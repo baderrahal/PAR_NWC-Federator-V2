@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>Federator.Addin</AssemblyName>
+    <RootNamespace>Federator.Addin</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Override on the command line when Navisworks sits elsewhere:
+       dotnet build -p:NavisworksPath="D:\Autodesk\Navisworks Manage 2025" -->
+  <PropertyGroup>
+    <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2025</NavisworksPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <ProjectReference Include="..\Federator.Core\Federator.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Navisworks.Api">
+      <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.Clash">
+      <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckNavisworksPresent" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(NavisworksPath)\Autodesk.Navisworks.Api.dll')"
+           Text="Autodesk.Navisworks.Api.dll not found under NavisworksPath '$(NavisworksPath)'. Set NavisworksPath to the Navisworks Manage 2025 install folder." />
+  </Target>
+
+</Project>

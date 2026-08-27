@@ -1,0 +1,47 @@
+# Build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+artifacts/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Rider and VS Code
+.idea/
+*.sln.iml
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+!packages/build/
+project.lock.json
+project.assets.json
+
+# Test and coverage output
+TestResults/
+*.trx
+*.coverage
+*.coverchecksum
+coverage*.json
+coverage*.xml
+
+# Navisworks outputs produced by a run
+*.nwf
+*.nwd
+*.nwc
+
+# Local scratch
+*.log
+*.tmp

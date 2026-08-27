@@ -27,13 +27,27 @@ Split on the hyphen. Part 3 is the building, part 5 is the discipline.
 Group on the full 6 character building code. 1C07BC and 1C07K1 are two buildings.
 Every discipline of a building goes into that building's federation. Discipline is
 read for reporting only, it never splits a group.
-Outputs keep the same container name with BM as the discipline code, ZZZ for the
-level, and the number 000001, because outputs overwrite.
+The output name is project, originator, building code, ZZZ, BM, MOD, 000001.
+Level and number are fixed because outputs overwrite. The four input files in a
+group may disagree on level and number, which is why neither is carried through.
+Project, originator and the type code come from the group's files.
+
+If two files in one group disagree on the project code or the originator, report
+it and skip the group. Do not pick one.
+
 The split character and the part positions are settings, never constants.
 
 ## What the clash test XML holds
 
-Measured from the real file. Do not re-derive this.
+Measured from the real files on 2026-08-27 and corrected on 2026-08-28. Do not
+re-derive this. An earlier version of this section said the reference file held no
+sets. It holds 61. The numbers below are the measured ones.
+
+1104-PAR_CLASH_AllInOne holds both parts, 61 sets and 1830 tests in one file, and
+all 61 test locators resolve against its own sets. It is the reference file. When
+this file and another disagree about anything, this one is right.
+
+The tests:
 
 - root exchange, units="ft", one batchtest, 1830 clashtest children
 - every test: test_type="hard_conservative", status="new",
@@ -42,12 +56,54 @@ Measured from the real file. Do not re-derive this.
   units before use
 - each side is one clashselection holding one locator, a name path such as
   lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals
-- paths nest. Mechanical has 4 subfolders. Walk the folders, never assume the
-  sets tree is flat
-- 61 unique sets. 1830 is every pair of 61 with no self pairs
-- set names contain spaces and ampersands. Match the exact string
+- 1830 is every pair of 61 with no self pairs
 - linkage is none and rules are empty in every test here. Read both anyway,
   another project will use them
+
+The sets:
+
+- 61 sets, carrying real rules, not one rule repeated
+- 102 conditions across the 61 sets. 30 sets carry one condition, 26 carry two,
+  5 carry four
+- paths nest. Mechanical has 4 subfolders. Walk the folders, never assume the
+  sets tree is flat
+- set names contain spaces and ampersands, and two of them end in a space. Match
+  the exact string. Never trim a set name or a locator
+- the rule vocabulary seen in real files:
+
+      category LcRevitData_Element display Element
+        property LcRevitPropertyElementCategory display Category, the Revit category
+        property lcldrevit_parameter_-1002053 display Workset
+
+      no category element at all
+        property LcOaNodeSourceFile display Source File
+
+- condition test values seen: equals and contains
+- a condition can arrive with no category element. The reader must not assume one
+- rebuilding a search through the API uses the internal strings, never the display
+  words. Element and Category and Workset and Source File are what a person reads,
+  LcRevitData_Element and the rest are what the API matches on
+
+Search_Set_Building.xml and Search_Set_Infra.xml are damaged exports. Every
+condition in both reads category Category, property Name, equals Floors. They are
+kept as samples only, to prove HealthCheck catches them. Never treat either as a
+reference for what a good file looks like.
+
+Counting distinct rules. Two different numbers are both right about the reference
+file and they answer different questions:
+
+- 53 is the number of distinct conditions, comparing test, category, property and
+  value, with flags left out. This is what HealthCheck.DistinctRuleCount counts,
+  because it is the one that catches a damaged export: Search_Set_Infra has 2715
+  conditions and 1 distinct condition
+- 59 is the number of distinct sets, comparing each set's whole ordered list of
+  conditions. It is 59 rather than 61 because two pairs of sets carry identical
+  rule lists: Telecom Fixtures with Telephone Devices, and Electrical Fixtures
+  with Devices
+
+The set level number cannot be used for the damaged export check. On Infra it
+gives 6, because the sets differ in how many copies of the one rule they hold,
+and 6 does not read as broken.
 
 ## Rules the code holds
 
@@ -66,7 +122,29 @@ Measured from the real file. Do not re-derive this.
 
 ## Build
 
-Fill this in from docs\scan.md once the scan has run. Do not guess the command.
+Filled in from docs\scan.md after the scan ran on 2026-08-27.
+
+Everything, which needs Navisworks on the machine because of the add-in project:
+
+    dotnet build ParsonsNwcFederator.sln -c Release
+
+The parts that need no Navisworks, which is all of Federator.Core:
+
+    dotnet test tests\Federator.Core.Tests\Federator.Core.Tests.csproj
+
+There is no Visual Studio and no .NET Framework targeting pack on this machine, so net48
+compiles only through the Microsoft.NETFramework.ReferenceAssemblies package. Every
+project references it. That makes nuget.org a hard requirement for building at all.
+
+The add-in finds Navisworks through the NavisworksPath property, default
+C:\Program Files\Autodesk\Navisworks Manage 2025. Override it when the install moved:
+
+    dotnet build ParsonsNwcFederator.sln -c Release -p:NavisworksPath="D:\Autodesk\Navisworks Manage 2025"
+
+Tests are NUnit. The pre-commit hook runs them and refuses the commit on a failure. Turn
+it on once per clone with:
+
+    git config core.hooksPath .githooks
 
 ## Tests
 
