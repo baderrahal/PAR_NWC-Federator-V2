@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# Runs the full test set and refuses the commit if anything fails.
+# Install with:  git config core.hooksPath .githooks
+
+set -e
+
+repo=$(git rev-parse --show-toplevel)
+cd "$repo"
+
+echo "pre-commit: running the full test set"
+
+if ! command -v dotnet >/dev/null 2>&1; then
+    echo "pre-commit: REFUSED. dotnet was not found on PATH, so the tests could not run."
+    echo "pre-commit: install the .NET SDK, or commit with --no-verify only if you know why."
+    exit 1
+fi
+
+if ! dotnet test "$repo/tests/Federator.Core.Tests/Federator.Core.Tests.csproj" \
+        --nologo -v quiet; then
+    echo ""
+    echo "pre-commit: REFUSED. The tests failed."
+    exit 1
+fi
+
+echo "pre-commit: tests passed"
+exit 0

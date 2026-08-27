@@ -1,0 +1,26 @@
+name: tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    # net48 needs a Windows runner. The reference assemblies come from the
+    # Microsoft.NETFramework.ReferenceAssemblies package, so no Visual Studio is needed.
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore tests/Federator.Core.Tests/Federator.Core.Tests.csproj
+
+      - name: Test
+        run: dotnet test tests/Federator.Core.Tests/Federator.Core.Tests.csproj --nologo -v minimal

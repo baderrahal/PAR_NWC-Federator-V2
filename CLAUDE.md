@@ -66,7 +66,29 @@ Measured from the real file. Do not re-derive this.
 
 ## Build
 
-Fill this in from docs\scan.md once the scan has run. Do not guess the command.
+Filled in from docs\scan.md after the scan ran on 2026-08-27.
+
+Everything, which needs Navisworks on the machine because of the add-in project:
+
+    dotnet build ParsonsNwcFederator.sln -c Release
+
+The parts that need no Navisworks, which is all of Federator.Core:
+
+    dotnet test tests\Federator.Core.Tests\Federator.Core.Tests.csproj
+
+There is no Visual Studio and no .NET Framework targeting pack on this machine, so net48
+compiles only through the Microsoft.NETFramework.ReferenceAssemblies package. Every
+project references it. That makes nuget.org a hard requirement for building at all.
+
+The add-in finds Navisworks through the NavisworksPath property, default
+C:\Program Files\Autodesk\Navisworks Manage 2025. Override it when the install moved:
+
+    dotnet build ParsonsNwcFederator.sln -c Release -p:NavisworksPath="D:\Autodesk\Navisworks Manage 2025"
+
+Tests are NUnit. The pre-commit hook runs them and refuses the commit on a failure. Turn
+it on once per clone with:
+
+    git config core.hooksPath .githooks
 
 ## Tests
 
