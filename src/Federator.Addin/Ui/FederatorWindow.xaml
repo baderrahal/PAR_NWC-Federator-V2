@@ -31,7 +31,10 @@
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
                     <Button x:Name="RunButton" Content="Run" Click="OnRun"
                             MinWidth="120" FontWeight="Bold" Margin="0,0,8,0" />
-                    <Button x:Name="CloseButton" Content="Close" Click="OnClose" Margin="0,0,12,0" />
+                    <Button x:Name="OpenLogFolderButton" Content="Open log folder" Click="OnOpenLogFolder"
+                            MinWidth="120" />
+                    <Button x:Name="CopyLogButton" Content="Copy log" Click="OnCopyLog" />
+                    <Button x:Name="CloseButton" Content="Close" Click="OnClose" Margin="12,0,12,0" />
                     <TextBlock x:Name="ProgressLine" VerticalAlignment="Center"
                                Text="Pick a folder and press Scan." />
                 </StackPanel>

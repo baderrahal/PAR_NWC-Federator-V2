@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Autodesk.Navisworks.Api;
+using Federator.Core.Diagnostics;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 
 namespace Federator.Addin.Engine
@@ -15,15 +16,18 @@ namespace Federator.Addin.Engine
     /// </summary>
     public sealed class FederationEngine
     {
-        public const string RunLogFileName = "ParsonsNwcFederator-run.log";
-
         private readonly Action<string> progress;
-        private readonly Action<string> log;
+        private readonly RunLog log;
 
-        public FederationEngine(Action<string> progress, Action<string> log)
+        public FederationEngine(Action<string> progress, RunLog log)
         {
+            if (log == null)
+            {
+                throw new ArgumentNullException("log");
+            }
+
             this.progress = progress ?? delegate { };
-            this.log = log ?? delegate { };
+            this.log = log;
         }
 
         /// <summary>
@@ -31,7 +35,7 @@ namespace Federator.Addin.Engine
         /// the next group starts, so a failure part way through keeps everything already
         /// written.
         /// </summary>
-        public IList<JobOutcome> Run(IList<FederationJob> jobs, string runLogPath)
+        public IList<JobOutcome> Run(IList<FederationJob> jobs)
         {
             if (jobs == null)
             {
@@ -47,11 +51,14 @@ namespace Federator.Addin.Engine
                     "Group " + (i + 1) + " of " + jobs.Count + ": " + job.Building
                         + " (" + job.Files.Count + " files)");
 
-                JobOutcome outcome = RunOne(job);
-                outcomes.Add(outcome);
+                Stopwatch groupClock = Stopwatch.StartNew();
+                log.GroupStarted(job.Building, job.Files);
 
-                AppendRunLog(runLogPath, outcome);
-                log(Describe(outcome));
+                JobOutcome outcome = RunOne(job);
+                groupClock.Stop();
+
+                outcomes.Add(outcome);
+                log.GroupFinished(job.Building, outcome.Result, groupClock.Elapsed.TotalSeconds);
             }
 
             return outcomes;
@@ -60,6 +67,8 @@ namespace Federator.Addin.Engine
         private JobOutcome RunOne(FederationJob job)
         {
             JobOutcome outcome = new JobOutcome(job);
+            outcome.NwfSize = -1;
+            outcome.NwdSize = -1;
 
             try
             {
@@ -68,27 +77,36 @@ namespace Federator.Addin.Engine
                 if (document == null)
                 {
                     outcome.Error = "There is no active document.";
+                    log.Line("GROUP    " + job.Building + " stopped, there is no active document");
                     return outcome;
                 }
 
+                log.Line("CLEAR    the document, before group " + job.Building);
                 document.Clear();
 
                 foreach (string file in job.Files)
                 {
-                    if (AppendOne(document, file))
+                    log.AppendAttempted(file);
+                    bool appended = AppendOne(document, file);
+                    log.AppendFinished(file, appended);
+
+                    if (appended)
                     {
                         outcome.AppendedCount++;
                     }
                     else
                     {
                         outcome.FailedFiles.Add(file);
-                        log("    could not append " + Path.GetFileName(file));
                     }
                 }
+
+                log.Line("APPEND   " + outcome.AppendedCount + " of " + job.Files.Count
+                    + " appended for " + job.Building);
 
                 if (outcome.AppendedCount == 0)
                 {
                     outcome.Error = "No file in this group appended, so nothing was written.";
+                    log.Line("GROUP    " + job.Building + " wrote nothing, every append failed");
                     return outcome;
                 }
 
@@ -98,11 +116,17 @@ namespace Federator.Addin.Engine
             catch (Exception error)
             {
                 outcome.Error = error.Message;
+                log.Failure(
+                    "federating group " + job.Building,
+                    error,
+                    "stopped this group, carried on with the next one, everything already written is kept");
 
                 // The outputs are still checked against the disk below, because a throw
                 // after a successful write must not report the file as missing.
-                outcome.NwfOnDisk = File.Exists(job.NwfPath);
-                outcome.NwdOnDisk = File.Exists(job.NwdPath);
+                outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath);
+                outcome.NwdSize = log.WriteFinished("NWD", job.NwdPath);
+                outcome.NwfOnDisk = outcome.NwfSize >= 0;
+                outcome.NwdOnDisk = outcome.NwdSize >= 0;
             }
 
             return outcome;
@@ -119,7 +143,7 @@ namespace Federator.Addin.Engine
             {
                 if (!File.Exists(file))
                 {
-                    log("    missing on disk: " + file);
+                    log.Line("APPEND   missing on disk, never attempted: " + file);
                     return false;
                 }
 
@@ -127,7 +151,10 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
-                log("    append threw on " + Path.GetFileName(file) + ": " + error.Message);
+                log.Failure(
+                    "appending " + file,
+                    error,
+                    "kept going with the rest of the group, this group will be marked partial");
                 return false;
             }
         }
@@ -135,33 +162,36 @@ namespace Federator.Addin.Engine
         private void WriteNwf(Document document, FederationJob job, JobOutcome outcome)
         {
             progress("Saving NWF for " + job.Building);
-            EnsureFolder(job.NwfPath);
+            log.WriteAttempted("NWF", job.NwfPath);
 
             try
             {
+                EnsureFolder(job.NwfPath);
                 document.TrySaveFile(job.NwfPath);
             }
             catch (Exception error)
             {
-                log("    NWF save threw: " + error.Message);
+                log.Failure(
+                    "saving the NWF for " + job.Building,
+                    error,
+                    "kept going, the disk is checked next to see whether anything landed");
             }
 
-            // Never report a file as written without looking for it.
-            outcome.NwfOnDisk = File.Exists(job.NwfPath);
-
-            if (!outcome.NwfOnDisk)
-            {
-                log("    NWF is not on disk after the save: " + job.NwfPath);
-            }
+            // Never report a file as written without looking for it. WriteFinished reads
+            // the size back off the disk itself.
+            outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath);
+            outcome.NwfOnDisk = outcome.NwfSize >= 0;
         }
 
         private void WriteNwd(Document document, FederationJob job, JobOutcome outcome)
         {
             progress("Publishing NWD for " + job.Building);
-            EnsureFolder(job.NwdPath);
+            log.WriteAttempted("NWD", job.NwdPath);
 
             try
             {
+                EnsureFolder(job.NwdPath);
+
                 // PublishProperties is the 2025 way to write an NWD. NwdExportOptions is
                 // a 2026 class and does not exist here.
                 using (PublishProperties properties = new PublishProperties())
@@ -176,15 +206,14 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
-                log("    NWD publish threw: " + error.Message);
+                log.Failure(
+                    "publishing the NWD for " + job.Building,
+                    error,
+                    "kept going, the disk is checked next to see whether anything landed");
             }
 
-            outcome.NwdOnDisk = File.Exists(job.NwdPath);
-
-            if (!outcome.NwdOnDisk)
-            {
-                log("    NWD is not on disk after the publish: " + job.NwdPath);
-            }
+            outcome.NwdSize = log.WriteFinished("NWD", job.NwdPath);
+            outcome.NwdOnDisk = outcome.NwdSize >= 0;
         }
 
         private static void EnsureFolder(string filePath)
@@ -227,29 +256,6 @@ namespace Federator.Addin.Engine
             }
 
             return line.ToString();
-        }
-
-        /// <summary>
-        /// One line per group, appended as the group finishes rather than at the end, so
-        /// a run that stops half way still leaves a readable log.
-        /// </summary>
-        private void AppendRunLog(string runLogPath, JobOutcome outcome)
-        {
-            if (string.IsNullOrEmpty(runLogPath))
-            {
-                return;
-            }
-
-            try
-            {
-                EnsureFolder(runLogPath);
-                string stamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                File.AppendAllText(runLogPath, stamp + "  " + Describe(outcome) + Environment.NewLine);
-            }
-            catch (Exception error)
-            {
-                log("    could not write the run log: " + error.Message);
-            }
         }
     }
 }

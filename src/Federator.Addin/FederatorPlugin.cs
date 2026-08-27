@@ -1,7 +1,9 @@
 using System;
 using System.Windows.Interop;
 using Autodesk.Navisworks.Api.Plugins;
+using Federator.Addin.Engine;
 using Federator.Addin.Ui;
+using Federator.Core.Diagnostics;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 
 namespace Federator.Addin
@@ -23,9 +25,24 @@ namespace Federator.Addin
 
         public override int Execute(params string[] parameters)
         {
+            // First line of the handler, before the folder is read, before the window
+            // opens anything, before any Navisworks call. A run that dies at startup still
+            // leaves a file behind. StartOrDisabled never throws.
+            RunLog log = RunLog.StartOrDisabled();
+
             try
             {
-                FederatorWindow window = new FederatorWindow();
+                log.Session(
+                    NavisworksFacts.PluginVersion(),
+                    NavisworksFacts.VersionString(),
+                    NavisworksFacts.OpenDocument());
+
+                if (!log.IsWritingToDisk)
+                {
+                    log.Line("WARNING  the run carries on but nothing is being written to disk");
+                }
+
+                FederatorWindow window = new FederatorWindow(log);
 
                 IntPtr owner = OwnerHandle();
 
@@ -35,17 +52,25 @@ namespace Federator.Addin
                 }
 
                 window.ShowDialog();
+                log.Line("Window closed.");
                 return 0;
             }
             catch (Exception error)
             {
+                log.Failure("starting the add-in", error, "stopped, the window never opened");
+
                 System.Windows.MessageBox.Show(
                     "Parsons NWC Federator could not start." + Environment.NewLine + Environment.NewLine
-                        + error,
+                        + error + Environment.NewLine + Environment.NewLine
+                        + "Log: " + (log.Path ?? "none, the log could not be opened"),
                     "Parsons NWC Federator",
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error);
                 return 1;
+            }
+            finally
+            {
+                log.Dispose();
             }
         }
 

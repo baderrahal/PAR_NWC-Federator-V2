@@ -371,6 +371,27 @@ public bool IsEnabled { get; set }   public bool IsChecked { get; set }
 public bool IsVisible { get; set }   public string OverrideDisplayName { get; set }
 ```
 
+### 4c. The version string, added 2026-08-30
+
+The diagnostic log header carries the Navisworks version as the API reports it. Read by
+reflection off the same install on 2026-08-30.
+
+`Autodesk.Navisworks.Api.ApplicationParts.ApplicationVersion` is sealed, base
+`System.Object`, and every member is get only:
+
+```
+public int ApiMajor { get }          public string Runtime { get }
+public int ApiMinor { get }          public string RuntimeLanguage { get }
+public int Build { get }             public int RuntimeMajor { get }
+public bool IsApiStable { get }      public int RuntimeMinor { get }
+public bool IsRuntimeBeta { get }    public string RuntimeProductName { get }
+```
+
+It declares no public methods, and it does NOT override `ToString`. `ToString` resolves to
+`System.Object.ToString`, which would log the type name and nothing else. The version
+string therefore has to be built from the properties above, which is what
+`NavisworksFacts.VersionString` does.
+
 NOT CHECKED, still UNKNOWN, because all of it needs Navisworks actually running: whether
 the button appears where expected, whether the bundle loads, whether an append or a
 publish succeeds against a real NWC, and how long a real run takes.

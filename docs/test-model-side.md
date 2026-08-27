@@ -158,12 +158,26 @@ changed. Check the NWF folder is still empty.
 
 **Worked:** the progress line moves through the groups, for example
 `Group 1 of 3: 1C07BC (4 files)`, then `Saving NWF for 1C07BC`, then
-`Publishing NWD for 1C07BC`. The log gets one line per group as each finishes:
+`Publishing NWD for 1C07BC`.
 
-    1C07BC  WRITTEN  appended 4 of 4  NWF on disk  NWD on disk
+The log box fills as it happens, one line per action rather than one per group, each with
+the wall clock time and the seconds since the run started:
+
+    14:23:05.117  +0000.001s  Log opened at C:\Users\you\AppData\Local\ParsonsNwcFederator\logs\run-20260830-142305.log
+    14:23:19.402  +0014.286s  GROUP    started  1C07BC  4 files
+                              file     : C:\in\1104-PAR-1C07BC-ZZZ-AR-MOD-000001.nwc
+    14:23:19.404  +0014.288s  CLEAR    the document, before group 1C07BC
+    14:23:19.410  +0014.294s  APPEND   attempt  C:\in\1104-PAR-1C07BC-ZZZ-AR-MOD-000001.nwc
+    14:23:41.882  +0036.766s  APPEND   ok       C:\in\1104-PAR-1C07BC-ZZZ-AR-MOD-000001.nwc  8,412,160 bytes
+    14:24:02.115  +0056.999s  NWF      attempt  C:\out\nwf\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf
+    14:24:07.330  +0062.214s  NWF      written  C:\out\nwf\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf  1,204,736 bytes
+    14:24:51.006  +0105.890s  GROUP    finished 1C07BC  DONE  91.604s
+
+Every size in there was read back off the disk after the write. A size is never printed
+for a file the tool did not find.
 
 When it ends the progress line reads something like
-`Run finished. 3 written, 0 partial, 0 failed.`
+`Run finished. 3 done, 0 partial, 0 failed.`
 
 ## Check what it actually wrote
 
@@ -176,35 +190,81 @@ date and no version number on the end.
 
 **Worked:** one `.nwd` per group, same names.
 
-24. Open `ParsonsNwcFederator-run.log` in the NWF folder.
+24. Look at the bottom of the log box in the window.
 
-**Worked:** one timestamped line per group, the same lines you saw in the log box. The
-word after the building code is `WRITTEN`, `PARTIAL` or `FAILED`.
+**Worked:** a `RESULT` block, which is the summary you do not have to scroll for. It reads
+groups done, groups partial, groups failed, then every file written with the size that was
+read back off the disk, then every error repeated in full, then the total elapsed. If
+nothing went wrong the errors section is the single line `Nothing failed.`
 
 25. Open one of the NWD files in Navisworks and check every discipline of that building is
     in it.
 
 ## What the three results mean
 
-- `WRITTEN` means every file appended and both outputs are on disk. The tool checked the
+- `DONE` means every file appended and both outputs are on disk. The tool checked the
   disk, it did not just assume the save worked.
 - `PARTIAL` means at least one NWC would not append but the rest did, and both outputs are
-  on disk. The line names the files that failed. The federation is real but incomplete, so
+  on disk. The log names the files that failed. The federation is real but incomplete, so
   go and look at those files.
 - `FAILED` means nothing usable came out. Either no file appended, or an output is not on
-  disk. The line says which.
+  disk. The log says which.
+
+## The log
+
+This is the thing to send me when anything goes wrong. It is written and flushed line by
+line as the run happens, never held back to the end, so even if Navisworks dies mid append
+everything up to that moment is already on disk.
+
+It lands in two places, always:
+
+1. The fixed path, which never depends on any folder you picked:
+
+       %LOCALAPPDATA%\ParsonsNwcFederator\logs\run-yyyyMMdd-HHmmss.log
+
+   In full that is
+   `C:\Users\<you>\AppData\Local\ParsonsNwcFederator\logs\`. A new file per run, named
+   for the moment you pressed the button. Even a run that fails on the very first step
+   leaves one here, because the log is opened before anything else happens.
+
+2. A copy next to the NWF folder, written at the end of the run, with the same file name.
+
+If the second copy cannot be written, the first log says so and the run carries on.
+Logging is never allowed to be the thing that stops a run.
+
+26. Click **Open log folder** at the bottom of the window.
+
+**Worked:** Explorer opens with this run's log file already picked out.
+
+27. Click **Copy log**.
+
+**Worked:** the progress line says how many characters were copied. Paste it straight into
+chat.
+
+One thing worth knowing: while the run is still going, the log file is held open. Notepad
+opens it fine and so does the **Copy log** button, but some tools refuse it with a sharing
+error. If that happens, either wait for the run to finish or use **Copy log**.
 
 ## Run it twice
 
-26. Click **Run** again with the same settings.
+28. Click **Run** again with the same settings.
 
-**Worked:** the same file names are overwritten in place. No second copy appears, no date
-suffix, no `(2)`. The run log grows by one more block of lines rather than being replaced.
+**Worked:** the same NWF and NWD file names are overwritten in place. No second copy
+appears, no date suffix, no `(2)`. You get a brand new log file, because logs are never
+overwritten.
 
 ## What to send me if it goes wrong
 
-The contents of the log box, the contents of `ParsonsNwcFederator-run.log`, and which step
-number above it stopped at.
+Send the whole log file, not a summary and not the last few lines. Use **Copy log** and
+paste the lot, or attach the file from
+`%LOCALAPPDATA%\ParsonsNwcFederator\logs\`.
+
+The reason is that the useful part is almost never where you would expect. The header
+carries the Navisworks version and what was open, the middle carries the exact file that
+was being appended when it died, and the failures carry their full stack traces. Trimming
+it to what looks relevant usually removes the line that says what happened.
+
+Also tell me which step number above it stopped at.
 
 ## What I could not test
 
@@ -222,6 +282,12 @@ it here. What I did check on this machine, without Navisworks running:
 - the scan, the parsing, the unreadable rows, the subfolder search, the grouping, the
   blocked group and the computed output names all work, driven against a folder of
   correctly named empty files
+- the log file is created before any work starts, every line reaches the disk immediately
+  rather than at the end, an exception is written with its full type name, message, inner
+  exception and stack trace, the result block counts match what was logged, and a bad
+  output folder still leaves the log in the fixed path with the reason the copy failed
+- the log captured a real scan live, with wall clock times and seconds elapsed on every
+  line
 
 What is still UNKNOWN until you run steps 6 to 26: whether Navisworks loads the bundle,
 whether the button appears on Tool Add-ins, whether an append, a save or a publish
