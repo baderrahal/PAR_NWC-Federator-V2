@@ -125,6 +125,39 @@ and 6 does not read as broken.
 - Images are off by default. When on, New and Active only, written as jpg beside
   the workbook with a link in the row, never pasted into cells
 
+## The diagnostic log
+
+The log is what Bader sends back when something goes wrong, so it is built to
+survive the crash rather than to be tidy.
+
+- every line is written and flushed all the way to the disk as it happens, with
+  FileStream.Flush(true). Nothing is held back to the end, so a process that dies
+  inside a Navisworks call still leaves everything up to that moment on disk
+- it opens on the first line of the button handler, before the folder is read and
+  before the window opens, so a run that dies at startup still produces a file
+- two places, always. The fixed path
+  %LOCALAPPDATA%\ParsonsNwcFederator\logs\run-yyyyMMdd-HHmmss.log never depends on
+  a folder the user picked, and a copy goes next to the NWF folder at the end. If
+  that copy fails, the reason goes in the first log and the run carries on
+- logging is never the thing that stops a run. That holds for the copy, for
+  retention, and for the log file itself, which falls back to the temp folder and
+  then to window only output
+- a size is only logged after File.Exists passes and the real size is read back.
+  Never log a size that was not read
+- on start, the oldest logs are deleted until 30 remain, the live file included.
+  The live file is never a candidate. A delete that fails writes one line naming
+  the file and the reason. 30 is a setting
+
+Two things that look like mistakes and are not:
+
+- while a run holds the log open, File.ReadAllText fails with a sharing error.
+  Anything reading a live log opens it share-aware. Notepad and the Copy log
+  button both work. There is a test pinning this
+- the header is two blocks on purpose. SESSION is written at button press and
+  proves the button fired even if the scan never ran. RUN SETTINGS is written at
+  Run because the folders and the counts do not exist until the scan finishes.
+  Do not merge them
+
 ## Build
 
 Filled in from docs\scan.md after the scan ran on 2026-08-27.
