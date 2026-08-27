@@ -96,15 +96,21 @@ namespace Federator.Core.Tests
         [Test]
         public void ThePartPositionsAreSettings()
         {
-            ContainerNameSettings settings = ContainerNameSettings.WithoutFixedLevelAndNumber();
-            settings.BuildingPart = 2;
-            settings.DisciplinePart = 4;
+            ContainerNameSettings settings = new ContainerNameSettings
+            {
+                ProjectPart = 5,
+                OriginatorPart = 3,
+                BuildingPart = 2,
+                DisciplinePart = 4
+            };
 
             ParsedContainerName parsed = ContainerName.Parse("XX-1C07BC-YY-AR-ZZ", settings);
 
             Assert.That(parsed.IsReadable, Is.True, parsed.UnreadableReason);
             Assert.That(parsed.Building, Is.EqualTo("1C07BC"));
             Assert.That(parsed.Discipline, Is.EqualTo("AR"));
+            Assert.That(parsed.Project, Is.EqualTo("ZZ"));
+            Assert.That(parsed.Originator, Is.EqualTo("YY"));
         }
 
         [Test]
@@ -152,22 +158,38 @@ namespace Federator.Core.Tests
             }
         }
 
+        // The type code is pinned, like the level and the number. Only parts 1, 2, 3 and
+        // 5 of the input reach the output name.
         [Test]
-        public void TheTypeCodeIsCarriedThroughRatherThanFixed()
+        public void TheTypeCodeIsPinnedToModWhateverTheInputCarried()
         {
             Assert.That(
                 ContainerName.BuildOutputName(ContainerName.Parse("1104-PAR-1C07BC-L02-AR-DOC-000456")),
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-DOC-000001"));
+                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
         }
 
         [Test]
-        public void TheFixedLevelAndNumberCanBeTurnedOff()
+        public void EveryPinnedFieldIsASetting()
         {
-            ContainerNameSettings settings = ContainerNameSettings.WithoutFixedLevelAndNumber();
+            ContainerNameSettings settings = new ContainerNameSettings
+            {
+                ForcedLevel = "L00",
+                OutputDisciplineCode = "FD",
+                ForcedTypeCode = "FED",
+                ForcedNumber = "000009"
+            };
 
             Assert.That(
-                ContainerName.BuildOutputName("1104-PAR-1C07BC-L02-AR-MOD-000456", settings),
-                Is.EqualTo("1104-PAR-1C07BC-L02-BM-MOD-000456"));
+                ContainerName.BuildOutputName("1104-PAR-1C07BC-L02-AR-DOC-000456", settings),
+                Is.EqualTo("1104-PAR-1C07BC-L00-FD-FED-000009"));
+        }
+
+        [Test]
+        public void AGroupOutputNameCanBeBuiltFromTheThreeAgreedFields()
+        {
+            Assert.That(
+                ContainerName.BuildOutputName("1104", "PAR", "1C07BC", new ContainerNameSettings()),
+                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
         }
 
         [Test]
@@ -179,13 +201,36 @@ namespace Federator.Core.Tests
             Assert.That(parsed.Originator, Is.EqualTo("PAR"));
         }
 
+        // The floor is five parts, because only parts 1, 2, 3 and 5 are read. A six part
+        // name and a five part name both parse, and both still give a full output name.
         [Test]
-        public void ASixPartNameCannotProduceAnOutputNameSoItIsUnreadable()
+        public void ASixPartNameParsesAndStillGivesAFullOutputName()
         {
             ParsedContainerName parsed = ContainerName.Parse("1104-PAR-1C07BC-ZZZ-AR-MOD");
 
-            Assert.That(parsed.IsReadable, Is.False);
-            Assert.That(parsed.UnreadableReason, Does.Contain("6 parts").And.Contains("7 are needed"));
+            Assert.That(parsed.IsReadable, Is.True, parsed.UnreadableReason);
+            Assert.That(parsed.Building, Is.EqualTo("1C07BC"));
+            Assert.That(parsed.Discipline, Is.EqualTo("AR"));
+            Assert.That(
+                ContainerName.BuildOutputName(parsed),
+                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
+        }
+
+        [Test]
+        public void AFivePartNameParsesAndStillGivesAFullOutputName()
+        {
+            ParsedContainerName parsed = ContainerName.Parse("1104-PAR-1C07BC-ZZZ-AR");
+
+            Assert.That(parsed.IsReadable, Is.True, parsed.UnreadableReason);
+            Assert.That(
+                ContainerName.BuildOutputName(parsed),
+                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
+        }
+
+        [Test]
+        public void TheReadableNameFloorIsFiveParts()
+        {
+            Assert.That(new ContainerNameSettings().MinimumParts, Is.EqualTo(5));
         }
 
         [Test]

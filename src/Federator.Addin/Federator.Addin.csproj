@@ -6,6 +6,15 @@
     <AssemblyName>Federator.Addin</AssemblyName>
     <RootNamespace>Federator.Addin</RootNamespace>
     <IsPackable>false</IsPackable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- The plugin is loaded by Navisworks, which supplies the entry point. -->
+    <OutputType>Library</OutputType>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Company>Parsons</Company>
+    <Product>Parsons NWC Federator</Product>
   </PropertyGroup>
 
   <!-- Override on the command line when Navisworks sits elsewhere:
@@ -19,6 +28,9 @@
     <ProjectReference Include="..\Federator.Core\Federator.Core.csproj" />
   </ItemGroup>
 
+  <!-- Copy local false. These live in the Navisworks install folder and the running
+       application already has them loaded. Shipping a second copy in the bundle would
+       load a second set of types and nothing would match. -->
   <ItemGroup>
     <Reference Include="Autodesk.Navisworks.Api">
       <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</HintPath>

@@ -105,9 +105,11 @@ namespace Federator.Core.Naming
         }
 
         /// <summary>
-        /// The output name for a federation. The discipline becomes the output code and
-        /// every other part is kept. When the settings name a level or a number position
-        /// together with a forced value, those parts are overwritten as well.
+        /// The output name for a federation, built rather than patched. It is always
+        /// seven fields: project, originator, building, the fixed level, the output
+        /// discipline code, the fixed type code, the fixed number. Only parts 1, 2, 3
+        /// and 5 of the input are read, so a five part input still produces a full
+        /// output name.
         /// </summary>
         public static string BuildOutputName(ParsedContainerName parsed, ContainerNameSettings settings)
         {
@@ -129,13 +131,18 @@ namespace Federator.Core.Naming
 
             settings.Validate();
 
-            List<string> parts = new List<string>(parsed.Parts);
-            parts[settings.DisciplinePart - 1] = settings.OutputDisciplineCode;
+            string[] fields =
+            {
+                parsed.Project,
+                parsed.Originator,
+                parsed.Building,
+                settings.ForcedLevel,
+                settings.OutputDisciplineCode,
+                settings.ForcedTypeCode,
+                settings.ForcedNumber
+            };
 
-            ApplyForcedPart(parts, settings.LevelPart, settings.ForcedLevel, "LevelPart");
-            ApplyForcedPart(parts, settings.NumberPart, settings.ForcedNumber, "NumberPart");
-
-            return string.Join(settings.Separator.ToString(), parts.ToArray());
+            return string.Join(settings.Separator.ToString(), fields);
         }
 
         public static string BuildOutputName(ParsedContainerName parsed)
@@ -148,27 +155,33 @@ namespace Federator.Core.Naming
             return BuildOutputName(Parse(name, settings), settings);
         }
 
-        private static void ApplyForcedPart(
-            IList<string> parts, int? position, string value, string settingName)
+        /// <summary>
+        /// The output name for a whole group. Every file in a group agrees on the
+        /// project, the originator and the building, so any one of them gives the same
+        /// answer, and this makes that explicit.
+        /// </summary>
+        public static string BuildOutputName(
+            string project, string originator, string building, ContainerNameSettings settings)
         {
-            if (!position.HasValue && value == null)
+            if (settings == null)
             {
-                return;
+                throw new ArgumentNullException("settings");
             }
 
-            if (!position.HasValue || value == null)
-            {
-                throw new ArgumentException(
-                    settingName + " and its forced value have to be set together, or both left unset.");
-            }
+            settings.Validate();
 
-            if (position.Value < 1 || position.Value > parts.Count)
+            string[] fields =
             {
-                throw new ArgumentOutOfRangeException(
-                    settingName, position.Value, "The name has " + parts.Count + " parts.");
-            }
+                project,
+                originator,
+                building,
+                settings.ForcedLevel,
+                settings.OutputDisciplineCode,
+                settings.ForcedTypeCode,
+                settings.ForcedNumber
+            };
 
-            parts[position.Value - 1] = value;
+            return string.Join(settings.Separator.ToString(), fields);
         }
 
         private static string Quoted(char separator)

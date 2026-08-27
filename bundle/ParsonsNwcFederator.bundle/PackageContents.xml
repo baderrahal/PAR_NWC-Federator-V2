@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Navisworks Manage 2025 is API series Nw22, so the module sits in Contents\v22 and the
+  series range is pinned to Nw22 only. Widening it would offer the add-in to a Navisworks
+  it was never built against.
+-->
+<ApplicationPackage SchemaVersion="1.0"
+                    AutodeskProduct="Navisworks"
+                    ProductType="Application"
+                    Name="Parsons NWC Federator"
+                    AppVersion="1.0.0"
+                    Description="Federates discipline NWC files into one NWF and one NWD per building"
+                    Author="Parsons"
+                    ProductCode="{6E5B4B62-9E3A-4F2C-9C3D-5A1E7B0D4C11}"
+                    UpgradeCode="{2A9C1D74-8B05-4E6A-B2F1-70C9E3A85D22}">
+
+  <CompanyDetails Name="Parsons" />
+
+  <Components Description="Navisworks Manage 2025">
+    <RuntimeRequirements OS="Win64"
+                         Platform="Navisworks"
+                         SeriesMin="Nw22"
+                         SeriesMax="Nw22" />
+    <ComponentEntry AppName="ParsonsNwcFederator"
+                    Version="1.0.0"
+                    ModuleName="./Contents/v22/Federator.Addin.dll"
+                    AppDescription="Parsons NWC Federator"
+                    LoadOnCommandInvocation="False"
+                    LoadOnAutoCADStartup="False" />
+  </Components>
+
+</ApplicationPackage>

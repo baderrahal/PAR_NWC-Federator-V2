@@ -220,6 +220,161 @@ report counts by, and New and Active are the two the image option covers.
 NOT CHECKED this session: the Clash Detective report defaults. That needs the running
 application, not reflection over the assembly. Still UNKNOWN.
 
+### 4b. What the model side needs, added 2026-08-29
+
+The first scan recorded the four Document methods but not the types around them, so the
+model side could not have been written without inventing something. Read by reflection off
+the same install, same way, on 2026-08-29. Assembly `Autodesk.Navisworks.Api.dll`, version
+22.0.0.0.
+
+Reaching the running application. `Autodesk.Navisworks.Api.Application` is sealed with no
+public constructor. Everything on it is static:
+
+```
+public static Autodesk.Navisworks.Api.Document ActiveDocument { get }
+public static Autodesk.Navisworks.Api.Document MainDocument { get }
+public static ReadOnlyCollection[Document] Documents { get }
+public static Autodesk.Navisworks.Api.ApplicationParts.IApplicationGui Gui { get }
+public static bool IsAutomated { get }
+public static string Title { get }
+public static Autodesk.Navisworks.Api.ApplicationParts.ApplicationVersion Version { get }
+public static Autodesk.Navisworks.Api.Progress BeginProgress()
+public static Autodesk.Navisworks.Api.Progress BeginProgress(System.String title)
+public static Autodesk.Navisworks.Api.Progress BeginProgress(System.String title, System.String message)
+public static System.Void EndProgress()
+```
+
+`ActiveDocument` is get only, so the add-in works on the document Navisworks already has
+open. It never makes one.
+
+Owning a window. `Application.Gui.MainWindow` is a `System.Windows.Forms.IWin32Window`,
+not a WPF Window, so a WPF dialog is parented through its `Handle` with
+`WindowInteropHelper`. That is why Federator.Addin references System.Windows.Forms.
+
+```
+System.Windows.Forms.IWin32Window MainWindow { get }
+```
+
+Document state, used to check what a Clear would throw away and to verify a write:
+
+```
+public string CurrentFileName { get }
+public string FileName { get }
+public string SuggestedFileName { get }
+public string Title { get }
+public bool IsClear { get }
+public Autodesk.Navisworks.Api.DocumentParts.DocumentModels Models { get }
+```
+
+`DocumentModels.Count` is an int, which is how many models are loaded after an append.
+
+The Try forms, which return a bool instead of throwing. These are the ones the engine
+uses, because one bad NWC must not stop a group:
+
+```
+public System.Boolean TryAppendFile(System.String fileName)
+public System.Boolean TryAppendFiles(System.Collections.Generic.IEnumerable`1[System.String] fileNames)
+public System.Boolean TrySaveFile(System.String fileName)
+public System.Boolean TrySaveFile(System.String fileName, Autodesk.Navisworks.Api.DocumentFileVersion fileVersion)
+public System.Boolean TryPublishFile(System.String fileName, Autodesk.Navisworks.Api.PublishProperties properties)
+```
+
+`DocumentFileVersion` is an enum over int. Note that every year from 2016 to 2025 is the
+same number, 448:
+
+```
+Current = 0
+Navisworks2015 = 441
+Navisworks2016 = 448   Navisworks2021 = 448
+Navisworks2017 = 448   Navisworks2022 = 448
+Navisworks2018 = 448   Navisworks2023 = 448
+Navisworks2019 = 448   Navisworks2024 = 448
+Navisworks2020 = 448   Navisworks2025 = 448
+```
+
+`PublishProperties` has a parameterless constructor, which is what `PublishFile` needs.
+Base type `NativeHandle`, so it is disposable:
+
+```
+public PublishProperties()
+public PublishProperties(Autodesk.Navisworks.Api.PublishProperties value)
+
+public bool AllowResave { get; set }              public string Keywords { get; set }
+public string Author { get; set }                 public bool PreventObjectPropertyExport { get; set }
+public string Comments { get; set }               public datetime PublishDate { get; set }
+public string Copyright { get; set }              public string PublishedFor { get; set }
+public bool DisplayAtPassword { get; set }        public string Publisher { get; set }
+public bool DisplayOnOpen { get; set }            public string Subject { get; set }
+public bool EmbedDatabaseProperties { get; set }  public string Title { get; set }
+public bool EmbedTextures { get; set }
+public bool HasBeenResaved { get }                public bool HasExpiryDate { get }
+public bool HasPassword { get }                   public bool IsReadOnly { get }
+public datetime ExpiryDate { get; set }
+
+public System.Void RemoveExpiryDate()
+public System.Void RemovePassword()
+public System.Void SetPassword(System.String password)
+```
+
+The plugin base class. `AddInPlugin` is abstract and derives from `Plugin`:
+
+```
+Autodesk.Navisworks.Api.Plugins.AddInPlugin, abstract, base Plugin
+    public Autodesk.Navisworks.Api.Plugins.CommandState CanExecute()
+    public System.Int32 Execute(System.String[] parameters)
+    public System.Boolean TryShowHelp()
+
+Autodesk.Navisworks.Api.Plugins.Plugin, abstract
+    public string DeveloperId { get }
+    public string Id { get }
+    public string Name { get }
+    public Autodesk.Navisworks.Api.Plugins.PluginRecord PluginRecord { get }
+```
+
+`Execute` returns an int, so the plugin returns 0 for done.
+
+The two attributes a plugin carries:
+
+```
+Autodesk.Navisworks.Api.Plugins.PluginAttribute, sealed
+    public PluginAttribute(string name, string developerId)
+    DisplayName { get; set }   ToolTip { get; set }   ExtendedToolTip { get; set }
+    Options { get; set }       SupportsIsSelfEnabled { get; set }
+    Name { get }               DeveloperId { get }
+
+Autodesk.Navisworks.Api.Plugins.AddInPluginAttribute, sealed
+    public AddInPluginAttribute(Autodesk.Navisworks.Api.Plugins.AddInLocation location)
+    Icon { get; set }          LargeIcon { get; set }   CanToggle { get; set }
+    LoadForCanExecute { get; set }   Shortcut { get; set }
+    ShortcutWindowTypes { get; set } CallCanExecute { get; set }
+    Location { get }
+```
+
+The enums those attributes take:
+
+```
+AddInLocation   : None = 0, AddIn = 1, Import = 2, Export = 3, Help = 4,
+                  CurrentSelectionContextMenu = 5, CurrentSelection2DContextMenu = 6
+PluginOptions   : None = 0, SupportsControls = 1
+CallCanExecute  : Always = 0, DocumentNotClear = 1,
+                  CurrentSelectionSingle = 2, CurrentSelectionMultiple = 3
+```
+
+`AddInLocation.AddIn` is the value that puts a button on the Tool Add-ins tab.
+
+`CommandState` is a class, not an enum, so `CanExecute` returns a new one:
+
+```
+public CommandState()
+public CommandState(bool enabled)
+public bool IsEnabled { get; set }   public bool IsChecked { get; set }
+public bool IsVisible { get; set }   public string OverrideDisplayName { get; set }
+```
+
+NOT CHECKED, still UNKNOWN, because all of it needs Navisworks actually running: whether
+the button appears where expected, whether the bundle loads, whether an append or a
+publish succeeds against a real NWC, and how long a real run takes.
+
 ### 5. Is nuget.org reachable
 
 YES. Tested by restoring ClosedXML into a scratch folder outside this repo, at
