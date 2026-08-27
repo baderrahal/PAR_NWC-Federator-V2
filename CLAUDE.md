@@ -28,14 +28,19 @@ Group on the full 6 character building code. 1C07BC and 1C07K1 are two buildings
 Every discipline of a building goes into that building's federation. Discipline is
 read for reporting only, it never splits a group.
 The output name is project, originator, building code, ZZZ, BM, MOD, 000001.
-Level and number are fixed because outputs overwrite. The four input files in a
-group may disagree on level and number, which is why neither is carried through.
-Project, originator and the type code come from the group's files.
+Level, discipline, type code and number are all pinned, because outputs overwrite
+and the files in a group may disagree on any of them. Only parts 1, 2 and 3 are
+copied from the input, and part 5 is read for reporting.
+
+The output name is built, not patched. That means a five part input still gives a
+full seven field output name, and the readable-name floor is five parts. A six part
+name reads fine.
 
 If two files in one group disagree on the project code or the originator, report
 it and skip the group. Do not pick one.
 
-The split character and the part positions are settings, never constants.
+The split character, the part positions and all four pinned values are settings,
+never constants.
 
 ## What the clash test XML holds
 
