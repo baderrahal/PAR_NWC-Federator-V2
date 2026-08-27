@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Addin.Engine
 {
@@ -37,18 +38,6 @@ namespace Federator.Addin.Engine
         public IList<string> Files { get; private set; }
     }
 
-    public enum JobResult
-    {
-        /// <summary>Every file appended and both outputs are on disk.</summary>
-        Written,
-
-        /// <summary>At least one file failed to append, but the outputs are on disk.</summary>
-        Partial,
-
-        /// <summary>Nothing usable came out of this group.</summary>
-        Failed
-    }
-
     /// <summary>What actually happened to one group, checked against the disk.</summary>
     public sealed class JobOutcome
     {
@@ -72,17 +61,23 @@ namespace Federator.Addin.Engine
 
         public string Error { get; set; }
 
-        public JobResult Result
+        public GroupOutcome Result
         {
             get
             {
                 if (!NwfOnDisk || !NwdOnDisk || AppendedCount == 0)
                 {
-                    return JobResult.Failed;
+                    return GroupOutcome.Failed;
                 }
 
-                return FailedFiles.Count > 0 ? JobResult.Partial : JobResult.Written;
+                return FailedFiles.Count > 0 ? GroupOutcome.Partial : GroupOutcome.Done;
             }
         }
+
+        /// <summary>Size read back off the disk, or minus one when the NWF is not there.</summary>
+        public long NwfSize { get; set; }
+
+        /// <summary>Size read back off the disk, or minus one when the NWD is not there.</summary>
+        public long NwdSize { get; set; }
     }
 }

@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using Federator.Addin.Engine;
+using Federator.Core.Diagnostics;
 using Federator.Core.Grouping;
 using Federator.Core.Naming;
 
@@ -20,11 +22,19 @@ namespace Federator.Addin.Ui
         private readonly ContainerNameSettings settings = new ContainerNameSettings();
         private readonly ObservableCollection<FileRow> files = new ObservableCollection<FileRow>();
         private readonly ObservableCollection<GroupRow> groups = new ObservableCollection<GroupRow>();
+        private readonly RunLog log;
         private bool running;
         private bool suspendRegroup;
 
-        public FederatorWindow()
+        public FederatorWindow(RunLog log)
         {
+            if (log == null)
+            {
+                throw new ArgumentNullException("log");
+            }
+
+            this.log = log;
+
             InitializeComponent();
 
             FilesGrid.ItemsSource = files;
@@ -32,6 +42,24 @@ namespace Federator.Addin.Ui
             OutputsGrid.ItemsSource = groups;
 
             files.CollectionChanged += delegate { Regroup(); };
+
+            // Every line the log writes appears in the window as it is written, so the run
+            // is watched rather than read afterwards.
+            log.LineWritten += OnLogLine;
+            Closed += delegate { log.LineWritten -= OnLogLine; };
+
+            LogBox.AppendText(log.ReadAll());
+            LogBox.ScrollToEnd();
+
+            ProgressLine.Text = log.IsWritingToDisk
+                ? "Log: " + log.Path
+                : "WARNING the log is not being written to disk. " + log.DisabledReason;
+        }
+
+        private void OnLogLine(string line)
+        {
+            LogBox.AppendText(line + Environment.NewLine);
+            LogBox.ScrollToEnd();
         }
 
         // ---------- Step 1, source ----------
@@ -63,9 +91,10 @@ namespace Federator.Addin.Ui
 
             files.Clear();
 
-            SearchOption depth = IncludeSubfolders.IsChecked == true
-                ? SearchOption.AllDirectories
-                : SearchOption.TopDirectoryOnly;
+            bool subfolders = IncludeSubfolders.IsChecked == true;
+            SearchOption depth = subfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
+            log.ScanStarted(folder, subfolders);
 
             string[] found;
 
@@ -75,6 +104,7 @@ namespace Federator.Addin.Ui
             }
             catch (Exception error)
             {
+                log.Failure("scanning " + folder, error, "stopped the scan, nothing was changed");
                 Warn("The folder could not be read." + Environment.NewLine + error.Message);
                 return;
             }
@@ -98,6 +128,7 @@ namespace Federator.Addin.Ui
                     if (!row.IsReadable)
                     {
                         unreadable++;
+                        log.UnreadableFile(row.FileName, row.Reason);
                     }
                 }
             }
@@ -109,12 +140,7 @@ namespace Federator.Addin.Ui
             SourceSummary.Text = found.Length + " NWC found, " + (found.Length - unreadable)
                 + " readable, " + unreadable + " that cannot be read.";
 
-            Log("Scanned " + folder + " and found " + found.Length + " NWC files.");
-
-            if (unreadable > 0)
-            {
-                Log(unreadable + " file names could not be read. They are unticked in step 1 with the reason.");
-            }
+            log.ScanFinished(found.Length, found.Length - unreadable, unreadable);
 
             Regroup();
             Steps.SelectedIndex = 1;
@@ -234,6 +260,21 @@ namespace Federator.Addin.Ui
             }
         }
 
+        private int TickedFileCount()
+        {
+            int ticked = 0;
+
+            foreach (FileRow row in files)
+            {
+                if (row.Include && row.IsReadable)
+                {
+                    ticked++;
+                }
+            }
+
+            return ticked;
+        }
+
         private void RefreshOutputsSummary()
         {
             int ready = 0;
@@ -246,8 +287,9 @@ namespace Federator.Addin.Ui
                 }
             }
 
-            OutputsSummary.Text = ready + " groups ticked to run. The run log goes next to the NWF folder as "
-                + FederationEngine.RunLogFileName + ".";
+            OutputsSummary.Text = ready + " groups ticked to run. The log is written to "
+                + (log.IsWritingToDisk ? log.Path : "the window only")
+                + " and copied next to the NWF folder at the end.";
         }
 
         // ---------- Run ----------
@@ -298,7 +340,16 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            RunJobs(jobs, Path.Combine(nwfFolder, FederationEngine.RunLogFileName));
+            log.RunSettings(
+                SourceFolderBox.Text,
+                IncludeSubfolders.IsChecked == true,
+                nwfFolder,
+                nwdFolder,
+                files.Count,
+                TickedFileCount(),
+                groups.Count);
+
+            RunJobs(jobs, nwfFolder);
         }
 
         /// <summary>
@@ -348,55 +399,55 @@ namespace Federator.Addin.Ui
         /// and the progress line repaint, which is not the same as moving the work onto a
         /// background thread. No Navisworks call may leave this thread.
         /// </summary>
-        private void RunJobs(IList<FederationJob> jobs, string runLogPath)
+        private void RunJobs(IList<FederationJob> jobs, string nwfFolder)
         {
             running = true;
             RunButton.IsEnabled = false;
 
             try
             {
-                Log("Run started. " + jobs.Count + " groups.");
+                log.Line("RUN      started, " + jobs.Count + " groups");
 
-                FederationEngine engine = new FederationEngine(SetProgress, Log);
-                IList<JobOutcome> outcomes = engine.Run(jobs, runLogPath);
+                FederationEngine engine = new FederationEngine(SetProgress, log);
+                engine.Run(jobs);
 
-                int written = 0;
-                int partial = 0;
-                int failed = 0;
-
-                foreach (JobOutcome outcome in outcomes)
-                {
-                    switch (outcome.Result)
-                    {
-                        case JobResult.Written:
-                            written++;
-                            break;
-                        case JobResult.Partial:
-                            partial++;
-                            break;
-                        default:
-                            failed++;
-                            break;
-                    }
-                }
-
-                string summary = "Run finished. " + written + " written, " + partial
-                    + " partial, " + failed + " failed.";
-                SetProgress(summary);
-                Log(summary);
-                Log("Run log: " + runLogPath);
+                log.Line("RUN      finished");
+                SetProgress("Run finished. " + log.CountOf(GroupOutcome.Done) + " done, "
+                    + log.CountOf(GroupOutcome.Partial) + " partial, "
+                    + log.CountOf(GroupOutcome.Failed) + " failed.");
             }
             catch (Exception error)
             {
+                log.Failure("the run", error, "stopped, everything already written is kept");
                 SetProgress("Run stopped on an error.");
-                Log("Run stopped: " + error);
                 Warn("The run stopped." + Environment.NewLine + Environment.NewLine + error.Message);
             }
             finally
             {
+                // The result block and the second copy are written whatever happened, so a
+                // run that stopped still leaves a readable log with its summary at the end.
+                WriteTheResultAndCopyTheLog(nwfFolder);
                 running = false;
                 RunButton.IsEnabled = true;
             }
+        }
+
+        private void WriteTheResultAndCopyTheLog(string nwfFolder)
+        {
+            try
+            {
+                log.WriteResultBlock();
+            }
+            catch (Exception error)
+            {
+                log.Failure("writing the result block", error, "kept going, the lines above are still on disk");
+            }
+
+            string copied;
+
+            // A failure here is written into the first log and then ignored. Logging is
+            // never the thing that stops a run.
+            log.TryCopyTo(nwfFolder, out copied);
         }
 
         // ---------- Small helpers ----------
@@ -409,8 +460,7 @@ namespace Federator.Addin.Ui
 
         private void Log(string text)
         {
-            LogBox.AppendText(text + Environment.NewLine);
-            LogBox.ScrollToEnd();
+            log.Line(text);
             Pump();
         }
 
@@ -443,6 +493,55 @@ namespace Federator.Addin.Ui
                 return dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK
                     ? dialog.SelectedPath
                     : null;
+            }
+        }
+
+        /// <summary>Wraps a path in quotes so a folder with spaces reaches Explorer whole.</summary>
+        private static string Quoted(string path)
+        {
+            return "\"" + path + "\"";
+        }
+
+        private void OnOpenLogFolder(object sender, RoutedEventArgs e)
+        {
+            string folder = log.IsWritingToDisk
+                ? System.IO.Path.GetDirectoryName(log.Path)
+                : RunLog.DefaultLogFolder();
+
+            try
+            {
+                Directory.CreateDirectory(folder);
+
+                if (log.IsWritingToDisk)
+                {
+                    // Opens the folder with this run's log already picked out.
+                    Process.Start("explorer.exe", "/select," + Quoted(log.Path));
+                }
+                else
+                {
+                    Process.Start("explorer.exe", Quoted(folder));
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure("opening the log folder " + folder, error, "kept going, nothing else changed");
+                Warn("The log folder could not be opened." + Environment.NewLine
+                    + folder + Environment.NewLine + Environment.NewLine + error.Message);
+            }
+        }
+
+        private void OnCopyLog(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string all = log.ReadAll();
+                Clipboard.SetText(all);
+                SetProgress("Whole log copied to the clipboard, " + all.Length + " characters.");
+            }
+            catch (Exception error)
+            {
+                log.Failure("copying the log to the clipboard", error, "kept going, nothing else changed");
+                Warn("The log could not be copied." + Environment.NewLine + Environment.NewLine + error.Message);
             }
         }
 
