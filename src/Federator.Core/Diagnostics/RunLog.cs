@@ -19,6 +19,18 @@ namespace Federator.Core.Diagnostics
         public const string FileNamePrefix = "run-";
         public const string FileNameExtension = ".log";
 
+        /// <summary>
+        /// How many log files the folder is left holding, the file being written
+        /// included. A setting, passed to the Start overload that takes it.
+        /// </summary>
+        public const int DefaultKeepLogs = 30;
+
+        /// <summary>
+        /// Only files matching this are ever considered for deletion, so nothing else
+        /// that happens to be sitting in the folder is touched.
+        /// </summary>
+        public const string LogFileSearchPattern = FileNamePrefix + "*" + FileNameExtension;
+
         private const string TimeFormat = "HH:mm:ss.fff";
         private const string Indent = "                          ";
 
@@ -83,10 +95,15 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public static RunLog StartOrDisabled()
         {
-            return StartOrDisabled(DefaultLogFolder(), DateTime.Now);
+            return StartOrDisabled(DefaultLogFolder(), DateTime.Now, DefaultKeepLogs);
         }
 
         public static RunLog StartOrDisabled(string preferredFolder, DateTime startedAt)
+        {
+            return StartOrDisabled(preferredFolder, startedAt, DefaultKeepLogs);
+        }
+
+        public static RunLog StartOrDisabled(string preferredFolder, DateTime startedAt, int keepLogs)
         {
             List<string> tried = new List<string>();
 
@@ -99,7 +116,7 @@ namespace Federator.Core.Diagnostics
 
                 try
                 {
-                    return Start(folder, startedAt);
+                    return Start(folder, startedAt, keepLogs);
                 }
                 catch (Exception error)
                 {
@@ -121,6 +138,15 @@ namespace Federator.Core.Diagnostics
         /// startup still produces one.
         /// </summary>
         public static RunLog Start(string folder, DateTime startedAt)
+        {
+            return Start(folder, startedAt, DefaultKeepLogs);
+        }
+
+        /// <summary>
+        /// Opens the file straight away, then prunes the folder back to
+        /// <paramref name="keepLogs"/> files, the new one included.
+        /// </summary>
+        public static RunLog Start(string folder, DateTime startedAt, int keepLogs)
         {
             if (folder == null)
             {
@@ -157,7 +183,103 @@ namespace Federator.Core.Diagnostics
 
             RunLog log = new RunLog(path, startedAt, stream, null);
             log.Line("Log opened at " + path);
+
+            // After the new file is open, so the live file is in the list and can be held
+            // back from deletion by name rather than by hoping it sorts newest.
+            log.PruneOldLogs(folder, keepLogs);
             return log;
+        }
+
+        /// <summary>
+        /// Deletes the oldest logs until <paramref name="keepLogs"/> are left, the file
+        /// being written included. The live file is never a candidate. A delete that
+        /// fails gets one line saying which file and why, and the run carries on.
+        /// Nothing in here is allowed to throw.
+        /// </summary>
+        private void PruneOldLogs(string folder, int keepLogs)
+        {
+            try
+            {
+                FileInfo[] all;
+
+                try
+                {
+                    all = new DirectoryInfo(folder).GetFiles(LogFileSearchPattern);
+                }
+                catch (Exception error)
+                {
+                    Line("RETAIN   could not list " + folder + ", nothing was deleted: "
+                        + error.GetType().Name + ": " + error.Message);
+                    return;
+                }
+
+                string live = FullPathOrSelf(Path);
+                List<FileInfo> others = new List<FileInfo>();
+
+                foreach (FileInfo candidate in all)
+                {
+                    if (!string.Equals(FullPathOrSelf(candidate.FullName), live, StringComparison.OrdinalIgnoreCase))
+                    {
+                        others.Add(candidate);
+                    }
+                }
+
+                // Newest first. The name carries the timestamp, so it breaks ties between
+                // files written inside the same clock tick.
+                others.Sort(NewestFirst);
+
+                // The live file counts towards the total, so one fewer of the rest is kept.
+                int keepOthers = Math.Max(0, keepLogs - 1);
+
+                if (others.Count <= keepOthers)
+                {
+                    return;
+                }
+
+                int deleted = 0;
+                int refused = 0;
+
+                for (int i = keepOthers; i < others.Count; i++)
+                {
+                    try
+                    {
+                        others[i].Delete();
+                        deleted++;
+                    }
+                    catch (Exception error)
+                    {
+                        refused++;
+                        Line("RETAIN   could not delete " + others[i].Name + ": "
+                            + error.GetType().Name + ": " + error.Message);
+                    }
+                }
+
+                Line("RETAIN   keeping " + keepLogs + " logs, deleted " + deleted
+                    + ", could not delete " + refused);
+            }
+            catch (Exception error)
+            {
+                // Retention is housekeeping. It never stops a run.
+                Line("RETAIN   skipped, " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        private static int NewestFirst(FileInfo left, FileInfo right)
+        {
+            int byTime = right.LastWriteTimeUtc.CompareTo(left.LastWriteTimeUtc);
+            return byTime != 0 ? byTime : string.CompareOrdinal(right.Name, left.Name);
+        }
+
+        private static string FullPathOrSelf(string path)
+        {
+            try
+            {
+                return string.IsNullOrEmpty(path) ? string.Empty : System.IO.Path.GetFullPath(path);
+            }
+            catch (Exception)
+            {
+                return path ?? string.Empty;
+            }
         }
 
         private static string FileName(DateTime startedAt, int attempt)
