@@ -16,6 +16,8 @@ namespace Federator.Core.Naming
             string stem,
             IList<string> parts,
             bool isReadable,
+            string project,
+            string originator,
             string building,
             string discipline,
             string unreadableReason)
@@ -24,6 +26,8 @@ namespace Federator.Core.Naming
             Stem = stem;
             Parts = new ReadOnlyCollection<string>(parts ?? new List<string>());
             IsReadable = isReadable;
+            Project = project;
+            Originator = originator;
             Building = building;
             Discipline = discipline;
             UnreadableReason = unreadableReason;
@@ -39,6 +43,12 @@ namespace Federator.Core.Naming
 
         public bool IsReadable { get; private set; }
 
+        /// <summary>The project code. Every file in a group has to agree on it.</summary>
+        public string Project { get; private set; }
+
+        /// <summary>The originator. Every file in a group has to agree on it.</summary>
+        public string Originator { get; private set; }
+
         public string Building { get; private set; }
 
         public string Discipline { get; private set; }
@@ -47,9 +57,16 @@ namespace Federator.Core.Naming
         public string UnreadableReason { get; private set; }
 
         internal static ParsedContainerName Readable(
-            string sourceName, string stem, IList<string> parts, string building, string discipline)
+            string sourceName,
+            string stem,
+            IList<string> parts,
+            string project,
+            string originator,
+            string building,
+            string discipline)
         {
-            return new ParsedContainerName(sourceName, stem, parts, true, building, discipline, null);
+            return new ParsedContainerName(
+                sourceName, stem, parts, true, project, originator, building, discipline, null);
         }
 
         internal static ParsedContainerName Unreadable(
@@ -60,7 +77,7 @@ namespace Federator.Core.Naming
                 throw new ArgumentException("An unreadable name needs a reason.", "reason");
             }
 
-            return new ParsedContainerName(sourceName, stem, parts, false, null, null, reason);
+            return new ParsedContainerName(sourceName, stem, parts, false, null, null, null, null, reason);
         }
 
         public override string ToString()

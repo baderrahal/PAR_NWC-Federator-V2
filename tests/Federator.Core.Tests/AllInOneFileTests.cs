@@ -137,12 +137,14 @@ namespace Federator.Core.Tests
             Assert.That(document.BatchTests[0].TestCount, Is.EqualTo(1830));
         }
 
-        // The brief said this file holds no sets. It holds 61. Measured this session and
-        // recorded in docs\scan.md.
+        // This is the reference file. It holds both parts, 61 sets and 1830 tests, and
+        // its own tests resolve against its own sets.
         [Test]
         public void TheFileAlsoHoldsSixtyOneSets()
         {
             Assert.That(document.Sets.Count, Is.EqualTo(61));
+            Assert.That(document.HasSets, Is.True);
+            Assert.That(document.HasTests, Is.True);
         }
 
         [Test]
@@ -223,18 +225,31 @@ namespace Federator.Core.Tests
             Assert.That(conditions, Is.EqualTo(102));
         }
 
+        // A condition can arrive with no category element. The reader must not assume one
+        // is there, and reading the file must not throw over it.
         [Test]
-        public void SomeConditionsCarryNoCategory()
+        public void ConditionsWithNoCategoryAreReadWithoutThrowing()
         {
+            ExchangeDocument reread = null;
+
+            Assert.DoesNotThrow(() => reread = new ExchangeReader().ReadFile(Samples.AllInOne()));
+
             int withoutCategory = 0;
 
-            foreach (SelectionSetDefinition set in document.Sets)
+            foreach (SelectionSetDefinition set in reread.Sets)
             {
                 foreach (SearchConditionDefinition condition in set.Conditions)
                 {
                     if (condition.Category == null)
                     {
                         withoutCategory++;
+
+                        // The ones with no category are the Source File searches, and they
+                        // still carry a property and a value.
+                        Assert.That(condition.Property.InternalName, Is.EqualTo("LcOaNodeSourceFile"));
+                        Assert.That(condition.Value, Is.Not.Null);
+                        Assert.DoesNotThrow(() => { string ignored = condition.RuleSignature; });
+                        Assert.DoesNotThrow(() => { string ignored = condition.ToString(); });
                     }
 
                     Assert.That(condition.Property, Is.Not.Null, set.Name);
@@ -266,8 +281,26 @@ namespace Federator.Core.Tests
             Assert.That(health.TestsWithUnresolvedSide.Count, Is.EqualTo(0));
         }
 
+        // HOW A DISTINCT RULE IS COUNTED.
+        //
+        // A rule is one condition, compared on the tuple
+        //     test, category internal, category display,
+        //     property internal, property display,
+        //     value type, value data
+        // with the flags attribute left out, because flags says how a condition joins to
+        // the next one and not what it asks the model for. That definition gives 53 for
+        // this file, and it is what HealthCheckResult.DistinctRuleCount reports.
+        //
+        // This definition is the one that has to be used for the damaged export check.
+        // Search_Set_Infra holds 2715 conditions and exactly 1 distinct rule under it,
+        // which is what makes the file readable as broken.
+        //
+        // Counting whole sets instead, by each set's full ordered list of conditions,
+        // gives 59 for this file. Both numbers are right, they answer different
+        // questions. 59 is not usable for the damaged export check: on Infra it gives 6,
+        // because those sets differ only in how many copies of the one rule they carry.
         [Test]
-        public void TheSetsAskFiftyThreeDifferentThingsSoTheExportIsUsable()
+        public void AnIndividualConditionIsTheUnitOfARuleAndThereAreFiftyThreeOfThem()
         {
             HealthCheckResult health = HealthCheck.Run(document);
 
@@ -275,6 +308,159 @@ namespace Federator.Core.Tests
             Assert.That(health.DistinctRuleCount, Is.EqualTo(53));
             Assert.That(health.AllSetsShareOneRule, Is.False);
             Assert.That(health.ExportUnusable, Is.False);
+        }
+
+        [Test]
+        public void CountingWholeSetsInsteadGivesFiftyNineBecauseTwoPairsMatch()
+        {
+            Dictionary<string, List<string>> byRuleList = new Dictionary<string, List<string>>();
+
+            foreach (SelectionSetDefinition set in document.Sets)
+            {
+                List<string> signatures = new List<string>();
+
+                foreach (SearchConditionDefinition condition in set.Conditions)
+                {
+                    signatures.Add(condition.RuleSignature);
+                }
+
+                string key = string.Join("||", signatures.ToArray());
+
+                if (!byRuleList.ContainsKey(key))
+                {
+                    byRuleList.Add(key, new List<string>());
+                }
+
+                byRuleList[key].Add(set.Name);
+            }
+
+            Assert.That(document.Sets.Count, Is.EqualTo(61));
+            Assert.That(byRuleList.Count, Is.EqualTo(59));
+
+            List<string> shared = new List<string>();
+
+            foreach (KeyValuePair<string, List<string>> entry in byRuleList)
+            {
+                if (entry.Value.Count > 1)
+                {
+                    entry.Value.Sort(System.StringComparer.Ordinal);
+                    shared.Add(string.Join(" and ", entry.Value.ToArray()));
+                }
+            }
+
+            shared.Sort(System.StringComparer.Ordinal);
+
+            Assert.That(shared.Count, Is.EqualTo(2));
+            Assert.That(shared, Does.Contain("BLD-EL-Devices and BLD-EL-Electrical Fixtures"));
+            Assert.That(shared, Does.Contain("BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices"));
+        }
+
+        [Test]
+        public void FlagsAreNotPartOfARuleSoBothValuesAppearAcrossTheFile()
+        {
+            HashSet<int> flags = new HashSet<int>();
+
+            foreach (SelectionSetDefinition set in document.Sets)
+            {
+                foreach (SearchConditionDefinition condition in set.Conditions)
+                {
+                    flags.Add(condition.Flags);
+                }
+            }
+
+            Assert.That(flags, Is.EquivalentTo(new[] { 0, 64 }));
+        }
+
+        [Test]
+        public void BothEqualsAndContainsSurviveARead()
+        {
+            HashSet<string> tests = new HashSet<string>();
+
+            foreach (SelectionSetDefinition set in document.Sets)
+            {
+                foreach (SearchConditionDefinition condition in set.Conditions)
+                {
+                    tests.Add(condition.Test);
+                }
+            }
+
+            Assert.That(tests, Is.EquivalentTo(new[] { "equals", "contains" }));
+        }
+
+        // Rebuilding a search through the API matches on the internal string, never on
+        // the display word, so the reader has to keep both and must not swap one for the
+        // other.
+        [Test]
+        public void InternalNamesAreKeptAlongsideTheDisplayWords()
+        {
+            HashSet<string> categories = new HashSet<string>();
+            HashSet<string> properties = new HashSet<string>();
+
+            foreach (SelectionSetDefinition set in document.Sets)
+            {
+                foreach (SearchConditionDefinition condition in set.Conditions)
+                {
+                    if (condition.Category != null)
+                    {
+                        categories.Add(condition.Category.InternalName + " -> " + condition.Category.DisplayName);
+                    }
+
+                    properties.Add(condition.Property.InternalName + " -> " + condition.Property.DisplayName);
+                }
+            }
+
+            Assert.That(categories, Is.EquivalentTo(new[] { "LcRevitData_Element -> Element" }));
+
+            Assert.That(properties, Is.EquivalentTo(new[]
+            {
+                "LcRevitPropertyElementCategory -> Category",
+                "lcldrevit_parameter_-1002053 -> Workset",
+                "LcOaNodeSourceFile -> Source File"
+            }));
+        }
+
+        [Test]
+        public void EveryValueIsAWideStringAndItsDataIsKept()
+        {
+            HashSet<string> dataTypes = new HashSet<string>();
+            int values = 0;
+
+            foreach (SelectionSetDefinition set in document.Sets)
+            {
+                foreach (SearchConditionDefinition condition in set.Conditions)
+                {
+                    dataTypes.Add(condition.Value.DataType);
+                    Assert.That(condition.Value.Data, Is.Not.Null.And.Not.Empty, set.Name);
+                    values++;
+                }
+            }
+
+            Assert.That(values, Is.EqualTo(102));
+            Assert.That(dataTypes, Is.EquivalentTo(new[] { "wstring" }));
+        }
+
+        [Test]
+        public void ThirtySetsCarryOneConditionTwentySixCarryTwoAndFiveCarryFour()
+        {
+            Dictionary<int, int> byCount = new Dictionary<int, int>();
+
+            foreach (SelectionSetDefinition set in document.Sets)
+            {
+                int count = set.Conditions.Count;
+
+                if (!byCount.ContainsKey(count))
+                {
+                    byCount.Add(count, 0);
+                }
+
+                byCount[count] = byCount[count] + 1;
+            }
+
+            Assert.That(byCount.Count, Is.EqualTo(3));
+            Assert.That(byCount[1], Is.EqualTo(30));
+            Assert.That(byCount[2], Is.EqualTo(26));
+            Assert.That(byCount[4], Is.EqualTo(5));
+            Assert.That((30 * 1) + (26 * 2) + (5 * 4), Is.EqualTo(102));
         }
 
         [Test]

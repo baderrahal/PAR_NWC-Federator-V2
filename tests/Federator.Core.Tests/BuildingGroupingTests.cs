@@ -96,7 +96,87 @@ namespace Federator.Core.Tests
             BuildingGroupingResult result = GroupOf();
 
             Assert.That(result.GroupCount, Is.EqualTo(0));
+            Assert.That(result.Skipped.Count, Is.EqualTo(0));
             Assert.That(result.Unreadable.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void AGroupCarriesTheProjectCodeAndOriginatorItsFilesAgreedOn()
+        {
+            BuildingGroup group = GroupOf(
+                "1104-PAR-1C07BC-ZZZ-AR-MOD-000001",
+                "1104-PAR-1C07BC-L01-ST-MOD-000002").Find("1C07BC");
+
+            Assert.That(group.Project, Is.EqualTo("1104"));
+            Assert.That(group.Originator, Is.EqualTo("PAR"));
+        }
+
+        [Test]
+        public void FilesThatDisagreeOnTheProjectCodeSkipTheWholeGroup()
+        {
+            BuildingGroupingResult result = GroupOf(
+                "1104-PAR-1C07BC-ZZZ-AR-MOD-000001",
+                "1105-PAR-1C07BC-ZZZ-ST-MOD-000001");
+
+            Assert.That(result.GroupCount, Is.EqualTo(0));
+            Assert.That(result.Skipped.Count, Is.EqualTo(1));
+
+            SkippedBuildingGroup skipped = result.FindSkipped("1C07BC");
+
+            Assert.That(skipped, Is.Not.Null);
+            Assert.That(skipped.FileCount, Is.EqualTo(2));
+            Assert.That(skipped.Reason, Does.Contain("project code"));
+            Assert.That(skipped.Reason, Does.Contain("1104").And.Contains("1105"));
+        }
+
+        [Test]
+        public void FilesThatDisagreeOnTheOriginatorSkipTheWholeGroup()
+        {
+            BuildingGroupingResult result = GroupOf(
+                "1104-PAR-1C07BC-ZZZ-AR-MOD-000001",
+                "1104-XYZ-1C07BC-ZZZ-ST-MOD-000001");
+
+            Assert.That(result.GroupCount, Is.EqualTo(0));
+            Assert.That(result.Skipped.Count, Is.EqualTo(1));
+            Assert.That(result.FindSkipped("1C07BC").Reason, Does.Contain("originator"));
+            Assert.That(result.FindSkipped("1C07BC").Reason, Does.Contain("PAR").And.Contains("XYZ"));
+        }
+
+        [Test]
+        public void ASkippedGroupNamesTheFileThatBrokeRanks()
+        {
+            SkippedBuildingGroup skipped = GroupOf(
+                "1104-PAR-1C07BC-ZZZ-AR-MOD-000001",
+                "1104-PAR-1C07BC-ZZZ-ST-MOD-000002",
+                "1105-PAR-1C07BC-ZZZ-ME-MOD-000003").FindSkipped("1C07BC");
+
+            Assert.That(skipped.Reason, Does.Contain("1104-PAR-1C07BC-ZZZ-AR-MOD-000001"));
+            Assert.That(skipped.Reason, Does.Contain("1105-PAR-1C07BC-ZZZ-ME-MOD-000003"));
+        }
+
+        [Test]
+        public void OneBadGroupNeverStopsAGoodOne()
+        {
+            BuildingGroupingResult result = GroupOf(
+                "1104-PAR-1C07BC-ZZZ-AR-MOD-000001",
+                "1105-PAR-1C07BC-ZZZ-ST-MOD-000001",
+                "1104-PAR-1C07K1-ZZZ-AR-MOD-000001",
+                "1104-PAR-1C07K1-ZZZ-ST-MOD-000001");
+
+            Assert.That(result.GroupCount, Is.EqualTo(1));
+            Assert.That(result.Find("1C07K1"), Is.Not.Null);
+            Assert.That(result.Find("1C07BC"), Is.Null);
+            Assert.That(result.Skipped.Count, Is.EqualTo(1));
+            Assert.That(result.Skipped[0].Building, Is.EqualTo("1C07BC"));
+        }
+
+        [Test]
+        public void OneFileOnItsOwnCanNeverDisagreeWithItself()
+        {
+            BuildingGroupingResult result = GroupOf("1104-PAR-1C07BC-ZZZ-AR-MOD-000001");
+
+            Assert.That(result.GroupCount, Is.EqualTo(1));
+            Assert.That(result.Skipped.Count, Is.EqualTo(0));
         }
     }
 }

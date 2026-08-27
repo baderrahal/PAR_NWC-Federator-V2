@@ -51,22 +51,35 @@ namespace Federator.Core.Naming
                         + settings.DisciplinePart + ".");
             }
 
+            string project = parts[settings.ProjectPart - 1];
+            string originator = parts[settings.OriginatorPart - 1];
             string building = parts[settings.BuildingPart - 1];
             string discipline = parts[settings.DisciplinePart - 1];
 
-            if (building.Length == 0)
+            string empty = FirstEmpty(
+                new[] { settings.ProjectPart, settings.OriginatorPart, settings.BuildingPart, settings.DisciplinePart },
+                new[] { project, originator, building, discipline },
+                new[] { "the project code", "the originator", "the building", "the discipline" });
+
+            if (empty != null)
             {
-                return ParsedContainerName.Unreadable(
-                    name, stem, parts, "Part " + settings.BuildingPart + ", the building, was empty.");
+                return ParsedContainerName.Unreadable(name, stem, parts, empty);
             }
 
-            if (discipline.Length == 0)
+            return ParsedContainerName.Readable(name, stem, parts, project, originator, building, discipline);
+        }
+
+        private static string FirstEmpty(int[] positions, string[] values, string[] labels)
+        {
+            for (int i = 0; i < values.Length; i++)
             {
-                return ParsedContainerName.Unreadable(
-                    name, stem, parts, "Part " + settings.DisciplinePart + ", the discipline, was empty.");
+                if (values[i].Length == 0)
+                {
+                    return "Part " + positions[i] + ", " + labels[i] + ", was empty.";
+                }
             }
 
-            return ParsedContainerName.Readable(name, stem, parts, building, discipline);
+            return null;
         }
 
         /// <summary>

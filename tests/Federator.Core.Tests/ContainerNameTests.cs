@@ -96,11 +96,9 @@ namespace Federator.Core.Tests
         [Test]
         public void ThePartPositionsAreSettings()
         {
-            ContainerNameSettings settings = new ContainerNameSettings
-            {
-                BuildingPart = 2,
-                DisciplinePart = 4
-            };
+            ContainerNameSettings settings = ContainerNameSettings.WithoutFixedLevelAndNumber();
+            settings.BuildingPart = 2;
+            settings.DisciplinePart = 4;
 
             ParsedContainerName parsed = ContainerName.Parse("XX-1C07BC-YY-AR-ZZ", settings);
 
@@ -119,30 +117,75 @@ namespace Federator.Core.Tests
                 Is.EqualTo("1104-PAR-1C07BC-ZZZ-FD-MOD-000001"));
         }
 
+        // The output name reads one way only: project, originator, building, ZZZ, BM,
+        // the type code, 000001. Level and number are fixed because outputs overwrite
+        // and because the files in one group may disagree on both.
         [Test]
-        public void ForcedLevelAndNumberOverwriteThosePartsWhenSet()
+        public void TheOutputNameFixesTheLevelAndTheNumberWhateverTheInputCarried()
         {
-            ContainerNameSettings settings = new ContainerNameSettings
-            {
-                LevelPart = 4,
-                ForcedLevel = "ZZZ",
-                NumberPart = 7,
-                ForcedNumber = "000001"
-            };
+            Assert.That(
+                ContainerName.BuildOutputName(ContainerName.Parse("1104-PAR-1C07BC-L02-AR-MOD-000456")),
+                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
 
-            string output = ContainerName.BuildOutputName(
-                ContainerName.Parse("1104-PAR-1C07BC-L02-AR-MOD-000456", settings), settings);
-
-            Assert.That(output, Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
+            Assert.That(
+                ContainerName.BuildOutputName(ContainerName.Parse("1104-PAR-1C07BC-L07-EL-MOD-000912")),
+                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
         }
 
         [Test]
-        public void ByDefaultEveryPartOtherThanTheDisciplineIsKept()
+        public void FourFilesOfOneBuildingAllGiveTheSameOutputName()
         {
-            string output = ContainerName.BuildOutputName(
-                ContainerName.Parse("1104-PAR-1C07BC-L02-AR-MOD-000456"));
+            string[] inputs =
+            {
+                "1104-PAR-1C07BC-ZZZ-AR-MOD-000001",
+                "1104-PAR-1C07BC-L01-ST-MOD-000004",
+                "1104-PAR-1C07BC-L02-ME-MOD-000117",
+                "1104-PAR-1C07BC-B01-EL-MOD-000999"
+            };
 
-            Assert.That(output, Is.EqualTo("1104-PAR-1C07BC-L02-BM-MOD-000456"));
+            foreach (string input in inputs)
+            {
+                Assert.That(
+                    ContainerName.BuildOutputName(ContainerName.Parse(input)),
+                    Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"),
+                    input);
+            }
+        }
+
+        [Test]
+        public void TheTypeCodeIsCarriedThroughRatherThanFixed()
+        {
+            Assert.That(
+                ContainerName.BuildOutputName(ContainerName.Parse("1104-PAR-1C07BC-L02-AR-DOC-000456")),
+                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-DOC-000001"));
+        }
+
+        [Test]
+        public void TheFixedLevelAndNumberCanBeTurnedOff()
+        {
+            ContainerNameSettings settings = ContainerNameSettings.WithoutFixedLevelAndNumber();
+
+            Assert.That(
+                ContainerName.BuildOutputName("1104-PAR-1C07BC-L02-AR-MOD-000456", settings),
+                Is.EqualTo("1104-PAR-1C07BC-L02-BM-MOD-000456"));
+        }
+
+        [Test]
+        public void ReadsTheProjectCodeAndTheOriginator()
+        {
+            ParsedContainerName parsed = ContainerName.Parse(Sample);
+
+            Assert.That(parsed.Project, Is.EqualTo("1104"));
+            Assert.That(parsed.Originator, Is.EqualTo("PAR"));
+        }
+
+        [Test]
+        public void ASixPartNameCannotProduceAnOutputNameSoItIsUnreadable()
+        {
+            ParsedContainerName parsed = ContainerName.Parse("1104-PAR-1C07BC-ZZZ-AR-MOD");
+
+            Assert.That(parsed.IsReadable, Is.False);
+            Assert.That(parsed.UnreadableReason, Does.Contain("6 parts").And.Contains("7 are needed"));
         }
 
         [Test]

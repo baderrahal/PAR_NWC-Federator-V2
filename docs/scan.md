@@ -364,24 +364,70 @@ every findspec: mode="all", disjoint="0", locator "/"
 all 61 test locators resolve against this file own sets
 ```
 
-### CORRECTION: the brief was wrong about this file
+### SETTLED on 2026-08-28: this file is the reference file
 
-The brief said, of this file, "file holds no sets at all". That is not true of the file on
-disk. It holds 61 selection sets, in a nested folder tree two deep, carrying 102
-conditions and 53 distinct rules. The name of the file, AllInOne, says the same thing.
+The first version of CLAUDE.md said of this file "file holds no sets at all". Bader
+confirmed on 2026-08-28 that the file is right and the note was wrong. CLAUDE.md now says
+so: this file holds both parts, 61 sets and 1830 tests, all 61 of its test locators
+resolve against its own sets, and it is the reference file. Every other fact the note gave
+about it checked out exactly.
 
-Everything else the brief said about this file checked out exactly.
+The knock-on effect is that the cross-file check still lands where the note said it would,
+0 of 61, but for a reason the note did not give. See "Cross file" below.
 
-Two possibilities, and this session cannot tell them apart: either the note was written
-against a different export, or it was written from the clashtests half of this one. Either
-way, the tests in `AllInOneFileTests.cs` assert what the file on disk holds, including
-`TheFileAlsoHoldsSixtyOneSets`. FOR BADER: confirm which file was meant, and I will
-change the assertion if this is the wrong one.
+The rule vocabulary in this file, which is what a good export looks like:
 
-The knock-on effect is that the cross-file check still lands where the brief said it
-would, but for a reason the brief did not give. See "Cross file" below.
+```
+category LcRevitData_Element display Element
+  property LcRevitPropertyElementCategory display Category, the Revit category
+  property lcldrevit_parameter_-1002053 display Workset
+
+no category element at all
+  property LcOaNodeSourceFile display Source File
+
+condition test values : equals and contains
+condition flags values: 0 and 64
+value data types      : wstring only
+```
+
+Rebuilding a search through the API matches on the internal string, never on the display
+word, so the reader keeps both and never swaps one for the other.
+
+### Counting distinct rules: 53 and 59 are both right
+
+Bader counted 59 distinct condition tuples and this scan counted 53. Measured again on
+2026-08-28, and the two numbers answer different questions. Neither is a mistake.
+
+```
+distinct CONDITION tuples, flags excluded                : 53
+distinct CONDITION tuples, flags included                : 53
+distinct CONDITION raw OuterXml                          : 53
+distinct SETS by whole ordered condition list            : 59
+```
+
+53 is the number of distinct conditions. 59 is the number of distinct sets, comparing each
+set's whole ordered list of conditions. It is 59 rather than 61 because two pairs of sets
+carry byte for byte identical rule lists:
+
+```
+BLD-EL-Telecom Fixtures    and  BLD-EL-Telephone Devices
+BLD-EL-Electrical Fixtures and  BLD-EL-Devices
+```
+
+The condition level definition is the one the code uses, and it is written into a comment
+above `AnIndividualConditionIsTheUnitOfARuleAndThereAreFiftyThreeOfThem` in
+`AllInOneFileTests.cs`. Both numbers are asserted, the 59 by
+`CountingWholeSetsInsteadGivesFiftyNineBecauseTwoPairsMatch`, which also names the two
+pairs so the difference stays visible.
+
+The set level number cannot be used for the damaged export check. On Search Set Infra it
+gives 6, because those 26 sets differ only in how many copies of the one rule they carry,
+and 6 does not read as broken. The condition level number gives 1 there, which does.
 
 ### Search Set Building.xml
+
+A DAMAGED EXPORT. Kept as a sample only, to prove HealthCheck catches it. Never a
+reference for what a good file looks like.
 
 ```
 root exchange, units="ft"
@@ -419,6 +465,9 @@ Checked across all three files: the only text carrying edge whitespace anywhere 
 value is affected.
 
 ### Search Set Infra.xml
+
+A DAMAGED EXPORT. Kept as a sample only, to prove HealthCheck catches it. Never a
+reference for what a good file looks like.
 
 ```
 root exchange, units="ft"
@@ -494,17 +543,33 @@ because that project references the Navisworks DLLs by path and no hosted runner
 Navisworks on it. The add-in has to be built on a machine that has Navisworks Manage 2025,
 which is what the `NavisworksPath` property is for.
 
-## Open questions for Bader
+## Settled on 2026-08-28
 
-1. The 1104 file holds 61 sets. The brief said it holds none. Confirm which file was
-   meant. The tests currently assert what is on disk.
-2. CLAUDE.md says an output name carries BM for the discipline, ZZZ for the level and
-   000001 for the number. Job 4 said to swap the discipline and keep everything else. The
-   sample name already has ZZZ and 000001, so it cannot tell the two apart. The code does
-   what Job 4 said and swaps only the discipline. The level and number rule is there as
-   settings that default to off: set `LevelPart`/`ForcedLevel` and
-   `NumberPart`/`ForcedNumber` on `ContainerNameSettings` to turn it on, no code change.
-   Say which you want and I will set the default.
-3. The Clash Detective report defaults are still UNKNOWN. Reflection cannot read them,
+1. The 1104 file holds 61 sets and the note that said otherwise was wrong. It is the
+   reference file. CLAUDE.md now says so and the tests assert it.
+2. The output name reads one way only: project, originator, building code, ZZZ, BM, the
+   type code, 000001. Level and number are fixed because outputs overwrite, and because
+   the files in one group may disagree on both. `ContainerNameSettings` now defaults
+   `LevelPart` to 4 with `ForcedLevel` ZZZ and `NumberPart` to 7 with `ForcedNumber`
+   000001. `ContainerNameSettings.WithoutFixedLevelAndNumber()` turns that off for reading
+   a name apart rather than naming a federation.
+3. Two files in one group that disagree on the project code or the originator are reported
+   and skipped, never resolved by picking one. `BuildingGroupingResult.Skipped` carries the
+   building, the reason, and both offending file names.
+4. The 53 against 59 rule count is settled. Both are right and they answer different
+   questions. See "Counting distinct rules" above.
+
+### Consequence of fixing the level and the number
+
+A name now has to split into at least 7 parts to be readable, because the output name
+cannot be built without a level part and a number part to overwrite. A 6 part name is
+reported unreadable rather than guessed at. Before this change the floor was 5 parts.
+
+## Still open for Bader
+
+1. The Clash Detective report defaults are still UNKNOWN. Reflection cannot read them,
    they need the running application. Tell me where to look or run it once and I will read
    it from there.
+2. The output name carries the type code through from the input, MOD in every sample seen.
+   Only the level and the number are fixed. If the type code should be pinned to MOD as
+   well, say so and it becomes one more forced part.

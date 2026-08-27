@@ -11,14 +11,27 @@ namespace Federator.Core.Grouping
     /// </summary>
     public sealed class BuildingGroup
     {
-        internal BuildingGroup(string building, IList<ParsedContainerName> files, IList<string> disciplines)
+        internal BuildingGroup(
+            string building,
+            string project,
+            string originator,
+            IList<ParsedContainerName> files,
+            IList<string> disciplines)
         {
             Building = building;
+            Project = project;
+            Originator = originator;
             Files = new ReadOnlyCollection<ParsedContainerName>(files);
             Disciplines = new ReadOnlyCollection<string>(disciplines);
         }
 
         public string Building { get; private set; }
+
+        /// <summary>The project code every file in this group agreed on.</summary>
+        public string Project { get; private set; }
+
+        /// <summary>The originator every file in this group agreed on.</summary>
+        public string Originator { get; private set; }
 
         public ReadOnlyCollection<ParsedContainerName> Files { get; private set; }
 
@@ -38,18 +51,56 @@ namespace Federator.Core.Grouping
     }
 
     /// <summary>
-    /// The groups, plus every name that could not be read. Unreadable names are never
-    /// folded into a group.
+    /// A building whose files disagree about something the output name is built from.
+    /// It is reported and skipped. Picking one of the two values would put a wrong
+    /// name on a federation.
+    /// </summary>
+    public sealed class SkippedBuildingGroup
+    {
+        internal SkippedBuildingGroup(string building, string reason, IList<ParsedContainerName> files)
+        {
+            Building = building;
+            Reason = reason;
+            Files = new ReadOnlyCollection<ParsedContainerName>(files);
+        }
+
+        public string Building { get; private set; }
+
+        public string Reason { get; private set; }
+
+        public ReadOnlyCollection<ParsedContainerName> Files { get; private set; }
+
+        public int FileCount
+        {
+            get { return Files.Count; }
+        }
+
+        public override string ToString()
+        {
+            return Building + " skipped: " + Reason;
+        }
+    }
+
+    /// <summary>
+    /// The groups that can be federated, the ones that were skipped, and every name
+    /// that could not be read. Unreadable names are never folded into a group.
     /// </summary>
     public sealed class BuildingGroupingResult
     {
-        internal BuildingGroupingResult(IList<BuildingGroup> groups, IList<ParsedContainerName> unreadable)
+        internal BuildingGroupingResult(
+            IList<BuildingGroup> groups,
+            IList<SkippedBuildingGroup> skipped,
+            IList<ParsedContainerName> unreadable)
         {
             Groups = new ReadOnlyCollection<BuildingGroup>(groups);
+            Skipped = new ReadOnlyCollection<SkippedBuildingGroup>(skipped);
             Unreadable = new ReadOnlyCollection<ParsedContainerName>(unreadable);
         }
 
         public ReadOnlyCollection<BuildingGroup> Groups { get; private set; }
+
+        /// <summary>Buildings whose files disagreed, reported by name with the reason.</summary>
+        public ReadOnlyCollection<SkippedBuildingGroup> Skipped { get; private set; }
 
         public ReadOnlyCollection<ParsedContainerName> Unreadable { get; private set; }
 
@@ -70,6 +121,24 @@ namespace Federator.Core.Grouping
                 if (string.Equals(group.Building, building, StringComparison.Ordinal))
                 {
                     return group;
+                }
+            }
+
+            return null;
+        }
+
+        public SkippedBuildingGroup FindSkipped(string building)
+        {
+            if (building == null)
+            {
+                throw new ArgumentNullException("building");
+            }
+
+            foreach (SkippedBuildingGroup skipped in Skipped)
+            {
+                if (string.Equals(skipped.Building, building, StringComparison.Ordinal))
+                {
+                    return skipped;
                 }
             }
 
