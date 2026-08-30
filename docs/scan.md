@@ -495,6 +495,73 @@ dotnet build ParsonsNwcFederator.sln -c Release -p:NavisworksPath="D:\Autodesk\N
 The project fails with a clear message rather than a missing-reference error when that
 path holds no `Autodesk.Navisworks.Api.dll`.
 
+## Finding a Navisworks file: use a direct path test, never a search
+
+Rule, and it holds whatever a future session thinks it has found: any check for a
+Navisworks file tests that one full path directly. Never search, never recurse, never
+wildcard the install folder. `Exists()` in MSBuild and `Test-Path` on a joined path in
+PowerShell are both direct tests and are the only two forms used here. There is no search
+anywhere in the build, and `Federator.Addin.csproj` now tests each referenced DLL by its
+own full path so a missing file is named rather than falling through to a resolution
+warning.
+
+### What was investigated on 2026-08-30, and what was actually true
+
+A build failure was reported, `Autodesk.Navisworks.Api.dll not found under NavisworksPath`,
+together with a report that `Get-ChildItem -Recurse -Filter` returned nothing on the
+Navisworks folder while a plain `dir -Name` listed everything. Two causes were suggested,
+that the existence check was recursing, and that the spaces in the folder name were
+mangling the path.
+
+Measured on this machine. NEITHER symptom reproduced, and BOTH suggested causes are ruled
+out:
+
+```
+File.Exists on the full path of each DLL          : True for all four, sizes read back
+   Autodesk.Navisworks.Api.dll                    4261152 bytes
+   Autodesk.Navisworks.Clash.dll                   508704 bytes
+   Autodesk.Navisworks.Automation.dll              184088 bytes
+   Roamer.exe                                      214296 bytes
+Directory.GetFiles, top level                     : 428 files
+Get-ChildItem -Recurse -Filter                    : 1 result, 0 errors
+Get-ChildItem -Recurse, no filter                 : 21474 files, 0 errors
+Directory.GetFiles with AllDirectories            : 1 result
+Directory.GetDirectories, top level               : 42 subfolders, no reparse points
+```
+
+Recursive walks of that folder work. Nothing blocks them.
+
+The existence check never recursed. `Exists()` is an MSBuild built in that tests one path.
+MSBuild was asked directly what it evaluates:
+
+```
+env:NavisworksPath                                : not set
+dotnet msbuild -getProperty:NavisworksPath        : C:\Program Files\Autodesk\Navisworks Manage 2025
+MSBuild Exists() on the Api DLL                   : PRESENT
+```
+
+The spaces were not mangling anything either. The compiler command line from a clean
+rebuild carries both references correctly quoted:
+
+```
+/reference:"C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Api.dll"
+/reference:"C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Clash.dll"
+```
+
+`dotnet build ParsonsNwcFederator.sln -c Release` succeeded, both incrementally and after
+deleting the add-in's bin and obj. Three ways of passing the override were tried. With a
+trailing backslash it built. Without one it built. Unquoted it failed, but with
+`MSB1008: Only one project can be specified`, which is a different error and not the one
+reported.
+
+So the reported failure is UNKNOWN in cause. It did not happen here on 2026-08-30 and no
+measurement on this machine explains it. What was changed is worth having regardless: the
+check now tests each referenced DLL by its own full path, names the file and the path it
+looked for when one is missing, and trims a trailing slash off `NavisworksPath` so a
+caller supplied path with one still builds a valid file path. If the failure returns,
+`dotnet build -v:detailed` now prints the three resolved paths under
+`CheckNavisworksPresent`, which is the first thing to read.
+
 ## Which test framework, and why
 
 NUnit, with `Microsoft.NET.Test.Sdk` 17.11.1, `NUnit` 3.14.0 and `NUnit3TestAdapter`

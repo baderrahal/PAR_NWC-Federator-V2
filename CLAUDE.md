@@ -179,6 +179,14 @@ C:\Program Files\Autodesk\Navisworks Manage 2025. Override it when the install m
 
     dotnet build ParsonsNwcFederator.sln -c Release -p:NavisworksPath="D:\Autodesk\Navisworks Manage 2025"
 
+Any check for a Navisworks file tests that one full path directly. Never search the
+install folder, never recurse it, never wildcard it. Exists() in MSBuild and Test-Path
+on a joined path are the only two forms used, and each referenced DLL is checked on
+its own so a missing file is named. A recursive walk of that folder was investigated
+on 2026-08-30 and works fine, so this rule is about keeping the check direct and
+self-diagnosing, not about working around the machine. docs\scan.md holds the
+measurements.
+
 Tests are NUnit. The pre-commit hook runs them and refuses the commit on a failure. Turn
 it on once per clone with:
 
