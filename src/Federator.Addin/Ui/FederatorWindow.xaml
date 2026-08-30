@@ -201,6 +201,33 @@
                 </DockPanel>
             </TabItem>
 
+
+            <!-- Step 4. Sets only in this session. No clash tests, no Excel. -->
+            <TabItem Header="4. Clash">
+                <DockPanel Margin="8">
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
+                               Text="Pick a sets or combined XML and rebuild its search sets in whatever is open right now. This does not run any clash test." />
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Content="Sets XML" />
+                        <TextBox Grid.Column="1" x:Name="SetsFileBox" VerticalAlignment="Center" />
+                        <Button Grid.Column="2" Content="Browse" Click="OnBrowseSetsFile" />
+                        <Button Grid.Column="3" x:Name="BuildSetsButton" Content="Build sets"
+                                Click="OnBuildSets" FontWeight="Bold" MinWidth="110" />
+                    </Grid>
+                    <TextBlock DockPanel.Dock="Bottom" x:Name="SetsSummary" Margin="0,6,0,0"
+                               Text="No file picked." />
+                    <TextBox x:Name="SetsBox" IsReadOnly="True" TextWrapping="NoWrap"
+                             VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                             FontFamily="Consolas" FontSize="11" />
+                </DockPanel>
+            </TabItem>
+
         </TabControl>
     </DockPanel>
 </Window>

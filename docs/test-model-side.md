@@ -86,9 +86,9 @@ log that may not exist.
 
 9. Click **Parsons NWC Federator**.
 
-**Worked:** a window opens called Parsons NWC Federator with three tabs across the top,
-`1. Source`, `2. Grouping` and `3. Outputs`, and a Run button, a progress line and a log
-box along the bottom.
+**Worked:** a window opens called Parsons NWC Federator with four tabs across the top,
+`1. Source`, `2. Grouping`, `3. Outputs` and `4. Clash`, and a Run button, a progress line
+and a log box along the bottom.
 
 **Failed:** a message box appears saying "Parsons NWC Federator could not start" with an
 error underneath. Send me that error text.
@@ -279,9 +279,61 @@ One thing worth knowing: while the run is still going, the log file is held open
 opens it fine and so does the **Copy log** button, but some tools refuse it with a sharing
 error. If that happens, either wait for the run to finish or use **Copy log**.
 
+## Step 4, the search sets
+
+This is the sets only. There are no clash tests and no Excel yet, so do not look for them.
+It runs against whatever document is open at the time, so it does not need a run to have
+happened first.
+
+30. Open any NWD or NWF that has real content in it.
+
+31. Click the **4. Clash** tab.
+
+32. Click **Browse** and pick a sets XML or a combined one. The reference file
+    `1104-PAR_CLASH_AllInOne (2) (1).xml` holds both halves and is a good first try.
+
+33. Click **Build sets**.
+
+**Worked:** the box fills with one line per set, and the line under it summarises. Each
+line carries the full folder path, the name, how many conditions it has and how many items
+it found:
+
+    ok      lcop_selection_set_tree/Architecture/BLD-AR-Floors  2 conditions  1,240 items
+    ZERO    lcop_selection_set_tree/Electrical/BLD-EL-Devices   1 condition   0 items
+
+Then the totals:
+
+    sets created      : 61
+    sets finding items: 47
+    sets at zero      : 14
+    items found       : 88213
+
+**Also worked, and is the point:** a set that finds nothing is marked `ZERO` and named. It
+is not an error and it is not hidden. That is how you find out a search that looks fine on
+paper matches nothing in this particular model.
+
+34. Open the Selection Sets window in Navisworks and check the folders.
+
+**Worked:** the folders nest exactly as the file had them, so `Mechanical` holds
+`Mechanical-HVAC` and the rest as real folders rather than as sets with long names.
+
+**Failed:** a line reads `FAILED` with an exception on it, or `SKIPPED` with a reason. A
+`SKIPPED` line means the file used a condition test this tool does not rebuild, and it
+names the test. Only an unknown test value causes that. An internal property name nobody
+has seen before is passed straight to Navisworks rather than being treated as a problem.
+
+Nothing here is tied to one project. The file is picked every run, and none of its names,
+folder names, counts or internal property names are written into the tool.
+
+35. Try it with a file that holds only tests and no sets.
+
+**Worked:** it says `This file holds no sets. Nothing to build.` and does nothing else. A
+project that keeps its sets in the model and supplies only tests is a normal case, not an
+error.
+
 ## Run it twice
 
-29. Click **Run** again with the same settings.
+36. Click **Run** again with the same settings.
 
 **Worked:** the same NWF and NWD file names are overwritten in place. No second copy
 appears, no date suffix, no `(2)`. You get a brand new log file, because logs are never
