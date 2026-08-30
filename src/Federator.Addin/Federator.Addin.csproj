@@ -21,6 +21,16 @@
        dotnet build -p:NavisworksPath="D:\Autodesk\Navisworks Manage 2025" -->
   <PropertyGroup>
     <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2025</NavisworksPath>
+
+    <!-- A caller who types the folder with a trailing slash would otherwise build a path
+         with two slashes in it. Trimming here means every path below is built once, the
+         same way. -->
+    <NavisworksPath>$(NavisworksPath.TrimEnd('\'))</NavisworksPath>
+
+    <!-- Each referenced DLL named once, as a full path. The HintPath and the existence
+         check below both use these, so they can never drift apart. -->
+    <NavisworksApiDll>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</NavisworksApiDll>
+    <NavisworksClashDll>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</NavisworksClashDll>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,20 +43,35 @@
        load a second set of types and nothing would match. -->
   <ItemGroup>
     <Reference Include="Autodesk.Navisworks.Api">
-      <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</HintPath>
+      <HintPath>$(NavisworksApiDll)</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Autodesk.Navisworks.Clash">
-      <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</HintPath>
+      <HintPath>$(NavisworksClashDll)</HintPath>
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>
 
+  <!--
+    One direct existence test per referenced file, against its full path. Exists() is a
+    direct path test, it does not search and it does not walk subfolders. Nothing in this
+    build searches for a Navisworks file, and nothing here should be changed to.
+
+    Each file is checked on its own so a missing Clash DLL says so by name, rather than
+    falling through to a reference resolution warning and a pile of compile errors.
+  -->
   <Target Name="CheckNavisworksPresent" BeforeTargets="ResolveAssemblyReferences">
-    <Error Condition="!Exists('$(NavisworksPath)\Autodesk.Navisworks.Api.dll')"
-           Text="Autodesk.Navisworks.Api.dll not found under NavisworksPath '$(NavisworksPath)'. Set NavisworksPath to the Navisworks Manage 2025 install folder." />
+    <Message Importance="low" Text="NavisworksPath  = $(NavisworksPath)" />
+    <Message Importance="low" Text="Api DLL         = $(NavisworksApiDll)" />
+    <Message Importance="low" Text="Clash DLL       = $(NavisworksClashDll)" />
+
+    <Error Condition="!Exists('$(NavisworksApiDll)')"
+           Text="Autodesk.Navisworks.Api.dll was not found at '$(NavisworksApiDll)'. NavisworksPath is '$(NavisworksPath)'. Set NavisworksPath to the Navisworks Manage 2025 install folder, for example -p:NavisworksPath=&quot;D:\Autodesk\Navisworks Manage 2025&quot;." />
+
+    <Error Condition="!Exists('$(NavisworksClashDll)')"
+           Text="Autodesk.Navisworks.Clash.dll was not found at '$(NavisworksClashDll)'. NavisworksPath is '$(NavisworksPath)'. Set NavisworksPath to the Navisworks Manage 2025 install folder, for example -p:NavisworksPath=&quot;D:\Autodesk\Navisworks Manage 2025&quot;." />
   </Target>
 
 </Project>
