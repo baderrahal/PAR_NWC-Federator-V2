@@ -211,12 +211,11 @@
             <TabItem Header="4. Clash">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="Pick the XML the run should use. A file can hold sets, clash tests, or both. When one file holds both, one pick is enough and the other box fills itself in. Run uses whatever is picked here for every ticked group. The two buttons below act on whatever is open right now instead." />
+                               Text="Pick the XML here and press Run on any step. The run does the whole job for every ticked group: append, save the NWF, build the sets, create the tests, run them, save the NWF again, publish the NWD last. A file can hold sets, clash tests, or both, and when it holds both, one pick fills both boxes. Leave these empty and Run does the model side only." />
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
@@ -226,14 +225,24 @@
                         <Label Grid.Row="0" Grid.Column="0" Content="Sets XML" />
                         <TextBox Grid.Row="0" Grid.Column="1" x:Name="SetsFileBox" VerticalAlignment="Center" />
                         <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowseSetsFile" />
-                        <Button Grid.Row="0" Grid.Column="3" x:Name="BuildSetsButton" Content="Build sets"
-                                Click="OnBuildSets" MinWidth="110" />
                         <Label Grid.Row="1" Grid.Column="0" Content="Clash test XML" />
                         <TextBox Grid.Row="1" Grid.Column="1" x:Name="TestsFileBox" VerticalAlignment="Center" />
                         <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowseTestsFile" />
-                        <Button Grid.Row="1" Grid.Column="3" x:Name="RunTestsButton" Content="Create and run"
-                                Click="OnRunTests" MinWidth="110" />
                     </Grid>
+
+                    <!-- Neither of these is a step in the run. They are for trying one open
+                         model by hand, which is why they are boxed off and named that way. -->
+                    <Border DockPanel.Dock="Top" BorderBrush="#FFBBBBBB" BorderThickness="1"
+                            Padding="8" Margin="0,0,0,8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Margin="0,0,10,0"
+                                       Text="Not part of the run. Try the file above against the model open right now:" />
+                            <Button x:Name="BuildSetsButton" Content="Sets into open model"
+                                    Click="OnBuildSets" MinWidth="150" Margin="0,0,6,0" />
+                            <Button x:Name="RunTestsButton" Content="Tests into open model"
+                                    Click="OnRunTests" MinWidth="150" />
+                        </StackPanel>
+                    </Border>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="SetsSummary" Margin="0,6,0,0"
                                Text="No file picked." />
                     <TextBox x:Name="SetsBox" IsReadOnly="True" TextWrapping="NoWrap"

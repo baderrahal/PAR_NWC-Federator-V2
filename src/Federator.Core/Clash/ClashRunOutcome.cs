@@ -222,6 +222,33 @@ namespace Federator.Core.Clash
         /// <summary>Seconds the whole clash step took, creating and running included.</summary>
         public double Seconds { get; set; }
 
+        /// <summary>
+        /// Set when the run was stopped before anything was created, because no test could
+        /// resolve a set. A run that cannot clash anything says so and stops, rather than
+        /// walking every test to report the same thing about each of them.
+        /// </summary>
+        public string StoppedReason { get; private set; }
+
+        public bool Stopped
+        {
+            get { return !string.IsNullOrEmpty(StoppedReason); }
+        }
+
+        /// <summary>
+        /// Records the guard. One line, naming how many sets the document holds and how
+        /// many the tests name, because those two numbers are the whole diagnosis.
+        /// </summary>
+        public string StopBecauseNoSetResolves(int setsInDocument, int setsExpected)
+        {
+            StoppedReason = "the document holds " + setsInDocument
+                + (setsInDocument == 1 ? " set" : " sets")
+                + " and the tests name " + setsExpected
+                + (setsExpected == 1 ? " set" : " sets")
+                + ", so no test can resolve a set. Nothing was created and nothing was run.";
+
+            return StoppedReason;
+        }
+
         public ReadOnlyCollection<ClashTestResult> Ran
         {
             get { return new ReadOnlyCollection<ClashTestResult>(ran); }
@@ -266,9 +293,12 @@ namespace Federator.Core.Clash
             skipped.Add(test);
         }
 
-        public void AddSkipped(string name, ClashSkipReason kind, string reason)
+        /// <summary>Records a skip and hands it back, so the caller can log it once.</summary>
+        public SkippedClashTest AddSkipped(string name, ClashSkipReason kind, string reason)
         {
-            skipped.Add(new SkippedClashTest(name, kind, reason));
+            SkippedClashTest test = new SkippedClashTest(name, kind, reason);
+            skipped.Add(test);
+            return test;
         }
 
         public ClashTestResult AddRan(
@@ -351,22 +381,43 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// One line per test, then the totals. The totals are counted off the same lists
-        /// the lines came from, so they cannot disagree with them.
+        /// How many skipped tests are written out in full for each reason. One real run
+        /// skipped 1830 tests for a single reason and wrote 1830 near identical lines into
+        /// a 1 MB log, which buries everything worth reading. A count and a few examples
+        /// say the same thing.
+        /// </summary>
+        public const int MaxSkipExamples = 5;
+
+        /// <summary>
+        /// One line per test that was created or run, then the skips summarised by reason,
+        /// then the totals. Per test detail is kept for the tests that actually did
+        /// something. The totals are counted off the same lists the lines came from, so
+        /// they cannot disagree with them.
         /// </summary>
         public IList<string> Lines()
         {
             List<string> lines = new List<string>();
+
+            if (Stopped)
+            {
+                lines.Add("STOPPED " + StoppedReason);
+                lines.Add(string.Empty);
+                lines.Add("ran against       : "
+                    + (string.IsNullOrEmpty(OpenDocument) ? "UNKNOWN" : OpenDocument));
+                lines.Add("tests in the file : " + TestsInFile);
+                lines.Add("tests created     : 0");
+                lines.Add("tests run         : 0");
+                lines.Add("clash step took   : "
+                    + Seconds.ToString("0.0", CultureInfo.InvariantCulture) + " seconds");
+                return lines;
+            }
 
             foreach (ClashTestResult result in ran)
             {
                 lines.Add(result.Line());
             }
 
-            foreach (SkippedClashTest test in skipped)
-            {
-                lines.Add("SKIPPED " + test.Name + "  " + test.Reason);
-            }
+            lines.AddRange(SkipLines());
 
             lines.Add(string.Empty);
             lines.Add("ran against       : "
@@ -381,10 +432,12 @@ namespace Federator.Core.Clash
 
             lines.Add("tests skipped     : " + SkippedCount + ", not run and not passed");
 
+            IDictionary<ClashSkipReason, int> reasonCounts = SkipReasonCounts();
+
             foreach (ClashSkipReason reason in SkipReasonsInOrder())
             {
-                int count = SkipReasonCounts()[reason];
-                lines.Add("    " + count.ToString().PadLeft(5) + "  " + ClashTestPlan.Describe(reason));
+                lines.Add("    " + reasonCounts[reason].ToString().PadLeft(5) + "  "
+                    + ClashTestPlan.Describe(reason));
             }
 
             lines.Add("tests run         : " + RanCount);
@@ -403,6 +456,57 @@ namespace Federator.Core.Clash
             // to find in a log that is thousands of lines long.
             lines.Add("clash step took   : " + Seconds.ToString("0.0", CultureInfo.InvariantCulture)
                 + " seconds");
+
+            return lines;
+        }
+
+        /// <summary>
+        /// The skipped tests, grouped by reason. Each reason gets a count, at most
+        /// MaxSkipExamples named examples, and then the number not shown, so nothing is
+        /// hidden and nothing is repeated a thousand times.
+        /// </summary>
+        public IList<string> SkipLines()
+        {
+            List<string> lines = new List<string>();
+
+            if (skipped.Count == 0)
+            {
+                return lines;
+            }
+
+            IDictionary<ClashSkipReason, int> counts = SkipReasonCounts();
+
+            foreach (ClashSkipReason reason in SkipReasonsInOrder())
+            {
+                int count = counts[reason];
+
+                lines.Add("SKIPPED " + count + (count == 1 ? " test, " : " tests, ")
+                    + ClashTestPlan.Describe(reason));
+
+                int shown = 0;
+
+                foreach (SkippedClashTest test in skipped)
+                {
+                    if (test.Kind != reason)
+                    {
+                        continue;
+                    }
+
+                    if (shown == MaxSkipExamples)
+                    {
+                        break;
+                    }
+
+                    lines.Add("        " + test.Name + "  " + test.Reason);
+                    shown++;
+                }
+
+                if (count > shown)
+                {
+                    lines.Add("        and " + (count - shown)
+                        + " more skipped for the same reason, counted and not listed");
+                }
+            }
 
             return lines;
         }
@@ -436,6 +540,11 @@ namespace Federator.Core.Clash
         /// <summary>The one line summary, for the window and the group line in the log.</summary>
         public string Summary()
         {
+            if (Stopped)
+            {
+                return "Stopped before creating anything. " + StoppedReason;
+            }
+
             return CreatedCount + " created, "
                 + (AlreadyPresentCount > 0 ? AlreadyPresentCount + " already there, " : string.Empty)
                 + RanCount + " run, "

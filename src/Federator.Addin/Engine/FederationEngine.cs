@@ -7,6 +7,7 @@ using Autodesk.Navisworks.Api;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
+using Federator.Core.Findings;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
@@ -24,6 +25,7 @@ namespace Federator.Addin.Engine
         private readonly RunLog log;
         private readonly bool republishNwd;
         private readonly ExchangeDocument exchange;
+        private readonly List<SourcePair> sourcePairs = new List<SourcePair>();
 
         public FederationEngine(Action<string> progress, RunLog log)
             : this(progress, log, true, null)
@@ -52,6 +54,16 @@ namespace Federator.Addin.Engine
             this.log = log;
             this.republishNwd = republishNwd;
             this.exchange = exchange;
+        }
+
+        /// <summary>
+        /// Every NWC and Revit source pair this run saw, in the order it saw them. Read
+        /// after Run to report where the building code inside the Revit name is not the
+        /// code on the NWC. Information only, nothing acts on it.
+        /// </summary>
+        public IList<SourcePair> SourcePairs
+        {
+            get { return sourcePairs; }
         }
 
         /// <summary>
@@ -193,15 +205,25 @@ namespace Federator.Addin.Engine
                     "The NWF at " + job.NwfPath + " is there but would not open, so the group was left alone.");
             }
 
-            return NwfComparison.Compare(FilesInsideTheOpenDocument(), job.Files);
+            return NwfComparison.Compare(FilesInsideTheOpenDocument(job.Building), job.Files);
         }
 
         /// <summary>
-        /// The files the open document points at. SourceFileName is the file that was
-        /// appended. FileName is also read, and used only when the source is empty, so a
-        /// model that reports one and not the other is still counted.
+        /// The files the open document points at.
+        ///
+        /// Model.FileName is the NWC, and it is what the scan holds, so it is the one the
+        /// comparison uses. Model.SourceFileName is the container the NWC was published
+        /// from, which on these projects is a Revit file in Autodesk Docs, for example
+        /// Autodesk Docs://KSA_New Murabba/1104-PAR-100000-ZZZ-AR-MOD-003000.rvt. That can
+        /// never equal a scanned NWC path, and comparing it reported CHANGED for 22 of 22
+        /// groups on a run where nothing had changed, so no set was built and no test ran.
+        ///
+        /// SourceFileName is still read, for two reasons. It is used when FileName is
+        /// empty, so a model reporting one and not the other is still counted, and both
+        /// are logged whenever they disagree, which is what made this findable in the
+        /// first place.
         /// </summary>
-        private IList<string> FilesInsideTheOpenDocument()
+        private IList<string> FilesInsideTheOpenDocument(string building)
         {
             List<string> files = new List<string>();
             Document document = NavisworksApplication.ActiveDocument;
@@ -215,12 +237,14 @@ namespace Federator.Addin.Engine
             {
                 string source = model.SourceFileName;
                 string cached = model.FileName;
-                string use = string.IsNullOrEmpty(source) ? cached : source;
+                string use = ModelFileNames.PathOf(cached, source);
 
                 log.Line("         holds   " + (string.IsNullOrEmpty(use) ? "an unnamed model" : use)
-                    + (string.Equals(source, cached, StringComparison.OrdinalIgnoreCase)
-                        ? string.Empty
-                        : "   [source " + Or(source) + ", file " + Or(cached) + "]"));
+                    + (ModelFileNames.Disagree(cached, source)
+                        ? "   [source " + Or(source) + ", file " + Or(cached) + "]"
+                        : string.Empty));
+
+                RecordSource(building, cached, source);
 
                 if (!string.IsNullOrEmpty(use))
                 {
@@ -229,6 +253,57 @@ namespace Federator.Addin.Engine
             }
 
             return files;
+        }
+
+        /// <summary>
+        /// Keeps the NWC and the Revit container it came from, so the run can report where
+        /// the building code inside the Revit name is not the code on the NWC. Reported
+        /// only, never acted on.
+        /// </summary>
+        private void RecordSource(string building, string nwcPath, string sourceName)
+        {
+            if (string.IsNullOrEmpty(nwcPath) || string.IsNullOrEmpty(sourceName))
+            {
+                return;
+            }
+
+            sourcePairs.Add(new SourcePair(building, nwcPath, sourceName));
+        }
+
+        /// <summary>
+        /// Reads the source name off every model in the document that was just built, so
+        /// a first run reports the same mismatches a rerun would. Never fails the group.
+        /// </summary>
+        private void RecordSourcesAfterAppending(Document document, string building)
+        {
+            try
+            {
+                if (document.Models == null)
+                {
+                    return;
+                }
+
+                foreach (Model model in document.Models)
+                {
+                    string cached = model.FileName;
+                    string source = model.SourceFileName;
+
+                    if (ModelFileNames.Disagree(cached, source))
+                    {
+                        log.Line("         holds   " + Or(cached)
+                            + "   [source " + Or(source) + ", file " + Or(cached) + "]");
+                    }
+
+                    RecordSource(building, cached, source);
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the Revit source names for " + building,
+                    error,
+                    "kept going, this only costs the SOURCE MISMATCH report for this group");
+            }
         }
 
         private static string Or(string value)
@@ -271,6 +346,8 @@ namespace Federator.Addin.Engine
                 log.Line("GROUP    " + job.Building + " wrote nothing, every append failed");
                 return false;
             }
+
+            RecordSourcesAfterAppending(document, job.Building);
 
             WriteNwf(document, job, outcome);
             return true;
@@ -346,9 +423,9 @@ namespace Federator.Addin.Engine
         /// </summary>
         private bool ClashStep(Document document, FederationJob job, JobOutcome outcome)
         {
-            if (exchange == null)
+            if (!ClashWork.Any(exchange))
             {
-                log.Line("CLASH    no file picked in the Clash step, no set built and no test created");
+                log.Line("CLASH    " + ClashWork.Describe(exchange));
                 return false;
             }
 
@@ -411,7 +488,7 @@ namespace Federator.Addin.Engine
         {
             try
             {
-                if (!exchange.HasTests)
+                if (!ClashWork.CreatesTests(exchange))
                 {
                     log.Line("CLASH    the picked file holds no clash test, so none was created");
                     return false;

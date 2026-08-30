@@ -402,6 +402,13 @@ namespace Federator.Core.Diagnostics
         public const string FindingsSectionTitle = "FINDINGS";
 
         /// <summary>
+        /// Where the Revit container inside an NWC is a different building from the NWC.
+        /// Only knowable once a document is open, so it goes in after the run rather than
+        /// with the scan findings.
+        /// </summary>
+        public const string SourceFindingsSectionTitle = "SOURCE FINDINGS";
+
+        /// <summary>
         /// A titled block of lines, written in order. Used for the group list and then
         /// the findings, which go after it.
         /// </summary>

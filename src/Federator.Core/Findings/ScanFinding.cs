@@ -20,7 +20,20 @@ namespace Federator.Core.Findings
         SingleDiscipline,
 
         /// <summary>A group missing disciplines that other groups in this run have.</summary>
-        MissingDisciplines
+        MissingDisciplines,
+
+        /// <summary>
+        /// The building code inside the Revit source name is not the code on the NWC that
+        /// was published from it. Only known once a document is open, so this one comes
+        /// out of the run rather than out of the scan.
+        /// </summary>
+        SourceMismatch,
+
+        /// <summary>
+        /// One Revit building code feeding more than one group, which reads as one
+        /// building split in two by a naming error.
+        /// </summary>
+        SharedSourceBuilding
     }
 
     /// <summary>One thing worth looking at, with enough detail to act on without the log.</summary>

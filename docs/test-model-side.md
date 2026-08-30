@@ -308,10 +308,16 @@ error. If that happens, either wait for the run to finish or use **Copy log**.
 
 ## Step 4, the search sets
 
-The **4. Clash** tab has two boxes and two buttons. The boxes are what the **Run** button
-uses for every ticked group. The two buttons are the one off, and they act on whatever
-document is open right now rather than on a run, so they do not need a run to have
-happened first. Use the buttons first to check a file, then use Run for the real thing.
+The **4. Clash** tab has two boxes and, boxed off below them, two buttons.
+
+The boxes are what **Run** uses. Run does the whole job for every ticked group: append,
+save the NWF, build the sets, create the tests, run them, save the NWF again, publish the
+NWD last. Leave both boxes empty and Run does the model side only, which is a step
+switched off rather than a failure.
+
+The two buttons are not steps in the run. They act on whatever document is open right now,
+for trying a file by hand before committing to a full run. That is why they are boxed off
+and named after what they do.
 
 There is no Excel yet, so do not look for it.
 
@@ -328,7 +334,7 @@ itself, for example `It holds 61 sets and 1830 tests.` If it holds both, it also
 `One pick is enough, both boxes now point at it.` and the **Clash test XML** box fills
 itself in. You never pick the same file twice.
 
-34. Click **Build sets**.
+34. Click **Sets into open model**.
 
 **Worked:** the box fills with one line per set, and the line under it summarises. Each
 line carries the full folder path, the name, how many conditions it has and how many items
@@ -393,7 +399,7 @@ or because they already live in the model.
     **Clash test XML**, and pick the file. If step 4 already filled this box in, it is
     already the right file and you can leave it.
 
-38. Click **Create and run**.
+38. Click **Tests into open model**.
 
 **Worked:** a line per test as it goes, then the totals. Expect this to take a while, and
 expect most tests to be skipped, which is the normal answer and not a fault:
@@ -463,13 +469,54 @@ of the two numbers its tolerance box shows.
 A test is never created with an empty side. One would return zero clashes and read as
 passed, which is worse than not being there at all.
 
+**Worked, and is what stops the 1 MB log:** when a pile of tests skip for the same reason,
+the log gives the count, at most five named examples, and then the number not listed:
+
+    SKIPPED 1784 tests, a side finds nothing in this model
+            AR-Floors v ME-Ducts   the right side "..." finds nothing in this model
+            AR-Walls v ME-Ducts    the right side "..." finds nothing in this model
+            and 1779 more skipped for the same reason, counted and not listed
+
+Every one of them is still counted in the totals. Only the repetition is gone. Tests that
+were created or run keep their own line each, because those are the ones worth reading.
+
+## Step 6, the guard on a document with no sets
+
+This one is quick and is worth doing deliberately, because the tool used to get it wrong.
+
+43. Open a model with no selection sets in it at all, pick a clash test XML, and press
+    **Tests into open model** without building the sets first.
+
+**Worked:** it stops immediately, before creating anything, and says so in one line in the
+log and on the line under the box:
+
+    CLASH    STOPPED  the document holds 0 sets and the tests name 61 sets, so no test can
+             resolve a set. Nothing was created and nothing was run.
+    CLASH    build the sets first, or pick a file whose tests name the sets this document
+             already holds
+
+**Failed:** it goes ahead and reports 1830 skipped, 0 created, 0 run. That is what it used
+to do, and it took a whole run and a 1 MB log to say one thing.
+
 ## Run it twice, which is the weekly case
 
 This is the behaviour that matters most, because the tool is used weekly and the clash
 results inside an NWF are the only record of what has been fixed. An NWF holds pointers to
 the NWC files, not copies, so a model updated in place needs no rebuild.
 
-43. Run once so an NWF exists, then run again with the same settings and the same folder.
+**Read this before you run it.** This is the step to watch hardest, because it has never
+once worked. On the run of 2026-08-30 every one of the 22 groups reported CHANGED and not
+one reported OPENED. The cause was the comparison reading `Model.SourceFileName`, which
+holds the Revit container in Autodesk Docs, against the scanned NWC path, which it can
+never equal. It now reads `Model.FileName`, which is the NWC and matched the scan exactly
+on every line of that same log.
+
+That fix is proved by tests against the real names off that log, but the tests cannot open
+an NWF. **OPENED has still never appeared in a real log.** Whether a second run against
+unchanged files actually produces it is UNKNOWN until you run this step, and it is the
+single most valuable thing you can tell me.
+
+44. Run once so an NWF exists, then run again with the same settings and the same folder.
 
 **Worked:** the second run does not rebuild. Each group logs
 
@@ -493,7 +540,7 @@ NWC files. What is not touched is the tests themselves, because that is where th
 and Resolved statuses live. If you ever see the sets tree holding two of everything, or
 every clash back at New after a second run, that is a real fault and worth stopping for.
 
-44. Now add one NWC to the source folder, or remove one, and run again.
+45. Now add one NWC to the source folder, or remove one, and run again.
 
 **Worked:** that group is left completely alone and logs
 
@@ -507,9 +554,34 @@ The NWF is not touched, so the decision is yours. If you want the new file in, d
 NWF and let the next run rebuild it, knowing that throws away the clash history for that
 building.
 
+## The Revit source report
+
+46. After any run, find the `SOURCE FINDINGS` block near the end of the log.
+
+**Worked:** it reports where the building code on the NWC is not the building code inside
+the Revit container it was published from. On the run of 2026-08-30 that is most of them:
+
+    NWC and Revit source pairs compared: 73
+    SOURCE MISMATCH   NWC 1B06BC was published from Revit 0000BC
+                      The NWC name says building 1B06BC and the Revit container it came
+                      from says building 0000BC. The group is built from the NWC name,
+                      which is unchanged. Neither code is assumed right.
+    SHARED SOURCE     Revit 0000KI feeds 2 groups: 1B06K1, 1B06KI
+                      One Revit building is being federated into more than one output,
+                      which reads as one building split in two by a naming error. Nothing
+                      is merged and no group is unpicked.
+
+The `SHARED SOURCE` line is the one worth acting on, because it means one real building is
+being split across two outputs. Neither line changes anything. Both codes are read with
+the same parser used on the NWC names, so there is no second naming rule to keep in step.
+
+**Worked, and is normal:** a pair where the codes agree is not reported, even when the rest
+of the name differs. `1C06PK` published from `1C06PK` numbered `000101` instead of `000001`
+is silent, because a number is not a building.
+
 ## Outputs overwrite
 
-45. Click **Run** again with the same settings.
+47. Click **Run** again with the same settings.
 
 **Worked:** the same NWF and NWD file names are overwritten in place. No second copy
 appears, no date suffix, no `(2)`. You get a brand new log file, because logs are never
@@ -517,7 +589,7 @@ overwritten.
 
 ## The order within a group, which changed
 
-46. Read one group's worth of log from `GROUP` to `GROUP`, and check the order.
+48. Read one group's worth of log from `GROUP` to `GROUP`, and check the order.
 
 **Worked:** it goes append, save the NWF, build the sets, create the tests, run them, save
 the NWF again, publish the NWD last. The NWD is the last thing that happens.
@@ -578,6 +650,13 @@ it here. What I did check on this machine, without Navisworks running:
 What is still UNKNOWN until you run steps 6 to 26: whether Navisworks loads the bundle,
 whether the button appears on Tool Add-ins, whether an append, a save or a publish
 succeeds against a real NWC, and how long a real run takes.
+
+**The one that matters most, and has never worked once.** A second run against unchanged
+files has never produced OPENED in a real log. On 2026-08-30 all 22 groups reported
+CHANGED, because the comparison was reading the Revit source name rather than the NWC
+name. That is fixed and is covered by tests built from the real names off that log, but a
+test cannot open an NWF. Step 44 is the only thing that can prove it, and until you run it
+the rerun path is UNKNOWN.
 
 For the clash step added on 2026-08-30, everything that could be settled without
 Navisworks was settled by reflection over the installed DLLs and is written up in

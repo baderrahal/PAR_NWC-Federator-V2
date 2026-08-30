@@ -513,6 +513,13 @@ namespace Federator.Addin.Ui
                     SetProgress, log, RepublishNwd.IsChecked == true, exchange);
                 engine.Run(jobs);
 
+                // What the Revit container inside each NWC says its building is. Only
+                // knowable once a document has been open, so it goes in after the run.
+                // Information, exactly like the scan findings. Nothing acts on it.
+                log.Block(
+                    RunLog.SourceFindingsSectionTitle,
+                    SourceMismatchFindings.From(engine.SourcePairs, settings).Lines());
+
                 log.Line("RUN      finished");
                 SetProgress("Run finished. " + log.CountOf(GroupOutcome.Done) + " done, "
                     + log.CountOf(GroupOutcome.Partial) + " partial, "

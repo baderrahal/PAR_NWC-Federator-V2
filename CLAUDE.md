@@ -132,6 +132,37 @@ and 6 does not read as broken.
       every file removed, and touch nothing. Bader decides
   The file list is read out of the opened NWF. No side file records what went in,
   because a side file can disagree with the NWF and the NWF is the record
+- The file list is read from Model.FileName, never from Model.SourceFileName.
+  FileName is the NWC, which is what the scan holds. SourceFileName is the
+  container the NWC was published from, which on this project is a Revit file in
+  Autodesk Docs such as
+    Autodesk Docs://KSA_New Murabba/1104-PAR-100000-ZZZ-AR-MOD-003000.rvt
+  That can never equal a scanned NWC path, so comparing on it reported CHANGED for
+  22 of 22 groups on a run where nothing had changed, and because a CHANGED group is
+  left alone entirely, no NWF was reused, no set was built and no test ran. Both
+  names still go in the log whenever they disagree, which is what made this
+  findable. The rule lives in Federator.Core.Rerun.ModelFileNames so it can be
+  tested without Navisworks, which is why it went unnoticed in the first place
+- The Revit container inside an NWC is often a different building from the NWC.
+  Where the building code parsed from the NWC name differs from the code in the
+  Revit source name, report SOURCE MISMATCH naming both, and where one Revit
+  building code feeds more than one group, report SHARED SOURCE, because that means
+  one building has been split in two by a naming error. Both codes are read with the
+  same parser used on the NWC names, never a separate rule. This is information. It
+  does not block, unpick or merge anything. Bader decides
+- When tests skip for the same reason, log the count and at most five examples, then
+  the total. Per test detail stays for tests that were created or run. One run wrote
+  1830 near identical SKIPPED lines and a 1 MB log, which buries everything worth
+  reading
+- If no test can resolve a set, say so and stop before creating anything. One line
+  naming how many sets the document holds and how many the tests name. A run against
+  a document holding zero sets once went ahead anyway and finished with 0 created and
+  0 run. This is a guard, visible in the log and in the window, never a silent skip
+- The Run button does the whole job for every ticked group, model side and clash
+  together, and the model side alone when no clash file is picked. The two buttons on
+  the Clash step are for trying one open model by hand and are labelled as that. They
+  are not steps in the run. Splitting one job across three presses is what let a user
+  run clash against a document with no sets in it
 - Republishing the NWD is a tick box, on by default, and happens in all three
   cases. That is the point of a rerun. The NWF pointers are unchanged, so
   reopening picks up whatever the NWC files now hold and the NWD is refreshed
