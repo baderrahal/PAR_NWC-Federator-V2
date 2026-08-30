@@ -67,10 +67,22 @@ means:
 
 **Failed:** the tab is missing, or the tab is there but the button is not. Either means
 Navisworks did not load the bundle. Check that the folder from step 4 exists and holds
-`PackageContents.xml` plus `Contents\v22\Federator.Addin.dll`. If it does and the button
-still does not appear, open **Tools** then **Global Options** then **Tools** then
-**Developer** and tick **Display plug-in load errors**, restart Navisworks, and send me
-what it says.
+`PackageContents.xml` plus `Contents\v22\Federator.Addin.dll`.
+
+If it does and the button still does not appear, the next thing to compare is
+`PackageContents.xml` against one that Navisworks already loads on the same machine.
+`%APPDATA%\Autodesk\ApplicationPlugins\ParsonsGlbExporter.bundle\PackageContents.xml` is a
+working Navisworks 2025 example. The two attributes that decide whether the bundle is even
+considered are `Platform`, which must be `NAVMAN`, and `AppType`, which must be
+`ManagedPlugin`. Both were wrong here once already, see docs\scan.md.
+
+Navisworks does not appear to write a plugin load failure anywhere. Searched on
+2026-08-30: the only Navisworks files under `%LOCALAPPDATA%` and `%APPDATA%` are licensing
+logs at `%LOCALAPPDATA%\Autodesk\Logs\AdlSdk-Navisworks Manage 2025-*.log`, which are
+encrypted and carry nothing about plugins, and Chromium web view caches. Nothing on disk
+mentioned this bundle except its own manifest. There may still be a setting for this in
+the application, but it could not be confirmed from outside, so do not go hunting for a
+log that may not exist.
 
 9. Click **Parsons NWC Federator**.
 

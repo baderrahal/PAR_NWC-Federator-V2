@@ -562,6 +562,83 @@ caller supplied path with one still builds a valid file path. If the failure ret
 `dotnet build -v:detailed` now prints the three resolved paths under
 `CheckNavisworksPresent`, which is the first thing to read.
 
+## Why the button did not appear, measured 2026-08-30
+
+The bundle installed cleanly and the button still did not appear on any ribbon tab. Two
+attributes in `PackageContents.xml` were wrong. Both were found by comparing our manifest
+against the bundles that already load on this machine, not by reading documentation.
+
+Every Navisworks targeting bundle on this machine, side by side:
+
+```
+BUNDLE                            Platform        SerMin SerMax AppType         ModuleName
+CODIGEM Clash Detection Matrix    NAVMAN          Nw22   Nw22   ManagedPlugin   ./Contents/v22/COGMClashDetectionMatrix/...
+ParsonsGlbExporter                NAVMAN|NAVSIM   Nw22   Nw22   ManagedPlugin   Contents\v22\ParsonsGlbExporter.dll
+ParsonsNwcFederator, ours, BEFORE Navisworks      Nw22   Nw22   (none)          ./Contents/v22/Federator.Addin.dll
+```
+
+Across all 111 ComponentEntry blocks in every bundle on the machine, the distinct Platform
+values were `NAVMAN` 6, `NAVMAN|NAVSIM` 1, `Revit` 28, `Civil3D` 10, `AutoCAD*` 6 and
+others. `Navisworks` appeared exactly once and it was ours.
+
+1. `Platform="Navisworks"` should be `NAVMAN`, the product token for Navisworks Manage.
+   `NAVMAN` is a real token, it is present as a string inside the product's own
+   `lcwebservices.dll`. This is believed to be the one that actually stopped the load,
+   because `RuntimeRequirements` is what selects a `Components` block for the running
+   product. A Platform the loader does not recognise means the block never matches, so the
+   `ComponentEntry` inside it is never read and nothing else in the file gets a chance to
+   matter.
+2. `AppType="ManagedPlugin"` was missing. Every Navisworks bundle that loads here declares
+   it. It tells the loader the module is a managed assembly holding plugin classes.
+
+Also removed, because no working Navisworks bundle on this machine carries either and both
+are AutoCAD demand loading concepts: `LoadOnCommandInvocation` and `LoadOnAutoCADStartup`.
+
+### What was ruled out, so it is not searched again
+
+The plugin class is correct and was never the problem. Reflected off the installed DLL:
+
+```
+class                  Federator.Addin.FederatorPlugin
+public                 True        abstract  False       nested  False      generic  False
+parameterless ctor     True, public
+base class             Autodesk.Navisworks.Api.Plugins.AddInPlugin,
+                       Autodesk.Navisworks.Api, Version=22.0.0.0, PublicKeyToken=d85e58fa5af9b484
+Execute                Int32 Execute(string[]), public, declared on FederatorPlugin
+PluginAttribute        Name "ParsonsNwcFederator", DeveloperId "PARS",
+                       DisplayName "Parsons NWC Federator"
+AddInPluginAttribute   AddInLocation = 1, which is AddInLocation.AddIn
+assembly               Federator.Addin, Version=1.0.0.0, net48, MSIL, runtime v4.0.30319
+```
+
+The Navisworks plugin id is `ParsonsNwcFederator.PARS`, built as Name plus DeveloperId.
+The manifest's `ComponentEntry AppName` is `ParsonsNwcFederator`. These are two different
+things and they are not required to match. CODIGEM's AppName is `Clash Detection Matrix`
+while its plugin id is something else entirely, and it loads.
+
+Also ruled out:
+
+- the bundle folder name. `ParsonsNwcFederator.bundle`, lower case suffix, correct. Two
+  bundles on the machine use `.Bundle` with a capital B and are presumably ignored
+- the ModuleName path. `./Contents/v22/Federator.Addin.dll` resolves to a file that exists
+- mark of the web. None of the three installed files carry any alternate data stream, so
+  nothing is blocked
+- architecture and framework. MSIL and net48, correct for the x64 host
+- a second Navisworks. Only Navisworks Manage 2025 has a Roamer.exe, the Exporters folders
+  do not
+
+### Navisworks does not write a plugin load failure anywhere findable
+
+Searched `%LOCALAPPDATA%` and `%APPDATA%` on 2026-08-30. The only Navisworks files are
+licensing logs at `%LOCALAPPDATA%\Autodesk\Logs\AdlSdk-Navisworks Manage 2025-*.log`, whose
+contents are `ENCODEDv2{...}` and carry nothing about plugins, plus Chromium web view
+caches. Nothing anywhere on disk mentioned `ParsonsNwcFederator` or `Federator.Addin`
+except our own manifest. Roamer.exe contains the string `PackageContents`, so it does read
+bundles, but no string matching `plugin load`, `plug-in load`, `load errors`,
+`DisplayPluginLoadErrors` or `developer` in either UTF-16 or ASCII. Whether the application
+has an in-product setting that reports plugin load errors is UNKNOWN and could not be
+confirmed from outside a running Navisworks.
+
 ## Which test framework, and why
 
 NUnit, with `Microsoft.NET.Test.Sdk` 17.11.1, `NUnit` 3.14.0 and `NUnit3TestAdapter`

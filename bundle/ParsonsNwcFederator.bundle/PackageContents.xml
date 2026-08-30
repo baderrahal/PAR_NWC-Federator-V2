@@ -3,6 +3,23 @@
   Navisworks Manage 2025 is API series Nw22, so the module sits in Contents\v22 and the
   series range is pinned to Nw22 only. Widening it would offer the add-in to a Navisworks
   it was never built against.
+
+  Two attributes here decide whether Navisworks even looks at the module, and both were
+  wrong until 2026-08-30. Measured against the bundles that already load on this machine,
+  see docs\scan.md:
+
+    Platform must be NAVMAN, the product token for Navisworks Manage. "Navisworks" is not
+    a token the loader knows. RuntimeRequirements is what selects the Components block for
+    the running product, so a Platform it does not recognise means the block is skipped
+    and the ComponentEntry inside it is never read.
+
+    AppType must be ManagedPlugin, which is what tells the loader the module is a .NET
+    assembly holding plugin classes rather than a native module.
+
+  NAVSIM, Navisworks Simulate, is deliberately not listed. This add-in is Manage only.
+
+  No LoadOnCommandInvocation and no LoadOnAutoCADStartup. Those are AutoCAD demand loading
+  attributes and no working Navisworks bundle on this machine carries either.
 -->
 <ApplicationPackage SchemaVersion="1.0"
                     AutodeskProduct="Navisworks"
@@ -18,15 +35,14 @@
 
   <Components Description="Navisworks Manage 2025">
     <RuntimeRequirements OS="Win64"
-                         Platform="Navisworks"
+                         Platform="NAVMAN"
                          SeriesMin="Nw22"
                          SeriesMax="Nw22" />
     <ComponentEntry AppName="ParsonsNwcFederator"
+                    AppType="ManagedPlugin"
                     Version="1.0.0"
                     ModuleName="./Contents/v22/Federator.Addin.dll"
-                    AppDescription="Parsons NWC Federator"
-                    LoadOnCommandInvocation="False"
-                    LoadOnAutoCADStartup="False" />
+                    AppDescription="Parsons NWC Federator" />
   </Components>
 
 </ApplicationPackage>
