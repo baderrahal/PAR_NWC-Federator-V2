@@ -91,6 +91,13 @@ namespace Federator.Core.Sets
             get { return new ReadOnlyCollection<SkippedSet>(skipped); }
         }
 
+        /// <summary>
+        /// The document the sets were resolved against. Counts cannot be read without it,
+        /// because a set at zero against an architecture model means something different
+        /// from a set at zero against a federated one.
+        /// </summary>
+        public string OpenDocument { get; set; }
+
         public void AddSkipped(SkippedSet set)
         {
             if (set == null)
@@ -235,6 +242,8 @@ namespace Federator.Core.Sets
             }
 
             lines.Add(string.Empty);
+            lines.Add("ran against       : "
+                + (string.IsNullOrEmpty(OpenDocument) ? "UNKNOWN" : OpenDocument));
             lines.Add("sets created      : " + CreatedCount);
             lines.Add("sets finding items: " + FindingItemsCount);
             lines.Add("sets at zero      : " + ZeroCount);

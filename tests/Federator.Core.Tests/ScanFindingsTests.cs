@@ -148,8 +148,9 @@ namespace Federator.Core.Tests
 
         // ---------- job 2, near match ----------
 
+        // The one real typing error in the 22 group run, a digit one against a capital i.
         [Test]
-        public void TwoCodesOneCharacterApartAreReportedWithBothFileCounts()
+        public void TwoCodesApartByAConfusableCharacterAreReportedWithBothFileCounts()
         {
             ScanFindings findings = FindingsFor(Files(
                 FullGroup("1B06K1"),
@@ -162,6 +163,8 @@ namespace Federator.Core.Tests
             Assert.That(near[0].Buildings, Is.EquivalentTo(new[] { "1B06K1", "1B06KI" }));
             Assert.That(near[0].Detail, Does.Contain("4 files"));
             Assert.That(near[0].Detail, Does.Contain("2 files"));
+            Assert.That(near[0].Headline, Does.Contain("character 6"),
+                "the line should say where the two codes differ");
         }
 
         [Test]
@@ -175,6 +178,32 @@ namespace Federator.Core.Tests
             Assert.That(ScanFindings.From(grouped).OfKind(FindingKind.NearMatch).Count, Is.EqualTo(1));
         }
 
+        // This is the noise the narrowing exists to remove. E and G are not confusable, so
+        // these are two real buildings and nothing should be said about them.
+        [Test]
+        public void TwoRealBuildingsOneOrdinaryCharacterApartProduceNothing()
+        {
+            ScanFindings findings = FindingsFor(Files(
+                FullGroup("1B06PE"),
+                FullGroup("1B06PG")));
+
+            Assert.That(findings.OfKind(FindingKind.NearMatch).Count, Is.EqualTo(0));
+            Assert.That(ScanFindings.IsConfusablePair("1B06PE", "1B06PG"), Is.False);
+        }
+
+        [Test]
+        public void CodesSharingAPrefixDoNotFloodTheFindings()
+        {
+            // Eight codes that all share 1B06P and differ only in the last character. A
+            // plain one character rule would report 28 pairs here.
+            ScanFindings findings = FindingsFor(Files(
+                FullGroup("1B06PA"), FullGroup("1B06PC"), FullGroup("1B06PD"),
+                FullGroup("1B06PE"), FullGroup("1B06PF"), FullGroup("1B06PH"),
+                FullGroup("1B06PJ"), FullGroup("1B06PK")));
+
+            Assert.That(findings.OfKind(FindingKind.NearMatch).Count, Is.EqualTo(0));
+        }
+
         [Test]
         public void CodesTwoCharactersApartAreNotANearMatch()
         {
@@ -185,18 +214,67 @@ namespace Federator.Core.Tests
             Assert.That(findings.OfKind(FindingKind.NearMatch).Count, Is.EqualTo(0));
         }
 
-        [TestCase("1B06K1", "1B06KI", true, "one character swapped")]
-        [TestCase("1B06K1", "1B06K", true, "one character missing")]
-        [TestCase("1B06K", "1B06K1", true, "one character extra")]
+        // Every pair that has to be caught, in both directions.
+        [TestCase('1', 'I')]
+        [TestCase('1', 'l')]
+        [TestCase('I', 'l')]
+        [TestCase('0', 'O')]
+        [TestCase('5', 'S')]
+        [TestCase('8', 'B')]
+        [TestCase('2', 'Z')]
+        [TestCase('6', 'G')]
+        public void EveryConfusablePairIsCaughtBothWays(char left, char right)
+        {
+            Assert.That(ScanFindings.AreConfusableCharacters(left, right), Is.True);
+            Assert.That(ScanFindings.AreConfusableCharacters(right, left), Is.True, "reversed");
+        }
+
+        [TestCase('E', 'G', "E is not confusable with anything")]
+        [TestCase('A', 'B', "B is confusable only with 8")]
+        [TestCase('1', '7', "7 is not in any group")]
+        [TestCase('0', 'D', "D is not confusable with 0")]
+        [TestCase('5', '6', "5 pairs with S and 6 pairs with G, not with each other")]
+        [TestCase('A', 'A', "the same character is not a difference")]
+        public void CharactersThatAreNotConfusableAreNotTreatedAsSuch(char left, char right, string why)
+        {
+            Assert.That(ScanFindings.AreConfusableCharacters(left, right), Is.False, why);
+            Assert.That(ScanFindings.AreConfusableCharacters(right, left), Is.False, why + ", reversed");
+        }
+
+        [TestCase("1B06K1", "1B06KI", true, "digit one against capital i")]
+        [TestCase("1B06K0", "1B06KO", true, "zero against capital o")]
+        [TestCase("1B065A", "1B06SA", true, "five against s")]
+        [TestCase("1B06PE", "1B06PG", false, "e against g is two real buildings")]
         [TestCase("1B06K1", "1B06K1", false, "identical is not a near match")]
-        [TestCase("1B06K1", "1B06J2", false, "two apart")]
+        [TestCase("1B06K1", "1B06J2", false, "two positions apart")]
+        [TestCase("1B06K1", "1B06K", false, "a missing character is not a near match")]
+        [TestCase("1B06K", "1B06K1", false, "an extra character is not a near match")]
         [TestCase("1B06K1", "1B06", false, "two shorter")]
-        [TestCase("1B06K1", "1b06K1", true, "a difference in case is one character")]
-        public void OneCharacterApartIsMeasuredNotGuessed(
+        public void AConfusablePairIsMeasuredNotGuessed(
             string left, string right, bool expected, string why)
         {
-            Assert.That(ScanFindings.IsOneCharacterApart(left, right), Is.EqualTo(expected), why);
-            Assert.That(ScanFindings.IsOneCharacterApart(right, left), Is.EqualTo(expected), why + ", reversed");
+            Assert.That(ScanFindings.IsConfusablePair(left, right), Is.EqualTo(expected), why);
+            Assert.That(ScanFindings.IsConfusablePair(right, left), Is.EqualTo(expected), why + ", reversed");
+        }
+
+        // An inserted or missing character was most of the noise, so it is deliberately out
+        // even when the codes look close.
+        [Test]
+        public void AnInsertedOrMissingCharacterIsNeverANearMatch()
+        {
+            ScanFindings shorter = FindingsFor(Files(
+                FullGroup("1B06K1"),
+                FullGroup("1B06K")));
+
+            Assert.That(shorter.OfKind(FindingKind.NearMatch).Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TheDifferenceIsReportedByPosition()
+        {
+            Assert.That(ScanFindings.DescribeConfusion("1B06K1", "1B06KI"),
+                Is.EqualTo("character 6 is \"1\" against \"I\""));
+            Assert.That(ScanFindings.DescribeConfusion("1B06PE", "1B06PG"), Is.Null);
         }
 
         // ---------- job 3, missing disciplines ----------

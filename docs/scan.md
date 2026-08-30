@@ -543,6 +543,31 @@ resolved, so three things that were UNKNOWN above are now answered:
 - **The folder tree rebuilds.** Sets landed under `Mechanical/Mechanical-HVAC` and the
   rest at the right depth.
 
+#### AddCopy returns void, so there is nothing to hold on to
+
+Checked on 2026-08-31 because the obvious fix for the folder failure below would have been
+to keep whatever the add handed back. Nothing on `DocumentSelectionSets` hands anything
+back. Every add shaped method returns void:
+
+```
+Void AddCopy(GroupItem parent, SavedItem item)
+Void AddCopy(SavedItem item)
+Void InsertCopy(GroupItem parent, Int32 index, SavedItem item)
+Void InsertCopy(Int32 index, SavedItem item)
+Void ReplaceWithCopy(GroupItem parent, Int32 index, SavedItem item)
+Void ReplaceWithCopy(Int32 index, SavedItem item)
+```
+
+The only ways back to an item are `RootItem`, `Value`, `ToSavedItemCollection`,
+`ResolveGuid`, `ResolveIndexPath` and `ResolveReference`. So the collection has to be read
+again after an add. There is no alternative to reading it again, only a choice about what
+to read it from, and the answer is a freshly read `RootItem`.
+
+`SavedItemCollection` is a mutable `IList<SavedItem>` with `Add`, `AddRange`, `Insert` and
+`IndexOfDisplayName`, and `GroupItem.Children` returns one. So a detached folder tree can
+be built in memory before being added, which is worth knowing if the read-again approach
+ever proves not to be enough.
+
 #### A handle held across an AddCopy does not show the new child
 
 The one failure in that run was ours:

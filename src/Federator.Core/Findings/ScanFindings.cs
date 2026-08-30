@@ -94,72 +94,107 @@ namespace Federator.Core.Findings
         }
 
         /// <summary>
-        /// True when two codes are one character apart, counting a swap, an extra
-        /// character or a missing one. Compared ordinally, so a difference in case counts.
+        /// Characters that are easy to mistake for one another when a code is read off a
+        /// drawing or retyped. Each line is one group, and any two different characters
+        /// from the same group are confusable in either direction.
+        ///
+        /// Anything wider than this is noise. A plain one character difference reported
+        /// about 45 pairs on a 22 group run and buried everything else, because codes
+        /// that share a prefix differ by one character constantly and 1B06PE against
+        /// 1B06PG is two real buildings.
         /// </summary>
-        public static bool IsOneCharacterApart(string left, string right)
+        private static readonly string[] ConfusableGroups =
+        {
+            "1Il",
+            "0O",
+            "5S",
+            "8B",
+            "2Z",
+            "6G"
+        };
+
+        /// <summary>
+        /// True when the two characters are different but easy to mistake for one another.
+        /// Compared as written, so only the exact characters listed above count.
+        /// </summary>
+        public static bool AreConfusableCharacters(char left, char right)
+        {
+            if (left == right)
+            {
+                return false;
+            }
+
+            foreach (string group in ConfusableGroups)
+            {
+                if (group.IndexOf(left) >= 0 && group.IndexOf(right) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// True when two codes are the same length and differ in exactly one position, and
+        /// the two characters in that position are confusable when read.
+        ///
+        /// An inserted or a missing character is deliberately not a near match. That was
+        /// most of the noise, and a code one character longer than another is usually a
+        /// different building rather than a typing slip.
+        /// </summary>
+        public static bool IsConfusablePair(string left, string right)
         {
             if (left == null || right == null)
             {
                 return false;
             }
 
-            if (string.Equals(left, right, StringComparison.Ordinal))
+            if (left.Length != right.Length)
             {
                 return false;
             }
 
-            int difference = left.Length - right.Length;
+            int at = -1;
 
-            if (difference < -1 || difference > 1)
+            for (int i = 0; i < left.Length; i++)
             {
-                return false;
-            }
-
-            if (difference == 0)
-            {
-                int changed = 0;
-
-                for (int i = 0; i < left.Length; i++)
+                if (left[i] == right[i])
                 {
-                    if (left[i] != right[i])
-                    {
-                        changed++;
-
-                        if (changed > 1)
-                        {
-                            return false;
-                        }
-                    }
-                }
-
-                return changed == 1;
-            }
-
-            string longer = difference == 1 ? left : right;
-            string shorter = difference == 1 ? right : left;
-
-            // Walk both, allowing exactly one skip in the longer one.
-            int shortIndex = 0;
-            bool skipped = false;
-
-            for (int longIndex = 0; longIndex < longer.Length; longIndex++)
-            {
-                if (shortIndex < shorter.Length && longer[longIndex] == shorter[shortIndex])
-                {
-                    shortIndex++;
                     continue;
                 }
 
-                if (skipped)
+                if (at >= 0)
                 {
                     return false;
                 }
 
-                skipped = true;
+                at = i;
             }
 
-            return shortIndex == shorter.Length;
+            return at >= 0 && AreConfusableCharacters(left[at], right[at]);
+        }
+
+        /// <summary>
+        /// Where the two codes differ and what the pair is, for the line that reports it.
+        /// Returns null when they are not a confusable pair.
+        /// </summary>
+        public static string DescribeConfusion(string left, string right)
+        {
+            if (!IsConfusablePair(left, right))
+            {
+                return null;
+            }
+
+            for (int i = 0; i < left.Length; i++)
+            {
+                if (left[i] != right[i])
+                {
+                    return "character " + (i + 1) + " is \"" + left[i] + "\" against \"" + right[i] + "\"";
+                }
+            }
+
+            return null;
         }
 
         public static ScanFindings From(BuildingGroupingResult result)
@@ -282,7 +317,9 @@ namespace Federator.Core.Findings
                     BuildingGroup left = groups[i];
                     BuildingGroup right = groups[j];
 
-                    if (!IsOneCharacterApart(left.Building, right.Building))
+                    string confusion = DescribeConfusion(left.Building, right.Building);
+
+                    if (confusion == null)
                     {
                         continue;
                     }
@@ -290,7 +327,8 @@ namespace Federator.Core.Findings
                     findings.Add(new ScanFinding(
                         FindingKind.NearMatch,
                         NearMatchLabel,
-                        left.Building + " and " + right.Building + " differ by one character",
+                        left.Building + " and " + right.Building + " differ by one character that is easy to misread, "
+                            + confusion,
                         left.Building + " holds " + left.FileCount + FilesWord(left.FileCount)
                             + " and " + right.Building + " holds " + right.FileCount
                             + FilesWord(right.FileCount)
@@ -412,7 +450,8 @@ namespace Federator.Core.Findings
 
         public const string NothingOdd =
             "Nothing odd. Every building code shares its shape with another, no two codes "
-            + "are one character apart, and every group holds every discipline in the run.";
+            + "differ by a single character that is easy to misread, and every group holds "
+            + "every discipline in the run.";
 
         private static List<string> FileNames(BuildingGroup group)
         {
