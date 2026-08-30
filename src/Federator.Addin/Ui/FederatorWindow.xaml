@@ -113,6 +113,24 @@
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
                                Text="Grouped on the full building code. A group whose files disagree on the project code or the originator is blocked and names both files." />
                     <TextBlock DockPanel.Dock="Bottom" x:Name="GroupingSummary" Margin="0,6,0,0" />
+
+                    <!-- Findings, shown before Run is pressed. None of this blocks a run. -->
+                    <Border DockPanel.Dock="Bottom" x:Name="FindingsPanel"
+                            BorderBrush="#D0D0D0" BorderThickness="1" Background="#FFFDF5"
+                            Padding="8" Margin="0,8,0,0">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" x:Name="FindingsHeading"
+                                       FontWeight="Bold" Margin="0,0,0,4"
+                                       Text="Findings" />
+                            <TextBox x:Name="FindingsBox" Height="120"
+                                     IsReadOnly="True" BorderThickness="0" Background="Transparent"
+                                     TextWrapping="NoWrap"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     FontFamily="Consolas" FontSize="11" />
+                        </DockPanel>
+                    </Border>
+
                     <DataGrid x:Name="GroupsGrid" AutoGenerateColumns="False" CanUserAddRows="False"
                               GridLinesVisibility="Horizontal" HeadersVisibility="Column">
                         <DataGrid.Columns>

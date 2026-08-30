@@ -124,6 +124,18 @@ and 6 does not read as broken.
   the counts by status, and a link to the sheet
 - Images are off by default. When on, New and Active only, written as jpg beside
   the workbook with a link in the row, never pasted into cells
+- The scan reports what it noticed and never acts on it. ODD SHAPE, NEAR MATCH,
+  SINGLE DISCIPLINE and MISSING are information. Nothing is blocked, unticked or
+  merged, and no code is assumed right. Bader decides
+- Findings are worked out from the run itself. The set of disciplines and the set
+  of code shapes come from the files in front of it, never from a list in the
+  code, because every project differs. A shape is the pattern of letters and
+  digits, so 1B06PK is 9A99AA. A code is odd only when its shape is held by no
+  other code and some other shape is shared, because with every shape unique
+  there is no majority to differ from
+- Findings show in the Grouping step before Run is pressed, and go in the log in
+  a FINDINGS block after the group list. Nothing odd is one line, not an empty
+  panel
 
 ## The diagnostic log
 

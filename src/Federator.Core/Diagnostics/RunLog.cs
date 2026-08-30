@@ -397,6 +397,28 @@ namespace Federator.Core.Diagnostics
 
         // ---------- one line per action ----------
 
+        public const string GroupsSectionTitle = "GROUPS";
+        public const string FindingsSectionTitle = "FINDINGS";
+
+        /// <summary>
+        /// A titled block of lines, written in order. Used for the group list and then
+        /// the findings, which go after it.
+        /// </summary>
+        public void Block(string title, IEnumerable<string> lines)
+        {
+            Section(title);
+
+            if (lines == null)
+            {
+                return;
+            }
+
+            foreach (string line in lines)
+            {
+                Line(line);
+            }
+        }
+
         public void ScanStarted(string folder, bool includeSubfolders)
         {
             Line("SCAN     started  " + folder + (includeSubfolders ? "  including subfolders" : "  top folder only"));

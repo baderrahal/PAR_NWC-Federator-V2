@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
+namespace Federator.Core.Findings
+{
+    /// <summary>
+    /// What the scan noticed. None of these block a run. They are information, and the
+    /// decision stays with the person reading them.
+    /// </summary>
+    public enum FindingKind
+    {
+        /// <summary>A building code whose letter and digit pattern no other code shares.</summary>
+        OddShape,
+
+        /// <summary>Two building codes one character apart, which reads like a typing error.</summary>
+        NearMatch,
+
+        /// <summary>A group holding one discipline, so it has nothing to clash against.</summary>
+        SingleDiscipline,
+
+        /// <summary>A group missing disciplines that other groups in this run have.</summary>
+        MissingDisciplines
+    }
+
+    /// <summary>One thing worth looking at, with enough detail to act on without the log.</summary>
+    public sealed class ScanFinding
+    {
+        internal ScanFinding(
+            FindingKind kind,
+            string label,
+            string headline,
+            string detail,
+            IList<string> buildings,
+            IList<string> files)
+        {
+            Kind = kind;
+            Label = label;
+            Headline = headline;
+            Detail = detail;
+            Buildings = new ReadOnlyCollection<string>(buildings ?? new List<string>());
+            Files = new ReadOnlyCollection<string>(files ?? new List<string>());
+        }
+
+        public FindingKind Kind { get; private set; }
+
+        /// <summary>The short shouty name, for example ODD SHAPE.</summary>
+        public string Label { get; private set; }
+
+        /// <summary>One line naming what and where.</summary>
+        public string Headline { get; private set; }
+
+        /// <summary>The reasoning, so the reader does not have to work it out again.</summary>
+        public string Detail { get; private set; }
+
+        /// <summary>The building codes this concerns, one for most, two for a near match.</summary>
+        public ReadOnlyCollection<string> Buildings { get; private set; }
+
+        /// <summary>File names, carried for an odd shape so the offending files are named.</summary>
+        public ReadOnlyCollection<string> Files { get; private set; }
+
+        public override string ToString()
+        {
+            return Label + "  " + Headline;
+        }
+    }
+}
