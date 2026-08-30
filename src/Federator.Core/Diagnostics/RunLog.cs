@@ -41,7 +41,12 @@ namespace Federator.Core.Diagnostics
         private readonly StringBuilder mirror = new StringBuilder();
         private readonly List<WrittenFile> written = new List<WrittenFile>();
         private readonly List<LoggedFailure> failures = new List<LoggedFailure>();
-        private readonly Dictionary<GroupOutcome, int> groupCounts = new Dictionary<GroupOutcome, int>();
+
+        // One list, not a count on one side and a reason list on the other. The RESULT
+        // block once printed "groups failed: 22" and "Nothing failed." together, because
+        // the count came from a dictionary and the errors came from a separate list that
+        // only exceptions reached. Everything about group outcomes now derives from here.
+        private readonly List<GroupRecord> groupRecords = new List<GroupRecord>();
         private bool closed;
 
         private RunLog(string path, DateTime startedAt, FileStream stream, string disabledReason)
@@ -57,10 +62,6 @@ namespace Federator.Core.Diagnostics
             }
 
             clock = Stopwatch.StartNew();
-
-            groupCounts[GroupOutcome.Done] = 0;
-            groupCounts[GroupOutcome.Partial] = 0;
-            groupCounts[GroupOutcome.Failed] = 0;
         }
 
         /// <summary>False when no file could be opened anywhere. Lines still reach the window.</summary>
@@ -451,13 +452,34 @@ namespace Federator.Core.Diagnostics
 
         public void GroupFinished(string building, GroupOutcome outcome, double seconds)
         {
+            GroupFinished(building, outcome, seconds, null);
+        }
+
+        /// <summary>
+        /// Records how one group ended, with the reason when it did not end cleanly.
+        ///
+        /// A group recorded as Failed always carries a reason. When the caller gives none
+        /// one is substituted rather than thrown over, because logging must never be the
+        /// thing that stops a run, and a substituted reason still keeps the RESULT block
+        /// honest by naming the group and saying the reason is missing.
+        /// </summary>
+        public void GroupFinished(string building, GroupOutcome outcome, double seconds, string reason)
+        {
+            string recorded = reason;
+
+            if (outcome == GroupOutcome.Failed && string.IsNullOrEmpty(recorded))
+            {
+                recorded = "UNKNOWN, the group was recorded as failed and no reason was given";
+            }
+
             lock (gate)
             {
-                groupCounts[outcome] = groupCounts[outcome] + 1;
+                groupRecords.Add(new GroupRecord(building, outcome, seconds, recorded));
             }
 
             Line("GROUP    finished " + building + "  " + outcome.ToString().ToUpperInvariant()
-                + "  " + seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s");
+                + "  " + seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s"
+                + (string.IsNullOrEmpty(recorded) ? string.Empty : "  " + recorded));
         }
 
         public void AppendAttempted(string file)
@@ -498,10 +520,45 @@ namespace Federator.Core.Diagnostics
 
             lock (gate)
             {
-                written.Add(new WrittenFile(kind, path, size));
+                // Recorded once. A throw after a successful write reaches a catch that
+                // checks the outputs again, and counting the same file twice would make
+                // "files written" a count of checks rather than of files.
+                bool already = false;
+
+                foreach (WrittenFile seen in written)
+                {
+                    if (string.Equals(seen.Path, path, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(seen.Kind, kind, StringComparison.Ordinal))
+                    {
+                        already = true;
+                        break;
+                    }
+                }
+
+                if (!already)
+                {
+                    written.Add(new WrittenFile(kind, path, size));
+                }
             }
 
             Line(kind.PadRight(8) + " written  " + path + "  " + DescribeSize(size));
+            return size;
+        }
+
+        /// <summary>
+        /// Looks at a file and reports its size WITHOUT recording it as written by this
+        /// run. Used where the outputs are checked after something threw, because a file
+        /// that was already sitting at the path last week is not one this run produced,
+        /// and the result block's files written list says every size in it was read back
+        /// after a write.
+        /// </summary>
+        public long CheckOnDisk(string kind, string path)
+        {
+            long size = SizeOnDisk(path);
+
+            Line(kind.PadRight(8) + " checked  " + path + "  "
+                + (size < 0 ? "NOT ON DISK" : DescribeSize(size) + ", not written by this run"));
+
             return size;
         }
 
@@ -569,7 +626,54 @@ namespace Federator.Core.Diagnostics
         {
             lock (gate)
             {
-                return groupCounts[outcome];
+                int count = 0;
+
+                foreach (GroupRecord record in groupRecords)
+                {
+                    if (record.Outcome == outcome)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
+
+        /// <summary>
+        /// Every group that ended Failed, each carrying its reason. This is the same list
+        /// CountOf(Failed) counts, so a failed count without a matching entry here cannot
+        /// happen.
+        /// </summary>
+        public IList<GroupRecord> FailedGroups
+        {
+            get
+            {
+                lock (gate)
+                {
+                    List<GroupRecord> failed = new List<GroupRecord>();
+
+                    foreach (GroupRecord record in groupRecords)
+                    {
+                        if (record.Outcome == GroupOutcome.Failed)
+                        {
+                            failed.Add(record);
+                        }
+                    }
+
+                    return failed;
+                }
+            }
+        }
+
+        public IList<GroupRecord> GroupRecords
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return new List<GroupRecord>(groupRecords);
+                }
             }
         }
 
@@ -624,21 +728,36 @@ namespace Federator.Core.Diagnostics
                 }
             }
 
+            // Both halves of this come from the lists the counts above were taken from,
+            // so "groups failed: 22" and "Nothing failed." can no longer both be true.
+            IList<GroupRecord> failedGroups = FailedGroups;
             IList<LoggedFailure> errors = Failures;
+            int total = failedGroups.Count + errors.Count;
             Blank();
 
-            if (errors.Count == 0)
+            if (total == 0)
             {
                 Line("Nothing failed.");
             }
             else
             {
-                Line("errors         : " + errors.Count + ", repeated here in full");
+                Line("errors         : " + total + ", repeated here in full");
+
+                int numbered = 0;
+
+                foreach (GroupRecord record in failedGroups)
+                {
+                    numbered++;
+                    Blank();
+                    Line("  [" + numbered + "] group " + record.Building + " ended FAILED");
+                    Detail("reason   : " + Or(record.Reason, "UNKNOWN"));
+                }
 
                 for (int i = 0; i < errors.Count; i++)
                 {
+                    numbered++;
                     Blank();
-                    Line("  [" + (i + 1) + "] " + errors[i].What);
+                    Line("  [" + numbered + "] " + errors[i].What);
 
                     foreach (string line in errors[i].Detail.Split('\n'))
                     {

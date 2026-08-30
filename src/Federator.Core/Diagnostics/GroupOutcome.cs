@@ -1,16 +1,56 @@
 namespace Federator.Core.Diagnostics
 {
-    /// <summary>How one group ended. The three counts in the result block are these.</summary>
+    /// <summary>
+    /// How one group ended. The three counts in the result block are these.
+    ///
+    /// The test is always what was ASKED FOR, not what happens to be on disk. A step
+    /// deliberately switched off is not a failure. Republishing the NWD is a tick box, and
+    /// with it off a group that federated cleanly is Done, not Failed. That mistake once
+    /// reported all 22 groups of a clean run as FAILED.
+    /// </summary>
     public enum GroupOutcome
     {
-        /// <summary>Every file appended and both outputs are on disk.</summary>
+        /// <summary>Everything requested for this group succeeded.</summary>
         Done,
 
-        /// <summary>At least one file failed to append, but the outputs are on disk.</summary>
+        /// <summary>
+        /// Something requested did not complete, or the group was CHANGED and left alone
+        /// on purpose.
+        /// </summary>
         Partial,
 
-        /// <summary>Nothing usable came out of this group.</summary>
+        /// <summary>Something requested threw, or produced nothing.</summary>
         Failed
+    }
+
+    /// <summary>
+    /// How one group ended, with the reason when it did not end cleanly. The result block
+    /// counts these and reads the reasons off the same list, so a failed count without a
+    /// matching reason cannot happen.
+    /// </summary>
+    public sealed class GroupRecord
+    {
+        internal GroupRecord(string building, GroupOutcome outcome, double seconds, string reason)
+        {
+            Building = building;
+            Outcome = outcome;
+            Seconds = seconds;
+            Reason = reason;
+        }
+
+        public string Building { get; private set; }
+
+        public GroupOutcome Outcome { get; private set; }
+
+        public double Seconds { get; private set; }
+
+        /// <summary>Never null or empty when Outcome is Failed.</summary>
+        public string Reason { get; private set; }
+
+        public override string ToString()
+        {
+            return Building + " " + Outcome + (string.IsNullOrEmpty(Reason) ? string.Empty : ": " + Reason);
+        }
     }
 
     /// <summary>A file the log verified on disk, with the size it read back.</summary>

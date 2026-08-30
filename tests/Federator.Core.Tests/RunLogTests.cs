@@ -276,8 +276,8 @@ namespace Federator.Core.Tests
             {
                 log.GroupFinished("1C07AA", GroupOutcome.Done, 12.5);
                 log.GroupFinished("1C07BC", GroupOutcome.Done, 30.25);
-                log.GroupFinished("1C07K1", GroupOutcome.Partial, 8.0);
-                log.GroupFinished("1C07ZZ", GroupOutcome.Failed, 1.5);
+                log.GroupFinished("1C07K1", GroupOutcome.Partial, 8.0, "1 of 4 files did not append");
+                log.GroupFinished("1C07ZZ", GroupOutcome.Failed, 1.5, "nothing appended");
 
                 string one = Path.Combine(folder, "one.nwf");
                 string two = Path.Combine(folder, "two.nwd");
@@ -302,7 +302,13 @@ namespace Federator.Core.Tests
                 Assert.That(text, Does.Contain("files written  : 2"));
                 Assert.That(text, Does.Contain(one));
                 Assert.That(text, Does.Contain(two));
-                Assert.That(text, Does.Contain("errors         : 2"));
+                // Three, not two. The failed group counts as an error alongside the two
+                // exceptions, because a failed count that no error accounts for is exactly
+                // the contradiction this block once printed.
+                Assert.That(text, Does.Contain("errors         : 3"));
+                Assert.That(text, Does.Contain("group 1C07ZZ ended FAILED"));
+                Assert.That(text, Does.Contain("nothing appended"));
+                Assert.That(text, Does.Not.Contain("Nothing failed."));
 
                 // Every error is repeated in full in the result block, so the tail of the
                 // file is enough on its own.

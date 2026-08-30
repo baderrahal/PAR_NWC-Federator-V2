@@ -66,7 +66,8 @@ namespace Federator.Addin.Engine
                 groupClock.Stop();
 
                 outcomes.Add(outcome);
-                log.GroupFinished(job.Building, outcome.Result, groupClock.Elapsed.TotalSeconds);
+                log.GroupFinished(
+                    job.Building, outcome.Result, groupClock.Elapsed.TotalSeconds, outcome.Reason);
             }
 
             return outcomes;
@@ -77,6 +78,7 @@ namespace Federator.Addin.Engine
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
             outcome.NwdSize = -1;
+            outcome.NwdRequested = republishNwd;
 
             try
             {
@@ -111,8 +113,14 @@ namespace Federator.Addin.Engine
                     // clash results inside it survive. A CHANGED group is left alone
                     // entirely and the decision goes to Bader.
                     outcome.AppendedCount = comparison.InNwf.Count;
-                    outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath);
+
+                    // Verified, not recorded as written. This run did not write it, and
+                    // the RESULT block's files written list says every size in it was read
+                    // back after a write.
+                    outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
                     outcome.NwfOnDisk = outcome.NwfSize >= 0;
+                    log.Line("NWF      reused   " + job.NwfPath + "  "
+                        + (outcome.NwfOnDisk ? outcome.NwfSize.ToString("#,##0") + " bytes" : "NOT ON DISK"));
                 }
 
                 WriteNwd(document, job, outcome);
@@ -125,10 +133,13 @@ namespace Federator.Addin.Engine
                     error,
                     "stopped this group, carried on with the next one, everything already written is kept");
 
-                // The outputs are still checked against the disk below, because a throw
-                // after a successful write must not report the file as missing.
-                outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath);
-                outcome.NwdSize = log.WriteFinished("NWD", job.NwdPath);
+                // The outputs are still checked against the disk, because a throw after a
+                // successful write must not report the file as missing. Checked, not
+                // recorded as written. A group that threw may never have reached either
+                // write, and whatever is sitting at these paths could be last week's,
+                // which this run did not produce.
+                outcome.NwfSize = log.CheckOnDisk("NWF", job.NwfPath);
+                outcome.NwdSize = log.CheckOnDisk("NWD", job.NwdPath);
                 outcome.NwfOnDisk = outcome.NwfSize >= 0;
                 outcome.NwdOnDisk = outcome.NwdSize >= 0;
             }
@@ -275,7 +286,14 @@ namespace Federator.Addin.Engine
             try
             {
                 EnsureFolder(job.NwfPath);
-                document.TrySaveFile(job.NwfPath);
+
+                // The NWF path only runs when there was no NWF there, so a stale file
+                // cannot mask a lost save the way it can for the NWD. The bool is still
+                // read, because it says more in the log than an absent file does.
+                if (!document.TrySaveFile(job.NwfPath))
+                {
+                    log.Line("NWF      the save returned false for " + job.Building);
+                }
             }
             catch (Exception error)
             {
@@ -304,6 +322,8 @@ namespace Federator.Addin.Engine
             progress("Publishing NWD for " + job.Building);
             log.WriteAttempted("NWD", job.NwdPath);
 
+            bool published = false;
+
             try
             {
                 EnsureFolder(job.NwdPath);
@@ -317,16 +337,26 @@ namespace Federator.Addin.Engine
                     properties.Subject = "Federation of building " + job.Building;
                     properties.Author = Environment.UserName;
 
-                    document.TryPublishFile(job.NwdPath, properties);
+                    // TryPublishFile returns a bool. Discarding it and trusting
+                    // File.Exists would call a stale NWD from last week a success.
+                    published = document.TryPublishFile(job.NwdPath, properties);
+                }
+
+                if (!published)
+                {
+                    log.Line("NWD      the publish returned false for " + job.Building);
                 }
             }
             catch (Exception error)
             {
+                published = false;
                 log.Failure(
                     "publishing the NWD for " + job.Building,
                     error,
                     "kept going, the disk is checked next to see whether anything landed");
             }
+
+            outcome.NwdPublishReportedSuccess = published;
 
             outcome.NwdSize = log.WriteFinished("NWD", job.NwdPath);
             outcome.NwdOnDisk = outcome.NwdSize >= 0;

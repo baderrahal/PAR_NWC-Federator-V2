@@ -12,6 +12,7 @@ using Federator.Core.Findings;
 using Federator.Core.Grouping;
 using Federator.Core.Exchange;
 using Federator.Core.Naming;
+using Federator.Core.Rerun;
 using Federator.Core.Sets;
 
 namespace Federator.Addin.Ui
@@ -364,11 +365,13 @@ namespace Federator.Addin.Ui
                     continue;
                 }
 
+                // Built through OutputPaths so the path a rerun looks for the NWF at is
+                // the same string it was written to.
                 jobs.Add(new FederationJob(
                     group.Building,
                     group.OutputName,
-                    Path.Combine(nwfFolder, group.OutputName + ".nwf"),
-                    Path.Combine(nwdFolder, group.OutputName + ".nwd"),
+                    OutputPaths.Nwf(nwfFolder, group.OutputName),
+                    OutputPaths.Nwd(nwdFolder, group.OutputName),
                     group.Files));
             }
 

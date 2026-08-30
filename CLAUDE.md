@@ -138,6 +138,29 @@ and 6 does not read as broken.
   without the clash history being touched
 - Outputs overwrite, the NWD every run and the NWF only when it is being built for
   the first time. No date suffix, no version suffix
+- A group ends in one of three states, and the test is always what was ASKED FOR,
+  never what happens to be on disk. A step deliberately switched off is not a
+  failure. Judging a group by whether an NWD existed, with republishing switched
+  off, once reported all 22 groups of a clean run as FAILED.
+    DONE     everything requested for this group succeeded
+    PARTIAL  something requested did not complete, or the group was CHANGED
+    FAILED   something requested threw or produced nothing
+  The rule lives in Federator.Core.Rerun.GroupJudgement, with no Navisworks types
+  in it, so it can be tested. The outcome and the reason for it come out of one
+  pass, so the two can never disagree
+- The counts in the RESULT block and the errors under it come from one list. A
+  failed count with an empty error list is what the log printed once, saying
+  "groups failed: 22" and "Nothing failed." in the same block. A group recorded as
+  failed always carries a reason, and one is substituted rather than thrown over
+  when a caller forgets, because logging never stops a run
+- Only a file this run actually wrote goes in the files written list. Outputs
+  overwrite with no date suffix, so last week's NWF and NWD sit at exactly the
+  paths this run uses. A group that threw before writing anything must not list
+  them as its own, and a file that was checked rather than written is logged with
+  CheckOnDisk, which reports the size and records nothing
+- The Try forms return a bool and it is read, never discarded. For the NWD that
+  bool is the only thing separating a fresh publish from last week's file at the
+  same path, because File.Exists cannot tell them apart
 - Excel sheet names stop at 31 characters and 1703 of the 1830 test names are
   longer. Sheets are T0001 upward. The Summary sheet carries the full test name,
   the counts by status, and a link to the sheet
