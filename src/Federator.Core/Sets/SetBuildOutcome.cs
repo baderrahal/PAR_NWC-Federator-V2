@@ -80,6 +80,7 @@ namespace Federator.Core.Sets
     {
         private readonly List<SetResult> results = new List<SetResult>();
         private readonly List<SkippedSet> skipped = new List<SkippedSet>();
+        private readonly List<string> alreadyPresent = new List<string>();
 
         public ReadOnlyCollection<SetResult> Results
         {
@@ -97,6 +98,26 @@ namespace Federator.Core.Sets
         /// from a set at zero against a federated one.
         /// </summary>
         public string OpenDocument { get; set; }
+
+        /// <summary>
+        /// A set already at this path in the open document. On a reused NWF every set from
+        /// last week is already there, and adding another copy would leave the tree holding
+        /// both, with a locator resolving to whichever came first. It is left alone.
+        /// </summary>
+        public ReadOnlyCollection<string> AlreadyPresent
+        {
+            get { return new ReadOnlyCollection<string>(alreadyPresent); }
+        }
+
+        public void AddAlreadyPresent(string path)
+        {
+            alreadyPresent.Add(path);
+        }
+
+        public int AlreadyPresentCount
+        {
+            get { return alreadyPresent.Count; }
+        }
 
         public void AddSkipped(SkippedSet set)
         {
@@ -245,6 +266,11 @@ namespace Federator.Core.Sets
             lines.Add("ran against       : "
                 + (string.IsNullOrEmpty(OpenDocument) ? "UNKNOWN" : OpenDocument));
             lines.Add("sets created      : " + CreatedCount);
+
+            if (AlreadyPresentCount > 0)
+            {
+                lines.Add("already there     : " + AlreadyPresentCount + ", left alone, not copied again");
+            }
             lines.Add("sets finding items: " + FindingItemsCount);
             lines.Add("sets at zero      : " + ZeroCount);
 

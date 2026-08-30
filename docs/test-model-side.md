@@ -1,7 +1,7 @@
 # Testing the model side
 
-For Bader. This covers the model side only: scan, group, federate, save NWF, write NWD.
-There is no clash and no Excel yet, so do not look for them.
+For Bader. This covers scan, group, federate, save NWF, build the sets, create and run the
+clash tests, write NWD. There is no Excel yet, so do not look for it.
 
 One action per step. Do them in order.
 
@@ -308,16 +308,25 @@ error. If that happens, either wait for the run to finish or use **Copy log**.
 
 ## Step 4, the search sets
 
-This is the sets only. There are no clash tests and no Excel yet, so do not look for them.
-It runs against whatever document is open at the time, so it does not need a run to have
-happened first.
+The **4. Clash** tab has two boxes and two buttons. The boxes are what the **Run** button
+uses for every ticked group. The two buttons are the one off, and they act on whatever
+document is open right now rather than on a run, so they do not need a run to have
+happened first. Use the buttons first to check a file, then use Run for the real thing.
+
+There is no Excel yet, so do not look for it.
 
 31. Open any NWD or NWF that has real content in it.
 
 32. Click the **4. Clash** tab.
 
-33. Click **Browse** and pick a sets XML or a combined one. The reference file
-    `1104-PAR_CLASH_AllInOne (2) (1).xml` holds both halves and is a good first try.
+33. Click the first **Browse**, beside **Sets XML**, and pick a sets XML or a combined
+    one. The reference file `1104-PAR_CLASH_AllInOne (2) (1).xml` holds both halves and is
+    a good first try.
+
+**Worked:** the line underneath says what the file actually holds, counted out of the file
+itself, for example `It holds 61 sets and 1830 tests.` If it holds both, it also says
+`One pick is enough, both boxes now point at it.` and the **Clash test XML** box fills
+itself in. You never pick the same file twice.
 
 34. Click **Build sets**.
 
@@ -374,13 +383,93 @@ folder names, counts or internal property names are written into the tool.
 project that keeps its sets in the model and supplies only tests is a normal case, not an
 error.
 
+## Step 5, the clash tests
+
+Same tab, second row. This creates the tests a picked file describes and runs them against
+whatever is open. The sets have to be there first, either because you built them in step 4
+or because they already live in the model.
+
+37. With the sets from step 4 still in the model, click the second **Browse**, beside
+    **Clash test XML**, and pick the file. If step 4 already filled this box in, it is
+    already the right file and you can leave it.
+
+38. Click **Create and run**.
+
+**Worked:** a line per test as it goes, then the totals. Expect this to take a while, and
+expect most tests to be skipped, which is the normal answer and not a fault:
+
+    clashes AR-Floors v ME-Ducts   items 1240 v 613   New 27   3.2s
+    passed  AR-Walls v ME-Ducts    items 980 v 613    none     2.8s
+    SKIPPED AR-Floors v EL-Devices  the right side "lcop_selection_set_tree/Electrical/
+            BLD-EL-Devices" finds nothing in this model, the left finds 1240
+
+Then the totals:
+
+    ran against       : C:\models\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd
+    tests in the file : 1830
+    tests created     : 1830
+    tests skipped     : 1784, not run and not passed
+         1784  a side finds nothing in this model
+    tests run         : 46
+        passed        : 31, ran and found nothing
+        with clashes  : 15
+    clashes found     : 212
+        New       : 212
+        Active    : 0
+        Reviewed  : 0
+        Approved  : 0
+        Resolved  : 0
+    clash step took   : 412.5 seconds
+
+**The two numbers to read carefully.** `tests skipped` and `passed` are different things
+and are never added together. A skipped test never ran, because one of its two sides finds
+nothing in this model. A passed test ran and found nothing wrong. Both would show zero
+clashes, which is why they are kept apart everywhere they appear. Most groups hold two or
+three disciplines, so most of the 1830 pairs have a side that cannot be there, and a large
+skipped number is the expected answer rather than a problem.
+
+`clash step took` is on its own line because it is the number nobody has yet, and it is
+what says whether the whole run will fit in the 45 minutes.
+
+39. While it runs, watch the progress line and the log.
+
+**Worked:** a running count every 25 tests, so a run of well over a thousand is watchable
+rather than silent:
+
+    CLASH    250 of 1830 tests, 8 run, 242 skipped, 31 clashes so far
+
+40. Open Clash Detective in Navisworks and compare.
+
+**Worked:** the tests are there under the names the file gave them, each side shows the
+selection set by name rather than a list of items, and the clash count on a test matches
+the number in the block above. That last one is the point. If a count disagrees with the
+panel, that is a real fault and the log line for that test has the numbers to send back.
+
+41. Look at any line in the log that begins `CLASH    created`.
+
+**Worked:** it carries the tolerance twice, in both units, for example
+`tolerance 0.2460629921 ft is 74.9999999921 mm`. Which units Navisworks measures the
+tolerance in is not something that could be read off the DLL, so both numbers are logged
+and this is the line that settles it. Check one test in Clash Detective and tell me which
+of the two numbers its tolerance box shows.
+
+42. Try a file that holds tests but names sets that are not in this model.
+
+**Worked:** each one is reported by name and skipped, and nothing is created:
+
+    CLASH    SKIPPED  AR-Floors v ST-Beams  the right set "lcop_selection_set_tree/
+             Structure/BLD-ST-Beams" is not in the document
+
+A test is never created with an empty side. One would return zero clashes and read as
+passed, which is worse than not being there at all.
+
 ## Run it twice, which is the weekly case
 
 This is the behaviour that matters most, because the tool is used weekly and the clash
 results inside an NWF are the only record of what has been fixed. An NWF holds pointers to
 the NWC files, not copies, so a model updated in place needs no rebuild.
 
-37. Run once so an NWF exists, then run again with the same settings and the same folder.
+43. Run once so an NWF exists, then run again with the same settings and the same folder.
 
 **Worked:** the second run does not rebuild. Each group logs
 
@@ -392,7 +481,19 @@ and the NWD is republished. Open the NWD and the geometry is current. Open the N
 Clash Detective and every result you had marked Active or Resolved is still marked that
 way. Nothing went back to New.
 
-38. Now add one NWC to the source folder, or remove one, and run again.
+**Also worked, and is new:** nothing is created twice. The second run logs
+
+    SET      already there, left alone  lcop_selection_set_tree/Architecture/BLD-AR-Floors
+    CLASH    1830 tests are already in this document, they keep their results and are not
+             recreated
+
+and the totals carry an `already there` line separate from `created`. The tests are still
+run, which is the point of a rerun, so their clashes are refreshed against the current
+NWC files. What is not touched is the tests themselves, because that is where the Active
+and Resolved statuses live. If you ever see the sets tree holding two of everything, or
+every clash back at New after a second run, that is a real fault and worth stopping for.
+
+44. Now add one NWC to the source folder, or remove one, and run again.
 
 **Worked:** that group is left completely alone and logs
 
@@ -406,13 +507,37 @@ The NWF is not touched, so the decision is yours. If you want the new file in, d
 NWF and let the next run rebuild it, knowing that throws away the clash history for that
 building.
 
-## Run it twice
+## Outputs overwrite
 
-37. Click **Run** again with the same settings.
+45. Click **Run** again with the same settings.
 
 **Worked:** the same NWF and NWD file names are overwritten in place. No second copy
 appears, no date suffix, no `(2)`. You get a brand new log file, because logs are never
 overwritten.
+
+## The order within a group, which changed
+
+46. Read one group's worth of log from `GROUP` to `GROUP`, and check the order.
+
+**Worked:** it goes append, save the NWF, build the sets, create the tests, run them, save
+the NWF again, publish the NWD last. The NWD is the last thing that happens.
+
+This is worth checking once because it used to be wrong. The NWD went before any clash
+work, which meant every NWD shipped with no sets and no results in it. The sets, the tests
+and the results all live in the NWF, so the NWD has to be published after the second save
+or it carries none of them.
+
+**Worked:** with the sets and tests boxes both empty, the log says
+
+    CLASH    no file picked in the Clash step, no set built and no test created
+
+and the group still finishes DONE. Not picking a file is a step switched off, not a
+failure, the same as unticking the NWD.
+
+**Worked:** a CHANGED group builds no sets and creates no tests either, and says so:
+
+    CLASH    1C07BC was left alone because its file list changed, so no set was built and
+             no test created
 
 ## What to send me if it goes wrong
 
@@ -453,3 +578,25 @@ it here. What I did check on this machine, without Navisworks running:
 What is still UNKNOWN until you run steps 6 to 26: whether Navisworks loads the bundle,
 whether the button appears on Tool Add-ins, whether an append, a save or a publish
 succeeds against a real NWC, and how long a real run takes.
+
+For the clash step added on 2026-08-30, everything that could be settled without
+Navisworks was settled by reflection over the installed DLLs and is written up in
+`docs\scan.md` section 4f. `document.GetClash().TestsData`, `CreateSelectionSource`,
+`TestsRunTest`, `ClashTest.Children` as the results, and the numbers behind
+`ClashTestType`, `ClashResultStatus`, `PrimitiveTypes` and `Units` are all read off the
+real assemblies rather than assumed.
+
+These four are UNKNOWN and only a real run answers them:
+
+- which units `ClashTest.Tolerance` is measured in. There is nothing on the type that
+  says, so both numbers go in the log and step 41 is the one that settles it
+- whether `TestsRunTest` waits for the test to finish or returns while it is still
+  running. If the seconds per test come back near zero and the clash counts are all zero,
+  that is what happened, and it is worth stopping for
+- whether `TestsAddCopy` takes a copy the way `DocumentSelectionSets.AddCopy` does. The
+  name says so and it was proved for sets, so the runner reads every test back by name
+  after adding it rather than trusting the object it handed in. If a test is created and
+  then reported as `added but not found again by name`, that assumption is wrong
+- whether a rerun really does preserve Active and Resolved on tests that are run again.
+  Step 43 is the one that answers it, and it needs you to mark a clash Resolved, run
+  again, and look

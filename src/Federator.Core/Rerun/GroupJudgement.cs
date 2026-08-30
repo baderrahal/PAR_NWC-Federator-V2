@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Rerun
@@ -9,6 +10,8 @@ namespace Federator.Core.Rerun
     /// </summary>
     public sealed class GroupFacts
     {
+        private readonly List<string> errors = new List<string>();
+
         public GroupFacts()
         {
             Decision = RerunDecision.Build;
@@ -48,8 +51,42 @@ namespace Federator.Core.Rerun
         /// <summary>How many of them would not append.</summary>
         public int FailedFileCount { get; set; }
 
-        /// <summary>Non empty when something threw.</summary>
-        public string Error { get; set; }
+        /// <summary>
+        /// Everything that threw for this group, in the order it threw. A list rather
+        /// than one slot, because a group now has several steps that can each throw
+        /// independently of the others. The model side can append cleanly and the clash
+        /// step still fail, and one slot would have kept whichever wrote to it last and
+        /// silently lost the other.
+        /// </summary>
+        public IList<string> Errors
+        {
+            get { return errors; }
+        }
+
+        /// <summary>Records one thrown error. An empty message is ignored, never stored blank.</summary>
+        public void AddError(string error)
+        {
+            if (!string.IsNullOrEmpty(error))
+            {
+                errors.Add(error);
+            }
+        }
+
+        public bool HasErrors
+        {
+            get { return errors.Count > 0; }
+        }
+
+        /// <summary>
+        /// Every error on one line. All of them, because the RESULT block is what Bader
+        /// sends back and a truncated list is a second run to find the rest.
+        /// </summary>
+        public string DescribeErrors()
+        {
+            return errors.Count == 0
+                ? null
+                : string.Join(", and ", new List<string>(errors).ToArray());
+        }
 
         public string NwfPath { get; set; }
 
@@ -81,9 +118,9 @@ namespace Federator.Core.Rerun
             }
 
             // FAILED. Something requested threw, or produced nothing.
-            if (!string.IsNullOrEmpty(facts.Error))
+            if (facts.HasErrors)
             {
-                reason = facts.Error;
+                reason = facts.DescribeErrors();
                 return GroupOutcome.Failed;
             }
 

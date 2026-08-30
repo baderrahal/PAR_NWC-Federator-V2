@@ -7,6 +7,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using Federator.Addin.Engine;
+using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Findings;
 using Federator.Core.Grouping;
@@ -491,8 +492,25 @@ namespace Federator.Addin.Ui
             {
                 log.Line("RUN      started, " + jobs.Count + " groups");
 
+                // Read once, before the first group, so a file that will not read stops
+                // the run here rather than part way through the second building.
+                ExchangeDocument exchange = PickedExchange();
+
+                if (exchange == null)
+                {
+                    log.Line("RUN      nothing picked in the Clash step, so no set will be built "
+                        + "and no test created");
+                }
+                else
+                {
+                    log.Line("RUN      the Clash step picked " + exchange.SourcePath);
+                    log.Line("RUN      it holds " + exchange.Sets.Count
+                        + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
+                        + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test" : " tests"));
+                }
+
                 FederationEngine engine = new FederationEngine(
-                    SetProgress, log, RepublishNwd.IsChecked == true);
+                    SetProgress, log, RepublishNwd.IsChecked == true, exchange);
                 engine.Run(jobs);
 
                 log.Line("RUN      finished");
@@ -538,13 +556,38 @@ namespace Federator.Addin.Ui
 
         private void OnBrowseSetsFile(object sender, RoutedEventArgs e)
         {
+            Browse("Pick the sets or combined XML", SetsFileBox, TestsFileBox);
+        }
+
+        private void OnBrowseTestsFile(object sender, RoutedEventArgs e)
+        {
+            Browse("Pick the clash test or combined XML", TestsFileBox, SetsFileBox);
+        }
+
+        /// <summary>
+        /// One browse for both boxes. Nothing about any one file is in here, the file is
+        /// picked every run and can be from any project.
+        ///
+        /// A file can hold sets, tests, or both. When it holds both, the other box is
+        /// filled in with the same path, so one pick is enough and the same file is never
+        /// chosen twice. Reading it once here is also what makes the message say which of
+        /// the three shapes it turned out to be.
+        /// </summary>
+        private void Browse(string title, System.Windows.Controls.TextBox into,
+            System.Windows.Controls.TextBox other)
+        {
             using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
             {
-                dialog.Title = "Pick the sets or combined XML";
+                dialog.Title = title;
                 dialog.Filter = "Navisworks exchange XML (*.xml)|*.xml|All files (*.*)|*.*";
                 dialog.CheckFileExists = true;
 
-                string current = SetsFileBox.Text == null ? string.Empty : SetsFileBox.Text.Trim();
+                string current = Trimmed(into.Text);
+
+                if (current.Length == 0)
+                {
+                    current = Trimmed(other.Text);
+                }
 
                 if (current.Length > 0)
                 {
@@ -563,12 +606,87 @@ namespace Federator.Addin.Ui
                     }
                 }
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
-                    SetsFileBox.Text = dialog.FileName;
-                    SetsSummary.Text = "Picked " + dialog.FileName + ". Press Build sets.";
+                    return;
+                }
+
+                into.Text = dialog.FileName;
+                SetsSummary.Text = DescribeAndSpread(dialog.FileName, other);
+            }
+        }
+
+        /// <summary>
+        /// Says what the picked file actually holds, counted out of the file itself, and
+        /// fills the other box in when one file covers both halves.
+        /// </summary>
+        private string DescribeAndSpread(string path, System.Windows.Controls.TextBox other)
+        {
+            ExchangeDocument exchange;
+
+            try
+            {
+                exchange = new ExchangeReader().ReadFile(path);
+            }
+            catch (Exception error)
+            {
+                log.Failure("reading " + path, error, "the file stays picked, nothing was read from it");
+                return "Picked " + path + ", but it would not read. " + error.Message;
+            }
+
+            string held = exchange.Sets.Count + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
+                + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test." : " tests.");
+
+            log.Line("PICK     " + path + " holds " + held);
+
+            if (exchange.HasSets && exchange.HasTests)
+            {
+                other.Text = path;
+                return "Picked " + path + ". It holds " + held
+                    + " One pick is enough, both boxes now point at it.";
+            }
+
+            return "Picked " + path + ". It holds " + held;
+        }
+
+        private static string Trimmed(string value)
+        {
+            return value == null ? string.Empty : value.Trim();
+        }
+
+        /// <summary>
+        /// Whatever was picked in the Clash step, read once. The two boxes usually hold one
+        /// path between them, and when they hold the same one it is read a single time.
+        /// Null when nothing was picked, and then the run builds no set and creates no test.
+        /// </summary>
+        private ExchangeDocument PickedExchange()
+        {
+            List<string> paths = new List<string>();
+
+            foreach (string path in new[] { Trimmed(SetsFileBox.Text), Trimmed(TestsFileBox.Text) })
+            {
+                if (path.Length == 0 || !File.Exists(path))
+                {
+                    continue;
+                }
+
+                bool already = false;
+
+                foreach (string seen in paths)
+                {
+                    if (string.Equals(seen, path, StringComparison.OrdinalIgnoreCase))
+                    {
+                        already = true;
+                    }
+                }
+
+                if (!already)
+                {
+                    paths.Add(path);
                 }
             }
+
+            return paths.Count == 0 ? null : new ExchangeReader().ReadFiles(paths);
         }
 
         /// <summary>
@@ -658,6 +776,83 @@ namespace Federator.Addin.Ui
                 BuildSetsButton.IsEnabled = true;
             }
         }
+
+        /// <summary>
+        /// Creates the tests the picked file holds and runs them against whatever document
+        /// is open right now, without federating anything. This is the one off. The Run
+        /// button does the same work per group, in the right order, and saves the NWF
+        /// after it. Runs on the plugin thread, like everything else that touches the API.
+        /// </summary>
+        private void OnRunTests(object sender, RoutedEventArgs e)
+        {
+            if (running)
+            {
+                return;
+            }
+
+            string path = Trimmed(TestsFileBox.Text);
+
+            if (path.Length == 0 || !File.Exists(path))
+            {
+                Warn("Pick a clash test or combined XML that exists first.");
+                return;
+            }
+
+            running = true;
+            RunTestsButton.IsEnabled = false;
+
+            try
+            {
+                log.Line("CLASH    started, reading " + path);
+                ExchangeDocument exchange = new ExchangeReader().ReadFile(path);
+
+                if (!exchange.HasTests)
+                {
+                    string nothing = "This file holds no clash test. Nothing to create.";
+                    log.Line("CLASH    " + nothing);
+                    SetsSummary.Text = nothing;
+                    ShowSetLines(new List<string> { nothing });
+                    return;
+                }
+
+                string units = ClashRunner.DocumentUnits();
+                ClashTestPlan plan = ClashTestPlan.From(exchange, units);
+
+                foreach (string unknown in plan.UnknownTestTypes)
+                {
+                    log.Line("CLASH    test type \"" + unknown
+                        + "\" is not one this tool creates, every test using it is skipped by name");
+                }
+
+                log.Line("CLASH    " + plan.TestsInFile + " in the file, " + plan.Buildable.Count
+                    + " to create, " + plan.Skipped.Count + " skipped before the model");
+
+                ClashRunOutcome outcome = new ClashRunner(SetProgress, log).Run(plan);
+
+                log.Block(ClashSectionTitle, outcome.Lines());
+                ShowSetLines(outcome.Lines());
+
+                SetsSummary.Text = outcome.Summary();
+                SetProgress("Clash tests finished. " + outcome.Summary());
+                log.Line("CLASH    finished. " + outcome.Summary());
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "creating and running the clash tests from " + path,
+                    error,
+                    "stopped, whatever was already created and run is still in the document");
+                SetProgress("The clash tests stopped on an error.");
+                Warn("The clash tests stopped." + Environment.NewLine + Environment.NewLine + error.Message);
+            }
+            finally
+            {
+                running = false;
+                RunTestsButton.IsEnabled = true;
+            }
+        }
+
+        private const string ClashSectionTitle = "CLASH";
 
         private const string SetsSectionTitle = "SETS";
 
