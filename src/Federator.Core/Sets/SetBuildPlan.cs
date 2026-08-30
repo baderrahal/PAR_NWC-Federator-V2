@@ -73,10 +73,21 @@ namespace Federator.Core.Sets
 
         public string Value { get; private set; }
 
+        /// <summary>
+        /// What this condition asks the model for, in internal names, so a set that finds
+        /// nothing explains itself without anyone opening the XML again.
+        /// </summary>
+        public string Describe()
+        {
+            return (HasCategory ? CategoryInternalName + "/" : string.Empty)
+                + PropertyInternalName
+                + (Test == ConditionTest.Contains ? " contains " : " equals ")
+                + "\"" + Value + "\"";
+        }
+
         public override string ToString()
         {
-            return (HasCategory ? CategoryInternalName : "(no category)")
-                + " " + PropertyInternalName + " " + Test + " " + Value;
+            return Describe();
         }
     }
 
@@ -104,6 +115,19 @@ namespace Federator.Core.Sets
         public int ConditionCount
         {
             get { return Conditions.Count; }
+        }
+
+        /// <summary>Every condition joined, which is the whole question the set asks.</summary>
+        public string Describe()
+        {
+            List<string> parts = new List<string>();
+
+            foreach (PlannedCondition condition in Conditions)
+            {
+                parts.Add(condition.Describe());
+            }
+
+            return parts.Count == 0 ? "nothing" : string.Join(" and ", parts.ToArray());
         }
 
         public override string ToString()
