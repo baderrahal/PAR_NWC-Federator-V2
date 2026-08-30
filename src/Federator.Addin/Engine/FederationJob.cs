@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Diagnostics;
+using Federator.Core.Rerun;
 
 namespace Federator.Addin.Engine
 {
@@ -61,28 +62,60 @@ namespace Federator.Addin.Engine
 
         public string Error { get; set; }
 
+        /// <summary>
+        /// Whether this run was asked to republish the NWD. When the tick box is off the
+        /// NWD is not a requested step, so its absence is not a failure. Reporting it as
+        /// one made every group of a clean 22 group run read FAILED.
+        /// </summary>
+        public bool NwdRequested { get; set; }
+
+        /// <summary>
+        /// Whether the publish call reported success. On a rerun last week's NWD sits at
+        /// the same path, so File.Exists on its own cannot tell a fresh publish from a
+        /// stale file.
+        /// </summary>
+        public bool NwdPublishReportedSuccess { get; set; }
+
+        /// <summary>
+        /// How this group ended. The rule itself lives in Federator.Core.Rerun so it can
+        /// be tested without Navisworks. This only gathers the facts.
+        /// </summary>
         public GroupOutcome Result
         {
-            get
+            get { return GroupJudgement.Judge(Facts()); }
+        }
+
+        /// <summary>
+        /// Why this group is not DONE, or null when it is. Comes out of the same pass that
+        /// decides the outcome, so the two can never disagree and a FAILED group can never
+        /// reach the log without a reason.
+        /// </summary>
+        public string Reason
+        {
+            get { return GroupJudgement.ReasonFor(Facts()); }
+        }
+
+        /// <summary>Everything the judgement needs, with no Navisworks types in it.</summary>
+        public GroupFacts Facts()
+        {
+            return new GroupFacts
             {
-                if (!NwfOnDisk || !NwdOnDisk || AppendedCount == 0)
-                {
-                    return GroupOutcome.Failed;
-                }
-
-                // A group left alone because its file list changed is not a failure and is
-                // not a clean run either. It is partial, and the log names what differs.
-                if (Decision == Federator.Core.Rerun.RerunDecision.Changed)
-                {
-                    return GroupOutcome.Partial;
-                }
-
-                return FailedFiles.Count > 0 ? GroupOutcome.Partial : GroupOutcome.Done;
-            }
+                Decision = Decision,
+                NwfOnDisk = NwfOnDisk,
+                NwdRequested = NwdRequested,
+                NwdOnDisk = NwdOnDisk,
+                NwdPublishReportedSuccess = NwdPublishReportedSuccess,
+                AppendedCount = AppendedCount,
+                FileCount = Job == null ? 0 : Job.Files.Count,
+                FailedFileCount = FailedFiles.Count,
+                Error = Error,
+                NwfPath = Job == null ? null : Job.NwfPath,
+                NwdPath = Job == null ? null : Job.NwdPath
+            };
         }
 
         /// <summary>Which of the three rerun cases this group turned out to be.</summary>
-        public Federator.Core.Rerun.RerunDecision Decision { get; set; }
+        public RerunDecision Decision { get; set; }
 
         /// <summary>Size read back off the disk, or minus one when the NWF is not there.</summary>
         public long NwfSize { get; set; }

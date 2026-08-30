@@ -255,13 +255,21 @@ nothing went wrong the errors section is the single line `Nothing failed.`
 
 ## What the three results mean
 
-- `DONE` means every file appended and both outputs are on disk. The tool checked the
-  disk, it did not just assume the save worked.
-- `PARTIAL` means at least one NWC would not append but the rest did, and both outputs are
-  on disk. The log names the files that failed. The federation is real but incomplete, so
-  go and look at those files.
-- `FAILED` means nothing usable came out. Either no file appended, or an output is not on
-  disk. The log says which.
+Each one is judged against what was ASKED FOR, not against what happens to be on disk. A
+step you deliberately switched off is not a failure.
+
+- `DONE` means everything requested for that group succeeded. If you untick republishing,
+  a group that federated cleanly is DONE, not FAILED. That mistake once reported all 22
+  groups of a clean run as FAILED.
+- `PARTIAL` means something requested did not complete, or the group was `CHANGED` and
+  left alone on purpose. The log names the files that would not append, or what differs.
+- `FAILED` means something requested threw, or produced nothing. The log always says
+  which, on the group line and again in the RESULT block. A failed count can never appear
+  with an empty error list.
+
+The RESULT block's `files written` list only ever names files this run actually wrote.
+Outputs overwrite with no date suffix, so last week's NWF and NWD are sitting at the same
+paths, and a group that threw before writing anything will not claim them.
 
 ## The log
 
