@@ -134,15 +134,37 @@ files and both values, like this:
 That is correct behaviour. The tool will not guess which of the two is right, so it skips
 the whole building and tells you which two files to go and look at.
 
-14. Untick any building you do not want in this run.
+14. Read the **Findings** panel under the table, before you press anything.
+
+**Worked:** it lists what the scan noticed about this run and nothing else. It is worked
+out from the run itself, so it needs no list of known building codes or known disciplines
+and will behave the same on a project it has never seen. Four kinds appear:
+
+- `ODD SHAPE` a building code whose pattern of letters and digits no other code in the run
+  shares, with its files named. In your run of 22 groups that would have caught `100000`
+  sitting among 21 codes shaped like `1B06PK` and `1C06M2`
+- `NEAR MATCH` two codes one character apart, with both file counts, which usually reads
+  as a typing error. In your run that is `1B06K1` against `1B06KI`
+- `SINGLE DISCIPLINE` a group holding one discipline, which cannot clash against anything.
+  In your run that is `1B06BS` with only EL and `1C06PK` with only AR
+- `MISSING` a group without disciplines that other groups in the run have
+
+**Also worked:** if nothing is odd, the panel says so in one line rather than sitting
+empty.
+
+None of this blocks anything. Every group stays ticked and runnable, and the decision is
+yours. The same lines go into the log in a `FINDINGS` block straight after the group list,
+so the file tells the same story afterwards.
+
+15. Untick any building you do not want in this run.
 
 ## Step 3, outputs
 
-15. Click the **3. Outputs** tab.
+16. Click the **3. Outputs** tab.
 
-16. Click the first **Browse** and pick the folder the NWF files go in.
+17. Click the first **Browse** and pick the folder the NWF files go in.
 
-17. Click the second **Browse** and pick the folder the NWD files go in.
+18. Click the second **Browse** and pick the folder the NWD files go in.
 
 **Worked:** the table shows the output name for every group before anything runs, for
 example `1104-PAR-1C07BC-ZZZ-BM-MOD-000001`. Check one against a building you know. It
@@ -152,21 +174,21 @@ pinned, because the outputs overwrite on the next run.
 
 ## Run it
 
-18. Click **Run**.
+19. Click **Run**.
 
-19. Read the warning box before clicking anything.
+20. Read the warning box before clicking anything.
 
 **Worked:** it names what you are about to lose, for example
 `The open file C:\models\something.nwf, holding 4 models.` If nothing is open it says so
 instead. This is your last chance, because the run clears the document before each group
 and does not save it first.
 
-20. Click **Cancel** the first time, on purpose.
+21. Click **Cancel** the first time, on purpose.
 
 **Worked:** the log says `Run cancelled before anything was cleared.` and nothing on disk
 changed. Check the NWF folder is still empty.
 
-21. Click **Run** again, then click **OK**.
+22. Click **Run** again, then click **OK**.
 
 **Worked:** the progress line moves through the groups, for example
 `Group 1 of 3: 1C07BC (4 files)`, then `Saving NWF for 1C07BC`, then
@@ -193,23 +215,23 @@ When it ends the progress line reads something like
 
 ## Check what it actually wrote
 
-22. Open the NWF folder.
+23. Open the NWF folder.
 
 **Worked:** one `.nwf` per group you ticked, named exactly what step 17 showed, with no
 date and no version number on the end.
 
-23. Open the NWD folder.
+24. Open the NWD folder.
 
 **Worked:** one `.nwd` per group, same names.
 
-24. Look at the bottom of the log box in the window.
+25. Look at the bottom of the log box in the window.
 
 **Worked:** a `RESULT` block, which is the summary you do not have to scroll for. It reads
 groups done, groups partial, groups failed, then every file written with the size that was
 read back off the disk, then every error repeated in full, then the total elapsed. If
 nothing went wrong the errors section is the single line `Nothing failed.`
 
-25. Open one of the NWD files in Navisworks and check every discipline of that building is
+26. Open one of the NWD files in Navisworks and check every discipline of that building is
     in it.
 
 ## What the three results mean
@@ -244,11 +266,11 @@ It lands in two places, always:
 If the second copy cannot be written, the first log says so and the run carries on.
 Logging is never allowed to be the thing that stops a run.
 
-26. Click **Open log folder** at the bottom of the window.
+27. Click **Open log folder** at the bottom of the window.
 
 **Worked:** Explorer opens with this run's log file already picked out.
 
-27. Click **Copy log**.
+28. Click **Copy log**.
 
 **Worked:** the progress line says how many characters were copied. Paste it straight into
 chat.
@@ -259,7 +281,7 @@ error. If that happens, either wait for the run to finish or use **Copy log**.
 
 ## Run it twice
 
-28. Click **Run** again with the same settings.
+29. Click **Run** again with the same settings.
 
 **Worked:** the same NWF and NWD file names are overwritten in place. No second copy
 appears, no date suffix, no `(2)`. You get a brand new log file, because logs are never

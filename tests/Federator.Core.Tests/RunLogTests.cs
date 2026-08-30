@@ -397,6 +397,39 @@ namespace Federator.Core.Tests
             }
         }
 
+        // The findings block goes after the group list, so the log reads in the order the
+        // work happened.
+        [Test]
+        public void ABlockWritesItsTitleThenItsLinesInOrder()
+        {
+            using (RunLog log = Start())
+            {
+                log.Block(RunLog.GroupsSectionTitle, new[] { "run  1B06PK  4 files", "run  100000  4 files" });
+                log.Block(RunLog.FindingsSectionTitle, new[] { "ODD SHAPE  100000", "NEAR MATCH  1B06K1 and 1B06KI" });
+
+                string text = ReadWhileOpen(log);
+
+                Assert.That(text, Does.Contain("GROUPS"));
+                Assert.That(text, Does.Contain("FINDINGS"));
+                Assert.That(text, Does.Contain("run  1B06PK  4 files"));
+                Assert.That(text, Does.Contain("ODD SHAPE  100000"));
+
+                int groupsAt = text.IndexOf("GROUPS", StringComparison.Ordinal);
+                int findingsAt = text.IndexOf("FINDINGS", StringComparison.Ordinal);
+                Assert.That(findingsAt, Is.GreaterThan(groupsAt), "FINDINGS came before the group list");
+            }
+        }
+
+        [Test]
+        public void ABlockWithNoLinesStillWritesItsTitle()
+        {
+            using (RunLog log = Start())
+            {
+                log.Block(RunLog.FindingsSectionTitle, null);
+                Assert.That(ReadWhileOpen(log), Does.Contain("FINDINGS"));
+            }
+        }
+
         [Test]
         public void ReadAllGivesBackTheWholeFileForTheClipboard()
         {

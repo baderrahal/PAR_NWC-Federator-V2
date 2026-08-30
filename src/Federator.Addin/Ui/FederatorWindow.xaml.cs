@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Federator.Addin.Engine;
 using Federator.Core.Diagnostics;
+using Federator.Core.Findings;
 using Federator.Core.Grouping;
 using Federator.Core.Naming;
 
@@ -23,6 +24,7 @@ namespace Federator.Addin.Ui
         private readonly ObservableCollection<FileRow> files = new ObservableCollection<FileRow>();
         private readonly ObservableCollection<GroupRow> groups = new ObservableCollection<GroupRow>();
         private readonly RunLog log;
+        private ScanFindings findings = ScanFindings.From(new List<BuildingGroup>());
         private bool running;
         private bool suspendRegroup;
 
@@ -209,7 +211,27 @@ namespace Federator.Addin.Ui
 
             int blocked = result.Skipped.Count;
             GroupingSummary.Text = result.Groups.Count + " groups ready, " + blocked + " blocked.";
+
+            // Worked out here so it is on screen before Run is pressed, not after.
+            findings = ScanFindings.From(result);
+            ShowFindings();
+
             RefreshOutputsSummary();
+        }
+
+        /// <summary>
+        /// The findings panel. Nothing here blocks a run, it is information and the
+        /// decision stays with the person reading it.
+        /// </summary>
+        private void ShowFindings()
+        {
+            FindingsHeading.Text = findings.Any
+                ? "Findings: " + findings.Count + (findings.Count == 1 ? " thing" : " things")
+                    + " worth a look. None of this stops a run."
+                : "Findings";
+
+            FindingsBox.Text = string.Join(
+                Environment.NewLine, new List<string>(findings.Lines()).ToArray());
         }
 
         private static IList<string> PathsFor(
@@ -349,7 +371,42 @@ namespace Federator.Addin.Ui
                 TickedFileCount(),
                 groups.Count);
 
+            log.Block(RunLog.GroupsSectionTitle, GroupListLines());
+            log.Block(RunLog.FindingsSectionTitle, findings.Lines());
+
             RunJobs(jobs, nwfFolder);
+        }
+
+        /// <summary>
+        /// One line per group, so the findings block that follows has something to refer
+        /// to and the log reads on its own.
+        /// </summary>
+        private IList<string> GroupListLines()
+        {
+            List<string> lines = new List<string>();
+
+            foreach (GroupRow group in groups)
+            {
+                string state = group.IsBlocked ? "BLOCKED" : (group.Include ? "run    " : "skipped");
+
+                lines.Add(state + "  " + group.Building.PadRight(10)
+                    + group.FileCount.ToString().PadLeft(3)
+                    + (group.FileCount == 1 ? " file   " : " files  ")
+                    + (group.OutputName.Length == 0 ? "no output name" : group.OutputName)
+                    + "  [" + group.Disciplines + "]");
+
+                if (group.IsBlocked)
+                {
+                    lines.Add("          " + group.BlockedReason);
+                }
+            }
+
+            if (lines.Count == 0)
+            {
+                lines.Add("No groups.");
+            }
+
+            return lines;
         }
 
         /// <summary>
