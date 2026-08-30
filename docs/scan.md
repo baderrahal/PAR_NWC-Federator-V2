@@ -396,6 +396,142 @@ NOT CHECKED, still UNKNOWN, because all of it needs Navisworks actually running:
 the button appears where expected, whether the bundle loads, whether an append or a
 publish succeeds against a real NWC, and how long a real run takes.
 
+### 4d. The search sets API, added 2026-08-31
+
+What rebuilding a selection set through the API needs. Read by reflection off the same
+install, same way, on 2026-08-31.
+
+Reaching the tree, and putting things in it:
+
+```
+Autodesk.Navisworks.Api.Document
+    public Autodesk.Navisworks.Api.DocumentParts.DocumentSelectionSets SelectionSets { get }
+
+Autodesk.Navisworks.Api.DocumentParts.DocumentSelectionSets
+    public Autodesk.Navisworks.Api.FolderItem RootItem { get }
+    public System.Void AddCopy(Autodesk.Navisworks.Api.SavedItem item)
+    public System.Void AddCopy(Autodesk.Navisworks.Api.GroupItem parent, Autodesk.Navisworks.Api.SavedItem item)
+    public System.Void Clear()
+    public System.Void EditDisplayName(Autodesk.Navisworks.Api.SavedItem item, System.String newDisplayName)
+```
+
+AddCopy takes a copy, so the item that ends up in the tree is not the object that was
+handed in. To use a new folder as a parent it has to be found again in
+`parent.Children` afterwards. `SavedItemCollection` has `Count` and an `Item` indexer.
+
+```
+Autodesk.Navisworks.Api.FolderItem : GroupItem : SavedItem
+    public FolderItem()
+    public string DisplayName { get; set }          [from SavedItem]
+    public SavedItemCollection Children { get }     [from GroupItem]
+
+Autodesk.Navisworks.Api.SelectionSet : SavedItem
+    public SelectionSet()
+    public SelectionSet(Autodesk.Navisworks.Api.Search search)
+    public SelectionSet(Autodesk.Navisworks.Api.ModelItemCollection items)
+    public bool HasSearch { get }
+    public Autodesk.Navisworks.Api.Search Search { get }
+    public Autodesk.Navisworks.Api.ModelItemCollection GetSelectedItems()
+    public Autodesk.Navisworks.Api.ModelItemCollection GetSelectedItems(Autodesk.Navisworks.Api.Document document)
+```
+
+The search itself:
+
+```
+Autodesk.Navisworks.Api.Search
+    public Search()
+    public Autodesk.Navisworks.Api.SearchLocations Locations { get; set }
+    public bool PruneBelowMatch { get; set }
+    public Autodesk.Navisworks.Api.SearchConditionCollection SearchConditions { get }
+    public Autodesk.Navisworks.Api.Selection Selection { get }
+    public ModelItemCollection FindAll(Autodesk.Navisworks.Api.Document document, System.Boolean reportProgress)
+    public ModelItem FindFirst(Autodesk.Navisworks.Api.Document document, System.Boolean reportProgress)
+
+Autodesk.Navisworks.Api.Selection
+    public System.Void SelectAll()
+
+Autodesk.Navisworks.Api.SearchConditionCollection
+    public Void Add(SearchCondition item)
+    public Void AddGroup(IEnumerable`1 from)
+```
+
+One condition, built in one call:
+
+```
+Autodesk.Navisworks.Api.SearchCondition
+    public SearchCondition(Autodesk.Navisworks.Api.NamedConstant categoryCombinedName,
+                           Autodesk.Navisworks.Api.NamedConstant propertyCombinedName,
+                           Autodesk.Navisworks.Api.SearchConditionOptions options,
+                           Autodesk.Navisworks.Api.SearchConditionComparison comparison,
+                           Autodesk.Navisworks.Api.VariantData value)
+
+Autodesk.Navisworks.Api.NamedConstant
+    public NamedConstant(string name)
+    public NamedConstant(string name, string displayName)
+    public string Name { get }          the internal string, what the API matches on
+    public string DisplayName { get }   the word a person reads
+
+Autodesk.Navisworks.Api.VariantData
+    public static VariantData FromDisplayString(System.String value)
+```
+
+There is no overload of the SearchCondition constructor without a category, so a
+condition that carried no category element has to pass null for
+`categoryCombinedName`. Whether the API accepts null there is UNKNOWN, it needs
+Navisworks running. The builder passes null, catches whatever comes back, and reports
+that set as FAILED with the exception rather than approximating a category.
+
+#### What flags 64 means, established not guessed
+
+`Autodesk.Navisworks.Api.SearchConditionOptions` is a `[Flags]` enum over int, and its
+bit values are the same numbers the exchange XML writes in its `flags` attribute:
+
+```
+None                            = 0
+IgnoreCategoryDisplayName       = 1
+IgnoreCategoryName              = 2
+IgnorePropertyDisplayName       = 4
+IgnoreDisplayNames              = 5
+IgnorePropertyName              = 8
+IgnoreNames                     = 10
+IgnoreDisplayStringValueCase    = 16
+NegateCondition                 = 32
+StartGroup                      = 64
+IgnoreDisplayStringValueAccents = 128
+IgnoreDisplayStringCharWidths   = 256
+```
+
+So `flags="64"` is `SearchConditionOptions.StartGroup`. `SearchCondition` also carries a
+matching `Options` property and a `StartGroup()` method, which is the same idea reached
+the other way. This replaces the guess in the Search Set Infra notes above, which said
+flags was the bit joining one condition to the next. StartGroup does begin a group, so
+that reading was pointing the right way, but the name and the meaning are now measured.
+
+The comparison values the two test strings map to:
+
+```
+Autodesk.Navisworks.Api.SearchConditionComparison, plain enum over int
+    None = 0                     Equal = 6                     NumericGreaterThan = 11
+    HasCategory = 1              NotEqual = 7                  DisplayStringContains = 12
+    NotHasCategory = 2           NumericLessThan = 8           DisplayStringWildcard = 13
+    HasProperty = 3              NumericLessThanOrEqual = 9    DateTimeWithinDay = 14
+    NotHasProperty = 4           NumericGreaterThanOrEqual = 10 DateTimeWithinWeek = 15
+    SameType = 5
+```
+
+`test="equals"` is `Equal`, and `test="contains"` is `DisplayStringContains`. Every other
+value in that enum is a test string this tool has never seen in a real file, so a set
+carrying one is reported by name and skipped rather than mapped on a guess.
+
+```
+Autodesk.Navisworks.Api.SearchLocations, Flags over int
+    None = 0, Self = 1, Descendants = 2, DescendantsAndSelf = 3
+```
+
+NOT CHECKED, still UNKNOWN, because it needs Navisworks running: whether a null category
+is accepted, whether a set created from a Search resolves through `GetSelectedItems`
+without the document being passed, and what any real set actually finds.
+
 ### 5. Is nuget.org reachable
 
 YES. Tested by restoring ClosedXML into a scratch folder outside this repo, at

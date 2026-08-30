@@ -10,7 +10,9 @@ using Federator.Addin.Engine;
 using Federator.Core.Diagnostics;
 using Federator.Core.Findings;
 using Federator.Core.Grouping;
+using Federator.Core.Exchange;
 using Federator.Core.Naming;
+using Federator.Core.Sets;
 
 namespace Federator.Addin.Ui
 {
@@ -505,6 +507,155 @@ namespace Federator.Addin.Ui
             // A failure here is written into the first log and then ignored. Logging is
             // never the thing that stops a run.
             log.TryCopyTo(nwfFolder, out copied);
+        }
+
+        // ---------- Step 4, clash. Sets only in this session ----------
+
+        private void OnBrowseSetsFile(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.Title = "Pick the sets or combined XML";
+                dialog.Filter = "Navisworks exchange XML (*.xml)|*.xml|All files (*.*)|*.*";
+                dialog.CheckFileExists = true;
+
+                string current = SetsFileBox.Text == null ? string.Empty : SetsFileBox.Text.Trim();
+
+                if (current.Length > 0)
+                {
+                    try
+                    {
+                        string folder = System.IO.Path.GetDirectoryName(current);
+
+                        if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
+                        {
+                            dialog.InitialDirectory = folder;
+                        }
+                    }
+                    catch (ArgumentException)
+                    {
+                        // A path that cannot be read is not worth failing the browse over.
+                    }
+                }
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    SetsFileBox.Text = dialog.FileName;
+                    SetsSummary.Text = "Picked " + dialog.FileName + ". Press Build sets.";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reads whichever file was picked and rebuilds its sets into whatever document is
+        /// open. Runs on the plugin thread, like everything else that touches the API.
+        /// </summary>
+        private void OnBuildSets(object sender, RoutedEventArgs e)
+        {
+            if (running)
+            {
+                return;
+            }
+
+            string path = SetsFileBox.Text == null ? string.Empty : SetsFileBox.Text.Trim();
+
+            if (path.Length == 0 || !File.Exists(path))
+            {
+                Warn("Pick a sets or combined XML that exists first.");
+                return;
+            }
+
+            running = true;
+            BuildSetsButton.IsEnabled = false;
+
+            try
+            {
+                log.Line("SETS     started, reading " + path);
+                ExchangeDocument exchange = new ExchangeReader().ReadFile(path);
+
+                log.Line("SETS     the file holds " + exchange.Sets.Count
+                    + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
+                    + exchange.Tests.Count
+                    + (exchange.Tests.Count == 1 ? " test" : " tests"));
+
+                SetBuildPlan plan = SetBuildPlan.From(exchange);
+
+                foreach (string unknown in plan.UnknownTestValues)
+                {
+                    log.Line("SETS     condition test \"" + unknown
+                        + "\" is not one this tool rebuilds, every set using it is skipped");
+                }
+
+                if (!plan.HasWork)
+                {
+                    // A project keeping its sets in the model and supplying only tests is a
+                    // normal case, not an error.
+                    string nothing = plan.Skipped.Count > 0
+                        ? "No set in this file can be rebuilt. " + plan.Skipped.Count + " skipped."
+                        : "This file holds no sets. Nothing to build.";
+
+                    log.Line("SETS     " + nothing);
+                    SetsSummary.Text = nothing;
+                    ShowSetLines(PlanOnlyLines(plan));
+                    return;
+                }
+
+                log.Line("SETS     " + plan.Buildable.Count + " to build, "
+                    + plan.Skipped.Count + " skipped, deepest folder depth "
+                    + plan.DeepestFolderDepth());
+
+                SetBuilder builder = new SetBuilder(SetProgress, log);
+                SetBuildOutcome outcome = builder.Build(plan);
+
+                log.Block(SetsSectionTitle, outcome.Lines());
+                ShowSetLines(outcome.Lines());
+
+                string summary = outcome.CreatedCount + " created, "
+                    + outcome.FindingItemsCount + " finding items, "
+                    + outcome.ZeroCount + " at zero"
+                    + (outcome.FailedCount > 0 ? ", " + outcome.FailedCount + " failed" : string.Empty)
+                    + (outcome.SkippedCount > 0 ? ", " + outcome.SkippedCount + " skipped" : string.Empty)
+                    + ".";
+
+                SetsSummary.Text = summary;
+                SetProgress("Sets finished. " + summary);
+                log.Line("SETS     finished. " + summary);
+            }
+            catch (Exception error)
+            {
+                log.Failure("building the sets from " + path, error, "stopped, nothing further was built");
+                SetProgress("Building the sets stopped on an error.");
+                Warn("Building the sets stopped." + Environment.NewLine + Environment.NewLine + error.Message);
+            }
+            finally
+            {
+                running = false;
+                BuildSetsButton.IsEnabled = true;
+            }
+        }
+
+        private const string SetsSectionTitle = "SETS";
+
+        private static IList<string> PlanOnlyLines(SetBuildPlan plan)
+        {
+            List<string> lines = new List<string>();
+
+            foreach (SkippedSet skipped in plan.Skipped)
+            {
+                lines.Add("SKIPPED " + skipped.Path + "  " + skipped.Reason);
+            }
+
+            if (lines.Count == 0)
+            {
+                lines.Add("This file holds no sets.");
+            }
+
+            return lines;
+        }
+
+        private void ShowSetLines(IEnumerable<string> lines)
+        {
+            SetsBox.Text = string.Join(Environment.NewLine, new List<string>(lines).ToArray());
         }
 
         // ---------- Small helpers ----------
