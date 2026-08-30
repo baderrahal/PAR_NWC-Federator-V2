@@ -52,6 +52,10 @@ namespace Federator.Addin.Ui
             log.LineWritten += OnLogLine;
             Closed += delegate { log.LineWritten -= OnLogLine; };
 
+            // Which binary this is, in the title bar, because a stale install is otherwise
+            // invisible and has caught Bader out twice.
+            Title = "Parsons NWC Federator   [" + BuildStamp.Of(typeof(FederatorWindow).Assembly) + "]";
+
             LogBox.AppendText(log.ReadAll());
             LogBox.ScrollToEnd();
 
@@ -299,8 +303,20 @@ namespace Federator.Addin.Ui
             return ticked;
         }
 
+        private void OnRepublishChanged(object sender, RoutedEventArgs e)
+        {
+            RefreshOutputsSummary();
+        }
+
         private void RefreshOutputsSummary()
         {
+            // IsChecked="True" in the XAML raises Checked while the tree is still being
+            // built, so this can be reached before the controls it reads exist.
+            if (OutputsSummary == null || RepublishNwd == null)
+            {
+                return;
+            }
+
             int ready = 0;
 
             foreach (GroupRow group in groups)
@@ -311,7 +327,11 @@ namespace Federator.Addin.Ui
                 }
             }
 
-            OutputsSummary.Text = ready + " groups ticked to run. The log is written to "
+            string nwd = RepublishNwd.IsChecked == true
+                ? "The NWD is republished every run."
+                : "The NWD is NOT being republished.";
+
+            OutputsSummary.Text = ready + " groups ticked to run. " + nwd + " The log is written to "
                 + (log.IsWritingToDisk ? log.Path : "the window only")
                 + " and copied next to the NWF folder at the end.";
         }
@@ -373,6 +393,7 @@ namespace Federator.Addin.Ui
                 TickedFileCount(),
                 groups.Count);
 
+            log.Line("republish NWD    : " + (RepublishNwd.IsChecked == true ? "yes" : "no"));
             log.Block(RunLog.GroupsSectionTitle, GroupListLines());
             log.Block(RunLog.FindingsSectionTitle, findings.Lines());
 
@@ -467,7 +488,8 @@ namespace Federator.Addin.Ui
             {
                 log.Line("RUN      started, " + jobs.Count + " groups");
 
-                FederationEngine engine = new FederationEngine(SetProgress, log);
+                FederationEngine engine = new FederationEngine(
+                    SetProgress, log, RepublishNwd.IsChecked == true);
                 engine.Run(jobs);
 
                 log.Line("RUN      finished");
