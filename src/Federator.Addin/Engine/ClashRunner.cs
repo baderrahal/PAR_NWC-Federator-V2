@@ -28,6 +28,14 @@ namespace Federator.Addin.Engine
         /// <summary>How often the running count goes in the log, so a long run is watchable.</summary>
         public const int ProgressEvery = 25;
 
+        /// <summary>
+        /// How many skips are written out in full for each reason as the run goes. One
+        /// real run wrote 1830 near identical SKIPPED lines and a 1 MB log. The rest are
+        /// counted and reported once, in the block at the end.
+        /// </summary>
+        private readonly Dictionary<ClashSkipReason, int> skipsLogged =
+            new Dictionary<ClashSkipReason, int>();
+
         public ClashRunner(Action<string> progress, RunLog log)
         {
             if (log == null)
@@ -105,6 +113,7 @@ namespace Federator.Addin.Engine
 
             ClashRunOutcome outcome = new ClashRunOutcome();
             outcome.TestsInFile = plan.TestsInFile;
+            skipsLogged.Clear();
 
             Stopwatch stepClock = Stopwatch.StartNew();
 
@@ -129,17 +138,34 @@ namespace Federator.Addin.Engine
 
                 DocumentSelectionSets sets = document.SelectionSets;
                 Dictionary<string, SelectionSet> byPath = IndexSets(sets);
+                int expected = plan.DistinctLocators().Count;
+
                 log.Line("CLASH    the document holds " + byPath.Count
-                    + (byPath.Count == 1 ? " set" : " sets") + " the tests can name");
+                    + (byPath.Count == 1 ? " set" : " sets") + " and the tests name "
+                    + expected + (expected == 1 ? " set" : " sets"));
 
                 // Every test carried into the plan but naming a set that is not here is
                 // moved out by name, before anything is created.
                 ClashTestPlan resolved = plan.ResolveAgainst(byPath.Keys);
 
+                // The guard. A document with no sets in it once took a whole run to say so
+                // 1830 times over. If there were tests that could have run and not one of
+                // them resolves a set, nothing here can clash, so it says so and stops
+                // rather than creating tests that can only report zero.
+                if (plan.Buildable.Count > 0 && resolved.Buildable.Count == 0)
+                {
+                    string why = outcome.StopBecauseNoSetResolves(byPath.Count, expected);
+                    log.Line("CLASH    STOPPED  " + why);
+                    progress("Clash stopped. " + why);
+                    log.Line("CLASH    build the sets first, or pick a file whose tests name "
+                        + "the sets this document already holds");
+                    return outcome;
+                }
+
                 foreach (SkippedClashTest test in resolved.Skipped)
                 {
                     outcome.AddSkipped(test);
-                    log.Line("CLASH    SKIPPED  " + test.Name + "  " + test.Reason);
+                    LogSkip(test);
                 }
 
                 DocumentClashTests clashTests = document.GetClash().TestsData;
@@ -240,8 +266,7 @@ namespace Federator.Addin.Engine
                 {
                     // Not run, and not counted as passed. A zero from a test that never
                     // ran reads exactly like a zero from a test that found nothing wrong.
-                    outcome.AddSkipped(planned.Name, ClashSkipReason.EmptySide, why);
-                    log.Line("CLASH    SKIPPED  " + planned.Name + "  " + why);
+                    LogSkip(outcome.AddSkipped(planned.Name, ClashSkipReason.EmptySide, why));
                     return;
                 }
 
@@ -266,6 +291,30 @@ namespace Federator.Addin.Engine
                     "clash test " + planned.Name,
                     error,
                     "kept going with the next test, this one is reported as skipped and was not run");
+            }
+        }
+
+        /// <summary>
+        /// Writes a skip into the log, at most MaxSkipExamples of them for each reason,
+        /// then one line saying the rest are counted. Everything skipped still reaches the
+        /// block at the end, where it is counted by reason with its examples.
+        /// </summary>
+        private void LogSkip(SkippedClashTest test)
+        {
+            int already;
+            skipsLogged.TryGetValue(test.Kind, out already);
+            skipsLogged[test.Kind] = already + 1;
+
+            if (already < ClashRunOutcome.MaxSkipExamples)
+            {
+                log.Line("CLASH    SKIPPED  " + test.Name + "  " + test.Reason);
+                return;
+            }
+
+            if (already == ClashRunOutcome.MaxSkipExamples)
+            {
+                log.Line("CLASH    further skips for \"" + ClashTestPlan.Describe(test.Kind)
+                    + "\" are counted, not listed. The block at the end carries the total.");
             }
         }
 

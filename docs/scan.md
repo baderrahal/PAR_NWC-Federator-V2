@@ -397,11 +397,36 @@ Autodesk.Navisworks.Api.Model, base NativeHandle
     public Autodesk.Navisworks.Api.PublishProperties PublishProperties { get }
 ```
 
-`Model` carries two names and the difference between them is UNKNOWN without a running
-Navisworks. `SourceFileName` reads as the file that was appended and `FileName` as what
-the document holds now. The engine uses `SourceFileName` and falls back to `FileName` only
-when the source is empty, and it logs both whenever they disagree, so the first real run
-settles which is which rather than this guessing.
+`Model` carries two names. This section used to say the difference between them was
+UNKNOWN, and guessed that `SourceFileName` was the file that was appended. That guess was
+wrong.
+
+SETTLED on 2026-08-30 by a real run, and the log is the measurement:
+
+- `FileName` holds the NWC that was appended, matching the scanned path exactly on every
+  line of that log
+- `SourceFileName` holds the container the NWC was published from, which on this project
+  is a Revit file in Autodesk Docs:
+
+      Autodesk Docs://KSA_New Murabba/1104-PAR-100000-ZZZ-AR-MOD-003000.rvt
+
+So the comparison uses `FileName`, and falls back to `SourceFileName` only when FileName
+is empty. The wrong way round can never match a scanned NWC path, and it reported CHANGED
+for 22 of 22 groups on a run where nothing had changed. Because a CHANGED group is left
+alone entirely, that also meant no NWF was reused, no set was built and no test ran.
+
+Logging both whenever they disagree is what made this findable, so that stays. The choice
+itself is in `Federator.Core.Rerun.ModelFileNames` rather than in the add-in, so it can be
+tested without Navisworks. It went unnoticed precisely because it was the one part of the
+comparison no test could reach.
+
+`SourceFileName` is now read for a second purpose. The Revit container inside an NWC is
+often a different building from the NWC itself, so the run reports SOURCE MISMATCH where
+the two building codes differ and SHARED SOURCE where one Revit building feeds two groups.
+Measured pairs from that run, NWC against Revit: 1B06BC/0000BC, 1B06BS/1A02BS,
+1B06G1/0000PG and 1B06PG, 1B06K1/0000KI, 1B06KI/0000KI, 1B06M1/1B06MM, 1B06P1/0000PW.
+1C06PK carries 1C06PK on both sides and differs only in the number, so it is not a
+mismatch. Both codes are read with the same parser used on the NWC names.
 
 ### 4f. Creating and running clash tests, added 2026-08-30
 

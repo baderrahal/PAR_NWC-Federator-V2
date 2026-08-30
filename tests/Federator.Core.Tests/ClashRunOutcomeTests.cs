@@ -149,7 +149,10 @@ namespace Federator.Core.Tests
 
             string block = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
 
-            Assert.That(block, Does.Contain("SKIPPED T1"));
+            // Skips are counted by reason with a few named examples rather than one line
+            // each, but a skipped test is still named and must never reach a passed line.
+            Assert.That(block, Does.Contain("SKIPPED 1 test, "));
+            Assert.That(block, Does.Contain("T1  nothing on the left"));
             Assert.That(block, Does.Not.Contain("passed  T1"),
                 "a skipped test was written out on a passed line");
         }
