@@ -308,9 +308,20 @@ Then the totals:
     sets at zero      : 14
     items found       : 88213
 
-**Also worked, and is the point:** a set that finds nothing is marked `ZERO` and named. It
-is not an error and it is not hidden. That is how you find out a search that looks fine on
-paper matches nothing in this particular model.
+**Also worked, and is the point:** a set that finds nothing is marked `ZERO`, named, and
+followed by the question it asked in internal names:
+
+    ZERO    lcop_selection_set_tree/Architecture/BLD-AR-Roofs  1 condition  0 items
+            asked for LcRevitData_Element/LcRevitPropertyElementCategory equals "Roofs"
+
+It is not an error and it is not hidden. A zero means one of two things and the tool
+cannot tell which, so it shows you the question and leaves the judgement to you. Either
+the model genuinely has no roofs in it, or the search is asking for the wrong thing. If
+most sets come back at zero, check what the ones that did work found. On the first real
+run, Walls, Parking, Site, Doors, Ramps, Stairs and Railings all found items while Roofs,
+Ceilings, Windows, Curtain Panels, Casework and Furniture did not, and every Structure,
+Mechanical and Electrical set was at zero. That is the shape of a site and parking model
+rather than a broken search.
 
 34. Open the Selection Sets window in Navisworks and check the folders.
 

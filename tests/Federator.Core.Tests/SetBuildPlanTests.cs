@@ -248,6 +248,50 @@ namespace Federator.Core.Tests
             Assert.That(conditions[1].Flags, Is.EqualTo(64));
         }
 
+        // ---------- what a set asked for ----------
+
+        [Test]
+        public void AConditionDescribesItselfInInternalNames()
+        {
+            ExchangeDocument document = Read(SetsXml(
+                Set("S", Condition("equals", "0",
+                        "LcRevitData_Element", "Element",
+                        "LcRevitPropertyElementCategory", "Category", "Roofs"))));
+
+            PlannedCondition condition = SetBuildPlan.From(document).Buildable[0].Conditions[0];
+
+            Assert.That(condition.Describe(),
+                Is.EqualTo("LcRevitData_Element/LcRevitPropertyElementCategory equals \"Roofs\""));
+            Assert.That(condition.Describe(), Does.Not.Contain("Element/Category"),
+                "the display words must not be what gets reported as the question");
+        }
+
+        [Test]
+        public void AConditionWithNoCategoryDescribesItselfWithoutInventingOne()
+        {
+            ExchangeDocument document = Read(SetsXml(
+                Set("S", Condition("contains", "0", null, null,
+                        "LcOaNodeSourceFile", "Source File", "-AR-"))));
+
+            Assert.That(SetBuildPlan.From(document).Buildable[0].Conditions[0].Describe(),
+                Is.EqualTo("LcOaNodeSourceFile contains \"-AR-\""));
+        }
+
+        [Test]
+        public void ASetDescribesEveryConditionItHolds()
+        {
+            ExchangeDocument document = Read(SetsXml(
+                Set("BLD-AR-Walls",
+                    Condition("equals", "0", "LcRevitData_Element", "Element",
+                        "LcRevitPropertyElementCategory", "Category", "Walls")
+                    + Condition("contains", "0", null, null,
+                        "LcOaNodeSourceFile", "Source File", "-AR-"))));
+
+            Assert.That(SetBuildPlan.From(document).Buildable[0].Describe(),
+                Is.EqualTo("LcRevitData_Element/LcRevitPropertyElementCategory equals \"Walls\""
+                    + " and LcOaNodeSourceFile contains \"-AR-\""));
+        }
+
         // ---------- a file with no sets ----------
 
         [Test]

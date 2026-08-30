@@ -89,12 +89,14 @@ namespace Federator.Addin.Engine
                 sets.AddCopy(parent, set);
 
                 // AddCopy takes a copy, so the item in the tree is not the object above.
-                // Find it again to resolve it, which is what proves the set actually works
-                // rather than that it was merely added.
-                SelectionSet created = FindSelectionSet(parent, planned.Name);
+                // Read the parent again from a fresh RootItem before looking, for the same
+                // reason the folders are resolved that way.
+                GroupItem fresh = ResolveFolders(sets, planned.Folders, planned.Folders.Count);
+                SelectionSet created = FindSelectionSet(fresh ?? parent, planned.Name);
                 int items = Resolve(document, created, search);
 
-                outcome.AddCreated(planned.Path, planned.Name, planned.ConditionCount, items);
+                outcome.AddCreated(
+                    planned.Path, planned.Name, planned.ConditionCount, items, planned.Describe());
                 log.Line("SET      " + outcome.Results[outcome.Results.Count - 1].Line());
             }
             catch (Exception error)
@@ -116,35 +118,76 @@ namespace Federator.Addin.Engine
         /// </summary>
         private GroupItem EnsureFolders(DocumentSelectionSets sets, IList<string> folders)
         {
-            GroupItem parent = sets.RootItem;
-
-            foreach (string name in folders)
+            for (int depth = 0; depth < folders.Count; depth++)
             {
-                FolderItem existing = FindFolder(parent, name);
-
-                if (existing != null)
+                if (ResolveFolders(sets, folders, depth + 1) != null)
                 {
-                    parent = existing;
                     continue;
                 }
 
-                FolderItem folder = new FolderItem();
-                folder.DisplayName = name;
-                sets.AddCopy(parent, folder);
+                GroupItem parent = ResolveFolders(sets, folders, depth);
 
-                FolderItem created = FindFolder(parent, name);
-
-                if (created == null)
+                if (parent == null)
                 {
                     throw new InvalidOperationException(
-                        "The folder \"" + name + "\" was added but could not be found again.");
+                        "The folder \"" + folders[depth] + "\" cannot be created because the path above it "
+                            + "is not there.");
                 }
 
-                log.Line("SET      folder   " + name);
-                parent = created;
+                FolderItem folder = new FolderItem();
+                folder.DisplayName = folders[depth];
+                sets.AddCopy(parent, folder);
+
+                // Resolved again from a fresh RootItem rather than from the handle used
+                // for the add. A handle held across an AddCopy does not show the new
+                // child, which is what made the very first folder look like it had not
+                // been created. See docs\scan.md.
+                if (ResolveFolders(sets, folders, depth + 1) == null)
+                {
+                    throw new InvalidOperationException(
+                        "The folder \"" + folders[depth] + "\" was added and is still not there on a fresh read.");
+                }
+
+                log.Line("SET      folder   " + string.Join("/", Prefix(folders, depth + 1)));
             }
 
-            return parent;
+            return ResolveFolders(sets, folders, folders.Count);
+        }
+
+        /// <summary>
+        /// Walks the folder path from a freshly read RootItem and returns the folder at
+        /// that depth, or null when any level is missing. The root is read again on every
+        /// call on purpose, because that is the read that has been seen to be current.
+        /// </summary>
+        private static GroupItem ResolveFolders(DocumentSelectionSets sets, IList<string> folders, int depth)
+        {
+            GroupItem current = sets.RootItem;
+
+            for (int i = 0; i < depth; i++)
+            {
+                FolderItem next = FindFolder(current, folders[i]);
+
+                if (next == null)
+                {
+                    return null;
+                }
+
+                current = next;
+            }
+
+            return current;
+        }
+
+        private static string[] Prefix(IList<string> folders, int depth)
+        {
+            string[] prefix = new string[depth];
+
+            for (int i = 0; i < depth; i++)
+            {
+                prefix[i] = folders[i];
+            }
+
+            return prefix;
         }
 
         private static FolderItem FindFolder(GroupItem parent, string name)

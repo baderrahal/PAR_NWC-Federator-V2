@@ -163,6 +163,43 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain("sets skipped      : 1"));
         }
 
+        // A zero is not an error, but it is useless without knowing what was asked. Bader
+        // ran the reference file against a model and 53 of 60 sets came back at zero, and
+        // the log did not say what any of them had looked for.
+        [Test]
+        public void AZeroLineSaysWhatTheSetAskedFor()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            SetResult result = outcome.AddCreated(
+                "lcop_selection_set_tree/Architecture/BLD-AR-Roofs", "BLD-AR-Roofs", 1, 0,
+                "LcRevitData_Element/LcRevitPropertyElementCategory equals \"Roofs\"");
+
+            Assert.That(result.IsZero, Is.True);
+            Assert.That(result.Line(), Does.StartWith("ZERO"));
+            Assert.That(result.Line(), Does.Contain("asked for"));
+            Assert.That(result.Line(), Does.Contain("LcRevitPropertyElementCategory equals \"Roofs\""));
+        }
+
+        [Test]
+        public void ASetThatFoundItemsDoesNotRepeatWhatItAskedFor()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            SetResult result = outcome.AddCreated("p", "n", 1, 2564, "something equals \"Walls\"");
+
+            Assert.That(result.Line(), Does.StartWith("ok"));
+            Assert.That(result.Line(), Does.Not.Contain("asked for"),
+                "a set that worked does not need explaining");
+        }
+
+        [Test]
+        public void AZeroWithNothingRecordedStillReadsCleanly()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+
+            Assert.That(outcome.AddCreated("p", "n", 1, 0).Line(), Does.StartWith("ZERO"));
+            Assert.That(outcome.AddCreated("p", "n", 1, 0).Line(), Does.Not.Contain("asked for"));
+        }
+
         [Test]
         public void AnOutcomeWithNothingInItStillReportsZeroTotals()
         {

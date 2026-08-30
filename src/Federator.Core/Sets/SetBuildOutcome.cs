@@ -7,14 +7,19 @@ namespace Federator.Core.Sets
     /// <summary>What happened to one set once it reached the model.</summary>
     public sealed class SetResult
     {
-        internal SetResult(string path, string name, int conditionCount, int itemCount, string error)
+        internal SetResult(
+            string path, string name, int conditionCount, int itemCount, string error, string asked)
         {
             Path = path;
             Name = name;
             ConditionCount = conditionCount;
             ItemCount = itemCount;
             Error = error;
+            Asked = asked;
         }
+
+        /// <summary>What the set asked the model for. Shown on a ZERO line so it explains itself.</summary>
+        public string Asked { get; private set; }
 
         public string Path { get; private set; }
 
@@ -48,9 +53,12 @@ namespace Federator.Core.Sets
                     + Word(ConditionCount, " condition", " conditions") + "  " + Error;
             }
 
-            return (IsZero ? "ZERO    " : "ok      ") + Path + "  "
+            string line = (IsZero ? "ZERO    " : "ok      ") + Path + "  "
                 + ConditionCount + Word(ConditionCount, " condition", " conditions") + "  "
                 + ItemCount + Word(ItemCount, " item", " items");
+
+            // A zero is not an error, but it is useless without knowing what was asked.
+            return IsZero && !string.IsNullOrEmpty(Asked) ? line + "  asked for " + Asked : line;
         }
 
         private static string Word(int count, string one, string many)
@@ -95,7 +103,13 @@ namespace Federator.Core.Sets
 
         public SetResult AddCreated(string path, string name, int conditionCount, int itemCount)
         {
-            SetResult result = new SetResult(path, name, conditionCount, itemCount, null);
+            return AddCreated(path, name, conditionCount, itemCount, null);
+        }
+
+        public SetResult AddCreated(
+            string path, string name, int conditionCount, int itemCount, string asked)
+        {
+            SetResult result = new SetResult(path, name, conditionCount, itemCount, null, asked);
             results.Add(result);
             return result;
         }
@@ -103,7 +117,7 @@ namespace Federator.Core.Sets
         public SetResult AddFailed(string path, string name, int conditionCount, string error)
         {
             SetResult result = new SetResult(
-                path, name, conditionCount, -1, string.IsNullOrEmpty(error) ? "UNKNOWN" : error);
+                path, name, conditionCount, -1, string.IsNullOrEmpty(error) ? "UNKNOWN" : error, null);
             results.Add(result);
             return result;
         }

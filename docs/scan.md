@@ -528,9 +528,49 @@ Autodesk.Navisworks.Api.SearchLocations, Flags over int
     None = 0, Self = 1, Descendants = 2, DescendantsAndSelf = 3
 ```
 
-NOT CHECKED, still UNKNOWN, because it needs Navisworks running: whether a null category
-is accepted, whether a set created from a Search resolves through `GetSelectedItems`
-without the document being passed, and what any real set actually finds.
+#### Settled by a real run on 2026-08-31
+
+Bader ran the reference file against an open model. 60 of the 61 sets were created and
+resolved, so three things that were UNKNOWN above are now answered:
+
+- **A null category is accepted.** `BLD-AR-Walls` and `BLD-AR-Stairs` each carry a
+  condition with no category element, `LcOaNodeSourceFile contains "-AR-"`, and they
+  returned 2564 and 19 items. Passing null for `categoryCombinedName` works and does not
+  throw. There is no need to invent a category for a condition that has none.
+- **A set created from a Search resolves.** `GetSelectedItems(document)` on the copy found
+  in the tree returned real counts, and the fallback line for a set that could not be
+  found again never appeared.
+- **The folder tree rebuilds.** Sets landed under `Mechanical/Mechanical-HVAC` and the
+  rest at the right depth.
+
+#### A handle held across an AddCopy does not show the new child
+
+The one failure in that run was ours:
+
+```
+FAILED  lcop_selection_set_tree/Architecture/BLD-AR-Floors  2 conditions
+        InvalidOperationException: The folder "Architecture" was added but could not be found again.
+```
+
+`BLD-AR-Floors` is the first set in the file. It created the `Architecture` folder with
+`AddCopy(parent, folder)` and then searched the same `parent` handle for it and did not
+find it. Every later Architecture set worked, because each set re-read `sets.RootItem`
+at the start and that fresh read did show the folder.
+
+So the rule, which the builder now follows everywhere: after any `AddCopy`, resolve again
+from a freshly read `DocumentSelectionSets.RootItem` rather than reusing the handle that
+was passed to the add. Never search a `GroupItem` you were holding before the add.
+
+Two things about this are still UNKNOWN and are not worth guessing at. Whether the
+staleness is specific to the very first add into an empty tree, and why the same stale
+handle worked for finding a `SelectionSet` immediately after adding one while failing for
+a `FolderItem`. Re-reading from the root covers both cases, so the cause does not have to
+be settled to be safe from it.
+
+NOT CHECKED, still UNKNOWN: whether a set that finds zero items does so because the model
+genuinely lacks that content or because the condition is wrong. The tool cannot tell those
+apart, so a ZERO line now prints the question the set asked, in internal names, and leaves
+the judgement to the reader.
 
 ### 5. Is nuget.org reachable
 
