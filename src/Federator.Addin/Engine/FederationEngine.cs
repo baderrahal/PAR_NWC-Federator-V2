@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using Autodesk.Navisworks.Api;
 using Federator.Core.Diagnostics;
+using Federator.Core.Rerun;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 
 namespace Federator.Addin.Engine
@@ -18,8 +19,14 @@ namespace Federator.Addin.Engine
     {
         private readonly Action<string> progress;
         private readonly RunLog log;
+        private readonly bool republishNwd;
 
         public FederationEngine(Action<string> progress, RunLog log)
+            : this(progress, log, true)
+        {
+        }
+
+        public FederationEngine(Action<string> progress, RunLog log, bool republishNwd)
         {
             if (log == null)
             {
@@ -28,6 +35,7 @@ namespace Federator.Addin.Engine
 
             this.progress = progress ?? delegate { };
             this.log = log;
+            this.republishNwd = republishNwd;
         }
 
         /// <summary>
@@ -81,36 +89,32 @@ namespace Federator.Addin.Engine
                     return outcome;
                 }
 
-                log.Line("CLEAR    the document, before group " + job.Building);
-                document.Clear();
+                NwfComparison comparison = Decide(document, job);
+                outcome.Decision = comparison.Decision;
 
-                foreach (string file in job.Files)
+                foreach (string line in comparison.Lines(job.NwfPath))
                 {
-                    log.AppendAttempted(file);
-                    bool appended = AppendOne(document, file);
-                    log.AppendFinished(file, appended);
-
-                    if (appended)
-                    {
-                        outcome.AppendedCount++;
-                    }
-                    else
-                    {
-                        outcome.FailedFiles.Add(file);
-                    }
+                    log.Line(line);
                 }
 
-                log.Line("APPEND   " + outcome.AppendedCount + " of " + job.Files.Count
-                    + " appended for " + job.Building);
-
-                if (outcome.AppendedCount == 0)
+                if (comparison.Decision == RerunDecision.Build)
                 {
-                    outcome.Error = "No file in this group appended, so nothing was written.";
-                    log.Line("GROUP    " + job.Building + " wrote nothing, every append failed");
-                    return outcome;
+                    if (!BuildFromScratch(document, job, outcome))
+                    {
+                        return outcome;
+                    }
+                }
+                else
+                {
+                    // The NWF is already open, because reading its file list is what
+                    // opened it. It is not cleared and nothing is re-appended, so the
+                    // clash results inside it survive. A CHANGED group is left alone
+                    // entirely and the decision goes to Bader.
+                    outcome.AppendedCount = comparison.InNwf.Count;
+                    outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath);
+                    outcome.NwfOnDisk = outcome.NwfSize >= 0;
                 }
 
-                WriteNwf(document, job, outcome);
                 WriteNwd(document, job, outcome);
             }
             catch (Exception error)
@@ -130,6 +134,110 @@ namespace Federator.Addin.Engine
             }
 
             return outcome;
+        }
+
+        /// <summary>
+        /// Works out which of the three cases this group is in. When an NWF is already
+        /// there it is opened, because reading the file list out of it is the only way to
+        /// compare, and the NWF is the record. No side file is kept.
+        /// </summary>
+        private NwfComparison Decide(Document document, FederationJob job)
+        {
+            if (!File.Exists(job.NwfPath))
+            {
+                return NwfComparison.NoNwfYet(job.Files);
+            }
+
+            progress("Opening the existing NWF for " + job.Building);
+            log.Line("OPEN     reading the file list out of " + job.NwfPath);
+
+            if (!document.TryOpenFile(job.NwfPath))
+            {
+                throw new InvalidOperationException(
+                    "The NWF at " + job.NwfPath + " is there but would not open, so the group was left alone.");
+            }
+
+            return NwfComparison.Compare(FilesInsideTheOpenDocument(), job.Files);
+        }
+
+        /// <summary>
+        /// The files the open document points at. SourceFileName is the file that was
+        /// appended. FileName is also read, and used only when the source is empty, so a
+        /// model that reports one and not the other is still counted.
+        /// </summary>
+        private IList<string> FilesInsideTheOpenDocument()
+        {
+            List<string> files = new List<string>();
+            Document document = NavisworksApplication.ActiveDocument;
+
+            if (document == null || document.Models == null)
+            {
+                return files;
+            }
+
+            foreach (Model model in document.Models)
+            {
+                string source = model.SourceFileName;
+                string cached = model.FileName;
+                string use = string.IsNullOrEmpty(source) ? cached : source;
+
+                log.Line("         holds   " + (string.IsNullOrEmpty(use) ? "an unnamed model" : use)
+                    + (string.Equals(source, cached, StringComparison.OrdinalIgnoreCase)
+                        ? string.Empty
+                        : "   [source " + Or(source) + ", file " + Or(cached) + "]"));
+
+                if (!string.IsNullOrEmpty(use))
+                {
+                    files.Add(use);
+                }
+            }
+
+            return files;
+        }
+
+        private static string Or(string value)
+        {
+            return string.IsNullOrEmpty(value) ? "none" : value;
+        }
+
+        /// <summary>
+        /// The only path that clears the document, and it only runs when there is no NWF
+        /// at the output path, so there is no clash history to lose. Returns false when
+        /// nothing appended and nothing should be written.
+        /// </summary>
+        private bool BuildFromScratch(Document document, FederationJob job, JobOutcome outcome)
+        {
+            log.Line("CLEAR    the document, before building " + job.Building + " from scratch");
+            document.Clear();
+
+            foreach (string file in job.Files)
+            {
+                log.AppendAttempted(file);
+                bool appended = AppendOne(document, file);
+                log.AppendFinished(file, appended);
+
+                if (appended)
+                {
+                    outcome.AppendedCount++;
+                }
+                else
+                {
+                    outcome.FailedFiles.Add(file);
+                }
+            }
+
+            log.Line("APPEND   " + outcome.AppendedCount + " of " + job.Files.Count
+                + " appended for " + job.Building);
+
+            if (outcome.AppendedCount == 0)
+            {
+                outcome.Error = "No file in this group appended, so nothing was written.";
+                log.Line("GROUP    " + job.Building + " wrote nothing, every append failed");
+                return false;
+            }
+
+            WriteNwf(document, job, outcome);
+            return true;
         }
 
         /// <summary>
@@ -185,6 +293,14 @@ namespace Federator.Addin.Engine
 
         private void WriteNwd(Document document, FederationJob job, JobOutcome outcome)
         {
+            if (!republishNwd)
+            {
+                log.Line("NWD      not republished, the tick box is off");
+                outcome.NwdSize = SizeOnDiskOrMinusOne(job.NwdPath);
+                outcome.NwdOnDisk = outcome.NwdSize >= 0;
+                return;
+            }
+
             progress("Publishing NWD for " + job.Building);
             log.WriteAttempted("NWD", job.NwdPath);
 
@@ -214,6 +330,18 @@ namespace Federator.Addin.Engine
 
             outcome.NwdSize = log.WriteFinished("NWD", job.NwdPath);
             outcome.NwdOnDisk = outcome.NwdSize >= 0;
+        }
+
+        private static long SizeOnDiskOrMinusOne(string path)
+        {
+            try
+            {
+                return File.Exists(path) ? new FileInfo(path).Length : -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
 
         private static void EnsureFolder(string filePath)

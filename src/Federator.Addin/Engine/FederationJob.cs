@@ -70,9 +70,19 @@ namespace Federator.Addin.Engine
                     return GroupOutcome.Failed;
                 }
 
+                // A group left alone because its file list changed is not a failure and is
+                // not a clean run either. It is partial, and the log names what differs.
+                if (Decision == Federator.Core.Rerun.RerunDecision.Changed)
+                {
+                    return GroupOutcome.Partial;
+                }
+
                 return FailedFiles.Count > 0 ? GroupOutcome.Partial : GroupOutcome.Done;
             }
         }
+
+        /// <summary>Which of the three rerun cases this group turned out to be.</summary>
+        public Federator.Core.Rerun.RerunDecision Decision { get; set; }
 
         /// <summary>Size read back off the disk, or minus one when the NWF is not there.</summary>
         public long NwfSize { get; set; }

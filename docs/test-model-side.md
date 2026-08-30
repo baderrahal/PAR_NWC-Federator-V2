@@ -86,9 +86,19 @@ log that may not exist.
 
 9. Click **Parsons NWC Federator**.
 
-**Worked:** a window opens called Parsons NWC Federator with four tabs across the top,
-`1. Source`, `2. Grouping`, `3. Outputs` and `4. Clash`, and a Run button, a progress line
-and a log box along the bottom.
+**Worked:** a window opens with four tabs across the top, `1. Source`, `2. Grouping`,
+`3. Outputs` and `4. Clash`, and a Run button, a progress line and a log box along the
+bottom.
+
+**Check the title bar first.** It reads something like
+
+    Parsons NWC Federator   [1.0.0.0 a1b2c3d4 built 2026-08-30 13:03:25]
+
+That is the commit and the moment the binary was built, and it is the same string the log
+prints in its SESSION block. Compare the time against when you last ran `install.ps1`. If
+it is older, you are looking at a stale install and nothing below will reflect your latest
+build. This has caught you out twice. A `+edits` after the commit means the working tree
+had uncommitted changes when it was built.
 
 **Failed:** a message box appears saying "Parsons NWC Federator could not start" with an
 error underneath. Send me that error text.
@@ -170,6 +180,11 @@ so the file tells the same story afterwards.
 
 18. Click the second **Browse** and pick the folder the NWD files go in.
 
+19. Leave **Republish the NWD every run** ticked.
+
+**Worked:** the line under the table says `The NWD is republished every run.` Untick it
+only when you want the NWF opened and compared without a new NWD being written.
+
 **Worked:** the table shows the output name for every group before anything runs, for
 example `1104-PAR-1C07BC-ZZZ-BM-MOD-000001`. Check one against a building you know. It
 should be the project code, the originator and the building code from the input files,
@@ -178,21 +193,21 @@ pinned, because the outputs overwrite on the next run.
 
 ## Run it
 
-19. Click **Run**.
+20. Click **Run**.
 
-20. Read the warning box before clicking anything.
+21. Read the warning box before clicking anything.
 
 **Worked:** it names what you are about to lose, for example
 `The open file C:\models\something.nwf, holding 4 models.` If nothing is open it says so
 instead. This is your last chance, because the run clears the document before each group
 and does not save it first.
 
-21. Click **Cancel** the first time, on purpose.
+22. Click **Cancel** the first time, on purpose.
 
 **Worked:** the log says `Run cancelled before anything was cleared.` and nothing on disk
 changed. Check the NWF folder is still empty.
 
-22. Click **Run** again, then click **OK**.
+23. Click **Run** again, then click **OK**.
 
 **Worked:** the progress line moves through the groups, for example
 `Group 1 of 3: 1C07BC (4 files)`, then `Saving NWF for 1C07BC`, then
@@ -219,23 +234,23 @@ When it ends the progress line reads something like
 
 ## Check what it actually wrote
 
-23. Open the NWF folder.
+24. Open the NWF folder.
 
 **Worked:** one `.nwf` per group you ticked, named exactly what step 17 showed, with no
 date and no version number on the end.
 
-24. Open the NWD folder.
+25. Open the NWD folder.
 
 **Worked:** one `.nwd` per group, same names.
 
-25. Look at the bottom of the log box in the window.
+26. Look at the bottom of the log box in the window.
 
 **Worked:** a `RESULT` block, which is the summary you do not have to scroll for. It reads
 groups done, groups partial, groups failed, then every file written with the size that was
 read back off the disk, then every error repeated in full, then the total elapsed. If
 nothing went wrong the errors section is the single line `Nothing failed.`
 
-26. Open one of the NWD files in Navisworks and check every discipline of that building is
+27. Open one of the NWD files in Navisworks and check every discipline of that building is
     in it.
 
 ## What the three results mean
@@ -270,11 +285,11 @@ It lands in two places, always:
 If the second copy cannot be written, the first log says so and the run carries on.
 Logging is never allowed to be the thing that stops a run.
 
-27. Click **Open log folder** at the bottom of the window.
+28. Click **Open log folder** at the bottom of the window.
 
 **Worked:** Explorer opens with this run's log file already picked out.
 
-28. Click **Copy log**.
+29. Click **Copy log**.
 
 **Worked:** the progress line says how many characters were copied. Paste it straight into
 chat.
@@ -289,14 +304,14 @@ This is the sets only. There are no clash tests and no Excel yet, so do not look
 It runs against whatever document is open at the time, so it does not need a run to have
 happened first.
 
-30. Open any NWD or NWF that has real content in it.
+31. Open any NWD or NWF that has real content in it.
 
-31. Click the **4. Clash** tab.
+32. Click the **4. Clash** tab.
 
-32. Click **Browse** and pick a sets XML or a combined one. The reference file
+33. Click **Browse** and pick a sets XML or a combined one. The reference file
     `1104-PAR_CLASH_AllInOne (2) (1).xml` holds both halves and is a good first try.
 
-33. Click **Build sets**.
+34. Click **Build sets**.
 
 **Worked:** the box fills with one line per set, and the line under it summarises. Each
 line carries the full folder path, the name, how many conditions it has and how many items
@@ -332,7 +347,7 @@ Ceilings, Windows, Curtain Panels, Casework and Furniture did not, and every Str
 Mechanical and Electrical set was at zero. That is the shape of a site and parking model
 rather than a broken search.
 
-34. Open the Selection Sets window in Navisworks and check the folders.
+35. Open the Selection Sets window in Navisworks and check the folders.
 
 **Worked:** the folders nest exactly as the file had them, so `Mechanical` holds
 `Mechanical-HVAC` and the rest as real folders rather than as sets with long names.
@@ -345,15 +360,47 @@ has seen before is passed straight to Navisworks rather than being treated as a 
 Nothing here is tied to one project. The file is picked every run, and none of its names,
 folder names, counts or internal property names are written into the tool.
 
-35. Try it with a file that holds only tests and no sets.
+36. Try it with a file that holds only tests and no sets.
 
 **Worked:** it says `This file holds no sets. Nothing to build.` and does nothing else. A
 project that keeps its sets in the model and supplies only tests is a normal case, not an
 error.
 
+## Run it twice, which is the weekly case
+
+This is the behaviour that matters most, because the tool is used weekly and the clash
+results inside an NWF are the only record of what has been fixed. An NWF holds pointers to
+the NWC files, not copies, so a model updated in place needs no rebuild.
+
+37. Run once so an NWF exists, then run again with the same settings and the same folder.
+
+**Worked:** the second run does not rebuild. Each group logs
+
+    OPENED   C:\out\nwf\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf
+             the file list matches the scan, 4 files, so it was not cleared and nothing
+             was re-appended
+
+and the NWD is republished. Open the NWD and the geometry is current. Open the NWF in
+Clash Detective and every result you had marked Active or Resolved is still marked that
+way. Nothing went back to New.
+
+38. Now add one NWC to the source folder, or remove one, and run again.
+
+**Worked:** that group is left completely alone and logs
+
+    CHANGED  C:\out\nwf\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf points at a different set
+             of files, so it was left exactly as it is
+             3 unchanged, 1 added, 1 removed
+             added   C:\in\1104-PAR-1C07BC-ZZZ-EL-MOD-000001.nwc
+             removed C:\in\1104-PAR-1C07BC-ZZZ-ME-MOD-000001.nwc
+
+The NWF is not touched, so the decision is yours. If you want the new file in, delete the
+NWF and let the next run rebuild it, knowing that throws away the clash history for that
+building.
+
 ## Run it twice
 
-36. Click **Run** again with the same settings.
+37. Click **Run** again with the same settings.
 
 **Worked:** the same NWF and NWD file names are overwritten in place. No second copy
 appears, no date suffix, no `(2)`. You get a brand new log file, because logs are never

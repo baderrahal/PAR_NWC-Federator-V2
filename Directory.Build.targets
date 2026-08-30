@@ -1,0 +1,53 @@
+<Project>
+
+  <!--
+    Stamps every assembly with the git commit it was built from and the moment it was
+    built, so a log can prove which binary ran.
+
+    The plain AssemblyVersion is 1.0.0.0 and always will be, so a stale install is
+    invisible in a log. Bader ran an old binary twice before this existed. The stamp goes
+    into AssemblyInformationalVersion, which is a free text field, so nothing here is a
+    hand edited version number.
+
+    The cost, measured on 2026-08-30 rather than assumed. Because the stamp carries the
+    moment of the build, InformationalVersion differs on every build, so the generated
+    AssemblyInfo is rewritten and every project recompiles every time. There is no longer
+    such a thing as a no-op build here. That was the trade asked for, something that
+    changes every build, and a full build of all three projects takes about three seconds,
+    so it is paid gladly.
+
+    Dropping the time and keeping only the commit would make builds incremental again, but
+    then two builds of the same commit would be indistinguishable, which is exactly the
+    case that caught Bader out.
+  -->
+  <Target Name="StampBuild" BeforeTargets="GetAssemblyAttributes">
+
+    <Exec Command="git -C &quot;$(MSBuildThisFileDirectory.TrimEnd('\'))&quot; rev-parse --short=8 HEAD"
+          ConsoleToMSBuild="true"
+          ContinueOnError="true"
+          StandardOutputImportance="low"
+          StandardErrorImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="FederatorGitHash" />
+      <Output TaskParameter="ExitCode" PropertyName="FederatorGitExitCode" />
+    </Exec>
+
+    <Exec Command="git -C &quot;$(MSBuildThisFileDirectory.TrimEnd('\'))&quot; status --porcelain"
+          ConsoleToMSBuild="true"
+          ContinueOnError="true"
+          StandardOutputImportance="low"
+          StandardErrorImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="FederatorGitDirty" />
+    </Exec>
+
+    <PropertyGroup>
+      <!-- Say so rather than inventing a hash when git cannot answer. -->
+      <FederatorGitHash Condition="'$(FederatorGitExitCode)' != '0' or '$(FederatorGitHash)' == ''">nogit</FederatorGitHash>
+      <FederatorGitHash Condition="'$(FederatorGitDirty)' != ''">$(FederatorGitHash)+edits</FederatorGitHash>
+      <FederatorBuiltAt>$([System.DateTime]::Now.ToString('yyyy-MM-dd HH:mm:ss'))</FederatorBuiltAt>
+      <InformationalVersion>$(AssemblyVersion) $(FederatorGitHash) built $(FederatorBuiltAt)</InformationalVersion>
+    </PropertyGroup>
+
+    <Message Importance="normal" Text="Build stamp: $(InformationalVersion)" />
+  </Target>
+
+</Project>

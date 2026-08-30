@@ -371,6 +371,38 @@ public bool IsEnabled { get; set }   public bool IsChecked { get; set }
 public bool IsVisible { get; set }   public string OverrideDisplayName { get; set }
 ```
 
+### 4e. Reading what an NWF points at, added 2026-08-30
+
+Needed so a rerun can tell whether an existing NWF still matches the group, without
+keeping a side file. The NWF is the record.
+
+```
+Autodesk.Navisworks.Api.Document
+    public System.Void OpenFile(System.String fileName)
+    public System.Boolean TryOpenFile(System.String fileName)
+    public System.Void OpenAggregate(System.String aggregateJson, System.String progressMedia)
+    public System.Boolean TryOpenAggregate(System.String aggregateJson, System.String progressMedia)
+
+Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+    public int Count { get }
+    public Autodesk.Navisworks.Api.Model First { get }
+    public Autodesk.Navisworks.Api.Model Item { get; set }
+    public IEnumerator`1[Autodesk.Navisworks.Api.Model] GetEnumerator()
+
+Autodesk.Navisworks.Api.Model, base NativeHandle
+    public string SourceFileName { get }
+    public string FileName { get }
+    public string Creator { get }
+    public guid SourceGuid { get }
+    public Autodesk.Navisworks.Api.PublishProperties PublishProperties { get }
+```
+
+`Model` carries two names and the difference between them is UNKNOWN without a running
+Navisworks. `SourceFileName` reads as the file that was appended and `FileName` as what
+the document holds now. The engine uses `SourceFileName` and falls back to `FileName` only
+when the source is empty, and it logs both whenever they disagree, so the first real run
+settles which is which rather than this guessing.
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

@@ -118,7 +118,26 @@ and 6 does not read as broken.
   not passed. Skipped and passed appear as different numbers in the Summary sheet
 - Each building writes its NWF, NWD and Excel before the next building starts.
   A failure part way through keeps everything already written
-- Outputs overwrite. No date suffix, no version suffix
+- Never clear and rebuild an NWF that already exists. This is the one rule most
+  likely to be helpfully undone by someone who does not know why it is here.
+  An NWF holds pointers to the NWC files, not copies, so a model updated in place
+  needs no rebuild. The clash results live inside that NWF and are the only record
+  of what has been fixed. Rebuilding it resets every clash to New and loses every
+  Active and Resolved. This tool runs weekly, so that is a week of review thrown
+  away each time. Three cases per group:
+    no NWF at the output path, build it, there is no history to lose
+    NWF there and its file list matches the group, open it, do not clear, do not
+      re-append, log OPENED
+    NWF there and the file list differs, log CHANGED naming every file added and
+      every file removed, and touch nothing. Bader decides
+  The file list is read out of the opened NWF. No side file records what went in,
+  because a side file can disagree with the NWF and the NWF is the record
+- Republishing the NWD is a tick box, on by default, and happens in all three
+  cases. That is the point of a rerun. The NWF pointers are unchanged, so
+  reopening picks up whatever the NWC files now hold and the NWD is refreshed
+  without the clash history being touched
+- Outputs overwrite, the NWD every run and the NWF only when it is being built for
+  the first time. No date suffix, no version suffix
 - Excel sheet names stop at 31 characters and 1703 of the 1830 test names are
   longer. Sheets are T0001 upward. The Summary sheet carries the full test name,
   the counts by status, and a link to the sheet
@@ -141,6 +160,14 @@ and 6 does not read as broken.
 
 The log is what Bader sends back when something goes wrong, so it is built to
 survive the crash rather than to be tidy.
+
+- every build stamps the assembly with the git commit and the moment it was built,
+  into AssemblyInformationalVersion, and the log prints it in SESSION and the
+  window shows it in its title bar. The plain assembly version is 1.0.0.0 and
+  always will be, so on its own it cannot tell a fresh install from a stale one and
+  Bader ran an old binary twice before this existed. Never fake this with a hand
+  edited version number. It costs a full recompile on every build, which is about
+  three seconds, and that is the trade
 
 - every line is written and flushed all the way to the disk as it happens, with
   FileStream.Flush(true). Nothing is held back to the end, so a process that dies

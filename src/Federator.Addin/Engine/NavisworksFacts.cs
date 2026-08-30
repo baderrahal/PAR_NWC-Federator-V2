@@ -84,13 +84,16 @@ namespace Federator.Addin.Engine
             }
         }
 
+        /// <summary>
+        /// The build stamp, not the bare assembly version. The version is 1.0.0.0 and
+        /// always will be, so on its own it cannot tell a fresh install from a stale one.
+        /// The stamp carries the commit and the moment the binary was built.
+        /// </summary>
         public static string PluginVersion()
         {
             try
             {
-                Assembly assembly = typeof(FederatorPlugin).Assembly;
-                Version version = assembly.GetName().Version;
-                return version == null ? "UNKNOWN" : version.ToString();
+                return Federator.Core.Diagnostics.BuildStamp.Of(typeof(FederatorPlugin).Assembly);
             }
             catch (Exception error)
             {
