@@ -143,8 +143,12 @@ and will behave the same on a project it has never seen. Four kinds appear:
 - `ODD SHAPE` a building code whose pattern of letters and digits no other code in the run
   shares, with its files named. In your run of 22 groups that would have caught `100000`
   sitting among 21 codes shaped like `1B06PK` and `1C06M2`
-- `NEAR MATCH` two codes one character apart, with both file counts, which usually reads
-  as a typing error. In your run that is `1B06K1` against `1B06KI`
+- `NEAR MATCH` two codes of the same length differing in one position, where the two
+  characters are ones that are easy to misread: `1` `I` `l`, `0` `O`, `5` `S`, `8` `B`,
+  `2` `Z`, `6` `G`. In your run that is `1B06K1` against `1B06KI` and nothing else. A
+  plain one character rule reported about 45 pairs and buried everything else, because
+  codes sharing a prefix differ by one character constantly and `1B06PE` against `1B06PG`
+  is two real buildings. An inserted or missing character is not a near match either
 - `SINGLE DISCIPLINE` a group holding one discipline, which cannot clash against anything.
   In your run that is `1B06BS` with only EL and `1C06PK` with only AR
 - `MISSING` a group without disciplines that other groups in the run have
@@ -303,10 +307,15 @@ it found:
 
 Then the totals:
 
+    ran against       : C:\models\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd  (4 models loaded)
     sets created      : 61
     sets finding items: 47
     sets at zero      : 14
     items found       : 88213
+
+The `ran against` line is the first thing to check. A count means nothing without knowing
+what it was counted against, and it is also written as a line before the first set so it
+is at the top of the block as well as the bottom.
 
 **Also worked, and is the point:** a set that finds nothing is marked `ZERO`, named, and
 followed by the question it asked in internal names:

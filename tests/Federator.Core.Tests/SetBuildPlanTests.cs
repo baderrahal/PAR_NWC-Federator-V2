@@ -248,6 +248,96 @@ namespace Federator.Core.Tests
             Assert.That(conditions[1].Flags, Is.EqualTo(64));
         }
 
+        // ---------- the first set in a newly created folder ----------
+
+        // The real run failed on the very first set, because the folder it needed had just
+        // been created and was looked up through a handle read before the add. The API half
+        // of that gets review rather than a test, as CLAUDE.md directs, because it only
+        // exists inside Navisworks. What is testable here is that nothing about being first
+        // makes a set different, so the builder has no reason to treat it specially.
+        [Test]
+        public void TheFirstSetInTheFileIsPlannedLikeAnyOther()
+        {
+            ExchangeDocument document = new ExchangeReader().ReadFile(Samples.AllInOne());
+            SetBuildPlan plan = SetBuildPlan.From(document);
+
+            PlannedSet first = plan.Buildable[0];
+
+            Assert.That(first.Name, Is.EqualTo("BLD-AR-Floors"), "this is the set that failed");
+            Assert.That(first.Folders, Is.EqualTo(new[] { "Architecture" }));
+            Assert.That(first.ConditionCount, Is.EqualTo(2));
+            Assert.That(plan.Skipped, Has.None.Property("Name").EqualTo("BLD-AR-Floors"));
+        }
+
+        [Test]
+        public void TheFolderTheFirstSetNeedsIsTheFirstFolderToCreate()
+        {
+            ExchangeDocument document = new ExchangeReader().ReadFile(Samples.AllInOne());
+            SetBuildPlan plan = SetBuildPlan.From(document);
+
+            IList<IList<string>> paths = plan.FolderPaths();
+
+            Assert.That(paths.Count, Is.GreaterThan(0));
+            Assert.That(new List<string>(paths[0]), Is.EqualTo(new[] { "Architecture" }));
+        }
+
+        // Every set has to have somewhere to go, or it cannot be placed at all.
+        [Test]
+        public void EverySetsFolderPathIsOneTheBuilderWillHaveCreated()
+        {
+            ExchangeDocument document = new ExchangeReader().ReadFile(Samples.AllInOne());
+            SetBuildPlan plan = SetBuildPlan.From(document);
+
+            HashSet<string> willExist = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (IList<string> path in plan.FolderPaths())
+            {
+                willExist.Add(string.Join("/", new List<string>(path).ToArray()));
+            }
+
+            foreach (PlannedSet set in plan.Buildable)
+            {
+                if (set.Folders.Count == 0)
+                {
+                    continue;
+                }
+
+                string needed = string.Join("/", new List<string>(set.Folders).ToArray());
+                Assert.That(willExist, Does.Contain(needed),
+                    set.Name + " needs a folder nothing will have created");
+            }
+        }
+
+        [Test]
+        public void AFolderIsOnlyCreatedOnceHoweverManySetsSitInIt()
+        {
+            ExchangeDocument document = new ExchangeReader().ReadFile(Samples.AllInOne());
+            IList<IList<string>> paths = SetBuildPlan.From(document).FolderPaths();
+
+            List<string> joined = new List<string>();
+
+            foreach (IList<string> path in paths)
+            {
+                joined.Add(string.Join("/", new List<string>(path).ToArray()));
+            }
+
+            Assert.That(joined.Count, Is.EqualTo(new HashSet<string>(joined, StringComparer.Ordinal).Count),
+                "a folder appears twice in the list to create");
+
+            // Architecture holds 16 sets and is still only created once.
+            int architecture = 0;
+
+            foreach (string path in joined)
+            {
+                if (path == "Architecture")
+                {
+                    architecture++;
+                }
+            }
+
+            Assert.That(architecture, Is.EqualTo(1));
+        }
+
         // ---------- what a set asked for ----------
 
         [Test]

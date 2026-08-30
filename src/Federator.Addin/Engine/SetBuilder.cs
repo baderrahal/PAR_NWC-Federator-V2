@@ -55,6 +55,12 @@ namespace Federator.Addin.Engine
                 return outcome;
             }
 
+            // Named before the first set, because a count means nothing without knowing
+            // what it was counted against.
+            string openDocument = NavisworksFacts.OpenDocument();
+            outcome.OpenDocument = openDocument;
+            log.Line("SET      ran against " + openDocument);
+
             DocumentSelectionSets sets = document.SelectionSets;
 
             for (int i = 0; i < plan.Buildable.Count; i++)
@@ -144,8 +150,13 @@ namespace Federator.Addin.Engine
                 // been created. See docs\scan.md.
                 if (ResolveFolders(sets, folders, depth + 1) == null)
                 {
+                    // AddCopy returns void, so there is no handle to hold on to and the
+                    // only way back to the new folder is to read it again. If that read
+                    // still does not show it, say what the level above does hold, so a
+                    // repeat of this is diagnosable from the log alone.
                     throw new InvalidOperationException(
-                        "The folder \"" + folders[depth] + "\" was added and is still not there on a fresh read.");
+                        "The folder \"" + folders[depth] + "\" was added and a fresh read still does not show it. "
+                            + "The level above holds: " + Describe(ResolveFolders(sets, folders, depth)) + ".");
                 }
 
                 log.Line("SET      folder   " + string.Join("/", Prefix(folders, depth + 1)));
@@ -176,6 +187,26 @@ namespace Federator.Addin.Engine
             }
 
             return current;
+        }
+
+        /// <summary>What a group actually holds, for a failure message that diagnoses itself.</summary>
+        private static string Describe(GroupItem group)
+        {
+            if (group == null)
+            {
+                return "nothing, the level above could not be read either";
+            }
+
+            SavedItemCollection children = group.Children;
+            List<string> names = new List<string>();
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+                names.Add((child is FolderItem ? "folder " : "set ") + child.DisplayName);
+            }
+
+            return names.Count == 0 ? "nothing" : string.Join(", ", names.ToArray());
         }
 
         private static string[] Prefix(IList<string> folders, int depth)
