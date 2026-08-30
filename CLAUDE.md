@@ -136,6 +136,40 @@ and 6 does not read as broken.
   cases. That is the point of a rerun. The NWF pointers are unchanged, so
   reopening picks up whatever the NWC files now hold and the NWD is refreshed
   without the clash history being touched
+- The clash test file is picked at run time, every run, and can be from any project.
+  Nothing about any one file is written into the code, not names, not counts, not
+  property internal names. Those appear in tests as sample data only. A file may hold
+  sets, tests, or both, and all three are normal. When one file holds both, one pick
+  is enough and picking it into either box fills the other one in
+- Per group the order is append, save the NWF, build the sets, create the tests, run
+  them, save the NWF again, publish the NWD last. The sets, the tests and the results
+  all live in the NWF, so an NWD published before the clash work ships without any of
+  them. The NWD used to go first and that is what this ordering fixes. The second
+  save only happens when the clash step actually put something into the document
+- Nothing is created twice on a rerun. A clash test already in the document under the
+  same name is left exactly as it is, because that is where its Active and Resolved
+  clashes live, and a set already at its path is left alone too, because a second copy
+  would leave two sets at one path and a locator resolving to whichever came first.
+  Both are counted and reported as already there, separately from what was created
+- A CHANGED group is left alone entirely, so no set is built into it and no test
+  created, the same as its NWF not being touched
+- Per test, everything comes from the file and never from a constant: the name, the
+  test type, the tolerance, merge composites, and per side the self intersect and the
+  primitive type flags
+- Tolerance is read per test and converted from the file units attribute into the
+  units of the open document before it is set. There is no global tolerance setting
+  in this tool. Both numbers and both unit names go in the log, because which units
+  ClashTest.Tolerance is measured in is UNKNOWN until a test runs against a real model
+- A test type that does not map to a value on the enum is reported by name and
+  skipped. It is never approximated to the nearest one, because a hard test standing
+  in for a clearance test reports a number that reads as real and is not
+- A clash side is pointed at the saved set through CreateSelectionSource, not filled
+  with a copy of the set's items. That is what Clash Detective does when a person
+  picks a set in the panel, and it is what keeps the counts matching the panel. A
+  copy is a snapshot that can drift from the set the panel shows
+- Everything that threw for one group is kept in a list, never in one slot. The model
+  side can append cleanly and the clash step still throw, and one slot kept whichever
+  wrote to it last and silently lost the other
 - Outputs overwrite, the NWD every run and the NWF only when it is being built for
   the first time. No date suffix, no version suffix
 - A group ends in one of three states, and the test is always what was ASKED FOR,

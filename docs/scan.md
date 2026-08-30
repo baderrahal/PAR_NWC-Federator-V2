@@ -403,6 +403,129 @@ the document holds now. The engine uses `SourceFileName` and falls back to `File
 when the source is empty, and it logs both whenever they disagree, so the first real run
 settles which is which rather than this guessing.
 
+### 4f. Creating and running clash tests, added 2026-08-30
+
+Section 4 recorded `DocumentClashTests`, `ClashTest` and the three enums, but not how a
+document is reached from the clash side, not how a side is pointed at a saved selection
+set, and not what the tolerance is measured in. Read by reflection off the same install,
+same way, on 2026-08-30.
+
+Reaching the clash tests from a document. It is an extension method, confirmed to carry
+`ExtensionAttribute`, on a static class:
+
+```
+Autodesk.Navisworks.Api.Clash.DocumentExtensions
+    public static DocumentClash GetClash(this Document doc)
+
+Autodesk.Navisworks.Api.Clash.DocumentClash
+    public Autodesk.Navisworks.Api.Clash.DocumentClashTests TestsData { get }
+    public static DocumentClash ClashInstance(Document doc)
+    public static DocumentClash CreateInstance(Document doc)
+    public bool TryCalculateMinimumClearance(ModelItemCollection selection1,
+        ModelItemCollection selection2, bool useCenterlines, out MinimumClearanceResult result)
+```
+
+So `document.GetClash().TestsData` is the `DocumentClashTests` that section 4 recorded.
+
+Pointing a side at a saved selection set. This is the one that was missing, and it is why
+a clash side does not need a copy of the items. `SelectionSource` has NO public
+constructor, both its constructors are non public, so the only way to get one is to ask
+the document for it:
+
+```
+Autodesk.Navisworks.Api.DocumentParts.DocumentSelectionSets
+    public SelectionSource CreateSelectionSource(SavedItem item)
+    public SavedItem ResolveSelectionSource(SelectionSource source)
+    public SavedItemReference CreateReference(SavedItem item)
+    public SavedItem ResolveReference(SavedItemReference reference)
+
+Autodesk.Navisworks.Api.SelectionSource, base NativeHandle
+    public Search TryGetSearch(Document document)
+    public ModelItemCollection TryGetSelectedItems(Document document)
+
+Autodesk.Navisworks.Api.Selection
+    public SelectionSourceCollection SelectionSources { get }
+    public bool HasSelectionSources { get }
+    public bool HasExplicitSelection { get }
+    public ModelItemCollection ExplicitSelection { get }
+    public System.Void Clear()
+    public System.Void CopyFrom(Selection from)
+    public System.Void CopyFrom(ModelItemCollection from)
+    public ModelItemCollection GetSelectedItems(Document document)
+
+Autodesk.Navisworks.Api.SelectionSourceCollection, base NativeHandle
+    public SelectionSourceCollection()
+    public int Count { get }
+    public System.Void Add(SelectionSource item)
+    public System.Void Clear()
+```
+
+There are two ways to fill a side and they are not the same thing:
+
+- `Selection.SelectionSources.Add(document.SelectionSets.CreateSelectionSource(set))`
+  points the side at the set itself, which is what Clash Detective does when a person
+  picks a set in the panel. The side stays live, so the test re-resolves the set when it
+  runs
+- `Selection.CopyFrom(items)` copies a fixed list of items in, which is a snapshot taken
+  at the moment the test was created
+
+The runner uses the first. CLAUDE.md requires the clash counts in the report to match the
+Clash Detective panel exactly, and a snapshot can drift from the set the panel shows.
+
+Counting results. `ClashTest` is a `GroupItem`, so its results are its `Children`, and
+both concrete result types implement `IClashResult`, confirmed by reflection:
+
+```
+ClashResult      : SavedItem, implements IClashResult
+ClashResultGroup : GroupItem,  implements IClashResult
+IClashResult
+    public ClashResultStatus Status { get; set }
+    public string DisplayName { get; set }
+    public double Distance { get; set }
+    public ModelItemCollection Selection1 { get }
+    public ModelItemCollection Selection2 { get }
+```
+
+So walking `test.Children` and reading `Status` off each child as an `IClashResult`
+counts a test by status, and a group counts as the one result the panel shows.
+
+The tolerance and the units. `Document` carries the units it is displayed in:
+
+```
+Autodesk.Navisworks.Api.Document
+    public Autodesk.Navisworks.Api.Units Units { get }      get only, no setter
+
+Autodesk.Navisworks.Api.Units, over int, NOT a flags enum
+    Meters = 0        Feet = 3        Yards = 5        Micrometers = 8
+    Centimeters = 1   Inches = 4      Kilometers = 6   Mils = 9
+    Millimeters = 2                   Miles = 7        Microinches = 10
+```
+
+`ClashTest.Tolerance` is a plain double with no units on it. Which units it is measured in
+is NOT readable by reflection and is UNKNOWN until a test runs against a real model.
+CLAUDE.md already records the rule as document units, so the runner converts the file
+tolerance into `document.Units` before setting it, and logs both numbers with both unit
+names on every test so the first real run settles it from the log alone rather than by
+anyone guessing again.
+
+`PrimitiveTypes`, which is what the file writes as `primtypes`, IS a flags enum:
+
+```
+Autodesk.Navisworks.Api.PrimitiveTypes, [Flags] over int
+    None = 0   Triangles = 1   Lines = 2   Points = 4   SnapPoints = 8   Text = 16
+```
+
+`primtypes="1"` is Triangles. The runner casts the int through and reports any bit that is
+not one of these rather than dropping it silently.
+
+What is still UNKNOWN here and needs Navisworks running:
+
+- which units `ClashTest.Tolerance` is in
+- whether `TestsRunTest` blocks until the test has finished, or returns while it runs
+- whether `TestsAddCopy` takes a copy the way `DocumentSelectionSets.AddCopy` does. Its
+  name says so and section 4d proved it for sets, so the runner reads the test back out
+  of `TestsData.Tests` by name after adding rather than holding the object it handed in
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

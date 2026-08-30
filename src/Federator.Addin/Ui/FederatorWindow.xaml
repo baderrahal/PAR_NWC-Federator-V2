@@ -207,11 +207,11 @@
             </TabItem>
 
 
-            <!-- Step 4. Sets only in this session. No clash tests, no Excel. -->
+            <!-- Step 4. Sets and clash tests. No Excel, that is the session after. -->
             <TabItem Header="4. Clash">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="Pick a sets or combined XML and rebuild its search sets in whatever is open right now. This does not run any clash test." />
+                               Text="Pick the XML the run should use. A file can hold sets, clash tests, or both. When one file holds both, one pick is enough and the other box fills itself in. Run uses whatever is picked here for every ticked group. The two buttons below act on whatever is open right now instead." />
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -219,11 +219,20 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Content="Sets XML" />
-                        <TextBox Grid.Column="1" x:Name="SetsFileBox" VerticalAlignment="Center" />
-                        <Button Grid.Column="2" Content="Browse" Click="OnBrowseSetsFile" />
-                        <Button Grid.Column="3" x:Name="BuildSetsButton" Content="Build sets"
-                                Click="OnBuildSets" FontWeight="Bold" MinWidth="110" />
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Sets XML" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="SetsFileBox" VerticalAlignment="Center" />
+                        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowseSetsFile" />
+                        <Button Grid.Row="0" Grid.Column="3" x:Name="BuildSetsButton" Content="Build sets"
+                                Click="OnBuildSets" MinWidth="110" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="Clash test XML" />
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="TestsFileBox" VerticalAlignment="Center" />
+                        <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowseTestsFile" />
+                        <Button Grid.Row="1" Grid.Column="3" x:Name="RunTestsButton" Content="Create and run"
+                                Click="OnRunTests" MinWidth="110" />
                     </Grid>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="SetsSummary" Margin="0,6,0,0"
                                Text="No file picked." />

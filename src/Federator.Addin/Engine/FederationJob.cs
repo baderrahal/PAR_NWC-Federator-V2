@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Rerun;
+using Federator.Core.Sets;
 
 namespace Federator.Addin.Engine
 {
@@ -42,6 +44,8 @@ namespace Federator.Addin.Engine
     /// <summary>What actually happened to one group, checked against the disk.</summary>
     public sealed class JobOutcome
     {
+        private readonly List<string> errors = new List<string>();
+
         public JobOutcome(FederationJob job)
         {
             Job = job;
@@ -60,7 +64,28 @@ namespace Federator.Addin.Engine
         /// <summary>Set only after File.Exists has been checked.</summary>
         public bool NwdOnDisk { get; set; }
 
-        public string Error { get; set; }
+        /// <summary>
+        /// Everything that threw for this group. A list, because the model side, the sets,
+        /// the tests and the run can each throw on their own and one slot would keep only
+        /// the last of them.
+        /// </summary>
+        public IList<string> Errors
+        {
+            get { return errors; }
+        }
+
+        public void AddError(string error)
+        {
+            if (!string.IsNullOrEmpty(error))
+            {
+                errors.Add(error);
+            }
+        }
+
+        public bool HasErrors
+        {
+            get { return errors.Count > 0; }
+        }
 
         /// <summary>
         /// Whether this run was asked to republish the NWD. When the tick box is off the
@@ -98,7 +123,7 @@ namespace Federator.Addin.Engine
         /// <summary>Everything the judgement needs, with no Navisworks types in it.</summary>
         public GroupFacts Facts()
         {
-            return new GroupFacts
+            GroupFacts facts = new GroupFacts
             {
                 Decision = Decision,
                 NwfOnDisk = NwfOnDisk,
@@ -108,10 +133,16 @@ namespace Federator.Addin.Engine
                 AppendedCount = AppendedCount,
                 FileCount = Job == null ? 0 : Job.Files.Count,
                 FailedFileCount = FailedFiles.Count,
-                Error = Error,
                 NwfPath = Job == null ? null : Job.NwfPath,
                 NwdPath = Job == null ? null : Job.NwdPath
             };
+
+            foreach (string error in errors)
+            {
+                facts.AddError(error);
+            }
+
+            return facts;
         }
 
         /// <summary>Which of the three rerun cases this group turned out to be.</summary>
@@ -122,5 +153,11 @@ namespace Federator.Addin.Engine
 
         /// <summary>Size read back off the disk, or minus one when the NWD is not there.</summary>
         public long NwdSize { get; set; }
+
+        /// <summary>What the sets step did for this group, or null when it did not run.</summary>
+        public SetBuildOutcome Sets { get; set; }
+
+        /// <summary>What the clash step did for this group, or null when it did not run.</summary>
+        public ClashRunOutcome Clash { get; set; }
     }
 }

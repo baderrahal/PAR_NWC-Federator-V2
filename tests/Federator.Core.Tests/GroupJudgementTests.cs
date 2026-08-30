@@ -30,7 +30,6 @@ namespace Federator.Core.Tests
                 AppendedCount = 4,
                 FileCount = 4,
                 FailedFileCount = 0,
-                Error = null,
                 NwfPath = @"C:\out\nwf\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf",
                 NwdPath = @"C:\out\nwd\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd"
             };
@@ -141,7 +140,7 @@ namespace Federator.Core.Tests
         public void SomethingThatThrewIsFailedAndKeepsItsMessage()
         {
             GroupFacts facts = Clean();
-            facts.Error = "IOException: the file is locked by another process";
+            facts.AddError("IOException: the file is locked by another process");
 
             string reason;
 
@@ -250,7 +249,7 @@ namespace Federator.Core.Tests
         {
             GroupFacts[] all =
             {
-                Failing(f => f.Error = "boom"),
+                Failing(f => f.AddError("boom")),
                 Failing(f => f.NwfOnDisk = false),
                 Failing(f => { f.AppendedCount = 0; f.FailedFileCount = 4; }),
                 Failing(f => f.NwdOnDisk = false),
@@ -288,6 +287,76 @@ namespace Federator.Core.Tests
         {
             string reason;
             Assert.Throws<ArgumentNullException>(delegate { GroupJudgement.Judge(null, out reason); });
+        }
+
+        // ---------- the errors are a list, not one slot ----------
+
+        // The model side can append cleanly and the clash step still throw. With one slot
+        // whichever wrote last was kept and the other was silently lost.
+        [Test]
+        public void TwoStepsThatBothThrewBothReachTheReason()
+        {
+            GroupFacts facts = Clean();
+            facts.AddError("building the sets threw InvalidOperationException: the folder was not found");
+            facts.AddError("creating the clash tests threw NullReferenceException");
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(facts.Errors.Count, Is.EqualTo(2));
+            Assert.That(reason, Does.Contain("building the sets threw"));
+            Assert.That(reason, Does.Contain("creating the clash tests threw"),
+                "the second error was lost, which is what one slot did");
+        }
+
+        [Test]
+        public void OneErrorReadsExactlyAsItDidBefore()
+        {
+            GroupFacts facts = Clean();
+            facts.AddError("IOException: the file is locked");
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Is.EqualTo("IOException: the file is locked"));
+        }
+
+        [Test]
+        public void NoErrorsIsNotAFailure()
+        {
+            GroupFacts facts = Clean();
+
+            Assert.That(facts.HasErrors, Is.False);
+            Assert.That(facts.Errors.Count, Is.EqualTo(0));
+            Assert.That(facts.DescribeErrors(), Is.Null);
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
+        }
+
+        // A caller passing null or empty must not turn a clean group into a failure with a
+        // blank reason, which is the shape that produced a bare count in the first place.
+        [Test]
+        public void ABlankErrorIsNotRecorded()
+        {
+            GroupFacts facts = Clean();
+            facts.AddError(null);
+            facts.AddError(string.Empty);
+
+            Assert.That(facts.Errors.Count, Is.EqualTo(0));
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
+        }
+
+        [Test]
+        public void TheErrorsAreKeptInTheOrderTheyThrew()
+        {
+            GroupFacts facts = Clean();
+            facts.AddError("first");
+            facts.AddError("second");
+            facts.AddError("third");
+
+            Assert.That(facts.Errors[0], Is.EqualTo("first"));
+            Assert.That(facts.Errors[2], Is.EqualTo("third"));
+            Assert.That(facts.DescribeErrors(), Does.StartWith("first"));
+            Assert.That(facts.DescribeErrors(), Does.EndWith("third"));
         }
 
         private static GroupFacts Failing(Action<GroupFacts> change)

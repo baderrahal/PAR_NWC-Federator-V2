@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Autodesk.Navisworks.Api;
+using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
+using Federator.Core.Exchange;
 using Federator.Core.Rerun;
+using Federator.Core.Sets;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 
 namespace Federator.Addin.Engine
@@ -20,13 +23,25 @@ namespace Federator.Addin.Engine
         private readonly Action<string> progress;
         private readonly RunLog log;
         private readonly bool republishNwd;
+        private readonly ExchangeDocument exchange;
 
         public FederationEngine(Action<string> progress, RunLog log)
-            : this(progress, log, true)
+            : this(progress, log, true, null)
         {
         }
 
         public FederationEngine(Action<string> progress, RunLog log, bool republishNwd)
+            : this(progress, log, republishNwd, null)
+        {
+        }
+
+        /// <summary>
+        /// The exchange document is whatever was picked in the Clash step, read once. It
+        /// can hold sets, tests, or both, and any of the three is a normal case. Null when
+        /// nothing was picked, and then no set is built and no test is created.
+        /// </summary>
+        public FederationEngine(
+            Action<string> progress, RunLog log, bool republishNwd, ExchangeDocument exchange)
         {
             if (log == null)
             {
@@ -36,6 +51,7 @@ namespace Federator.Addin.Engine
             this.progress = progress ?? delegate { };
             this.log = log;
             this.republishNwd = republishNwd;
+            this.exchange = exchange;
         }
 
         /// <summary>
@@ -86,7 +102,7 @@ namespace Federator.Addin.Engine
 
                 if (document == null)
                 {
-                    outcome.Error = "There is no active document.";
+                    outcome.AddError("There is no active document.");
                     log.Line("GROUP    " + job.Building + " stopped, there is no active document");
                     return outcome;
                 }
@@ -123,11 +139,20 @@ namespace Federator.Addin.Engine
                         + (outcome.NwfOnDisk ? outcome.NwfSize.ToString("#,##0") + " bytes" : "NOT ON DISK"));
                 }
 
+                // The sets, the tests and the results all live in the NWF, so the clash
+                // work happens BEFORE the NWF is saved for the last time and long before
+                // the NWD is published. The NWD used to go first, which shipped it with no
+                // sets and no results in it.
+                if (ClashStep(document, job, outcome))
+                {
+                    SaveTheNwfAgain(document, job, outcome);
+                }
+
                 WriteNwd(document, job, outcome);
             }
             catch (Exception error)
             {
-                outcome.Error = error.Message;
+                outcome.AddError(error.Message);
                 log.Failure(
                     "federating group " + job.Building,
                     error,
@@ -242,7 +267,7 @@ namespace Federator.Addin.Engine
 
             if (outcome.AppendedCount == 0)
             {
-                outcome.Error = "No file in this group appended, so nothing was written.";
+                outcome.AddError("No file in this group appended, so nothing was written.");
                 log.Line("GROUP    " + job.Building + " wrote nothing, every append failed");
                 return false;
             }
@@ -305,6 +330,156 @@ namespace Federator.Addin.Engine
 
             // Never report a file as written without looking for it. WriteFinished reads
             // the size back off the disk itself.
+            outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath);
+            outcome.NwfOnDisk = outcome.NwfSize >= 0;
+        }
+
+        /// <summary>
+        /// Builds the sets the picked file holds, creates the tests it holds and runs
+        /// them, all into the document that is open for this group. Returns true when
+        /// anything was put into the document, which is what decides whether the NWF is
+        /// saved again.
+        ///
+        /// Any of the three shapes is a normal case: a file holding sets only, a file
+        /// holding tests only where the sets already live in the model, or one file
+        /// holding both.
+        /// </summary>
+        private bool ClashStep(Document document, FederationJob job, JobOutcome outcome)
+        {
+            if (exchange == null)
+            {
+                log.Line("CLASH    no file picked in the Clash step, no set built and no test created");
+                return false;
+            }
+
+            if (outcome.Decision == RerunDecision.Changed)
+            {
+                // A CHANGED group is left alone entirely and the decision goes to Bader,
+                // so nothing is built into it either.
+                log.Line("CLASH    " + job.Building
+                    + " was left alone because its file list changed, so no set was built and no test created");
+                return false;
+            }
+
+            bool changed = BuildTheSets(document, job, outcome);
+
+            // Deliberately not short circuited. A file holding tests only is a normal
+            // case, so the tests are created whether or not any set was built here.
+            return CreateAndRunTheTests(document, job, outcome) || changed;
+        }
+
+        private bool BuildTheSets(Document document, FederationJob job, JobOutcome outcome)
+        {
+            try
+            {
+                SetBuildPlan plan = SetBuildPlan.From(exchange);
+
+                foreach (string unknown in plan.UnknownTestValues)
+                {
+                    log.Line("SETS     condition test \"" + unknown
+                        + "\" is not one this tool rebuilds, every set using it is skipped");
+                }
+
+                if (!plan.HasWork)
+                {
+                    log.Line("SETS     the picked file holds no set this tool rebuilds, "
+                        + "so the tests will resolve against whatever sets the model already holds");
+                    return false;
+                }
+
+                log.Line("SETS     " + job.Building + ", " + plan.Buildable.Count + " to build, "
+                    + plan.Skipped.Count + " skipped");
+
+                SetBuildOutcome sets = new SetBuilder(progress, log).Build(plan);
+                outcome.Sets = sets;
+                log.Block("SETS " + job.Building, sets.Lines());
+
+                return sets.CreatedCount > sets.AlreadyPresentCount;
+            }
+            catch (Exception error)
+            {
+                outcome.AddError("building the sets threw " + error.GetType().Name + ": " + error.Message);
+                log.Failure(
+                    "building the sets for " + job.Building,
+                    error,
+                    "kept going, the tests will resolve against whatever sets did get built");
+                return false;
+            }
+        }
+
+        private bool CreateAndRunTheTests(Document document, FederationJob job, JobOutcome outcome)
+        {
+            try
+            {
+                if (!exchange.HasTests)
+                {
+                    log.Line("CLASH    the picked file holds no clash test, so none was created");
+                    return false;
+                }
+
+                // The units come from the document that is open right now, because every
+                // tolerance in the file is converted into them. There is no global
+                // tolerance setting in this tool, each test carries its own.
+                string units = ClashRunner.DocumentUnits();
+                ClashTestPlan plan = ClashTestPlan.From(exchange, units);
+
+                foreach (string unknown in plan.UnknownTestTypes)
+                {
+                    log.Line("CLASH    test type \"" + unknown
+                        + "\" is not one this tool creates, every test using it is skipped by name");
+                }
+
+                log.Line("CLASH    " + job.Building + ", " + plan.TestsInFile + " in the file, "
+                    + plan.Buildable.Count + " to create, " + plan.Skipped.Count + " skipped before the model");
+
+                ClashRunOutcome clash = new ClashRunner(progress, log).Run(plan);
+                outcome.Clash = clash;
+                log.Block("CLASH " + job.Building, clash.Lines());
+                log.Line("CLASH    " + job.Building + " finished. " + clash.Summary());
+
+                return clash.CreatedCount > 0 || clash.RanCount > 0;
+            }
+            catch (Exception error)
+            {
+                outcome.AddError(
+                    "creating or running the clash tests threw " + error.GetType().Name + ": " + error.Message);
+                log.Failure(
+                    "the clash tests for " + job.Building,
+                    error,
+                    "kept going, whatever was already created and run is kept in the NWF");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Saves the NWF after the clash work, which is what puts the sets, the tests and
+        /// the results into it. This is a real write by this run, in all three rerun
+        /// cases, so it goes through WriteFinished and its size is read back off the disk.
+        /// </summary>
+        private void SaveTheNwfAgain(Document document, FederationJob job, JobOutcome outcome)
+        {
+            progress("Saving the NWF for " + job.Building + " with its sets and results");
+            log.WriteAttempted("NWF", job.NwfPath);
+
+            try
+            {
+                EnsureFolder(job.NwfPath);
+
+                if (!document.TrySaveFile(job.NwfPath))
+                {
+                    log.Line("NWF      the save after the clash work returned false for " + job.Building);
+                }
+            }
+            catch (Exception error)
+            {
+                outcome.AddError(
+                    "saving the NWF after the clash work threw " + error.GetType().Name + ": " + error.Message);
+                log.Failure(
+                    "saving the NWF after the clash work for " + job.Building,
+                    error,
+                    "kept going, the disk is checked next to see whether anything landed");
+            }
+
             outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath);
             outcome.NwfOnDisk = outcome.NwfSize >= 0;
         }
@@ -408,9 +583,16 @@ namespace Federator.Addin.Engine
                 }
             }
 
-            if (!string.IsNullOrEmpty(outcome.Error))
+            if (outcome.Clash != null)
             {
-                line.Append("  error: ").Append(outcome.Error);
+                line.Append("  clash ").Append(outcome.Clash.RanCount).Append(" run, ")
+                    .Append(outcome.Clash.SkippedCount).Append(" skipped, ")
+                    .Append(outcome.Clash.TotalClashes).Append(" clashes");
+            }
+
+            foreach (string error in outcome.Errors)
+            {
+                line.Append("  error: ").Append(error);
             }
 
             return line.ToString();

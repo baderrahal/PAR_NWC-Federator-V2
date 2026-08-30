@@ -20,7 +20,16 @@ namespace Federator.Core.Exchange
                 { "in", 25.4 },
                 { "ft", 304.8 },
                 { "yd", 914.4 },
-                { "mi", 1609344.0 }
+                { "mi", 1609344.0 },
+
+                // The last three have never been seen in an exchange file. They are here
+                // because a tolerance is converted into the units of the OPEN DOCUMENT,
+                // and Autodesk.Navisworks.Api.Units carries Micrometers, Mils and
+                // Microinches, so a document set to one of them would otherwise fail to
+                // convert a tolerance that is written in perfectly ordinary feet.
+                { "um", 0.001 },
+                { "mil", 0.0254 },
+                { "uin", 0.0000254 }
             };
 
         public static bool IsKnown(string units)

@@ -80,6 +80,21 @@ namespace Federator.Addin.Engine
             {
                 GroupItem parent = EnsureFolders(sets, planned.Folders);
 
+                // A reused NWF already holds last week's sets. Adding another copy would
+                // leave the tree with two sets at one path and a clash locator resolving
+                // to whichever came first, so an existing one is left exactly as it is.
+                SelectionSet existing = FindSelectionSet(parent, planned.Name);
+
+                if (existing != null)
+                {
+                    outcome.AddAlreadyPresent(planned.Path);
+                    outcome.AddCreated(
+                        planned.Path, planned.Name, planned.ConditionCount,
+                        CountOf(document, existing), planned.Describe());
+                    log.Line("SET      already there, left alone  " + planned.Path);
+                    return;
+                }
+
                 Search search = new Search();
                 search.Selection.SelectAll();
                 search.Locations = SearchLocations.DescendantsAndSelf;
@@ -261,6 +276,13 @@ namespace Federator.Addin.Engine
         /// set that is in the tree where possible, because that is the thing that has to
         /// work. Falls back to the search itself if the set cannot be found again.
         /// </summary>
+        /// <summary>How many items a set that is already in the tree finds as it stands.</summary>
+        private static int CountOf(Document document, SelectionSet set)
+        {
+            ModelItemCollection found = set.GetSelectedItems(document);
+            return found == null ? 0 : found.Count;
+        }
+
         private int Resolve(Document document, SelectionSet created, Search search)
         {
             if (created != null)
