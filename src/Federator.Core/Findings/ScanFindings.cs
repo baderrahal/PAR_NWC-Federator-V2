@@ -190,7 +190,7 @@ namespace Federator.Core.Findings
             {
                 if (left[i] != right[i])
                 {
-                    return "character " + (i + 1) + " is \"" + left[i] + "\" against \"" + right[i] + "\"";
+                    return "character " + (i + 1) + ", a " + left[i] + " against an " + right[i];
                 }
             }
 
@@ -282,25 +282,30 @@ namespace Federator.Core.Findings
                 }
 
                 BuildingGroup odd = holders[0];
-                List<string> otherShapes = new List<string>();
+
+                // An example of what the others look like, rather than the shape string.
+                // Nobody reads 9A99AA. Everybody reads 1B06PK.
+                string example = MostSharedExample(byShape, shapeOrder, shape);
+                int others = 0;
 
                 foreach (string other in shapeOrder)
                 {
                     if (!string.Equals(other, shape, StringComparison.Ordinal))
                     {
-                        otherShapes.Add(other + " x" + byShape[other].Count);
+                        others += byShape[other].Count;
                     }
                 }
-
-                otherShapes.Sort(StringComparer.Ordinal);
 
                 findings.Add(new ScanFinding(
                     FindingKind.OddShape,
                     OddShapeLabel,
-                    odd.Building + " is the only code shaped " + shape,
-                    "Every other code in this run has a different shape: "
-                        + string.Join(", ", otherShapes.ToArray())
-                        + ". The group still runs, this is only worth a look.",
+                    "The building code " + odd.Building
+                        + " is written differently from every other code in this run.",
+                    "The other " + others + (others == 1 ? " code looks" : " codes look")
+                        + " like " + example + ", and " + odd.Building + " does not follow that. "
+                        + "That is often a typing error in the file name, and it is sometimes a "
+                        + "real building named another way. Nothing is changed and the group still "
+                        + "runs.",
                     new List<string> { odd.Building },
                     FileNames(odd)));
             }
@@ -327,12 +332,15 @@ namespace Federator.Core.Findings
                     findings.Add(new ScanFinding(
                         FindingKind.NearMatch,
                         NearMatchLabel,
-                        left.Building + " and " + right.Building + " differ by one character that is easy to misread, "
-                            + confusion,
-                        left.Building + " holds " + left.FileCount + FilesWord(left.FileCount)
-                            + " and " + right.Building + " holds " + right.FileCount
-                            + FilesWord(right.FileCount)
-                            + ". They are kept apart. Nothing is merged and neither is assumed right.",
+                        left.Building + " and " + right.Building
+                            + " look almost the same and could be one building typed two ways.",
+                        "They differ only at " + confusion
+                            + ", which are easy to mistake for one another when a code is read off "
+                            + "a drawing or retyped. " + left.Building + " holds " + left.FileCount
+                            + FilesWord(left.FileCount) + " and " + right.Building + " holds "
+                            + right.FileCount + FilesWord(right.FileCount)
+                            + ". They are being kept as two separate federations. If they are meant "
+                            + "to be one building, one of the NWC file names needs correcting.",
                         new List<string> { left.Building, right.Building },
                         null));
                 }
@@ -351,10 +359,14 @@ namespace Federator.Core.Findings
                     findings.Add(new ScanFinding(
                         FindingKind.SingleDiscipline,
                         SingleDisciplineLabel,
-                        group.Building + " holds only " + group.Disciplines[0],
-                        "A group with one discipline has nothing to clash against. "
-                            + "This run has " + string.Join(", ", new List<string>(disciplinesInRun).ToArray())
-                            + ".",
+                        group.Building + " holds only " + group.Disciplines[0]
+                            + " files, so there is nothing for them to clash against.",
+                        "This run also has "
+                            + string.Join(", ", Without(disciplinesInRun, group.Disciplines[0]).ToArray())
+                            + " files in other buildings. The federation is still built and every "
+                            + "clash test is still created, but none of them can find anything. "
+                            + "Either the other disciplines have not been exported yet, or this "
+                            + "building really is " + group.Disciplines[0] + " only.",
                         new List<string> { group.Building },
                         FileNames(group)));
 
@@ -371,13 +383,58 @@ namespace Federator.Core.Findings
                 findings.Add(new ScanFinding(
                     FindingKind.MissingDisciplines,
                     MissingDisciplinesLabel,
-                    group.Building + " has no " + string.Join(", ", missing.ToArray()),
+                    group.Building + " has no " + string.Join(" or ", missing.ToArray())
+                        + " files, which other buildings in this run do have.",
                     "It holds " + string.Join(", ", new List<string>(group.Disciplines).ToArray())
-                        + ". This run has " + string.Join(", ", new List<string>(disciplinesInRun).ToArray())
-                        + ".",
+                        + ", and this run has "
+                        + string.Join(", ", new List<string>(disciplinesInRun).ToArray())
+                        + " between all its buildings. That may be deliberate, or those models may "
+                        + "not have been exported yet. Nothing is blocked either way.",
                     new List<string> { group.Building },
                     null));
             }
+        }
+
+        /// <summary>
+        /// A real code that has the most widely shared shape, so the finding can say what
+        /// the others look like instead of printing a pattern nobody reads.
+        /// </summary>
+        private static string MostSharedExample(
+            Dictionary<string, List<BuildingGroup>> byShape, IList<string> shapeOrder, string exclude)
+        {
+            string best = null;
+            int most = 0;
+
+            foreach (string shape in shapeOrder)
+            {
+                if (string.Equals(shape, exclude, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (byShape[shape].Count > most)
+                {
+                    most = byShape[shape].Count;
+                    best = byShape[shape][0].Building;
+                }
+            }
+
+            return best == null ? "the others" : best;
+        }
+
+        private static List<string> Without(IEnumerable<string> all, string one)
+        {
+            List<string> rest = new List<string>();
+
+            foreach (string value in all)
+            {
+                if (!string.Equals(value, one, StringComparison.Ordinal))
+                {
+                    rest.Add(value);
+                }
+            }
+
+            return rest;
         }
 
         private static List<string> Missing(BuildingGroup group, IList<string> disciplinesInRun)

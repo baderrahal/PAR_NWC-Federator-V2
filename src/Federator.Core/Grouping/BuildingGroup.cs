@@ -6,8 +6,8 @@ using Federator.Core.Naming;
 namespace Federator.Core.Grouping
 {
     /// <summary>
-    /// Every file that belongs to one building. Discipline is carried for reporting,
-    /// it never splits a group.
+    /// Every file that belongs to one group. What makes a group is the chosen
+    /// <see cref="GroupingMode"/>, and per building is the default.
     /// </summary>
     public sealed class BuildingGroup
     {
@@ -16,16 +16,47 @@ namespace Federator.Core.Grouping
             string project,
             string originator,
             IList<ParsedContainerName> files,
-            IList<string> disciplines)
+            IList<string> disciplines,
+            string buildingCode,
+            string disciplineCode)
         {
             Building = building;
             Project = project;
             Originator = originator;
             Files = new ReadOnlyCollection<ParsedContainerName>(files);
             Disciplines = new ReadOnlyCollection<string>(disciplines);
+            BuildingCode = buildingCode;
+            DisciplineCode = disciplineCode;
         }
 
+        /// <summary>
+        /// What this group is called in the table and the log. The building code when
+        /// grouping per building, and the building and discipline together, or the
+        /// discipline alone, under the other modes.
+        /// </summary>
         public string Building { get; private set; }
+
+        /// <summary>
+        /// The building code for the output name, or empty when the group spans more than
+        /// one building and the name has to carry the all buildings code instead.
+        /// </summary>
+        public string BuildingCode { get; private set; }
+
+        /// <summary>
+        /// The discipline for the output name, or empty when the group spans more than one
+        /// discipline and the name has to carry the pattern's discipline instead.
+        /// </summary>
+        public string DisciplineCode { get; private set; }
+
+        /// <summary>
+        /// One NWC on its own cannot clash with anything, whatever the tests say. The
+        /// clash step still creates every test so the NWF matches the others, and then
+        /// records them as not run for this reason rather than as a side finding nothing.
+        /// </summary>
+        public bool IsSingleModel
+        {
+            get { return Files.Count == 1; }
+        }
 
         /// <summary>The project code every file in this group agreed on.</summary>
         public string Project { get; private set; }

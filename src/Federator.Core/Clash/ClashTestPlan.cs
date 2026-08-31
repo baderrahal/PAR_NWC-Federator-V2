@@ -46,6 +46,14 @@ namespace Federator.Core.Clash
         /// <summary>Both sides resolved, but one of them finds nothing in this model.</summary>
         EmptySide,
 
+        /// <summary>
+        /// The group holds one NWC, so nothing in it can clash with anything else whatever
+        /// the tests say. Counted apart from EmptySide on purpose. A side finding nothing
+        /// says a discipline was not exported. One model says the group was never going to
+        /// clash, and no export would change that.
+        /// </summary>
+        SingleModel,
+
         /// <summary>Creating or running the test threw.</summary>
         Failed
     }
@@ -539,6 +547,8 @@ namespace Federator.Core.Clash
                     return "a set is not in the document";
                 case ClashSkipReason.EmptySide:
                     return "a side finds nothing in this model";
+                case ClashSkipReason.SingleModel:
+                    return "the group holds one model, so nothing in it can clash";
                 case ClashSkipReason.Failed:
                     return "creating or running it threw";
                 default:

@@ -570,6 +570,13 @@ namespace Federator.Addin.Engine
 
                 ClashRunner runner = new ClashRunner(progress, log, guard);
                 runner.NameSettings = reports.Names;
+                runner.SingleModelGroup = job.Files.Count == 1;
+
+                if (runner.SingleModelGroup)
+                {
+                    log.Line("CLASH    " + job.Building + " holds one model, so every test is created "
+                        + "and none is run. One model cannot clash with anything.");
+                }
 
                 if (reports.WriteWorkbook || reports.WriteXml)
                 {
@@ -635,7 +642,7 @@ namespace Federator.Addin.Engine
 
             if (reports.WriteWorkbook)
             {
-                string path = ReportPaths.Workbook(reportFolder, job.OutputName);
+                string path = ReportPaths.Workbook(reportFolder, job.WorkbookName);
                 progress("Writing the workbook for " + job.Building);
                 log.WriteAttempted("XLSX", path);
 
@@ -662,7 +669,7 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            string xmlPath = ReportPaths.Xml(reportFolder, job.OutputName);
+            string xmlPath = ReportPaths.Xml(reportFolder, job.WorkbookName);
             log.WriteAttempted("XML", xmlPath);
 
             try

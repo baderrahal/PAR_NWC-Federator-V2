@@ -94,7 +94,8 @@ namespace Federator.Core.Tests
             for (int i = 0; i < pairs.GetLength(0); i++)
             {
                 Assert.That(block,
-                    Does.Contain("NWC " + pairs[i, 0] + " was published from Revit " + pairs[i, 1]),
+                    Does.Contain("The NWC files named " + pairs[i, 0]
+                        + " were published from a Revit model named " + pairs[i, 1]),
                     pairs[i, 0] + " against " + pairs[i, 1] + " was not reported");
             }
         }
@@ -157,9 +158,12 @@ namespace Federator.Core.Tests
             Assert.That(shared.Count, Is.EqualTo(1));
             Assert.That(shared[0].Label, Is.EqualTo("SHARED SOURCE"));
             Assert.That(shared[0].Headline, Does.Contain("0000KI"));
-            Assert.That(shared[0].Headline, Does.Contain("1B06K1"));
-            Assert.That(shared[0].Headline, Does.Contain("1B06KI"));
-            Assert.That(shared[0].Detail, Does.Contain("split in two"));
+            Assert.That(shared[0].Detail, Does.Contain("1B06K1"));
+            Assert.That(shared[0].Detail, Does.Contain("1B06KI"));
+
+            // The words a person would say, which is the whole point of the rewrite.
+            Assert.That(shared[0].Headline, Does.Contain("same Revit building"));
+            Assert.That(shared[0].Detail, Does.Contain("one of the NWC file names is wrong"));
             Assert.That(shared[0].Detail, Does.Contain("Nothing is merged"));
         }
 
@@ -192,7 +196,7 @@ namespace Federator.Core.Tests
             IList<ScanFinding> shared = findings.OfKind(FindingKind.SharedSourceBuilding);
 
             Assert.That(shared.Count, Is.EqualTo(1), "one line for the shared code, not one per group");
-            Assert.That(shared[0].Headline, Does.Contain("3 groups"));
+            Assert.That(shared[0].Headline, Does.Contain("3 federations"));
             Assert.That(shared[0].Buildings.Count, Is.EqualTo(4), "the source and its three groups");
         }
 
@@ -250,7 +254,9 @@ namespace Federator.Core.Tests
             Assert.That(findings.UnreadableSourceNames, Is.EqualTo(1));
             Assert.That(findings.PairsRead, Is.EqualTo(1), "only the readable pair was compared");
             Assert.That(findings.OfKind(FindingKind.SourceMismatch).Count, Is.EqualTo(1));
-            Assert.That(Block(findings), Does.Contain("could not be read with the same parser"));
+            // One reads "does not follow", several read "do not follow", so the assertion
+            // is on the part that does not change with the count.
+            Assert.That(Block(findings), Does.Contain("follow the naming standard"));
         }
 
         [Test]
@@ -264,7 +270,7 @@ namespace Federator.Core.Tests
 
             Assert.That(findings.UnreadableNwcNames, Is.EqualTo(1));
             Assert.That(findings.Any, Is.False);
-            Assert.That(Block(findings), Does.Contain("which the scan already reports"));
+            Assert.That(Block(findings), Does.Contain("the scan already lists"));
         }
 
         // The split character and the part positions are settings, so a project using a
@@ -286,7 +292,8 @@ namespace Federator.Core.Tests
                 underscores);
 
             Assert.That(findings.OfKind(FindingKind.SourceMismatch).Count, Is.EqualTo(1));
-            Assert.That(Block(findings), Does.Contain("NWC 1B06BC was published from Revit 0000BC"));
+            Assert.That(Block(findings),
+                Does.Contain("The NWC files named 1B06BC were published from a Revit model named 0000BC"));
         }
 
         // ---------- it is information and nothing more ----------
@@ -296,15 +303,15 @@ namespace Federator.Core.Tests
         {
             string block = Block(SourceMismatchFindings.From(RealRun()));
 
-            Assert.That(block, Does.Contain("Neither code is assumed right."));
-            Assert.That(block, Does.Contain("The group is built from the NWC name, which is unchanged."));
+            Assert.That(block, Does.Contain("neither name is assumed right"));
+            Assert.That(block, Does.Contain("The federation is named from the NWC file name"));
         }
 
         [Test]
         public void TheBlockAlwaysSaysHowManyPairsItRead()
         {
             Assert.That(Block(SourceMismatchFindings.From(RealRun())),
-                Does.Contain("NWC and Revit source pairs compared: 9"));
+                Does.Contain("9 NWC files were checked"));
         }
 
         [Test]

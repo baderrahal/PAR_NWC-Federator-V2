@@ -60,11 +60,29 @@ namespace Federator.Core.Findings
         /// <summary>The short shouty name, for example ODD SHAPE.</summary>
         public string Label { get; private set; }
 
-        /// <summary>One line naming what and where.</summary>
+        /// <summary>
+        /// What was noticed, in the words a person would say it in. Never a shape string
+        /// or a code word. A reader should not have to know how the tool works.
+        /// </summary>
         public string Headline { get; private set; }
 
-        /// <summary>The reasoning, so the reader does not have to work it out again.</summary>
+        /// <summary>
+        /// What it probably means and what to do about it, again in plain words. The
+        /// reader should not have to work it out again.
+        /// </summary>
         public string Detail { get; private set; }
+
+        /// <summary>
+        /// The whole thing as one sentence, which is what goes beside the code when the
+        /// findings are copied out as a table.
+        /// </summary>
+        public string Sentence
+        {
+            get
+            {
+                return string.IsNullOrEmpty(Detail) ? Headline : Headline + " " + Detail;
+            }
+        }
 
         /// <summary>The building codes this concerns, one for most, two for a near match.</summary>
         public ReadOnlyCollection<string> Buildings { get; private set; }

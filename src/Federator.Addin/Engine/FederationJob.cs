@@ -12,6 +12,21 @@ namespace Federator.Addin.Engine
     public sealed class FederationJob
     {
         public FederationJob(string building, string outputName, string nwfPath, string nwdPath, IList<string> files)
+            : this(building, outputName, nwfPath, nwdPath, files, outputName)
+        {
+        }
+
+        /// <summary>
+        /// The workbook can carry a different name from the NWF, because the Outputs step
+        /// holds one naming pattern for each of the three.
+        /// </summary>
+        public FederationJob(
+            string building,
+            string outputName,
+            string nwfPath,
+            string nwdPath,
+            IList<string> files,
+            string workbookName)
         {
             if (building == null)
             {
@@ -28,6 +43,7 @@ namespace Federator.Addin.Engine
             NwfPath = nwfPath;
             NwdPath = nwdPath;
             Files = files;
+            WorkbookName = string.IsNullOrEmpty(workbookName) ? outputName : workbookName;
         }
 
         public string Building { get; private set; }
@@ -40,6 +56,9 @@ namespace Federator.Addin.Engine
 
         /// <summary>Full paths, appended in this order.</summary>
         public IList<string> Files { get; private set; }
+
+        /// <summary>What the workbook is called. The NWF name unless a pattern differs.</summary>
+        public string WorkbookName { get; private set; }
     }
 
     /// <summary>What actually happened to one group, checked against the disk.</summary>

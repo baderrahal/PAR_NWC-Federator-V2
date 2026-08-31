@@ -18,4 +18,14 @@
     <PackageReference Include="ClosedXML" Version="0.105.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- A BuildingGroup is built by the grouping and nothing else, which is right. The
+         name collision guard has to be tested against two groups that would be written to
+         one name, and the four grouping modes cannot currently produce that pair, so the
+         test constructs them directly rather than the guard going untested. -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Federator.Core.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>

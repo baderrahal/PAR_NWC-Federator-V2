@@ -1,8 +1,9 @@
 # Parsons NWC Federator
 
-Navisworks Manage 2025 add-in. Reads a folder of discipline NWC files, groups them
-by building, saves an NWF and an NWD per building, imports a clash test XML, runs
-the tests, and writes one Excel report per building.
+Navisworks Manage 2025 add-in. Reads a folder of discipline NWC files, gathers them
+into federations, saves an NWF and an NWD per federation, imports a clash test XML,
+runs the tests, and writes one Excel report per federation. Per building is the
+default way of gathering them and there are three others.
 
 ## Host and target
 
@@ -24,13 +25,35 @@ the tests, and writes one Excel report per building.
 
 Input:  1104-PAR-1C07BC-ZZZ-AR-MOD-000001.nwc
 Split on the hyphen. Part 3 is the building, part 5 is the discipline.
+How the files are gathered is a CHOICE, made in the Grouping step, and per building
+is only the DEFAULT. This used to be written here as a rule and it is not one. The
+four choices are one file per building, one per building and discipline, one per
+discipline across every building, and one file for everything. Per building puts
+every discipline of a building into one federation, and under it discipline is read
+for reporting only. Under the other three it decides the split as well.
 Group on the full 6 character building code. 1C07BC and 1C07K1 are two buildings.
-Every discipline of a building goes into that building's federation. Discipline is
-read for reporting only, it never splits a group.
-The output name is project, originator, building code, ZZZ, BM, MOD, 000001.
-Level, discipline, type code and number are all pinned, because outputs overwrite
-and the files in a group may disagree on any of them. Only parts 1, 2 and 3 are
-copied from the input, and part 5 is read for reporting.
+
+The output name is project, originator, building, level, discipline, type, number,
+and it is a PATTERN with defaults rather than a fixed string. This used to be written
+here as fixed and it is not. The first three come from the file names. The other four
+are supplied, because the files in one group can disagree on all of them and outputs
+overwrite, so copying from any one input would mean picking a winner.
+
+Every supplied field is shown in the Outputs step and can be changed there. The
+defaults are ZZZ for the level, which is the ISO 19650 code for all levels, BM for
+the discipline, which is a federated building model, MOD for the type, which is a
+model, and 000001 for the number, which never advances because the file is
+overwritten in place. A fifth, ZZZZZZ, is the building field for a group that covers
+several buildings, following the same all convention.
+
+The building field carries the group's own building code where the group is one
+building, and the discipline field carries the group's own discipline where the group
+is one discipline. The supplied value is only used where the group spans several.
+
+There is one pattern each for the NWF, the NWD and the workbook, because a project
+may want them to differ. They start identical. A set of patterns that would write two
+groups to the same name is reported and the run does not start, because outputs
+overwrite with no date suffix and the second would silently destroy the first.
 
 The output name is built, not patched. That means a five part input still gives a
 full seven field output name, and the readable-name floor is five parts. A six part
@@ -39,8 +62,8 @@ name reads fine.
 If two files in one group disagree on the project code or the originator, report
 it and skip the group. Do not pick one.
 
-The split character, the part positions and all four pinned values are settings,
-never constants.
+The split character, the part positions, the grouping choice and every supplied name
+field are settings, never constants.
 
 ## What the clash test XML holds
 
@@ -227,6 +250,24 @@ and 6 does not read as broken.
   trace. One run wrote the same stack tens of thousands of times into a 17.8 MB log
 - One picker, one file. The file can hold sets, tests, or both, and the tool reads what is
   in it. A file holding only tests still works against sets already in the model
+- The scan and its checks live in the Source step, so pressing Scan reports what was
+  found and what is wrong with it in one place. A plain count line first, files found,
+  files readable, groups and the findings by kind, then the findings themselves
+- Findings are written in the words a person would say, never in the words the tool
+  thinks in. A shape is described by naming a real code that has it, not by printing
+  9A99AA. A shared Revit source says two federations are being built from one Revit
+  building, names both, and says that usually means one NWC file name is wrong. The
+  short code stays as its own column so it can still be sorted on
+- Copy findings puts them on the clipboard as tab separated rows with a header, so
+  pasting into Excel gives a table. A run with nothing odd still copies a header and
+  one row saying so, because an empty clipboard reads as a failed copy
+- A group holding one NWC cannot clash with anything, whatever the test list says. Every
+  test is still created, so the NWF is complete and matches the other groups and a later
+  run against a fuller model finds them already there, and none of them is run. The
+  reason is SingleModel and it is counted apart from EmptySide on purpose. A side finding
+  nothing says a discipline was not exported. One model says the group was never going to
+  clash and no export would change that. In the last real folder that was 1B06BS and
+  1C06PK, and both ran 1830 tests for nothing
 - Outputs overwrite, the NWD every run and the NWF only when it is being built for
   the first time. No date suffix, no version suffix
 - A group ends in one of three states, and the test is always what was ASKED FOR,

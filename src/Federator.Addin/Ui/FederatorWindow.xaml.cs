@@ -30,8 +30,20 @@ namespace Federator.Addin.Ui
         private readonly ObservableCollection<GroupRow> groups = new ObservableCollection<GroupRow>();
         private readonly RunLog log;
         private ScanFindings findings = ScanFindings.From(new List<BuildingGroup>());
+
+        /// <summary>
+        /// The Revit source findings from the last run. They cannot exist before a run,
+        /// because nothing knows what an NWC was published from until a document has been
+        /// opened, so the panel says so rather than pretending there are none.
+        /// </summary>
+        private SourceMismatchFindings sourceFindings;
+
+        private ScanCounts counts = new ScanCounts();
+        private IList<BuildingGroup> lastGroups = new List<BuildingGroup>();
+        private readonly OutputNaming naming = new OutputNaming();
         private bool running;
         private bool suspendRegroup;
+        private bool suspendNaming;
 
         public FederatorWindow(RunLog log)
         {
@@ -47,6 +59,9 @@ namespace Federator.Addin.Ui
             FilesGrid.ItemsSource = files;
             GroupsGrid.ItemsSource = groups;
             OutputsGrid.ItemsSource = groups;
+
+            FillGroupingModes();
+            ShowNaming();
 
             files.CollectionChanged += delegate { Regroup(); };
 
@@ -157,6 +172,36 @@ namespace Federator.Addin.Ui
             Steps.SelectedIndex = 1;
         }
 
+        /// <summary>
+        /// The four ways of gathering files, read off GroupingModes so the window and the
+        /// grouping cannot drift apart. Per building is the default and is selected here.
+        /// </summary>
+        private void FillGroupingModes()
+        {
+            GroupingModeBox.Items.Clear();
+
+            foreach (GroupingMode mode in GroupingModes.All())
+            {
+                GroupingModeBox.Items.Add(GroupingModes.Describe(mode));
+            }
+
+            GroupingModeBox.SelectedIndex = Array.IndexOf(GroupingModes.All(), GroupingModes.Default);
+        }
+
+        private GroupingMode ChosenGrouping()
+        {
+            GroupingMode[] all = GroupingModes.All();
+            int at = GroupingModeBox == null ? -1 : GroupingModeBox.SelectedIndex;
+
+            return at >= 0 && at < all.Length ? all[at] : GroupingModes.Default;
+        }
+
+        private void OnGroupingModeChanged(
+            object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            Regroup();
+        }
+
         private void OnFileRowChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "Include")
@@ -199,7 +244,11 @@ namespace Federator.Addin.Ui
                 paths.Add(row.FullPath);
             }
 
-            BuildingGroupingResult result = BuildingGrouping.Group(ticked);
+            ReadNaming();
+
+            GroupingMode mode = ChosenGrouping();
+            BuildingGroupingResult result = BuildingGrouping.Group(ticked, mode, settings);
+            lastGroups = new List<BuildingGroup>(result.Groups);
 
             foreach (BuildingGroup group in result.Groups)
             {
@@ -207,7 +256,9 @@ namespace Federator.Addin.Ui
                     group.Building,
                     PathsFor(group.Files, pathsByStem),
                     group.Disciplines,
-                    ContainerName.BuildOutputName(group.Project, group.Originator, group.Building, settings)));
+                    SafeName(naming.Nwf, group),
+                    SafeName(naming.Nwd, group),
+                    SafeName(naming.Workbook, group)));
             }
 
             foreach (SkippedBuildingGroup skipped in result.Skipped)
@@ -219,28 +270,149 @@ namespace Federator.Addin.Ui
             }
 
             int blocked = result.Skipped.Count;
-            GroupingSummary.Text = result.Groups.Count + " groups ready, " + blocked + " blocked.";
+            GroupingSummary.Text = GroupingModes.Describe(mode) + ". "
+                + result.Groups.Count + (result.Groups.Count == 1 ? " group ready, " : " groups ready, ")
+                + blocked + " blocked.";
 
             // Worked out here so it is on screen before Run is pressed, not after.
             findings = ScanFindings.From(result);
             ShowFindings();
+            RefreshNamePreview();
 
             RefreshOutputsSummary();
         }
 
         /// <summary>
-        /// The findings panel. Nothing here blocks a run, it is information and the
-        /// decision stays with the person reading it.
+        /// The name for one group, or the reason it cannot be built. A half typed pattern
+        /// must show what is wrong rather than throwing while somebody is still typing.
+        /// </summary>
+        private string SafeName(NamePattern pattern, BuildingGroup group)
+        {
+            try
+            {
+                return pattern.NameFor(group, settings);
+            }
+            catch (InvalidOperationException error)
+            {
+                return "CANNOT BE NAMED: " + error.Message;
+            }
+        }
+
+        /// <summary>
+        /// The findings panel, on the Source step so pressing Scan reports what was found
+        /// and what is wrong with it in one place. Nothing here blocks a run or unticks
+        /// anything. It is information and the decision stays with the person reading it.
         /// </summary>
         private void ShowFindings()
         {
-            FindingsHeading.Text = findings.Any
-                ? "Findings: " + findings.Count + (findings.Count == 1 ? " thing" : " things")
-                    + " worth a look. None of this stops a run."
-                : "Findings";
+            counts = new ScanCounts();
+            counts.FilesFound = files.Count;
+            counts.FilesReadable = ReadableFileCount();
+            counts.GroupingDescription = GroupingModes.Describe(ChosenGrouping());
 
-            FindingsBox.Text = string.Join(
-                Environment.NewLine, new List<string>(findings.Lines()).ToArray());
+            int ready = 0;
+            int blocked = 0;
+
+            foreach (GroupRow group in groups)
+            {
+                if (group.IsBlocked)
+                {
+                    blocked++;
+                }
+                else
+                {
+                    ready++;
+                }
+            }
+
+            counts.Groups = ready;
+            counts.BlockedGroups = blocked;
+            counts.Count(AllFindings());
+
+            FindingsHeading.Text = counts.TotalFindings == 0
+                ? "What the scan found"
+                : "What the scan found, including " + counts.TotalFindings
+                    + (counts.TotalFindings == 1 ? " thing" : " things")
+                    + " worth a look. None of it stops a run.";
+
+            List<string> lines = new List<string>(counts.Lines());
+            lines.Add(string.Empty);
+
+            foreach (ScanFinding finding in AllFindings())
+            {
+                lines.Add(finding.Label + "   " + finding.Sentence);
+
+                foreach (string file in finding.Files)
+                {
+                    lines.Add("      " + file);
+                }
+
+                lines.Add(string.Empty);
+            }
+
+            if (sourceFindings == null)
+            {
+                lines.Add("The NWC files have not been compared against the Revit models they were "
+                    + "published from yet. That can only be done once a run has opened them, so it "
+                    + "appears here after the first run.");
+            }
+
+            FindingsBox.Text = string.Join(Environment.NewLine, lines.ToArray());
+        }
+
+        /// <summary>
+        /// Everything found, the scan and, once a run has read the models, the Revit source
+        /// findings too. One list, so the panel and the copied table cannot disagree.
+        /// </summary>
+        private IList<ScanFinding> AllFindings()
+        {
+            List<ScanFinding> all = new List<ScanFinding>(findings.All);
+
+            if (sourceFindings != null)
+            {
+                all.AddRange(sourceFindings.All);
+            }
+
+            return all;
+        }
+
+        private int ReadableFileCount()
+        {
+            int readable = 0;
+
+            foreach (FileRow row in files)
+            {
+                if (row.IsReadable)
+                {
+                    readable++;
+                }
+            }
+
+            return readable;
+        }
+
+        /// <summary>
+        /// The findings on the clipboard as tab separated rows with a header, so pasting
+        /// into Excel gives a table rather than one blob of text.
+        /// </summary>
+        private void OnCopyFindings(object sender, RoutedEventArgs e)
+        {
+            string table = FindingsTable.Tsv(AllFindings());
+
+            try
+            {
+                Clipboard.SetText(table);
+                SetProgress("Findings copied. Paste into Excel and it lands as a table.");
+            }
+            catch (Exception error)
+            {
+                // The clipboard can be held by another process. Never worth stopping over.
+                log.Failure(
+                    "copying the findings to the clipboard",
+                    error,
+                    "nothing was changed, the findings are still in the panel");
+                Warn("The clipboard would not take it." + Environment.NewLine + error.Message);
+            }
         }
 
         private static IList<string> PathsFor(
@@ -265,6 +437,118 @@ namespace Federator.Addin.Ui
             }
 
             return paths;
+        }
+
+        // ---------- Step 3, the naming patterns ----------
+
+        /// <summary>
+        /// Puts the current patterns into the boxes. Called once when the window opens, so
+        /// the defaults are visible rather than hidden in the code.
+        /// </summary>
+        private void ShowNaming()
+        {
+            suspendNaming = true;
+
+            try
+            {
+                Show(naming.Nwf, NwfLevel, NwfDiscipline, NwfType, NwfNumber, NwfAllBuildings);
+                Show(naming.Nwd, NwdLevel, NwdDiscipline, NwdType, NwdNumber, NwdAllBuildings);
+                Show(naming.Workbook, WorkbookLevel, WorkbookDiscipline, WorkbookType,
+                    WorkbookNumber, WorkbookAllBuildings);
+            }
+            finally
+            {
+                suspendNaming = false;
+            }
+        }
+
+        private static void Show(
+            NamePattern pattern,
+            System.Windows.Controls.TextBox level,
+            System.Windows.Controls.TextBox discipline,
+            System.Windows.Controls.TextBox type,
+            System.Windows.Controls.TextBox number,
+            System.Windows.Controls.TextBox allBuildings)
+        {
+            level.Text = pattern.Level;
+            discipline.Text = pattern.Discipline;
+            type.Text = pattern.TypeCode;
+            number.Text = pattern.Number;
+            allBuildings.Text = pattern.AllBuildings;
+        }
+
+        /// <summary>Reads the boxes back into the patterns, exactly as typed.</summary>
+        private void ReadNaming()
+        {
+            Read(naming.Nwf, NwfLevel, NwfDiscipline, NwfType, NwfNumber, NwfAllBuildings);
+            Read(naming.Nwd, NwdLevel, NwdDiscipline, NwdType, NwdNumber, NwdAllBuildings);
+            Read(naming.Workbook, WorkbookLevel, WorkbookDiscipline, WorkbookType,
+                WorkbookNumber, WorkbookAllBuildings);
+        }
+
+        private static void Read(
+            NamePattern pattern,
+            System.Windows.Controls.TextBox level,
+            System.Windows.Controls.TextBox discipline,
+            System.Windows.Controls.TextBox type,
+            System.Windows.Controls.TextBox number,
+            System.Windows.Controls.TextBox allBuildings)
+        {
+            pattern.Level = Trimmed(level.Text);
+            pattern.Discipline = Trimmed(discipline.Text);
+            pattern.TypeCode = Trimmed(type.Text);
+            pattern.Number = Trimmed(number.Text);
+            pattern.AllBuildings = Trimmed(allBuildings.Text);
+        }
+
+        private void OnNamingChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (suspendNaming)
+            {
+                return;
+            }
+
+            Regroup();
+        }
+
+        /// <summary>
+        /// What the names come out as, shown before anything runs. A pattern that would put
+        /// two groups on one name is named here as well as refused at Run, because seeing
+        /// it while typing is better than being stopped afterwards.
+        /// </summary>
+        private void RefreshNamePreview()
+        {
+            if (NamePreview == null)
+            {
+                return;
+            }
+
+            List<string> lines = new List<string>();
+
+            foreach (GroupRow group in groups)
+            {
+                if (!group.IsBlocked)
+                {
+                    lines.Add("NWF       " + group.NwfName);
+                    lines.Add("NWD       " + group.NwdName);
+                    lines.Add("Workbook  " + group.WorkbookName);
+                    break;
+                }
+            }
+
+            if (lines.Count == 0)
+            {
+                NamePreview.Text = "No group to name yet. Scan a folder first.";
+                return;
+            }
+
+            string collisions = OutputNameCheck.WhyTheRunCannotStart(lastGroups, naming, settings);
+
+            NamePreview.Text = "The first group would be written as:" + Environment.NewLine
+                + string.Join(Environment.NewLine, lines.ToArray())
+                + (collisions == null
+                    ? string.Empty
+                    : Environment.NewLine + Environment.NewLine + "THE RUN CANNOT START. " + collisions);
         }
 
         // ---------- Step 3, outputs ----------
@@ -411,6 +695,20 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            // Outputs overwrite with no date suffix, so two groups sharing a name is not a
+            // warning. The second silently destroys the first and only shows up later as a
+            // federation nobody can find. Caught before anything is cleared or written.
+            string collisions = OutputNameCheck.WhyTheRunCannotStart(
+                TickedGroups(), naming, settings);
+
+            if (collisions != null)
+            {
+                log.Line("RUN      refused before starting. " + collisions);
+                Warn("The run cannot start." + Environment.NewLine + Environment.NewLine + collisions);
+                Steps.SelectedIndex = 2;
+                return;
+            }
+
             List<FederationJob> jobs = new List<FederationJob>();
 
             foreach (GroupRow group in groups)
@@ -424,10 +722,11 @@ namespace Federator.Addin.Ui
                 // the same string it was written to.
                 jobs.Add(new FederationJob(
                     group.Building,
-                    group.OutputName,
-                    OutputPaths.Nwf(nwfFolder, group.OutputName),
-                    OutputPaths.Nwd(nwdFolder, group.OutputName),
-                    group.Files));
+                    group.NwfName,
+                    OutputPaths.Nwf(nwfFolder, group.NwfName),
+                    OutputPaths.Nwd(nwdFolder, group.NwdName),
+                    group.Files,
+                    group.WorkbookName));
             }
 
             if (jobs.Count == 0)
@@ -451,11 +750,36 @@ namespace Federator.Addin.Ui
                 TickedFileCount(),
                 groups.Count);
 
+            log.Line("grouping         : " + GroupingModes.Describe(ChosenGrouping()));
             log.Line("republish NWD    : " + (RepublishNwd.IsChecked == true ? "yes" : "no"));
             log.Block(RunLog.GroupsSectionTitle, GroupListLines());
             log.Block(RunLog.FindingsSectionTitle, findings.Lines());
 
             RunJobs(jobs, nwfFolder);
+        }
+
+        /// <summary>
+        /// The groups that will actually run. A name shared with a group nobody ticked is
+        /// not a collision, because only one of them is going to be written.
+        /// </summary>
+        private IList<BuildingGroup> TickedGroups()
+        {
+            List<BuildingGroup> ticked = new List<BuildingGroup>();
+
+            foreach (BuildingGroup group in lastGroups)
+            {
+                foreach (GroupRow row in groups)
+                {
+                    if (string.Equals(row.Building, group.Building, StringComparison.Ordinal)
+                        && row.Include && !row.IsBlocked && row.Files.Count > 0)
+                    {
+                        ticked.Add(group);
+                        break;
+                    }
+                }
+            }
+
+            return ticked;
         }
 
         /// <summary>
@@ -575,9 +899,9 @@ namespace Federator.Addin.Ui
                 // What the Revit container inside each NWC says its building is. Only
                 // knowable once a document has been open, so it goes in after the run.
                 // Information, exactly like the scan findings. Nothing acts on it.
-                log.Block(
-                    RunLog.SourceFindingsSectionTitle,
-                    SourceMismatchFindings.From(engine.SourcePairs, settings).Lines());
+                sourceFindings = SourceMismatchFindings.From(engine.SourcePairs, settings);
+                log.Block(RunLog.SourceFindingsSectionTitle, sourceFindings.Lines());
+                ShowFindings();
 
                 log.Line("RUN      finished");
                 SetProgress("Run finished. " + log.CountOf(GroupOutcome.Done) + " done, "

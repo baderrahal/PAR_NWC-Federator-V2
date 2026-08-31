@@ -21,10 +21,14 @@ namespace Federator.Addin.Ui
             string building,
             IList<string> files,
             IList<string> disciplines,
-            string outputName)
+            string nwfName,
+            string nwdName,
+            string workbookName)
         {
             GroupRow row = new GroupRow(building, files, disciplines);
-            row.OutputName = outputName;
+            row.NwfName = nwfName;
+            row.NwdName = nwdName;
+            row.WorkbookName = workbookName;
             row.include = true;
             return row;
         }
@@ -33,7 +37,9 @@ namespace Federator.Addin.Ui
         {
             GroupRow row = new GroupRow(building, files, new List<string>());
             row.BlockedReason = reason;
-            row.OutputName = string.Empty;
+            row.NwfName = string.Empty;
+            row.NwdName = string.Empty;
+            row.WorkbookName = string.Empty;
             row.include = false;
             return row;
         }
@@ -50,7 +56,33 @@ namespace Federator.Addin.Ui
 
         public string Disciplines { get; private set; }
 
-        public string OutputName { get; private set; }
+        /// <summary>
+        /// The three can differ, because the NWF, the NWD and the workbook each have their
+        /// own pattern in the Outputs step. They start identical.
+        /// </summary>
+        public string NwfName { get; private set; }
+
+        public string NwdName { get; private set; }
+
+        public string WorkbookName { get; private set; }
+
+        /// <summary>
+        /// The name this group is known by in the log and the group list. The NWF is the
+        /// one that carries the clash history, so it is the one that names the group.
+        /// </summary>
+        public string OutputName
+        {
+            get { return NwfName; }
+        }
+
+        /// <summary>
+        /// One NWC on its own cannot clash with anything. The tests are still created so
+        /// the NWF matches the others, and none of them is run.
+        /// </summary>
+        public bool IsSingleModel
+        {
+            get { return Files.Count == 1; }
+        }
 
         /// <summary>Null when the group is usable.</summary>
         public string BlockedReason { get; private set; }
@@ -82,7 +114,17 @@ namespace Federator.Addin.Ui
 
         public string Status
         {
-            get { return IsBlocked ? "BLOCKED: " + BlockedReason : "Ready"; }
+            get
+            {
+                if (IsBlocked)
+                {
+                    return "BLOCKED: " + BlockedReason;
+                }
+
+                return IsSingleModel
+                    ? "Ready. One model, so every test is created and none is run."
+                    : "Ready";
+            }
         }
 
         public override string ToString()

@@ -88,7 +88,16 @@ namespace Federator.Core.Tests
             Assert.That(odd.Count, Is.EqualTo(1));
             Assert.That(odd[0].Buildings, Is.EqualTo(new[] { "100000" }));
             Assert.That(odd[0].Label, Is.EqualTo("ODD SHAPE"));
-            Assert.That(odd[0].Headline, Does.Contain("100000").And.Contains("999999"));
+            Assert.That(odd[0].Headline, Does.Contain("100000"));
+            Assert.That(odd[0].Headline, Does.Contain("written differently"));
+
+            // An example of what the others look like, not a shape string. Nobody reads
+            // 9A99AA, everybody reads a real code.
+            Assert.That(odd[0].Sentence, Does.Contain("codes look like"));
+            Assert.That(odd[0].Sentence, Does.Not.Contain("9A99AA"),
+                "the finding still prints a shape string at the reader");
+            Assert.That(odd[0].Sentence, Does.Not.Contain("shape"),
+                "the word shape is how the tool thinks, not how a person reads");
         }
 
         [Test]
@@ -163,8 +172,11 @@ namespace Federator.Core.Tests
             Assert.That(near[0].Buildings, Is.EquivalentTo(new[] { "1B06K1", "1B06KI" }));
             Assert.That(near[0].Detail, Does.Contain("4 files"));
             Assert.That(near[0].Detail, Does.Contain("2 files"));
-            Assert.That(near[0].Headline, Does.Contain("character 6"),
-                "the line should say where the two codes differ");
+            Assert.That(near[0].Detail, Does.Contain("character 6"),
+                "the finding should say where the two codes differ");
+            Assert.That(near[0].Headline, Does.Contain("look almost the same"));
+            Assert.That(near[0].Detail, Does.Contain("one of the NWC file names needs correcting"),
+                "the finding should say what a person would do about it");
         }
 
         [Test]
@@ -272,8 +284,9 @@ namespace Federator.Core.Tests
         [Test]
         public void TheDifferenceIsReportedByPosition()
         {
+            // Words, not quoted characters. A reader should not have to decode it.
             Assert.That(ScanFindings.DescribeConfusion("1B06K1", "1B06KI"),
-                Is.EqualTo("character 6 is \"1\" against \"I\""));
+                Is.EqualTo("character 6, a 1 against an I"));
             Assert.That(ScanFindings.DescribeConfusion("1B06PE", "1B06PG"), Is.Null);
         }
 
@@ -293,7 +306,7 @@ namespace Federator.Core.Tests
             Assert.That(single[0].Label, Is.EqualTo("SINGLE DISCIPLINE"));
             Assert.That(single[0].Buildings, Is.EqualTo(new[] { "1B06BS" }));
             Assert.That(single[0].Headline, Does.Contain("only EL"));
-            Assert.That(single[0].Detail, Does.Contain("nothing to clash against"));
+            Assert.That(single[0].Headline, Does.Contain("nothing for them to clash against"));
         }
 
         [Test]
@@ -325,6 +338,7 @@ namespace Federator.Core.Tests
             Assert.That(missing[0].Buildings, Is.EqualTo(new[] { "1B06BS" }));
             Assert.That(missing[0].Headline, Does.Contain("EL").And.Contains("ME"));
             Assert.That(missing[0].Detail, Does.Contain("AR, ST"));
+            Assert.That(missing[0].Headline, Does.Contain("which other buildings in this run do have"));
         }
 
         // The set of disciplines comes from the run, never from a list in the code.

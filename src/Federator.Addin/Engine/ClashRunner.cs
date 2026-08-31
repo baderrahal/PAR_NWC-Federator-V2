@@ -152,6 +152,14 @@ namespace Federator.Addin.Engine
         /// <summary>How the discipline is read off a source file name. A setting.</summary>
         public ContainerNameSettings NameSettings { get; set; }
 
+        /// <summary>
+        /// True when this group holds one NWC. Every test is still created, so the NWF is
+        /// complete and matches the other groups, and none of them is run, because one
+        /// model cannot clash with anything. Recorded as SingleModel rather than as a side
+        /// finding nothing, which is a different fact about a different problem.
+        /// </summary>
+        public bool SingleModelGroup { get; set; }
+
         public ClashRunOutcome Run(ClashTestPlan plan)
         {
             if (plan == null)
@@ -420,6 +428,19 @@ namespace Federator.Addin.Engine
                 {
                     summary.LeftItems = leftItems;
                     summary.RightItems = rightItems;
+                }
+
+                if (SingleModelGroup)
+                {
+                    // Created, so the NWF matches every other group and a later run against
+                    // a fuller model finds the tests already there. Not run, because there
+                    // is nothing here for them to run against.
+                    LogSkip(outcome.AddSkipped(
+                        planned.Name,
+                        ClashSkipReason.SingleModel,
+                        "the group holds one model, so there is nothing for this test to clash against"));
+                    guard.RecordNotAttempted();
+                    return;
                 }
 
                 string why;
