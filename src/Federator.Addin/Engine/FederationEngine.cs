@@ -571,6 +571,8 @@ namespace Federator.Addin.Engine
                 ClashRunner runner = new ClashRunner(progress, log, guard);
                 runner.NameSettings = reports.Names;
                 runner.SingleModelGroup = job.Files.Count == 1;
+                runner.ApplyFileSettings = reports.ApplyFileSettings;
+                runner.CompactResolved = reports.CompactResolved;
 
                 if (runner.SingleModelGroup)
                 {
@@ -585,6 +587,7 @@ namespace Federator.Addin.Engine
                     report.DocumentUnits = units;
                     report.RunAt = DateTime.Now;
                     report.BuildStamp = BuildStamp.Of(typeof(FederationEngine).Assembly);
+                    report.OpenCount = reports.OpenCount;
                     runner.Report = report;
                     outcome.Report = report;
                 }
@@ -595,6 +598,7 @@ namespace Federator.Addin.Engine
                 {
                     outcome.Report.OpenDocument = clash.OpenDocument;
                     outcome.Report.ClashStepSeconds = clash.Seconds;
+                    outcome.Report.CompactedAway = clash.Compacted;
                 }
                 outcome.Clash = clash;
                 log.Block("CLASH " + job.Building, clash.Lines());

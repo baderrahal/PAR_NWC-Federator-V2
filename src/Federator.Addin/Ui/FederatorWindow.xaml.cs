@@ -41,6 +41,12 @@ namespace Federator.Addin.Ui
         private ScanCounts counts = new ScanCounts();
         private IList<BuildingGroup> lastGroups = new List<BuildingGroup>();
         private readonly OutputNaming naming = new OutputNaming();
+
+        /// <summary>Where each picker was last pointed, kept across sessions.</summary>
+        private readonly FolderMemory folders = FolderMemory.Load();
+
+        /// <summary>One row per group, filled from the patterns and editable in place.</summary>
+        private OutputNameTable nameTable = new OutputNameTable();
         private bool running;
         private bool suspendRegroup;
         private bool suspendNaming;
@@ -61,7 +67,10 @@ namespace Federator.Addin.Ui
             OutputsGrid.ItemsSource = groups;
 
             FillGroupingModes();
+            FillOpenCounts();
             ShowNaming();
+
+            log.Block("FOLDERS REMEMBERED", folders.Lines());
 
             files.CollectionChanged += delegate { Regroup(); };
 
@@ -92,10 +101,12 @@ namespace Federator.Addin.Ui
 
         private void OnBrowseSource(object sender, RoutedEventArgs e)
         {
-            string picked = PickFolder("Pick the folder holding the NWC files", SourceFolderBox.Text);
+            string picked = PickFolder(
+                "Pick the folder holding the NWC files", StartFor(PickerKind.Source, SourceFolderBox.Text));
 
             if (picked != null)
             {
+                folders.Remember(PickerKind.Source, picked);
                 SourceFolderBox.Text = picked;
             }
         }
@@ -188,6 +199,31 @@ namespace Federator.Addin.Ui
             GroupingModeBox.SelectedIndex = Array.IndexOf(GroupingModes.All(), GroupingModes.Default);
         }
 
+        /// <summary>
+        /// The two ways of counting what is still outstanding, read off OpenClashes so the
+        /// window and the workbook cannot drift apart. Navisworks open is the default,
+        /// because it is the product's own definition rather than one this tool invented.
+        /// </summary>
+        private void FillOpenCounts()
+        {
+            OpenCountBox.Items.Clear();
+
+            foreach (OpenClashCount which in OpenClashes.All())
+            {
+                OpenCountBox.Items.Add(OpenClashes.Describe(which));
+            }
+
+            OpenCountBox.SelectedIndex = Array.IndexOf(OpenClashes.All(), OpenClashes.Default);
+        }
+
+        private OpenClashCount ChosenOpenCount()
+        {
+            OpenClashCount[] all = OpenClashes.All();
+            int at = OpenCountBox == null ? -1 : OpenCountBox.SelectedIndex;
+
+            return at >= 0 && at < all.Length ? all[at] : OpenClashes.Default;
+        }
+
         private GroupingMode ChosenGrouping()
         {
             GroupingMode[] all = GroupingModes.All();
@@ -250,15 +286,18 @@ namespace Federator.Addin.Ui
             BuildingGroupingResult result = BuildingGrouping.Group(ticked, mode, settings);
             lastGroups = new List<BuildingGroup>(result.Groups);
 
+            // The scan feeds the table. Regrouping is a different set of groups, so the
+            // table is built again and any hand edit belonged to groups that no longer
+            // exist. A pattern change goes through Refill instead, which keeps them.
+            nameTable = OutputNameTable.From(result.Groups, naming, settings);
+
             foreach (BuildingGroup group in result.Groups)
             {
                 groups.Add(GroupRow.Usable(
                     group.Building,
                     PathsFor(group.Files, pathsByStem),
                     group.Disciplines,
-                    SafeName(naming.Nwf, group),
-                    SafeName(naming.Nwd, group),
-                    SafeName(naming.Workbook, group)));
+                    nameTable.Find(group.Building)));
             }
 
             foreach (SkippedBuildingGroup skipped in result.Skipped)
@@ -484,6 +523,8 @@ namespace Federator.Addin.Ui
             Read(naming.Nwd, NwdLevel, NwdDiscipline, NwdType, NwdNumber, NwdAllBuildings);
             Read(naming.Workbook, WorkbookLevel, WorkbookDiscipline, WorkbookType,
                 WorkbookNumber, WorkbookAllBuildings);
+
+            naming.DateTheNwd = DateTheNwd != null && DateTheNwd.IsChecked == true;
         }
 
         private static void Read(
@@ -503,12 +544,55 @@ namespace Federator.Addin.Ui
 
         private void OnNamingChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (suspendNaming)
+            RefillNames();
+        }
+
+        private void OnNamingToggled(object sender, RoutedEventArgs e)
+        {
+            RefillNames();
+        }
+
+        /// <summary>
+        /// A pattern changed, so every name that has not been typed over is rebuilt and
+        /// every one that has is left exactly as it is. It says how many it kept, because
+        /// otherwise nobody can tell whether their edit survived.
+        /// </summary>
+        private void RefillNames()
+        {
+            if (suspendNaming || nameTable == null || NamePreview == null)
             {
                 return;
             }
 
-            Regroup();
+            ReadNaming();
+            int kept = nameTable.Refill(naming, settings);
+
+            foreach (GroupRow row in groups)
+            {
+                row.NamesRefilled();
+            }
+
+            lastRefill = OutputNameTable.DescribeRefill(nameTable.Count, kept);
+            RefreshNamePreview();
+            RefreshOutputsSummary();
+        }
+
+        private string lastRefill = string.Empty;
+
+        /// <summary>
+        /// A name typed straight into the table. Only that one name changes, and only that
+        /// row is left alone by the next pattern change.
+        /// </summary>
+        private void OnNameEdited(object sender, System.Windows.Controls.DataGridCellEditEndingEventArgs e)
+        {
+            // The binding writes the value on commit, so nothing is read here. This runs
+            // afterwards to refresh what the edit affects.
+            Dispatcher.BeginInvoke(new Action(delegate
+            {
+                lastRefill = string.Empty;
+                RefreshNamePreview();
+                RefreshOutputsSummary();
+            }), System.Windows.Threading.DispatcherPriority.Background);
         }
 
         /// <summary>
@@ -542,10 +626,13 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            string collisions = OutputNameCheck.WhyTheRunCannotStart(lastGroups, naming, settings);
+            string collisions = nameTable.WhyTheRunCannotStart();
 
             NamePreview.Text = "The first group would be written as:" + Environment.NewLine
                 + string.Join(Environment.NewLine, lines.ToArray())
+                + (lastRefill.Length == 0
+                    ? string.Empty
+                    : Environment.NewLine + lastRefill)
                 + (collisions == null
                     ? string.Empty
                     : Environment.NewLine + Environment.NewLine + "THE RUN CANNOT START. " + collisions);
@@ -555,10 +642,12 @@ namespace Federator.Addin.Ui
 
         private void OnBrowseNwf(object sender, RoutedEventArgs e)
         {
-            string picked = PickFolder("Pick the folder for the NWF files", NwfFolderBox.Text);
+            string picked = PickFolder(
+                "Pick the folder for the NWF files", StartFor(PickerKind.Nwf, NwfFolderBox.Text));
 
             if (picked != null)
             {
+                folders.Remember(PickerKind.Nwf, picked);
                 NwfFolderBox.Text = picked;
                 RefreshOutputsSummary();
             }
@@ -566,10 +655,12 @@ namespace Federator.Addin.Ui
 
         private void OnBrowseNwd(object sender, RoutedEventArgs e)
         {
-            string picked = PickFolder("Pick the folder for the NWD files", NwdFolderBox.Text);
+            string picked = PickFolder(
+                "Pick the folder for the NWD files", StartFor(PickerKind.Nwd, NwdFolderBox.Text));
 
             if (picked != null)
             {
+                folders.Remember(PickerKind.Nwd, picked);
                 NwdFolderBox.Text = picked;
                 RefreshOutputsSummary();
             }
@@ -592,10 +683,12 @@ namespace Federator.Addin.Ui
 
         private void OnBrowseExcel(object sender, RoutedEventArgs e)
         {
-            string picked = PickFolder("Pick the folder for the Excel reports", ExcelFolderBox.Text);
+            string picked = PickFolder(
+                "Pick the folder for the Excel reports", StartFor(PickerKind.Excel, ExcelFolderBox.Text));
 
             if (picked != null)
             {
+                folders.Remember(PickerKind.Excel, picked);
                 ExcelFolderBox.Text = picked;
                 RefreshOutputsSummary();
             }
@@ -625,6 +718,9 @@ namespace Federator.Addin.Ui
             // in C:\00_NM\NWC Fed\NWC\test001, which is where its own input lives.
             options.SourceFolder = Trimmed(SourceFolderBox.Text);
             options.WriteXml = WriteClashXml.IsChecked == true;
+            options.OpenCount = ChosenOpenCount();
+            options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
+            options.CompactResolved = CompactResolved.IsChecked == true;
             options.Names = settings;
             return options;
         }
@@ -654,7 +750,8 @@ namespace Federator.Addin.Ui
             // IsChecked="True" in the XAML raises Checked while the tree is still being
             // built, so this can be reached before the controls it reads exist.
             if (OutputsSummary == null || RepublishNwd == null || ExcelFolderBox == null
-                || NwfFolderBox == null || WriteClashXml == null || SourceFolderBox == null)
+                || NwfFolderBox == null || WriteClashXml == null || SourceFolderBox == null
+                || DateTheNwd == null)
             {
                 return;
             }
@@ -706,8 +803,7 @@ namespace Federator.Addin.Ui
             // Outputs overwrite with no date suffix, so two groups sharing a name is not a
             // warning. The second silently destroys the first and only shows up later as a
             // federation nobody can find. Caught before anything is cleared or written.
-            string collisions = OutputNameCheck.WhyTheRunCannotStart(
-                TickedGroups(), naming, settings);
+            string collisions = nameTable.Only(TickedGroupKeys()).WhyTheRunCannotStart();
 
             if (collisions != null)
             {
@@ -759,6 +855,19 @@ namespace Federator.Addin.Ui
                 groups.Count);
 
             log.Line("grouping         : " + GroupingModes.Describe(ChosenGrouping()));
+            log.Line("matrix counts    : " + OpenClashes.Describe(ChosenOpenCount()));
+            log.Line("apply file to old: "
+                + (ApplyFileSettings.IsChecked == true
+                    ? "YES, which RESETS the results of every test it changes"
+                    : "no, differences are reported and nothing is changed"));
+            log.Line("compact resolved : "
+                + (CompactResolved.IsChecked == true
+                    ? "YES, which permanently removes every Resolved clash"
+                    : "no"));
+            log.Line("NWD naming       : "
+                + (DateTheNwd.IsChecked == true
+                    ? "dated, so every week is kept"
+                    : "overwrites, so only the latest week exists"));
             log.Line("republish NWD    : " + (RepublishNwd.IsChecked == true ? "yes" : "no"));
             log.Block(RunLog.GroupsSectionTitle, GroupListLines());
             log.Block(RunLog.FindingsSectionTitle, findings.Lines());
@@ -770,20 +879,15 @@ namespace Federator.Addin.Ui
         /// The groups that will actually run. A name shared with a group nobody ticked is
         /// not a collision, because only one of them is going to be written.
         /// </summary>
-        private IList<BuildingGroup> TickedGroups()
+        private IList<string> TickedGroupKeys()
         {
-            List<BuildingGroup> ticked = new List<BuildingGroup>();
+            List<string> ticked = new List<string>();
 
-            foreach (BuildingGroup group in lastGroups)
+            foreach (GroupRow row in groups)
             {
-                foreach (GroupRow row in groups)
+                if (row.Include && !row.IsBlocked && row.Files.Count > 0)
                 {
-                    if (string.Equals(row.Building, group.Building, StringComparison.Ordinal)
-                        && row.Include && !row.IsBlocked && row.Files.Count > 0)
-                    {
-                        ticked.Add(group);
-                        break;
-                    }
+                    ticked.Add(row.Building);
                 }
             }
 
@@ -976,7 +1080,7 @@ namespace Federator.Addin.Ui
                 dialog.Filter = "Navisworks exchange XML (*.xml)|*.xml|All files (*.*)|*.*";
                 dialog.CheckFileExists = true;
 
-                string current = Trimmed(ExchangeFileBox.Text);
+                string current = StartFor(PickerKind.ClashXml, ExchangeFileBox.Text);
 
                 if (current.Length > 0)
                 {
@@ -1000,6 +1104,7 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
+                folders.Remember(PickerKind.ClashXml, dialog.FileName);
                 ExchangeFileBox.Text = dialog.FileName;
                 SetsSummary.Text = Describe(dialog.FileName);
             }
@@ -1033,6 +1138,19 @@ namespace Federator.Addin.Ui
         private static string Trimmed(string value)
         {
             return value == null ? string.Empty : value.Trim();
+        }
+
+        /// <summary>
+        /// Where one picker should open. What is already in its box wins, because that is
+        /// what the person is looking at, then what that picker was last pointed at, and
+        /// a folder that has gone falls back to its nearest existing parent rather than
+        /// failing to open.
+        /// </summary>
+        private string StartFor(PickerKind kind, string inTheBox)
+        {
+            string typed = FolderMemory.NearestExisting(Trimmed(inTheBox));
+
+            return typed.Length > 0 ? typed : folders.OpenAt(kind);
         }
 
         /// <summary>

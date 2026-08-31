@@ -871,6 +871,172 @@ failure, the same as unticking the NWD.
     CLASH    1C07BC was left alone because its file list changed, so no set was built and
              no test created
 
+## The pickers remember where you were
+
+65. Close Navisworks completely after a run. Open it again and press the button, then open
+    each of the five pickers in turn: source, NWF, NWD, Excel and the clash XML.
+
+**Worked:** each one opens where you last left it, and they are five separate memories.
+The clash picker opens in the folder the XML lives in, not at the XML itself.
+
+66. The one worth checking properly: pick an NWD folder somewhere quite different, then
+    open the source picker.
+
+**Worked:** the source picker still opens at the NWC folder. It did not follow the NWD
+picker. One shared memory is worse than none, because it walks every picker to whatever
+you touched last.
+
+67. Now rename or unmount a folder one of them remembers, and open that picker.
+
+**Worked:** it opens at the nearest parent that is still there, and the Source step says
+
+    FOLDERS  C:\out\nwf\test001 has gone, opening at C:\out\nwf instead
+
+Nothing is cleared and nothing is an error. Put the folder back and it opens there again.
+This is the drive-not-mounted-yet case, which happens most Mondays.
+
+The file is `%LOCALAPPDATA%\ParsonsNwcFederator\logs\folders.txt` and you can delete it.
+Deleting it forgets everything and breaks nothing.
+
+## Step 9, the names as a table
+
+This replaces reading the pattern and hoping. The names are now shown per group and every
+one of them can be typed over.
+
+68. Scan, then go to the Outputs step and look at the grid.
+
+**Worked:** one row per group, with the NWF, NWD and workbook name already filled in, and
+an **Edited** column that is empty on every row.
+
+69. Click into one NWF name and type something else. Press Tab.
+
+**Worked:** that row's Edited column says `by hand`. The NWD and workbook names on the SAME
+row are untouched, and every other row is untouched.
+
+70. Now change a pattern, for instance set the type code to FED, and watch the grid.
+
+**Worked:** every name refills except the one you typed, and a line appears saying
+
+    2 of 3 rows refilled. 1 row was typed over by hand and left alone.
+
+This is the whole point of the table. A pattern is where a name starts, not where it ends,
+and one group in twenty needs a name no pattern will give it.
+
+71. Type a name onto one row that another row already has, and press **Run**.
+
+**Worked:** the run does not start. It names both groups and says they would be written to
+the same file. Outputs overwrite with no date suffix, so the second would destroy the first
+silently, which is why this is a stop and not a warning.
+
+## Step 10, what has drifted since last week
+
+The clash tests already in the document keep their results and are never recreated, which
+is right. It also means a tolerance you changed in the XML never reaches them. That was
+silent. Now it is reported.
+
+72. Change the tolerance on a few tests in the clash XML, then run against a model that
+    already has those tests in it.
+
+**Worked:** a `DRIFT` block naming each one:
+
+    DRIFT    1830 tests were already in the document and were compared with the file.
+             3 differ.
+             AR-Floors v ME-Ducts: the file says the tolerance 0.075, the document has 0.05
+             ...
+             Nothing was changed. Changing a test resets its results.
+
+**Worked:** nothing in the document changed. Open Clash Detective and the tolerances are
+still what they were, and every Active and Resolved clash is still Active and Resolved.
+
+73. Only if you actually want the file to win: tick **Apply the file's settings to tests
+    already in the document** on the Clash step, and run again.
+
+**Worked:** it says loudly that this RESETS the results of every test it changes and that
+their clashes go back to New, then it changes them and says which. This is a once-a-quarter
+thing, not a weekly one. The default is off for that reason.
+
+## Step 11, the stale warning, and what it does not say
+
+74. Look for `STATUS` lines in the log after the tests run.
+
+**Worked:** it reports what Navisworks says and nothing more:
+
+    STATUS   412 of 1830 tests report status Old
+
+**This is deliberately not interpreted.** Clash Detective shows a warning triangle on a
+test when something has changed. The API has no stale, altered or out-of-date member on
+anything, measured across every type in `Autodesk.Navisworks.Clash`, public and private,
+and recorded in docs\scan.md section 4j. The only thing that exists is `ClashTest.Status`,
+which is New, Old, Partial or Complete. What puts a test into Old is **UNKNOWN**, so the
+tool prints the word Old and stops there. It will never tell you "your models have
+changed", because it cannot know that.
+
+If you can tell me what Clash Detective shows next to a test the log called Old, that maps
+the word to the triangle and I can then say something useful about it.
+
+## Step 12, Resolved clashes, and Compact
+
+75. After a run, look at the workbook Summary and at the group totals in the log.
+
+**Worked:** the Resolved count per test and for the group. On a test that has been running
+weekly for months this number only grows, because a Resolved clash stays in the file
+forever. That is what makes the file the record.
+
+76. **Read this before ticking anything.** Compact removes every Resolved clash from the
+    NWF. The NWF is the only record of what has been fixed. There is no second copy and it
+    cannot be undone.
+
+Only when you have decided you want that: tick **Compact resolved clashes** on the Clash
+step. It runs after the tests and before the workbook.
+
+**Worked:** it says what it is about to do, with the count, before it does it:
+
+    CLASH    COMPACTING. This removes Resolved clashes from the NWF permanently and
+             cannot be undone. 4812 resolved clashes are in this document.
+    CLASH    compacted, 4812 resolved clashes removed
+
+**Worked, and matters more:** with the box unticked, no compact happens, and the log says
+the resolved count without removing anything. Nothing compacts on its own, ever.
+
+## Step 13, what counts as still open
+
+77. On the Clash step, look at the open count box. It has two choices and the default is
+    **Navisworks open**.
+
+**Worked:** the default counts New, Active and Reviewed, which is what Navisworks itself
+calls open, so the matrix number agrees with the panel. Switch it to **New plus Active**
+and the same run gives a smaller number, short by exactly the Reviewed clashes.
+
+**Worked:** the workbook says which one it used, on the sheet, along with what it counted
+and what it did not. Approved and Resolved are closed under both.
+
+The API has no open against closed notion at all, so neither of these is read off it. Both
+are rules, the labelling is there so nobody reads an API meaning into the number, and the
+sheet never says a bare "open" without saying which.
+
+## Step 14, the weekly record
+
+78. On the Outputs step, tick **Date the NWD**, and run.
+
+**Worked:** the NWD is written as `1104-PAR-1C07BC-ZZZ-BM-MOD-20260904.nwd`, with today's
+date where the number was, and last week's dated NWD is still sitting beside it. The NWF
+is still `-000001` and still overwritten in place.
+
+**That difference is on purpose.** The NWF holds the clash tests and every clash result
+inside it, so it IS the history, and overwriting it in place is what keeps that history in
+one file. A dated NWF would fork it: this week's clashes in one file, last week's Active
+and Resolved stranded in another, and no file holding the whole picture. The NWD carries no
+clash results at all, it is just the model as it stood, so a dated NWD is a free weekly
+photograph. One is a ledger and one is a photograph.
+
+79. The date format is a setting if yyyyMMdd is not what your project wants.
+
+**Worked:** a format that would make a file name Windows refuses, such as one holding a
+slash or a colon, falls back to the number rather than failing at the moment of writing.
+A format that is merely odd is used exactly as typed and you can see it in the Outputs
+grid before you run. It is your setting, so your mistakes stay visible rather than being
+quietly corrected.
+
 ## What to send me if it goes wrong
 
 Send the whole log file, not a summary and not the last few lines. Use **Copy log** and
@@ -997,3 +1163,20 @@ the running application do with it:
 - whether a single model group really does end with a complete NWF, every test in it and
   none of them run. The rule is tested and the wiring is reviewed, but only a run against
   1B06BS proves it
+
+From the seven changes of 2026-08-31, the ones a run has to answer. The folder memory, the
+name table, the drift comparison and the open count are all tested in Federator.Core, so
+what is left is what the running application does:
+
+- what Clash Detective shows next to a test the log reported as status Old. That is the
+  one measurement I cannot take from here and it is the whole of step 11. It maps the word
+  to the warning triangle, or proves it does not
+- whether Compact actually removes what it says it removes. Take a copy of the NWF first.
+  The count comes back from the tally before and after, but only opening the file proves
+  the Resolved clashes have gone and that nothing else went with them
+- whether applying the file's settings really does reset the results of the tests it
+  changes. The tool says it will, because changing a test is documented as doing that.
+  Whether it resets only those tests, or something wider, is UNKNOWN until you try it on a
+  copy
+- whether a dated NWD and an undated NWF sit together the way step 14 describes across two
+  real weeks. One run cannot show that, two can

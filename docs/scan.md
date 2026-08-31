@@ -855,6 +855,87 @@ references, and refuses to finish if any reference is satisfied by neither the b
 framework, nor the Navisworks folder. It also prints the six version mismatches above,
 labelled as expected rather than as faults, so the next person does not read them as one.
 
+### 4j. A stale test marker, and whether Compact is reachable, measured 2026-08-31
+
+Both read off `Autodesk.Navisworks.Clash.dll` 22.0.0.0 in the install by reflection over
+every type in the assembly, public members and private ones alike. The probe is
+`build\probe-clash-api.ps1`, kept in the repo so these can be re-read against a
+later install rather than trusted.
+
+#### The stale warning: there is a status, and its meaning is UNKNOWN
+
+Clash Detective shows a warning triangle on a test when something about it has changed
+since it was last run. The question was whether the API exposes that.
+
+Searching every type whose full name holds `Clash`, for members naming stale, alter,
+outofdate, outdate, dirty, uptodate, invalid, needsrun, rerun or expire, across public,
+non public, instance and static members:
+
+    none
+
+So there is no `IsStale`, no `IsAltered`, no `IsOutOfDate` and no `NeedsRerun` anywhere.
+The only candidate is `ClashTest.Status`:
+
+    Autodesk.Navisworks.Api.Clash.ClashTestStatus Status   get and set, both public
+
+    ClashTestStatus, underlying type Int32
+      New      = 0
+      Old      = 1
+      Partial  = 2
+      Complete = 3
+
+`Old` is the only value that could carry the warning. What is NOT established, and cannot
+be established from the DLL, is what puts a test into `Old`. Whether it means an option
+was changed, a newer model revision was loaded, both, or something else again, is
+**UNKNOWN**. The names carry no documentation and reflection shows no rule.
+
+So the tool reports the status as itself, by test name, and puts no meaning on it. It says
+what Navisworks says and never translates `Old` into "your models have changed", because
+that sentence would be invented here rather than read off anything. `ClashRunner.ReportStatus`
+is the whole of it, and it logs. It never decides.
+
+The settable side matters too. `Status` has a public setter, so a caller can write `Old`
+onto a test or wipe it. Nothing in this tool writes it. Setting the status would be
+claiming to know the rule that is UNKNOWN above.
+
+#### Compact: reachable, and it destroys history
+
+    public void TestsCompactTest(ClashTest test)
+    public void TestsCompactAllTests()
+
+Both public on `DocumentClashTests`, so Compact IS reachable and the tick box is real.
+Underneath, in the interop layer, `LcClClashTestRunner.CompactOneTest` and
+`.CompactAllTests`.
+
+`TestsCompactTest` takes a `ClashTest`, so it is subject to section 4g: it is a mutator on
+`DocumentClashTests` and the handle passed in is dead when it returns. `TestsCompactAllTests`
+takes nothing, which is the safer of the two, and it is the one this tool calls.
+
+What Compact removes is Resolved clashes. Once removed they are gone from the NWF, and the
+NWF is the only record of what has been fixed, so this is not undoable and no second copy
+exists anywhere. It is off by default, it is announced in the log before it runs with the
+count it is about to remove, and the count it removed is reported afterwards. Nothing
+compacts on its own.
+
+Why it is offered at all: a test reruns weekly for months, and every clash ever fixed stays
+in the file as Resolved. The count grows without limit and nothing else prunes it. So it is
+a decision Bader makes on a run, with the number in front of him, rather than a thing the
+tool does quietly or a thing he cannot do at all.
+
+#### For the record, alongside 4h
+
+    ClashResultStatus, underlying type Int32
+      New      = 0
+      Active   = 1
+      Reviewed = 2
+      Approved = 3
+      Resolved = 4
+
+Still five flat values and still no open against closed anywhere on it, which is what 4h
+recorded. The open count setting is a stated rule on top of this enum, never a reading of
+it, and the workbook says which of the two it used.
+
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

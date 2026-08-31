@@ -1,45 +1,45 @@
 using System.Collections.Generic;
+using Federator.Core.Naming;
 
 namespace Federator.Addin.Ui
 {
     /// <summary>
-    /// One building. A group whose files disagree on the project code or the originator
-    /// arrives blocked, showing both offending file names, and cannot be ticked.
+    /// One group in the tables. A group whose files disagree on the project code or the
+    /// originator arrives blocked, showing both offending file names, and cannot be ticked.
+    ///
+    /// The three output names are a view onto the row in the name table, so typing one in
+    /// the grid marks that one name as typed over and a later pattern change leaves it
+    /// alone. Nothing here holds a second copy of a name.
     /// </summary>
     public sealed class GroupRow : ObservableObject
     {
         private bool include;
+        private readonly OutputNameRow names;
 
-        private GroupRow(string building, IList<string> files, IList<string> disciplines)
+        private GroupRow(
+            string building, IList<string> files, IList<string> disciplines, OutputNameRow names)
         {
             Building = building;
             Files = files;
             Disciplines = string.Join(", ", new List<string>(disciplines).ToArray());
+            this.names = names;
         }
 
         public static GroupRow Usable(
             string building,
             IList<string> files,
             IList<string> disciplines,
-            string nwfName,
-            string nwdName,
-            string workbookName)
+            OutputNameRow names)
         {
-            GroupRow row = new GroupRow(building, files, disciplines);
-            row.NwfName = nwfName;
-            row.NwdName = nwdName;
-            row.WorkbookName = workbookName;
+            GroupRow row = new GroupRow(building, files, disciplines, names);
             row.include = true;
             return row;
         }
 
         public static GroupRow Blocked(string building, IList<string> files, string reason)
         {
-            GroupRow row = new GroupRow(building, files, new List<string>());
+            GroupRow row = new GroupRow(building, files, new List<string>(), null);
             row.BlockedReason = reason;
-            row.NwfName = string.Empty;
-            row.NwdName = string.Empty;
-            row.WorkbookName = string.Empty;
             row.include = false;
             return row;
         }
@@ -56,15 +56,29 @@ namespace Federator.Addin.Ui
 
         public string Disciplines { get; private set; }
 
-        /// <summary>
-        /// The three can differ, because the NWF, the NWD and the workbook each have their
-        /// own pattern in the Outputs step. They start identical.
-        /// </summary>
-        public string NwfName { get; private set; }
+        /// <summary>The row in the name table this shows, or null for a blocked group.</summary>
+        public OutputNameRow Names
+        {
+            get { return names; }
+        }
 
-        public string NwdName { get; private set; }
+        public string NwfName
+        {
+            get { return NameOf(OutputKind.Nwf); }
+            set { TypeOver(OutputKind.Nwf, value, "NwfName"); }
+        }
 
-        public string WorkbookName { get; private set; }
+        public string NwdName
+        {
+            get { return NameOf(OutputKind.Nwd); }
+            set { TypeOver(OutputKind.Nwd, value, "NwdName"); }
+        }
+
+        public string WorkbookName
+        {
+            get { return NameOf(OutputKind.Workbook); }
+            set { TypeOver(OutputKind.Workbook, value, "WorkbookName"); }
+        }
 
         /// <summary>
         /// The name this group is known by in the log and the group list. The NWF is the
@@ -75,13 +89,44 @@ namespace Federator.Addin.Ui
             get { return NwfName; }
         }
 
-        /// <summary>
-        /// One NWC on its own cannot clash with anything. The tests are still created so
-        /// the NWF matches the others, and none of them is run.
-        /// </summary>
-        public bool IsSingleModel
+        /// <summary>Says at a glance which rows a pattern change will leave alone.</summary>
+        public string EditedMark
         {
-            get { return Files.Count == 1; }
+            get { return names != null && names.WasEdited ? "by hand" : string.Empty; }
+        }
+
+        private string NameOf(OutputKind kind)
+        {
+            return names == null ? string.Empty : names.Get(kind);
+        }
+
+        private void TypeOver(OutputKind kind, string value, string property)
+        {
+            if (names == null)
+            {
+                return;
+            }
+
+            string tidied = value == null ? string.Empty : value.Trim();
+
+            if (string.Equals(names.Get(kind), tidied, System.StringComparison.Ordinal)
+                && names.IsByHand(kind))
+            {
+                return;
+            }
+
+            names.SetByHand(kind, tidied);
+            Raise(property);
+            Raise("EditedMark");
+        }
+
+        /// <summary>Tells the grid the names underneath it have been refilled.</summary>
+        public void NamesRefilled()
+        {
+            Raise("NwfName");
+            Raise("NwdName");
+            Raise("WorkbookName");
+            Raise("EditedMark");
         }
 
         /// <summary>Null when the group is usable.</summary>
@@ -95,6 +140,15 @@ namespace Federator.Addin.Ui
         public bool CanInclude
         {
             get { return !IsBlocked; }
+        }
+
+        /// <summary>
+        /// One NWC on its own cannot clash with anything. The tests are still created so
+        /// the NWF matches the others, and none of them is run.
+        /// </summary>
+        public bool IsSingleModel
+        {
+            get { return Files.Count == 1; }
         }
 
         public bool Include

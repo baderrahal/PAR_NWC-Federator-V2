@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Federator.Core.Clash;
 
 namespace Federator.Core.Report
 {
@@ -33,7 +34,10 @@ namespace Federator.Core.Report
 
         public MatrixCellKind Kind { get; private set; }
 
-        /// <summary>Only meaningful when the kind is Ran.</summary>
+        /// <summary>
+        /// How many are still outstanding under the rule the report was built with. Only
+        /// meaningful when the kind is Ran.
+        /// </summary>
         public int NewPlusActive { get; private set; }
 
         public int RawClashes { get; private set; }
@@ -97,6 +101,12 @@ namespace Federator.Core.Report
             get { return locators.Count; }
         }
 
+        /// <summary>Which rule the cells were counted under, so the sheet can say so.</summary>
+        public OpenClashCount OpenCount
+        {
+            get { return report.OpenCount; }
+        }
+
         /// <summary>The discipline for one axis entry, read off its folder.</summary>
         public string DisciplineOf(string locator)
         {
@@ -131,7 +141,7 @@ namespace Federator.Core.Report
 
             foreach (TestReport test in report.Tests)
             {
-                MatrixCell cell = Cell(test);
+                MatrixCell cell = Cell(test, report.OpenCount);
 
                 // Symmetric. A clash between A and B is the same clash as B against A, so
                 // both halves of the grid carry it and neither half is left blank.
@@ -142,7 +152,7 @@ namespace Federator.Core.Report
             return matrix;
         }
 
-        private static MatrixCell Cell(TestReport test)
+        private static MatrixCell Cell(TestReport test, OpenClashCount which)
         {
             if (test.State == TestState.Skipped)
             {
@@ -150,7 +160,7 @@ namespace Federator.Core.Report
             }
 
             return new MatrixCell(
-                MatrixCellKind.Ran, test.NewPlusActive, test.RawClashes, test.Number);
+                MatrixCellKind.Ran, test.OpenUnder(which), test.RawClashes, test.Number);
         }
 
         private void Remember(string locator, HashSet<string> seen)
