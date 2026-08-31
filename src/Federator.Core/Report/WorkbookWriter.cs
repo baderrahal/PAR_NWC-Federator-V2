@@ -38,7 +38,7 @@ namespace Federator.Core.Report
             "Outcome", "Why skipped",
             "Groups", "Raw clashes",
             "New", "Active", "Reviewed", "Approved", "Resolved",
-            "New plus Active", "Seconds"
+            "Open", "Resolved so far", "Seconds"
         };
 
         /// <summary>
@@ -125,8 +125,16 @@ namespace Federator.Core.Report
                 row = Fact(sheet, row, status.ToString(), totals.Of(status).ToString());
             }
 
-            row = Fact(sheet, row, "New plus Active",
-                (totals.Of(ClashStatus.New) + totals.Of(ClashStatus.Active)).ToString());
+            row = Fact(sheet, row, "Open, counted as " + OpenClashes.Heading(report.OpenCount),
+                OpenClashes.Of(totals, report.OpenCount).ToString());
+            row = Fact(sheet, row, "Resolved, which stay in the file and keep counting",
+                totals.Of(ClashStatus.Resolved).ToString());
+
+            if (report.CompactedAway >= 0)
+            {
+                row = Fact(sheet, row, "Removed by compacting this run",
+                    report.CompactedAway.ToString());
+            }
 
             row += 2;
             int headerRow = row;
@@ -175,7 +183,8 @@ namespace Federator.Core.Report
                     sheet.Cell(row, column++).Value = test.Tally.Of(status);
                 }
 
-                sheet.Cell(row, column++).Value = test.NewPlusActive;
+                sheet.Cell(row, column++).Value = test.OpenUnder(report.OpenCount);
+                sheet.Cell(row, column++).Value = test.Resolved;
                 sheet.Cell(row, column).Value = test.Seconds;
 
                 row++;
@@ -210,14 +219,14 @@ namespace Federator.Core.Report
             IXLWorksheet sheet = workbook.Worksheets.Add(SheetNames.MatrixSheet);
             ClashMatrix matrix = ClashMatrix.From(report);
 
-            sheet.Cell(1, 1).Value = "New plus Active per pair, building " + report.Building;
+            sheet.Cell(1, 1).Value = OpenClashes.Heading(report.OpenCount)
+                + " per pair, building " + report.Building;
             sheet.Cell(1, 1).Style.Font.Bold = true;
-            sheet.Cell(2, 1).Value =
-                "A cell reads \"" + MatrixCell.Skipped + "\" where the test did not run. That is not a "
-                + "zero. A zero means the pair was tested and nothing clashed.";
+            sheet.Cell(2, 1).Value = OpenClashes.SheetLabel(report.OpenCount);
             sheet.Cell(3, 1).Value =
-                "The disciplines come from the folder names in the picked file, never from a list "
-                + "in this tool.";
+                "A cell reads \"" + MatrixCell.Skipped + "\" where the test did not run. That is not a "
+                + "zero. A zero means the pair was tested and nothing clashed. The disciplines come "
+                + "from the folder names in the picked file, never from a list in this tool.";
 
             int top = 5;
             int size = matrix.Size;

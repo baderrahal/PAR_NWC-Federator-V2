@@ -219,8 +219,20 @@ namespace Federator.Core.Clash
         /// <summary>The document the tests ran against, because a count means nothing without it.</summary>
         public string OpenDocument { get; set; }
 
+        public ClashRunOutcome()
+        {
+            Compacted = -1;
+        }
+
         /// <summary>Seconds the whole clash step took, creating and running included.</summary>
         public double Seconds { get; set; }
+
+        /// <summary>
+        /// How many Resolved clashes compacting removed, or minus one when compacting was
+        /// not asked for. Resolved clashes stay in the file and keep counting until
+        /// something takes them out.
+        /// </summary>
+        public int Compacted { get; set; }
 
         /// <summary>
         /// Set when the run was stopped before anything was created, because no test could

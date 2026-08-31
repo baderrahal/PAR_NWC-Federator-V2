@@ -256,13 +256,28 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// New plus Active. Labelled as that sum everywhere, and never as "open", because
-        /// the clash API has no open against closed notion and neither does Navisworks'
-        /// own report. See docs/scan.md section 4h.
+        /// New plus Active. Kept because it is what this tool counted before there was a
+        /// choice, and never labelled "open", because the clash API has no open against
+        /// closed notion. See docs/scan.md section 4h.
         /// </summary>
         public int NewPlusActive
         {
-            get { return tally.Of(ClashStatus.New) + tally.Of(ClashStatus.Active); }
+            get { return OpenClashes.Of(tally, OpenClashCount.NewAndActive); }
+        }
+
+        /// <summary>How many are still outstanding under whichever rule was chosen.</summary>
+        public int OpenUnder(OpenClashCount which)
+        {
+            return OpenClashes.Of(tally, which);
+        }
+
+        /// <summary>
+        /// How many are Resolved. Resolved clashes stay in the file and keep counting, so
+        /// this is how the growth becomes visible before anyone decides to compact.
+        /// </summary>
+        public int Resolved
+        {
+            get { return tally.Of(ClashStatus.Resolved); }
         }
 
         /// <summary>A test with rows gets a sheet. One that found nothing does not.</summary>
@@ -313,6 +328,8 @@ namespace Federator.Core.Report
             SourceFile = string.Empty;
             DocumentUnits = string.Empty;
             SetTreeRoot = "lcop_selection_set_tree";
+            OpenCount = OpenClashes.Default;
+            CompactedAway = -1;
         }
 
         public string Building { get; private set; }
@@ -334,7 +351,22 @@ namespace Federator.Core.Report
         /// <summary>The prefix every set path is built with. A setting, not a constant.</summary>
         public string SetTreeRoot { get; set; }
 
+        /// <summary>
+        /// What the matrix counts as still outstanding. A setting with two choices, and
+        /// the sheet says which one it used.
+        /// </summary>
+        public OpenClashCount OpenCount { get; set; }
+
         public double ClashStepSeconds { get; set; }
+
+        /// <summary>Resolved clashes across every test, which is what compacting removes.</summary>
+        public int TotalResolved
+        {
+            get { return Totals.Of(ClashStatus.Resolved); }
+        }
+
+        /// <summary>How many results compacting removed, or minus one when it was not run.</summary>
+        public int CompactedAway { get; set; }
 
         public ReadOnlyCollection<TestReport> Tests
         {

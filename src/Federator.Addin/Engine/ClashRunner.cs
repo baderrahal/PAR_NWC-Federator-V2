@@ -160,6 +160,30 @@ namespace Federator.Addin.Engine
         /// </summary>
         public bool SingleModelGroup { get; set; }
 
+        /// <summary>
+        /// Apply the file's settings to tests already in the document. Off by default,
+        /// because doing it RESETS their results, and those results are the only record of
+        /// what has been fixed. Off, this only reports what has drifted.
+        /// </summary>
+        public bool ApplyFileSettings { get; set; }
+
+        /// <summary>
+        /// Remove Resolved clashes after the tests have run. Off by default, and never
+        /// done silently, because it destroys the record of what was resolved.
+        /// </summary>
+        public bool CompactResolved { get; set; }
+
+        /// <summary>Everything the file and the document disagree about, by test name.</summary>
+        public IList<TestDifference> Drift
+        {
+            get { return drift; }
+        }
+
+        private readonly List<TestDifference> drift = new List<TestDifference>();
+
+        /// <summary>How many tests already in the document were compared against the file.</summary>
+        public int Compared { get; private set; }
+
         public ClashRunOutcome Run(ClashTestPlan plan)
         {
             if (plan == null)
@@ -171,6 +195,8 @@ namespace Federator.Addin.Engine
             outcome.TestsInFile = plan.TestsInFile;
             skipsLogged.Clear();
             reports = null;
+            drift.Clear();
+            Compared = 0;
 
             Stopwatch stepClock = Stopwatch.StartNew();
 
@@ -194,6 +220,7 @@ namespace Federator.Addin.Engine
                     + ", every tolerance was converted into it");
 
                 DocumentSelectionSets sets = document.SelectionSets;
+                setsForLookup = sets;
                 Dictionary<string, SelectionSet> byPath = IndexSets(sets);
                 int expected = plan.DistinctLocators().Count;
 
@@ -242,6 +269,14 @@ namespace Federator.Addin.Engine
                         : ", they keep their results and are not recreated"));
 
                 RunEach(document, sets, clashTests, byPath, present, resolved, outcome);
+
+                if (drift.Count > 0 || Compared > 0)
+                {
+                    log.Block("DRIFT " + Or(outcome.OpenDocument, "this document"),
+                        TestDrift.Lines(drift, Compared, ApplyFileSettings));
+                }
+
+                Compact(clashTests, outcome);
             }
             finally
             {
@@ -328,6 +363,50 @@ namespace Federator.Addin.Engine
                 : null;
         }
 
+        /// <summary>
+        /// Removes Resolved clashes, which stay in the file and keep counting until
+        /// something takes them out. Never silent, and never on unless it was asked for,
+        /// because it destroys the record of what was resolved.
+        ///
+        /// TestsCompactAllTests and TestsCompactTest are both on DocumentClashTests, read
+        /// off the installed DLL on 2026-08-31, so this is reachable rather than guessed.
+        /// </summary>
+        private void Compact(DocumentClashTests clashTests, ClashRunOutcome outcome)
+        {
+            int before = outcome.Totals.Of(CoreClashStatus.Resolved);
+
+            if (!CompactResolved)
+            {
+                if (before > 0)
+                {
+                    log.Line("CLASH    " + before
+                        + " clashes are Resolved and stay in the file, counting, until they are "
+                        + "compacted. Compacting is off, so nothing was removed.");
+                }
+
+                return;
+            }
+
+            log.Line("CLASH    COMPACTING. This removes Resolved clashes from every test in this "
+                + "document. It destroys the record of what was resolved and cannot be undone.");
+            log.Line("CLASH    " + before + " Resolved before compacting.");
+
+            try
+            {
+                clashTests.TestsCompactAllTests();
+                outcome.Compacted = before;
+                log.Line("CLASH    compacted. " + before
+                    + (before == 1 ? " Resolved clash was removed." : " Resolved clashes were removed."));
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "compacting the clash tests",
+                    error,
+                    "kept going, nothing was removed and every Resolved clash is still there");
+            }
+        }
+
         private void RunEach(
             Document document,
             DocumentSelectionSets sets,
@@ -386,7 +465,11 @@ namespace Federator.Addin.Engine
                     // exactly as it is. Rebuilding it would reset every clash to New and
                     // throw away every Active and Resolved, which is the whole reason the
                     // NWF is never cleared either.
+                    //
+                    // Left alone means a tolerance changed in the file never reaches it, so
+                    // the two are compared and every difference is reported by name.
                     outcome.AddAlreadyPresent(planned.Name);
+                    CompareAndMaybeApply(clashTests, address, planned, byPath, sets);
                 }
                 else
                 {
@@ -523,6 +606,202 @@ namespace Federator.Addin.Engine
                     "clash test " + planned.Name,
                     error,
                     "kept going with the next test, this one is reported as skipped and was not run");
+            }
+        }
+
+        /// <summary>
+        /// Compares one test already in the document against what the file says it should
+        /// be, and reports every difference by name. Changes nothing unless
+        /// ApplyFileSettings is on, because changing a test resets its results.
+        /// </summary>
+        private void CompareAndMaybeApply(
+            DocumentClashTests clashTests,
+            TestAddress address,
+            PlannedClashTest planned,
+            Dictionary<string, SelectionSet> byPath,
+            DocumentSelectionSets sets)
+        {
+            using (ClashTest test = Resolve(clashTests, address, planned.Name))
+            {
+                if (test == null)
+                {
+                    return;
+                }
+
+                Compared++;
+                ReportStatus(test, planned.Name);
+
+                IList<TestDifference> differences = TestDrift.Compare(
+                    planned.Name, TestSettings.FromFile(planned), SettingsOf(test, byPath));
+
+                if (differences.Count == 0)
+                {
+                    return;
+                }
+
+                foreach (TestDifference difference in differences)
+                {
+                    drift.Add(difference);
+                }
+
+                if (!ApplyFileSettings)
+                {
+                    return;
+                }
+            }
+
+            // Applying is a mutation, so the handle above is finished with before this and
+            // the test is resolved again inside.
+            Apply(clashTests, address, planned, byPath, sets);
+        }
+
+        /// <summary>
+        /// What the test in the document is actually set to. The side locators are read
+        /// back by asking the document which saved set each side points at.
+        /// </summary>
+        private TestSettings SettingsOf(ClashTest test, Dictionary<string, SelectionSet> byPath)
+        {
+            TestSettings settings = new TestSettings();
+            settings.Tolerance = test.Tolerance;
+            settings.TestType = (ClashTestKind)(int)test.TestType;
+            settings.TestTypeName = test.TestType.ToString();
+            settings.MergeComposites = test.MergeComposites;
+
+            settings.LeftSelfIntersect = test.SelectionA.SelfIntersect;
+            settings.RightSelfIntersect = test.SelectionB.SelfIntersect;
+            settings.LeftPrimitiveTypes = (int)test.SelectionA.PrimitiveTypes;
+            settings.RightPrimitiveTypes = (int)test.SelectionB.PrimitiveTypes;
+
+            settings.LeftLocator = LocatorOf(test.SelectionA, byPath);
+            settings.RightLocator = LocatorOf(test.SelectionB, byPath);
+
+            return settings;
+        }
+
+        /// <summary>
+        /// Which set path a side points at, found by matching the sets this run indexed.
+        /// Empty when the side points at something that is not one of them, which is a
+        /// difference worth reporting rather than hiding.
+        /// </summary>
+        private string LocatorOf(ClashSelection side, Dictionary<string, SelectionSet> byPath)
+        {
+            try
+            {
+                SelectionSourceCollection sources = side.Selection.SelectionSources;
+
+                if (sources == null || sources.Count == 0)
+                {
+                    return string.Empty;
+                }
+
+                foreach (KeyValuePair<string, SelectionSet> pair in byPath)
+                {
+                    using (SelectionSource mine = setsForLookup.CreateSelectionSource(pair.Value))
+                    {
+                        for (int i = 0; i < sources.Count; i++)
+                        {
+                            if (sources[i].Equals(mine))
+                            {
+                                return pair.Key;
+                            }
+                        }
+                    }
+                }
+
+                return string.Empty;
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading which set a clash side points at",
+                    error,
+                    "kept going, that side is reported as UNKNOWN rather than as changed");
+                return UnknownLocator;
+            }
+        }
+
+        /// <summary>
+        /// A side this tool could not read. Never compared, so it is not reported as drift
+        /// when the truth is that nothing was read.
+        /// </summary>
+        public const string UnknownLocator = "UNKNOWN";
+
+        private DocumentSelectionSets setsForLookup;
+
+        /// <summary>
+        /// Puts the file's settings onto a test already in the document. This RESETS its
+        /// results, which is why it is off by default and said loudly in the log.
+        /// </summary>
+        private void Apply(
+            DocumentClashTests clashTests,
+            TestAddress address,
+            PlannedClashTest planned,
+            Dictionary<string, SelectionSet> byPath,
+            DocumentSelectionSets sets)
+        {
+            try
+            {
+                using (ClashTest replacement = new ClashTest())
+                {
+                    replacement.DisplayName = planned.Name;
+                    replacement.TestType = (ClashTestType)(int)planned.TestType;
+                    replacement.Tolerance = planned.Tolerance;
+                    replacement.MergeComposites = planned.MergeComposites;
+
+                    FillSide(document: null, sets: sets, side: replacement.SelectionA,
+                        planned: planned.Left, byPath: byPath);
+                    FillSide(document: null, sets: sets, side: replacement.SelectionB,
+                        planned: planned.Right, byPath: byPath);
+
+                    using (ClashTest existing = Resolve(clashTests, address, planned.Name))
+                    {
+                        if (existing == null)
+                        {
+                            return;
+                        }
+
+                        clashTests.TestsEditTestFromCopy(existing, replacement);
+                    }
+                }
+
+                log.Line("CLASH    APPLIED  " + planned.Name
+                    + "  the file's settings were put onto the test in the document, which reset "
+                    + "its results");
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "applying the file's settings to " + planned.Name,
+                    error,
+                    "kept going, that test still holds what it held before");
+            }
+        }
+
+        /// <summary>
+        /// What the document says about this test's state.
+        ///
+        /// ClashTest.Status is the only thing on the type that could carry it, and its
+        /// enum is New, Old, Partial, Complete. Old is the one Clash Detective shows when
+        /// a test has been run and something has changed since. Whether Old is set for
+        /// exactly the reasons a person means by altered is UNKNOWN from the DLL, so the
+        /// status is reported as itself and no meaning is put on it here. See
+        /// docs\scan.md section 4j.
+        /// </summary>
+        private void ReportStatus(ClashTest test, string name)
+        {
+            try
+            {
+                if (test.Status == ClashTestStatus.Old)
+                {
+                    log.Line("CLASH    OLD      " + name
+                        + "  Navisworks has this test marked Old, which it does when a test has "
+                        + "run and something changed after. Its results may not match the model "
+                        + "as it stands.");
+                }
+            }
+            catch (Exception)
+            {
+                // Reading a status is never worth failing a test over.
             }
         }
 

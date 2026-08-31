@@ -95,8 +95,8 @@ namespace Federator.Core.Tests
         // folder it was reading its NWC files out of. The Clash step picks an XML at run
         // time, so a report written there is a file a later run can be handed as its own
         // input.
-        private const string Source = @"C:\\00_NM\\NWC Fed\\NWC\\test001";
-        private const string Nwf = @"C:\\00_NM\\NWC Fed\\NWF\\test001";
+        private const string Source = @"C:\00_NM\NWC Fed\NWC\test001";
+        private const string Nwf = @"C:\00_NM\NWC Fed\NWF\test001";
 
         // The one the brief asks for by name.
         [Test]

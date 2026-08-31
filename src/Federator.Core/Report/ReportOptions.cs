@@ -14,6 +14,9 @@ namespace Federator.Core.Report
             WriteXml = false;
             ExcelFolder = string.Empty;
             SourceFolder = string.Empty;
+            OpenCount = Federator.Core.Clash.OpenClashes.Default;
+            ApplyFileSettings = false;
+            CompactResolved = false;
             Names = new ContainerNameSettings();
         }
 
@@ -40,6 +43,21 @@ namespace Federator.Core.Report
         /// input.
         /// </summary>
         public string SourceFolder { get; set; }
+
+        /// <summary>What the matrix counts as still outstanding. Navisworks open by default.</summary>
+        public Federator.Core.Clash.OpenClashCount OpenCount { get; set; }
+
+        /// <summary>
+        /// Put the file's settings onto tests already in the document. Off by default,
+        /// because it RESETS their results.
+        /// </summary>
+        public bool ApplyFileSettings { get; set; }
+
+        /// <summary>
+        /// Remove Resolved clashes after the tests run. Off by default, because it
+        /// destroys the record of what was resolved.
+        /// </summary>
+        public bool CompactResolved { get; set; }
 
         /// <summary>How a discipline is read off a source file name.</summary>
         public ContainerNameSettings Names { get; set; }

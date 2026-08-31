@@ -29,6 +29,9 @@ namespace Federator.Core.Naming
         public const string DefaultNumber = "000001";
         public const string DefaultAllBuildings = "ZZZZZZ";
 
+        /// <summary>Sorts by name the same way it sorts by date, which is the point of it.</summary>
+        public const string DefaultDateFormat = "yyyyMMdd";
+
         public NamePattern()
         {
             Level = DefaultLevel;
@@ -36,6 +39,7 @@ namespace Federator.Core.Naming
             TypeCode = DefaultTypeCode;
             Number = DefaultNumber;
             AllBuildings = DefaultAllBuildings;
+            DateFormat = DefaultDateFormat;
         }
 
         /// <summary>ISO 19650 code for all levels. The files in a group can disagree on it.</summary>
@@ -58,6 +62,12 @@ namespace Federator.Core.Naming
         /// </summary>
         public string AllBuildings { get; set; }
 
+        /// <summary>
+        /// How a date is written into the number field when the NWD is being kept week
+        /// by week. A setting, so a project that writes dates another way changes it here.
+        /// </summary>
+        public string DateFormat { get; set; }
+
         public NamePattern Copy()
         {
             return new NamePattern
@@ -66,7 +76,8 @@ namespace Federator.Core.Naming
                 Discipline = Discipline,
                 TypeCode = TypeCode,
                 Number = Number,
-                AllBuildings = AllBuildings
+                AllBuildings = AllBuildings,
+                DateFormat = DateFormat
             };
         }
 
@@ -107,13 +118,60 @@ namespace Federator.Core.Naming
         /// </summary>
         public string NameFor(BuildingGroup group, ContainerNameSettings settings)
         {
+            return NameFor(group, settings, null);
+        }
+
+        /// <summary>
+        /// The name for one group, with a date in place of the number when one is given.
+        ///
+        /// The number field exists to tell revisions of one container apart, and it never
+        /// advances here because the file is overwritten in place. When the NWD is being
+        /// kept week by week it stops being overwritten, so the date goes exactly where the
+        /// number was rather than as an eighth field the naming standard does not have.
+        /// </summary>
+        public string NameFor(BuildingGroup group, ContainerNameSettings settings, DateTime? on)
+        {
             if (group == null)
             {
                 throw new ArgumentNullException("group");
             }
 
             return NameFor(
-                group.Project, group.Originator, group.BuildingCode, group.DisciplineCode, settings);
+                group.Project, group.Originator, group.BuildingCode, group.DisciplineCode,
+                settings, on);
+        }
+
+        /// <summary>The number field, or the date when the output is being kept week by week.</summary>
+        public string NumberOrDate(DateTime? on)
+        {
+            if (!on.HasValue)
+            {
+                return Number;
+            }
+
+            string format = string.IsNullOrEmpty(DateFormat) ? DefaultDateFormat : DateFormat;
+            string written;
+
+            try
+            {
+                written = on.Value.ToString(format, System.Globalization.CultureInfo.InvariantCulture);
+            }
+            catch (FormatException)
+            {
+                return Number;
+            }
+
+            // DateTime.ToString does NOT throw on a format string nobody can read. It
+            // treats what it does not recognise as literal text, so "not a real format"
+            // comes back as "noA a real 0or0aA". Measured on 2026-08-31. What matters is
+            // whether the result can be part of a file name, so that is what is checked
+            // rather than an exception that never arrives.
+            if (written.Length == 0 || written.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
+            {
+                return Number;
+            }
+
+            return written;
         }
 
         public string NameFor(
@@ -122,6 +180,17 @@ namespace Federator.Core.Naming
             string buildingCode,
             string disciplineCode,
             ContainerNameSettings settings)
+        {
+            return NameFor(project, originator, buildingCode, disciplineCode, settings, null);
+        }
+
+        public string NameFor(
+            string project,
+            string originator,
+            string buildingCode,
+            string disciplineCode,
+            ContainerNameSettings settings,
+            DateTime? on)
         {
             if (settings == null)
             {
@@ -143,7 +212,7 @@ namespace Federator.Core.Naming
                 Level,
                 string.IsNullOrEmpty(disciplineCode) ? Discipline : disciplineCode,
                 TypeCode,
-                Number
+                NumberOrDate(on)
             };
 
             return string.Join(settings.Separator.ToString(), fields);
@@ -169,6 +238,24 @@ namespace Federator.Core.Naming
 
         public NamePattern Workbook { get; set; }
 
+        /// <summary>
+        /// Write the NWD with a date in its name, so an earlier week still exists. Off by
+        /// default.
+        ///
+        /// The NWF always overwrites and always will. Its clash results live inside it and
+        /// are the record of what has been fixed, so it has to be the same file week after
+        /// week or that record starts again. The NWD carries no results, it is the picture
+        /// of the models as they were, so keeping one per week costs only disk and is the
+        /// only way an earlier week still exists.
+        /// </summary>
+        public bool DateTheNwd { get; set; }
+
+        /// <summary>The date the NWD carries, or null when it is overwriting as usual.</summary>
+        public DateTime? NwdDate(DateTime today)
+        {
+            return DateTheNwd ? (DateTime?)today : null;
+        }
+
         /// <summary>The three, in the order the window shows them.</summary>
         public IList<NamePattern> All()
         {
@@ -182,7 +269,22 @@ namespace Federator.Core.Naming
 
         public OutputNaming Copy()
         {
-            return new OutputNaming { Nwf = Nwf.Copy(), Nwd = Nwd.Copy(), Workbook = Workbook.Copy() };
+            return new OutputNaming
+            {
+                Nwf = Nwf.Copy(),
+                Nwd = Nwd.Copy(),
+                Workbook = Workbook.Copy(),
+                DateTheNwd = DateTheNwd
+            };
+        }
+    }
+
+    /// <summary>Builds a collision from outside this file, for the name table.</summary>
+    public static class NameCollisions
+    {
+        public static NameCollision Make(string kind, string name, IList<string> groups)
+        {
+            return new NameCollision(kind, name, groups);
         }
     }
 

@@ -178,7 +178,7 @@
             <TabItem Header="3. Outputs">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="One NWF folder, one NWD folder and one Excel folder for the whole run. Leave the Excel folder empty and the workbooks go beside the NWF folder, in a subfolder called Clash Reports. Outputs overwrite, so there is no date suffix and no version suffix." />
+                               Text="One NWF folder, one NWD folder and one Excel folder for the whole run. Leave the Excel folder empty and the workbooks go beside the NWF folder, in a subfolder called Clash Reports. The name fields below fill the table, and any name in the table can be typed over. A name you type over is left alone when a pattern changes." />
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -186,6 +186,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -213,6 +214,10 @@
                                   IsChecked="False" Margin="0,4,0,0"
                                   Content="Also write a Navisworks style clash XML beside each workbook"
                                   Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
+                        <CheckBox Grid.Row="5" Grid.Column="1" x:Name="DateTheNwd"
+                                  IsChecked="False" Margin="0,4,0,0"
+                                  Content="Keep every week's NWD by putting the date in its name instead of the number. The NWF always overwrites, because its clash results are the record."
+                                  Checked="OnNamingToggled" Unchecked="OnNamingToggled" />
                     </Grid>
 
                     <!-- The four fields this tool supplies rather than reads out of a file
@@ -275,14 +280,23 @@
                                TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" />
                     <TextBlock DockPanel.Dock="Bottom" x:Name="OutputsSummary" Margin="0,6,0,0" />
                     <DataGrid x:Name="OutputsGrid" AutoGenerateColumns="False" CanUserAddRows="False"
-                              IsReadOnly="True" GridLinesVisibility="Horizontal" HeadersVisibility="Column">
+                              IsReadOnly="False" GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                              CellEditEnding="OnNameEdited">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Building" Width="90" Binding="{Binding Building}" />
-                            <DataGridTextColumn Header="Files" Width="50" Binding="{Binding FileCount}" />
-                            <DataGridTextColumn Header="NWF name" Width="260" Binding="{Binding NwfName}" />
-                            <DataGridTextColumn Header="NWD name" Width="260" Binding="{Binding NwdName}" />
-                            <DataGridTextColumn Header="Workbook name" Width="260" Binding="{Binding WorkbookName}" />
-                            <DataGridTextColumn Header="Status" Width="*" Binding="{Binding Status}" />
+                            <DataGridTextColumn Header="Building" Width="90" IsReadOnly="True"
+                                                Binding="{Binding Building}" />
+                            <DataGridTextColumn Header="Files" Width="50" IsReadOnly="True"
+                                                Binding="{Binding FileCount}" />
+                            <DataGridTextColumn Header="NWF name" Width="250"
+                                                Binding="{Binding NwfName, UpdateSourceTrigger=LostFocus}" />
+                            <DataGridTextColumn Header="NWD name" Width="250"
+                                                Binding="{Binding NwdName, UpdateSourceTrigger=LostFocus}" />
+                            <DataGridTextColumn Header="Workbook name" Width="250"
+                                                Binding="{Binding WorkbookName, UpdateSourceTrigger=LostFocus}" />
+                            <DataGridTextColumn Header="Edited" Width="55" IsReadOnly="True"
+                                                Binding="{Binding EditedMark}" />
+                            <DataGridTextColumn Header="Status" Width="*" IsReadOnly="True"
+                                                Binding="{Binding Status}" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
@@ -303,6 +317,29 @@
                         <Label Grid.Column="0" Content="Clash XML" />
                         <TextBox Grid.Column="1" x:Name="ExchangeFileBox" VerticalAlignment="Center" />
                         <Button Grid.Column="2" Content="Browse" Click="OnBrowseExchangeFile" />
+                    </Grid>
+
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <CheckBox Grid.Row="0" Grid.ColumnSpan="2" x:Name="ApplyFileSettings"
+                                  IsChecked="False" Margin="0,0,0,4"
+                                  Content="Apply the file's settings to tests already in the document. THIS RESETS THEIR RESULTS. Left off, every difference is still reported and nothing is changed." />
+                        <CheckBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="CompactResolved"
+                                  IsChecked="False" Margin="0,0,0,4"
+                                  Content="Remove Resolved clashes after the tests run. This destroys the record of what was resolved and cannot be undone." />
+
+                        <Label Grid.Row="2" Grid.Column="0" Content="The matrix counts" VerticalAlignment="Center" />
+                        <ComboBox Grid.Row="2" Grid.Column="1" x:Name="OpenCountBox"
+                                  HorizontalAlignment="Left" MinWidth="440" VerticalAlignment="Center" />
                     </Grid>
 
                     <!-- Neither of these is a step in the run. They are for trying one open

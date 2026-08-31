@@ -39,6 +39,20 @@ here as fixed and it is not. The first three come from the file names. The other
 are supplied, because the files in one group can disagree on all of them and outputs
 overwrite, so copying from any one input would mean picking a winner.
 
+The names are shown as a TABLE with one row per group, filled in by the scan, and every
+cell in it can be typed over. A pattern is where a name starts and not where it ends,
+because one group in twenty usually needs a name the pattern cannot give.
+
+A name typed over is held per CELL, not per row. Changing a pattern refills only the
+cells nobody has touched, so editing an NWF name does not freeze the NWD name beside it,
+and the refill says how many rows it kept. A cell can be given back to the pattern.
+Setting a cell to exactly what the pattern already gives still counts as typed over,
+because the person meant that value.
+
+The collision check runs on the table, not on the patterns, so two names typed to the
+same thing is caught the same way two patterns colliding is. It names both groups and
+the run does not start.
+
 Every supplied field is shown in the Outputs step and can be changed there. The
 defaults are ZZZ for the level, which is the ISO 19650 code for all levels, BM for
 the discipline, which is a federated building model, MOD for the type, which is a
@@ -207,6 +221,39 @@ and 6 does not read as broken.
   Both are counted and reported as already there, separately from what was created
 - A CHANGED group is left alone entirely, so no set is built into it and no test
   created, the same as its NWF not being touched
+- A test already in the document is left as it is, which means a tolerance changed in the
+  XML never reaches it. That is right and it was silent, so now it is REPORTED. Every
+  test in both is compared on the tolerance, the test type, merge composites, and per
+  side the locator and the self intersect and primitive type flags, and every difference
+  is named by test name with both values. Comparing changes nothing on either side.
+  Tolerances are compared within an epsilon because the file's number travels through a
+  unit conversion, and an exact comparison would report drift on all 1830. Locators are
+  compared Ordinal and never trimmed, because two set names in the reference file end in
+  a space
+- Applying the file's settings to a test already in the document is a tick box, off by
+  default, and it says plainly that changing a test RESETS its results and every clash
+  in it goes back to New. That is the whole reason the default is to report and not to
+  act. What drifted is worth knowing every week. Overwriting it is worth doing once
+- There is no stale marker on the clash API. Nothing named stale, altered, out of date,
+  dirty or needs rerun exists on any type in Autodesk.Navisworks.Clash, public or
+  private, measured on 2026-08-31, see docs\scan.md section 4j. The only thing there is
+  ClashTest.Status, a four value enum of New, Old, Partial and Complete. What puts a test
+  into Old is UNKNOWN and cannot be read off the DLL, so the status is logged as itself
+  and no sentence is put on it. Never translate Old into "your models have changed". The
+  Status setter is public and nothing here writes it, because writing it would be
+  claiming to know the rule that is UNKNOWN
+- Resolved clashes stay in the file forever and that is the point of them, so the count
+  is reported per test and as a total for the group. A test running weekly for months
+  accumulates them without limit and nothing else prunes them
+- Compact is reachable, DocumentClashTests.TestsCompactAllTests is public, and it is a
+  tick box off by default that runs after the tests and before the workbook is written.
+  Never compact silently. It removes every Resolved clash from the NWF, the NWF is the
+  only record of what has been fixed, and there is no second copy anywhere, so it cannot
+  be undone. The count is announced before it runs and the count removed is reported
+  after. The no argument form is used, because TestsCompactTest takes a ClashTest and is
+  a mutator, so the handle passed to it dies the way section 4g describes
+- Nothing removed and nothing asked to be removed are different, so the compacted count
+  is minus one until a compact actually runs. Zero removed is a real answer
 - Per test, everything comes from the file and never from a constant: the name, the
   test type, the tolerance, merge composites, and per side the self intersect and the
   primitive type flags
@@ -250,6 +297,13 @@ and 6 does not read as broken.
   trace. One run wrote the same stack tens of thousands of times into a 17.8 MB log
 - One picker, one file. The file can hold sets, tests, or both, and the tool reads what is
   in it. A file holding only tests still works against sets already in the model
+- Every picker remembers its own last folder, in a file beside the logs, and reopens
+  there next time. Per picker and never one shared, because with one shared, picking an
+  NWD folder moves the source picker to it and the next run reads the wrong folder. A
+  remembered folder that has gone is not an error and is never cleared, the picker opens
+  at the nearest parent still on disk and says so, which is what happens when a project
+  drive is not mounted yet. Remembering never stops a run: an unwritable location is
+  recorded as a reason and the session still remembers, it just does not survive a restart
 - The scan and its checks live in the Source step, so pressing Scan reports what was
   found and what is wrong with it in one place. A plain count line first, files found,
   files readable, groups and the findings by kind, then the findings themselves
@@ -297,7 +351,26 @@ and 6 does not read as broken.
   itself inside the source there is nowhere safe, and that is said rather than written
   somewhere surprising
 - Outputs overwrite, the NWD every run and the NWF only when it is being built for
-  the first time. No date suffix, no version suffix
+  the first time. No version suffix, and no date suffix unless the weekly record tick
+  box is on, which is off by default and applies to the NWD alone
+- The NWF and the NWD are dated differently on purpose, and this is the reason. The
+  NWF holds the clash tests and every clash result inside it, so it IS the history and
+  overwriting it in place is what keeps that history. A dated NWF would fork the
+  history: this week's clashes would go in one file, last week's Active and Resolved
+  would be stranded in another, and no file would hold the whole picture. The NWD
+  carries no clash results at all, it is the model as it stood, so a dated NWD is a
+  weekly record that costs nothing and loses nothing. One is a ledger and one is a
+  photograph
+- The date goes in the number field, because the number never advanced anyway. It is
+  a format string and a setting, DateFormat, defaulting to yyyyMMdd. It is not a
+  fixed string and never a fourth name pattern
+- DateTime.ToString does NOT throw on a format string nobody can read, it treats what
+  it does not recognise as literal text, so "not a real format" comes back as
+  "noA a real 0or0aA". Measured, see docs\scan.md section 4j. So what is checked is
+  what the format PRODUCED, not whether it threw. A result that is empty or holds a
+  character Windows refuses in a file name falls back to the number. Anything else is
+  used as typed, because the format is the person's setting and their mistakes should
+  be visible in the preview rather than silently corrected
 - A group ends in one of three states, and the test is always what was ASKED FOR,
   never what happens to be on disk. A step deliberately switched off is not a
   failure. Judging a group by whether an NWD existed, with republishing switched
@@ -335,8 +408,14 @@ and 6 does not read as broken.
   ClashResultGroup, ClashTest or DocumentClashTests names one, ClashResultStatus is a flat
   five value enum, and Navisworks' own report does not mention open or closed either. So
   every status is reported as itself, and where the matrix needs one number for what is
-  outstanding it is labelled New plus Active rather than open, because that is a rule
-  Bader stated and not one the API holds
+  outstanding, WHICH statuses that number holds is a setting with two choices and never
+  a constant, because neither answer is readable off the API and both are stated rules:
+    Navisworks open  New, Active and Reviewed. The default, because it is the product's
+                     own definition and the number then agrees with the panel
+    New plus Active  the two only, for a project that treats Reviewed as dealt with
+  Approved and Resolved are closed under both. The sheet is labelled with which one it
+  used and with what that choice counted, so nobody reads an API meaning into a number
+  that has none. The word open never appears unqualified
 - One sheet per test that found something. A test that found nothing gets no sheet and
   appears in the Summary as its status. Sheets are T0001 upward because Excel stops a
   sheet name at 31 characters and 1703 of the 1830 test names are longer, so a sheet is
@@ -344,7 +423,8 @@ and 6 does not read as broken.
 - The Summary carries one row per test in the file, not one per test that ran. Skipped,
   passed and found are three numbers and are never merged. On 1C07BC that is 1164 skipped,
   618 passed and 48 with clashes, and those add to 1830
-- The matrix cell holds New plus Active. A skipped pair reads "skipped" and never "0",
+- The matrix cell holds whatever the open count setting says. A skipped pair reads
+  "skipped" and never "0",
   because a zero says the pair was tested and nothing clashed, and a skip says nobody
   looked. A pair no test covers is blank, which is a third thing again. The discipline
   grouping is read from the set folder names in the picked file, never from a list in the
