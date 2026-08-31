@@ -268,6 +268,34 @@ and 6 does not read as broken.
   nothing says a discipline was not exported. One model says the group was never going to
   clash and no export would change that. In the last real folder that was 1B06BS and
   1C06PK, and both ran 1830 tests for nothing
+- The add-in resolves its own assemblies from its bundle folder by simple name,
+  ignoring the version, through an AssemblyResolve handler registered in the static
+  constructor of FederatorPlugin. This is not belt and braces, it is the only thing
+  that works. Six references bind to a version one build number away from the file
+  that ships, .NET Framework binds a strong named assembly by exact version, and the
+  binding redirects NuGet writes go in an application config that a Navisworks add-in
+  does not have. Every file was already present when a run failed on this, so adding
+  files fixes nothing. The rule lives in Federator.Core.Diagnostics.BundleAssemblies
+  so it can be tested, and it is proved by a console exe with its config deleted, see
+  docs\scan.md section 4i
+- install.ps1 copies the bundle CONTENTS, never the bundle folder. Copy-Item of a
+  directory puts it inside the destination when the destination exists and creates it
+  when it does not, so the same line does two different things depending on whether
+  the remove before it has finished. That left ParsonsNwcFederator.bundle inside
+  ParsonsNwcFederator.bundle, which Navisworks does not read at all, and it is checked
+  for afterwards
+- install.ps1 walks what is actually in the bundle after copying and refuses to finish
+  if any reference is satisfied by neither the bundle, the framework, nor the
+  Navisworks folder. A missing file is caught at install rather than ninety seconds
+  into a run. The version mismatches are printed too, labelled as expected, so nobody
+  reads them as faults
+- The reports never go inside the folder being scanned, whether it was picked or
+  defaulted to. A run put the workbooks in the NWC folder it was reading, and the
+  Clash step picks an XML at run time, so a report written there is a file a later run
+  can be handed as its own input. A picked folder inside the source is refused and the
+  default beside the NWF folder is used instead, saying so. Where the NWF folder is
+  itself inside the source there is nowhere safe, and that is said rather than written
+  somewhere surprising
 - Outputs overwrite, the NWD every run and the NWF only when it is being built for
   the first time. No date suffix, no version suffix
 - A group ends in one of three states, and the test is always what was ASKED FOR,

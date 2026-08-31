@@ -85,8 +85,19 @@ $strays = Get-ChildItem $contents -Filter "*Navisworks*" -ErrorAction SilentlyCo
 if ($strays) { throw "A Navisworks assembly ended up in the bundle: $($strays.Name -join ', ')" }
 
 if (Test-Path $target) { Remove-Item $target -Recurse -Force }
-New-Item -ItemType Directory -Force -Path (Split-Path -Parent $target) | Out-Null
-Copy-Item $staging $target -Recurse -Force
+
+# The contents, never the folder. Copy-Item of a directory puts it INSIDE the destination
+# when the destination already exists, and creates it when it does not, so the same line
+# does two different things depending on whether the remove above has finished. That
+# happened on 2026-08-31 and left ParsonsNwcFederator.bundle inside
+# ParsonsNwcFederator.bundle, which Navisworks does not read at all.
+New-Item -ItemType Directory -Force -Path $target | Out-Null
+Copy-Item (Join-Path $staging "*") $target -Recurse -Force
+
+$nested = Join-Path $target (Split-Path -Leaf $target)
+if (Test-Path $nested) {
+    throw "The bundle ended up inside itself at '$nested'. Nothing was installed that Navisworks can read."
+}
 
 # Report only what is actually on disk.
 $written = Get-ChildItem $target -Recurse -File | Sort-Object FullName
@@ -111,4 +122,74 @@ if ($missing.Count -gt 0) {
 }
 
 Write-Host ("All {0} expected files are present." -f $expected.Count)
+Write-Host ""
+
+# Every assembly the bundle references has to be in the bundle or in the framework.
+# A run on aa163c9e got ninety seconds in and then failed to write the workbook, and
+# a missing file and a version mismatch look identical from the outside. This walks
+# what is actually in the folder rather than trusting the list above, so a package
+# that gains a dependency is caught here rather than during a run.
+Write-Host "Checking every assembly the bundle needs:"
+
+$inBundle = @{}
+foreach ($f in (Get-ChildItem $contents -Filter *.dll)) {
+    $inBundle[[System.IO.Path]::GetFileNameWithoutExtension($f.Name)] = $f.FullName
+}
+
+$missing = @()
+$mismatched = @()
+$seen = @{}
+
+foreach ($f in (Get-ChildItem $contents -Filter *.dll | Sort-Object Name)) {
+    try { $asm = [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($f.FullName) }
+    catch { continue }
+
+    foreach ($ref in $asm.GetReferencedAssemblies()) {
+        if ($inBundle.ContainsKey($ref.Name)) {
+            $have = [System.Reflection.AssemblyName]::GetAssemblyName($inBundle[$ref.Name]).Version
+            if ($have -ne $ref.Version) {
+                $key = "{0} {1} {2}" -f $asm.GetName().Name, $ref.Name, $ref.Version
+                if (-not $seen.ContainsKey($key)) {
+                    $seen[$key] = $true
+                    $mismatched += ("  {0,-38} wants {1,-40} the file is {2}" -f $asm.GetName().Name, ($ref.Name + " " + $ref.Version), $have)
+                }
+            }
+            continue
+        }
+
+        # Not ours. It is fine if the framework supplies it, and fine if Navisworks
+        # does, because the running application already has those loaded and a second
+        # copy in the bundle would load a second set of types.
+        $ok = Test-Path (Join-Path $NavisworksPath ($ref.Name + ".dll"))
+
+        if (-not $ok) {
+            try { [System.Reflection.Assembly]::ReflectionOnlyLoad($ref.FullName) | Out-Null; $ok = $true } catch { }
+        }
+
+        if (-not $ok) {
+            try { [System.Reflection.Assembly]::ReflectionOnlyLoad($ref.Name) | Out-Null; $ok = $true } catch { }
+        }
+
+        if (-not $ok -and -not $seen.ContainsKey($ref.Name)) {
+            $seen[$ref.Name] = $true
+            $missing += ("  {0} needs {1}, which is neither in the bundle nor in the framework" -f $asm.GetName().Name, $ref.Name)
+        }
+    }
+}
+
+if ($missing.Count -gt 0) {
+    foreach ($line in $missing) { Write-Host $line }
+    throw ("Install incomplete. {0} assembly reference(s) cannot be satisfied. Add the file(s) to the carried list in this script." -f $missing.Count)
+}
+
+Write-Host ("  every reference is satisfied, {0} assemblies checked. Navisworks supplies its own." -f $inBundle.Count)
+
+if ($mismatched.Count -gt 0) {
+    Write-Host ""
+    Write-Host ("  {0} reference(s) bind to a version the shipped file does not carry." -f $mismatched.Count)
+    Write-Host "  These are NOT faults. There is no application config to put a binding"
+  Write-Host "  redirect in, so the add-in resolves them by name from this folder."
+    foreach ($line in $mismatched) { Write-Host $line }
+}
+
 Write-Host "Start Navisworks Manage 2025 and look on the Tool Add-ins tab for Parsons NWC Federator."

@@ -23,6 +23,21 @@ namespace Federator.Addin
         public const string PluginName = "ParsonsNwcFederator";
         public const string DeveloperCode = "PARS";
 
+        /// <summary>
+        /// Runs when Navisworks first touches this type, which is before Execute and long
+        /// before anything reaches the workbook writer. The handler has to be in place by
+        /// then, because the runtime asks for a dependency the first time it compiles a
+        /// method that mentions one.
+        ///
+        /// A run on aa163c9e got all the way to writing the workbook and then failed with
+        /// System.Numerics.Vectors 4.1.3.0 not found, while a copy of that assembly was
+        /// sitting in the bundle at 4.1.4.0. See BundleAssemblies for the measurements.
+        /// </summary>
+        static FederatorPlugin()
+        {
+            BundleAssemblies.InstallBesideThisAssembly(null);
+        }
+
         public override int Execute(params string[] parameters)
         {
             // First line of the handler, before the folder is read, before the window
@@ -32,6 +47,11 @@ namespace Federator.Addin
 
             try
             {
+                // Already hooked up by the static constructor. This only points it at the
+                // log, so what it resolved is on the record, and re-registers it if this
+                // type was somehow reached without its initialiser running.
+                BundleAssemblies.InstallBesideThisAssembly(log.Line);
+
                 log.Session(
                     NavisworksFacts.PluginVersion(),
                     NavisworksFacts.VersionString(),

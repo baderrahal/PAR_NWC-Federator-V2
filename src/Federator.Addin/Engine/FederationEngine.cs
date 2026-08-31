@@ -86,7 +86,7 @@ namespace Federator.Addin.Engine
             this.reportFolder = string.IsNullOrEmpty(nwfFolder)
                     && string.IsNullOrEmpty(this.reports.ExcelFolder)
                 ? null
-                : this.reports.FolderFor(nwfFolder);
+                : this.reports.ChooseFor(nwfFolder).Folder;
         }
 
         /// <summary>

@@ -620,6 +620,10 @@ namespace Federator.Addin.Ui
         {
             ReportOptions options = new ReportOptions();
             options.ExcelFolder = Trimmed(ExcelFolderBox.Text);
+
+            // Reports never go inside the folder being scanned. A real run put them
+            // in C:\00_NM\NWC Fed\NWC\test001, which is where its own input lives.
+            options.SourceFolder = Trimmed(SourceFolderBox.Text);
             options.WriteXml = WriteClashXml.IsChecked == true;
             options.Names = settings;
             return options;
@@ -633,11 +637,15 @@ namespace Federator.Addin.Ui
         {
             try
             {
-                return ReportsWanted().FolderFor(Trimmed(NwfFolderBox.Text));
+                ReportFolderChoice where = ReportsWanted().ChooseFor(Trimmed(NwfFolderBox.Text));
+
+                return where.WasRefused
+                    ? where.Folder + ". " + where.RefusedReason
+                    : where.Folder;
             }
-            catch (ArgumentException)
+            catch (ArgumentException error)
             {
-                return "UNKNOWN until an NWF folder or an Excel folder is picked";
+                return "UNKNOWN. " + error.Message;
             }
         }
 
@@ -645,8 +653,8 @@ namespace Federator.Addin.Ui
         {
             // IsChecked="True" in the XAML raises Checked while the tree is still being
             // built, so this can be reached before the controls it reads exist.
-            if (OutputsSummary == null || RepublishNwd == null
-                || ExcelFolderBox == null || NwfFolderBox == null || WriteClashXml == null)
+            if (OutputsSummary == null || RepublishNwd == null || ExcelFolderBox == null
+                || NwfFolderBox == null || WriteClashXml == null || SourceFolderBox == null)
             {
                 return;
             }
@@ -888,7 +896,14 @@ namespace Federator.Addin.Ui
                 }
 
                 ReportOptions options = ReportsWanted();
-                log.Line("RUN      workbooks go in " + options.FolderFor(nwfFolder));
+                ReportFolderChoice where = options.ChooseFor(nwfFolder);
+
+                if (where.WasRefused)
+                {
+                    log.Line("RUN      " + where.RefusedReason);
+                }
+
+                log.Line("RUN      workbooks go in " + where.Folder);
                 log.Line("RUN      the clash XML is "
                     + (options.WriteXml ? "written beside each workbook" : "off"));
 
