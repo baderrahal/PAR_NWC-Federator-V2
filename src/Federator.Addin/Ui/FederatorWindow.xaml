@@ -169,7 +169,7 @@
             <TabItem Header="3. Outputs">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="One NWF folder and one NWD folder for the whole run. Outputs overwrite, so there is no date suffix and no version suffix." />
+                               Text="One NWF folder, one NWD folder and one Excel folder for the whole run. Leave the Excel folder empty and the workbooks go beside the NWF folder, in a subfolder called Clash Reports. Outputs overwrite, so there is no date suffix and no version suffix." />
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -180,17 +180,29 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="NWF folder" />
                         <TextBox Grid.Row="0" Grid.Column="1" x:Name="NwfFolderBox"
-                                 VerticalAlignment="Center" Margin="0,0,0,4" />
+                                 VerticalAlignment="Center" Margin="0,0,0,4"
+                                 TextChanged="OnOutputFolderChanged" />
                         <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowseNwf" Margin="4,0,0,4" />
                         <Label Grid.Row="1" Grid.Column="0" Content="NWD folder" />
-                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="NwdFolderBox" VerticalAlignment="Center" />
-                        <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowseNwd" />
-                        <CheckBox Grid.Row="2" Grid.Column="1" x:Name="RepublishNwd"
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="NwdFolderBox"
+                                 VerticalAlignment="Center" Margin="0,0,0,4" />
+                        <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowseNwd" Margin="4,0,0,4" />
+                        <Label Grid.Row="2" Grid.Column="0" Content="Excel folder" />
+                        <TextBox Grid.Row="2" Grid.Column="1" x:Name="ExcelFolderBox"
+                                 VerticalAlignment="Center" TextChanged="OnOutputFolderChanged" />
+                        <Button Grid.Row="2" Grid.Column="2" Content="Browse" Click="OnBrowseExcel" />
+                        <CheckBox Grid.Row="3" Grid.Column="1" x:Name="RepublishNwd"
                                   IsChecked="True" Margin="0,8,0,0"
                                   Content="Republish the NWD every run, whether the NWF was built, opened or left alone"
+                                  Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
+                        <CheckBox Grid.Row="4" Grid.Column="1" x:Name="WriteClashXml"
+                                  IsChecked="False" Margin="0,4,0,0"
+                                  Content="Also write a Navisworks style clash XML beside each workbook"
                                   Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
                     </Grid>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="OutputsSummary" Margin="0,6,0,0" />

@@ -91,8 +91,10 @@ namespace Federator.Core.Clash
             string documentUnits,
             bool mergeComposites,
             PlannedClashSide left,
-            PlannedClashSide right)
+            PlannedClashSide right,
+            int fileIndex)
         {
+            FileIndex = fileIndex;
             Name = name;
             TestType = testType;
             TestTypeName = testTypeName;
@@ -104,6 +106,13 @@ namespace Federator.Core.Clash
             Left = left;
             Right = right;
         }
+
+        /// <summary>
+        /// Where this test sat in the file, from zero. Carried so the workbook can number
+        /// its sheets in file order rather than in the order the plan happened to sort
+        /// them into, which would move a sheet number between runs.
+        /// </summary>
+        public int FileIndex { get; private set; }
 
         public string Name { get; private set; }
 
@@ -153,11 +162,20 @@ namespace Federator.Core.Clash
     public sealed class SkippedClashTest
     {
         internal SkippedClashTest(string name, ClashSkipReason kind, string reason)
+            : this(name, kind, reason, -1)
+        {
+        }
+
+        internal SkippedClashTest(string name, ClashSkipReason kind, string reason, int fileIndex)
         {
             Name = name;
             Kind = kind;
             Reason = reason;
+            FileIndex = fileIndex;
         }
+
+        /// <summary>Where this test sat in the file, from zero. Minus one when unknown.</summary>
+        public int FileIndex { get; private set; }
 
         /// <summary>The test name, so it can be reported by name as the rule requires.</summary>
         public string Name { get; private set; }
@@ -262,9 +280,9 @@ namespace Federator.Core.Clash
             List<string> unknown = new List<string>();
             HashSet<string> seenUnknown = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (ClashTestDefinition test in exchange.Tests)
+            for (int i = 0; i < exchange.Tests.Count; i++)
             {
-                Plan(test, documentUnits, buildable, skipped, unknown, seenUnknown);
+                Plan(exchange.Tests[i], i, documentUnits, buildable, skipped, unknown, seenUnknown);
             }
 
             return new ClashTestPlan(
@@ -273,6 +291,7 @@ namespace Federator.Core.Clash
 
         private static void Plan(
             ClashTestDefinition test,
+            int fileIndex,
             string documentUnits,
             List<PlannedClashTest> buildable,
             List<SkippedClashTest> skipped,
@@ -284,7 +303,7 @@ namespace Federator.Core.Clash
             if (string.IsNullOrEmpty(test.Name))
             {
                 skipped.Add(new SkippedClashTest(
-                    "UNKNOWN", ClashSkipReason.NoName, "the test carried no name attribute"));
+                    "UNKNOWN", ClashSkipReason.NoName, "the test carried no name attribute", fileIndex));
                 return;
             }
 
@@ -303,7 +322,8 @@ namespace Federator.Core.Clash
                     test.Name,
                     ClashSkipReason.UnknownTestType,
                     "test type \"" + named + "\" is not one this tool creates, the ones it creates are "
-                        + string.Join(", ", new List<string>(KnownTestTypeNames()).ToArray())));
+                        + string.Join(", ", new List<string>(KnownTestTypeNames()).ToArray()),
+                    fileIndex));
                 return;
             }
 
@@ -311,7 +331,8 @@ namespace Federator.Core.Clash
 
             if (sideProblem != null)
             {
-                skipped.Add(new SkippedClashTest(test.Name, ClashSkipReason.NoLocator, sideProblem));
+                skipped.Add(new SkippedClashTest(
+                    test.Name, ClashSkipReason.NoLocator, sideProblem, fileIndex));
                 return;
             }
 
@@ -320,7 +341,8 @@ namespace Federator.Core.Clash
 
             if (unitsProblem != null)
             {
-                skipped.Add(new SkippedClashTest(test.Name, ClashSkipReason.UnknownUnits, unitsProblem));
+                skipped.Add(new SkippedClashTest(
+                    test.Name, ClashSkipReason.UnknownUnits, unitsProblem, fileIndex));
                 return;
             }
 
@@ -334,7 +356,8 @@ namespace Federator.Core.Clash
                 documentUnits,
                 test.MergeComposites,
                 Side(test.Left),
-                Side(test.Right)));
+                Side(test.Right),
+                fileIndex));
         }
 
         /// <summary>
@@ -436,7 +459,8 @@ namespace Federator.Core.Clash
                 nowSkipped.Add(new SkippedClashTest(
                     test.Name,
                     ClashSkipReason.LocatorNotResolved,
-                    Unresolved(leftKnown, rightKnown, test)));
+                    Unresolved(leftKnown, rightKnown, test),
+                    test.FileIndex));
             }
 
             return new ClashTestPlan(

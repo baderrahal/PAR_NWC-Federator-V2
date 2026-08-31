@@ -13,6 +13,7 @@ using Federator.Core.Findings;
 using Federator.Core.Grouping;
 using Federator.Core.Exchange;
 using Federator.Core.Naming;
+using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
 
@@ -305,16 +306,63 @@ namespace Federator.Addin.Ui
             return ticked;
         }
 
+        private void OnBrowseExcel(object sender, RoutedEventArgs e)
+        {
+            string picked = PickFolder("Pick the folder for the Excel reports", ExcelFolderBox.Text);
+
+            if (picked != null)
+            {
+                ExcelFolderBox.Text = picked;
+                RefreshOutputsSummary();
+            }
+        }
+
+        private void OnOutputFolderChanged(
+            object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            RefreshOutputsSummary();
+        }
+
         private void OnRepublishChanged(object sender, RoutedEventArgs e)
         {
             RefreshOutputsSummary();
+        }
+
+        /// <summary>
+        /// What the run will do about reports. The folder is worked out here so the window
+        /// can say where the workbooks are going before Run is pressed.
+        /// </summary>
+        private ReportOptions ReportsWanted()
+        {
+            ReportOptions options = new ReportOptions();
+            options.ExcelFolder = Trimmed(ExcelFolderBox.Text);
+            options.WriteXml = WriteClashXml.IsChecked == true;
+            options.Names = settings;
+            return options;
+        }
+
+        /// <summary>
+        /// Where the workbooks land, or a plain reason why that cannot be worked out yet.
+        /// Never throws, because it runs on every keystroke in a folder box.
+        /// </summary>
+        private string WorkbookFolderOrWhyNot()
+        {
+            try
+            {
+                return ReportsWanted().FolderFor(Trimmed(NwfFolderBox.Text));
+            }
+            catch (ArgumentException)
+            {
+                return "UNKNOWN until an NWF folder or an Excel folder is picked";
+            }
         }
 
         private void RefreshOutputsSummary()
         {
             // IsChecked="True" in the XAML raises Checked while the tree is still being
             // built, so this can be reached before the controls it reads exist.
-            if (OutputsSummary == null || RepublishNwd == null)
+            if (OutputsSummary == null || RepublishNwd == null
+                || ExcelFolderBox == null || NwfFolderBox == null || WriteClashXml == null)
             {
                 return;
             }
@@ -333,7 +381,13 @@ namespace Federator.Addin.Ui
                 ? "The NWD is republished every run."
                 : "The NWD is NOT being republished.";
 
-            OutputsSummary.Text = ready + " groups ticked to run. " + nwd + " The log is written to "
+            string xml = WriteClashXml != null && WriteClashXml.IsChecked == true
+                ? " A clash XML is written beside each workbook."
+                : string.Empty;
+
+            OutputsSummary.Text = ready + " groups ticked to run. " + nwd
+                + " Workbooks go in " + WorkbookFolderOrWhyNot() + "." + xml
+                + " The log is written to "
                 + (log.IsWritingToDisk ? log.Path : "the window only")
                 + " and copied next to the NWF folder at the end.";
         }
@@ -509,8 +563,13 @@ namespace Federator.Addin.Ui
                         + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test" : " tests"));
                 }
 
+                ReportOptions options = ReportsWanted();
+                log.Line("RUN      workbooks go in " + options.FolderFor(nwfFolder));
+                log.Line("RUN      the clash XML is "
+                    + (options.WriteXml ? "written beside each workbook" : "off"));
+
                 FederationEngine engine = new FederationEngine(
-                    SetProgress, log, RepublishNwd.IsChecked == true, exchange);
+                    SetProgress, log, RepublishNwd.IsChecked == true, exchange, options, nwfFolder);
                 engine.Run(jobs);
 
                 // What the Revit container inside each NWC says its building is. Only

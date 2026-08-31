@@ -8,6 +8,7 @@ using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Findings;
+using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
@@ -25,6 +26,8 @@ namespace Federator.Addin.Engine
         private readonly RunLog log;
         private readonly bool republishNwd;
         private readonly ExchangeDocument exchange;
+        private readonly ReportOptions reports;
+        private readonly string reportFolder;
         private readonly List<SourcePair> sourcePairs = new List<SourcePair>();
 
         /// <summary>
@@ -54,6 +57,21 @@ namespace Federator.Addin.Engine
         /// </summary>
         public FederationEngine(
             Action<string> progress, RunLog log, bool republishNwd, ExchangeDocument exchange)
+            : this(progress, log, republishNwd, exchange, null, null)
+        {
+        }
+
+        /// <summary>
+        /// The report folder is worked out once, from the picked folder or from beside the
+        /// NWF folder, so every group in the run writes into the same place.
+        /// </summary>
+        public FederationEngine(
+            Action<string> progress,
+            RunLog log,
+            bool republishNwd,
+            ExchangeDocument exchange,
+            ReportOptions reports,
+            string nwfFolder)
         {
             if (log == null)
             {
@@ -64,6 +82,11 @@ namespace Federator.Addin.Engine
             this.log = log;
             this.republishNwd = republishNwd;
             this.exchange = exchange;
+            this.reports = reports ?? new ReportOptions();
+            this.reportFolder = string.IsNullOrEmpty(nwfFolder)
+                    && string.IsNullOrEmpty(this.reports.ExcelFolder)
+                ? null
+                : this.reports.FolderFor(nwfFolder);
         }
 
         /// <summary>
@@ -190,6 +213,11 @@ namespace Federator.Addin.Engine
                 {
                     SaveTheNwfAgain(document, job, outcome);
                 }
+
+                // After the clash step and before the NWD, so the three outputs of a group
+                // agree with each other rather than the workbook describing a state the
+                // NWD does not carry.
+                WriteWorkbook(job, outcome);
 
                 WriteNwd(document, job, outcome);
             }
@@ -540,7 +568,27 @@ namespace Federator.Addin.Engine
                 log.Line("CLASH    " + job.Building + ", " + plan.TestsInFile + " in the file, "
                     + plan.Buildable.Count + " to create, " + plan.Skipped.Count + " skipped before the model");
 
-                ClashRunOutcome clash = new ClashRunner(progress, log, guard).Run(plan);
+                ClashRunner runner = new ClashRunner(progress, log, guard);
+                runner.NameSettings = reports.Names;
+
+                if (reports.WriteWorkbook || reports.WriteXml)
+                {
+                    ClashReport report = new ClashReport(job.Building, job.OutputName);
+                    report.SourceFile = exchange.SourcePath;
+                    report.DocumentUnits = units;
+                    report.RunAt = DateTime.Now;
+                    report.BuildStamp = BuildStamp.Of(typeof(FederationEngine).Assembly);
+                    runner.Report = report;
+                    outcome.Report = report;
+                }
+
+                ClashRunOutcome clash = runner.Run(plan);
+
+                if (outcome.Report != null)
+                {
+                    outcome.Report.OpenDocument = clash.OpenDocument;
+                    outcome.Report.ClashStepSeconds = clash.Seconds;
+                }
                 outcome.Clash = clash;
                 log.Block("CLASH " + job.Building, clash.Lines());
                 log.Line("CLASH    " + job.Building + " finished. " + clash.Summary());
@@ -565,6 +613,73 @@ namespace Federator.Addin.Engine
                     "kept going, whatever was already created and run is kept in the NWF");
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Writes the workbook, and the XML beside it when that is switched on. Both are
+        /// built from the same results in memory. Neither reads the other, so a fault in
+        /// one cannot corrupt the other.
+        ///
+        /// A file is only recorded as written after it exists and its size has been read
+        /// back off the disk, which is what WriteFinished does. Nothing here reports a
+        /// size it did not read.
+        /// </summary>
+        private void WriteWorkbook(FederationJob job, JobOutcome outcome)
+        {
+            ClashReport report = outcome.Report;
+
+            if (report == null || reportFolder == null)
+            {
+                return;
+            }
+
+            if (reports.WriteWorkbook)
+            {
+                string path = ReportPaths.Workbook(reportFolder, job.OutputName);
+                progress("Writing the workbook for " + job.Building);
+                log.WriteAttempted("XLSX", path);
+
+                try
+                {
+                    new WorkbookWriter().Write(report, path);
+                }
+                catch (Exception error)
+                {
+                    outcome.AddError(
+                        "writing the workbook threw " + error.GetType().Name + ": " + error.Message);
+                    log.Failure(
+                        "writing the workbook for " + job.Building,
+                        error,
+                        "kept going, the disk is checked next to see whether anything landed");
+                }
+
+                outcome.WorkbookSize = log.WriteFinished("XLSX", path);
+                outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
+            }
+
+            if (!reports.WriteXml)
+            {
+                return;
+            }
+
+            string xmlPath = ReportPaths.Xml(reportFolder, job.OutputName);
+            log.WriteAttempted("XML", xmlPath);
+
+            try
+            {
+                new ClashReportXml().Write(report, xmlPath);
+            }
+            catch (Exception error)
+            {
+                outcome.AddError(
+                    "writing the clash XML threw " + error.GetType().Name + ": " + error.Message);
+                log.Failure(
+                    "writing the clash XML for " + job.Building,
+                    error,
+                    "kept going, the workbook is unaffected because neither reads the other");
+            }
+
+            outcome.XmlSize = log.WriteFinished("XML", xmlPath);
         }
 
         /// <summary>

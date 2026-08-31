@@ -252,9 +252,45 @@ and 6 does not read as broken.
 - The Try forms return a bool and it is read, never discarded. For the NWD that
   bool is the only thing separating a fresh publish from last week's file at the
   same path, because File.Exists cannot tell them apart
-- Excel sheet names stop at 31 characters and 1703 of the 1830 test names are
-  longer. Sheets are T0001 upward. The Summary sheet carries the full test name,
-  the counts by status, and a link to the sheet
+- One workbook per group, written after the clash step and before the NWD is published,
+  so the three outputs of a group agree with each other. Named like the group's other
+  outputs with an xlsx extension, and it overwrites, the same as the NWF and the NWD. The
+  Excel folder is picked on the Outputs step, and when it is empty the workbooks go beside
+  the NWF folder in a subfolder called Clash Reports, which is a setting
+- Results are grouped, not one row per raw clash. A group is one row and its distance is
+  the most severe clash in it, which is the minimum: a hard clash reports a negative
+  overlap so the worst is the most negative, and a clearance test reports a gap so the
+  worst is the smallest. Every row carries the raw count behind it, so the grouping hides
+  nothing
+- The clash API has no open against closed notion. Nothing on IClashResult, ClashResult,
+  ClashResultGroup, ClashTest or DocumentClashTests names one, ClashResultStatus is a flat
+  five value enum, and Navisworks' own report does not mention open or closed either. So
+  every status is reported as itself, and where the matrix needs one number for what is
+  outstanding it is labelled New plus Active rather than open, because that is a rule
+  Bader stated and not one the API holds
+- One sheet per test that found something. A test that found nothing gets no sheet and
+  appears in the Summary as its status. Sheets are T0001 upward because Excel stops a
+  sheet name at 31 characters and 1703 of the 1830 test names are longer, so a sheet is
+  never named after its test and the full name lives in the Summary
+- The Summary carries one row per test in the file, not one per test that ran. Skipped,
+  passed and found are three numbers and are never merged. On 1C07BC that is 1164 skipped,
+  618 passed and 48 with clashes, and those add to 1830
+- The matrix cell holds New plus Active. A skipped pair reads "skipped" and never "0",
+  because a zero says the pair was tested and nothing clashed, and a skip says nobody
+  looked. A pair no test covers is blank, which is a third thing again. The discipline
+  grouping is read from the set folder names in the picked file, never from a list in the
+  code
+- The clash XML is optional and off by default. It is built from the same results the
+  workbook is built from, never by reading the workbook and never read by it, so a fault
+  in one cannot corrupt the other. Its shape was read off the three stylesheets the
+  Navisworks install ships, because there is no clash report schema anywhere in the
+  install. What is filled and what is left out is listed in ClashReportXml, and a part
+  with nothing to put in it is left out rather than written empty
+- The workbook library is ClosedXML, and the writer lives in Federator.Core rather than in
+  the add-in so the tests write a real xlsx and read it back without Navisworks. It ships
+  twelve more DLLs into the bundle and install.ps1 carries every one of them, because the
+  add-in would otherwise load and then throw the first time a group finished. None of them
+  collides with a file the Navisworks install ships
 - Images are off by default. When on, New and Active only, written as jpg beside
   the workbook with a link in the row, never pasted into cells
 - The scan reports what it noticed and never acts on it. ODD SHAPE, NEAR MATCH,

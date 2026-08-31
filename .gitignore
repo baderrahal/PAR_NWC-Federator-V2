@@ -5,8 +5,12 @@ obj/
 [Rr]elease/
 x64/
 x86/
-build/
 artifacts/
+
+# NOT build/. That folder holds install.ps1, which is the only way the add-in and
+# the twelve library DLLs reach the 27 machines that run this. It was ignored here
+# from the first commit and had never been committed, so it was one clean away from
+# being lost. bin/, obj/, Debug/, Release/ and artifacts/ already cover build output.
 
 # Visual Studio
 .vs/
