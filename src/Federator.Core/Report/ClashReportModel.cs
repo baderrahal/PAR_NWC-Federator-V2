@@ -22,9 +22,30 @@ namespace Federator.Core.Report
             SourceFile = string.Empty;
             Discipline = string.Empty;
             ElementId = string.Empty;
+            ItemType = string.Empty;
+            IdLabel = ClientFormat.DefaultIdLabel;
         }
 
         public string Name { get; set; }
+
+        /// <summary>
+        /// The client's Item Type column, which is the Navisworks item type and reads
+        /// Solid on every one of the 120 item cells in the accepted report. Not the same
+        /// as <see cref="Type"/>, which is the Revit type name and is ours.
+        /// </summary>
+        public string ItemType { get; set; }
+
+        /// <summary>
+        /// What Navisworks puts in front of the id, which it reads off whichever property
+        /// carried it. Element ID on a Revit sourced NWC. A default, never a constant.
+        /// </summary>
+        public string IdLabel { get; set; }
+
+        /// <summary>The client's Item ID column, label and value in one field.</summary>
+        public string ClientId()
+        {
+            return ClientFormat.ItemId(IdLabel, ElementId);
+        }
 
         public string Family { get; set; }
 
@@ -60,9 +81,47 @@ namespace Federator.Core.Report
             Left = new ClashItem();
             Right = new ClashItem();
             RawClashes = 1;
+            Description = string.Empty;
+            ImageFile = string.Empty;
+            ImageLink = string.Empty;
+            ImagePath = string.Empty;
         }
 
         public string Name { get; set; }
+
+        /// <summary>
+        /// The client's Description column, which is the clash's own description and
+        /// reads Hard (Conservative) on every row of the accepted report. Read off the
+        /// result, never filled in from the test type here.
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>The picture's file name, empty where none was written.</summary>
+        public string ImageFile { get; set; }
+
+        /// <summary>What the workbook cell links to, relative so the pair can be moved.</summary>
+        public string ImageLink { get; set; }
+
+        /// <summary>Where the picture actually is, for embedding a thumbnail.</summary>
+        public string ImagePath { get; set; }
+
+        /// <summary>True when this row has a picture beside the workbook.</summary>
+        public bool HasImage
+        {
+            get { return !string.IsNullOrEmpty(ImageFile); }
+        }
+
+        /// <summary>The client's Grid Location column, grid and level in one field.</summary>
+        public string ClientGridLocation()
+        {
+            return ClientFormat.GridLocation(GridLocation, Level);
+        }
+
+        /// <summary>The client's Clash Point column, the three coordinates in one field.</summary>
+        public string ClientClashPoint()
+        {
+            return ClientFormat.ClashPoint(X, Y, Z);
+        }
 
         public ClashStatus Status { get; set; }
 
@@ -182,6 +241,8 @@ namespace Federator.Core.Report
             SkippedReason = string.Empty;
             TestTypeName = string.Empty;
             ToleranceUnits = string.Empty;
+            StatusWord = string.Empty;
+            ImageIndex = -1;
         }
 
         /// <summary>One based, and the number the sheet is named after.</summary>
@@ -208,6 +269,46 @@ namespace Federator.Core.Report
 
         /// <summary>Empty unless the state is Skipped.</summary>
         public string SkippedReason { get; set; }
+
+        /// <summary>
+        /// The client's Status column on the test header. Navisworks writes its own word
+        /// there and the accepted report says OK on all 1830 of its tests, which is the
+        /// only value anyone here has seen. So this carries whatever the run read off the
+        /// test rather than a translation, and it is left empty rather than invented.
+        /// </summary>
+        public string StatusWord { get; set; }
+
+        /// <summary>
+        /// This test's number in the picture names, zero based, or minus one until it
+        /// writes one. It counts tests that write pictures rather than tests in the file,
+        /// which is what makes cd000001 the first picture of the first test that has one.
+        /// </summary>
+        public int ImageIndex { get; set; }
+
+        /// <summary>The client's Tolerance column, value and unit in one field.</summary>
+        public string ClientTolerance()
+        {
+            return ClientFormat.Tolerance(Tolerance, ToleranceUnits);
+        }
+
+        /// <summary>How many rows on this sheet carry a picture.</summary>
+        public int ImageCount
+        {
+            get
+            {
+                int count = 0;
+
+                foreach (ClashRow row in rows)
+                {
+                    if (row.HasImage)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
 
         public double Seconds { get; set; }
 
@@ -330,6 +431,57 @@ namespace Federator.Core.Report
             SetTreeRoot = "lcop_selection_set_tree";
             OpenCount = OpenClashes.Default;
             CompactedAway = -1;
+            Images = new ImageTally();
+        }
+
+        /// <summary>What the pictures cost for this group. Measured, never estimated.</summary>
+        public ImageTally Images { get; private set; }
+
+        /// <summary>
+        /// The next number for a test that is about to write its first picture, and the
+        /// same number again for a test that already has one.
+        ///
+        /// Handed out here rather than by the caller so the numbering cannot repeat or
+        /// skip, the same reason the sheet numbers are.
+        /// </summary>
+        public int ImageIndexFor(TestReport test)
+        {
+            if (test == null)
+            {
+                throw new ArgumentNullException("test");
+            }
+
+            if (test.ImageIndex >= 0)
+            {
+                return test.ImageIndex;
+            }
+
+            int next = 0;
+
+            foreach (TestReport other in tests)
+            {
+                if (other.ImageIndex >= next)
+                {
+                    next = other.ImageIndex + 1;
+                }
+            }
+
+            test.ImageIndex = next;
+            return next;
+        }
+
+        /// <summary>
+        /// Hands an index back where the test claimed one and then wrote nothing, which
+        /// happens when its first render fails. Without this the numbering would carry a
+        /// gap, and the numbering is the one thing about the pictures the client's own
+        /// tooling might rely on.
+        /// </summary>
+        public void ReleaseImageIndex(TestReport test)
+        {
+            if (test != null && test.ImageCount == 0)
+            {
+                test.ImageIndex = -1;
+            }
         }
 
         public string Building { get; private set; }

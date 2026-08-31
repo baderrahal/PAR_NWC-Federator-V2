@@ -19,4 +19,11 @@
     <ProjectReference Include="..\..\src\Federator.Core\Federator.Core.csproj" />
   </ItemGroup>
 
+  <!-- So a test can open a written xlsx as the zip it is and prove what the file itself
+       holds, rather than only what the library says it wrote. -->
+  <ItemGroup>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+  </ItemGroup>
+
 </Project>

@@ -15,20 +15,69 @@ namespace Federator.Core.Report
     /// </summary>
     public sealed class WorkbookWriter
     {
-        /// <summary>The columns of a test sheet, in the order the brief sets out.</summary>
-        public static readonly string[] TestColumns =
+        private readonly ReportOptions options;
+
+        /// <summary>The defaults, which is every column and images on.</summary>
+        public WorkbookWriter()
+            : this(null)
         {
-            "Group or clash",
-            "Status",
-            "Distance",
-            "Grid",
-            "Level",
-            "A item", "A family", "A type", "A material", "A source file", "A discipline",
-            "B item", "B family", "B type", "B material", "B source file", "B discipline",
-            "Found", "Position",
-            "A element id", "B element id",
-            "Raw clashes"
+        }
+
+        public WorkbookWriter(ReportOptions options)
+        {
+            this.options = options ?? new ReportOptions();
+        }
+
+        /// <summary>What this writer was told to do. Never null.</summary>
+        public ReportOptions Options
+        {
+            get { return options; }
+        }
+
+        /// <summary>
+        /// The columns of a test sheet, which are the client's own columns in the client's
+        /// own order and words, taken from the report they have already accepted. See
+        /// <see cref="ClientFormat"/> for where each name and each format was read from.
+        /// </summary>
+        public static readonly string[] ClientColumns = ClientFormat.ClashColumns;
+
+        /// <summary>
+        /// Ours, and they come AFTER theirs rather than in place of any of them. Without
+        /// these, whoever has to fix a clash opens the model to find out what they are
+        /// looking at.
+        ///
+        /// Type Name rather than Type, because the client already has a column called
+        /// Item Type and it holds something else. Theirs is the Navisworks item type and
+        /// reads Solid. Ours is the type name off the model.
+        /// </summary>
+        public static readonly string[] OurColumns =
+        {
+            "Item 1 Family", "Item 1 Type Name", "Item 1 Material",
+            "Item 1 Source File", "Item 1 Discipline",
+            "Item 2 Family", "Item 2 Type Name", "Item 2 Material",
+            "Item 2 Source File", "Item 2 Discipline",
+            "Found", "Raw clashes"
         };
+
+        /// <summary>
+        /// The whole header of a test sheet. Client columns always, ours only when they
+        /// were asked for, so a submission can be exported with exactly the columns that
+        /// were signed off.
+        /// </summary>
+        public static string[] TestColumnsFor(bool clientColumnsOnly)
+        {
+            if (clientColumnsOnly)
+            {
+                return (string[])ClientColumns.Clone();
+            }
+
+            List<string> all = new List<string>(ClientColumns);
+            all.AddRange(OurColumns);
+            return all.ToArray();
+        }
+
+        /// <summary>Every column, which is what a workbook written with the defaults holds.</summary>
+        public static readonly string[] TestColumns = TestColumnsFor(false);
 
         public static readonly string[] SummaryColumns =
         {
@@ -38,7 +87,7 @@ namespace Federator.Core.Report
             "Outcome", "Why skipped",
             "Groups", "Raw clashes",
             "New", "Active", "Reviewed", "Approved", "Resolved",
-            "Open", "Resolved so far", "Seconds"
+            "Open", "Resolved so far", "Seconds", "Images"
         };
 
         /// <summary>
@@ -136,6 +185,21 @@ namespace Federator.Core.Report
                     report.CompactedAway.ToString());
             }
 
+            row++;
+            row = Fact(sheet, row, "Images", options.Images.Describe());
+            row = Fact(sheet, row, "Images written", report.Images.Written.ToString());
+            row = Fact(sheet, row, "Images, megabytes",
+                report.Images.TotalMegabytes.ToString("0.00", CultureInfo.InvariantCulture));
+            row = Fact(sheet, row, "Images, seconds in total",
+                report.Images.TotalSeconds.ToString("0.0", CultureInfo.InvariantCulture));
+            row = Fact(sheet, row, "Images, seconds each",
+                report.Images.SecondsEach.ToString("0.000", CultureInfo.InvariantCulture));
+            row = Fact(sheet, row, "Images that failed", report.Images.Failed.ToString());
+            row = Fact(sheet, row, "Columns",
+                options.ClientColumnsOnly
+                    ? "the client's columns only, as the accepted report has them"
+                    : "the client's columns, then ours after them");
+
             row += 2;
             int headerRow = row;
 
@@ -185,7 +249,8 @@ namespace Federator.Core.Report
 
                 sheet.Cell(row, column++).Value = test.OpenUnder(report.OpenCount);
                 sheet.Cell(row, column++).Value = test.Resolved;
-                sheet.Cell(row, column).Value = test.Seconds;
+                sheet.Cell(row, column++).Value = test.Seconds;
+                sheet.Cell(row, column).Value = test.ImageCount;
 
                 row++;
             }
@@ -295,75 +360,237 @@ namespace Federator.Core.Report
             IXLWorksheet sheet = workbook.Worksheets.Add(
                 SheetNames.Sanitise(test.SheetName(), "T" + test.Number));
 
-            sheet.Cell(1, 1).Value = test.Name;
-            sheet.Cell(1, 1).Style.Font.Bold = true;
-            sheet.Cell(2, 1).Value = ClashReport.SetNameOf(test.LeftLocator)
+            int row = WriteTestHeader(sheet, test);
+            row = WriteOurContext(sheet, row, test);
+            WriteClashTable(sheet, row, test);
+
+            sheet.Columns().AdjustToContents(1, 45);
+        }
+
+        /// <summary>
+        /// The client's own test header, their nine columns in their order and their
+        /// words, with the test name beside them the way their report has it.
+        /// </summary>
+        private int WriteTestHeader(IXLWorksheet sheet, TestReport test)
+        {
+            const int nameRow = 1;
+            const int valueRow = 2;
+
+            sheet.Cell(nameRow, 1).Value = test.Name;
+            sheet.Cell(nameRow, 1).Style.Font.Bold = true;
+            sheet.Range(nameRow, 1, valueRow, 1).Merge();
+
+            for (int i = 0; i < ClientFormat.TestHeader.Length; i++)
+            {
+                IXLCell header = sheet.Cell(nameRow, i + 2);
+                header.Value = ClientFormat.TestHeader[i];
+                header.Style.Font.Bold = true;
+            }
+
+            int column = 2;
+
+            sheet.Cell(valueRow, column++).Value = test.ClientTolerance();
+            sheet.Cell(valueRow, column++).Value = test.RawClashes;
+
+            foreach (ClashStatus status in ClashTally.AllStatuses)
+            {
+                sheet.Cell(valueRow, column++).Value = test.Tally.Of(status);
+            }
+
+            sheet.Cell(valueRow, column++).Value = test.TestTypeName;
+
+            // Their Status column. Left empty rather than translated where the run read
+            // nothing, because OK is the only word anyone here has seen in one of theirs.
+            sheet.Cell(valueRow, column).Value = test.StatusWord;
+
+            return valueRow + 2;
+        }
+
+        /// <summary>
+        /// Ours, kept off their block and out of their columns. The sets, the counts and
+        /// the way back to the Summary.
+        /// </summary>
+        private int WriteOurContext(IXLWorksheet sheet, int row, TestReport test)
+        {
+            sheet.Cell(row, 1).Value = ClashReport.SetNameOf(test.LeftLocator)
                 + "  against  " + ClashReport.SetNameOf(test.RightLocator)
                 + "   items " + test.LeftItems + " v " + test.RightItems
-                + "   tolerance " + test.Tolerance.ToString("0.####", CultureInfo.InvariantCulture)
-                + " " + test.ToleranceUnits;
-            sheet.Cell(3, 1).Value = test.GroupCount + " rows covering " + test.RawClashes
-                + " raw clashes. A group is one row and carries the count behind it.";
+                + "   " + test.GroupCount + " rows covering " + test.RawClashes
+                + " raw clashes, a group being one row carrying the count behind it.";
+            row++;
 
-            IXLCell back = sheet.Cell(4, 1);
+            if (test.ImageCount > 0)
+            {
+                sheet.Cell(row, 1).Value = test.ImageCount
+                    + " rows carry a picture, in the folder beside this workbook. A cell "
+                    + "with no link is a clash no picture was asked for or one whose "
+                    + "picture failed.";
+                row++;
+            }
+
+            IXLCell back = sheet.Cell(row, 1);
             back.Value = "Back to " + SheetNames.SummarySheet;
             back.SetHyperlink(new XLHyperlink("'" + SheetNames.SummarySheet + "'!A1"));
 
-            const int headerRow = 6;
+            return row + 2;
+        }
 
-            for (int i = 0; i < TestColumns.Length; i++)
+        private void WriteClashTable(IXLWorksheet sheet, int top, TestReport test)
+        {
+            string[] columns = TestColumnsFor(options.ClientColumnsOnly);
+
+            // Their merged Item 1 and Item 2 labels, sitting over the two blocks of three
+            // exactly where their report has them.
+            int firstItem = ClientFormat.FirstItemColumn + 1;
+            int secondItem = firstItem + ClientFormat.ItemColumns;
+
+            WriteItemGroupLabel(sheet, top, firstItem, ClientFormat.ItemGroup1);
+            WriteItemGroupLabel(sheet, top, secondItem, ClientFormat.ItemGroup2);
+
+            int headerRow = top + 1;
+
+            for (int i = 0; i < columns.Length; i++)
             {
-                sheet.Cell(headerRow, i + 1).Value = TestColumns[i];
-                sheet.Cell(headerRow, i + 1).Style.Font.Bold = true;
+                IXLCell header = sheet.Cell(headerRow, i + 1);
+                header.Value = columns[i];
+                header.Style.Font.Bold = true;
             }
 
             int row = headerRow + 1;
 
             foreach (ClashRow clash in test.Rows)
             {
-                int column = 1;
-
-                sheet.Cell(row, column++).Value = clash.Name;
-                sheet.Cell(row, column++).Value = clash.Status.ToString();
-                sheet.Cell(row, column++).Value = clash.Distance;
-                sheet.Cell(row, column++).Value = clash.GridLocation;
-                sheet.Cell(row, column++).Value = clash.Level;
-
-                column = WriteItem(sheet, row, column, clash.Left);
-                column = WriteItem(sheet, row, column, clash.Right);
-
-                if (clash.Found.HasValue)
-                {
-                    sheet.Cell(row, column).Value = clash.Found.Value;
-                    sheet.Cell(row, column).Style.DateFormat.Format = "yyyy-mm-dd hh:mm";
-                }
-
-                column++;
-
-                sheet.Cell(row, column++).Value = clash.Position();
-                sheet.Cell(row, column++).Value = clash.Left.ElementId;
-                sheet.Cell(row, column++).Value = clash.Right.ElementId;
-
-                // Never hidden by the grouping. One for a plain clash, the count inside
-                // the group otherwise.
-                sheet.Cell(row, column).Value = clash.RawClashes;
-
+                WriteClashRow(sheet, row, clash);
                 row++;
             }
 
             if (test.Rows.Count > 0)
             {
-                sheet.Range(headerRow, 1, headerRow + test.Rows.Count, TestColumns.Length)
+                sheet.Range(headerRow, 1, headerRow + test.Rows.Count, columns.Length)
                     .SetAutoFilter();
                 sheet.SheetView.FreezeRows(headerRow);
             }
-
-            sheet.Columns().AdjustToContents(1, 45);
         }
 
-        private static int WriteItem(IXLWorksheet sheet, int row, int column, ClashItem item)
+        private static void WriteItemGroupLabel(IXLWorksheet sheet, int row, int column, string label)
         {
+            IXLCell cell = sheet.Cell(row, column);
+            cell.Value = label;
+            cell.Style.Font.Bold = true;
+            cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            sheet.Range(row, column, row, column + ClientFormat.ItemColumns - 1).Merge();
+        }
+
+        private void WriteClashRow(IXLWorksheet sheet, int row, ClashRow clash)
+        {
+            int column = 1;
+
+            WriteImageCell(sheet, sheet.Cell(row, column++), clash);
+
+            sheet.Cell(row, column++).Value = clash.Name;
+            sheet.Cell(row, column++).Value = clash.Status.ToString();
+
+            // The raw signed number, negative on a hard clash, written as a number so it
+            // sorts and filters. Their own xlsx holds a number here too.
+            sheet.Cell(row, column++).Value = clash.Distance;
+
+            sheet.Cell(row, column++).Value = clash.ClientGridLocation();
+            sheet.Cell(row, column++).Value = clash.Description;
+            sheet.Cell(row, column++).Value = clash.ClientClashPoint();
+
+            column = WriteClientItem(sheet, row, column, clash.Left);
+            column = WriteClientItem(sheet, row, column, clash.Right);
+
+            if (options.ClientColumnsOnly)
+            {
+                return;
+            }
+
+            column = WriteOurItem(sheet, row, column, clash.Left);
+            column = WriteOurItem(sheet, row, column, clash.Right);
+
+            if (clash.Found.HasValue)
+            {
+                sheet.Cell(row, column).Value = clash.Found.Value;
+                sheet.Cell(row, column).Style.DateFormat.Format = "yyyy-mm-dd hh:mm";
+            }
+
+            column++;
+
+            // Never hidden by the grouping. One for a plain clash, the count inside the
+            // group otherwise.
+            sheet.Cell(row, column).Value = clash.RawClashes;
+        }
+
+        /// <summary>
+        /// The Image cell. A link to the jpg beside the workbook, and the picture itself
+        /// only when that was asked for, because the accepted report links rather than
+        /// pasting and a pasted picture makes the file many times larger.
+        ///
+        /// A clash with no picture leaves the cell empty. That is the ordinary answer for
+        /// a status nobody asked for a picture of, and it is also what a failed render
+        /// leaves behind, which is why the failures are counted in the log instead.
+        /// </summary>
+        private void WriteImageCell(IXLWorksheet sheet, IXLCell cell, ClashRow clash)
+        {
+            if (!clash.HasImage)
+            {
+                return;
+            }
+
+            cell.Value = clash.ImageFile;
+
+            if (!string.IsNullOrEmpty(clash.ImageLink))
+            {
+                // A relative Uri, not a plain string. Handed the string, ClosedXML reads
+                // it as an internal address, which makes the cell jump to a sheet that
+                // does not exist instead of opening the picture.
+                cell.SetHyperlink(new XLHyperlink(new Uri(clash.ImageLink, UriKind.Relative)));
+            }
+
+            if (!options.Images.EmbedThumbnail || string.IsNullOrEmpty(clash.ImagePath))
+            {
+                return;
+            }
+
+            try
+            {
+                if (!File.Exists(clash.ImagePath))
+                {
+                    return;
+                }
+
+                sheet.AddPicture(clash.ImagePath)
+                    .MoveTo(cell)
+                    .WithSize(ThumbnailPixels, ThumbnailPixels);
+
+                sheet.Row(cell.Address.RowNumber).Height = ThumbnailPoints;
+                sheet.Column(cell.Address.ColumnNumber).Width = ThumbnailWidth;
+            }
+            catch (Exception)
+            {
+                // A picture that will not embed must not lose the workbook. The link is
+                // already on the cell, so the row still reaches its image.
+            }
+        }
+
+        /// <summary>The size a pasted thumbnail is drawn at, matching their 95 pixel one.</summary>
+        private const int ThumbnailPixels = 95;
+
+        private const double ThumbnailPoints = 72.0;
+
+        private const double ThumbnailWidth = 14.0;
+
+        private static int WriteClientItem(IXLWorksheet sheet, int row, int column, ClashItem item)
+        {
+            sheet.Cell(row, column++).Value = item.ClientId();
             sheet.Cell(row, column++).Value = item.Name;
+            sheet.Cell(row, column++).Value = item.ItemType;
+            return column;
+        }
+
+        private static int WriteOurItem(IXLWorksheet sheet, int row, int column, ClashItem item)
+        {
             sheet.Cell(row, column++).Value = item.Family;
             sheet.Cell(row, column++).Value = item.Type;
             sheet.Cell(row, column++).Value = item.Material;

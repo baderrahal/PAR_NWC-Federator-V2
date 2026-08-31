@@ -1037,6 +1037,162 @@ A format that is merely odd is used exactly as typed and you can see it in the O
 grid before you run. It is your setting, so your mistakes stay visible rather than being
 quietly corrected.
 
+## Step 15, the workbook in the client's own shape
+
+The columns are now the ones on the report the client has already accepted, in their order
+and in their words. They were read off the two files you sent and off the stylesheet
+Navisworks wrote them with, not off a description of them.
+
+80. Run a group that finds clashes, then open a T sheet in the workbook.
+
+**Worked:** the top of the sheet is their test header, the test name and then their nine:
+
+    Tolerance | Clashes | New | Active | Reviewed | Approved | Resolved | Type | Status
+    0.025m    | 13      | 13  | 0      | 0        | 0        | 0        | Hard (Conservative) | OK
+
+and the clash table below it has their thirteen, with Item 1 and Item 2 merged over the two
+blocks of three, exactly as their report has them:
+
+    Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point
+          | Item ID | Item Name | Item Type | Item ID | Item Name | Item Type
+
+81. Check the four fields that look like they could be several columns and are not.
+
+**Worked:** Grid Location reads `B-1 : ROF` in one cell, not a grid column and a level
+column. Clash Point reads `x:31.643, y:-2.913, z:3.325` in one cell, not three. Item ID
+reads `Element ID: 1554240`. Tolerance reads `0.025m` with no space.
+
+Those four are the part everyone gets wrong, including the brief I was given, so they are
+worth ten seconds each. The stylesheet is what settles them and it is quoted in
+docs\scan.md section 4k.
+
+82. Check Distance.
+
+**Worked:** the raw signed number, negative on a hard clash, and a NUMBER rather than text,
+so the column still sorts and filters. Their own xlsx holds a number there too.
+
+83. Look to the right of Item 2's Item Type.
+
+**Worked:** ours start there and nowhere else. Item 1 Family, Item 1 Type Name, Item 1
+Material, Item 1 Source File, Item 1 Discipline, then the same for Item 2, then Found and
+Raw clashes.
+
+Ours says **Type Name** and not Type, on purpose. The client already has a column called
+Item Type and it holds something else, the Navisworks item type, which reads Solid. Two
+columns called Type meaning two different things is how a report gets misread.
+
+84. For a submission, tick **Client columns only** on the Outputs step and run again.
+
+**Worked:** ours are gone and theirs are untouched, in the same order in the same columns.
+Ours come off the right hand end, so nothing of theirs moves. The Summary sheet says which
+of the two the workbook was written with.
+
+## Step 16, the pictures where the client expects them
+
+85. Run with the defaults. Images are **on** now, because the accepted report has them.
+
+**Worked:** beside the workbook there is a folder named after it with `_files` on the end,
+holding loose jpg. Exactly where your own report keeps them.
+
+86. Look at the names.
+
+**Worked:** `cd000001.jpg` upward, and the numbering is theirs. It is not one running
+sequence, which is what the first dozen look like. It is cd, then the test, then the clash
+within that test:
+
+    cd000001.jpg   first test, first clash
+    cd000013.jpg   first test, thirteenth clash
+    cd010001.jpg   second test, first clash
+
+Your own 2672 picture export is what proved this, because it reaches test 100 and the names
+there are `cd1000001.jpg`, seven digits. A fixed width would have got that wrong.
+
+We do not write a `logo.jpg`. Navisworks puts that one there and it is not a clash picture.
+
+87. Click an Image cell in the workbook.
+
+**Worked:** it opens the jpg. The link is relative, so moving the workbook and its `_files`
+folder together keeps every one of them working. Move the workbook on its own and they
+break, which is why the two are written side by side.
+
+**Worth knowing about your own xlsx:** the one you sent has 61 pictures in it as links, and
+every one is absolute, `file:///C:\00_NM\Clash report\...`. So that file shows broken
+picture boxes on anyone else's machine. Ours does not have that problem.
+
+88. If you want the picture in the cell as well, tick **Also paste a thumbnail**.
+
+**Worked:** it appears in the Image cell. Off by default, because the accepted report links
+rather than pasting and pasting makes the workbook many times larger.
+
+## Step 17, what the pictures actually cost
+
+Every number anyone has given for this, mine included, has been a guess. Now it is measured.
+
+89. After a run, find the `IMAGES` lines in the log.
+
+**Worked:** four numbers per group, all of them read off the run:
+
+    IMAGES   60 written, 10.98 MB, 41.2 seconds in total.
+             0.687 seconds each on average, quickest 0.412, slowest 1.884.
+             187 KB each on average.
+
+and the same figures on the Summary sheet, because the log is not what gets sent on.
+
+**This is the step I most want the numbers from.** Rendering a picture needs the running
+application, so I cannot time it here. Sixty pictures at whatever it turns out to be per
+picture is what decides whether the cap needs a default other than off. Send me the IMAGES
+lines from a real group.
+
+90. Look at the counts of what was passed over.
+
+**Worked:** clashes skipped on status and clashes skipped on the cap are counted
+separately, because they are different decisions.
+
+## Step 18, the image settings
+
+91. On the Outputs step, look at the image block. The summary line under it says what the
+    settings will actually do, before you run.
+
+**Worked, the defaults:** on, 1024 by 1024, New Active and Reviewed only, no cap, linked
+rather than pasted.
+
+The 1024 is not a guess either. All 60 pictures in the report you sent measure 1024 by 1024,
+so ours match what was accepted.
+
+92. Set the cap to 5 and run against a test with more clashes than that.
+
+**Worked:** five pictures for that test and no more, the rest counted as passed over on the
+cap. The cap is per test, so a test with 1244 clashes cannot spend the whole run rendering.
+
+93. Untick Reviewed and run.
+
+**Worked:** Reviewed clashes get no picture and are counted as passed over on status.
+
+94. Untick all five statuses.
+
+**Worked:** it treats that as images off, and says so, rather than quietly writing nothing.
+Those two are the same thing and one of them is legible in the log.
+
+95. Type nonsense into the size or the cap box.
+
+**Worked:** the summary line falls back to the default and shows what it actually
+understood, so a typo is visible before Run is pressed rather than after.
+
+## Step 19, a picture that fails
+
+96. This one is hard to force on purpose, so mostly it is a thing to watch for.
+
+**Should happen:** a clash whose picture fails is logged by name, its Image cell is left
+empty, every other column on that row is still filled in, and the run carries on. The
+workbook is the point of the run and a missing picture is not worth losing it over.
+
+**Should also happen:** if fifty in a row fail the same way, the run stops and says so, the
+same as the clash step does. The line will say images rather than tests, so you know where
+to look.
+
+97. If that ever fires, send me the line. It will name the first reason, and the fix will
+    be to switch images off for that run while it is sorted out.
+
 ## What to send me if it goes wrong
 
 Send the whole log file, not a summary and not the last few lines. Use **Copy log** and
@@ -1180,3 +1336,28 @@ what is left is what the running application does:
   copy
 - whether a dated NWD and an undated NWF sit together the way step 14 describes across two
   real weeks. One run cannot show that, two can
+
+From the client format work of 2026-08-31. The columns, the joins, the picture naming and
+the settings are all tested in Federator.Core against the two files you sent, so what is
+left needs the running application:
+
+- how long ONE picture takes. This is the one number the whole image feature turns on and I
+  cannot measure it from here. TestsImageForResult needs a document open and a renderer. If
+  it is a tenth of a second, nobody needs the cap. If it is two seconds, 60 pictures is two
+  minutes a group and 22 groups is three quarters of an hour on pictures alone
+- whether the pictures are framed on the clash. TestsImageForResult takes a clash result
+  and no camera at all, so the view can only have come from the result, but whether it
+  applies the clash's own viewpoint internally is UNKNOWN from the DLL. If they come out
+  framed on the whole model rather than on the clash, say so and the explicit route is
+  written up in docs\scan.md section 4k
+- which of the three image styles matches theirs. Scene, SceneUsingRayTrace and
+  ScenePlusOverlay are the three that exist. This tool asks for ScenePlusOverlay because an
+  overlay is where a clash highlight would live, and that is reasoning rather than a
+  measurement. Comparing one of ours against one of theirs side by side settles it
+- whether ClassDisplayName is really what fills their Item Type column. Theirs reads Solid
+  on all 120 item cells of the report you sent, and ClassDisplayName is what the Item tab
+  shows as the type, but only a run against a real model shows the two agreeing
+- whether the Description column fills. Theirs reads Hard (Conservative) on every row,
+  which is the clash's own description, and this tool reads ClashResult.Description. If
+  ours comes out empty then Navisworks fills that field when it writes a report rather
+  than storing it, and it would then be the test type wording instead

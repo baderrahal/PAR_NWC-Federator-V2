@@ -936,6 +936,215 @@ recorded. The open count setting is a stated rule on top of this enum, never a r
 it, and the workbook says which of the two it used.
 
 
+### 4k. Clash images, and the format the client has accepted, measured 2026-08-31
+
+Two things this section settles. How a picture of a clash is actually made, read off the
+installed DLLs. And what the client's own report holds, read off the report itself rather
+than off anyone's description of it.
+
+#### How an image is made
+
+Every method in either `Autodesk.Navisworks.Api.dll` or `Autodesk.Navisworks.Clash.dll`
+that returns a `System.Drawing.Bitmap`, found by walking every type in both assemblies,
+public members and private ones alike. The probe is `build\probe-clash-images.ps1`.
+
+```
+public  Bitmap DocumentClashTests.TestsImageForResult(
+            IClashResult result, ImageGenerationStyle style, int width, int height)
+
+public  Bitmap Document.GenerateImage(ImageGenerationStyle style,
+            int width, int height, bool enableSectioning)
+public  Bitmap Document.GenerateImage(ImageGenerationStyle style,
+            int width, int height, double maxTimeHint, bool enableSectioning)
+internal Bitmap Document.GenerateImage(ImageGenerationStyle style, View view,
+            int width, int height, double maxTimeHint, bool enableSectioning)
+
+public  Bitmap View.GenerateImage(ImageGenerationStyle style,
+            int width, int height, bool enableSectioning)
+public  Bitmap View.GenerateImage(ImageGenerationStyle style,
+            int width, int height, double maxTimeHint, bool enableSectioning)
+```
+
+That is the complete list. `TestsImageForResult` is the only one of them that takes a clash
+result, so it is the one this tool uses.
+
+```
+Autodesk.Navisworks.Api.ImageGenerationStyle, underlying Int32
+  Scene              = 0
+  SceneUsingRayTrace = 1
+  ScenePlusOverlay   = 2
+```
+
+WHICH of the three Navisworks uses for its own report is **UNKNOWN**. It cannot be read
+off the DLL. `ScenePlusOverlay` is what this tool asks for, because an overlay is where a
+clash highlight would live and the accepted report shows the two clashing items picked
+out, and it is a property on `ClashImages` rather than a constant, so it can be changed
+once a real run shows which one matches.
+
+#### How a clash's own viewpoint is applied first
+
+```
+public Viewpoint DocumentClashTests.TestsViewpointForResult(IClashResult result)
+
+public void Document.CurrentViewpoint.CopyFrom(Viewpoint viewpoint)
+       Document.CurrentViewpoint is a DocumentCurrentViewpoint, get only, and holds
+         Viewpoint Value { get }
+         Viewpoint ToViewpoint()
+         Viewpoint CreateCopy()
+         void      CopyFrom(Viewpoint viewpoint)
+
+public void View.CopyViewpointFrom(Viewpoint viewpoint, ViewChange change)
+public Viewpoint View.CreateViewpointCopy()
+       Document.ActiveView is a View, get only. View is IDisposable.
+```
+
+`Viewpoint` derives from `NativeHandle` and is `IDisposable`, so section 4g applies to it
+the same as to everything else the document owns.
+
+Whether `TestsImageForResult` applies the clash's viewpoint internally is **UNKNOWN**. It
+cannot be read off the DLL. What IS established is that it takes a result, a style and two
+numbers and no camera of any kind, so the view it renders can only have come from the
+result. This tool therefore calls it on its own and does not set a viewpoint first. If a
+real run shows the pictures are not framed on the clash, the explicit route is the four
+calls above: read the viewpoint, copy it onto the current viewpoint or the active view,
+then `View.GenerateImage`.
+
+`ClashResult.HasSavedViewpoint` is a public get only bool, which says whether a clash
+carries its own saved viewpoint. Nothing here writes a viewpoint into the NWF.
+
+#### How an image is written to a file
+
+Nothing in the Navisworks API writes a clash image to a file. Searched both assemblies for
+every method naming image, render, snapshot, thumbnail, bitmap, capture or export. What
+exists is:
+
+```
+public void ApplicationAutomation.GenerateThumbnail(int width, int height, string fileName)
+public void ApplicationAutomation.GenerateThumbnailByRayTrace(int width, int height, string fileName)
+```
+
+Both write a file and neither takes a clash. They are the document thumbnail, not a clash
+view, so neither is usable here.
+
+So the bitmap is written with .NET rather than with Navisworks:
+
+```
+public void Image.Save(string filename, System.Drawing.Imaging.ImageFormat format)
+public void Image.Save(string filename, ImageCodecInfo encoder, EncoderParameters encoderParams)
+       System.Drawing.Imaging.ImageFormat.Jpeg exists
+       System.Drawing.Imaging.Encoder.Quality exists
+```
+
+`Image.Save(path, ImageFormat.Jpeg)` is what this tool uses. The encoder form is there if a
+quality setting is ever wanted. The bitmap is a native image handle and is disposed on
+every path, because one leaked per clash across 1830 tests is how a run runs a machine out
+of memory.
+
+#### What the accepted report actually holds
+
+Read off the two files Bader supplied and their sibling folder:
+
+```
+C:\00_NM\Clash report\1104-PAR-1A02WO-XXX-BM-RPT-000001.html    3124927 bytes
+C:\00_NM\Clash report\1104-PAR-1A02WO-XXX-BM-RPT-000001.xlsx     893415 bytes
+C:\00_NM\Clash report\1104-PAR-1A02WO-XXX-BM-RPT-000001_files\   61 jpg
+```
+
+and cross checked against a second, much larger export in the same folder,
+`1104-PAR-1A04EP-ZZZ-BM-RPT-000001` with 2672 pictures, and against the stylesheet
+Navisworks wrote them with:
+
+```
+Navisworks Manage 2025\en-US\stylesheets\clash_report_html_tabular.xsl   28748 bytes
+```
+
+The stylesheet matters because it says which of the columns are fields and which are joins,
+which the rendered HTML alone cannot.
+
+The per test header, nine cells, from the `clashtest` template:
+
+```
+Tolerance | Clashes | New | Active | Reviewed | Approved | Resolved | Type | Status
+0.025m    | 13      | 13  | 0      | 0        | 0        | 0        | Hard (Conservative) | OK
+```
+
+All 1830 tests get a block, including the 1809 that found nothing.
+
+The per clash columns, from the `mainTableHeader` template:
+
+```
+Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point
+      | Item 1: Item ID | Item Name | Item Type
+      | Item 2: Item ID | Item Name | Item Type
+```
+
+Four of these are joins rather than columns, and this is the part a description gets wrong:
+
+- **Tolerance** is `@tolerance` and `/exchange/@units` written one after the other with
+  nothing between them. Hence `0.025m` and not `0.025 m`
+- **Grid Location** is one cell. `B-1 : ROF` is the grid intersection, a spaced colon, then
+  the level. Not two columns
+- **Clash Point** is one cell carrying three literal prefixes and two commas,
+  `x:31.643, y:-2.913, z:3.325`. The stylesheet gives that cell `colspan="3"`, which is why
+  it can look like three columns and is not
+- **Item ID** is `objectattribute/name` in italics, a colon, then `objectattribute/value`.
+  So `Element ID` is read out of the model and is not a constant. A model from something
+  other than Revit carries a different label
+
+`Item Name` and `Item Type` are NOT fixed columns in the stylesheet. They come from
+`$showQuickProperties`, which writes one column per `smarttag` and takes the heading from
+`smarttag/name` in the data. In the accepted report the two quick properties configured
+were Item Name and Item Type, so those are the words used here, and Item Type reads `Solid`
+on all 120 item cells.
+
+Numbers, measured across all 60 clash rows: every Distance and every coordinate is written
+to three decimals, trailing zeros kept, `z:-0.050` among them.
+
+#### The pictures
+
+The folder is the report name with `_files` appended, beside the report. It holds loose jpg
+plus a `logo.jpg` that Navisworks puts there.
+
+The naming is **not** one running sequence, which is what the first dozen names suggest. It
+is `cd`, the test, then the clash within that test:
+
+```
+cd000001.jpg   test 0,   clash 1        first thirteen are test 0
+cd000013.jpg   test 0,   clash 13
+cd010001.jpg   test 1,   clash 1
+cd200001.jpg   test 20,  clash 1
+cd1000001.jpg  test 100, clash 1        seven digits, from the 2672 picture export
+cd001244.jpg   test 0,   clash 1244     the largest test in that export
+```
+
+So the test is formatted `00`, a floor of two digits with no ceiling, and the clash `0000`,
+a floor of four. Test 100 gives three digits and the whole name grows to seven, which a
+fixed six wide field would have got wrong.
+
+On the 1830 block export the picture's test number equals the index of the test block, with
+no gaps, because the blocks are sorted by clash count descending so every block that has
+pictures is a contiguous run from zero. That makes "index of the block" and "index among
+tests that have pictures" indistinguishable in both samples. This tool uses the second,
+because it is the one that cannot leave a gap.
+
+Sizes, measured: all 60 pictures are 1024 by 1024. Mean 187 KB, largest 318 KB, smallest
+25 KB, 10.98 MB for the 60. That is where the 1024 default comes from.
+
+#### The xlsx is Excel's own save of the HTML
+
+Worth knowing, because it explains two things that look like faults:
+
+- declared dimension `A1:BA14701`, which is 53 columns, but only 17 columns hold a value.
+  The other 36 come from the colspans in the HTML being expanded on import
+- it holds no embedded pictures at all, no `xl/media` part. It has 61 pictures and 61
+  hyperlinks that are all EXTERNAL and ABSOLUTE, pointing at
+  `file:///C:\00_NM\Clash report\..._files\cd000001.jpg`. So the xlsx on its own shows
+  broken picture boxes on any machine but the one that made it
+
+This tool writes a real workbook rather than a saved HTML page, and its links are relative,
+so the workbook and its `_files` folder can be moved together and keep working.
+
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

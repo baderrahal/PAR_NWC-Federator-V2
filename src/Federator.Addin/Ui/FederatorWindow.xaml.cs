@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 using Federator.Addin.Engine;
 using Federator.Core.Clash;
@@ -721,8 +722,100 @@ namespace Federator.Addin.Ui
             options.OpenCount = ChosenOpenCount();
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
             options.CompactResolved = CompactResolved.IsChecked == true;
+            options.ClientColumnsOnly = ClientColumnsOnly.IsChecked == true;
+            options.Images = ImagesWanted();
             options.Names = settings;
             return options;
+        }
+
+        /// <summary>
+        /// What the run will do about pictures. A box nobody can read falls back to the
+        /// default rather than stopping the run, and the summary line shows what was
+        /// actually understood, so a typo is visible before Run is pressed.
+        /// </summary>
+        private ImageOptions ImagesWanted()
+        {
+            ImageOptions images = new ImageOptions();
+            images.Write = WriteImages.IsChecked == true;
+            images.EmbedThumbnail = EmbedThumbnails.IsChecked == true;
+
+            int pixels = Number(ImagePixelsBox.Text, ImageOptions.DefaultPixels);
+            images.Width = pixels;
+            images.Height = pixels;
+            images.CapPerTest = Number(ImageCapBox.Text, 0);
+
+            List<ClashStatus> wanted = new List<ClashStatus>();
+
+            if (ImageNew.IsChecked == true) { wanted.Add(ClashStatus.New); }
+            if (ImageActive.IsChecked == true) { wanted.Add(ClashStatus.Active); }
+            if (ImageReviewed.IsChecked == true) { wanted.Add(ClashStatus.Reviewed); }
+            if (ImageApproved.IsChecked == true) { wanted.Add(ClashStatus.Approved); }
+            if (ImageResolved.IsChecked == true) { wanted.Add(ClashStatus.Resolved); }
+
+            if (wanted.Count == 0)
+            {
+                // Every status unticked means no picture would ever be written. That is
+                // the images box unticked, said a longer way, so it is treated as that
+                // rather than refused.
+                images.Write = false;
+            }
+            else
+            {
+                images.OnlyFor(wanted);
+            }
+
+            return images;
+        }
+
+        /// <summary>
+        /// A whole number out of a box, or the fallback. Never throws and never stops a
+        /// run, because this is read on every keystroke.
+        /// </summary>
+        private static int Number(string text, int fallback)
+        {
+            int value;
+
+            if (!int.TryParse(Trimmed(text), System.Globalization.NumberStyles.None,
+                    System.Globalization.CultureInfo.InvariantCulture, out value))
+            {
+                return fallback;
+            }
+
+            return value < 0 ? fallback : value;
+        }
+
+        private void OnImageSettingChanged(object sender, RoutedEventArgs e)
+        {
+            RefreshImageSummary();
+        }
+
+        private void OnImageSettingChanged(object sender, TextChangedEventArgs e)
+        {
+            RefreshImageSummary();
+        }
+
+        /// <summary>
+        /// Says what the settings will actually do, in the same words the log will use, so
+        /// a cap or a size that did not read the way it was typed is visible here first.
+        /// </summary>
+        private void RefreshImageSummary()
+        {
+            if (ImageSummary == null)
+            {
+                return;
+            }
+
+            try
+            {
+                ImageSummary.Text = ImagesWanted().Describe()
+                    + (ClientColumnsOnly.IsChecked == true
+                        ? " Client columns only."
+                        : " Client columns, then ours after them.");
+            }
+            catch (Exception error)
+            {
+                ImageSummary.Text = "Cannot read the image settings. " + error.Message;
+            }
         }
 
         /// <summary>

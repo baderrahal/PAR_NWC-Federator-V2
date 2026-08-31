@@ -43,6 +43,15 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// Where the pictures are written, and what they cost. Null leaves every Image
+        /// cell empty, which is what a run with images switched off does.
+        /// </summary>
+        public ClashImages Images { get; set; }
+
+        /// <summary>The workbook the pictures sit beside. Empty writes none.</summary>
+        public string WorkbookPath { get; set; }
+
+        /// <summary>
         /// The property display names to look for, in order, the first that resolves
         /// winning. Settings, because every project and every exporter names them
         /// differently, and a name nobody has seen leaves the cell empty rather than
@@ -62,6 +71,24 @@ namespace Federator.Addin.Engine
         /// </summary>
         public void Into(Document document, ClashTest test, TestReport into)
         {
+            Into(document, null, test, null, into);
+        }
+
+        /// <summary>
+        /// Every row for one test, and a picture for each row that asked for one.
+        ///
+        /// The picture is rendered here rather than in a second pass because this is
+        /// where the result handle already is, and it is rendered only once the row has
+        /// been fully read, so a render that somehow invalidated the handle could not
+        /// cost a single column.
+        /// </summary>
+        public void Into(
+            Document document,
+            DocumentClashTests clashTests,
+            ClashTest test,
+            ClashReport report,
+            TestReport into)
+        {
             if (into == null)
             {
                 throw new ArgumentNullException("into");
@@ -71,7 +98,7 @@ namespace Federator.Addin.Engine
 
             try
             {
-                Walk(document, grid, test.Children, into);
+                Walk(document, clashTests, grid, test.Children, report, into);
             }
             finally
             {
@@ -83,7 +110,12 @@ namespace Federator.Addin.Engine
         }
 
         private void Walk(
-            Document document, GridSystem grid, SavedItemCollection children, TestReport into)
+            Document document,
+            DocumentClashTests clashTests,
+            GridSystem grid,
+            SavedItemCollection children,
+            ClashReport report,
+            TestReport into)
         {
             if (children == null)
             {
@@ -98,7 +130,9 @@ namespace Federator.Addin.Engine
 
                     if (group != null)
                     {
-                        into.Add(GroupRow(document, grid, group));
+                        ClashRow groupRow = GroupRow(document, grid, group);
+                        into.Add(groupRow);
+                        Picture(clashTests, group, report, into, groupRow);
                         continue;
                     }
 
@@ -106,7 +140,9 @@ namespace Federator.Addin.Engine
 
                     if (result != null)
                     {
-                        into.Add(ResultRow(document, grid, result));
+                        ClashRow resultRow = ResultRow(document, grid, result);
+                        into.Add(resultRow);
+                        Picture(clashTests, result, report, into, resultRow);
                     }
                 }
             }
@@ -128,6 +164,7 @@ namespace Federator.Addin.Engine
             row.Name = Or(group.DisplayName, "group");
             row.Status = (CoreClashStatus)(int)group.Status;
             row.Distance = ClashRow.MostSevere(distances, group.Distance);
+            row.Description = Or(group.Description, string.Empty);
 
             // The representative result is the clash Navisworks itself shows for the
             // group, so its items are the ones a reader would be looking at.
@@ -162,6 +199,7 @@ namespace Federator.Addin.Engine
         private void Fill(Document document, GridSystem grid, ClashRow row, ClashResult result)
         {
             row.Found = result.CreatedTime;
+            row.Description = Or(result.Description, string.Empty);
             Place(grid, row, result.Center);
 
             using (ModelItem left = result.Item1)
@@ -239,13 +277,26 @@ namespace Federator.Addin.Engine
                 into.Family = FirstProperty(item, FamilyNames);
                 into.Type = FirstProperty(item, TypeNames);
                 into.Material = FirstProperty(item, MaterialNames);
-                into.ElementId = FirstProperty(item, ElementIdNames);
+
+                // The client's Item Type column, which reads Solid on every item cell of
+                // the accepted report. ClassDisplayName is what the Item tab shows as the
+                // type, so it is what that column is.
+                into.ItemType = Or(item.ClassDisplayName, string.Empty);
+
+                // The id and, separately, the name of whatever property carried it,
+                // because the client's Item ID column is that name and the value in one
+                // field. Element ID on a Revit sourced NWC.
+                string idFrom;
+                into.ElementId = FirstProperty(item, ElementIdNames, out idFrom);
+                into.IdLabel = idFrom.Length == 0 ? ClientFormat.DefaultIdLabel : idFrom;
 
                 if (into.ElementId.Length == 0)
                 {
                     // No id property anywhere, so the instance GUID is what is left. It
-                    // still finds the thing again, which is the point of the column.
+                    // still finds the thing again, which is the point of the column, and
+                    // the label says which it is rather than claiming an element id.
                     into.ElementId = item.InstanceGuid.ToString();
+                    into.IdLabel = "Instance GUID";
                 }
 
                 string source = SourceFileOf(item);
@@ -265,6 +316,25 @@ namespace Federator.Addin.Engine
             }
         }
 
+        /// <summary>
+        /// One picture for one row, where one was asked for. Everything about whether to
+        /// write it lives in the writer, so this only has to hand it the row.
+        /// </summary>
+        private void Picture(
+            DocumentClashTests clashTests,
+            IClashResult result,
+            ClashReport report,
+            TestReport test,
+            ClashRow row)
+        {
+            if (Images == null || report == null || string.IsNullOrEmpty(WorkbookPath))
+            {
+                return;
+            }
+
+            Images.Write(clashTests, result, report, test, row, WorkbookPath);
+        }
+
         private static string SourceFileOf(ModelItem item)
         {
             using (Model model = item.Model)
@@ -280,6 +350,18 @@ namespace Federator.Addin.Engine
         /// </summary>
         private static string FirstProperty(ModelItem item, string[] wanted)
         {
+            string which;
+            return FirstProperty(item, wanted, out which);
+        }
+
+        /// <summary>
+        /// The same, and it also reports the display name that matched, which is what the
+        /// client's Item ID column puts in front of the value.
+        /// </summary>
+        private static string FirstProperty(ModelItem item, string[] wanted, out string matched)
+        {
+            matched = string.Empty;
+
             if (wanted == null || wanted.Length == 0)
             {
                 return string.Empty;
@@ -314,6 +396,7 @@ namespace Federator.Addin.Engine
 
                             if (!string.IsNullOrEmpty(text))
                             {
+                                matched = property.DisplayName ?? string.Empty;
                                 return text;
                             }
                         }
