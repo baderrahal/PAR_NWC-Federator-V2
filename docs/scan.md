@@ -742,6 +742,119 @@ Navisworks ships**, so nothing is at risk of binding to the wrong version.
 The writer lives in Federator.Core rather than in the add-in, so the tests write a real
 xlsx and read it back without Navisworks.
 
+### 4i. Why the workbook would not load, measured 2026-08-31
+
+A run on aa163c9e did everything right and then failed writing the workbook:
+
+    TypeInitializationException, SixLabors.Fonts.Tables.TableLoader
+    inner FileNotFoundException: Could not load file or assembly
+    'System.Numerics.Vectors, Version=4.1.3.0'
+
+`System.Numerics.Vectors.dll` was already in the bundle. Every other file was too.
+
+#### What is actually in the bundle, and at what version
+
+Read with `AssemblyName.GetAssemblyName` off the installed bundle:
+
+```
+ClosedXML                                0.105.1.0
+ClosedXML.Parser                         1.0.0.0
+DocumentFormat.OpenXml                   3.1.1.0
+DocumentFormat.OpenXml.Framework         3.1.1.0
+ExcelNumberFormat                        1.1.0.0
+Federator.Addin                          1.0.0.0
+Federator.Core                           1.0.0.0
+Microsoft.Bcl.HashCode                   1.0.0.0
+RBush                                    4.0.0.0
+SixLabors.Fonts                          1.0.0.0
+System.Buffers                           4.0.3.0
+System.Memory                            4.0.1.2
+System.Numerics.Vectors                  4.1.4.0
+System.Runtime.CompilerServices.Unsafe   4.0.6.0
+```
+
+NOT ONE FILE IS MISSING. Every reference resolves to a file that is present. What does
+not match is the version, in six places:
+
+```
+ClosedXML         wants System.Buffers 4.0.2.0                       the file is 4.0.3.0
+ClosedXML.Parser  wants System.Memory 4.0.1.1                        the file is 4.0.1.2
+SixLabors.Fonts   wants System.Memory 4.0.1.1                        the file is 4.0.1.2
+SixLabors.Fonts   wants System.Buffers 4.0.2.0                       the file is 4.0.3.0
+SixLabors.Fonts   wants System.Numerics.Vectors 4.1.3.0              the file is 4.1.4.0
+System.Memory     wants System.Runtime.CompilerServices.Unsafe 4.0.4.1  the file is 4.0.6.0
+```
+
+.NET Framework binds a strong named assembly by EXACT version, so a file one build number
+away is refused. Adding files fixes none of this.
+
+Where else a copy could come from, checked:
+
+- Navisworks ships none of these. Searched the whole install folder for each name
+- the GAC holds only `System.Numerics.Vectors 4.0.0.0`, which is the framework facade and
+  is not 4.1.3.0 either
+- `C:\Windows\Microsoft.NET\Framework64\v4.0.30319\System.Numerics.Vectors.dll` is also
+  4.0.0.0
+
+#### Why there is no binding redirect
+
+This is what NuGet writes into the application config, and the build does write it. The
+probe project below produced `loadprobe.exe.config` holding exactly the four redirects:
+
+```
+System.Buffers                          0.0.0.0-4.0.3.0 -> 4.0.3.0
+System.Memory                           0.0.0.0-4.0.1.2 -> 4.0.1.2
+System.Numerics.Vectors                 0.0.0.0-4.1.4.0 -> 4.1.4.0
+System.Runtime.CompilerServices.Unsafe  0.0.0.0-4.0.6.0 -> 4.0.6.0
+```
+
+A Navisworks add-in has no config of its own. It runs inside Roamer.exe and that config
+belongs to Autodesk, so there is nowhere to put one. That is also why the tests never
+caught this: the test process has a config with those same four redirects in it.
+
+#### The fix, and it is proved
+
+An `AssemblyResolve` handler on the current AppDomain, matching on the simple name alone
+and loading from the bundle folder. An assembly handed back from `AssemblyResolve` is
+accepted without a version check, so it survives a version mismatch and a missing file the
+same way. It is registered in the static constructor of `FederatorPlugin`, which runs
+before `Execute` and long before anything reaches the workbook writer.
+
+REPRODUCED OUTSIDE NAVISWORKS on 2026-08-31, which is what makes this proved rather than
+argued. A net48 console exe referencing ClosedXML and Federator.Core, run three ways:
+
+```
+1. with its own config           WORKBOOK WRITTEN, 7276 bytes
+2. config file deleted           FAILED TypeInitializationException,
+                                 SixLabors.Fonts.Tables.TableLoader
+                                 inner FileLoadException: System.Numerics.Vectors
+                                 4.1.3.0, the located assembly's manifest definition
+                                 does not match the assembly reference
+3. config deleted, resolver on   WORKBOOK WRITTEN, 7276 bytes
+```
+
+Run 2 is the reported failure, reproduced by nothing more than deleting the config file,
+which is the one thing that makes a process behave like a Navisworks add-in. Run 3 shows
+the handler answering for `System.Numerics.Vectors 4.1.3.0`,
+`System.Runtime.CompilerServices.Unsafe 4.0.4.1` and `System.Buffers 4.0.2.0`, and reusing
+the already loaded `System.Memory`.
+
+To repeat it: make a net48 exe with `PackageReference ClosedXML 0.105.1` and a reference
+to the built `Federator.Core.dll`, build it, delete `<exe>.config` from the output, and
+run. That is the whole recipe.
+
+Run 2 reports `FileLoadException, the manifest does not match` where Bader's log reported
+`FileNotFoundException, could not load`. Both name the same assembly and the same version,
+and both are answered by the handler. Which of the two a given process reports is UNKNOWN
+and does not change the fix.
+
+#### The installer checks this now
+
+`install.ps1` walks what is actually in the bundle after copying, reads what each file
+references, and refuses to finish if any reference is satisfied by neither the bundle, the
+framework, nor the Navisworks folder. It also prints the six version mismatches above,
+labelled as expected rather than as faults, so the next person does not read them as one.
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

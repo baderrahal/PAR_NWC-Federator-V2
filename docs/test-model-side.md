@@ -45,7 +45,24 @@ reads at startup, and Navisworks only reads it once.
 
 **Worked:** the three files are listed and the script says all three are present.
 
-**Failed:** the script throws instead. The three failures it can report, and what each
+**Also worked, and is new:** after the file list the installer checks every assembly the
+bundle needs:
+
+    Checking every assembly the bundle needs:
+      every reference is satisfied, 14 assemblies checked. Navisworks supplies its own.
+
+      6 reference(s) bind to a version the shipped file does not carry.
+      These are NOT faults. There is no application config to put a binding
+      redirect in, so the add-in resolves them by name from this folder.
+      SixLabors.Fonts   wants System.Numerics.Vectors 4.1.3.0   the file is 4.1.4.0
+      ...
+
+Those six mismatches are why a run on aa163c9e wrote no workbook. Every file was already
+in the bundle, and .NET Framework refuses a strong named assembly one build number away
+from the one asked for. Read them and move on. If the installer ever says a reference is
+satisfied by nothing, stop and send me that line, because that one is a real fault.
+
+**Failed:** the script throws instead. The failures it can report, and what each
 means:
 
 - `Autodesk.Navisworks.Api.dll was not found under '...'` means the Navisworks path is
@@ -956,6 +973,18 @@ What no test can reach is the harvesting, which needs a live model:
   none of its twelve DLLs collides with a file the Navisworks install ships, both checked,
   but whether the running application binds them is UNKNOWN until step 56
 - how long writing 22 workbooks adds to a run
+
+From the load fix of 2026-08-31, one thing is proved and one is not:
+
+- PROVED, and not by a test. A net48 console exe with ClosedXML and Federator.Core, run
+  with its own config file deleted, fails with exactly the error your run reported, and
+  succeeds once the resolver is switched on. Deleting the config is what makes a process
+  behave like a Navisworks add-in, because an add-in has no config of its own. The recipe
+  is in docs\scan.md section 4i so it can be repeated
+- UNKNOWN. Whether the handler is registered early enough inside Navisworks itself. It
+  goes in the static constructor of the plugin type, which the runtime runs before Execute
+  and long before anything reaches the workbook writer, but only a real run proves it. The
+  log will say `BUNDLE   assemblies are resolved from ...` as its first lines if it is
 
 From the five changes of 2026-08-31, two more. Everything about the grouping choice, the
 naming patterns, the collision guard, the findings wording, the findings table and the

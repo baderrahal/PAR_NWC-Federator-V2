@@ -88,6 +88,117 @@ namespace Federator.Core.Tests
                 delegate { ReportPaths.For(@"C:\out", OutputName, null); });
         }
 
+
+        // ---------- the reports never go inside the folder being scanned ----------
+
+        // A real run put the workbooks in C:\00_NM\NWC Fed\NWC\test001, which is the
+        // folder it was reading its NWC files out of. The Clash step picks an XML at run
+        // time, so a report written there is a file a later run can be handed as its own
+        // input.
+        private const string Source = @"C:\\00_NM\\NWC Fed\\NWC\\test001";
+        private const string Nwf = @"C:\\00_NM\\NWC Fed\\NWF\\test001";
+
+        // The one the brief asks for by name.
+        [Test]
+        public void TheDefaultLandsBesideTheNwfFolderAndNotInTheSourceFolder()
+        {
+            ReportFolderChoice where = ReportPaths.Choose(string.Empty, Nwf, Source);
+
+            Assert.That(where.Folder, Is.EqualTo(Nwf + @"\Clash Reports"));
+            Assert.That(where.WasRefused, Is.False);
+            Assert.That(ReportPaths.IsInside(where.Folder, Source), Is.False,
+                "the default landed inside the folder being scanned");
+        }
+
+        // The other half. A folder picked by hand that is inside the source is refused.
+        [Test]
+        public void APickedFolderInsideTheSourceFolderIsRefusedAndSaysWhy()
+        {
+            ReportFolderChoice where = ReportPaths.Choose(Source, Nwf, Source);
+
+            Assert.That(where.WasRefused, Is.True);
+            Assert.That(where.Folder, Is.EqualTo(Nwf + @"\Clash Reports"),
+                "it should fall back to beside the NWF folder");
+            Assert.That(where.RefusedReason, Does.Contain("inside the folder being scanned"));
+            Assert.That(where.RefusedReason, Does.Contain(Source));
+        }
+
+        [Test]
+        public void AFolderUnderTheSourceFolderIsRefusedToo()
+        {
+            ReportFolderChoice where = ReportPaths.Choose(
+                Source + @"\reports", Nwf, Source);
+
+            Assert.That(where.WasRefused, Is.True);
+            Assert.That(ReportPaths.IsInside(where.Folder, Source), Is.False);
+        }
+
+        [Test]
+        public void AFolderOutsideTheSourceFolderIsUsedExactlyAsPicked()
+        {
+            ReportFolderChoice where = ReportPaths.Choose(@"D:\reports", Nwf, Source);
+
+            Assert.That(where.WasRefused, Is.False);
+            Assert.That(where.Folder, Is.EqualTo(@"D:\reports"));
+        }
+
+        // A folder whose name merely starts with the source folder's name is a different
+        // folder, not one inside it.
+        [Test]
+        public void AFolderThatOnlySharesAPrefixIsNotInsideIt()
+        {
+            Assert.That(ReportPaths.IsInside(@"C:\out\NWCFed", @"C:\out\NWC"), Is.False);
+            Assert.That(ReportPaths.IsInside(@"C:\out\NWC\sub", @"C:\out\NWC"), Is.True);
+            Assert.That(ReportPaths.IsInside(@"C:\out\NWC", @"C:\out\NWC"), Is.True,
+                "the folder itself counts as inside itself");
+        }
+
+        [Test]
+        public void CaseAndTrailingSlashesDoNotChangeTheAnswer()
+        {
+            Assert.That(ReportPaths.IsInside(@"c:\OUT\nwc\sub", @"C:\out\NWC\"), Is.True);
+        }
+
+        [Test]
+        public void WithNoSourceFolderNothingIsRefused()
+        {
+            Assert.That(ReportPaths.Choose(Source, Nwf, null).WasRefused, Is.False,
+                "with nothing being scanned there is nothing to keep out of");
+            Assert.That(ReportPaths.IsInside(@"C:\anything", null), Is.False);
+            Assert.That(ReportPaths.IsInside(@"C:\anything", "   "), Is.False);
+        }
+
+        // If the NWF folder is itself inside the source folder there is nowhere safe, and
+        // that is said rather than written somewhere surprising.
+        [Test]
+        public void AnNwfFolderInsideTheSourceFolderIsRefusedRatherThanUsed()
+        {
+            ArgumentException thrown = Assert.Throws<ArgumentException>(
+                delegate { ReportPaths.Choose(string.Empty, Source + @"\nwf", Source); });
+
+            Assert.That(thrown.Message, Does.Contain("nowhere to put the reports"));
+            Assert.That(thrown.Message, Does.Contain("Pick an Excel folder outside it"));
+        }
+
+        [Test]
+        public void TheOptionsCarryTheSourceFolderThroughToTheChoice()
+        {
+            ReportOptions options = new ReportOptions();
+            options.SourceFolder = Source;
+
+            Assert.That(options.ChooseFor(Nwf).Folder, Is.EqualTo(Nwf + @"\Clash Reports"));
+
+            options.ExcelFolder = Source;
+            Assert.That(options.ChooseFor(Nwf).WasRefused, Is.True);
+            Assert.That(options.FolderFor(Nwf), Is.EqualTo(Nwf + @"\Clash Reports"));
+        }
+
+        [Test]
+        public void TheSourceFolderStartsEmptySoNothingIsRefusedByDefault()
+        {
+            Assert.That(new ReportOptions().SourceFolder, Is.EqualTo(string.Empty));
+        }
+
         // ---------- the options object ----------
 
         [Test]
