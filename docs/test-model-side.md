@@ -308,11 +308,15 @@ error. If that happens, either wait for the run to finish or use **Copy log**.
 
 ## Step 4, the search sets
 
-The **4. Clash** tab has two boxes and, boxed off below them, two buttons.
+The **4. Clash** tab has one box and, boxed off below it, two buttons.
 
-The boxes are what **Run** uses. Run does the whole job for every ticked group: append,
+There used to be two boxes, one for a sets file and one for a clash test file. Your file
+holds both, so that meant picking the same file twice. There is one picker now and the
+tool reads whatever is in the file.
+
+The box is what **Run** uses. Run does the whole job for every ticked group: append,
 save the NWF, build the sets, create the tests, run them, save the NWF again, publish the
-NWD last. Leave both boxes empty and Run does the model side only, which is a step
+NWD last. Leave the box empty and Run does the model side only, which is a step
 switched off rather than a failure.
 
 The two buttons are not steps in the run. They act on whatever document is open right now,
@@ -325,14 +329,13 @@ There is no Excel yet, so do not look for it.
 
 32. Click the **4. Clash** tab.
 
-33. Click the first **Browse**, beside **Sets XML**, and pick a sets XML or a combined
-    one. The reference file `1104-PAR_CLASH_AllInOne (2) (1).xml` holds both halves and is
-    a good first try.
+33. Click **Browse** beside **Clash XML** and pick your file. The reference file
+    `1104-PAR_CLASH_AllInOne (2) (1).xml` holds both halves and is a good first try.
 
 **Worked:** the line underneath says what the file actually holds, counted out of the file
-itself, for example `It holds 61 sets and 1830 tests.` If it holds both, it also says
-`One pick is enough, both boxes now point at it.` and the **Clash test XML** box fills
-itself in. You never pick the same file twice.
+itself, for example `Picked ... It holds 61 sets and 1830 tests.` A file holding only
+tests reads `0 sets and 1830 tests` and is still fine, as long as the sets are already in
+the model.
 
 34. Click **Sets into open model**.
 
@@ -391,13 +394,11 @@ error.
 
 ## Step 5, the clash tests
 
-Same tab, second row. This creates the tests a picked file describes and runs them against
-whatever is open. The sets have to be there first, either because you built them in step 4
-or because they already live in the model.
+Same tab, same file. This creates the tests the picked file describes and runs them
+against whatever is open. The sets have to be there first, either because you built them
+in step 4 or because they already live in the model.
 
-37. With the sets from step 4 still in the model, click the second **Browse**, beside
-    **Clash test XML**, and pick the file. If step 4 already filled this box in, it is
-    already the right file and you can leave it.
+37. Leave the **Clash XML** box exactly as it is. It is the same file.
 
 38. Click **Tests into open model**.
 
@@ -498,6 +499,59 @@ log and on the line under the box:
 **Failed:** it goes ahead and reports 1830 skipped, 0 created, 0 run. That is what it used
 to do, and it took a whole run and a 1 MB log to say one thing.
 
+## Step 7, the run stops itself when everything is failing
+
+This is the one that would have saved you nine hours. On 2026-08-31 a run went through 24
+groups over 8 hours 52 minutes, created 1830 tests in every one of them and produced
+nothing, because every single test threw the same exception and the run carried on
+regardless.
+
+That exception is fixed. This is the net underneath it.
+
+44. Run normally. If anything has gone wrong in the same way for the first 50 tests,
+    watch what happens.
+
+**Worked:** the run stops. Not the test, not the group, the run:
+
+    CLASH    RUN STOPPED  the first 50 tests all failed for the same reason, so the rest
+             of the run was not attempted. ObjectDisposedException: ...
+    RUN      STOPPED after 1 group. the first 50 tests all failed for the same reason ...
+    RUN      23 groups were not attempted. Everything already written is kept.
+
+Fifty is a setting. A test skipped because one of its sides finds nothing in this model is
+the ordinary answer, not a failure, so it does not count towards the fifty either way. A
+single test that works resets the count, because a run that does anything at all is not
+uniformly broken.
+
+45. Look at the size of the log.
+
+**Worked:** it is small. The previous run left 17.8 MB, almost all of it the same stack
+trace written out tens of thousands of times. The same failure is now written out once and
+counted:
+
+    FAILURE  clash test AR-Floors v ME-Ducts
+             type     : System.ObjectDisposedException
+             ...
+    FAILURE  the same failure again for clash test AR-Floors v ME-Ducts. Every further
+             repeat of this exact trace is counted, not written out.
+
+and the RESULT block carries the total beside the one trace:
+
+    [1] clash test AR-Floors v ME-Ducts   THIS HAPPENED 43920 TIMES, the trace is written once
+
+Nothing is lost. Every repeat is counted. Only the repetition is gone.
+
+46. Look at the `CLASH` lines at the top of each group.
+
+**Worked:** every group says how many clash tests the document already held, even when
+that is none:
+
+    CLASH    the document already holds 0 clash tests, so everything created here is new
+
+That line is there to answer a question I could not answer without a real run: whether
+tests, sets or results survive from one group into the next document. If group 2 onwards
+says a number other than zero, they do survive, and that is worth telling me.
+
 ## Run it twice, which is the weekly case
 
 This is the behaviour that matters most, because the tool is used weekly and the clash
@@ -516,7 +570,7 @@ an NWF. **OPENED has still never appeared in a real log.** Whether a second run 
 unchanged files actually produces it is UNKNOWN until you run this step, and it is the
 single most valuable thing you can tell me.
 
-44. Run once so an NWF exists, then run again with the same settings and the same folder.
+47. Run once so an NWF exists, then run again with the same settings and the same folder.
 
 **Worked:** the second run does not rebuild. Each group logs
 
@@ -540,7 +594,7 @@ NWC files. What is not touched is the tests themselves, because that is where th
 and Resolved statuses live. If you ever see the sets tree holding two of everything, or
 every clash back at New after a second run, that is a real fault and worth stopping for.
 
-45. Now add one NWC to the source folder, or remove one, and run again.
+48. Now add one NWC to the source folder, or remove one, and run again.
 
 **Worked:** that group is left completely alone and logs
 
@@ -556,7 +610,7 @@ building.
 
 ## The Revit source report
 
-46. After any run, find the `SOURCE FINDINGS` block near the end of the log.
+49. After any run, find the `SOURCE FINDINGS` block near the end of the log.
 
 **Worked:** it reports where the building code on the NWC is not the building code inside
 the Revit container it was published from. On the run of 2026-08-30 that is most of them:
@@ -581,7 +635,7 @@ is silent, because a number is not a building.
 
 ## Outputs overwrite
 
-47. Click **Run** again with the same settings.
+50. Click **Run** again with the same settings.
 
 **Worked:** the same NWF and NWD file names are overwritten in place. No second copy
 appears, no date suffix, no `(2)`. You get a brand new log file, because logs are never
@@ -589,7 +643,7 @@ overwritten.
 
 ## The order within a group, which changed
 
-48. Read one group's worth of log from `GROUP` to `GROUP`, and check the order.
+51. Read one group's worth of log from `GROUP` to `GROUP`, and check the order.
 
 **Worked:** it goes append, save the NWF, build the sets, create the tests, run them, save
 the NWF again, publish the NWD last. The NWD is the last thing that happens.
@@ -655,7 +709,7 @@ succeeds against a real NWC, and how long a real run takes.
 files has never produced OPENED in a real log. On 2026-08-30 all 22 groups reported
 CHANGED, because the comparison was reading the Revit source name rather than the NWC
 name. That is fixed and is covered by tests built from the real names off that log, but a
-test cannot open an NWF. Step 44 is the only thing that can prove it, and until you run it
+test cannot open an NWF. Step 47 is the only thing that can prove it, and until you run it
 the rerun path is UNKNOWN.
 
 For the clash step added on 2026-08-30, everything that could be settled without
@@ -679,3 +733,20 @@ These four are UNKNOWN and only a real run answers them:
 - whether a rerun really does preserve Active and Resolved on tests that are run again.
   Step 43 is the one that answers it, and it needs you to mark a clash Resolved, run
   again, and look
+
+From the run of 2026-08-31, which threw `ObjectDisposedException (WeakRef)` once per test
+for nearly nine hours, three more:
+
+- whether the tests that did run actually produced results. They ran, because
+  `TestsRunTest` is above the throw in every one of those stacks and returned normally,
+  but nothing could read the results, so what they found is UNKNOWN. The NWF from that run
+  may well hold real clash results that were never reported
+- whether sets, tests or results survive from one group into the next document. The
+  evidence says no, because all 24 groups reported 1830 created rather than already there,
+  so the collection was empty each time. Every group now logs the count even at zero, so
+  the next log answers this outright rather than by inference
+- what made the clash step grow from 39.8 seconds to 1259.5 seconds. Two things that grew
+  are measured and removed: a per test walk of the whole tests collection, which was
+  O(n squared) and built about 1.7 million finalizable native handles per group, and a
+  failure list that kept every one of 43920 stack traces. Whether that was all of it is
+  UNKNOWN until a run is timed again

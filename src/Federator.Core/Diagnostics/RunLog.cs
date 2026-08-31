@@ -42,6 +42,21 @@ namespace Federator.Core.Diagnostics
         private readonly List<WrittenFile> written = new List<WrittenFile>();
         private readonly List<LoggedFailure> failures = new List<LoggedFailure>();
 
+        /// <summary>
+        /// Every distinct failure seen so far, so a repeat is recognised rather than
+        /// written out again. Keyed on what was being done plus the whole laid out
+        /// detail, which is the type, the message, the inner exceptions and the stack.
+        /// </summary>
+        private readonly Dictionary<string, LoggedFailure> repeats =
+            new Dictionary<string, LoggedFailure>(StringComparer.Ordinal);
+
+        /// <summary>A separator that cannot turn up inside a message or a stack.</summary>
+        private const string FailureSeparator = "\u001F";
+
+        private static readonly char[] SplitOnNewLine = { '\n' };
+
+        private static readonly char[] TrimCarriageReturn = { '\r' };
+
         // One list, not a count on one side and a reason list on the other. The RESULT
         // block once printed "groups failed: 22" and "Nothing failed." together, because
         // the count came from a dictionary and the errors came from a separate list that
@@ -576,23 +591,105 @@ namespace Federator.Core.Diagnostics
         /// then what the tool did next. A swallowed failure is the one bug this log
         /// exists to prevent, so nothing calls this without saying what happened after.
         /// </summary>
+        /// <summary>
+        /// One failure, with its type, message, inner exceptions and stack trace.
+        ///
+        /// The same failure repeating is written out in full once and counted after
+        /// that. One run threw the same ObjectDisposedException tens of thousands of
+        /// times and left a 17.8 MB log that was almost entirely one stack trace, which
+        /// buries every line that says what actually happened. Nothing is lost, because
+        /// every repeat is counted and the total goes in the RESULT block beside the
+        /// one trace.
+        /// </summary>
         public void Failure(string what, Exception error, string whatNext)
         {
             string detail = Describe(error);
+            bool firstTime;
+            int times;
 
             lock (gate)
             {
-                failures.Add(new LoggedFailure(what, detail, whatNext));
+                LoggedFailure already;
+                string signature = Or(what, string.Empty) + FailureSeparator + detail;
+
+                if (repeats.TryGetValue(signature, out already))
+                {
+                    already.AgainOnce();
+                    times = already.Times;
+                    firstTime = false;
+                }
+                else
+                {
+                    LoggedFailure first = new LoggedFailure(what, detail, whatNext);
+                    failures.Add(first);
+                    repeats.Add(signature, first);
+                    times = 1;
+                    firstTime = true;
+                }
             }
 
-            Line("FAILURE  " + Or(what, "unnamed failure"));
-
-            foreach (string line in detail.Split('\n'))
+            if (firstTime)
             {
-                Detail(line.TrimEnd('\r'));
+                Line("FAILURE  " + Or(what, "unnamed failure"));
+
+                foreach (string line in detail.Split(SplitOnNewLine))
+                {
+                    Detail(line.TrimEnd(TrimCarriageReturn));
+                }
+
+                Detail("next     : " + Or(whatNext, "UNKNOWN"));
+                return;
             }
 
-            Detail("next     : " + Or(whatNext, "UNKNOWN"));
+            // One line saying the repeats are being counted rather than written out, then
+            // silence. The RESULT block carries the total beside the one trace.
+            if (times == 2)
+            {
+                Line("FAILURE  the same failure again for " + Or(what, "unnamed failure")
+                    + ". Every further repeat of this exact trace is counted, not written out.");
+            }
+        }
+
+        /// <summary>How many times this exact failure happened, the first one included.</summary>
+        public int TimesFailed(string what, Exception error)
+        {
+            lock (gate)
+            {
+                LoggedFailure found;
+                string signature = Or(what, string.Empty) + FailureSeparator + Describe(error);
+                return repeats.TryGetValue(signature, out found) ? found.Times : 0;
+            }
+        }
+
+        /// <summary>Distinct failures. A trace repeating is one thing that went wrong.</summary>
+        public int DistinctFailureCount
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return failures.Count;
+                }
+            }
+        }
+
+        /// <summary>Every failure including the repeats, which is what actually happened.</summary>
+        public int TotalFailureCount
+        {
+            get
+            {
+                lock (gate)
+                {
+                    int total = 0;
+
+                    foreach (LoggedFailure failure in failures)
+                    {
+                        total += failure.Times;
+                    }
+
+                    return total;
+                }
+            }
         }
 
         private static string Describe(Exception error)
@@ -764,7 +861,14 @@ namespace Federator.Core.Diagnostics
                 {
                     numbered++;
                     Blank();
-                    Line("  [" + numbered + "] " + errors[i].What);
+                    // The trace is written once however many times it happened, so the
+                    // count has to be on the line beside it or the log understates what
+                    // went wrong by tens of thousands.
+                    Line("  [" + numbered + "] " + errors[i].What
+                        + (errors[i].Times > 1
+                            ? "   THIS HAPPENED " + errors[i].Times
+                                + " TIMES, the trace is written once"
+                            : string.Empty));
 
                     foreach (string line in errors[i].Detail.Split('\n'))
                     {

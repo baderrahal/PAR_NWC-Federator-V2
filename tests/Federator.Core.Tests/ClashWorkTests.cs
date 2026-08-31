@@ -62,6 +62,53 @@ namespace Federator.Core.Tests
             Assert.That(ClashWork.Any(testsOnly), Is.True);
         }
 
+        // ---------- one picker, one file ----------
+
+        // There used to be two boxes, one for a sets file and one for a clash test file,
+        // which meant picking the same combined file twice. There is one now, so a single
+        // file has to cover whichever of the three shapes it turns out to be.
+        [Test]
+        public void OnePickCoversWhicheverShapeTheFileTurnsOutToBe()
+        {
+            ExchangeDocument both = new ExchangeReader().ReadFile(Samples.AllInOne());
+            ExchangeDocument setsOnly = new ExchangeReader().ReadFile(Samples.Infra());
+
+            Assert.That(ClashWork.BuildsSets(both) && ClashWork.CreatesTests(both), Is.True,
+                "one pick of a combined file has to do both halves");
+            Assert.That(ClashWork.BuildsSets(setsOnly) && !ClashWork.CreatesTests(setsOnly), Is.True,
+                "one pick of a sets only file builds sets and creates nothing");
+        }
+
+        // The case the brief asks for by name. Bader can still hand it a file that only
+        // holds tests, and it works against sets already in the model.
+        [Test]
+        public void AFileHoldingTestsOnlyIsStillAcceptedWithOnePicker()
+        {
+            ExchangeDocument testsOnly = new ExchangeReader().ReadText(
+                "<exchange units=\"ft\"><batchtest name=\"b\">"
+                + "<clashtest name=\"T\" test_type=\"hard\" tolerance=\"0.25\" merge_composites=\"1\">"
+                + "<left><clashselection><locator>lcop_selection_set_tree/A</locator>"
+                + "</clashselection></left>"
+                + "<right><clashselection><locator>lcop_selection_set_tree/B</locator>"
+                + "</clashselection></right>"
+                + "</clashtest></batchtest></exchange>");
+
+            Assert.That(ClashWork.Any(testsOnly), Is.True,
+                "a tests only file was refused once the sets picker went");
+            Assert.That(ClashWork.BuildsSets(testsOnly), Is.False);
+            Assert.That(ClashWork.CreatesTests(testsOnly), Is.True);
+            Assert.That(ClashWork.Describe(testsOnly), Does.Contain("0 sets and 1 test"));
+
+            // And it plans, against sets that live in the model rather than in the file.
+            ClashTestPlan plan = ClashTestPlan.From(testsOnly, "m");
+
+            Assert.That(plan.Buildable.Count, Is.EqualTo(1));
+            Assert.That(
+                plan.ResolveAgainst(
+                    new[] { "lcop_selection_set_tree/A", "lcop_selection_set_tree/B" }).Buildable.Count,
+                Is.EqualTo(1));
+        }
+
         [Test]
         public void AFileHoldingNeitherIsNothingToDoRatherThanAnError()
         {

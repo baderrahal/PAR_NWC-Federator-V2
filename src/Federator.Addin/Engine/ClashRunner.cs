@@ -19,11 +19,33 @@ namespace Federator.Addin.Engine
     ///
     /// Nothing about any one project is in here. The names, the count, the test types, the
     /// tolerances and the set paths all come from the file that was picked.
+    ///
+    /// HOW A CLASH TEST IS HELD, AND WHY IT IS NEVER HELD FOR LONG.
+    ///
+    /// A ClashTest read out of DocumentClashTests.Tests is a borrowed view of an object the
+    /// document owns. Measured off the installed DLL on 2026-08-31: GroupItem.GetChild
+    /// creates the wrapper through SavedItem.InternalCreator with ownership eEXTERNAL, and
+    /// NativeHandle holds the native object through an LcUWeakReferenceHandle. So the
+    /// wrapper is valid only while the native object behind it is, and every mutator on
+    /// DocumentClashTests is a copy form, TestsAddCopy, TestsEditTestFromCopy,
+    /// TestsReplaceWithCopy, which replaces that object.
+    ///
+    /// TestsRunTest writes results into the test, so it is a mutation too. A wrapper held
+    /// across it is dead the moment it returns, and reading Children off it throws
+    /// ObjectDisposedException "Object has been Disposed (WeakRef)". A real run threw that
+    /// once per test, tens of thousands of times, over 8 hours 52 minutes.
+    ///
+    /// So a test is addressed by where it sits, never held. TestAddress is the path of
+    /// child indexes from the root, and every use resolves it again, uses it, and disposes
+    /// the wrapper. That also removes the per test walk of the whole tests collection,
+    /// which was O(n squared) over 1830 tests and created about 1.7 million short lived
+    /// native handles for each group.
     /// </summary>
     public sealed class ClashRunner
     {
         private readonly Action<string> progress;
         private readonly RunLog log;
+        private readonly RepeatedFailureGuard guard;
 
         /// <summary>How often the running count goes in the log, so a long run is watchable.</summary>
         public const int ProgressEvery = 25;
@@ -37,6 +59,16 @@ namespace Federator.Addin.Engine
             new Dictionary<ClashSkipReason, int>();
 
         public ClashRunner(Action<string> progress, RunLog log)
+            : this(progress, log, new RepeatedFailureGuard())
+        {
+        }
+
+        /// <summary>
+        /// The guard is handed in so it can live for the whole run rather than for one
+        /// group. A run failing uniformly must stop the run, and a per group guard would
+        /// have let the same nine hours pass 24 times over.
+        /// </summary>
+        public ClashRunner(Action<string> progress, RunLog log, RepeatedFailureGuard guard)
         {
             if (log == null)
             {
@@ -45,6 +77,7 @@ namespace Federator.Addin.Engine
 
             this.progress = progress ?? delegate { };
             this.log = log;
+            this.guard = guard ?? new RepeatedFailureGuard();
             SetTreeRoot = ExchangeReader.SelectionSetTreeRoot;
         }
 
@@ -169,14 +202,16 @@ namespace Federator.Addin.Engine
                 }
 
                 DocumentClashTests clashTests = document.GetClash().TestsData;
-                Dictionary<string, ClashTest> present = IndexTests(clashTests);
+                Dictionary<string, TestAddress> present = IndexTests(clashTests);
 
-                if (present.Count > 0)
-                {
-                    log.Line("CLASH    " + present.Count
-                        + (present.Count == 1 ? " test is" : " tests are")
-                        + " already in this document, they keep their results and are not recreated");
-                }
+                // Always logged, even at zero. Whether tests survive from one group into
+                // the next document is the question a slowdown turns on, and this is the
+                // line that answers it from the log rather than from a theory.
+                log.Line("CLASH    the document already holds " + present.Count
+                    + (present.Count == 1 ? " clash test" : " clash tests")
+                    + (present.Count == 0
+                        ? ", so everything created here is new"
+                        : ", they keep their results and are not recreated"));
 
                 RunEach(document, sets, clashTests, byPath, present, resolved, outcome);
             }
@@ -194,7 +229,7 @@ namespace Federator.Addin.Engine
             DocumentSelectionSets sets,
             DocumentClashTests clashTests,
             Dictionary<string, SelectionSet> byPath,
-            Dictionary<string, ClashTest> present,
+            Dictionary<string, TestAddress> present,
             ClashTestPlan plan,
             ClashRunOutcome outcome)
         {
@@ -215,6 +250,16 @@ namespace Federator.Addin.Engine
                 }
 
                 OneTest(document, sets, clashTests, byPath, present, planned, outcome);
+
+                // Nine hours produced nothing once because nothing watched for this. A run
+                // failing uniformly stops the run, not the group.
+                if (guard.ShouldStopTheRun)
+                {
+                    outcome.StopTheWholeRun(guard.Reason);
+                    log.Line("CLASH    RUN STOPPED  " + guard.Reason);
+                    progress("The run was stopped. " + guard.Reason);
+                    return;
+                }
             }
         }
 
@@ -223,15 +268,15 @@ namespace Federator.Addin.Engine
             DocumentSelectionSets sets,
             DocumentClashTests clashTests,
             Dictionary<string, SelectionSet> byPath,
-            Dictionary<string, ClashTest> present,
+            Dictionary<string, TestAddress> present,
             PlannedClashTest planned,
             ClashRunOutcome outcome)
         {
             try
             {
-                ClashTest test;
+                TestAddress address;
 
-                if (present.TryGetValue(planned.Name, out test))
+                if (present.TryGetValue(planned.Name, out address))
                 {
                     // An OPENED group keeps its results, so a test already there is left
                     // exactly as it is. Rebuilding it would reset every clash to New and
@@ -241,24 +286,37 @@ namespace Federator.Addin.Engine
                 }
                 else
                 {
-                    test = Create(document, sets, clashTests, byPath, planned);
+                    address = Create(document, sets, clashTests, byPath, planned);
 
-                    if (test == null)
+                    if (address == null)
                     {
-                        outcome.AddSkipped(
+                        Failed(
+                            outcome,
                             planned.Name,
-                            ClashSkipReason.Failed,
                             "the test was added and a fresh read of the tests does not show it");
                         log.Line("CLASH    FAILED   " + planned.Name
-                            + "  added but not found again by name");
+                            + "  added but not found again where it was put");
                         return;
                     }
 
                     outcome.AddCreated(planned.Name);
                 }
 
-                int leftItems = ItemsOn(document, test.SelectionA, byPath, planned.Left.Locator);
-                int rightItems = ItemsOn(document, test.SelectionB, byPath, planned.Right.Locator);
+                int leftItems;
+                int rightItems;
+
+                // Resolved, read, disposed. Nothing is held across the run below.
+                using (ClashTest before = Resolve(clashTests, address, planned.Name))
+                {
+                    if (before == null)
+                    {
+                        Failed(outcome, planned.Name, "the test is no longer where it was put");
+                        return;
+                    }
+
+                    leftItems = ItemsOn(document, before.SelectionA, byPath, planned.Left.Locator);
+                    rightItems = ItemsOn(document, before.SelectionB, byPath, planned.Right.Locator);
+                }
 
                 string why;
 
@@ -266,26 +324,58 @@ namespace Federator.Addin.Engine
                 {
                     // Not run, and not counted as passed. A zero from a test that never
                     // ran reads exactly like a zero from a test that found nothing wrong.
+                    // It says nothing about whether the run is broken, so the guard is
+                    // told it was not attempted rather than that it succeeded.
                     LogSkip(outcome.AddSkipped(planned.Name, ClashSkipReason.EmptySide, why));
+                    guard.RecordNotAttempted();
                     return;
                 }
 
                 Stopwatch clock = Stopwatch.StartNew();
-                clashTests.TestsRunTest(test);
+
+                using (ClashTest running = Resolve(clashTests, address, planned.Name))
+                {
+                    if (running == null)
+                    {
+                        Failed(outcome, planned.Name, "the test is no longer where it was put");
+                        return;
+                    }
+
+                    clashTests.TestsRunTest(running);
+                }
+
                 clock.Stop();
 
-                ClashTally tally = Count(test, planned.Name);
+                // A fresh handle. The one handed to TestsRunTest is dead by now, and
+                // reading Children off it is exactly what threw tens of thousands of times.
+                ClashTally tally;
+
+                using (ClashTest after = Resolve(clashTests, address, planned.Name))
+                {
+                    if (after == null)
+                    {
+                        Failed(
+                            outcome,
+                            planned.Name,
+                            "the test ran but could not be found again to count its results");
+                        return;
+                    }
+
+                    tally = Count(after, planned.Name);
+                }
+
                 ClashTestResult result = outcome.AddRan(
                     planned.Name, leftItems, rightItems, tally, clock.Elapsed.TotalSeconds);
 
+                guard.RecordSuccess();
                 log.Line("CLASH    " + result.Line());
             }
             catch (Exception error)
             {
-                outcome.AddSkipped(
-                    planned.Name,
-                    ClashSkipReason.Failed,
-                    error.GetType().Name + ": " + error.Message);
+                string reason = error.GetType().Name + ": " + error.Message;
+
+                outcome.AddSkipped(planned.Name, ClashSkipReason.Failed, reason);
+                guard.RecordFailure(reason);
 
                 log.Failure(
                     "clash test " + planned.Name,
@@ -295,42 +385,32 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Writes a skip into the log, at most MaxSkipExamples of them for each reason,
-        /// then one line saying the rest are counted. Everything skipped still reaches the
-        /// block at the end, where it is counted by reason with its examples.
+        /// A failure that did not throw. It still counts towards the guard, because a run
+        /// where every test fails the same way is the case that guard exists for, whether
+        /// or not an exception carried the news.
         /// </summary>
-        private void LogSkip(SkippedClashTest test)
+        private void Failed(ClashRunOutcome outcome, string name, string reason)
         {
-            int already;
-            skipsLogged.TryGetValue(test.Kind, out already);
-            skipsLogged[test.Kind] = already + 1;
-
-            if (already < ClashRunOutcome.MaxSkipExamples)
-            {
-                log.Line("CLASH    SKIPPED  " + test.Name + "  " + test.Reason);
-                return;
-            }
-
-            if (already == ClashRunOutcome.MaxSkipExamples)
-            {
-                log.Line("CLASH    further skips for \"" + ClashTestPlan.Describe(test.Kind)
-                    + "\" are counted, not listed. The block at the end carries the total.");
-            }
+            outcome.AddSkipped(name, ClashSkipReason.Failed, reason);
+            guard.RecordFailure(reason);
         }
 
         /// <summary>
-        /// Builds one test from the file and nothing but the file, adds it, and reads it
-        /// back by name. TestsAddCopy takes a copy the way DocumentSelectionSets.AddCopy
-        /// does, so the object handed in is not the object in the tree and the one in the
-        /// tree is the one that has to run.
+        /// Builds one test from the file and nothing but the file, adds it, and returns
+        /// where it landed. TestsAddCopy adds at the root and returns void, so the new
+        /// test is the last child of the root, and that is checked by name rather than
+        /// assumed. Nothing walks the whole collection, which is what made this O(n
+        /// squared) over 1830 tests.
         /// </summary>
-        private ClashTest Create(
+        private TestAddress Create(
             Document document,
             DocumentSelectionSets sets,
             DocumentClashTests clashTests,
             Dictionary<string, SelectionSet> byPath,
             PlannedClashTest planned)
         {
+            int before = clashTests.Tests.Count;
+
             using (ClashTest test = new ClashTest())
             {
                 test.DisplayName = planned.Name;
@@ -349,8 +429,80 @@ namespace Federator.Addin.Engine
                 + "  tolerance " + planned.DescribeTolerance()
                 + "  merge composites " + (planned.MergeComposites ? "on" : "off"));
 
-            // Read again from a fresh index rather than from the object handed to AddCopy.
-            return FindTest(clashTests, planned.Name);
+            int after = clashTests.Tests.Count;
+
+            if (after != before + 1)
+            {
+                log.Line("CLASH    the tests went from " + before + " to " + after
+                    + " when \"" + planned.Name + "\" was added, which is not one more");
+                return null;
+            }
+
+            TestAddress address = TestAddress.At(before);
+
+            // Checked by name from a fresh read, never assumed. AddCopy takes a copy, so
+            // the object in the tree is not the one handed in.
+            using (ClashTest landed = Resolve(clashTests, address, planned.Name))
+            {
+                return landed == null ? null : address;
+            }
+        }
+
+        /// <summary>
+        /// Reads the test at an address out of a freshly read collection, and checks it is
+        /// still the test that name says. Returns null rather than the wrong test, because
+        /// running the wrong test writes results into somebody else's.
+        ///
+        /// The caller disposes what comes back. The wrapper is created with eEXTERNAL
+        /// ownership, so disposing it releases the wrapper and never the document's test.
+        /// </summary>
+        private ClashTest Resolve(DocumentClashTests clashTests, TestAddress address, string name)
+        {
+            SavedItemCollection children = clashTests.Tests;
+            SavedItem item = null;
+
+            for (int level = 0; level < address.Depth; level++)
+            {
+                int index = address.IndexAt(level);
+
+                if (children == null || index < 0 || index >= children.Count)
+                {
+                    return null;
+                }
+
+                item = children[index];
+
+                if (level + 1 == address.Depth)
+                {
+                    break;
+                }
+
+                GroupItem group = item as GroupItem;
+
+                if (group == null)
+                {
+                    return null;
+                }
+
+                children = group.Children;
+            }
+
+            ClashTest test = item as ClashTest;
+
+            if (test == null)
+            {
+                return null;
+            }
+
+            if (!string.Equals(test.DisplayName, name, StringComparison.Ordinal))
+            {
+                log.Line("CLASH    the test at " + address + " is now \"" + test.DisplayName
+                    + "\" and not \"" + name + "\", so it was left alone");
+                test.Dispose();
+                return null;
+            }
+
+            return test;
         }
 
         /// <summary>
@@ -372,6 +524,9 @@ namespace Federator.Addin.Engine
             SelectionSet set = byPath[planned.Locator];
 
             side.Selection.Clear();
+
+            // The source is handed to the collection, which takes it from here. Disposing
+            // it after the Add would take it back out from under the test.
             side.Selection.SelectionSources.Add(sets.CreateSelectionSource(set));
         }
 
@@ -412,22 +567,31 @@ namespace Federator.Addin.Engine
             Dictionary<string, SelectionSet> byPath,
             string locator)
         {
-            ModelItemCollection found = side.Selection.GetSelectedItems(document);
+            int fromSide;
 
-            if (found != null && found.Count > 0)
+            using (ModelItemCollection found = side.Selection.GetSelectedItems(document))
             {
-                return found.Count;
+                fromSide = found == null ? 0 : found.Count;
+            }
+
+            if (fromSide > 0)
+            {
+                return fromSide;
             }
 
             SelectionSet set;
 
             if (!byPath.TryGetValue(locator, out set))
             {
-                return found == null ? 0 : found.Count;
+                return fromSide;
             }
 
-            ModelItemCollection fromSet = set.GetSelectedItems(document);
-            int viaSet = fromSet == null ? 0 : fromSet.Count;
+            int viaSet;
+
+            using (ModelItemCollection fromSet = set.GetSelectedItems(document))
+            {
+                viaSet = fromSet == null ? 0 : fromSet.Count;
+            }
 
             if (viaSet > 0)
             {
@@ -442,6 +606,9 @@ namespace Federator.Addin.Engine
         /// Counts the results of one test by status. A result group is one row in the
         /// panel holding several clashes, so the leaves are counted and the grouping is
         /// reported, rather than a group silently counting as one.
+        ///
+        /// The test handed in must be freshly resolved. Running a test replaces the native
+        /// object, so a handle taken before the run throws here rather than counting.
         /// </summary>
         private ClashTally Count(ClashTest test, string name)
         {
@@ -469,22 +636,48 @@ namespace Federator.Addin.Engine
 
             for (int i = 0; i < children.Count; i++)
             {
-                SavedItem child = children[i];
-                ClashResultGroup group = child as ClashResultGroup;
-
-                if (group != null)
+                using (SavedItem child = children[i])
                 {
-                    groups++;
-                    CountInto(group.Children, tally, ref groups);
-                    continue;
-                }
+                    ClashResultGroup group = child as ClashResultGroup;
 
-                ClashResult result = child as ClashResult;
+                    if (group != null)
+                    {
+                        groups++;
+                        CountInto(group.Children, tally, ref groups);
+                        continue;
+                    }
 
-                if (result != null)
-                {
-                    tally.Add((CoreClashStatus)(int)result.Status);
+                    ClashResult result = child as ClashResult;
+
+                    if (result != null)
+                    {
+                        tally.Add((CoreClashStatus)(int)result.Status);
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Writes a skip into the log, at most MaxSkipExamples of them for each reason,
+        /// then one line saying the rest are counted. Everything skipped still reaches the
+        /// block at the end, where it is counted by reason with its examples.
+        /// </summary>
+        private void LogSkip(SkippedClashTest test)
+        {
+            int already;
+            skipsLogged.TryGetValue(test.Kind, out already);
+            skipsLogged[test.Kind] = already + 1;
+
+            if (already < ClashRunOutcome.MaxSkipExamples)
+            {
+                log.Line("CLASH    SKIPPED  " + test.Name + "  " + test.Reason);
+                return;
+            }
+
+            if (already == ClashRunOutcome.MaxSkipExamples)
+            {
+                log.Line("CLASH    further skips for \"" + ClashTestPlan.Describe(test.Kind)
+                    + "\" are counted, not listed. The block at the end carries the total.");
             }
         }
 
@@ -494,6 +687,9 @@ namespace Federator.Addin.Engine
         /// Every set in the document, keyed by the same path a locator is written with, so
         /// the two are compared with an ordinary string comparison. Ordinal and never
         /// trimmed, because two set names in the reference file end in a space.
+        ///
+        /// These wrappers are held for the whole group on purpose. Nothing in the clash
+        /// step mutates the sets tree, so nothing invalidates them.
         /// </summary>
         public Dictionary<string, SelectionSet> IndexSets(DocumentSelectionSets sets)
         {
@@ -530,6 +726,7 @@ namespace Federator.Addin.Engine
                     {
                         log.Line("CLASH    two sets share the path \"" + path
                             + "\", the first one found is the one the tests will use");
+                        set.Dispose();
                         continue;
                     }
 
@@ -541,12 +738,14 @@ namespace Federator.Addin.Engine
 
                 if (folder == null)
                 {
+                    child.Dispose();
                     continue;
                 }
 
                 folders.Add(folder.DisplayName);
                 WalkSets(folder, folders, byPath);
                 folders.RemoveAt(folders.Count - 1);
+                folder.Dispose();
             }
         }
 
@@ -565,20 +764,24 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Every clash test already in the document, by name. A ClashTest is itself a
-        /// GroupItem holding its results, so it is tested for before a folder is, or the
-        /// walk would descend into the results.
+        /// Where every clash test already in the document sits, by name. Addresses, not
+        /// handles, because the first TestsAddCopy would invalidate any handle kept here.
+        /// Walked once for the whole group, never once per test.
+        ///
+        /// A ClashTest is itself a GroupItem holding its results, so it is tested for
+        /// before a folder is, or the walk would descend into the results.
         /// </summary>
-        public Dictionary<string, ClashTest> IndexTests(DocumentClashTests clashTests)
+        public Dictionary<string, TestAddress> IndexTests(DocumentClashTests clashTests)
         {
-            Dictionary<string, ClashTest> byName =
-                new Dictionary<string, ClashTest>(StringComparer.Ordinal);
+            Dictionary<string, TestAddress> byName =
+                new Dictionary<string, TestAddress>(StringComparer.Ordinal);
 
-            WalkTests(clashTests.Tests, byName);
+            WalkTests(clashTests.Tests, new List<int>(), byName);
             return byName;
         }
 
-        private void WalkTests(SavedItemCollection items, Dictionary<string, ClashTest> byName)
+        private void WalkTests(
+            SavedItemCollection items, List<int> path, Dictionary<string, TestAddress> byName)
         {
             if (items == null)
             {
@@ -587,40 +790,98 @@ namespace Federator.Addin.Engine
 
             for (int i = 0; i < items.Count; i++)
             {
-                SavedItem item = items[i];
-                ClashTest test = item as ClashTest;
-
-                if (test != null)
+                using (SavedItem item = items[i])
                 {
-                    string name = test.DisplayName;
+                    path.Add(i);
 
-                    if (!string.IsNullOrEmpty(name) && !byName.ContainsKey(name))
+                    ClashTest test = item as ClashTest;
+
+                    if (test != null)
                     {
-                        byName.Add(name, test);
+                        string name = test.DisplayName;
+
+                        if (!string.IsNullOrEmpty(name) && !byName.ContainsKey(name))
+                        {
+                            byName.Add(name, TestAddress.At(path));
+                        }
+                    }
+                    else
+                    {
+                        GroupItem folder = item as GroupItem;
+
+                        if (folder != null)
+                        {
+                            WalkTests(folder.Children, path, byName);
+                        }
                     }
 
-                    continue;
-                }
-
-                GroupItem folder = item as GroupItem;
-
-                if (folder != null)
-                {
-                    WalkTests(folder.Children, byName);
+                    path.RemoveAt(path.Count - 1);
                 }
             }
-        }
-
-        private ClashTest FindTest(DocumentClashTests clashTests, string name)
-        {
-            Dictionary<string, ClashTest> byName = IndexTests(clashTests);
-            ClashTest test;
-            return byName.TryGetValue(name, out test) ? test : null;
         }
 
         private static string Or(string value, string fallback)
         {
             return string.IsNullOrEmpty(value) ? fallback : value;
+        }
+    }
+
+    /// <summary>
+    /// Where a clash test sits, as the path of child indexes from the root of the tests
+    /// tree. A test is addressed rather than held, because every mutation through
+    /// DocumentClashTests replaces the native object and kills any handle onto it.
+    /// </summary>
+    public sealed class TestAddress
+    {
+        private readonly int[] path;
+
+        private TestAddress(int[] path)
+        {
+            this.path = path;
+        }
+
+        public static TestAddress At(int index)
+        {
+            return new TestAddress(new[] { index });
+        }
+
+        public static TestAddress At(IList<int> path)
+        {
+            if (path == null || path.Count == 0)
+            {
+                throw new ArgumentException("A test address needs at least one index.", "path");
+            }
+
+            int[] copy = new int[path.Count];
+
+            for (int i = 0; i < path.Count; i++)
+            {
+                copy[i] = path[i];
+            }
+
+            return new TestAddress(copy);
+        }
+
+        public int Depth
+        {
+            get { return path.Length; }
+        }
+
+        public int IndexAt(int level)
+        {
+            return path[level];
+        }
+
+        public override string ToString()
+        {
+            string[] parts = new string[path.Length];
+
+            for (int i = 0; i < path.Length; i++)
+            {
+                parts[i] = path[i].ToString();
+            }
+
+            return "tests[" + string.Join("][", parts) + "]";
         }
     }
 }

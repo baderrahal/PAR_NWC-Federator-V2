@@ -27,6 +27,16 @@ namespace Federator.Addin.Engine
         private readonly ExchangeDocument exchange;
         private readonly List<SourcePair> sourcePairs = new List<SourcePair>();
 
+        /// <summary>
+        /// One guard for the whole run, not one per group. Every group of that nine hour
+        /// run failed the same way, so a guard that reset between groups would have let
+        /// all 24 of them through.
+        /// </summary>
+        private readonly RepeatedFailureGuard guard = new RepeatedFailureGuard();
+
+        /// <summary>Why the run was abandoned, or null while it is still going.</summary>
+        private string stopTheRun;
+
         public FederationEngine(Action<string> progress, RunLog log)
             : this(progress, log, true, null)
         {
@@ -96,6 +106,27 @@ namespace Federator.Addin.Engine
                 outcomes.Add(outcome);
                 log.GroupFinished(
                     job.Building, outcome.Result, groupClock.Elapsed.TotalSeconds, outcome.Reason);
+
+                // A run failing uniformly stops here rather than working through the rest.
+                // One real run spent 8 hours 52 minutes over 24 groups with every test
+                // failing the same way, and stopping the group would have saved none of it.
+                if (stopTheRun != null)
+                {
+                    int notAttempted = jobs.Count - (i + 1);
+
+                    log.Line("RUN      STOPPED after " + (i + 1)
+                        + (i == 0 ? " group. " : " groups. ") + stopTheRun);
+
+                    if (notAttempted > 0)
+                    {
+                        log.Line("RUN      " + notAttempted
+                            + (notAttempted == 1 ? " group was" : " groups were")
+                            + " not attempted. Everything already written is kept.");
+                    }
+
+                    progress("The run was stopped. " + stopTheRun);
+                    break;
+                }
             }
 
             return outcomes;
@@ -509,10 +540,18 @@ namespace Federator.Addin.Engine
                 log.Line("CLASH    " + job.Building + ", " + plan.TestsInFile + " in the file, "
                     + plan.Buildable.Count + " to create, " + plan.Skipped.Count + " skipped before the model");
 
-                ClashRunOutcome clash = new ClashRunner(progress, log).Run(plan);
+                ClashRunOutcome clash = new ClashRunner(progress, log, guard).Run(plan);
                 outcome.Clash = clash;
                 log.Block("CLASH " + job.Building, clash.Lines());
                 log.Line("CLASH    " + job.Building + " finished. " + clash.Summary());
+
+                if (clash.StopTheRun)
+                {
+                    // Not this group's failure alone. The rest of the run is abandoned
+                    // after this group finishes writing what it already has.
+                    stopTheRun = clash.StopTheRunReason;
+                    outcome.AddError(clash.StopTheRunReason);
+                }
 
                 return clash.CreatedCount > 0 || clash.RanCount > 0;
             }

@@ -80,6 +80,7 @@ namespace Federator.Core.Diagnostics
             What = what;
             Detail = detail;
             WhatNext = whatNext;
+            Times = 1;
         }
 
         public string What { get; private set; }
@@ -89,5 +90,17 @@ namespace Federator.Core.Diagnostics
 
         /// <summary>What the tool did after this failure, kept going or stopped.</summary>
         public string WhatNext { get; private set; }
+
+        /// <summary>
+        /// How many times this exact failure happened. One run threw the same exception
+        /// tens of thousands of times and wrote a 17.8 MB log that was almost entirely one
+        /// stack trace, so the trace is kept once and the rest are counted.
+        /// </summary>
+        public int Times { get; private set; }
+
+        internal void AgainOnce()
+        {
+            Times++;
+        }
     }
 }
