@@ -229,6 +229,25 @@ namespace Federator.Core.Clash
         /// </summary>
         public string StoppedReason { get; private set; }
 
+        /// <summary>
+        /// Set when this group failed so uniformly that the whole run was abandoned, not
+        /// just this group. A run once spent 8 hours 52 minutes over 24 groups with every
+        /// test failing the same way, and stopping the group would have saved none of it.
+        /// </summary>
+        public string StopTheRunReason { get; private set; }
+
+        public bool StopTheRun
+        {
+            get { return !string.IsNullOrEmpty(StopTheRunReason); }
+        }
+
+        public void StopTheWholeRun(string reason)
+        {
+            StopTheRunReason = string.IsNullOrEmpty(reason)
+                ? "UNKNOWN, the run was stopped and no reason was given"
+                : reason;
+        }
+
         public bool Stopped
         {
             get { return !string.IsNullOrEmpty(StoppedReason); }
@@ -398,6 +417,12 @@ namespace Federator.Core.Clash
         {
             List<string> lines = new List<string>();
 
+            if (StopTheRun)
+            {
+                lines.Add("RUN STOPPED " + StopTheRunReason);
+                lines.Add(string.Empty);
+            }
+
             if (Stopped)
             {
                 lines.Add("STOPPED " + StoppedReason);
@@ -540,6 +565,11 @@ namespace Federator.Core.Clash
         /// <summary>The one line summary, for the window and the group line in the log.</summary>
         public string Summary()
         {
+            if (StopTheRun)
+            {
+                return "The run was stopped. " + StopTheRunReason;
+            }
+
             if (Stopped)
             {
                 return "Stopped before creating anything. " + StoppedReason;

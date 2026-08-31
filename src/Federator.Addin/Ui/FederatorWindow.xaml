@@ -211,23 +211,16 @@
             <TabItem Header="4. Clash">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="Pick the XML here and press Run on any step. The run does the whole job for every ticked group: append, save the NWF, build the sets, create the tests, run them, save the NWF again, publish the NWD last. A file can hold sets, clash tests, or both, and when it holds both, one pick fills both boxes. Leave these empty and Run does the model side only." />
+                               Text="Pick one XML here and press Run on any step. The run does the whole job for every ticked group: append, save the NWF, build the sets, create the tests, run them, save the NWF again, publish the NWD last. The file can hold sets, clash tests, or both, and the tool reads whatever is in it. Leave this empty and Run does the model side only." />
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="Sets XML" />
-                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="SetsFileBox" VerticalAlignment="Center" />
-                        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowseSetsFile" />
-                        <Label Grid.Row="1" Grid.Column="0" Content="Clash test XML" />
-                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="TestsFileBox" VerticalAlignment="Center" />
-                        <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowseTestsFile" />
+                        <Label Grid.Column="0" Content="Clash XML" />
+                        <TextBox Grid.Column="1" x:Name="ExchangeFileBox" VerticalAlignment="Center" />
+                        <Button Grid.Column="2" Content="Browse" Click="OnBrowseExchangeFile" />
                     </Grid>
 
                     <!-- Neither of these is a step in the run. They are for trying one open

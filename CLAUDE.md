@@ -170,8 +170,8 @@ and 6 does not read as broken.
 - The clash test file is picked at run time, every run, and can be from any project.
   Nothing about any one file is written into the code, not names, not counts, not
   property internal names. Those appear in tests as sample data only. A file may hold
-  sets, tests, or both, and all three are normal. When one file holds both, one pick
-  is enough and picking it into either box fills the other one in
+  sets, tests, or both, and all three are normal. There is one picker, because Bader's
+  file holds both and two boxes meant picking the same file twice
 - Per group the order is append, save the NWF, build the sets, create the tests, run
   them, save the NWF again, publish the NWD last. The sets, the tests and the results
   all live in the NWF, so an NWD published before the clash work ships without any of
@@ -201,6 +201,32 @@ and 6 does not read as broken.
 - Everything that threw for one group is kept in a list, never in one slot. The model
   side can append cleanly and the clash step still throw, and one slot kept whichever
   wrote to it last and silently lost the other
+- A handle onto anything the document owns is borrowed, never kept. Every SavedItem read
+  out of a collection is created with eEXTERNAL ownership over a weak reference, so it
+  dies the moment the document replaces the object behind it, and every mutator on
+  DocumentClashTests is a copy form that does exactly that. TestsRunTest is one of them,
+  so the test handed to it is dead when it returns and reading Children off it throws
+  ObjectDisposedException (WeakRef). A test is addressed by where it sits, resolved again
+  before every use, and disposed after. One run threw that exception once per test for
+  8 hours 52 minutes and produced nothing
+- Nothing walks a whole collection once per item. Looking a test up by name after every
+  add was O(n squared) over 1830 tests and built about 1.7 million finalizable native
+  handles per group. TestsAddCopy appends at the root, so the new test is at the index the
+  count held before the add, checked by name rather than assumed
+- What this tool creates or resolves, it disposes. All of ClashTest, ClashResult,
+  ClashSelection, SelectionSet, SelectionSource, Selection, ModelItemCollection, Search
+  and SavedItem are IDisposable. Disposing an eEXTERNAL wrapper releases the wrapper and
+  never the document's object. SavedItemCollection is not disposable and is never disposed
+- A run that is failing everything stops the run, not the group. After the first 50 tests,
+  if every one has failed for the same reason, the whole run stops and says so in one
+  line. Every group of that nine hour run failed the same way, so a per group stop would
+  have saved none of it. The 50 is a setting. A test skipped because a side finds nothing
+  is the ordinary answer and counts neither way
+- An exception repeating with the same heading and the same trace is written out in full
+  once and counted after that, and the RESULT block carries the total beside the one
+  trace. One run wrote the same stack tens of thousands of times into a 17.8 MB log
+- One picker, one file. The file can hold sets, tests, or both, and the tool reads what is
+  in it. A file holding only tests still works against sets already in the model
 - Outputs overwrite, the NWD every run and the NWF only when it is being built for
   the first time. No date suffix, no version suffix
 - A group ends in one of three states, and the test is always what was ASKED FOR,

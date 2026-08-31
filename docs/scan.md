@@ -551,6 +551,101 @@ What is still UNKNOWN here and needs Navisworks running:
   name says so and section 4d proved it for sets, so the runner reads the test back out
   of `TestsData.Tests` by name after adding rather than holding the object it handed in
 
+### 4g. How long a handle lives, measured 2026-08-31
+
+A run created 1830 tests in each of 24 groups, ran for 8 hours 52 minutes and produced
+nothing. Every test threw the same thing:
+
+    System.ObjectDisposedException: Object has been Disposed (WeakRef)
+    Object name: 'NativeHandle'
+       at Autodesk.Navisworks.Api.GroupItem.get_Children()
+       at Federator.Addin.Engine.ClashRunner.Count(ClashTest test, String name)
+
+Read by reflection and by decoding the IL off the same install. This is the measurement,
+not a theory about it.
+
+`NativeHandle` is the base of every API object this tool touches. Its private fields:
+
+```
+LcUWeakReferenceHandle* m_weak_ref          a WEAK reference to the native object
+void*                   m_native_ptr
+NativeHandleOwnership   Ownership
+static IObjectManager   m_s_object_manager  one table for the whole process
+```
+
+It has a finalizer, a `Dispose`, a `CleanupAnyWeakRef` and an `InvalidateObject`. So a
+managed wrapper does not keep the native object alive. It watches it.
+
+`Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership`:
+
+```
+eINVALID = 0   eEXTERNAL = 1   eWRAPPER = 2   eREF_COUNTED = 3   eWEAK_REFERENCE = 4
+```
+
+Which one a wrapper gets was read out of the IL. `SavedItemCollection` indexer calls
+`GroupItem.GetChild`, and `GroupItem.GetChild` ends:
+
+```
+    call     .LcOpGroupItem.GetChild
+    ldc.i4.1
+    call     SavedItem.InternalCreator
+```
+
+`ldc.i4.1` is the ownership argument, and 1 is `eEXTERNAL`. So:
+
+**Every SavedItem read out of a SavedItemCollection is a borrowed view of an object the
+document owns.** It is valid only while that native object is, and it is safe to dispose,
+because disposing an eEXTERNAL wrapper releases the wrapper and never the document's
+object.
+
+What destroys the native object is any mutation through the owning document part. Every
+mutator on `DocumentClashTests` is a copy form, `TestsAddCopy`, `TestsEditTestFromCopy`,
+`TestsReplaceWithCopy`, exactly as `DocumentSelectionSets.AddCopy` is, and section 4d
+already recorded for the sets that a handle held across an `AddCopy` does not see the
+result. The same holds here, and `TestsRunTest` is a mutation too, because it writes the
+results into the test.
+
+So the rule, which the runner now follows:
+
+- a `ClashTest` handed to `TestsRunTest` is DEAD when that call returns
+- reading `Children` off it throws `ObjectDisposedException ... (WeakRef)`, which is
+  exactly the stack above
+- a test is addressed by where it sits, never held. Resolve it, use it, dispose it, and
+  resolve it again after anything that mutates the tests
+
+The run had actually run the tests. `TestsRunTest` is above `Count` in that stack and
+returned normally, so the count of `0 run` is bookkeeping and not a description: the
+outcome is only recorded after the results are counted, and counting threw first.
+
+Two things this also explains, and both are now gone:
+
+- the old code called `FindTest`, which walked the whole tests collection, once per test.
+  Over 1830 tests that is about 1.7 million `SavedItem` wrappers built and thrown away per
+  group, each one a finalizable native handle registered against the one static
+  `IObjectManager`. It is now an index, built once, and `TestsAddCopy` appends at the root
+  so the new test is at the index the count was before the add, checked by name
+- nothing was ever disposed. Everything in the list below is `IDisposable`, and now what
+  the tool creates or resolves is disposed:
+
+```
+ClashTest  ClashResult  ClashResultGroup  ClashSelection  ClashTestsData
+SelectionSet  SelectionSource  SelectionSourceCollection  Selection
+ModelItemCollection  Search  FolderItem  SavedItem
+```
+
+`SavedItemCollection` is NOT disposable, so it is a view and is never disposed.
+
+Still UNKNOWN, and only a real run answers it:
+
+- whether the tests that did run produced results, since nothing could read them
+- whether sets, tests or results survive from one group into the next document. The
+  evidence points at no, because every one of the 24 groups reported 1830 created rather
+  than already there, which means the collection was empty each time. The runner now logs
+  the count on every group even when it is zero, so the next log answers this outright
+- what exactly made the clash step grow from 39.8 seconds to 1259.5 seconds. The two
+  measured candidates above are both removed, so the next run either shows a flat time or
+  shows that something else grows
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

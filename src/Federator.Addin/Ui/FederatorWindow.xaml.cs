@@ -561,40 +561,24 @@ namespace Federator.Addin.Ui
 
         // ---------- Step 4, clash. Sets only in this session ----------
 
-        private void OnBrowseSetsFile(object sender, RoutedEventArgs e)
-        {
-            Browse("Pick the sets or combined XML", SetsFileBox, TestsFileBox);
-        }
-
-        private void OnBrowseTestsFile(object sender, RoutedEventArgs e)
-        {
-            Browse("Pick the clash test or combined XML", TestsFileBox, SetsFileBox);
-        }
-
         /// <summary>
-        /// One browse for both boxes. Nothing about any one file is in here, the file is
+        /// One picker, one file. Nothing about any one file is in here, the file is
         /// picked every run and can be from any project.
         ///
-        /// A file can hold sets, tests, or both. When it holds both, the other box is
-        /// filled in with the same path, so one pick is enough and the same file is never
-        /// chosen twice. Reading it once here is also what makes the message say which of
-        /// the three shapes it turned out to be.
+        /// The file can hold sets, tests, or both, and the tool reads what is in it.
+        /// There used to be a second box for a sets file, which meant picking the same
+        /// combined file twice. Reading it once here is also what lets the message say
+        /// which of the three shapes it turned out to be.
         /// </summary>
-        private void Browse(string title, System.Windows.Controls.TextBox into,
-            System.Windows.Controls.TextBox other)
+        private void OnBrowseExchangeFile(object sender, RoutedEventArgs e)
         {
             using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
             {
-                dialog.Title = title;
+                dialog.Title = "Pick the clash XML. It can hold sets, tests, or both.";
                 dialog.Filter = "Navisworks exchange XML (*.xml)|*.xml|All files (*.*)|*.*";
                 dialog.CheckFileExists = true;
 
-                string current = Trimmed(into.Text);
-
-                if (current.Length == 0)
-                {
-                    current = Trimmed(other.Text);
-                }
+                string current = Trimmed(ExchangeFileBox.Text);
 
                 if (current.Length > 0)
                 {
@@ -618,16 +602,16 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                into.Text = dialog.FileName;
-                SetsSummary.Text = DescribeAndSpread(dialog.FileName, other);
+                ExchangeFileBox.Text = dialog.FileName;
+                SetsSummary.Text = Describe(dialog.FileName);
             }
         }
 
         /// <summary>
-        /// Says what the picked file actually holds, counted out of the file itself, and
-        /// fills the other box in when one file covers both halves.
+        /// Says what the picked file actually holds, counted out of the file itself, so a
+        /// file with no tests in it is obvious before a run rather than after one.
         /// </summary>
-        private string DescribeAndSpread(string path, System.Windows.Controls.TextBox other)
+        private string Describe(string path)
         {
             ExchangeDocument exchange;
 
@@ -645,14 +629,6 @@ namespace Federator.Addin.Ui
                 + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test." : " tests.");
 
             log.Line("PICK     " + path + " holds " + held);
-
-            if (exchange.HasSets && exchange.HasTests)
-            {
-                other.Text = path;
-                return "Picked " + path + ". It holds " + held
-                    + " One pick is enough, both boxes now point at it.";
-            }
-
             return "Picked " + path + ". It holds " + held;
         }
 
@@ -662,38 +638,17 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// Whatever was picked in the Clash step, read once. The two boxes usually hold one
-        /// path between them, and when they hold the same one it is read a single time.
-        /// Null when nothing was picked, and then the run builds no set and creates no test.
+        /// The one file picked in the Clash step, read once. Null when nothing was
+        /// picked, and then the run builds no set and creates no test, which is a step
+        /// switched off rather than a failure.
         /// </summary>
         private ExchangeDocument PickedExchange()
         {
-            List<string> paths = new List<string>();
+            string path = Trimmed(ExchangeFileBox.Text);
 
-            foreach (string path in new[] { Trimmed(SetsFileBox.Text), Trimmed(TestsFileBox.Text) })
-            {
-                if (path.Length == 0 || !File.Exists(path))
-                {
-                    continue;
-                }
-
-                bool already = false;
-
-                foreach (string seen in paths)
-                {
-                    if (string.Equals(seen, path, StringComparison.OrdinalIgnoreCase))
-                    {
-                        already = true;
-                    }
-                }
-
-                if (!already)
-                {
-                    paths.Add(path);
-                }
-            }
-
-            return paths.Count == 0 ? null : new ExchangeReader().ReadFiles(paths);
+            return path.Length == 0 || !File.Exists(path)
+                ? null
+                : new ExchangeReader().ReadFile(path);
         }
 
         /// <summary>
@@ -707,11 +662,11 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            string path = SetsFileBox.Text == null ? string.Empty : SetsFileBox.Text.Trim();
+            string path = Trimmed(ExchangeFileBox.Text);
 
             if (path.Length == 0 || !File.Exists(path))
             {
-                Warn("Pick a sets or combined XML that exists first.");
+                Warn("Pick a clash XML that exists first.");
                 return;
             }
 
@@ -797,11 +752,11 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            string path = Trimmed(TestsFileBox.Text);
+            string path = Trimmed(ExchangeFileBox.Text);
 
             if (path.Length == 0 || !File.Exists(path))
             {
-                Warn("Pick a clash test or combined XML that exists first.");
+                Warn("Pick a clash XML that exists first.");
                 return;
             }
 
