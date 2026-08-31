@@ -544,6 +544,7 @@ namespace Federator.Core.Clash
             foreach (ClashSkipReason reason in
                 new[]
                 {
+                    ClashSkipReason.SingleModel,
                     ClashSkipReason.EmptySide,
                     ClashSkipReason.LocatorNotResolved,
                     ClashSkipReason.UnknownTestType,

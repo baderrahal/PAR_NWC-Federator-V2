@@ -5,22 +5,46 @@ using Federator.Core.Naming;
 namespace Federator.Core.Grouping
 {
     /// <summary>
-    /// Groups parsed container names on the full building code. Every discipline of a
-    /// building lands in the same group. A building whose files disagree on the project
-    /// code or the originator is reported and skipped.
+    /// Gathers parsed container names into federations.
+    ///
+    /// Per building is the default and is what this project runs weekly, with every
+    /// discipline of a building landing in the same group. It is a default rather than a
+    /// rule, because a coordination meeting about one discipline across a whole site wants
+    /// a different split from a building handover. See <see cref="GroupingMode"/>.
+    ///
+    /// Whatever the mode, a group whose files disagree on the project code or the
+    /// originator is reported and skipped, because both go into the output name and
+    /// picking one of two values would put a wrong name on a federation.
     /// </summary>
     public static class BuildingGrouping
     {
         public static BuildingGroupingResult Group(IEnumerable<ParsedContainerName> names)
+        {
+            return Group(names, GroupingModes.Default, new ContainerNameSettings());
+        }
+
+        public static BuildingGroupingResult Group(
+            IEnumerable<ParsedContainerName> names, GroupingMode mode)
+        {
+            return Group(names, mode, new ContainerNameSettings());
+        }
+
+        public static BuildingGroupingResult Group(
+            IEnumerable<ParsedContainerName> names, GroupingMode mode, ContainerNameSettings settings)
         {
             if (names == null)
             {
                 throw new ArgumentNullException("names");
             }
 
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
             List<ParsedContainerName> unreadable = new List<ParsedContainerName>();
             List<string> order = new List<string>();
-            Dictionary<string, List<ParsedContainerName>> byBuilding =
+            Dictionary<string, List<ParsedContainerName>> byKey =
                 new Dictionary<string, List<ParsedContainerName>>(StringComparer.Ordinal);
 
             foreach (ParsedContainerName name in names)
@@ -36,13 +60,14 @@ namespace Federator.Core.Grouping
                     continue;
                 }
 
+                string key = KeyFor(name, mode, settings);
                 List<ParsedContainerName> bucket;
 
-                if (!byBuilding.TryGetValue(name.Building, out bucket))
+                if (!byKey.TryGetValue(key, out bucket))
                 {
                     bucket = new List<ParsedContainerName>();
-                    byBuilding.Add(name.Building, bucket);
-                    order.Add(name.Building);
+                    byKey.Add(key, bucket);
+                    order.Add(key);
                 }
 
                 bucket.Add(name);
@@ -53,32 +78,64 @@ namespace Federator.Core.Grouping
             List<BuildingGroup> groups = new List<BuildingGroup>();
             List<SkippedBuildingGroup> skipped = new List<SkippedBuildingGroup>();
 
-            foreach (string building in order)
+            foreach (string key in order)
             {
-                List<ParsedContainerName> files = byBuilding[building];
+                List<ParsedContainerName> files = byKey[key];
                 string disagreement = FirstDisagreement(files);
 
                 if (disagreement != null)
                 {
-                    skipped.Add(new SkippedBuildingGroup(building, disagreement, files));
+                    skipped.Add(new SkippedBuildingGroup(key, disagreement, files));
                     continue;
                 }
 
                 groups.Add(new BuildingGroup(
-                    building,
+                    key,
                     files[0].Project,
                     files[0].Originator,
                     files,
-                    DistinctDisciplines(files)));
+                    DistinctDisciplines(files),
+                    GroupingModes.OneBuildingPerGroup(mode) ? files[0].Building : string.Empty,
+                    GroupingModes.OneDisciplinePerGroup(mode) ? files[0].Discipline : string.Empty));
             }
 
             return new BuildingGroupingResult(groups, skipped, unreadable);
         }
 
+        /// <summary>
+        /// What gathers files into one group, and what that group is called.
+        /// </summary>
+        public static string KeyFor(
+            ParsedContainerName name, GroupingMode mode, ContainerNameSettings settings)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            switch (mode)
+            {
+                case GroupingMode.PerBuildingAndDiscipline:
+                    return name.Building + settings.Separator + name.Discipline;
+                case GroupingMode.PerDiscipline:
+                    return name.Discipline;
+                case GroupingMode.Everything:
+                    return GroupingModes.EverythingKey;
+                default:
+                    return name.Building;
+            }
+        }
+
         public static BuildingGroupingResult GroupNames(
             IEnumerable<string> names, ContainerNameSettings settings)
         {
-            return Group(ContainerName.ParseAll(names, settings));
+            return GroupNames(names, settings, GroupingModes.Default);
+        }
+
+        public static BuildingGroupingResult GroupNames(
+            IEnumerable<string> names, ContainerNameSettings settings, GroupingMode mode)
+        {
+            return Group(ContainerName.ParseAll(names, settings), mode, settings);
         }
 
         /// <summary>

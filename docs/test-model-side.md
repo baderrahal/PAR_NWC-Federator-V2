@@ -112,9 +112,21 @@ error underneath. Send me that error text.
 12. Click **Scan**.
 
 **Worked:** the table fills with one row per NWC. Each readable row is ticked and shows
-the building code and the discipline pulled out of its name. The line under the table
-reads something like `12 NWC found, 11 readable, 1 that cannot be read.` The window then
-moves itself to the Grouping tab.
+the building code and the discipline pulled out of its name.
+
+**Also worked, and is new:** the findings panel under the table now reports everything in
+one place, starting with a plain count:
+
+    73 files found, 71 readable, 2 that cannot be read.
+    22 groups, one file per building, and 1 blocked because their files disagree.
+    9 things worth a look. None of it stops a run.
+           1  written differently from the rest
+           1  two codes that look almost the same
+           2  only one discipline, so nothing to clash
+           5  missing a discipline others have
+
+That panel used to be on the Grouping tab. Scan now reports what was found and what is
+wrong with it together.
 
 **Also worked, and is the point:** any file whose name does not follow the standard is
 still in the table, on a pink row, unticked, with the reason spelled out, for example
@@ -125,30 +137,35 @@ building code to group it under.
 **Failed:** the table stays empty and the summary says `0 NWC found`. The folder holds no
 `.nwc` files, or you picked the wrong folder.
 
-## Step 2, grouping
+13. Read the findings themselves, which are now written the way a person would say them.
 
-13. Click the **2. Grouping** tab.
+**Worked:** they read as sentences rather than as code. Where it used to say
+`100000 is the only code shaped 9A99AA` it now says:
 
-**Worked:** one row per building. Each row shows the building code, how many files are in
-it, and every discipline present, for example `AR, ME, ST`. All four disciplines of a
-building are in one row. Discipline never splits a building into two rows.
+    ODD SHAPE   The building code 100000 is written differently from every other code in
+                this run. The other 21 codes look like 1B06PK, and 100000 does not follow
+                that. That is often a typing error in the file name, and it is sometimes a
+                real building named another way. Nothing is changed and the group still runs.
 
-**Also worked:** if two files under one building disagree on the project code or the
-originator, that row is pink, unticked, cannot be ticked, and the Status column names both
-files and both values, like this:
+and where it used to say `Revit 0000KI feeds 2 groups` it now says:
 
-    BLOCKED: The files disagree on the project code.
-    1104-PAR-1C07K1-ZZZ-AR-MOD-000001 says 1104 and
-    1105-PAR-1C07K1-ZZZ-ST-MOD-000001 says 1105.
+    SHARED SOURCE  2 federations are being built from the same Revit building, 0000KI.
+                   They are 1B06K1 and 1B06KI. That usually means one of the NWC file
+                   names is wrong and these should be one building. Nothing is merged and
+                   no group is unpicked, so the decision is yours.
 
-That is correct behaviour. The tool will not guess which of the two is right, so it skips
-the whole building and tells you which two files to go and look at.
+If any of these still reads like code rather than like English, tell me which one.
 
-14. Read the **Findings** panel under the table, before you press anything.
+14. Click **Copy findings**, then paste into Excel.
 
-**Worked:** it lists what the scan noticed about this run and nothing else. It is worked
-out from the run itself, so it needs no list of known building codes or known disciplines
-and will behave the same on a project it has never seen. Four kinds appear:
+**Worked:** it lands as a table with a header row and four columns, `Code`, `Buildings`,
+`What it means` and `Files`. The code is its own column so you can sort or filter on it,
+and the sentence sits next to it. A run with nothing odd still copies a header and one row
+saying so, because an empty clipboard reads as a failed copy.
+
+**Still true:** it is worked out from the run itself, so it needs no list of known building
+codes or known disciplines and will behave the same on a project it has never seen. Six
+kinds appear. Nothing here blocks a run or unticks anything.
 
 - `ODD SHAPE` a building code whose pattern of letters and digits no other code in the run
   shares, with its files named. In your run of 22 groups that would have caught `100000`
@@ -170,44 +187,102 @@ None of this blocks anything. Every group stays ticked and runnable, and the dec
 yours. The same lines go into the log in a `FINDINGS` block straight after the group list,
 so the file tells the same story afterwards.
 
-15. Untick any building you do not want in this run.
+## Step 2, grouping
+
+15. Click the **2. Grouping** tab and look at the new **Make** box.
+
+**Worked:** four choices, and **One file per building** is already selected, because that
+is what you run weekly. The other three are one file per building and discipline, one file
+per discipline across every building, and one file for everything.
+
+16. Change it to **One file per building and discipline** and watch the table.
+
+**Worked:** the table redraws immediately. Where you had `1C07BC` with 4 files you now have
+`1C07BC-AR`, `1C07BC-ST`, `1C07BC-ME` and `1C07BC-EL`, one file each, and the output names
+on the Outputs step change with them. Put it back to **One file per building** when you
+have looked.
+
+Per building used to be written down as a rule. It is a default, and CLAUDE.md now says so.
+
+17. With **One file per building** selected again, read the group table.
+
+**Worked:** one row per building. Each row shows the building code, how many files are in
+it, and every discipline present, for example `AR, ME, ST`. All four disciplines of a
+building are in one row. Discipline never splits a building into two rows.
+
+**Also worked:** if two files under one building disagree on the project code or the
+originator, that row is pink, unticked, cannot be ticked, and the Status column names both
+files and both values, like this:
+
+    BLOCKED: The files disagree on the project code.
+    1104-PAR-1C07K1-ZZZ-AR-MOD-000001 says 1104 and
+    1105-PAR-1C07K1-ZZZ-ST-MOD-000001 says 1105.
+
+That is correct behaviour. The tool will not guess which of the two is right, so it skips
+the whole building and tells you which two files to go and look at.
+
+18. Untick any building you do not want in this run.
 
 ## Step 3, outputs
 
-16. Click the **3. Outputs** tab.
+19. Click the **3. Outputs** tab.
 
-17. Click the first **Browse** and pick the folder the NWF files go in.
+20. Click the first **Browse** and pick the folder the NWF files go in.
 
-18. Click the second **Browse** and pick the folder the NWD files go in.
+21. Click the second **Browse** and pick the folder the NWD files go in.
 
-19. Leave **Republish the NWD every run** ticked.
+22. Leave **Republish the NWD every run** ticked.
 
 **Worked:** the line under the table says `The NWD is republished every run.` Untick it
 only when you want the NWF opened and compared without a new NWD being written.
 
-**Worked:** the table shows the output name for every group before anything runs, for
-example `1104-PAR-1C07BC-ZZZ-BM-MOD-000001`. Check one against a building you know. It
-should be the project code, the originator and the building code from the input files,
-then always `ZZZ`, `BM`, `MOD` and `000001`. Level, discipline, type and number are all
-pinned, because the outputs overwrite on the next run.
+**Worked:** the table shows all three names for every group before anything runs, one
+column each for the NWF, the NWD and the workbook, for example
+`1104-PAR-1C07BC-ZZZ-BM-MOD-000001`. Check one against a building you know. The project
+code, the originator and the building code come from the input files. The rest is supplied.
+
+23. Look at the naming grid above the table.
+
+**Worked:** fifteen boxes, five fields across and one row each for NWF, NWD and workbook,
+filled in with `ZZZ`, `BM`, `MOD`, `000001` and `ZZZZZZ`. Those used to be fixed in the
+code. They are defaults now and every one of them can be changed here.
+
+They are what they are because the files inside one group can disagree on the level, the
+type and the number, and outputs overwrite, so copying any one of them from an input file
+would mean picking a winner. `ZZZ` is the ISO 19650 code for all levels, `BM` is a
+federated building model, `MOD` is a model, `000001` never advances because the file is
+overwritten in place, and `ZZZZZZ` is the building field when a group covers more than one
+building.
+
+24. Change the workbook row's **Type** from `MOD` to `RPT` and watch the table.
+
+**Worked:** the Workbook name column changes and the NWF and NWD columns do not. The three
+patterns are separate, because a project may want them to differ. The preview line above
+the table shows the first group's three names as you type. Put it back to `MOD` when you
+have looked.
+
+**Worked, and is the guard:** if you ever set them so that two groups would end up with the
+same name, the preview says `THE RUN CANNOT START` and names both groups, and pressing Run
+refuses rather than starting. Outputs overwrite with no date suffix, so one would silently
+destroy the other and you would only notice as a federation nobody can find.
 
 ## Run it
 
-20. Click **Run**.
+25. Click **Run**.
 
-21. Read the warning box before clicking anything.
+26. Read the warning box before clicking anything.
 
 **Worked:** it names what you are about to lose, for example
 `The open file C:\models\something.nwf, holding 4 models.` If nothing is open it says so
 instead. This is your last chance, because the run clears the document before each group
 and does not save it first.
 
-22. Click **Cancel** the first time, on purpose.
+27. Click **Cancel** the first time, on purpose.
 
 **Worked:** the log says `Run cancelled before anything was cleared.` and nothing on disk
 changed. Check the NWF folder is still empty.
 
-23. Click **Run** again, then click **OK**.
+28. Click **Run** again, then click **OK**.
 
 **Worked:** the progress line moves through the groups, for example
 `Group 1 of 3: 1C07BC (4 files)`, then `Saving NWF for 1C07BC`, then
@@ -234,23 +309,23 @@ When it ends the progress line reads something like
 
 ## Check what it actually wrote
 
-24. Open the NWF folder.
+29. Open the NWF folder.
 
 **Worked:** one `.nwf` per group you ticked, named exactly what step 17 showed, with no
 date and no version number on the end.
 
-25. Open the NWD folder.
+30. Open the NWD folder.
 
 **Worked:** one `.nwd` per group, same names.
 
-26. Look at the bottom of the log box in the window.
+31. Look at the bottom of the log box in the window.
 
 **Worked:** a `RESULT` block, which is the summary you do not have to scroll for. It reads
 groups done, groups partial, groups failed, then every file written with the size that was
 read back off the disk, then every error repeated in full, then the total elapsed. If
 nothing went wrong the errors section is the single line `Nothing failed.`
 
-27. Open one of the NWD files in Navisworks and check every discipline of that building is
+32. Open one of the NWD files in Navisworks and check every discipline of that building is
     in it.
 
 ## What the three results mean
@@ -293,11 +368,11 @@ It lands in two places, always:
 If the second copy cannot be written, the first log says so and the run carries on.
 Logging is never allowed to be the thing that stops a run.
 
-28. Click **Open log folder** at the bottom of the window.
+33. Click **Open log folder** at the bottom of the window.
 
 **Worked:** Explorer opens with this run's log file already picked out.
 
-29. Click **Copy log**.
+34. Click **Copy log**.
 
 **Worked:** the progress line says how many characters were copied. Paste it straight into
 chat.
@@ -325,11 +400,11 @@ and named after what they do.
 
 There is no Excel yet, so do not look for it.
 
-31. Open any NWD or NWF that has real content in it.
+36. Open any NWD or NWF that has real content in it.
 
-32. Click the **4. Clash** tab.
+37. Click the **4. Clash** tab.
 
-33. Click **Browse** beside **Clash XML** and pick your file. The reference file
+38. Click **Browse** beside **Clash XML** and pick your file. The reference file
     `1104-PAR_CLASH_AllInOne (2) (1).xml` holds both halves and is a good first try.
 
 **Worked:** the line underneath says what the file actually holds, counted out of the file
@@ -337,7 +412,7 @@ itself, for example `Picked ... It holds 61 sets and 1830 tests.` A file holding
 tests reads `0 sets and 1830 tests` and is still fine, as long as the sets are already in
 the model.
 
-34. Click **Sets into open model**.
+39. Click **Sets into open model**.
 
 **Worked:** the box fills with one line per set, and the line under it summarises. Each
 line carries the full folder path, the name, how many conditions it has and how many items
@@ -373,7 +448,7 @@ Ceilings, Windows, Curtain Panels, Casework and Furniture did not, and every Str
 Mechanical and Electrical set was at zero. That is the shape of a site and parking model
 rather than a broken search.
 
-35. Open the Selection Sets window in Navisworks and check the folders.
+40. Open the Selection Sets window in Navisworks and check the folders.
 
 **Worked:** the folders nest exactly as the file had them, so `Mechanical` holds
 `Mechanical-HVAC` and the rest as real folders rather than as sets with long names.
@@ -386,7 +461,7 @@ has seen before is passed straight to Navisworks rather than being treated as a 
 Nothing here is tied to one project. The file is picked every run, and none of its names,
 folder names, counts or internal property names are written into the tool.
 
-36. Try it with a file that holds only tests and no sets.
+41. Try it with a file that holds only tests and no sets.
 
 **Worked:** it says `This file holds no sets. Nothing to build.` and does nothing else. A
 project that keeps its sets in the model and supplies only tests is a normal case, not an
@@ -398,9 +473,9 @@ Same tab, same file. This creates the tests the picked file describes and runs t
 against whatever is open. The sets have to be there first, either because you built them
 in step 4 or because they already live in the model.
 
-37. Leave the **Clash XML** box exactly as it is. It is the same file.
+42. Leave the **Clash XML** box exactly as it is. It is the same file.
 
-38. Click **Tests into open model**.
+43. Click **Tests into open model**.
 
 **Worked:** a line per test as it goes, then the totals. Expect this to take a while, and
 expect most tests to be skipped, which is the normal answer and not a fault:
@@ -438,21 +513,21 @@ skipped number is the expected answer rather than a problem.
 `clash step took` is on its own line because it is the number nobody has yet, and it is
 what says whether the whole run will fit in the 45 minutes.
 
-39. While it runs, watch the progress line and the log.
+44. While it runs, watch the progress line and the log.
 
 **Worked:** a running count every 25 tests, so a run of well over a thousand is watchable
 rather than silent:
 
     CLASH    250 of 1830 tests, 8 run, 242 skipped, 31 clashes so far
 
-40. Open Clash Detective in Navisworks and compare.
+45. Open Clash Detective in Navisworks and compare.
 
 **Worked:** the tests are there under the names the file gave them, each side shows the
 selection set by name rather than a list of items, and the clash count on a test matches
 the number in the block above. That last one is the point. If a count disagrees with the
 panel, that is a real fault and the log line for that test has the numbers to send back.
 
-41. Look at any line in the log that begins `CLASH    created`.
+46. Look at any line in the log that begins `CLASH    created`.
 
 **Worked:** it carries the tolerance twice, in both units, for example
 `tolerance 0.2460629921 ft is 74.9999999921 mm`. Which units Navisworks measures the
@@ -460,7 +535,7 @@ tolerance in is not something that could be read off the DLL, so both numbers ar
 and this is the line that settles it. Check one test in Clash Detective and tell me which
 of the two numbers its tolerance box shows.
 
-42. Try a file that holds tests but names sets that are not in this model.
+47. Try a file that holds tests but names sets that are not in this model.
 
 **Worked:** each one is reported by name and skipped, and nothing is created:
 
@@ -485,7 +560,7 @@ were created or run keep their own line each, because those are the ones worth r
 
 This one is quick and is worth doing deliberately, because the tool used to get it wrong.
 
-43. Open a model with no selection sets in it at all, pick a clash test XML, and press
+48. Open a model with no selection sets in it at all, pick a clash test XML, and press
     **Tests into open model** without building the sets first.
 
 **Worked:** it stops immediately, before creating anything, and says so in one line in the
@@ -499,6 +574,34 @@ log and on the line under the box:
 **Failed:** it goes ahead and reports 1830 skipped, 0 created, 0 run. That is what it used
 to do, and it took a whole run and a 1 MB log to say one thing.
 
+## A group that holds one model
+
+1B06BS and 1C06PK each hold a single NWC. One model cannot clash with anything, whatever
+the test list says, and both of them used to run the full 1830 tests for nothing.
+
+**Worked:** the group row on the Grouping step says so before you run:
+
+    Ready. One model, so every test is created and none is run.
+
+and the log says it once per group:
+
+    CLASH    1B06BS holds one model, so every test is created and none is run. One model
+             cannot clash with anything.
+
+**Worked:** every test is still created, so the NWF is complete and matches the other
+groups and a later run against a fuller model finds them already there. The block reads:
+
+    SKIPPED 1830 tests, the group holds one model, so nothing in it can clash
+
+**The thing to check:** that reason is its own, and is counted apart from a side finding
+nothing. They mean different things. A side finding nothing says a discipline was not
+exported and could be. One model says the group was never going to clash and no export
+would change that. If a single model group ever reports its tests as
+`a side finds nothing in this model`, that is a real fault.
+
+**Worked:** the workbook is still written, and shows every test as not run for that
+reason, so the group has the same set of outputs as every other group.
+
 ## Step 7, the run stops itself when everything is failing
 
 This is the one that would have saved you nine hours. On 2026-08-31 a run went through 24
@@ -508,7 +611,7 @@ regardless.
 
 That exception is fixed. This is the net underneath it.
 
-44. Run normally. If anything has gone wrong in the same way for the first 50 tests,
+49. Run normally. If anything has gone wrong in the same way for the first 50 tests,
     watch what happens.
 
 **Worked:** the run stops. Not the test, not the group, the run:
@@ -523,7 +626,7 @@ the ordinary answer, not a failure, so it does not count towards the fifty eithe
 single test that works resets the count, because a run that does anything at all is not
 uniformly broken.
 
-45. Look at the size of the log.
+50. Look at the size of the log.
 
 **Worked:** it is small. The previous run left 17.8 MB, almost all of it the same stack
 trace written out tens of thousands of times. The same failure is now written out once and
@@ -541,7 +644,7 @@ and the RESULT block carries the total beside the one trace:
 
 Nothing is lost. Every repeat is counted. Only the repetition is gone.
 
-46. Look at the `CLASH` lines at the top of each group.
+51. Look at the `CLASH` lines at the top of each group.
 
 **Worked:** every group says how many clash tests the document already held, even when
 that is none:
@@ -557,18 +660,18 @@ says a number other than zero, they do survive, and that is worth telling me.
 One workbook per group, written after the clash step and before the NWD is published, so
 the three outputs of a group describe the same state.
 
-47. Go to the **3. Outputs** tab and look at the new **Excel folder** box.
+52. Go to the **3. Outputs** tab and look at the new **Excel folder** box.
 
 **Worked:** the line under the table says where the workbooks are going. Leave the box
 empty and it reads something like `Workbooks go in C:\out\nwf\Clash Reports.` The folder
 is made if it is not there.
 
-48. Run a group that finds clashes, then open the workbook.
+53. Run a group that finds clashes, then open the workbook.
 
 **Worked:** it opens in Excel and has a `Summary` sheet, a `Matrix` sheet, and one sheet
 per test that found something, named `T0001` upward.
 
-49. Read the top of the `Summary` sheet.
+54. Read the top of the `Summary` sheet.
 
 **Worked:** the three numbers that must never be merged are three separate lines:
 
@@ -582,7 +685,7 @@ per test that found something, named `T0001` upward.
 618 plus 48 plus 1164 is 1830. If those ever fail to add up, something has merged skipped
 with passed, which is the mistake this whole design is built to prevent.
 
-50. Scroll down the `Summary` to the table.
+55. Scroll down the `Summary` to the table.
 
 **Worked:** one row per test in the file, not one per test that ran. A skipped test is in
 there carrying why it was skipped. A test that found something has a link in the `Sheet`
@@ -590,7 +693,7 @@ column, and a test that found nothing has no link, because a link to a sheet tha
 exist opens an error box. The `Test name` column carries the full name, which is the whole
 reason that column exists.
 
-51. Open one `T####` sheet.
+56. Open one `T####` sheet.
 
 **Worked:** one row per group or per ungrouped clash, and the columns run: group or clash
 name, status, distance, grid, level, then for each side the item name, family, type,
@@ -603,12 +706,12 @@ on a real Revit model, tell me, because the tool looks for a property whose disp
 is Family, Type or Material in any category and leaves the cell empty rather than guessing
 when it finds none. The names it looks for are settings and I can change them.
 
-52. Check a row that is a group.
+57. Check a row that is a group.
 
 **Worked:** its `Raw clashes` column says how many clashes are behind that one row, and
 its distance is the most severe of them. Nothing is hidden by the grouping.
 
-53. Open the `Matrix` sheet.
+58. Open the `Matrix` sheet.
 
 **Worked:** sides down and across, the disciplines read off the folder names in your own
 file rather than off any list in the tool. A cell holds New plus Active, the clashes still
@@ -619,7 +722,7 @@ zero means the pair was tested and nothing clashed. A skip means nobody looked. 
 ever see a zero where a test did not run, that is a real fault and worth stopping for. A
 pair no test covers at all is left blank, which is a third thing again.
 
-54. Tick **Also write a Navisworks style clash XML** on the Outputs tab and run again.
+59. Tick **Also write a Navisworks style clash XML** on the Outputs tab and run again.
 
 **Worked:** an XML lands beside each workbook under the same name. It is off by default.
 It is built from the same results in memory that the workbook is built from, so neither
@@ -656,7 +759,7 @@ an NWF. **OPENED has still never appeared in a real log.** Whether a second run 
 unchanged files actually produces it is UNKNOWN until you run this step, and it is the
 single most valuable thing you can tell me.
 
-55. Run once so an NWF exists, then run again with the same settings and the same folder.
+60. Run once so an NWF exists, then run again with the same settings and the same folder.
 
 **Worked:** the second run does not rebuild. Each group logs
 
@@ -680,7 +783,7 @@ NWC files. What is not touched is the tests themselves, because that is where th
 and Resolved statuses live. If you ever see the sets tree holding two of everything, or
 every clash back at New after a second run, that is a real fault and worth stopping for.
 
-56. Now add one NWC to the source folder, or remove one, and run again.
+61. Now add one NWC to the source folder, or remove one, and run again.
 
 **Worked:** that group is left completely alone and logs
 
@@ -696,7 +799,7 @@ building.
 
 ## The Revit source report
 
-57. After any run, find the `SOURCE FINDINGS` block near the end of the log.
+62. After any run, find the `SOURCE FINDINGS` block near the end of the log.
 
 **Worked:** it reports where the building code on the NWC is not the building code inside
 the Revit container it was published from. On the run of 2026-08-30 that is most of them:
@@ -721,7 +824,7 @@ is silent, because a number is not a building.
 
 ## Outputs overwrite
 
-58. Click **Run** again with the same settings.
+63. Click **Run** again with the same settings.
 
 **Worked:** the same NWF and NWD file names are overwritten in place. No second copy
 appears, no date suffix, no `(2)`. You get a brand new log file, because logs are never
@@ -729,7 +832,7 @@ overwritten.
 
 ## The order within a group, which changed
 
-59. Read one group's worth of log from `GROUP` to `GROUP`, and check the order.
+64. Read one group's worth of log from `GROUP` to `GROUP`, and check the order.
 
 **Worked:** it goes append, save the NWF, build the sets, create the tests, run them, save
 the NWF again, publish the NWD last. The NWD is the last thing that happens.
@@ -853,3 +956,15 @@ What no test can reach is the harvesting, which needs a live model:
   none of its twelve DLLs collides with a file the Navisworks install ships, both checked,
   but whether the running application binds them is UNKNOWN until step 56
 - how long writing 22 workbooks adds to a run
+
+From the five changes of 2026-08-31, two more. Everything about the grouping choice, the
+naming patterns, the collision guard, the findings wording, the findings table and the
+single model reason is tested in Federator.Core, so what is left is what the window and
+the running application do with it:
+
+- whether the four grouping modes read cleanly on a real folder, in particular whether
+  one file per discipline across every building produces something you would actually
+  want to open. Nothing tests how it looks
+- whether a single model group really does end with a complete NWF, every test in it and
+  none of them run. The rule is tested and the wiring is reviewed, but only a run against
+  1B06BS proves it

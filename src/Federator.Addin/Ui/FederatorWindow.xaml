@@ -51,7 +51,7 @@
             <TabItem Header="1. Source">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="Pick the folder of NWC files. A row that cannot be read stays in the table, unticked, with the reason." />
+                               Text="Pick the folder of NWC files and press Scan. What was found and what is wrong with it are both reported here. Nothing below blocks a run or unticks anything, it is information and the decision is yours." />
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -68,6 +68,27 @@
                         <Button Grid.Column="4" Content="Scan" Click="OnScan" FontWeight="Bold" />
                     </Grid>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="SourceSummary" Margin="0,6,0,0" />
+
+                    <!-- The scan and its checks in one place. None of this blocks a run. -->
+                    <Border DockPanel.Dock="Bottom" x:Name="FindingsPanel"
+                            BorderBrush="#D0D0D0" BorderThickness="1" Background="#FFFDF5"
+                            Padding="8" Margin="0,8,0,0">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,4">
+                                <Button DockPanel.Dock="Right" x:Name="CopyFindingsButton"
+                                        Content="Copy findings" Click="OnCopyFindings" MinWidth="110" />
+                                <TextBlock x:Name="FindingsHeading" FontWeight="Bold"
+                                           VerticalAlignment="Center" Text="Findings" />
+                            </DockPanel>
+                            <TextBox x:Name="FindingsBox" Height="150"
+                                     IsReadOnly="True" BorderThickness="0" Background="Transparent"
+                                     TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     FontFamily="Segoe UI" FontSize="12" />
+                        </DockPanel>
+                    </Border>
+
                     <DataGrid x:Name="FilesGrid" AutoGenerateColumns="False" CanUserAddRows="False"
                               IsReadOnly="False" GridLinesVisibility="Horizontal"
                               HeadersVisibility="Column" SelectionMode="Extended">
@@ -111,25 +132,13 @@
             <TabItem Header="2. Grouping">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="Grouped on the full building code. A group whose files disagree on the project code or the originator is blocked and names both files." />
+                               Text="Choose how the files are gathered into federations. A group whose files disagree on the project code or the originator is blocked and names both files. The scan and its findings are on the Source step." />
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                        <Label Content="Make" VerticalAlignment="Center" />
+                        <ComboBox x:Name="GroupingModeBox" MinWidth="320" VerticalAlignment="Center"
+                                  SelectionChanged="OnGroupingModeChanged" />
+                    </StackPanel>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="GroupingSummary" Margin="0,6,0,0" />
-
-                    <!-- Findings, shown before Run is pressed. None of this blocks a run. -->
-                    <Border DockPanel.Dock="Bottom" x:Name="FindingsPanel"
-                            BorderBrush="#D0D0D0" BorderThickness="1" Background="#FFFDF5"
-                            Padding="8" Margin="0,8,0,0">
-                        <DockPanel>
-                            <TextBlock DockPanel.Dock="Top" x:Name="FindingsHeading"
-                                       FontWeight="Bold" Margin="0,0,0,4"
-                                       Text="Findings" />
-                            <TextBox x:Name="FindingsBox" Height="120"
-                                     IsReadOnly="True" BorderThickness="0" Background="Transparent"
-                                     TextWrapping="NoWrap"
-                                     VerticalScrollBarVisibility="Auto"
-                                     HorizontalScrollBarVisibility="Auto"
-                                     FontFamily="Consolas" FontSize="11" />
-                        </DockPanel>
-                    </Border>
 
                     <DataGrid x:Name="GroupsGrid" AutoGenerateColumns="False" CanUserAddRows="False"
                               GridLinesVisibility="Horizontal" HeadersVisibility="Column">
@@ -205,13 +214,74 @@
                                   Content="Also write a Navisworks style clash XML beside each workbook"
                                   Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
                     </Grid>
+
+                    <!-- The four fields this tool supplies rather than reads out of a file
+                         name, plus the code used when a group covers several buildings.
+                         Defaults, not constants. -->
+                    <Border DockPanel.Dock="Top" BorderBrush="#D0D0D0" BorderThickness="1"
+                            Padding="8" Margin="0,0,0,8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.ColumnSpan="7" Margin="0,0,0,6"
+                                       TextWrapping="Wrap"
+                                       Text="The name is project, originator, building, level, discipline, type, number. The first three come from the file names. These four are supplied, because the files in one group can disagree on them and outputs overwrite. The last is used when a group covers several buildings. Change any of them." />
+
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="Level" FontWeight="Bold" Margin="4,0,4,2" />
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Discipline" FontWeight="Bold" Margin="4,0,4,2" />
+                            <TextBlock Grid.Row="1" Grid.Column="3" Text="Type" FontWeight="Bold" Margin="4,0,4,2" />
+                            <TextBlock Grid.Row="1" Grid.Column="4" Text="Number" FontWeight="Bold" Margin="4,0,4,2" />
+                            <TextBlock Grid.Row="1" Grid.Column="5" Text="All buildings" FontWeight="Bold" Margin="4,0,4,2" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="NWF" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="2" Grid.Column="1" x:Name="NwfLevel" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="2" Grid.Column="2" x:Name="NwfDiscipline" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="2" Grid.Column="3" x:Name="NwfType" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="2" Grid.Column="4" x:Name="NwfNumber" Width="80" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="2" Grid.Column="5" x:Name="NwfAllBuildings" Width="90" Margin="4,1" TextChanged="OnNamingChanged" />
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="NWD" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="3" Grid.Column="1" x:Name="NwdLevel" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="3" Grid.Column="2" x:Name="NwdDiscipline" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="3" Grid.Column="3" x:Name="NwdType" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="3" Grid.Column="4" x:Name="NwdNumber" Width="80" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="3" Grid.Column="5" x:Name="NwdAllBuildings" Width="90" Margin="4,1" TextChanged="OnNamingChanged" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Workbook" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="4" Grid.Column="1" x:Name="WorkbookLevel" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="4" Grid.Column="2" x:Name="WorkbookDiscipline" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="4" Grid.Column="3" x:Name="WorkbookType" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="4" Grid.Column="4" x:Name="WorkbookNumber" Width="80" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="4" Grid.Column="5" x:Name="WorkbookAllBuildings" Width="90" Margin="4,1" TextChanged="OnNamingChanged" />
+                        </Grid>
+                    </Border>
+
+                    <TextBlock DockPanel.Dock="Top" x:Name="NamePreview" Margin="0,0,0,8"
+                               TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" />
                     <TextBlock DockPanel.Dock="Bottom" x:Name="OutputsSummary" Margin="0,6,0,0" />
                     <DataGrid x:Name="OutputsGrid" AutoGenerateColumns="False" CanUserAddRows="False"
                               IsReadOnly="True" GridLinesVisibility="Horizontal" HeadersVisibility="Column">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Building" Width="90" Binding="{Binding Building}" />
                             <DataGridTextColumn Header="Files" Width="50" Binding="{Binding FileCount}" />
-                            <DataGridTextColumn Header="Output name" Width="300" Binding="{Binding OutputName}" />
+                            <DataGridTextColumn Header="NWF name" Width="260" Binding="{Binding NwfName}" />
+                            <DataGridTextColumn Header="NWD name" Width="260" Binding="{Binding NwdName}" />
+                            <DataGridTextColumn Header="Workbook name" Width="260" Binding="{Binding WorkbookName}" />
                             <DataGridTextColumn Header="Status" Width="*" Binding="{Binding Status}" />
                         </DataGrid.Columns>
                     </DataGrid>

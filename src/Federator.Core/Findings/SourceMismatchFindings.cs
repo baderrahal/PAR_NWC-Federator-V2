@@ -54,8 +54,8 @@ namespace Federator.Core.Findings
         public const string SharedSourceLabel = "SHARED SOURCE";
 
         public const string NothingOdd =
-            "Every NWC carries a Revit source whose building code matches its own, and no "
-            + "two groups are fed by the same Revit building code.";
+            "Every NWC came from a Revit model with the same building code, and no two "
+            + "federations are being built from the same Revit building.";
 
         private SourceMismatchFindings(
             IList<ScanFinding> all,
@@ -204,11 +204,12 @@ namespace Federator.Core.Findings
                 findings.Add(new ScanFinding(
                     FindingKind.SourceMismatch,
                     SourceMismatchLabel,
-                    "NWC " + one.NwcBuilding + " was published from Revit " + one.SourceBuilding,
-                    "The NWC name says building " + one.NwcBuilding
-                        + " and the Revit container it came from says building " + one.SourceBuilding
-                        + ". The group is built from the NWC name, which is unchanged. "
-                        + "Neither code is assumed right.",
+                    "The NWC files named " + one.NwcBuilding
+                        + " were published from a Revit model named " + one.SourceBuilding + ".",
+                    "The federation is named from the NWC file name, so it will be called "
+                        + one.NwcBuilding + ". Usually this means the Revit file still carries an "
+                        + "older building code, or the NWC was exported under a name typed by hand. "
+                        + "Nothing is changed and neither name is assumed right.",
                     new List<string> { one.NwcBuilding, one.SourceBuilding },
                     new List<string> { one.Nwc.Stem, "from " + one.Source.Stem }));
             }
@@ -260,11 +261,12 @@ namespace Federator.Core.Findings
                 findings.Add(new ScanFinding(
                     FindingKind.SharedSourceBuilding,
                     SharedSourceLabel,
-                    "Revit " + source + " feeds " + named.Count + " groups: "
-                        + string.Join(", ", named.ToArray()),
-                    "One Revit building is being federated into more than one output, which "
-                        + "reads as one building split in two by a naming error. Nothing is "
-                        + "merged and no group is unpicked.",
+                    named.Count + " federations are being built from the same Revit building, "
+                        + source + ".",
+                    "They are " + string.Join(" and ", named.ToArray())
+                        + ". That usually means one of the NWC file names is wrong and these should "
+                        + "be one building. Nothing is merged and no group is unpicked, so the "
+                        + "decision is yours.",
                     buildings,
                     null));
             }
@@ -278,20 +280,23 @@ namespace Federator.Core.Findings
         {
             List<string> lines = new List<string>();
 
-            lines.Add("NWC and Revit source pairs compared: " + PairsRead);
+            lines.Add(PairsRead
+                + (PairsRead == 1 ? " NWC was checked" : " NWC files were checked")
+                + " against the Revit model each was published from.");
 
             if (UnreadableSourceNames > 0)
             {
                 lines.Add(UnreadableSourceNames
-                    + (UnreadableSourceNames == 1 ? " source name" : " source names")
-                    + " could not be read with the same parser, so no code could be compared");
+                    + (UnreadableSourceNames == 1 ? " Revit name does" : " Revit names do")
+                    + " not follow the naming standard, so no building code could be read out of "
+                    + "them and they were left alone.");
             }
 
             if (UnreadableNwcNames > 0)
             {
                 lines.Add(UnreadableNwcNames
-                    + (UnreadableNwcNames == 1 ? " NWC name" : " NWC names")
-                    + " could not be read, which the scan already reports");
+                    + (UnreadableNwcNames == 1 ? " NWC name could" : " NWC names could")
+                    + " not be read, which the scan already lists on its own rows.");
             }
 
             if (!Any)
