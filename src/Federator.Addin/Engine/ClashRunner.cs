@@ -168,6 +168,19 @@ namespace Federator.Addin.Engine
         public bool ApplyFileSettings { get; set; }
 
         /// <summary>
+        /// Writes a picture per clash. Null leaves every Image cell empty, which is what
+        /// a run with images switched off does.
+        /// </summary>
+        public ClashImages Images { get; set; }
+
+        /// <summary>
+        /// Where the workbook is going, because the pictures go in a folder named after
+        /// it and beside it. Known before the clash step rather than after, since that is
+        /// when the pictures are rendered.
+        /// </summary>
+        public string WorkbookPath { get; set; }
+
+        /// <summary>
         /// Remove Resolved clashes after the tests have run. Off by default, and never
         /// done silently, because it destroys the record of what was resolved.
         /// </summary>
@@ -582,7 +595,10 @@ namespace Federator.Addin.Engine
                     if (summary != null)
                     {
                         summary.Seconds = clock.Elapsed.TotalSeconds;
-                        new ClashHarvest(log, NameSettings).Into(document, after, summary);
+                        ClashHarvest harvest = new ClashHarvest(log, NameSettings);
+                        harvest.Images = Images;
+                        harvest.WorkbookPath = WorkbookPath;
+                        harvest.Into(document, clashTests, after, Report, summary);
                         summary.State = summary.HasSheet
                             ? TestState.FoundClashes
                             : TestState.Passed;

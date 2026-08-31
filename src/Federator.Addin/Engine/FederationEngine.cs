@@ -590,6 +590,22 @@ namespace Federator.Addin.Engine
                     report.OpenCount = reports.OpenCount;
                     runner.Report = report;
                     outcome.Report = report;
+
+                    // The pictures go in a folder named after the workbook and beside it,
+                    // so where the workbook is going has to be known before the clash step
+                    // rather than after it. Only when a workbook is actually being written,
+                    // because pictures beside a file nobody writes are pictures nobody
+                    // finds.
+                    if (reports.WriteWorkbook && reportFolder != null && reports.Images.Write)
+                    {
+                        runner.WorkbookPath = ReportPaths.Workbook(reportFolder, job.WorkbookName);
+                        runner.Images = new ClashImages(log, reports.Images);
+                        log.Line("CLASH    " + reports.Images.Describe());
+                    }
+                    else if (!reports.Images.Write)
+                    {
+                        log.Line("CLASH    images are switched off for this run.");
+                    }
                 }
 
                 ClashRunOutcome clash = runner.Run(plan);
@@ -602,6 +618,22 @@ namespace Federator.Addin.Engine
                 }
                 outcome.Clash = clash;
                 log.Block("CLASH " + job.Building, clash.Lines());
+
+                if (outcome.Report != null && runner.Images != null)
+                {
+                    // Measured, never estimated. Every number anyone has given for what a
+                    // clash image costs has been a guess until this line.
+                    foreach (string line in outcome.Report.Images.Lines())
+                    {
+                        log.Line(line);
+                    }
+
+                    if (runner.Images.ShouldStopTheRun && stopTheRun == null)
+                    {
+                        stopTheRun = runner.Images.StopReason;
+                        outcome.AddError(runner.Images.StopReason);
+                    }
+                }
                 log.Line("CLASH    " + job.Building + " finished. " + clash.Summary());
 
                 if (clash.StopTheRun)
@@ -652,7 +684,7 @@ namespace Federator.Addin.Engine
 
                 try
                 {
-                    new WorkbookWriter().Write(report, path);
+                    new WorkbookWriter(reports).Write(report, path);
                 }
                 catch (Exception error)
                 {

@@ -416,6 +416,31 @@ and 6 does not read as broken.
   Approved and Resolved are closed under both. The sheet is labelled with which one it
   used and with what that choice counted, so nobody reads an API meaning into a number
   that has none. The word open never appears unqualified
+- The test sheet carries the CLIENT'S columns, in their order and in their words, because
+  they have already accepted a report in that shape. Per test:
+    Tolerance, Clashes, New, Active, Reviewed, Approved, Resolved, Type, Status
+  Per clash:
+    Image, Clash Name, Status, Distance, Grid Location, Description, Clash Point,
+    then Item 1 and Item 2, each Item ID, Item Name, Item Type
+  Four of these are joins and not columns, which is the part a description gets wrong and
+  the stylesheet settles. Grid Location is ONE field, "B-1 : ROF", grid then a spaced colon
+  then the level. Clash Point is ONE field, "x:31.643, y:-2.913, z:3.325", three decimals
+  each with the trailing zeros kept. Item ID is ONE field, "Element ID: 1554240", and that
+  label is read off whatever property carried the id rather than being a constant.
+  Tolerance carries its unit with no space, "0.025m". Distance is the raw signed number,
+  negative on a hard clash, written as a number so it still sorts. Type reads
+  "Hard (Conservative)". Measured, see docs\scan.md section 4k
+- Our extra columns, family, type name, material, source file and discipline, come AFTER
+  theirs and never in place of any of them. Client columns only is a tick box, off, so a
+  submission can be exported in exactly the shape that was signed off. Switching it on
+  removes columns from the right hand end and moves none of theirs. Ours says Type Name
+  rather than Type, because the client already has an Item Type column and it holds
+  something else, the Navisworks item type, which reads Solid
+- A link to an image is written as a relative Uri and never as a plain string. Handed a
+  string, ClosedXML reads a relative path as an INTERNAL address, so the cell tries to
+  jump to a sheet of that name instead of opening the picture. There is a test that opens
+  the written xlsx as the zip it is and reads the relationship back, because the object
+  model reported this as fine while the file was wrong
 - One sheet per test that found something. A test that found nothing gets no sheet and
   appears in the Summary as its status. Sheets are T0001 upward because Excel stops a
   sheet name at 31 characters and 1703 of the 1830 test names are longer, so a sheet is
@@ -440,8 +465,28 @@ and 6 does not read as broken.
   twelve more DLLs into the bundle and install.ps1 carries every one of them, because the
   add-in would otherwise load and then throw the first time a group finished. None of them
   collides with a file the Navisworks install ships
-- Images are off by default. When on, New and Active only, written as jpg beside
-  the workbook with a link in the row, never pasted into cells
+- Images are ON by default, because the report the client has already accepted has them
+  and one without them is not the thing they agreed to receive. They go where that report
+  puts them, in a folder beside the workbook named after it with _files on the end, as
+  loose jpg. The workbook links to them and does not paste them in. A thumbnail in the
+  cell is a tick box, off, because pasting is not what the accepted report does and it
+  makes the file many times larger. No clash is ever saved as a viewpoint in the NWF
+- The picture names are theirs and are NOT one running sequence, which is what the first
+  dozen look like. It is cd, then the test formatted 00, then the clash within that test
+  formatted 0000. Test 0 clash 1 is cd000001.jpg and test 100 clash 1 is cd1000001.jpg,
+  seven digits, measured on a real 2672 picture export. Two digits is a floor and not a
+  width. The test number counts tests that have pictures, so it can never leave a gap, and
+  a test whose first render fails hands its number back
+- The image settings: on by default, a cap per test defaulting to off, a status filter
+  defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
+  that is what all 60 pictures of the accepted report measure. An image that fails renders
+  nothing, is logged by name, leaves its cell empty and never stops the run. Fifty
+  failures of the same reason stop the run, the same way and with the same default as the
+  clash step, and the line says images rather than tests
+- What the pictures cost is MEASURED and logged per group: seconds per image, total
+  seconds, how many, and how many megabytes. Every number anyone has given for this,
+  including mine, was a guess until this existed. The same figures go on the Summary
+  sheet, because the log is not what gets sent on
 - The scan reports what it noticed and never acts on it. ODD SHAPE, NEAR MATCH,
   SINGLE DISCIPLINE and MISSING are information. Nothing is blocked, unticked or
   merged, and no code is assumed right. Bader decides

@@ -220,6 +220,75 @@
                                   Checked="OnNamingToggled" Unchecked="OnNamingToggled" />
                     </Grid>
 
+                    <!-- The pictures. On, because the report the client has accepted has
+                         them and one without them is not the thing they agreed to. They go
+                         in a folder named after the workbook, numbered the way theirs are,
+                         so the two travel together. -->
+                    <Border DockPanel.Dock="Top" BorderBrush="#D0D0D0" BorderThickness="1"
+                            Padding="8" Margin="0,0,0,8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <CheckBox Grid.Row="0" Grid.ColumnSpan="5" x:Name="WriteImages"
+                                      IsChecked="True" Margin="0,0,0,6"
+                                      Content="Write a picture per clash, into a folder named after the workbook with _files on the end, numbered cd000001 upward the way the accepted report numbers them"
+                                      Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Size in pixels" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="1" Grid.Column="1" x:Name="ImagePixelsBox"
+                                     Text="1024" MinWidth="70" VerticalAlignment="Center" Margin="0,0,12,4"
+                                     TextChanged="OnImageSettingChanged" />
+                            <Label Grid.Row="1" Grid.Column="2" Content="At most per test, 0 for no cap"
+                                   VerticalAlignment="Center" />
+                            <TextBox Grid.Row="1" Grid.Column="3" x:Name="ImageCapBox"
+                                     Text="0" MinWidth="70" VerticalAlignment="Center" Margin="0,0,0,4"
+                                     TextChanged="OnImageSettingChanged" />
+
+                            <Label Grid.Row="2" Grid.Column="0" Content="Only these" VerticalAlignment="Center" />
+                            <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4"
+                                        Orientation="Horizontal" VerticalAlignment="Center">
+                                <CheckBox x:Name="ImageNew" Content="New" IsChecked="True" Margin="0,0,10,0"
+                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                <CheckBox x:Name="ImageActive" Content="Active" IsChecked="True" Margin="0,0,10,0"
+                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                <CheckBox x:Name="ImageReviewed" Content="Reviewed" IsChecked="True" Margin="0,0,10,0"
+                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                <CheckBox x:Name="ImageApproved" Content="Approved" IsChecked="False" Margin="0,0,10,0"
+                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                <CheckBox x:Name="ImageResolved" Content="Resolved" IsChecked="False"
+                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                            </StackPanel>
+
+                            <CheckBox Grid.Row="3" Grid.ColumnSpan="5" x:Name="EmbedThumbnails"
+                                      IsChecked="False" Margin="0,6,0,0"
+                                      Content="Also paste a thumbnail into the Image cell. The accepted report links rather than pasting, and pasting makes the workbook many times larger."
+                                      Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+
+                            <CheckBox Grid.Row="4" Grid.ColumnSpan="5" x:Name="ClientColumnsOnly"
+                                      IsChecked="False" Margin="0,4,0,0"
+                                      Content="Client columns only, for a submission. Ours come after theirs and never in place of them, so this drops columns from the right hand end and moves nothing."
+                                      Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+
+                            <TextBlock Grid.Row="5" Grid.ColumnSpan="5" x:Name="ImageSummary"
+                                       Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#606060"
+                                       Text="Images on." />
+                        </Grid>
+                    </Border>
+
                     <!-- The four fields this tool supplies rather than reads out of a file
                          name, plus the code used when a group covers several buildings.
                          Defaults, not constants. -->
