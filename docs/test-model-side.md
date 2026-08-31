@@ -1,7 +1,7 @@
 # Testing the model side
 
 For Bader. This covers scan, group, federate, save NWF, build the sets, create and run the
-clash tests, write NWD. There is no Excel yet, so do not look for it.
+clash tests, write the workbook, write NWD. Images inside the workbook are not built yet.
 
 One action per step. Do them in order.
 
@@ -552,6 +552,92 @@ That line is there to answer a question I could not answer without a real run: w
 tests, sets or results survive from one group into the next document. If group 2 onwards
 says a number other than zero, they do survive, and that is worth telling me.
 
+## Step 8, the workbook
+
+One workbook per group, written after the clash step and before the NWD is published, so
+the three outputs of a group describe the same state.
+
+47. Go to the **3. Outputs** tab and look at the new **Excel folder** box.
+
+**Worked:** the line under the table says where the workbooks are going. Leave the box
+empty and it reads something like `Workbooks go in C:\out\nwf\Clash Reports.` The folder
+is made if it is not there.
+
+48. Run a group that finds clashes, then open the workbook.
+
+**Worked:** it opens in Excel and has a `Summary` sheet, a `Matrix` sheet, and one sheet
+per test that found something, named `T0001` upward.
+
+49. Read the top of the `Summary` sheet.
+
+**Worked:** the three numbers that must never be merged are three separate lines:
+
+    Tests in the file                 1830
+    Ran                                666
+    Passed, ran and found nothing      618
+    Found clashes                       48
+    Skipped, not run and not passed   1164
+    Raw clashes                        213
+
+618 plus 48 plus 1164 is 1830. If those ever fail to add up, something has merged skipped
+with passed, which is the mistake this whole design is built to prevent.
+
+50. Scroll down the `Summary` to the table.
+
+**Worked:** one row per test in the file, not one per test that ran. A skipped test is in
+there carrying why it was skipped. A test that found something has a link in the `Sheet`
+column, and a test that found nothing has no link, because a link to a sheet that does not
+exist opens an error box. The `Test name` column carries the full name, which is the whole
+reason that column exists.
+
+51. Open one `T####` sheet.
+
+**Worked:** one row per group or per ungrouped clash, and the columns run: group or clash
+name, status, distance, grid, level, then for each side the item name, family, type,
+material, source file and discipline, then found date, position, the two element ids, and
+the raw clash count.
+
+**The three that matter most:** family, type and material. Without them whoever fixes the
+clash has to open the model to find out what they are looking at. If they come back empty
+on a real Revit model, tell me, because the tool looks for a property whose display name
+is Family, Type or Material in any category and leaves the cell empty rather than guessing
+when it finds none. The names it looks for are settings and I can change them.
+
+52. Check a row that is a group.
+
+**Worked:** its `Raw clashes` column says how many clashes are behind that one row, and
+its distance is the most severe of them. Nothing is hidden by the grouping.
+
+53. Open the `Matrix` sheet.
+
+**Worked:** sides down and across, the disciplines read off the folder names in your own
+file rather than off any list in the tool. A cell holds New plus Active, the clashes still
+outstanding.
+
+**The one to look hardest at:** a pair whose test was skipped reads `skipped`, not `0`. A
+zero means the pair was tested and nothing clashed. A skip means nobody looked. If you
+ever see a zero where a test did not run, that is a real fault and worth stopping for. A
+pair no test covers at all is left blank, which is a third thing again.
+
+54. Tick **Also write a Navisworks style clash XML** on the Outputs tab and run again.
+
+**Worked:** an XML lands beside each workbook under the same name. It is off by default.
+It is built from the same results in memory that the workbook is built from, so neither
+reads the other and a fault in one cannot corrupt the other.
+
+Its shape was read off the three stylesheets your Navisworks install ships in
+`en-US\stylesheets\`, because there is no clash report schema anywhere in the install.
+Filled: exchange, batchtest, clashtests, clashtest, summary, clashresults, clashgroup,
+clashresult, resultstatus, clashpoint, gridlocation, createddate, clashobjects,
+clashobject, layer and objectattribute. Left out, because the tool holds nothing to put in
+them: approveddate, approvedby, assignedto, description, smarttags, clashtasklink and
+everything under it, linkage, linkedanimation, clipplaneset, view and camera. Left out
+rather than written empty, so a blank is never read as a measured blank.
+
+**Not built yet.** Images are still not written. CLAUDE.md records them as off by default
+and New and Active only, written as jpg beside the workbook with a link in the row. That
+is a later session, so do not look for them.
+
 ## Run it twice, which is the weekly case
 
 This is the behaviour that matters most, because the tool is used weekly and the clash
@@ -570,7 +656,7 @@ an NWF. **OPENED has still never appeared in a real log.** Whether a second run 
 unchanged files actually produces it is UNKNOWN until you run this step, and it is the
 single most valuable thing you can tell me.
 
-47. Run once so an NWF exists, then run again with the same settings and the same folder.
+55. Run once so an NWF exists, then run again with the same settings and the same folder.
 
 **Worked:** the second run does not rebuild. Each group logs
 
@@ -594,7 +680,7 @@ NWC files. What is not touched is the tests themselves, because that is where th
 and Resolved statuses live. If you ever see the sets tree holding two of everything, or
 every clash back at New after a second run, that is a real fault and worth stopping for.
 
-48. Now add one NWC to the source folder, or remove one, and run again.
+56. Now add one NWC to the source folder, or remove one, and run again.
 
 **Worked:** that group is left completely alone and logs
 
@@ -610,7 +696,7 @@ building.
 
 ## The Revit source report
 
-49. After any run, find the `SOURCE FINDINGS` block near the end of the log.
+57. After any run, find the `SOURCE FINDINGS` block near the end of the log.
 
 **Worked:** it reports where the building code on the NWC is not the building code inside
 the Revit container it was published from. On the run of 2026-08-30 that is most of them:
@@ -635,7 +721,7 @@ is silent, because a number is not a building.
 
 ## Outputs overwrite
 
-50. Click **Run** again with the same settings.
+58. Click **Run** again with the same settings.
 
 **Worked:** the same NWF and NWD file names are overwritten in place. No second copy
 appears, no date suffix, no `(2)`. You get a brand new log file, because logs are never
@@ -643,7 +729,7 @@ overwritten.
 
 ## The order within a group, which changed
 
-51. Read one group's worth of log from `GROUP` to `GROUP`, and check the order.
+59. Read one group's worth of log from `GROUP` to `GROUP`, and check the order.
 
 **Worked:** it goes append, save the NWF, build the sets, create the tests, run them, save
 the NWF again, publish the NWD last. The NWD is the last thing that happens.
@@ -709,7 +795,7 @@ succeeds against a real NWC, and how long a real run takes.
 files has never produced OPENED in a real log. On 2026-08-30 all 22 groups reported
 CHANGED, because the comparison was reading the Revit source name rather than the NWC
 name. That is fixed and is covered by tests built from the real names off that log, but a
-test cannot open an NWF. Step 47 is the only thing that can prove it, and until you run it
+test cannot open an NWF. Step 55 is the only thing that can prove it, and until you run it
 the rerun path is UNKNOWN.
 
 For the clash step added on 2026-08-30, everything that could be settled without
@@ -750,3 +836,20 @@ for nearly nine hours, three more:
   O(n squared) and built about 1.7 million finalizable native handles per group, and a
   failure list that kept every one of 43920 stack traces. Whether that was all of it is
   UNKNOWN until a run is timed again
+
+From the workbook added on 2026-08-31, four more. The whole of the writing side is tested,
+because the writer sits in Federator.Core and the tests write a real xlsx and read it back.
+What no test can reach is the harvesting, which needs a live model:
+
+- whether family, type and material actually come back on your Revit models. The tool
+  looks for a property whose display name is Family, Type or Material in any category and
+  leaves the cell empty rather than guessing when it finds none, so an empty column means
+  the property is named something else on your exports. Those names are settings and I can
+  change them once you tell me what they are
+- whether the grid and level columns fill. They come from
+  `document.Grids.ActiveSystem.ClosestIntersection`, so a model carrying no grid system
+  leaves both empty, which is not a fault
+- whether ClosedXML loads inside the Navisworks process. It builds clean against net48 and
+  none of its twelve DLLs collides with a file the Navisworks install ships, both checked,
+  but whether the running application binds them is UNKNOWN until step 56
+- how long writing 22 workbooks adds to a run

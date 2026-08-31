@@ -10,6 +10,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+
+    <!-- The workbook writer lives here rather than in the add-in, so the tests write a
+         real xlsx and read it back without Navisworks. Checked on 2026-08-31: builds
+         clean against net48, and none of its twelve DLLs collide with a file the
+         Navisworks install ships. See docs/scan.md section 4h. -->
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
   </ItemGroup>
 
 </Project>

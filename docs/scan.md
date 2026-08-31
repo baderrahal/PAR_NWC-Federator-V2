@@ -646,6 +646,102 @@ Still UNKNOWN, and only a real run answers it:
   measured candidates above are both removed, so the next run either shows a flat time or
   shows that something else grows
 
+### 4h. The clash report XML, and open against closed, measured 2026-08-31
+
+Two things the Excel session had to settle before writing anything.
+
+#### There is no clash report schema, but there is a definition
+
+The `schemas` folder holds only `nw-exchange-*.xsd` and `nw-Takeoff*-10.0.xsd`, listed in
+full in section 7. There is NO clash report XSD anywhere in the install. Searched the whole
+install folder for `*.xsd`, and those are all of them.
+
+The shape is still shipped, in the stylesheets Navisworks uses to render its own clash
+reports. Three of them, in every language folder:
+
+```
+C:\Program Files\Autodesk\Navisworks Manage 2025\en-US\stylesheets\
+    clash_report_html.xsl            19066 bytes
+    clash_report_html_tabular.xsl    28748 bytes
+    clash_report_text.xsl            14857 bytes
+```
+
+An XSL says exactly which elements and attributes the XML it transforms carries, so the
+shape below is read rather than invented. Every name here came out of the `match` and
+`select` expressions in those three files:
+
+```
+exchange @units
+  batchtest @name @internal_name
+    clashtests
+      clashtest @name @test_type @status @tolerance
+        summary @total @new @active @reviewed @approved @resolved
+        clashresults
+          clashgroup  @name @distance @href @status
+          clashresult @name @distance @href
+            both carry the same children:
+              resultstatus                 text
+              description                  text
+              clashpoint / pos3f @x @y @z
+              gridlocation                 text
+              createddate / date @day @month @year, time @hour @minute @second
+              approveddate, approvedby, assignedto
+              clashobjects
+                clashobject
+                  layer                    text
+                  pathlink / node          text, one node per path step
+                  objectattribute          name, value
+                  smarttags / smarttag     name, value
+              clashtasklink
+                starttime endtime taskname tasklink taskuid animatorscene animatoranim
+              linkage, linkedanimation, clipplaneset, view / camera
+```
+
+`clashgroup` and `clashresult` are siblings under `clashresults`. A group holds the
+clashes in it and the text stylesheet says of its fields: for group fields marked with an
+asterisk, the most significant value from the group is shown.
+
+#### The clash API does not distinguish open from closed
+
+Searched both assemblies for any public member named `IsOpen`, `IsClosed`, `IsResolved`,
+`IsActive`, `OpenCount`, `ClosedCount` or `Outstanding`. Nothing on `IClashResult`,
+`ClashResult`, `ClashResultGroup`, `ClashTest` or `DocumentClashTests` has any of them.
+The only hits anywhere were unrelated: `Document.IsActiveTransaction`, an animation
+controller, a measure tool and a data reader.
+
+`ClashResultStatus` is a flat enum of five values with nothing grouping them:
+
+```
+New = 0   Active = 1   Reviewed = 2   Approved = 3   Resolved = 4
+```
+
+Navisworks' own clash report does not have the notion either. None of the three
+stylesheets mentions open, closed or outstanding anywhere.
+
+So: **UNKNOWN from the API, and the tool never derives one.** Every status is reported as
+itself, all five of them, everywhere. Where the matrix needs a single number for what is
+still outstanding it uses New plus Active, because that is the rule Bader stated, and the
+column is labelled as that sum rather than as "open" so nobody reads an API meaning into
+it that the API does not have.
+
+#### The workbook library
+
+ClosedXML 0.105.1, restored from nuget.org, which section 5 already recorded as reachable.
+It builds clean against net48 with no NU warnings. It ships twelve DLLs into the bundle:
+
+```
+ClosedXML.dll  ClosedXML.Parser.dll  DocumentFormat.OpenXml.dll
+DocumentFormat.OpenXml.Framework.dll  ExcelNumberFormat.dll
+Microsoft.Bcl.HashCode.dll  RBush.dll  SixLabors.Fonts.dll  System.Buffers.dll
+System.Memory.dll  System.Numerics.Vectors.dll  System.Runtime.CompilerServices.Unsafe.dll
+```
+
+Checked each one against the Navisworks install folder: **none of them collide with a file
+Navisworks ships**, so nothing is at risk of binding to the wrong version.
+
+The writer lives in Federator.Core rather than in the add-in, so the tests write a real
+xlsx and read it back without Navisworks.
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

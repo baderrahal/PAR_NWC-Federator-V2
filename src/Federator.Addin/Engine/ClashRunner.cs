@@ -7,6 +7,8 @@ using Autodesk.Navisworks.Api.DocumentParts;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
+using Federator.Core.Naming;
+using Federator.Core.Report;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 using CoreClashStatus = Federator.Core.Clash.ClashStatus;
 
@@ -57,6 +59,9 @@ namespace Federator.Addin.Engine
         /// </summary>
         private readonly Dictionary<ClashSkipReason, int> skipsLogged =
             new Dictionary<ClashSkipReason, int>();
+
+        /// <summary>The Summary row for each buildable test, keyed on where it sat in the file.</summary>
+        private Dictionary<int, TestReport> reports;
 
         public ClashRunner(Action<string> progress, RunLog log)
             : this(progress, log, new RepeatedFailureGuard())
@@ -137,6 +142,16 @@ namespace Federator.Addin.Engine
         /// sets actually in the document first, so a locator naming a set that is not
         /// there skips its test by name rather than creating one with an empty side.
         /// </summary>
+        /// <summary>
+        /// The workbook model this run fills as it goes, or null when nothing is being
+        /// written. It is filled from the live results here, in one pass, because the
+        /// results are only readable while the document is open.
+        /// </summary>
+        public ClashReport Report { get; set; }
+
+        /// <summary>How the discipline is read off a source file name. A setting.</summary>
+        public ContainerNameSettings NameSettings { get; set; }
+
         public ClashRunOutcome Run(ClashTestPlan plan)
         {
             if (plan == null)
@@ -147,6 +162,7 @@ namespace Federator.Addin.Engine
             ClashRunOutcome outcome = new ClashRunOutcome();
             outcome.TestsInFile = plan.TestsInFile;
             skipsLogged.Clear();
+            reports = null;
 
             Stopwatch stepClock = Stopwatch.StartNew();
 
@@ -201,6 +217,10 @@ namespace Federator.Addin.Engine
                     LogSkip(test);
                 }
 
+                // One row per test in the file, in file order, before anything runs. A
+                // test that never runs still has to reach the Summary carrying why.
+                reports = BuildReports(resolved);
+
                 DocumentClashTests clashTests = document.GetClash().TestsData;
                 Dictionary<string, TestAddress> present = IndexTests(clashTests);
 
@@ -222,6 +242,82 @@ namespace Federator.Addin.Engine
             }
 
             return outcome;
+        }
+
+        /// <summary>
+        /// A Summary row for every test in the file, numbered in file order so a sheet
+        /// number is the same on every run. Skipped tests are in here too, carrying why,
+        /// because skipped and passed are different numbers and both have to be readable
+        /// off one sheet.
+        /// </summary>
+        private Dictionary<int, TestReport> BuildReports(ClashTestPlan plan)
+        {
+            Dictionary<int, TestReport> byIndex = new Dictionary<int, TestReport>();
+
+            if (Report == null)
+            {
+                return byIndex;
+            }
+
+            List<int> order = new List<int>();
+            Dictionary<int, PlannedClashTest> buildable = new Dictionary<int, PlannedClashTest>();
+            Dictionary<int, SkippedClashTest> skipped = new Dictionary<int, SkippedClashTest>();
+
+            foreach (PlannedClashTest test in plan.Buildable)
+            {
+                if (!buildable.ContainsKey(test.FileIndex))
+                {
+                    buildable.Add(test.FileIndex, test);
+                    order.Add(test.FileIndex);
+                }
+            }
+
+            foreach (SkippedClashTest test in plan.Skipped)
+            {
+                if (test.FileIndex >= 0 && !skipped.ContainsKey(test.FileIndex)
+                    && !buildable.ContainsKey(test.FileIndex))
+                {
+                    skipped.Add(test.FileIndex, test);
+                    order.Add(test.FileIndex);
+                }
+            }
+
+            order.Sort();
+
+            foreach (int index in order)
+            {
+                PlannedClashTest planned;
+
+                if (buildable.TryGetValue(index, out planned))
+                {
+                    TestReport report = Report.AddTest(planned.Name);
+                    report.LeftLocator = planned.Left.Locator;
+                    report.RightLocator = planned.Right.Locator;
+                    report.Tolerance = planned.Tolerance;
+                    report.ToleranceUnits = planned.DocumentUnits;
+                    report.TestTypeName = planned.TestTypeName;
+                    report.State = TestState.Skipped;
+                    byIndex.Add(index, report);
+                    continue;
+                }
+
+                SkippedClashTest missed = skipped[index];
+                TestReport row = Report.AddTest(missed.Name);
+                row.State = TestState.Skipped;
+                row.SkippedReason = missed.Reason;
+            }
+
+            return byIndex;
+        }
+
+        /// <summary>The Summary row for one test, or null when nothing is being written.</summary>
+        private TestReport ReportFor(PlannedClashTest planned)
+        {
+            TestReport found;
+
+            return reports != null && reports.TryGetValue(planned.FileIndex, out found)
+                ? found
+                : null;
         }
 
         private void RunEach(
@@ -318,10 +414,24 @@ namespace Federator.Addin.Engine
                     rightItems = ItemsOn(document, before.SelectionB, byPath, planned.Right.Locator);
                 }
 
+                TestReport summary = ReportFor(planned);
+
+                if (summary != null)
+                {
+                    summary.LeftItems = leftItems;
+                    summary.RightItems = rightItems;
+                }
+
                 string why;
 
                 if (!ClashSideCheck.CanRun(planned, leftItems, rightItems, out why))
                 {
+                    if (summary != null)
+                    {
+                        summary.State = TestState.Skipped;
+                        summary.SkippedReason = why;
+                    }
+
                     // Not run, and not counted as passed. A zero from a test that never
                     // ran reads exactly like a zero from a test that found nothing wrong.
                     // It says nothing about whether the run is broken, so the guard is
@@ -362,6 +472,17 @@ namespace Federator.Addin.Engine
                     }
 
                     tally = Count(after, planned.Name);
+
+                    // Read now, in the same pass, because the results are only readable
+                    // while this document is open and this handle is fresh.
+                    if (summary != null)
+                    {
+                        summary.Seconds = clock.Elapsed.TotalSeconds;
+                        new ClashHarvest(log, NameSettings).Into(document, after, summary);
+                        summary.State = summary.HasSheet
+                            ? TestState.FoundClashes
+                            : TestState.Passed;
+                    }
                 }
 
                 ClashTestResult result = outcome.AddRan(
