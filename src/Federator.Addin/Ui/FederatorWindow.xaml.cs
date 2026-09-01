@@ -67,9 +67,17 @@ namespace Federator.Addin.Ui
             GroupsGrid.ItemsSource = groups;
             OutputsGrid.ItemsSource = groups;
 
+            // The boxes are filled from the patterns BEFORE anything can read them back.
+            //
+            // FillGroupingModes sets SelectedIndex, which fires OnGroupingModeChanged,
+            // which calls Regroup, which calls ReadNaming. With the boxes still empty that
+            // read every default out of the patterns and replaced it with nothing, and
+            // ShowNaming then put the emptied patterns back into the boxes. The window
+            // opened with all fifteen naming boxes blank, so every field had to be typed
+            // by hand, which is where MOD-00001 came from instead of MOD-000001.
+            ShowNaming();
             FillGroupingModes();
             FillOpenCounts();
-            ShowNaming();
 
             log.Block("FOLDERS REMEMBERED", folders.Lines());
 
@@ -1173,23 +1181,14 @@ namespace Federator.Addin.Ui
                 dialog.Filter = "Navisworks exchange XML (*.xml)|*.xml|All files (*.*)|*.*";
                 dialog.CheckFileExists = true;
 
-                string current = StartFor(PickerKind.ClashXml, ExchangeFileBox.Text);
+                // StartFor already gives a FOLDER, for this picker as much as the other
+                // four. Taking the directory name of it opened the parent, so a remembered
+                // folder came back one level too high every time.
+                string folder = StartFor(PickerKind.ClashXml, ExchangeFileBox.Text);
 
-                if (current.Length > 0)
+                if (folder.Length > 0 && Directory.Exists(folder))
                 {
-                    try
-                    {
-                        string folder = System.IO.Path.GetDirectoryName(current);
-
-                        if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
-                        {
-                            dialog.InitialDirectory = folder;
-                        }
-                    }
-                    catch (ArgumentException)
-                    {
-                        // A path that cannot be read is not worth failing the browse over.
-                    }
+                    dialog.InitialDirectory = folder;
                 }
 
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
@@ -1241,9 +1240,7 @@ namespace Federator.Addin.Ui
         /// </summary>
         private string StartFor(PickerKind kind, string inTheBox)
         {
-            string typed = FolderMemory.NearestExisting(Trimmed(inTheBox));
-
-            return typed.Length > 0 ? typed : folders.OpenAt(kind);
+            return PickerStart.For(folders, kind, inTheBox);
         }
 
         /// <summary>

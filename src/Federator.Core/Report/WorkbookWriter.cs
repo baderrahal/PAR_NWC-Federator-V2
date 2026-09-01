@@ -230,7 +230,7 @@ namespace Federator.Core.Report
                 // The full name, which is why this column exists. 1703 of the 1830 names
                 // in the reference file are longer than a sheet name can be.
                 sheet.Cell(row, column++).Value = test.Name;
-                sheet.Cell(row, column++).Value = test.TestTypeName;
+                sheet.Cell(row, column++).Value = ClientFormat.TestTypeWording(test.TestTypeName);
                 sheet.Cell(row, column++).Value = ClashReport.SetNameOf(test.LeftLocator);
                 sheet.Cell(row, column++).Value = ClashReport.SetNameOf(test.RightLocator);
                 sheet.Cell(row, column++).Value = test.LeftItems;
@@ -361,7 +361,16 @@ namespace Federator.Core.Report
                 SheetNames.Sanitise(test.SheetName(), "T" + test.Number));
 
             int row = WriteTestHeader(sheet, test);
-            row = WriteOurContext(sheet, row, test);
+
+            // Client columns only means nothing of ours on the sheet at all, not just no
+            // extra columns. The explanatory lines, the way back to the Summary and the
+            // filter arrows are all ours, and a submission should look like the report
+            // that was signed off and nothing else.
+            if (!options.ClientColumnsOnly)
+            {
+                row = WriteOurContext(sheet, row, test);
+            }
+
             WriteClashTable(sheet, row, test);
 
             sheet.Columns().AdjustToContents(1, 45);
@@ -397,10 +406,13 @@ namespace Federator.Core.Report
                 sheet.Cell(valueRow, column++).Value = test.Tally.Of(status);
             }
 
-            sheet.Cell(valueRow, column++).Value = test.TestTypeName;
+            // Their words, "Hard (Conservative)", not the file's token
+            // "hard_conservative" which is what a real run wrote into this cell.
+            sheet.Cell(valueRow, column++).Value = ClientFormat.TestTypeWording(test.TestTypeName);
 
-            // Their Status column. Left empty rather than translated where the run read
-            // nothing, because OK is the only word anyone here has seen in one of theirs.
+            // Their Status column. This carries whatever the run read off the test and is
+            // never translated. Theirs says OK, which is not a value on the API's enum, so
+            // no mapping is invented here. See docs\scan.md section 4j.
             sheet.Cell(valueRow, column).Value = test.StatusWord;
 
             return valueRow + 2;
@@ -464,12 +476,20 @@ namespace Federator.Core.Report
                 row++;
             }
 
-            if (test.Rows.Count > 0)
+            if (test.Rows.Count == 0)
+            {
+                return;
+            }
+
+            // A filter arrow on every header is ours. Theirs has none, so a submission
+            // gets none either.
+            if (!options.ClientColumnsOnly)
             {
                 sheet.Range(headerRow, 1, headerRow + test.Rows.Count, columns.Length)
                     .SetAutoFilter();
-                sheet.SheetView.FreezeRows(headerRow);
             }
+
+            sheet.SheetView.FreezeRows(headerRow);
         }
 
         private static void WriteItemGroupLabel(IXLWorksheet sheet, int row, int column, string label)
@@ -490,9 +510,13 @@ namespace Federator.Core.Report
             sheet.Cell(row, column++).Value = clash.Name;
             sheet.Cell(row, column++).Value = clash.Status.ToString();
 
-            // The raw signed number, negative on a hard clash, written as a number so it
-            // sorts and filters. Their own xlsx holds a number here too.
-            sheet.Cell(row, column++).Value = clash.Distance;
+            // The raw signed number, negative on a hard clash, written as a NUMBER so it
+            // sorts and filters, and given their three decimal format so it reads the way
+            // theirs does. Without the format Excel shows the whole double and a real run
+            // printed -0.328083992004395 where theirs says -0.050.
+            IXLCell distance = sheet.Cell(row, column++);
+            distance.Value = clash.Distance;
+            distance.Style.NumberFormat.Format = ClientFormat.DistanceFormat;
 
             sheet.Cell(row, column++).Value = clash.ClientGridLocation();
             sheet.Cell(row, column++).Value = clash.Description;

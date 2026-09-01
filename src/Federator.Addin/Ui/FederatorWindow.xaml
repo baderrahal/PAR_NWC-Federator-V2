@@ -63,7 +63,7 @@
                         <Label Grid.Column="0" Content="Folder" />
                         <TextBox Grid.Column="1" x:Name="SourceFolderBox" VerticalAlignment="Center" />
                         <Button Grid.Column="2" Content="Browse" Click="OnBrowseSource" />
-                        <CheckBox Grid.Column="3" x:Name="IncludeSubfolders" Content="Include subfolders"
+                        <CheckBox Grid.Column="3" x:Name="IncludeSubfolders" Content="Look in subfolders as well as the folder itself"
                                   IsChecked="True" VerticalAlignment="Center" Margin="12,0,0,0" />
                         <Button Grid.Column="4" Content="Scan" Click="OnScan" FontWeight="Bold" />
                     </Grid>
@@ -208,15 +208,15 @@
                         <Button Grid.Row="2" Grid.Column="2" Content="Browse" Click="OnBrowseExcel" />
                         <CheckBox Grid.Row="3" Grid.Column="1" x:Name="RepublishNwd"
                                   IsChecked="True" Margin="0,8,0,0"
-                                  Content="Republish the NWD every run, whether the NWF was built, opened or left alone"
+                                  Content="Write a fresh NWD every run. Off, and last week's NWD is left where it is. Adds about a second a group."
                                   Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
                         <CheckBox Grid.Row="4" Grid.Column="1" x:Name="WriteClashXml"
                                   IsChecked="False" Margin="0,4,0,0"
-                                  Content="Also write a Navisworks style clash XML beside each workbook"
+                                  Content="Write a clash XML beside each workbook as well. One more file per group, under a megabyte."
                                   Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
                         <CheckBox Grid.Row="5" Grid.Column="1" x:Name="DateTheNwd"
                                   IsChecked="False" Margin="0,4,0,0"
-                                  Content="Keep every week's NWD by putting the date in its name instead of the number. The NWF always overwrites, because its clash results are the record."
+                                  Content="Keep one NWD per week by putting the date in its name. Off, each run overwrites the last, so only this week exists. USES MORE DISK, one NWD a week and nothing removes them. The NWF always overwrites, because the clash history lives inside it."
                                   Checked="OnNamingToggled" Unchecked="OnNamingToggled" />
                     </Grid>
 
@@ -245,7 +245,7 @@
 
                             <CheckBox Grid.Row="0" Grid.ColumnSpan="5" x:Name="WriteImages"
                                       IsChecked="True" Margin="0,0,0,6"
-                                      Content="Write a picture per clash, into a folder named after the workbook with _files on the end, numbered cd000001 upward the way the accepted report numbers them"
+                                      Content="Put a picture of every clash in a folder beside the workbook, named the way the client's report names them. Off, and the Image column is empty. SLOWER: about 0.08 seconds a clash, and 213 pictures came to 54 MB on disk."
                                       Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
 
                             <Label Grid.Row="1" Grid.Column="0" Content="Size in pixels" VerticalAlignment="Center" />
@@ -275,12 +275,12 @@
 
                             <CheckBox Grid.Row="3" Grid.ColumnSpan="5" x:Name="EmbedThumbnails"
                                       IsChecked="False" Margin="0,6,0,0"
-                                      Content="Also paste a thumbnail into the Image cell. The accepted report links rather than pasting, and pasting makes the workbook many times larger."
+                                      Content="Paste each picture into its cell as well as linking to it. MAKES THE WORKBOOK ABOUT 170 TIMES BIGGER: 51.7 MB instead of 0.3 MB on a real 213 clash group, and the pictures are already in the folder beside it. The client's own report links and does not paste."
                                       Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
 
                             <CheckBox Grid.Row="4" Grid.ColumnSpan="5" x:Name="ClientColumnsOnly"
                                       IsChecked="False" Margin="0,4,0,0"
-                                      Content="Client columns only, for a submission. Ours come after theirs and never in place of them, so this drops columns from the right hand end and moves nothing."
+                                      Content="Write each test sheet exactly as the client's accepted report and nothing else. Drops our five columns per item, the notes above the table, the link back to the Summary and the filter arrows. Theirs do not move."
                                       Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
 
                             <TextBlock Grid.Row="5" Grid.ColumnSpan="5" x:Name="ImageSummary"
@@ -401,10 +401,10 @@
 
                         <CheckBox Grid.Row="0" Grid.ColumnSpan="2" x:Name="ApplyFileSettings"
                                   IsChecked="False" Margin="0,0,0,4"
-                                  Content="Apply the file's settings to tests already in the document. THIS RESETS THEIR RESULTS. Left off, every difference is still reported and nothing is changed." />
+                                  Content="Make tests already in the model match the picked file. DESTROYS RESULTS: every clash in a test it changes goes back to New. Off, the differences are still listed and nothing is changed." />
                         <CheckBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="CompactResolved"
                                   IsChecked="False" Margin="0,0,0,4"
-                                  Content="Remove Resolved clashes after the tests run. This destroys the record of what was resolved and cannot be undone." />
+                                  Content="Delete Resolved clashes out of the NWF. DESTROYS THE RECORD of what has been fixed, cannot be undone, and there is no second copy anywhere." />
 
                         <Label Grid.Row="2" Grid.Column="0" Content="The matrix counts" VerticalAlignment="Center" />
                         <ComboBox Grid.Row="2" Grid.Column="1" x:Name="OpenCountBox"

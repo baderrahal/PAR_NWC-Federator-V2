@@ -542,9 +542,17 @@ namespace Federator.Core.Diagnostics
 
             lock (gate)
             {
-                // Recorded once. A throw after a successful write reaches a catch that
-                // checks the outputs again, and counting the same file twice would make
-                // "files written" a count of checks rather than of files.
+                // One entry per file, so "files written" stays a count of files rather
+                // than of writes. The SIZE is the latest one read, because a file written
+                // twice is bigger the second time and the first number is then a lie.
+                //
+                // The NWF is the case this exists for. It is saved once after the models
+                // are appended and again after the clash step, and a run on 2026-09-01
+                // reported it at 4,141 bytes in the RESULT block, the size of the empty
+                // federation, while the second save had read 165,844 bytes off the disk
+                // and printed it four minutes earlier. Nothing had shrunk. The entry was
+                // simply never updated, which reads exactly like an NWF that lost every
+                // clash result it held.
                 bool already = false;
 
                 foreach (WrittenFile seen in written)
@@ -552,6 +560,7 @@ namespace Federator.Core.Diagnostics
                     if (string.Equals(seen.Path, path, StringComparison.OrdinalIgnoreCase)
                         && string.Equals(seen.Kind, kind, StringComparison.Ordinal))
                     {
+                        seen.SizeInBytes = size;
                         already = true;
                         break;
                     }
@@ -564,6 +573,72 @@ namespace Federator.Core.Diagnostics
             }
 
             Line(kind.PadRight(8) + " written  " + path + "  " + DescribeSize(size));
+            return size;
+        }
+
+        /// <summary>
+        /// Reads a file this run already wrote, one more time, and says whether it is
+        /// still the size it was. Updates the recorded entry so the RESULT block carries
+        /// the last state rather than the first.
+        ///
+        /// This exists for the NWF. The clash tests and every clash result live inside it
+        /// and are the only record of what has been fixed, and the NWD is published after
+        /// it. Nothing was checking that the NWF was still whole once that had happened,
+        /// so a run could have destroyed a week of review and said nothing. Now it looks.
+        ///
+        /// Returns the size, or minus one when the file has gone.
+        /// </summary>
+        public long ConfirmStillWhole(string kind, string path, string after)
+        {
+            long size = SizeOnDisk(path);
+            long before = -1;
+
+            lock (gate)
+            {
+                foreach (WrittenFile seen in written)
+                {
+                    if (string.Equals(seen.Path, path, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(seen.Kind, kind, StringComparison.Ordinal))
+                    {
+                        before = seen.SizeInBytes;
+
+                        if (size >= 0)
+                        {
+                            seen.SizeInBytes = size;
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            if (size < 0)
+            {
+                Line(kind.PadRight(8) + " GONE     " + path
+                    + "  it is not on disk after " + after);
+                return -1;
+            }
+
+            if (before < 0)
+            {
+                Line(kind.PadRight(8) + " checked  " + path + "  " + DescribeSize(size)
+                    + " after " + after);
+                return size;
+            }
+
+            if (size == before)
+            {
+                Line(kind.PadRight(8) + " intact   " + path + "  " + DescribeSize(size)
+                    + ", unchanged by " + after);
+                return size;
+            }
+
+            Line(kind.PadRight(8) + " CHANGED  " + path + "  was " + DescribeSize(before)
+                + ", is now " + DescribeSize(size) + " after " + after
+                + (size < before
+                    ? ". It got SMALLER. The clash results live in this file."
+                    : "."));
+
             return size;
         }
 
