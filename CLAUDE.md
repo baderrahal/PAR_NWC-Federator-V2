@@ -427,6 +427,38 @@ and 6 does not read as broken.
 - The Try forms return a bool and it is read, never discarded. For the NWD that
   bool is the only thing separating a fresh publish from last week's file at the
   same path, because File.Exists cannot tell them apart
+- The workbook is ONE SHEET, laid out exactly as the report the client receives: every
+  test one after another, most clashes first. The Summary sheet, the Matrix sheet and the
+  sheet per test are GONE. All three were asked for in an earlier session, before anyone
+  had put a real Navisworks report beside ours. Once both were seen together the ask
+  became one thing, our output matching theirs, and theirs has none of them. Do not add
+  them back because they seem useful. If it is not in theirs it is not in ours
+- The tests are ordered MOST CLASHES FIRST, and where two hold the same count they keep
+  the order they were created in. Measured off both exports in samples\client-report on
+  2026-09-01: both are strictly descending over all 1830 blocks, and every tie group is in
+  the order the tests sit in the exchange file rather than alphabetical, including one
+  group of 1807. So it is a STABLE sort, and List.Sort is not one
+- The OUTPUT is sorted and the document is not. Whether their report is sorted by the
+  report writer or simply walks a collection Clash Detective had already sorted is
+  UNKNOWN and cannot be read off the files. Sorting the document would mean calling
+  TestsSortTests, a mutator that reorders the tests inside the NWF, and the NWF is the
+  record of what has been fixed
+- A distance or a coordinate is THREE DECIMALS with the trailing zeros kept, except that a
+  value which is not zero but would round to 0.000 is written to three significant figures
+  instead, in plain decimal and never an exponent. Measured across all 387 coordinates and
+  129 distances in the two exports: nine are of that second kind and 0.000 appears nowhere
+  in either file. Whether theirs rounds or truncates is UNKNOWN, because both files carry
+  only the formatted text, so ours rounds
+- The Item ID label is Element ID, and this tool CHOOSES it rather than reading it. It used
+  to be the display name of whichever property matched, and since Id is first in the search
+  list that came out as "Id: 990299" against their "Element ID: 702888". Which property
+  actually supplied the value is kept on the item and goes in the log, because renaming a
+  value is only honest while what was renamed is still visible
+- A report check compares three things and not one: WHICH columns, in what SHAPE, in what
+  ORDER. The check before this compared presence alone and passed while the test order, the
+  id label and both number formats all differed from the samples. It reports the FIRST
+  divergence with what ours holds and what theirs holds, because one fault has forty
+  consequences and the first is the one to act on
 - One workbook per group, written after the clash step and before the NWD is published,
   so the three outputs of a group agree with each other. Named like the group's other
   outputs with an xlsx extension, and it overwrites, the same as the NWF and the NWD. The

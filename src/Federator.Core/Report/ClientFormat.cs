@@ -43,15 +43,24 @@ namespace Federator.Core.Report
         {
             "Image", "Clash Name", "Status", "Distance", "Grid Location", "Description",
             "Clash Point",
-            "Item ID", "Item Name", "Item Type",
-            "Item ID", "Item Name", "Item Type"
+            "Item ID", "Layer", "Item Name", "Item Type",
+            "Item ID", "Layer", "Item Name", "Item Type"
+        };
+
+        /// <summary>
+        /// The four columns each item block carries, in their order. Measured on both
+        /// exports in samples\client-report, which agree exactly.
+        /// </summary>
+        public static readonly string[] PerItemColumns =
+        {
+            "Item ID", "Layer", "Item Name", "Item Type"
         };
 
         /// <summary>Where the Item 1 block starts in <see cref="ClashColumns"/>, zero based.</summary>
         public const int FirstItemColumn = 7;
 
-        /// <summary>How many columns each item block holds.</summary>
-        public const int ItemColumns = 3;
+        /// <summary>How many columns each item block holds. Four, with Layer among them.</summary>
+        public const int ItemColumns = 4;
 
         /// <summary>The merged labels sitting above the two item blocks.</summary>
         public const string ItemGroup1 = "Item 1";
@@ -174,12 +183,77 @@ namespace Federator.Core.Report
         public const string ToleranceFormat = "0.000";
 
         /// <summary>
-        /// Three decimals, invariant, which is the form every distance and every
-        /// coordinate in the accepted report is written in.
+        /// A distance or a coordinate the way theirs writes it.
+        ///
+        /// MEASURED on 2026-09-01 across all 387 coordinates and 129 distances in the two
+        /// exports in samples\client-report. The rule is three decimals, trailing zeros
+        /// kept, so 8.310 and -0.440 and 17.150 all appear as they are.
+        ///
+        /// With ONE exception, which is why this is not just a format string. A value that
+        /// is not zero but would round to zero at three decimals is written to three
+        /// significant figures instead, in plain decimal and never in exponent form. All
+        /// nine of those in their files:
+        ///
+        ///     0.0000000000000373   0.0000000000000243   0.0000000000000365
+        ///     0.0000000000000486   0.0000000684         -0.000432
+        ///
+        /// and 0.000 or -0.000 appears nowhere in either file. So a real value is never
+        /// shown as zero.
+        ///
+        /// Whether theirs ROUNDS or TRUNCATES is UNKNOWN. Both files carry only the
+        /// already formatted text and nothing in either carries the value behind it, so
+        /// there is nothing to compare. This rounds, which is what three decimals
+        /// ordinarily means.
         /// </summary>
         public static string Fixed(double value)
         {
-            return value.ToString("0.000", CultureInfo.InvariantCulture);
+            if (value == 0.0 || double.IsNaN(value) || double.IsInfinity(value))
+            {
+                return value.ToString(FixedFormat, CultureInfo.InvariantCulture);
+            }
+
+            string three = value.ToString(FixedFormat, CultureInfo.InvariantCulture);
+
+            // Would it read as zero when it is not. Checked on the text rather than on the
+            // number, because that is the thing a person would see.
+            if (three.IndexOfAny(NotZero) >= 0)
+            {
+                return three;
+            }
+
+            return Significant(value);
+        }
+
+        /// <summary>The format three decimals means, kept here so nothing else spells it out.</summary>
+        public const string FixedFormat = "0.000";
+
+        /// <summary>How many significant figures a value too small for three decimals gets.</summary>
+        public const int SmallValueFigures = 3;
+
+        private static readonly char[] NotZero = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
+        /// <summary>
+        /// Three significant figures, in plain decimal. 3.73e-14 comes out as
+        /// 0.0000000000000373, which is what their file holds, and never as an exponent.
+        /// </summary>
+        private static string Significant(double value)
+        {
+            int magnitude = (int)Math.Floor(Math.Log10(Math.Abs(value)));
+            int decimals = SmallValueFigures - 1 - magnitude;
+
+            if (decimals < 0)
+            {
+                decimals = 0;
+            }
+
+            // A double cannot carry more than this, and a format string longer than it
+            // would only print noise.
+            if (decimals > 330)
+            {
+                decimals = 330;
+            }
+
+            return value.ToString("0." + new string('0', decimals), CultureInfo.InvariantCulture);
         }
 
         /// <summary>

@@ -155,8 +155,8 @@ namespace Federator.Core.Tests
 
             using (XLWorkbook workbook = new XLWorkbook(Write(report, new ReportOptions())))
             {
-                IXLWorksheet sheet = workbook.Worksheet("T0001");
-                IXLCell cell = sheet.Cell(HeaderRow(sheet) + 1, 4);
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
+                IXLCell cell = sheet.Cell(HeaderRow(sheet) + 1, WorkbookWriter.ColumnDistance);
 
                 Assert.That(cell.DataType, Is.EqualTo(XLDataType.Number),
                     "it has to stay a number so the column still sorts");
@@ -167,57 +167,33 @@ namespace Federator.Core.Tests
             }
         }
 
-        // ---------- nothing of ours on a client only sheet ----------
+        // ---------- nothing of ours anywhere on the sheet ----------
 
-        // The one the brief asks for by name.
+        // What used to be here tested a client only MODE. There is no mode now. The
+        // workbook is the client's report and nothing else, so the notes, the link back to
+        // the Summary and the filter arrows are gone along with the Summary itself.
         [Test]
-        public void AClientOnlySheetCarriesNoNotesNoBackLinkAndNoFilters()
-        {
-            ClashReport report = Report();
-            OneTest(report, -0.05);
-
-            ReportOptions clientOnly = new ReportOptions();
-            clientOnly.ClientColumnsOnly = true;
-
-            using (XLWorkbook workbook = new XLWorkbook(Write(report, clientOnly)))
-            {
-                IXLWorksheet sheet = workbook.Worksheet("T0001");
-
-                foreach (IXLCell cell in sheet.CellsUsed())
-                {
-                    string text = cell.GetString();
-
-                    Assert.That(text, Does.Not.Contain("Back to"),
-                        "the way back to the Summary is ours");
-                    Assert.That(text, Does.Not.Contain("raw clashes"),
-                        "the note above the table is ours");
-                    Assert.That(text, Does.Not.Contain("carry a picture"),
-                        "the note about pictures is ours");
-                }
-
-                Assert.That(sheet.AutoFilter.IsEnabled, Is.False,
-                    "the filter arrows are ours and theirs has none");
-
-                // Their header sits straight under their test block, with nothing between.
-                Assert.That(HeaderRow(sheet), Is.EqualTo(5));
-                Assert.That(sheet.Cell(4, ClientFormat.FirstItemColumn + 1).GetString(),
-                    Is.EqualTo("Item 1"));
-            }
-        }
-
-        [Test]
-        public void OurOwnSheetStillHasAllOfThat()
+        public void TheSheetCarriesNoNotesNoBackLinkAndNoFilters()
         {
             ClashReport report = Report();
             OneTest(report, -0.05);
 
             using (XLWorkbook workbook = new XLWorkbook(Write(report, new ReportOptions())))
             {
-                IXLWorksheet sheet = workbook.Worksheet("T0001");
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
 
-                Assert.That(sheet.AutoFilter.IsEnabled, Is.True);
-                Assert.That(Anywhere(sheet, "Back to"), Is.True);
-                Assert.That(Anywhere(sheet, "raw clashes"), Is.True);
+                foreach (IXLCell cell in sheet.CellsUsed())
+                {
+                    string text = cell.GetString();
+
+                    Assert.That(text, Does.Not.Contain("Back to"));
+                    Assert.That(text, Does.Not.Contain("raw clashes"));
+                    Assert.That(text, Does.Not.Contain("carry a picture"));
+                }
+
+                Assert.That(sheet.AutoFilter.IsEnabled, Is.False,
+                    "the filter arrows are ours and theirs has none");
+                Assert.That(workbook.Worksheets.Count, Is.EqualTo(1));
             }
         }
 
@@ -298,8 +274,8 @@ namespace Federator.Core.Tests
 
             using (XLWorkbook workbook = new XLWorkbook(path))
             {
-                IXLWorksheet sheet = workbook.Worksheet("T0001");
-                IXLCell cell = sheet.Cell(HeaderRow(sheet) + 1, 1);
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
+                IXLCell cell = sheet.Cell(HeaderRow(sheet) + 1, WorkbookWriter.ColumnImage);
 
                 Assert.That(cell.HasHyperlink, Is.True,
                     "the row still has to reach its picture, it is just not pasted in");
@@ -382,7 +358,7 @@ namespace Federator.Core.Tests
         {
             for (int row = 1; row <= 40; row++)
             {
-                if (sheet.Cell(row, 2).GetString() == "Clash Name")
+                if (sheet.Cell(row, WorkbookWriter.ColumnClashName).GetString() == "Clash Name")
                 {
                     return row;
                 }

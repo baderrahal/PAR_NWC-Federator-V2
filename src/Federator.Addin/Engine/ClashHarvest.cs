@@ -303,7 +303,18 @@ namespace Federator.Addin.Engine
                 // field. Element ID on a Revit sourced NWC.
                 string idFrom;
                 into.ElementId = FirstProperty(lookIn, ElementIdNames, out idFrom);
-                into.IdLabel = idFrom.Length == 0 ? ClientFormat.DefaultIdLabel : idFrom;
+
+                // The label is OURS to choose and it is always Element ID, because that is
+                // what both client exports read and this report has to match them. It used
+                // to be the display name of whichever property matched, and since Id is
+                // first in the list above that came out as "Id: 990299" against their
+                // "Element ID: 702888".
+                //
+                // Which property actually supplied the value is not lost, it goes in the
+                // log, because renaming a value is only honest if what was renamed is
+                // still visible somewhere.
+                into.IdLabel = ClientFormat.DefaultIdLabel;
+                into.IdFrom = idFrom;
 
                 if (into.ElementId.Length == 0)
                 {

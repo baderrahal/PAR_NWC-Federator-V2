@@ -6,24 +6,29 @@ using ClosedXML.Excel;
 namespace Federator.Core.Report
 {
     /// <summary>
-    /// Reads a written workbook back off the disk and says what is in it.
+    /// Reads a written workbook back off the disk and compares it against the report the
+    /// client receives.
     ///
-    /// The file, never the object that produced it, for the same reason as
-    /// <see cref="PageCheck"/>. This is the check that would have caught Source File and
-    /// Discipline coming out empty on every row without Bader opening the workbook and
-    /// searching it.
+    /// WHY THIS HAD TO CHANGE. The check before this one passed while the test order, the
+    /// id label and both number formats all differed from the samples, because it counted
+    /// PRESENCE and nothing else. A column being there says nothing about whether it is in
+    /// the right place, holds the right shape of value, or sits in the right block. So this
+    /// compares three things it did not: which columns, in what shape, in what order.
+    ///
+    /// It reports the FIRST divergence with what ours holds and what theirs holds, because
+    /// a list of forty consequences of one fault is harder to act on than the fault.
     ///
     /// Nothing here throws. Checking a report must never be the reason a run fails.
     /// </summary>
     public sealed class WorkbookCheck
     {
-        private readonly List<ColumnFill> columns = new List<ColumnFill>();
         private readonly List<string> problems = new List<string>();
 
         private WorkbookCheck()
         {
             Path = string.Empty;
             CouldNotRead = string.Empty;
+            SheetName = string.Empty;
         }
 
         public string Path { get; private set; }
@@ -36,17 +41,21 @@ namespace Federator.Core.Report
             get { return CouldNotRead.Length == 0; }
         }
 
-        /// <summary>Clash rows across every test sheet.</summary>
-        public int Rows { get; private set; }
-
+        /// <summary>How many sheets it holds. Theirs holds one.</summary>
         public int Sheets { get; private set; }
 
-        /// <summary>One per column of ours, with how many rows filled it.</summary>
-        public IList<ColumnFill> Columns
-        {
-            get { return columns.AsReadOnly(); }
-        }
+        public string SheetName { get; private set; }
 
+        /// <summary>Test blocks found on the sheet.</summary>
+        public int Blocks { get; private set; }
+
+        /// <summary>Clash rows across every block.</summary>
+        public int Rows { get; private set; }
+
+        /// <summary>The clash count of each block, in the order they appear.</summary>
+        public IList<int> BlockCounts { get; private set; }
+
+        /// <summary>Everything wrong, each a plain sentence, worst first.</summary>
         public IList<string> Problems
         {
             get { return problems.AsReadOnly(); }
@@ -57,11 +66,17 @@ namespace Federator.Core.Report
             get { return Ran && problems.Count == 0; }
         }
 
-        /// <summary>Reads the workbook at this path.</summary>
+        /// <summary>The first thing that differs, or an empty string.</summary>
+        public string FirstDivergence
+        {
+            get { return problems.Count == 0 ? string.Empty : problems[0]; }
+        }
+
         public static WorkbookCheck Of(string path)
         {
             WorkbookCheck check = new WorkbookCheck();
             check.Path = path ?? string.Empty;
+            check.BlockCounts = new List<int>();
 
             try
             {
@@ -86,121 +101,217 @@ namespace Federator.Core.Report
 
         private void Read(XLWorkbook workbook)
         {
-            Dictionary<string, int> filled = new Dictionary<string, int>(StringComparer.Ordinal);
-
-            foreach (string ours in WorkbookWriter.OurColumns)
-            {
-                filled[ours] = 0;
-            }
+            List<IXLWorksheet> sheets = new List<IXLWorksheet>();
 
             foreach (IXLWorksheet sheet in workbook.Worksheets)
             {
-                if (sheet.Name == SheetNames.SummarySheet || sheet.Name == SheetNames.MatrixSheet)
-                {
-                    continue;
-                }
-
-                Sheets++;
-                ReadSheet(sheet, filled);
+                sheets.Add(sheet);
             }
 
-            foreach (string ours in WorkbookWriter.OurColumns)
+            Sheets = sheets.Count;
+
+            if (Sheets == 0)
             {
-                columns.Add(new ColumnFill(ours, filled[ours]));
-            }
-
-            Judge();
-        }
-
-        private void ReadSheet(IXLWorksheet sheet, IDictionary<string, int> filled)
-        {
-            // The header is the row whose second cell is the client's Clash Name column.
-            int header = 0;
-
-            for (int row = 1; row <= 40; row++)
-            {
-                if (sheet.Cell(row, 2).GetString() == "Clash Name")
-                {
-                    header = row;
-                    break;
-                }
-            }
-
-            if (header == 0)
-            {
-                problems.Add("The sheet " + sheet.Name
-                    + " has no clash table, so nothing on it could be counted.");
+                problems.Add("The workbook has no sheets at all.");
                 return;
             }
 
-            // Where each of our columns sits on this sheet, read off the header rather
-            // than assumed, because the client only mode leaves them out entirely.
-            Dictionary<int, string> where = new Dictionary<int, string>();
-            int width = 1;
+            SheetName = sheets[0].Name;
 
-            for (int column = 1; column <= 60; column++)
+            // Theirs is one sheet holding every test. Ours had fifty.
+            if (Sheets != 1)
             {
-                string name = sheet.Cell(header, column).GetString();
+                List<string> names = new List<string>();
 
-                if (name.Length == 0)
+                for (int i = 0; i < sheets.Count && i < 4; i++)
+                {
+                    names.Add(sheets[i].Name);
+                }
+
+                problems.Add("The workbook has " + Sheets
+                    + " sheets and the client's report has one. Ours starts "
+                    + string.Join(", ", names.ToArray())
+                    + " and theirs is a single sheet holding every test one after another.");
+            }
+
+            ReadSheet(sheets[0]);
+        }
+
+        private void ReadSheet(IXLWorksheet sheet)
+        {
+            List<int> counts = new List<int>();
+            int lastRow = sheet.LastRowUsed() == null ? 0 : sheet.LastRowUsed().RowNumber();
+
+            for (int row = 1; row <= lastRow; row++)
+            {
+                // A block header is the row whose Clash Name column holds their heading.
+                if (sheet.Cell(row, WorkbookWriter.ColumnClashName).GetString() != "Clash Name")
                 {
                     continue;
                 }
 
-                width = column;
+                Blocks++;
+                CheckColumnOrder(sheet, row);
 
-                if (filled.ContainsKey(name))
+                int rows = 0;
+
+                for (int at = row + 1; at <= lastRow; at++)
                 {
-                    where[column] = name;
-                }
-            }
-
-            for (int row = header + 1; ; row++)
-            {
-                // A row is real while its Clash Name cell holds something.
-                if (sheet.Cell(row, 2).GetString().Length == 0)
-                {
-                    break;
-                }
-
-                Rows++;
-
-                foreach (KeyValuePair<int, string> at in where)
-                {
-                    if (sheet.Cell(row, at.Key).GetString().Trim().Length > 0)
+                    if (sheet.Cell(at, WorkbookWriter.ColumnClashName).GetString().Length == 0)
                     {
-                        filled[at.Value] = filled[at.Value] + 1;
+                        break;
                     }
+
+                    rows++;
+                    Rows++;
+                    CheckShape(sheet, at, rows == 1 && Blocks == 1);
                 }
+
+                counts.Add(rows);
+            }
+
+            BlockCounts = counts;
+            CheckOrder(counts);
+
+            if (Blocks == 0)
+            {
+                problems.Add("The sheet has no clash table at all, so nothing on it could "
+                    + "be compared with the client's report.");
             }
         }
 
-        private void Judge()
+        // ---------- which columns, in what order ----------
+
+        private void CheckColumnOrder(IXLWorksheet sheet, int row)
         {
-            if (Rows == 0)
+            IList<string> theirs = ClientReportColumns.All();
+            List<string> ours = new List<string>();
+
+            foreach (int column in Columns())
+            {
+                ours.Add(sheet.Cell(row, column).GetString());
+            }
+
+            for (int i = 0; i < theirs.Count; i++)
+            {
+                string mine = i < ours.Count ? ours[i] : string.Empty;
+
+                if (string.Equals(mine, theirs[i], StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                Say("Column " + (i + 1) + " of the clash table is wrong. Ours reads "
+                    + Quote(mine) + " and the client's report reads " + Quote(theirs[i])
+                    + ". The whole order should be " + string.Join(", ", Array(theirs)) + ".");
+                return;
+            }
+        }
+
+        /// <summary>The sheet columns a clash row uses, in order, gaps skipped.</summary>
+        private static IList<int> Columns()
+        {
+            List<int> at = new List<int>
+            {
+                WorkbookWriter.ColumnImage,
+                WorkbookWriter.ColumnClashName,
+                WorkbookWriter.ColumnStatus,
+                WorkbookWriter.ColumnDistance,
+                WorkbookWriter.ColumnGridLocation,
+                WorkbookWriter.ColumnDescription,
+                WorkbookWriter.ColumnClashPoint
+            };
+
+            for (int i = 0; i < ClientFormat.ItemColumns; i++)
+            {
+                at.Add(WorkbookWriter.ColumnItem1 + i);
+            }
+
+            for (int i = 0; i < ClientFormat.ItemColumns; i++)
+            {
+                at.Add(WorkbookWriter.ColumnItem2 + i);
+            }
+
+            return at;
+        }
+
+        // ---------- what shape the values are ----------
+
+        private void CheckShape(IXLWorksheet sheet, int row, bool first)
+        {
+            if (!first)
             {
                 return;
             }
 
-            List<string> empty = new List<string>();
+            string id = sheet.Cell(row, WorkbookWriter.ColumnItem1).GetString();
 
-            foreach (ColumnFill column in columns)
+            if (id.Length > 0 && !ClientShapes.LooksLikeAnItemId(id))
             {
-                if (column.Filled == 0)
-                {
-                    empty.Add(column.Name);
-                }
+                Say("The Item ID cell is the wrong shape. Ours reads " + Quote(id)
+                    + " and the client's report reads "
+                    + Quote(ClientShapes.ExampleItemId) + ".");
             }
 
-            if (empty.Count > 0)
+            string point = sheet.Cell(row, WorkbookWriter.ColumnClashPoint).GetString();
+
+            if (point.Length > 0 && !ClientShapes.LooksLikeAClashPoint(point))
             {
-                problems.Add("These columns are empty on every row, "
-                    + string.Join(", ", empty.ToArray())
-                    + ". Either the model does not carry them or they are not being read.");
+                Say("The Clash Point cell is the wrong shape. Ours reads " + Quote(point)
+                    + " and the client's report reads "
+                    + Quote(ClientShapes.ExampleClashPoint) + ".");
+            }
+
+            IXLCell distance = sheet.Cell(row, WorkbookWriter.ColumnDistance);
+
+            if (distance.DataType == XLDataType.Number
+                && distance.Style.NumberFormat.Format != ClientFormat.FixedFormat)
+            {
+                Say("The Distance cell carries the number format "
+                    + Quote(distance.Style.NumberFormat.Format)
+                    + " and the client's report writes three decimals, "
+                    + Quote(ClientFormat.FixedFormat) + ", so ours prints the whole double.");
             }
         }
 
-        /// <summary>The block for the log.</summary>
+        // ---------- in what order ----------
+
+        private void CheckOrder(IList<int> counts)
+        {
+            for (int i = 1; i < counts.Count; i++)
+            {
+                if (counts[i] <= counts[i - 1])
+                {
+                    continue;
+                }
+
+                Say("The tests are in the wrong order. Block " + i + " holds " + counts[i - 1]
+                    + " clashes and block " + (i + 1) + " holds " + counts[i]
+                    + ". The client's report puts the most clashes first, so a reader is "
+                    + "not scrolling past empty tests.");
+                return;
+            }
+        }
+
+        private void Say(string problem)
+        {
+            problems.Add(problem);
+        }
+
+        private static string Quote(string value)
+        {
+            return "\"" + (value ?? string.Empty) + "\"";
+        }
+
+        private static string[] Array(IList<string> values)
+        {
+            string[] all = new string[values.Count];
+            values.CopyTo(all, 0);
+            return all;
+        }
+
+        // ---------- what it says ----------
+
         public IList<string> Lines()
         {
             List<string> lines = new List<string>();
@@ -211,20 +322,22 @@ namespace Federator.Core.Report
                 return lines;
             }
 
-            lines.Add("CHECK    " + Rows + " clash "
-                + (Rows == 1 ? "row" : "rows") + " across " + Sheets
-                + " test " + (Sheets == 1 ? "sheet" : "sheets") + ".");
+            lines.Add("CHECK    " + Sheets + (Sheets == 1 ? " sheet, " : " sheets, ")
+                + Quote(SheetName) + ", " + Blocks + " test "
+                + (Blocks == 1 ? "block" : "blocks") + ", " + Rows + " clash "
+                + (Rows == 1 ? "row" : "rows") + ".");
 
-            if (columns.Count == 0 || Rows == 0)
+            if (BlockCounts.Count > 0)
             {
-                lines.Add("         nothing of ours to count on it.");
-            }
+                List<string> first = new List<string>();
 
-            foreach (ColumnFill column in columns)
-            {
-                lines.Add("         " + column.Name.PadRight(20)
-                    + column.Filled + " of " + Rows
-                    + (column.Filled == 0 && Rows > 0 ? "   EMPTY ON EVERY ROW" : string.Empty));
+                for (int i = 0; i < BlockCounts.Count && i < 8; i++)
+                {
+                    first.Add(BlockCounts[i].ToString());
+                }
+
+                lines.Add("         the first blocks hold " + string.Join(", ", first.ToArray())
+                    + (BlockCounts.Count > 8 ? " and so on." : "."));
             }
 
             foreach (string problem in problems)
@@ -232,15 +345,17 @@ namespace Federator.Core.Report
                 lines.Add("         " + problem);
             }
 
-            if (problems.Count == 0 && Rows > 0)
+            if (problems.Count == 0)
             {
-                lines.Add("         Every column of ours is filled somewhere.");
+                lines.Add("         Every column, shape and block order matches the client's "
+                    + "report.");
             }
+
+            lines.Add("         " + ClientReportColumns.ReadFrom());
 
             return lines;
         }
 
-        /// <summary>One line for the run view.</summary>
         public string Summary()
         {
             if (!Ran)
@@ -248,36 +363,13 @@ namespace Federator.Core.Report
                 return "Workbook not checked, " + CouldNotRead + ".";
             }
 
-            if (Rows == 0)
-            {
-                return "Workbook written, no clash rows on it.";
-            }
-
             if (problems.Count > 0)
             {
-                return "Workbook: " + problems[0];
+                return "Workbook: " + FirstDivergence;
             }
 
-            return "Workbook: " + Rows + " rows, every column of ours filled somewhere.";
-        }
-    }
-
-    /// <summary>One of our own columns, and how many rows put something in it.</summary>
-    public sealed class ColumnFill
-    {
-        internal ColumnFill(string name, int filled)
-        {
-            Name = name;
-            Filled = filled;
-        }
-
-        public string Name { get; private set; }
-
-        public int Filled { get; private set; }
-
-        public override string ToString()
-        {
-            return Name + " " + Filled;
+            return "Workbook: one sheet, " + Blocks + " tests, " + Rows
+                + " rows, matching the client's layout.";
         }
     }
 }

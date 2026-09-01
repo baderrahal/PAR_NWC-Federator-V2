@@ -149,7 +149,10 @@ namespace Federator.Core.Report
 
             XElement tests = new XElement("clashtests");
 
-            foreach (TestReport test in report.Tests)
+            // Most clashes first, ties in the order they were created, which is what both
+            // client exports do. Ours followed the order the tests sat in the file, so it
+            // opened with empty tests and a reader scrolled past hundreds of them.
+            foreach (TestReport test in report.InReportOrder())
             {
                 tests.Add(Test(test));
             }
@@ -216,8 +219,7 @@ namespace Federator.Core.Report
         {
             XElement element = new XElement(row.IsGroup ? "clashgroup" : "clashresult",
                 new XAttribute("name", Or(row.Name, "clash")),
-                new XAttribute("distance",
-                    row.Distance.ToString("0.######", CultureInfo.InvariantCulture)));
+                new XAttribute("distance", ClientFormat.Fixed(row.Distance)));
 
             // The stylesheet turns its Image column on for boolean(//@href) and reads the
             // picture off this one attribute. No picture, no attribute, no column.
@@ -246,9 +248,9 @@ namespace Federator.Core.Report
 
             element.Add(new XElement("clashpoint",
                 new XElement("pos3f",
-                    new XAttribute("x", row.X.ToString("0.######", CultureInfo.InvariantCulture)),
-                    new XAttribute("y", row.Y.ToString("0.######", CultureInfo.InvariantCulture)),
-                    new XAttribute("z", row.Z.ToString("0.######", CultureInfo.InvariantCulture)))));
+                    new XAttribute("x", ClientFormat.Fixed(row.X)),
+                    new XAttribute("y", ClientFormat.Fixed(row.Y)),
+                    new XAttribute("z", ClientFormat.Fixed(row.Z)))));
 
             // No createddate. The stylesheet writes a Date Found column for any it finds
             // and the client's report has no such column, measured on both 1A02WN and

@@ -170,8 +170,8 @@ namespace Federator.Core.Tests
             }
 
             Assert.That(report.Tests.Count, Is.EqualTo(1830));
-            Assert.That(WorkbookWriter.SheetNamesFor(report).Count, Is.EqualTo(2),
-                "no test found anything, so only Summary and Matrix exist");
+            Assert.That(WorkbookWriter.SheetNamesFor(report).Count, Is.EqualTo(1),
+                "one sheet, the way the client's report has it");
         }
 
         [Test]

@@ -29,8 +29,8 @@ namespace Federator.Core.Tests
             {
                 "Image", "Clash Name", "Status", "Distance", "Grid Location", "Description",
                 "Clash Point",
-                "Item ID", "Item Name", "Item Type",
-                "Item ID", "Item Name", "Item Type"
+                "Item ID", "Layer", "Item Name", "Item Type",
+                "Item ID", "Layer", "Item Name", "Item Type"
             }));
         }
 
@@ -50,7 +50,7 @@ namespace Federator.Core.Tests
             // Seven general columns, then three per item, twice. That is what the
             // colspans in their header row add up to.
             Assert.That(ClientFormat.FirstItemColumn, Is.EqualTo(7));
-            Assert.That(ClientFormat.ItemColumns, Is.EqualTo(3));
+            Assert.That(ClientFormat.ItemColumns, Is.EqualTo(4), "Item ID, Layer, Item Name, Item Type");
             Assert.That(ClientFormat.ClashColumns.Length,
                 Is.EqualTo(ClientFormat.FirstItemColumn + (2 * ClientFormat.ItemColumns)));
             Assert.That(ClientFormat.ItemGroup1, Is.EqualTo("Item 1"));
@@ -194,43 +194,23 @@ namespace Federator.Core.Tests
             Assert.That(test.ClientTolerance(), Is.EqualTo("0.025m"));
         }
 
-        // ---------- ours come after theirs, never in place of them ----------
+        // ---------- nothing of ours is in the client layout at all ----------
 
-        // The one the brief asks for by name.
+        // What used to be here tested that our columns came after theirs. There are no
+        // columns of ours now. The workbook is the client's report and nothing else, so
+        // the whole set is theirs and there is nothing to come after it.
         [Test]
-        public void OurColumnsComeAfterTheirsAndNeverInPlaceOfThem()
+        public void TheColumnSetIsTheirsAndHasNoRoomForOurs()
         {
-            string[] everything = WorkbookWriter.TestColumnsFor(false);
+            Assert.That(ClientFormat.ClashColumns.Length, Is.EqualTo(15));
 
-            for (int i = 0; i < ClientFormat.ClashColumns.Length; i++)
+            foreach (string ours in new[]
             {
-                Assert.That(everything[i], Is.EqualTo(ClientFormat.ClashColumns[i]),
-                    "column " + i + " is not the client's");
-            }
-
-            Assert.That(everything.Length,
-                Is.EqualTo(ClientFormat.ClashColumns.Length + WorkbookWriter.OurColumns.Length));
-        }
-
-        [Test]
-        public void ASubmissionCanBeExportedWithTheirColumnsAlone()
-        {
-            Assert.That(WorkbookWriter.TestColumnsFor(true),
-                Is.EqualTo(ClientFormat.ClashColumns));
-        }
-
-        // Theirs already has a column called Item Type and it holds the Navisworks item
-        // type. Ours must not be called that as well.
-        [Test]
-        public void NoneOfOursRepeatsAClientColumnName()
-        {
-            List<string> theirs = new List<string>(ClientFormat.ClashColumns);
-
-            foreach (string ours in WorkbookWriter.OurColumns)
+                "Family", "Type Name", "Material", "Source File", "Discipline", "Date Found",
+                "Raw clashes"
+            })
             {
-                Assert.That(theirs, Does.Not.Contain(ours),
-                    "\"" + ours + "\" is already one of the client's columns and means "
-                    + "something else there");
+                Assert.That(ClientFormat.ClashColumns, Does.Not.Contain(ours), ours);
             }
         }
 

@@ -24,6 +24,8 @@ namespace Federator.Core.Report
             ElementId = string.Empty;
             ItemType = string.Empty;
             IdLabel = ClientFormat.DefaultIdLabel;
+            IdFrom = string.Empty;
+            Layer = string.Empty;
         }
 
         public string Name { get; set; }
@@ -40,6 +42,18 @@ namespace Federator.Core.Report
         /// carried it. Element ID on a Revit sourced NWC. A default, never a constant.
         /// </summary>
         public string IdLabel { get; set; }
+
+        /// <summary>
+        /// The display name of the property the id actually came from, which is not what
+        /// the cell says. The cell says Element ID to match the client's own report, so
+        /// this is where the real answer lives and it goes in the log.
+        /// </summary>
+        public string IdFrom { get; set; }
+
+        /// <summary>
+        /// The client's Layer column, which holds the level on both their exports.
+        /// </summary>
+        public string Layer { get; set; }
 
         /// <summary>The client's Item ID column, label and value in one field.</summary>
         public string ClientId()
@@ -523,6 +537,57 @@ namespace Federator.Core.Report
         public ReadOnlyCollection<TestReport> Tests
         {
             get { return new ReadOnlyCollection<TestReport>(tests); }
+        }
+
+        /// <summary>
+        /// The tests in the order a report puts them: most clashes first, and where two
+        /// hold the same number the order they were created in.
+        ///
+        /// MEASURED off both exports in samples\client-report on 2026-09-01. Both are
+        /// strictly descending by clash count over all 1830 blocks. The tie rule was read
+        /// off the tie groups against the order the tests sit in the exchange file, and it
+        /// is that original order in every group, including one of 1807 tests, and it is
+        /// NOT alphabetical in any of them.
+        ///
+        /// So it is a STABLE sort by count descending, which is why this carries the
+        /// original position rather than handing the list to a comparer. List.Sort is not
+        /// stable and would scramble the 1807.
+        ///
+        /// WHY THE OUTPUT IS SORTED AND NOT THE DOCUMENT. Whether their report is sorted
+        /// by the report writer, or simply walks a tests collection that Clash Detective
+        /// had already sorted, is UNKNOWN and cannot be read off the files. Sorting the
+        /// document would mean calling DocumentClashTests.TestsSortTests, which is a
+        /// mutator that reorders the tests inside the NWF, and the NWF is the record of
+        /// what has been fixed. So the output is sorted and the document is left alone.
+        /// </summary>
+        public IList<TestReport> InReportOrder()
+        {
+            List<TestReport> sorted = new List<TestReport>(tests);
+
+            // A stable sort by count descending. The index is the original position, so
+            // two tests holding the same count come out in the order they were created.
+            List<int> at = new List<int>();
+
+            for (int i = 0; i < sorted.Count; i++)
+            {
+                at.Add(i);
+            }
+
+            at.Sort(delegate(int left, int right)
+            {
+                int byCount = sorted[right].RawClashes.CompareTo(sorted[left].RawClashes);
+
+                return byCount != 0 ? byCount : left.CompareTo(right);
+            });
+
+            List<TestReport> ordered = new List<TestReport>();
+
+            foreach (int i in at)
+            {
+                ordered.Add(sorted[i]);
+            }
+
+            return ordered;
         }
 
         /// <summary>

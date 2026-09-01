@@ -23,6 +23,18 @@ namespace Federator.Core.Report
         /// <summary>How many digits a test number is padded to, so T0001 sorts before T0010.</summary>
         public const int TestDigits = 4;
 
+        /// <summary>
+        /// The one sheet, named after the report the way theirs is. Excel stops a sheet
+        /// name at 31 characters, so theirs reads 1104-PAR-1A04WN-XXX-BM-RPT-0000, which
+        /// is the file name cut at 31.
+        /// </summary>
+        public static string ForReport(string outputName)
+        {
+            string name = Sanitise(outputName ?? string.Empty, "Clash Report");
+
+            return name.Length <= MaxLength ? name : name.Substring(0, MaxLength);
+        }
+
         public const string SummarySheet = "Summary";
 
         public const string MatrixSheet = "Matrix";

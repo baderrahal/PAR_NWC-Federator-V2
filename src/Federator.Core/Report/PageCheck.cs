@@ -21,12 +21,16 @@ namespace Federator.Core.Report
     public sealed class PageCheck
     {
         private readonly List<string> extraColumns = new List<string>();
+        private readonly List<string> headerColumns = new List<string>();
+        private readonly List<int> blockCounts = new List<int>();
         private readonly List<string> missingPictures = new List<string>();
         private readonly List<string> problems = new List<string>();
 
         private PageCheck()
         {
             FirstItemId = string.Empty;
+            FirstClashPoint = string.Empty;
+            FirstDistance = string.Empty;
             Tolerance = string.Empty;
             LogoReference = string.Empty;
             Path = string.Empty;
@@ -60,6 +64,12 @@ namespace Federator.Core.Report
             get { return extraColumns.AsReadOnly(); }
         }
 
+        /// <summary>The first clash point cell in full, so its shape is visible.</summary>
+        public string FirstClashPoint { get; private set; }
+
+        /// <summary>The first distance cell exactly as written.</summary>
+        public string FirstDistance { get; private set; }
+
         /// <summary>The tolerance cell exactly as written, unit and all.</summary>
         public string Tolerance { get; private set; }
 
@@ -91,6 +101,15 @@ namespace Federator.Core.Report
         public bool Passed
         {
             get { return Ran && problems.Count == 0; }
+        }
+
+        /// <summary>
+        /// The first thing that differs, or an empty string. One fault often has forty
+        /// consequences and the first is the one to act on.
+        /// </summary>
+        public string FirstProblem
+        {
+            get { return problems.Count == 0 ? string.Empty : problems[0]; }
         }
 
         /// <summary>
@@ -153,6 +172,7 @@ namespace Federator.Core.Report
         private void Read(string html, string beside)
         {
             ReadColumns(html);
+            ReadBlocks(html);
             ReadRows(html);
             ReadTolerance(html);
             ReadPictures(html, beside);
@@ -179,7 +199,14 @@ namespace Federator.Core.Report
             {
                 string name = Text(cell.Groups[1].Value);
 
-                if (name.Length == 0 || ClientReportColumns.IsTheirs(name))
+                if (name.Length == 0)
+                {
+                    continue;
+                }
+
+                headerColumns.Add(name);
+
+                if (ClientReportColumns.IsTheirs(name))
                 {
                     continue;
                 }
@@ -189,9 +216,90 @@ namespace Federator.Core.Report
                     extraColumns.Add(name);
                 }
             }
+
+            // Presence is not enough. The old check passed while the order, the id label
+            // and both number formats differed from the samples, because a column being
+            // there says nothing about where it is.
+            //
+            // Only where there is something to compare. A group where nothing clashed has
+            // no items in it, so the stylesheet leaves out every column that depends on
+            // one, and a shorter header there is the ordinary answer rather than a fault.
+            // The attribute, not the word. The page's own CSS block declares
+            // td.item1Content, so looking for the bare word finds it on every page.
+            if (html.IndexOf("class=\"item1Content\"", StringComparison.Ordinal) < 0)
+            {
+                return;
+            }
+
+            IList<string> theirs = ClientReportColumns.All();
+
+            for (int i = 0; i < theirs.Count; i++)
+            {
+                string mine = i < headerColumns.Count ? headerColumns[i] : string.Empty;
+
+                if (string.Equals(mine, theirs[i], StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                problems.Add("Column " + (i + 1) + " of the clash table is wrong. Ours reads \""
+                    + mine + "\" and the client's report reads \"" + theirs[i]
+                    + "\". The whole order should be " + string.Join(", ", Array(theirs)) + ".");
+                break;
+            }
         }
 
         // ---------- the rows and their item ids ----------
+
+        /// <summary>
+        /// How many clashes each test block holds, in the order the page has them. Their
+        /// report puts the most first, and ours followed the order the tests sat in the
+        /// file, so it opened with four empty tests.
+        /// </summary>
+        private void ReadBlocks(string html)
+        {
+            foreach (Match block in Regex.Matches(
+                html, "<table class=\"testSummaryTable\">(.*?)</table>", RegexOptions.Singleline))
+            {
+                Match cell = Regex.Match(
+                    block.Groups[1].Value,
+                    "class=\"contentCell\">(.*?)</td>.*?class=\"contentCell\">(.*?)</td>",
+                    RegexOptions.Singleline);
+
+                int count;
+
+                if (cell.Success && int.TryParse(Text(cell.Groups[2].Value), out count))
+                {
+                    blockCounts.Add(count);
+                }
+            }
+
+            for (int i = 1; i < blockCounts.Count; i++)
+            {
+                if (blockCounts[i] <= blockCounts[i - 1])
+                {
+                    continue;
+                }
+
+                problems.Add("The tests are in the wrong order. Block " + i + " holds "
+                    + blockCounts[i - 1] + " clashes and block " + (i + 1) + " holds "
+                    + blockCounts[i] + ". The client's report puts the most clashes first, "
+                    + "so a reader is not scrolling past empty tests.");
+                break;
+            }
+        }
+
+        /// <summary>The clashes in each test block, in page order.</summary>
+        public IList<int> BlockCounts
+        {
+            get { return blockCounts.AsReadOnly(); }
+        }
+
+        /// <summary>The clash table header exactly as the page has it, in order.</summary>
+        public IList<string> HeaderColumns
+        {
+            get { return headerColumns.AsReadOnly(); }
+        }
 
         private void ReadRows(string html)
         {
@@ -212,6 +320,12 @@ namespace Federator.Core.Report
 
                 string one = FirstCell(body, "item1Content");
                 string two = FirstCell(body, "item2Content");
+
+                if (FirstClashPoint.Length == 0)
+                {
+                    FirstClashPoint = Cell(body, "contentCell", ClientFormat.FirstItemColumn - 1);
+                    FirstDistance = Cell(body, "contentCell", 3);
+                }
 
                 if (LooksLikeAnId(one))
                 {
@@ -239,6 +353,17 @@ namespace Federator.Core.Report
         /// The Item ID cell is the FIRST cell of an item block, because Item ID is the
         /// first of the client's four per item columns.
         /// </summary>
+        /// <summary>The nth cell of a row carrying this class, zero based.</summary>
+        private static string Cell(string row, string cssClass, int nth)
+        {
+            MatchCollection found = Regex.Matches(
+                row, "class=\"" + cssClass + "\"[^>]*>(.*?)</td>", RegexOptions.Singleline);
+
+            return nth >= 0 && nth < found.Count
+                ? Text(found[nth].Groups[1].Value)
+                : string.Empty;
+        }
+
         private static string FirstCell(string row, string cssClass)
         {
             Match found = Regex.Match(
@@ -411,6 +536,38 @@ namespace Federator.Core.Report
                         : ". Missing: " + string.Join(", ", missingPictures.ToArray()) + "."));
             }
 
+            // Shape, not just presence. Every one of these was wrong at some point while
+            // the old check reported nothing, because it only asked whether the cell was
+            // there at all.
+            if (FirstItemId.Length > 0 && !ClientShapes.LooksLikeAnItemId(FirstItemId))
+            {
+                problems.Add("The Item ID cell is the wrong shape. Ours reads \""
+                    + FirstItemId + "\" and the client's report reads \""
+                    + ClientShapes.ExampleItemId + "\".");
+            }
+
+            if (FirstClashPoint.Length > 0
+                && !ClientShapes.LooksLikeAClashPoint(FirstClashPoint))
+            {
+                problems.Add("The Clash Point cell is the wrong shape. Ours reads \""
+                    + FirstClashPoint + "\" and the client's report reads \""
+                    + ClientShapes.ExampleClashPoint + "\".");
+            }
+
+            if (FirstDistance.Length > 0 && !ClientShapes.LooksLikeADistance(FirstDistance))
+            {
+                problems.Add("The Distance cell is the wrong shape. Ours reads \""
+                    + FirstDistance + "\" and the client's report reads \""
+                    + ClientShapes.ExampleDistance + "\", three decimals.");
+            }
+
+            if (Tolerance.Length > 0 && !ClientShapes.LooksLikeATolerance(Tolerance))
+            {
+                problems.Add("The Tolerance cell is the wrong shape. Ours reads \""
+                    + Tolerance + "\" and the client's report reads \""
+                    + ClientShapes.ExampleTolerance + "\".");
+            }
+
             if (LogoReferenced && !LogoOnDisk)
             {
                 problems.Add("The page shows a logo at " + LogoReference
@@ -505,6 +662,13 @@ namespace Federator.Core.Report
 
             return "Client report: Item ID filled on " + ItemIdOnItem1 + " of " + Rows
                 + " rows, no extra columns, all " + PicturesOnDisk + " pictures on disk.";
+        }
+
+        private static string[] Array(IList<string> values)
+        {
+            string[] all = new string[values.Count];
+            values.CopyTo(all, 0);
+            return all;
         }
 
         private static string Text(string html)
