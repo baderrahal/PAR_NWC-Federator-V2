@@ -57,6 +57,41 @@ namespace Federator.Core.Report
         /// file a later run can be pointed at as its own input, and even where it is not
         /// it fills the source folder with output.
         /// </summary>
+        /// <summary>
+        /// Where the reports will go, in words a person would say, for the line under the
+        /// Outputs step. Never throws and never shows a code identifier.
+        ///
+        /// It said "Workbooks go in UNKNOWN" before a scan, with
+        /// "Parameter name: nwfFolder" behind it, because the empty NWF folder threw and
+        /// the exception message went straight to the label. Nothing is wrong at that
+        /// point. The folder has simply not been picked yet, and that is what it says.
+        /// </summary>
+        public static string WhereTheyGo(string pickedFolder, string nwfFolder, string sourceFolder)
+        {
+            string nwf = nwfFolder == null ? string.Empty : nwfFolder.Trim();
+            string picked = pickedFolder == null ? string.Empty : pickedFolder.Trim();
+
+            if (nwf.Length == 0)
+            {
+                return picked.Length > 0
+                    ? picked
+                    : "beside the NWF folder, once one is picked on this step";
+            }
+
+            try
+            {
+                ReportFolderChoice where = Choose(picked, nwf, sourceFolder);
+
+                return where.WasRefused
+                    ? where.Folder + ". " + where.RefusedReason
+                    : where.Folder;
+            }
+            catch (Exception)
+            {
+                return "not worked out yet, the NWF folder on this step cannot be read";
+            }
+        }
+
         public static ReportFolderChoice Choose(
             string pickedFolder, string nwfFolder, string sourceFolder)
         {

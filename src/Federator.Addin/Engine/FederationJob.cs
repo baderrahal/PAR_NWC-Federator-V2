@@ -171,6 +171,11 @@ namespace Federator.Addin.Engine
         /// <summary>Size read back off the disk, or minus one when the NWF is not there.</summary>
         public long NwfSize { get; set; }
 
+        /// <summary>The client report page, minus one until its size is read off the disk.</summary>
+        public long HtmlSize { get; set; }
+
+        public bool HtmlOnDisk { get; set; }
+
         /// <summary>Size read back off the disk, or minus one when the NWD is not there.</summary>
         public long NwdSize { get; set; }
 

@@ -108,11 +108,17 @@ namespace Federator.Core.Tests
         }
 
         [Test]
+        public void TheLogoPickerRemembersItsOwnFolder()
+        {
+            ProveOnePicker(PickerKind.Logo, "branding");
+        }
+
+        [Test]
         public void EveryPickerInTheWindowIsCoveredHere()
         {
-            // Five Browse buttons, five kinds, five tests above. If a sixth picker is
+            // Six Browse buttons, six kinds, six tests above. If a seventh picker is
             // added this fails until it is proved too.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(5));
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(6));
         }
 
         // ---------- the one that was actually broken ----------
