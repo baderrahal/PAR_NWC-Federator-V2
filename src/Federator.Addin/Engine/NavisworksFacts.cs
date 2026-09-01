@@ -54,6 +54,45 @@ namespace Federator.Addin.Engine
             }
         }
 
+        /// <summary>
+        /// The folder Navisworks is installed in, read as the folder its own API assembly
+        /// was loaded from. That is the install, whatever drive it is on, so nothing here
+        /// is a hard coded path and no search is needed.
+        /// </summary>
+        public static string InstallFolder()
+        {
+            try
+            {
+                string dll = typeof(NavisworksApplication).Assembly.Location;
+
+                return string.IsNullOrEmpty(dll)
+                    ? string.Empty
+                    : System.IO.Path.GetDirectoryName(dll) ?? string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// The language folder name the application reports, for example en-US. Empty
+        /// where it cannot be read, and the caller then falls back to en-US.
+        /// </summary>
+        public static string Language()
+        {
+            try
+            {
+                ApplicationVersion version = NavisworksApplication.Version;
+
+                return version == null ? string.Empty : Or(version.RuntimeLanguage, string.Empty);
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
         /// <summary>The document open right now, with its path, or the word none.</summary>
         public static string OpenDocument()
         {

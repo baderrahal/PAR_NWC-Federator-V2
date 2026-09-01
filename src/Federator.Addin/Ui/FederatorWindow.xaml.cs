@@ -336,13 +336,22 @@ namespace Federator.Addin.Ui
         /// </summary>
         private string SafeName(NamePattern pattern, BuildingGroup group)
         {
+            string why = pattern.WhyUnusable();
+
+            if (why != null)
+            {
+                // Our own sentence, asked for directly, so nothing a framework wrote can
+                // reach a label. No name yet is not a shouting matter either.
+                return "No name yet. " + why;
+            }
+
             try
             {
                 return pattern.NameFor(group, settings);
             }
-            catch (InvalidOperationException error)
+            catch (InvalidOperationException)
             {
-                return "CANNOT BE NAMED: " + error.Message;
+                return "No name yet. One of the fields on this step is empty.";
             }
         }
 
@@ -690,6 +699,38 @@ namespace Federator.Addin.Ui
             return ticked;
         }
 
+        /// <summary>
+        /// The logo the client report page carries. Empty by default, which means no
+        /// logo. Autodesk's own logo.jpg is in their install and is theirs, so nothing
+        /// here reaches for it and Bader points this at the Parsons mark.
+        /// </summary>
+        private void OnBrowseLogo(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.Title = "Pick the logo for the client report page";
+                dialog.Filter = "Pictures (*.jpg;*.jpeg;*.png;*.gif)|*.jpg;*.jpeg;*.png;*.gif"
+                    + "|All files (*.*)|*.*";
+                dialog.CheckFileExists = true;
+
+                string folder = PickerStart.For(folders, PickerKind.Logo, LogoBox.Text);
+
+                if (folder.Length > 0 && Directory.Exists(folder))
+                {
+                    dialog.InitialDirectory = folder;
+                }
+
+                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                folders.Remember(PickerKind.Logo, dialog.FileName);
+                LogoBox.Text = dialog.FileName;
+                RefreshOutputsSummary();
+            }
+        }
+
         private void OnBrowseExcel(object sender, RoutedEventArgs e)
         {
             string picked = PickFolder(
@@ -731,6 +772,8 @@ namespace Federator.Addin.Ui
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
             options.CompactResolved = CompactResolved.IsChecked == true;
             options.ClientColumnsOnly = ClientColumnsOnly.IsChecked == true;
+            options.WriteHtml = WriteHtmlReport.IsChecked == true;
+            options.LogoPath = Trimmed(LogoBox.Text);
             options.Images = ImagesWanted();
             options.Names = settings;
             return options;
@@ -820,9 +863,10 @@ namespace Federator.Addin.Ui
                         ? " Client columns only."
                         : " Client columns, then ours after them.");
             }
-            catch (Exception error)
+            catch (Exception)
             {
-                ImageSummary.Text = "Cannot read the image settings. " + error.Message;
+                // A label, not a failure dialog, so it carries no framework message.
+                ImageSummary.Text = "The photo settings on this step cannot be read.";
             }
         }
 
@@ -832,18 +876,9 @@ namespace Federator.Addin.Ui
         /// </summary>
         private string WorkbookFolderOrWhyNot()
         {
-            try
-            {
-                ReportFolderChoice where = ReportsWanted().ChooseFor(Trimmed(NwfFolderBox.Text));
-
-                return where.WasRefused
-                    ? where.Folder + ". " + where.RefusedReason
-                    : where.Folder;
-            }
-            catch (ArgumentException error)
-            {
-                return "UNKNOWN. " + error.Message;
-            }
+            // One rule, in Core, so it can be proved rather than clicked.
+            return ReportPaths.WhereTheyGo(
+                Trimmed(ExcelFolderBox.Text), Trimmed(NwfFolderBox.Text), Trimmed(SourceFolderBox.Text));
         }
 
         private void RefreshOutputsSummary()

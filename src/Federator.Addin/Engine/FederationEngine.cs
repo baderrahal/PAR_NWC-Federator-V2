@@ -703,6 +703,109 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// Writes the report as HTML (Tabular), which is what the client actually
+        /// receives, by handing our XML to Autodesk's own stylesheet.
+        ///
+        /// The stylesheet is read from the install at run time and no copy of it is in
+        /// this repo. Where it is not there, this says every path it looked at and writes
+        /// nothing. The workbook and the XML are untouched either way.
+        /// </summary>
+        private void WriteHtmlTabular(FederationJob job, JobOutcome outcome, ClashReport report)
+        {
+            if (!reports.WriteHtml)
+            {
+                return;
+            }
+
+            string stylesheet = StylesheetLocator.Find(
+                NavisworksFacts.InstallFolder(), NavisworksFacts.Language());
+
+            if (stylesheet.Length == 0)
+            {
+                foreach (string line in StylesheetLocator.WhyNotFound(
+                    NavisworksFacts.InstallFolder(), NavisworksFacts.Language()))
+                {
+                    log.Line(line);
+                }
+
+                return;
+            }
+
+            string path = HtmlTabularWriter.PathFor(
+                ReportPaths.Workbook(reportFolder, job.WorkbookName));
+
+            progress("Writing the client report for " + job.Building);
+            log.WriteAttempted("HTML", path);
+
+            try
+            {
+                ClashReportXml writer = new ClashReportXml();
+                writer.ClientColumnsOnly = reports.ClientColumnsOnly;
+                writer.LogoHref = CopyLogoBeside(path);
+
+                new HtmlTabularWriter().Write(writer.Build(report), stylesheet, path);
+            }
+            catch (Exception error)
+            {
+                outcome.AddError(
+                    "writing the client report threw " + error.GetType().Name + ": " + error.Message);
+                log.Failure(
+                    "writing the client report for " + job.Building,
+                    error,
+                    "kept going, the workbook and the XML are unaffected");
+            }
+
+            outcome.HtmlSize = log.WriteFinished("HTML", path);
+            outcome.HtmlOnDisk = outcome.HtmlSize >= 0;
+        }
+
+        /// <summary>
+        /// Puts the picked logo beside the page and gives back the name to link it by, or
+        /// an empty string when nobody picked one.
+        ///
+        /// Copied rather than linked, so the page and its picture travel together the same
+        /// way the clash pictures do. Nothing here ever reaches for Autodesk's own
+        /// logo.jpg in the install.
+        /// </summary>
+        private string CopyLogoBeside(string pagePath)
+        {
+            string picked = reports.LogoPath == null ? string.Empty : reports.LogoPath.Trim();
+
+            if (picked.Length == 0)
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                if (!System.IO.File.Exists(picked))
+                {
+                    log.Line("HTML     the logo " + picked + " is not there, so the page has none");
+                    return string.Empty;
+                }
+
+                string name = System.IO.Path.GetFileName(picked);
+                string beside = System.IO.Path.Combine(
+                    System.IO.Path.GetDirectoryName(pagePath) ?? string.Empty, name);
+
+                if (!string.Equals(picked, beside, StringComparison.OrdinalIgnoreCase))
+                {
+                    System.IO.File.Copy(picked, beside, true);
+                }
+
+                return name;
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "copying the logo beside the client report",
+                    error,
+                    "kept going, the page was written with no logo");
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
         /// Writes the workbook, and the XML beside it when that is switched on. Both are
         /// built from the same results in memory. Neither reads the other, so a fault in
         /// one cannot corrupt the other.
@@ -743,6 +846,8 @@ namespace Federator.Addin.Engine
                 outcome.WorkbookSize = log.WriteFinished("XLSX", path);
                 outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
             }
+
+            WriteHtmlTabular(job, outcome, report);
 
             if (!reports.WriteXml)
             {

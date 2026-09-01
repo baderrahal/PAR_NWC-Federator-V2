@@ -187,7 +187,9 @@ namespace Federator.Core.Tests
 
             Assert.That(group.Attribute("distance").Value, Is.EqualTo("-0.145"));
             Assert.That(group.Element("resultstatus").Value, Is.EqualTo("New"));
-            Assert.That(group.Element("gridlocation").Value, Is.EqualTo("C-4"));
+            // The single joined field, the same one the workbook and the client's own
+            // report carry. It used to write the grid without its level.
+            Assert.That(group.Element("gridlocation").Value, Is.EqualTo("C-4 : Level 03"));
 
             XElement point = group.Element("clashpoint").Element("pos3f");
             Assert.That(point.Attribute("x").Value, Is.EqualTo("12.5"));
@@ -209,7 +211,7 @@ namespace Federator.Core.Tests
         // Family, type and material go in as objectattribute pairs, which is the shape the
         // stylesheets read arbitrary item properties out of.
         [Test]
-        public void TheItemPropertiesGoInAsObjectattributeNameAndValuePairs()
+        public void TheIdIsTheOneObjectattributeAndEverythingElseIsAQuickProperty()
         {
             ClashReport report = Report();
             WithRows(report);
@@ -219,19 +221,28 @@ namespace Federator.Core.Tests
                 .Element("clashresults").Element("clashgroup")
                 .Element("clashobjects").Element("clashobject");
 
+            // Exactly one, because the stylesheet's Item ID cell is value-of over
+            // ./objectattribute/name and takes the FIRST. Writing several put the item's
+            // Name in the id column.
+            Assert.That(first.Elements("objectattribute").Count, Is.EqualTo(1));
+            Assert.That(first.Element("objectattribute").Element("name").Value,
+                Is.EqualTo("Element ID"));
+            Assert.That(first.Element("objectattribute").Element("value").Value,
+                Is.EqualTo("884213"));
+
             Dictionary<string, string> read = new Dictionary<string, string>(StringComparer.Ordinal);
 
-            foreach (XElement attribute in first.Elements("objectattribute"))
+            foreach (XElement tag in first.Element("smarttags").Elements("smarttag"))
             {
-                read[attribute.Element("name").Value] = attribute.Element("value").Value;
+                read[tag.Element("name").Value] = tag.Element("value").Value;
             }
 
-            Assert.That(read["Name"], Is.EqualTo("Floor 200mm"));
+            // Theirs first, then ours, which is the order they appear as columns.
+            Assert.That(read["Item Name"], Is.EqualTo("Floor 200mm"));
             Assert.That(read["Family"], Is.EqualTo("Floor"));
-            Assert.That(read["Type"], Is.EqualTo("Generic 200mm"));
+            Assert.That(read["Type Name"], Is.EqualTo("Generic 200mm"));
             Assert.That(read["Material"], Is.EqualTo("Concrete"));
             Assert.That(read["Discipline"], Is.EqualTo("AR"));
-            Assert.That(read["Element Id"], Is.EqualTo("884213"));
         }
 
         // Left out rather than written empty, so a blank is never read as a measured blank.

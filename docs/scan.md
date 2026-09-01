@@ -1302,6 +1302,157 @@ supplied fields had to be typed by hand, and a hand typed number is where a digi
 missing. `ShowNaming()` now runs before the combos are filled.
 
 
+### 4m. The client format is HTML Tabular, and our XML against its stylesheet, measured 2026-09-01
+
+#### What the client's file actually is
+
+Clash Detective cannot export an xlsx. Bader exports HTML (Tabular) and opens the page in
+Excel, and that is the file the client accepted. It explains everything about the samples
+that looked odd from the outside: a declared dimension of 53 columns with 17 populated, the
+merged cells, and the absolute `file:///` picture links Excel writes when it saves an HTML
+page.
+
+So the layout is not ours to invent. It is defined by
+
+```
+Navisworks Manage 2025\en-US\stylesheets\clash_report_html_tabular.xsl   28748 bytes
+```
+
+which is Autodesk's file. No copy of it is in this repo. It is read from the install at run
+time by `StylesheetLocator`, which builds each candidate path directly and tests it with
+`File.Exists`, never searching or wildcarding the install folder. The candidates are the
+language the application reports and then `en-US`. When neither is there the log names both
+paths and writes no page, and the workbook and the XML are untouched.
+
+#### The Layer column: the previous session was right about two files and wrong in general
+
+A screenshot of `1104-PAR-1A04WE-XXX-BM-RPT-000001.xlsx` shows a Layer column on both items.
+That file was never committed to `samples\client-report`, which holds only 1A02WE and
+1A02WO. It does exist on Bader's machine and was read from there on 2026-09-01:
+
+```
+1A04WE row 8   Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point
+               Item ID | Layer | Item Name | Item Type
+               Item ID | Layer | Item Name | Item Type
+1A02WE row 8   Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point
+               Item ID | Item Name | Item Type
+               Item ID | Item Name | Item Type
+```
+
+Both are true. The stylesheet writes a Layer column for
+`boolean(//clashobjects/clashobject/layer)` and nothing else, so it appears when the export
+carried layer data and not when it did not. On 1A04WE the column is present with the header
+and the cells are empty.
+
+This is the whole lesson of this section. Not one of these columns is fixed. Every one of
+them is a boolean over an XPath, so what the page holds is decided entirely by what the XML
+holds.
+
+#### Every column test the stylesheet makes, and what our XML answers
+
+Read off the variable block at the top of the stylesheet, and checked against our own XML
+by `HtmlTabularTests.OurXmlAnswersEveryColumnTestTheStylesheetMakes`.
+
+| Variable | XPath it tests | Ours before | Ours now |
+|---|---|---|---|
+| showSummary | `/exchange/batchtest/clashtests/clashtest/summary` | yes | yes |
+| showClashPoint | `//clashpoint` | yes | yes |
+| showDistance | `//@distance` | yes | yes |
+| showStatus | `//resultstatus` | yes | yes |
+| showGridLocation | `//gridlocation` | yes | yes |
+| showLayer | `//clashobjects/clashobject/layer` | yes | yes |
+| showItemID | `//clashobjects/clashobject/objectattribute` | yes | yes |
+| showDateFound | `//clashresult/createddate` | yes | ours only |
+| **showDescription** | `//description` | **NO** | yes |
+| **showQuickProperties** | `//clashobjects/clashobject/smarttags` | **NO** | yes |
+| **showImage** | `//@href` | **NO** | yes |
+| showDateApproved | `//approveddate` | no | no |
+| showApprovedBy | `//approvedby` | no | no |
+| showAssignedTo | `//assignedto` | no | no |
+| showClashGroup | `//parentgroup` | no | no |
+| showComments | `//comments/comment` | no | no |
+| showItemPath | `//clashobjects/clashobject/pathlink` | no | no |
+
+So it very nearly matched. Three whole columns of the client's report could not be produced,
+and one more was the wrong shape:
+
+- **description** was missing, so no Description column
+- **smarttags** was missing, so no Item Name and no Item Type. These are not fixed columns
+  at all. The stylesheet writes one column per smarttag and takes the heading from
+  `smarttag/name` in the data, so the client's Item Name and Item Type are the two quick
+  properties their export was configured with
+- **@href** was missing, so no Image column
+- **objectattribute** was the wrong shape. The Item ID cell is
+
+  ```xml
+  <i><xsl:value-of select="./objectattribute/name"/></i>:
+  <xsl:value-of select="./objectattribute/value"/>
+  ```
+
+  `xsl:value-of` over a node set takes the FIRST node. We wrote four per clashobject, Name,
+  Family, Type, Material, Source File, Discipline and Element Id, so the id column would
+  have rendered `Name: PAR-CONC-FOUNDATION`. Theirs carries exactly one, the id
+
+The decision was to reshape our XML rather than write the HTML ourselves. Four small changes
+against reimplementing a 700 line layout, and the page is then rendered by the same file
+Navisworks renders theirs with, so it cannot drift from it.
+
+One thing the stylesheet forces. `$colQuickProperties` is
+`count((//clashobject/smarttags)[1]/smarttag)`, counted once off the FIRST clashobject and
+used for every row. So every clashobject must carry the same list of smarttags, empty values
+included, or every column after them slides sideways.
+
+#### Where ours differs from theirs on purpose
+
+Two elements are written only when the client layout has not been asked for, because the
+client's own report has neither column:
+
+- `createddate`, which gives a Date Found column
+- our five extra quick properties, Family, Type Name, Material, Source File and Discipline
+
+With **Client report layout only** ticked, the page is their fifteen columns and nothing
+else. Without it, ours are appended after theirs and none of theirs move.
+
+#### The logo
+
+```xml
+<td class="logoCell" colspan="3">
+  <img alt="logo"><xsl:attribute name="src"><xsl:value-of select="//logo/@href"/></xsl:attribute></img>
+</td>
+```
+
+The logo is DATA, read from `//logo/@href`, not something baked into the layout. Autodesk's
+own `logo.jpg` sits in the Images folder of the install and is theirs, and nothing here
+copies it or reaches for it.
+
+It is a file the user picks, empty by default. Empty writes no `logo` element at all, the
+stylesheet then renders `src=""`, and the page carries no picture. A picked file is copied
+beside the page and linked by its bare name, so the page and its logo travel together the
+same way the clash pictures do.
+
+#### The transform
+
+`System.Xml.Xsl.XslCompiledTransform`, which is in the framework, so nothing new ships in
+the bundle. The stylesheet declares `version="1.0"` and uses no `document()`, no
+`msxsl:script`, no `xsl:import` and no `xsl:include`, checked on 2026-09-01, so it runs
+under `XsltSettings.Default` with both scripts and document loading switched off.
+
+#### The trailing space in every image link
+
+The samples' image hrefs all end in a space, which looked like a fault in ours. It is the
+stylesheet:
+
+```xml
+<xsl:attribute name="href">
+  <xsl:value-of select="@href"/>
+  <xsl:text> </xsl:text>
+</xsl:attribute>
+```
+
+It confirms the samples were produced by exactly this file, and it is nothing for us to
+reproduce or correct.
+
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

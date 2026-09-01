@@ -15,7 +15,10 @@ namespace Federator.Core.Diagnostics
         Nwf,
         Nwd,
         Excel,
-        ClashXml
+        ClashXml,
+
+        /// <summary>The picture the client report page carries, if anyone picks one.</summary>
+        Logo
     }
 
     /// <summary>
@@ -123,7 +126,8 @@ namespace Federator.Core.Diagnostics
                 PickerKind.Nwf,
                 PickerKind.Nwd,
                 PickerKind.Excel,
-                PickerKind.ClashXml
+                PickerKind.ClashXml,
+                PickerKind.Logo
             };
         }
 

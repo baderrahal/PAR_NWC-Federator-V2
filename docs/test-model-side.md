@@ -1344,6 +1344,111 @@ seeing when you said not all of them remember, this is it.
      `%LOCALAPPDATA%\ParsonsNwcFederator\logs\folders.txt`. Delete it to forget everything.
      Your run's first line said `Nothing remembered yet`, which is what a first run says.
 
+## Step 26, the client report page
+
+You were right that the client format is not a workbook. Clash Detective cannot export an
+xlsx at all. You export HTML (Tabular) and open it in Excel, and that is why the file you
+sent declares 53 columns with 17 filled in and has absolute file:/// links in it.
+
+So this tool no longer invents that layout. It hands our own XML to Autodesk's own
+clash_report_html_tabular.xsl out of your Navisworks install, which is the same file that
+made yours.
+
+115. Run a group. In the reports folder, beside the workbook, there is now an .html with
+     the same name.
+
+**Worked:** open it in Excel. The columns are theirs, in their order, in their words:
+
+    Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point
+    Item ID | Layer | Item Name | Item Type      (Item 1)
+    Item ID | Layer | Item Name | Item Type      (Item 2)
+
+116. Tick **Client report layout only** and run again.
+
+**Worked:** exactly the fifteen above and nothing else. Untick it and our five extra
+properties per item and a Date Found column appear after theirs, and none of theirs move.
+
+117. About the Layer column, and about a file that never reached me.
+
+**You were right and the last session was wrong.** It reported that no supplied export has
+a Layer column. That was true of the two files in samples\client-report, 1A02WE and 1A02WO,
+and it is not true in general. Your screenshot is of
+**1104-PAR-1A04WE-XXX-BM-RPT-000001.xlsx, which was never committed.** I read it off your
+machine at C:\00_NM\Clash report and it has a Layer column on both items, with the header
+present and the cells empty.
+
+Both files are correct. The stylesheet writes a Layer column when the export carried layer
+data and leaves it out when it did not. Ours always carries the level, so ours always has
+the column and it is filled in.
+
+118. If Navisworks is missing or its stylesheet is not where it should be, the log says so
+     and names every path it looked at, and the workbook and the XML are written as normal.
+
+## Step 27, the logo
+
+119. The logo on your report comes from logo.jpg in the Images folder of the Navisworks
+     install. It is Autodesk's and this tool does not touch it, copy it or ship it.
+
+**Worked:** there is a Logo box on the Outputs step with its own Browse. Empty means no
+logo, which is the default, and the page then has no picture on it.
+
+120. Point it at the Parsons mark and run.
+
+**Worked:** the file is copied beside the page and the page shows it. The two travel
+together, the same way the clash pictures do.
+
+## Step 28, the tick boxes
+
+121. Look at every tick box in the window.
+
+**Worked:** each one is a short label with one grey line under it saying what it costs.
+Nothing runs off the edge, nothing is in capitals, and the off state is only described
+where it changes what you would choose.
+
+    Republish the NWD
+        Adds about a second per building.
+
+    Photo of every clash
+        About 0.08 seconds each. 213 clashes took 17 seconds.
+
+    Paste the photos into the cells
+        Workbook goes from 0.3 MB to 52 MB. Already linked without this.
+
+122. The two that destroy something carry a red exclamation mark beside the label, rather
+     than shouting. When every label shouted, none of them did.
+
+     Applying the file's settings, and deleting Resolved clashes.
+
+123. If any label still leaves you guessing, tell me which one and what you expected it to
+     mean. That is the only test for this.
+
+## Step 29, the Outputs page scrolls
+
+124. Go to the Outputs step and make the window short.
+
+**Worked:** a scrollbar appears and the naming table and everything under it can be
+reached. It was cut off before, by 384 pixels on a 1024 by 680 window and still by 87 on a
+1600 by 1000 one, which is why the table was not visible whatever you did.
+
+125. The other three steps were measured at those same three sizes and all fit, so none of
+     them has a scrollbar. Source is the closest, wanting 326 pixels of the 389 it gets on
+     the smallest window. If you ever find one cut off, tell me the window size.
+
+## Step 30, two things that were leaking
+
+126. Open the window and go to the Outputs step without scanning anything.
+
+**Worked:** it says the workbooks go "beside the NWF folder, once one is picked on this
+step". It used to say "Workbooks go in UNKNOWN", which reads as a fault when nothing is
+wrong yet.
+
+127. It also used to show "Parameter name: nwfFolder" behind that, which is a name out of
+     the code and means nothing to anyone using this.
+
+**Worked:** no label anywhere carries a code name or a framework message now. A failure
+DIALOG still shows the message, because that is what you send back to me and it is what
+makes a fault findable. A label does not.
+
 ## What to send me if it goes wrong
 
 Send the whole log file, not a summary and not the last few lines. Use **Copy log** and
@@ -1526,3 +1631,18 @@ From the client match work of 2026-09-01, what is still open:
 - whether Status should say OK. Theirs does, on all 1830 tests. OK is not a value on
   ClashTestStatus, which is New, Old, Partial or Complete, and what puts a test into any
   of them is UNKNOWN, so ours writes what the API reports and translates nothing
+
+From the HTML Tabular work of 2026-09-01:
+
+- ANSWERED. The client format is HTML (Tabular) rendered by Autodesk's own stylesheet, and
+  our XML now feeds every column test that stylesheet makes. Proved by transforming with
+  the real file out of the install and reading the header row back
+- ANSWERED. A supplied export does have a Layer column. 1A04WE has one and 1A02WE does not,
+  because the stylesheet writes it only when the XML carries layer data. Ours always does
+- STILL MISSING FROM THE REPO. 1104-PAR-1A04WE-XXX-BM-RPT-000001.xlsx and its html and
+  _files folder were never committed. Commit them and samples\client-report holds the case
+  with a Layer column as well as the two without one
+- whether the page opens in Excel the way theirs does. Ours is written by their own
+  stylesheet from our data, so it should, and only opening one proves it
+- whether the picture links resolve when the page is opened in Excel. Ours are relative and
+  theirs are absolute, so ours should survive being moved and theirs should not

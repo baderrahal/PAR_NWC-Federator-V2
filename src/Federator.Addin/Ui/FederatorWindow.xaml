@@ -20,6 +20,22 @@
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Margin" Value="0,0,0,6" />
         </Style>
+        <!-- One grey line under a tick box saying what it costs. Indented under the box
+             so it reads as belonging to it, and wrapped so it never runs off the edge. -->
+        <Style x:Key="TickHelp" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#707070" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="20,1,0,8" />
+        </Style>
+        <!-- The mark on the two that destroy something. A mark rather than capitals,
+             because capitals in every label made all of them shout equally. -->
+        <Style x:Key="WarningMark" TargetType="TextBlock">
+            <Setter Property="Text" Value="!" />
+            <Setter Property="Foreground" Value="#C00000" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="0,0,6,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
     </Window.Resources>
 
     <DockPanel Margin="10">
@@ -63,7 +79,7 @@
                         <Label Grid.Column="0" Content="Folder" />
                         <TextBox Grid.Column="1" x:Name="SourceFolderBox" VerticalAlignment="Center" />
                         <Button Grid.Column="2" Content="Browse" Click="OnBrowseSource" />
-                        <CheckBox Grid.Column="3" x:Name="IncludeSubfolders" Content="Look in subfolders as well as the folder itself"
+                        <CheckBox Grid.Column="3" x:Name="IncludeSubfolders" Content="Include subfolders"
                                   IsChecked="True" VerticalAlignment="Center" Margin="12,0,0,0" />
                         <Button Grid.Column="4" Content="Scan" Click="OnScan" FontWeight="Bold" />
                     </Grid>
@@ -176,6 +192,15 @@
 
             <!-- Step 3 -->
             <TabItem Header="3. Outputs">
+                <!-- The only step whose content is taller than the window. Measured at
+                     1024x680, 1280x800 and 1600x1000 with build\probe-window-scroll.ps1
+                     and cut off at all three, by 384, 264 and 87 pixels, which is why the
+                     naming table and everything under it could not be reached. The other
+                     three steps fit at all three sizes and are left alone, because a
+                     ScrollViewer around a step whose grid is meant to fill stops it
+                     filling. -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
                                Text="One NWF folder, one NWD folder and one Excel folder for the whole run. Leave the Excel folder empty and the workbooks go beside the NWF folder, in a subfolder called Clash Reports. The name fields below fill the table, and any name in the table can be typed over. A name you type over is left alone when a pattern changes." />
@@ -186,6 +211,9 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -206,18 +234,40 @@
                         <TextBox Grid.Row="2" Grid.Column="1" x:Name="ExcelFolderBox"
                                  VerticalAlignment="Center" TextChanged="OnOutputFolderChanged" />
                         <Button Grid.Row="2" Grid.Column="2" Content="Browse" Click="OnBrowseExcel" />
-                        <CheckBox Grid.Row="3" Grid.Column="1" x:Name="RepublishNwd"
-                                  IsChecked="True" Margin="0,8,0,0"
-                                  Content="Write a fresh NWD every run. Off, and last week's NWD is left where it is. Adds about a second a group."
-                                  Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
-                        <CheckBox Grid.Row="4" Grid.Column="1" x:Name="WriteClashXml"
-                                  IsChecked="False" Margin="0,4,0,0"
-                                  Content="Write a clash XML beside each workbook as well. One more file per group, under a megabyte."
-                                  Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
-                        <CheckBox Grid.Row="5" Grid.Column="1" x:Name="DateTheNwd"
-                                  IsChecked="False" Margin="0,4,0,0"
-                                  Content="Keep one NWD per week by putting the date in its name. Off, each run overwrites the last, so only this week exists. USES MORE DISK, one NWD a week and nothing removes them. The NWF always overwrites, because the clash history lives inside it."
-                                  Checked="OnNamingToggled" Unchecked="OnNamingToggled" />
+                        <StackPanel Grid.Row="3" Grid.Column="1" Margin="0,8,0,0">
+                            <CheckBox x:Name="RepublishNwd" IsChecked="True"
+                                      Content="Republish the NWD"
+                                      Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
+                            <TextBlock Style="{StaticResource TickHelp}"
+                                       Text="Adds about a second per building." />
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="1">
+                            <CheckBox x:Name="WriteClashXml" IsChecked="False"
+                                      Content="Write a clash XML beside each workbook"
+                                      Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
+                            <TextBlock Style="{StaticResource TickHelp}"
+                                       Text="One extra file per building, under a megabyte." />
+                        </StackPanel>
+                        <StackPanel Grid.Row="5" Grid.Column="1">
+                            <CheckBox x:Name="DateTheNwd" IsChecked="False"
+                                      Content="Date the NWD so every week is kept"
+                                      Checked="OnNamingToggled" Unchecked="OnNamingToggled" />
+                            <TextBlock Style="{StaticResource TickHelp}"
+                                       Text="Without this, only the latest week exists." />
+                        </StackPanel>
+                        <StackPanel Grid.Row="6" Grid.Column="1">
+                            <CheckBox x:Name="WriteHtmlReport" IsChecked="True"
+                                      Content="Write the client report page"
+                                      Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
+                            <TextBlock Style="{StaticResource TickHelp}"
+                                       Text="HTML Tabular, the format the client accepts. Opens in Excel." />
+                        </StackPanel>
+                        <Label Grid.Row="7" Grid.Column="0" Content="Logo" />
+                        <TextBox Grid.Row="7" Grid.Column="1" x:Name="LogoBox"
+                                 VerticalAlignment="Center" />
+                        <Button Grid.Row="7" Grid.Column="2" Content="Browse" Click="OnBrowseLogo" />
+                        <TextBlock Grid.Row="8" Grid.Column="1" Style="{StaticResource TickHelp}"
+                                   Text="Shown on the client report page. Empty means no logo." />
                     </Grid>
 
                     <!-- The pictures. On, because the report the client has accepted has
@@ -243,10 +293,13 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <CheckBox Grid.Row="0" Grid.ColumnSpan="5" x:Name="WriteImages"
-                                      IsChecked="True" Margin="0,0,0,6"
-                                      Content="Put a picture of every clash in a folder beside the workbook, named the way the client's report names them. Off, and the Image column is empty. SLOWER: about 0.08 seconds a clash, and 213 pictures came to 54 MB on disk."
-                                      Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                            <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
+                                <CheckBox x:Name="WriteImages" IsChecked="True"
+                                          Content="Photo of every clash"
+                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                <TextBlock Style="{StaticResource TickHelp}"
+                                           Text="About 0.08 seconds each. 213 clashes took 17 seconds." />
+                            </StackPanel>
 
                             <Label Grid.Row="1" Grid.Column="0" Content="Size in pixels" VerticalAlignment="Center" />
                             <TextBox Grid.Row="1" Grid.Column="1" x:Name="ImagePixelsBox"
@@ -273,15 +326,21 @@
                                           Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
                             </StackPanel>
 
-                            <CheckBox Grid.Row="3" Grid.ColumnSpan="5" x:Name="EmbedThumbnails"
-                                      IsChecked="False" Margin="0,6,0,0"
-                                      Content="Paste each picture into its cell as well as linking to it. MAKES THE WORKBOOK ABOUT 170 TIMES BIGGER: 51.7 MB instead of 0.3 MB on a real 213 clash group, and the pictures are already in the folder beside it. The client's own report links and does not paste."
-                                      Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                            <StackPanel Grid.Row="3" Grid.ColumnSpan="5" Margin="0,6,0,0">
+                                <CheckBox x:Name="EmbedThumbnails" IsChecked="False"
+                                          Content="Paste the photos into the cells"
+                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                <TextBlock Style="{StaticResource TickHelp}"
+                                           Text="Workbook goes from 0.3 MB to 52 MB. Already linked without this." />
+                            </StackPanel>
 
-                            <CheckBox Grid.Row="4" Grid.ColumnSpan="5" x:Name="ClientColumnsOnly"
-                                      IsChecked="False" Margin="0,4,0,0"
-                                      Content="Write each test sheet exactly as the client's accepted report and nothing else. Drops our five columns per item, the notes above the table, the link back to the Summary and the filter arrows. Theirs do not move."
-                                      Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                            <StackPanel Grid.Row="4" Grid.ColumnSpan="5">
+                                <CheckBox x:Name="ClientColumnsOnly" IsChecked="False"
+                                          Content="Client report layout only"
+                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                <TextBlock Style="{StaticResource TickHelp}"
+                                           Text="Drops our extra columns, the notes and the filters." />
+                            </StackPanel>
 
                             <TextBlock Grid.Row="5" Grid.ColumnSpan="5" x:Name="ImageSummary"
                                        Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#606060"
@@ -369,6 +428,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
+                </ScrollViewer>
             </TabItem>
 
 
@@ -399,12 +459,26 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <CheckBox Grid.Row="0" Grid.ColumnSpan="2" x:Name="ApplyFileSettings"
-                                  IsChecked="False" Margin="0,0,0,4"
-                                  Content="Make tests already in the model match the picked file. DESTROYS RESULTS: every clash in a test it changes goes back to New. Off, the differences are still listed and nothing is changed." />
-                        <CheckBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="CompactResolved"
-                                  IsChecked="False" Margin="0,0,0,4"
-                                  Content="Delete Resolved clashes out of the NWF. DESTROYS THE RECORD of what has been fixed, cannot be undone, and there is no second copy anywhere." />
+                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource WarningMark}" />
+                                <CheckBox x:Name="ApplyFileSettings" IsChecked="False"
+                                          VerticalAlignment="Center"
+                                          Content="Apply the file's settings to existing tests" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource TickHelp}"
+                                       Text="Resets those clashes to New. Differences are listed either way." />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource WarningMark}" />
+                                <CheckBox x:Name="CompactResolved" IsChecked="False"
+                                          VerticalAlignment="Center"
+                                          Content="Delete Resolved clashes from the NWF" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource TickHelp}"
+                                       Text="Cannot be undone. The record of what was fixed is lost." />
+                        </StackPanel>
 
                         <Label Grid.Row="2" Grid.Column="0" Content="The matrix counts" VerticalAlignment="Center" />
                         <ComboBox Grid.Row="2" Grid.Column="1" x:Name="OpenCountBox"

@@ -18,6 +18,8 @@ namespace Federator.Core.Report
             ApplyFileSettings = false;
             CompactResolved = false;
             ClientColumnsOnly = false;
+            WriteHtml = true;
+            LogoPath = string.Empty;
             Images = new ImageOptions();
             Names = new ContainerNameSettings();
         }
@@ -37,6 +39,26 @@ namespace Federator.Core.Report
 
         /// <summary>Clash pictures. On by default, because the accepted report has them.</summary>
         public ImageOptions Images { get; set; }
+
+        /// <summary>
+        /// Write the report as HTML (Tabular), which is the format the client actually
+        /// receives. On, because Clash Detective cannot export an xlsx at all, so the file
+        /// they accepted is an HTML page opened in Excel.
+        ///
+        /// It is rendered by Autodesk's own clash_report_html_tabular.xsl, read from the
+        /// install at run time. No copy of that file is in this repo and none is written.
+        /// A missing stylesheet turns this one output off and nothing else.
+        /// </summary>
+        public bool WriteHtml { get; set; }
+
+        /// <summary>
+        /// The logo the HTML page shows, or empty for none, which is the default.
+        ///
+        /// Autodesk's own logo.jpg sits in the Images folder of the install and is theirs.
+        /// Nothing here copies it or writes it. Point this at your own mark and it is
+        /// copied beside the report so the page and its picture travel together.
+        /// </summary>
+        public string LogoPath { get; set; }
 
         /// <summary>On. The workbook is the point of the run.</summary>
         public bool WriteWorkbook { get; set; }

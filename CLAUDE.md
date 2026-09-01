@@ -314,6 +314,17 @@ and 6 does not read as broken.
   at the nearest parent still on disk and says so, which is what happens when a project
   drive is not mounted yet. Remembering never stops a run: an unwritable location is
   recorded as a reason and the session still remembers, it just does not survive a restart
+- A step whose content is taller than the window scrolls. Only the Outputs step is,
+  measured at 1024x680, 1280x800 and 1600x1000 with build\probe-window-scroll.ps1 and
+  cut off at all three, which is why the naming table could not be reached. The other three
+  fit at all three sizes and are left alone, because a ScrollViewer around a step whose grid
+  is meant to fill stops it filling
+- No code identifier and no framework message ever reaches a label. It said
+  "Workbooks go in UNKNOWN" before a scan, with "Parameter name: nwfFolder" behind it,
+  because an empty NWF folder threw and the message went straight to the window. Nothing was
+  wrong at that point, the folder had not been picked. A failure DIALOG may carry the
+  exception message, because that is what gets sent back. A label may not. The wording lives
+  in Federator.Core.Report.ReportPaths.WhereTheyGo so it can be proved
 - The scan and its checks live in the Source step, so pressing Scan reports what was
   found and what is wrong with it in one place. A plain count line first, files found,
   files readable, groups and the findings by kind, then the findings themselves
@@ -503,6 +514,38 @@ and 6 does not read as broken.
   looked. A pair no test covers is blank, which is a third thing again. The discipline
   grouping is read from the set folder names in the picked file, never from a list in the
   code
+- The client's report is HTML (Tabular), not a workbook. Clash Detective cannot export an
+  xlsx at all, so what they accepted is a page exported from Clash Detective and opened in
+  Excel. That is why the sample declares 53 columns with 17 populated, carries merged cells
+  and has absolute file:/// links in it
+- The page is rendered by Autodesk's own clash_report_html_tabular.xsl, read from the
+  install at run time and never copied into this repo. The path is built and tested
+  directly, the language the application reports and then en-US, never searched for. Where
+  neither is there the log names both paths, no page is written, and the workbook and the
+  XML are untouched. It is on by default, because it is the format the client accepts
+- Not one column in that page is fixed. Every one is a boolean over an XPath in the
+  stylesheet, so what the page holds is decided by what our XML holds. The Layer column is
+  the proof: 1A04WE has it and 1A02WE does not, from the same tool, because one export
+  carried layer data and the other did not. Never write a column list for that page, write
+  the data and let the stylesheet decide
+- Our XML feeds that stylesheet, so its shape is not ours to choose either. Measured on
+  2026-09-01, it answered every column test but three: description, smarttags and the href
+  on a result, which are the Description column, the Item Name and Item Type columns, and
+  the Image column. See docs\scan.md section 4m for the whole table
+- Exactly ONE objectattribute per clashobject, and it is the id. The Item ID cell is
+  value-of over ./objectattribute/name, which takes the FIRST node, so writing several put
+  the item's Name in the id column. Everything else about an item is a smarttag, which is
+  how Item Name and Item Type reach the page at all
+- Every clashobject carries the SAME list of smarttags, empty values included. The
+  stylesheet counts them once off the first clashobject and uses that count for every row,
+  so one item with fewer of them slides every column after it sideways
+- Date Found and our five extra item properties are ours, not theirs. Their report has
+  neither, so both are left out when the client layout is asked for and appended after
+  theirs when it is not
+- The logo is DATA, read by the stylesheet from //logo/@href, not part of the layout. It is
+  a file the user picks and it is EMPTY by default, which writes no logo element and puts no
+  picture on the page. Autodesk's own logo.jpg is in the Images folder of their install and
+  is theirs. Nothing here copies it, reaches for it, or ships it
 - The clash XML is optional and off by default. It is built from the same results the
   workbook is built from, never by reading the workbook and never read by it, so a fault
   in one cannot corrupt the other. Its shape was read off the three stylesheets the
@@ -551,18 +594,22 @@ and 6 does not read as broken.
 
 ## What a tick box says
 
-A tick box names the EFFECT on the output, not the mechanism, and says plainly where it
-costs something. Bader could not tell what any of them would change.
+A tick box is a SHORT LABEL and one grey line under it. Bader called the long ones a
+nightmare and he was right: they ran off the edge of the window, they shouted in capitals,
+and they explained the off state as well as the on state, so nothing stood out.
 
-- what it does to the output first, in one short sentence
-- what happens with it off, where that is not obvious
-- then, in capitals, whether it MAKES A FILE BIGGER, makes a run SLOWER, or DESTROYS
-  something, with the measured number where there is one
+- the label is at most EIGHT words and names the thing, not the mechanism
+- one grey help line under it, at most TWELVE words, saying what it costs
+- no capitals for emphasis anywhere. Acronyms a person says out loud are fine
+- do not describe the off state unless it changes what someone would choose
+- the two that destroy something carry a red exclamation mark beside the label. A mark,
+  because when every label shouted, none of them did
 
-Pasting thumbnails is 170 times bigger, 51.7 MB against 0.3 MB on a real 213 clash group.
-Images cost about 0.08 seconds a clash and 54 MB on disk for 213. Applying the file's
-settings resets every clash in a changed test to New. Compacting deletes the record of
-what was fixed and there is no second copy. Those four are the ones worth a capital.
+The numbers in a help line are measured, never estimated. Photos are about 0.08 seconds
+each and 213 took 17 seconds. Pasting them takes the workbook from 0.3 MB to 52 MB.
+
+build\probe-window-labels.ps1 reads every tick box out of the real window and checks all
+of this, so the limits are proved rather than remembered.
 
 ## The diagnostic log
 
