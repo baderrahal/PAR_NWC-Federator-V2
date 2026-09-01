@@ -1689,6 +1689,76 @@ fault in it, and losing a group over that would be worse than the fault.
 155. **If your client ever asks for a different column, send me one export that has it.**
      One file settles it. The set comes from the files, not from a decision.
 
+## Step 43, the workbook is the client's report now
+
+Everything the workbook used to have that theirs does not is gone. That was asked for
+before either of us had seen a real Navisworks report. Now that they sit side by side the
+ask is one thing, so the workbook is one sheet and nothing else.
+
+156. Open the workbook.
+
+**Worked:** one sheet, named after the report, holding every test one after another. No
+Summary sheet, no Matrix sheet, no sheet per test. That is fifty sheets down to one.
+
+**If you want any of those back, say so and I will add them as a separate file rather than
+putting them back on this one.** They are not in the client's report, so they are not on
+this sheet.
+
+157. Put your own report and ours side by side and compare a block.
+
+**Worked:** same columns in the same lettered columns. Image in A, Clash Name in C, Status
+in E, Distance in F, Grid Location in G, Description in H, Clash Point in I, then Item ID,
+Layer, Item Name and Item Type twice. Same merges, same widths.
+
+## Step 44, the tests are in the right order
+
+158. Look at the first block on the sheet, and the last.
+
+**Worked:** most clashes first, empty tests last. Ours used to follow the order the tests
+sat in the XML, so it opened with four empty tests and you scrolled past hundreds more.
+
+159. The tie rule was measured off your own two reports rather than guessed. Where two
+     tests hold the same number of clashes they keep the order they were created in, not
+     alphabetical. Your 1A02WN has 1807 tests with no clashes and every one of them is in
+     the original order, which is not something that happens by chance.
+
+160. The order is applied to the page and the workbook alike.
+
+## Step 45, the three cells
+
+161. Look at an Item ID cell.
+
+**Worked:** `Element ID: 702888`, the same label as yours. Ours read `Id: 990299`. That
+label was never Navisworks naming it for us, it was this tool using the display name of
+whichever property matched first, and Id happened to be first in the list. It is your
+label now, and the property that actually supplied the number is in the log.
+
+162. Look at Distance and Clash Point.
+
+**Worked:** three decimals, `-0.123` and `x:8.241`. Ours carried the whole double.
+
+163. One thing measured that is worth knowing. Your 1A04WN has nine coordinates that are
+     NOT three decimals, like `0.0000000000000373`. Every one is a value that would read
+     as `0.000` if it were cut to three, and `0.000` appears nowhere in either of your
+     files. So Navisworks never shows a real value as zero, and ours does the same now.
+
+     Whether yours rounds or cuts I could not establish. Both your files carry only the
+     finished text and nothing carries the number behind it. Ours rounds.
+
+## Step 46, the check would have caught all of it
+
+164. The self check reported nothing wrong while the order, the label and both number
+     formats differed from your files. It was counting whether a column was there and
+     nothing else.
+
+**Worked:** it now compares which columns, in what shape, in what order, and names the
+first difference with an example from each:
+
+    Client report: The Item ID cell is the wrong shape. Ours reads "Id: 990299" and the
+    client's report reads "Element ID: 707077".
+
+165. That is the line that should have found this instead of you opening files.
+
 ## What to send me if it goes wrong
 
 Send the whole log file, not a summary and not the last few lines. Use **Copy log** and

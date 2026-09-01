@@ -192,9 +192,11 @@ namespace Federator.Core.Tests
             Assert.That(group.Element("gridlocation").Value, Is.EqualTo("C-4 : Level 03"));
 
             XElement point = group.Element("clashpoint").Element("pos3f");
-            Assert.That(point.Attribute("x").Value, Is.EqualTo("12.5"));
-            Assert.That(point.Attribute("y").Value, Is.EqualTo("-3.25"));
-            Assert.That(point.Attribute("z").Value, Is.EqualTo("9"));
+            // Three decimals, which is what both client exports write, trailing zeros
+            // kept. Ours used to write the whole double.
+            Assert.That(point.Attribute("x").Value, Is.EqualTo("12.500"));
+            Assert.That(point.Attribute("y").Value, Is.EqualTo("-3.250"));
+            Assert.That(point.Attribute("z").Value, Is.EqualTo("9.000"));
 
             // No createddate. The stylesheet writes a Date Found column for any it finds
             // and the client's report has none, measured on both 1A02WN and 1A04WN.

@@ -1769,6 +1769,151 @@ of that is what the reports actually carry. The live one is `mainTableHeader`, a
 only one the column tests read.
 
 
+### 4p. Matching the original workbook, measured 2026-09-01
+
+Bader changed his mind on the workbook and the reason is good. He answered the original
+question before anyone had seen a real Navisworks report. With both side by side the ask
+became one thing: our output matching theirs.
+
+Files read:
+
+```
+samples\client-report\1104-PAR-1A02WN-XXX-BM-RPT-000001.html and .xlsx
+samples\client-report\1104-PAR-1A04WN-XXX-BM-RPT-000001.html and .xlsx
+samples\our-report\1104-PAR-1C07BC-ZZZ-BM-RPT-000001.html, .xlsx and .xml
+```
+
+The brief names ours as `-BM-MOD-000001`. The committed file is `-BM-RPT-000001`. Same
+file, different middle field.
+
+#### The sort rule
+
+Both exports are strictly descending by clash count over all 1830 blocks. 1A02WN opens
+12, 6, 6, 6 and 1A04WN opens 9, 7, 6, 6, and both end on 0.
+
+The SECOND KEY was measured rather than assumed, because 1830 tests share few distinct
+counts: 1A02WN has six distinct counts and 1A04WN eight, so the tie groups are enormous.
+Each tie group was compared against the order the tests sit in
+`samples\1104-PAR_CLASH_AllInOne (2) (1).xml`, which both reports were run from:
+
+```
+1A02WN   count 6      3 tests   original order: yes   alphabetical: no
+         count 4      3 tests   original order: yes   alphabetical: no
+         count 2      6 tests   original order: yes   alphabetical: no
+         count 1     10 tests   original order: yes   alphabetical: no
+         count 0   1807 tests   original order: yes   alphabetical: no
+1A04WN   count 4      3 tests   original order: yes   alphabetical: no
+         count 2      6 tests   original order: yes   alphabetical: no
+         count 1     10 tests   original order: yes   alphabetical: no
+         count 0   1806 tests   original order: yes   alphabetical: no
+```
+
+So the tie rule is the order the tests were created in, not the name. A group of 1807
+holding that order by chance is not a possibility.
+
+That makes it a STABLE sort by count descending. `List.Sort` is not stable and would
+scramble the 1807, so `ClashReport.InReportOrder` carries the original index and sorts on
+the pair.
+
+**Is that order the document's or the report writer's? UNKNOWN.** Nothing in the files can
+tell the two apart: a report writer that sorts, and a report writer that walks a collection
+Clash Detective had already sorted, produce the same page. The OUTPUT is sorted here for a
+second reason as well. Sorting the document would mean calling
+`DocumentClashTests.TestsSortTests`, which is a mutator that reorders the tests inside the
+NWF, and the NWF is the only record of what has been fixed.
+
+#### The number format
+
+Every distance and coordinate in both exports, 387 coordinates and 129 distances:
+
+```
+decimals seen, 1A02WN   3 on all 192 coordinates
+decimals seen, 1A04WN   3 on 186, and 6, 10 or 16 on nine of them
+```
+
+Trailing zeros are kept, so 8.310 and -0.440 and 17.150 appear as they are. That rules out
+significant figures as the general rule.
+
+The nine outliers in 1A04WN are all values that would round to zero at three decimals:
+
+```
+0.0000000000000373   0.0000000000000243   0.0000000000000365
+0.0000000000000486   0.0000000684         -0.000432
+```
+
+each of which is three significant figures, in plain decimal and never an exponent. And
+`0.000` and `-0.000` appear nowhere in either file. So the rule is three decimals, with a
+non-zero value that would read as zero written to three significant figures instead.
+
+**Whether theirs rounds or truncates is UNKNOWN.** Both files carry only the formatted text
+and nothing in either carries the value behind it, so there is nothing to compare. Ours
+rounds, which is what three decimals ordinarily means.
+
+#### The id label
+
+Ours read `Id: 990299` and theirs reads `Element ID: 702888`.
+
+WE set that label. `ClashHarvest.ElementIdNames` is
+`{ "Id", "Element Id", "ElementId", "Element ID" }` and the label was the display name of
+whichever matched. Id is first, so a Revit item whose property is displayed as Id gave the
+label Id. Navisworks is not naming it for us.
+
+So it is ours to match, and it is `Element ID`. The display name of the property that
+actually supplied the value is kept on `ClashItem.IdFrom` and goes in the log, because
+renaming a value is only honest while what was renamed is still visible.
+
+#### What the workbook lost
+
+Their xlsx is one sheet holding every test one after another. Ours had 50: a Summary, a
+Matrix and one per test that found clashes. All three are gone.
+
+The block layout, measured merge by merge off 1A04WN:
+
+```
+row 1        A1:C1 empty for the logo, D1:BA1 "Clash Report"
+row start    A:B merged over two rows, the test name. C to K the nine headers
+row start+1  C to K the nine values
+row start+2  blank
+row start+3  A:K empty, L:O "Item 1", P:S "Item 2"
+row start+4  A:B "Image", C:D "Clash Name", E to H, I:K "Clash Point",
+             L M N O and P Q R S the two item blocks
+row start+5  one row per clash, with A:B, C:D and I:K merged
+             then three blank rows before the next block
+```
+
+Column widths were taken off their sheet too, so a side by side comparison lines up.
+
+#### The self check passed all of this
+
+It reported nothing wrong while the order, the id label and both number formats differed
+from the samples, because it counted PRESENCE. A column being there says nothing about
+where it is, what shape its values are, or what order the blocks sit in.
+
+It now compares all three and reports the first divergence with an example from each file:
+
+```
+Column 8 of the clash table is wrong. Ours reads "Layer" and the client's report reads
+"Item ID". The whole order should be Image, Clash Name, ...
+
+The Item ID cell is the wrong shape. Ours reads "Id: 990299" and the client's report
+reads "Element ID: 707077".
+
+The tests are in the wrong order. Block 1 holds 1 clashes and block 2 holds 9. The
+client's report puts the most clashes first.
+```
+
+A measurement is checked against the rule above rather than a loose pattern, which is what
+lets it catch `x:33.170986` while every column is present.
+
+#### One difference this does not close
+
+The clash pictures are numbered by the order the tests RAN, because they are rendered
+during the clash walk, and the report is sorted afterwards. Theirs numbers by block. So
+`cd000001.jpg` is not necessarily the first block's first clash in ours. Every row links to
+its own file explicitly, so nothing is mislabelled, but the two numbering schemes are not
+the same and matching them would mean rendering after the run rather than during it.
+
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by
