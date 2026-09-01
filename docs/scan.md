@@ -1479,6 +1479,169 @@ It confirms the samples were produced by exactly this file, and it is nothing fo
 reproduce or correct.
 
 
+### 4n. Reading a property value of any kind, and four column faults, measured 2026-09-01
+
+A real run compared against two real Navisworks reports. The files:
+
+```
+samples\client-report\1104-PAR-1A02WN-XXX-BM-RPT-000001.html   3265122 bytes
+samples\client-report\1104-PAR-1A04WN-XXX-BM-RPT-000001.html   3266035 bytes
+samples\our-report\1104-PAR-1C07BC-ZZZ-BM-RPT-000001.html      3904315 bytes
+samples\our-report\1104-PAR-1C07BC-ZZZ-BM-RPT-000001.xml       1112490 bytes
+docs\logs\run-20260901-191711.log                               198097 bytes
+```
+
+The header rows, read out of each:
+
+```
+theirs   general  Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point
+         item 1   Item ID | Layer | Item Name | Item Type
+         item 2   Item ID | Layer | Item Name | Item Type
+
+ours     general  Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point
+         item 1   Layer | Item Name | Item Type
+         item 2   Layer | Item Name | Item Type
+```
+
+Both theirs are identical to each other. Ours is missing Item ID on both items and nothing
+else, so seven general columns against seven and three item columns against four.
+
+#### Which member returns a value regardless of kind
+
+The log carries the cause, twice written out and the rest counted:
+
+```
+type     : System.NotSupportedException
+message  : Not supported if '!IsDisplayString'
+stack    : at Autodesk.Navisworks.Api.VariantData.ToDisplayString()
+           at Federator.Addin.Engine.ClashHarvest.FirstProperty(ModelItem, String[], String&)
+           at Federator.Addin.Engine.ClashHarvest.Describe(Document, ModelItem, ModelItem, ClashItem)
+```
+
+Every accessor on `VariantData` is kind specific and throws on any other kind. The complete
+list, read off the installed DLL:
+
+```
+ToAnyDouble  ToBoolean  ToDateTime  ToDisplayString  ToDouble  ToDoubleAngle
+ToDoubleArea ToDoubleLength  ToDoubleVolume  ToIdentifierString  ToInt32
+ToNamedConstant  ToPoint2D  ToPoint3D  ToString
+```
+
+and the kinds:
+
+```
+VariantDataType   None=0 Double=1 Int32=2 Boolean=3 DisplayString=4 DateTime=5
+                  DoubleLength=6 DoubleAngle=7 NamedConstant=8 IdentifierString=9
+                  DoubleArea=10 DoubleVolume=11 Point3D=12 Point2D=13
+```
+
+**The one that returns a value regardless of kind is `VariantData.ToString()`.** It is an
+override declared on `VariantData` itself, and its IL, decoded off the installed DLL,
+proves what it does. It calls `NativeHandle.get_IsDisposed`, then `GetDataType`, then
+switches to the matching accessor:
+
+```
+call VariantData.GetDataType
+call VariantData.ToDouble        ... Double.ToString      ... String.Concat
+call VariantData.ToInt32         ... Int32.ToString       ... String.Concat
+call VariantData.ToBoolean       ... Boolean.ToString     ... String.Concat
+call VariantData.ToDisplayString ...                      ... String.Concat
+call VariantData.ToDateTime      ... DateTime.ToString    ... String.Concat
+call VariantData.ToDoubleLength  ... Double.ToString      ... String.Concat
+call VariantData.ToDoubleAngle   ... Double.ToString      ... String.Concat
+```
+
+So it never throws. There is a catch. Its string literals are
+
+```
+"Disposed" "None" "Double:" "Int32:" "Boolean:" "DisplayString:" "DateTime:"
+"DoubleLength:" "DoubleAngle:" "<null>" "NamedConstant:" "IdentifierString:"
+"Point3D:" "Point2D:" "Unknown"
+```
+
+so it prefixes the kind and hands back `Int32:702888`, not `702888`. It is a diagnostic
+form rather than a value.
+
+The tool therefore reads the KIND and calls the right accessor, which is what `ToString`
+does internally minus the prefix, and keeps `ToString` as the fallback for a kind it does
+not know, stripping the prefix with `Federator.Core.Report.VariantText.Clean`. That part is
+in Core so it can be tested, because the rest needs Navisworks.
+
+`ToAnyDouble` covers Double, DoubleLength, DoubleAngle, DoubleArea and DoubleVolume in one
+case, which is what its name says and what saves five cases that would each throw on the
+other four.
+
+None of this could be tried outside Navisworks. `VariantData.FromInt32` throws
+`AccessViolationException` in a bare process, because the native side is not initialised,
+so the IL is the evidence rather than a run.
+
+#### Why the source file and the discipline were empty as well
+
+`Describe` read the family, then the type, then the material, then the item type, then the
+element id, and only then the source file and the discipline. The element id is an Int32,
+so `ToDisplayString` threw on it, and the single try around the whole method meant
+everything after that point was never reached. One throw cost three columns, not one.
+
+The source file and the discipline now sit in their own try, so a property that will not
+read cannot take them with it.
+
+#### Our columns were leaking into the client's page, and one measurement says otherwise
+
+The stylesheet writes one column per smarttag, so anything of ours in the XML becomes a
+column on the page the client receives. Our XML carried seven:
+
+```
+Item Name | Item Type | Family | Type Name | Material | Source File | Discipline
+                                                        (empty)      (empty)
+```
+
+2982 smarttags over 426 clashobjects, exactly seven each.
+
+The rendered page from that same run, however, carries only three item columns. Our extras
+appear zero times in it. That is because the page was built with the client layout tick box
+on while the standalone XML file ignores that setting and always wrote seven. So the leak
+was real in the XML and had not yet reached that particular page.
+
+Either way it is now impossible. The page IS the client's report, so the XML that feeds it
+always carries exactly the two quick properties theirs has, whatever any tick box says.
+Family, Type Name, Material, Source File and Discipline are workbook columns.
+
+`createddate` goes with them. Neither supplied report has a Date Found column, and the
+stylesheet writes one for any `createddate` it finds.
+
+#### Tolerance and separator
+
+```
+theirs   0.025m                        ours   0.2460629921ft
+theirs   ..._files\cd000001.jpg        ours   ..._files/cd000001.jpg
+theirs   ..._files\logo.jpg            ours   ..._files/logo.jpg
+```
+
+The units differ because the two documents do, which is correct and the log says so. The
+precision was ours: the stylesheet writes the `tolerance` attribute straight into the cell
+followed by the units, and we were writing the file's own full precision. Three decimals
+now, which is how both of theirs are written.
+
+The separator is a backslash in both of theirs, for the clash pictures and for the logo,
+and the client opens these in Excel on Windows. The workbook keeps a forward slash, because
+a hyperlink there is a Uri and there is nothing of theirs to match: their own xlsx carries
+no picture hyperlinks at all, only linked drawings.
+
+#### Neither report embeds its pictures
+
+Measured on the zip of each:
+
+```
+theirs 1A04WN   embedded pictures 0
+theirs 1A02WN   embedded pictures 0
+ours   1C07BC   embedded pictures 0
+```
+
+The native export never embeds. Pictures show only when the `_files` folder sits beside the
+file, which is why the page and its folder are what gets sent, and why the tick box that
+pastes them into cells says so.
+
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

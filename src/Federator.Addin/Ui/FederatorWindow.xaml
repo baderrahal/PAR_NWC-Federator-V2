@@ -331,7 +331,7 @@
                                           Content="Paste the photos into the cells"
                                           Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
                                 <TextBlock Style="{StaticResource TickHelp}"
-                                           Text="Workbook goes from 0.3 MB to 52 MB. Already linked without this." />
+                                           Text="Send the page and its _files folder. Neither report embeds photos." />
                             </StackPanel>
 
                             <StackPanel Grid.Row="4" Grid.ColumnSpan="5">

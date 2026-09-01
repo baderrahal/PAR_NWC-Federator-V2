@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
 using Federator.Core.Diagnostics;
@@ -319,6 +320,21 @@ namespace Federator.Addin.Engine
                     }
                 }
 
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the properties of a clashing item",
+                    error,
+                    "kept going, the columns this item did not fill are left empty");
+            }
+
+            // In its OWN try, so a property that will not read cannot take these with it.
+            // That is exactly what happened on 2026-09-01: one NotSupportedException out
+            // of ToDisplayString aborted the whole of this method, and the source file and
+            // the discipline came out empty on all 426 items because they are read last.
+            try
+            {
                 string source = SourceFileOf(item);
                 into.SourceFile = source;
 
@@ -330,7 +346,7 @@ namespace Federator.Addin.Engine
             catch (Exception error)
             {
                 log.Failure(
-                    "reading the properties of a clashing item",
+                    "reading which file a clashing item came from",
                     error,
                     "kept going, the columns this item did not fill are left empty");
             }
@@ -490,26 +506,107 @@ namespace Federator.Addin.Engine
                             continue;
                         }
 
-                        using (VariantData value = property.Value)
+                        string text = Text(property);
+
+                        if (text.Length > 0)
                         {
-                            if (value == null)
-                            {
-                                continue;
-                            }
-
-                            string text = value.ToDisplayString();
-
-                            if (!string.IsNullOrEmpty(text))
-                            {
-                                matched = property.DisplayName ?? string.Empty;
-                                return text;
-                            }
+                            matched = property.DisplayName ?? string.Empty;
+                            return text;
                         }
                     }
                 }
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// One property as text, whatever kind of value it holds.
+        ///
+        /// This used to be ToDisplayString() alone, which is kind specific and throws
+        /// NotSupportedException on anything that is not a display string. A Revit element
+        /// id is an Int32, so it threw, 426 times on the run of 2026-09-01, and because
+        /// one throw took the whole of Describe with it the element id, the source file
+        /// and the discipline were all left empty and the client report lost its Item ID
+        /// column.
+        ///
+        /// Every To&lt;Kind&gt;() on VariantData is kind specific in the same way. The one
+        /// member that returns a value regardless of kind is ToString(), whose IL switches
+        /// on GetDataType and calls the matching accessor, but it prefixes the kind name
+        /// and hands back "Int32:702888". So the kind is read here and the right accessor
+        /// called, which gives the value clean, and ToString is the fallback for a kind
+        /// this does not know. See docs\scan.md section 4n.
+        ///
+        /// Never throws. A property that cannot be read is one empty cell, not a lost row.
+        /// </summary>
+        private static string Text(DataProperty property)
+        {
+            try
+            {
+                using (VariantData value = property.Value)
+                {
+                    if (value == null)
+                    {
+                        return string.Empty;
+                    }
+
+                    return Text(value);
+                }
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        private static string Text(VariantData value)
+        {
+            switch (value.DataType)
+            {
+                case VariantDataType.None:
+                    return string.Empty;
+
+                case VariantDataType.DisplayString:
+                    return value.ToDisplayString();
+
+                case VariantDataType.IdentifierString:
+                    return value.ToIdentifierString();
+
+                case VariantDataType.Int32:
+                    return value.ToInt32().ToString(CultureInfo.InvariantCulture);
+
+                case VariantDataType.Boolean:
+                    return value.ToBoolean().ToString(CultureInfo.InvariantCulture);
+
+                case VariantDataType.DateTime:
+                    return value.ToDateTime().ToString(
+                        "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+                case VariantDataType.Double:
+                case VariantDataType.DoubleLength:
+                case VariantDataType.DoubleAngle:
+                case VariantDataType.DoubleArea:
+                case VariantDataType.DoubleVolume:
+
+                    // ToAnyDouble covers all five, which is what its name says and what
+                    // saves five separate cases that would each throw on the other four.
+                    return value.ToAnyDouble().ToString("0.######", CultureInfo.InvariantCulture);
+
+                case VariantDataType.NamedConstant:
+                    using (NamedConstant named = value.ToNamedConstant())
+                    {
+                        return named == null ? string.Empty : Or(named.DisplayName, string.Empty);
+                    }
+
+                default:
+
+                    // A kind nobody here has seen. ToString never throws, so the value is
+                    // still read, and the kind prefix it adds is taken back off.
+                    string fallback = VariantText.Clean(
+                        value.ToString(), value.DataType.ToString());
+
+                    return VariantText.IsNothing(fallback) ? string.Empty : fallback;
+            }
         }
 
         /// <summary>

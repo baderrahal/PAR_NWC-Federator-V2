@@ -196,10 +196,9 @@ namespace Federator.Core.Tests
             Assert.That(point.Attribute("y").Value, Is.EqualTo("-3.25"));
             Assert.That(point.Attribute("z").Value, Is.EqualTo("9"));
 
-            XElement date = group.Element("createddate").Element("date");
-            Assert.That(date.Attribute("year").Value, Is.EqualTo("2026"));
-            Assert.That(date.Attribute("month").Value, Is.EqualTo("8"));
-            Assert.That(date.Attribute("day").Value, Is.EqualTo("31"));
+            // No createddate. The stylesheet writes a Date Found column for any it finds
+            // and the client's report has none, measured on both 1A02WN and 1A04WN.
+            Assert.That(group.Element("createddate"), Is.Null);
 
             List<XElement> objects = new List<XElement>(
                 group.Element("clashobjects").Elements("clashobject"));
@@ -238,11 +237,15 @@ namespace Federator.Core.Tests
             }
 
             // Theirs first, then ours, which is the order they appear as columns.
+            // Exactly the two the client's report has. The stylesheet makes a column out
+            // of every smarttag, so anything of ours here becomes a column on the page
+            // they receive. Family, Type Name, Material, Source File and Discipline are
+            // in the workbook instead.
+            Assert.That(read.Count, Is.EqualTo(2));
             Assert.That(read["Item Name"], Is.EqualTo("Floor 200mm"));
-            Assert.That(read["Family"], Is.EqualTo("Floor"));
-            Assert.That(read["Type Name"], Is.EqualTo("Generic 200mm"));
-            Assert.That(read["Material"], Is.EqualTo("Concrete"));
-            Assert.That(read["Discipline"], Is.EqualTo("AR"));
+            Assert.That(read["Item Type"], Is.EqualTo(string.Empty));
+            Assert.That(read.ContainsKey("Family"), Is.False);
+            Assert.That(read.ContainsKey("Source File"), Is.False);
         }
 
         // Left out rather than written empty, so a blank is never read as a measured blank.

@@ -1524,6 +1524,89 @@ picture at the top. A missing logo never stops a report.
      reference in the file and the logo is one. That is Autodesk's own behaviour and their
      reports do the same.
 
+## Step 35, the Item ID column is back
+
+136. Run a group and open the client report page. Look at the Item 1 and Item 2 blocks.
+
+**Worked:** four columns each, the same as yours:
+
+    Item ID | Layer | Item Name | Item Type
+
+and Item ID reads `Element ID: 702888`. Ours had no such column at all before.
+
+137. What was wrong, because the log told us exactly.
+
+Your run threw 426 times with
+
+    System.NotSupportedException: Not supported if '!IsDisplayString'
+       at Autodesk.Navisworks.Api.VariantData.ToDisplayString()
+
+Every way of reading a property value out of Navisworks is tied to the kind of value it
+holds, and a Revit element id is a number, not a display string. So the read threw, and
+because the whole of that method sat in one try, everything after it was lost as well.
+That is why the source file and the discipline were empty too. One throw cost three
+columns.
+
+The value is now read by its kind. The source file and the discipline sit in their own
+try, so a property that will not read can never take them with it again.
+
+138. Check the two columns that were empty.
+
+**Worked:** Source File and Discipline are filled in the workbook. They are not on the
+client page, on purpose, see the next step.
+
+## Step 36, our columns stay out of the client's page
+
+139. Open the client report page and look for Family, Type Name, Material, Source File or
+     Discipline.
+
+**Worked:** none of them is there. Neither is Date Found. The page is exactly the fifteen
+columns your own reports carry and nothing else.
+
+That is now true whatever the tick boxes say. The page IS the client's report, so it
+always carries only what theirs carries.
+
+140. Open the workbook and look for the same five.
+
+**Worked:** they are all there, after the client's columns. That is where ours belong.
+
+141. Worth knowing why this mattered. The stylesheet makes a column out of every quick
+     property it finds in the file. Ours was writing seven per item where yours writes
+     two, so five extra columns would appear on a page going to a client, and two of them
+     empty.
+
+## Step 37, tolerance and separators
+
+142. Look at the Tolerance cell on the page.
+
+**Worked:** three decimals with the unit, `0.246ft`. It read `0.2460629921ft` before, which
+was the file's own precision rather than a format. Yours reads `0.025m`.
+
+**The unit difference is not a fault.** Your model measures in feet and theirs in metres,
+and the log says `the document measures in ft, every tolerance was converted into it`.
+0.246 ft is 75 mm and 0.025 m is 25 mm, so the two projects also use different tolerances.
+
+143. Look at the picture references in the page source.
+
+**Worked:** a backslash, `1104-..._files\cd000001.jpg`, which is what both of your reports
+write. The logo too. Ours used a forward slash before.
+
+The workbook keeps a forward slash in its hyperlinks, because a hyperlink there is a web
+style address and your own xlsx has no picture hyperlinks at all to copy.
+
+## Step 38, the pictures never live inside the file
+
+144. This one is worth knowing before anyone asks why a workbook on its own shows nothing.
+
+**Measured on your files and ours:** your 1A04WN xlsx has zero embedded pictures. Your
+1A02WN has zero. Ours has zero. The native Navisworks export never embeds them.
+
+Pictures show only when the `_files` folder sits beside the file. **The page and its
+_files folder together is what gets sent.** Either one alone is not the report.
+
+145. The line under the paste tick box now says exactly that, so nobody expects a workbook
+     to carry pictures on its own.
+
 ## What to send me if it goes wrong
 
 Send the whole log file, not a summary and not the last few lines. Use **Copy log** and

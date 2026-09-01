@@ -532,6 +532,32 @@ and 6 does not read as broken.
   2026-09-01, it answered every column test but three: description, smarttags and the href
   on a result, which are the Description column, the Item Name and Item Type columns, and
   the Image column. See docs\scan.md section 4m for the whole table
+- A property value is read by its KIND, never with ToDisplayString alone. Every accessor
+  on VariantData is kind specific and throws on any other kind, and a Revit element id is
+  an Int32, so ToDisplayString threw 426 times on one run and took the whole of Describe
+  with it, losing the element id, the source file and the discipline together. The one
+  member that returns a value regardless of kind is ToString, whose IL switches on
+  GetDataType, but it prefixes the kind and hands back "Int32:702888". So the kind is read
+  and the right accessor called, with ToString as the fallback for a kind nobody has seen
+  and its prefix stripped. Measured, see docs\scan.md section 4n
+- Anything that can throw per item goes in its own try. The source file and the discipline
+  are read last and were lost to a throw three properties earlier, on all 426 items, which
+  is one throw costing three columns
+- The page carries ONLY the two quick properties the client's report has, Item Name and
+  Item Type, whatever any tick box says. The stylesheet makes a column out of every
+  smarttag, so Family, Type Name, Material, Source File and Discipline would each become a
+  column on the page the client receives. They are workbook columns. createddate goes the
+  same way, because neither supplied report has a Date Found column
+- Tolerance is written to THREE decimals, which is how both of theirs are written. Ours
+  read 0.2460629921ft against their 0.025m. The units differing is the two documents
+  differing and is correct. The precision was ours
+- A picture reference on the page uses a BACKSLASH, for the clash pictures and for the
+  logo, because that is what both supplied reports write and the client opens these in
+  Excel on Windows. The workbook keeps a forward slash, because a hyperlink there is a Uri
+  and their own xlsx has no picture hyperlinks at all to match
+- Neither their report nor ours embeds a picture in the xlsx, measured on the zip of each.
+  The native export never does. Pictures show only when the _files folder sits beside the
+  file, so the page and its folder are what gets sent and the tick box says so
 - Exactly ONE objectattribute per clashobject, and it is the id. The Item ID cell is
   value-of over ./objectattribute/name, which takes the FIRST node, so writing several put
   the item's Name in the id column. Everything else about an item is a smarttag, which is
