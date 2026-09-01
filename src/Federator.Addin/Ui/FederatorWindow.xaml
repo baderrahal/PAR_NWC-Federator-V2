@@ -267,7 +267,7 @@
                                  VerticalAlignment="Center" />
                         <Button Grid.Row="7" Grid.Column="2" Content="Browse" Click="OnBrowseLogo" />
                         <TextBlock Grid.Row="8" Grid.Column="1" Style="{StaticResource TickHelp}"
-                                   Text="Shown on the client report page. Empty means no logo." />
+                                   Text="Starts as the Navisworks logo, which is what the client accepts. Clear it for none." />
                     </Grid>
 
                     <!-- The pictures. On, because the report the client has accepted has

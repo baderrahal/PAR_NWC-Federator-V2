@@ -40,10 +40,33 @@ namespace Federator.Core.Report
         public const string Prefix = "cd";
 
         /// <summary>
-        /// The logo Navisworks writes into the same folder. Named here so a count of what
-        /// this tool wrote can leave it out rather than pretend to have made it.
+        /// The logo goes in the same folder, which is where Navisworks puts it and where
+        /// both supplied reports have it. Named here so a count of the pictures this tool
+        /// rendered can leave it out, because it was copied rather than made.
         /// </summary>
         public const string LogoName = "logo.jpg";
+
+        /// <summary>Where the logo is copied to, beside the clash pictures.</summary>
+        public static string LogoPathFor(string workbookPath)
+        {
+            string folder = FolderFor(workbookPath);
+
+            return folder.Length == 0 ? string.Empty : Path.Combine(folder, LogoName);
+        }
+
+        /// <summary>
+        /// What the page links the logo by. Relative and forward slashed, the same as
+        /// every clash picture, so the page and its folder can be sent anywhere together.
+        ///
+        /// The accepted xlsx carries absolute file:/// links, which is exactly why its
+        /// pictures break on any machine but the one that made it. Ours must not.
+        /// </summary>
+        public static string LogoLinkFor(string workbookPath)
+        {
+            string folder = FolderNameFor(workbookPath);
+
+            return folder.Length == 0 ? string.Empty : folder + "/" + LogoName;
+        }
 
         /// <summary>
         /// The images folder for a workbook, which is a sibling of it named after it.

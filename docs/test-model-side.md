@@ -1449,6 +1449,81 @@ wrong yet.
 DIALOG still shows the message, because that is what you send back to me and it is what
 makes a fault findable. A label does not.
 
+## Step 31, the logo is the one you already send
+
+The report now carries the same logo your reports carry today, automatically. Nothing to
+pick, nothing to set up, no first run without it.
+
+128. Open the window and go to the Outputs step.
+
+**Worked:** the Logo box is already filled in with
+
+    C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg
+
+That is where Navisworks keeps it. It is 6137 bytes and it is byte for byte the same file
+as the logo.jpg sitting in the _files folder of both reports you sent me, same MD5, which
+is how I know it is the one Navisworks copies into a report folder.
+
+129. Run a group and open the client report page.
+
+**Worked:** the logo is at the top left, exactly as on the reports you send today.
+
+130. Look in the report's _files folder.
+
+**Worked:** logo.jpg is in there beside the clash pictures, which is where Navisworks puts
+it too.
+
+## Step 32, it survives being sent
+
+131. This is the one that matters for a client. Copy the whole reports folder to a memory
+     stick, or to a network share, or send it to someone else, and open the page there.
+
+**Worked:** the logo and every clash picture still show. The page references them
+relatively, so the folder works wherever it goes.
+
+**Your own xlsx does not do this.** The one you sent carries absolute links,
+`file:///C:\00_NM\Clash report\...`, so its pictures only ever show on your machine.
+Anyone else opens it to broken boxes. Ours does not repeat that, and there is a test that
+opens the written page and reads the reference back out of the file to make sure, because
+the last broken image link was reported as fine by the object model while the file itself
+was wrong.
+
+## Step 33, nothing of Autodesk's ships with this tool
+
+132. This is worth knowing if anyone asks about licensing.
+
+The logo is never copied into this repo, never into the bundle, and install.ps1 does not
+carry it. It is read off the Navisworks install on the machine that is running, every run.
+So the picture that reaches a client was already on the machine that wrote the report.
+
+The only two logo.jpg files in the repo are inside the two client exports you committed
+yourself, where Navisworks had already put them. There is a test that fails if one turns
+up anywhere else.
+
+## Step 34, when the logo is not there
+
+133. Hard to force on purpose, and mostly a thing to watch for. If Navisworks is installed
+     somewhere unusual, or the Images folder is missing, the log says so and names every
+     path it looked at:
+
+    LOGO     the report carries the logo Navisworks puts on its own, read from the install
+             at run time. It is not there, so the page was written without one. Everything
+             else on it is unaffected.
+             looked at C:\...\Images\logo.jpg
+             looked at C:\...\en-US\Images\logo.jpg
+
+**Should happen:** the report is still written, with everything else on it, and just no
+picture at the top. A missing logo never stops a report.
+
+134. If you want a different mark for a project, the Browse box is still there. Point it at
+     a file and that one is used instead. Clear the box and there is no logo at all. Most
+     people never touch it.
+
+135. One thing that is not a fault. A page with a logo shows an Image column even when the
+     photos are switched off, because the stylesheet turns that column on for any picture
+     reference in the file and the logo is one. That is Autodesk's own behaviour and their
+     reports do the same.
+
 ## What to send me if it goes wrong
 
 Send the whole log file, not a summary and not the last few lines. Use **Copy log** and

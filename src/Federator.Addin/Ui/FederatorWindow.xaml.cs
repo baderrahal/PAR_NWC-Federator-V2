@@ -76,6 +76,7 @@ namespace Federator.Addin.Ui
             // opened with all fifteen naming boxes blank, so every field had to be typed
             // by hand, which is where MOD-00001 came from instead of MOD-000001.
             ShowNaming();
+            ShowTheInstallsLogo();
             FillGroupingModes();
             FillOpenCounts();
 
@@ -700,9 +701,41 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The logo the client report page carries. Empty by default, which means no
-        /// logo. Autodesk's own logo.jpg is in their install and is theirs, so nothing
-        /// here reaches for it and Bader points this at the Parsons mark.
+        /// Fills the logo box with the one Navisworks puts on its own reports, because
+        /// that is the report the client accepts and there should be nothing to set up
+        /// before a first run.
+        ///
+        /// Read off the install every time the window opens rather than remembered, so a
+        /// machine whose Navisworks moved still finds it. Clearing the box means no logo.
+        /// </summary>
+        private void ShowTheInstallsLogo()
+        {
+            if (LogoBox == null || Trimmed(LogoBox.Text).Length > 0)
+            {
+                return;
+            }
+
+            string install = NavisworksFacts.InstallFolder();
+            string language = NavisworksFacts.Language();
+            string found = LogoLocator.Find(install, language);
+
+            if (found.Length > 0)
+            {
+                LogoBox.Text = found;
+                log.Line("LOGO     the report will carry " + found);
+                return;
+            }
+
+            foreach (string line in LogoLocator.WhyNotFound(install, language))
+            {
+                log.Line(line);
+            }
+        }
+
+        /// <summary>
+        /// A different mark for a project that needs one. It starts filled with the
+        /// install's own logo, which is what the client accepts, so most people never open
+        /// this. Clearing the box means no logo at all.
         /// </summary>
         private void OnBrowseLogo(object sender, RoutedEventArgs e)
         {

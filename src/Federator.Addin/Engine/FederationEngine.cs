@@ -741,7 +741,8 @@ namespace Federator.Addin.Engine
             {
                 ClashReportXml writer = new ClashReportXml();
                 writer.ClientColumnsOnly = reports.ClientColumnsOnly;
-                writer.LogoHref = CopyLogoBeside(path);
+                writer.LogoHref = CopyLogoIntoTheReportFolder(
+                    ReportPaths.Workbook(reportFolder, job.WorkbookName));
 
                 new HtmlTabularWriter().Write(writer.Build(report), stylesheet, path);
             }
@@ -760,19 +761,27 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Puts the picked logo beside the page and gives back the name to link it by, or
-        /// an empty string when nobody picked one.
+        /// Copies the logo into the report's own _files folder, beside the clash pictures,
+        /// and gives back the relative name to link it by.
         ///
-        /// Copied rather than linked, so the page and its picture travel together the same
-        /// way the clash pictures do. Nothing here ever reaches for Autodesk's own
-        /// logo.jpg in the install.
+        /// The report goes to a client, so the page cannot point at a path on the machine
+        /// that wrote it. The accepted xlsx carries absolute file:/// links and that is
+        /// exactly why its pictures break anywhere else. Copied and linked relatively, the
+        /// whole folder works wherever it is sent, which is what Navisworks itself does
+        /// and why both supplied reports have a logo.jpg sitting in their _files folder.
+        ///
+        /// Where nobody has changed it, the file copied is the install's own logo.jpg. No
+        /// copy of it is in this repo or in the bundle. It is read off the machine that is
+        /// running, every run.
         /// </summary>
-        private string CopyLogoBeside(string pagePath)
+        private string CopyLogoIntoTheReportFolder(string workbookPath)
         {
             string picked = reports.LogoPath == null ? string.Empty : reports.LogoPath.Trim();
 
+            // Cleared on purpose means no logo, and that is a choice rather than a fault.
             if (picked.Length == 0)
             {
+                log.Line("LOGO     the logo box is empty, so the page carries no logo");
                 return string.Empty;
             }
 
@@ -780,25 +789,36 @@ namespace Federator.Addin.Engine
             {
                 if (!System.IO.File.Exists(picked))
                 {
-                    log.Line("HTML     the logo " + picked + " is not there, so the page has none");
+                    foreach (string line in LogoLocator.WhyNotFound(
+                        NavisworksFacts.InstallFolder(), NavisworksFacts.Language()))
+                    {
+                        log.Line(line);
+                    }
+
+                    log.Line("         and the picked " + picked + " is not there either");
                     return string.Empty;
                 }
 
-                string name = System.IO.Path.GetFileName(picked);
-                string beside = System.IO.Path.Combine(
-                    System.IO.Path.GetDirectoryName(pagePath) ?? string.Empty, name);
+                string into = ImageNaming.LogoPathFor(workbookPath);
+                string folder = System.IO.Path.GetDirectoryName(into);
 
-                if (!string.Equals(picked, beside, StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(folder) && !System.IO.Directory.Exists(folder))
                 {
-                    System.IO.File.Copy(picked, beside, true);
+                    System.IO.Directory.CreateDirectory(folder);
                 }
 
-                return name;
+                if (!string.Equals(picked, into, StringComparison.OrdinalIgnoreCase))
+                {
+                    System.IO.File.Copy(picked, into, true);
+                }
+
+                log.Line("LOGO     " + picked + " copied into " + folder);
+                return ImageNaming.LogoLinkFor(workbookPath);
             }
             catch (Exception error)
             {
                 log.Failure(
-                    "copying the logo beside the client report",
+                    "copying the logo into the report folder",
                     error,
                     "kept going, the page was written with no logo");
                 return string.Empty;
