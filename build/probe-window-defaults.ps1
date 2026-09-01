@@ -70,7 +70,10 @@ foreach ($which in @("Nwf","Nwd","Workbook")) {
 
 Write-Output ""
 Write-Output "==== calling ShowNaming again by hand ===="
-$winType.GetMethod("ShowNaming", "NonPublic,Instance").Invoke($window, @())
+# GetMethod(string, string) is not an overload. The flags have to be the enum, or
+# PowerShell binds to GetMethod(string, Type[]) and throws on the conversion.
+$flags = [System.Reflection.BindingFlags]"NonPublic,Instance"
+$winType.GetMethod("ShowNaming", $flags).Invoke($window, @())
 foreach ($n in @("NwfLevel","NwfNumber","NwdNumber","WorkbookNumber")) {
   $b = Box $n
   Write-Output ("  {0,-18} {1}" -f $n, ("'" + $b.Text + "'"))

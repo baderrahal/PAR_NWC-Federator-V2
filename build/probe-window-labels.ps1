@@ -47,20 +47,49 @@ for ($i = 0; $i -lt $steps.Items.Count; $i++) {
   $panels += $steps.Items[$i].Content
 }
 
-function Walk($node, $found) {
+function Walk($node, $found, $type) {
   if ($null -eq $node) { return }
   $stack = New-Object System.Collections.Stack
   $stack.Push($node)
   while ($stack.Count -gt 0) {
     $n = $stack.Pop()
-    if ($n -is [System.Windows.Controls.CheckBox]) { [void]$found.Add($n) }
+    if ($n -is $type) { [void]$found.Add($n) }
     $c = [System.Windows.Media.VisualTreeHelper]::GetChildrenCount($n)
     for ($k = 0; $k -lt $c; $k++) { $stack.Push([System.Windows.Media.VisualTreeHelper]::GetChild($n, $k)) }
   }
 }
 
+# What is visible WITHOUT opening anything. That is the number this window is judged on,
+# because a decision behind an expander is one nobody is asked to make.
+$upFront = New-Object System.Collections.ArrayList
+foreach ($panel in $panels) { Walk $panel $upFront ([System.Windows.Controls.CheckBox]) }
+$upFrontNames = @()
+foreach ($b in $upFront) { if ($b.Name) { $upFrontNames += $b.Name } }
+
+# Now open every expander, more than once because opening one can reveal another, so the
+# boxes inside them are checked against the same limits as the ones in plain sight.
+$opened = @()
+for ($pass = 0; $pass -lt 4; $pass++) {
+  $ex = New-Object System.Collections.ArrayList
+  for ($i = 0; $i -lt $steps.Items.Count; $i++) {
+    $steps.SelectedIndex = $i
+    $window.UpdateLayout()
+    Walk $steps.Items[$i].Content $ex ([System.Windows.Controls.Expander])
+  }
+  $more = $false
+  foreach ($e in $ex) {
+    if (-not $e.IsExpanded) { $e.IsExpanded = $true; $opened += [string]$e.Header; $more = $true }
+  }
+  $window.UpdateLayout()
+  if (-not $more) { break }
+}
+
 $boxes = New-Object System.Collections.ArrayList
-foreach ($panel in $panels) { Walk $panel $boxes }
+for ($i = 0; $i -lt $steps.Items.Count; $i++) {
+  $steps.SelectedIndex = $i
+  $window.UpdateLayout()
+  Walk $steps.Items[$i].Content $boxes ([System.Windows.Controls.CheckBox])
+}
 
 # One word boxes that share a line and are not settings with a cost, so no help line.
 $plain = @("ImageNew", "ImageActive", "ImageReviewed", "ImageApproved", "ImageResolved",
@@ -121,11 +150,16 @@ foreach ($box in $boxes) {
   $verdict = "ok"
   if ($notes.Count -gt 0) { $verdict = ($notes -join ", "); $bad++ }
 
-  Write-Output ("{0,-20} {1,2}w {2,2}w  {3}" -f $name, $words, $helpWords, $verdict)
+  $where = "up front"
+  if ($upFrontNames -notcontains $name) { $where = "behind an expander" }
+
+  Write-Output ("{0,-20} {1,2}w {2,2}w  {3,-18}  {4}" -f $name, $words, $helpWords, $where, $verdict)
   if ($help -ne "") { Write-Output ("                              " + $help) }
 }
 
 Write-Output ""
-Write-Output ("tick boxes checked: " + $boxes.Count + "   problems: " + $bad)
+Write-Output ("expanders opened: " + (($opened | Select-Object -Unique) -join ", "))
+$hidden = $boxes.Count - $upFrontNames.Count
+Write-Output ("tick boxes: " + $boxes.Count + "   up front: " + $upFrontNames.Count + "   behind an expander: " + $hidden + "   problems: " + $bad)
 $window.Close()
 Write-Output "PROBE DONE"

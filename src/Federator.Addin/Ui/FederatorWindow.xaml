@@ -61,7 +61,7 @@
             </DockPanel>
         </Border>
 
-        <TabControl x:Name="Steps">
+        <TabControl x:Name="Steps" SelectionChanged="OnStepShown">
 
             <!-- Step 1 -->
             <TabItem Header="1. Source">
@@ -234,119 +234,102 @@
                         <TextBox Grid.Row="2" Grid.Column="1" x:Name="ExcelFolderBox"
                                  VerticalAlignment="Center" TextChanged="OnOutputFolderChanged" />
                         <Button Grid.Row="2" Grid.Column="2" Content="Browse" Click="OnBrowseExcel" />
-                        <StackPanel Grid.Row="3" Grid.Column="1" Margin="0,8,0,0">
-                            <CheckBox x:Name="RepublishNwd" IsChecked="True"
-                                      Content="Republish the NWD"
-                                      Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
-                            <TextBlock Style="{StaticResource TickHelp}"
-                                       Text="Adds about a second per building." />
-                        </StackPanel>
-                        <StackPanel Grid.Row="4" Grid.Column="1">
-                            <CheckBox x:Name="WriteClashXml" IsChecked="False"
-                                      Content="Write a clash XML beside each workbook"
-                                      Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
-                            <TextBlock Style="{StaticResource TickHelp}"
-                                       Text="One extra file per building, under a megabyte." />
-                        </StackPanel>
-                        <StackPanel Grid.Row="5" Grid.Column="1">
-                            <CheckBox x:Name="DateTheNwd" IsChecked="False"
-                                      Content="Date the NWD so every week is kept"
-                                      Checked="OnNamingToggled" Unchecked="OnNamingToggled" />
-                            <TextBlock Style="{StaticResource TickHelp}"
-                                       Text="Without this, only the latest week exists." />
-                        </StackPanel>
-                        <StackPanel Grid.Row="6" Grid.Column="1">
-                            <CheckBox x:Name="WriteHtmlReport" IsChecked="True"
-                                      Content="Write the client report page"
-                                      Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
-                            <TextBlock Style="{StaticResource TickHelp}"
-                                       Text="HTML Tabular, the format the client accepts. Opens in Excel." />
-                        </StackPanel>
-                        <Label Grid.Row="7" Grid.Column="0" Content="Logo" />
-                        <TextBox Grid.Row="7" Grid.Column="1" x:Name="LogoBox"
+                        <!-- The NWD, the client page and the photos used to be three tick
+                             boxes. A weekly run wants all three every time, so they are
+                             fixed on and are not a decision any more. -->
+                        <Label Grid.Row="3" Grid.Column="0" Content="Report units" />
+                        <ComboBox Grid.Row="3" Grid.Column="1" x:Name="UnitsBox"
+                                  HorizontalAlignment="Left" MinWidth="200"
+                                  VerticalAlignment="Center" Margin="0,8,0,0"
+                                  SelectionChanged="OnUnitsChanged" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource TickHelp}"
+                                   Text="The document is put into this before the clash runs, so every number is in it." />
+                        <Label Grid.Row="5" Grid.Column="0" Content="Logo" />
+                        <TextBox Grid.Row="5" Grid.Column="1" x:Name="LogoBox"
                                  VerticalAlignment="Center" />
-                        <Button Grid.Row="7" Grid.Column="2" Content="Browse" Click="OnBrowseLogo" />
-                        <TextBlock Grid.Row="8" Grid.Column="1" Style="{StaticResource TickHelp}"
+                        <Button Grid.Row="5" Grid.Column="2" Content="Browse" Click="OnBrowseLogo" />
+                        <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource TickHelp}"
                                    Text="Starts as the Navisworks logo, which is what the client accepts. Clear it for none." />
                     </Grid>
 
-                    <!-- The pictures. On, because the report the client has accepted has
-                         them and one without them is not the thing they agreed to. They go
-                         in a folder named after the workbook, numbered the way theirs are,
-                         so the two travel together. -->
-                    <Border DockPanel.Dock="Top" BorderBrush="#D0D0D0" BorderThickness="1"
-                            Padding="8" Margin="0,0,0,8">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+                    <!-- Everything below here is a decision a weekly run does not have to
+                         make. It is collapsed, with the answer already chosen, so the
+                         Outputs step is three folders, the units and the logo. -->
+                    <Expander DockPanel.Dock="Top" Header="More, rarely changed"
+                              IsExpanded="False" Margin="0,0,0,8">
+                        <Border BorderBrush="#D0D0D0" BorderThickness="1" Padding="8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
-                                <CheckBox x:Name="WriteImages" IsChecked="True"
-                                          Content="Photo of every clash"
-                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                <TextBlock Style="{StaticResource TickHelp}"
-                                           Text="About 0.08 seconds each. 213 clashes took 17 seconds." />
-                            </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
+                                    <CheckBox x:Name="DateTheNwd" IsChecked="False"
+                                              Content="Date the NWD so every week is kept"
+                                              Checked="OnNamingToggled" Unchecked="OnNamingToggled" />
+                                    <TextBlock Style="{StaticResource TickHelp}"
+                                               Text="Without this, only the latest week exists." />
+                                </StackPanel>
 
-                            <Label Grid.Row="1" Grid.Column="0" Content="Size in pixels" VerticalAlignment="Center" />
-                            <TextBox Grid.Row="1" Grid.Column="1" x:Name="ImagePixelsBox"
-                                     Text="1024" MinWidth="70" VerticalAlignment="Center" Margin="0,0,12,4"
-                                     TextChanged="OnImageSettingChanged" />
-                            <Label Grid.Row="1" Grid.Column="2" Content="At most per test, 0 for no cap"
-                                   VerticalAlignment="Center" />
-                            <TextBox Grid.Row="1" Grid.Column="3" x:Name="ImageCapBox"
-                                     Text="0" MinWidth="70" VerticalAlignment="Center" Margin="0,0,0,4"
-                                     TextChanged="OnImageSettingChanged" />
+                                <StackPanel Grid.Row="1" Grid.ColumnSpan="5">
+                                    <CheckBox x:Name="WriteClashXml" IsChecked="False"
+                                              Content="Write a clash XML beside each workbook"
+                                              Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
+                                    <TextBlock Style="{StaticResource TickHelp}"
+                                               Text="One extra file per building, under a megabyte." />
+                                </StackPanel>
 
-                            <Label Grid.Row="2" Grid.Column="0" Content="Only these" VerticalAlignment="Center" />
-                            <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4"
-                                        Orientation="Horizontal" VerticalAlignment="Center">
-                                <CheckBox x:Name="ImageNew" Content="New" IsChecked="True" Margin="0,0,10,0"
-                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                <CheckBox x:Name="ImageActive" Content="Active" IsChecked="True" Margin="0,0,10,0"
-                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                <CheckBox x:Name="ImageReviewed" Content="Reviewed" IsChecked="True" Margin="0,0,10,0"
-                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                <CheckBox x:Name="ImageApproved" Content="Approved" IsChecked="False" Margin="0,0,10,0"
-                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                <CheckBox x:Name="ImageResolved" Content="Resolved" IsChecked="False"
-                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                            </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.ColumnSpan="5">
+                                    <CheckBox x:Name="EmbedThumbnails" IsChecked="False"
+                                              Content="Paste the photos into the cells"
+                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                    <TextBlock Style="{StaticResource TickHelp}"
+                                               Text="Send the page and its _files folder. Neither report embeds photos." />
+                                </StackPanel>
 
-                            <StackPanel Grid.Row="3" Grid.ColumnSpan="5" Margin="0,6,0,0">
-                                <CheckBox x:Name="EmbedThumbnails" IsChecked="False"
-                                          Content="Paste the photos into the cells"
-                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                <TextBlock Style="{StaticResource TickHelp}"
-                                           Text="Send the page and its _files folder. Neither report embeds photos." />
-                            </StackPanel>
+                                <Label Grid.Row="3" Grid.Column="0" Content="Photo size" VerticalAlignment="Center" />
+                                <TextBox Grid.Row="3" Grid.Column="1" x:Name="ImagePixelsBox"
+                                         Text="1024" MinWidth="70" VerticalAlignment="Center" Margin="0,0,12,4"
+                                         TextChanged="OnImageSettingChanged" />
+                                <Label Grid.Row="3" Grid.Column="2" Content="At most per test, 0 for no cap"
+                                       VerticalAlignment="Center" />
+                                <TextBox Grid.Row="3" Grid.Column="3" x:Name="ImageCapBox"
+                                         Text="0" MinWidth="70" VerticalAlignment="Center" Margin="0,0,0,4"
+                                         TextChanged="OnImageSettingChanged" />
 
-                            <StackPanel Grid.Row="4" Grid.ColumnSpan="5">
-                                <CheckBox x:Name="ClientColumnsOnly" IsChecked="False"
-                                          Content="Client report layout only"
-                                          Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                <TextBlock Style="{StaticResource TickHelp}"
-                                           Text="Drops our extra columns, the notes and the filters." />
-                            </StackPanel>
+                                <Label Grid.Row="4" Grid.Column="0" Content="Photo of" VerticalAlignment="Center" />
+                                <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4"
+                                            Orientation="Horizontal" VerticalAlignment="Center">
+                                    <CheckBox x:Name="ImageNew" Content="New" IsChecked="True" Margin="0,0,10,0"
+                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                    <CheckBox x:Name="ImageActive" Content="Active" IsChecked="True" Margin="0,0,10,0"
+                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                    <CheckBox x:Name="ImageReviewed" Content="Reviewed" IsChecked="True" Margin="0,0,10,0"
+                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                    <CheckBox x:Name="ImageApproved" Content="Approved" IsChecked="False" Margin="0,0,10,0"
+                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                    <CheckBox x:Name="ImageResolved" Content="Resolved" IsChecked="False"
+                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
+                                </StackPanel>
 
-                            <TextBlock Grid.Row="5" Grid.ColumnSpan="5" x:Name="ImageSummary"
-                                       Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#606060"
-                                       Text="Images on." />
-                        </Grid>
-                    </Border>
+                                <TextBlock Grid.Row="5" Grid.ColumnSpan="5" x:Name="ImageSummary"
+                                           Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#606060"
+                                           Text="Photos on." />
+                            </Grid>
+                        </Border>
+                    </Expander>
 
                     <!-- The four fields this tool supplies rather than reads out of a file
                          name, plus the code used when a group covers several buildings.
@@ -459,31 +442,59 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource WarningMark}" />
-                                <CheckBox x:Name="ApplyFileSettings" IsChecked="False"
-                                          VerticalAlignment="Center"
-                                          Content="Apply the file's settings to existing tests" />
+                        <!-- The two that destroy data. Collapsed and on their own, because
+                             they do not belong beside ordinary output options. -->
+                        <Expander Grid.Row="0" Grid.ColumnSpan="2" IsExpanded="False"
+                                  Header="Things that destroy data" Margin="0,0,0,8">
+                            <StackPanel Margin="20,4,0,0">
+                                <!-- One StackPanel each, never two boxes in one, because the
+                                     help line is read as the one beside its own box. -->
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource WarningMark}" />
+                                        <CheckBox x:Name="ApplyFileSettings" IsChecked="False"
+                                                  VerticalAlignment="Center"
+                                                  Content="Apply the file's settings to existing tests" />
+                                    </StackPanel>
+                                    <TextBlock Style="{StaticResource TickHelp}"
+                                               Text="Resets those clashes to New. Differences are listed either way." />
+                                </StackPanel>
+                                <StackPanel Margin="0,8,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource WarningMark}" />
+                                        <CheckBox x:Name="CompactResolved" IsChecked="False"
+                                                  VerticalAlignment="Center"
+                                                  Content="Delete Resolved clashes from the NWF" />
+                                    </StackPanel>
+                                    <TextBlock Style="{StaticResource TickHelp}"
+                                               Text="Cannot be undone. The record of what was fixed is lost." />
+                                </StackPanel>
                             </StackPanel>
-                            <TextBlock Style="{StaticResource TickHelp}"
-                                       Text="Resets those clashes to New. Differences are listed either way." />
-                        </StackPanel>
-                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource WarningMark}" />
-                                <CheckBox x:Name="CompactResolved" IsChecked="False"
-                                          VerticalAlignment="Center"
-                                          Content="Delete Resolved clashes from the NWF" />
-                            </StackPanel>
-                            <TextBlock Style="{StaticResource TickHelp}"
-                                       Text="Cannot be undone. The record of what was fixed is lost." />
-                        </StackPanel>
+                        </Expander>
 
                         <Label Grid.Row="2" Grid.Column="0" Content="The matrix counts" VerticalAlignment="Center" />
                         <ComboBox Grid.Row="2" Grid.Column="1" x:Name="OpenCountBox"
                                   HorizontalAlignment="Left" MinWidth="440" VerticalAlignment="Center" />
                     </Grid>
+
+                    <!-- The second way to run. A federation that already exists needs no
+                         scan, no source folder and no grouping, because everything the run
+                         needs is on the file that is open. -->
+                    <Border DockPanel.Dock="Top" BorderBrush="#FF7A9CC6" BorderThickness="2"
+                            Padding="8" Margin="0,0,0,8">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="RunOpenButton" Content="Run the open file"
+                                        Click="OnRunOpenDocument" MinWidth="170"
+                                        FontWeight="Bold" Margin="0,0,10,0" />
+                                <TextBlock VerticalAlignment="Center" x:Name="OpenDocumentLine"
+                                           TextWrapping="Wrap"
+                                           Text="Nothing is open." />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource TickHelp}" Margin="0,6,0,0"
+                                       Text="The whole job on the file already open. No scan, no folder, no grouping." />
+                        </StackPanel>
+                    </Border>
 
                     <!-- Neither of these is a step in the run. They are for trying one open
                          model by hand, which is why they are boxed off and named that way. -->

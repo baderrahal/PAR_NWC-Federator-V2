@@ -127,6 +127,15 @@ namespace Federator.Core.Report
                 }
 
                 Widths(sheet);
+
+                // Theirs, measured. ClosedXML's own defaults are a different four numbers.
+                sheet.PageSetup.Margins.Top = 1.0;
+                sheet.PageSetup.Margins.Bottom = 1.0;
+                sheet.PageSetup.Margins.Left = 0.75;
+                sheet.PageSetup.Margins.Right = 0.75;
+                sheet.PageSetup.Margins.Header = 0.5;
+                sheet.PageSetup.Margins.Footer = 0.5;
+
                 workbook.SaveAs(path);
             }
 
@@ -143,11 +152,14 @@ namespace Federator.Core.Report
         {
             sheet.Range(1, 1, 1, 3).Merge();
 
+            // 45, measured off their row 1, which is where the logo picture sits.
+            sheet.Row(1).Height = TitleRowHeight;
+
             IXLCell title = sheet.Cell(1, 4);
             title.Value = TitleText;
             title.Style.Font.Bold = true;
             title.Style.Font.FontSize = 18;
-            title.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            ClientStyle.Cell(title.Style, XLAlignmentVerticalValues.Center);
             sheet.Range(1, 4, 1, LastColumn).Merge();
 
             return 4;
@@ -155,6 +167,12 @@ namespace Federator.Core.Report
 
         /// <summary>Their own words at the top of the page.</summary>
         public const string TitleText = "Clash Report";
+
+        /// <summary>Measured off their row 1, which carries the logo.</summary>
+        public const double TitleRowHeight = 45.0;
+
+        /// <summary>Measured off every clash row of theirs, so a picture fits.</summary>
+        public const double ClashRowHeight = 60.0;
 
         // ---------- one test block ----------
 
@@ -177,6 +195,8 @@ namespace Federator.Core.Report
             int groupRow = start + 3;
             int headerRow = start + 4;
 
+            sheet.Row(start + 2).Height = ClientStyle.GapRowHeight;
+
             WriteItemGroupLabels(sheet, groupRow);
             WriteColumnHeadings(sheet, headerRow);
 
@@ -185,6 +205,10 @@ namespace Federator.Core.Report
             foreach (ClashRow clash in test.Rows)
             {
                 WriteClashRow(sheet, row, clash);
+
+                // 60, measured off every clash row of theirs, so a picture fits rather
+                // than being squashed into a default row.
+                sheet.Row(row).Height = ClashRowHeight;
                 row++;
             }
 
@@ -193,12 +217,16 @@ namespace Federator.Core.Report
 
         private static void WriteTestHeader(IXLWorksheet sheet, int start, TestReport test)
         {
+            // Grey, boxed thick outside and medium within. Theirs, measured.
+            ClientStyle.TestHeader(sheet, start, ColumnTestHeader - 1, LastTestHeaderColumn);
+            sheet.Row(start).Height = ClientStyle.TestHeaderRowHeight;
+            sheet.Row(start + 1).Height = ClientStyle.TestValuesRowHeight;
+
             IXLCell name = sheet.Cell(start, 1);
             name.Value = test.Name;
             name.Style.Font.Bold = true;
             name.Style.Font.FontSize = 16;
             name.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            name.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             sheet.Range(start, 1, start + 1, 2).Merge();
 
             for (int i = 0; i < ClientFormat.TestHeader.Length; i++)
@@ -206,7 +234,6 @@ namespace Federator.Core.Report
                 IXLCell header = sheet.Cell(start, ColumnTestHeader + i);
                 header.Value = ClientFormat.TestHeader[i];
                 header.Style.Font.Bold = true;
-                header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             }
 
             int column = ColumnTestHeader;
@@ -221,30 +248,66 @@ namespace Federator.Core.Report
             }
 
             sheet.Cell(values, column++).Value = ClientFormat.TestTypeWording(test.TestTypeName);
-            sheet.Cell(values, column).Value = test.StatusWord;
+            sheet.Cell(values, column).Value = ClientFormat.StatusWording(test.StatusWord);
 
-            for (int i = 0; i < ClientFormat.TestHeader.Length; i++)
-            {
-                sheet.Cell(values, ColumnTestHeader + i).Style.Alignment.Horizontal =
-                    XLAlignmentHorizontalValues.Center;
-            }
         }
+
+        /// <summary>
+        /// The last column the test header table reaches, which is Status. Their table is
+        /// nine columns wide and stops there, so the thick right edge is on it and not on
+        /// the far side of the sheet.
+        /// </summary>
+        public static readonly int LastTestHeaderColumn =
+            ColumnTestHeader + ClientFormat.TestHeader.Length - 1;
 
         private static void WriteItemGroupLabels(IXLWorksheet sheet, int row)
         {
+            sheet.Row(row).Height = ClientStyle.HeadingRowHeight;
+
+            // Three runs, each boxed as one merged cell is: grey over the clash columns,
+            // blue over Item 1 and pink over Item 2. Theirs, measured.
+            Paint(sheet, row, 1, ColumnItem1 - 1, ClientStyle.HeaderGrey,
+                XLAlignmentHorizontalValues.General);
             sheet.Range(row, 1, row, ColumnItem1 - 1).Merge();
 
-            Label(sheet, row, ColumnItem1, ClientFormat.ItemGroup1);
-            Label(sheet, row, ColumnItem2, ClientFormat.ItemGroup2);
+            Label(sheet, row, ColumnItem1, ClientFormat.ItemGroup1, ClientStyle.Item1Heading);
+            Label(sheet, row, ColumnItem2, ClientFormat.ItemGroup2, ClientStyle.Item2Heading);
         }
 
-        private static void Label(IXLWorksheet sheet, int row, int column, string text)
+        private static void Label(
+            IXLWorksheet sheet, int row, int column, string text, string colour)
         {
+            int last = column + ClientFormat.ItemColumns - 1;
+
+            Paint(sheet, row, column, last, colour, XLAlignmentHorizontalValues.Center);
+
             IXLCell cell = sheet.Cell(row, column);
             cell.Value = text;
             cell.Style.Font.Bold = true;
-            cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            sheet.Range(row, column, row, column + ClientFormat.ItemColumns - 1).Merge();
+            sheet.Range(row, column, row, last).Merge();
+        }
+
+        /// <summary>
+        /// One run of a heading row: filled, boxed medium, centred down and wrapping,
+        /// which is what every heading cell of theirs carries.
+        /// </summary>
+        private static void Paint(
+            IXLWorksheet sheet, int row, int first, int last, string colour,
+            XLAlignmentHorizontalValues across)
+        {
+            ClientStyle.Fill(sheet, row, first, last, colour);
+            ClientStyle.Box(sheet, row, first, last, XLBorderStyleValues.Medium);
+
+            for (int column = first; column <= last; column++)
+            {
+                IXLStyle style = sheet.Cell(row, column).Style;
+                ClientStyle.Cell(style, XLAlignmentVerticalValues.Center);
+
+                if (across != XLAlignmentHorizontalValues.General)
+                {
+                    style.Alignment.Horizontal = across;
+                }
+            }
         }
 
         /// <summary>
@@ -252,8 +315,57 @@ namespace Federator.Core.Report
         /// two and Clash Point over three, which is where the gaps in the column numbers
         /// come from.
         /// </summary>
+        /// <summary>
+        /// Where the merges fall along a table row, as first and last column pairs. Their
+        /// borders follow these runs, so the runs are stated once and both the heading row
+        /// and every clash row are ruled off the same list.
+        /// </summary>
+        public static readonly int[][] Runs = BuildRuns();
+
+        private static int[][] BuildRuns()
+        {
+            List<int[]> runs = new List<int[]>();
+
+            runs.Add(new[] { ColumnImage, ColumnImage + 1 });
+            runs.Add(new[] { ColumnClashName, ColumnClashName + 1 });
+            runs.Add(new[] { ColumnStatus, ColumnStatus });
+            runs.Add(new[] { ColumnDistance, ColumnDistance });
+            runs.Add(new[] { ColumnGridLocation, ColumnGridLocation });
+            runs.Add(new[] { ColumnDescription, ColumnDescription });
+            runs.Add(new[] { ColumnClashPoint, ColumnClashPoint + 2 });
+
+            for (int column = ColumnItem1; column <= LastColumn; column++)
+            {
+                runs.Add(new[] { column, column });
+            }
+
+            return runs.ToArray();
+        }
+
+        /// <summary>Boxes every run of one table row medium, the way theirs is.</summary>
+        private static void BoxTheRuns(IXLWorksheet sheet, int row)
+        {
+            foreach (int[] run in Runs)
+            {
+                ClientStyle.Box(sheet, row, run[0], run[1], XLBorderStyleValues.Medium);
+            }
+
+            for (int column = 1; column <= LastColumn; column++)
+            {
+                ClientStyle.Cell(sheet.Cell(row, column).Style,
+                    XLAlignmentVerticalValues.Center);
+            }
+        }
+
         private static void WriteColumnHeadings(IXLWorksheet sheet, int row)
         {
+            sheet.Row(row).Height = ClientStyle.HeadingRowHeight;
+
+            ClientStyle.Fill(sheet, row, 1, ColumnItem1 - 1, ClientStyle.HeaderGrey);
+            ClientStyle.Fill(sheet, row, ColumnItem1, ColumnItem2 - 1, ClientStyle.Item1Heading);
+            ClientStyle.Fill(sheet, row, ColumnItem2, LastColumn, ClientStyle.Item2Heading);
+            BoxTheRuns(sheet, row);
+
             Heading(sheet, row, ColumnImage, "Image", 2);
             Heading(sheet, row, ColumnClashName, "Clash Name", 2);
             Heading(sheet, row, ColumnStatus, "Status", 1);
@@ -287,6 +399,13 @@ namespace Federator.Core.Report
 
         private void WriteClashRow(IXLWorksheet sheet, int row, ClashRow clash)
         {
+            // The two item blocks are tinted and every run is boxed, which is what makes
+            // theirs readable across nineteen columns. Painted before the values so a cell
+            // that is never given a value still carries the block it belongs to.
+            ClientStyle.Fill(sheet, row, ColumnItem1, ColumnItem2 - 1, ClientStyle.Item1Body);
+            ClientStyle.Fill(sheet, row, ColumnItem2, LastColumn, ClientStyle.Item2Body);
+            BoxTheRuns(sheet, row);
+
             WriteImageCell(sheet, sheet.Cell(row, ColumnImage), clash);
             sheet.Range(row, ColumnImage, row, ColumnImage + 1).Merge();
 
@@ -295,11 +414,11 @@ namespace Federator.Core.Report
 
             sheet.Cell(row, ColumnStatus).Value = clash.Status.ToString();
 
-            // The raw signed number, written as a NUMBER so the column still sorts, with
-            // their three decimal format on it.
-            IXLCell distance = sheet.Cell(row, ColumnDistance);
-            distance.Value = clash.Distance;
-            distance.Style.NumberFormat.Format = ClientFormat.FixedFormat;
+            // The ROUNDED number itself, not the raw one behind a display format. Ours
+            // stored -1.70603561401367 with a format of 0.000, so anyone sorting,
+            // filtering or copying got the long value. Theirs stores -0.116 and carries
+            // no number format at all, so General shows it as written.
+            sheet.Cell(row, ColumnDistance).Value = ClientFormat.Rounded(clash.Distance);
 
             sheet.Cell(row, ColumnGridLocation).Value = clash.ClientGridLocation();
             sheet.Cell(row, ColumnDescription).Value = clash.Description;
@@ -307,18 +426,22 @@ namespace Federator.Core.Report
             sheet.Cell(row, ColumnClashPoint).Value = clash.ClientClashPoint();
             sheet.Range(row, ColumnClashPoint, row, ColumnClashPoint + 2).Merge();
 
-            WriteItem(sheet, row, ColumnItem1, clash.Left);
-            WriteItem(sheet, row, ColumnItem2, clash.Right);
+            // The level is passed in because the page writes it into its own layer element
+            // and the workbook was writing an item property nothing ever filled, so the
+            // same row read LGF in one file and nothing in the other.
+            WriteItem(sheet, row, ColumnItem1, clash.Left, clash.Level);
+            WriteItem(sheet, row, ColumnItem2, clash.Right, clash.Level);
         }
 
         /// <summary>
         /// One item block, their four columns. Layer carries the level, which is what
         /// theirs holds in it.
         /// </summary>
-        private static void WriteItem(IXLWorksheet sheet, int row, int column, ClashItem item)
+        private static void WriteItem(
+            IXLWorksheet sheet, int row, int column, ClashItem item, string clashLevel)
         {
             sheet.Cell(row, column).Value = item.ClientId();
-            sheet.Cell(row, column + 1).Value = item.Layer;
+            sheet.Cell(row, column + 1).Value = item.LayerOr(clashLevel);
             sheet.Cell(row, column + 2).Value = item.Name;
             sheet.Cell(row, column + 3).Value = item.ItemType;
         }
@@ -337,8 +460,10 @@ namespace Federator.Core.Report
                 return;
             }
 
-            cell.Value = clash.ImageFile;
-
+            // NO filename in the cell. Theirs is empty here and the picture is attached
+            // as a linked drawing, measured on their xl/drawings/drawing1.xml which holds
+            // no media of its own. A filename sitting in the cell is neither their layout
+            // nor a picture, so the cell carries only the link.
             if (!string.IsNullOrEmpty(clash.ImageLink))
             {
                 // A relative Uri, not a plain string. Handed the string, ClosedXML reads
@@ -378,20 +503,37 @@ namespace Federator.Core.Report
         private const double ThumbnailPoints = 72.0;
 
         /// <summary>
+        /// Their column widths, read out of the sheet XML of
+        /// 1104-PAR-1A04WN-XXX-BM-RPT-000001.xlsx on 2026-09-01, to the digit. They are
+        /// not round numbers because Excel fitted them to that file's own content.
+        /// </summary>
+        public static readonly double[] TheirWidths =
+        {
+            26.6640625, 26.6640625, 9.44140625, 7.44140625, 6.21875, 8.33203125,
+            12.33203125, 18.33203125, 9.33203125, 19.6640625, 6.5546875, 18.77734375,
+            10.109375, 35.5546875, 9.5546875, 18.77734375, 5.5546875, 35.5546875, 9.5546875
+        };
+
+        /// <summary>
+        /// What ClosedXML adds to a column width on save. Measured: every width we set
+        /// came back exactly 0.710625 larger, which is the whole of the difference Bader
+        /// saw between our columns and theirs.
+        /// </summary>
+        public const double ClosedXmlWidthPadding = 0.710625;
+
+        /// <summary>
         /// Column widths off theirs, measured on
         /// 1104-PAR-1A04WN-XXX-BM-RPT-000001.xlsx, so a side by side comparison lines up.
         /// </summary>
         private static void Widths(IXLWorksheet sheet)
         {
-            double[] widths =
+            for (int i = 0; i < TheirWidths.Length && i < LastColumn; i++)
             {
-                26.66, 26.66, 9.44, 7.44, 6.22, 8.33, 12.33, 18.33, 9.33, 19.66,
-                6.55, 18.78, 10.11, 26.66, 9.44, 18.78, 10.11, 26.66, 9.44
-            };
-
-            for (int i = 0; i < widths.Length && i < LastColumn; i++)
-            {
-                sheet.Column(i + 1).Width = widths[i];
+                // What ClosedXML writes is what it is given PLUS a fixed padding, measured
+                // at 0.710625 across every column on 2026-09-01. Ours came out about 0.7
+                // wider than theirs on every column, which is that padding and nothing
+                // else. Taking it off here means the saved file holds their number.
+                sheet.Column(i + 1).Width = TheirWidths[i] - ClosedXmlWidthPadding;
             }
         }
 

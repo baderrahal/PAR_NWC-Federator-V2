@@ -200,10 +200,10 @@ and 6 does not read as broken.
   the Clash step are for trying one open model by hand and are labelled as that. They
   are not steps in the run. Splitting one job across three presses is what let a user
   run clash against a document with no sets in it
-- Republishing the NWD is a tick box, on by default, and happens in all three
-  cases. That is the point of a rerun. The NWF pointers are unchanged, so
-  reopening picks up whatever the NWC files now hold and the NWD is refreshed
-  without the clash history being touched
+- Republishing the NWD happens in all three cases, and it is no longer a tick box. It was
+  one, on by default, and a weekly run wanted it every time, so it is fixed on. That is the
+  point of a rerun. The NWF pointers are unchanged, so reopening picks up whatever the NWC
+  files now hold and the NWD is refreshed without the clash history being touched
 - The clash test file is picked at run time, every run, and can be from any project.
   Nothing about any one file is written into the code, not names, not counts, not
   property internal names. Those appear in tests as sample data only. A file may hold
@@ -496,9 +496,10 @@ and 6 does not read as broken.
   negative on a hard clash, written as a number so it still sorts. Type reads
   "Hard (Conservative)". Measured, see docs\scan.md section 4k
 - Our extra columns, family, type name, material, source file and discipline, come AFTER
-  theirs and never in place of any of them. Client columns only is a tick box, off, so a
-  submission can be exported in exactly the shape that was signed off. Switching it on
-  removes columns from the right hand end and moves none of theirs. Ours says Type Name
+  theirs and never in place of any of them, on the CLASH XML and nowhere else. The Client
+  columns only tick box that used to switch them off is GONE, because the workbook became
+  one sheet laid out as theirs with none of ours on it, so there was nothing left for it to
+  remove and it sat in the window doing nothing. Ours says Type Name
   rather than Type, because the client already has an Item Type column and it holds
   something else, the Navisworks item type, which reads Solid
 - The client's report has NO Layer column. Measured on both supplied exports and on the
@@ -612,7 +613,9 @@ and 6 does not read as broken.
   and their own xlsx has no picture hyperlinks at all to match
 - Neither their report nor ours embeds a picture in the xlsx, measured on the zip of each.
   The native export never does. Pictures show only when the _files folder sits beside the
-  file, so the page and its folder are what gets sent and the tick box says so
+  file, so the page and its folder are what gets sent. That used to be said by a tick box
+  and the box is gone, because the accepted report has photos and one without them is not
+  the thing the client agreed to receive, so it is fixed on
 - Exactly ONE objectattribute per clashobject, and it is the id. The Item ID cell is
   value-of over ./objectattribute/name, which takes the FIRST node, so writing several put
   the item's Name in the id column. Everything else about an item is a smarttag, which is
@@ -679,6 +682,81 @@ and 6 does not read as broken.
   seconds, how many, and how many megabytes. Every number anyone has given for this,
   including mine, was a guess until this existed. The same figures go on the Summary
   sheet, because the log is not what gets sent on
+- The report goes out in ONE unit and it is the document's. Never convert a number
+  ourselves to look metric while the document is in feet, because the tolerance, the
+  distances and the coordinates all come out of the document in the document's units and a
+  report whose numbers and whose unit label disagree is a report that lies. What the tool
+  does instead is put the document into the units first. Measured on 2026-09-01 across all
+  4027 types: Document.Units is read only, Model.Units is read only, and the only public
+  managed member that sets units at all is
+  DocumentModels.SetModelUnitsAndTransform(Model, Units, Transform3D, bool). So each MODEL
+  can be set and the DOCUMENT cannot, and whether Document.Units then follows is UNKNOWN
+  until a run. Every model is set, the document is read before and after, and where it did
+  not follow the log says so plainly rather than claiming the change worked. It runs BEFORE
+  the clash step. The units are a combo on the Outputs step defaulting to Meters, because
+  this is a Saudi project and every report the team sends is metric
+- A federation that already exists needs NO SCAN. In Navisworks a person opens a file,
+  opens Clash Detective, presses Run and reads the results, and nothing asks them where
+  their models came from. So there are two ways to run and they are told apart by what they
+  name: the Run button on the Source step names a count of ticked groups, and the Run the
+  open file button names the open FILE and the two paths it will write. The open path is
+  the same flow with the first step removed. There is no Decide, because the document IS
+  the file list, nothing is appended and nothing is cleared, so the clash results inside it
+  survive. The clash file is optional there, and without one the tests already in the
+  document are run, which is the ordinary weekly case. The outputs are named after the open
+  file with the extension swapped and the report in Clash Reports beside it, which is
+  exactly where the scanned path puts them, so the same building run either way writes the
+  same files. No pattern is applied, because the name is already on the file. An unsaved
+  document is refused by name, because there is nowhere to put an NWD beside it. The rule
+  lives in Federator.Core.Rerun.OpenDocumentJob so it can be tested without Navisworks
+- Distance is the ROUNDED number and carries no number format, because that is what theirs
+  holds. Ours stored -0.328083992004395 behind a format of 0.000, so the cell read -0.328
+  and anyone sorting, filtering or copying the column got the long value. Rounding the
+  value and rounding the display are different things and theirs rounds the value
+- The Layer column carries the LEVEL. It was an item property nothing ever filled, so the
+  same clash read LGF on the page and nothing in the workbook. Where the item has its own
+  layer that wins, and otherwise the clash's level is used
+- The Image cell is EMPTY and carries the link. Theirs holds nothing there at all with the
+  picture behind it, so writing the file name put a string where their report shows a photo
+- A test status of Complete is written OK, because that is their wording. Anything else
+  goes through as itself
+- The workbook is BANDED, and the colours are theirs, read off the accepted export. Grey
+  behind every heading, blue over Item 1 and pink over Item 2, paler on the clash rows than
+  on the headings, every cell boxed medium and the test header ruled thick. Ours was plain
+  white with no border anywhere, which is the first thing a person sees before they see a
+  single number. The five colours, the seven row heights and the nineteen column widths are
+  in Federator.Core.Report.ClientLayout, and ClientLayoutTests opens their file and asserts
+  every one of them against it, so the table answers to their export rather than to whoever
+  typed it
+- Their test header is a table NINE columns wide that stops at Status, so L to S on those
+  two rows are not cells of theirs and are not expected to carry anything. Their borders
+  follow the merge runs, the left edge on the first column of a run and the right on the
+  last, which is what keeps our cells identical to theirs where a run is merged
+- The report check compares CELL AGAINST CELL: the value, the data type, the number format,
+  the fill, the borders, the row height and the column width, with both sides printed. The
+  check before this compared which columns, in what shape, in what order, and passed with
+  eight visible differences sitting in the file, because none of them was in front of it.
+  It walks the first block only, since every block is painted by the same code and 1830
+  blocks by nineteen columns is a check nobody reads
+- A check that reads the same table the writer wrote from CANNOT catch that table being
+  wrong, and this is the third time a check here has reported clean over a real difference,
+  so what it cannot catch is written into its pass line rather than left to be discovered.
+  Four things. The table being wrong, which only ClientLayoutTests catches by reading their
+  file. Anything not in the compared list, which is fonts, the sheet name, freeze panes,
+  print setup and merged ranges, all listed in docs\scan.md 4q with both sides. Whether a
+  value is TRUE, since a number to three decimals off the wrong clash still reads right.
+  And a block that was never written at all
+- Every check gets a test that BREAKS one thing and asserts the check names it. A test that
+  only asserts the good file passes would have passed against all eight of the differences
+  above. Fourteen of them live in WorkbookCellCheckTests
+- A tick box has to earn being a decision. Fifteen went to eleven, of which ONE is visible
+  without opening anything. Republishing the NWD, writing the client page and rendering the
+  photos are fixed ON, because a weekly run wants all three every time. Client columns only
+  is gone outright, dead since the workbook became one sheet with none of ours on it.
+  Dating the NWD, the clash XML, the thumbnails and the five image status boxes are
+  collapsed under More, rarely changed. The two that destroy data are collapsed on their
+  own under Things that destroy data, because they do not belong beside ordinary output
+  options. Fewer decisions is the goal, not more words explaining them
 - The scan reports what it noticed and never acts on it. ODD SHAPE, NEAR MATCH,
   SINGLE DISCIPLINE and MISSING are information. Nothing is blocked, unticked or
   merged, and no code is assumed right. Bader decides
@@ -708,8 +786,17 @@ and they explained the off state as well as the on state, so nothing stood out.
 The numbers in a help line are measured, never estimated. Photos are about 0.08 seconds
 each and 213 took 17 seconds. Pasting them takes the workbook from 0.3 MB to 52 MB.
 
+There were fifteen and there are eleven, of which ONE is visible without opening anything.
+A box only stays if a normal weekly run genuinely has to choose. Everything else became a
+fixed behaviour with the sensible answer chosen, or moved under an expander. The two that
+destroy data are under one of their own, because they do not belong beside ordinary output
+options. Which box went where and what each removed one was fixed to is in docs\scan.md 4q.
+
 build\probe-window-labels.ps1 reads every tick box out of the real window and checks all
-of this, so the limits are proved rather than remembered.
+of this, so the limits are proved rather than remembered. It OPENS every expander first,
+because a collapsed one has no visual tree behind it and the probe found one box and
+reported no problems, and it says how many are visible without opening anything, which is
+the number the window is judged on.
 
 ## The diagnostic log
 

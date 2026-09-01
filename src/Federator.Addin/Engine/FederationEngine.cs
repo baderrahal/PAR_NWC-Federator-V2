@@ -155,6 +155,112 @@ namespace Federator.Addin.Engine
             return outcomes;
         }
 
+        /// <summary>
+        /// The whole job against the document somebody already has open, with no scan, no
+        /// source folder and no grouping.
+        ///
+        /// WHY. Running a federation that already exists meant picking the folder its NWC
+        /// files came from, waiting for a scan, choosing a grouping and ticking one group
+        /// out of twenty two, all to arrive at a file that was open on the screen. In
+        /// Navisworks a person opens a file, opens Clash Detective, presses Run and reads
+        /// the results. This is the same shape.
+        ///
+        /// It is the SAME flow as a scanned group with the first step removed. There is no
+        /// Decide, because there is nothing to compare a file list against: the document is
+        /// the file list. Nothing is appended and nothing is cleared, so the clash results
+        /// inside it survive, which is the rule that matters most here. Everything after
+        /// that is what a scanned group does, in the same order, through the same methods.
+        ///
+        /// The clash file is optional. Without one, the tests already in the document are
+        /// run, which is the ordinary weekly case.
+        /// </summary>
+        public JobOutcome RunOpenDocument(string subfolder)
+        {
+            Document document = NavisworksApplication.ActiveDocument;
+            string open = document == null ? string.Empty : Or(document.FileName);
+
+            FederationJob job = OpenJob(open, subfolder);
+            JobOutcome outcome = new JobOutcome(job);
+            outcome.NwfSize = -1;
+            outcome.NwdSize = -1;
+            outcome.NwdRequested = republishNwd;
+
+            if (document == null)
+            {
+                outcome.AddError("There is no document open, so there is nothing to run.");
+                log.Line("OPEN     nothing is open");
+                return outcome;
+            }
+
+            if (!OpenDocumentJob.CanRun(open))
+            {
+                outcome.AddError(OpenDocumentJob.WhyNot(open));
+                log.Line("OPEN     " + OpenDocumentJob.WhyNot(open));
+                return outcome;
+            }
+
+            log.Line("OPEN     running the document that is already open, no scan");
+            log.Line("OPEN     file     " + open);
+            log.Line("OPEN     NWD      " + job.NwdPath);
+            log.Line("OPEN     report   " + reportFolder);
+
+            try
+            {
+                // Nothing is appended and nothing is cleared. The models in it are what
+                // somebody put there, and the clash history lives in the same file.
+                outcome.Decision = RerunDecision.Open;
+                outcome.AppendedCount = document.Models.Count;
+                outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
+                outcome.NwfOnDisk = outcome.NwfSize >= 0;
+
+                if (reports.SetDocumentUnits)
+                {
+                    new DocumentUnits(log).Apply(document, WantedUnits());
+                }
+
+                if (ClashStep(document, job, outcome))
+                {
+                    SaveTheNwfAgain(document, job, outcome);
+                }
+
+                WriteWorkbook(job, outcome);
+                WriteNwd(document, job, outcome);
+                ConfirmTheNwfSurvived(job, outcome);
+            }
+            catch (Exception error)
+            {
+                outcome.AddError(error.Message);
+                log.Failure(
+                    "running the open document " + job.Building,
+                    error,
+                    "stopped, everything already written is kept");
+
+                outcome.NwfSize = log.CheckOnDisk("NWF", job.NwfPath);
+                outcome.NwdSize = log.CheckOnDisk("NWD", job.NwdPath);
+                outcome.NwfOnDisk = outcome.NwfSize >= 0;
+                outcome.NwdOnDisk = outcome.NwdSize >= 0;
+            }
+
+            return outcome;
+        }
+
+        /// <summary>
+        /// The job for the open document. Its name is read off the file rather than built
+        /// from a pattern, because the name is already decided and is on the file.
+        /// </summary>
+        private static FederationJob OpenJob(string open, string subfolder)
+        {
+            string name = OpenDocumentJob.NameFrom(open);
+
+            return new FederationJob(
+                name,
+                name,
+                open,
+                OpenDocumentJob.NwdBeside(open),
+                new List<string>(),
+                name);
+        }
+
         private JobOutcome RunOne(FederationJob job)
         {
             JobOutcome outcome = new JobOutcome(job);
@@ -209,6 +315,14 @@ namespace Federator.Addin.Engine
                 // work happens BEFORE the NWF is saved for the last time and long before
                 // the NWD is published. The NWD used to go first, which shipped it with no
                 // sets and no results in it.
+                // BEFORE the clash step, so every tolerance and every distance is read in
+                // the units the report is going out in. Converting afterwards would mean a
+                // report whose numbers and whose unit label disagree.
+                if (reports.SetDocumentUnits)
+                {
+                    new DocumentUnits(log).Apply(document, WantedUnits());
+                }
+
                 if (ClashStep(document, job, outcome))
                 {
                     SaveTheNwfAgain(document, job, outcome);
@@ -782,6 +896,23 @@ namespace Federator.Addin.Engine
             outcome.HtmlOnDisk = outcome.HtmlSize >= 0;
 
             CheckThePage(job, outcome, path);
+        }
+
+        /// <summary>
+        /// The units the report is going out in, read off the setting. A name nobody can
+        /// read falls back to metres rather than stopping a run.
+        /// </summary>
+        private Autodesk.Navisworks.Api.Units WantedUnits()
+        {
+            try
+            {
+                return (Autodesk.Navisworks.Api.Units)Enum.Parse(
+                    typeof(Autodesk.Navisworks.Api.Units), reports.UnitsName, true);
+            }
+            catch (Exception)
+            {
+                return Autodesk.Navisworks.Api.Units.Meters;
+            }
         }
 
         /// <summary>

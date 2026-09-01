@@ -303,7 +303,10 @@ namespace Federator.Core.Tests
 
                 Assert.That(cell.DataType, Is.EqualTo(XLDataType.Number),
                     "it has to stay a number so the column still sorts");
-                Assert.That(cell.Style.NumberFormat.Format, Is.EqualTo("0.000"));
+                Assert.That(cell.GetDouble(), Is.EqualTo(-0.328).Within(0.0000000001),
+                    "the value is rounded, not the display. Theirs holds the short number");
+                Assert.That(cell.Style.NumberFormat.Format, Is.Empty,
+                    "theirs carries no number format at all");
                 Assert.That(cell.GetFormattedString(), Is.EqualTo("-0.328"));
             }
         }
@@ -397,7 +400,11 @@ namespace Federator.Core.Tests
                 IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
                 IXLCell cell = sheet.Cell(HeaderRows(sheet)[0] + 1, 1);
 
-                Assert.That(cell.GetString(), Is.EqualTo("cd000001.jpg"));
+                // The cell is EMPTY and carries the link. Theirs holds nothing there at
+                // all, with the picture sitting behind it, so writing the file name put a
+                // string where their report shows a photo.
+                Assert.That(cell.GetString(), Is.Empty,
+                    "theirs shows a photo here, not a file name");
                 Assert.That(cell.HasHyperlink, Is.True);
                 Assert.That(cell.GetHyperlink().IsExternal, Is.True,
                     "an internal link opens nothing");
