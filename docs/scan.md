@@ -1425,10 +1425,36 @@ The logo is DATA, read from `//logo/@href`, not something baked into the layout.
 own `logo.jpg` sits in the Images folder of the install and is theirs, and nothing here
 copies it or reaches for it.
 
-It is a file the user picks, empty by default. Empty writes no `logo` element at all, the
-stylesheet then renders `src=""`, and the page carries no picture. A picked file is copied
-beside the page and linked by its bare name, so the page and its logo travel together the
-same way the clash pictures do.
+The page carries the logo Navisworks puts on its own reports, because that is the report
+the client accepts. Measured on 2026-09-01:
+
+```
+C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg   6137 bytes
+MD5 b5df301defc444485c0461748c56e0d9
+```
+
+`Images` sits at the top of the install with no language folder, checked. That file is byte
+for byte the same as the `logo.jpg` in the `_files` folder of BOTH reports Bader supplied,
+same MD5, which is what proves Navisworks copies that exact file into the report folder.
+
+So this tool does the same. It reads it off the install at run time and copies it into the
+report's own `_files` folder beside the clash pictures, then links it relatively as
+`<stem>_files/logo.jpg`. The report goes to a client and the page must not point at a path
+on the machine that wrote it. The accepted xlsx carries absolute `file:///` links, which is
+exactly why its pictures break on any other machine, and a test opens our written page and
+reads the `src` back out of the file rather than off the object model.
+
+No copy of the logo is in this repo, in the bundle, or in `install.ps1`. The only two in the
+checkout are inside the client exports Bader committed, where Navisworks had already put
+them.
+
+The Browse box stays for a project that needs a different mark, and it starts filled with
+the install's own. Clearing it means no logo, and a logo that cannot be found writes the
+page without one and names every path it tried.
+
+One consequence worth knowing. `$showImage` is `boolean(//@href)` and the logo carries an
+`href` too, so a page with a logo shows the Image column even when there are no clash
+pictures. That is Autodesk's own behaviour and their reports do the same.
 
 #### The transform
 

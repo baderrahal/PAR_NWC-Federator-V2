@@ -542,10 +542,29 @@ and 6 does not read as broken.
 - Date Found and our five extra item properties are ours, not theirs. Their report has
   neither, so both are left out when the client layout is asked for and appended after
   theirs when it is not
-- The logo is DATA, read by the stylesheet from //logo/@href, not part of the layout. It is
-  a file the user picks and it is EMPTY by default, which writes no logo element and puts no
-  picture on the page. Autodesk's own logo.jpg is in the Images folder of their install and
-  is theirs. Nothing here copies it, reaches for it, or ships it
+- The logo is DATA, read by the stylesheet from //logo/@href, not part of the layout, and
+  the page carries the one Navisworks puts on its own reports because that is the report the
+  client accepts. It is read off the install at run time, the same way the stylesheet is,
+  from \Images\logo.jpg at the top of the install with no language folder, measured
+  2026-09-01 at 6137 bytes and byte for byte the same file as the logo.jpg in both supplied
+  reports. There is nothing to set up before a first run
+- No copy of that logo is in this repo, in the bundle, or in install.ps1. It is read off
+  the machine that is running, every run. The only two in the checkout are inside the client
+  exports Bader committed, where Navisworks had already put them, and a test names that
+  exception so one appearing anywhere else fails
+- The logo is COPIED into the report's own _files folder beside the clash pictures and
+  linked relatively, which is what Navisworks itself does. The report goes to a client, so
+  the page must not point at a path on the machine that wrote it. The accepted xlsx carries
+  absolute file:/// links and that is exactly why its pictures break everywhere else. A test
+  opens the written page and reads the src back out of it, because the object model reported
+  a broken link as fine once already
+- A logo that cannot be found writes the page without one, names every path it looked at,
+  and carries on. A missing picture never stops a report
+- The Browse box stays, for a project that needs a different mark, and it starts filled with
+  the install's logo. Clearing it means no logo. Most people never touch it
+- Writing a logo turns the stylesheet's Image column on even with no clash pictures, because
+  its test is boolean(//@href) and the logo carries an href too. That is Autodesk's own
+  behaviour and their reports do the same. Pinned by a test so nobody reads it as a fault
 - The clash XML is optional and off by default. It is built from the same results the
   workbook is built from, never by reading the workbook and never read by it, so a fault
   in one cannot corrupt the other. Its shape was read off the three stylesheets the
