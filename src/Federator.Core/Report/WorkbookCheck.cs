@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using ClosedXML.Excel;
 
@@ -17,6 +18,34 @@ namespace Federator.Core.Report
     ///
     /// It reports the FIRST divergence with what ours holds and what theirs holds, because
     /// a list of forty consequences of one fault is harder to act on than the fault.
+    ///
+    /// AND WHY IT CHANGED AGAIN. That version still passed with eight visible differences
+    /// sitting in the file: no fill anywhere, no border anywhere, the wrong row heights,
+    /// the wrong column widths, a Layer column nothing filled, a filename in the Image
+    /// cell, the raw double behind a display format and Complete where theirs says OK. It
+    /// looked at the words in the header row and the shape of three values, so none of
+    /// those was in front of it. This one walks every cell of every block and compares the
+    /// VALUE, the data TYPE, the NUMBER FORMAT, the FILL, the BORDERS, the ROW HEIGHT and
+    /// the COLUMN WIDTH, and prints both sides of whatever differs.
+    ///
+    /// WHAT IT STILL CANNOT CATCH, which is the third time a check here has reported clean
+    /// over a real difference, so it is written down rather than discovered again:
+    ///
+    ///   THE TABLE BEING WRONG. This compares the file against ClientLayout, and the
+    ///   writer paints from ClientLayout too. A number that is wrong in both is invisible
+    ///   here. Only ClientLayoutTests can catch it, by opening the sample and asserting
+    ///   every number against their file
+    ///
+    ///   ANYTHING NOT IN THE LIST ABOVE. Fonts, font colours, the sheet name, freeze panes,
+    ///   print setup and merged ranges are not compared. They are listed in scan.md
+    ///   section 4q with what each of ours holds and what each of theirs holds
+    ///
+    ///   WHETHER A VALUE IS TRUE. It can see that the Distance cell holds a number to three
+    ///   decimals. It cannot see that the number came off the wrong clash
+    ///
+    ///   A BLOCK THAT WAS NEVER WRITTEN. It checks the blocks it finds. A test dropped
+    ///   before the workbook was written leaves nothing here to find, which is what the
+    ///   Summary in the log is for
     ///
     /// Nothing here throws. Checking a report must never be the reason a run fails.
     /// </summary>
@@ -153,6 +182,23 @@ namespace Federator.Core.Report
                 Blocks++;
                 CheckColumnOrder(sheet, row);
 
+                // Only the first block is walked cell by cell. Every block is painted by
+                // the same code, so a fault in one is a fault in all of them, and 1830
+                // blocks times nineteen columns is a check nobody reads.
+                if (Blocks == 1)
+                {
+                    for (int at = row - 4; at <= row; at++)
+                    {
+                        if (at >= 1)
+                        {
+                            CheckCells(sheet, at, ClientLayout.KindOf(at, row));
+                        }
+                    }
+
+                    CheckWidths(sheet);
+                    CheckTitle(sheet);
+                }
+
                 int rows = 0;
 
                 for (int at = row + 1; at <= lastRow; at++)
@@ -164,6 +210,12 @@ namespace Federator.Core.Report
 
                     rows++;
                     Rows++;
+
+                    if (Blocks == 1 && rows == 1)
+                    {
+                        CheckCells(sheet, at, ClientLayout.RowKind.Clash);
+                    }
+
                     CheckShape(sheet, at, rows == 1 && Blocks == 1);
                 }
 
@@ -235,6 +287,189 @@ namespace Federator.Core.Report
             return at;
         }
 
+        // ---------- cell against cell ----------
+
+        /// <summary>
+        /// One row, every column, against what the client's report carries there. The row
+        /// height first, because a wrong height is one line rather than nineteen.
+        /// </summary>
+        private void CheckCells(IXLWorksheet sheet, int row, ClientLayout.RowKind kind)
+        {
+            double wanted = ClientLayout.Height(kind);
+            double got = sheet.Row(row).Height;
+
+            if (Math.Abs(got - wanted) > ClientLayout.Epsilon)
+            {
+                Say("Row " + row + ", the " + Words(kind) + " row, is "
+                    + Number(got) + " high and the client's report has it at "
+                    + Number(wanted) + ".");
+            }
+
+            for (int column = 1; column <= WorkbookWriter.LastColumn; column++)
+            {
+                CheckFill(sheet, row, column, kind);
+                CheckBorder(sheet, row, column, kind);
+            }
+        }
+
+        private void CheckFill(
+            IXLWorksheet sheet, int row, int column, ClientLayout.RowKind kind)
+        {
+            string wanted = ClientLayout.Fill(kind, column);
+            string got = Colour(sheet.Cell(row, column));
+
+            if (string.Equals(got, wanted, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            Say("Cell " + Where(row, column) + ", on the " + Words(kind) + " row, is "
+                + Paint(got) + " and the client's report paints it " + Paint(wanted)
+                + ". That banding is the first thing a reader sees, so a report without "
+                + "it does not look like the one they accepted.");
+        }
+
+        /// <summary>
+        /// Whether the cell is ruled at all. Which edges carry which weight is theirs and
+        /// is painted from the same runs, so what is worth reporting is a row that came
+        /// out bare.
+        /// </summary>
+        private void CheckBorder(
+            IXLWorksheet sheet, int row, int column, ClientLayout.RowKind kind)
+        {
+            if (column > ClientLayout.LastColumnOf(kind))
+            {
+                return;
+            }
+
+            IXLStyle style = sheet.Cell(row, column).Style;
+
+            bool ruled = style.Border.TopBorder != XLBorderStyleValues.None
+                || style.Border.BottomBorder != XLBorderStyleValues.None
+                || style.Border.LeftBorder != XLBorderStyleValues.None
+                || style.Border.RightBorder != XLBorderStyleValues.None;
+
+            if (ruled)
+            {
+                return;
+            }
+
+            Say("Cell " + Where(row, column) + ", on the " + Words(kind)
+                + " row, carries no border and every cell of the client's table is boxed.");
+        }
+
+        /// <summary>Their nineteen column widths, against ours.</summary>
+        private void CheckWidths(IXLWorksheet sheet)
+        {
+            for (int column = 1; column <= WorkbookWriter.LastColumn; column++)
+            {
+                // ClosedXML reports a width with its own padding already taken off, and
+                // the file carries it with the padding on, which is what the writer adds.
+                // Comparing the two directly reported all nineteen as wrong on a file that
+                // matched theirs to six decimals.
+                double wanted = ClientLayout.Width(column) - WorkbookWriter.ClosedXmlWidthPadding;
+                double got = sheet.Column(column).Width;
+
+                if (Math.Abs(got - wanted) <= ClientLayout.Epsilon)
+                {
+                    continue;
+                }
+
+                Say("Column " + Letter(column) + " is " + Number(got)
+                    + " wide and the client's report has it at " + Number(wanted)
+                    + ", so their columns and ours do not line up.");
+                return;
+            }
+        }
+
+        /// <summary>Row 1, which carries their words and their height.</summary>
+        private void CheckTitle(IXLWorksheet sheet)
+        {
+            double got = sheet.Row(1).Height;
+
+            if (Math.Abs(got - WorkbookWriter.TitleRowHeight) > ClientLayout.Epsilon)
+            {
+                Say("Row 1 is " + Number(got) + " high and the client's report has it at "
+                    + Number(WorkbookWriter.TitleRowHeight) + ", which is the room the "
+                    + "logo sits in.");
+            }
+
+            string title = sheet.Cell(1, 4).GetString();
+
+            if (!string.Equals(title, WorkbookWriter.TitleText, StringComparison.Ordinal))
+            {
+                Say("Row 1 reads " + Quote(title) + " and the client's report reads "
+                    + Quote(WorkbookWriter.TitleText) + ".");
+            }
+        }
+
+        private static string Colour(IXLCell cell)
+        {
+            try
+            {
+                if (cell.Style.Fill.PatternType == XLFillPatternValues.None)
+                {
+                    return string.Empty;
+                }
+
+                // XLColor.Color is a System.Drawing colour, so the six digits are read
+                // off it rather than through a helper that does not exist on it.
+                System.Drawing.Color colour = cell.Style.Fill.BackgroundColor.Color;
+
+                return colour.R.ToString("X2", CultureInfo.InvariantCulture)
+                    + colour.G.ToString("X2", CultureInfo.InvariantCulture)
+                    + colour.B.ToString("X2", CultureInfo.InvariantCulture);
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        private static string Paint(string colour)
+        {
+            return colour.Length == 0 ? "not filled" : "filled " + colour;
+        }
+
+        private static string Words(ClientLayout.RowKind kind)
+        {
+            switch (kind)
+            {
+                case ClientLayout.RowKind.Title: return "title";
+                case ClientLayout.RowKind.TestHeader: return "test heading";
+                case ClientLayout.RowKind.TestValues: return "test value";
+                case ClientLayout.RowKind.Gap: return "blank";
+                case ClientLayout.RowKind.ItemLabels: return "Item 1 and Item 2";
+                case ClientLayout.RowKind.Headings: return "column heading";
+                default: return "clash";
+            }
+        }
+
+        private static string Where(int row, int column)
+        {
+            return Letter(column) + row.ToString(CultureInfo.InvariantCulture);
+        }
+
+        private static string Letter(int column)
+        {
+            string name = string.Empty;
+            int at = column;
+
+            while (at > 0)
+            {
+                int part = (at - 1) % 26;
+                name = (char)(65 + part) + name;
+                at = (at - 1 - part) / 26;
+            }
+
+            return name;
+        }
+
+        private static string Number(double value)
+        {
+            return value.ToString("0.####", CultureInfo.InvariantCulture);
+        }
+
         // ---------- what shape the values are ----------
 
         private void CheckShape(IXLWorksheet sheet, int row, bool first)
@@ -264,13 +499,52 @@ namespace Federator.Core.Report
 
             IXLCell distance = sheet.Cell(row, WorkbookWriter.ColumnDistance);
 
-            if (distance.DataType == XLDataType.Number
-                && distance.Style.NumberFormat.Format != ClientFormat.FixedFormat)
+            if (distance.DataType != XLDataType.Number)
             {
-                Say("The Distance cell carries the number format "
-                    + Quote(distance.Style.NumberFormat.Format)
-                    + " and the client's report writes three decimals, "
-                    + Quote(ClientFormat.FixedFormat) + ", so ours prints the whole double.");
+                Say("The Distance cell holds " + Quote(distance.GetString())
+                    + " as text and the client's report holds a number there, so ours "
+                    + "cannot be sorted or filtered on.");
+            }
+            else
+            {
+                // Theirs stores the ROUNDED number under General. A format here means ours
+                // is keeping the raw double and hiding it behind a display, which is what
+                // put -0.328083992004395 into a cell reading -0.328.
+                if (distance.Style.NumberFormat.Format != ClientLayout.DistanceNumberFormat)
+                {
+                    Say("The Distance cell carries the number format "
+                        + Quote(distance.Style.NumberFormat.Format)
+                        + " and the client's report carries none, which means ours is "
+                        + "storing the raw value behind a display and theirs is not.");
+                }
+
+                double held = distance.GetDouble();
+
+                if (Math.Abs(held - ClientFormat.Rounded(held)) > 1e-9)
+                {
+                    Say("The Distance cell holds "
+                        + held.ToString("R", CultureInfo.InvariantCulture)
+                        + " and the client's report holds it rounded, "
+                        + Quote(ClientFormat.Fixed(held)) + ".");
+                }
+            }
+
+            string layer = sheet.Cell(row, WorkbookWriter.ColumnItem1 + 1).GetString();
+
+            if (layer.Length == 0)
+            {
+                Say("The Item 1 Layer cell is empty and the client's report carries the "
+                    + "level in it. Nothing was ever written into it, so the column reads "
+                    + "as a column their report fills and ours does not.");
+            }
+
+            IXLCell image = sheet.Cell(row, WorkbookWriter.ColumnImage);
+
+            if (image.GetString().Length > 0)
+            {
+                Say("The Image cell reads " + Quote(image.GetString())
+                    + " and the client's report leaves it empty with the picture behind "
+                    + "it, so ours shows a file name where theirs shows a photo.");
             }
         }
 
@@ -347,8 +621,12 @@ namespace Federator.Core.Report
 
             if (problems.Count == 0)
             {
-                lines.Add("         Every column, shape and block order matches the client's "
-                    + "report.");
+                lines.Add("         Every column, value shape, fill, border, row height "
+                    + "and column width matches the client's report, and the blocks are "
+                    + "in their order.");
+                lines.Add("         Not compared: the font, the sheet name, freeze panes, "
+                    + "print setup, merged ranges, and whether a value is true. See "
+                    + "scan.md 4q.");
             }
 
             lines.Add("         " + ClientReportColumns.ReadFrom());

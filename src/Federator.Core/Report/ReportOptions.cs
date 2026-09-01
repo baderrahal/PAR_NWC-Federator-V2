@@ -19,6 +19,8 @@ namespace Federator.Core.Report
             CompactResolved = false;
             ClientColumnsOnly = false;
             WriteHtml = true;
+            SetDocumentUnits = true;
+            UnitsName = DefaultUnits;
             LogoPath = string.Empty;
             Images = new ImageOptions();
             Names = new ContainerNameSettings();
@@ -50,6 +52,24 @@ namespace Federator.Core.Report
         /// A missing stylesheet turns this one output off and nothing else.
         /// </summary>
         public bool WriteHtml { get; set; }
+
+        /// <summary>
+        /// Put the document into <see cref="UnitsName"/> before the clash step.
+        ///
+        /// On, because this is a Saudi project and every report the team sends is metric,
+        /// and a run on a document in feet wrote a tolerance of 0.246ft and distances in
+        /// feet, which nobody can use. It is a mutation of the document, so it is logged
+        /// with what the document was and what it became.
+        /// </summary>
+        public bool SetDocumentUnits { get; set; }
+
+        /// <summary>
+        /// Which units, by the name on the Navisworks enum. Metres by default.
+        /// </summary>
+        public string UnitsName { get; set; }
+
+        /// <summary>Metres, because that is what the client receives.</summary>
+        public const string DefaultUnits = "Meters";
 
         /// <summary>
         /// The logo the HTML page shows, or empty for none, which is the default.

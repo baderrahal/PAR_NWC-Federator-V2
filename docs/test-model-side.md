@@ -1956,3 +1956,39 @@ From the HTML Tabular work of 2026-09-01:
   stylesheet from our data, so it should, and only opening one proves it
 - whether the picture links resolve when the page is opened in Excel. Ours are relative and
   theirs are absolute, so ours should survive being moved and theirs should not
+
+From the workbook cell work of 2026-09-01:
+
+- ANSWERED. Status now writes OK where the API says Complete, and anything else goes
+  through as itself. Their report says OK on all 1830 tests and ours said Complete, which
+  is the enum value. Nothing is translated except that one pair
+- ANSWERED. Distance is the rounded number with no format, Layer carries the level, the
+  Image cell is empty with the link on it, the rows are 45 and 60 high, the nineteen
+  columns are their widths, and every cell is banded and boxed the way theirs is. All
+  measured off their export and pinned by ClientLayoutTests
+
+Still open, and each needs a run:
+
+- WHETHER THE DOCUMENT ACTUALLY GOES INTO METRES. This is the one to watch first. The API
+  can set each MODEL's units through DocumentModels.SetModelUnitsAndTransform, and there is
+  no way at all to set the DOCUMENT's. Whether Document.Units follows from the models it
+  holds cannot be read off the DLL. The log says what the document reported before and
+  after and says THE DOCUMENT DID NOT FOLLOW in capitals when it did not. Send that line
+  back. If it did not follow, the report is still honest, because every number in it and
+  the unit beside them are the document's, but the client gets feet
+- whether setting the models' units MOVES anything. Each model is handed back its own
+  transform and its own reflected flag, so it should not, and only looking at the model
+  proves it. If geometry has shifted, the units step is the first thing to switch off
+- whether Run the open file does the whole job. It is a new path through the engine and
+  every line of it calls Navisworks, so none of it is unit tested. Open one federation,
+  press it, and send back the log. What is testable, the naming, is covered by
+  OpenDocumentJobTests and lands on the same paths the scanned run uses
+- whether the open path leaves the clash history alone. It does not append, does not clear
+  and does not Decide, so it should, and the INTACT line after the NWD is what proves it
+- whether the banding survives being opened in Excel and saved again. Ours writes the fills
+  as explicit RGB and theirs arrived as theme colours through an HTML import, so the two
+  files should look identical and only opening both side by side settles it
+- whether eleven tick boxes with one visible is too few rather than too many. Three became
+  fixed behaviour, so if a week comes where the NWD should not be republished, or the page
+  should not be written, or the photos should be skipped, that is a box coming back and it
+  should come back rather than being worked around

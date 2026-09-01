@@ -1914,6 +1914,153 @@ its own file explicitly, so nothing is mislabelled, but the two numbering scheme
 the same and matching them would mean rendering after the run rather than during it.
 
 
+### 4q. The workbook cell by cell, and the units, measured 2026-09-01
+
+Every number below was read off the two files with the same reader, ours written by
+`WorkbookWriter` and theirs `samples\client-report\1104-PAR-1A04WN-XXX-BM-RPT-000001.xlsx`.
+Nothing here is estimated.
+
+#### Can the document be put into metres
+
+The document was in feet and the client works in metres. Whether the API can set units was
+established by loading `Autodesk.Navisworks.Api.dll` with `LoadFrom` and walking all 4027
+types. `ReflectionOnlyLoadFrom` was tried first and `GetTypes()` returned 0, so that pass
+proved nothing and was redone.
+
+    Document.Units                      read only, no setter at all
+    Model.Units                         read only, no setter at all
+    any settable Units property         none, across all 4027 types
+    any Set/Convert/Change units method none, except the three below
+
+    public void DocumentModels.SetModelUnitsAndTransform(
+        Model model, Units units, Transform3D transform, bool transformReflected)
+
+    Autodesk.Navisworks.Api.Interop.LcOpModel.SetOriginalUnits(Units)
+    Autodesk.Navisworks.Api.Interop.LcVwDocument.SetModelUnitsAndTransform(...)
+
+So the DOCUMENT's units cannot be set. Each MODEL's can, through the one public managed
+member, reached as `Document.Models`. Whether `Document.Units` then follows from the models
+it holds is **UNKNOWN** and cannot be read off the DLL. It needs a run.
+
+`Federator.Addin.Engine.DocumentUnits` therefore sets every model, logs what the document
+said before and after, and says plainly when the document did not follow. It never claims
+the change worked. It runs BEFORE the clash step, so every tolerance and every distance is
+read in the units the report goes out in. Nothing is converted afterwards: the tolerance,
+the distances and the coordinates all come out of the document in the document's units, so
+a report saying metres while the document says feet is a report that lies.
+
+#### What differed, cell by cell
+
+Nine things. Every VALUE already matched, which is why the previous check passed.
+
+| what | ours was | theirs is | fixed |
+|---|---|---|---|
+| Distance value | `-0.328083992004395` behind format `0.000` | `-0.116`, rounded, no format | yes |
+| Layer, both items | empty on every row | the level, `GRF` | yes |
+| Image cell | `cd000001.jpg` | empty, picture behind it | yes |
+| Status wording | `Complete` | `OK` | yes |
+| Row 1 height | default | 45 | yes |
+| Clash row height | default | 60 | yes |
+| Column widths | default | nineteen measured values | yes |
+| Fills | none anywhere | five colours, banded | yes |
+| Borders | none anywhere | medium box, thick round the test header | yes |
+
+The fills, read off their file:
+
+    heading rows, clash columns A to K   EEEEEE
+    heading rows, Item 1 block L to O    99CCFF
+    heading rows, Item 2 block P to S    FFCCCC
+    clash rows,   Item 1 block L to O    DDEEFF
+    clash rows,   Item 2 block P to S    FFEEEE
+
+The row heights, read off their file:
+
+    row 1, the title and the logo        45
+    the test heading row                 15.6
+    the test values row                  15
+    the blank between                    15.6
+    the Item 1 and Item 2 row            15
+    the column heading row               15
+    every clash row                      60
+
+Their test header is a table NINE columns wide that stops at Status, so L to S on those two
+rows carry nothing at all and are not expected to. Their borders follow the merge runs:
+the left edge on the first column of a run, the right on the last, top and bottom on all of
+them, which is what `ClientStyle.Box` reproduces.
+
+`ClosedXML` reports a column width with its own padding of 0.710625 already taken off, and
+the file carries it with the padding on. Comparing the two directly reports all nineteen
+columns wrong on a file that matches to six decimals.
+
+#### What is still different, and why each one is left
+
+Measured on the two files after every fix above.
+
+| what | ours | theirs | why it is left |
+|---|---|---|---|
+| sheet width | stops at S | runs to BA, 53 columns | theirs is an HTML table declaring 53 columns. Ours fills the same nineteen and no report reads the empty ones |
+| font colour | explicit `FF000000` | theme 1 | renders the same under every stock theme. ClosedXML has no theme colour to write |
+| `pageSetup` element | written | absent | ClosedXML writes one whatever we do. An imported page carries none |
+| page margins | now theirs | 1/1/0.75/0.75/0.5/0.5 | **fixed**, they were ClosedXML's four defaults |
+| hyperlinks | one per picture | none at all | theirs has no picture links, which is exactly why its pictures break when it is moved. Ours is a stated rule and is worth more than the match |
+| explicit `none` borders | written on all four sides | omitted | ClosedXML writes all four whenever one is set. An omitted side and `style="none"` are the same border |
+| `horizontal="general"` | written | omitted | general IS the default. Same cell, two spellings |
+| `vertical="bottom"` | written | omitted | bottom IS the default. Same cell, two spellings |
+| picture numbering | by the order the tests RAN | by block | already recorded in 4p. Matching it means rendering after the run rather than during it |
+| row 2 and row 3 | no cells | a styled blank at A2, row 3 at height 15 | nothing shows in either. Writing cells to match empty cells is noise |
+| merged ranges | identical block for block | identical block for block | **same**, verified over rows 1 to 12: `A1:C1`, `A4:B5`, `A7:K7`, `L7:O7`, `P7:S7`, then `A:B`, `C:D`, `I:K` per table row |
+| sheet name | the output name, 31 characters | the output name, 31 characters | **same** |
+| freeze panes | none | none | **same** |
+| auto filter | none | none | **same**, ours went with the Summary sheet |
+| embedded pictures | none | none | **same**, the native export never embeds |
+
+#### What the check can and cannot catch after this
+
+`WorkbookCheck` now walks every cell of the first block and compares the value, the data
+type, the number format, the fill, the borders, the row height and the column width,
+printing both sides of whatever differs. Fourteen tests in `WorkbookCellCheckTests` break
+one thing at a time and assert it is named, because a check nobody has watched fail is not
+a check.
+
+What it still cannot catch, written down because this is the third time a check here has
+reported clean over a real difference:
+
+- **the table being wrong.** The check compares against `ClientLayout` and the writer
+  paints from `ClientLayout`. A number wrong in both is invisible. Only
+  `ClientLayoutTests` catches that, by opening the sample and asserting every height,
+  every fill and every width against their file. Six tests, all green
+- **anything not in the list above.** Fonts, font colours, the sheet name, freeze panes,
+  print setup and merged ranges are not compared. They are in the table above with both
+  sides shown
+- **whether a value is true.** It can see the Distance cell holds a number to three
+  decimals. It cannot see the number came off the wrong clash
+- **a block that was never written.** It checks the blocks it finds
+
+The pass line says all four out loud, so a clean check does not read as approval of what it
+did not look at.
+
+#### The tick boxes, before and after
+
+Fifteen. Read out of the real window by `build\probe-window-labels.ps1`, which now opens
+every expander first and says which boxes are visible without opening anything.
+
+| box | what it did | kept |
+|---|---|---|
+| `IncludeSubfolders` | whether the scan walks down | kept, up front, beside the folder it changes |
+| `RepublishNwd` | write the NWD | removed, fixed ON. A weekly run wants it every time |
+| `WriteHtmlReport` | write the client page | removed, fixed ON. It is the format the client accepts |
+| `WriteImages` | render the photos | removed, fixed ON. The accepted report has them |
+| `ClientColumnsOnly` | drop our extra columns | removed outright. Dead since the workbook became one sheet with none of ours on it |
+| `DateTheNwd` | keep every week's NWD | moved, collapsed |
+| `WriteClashXml` | an extra XML per building | moved, collapsed |
+| `EmbedThumbnails` | paste photos into cells | moved, collapsed |
+| `ImageNew` to `ImageResolved` | which statuses get a photo | moved, collapsed, defaults unchanged at New, Active, Reviewed |
+| `ApplyFileSettings` | overwrite existing tests | kept, moved into "Things that destroy data" |
+| `CompactResolved` | delete Resolved clashes | kept, moved into "Things that destroy data" |
+
+Eleven boxes remain and ONE is visible without opening anything. A units combo replaced the
+three that became fixed, defaulting to metres.
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

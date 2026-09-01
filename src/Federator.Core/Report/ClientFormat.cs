@@ -169,6 +169,32 @@ namespace Federator.Core.Report
         /// attribute and the units attribute one after the other with nothing between
         /// them, so there is no space and this is one field.
         /// </summary>
+        /// <summary>
+        /// The test status in the client's word.
+        ///
+        /// Ours read "Complete" because that is what the API returns: ClashRunner sets it
+        /// from ClashTest.Status, and ClashTestStatus is New, Old, Partial or Complete.
+        /// Theirs reads "OK" on all 1830 tests of both exports.
+        ///
+        /// Complete to OK is the ONE pair that can be measured, because every test in both
+        /// of their reports had run. What New, Old and Partial read as in one of theirs is
+        /// UNKNOWN, so those are written as they are rather than invented.
+        /// </summary>
+        public static string StatusWording(string status)
+        {
+            if (string.IsNullOrEmpty(status))
+            {
+                return string.Empty;
+            }
+
+            return string.Equals(status.Trim(), "Complete", StringComparison.OrdinalIgnoreCase)
+                ? ClientStatusOk
+                : status.Trim();
+        }
+
+        /// <summary>What theirs says on every test that ran.</summary>
+        public const string ClientStatusOk = "OK";
+
         public static string Tolerance(double value, string units)
         {
             return value.ToString(ToleranceFormat, CultureInfo.InvariantCulture)
@@ -226,6 +252,39 @@ namespace Federator.Core.Report
 
         /// <summary>The format three decimals means, kept here so nothing else spells it out.</summary>
         public const string FixedFormat = "0.000";
+
+        /// <summary>
+        /// The NUMBER rounded to what <see cref="Fixed"/> would print, for a cell that
+        /// holds a number rather than text.
+        ///
+        /// A display format is not enough. Ours stored -1.70603561401367 behind a format
+        /// of 0.000, so it looked right and anyone sorting, filtering or copying got the
+        /// long value. Theirs stores the rounded number itself and carries no format.
+        ///
+        /// A value too small for three decimals keeps its own precision, the same
+        /// exception <see cref="Fixed"/> makes, so a real value is never rounded to zero.
+        /// </summary>
+        public static double Rounded(double value)
+        {
+            if (value == 0.0 || double.IsNaN(value) || double.IsInfinity(value))
+            {
+                return value;
+            }
+
+            double three = Math.Round(value, 3, MidpointRounding.AwayFromZero);
+
+            if (three != 0.0)
+            {
+                return three;
+            }
+
+            // Would have gone to zero, so it keeps the three significant figures the text
+            // form would have shown.
+            int magnitude = (int)Math.Floor(Math.Log10(Math.Abs(value)));
+            int decimals = SmallValueFigures - 1 - magnitude;
+
+            return decimals > 15 ? value : Math.Round(value, decimals, MidpointRounding.AwayFromZero);
+        }
 
         /// <summary>How many significant figures a value too small for three decimals gets.</summary>
         public const int SmallValueFigures = 3;

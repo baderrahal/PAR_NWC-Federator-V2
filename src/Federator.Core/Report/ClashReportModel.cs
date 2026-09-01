@@ -55,6 +55,23 @@ namespace Federator.Core.Report
         /// </summary>
         public string Layer { get; set; }
 
+        /// <summary>
+        /// The Layer cell, falling back to the clash's own level.
+        ///
+        /// The page writes the level into its layer element and the workbook was writing
+        /// this property, which nothing ever filled, so the same row read LGF in the page
+        /// and nothing in the workbook. Both read the same thing now.
+        ///
+        /// Theirs is a real per item Layer and is not the level: one of their rows carries
+        /// GRF on item 1 with the level at LGF, and nothing at all on item 2. This tool
+        /// does not read that property, so it carries the level in both files rather than
+        /// leaving one of them empty.
+        /// </summary>
+        public string LayerOr(string level)
+        {
+            return string.IsNullOrEmpty(Layer) ? (level ?? string.Empty) : Layer;
+        }
+
         /// <summary>The client's Item ID column, label and value in one field.</summary>
         public string ClientId()
         {

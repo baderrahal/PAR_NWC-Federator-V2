@@ -77,6 +77,8 @@ namespace Federator.Addin.Ui
             // by hand, which is where MOD-00001 came from instead of MOD-000001.
             ShowNaming();
             ShowTheInstallsLogo();
+            FillUnits();
+            ShowOpenDocument();
             FillGroupingModes();
             FillOpenCounts();
 
@@ -737,6 +739,53 @@ namespace Federator.Addin.Ui
         /// install's own logo, which is what the client accepts, so most people never open
         /// this. Clearing the box means no logo at all.
         /// </summary>
+        /// <summary>
+        /// The units every number in the report is in. Metres by default, because this is
+        /// a Saudi project and every report the team sends is metric.
+        /// </summary>
+        private static readonly string[] UnitChoices =
+        {
+            "Meters", "Millimeters", "Centimeters", "Feet", "Inches"
+        };
+
+        private void FillUnits()
+        {
+            UnitsBox.Items.Clear();
+
+            foreach (string name in UnitChoices)
+            {
+                UnitsBox.Items.Add(UnitWording(name));
+            }
+
+            UnitsBox.SelectedIndex = 0;
+        }
+
+        private static string UnitWording(string name)
+        {
+            switch (name)
+            {
+                case "Meters": return "Metres, which is what the client receives";
+                case "Millimeters": return "Millimetres";
+                case "Centimeters": return "Centimetres";
+                case "Feet": return "Feet";
+                default: return name;
+            }
+        }
+
+        private string ChosenUnits()
+        {
+            int at = UnitsBox == null ? 0 : UnitsBox.SelectedIndex;
+
+            return at >= 0 && at < UnitChoices.Length
+                ? UnitChoices[at]
+                : ReportOptions.DefaultUnits;
+        }
+
+        private void OnUnitsChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RefreshOutputsSummary();
+        }
+
         private void OnBrowseLogo(object sender, RoutedEventArgs e)
         {
             using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
@@ -801,12 +850,16 @@ namespace Federator.Addin.Ui
             // in C:\00_NM\NWC Fed\NWC\test001, which is where its own input lives.
             options.SourceFolder = Trimmed(SourceFolderBox.Text);
             options.WriteXml = WriteClashXml.IsChecked == true;
+
+            // Fixed on. A weekly run wants the NWD, the client page and the photos every
+            // time, so all three stopped being decisions.
+            options.WriteHtml = true;
             options.OpenCount = ChosenOpenCount();
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
             options.CompactResolved = CompactResolved.IsChecked == true;
-            options.ClientColumnsOnly = ClientColumnsOnly.IsChecked == true;
-            options.WriteHtml = WriteHtmlReport.IsChecked == true;
             options.LogoPath = Trimmed(LogoBox.Text);
+            options.SetDocumentUnits = true;
+            options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
             options.Names = settings;
             return options;
@@ -820,7 +873,7 @@ namespace Federator.Addin.Ui
         private ImageOptions ImagesWanted()
         {
             ImageOptions images = new ImageOptions();
-            images.Write = WriteImages.IsChecked == true;
+            images.Write = true;
             images.EmbedThumbnail = EmbedThumbnails.IsChecked == true;
 
             int pixels = Number(ImagePixelsBox.Text, ImageOptions.DefaultPixels);
@@ -892,9 +945,7 @@ namespace Federator.Addin.Ui
             try
             {
                 ImageSummary.Text = ImagesWanted().Describe()
-                    + (ClientColumnsOnly.IsChecked == true
-                        ? " Client columns only."
-                        : " Client columns, then ours after them.");
+                    + " The workbook is the client's layout.";
             }
             catch (Exception)
             {
@@ -918,7 +969,7 @@ namespace Federator.Addin.Ui
         {
             // IsChecked="True" in the XAML raises Checked while the tree is still being
             // built, so this can be reached before the controls it reads exist.
-            if (OutputsSummary == null || RepublishNwd == null || ExcelFolderBox == null
+            if (OutputsSummary == null || ExcelFolderBox == null
                 || NwfFolderBox == null || WriteClashXml == null || SourceFolderBox == null
                 || DateTheNwd == null)
             {
@@ -935,9 +986,7 @@ namespace Federator.Addin.Ui
                 }
             }
 
-            string nwd = RepublishNwd.IsChecked == true
-                ? "The NWD is republished every run."
-                : "The NWD is NOT being republished.";
+            string nwd = "The NWD is republished every run.";
 
             string xml = WriteClashXml != null && WriteClashXml.IsChecked == true
                 ? " A clash XML is written beside each workbook."
@@ -1037,7 +1086,8 @@ namespace Federator.Addin.Ui
                 + (DateTheNwd.IsChecked == true
                     ? "dated, so every week is kept"
                     : "overwrites, so only the latest week exists"));
-            log.Line("republish NWD    : " + (RepublishNwd.IsChecked == true ? "yes" : "no"));
+            log.Line("republish NWD    : yes, fixed");
+            log.Line("report units     : " + ChosenUnits());
             log.Block(RunLog.GroupsSectionTitle, GroupListLines());
             log.Block(RunLog.FindingsSectionTitle, findings.Lines());
 
@@ -1181,7 +1231,7 @@ namespace Federator.Addin.Ui
                     + (options.WriteXml ? "written beside each workbook" : "off"));
 
                 FederationEngine engine = new FederationEngine(
-                    SetProgress, log, RepublishNwd.IsChecked == true, exchange, options, nwfFolder);
+                    SetProgress, log, true, exchange, options, nwfFolder);
                 engine.Run(jobs);
 
                 // What the Revit container inside each NWC says its building is. Only
@@ -1329,6 +1379,139 @@ namespace Federator.Addin.Ui
         /// Reads whichever file was picked and rebuilds its sets into whatever document is
         /// open. Runs on the plugin thread, like everything else that touches the API.
         /// </summary>
+        /// <summary>
+        /// The whole job on the file already open. No scan, no source folder, no grouping.
+        ///
+        /// HOW A PERSON TELLS THE TWO APART. The blue box on this step says what it will
+        /// run and where it will write, naming the open file. The Run button on the Source
+        /// step is the other path, and it says how many groups are ticked. One names a
+        /// file, the other names a count, so neither reads as the other.
+        /// </summary>
+        private void OnRunOpenDocument(object sender, RoutedEventArgs e)
+        {
+            if (running)
+            {
+                return;
+            }
+
+            string open = OpenDocumentPath();
+
+            if (!OpenDocumentJob.CanRun(open))
+            {
+                Warn(OpenDocumentJob.WhyNot(open));
+                return;
+            }
+
+            // The clash file is OPTIONAL here. Without one, whatever tests are already in
+            // the document are run, which is the ordinary weekly case.
+            string path = Trimmed(ExchangeFileBox.Text);
+            ExchangeDocument exchange = null;
+
+            running = true;
+            RunOpenButton.IsEnabled = false;
+
+            try
+            {
+                if (path.Length > 0 && File.Exists(path))
+                {
+                    exchange = new ExchangeReader().ReadFile(path);
+                    log.Line("OPEN     clash file " + path);
+                }
+                else
+                {
+                    log.Line("OPEN     no clash file picked, running the tests already in it");
+                }
+
+                ReportOptions options = ReportsWanted();
+                string subfolder = ReportPaths.DefaultSubfolder;
+                string reportFolder = OpenDocumentJob.ReportFolderBeside(open, subfolder);
+
+                FederationEngine engine = new FederationEngine(
+                    SetProgress, log, true, exchange, options, reportFolder);
+
+                JobOutcome outcome = engine.RunOpenDocument(subfolder);
+
+                log.Block("OPEN DOCUMENT", new List<string> { FederationEngine.Describe(outcome) });
+                SetsSummary.Text = FederationEngine.Describe(outcome);
+                SetProgress(SetsSummary.Text);
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "running the open document",
+                    error,
+                    "stopped, everything already written is kept");
+                SetProgress("The run on the open document stopped on an error.");
+                Warn(error.Message);
+            }
+            finally
+            {
+                running = false;
+                RunOpenButton.IsEnabled = true;
+                ShowOpenDocument();
+            }
+        }
+
+        /// <summary>
+        /// A step was shown. The blue box names the file open RIGHT NOW, and a person can
+        /// open a different one between one look and the next, so it is read again here
+        /// rather than once at startup.
+        /// </summary>
+        private void OnStepShown(object sender, SelectionChangedEventArgs e)
+        {
+            // TabControl bubbles SelectionChanged from every combo box inside it.
+            if (!ReferenceEquals(e.OriginalSource, Steps))
+            {
+                return;
+            }
+
+            ShowOpenDocument();
+        }
+
+        /// <summary>
+        /// What the blue box says. Read every time the step is shown, because the person
+        /// can open a different file between one look and the next.
+        /// </summary>
+        private void ShowOpenDocument()
+        {
+            if (OpenDocumentLine == null)
+            {
+                return;
+            }
+
+            string open = OpenDocumentPath();
+
+            OpenDocumentLine.Text = OpenDocumentJob.Describe(
+                open, ReportPaths.DefaultSubfolder);
+
+            if (RunOpenButton != null)
+            {
+                RunOpenButton.IsEnabled = !running && OpenDocumentJob.CanRun(open);
+            }
+        }
+
+        /// <summary>
+        /// Where the open document was loaded from, or empty. Never throws, because the
+        /// window reads this to fill a label and a label must not carry a framework
+        /// message.
+        /// </summary>
+        private static string OpenDocumentPath()
+        {
+            try
+            {
+                Autodesk.Navisworks.Api.Document document =
+                    Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+                return document == null || document.FileName == null
+                    ? string.Empty
+                    : document.FileName;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
         private void OnBuildSets(object sender, RoutedEventArgs e)
         {
             if (running)

@@ -179,7 +179,9 @@ namespace Federator.Core.Report
             XElement element = new XElement("clashtest",
                 new XAttribute("name", test.Name),
                 new XAttribute("test_type", Or(test.TestTypeName, "unknown")),
-                new XAttribute("status", test.State == TestState.Skipped ? "skipped" : "ok"),
+                new XAttribute("status", test.State == TestState.Skipped
+                    ? "skipped"
+                    : ClientFormat.StatusWording(test.StatusWord)),
                 // Three decimals. The stylesheet writes this attribute straight into the
                 // cell followed by the units, so ours read 0.2460629921ft where theirs
                 // read 0.025m. The units differ because the documents do and that is

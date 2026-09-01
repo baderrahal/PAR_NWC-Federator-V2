@@ -158,11 +158,17 @@ namespace Federator.Core.Tests
                 IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
                 IXLCell cell = sheet.Cell(HeaderRow(sheet) + 1, WorkbookWriter.ColumnDistance);
 
+                // What this used to assert, that the raw double is kept behind a display
+                // format, was measured against theirs and is wrong. Theirs stores -0.116
+                // and carries no format at all, so anyone sorting, filtering or copying
+                // a column of ours got -0.328083992004395 where theirs gives -0.328.
                 Assert.That(cell.DataType, Is.EqualTo(XLDataType.Number),
                     "it has to stay a number so the column still sorts");
-                Assert.That(cell.GetDouble(), Is.EqualTo(-0.328083992004395).Within(0.0000000001),
-                    "the raw signed number is kept, only how it reads changes");
-                Assert.That(cell.Style.NumberFormat.Format, Is.EqualTo("0.000"));
+                Assert.That(cell.GetDouble(), Is.EqualTo(-0.328).Within(0.0000000001),
+                    "the value itself is rounded, which is what theirs holds");
+                Assert.That(cell.Style.NumberFormat.Format, Is.Empty,
+                    "theirs carries no number format, so a format here would mean ours is "
+                    + "hiding a longer number behind a shorter one");
                 Assert.That(cell.GetFormattedString(), Is.EqualTo("-0.328"));
             }
         }
