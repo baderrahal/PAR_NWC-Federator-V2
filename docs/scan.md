@@ -1642,6 +1642,133 @@ file, which is why the page and its folder are what gets sent, and why the tick 
 pastes them into cells says so.
 
 
+### 4o. The reports check themselves, and where the client column set comes from, 2026-09-01
+
+Bader has been opening every client report in Excel after a run and searching it by hand.
+This tool wrote the file, so it can look and say.
+
+#### Both checks read the FILE
+
+`PageCheck` reads the written HTML back off the disk. `WorkbookCheck` opens the written
+xlsx. Neither looks at the object that produced it, and that distinction has already caught
+two faults that the object model reported as fine:
+
+- a relative image link that ClosedXML stored as an INTERNAL address, so the cell jumped to
+  a sheet instead of opening the picture, while the object model said the link was there
+- a test that was silently skipping rather than running, because it counted `..\` steps to
+  reach the samples folder
+
+Neither check can fail a group. A page with a column too many is worth saying loudly and is
+not a reason to mark a group failed, because the NWF, the NWD and the workbook were all
+written. Judging a group on it would repeat the fault that once reported a clean 22 group
+run as FAILED. They go into `JobOutcome.ReportWarnings`, which is a separate list from
+`Errors` for exactly that reason.
+
+#### What the page check reports
+
+```
+REPORT CHECK 1C07BC
+CHECK    213 clash rows on the page.
+         Item ID filled on 213 of 213 for item 1 and 213 of 213 for item 2.
+         the first one reads Element ID: 702888
+         no column the client's report does not have.
+         the tolerance cell reads 0.246ft
+         213 picture references, 213 with a backslash, 213 on disk.
+         the logo is 1104-...-RPT-000001_files\logo.jpg and it is on disk.
+         Nothing wrong with it.
+```
+
+Every number is counted off the file. A picture reference is resolved against the page's own
+folder, so "on disk" means the `_files` folder really holds it, which is the thing that
+breaks when a report is sent on. An id cell counts as filled when it holds a label, a colon
+and something after it, because an empty one is exactly what a run wrote into all 426 of
+them.
+
+#### What the workbook check reports
+
+```
+WORKBOOK CHECK 1C07BC
+CHECK    213 clash rows across 48 test sheets.
+         Item 1 Family       213 of 213
+         Item 1 Type Name    213 of 213
+         Item 1 Source File    0 of 213   EMPTY ON EVERY ROW
+         ...
+         These columns are empty on every row, Item 1 Source File, Item 1 Discipline,
+         Item 2 Source File, Item 2 Discipline. Either the model does not carry them or
+         they are not being read.
+```
+
+This is the check that would have caught Source File and Discipline coming out empty
+without anyone opening the workbook. Each column is found by its heading on each sheet
+rather than by position, because the client only mode leaves ours out entirely.
+
+#### One line in the window
+
+The run view carries one line per group, in the words a person would use:
+
+```
+1C07BC. Client report: Item ID filled on 213 of 213 rows, no extra columns, all 213
+        pictures on disk.
+1C07BC. Workbook: 213 rows, every column of ours filled somewhere.
+```
+
+Anything failing shows the first problem there instead, so a bad report is visible without
+opening the log.
+
+#### Where the client column set came from
+
+Not a list typed into the code. Two sources.
+
+The stylesheet, `clash_report_html_tabular.xsl`, gives the complete vocabulary of columns it
+can write as literals:
+
+```
+Approved By, Assigned To, Clash Group, Clash Name, Clash Point, Comments, Date Approved,
+Date Found, Description, Distance, Grid Location, Image, Item ID, Layer, Path, Status,
+and the Task block of Name, Start and End
+```
+
+The two exports in `samples\client-report` say which of that the client actually receives.
+Both carry exactly the same header, checked:
+
+```
+general   Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point
+per item  Item ID | Layer | Item Name | Item Type
+```
+
+`Item Name` and `Item Type` are NOT in the stylesheet's literal list. They are quick
+properties, written one column per smarttag with the heading taken from the data, which is
+why they can be anything at all and why our own extras became columns when they were
+written there.
+
+`ClientReportColumnsTests` re-reads both sample exports and the stylesheet on every test run
+and fails if the set no longer matches, so the constant is checked against the files rather
+than trusted.
+
+#### A dead template in Autodesk's own stylesheet
+
+Worth recording, because it will mislead the next person who greps that file. There is a
+template named `ItemHeaderCells` that NOTHING calls:
+
+```xml
+<xsl:template name="ItemHeaderCells">
+  <xsl:param name="ItemNumber"/>
+  <xsl:variable name="class">item<xsl:value-of select="$ItemNumber"/>Header</xsl:variable>
+  <xsl:for-each select="(//clashresults/clashresults/clashobjects/clashobject)[1]/smarttags/smarttag">
+    <td class="{$class}"><xsl:value-of select="./Name"/></td>
+    <td class="{$class}">Item Type</td>
+  </xsl:for-each>
+  <td class="{$class}">Item ID</td>
+  <td class="{$class}">Layer</td>
+</xsl:template>
+```
+
+It writes `Item Type` as a literal, reads `./Name` with a capital where the rest of the file
+reads `name`, and puts Item ID and Layer AFTER the quick properties rather than before. None
+of that is what the reports actually carry. The live one is `mainTableHeader`, and it is the
+only one the column tests read.
+
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

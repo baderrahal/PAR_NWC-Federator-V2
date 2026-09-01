@@ -665,6 +665,26 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// Reads the workbook back off the disk and counts how many rows filled each of
+        /// our own columns. A column filled zero times is named.
+        ///
+        /// This is the check that would have caught Source File and Discipline coming out
+        /// empty on every row, without anyone opening the file to find out.
+        /// </summary>
+        private void CheckTheWorkbook(FederationJob job, JobOutcome outcome, string path)
+        {
+            WorkbookCheck check = WorkbookCheck.Of(path);
+
+            log.Block("WORKBOOK CHECK " + job.Building, check.Lines());
+            progress(job.Building + ". " + check.Summary());
+
+            if (!check.Passed)
+            {
+                outcome.AddReportWarning(check.Summary());
+            }
+        }
+
+        /// <summary>
         /// Reads the NWF one more time, after the NWD has been published, and says whether
         /// it is still the size it was when it was saved.
         ///
@@ -760,6 +780,29 @@ namespace Federator.Addin.Engine
 
             outcome.HtmlSize = log.WriteFinished("HTML", path);
             outcome.HtmlOnDisk = outcome.HtmlSize >= 0;
+
+            CheckThePage(job, outcome, path);
+        }
+
+        /// <summary>
+        /// Reads the page back off the disk and says what is in it, because Bader has been
+        /// opening every report in Excel and searching it by hand and this tool wrote the
+        /// file. The FILE is read, never the object that produced it, which is how the
+        /// broken image link and the silently skipping test were both caught.
+        ///
+        /// Checking a report never fails a group. A check that cannot run says so.
+        /// </summary>
+        private void CheckThePage(FederationJob job, JobOutcome outcome, string path)
+        {
+            PageCheck check = PageCheck.Of(path);
+
+            log.Block("REPORT CHECK " + job.Building, check.Lines());
+            progress(job.Building + ". " + check.Summary());
+
+            if (!check.Passed)
+            {
+                outcome.AddReportWarning(check.Summary());
+            }
         }
 
         /// <summary>
@@ -867,6 +910,8 @@ namespace Federator.Addin.Engine
 
                 outcome.WorkbookSize = log.WriteFinished("XLSX", path);
                 outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
+
+                CheckTheWorkbook(job, outcome, path);
             }
 
             WriteHtmlTabular(job, outcome, report);
