@@ -532,6 +532,29 @@ and 6 does not read as broken.
   2026-09-01, it answered every column test but three: description, smarttags and the href
   on a result, which are the Description column, the Item Name and Item Type columns, and
   the Image column. See docs\scan.md section 4m for the whole table
+- Every report this tool writes is READ BACK off the disk and checked, and what the check
+  found goes in the log as a block and in the window as one line. Bader was opening every
+  report in Excel and searching it by hand, and the tool wrote the file. The FILE is read,
+  never the object that produced it, because the object model has twice called a written
+  file fine when it was not
+- The page check reports the rows, how many carry an Item ID on each item, the first id in
+  full so its shape is visible, any column that is not the client's named, the tolerance
+  cell exactly as written, how many picture references there are and how many use a
+  backslash and how many are really on disk, and whether the logo is there. The workbook
+  check reports the rows and, per column of ours, how many rows filled it. A column filled
+  zero times is NAMED, which is what would have caught Source File and Discipline
+- A report check NEVER fails a group. It is a warning on its own list, apart from the
+  errors, because the NWF, the NWD and the workbook were all still written. Judging a group
+  on it would repeat the fault that once reported a clean 22 group run as FAILED
+- The client column set is read from clash_report_html_tabular.xsl and from the exports in
+  samples\client-report, never typed into the code. The stylesheet gives what is possible
+  and the samples give what is theirs. A test re-reads both on every run and fails if the
+  set has drifted, so the list is checked against the files rather than trusted
+- The stylesheet carries a DEAD template named ItemHeaderCells that nothing calls. It
+  writes Item Type as a literal, reads ./Name with a capital where the rest of the file
+  reads name, and puts Item ID and Layer after the quick properties rather than before.
+  None of that is what the reports carry. The live one is mainTableHeader and it is the
+  only one anything here reads. Measured, see docs\scan.md section 4o
 - A property value is read by its KIND, never with ToDisplayString alone. Every accessor
   on VariantData is kind specific and throws on any other kind, and a Revit element id is
   an Int32, so ToDisplayString threw 426 times on one run and took the whole of Describe

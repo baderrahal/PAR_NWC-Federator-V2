@@ -1607,6 +1607,88 @@ _files folder together is what gets sent.** Either one alone is not the report.
 145. The line under the paste tick box now says exactly that, so nobody expects a workbook
      to carry pictures on its own.
 
+## Step 39, the report checks itself so you do not have to
+
+You have been opening every client report in Excel and searching it after a run. The tool
+wrote the file, so it now reads it back and says what is in it.
+
+146. Run a group and watch the run view.
+
+**Worked:** two lines per group, in plain words:
+
+    1C07BC. Client report: Item ID filled on 213 of 213 rows, no extra columns,
+            all 213 pictures on disk.
+    1C07BC. Workbook: 213 rows, every column of ours filled somewhere.
+
+That is the whole check in a sentence. If it says that, you do not need to open anything.
+
+147. If something is wrong, the line says what instead. For example
+
+    1C07BC. Client report: The Item ID column is empty on some rows. Item 1 has one on
+            0 of 213 and item 2 on 0 of 213. The client's report has one on every row.
+
+So a bad report is visible without opening the log at all.
+
+## Step 40, the full check in the log
+
+148. Find the `REPORT CHECK` block for a group.
+
+**Worked:** every number the check counted, off the file itself:
+
+    CHECK    213 clash rows on the page.
+             Item ID filled on 213 of 213 for item 1 and 213 of 213 for item 2.
+             the first one reads Element ID: 702888
+             no column the client's report does not have.
+             the tolerance cell reads 0.246ft
+             213 picture references, 213 with a backslash, 213 on disk.
+             the logo is 1104-...-RPT-000001_files\logo.jpg and it is on disk.
+             Nothing wrong with it.
+
+The first Item ID is printed in full on purpose, so you can see its shape rather than take
+my word that it is right.
+
+149. The picture count is the one worth reading. **On disk** means the `_files` folder
+     really holds the file the page points at. That is the thing that breaks when a report
+     is sent on, so it is counted rather than assumed.
+
+150. Find the `WORKBOOK CHECK` block.
+
+**Worked:** how many rows filled each of our own columns:
+
+    CHECK    213 clash rows across 48 test sheets.
+             Item 1 Family       213 of 213
+             Item 1 Source File    0 of 213   EMPTY ON EVERY ROW
+
+A column that is empty on every row is named. That is exactly what happened to Source File
+and Discipline, and nothing said so until you opened the workbook and looked.
+
+## Step 41, a failing check never fails the group
+
+151. Worth knowing so a warning does not read as a disaster.
+
+**Worked:** a report check that finds something wrong says so loudly and the group is
+still DONE. The NWF, the NWD and the workbook were all written. Only the report has a
+fault in it, and losing a group over that would be worse than the fault.
+
+152. If a check ever says the page could not be read at all, that IS worth sending to me
+     with the log. It means the file was not written the way it should have been.
+
+## Step 42, where the column list comes from
+
+153. Nobody typed the client column list into the tool. It was read from two places, and
+     the log says so at the end of every check:
+
+    The client column set was read from clash_report_html_tabular.xsl in the Navisworks
+    install and from the exports in samples\client-report, never from a list typed into
+    this tool.
+
+154. There is a test that re-reads both of your exports and the stylesheet on every build.
+     If Autodesk change the layout, or if you send me an export with a different set of
+     columns, that test fails and tells me before a report goes out wrong.
+
+155. **If your client ever asks for a different column, send me one export that has it.**
+     One file settles it. The set comes from the files, not from a decision.
+
 ## What to send me if it goes wrong
 
 Send the whole log file, not a summary and not the last few lines. Use **Copy log** and
