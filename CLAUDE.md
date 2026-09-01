@@ -297,6 +297,16 @@ and 6 does not read as broken.
   trace. One run wrote the same stack tens of thousands of times into a 17.8 MB log
 - One picker, one file. The file can hold sets, tests, or both, and the tool reads what is
   in it. A file holding only tests still works against sets already in the model
+- The naming boxes are filled from the patterns BEFORE anything can read them back.
+  Filling the grouping combo sets SelectedIndex, which fires its handler, which regroups,
+  which reads the boxes into the patterns. With the boxes still empty that replaced every
+  default with nothing, and the window then opened with all fifteen naming boxes blank, so
+  every field had to be typed by hand. That is where MOD-00001 came from instead of
+  MOD-000001. The defaults were always six digits in the code and never reached the window
+- Every picker returns a FOLDER to open at, including the one that chooses a file, and the
+  caller never takes the parent of it. Doing that opened the clash XML picker one level
+  above the folder it had remembered. The rule lives in
+  Federator.Core.Diagnostics.PickerStart so all five can be proved rather than clicked
 - Every picker remembers its own last folder, in a file beside the logs, and reopens
   there next time. Per picker and never one shared, because with one shared, picking an
   NWD folder moves the source picker to it and the next run reads the wrong folder. A
@@ -386,6 +396,18 @@ and 6 does not read as broken.
   "groups failed: 22" and "Nothing failed." in the same block. A group recorded as
   failed always carries a reason, and one is substituted rather than thrown over
   when a caller forgets, because logging never stops a run
+- A file written twice reports the size of the SECOND write. The list holds one entry per
+  file so the count stays a count of files, and the SIZE is the last one read. The NWF is
+  saved twice, once after the append and once after the clash step, and keeping the first
+  size made a run report it at 4,141 bytes, an empty federation, when the second save had
+  read 165,844 off the disk four minutes earlier. Nothing had shrunk. It read exactly like
+  an NWF that had lost every clash result in it, which is the most alarming thing this log
+  can say, so it must never say it by accident
+- The NWF is looked at ONCE MORE after the NWD is published, because the NWD is published
+  last and the NWF is the only record of what has been fixed. The line says intact and the
+  size, or CHANGED with both sizes, or GONE. Nothing was checking this, so a run that did
+  destroy the clash history would have finished quietly. It writes nothing and changes
+  nothing, so it cannot itself break a group
 - Only a file this run actually wrote goes in the files written list. Outputs
   overwrite with no date suffix, so last week's NWF and NWD sit at exactly the
   paths this run uses. A group that threw before writing anything must not list
@@ -436,6 +458,33 @@ and 6 does not read as broken.
   removes columns from the right hand end and moves none of theirs. Ours says Type Name
   rather than Type, because the client already has an Item Type column and it holds
   something else, the Navisworks item type, which reads Solid
+- The client's report has NO Layer column. Measured on both supplied exports and on the
+  stylesheet, which has one behind a flag that was off. Item Name and Item Type are not
+  fixed columns either, they are the quick properties, and the accepted report happens to
+  carry those two. So the thirteen are the whole of it
+- Grid Location is built from the grid intersection name, which ALREADY carries the level.
+  Appending the level to it wrote "D-8 : LGF : LGF" on a real run. The level is only added
+  where the grid does not already end with it
+- The Type cell carries the client's wording, "Hard (Conservative)", not the file's token,
+  "hard_conservative". One pair is measured and the rule read off it is that the first word
+  is the type and the rest is a qualifier in brackets. A value that already has a space or
+  a bracket in it is left exactly as it is
+- An all zero GUID is not an id. A run wrote
+  "Instance GUID: 00000000-0000-0000-0000-000000000000" into all 426 item cells, which
+  reads like an id and identifies nothing. The cell is left empty instead, and the real
+  cause is fixed too: the clash gives back the geometry leaf, which on a Revit sourced NWC
+  carries a material name and no Revit properties, so the id, the family and the type are
+  looked for on the item, then on its composite item, then up its ancestors
+- Distance is the raw signed number and the cell carries a three decimal number format, so
+  it reads the way theirs does and still sorts. Without the format Excel printed
+  -0.328083992004395 where theirs shows -0.050. The VALUE differing between two reports is
+  the two documents' units and not a fault: ours measured in feet and theirs in metres, and
+  the tolerance says so too, 0.2461ft against 0.025m
+- Client columns only means nothing of ours on the sheet at all, not just no extra columns.
+  The notes above the table, the link back to the Summary and the filter arrows are ours
+  and all three go. Their columns do not move
+- The client's logo is not copied. It is an Autodesk logo that ships with their report and
+  not with this install, and there is no right to redistribute it
 - A link to an image is written as a relative Uri and never as a plain string. Handed a
   string, ClosedXML reads a relative path as an INTERNAL address, so the cell tries to
   jump to a sheet of that name instead of opening the picture. There is a test that opens
@@ -499,6 +548,21 @@ and 6 does not read as broken.
 - Findings show in the Grouping step before Run is pressed, and go in the log in
   a FINDINGS block after the group list. Nothing odd is one line, not an empty
   panel
+
+## What a tick box says
+
+A tick box names the EFFECT on the output, not the mechanism, and says plainly where it
+costs something. Bader could not tell what any of them would change.
+
+- what it does to the output first, in one short sentence
+- what happens with it off, where that is not obvious
+- then, in capitals, whether it MAKES A FILE BIGGER, makes a run SLOWER, or DESTROYS
+  something, with the measured number where there is one
+
+Pasting thumbnails is 170 times bigger, 51.7 MB against 0.3 MB on a real 213 clash group.
+Images cost about 0.08 seconds a clash and 54 MB on disk for 213. Applying the file's
+settings resets every clash in a changed test to New. Compacting deletes the record of
+what was fixed and there is no second copy. Those four are the ones worth a capital.
 
 ## The diagnostic log
 

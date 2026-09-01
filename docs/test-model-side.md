@@ -1193,6 +1193,157 @@ to look.
 97. If that ever fires, send me the line. It will name the first reason, and the fix will
     be to switch images off for that run while it is sorted out.
 
+## Step 20, the NWF still holds its results after the NWD
+
+Read this one first. It is the only step here that is about losing work rather than about
+how a report looks.
+
+Your run of 2026-09-01 ended with the RESULT block saying the NWF was 4,141 bytes, which is
+an empty federation. **Nothing had shrunk.** The same file had been read at 165,844 bytes
+four minutes earlier, on its own line, and the result block was reporting the size from the
+FIRST of the two saves and had never updated it. The NWD had nothing to do with it.
+
+That is fixed, and a real check has been added that was never there.
+
+98. Run a group that finds clashes and read the end of its log.
+
+**Worked:** two NWF written lines, the second much bigger than the first, and then after
+the NWD a third line:
+
+    NWF      written  ...1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf    4,141 bytes
+    NWF      written  ...1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf  165,844 bytes
+    NWD      written  ...1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd  5,936,323 bytes
+    NWF      intact   ...1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf  165,844 bytes, unchanged
+                      by publishing the NWD
+
+and the RESULT block now says 165,844 for it, not 4,141.
+
+99. **If you ever see this instead, stop and send it to me.**
+
+    NWF      CHANGED  ...  was 165,844 bytes, is now 4,141 bytes after publishing the NWD.
+                      It got SMALLER. The clash results live in this file.
+
+That is the real version of what the old log only looked like. It would mean a week of
+review had gone, and the group is marked failed with that reason on it.
+
+100. The one thing a log still cannot tell you: open the NWF in Clash Detective after the
+     run and check the results are there. The size says the file was not truncated. Only
+     opening it proves the clashes are still in it, and that is UNKNOWN until you look.
+
+## Step 21, the workbook against the client's own
+
+Your two files are in `samples\client-report` now, and the workbook from your run is in
+`samples\our-report`, so these were compared cell by cell rather than by eye.
+
+101. Open a test sheet and check the four fields that were wrong.
+
+**Worked:** Type now reads `Hard (Conservative)` and not `hard_conservative`. Status is
+filled rather than blank. Grid Location reads `D-8 : LGF` once and not `D-8 : LGF : LGF`.
+Distance reads `-0.328` and not `-0.328083992004395`, and it is still a number, so the
+column sorts.
+
+102. Look at Item ID.
+
+**Worked:** a real element id where the model has one, and an EMPTY cell where it does not.
+It will never again say `Instance GUID: 00000000-0000-0000-0000-000000000000`, which is
+what all 426 of your item cells said. That was two faults at once. The clash hands back the
+geometry, which on a Revit NWC is a leaf carrying a material name and no Revit properties,
+so the id is now looked for on the element that leaf belongs to and then up its ancestors.
+And an all zero GUID is not an id, so it is not written as one.
+
+**This is the one I most want checked.** The search is right in principle and only a real
+model shows whether the id is actually found. If the cells are still empty, send me one
+clash and the Properties panel for the item, and I will see which category it is in.
+
+103. Two things the brief said were wrong that turned out not to be.
+
+**There is no Layer column in your report.** I checked both exports and the HTML. Their
+header is thirteen cells and Layer is not one of them. Navisworks can write one, behind an
+option that was off when yours was exported. So there is nothing to add.
+
+**The tolerance is not wrong either.** Yours reads `0.2461ft` and theirs `0.025m` because
+your model measures in feet and theirs in metres, and the two projects use different
+tolerances. 0.2461 ft is 75 mm and 0.025 m is 25 mm. The log says
+`the document measures in ft, every tolerance was converted into it`. Both reports are
+right for their own model.
+
+104. Tick **Client columns only** and run again.
+
+**Worked:** the sheet is their thirteen columns and nothing else. The three notes above the
+table, the Back to Summary link and the filter arrows are all gone, because they are ours.
+Theirs have not moved.
+
+105. The logo.
+
+**Not done, on purpose.** Their report has an Autodesk logo in it. It ships with their
+export, not with this install, and there is no right to redistribute it. If Parsons wants
+its own logo there, send me the file and where it should sit.
+
+## Step 22, the number has six digits again
+
+106. Open the window and go to the Outputs step without typing anything.
+
+**Worked:** all fifteen name fields are filled in. ZZZ, BM, MOD, 000001, ZZZZZZ, on all
+three rows.
+
+**They were all EMPTY before.** That is why your run produced `MOD-00001` with five digits.
+The defaults were always six in the code and never reached the window, so every one of the
+five fields had to be typed by hand, and a hand typed number is where a digit goes missing.
+Filling the grouping list at startup fired a regroup, which read the still empty boxes back
+over the defaults and wiped them.
+
+107. Check the number field says exactly `000001`, six characters.
+
+## Step 23, the pictures and the 54 MB
+
+108. Your workbook came out at 54 MB. That was asked for, not a default.
+
+The log records it: `Images on, 1024 by 1024 pixels, New, Active, Reviewed, Resolved only,
+no cap per test, **with a thumbnail in the cell**`. Pasting the pictures in put 213 of them
+inside the file, 51.4 MB of the 51.7 MB it came to, and the same 213 are in the folder
+beside it anyway.
+
+**Worked:** the default is off and always was. Untick it and the same workbook is about
+0.3 MB, roughly 170 times smaller, and every Image cell still opens its picture.
+
+109. Read the line under that tick box.
+
+**Worked:** it now says what it costs, with the numbers off your own run, rather than
+leaving you to find out by looking at the file afterwards.
+
+## Step 24, the tick boxes say what they do
+
+110. Read every tick box in the window.
+
+**Worked:** each one names what changes in the output, then what happens with it off, and
+then in capitals whether it makes a file bigger, makes the run slower, or destroys
+something. Four of them carry a capital:
+
+- pasting thumbnails, MAKES THE WORKBOOK ABOUT 170 TIMES BIGGER
+- the pictures themselves, SLOWER, with the seconds and the megabytes
+- applying the file's settings, DESTROYS RESULTS
+- compacting, DESTROYS THE RECORD
+
+111. If any of them still leaves you guessing what will change, tell me which and what you
+     expected it to mean. That is the only test for this one.
+
+## Step 25, every picker, one at a time
+
+112. Point all five Browse buttons at five different folders: the source, the NWF, the NWD,
+     the Excel folder and the clash XML. Close Navisworks completely. Open it again.
+
+**Worked:** all five open where you left them, and they are five separate memories.
+
+113. The one that was broken: the clash XML picker.
+
+**Worked:** it opens in the folder the XML is in. It used to open one level ABOVE that,
+because it took the parent of a value that was already a folder. If that is what you were
+seeing when you said not all of them remember, this is it.
+
+114. The file that holds them is
+     `%LOCALAPPDATA%\ParsonsNwcFederator\logs\folders.txt`. Delete it to forget everything.
+     Your run's first line said `Nothing remembered yet`, which is what a first run says.
+
 ## What to send me if it goes wrong
 
 Send the whole log file, not a summary and not the last few lines. Use **Copy log** and
@@ -1357,7 +1508,21 @@ left needs the running application:
 - whether ClassDisplayName is really what fills their Item Type column. Theirs reads Solid
   on all 120 item cells of the report you sent, and ClassDisplayName is what the Item tab
   shows as the type, but only a run against a real model shows the two agreeing
-- whether the Description column fills. Theirs reads Hard (Conservative) on every row,
-  which is the clash's own description, and this tool reads ClashResult.Description. If
-  ours comes out empty then Navisworks fills that field when it writes a report rather
-  than storing it, and it would then be the test type wording instead
+- ANSWERED by the run of 2026-09-01. The Description column fills. Ours reads
+  Hard (Conservative) on every row, the same as theirs, so ClashResult.Description does
+  carry it
+- ANSWERED by the same run. A picture takes 0.079 seconds, 213 of them took 16.9 seconds
+  and came to 53.55 MB, so the cap does not need a default other than off
+
+From the client match work of 2026-09-01, what is still open:
+
+- whether the element id is now actually found. The search runs over the clashing item,
+  then the element it belongs to, then up its ancestors, and only a real model shows
+  whether one of them carries it. If the Item ID cells are still empty, send me one clash
+  and the Properties panel for the item
+- whether the NWF still holds its RESULTS after the NWD is published, not just its size.
+  The size is checked now and reported as intact, changed or gone. Only opening the NWF in
+  Clash Detective proves the clashes are in it
+- whether Status should say OK. Theirs does, on all 1830 tests. OK is not a value on
+  ClashTestStatus, which is New, Old, Partial or Complete, and what puts a test into any
+  of them is UNKNOWN, so ours writes what the API reports and translates nothing

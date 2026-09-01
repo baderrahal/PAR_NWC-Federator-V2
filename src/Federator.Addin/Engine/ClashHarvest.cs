@@ -40,6 +40,7 @@ namespace Federator.Addin.Engine
             TypeNames = new[] { "Type", "Type Name" };
             MaterialNames = new[] { "Material", "Material Name", "Structural Material" };
             ElementIdNames = new[] { "Id", "Element Id", "ElementId", "Element ID" };
+            LookUpLevels = DefaultLookUpLevels;
         }
 
         /// <summary>
@@ -202,14 +203,21 @@ namespace Federator.Addin.Engine
             row.Description = Or(result.Description, string.Empty);
             Place(grid, row, result.Center);
 
+            // Item1 is the geometry the clash was found on, which for a Revit sourced
+            // NWC is a leaf carrying a material name and no Revit properties at all.
+            // CompositeItem1 is the element that leaf belongs to, which is where the id,
+            // the family and the type live. A real run read Item1 alone and wrote an all
+            // zero GUID into every one of the 426 item cells.
             using (ModelItem left = result.Item1)
+            using (ModelItem leftWhole = result.CompositeItem1)
             {
-                Describe(document, left, row.Left);
+                Describe(document, left, leftWhole, row.Left);
             }
 
             using (ModelItem right = result.Item2)
+            using (ModelItem rightWhole = result.CompositeItem2)
             {
-                Describe(document, right, row.Right);
+                Describe(document, right, rightWhole, row.Right);
             }
         }
 
@@ -264,7 +272,7 @@ namespace Federator.Addin.Engine
         /// One item. The family, the type and the material matter because without them
         /// whoever fixes it has to open the model to see what they are looking at.
         /// </summary>
-        private void Describe(Document document, ModelItem item, ClashItem into)
+        private void Describe(Document document, ModelItem item, ModelItem whole, ClashItem into)
         {
             if (item == null)
             {
@@ -273,10 +281,16 @@ namespace Federator.Addin.Engine
 
             try
             {
+                // Where a property is looked for: the item itself, then the element it
+                // belongs to, then up the tree. Navisworks' own report finds an Element ID
+                // for these, so it is somewhere above the geometry, and the first one
+                // found wins.
+                IList<ModelItem> lookIn = Upwards(item, whole);
+
                 into.Name = Or(item.DisplayName, string.Empty);
-                into.Family = FirstProperty(item, FamilyNames);
-                into.Type = FirstProperty(item, TypeNames);
-                into.Material = FirstProperty(item, MaterialNames);
+                into.Family = FirstProperty(lookIn, FamilyNames);
+                into.Type = FirstProperty(lookIn, TypeNames);
+                into.Material = FirstProperty(lookIn, MaterialNames);
 
                 // The client's Item Type column, which reads Solid on every item cell of
                 // the accepted report. ClassDisplayName is what the Item tab shows as the
@@ -287,16 +301,22 @@ namespace Federator.Addin.Engine
                 // because the client's Item ID column is that name and the value in one
                 // field. Element ID on a Revit sourced NWC.
                 string idFrom;
-                into.ElementId = FirstProperty(item, ElementIdNames, out idFrom);
+                into.ElementId = FirstProperty(lookIn, ElementIdNames, out idFrom);
                 into.IdLabel = idFrom.Length == 0 ? ClientFormat.DefaultIdLabel : idFrom;
 
                 if (into.ElementId.Length == 0)
                 {
-                    // No id property anywhere, so the instance GUID is what is left. It
-                    // still finds the thing again, which is the point of the column, and
-                    // the label says which it is rather than claiming an element id.
-                    into.ElementId = item.InstanceGuid.ToString();
-                    into.IdLabel = "Instance GUID";
+                    // No id property anywhere above this item either, so the instance GUID
+                    // is what is left. It is only used when it is a real one. An all zero
+                    // GUID identifies nothing, so it is left out and the cell stays empty
+                    // rather than carrying something that reads like an id.
+                    string guid = GuidOf(lookIn);
+
+                    if (!ClientFormat.NoIdAtAll(guid))
+                    {
+                        into.ElementId = guid;
+                        into.IdLabel = "Instance GUID";
+                    }
                 }
 
                 string source = SourceFileOf(item);
@@ -348,6 +368,91 @@ namespace Federator.Addin.Engine
         /// because which category holds Family differs between exporters. An empty string
         /// where none of them is there, never a guess.
         /// </summary>
+        /// <summary>
+        /// How far up the tree a property is looked for. The most a real model needs is a
+        /// few steps, and a bound stops a malformed tree turning one cell into a walk.
+        /// </summary>
+        public int LookUpLevels { get; set; }
+
+        /// <summary>
+        /// The item, then the element it belongs to, then its ancestors, in the order they
+        /// should be searched. Nothing is disposed here, because the caller owns the two
+        /// it passed in and the ancestors are borrowed the same way.
+        /// </summary>
+        private IList<ModelItem> Upwards(ModelItem item, ModelItem whole)
+        {
+            List<ModelItem> found = new List<ModelItem> { item };
+
+            if (whole != null && !ReferenceEquals(whole, item))
+            {
+                found.Add(whole);
+            }
+
+            try
+            {
+                ModelItem walk = item.Parent;
+                int levels = LookUpLevels < 1 ? DefaultLookUpLevels : LookUpLevels;
+
+                for (int i = 0; i < levels && walk != null; i++)
+                {
+                    found.Add(walk);
+                    walk = walk.Parent;
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "walking up from a clashing item to find its properties",
+                    error,
+                    "kept going, only the item itself was searched");
+            }
+
+            return found;
+        }
+
+        public const int DefaultLookUpLevels = 8;
+
+        private static string GuidOf(IList<ModelItem> lookIn)
+        {
+            foreach (ModelItem item in lookIn)
+            {
+                string guid = item.InstanceGuid.ToString();
+
+                if (!ClientFormat.NoIdAtAll(guid))
+                {
+                    return guid;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string FirstProperty(IList<ModelItem> lookIn, string[] wanted)
+        {
+            string which;
+            return FirstProperty(lookIn, wanted, out which);
+        }
+
+        /// <summary>The first of these items to carry one of the names wins.</summary>
+        private static string FirstProperty(
+            IList<ModelItem> lookIn, string[] wanted, out string matched)
+        {
+            matched = string.Empty;
+
+            foreach (ModelItem item in lookIn)
+            {
+                string found = FirstProperty(item, wanted, out matched);
+
+                if (found.Length > 0)
+                {
+                    return found;
+                }
+            }
+
+            matched = string.Empty;
+            return string.Empty;
+        }
+
         private static string FirstProperty(ModelItem item, string[] wanted)
         {
             string which;
@@ -362,7 +467,7 @@ namespace Federator.Addin.Engine
         {
             matched = string.Empty;
 
-            if (wanted == null || wanted.Length == 0)
+            if (item == null || wanted == null || wanted.Length == 0)
             {
                 return string.Empty;
             }

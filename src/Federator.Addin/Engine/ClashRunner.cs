@@ -595,6 +595,13 @@ namespace Federator.Addin.Engine
                     if (summary != null)
                     {
                         summary.Seconds = clock.Elapsed.TotalSeconds;
+
+                        // The client's Status column on the test header. Whatever the API
+                        // reports, written as itself. Theirs says OK, which is not a value
+                        // on ClashTestStatus, and what puts a test into any of the four is
+                        // UNKNOWN, so nothing is translated. See docs\scan.md section 4j.
+                        summary.StatusWord = after.Status.ToString();
+
                         ClashHarvest harvest = new ClashHarvest(log, NameSettings);
                         harvest.Images = Images;
                         harvest.WorkbookPath = WorkbookPath;

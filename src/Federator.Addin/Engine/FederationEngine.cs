@@ -220,6 +220,12 @@ namespace Federator.Addin.Engine
                 WriteWorkbook(job, outcome);
 
                 WriteNwd(document, job, outcome);
+
+                // The NWD is published last, and the NWF is the only record of what has
+                // been fixed, so the NWF is looked at once more AFTER it. Nothing was
+                // checking this, and a RESULT block reporting the size of the first save
+                // made it read as though publishing the NWD had emptied the file.
+                ConfirmTheNwfSurvived(job, outcome);
             }
             catch (Exception error)
             {
@@ -656,6 +662,44 @@ namespace Federator.Addin.Engine
                     "kept going, whatever was already created and run is kept in the NWF");
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Reads the NWF one more time, after the NWD has been published, and says whether
+        /// it is still the size it was when it was saved.
+        ///
+        /// This is the last thing a group does. It writes nothing and changes nothing, so
+        /// it cannot itself be what breaks a group, and it only speaks about a file this
+        /// run actually wrote.
+        /// </summary>
+        private void ConfirmTheNwfSurvived(FederationJob job, JobOutcome outcome)
+        {
+            if (!outcome.NwfOnDisk)
+            {
+                return;
+            }
+
+            long size = log.ConfirmStillWhole("NWF", job.NwfPath, "publishing the NWD");
+
+            if (size < 0)
+            {
+                outcome.AddError(
+                    "the NWF is not on disk after the NWD was published, so this group's "
+                    + "clash results are gone");
+                outcome.NwfOnDisk = false;
+                outcome.NwfSize = -1;
+                return;
+            }
+
+            if (size < outcome.NwfSize)
+            {
+                outcome.AddError(
+                    "the NWF shrank from " + outcome.NwfSize.ToString("#,##0") + " to "
+                    + size.ToString("#,##0") + " bytes while the NWD was published. The "
+                    + "clash results live in that file.");
+            }
+
+            outcome.NwfSize = size;
         }
 
         /// <summary>

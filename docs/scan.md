@@ -1145,6 +1145,163 @@ This tool writes a real workbook rather than a saved HTML page, and its links ar
 so the workbook and its `_files` folder can be moved together and keep working.
 
 
+### 4l. Our report against theirs, cell by cell, measured 2026-09-01
+
+Bader committed a real run's output beside two real client exports, so for the first time
+the two could be compared rather than described:
+
+```
+samples\our-report\1104-PAR-1C07BC-ZZZ-BM-RPT-00001.xlsx      54,240,144 bytes, 50 sheets
+samples\our-report\1104-PAR-1C07BC-ZZZ-BM-RPT-00001_files\    213 jpg, 54 MB
+samples\client-report\1104-PAR-1A02WE-XXX-BM-RPT-000001.xlsx     893,624 bytes, 1 sheet
+samples\client-report\1104-PAR-1A02WO-XXX-BM-RPT-000001.xlsx     893,415 bytes, 1 sheet
+docs\logs\run-20260901-093708.log                                523,133 bytes
+```
+
+Their first test block, read out of the file:
+
+```
+row 4   BLD-ST-Walls-vs-BLD-AR-Floors | Tolerance | Clashes | New | Active | Reviewed | Approved | Resolved | Type | Status
+row 5                                 | 0.025m    | 13      | 13  | 0      | 0        | 0        | 0        | Hard (Conservative) | OK
+row 7                                                                             Item 1 (L)         Item 2 (O)
+row 8   Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point | Item ID | Item Name | Item Type | Item ID | Item Name | Item Type
+row 9         | Clash1     | New    | -0.05    | B-1 : LGF     | Hard (Conservative) | x:-2.100, y:-2.726, z:-0.051 | Element ID: 2635048 | Concrete, Cast In Situ Fc' 35MPa | Solid | Element ID: 814542 | TRENCH | Solid
+```
+
+Ours, the same rows out of ours:
+
+```
+row 1   BLD-AR-Walls-vs-BLD-AR-Columns | Tolerance | Clashes | ... | Type | Status
+row 2                                  | 0.2461ft  | 8       | ... | hard_conservative | (empty)
+row 4   BLD-AR-Walls  against  BLD-AR-Columns   items 16 v 8   8 rows covering 8 raw clashes...
+row 5   8 rows carry a picture, in the folder beside this workbook...
+row 6   Back to Summary
+row 9   Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point | Item ID | ...
+row 10  cd000001.jpg | Clash1 | New | -0.328083992004395 | D-8 : LGF : LGF | Hard (Conservative) | x:33.171, y:-10.410, z:0.328 | Instance GUID: 00000000-0000-0000-0000-000000000000 | ...
+```
+
+Ten differences, and what each one turned out to be:
+
+| Field         | Theirs                | Ours                                          | What it was |
+|---------------|-----------------------|-----------------------------------------------|-------------|
+| Item ID       | Element ID: 2635048   | Instance GUID: 00000000-0000-...-000000000000 | two faults, below |
+| Layer         | NOT PRESENT           | not present                                   | nothing to fix |
+| Type          | Hard (Conservative)   | hard_conservative                             | the file's token reached the cell |
+| Status        | OK                    | empty                                         | never set |
+| Grid Location | B-1 : LGF             | D-8 : LGF : LGF                               | the level said twice |
+| Distance      | -0.05                 | -0.328083992004395                            | no number format |
+| Tolerance     | 0.025m                | 0.2461ft                                      | NOT a fault, see below |
+| Extra rows    | none                  | three plus Back to Summary                    | ours, on their sheet |
+| Filters       | none                  | on every header                               | ours, on their sheet |
+| Logo          | present               | absent                                        | left absent on purpose |
+
+#### Layer: the brief said theirs has one. It does not
+
+Searched both supplied exports. Neither the xlsx nor the HTML carries a Layer column. Their
+header row is thirteen cells and Layer is not among them:
+
+```
+Image | Clash Name | Status | Distance | Grid Location | Description | Clash Point
+      | Item ID | Item Name | Item Type | Item ID | Item Name | Item Type
+```
+
+The stylesheet does have one, behind `$showLayer`, and that flag was off for these exports.
+So there is nothing to add. Section 4k already recorded that Item Name and Item Type are
+not fixed columns either, they are the quick properties, which is the same kind of thing.
+
+#### Item ID: two separate faults on top of each other
+
+The label read `Instance GUID` and the value was all zeros, in all 426 item cells.
+
+First, the id was never found. `ClashResult.Item1` is the geometry the clash was found on.
+On a Revit sourced NWC that is a leaf whose display name is a material, `PAR-CONC-FOUNDATION`
+in ours and `Concrete, Cast In Situ Fc' 35MPa` in theirs, and it carries no Revit properties
+at all. The element it belongs to is `ClashResult.CompositeItem1`, and that is where the id,
+the family and the type live. The search now runs over the item, then its composite item,
+then up to eight ancestors, first hit winning.
+
+Second, the fallback was worse than nothing. With no id found it wrote `item.InstanceGuid`,
+which came back as `Guid.Empty` on every item in this model. A row of zeros behind the
+words `Instance GUID:` reads like an identifier and identifies nothing. An all zero GUID is
+now treated as no id at all and the cell is left empty, which says the same thing honestly.
+
+#### Tolerance and Distance: the units are not a fault
+
+Their document measures in metres and this one measures in feet. The log says so:
+
+```
+09:42:07.639  CLASH    the document measures in ft, every tolerance was converted into it
+              CLASH    created  ...  tolerance 0.2460629921 ft is 0.2460629921 ft
+```
+
+0.2460629921 ft is 75 mm and 0.025 m is 25 mm, so the two projects also use different
+tolerances. Both reports are correct for their own model, and the conversion did run, it
+was just a no-op from feet into feet.
+
+What WAS wrong is the formatting. The Distance cell carried no number format, so Excel
+printed the whole double. It now carries `0.000`, which is what every distance and every
+coordinate in both client exports is written to, and it stays a number so the column sorts.
+
+#### The 54 MB workbook was asked for
+
+The workbook holds 213 embedded pictures, 53,855,953 bytes of the 54,240,144 on disk.
+Without them it would be about 0.31 MB, so pasting them made it roughly 170 times larger,
+and the same 213 pictures are already in the folder beside it either way.
+
+The default is off, and was off. The log records that this run asked for it:
+
+```
+09:42:07.633  CLASH    Images on, 1024 by 1024 pixels, New, Active, Reviewed, Resolved
+                       only, no cap per test, with a thumbnail in the cell.
+```
+
+So nothing needed switching off. What was missing is that the tick box did not say what it
+would cost, and now it does, with those measured numbers in it.
+
+#### What the log settled about the NWF
+
+```
+09:42:06.359  NWF   written  ...1104-PAR-1C07BC-ZZZ-BM-MOD-00001.nwf    4,141 bytes
+09:44:10.673  NWF   written  ...1104-PAR-1C07BC-ZZZ-BM-MOD-00001.nwf  165,844 bytes
+09:44:16.657  NWD   written  ...                                    5,936,323 bytes
+09:44:16.945  RESULT files written : 4, every size read back off the disk
+              NWF   ...1104-PAR-1C07BC-ZZZ-BM-MOD-00001.nwf           4,141 bytes
+```
+
+The NWF did not shrink and the NWD is not implicated. `RunLog.WriteFinished` recorded a
+path once and kept the FIRST size, so the RESULT block printed the 4,141 read at 09:42:06,
+four minutes before the NWD was published at 09:44:16. The second save read 165,844 off the
+disk and printed it correctly on its own line.
+
+The de-duplication was there so that a catch which re-checks the outputs could not turn
+"files written" into a count of checks. That catch uses `CheckOnDisk`, which records
+nothing, so the only repeat caller of `WriteFinished` on one path is the NWF's two saves,
+and keeping the first of those two is always wrong. The entry now takes the latest size and
+there is still one entry per file.
+
+Separately, nothing was looking at the NWF after the NWD was published, so a run that DID
+destroy the clash history would have finished quietly. `RunLog.ConfirmStillWhole` now reads
+it once more at the end of the group and logs intact with the size, or CHANGED with both
+sizes, or GONE.
+
+#### The naming boxes opened empty, which is where MOD-00001 came from
+
+Measured by constructing the real window and reading the boxes, `build\probe-window-defaults.ps1`:
+
+```
+before   NwfNumber ''        0 characters      all fifteen boxes empty
+after    NwfNumber '000001'  6 characters      all fifteen carry their default
+```
+
+`NamePattern.DefaultNumber` was always `000001` and is verified six characters by test. It
+never reached the window. `FillGroupingModes()` sets `SelectedIndex`, which fires
+`OnGroupingModeChanged`, which calls `Regroup()`, which calls `ReadNaming()`. With the boxes
+still empty that read every default out of the patterns and replaced it with nothing, and
+`ShowNaming()` then wrote the emptied patterns back into the boxes. Every one of the five
+supplied fields had to be typed by hand, and a hand typed number is where a digit goes
+missing. `ShowNaming()` now runs before the combos are filled.
+
+
 ### 4c. The version string, added 2026-08-30
 
 The diagnostic log header carries the Navisworks version as the API reports it. Read by

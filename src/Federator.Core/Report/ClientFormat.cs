@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 
 namespace Federator.Core.Report
 {
@@ -83,14 +86,25 @@ namespace Federator.Core.Report
         /// Either half can be missing, and the separator goes with the half that is not
         /// there, so a model with no levels reads "B-1" rather than "B-1 : ".
         /// </summary>
+        public const string GridSeparator = " : ";
+
         public static string GridLocation(string grid, string level)
         {
             bool hasGrid = !string.IsNullOrEmpty(grid);
             bool hasLevel = !string.IsNullOrEmpty(level);
 
+            // Navisworks' own grid intersection name ALREADY carries the level, so it
+            // arrives reading "D-8 : LGF". Joining the level onto that gave
+            // "D-8 : LGF : LGF" on a real run. The level is only appended when the grid
+            // does not already end with it.
+            if (hasGrid && hasLevel && AlreadyEndsWith(grid, level))
+            {
+                return grid;
+            }
+
             if (hasGrid && hasLevel)
             {
-                return grid + " : " + level;
+                return grid + GridSeparator + level;
             }
 
             if (hasGrid)
@@ -107,14 +121,38 @@ namespace Federator.Core.Report
         /// </summary>
         public static string ItemId(string label, string value)
         {
-            string name = string.IsNullOrEmpty(label) ? DefaultIdLabel : label;
-
-            if (string.IsNullOrEmpty(value))
+            if (NoIdAtAll(value))
             {
                 return string.Empty;
             }
 
+            string name = string.IsNullOrEmpty(label) ? DefaultIdLabel : label;
             return name + ": " + value;
+        }
+
+        /// <summary>
+        /// An all zero GUID is not an id, it is what Navisworks hands back when the item
+        /// has none. A real run wrote
+        /// "Instance GUID: 00000000-0000-0000-0000-000000000000" into all 426 item cells,
+        /// which reads like an id and identifies nothing. An empty cell says the same
+        /// thing honestly.
+        /// </summary>
+        public static bool NoIdAtAll(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return true;
+            }
+
+            foreach (char c in value)
+            {
+                if (c != '0' && c != '-' && c != '{' && c != '}' && c != ' ')
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -134,6 +172,111 @@ namespace Federator.Core.Report
         public static string Fixed(double value)
         {
             return value.ToString("0.000", CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// The number format the Distance cell is given, so the cell holds the raw signed
+        /// number and still sorts, while reading the way theirs does. Ours came out as
+        /// -0.328083992004395 on a real run because the cell carried no format at all.
+        /// </summary>
+        public const string DistanceFormat = "0.000";
+
+        private static bool AlreadyEndsWith(string grid, string level)
+        {
+            if (grid.EndsWith(GridSeparator + level, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return string.Equals(grid, level, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// The test type in the words the client's report uses.
+        ///
+        /// One pair is MEASURED: the file carries test_type="hard_conservative" and the
+        /// accepted report shows "Hard (Conservative)". The rule read off that pair is
+        /// that the first word is the type and anything after it is a qualifier in
+        /// brackets, and it is applied to the others rather than each being invented.
+        /// Only the one pair has been seen against a client file. See docs\scan.md
+        /// section 4k.
+        ///
+        /// Takes either the file's token, hard_conservative, or the enum name,
+        /// HardConservative, because both reach this from different places.
+        /// </summary>
+        public static string TestTypeWording(string testType)
+        {
+            if (string.IsNullOrEmpty(testType))
+            {
+                return string.Empty;
+            }
+
+            // Already in their form. A bracket or a space means someone has written the
+            // wording rather than a token, so it is left exactly as it is. Without this,
+            // "Hard (Conservative)" came back as "Hard (( Conservative))".
+            if (testType.IndexOf('(') >= 0 || testType.IndexOf(' ') >= 0)
+            {
+                return testType;
+            }
+
+            IList<string> words = Words(testType);
+
+            if (words.Count == 0)
+            {
+                return testType;
+            }
+
+            if (words.Count == 1)
+            {
+                return words[0];
+            }
+
+            string[] rest = new string[words.Count - 1];
+
+            for (int i = 1; i < words.Count; i++)
+            {
+                rest[i - 1] = words[i];
+            }
+
+            return words[0] + " (" + string.Join(" ", rest) + ")";
+        }
+
+        /// <summary>Splits on underscores and on the capitals of an enum name, and title cases each.</summary>
+        private static IList<string> Words(string value)
+        {
+            List<string> words = new List<string>();
+            StringBuilder current = new StringBuilder();
+
+            foreach (char c in value)
+            {
+                if (c == '_' || c == ' ' || c == '-')
+                {
+                    Take(words, current);
+                    continue;
+                }
+
+                if (char.IsUpper(c) && current.Length > 0)
+                {
+                    Take(words, current);
+                }
+
+                current.Append(c);
+            }
+
+            Take(words, current);
+            return words;
+        }
+
+        private static void Take(List<string> words, StringBuilder current)
+        {
+            if (current.Length == 0)
+            {
+                return;
+            }
+
+            string word = current.ToString();
+            words.Add(char.ToUpperInvariant(word[0]) + word.Substring(1).ToLowerInvariant());
+            current.Length = 0;
         }
     }
 }

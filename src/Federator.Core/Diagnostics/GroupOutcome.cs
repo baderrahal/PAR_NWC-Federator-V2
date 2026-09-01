@@ -69,7 +69,7 @@ namespace Federator.Core.Diagnostics
         public string Path { get; private set; }
 
         /// <summary>Read back off the disk. Never a size that was assumed.</summary>
-        public long SizeInBytes { get; private set; }
+        public long SizeInBytes { get; internal set; }
     }
 
     /// <summary>One failure, kept whole so the result block can repeat it in full.</summary>
