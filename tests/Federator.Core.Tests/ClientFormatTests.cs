@@ -139,9 +139,11 @@ namespace Federator.Core.Tests
         [Test]
         public void ToleranceCarriesItsUnitWithNoSpace()
         {
+            // Three decimals, which is how theirs is written. Ours read 0.2460629921ft
+            // on a real run, which was the file's own precision rather than a format.
             Assert.That(ClientFormat.Tolerance(0.025, "m"), Is.EqualTo("0.025m"));
             Assert.That(ClientFormat.Tolerance(0.075, "m"), Is.EqualTo("0.075m"));
-            Assert.That(ClientFormat.Tolerance(0.2460629921, "ft"), Is.EqualTo("0.2461ft"));
+            Assert.That(ClientFormat.Tolerance(0.2460629921, "ft"), Is.EqualTo("0.246ft"));
         }
 
         [Test]
@@ -149,6 +151,8 @@ namespace Federator.Core.Tests
         {
             Assert.That(ClientFormat.Tolerance(0.025, ""), Is.EqualTo("0.025"));
             Assert.That(ClientFormat.Tolerance(0.025, null), Is.EqualTo("0.025"));
+            Assert.That(ClientFormat.Tolerance(1, "m"), Is.EqualTo("1.000m"),
+                "three decimals always, the same as theirs");
         }
 
         // ---------- the row builds its own single fields ----------

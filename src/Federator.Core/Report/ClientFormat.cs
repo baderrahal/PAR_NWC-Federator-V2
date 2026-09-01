@@ -162,8 +162,16 @@ namespace Federator.Core.Report
         /// </summary>
         public static string Tolerance(double value, string units)
         {
-            return value.ToString("0.####", CultureInfo.InvariantCulture) + (units ?? string.Empty);
+            return value.ToString(ToleranceFormat, CultureInfo.InvariantCulture)
+                + (units ?? string.Empty);
         }
+
+        /// <summary>
+        /// Three decimals. Theirs reads 0.025m and ours read 0.2460629921ft on a real run,
+        /// which is the same number of decimals the file happened to carry rather than a
+        /// format. The units differ because the two documents do, and that is correct.
+        /// </summary>
+        public const string ToleranceFormat = "0.000";
 
         /// <summary>
         /// Three decimals, invariant, which is the form every distance and every

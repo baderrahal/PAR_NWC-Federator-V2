@@ -52,18 +52,16 @@ namespace Federator.Core.Report
 
         public const string QuickType = "Item Type";
 
-        /// <summary>Ours, written after theirs and dropped when the client layout is asked for.</summary>
-        public static readonly string[] OurQuickProperties =
-        {
-            "Family", "Type Name", "Material", "Source File", "Discipline"
-        };
-
         /// <summary>
-        /// Write only the quick properties the client's report has. The stylesheet counts
-        /// the smarttags of the FIRST clashobject and uses that count for every row, so
-        /// every clashobject must carry the same list or the columns slide sideways.
+        /// The client's report has exactly TWO quick properties, so this XML writes
+        /// exactly two. The stylesheet makes a column out of every smarttag it finds, so
+        /// anything of ours here becomes a column on the page the client receives.
+        ///
+        /// Family, Type Name, Material, Source File and Discipline used to be written
+        /// here as well. They belong in the workbook, which is ours, and never on the
+        /// page, which is theirs.
         /// </summary>
-        public bool ClientColumnsOnly { get; set; }
+        public static readonly string[] QuickProperties = { QuickName, QuickType };
 
         /// <summary>
         /// The logo the page shows, or empty for none. The stylesheet reads //logo/@href,
@@ -160,7 +158,7 @@ namespace Federator.Core.Report
             // one, so the page carries no logo rather than a borrowed one.
             if (!string.IsNullOrEmpty(LogoHref))
             {
-                exchange.Add(new XElement("logo", new XAttribute("href", LogoHref)));
+                exchange.Add(new XElement("logo", new XAttribute("href", Windows(LogoHref))));
             }
 
             exchange.Add(new XElement("batchtest",
@@ -179,8 +177,12 @@ namespace Federator.Core.Report
                 new XAttribute("name", test.Name),
                 new XAttribute("test_type", Or(test.TestTypeName, "unknown")),
                 new XAttribute("status", test.State == TestState.Skipped ? "skipped" : "ok"),
+                // Three decimals. The stylesheet writes this attribute straight into the
+                // cell followed by the units, so ours read 0.2460629921ft where theirs
+                // read 0.025m. The units differ because the documents do and that is
+                // right. The precision was ours to fix.
                 new XAttribute("tolerance",
-                    test.Tolerance.ToString("0.##########", CultureInfo.InvariantCulture)),
+                    test.Tolerance.ToString(ClientFormat.ToleranceFormat, CultureInfo.InvariantCulture)),
                 new XElement("summary",
                     new XAttribute("total", tally.Total),
                     new XAttribute("new", tally.Of(ClashStatus.New)),
@@ -221,7 +223,7 @@ namespace Federator.Core.Report
             // picture off this one attribute. No picture, no attribute, no column.
             if (row.HasImage && row.ImageLink.Length > 0)
             {
-                element.Add(new XAttribute("href", row.ImageLink));
+                element.Add(new XAttribute("href", Windows(row.ImageLink)));
             }
 
             element.Add(new XElement("resultstatus", row.Status.ToString()));
@@ -248,19 +250,9 @@ namespace Federator.Core.Report
                     new XAttribute("y", row.Y.ToString("0.######", CultureInfo.InvariantCulture)),
                     new XAttribute("z", row.Z.ToString("0.######", CultureInfo.InvariantCulture)))));
 
-            // A Date Found column, which the client's report does not have. The
-            // stylesheet writes one for any createddate it finds, so this is ours and it
-            // comes out with the rest of ours.
-            if (row.Found.HasValue && !ClientColumnsOnly)
-            {
-                DateTime found = row.Found.Value;
-
-                element.Add(new XElement("createddate",
-                    new XElement("date",
-                        new XAttribute("year", found.Year),
-                        new XAttribute("month", found.Month),
-                        new XAttribute("day", found.Day))));
-            }
+            // No createddate. The stylesheet writes a Date Found column for any it finds
+            // and the client's report has no such column, measured on both 1A02WN and
+            // 1A04WN. Found is still in the workbook, which is ours.
 
             element.Add(new XElement("clashobjects",
                 Item(row.Left, row.Level),
@@ -301,20 +293,9 @@ namespace Federator.Core.Report
             // the FIRST clashobject's smarttags, so the same list is written every time,
             // empty values included, or the columns slide sideways from one row to the
             // next.
-            XElement tags = new XElement("smarttags",
+            element.Add(new XElement("smarttags",
                 Tag(QuickName, item.Name),
-                Tag(QuickType, item.ItemType));
-
-            if (!ClientColumnsOnly)
-            {
-                tags.Add(Tag(OurQuickProperties[0], item.Family));
-                tags.Add(Tag(OurQuickProperties[1], item.Type));
-                tags.Add(Tag(OurQuickProperties[2], item.Material));
-                tags.Add(Tag(OurQuickProperties[3], item.SourceFile));
-                tags.Add(Tag(OurQuickProperties[4], item.Discipline));
-            }
-
-            element.Add(tags);
+                Tag(QuickType, item.ItemType)));
 
             return element;
         }
@@ -328,6 +309,20 @@ namespace Federator.Core.Report
             return new XElement("smarttag",
                 new XElement("name", name),
                 new XElement("value", value ?? string.Empty));
+        }
+
+        /// <summary>
+        /// A picture reference the way theirs writes it, with a backslash. Both supplied
+        /// reports use one, for the clash pictures and for the logo, and the client opens
+        /// these in Excel on Windows.
+        ///
+        /// The workbook keeps a forward slash, because a hyperlink there is a Uri and
+        /// there is nothing of theirs to match: their own xlsx carries no picture
+        /// hyperlinks at all.
+        /// </summary>
+        public static string Windows(string link)
+        {
+            return string.IsNullOrEmpty(link) ? string.Empty : link.Replace('/', '\\');
         }
 
         private static string Or(string value, string fallback)

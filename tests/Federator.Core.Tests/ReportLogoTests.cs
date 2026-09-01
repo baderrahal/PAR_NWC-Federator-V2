@@ -93,15 +93,22 @@ namespace Federator.Core.Tests
                 Assert.Ignore("Navisworks is not on this machine.");
             }
 
-            string mine = LogoLocator.Find(Install, "en-US");
-            string theirs = Path.Combine(
-                TestContext.CurrentContext.TestDirectory,
-                @"..\..\..\..\..\samples\client-report\1104-PAR-1A02WE-XXX-BM-RPT-000001_files\logo.jpg");
+            string repo = RepoRoot();
 
-            if (!File.Exists(theirs))
+            if (repo == null)
             {
-                Assert.Ignore("The supplied report is not beside this checkout.");
+                Assert.Ignore("The checkout is not beside the test binaries.");
             }
+
+            string mine = LogoLocator.Find(Install, "en-US");
+
+            // Found from the solution file rather than counted in ..\ steps, which is how
+            // this test came to be silently skipped instead of run.
+            string theirs = Path.Combine(repo,
+                @"samples\client-report\1104-PAR-1A02WN-XXX-BM-RPT-000001_files\logo.jpg");
+
+            Assert.That(File.Exists(theirs), Is.True,
+                "the supplied client export is not in this checkout: " + theirs);
 
             Assert.That(File.ReadAllBytes(mine), Is.EqualTo(File.ReadAllBytes(theirs)));
         }
@@ -195,10 +202,14 @@ namespace Federator.Core.Tests
                     continue;
                 }
 
-                Assert.That(found, Does.Contain(@"samples\client-report\"),
-                    "a logo file is in the checkout outside the supplied client exports");
+                // Two places, both of them sample REPORT folders rather than anything this
+                // tool ships. client-report holds the exports Bader received, and
+                // our-report holds one this tool produced, where the logo was copied in
+                // beside the clash pictures exactly as it is meant to be.
+                Assert.That(found, Does.Contain(@"samples\"),
+                    "a logo file is in the checkout outside the sample reports");
                 Assert.That(found, Does.Contain("_files"),
-                    "it is not inside an export folder, so it did not come from Navisworks");
+                    "it is not inside a report folder, so it did not get there by being copied");
             }
         }
 
@@ -332,7 +343,8 @@ namespace Federator.Core.Tests
             string page = WritePage(ImageNaming.LogoLinkFor(Workbook()));
             string src = LogoSrcInTheFile(page);
 
-            Assert.That(src, Is.EqualTo(OutputName + "_files/logo.jpg"));
+            // A backslash, the same as every picture reference and the same as theirs.
+            Assert.That(src, Is.EqualTo(OutputName + "_files" + "\\" + "logo.jpg"));
             Assert.That(src, Does.Not.Contain("file:///"),
                 "the accepted xlsx does this and its pictures break everywhere else");
             Assert.That(src, Does.Not.Contain(":"));

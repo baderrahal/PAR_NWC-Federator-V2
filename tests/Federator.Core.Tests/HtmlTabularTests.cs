@@ -27,6 +27,9 @@ namespace Federator.Core.Tests
         private const string Root = "lcop_selection_set_tree";
         private const string Install = @"C:\Program Files\Autodesk\Navisworks Manage 2025";
 
+        /// <summary>What theirs uses in every picture reference.</summary>
+        private const string Sep = "\\";
+
         private string folder;
 
         [SetUp]
@@ -169,8 +172,10 @@ namespace Federator.Core.Tests
             Assert.That(x.XPathHas("/exchange/batchtest/clashtests/clashtest/summary"), Is.True,
                 "showSummary, the nine cell test header");
             Assert.That(x.XPathHas("//clashpoint"), Is.True, "showClashPoint");
-            Assert.That(x.XPathHas("//clashresult/createddate"), Is.True,
-                "showDateFound, which is ours and not one of theirs");
+            // showDateFound is deliberately FALSE. The client's report has no Date Found
+            // column, measured on both 1A02WN and 1A04WN, and the stylesheet writes one
+            // for any createddate it finds.
+            Assert.That(x.XPathHas("//clashresult/createddate"), Is.False, "showDateFound");
             Assert.That(x.XPathHas("//clashobjects/clashobject/layer"), Is.True, "showLayer");
             Assert.That(x.XPathHas("//clashobjects/clashobject/objectattribute"), Is.True,
                 "showItemID");
@@ -247,16 +252,15 @@ namespace Federator.Core.Tests
                     "a differing count slides every column after it");
             }
 
-            Assert.That(expected, Is.EqualTo(7), "two of theirs and five of ours");
+            Assert.That(expected, Is.EqualTo(2), "exactly the two the client's report has");
         }
 
         // Their report has no Date Found column, and the stylesheet writes one for any
         // createddate it finds, so that element is ours too.
         [Test]
-        public void TheClientLayoutHasNoDateFoundColumn()
+        public void ThePageHasNoDateFoundColumn()
         {
             ClashReportXml writer = new ClashReportXml();
-            writer.ClientColumnsOnly = true;
 
             Assert.That(writer.Build(Report()).XPathHas("//createddate"), Is.False);
             Assert.That(HeaderCells(Transform(writer, Report())), Does.Not.Contain("Date Found"));
@@ -266,7 +270,6 @@ namespace Federator.Core.Tests
         public void TheClientLayoutCarriesTheirTwoQuickPropertiesAndNoneOfOurs()
         {
             ClashReportXml writer = new ClashReportXml();
-            writer.ClientColumnsOnly = true;
 
             XDocument x = writer.Build(Report());
             XElement tags = x.Root.Descendants("smarttags").First();
@@ -288,7 +291,6 @@ namespace Federator.Core.Tests
         public void ThePageCarriesTheClientsColumnsInTheirOrder()
         {
             ClashReportXml writer = new ClashReportXml();
-            writer.ClientColumnsOnly = true;
 
             IList<string> header = HeaderCells(Transform(writer, Report()));
 
@@ -308,7 +310,6 @@ namespace Federator.Core.Tests
         public void TheLayerColumnIsThereBecauseOurXmlCarriesALayer()
         {
             ClashReportXml writer = new ClashReportXml();
-            writer.ClientColumnsOnly = true;
 
             string html = Transform(writer, Report());
 
@@ -316,15 +317,32 @@ namespace Federator.Core.Tests
             Assert.That(html, Does.Contain(">LGF<"));
         }
 
+        // The one the brief asks for by name. The stylesheet makes a column out of every
+        // smarttag, so anything of ours in the XML becomes a column on the page the client
+        // receives. Ours belong in the workbook.
         [Test]
-        public void OurExtraQuickPropertiesBecomeExtraColumnsWhenTheyAreAskedFor()
+        public void NoColumnOfOursReachesThePage()
         {
-            IList<string> header = HeaderCells(Transform(new ClashReportXml(), Report()));
+            string html = Transform(new ClashReportXml(), Report());
+            IList<string> header = HeaderCells(html);
 
-            Assert.That(header, Does.Contain("Family"));
-            Assert.That(header, Does.Contain("Source File"));
-            Assert.That(header.IndexOf("Family"), Is.GreaterThan(header.IndexOf("Item Type")),
-                "ours come after theirs");
+            foreach (string ours in new[]
+            {
+                "Family", "Type Name", "Material", "Source File", "Discipline", "Date Found"
+            })
+            {
+                Assert.That(header, Does.Not.Contain(ours), ours + " reached the client page");
+                Assert.That(html, Does.Not.Contain(">" + ours + "</td>"), ours);
+            }
+
+            // And theirs, which is the whole of it, exactly as both samples have it.
+            Assert.That(header, Is.EqualTo(new[]
+            {
+                "Image", "Clash Name", "Status", "Distance", "Grid Location", "Description",
+                "Clash Point",
+                "Item ID", "Layer", "Item Name", "Item Type",
+                "Item ID", "Layer", "Item Name", "Item Type"
+            }));
         }
 
         [Test]
@@ -352,8 +370,13 @@ namespace Federator.Core.Tests
         {
             string html = Transform(new ClashReportXml(), Report());
 
+            // A BACKSLASH, which is what both supplied reports write. The client opens
+            // these in Excel on Windows.
             Assert.That(html, Does.Contain("cd000001.jpg"));
-            Assert.That(html, Does.Contain("1104-PAR-1C07BC-ZZZ-BM-RPT-000001_files/cd000001.jpg"));
+            Assert.That(html, Does.Contain(
+                "1104-PAR-1C07BC-ZZZ-BM-RPT-000001_files" + Sep + "cd000001.jpg"));
+            Assert.That(html, Does.Not.Contain(
+                "1104-PAR-1C07BC-ZZZ-BM-RPT-000001_files/cd000001.jpg"));
             Assert.That(html, Does.Not.Contain("file:///"),
                 "an absolute link only works on the machine that wrote it");
         }
