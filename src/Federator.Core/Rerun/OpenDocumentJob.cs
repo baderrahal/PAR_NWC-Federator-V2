@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using Federator.Core.Diagnostics;
 using Federator.Core.Report;
 
 namespace Federator.Core.Rerun
@@ -117,7 +119,12 @@ namespace Federator.Core.Rerun
             return Path.Combine(folder, NameFrom(openPath) + extension);
         }
 
-        private static string FolderOf(string openPath)
+        /// <summary>
+        /// The open file's own folder, or empty where the path has none. This is where the
+        /// NWD goes, where the Clash Reports folder goes, and where the second copy of the
+        /// log goes, the same as the NWF folder on a scanned run.
+        /// </summary>
+        public static string FolderOf(string openPath)
         {
             if (string.IsNullOrEmpty(openPath))
             {
@@ -133,6 +140,47 @@ namespace Federator.Core.Rerun
             {
                 return string.Empty;
             }
+        }
+
+        /// <summary>The title of the block written when an open file run finishes.</summary>
+        public const string SummaryTitle = "OPEN FILE";
+
+        /// <summary>
+        /// The block written when an open file run finishes, just before the RESULT block.
+        /// A scanned run has RUN SETTINGS and GROUPS blocks that name its folders and its
+        /// groups, and the open file run had nothing, so the RESULT block that followed
+        /// counted a group nobody could see. These are the same fields where they apply,
+        /// and the ones that do not apply say so rather than being left blank.
+        /// </summary>
+        public static IList<string> SummaryLines(
+            string openPath,
+            string clashFile,
+            string nwdPath,
+            string reportFolder,
+            string clashSummary,
+            GroupOutcome outcome,
+            string reason)
+        {
+            List<string> lines = new List<string>();
+
+            lines.Add("file          : " + Or(openPath, Unsaved + ", nothing to run"));
+            lines.Add("decision      : opened file, no Decide, nothing appended and nothing cleared");
+            lines.Add("clash file    : " + Or(clashFile, "none picked"));
+            lines.Add("clash         : " + Or(clashSummary, "no clash step ran"));
+            lines.Add("NWD           : " + Or(nwdPath, "not written, the file has no folder"));
+            lines.Add("report folder : " + Or(reportFolder, "not worked out, the file has no folder"));
+            lines.Add("source folder : not applicable, nothing was scanned");
+            lines.Add("grouping      : not applicable, the open file is the one group");
+            lines.Add("files ticked  : not applicable, the models are the ones inside the file");
+            lines.Add("outcome       : " + outcome.ToString().ToUpperInvariant()
+                + (string.IsNullOrEmpty(reason) ? string.Empty : ", " + reason));
+
+            return lines;
+        }
+
+        private static string Or(string value, string fallback)
+        {
+            return string.IsNullOrEmpty(value) ? fallback : value;
         }
 
         /// <summary>

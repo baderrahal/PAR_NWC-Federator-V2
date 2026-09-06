@@ -1431,9 +1431,10 @@ namespace Federator.Addin.Ui
                 FederationEngine engine = new FederationEngine(
                     SetProgress, log, true, exchange, options);
 
+                // The engine writes the GROUP lines and the OPEN FILE block itself, so
+                // they are there whatever happens inside it.
                 JobOutcome outcome = engine.RunOpenDocument();
 
-                log.Block("OPEN DOCUMENT", new List<string> { FederationEngine.Describe(outcome) });
                 SetsSummary.Text = FederationEngine.Describe(outcome);
                 SetProgress(SetsSummary.Text);
             }
@@ -1448,6 +1449,16 @@ namespace Federator.Addin.Ui
             }
             finally
             {
+                // The source findings compare the Revit source inside each NWC against the
+                // scanned NWC name, and nothing was scanned here, so there is nothing to
+                // compare. Said in the log rather than left as a missing block.
+                log.Line("SOURCE   findings skipped, the open file run has no scanned source folder to compare against");
+
+                // The RESULT block and the second copy of the log are written whatever
+                // happened, the same as the scanned run. The copy goes beside the open
+                // file, where the scanned run puts it beside the NWF folder. This used to
+                // be missing, so an open file run ended with no RESULT block and no copy.
+                WriteTheResultAndCopyTheLog(OpenDocumentJob.FolderOf(open));
                 running = false;
                 RunOpenButton.IsEnabled = true;
                 ShowOpenDocument();

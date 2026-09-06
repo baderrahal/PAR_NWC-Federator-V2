@@ -365,5 +365,50 @@ namespace Federator.Core.Tests
             change(facts);
             return facts;
         }
+
+        /// <summary>
+        /// B11. The open file run is one group with Decision Open and nothing appended by
+        /// this run, and it is judged by the same rule as an NWF the scan reused.
+        /// </summary>
+        [Test]
+        public void AnOpenFileRunWithEverythingWrittenIsDone()
+        {
+            GroupFacts facts = new GroupFacts
+            {
+                Decision = RerunDecision.Open,
+                NwfOnDisk = true,
+                NwdRequested = true,
+                NwdOnDisk = true,
+                NwdPublishReportedSuccess = true,
+                AppendedCount = 4,
+                FileCount = 0,
+                FailedFileCount = 0
+            };
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Done));
+            Assert.That(reason, Is.Null);
+        }
+
+        [Test]
+        public void AnOpenFileRunWhoseNwdWasNotPublishedIsFailedAndSaysSo()
+        {
+            GroupFacts facts = new GroupFacts
+            {
+                Decision = RerunDecision.Open,
+                NwfOnDisk = true,
+                NwdRequested = true,
+                NwdOnDisk = false,
+                NwdPublishReportedSuccess = false,
+                AppendedCount = 4,
+                NwdPath = "D:\\Federations\\one.nwd"
+            };
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Does.Contain("NWD was requested and is not on disk"));
+        }
     }
 }

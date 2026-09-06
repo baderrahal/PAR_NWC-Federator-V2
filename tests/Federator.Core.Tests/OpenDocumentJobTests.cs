@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.IO;
+using Federator.Core.Diagnostics;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using NUnit.Framework;
@@ -107,6 +109,65 @@ namespace Federator.Core.Tests
 
             Assert.That(report, Is.EqualTo(
                 Path.Combine(Path.GetTempPath(), "NWC", ReportPaths.DefaultSubfolder)));
+        }
+
+        [Test]
+        public void TheFolderOfTheOpenFileIsWhereTheLogCopyGoes()
+        {
+            Assert.That(OpenDocumentJob.FolderOf(OpenHere),
+                Is.EqualTo(Path.GetDirectoryName(OpenHere)));
+            Assert.That(OpenDocumentJob.FolderOf("model.nwf"), Is.Empty);
+            Assert.That(OpenDocumentJob.FolderOf(string.Empty), Is.Empty);
+            Assert.That(OpenDocumentJob.FolderOf(null), Is.Empty);
+        }
+
+        /// <summary>
+        /// B11. The open file run ended with no block naming what it did, so the RESULT
+        /// block after it counted a group nobody could see. These lines carry the same
+        /// fields the scanned run's blocks carry, where they apply.
+        /// </summary>
+        [Test]
+        public void TheSummaryNamesTheFileTheDecisionTheClashTheNwdAndTheReportFolder()
+        {
+            IList<string> lines = OpenDocumentJob.SummaryLines(
+                OpenHere,
+                Path.Combine(Path.GetTempPath(), "tests.xml"),
+                OpenDocumentJob.NwdBeside(OpenHere),
+                OpenDocumentJob.ReportFolder(OpenHere, string.Empty).Folder,
+                "1830 created, 48 with clashes",
+                GroupOutcome.Done,
+                null);
+
+            string all = string.Join("\n", new List<string>(lines).ToArray());
+
+            Assert.That(all, Does.Contain(OpenHere));
+            Assert.That(all, Does.Contain("opened file, no Decide"));
+            Assert.That(all, Does.Contain("tests.xml"));
+            Assert.That(all, Does.Contain("1830 created, 48 with clashes"));
+            Assert.That(all, Does.Contain(OpenDocumentJob.NwdBeside(OpenHere)));
+            Assert.That(all, Does.Contain(OpenDocumentJob.ReportFolder(OpenHere, string.Empty).Folder));
+            Assert.That(all, Does.Contain("outcome       : DONE"));
+        }
+
+        [Test]
+        public void TheFieldsAScannedRunHasAndAnOpenFileDoesNotSayNotApplicable()
+        {
+            IList<string> lines = OpenDocumentJob.SummaryLines(
+                OpenHere, null, OpenDocumentJob.NwdBeside(OpenHere), null, null,
+                GroupOutcome.Failed, "the NWD was requested and is not on disk");
+
+            Assert.That(lines, Has.Some.StartsWith("source folder : not applicable"));
+            Assert.That(lines, Has.Some.StartsWith("grouping      : not applicable"));
+            Assert.That(lines, Has.Some.StartsWith("files ticked  : not applicable"));
+            Assert.That(lines, Has.Some.StartsWith("clash file    : none picked"));
+            Assert.That(lines, Has.Some.StartsWith("clash         : no clash step ran"));
+            Assert.That(lines, Has.Some.Contains("FAILED, the NWD was requested and is not on disk"));
+
+            foreach (string line in lines)
+            {
+                Assert.That(line.TrimEnd(), Does.Not.EndWith(":"),
+                    "a field is never left blank: " + line);
+            }
         }
 
         private static int Count(string text, string part)
