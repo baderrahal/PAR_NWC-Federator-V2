@@ -105,7 +105,7 @@ Core has no Navisworks reference. The add-in hands it plain values.
 
 One line each. File, line, what is wrong, what it breaks.
 
-- B1 `src/Federator.Addin/Engine/FederationEngine.cs:653` returns `CreatedCount > AlreadyPresentCount`. A rerun that finds 60 sets present and creates 1 new says nothing was built. The second NWF save and the tests can then be skipped for that group
+- B1 `src/Federator.Addin/Engine/FederationEngine.cs:653` returns `CreatedCount > AlreadyPresentCount`. A rerun that finds 60 sets present and creates 1 new says nothing was built. Corrected 2026-09-06 while fixing it: the tests are still created and run, because `ClashStep` does not short circuit on this bool. What is lost is the second NWF save, when the file holds sets only or no test was created or run, so the new set is never saved into the NWF
 - B2 `src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1425` to `1432` with `FederationEngine.cs:86` to `89`. The open file path passes a folder already ending in `Clash Reports`, the engine appends `Clash Reports` again through `ReportPaths.Choose`. Reports land in `Clash Reports\Clash Reports`. The scan's source folder refusal is also applied to a run that had no scan
 - B3 `src/Federator.Addin/Engine/FederationEngine.cs:1112` logs "not republished, the tick box is off". The box no longer exists. The line can only lie
 - B4 `src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1168` the confirm dialog says "Before each group the document is cleared". On a rerun with an NWF present nothing is cleared. The person is told the wrong thing before pressing Yes

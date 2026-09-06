@@ -2,6 +2,38 @@
 
 Newest entry at the top.
 
+## 2026-09-06 F5, the sets built test, and Bader's answers
+
+### What was done
+
+- Bader answered every question. The answers sit under each question in `02_questions.md`
+- `01_next.md` reordered to Bader's order. F19 dropped. F20, F21 and F22 added
+- `steps/logs` created with a README for the run logs
+- `03_bader_next.md` written, the local steps for the build, the install and the first proof
+- F5 fixed. `FederationEngine.BuildTheSets` returned `CreatedCount > AlreadyPresentCount`. It now returns `SetBuildOutcome.PutAnythingIn`, which is `CreatedCount > 0`
+- The bool has one meaning. It feeds `ClashStep`, whose only caller uses it to decide the second NWF save. The tests were never gated on it, `ClashStep` runs them either way. So B1 in `00_analysis.md` was corrected: what was lost was the second NWF save, not the tests
+- One log line added after the SETS block saying how many sets were put into the document and how many were already there
+- Four Core tests added in `SetBuildOutcomeTests` for `PutAnythingIn`
+- Core tests under mono on Linux: 800 passed, 40 failed, 32 skipped, 872 total. The 40 are the same Windows path and file locking failures as before, none in the sets tests
+- The add-in was not compiled. It cannot compile in the container
+
+### What remains
+
+- F6 onward in `01_next.md`, in that order
+- The three proofs P1, P2, P3 on the local machine
+
+### Known bugs
+
+- B1 fixed in code, pending local proof. The proof: run one building twice, the second press must show OPENED, the sets present and the tests still run, then drop the log in `steps/logs`
+- B2 to B11, L1 to L8, M1 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F5 PR
+2. Bader follows `03_bader_next.md` and drops the two logs into `steps/logs`
+3. Worker reads the logs and records the proof in this file
+4. Worker starts F6
+
 ## 2026-09-06 analysis pass
 
 ### What was done

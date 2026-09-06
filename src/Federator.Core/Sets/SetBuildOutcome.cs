@@ -156,6 +156,17 @@ namespace Federator.Core.Sets
             get { return Count(true, false); }
         }
 
+        /// <summary>
+        /// True when this build put at least one set into the document. That is what
+        /// decides whether the NWF is saved again after the sets. A set already there
+        /// was left alone and put nothing in, so it does not count either way: a rerun
+        /// that finds sixty present and creates one still put one in.
+        /// </summary>
+        public bool PutAnythingIn
+        {
+            get { return CreatedCount > 0; }
+        }
+
         /// <summary>Created sets that found at least one item.</summary>
         public int FindingItemsCount
         {

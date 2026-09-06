@@ -1,47 +1,42 @@
 # 01 next
 
-Fixes ranked. Smallest and safest first.
-Nothing here is done. Each one waits for Bader to say go.
+Fixes in the order Bader set on 2026-09-06. The F numbers are kept from the first list.
+One PR per fix. F1 to F4 go in one PR. The worker merges its own PR.
 
 `CONTAINER` means the fix can be built and tested here.
 `LOCAL MACHINE ONLY` means it needs Navisworks to prove.
 The add-in does not compile in the container at all, so every add-in edit
 can be written here and only proved on the local machine.
 
-## F1 Fix the test name typo
+## Order
 
-- Closes B8
-- Files `tests/Federator.Core.Tests/ReportCheckTests.cs`
-- CONTAINER
-- Size: one word
+1. F5
+2. F6
+3. F7
+4. F8
+5. F22
+6. F1 to F4 as one PR
+7. F9
+8. F10
+9. F11
+10. F17
+11. F15
+12. F12
+13. F13
+14. F14
+15. F16
+16. F18
+17. F20
+18. F21
 
-## F2 Fix the hardcoded probe path
-
-- Closes B7
-- Files `build/probe-window-defaults.ps1`
-- LOCAL MACHINE ONLY to run, CONTAINER to edit
-- Size: one line, copy the form the other probes use
-
-## F3 Fix the two wrong messages
-
-- Closes B3 and B4
-- Files `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`
-- LOCAL MACHINE ONLY to see, CONTAINER to edit
-- Size: two strings. The confirm text should say cleared only when a group has no NWF yet
-
-## F4 Fix the units docstring
-
-- Closes B10
-- Files `src/Federator.Addin/Engine/DocumentUnits.cs`
-- CONTAINER to edit
-- Size: one sentence
+F19 is dropped.
 
 ## F5 Fix the sets built test
 
 - Closes B1
-- Files `src/Federator.Addin/Engine/FederationEngine.cs` line 653
+- Files `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Core/Sets/SetBuildOutcome.cs`
 - LOCAL MACHINE ONLY to prove
-- Size: one expression, `CreatedCount > 0`. Check what the caller does with false first
+- Size: one expression. Done in code on 2026-09-06, proof pending. See `log.md`
 
 ## F6 Fix the open file report folder
 
@@ -62,14 +57,57 @@ can be written here and only proved on the local machine.
 - Closes L1
 - Files `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`, `src/Federator.Core/Clash/ClashWork.cs`
 - CONTAINER for the Core side, LOCAL MACHINE ONLY to prove
-- Size: medium. `ClashStep` needs a branch with no exchange that runs every test already in the document. `ClashRunner.Run` takes a plan built from the XML today, so it needs a plan built from the document. Waits on Q2
+- Size: medium. `ClashStep` needs a branch with no exchange that runs every test already in the document, on both the scanned path and the open file path. `ClashRunner.Run` takes a plan built from the XML today, so it needs a plan built from the document. Q2 answered yes
+
+## F22 Two clear workflows in the window
+
+- Closes part of L1 and Q17
+- Files `src/Federator.Addin/Ui/FederatorWindow.xaml`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`, `src/Federator.Core/Rerun/`
+- CONTAINER for the wording rule in Core, LOCAL MACHINE ONLY to see
+- The window must show the difference between the first run and the weekly run
+- First run: build the NWF, the sets, the tests, the reports and the NWD from the XML
+- Weekly run: open the NWF already there, reload the NWCs, run the saved tests, write the reports and the NWD, XML optional
+- Before the confirm box, the person must be told which of the two will happen per group
+- Waits on Bader confirming the two workflow definitions in chat
+
+## F1 Fix the test name typo
+
+- Closes B8
+- Files `tests/Federator.Core.Tests/ReportCheckTests.cs`
+- CONTAINER
+- Size: one word
+- Goes in one PR with F2, F3 and F4
+
+## F2 Fix the hardcoded probe path
+
+- Closes B7
+- Files `build/probe-window-defaults.ps1`
+- LOCAL MACHINE ONLY to run, CONTAINER to edit
+- Size: one line, copy the form the other probes use
+- Goes in one PR with F1, F3 and F4
+
+## F3 Fix the two wrong messages
+
+- Closes B3 and B4
+- Files `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`
+- LOCAL MACHINE ONLY to see, CONTAINER to edit
+- Size: two strings. The confirm text says cleared only when it is true, Q13
+- Goes in one PR with F1, F2 and F4
+
+## F4 Fix the units docstring
+
+- Closes B10
+- Files `src/Federator.Addin/Engine/DocumentUnits.cs`
+- CONTAINER to edit
+- Size: one sentence
+- Goes in one PR with F1, F2 and F3
 
 ## F9 Skip the units change on a CHANGED group
 
 - Closes L2
 - Files `src/Federator.Addin/Engine/FederationEngine.cs` around line 321
 - LOCAL MACHINE ONLY to prove
-- Size: one guard on `comparison.Decision`
+- Size: one guard on `comparison.Decision`. Q12 answered yes
 
 ## F10 Gate the page on its own flag
 
@@ -83,7 +121,21 @@ can be written here and only proved on the local machine.
 - Closes B9
 - Files `src/Federator.Core/Report/ReportOptions.cs`, `SheetNames.cs`, `ClashMatrix.cs`, `ClashReportModel.cs`, their tests, `docs/scan.md` 4q
 - CONTAINER
-- Size: medium, a delete across six files and a test run. Waits on Q4
+- Size: medium, a delete across six files and a test run. Q4 answered yes
+
+## F17 Picture numbering by block order
+
+- Closes L4
+- Files `src/Federator.Addin/Engine/ClashRunner.cs`, `src/Federator.Core/Report/ImageNaming.cs`
+- LOCAL MACHINE ONLY to prove
+- Size: medium, and pictures would need renaming after the sort. Q8 answered match the Navisworks export order
+
+## F15 Dispose in SetBuilder and ClashRunner.Resolve
+
+- Closes B5 and B6
+- Files `src/Federator.Addin/Engine/SetBuilder.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`
+- LOCAL MACHINE ONLY to prove, and the proof is a run with no ObjectDisposedException
+- Size: medium and the riskiest here. Disposing a wrapper the code still uses throws at run time. Last of the code fixes, one file at a time, one run each. Q14 answered fix now
 
 ## F12 Fix the docs that contradict the code
 
@@ -97,7 +149,7 @@ can be written here and only proved on the local machine.
 - Closes M4, part of L5
 - Files `CLAUDE.md`, new `.claude/rules/*.md`, `docs/`
 - CONTAINER
-- Size: large for reading, small for typing. Waits on Q5
+- Size: large for reading, small for typing. Q5 answered yes
 
 ## F14 Add a root README
 
@@ -106,45 +158,45 @@ can be written here and only proved on the local machine.
 - CONTAINER
 - Size: one page
 
-## F15 Dispose in SetBuilder and ClashRunner.Resolve
-
-- Closes B5 and B6
-- Files `src/Federator.Addin/Engine/SetBuilder.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`
-- LOCAL MACHINE ONLY to prove, and the proof is a run with no ObjectDisposedException
-- Size: medium and the riskiest here. Disposing a wrapper the code still uses throws at run time. Do it last, one file at a time, one run each
-
 ## F16 Make the tests path neutral
 
 - Closes M8
 - Files about 15 test files
 - CONTAINER, then confirm on Windows
-- Size: medium. Waits on Q11. Only worth it if the container is to run the tests before every push
-
-## F17 Picture numbering by block order
-
-- Closes L4
-- Files `src/Federator.Addin/Engine/ClashRunner.cs`, `src/Federator.Core/Report/ImageNaming.cs`
-- LOCAL MACHINE ONLY to prove
-- Size: medium, and pictures would need renaming after the sort. Waits on Q8
+- Size: medium. Q11 answered yes
 
 ## F18 Add the 1A04WE sample
 
 - Closes M7
 - Files `samples/client-report/`
-- Bader has the file. CONTAINER once it is in
+- Bader uploads the file later, Q9. CONTAINER once it is in
 - Size: a commit
+
+## F20 Run the Core tests on every push to main
+
+- Closes part of M5
+- Files `.github/workflows/tests.yml`
+- CONTAINER to edit, GitHub to prove
+- Size: add `push` with `branches: [main]` to the `on` block. Same job as today. Q18 answered yes
+
+## F21 The log answers timing and counts
+
+- Closes M1, M2 and M3 as far as a log can
+- Files `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`
+- CONTAINER for the block shape in Core, LOCAL MACHINE ONLY to prove
+- The run log carries a timing block per group and a total for the run
+- Per test, the clash count written to Excel goes in the log, so the Excel and the log can be checked against the panel
+- Size: medium. Q3 and Q7 answered the log must carry it
 
 ## F19 CI for the add-in
 
-- Closes M5
-- Files `.github/workflows/`
-- Needs a self hosted runner with Navisworks. Waits on Q10
-- Size: UNKNOWN until Q10 is answered
+- DROPPED. Add-in build stays local, Q10
+- M5 stays open on the add-in side
 
 ## The three proofs
 
-Not fixes. Runs on the local machine that no code change replaces.
+Not fixes. Runs on the local machine that no code change replaces. Bader runs them, Q15.
 
 - P1 one building, Run, send the log. Proves criterion 1 and shows OPENED on the second press. Closes M1
-- P2 six buildings ticked, Run, send the log. The timing block per group answers criterion 2. Closes M2
+- P2 all buildings ticked, Run, send the log. The timing block per group answers criterion 2. Closes M2
 - P3 open one NWF, read the panel count for three tests, compare to the Excel. Closes M3
