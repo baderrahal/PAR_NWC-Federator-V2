@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Federator.Core.Report;
 
 namespace Federator.Core.Rerun
 {
@@ -75,21 +76,33 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// The folder the workbook goes in, which is the Clash Reports folder beside the
-        /// open file. The same subfolder the scanned path uses, so both write to one place.
+        /// Where the reports go for the open file. ONE rule for both ways of running:
+        /// the same <see cref="ReportPaths.Choose"/> the scanned run uses, handed the
+        /// open file's own folder where the scanned run hands the NWF folder. A picked
+        /// Excel folder wins, and with none picked the reports go in the Clash Reports
+        /// subfolder beside the file.
+        ///
+        /// WHY THIS REPLACED ReportFolderBeside. That method built the Clash Reports
+        /// folder here, and the window then handed that folder to the engine as if it
+        /// were the NWF folder, so the engine built Clash Reports beside it again and
+        /// wrote to Clash Reports\Clash Reports. The folder is now decided once, here,
+        /// and nothing downstream adds to it.
+        ///
+        /// No source folder goes in, because nothing was scanned. The refusal to write
+        /// inside the folder being scanned guards a scan, and an open file has none. The
+        /// scan's folder box may still hold last time's folder, and applying it here once
+        /// refused a run for a scan that never happened.
         /// </summary>
-        public static string ReportFolderBeside(string openPath, string subfolder)
+        public static ReportFolderChoice ReportFolder(string openPath, string pickedExcelFolder)
         {
             string folder = FolderOf(openPath);
 
             if (folder.Length == 0)
             {
-                return string.Empty;
+                return new ReportFolderChoice(string.Empty, null);
             }
 
-            return string.IsNullOrEmpty(subfolder)
-                ? folder
-                : Path.Combine(folder, subfolder);
+            return ReportPaths.Choose(pickedExcelFolder, folder, null);
         }
 
         private static string Beside(string openPath, string extension)
@@ -126,7 +139,7 @@ namespace Federator.Core.Rerun
         /// What the window says the run will do, in one line, so a person can read it
         /// before pressing anything.
         /// </summary>
-        public static string Describe(string openPath, string subfolder)
+        public static string Describe(string openPath, string pickedExcelFolder)
         {
             if (!CanRun(openPath))
             {
@@ -135,7 +148,7 @@ namespace Federator.Core.Rerun
 
             return "Runs on " + NameFrom(openPath) + ", writes " + NwdBeside(openPath)
                 + " and the report in "
-                + ReportFolderBeside(openPath, subfolder) + ".";
+                + ReportFolder(openPath, pickedExcelFolder).Folder + ".";
         }
     }
 }

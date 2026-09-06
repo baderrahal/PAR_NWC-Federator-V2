@@ -27,7 +27,11 @@ namespace Federator.Addin.Engine
         private readonly bool republishNwd;
         private readonly ExchangeDocument exchange;
         private readonly ReportOptions reports;
-        private readonly string reportFolder;
+        /// <summary>
+        /// Where the reports go. Decided in the constructor for a scanned run, from the
+        /// NWF folder, and in RunOpenDocument for the open file, from the file itself.
+        /// </summary>
+        private string reportFolder;
         private readonly List<SourcePair> sourcePairs = new List<SourcePair>();
 
         /// <summary>
@@ -72,6 +76,27 @@ namespace Federator.Addin.Engine
             ExchangeDocument exchange,
             ReportOptions reports,
             string nwfFolder)
+            : this(progress, log, republishNwd, exchange, reports)
+        {
+            this.reportFolder = string.IsNullOrEmpty(nwfFolder)
+                    && string.IsNullOrEmpty(this.reports.ExcelFolder)
+                ? null
+                : this.reports.ChooseFor(nwfFolder).Folder;
+        }
+
+        /// <summary>
+        /// For the open file. No folder is handed in, because the report folder is read
+        /// off the open file in RunOpenDocument through OpenDocumentJob.ReportFolder, the
+        /// same rule the window uses for its line. Handing a folder in here is what once
+        /// wrote to Clash Reports\Clash Reports: the window passed the report folder as
+        /// the NWF folder and the constructor built Clash Reports beside it again.
+        /// </summary>
+        public FederationEngine(
+            Action<string> progress,
+            RunLog log,
+            bool republishNwd,
+            ExchangeDocument exchange,
+            ReportOptions reports)
         {
             if (log == null)
             {
@@ -83,10 +108,7 @@ namespace Federator.Addin.Engine
             this.republishNwd = republishNwd;
             this.exchange = exchange;
             this.reports = reports ?? new ReportOptions();
-            this.reportFolder = string.IsNullOrEmpty(nwfFolder)
-                    && string.IsNullOrEmpty(this.reports.ExcelFolder)
-                ? null
-                : this.reports.ChooseFor(nwfFolder).Folder;
+            this.reportFolder = null;
         }
 
         /// <summary>
@@ -174,12 +196,12 @@ namespace Federator.Addin.Engine
         /// The clash file is optional. Without one, the tests already in the document are
         /// run, which is the ordinary weekly case.
         /// </summary>
-        public JobOutcome RunOpenDocument(string subfolder)
+        public JobOutcome RunOpenDocument()
         {
             Document document = NavisworksApplication.ActiveDocument;
             string open = document == null ? string.Empty : Or(document.FileName);
 
-            FederationJob job = OpenJob(open, subfolder);
+            FederationJob job = OpenJob(open);
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
             outcome.NwdSize = -1;
@@ -199,10 +221,19 @@ namespace Federator.Addin.Engine
                 return outcome;
             }
 
+            // The one rule for where the reports go, shared with the window's line. The
+            // open file's own folder stands where the NWF folder stands on a scanned run,
+            // and no scan folder is applied because there was no scan.
+            ReportFolderChoice where = OpenDocumentJob.ReportFolder(open, reports.ExcelFolder);
+            reportFolder = where.Folder;
+
             log.Line("OPEN     running the document that is already open, no scan");
             log.Line("OPEN     file     " + open);
             log.Line("OPEN     NWD      " + job.NwdPath);
-            log.Line("OPEN     report   " + reportFolder);
+            log.Line("OPEN     report   " + reportFolder
+                + (string.IsNullOrEmpty(reports.ExcelFolder)
+                    ? "  (beside the file, no Excel folder picked)"
+                    : "  (the Excel folder picked on the Outputs step)"));
 
             try
             {
@@ -248,7 +279,7 @@ namespace Federator.Addin.Engine
         /// The job for the open document. Its name is read off the file rather than built
         /// from a pattern, because the name is already decided and is on the file.
         /// </summary>
-        private static FederationJob OpenJob(string open, string subfolder)
+        private static FederationJob OpenJob(string open)
         {
             string name = OpenDocumentJob.NameFrom(open);
 
