@@ -1423,13 +1423,15 @@ namespace Federator.Addin.Ui
                 }
 
                 ReportOptions options = ReportsWanted();
-                string subfolder = ReportPaths.DefaultSubfolder;
-                string reportFolder = OpenDocumentJob.ReportFolderBeside(open, subfolder);
 
+                // No folder is handed in. The engine reads the report folder off the open
+                // file through OpenDocumentJob.ReportFolder, the same rule ShowOpenDocument
+                // uses for the line above the button. Handing the report folder in as the
+                // NWF folder is what once wrote to Clash Reports\Clash Reports.
                 FederationEngine engine = new FederationEngine(
-                    SetProgress, log, true, exchange, options, reportFolder);
+                    SetProgress, log, true, exchange, options);
 
-                JobOutcome outcome = engine.RunOpenDocument(subfolder);
+                JobOutcome outcome = engine.RunOpenDocument();
 
                 log.Block("OPEN DOCUMENT", new List<string> { FederationEngine.Describe(outcome) });
                 SetsSummary.Text = FederationEngine.Describe(outcome);
@@ -1482,7 +1484,7 @@ namespace Federator.Addin.Ui
             string open = OpenDocumentPath();
 
             OpenDocumentLine.Text = OpenDocumentJob.Describe(
-                open, ReportPaths.DefaultSubfolder);
+                open, ExcelFolderBox == null ? string.Empty : Trimmed(ExcelFolderBox.Text));
 
             if (RunOpenButton != null)
             {

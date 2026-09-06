@@ -2,6 +2,40 @@
 
 Newest entry at the top.
 
+## 2026-09-06 F6, the open file report folder
+
+### What was done
+
+- `steps/logs` holds only its README. No run log yet, so B1 is still pending local proof and nothing about it was recorded
+- F6 fixed. The window built `<folder>\Clash Reports` with `OpenDocumentJob.ReportFolderBeside` and handed it to the engine as the NWF folder. The engine then built `Clash Reports` beside that again through `ReportPaths.Choose`, so the reports went to `<folder>\Clash Reports\Clash Reports`
+- The decision now lives in one place, `OpenDocumentJob.ReportFolder(openPath, pickedExcelFolder)` in Core. It calls the same `ReportPaths.Choose` the scanned run uses, with the open file's own folder where the scanned run puts the NWF folder. A picked Excel folder wins, the same as the scanned run
+- The engine's open file path calls that rule in `RunOpenDocument` and takes no folder from the window. The window's blue line calls the same rule, so what it says and what is written cannot differ
+- `ReportFolderBeside` is gone. `RunOpenDocument` and `OpenJob` lost a subfolder parameter nothing read
+- The scan's source folder refusal is skipped on the open file run. No source folder is handed to `ReportPaths.Choose` there, because nothing was scanned. The engine still creates the report folder and reads every written file back, so a folder that cannot be written is caught by the write itself
+- The scanned path is untouched. The six argument engine constructor now delegates to a new five argument one and then sets the report folder exactly as before
+- Five Core tests added in `OpenDocumentJobTests`, one of which pins the old doubling as the trap it was
+- Core tests under mono on Linux: 804 passed, 40 failed, 32 skipped, 876 total. The 40 are the same Windows path and file locking failures as before, none new
+- The add-in was not compiled. It cannot compile in the container
+- `03_bader_next.md` rewritten for the F5 and F6 proofs together
+
+### What remains
+
+- F7 onward in `01_next.md`, in that order
+- The F5 and F6 proofs on the local machine, then P1, P2, P3
+
+### Known bugs
+
+- B1 fixed in code, pending local proof. Run one building twice, the second press must show OPENED, the sets present and the tests still run
+- B2 fixed in code, pending local proof. Open one NWF, press Run the open file, the reports must land in one Clash Reports folder beside the file, no folder inside a folder
+- B3 to B11, L1 to L8, M1 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F6 PR
+2. Bader follows `03_bader_next.md` and drops the three logs into `steps/logs`
+3. Worker reads the logs and records both proofs in this file
+4. Worker starts F7
+
 ## 2026-09-06 F5, the sets built test, and Bader's answers
 
 ### What was done

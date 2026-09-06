@@ -1,6 +1,7 @@
 # 03 Bader next
 
 One action per step. Do them in order.
+Two proofs are waiting: F5 and F6. One build and one install cover both.
 
 ## Get the code
 
@@ -34,7 +35,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 
 11. Read the last lines. It must say the bundle is complete. If it refuses, copy the whole output into the chat
 
-## Run one building twice
+## Proof F5, one building twice
 
 12. Close Navisworks if it is open
 13. Open Navisworks Manage 2025
@@ -47,13 +48,25 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 20. Press Run again on the same building, same folders, same XML
 21. The second run must say OPENED for the group, the sets already there, and the tests still run
 
-## Send the log
+## Proof F6, the open file
 
-22. Open the folder `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
-23. Copy the two newest `run-*.log` files
-24. Paste them into `steps\logs` in the repo folder
-25. Rename each with the date and the building, like `2026-09-08-1C07BC-first.log` and `2026-09-08-1C07BC-second.log`
-26. Open GitHub Desktop
-27. Write a summary like `logs from 1C07BC twice`
-28. Press Commit to main
-29. Press Push origin
+22. In Navisworks open the NWF the F5 run wrote
+23. Open the add-in from the ribbon
+24. Go to the Clash step
+25. Read the blue line above Run the open file. It must name one Clash Reports folder beside the NWF
+26. Leave the clash XML box empty
+27. Press Run the open file and wait for it to finish
+28. Open the NWF's folder in Explorer
+29. There must be one folder named Clash Reports beside the NWF, with the workbook and the page inside it
+30. There must be no Clash Reports folder inside that Clash Reports folder
+
+## Send the logs
+
+31. Open the folder `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
+32. Copy the three newest `run-*.log` files
+33. Paste them into `steps\logs` in the repo folder
+34. Rename each with the date, the building and the press, like `2026-09-08-1C07BC-first.log`, `2026-09-08-1C07BC-second.log` and `2026-09-08-1C07BC-openfile.log`
+35. Open GitHub Desktop
+36. Write a summary like `logs from 1C07BC, F5 and F6 proofs`
+37. Press Commit to main
+38. Press Push origin
