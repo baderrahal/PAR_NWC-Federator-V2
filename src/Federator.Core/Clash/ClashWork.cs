@@ -3,6 +3,17 @@ using Federator.Core.Exchange;
 namespace Federator.Core.Clash
 {
     /// <summary>
+    /// The three things the clash step can do. Tests from the picked XML, tests already
+    /// saved in the document when no XML was picked, or nothing.
+    /// </summary>
+    public enum ClashSource
+    {
+        TestsFromXml,
+        TestsSavedInDocument,
+        Nothing
+    }
+
+    /// <summary>
     /// What the run should do about clash, given whatever was picked in the Clash step.
     ///
     /// Nothing picked is a step switched off, not a failure. The run does the model side
@@ -13,6 +24,56 @@ namespace Federator.Core.Clash
     {
         public const string NothingPicked =
             "no file picked in the Clash step, no set built and no test created";
+
+        /// <summary>
+        /// Which of the three things the clash step does. Decided once, in Core, so the
+        /// scanned run and the open file run cannot answer it differently.
+        /// </summary>
+        public static ClashSource SourceFor(ExchangeDocument exchange, int savedTests)
+        {
+            if (Any(exchange))
+            {
+                return ClashSource.TestsFromXml;
+            }
+
+            if (exchange == null && savedTests > 0)
+            {
+                return ClashSource.TestsSavedInDocument;
+            }
+
+            return ClashSource.Nothing;
+        }
+
+        /// <summary>True when there is clash work, from the file or from the document.</summary>
+        public static bool Any(ExchangeDocument exchange, int savedTests)
+        {
+            return SourceFor(exchange, savedTests) != ClashSource.Nothing;
+        }
+
+        /// <summary>True for a plan with at least one test to run, whichever way it was built.</summary>
+        public static bool AnyIn(ClashTestPlan plan)
+        {
+            return plan != null && plan.HasWork;
+        }
+
+        /// <summary>
+        /// The one line the log carries for the source, in the same shape whichever way the
+        /// run was started. Three shapes and no fourth.
+        /// </summary>
+        public static string DescribeSource(ClashSource source, ExchangeDocument exchange, int savedTests)
+        {
+            switch (source)
+            {
+                case ClashSource.TestsFromXml:
+                    return "tests from XML, " + Describe(exchange);
+                case ClashSource.TestsSavedInDocument:
+                    return "tests saved in the document, " + savedTests + " of them, no XML picked";
+                default:
+                    return exchange == null
+                        ? "nothing, no XML picked and the document holds no clash test, so nothing ran"
+                        : "nothing, " + Describe(exchange);
+            }
+        }
 
         /// <summary>True when there is any clash work at all for this run.</summary>
         public static bool Any(ExchangeDocument exchange)

@@ -193,8 +193,9 @@ namespace Federator.Addin.Engine
         /// inside it survive, which is the rule that matters most here. Everything after
         /// that is what a scanned group does, in the same order, through the same methods.
         ///
-        /// The clash file is optional. Without one, the tests already in the document are
-        /// run, which is the ordinary weekly case.
+        /// The clash file is optional. Without one, the tests saved in the document are
+        /// run where they sit, which is the ordinary weekly case, and a document holding
+        /// none means nothing runs and the log says so.
         /// </summary>
         public JobOutcome RunOpenDocument()
         {
@@ -661,26 +662,36 @@ namespace Federator.Addin.Engine
         /// </summary>
         private bool ClashStep(Document document, FederationJob job, JobOutcome outcome)
         {
-            if (!ClashWork.Any(exchange))
-            {
-                log.Line("CLASH    " + ClashWork.Describe(exchange));
-                return false;
-            }
-
             if (outcome.Decision == RerunDecision.Changed)
             {
                 // A CHANGED group is left alone entirely and the decision goes to Bader,
-                // so nothing is built into it either.
+                // so nothing is built into it and nothing in it is run.
                 log.Line("CLASH    " + job.Building
-                    + " was left alone because its file list changed, so no set was built and no test created");
+                    + " was left alone because its file list changed, so no set was built and no test created or run");
                 return false;
             }
 
-            bool changed = BuildTheSets(document, job, outcome);
+            // Three things can happen and the log names which, in the same words on the
+            // scanned run and on the open file run: tests from the picked XML, the tests
+            // already saved in the document when no XML was picked, or nothing. The
+            // saved tests are only counted when there is no XML, because with one the
+            // XML decides everything exactly as before.
+            int savedTests = exchange == null ? SavedTests.Count(document) : 0;
+            ClashSource source = ClashWork.SourceFor(exchange, savedTests);
+            log.Line("CLASH    source   " + ClashWork.DescribeSource(source, exchange, savedTests));
+
+            if (source == ClashSource.Nothing)
+            {
+                return false;
+            }
+
+            // Sets come from the XML and from nowhere else. With no XML the sets in the
+            // document are left exactly as they are.
+            bool changed = source == ClashSource.TestsFromXml && BuildTheSets(document, job, outcome);
 
             // Deliberately not short circuited. A file holding tests only is a normal
             // case, so the tests are created whether or not any set was built here.
-            return CreateAndRunTheTests(document, job, outcome) || changed;
+            return CreateAndRunTheTests(document, job, outcome, source) || changed;
         }
 
         private bool BuildTheSets(Document document, FederationJob job, JobOutcome outcome)
@@ -731,30 +742,52 @@ namespace Federator.Addin.Engine
             }
         }
 
-        private bool CreateAndRunTheTests(Document document, FederationJob job, JobOutcome outcome)
+        private bool CreateAndRunTheTests(
+            Document document, FederationJob job, JobOutcome outcome, ClashSource source)
         {
             try
             {
-                if (!ClashWork.CreatesTests(exchange))
-                {
-                    log.Line("CLASH    the picked file holds no clash test, so none was created");
-                    return false;
-                }
-
                 // The units come from the document that is open right now, because every
                 // tolerance in the file is converted into them. There is no global
                 // tolerance setting in this tool, each test carries its own.
                 string units = ClashRunner.DocumentUnits();
-                ClashTestPlan plan = ClashTestPlan.From(exchange, units);
+                ClashTestPlan plan;
 
-                foreach (string unknown in plan.UnknownTestTypes)
+                if (source == ClashSource.TestsFromXml)
                 {
-                    log.Line("CLASH    test type \"" + unknown
-                        + "\" is not one this tool creates, every test using it is skipped by name");
-                }
+                    if (!ClashWork.CreatesTests(exchange))
+                    {
+                        log.Line("CLASH    the picked file holds no clash test, so none was created");
+                        return false;
+                    }
 
-                log.Line("CLASH    " + job.Building + ", " + plan.TestsInFile + " in the file, "
-                    + plan.Buildable.Count + " to create, " + plan.Skipped.Count + " skipped before the model");
+                    plan = ClashTestPlan.From(exchange, units);
+
+                    foreach (string unknown in plan.UnknownTestTypes)
+                    {
+                        log.Line("CLASH    test type \"" + unknown
+                            + "\" is not one this tool creates, every test using it is skipped by name");
+                    }
+
+                    log.Line("CLASH    " + job.Building + ", " + plan.TestsInFile + " in the file, "
+                        + plan.Buildable.Count + " to create, " + plan.Skipped.Count + " skipped before the model");
+                }
+                else
+                {
+                    // No XML. The tests already saved in the document are the plan, by
+                    // address, and every one is run where it sits. Nothing is created and
+                    // nothing is compared, because there is no file to compare against.
+                    plan = ClashTestPlan.FromDocument(SavedTests.Read(document), units);
+
+                    foreach (string unknown in plan.UnknownTestTypes)
+                    {
+                        log.Line("CLASH    saved test " + unknown
+                            + " is not one this tool runs, every test with it is skipped by name");
+                    }
+
+                    log.Line("CLASH    " + job.Building + ", " + plan.TestsInFile + " saved in the document, "
+                        + plan.Buildable.Count + " to run, " + plan.Skipped.Count + " skipped before the model");
+                }
 
                 ClashRunner runner = new ClashRunner(progress, log, guard);
                 runner.NameSettings = reports.Names;
@@ -771,7 +804,9 @@ namespace Federator.Addin.Engine
                 if (reports.WriteWorkbook || reports.WriteXml)
                 {
                     ClashReport report = new ClashReport(job.Building, job.OutputName);
-                    report.SourceFile = exchange.SourcePath;
+                    report.SourceFile = exchange == null
+                        ? "the tests saved in the open document"
+                        : exchange.SourcePath;
                     report.DocumentUnits = units;
                     report.RunAt = DateTime.Now;
                     report.BuildStamp = BuildStamp.Of(typeof(FederationEngine).Assembly);

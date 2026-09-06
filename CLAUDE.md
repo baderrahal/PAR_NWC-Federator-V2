@@ -196,7 +196,12 @@ and 6 does not read as broken.
   a document holding zero sets once went ahead anyway and finished with 0 created and
   0 run. This is a guard, visible in the log and in the window, never a silent skip
 - The Run button does the whole job for every ticked group, model side and clash
-  together, and the model side alone when no clash file is picked. The two buttons on
+  together. With no XML picked, the tests saved in each group's NWF are run where they
+  sit, and a group whose NWF holds none runs nothing and the log says so. The clash step
+  does one of three things and the log names which, in the same words on the scanned run
+  and on the open file run: tests from XML, tests saved in the document, or nothing. The
+  rule lives in Federator.Core.Clash.ClashWork.SourceFor. Sets come from the XML and from
+  nowhere else, so with no XML the sets in the document are left alone. The two buttons on
   the Clash step are for trying one open model by hand and are labelled as that. They
   are not steps in the run. Splitting one job across three presses is what let a user
   run clash against a document with no sets in it
@@ -702,8 +707,9 @@ and 6 does not read as broken.
   open file button names the open FILE and the two paths it will write. The open path is
   the same flow with the first step removed. There is no Decide, because the document IS
   the file list, nothing is appended and nothing is cleared, so the clash results inside it
-  survive. The clash file is optional there, and without one the tests already in the
-  document are run, which is the ordinary weekly case. The outputs are named after the open
+  survive. The clash file is optional there, and without one the tests saved in the
+  document are run where they sit, which is the ordinary weekly case, and a document
+  holding none runs nothing and the log says so. The outputs are named after the open
   file with the extension swapped and the report in Clash Reports beside it, which is
   exactly where the scanned path puts them, so the same building run either way writes the
   same files. No pattern is applied, because the name is already on the file. An unsaved

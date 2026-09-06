@@ -117,6 +117,8 @@ One line each. File, line, what is wrong, what it breaks.
 - B10 `src/Federator.Addin/Engine/DocumentUnits.cs:40` docstring says the unit change is off unless asked for. `FederatorWindow.ReportsWanted` sets it on. The comment is wrong
 - B11 `src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1390` to `1454` `OnRunOpenDocument` never calls `WriteTheResultAndCopyTheLog`, and `FederationEngine.RunOpenDocument` never calls `log.GroupFinished`. An open file run leaves no RESULT block and no log copy beside the file
 
+- B12 OPEN, waiting on Bader. Bader opened an NWD from ACC and the tool showed an error beside the file. The exact text, the place in the window, the path, and whether Navisworks opens that file on its own are not known yet. See Q20. F23 fixes it once Q20 is answered
+
 ## 4 Logic problems
 
 - L1 CLAUDE.md, the button help and `FederatorWindow.xaml.cs:1422` all say an open file with no clash XML runs the tests already in the document. `FederationEngine.ClashStep:605` returns false when `ClashWork.Any(exchange)` is false, and `ClashWork.Any(null)` is false by test. So nothing runs. The ordinary weekly case does nothing and the log says it did

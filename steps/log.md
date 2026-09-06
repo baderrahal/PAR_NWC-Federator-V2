@@ -2,6 +2,86 @@
 
 Newest entry at the top.
 
+## 2026-09-06 F8, run the saved tests when no XML is picked
+
+### What was done
+
+- `steps/logs` still holds only its README. No run log yet, so B1, B2 and B11 stay pending local proof and nothing about them was recorded
+- B12 registered in `00_analysis.md`, OPEN: Bader opened an NWD from ACC and the tool showed an error beside the file. Q20 added with the four unknowns, answer blank. F23 added to `01_next.md` after F22
+- F8 fixed. With no XML, `ClashStep` returned before anything ran, on both paths, while the open file line said the tests already in the document were running
+- The clash step now does one of three things and the log names which in one line, `CLASH    source   ...`, the same on the scanned run and the open file run: tests from XML, tests saved in the document, or nothing. The rule is `ClashWork.SourceFor` in Core
+- A second way to build a `ClashTestPlan`: `ClashTestPlan.FromDocument` in Core, from a list of `SavedClashTest`, every saved test by its address, no drift compare, no sets touched. The add-in fills the list in `SavedTests.Read` from `DocumentClashTests`, walked once, wrappers disposed
+- `ClashRunner` runs a document plan through the same path as an XML plan. A test with an address is resolved where it sits and neither created nor compared. `SingleModel`, `EmptySide` and the `RepeatedFailureGuard` apply the same way. Harvest, images, workbook, page and the second NWF save follow exactly as the XML case
+- With an XML picked nothing changed. The saved tests are not even counted then
+- Words fixed to match the log line: CLAUDE.md in two places, the help under Run the open file in the window, the OPEN line and comment in `FederatorWindow.xaml.cs`, and the engine docstring
+- Eleven Core tests added in `SavedTestPlanTests`
+- Core tests under mono on Linux: 820 passed, 40 failed, 32 skipped, 892 total. The 40 are the same Windows path and file locking failures as before, none new
+- The add-in was not compiled. It cannot compile in the container
+- `03_bader_next.md` rewritten for the F5, F6, F7 and F8 proofs in one session
+
+### What remains
+
+- F22 next, then F23 once Q20 is answered, then F1 to F4 in one PR, then the rest of `01_next.md` in order
+- The F5, F6, F7 and F8 proofs on the local machine, then P1, P2, P3
+- Q20 from Bader
+
+### Known bugs
+
+- B1 fixed in code, pending local proof. Run one building twice, the second press must show OPENED, the sets present and the tests still run
+- B2 fixed in code, pending local proof. Open one NWF, press Run the open file, the reports must land in one Clash Reports folder beside the file, no folder inside a folder
+- B11 fixed in code, pending local proof. Open one NWF, press Run the open file, the log must end with a RESULT block for that file and a copy of the log must sit beside it
+- L1 fixed in code, pending local proof. Open one NWF that holds tests, pick no XML, press Run the open file, the tests must run and the Excel must be written. Then the same on the scanned run with no XML on a folder whose NWFs already hold tests
+- B12 OPEN, waiting on Q20
+- B3 to B10, L2 to L8, M1 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F8 PR
+2. Bader answers Q20 in `02_questions.md`
+3. Bader follows `03_bader_next.md` and drops the logs into `steps/logs`
+4. Worker reads the logs and records the four proofs in this file
+5. Worker starts F22 once Bader confirms the two workflow definitions in chat
+
+## 2026-09-06 F8, run the saved tests when no XML is picked
+
+### What was done
+
+- `steps/logs` still holds only its README. No run log yet, so B1, B2 and B11 stay pending local proof and nothing about them was recorded
+- B12 registered in `00_analysis.md`, OPEN, waiting on Bader. Q20 added to `02_questions.md` with the four unknowns. F23 added to `01_next.md` after F22
+- F8 fixed. With no XML, `ClashStep` returned before anything ran, on both the scanned run and the open file run, while the window logged that it was running the tests already in the document
+- The clash step now does one of three things and the log names which, in one line shape on both runs: `CLASH    source   tests from XML, ...`, `CLASH    source   tests saved in the document, N of them, no XML picked`, or `CLASH    source   nothing, no XML picked and the document holds no clash test, so nothing ran`. The rule is `ClashWork.SourceFor` in Core
+- A second way to build a `ClashTestPlan`, `ClashTestPlan.FromDocument`, in Core. Every saved test goes in by its address, in the order found. No drift compare, nothing created, sets not touched. `SavedClashTest` is the shape it takes, with no Navisworks type on it
+- The add-in fills it in `SavedTests.Read`, one walk of `DocumentClashTests` that disposes every wrapper and keeps only the address
+- `ClashRunner.Run` and `OneTest` take a document plan through the same path: `ItemsOn` both sides, the SingleModel and EmptySide skips, `TestsRunTest`, the harvest, the images, the report, the `RepeatedFailureGuard`. A document plan skips the set resolution and the zero sets guard, because its sides are already inside the tests
+- The XML path is unchanged. An XML holding neither sets nor tests is still nothing, whatever the document holds
+- The words fixed to match the log: CLAUDE.md in two places, the help line under Run the open file, the OPEN log line in the window, and the engine docstring
+- Eleven Core tests added in `SavedTestPlanTests`
+- Core tests under mono on Linux: 820 passed, 40 failed, 32 skipped, 892 total. The 40 are the same Windows path and file locking failures as before, none new
+- The add-in was not compiled. It cannot compile in the container
+- `03_bader_next.md` rewritten for the F5, F6, F7 and F8 proofs in one session
+
+### What remains
+
+- F22 next, which waits on Bader confirming the two workflow definitions in chat, then F23 once Q20 is answered, then F1 to F4 as one PR
+- The F5, F6, F7 and F8 proofs on the local machine, then P1, P2, P3
+
+### Known bugs
+
+- B1 fixed in code, pending local proof. Run one building twice, the second press must show OPENED, the sets present and the tests still run
+- B2 fixed in code, pending local proof. Open one NWF, press Run the open file, the reports must land in one Clash Reports folder beside the file, no folder inside a folder
+- B11 fixed in code, pending local proof. Open one NWF, press Run the open file, the log must end with a RESULT block for that file and a copy of the log must sit beside it
+- L1 fixed in code, pending local proof. Open one NWF that holds tests, pick no XML, press Run the open file, the tests must run and the Excel must be written. Then the scanned run with no XML on a folder whose NWFs already hold tests
+- B12 OPEN, waiting on Q20
+- B3 to B10, L2 to L8, M1 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F8 PR
+2. Bader answers Q20 and confirms the two workflow definitions for F22 in chat
+3. Bader follows `03_bader_next.md` and drops the logs into `steps/logs`
+4. Worker reads the logs and records the four proofs in this file
+5. Worker starts F22
+
 ## 2026-09-06 F7, the RESULT block and log copy for the open file run
 
 ### What was done

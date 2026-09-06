@@ -235,28 +235,45 @@ namespace Federator.Addin.Engine
                 DocumentSelectionSets sets = document.SelectionSets;
                 setsForLookup = sets;
                 Dictionary<string, SelectionSet> byPath = IndexSets(sets);
-                int expected = plan.DistinctLocators().Count;
+                ClashTestPlan resolved;
 
-                log.Line("CLASH    the document holds " + byPath.Count
-                    + (byPath.Count == 1 ? " set" : " sets") + " and the tests name "
-                    + expected + (expected == 1 ? " set" : " sets"));
-
-                // Every test carried into the plan but naming a set that is not here is
-                // moved out by name, before anything is created.
-                ClashTestPlan resolved = plan.ResolveAgainst(byPath.Keys);
-
-                // The guard. A document with no sets in it once took a whole run to say so
-                // 1830 times over. If there were tests that could have run and not one of
-                // them resolves a set, nothing here can clash, so it says so and stops
-                // rather than creating tests that can only report zero.
-                if (plan.Buildable.Count > 0 && resolved.Buildable.Count == 0)
+                if (plan.Source == ClashPlanSource.Document)
                 {
-                    string why = outcome.StopBecauseNoSetResolves(byPath.Count, expected);
-                    log.Line("CLASH    STOPPED  " + why);
-                    progress("Clash stopped. " + why);
-                    log.Line("CLASH    build the sets first, or pick a file whose tests name "
-                        + "the sets this document already holds");
-                    return outcome;
+                    // The tests came out of this document, so their sides are already
+                    // inside them. Nothing is resolved against the sets and nothing is
+                    // created, so the guard for a document whose sets resolve nothing does
+                    // not apply here. A side that finds nothing is still caught per test,
+                    // below, the same as a test from a file.
+                    log.Line("CLASH    the document holds " + byPath.Count
+                        + (byPath.Count == 1 ? " set" : " sets") + ", and the "
+                        + plan.Buildable.Count + " saved tests keep the sides they were saved with");
+                    resolved = plan;
+                }
+                else
+                {
+                    int expected = plan.DistinctLocators().Count;
+
+                    log.Line("CLASH    the document holds " + byPath.Count
+                        + (byPath.Count == 1 ? " set" : " sets") + " and the tests name "
+                        + expected + (expected == 1 ? " set" : " sets"));
+
+                    // Every test carried into the plan but naming a set that is not here is
+                    // moved out by name, before anything is created.
+                    resolved = plan.ResolveAgainst(byPath.Keys);
+
+                    // The guard. A document with no sets in it once took a whole run to say
+                    // so 1830 times over. If there were tests that could have run and not
+                    // one of them resolves a set, nothing here can clash, so it says so and
+                    // stops rather than creating tests that can only report zero.
+                    if (plan.Buildable.Count > 0 && resolved.Buildable.Count == 0)
+                    {
+                        string why = outcome.StopBecauseNoSetResolves(byPath.Count, expected);
+                        log.Line("CLASH    STOPPED  " + why);
+                        progress("Clash stopped. " + why);
+                        log.Line("CLASH    build the sets first, or pick a file whose tests name "
+                            + "the sets this document already holds");
+                        return outcome;
+                    }
                 }
 
                 foreach (SkippedClashTest test in resolved.Skipped)
@@ -472,7 +489,15 @@ namespace Federator.Addin.Engine
             {
                 TestAddress address;
 
-                if (present.TryGetValue(planned.Name, out address))
+                if (planned.IsFromDocument)
+                {
+                    // A test read out of the document, run where it was found. Its
+                    // results are its own and there is no file to compare it against, so
+                    // it is neither created nor checked for drift.
+                    address = TestAddress.At(planned.Address);
+                    outcome.AddAlreadyPresent(planned.Name);
+                }
+                else if (present.TryGetValue(planned.Name, out address))
                 {
                     // An OPENED group keeps its results, so a test already there is left
                     // exactly as it is. Rebuilding it would reset every clash to New and
