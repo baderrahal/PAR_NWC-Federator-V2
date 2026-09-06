@@ -207,72 +207,100 @@ namespace Federator.Addin.Engine
             outcome.NwdSize = -1;
             outcome.NwdRequested = republishNwd;
 
-            if (document == null)
-            {
-                outcome.AddError("There is no document open, so there is nothing to run.");
-                log.Line("OPEN     nothing is open");
-                return outcome;
-            }
-
-            if (!OpenDocumentJob.CanRun(open))
-            {
-                outcome.AddError(OpenDocumentJob.WhyNot(open));
-                log.Line("OPEN     " + OpenDocumentJob.WhyNot(open));
-                return outcome;
-            }
-
-            // The one rule for where the reports go, shared with the window's line. The
-            // open file's own folder stands where the NWF folder stands on a scanned run,
-            // and no scan folder is applied because there was no scan.
-            ReportFolderChoice where = OpenDocumentJob.ReportFolder(open, reports.ExcelFolder);
-            reportFolder = where.Folder;
-
-            log.Line("OPEN     running the document that is already open, no scan");
-            log.Line("OPEN     file     " + open);
-            log.Line("OPEN     NWD      " + job.NwdPath);
-            log.Line("OPEN     report   " + reportFolder
-                + (string.IsNullOrEmpty(reports.ExcelFolder)
-                    ? "  (beside the file, no Excel folder picked)"
-                    : "  (the Excel folder picked on the Outputs step)"));
+            // The open file is one group, and it starts and finishes the way a scanned
+            // group does, so GroupJudgement gives it DONE, PARTIAL or FAILED by the same
+            // rule and the RESULT block counts it. It used to end with no GROUP line at
+            // all, so the RESULT block that followed said no group had run.
+            Stopwatch groupClock = Stopwatch.StartNew();
+            log.GroupStarted(job.Building, FilesInsideTheOpenDocument(job.Building));
 
             try
             {
-                // Nothing is appended and nothing is cleared. The models in it are what
-                // somebody put there, and the clash history lives in the same file.
-                outcome.Decision = RerunDecision.Open;
-                outcome.AppendedCount = document.Models.Count;
-                outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
-                outcome.NwfOnDisk = outcome.NwfSize >= 0;
-
-                if (reports.SetDocumentUnits)
+                if (document == null)
                 {
-                    new DocumentUnits(log).Apply(document, WantedUnits());
+                    outcome.AddError("There is no document open, so there is nothing to run.");
+                    log.Line("OPEN     nothing is open");
+                    return outcome;
                 }
 
-                if (ClashStep(document, job, outcome))
+                if (!OpenDocumentJob.CanRun(open))
                 {
-                    SaveTheNwfAgain(document, job, outcome);
+                    outcome.AddError(OpenDocumentJob.WhyNot(open));
+                    log.Line("OPEN     " + OpenDocumentJob.WhyNot(open));
+                    return outcome;
                 }
 
-                WriteWorkbook(job, outcome);
-                WriteNwd(document, job, outcome);
-                ConfirmTheNwfSurvived(job, outcome);
+                // The one rule for where the reports go, shared with the window's line.
+                // The open file's own folder stands where the NWF folder stands on a
+                // scanned run, and no scan folder is applied because there was no scan.
+                ReportFolderChoice where = OpenDocumentJob.ReportFolder(open, reports.ExcelFolder);
+                reportFolder = where.Folder;
+
+                log.Line("OPEN     running the document that is already open, no scan");
+                log.Line("OPEN     file     " + open);
+                log.Line("OPEN     NWD      " + job.NwdPath);
+                log.Line("OPEN     report   " + reportFolder
+                    + (string.IsNullOrEmpty(reports.ExcelFolder)
+                        ? "  (beside the file, no Excel folder picked)"
+                        : "  (the Excel folder picked on the Outputs step)"));
+
+                try
+                {
+                    // Nothing is appended and nothing is cleared. The models in it are
+                    // what somebody put there, and the clash history lives in the same
+                    // file.
+                    outcome.Decision = RerunDecision.Open;
+                    outcome.AppendedCount = document.Models.Count;
+                    outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
+                    outcome.NwfOnDisk = outcome.NwfSize >= 0;
+
+                    if (reports.SetDocumentUnits)
+                    {
+                        new DocumentUnits(log).Apply(document, WantedUnits());
+                    }
+
+                    if (ClashStep(document, job, outcome))
+                    {
+                        SaveTheNwfAgain(document, job, outcome);
+                    }
+
+                    WriteWorkbook(job, outcome);
+                    WriteNwd(document, job, outcome);
+                    ConfirmTheNwfSurvived(job, outcome);
+                }
+                catch (Exception error)
+                {
+                    outcome.AddError(error.Message);
+                    log.Failure(
+                        "running the open document " + job.Building,
+                        error,
+                        "stopped, everything already written is kept");
+
+                    outcome.NwfSize = log.CheckOnDisk("NWF", job.NwfPath);
+                    outcome.NwdSize = log.CheckOnDisk("NWD", job.NwdPath);
+                    outcome.NwfOnDisk = outcome.NwfSize >= 0;
+                    outcome.NwdOnDisk = outcome.NwdSize >= 0;
+                }
+
+                return outcome;
             }
-            catch (Exception error)
+            finally
             {
-                outcome.AddError(error.Message);
-                log.Failure(
-                    "running the open document " + job.Building,
-                    error,
-                    "stopped, everything already written is kept");
+                groupClock.Stop();
+                log.GroupFinished(
+                    job.Building, outcome.Result, groupClock.Elapsed.TotalSeconds, outcome.Reason);
 
-                outcome.NwfSize = log.CheckOnDisk("NWF", job.NwfPath);
-                outcome.NwdSize = log.CheckOnDisk("NWD", job.NwdPath);
-                outcome.NwfOnDisk = outcome.NwfSize >= 0;
-                outcome.NwdOnDisk = outcome.NwdSize >= 0;
+                // The same fields the scanned run's RUN SETTINGS and GROUPS blocks carry,
+                // where they apply, written just before the window writes RESULT.
+                log.Block(OpenDocumentJob.SummaryTitle, OpenDocumentJob.SummaryLines(
+                    open,
+                    exchange == null ? null : exchange.SourcePath,
+                    job.NwdPath,
+                    reportFolder,
+                    outcome.Clash == null ? null : outcome.Clash.Summary(),
+                    outcome.Result,
+                    outcome.Reason));
             }
-
-            return outcome;
         }
 
         /// <summary>
