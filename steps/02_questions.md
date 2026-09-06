@@ -79,3 +79,12 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 19. Not in the first list. Which fixes go in.
 
    Answer: fix everything, in the order in `01_next.md`.
+
+20. B12, the NWD opened from ACC that showed an error beside the file. Four things are not known
+
+   - the exact text of the error
+   - where in the window it appeared
+   - the path of the file as Navisworks shows it
+   - whether Navisworks opens that file on its own with the add-in closed
+
+   Answer:

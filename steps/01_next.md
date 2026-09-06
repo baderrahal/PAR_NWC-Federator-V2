@@ -15,19 +15,20 @@ can be written here and only proved on the local machine.
 3. F7
 4. F8
 5. F22
-6. F1 to F4 as one PR
-7. F9
-8. F10
-9. F11
-10. F17
-11. F15
-12. F12
-13. F13
-14. F14
-15. F16
-16. F18
-17. F20
-18. F21
+6. F23, once Q20 is answered
+7. F1 to F4 as one PR
+8. F9
+9. F10
+10. F11
+11. F17
+12. F15
+13. F12
+14. F13
+15. F14
+16. F16
+17. F18
+18. F20
+19. F21
 
 F19 is dropped.
 
@@ -57,7 +58,7 @@ F19 is dropped.
 - Closes L1
 - Files `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`, `src/Federator.Core/Clash/ClashWork.cs`
 - CONTAINER for the Core side, LOCAL MACHINE ONLY to prove
-- Size: medium. `ClashStep` needs a branch with no exchange that runs every test already in the document, on both the scanned path and the open file path. `ClashRunner.Run` takes a plan built from the XML today, so it needs a plan built from the document. Q2 answered yes
+- Size: medium. Done in code on 2026-09-06, proof pending. See `log.md`
 
 ## F22 Two clear workflows in the window
 
@@ -69,6 +70,14 @@ F19 is dropped.
 - Weekly run: open the NWF already there, reload the NWCs, run the saved tests, write the reports and the NWD, XML optional
 - Before the confirm box, the person must be told which of the two will happen per group
 - Waits on Bader confirming the two workflow definitions in chat
+
+## F23 Fix B12, the NWD opened from ACC
+
+- Closes B12
+- Files UNKNOWN until Q20 is answered
+- LOCAL MACHINE ONLY to see, CONTAINER to read
+- Before the fix, read every code path that touches a file path and list in the PR every place the add-in refuses or fails on a path, so the ACC case can be matched when the details arrive
+- Waits on Q20
 
 ## F1 Fix the test name typo
 

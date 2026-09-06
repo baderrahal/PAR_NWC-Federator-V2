@@ -1402,8 +1402,9 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            // The clash file is OPTIONAL here. Without one, whatever tests are already in
-            // the document are run, which is the ordinary weekly case.
+            // The clash file is OPTIONAL here. Without one, the tests saved in the document
+            // are run where they sit, which is the ordinary weekly case, and a document
+            // holding none means nothing runs and the log says so.
             string path = Trimmed(ExchangeFileBox.Text);
             ExchangeDocument exchange = null;
 
@@ -1419,7 +1420,8 @@ namespace Federator.Addin.Ui
                 }
                 else
                 {
-                    log.Line("OPEN     no clash file picked, running the tests already in it");
+                    log.Line("OPEN     no XML picked, so the tests saved in the document run, "
+                        + "or nothing runs when it holds none");
                 }
 
                 ReportOptions options = ReportsWanted();

@@ -492,7 +492,7 @@
                                            Text="Nothing is open." />
                             </StackPanel>
                             <TextBlock Style="{StaticResource TickHelp}" Margin="0,6,0,0"
-                                       Text="The whole job on the file already open. No scan, no folder, no grouping." />
+                                       Text="No scan, no grouping. With no XML picked, the tests saved in the file run." />
                         </StackPanel>
                     </Border>
 

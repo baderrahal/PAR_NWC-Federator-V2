@@ -86,6 +86,19 @@ namespace Federator.Core.Clash
         }
     }
 
+    /// <summary>Where a plan's tests came from.</summary>
+    public enum ClashPlanSource
+    {
+        /// <summary>The picked exchange file. Tests are created where missing and run.</summary>
+        ExchangeFile,
+
+        /// <summary>
+        /// The tests already saved in the open document. Nothing is created, nothing is
+        /// compared against a file, and every test is run where it sits.
+        /// </summary>
+        Document
+    }
+
     /// <summary>One test that can be created, with its tolerance already in document units.</summary>
     public sealed class PlannedClashTest
     {
@@ -101,7 +114,26 @@ namespace Federator.Core.Clash
             PlannedClashSide left,
             PlannedClashSide right,
             int fileIndex)
+            : this(name, testType, testTypeName, toleranceInFileUnits, fileUnits, tolerance,
+                documentUnits, mergeComposites, left, right, fileIndex, null)
         {
+        }
+
+        internal PlannedClashTest(
+            string name,
+            ClashTestKind testType,
+            string testTypeName,
+            double toleranceInFileUnits,
+            string fileUnits,
+            double tolerance,
+            string documentUnits,
+            bool mergeComposites,
+            PlannedClashSide left,
+            PlannedClashSide right,
+            int fileIndex,
+            IList<int> address)
+        {
+            Address = address == null ? null : new ReadOnlyCollection<int>(new List<int>(address));
             FileIndex = fileIndex;
             Name = name;
             TestType = testType;
@@ -121,6 +153,20 @@ namespace Federator.Core.Clash
         /// them into, which would move a sheet number between runs.
         /// </summary>
         public int FileIndex { get; private set; }
+
+        /// <summary>
+        /// Where the test already sits in the document, as the path of child indexes from
+        /// the root of the tests tree. Null for a test planned from a file, which is
+        /// found by name or created. Set for a test planned from the document, which is
+        /// run where it is and never created or compared.
+        /// </summary>
+        public ReadOnlyCollection<int> Address { get; private set; }
+
+        /// <summary>True for a test read out of the document rather than out of a file.</summary>
+        public bool IsFromDocument
+        {
+            get { return Address != null; }
+        }
 
         public string Name { get; private set; }
 
@@ -233,7 +279,19 @@ namespace Federator.Core.Clash
             List<PlannedClashTest> buildable,
             List<SkippedClashTest> skipped,
             List<string> unknownTestTypes)
+            : this(ClashPlanSource.ExchangeFile, testsInFile, documentUnits, buildable, skipped, unknownTestTypes)
         {
+        }
+
+        private ClashTestPlan(
+            ClashPlanSource source,
+            int testsInFile,
+            string documentUnits,
+            List<PlannedClashTest> buildable,
+            List<SkippedClashTest> skipped,
+            List<string> unknownTestTypes)
+        {
+            Source = source;
             TestsInFile = testsInFile;
             DocumentUnits = documentUnits;
             this.buildable = buildable;
@@ -241,7 +299,13 @@ namespace Federator.Core.Clash
             this.unknownTestTypes = unknownTestTypes;
         }
 
-        /// <summary>How many clashtest elements the file held, before anything was decided.</summary>
+        /// <summary>The picked file, or the tests already saved in the document.</summary>
+        public ClashPlanSource Source { get; private set; }
+
+        /// <summary>
+        /// How many clashtest elements the file held, before anything was decided. For a
+        /// plan built from the document, how many tests the document holds.
+        /// </summary>
         public int TestsInFile { get; private set; }
 
         /// <summary>The units the open document is in, which every tolerance was converted into.</summary>
@@ -295,6 +359,77 @@ namespace Federator.Core.Clash
 
             return new ClashTestPlan(
                 exchange.Tests.Count, documentUnits, buildable, skipped, unknown);
+        }
+
+        /// <summary>
+        /// The second way to build a plan: from the tests already saved in the document,
+        /// for a run with no XML picked. Every saved test goes in, by its address, in the
+        /// order it was found. Nothing is created and nothing is compared, because there
+        /// is no file to create from or to drift from. The sets are not touched either.
+        ///
+        /// A test with no name is skipped by reason, because it could never be reported
+        /// on. A test type number that is not one on the enum is skipped by name, never
+        /// approximated, the same rule the file path keeps.
+        /// </summary>
+        public static ClashTestPlan FromDocument(IList<SavedClashTest> saved, string documentUnits)
+        {
+            if (saved == null)
+            {
+                throw new ArgumentNullException("saved");
+            }
+
+            List<PlannedClashTest> buildable = new List<PlannedClashTest>();
+            List<SkippedClashTest> skipped = new List<SkippedClashTest>();
+            List<string> unknown = new List<string>();
+            HashSet<string> seenUnknown = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            for (int i = 0; i < saved.Count; i++)
+            {
+                SavedClashTest test = saved[i];
+
+                if (string.IsNullOrEmpty(test.Name))
+                {
+                    skipped.Add(new SkippedClashTest(
+                        "UNKNOWN", ClashSkipReason.NoName, "the saved test carries no name", i));
+                    continue;
+                }
+
+                if (!Enum.IsDefined(typeof(ClashTestKind), test.TestTypeNumber))
+                {
+                    string named = "type number " + test.TestTypeNumber.ToString(CultureInfo.InvariantCulture);
+
+                    if (seenUnknown.Add(named))
+                    {
+                        unknown.Add(named);
+                    }
+
+                    skipped.Add(new SkippedClashTest(
+                        test.Name,
+                        ClashSkipReason.UnknownTestType,
+                        "the saved test has " + named + ", which is not one this tool runs",
+                        i));
+                    continue;
+                }
+
+                ClashTestKind kind = (ClashTestKind)test.TestTypeNumber;
+
+                buildable.Add(new PlannedClashTest(
+                    test.Name,
+                    kind,
+                    kind.ToString(),
+                    test.Tolerance,
+                    documentUnits,
+                    test.Tolerance,
+                    documentUnits,
+                    test.MergeComposites,
+                    new PlannedClashSide(test.LeftSelfIntersect, test.LeftPrimitiveTypes, test.LeftLocator),
+                    new PlannedClashSide(test.RightSelfIntersect, test.RightPrimitiveTypes, test.RightLocator),
+                    i,
+                    test.Address));
+            }
+
+            return new ClashTestPlan(
+                ClashPlanSource.Document, saved.Count, documentUnits, buildable, skipped, unknown);
         }
 
         private static void Plan(
@@ -472,7 +607,7 @@ namespace Federator.Core.Clash
             }
 
             return new ClashTestPlan(
-                TestsInFile, DocumentUnits, stillBuildable, nowSkipped, unknownTestTypes);
+                Source, TestsInFile, DocumentUnits, stillBuildable, nowSkipped, unknownTestTypes);
         }
 
         private static string Unresolved(bool leftKnown, bool rightKnown, PlannedClashTest test)

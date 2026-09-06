@@ -1,7 +1,7 @@
 # 03 Bader next
 
 One action per step. Do them in order.
-Three proofs are waiting: F5, F6 and F7. One build, one install and one Navisworks session cover all three.
+Four proofs are waiting: F5, F6, F7 and F8. One build, one install and one Navisworks session cover all four.
 
 ## Get the code
 
@@ -72,13 +72,27 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 38. Look for: a RESULT block at the end with groups done, partial and failed
 39. Look for: the RESULT block counts one group, not zero
 
+## Proof F8, the saved tests run with no XML
+
+40. In step 28 the XML box was empty, so the press in step 29 was already this proof. Open the same log from step 35
+41. Look for: a line `CLASH    source   tests saved in the document, N of them, no XML picked`, where N is the test count
+42. Look for: CLASH lines showing tests run, with clash counts, after that line
+43. Look for: the workbook in the Clash Reports folder has today's time on it
+44. Now the scanned run with no XML. Open the add-in, pick the NWC folder, press Scan
+45. Tick the same building as before, the one whose NWF now holds the tests
+46. Pick the same NWF and NWD folders. Leave the clash XML box empty
+47. Press Run and wait for it to finish
+48. Look for: the group says OPENED
+49. Look for: the same `CLASH    source   tests saved in the document` line, then tests running
+50. Look for: a fresh workbook beside the NWF folder in Clash Reports
+
 ## Send the logs
 
-40. Open the folder `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
-41. Copy the three newest `run-*.log` files
-42. Paste them into `steps\logs` in the repo folder
-43. Rename each with the date, the building and the press, like `2026-09-08-1C07BC-first.log`, `2026-09-08-1C07BC-second.log` and `2026-09-08-1C07BC-openfile.log`
-44. Open GitHub Desktop
-45. Write a summary like `logs from 1C07BC, F5 F6 F7 proofs`
-46. Press Commit to main
-47. Press Push origin
+51. Open the folder `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
+52. Copy the four newest `run-*.log` files
+53. Paste them into `steps\logs` in the repo folder
+54. Rename each with the date, the building and the press, like `2026-09-08-1C07BC-first.log`, `2026-09-08-1C07BC-second.log`, `2026-09-08-1C07BC-openfile.log` and `2026-09-08-1C07BC-noxml.log`
+55. Open GitHub Desktop
+56. Write a summary like `logs from 1C07BC, F5 F6 F7 F8 proofs`
+57. Press Commit to main
+58. Press Push origin
