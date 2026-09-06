@@ -212,5 +212,55 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Not.Contain("sets that failed"));
             Assert.That(all, Does.Not.Contain("sets skipped"));
         }
+
+        /// <summary>
+        /// B1. The second NWF save is decided by whether the build put anything into the
+        /// document. Sets already there were left alone, so they do not count against
+        /// the ones created. A rerun that finds sixty present and creates one still put
+        /// one in, and the engine once said it had built nothing in exactly that case.
+        /// </summary>
+        [Test]
+        public void OneCreatedAmongManyAlreadyPresentStillPutSomethingIn()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddCreated("lcop_selection_set_tree/A/New", "New", 1, 3);
+
+            for (int i = 0; i < 60; i++)
+            {
+                outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Old" + i);
+            }
+
+            Assert.That(outcome.CreatedCount, Is.EqualTo(1));
+            Assert.That(outcome.AlreadyPresentCount, Is.EqualTo(60));
+            Assert.That(outcome.PutAnythingIn, Is.True);
+        }
+
+        [Test]
+        public void EverySetAlreadyPresentPutNothingIn()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/One");
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Two");
+
+            Assert.That(outcome.PutAnythingIn, Is.False);
+        }
+
+        [Test]
+        public void AFailedSetPutNothingIn()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddFailed("lcop_selection_set_tree/A/One", "One", 1, "threw");
+
+            Assert.That(outcome.PutAnythingIn, Is.False);
+        }
+
+        [Test]
+        public void ASetCreatedAtZeroItemsStillPutSomethingIn()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddCreated("lcop_selection_set_tree/A/One", "One", 1, 0);
+
+            Assert.That(outcome.PutAnythingIn, Is.True);
+        }
     }
 }
