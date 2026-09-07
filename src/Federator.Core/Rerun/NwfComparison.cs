@@ -276,6 +276,32 @@ namespace Federator.Core.Rerun
             return lines;
         }
 
+        /// <summary>
+        /// The one line a CHANGED group leaves in the log when the run skips it, naming the
+        /// group, why, what differs, and what was not done. One line so the reason and the
+        /// difference cannot drift apart from each other.
+        /// </summary>
+        public string SkipLine(string building)
+        {
+            List<string> differences = new List<string>();
+
+            foreach (string file in Added)
+            {
+                differences.Add("added " + System.IO.Path.GetFileName(file));
+            }
+
+            foreach (string file in Removed)
+            {
+                differences.Add("removed " + System.IO.Path.GetFileName(file));
+            }
+
+            return "GROUP    " + (string.IsNullOrEmpty(building) ? "UNKNOWN" : building)
+                + " skipped, the NWF on disk no longer matches the folder: "
+                + Added.Count + " added, " + Removed.Count + " removed"
+                + (differences.Count == 0 ? string.Empty : " (" + string.Join(", ", differences.ToArray()) + ")")
+                + ". Nothing was done to it: no units change, no sets, no tests, no save, no NWD. Bader decides";
+        }
+
         private static string Word(int count, string one, string many)
         {
             return count == 1 ? one : many;

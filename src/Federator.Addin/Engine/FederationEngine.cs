@@ -362,6 +362,25 @@ namespace Federator.Addin.Engine
                     log.Line(line);
                 }
 
+                if (comparison.Decision == RerunDecision.Changed)
+                {
+                    // Left alone entirely, and BEFORE anything touches the document in
+                    // memory. It used to fall through to the units change, the clash
+                    // step, the NWD publish and the survival check, so a group nobody
+                    // was going to run still had every model's units set, logged a UNITS
+                    // line, and published an NWD off a federation that no longer matched
+                    // the folder. Reading the file list is the one thing that happened
+                    // before this, and that is a read. Bader decides what to do with it.
+                    outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
+                    outcome.NwfOnDisk = outcome.NwfSize >= 0;
+                    outcome.NwdSize = SizeOnDiskOrMinusOne(job.NwdPath);
+                    outcome.NwdOnDisk = outcome.NwdSize >= 0;
+                    outcome.AppendedCount = comparison.InNwf.Count;
+                    log.Line(comparison.SkipLine(job.Building));
+                    progress(job.Building + " skipped, the NWF on disk no longer matches the folder");
+                    return outcome;
+                }
+
                 if (comparison.Decision == RerunDecision.Build)
                 {
                     if (!BuildFromScratch(document, job, outcome))
@@ -371,10 +390,9 @@ namespace Federator.Addin.Engine
                 }
                 else
                 {
-                    // The NWF is already open, because reading its file list is what
-                    // opened it. It is not cleared and nothing is re-appended, so the
-                    // clash results inside it survive. A CHANGED group is left alone
-                    // entirely and the decision goes to Bader.
+                    // OPENED. The NWF is already open, because reading its file list is
+                    // what opened it. It is not cleared and nothing is re-appended, so the
+                    // clash results inside it survive.
                     outcome.AppendedCount = comparison.InNwf.Count;
 
                     // Verified, not recorded as written. This run did not write it, and

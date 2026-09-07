@@ -132,6 +132,16 @@ namespace Federator.Core.Rerun
                 return GroupOutcome.Failed;
             }
 
+            // PARTIAL, judged before the NWD checks. A CHANGED group is left alone
+            // entirely, and since F9 that includes its NWD, so a missing or stale NWD is
+            // what was asked for and not a failure. Only a missing NWF, above, or an error
+            // can make it FAILED.
+            if (facts.Decision == RerunDecision.Changed)
+            {
+                reason = "the NWF points at a different set of files, so it was left alone";
+                return GroupOutcome.Partial;
+            }
+
             if (facts.Decision == RerunDecision.Build && facts.AppendedCount == 0)
             {
                 reason = "nothing appended, so the group produced nothing";
@@ -154,13 +164,7 @@ namespace Federator.Core.Rerun
                 return GroupOutcome.Failed;
             }
 
-            // PARTIAL. Something requested did not complete, or the group was left alone.
-            if (facts.Decision == RerunDecision.Changed)
-            {
-                reason = "the NWF points at a different set of files, so it was left alone";
-                return GroupOutcome.Partial;
-            }
-
+            // PARTIAL. Something requested did not complete.
             if (facts.FailedFileCount > 0)
             {
                 reason = facts.FailedFileCount + " of " + facts.FileCount + " files did not append";

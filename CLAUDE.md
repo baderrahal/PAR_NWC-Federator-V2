@@ -236,7 +236,7 @@ and 6 does not read as broken.
   the Clash step are for trying one open model by hand and are labelled as that. They
   are not steps in the run. Splitting one job across three presses is what let a user
   run clash against a document with no sets in it
-- Republishing the NWD happens in all three cases, and it is no longer a tick box. It was
+- Republishing the NWD happens in the Build and Open cases, and it is no longer a tick box. It was
   one, on by default, and a weekly run wanted it every time, so it is fixed on. That is the
   point of a rerun. The NWF pointers are unchanged, so reopening picks up whatever the NWC
   files now hold and the NWD is refreshed without the clash history being touched
@@ -255,8 +255,13 @@ and 6 does not read as broken.
   clashes live, and a set already at its path is left alone too, because a second copy
   would leave two sets at one path and a locator resolving to whichever came first.
   Both are counted and reported as already there, separately from what was created
-- A CHANGED group is left alone entirely, so no set is built into it and no test
-  created, the same as its NWF not being touched
+- A CHANGED group is left alone entirely, and the check comes BEFORE anything touches
+  the document in memory: no units change, no set, no test, no save, no NWD, and its
+  judgement is PARTIAL whatever its NWD looks like. It used to fall through to the units
+  change and the NWD publish, so every model had its units set and an NWD was published
+  off a federation that no longer matched the folder. One GROUP line names the group,
+  the files added and removed, and that nothing was done. The line lives in
+  Federator.Core.Rerun.NwfComparison.SkipLine so it can be tested. Bader decides
 - A test already in the document is left as it is, which means a tolerance changed in the
   XML never reaches it. That is right and it was silent, so now it is REPORTED. Every
   test in both is compared on the tolerance, the test type, merge composites, and per
