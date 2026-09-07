@@ -49,7 +49,7 @@ foreach ($n in @("NwfLevel","NwfDiscipline","NwfType","NwfNumber","NwfAllBuildin
 Write-Output ""
 Write-Output "==== the tick boxes, their text and their state ===="
 foreach ($n in @("RepublishNwd","WriteClashXml","DateTheNwd","WriteImages","EmbedThumbnails",
-                 "ClientColumnsOnly","ApplyFileSettings","CompactResolved","IncludeSubfolders")) {
+                 "ApplyFileSettings","CompactResolved","IncludeSubfolders")) {
   $b = Box $n
   if ($null -eq $b) { Write-Output ("  {0,-20} NOT FOUND" -f $n); continue }
   Write-Output ("  {0,-20} checked={1,-6} {2}" -f $n, $b.IsChecked, $b.Content)

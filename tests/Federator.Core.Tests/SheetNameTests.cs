@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Federator.Core.Report;
 using NUnit.Framework;
 
@@ -7,82 +5,24 @@ namespace Federator.Core.Tests
 {
     /// <summary>
     /// Excel stops a sheet name at 31 characters, and 1703 of the 1830 test names in the
-    /// reference file are longer than that, which is why a sheet is never named after its
-    /// test.
+    /// reference file are longer than that, which is why a sheet is never named after a
+    /// test. The one sheet is named after the report.
     /// </summary>
     [TestFixture]
     public class SheetNameTests
     {
+        // The limit. The one sheet is named after the report and cut at 31, the way
+        // the client's own export is.
         [Test]
-        public void TheFirstTestIsTZeroZeroZeroOne()
-        {
-            Assert.That(SheetNames.ForTest(1), Is.EqualTo("T0001"));
-        }
-
-        [Test]
-        public void ThePaddingKeepsThemInOrder()
-        {
-            Assert.That(SheetNames.ForTest(9), Is.EqualTo("T0009"));
-            Assert.That(SheetNames.ForTest(10), Is.EqualTo("T0010"));
-            Assert.That(SheetNames.ForTest(99), Is.EqualTo("T0099"));
-        }
-
-        // The one the brief asks for by name.
-        [Test]
-        public void NamingCarriesOnPastAThousandTests()
-        {
-            Assert.That(SheetNames.ForTest(999), Is.EqualTo("T0999"));
-            Assert.That(SheetNames.ForTest(1000), Is.EqualTo("T1000"));
-            Assert.That(SheetNames.ForTest(1001), Is.EqualTo("T1001"));
-            Assert.That(SheetNames.ForTest(1830), Is.EqualTo("T1830"));
-        }
-
-        [Test]
-        public void PastTenThousandItGrowsRatherThanWrapping()
-        {
-            Assert.That(SheetNames.ForTest(10000), Is.EqualTo("T10000"));
-            Assert.That(SheetNames.ForTest(123456), Is.EqualTo("T123456"));
-        }
-
-        [Test]
-        public void EveryNameIsUniqueAcrossTheWholeReferenceFile()
-        {
-            HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            for (int i = 1; i <= 1830; i++)
-            {
-                Assert.That(seen.Add(SheetNames.ForTest(i)), Is.True,
-                    "two tests were given the same sheet name at " + i);
-            }
-        }
-
-        // The limit, checked over a range far past anything real.
-        [Test]
-        public void NoGeneratedNameEverExceedsThirtyOneCharacters()
+        public void TheOneSheetNameNeverExceedsThirtyOneCharacters()
         {
             Assert.That(SheetNames.MaxLength, Is.EqualTo(31));
 
-            foreach (int number in new[] { 1, 9, 10, 999, 1000, 1830, 9999, 10000, 1000000 })
-            {
-                string name = SheetNames.ForTest(number);
+            string name = SheetNames.ForReport("1104-PAR-1A04WN-XXX-BM-RPT-000001");
 
-                Assert.That(name.Length, Is.LessThanOrEqualTo(SheetNames.MaxLength), name);
-                Assert.That(SheetNames.IsAcceptable(name), Is.True, name);
-            }
-        }
-
-        [Test]
-        public void TheSummaryAndMatrixNamesAreAcceptableToo()
-        {
-            Assert.That(SheetNames.IsAcceptable(SheetNames.SummarySheet), Is.True);
-            Assert.That(SheetNames.IsAcceptable(SheetNames.MatrixSheet), Is.True);
-        }
-
-        [Test]
-        public void ATestNumberBelowOneIsRefusedRatherThanNamed()
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(delegate { SheetNames.ForTest(0); });
-            Assert.Throws<ArgumentOutOfRangeException>(delegate { SheetNames.ForTest(-1); });
+            Assert.That(name, Is.EqualTo("1104-PAR-1A04WN-XXX-BM-RPT-0000"));
+            Assert.That(name.Length, Is.EqualTo(SheetNames.MaxLength));
+            Assert.That(SheetNames.IsAcceptable(name), Is.True);
         }
 
         // ---------- what Excel refuses ----------
@@ -148,15 +88,15 @@ namespace Federator.Core.Tests
             Assert.That(SheetNames.IsAcceptable(tidied), Is.True);
         }
 
-        // A real name off the reference file, which is exactly why sheets are numbered.
+        // A real name off the reference file, which is exactly why no sheet is named
+        // after a test.
         [Test]
-        public void ARealTestNameIsTooLongForASheetWhichIsWhyTheyAreNumbered()
+        public void ARealTestNameIsTooLongForASheetWhichIsWhyNoSheetIsNamedAfterOne()
         {
             string real = "BLD-ME-Air Terminals v BLD-AR-Floors and Ceilings";
 
             Assert.That(real.Length, Is.GreaterThan(SheetNames.MaxLength));
             Assert.That(SheetNames.IsAcceptable(real), Is.False);
-            Assert.That(SheetNames.IsAcceptable(SheetNames.ForTest(1)), Is.True);
         }
     }
 }

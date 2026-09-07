@@ -119,9 +119,8 @@ F19 is dropped.
 ## F11 Remove the dead code
 
 - Closes B9
-- Files `src/Federator.Core/Report/ReportOptions.cs`, `SheetNames.cs`, `ClashMatrix.cs`, `ClashReportModel.cs`, their tests, `docs/scan.md` 4q
-- CONTAINER
-- Size: medium, a delete across six files and a test run. Q4 answered yes
+- Files `src/Federator.Core/Report/ReportOptions.cs`, `SheetNames.cs`, `ClashMatrix.cs`, `ClashReportModel.cs`, `src/Federator.Core/Clash/OpenClashes.cs`, their tests, CLAUDE.md, `docs/test-model-side.md`
+- DONE on 2026-09-07. The local proof is only that the add-in builds. Q4 answered yes
 
 ## F17 Picture numbering by block order
 

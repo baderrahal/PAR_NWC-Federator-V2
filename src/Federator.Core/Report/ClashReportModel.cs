@@ -418,11 +418,6 @@ namespace Federator.Core.Report
             get { return rows.Count > 0; }
         }
 
-        public string SheetName()
-        {
-            return SheetNames.ForTest(Number);
-        }
-
         /// <summary>What the Summary says in its outcome column.</summary>
         public string DescribeState()
         {
@@ -440,7 +435,7 @@ namespace Federator.Core.Report
 
         public override string ToString()
         {
-            return SheetName() + "  " + Name;
+            return Number + "  " + Name;
         }
     }
 

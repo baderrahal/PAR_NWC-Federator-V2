@@ -7,11 +7,11 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// What the matrix counts as still outstanding.
+    /// What counts as still outstanding.
     ///
     /// The clash API has no open against closed notion at all, see docs\scan.md section
-    /// 4h, so neither choice is read off it. Both are stated rules, and the sheet says
-    /// which one it used so nobody reads an API meaning into a number that has none.
+    /// 4h, so neither choice is read off it. Both are stated rules, picked in the window
+    /// and written to the log, so nobody reads an API meaning into a number that has none.
     /// </summary>
     [TestFixture]
     public class OpenClashesTests
@@ -77,7 +77,7 @@ namespace Federator.Core.Tests
             }
         }
 
-        // ---------- it changes the matrix ----------
+        // ---------- a report to count over ----------
 
         private static ClashReport Report(OpenClashCount which)
         {
@@ -111,72 +111,13 @@ namespace Federator.Core.Tests
             return 2;
         }
 
-        // The one the brief asks for by name.
-        [Test]
-        public void TheSettingChangesWhatTheMatrixCellHolds()
-        {
-            MatrixCell newAndActive = ClashMatrix
-                .From(Report(OpenClashCount.NewAndActive)).At(Floors, Ducts);
-
-            MatrixCell navisworksOpen = ClashMatrix
-                .From(Report(OpenClashCount.NavisworksOpen)).At(Floors, Ducts);
-
-            Assert.That(newAndActive.Text(), Is.EqualTo("15"));
-            Assert.That(navisworksOpen.Text(), Is.EqualTo("18"),
-                "the setting did not reach the matrix");
-            Assert.That(navisworksOpen.NewPlusActive - newAndActive.NewPlusActive, Is.EqualTo(3),
-                "the difference is exactly the Reviewed clashes");
-        }
-
-        [Test]
-        public void TheMatrixSaysWhichOneItUsed()
-        {
-            Assert.That(ClashMatrix.From(Report(OpenClashCount.NavisworksOpen)).OpenCount,
-                Is.EqualTo(OpenClashCount.NavisworksOpen));
-            Assert.That(ClashMatrix.From(Report(OpenClashCount.NewAndActive)).OpenCount,
-                Is.EqualTo(OpenClashCount.NewAndActive));
-        }
-
-        [Test]
-        public void ASkippedPairStillSaysSkippedUnderBoth()
-        {
-            foreach (OpenClashCount which in OpenClashes.All())
-            {
-                ClashReport report = new ClashReport("b", "n");
-                report.OpenCount = which;
-
-                TestReport test = report.AddTest("skipped");
-                test.LeftLocator = Floors;
-                test.RightLocator = Ducts;
-                test.State = TestState.Skipped;
-
-                Assert.That(ClashMatrix.From(report).At(Floors, Ducts).Text(),
-                    Is.EqualTo("skipped"), which.ToString());
-            }
-        }
-
-        // ---------- the sheet is labelled with which one ----------
+        // ---------- the window names each choice ----------
 
         [Test]
         public void EachChoiceHasItsOwnWordsAndTheyAreDifferent()
         {
             Assert.That(OpenClashes.Describe(OpenClashCount.NewAndActive),
                 Is.Not.EqualTo(OpenClashes.Describe(OpenClashCount.NavisworksOpen)));
-            Assert.That(OpenClashes.Heading(OpenClashCount.NavisworksOpen),
-                Does.Contain("Reviewed"));
-            Assert.That(OpenClashes.Heading(OpenClashCount.NewAndActive),
-                Does.Not.Contain("Reviewed"));
-        }
-
-        [Test]
-        public void TheLabelSaysWhatIsCountedAndWhatIsNot()
-        {
-            Assert.That(OpenClashes.SheetLabel(OpenClashCount.NavisworksOpen),
-                Does.Contain("Navisworks' own definition of open"));
-            Assert.That(OpenClashes.SheetLabel(OpenClashCount.NavisworksOpen),
-                Does.Contain("Approved and Resolved counted as closed"));
-            Assert.That(OpenClashes.SheetLabel(OpenClashCount.NewAndActive),
-                Does.Contain("Reviewed is NOT counted here"));
         }
 
         [Test]

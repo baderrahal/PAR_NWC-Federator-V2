@@ -183,7 +183,7 @@ and 6 does not read as broken.
 - A locator that does not resolve to a set: report the test by name, skip it.
   Never import a test with an empty side. It returns zero clashes and reads as passed
 - A test where either side resolves to zero items in this model counts as skipped,
-  not passed. Skipped and passed appear as different numbers in the Summary sheet
+  not passed. Skipped and passed are counted as different numbers in the report
 - Each building writes its NWF, NWD and Excel before the next building starts.
   A failure part way through keeps everything already written
 - Never clear and rebuild an NWF that already exists. This is the one rule most
@@ -513,15 +513,16 @@ and 6 does not read as broken.
 - The clash API has no open against closed notion. Nothing on IClashResult, ClashResult,
   ClashResultGroup, ClashTest or DocumentClashTests names one, ClashResultStatus is a flat
   five value enum, and Navisworks' own report does not mention open or closed either. So
-  every status is reported as itself, and where the matrix needs one number for what is
+  every status is reported as itself, and where one number is needed for what is
   outstanding, WHICH statuses that number holds is a setting with two choices and never
   a constant, because neither answer is readable off the API and both are stated rules:
     Navisworks open  New, Active and Reviewed. The default, because it is the product's
                      own definition and the number then agrees with the panel
     New plus Active  the two only, for a project that treats Reviewed as dealt with
-  Approved and Resolved are closed under both. The sheet is labelled with which one it
-  used and with what that choice counted, so nobody reads an API meaning into a number
-  that has none. The word open never appears unqualified
+  Approved and Resolved are closed under both. The choice is written to the log, so
+  nobody reads an API meaning into a number that has none. The word open never appears
+  unqualified. Since the Summary and Matrix sheets went, no output shows that number,
+  and the setting is kept because the window and the report options still carry it
 - The test sheet carries the CLIENT'S columns, in their order and in their words, because
   they have already accepted a report in that shape. Per test:
     Tolerance, Clashes, New, Active, Reviewed, Approved, Resolved, Type, Status
@@ -575,19 +576,9 @@ and 6 does not read as broken.
   jump to a sheet of that name instead of opening the picture. There is a test that opens
   the written xlsx as the zip it is and reads the relationship back, because the object
   model reported this as fine while the file was wrong
-- One sheet per test that found something. A test that found nothing gets no sheet and
-  appears in the Summary as its status. Sheets are T0001 upward because Excel stops a
-  sheet name at 31 characters and 1703 of the 1830 test names are longer, so a sheet is
-  never named after its test and the full name lives in the Summary
-- The Summary carries one row per test in the file, not one per test that ran. Skipped,
-  passed and found are three numbers and are never merged. On 1C07BC that is 1164 skipped,
-  618 passed and 48 with clashes, and those add to 1830
-- The matrix cell holds whatever the open count setting says. A skipped pair reads
-  "skipped" and never "0",
-  because a zero says the pair was tested and nothing clashed, and a skip says nobody
-  looked. A pair no test covers is blank, which is a third thing again. The discipline
-  grouping is read from the set folder names in the picked file, never from a list in the
-  code
+- The report still counts skipped, passed and found as three numbers that are never
+  merged. On 1C07BC that is 1164 skipped, 618 passed and 48 with clashes, and those add
+  to 1830. A skipped test says so and never reads as passed
 - The client's report is HTML (Tabular), not a workbook. Clash Detective cannot export an
   xlsx at all, so what they accepted is a page exported from Clash Detective and opened in
   Excel. That is why the sample declares 53 columns with 17 populated, carries merged cells
