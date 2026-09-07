@@ -912,7 +912,9 @@ namespace Federator.Addin.Ui
         /// </summary>
         /// <summary>
         /// The units every number in the report is in. Metres by default, because this is
-        /// a Saudi project and every report the team sends is metric.
+        /// a Saudi project and every report the team sends is metric. Since F26 this sets
+        /// what the MODELS are put into, which is what a person sees in Navisworks. The
+        /// report itself is always metres, converted in Core before anything is written.
         /// </summary>
         private static readonly string[] UnitChoices =
         {
@@ -935,7 +937,7 @@ namespace Federator.Addin.Ui
         {
             switch (name)
             {
-                case "Meters": return "Metres, which is what the client receives";
+                case "Meters": return "Metres, which is what the models are set to";
                 case "Millimeters": return "Millimetres";
                 case "Centimeters": return "Centimetres";
                 case "Feet": return "Feet";
@@ -1267,7 +1269,9 @@ namespace Federator.Addin.Ui
                     ? "dated, so every week is kept"
                     : "overwrites, so only the latest week exists"));
             log.Line("republish NWD    : yes, fixed");
-            log.Line("report units     : " + ChosenUnits());
+            log.Line("model units      : " + ChosenUnits() + ", which is what the models are set to");
+            log.Line("report units     : " + Federator.Core.Report.ReportUnits.Name
+                + ", always, converted before anything is written");
             log.Block(RunLog.GroupsSectionTitle, GroupListLines());
             log.Block(RunLog.FindingsSectionTitle, findings.Lines());
 

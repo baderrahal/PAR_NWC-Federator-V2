@@ -1465,7 +1465,27 @@ namespace Federator.Addin.Engine
                 return;
             }
 
+            // METERS, always. F26, Q23. Every number came out of the document in the
+            // document's units, and this converts the whole report once, before the
+            // workbook, the page and the XML are written, so all three read the same
+            // converted numbers and the same label. A unit the table has not been taught
+            // fails the group rather than writing a report in the wrong unit.
+            ReportUnitsOutcome units = ReportUnits.ToMeters(report);
+            log.Line(units.Line());
+
+            if (units.Refused)
+            {
+                outcome.AddError(
+                    "the report was not written because its numbers could not be converted to "
+                    + ReportUnits.Name + ": " + units.Problem);
+                log.WriteSkipped("XLSX", "the numbers are not in " + ReportUnits.Name);
+                log.WriteSkipped("HTML", "the numbers are not in " + ReportUnits.Name);
+                log.WriteSkipped("XML", "the numbers are not in " + ReportUnits.Name);
+                return;
+            }
+
             if (!outputs.WriteWorkbook)
+
             {
                 log.WriteSkipped("XLSX", OutputPlan.NotWanted);
             }

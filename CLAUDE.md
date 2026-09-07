@@ -748,19 +748,33 @@ and 6 does not read as broken.
   seconds, how many, and how many megabytes. Every number anyone has given for this,
   including mine, was a guess until this existed. The same figures go on the Summary
   sheet, because the log is not what gets sent on
-- The report goes out in ONE unit and it is the document's. Never convert a number
-  ourselves to look metric while the document is in feet, because the tolerance, the
-  distances and the coordinates all come out of the document in the document's units and a
-  report whose numbers and whose unit label disagree is a report that lies. What the tool
-  does instead is put the document into the units first. Measured on 2026-09-01 across all
-  4027 types: Document.Units is read only, Model.Units is read only, and the only public
-  managed member that sets units at all is
+- The report goes out in METERS, always, whatever the document measures in. Q23. It used
+  to go out in the document's units, with the rule that converting a number ourselves
+  while the document read feet would make the numbers and the label disagree. The run of
+  2026-09-07 settled it the other way: 11 of 14 groups set every model to meters, the
+  document still reported feet, and the report went out in feet with the tolerance at
+  0.246ft. So the conversion is done, once, in one pass over the FINISHED report, in
+  Federator.Core.Report.ReportUnits, before the workbook, the page or the XML is written.
+  All three read the same converted report, and the same pass writes the unit label, so a
+  number and its label still cannot disagree. What is converted is the tolerance of every
+  test and the distance and the clash point of every row, and nothing else, because a grid
+  location is text and a raw count is a count. The factors are ExchangeUnits, the one
+  conversion table in this repo, and a unit it has not been taught is REFUSED: nothing is
+  written and the group FAILS, because a report in the wrong unit reads as real and is not
+- Setting the models is still done, BEFORE the clash step, and it is kept because it fixes
+  what the person sees in Navisworks. Measured on 2026-09-01 across all 4027 types:
+  Document.Units is read only, Model.Units is read only, and the only public managed member
+  that sets units at all is
   DocumentModels.SetModelUnitsAndTransform(Model, Units, Transform3D, bool). So each MODEL
-  can be set and the DOCUMENT cannot, and whether Document.Units then follows is UNKNOWN
-  until a run. Every model is set, the document is read before and after, and where it did
-  not follow the log says so plainly rather than claiming the change worked. It runs BEFORE
-  the clash step. The units are a combo on the Outputs step defaulting to Meters, because
-  this is a Saudi project and every report the team sends is metric
+  can be set and the DOCUMENT cannot. Whether Document.Units follows is UNKNOWN and no
+  longer matters, because it no longer decides the report. What Document.Units actually
+  reports is UNKNOWN too: setting a model writes a per file override, the same one the
+  Units and Transform dialog shows, while what the scene is measured and displayed in is
+  an application option, Options, Interface, Display Units, which Autodesk documents as
+  what tolerances for clash detection are set in. Whether Document.Units reads that option
+  is not readable off the DLL, so it is not claimed. The words DID NOT FOLLOW are gone from
+  the log. The combo on the Outputs step is MODEL units, defaulting to Meters, and its help
+  line says the report is always in metres
 - A federation that already exists needs NO SCAN. In Navisworks a person opens a file,
   opens Clash Detective, presses Run and reads the results, and nothing asks them where
   their models came from. So there are two ways to run and they are told apart by what they
