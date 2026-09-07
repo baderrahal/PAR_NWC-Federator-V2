@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Autodesk.Navisworks.Api;
+using Autodesk.Navisworks.Api.Clash;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
@@ -364,24 +365,18 @@ namespace Federator.Addin.Engine
 
                 if (comparison.Decision == RerunDecision.Changed)
                 {
-                    // Left alone entirely, and BEFORE anything touches the document in
-                    // memory. It used to fall through to the units change, the clash
-                    // step, the NWD publish and the survival check, so a group nobody
-                    // was going to run still had every model's units set, logged a UNITS
-                    // line, and published an NWD off a federation that no longer matched
-                    // the folder. Reading the file list is the one thing that happened
-                    // before this, and that is a read. Bader decides what to do with it.
-                    outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
-                    outcome.NwfOnDisk = outcome.NwfSize >= 0;
-                    outcome.NwdSize = SizeOnDiskOrMinusOne(job.NwdPath);
-                    outcome.NwdOnDisk = outcome.NwdSize >= 0;
-                    outcome.AppendedCount = comparison.InNwf.Count;
-                    log.Line(comparison.SkipLine(job.Building));
-                    progress(job.Building + " skipped, the NWF on disk no longer matches the folder");
-                    return outcome;
+                    // Rebuilt from the scan folder, keeping the tests saved inside it.
+                    // Bader decided this on 2026-09-07, Q22, after six groups in one run
+                    // had an NWF built from an older folder with fewer files, were left
+                    // alone, and had NWDs published off them with models missing. The
+                    // rebuild happens BEFORE the units change and the clash step, and
+                    // from here the group is treated exactly as an opened one.
+                    if (!RebuildFromScan(document, job, outcome, comparison))
+                    {
+                        return outcome;
+                    }
                 }
-
-                if (comparison.Decision == RerunDecision.Build)
+                else if (comparison.Decision == RerunDecision.Build)
                 {
                     if (!BuildFromScratch(document, job, outcome))
                     {
@@ -584,15 +579,32 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The only path that clears the document, and it only runs when there is no NWF
-        /// at the output path, so there is no clash history to lose. Returns false when
-        /// nothing appended and nothing should be written.
+        /// Clears the document and builds the group from nothing. Runs when there is no
+        /// NWF at the output path, so there is no clash history to lose. The other clear
+        /// is RebuildFromScan, which keeps the history. Returns false when nothing
+        /// appended and nothing should be written.
         /// </summary>
         private bool BuildFromScratch(Document document, FederationJob job, JobOutcome outcome)
         {
             log.Line("CLEAR    the document, before building " + job.Building + " from scratch");
             document.Clear();
 
+            if (!AppendAll(document, job, outcome))
+            {
+                return false;
+            }
+
+            WriteNwf(document, job, outcome);
+            return true;
+        }
+
+        /// <summary>
+        /// Appends every file of the group, in the group's order, into the document as it
+        /// is. Shared by the first build and the rebuild, so the two cannot drift. Returns
+        /// false when nothing appended, which is a group that produced nothing.
+        /// </summary>
+        private bool AppendAll(Document document, FederationJob job, JobOutcome outcome)
+        {
             foreach (string file in job.Files)
             {
                 log.AppendAttempted(file);
@@ -620,9 +632,237 @@ namespace Federator.Addin.Engine
             }
 
             RecordSourcesAfterAppending(document, job.Building);
-
-            WriteNwf(document, job, outcome);
             return true;
+        }
+
+        /// <summary>
+        /// Clears the opened NWF and rebuilds it from the scan folder, keeping the clash
+        /// tests saved inside it. F24, bug B13, Q22.
+        ///
+        /// WHY. Six groups in the run of 2026-09-07 had an NWF built from an older folder
+        /// holding fewer files than the scan, 1B06BC 4 of 5 with EL missing, 1B06K1 1 of
+        /// 4. CHANGED left every one alone, so nothing rebuilt them and the NWDs went out
+        /// missing models. Bader decided: rebuild from the scan by itself, keep the saved
+        /// tests, and say what was added, what moved and what was removed.
+        ///
+        /// HOW THE TESTS ARE KEPT. What the NWF holds is read BEFORE the clear, in two
+        /// forms. SavedTests.Read gives the count and the names as Core sees them, which
+        /// is what the log and the check use. DocumentClashTests.CreateCopy gives the
+        /// document's own value copy of the tests, and DocumentSelectionSets.CreateCopy
+        /// the same for the sets, which are what can be put back with CopyFrom. Whether
+        /// Document.Clear keeps either is UNKNOWN until a run: the count is read off the
+        /// document after the appends, the copies are put back only where the count
+        /// dropped, and the count is read again. The log line says which happened.
+        /// CreateCopy and CopyFrom on DocumentClashTests were read off the DLL on
+        /// 2026-08-27, docs\scan.md section 4. The same pair on DocumentSelectionSets was
+        /// NOT measured and is used on the strength of the Navisworks pattern every
+        /// document part follows, so a build error there names exactly this.
+        ///
+        /// WHAT IS NOT DONE. The NWF on disk is only saved over once every test read
+        /// before the clear is back in the document. Where they cannot be put back the
+        /// group fails, says so, and the NWF on disk keeps its file list and its tests.
+        /// </summary>
+        private bool RebuildFromScan(
+            Document document, FederationJob job, JobOutcome outcome, NwfComparison comparison)
+        {
+            NwfRebuildPlan plan = NwfRebuildPlan.From(comparison);
+
+            foreach (string line in plan.Lines(job.NwfPath))
+            {
+                log.Line(line);
+            }
+
+            progress("Rebuilding the NWF for " + job.Building + " from the scan folder");
+
+            IList<SavedClashTest> saved = SavedTests.Read(document);
+            ClashTestsData testsCopy = null;
+            SavedItemCollection setsCopy = null;
+
+            try
+            {
+                testsCopy = document.GetClash().TestsData.CreateCopy();
+                setsCopy = document.SelectionSets.CreateCopy();
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "copying the saved sets and tests of " + job.Building + " before the clear",
+                    error,
+                    "kept going, whether the clear keeps them is read off the document after the appends");
+            }
+
+            try
+            {
+                log.Line("CLEAR    the document, before rebuilding " + job.Building + " from the scan folder");
+                document.Clear();
+
+                if (!AppendAll(document, job, outcome))
+                {
+                    log.Line("NWF      NOT saved over, the NWF on disk keeps its file list and its tests");
+                    return false;
+                }
+
+                int afterClear = SavedTests.Count(document);
+                int afterRestore = afterClear;
+
+                if (saved.Count > 0 && afterClear < saved.Count && testsCopy != null)
+                {
+                    try
+                    {
+                        // Sets first. A test side points at a set, so the tests go back
+                        // into a document that already holds what they point at.
+                        if (setsCopy != null)
+                        {
+                            document.SelectionSets.CopyFrom(setsCopy);
+                        }
+
+                        document.GetClash().TestsData.CopyFrom(testsCopy);
+                        afterRestore = SavedTests.Count(document);
+                    }
+                    catch (Exception error)
+                    {
+                        log.Failure(
+                            "putting the saved sets and tests back into " + job.Building,
+                            error,
+                            "the saved tests line below carries what the document holds now");
+                    }
+                }
+
+                log.Line(NwfRebuildPlan.SavedTestsLine(saved.Count, afterClear, afterRestore));
+
+                if (!NwfRebuildPlan.SavedTestsKept(saved.Count, afterRestore))
+                {
+                    outcome.AddError(
+                        "the rebuild could not keep the " + saved.Count
+                        + " saved clash tests, " + afterRestore
+                        + " are in the document, so the NWF on disk was not saved over");
+                    log.Line("NWF      NOT saved over, the NWF on disk keeps its file list and its tests");
+                    return false;
+                }
+
+                WriteNwf(document, job, outcome);
+                outcome.Decision = RerunDecision.Rebuilt;
+                return true;
+            }
+            finally
+            {
+                if (testsCopy != null)
+                {
+                    testsCopy.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The label each group will take, worked out by opening each NWF that is on disk
+        /// and comparing its file list with the scan, BEFORE the confirm dialog, so the
+        /// dialog can count the Rebuilt groups and the list can show them. The window only
+        /// calls this when nothing open would be lost, because opening an NWF replaces the
+        /// open document and the person has not yet said yes.
+        ///
+        /// Every NWF is opened again by Decide in the run itself, and that is the read
+        /// that counts. This changes what the person is told and nothing else, so nothing
+        /// here records a Revit source or writes a holds line. A group that will not open
+        /// reads Unknown here and the run decides.
+        /// </summary>
+        public static IList<string> PreviewRunPaths(
+            IList<FederationJob> jobs, bool xmlPicked, RunLog log, Action<string> progress)
+        {
+            if (jobs == null)
+            {
+                throw new ArgumentNullException("jobs");
+            }
+
+            List<string> labels = new List<string>();
+            Stopwatch clock = Stopwatch.StartNew();
+            int opened = 0;
+
+            for (int i = 0; i < jobs.Count; i++)
+            {
+                FederationJob job = jobs[i];
+                string label;
+
+                try
+                {
+                    if (!File.Exists(job.NwfPath))
+                    {
+                        label = RunPath.FirstRun;
+                    }
+                    else
+                    {
+                        if (progress != null)
+                        {
+                            progress("Checking NWF " + (i + 1) + " of " + jobs.Count + ": " + job.Building);
+                        }
+
+                        Document document = NavisworksApplication.ActiveDocument;
+
+                        if (document == null || !document.TryOpenFile(job.NwfPath))
+                        {
+                            label = RunPath.Unknown;
+                        }
+                        else
+                        {
+                            opened++;
+                            NwfComparison comparison = NwfComparison.Compare(ModelFileList(document), job.Files);
+                            label = RunPath.AfterOpening(comparison.Decision, xmlPicked);
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    label = RunPath.Unknown;
+
+                    if (log != null)
+                    {
+                        log.Failure(
+                            "checking the NWF of " + job.Building + " before the run",
+                            error,
+                            "the group reads Unknown in the list and the run decides");
+                    }
+                }
+
+                labels.Add(label);
+
+                if (log != null)
+                {
+                    log.Line("PREVIEW  " + job.Building + "  " + label);
+                }
+            }
+
+            clock.Stop();
+
+            if (log != null)
+            {
+                log.Line("PREVIEW  opened " + opened + (opened == 1 ? " NWF" : " NWFs")
+                    + " before the confirm dialog in "
+                    + clock.Elapsed.TotalSeconds.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + "s");
+            }
+
+            return labels;
+        }
+
+        /// <summary>The NWC each model points at, with no logging and no recording. See FilesInsideTheOpenDocument.</summary>
+        private static IList<string> ModelFileList(Document document)
+        {
+            List<string> files = new List<string>();
+
+            if (document == null || document.Models == null)
+            {
+                return files;
+            }
+
+            foreach (Model model in document.Models)
+            {
+                string use = ModelFileNames.PathOf(model.FileName, model.SourceFileName);
+
+                if (!string.IsNullOrEmpty(use))
+                {
+                    files.Add(use);
+                }
+            }
+
+            return files;
         }
 
         /// <summary>
@@ -697,8 +937,10 @@ namespace Federator.Addin.Engine
         {
             if (outcome.Decision == RerunDecision.Changed)
             {
-                // A CHANGED group is left alone entirely and the decision goes to Bader,
-                // so nothing is built into it and nothing in it is run.
+                // A CHANGED group that was not rebuilt is left alone, so nothing is built
+                // into it and nothing in it is run. Since F24 a CHANGED group is rebuilt
+                // and reaches here as Rebuilt, so this only holds where the rebuild never
+                // started.
                 log.Line("CLASH    " + job.Building
                     + " was left alone because its file list changed, so no set was built and no test created or run");
                 return false;

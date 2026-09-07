@@ -14,8 +14,19 @@ namespace Federator.Core.Rerun
         /// <summary>The NWF is already pointing at exactly this group. Open it and leave it alone.</summary>
         Open,
 
-        /// <summary>The NWF points at a different set of files. Report it and touch nothing.</summary>
-        Changed
+        /// <summary>
+        /// The NWF points at a different set of files. This is what the comparison reads.
+        /// Since F24 the engine rebuilds such a group from the scan and ends it as Rebuilt,
+        /// so a group only ENDS as Changed when the rebuild never started.
+        /// </summary>
+        Changed,
+
+        /// <summary>
+        /// The NWF pointed at a different set of files and was cleared and rebuilt from the
+        /// scan folder, keeping the tests saved inside it. Bader decided this on 2026-09-07,
+        /// Q22, after six groups in one run were left alone with NWFs missing files.
+        /// </summary>
+        Rebuilt
     }
 
     /// <summary>
@@ -249,57 +260,18 @@ namespace Federator.Core.Rerun
                     break;
 
                 default:
-                    lines.Add("CHANGED  " + nwfPath + " points at a different set of files, "
-                        + "so it was left exactly as it is");
+                    // The heading and the counts only. Which file was added, which moved
+                    // and which was removed is said once, by NwfRebuildPlan, in the
+                    // REBUILT block that follows, so a move never reads as an addition
+                    // and a removal here and a move there.
+                    lines.Add("CHANGED  " + nwfPath + " points at a different set of files");
                     lines.Add("         " + Unchanged.Count + " unchanged, "
-                        + Added.Count + " added, " + Removed.Count + " removed");
-
-                    foreach (string file in Added)
-                    {
-                        lines.Add("         added   " + file);
-                    }
-
-                    foreach (string file in Removed)
-                    {
-                        lines.Add("         removed " + file);
-                    }
-
-                    foreach (string leaf in Moved)
-                    {
-                        lines.Add("         note    " + leaf
-                            + " is on both sides under a different folder, which reads as a move");
-                    }
-
+                        + Added.Count + " added, " + Removed.Count + " removed, "
+                        + "so it is rebuilt from the scan folder");
                     break;
             }
 
             return lines;
-        }
-
-        /// <summary>
-        /// The one line a CHANGED group leaves in the log when the run skips it, naming the
-        /// group, why, what differs, and what was not done. One line so the reason and the
-        /// difference cannot drift apart from each other.
-        /// </summary>
-        public string SkipLine(string building)
-        {
-            List<string> differences = new List<string>();
-
-            foreach (string file in Added)
-            {
-                differences.Add("added " + System.IO.Path.GetFileName(file));
-            }
-
-            foreach (string file in Removed)
-            {
-                differences.Add("removed " + System.IO.Path.GetFileName(file));
-            }
-
-            return "GROUP    " + (string.IsNullOrEmpty(building) ? "UNKNOWN" : building)
-                + " skipped, the NWF on disk no longer matches the folder: "
-                + Added.Count + " added, " + Removed.Count + " removed"
-                + (differences.Count == 0 ? string.Empty : " (" + string.Join(", ", differences.ToArray()) + ")")
-                + ". Nothing was done to it: no units change, no sets, no tests, no save, no NWD. Bader decides";
         }
 
         private static string Word(int count, string one, string many)

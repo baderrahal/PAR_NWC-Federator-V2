@@ -88,3 +88,15 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
    - whether Navisworks opens that file on its own with the add-in closed
 
    Answer:
+
+21. Not in the first list. Skipped groups. The run log from 2026-09-07 dropped 12 of 26 groups before the run started, every group without AR, EL, ME or ST, and the rule is not shown in the window. See B15
+
+   Answer: federate what Bader ticks. Every ticked group gets its NWF and NWD. Clash only where the group holds two or more disciplines. No hidden discipline rule. F25.
+
+22. Not in the first list. CHANGED. Six groups in the same log had an NWF built from an older folder with fewer files, and the tool left them alone. See B13
+
+   Answer: rebuild the NWF from the scan folder by itself, keep the tests saved inside it, and say in the log what was added, what moved and what was removed. F24.
+
+23. Not in the first list. Units. The same log says THE DOCUMENT DID NOT FOLLOW on 11 of 14 groups and the report went out in feet. See B14
+
+   Answer: the report is always in meters, never feet. Force the document to meters and fail the group loudly if it will not follow. F26.

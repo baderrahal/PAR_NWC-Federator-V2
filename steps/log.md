@@ -2,6 +2,58 @@
 
 Newest entry at the top.
 
+## 2026-09-07 F24, a CHANGED NWF is rebuilt from the scan
+
+### What was done
+
+- The first run log arrived. `steps/logs/run-20260907-093440.log`, moved there from a root `Log` folder, which is deleted. It is a run on the old build be0b9b37 of 1 Sep, before any fix, on the C06 folder, 76 files, 26 groups, no clash XML
+- What the log proves. F9 was needed and is seen live: six CHANGED groups fell through to UNITS and published an NWD off a federation missing models. F22 labels would have shown those six as Skipped. The 8 DONE groups are right, OPENED, units, NWD, NWF intact. The SOURCE MISMATCH and SHARED SOURCE lines are Revit naming, 1B06BC published from 0000BC and so on, and 1B06M1 with 1C06M2 both from 1B06MM. Not the tool. Total 352 seconds for 14 groups with no clash step, which is the first timing baseline. Noted against M2: about 2 to 6 seconds per group to open, set units and publish, so the clash step is the whole of the 45 minutes
+- Three new bugs from the log, in `00_analysis.md` section 3. B13 CHANGED left the NWF alone with the scan folder holding the right files. B14 UNITS said THE DOCUMENT DID NOT FOLLOW on 11 of 14 groups and the report went out in feet. B15 12 of 26 groups were dropped before the run by a discipline rule the window does not show
+- Bader answered Q21, Q22 and Q23 in `02_questions.md`. Q21 federate what is ticked, no hidden discipline rule. Q22 rebuild a CHANGED NWF from the scan folder, keep the saved tests, say what was added, moved and removed. Q23 the report is always in meters, force the document and fail loudly
+- `01_next.md` gains F24, F26 and F25 right after F20, in that order, then F16 and the rest
+- F24 done, bug B13. Before, a CHANGED group was left alone entirely and judged PARTIAL, the F9 rule. After, it is rebuilt: the saved tests are read, the document's own copies of the tests and the sets are taken, the document is cleared, the scan is appended in scan order, the copies are put back where the clear dropped them, the count is read again, and only then is the NWF saved over. From there it is an opened group: units, the clash step, the reports, the NWD
+- New `src/Federator.Core/Rerun/NwfRebuildPlan.cs`. A file on both sides under a different folder is a move, a file only in the scan is an addition, a file only in the NWF is a removal, the files to append are the scan in scan order. `Lines` gives the REBUILT block, `SavedTestsLine` the one line with the three numbers, `SavedTestsKept` the rule the engine acts on
+- `RerunDecision.Rebuilt` added. `RunPath.Rebuilt` is the label, with `AfterOpening` for a comparison that reads Changed before the run. The confirm dialog counts Rebuilt groups and says the NWF is cleared and rebuilt from the scan folder with its saved tests kept. The RESULT block carries `rebuilt        : n`. `GroupJudgement` judges a rebuilt group DONE when everything after went right and FAILED when the rebuild appended nothing
+- The window opens each NWF on disk at Run, before the confirm dialog, so the six show Rebuilt in the list and the dialog counts them. Only when nothing open would be lost, because opening an NWF replaces the open document and Run cancelled must still mean nothing was cleared. Otherwise the dialog says Rebuilt is only known once each NWF is opened. After the run every group reads what it actually did
+- Whether the tests survive `Document.Clear` is UNKNOWN from here. `DocumentClashTests.CreateCopy` and `CopyFrom` were read off the DLL on 2026-08-27, docs/scan.md section 4, and `ClashTestsData` is disposable. The same pair on `DocumentSelectionSets` was NOT measured and is used on the strength of the pattern every document part follows, so a build error on Bader's machine would name exactly that. The engine reads the count after the appends, puts the copies back only where the count dropped, reads it again, and the log line says which of the two happened
+- `NwfComparison.Lines` on CHANGED is the heading and the counts only, the per file lines moved to the REBUILT block so a move never reads as an addition and a removal in one place and a move in another. `SkipLine` deleted with its test, nothing skips any more
+- Tests: `NwfRebuildPlanTests`, fifteen, the 1B06BC case from the log with 4 moves, 1 addition and 0 removals, the append order, a move with its from and to folders, a pure addition, a pure removal, a move and a removal of one name told apart, no rebuild for Open or Build, the null refusal, the REBUILT lines, the removed line, and the four saved tests lines. `RunPathTests` gains four, six labels, Rebuilt with or without an XML, AfterOpening, the confirm lines with and without a Rebuilt group. `GroupJudgementTests` gains four, rebuilt done, rebuild appended nothing failed, rebuilt with a failed file partial, rebuilt NWD not published failed
+- Core tests under mono on Linux, before: 840 passed, 40 failed, 32 skipped, 912 total. After: 863 passed, 39 failed, 32 skipped, 934 total. The 39 are the same Windows path and file locking failures, one fewer because the CHANGED lines test no longer asserts a Windows path. None new
+- The add-in was not compiled. It cannot compile in the container
+
+### What remains
+
+- F26 next, then F25, F16, F21, F12, F13, F14, F15, F18 when the sample arrives, F23 when Q20 is answered
+- The proofs from F5 onward on the local machine, F24 first, then P1, P2, P3
+- Q20 from Bader, and whether the outstanding count setting stays now that nothing shows it
+
+### Known bugs
+
+- B13 fixed in code, pending local proof. Pull main, build, install, scan the same C06 folder, the six groups 1B06BC, 1B06G1, 1B06K1, 1B06M1, 1B06P1 and 1B06PE must show Rebuilt in the list, and after the run each NWF must hold every scanned file and the NWD must hold them too. Drop the log into `steps/logs`
+- B14 OPEN, F26 next. B15 OPEN, F25 after it
+- M5 closed on the Core side, still open on the add-in side because the add-in build stays local
+- L4 fixed in code, pending local proof. Run one group with pictures on, open the Excel, the picture on row N of a block must be picture N in the same order the Clash Detective panel lists the clashes, the blocks numbered most clashes first, and every link must open its picture. The log must carry one IMAGES numbered in report order line
+- B9 fixed. The local proof is only that the add-in builds
+- L3 fixed in code, pending local proof. Run one group with the XML box on and every image status unticked, the log must show XML written, IMAGES skipped with images switched off, XLSX and HTML written. Then the XML box off and the statuses back on, the log must show XML skipped as not wanted and the pictures rendered
+- L2 fixed in code and seen needed in the run log, pending local proof. The proof changes with F24: a folder that differs from the NWF now reads Rebuilt, so the proof is that no UNITS line comes before the REBUILT block
+- B7 fixed in code, pending a local run of `build/probe-window-defaults.ps1`
+- B1 fixed in code, pending local proof. Run one building twice, the second press must show OPENED, the sets present and the tests still run
+- B2 fixed in code, pending local proof. Open one NWF, press Run the open file, the reports must land in one Clash Reports folder beside the file, no folder inside a folder
+- B11 fixed in code, pending local proof. Open one NWF, press Run the open file, the log must end with a RESULT block for that file and a copy of the log must sit beside it
+- L1 fixed in code, pending local proof. Open one NWF that holds tests, pick no XML, press Run the open file, the tests must run and the Excel must be written. Then the same on the scanned run with no XML on a folder whose NWFs already hold tests
+- F22 done in code, pending local proof. Scan a folder that holds some NWFs and lacks others, pick no XML, the list must show First run beside the groups with no NWF and Weekly run beside the others, and the confirm dialog must show the counts
+- B3, B4, B8 and B10 fixed
+- B12 OPEN, waiting on Q20
+- B5, B6, L5 to L8, M1 to M4, M6 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F24 PR
+2. Bader pulls main, builds, installs, and runs the C06 folder again, F24 first in `03_bader_next.md`, then the rest of the proofs, and drops every log into `steps/logs`
+3. Bader answers Q20 in `02_questions.md` and says whether the outstanding count setting stays
+4. Worker reads the logs and records the proofs in this file
+5. Worker starts F26, the report always in meters
+
 ## 2026-09-07 F20, the Core tests run on every push to main
 
 ### What was done
