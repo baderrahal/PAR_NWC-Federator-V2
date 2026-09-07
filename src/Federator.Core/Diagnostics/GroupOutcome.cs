@@ -31,14 +31,27 @@ namespace Federator.Core.Diagnostics
     public sealed class GroupRecord
     {
         internal GroupRecord(string building, GroupOutcome outcome, double seconds, string reason)
+            : this(building, outcome, seconds, reason, null)
+        {
+        }
+
+        internal GroupRecord(
+            string building, GroupOutcome outcome, double seconds, string reason, string runPath)
         {
             Building = building;
             Outcome = outcome;
             Seconds = seconds;
             Reason = reason;
+            RunPath = runPath;
         }
 
         public string Building { get; private set; }
+
+        /// <summary>
+        /// Which of the two workflows the group took, in the words of
+        /// Federator.Core.Rerun.RunPath, or null where the caller did not say.
+        /// </summary>
+        public string RunPath { get; private set; }
 
         public GroupOutcome Outcome { get; private set; }
 

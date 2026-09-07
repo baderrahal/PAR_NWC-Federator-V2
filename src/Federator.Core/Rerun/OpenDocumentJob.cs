@@ -189,12 +189,23 @@ namespace Federator.Core.Rerun
         /// </summary>
         public static string Describe(string openPath, string pickedExcelFolder)
         {
+            return Describe(openPath, pickedExcelFolder, false);
+        }
+
+        /// <summary>
+        /// The same line, led by which workflow this is. The open file is always a Weekly
+        /// run, because the NWF already exists and is the document, and there is no First
+        /// run on this path. An XML picked makes it a Weekly run plus XML.
+        /// </summary>
+        public static string Describe(string openPath, string pickedExcelFolder, bool xmlPicked)
+        {
             if (!CanRun(openPath))
             {
                 return WhyNot(openPath);
             }
 
-            return "Runs on " + NameFrom(openPath) + ", writes " + NwdBeside(openPath)
+            return RunPath.Label(RerunDecision.Open, xmlPicked) + ". Runs on " + NameFrom(openPath)
+                + ", writes " + NwdBeside(openPath)
                 + " and the report in "
                 + ReportFolder(openPath, pickedExcelFolder).Folder + ".";
         }

@@ -16,7 +16,7 @@ can be written here and only proved on the local machine.
 4. F8
 5. F22
 6. F23, once Q20 is answered
-7. F1 to F4 as one PR
+7. F1, F2 and F4 as one PR. F3 was done inside F22
 8. F9
 9. F10
 10. F11
@@ -62,14 +62,14 @@ F19 is dropped.
 
 ## F22 Two clear workflows in the window
 
-- Closes part of L1 and Q17
-- Files `src/Federator.Addin/Ui/FederatorWindow.xaml`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`, `src/Federator.Core/Rerun/`
-- CONTAINER for the wording rule in Core, LOCAL MACHINE ONLY to see
-- The window must show the difference between the first run and the weekly run
-- First run: build the NWF, the sets, the tests, the reports and the NWD from the XML
-- Weekly run: open the NWF already there, reload the NWCs, run the saved tests, write the reports and the NWD, XML optional
-- Before the confirm box, the person must be told which of the two will happen per group
-- Waits on Bader confirming the two workflow definitions in chat
+- Closes part of L1 and Q17, and closes F3 with it
+- Files `src/Federator.Core/Rerun/RunPath.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`, `src/Federator.Addin/Ui/GroupRow.cs`, `src/Federator.Core/Diagnostics/RunLog.cs`
+- CONTAINER for the label rule in Core, LOCAL MACHINE ONLY to see
+- Confirmed by Bader on 7 Sep 2026 with these two definitions
+- First run. The NWC folder is scanned and grouped, output folders picked, a clash XML picked, Run pressed. Per group the tool builds the NWF, builds the sets, adds and runs the tests from the XML, writes Excel, HTML, images and the NWD
+- Weekly run. The same NWC folder, Run pressed with no XML. Per group the tool finds the NWF already there, opens it (OPENED), lets Navisworks reload the newer NWCs, runs the tests saved inside the NWF, writes Excel, HTML, images and the NWD. An XML is optional and only adds or updates tests
+- The window shows one label per group after Scan and before Run, the confirm dialog counts them, and the log carries them. The labels are First run, Weekly run, Weekly run plus XML, Skipped (changed on disk), Unknown
+- Done in code on 2026-09-07, proof pending. See `log.md`
 
 ## F23 Fix B12, the NWD opened from ACC
 
@@ -85,7 +85,7 @@ F19 is dropped.
 - Files `tests/Federator.Core.Tests/ReportCheckTests.cs`
 - CONTAINER
 - Size: one word
-- Goes in one PR with F2, F3 and F4
+- Goes in one PR with F2 and F4
 
 ## F2 Fix the hardcoded probe path
 
@@ -93,15 +93,14 @@ F19 is dropped.
 - Files `build/probe-window-defaults.ps1`
 - LOCAL MACHINE ONLY to run, CONTAINER to edit
 - Size: one line, copy the form the other probes use
-- Goes in one PR with F1, F3 and F4
+- Goes in one PR with F1 and F4
 
 ## F3 Fix the two wrong messages
 
 - Closes B3 and B4
 - Files `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`
-- LOCAL MACHINE ONLY to see, CONTAINER to edit
-- Size: two strings. The confirm text says cleared only when it is true, Q13
-- Goes in one PR with F1, F2 and F4
+- DONE on 2026-09-07 inside F22. The confirm dialog says cleared only for First run groups, Q13, and the NWD line no longer names a tick box that is gone
+- No longer part of the F1 to F4 PR, which is now F1, F2 and F4
 
 ## F4 Fix the units docstring
 
@@ -109,7 +108,7 @@ F19 is dropped.
 - Files `src/Federator.Addin/Engine/DocumentUnits.cs`
 - CONTAINER to edit
 - Size: one sentence
-- Goes in one PR with F1, F2 and F3
+- Goes in one PR with F1 and F2
 
 ## F9 Skip the units change on a CHANGED group
 
