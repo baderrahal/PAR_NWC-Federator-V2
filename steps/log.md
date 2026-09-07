@@ -2,6 +2,50 @@
 
 Newest entry at the top.
 
+## 2026-09-07 F11, the dead code is gone
+
+### What was done
+
+- `steps/logs` still holds only its README. No run log yet, so every fix from F5 onward stays pending local proof and nothing about them was recorded
+- F11 done. Every name in B9 was searched across source, tests, docs, CLAUDE.md, samples and build scripts, and sorted by who reads it: running code, a test only, or a doc only
+- Deleted, because nothing running read them: `ReportOptions.ClientColumnsOnly`, `SheetNames.SummarySheet`, `SheetNames.MatrixSheet`, `SheetNames.ForTest` with `TestPrefix` and `TestDigits`, `TestReport.SheetName`, the whole of `ClashMatrix.cs` with `ClashMatrix`, `MatrixCell` and `MatrixCellKind`, and two members orphaned by that, `OpenClashes.Heading` and `OpenClashes.SheetLabel`, which only the sheets that are gone ever showed
+- Kept: `TestReport.HasSheet`, read by `ClashReportXml` and `ClashRunner`. Kept: the outstanding count setting, `ReportOptions.OpenCount` and `OpenClashes`, read by the window, the engine and `ImageOptions`, though no output shows the number now that the Summary and Matrix sheets are gone. Flagged for Bader rather than deleted, because it is a window control and a CLAUDE.md rule
+- Tests: `ClashMatrixTests` deleted whole, the three matrix tests and the sheet label test cut out of `OpenClashesTests`, the matrix test cut out of `SingleModelGroupTests`, the seven `ForTest` tests cut out of `SheetNameTests` with two rewritten onto the one sheet name, and the `SheetName` asserts cut out of `ClashReportTests`. Twenty nine tests removed and three rewritten in their place, so twenty six fewer
+- Docs: CLAUDE.md lost the three bullets that described the T0001 sheets, the Summary rows and the matrix cell, and two lines were reworded so nothing points at the matrix or a sheet label. `docs/test-model-side.md` step 53 now says those sheets are history. The `docs/scan.md` 4q row for `ClientColumnsOnly` records its removal and stays. The probe script no longer lists `ClientColumnsOnly`. The window label `The matrix counts` reads `Outstanding counts` and the log key with it
+- The report output is unchanged. The tests that pin the one sheet, the cells, the client layout, the page and the client columns all still pass: `OneSheetWorkbookTests`, `WorkbookCellCheckTests`, `ClientLayoutTests`, `ReportCheckTests`, `ClientColumnsTests`
+- Core tests under mono on Linux, before: 850 passed, 40 failed, 32 skipped, 922 total. After: 824 passed, 40 failed, 32 skipped, 896 total. The 40 are the same Windows path and file locking failures, none new
+- The add-in was not compiled. It cannot compile in the container. A plain text search of `src/Federator.Addin` for every deleted name returns nothing
+- `03_bader_next.md` build step says the build must finish with no error about a missing name
+
+### What remains
+
+- F23 once Q20 is answered, then F17 onward in `01_next.md` in order
+- The proofs from F5 onward on the local machine, then P1, P2, P3
+- Q20 from Bader, and whether the outstanding count setting stays now that nothing shows it
+
+### Known bugs
+
+- B9 fixed. The local proof is only that the add-in builds
+- L3 fixed in code, pending local proof. Run one group with the XML box on and every image status unticked, the log must show XML written, IMAGES skipped with images switched off, XLSX and HTML written. Then the XML box off and the statuses back on, the log must show XML skipped as not wanted and the pictures rendered
+- L2 fixed in code, pending local proof. Add or remove one NWC in a folder whose NWF exists, press Run, the group must show Skipped (changed on disk), the log must show no UNITS line for it, and the NWF must keep its old modified time
+- B7 fixed in code, pending a local run of `build/probe-window-defaults.ps1`
+- B1 fixed in code, pending local proof. Run one building twice, the second press must show OPENED, the sets present and the tests still run
+- B2 fixed in code, pending local proof. Open one NWF, press Run the open file, the reports must land in one Clash Reports folder beside the file, no folder inside a folder
+- B11 fixed in code, pending local proof. Open one NWF, press Run the open file, the log must end with a RESULT block for that file and a copy of the log must sit beside it
+- L1 fixed in code, pending local proof. Open one NWF that holds tests, pick no XML, press Run the open file, the tests must run and the Excel must be written. Then the same on the scanned run with no XML on a folder whose NWFs already hold tests
+- F22 done in code, pending local proof. Scan a folder that holds some NWFs and lacks others, pick no XML, the list must show First run beside the groups with no NWF and Weekly run beside the others, and the confirm dialog must show the counts
+- B3, B4, B8 and B10 fixed
+- B12 OPEN, waiting on Q20
+- B5, B6, L4 to L8, M1 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F11 PR
+2. Bader answers Q20 in `02_questions.md` and says whether the outstanding count setting stays
+3. Bader follows `03_bader_next.md` and drops the logs into `steps/logs`
+4. Worker reads the logs and records the proofs in this file
+5. Worker starts F17, or F23 if Q20 is answered first
+
 ## 2026-09-07 F10, each output gated on its own flag
 
 ### What was done

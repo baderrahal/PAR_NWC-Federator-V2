@@ -56,30 +56,12 @@ namespace Federator.Core.Clash
             return open;
         }
 
-        /// <summary>The words for the choice, for the sheet label and the log.</summary>
+        /// <summary>The words for the choice, for the window and the log.</summary>
         public static string Describe(OpenClashCount which)
         {
             return which == OpenClashCount.NewAndActive
                 ? "New plus Active"
                 : "New plus Active plus Reviewed, which is what Navisworks counts as open";
-        }
-
-        /// <summary>The short form, for a column heading.</summary>
-        public static string Heading(OpenClashCount which)
-        {
-            return which == OpenClashCount.NewAndActive
-                ? "New plus Active"
-                : "New plus Active plus Reviewed";
-        }
-
-        /// <summary>What the sheet says under its title, so the number is never bare.</summary>
-        public static string SheetLabel(OpenClashCount which)
-        {
-            return "Each cell holds " + Heading(which) + ". "
-                + (which == OpenClashCount.NavisworksOpen
-                    ? "That is Navisworks' own definition of open, with Approved and Resolved "
-                        + "counted as closed."
-                    : "Reviewed is NOT counted here, which differs from what Navisworks calls open.");
         }
     }
 }

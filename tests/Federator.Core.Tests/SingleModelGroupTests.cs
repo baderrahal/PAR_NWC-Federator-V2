@@ -148,24 +148,6 @@ namespace Federator.Core.Tests
             }
         }
 
-        [Test]
-        public void TheMatrixShowsSkippedRatherThanZeroForASingleModelGroup()
-        {
-            ClashReport report = new ClashReport("1B06BS", "1104-PAR-1B06BS-ZZZ-BM-MOD-000001");
-
-            TestReport test = report.AddTest("AR v ME");
-            test.LeftLocator = "lcop_selection_set_tree/Architecture/BLD-AR-Floors";
-            test.RightLocator = "lcop_selection_set_tree/Mechanical/BLD-ME-Ducts";
-            test.State = TestState.Skipped;
-            test.SkippedReason = "the group holds one model";
-
-            MatrixCell cell = ClashMatrix.From(report).At(test.LeftLocator, test.RightLocator);
-
-            Assert.That(cell.Kind, Is.EqualTo(MatrixCellKind.Skipped));
-            Assert.That(cell.Text(), Is.EqualTo("skipped"),
-                "a group that could never clash read as coordinated");
-        }
-
         // ---------- the reason reads as words a person would say ----------
 
         [Test]

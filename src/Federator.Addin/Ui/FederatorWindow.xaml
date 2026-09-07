@@ -475,7 +475,7 @@
                             </StackPanel>
                         </Expander>
 
-                        <Label Grid.Row="2" Grid.Column="0" Content="The matrix counts" VerticalAlignment="Center" />
+                        <Label Grid.Row="2" Grid.Column="0" Content="Outstanding counts" VerticalAlignment="Center" />
                         <ComboBox Grid.Row="2" Grid.Column="1" x:Name="OpenCountBox"
                                   HorizontalAlignment="Left" MinWidth="440" VerticalAlignment="Center" />
                     </Grid>

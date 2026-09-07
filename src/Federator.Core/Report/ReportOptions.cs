@@ -17,7 +17,6 @@ namespace Federator.Core.Report
             OpenCount = Federator.Core.Clash.OpenClashes.Default;
             ApplyFileSettings = false;
             CompactResolved = false;
-            ClientColumnsOnly = false;
             WriteHtml = true;
             SetDocumentUnits = true;
             UnitsName = DefaultUnits;
@@ -25,19 +24,6 @@ namespace Federator.Core.Report
             Images = new ImageOptions();
             Names = new ContainerNameSettings();
         }
-
-        /// <summary>
-        /// Write only the columns the client's own report has, dropping ours.
-        ///
-        /// Off, because family, type, material, source file and discipline are what stop
-        /// whoever has to fix a clash from opening the model to find out what they are
-        /// looking at. On for a submission, where the sheet should look like the one that
-        /// was signed off and nothing else.
-        ///
-        /// Ours are added AFTER theirs and never in place of them, so switching this on
-        /// removes columns from the right hand end and moves none of the others.
-        /// </summary>
-        public bool ClientColumnsOnly { get; set; }
 
         /// <summary>Clash pictures. On by default, because the accepted report has them.</summary>
         public ImageOptions Images { get; set; }

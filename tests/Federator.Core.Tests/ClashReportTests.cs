@@ -189,8 +189,6 @@ namespace Federator.Core.Tests
             Assert.That(report.Tests[0].HasSheet, Is.False, "a skipped test has no sheet");
             Assert.That(report.Tests[1].HasSheet, Is.False, "a passed test has no sheet");
             Assert.That(report.Tests[2].HasSheet, Is.True);
-            Assert.That(report.Tests[2].SheetName(), Is.EqualTo("T0003"),
-                "the sheet is numbered by the test, not by which ones have sheets");
         }
 
         [Test]
@@ -213,21 +211,18 @@ namespace Federator.Core.Tests
             Assert.That(skipped.DescribeState(), Is.Not.EqualTo(passed.DescribeState()));
         }
 
-        // ---------- the sheet numbers ----------
+        // ---------- the test numbers ----------
 
         [Test]
-        public void TestsAreNumberedInOrderAndNeverRepeat()
+        public void TestsAreNumberedInOrderFromOne()
         {
             ClashReport report = Report();
-            HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
 
             for (int i = 0; i < 1830; i++)
             {
                 TestReport test = report.AddTest("test " + i);
 
                 Assert.That(test.Number, Is.EqualTo(i + 1));
-                Assert.That(names.Add(test.SheetName()), Is.True, "sheet name repeated at " + i);
-                Assert.That(SheetNames.IsAcceptable(test.SheetName()), Is.True);
             }
         }
 

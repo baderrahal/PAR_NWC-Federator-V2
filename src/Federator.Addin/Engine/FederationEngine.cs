@@ -1022,9 +1022,8 @@ namespace Federator.Addin.Engine
 
             try
             {
-                // No ClientColumnsOnly here any more. The page IS the client's report and
-                // always carries only what theirs carries. Our extra columns live in the
-                // workbook, where that tick box still governs them.
+                // The page IS the client's report and always carries only what theirs
+                // carries. Our extra columns live on the clash XML and nowhere else.
                 ClashReportXml writer = new ClashReportXml();
                 writer.LogoHref = CopyLogoIntoTheReportFolder(
                     ReportPaths.Workbook(reportFolder, job.WorkbookName));

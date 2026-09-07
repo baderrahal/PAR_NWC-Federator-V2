@@ -1161,7 +1161,7 @@ namespace Federator.Addin.Ui
                 groups.Count);
 
             log.Line("grouping         : " + GroupingModes.Describe(ChosenGrouping()));
-            log.Line("matrix counts    : " + OpenClashes.Describe(ChosenOpenCount()));
+            log.Line("outstanding      : " + OpenClashes.Describe(ChosenOpenCount()));
             log.Line("apply file to old: "
                 + (ApplyFileSettings.IsChecked == true
                     ? "YES, which RESETS the results of every test it changes"

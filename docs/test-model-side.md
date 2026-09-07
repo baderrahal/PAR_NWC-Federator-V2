@@ -685,8 +685,10 @@ is made if it is not there.
 
 53. Run a group that finds clashes, then open the workbook.
 
-**Worked:** it opens in Excel and has a `Summary` sheet, a `Matrix` sheet, and one sheet
-per test that found something, named `T0001` upward.
+**Worked at the time:** it opened in Excel with a `Summary` sheet, a `Matrix` sheet, and
+one sheet per test that found something. All three are gone now, the workbook is one
+sheet laid out as the client's report, and the code behind them was deleted on
+2026-09-07. This step is history, not a check to repeat.
 
 54. Read the top of the `Summary` sheet.
 
