@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Federator.Core.Diagnostics;
+using Federator.Core.Rerun;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -548,6 +549,50 @@ namespace Federator.Core.Tests
                 Assert.That(log.ReadAll(), Does.Contain("mid run"));
                 Assert.That(ReadWhileOpen(log), Does.Contain("mid run"));
             }
+        }
+
+        /// <summary>
+        /// F22. The GROUP finished line carries which of the two workflows the group took,
+        /// and the RESULT block totals them, so a log alone shows how many were a First
+        /// run and how many a Weekly run.
+        /// </summary>
+        [Test]
+        public void TheGroupLineAndTheResultBlockCarryWhichWorkflowEachGroupTook()
+        {
+            string text;
+
+            using (RunLog log = Start())
+            {
+                log.GroupFinished("a", GroupOutcome.Done, 1.0, null, RunPath.FirstRun);
+                log.GroupFinished("b", GroupOutcome.Done, 1.0, null, RunPath.WeeklyRun);
+                log.GroupFinished("c", GroupOutcome.Done, 1.0, null, RunPath.WeeklyRunPlusXml);
+                log.GroupFinished("d", GroupOutcome.Partial, 1.0, "left alone", RunPath.Skipped);
+                log.WriteResultBlock();
+                text = ReadWhileOpen(log);
+            }
+
+            Assert.That(text, Does.Contain("GROUP    finished a  DONE  1.000s  First run"));
+            Assert.That(text, Does.Contain("GROUP    finished d  PARTIAL  1.000s  Skipped (changed on disk)  left alone"));
+            Assert.That(text, Does.Contain("first run      : 1"));
+            Assert.That(text, Does.Contain("weekly run     : 1"));
+            Assert.That(text, Does.Contain("weekly + XML   : 1"));
+            Assert.That(text, Does.Contain("skipped        : 1"));
+        }
+
+        [Test]
+        public void ALogWhoseGroupsNamedNoPathCarriesNoPathLines()
+        {
+            string text;
+
+            using (RunLog log = Start())
+            {
+                log.GroupFinished("a", GroupOutcome.Done, 1.0);
+                log.WriteResultBlock();
+                text = ReadWhileOpen(log);
+            }
+
+            Assert.That(text, Does.Not.Contain("first run      :"));
+            Assert.That(text, Does.Not.Contain("path unknown"));
         }
     }
 }

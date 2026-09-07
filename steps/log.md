@@ -2,27 +2,29 @@
 
 Newest entry at the top.
 
-## 2026-09-06 F8, run the saved tests when no XML is picked
+## 2026-09-07 F22, two clear workflows in the window, and F3 with it
 
 ### What was done
 
-- `steps/logs` still holds only its README. No run log yet, so B1, B2 and B11 stay pending local proof and nothing about them was recorded
-- B12 registered in `00_analysis.md`, OPEN: Bader opened an NWD from ACC and the tool showed an error beside the file. Q20 added with the four unknowns, answer blank. F23 added to `01_next.md` after F22
-- F8 fixed. With no XML, `ClashStep` returned before anything ran, on both paths, while the open file line said the tests already in the document were running
-- The clash step now does one of three things and the log names which in one line, `CLASH    source   ...`, the same on the scanned run and the open file run: tests from XML, tests saved in the document, or nothing. The rule is `ClashWork.SourceFor` in Core
-- A second way to build a `ClashTestPlan`: `ClashTestPlan.FromDocument` in Core, from a list of `SavedClashTest`, every saved test by its address, no drift compare, no sets touched. The add-in fills the list in `SavedTests.Read` from `DocumentClashTests`, walked once, wrappers disposed
-- `ClashRunner` runs a document plan through the same path as an XML plan. A test with an address is resolved where it sits and neither created nor compared. `SingleModel`, `EmptySide` and the `RepeatedFailureGuard` apply the same way. Harvest, images, workbook, page and the second NWF save follow exactly as the XML case
-- With an XML picked nothing changed. The saved tests are not even counted then
-- Words fixed to match the log line: CLAUDE.md in two places, the help under Run the open file in the window, the OPEN line and comment in `FederatorWindow.xaml.cs`, and the engine docstring
-- Eleven Core tests added in `SavedTestPlanTests`
-- Core tests under mono on Linux: 820 passed, 40 failed, 32 skipped, 892 total. The 40 are the same Windows path and file locking failures as before, none new
+- `steps/logs` still holds only its README. No run log yet, so B1, B2, B11 and L1 stay pending local proof and nothing about them was recorded
+- The F8 entry sat in this file twice. The fuller one is kept and the other is gone
+- F22 marked confirmed by Bader on 7 Sep 2026 in `01_next.md` with the two definitions
+- F22 done. The rule is `Federator.Core.Rerun.RunPath`, beside Decide. Given the Decide result and whether an XML is picked it returns one of five labels: First run, Weekly run, Weekly run plus XML, Skipped (changed on disk), Unknown. Before the run the label is worked out from whether the NWF is already at its output path, because CHANGED is only known once the NWF is opened
+- The group list has a Run as column, filled after Scan and refreshed when the NWF folder, a name, or the XML box changes. Blocked groups show nothing there
+- The confirm dialog opens with the count per label and says cleared only for the First run groups. The Skipped line says it is only known once each NWF is opened. Then the existing lines about what is open and Carry on. That closes F3: B4 was the dialog saying cleared before every group, and B3 the NWD line naming a tick box that is gone, which is reworded too
+- Run the open file: the blue line leads with Weekly run or Weekly run plus XML, and the help says there is no First run on that path
+- The log carries the label on every GROUP finished line and in the GROUPS block before the run, and the RESULT block totals them: first run, weekly run, weekly plus XML, skipped
+- CLAUDE.md has a Two workflows section with the two definitions and the labels. `README.md` created at the root with the same section. F14 stays open for the rest of a README
+- The engine does the same work as before. Only what the person is told changed, plus one log string
+- Fourteen Core tests added. Eleven in `RunPathTests`, one in `OpenDocumentJobTests`, two in `RunLogTests`
+- Core tests under mono on Linux: 834 passed, 40 failed, 32 skipped, 906 total. The 40 are the same Windows path and file locking failures as before, none new
 - The add-in was not compiled. It cannot compile in the container
-- `03_bader_next.md` rewritten for the F5, F6, F7 and F8 proofs in one session
+- `03_bader_next.md` rewritten for the F5, F6, F7, F8 and F22 proofs in one session
 
 ### What remains
 
-- F22 next, then F23 once Q20 is answered, then F1 to F4 in one PR, then the rest of `01_next.md` in order
-- The F5, F6, F7 and F8 proofs on the local machine, then P1, P2, P3
+- F23 once Q20 is answered, then F1, F2 and F4 in one PR, then the rest of `01_next.md` in order
+- The F5, F6, F7, F8 and F22 proofs on the local machine, then P1, P2, P3
 - Q20 from Bader
 
 ### Known bugs
@@ -31,16 +33,18 @@ Newest entry at the top.
 - B2 fixed in code, pending local proof. Open one NWF, press Run the open file, the reports must land in one Clash Reports folder beside the file, no folder inside a folder
 - B11 fixed in code, pending local proof. Open one NWF, press Run the open file, the log must end with a RESULT block for that file and a copy of the log must sit beside it
 - L1 fixed in code, pending local proof. Open one NWF that holds tests, pick no XML, press Run the open file, the tests must run and the Excel must be written. Then the same on the scanned run with no XML on a folder whose NWFs already hold tests
+- F22 done in code, pending local proof. Scan a folder that holds some NWFs and lacks others, pick no XML, the list must show First run beside the groups with no NWF and Weekly run beside the others, and the confirm dialog must show the counts
+- B3 and B4 fixed in code inside F22, pending the same proof
 - B12 OPEN, waiting on Q20
-- B3 to B10, L2 to L8, M1 to M8 still open. See `00_analysis.md`
+- B5 to B10, L2 to L8, M1 to M8 still open. See `00_analysis.md`
 
 ### What comes next
 
-1. Merge the F8 PR
+1. Merge the F22 PR
 2. Bader answers Q20 in `02_questions.md`
 3. Bader follows `03_bader_next.md` and drops the logs into `steps/logs`
-4. Worker reads the logs and records the four proofs in this file
-5. Worker starts F22 once Bader confirms the two workflow definitions in chat
+4. Worker reads the logs and records the five proofs in this file
+5. Worker starts F1, F2 and F4 as one PR, or F23 if Q20 is answered first
 
 ## 2026-09-06 F8, run the saved tests when no XML is picked
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Federator.Core.Naming;
+using Federator.Core.Rerun;
 
 namespace Federator.Addin.Ui
 {
@@ -163,6 +164,31 @@ namespace Federator.Addin.Ui
 
                 include = value && !IsBlocked;
                 Raise("Include");
+            }
+        }
+
+        private string runAs = RunPath.Unknown;
+
+        /// <summary>
+        /// Which of the two workflows this group is expected to take, in the words of
+        /// Federator.Core.Rerun.RunPath, worked out before Run from whether the NWF is
+        /// already at its output path and whether an XML is picked. Shown in the group
+        /// list so the person knows before pressing anything.
+        /// </summary>
+        public string RunAs
+        {
+            get { return IsBlocked ? string.Empty : runAs; }
+            set
+            {
+                string tidied = value ?? RunPath.Unknown;
+
+                if (string.Equals(runAs, tidied, System.StringComparison.Ordinal))
+                {
+                    return;
+                }
+
+                runAs = tidied;
+                Raise("RunAs");
             }
         }
 

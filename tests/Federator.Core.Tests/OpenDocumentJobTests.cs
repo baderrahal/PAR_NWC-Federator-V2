@@ -170,6 +170,19 @@ namespace Federator.Core.Tests
             }
         }
 
+        [Test]
+        public void TheLineLeadsWithWeeklyRunAndNeverFirstRun()
+        {
+            string noXml = OpenDocumentJob.Describe(OpenHere, string.Empty, false);
+            string withXml = OpenDocumentJob.Describe(OpenHere, string.Empty, true);
+
+            Assert.That(noXml, Does.StartWith(RunPath.WeeklyRun + "."));
+            Assert.That(noXml, Does.Not.Contain(RunPath.WeeklyRunPlusXml));
+            Assert.That(withXml, Does.StartWith(RunPath.WeeklyRunPlusXml + "."));
+            Assert.That(noXml, Does.Not.Contain(RunPath.FirstRun));
+            Assert.That(withXml, Does.Not.Contain(RunPath.FirstRun));
+        }
+
         private static int Count(string text, string part)
         {
             int count = 0;

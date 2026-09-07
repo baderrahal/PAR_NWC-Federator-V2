@@ -173,6 +173,8 @@
                                                 Binding="{Binding FileCount}" />
                             <DataGridTextColumn Header="Disciplines" Width="200" IsReadOnly="True"
                                                 Binding="{Binding Disciplines}" />
+                            <DataGridTextColumn Header="Run as" Width="150" IsReadOnly="True"
+                                                Binding="{Binding RunAs}" />
                             <DataGridTextColumn Header="Status" Width="*" IsReadOnly="True"
                                                 Binding="{Binding Status}" />
                         </DataGrid.Columns>
@@ -427,7 +429,8 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Content="Clash XML" />
-                        <TextBox Grid.Column="1" x:Name="ExchangeFileBox" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" x:Name="ExchangeFileBox" VerticalAlignment="Center"
+                                 TextChanged="OnExchangeFileChanged" />
                         <Button Grid.Column="2" Content="Browse" Click="OnBrowseExchangeFile" />
                     </Grid>
 
@@ -492,7 +495,7 @@
                                            Text="Nothing is open." />
                             </StackPanel>
                             <TextBlock Style="{StaticResource TickHelp}" Margin="0,6,0,0"
-                                       Text="No scan, no grouping. With no XML picked, the tests saved in the file run." />
+                                       Text="Always a Weekly run, never a First run. No XML means the saved tests run." />
                         </StackPanel>
                     </Border>
 

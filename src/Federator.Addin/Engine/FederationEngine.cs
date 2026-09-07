@@ -149,8 +149,16 @@ namespace Federator.Addin.Engine
                 groupClock.Stop();
 
                 outcomes.Add(outcome);
+
+                // Which of the two workflows this group took, read off the Decide result.
+                // A group that threw before Decide carries the default, Build, and so
+                // reads First run, the same default GroupJudgement judges it by.
                 log.GroupFinished(
-                    job.Building, outcome.Result, groupClock.Elapsed.TotalSeconds, outcome.Reason);
+                    job.Building,
+                    outcome.Result,
+                    groupClock.Elapsed.TotalSeconds,
+                    outcome.Reason,
+                    RunPath.Label(outcome.Decision, exchange != null));
 
                 // A run failing uniformly stops here rather than working through the rest.
                 // One real run spent 8 hours 52 minutes over 24 groups with every test
@@ -288,8 +296,15 @@ namespace Federator.Addin.Engine
             finally
             {
                 groupClock.Stop();
+
+                // The open file is always a Weekly run. There is no First run on this
+                // path, because the NWF already exists and is the document.
                 log.GroupFinished(
-                    job.Building, outcome.Result, groupClock.Elapsed.TotalSeconds, outcome.Reason);
+                    job.Building,
+                    outcome.Result,
+                    groupClock.Elapsed.TotalSeconds,
+                    outcome.Reason,
+                    RunPath.Label(RerunDecision.Open, exchange != null));
 
                 // The same fields the scanned run's RUN SETTINGS and GROUPS blocks carry,
                 // where they apply, written just before the window writes RESULT.
@@ -1212,7 +1227,7 @@ namespace Federator.Addin.Engine
         {
             if (!republishNwd)
             {
-                log.Line("NWD      not republished, the tick box is off");
+                log.Line("NWD      not republished, this run was started without republishing");
                 outcome.NwdSize = SizeOnDiskOrMinusOne(job.NwdPath);
                 outcome.NwdOnDisk = outcome.NwdSize >= 0;
                 return;

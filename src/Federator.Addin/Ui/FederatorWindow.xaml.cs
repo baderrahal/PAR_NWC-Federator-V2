@@ -657,6 +657,89 @@ namespace Federator.Addin.Ui
                 + (collisions == null
                     ? string.Empty
                     : Environment.NewLine + Environment.NewLine + "THE RUN CANNOT START. " + collisions);
+
+            // A name change moves the NWF path, and the path is what decides First run
+            // against Weekly run.
+            RefreshRunPaths();
+        }
+
+        /// <summary>
+        /// Which of the two workflows each group is expected to take, shown in the group
+        /// list before Run. Read off whether the NWF is already at its output path and
+        /// whether an XML is picked, through Federator.Core.Rerun.RunPath. Nothing here
+        /// opens a file, so CHANGED cannot be known yet and never shows here.
+        /// </summary>
+        private void RefreshRunPaths()
+        {
+            if (NwfFolderBox == null)
+            {
+                return;
+            }
+
+            string nwfFolder = Trimmed(NwfFolderBox.Text);
+            bool xmlPicked = XmlIsPicked();
+
+            foreach (GroupRow group in groups)
+            {
+                if (group.IsBlocked)
+                {
+                    continue;
+                }
+
+                if (nwfFolder.Length == 0 || group.NwfName.Length == 0)
+                {
+                    group.RunAs = RunPath.Unknown;
+                    continue;
+                }
+
+                bool nwfOnDisk;
+
+                try
+                {
+                    nwfOnDisk = File.Exists(OutputPaths.Nwf(nwfFolder, group.NwfName));
+                }
+                catch (Exception)
+                {
+                    group.RunAs = RunPath.Unknown;
+                    continue;
+                }
+
+                group.RunAs = RunPath.Expected(nwfOnDisk, xmlPicked);
+            }
+        }
+
+        /// <summary>The same test the run uses: a path in the box that is really on disk.</summary>
+        private bool XmlIsPicked()
+        {
+            if (ExchangeFileBox == null)
+            {
+                return false;
+            }
+
+            string path = Trimmed(ExchangeFileBox.Text);
+            return path.Length > 0 && File.Exists(path);
+        }
+
+        private void OnExchangeFileChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            RefreshRunPaths();
+            ShowOpenDocument();
+        }
+
+        /// <summary>The expected label of every group that will run, in list order.</summary>
+        private IList<string> TickedRunPaths()
+        {
+            List<string> labels = new List<string>();
+
+            foreach (GroupRow group in groups)
+            {
+                if (group.Include && !group.IsBlocked && group.Files.Count > 0)
+                {
+                    labels.Add(group.RunAs);
+                }
+            }
+
+            return labels;
         }
 
         // ---------- Step 3, outputs ----------
@@ -830,6 +913,7 @@ namespace Federator.Addin.Ui
             object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             RefreshOutputsSummary();
+            RefreshRunPaths();
         }
 
         private void OnRepublishChanged(object sender, RoutedEventArgs e)
@@ -1057,7 +1141,11 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            if (!ConfirmClear(jobs.Count))
+            // The NWF folder may have changed since the list was last refreshed, so the
+            // labels are read again right before they are counted.
+            RefreshRunPaths();
+
+            if (!ConfirmClear(TickedRunPaths()))
             {
                 Log("Run cancelled before anything was cleared.");
                 return;
@@ -1129,7 +1217,8 @@ namespace Federator.Addin.Ui
                     + group.FileCount.ToString().PadLeft(3)
                     + (group.FileCount == 1 ? " file   " : " files  ")
                     + (group.OutputName.Length == 0 ? "no output name" : group.OutputName)
-                    + "  [" + group.Disciplines + "]");
+                    + "  [" + group.Disciplines + "]"
+                    + (group.IsBlocked ? string.Empty : "  " + group.RunAs));
 
                 if (group.IsBlocked)
                 {
@@ -1146,10 +1235,12 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// Clearing throws away whatever is open, so the warning names it and the user
-        /// can cancel. Asked once, before the first group.
+        /// Says which of the two workflows the run will take, per group count, before
+        /// anything happens. Clearing is only said where it is true, which is the First
+        /// run groups. Whatever is open is replaced either way, so it is named and the
+        /// user can cancel. Asked once, before the first group.
         /// </summary>
-        private bool ConfirmClear(int jobCount)
+        private bool ConfirmClear(IList<string> runPaths)
         {
             string discarded;
 
@@ -1162,10 +1253,8 @@ namespace Federator.Addin.Ui
                 discarded = "Navisworks would not say what is open (" + error.Message + ").";
             }
 
-            string message =
-                "This run federates " + jobCount + (jobCount == 1 ? " group." : " groups.")
-                + Environment.NewLine + Environment.NewLine
-                + "Before each group the document is cleared.";
+            string message = string.Join(
+                Environment.NewLine, new List<string>(RunPath.ConfirmLines(runPaths)).ToArray());
 
             if (discarded != null)
             {
@@ -1497,7 +1586,9 @@ namespace Federator.Addin.Ui
             string open = OpenDocumentPath();
 
             OpenDocumentLine.Text = OpenDocumentJob.Describe(
-                open, ExcelFolderBox == null ? string.Empty : Trimmed(ExcelFolderBox.Text));
+                open,
+                ExcelFolderBox == null ? string.Empty : Trimmed(ExcelFolderBox.Text),
+                XmlIsPicked());
 
             if (RunOpenButton != null)
             {

@@ -5,6 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
+using Federator.Core.Rerun;
+
 namespace Federator.Core.Diagnostics
 {
     /// <summary>
@@ -487,6 +489,18 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public void GroupFinished(string building, GroupOutcome outcome, double seconds, string reason)
         {
+            GroupFinished(building, outcome, seconds, reason, null);
+        }
+
+        /// <summary>
+        /// The GROUP finished line, carrying which of the two workflows the group took,
+        /// in the words of Federator.Core.Rerun.RunPath. The label goes on the line and
+        /// into the RESULT block totals, so a log alone shows how many groups took each
+        /// path. Null where the caller does not know, and then no path is written.
+        /// </summary>
+        public void GroupFinished(
+            string building, GroupOutcome outcome, double seconds, string reason, string runPath)
+        {
             string recorded = reason;
 
             if (outcome == GroupOutcome.Failed && string.IsNullOrEmpty(recorded))
@@ -496,11 +510,12 @@ namespace Federator.Core.Diagnostics
 
             lock (gate)
             {
-                groupRecords.Add(new GroupRecord(building, outcome, seconds, recorded));
+                groupRecords.Add(new GroupRecord(building, outcome, seconds, recorded, runPath));
             }
 
             Line("GROUP    finished " + building + "  " + outcome.ToString().ToUpperInvariant()
                 + "  " + seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s"
+                + (string.IsNullOrEmpty(runPath) ? string.Empty : "  " + runPath)
                 + (string.IsNullOrEmpty(recorded) ? string.Empty : "  " + recorded));
         }
 
@@ -889,6 +904,29 @@ namespace Federator.Core.Diagnostics
             Line("groups done    : " + CountOf(GroupOutcome.Done));
             Line("groups partial : " + CountOf(GroupOutcome.Partial));
             Line("groups failed  : " + CountOf(GroupOutcome.Failed));
+
+            // Which of the two workflows each group took, so a log alone answers how many
+            // were a First run and how many a Weekly run. Only where the groups carried a
+            // path at all, so a log from a caller that never said stays as it was.
+            List<string> paths = new List<string>();
+
+            foreach (GroupRecord record in GroupRecords)
+            {
+                if (!string.IsNullOrEmpty(record.RunPath))
+                {
+                    paths.Add(record.RunPath);
+                }
+            }
+
+            if (paths.Count > 0)
+            {
+                Blank();
+
+                foreach (string line in RunPath.ResultLines(paths))
+                {
+                    Line(line);
+                }
+            }
 
             IList<WrittenFile> files = WrittenFiles;
             Blank();
