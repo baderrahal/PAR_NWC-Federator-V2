@@ -961,11 +961,11 @@ namespace Federator.Addin.Engine
             {
                 outcome.AddReportWarning(
                     "renumbering the pictures threw " + error.GetType().Name + ": " + error.Message
-                    + ", the pictures keep their run order numbers and every link still opens its picture");
+                    + ", the picture numbers may be a mix of run order and report order, the log names the pass that stopped");
                 log.Failure(
                     "renumbering the pictures for " + job.Building,
                     error,
-                    "kept going, the pictures keep their run order numbers");
+                    "kept going, the pictures that were not yet renamed keep their run order numbers");
             }
         }
 
