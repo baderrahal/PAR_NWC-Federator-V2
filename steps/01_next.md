@@ -10,25 +10,27 @@ can be written here and only proved on the local machine.
 
 ## Order
 
+Changed by Bader on 2026-09-07. F15 moved to the end of the code fixes. F5 to F17 are done.
+
 1. F5
 2. F6
 3. F7
 4. F8
 5. F22
-6. F23, once Q20 is answered
-7. F1, F2 and F4 as one PR, done. F3 was done inside F22
-8. F9
-9. F10
-10. F11
-11. F17
-12. F15
-13. F12
-14. F13
-15. F14
-16. F16
-17. F18
-18. F20
-19. F21
+6. F1, F2 and F4 as one PR, done. F3 was done inside F22
+7. F9
+8. F10
+9. F11
+10. F17
+11. F20
+12. F16
+13. F21
+14. F12
+15. F13
+16. F14
+17. F15
+18. F18 when the sample arrives
+19. F23 when Q20 is answered
 
 F19 is dropped.
 
@@ -136,6 +138,7 @@ F19 is dropped.
 - Files `src/Federator.Addin/Engine/SetBuilder.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`
 - LOCAL MACHINE ONLY to prove, and the proof is a run with no ObjectDisposedException
 - Size: medium and the riskiest here. Disposing a wrapper the code still uses throws at run time. Last of the code fixes, one file at a time, one run each. Q14 answered fix now
+- Read `steps/05_api_notes.md` first if it exists
 
 ## F12 Fix the docs that contradict the code
 
@@ -178,6 +181,7 @@ F19 is dropped.
 - Files `.github/workflows/tests.yml`
 - CONTAINER to edit, GitHub to prove
 - Size: add `push` with `branches: [main]` to the `on` block. Same job as today. Q18 answered yes
+- DONE on 2026-09-07. The proof is the push run on main after the merge
 
 ## F21 The log answers timing and counts
 
