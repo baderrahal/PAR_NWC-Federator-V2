@@ -438,6 +438,61 @@ namespace Federator.Core.Tests
             Assert.That(reason, Does.Contain("left alone"));
         }
 
+        // F24. A group whose NWF was rebuilt from the scan is judged the way an opened
+        // group is: DONE when everything after the rebuild went right, FAILED when the
+        // rebuild appended nothing.
+        [Test]
+        public void ARebuiltGroupWithEverythingElseRightIsDone()
+        {
+            GroupFacts facts = Clean();
+            facts.Decision = RerunDecision.Rebuilt;
+            facts.AppendedCount = 5;
+            facts.FileCount = 5;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Done));
+            Assert.That(reason, Is.Null);
+        }
+
+        [Test]
+        public void ARebuildThatAppendedNothingIsFailed()
+        {
+            GroupFacts facts = Clean();
+            facts.Decision = RerunDecision.Rebuilt;
+            facts.AppendedCount = 0;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Does.Contain("rebuild produced nothing"));
+        }
+
+        [Test]
+        public void ARebuiltGroupWithAFileThatWouldNotAppendIsPartial()
+        {
+            GroupFacts facts = Clean();
+            facts.Decision = RerunDecision.Rebuilt;
+            facts.AppendedCount = 4;
+            facts.FileCount = 5;
+            facts.FailedFileCount = 1;
+
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Partial));
+        }
+
+        [Test]
+        public void ARebuiltGroupWhoseNwdDidNotPublishIsFailed()
+        {
+            GroupFacts facts = Clean();
+            facts.Decision = RerunDecision.Rebuilt;
+            facts.AppendedCount = 5;
+            facts.NwdRequested = true;
+            facts.NwdOnDisk = true;
+            facts.NwdPublishReportedSuccess = false;
+
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Failed));
+        }
+
         [Test]
         public void AChangedGroupWhoseNwfIsGoneOrThatThrewIsStillFailed()
         {

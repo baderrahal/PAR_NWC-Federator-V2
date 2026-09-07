@@ -667,7 +667,8 @@ namespace Federator.Addin.Ui
         /// Which of the two workflows each group is expected to take, shown in the group
         /// list before Run. Read off whether the NWF is already at its output path and
         /// whether an XML is picked, through Federator.Core.Rerun.RunPath. Nothing here
-        /// opens a file, so CHANGED cannot be known yet and never shows here.
+        /// opens a file, so Rebuilt cannot be known yet and never shows here. It shows
+        /// once PreviewRunPaths has opened the NWFs at Run, and after the run.
         /// </summary>
         private void RefreshRunPaths()
         {
@@ -740,6 +741,93 @@ namespace Federator.Addin.Ui
             }
 
             return labels;
+        }
+
+        /// <summary>
+        /// Opens each NWF that is on disk and compares it with the scan, so the confirm
+        /// dialog counts the Rebuilt groups and the list shows them before Run. F24.
+        ///
+        /// Only when nothing open would be lost. Opening an NWF replaces the open document
+        /// and the person has not yet said yes, and "Run cancelled before anything was
+        /// cleared" has to stay true. Where something is open the dialog says Rebuilt is
+        /// only known once each NWF is opened, and the run settles the label.
+        /// </summary>
+        private void PreviewRunPaths(IList<FederationJob> jobs)
+        {
+            string discarded;
+
+            try
+            {
+                discarded = DocumentGuard.WhatClearWouldDiscard();
+            }
+            catch (Exception error)
+            {
+                discarded = "Navisworks would not say what is open (" + error.Message + ").";
+            }
+
+            if (discarded != null)
+            {
+                log.Line("PREVIEW  not done, opening each NWF would discard what is open before the confirm dialog: "
+                    + discarded);
+                return;
+            }
+
+            try
+            {
+                IList<string> labels = FederationEngine.PreviewRunPaths(jobs, XmlIsPicked(), log, SetProgress);
+
+                for (int i = 0; i < jobs.Count && i < labels.Count; i++)
+                {
+                    GroupRow group = GroupFor(jobs[i]);
+
+                    if (group != null)
+                    {
+                        group.RunAs = labels[i];
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure("checking the NWFs before the run", error, "the labels stay as expected and the run decides");
+            }
+        }
+
+        /// <summary>The label each group ended with, read off what the engine did.</summary>
+        private void ShowRunPathsAfterTheRun(IList<JobOutcome> outcomes, bool xmlPicked)
+        {
+            if (outcomes == null)
+            {
+                return;
+            }
+
+            foreach (JobOutcome outcome in outcomes)
+            {
+                GroupRow group = GroupFor(outcome.Job);
+
+                if (group != null)
+                {
+                    group.RunAs = RunPath.Label(outcome.Decision, xmlPicked);
+                }
+            }
+        }
+
+        /// <summary>The row a job was built from, matched on the NWF name, which the collision check keeps unique.</summary>
+        private GroupRow GroupFor(FederationJob job)
+        {
+            if (job == null)
+            {
+                return null;
+            }
+
+            foreach (GroupRow group in groups)
+            {
+                if (!group.IsBlocked && string.Equals(group.NwfName, job.OutputName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return group;
+                }
+            }
+
+            return null;
         }
 
         // ---------- Step 3, outputs ----------
@@ -1145,6 +1233,10 @@ namespace Federator.Addin.Ui
             // labels are read again right before they are counted.
             RefreshRunPaths();
 
+            // Then each NWF on disk is opened and compared, where that loses nothing, so
+            // the dialog can count the Rebuilt groups and the list can show them.
+            PreviewRunPaths(jobs);
+
             if (!ConfirmClear(TickedRunPaths()))
             {
                 Log("Run cancelled before anything was cleared.");
@@ -1321,7 +1413,11 @@ namespace Federator.Addin.Ui
 
                 FederationEngine engine = new FederationEngine(
                     SetProgress, log, true, exchange, options, nwfFolder);
-                engine.Run(jobs);
+                IList<JobOutcome> outcomes = engine.Run(jobs);
+
+                // What each group actually did, in the list. A group that was rebuilt
+                // reads Rebuilt here once the run has settled it.
+                ShowRunPathsAfterTheRun(outcomes, exchange != null);
 
                 // What the Revit container inside each NWC says its building is. Only
                 // knowable once a document has been open, so it goes in after the run.

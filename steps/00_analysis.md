@@ -118,6 +118,9 @@ One line each. File, line, what is wrong, what it breaks.
 - B11 `src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1390` to `1454` `OnRunOpenDocument` never calls `WriteTheResultAndCopyTheLog`, and `FederationEngine.RunOpenDocument` never calls `log.GroupFinished`. An open file run leaves no RESULT block and no log copy beside the file
 
 - B12 OPEN, waiting on Bader. Bader opened an NWD from ACC and the tool showed an error beside the file. The exact text, the place in the window, the path, and whether Navisworks opens that file on its own are not known yet. See Q20. F23 fixes it once Q20 is answered
+- B13 On CHANGED the NWF is left alone even when the scan folder holds the right files. In `steps/logs/run-20260907-093440.log`, 1B06BC, 1B06G1, 1B06K1, 1B06M1, 1B06P1 and 1B06PE have an NWF on disk that was built from `01_WIP\BI_BIM\Native Model\NWC` and holds fewer files than the scan. 1B06BC holds 4 of 5, EL missing. 1B06K1 holds 1 of 4. The tool read CHANGED, left the NWF, and the old build published an NWD off it, so the NWD is missing NWCs. F9 stops the stale NWD but nothing rebuilds the NWF. F24 fixes it, Q22
+- B14 UNITS says THE DOCUMENT DID NOT FOLLOW on 11 of 14 groups in the same log. The models are set to meters, the document stays in feet, and the report is written in feet, tolerance included. F26 fixes it, Q23
+- B15 12 of 26 groups were dropped before the run started in the same log, 30 of 76 ticked files never federated. Every group without AR, EL, ME or ST was dropped, including 1B0601 with LV, MV, SL and 1B0612 with TM, TR. The rule is not shown in the window and overrides the ticks. F25 fixes it, Q21
 
 ## 4 Logic problems
 

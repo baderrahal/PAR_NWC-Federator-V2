@@ -167,7 +167,10 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheChangedLinesNameEveryFileAddedAndEveryFileRemoved()
+        // F24. The comparison names the NWF and the counts and says it is rebuilt. Which
+        // file was added, moved or removed is said once, by NwfRebuildPlan, so a move
+        // never reads as an addition and a removal here and a move there.
+        public void TheChangedLinesNameTheNwfTheCountsAndTheRebuild()
         {
             IList<string> lines = NwfComparison
                 .Compare(Group(Ar, St, Me), Group(Ar, St, El))
@@ -175,11 +178,10 @@ namespace Federator.Core.Tests
 
             string all = string.Join(Environment.NewLine, new List<string>(lines).ToArray());
 
+            Assert.That(lines.Count, Is.EqualTo(2), "the heading and the counts, no per file line here");
             Assert.That(all, Does.Contain("CHANGED"));
-            Assert.That(all, Does.Contain("left exactly as it is"));
-            Assert.That(all, Does.Contain("added   " + In(Incoming, El)));
-            Assert.That(all, Does.Contain("removed " + In(Incoming, Me)));
-            Assert.That(all, Does.Contain("2 unchanged, 1 added, 1 removed"));
+            Assert.That(all, Does.Not.Contain("left exactly as it is"));
+            Assert.That(all, Does.Contain("2 unchanged, 1 added, 1 removed, so it is rebuilt from the scan folder"));
         }
 
         [Test]
@@ -193,10 +195,6 @@ namespace Federator.Core.Tests
             Assert.That(comparison.Added.Count, Is.EqualTo(1));
             Assert.That(comparison.Removed.Count, Is.EqualTo(1));
             Assert.That(comparison.Moved, Is.EqualTo(new[] { Ar }));
-
-            string all = string.Join(Environment.NewLine,
-                new List<string>(comparison.Lines(@"C:\out\x.nwf")).ToArray());
-            Assert.That(all, Does.Contain("reads as a move"));
         }
 
         [Test]
@@ -258,32 +256,5 @@ namespace Federator.Core.Tests
             Assert.Throws<ArgumentNullException>(delegate { NwfComparison.Compare(new string[0], null); });
         }
 
-        /// <summary>
-        /// F9. The one line a CHANGED group leaves when the run skips it. It names the
-        /// group, the files that differ, and every step that was not done, so a log alone
-        /// says why nothing happened to the group.
-        /// </summary>
-        [Test]
-        public void TheSkipLineNamesTheGroupTheDifferenceAndWhatWasNotDone()
-        {
-            // Built with Path.Combine so the file names split the same way on Windows,
-            // where the run happens, and on Linux, where the container runs the tests.
-            string folder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "in");
-            NwfComparison comparison = NwfComparison.Compare(
-                new[] { System.IO.Path.Combine(folder, "a.nwc"), System.IO.Path.Combine(folder, "b.nwc") },
-                new[] { System.IO.Path.Combine(folder, "a.nwc"), System.IO.Path.Combine(folder, "c.nwc") });
-
-            string line = comparison.SkipLine("1C07BC");
-
-            Assert.That(comparison.Decision, Is.EqualTo(RerunDecision.Changed));
-            Assert.That(line, Does.StartWith("GROUP    1C07BC skipped"));
-            Assert.That(line, Does.Contain("no longer matches the folder"));
-            Assert.That(line, Does.Contain("1 added, 1 removed"));
-            Assert.That(line, Does.Contain("added c.nwc"));
-            Assert.That(line, Does.Contain("removed b.nwc"));
-            Assert.That(line, Does.Contain("no units change"));
-            Assert.That(line, Does.Contain("no NWD"));
-            Assert.That(line, Does.Not.Contain("\n"), "one line, not a block");
-        }
     }
 }

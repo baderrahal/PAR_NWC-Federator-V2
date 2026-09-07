@@ -10,7 +10,7 @@ can be written here and only proved on the local machine.
 
 ## Order
 
-Changed by Bader on 2026-09-07. F15 moved to the end of the code fixes. F5 to F17 are done.
+Changed by Bader on 2026-09-07. F15 moved to the end of the code fixes, and F24, F26 and F25 added from the run log of 2026-09-07, right after F20. F5 to F20 are done.
 
 1. F5
 2. F6
@@ -23,14 +23,17 @@ Changed by Bader on 2026-09-07. F15 moved to the end of the code fixes. F5 to F1
 9. F11
 10. F17
 11. F20
-12. F16
-13. F21
-14. F12
-15. F13
-16. F14
-17. F15
-18. F18 when the sample arrives
-19. F23 when Q20 is answered
+12. F24
+13. F26
+14. F25
+15. F16
+16. F21
+17. F12
+18. F13
+19. F14
+20. F15
+21. F18 when the sample arrives
+22. F23 when Q20 is answered
 
 F19 is dropped.
 
@@ -182,6 +185,29 @@ F19 is dropped.
 - CONTAINER to edit, GitHub to prove
 - Size: add `push` with `branches: [main]` to the `on` block. Same job as today. Q18 answered yes
 - DONE on 2026-09-07. The proof is the push run on main after the merge
+
+## F24 Rebuild a CHANGED NWF from the scan
+
+- Closes B13, Q22
+- Files `src/Federator.Core/Rerun/NwfRebuildPlan.cs`, `NwfComparison.cs`, `RunPath.cs`, `GroupJudgement.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`
+- CONTAINER for the plan, the label and the judgement, LOCAL MACHINE ONLY to prove the rebuild and whether the clear keeps the saved tests
+- DONE on 2026-09-07, proof pending. See `log.md`. The proof is first in `03_bader_next.md`
+
+## F26 Units always meters
+
+- Closes B14, Q23
+- Files `src/Federator.Addin/Engine/DocumentUnits.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Core/Rerun/GroupJudgement.cs`
+- LOCAL MACHINE ONLY to prove, CONTAINER for the judgement
+- The report is always in meters, never feet. Force the document to meters and fail the group loudly if it will not follow. The run log of 2026-09-07 says THE DOCUMENT DID NOT FOLLOW on 11 of 14 groups
+- Size: medium. Which call moves Document.Units is UNKNOWN, docs/scan.md says Document.Units is read only and only the models can be set
+
+## F25 Drop the hidden discipline rule
+
+- Closes B15, Q21
+- Files `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`, the grouping in `src/Federator.Core/Grouping`, maybe `ScanFindings`
+- CONTAINER for the grouping rule, LOCAL MACHINE ONLY to see the list
+- Federate what Bader ticks. Every ticked group gets its NWF and NWD. Clash only where the group holds two or more disciplines. No hidden discipline rule. The run log of 2026-09-07 dropped 12 of 26 groups and 30 of 76 files without saying why
+- Size: medium. Find where the rule lives first, the log shows it as `skipped` in the GROUPS block
 
 ## F21 The log answers timing and counts
 

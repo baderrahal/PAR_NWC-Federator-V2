@@ -97,8 +97,8 @@ namespace Federator.Core.Rerun
     /// Decides how one group ended, judged against what was ASKED FOR rather than against
     /// what happens to be on disk.
     ///
-    ///   DONE     everything requested for this group succeeded
-    ///   PARTIAL  something requested did not complete, or the group was CHANGED
+    ///   DONE     everything requested for this group succeeded, a rebuilt group included
+    ///   PARTIAL  something requested did not complete, or the group was CHANGED and left alone
     ///   FAILED   something requested threw or produced nothing
     ///
     /// A step deliberately switched off is not a failure. Judging a group by whether an
@@ -145,6 +145,16 @@ namespace Federator.Core.Rerun
             if (facts.Decision == RerunDecision.Build && facts.AppendedCount == 0)
             {
                 reason = "nothing appended, so the group produced nothing";
+                return GroupOutcome.Failed;
+            }
+
+            // A rebuilt group appended the scan into a cleared document, exactly as a
+            // Build does, so nothing appended is the same failure. Everything after the
+            // rebuild is judged the way an opened group is, so a rebuilt group whose
+            // units, clash step, reports and NWD all went right is DONE.
+            if (facts.Decision == RerunDecision.Rebuilt && facts.AppendedCount == 0)
+            {
+                reason = "nothing appended, so the rebuild produced nothing";
                 return GroupOutcome.Failed;
             }
 

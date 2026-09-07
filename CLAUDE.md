@@ -101,9 +101,14 @@ confirm dialog:
     First run                  no NWF at the output path yet
     Weekly run                 the NWF is there and no XML is picked
     Weekly run plus XML        the NWF is there and an XML is picked
-    Skipped (changed on disk)  the NWF points at a different file list. Only known
-                               once the NWF is opened, so it shows in the log, not
-                               before the run
+    Rebuilt                    the NWF is there and points at a different file list,
+                               so it is cleared and rebuilt from the scan folder with
+                               its saved tests kept, then run as a Weekly run. Only
+                               known once the NWF is opened, so the window opens each
+                               NWF at Run where nothing open would be lost, and
+                               otherwise the run settles it and the list shows it after
+    Skipped (changed on disk)  a group whose file list differed and that was left
+                               alone. Since F24 no group ends this way
     Unknown                    the NWF folder is not picked yet, or a case the rule
                                cannot name
 
@@ -196,8 +201,12 @@ and 6 does not read as broken.
     no NWF at the output path, build it, there is no history to lose
     NWF there and its file list matches the group, open it, do not clear, do not
       re-append, log OPENED
-    NWF there and the file list differs, log CHANGED naming every file added and
-      every file removed, and touch nothing. Bader decides
+    NWF there and the file list differs, log CHANGED with the counts, then REBUILT
+      naming every file added, moved and removed, read the saved tests, clear the
+      document, append the scan in scan order, put the saved sets and tests back
+      where the clear dropped them, and only then save the NWF over. Bader decided
+      this on 2026-09-07, Q22, so the rule above holds for a matching NWF and a
+      differing one is rebuilt rather than left alone
   The file list is read out of the opened NWF. No side file records what went in,
   because a side file can disagree with the NWF and the NWF is the record
 - The file list is read from Model.FileName, never from Model.SourceFileName.
@@ -255,13 +264,24 @@ and 6 does not read as broken.
   clashes live, and a set already at its path is left alone too, because a second copy
   would leave two sets at one path and a locator resolving to whichever came first.
   Both are counted and reported as already there, separately from what was created
-- A CHANGED group is left alone entirely, and the check comes BEFORE anything touches
-  the document in memory: no units change, no set, no test, no save, no NWD, and its
-  judgement is PARTIAL whatever its NWD looks like. It used to fall through to the units
-  change and the NWD publish, so every model had its units set and an NWD was published
-  off a federation that no longer matched the folder. One GROUP line names the group,
-  the files added and removed, and that nothing was done. The line lives in
-  Federator.Core.Rerun.NwfComparison.SkipLine so it can be tested. Bader decides
+- A CHANGED group is REBUILT from the scan folder, keeping the tests saved inside it,
+  and the rebuild comes BEFORE the units change and the clash step, so from there it is
+  an opened group. It used to be left alone entirely, and on 2026-09-07 six groups had
+  an NWF built from an older folder with fewer files, 1B06BC 4 of 5 with EL missing,
+  1B06K1 1 of 4, so the NWDs went out missing models and nothing rebuilt the NWF. The
+  plan lives in Federator.Core.Rerun.NwfRebuildPlan: a file on both sides under a
+  different folder is a MOVE, a file only in the scan is an addition, a file only in
+  the NWF is a removal, and the files to append are the scan in scan order. The log
+  carries one shape, REBUILT with the three counts, one line per file, then one saved
+  tests line with three numbers read off the document: how many were read before the
+  clear, how many were there after the appends, how many after the copy was put back.
+  The copy is DocumentClashTests.CreateCopy and CopyFrom for the tests and the same
+  pair on DocumentSelectionSets for the sets, the sets first because a side points at
+  a set. Whether Document.Clear keeps them is UNKNOWN until a run, so the numbers are
+  read and never assumed. The NWF on disk is only saved over once every test read before
+  the clear is back, and otherwise the group fails, says so, and the NWF keeps its file
+  list and its tests. A rebuilt group ends as Rebuilt and is judged DONE when everything
+  after the rebuild went right, in Federator.Core.Rerun.GroupJudgement. Q22
 - A test already in the document is left as it is, which means a tolerance changed in the
   XML never reaches it. That is right and it was silent, so now it is REPORTED. Every
   test in both is compared on the tolerance, the test type, merge composites, and per
@@ -438,8 +458,10 @@ and 6 does not read as broken.
   failure. Judging a group by whether an NWD existed, with republishing switched
   off, once reported all 22 groups of a clean run as FAILED.
     DONE     everything requested for this group succeeded
-    PARTIAL  something requested did not complete, or the group was CHANGED
-    FAILED   something requested threw or produced nothing
+    PARTIAL  something requested did not complete, or the group was CHANGED and
+             left alone, which since F24 no group is
+    FAILED   something requested threw or produced nothing, a rebuild that appended
+             nothing or could not keep its saved tests included
   The rule lives in Federator.Core.Rerun.GroupJudgement, with no Navisworks types
   in it, so it can be tested. The outcome and the reason for it come out of one
   pass, so the two can never disagree
