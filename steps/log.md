@@ -2,6 +2,50 @@
 
 Newest entry at the top.
 
+## 2026-09-07 F10, each output gated on its own flag
+
+### What was done
+
+- `steps/logs` still holds only its README. No run log yet, so every fix from F5 onward stays pending local proof and nothing about them was recorded
+- F10 done. The ClashReport that feeds the workbook, the XML and the HTML page was built only when the workbook or the XML was wanted, so the page rode on the workbook flag. The pictures were rendered only when the workbook was wanted, so they rode on it too. Both are fixed on today, so nothing was lost yet, and switching the workbook off would have taken the page and the photos with it
+- The rule is `Federator.Core.Report.OutputPlan`, built from the ReportOptions flags. The report is built when the workbook, the XML or the page is wanted. Pictures are rendered when they are wanted and at least one of the three is wanted to link them from, because the page embeds them, the workbook links them and the XML carries their href. With none wanted there is nowhere a picture could be found
+- The engine reads that plan in `CreateAndRunTheTests` and `WriteWorkbook`. The NWD keeps its own flag, republishNwd, which was already its own
+- Every output gets one log line whichever way it went. Written ones keep the `attempt` and `written` lines. Skipped ones get `XLSX     skipped  <reason>` from the new `RunLog.WriteSkipped`, in the same shape, with the reason: not wanted this run, no report folder, no clash step ran, images switched off, nowhere to link a picture, or the stylesheet not found. One `OUTPUTS` line names the four flags before the clash step. The lines come from the shared engine methods, so the scanned run and the open file run write the same
+- The window wiring was checked. Every tick box reaches the engine: the XML box, the thumbnails box, the five image status boxes, apply file settings, compact resolved, date the NWD, include subfolders. The engine reads three report flags that no tick box sets, because CLAUDE.md fixed them on: the workbook, the page and the pictures. Pictures still switch off when every status box is unticked. Nothing was broken and no box was added
+- What each output contains is untouched
+- Thirteen Core tests added. Twelve in `OutputPlanTests`, eight of them the full table of the three report flags, and one in `RunLogTests` for the skipped line
+- Core tests under mono on Linux: 850 passed, 40 failed, 32 skipped, 922 total. The 40 are the same Windows path and file locking failures as before, none new
+- The add-in was not compiled. It cannot compile in the container
+- `03_bader_next.md` has the F10 proof after the F9 proof. The proof Bader named needs an Excel box and an HTML box that the window does not have and that were not added, so the proof uses what the window can switch: the XML box and the five image status boxes
+
+### What remains
+
+- F23 once Q20 is answered, then F11 onward in `01_next.md` in order
+- The proofs from F5 onward on the local machine, then P1, P2, P3
+- Q20 from Bader
+
+### Known bugs
+
+- L3 fixed in code, pending local proof. Run one group with the XML box on and every image status unticked, the log must show XML written, IMAGES skipped with images switched off, XLSX and HTML written. Then the XML box off and the statuses back on, the log must show XML skipped as not wanted and the pictures rendered
+- L2 fixed in code, pending local proof. Add or remove one NWC in a folder whose NWF exists, press Run, the group must show Skipped (changed on disk), the log must show no UNITS line for it, and the NWF must keep its old modified time
+- B7 fixed in code, pending a local run of `build/probe-window-defaults.ps1`
+- B1 fixed in code, pending local proof. Run one building twice, the second press must show OPENED, the sets present and the tests still run
+- B2 fixed in code, pending local proof. Open one NWF, press Run the open file, the reports must land in one Clash Reports folder beside the file, no folder inside a folder
+- B11 fixed in code, pending local proof. Open one NWF, press Run the open file, the log must end with a RESULT block for that file and a copy of the log must sit beside it
+- L1 fixed in code, pending local proof. Open one NWF that holds tests, pick no XML, press Run the open file, the tests must run and the Excel must be written. Then the same on the scanned run with no XML on a folder whose NWFs already hold tests
+- F22 done in code, pending local proof. Scan a folder that holds some NWFs and lacks others, pick no XML, the list must show First run beside the groups with no NWF and Weekly run beside the others, and the confirm dialog must show the counts
+- B3, B4, B8 and B10 fixed
+- B12 OPEN, waiting on Q20
+- B5, B6, B9, L4 to L8, M1 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F10 PR
+2. Bader answers Q20 in `02_questions.md`
+3. Bader follows `03_bader_next.md` and drops the logs into `steps/logs`
+4. Worker reads the logs and records the proofs in this file
+5. Worker starts F11, or F23 if Q20 is answered first
+
 ## 2026-09-07 F9, a CHANGED group is left alone before anything touches it
 
 ### What was done
