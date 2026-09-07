@@ -200,6 +200,7 @@ F19 is dropped.
 - LOCAL MACHINE ONLY to prove, CONTAINER for the judgement
 - The report is always in meters, never feet. Force the document to meters and fail the group loudly if it will not follow. The run log of 2026-09-07 says THE DOCUMENT DID NOT FOLLOW on 11 of 14 groups
 - Size: medium. Which call moves Document.Units is UNKNOWN, docs/scan.md says Document.Units is read only and only the models can be set
+- DONE on 2026-09-07, proof pending. See `log.md`. The numbers are converted in Core rather than waiting for the document to follow
 
 ## F25 Drop the hidden discipline rule
 

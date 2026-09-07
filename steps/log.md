@@ -2,6 +2,58 @@
 
 Newest entry at the top.
 
+## 2026-09-07 F26, the report is always in metres
+
+### What was done
+
+- `steps/logs` holds one run log, `run-20260907-093440.log`, already read and recorded under F24. No new log since, so every fix from F5 onward stays pending local proof
+- F26 done, bug B14. Every UNITS line of that log was read. 14 groups say the document is in Feet and the report needs Meters. 12 lines say THE DOCUMENT DID NOT FOLLOW. Only 2 groups followed, 1B06K1 and 1B06M1, and both had exactly one model set. Every group with 2 or more models set stayed in feet
+- What the code set and what it read. It SET each model through `DocumentModels.SetModelUnitsAndTransform`, which is the only public managed member in the API that sets units at all, measured across all 4027 types on 2026-09-01, docs/scan.md 4q. It then READ `Document.Units`, which has no setter anywhere, and judged the report by it
+- Why a document can stay in feet after every model is set. Two different things carry the word units. A model's units are a per file override, which is what `SetModelUnitsAndTransform` writes and what the Units and Transform dialog shows. What the scene is measured and displayed in is an application option, Options, Interface, Display Units, which Autodesk describes as used to measure geometry, align appended models and set tolerances for clash detection. It is not a document property and the API exposes no setter for it. So setting every model changes each file and leaves the display unit alone. Why one model set made `Document.Units` report metres and two did not is UNKNOWN and cannot be read off the DLL
+- The fix does not wait for the document to follow. New `src/Federator.Core/Report/ReportUnits.cs` converts the FINISHED report into metres in one pass, before the workbook, the page or the XML is written, so all three read the same numbers and the same label. Converted: the tolerance of every test, and the distance and the clash point of every row. Not converted: grid location, level, status, counts, names, because none of them is a measurement
+- The factors are `ExchangeUnits`, which is the one conversion table in this repo. Nothing was duplicated
+- A unit the table has not been taught is REFUSED. Nothing is written, three skipped lines are logged, and the group is FAILED through the error list, which `GroupJudgement` already turns into FAILED. No rule in the judgement needed changing
+- Setting the models is kept, unchanged, because it fixes what the person sees in Navisworks. No application option is touched, so nothing has to be restored afterwards
+- The log line changed. `UNITS    <n> models set, <n> that would not, document shows Feet (ft). Every report number is converted to Meters (m) before it is written`, then after the clash step `UNITS    every number converted from ft to m, one ft is 0.3048 m, <n> tests and <n> rows. The report is written in Meters (m)`. The words DID NOT FOLLOW are gone from the code
+- The window combo is now labelled Model units, its grey line reads `What Navisworks shows. The report is always in metres.`, and the run settings carry two lines, `model units` and `report units : Meters (m), always, converted before anything is written`
+- Tests: `ReportUnitsTests`, sixteen. The table over m, ft, in, mm and cm. The two report unit names. The tolerance converted with its label, 0.2460629921 ft reading 0.075m in the cell. A row's distance and clash point converted with the sign kept. Nothing but the measured numbers touched. The report label afterwards. A document already in metres converting nothing and not doubling. An unknown unit refused with nothing half converted and the label not faked. A document that said nothing about its units refused. A null report refused. The log line naming the unit, the factor and the counts. Every test and every row counted
+- Core tests under mono on Linux, before: 863 passed, 39 failed, 32 skipped, 934 total. After: 879 passed, 39 failed, 32 skipped, 950 total. The 39 are the same Windows path and file locking failures, none new
+- The add-in was not compiled. It cannot compile in the container
+
+### What remains
+
+- F25 next, then F16, F21, F12, F13, F14, F15, F18 when the sample arrives, F23 when Q20 is answered
+- The proofs from F5 onward on the local machine, F24 first and F26 second, then P1, P2, P3
+- Q20 from Bader, and whether the outstanding count setting stays now that nothing shows it
+
+### Known bugs
+
+- B14 fixed in code, pending local proof. Run one group whose models are in feet, the report header must say Meters (m), one clash distance must match the Clash Detective panel when the panel is switched to metres, and the log must carry the new UNITS line with no DID NOT FOLLOW anywhere
+- B13 fixed in code, pending local proof. Pull main, build, install, scan the same C06 folder, the six groups must show Rebuilt in the list, and after the run each NWF must hold every scanned file and the NWD must hold them too
+- B15 OPEN, F25 next
+- M5 closed on the Core side, still open on the add-in side because the add-in build stays local
+- L4 fixed in code, pending local proof. The picture on row N of a block must be picture N in the order the Clash Detective panel lists the clashes
+- B9 fixed. The local proof is only that the add-in builds
+- L3 fixed in code, pending local proof. The XML box on with every image status unticked, then the other way round
+- L2 fixed in code, pending local proof. Under F24 a folder that differs is rebuilt, so the proof is that no UNITS line comes before the REBUILT block
+- B7 fixed in code, pending a local run of `build/probe-window-defaults.ps1`
+- B1 fixed in code, pending local proof. Run one building twice, the second press must show OPENED
+- B2 fixed in code, pending local proof. One Clash Reports folder beside the file, no folder inside a folder
+- B11 fixed in code, pending local proof. The open file run must end with a RESULT block and a log copy
+- L1 fixed in code, pending local proof. No XML, the tests saved in the NWF must run
+- F22 done in code, pending local proof. The list must show First run and Weekly run per group
+- B3, B4, B8 and B10 fixed
+- B12 OPEN, waiting on Q20
+- B5, B6, L5 to L8, M1 to M4, M6 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F26 PR
+2. Bader pulls main, builds, installs, and works through `03_bader_next.md`, F24 first and F26 second, then the rest, and drops every log into `steps/logs`
+3. Bader answers Q20 in `02_questions.md` and says whether the outstanding count setting stays
+4. Worker reads the logs and records the proofs in this file
+5. Worker starts F25, dropping the hidden discipline rule
+
 ## 2026-09-07 F24, a CHANGED NWF is rebuilt from the scan
 
 ### What was done

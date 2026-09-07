@@ -33,8 +33,12 @@ namespace Federator.Addin.Engine
     /// own Units then follows from the models it holds is UNKNOWN, because it cannot be
     /// read off reflection and needs a run to see.
     ///
-    /// This therefore sets every model, logs what the document said before and after, and
-    /// says plainly when the document did not follow. It never claims the change worked.
+    /// This therefore sets every model and logs what the document said before and after.
+    /// It never claims the change worked, and since F26 it does not need to: what the
+    /// document reports no longer decides the report units. Federator.Core.Report.ReportUnits
+    /// converts every number in the finished report into meters before anything is written,
+    /// so a document that stays in feet costs the person a feet reading on screen and
+    /// nothing else. Setting the models is kept because it also fixes what they see.
     ///
     /// IT IS A MUTATION. Setting a model's units changes what the NWF holds, so it is
     /// logged with what the document was and what it became. It is on for every run,
@@ -120,15 +124,9 @@ namespace Federator.Addin.Engine
             }
 
             log.Line("UNITS    " + changed + " model" + (changed == 1 ? "" : "s") + " set, "
-                + failed + " that would not. The document was " + Name(before)
-                + " and reports " + Name(after) + " now.");
-
-            if (after != wanted)
-            {
-                log.Line("UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this "
-                    + "report is in " + Name(after) + ", the tolerance included, and the "
-                    + "report says so rather than pretending otherwise.");
-            }
+                + failed + " that would not, document shows " + Name(after)
+                + ". Every report number is converted to " + Federator.Core.Report.ReportUnits.Name
+                + " before it is written, so the report is metric whatever this says.");
 
             return after;
         }

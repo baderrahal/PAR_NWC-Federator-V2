@@ -239,13 +239,13 @@
                         <!-- The NWD, the client page and the photos used to be three tick
                              boxes. A weekly run wants all three every time, so they are
                              fixed on and are not a decision any more. -->
-                        <Label Grid.Row="3" Grid.Column="0" Content="Report units" />
+                        <Label Grid.Row="3" Grid.Column="0" Content="Model units" />
                         <ComboBox Grid.Row="3" Grid.Column="1" x:Name="UnitsBox"
                                   HorizontalAlignment="Left" MinWidth="200"
                                   VerticalAlignment="Center" Margin="0,8,0,0"
                                   SelectionChanged="OnUnitsChanged" />
                         <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource TickHelp}"
-                                   Text="The document is put into this before the clash runs, so every number is in it." />
+                                   Text="What Navisworks shows. The report is always in metres." />
                         <Label Grid.Row="5" Grid.Column="0" Content="Logo" />
                         <TextBox Grid.Row="5" Grid.Column="1" x:Name="LogoBox"
                                  VerticalAlignment="Center" />
