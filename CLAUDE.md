@@ -767,10 +767,14 @@ and 6 does not read as broken.
   that sets units at all is
   DocumentModels.SetModelUnitsAndTransform(Model, Units, Transform3D, bool). So each MODEL
   can be set and the DOCUMENT cannot. Whether Document.Units follows is UNKNOWN and no
-  longer matters, because it no longer decides the report. Document.Units is a read of what
-  Navisworks displays, and the words DID NOT FOLLOW are gone from the log. The combo on the
-  Outputs step is MODEL units, defaulting to Meters, and its help line says the report is
-  always in metres
+  longer matters, because it no longer decides the report. What Document.Units actually
+  reports is UNKNOWN too: setting a model writes a per file override, the same one the
+  Units and Transform dialog shows, while what the scene is measured and displayed in is
+  an application option, Options, Interface, Display Units, which Autodesk documents as
+  what tolerances for clash detection are set in. Whether Document.Units reads that option
+  is not readable off the DLL, so it is not claimed. The words DID NOT FOLLOW are gone from
+  the log. The combo on the Outputs step is MODEL units, defaulting to Meters, and its help
+  line says the report is always in metres
 - A federation that already exists needs NO SCAN. In Navisworks a person opens a file,
   opens Clash Detective, presses Run and reads the results, and nothing asks them where
   their models came from. So there are two ways to run and they are told apart by what they
