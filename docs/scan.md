@@ -1905,13 +1905,21 @@ client's report puts the most clashes first.
 A measurement is checked against the rule above rather than a loose pattern, which is what
 lets it catch `x:33.170986` while every column is present.
 
-#### One difference this does not close
+#### One difference this did not close, closed by F17 on 2026-09-07
 
-The clash pictures are numbered by the order the tests RAN, because they are rendered
+The clash pictures WERE numbered by the order the tests RAN, because they are rendered
 during the clash walk, and the report is sorted afterwards. Theirs numbers by block. So
-`cd000001.jpg` is not necessarily the first block's first clash in ours. Every row links to
-its own file explicitly, so nothing is mislabelled, but the two numbering schemes are not
-the same and matching them would mean rendering after the run rather than during it.
+`cd000001.jpg` was not necessarily the first block's first clash in ours. Every row linked to
+its own file explicitly, so nothing was mislabelled, but the two numbering schemes were not
+the same.
+
+Since F17 the pictures are still rendered during the walk, under the run order number, and
+renamed ONCE after the run by `Federator.Core.Report.ImageRenumbering`, in one pass, into
+the order `ReportOrder` gives: tests most clashes first with ties in creation order, and
+inside a test the clashes as Clash Detective lists them. The row, the workbook link, the
+XML href and the page all follow the renamed file. The rename goes through a holding name
+first so a swap between two tests cannot write one picture over another. The rule is
+proved in `ReportOrderTests`, the add-in side is proved locally only.
 
 
 ### 4q. The workbook cell by cell, and the units, measured 2026-09-01
@@ -2006,7 +2014,7 @@ Measured on the two files after every fix above.
 | explicit `none` borders | written on all four sides | omitted | ClosedXML writes all four whenever one is set. An omitted side and `style="none"` are the same border |
 | `horizontal="general"` | written | omitted | general IS the default. Same cell, two spellings |
 | `vertical="bottom"` | written | omitted | bottom IS the default. Same cell, two spellings |
-| picture numbering | by the order the tests RAN | by block | already recorded in 4p. Matching it means rendering after the run rather than during it |
+| picture numbering | by block, renamed once after the run | by block | **same** since F17. Rendered under the run order while the tests run, then ImageRenumbering renames every picture in one pass into report order. Was by the order the tests RAN, recorded in 4p |
 | row 2 and row 3 | no cells | a styled blank at A2, row 3 at height 15 | nothing shows in either. Writing cells to match empty cells is noise |
 | merged ranges | identical block for block | identical block for block | **same**, verified over rows 1 to 12: `A1:C1`, `A4:B5`, `A7:K7`, `L7:O7`, `P7:S7`, then `A:B`, `C:D`, `I:K` per table row |
 | sheet name | the output name, 31 characters | the output name, 31 characters | **same** |

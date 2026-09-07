@@ -2,6 +2,53 @@
 
 Newest entry at the top.
 
+## 2026-09-07 F17, the pictures are numbered in the export order
+
+### What was done
+
+- `steps/logs` still holds only its README. No run log yet, so every fix from F5 onward stays pending local proof and nothing about them was recorded
+- F17 done, logic problem L4. The pictures used to take their test number from the order the tests RAN, because they are rendered while the tests run and the report is sorted afterwards. The rows are written in report order. So the first block of the workbook, the test with the most clashes, carried whatever number its run position gave it, and the Navisworks export numbers that block cd00
+- Worked example, three tests in run order: Floors ran first with one clash, Walls second with three, Columns third with two. Before: Floors 1 was cd000001, Walls 1 to 3 were cd010001 to cd010003, Columns 1 and 2 were cd020001 and cd020002. The workbook lists Walls, Columns, Floors, so row 1 of the workbook linked to cd010001. After: Walls 1 to 3 are cd000001 to cd000003, Columns 1 and 2 are cd010001 and cd010002, Floors 1 is cd020001. Row N of a block links to picture N of that block
+- The rule in one sentence: the pictures are numbered in the order the rows are written, tests most clashes first with ties in creation order, and inside a test the clashes as Clash Detective lists them
+- The order is only known when the last test has run, so the pictures are still rendered under the run order number and renamed ONCE after the run, in one pass, before any report is written. The rename goes through a holding name first, because a swap between two tests would otherwise write one picture over another. What a picture shows and its size are untouched, only the number changes
+- New `src/Federator.Core/Report/ReportOrder.cs`. `ReportOrder.Tests`, `Rows` and `PictureNumbers` give the order and the number of every picture, `PictureNumberFor` gives one row its number, `ImageRenumbering.Apply` does the rename and repoints the row's file, link and path, and `ImageRenumberingOutcome` says how many were renamed, already right, or missing
+- `FederationEngine.RenumberThePictures` calls it right after the clash step when pictures were rendered. The log gets one line, `IMAGES   numbered in report order: <n> renamed, <n> already right, <n> missing`. A missing picture or a throw is a report warning and never fails the group
+- The workbook link, the XML href and the page all read the row's link, so repointing the row is what moves all three. Two tests write the workbook and the XML after the rename and read the link back off the file
+- CLAUDE.md has a new picture bullet, `docs/scan.md` 4p closes the difference it recorded and the 4q row reads same
+- Tests: `ReportOrderTests`, sixteen. The order on a mixed sample, a tie keeping creation order, rows keeping Clash Detective's order, every picture carrying its row number, the old run order numbering shown as wrong, no gap for a test without a picture, a row without a picture not numbered, the rename giving row number equal to picture number with each file checked by content, a swap overwriting nothing, no holding file left, already right pictures not moved, a missing picture named and the rest renamed, no pictures renaming nothing, the workbook link and the XML href pointing at the renamed file
+- Core tests under mono on Linux, before: 824 passed, 40 failed, 32 skipped, 896 total. After: 840 passed, 40 failed, 32 skipped, 912 total. The 40 are the same Windows path and file locking failures, none new, none in the new fixture
+- The add-in was not compiled. It cannot compile in the container
+
+### What remains
+
+- F23 once Q20 is answered, then F15 onward in `01_next.md` in order
+- The proofs from F5 onward on the local machine, then P1, P2, P3
+- Q20 from Bader, and whether the outstanding count setting stays now that nothing shows it
+
+### Known bugs
+
+- L4 fixed in code, pending local proof. Run one group with pictures on, open the Excel, the picture on row N of a block must be picture N in the same order the Clash Detective panel lists the clashes, the blocks numbered most clashes first, and every link must open its picture. The log must carry one IMAGES numbered in report order line
+- B9 fixed. The local proof is only that the add-in builds
+- L3 fixed in code, pending local proof. Run one group with the XML box on and every image status unticked, the log must show XML written, IMAGES skipped with images switched off, XLSX and HTML written. Then the XML box off and the statuses back on, the log must show XML skipped as not wanted and the pictures rendered
+- L2 fixed in code, pending local proof. Add or remove one NWC in a folder whose NWF exists, press Run, the group must show Skipped (changed on disk), the log must show no UNITS line for it, and the NWF must keep its old modified time
+- B7 fixed in code, pending a local run of `build/probe-window-defaults.ps1`
+- B1 fixed in code, pending local proof. Run one building twice, the second press must show OPENED, the sets present and the tests still run
+- B2 fixed in code, pending local proof. Open one NWF, press Run the open file, the reports must land in one Clash Reports folder beside the file, no folder inside a folder
+- B11 fixed in code, pending local proof. Open one NWF, press Run the open file, the log must end with a RESULT block for that file and a copy of the log must sit beside it
+- L1 fixed in code, pending local proof. Open one NWF that holds tests, pick no XML, press Run the open file, the tests must run and the Excel must be written. Then the same on the scanned run with no XML on a folder whose NWFs already hold tests
+- F22 done in code, pending local proof. Scan a folder that holds some NWFs and lacks others, pick no XML, the list must show First run beside the groups with no NWF and Weekly run beside the others, and the confirm dialog must show the counts
+- B3, B4, B8 and B10 fixed
+- B12 OPEN, waiting on Q20
+- B5, B6, L5 to L8, M1 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F17 PR
+2. Bader answers Q20 in `02_questions.md` and says whether the outstanding count setting stays
+3. Bader follows `03_bader_next.md`, the F17 proof sits after the F10 proof, and drops the logs into `steps/logs`
+4. Worker reads the logs and records the proofs in this file
+5. Worker starts F15, or F23 if Q20 is answered first
+
 ## 2026-09-07 F11, the dead code is gone
 
 ### What was done

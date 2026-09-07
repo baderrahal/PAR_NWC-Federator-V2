@@ -888,6 +888,17 @@ namespace Federator.Addin.Engine
 
                 if (outcome.Report != null && runner.Images != null)
                 {
+                    // The pictures were rendered under run order numbers while the tests
+                    // ran, because the report order is only known when the last test has
+                    // run. Renamed once here, before any report is written, so every
+                    // picture carries the number of its row. A rename that throws is a
+                    // warning on the report and never fails the group, since the NWF, the
+                    // pictures and the workbook are all still written.
+                    RenumberThePictures(job, outcome, runner.WorkbookPath);
+                }
+
+                if (outcome.Report != null && runner.Images != null)
+                {
                     // Measured, never estimated. Every number anyone has given for what a
                     // clash image costs has been a guess until this line.
                     foreach (string line in outcome.Report.Images.Lines())
@@ -922,6 +933,39 @@ namespace Federator.Addin.Engine
                     error,
                     "kept going, whatever was already created and run is kept in the NWF");
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Renames the pictures into report order. The rule and the two pass move live in
+        /// Federator.Core.Report.ImageRenumbering so they can be tested without Navisworks.
+        /// </summary>
+        private void RenumberThePictures(FederationJob job, JobOutcome outcome, string workbookPath)
+        {
+            try
+            {
+                ImageRenumberingOutcome renumbered = ImageRenumbering.Apply(outcome.Report, workbookPath);
+
+                foreach (string line in renumbered.Lines())
+                {
+                    log.Line(line);
+                }
+
+                if (renumbered.Missing > 0)
+                {
+                    outcome.AddReportWarning(
+                        renumbered.Missing + " picture(s) named on a row were not on disk when the pictures were renumbered");
+                }
+            }
+            catch (Exception error)
+            {
+                outcome.AddReportWarning(
+                    "renumbering the pictures threw " + error.GetType().Name + ": " + error.Message
+                    + ", the picture numbers may be a mix of run order and report order, the log carries the error");
+                log.Failure(
+                    "renumbering the pictures for " + job.Building,
+                    error,
+                    "kept going, the pictures that were not yet renamed keep their run order numbers");
             }
         }
 
