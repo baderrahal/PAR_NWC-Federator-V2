@@ -300,7 +300,7 @@ namespace Federator.Core.Tests
         // ---------- the logo ----------
 
         [Test]
-        public void ALogoOnTheePageIsCheckedAgainstTheDisk()
+        public void ALogoOnThePageIsCheckedAgainstTheDisk()
         {
             string path = WritePage(2, true, OutputName + "_files/logo.jpg");
             File.WriteAllBytes(

@@ -2,6 +2,47 @@
 
 Newest entry at the top.
 
+## 2026-09-07 F1, F2 and F4, the small fixes
+
+### What was done
+
+- `steps/logs` still holds only its README. No run log yet, so B1, B2, B11, L1 and F22 stay pending local proof and nothing about them was recorded
+- F1, B8. The test `ALogoOnTheePageIsCheckedAgainstTheDisk` in `ReportCheckTests.cs` is now `ALogoOnThePageIsCheckedAgainstTheDisk`. Name only
+- F2, B7. `build/probe-window-defaults.ps1` read `$repo = "C:\Users\p003653k\source\repos\Parsons NWC Federator"`. It now reads `$repo = Split-Path $PSScriptRoot`, the same line the scroll and labels probes use
+- F4, B10. The `DocumentUnits` docstring said the units change is off unless asked for. The window sets it on for every run, so the sentence now says it is on for every run, because the window sets it on and every report the team sends is metric
+- The same machine path sat in `docs/test-model-side.md` step 2 as a `cd` line. It now says to change into the folder the repo is checked out in. `docs/scan.md` line 7 still names the user as part of the machine record of the scan, which is a measurement and not a path, so it stays
+- F3 was closed inside F22, so F1 to F4 are all done
+- Core tests under mono on Linux: 834 passed, 40 failed, 32 skipped, 906 total. Unchanged, none new. The renamed test is one of the 32 that skip without a Navisworks install
+- The add-in was not compiled. It cannot compile in the container. The probe runs on Windows only, against the built add-in
+- `03_bader_next.md` has one step at the end to run the probe
+
+### What remains
+
+- F23 once Q20 is answered, then F9 onward in `01_next.md` in order
+- The F5, F6, F7, F8 and F22 proofs on the local machine, then P1, P2, P3
+- Q20 from Bader
+
+### Known bugs
+
+- B7 fixed in code, pending a local run of `build/probe-window-defaults.ps1`
+- B8 fixed. B10 fixed
+- B1 fixed in code, pending local proof. Run one building twice, the second press must show OPENED, the sets present and the tests still run
+- B2 fixed in code, pending local proof. Open one NWF, press Run the open file, the reports must land in one Clash Reports folder beside the file, no folder inside a folder
+- B11 fixed in code, pending local proof. Open one NWF, press Run the open file, the log must end with a RESULT block for that file and a copy of the log must sit beside it
+- L1 fixed in code, pending local proof. Open one NWF that holds tests, pick no XML, press Run the open file, the tests must run and the Excel must be written. Then the same on the scanned run with no XML on a folder whose NWFs already hold tests
+- F22 done in code, pending local proof. Scan a folder that holds some NWFs and lacks others, pick no XML, the list must show First run beside the groups with no NWF and Weekly run beside the others, and the confirm dialog must show the counts
+- B3 and B4 fixed in code inside F22, pending the same proof
+- B12 OPEN, waiting on Q20
+- B5, B6, B9, L2 to L8, M1 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F1 F2 F4 PR
+2. Bader answers Q20 in `02_questions.md`
+3. Bader follows `03_bader_next.md`, runs the probe at the end, and drops the logs into `steps/logs`
+4. Worker reads the logs and records the proofs in this file
+5. Worker starts F9, or F23 if Q20 is answered first
+
 ## 2026-09-07 F22, two clear workflows in the window, and F3 with it
 
 ### What was done

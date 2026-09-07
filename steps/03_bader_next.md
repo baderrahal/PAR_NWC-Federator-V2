@@ -116,3 +116,13 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 70. Write a summary like `logs from 1C07BC, F5 to F22 proofs`
 71. Press Commit to main
 72. Press Push origin
+
+## Run the window probe
+
+73. In the VS Code terminal run:
+
+```
+powershell -ExecutionPolicy Bypass -File build\probe-window-defaults.ps1
+```
+
+74. Look for: it prints the window defaults and no error about a path

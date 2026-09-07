@@ -20,7 +20,7 @@ reads at startup, and Navisworks only reads it once.
 
 2. Go to the repo:
 
-       cd "C:\Users\p003653k\source\repos\Parsons NWC Federator"
+       cd "<the folder this repo is checked out in>"
 
 3. Run the installer:
 

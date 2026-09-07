@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 $bundle = "$env:APPDATA\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22"
-$repo = "C:\Users\p003653k\source\repos\Parsons NWC Federator"
+$repo = Split-Path $PSScriptRoot
 $addin = Join-Path $repo "src\Federator.Addin\bin\Release\net48\Federator.Addin.dll"
 $nw = "C:\Program Files\Autodesk\Navisworks Manage 2025"
 
