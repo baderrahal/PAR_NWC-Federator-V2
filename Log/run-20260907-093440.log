@@ -1,0 +1,572 @@
+﻿09:34:40.771  +0000.000s  Log opened at C:\Users\p003653k\AppData\Local\ParsonsNwcFederator\logs\run-20260907-093440.log
+09:34:40.775  +0000.004s  RETAIN   keeping 30 logs, deleted 1, could not delete 0
+
+================================================================
+SESSION
+================================================================
+09:34:40.781  +0000.011s  started        : 2026-09-07 09:34:40
+09:34:40.781  +0000.012s  plugin version : 1.0.0.0 be0b9b37 built 2026-09-01 23:14:50
+09:34:40.782  +0000.012s  navisworks     : Autodesk Navisworks Manage 2025  runtime 22.5  build 0  api 22.0 (stable)  language en-US  runtime string Navisworks Manage
+09:34:40.782  +0000.012s  open document  : none, the document is clear
+09:34:40.782  +0000.013s  log file       : C:\Users\p003653k\AppData\Local\ParsonsNwcFederator\logs\run-20260907-093440.log
+09:34:40.795  +0000.025s  LOGO     the report will carry C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg
+
+================================================================
+FOLDERS REMEMBERED
+================================================================
+09:34:40.800  +0000.029s  Source    C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C07
+09:34:40.800  +0000.030s  Nwf       C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C07\Buildings & Landscape
+09:34:40.800  +0000.030s  Nwd       C:\00_NM\C 06 07\NWD\C 07
+09:34:40.800  +0000.030s  Excel     C:\00_NM\C 06 07\CLASH REPORT\C 07
+09:34:40.800  +0000.030s  ClashXml  C:\Users\p003653k\Downloads
+09:34:48.579  +0007.808s  SCAN     started  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06  including subfolders
+09:34:49.562  +0008.791s  SCAN     finished 76 found, 76 readable, 0 that cannot be read
+09:37:26.532  +0165.760s  Run cancelled before anything was cleared.
+
+================================================================
+RUN SETTINGS
+================================================================
+09:39:49.882  +0309.108s  source folder     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06
+09:39:49.883  +0309.109s  include subfolders: yes
+09:39:49.887  +0309.113s  NWF folder        : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape
+09:39:49.892  +0309.118s  NWD folder        : C:\00_NM\C 06 07\NWD\C 06
+09:39:49.896  +0309.122s  files found       : 76
+09:39:49.899  +0309.125s  files ticked      : 76
+09:39:49.900  +0309.126s  groups built      : 26
+09:39:49.901  +0309.127s  grouping         : One file per building
+09:39:49.902  +0309.128s  matrix counts    : New plus Active plus Reviewed, which is what Navisworks counts as open
+09:39:49.903  +0309.129s  apply file to old: no, differences are reported and nothing is changed
+09:39:49.904  +0309.130s  compact resolved : no
+09:39:49.905  +0309.131s  NWD naming       : overwrites, so only the latest week exists
+09:39:49.906  +0309.132s  republish NWD    : yes, fixed
+09:39:49.907  +0309.133s  report units     : Meters
+
+================================================================
+GROUPS
+================================================================
+09:39:49.912  +0309.138s  skipped  1A0605      1 file   1104-PAR-1A0605-ZZZ-BM-MOD-000001  [IS]
+09:39:49.913  +0309.139s  skipped  1B0601      3 files  1104-PAR-1B0601-ZZZ-BM-MOD-000001  [LV, MV, SL]
+09:39:49.914  +0309.141s  skipped  1B0602      1 file   1104-PAR-1B0602-ZZZ-BM-MOD-000001  [PW]
+09:39:49.915  +0309.142s  skipped  1B0603      2 files  1104-PAR-1B0603-ZZZ-BM-MOD-000001  [IR]
+09:39:49.916  +0309.143s  skipped  1B0604      1 file   1104-PAR-1B0604-ZZZ-BM-MOD-000001  [DS]
+09:39:49.917  +0309.144s  skipped  1B0605      1 file   1104-PAR-1B0605-ZZZ-BM-MOD-000001  [TE]
+09:39:49.918  +0309.144s  skipped  1B0606      1 file   1104-PAR-1B0606-ZZZ-BM-MOD-000001  [SE]
+09:39:49.919  +0309.145s  skipped  1B0607      1 file   1104-PAR-1B0607-ZZZ-BM-MOD-000001  [SG]
+09:39:49.921  +0309.147s  skipped  1B0608      1 file   1104-PAR-1B0608-ZZZ-BM-MOD-000001  [SM]
+09:39:49.921  +0309.147s  skipped  1B0612      4 files  1104-PAR-1B0612-ZZZ-BM-MOD-000001  [TM, TR]
+09:39:49.922  +0309.148s  run      1B06BC      5 files  1104-PAR-1B06BC-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]
+09:39:49.923  +0309.149s  run      1B06G1      5 files  1104-PAR-1B06G1-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]
+09:39:49.924  +0309.150s  run      1B06K1      4 files  1104-PAR-1B06K1-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]
+09:39:49.925  +0309.151s  run      1B06M1      2 files  1104-PAR-1B06M1-ZZZ-BM-MOD-000001  [ME, ST]
+09:39:49.925  +0309.152s  run      1B06P1      5 files  1104-PAR-1B06P1-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]
+09:39:49.926  +0309.152s  run      1B06PE      4 files  1104-PAR-1B06PE-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]
+09:39:49.927  +0309.153s  run      1B06PH      5 files  1104-PAR-1B06PH-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]
+09:39:49.927  +0309.154s  run      1B06PO      4 files  1104-PAR-1B06PO-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]
+09:39:49.928  +0309.155s  run      1B06PP      8 files  1104-PAR-1B06PP-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]
+09:39:49.929  +0309.156s  run      1B06PS      3 files  1104-PAR-1B06PS-ZZZ-BM-MOD-000001  [AR, EL, ST]
+09:39:49.930  +0309.157s  skipped  1B06PT      1 file   1104-PAR-1B06PT-ZZZ-BM-MOD-000001  [ST]
+09:39:49.931  +0309.158s  run      1B06WL      3 files  1104-PAR-1B06WL-ZZZ-BM-MOD-000001  [EL, ME, ST]
+09:39:49.932  +0309.159s  run      1B06WM      4 files  1104-PAR-1B06WM-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]
+09:39:49.933  +0309.160s  run      1B06WO      4 files  1104-PAR-1B06WO-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]
+09:39:49.934  +0309.161s  run      1C06M2      2 files  1104-PAR-1C06M2-ZZZ-BM-MOD-000001  [ME, ST]
+09:39:49.936  +0309.163s  skipped  1C06RW      1 file   1104-PAR-1C06RW-ZZZ-BM-MOD-000001  [ST]
+
+================================================================
+FINDINGS
+================================================================
+09:39:49.941  +0309.168s  Disciplines in this run: AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR
+09:39:49.942  +0309.168s  SINGLE DISCIPLINE 1A0605 holds only IS files, so there is nothing for them to clash against.
+09:39:49.942  +0309.169s                    This run also has AR, DS, EL, IR, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR files in other buildings. The federation is still built and every clash test is still created, but none of them can find anything. Either the other disciplines have not been exported yet, or this building really is IS only.
+09:39:49.943  +0309.170s                    file: 1104-PAR-1A0605-ZZZ-IS-MOD-000001
+09:39:49.944  +0309.171s  MISSING           1B0601 has no AR or DS or EL or IR or IS or ME or PW or SE or SG or SM or ST or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.949  +0309.176s                    It holds LV, MV, SL, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.951  +0309.177s  SINGLE DISCIPLINE 1B0602 holds only PW files, so there is nothing for them to clash against.
+09:39:49.952  +0309.178s                    This run also has AR, DS, EL, IR, IS, LV, ME, MV, SE, SG, SL, SM, ST, TE, TM, TR files in other buildings. The federation is still built and every clash test is still created, but none of them can find anything. Either the other disciplines have not been exported yet, or this building really is PW only.
+09:39:49.953  +0309.179s                    file: 1104-PAR-1B0602-ZZZ-PW-MOD-000001
+09:39:49.954  +0309.180s  SINGLE DISCIPLINE 1B0603 holds only IR files, so there is nothing for them to clash against.
+09:39:49.955  +0309.181s                    This run also has AR, DS, EL, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR files in other buildings. The federation is still built and every clash test is still created, but none of them can find anything. Either the other disciplines have not been exported yet, or this building really is IR only.
+09:39:49.956  +0309.182s                    file: 1104-PAR-1B0603-ZZZ-IR-MOD-000001
+09:39:49.957  +0309.183s                    file: 1104-PAR-1B0603-ZZZ-IR-MOD-000002
+09:39:49.957  +0309.184s  SINGLE DISCIPLINE 1B0604 holds only DS files, so there is nothing for them to clash against.
+09:39:49.959  +0309.185s                    This run also has AR, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR files in other buildings. The federation is still built and every clash test is still created, but none of them can find anything. Either the other disciplines have not been exported yet, or this building really is DS only.
+09:39:49.960  +0309.186s                    file: 1104-PAR-1B0604-ZZZ-DS-MOD-000001
+09:39:49.961  +0309.187s  SINGLE DISCIPLINE 1B0605 holds only TE files, so there is nothing for them to clash against.
+09:39:49.962  +0309.187s                    This run also has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TM, TR files in other buildings. The federation is still built and every clash test is still created, but none of them can find anything. Either the other disciplines have not been exported yet, or this building really is TE only.
+09:39:49.963  +0309.189s                    file: 1104-PAR-1B0605-ZZZ-TE-MOD-000001
+09:39:49.964  +0309.190s  SINGLE DISCIPLINE 1B0606 holds only SE files, so there is nothing for them to clash against.
+09:39:49.965  +0309.191s                    This run also has AR, DS, EL, IR, IS, LV, ME, MV, PW, SG, SL, SM, ST, TE, TM, TR files in other buildings. The federation is still built and every clash test is still created, but none of them can find anything. Either the other disciplines have not been exported yet, or this building really is SE only.
+09:39:49.965  +0309.192s                    file: 1104-PAR-1B0606-ZZZ-SE-MOD-000001
+09:39:49.966  +0309.193s  SINGLE DISCIPLINE 1B0607 holds only SG files, so there is nothing for them to clash against.
+09:39:49.967  +0309.194s                    This run also has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SL, SM, ST, TE, TM, TR files in other buildings. The federation is still built and every clash test is still created, but none of them can find anything. Either the other disciplines have not been exported yet, or this building really is SG only.
+09:39:49.970  +0309.196s                    file: 1104-PAR-1B0607-ZZZ-SG-MOD-000001
+09:39:49.971  +0309.197s  SINGLE DISCIPLINE 1B0608 holds only SM files, so there is nothing for them to clash against.
+09:39:49.972  +0309.198s                    This run also has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, ST, TE, TM, TR files in other buildings. The federation is still built and every clash test is still created, but none of them can find anything. Either the other disciplines have not been exported yet, or this building really is SM only.
+09:39:49.973  +0309.199s                    file: 1104-PAR-1B0608-ZZZ-SM-MOD-000001
+09:39:49.974  +0309.200s  MISSING           1B0612 has no AR or DS or EL or IR or IS or LV or ME or MV or PW or SE or SG or SL or SM or ST or TE files, which other buildings in this run do have.
+09:39:49.975  +0309.201s                    It holds TM, TR, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.976  +0309.202s  MISSING           1B06BC has no DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.977  +0309.203s                    It holds AR, EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.978  +0309.204s  MISSING           1B06G1 has no DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.979  +0309.205s                    It holds AR, EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.979  +0309.206s  MISSING           1B06K1 has no DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.981  +0309.207s                    It holds AR, EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.982  +0309.208s  MISSING           1B06M1 has no AR or DS or EL or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.986  +0309.213s                    It holds ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.987  +0309.214s  MISSING           1B06P1 has no DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.989  +0309.215s                    It holds AR, EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.990  +0309.216s  MISSING           1B06PE has no DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.991  +0309.216s                    It holds AR, EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.992  +0309.218s  MISSING           1B06PH has no DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.993  +0309.218s                    It holds AR, EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.994  +0309.219s  MISSING           1B06PO has no DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.994  +0309.220s                    It holds AR, EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.996  +0309.222s  MISSING           1B06PP has no DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.997  +0309.223s                    It holds AR, EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:49.999  +0309.224s  MISSING           1B06PS has no DS or IR or IS or LV or ME or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:49.999  +0309.226s                    It holds AR, EL, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:50.001  +0309.227s  SINGLE DISCIPLINE 1B06PT holds only ST files, so there is nothing for them to clash against.
+09:39:50.002  +0309.228s                    This run also has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, TE, TM, TR files in other buildings. The federation is still built and every clash test is still created, but none of them can find anything. Either the other disciplines have not been exported yet, or this building really is ST only.
+09:39:50.003  +0309.229s                    file: 1104-PAR-1B06PT-ZZZ-ST-MOD-000001
+09:39:50.004  +0309.230s  MISSING           1B06WL has no AR or DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:50.004  +0309.231s                    It holds EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:50.005  +0309.232s  MISSING           1B06WM has no DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:50.006  +0309.233s                    It holds AR, EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:50.007  +0309.234s  MISSING           1B06WO has no DS or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:50.009  +0309.235s                    It holds AR, EL, ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:50.014  +0309.240s  MISSING           1C06M2 has no AR or DS or EL or IR or IS or LV or MV or PW or SE or SG or SL or SM or TE or TM or TR files, which other buildings in this run do have.
+09:39:50.016  +0309.242s                    It holds ME, ST, and this run has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, ST, TE, TM, TR between all its buildings. That may be deliberate, or those models may not have been exported yet. Nothing is blocked either way.
+09:39:50.017  +0309.243s  SINGLE DISCIPLINE 1C06RW holds only ST files, so there is nothing for them to clash against.
+09:39:50.018  +0309.244s                    This run also has AR, DS, EL, IR, IS, LV, ME, MV, PW, SE, SG, SL, SM, TE, TM, TR files in other buildings. The federation is still built and every clash test is still created, but none of them can find anything. Either the other disciplines have not been exported yet, or this building really is ST only.
+09:39:50.019  +0309.246s                    file: 1104-PAR-1C06RW-ZZZ-ST-MOD-000001
+09:39:50.025  +0309.252s  RUN      started, 14 groups
+09:39:50.027  +0309.254s  RUN      nothing picked in the Clash step, so no set will be built and no test created
+09:39:50.035  +0309.262s  RUN      workbooks go in C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\Clash Reports
+09:39:50.037  +0309.263s  RUN      the clash XML is off
+09:39:50.073  +0309.299s  GROUP    started  1B06BC  5 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc
+09:39:50.107  +0309.334s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf
+09:39:53.165  +0312.392s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000BC-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc]
+09:39:53.357  +0312.583s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000BC-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc]
+09:39:53.359  +0312.585s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000BC-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc]
+09:39:53.360  +0312.587s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000BC-ZZZ-ST-MOD-000002.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc]
+09:39:53.365  +0312.591s  CHANGED  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf points at a different set of files, so it was left exactly as it is
+09:39:53.367  +0312.593s           0 unchanged, 5 added, 4 removed
+09:39:53.370  +0312.597s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc
+09:39:53.371  +0312.598s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc
+09:39:53.372  +0312.599s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc
+09:39:53.373  +0312.600s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc
+09:39:53.375  +0312.602s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc
+09:39:53.376  +0312.603s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc
+09:39:53.377  +0312.604s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc
+09:39:53.378  +0312.605s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc
+09:39:53.379  +0312.606s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc
+09:39:53.382  +0312.608s           note    1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:39:53.383  +0312.609s           note    1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:39:53.384  +0312.610s           note    1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:39:53.385  +0312.612s           note    1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc is on both sides under a different folder, which reads as a move
+09:39:53.388  +0312.614s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf  4,328 bytes
+09:39:53.390  +0312.617s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:39:53.473  +0312.699s  UNITS    4 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:39:53.474  +0312.701s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:39:53.476  +0312.703s  CLASH    no file picked in the Clash step, no set built and no test created
+09:39:53.526  +0312.752s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwd
+09:39:53.951  +0313.178s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwd  4,172,021 bytes
+09:39:53.957  +0313.183s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf  4,328 bytes after publishing the NWD
+09:39:53.960  +0313.186s  GROUP    finished 1B06BC  PARTIAL  3.886s  the NWF points at a different set of files, so it was left alone
+09:39:54.055  +0313.280s  GROUP    started  1B06G1  5 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06G1-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06G1-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06G1-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06G1-ZZZ-ST-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06G1-ZZZ-ST-MOD-000002.nwc
+09:39:54.069  +0313.296s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwf
+09:39:56.165  +0315.391s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06G1-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000PG-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06G1-ZZZ-AR-MOD-000001.nwc]
+09:39:56.169  +0315.396s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06G1-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PG-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06G1-ZZZ-ME-MOD-000001.nwc]
+09:39:56.172  +0315.398s  CHANGED  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwf points at a different set of files, so it was left exactly as it is
+09:39:56.173  +0315.400s           0 unchanged, 5 added, 2 removed
+09:39:56.177  +0315.403s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06G1-ZZZ-AR-MOD-000001.nwc
+09:39:56.179  +0315.405s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06G1-ZZZ-EL-MOD-000001.nwc
+09:39:56.180  +0315.407s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06G1-ZZZ-ME-MOD-000001.nwc
+09:39:56.182  +0315.408s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06G1-ZZZ-ST-MOD-000001.nwc
+09:39:56.183  +0315.410s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06G1-ZZZ-ST-MOD-000002.nwc
+09:39:56.185  +0315.411s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06G1-ZZZ-AR-MOD-000001.nwc
+09:39:56.186  +0315.413s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06G1-ZZZ-ME-MOD-000001.nwc
+09:39:56.191  +0315.417s           note    1104-PAR-1B06G1-ZZZ-AR-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:39:56.192  +0315.418s           note    1104-PAR-1B06G1-ZZZ-ME-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:39:56.197  +0315.424s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwf  4,138 bytes
+09:39:56.199  +0315.425s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:39:56.244  +0315.470s  UNITS    2 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:39:56.246  +0315.472s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:39:56.248  +0315.474s  CLASH    no file picked in the Clash step, no set built and no test created
+09:39:56.316  +0315.542s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwd
+09:39:57.008  +0316.234s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwd  5,557,777 bytes
+09:39:57.011  +0316.238s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwf  4,138 bytes after publishing the NWD
+09:39:57.013  +0316.240s  GROUP    finished 1B06G1  PARTIAL  2.960s  the NWF points at a different set of files, so it was left alone
+09:39:57.050  +0316.277s  GROUP    started  1B06K1  4 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06K1-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06K1-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06K1-ZZZ-ST-MOD-000001.nwc
+09:39:57.097  +0316.324s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf
+09:39:59.047  +0318.273s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000KI-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc]
+09:39:59.053  +0318.279s  CHANGED  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf points at a different set of files, so it was left exactly as it is
+09:39:59.058  +0318.284s           0 unchanged, 4 added, 1 removed
+09:39:59.062  +0318.288s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc
+09:39:59.066  +0318.292s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06K1-ZZZ-EL-MOD-000001.nwc
+09:39:59.089  +0318.315s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06K1-ZZZ-ME-MOD-000001.nwc
+09:39:59.092  +0318.318s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06K1-ZZZ-ST-MOD-000001.nwc
+09:39:59.093  +0318.320s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc
+09:39:59.098  +0318.324s           note    1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:39:59.102  +0318.329s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf  4,328 bytes
+09:39:59.105  +0318.331s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:39:59.124  +0318.350s  UNITS    1 model set, 0 that would not. The document was Feet (ft) and reports Meters (m) now.
+09:39:59.126  +0318.352s  CLASH    no file picked in the Clash step, no set built and no test created
+09:39:59.149  +0318.375s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwd
+09:39:59.221  +0318.447s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwd  164,226 bytes
+09:39:59.224  +0318.450s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf  4,328 bytes after publishing the NWD
+09:39:59.227  +0318.453s  GROUP    finished 1B06K1  PARTIAL  2.177s  the NWF points at a different set of files, so it was left alone
+09:39:59.258  +0318.484s  GROUP    started  1B06M1  2 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06M1-ZZZ-ST-MOD-000001.nwc
+09:39:59.275  +0318.501s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf
+09:40:01.394  +0320.620s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06MM-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc]
+09:40:01.400  +0320.626s  CHANGED  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf points at a different set of files, so it was left exactly as it is
+09:40:01.407  +0320.633s           0 unchanged, 2 added, 1 removed
+09:40:01.410  +0320.637s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc
+09:40:01.415  +0320.641s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06M1-ZZZ-ST-MOD-000001.nwc
+09:40:01.444  +0320.670s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc
+09:40:01.446  +0320.673s           note    1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:40:01.451  +0320.678s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf  4,159 bytes
+09:40:01.453  +0320.680s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:01.455  +0320.682s  UNITS    1 model set, 0 that would not. The document was Feet (ft) and reports Meters (m) now.
+09:40:01.457  +0320.684s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:01.499  +0320.725s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwd
+09:40:01.612  +0320.838s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwd  454,262 bytes
+09:40:01.616  +0320.842s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf  4,159 bytes after publishing the NWD
+09:40:01.618  +0320.844s  GROUP    finished 1B06M1  PARTIAL  2.360s  the NWF points at a different set of files, so it was left alone
+09:40:01.656  +0320.882s  GROUP    started  1B06P1  5 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06P1-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06P1-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06P1-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06P1-ZZZ-ST-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06P1-ZZZ-ST-MOD-000002.nwc
+09:40:01.687  +0320.913s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf
+09:40:03.813  +0323.039s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06P1-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000PW-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06P1-ZZZ-AR-MOD-000001.nwc]
+09:40:03.818  +0323.044s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06P1-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000PW-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06P1-ZZZ-ME-MOD-000001.nwc]
+09:40:03.823  +0323.049s  CHANGED  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf points at a different set of files, so it was left exactly as it is
+09:40:03.827  +0323.053s           0 unchanged, 5 added, 2 removed
+09:40:03.829  +0323.056s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06P1-ZZZ-AR-MOD-000001.nwc
+09:40:03.832  +0323.058s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06P1-ZZZ-EL-MOD-000001.nwc
+09:40:03.834  +0323.060s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06P1-ZZZ-ME-MOD-000001.nwc
+09:40:03.836  +0323.062s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06P1-ZZZ-ST-MOD-000001.nwc
+09:40:03.837  +0323.063s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06P1-ZZZ-ST-MOD-000002.nwc
+09:40:03.838  +0323.064s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06P1-ZZZ-AR-MOD-000001.nwc
+09:40:03.840  +0323.066s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06P1-ZZZ-ME-MOD-000001.nwc
+09:40:03.841  +0323.067s           note    1104-PAR-1B06P1-ZZZ-AR-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:40:03.843  +0323.070s           note    1104-PAR-1B06P1-ZZZ-ME-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:40:03.848  +0323.074s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf  4,357 bytes
+09:40:03.850  +0323.077s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:03.934  +0323.160s  UNITS    2 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:40:03.937  +0323.163s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:40:03.938  +0323.165s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:03.969  +0323.195s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwd
+09:40:04.730  +0323.955s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwd  5,266,820 bytes
+09:40:04.735  +0323.961s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf  4,357 bytes after publishing the NWD
+09:40:04.738  +0323.965s  GROUP    finished 1B06P1  PARTIAL  3.082s  the NWF points at a different set of files, so it was left alone
+09:40:04.759  +0323.984s  GROUP    started  1B06PE  4 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PE-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc
+09:40:04.787  +0324.013s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf
+09:40:06.884  +0326.111s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PE-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc]
+09:40:06.892  +0326.118s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PE-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc]
+09:40:06.895  +0326.122s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PE-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc]
+09:40:06.901  +0326.127s  CHANGED  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf points at a different set of files, so it was left exactly as it is
+09:40:06.904  +0326.130s           0 unchanged, 4 added, 3 removed
+09:40:06.907  +0326.133s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc
+09:40:06.910  +0326.137s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PE-ZZZ-EL-MOD-000001.nwc
+09:40:06.914  +0326.140s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc
+09:40:06.918  +0326.144s           added   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc
+09:40:06.922  +0326.149s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc
+09:40:06.926  +0326.152s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc
+09:40:06.929  +0326.156s           removed C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Native Model\NWC\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc
+09:40:06.934  +0326.160s           note    1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:40:06.937  +0326.164s           note    1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:40:06.939  +0326.165s           note    1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc is on both sides under a different folder, which reads as a move
+09:40:06.946  +0326.172s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf  4,346 bytes
+09:40:06.950  +0326.176s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:07.018  +0326.244s  UNITS    3 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:40:07.033  +0326.260s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:40:07.036  +0326.262s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:07.053  +0326.280s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwd
+09:40:07.159  +0326.385s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwd  266,295 bytes
+09:40:07.162  +0326.388s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf  4,346 bytes after publishing the NWD
+09:40:07.165  +0326.391s  GROUP    finished 1B06PE  PARTIAL  2.406s  the NWF points at a different set of files, so it was left alone
+09:40:07.189  +0326.415s  GROUP    started  1B06PH  5 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PH-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PH-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PH-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PH-ZZZ-ME-MOD-000002.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PH-ZZZ-ST-MOD-000001.nwc
+09:40:07.221  +0326.447s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf
+09:40:09.691  +0328.917s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PH-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PH-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PH-ZZZ-AR-MOD-000001.nwc]
+09:40:09.698  +0328.924s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PH-ZZZ-EL-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PH-ZZZ-EL-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PH-ZZZ-EL-MOD-000001.nwc]
+09:40:09.702  +0328.929s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PH-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PH-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PH-ZZZ-ME-MOD-000001.nwc]
+09:40:09.706  +0328.933s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PH-ZZZ-ME-MOD-000002.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PH-ZZZ-ME-MOD-000002.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PH-ZZZ-ME-MOD-000002.nwc]
+09:40:09.710  +0328.937s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PH-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PH-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PH-ZZZ-ST-MOD-000001.nwc]
+09:40:09.713  +0328.940s  OPENED   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf
+09:40:09.716  +0328.942s           the file list matches the scan, 5 files, so it was not cleared and nothing was re-appended
+09:40:09.720  +0328.947s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf  89,373 bytes
+09:40:09.723  +0328.949s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:09.736  +0328.963s  UNITS    5 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:40:09.739  +0328.966s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:40:09.743  +0328.969s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:10.219  +0329.445s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwd
+09:40:10.796  +0330.022s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwd  4,250,761 bytes
+09:40:10.802  +0330.028s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf  89,373 bytes after publishing the NWD
+09:40:10.805  +0330.030s  GROUP    finished 1B06PH  DONE  3.615s
+09:40:10.850  +0330.076s  GROUP    started  1B06PO  4 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PO-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PO-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PO-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc
+09:40:10.893  +0330.119s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwf
+09:40:13.018  +0332.244s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PO-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PO-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PO-ZZZ-AR-MOD-000001.nwc]
+09:40:13.026  +0332.252s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PO-ZZZ-EL-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PO-ZZZ-EL-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PO-ZZZ-EL-MOD-000001.nwc]
+09:40:13.031  +0332.257s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PO-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PO-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PO-ZZZ-ME-MOD-000001.nwc]
+09:40:13.036  +0332.262s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PO-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc]
+09:40:13.040  +0332.266s  OPENED   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwf
+09:40:13.042  +0332.268s           the file list matches the scan, 4 files, so it was not cleared and nothing was re-appended
+09:40:13.047  +0332.273s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwf  80,435 bytes
+09:40:13.051  +0332.277s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:13.060  +0332.287s  UNITS    4 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:40:13.064  +0332.290s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:40:13.068  +0332.294s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:13.135  +0332.362s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwd
+09:40:13.462  +0332.688s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwd  1,851,205 bytes
+09:40:13.468  +0332.694s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwf  80,435 bytes after publishing the NWD
+09:40:13.471  +0332.697s  GROUP    finished 1B06PO  DONE  2.620s
+09:40:13.513  +0332.739s  GROUP    started  1B06PP  8 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PP-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PP-ZZZ-AR-MOD-000002.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PP-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PP-ZZZ-EL-MOD-000002.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PP-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PP-ZZZ-ME-MOD-000002.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PP-ZZZ-ME-MOD-000003.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PP-ZZZ-ST-MOD-000001.nwc
+09:40:13.554  +0332.780s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf
+09:40:16.554  +0335.780s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PP-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PP-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PP-ZZZ-AR-MOD-000001.nwc]
+09:40:16.602  +0335.828s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PP-ZZZ-AR-MOD-000002.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PP-ZZZ-AR-MOD-000002.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PP-ZZZ-AR-MOD-000002.nwc]
+09:40:16.605  +0335.831s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PP-ZZZ-EL-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PP-ZZZ-EL-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PP-ZZZ-EL-MOD-000001.nwc]
+09:40:16.607  +0335.833s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PP-ZZZ-EL-MOD-000002.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PP-ZZZ-EL-MOD-000002.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PP-ZZZ-EL-MOD-000002.nwc]
+09:40:16.609  +0335.835s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PP-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PP-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PP-ZZZ-ME-MOD-000001.nwc]
+09:40:16.612  +0335.838s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PP-ZZZ-ME-MOD-000002.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PP-ZZZ-ME-MOD-000005.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PP-ZZZ-ME-MOD-000002.nwc]
+09:40:16.614  +0335.841s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PP-ZZZ-ME-MOD-000003.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PP-ZZZ-ME-MOD-000003.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06PP-ZZZ-ME-MOD-000003.nwc]
+09:40:16.618  +0335.845s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PP-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06PP-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PP-ZZZ-ST-MOD-000001.nwc]
+09:40:16.622  +0335.848s  OPENED   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf
+09:40:16.624  +0335.850s           the file list matches the scan, 8 files, so it was not cleared and nothing was re-appended
+09:40:16.628  +0335.855s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf  241,795 bytes
+09:40:16.631  +0335.858s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:16.726  +0335.952s  UNITS    8 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:40:16.728  +0335.954s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:40:16.730  +0335.956s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:16.785  +0336.011s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwd
+09:40:19.361  +0338.587s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwd  23,273,480 bytes
+09:40:19.367  +0338.593s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf  241,795 bytes after publishing the NWD
+09:40:19.370  +0338.596s  GROUP    finished 1B06PP  DONE  5.857s
+09:40:19.419  +0338.646s  GROUP    started  1B06PS  3 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PS-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc
+09:40:19.460  +0338.686s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf
+09:40:21.426  +0340.652s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000PS-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc]
+09:40:21.433  +0340.659s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PS-ZZZ-EL-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000PS-ZZZ-EL-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06PS-ZZZ-EL-MOD-000001.nwc]
+09:40:21.437  +0340.663s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-0000PS-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc]
+09:40:21.441  +0340.667s  OPENED   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf
+09:40:21.444  +0340.670s           the file list matches the scan, 3 files, so it was not cleared and nothing was re-appended
+09:40:21.449  +0340.674s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf  90,167 bytes
+09:40:21.451  +0340.677s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:21.505  +0340.730s  UNITS    3 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:40:21.506  +0340.732s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:40:21.508  +0340.734s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:21.550  +0340.776s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwd
+09:40:22.225  +0341.451s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwd  5,386,402 bytes
+09:40:22.230  +0341.456s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf  90,167 bytes after publishing the NWD
+09:40:22.231  +0341.458s  GROUP    finished 1B06PS  DONE  2.812s
+09:40:22.263  +0341.489s  GROUP    started  1B06WL  3 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06WL-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06WL-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06WL-ZZZ-ST-MOD-000001.nwc
+09:40:22.292  +0341.518s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf
+09:40:24.267  +0343.493s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06WL-ZZZ-EL-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WL-ZZZ-EL-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06WL-ZZZ-EL-MOD-000001.nwc]
+09:40:24.273  +0343.498s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06WL-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WL-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06WL-ZZZ-ME-MOD-000001.nwc]
+09:40:24.276  +0343.502s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06WL-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WL-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06WL-ZZZ-ST-MOD-000001.nwc]
+09:40:24.279  +0343.505s  OPENED   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf
+09:40:24.281  +0343.507s           the file list matches the scan, 3 files, so it was not cleared and nothing was re-appended
+09:40:24.285  +0343.511s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf  79,438 bytes
+09:40:24.288  +0343.514s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:24.343  +0343.569s  UNITS    3 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:40:24.345  +0343.571s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:40:24.347  +0343.573s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:24.405  +0343.631s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwd
+09:40:24.812  +0344.038s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwd  2,707,637 bytes
+09:40:24.815  +0344.041s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf  79,438 bytes after publishing the NWD
+09:40:24.817  +0344.043s  GROUP    finished 1B06WL  DONE  2.554s
+09:40:24.855  +0344.081s  GROUP    started  1B06WM  4 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06WM-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06WM-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06WM-ZZZ-ST-MOD-000001.nwc
+09:40:24.882  +0344.108s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf
+09:40:27.315  +0346.540s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WM-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc]
+09:40:27.322  +0346.548s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06WM-ZZZ-EL-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WM-ZZZ-EL-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06WM-ZZZ-EL-MOD-000001.nwc]
+09:40:27.327  +0346.553s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06WM-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WM-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06WM-ZZZ-ME-MOD-000001.nwc]
+09:40:27.331  +0346.557s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06WM-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WM-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06WM-ZZZ-ST-MOD-000001.nwc]
+09:40:27.336  +0346.562s  OPENED   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf
+09:40:27.339  +0346.565s           the file list matches the scan, 4 files, so it was not cleared and nothing was re-appended
+09:40:27.342  +0346.568s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf  214,443 bytes
+09:40:27.344  +0346.570s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:27.556  +0346.781s  UNITS    4 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:40:27.558  +0346.783s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:40:27.560  +0346.785s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:27.648  +0346.874s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwd
+09:40:28.189  +0347.415s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwd  2,552,745 bytes
+09:40:28.196  +0347.422s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf  214,443 bytes after publishing the NWD
+09:40:28.198  +0347.424s  GROUP    finished 1B06WM  DONE  3.343s
+09:40:28.259  +0347.484s  GROUP    started  1B06WO  4 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06WO-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06WO-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06WO-ZZZ-ST-MOD-000001.nwc
+09:40:28.300  +0347.526s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf
+09:40:30.211  +0349.437s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WO-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Architectural\Models\1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc]
+09:40:30.217  +0349.443s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06WO-ZZZ-EL-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WO-ZZZ-EL-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Electrical\Models\1104-PAR-1B06WO-ZZZ-EL-MOD-000001.nwc]
+09:40:30.222  +0349.448s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06WO-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WO-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1B06WO-ZZZ-ME-MOD-000001.nwc]
+09:40:30.225  +0349.451s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06WO-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06WO-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1B06WO-ZZZ-ST-MOD-000001.nwc]
+09:40:30.227  +0349.454s  OPENED   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf
+09:40:30.229  +0349.456s           the file list matches the scan, 4 files, so it was not cleared and nothing was re-appended
+09:40:30.235  +0349.461s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf  85,732 bytes
+09:40:30.240  +0349.466s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:30.439  +0349.665s  UNITS    4 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:40:30.441  +0349.667s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:40:30.443  +0349.668s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:30.488  +0349.714s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwd
+09:40:30.739  +0349.965s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwd  1,856,342 bytes
+09:40:30.743  +0349.969s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf  85,732 bytes after publishing the NWD
+09:40:30.747  +0349.973s  GROUP    finished 1B06WO  DONE  2.488s
+09:40:30.779  +0350.005s  GROUP    started  1C06M2  2 files
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc
+09:40:30.805  +0350.031s  OPEN     reading the file list out of C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf
+09:40:32.497  +0351.723s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06MM-ZZZ-ME-MOD-001001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Mechanical\Models\1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc]
+09:40:32.503  +0351.728s           holds   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1C06M2-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C06\Building_Structural\Models\1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc]
+09:40:32.507  +0351.732s  OPENED   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf
+09:40:32.509  +0351.735s           the file list matches the scan, 2 files, so it was not cleared and nothing was re-appended
+09:40:32.514  +0351.740s  NWF      reused   C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  70,718 bytes
+09:40:32.516  +0351.742s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+09:40:32.519  +0351.745s  UNITS    2 models set, 0 that would not. The document was Feet (ft) and reports Feet (ft) now.
+09:40:32.522  +0351.748s  UNITS    THE DOCUMENT DID NOT FOLLOW. Every number in this report is in Feet (ft), the tolerance included, and the report says so rather than pretending otherwise.
+09:40:32.524  +0351.750s  CLASH    no file picked in the Clash step, no set built and no test created
+09:40:32.559  +0351.784s  NWD      attempt  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd
+09:40:32.702  +0351.928s  NWD      written  C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd  552,975 bytes
+09:40:32.726  +0351.952s  NWF      checked  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  70,718 bytes after publishing the NWD
+09:40:32.728  +0351.955s  GROUP    finished 1C06M2  DONE  1.950s
+
+================================================================
+SOURCE FINDINGS
+================================================================
+09:40:32.740  +0351.966s  46 NWC files were checked against the Revit model each was published from.
+09:40:32.742  +0351.967s  SOURCE MISMATCH   The NWC files named 1B06BC were published from a Revit model named 0000BC.
+09:40:32.744  +0351.969s                    The federation is named from the NWC file name, so it will be called 1B06BC. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.745  +0351.971s                    1104-PAR-1B06BC-ZZZ-AR-MOD-000001
+09:40:32.747  +0351.972s                    from 1104-PAR-0000BC-ZZZ-AR-MOD-000001
+09:40:32.750  +0351.975s  SOURCE MISMATCH   The NWC files named 1B06BC were published from a Revit model named 0000BC.
+09:40:32.752  +0351.978s                    The federation is named from the NWC file name, so it will be called 1B06BC. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.755  +0351.981s                    1104-PAR-1B06BC-ZZZ-ME-MOD-000001
+09:40:32.758  +0351.983s                    from 1104-PAR-0000BC-ZZZ-ME-MOD-000001
+09:40:32.761  +0351.986s  SOURCE MISMATCH   The NWC files named 1B06BC were published from a Revit model named 0000BC.
+09:40:32.763  +0351.989s                    The federation is named from the NWC file name, so it will be called 1B06BC. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.766  +0351.991s                    1104-PAR-1B06BC-ZZZ-ST-MOD-000001
+09:40:32.768  +0351.994s                    from 1104-PAR-0000BC-ZZZ-ST-MOD-000001
+09:40:32.771  +0351.997s  SOURCE MISMATCH   The NWC files named 1B06BC were published from a Revit model named 0000BC.
+09:40:32.775  +0352.000s                    The federation is named from the NWC file name, so it will be called 1B06BC. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.778  +0352.004s                    1104-PAR-1B06BC-ZZZ-ST-MOD-000002
+09:40:32.781  +0352.007s                    from 1104-PAR-0000BC-ZZZ-ST-MOD-000002
+09:40:32.784  +0352.010s  SOURCE MISMATCH   The NWC files named 1B06G1 were published from a Revit model named 0000PG.
+09:40:32.786  +0352.012s                    The federation is named from the NWC file name, so it will be called 1B06G1. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.793  +0352.019s                    1104-PAR-1B06G1-ZZZ-AR-MOD-000001
+09:40:32.796  +0352.022s                    from 1104-PAR-0000PG-ZZZ-AR-MOD-000001
+09:40:32.800  +0352.026s  SOURCE MISMATCH   The NWC files named 1B06G1 were published from a Revit model named 1B06PG.
+09:40:32.803  +0352.029s                    The federation is named from the NWC file name, so it will be called 1B06G1. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.805  +0352.031s                    1104-PAR-1B06G1-ZZZ-ME-MOD-000001
+09:40:32.807  +0352.033s                    from 1104-PAR-1B06PG-ZZZ-ME-MOD-000001
+09:40:32.808  +0352.034s  SOURCE MISMATCH   The NWC files named 1B06K1 were published from a Revit model named 0000KI.
+09:40:32.810  +0352.036s                    The federation is named from the NWC file name, so it will be called 1B06K1. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.812  +0352.038s                    1104-PAR-1B06K1-ZZZ-AR-MOD-000001
+09:40:32.814  +0352.039s                    from 1104-PAR-0000KI-ZZZ-AR-MOD-000001
+09:40:32.815  +0352.041s  SOURCE MISMATCH   The NWC files named 1B06M1 were published from a Revit model named 1B06MM.
+09:40:32.816  +0352.042s                    The federation is named from the NWC file name, so it will be called 1B06M1. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.818  +0352.044s                    1104-PAR-1B06M1-ZZZ-ME-MOD-000001
+09:40:32.820  +0352.046s                    from 1104-PAR-1B06MM-ZZZ-ME-MOD-000001
+09:40:32.821  +0352.048s  SOURCE MISMATCH   The NWC files named 1B06P1 were published from a Revit model named 0000PW.
+09:40:32.823  +0352.050s                    The federation is named from the NWC file name, so it will be called 1B06P1. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.825  +0352.051s                    1104-PAR-1B06P1-ZZZ-AR-MOD-000001
+09:40:32.827  +0352.053s                    from 1104-PAR-0000PW-ZZZ-AR-MOD-000001
+09:40:32.828  +0352.055s  SOURCE MISMATCH   The NWC files named 1B06P1 were published from a Revit model named 0000PW.
+09:40:32.830  +0352.057s                    The federation is named from the NWC file name, so it will be called 1B06P1. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.833  +0352.059s                    1104-PAR-1B06P1-ZZZ-ME-MOD-000001
+09:40:32.835  +0352.061s                    from 1104-PAR-0000PW-ZZZ-ME-MOD-000001
+09:40:32.837  +0352.062s  SOURCE MISMATCH   The NWC files named 1B06PS were published from a Revit model named 0000PS.
+09:40:32.839  +0352.064s                    The federation is named from the NWC file name, so it will be called 1B06PS. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.840  +0352.066s                    1104-PAR-1B06PS-ZZZ-AR-MOD-000001
+09:40:32.842  +0352.068s                    from 1104-PAR-0000PS-ZZZ-AR-MOD-000001
+09:40:32.844  +0352.070s  SOURCE MISMATCH   The NWC files named 1B06PS were published from a Revit model named 0000PS.
+09:40:32.846  +0352.071s                    The federation is named from the NWC file name, so it will be called 1B06PS. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.848  +0352.073s                    1104-PAR-1B06PS-ZZZ-EL-MOD-000001
+09:40:32.849  +0352.075s                    from 1104-PAR-0000PS-ZZZ-EL-MOD-000001
+09:40:32.852  +0352.077s  SOURCE MISMATCH   The NWC files named 1B06PS were published from a Revit model named 0000PS.
+09:40:32.853  +0352.079s                    The federation is named from the NWC file name, so it will be called 1B06PS. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.856  +0352.081s                    1104-PAR-1B06PS-ZZZ-ST-MOD-000001
+09:40:32.858  +0352.083s                    from 1104-PAR-0000PS-ZZZ-ST-MOD-000001
+09:40:32.860  +0352.085s  SOURCE MISMATCH   The NWC files named 1C06M2 were published from a Revit model named 1B06MM.
+09:40:32.862  +0352.087s                    The federation is named from the NWC file name, so it will be called 1C06M2. Usually this means the Revit file still carries an older building code, or the NWC was exported under a name typed by hand. Nothing is changed and neither name is assumed right.
+09:40:32.864  +0352.090s                    1104-PAR-1C06M2-ZZZ-ME-MOD-000001
+09:40:32.867  +0352.092s                    from 1104-PAR-1B06MM-ZZZ-ME-MOD-001001
+09:40:32.869  +0352.095s  SHARED SOURCE     2 federations are being built from the same Revit building, 1B06MM.
+09:40:32.871  +0352.097s                    They are 1B06M1 and 1C06M2. That usually means one of the NWC file names is wrong and these should be one building. Nothing is merged and no group is unpicked, so the decision is yours.
+09:40:32.874  +0352.100s  RUN      finished
+
+================================================================
+RESULT
+================================================================
+09:40:32.910  +0352.136s  groups done    : 8
+09:40:32.912  +0352.138s  groups partial : 6
+09:40:32.914  +0352.140s  groups failed  : 0
+
+09:40:32.917  +0352.143s  files written  : 14, every size read back off the disk
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwd  4,172,021 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwd  5,557,777 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwd  164,226 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwd  454,262 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwd  5,266,820 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwd  266,295 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwd  4,250,761 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwd  1,851,205 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwd  23,273,480 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwd  5,386,402 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwd  2,707,637 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwd  2,552,745 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwd  1,856,342 bytes
+                          NWD   C:\00_NM\C 06 07\NWD\C 06\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd  552,975 bytes
+
+09:40:32.950  +0352.175s  Nothing failed.
+
+09:40:32.953  +0352.178s  total elapsed  : 352.178s
+09:40:32.964  +0352.190s  COPY     written  C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C06\Buildings & Landscape\run-20260907-093440.log  105,874 bytes
+09:40:44.430  +0363.656s  Window closed.
