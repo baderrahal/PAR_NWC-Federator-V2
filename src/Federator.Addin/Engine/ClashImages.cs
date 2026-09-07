@@ -37,6 +37,11 @@ namespace Federator.Addin.Engine
     /// at all.
     ///
     /// No clash is saved as a viewpoint in the NWF. Nothing here touches SavedViewpoints.
+    ///
+    /// The number a picture is written under here is the RUN order, because the report
+    /// order is only known once every test has run. ImageRenumbering in Federator.Core
+    /// renames every picture once after the run, so what the client receives is numbered
+    /// the way the Navisworks export numbers it.
     /// </summary>
     public sealed class ClashImages
     {

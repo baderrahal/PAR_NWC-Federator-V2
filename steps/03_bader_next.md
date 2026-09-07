@@ -1,7 +1,7 @@
 # 03 Bader next
 
 One action per step. Do them in order.
-Five proofs are waiting: F5, F6, F7, F8 and F22. One build, one install and one Navisworks session cover all five.
+Eight proofs are waiting: F5, F6, F7, F8, F9, F10, F17 and F22. One build, one install and one Navisworks session cover all eight.
 
 ## Get the code
 
@@ -83,79 +83,94 @@ The window has no box for the workbook or the page, both are fixed on, so this p
 45. Look for: `XML      skipped  not wanted this run`
 46. Look for: the pictures rendered again, the CLASH block counts them
 
+## Proof F17, the pictures are numbered in the export order
+
+This uses the run from step 44, the one with the pictures on. The rule: the picture on row N of a block is picture N of that block, and the blocks are numbered in the order the workbook lists the tests, most clashes first.
+
+47. Stay on the run from step 44
+48. Look for: one line `IMAGES   numbered in report order: <n> renamed, <n> already right, 0 missing` in the log after the CLASH block
+49. Open the Clash Reports folder beside the NWF folder and open that building's workbook in Excel
+50. In Navisworks open Clash Detective and select the test that is the first block of the workbook, the one with the most clashes
+51. Look for: the clashes on the sheet are in the same order the Clash Detective panel lists them
+52. Look for: the Image cell on row 1 of that block links to cd000001.jpg, row 2 to cd000002.jpg, and so on, the row number and the picture number the same
+53. Look for: the second block's pictures start at cd010001.jpg, the third at cd020001.jpg
+54. Click the Image cell on three rows in three different blocks
+55. Look for: every link opens its picture, and the picture shows the two items named on that row
+56. In Explorer open the `_files` folder beside the workbook and look for: no file ending `.moving`
+
 ## Proof F5, one building twice with the XML
 
-47. Tick one building only
-48. Press Run
-49. Look for: the confirm dialog opens with `First run: 1` and says the document is cleared before each one
-50. Press OK and wait for it to finish
-51. Go to the Grouping step
-52. Look for: that group now reads Weekly run plus XML, the others still First run
-53. Press Run again on the same building, same folders, same XML
-54. Look for: the confirm dialog says `Weekly run plus XML: 1` and `First run: 0`, and does not say cleared
-55. Press OK and wait for it to finish
-56. Look for: the log says OPENED for the group
-57. Look for: the SETS block says the sets are already there
-58. Look for: the line `CLASH    source   tests from XML` and the tests running after it
+57. Tick one building only
+58. Press Run
+59. Look for: the confirm dialog opens with `First run: 1` and says the document is cleared before each one
+60. Press OK and wait for it to finish
+61. Go to the Grouping step
+62. Look for: that group now reads Weekly run plus XML, the others still First run
+63. Press Run again on the same building, same folders, same XML
+64. Look for: the confirm dialog says `Weekly run plus XML: 1` and `First run: 0`, and does not say cleared
+65. Press OK and wait for it to finish
+66. Look for: the log says OPENED for the group
+67. Look for: the SETS block says the sets are already there
+68. Look for: the line `CLASH    source   tests from XML` and the tests running after it
 
 ## Proof F8 on the scanned run, no XML
 
-59. Clear the clash XML box on the Clash step
-60. Go to the Grouping step
-61. Look for: the run group reads Weekly run and the others First run
-62. Keep the same building ticked and the same folders
-63. Press Run
-64. Look for: the confirm dialog says `Weekly run: 1`
-65. Press OK and wait for it to finish
-66. Look for: the line `CLASH    source   tests saved in the document, 1830 of them, no XML picked`
-67. Look for: the CLASH block says the tests ran and the workbook was written
-68. Look for: no SETS block, because no XML means the sets are left alone
+69. Clear the clash XML box on the Clash step
+70. Go to the Grouping step
+71. Look for: the run group reads Weekly run and the others First run
+72. Keep the same building ticked and the same folders
+73. Press Run
+74. Look for: the confirm dialog says `Weekly run: 1`
+75. Press OK and wait for it to finish
+76. Look for: the line `CLASH    source   tests saved in the document, 1830 of them, no XML picked`
+77. Look for: the CLASH block says the tests ran and the workbook was written
+78. Look for: no SETS block, because no XML means the sets are left alone
 
 ## Proof F6, the open file report folder
 
-69. In Navisworks open the NWF the F5 run wrote
-70. Open the add-in from the ribbon
-71. Go to the Clash step
-72. Look for: the blue line above Run the open file starts with `Weekly run.` and names one Clash Reports folder beside the NWF
-73. Leave the clash XML box empty
-74. Press Run the open file and wait for it to finish
-75. Open the NWF's folder in Explorer
-76. Look for: one folder named Clash Reports beside the NWF, with the workbook and the page inside it
-77. Look for: no Clash Reports folder inside that Clash Reports folder
+79. In Navisworks open the NWF the F5 run wrote
+80. Open the add-in from the ribbon
+81. Go to the Clash step
+82. Look for: the blue line above Run the open file starts with `Weekly run.` and names one Clash Reports folder beside the NWF
+83. Leave the clash XML box empty
+84. Press Run the open file and wait for it to finish
+85. Open the NWF's folder in Explorer
+86. Look for: one folder named Clash Reports beside the NWF, with the workbook and the page inside it
+87. Look for: no Clash Reports folder inside that Clash Reports folder
 
 ## Proof F8 on the open file, no XML
 
-78. Stay on the run from step 74
-79. Look for: the line `CLASH    source   tests saved in the document, 1830 of them, no XML picked`
-80. Look for: the CLASH block says the tests ran and the workbook was written
+88. Stay on the run from step 84
+89. Look for: the line `CLASH    source   tests saved in the document, 1830 of them, no XML picked`
+90. Look for: the CLASH block says the tests ran and the workbook was written
 
 ## Proof F7, the RESULT block and the log copy
 
-81. Stay in the same NWF folder in Explorer
-82. Look for: a file named run-yyyyMMdd-HHmmss.log beside the NWF, from the press in step 74
-83. Open that log in Notepad
-84. Look for: a GROUP started line and a GROUP finished line naming the NWF, the finished line ending with `Weekly run`
-85. Look for: a block titled OPEN FILE naming the file, the NWD and the report folder
-86. Look for: a RESULT block at the end with groups done, partial and failed
-87. Look for: the RESULT block counts one group, not zero, and carries `weekly run     : 1`
+91. Stay in the same NWF folder in Explorer
+92. Look for: a file named run-yyyyMMdd-HHmmss.log beside the NWF, from the press in step 74
+93. Open that log in Notepad
+94. Look for: a GROUP started line and a GROUP finished line naming the NWF, the finished line ending with `Weekly run`
+95. Look for: a block titled OPEN FILE naming the file, the NWD and the report folder
+96. Look for: a RESULT block at the end with groups done, partial and failed
+97. Look for: the RESULT block counts one group, not zero, and carries `weekly run     : 1`
 
 ## Send the logs
 
-88. Open the folder `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
-89. Copy the four newest `run-*.log` files
-90. Paste them into `steps\logs` in the repo folder
-91. Rename each with the date, the building and the press, like `2026-09-08-1C07BC-first.log`, `2026-09-08-1C07BC-second.log`, `2026-09-08-1C07BC-noxml.log` and `2026-09-08-1C07BC-openfile.log`
-92. Open GitHub Desktop
-93. Write a summary like `logs from 1C07BC, F5 to F22 proofs`
-94. Press Commit to main
-95. Press Push origin
+98. Open the folder `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
+99. Copy the four newest `run-*.log` files
+100. Paste them into `steps\logs` in the repo folder
+101. Rename each with the date, the building and the press, like `2026-09-08-1C07BC-first.log`, `2026-09-08-1C07BC-second.log`, `2026-09-08-1C07BC-noxml.log` and `2026-09-08-1C07BC-openfile.log`
+102. Open GitHub Desktop
+103. Write a summary like `logs from 1C07BC, F5 to F22 proofs`
+104. Press Commit to main
+105. Press Push origin
 
 ## Run the window probe
 
-96. In the VS Code terminal run:
+106. In the VS Code terminal run:
 
 ```
 powershell -ExecutionPolicy Bypass -File build\probe-window-defaults.ps1
 ```
 
-97. Look for: it prints the window defaults and no error about a path
+107. Look for: it prints the window defaults and no error about a path

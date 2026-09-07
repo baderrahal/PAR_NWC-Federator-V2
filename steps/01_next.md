@@ -125,9 +125,10 @@ F19 is dropped.
 ## F17 Picture numbering by block order
 
 - Closes L4
-- Files `src/Federator.Addin/Engine/ClashRunner.cs`, `src/Federator.Core/Report/ImageNaming.cs`
+- Files `src/Federator.Core/Report/ReportOrder.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/ClashImages.cs`
 - LOCAL MACHINE ONLY to prove
 - Size: medium, and pictures would need renaming after the sort. Q8 answered match the Navisworks export order
+- DONE on 2026-09-07, proof pending. See `log.md`. The pictures are rendered under the run order and renamed once after the run, in one pass
 
 ## F15 Dispose in SetBuilder and ClashRunner.Resolve
 

@@ -704,6 +704,18 @@ and 6 does not read as broken.
   seven digits, measured on a real 2672 picture export. Two digits is a floor and not a
   width. The test number counts tests that have pictures, so it can never leave a gap, and
   a test whose first render fails hands its number back
+- The pictures are NUMBERED IN THE EXPORT ORDER, which is the order the rows are written:
+  tests most clashes first with ties in creation order, and inside a test the clashes as
+  Clash Detective lists them. Measured off both exports in samples\client-report, where
+  the first block is cd00 and the second cd01 whatever order the tests ran in. A picture is
+  rendered while its test runs, under the run order number, because the report order is
+  only known when the last test has run. So after the run every picture is renamed ONCE,
+  in one pass, and the row, the workbook link, the XML href and the page all follow it. The
+  rename goes through a holding name first, because a swap between two tests would
+  otherwise write one picture over another. What a picture shows and its size are
+  untouched. The rule lives in Federator.Core.Report.ReportOrder and the rename in
+  Federator.Core.Report.ImageRenumbering, so both can be tested without Navisworks. A
+  rename that fails is a warning on the report and never fails the group
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
   that is what all 60 pictures of the accepted report measure. An image that fails renders
