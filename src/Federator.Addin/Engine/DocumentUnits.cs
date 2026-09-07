@@ -36,10 +36,11 @@ namespace Federator.Addin.Engine
     /// This therefore sets every model, logs what the document said before and after, and
     /// says plainly when the document did not follow. It never claims the change worked.
     ///
-    /// IT IS A MUTATION. Setting a model's units changes what the NWF holds, so it is off
-    /// unless asked for, it happens before the clash step so tolerances and distances are
-    /// read in the new units, and each model keeps its own transform rather than being
-    /// handed a new one.
+    /// IT IS A MUTATION. Setting a model's units changes what the NWF holds, so it is
+    /// logged with what the document was and what it became. It is on for every run,
+    /// because the window sets it on and every report the team sends is metric. It
+    /// happens before the clash step so tolerances and distances are read in the new
+    /// units, and each model keeps its own transform rather than being handed a new one.
     /// </summary>
     public sealed class DocumentUnits
     {

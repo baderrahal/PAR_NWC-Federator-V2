@@ -16,7 +16,7 @@ can be written here and only proved on the local machine.
 4. F8
 5. F22
 6. F23, once Q20 is answered
-7. F1, F2 and F4 as one PR. F3 was done inside F22
+7. F1, F2 and F4 as one PR, done. F3 was done inside F22
 8. F9
 9. F10
 10. F11
@@ -83,17 +83,13 @@ F19 is dropped.
 
 - Closes B8
 - Files `tests/Federator.Core.Tests/ReportCheckTests.cs`
-- CONTAINER
-- Size: one word
-- Goes in one PR with F2 and F4
+- DONE on 2026-09-07 in one PR with F2 and F4
 
 ## F2 Fix the hardcoded probe path
 
 - Closes B7
-- Files `build/probe-window-defaults.ps1`
-- LOCAL MACHINE ONLY to run, CONTAINER to edit
-- Size: one line, copy the form the other probes use
-- Goes in one PR with F1 and F4
+- Files `build/probe-window-defaults.ps1`, `docs/test-model-side.md`
+- DONE on 2026-09-07 in one PR with F1 and F4, pending a local run of the probe
 
 ## F3 Fix the two wrong messages
 
@@ -106,9 +102,7 @@ F19 is dropped.
 
 - Closes B10
 - Files `src/Federator.Addin/Engine/DocumentUnits.cs`
-- CONTAINER to edit
-- Size: one sentence
-- Goes in one PR with F1 and F2
+- DONE on 2026-09-07 in one PR with F1 and F2
 
 ## F9 Skip the units change on a CHANGED group
 
