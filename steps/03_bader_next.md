@@ -50,79 +50,95 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 22. Go to the Clash step and pick the clash XML
 23. Look for: every group still reads First run, because no NWF is there yet
 
+## Proof F9, a changed folder is left alone
+
+Do this after the F5 proof below has run once, so an NWF exists. Skip it on the first pass and come back to it after the F7 proof if that is easier.
+
+24. Pick a building whose NWF already exists in the NWF folder
+25. In Explorer note the modified time of that NWF
+26. Copy one NWC of that building out of the NWC folder to the desktop, so the folder lost one file
+27. Press Scan again and tick that building only
+28. Press Run and press OK on the dialog
+29. Look for: the log has a CHANGED block naming the removed file, then one line `GROUP    <building> skipped, the NWF on disk no longer matches the folder`
+30. Look for: no UNITS line for that group
+31. Look for: the GROUP finished line ends with `Skipped (changed on disk)` and PARTIAL, not FAILED
+32. Look for: the RESULT block carries `skipped        : 1`
+33. In Explorer look for: the NWF keeps the modified time from step 25
+34. Copy the NWC back into the NWC folder
+
 ## Proof F5, one building twice with the XML
 
-24. Tick one building only
-25. Press Run
-26. Look for: the confirm dialog opens with `First run: 1` and says the document is cleared before each one
-27. Press OK and wait for it to finish
-28. Go to the Grouping step
-29. Look for: that group now reads Weekly run plus XML, the others still First run
-30. Press Run again on the same building, same folders, same XML
-31. Look for: the confirm dialog says `Weekly run plus XML: 1` and `First run: 0`, and does not say cleared
-32. Press OK and wait for it to finish
-33. Look for: the log says OPENED for the group
-34. Look for: the SETS block says the sets are already there
-35. Look for: the line `CLASH    source   tests from XML` and the tests running after it
+35. Tick one building only
+36. Press Run
+37. Look for: the confirm dialog opens with `First run: 1` and says the document is cleared before each one
+38. Press OK and wait for it to finish
+39. Go to the Grouping step
+40. Look for: that group now reads Weekly run plus XML, the others still First run
+41. Press Run again on the same building, same folders, same XML
+42. Look for: the confirm dialog says `Weekly run plus XML: 1` and `First run: 0`, and does not say cleared
+43. Press OK and wait for it to finish
+44. Look for: the log says OPENED for the group
+45. Look for: the SETS block says the sets are already there
+46. Look for: the line `CLASH    source   tests from XML` and the tests running after it
 
 ## Proof F8 on the scanned run, no XML
 
-36. Clear the clash XML box on the Clash step
-37. Go to the Grouping step
-38. Look for: the run group reads Weekly run and the others First run
-39. Keep the same building ticked and the same folders
-40. Press Run
-41. Look for: the confirm dialog says `Weekly run: 1`
-42. Press OK and wait for it to finish
-43. Look for: the line `CLASH    source   tests saved in the document, 1830 of them, no XML picked`
-44. Look for: the CLASH block says the tests ran and the workbook was written
-45. Look for: no SETS block, because no XML means the sets are left alone
+47. Clear the clash XML box on the Clash step
+48. Go to the Grouping step
+49. Look for: the run group reads Weekly run and the others First run
+50. Keep the same building ticked and the same folders
+51. Press Run
+52. Look for: the confirm dialog says `Weekly run: 1`
+53. Press OK and wait for it to finish
+54. Look for: the line `CLASH    source   tests saved in the document, 1830 of them, no XML picked`
+55. Look for: the CLASH block says the tests ran and the workbook was written
+56. Look for: no SETS block, because no XML means the sets are left alone
 
 ## Proof F6, the open file report folder
 
-46. In Navisworks open the NWF the F5 run wrote
-47. Open the add-in from the ribbon
-48. Go to the Clash step
-49. Look for: the blue line above Run the open file starts with `Weekly run.` and names one Clash Reports folder beside the NWF
-50. Leave the clash XML box empty
-51. Press Run the open file and wait for it to finish
-52. Open the NWF's folder in Explorer
-53. Look for: one folder named Clash Reports beside the NWF, with the workbook and the page inside it
-54. Look for: no Clash Reports folder inside that Clash Reports folder
+57. In Navisworks open the NWF the F5 run wrote
+58. Open the add-in from the ribbon
+59. Go to the Clash step
+60. Look for: the blue line above Run the open file starts with `Weekly run.` and names one Clash Reports folder beside the NWF
+61. Leave the clash XML box empty
+62. Press Run the open file and wait for it to finish
+63. Open the NWF's folder in Explorer
+64. Look for: one folder named Clash Reports beside the NWF, with the workbook and the page inside it
+65. Look for: no Clash Reports folder inside that Clash Reports folder
 
 ## Proof F8 on the open file, no XML
 
-55. Stay on the run from step 51
-56. Look for: the line `CLASH    source   tests saved in the document, 1830 of them, no XML picked`
-57. Look for: the CLASH block says the tests ran and the workbook was written
+66. Stay on the run from step 62
+67. Look for: the line `CLASH    source   tests saved in the document, 1830 of them, no XML picked`
+68. Look for: the CLASH block says the tests ran and the workbook was written
 
 ## Proof F7, the RESULT block and the log copy
 
-58. Stay in the same NWF folder in Explorer
-59. Look for: a file named run-yyyyMMdd-HHmmss.log beside the NWF, from the press in step 51
-60. Open that log in Notepad
-61. Look for: a GROUP started line and a GROUP finished line naming the NWF, the finished line ending with `Weekly run`
-62. Look for: a block titled OPEN FILE naming the file, the NWD and the report folder
-63. Look for: a RESULT block at the end with groups done, partial and failed
-64. Look for: the RESULT block counts one group, not zero, and carries `weekly run     : 1`
+69. Stay in the same NWF folder in Explorer
+70. Look for: a file named run-yyyyMMdd-HHmmss.log beside the NWF, from the press in step 62
+71. Open that log in Notepad
+72. Look for: a GROUP started line and a GROUP finished line naming the NWF, the finished line ending with `Weekly run`
+73. Look for: a block titled OPEN FILE naming the file, the NWD and the report folder
+74. Look for: a RESULT block at the end with groups done, partial and failed
+75. Look for: the RESULT block counts one group, not zero, and carries `weekly run     : 1`
 
 ## Send the logs
 
-65. Open the folder `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
-66. Copy the four newest `run-*.log` files
-67. Paste them into `steps\logs` in the repo folder
-68. Rename each with the date, the building and the press, like `2026-09-08-1C07BC-first.log`, `2026-09-08-1C07BC-second.log`, `2026-09-08-1C07BC-noxml.log` and `2026-09-08-1C07BC-openfile.log`
-69. Open GitHub Desktop
-70. Write a summary like `logs from 1C07BC, F5 to F22 proofs`
-71. Press Commit to main
-72. Press Push origin
+76. Open the folder `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
+77. Copy the four newest `run-*.log` files
+78. Paste them into `steps\logs` in the repo folder
+79. Rename each with the date, the building and the press, like `2026-09-08-1C07BC-first.log`, `2026-09-08-1C07BC-second.log`, `2026-09-08-1C07BC-noxml.log` and `2026-09-08-1C07BC-openfile.log`
+80. Open GitHub Desktop
+81. Write a summary like `logs from 1C07BC, F5 to F22 proofs`
+82. Press Commit to main
+83. Press Push origin
 
 ## Run the window probe
 
-73. In the VS Code terminal run:
+84. In the VS Code terminal run:
 
 ```
 powershell -ExecutionPolicy Bypass -File build\probe-window-defaults.ps1
 ```
 
-74. Look for: it prints the window defaults and no error about a path
+85. Look for: it prints the window defaults and no error about a path

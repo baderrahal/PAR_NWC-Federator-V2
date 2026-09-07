@@ -107,9 +107,8 @@ F19 is dropped.
 ## F9 Skip the units change on a CHANGED group
 
 - Closes L2
-- Files `src/Federator.Addin/Engine/FederationEngine.cs` around line 321
-- LOCAL MACHINE ONLY to prove
-- Size: one guard on `comparison.Decision`. Q12 answered yes
+- Files `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Core/Rerun/NwfComparison.cs`, `src/Federator.Core/Rerun/GroupJudgement.cs`
+- DONE on 2026-09-07, proof pending. See `log.md`. Q12 answered yes
 
 ## F10 Gate the page on its own flag
 

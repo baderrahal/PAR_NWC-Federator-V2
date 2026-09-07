@@ -410,5 +410,47 @@ namespace Federator.Core.Tests
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
             Assert.That(reason, Does.Contain("NWD was requested and is not on disk"));
         }
+
+        /// <summary>
+        /// F9. A CHANGED group is left alone entirely, its NWD included, so its NWD being
+        /// missing or stale is what was asked for and never makes it FAILED.
+        /// </summary>
+        [Test]
+        public void AChangedGroupIsPartialWhateverItsNwdLooksLike()
+        {
+            GroupFacts noNwd = Clean();
+            noNwd.Decision = RerunDecision.Changed;
+            noNwd.NwdRequested = true;
+            noNwd.NwdOnDisk = false;
+            noNwd.NwdPublishReportedSuccess = false;
+
+            GroupFacts staleNwd = Clean();
+            staleNwd.Decision = RerunDecision.Changed;
+            staleNwd.NwdRequested = true;
+            staleNwd.NwdOnDisk = true;
+            staleNwd.NwdPublishReportedSuccess = false;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(noNwd, out reason), Is.EqualTo(GroupOutcome.Partial));
+            Assert.That(reason, Does.Contain("left alone"));
+            Assert.That(GroupJudgement.Judge(staleNwd, out reason), Is.EqualTo(GroupOutcome.Partial));
+            Assert.That(reason, Does.Contain("left alone"));
+        }
+
+        [Test]
+        public void AChangedGroupWhoseNwfIsGoneOrThatThrewIsStillFailed()
+        {
+            GroupFacts gone = Clean();
+            gone.Decision = RerunDecision.Changed;
+            gone.NwfOnDisk = false;
+
+            GroupFacts threw = Clean();
+            threw.Decision = RerunDecision.Changed;
+            threw.AddError("would not open");
+
+            Assert.That(GroupJudgement.Judge(gone), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(GroupJudgement.Judge(threw), Is.EqualTo(GroupOutcome.Failed));
+        }
     }
 }

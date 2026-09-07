@@ -257,5 +257,33 @@ namespace Federator.Core.Tests
             Assert.Throws<ArgumentNullException>(delegate { NwfComparison.Compare(null, new string[0]); });
             Assert.Throws<ArgumentNullException>(delegate { NwfComparison.Compare(new string[0], null); });
         }
+
+        /// <summary>
+        /// F9. The one line a CHANGED group leaves when the run skips it. It names the
+        /// group, the files that differ, and every step that was not done, so a log alone
+        /// says why nothing happened to the group.
+        /// </summary>
+        [Test]
+        public void TheSkipLineNamesTheGroupTheDifferenceAndWhatWasNotDone()
+        {
+            // Built with Path.Combine so the file names split the same way on Windows,
+            // where the run happens, and on Linux, where the container runs the tests.
+            string folder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "in");
+            NwfComparison comparison = NwfComparison.Compare(
+                new[] { System.IO.Path.Combine(folder, "a.nwc"), System.IO.Path.Combine(folder, "b.nwc") },
+                new[] { System.IO.Path.Combine(folder, "a.nwc"), System.IO.Path.Combine(folder, "c.nwc") });
+
+            string line = comparison.SkipLine("1C07BC");
+
+            Assert.That(comparison.Decision, Is.EqualTo(RerunDecision.Changed));
+            Assert.That(line, Does.StartWith("GROUP    1C07BC skipped"));
+            Assert.That(line, Does.Contain("no longer matches the folder"));
+            Assert.That(line, Does.Contain("1 added, 1 removed"));
+            Assert.That(line, Does.Contain("added c.nwc"));
+            Assert.That(line, Does.Contain("removed b.nwc"));
+            Assert.That(line, Does.Contain("no units change"));
+            Assert.That(line, Does.Contain("no NWD"));
+            Assert.That(line, Does.Not.Contain("\n"), "one line, not a block");
+        }
     }
 }
