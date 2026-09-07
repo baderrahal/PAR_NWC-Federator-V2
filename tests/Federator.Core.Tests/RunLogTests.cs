@@ -594,5 +594,25 @@ namespace Federator.Core.Tests
             Assert.That(text, Does.Not.Contain("first run      :"));
             Assert.That(text, Does.Not.Contain("path unknown"));
         }
+
+        /// <summary>
+        /// F10. An output the run did not write gets a line in the same shape as the
+        /// written ones, so every output is accounted for whichever way it went.
+        /// </summary>
+        [Test]
+        public void ASkippedOutputGetsALineInTheSameShapeAsAWrittenOne()
+        {
+            using (RunLog log = Start())
+            {
+                log.WriteSkipped("XLSX", "not wanted this run");
+                log.WriteSkipped("IMAGES", null);
+
+                string text = ReadWhileOpen(log);
+
+                Assert.That(text, Does.Contain("XLSX     skipped  not wanted this run"));
+                Assert.That(text, Does.Contain("IMAGES   skipped  UNKNOWN"));
+                Assert.That(log.WrittenFiles.Count, Is.EqualTo(0), "a skip records nothing as written");
+            }
+        }
     }
 }

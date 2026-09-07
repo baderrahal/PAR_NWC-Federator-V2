@@ -113,9 +113,8 @@ F19 is dropped.
 ## F10 Gate the page on its own flag
 
 - Closes L3
-- Files `src/Federator.Addin/Engine/FederationEngine.cs` `CreateAndRunTheTests` and `WriteWorkbook`
-- LOCAL MACHINE ONLY to prove
-- Size: small. Build the `ClashReport` when workbook, XML or HTML is wanted
+- Files `src/Federator.Core/Report/OutputPlan.cs`, `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`
+- DONE on 2026-09-07, proof pending. See `log.md`
 
 ## F11 Remove the dead code
 

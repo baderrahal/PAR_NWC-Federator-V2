@@ -541,6 +541,16 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
+        /// An output this run did not write, with why, in the same shape as the written
+        /// ones so every output has one line whichever way it went. Records nothing,
+        /// because nothing was written.
+        /// </summary>
+        public void WriteSkipped(string kind, string reason)
+        {
+            Line(kind.PadRight(8) + " skipped  " + (string.IsNullOrEmpty(reason) ? "UNKNOWN" : reason));
+        }
+
+        /// <summary>
         /// Checks the file is really there, reads its real size, records it for the result
         /// block and logs it. Returns minus one when the file is not on disk, and in that
         /// case nothing is recorded as written.

@@ -834,7 +834,14 @@ namespace Federator.Addin.Engine
                         + "and none is run. One model cannot clash with anything.");
                 }
 
-                if (reports.WriteWorkbook || reports.WriteXml)
+                // Each output answers to its own flag. The report is built when the
+                // workbook, the XML or the page is wanted, because all three are made
+                // from it. It used to be built only for the workbook or the XML, so the
+                // page rode on the workbook flag and would have gone with it.
+                OutputPlan outputs = OutputPlan.From(reports);
+                log.Line("OUTPUTS  " + outputs);
+
+                if (outputs.BuildReport)
                 {
                     ClashReport report = new ClashReport(job.Building, job.OutputName);
                     report.SourceFile = exchange == null
@@ -848,20 +855,24 @@ namespace Federator.Addin.Engine
                     outcome.Report = report;
 
                     // The pictures go in a folder named after the workbook and beside it,
-                    // so where the workbook is going has to be known before the clash step
-                    // rather than after it. Only when a workbook is actually being written,
-                    // because pictures beside a file nobody writes are pictures nobody
-                    // finds.
-                    if (reports.WriteWorkbook && reportFolder != null && reports.Images.Write)
+                    // which is also where the page and the XML sit, so where the workbook
+                    // would go has to be known before the clash step rather than after it.
+                    // Rendered when pictures are wanted and any report is wanted to link
+                    // them from. They used to ride on the workbook flag alone.
+                    if (outputs.WriteImages && reportFolder != null)
                     {
                         runner.WorkbookPath = ReportPaths.Workbook(reportFolder, job.WorkbookName);
                         runner.Images = new ClashImages(log, reports.Images);
                         log.Line("CLASH    " + reports.Images.Describe());
                     }
-                    else if (!reports.Images.Write)
+                    else
                     {
-                        log.Line("CLASH    images are switched off for this run.");
+                        log.WriteSkipped("IMAGES", outputs.ImagesSkipReason ?? "no report folder");
                     }
+                }
+                else
+                {
+                    log.WriteSkipped("IMAGES", outputs.ImagesSkipReason);
                 }
 
                 ClashRunOutcome clash = runner.Run(plan);
@@ -984,6 +995,7 @@ namespace Federator.Addin.Engine
         {
             if (!reports.WriteHtml)
             {
+                log.WriteSkipped("HTML", OutputPlan.NotWanted);
                 return;
             }
 
@@ -998,6 +1010,7 @@ namespace Federator.Addin.Engine
                     log.Line(line);
                 }
 
+                log.WriteSkipped("HTML", "the stylesheet was not found in the install, see the lines above");
                 return;
             }
 
@@ -1149,13 +1162,29 @@ namespace Federator.Addin.Engine
         private void WriteWorkbook(FederationJob job, JobOutcome outcome)
         {
             ClashReport report = outcome.Report;
+            OutputPlan outputs = OutputPlan.From(reports);
 
             if (report == null || reportFolder == null)
             {
+                // Nothing to write from, or nowhere to write to. Each output still gets
+                // its line, so a log never leaves an output unaccounted for.
+                string why = reportFolder == null
+                    ? "no report folder"
+                    : outputs.BuildReport
+                        ? "no clash step ran for this group, so there is nothing to report"
+                        : OutputPlan.NotWanted;
+
+                log.WriteSkipped("XLSX", outputs.WriteWorkbook ? why : OutputPlan.NotWanted);
+                log.WriteSkipped("HTML", outputs.WriteHtml ? why : OutputPlan.NotWanted);
+                log.WriteSkipped("XML", outputs.WriteXml ? why : OutputPlan.NotWanted);
                 return;
             }
 
-            if (reports.WriteWorkbook)
+            if (!outputs.WriteWorkbook)
+            {
+                log.WriteSkipped("XLSX", OutputPlan.NotWanted);
+            }
+            else
             {
                 string path = ReportPaths.Workbook(reportFolder, job.WorkbookName);
                 progress("Writing the workbook for " + job.Building);
@@ -1183,8 +1212,9 @@ namespace Federator.Addin.Engine
 
             WriteHtmlTabular(job, outcome, report);
 
-            if (!reports.WriteXml)
+            if (!outputs.WriteXml)
             {
+                log.WriteSkipped("XML", OutputPlan.NotWanted);
                 return;
             }
 
