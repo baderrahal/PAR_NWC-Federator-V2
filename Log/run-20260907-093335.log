@@ -1,0 +1,22 @@
+﻿09:33:35.821  +0000.000s  Log opened at C:\Users\p003653k\AppData\Local\ParsonsNwcFederator\logs\run-20260907-093335.log
+09:33:35.826  +0000.006s  RETAIN   keeping 30 logs, deleted 1, could not delete 0
+
+================================================================
+SESSION
+================================================================
+09:33:35.834  +0000.014s  started        : 2026-09-07 09:33:35
+09:33:35.834  +0000.014s  plugin version : 1.0.0.0 be0b9b37 built 2026-09-01 23:14:50
+09:33:35.834  +0000.014s  navisworks     : Autodesk Navisworks Manage 2025  runtime 22.5  build 0  api 22.0 (stable)  language en-US  runtime string Navisworks Manage
+09:33:35.834  +0000.014s  open document  : none, the document is clear
+09:33:35.835  +0000.014s  log file       : C:\Users\p003653k\AppData\Local\ParsonsNwcFederator\logs\run-20260907-093335.log
+09:33:35.895  +0000.075s  LOGO     the report will carry C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg
+
+================================================================
+FOLDERS REMEMBERED
+================================================================
+09:33:35.915  +0000.094s  Source    C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\04_Published\02_Schematic Design\100% SD CO6 & C07 [001]\C07
+09:33:35.915  +0000.095s  Nwf       C:\Users\p003653k\DC\ACCDocs\Parsons MEA\KSA_New Murabba\Project Files\01_WIP\BI_BIM\Federated Model\NWF\C07\Buildings & Landscape
+09:33:35.915  +0000.095s  Nwd       C:\00_NM\C 06 07\NWD\C 07
+09:33:35.916  +0000.095s  Excel     C:\00_NM\C 06 07\CLASH REPORT\C 07
+09:33:35.916  +0000.095s  ClashXml  C:\Users\p003653k\Downloads
+09:33:51.631  +0015.811s  Window closed.
