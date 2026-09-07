@@ -2,6 +2,50 @@
 
 Newest entry at the top.
 
+## 2026-09-07 F20, the Core tests run on every push to main
+
+### What was done
+
+- `steps/logs` still holds only its README. No run log yet, so every fix from F5 onward stays pending local proof and nothing about them was recorded
+- Order changed in `01_next.md` as Bader set it. F15 moved to the end of the code fixes. From here: F20, F16, F21, F12, F13, F14, F15, F18 when the sample arrives, F23 when Q20 is answered. F15 carries one new line, read `steps/05_api_notes.md` first if it exists. That file does not exist yet
+- F20 done. `.github/workflows/tests.yml` triggered on pull_request and workflow_dispatch only. It now also triggers on push to main. Same job, same four steps, no second workflow file
+- The job runs the Core tests only. It restores and tests `tests/Federator.Core.Tests/Federator.Core.Tests.csproj`, whose only project reference is `src/Federator.Core/Federator.Core.csproj`. Nothing in it names the add-in project or the solution, so the runner never tries to build the add-in. Nothing to fix there
+- On a PR merge the same commit runs once as the PR check and once as the push run on main. The push run is a second run of the same job on the same commit and blocks nothing, because no branch rule waits on it. That is the ordinary shape of a push plus pull_request workflow and it is left as it is
+- No test was changed
+- Core tests under mono on Linux, unchanged: 840 passed, 40 failed, 32 skipped, 912 total. The 40 are the same Windows path and file locking failures
+- The add-in was not compiled. It cannot compile in the container
+
+### What remains
+
+- F16 next, then F21, F12, F13, F14, F15, F18 when the sample arrives, F23 when Q20 is answered
+- The proofs from F5 onward on the local machine, then P1, P2, P3
+- Q20 from Bader, and whether the outstanding count setting stays now that nothing shows it
+
+### Known bugs
+
+- M5 closed on the Core side. The Core tests run on every PR and every push to main. Still open on the add-in side, because the add-in build stays local, F19 dropped by Q10
+- L4 fixed in code, pending local proof. Run one group with pictures on, open the Excel, the picture on row N of a block must be picture N in the same order the Clash Detective panel lists the clashes, the blocks numbered most clashes first, and every link must open its picture. The log must carry one IMAGES numbered in report order line
+- B9 fixed. The local proof is only that the add-in builds
+- L3 fixed in code, pending local proof. Run one group with the XML box on and every image status unticked, the log must show XML written, IMAGES skipped with images switched off, XLSX and HTML written. Then the XML box off and the statuses back on, the log must show XML skipped as not wanted and the pictures rendered
+- L2 fixed in code, pending local proof. Add or remove one NWC in a folder whose NWF exists, press Run, the group must show Skipped (changed on disk), the log must show no UNITS line for it, and the NWF must keep its old modified time
+- B7 fixed in code, pending a local run of `build/probe-window-defaults.ps1`
+- B1 fixed in code, pending local proof. Run one building twice, the second press must show OPENED, the sets present and the tests still run
+- B2 fixed in code, pending local proof. Open one NWF, press Run the open file, the reports must land in one Clash Reports folder beside the file, no folder inside a folder
+- B11 fixed in code, pending local proof. Open one NWF, press Run the open file, the log must end with a RESULT block for that file and a copy of the log must sit beside it
+- L1 fixed in code, pending local proof. Open one NWF that holds tests, pick no XML, press Run the open file, the tests must run and the Excel must be written. Then the same on the scanned run with no XML on a folder whose NWFs already hold tests
+- F22 done in code, pending local proof. Scan a folder that holds some NWFs and lacks others, pick no XML, the list must show First run beside the groups with no NWF and Weekly run beside the others, and the confirm dialog must show the counts
+- B3, B4, B8 and B10 fixed
+- B12 OPEN, waiting on Q20
+- B5, B6, L5 to L8, M1 to M4, M6 to M8 still open. See `00_analysis.md`
+
+### What comes next
+
+1. Merge the F20 PR and read the push run on main
+2. Bader answers Q20 in `02_questions.md` and says whether the outstanding count setting stays
+3. Bader follows `03_bader_next.md` and drops the logs into `steps/logs`
+4. Worker reads the logs and records the proofs in this file
+5. Worker starts F16, the tests made path neutral
+
 ## 2026-09-07 F17, the pictures are numbered in the export order
 
 ### What was done
