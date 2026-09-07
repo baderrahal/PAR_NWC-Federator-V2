@@ -961,7 +961,7 @@ namespace Federator.Addin.Engine
             {
                 outcome.AddReportWarning(
                     "renumbering the pictures threw " + error.GetType().Name + ": " + error.Message
-                    + ", the picture numbers may be a mix of run order and report order, the log names the pass that stopped");
+                    + ", the picture numbers may be a mix of run order and report order, the log carries the error");
                 log.Failure(
                     "renumbering the pictures for " + job.Building,
                     error,
