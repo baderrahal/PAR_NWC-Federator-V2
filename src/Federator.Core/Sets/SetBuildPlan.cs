@@ -48,7 +48,7 @@ namespace Federator.Core.Sets
         /// <summary>
         /// The flags attribute exactly as the file carried it. Read off the installed DLL
         /// on 2026-08-31, Autodesk.Navisworks.Api.SearchConditionOptions is a Flags enum
-        /// over int whose bits are the same numbers, so 64 is StartGroup. See docs\scan.md.
+        /// over int whose bits are the same numbers, so 64 is StartGroup. See docs\history\scan.md.
         /// This is kept as an int here because Core never references the Navisworks API.
         /// </summary>
         public int Flags { get; private set; }

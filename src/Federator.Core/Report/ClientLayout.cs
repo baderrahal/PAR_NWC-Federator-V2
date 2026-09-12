@@ -39,7 +39,7 @@ namespace Federator.Core.Report
             /// <summary>Item 1 and Item 2 over their blocks.</summary>
             ItemLabels,
 
-            /// <summary>The thirteen column headings.</summary>
+            /// <summary>The fifteen column headings.</summary>
             Headings,
 
             /// <summary>One clash.</summary>
@@ -170,7 +170,7 @@ namespace Federator.Core.Report
         public const double Epsilon = 0.0001;
 
         /// <summary>
-        /// True where the Distance cell should carry no number format at all. Theirs holds
+        /// The number format the Distance cell carries, which is none at all. Theirs holds
         /// the rounded number under General, so a format here would mean ours is storing
         /// the raw double and hiding it behind a display, which is what it used to do.
         /// </summary>

@@ -9,11 +9,12 @@ namespace Federator.Core.Report
     /// already receives so the workbook and its pictures travel together.
     ///
     /// Measured on 2026-08-31 off two real exports, one small and one large, in
-    /// C:\00_NM\Clash report. See docs\scan.md section 4k.
+    /// C:\00_NM\Clash report. See docs\history\scan.md section 4k.
     ///
     /// The folder is the report name with _files on the end, beside the report. The
-    /// pictures are loose jpg in it, plus a logo.jpg that Navisworks puts there and this
-    /// tool does not.
+    /// pictures are loose jpg in it, plus a logo.jpg. Navisworks puts one there on its own
+    /// reports and this tool copies one there too, off the machine that is running, so the
+    /// page and its picture travel together.
     ///
     /// The name is NOT one running sequence, which is what it looks like from the first
     /// dozen. It is cd, then the test, then the clash within that test:
@@ -42,11 +43,9 @@ namespace Federator.Core.Report
         /// <summary>
         /// The logo goes in the same folder, which is where Navisworks puts it and where
         /// both supplied reports have it. Named here so a count of the pictures this tool
-        /// rendered can leave it out, because it was copied rather than made.
-        /// </summary>
-        /// <summary>
-        /// The same name the install ships it under, read off InstallFiles rather than
-        /// typed again, because the copy in the report folder is that file.
+        /// rendered can leave it out, because it was copied rather than made. The name is
+        /// read off InstallFiles rather than typed again, because the copy in the report
+        /// folder is that file.
         /// </summary>
         public const string LogoName = InstallFiles.LogoName;
 

@@ -6,6 +6,14 @@ $ErrorActionPreference = "Stop"
 $bundle = "$env:APPDATA\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22"
 $repo = Split-Path (Split-Path $PSScriptRoot)
 $addin = Join-Path $repo "src\Federator.Addin\bin\Release\net48\Federator.Addin.dll"
+$core = Join-Path (Split-Path $addin) "Federator.Core.dll"
+$api = Join-Path $NavisworksPath "Autodesk.Navisworks.Api.dll"
+
+# Every path is built and tested directly, one file at a time so a missing one is named.
+# Never search the install folder. The same rule the build uses.
+if (-not (Test-Path $addin)) { Write-Output "UNKNOWN: no Federator.Addin.dll at $addin. Build in Release first"; exit 1 }
+if (-not (Test-Path $core)) { Write-Output "UNKNOWN: no Federator.Core.dll at $core. Build in Release first"; exit 1 }
+if (-not (Test-Path $api)) { Write-Output "UNKNOWN: no Autodesk.Navisworks.Api.dll at $api"; exit 1 }
 $nw = $NavisworksPath
 
 [System.AppDomain]::CurrentDomain.add_AssemblyResolve({

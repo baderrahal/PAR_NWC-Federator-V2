@@ -2,7 +2,12 @@
 param([string]$NavisworksPath = "C:\Program Files\Autodesk\Navisworks Manage 2025")
 $ErrorActionPreference = "Stop"
 $nw = $NavisworksPath
-$a = [System.Reflection.Assembly]::ReflectionOnlyLoadFrom((Join-Path $nw "Autodesk.Navisworks.Api.dll"))
+$api = Join-Path $nw "Autodesk.Navisworks.Api.dll"
+
+# The path is built and tested directly, never searched for, the same rule the build uses.
+if (-not (Test-Path $api)) { Write-Output "UNKNOWN: no Autodesk.Navisworks.Api.dll at $api"; exit 1 }
+
+$a = [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($api)
 
 function Sig($m) {
   $ps = @()

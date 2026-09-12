@@ -19,10 +19,13 @@ namespace Federator.Core.Rerun
             NwdPath = "the NWD path";
         }
 
-        /// <summary>Which of the three rerun cases this group turned out to be.</summary>
+        /// <summary>Which of the four rerun cases this group turned out to be.</summary>
         public RerunDecision Decision { get; set; }
 
-        /// <summary>Set only after File.Exists has been checked.</summary>
+        /// <summary>
+        /// This and NwdOnDisk below are set only after File.Exists has been checked, never
+        /// off a call that reported success.
+        /// </summary>
         public bool NwfOnDisk { get; set; }
 
         /// <summary>
@@ -31,7 +34,6 @@ namespace Federator.Core.Rerun
         /// </summary>
         public bool NwdRequested { get; set; }
 
-        /// <summary>Set only after File.Exists has been checked.</summary>
         public bool NwdOnDisk { get; set; }
 
         /// <summary>

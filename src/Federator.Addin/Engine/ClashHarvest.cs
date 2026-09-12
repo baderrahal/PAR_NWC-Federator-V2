@@ -16,7 +16,7 @@ namespace Federator.Addin.Engine
     /// Everything here reads. Nothing is created, nothing is mutated, so nothing here can
     /// invalidate a handle the runner is holding. Every wrapper it resolves is disposed,
     /// which is safe because a SavedItem read out of a collection is created with
-    /// eEXTERNAL ownership. See docs\scan.md section 4g.
+    /// eEXTERNAL ownership. See docs\history\scan.md section 4g.
     ///
     /// Nothing about any one project is in here. The property names it looks for are
     /// settings, and where a property is not there the cell is left empty rather than
@@ -45,8 +45,8 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Where the pictures are written, and what they cost. Null leaves every Image
-        /// cell empty, which is what a run with images switched off does.
+        /// Where the pictures are written, and what they cost. The same object the runner
+        /// holds, handed down, so what null means is said once on ClashRunner.Images.
         /// </summary>
         public ClashImages Images { get; set; }
 
@@ -537,7 +537,7 @@ namespace Federator.Addin.Engine
         /// on GetDataType and calls the matching accessor, but it prefixes the kind name
         /// and hands back "Int32:702888". So the kind is read here and the right accessor
         /// called, which gives the value clean, and ToString is the fallback for a kind
-        /// this does not know. See docs\scan.md section 4n.
+        /// this does not know. See docs\history\scan.md section 4n.
         ///
         /// Never throws. A property that cannot be read is one empty cell, not a lost row.
         /// </summary>

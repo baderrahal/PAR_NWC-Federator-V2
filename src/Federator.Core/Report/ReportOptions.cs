@@ -66,8 +66,10 @@ namespace Federator.Core.Report
         /// The logo the HTML page shows, or empty for none, which is the default.
         ///
         /// Autodesk's own logo.jpg sits in the Images folder of the install and is theirs.
-        /// Nothing here copies it or writes it. Point this at your own mark and it is
-        /// copied beside the report so the page and its picture travel together.
+        /// No copy of it is in this repo or in the bundle. This box starts filled with that
+        /// file, read off the machine that is running, and whatever it points at is copied
+        /// beside the report so the page and its picture travel together. Clear it for no
+        /// logo at all.
         /// </summary>
         public string LogoPath { get; set; }
 

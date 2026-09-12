@@ -10,9 +10,9 @@ namespace Federator.Core.Tests
     /// run that raised it said "Nothing remembered yet" on its first line, so nothing
     /// confirmed it either way.
     ///
-    /// There are five Browse buttons in the window: the source folder, the NWF folder, the
-    /// NWD folder, the Excel folder and the clash XML. All five go through PickerStart, so
-    /// all five can be proved here rather than clicked.
+    /// There are six Browse buttons in the window: the source folder, the NWF folder, the
+    /// NWD folder, the Excel folder, the clash XML and the logo. All six go through
+    /// PickerStart, so all six can be proved here rather than clicked.
     /// </summary>
     [TestFixture]
     public class PickerStartTests

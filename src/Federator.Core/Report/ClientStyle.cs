@@ -4,8 +4,9 @@ namespace Federator.Core.Report
 {
     /// <summary>
     /// How the client's report LOOKS, measured cell by cell off
-    /// samples\client-report\1104-PAR-1A04WN-XXX-BM-RPT-000001.xlsx on 2026-09-01 and
-    /// checked against 1104-PAR-1A04WE-XXX-BM-RPT-000001.xlsx.
+    /// samples\client-report\1104-PAR-1A04WN-XXX-BM-RPT-000001.xlsx on 2026-09-01, which
+    /// is committed here, and checked against 1104-PAR-1A04WE-XXX-BM-RPT-000001.xlsx, which
+    /// was read on Bader's machine and is not in this checkout.
     ///
     /// WHY THIS EXISTS. Every VALUE in our workbook already matched theirs, and the check
     /// said so, while the two files looked nothing alike side by side. Theirs is banded:

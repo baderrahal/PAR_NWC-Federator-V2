@@ -40,7 +40,9 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
     docs\history            measurements and old rules, never current
     samples                 real files from the project, read by tests, never edited
     steps                   the plan, the questions, what Bader does next, the log
-    bundle                  what ships, written by the build, never by hand
+    bundle                  one hand written manifest, PackageContents.xml, copied by
+                            install.ps1. Not build output and not edited in a fix
+    artifacts               where install.ps1 assembles the bundle. Written by the build
     .claude\rules           the rules per folder, each with a paths line at the top
     .claude\hooks           two walls, run by Claude Code before a tool call
 
@@ -71,8 +73,9 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
   A failure dialog may carry the exception message. A label may not
 - A file this tool did not write is never listed as written, and a size is only
   logged after File.Exists passes and the real size is read back
-- samples, steps\logs and bundle are never edited. The first two are evidence and
-  the third is build output. A hook refuses the edit
+- samples, steps\logs and bundle are never edited. The first two are evidence and the
+  third is the one manifest the install reads, changed on its own and never inside a
+  fix. A hook refuses the edit
 - Nothing is committed or pushed on main. Every fix goes on its own branch, named
   fix-FNN for the fix in steps\01_next.md, reaches main through one pull request
   merged once Actions is green, and the local branch is deleted after. A hook

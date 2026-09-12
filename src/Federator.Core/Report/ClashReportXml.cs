@@ -18,7 +18,7 @@ namespace Federator.Core.Report
     ///
     /// WHERE THE SHAPE CAME FROM. There is no clash report XSD anywhere in the Navisworks
     /// install. The schemas folder holds only nw-exchange and nw-Takeoff schemas, listed
-    /// in docs/scan.md section 7. The shape is still shipped, in the three stylesheets
+    /// in docs/history/scan.md section 7. The shape is still shipped, in the three stylesheets
     /// Navisworks uses to render its own clash reports:
     ///
     ///     Navisworks Manage 2025\en-US\stylesheets\clash_report_html.xsl
@@ -26,19 +26,20 @@ namespace Federator.Core.Report
     ///     Navisworks Manage 2025\en-US\stylesheets\clash_report_text.xsl
     ///
     /// An XSL says exactly which elements and attributes the XML it transforms carries, so
-    /// every name below was read off those files rather than invented. See docs/scan.md
+    /// every name below was read off those files rather than invented. See docs/history/scan.md
     /// section 4h for the whole shape.
     ///
     /// WHAT IS FILLED AND WHAT IS LEFT OUT. Filled: exchange, batchtest, clashtests,
     /// clashtest, summary, clashresults, clashgroup, clashresult, resultstatus,
     /// clashpoint, pos3f, gridlocation, createddate, date, clashobjects, clashobject,
-    /// layer, objectattribute. Left out, because this tool holds nothing to put in them:
+    /// layer, objectattribute, description, smarttags, smarttag and logo. Left out,
+    /// because this tool holds nothing to put in them:
     /// approveddate, approvedby, assignedto, clashtasklink and everything under it,
     /// linkage, linkedanimation, clipplaneset, view and camera.
     ///
     /// WHAT THIS IS FOR NOW. It is no longer only a file beside the workbook. It is what
     /// the HTML Tabular report is rendered from, by Autodesk's own stylesheet, so every
-    /// element here is chosen because that stylesheet reads it. See docs\scan.md
+    /// element here is chosen because that stylesheet reads it. See docs\history\scan.md
     /// section 4m for our XML tested against every one of its column tests.
     /// Left out rather than written empty, so nobody reads a blank as a measured blank.
     /// </summary>
@@ -62,15 +63,18 @@ namespace Federator.Core.Report
         /// here as well. They belong in the workbook, which is ours, and never on the
         /// page, which is theirs.
         /// </summary>
-        public static readonly string[] QuickProperties = ClientReportColumns.QuickProperties;
+        internal static readonly string[] QuickProperties = ClientReportColumns.QuickProperties;
 
         /// <summary>
         /// The logo the page shows, or empty for none. The stylesheet reads //logo/@href,
         /// so the logo is data rather than something baked into the layout, and writing no
         /// logo element leaves the src empty and puts no picture on the page.
         ///
-        /// Autodesk's own logo.jpg ships in the install's Images folder and is theirs.
-        /// Nothing here copies it. This is empty until somebody points it at their own.
+        /// Autodesk's own logo.jpg ships in the install's Images folder and is theirs. No
+        /// copy of it is in this repo or in the bundle. The run reads it off the machine
+        /// that is running and copies it into the report's own _files folder, which is what
+        /// Navisworks itself does, so what this carries is a relative name and never a path
+        /// on the machine that wrote the report.
         /// </summary>
         public string LogoHref { get; set; }
 
@@ -197,7 +201,7 @@ namespace Federator.Core.Report
                     new XAttribute("approved", tally.Of(ClashStatus.Approved)),
                     new XAttribute("resolved", tally.Of(ClashStatus.Resolved))));
 
-            if (!test.HasSheet)
+            if (!test.HasRows)
             {
                 return element;
             }
@@ -267,9 +271,10 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// One side. The family, type, material, source file and discipline go in as
-        /// objectattribute name and value pairs, which is the shape the stylesheets read
-        /// arbitrary item properties out of.
+        /// One side. The id goes in as the one objectattribute and the two quick
+        /// properties as smarttags, and nothing else does. The family, type name, material,
+        /// source file and discipline are read off the item and written nowhere, because
+        /// the stylesheet makes a column out of every smarttag and the page is theirs.
         /// </summary>
         private XElement Item(ClashItem item, string level)
         {

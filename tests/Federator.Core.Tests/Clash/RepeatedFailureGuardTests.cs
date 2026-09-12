@@ -60,7 +60,6 @@ namespace Federator.Core.Tests
             Assert.That(AfterFailures(1830, Disposed).Consecutive, Is.EqualTo(1830));
         }
 
-        // The number is a setting, not a constant.
         [Test]
         public void TheThresholdIsASetting()
         {

@@ -166,8 +166,8 @@ namespace Federator.Core.Clash
             int filePrimitives,
             int documentPrimitives)
         {
-            // Ordinal and never trimmed, because two set names in the reference file end
-            // in a space.
+            // Ordinal and never trimmed. The rule, and the two set names that are the
+            // reason for it, are in .claude\rules\core.md.
             if (!string.Equals(fileLocator, documentLocator, StringComparison.Ordinal))
             {
                 Add(found, testName, which + " set", QuotedOrNothing(fileLocator), QuotedOrNothing(documentLocator));

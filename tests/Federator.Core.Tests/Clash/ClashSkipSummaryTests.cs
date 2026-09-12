@@ -35,7 +35,6 @@ namespace Federator.Core.Tests
 
         // ---------- one thing said once, not 1830 times ----------
 
-        // The exact case. 1830 skips for one reason must not become 1830 lines.
         [Test]
         public void EighteenHundredSkipsForOneReasonDoNotBecomeEighteenHundredLines()
         {

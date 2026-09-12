@@ -4,10 +4,6 @@ using System.IO;
 
 namespace Federator.Core.Report
 {
-    /// <summary>
-    /// Where a workbook goes. One place builds the path, so the path written to and the
-    /// path looked for cannot drift, exactly as OutputPaths does for the NWF and the NWD.
-    /// </summary>
     /// <summary>Where the reports go, and why, when a picked folder had to be refused.</summary>
     public sealed class ReportFolderChoice
     {
@@ -28,6 +24,10 @@ namespace Federator.Core.Report
         }
     }
 
+    /// <summary>
+    /// Where a workbook goes. One place builds the path, so the path written to and the
+    /// path looked for cannot drift, exactly as OutputPaths does for the NWF and the NWD.
+    /// </summary>
     public static class ReportPaths
     {
         /// <summary>The subfolder used when no Excel folder was picked.</summary>

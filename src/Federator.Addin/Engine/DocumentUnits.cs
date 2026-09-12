@@ -16,7 +16,7 @@ namespace Federator.Addin.Engine
     /// the document's units, so a report that says metres while the document says feet is
     /// a report that lies.
     ///
-    /// WHAT THE DLL SAYS, measured on 2026-09-01, see docs\scan.md section 4q.
+    /// WHAT THE DLL SAYS, measured on 2026-09-01, see docs\history\scan.md section 4q.
     ///
     ///   Document.Units   read only, no setter at all
     ///   Model.Units      read only, no setter at all
@@ -44,7 +44,8 @@ namespace Federator.Addin.Engine
     ///
     /// IT IS A MUTATION. Setting a model's units changes what the NWF holds, so it is
     /// logged with what the document was and what it became. It is on for every run,
-    /// because the window sets it on and every report the team sends is metric. It
+    /// fixed on in ReportOptions with nothing in the window able to turn it off, because
+    /// every report the team sends is metric. It
     /// happens before the clash step so tolerances and distances are read in the new
     /// units, and each model keeps its own transform rather than being handed a new one.
     /// </summary>

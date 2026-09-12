@@ -83,7 +83,7 @@ namespace Federator.Core.Tests
             Assert.That(error.Message, Does.Contain("Feet"));
         }
 
-        // 0.2460629921 ft is the 75 mm CLAUDE.md records off the reference file.
+        // 0.2460629921 ft is the 75 mm .claude\rules\core.md records off the reference file.
         [Test]
         public void TheFeetRowAgreesWithTheReferenceFile()
         {

@@ -61,7 +61,7 @@ the window and the log, in `Federator.Core.Rerun.OpenDocumentJob`.
 
 ## The two hand buttons
 
-Build sets and Run tests on the Clash step are for trying one open model by hand and
-are labelled as that. They are not steps in the run. Each calls the one engine method
+Sets into open model and Tests into open model, on the Clash step, are for trying one
+open model by hand and are labelled as that. They are not steps in the run. Each calls the one engine method
 the run calls per group, so the SETS and CLASH lines in the log read the same whichever
 way the work was started.

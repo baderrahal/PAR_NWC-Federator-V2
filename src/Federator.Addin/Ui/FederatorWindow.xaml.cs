@@ -1488,7 +1488,7 @@ namespace Federator.Addin.Ui
                 dialog.CheckFileExists = true;
 
                 // StartFor already gives a FOLDER, for this picker as much as the other
-                // four. Taking the directory name of it opened the parent, so a remembered
+                // five. Taking the directory name of it opened the parent, so a remembered
                 // folder came back one level too high every time.
                 string folder = StartFor(PickerKind.ClashXml, ExchangeFileBox.Text);
 

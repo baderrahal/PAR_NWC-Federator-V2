@@ -183,9 +183,9 @@ namespace Federator.Core.Tests
             found.State = TestState.FoundClashes;
             found.Add(Row(ClashStatus.New, -0.1, 3));
 
-            Assert.That(report.Tests[0].HasSheet, Is.False, "a skipped test has no sheet");
-            Assert.That(report.Tests[1].HasSheet, Is.False, "a passed test has no sheet");
-            Assert.That(report.Tests[2].HasSheet, Is.True);
+            Assert.That(report.Tests[0].HasRows, Is.False, "a skipped test has no row");
+            Assert.That(report.Tests[1].HasRows, Is.False, "a passed test has no row");
+            Assert.That(report.Tests[2].HasRows, Is.True);
         }
 
         // ---------- the test numbers ----------

@@ -375,6 +375,7 @@ F19 is dropped.
 - CONTAINER
 - The seventeen `docs\scan.md` paths and the four other moved paths. Thirteen to fifteen, five to six, three to four, eight to twelve. core.md made to agree with itself on Distance, the Item ID label, the workbook check, the five extra properties, the Summary sheet, the Layer column, the left alone group, `HealthCheckResult`, and the sample names. The Summary sheet comments in `ClashReportModel`, `HasSheet` renamed `HasRows`. The logo comments. The three stacked summaries, the copied sentences, the two comments that restate a test name, the three project names in comments. The Health tests into a `Health` folder. The probes README made true by giving `probe-units.ps1` and the three window probes the same Test-Path and UNKNOWN line as the other two
 - Size: large in count, no logic
+- DONE on 2026-09-12. 62 files. The old doc path was 31 lines in 22 files, measured rather than counted off the list, and 30 are repointed. The bundle manifest holds the 31st and is Q30. The nineteen copies of the temp folder sentence go with F16
 
 ## F45 The clash step keeps its rules
 

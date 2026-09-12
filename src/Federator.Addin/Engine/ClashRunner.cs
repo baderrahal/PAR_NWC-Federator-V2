@@ -99,7 +99,7 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// Autodesk.Navisworks.Api.Units to the unit code ExchangeUnits converts with,
         /// read off UnitTable. The enum values were read off the installed DLL, see
-        /// docs\scan.md. A value the table has not been taught returns null rather than a
+        /// docs\history\scan.md. A value the table has not been taught returns null rather than a
         /// guessed factor, and every test is then skipped by name saying so.
         /// </summary>
         public static string UnitName(Units units)
@@ -604,14 +604,14 @@ namespace Federator.Addin.Engine
                         // The client's Status column on the test header. Whatever the API
                         // reports, written as itself. Theirs says OK, which is not a value
                         // on ClashTestStatus, and what puts a test into any of the four is
-                        // UNKNOWN, so nothing is translated. See docs\scan.md section 4j.
+                        // UNKNOWN, so nothing is translated. See docs\history\scan.md section 4j.
                         summary.StatusWord = after.Status.ToString();
 
                         ClashHarvest harvest = new ClashHarvest(log, NameSettings);
                         harvest.Images = Images;
                         harvest.WorkbookPath = WorkbookPath;
                         harvest.Into(document, clashTests, after, Report, summary);
-                        summary.State = summary.HasSheet
+                        summary.State = summary.HasRows
                             ? TestState.FoundClashes
                             : TestState.Passed;
                     }
@@ -826,7 +826,7 @@ namespace Federator.Addin.Engine
         /// a test has been run and something has changed since. Whether Old is set for
         /// exactly the reasons a person means by altered is UNKNOWN from the DLL, so the
         /// status is reported as itself and no meaning is put on it here. See
-        /// docs\scan.md section 4j.
+        /// docs\history\scan.md section 4j.
         /// </summary>
         private void ReportStatus(ClashTest test, string name)
         {

@@ -654,7 +654,7 @@ namespace Federator.Addin.Engine
         /// document after the appends, the copies are put back only where the count
         /// dropped, and the count is read again. The log line says which happened.
         /// CreateCopy and CopyFrom on DocumentClashTests were read off the DLL on
-        /// 2026-08-27, docs\scan.md section 4. The same pair on DocumentSelectionSets was
+        /// 2026-08-27, docs\history\scan.md section 4. The same pair on DocumentSelectionSets was
         /// NOT measured and is used on the strength of the Navisworks pattern every
         /// document part follows, so a build error there names exactly this.
         ///
@@ -790,7 +790,7 @@ namespace Federator.Addin.Engine
                 }
 
                 // SavedItemCollection was not IDisposable on the DLL measured on 2026-08-31,
-                // docs/scan.md section 4g, so the copy is disposed only where the type
+                // docs/history/scan.md section 4g, so the copy is disposed only where the type
                 // turns out to be. This compiles either way.
                 IDisposable setsHandle = setsCopy as IDisposable;
 
@@ -1000,9 +1000,9 @@ namespace Federator.Addin.Engine
             {
                 EnsureFolder(job.NwfPath);
 
-                // The NWF path only runs when there was no NWF there, so a stale file
-                // cannot mask a lost save the way it can for the NWD. The bool is still
-                // read, because it says more in the log than an absent file does.
+                // This also runs on a rebuild, where an NWF IS already at the path, so
+                // the bool is what says the save happened rather than the file being
+                // there. It says more in the log than an absent file does either way.
                 if (!document.TrySaveFile(job.NwfPath))
                 {
                     log.Line("NWF      the save returned false for " + job.Building);

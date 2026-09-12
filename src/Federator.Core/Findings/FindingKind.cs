@@ -13,7 +13,12 @@ namespace Federator.Core.Findings
         /// <summary>A building code whose letter and digit pattern no other code shares.</summary>
         OddShape,
 
-        /// <summary>Two building codes one character apart, which reads like a typing error.</summary>
+        /// <summary>
+        /// Two building codes of the same length differing at exactly one position, where
+        /// those two characters are easy to mistake for one another when read. An inserted
+        /// or a missing character is deliberately not one, because that was most of the
+        /// noise and is usually a different building.
+        /// </summary>
         NearMatch,
 
         /// <summary>A group holding one discipline, so it has nothing to clash against.</summary>

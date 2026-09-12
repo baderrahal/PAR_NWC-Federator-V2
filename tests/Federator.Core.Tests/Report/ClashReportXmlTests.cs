@@ -13,7 +13,7 @@ namespace Federator.Core.Tests
     /// from, and never read by or reading the workbook.
     ///
     /// The shape came off the three stylesheets Navisworks ships, because there is no
-    /// clash report schema anywhere in the install. See docs/scan.md section 4h.
+    /// clash report schema anywhere in the install. See docs/history/scan.md section 4h.
     /// </summary>
     [TestFixture]
     public class ClashReportXmlTests
@@ -238,11 +238,10 @@ namespace Federator.Core.Tests
                 read[tag.Element("name").Value] = tag.Element("value").Value;
             }
 
-            // Theirs first, then ours, which is the order they appear as columns.
             // Exactly the two the client's report has. The stylesheet makes a column out
             // of every smarttag, so anything of ours here becomes a column on the page
             // they receive. Family, Type Name, Material, Source File and Discipline are
-            // in the workbook instead.
+            // written nowhere at all, which is Q25.
             Assert.That(read.Count, Is.EqualTo(2));
             Assert.That(read["Item Name"], Is.EqualTo("Floor 200mm"));
             Assert.That(read["Item Type"], Is.EqualTo(string.Empty));

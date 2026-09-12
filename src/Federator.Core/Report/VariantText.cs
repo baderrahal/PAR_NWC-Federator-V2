@@ -21,7 +21,7 @@ namespace Federator.Core.Report
     /// Its IL, read off the installed DLL on 2026-09-01, calls GetDataType and then
     /// switches to the matching To&lt;Kind&gt;() accessor, so it never throws. It does prefix
     /// the kind name though, so it hands back "Int32:702888" rather than "702888". See
-    /// docs\scan.md section 4n.
+    /// docs\history\scan.md section 4n.
     ///
     /// So the add-in reads by kind, which gives the value clean, and falls back to
     /// ToString() for a kind it does not know. This strips the prefix off that fallback.

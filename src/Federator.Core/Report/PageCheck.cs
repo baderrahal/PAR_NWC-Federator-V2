@@ -344,10 +344,10 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The Item ID cell is the FIRST cell of an item block, because Item ID is the
-        /// first of the client's four per item columns.
+        /// The nth cell of a row carrying this class, zero based. The Item ID cell is the
+        /// FIRST cell of an item block, because Item ID is the first of the client's four
+        /// per item columns.
         /// </summary>
-        /// <summary>The nth cell of a row carrying this class, zero based.</summary>
         private static string Cell(string row, string cssClass, int nth)
         {
             MatchCollection found = Regex.Matches(

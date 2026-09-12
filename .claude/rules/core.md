@@ -123,7 +123,7 @@ Counting distinct rules. Two different numbers are both right about the referenc
 file and they answer different questions:
 
 - 53 is the number of distinct conditions, comparing test, category, property and
-  value, with flags left out. This is what HealthCheck.DistinctRuleCount counts,
+  value, with flags left out. This is what HealthCheckResult.DistinctRuleCount counts,
   because it is the one that catches a damaged export: Search_Set_Infra has 2715
   conditions and 1 distinct condition
 - 59 is the number of distinct sets, comparing each set's whole ordered list of
@@ -188,7 +188,7 @@ and 6 does not read as broken.
 - Every picker returns a FOLDER to open at, including the one that chooses a file, and the
   caller never takes the parent of it. Doing that opened the clash XML picker one level
   above the folder it had remembered. The rule lives in
-  Federator.Core.Diagnostics.PickerStart so all five can be proved rather than clicked
+  Federator.Core.Diagnostics.PickerStart so all six can be proved rather than clicked
 - Every picker remembers its own last folder, in a file beside the logs, and reopens
   there next time. Per picker and never one shared, because with one shared, picking an
   NWD folder moves the source picker to it and the next run reads the wrong folder. A
@@ -259,7 +259,8 @@ and 6 does not read as broken.
   off, once reported all 22 groups of a clean run as FAILED.
     DONE     everything requested for this group succeeded
     PARTIAL  something requested did not complete, or the group was CHANGED and
-             left alone, which since F24 no group is
+             left alone, which since F24 means only a group whose rebuild never
+             started, because a rebuild that ran ends as Rebuilt
     FAILED   something requested threw or produced nothing, a rebuild that appended
              nothing or could not keep its saved tests included
   The rule lives in Federator.Core.Rerun.GroupJudgement, with no Navisworks types
@@ -348,12 +349,15 @@ and 6 does not read as broken.
     Tolerance, Clashes, New, Active, Reviewed, Approved, Resolved, Type, Status
   Per clash:
     Image, Clash Name, Status, Distance, Grid Location, Description, Clash Point,
-    then Item 1 and Item 2, each Item ID, Item Name, Item Type
+    then Item 1 and Item 2, each Item ID, Layer, Item Name, Item Type
   Four of these are joins and not columns, which is the part a description gets wrong and
   the stylesheet settles. Grid Location is ONE field, "B-1 : ROF", grid then a spaced colon
   then the level. Clash Point is ONE field, "x:31.643, y:-2.913, z:3.325", three decimals
-  each with the trailing zeros kept. Item ID is ONE field, "Element ID: 1554240", and that
-  label is read off whatever property carried the id rather than being a constant.
+  each with the trailing zeros kept. Item ID is ONE field, "Element ID: 1554240", and the
+  tool CHOOSES that label rather than reading it off whichever property matched, which once
+  wrote "Id: 990299" against their "Element ID: 702888". Which property supplied the value
+  is kept on the item, because renaming a value is only honest while what was renamed is
+  still visible.
   Tolerance carries its unit with no space, "0.025m". Distance is the raw signed number,
   negative on a hard clash, written as a number so it still sorts. Type reads
   "Hard (Conservative)". Measured, see docs\history\scan.md section 4k
@@ -364,10 +368,12 @@ and 6 does not read as broken.
   remove and it sat in the window doing nothing. Ours says Type Name
   rather than Type, because the client already has an Item Type column and it holds
   something else, the Navisworks item type, which reads Solid
-- The client's report has NO Layer column. Measured on both supplied exports and on the
-  stylesheet, which has one behind a flag that was off. Item Name and Item Type are not
-  fixed columns either, they are the quick properties, and the accepted report happens to
-  carry those two. So the thirteen are the whole of it
+- The client's report DOES carry a Layer column, in both committed exports, one per item
+  block. Read off the header row of each on 2026-09-12. This bullet said the opposite, from
+  a measurement of two other exports, and the code has written fifteen headings all along.
+  Item Name and Item Type are not fixed columns either, they are the quick properties, and
+  the accepted report happens to carry those two. So the fifteen are the whole of it, seven
+  before the item blocks and four in each of the two
 - Grid Location is built from the grid intersection name, which ALREADY carries the level.
   Appending the level to it wrote "D-8 : LGF : LGF" on a real run. The level is only added
   where the grid does not already end with it
@@ -381,11 +387,12 @@ and 6 does not read as broken.
   cause is fixed too: the clash gives back the geometry leaf, which on a Revit sourced NWC
   carries a material name and no Revit properties, so the id, the family and the type are
   looked for on the item, then on its composite item, then up its ancestors
-- Distance is the raw signed number and the cell carries a three decimal number format, so
-  it reads the way theirs does and still sorts. Without the format Excel printed
-  -0.328083992004395 where theirs shows -0.050. The VALUE differing between two reports is
-  the two documents' units and not a fault: ours measured in feet and theirs in metres, and
-  the tolerance says so too, 0.2461ft against 0.025m
+- Distance is the ROUNDED signed number and the cell carries no number format, which is
+  what theirs holds and what the code writes. This bullet asked for a raw number behind a
+  format, which is the thing the later bullet says was wrong: the cell read -0.328 while
+  anyone sorting, filtering or copying the column got -0.328083992004395. The VALUE
+  differing between two reports is the two documents' units and not a fault: ours measured
+  in feet and theirs in metres, and the tolerance says so too, 0.2461ft against 0.025m
 - Client columns only means nothing of ours on the sheet at all, not just no extra columns.
   The notes above the table, the link back to the Summary and the filter arrows are ours
   and all three go. Their columns do not move
@@ -411,8 +418,10 @@ and 6 does not read as broken.
 - Not one column in that page is fixed. Every one is a boolean over an XPath in the
   stylesheet, so what the page holds is decided by what our XML holds. The Layer column is
   the proof: 1A04WE has it and 1A02WE does not, from the same tool, because one export
-  carried layer data and the other did not. Never write a column list for that page, write
-  the data and let the stylesheet decide
+  carried layer data and the other did not. Those two were measured on Bader's machine and
+  are recorded in docs\history, and they are not the exports in samples\client-report,
+  which are 1A02WN and 1A04WN and both carry the column. Never write a column list for that
+  page, write the data and let the stylesheet decide
 - Our XML feeds that stylesheet, so its shape is not ours to choose either. Measured on
   2026-09-01, it answered every column test but three: description, smarttags and the href
   on a result, which are the Description column, the Item Name and Item Type columns, and
@@ -426,8 +435,10 @@ and 6 does not read as broken.
   full so its shape is visible, any column that is not the client's named, the tolerance
   cell exactly as written, how many picture references there are and how many use a
   backslash and how many are really on disk, and whether the logo is there. The workbook
-  check reports the rows and, per column of ours, how many rows filled it. A column filled
-  zero times is NAMED, which is what would have caught Source File and Discipline
+  check reports the sheets and their names, the blocks, the rows, the clash count of each
+  block, and the first thing that differs from the client's layout with both sides printed.
+  It counts no column of ours, because since the workbook became their one sheet there is
+  no column of ours on it to count
 - A report check NEVER fails a group. It is a warning on its own list, apart from the
   errors, because the NWF, the NWD and the workbook were all still written. Judging a group
   on it would repeat the fault that once reported a clean 22 group run as FAILED
@@ -465,8 +476,8 @@ and 6 does not read as broken.
   stylesheet counts them once off the first clashobject and uses that count for every row,
   so one item with fewer of them slides every column after it sideways
 - Date Found and our five extra item properties are ours, not theirs. Their report has
-  neither, so both are left out when the client layout is asked for and appended after
-  theirs when it is not
+  neither, and there is no longer a choice about it: the workbook is their one sheet with
+  none of ours on it, so both are left out everywhere and neither is written at all
 - The logo is DATA, read by the stylesheet from //logo/@href, not part of the layout, and
   the page carries the one Navisworks puts on its own reports because that is the report the
   client accepts. It is read off the install at run time, the same way the stylesheet is,
@@ -533,8 +544,8 @@ and 6 does not read as broken.
   clash step, and the line says images rather than tests
 - What the pictures cost is MEASURED and logged per group: seconds per image, total
   seconds, how many, and how many megabytes. Every number anyone has given for this,
-  including mine, was a guess until this existed. The same figures go on the Summary
-  sheet, because the log is not what gets sent on
+  including mine, was a guess until this existed. They are in the log and nowhere else,
+  because the Summary sheet they used to go on is gone
 - The report goes out in METERS, always, whatever the document measures in. Q23. It used
   to go out in the document's units, with the rule that converting a number ourselves
   while the document read feet would make the numbers and the label disagree. The run of
@@ -562,8 +573,9 @@ and 6 does not read as broken.
 - A federation that already exists needs NO SCAN. In Navisworks a person opens a file,
   opens Clash Detective, presses Run and reads the results, and nothing asks them where
   their models came from. So there are two ways to run and they are told apart by what they
-  name: the Run button on the Source step names a count of ticked groups, and the Run the
-  open file button names the open FILE and the two paths it will write. The open path is
+  name: the Run button in the bar along the bottom, which every step shares, names a count
+  of ticked groups, and the Run the open file button on the Clash step names the open FILE
+  and the two paths it will write. The open path is
   the same flow with the first step removed. There is no Decide, because the document IS
   the file list, nothing is appended and nothing is cleared, so the clash results inside it
   survive. The clash file is optional there, and without one the tests saved in the

@@ -29,9 +29,8 @@ namespace Federator.Core.Clash
 
         /// <summary>
         /// The group holds fewer than two disciplines, so nothing in it can clash with
-        /// anything else whatever the tests say. Counted apart from EmptySide on purpose.
-        /// A side finding nothing says a discipline was not exported. One discipline says
-        /// the group was never going to clash, and no export would change that. D5.
+        /// anything else whatever the tests say. Counted apart from EmptySide on purpose,
+        /// for the reason in .claude\rules\core.md. D5.
         /// </summary>
         SingleDiscipline,
 

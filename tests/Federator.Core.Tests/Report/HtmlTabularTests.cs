@@ -89,7 +89,7 @@ namespace Federator.Core.Tests
             return report;
         }
 
-        /// <summary>Clash1 of the client's own 1A02WE report, field for field.</summary>
+        /// <summary>Clash1 of the client's own report, field for field.</summary>
         private static ClashRow Clash()
         {
             ClashRow row = new ClashRow();
@@ -303,9 +303,9 @@ namespace Federator.Core.Tests
             }));
         }
 
-        // The 1A04WE export has a Layer column on both items and the two committed earlier
-        // do not, because the stylesheet only writes it when the XML carries a layer
-        // element. Ours always does, so ours always has it.
+        // The stylesheet only writes a Layer column when the XML carries a layer element.
+        // Both committed exports carry one, read off their header rows on 2026-09-12, and
+        // ours always writes the element, so ours always has the column.
         [Test]
         public void TheLayerColumnIsThereBecauseOurXmlCarriesALayer()
         {
@@ -319,7 +319,7 @@ namespace Federator.Core.Tests
 
         // The one the brief asks for by name. The stylesheet makes a column out of every
         // smarttag, so anything of ours in the XML becomes a column on the page the client
-        // receives. Ours belong in the workbook.
+        // receives. Nothing of ours is written to any output, which is Q25.
         [Test]
         public void NoColumnOfOursReachesThePage()
         {

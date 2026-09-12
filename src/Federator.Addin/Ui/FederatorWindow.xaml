@@ -195,7 +195,7 @@
             <!-- Step 3 -->
             <TabItem Header="3. Outputs">
                 <!-- The only step whose content is taller than the window. Measured at
-                     1024x680, 1280x800 and 1600x1000 with build\probe-window-scroll.ps1
+                     1024x680, 1280x800 and 1600x1000 with tools\probes\probe-window-scroll.ps1
                      and cut off at all three, by 384, 264 and 87 pixels, which is why the
                      naming table and everything under it could not be reached. The other
                      three steps fit at all three sizes and are left alone, because a
@@ -299,7 +299,7 @@
                                               Content="Paste the photos into the cells"
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
                                     <TextBlock Style="{StaticResource TickHelp}"
-                                               Text="Send the page and its _files folder. Neither report embeds photos." />
+                                               Text="Off. Neither report pastes them, both link to the _files folder." />
                                 </StackPanel>
 
                                 <Label Grid.Row="3" Grid.Column="0" Content="Photo size" VerticalAlignment="Center" />

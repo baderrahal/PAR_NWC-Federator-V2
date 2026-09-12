@@ -31,8 +31,8 @@ namespace Federator.Core.Grouping
 
         /// <summary>
         /// What this group is called in the table and the log. The building code when
-        /// grouping per building, and the building and discipline together, or the
-        /// discipline alone, under the other modes.
+        /// grouping per building, the building and discipline together, the discipline
+        /// alone, or one name for the lot when everything ticked goes into one federation.
         /// </summary>
         public string Building { get; private set; }
 

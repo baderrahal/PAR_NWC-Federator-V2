@@ -12,7 +12,7 @@ namespace Federator.Core.Report
     /// Every name and every format in here was read off two things on 2026-08-31, never
     /// invented:
     ///
-    /// - the accepted report itself,
+    /// - the accepted report itself, read on Bader's machine and not in this checkout,
     ///   C:\00_NM\Clash report\1104-PAR-1A02WO-XXX-BM-RPT-000001.html and its .xlsx
     /// - the stylesheet Navisworks used to write it,
     ///   en-US\stylesheets\clash_report_html_tabular.xsl
@@ -20,7 +20,7 @@ namespace Federator.Core.Report
     /// The stylesheet matters because it says which of these are fields and which are
     /// joins. Grid Location and Clash Point look like they could be several columns and
     /// are one each, and Item ID carries its own label out of the model rather than a
-    /// constant. See docs\scan.md section 4k.
+    /// constant. See docs\history\scan.md section 4k.
     /// </summary>
     public static class ClientFormat
     {
@@ -306,13 +306,6 @@ namespace Federator.Core.Report
             return value.ToString("0." + new string('0', decimals), CultureInfo.InvariantCulture);
         }
 
-        /// <summary>
-        /// The number format the Distance cell is given, so the cell holds the raw signed
-        /// number and still sorts, while reading the way theirs does. Ours came out as
-        /// -0.328083992004395 on a real run because the cell carried no format at all.
-        /// </summary>
-        public const string DistanceFormat = "0.000";
-
         private static bool AlreadyEndsWith(string grid, string level)
         {
             if (grid.EndsWith(GridSeparator + level, StringComparison.OrdinalIgnoreCase))
@@ -330,7 +323,7 @@ namespace Federator.Core.Report
         /// accepted report shows "Hard (Conservative)". The rule read off that pair is
         /// that the first word is the type and anything after it is a qualifier in
         /// brackets, and it is applied to the others rather than each being invented.
-        /// Only the one pair has been seen against a client file. See docs\scan.md
+        /// Only the one pair has been seen against a client file. See docs\history\scan.md
         /// section 4k.
         ///
         /// Takes either the file's token, hard_conservative, or the enum name,

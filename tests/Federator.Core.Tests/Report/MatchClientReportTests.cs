@@ -15,8 +15,8 @@ namespace Federator.Core.Tests
     /// own report, measured cell by cell out of the two files in samples\, and pinned so
     /// they cannot come back.
     ///
-    ///   samples\our-report\1104-PAR-1C07BC-ZZZ-BM-RPT-00001.xlsx
-    ///   samples\client-report\1104-PAR-1A02WE-XXX-BM-RPT-000001.xlsx
+    ///   samples\our-report\1104-PAR-1C07BC-ZZZ-BM-RPT-000001.xlsx
+    ///   samples\client-report\1104-PAR-1A02WN-XXX-BM-RPT-000001.xlsx
     ///
     /// Every "theirs" value below was read out of their file and every "ours" value out of
     /// ours. Nothing here is an opinion about what the format ought to be.
