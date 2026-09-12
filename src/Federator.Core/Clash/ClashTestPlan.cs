@@ -16,7 +16,8 @@ namespace Federator.Core.Clash
     {
         /// <summary>
         /// The test_type strings this tool creates, and what each maps to. Only
-        /// hard_conservative has been measured in a real file, see CLAUDE.md. The other
+        /// hard_conservative has been measured in a real file, see .claude\rules\core.md.
+        /// The other
         /// four are the same lower case form and are UNVERIFIED against a real export.
         /// That costs nothing, because a string not in this table is skipped by name
         /// rather than approximated, which is the behaviour that matters.
@@ -266,8 +267,8 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// Never import a test with an empty side. It returns zero clashes and reads as
-        /// passed, which is worse than not being there at all.
+        /// Why this test cannot be imported, or empty when it can. A side with no locator
+        /// is the case the rule in .claude\rules\core.md refuses.
         /// </summary>
         private static string SideProblem(ClashTestDefinition test)
         {

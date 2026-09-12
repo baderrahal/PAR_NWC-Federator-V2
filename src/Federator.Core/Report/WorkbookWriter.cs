@@ -146,7 +146,7 @@ namespace Federator.Core.Report
         {
             sheet.Range(1, 1, 1, 3).Merge();
 
-            // 45, measured off their row 1, which is where the logo picture sits.
+            // Measured off their row 1, which is where the logo picture sits.
             sheet.Row(1).Height = TitleRowHeight;
 
             IXLCell title = sheet.Cell(1, 4);
@@ -178,7 +178,7 @@ namespace Federator.Core.Report
         ///     start + 1  their nine values
         ///     start + 2  blank
         ///     start + 3  Item 1 and Item 2 over the two item blocks
-        ///     start + 4  the thirteen column headings
+        ///     start + 4  the fifteen column headings
         ///     start + 5  one row per clash
         ///     then three blank rows
         /// </summary>
@@ -200,8 +200,8 @@ namespace Federator.Core.Report
             {
                 WriteClashRow(sheet, row, clash);
 
-                // 60, measured off every clash row of theirs, so a picture fits rather
-                // than being squashed into a default row.
+                // Measured off every clash row of theirs, so a picture fits rather than
+                // being squashed into a default row.
                 sheet.Row(row).Height = ClashRowHeight;
                 row++;
             }
@@ -347,9 +347,10 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The thirteen headings, in their columns. Image and Clash Name are merged over
-        /// two and Clash Point over three, which is where the gaps in the column numbers
-        /// come from.
+        /// The fifteen headings, in their columns. Seven before the item blocks and four
+        /// in each of the two, Layer among them. Image and Clash Name are merged over two
+        /// and Clash Point over three, which is where the gaps in the column numbers come
+        /// from.
         /// </summary>
         private static void WriteColumnHeadings(IXLWorksheet sheet, int row)
         {

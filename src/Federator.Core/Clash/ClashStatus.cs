@@ -8,7 +8,7 @@ namespace Federator.Core.Clash
 {
     /// <summary>
     /// The result statuses, the numbers of Autodesk.Navisworks.Api.Clash.ClashResultStatus
-    /// read off the installed DLL and recorded in docs\scan.md. Repeated here because Core
+    /// read off the installed DLL and recorded in docs\history\scan.md. Repeated here because Core
     /// never references the Navisworks API.
     /// </summary>
     public enum ClashStatus

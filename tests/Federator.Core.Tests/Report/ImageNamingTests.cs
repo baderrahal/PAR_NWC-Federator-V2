@@ -54,8 +54,9 @@ namespace Federator.Core.Tests
 
         // ---------- the numbering is theirs ----------
 
-        // The one the brief asks for by name. These twenty one names are the whole of the
-        // supplied report's folder, in order.
+        // The one the brief asks for by name. These eight names are read off the supplied
+        // report's own folder, which holds 64 pictures and the logo beside them. Counted on
+        // 2026-09-12 on 1A02WN, and 1A04WN holds 65 and the same logo.
         [Test]
         public void TheNumberingMatchesTheAcceptedReportExactly()
         {

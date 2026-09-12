@@ -27,7 +27,7 @@ namespace Federator.Core.Units
         /// <summary>
         /// The member name on Autodesk.Navisworks.Api.Units, as text, because nothing in
         /// Core references Navisworks. The add-in parses it onto the enum and the values
-        /// were read off the installed DLL, see docs\scan.md.
+        /// were read off the installed DLL, see docs\history\scan.md.
         /// </summary>
         public string EnumName { get; private set; }
 

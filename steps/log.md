@@ -2,6 +2,41 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F44, the docs and the comments agree with the code
+
+### What was done
+
+- F44 done. 62 files. No logic changed except one member renamed, one dead constant deleted and one taken off the public surface, each named below
+- The moved doc path, measured rather than taken from the list. `grep -rn "scan\.md" .` outside `.git`, `docs\history`, `steps`, `bin` and `obj` found 31 lines in 22 files carrying the old `docs\scan.md`, in both spellings. The audit said seventeen source and test files and the round brief said 28 places. 30 of the 31 are repointed at `docs\history\scan.md`, including two that named the file with no folder at all, one of which is a line the tool prints into the log. The 31st is in the bundle manifest and is Q30. `build\probe-window-scroll.ps1` in the window XAML is the probe's real path, `tools\probes`. No file outside `steps` and `docs\history` names `test-model-side.md` at all, so that one was already done
+- The counts. Thirteen column headings is fifteen, seven before the item blocks and four in each of the two, counted off `ClientReportColumns` and read off the header row of both committed exports. Five pickers is six, the logo picker included, counted off `PickerKind`. Three rerun cases is four, counted off `RerunDecision`. The eight faults a workbook check once reported clean over is still eight, and the fixture that breaks them now holds fourteen tests. Twenty one picture names is eight names asserted, read off a folder holding 64 pictures and a logo
+- The rules file made to agree with itself, ten corrections. Distance is the rounded number with no format, which is what the code writes, and the bullet asking for a raw number behind a format is gone. The Item ID label is chosen by the tool, and which property supplied the value is kept on the item. The workbook check reports sheets, blocks, rows, the count of each block and the first divergence, and counts no column of ours, because there is no column of ours to count. The five extra item properties are written nowhere and there is no choice about it. The picture cost figures are in the log and nowhere else, because the Summary sheet they used to go on is gone. A group can still end left alone, when its rebuild never started. `HealthCheckResult.DistinctRuleCount`, not `HealthCheck`. The Run button is in the bar along the bottom that every step shares. The picker count. And the Layer column, which is the one that had to be settled by opening the files
+- The Layer column, settled by measurement. The rules file said the client's report has NO Layer column and that the thirteen are the whole of it. Both committed exports carry one per item block, read off their header rows on 2026-09-12, and the code has written fifteen headings all along. The two exports the old bullet was measured on, 1A04WE and 1A02WE, were read on Bader's machine and are not in this checkout, which is now said wherever either is named
+- The sheets that are gone. `HasSheet` is `HasRows`, with its three callers and three tests, because it means has rows and every test had a sheet only before the workbook became one. The comments on `TestReport`, its `Number` and `Name`, `OpenClashes`, `PlannedClashTest` and two test fixtures say block or row where they said sheet
+- The logo comments. Three said nothing here copies the logo, and the engine copies one into the report's own _files folder every run. What is true is that no copy of it is in this repo or the bundle, it is read off the machine that is running, and that is what all three say now
+- The copies folded. Four stacked summaries, two of them on the wrong member, unstacked and the displaced block put on the member it describes. Four copies of one sentence about `File.Exists` said once per file. Two `Images` properties sharing a rule, now said on the runner and pointed at from the harvest. Two naming members sharing a sentence about the project code where one holds a position and the other a value. Four rule sentences copied word for word out of the rules file now say what the code does and point at the rule
+- Two comments that restated the test name under them are gone, and two that restated the value of the constant beside them now carry the measurement and not the number
+- The probes. `probe-units.ps1` and the three window probes had no path test and no UNKNOWN line, which the probes README says every probe has. Each now tests every path it needs, one file at a time so a missing one is named, and says UNKNOWN and stops. The README needed no change once they were true
+- The test layout. `CrossFileTests` is three tests and all three are health checks, so it moved to a new `Health` folder and every Core folder now has a test folder, which is what CLAUDE.md says. The health assertions that sit beside the reader tests for one sample file stay there, because they read the same file
+- CLAUDE.md. The bundle folder is not build output. It holds one hand written manifest that `install.ps1` copies into `artifacts`, and `artifacts` is what the build writes. Both lines say that now, and the never edited rule stands with its real reason
+- Two members the F40 entry named as deleted and which were still there. `ClientFormat.DistanceFormat`, a public const nothing called, whose comment stated the opposite of what the code does, is deleted. `ClashReportXml.QuickProperties`, no caller under src and two tests reading it, is internal, which is what F40 did with that kind. The F40 entry overstated on both and this entry is the correction
+- Noticed and not acted on. `TestReport.Number` has no caller under src and two tests read it, which is the Q26 kind. The one sentence about a leftover temp folder sits above the same catch block in nineteen test files, and one shared helper for it is F16, which is next
+- Proved here: Core builds with no warning. The parse of the whole add-in with no references, the same six error codes as before the edits and not one `CS1xxx`. The arity check, 0 mismatches. The window XAML parses as XML after the two text changes. Core tests before: 908 passed, 37 failed, 33 skipped, 978 total. After: the same, because this fix adds no test and changes no rule a test reads
+- Waits for the local machine: six add-in files and the XAML changed, all of them comments except the `HasRows` rename and the help line under the paste into cells tick. The proof is the build and one run whose SETS and CLASH blocks read as before
+
+### What remains
+
+- F16, then the read of `03_bader_next.md` against the code, then the closing entry
+- Q30 for Bader, raised by this fix
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F44 PR
+2. F16, the tests path neutral
+
 ## 2026-09-12 F43, three settings that are constants
 
 ### What was done

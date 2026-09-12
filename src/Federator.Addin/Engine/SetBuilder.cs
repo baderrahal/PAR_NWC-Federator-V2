@@ -190,7 +190,7 @@ namespace Federator.Addin.Engine
                 // Resolved again from a fresh RootItem rather than from the handle used
                 // for the add. A handle held across an AddCopy does not show the new
                 // child, which is what made the very first folder look like it had not
-                // been created. See docs\scan.md.
+                // been created. See docs\history\scan.md.
                 using (GroupItem added = ResolveFolders(sets, folders, depth + 1))
                 {
                     if (added == null)
@@ -362,11 +362,6 @@ namespace Federator.Addin.Engine
             return FindSelectionSet(parent, name);
         }
 
-        /// <summary>
-        /// How many items the set finds in the model as it stands. Resolved through the
-        /// set that is in the tree where possible, because that is the thing that has to
-        /// work. Falls back to the search itself if the set cannot be found again.
-        /// </summary>
         /// <summary>How many items a set that is already in the tree finds as it stands.</summary>
         private static int CountOf(Document document, SelectionSet set)
         {
@@ -376,6 +371,11 @@ namespace Federator.Addin.Engine
             }
         }
 
+        /// <summary>
+        /// How many items the set finds in the model as it stands. Resolved through the set
+        /// that is in the tree where possible, because that is the thing that has to work.
+        /// Falls back to the search itself if the set cannot be found again.
+        /// </summary>
         private int Resolve(Document document, SelectionSet created, Search search)
         {
             if (created != null)
@@ -397,12 +397,13 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// One condition. The internal names are what the API matches on, so they go into
         /// NamedConstant as the name. The display words are carried alongside for
-        /// reporting, and the two ignore options stop them affecting the match, which is
-        /// what CLAUDE.md asks for.
+        /// reporting, and the two ignore options stop them affecting the match. That is the
+        /// rule in .claude\rules\core.md that a search rebuilt through the API matches on
+        /// the internal strings and never on the display words.
         ///
         /// The flags from the file are passed through as SearchConditionOptions. Read off
         /// the installed DLL on 2026-08-31, that enum's bits are the same numbers the file
-        /// writes, and 64 is StartGroup. See docs\scan.md.
+        /// writes, and 64 is StartGroup. See docs\history\scan.md.
         /// </summary>
         private static SearchCondition BuildCondition(PlannedCondition condition)
         {

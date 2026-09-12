@@ -6,11 +6,11 @@ namespace Federator.Core.Diagnostics
     /// Where one Browse button opens.
     ///
     /// This lives in Core so every picker can be proved rather than clicked. The window
-    /// has five of them and Bader reported that not all of them remembered, which nothing
-    /// could confirm either way because the run that raised it said "Nothing remembered
-    /// yet" on its first line.
+    /// has six of them, the logo picker included, and Bader reported that not all of them
+    /// remembered, which nothing could confirm either way because the run that raised it
+    /// said "Nothing remembered yet" on its first line.
     ///
-    /// The rule is the same for all five and there is one of it:
+    /// The rule is the same for all six and there is one of it:
     ///   what is already in the box wins, because it is what the person is looking at
     ///   otherwise the folder this picker was last pointed at
     ///   otherwise nothing, and the dialog opens wherever Windows would

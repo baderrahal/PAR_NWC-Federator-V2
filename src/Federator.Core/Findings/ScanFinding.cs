@@ -52,10 +52,17 @@ namespace Federator.Core.Findings
             }
         }
 
-        /// <summary>The building codes this concerns, one for most, two for a near match.</summary>
+        /// <summary>
+        /// The building codes this concerns. One for an odd shape, a single discipline and
+        /// missing disciplines, two for a near match and a source mismatch, and one per
+        /// group for a shared source.
+        /// </summary>
         public ReadOnlyCollection<string> Buildings { get; private set; }
 
-        /// <summary>File names, carried for an odd shape so the offending files are named.</summary>
+        /// <summary>
+        /// File names, so the offending files are named. Carried for an odd shape, a single
+        /// discipline and a source mismatch, and empty for the other three.
+        /// </summary>
         public ReadOnlyCollection<string> Files { get; private set; }
 
         public override string ToString()

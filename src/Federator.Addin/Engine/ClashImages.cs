@@ -16,7 +16,7 @@ namespace Federator.Addin.Engine
     /// Renders one picture per clash and writes it where the client already expects it.
     ///
     /// How this is done, read off the installed DLLs on 2026-08-31 and recorded in
-    /// docs\scan.md section 4k:
+    /// docs\history\scan.md section 4k:
     ///
     ///   public System.Drawing.Bitmap DocumentClashTests.TestsImageForResult(
     ///       IClashResult result, ImageGenerationStyle style, int width, int height)
@@ -75,7 +75,10 @@ namespace Federator.Addin.Engine
         /// </summary>
         public ImageGenerationStyle Style { get; set; }
 
-        /// <summary>Fires once fifty renders in a row have failed the same way.</summary>
+        /// <summary>
+        /// Fires once StopAfterFailures renders in a row have failed the same way, which
+        /// is fifty by default and is a setting on ImageOptions.
+        /// </summary>
         public bool ShouldStopTheRun
         {
             get { return guard != null && guard.ShouldStopTheRun; }

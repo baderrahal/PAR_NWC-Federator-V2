@@ -17,7 +17,7 @@ namespace Federator.Addin.Engine
     {
         /// <summary>
         /// ApplicationVersion does not override ToString, so the string is built from its
-        /// properties. See docs\scan.md section 4c.
+        /// properties. See docs\history\scan.md section 4c.
         /// </summary>
         public static string VersionString()
         {

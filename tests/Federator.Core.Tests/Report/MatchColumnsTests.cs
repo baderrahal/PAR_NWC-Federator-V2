@@ -14,7 +14,6 @@ namespace Federator.Core.Tests
     ///   samples\client-report\1104-PAR-1A02WN-XXX-BM-RPT-000001.html
     ///   samples\client-report\1104-PAR-1A04WN-XXX-BM-RPT-000001.html
     ///   samples\our-report\1104-PAR-1C07BC-ZZZ-BM-RPT-000001.html and .xml
-    ///   docs\logs\run-20260901-191711.log
     /// </summary>
     [TestFixture]
     public class MatchColumnsTests
@@ -175,7 +174,7 @@ namespace Federator.Core.Tests
         }
 
         // Family, Material, Source File and Discipline are all filled on the report above,
-        // and not one of them reaches the XML. They are workbook columns.
+        // and not one of them reaches the XML. They reach no output at all, which is Q25.
         [Test]
         public void OurItemPropertiesAreNowhereInTheXmlEvenWhenTheyAreFilled()
         {

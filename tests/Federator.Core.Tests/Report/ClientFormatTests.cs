@@ -14,6 +14,10 @@ namespace Federator.Core.Tests
     ///
     ///   C:\00_NM\Clash report\1104-PAR-1A02WO-XXX-BM-RPT-000001.html
     ///   C:\00_NM\Clash report\1104-PAR-1A02WO-XXX-BM-RPT-000001.xlsx
+    ///
+    /// Those two were read on Bader's machine and are not in this checkout. The exports
+    /// that are committed, and that the other fixtures read, are 1A02WN and 1A04WN under
+    /// samples\client-report.
     ///   Navisworks Manage 2025\en-US\stylesheets\clash_report_html_tabular.xsl
     /// </summary>
     [TestFixture]

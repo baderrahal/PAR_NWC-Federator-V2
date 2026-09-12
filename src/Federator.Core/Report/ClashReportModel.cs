@@ -7,9 +7,13 @@ using Federator.Core.Clash;
 namespace Federator.Core.Report
 {
     /// <summary>
-    /// One side of one clash row. Family, type and material are here because without them
-    /// whoever has to fix the clash must open the model to find out what they are looking
-    /// at.
+    /// One side of one clash row.
+    ///
+    /// Family, type name, material, source file and discipline are read off every item and
+    /// reach no output. They were put here so whoever has to fix a clash would not have to
+    /// open the model, and then the workbook became the client's one sheet with none of
+    /// ours on it and the page stayed theirs. Whether they go or wait for a column that
+    /// does not exist yet is Q25.
     /// </summary>
     public sealed class ClashItem
     {
@@ -242,8 +246,9 @@ namespace Federator.Core.Report
     }
 
     /// <summary>
-    /// One test, whether or not it ran. The Summary sheet carries one row per test in the
-    /// file, so a test that never ran is here too, carrying why.
+    /// One test, whether or not it ran. The report holds one of these per test in the
+    /// file, so a test that never ran is here too, carrying why. Only the ones that found
+    /// something get a block on the sheet.
     /// </summary>
     public sealed class TestReport
     {
@@ -269,10 +274,10 @@ namespace Federator.Core.Report
             ImageIndex = -1;
         }
 
-        /// <summary>One based, and the number the sheet is named after.</summary>
+        /// <summary>Where this test sits in the file, from one.</summary>
         public int Number { get; private set; }
 
-        /// <summary>The full test name, which the sheet name cannot hold.</summary>
+        /// <summary>The full test name, as the file carries it.</summary>
         public string Name { get; private set; }
 
         public string LeftLocator { get; set; }
@@ -383,8 +388,11 @@ namespace Federator.Core.Report
             get { return tally.Of(ClashStatus.Resolved); }
         }
 
-        /// <summary>A test with rows gets a sheet. One that found nothing does not.</summary>
-        public bool HasSheet
+        /// <summary>
+        /// A test with rows gets a block on the sheet. One that found nothing does not.
+        /// It was called HasSheet while every test had a sheet of its own.
+        /// </summary>
+        public bool HasRows
         {
             get { return rows.Count > 0; }
         }

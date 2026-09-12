@@ -56,7 +56,7 @@ Copy-Item (Join-Path $bundleSrc "PackageContents.xml") $staging -Force
 # The two the tool is, and the workbook library the report writer needs. ClosedXML pulls
 # eleven more DLLs and every one of them has to travel, or the add-in loads and then
 # throws the first time a group finishes. Checked on 2026-08-31: none of them collides
-# with a file the Navisworks install ships, see docs\scan.md section 4h.
+# with a file the Navisworks install ships, see docs\history\scan.md section 4h.
 $carried = @("Federator.Addin.dll", "Federator.Core.dll")
 $library = @(
     "ClosedXML.dll",

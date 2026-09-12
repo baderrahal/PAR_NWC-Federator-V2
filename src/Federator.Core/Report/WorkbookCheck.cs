@@ -37,8 +37,9 @@ namespace Federator.Core.Report
     ///   every number against their file
     ///
     ///   ANYTHING NOT IN THE LIST ABOVE. Fonts, font colours, the sheet name, freeze panes,
-    ///   print setup and merged ranges are not compared. They are listed in scan.md
-    ///   section 4q with what each of ours holds and what each of theirs holds
+    ///   print setup and merged ranges are not compared. They are listed in
+    ///   docs\history\scan.md section 4q with what each of ours holds and what each of
+    ///   theirs holds
     ///
     ///   WHETHER A VALUE IS TRUE. It can see that the Distance cell holds a number to three
     ///   decimals. It cannot see that the number came off the wrong clash
@@ -626,7 +627,7 @@ namespace Federator.Core.Report
                     + "in their order.");
                 lines.Add("         Not compared: the font, the sheet name, freeze panes, "
                     + "print setup, merged ranges, and whether a value is true. See "
-                    + "scan.md 4q.");
+                    + "docs\\history\\scan.md 4q.");
             }
 
             lines.Add("         " + ClientReportColumns.ReadFrom());

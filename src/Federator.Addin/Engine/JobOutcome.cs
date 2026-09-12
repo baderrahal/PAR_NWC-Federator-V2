@@ -25,10 +25,12 @@ namespace Federator.Addin.Engine
 
         public IList<string> FailedFiles { get; private set; }
 
-        /// <summary>Set only after File.Exists has been checked.</summary>
+        /// <summary>
+        /// These two are set only after File.Exists has been checked, never off a call that
+        /// reported success.
+        /// </summary>
         public bool NwfOnDisk { get; set; }
 
-        /// <summary>Set only after File.Exists has been checked.</summary>
         public bool NwdOnDisk { get; set; }
 
         /// <summary>

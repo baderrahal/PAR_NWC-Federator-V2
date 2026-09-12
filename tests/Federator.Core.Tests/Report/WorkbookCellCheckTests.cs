@@ -8,7 +8,8 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// Proves the check CATCHES each of the eight faults it used to report clean over.
+    /// Proves the check CATCHES the faults it used to report clean over. Eight of them sat
+    /// in one real file, and this fixture now breaks fourteen things one at a time.
     ///
     /// Bader's words were that this is the third time a check has passed with a difference
     /// sitting in the file. A check nobody has watched fail is not a check, so each of

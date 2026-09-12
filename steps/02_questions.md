@@ -126,3 +126,7 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 29. From F43 on 2026-09-12. The stop after count, the log count and the report subfolder are settable properties now, each with the default it always had, and nothing outside the code sets any of them. A property can be changed where the code reads it, which still means a recompile, and the rule says these numbers can be changed without one. A settings file beside the logs, read once when the log opens and written by nothing, would do it with no new box in the window. Is that wanted, and if it is, which numbers go in it and what happens when it holds a value the code refuses?
 
    Answer:
+
+30. From F44 on 2026-09-12. `bundle\ParsonsNwcFederator.bundle\PackageContents.xml` line 9 points at `docs\scan.md`, which moved to `docs\history` in F37. It is the one file left in the repo carrying that path. CLAUDE.md called the bundle folder build output written by the build, and it is not: it holds that one hand written manifest, `install.ps1` copies it into `artifacts`, and `artifacts` is what the build writes. F44 corrected the description and left the file alone, because the rule and the hook both say the folder is never edited. May the manifest be changed on its own, now that it is known to be hand written rather than generated, or does the rule stand and the stale path with it?
+
+   Answer:

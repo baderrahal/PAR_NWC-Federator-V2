@@ -65,8 +65,8 @@ namespace Federator.Core.Tests
 
         // ---------- the tolerance, converted from the file units ----------
 
-        // 0.2460629921 ft is the 75 mm CLAUDE.md records. Into a metric document that has
-        // to come out as 0.075 m, not as 0.246 of anything.
+        // 0.2460629921 ft is the 75 mm .claude\rules\core.md records. Into a metric
+        // document that has to come out as 0.075 m, not as 0.246 of anything.
         [Test]
         public void TheToleranceIsConvertedFromTheFileUnitsIntoTheDocumentUnits()
         {
@@ -427,7 +427,7 @@ namespace Federator.Core.Tests
         }
 
         // Search Set Infra is the sets only file. Search Set Building is NOT, it holds 1830
-        // tests as well, which docs\scan.md records and which reading it here confirms.
+        // tests as well, which docs\history\scan.md records and which reading it here confirms.
         [Test]
         public void AFileHoldingSetsOnlyPlansNoTestAndIsNotAnError()
         {

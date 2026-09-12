@@ -55,9 +55,9 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// Where this test sat in the file, from zero. Carried so the workbook can number
-        /// its sheets in file order rather than in the order the plan happened to sort
-        /// them into, which would move a sheet number between runs.
+        /// Where this test sat in the file, from zero. Carried so the report can number the
+        /// tests in file order rather than in the order the plan happened to sort them into,
+        /// which would move a number between runs.
         /// </summary>
         public int FileIndex { get; private set; }
 

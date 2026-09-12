@@ -27,10 +27,10 @@ namespace Federator.Core.Naming
 
         public char Separator { get; set; }
 
-        /// <summary>The project code. Every file in a group has to agree on it.</summary>
+        /// <summary>Which part of the split name carries the project code.</summary>
         public int ProjectPart { get; set; }
 
-        /// <summary>The originator. Every file in a group has to agree on it.</summary>
+        /// <summary>Which part carries the originator.</summary>
         public int OriginatorPart { get; set; }
 
         public int BuildingPart { get; set; }

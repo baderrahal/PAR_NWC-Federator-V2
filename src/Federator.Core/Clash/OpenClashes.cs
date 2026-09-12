@@ -3,11 +3,14 @@ using System;
 namespace Federator.Core.Clash
 {
     /// <summary>
-    /// What the matrix cell counts as still outstanding.
+    /// What counts as still outstanding.
     ///
-    /// The clash API has no open against closed notion at all, see docs\scan.md section
-    /// 4h, so neither of these is read off it. Both are stated rules and the sheet says
-    /// which one it used, so nobody reads an API meaning into a number that has none.
+    /// The clash API has no open against closed notion at all, see docs\history\scan.md
+    /// section 4h, so neither of these is read off it. Both are stated rules, and the log
+    /// says which one was used, so nobody reads an API meaning into a number that has none.
+    /// Since the Summary and Matrix sheets went and the window stopped offering the choice,
+    /// the one reader left is the image status filter asking for what Navisworks counts as
+    /// open.
     /// </summary>
     public enum OpenClashCount
     {

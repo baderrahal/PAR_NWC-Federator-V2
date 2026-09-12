@@ -167,7 +167,7 @@ namespace Federator.Core.Tests
             }
 
             Assert.That(report.Tests.Count, Is.EqualTo(1830),
-                "the Summary still carries one row per test in the file");
+                "the report still holds one of these per test in the file");
             Assert.That(report.CountOf(TestState.Skipped), Is.EqualTo(1830));
             Assert.That(report.CountOf(TestState.Passed), Is.EqualTo(0),
                 "not run is not the same as passed");
@@ -175,7 +175,7 @@ namespace Federator.Core.Tests
 
             foreach (TestReport test in report.Tests)
             {
-                Assert.That(test.HasSheet, Is.False, "nothing ran, so nothing has a sheet");
+                Assert.That(test.HasRows, Is.False, "nothing ran, so nothing has a row");
                 Assert.That(test.State, Is.EqualTo(TestState.Skipped));
                 Assert.That(test.SkippedReason, Does.Contain("one discipline"));
             }
