@@ -93,6 +93,8 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
    Answer: federate what Bader ticks. Every ticked group gets its NWF and NWD. Clash only where the group holds two or more disciplines. No hidden discipline rule. F25.
 
+   Closed on 2026-09-12 by F27. The rule was never in the code. The GROUPS block printed skipped for a group unticked in the Run column, and now prints unticked with one line counting them. Clash only where two disciplines meet is F35.
+
 22. Not in the first list. CHANGED. Six groups in the same log had an NWF built from an older folder with fewer files, and the tool left them alone. See B13
 
    Answer: rebuild the NWF from the scan folder by itself, keep the tests saved inside it, and say in the log what was added, what moved and what was removed. F24.

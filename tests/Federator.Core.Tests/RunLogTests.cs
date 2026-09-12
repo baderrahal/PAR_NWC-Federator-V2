@@ -614,5 +614,23 @@ namespace Federator.Core.Tests
                 Assert.That(log.WrittenFiles.Count, Is.EqualTo(0), "a skip records nothing as written");
             }
         }
+
+        // F27. The line after the group list. There is no hidden rule dropping groups,
+        // so the line names the one thing that does, the Run column.
+        [Test]
+        public void TheUntickedLineCountsTheGroupsAndNamesTheRunColumn()
+        {
+            Assert.That(RunLog.UntickedGroupsLine(12),
+                Is.EqualTo("12 groups unticked in the Run column, nothing else drops a group"));
+            Assert.That(RunLog.UntickedGroupsLine(1),
+                Is.EqualTo("1 group unticked in the Run column, nothing else drops a group"));
+        }
+
+        [Test]
+        public void NothingUntickedStillSaysSo()
+        {
+            Assert.That(RunLog.UntickedGroupsLine(0),
+                Is.EqualTo("0 groups unticked in the Run column, nothing else drops a group"));
+        }
     }
 }

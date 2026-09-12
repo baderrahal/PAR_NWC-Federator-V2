@@ -1304,10 +1304,19 @@ namespace Federator.Addin.Ui
         private IList<string> GroupListLines()
         {
             List<string> lines = new List<string>();
+            int unticked = 0;
 
             foreach (GroupRow group in groups)
             {
-                string state = group.IsBlocked ? "BLOCKED" : (group.Include ? "run    " : "skipped");
+                // Unticked, never skipped. A group is only left out of a run by the Run
+                // column or by being blocked, and skipped once read as a rule that does
+                // not exist.
+                string state = group.IsBlocked ? "BLOCKED " : (group.Include ? "run     " : "unticked");
+
+                if (!group.IsBlocked && !group.Include)
+                {
+                    unticked++;
+                }
 
                 lines.Add(state + "  " + group.Building.PadRight(10)
                     + group.FileCount.ToString().PadLeft(3)
@@ -1325,6 +1334,10 @@ namespace Federator.Addin.Ui
             if (lines.Count == 0)
             {
                 lines.Add("No groups.");
+            }
+            else
+            {
+                lines.Add(RunLog.UntickedGroupsLine(unticked));
             }
 
             return lines;

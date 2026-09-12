@@ -18,7 +18,7 @@ The real order the code runs, one line per stage.
 5. `FederatorWindow.Regroup`, `ContainerName.Parse` per file, `BuildingGrouping.Group` by the chosen `GroupingMode`
 6. `OutputNameTable` fills one row per group from the three `NamePattern` values
 7. `ScanFindings.From` works out ODD SHAPE, NEAR MATCH, SINGLE DISCIPLINE, MISSING and shows them
-8. Clash step, `OnBrowseExchangeFile`, `ExchangeReader.Read`, `HealthCheck.Run` on the XML
+8. Clash step, `OnBrowseExchangeFile`, `ExchangeReader.ReadFile`, then a count of the sets and tests under the file line. `HealthCheck.Run` is not called by anything in src today. F34 wires it, D1 of the round of 2026-09-12
 9. `FederatorWindow.OnRun`, builds one `FederationJob` per ticked group through `OutputPaths`
 10. `OutputNameTable` collision check, then `ConfirmClear` dialog
 11. `FederatorWindow.RunJobs`, writes RUN SETTINGS, `new FederationEngine(...)`, `engine.Run(jobs)`
@@ -121,7 +121,7 @@ One line each. File, line, what is wrong, what it breaks.
 - B13 On CHANGED the NWF is left alone even when the scan folder holds the right files. In `steps/logs/run-20260907-093440.log`, 1B06BC, 1B06G1, 1B06K1, 1B06M1, 1B06P1 and 1B06PE have an NWF on disk that was built from `01_WIP\BI_BIM\Native Model\NWC` and holds fewer files than the scan. 1B06BC holds 4 of 5, EL missing. 1B06K1 holds 1 of 4. The tool read CHANGED, left the NWF, and the old build published an NWD off it, so the NWD is missing NWCs. F9 stops the stale NWD but nothing rebuilds the NWF. F24 fixes it, Q22
 - B14 UNITS says THE DOCUMENT DID NOT FOLLOW on 11 of 14 groups in the same log. The models are set to meters, the document stays in feet, and the report is written in feet, tolerance included. F26 fixes it, Q23
 - B14 fixed by F26 on 2026-09-07. The report is converted to meters in Core before anything is written, and the words DID NOT FOLLOW are gone
-- B15 12 of 26 groups were dropped before the run started in the same log, 30 of 76 ticked files never federated. Every group without AR, EL, ME or ST was dropped, including 1B0601 with LV, MV, SL and 1B0612 with TM, TR. The rule is not shown in the window and overrides the ticks. F25 fixes it, Q21
+- B15 CLOSED by F27 on 2026-09-12. The same log showed 12 of 26 groups as skipped, every group without AR, EL, ME or ST, and it read as a hidden discipline rule. There is no such rule. Nothing in src sets `GroupRow.Include` to false except the Run column and a blocked group, and it was the same at be0b9b37. The 12 were unticked by hand and the GROUPS block printed skipped for an unticked group. F27 makes it print unticked and adds one line counting them. Q21
 
 ## 4 Logic problems
 
