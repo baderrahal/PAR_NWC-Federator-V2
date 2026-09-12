@@ -37,11 +37,12 @@ Changed on 2026-09-12 from the audit in chat. F27 to F38 are new and go before F
 23. F36
 24. F37, closes F12 and F14
 25. F38, closes F13
-26. F16
-27. F21
-28. F15
-29. F18 when the sample arrives
-30. F23 when Q20 is answered
+26. F39, the window compiles again, found by the audit of 2026-09-12
+27. F16
+28. F21
+29. F15
+30. F18 when the sample arrives
+31. F23 when Q20 is answered
 
 F19 is dropped.
 
@@ -297,6 +298,15 @@ F19 is dropped.
 - CONTAINER
 - History to `docs/history/claude-md-history.md`, four rules files under `.claude/rules` with paths frontmatter, two PreToolUse hooks under `.claude/hooks` in `.claude/settings.json`, the pre-commit hook kept
 - DONE on 2026-09-12. CLAUDE.md is 164 lines, `.claude/rules` holds addin, core, tests and steps with a paths line each, `.claude/settings.json` runs two hooks from `.claude/hooks` and both were tried with piped tool calls, the old CLAUDE.md is whole in `docs/history/claude-md-history.md`, the pre-commit hook is unchanged
+
+## F39 The window compiles again
+
+- Found by the audit of 2026-09-12, reader steps-and-rules, and confirmed by grep
+- Files `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`
+- CONTAINER to edit, LOCAL MACHINE ONLY to prove, because the add-in does not build here
+- F34 deleted the republish flag and the three engine constructors that took it, and left the two calls in the window that passed `true` as the third argument. The Run button and the Run the open file button both construct the engine that way, so the add-in has not compiled since F34 merged and F35, F36 and F37 were read, never built. The fix is the two calls losing the `true`
+- Size: two lines
+- DONE on 2026-09-12. Both calls read `SetProgress, log, exchange, options` with `nwfFolder` on the first, matching the two constructors. A heuristic check of every `new` and every static call in the add-in against the declared arities finds nothing else. The proof is the build in `03_bader_next.md`, and it is the reason the build comes first
 
 ## F25 Drop the hidden discipline rule
 

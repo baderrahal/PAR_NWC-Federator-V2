@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F39, the window compiles again
+
+### What was done
+
+- F39 done, two lines. Found by the audit of 2026-09-12, whose steps-and-rules reader compared every call from the window into the engine against the engine's constructors, and confirmed by grep before anything was changed
+- F34 deleted the republish flag and the three engine constructors that took it, and the two calls in the window that construct the engine for a run kept passing `true` as their third argument. The Run button passed six arguments to a constructor that takes five and the Run the open file button passed a bool where an exchange document goes. Neither matches a constructor that exists, so the add-in has not compiled since F34 merged, and F35, F36 and F37 changed it further without a build. Both calls now read `SetProgress, log, exchange, options`, with `nwfFolder` on the first, and the two hand button calls were already right
+- Why it was missed: the add-in does not build here, and F34 was read twice as a diff. A diff shows the constructors that went and not the callers that stayed, so the reading found nothing wrong with either side on its own. The audit found it by putting the two side by side, which is what a compiler does
+- A heuristic check was run once over the whole add-in, every `new` and every static call against the arities declared under src, and it finds this one call and nothing else. It is a script in the session and not in the repo, because the local build is the real check and comes first in `03_bader_next.md`
+- Proved here: Core tests under mono on Linux, before and after: 905 passed, 37 failed, 33 skipped, 975 total. No Core file changed
+- Waits for the local machine: the build. This fix is the reason the build is the first step of `03_bader_next.md`, and if the build names anything else, the whole error goes in the chat
+
+### What remains
+
+- The round close on its branch: `steps/04_audit.md`, the fix list in `01_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F38 entry
+
+### What comes next
+
+1. Merge the F39 PR
+2. Finish the round close
 ## 2026-09-12 F38, CLAUDE.md under 200 lines, rules in .claude, walls in hooks
 
 ### What was done
