@@ -66,6 +66,8 @@ namespace Federator.Core.Diagnostics
         private readonly List<GroupRecord> groupRecords = new List<GroupRecord>();
         private bool closed;
 
+        private static int keepLogs = DefaultKeepLogs;
+
         private RunLog(string path, DateTime startedAt, FileStream stream, string disabledReason)
         {
             Path = path;
@@ -191,7 +193,31 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public static RunLog StartOrDisabled()
         {
-            return StartOrDisabled(DefaultLogFolder(), DateTime.Now, DefaultKeepLogs);
+            return StartOrDisabled(DefaultLogFolder(), DateTime.Now, KeepLogs);
+        }
+
+        /// <summary>
+        /// How many log files are kept, the live one included. A setting and not a
+        /// constant, because the number shapes a run. It is static because the log opens
+        /// on the first line of the button handler, before a window or any options object
+        /// exists, so there is nothing else for it to hang off. Zero keeps the live file
+        /// alone, which is a real answer. A negative count is refused where it is set,
+        /// rather than at the moment the run needs it.
+        /// </summary>
+        public static int KeepLogs
+        {
+            get { return keepLogs; }
+
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        "value", "A run cannot keep fewer than no log files.");
+                }
+
+                keepLogs = value;
+            }
         }
 
         public static RunLog StartOrDisabled(string preferredFolder, DateTime startedAt, int keepLogs)

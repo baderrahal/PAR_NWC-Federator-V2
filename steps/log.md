@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F43, three settings that are constants
+
+### What was done
+
+- F43 done. The stop after count, the log count and the report subfolder each have the default they always had and can now be set. The progress interval in `ClashRunner` stays a const, because no rule names it, which is what the audit's verifier pointed out
+- The stop after count is `ReportOptions.StopAfterFailures`, defaulting to the guard's own `DefaultThreshold`, and the one guard the whole run shares is built from it in the engine constructor. It was a field initialiser calling the no argument constructor, so no run could reach the number. A count under one is refused where it is set, with the sentence the guard already uses, rather than throwing in the middle of a run
+- The log count is `RunLog.KeepLogs`, defaulting to `DefaultKeepLogs`, read by the no argument `StartOrDisabled` the plugin calls. It is static because the log opens on the first line of the button handler, before a window or any options object exists, so there is nothing else for it to hang off. Zero keeps the live file alone, which is a real answer, and fewer than none is refused
+- The report subfolder is `ReportPaths.Subfolder`, defaulting to `DefaultSubfolder`, read by the one place that builds the fallback folder. Static for the same kind of reason: the open file run and the line under the Outputs step both work the folder out with no options object in front of them, and threading a parameter through four call sites would have put the same name in four places. A name that is empty or carries a slash is refused where it is set
+- Both slashes are refused by name rather than by asking the running platform what it calls a separator. The first version asked, and the test that hands it `Reports\Weekly` passed the backslash straight through in this container, where the separator is a forward slash. That is the F16 fault caught in a new test before it was written down
+- One dead thing went with it. `ClashRunner`'s two argument constructor built its own guard and nothing in src or in the tests called it, so it is gone and the guard is handed in, which is the rule that the guard lives for the run and not for a group
+- `ImageOptions.DefaultStopAfterFailures` already reads `RepeatedFailureGuard.DefaultThreshold` rather than repeating the 50. F40 did that one
+- Nothing outside the code sets any of the three, so today the change is that they can be set at all. Whether a settings file is wanted is Q29
+- Proved here: thirteen new tests, each changing a setting and reading the answer back out of the thing that uses it, and handing each one a value it must refuse. The folder actually chosen follows the subfolder setting, and so does the line under the Outputs step. A guard built from a count of two stops after the second failure and not the first. The arity check over the whole add-in, 0 mismatches. The parse of the whole add-in with no references, the same six error codes as before and not one `CS1xxx`. Core builds with no warning. Core tests before: 895 passed, 37 failed, 33 skipped, 965 total. After: 908 passed, 37 failed, 33 skipped, 978 total
+- Waits for the local machine: two add-in files changed, the engine and the clash runner. The proof is the build and one run whose CLASH block reads as before, because every default is the number it always was
+
+### What remains
+
+- F44, F45 and F16 in order, then the read of `03_bader_next.md` against the code, then the closing entry
+- Q29 for Bader, raised by this fix
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F43 PR
+2. F44, the docs and the comments agree with the code
+
 ## 2026-09-12 F42, no framework message in a label
 
 ### What was done

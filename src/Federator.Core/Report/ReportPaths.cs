@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Federator.Core.Report
@@ -29,10 +30,66 @@ namespace Federator.Core.Report
 
     public static class ReportPaths
     {
-        /// <summary>
-        /// The subfolder used when no Excel folder was picked. A setting, not a constant.
-        /// </summary>
+        /// <summary>The subfolder used when no Excel folder was picked.</summary>
         public const string DefaultSubfolder = "Clash Reports";
+
+        private static string subfolder = DefaultSubfolder;
+
+        /// <summary>
+        /// The subfolder the reports go in when no Excel folder was picked. A setting and
+        /// not a constant, because the name shapes where every report of every run lands.
+        /// It is static because the open file run and the line under the Outputs step both
+        /// work the folder out with no options object in front of them. A name that is not
+        /// one folder is refused where it is set.
+        /// </summary>
+        public static string Subfolder
+        {
+            get { return subfolder; }
+
+            set
+            {
+                string wanted = value == null ? string.Empty : value.Trim();
+
+                if (wanted.Length == 0)
+                {
+                    throw new ArgumentException(
+                        "The reports need a subfolder name to go in when no Excel folder is picked.",
+                        "value");
+                }
+
+                if (wanted.IndexOfAny(NotInAFolderName) >= 0)
+                {
+                    throw new ArgumentException(
+                        "The subfolder is one folder name and not a path, so \"" + wanted
+                            + "\" cannot be used.",
+                        "value");
+                }
+
+                subfolder = wanted;
+            }
+        }
+
+        private static readonly char[] NotInAFolderName = BuildNotInAFolderName();
+
+        /// <summary>
+        /// Both slashes by name, not whichever one this machine calls a separator. The
+        /// tool runs on Windows, where both are separators, and a test that asked the
+        /// running platform passed a backslash straight through in the container.
+        /// </summary>
+        private static char[] BuildNotInAFolderName()
+        {
+            List<char> refused = new List<char>(Path.GetInvalidFileNameChars());
+
+            foreach (char slash in new[] { '\\', '/' })
+            {
+                if (!refused.Contains(slash))
+                {
+                    refused.Add(slash);
+                }
+            }
+
+            return refused.ToArray();
+        }
 
         public const string WorkbookExtension = ".xlsx";
 
@@ -144,7 +201,7 @@ namespace Federator.Core.Report
                     "nwfFolder");
             }
 
-            return Path.Combine(nwfFolder.Trim(), DefaultSubfolder);
+            return Path.Combine(nwfFolder.Trim(), Subfolder);
         }
 
         /// <summary>

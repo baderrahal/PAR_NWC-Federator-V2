@@ -1,3 +1,5 @@
+using System;
+using Federator.Core.Clash;
 using Federator.Core.Naming;
 
 namespace Federator.Core.Report
@@ -16,6 +18,7 @@ namespace Federator.Core.Report
             SourceFolder = string.Empty;
             ApplyFileSettings = false;
             CompactResolved = false;
+            StopAfterFailures = RepeatedFailureGuard.DefaultThreshold;
 
             // Fixed on, and the window no longer sets them. A weekly run wants the page
             // and the units every time, so neither is a decision any more. F34.
@@ -103,6 +106,31 @@ namespace Federator.Core.Report
         /// destroys the record of what was resolved.
         /// </summary>
         public bool CompactResolved { get; set; }
+
+        /// <summary>
+        /// How many clash tests failing in a row for the same reason stop the whole run.
+        /// Fifty by default, the number the guard carries, and a setting rather than a
+        /// constant because it shapes the run. One guard is built from this for the whole
+        /// run, never one per group, since every group of that nine hour run failed the
+        /// same way. The images have their own count of the same shape on ImageOptions.
+        /// </summary>
+        public int StopAfterFailures
+        {
+            get { return stopAfterFailures; }
+
+            set
+            {
+                if (value < 1)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        "value", "The guard needs at least one failure before it can stop a run.");
+                }
+
+                stopAfterFailures = value;
+            }
+        }
+
+        private int stopAfterFailures;
 
         /// <summary>How a discipline is read off a source file name.</summary>
         public ContainerNameSettings Names { get; set; }
