@@ -10,48 +10,19 @@ can be written here and only proved on the local machine.
 
 ## Order
 
-Changed on 2026-09-12 from the audit in chat. F27 to F38 are new and go before F16, F21 and F15. F12, F13 and F14 are absorbed by F37 and F38 and close with them. F25 closes with F27, the rule was never in the code. F5 to F26 are done.
+Renumbered on 2026-09-12 when the second audit round closed. What is left is three. Only the first can be started here, and the other two wait on Bader.
 
-1. F5
-2. F6
-3. F7
-4. F8
-5. F22
-6. F1, F2 and F4 as one PR, done. F3 was done inside F22
-7. F9
-8. F10
-9. F11
-10. F17
-11. F20
-12. F24
-13. F26
-14. F27, closes F25
-15. F28
-16. F29
-17. F30
-18. F31
-19. F32
-20. F33
-21. F34
-22. F35
-23. F36
-24. F37, closes F12 and F14
-25. F38, closes F13
-26. F39, the window compiles again, found by the audit of 2026-09-12
-27. F46, the four the chat audit of 2026-09-12 found, two of them blocking Bader
-28. F40, dead members out, second pass, from the audit
-29. F41, every handle disposed
-30. F42, no framework message in a label
-31. F43, three settings that are constants
-32. F44, the docs and the comments agree with the code
-33. F45, the clash step keeps its rules
-34. F16, widened by the audit
-35. F21
-36. F15
-37. F18 when the sample arrives
-38. F23 when Q20 is answered
+1. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
+2. F18, when Bader uploads the 1A04WE sample, Q9
+3. F23, when Q20 is answered
 
-F19 is dropped.
+Nothing else is open. F19 is dropped.
+
+## Done, in the order they were worked
+
+F5, F6, F7, F8, F22, then F1 with F2 and F4 in one pull request, F3 inside F22, then F9, F10, F11, F17, F20, F24, F26, F27 which closes F25, F28, F29, F30, F31, F32, F33, F34, F35, F36, F37 which closes F12 and F14, F38 which closes F13, F39, then the second audit round: F46, F40, F41 which closes F15, F42, F43, F44, F45 and F16.
+
+Every one of them carries its DONE line in its own section below, and its entry in `log.md`. None of them is proved on a machine with Navisworks yet. That is `03_bader_next.md`.
 
 ## F5 Fix the sets built test
 
@@ -154,11 +125,7 @@ F19 is dropped.
 
 ## F15 Dispose in SetBuilder and ClashRunner.Resolve
 
-- Closes B5 and B6
-- Files `src/Federator.Addin/Engine/SetBuilder.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`
-- LOCAL MACHINE ONLY to prove, and the proof is a run with no ObjectDisposedException
-- Size: medium and the riskiest here. Disposing a wrapper the code still uses throws at run time. Last of the code fixes, one file at a time, one run each. Q14 answered fix now
-- Read `steps/05_api_notes.md` first if it exists
+- CLOSED on 2026-09-12 by F41, which is the same two files and more. B5, the intermediate levels `Resolve` walks past, and B6, everything `SetBuilder` creates or resolves, are both done, and `SavedTests` went with them. The proof is the same one F15 asked for, a run with no ObjectDisposedException, and it is steps 188 to 190 of `03_bader_next.md`
 
 ## F12 Fix the docs that contradict the code
 
