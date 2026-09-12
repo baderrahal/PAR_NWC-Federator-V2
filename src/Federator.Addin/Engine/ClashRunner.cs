@@ -129,12 +129,13 @@ namespace Federator.Addin.Engine
         public ContainerNameSettings NameSettings { get; set; }
 
         /// <summary>
-        /// True when this group holds one NWC. Every test is still created, so the NWF is
-        /// complete and matches the other groups, and none of them is run, because one
-        /// model cannot clash with anything. Recorded as SingleModel rather than as a side
-        /// finding nothing, which is a different fact about a different problem.
+        /// True when this group holds fewer than two disciplines. Every test is still
+        /// created, so the NWF is complete and matches the other groups, and none of them
+        /// is run, because one discipline cannot clash with itself. Recorded as
+        /// SingleDiscipline rather than as a side finding nothing, which is a different
+        /// fact about a different problem. D5.
         /// </summary>
-        public bool SingleModelGroup { get; set; }
+        public bool SingleDisciplineGroup { get; set; }
 
         /// <summary>
         /// Apply the file's settings to tests already in the document. Off by default,
@@ -531,15 +532,15 @@ namespace Federator.Addin.Engine
                     summary.RightItems = rightItems;
                 }
 
-                if (SingleModelGroup)
+                if (SingleDisciplineGroup)
                 {
                     // Created, so the NWF matches every other group and a later run against
                     // a fuller model finds the tests already there. Not run, because there
                     // is nothing here for them to run against.
                     LogSkip(outcome.AddSkipped(
                         planned.Name,
-                        ClashSkipReason.SingleModel,
-                        "the group holds one model, so there is nothing for this test to clash against"));
+                        ClashSkipReason.SingleDiscipline,
+                        "the group holds one discipline, so there is nothing for this test to clash against"));
                     guard.RecordNotAttempted();
                     return;
                 }

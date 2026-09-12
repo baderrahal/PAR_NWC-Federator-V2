@@ -11,14 +11,11 @@ namespace Federator.Addin.Engine
     /// <summary>One building's worth of work, fully decided before the run starts.</summary>
     public sealed class FederationJob
     {
-        public FederationJob(string building, string outputName, string nwfPath, string nwdPath, IList<string> files)
-            : this(building, outputName, nwfPath, nwdPath, files, outputName)
-        {
-        }
-
         /// <summary>
         /// The workbook can carry a different name from the NWF, because the Outputs step
-        /// holds one naming pattern for each of the three.
+        /// holds one naming pattern for each of the three. The discipline count is what
+        /// the scan found in this group, or null for the open file, where nothing was
+        /// scanned and the count is UNKNOWN.
         /// </summary>
         public FederationJob(
             string building,
@@ -26,7 +23,8 @@ namespace Federator.Addin.Engine
             string nwfPath,
             string nwdPath,
             IList<string> files,
-            string workbookName)
+            string workbookName,
+            int? disciplineCount)
         {
             if (building == null)
             {
@@ -44,6 +42,7 @@ namespace Federator.Addin.Engine
             NwdPath = nwdPath;
             Files = files;
             WorkbookName = string.IsNullOrEmpty(workbookName) ? outputName : workbookName;
+            DisciplineCount = disciplineCount;
         }
 
         public string Building { get; private set; }
@@ -59,6 +58,26 @@ namespace Federator.Addin.Engine
 
         /// <summary>What the workbook is called. The NWF name unless a pattern differs.</summary>
         public string WorkbookName { get; private set; }
+
+        /// <summary>
+        /// How many disciplines the scan found in this group, or null where nothing was
+        /// scanned. Fewer than two and the clash step creates every test and runs none,
+        /// by BuildingGroup.CannotClashWith. D5.
+        /// </summary>
+        public int? DisciplineCount { get; private set; }
+
+        /// <summary>
+        /// True where the scan found fewer than two disciplines. The open file is never
+        /// judged here, because its count is UNKNOWN and a guess would stop real tests.
+        /// </summary>
+        public bool IsSingleDiscipline
+        {
+            get
+            {
+                return DisciplineCount.HasValue
+                    && Federator.Core.Grouping.BuildingGroup.CannotClashWith(DisciplineCount.Value);
+            }
+        }
     }
 
     /// <summary>What actually happened to one group, checked against the disk.</summary>

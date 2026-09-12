@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F35, clash only where two disciplines meet
+
+### What was done
+
+- F35 done, D5. The one model rule counted files, so two NWCs of one discipline ran every test for nothing the way one NWC did. The rule now counts disciplines and lives in one place, `BuildingGroup.CannotClashWith(int disciplineCount)`, fewer than two and nothing in the group can clash. `BuildingGroup.IsSingleDiscipline` replaces `IsSingleModel`, `GroupRow` carries `DisciplineCount` off the scan and reads the same rule for its `IsSingleDiscipline` and its status line, which now says one discipline, and `FederationJob` carries the count on to the engine, which sets `ClashRunner.SingleDisciplineGroup` from `job.IsSingleDiscipline`. `ClashSkipReason.SingleModel` is `SingleDiscipline` and every line that said one model says one discipline
+- `FederationJob.DisciplineCount` is `int?`. The open file passes null, because nothing was scanned and its count is UNKNOWN, so it is never judged this way, which is what the file count gave it before, an empty list is not one file. The five argument constructor nothing called is gone
+- The SINGLE DISCIPLINE scan finding says the tests are created and none is run, it said none of them can find anything, which was true before D5 and is not how it ends now
+- Proved here: `SingleModelGroupTests` is `SingleDisciplineGroupTests`, its nine references renamed, and it gains `AGroupWithTwoFilesOfOneDisciplineKnowsItCannotClashEither` and `TheRuleIsFewerThanTwoDisciplines`. `GroupingModeTests.AGroupHoldingOneDisciplineKnowsItCannotClash` reads the new name. Core tests under mono on Linux, before: 914 passed, 37 failed, 33 skipped, 984 total. After: 916 passed, 37 failed, 33 skipped, 986 total. The 37 are the same Windows path and file locking failures, none new. A grep for `SingleModel` and one model over src and tests finds nothing but three comments about one model in a document, which are about a different thing
+- Waits for the local machine: the add-in does not build here. Five add-in files changed, read twice. Proof: scan a folder holding a building with two NWCs of one discipline, its row must read Ready. One discipline, so every test is created and none is run, and the run's CLASH block for it must say holds one discipline and skip every test with the SingleDiscipline reason
+
+### What remains
+
+- F36 to F38 in order, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F32 entry
+
+### What comes next
+
+1. Merge the F35 PR
+2. F36, dead code and copies out
+
 ## 2026-09-12 F34, window wiring
 
 ### What was done

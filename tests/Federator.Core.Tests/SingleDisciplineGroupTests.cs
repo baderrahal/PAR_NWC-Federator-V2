@@ -9,18 +9,20 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// A group holding one NWC cannot clash with anything, whatever the test list says. In
-    /// the last real folder that was 1B06BS and 1C06PK, and both ran the full 1830 tests
-    /// for nothing.
+    /// A group holding fewer than two disciplines cannot clash with anything, whatever the
+    /// test list says, because every clash test is one discipline against another. In the
+    /// last real folder 1B06BS and 1C06PK each held one NWC, and both ran the full 1830
+    /// tests for nothing. Two NWCs of the same discipline are the same case, D5, which is
+    /// why the count is of disciplines and not of files.
     ///
     /// Every test is still created, so the NWF is complete and matches the other groups and
     /// a later run against a fuller model finds them already there. None of them is run,
-    /// and the reason is recorded as the group holding one model rather than as a side
-    /// finding nothing. Those are different facts about different problems and they count
-    /// separately.
+    /// and the reason is recorded as the group holding one discipline rather than as a
+    /// side finding nothing. Those are different facts about different problems and they
+    /// count separately.
     /// </summary>
     [TestFixture]
-    public class SingleModelGroupTests
+    public class SingleDisciplineGroupTests
     {
         // ---------- the group knows ----------
 
@@ -36,22 +38,53 @@ namespace Federator.Core.Tests
                 },
                 new ContainerNameSettings());
 
-            Assert.That(result.Find("1B06BS").IsSingleModel, Is.True);
-            Assert.That(result.Find("1C07BC").IsSingleModel, Is.False);
+            Assert.That(result.Find("1B06BS").IsSingleDiscipline, Is.True);
+            Assert.That(result.Find("1C07BC").IsSingleDiscipline, Is.False);
+        }
+
+        // D5. Two files of one discipline are the same case as one file.
+        [Test]
+        public void AGroupWithTwoFilesOfOneDisciplineKnowsItCannotClashEither()
+        {
+            BuildingGroupingResult result = BuildingGrouping.GroupNames(
+                new[]
+                {
+                    "1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc",
+                    "1104-PAR-1B06BS-ZZZ-EL-MOD-000002.nwc",
+                    "1104-PAR-1C07BC-ZZZ-AR-MOD-000001.nwc",
+                    "1104-PAR-1C07BC-ZZZ-ST-MOD-000001.nwc"
+                },
+                new ContainerNameSettings());
+
+            BuildingGroup twoOfOne = result.Find("1B06BS");
+
+            Assert.That(twoOfOne.FileCount, Is.EqualTo(2));
+            Assert.That(twoOfOne.Disciplines.Count, Is.EqualTo(1));
+            Assert.That(twoOfOne.IsSingleDiscipline, Is.True);
+            Assert.That(result.Find("1C07BC").IsSingleDiscipline, Is.False);
+        }
+
+        [Test]
+        public void TheRuleIsFewerThanTwoDisciplines()
+        {
+            Assert.That(BuildingGroup.CannotClashWith(0), Is.True);
+            Assert.That(BuildingGroup.CannotClashWith(1), Is.True);
+            Assert.That(BuildingGroup.CannotClashWith(2), Is.False);
+            Assert.That(BuildingGroup.CannotClashWith(5), Is.False);
         }
 
         // ---------- the reason is its own ----------
 
         // The one the brief asks for by name.
         [Test]
-        public void OneModelAndASideFindingNothingAreDifferentReasons()
+        public void OneDisciplineAndASideFindingNothingAreDifferentReasons()
         {
-            Assert.That(ClashSkipReason.SingleModel, Is.Not.EqualTo(ClashSkipReason.EmptySide));
+            Assert.That(ClashSkipReason.SingleDiscipline, Is.Not.EqualTo(ClashSkipReason.EmptySide));
 
-            Assert.That(ClashTestPlan.Describe(ClashSkipReason.SingleModel),
+            Assert.That(ClashTestPlan.Describe(ClashSkipReason.SingleDiscipline),
                 Is.Not.EqualTo(ClashTestPlan.Describe(ClashSkipReason.EmptySide)));
-            Assert.That(ClashTestPlan.Describe(ClashSkipReason.SingleModel),
-                Does.Contain("one model"));
+            Assert.That(ClashTestPlan.Describe(ClashSkipReason.SingleDiscipline),
+                Does.Contain("one discipline"));
             Assert.That(ClashTestPlan.Describe(ClashSkipReason.EmptySide),
                 Does.Contain("finds nothing"));
         }
@@ -65,40 +98,40 @@ namespace Federator.Core.Tests
             {
                 outcome.AddSkipped(
                     "T" + i,
-                    ClashSkipReason.SingleModel,
-                    "the group holds one model, so there is nothing for this test to clash against");
+                    ClashSkipReason.SingleDiscipline,
+                    "the group holds one discipline, so there is nothing for this test to clash against");
             }
 
             outcome.AddSkipped("other", ClashSkipReason.EmptySide, "the left side finds nothing");
 
             IDictionary<ClashSkipReason, int> counts = outcome.SkipReasonCounts();
 
-            Assert.That(counts[ClashSkipReason.SingleModel], Is.EqualTo(1830));
+            Assert.That(counts[ClashSkipReason.SingleDiscipline], Is.EqualTo(1830));
             Assert.That(counts[ClashSkipReason.EmptySide], Is.EqualTo(1));
             Assert.That(outcome.SkippedCount, Is.EqualTo(1831));
         }
 
         [Test]
-        public void TheBlockNamesTheOneModelReasonOnItsOwnLine()
+        public void TheBlockNamesTheOneDisciplineReasonOnItsOwnLine()
         {
             ClashRunOutcome outcome = new ClashRunOutcome();
             outcome.TestsInFile = 1830;
 
             for (int i = 0; i < 1830; i++)
             {
-                outcome.AddSkipped("T" + i, ClashSkipReason.SingleModel, "one model");
+                outcome.AddSkipped("T" + i, ClashSkipReason.SingleDiscipline, "one discipline");
             }
 
             string block = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
 
             Assert.That(block, Does.Contain("SKIPPED 1830 tests, "
-                + ClashTestPlan.Describe(ClashSkipReason.SingleModel)));
+                + ClashTestPlan.Describe(ClashSkipReason.SingleDiscipline)));
             Assert.That(block, Does.Contain("tests skipped     : 1830, not run and not passed"));
             Assert.That(block, Does.Not.Contain(ClashTestPlan.Describe(ClashSkipReason.EmptySide)),
-                "a one model group was reported as a side finding nothing");
+                "a one discipline group was reported as a side finding nothing");
         }
 
-        // A single model group is not a passed group. Nothing ran.
+        // A single discipline group is not a passed group. Nothing ran.
         [Test]
         public void NoneOfThemCountsAsPassed()
         {
@@ -107,7 +140,7 @@ namespace Federator.Core.Tests
             for (int i = 0; i < 100; i++)
             {
                 outcome.AddCreated("T" + i);
-                outcome.AddSkipped("T" + i, ClashSkipReason.SingleModel, "one model");
+                outcome.AddSkipped("T" + i, ClashSkipReason.SingleDiscipline, "one discipline");
             }
 
             Assert.That(outcome.CreatedCount, Is.EqualTo(100), "the tests are still created");
@@ -130,7 +163,7 @@ namespace Federator.Core.Tests
                 TestReport test = report.AddTest("test " + i);
                 test.State = TestState.Skipped;
                 test.SkippedReason =
-                    "the group holds one model, so there is nothing for this test to clash against";
+                    "the group holds one discipline, so there is nothing for this test to clash against";
             }
 
             Assert.That(report.Tests.Count, Is.EqualTo(1830),
@@ -143,7 +176,7 @@ namespace Federator.Core.Tests
             foreach (TestReport test in report.Tests)
             {
                 Assert.That(test.HasSheet, Is.False, "nothing ran, so nothing has a sheet");
-                Assert.That(test.DescribeState(), Does.Contain("one model"));
+                Assert.That(test.DescribeState(), Does.Contain("one discipline"));
                 Assert.That(test.DescribeState(), Does.Contain("skipped, not run"));
             }
         }
@@ -153,9 +186,9 @@ namespace Federator.Core.Tests
         [Test]
         public void TheReasonExplainsItselfWithoutTheReaderKnowingTheTool()
         {
-            string reason = ClashTestPlan.Describe(ClashSkipReason.SingleModel);
+            string reason = ClashTestPlan.Describe(ClashSkipReason.SingleDiscipline);
 
-            Assert.That(reason, Does.Contain("one model"));
+            Assert.That(reason, Does.Contain("one discipline"));
             Assert.That(reason, Does.Contain("clash"));
             Assert.That(reason, Is.Not.EqualTo("UNKNOWN"));
         }

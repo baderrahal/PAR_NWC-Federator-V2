@@ -304,7 +304,8 @@ namespace Federator.Addin.Engine
                 open,
                 OpenDocumentJob.NwdBeside(open),
                 new List<string>(),
-                name);
+                name,
+                null);
         }
 
         private JobOutcome RunOne(FederationJob job)
@@ -1215,14 +1216,14 @@ namespace Federator.Addin.Engine
 
                 ClashRunner runner = new ClashRunner(progress, log, guard);
                 runner.NameSettings = reports.Names;
-                runner.SingleModelGroup = job.Files.Count == 1;
+                runner.SingleDisciplineGroup = job.IsSingleDiscipline;
                 runner.ApplyFileSettings = reports.ApplyFileSettings;
                 runner.CompactResolved = reports.CompactResolved;
 
-                if (runner.SingleModelGroup)
+                if (runner.SingleDisciplineGroup)
                 {
-                    log.Line("CLASH    " + job.Building + " holds one model, so every test is created "
-                        + "and none is run. One model cannot clash with anything.");
+                    log.Line("CLASH    " + job.Building + " holds one discipline, so every test is created "
+                        + "and none is run. One discipline cannot clash with itself.");
                 }
 
                 // Each output answers to its own flag. The report is built when the
