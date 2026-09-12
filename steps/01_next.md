@@ -38,11 +38,17 @@ Changed on 2026-09-12 from the audit in chat. F27 to F38 are new and go before F
 24. F37, closes F12 and F14
 25. F38, closes F13
 26. F39, the window compiles again, found by the audit of 2026-09-12
-27. F16
-28. F21
-29. F15
-30. F18 when the sample arrives
-31. F23 when Q20 is answered
+27. F40, dead members out, second pass, from the audit
+28. F41, every handle disposed
+29. F42, no framework message in a label
+30. F43, three settings that are constants
+31. F44, the docs and the comments agree with the code
+32. F45, the clash step keeps its rules
+33. F16, widened by the audit
+34. F21
+35. F15
+36. F18 when the sample arrives
+37. F23 when Q20 is answered
 
 F19 is dropped.
 
@@ -97,13 +103,13 @@ F19 is dropped.
 ## F1 Fix the test name typo
 
 - Closes B8
-- Files `tests/Federator.Core.Tests/ReportCheckTests.cs`
+- Files `tests/Federator.Core.Tests/Report/ReportCheckTests.cs`
 - DONE on 2026-09-07 in one PR with F2 and F4
 
 ## F2 Fix the hardcoded probe path
 
 - Closes B7
-- Files `build/probe-window-defaults.ps1`, `docs/test-model-side.md`
+- Files `tools/probes/probe-window-defaults.ps1`, `docs/history/test-model-side.md`, both moved there by F37
 - DONE on 2026-09-07 in one PR with F1 and F4, pending a local run of the probe
 
 ## F3 Fix the two wrong messages
@@ -183,6 +189,7 @@ F19 is dropped.
 - Files about 15 test files
 - CONTAINER, then confirm on Windows
 - Size: medium. Q11 answered yes
+- Widened by the audit of 2026-09-12, see `04_audit.md`. The 37 tests that fail here, the six that skip saying a sample is missing when it is there, the three ReadOnlyCollection against array comparisons, `ContainerNameTests.ReadsAFullPathThroughToTheName` which passes off Windows without proving anything, `Samples.Folder` in place of the four `RepoRoot` copies, and one temp folder helper in place of the nineteen copies of its comment
 
 ## F18 Add the 1A04WE sample
 
@@ -224,7 +231,7 @@ F19 is dropped.
 
 ## F28 A set already there is not counted as created
 
-- Files `src/Federator.Core/Sets/SetBuildOutcome.cs`, `src/Federator.Addin/Engine/SetBuilder.cs`, `tests/Federator.Core.Tests/SetBuildOutcomeTests.cs`
+- Files `src/Federator.Core/Sets/SetBuildOutcome.cs`, `src/Federator.Addin/Engine/SetBuilder.cs`, `tests/Federator.Core.Tests/Sets/SetBuildOutcomeTests.cs`
 - CONTAINER for the outcome, LOCAL MACHINE ONLY to see the second NWF save stop on a weekly run
 - `BuildOne` calls `AddAlreadyPresent` and then `AddCreated` for the same set, so `CreatedCount` and `PutAnythingIn` count present sets and the second NWF save fires on every weekly run
 - DONE on 2026-09-12, proof pending on the local machine
@@ -307,6 +314,58 @@ F19 is dropped.
 - F34 deleted the republish flag and the three engine constructors that took it, and left the two calls in the window that passed `true` as the third argument. The Run button and the Run the open file button both construct the engine that way, so the add-in has not compiled since F34 merged and F35, F36 and F37 were read, never built. The fix is the two calls losing the `true`
 - Size: two lines
 - DONE on 2026-09-12. Both calls read `SetProgress, log, exchange, options` with `nwfFolder` on the first, matching the two constructors. A heuristic check of every `new` and every static call in the add-in against the declared arities finds nothing else. The proof is the build in `03_bader_next.md`, and it is the reason the build comes first
+
+## F40 Dead members out, second pass
+
+- From the audit of 2026-09-12, `04_audit.md`, Members with no caller
+- Files about 40 under `src/Federator.Core`, `ClashRunner.cs`, `JobOutcome.cs`, `GroupRow.cs`, and their tests
+- CONTAINER for Core, the three add-in members read twice
+- The 43 members referenced by nothing, the 34 uncalled once the type is checked, the 9 public and used only in their own file made private. `ReleaseToPattern` waits on Q24 and the five item properties on Q25. The copies: `NwfComparison.Moves` and `Moved` and its `LeafOf` go and `NwfRebuildPlan` keeps the one rule, `RepoRoot` in four test files reads `Samples.Folder`, `ImageOptions.DefaultStopAfterFailures` reads `RepeatedFailureGuard.DefaultThreshold`, `ScanFindings` reads `BuildingGroup.IsSingleDiscipline`, one `LogoName`
+- Every name goes through grep over src and the XAML first and the results go in the PR body, as F36 did
+- Size: large in count, small in thought
+
+## F41 Every handle disposed
+
+- From the audit, Contradictions with the rules, the handles list
+- Files `src/Federator.Addin/Engine/SetBuilder.cs`, `SavedTests.cs`, `ClashRunner.cs`
+- LOCAL MACHINE ONLY to prove, CONTAINER to edit, read twice
+- `SetBuilder`: the `Search`, the `SelectionSet`, the three `ModelItemCollection`, every `SavedItem` in `Describe`, every child not returned in `FindFolder` and `FindSelectionSet`. `SavedTests`: `SelectionA` and `SelectionB` read once each into a using block. `ClashRunner`: the root `FolderItem` in `IndexSets`, the intermediate `GroupItem` in `Resolve`, every `SelectionA`, `SelectionB` and `Selection` read. And `FindSelectionSet` reads the child at the index the count held before `AddCopy` and checks its name, as `ClashRunner` does for tests
+- Proof: one building run twice with the XML, the SETS and CLASH blocks read as before and the run is not slower
+- Size: medium
+
+## F42 No framework message in a label
+
+- From the audit, Framework messages in labels, and the window words
+- Files `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Core/Clash/RepeatedFailureGuard.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`, `FederationEngine.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml`, `FederatorWindow.xaml.cs`, `src/Federator.Core/Clash/ClashWork.cs`
+- CONTAINER for Core and the wording, the window read twice
+- `RunLog.DisabledReason` names the two folders tried in plain words and keeps the type and message for the log lines. The guard carries a plain reason for the label and the exception for the log. `FederationEngine.Describe` says how many errors the log holds and not what they say. `Describe(path)` in the window says the log says why. The Clash step heading and the `ClashWork` class comment say that with no XML the tests saved in each NWF run and no set is built. The photo size box and the five status ticks are filled from `ImageOptions` in the window constructor, the way the naming boxes are, and the XAML carries neither
+- Every label wording lives in Core where a test can read it, as `ReportPaths.WhereTheyGo` does
+- Size: medium
+
+## F43 Three settings that are constants
+
+- From the audit, Settings that are constants
+- Files `src/Federator.Core/Clash/RepeatedFailureGuard.cs`, `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Core/Report/ReportPaths.cs`, `ReportOptions.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`, `FederationEngine.cs`, `FederatorPlugin.cs`
+- CONTAINER for Core, the add-in read twice
+- The stop after count, the log count and the report subfolder each become a settable property with the same default, read by the code that constructs the guard, starts the log and chooses the folder. The progress interval in `ClashRunner` stays a const, because no rule names it, which the audit's verifier pointed out. No new box in the window, a setting is a property with a default and not a tick box, and the rule is that the number can be changed without a recompile
+- Size: small
+
+## F44 The docs and the comments agree with the code
+
+- From the audit, Doc lines that disagree with the code, and Doubled and copied comments
+- Files about 45, most of them one comment line, plus `.claude/rules/core.md`, `README.md`, `docs/workflow.md`, `tools/probes/README.md`, `CLAUDE.md`, and the four probes that do not test their path
+- CONTAINER
+- The seventeen `docs\scan.md` paths and the four other moved paths. Thirteen to fifteen, five to six, three to four, eight to twelve. core.md made to agree with itself on Distance, the Item ID label, the workbook check, the five extra properties, the Summary sheet, the Layer column, the left alone group, `HealthCheckResult`, and the sample names. The Summary sheet comments in `ClashReportModel`, `HasSheet` renamed `HasRows`. The logo comments. The three stacked summaries, the copied sentences, the two comments that restate a test name, the three project names in comments. The Health tests into a `Health` folder. The probes README made true by giving `probe-units.ps1` and the three window probes the same Test-Path and UNKNOWN line as the other two
+- Size: large in count, no logic
+
+## F45 The clash step keeps its rules
+
+- From the audit, Rules the clash step breaks
+- Files `src/Federator.Core/Exchange/ExchangeReader.cs`, `src/Federator.Core/Clash/ClashTestPlan.cs`, `TestDrift.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`, `ClashHarvest.cs`
+- CONTAINER for Core, the add-in read twice, LOCAL MACHINE ONLY to prove the compact count
+- A test whose tolerance attribute is missing is skipped by name the way an unknown test type is, never given 0.0. The OLD line logs the status word and nothing else. The compacted count is the Resolved count before less the count read after `TestsCompactAllTests`. A side whose locator reads UNKNOWN is left out of the drift comparison and counted as not compared. `IdFrom` goes in the log once per item, or goes with Q25
+- Size: small
+
 
 ## F25 Drop the hidden discipline rule
 
