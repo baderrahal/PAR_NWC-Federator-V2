@@ -41,12 +41,12 @@ namespace Federator.Core.Findings
             get { return All.Count > 0; }
         }
 
-        public int Count
+        internal int Count
         {
             get { return All.Count; }
         }
 
-        public IList<ScanFinding> OfKind(FindingKind kind)
+        internal IList<ScanFinding> OfKind(FindingKind kind)
         {
             List<ScanFinding> found = new List<ScanFinding>();
 
@@ -354,7 +354,7 @@ namespace Federator.Core.Findings
         {
             foreach (BuildingGroup group in groups)
             {
-                if (group.Disciplines.Count == 1)
+                if (group.IsSingleDiscipline)
                 {
                     findings.Add(new ScanFinding(
                         FindingKind.SingleDiscipline,

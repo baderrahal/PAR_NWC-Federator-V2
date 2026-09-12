@@ -46,7 +46,6 @@ namespace Federator.Core.Rerun
             IList<string> scanned,
             IList<string> added,
             IList<string> removed,
-            IList<string> moved,
             IList<string> unchanged)
         {
             Decision = decision;
@@ -54,7 +53,6 @@ namespace Federator.Core.Rerun
             Scanned = new ReadOnlyCollection<string>(scanned);
             Added = new ReadOnlyCollection<string>(added);
             Removed = new ReadOnlyCollection<string>(removed);
-            Moved = new ReadOnlyCollection<string>(moved);
             Unchanged = new ReadOnlyCollection<string>(unchanged);
         }
 
@@ -71,12 +69,9 @@ namespace Federator.Core.Rerun
         /// <summary>In the NWF and not in the scan.</summary>
         public ReadOnlyCollection<string> Removed { get; private set; }
 
-        /// <summary>Same file name on both sides, different folder. Also in Added and Removed.</summary>
-        public ReadOnlyCollection<string> Moved { get; private set; }
-
         public ReadOnlyCollection<string> Unchanged { get; private set; }
 
-        public bool Matches
+        internal bool Matches
         {
             get { return Decision == RerunDecision.Open; }
         }
@@ -91,7 +86,6 @@ namespace Federator.Core.Rerun
                 new List<string>(),
                 files,
                 new List<string>(files),
-                new List<string>(),
                 new List<string>(),
                 new List<string>());
         }
@@ -142,59 +136,11 @@ namespace Federator.Core.Rerun
                 }
             }
 
-            List<string> moved = Moves(added, removed);
-
             RerunDecision decision = added.Count == 0 && removed.Count == 0
                 ? RerunDecision.Open
                 : RerunDecision.Changed;
 
-            return new NwfComparison(decision, existing, wanted, added, removed, moved, unchanged);
-        }
-
-        /// <summary>
-        /// File names that appear on both sides under a different folder. These are still
-        /// counted as added and removed, this only names them so the report reads honestly.
-        /// </summary>
-        private static List<string> Moves(IList<string> added, IList<string> removed)
-        {
-            List<string> moved = new List<string>();
-
-            if (added.Count == 0 || removed.Count == 0)
-            {
-                return moved;
-            }
-
-            HashSet<string> removedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (string file in removed)
-            {
-                removedNames.Add(LeafOf(file));
-            }
-
-            foreach (string file in added)
-            {
-                string leaf = LeafOf(file);
-
-                if (removedNames.Contains(leaf) && !moved.Contains(leaf))
-                {
-                    moved.Add(leaf);
-                }
-            }
-
-            return moved;
-        }
-
-        private static string LeafOf(string path)
-        {
-            try
-            {
-                string leaf = Path.GetFileName(path);
-                return string.IsNullOrEmpty(leaf) ? path : leaf;
-            }
-            catch (ArgumentException)
-            {
-                return path;
-            }
+            return new NwfComparison(decision, existing, wanted, added, removed, unchanged);
         }
 
         /// <summary>

@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F40, dead members out, second pass
+
+### What was done
+
+- F40 done. 45 members deleted, 64 taken off the public surface, 66 files touched, 1045 lines out and 171 in
+- Every name was checked twice before anything went. Once by a script written for this, which reads every `.cs` and `.xaml` under src, classifies each reference to a name as code, comment or string, and reports the hits outside the declaring file, inside it, and in the tests. That is what separates `ClashRunOutcome.Ran`, which nothing calls, from `PageCheck.Ran` and `WorkbookCheck.Ran`, which are called and share the name. Once again by fourteen readers, one per area, each grepping src and the XAML itself with a verifier told to refute it. The two readings agree on every member. The script's table and the readers' verdicts are both in the PR body
+- What went outright, 45. The four collections on `ClashRunOutcome`, `RepeatedFailureGuard.Seen` and `Threshold` with the counter behind them, `ClashTestPlan.SkipReasonCounts`, `OpenClashes.All`, `Default` and `Describe`, `BuildStamp.LooksStamped` back as internal, `BundleAssemblies.MissingFrom` with `ReferencesOf` which only it called and `Resolved` with the list it copied, `FolderMemory.IsRemembering`, `GroupRecord.Seconds` with the constructor that took it, `RunLog.Start()` and two `GroupFinished` overloads, `ExchangeReader.ReadFiles`, `SelectionSetDefinition.Guid`, nine members of the report model that went with the Summary sheet, `ClientFormat.DistanceFormat`, `ClientShapes.CoordinatesIn`, `ImageOptions.Statuses`, `WorkbookWriter.ClientColumns` and `Options`, `PageCheck.HeaderColumns`, `ReportOptions.FolderFor`, `ClashReportXml.QuickProperties`, `ContainerNameSettings.Copy`, `OutputNaming.All` and `Copy` with `NamePattern.Copy`, `OutputNameTable.Build` three argument, `ParsedContainerName.SourceName` with the parameter that fed it, `BuildingGroupingResult.Find`, `NwfComparison.Moved` with `Moves` and its `LeafOf`, and in the add-in `ClashRunner.Drift`, `GroupRow.Names`, `ClashHarvest.Into` three argument and `JobOutcome.ReportWarnings` with `AddReportWarning` and its four call sites
+- What went internal rather than out, 64. A member with no caller under src whose only reader is a test that pins a rule the repo states. Deleting it deletes the proof of the rule, so it comes off the public surface instead and the test still reaches it through the `InternalsVisibleTo` the Core project already carries. The reference file holding one batchtest and 1830 tests, 61 distinct locators, linkage none and rules empty in every test, a set name ending in a space, the stamping having run, the picture name round tripping, what the page check and the workbook check report. That boundary is Q26, because it is a reading of the rule and not the rule itself
+- Why `JobOutcome.ReportWarnings` could go without losing anything. The engine added four warnings to it and nothing read the list. Each of the four already reaches the log by another path: two through `log.Block` with the check's own lines, one through the renumbering lines written just above it, one through `log.Failure`. So the list was a second copy of what the log already carries, and the two check methods stopped taking an outcome they no longer read
+- The copies folded into one place. `NwfComparison` stopped working out a move, which `NwfRebuildPlan.From` already does and which the engine reads. `ImageOptions.DefaultStopAfterFailures` reads `RepeatedFailureGuard.DefaultThreshold` rather than typing 50 again. `ImageNaming.LogoName` reads `InstallFiles.LogoName`, because the copy in the report folder is that file. `ScanFindings` reads `BuildingGroup.IsSingleDiscipline`, the rule F35 made. `Samples.Repo` is the one walk up to the checkout, in place of four copies in the report fixtures
+- One cascade worth naming. Deleting `TestReport.OpenUnder` and `NewPlusActive` left `OpenClashes.Of` with no caller, so it went too, and the two choice rule for what counts as still outstanding now has one reader left, the image status filter asking for what Navisworks counts as open. That is a stated rule losing its last output, so it is Q27 rather than a silent deletion
+- `OutputNameRow.ReleaseToPattern` and the five per item properties stay where they are. Q24 and Q25 are unanswered
+- Proved here: the arity check over the whole add-in, every `new` and every static call against the parameter counts declared under src, 0 mismatches, run before and after the add-in edits. The Core project and the test project both build clean with no warning. Core tests before: 905 passed, 37 failed, 33 skipped, 975 total. After: 885 passed, 37 failed, 33 skipped, 955 total. The 20 fewer are the tests deleted with the members they proved, named in the PR body, and the 37 and the 33 are unchanged, so nothing else moved
+- Waits for the local machine: the add-in does not build here. Five add-in files changed, `ClashHarvest`, `ClashRunner`, `FederationEngine`, `JobOutcome` and `GroupRow`, every hunk read twice and the whole diff read again after the edit. Proof is the build, then one run whose log carries the same REPORT CHECK and WORKBOOK CHECK blocks as before
+
+### What remains
+
+- F41 to F45 and F16 in order, then the read of `03_bader_next.md` against the code, then the closing entry
+- Q26 and Q27 for Bader, both raised by this fix
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F40 PR
+2. F41, every handle disposed
+
 ## 2026-09-12 F46, the four the chat audit found
 
 ### What was done

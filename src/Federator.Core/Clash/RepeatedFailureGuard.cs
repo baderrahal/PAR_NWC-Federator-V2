@@ -21,7 +21,6 @@ namespace Federator.Core.Clash
         private readonly int threshold;
         private string firstReason;
         private int consecutive;
-        private int seen;
 
         public RepeatedFailureGuard()
             : this(DefaultThreshold)
@@ -37,18 +36,6 @@ namespace Federator.Core.Clash
             }
 
             this.threshold = threshold;
-        }
-
-        /// <summary>The number of same reason failures in a row that stops the run. A setting.</summary>
-        public int Threshold
-        {
-            get { return threshold; }
-        }
-
-        /// <summary>How many outcomes have been recorded, of either kind.</summary>
-        public int Seen
-        {
-            get { return seen; }
         }
 
         /// <summary>How many failures in a row, all carrying the same reason.</summary>
@@ -81,7 +68,6 @@ namespace Federator.Core.Clash
         /// </summary>
         public void RecordSuccess()
         {
-            seen++;
             consecutive = 0;
             firstReason = null;
         }
@@ -92,8 +78,6 @@ namespace Federator.Core.Clash
         /// </summary>
         public void RecordFailure(string reason)
         {
-            seen++;
-
             string tidied = reason == null ? string.Empty : reason;
 
             if (consecutive > 0 && string.Equals(firstReason, tidied, StringComparison.Ordinal))

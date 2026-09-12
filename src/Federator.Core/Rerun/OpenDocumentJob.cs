@@ -277,7 +277,7 @@ namespace Federator.Core.Rerun
         /// What the window says the run will do, in one line, so a person can read it
         /// before pressing anything.
         /// </summary>
-        public static string Describe(string openPath, string pickedExcelFolder)
+        internal static string Describe(string openPath, string pickedExcelFolder)
         {
             return Describe(openPath, pickedExcelFolder, false);
         }

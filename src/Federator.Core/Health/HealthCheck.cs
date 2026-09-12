@@ -24,7 +24,7 @@ namespace Federator.Core.Health
         /// Checks tests from one file against sets from another, which is how a tests
         /// export and a sets export get paired up.
         /// </summary>
-        public static HealthCheckResult Run(ExchangeDocument tests, ExchangeDocument sets)
+        internal static HealthCheckResult Run(ExchangeDocument tests, ExchangeDocument sets)
         {
             if (tests == null)
             {

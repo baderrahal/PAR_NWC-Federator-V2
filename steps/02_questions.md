@@ -110,3 +110,11 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 25. From the audit of 2026-09-12. Family, type name, material, source file and discipline are read off every clash item and written to no output, because the workbook became the client's one sheet with none of ours on it and the page never carried them. They cost a property lookup per item per run. Delete them and their harvest, or keep them for a workbook column that does not exist yet? See `04_audit.md`, F40 and F45
 
    Answer:
+
+26. From F40 on 2026-09-12. The rule says a public member nothing in src calls is deleted with its tests. Thirty of them are read only by a test that pins a rule the repo states: the reference file holds one batchtest and 1830 tests, 61 distinct locators, linkage none and rules empty in every test, two set names ending in a space, the stamping actually ran, the picture name round trips, the report check names what it found. Deleting the member deletes that proof. F40 made those members `internal` instead, so they are off the public surface and the tests still reach them through the `InternalsVisibleTo` the Core project already carries. Is that the right answer, or should the member and its test both go? See the list in the F40 pull request
+
+   Answer:
+
+27. From F40 on 2026-09-12. The two choice rule for what counts as still outstanding has lost every reader. The Summary and Matrix sheets went, D3 took the window setting, and F40 deleted `OpenClashes.All`, `Default`, `Describe` and `Of` along with `TestReport.OpenUnder` and `NewPlusActive`, which were the last callers. What is left is the enum and `StatusesFor`, which the image status filter reads to ask for what Navisworks counts as open. Should the rule stay in `.claude/rules/core.md` as a rule with one reader, or is the choice gone for good and the bullet with it?
+
+   Answer:

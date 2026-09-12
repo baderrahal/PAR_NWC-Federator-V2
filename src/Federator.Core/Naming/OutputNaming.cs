@@ -42,26 +42,9 @@ namespace Federator.Core.Naming
             return DateTheNwd ? (DateTime?)today : null;
         }
 
-        /// <summary>The three, in the order the window shows them.</summary>
-        public IList<NamePattern> All()
-        {
-            return new List<NamePattern> { Nwf, Nwd, Workbook };
-        }
-
         public static IList<string> Labels()
         {
             return new List<string> { "NWF", "NWD", "Workbook" };
-        }
-
-        public OutputNaming Copy()
-        {
-            return new OutputNaming
-            {
-                Nwf = Nwf.Copy(),
-                Nwd = Nwd.Copy(),
-                Workbook = Workbook.Copy(),
-                DateTheNwd = DateTheNwd
-            };
         }
     }
 }

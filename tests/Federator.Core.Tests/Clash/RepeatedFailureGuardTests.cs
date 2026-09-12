@@ -33,7 +33,6 @@ namespace Federator.Core.Tests
         public void TheDefaultIsFifty()
         {
             Assert.That(RepeatedFailureGuard.DefaultThreshold, Is.EqualTo(50));
-            Assert.That(new RepeatedFailureGuard().Threshold, Is.EqualTo(50));
         }
 
         [Test]
@@ -66,8 +65,6 @@ namespace Federator.Core.Tests
         public void TheThresholdIsASetting()
         {
             RepeatedFailureGuard guard = new RepeatedFailureGuard(3);
-
-            Assert.That(guard.Threshold, Is.EqualTo(3));
 
             guard.RecordFailure(Disposed);
             guard.RecordFailure(Disposed);
@@ -154,7 +151,6 @@ namespace Federator.Core.Tests
             RepeatedFailureGuard guard = new RepeatedFailureGuard();
 
             Assert.That(guard.ShouldStopTheRun, Is.False);
-            Assert.That(guard.Seen, Is.EqualTo(0));
             Assert.That(guard.Consecutive, Is.EqualTo(0));
         }
 

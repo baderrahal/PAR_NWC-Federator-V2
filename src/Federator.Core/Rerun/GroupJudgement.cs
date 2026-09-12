@@ -58,7 +58,7 @@ namespace Federator.Core.Rerun
         /// step still fail, and one slot would have kept whichever wrote to it last and
         /// silently lost the other.
         /// </summary>
-        public IList<string> Errors
+        internal IList<string> Errors
         {
             get { return errors; }
         }

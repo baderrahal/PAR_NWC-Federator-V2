@@ -48,6 +48,29 @@ namespace Federator.Core.Tests
             return Resolve(InfraNames);
         }
 
+        /// <summary>
+        /// The checkout itself, found the same way the samples folder is. The fixtures
+        /// that read the client's exports and the stylesheet need the root rather than
+        /// the samples folder, and this is the one place that walk is written.
+        /// </summary>
+        public static string Repo()
+        {
+            DirectoryInfo directory = new DirectoryInfo(
+                Path.GetDirectoryName(new Uri(typeof(Samples).Assembly.CodeBase).LocalPath));
+
+            while (directory != null)
+            {
+                if (File.Exists(Path.Combine(directory.FullName, "ParsonsNwcFederator.sln")))
+                {
+                    return directory.FullName;
+                }
+
+                directory = directory.Parent;
+            }
+
+            return null;
+        }
+
         public static string Folder()
         {
             string start = Path.GetDirectoryName(new Uri(typeof(Samples).Assembly.CodeBase).LocalPath);

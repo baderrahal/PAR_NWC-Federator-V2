@@ -44,7 +44,11 @@ namespace Federator.Core.Report
         /// both supplied reports have it. Named here so a count of the pictures this tool
         /// rendered can leave it out, because it was copied rather than made.
         /// </summary>
-        public const string LogoName = "logo.jpg";
+        /// <summary>
+        /// The same name the install ships it under, read off InstallFiles rather than
+        /// typed again, because the copy in the report folder is that file.
+        /// </summary>
+        public const string LogoName = InstallFiles.LogoName;
 
         /// <summary>Where the logo is copied to, beside the clash pictures.</summary>
         public static string LogoPathFor(string workbookPath)
@@ -138,7 +142,7 @@ namespace Federator.Core.Report
         /// Reads a name back into the two numbers, or returns false. Here so a test can
         /// prove the numbering round trips rather than only that it prints.
         /// </summary>
-        public static bool TryRead(string fileName, out int testIndex, out int clashIndex)
+        internal static bool TryRead(string fileName, out int testIndex, out int clashIndex)
         {
             testIndex = 0;
             clashIndex = 0;

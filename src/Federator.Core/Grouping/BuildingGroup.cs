@@ -113,7 +113,7 @@ namespace Federator.Core.Grouping
 
         public ReadOnlyCollection<ParsedContainerName> Files { get; private set; }
 
-        public int FileCount
+        internal int FileCount
         {
             get { return Files.Count; }
         }
@@ -145,14 +145,14 @@ namespace Federator.Core.Grouping
         /// <summary>Buildings whose files disagreed, reported by name with the reason.</summary>
         public ReadOnlyCollection<SkippedBuildingGroup> Skipped { get; private set; }
 
-        public ReadOnlyCollection<ParsedContainerName> Unreadable { get; private set; }
+        internal ReadOnlyCollection<ParsedContainerName> Unreadable { get; private set; }
 
-        public int GroupCount
+        internal int GroupCount
         {
             get { return Groups.Count; }
         }
 
-        public BuildingGroup Find(string building)
+        internal BuildingGroup Find(string building)
         {
             if (building == null)
             {
@@ -170,7 +170,7 @@ namespace Federator.Core.Grouping
             return null;
         }
 
-        public SkippedBuildingGroup FindSkipped(string building)
+        internal SkippedBuildingGroup FindSkipped(string building)
         {
             if (building == null)
             {

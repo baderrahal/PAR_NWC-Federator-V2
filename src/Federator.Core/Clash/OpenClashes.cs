@@ -24,44 +24,12 @@ namespace Federator.Core.Clash
 
     public static class OpenClashes
     {
-        public const OpenClashCount Default = OpenClashCount.NavisworksOpen;
-
-        public static OpenClashCount[] All()
-        {
-            return new[] { OpenClashCount.NavisworksOpen, OpenClashCount.NewAndActive };
-        }
-
         /// <summary>The statuses one choice counts. Read once, used everywhere.</summary>
         public static ClashStatus[] StatusesFor(OpenClashCount which)
         {
             return which == OpenClashCount.NewAndActive
                 ? new[] { ClashStatus.New, ClashStatus.Active }
                 : new[] { ClashStatus.New, ClashStatus.Active, ClashStatus.Reviewed };
-        }
-
-        public static int Of(ClashTally tally, OpenClashCount which)
-        {
-            if (tally == null)
-            {
-                return 0;
-            }
-
-            int open = 0;
-
-            foreach (ClashStatus status in StatusesFor(which))
-            {
-                open += tally.Of(status);
-            }
-
-            return open;
-        }
-
-        /// <summary>The words for the choice, for the window and the log.</summary>
-        public static string Describe(OpenClashCount which)
-        {
-            return which == OpenClashCount.NewAndActive
-                ? "New plus Active"
-                : "New plus Active plus Reviewed, which is what Navisworks counts as open";
         }
     }
 }

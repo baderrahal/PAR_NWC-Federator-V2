@@ -158,12 +158,10 @@ namespace Federator.Addin.Engine
         /// </summary>
         public bool CompactResolved { get; set; }
 
-        /// <summary>Everything the file and the document disagree about, by test name.</summary>
-        public IList<TestDifference> Drift
-        {
-            get { return drift; }
-        }
-
+        /// <summary>
+        /// Everything the file and the document disagree about, by test name. Read inside
+        /// this class for the DRIFT block and nowhere else.
+        /// </summary>
         private readonly List<TestDifference> drift = new List<TestDifference>();
 
         /// <summary>How many tests already in the document were compared against the file.</summary>

@@ -75,7 +75,7 @@ namespace Federator.Core.Report
         public string LogoHref { get; set; }
 
         /// <summary>The stylesheets the shape was read from, named so the claim is checkable.</summary>
-        public static readonly string[] ShapeReadFrom =
+        internal static readonly string[] ShapeReadFrom =
         {
             "clash_report_html.xsl",
             "clash_report_html_tabular.xsl",
@@ -83,7 +83,7 @@ namespace Federator.Core.Report
         };
 
         /// <summary>Elements this tool fills.</summary>
-        public static readonly string[] Filled =
+        internal static readonly string[] Filled =
         {
             "exchange", "batchtest", "clashtests", "clashtest", "summary", "clashresults",
             "clashgroup", "clashresult", "resultstatus", "clashpoint", "pos3f",
@@ -95,7 +95,7 @@ namespace Federator.Core.Report
         /// Elements of that shape this tool leaves out, because it holds nothing to put in
         /// them. Left out rather than written empty.
         /// </summary>
-        public static readonly string[] LeftOut =
+        internal static readonly string[] LeftOut =
         {
             "approveddate", "approvedby", "assignedto", "parentgroup", "comments",
             "pathlink", "clashtasklink", "starttime", "endtime", "taskname", "tasklink",
@@ -332,7 +332,7 @@ namespace Federator.Core.Report
 
 
         /// <summary>What was filled and what was left out, for the log and the report.</summary>
-        public static IList<string> Explain()
+        internal static IList<string> Explain()
         {
             List<string> lines = new List<string>();
 

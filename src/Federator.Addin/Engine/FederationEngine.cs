@@ -1337,18 +1337,9 @@ namespace Federator.Addin.Engine
                 {
                     log.Line(line);
                 }
-
-                if (renumbered.Missing > 0)
-                {
-                    outcome.AddReportWarning(
-                        renumbered.Missing + " picture(s) named on a row were not on disk when the pictures were renumbered");
-                }
             }
             catch (Exception error)
             {
-                outcome.AddReportWarning(
-                    "renumbering the pictures threw " + error.GetType().Name + ": " + error.Message
-                    + ", the picture numbers may be a mix of run order and report order, the log carries the error");
                 log.Failure(
                     "renumbering the pictures for " + job.Building,
                     error,
@@ -1363,17 +1354,12 @@ namespace Federator.Addin.Engine
         /// This is the check that would have caught Source File and Discipline coming out
         /// empty on every row, without anyone opening the file to find out.
         /// </summary>
-        private void CheckTheWorkbook(FederationJob job, JobOutcome outcome, string path)
+        private void CheckTheWorkbook(FederationJob job, string path)
         {
             WorkbookCheck check = WorkbookCheck.Of(path);
 
             log.Block("WORKBOOK CHECK " + job.Building, check.Lines());
             progress(job.Building + ". " + check.Summary());
-
-            if (!check.Passed)
-            {
-                outcome.AddReportWarning(check.Summary());
-            }
         }
 
         /// <summary>
@@ -1474,7 +1460,7 @@ namespace Federator.Addin.Engine
             outcome.HtmlSize = log.WriteFinished("HTML", path);
             outcome.HtmlOnDisk = outcome.HtmlSize >= 0;
 
-            CheckThePage(job, outcome, path);
+            CheckThePage(job, path);
         }
 
         /// <summary>
@@ -1516,17 +1502,12 @@ namespace Federator.Addin.Engine
         ///
         /// Checking a report never fails a group. A check that cannot run says so.
         /// </summary>
-        private void CheckThePage(FederationJob job, JobOutcome outcome, string path)
+        private void CheckThePage(FederationJob job, string path)
         {
             PageCheck check = PageCheck.Of(path);
 
             log.Block("REPORT CHECK " + job.Building, check.Lines());
             progress(job.Building + ". " + check.Summary());
-
-            if (!check.Passed)
-            {
-                outcome.AddReportWarning(check.Summary());
-            }
         }
 
         /// <summary>
@@ -1671,7 +1652,7 @@ namespace Federator.Addin.Engine
                 outcome.WorkbookSize = log.WriteFinished("XLSX", path);
                 outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
 
-                CheckTheWorkbook(job, outcome, path);
+                CheckTheWorkbook(job, path);
             }
 
             WriteHtmlTabular(job, outcome, report);

@@ -113,7 +113,7 @@ namespace Federator.Core.Naming
             Today = DateTime.Today;
         }
 
-        public ReadOnlyCollection<OutputNameRow> Rows
+        internal ReadOnlyCollection<OutputNameRow> Rows
         {
             get { return new ReadOnlyCollection<OutputNameRow>(rows); }
         }
@@ -231,12 +231,6 @@ namespace Federator.Core.Naming
         private DateTime? DateFor(OutputNaming naming, OutputKind kind)
         {
             return kind == OutputKind.Nwd ? naming.NwdDate(Today) : null;
-        }
-
-        public static string Build(
-            NamePattern pattern, BuildingGroup group, ContainerNameSettings settings)
-        {
-            return Build(pattern, group, settings, null);
         }
 
         public static string Build(

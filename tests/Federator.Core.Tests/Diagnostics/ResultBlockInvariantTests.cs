@@ -62,7 +62,7 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
-                log.GroupFinished("1C07BC", GroupOutcome.Failed, 1.0, "the NWF is not on disk");
+                log.GroupFinished("1C07BC", GroupOutcome.Failed, 1.0, "the NWF is not on disk", null);
 
                 Assert.That(log.CountOf(GroupOutcome.Failed), Is.EqualTo(1));
 
@@ -86,7 +86,8 @@ namespace Federator.Core.Tests
                 for (int i = 0; i < 22; i++)
                 {
                     log.GroupFinished(
-                        "1B06P" + i, GroupOutcome.Failed, 1.0, "the NWD was requested and is not on disk");
+                        "1B06P" + i, GroupOutcome.Failed, 1.0,
+                        "the NWD was requested and is not on disk", null);
                 }
 
                 log.WriteResultBlock();
@@ -107,7 +108,7 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
-                log.GroupFinished("1C07BC", GroupOutcome.Failed, 1.0);
+                log.GroupFinished("1C07BC", GroupOutcome.Failed, 1.0, null, null);
 
                 Assert.That(log.FailedGroups.Count, Is.EqualTo(1));
                 Assert.That(log.FailedGroups[0].Reason, Is.Not.Null.And.Not.Empty);
@@ -126,10 +127,10 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
-                log.GroupFinished("a", GroupOutcome.Done, 1.0);
-                log.GroupFinished("b", GroupOutcome.Partial, 1.0, "one file did not append");
-                log.GroupFinished("c", GroupOutcome.Failed, 1.0, "nothing appended");
-                log.GroupFinished("d", GroupOutcome.Failed, 1.0, "the NWF is not on disk");
+                log.GroupFinished("a", GroupOutcome.Done, 1.0, null, null);
+                log.GroupFinished("b", GroupOutcome.Partial, 1.0, "one file did not append", null);
+                log.GroupFinished("c", GroupOutcome.Failed, 1.0, "nothing appended", null);
+                log.GroupFinished("d", GroupOutcome.Failed, 1.0, "the NWF is not on disk", null);
 
                 Assert.That(log.CountOf(GroupOutcome.Failed), Is.EqualTo(log.FailedGroups.Count),
                     "the count and the list came from different places");
@@ -153,8 +154,8 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
-                log.GroupFinished("a", GroupOutcome.Done, 1.0);
-                log.GroupFinished("b", GroupOutcome.Done, 1.0);
+                log.GroupFinished("a", GroupOutcome.Done, 1.0, null, null);
+                log.GroupFinished("b", GroupOutcome.Done, 1.0, null, null);
 
                 log.WriteResultBlock();
                 string text = ReadWhileOpen(log);
@@ -172,7 +173,7 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
-                log.GroupFinished("1C07BC", GroupOutcome.Partial, 1.0, "1 of 4 files did not append");
+                log.GroupFinished("1C07BC", GroupOutcome.Partial, 1.0, "1 of 4 files did not append", null);
 
                 log.WriteResultBlock();
                 string text = ReadWhileOpen(log);
@@ -191,7 +192,7 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
-                log.GroupFinished("1C07BC", GroupOutcome.Failed, 1.0, "nothing appended");
+                log.GroupFinished("1C07BC", GroupOutcome.Failed, 1.0, "nothing appended", null);
                 log.Failure("saving the NWF", new InvalidOperationException("locked"), "carried on");
 
                 log.WriteResultBlock();
@@ -210,7 +211,7 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
-                log.GroupFinished("1C07BC", GroupOutcome.Done, 1.0);
+                log.GroupFinished("1C07BC", GroupOutcome.Done, 1.0, null, null);
                 log.Failure("copying the log", new IOException("no such drive"), "carried on");
 
                 log.WriteResultBlock();

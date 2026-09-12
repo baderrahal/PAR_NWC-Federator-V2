@@ -12,7 +12,7 @@ namespace Federator.Core.Naming
     /// </summary>
     public static class ContainerName
     {
-        public static ParsedContainerName Parse(string name)
+        internal static ParsedContainerName Parse(string name)
         {
             return Parse(name, new ContainerNameSettings());
         }
@@ -28,14 +28,14 @@ namespace Federator.Core.Naming
 
             if (name == null)
             {
-                return ParsedContainerName.Unreadable(null, null, null, "The name was null.");
+                return ParsedContainerName.Unreadable(null, null, "The name was null.");
             }
 
             string stem = Stem(name);
 
             if (stem.Length == 0)
             {
-                return ParsedContainerName.Unreadable(name, stem, null, "The name was empty.");
+                return ParsedContainerName.Unreadable(stem, null, "The name was empty.");
             }
 
             List<string> parts = new List<string>(stem.Split(settings.Separator));
@@ -43,7 +43,6 @@ namespace Federator.Core.Naming
             if (parts.Count < settings.MinimumParts)
             {
                 return ParsedContainerName.Unreadable(
-                    name,
                     stem,
                     parts,
                     "Split on " + Quoted(settings.Separator) + " gave " + parts.Count + " parts, and "
@@ -64,10 +63,10 @@ namespace Federator.Core.Naming
 
             if (empty != null)
             {
-                return ParsedContainerName.Unreadable(name, stem, parts, empty);
+                return ParsedContainerName.Unreadable(stem, parts, empty);
             }
 
-            return ParsedContainerName.Readable(name, stem, parts, project, originator, building, discipline);
+            return ParsedContainerName.Readable(stem, parts, project, originator, building, discipline);
         }
 
         private static string FirstEmpty(int[] positions, string[] values, string[] labels)

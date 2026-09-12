@@ -176,8 +176,8 @@ namespace Federator.Core.Tests
             foreach (TestReport test in report.Tests)
             {
                 Assert.That(test.HasSheet, Is.False, "nothing ran, so nothing has a sheet");
-                Assert.That(test.DescribeState(), Does.Contain("one discipline"));
-                Assert.That(test.DescribeState(), Does.Contain("skipped, not run"));
+                Assert.That(test.State, Is.EqualTo(TestState.Skipped));
+                Assert.That(test.SkippedReason, Does.Contain("one discipline"));
             }
         }
 

@@ -7,17 +7,11 @@ namespace Federator.Core.Diagnostics
     /// </summary>
     public sealed class GroupRecord
     {
-        internal GroupRecord(string building, GroupOutcome outcome, double seconds, string reason)
-            : this(building, outcome, seconds, reason, null)
-        {
-        }
-
         internal GroupRecord(
-            string building, GroupOutcome outcome, double seconds, string reason, string runPath)
+            string building, GroupOutcome outcome, string reason, string runPath)
         {
             Building = building;
             Outcome = outcome;
-            Seconds = seconds;
             Reason = reason;
             RunPath = runPath;
         }
@@ -31,8 +25,6 @@ namespace Federator.Core.Diagnostics
         public string RunPath { get; private set; }
 
         public GroupOutcome Outcome { get; private set; }
-
-        public double Seconds { get; private set; }
 
         /// <summary>Never null or empty when Outcome is Failed.</summary>
         public string Reason { get; private set; }

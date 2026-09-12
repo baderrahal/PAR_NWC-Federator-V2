@@ -108,7 +108,7 @@ namespace Federator.Core.Report
         public ContainerNameSettings Names { get; set; }
 
         /// <summary>The folder for this run, given where the NWF files are going.</summary>
-        public string FolderFor(string nwfFolder)
+        internal string FolderFor(string nwfFolder)
         {
             return ChooseFor(nwfFolder).Folder;
         }

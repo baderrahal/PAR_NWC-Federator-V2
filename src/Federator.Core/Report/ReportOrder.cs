@@ -38,7 +38,7 @@ namespace Federator.Core.Report
         /// Every clash in report order: tests as above, and inside each test the rows in
         /// the order Clash Detective listed them.
         /// </summary>
-        public static IList<ClashRow> Rows(ClashReport report)
+        internal static IList<ClashRow> Rows(ClashReport report)
         {
             List<ClashRow> rows = new List<ClashRow>();
 
@@ -92,7 +92,7 @@ namespace Federator.Core.Report
         }
 
         /// <summary>The number one pictured row should carry, or null for a row with no picture.</summary>
-        public static PictureNumber PictureNumberFor(ClashReport report, ClashRow row)
+        internal static PictureNumber PictureNumberFor(ClashReport report, ClashRow row)
         {
             foreach (PictureNumber number in PictureNumbers(report))
             {
@@ -270,7 +270,7 @@ namespace Federator.Core.Report
         /// <summary>Rows that carry a picture name and whose file was not on disk.</summary>
         public int Missing { get; internal set; }
 
-        public IList<string> Problems
+        internal IList<string> Problems
         {
             get { return problems; }
         }

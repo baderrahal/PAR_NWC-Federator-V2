@@ -37,7 +37,7 @@ namespace Federator.Core.Report
         /// True when Excel will accept this exactly as it stands. Everything this tool
         /// generates has to pass this, which is what the tests assert.
         /// </summary>
-        public static bool IsAcceptable(string name)
+        internal static bool IsAcceptable(string name)
         {
             if (string.IsNullOrEmpty(name) || name.Length > MaxLength)
             {
@@ -62,7 +62,7 @@ namespace Federator.Core.Report
         /// unchecked would throw at the point of writing and lose the whole workbook, so
         /// this is the floor the one sheet name goes through.
         /// </summary>
-        public static string Sanitise(string name)
+        internal static string Sanitise(string name)
         {
             return Sanitise(name, "Sheet");
         }

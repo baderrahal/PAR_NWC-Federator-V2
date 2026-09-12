@@ -62,12 +62,6 @@ namespace Federator.Addin.Ui
         /// <summary>How many disciplines the scan found in this group, handed on to the job.</summary>
         public int DisciplineCount { get; private set; }
 
-        /// <summary>The row in the name table this shows, or null for a blocked group.</summary>
-        public OutputNameRow Names
-        {
-            get { return names; }
-        }
-
         public string NwfName
         {
             get { return NameOf(OutputKind.Nwf); }

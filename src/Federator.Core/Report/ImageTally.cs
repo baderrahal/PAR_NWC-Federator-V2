@@ -27,7 +27,7 @@ namespace Federator.Core.Report
         private double quickest = double.MaxValue;
 
         /// <summary>How many pictures were written.</summary>
-        public int Written
+        internal int Written
         {
             get { return written; }
         }
@@ -39,13 +39,13 @@ namespace Federator.Core.Report
         }
 
         /// <summary>Clashes passed over because the test had hit its cap.</summary>
-        public int SkippedByCap
+        internal int SkippedByCap
         {
             get { return skippedByCap; }
         }
 
         /// <summary>Clashes passed over because their status is not one that gets a picture.</summary>
-        public int SkippedByStatus
+        internal int SkippedByStatus
         {
             get { return skippedByStatus; }
         }
@@ -55,7 +55,7 @@ namespace Federator.Core.Report
             get { return seconds; }
         }
 
-        public long TotalBytes
+        internal long TotalBytes
         {
             get { return bytes; }
         }
@@ -71,7 +71,7 @@ namespace Federator.Core.Report
             get { return written == 0 ? 0.0 : seconds / written; }
         }
 
-        public double Slowest
+        internal double Slowest
         {
             get { return slowest; }
         }

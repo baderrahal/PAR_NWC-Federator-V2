@@ -20,7 +20,6 @@ namespace Federator.Core.Tests
         }
 
         private static readonly string Incoming = @"C:\models\incoming";
-        private static readonly string Elsewhere = @"C:\models\archive";
 
         private static string[] Group(params string[] names)
         {
@@ -163,7 +162,6 @@ namespace Federator.Core.Tests
             Assert.That(comparison.Added, Is.EqualTo(new[] { In(Incoming, El) }));
             Assert.That(comparison.Removed, Is.EqualTo(new[] { In(Incoming, Me) }));
             Assert.That(comparison.Unchanged.Count, Is.EqualTo(2));
-            Assert.That(comparison.Moved.Count, Is.EqualTo(0), "different names, so not a move");
         }
 
         [Test]
@@ -182,19 +180,6 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain("CHANGED"));
             Assert.That(all, Does.Not.Contain("left exactly as it is"));
             Assert.That(all, Does.Contain("2 unchanged, 1 added, 1 removed, so it is rebuilt from the scan folder"));
-        }
-
-        [Test]
-        public void AFileThatKeptItsNameAndChangedFolderIsCalledOutAsAMove()
-        {
-            NwfComparison comparison = NwfComparison.Compare(
-                new[] { In(Incoming, Ar) },
-                new[] { In(Elsewhere, Ar) });
-
-            Assert.That(comparison.Decision, Is.EqualTo(RerunDecision.Changed));
-            Assert.That(comparison.Added.Count, Is.EqualTo(1));
-            Assert.That(comparison.Removed.Count, Is.EqualTo(1));
-            Assert.That(comparison.Moved, Is.EqualTo(new[] { Ar }));
         }
 
         [Test]

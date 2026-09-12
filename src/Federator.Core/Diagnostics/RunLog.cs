@@ -100,11 +100,6 @@ namespace Federator.Core.Diagnostics
             return System.IO.Path.Combine(System.IO.Path.Combine(local, AppFolderName), LogsFolderName);
         }
 
-        public static RunLog Start()
-        {
-            return Start(DefaultLogFolder(), DateTime.Now);
-        }
-
         /// <summary>
         /// Opens the log and never throws. The fixed folder is tried first, then the temp
         /// folder. If neither can be opened the log carries on with nothing behind it, so
@@ -114,11 +109,6 @@ namespace Federator.Core.Diagnostics
         public static RunLog StartOrDisabled()
         {
             return StartOrDisabled(DefaultLogFolder(), DateTime.Now, DefaultKeepLogs);
-        }
-
-        public static RunLog StartOrDisabled(string preferredFolder, DateTime startedAt)
-        {
-            return StartOrDisabled(preferredFolder, startedAt, DefaultKeepLogs);
         }
 
         public static RunLog StartOrDisabled(string preferredFolder, DateTime startedAt, int keepLogs)
@@ -487,29 +477,17 @@ namespace Federator.Core.Diagnostics
             }
         }
 
-        public void GroupFinished(string building, GroupOutcome outcome, double seconds)
-        {
-            GroupFinished(building, outcome, seconds, null);
-        }
-
         /// <summary>
-        /// Records how one group ended, with the reason when it did not end cleanly.
+        /// Records how one group ended, with the reason when it did not end cleanly, and
+        /// the GROUP finished line that carries which of the two workflows it took, in the
+        /// words of Federator.Core.Rerun.RunPath. The label goes on the line and into the
+        /// RESULT block totals, so a log alone shows how many groups took each path. Null
+        /// where the caller does not know, and then no path is written.
         ///
         /// A group recorded as Failed always carries a reason. When the caller gives none
         /// one is substituted rather than thrown over, because logging must never be the
         /// thing that stops a run, and a substituted reason still keeps the RESULT block
         /// honest by naming the group and saying the reason is missing.
-        /// </summary>
-        public void GroupFinished(string building, GroupOutcome outcome, double seconds, string reason)
-        {
-            GroupFinished(building, outcome, seconds, reason, null);
-        }
-
-        /// <summary>
-        /// The GROUP finished line, carrying which of the two workflows the group took,
-        /// in the words of Federator.Core.Rerun.RunPath. The label goes on the line and
-        /// into the RESULT block totals, so a log alone shows how many groups took each
-        /// path. Null where the caller does not know, and then no path is written.
         /// </summary>
         public void GroupFinished(
             string building, GroupOutcome outcome, double seconds, string reason, string runPath)
@@ -523,7 +501,7 @@ namespace Federator.Core.Diagnostics
 
             lock (gate)
             {
-                groupRecords.Add(new GroupRecord(building, outcome, seconds, recorded, runPath));
+                groupRecords.Add(new GroupRecord(building, outcome, recorded, runPath));
             }
 
             Line("GROUP    finished " + building + "  " + outcome.ToString().ToUpperInvariant()

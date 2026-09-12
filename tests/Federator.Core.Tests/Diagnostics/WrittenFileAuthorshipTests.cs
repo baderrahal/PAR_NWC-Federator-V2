@@ -107,7 +107,7 @@ namespace Federator.Core.Tests
                 log.Failure("federating 1C07BC", new InvalidOperationException("would not open"), "carried on");
                 log.CheckOnDisk("NWF", nwf);
                 log.CheckOnDisk("NWD", nwd);
-                log.GroupFinished("1C07BC", GroupOutcome.Failed, 1.0, "would not open");
+                log.GroupFinished("1C07BC", GroupOutcome.Failed, 1.0, "would not open", null);
 
                 log.WriteResultBlock();
                 string text = ReadWhileOpen(log);

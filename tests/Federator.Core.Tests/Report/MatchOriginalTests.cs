@@ -22,23 +22,6 @@ namespace Federator.Core.Tests
     {
         private const string Root = "lcop_selection_set_tree";
 
-        private static string RepoRoot()
-        {
-            DirectoryInfo at = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
-
-            while (at != null)
-            {
-                if (File.Exists(Path.Combine(at.FullName, "ParsonsNwcFederator.sln")))
-                {
-                    return at.FullName;
-                }
-
-                at = at.Parent;
-            }
-
-            return null;
-        }
-
         /// <summary>Every test block of one export, name and clash count, in page order.</summary>
         private static IList<KeyValuePair<string, int>> BlocksOf(string path)
         {
@@ -117,7 +100,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheirTieRuleIsTheOrderTheTestsWereCreatedInAndNotTheName()
         {
-            string repo = RepoRoot();
+            string repo = Samples.Repo();
 
             if (repo == null)
             {
@@ -195,7 +178,7 @@ namespace Federator.Core.Tests
         [Test]
         public void OurOrderReproducesTheirsBlockForBlock()
         {
-            string repo = RepoRoot();
+            string repo = Samples.Repo();
 
             if (repo == null)
             {
@@ -244,7 +227,7 @@ namespace Federator.Core.Tests
 
         private static IList<string> Exports()
         {
-            string repo = RepoRoot();
+            string repo = Samples.Repo();
 
             if (repo == null)
             {

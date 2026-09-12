@@ -89,7 +89,7 @@ namespace Federator.Core.Report
         }
 
         /// <summary>Why a report is not built at all, or null when one is.</summary>
-        public string ReportSkipReason
+        internal string ReportSkipReason
         {
             get { return BuildReport ? null : NotWanted; }
         }

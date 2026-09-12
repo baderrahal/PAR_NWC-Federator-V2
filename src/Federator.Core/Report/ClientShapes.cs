@@ -129,27 +129,5 @@ namespace Federator.Core.Report
         {
             return LooksLikeAMeasurement(cell);
         }
-
-        /// <summary>
-        /// Every coordinate in a clash point cell, so each can be checked on its own.
-        /// Returns an empty array where the cell is not that shape at all.
-        /// </summary>
-        public static string[] CoordinatesIn(string cell)
-        {
-            if (!LooksLikeAClashPoint(cell))
-            {
-                return new string[0];
-            }
-
-            MatchCollection found = Regex.Matches(cell, @"[xyz]:(-?\d+(?:\.\d+)?)");
-            string[] values = new string[found.Count];
-
-            for (int i = 0; i < found.Count; i++)
-            {
-                values[i] = found[i].Groups[1].Value;
-            }
-
-            return values;
-        }
     }
 }

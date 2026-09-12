@@ -87,12 +87,12 @@ namespace Federator.Core.Findings
             get { return All.Count > 0; }
         }
 
-        public int Count
+        internal int Count
         {
             get { return All.Count; }
         }
 
-        public IList<ScanFinding> OfKind(FindingKind kind)
+        internal IList<ScanFinding> OfKind(FindingKind kind)
         {
             List<ScanFinding> found = new List<ScanFinding>();
 
@@ -107,7 +107,7 @@ namespace Federator.Core.Findings
             return found;
         }
 
-        public static SourceMismatchFindings From(IEnumerable<SourcePair> pairs)
+        internal static SourceMismatchFindings From(IEnumerable<SourcePair> pairs)
         {
             return From(pairs, new ContainerNameSettings());
         }

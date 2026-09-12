@@ -87,26 +87,6 @@ namespace Federator.Core.Clash
             return StoppedReason;
         }
 
-        public ReadOnlyCollection<ClashTestResult> Ran
-        {
-            get { return new ReadOnlyCollection<ClashTestResult>(ran); }
-        }
-
-        public ReadOnlyCollection<SkippedClashTest> Skipped
-        {
-            get { return new ReadOnlyCollection<SkippedClashTest>(skipped); }
-        }
-
-        public ReadOnlyCollection<string> Created
-        {
-            get { return new ReadOnlyCollection<string>(created); }
-        }
-
-        public ReadOnlyCollection<string> AlreadyPresent
-        {
-            get { return new ReadOnlyCollection<string>(alreadyPresent); }
-        }
-
         public void AddCreated(string name)
         {
             created.Add(name);

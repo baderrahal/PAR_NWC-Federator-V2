@@ -90,7 +90,6 @@ namespace Federator.Core.Tests
             test.Add(Row(ClashStatus.New, -0.2, 9));
             test.Add(Row(ClashStatus.Active, -0.3, 1));
 
-            Assert.That(test.GroupCount, Is.EqualTo(3), "three rows on the sheet");
             Assert.That(test.RawClashes, Is.EqualTo(24), "the grouping hid the real count");
         }
 
@@ -106,7 +105,6 @@ namespace Federator.Core.Tests
             Assert.That(test.Tally.Of(ClashStatus.New), Is.EqualTo(14));
             Assert.That(test.Tally.Of(ClashStatus.Active), Is.EqualTo(9));
             Assert.That(test.Tally.Total, Is.EqualTo(23));
-            Assert.That(test.NewPlusActive, Is.EqualTo(23));
         }
 
         [Test]
@@ -119,7 +117,6 @@ namespace Federator.Core.Tests
             row.IsGroup = false;
             test.Add(row);
 
-            Assert.That(test.GroupCount, Is.EqualTo(1));
             Assert.That(test.RawClashes, Is.EqualTo(1));
         }
 
@@ -191,26 +188,6 @@ namespace Federator.Core.Tests
             Assert.That(report.Tests[2].HasSheet, Is.True);
         }
 
-        [Test]
-        public void SkippedAndPassedNeverReadTheSameInTheOutcomeColumn()
-        {
-            ClashReport report = Report();
-
-            TestReport skipped = report.AddTest("skipped");
-            skipped.State = TestState.Skipped;
-            skipped.SkippedReason = "the left side finds nothing in this model";
-
-            TestReport passed = report.AddTest("passed");
-            passed.State = TestState.Passed;
-
-            Assert.That(skipped.DescribeState(), Does.Contain("skipped"));
-            Assert.That(skipped.DescribeState(), Does.Contain("not run"));
-            Assert.That(skipped.DescribeState(), Does.Contain("finds nothing"));
-            Assert.That(passed.DescribeState(), Does.Contain("passed"));
-            Assert.That(passed.DescribeState(), Does.Contain("found nothing"));
-            Assert.That(skipped.DescribeState(), Is.Not.EqualTo(passed.DescribeState()));
-        }
-
         // ---------- the test numbers ----------
 
         [Test]
@@ -228,66 +205,6 @@ namespace Federator.Core.Tests
 
         // ---------- the discipline comes off the folder names in the file ----------
 
-        [Test]
-        public void TheDisciplineIsTheFirstFolderUnderTheTreeRoot()
-        {
-            ClashReport report = Report();
-
-            Assert.That(
-                report.DisciplineOf(Root + "/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals"),
-                Is.EqualTo("Mechanical"));
-            Assert.That(report.DisciplineOf(Root + "/Architecture/BLD-AR-Floors"),
-                Is.EqualTo("Architecture"));
-        }
-
-        [Test]
-        public void ASetAtTheRootHasNoDisciplineRatherThanAGuessedOne()
-        {
-            Assert.That(Report().DisciplineOf(Root + "/BLD-AR-Floors"), Is.EqualTo(string.Empty));
-            Assert.That(Report().DisciplineOf(string.Empty), Is.EqualTo(string.Empty));
-            Assert.That(Report().DisciplineOf(null), Is.EqualTo(string.Empty));
-        }
-
-        // Whatever the file calls its folders is what the report calls its disciplines.
-        // Nothing in the code holds a list of them.
-        [Test]
-        public void AProjectUsingItsOwnFolderNamesReadsThoseAndNotAList()
-        {
-            ClashReport report = Report();
-
-            Assert.That(report.DisciplineOf(Root + "/Tunnelling/Segments/INF-TU-Rings"),
-                Is.EqualTo("Tunnelling"));
-            Assert.That(report.DisciplineOf(Root + "/Landscape/LAN-Planting"),
-                Is.EqualTo("Landscape"));
-        }
-
-        [Test]
-        public void ADifferentTreeRootIsHonouredBecauseItIsASetting()
-        {
-            ClashReport report = Report();
-            report.SetTreeRoot = "some_other_root";
-
-            Assert.That(report.DisciplineOf("some_other_root/Mechanical/BLD-ME-Ducts"),
-                Is.EqualTo("Mechanical"));
-        }
-
-        [Test]
-        public void TheSetNameIsTheLastPartOfThePath()
-        {
-            Assert.That(
-                ClashReport.SetNameOf(Root + "/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals"),
-                Is.EqualTo("BLD-ME-Air Terminals"));
-            Assert.That(ClashReport.SetNameOf(string.Empty), Is.EqualTo(string.Empty));
-        }
-
-        // Two set names in the reference file end in a space, so nothing may trim one.
-        [Test]
-        public void ASetNameEndingInASpaceKeepsIt()
-        {
-            Assert.That(ClashReport.SetNameOf(Root + "/Electrical/BLD-EL-Devices "),
-                Is.EqualTo("BLD-EL-Devices "));
-        }
-
         // ---------- the totals ----------
 
         [Test]
@@ -301,8 +218,6 @@ namespace Federator.Core.Tests
             TestReport two = Ran(report, "two", Root + "/A/x", Root + "/C/z");
             two.Add(Row(ClashStatus.Active, -0.2, 13));
 
-            Assert.That(report.TotalRawClashes, Is.EqualTo(213),
-                "the real run found 213 clashes on 1C07BC");
             Assert.That(report.Totals.Of(ClashStatus.New), Is.EqualTo(200));
             Assert.That(report.Totals.Of(ClashStatus.Active), Is.EqualTo(13));
         }

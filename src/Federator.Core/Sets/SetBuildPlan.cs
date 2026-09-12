@@ -69,7 +69,7 @@ namespace Federator.Core.Sets
         public string PropertyDisplayName { get; private set; }
 
         /// <summary>The data type attribute, for example wstring.</summary>
-        public string ValueType { get; private set; }
+        internal string ValueType { get; private set; }
 
         public string Value { get; private set; }
 

@@ -46,7 +46,7 @@ namespace Federator.Core.Exchange
             return Read(document, path);
         }
 
-        public ExchangeDocument ReadText(string xml)
+        internal ExchangeDocument ReadText(string xml)
         {
             if (xml == null)
             {
@@ -58,40 +58,6 @@ namespace Federator.Core.Exchange
             {
                 return Read(XDocument.Load(reader), null);
             }
-        }
-
-        /// <summary>
-        /// Reads several files into one document, so a run can hand the health check a
-        /// tests file and a sets file together.
-        /// </summary>
-        public ExchangeDocument ReadFiles(IEnumerable<string> paths)
-        {
-            if (paths == null)
-            {
-                throw new ArgumentNullException("paths");
-            }
-
-            List<string> sources = new List<string>();
-            List<BatchTestDefinition> batches = new List<BatchTestDefinition>();
-            List<ClashTestDefinition> tests = new List<ClashTestDefinition>();
-            List<SelectionSetDefinition> sets = new List<SelectionSetDefinition>();
-            string units = null;
-
-            foreach (string path in paths)
-            {
-                ExchangeDocument one = ReadFile(path);
-                sources.Add(path);
-                batches.AddRange(one.BatchTests);
-                tests.AddRange(one.Tests);
-                sets.AddRange(one.Sets);
-
-                if (units == null)
-                {
-                    units = one.Units;
-                }
-            }
-
-            return new ExchangeDocument(string.Join(";", sources.ToArray()), units, batches, tests, sets);
         }
 
         private ExchangeDocument Read(XDocument document, string sourcePath)
@@ -280,7 +246,6 @@ namespace Federator.Core.Exchange
 
             return new SelectionSetDefinition(
                 name,
-                Attribute(set, "guid"),
                 new List<string>(folders),
                 BuildPath(folders, name),
                 mode,

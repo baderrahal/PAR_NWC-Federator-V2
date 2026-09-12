@@ -61,15 +61,5 @@ namespace Federator.Core.Tests
             Assert.That(health.UnresolvedLocators[0].TestNames.Count, Is.EqualTo(60));
         }
 
-        [Test]
-        public void ReadingBothFilesTogetherGivesOneDocument()
-        {
-            ExchangeDocument combined = new ExchangeReader().ReadFiles(
-                new[] { Samples.AllInOne(), Samples.Infra() });
-
-            Assert.That(combined.Tests.Count, Is.EqualTo(1830));
-            Assert.That(combined.Sets.Count, Is.EqualTo(61 + 26));
-            Assert.That(combined.Units, Is.EqualTo("ft"));
-        }
     }
 }

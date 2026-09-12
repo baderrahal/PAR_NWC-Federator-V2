@@ -76,10 +76,10 @@ namespace Federator.Core.Exchange
         public bool MergeComposites { get; private set; }
 
         /// <summary>The linkage mode, for example none. Read even though these files never use it.</summary>
-        public string LinkageMode { get; private set; }
+        internal string LinkageMode { get; private set; }
 
         /// <summary>The rule names under the rules element. Empty in these files, read anyway.</summary>
-        public ReadOnlyCollection<string> Rules { get; private set; }
+        internal ReadOnlyCollection<string> Rules { get; private set; }
 
         public ClashSideDefinition Left { get; private set; }
 
@@ -203,7 +203,6 @@ namespace Federator.Core.Exchange
     {
         internal SelectionSetDefinition(
             string name,
-            string guid,
             IList<string> folders,
             string path,
             string findSpecMode,
@@ -212,7 +211,6 @@ namespace Federator.Core.Exchange
             IList<SearchConditionDefinition> conditions)
         {
             Name = name;
-            Guid = guid;
             Folders = new ReadOnlyCollection<string>(folders ?? new List<string>());
             Path = path;
             FindSpecMode = findSpecMode;
@@ -224,8 +222,6 @@ namespace Federator.Core.Exchange
 
         public string Name { get; private set; }
 
-        public string Guid { get; private set; }
-
         /// <summary>The folders above this set, outermost first. Empty for a set at the root.</summary>
         public ReadOnlyCollection<string> Folders { get; private set; }
 
@@ -236,12 +232,12 @@ namespace Federator.Core.Exchange
         public string Path { get; private set; }
 
         /// <summary>The findspec mode attribute, for example all.</summary>
-        public string FindSpecMode { get; private set; }
+        internal string FindSpecMode { get; private set; }
 
-        public bool Disjoint { get; private set; }
+        internal bool Disjoint { get; private set; }
 
         /// <summary>The locator inside the findspec, which says where the search starts.</summary>
-        public string FindSpecLocator { get; private set; }
+        internal string FindSpecLocator { get; private set; }
 
         public ReadOnlyCollection<SearchConditionDefinition> Conditions { get; private set; }
 
@@ -353,7 +349,7 @@ namespace Federator.Core.Exchange
         /// <summary>The units attribute on the exchange element.</summary>
         public string Units { get; private set; }
 
-        public ReadOnlyCollection<BatchTestDefinition> BatchTests { get; private set; }
+        internal ReadOnlyCollection<BatchTestDefinition> BatchTests { get; private set; }
 
         public ReadOnlyCollection<ClashTestDefinition> Tests { get; private set; }
 
@@ -370,7 +366,7 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>Every distinct locator named by a test side, in first seen order.</summary>
-        public IList<string> DistinctTestLocators()
+        internal IList<string> DistinctTestLocators()
         {
             List<string> locators = new List<string>();
             HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
