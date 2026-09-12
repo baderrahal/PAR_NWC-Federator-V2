@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F30, one tail for both run paths
+
+### What was done
+
+- F30 done. `RunOne` and `RunOpenDocument` each carried the same six calls after the models were in the document, the units, `ClashStep` with `SaveTheNwfAgain` on a true, `WriteWorkbook`, `WriteNwd` and `ConfirmTheNwfSurvived`, and the comments explaining the order sat on the scanned copy only. The six are now one private method, `FinishTheGroup(document, job, outcome)`, placed right after `RunOne`, called by both at the point the six stood, with the comments moved once. Nothing else in either method changes, the diff is 43 lines added against 42 removed
+- Both methods were read again after the move. Ten things still differ and the PR body lists them: the signature and where the job comes from, where the document is read, the group clock and the GROUP lines that `Run` writes for a scanned group and `RunOpenDocument` writes for itself, the two no document messages, the `OpenDocumentJob.CanRun` guard, where `reportFolder` is set, the four OPEN lines against the `Decide` lines, the fixed Open decision against the three `Decide` cases, the two catch headings, and the try shape. None of them is the tail
+- One comment moved as it was and is stale since F26: it says the units go before the clash step so the report reads in the units it goes out in, and since F26 the report is converted to metres in one pass whatever the document reads. The move keeps it verbatim because F30 changes nothing but the place. It goes on the audit list
+- Proved here: Core tests under mono on Linux, before and after: 888 passed, 39 failed, 32 skipped, 959 total. No Core file changed. The 39 are the same Windows path and file locking failures, none new
+- Waits for the local machine: the add-in does not build here. Proof: build, install, run one building on the scanned path and once on the open file path, and read the two logs. After the models are in, both must show UNITS, then SETS and CLASH, then `NWF      attempt`, XLSX, NWD and the final NWF line in that order
+
+### What remains
+
+- F31 to F38 in order, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F27 entry, plus the stale units comment above, for the audit
+
+### What comes next
+
+1. Merge the F30 PR
+2. F31, the clash side lookup is built once per run
+
 ## 2026-09-12 F29, the rebuild keeps the sets on their own count
 
 ### What was done
