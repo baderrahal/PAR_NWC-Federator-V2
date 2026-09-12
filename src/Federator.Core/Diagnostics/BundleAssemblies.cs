@@ -132,7 +132,7 @@ namespace Federator.Core.Diagnostics
                 installed = true;
             }
 
-            Say("BUNDLE   assemblies are resolved from " + Or(folder, "UNKNOWN, this assembly has no location"));
+            Say("BUNDLE   assemblies are resolved from " + Words.Or(folder, "UNKNOWN, this assembly has no location"));
         }
 
         /// <summary>Where this assembly is, which is the bundle folder. Empty when it has no location.</summary>
@@ -258,10 +258,6 @@ namespace Federator.Core.Diagnostics
             }
         }
 
-        private static string Or(string value, string fallback)
-        {
-            return string.IsNullOrEmpty(value) ? fallback : value;
-        }
 
         /// <summary>
         /// Every assembly the bundle has to carry, worked out from what is actually in the

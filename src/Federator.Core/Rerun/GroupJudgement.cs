@@ -128,7 +128,7 @@ namespace Federator.Core.Rerun
             {
                 // Required whichever case this was. In Build it was just written, and in
                 // Open or Changed it was opened, so either way it has to be there.
-                reason = "the NWF is not on disk at " + Or(facts.NwfPath, "an unknown path");
+                reason = "the NWF is not on disk at " + Words.Or(facts.NwfPath, "an unknown path");
                 return GroupOutcome.Failed;
             }
 
@@ -160,7 +160,7 @@ namespace Federator.Core.Rerun
 
             if (facts.NwdRequested && !facts.NwdOnDisk)
             {
-                reason = "the NWD was requested and is not on disk at " + Or(facts.NwdPath, "an unknown path");
+                reason = "the NWD was requested and is not on disk at " + Words.Or(facts.NwdPath, "an unknown path");
                 return GroupOutcome.Failed;
             }
 
@@ -170,7 +170,7 @@ namespace Federator.Core.Rerun
                 // that is last week's NWD, and calling the group DONE off it would report
                 // a stale file as a fresh one.
                 reason = "the NWD publish did not report success, so the file at "
-                    + Or(facts.NwdPath, "an unknown path") + " is not from this run";
+                    + Words.Or(facts.NwdPath, "an unknown path") + " is not from this run";
                 return GroupOutcome.Failed;
             }
 
@@ -199,9 +199,5 @@ namespace Federator.Core.Rerun
             return reason;
         }
 
-        private static string Or(string value, string fallback)
-        {
-            return string.IsNullOrEmpty(value) ? fallback : value;
-        }
     }
 }

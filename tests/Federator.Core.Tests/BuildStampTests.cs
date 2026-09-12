@@ -16,7 +16,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheCoreAssemblyCarriesAStamp()
         {
-            string stamp = BuildStamp.OfCore();
+            string stamp = BuildStamp.Of(typeof(BuildStamp).Assembly);
 
             Assert.That(stamp, Is.Not.Null.And.Not.Empty);
             Assert.That(stamp, Is.Not.EqualTo(BuildStamp.Unknown),
@@ -37,7 +37,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheStampCarriesAVersionACommitAndAMoment()
         {
-            string stamp = BuildStamp.OfCore();
+            string stamp = BuildStamp.Of(typeof(BuildStamp).Assembly);
 
             Assert.That(stamp, Does.Match(
                 @"^\d+\.\d+\.\d+\.\d+ (?:[0-9a-f]{7,}(?:\+edits)?|nogit(?:\+edits)?) built \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$"),
@@ -47,7 +47,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheMomentInTheStampIsAReadableDate()
         {
-            Match found = Regex.Match(BuildStamp.OfCore(), @"built (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})$");
+            Match found = Regex.Match(BuildStamp.Of(typeof(BuildStamp).Assembly), @"built (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})$");
 
             Assert.That(found.Success, Is.True);
 
@@ -63,7 +63,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TwoAssembliesBuiltSeparatelyCarrySeparateStamps()
         {
-            string core = BuildStamp.OfCore();
+            string core = BuildStamp.Of(typeof(BuildStamp).Assembly);
             string tests = BuildStamp.Of(typeof(BuildStampTests).Assembly);
 
             Assert.That(BuildStamp.LooksStamped(core), Is.True);

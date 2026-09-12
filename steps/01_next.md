@@ -281,6 +281,7 @@ F19 is dropped.
 - Files across `src` and `tests`, `build/probe-window-defaults.ps1`
 - CONTAINER
 - Every name grepped before it goes, one `Or` helper in `Words.cs`, one client column list, one `InstallFiles` locator, every doubled summary block fixed
+- DONE on 2026-09-12. `RunPath.Skipped` stays, a failed rebuild reaches it. `ClashWork.Any(exchange)` stays, `SourceFor` and `Describe` call it, the two argument `Any` and `AnyIn` went. `GroupRecords` stays public, a test reads it
 
 ## F37 One type per file and one place per kind of file
 

@@ -44,18 +44,6 @@ namespace Federator.Core.Clash
             return ClashSource.Nothing;
         }
 
-        /// <summary>True when there is clash work, from the file or from the document.</summary>
-        public static bool Any(ExchangeDocument exchange, int savedTests)
-        {
-            return SourceFor(exchange, savedTests) != ClashSource.Nothing;
-        }
-
-        /// <summary>True for a plan with at least one test to run, whichever way it was built.</summary>
-        public static bool AnyIn(ClashTestPlan plan)
-        {
-            return plan != null && plan.HasWork;
-        }
-
         /// <summary>
         /// The one line the log carries for the source, in the same shape whichever way the
         /// run was started. Three shapes and no fourth.

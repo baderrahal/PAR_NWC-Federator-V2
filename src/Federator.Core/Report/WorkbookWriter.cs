@@ -311,11 +311,6 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The thirteen headings, in their columns. Image and Clash Name are merged over
-        /// two and Clash Point over three, which is where the gaps in the column numbers
-        /// come from.
-        /// </summary>
-        /// <summary>
         /// Where the merges fall along a table row, as first and last column pairs. Their
         /// borders follow these runs, so the runs are stated once and both the heading row
         /// and every clash row are ruled off the same list.
@@ -357,6 +352,11 @@ namespace Federator.Core.Report
             }
         }
 
+        /// <summary>
+        /// The thirteen headings, in their columns. Image and Clash Name are merged over
+        /// two and Clash Point over three, which is where the gaps in the column numbers
+        /// come from.
+        /// </summary>
         private static void WriteColumnHeadings(IXLWorksheet sheet, int row)
         {
             sheet.Row(row).Height = ClientStyle.HeadingRowHeight;

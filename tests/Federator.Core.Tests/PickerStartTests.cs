@@ -61,7 +61,7 @@ namespace Federator.Core.Tests
 
             FolderMemory before = FolderMemory.Load(file);
 
-            Assert.That(PickerStart.Remembers(before, kind), Is.False,
+            Assert.That(before.LastFor(kind), Is.Empty,
                 kind + " remembered something before anything was picked");
 
             before.Remember(kind, picked);
@@ -69,7 +69,7 @@ namespace Federator.Core.Tests
             // A new window, a new process, the same file beside the logs.
             FolderMemory after = FolderMemory.Load(file);
 
-            Assert.That(PickerStart.Remembers(after, kind), Is.True,
+            Assert.That(after.LastFor(kind), Is.Not.Empty,
                 kind + " did not save its folder");
             Assert.That(PickerStart.For(after, kind, string.Empty), Is.EqualTo(picked),
                 kind + " did not reopen where it was left");
@@ -194,7 +194,6 @@ namespace Federator.Core.Tests
                 Is.EqualTo(string.Empty));
             Assert.That(PickerStart.For(null, PickerKind.Source, null),
                 Is.EqualTo(string.Empty));
-            Assert.That(PickerStart.Remembers(null, PickerKind.Source), Is.False);
         }
     }
 }

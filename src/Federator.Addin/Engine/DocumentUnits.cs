@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
 using Federator.Core.Units;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Addin.Engine
 {
@@ -167,7 +168,7 @@ namespace Federator.Addin.Engine
             catch (Exception error)
             {
                 log.Failure(
-                    "setting the units of " + Or(model.FileName, "a model"),
+                    "setting the units of " + Words.Or(model.FileName, "a model"),
                     error,
                     "kept going, that model keeps the units it had");
                 return false;
@@ -190,9 +191,5 @@ namespace Federator.Addin.Engine
             return units.ToString() + " (" + Short(units) + ")";
         }
 
-        private static string Or(string value, string fallback)
-        {
-            return string.IsNullOrEmpty(value) ? fallback : value;
-        }
     }
 }

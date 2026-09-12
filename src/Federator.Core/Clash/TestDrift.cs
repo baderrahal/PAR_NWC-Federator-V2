@@ -170,7 +170,7 @@ namespace Federator.Core.Clash
             // in a space.
             if (!string.Equals(fileLocator, documentLocator, StringComparison.Ordinal))
             {
-                Add(found, testName, which + " set", Or(fileLocator), Or(documentLocator));
+                Add(found, testName, which + " set", QuotedOrNothing(fileLocator), QuotedOrNothing(documentLocator));
             }
 
             if (fileSelf != documentSelf)
@@ -203,7 +203,7 @@ namespace Federator.Core.Clash
             return value ? "on" : "off";
         }
 
-        private static string Or(string value)
+        private static string QuotedOrNothing(string value)
         {
             return string.IsNullOrEmpty(value) ? "nothing" : "\"" + value + "\"";
         }

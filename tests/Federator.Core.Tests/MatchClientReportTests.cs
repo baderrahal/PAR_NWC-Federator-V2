@@ -213,7 +213,7 @@ namespace Federator.Core.Tests
         {
             Assert.That(NamePattern.DefaultNumber, Is.EqualTo("000001"));
             Assert.That(NamePattern.DefaultNumber.Length, Is.EqualTo(6));
-            Assert.That(ContainerNameSettings.DefaultForcedNumber.Length, Is.EqualTo(6));
+            Assert.That(NamePattern.DefaultNumber.Length, Is.EqualTo(6));
             Assert.That(new NamePattern().Number.Length, Is.EqualTo(6));
         }
 

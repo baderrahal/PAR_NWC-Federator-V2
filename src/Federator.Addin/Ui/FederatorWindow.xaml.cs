@@ -866,7 +866,7 @@ namespace Federator.Addin.Ui
 
             string install = NavisworksFacts.InstallFolder();
             string language = NavisworksFacts.Language();
-            string found = LogoLocator.Find(install, language);
+            string found = InstallFiles.FindLogo(install, language);
 
             if (found.Length > 0)
             {
@@ -875,17 +875,12 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            foreach (string line in LogoLocator.WhyNotFound(install, language))
+            foreach (string line in InstallFiles.WhyNoLogo(install, language))
             {
                 log.Line(line);
             }
         }
 
-        /// <summary>
-        /// A different mark for a project that needs one. It starts filled with the
-        /// install's own logo, which is what the client accepts, so most people never open
-        /// this. Clearing the box means no logo at all.
-        /// </summary>
         /// <summary>
         /// The units every number in the report is in. Metres by default, because this is
         /// a Saudi project and every report the team sends is metric. Since F26 this sets

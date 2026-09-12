@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using Federator.Core.Clash;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Report
 {
@@ -48,9 +49,9 @@ namespace Federator.Core.Report
         /// its Item Name and Item Type headings from the smarttag names in the data, so
         /// these words are what appear on the page.
         /// </summary>
-        public const string QuickName = "Item Name";
+        public static readonly string QuickName = ClientReportColumns.QuickProperties[0];
 
-        public const string QuickType = "Item Type";
+        public static readonly string QuickType = ClientReportColumns.QuickProperties[1];
 
         /// <summary>
         /// The client's report has exactly TWO quick properties, so this XML writes
@@ -61,7 +62,7 @@ namespace Federator.Core.Report
         /// here as well. They belong in the workbook, which is ours, and never on the
         /// page, which is theirs.
         /// </summary>
-        public static readonly string[] QuickProperties = { QuickName, QuickType };
+        public static readonly string[] QuickProperties = ClientReportColumns.QuickProperties;
 
         /// <summary>
         /// The logo the page shows, or empty for none. The stylesheet reads //logo/@href,
@@ -145,7 +146,7 @@ namespace Federator.Core.Report
             }
 
             XElement exchange = new XElement("exchange",
-                new XAttribute("units", Or(report.DocumentUnits, "unknown")));
+                new XAttribute("units", Words.Or(report.DocumentUnits, "unknown")));
 
             XElement tests = new XElement("clashtests");
 
@@ -165,8 +166,8 @@ namespace Federator.Core.Report
             }
 
             exchange.Add(new XElement("batchtest",
-                new XAttribute("name", Or(report.Building, "clash")),
-                new XAttribute("internal_name", Or(report.OutputName, report.Building)),
+                new XAttribute("name", Words.Or(report.Building, "clash")),
+                new XAttribute("internal_name", Words.Or(report.OutputName, report.Building)),
                 tests));
 
             return new XDocument(new XDeclaration("1.0", "UTF-8", null), exchange);
@@ -178,7 +179,7 @@ namespace Federator.Core.Report
 
             XElement element = new XElement("clashtest",
                 new XAttribute("name", test.Name),
-                new XAttribute("test_type", Or(test.TestTypeName, "unknown")),
+                new XAttribute("test_type", Words.Or(test.TestTypeName, "unknown")),
                 new XAttribute("status", test.State == TestState.Skipped
                     ? "skipped"
                     : ClientFormat.StatusWording(test.StatusWord)),
@@ -220,7 +221,7 @@ namespace Federator.Core.Report
         private XElement Result(ClashRow row)
         {
             XElement element = new XElement(row.IsGroup ? "clashgroup" : "clashresult",
-                new XAttribute("name", Or(row.Name, "clash")),
+                new XAttribute("name", Words.Or(row.Name, "clash")),
                 new XAttribute("distance", ClientFormat.Fixed(row.Distance)));
 
             // The stylesheet turns its Image column on for boolean(//@href) and reads the
@@ -288,7 +289,7 @@ namespace Federator.Core.Report
             if (!ClientFormat.NoIdAtAll(item.ElementId))
             {
                 element.Add(new XElement("objectattribute",
-                    new XElement("name", Or(item.IdLabel, ClientFormat.DefaultIdLabel)),
+                    new XElement("name", Words.Or(item.IdLabel, ClientFormat.DefaultIdLabel)),
                     new XElement("value", item.ElementId)));
             }
 
@@ -329,10 +330,6 @@ namespace Federator.Core.Report
             return string.IsNullOrEmpty(link) ? string.Empty : link.Replace('/', '\\');
         }
 
-        private static string Or(string value, string fallback)
-        {
-            return string.IsNullOrEmpty(value) ? fallback : value;
-        }
 
         /// <summary>What was filled and what was left out, for the log and the report.</summary>
         public static IList<string> Explain()

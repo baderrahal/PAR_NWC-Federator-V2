@@ -114,11 +114,6 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Creates whatever the plan holds and runs it. The plan is resolved against the
-        /// sets actually in the document first, so a locator naming a set that is not
-        /// there skips its test by name rather than creating one with an empty side.
-        /// </summary>
-        /// <summary>
         /// The workbook model this run fills as it goes, or null when nothing is being
         /// written. It is filled from the live results here, in one pass, because the
         /// results are only readable while the document is open.
@@ -174,6 +169,11 @@ namespace Federator.Addin.Engine
         /// <summary>How many tests already in the document were compared against the file.</summary>
         public int Compared { get; private set; }
 
+        /// <summary>
+        /// Creates whatever the plan holds and runs it. The plan is resolved against the
+        /// sets actually in the document first, so a locator naming a set that is not
+        /// there skips its test by name rather than creating one with an empty side.
+        /// </summary>
         public ClashRunOutcome Run(ClashTestPlan plan)
         {
             if (plan == null)
@@ -210,7 +210,7 @@ namespace Federator.Addin.Engine
                 // knowing what it was counted against.
                 outcome.OpenDocument = NavisworksFacts.OpenDocument();
                 log.Line("CLASH    ran against " + outcome.OpenDocument);
-                log.Line("CLASH    the document measures in " + Or(UnitName(document.Units), "UNKNOWN units")
+                log.Line("CLASH    the document measures in " + Words.Or(UnitName(document.Units), "UNKNOWN units")
                     + ", every tolerance was converted into it");
 
                 DocumentSelectionSets sets = document.SelectionSets;
@@ -282,7 +282,7 @@ namespace Federator.Addin.Engine
 
                 if (drift.Count > 0 || Compared > 0)
                 {
-                    log.Block("DRIFT " + Or(outcome.OpenDocument, "this document"),
+                    log.Block("DRIFT " + Words.Or(outcome.OpenDocument, "this document"),
                         TestDrift.Lines(drift, Compared, ApplyFileSettings));
                 }
 
@@ -1342,10 +1342,6 @@ namespace Federator.Addin.Engine
             }
         }
 
-        private static string Or(string value, string fallback)
-        {
-            return string.IsNullOrEmpty(value) ? fallback : value;
-        }
     }
 
     /// <summary>

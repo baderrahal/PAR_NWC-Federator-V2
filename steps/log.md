@@ -2,6 +2,32 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F36, dead code and copies out
+
+### What was done
+
+- F36 done. Every name went through grep over src first, and the results are in the PR body. Deleted with their tests: `OutputNameCheck`, the pattern based collision check that `OutputNameTable` replaced, with six tests and the helper only they used. `ContainerName.BuildOutputName`, four overloads, and `ContainerNameSettings.ForcedLevel`, `ForcedTypeCode`, `ForcedNumber` and `OutputDisciplineCode` with their defaults, their lines in `Validate` and `Copy`, and `RequireValue`, which only they called, with eight tests deleted and three trimmed to the parsing they still prove. The output name has been `NamePattern`'s since the patterns existed, and both class comments say so now. `ClashWork.Any(exchange, savedTests)` and `AnyIn`, the one argument `Any` stays because `SourceFor` and `Describe` call it. `BuildStamp.OfCore`, the four tests read `BuildStamp.Of(typeof(BuildStamp).Assembly)`. `PickerStart.Remembers`, the tests read `FolderMemory.LastFor` directly. `RunLog.TimesFailed`, `DistinctFailureCount` and `TotalFailureCount`, the tests read `Failures.Count` and `Failures[i].Times`, and the one test that was only about `TimesFailed` went. `RunPath.Skipped` stays, a rebuild that fails still ends its group as Changed and the GROUP line reads it. `GroupRecords` stays public, `ResultBlockInvariantTests` reads it
+- One `Or`. `Federator.Core.Diagnostics.Words.Or(value, fallback)` replaces the private copy in ten files, `BundleAssemblies`, `FolderMemory`, `RunLog`, `OpenDocumentJob`, `GroupJudgement`, `ClashReportXml`, `NavisworksFacts`, `ClashHarvest`, `ClashRunner` and `DocumentUnits`, fifty calls rewritten. The engine's one argument `Or`, which said none, is `Words.Or(value, "none")` at its eight calls. `TestDrift`'s was not an Or, it quotes the value and says nothing for none, so it is `QuotedOrNothing`. `WordsTests` pins the three cases, a value, null or empty, and a space, which is a value because two set names in the reference file end in one
+- One client column list. `ClientFormat.ClashColumns`, `PerItemColumns`, `FirstItemColumn` and `ItemColumns` are read off `ClientReportColumns`, and `ClashReportXml.QuickProperties`, `QuickName` and `QuickType` too, so the fifteen words live once, where a test checks them against the client's own exports. `ClientReportColumnsTests.EveryOtherColumnListReadsThisOne` pins it
+- One `InstallFiles` locator replaces `StylesheetLocator` and `LogoLocator`, which followed the same rule in two files. `FindStylesheet`, `StylesheetCandidates`, `WhyNoStylesheet`, `FindLogo`, `LogoCandidates`, `WhyNoLogo`, with one `FirstOnDisk`, one `WhyNot`, one `Languages`. The engine, the window and five test files read it. Nothing about either file changed, the paths tried and the lines logged are the same
+- The seven doubled summary blocks that were left, in `ClashHarvest`, `ClashRunner`, `FederatorWindow.xaml.cs`, `RunLog`, `ClientFormat`, `ReportPaths` and `WorkbookWriter`. Five were a summary that had drifted off its method, put back above `FirstProperty`, `Run`, `Tolerance`, `Choose` and `WriteColumnHeadings`. One in `RunLog` was two summaries for `Failure`, merged. One in the window described a box that has no method, deleted. A grep for a summary closing and another opening finds nothing now
+- `probe-window-defaults.ps1` no longer lists `RepublishNwd` and `WriteImages`, the two boxes that are gone
+- Proved here: Core tests under mono on Linux, before: 916 passed, 37 failed, 33 skipped, 986 total. After: 905 passed, 37 failed, 33 skipped, 975 total. Eleven fewer, fifteen deleted with the members and four added, `WordsTests` three and `ClientReportColumnsTests` one. The 37 are the same Windows path and file locking failures, none new
+- Waits for the local machine: the add-in does not build here. Six add-in files changed, `ClashHarvest`, `ClashRunner`, `DocumentUnits`, `FederationEngine`, `NavisworksFacts` and the window, every one a rename of a call or a moved comment, read twice. Proof is the build, then one run whose log reads as before
+
+### What remains
+
+- F37 and F38, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F32 entry
+
+### What comes next
+
+1. Merge the F36 PR
+2. F37, one type per file and one place per kind of file
+
 ## 2026-09-12 F35, clash only where two disciplines meet
 
 ### What was done

@@ -57,7 +57,7 @@ namespace Federator.Core.Tests
 
         private static string Stylesheet()
         {
-            string path = StylesheetLocator.Find(Install, "en-US");
+            string path = InstallFiles.FindStylesheet(Install, "en-US");
 
             if (path.Length == 0)
             {
@@ -435,7 +435,7 @@ namespace Federator.Core.Tests
         [Test]
         public void ItSaysEveryPathItLookedAtWhenItCannotFindOne()
         {
-            IList<string> lines = StylesheetLocator.WhyNotFound(@"C:\Nowhere", "fr-FR");
+            IList<string> lines = InstallFiles.WhyNoStylesheet(@"C:\Nowhere", "fr-FR");
             string block = string.Join("\n", new List<string>(lines).ToArray());
 
             Assert.That(block, Does.Contain("clash_report_html_tabular.xsl"));
@@ -448,7 +448,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheLanguageTheApplicationReportsIsTriedFirst()
         {
-            IList<string> tried = StylesheetLocator.CandidatesIn(@"C:\NW", "de-DE");
+            IList<string> tried = InstallFiles.StylesheetCandidates(@"C:\NW", "de-DE");
 
             Assert.That(tried.Count, Is.EqualTo(2));
             Assert.That(tried[0], Does.Contain(@"\de-DE\"));
@@ -458,9 +458,9 @@ namespace Federator.Core.Tests
         [Test]
         public void OneLanguageIsOneCandidateRatherThanTheSameTwice()
         {
-            Assert.That(StylesheetLocator.CandidatesIn(@"C:\NW", "en-US").Count, Is.EqualTo(1));
-            Assert.That(StylesheetLocator.CandidatesIn(@"C:\NW", null).Count, Is.EqualTo(1));
-            Assert.That(StylesheetLocator.CandidatesIn(string.Empty, "en-US").Count, Is.EqualTo(0));
+            Assert.That(InstallFiles.StylesheetCandidates(@"C:\NW", "en-US").Count, Is.EqualTo(1));
+            Assert.That(InstallFiles.StylesheetCandidates(@"C:\NW", null).Count, Is.EqualTo(1));
+            Assert.That(InstallFiles.StylesheetCandidates(string.Empty, "en-US").Count, Is.EqualTo(0));
         }
 
         [Test]
