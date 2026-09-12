@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F28, a set already there is not counted as created
+
+### What was done
+
+- F28 done. `SetBuilder.BuildOne` called `outcome.AddAlreadyPresent(path)` and then `outcome.AddCreated(...)` for the same set, so `CreatedCount` and `PutAnythingIn` counted present sets and the second NWF save fired on every weekly run
+- `SetBuildOutcome.AddAlreadyPresent` is now one call carrying the path, the name, the condition count and the item count. It returns a `SetResult` marked `Present`, printed by `Lines()` as `present <path>  <n> conditions  <n> items  already there, left alone`, counted in `AlreadyPresentCount` and never in `CreatedCount`, `FindingItemsCount`, `ZeroCount`, `FailedCount` or `TotalItems`. `BuildOne` makes that one call and logs the line it returns
+- The separate list of present paths is gone, the count comes off the one results list the lines come from, so the two cannot disagree
+- Proved here: `SetBuildOutcomeTests`, every `AddAlreadyPresent` use takes the add-in shape, and three tests added: `SixtyOnePresentAndNoneCreatedPutNothingInAndPrintsNoOkLine`, `SixtyPresentAndOneCreatedPutSomethingIn`, `APresentLineCarriesItsItemCountAndIsNotCreated`. Core tests under mono on Linux, before: 881 passed, 39 failed, 32 skipped, 952 total. After: 884 passed, 39 failed, 32 skipped, 955 total. The 39 are the same Windows path and file locking failures, none new
+- Waits for the local machine: the add-in does not build here. The `BuildOne` change is five lines, read twice. Proof: run one building twice with the XML picked, the second run's SETS block must show every set as present, `sets created      : 0`, `already there     : 61`, and no second `NWF      attempt` line after the CLASH block unless a test was created
+
+### What remains
+
+- F29 to F38 in order, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F27 entry
+
+### What comes next
+
+1. Merge the F28 PR
+2. F29, the rebuild keeps the sets on their own count
+
 ## 2026-09-12 F27, the GROUPS block tells the truth
 
 ### What was done

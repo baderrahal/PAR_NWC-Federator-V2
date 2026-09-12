@@ -9,6 +9,12 @@ namespace Federator.Core.Sets
     {
         internal SetResult(
             string path, string name, int conditionCount, int itemCount, string error, string asked)
+            : this(path, name, conditionCount, itemCount, error, asked, false)
+        {
+        }
+
+        internal SetResult(
+            string path, string name, int conditionCount, int itemCount, string error, string asked, bool present)
         {
             Path = path;
             Name = name;
@@ -16,6 +22,7 @@ namespace Federator.Core.Sets
             ItemCount = itemCount;
             Error = error;
             Asked = asked;
+            Present = present;
         }
 
         /// <summary>What the set asked the model for. Shown on a ZERO line so it explains itself.</summary>
@@ -30,12 +37,21 @@ namespace Federator.Core.Sets
         /// <summary>How many items it found. Minus one when it never resolved.</summary>
         public int ItemCount { get; private set; }
 
-        /// <summary>Null when the set was created and resolved.</summary>
+        /// <summary>Null when the set was created and resolved, or was already there.</summary>
         public string Error { get; private set; }
 
+        /// <summary>
+        /// Already at its path in the open document before this build, so it was left
+        /// alone and put nothing in. F28. It used to be counted as created as well, so
+        /// every weekly run reported sixty one sets created and saved the NWF a second
+        /// time for nothing.
+        /// </summary>
+        public bool Present { get; private set; }
+
+        /// <summary>Created by this build and resolved. A present set is not created.</summary>
         public bool Created
         {
-            get { return Error == null; }
+            get { return Error == null && !Present; }
         }
 
         /// <summary>Created and resolved, but found nothing. Reported, never hidden.</summary>
@@ -47,6 +63,13 @@ namespace Federator.Core.Sets
         /// <summary>The one line this set contributes to the log.</summary>
         public string Line()
         {
+            if (Present)
+            {
+                return "present " + Path + "  " + ConditionCount
+                    + Word(ConditionCount, " condition", " conditions") + "  "
+                    + ItemCount + Word(ItemCount, " item", " items") + "  already there, left alone";
+            }
+
             if (!Created)
             {
                 return "FAILED  " + Path + "  " + ConditionCount
@@ -80,7 +103,6 @@ namespace Federator.Core.Sets
     {
         private readonly List<SetResult> results = new List<SetResult>();
         private readonly List<SkippedSet> skipped = new List<SkippedSet>();
-        private readonly List<string> alreadyPresent = new List<string>();
 
         public ReadOnlyCollection<SetResult> Results
         {
@@ -102,21 +124,35 @@ namespace Federator.Core.Sets
         /// <summary>
         /// A set already at this path in the open document. On a reused NWF every set from
         /// last week is already there, and adding another copy would leave the tree holding
-        /// both, with a locator resolving to whichever came first. It is left alone.
+        /// both, with a locator resolving to whichever came first. It is left alone. One
+        /// call, carrying the path, the name, the condition count and how many items it
+        /// finds in this document, so it has a line of its own and is never counted as
+        /// created. F28.
         /// </summary>
-        public ReadOnlyCollection<string> AlreadyPresent
+        public SetResult AddAlreadyPresent(string path, string name, int conditionCount, int itemCount)
         {
-            get { return new ReadOnlyCollection<string>(alreadyPresent); }
+            SetResult result = new SetResult(path, name, conditionCount, itemCount, null, null, true);
+            results.Add(result);
+            return result;
         }
 
-        public void AddAlreadyPresent(string path)
-        {
-            alreadyPresent.Add(path);
-        }
-
+        /// <summary>Sets already there and left alone. Never in CreatedCount.</summary>
         public int AlreadyPresentCount
         {
-            get { return alreadyPresent.Count; }
+            get
+            {
+                int present = 0;
+
+                foreach (SetResult result in results)
+                {
+                    if (result.Present)
+                    {
+                        present++;
+                    }
+                }
+
+                return present;
+            }
         }
 
         public void AddSkipped(SkippedSet set)
@@ -200,7 +236,7 @@ namespace Federator.Core.Sets
 
                 foreach (SetResult result in results)
                 {
-                    if (!result.Created)
+                    if (!result.Created && !result.Present)
                     {
                         failed++;
                     }

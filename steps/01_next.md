@@ -224,6 +224,7 @@ F19 is dropped.
 - Files `src/Federator.Core/Sets/SetBuildOutcome.cs`, `src/Federator.Addin/Engine/SetBuilder.cs`, `tests/Federator.Core.Tests/SetBuildOutcomeTests.cs`
 - CONTAINER for the outcome, LOCAL MACHINE ONLY to see the second NWF save stop on a weekly run
 - `BuildOne` calls `AddAlreadyPresent` and then `AddCreated` for the same set, so `CreatedCount` and `PutAnythingIn` count present sets and the second NWF save fires on every weekly run
+- DONE on 2026-09-12, proof pending on the local machine
 
 ## F29 The rebuild keeps the sets on their own count
 
