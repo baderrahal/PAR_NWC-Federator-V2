@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F32, the open file is guarded
+
+### What was done
+
+- F32 done, D2. `OpenDocumentJob.CanRun` checked one thing, that the document had a name, so an NWD opened directly was allowed and the NWD this tool publishes would have been written over the file that was open. Five things are now checked in order and `WhyNot` names the first that fails, in a person's words: it has a name, it was opened from a folder and not from an address, it is an NWF, it has a folder in front of its name, and that folder can be read from here. Each refusal says what to do instead
+- `CanRun` and `WhyNot` gain a second form with the disk read handed in as `Func<string, bool>`, and the one argument form hands in `Directory.Exists`. That is the seam that lets every reason be proved without a folder that exists on the machine running the tests, and the one argument form is tested against a real temp folder and a missing one
+- `NwdBeside` never names the open file. Where the swap lands on the same path, read case blind, empty comes back. `CanRun` refuses such a file before anything is written, this is the second lock on the same door
+- The window did not change. `OpenDocumentLine` already shows `Describe`, which returns `WhyNot` when the file cannot run, the button is disabled by `CanRun`, and pressing it warns with `WhyNot`. The engine logs `OPEN     ` and the same reason. The window file is listed under F32 in `01_next.md` and stays unchanged, said there
+- B12 narrowed. What Navisworks reports as the file name of a document opened from Autodesk Docs is still UNKNOWN, Q20, so the ACC case is not claimed. The note is under F23 in `01_next.md` and on B12 in `00_analysis.md`. CLAUDE.md's open file bullet carries the five checks
+- Proved here: `OpenDocumentJobTests`. `AnNwdOpenedDirectlyStillNamesItsOutputs` is replaced by `AnNwdOpenedDirectlyIsRefusedAndSaysToOpenTheNwf`, `TheRefusalCarriesNoCodeIdentifier` by `EveryRefusalCarriesNoCodeIdentifier` over all seven refusals, and eight tests added: `AnNwcOpenedDirectlyIsRefusedTheSameWay`, `TheExtensionIsReadCaseBlind`, `ANameWithNoFolderBehindItIsRefusedAndSaysSo`, `AnAddressRatherThanAFolderIsRefusedAndNamed`, `AUncPathIsAFolderLikeAnyOther`, `AFolderThatCannotBeReadIsRefusedAndNamed`, `TheOneArgumentFormAsksTheDisk`, `TheNwdNeverLandsOnTheOpenFile`. The UNC test ignores itself where the separator is not a backslash, because a UNC path is only a path on Windows, so it is skipped under mono and runs on the local machine. Core tests under mono on Linux, before: 888 passed, 39 failed, 32 skipped, 959 total. After: 897 passed, 37 failed, 33 skipped, 967 total. The 37 are Windows path and file locking failures, none new, and two fewer than before because `TheLineLeadsWithWeeklyRunAndNeverFirstRun` and `TheLineSaysWhatItWillDoAndWhereBeforeAnyonePressesIt` now build their file in a temp folder that exists, since `Describe` asks the disk, and so pass here too
+- Waits for the local machine: nothing to build for this one beyond the ordinary add-in build. Proof: open an NWD in Navisworks, open the window, the Clash step must read the refusal naming .nwd and the Run the open file button must be greyed. Open the NWF and the line must name the NWD and the report folder as before
+
+### What remains
+
+- F33 to F38 in order, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F30 entry. B12 narrowed, still open on the ACC case
+
+### What comes next
+
+1. Merge the F32 PR
+2. F33, one unit table
+
 ## 2026-09-12 F31, the clash side lookup is built once per run
 
 ### What was done

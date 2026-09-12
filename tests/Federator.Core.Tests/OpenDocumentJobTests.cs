@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Federator.Core.Diagnostics;
@@ -170,17 +171,39 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// A folder that exists for the length of one test. Describe asks the disk since
+        /// F32, so a file whose folder is not there is refused rather than described.
+        /// </summary>
+        private static string AFolderOnDisk()
+        {
+            string folder = Path.Combine(
+                Path.GetTempPath(), "open-document-job-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(folder);
+            return folder;
+        }
+
         [Test]
         public void TheLineLeadsWithWeeklyRunAndNeverFirstRun()
         {
-            string noXml = OpenDocumentJob.Describe(OpenHere, string.Empty, false);
-            string withXml = OpenDocumentJob.Describe(OpenHere, string.Empty, true);
+            string folder = AFolderOnDisk();
 
-            Assert.That(noXml, Does.StartWith(RunPath.WeeklyRun + "."));
-            Assert.That(noXml, Does.Not.Contain(RunPath.WeeklyRunPlusXml));
-            Assert.That(withXml, Does.StartWith(RunPath.WeeklyRunPlusXml + "."));
-            Assert.That(noXml, Does.Not.Contain(RunPath.FirstRun));
-            Assert.That(withXml, Does.Not.Contain(RunPath.FirstRun));
+            try
+            {
+                string open = Path.Combine(folder, "1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf");
+                string noXml = OpenDocumentJob.Describe(open, string.Empty, false);
+                string withXml = OpenDocumentJob.Describe(open, string.Empty, true);
+
+                Assert.That(noXml, Does.StartWith(RunPath.WeeklyRun + "."));
+                Assert.That(noXml, Does.Not.Contain(RunPath.WeeklyRunPlusXml));
+                Assert.That(withXml, Does.StartWith(RunPath.WeeklyRunPlusXml + "."));
+                Assert.That(noXml, Does.Not.Contain(RunPath.FirstRun));
+                Assert.That(withXml, Does.Not.Contain(RunPath.FirstRun));
+            }
+            finally
+            {
+                Directory.Delete(folder, true);
+            }
         }
 
         private static int Count(string text, string part)
@@ -197,14 +220,154 @@ namespace Federator.Core.Tests
             return count;
         }
 
-        [Test]
-        public void AnNwdOpenedDirectlyStillNamesItsOutputs()
+        /// <summary>The disk read handed in, so a reason is proved without a folder on disk.</summary>
+        private static bool Readable(string folder)
         {
-            string open = @"D:\Federations\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd";
+            return true;
+        }
 
-            Assert.That(OpenDocumentJob.NameFrom(open),
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
-            Assert.That(OpenDocumentJob.CanRun(open), Is.True);
+        private static bool Unreadable(string folder)
+        {
+            return false;
+        }
+
+        private static string InFederations(string name)
+        {
+            return Path.Combine(Path.GetTempPath(), "Federations", name);
+        }
+
+        /// <summary>
+        /// D2, 2026-09-12. An NWD opened directly used to be allowed. The NWD is what this
+        /// tool publishes, and publishing it over the file that is open is the one output
+        /// that could destroy its own input.
+        /// </summary>
+        [Test]
+        public void AnNwdOpenedDirectlyIsRefusedAndSaysToOpenTheNwf()
+        {
+            string open = InFederations("1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd");
+
+            Assert.That(OpenDocumentJob.CanRun(open, Readable), Is.False);
+
+            string why = OpenDocumentJob.WhyNot(open, Readable);
+
+            Assert.That(why, Does.Contain(".nwd"));
+            Assert.That(why, Does.Contain("Open the NWF instead"));
+        }
+
+        [Test]
+        public void AnNwcOpenedDirectlyIsRefusedTheSameWay()
+        {
+            string open = InFederations("1104-PAR-1C07BC-ZZZ-AR-MOD-000001.nwc");
+
+            Assert.That(OpenDocumentJob.CanRun(open, Readable), Is.False);
+            Assert.That(OpenDocumentJob.WhyNot(open, Readable), Does.Contain(".nwc"));
+        }
+
+        [Test]
+        public void TheExtensionIsReadCaseBlind()
+        {
+            // Windows reads file names case blind, so X.NWF is an NWF and X.NWD is not.
+            Assert.That(OpenDocumentJob.CanRun(InFederations("X.NWF"), Readable), Is.True);
+            Assert.That(OpenDocumentJob.CanRun(InFederations("X.NWD"), Readable), Is.False);
+        }
+
+        [Test]
+        public void ANameWithNoFolderBehindItIsRefusedAndSaysSo()
+        {
+            Assert.That(OpenDocumentJob.CanRun("model.nwf", Readable), Is.False);
+            Assert.That(OpenDocumentJob.WhyNot("model.nwf", Readable), Does.Contain("no folder"));
+        }
+
+        /// <summary>
+        /// B12 narrowed. What Navisworks reports as the file name of a document opened
+        /// from Autodesk Docs is UNKNOWN, Q20, so the ACC case is not claimed here. What
+        /// is pinned is that an address is never taken for a folder.
+        /// </summary>
+        [Test]
+        public void AnAddressRatherThanAFolderIsRefusedAndNamed()
+        {
+            string[] addresses =
+            {
+                "acc://hub/project/1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf",
+                "https://docs.example.com/1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf",
+            };
+
+            foreach (string open in addresses)
+            {
+                Assert.That(OpenDocumentJob.CanRun(open, Readable), Is.False, open);
+
+                string why = OpenDocumentJob.WhyNot(open, Readable);
+
+                Assert.That(why, Does.Contain(open));
+                Assert.That(why, Does.Contain("an address"));
+            }
+        }
+
+        [Test]
+        public void AUncPathIsAFolderLikeAnyOther()
+        {
+            if (Path.DirectorySeparatorChar != '\\')
+            {
+                Assert.Ignore("A UNC path is only a path on Windows.");
+            }
+
+            string open = @"\\server\share\Federations\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf";
+
+            Assert.That(OpenDocumentJob.CanRun(open, Readable), Is.True);
+            Assert.That(OpenDocumentJob.NwdBeside(open),
+                Is.EqualTo(@"\\server\share\Federations\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd"));
+        }
+
+        [Test]
+        public void AFolderThatCannotBeReadIsRefusedAndNamed()
+        {
+            Assert.That(OpenDocumentJob.CanRun(OpenHere, Unreadable), Is.False);
+
+            string why = OpenDocumentJob.WhyNot(OpenHere, Unreadable);
+
+            Assert.That(why, Does.Contain(Path.GetDirectoryName(OpenHere)));
+            Assert.That(why, Does.Contain("cannot be read"));
+        }
+
+        [Test]
+        public void TheOneArgumentFormAsksTheDisk()
+        {
+            string folder = AFolderOnDisk();
+
+            try
+            {
+                string open = Path.Combine(folder, "fed.nwf");
+                string gone = Path.Combine(folder, "not-here", "fed.nwf");
+
+                Assert.That(OpenDocumentJob.CanRun(open), Is.True);
+                Assert.That(OpenDocumentJob.WhyNot(open), Is.Empty);
+                Assert.That(OpenDocumentJob.CanRun(gone), Is.False);
+                Assert.That(OpenDocumentJob.WhyNot(gone), Does.Contain("cannot be read"));
+            }
+            finally
+            {
+                Directory.Delete(folder, true);
+            }
+        }
+
+        [Test]
+        public void TheNwdNeverLandsOnTheOpenFile()
+        {
+            // The second lock. CanRun refuses an NWD before anything is written, and the
+            // NWD path of one is empty rather than the open file itself, case blind.
+            string[] opens = { InFederations("X.nwd"), InFederations("X.NWD"), InFederations("X.Nwd") };
+
+            foreach (string open in opens)
+            {
+                Assert.That(OpenDocumentJob.NwdBeside(open), Is.Empty, open);
+            }
+
+            string nwf = InFederations("X.nwf");
+
+            Assert.That(OpenDocumentJob.NwdBeside(nwf), Is.Not.Empty);
+            Assert.That(
+                string.Equals(OpenDocumentJob.NwdBeside(nwf), nwf, StringComparison.OrdinalIgnoreCase),
+                Is.False);
         }
 
         [Test]
@@ -220,25 +383,51 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheRefusalCarriesNoCodeIdentifier()
+        public void EveryRefusalCarriesNoCodeIdentifier()
         {
             // A label may never carry a framework message or a parameter name. The rule
             // that put "Parameter name: nwfFolder" in front of a user applies here too.
-            string why = OpenDocumentJob.WhyNot(null);
+            string[] whys =
+            {
+                OpenDocumentJob.WhyNot(null, Readable),
+                OpenDocumentJob.WhyNot(string.Empty, Readable),
+                OpenDocumentJob.WhyNot("model.nwf", Readable),
+                OpenDocumentJob.WhyNot(InFederations("X.nwd"), Readable),
+                OpenDocumentJob.WhyNot(InFederations("X"), Readable),
+                OpenDocumentJob.WhyNot("acc://hub/X.nwf", Readable),
+                OpenDocumentJob.WhyNot(OpenHere, Unreadable),
+            };
 
-            Assert.That(why, Does.Not.Contain("Parameter"));
-            Assert.That(why, Does.Not.Contain("null"));
-            Assert.That(why, Does.Not.Contain("Exception"));
+            foreach (string why in whys)
+            {
+                Assert.That(why, Is.Not.Empty);
+                Assert.That(why, Does.Not.Contain("Parameter"));
+                Assert.That(why, Does.Not.Contain("null"));
+                Assert.That(why, Does.Not.Contain("Exception"));
+                Assert.That(why, Does.Not.Contain("Func"));
+                Assert.That(why, Does.Not.Contain("CanRun"));
+            }
         }
 
         [Test]
         public void TheLineSaysWhatItWillDoAndWhereBeforeAnyonePressesIt()
         {
-            string said = OpenDocumentJob.Describe(Open, string.Empty);
+            string folder = AFolderOnDisk();
 
-            Assert.That(said, Does.Contain("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
-            Assert.That(said, Does.Contain(@"D:\Federations\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd"));
-            Assert.That(said, Does.Contain(@"D:\Federations\Clash Reports"));
+            try
+            {
+                string open = Path.Combine(folder, "1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf");
+                string said = OpenDocumentJob.Describe(open, string.Empty);
+
+                Assert.That(said, Does.Contain("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
+                Assert.That(said, Does.Contain(
+                    Path.Combine(folder, "1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd")));
+                Assert.That(said, Does.Contain(Path.Combine(folder, ReportPaths.DefaultSubfolder)));
+            }
+            finally
+            {
+                Directory.Delete(folder, true);
+            }
         }
 
         [Test]
