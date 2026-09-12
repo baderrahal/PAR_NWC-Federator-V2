@@ -13,6 +13,7 @@ using Federator.Core.Diagnostics;
 using Federator.Core.Findings;
 using Federator.Core.Grouping;
 using Federator.Core.Exchange;
+using Federator.Core.Health;
 using Federator.Core.Naming;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
@@ -22,8 +23,8 @@ using Federator.Core.Units;
 namespace Federator.Addin.Ui
 {
     /// <summary>
-    /// Three steps: source, grouping, outputs. The window does the deciding. The engine
-    /// does the work, on this same thread.
+    /// Four tabs: source, grouping, outputs, clash. The window does the deciding. The
+    /// engine does the work, on this same thread.
     /// </summary>
     public partial class FederatorWindow : Window
     {
@@ -81,7 +82,6 @@ namespace Federator.Addin.Ui
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
-            FillOpenCounts();
 
             log.Block("FOLDERS REMEMBERED", folders.Lines());
 
@@ -210,31 +210,6 @@ namespace Federator.Addin.Ui
             }
 
             GroupingModeBox.SelectedIndex = Array.IndexOf(GroupingModes.All(), GroupingModes.Default);
-        }
-
-        /// <summary>
-        /// The two ways of counting what is still outstanding, read off OpenClashes so the
-        /// window and the workbook cannot drift apart. Navisworks open is the default,
-        /// because it is the product's own definition rather than one this tool invented.
-        /// </summary>
-        private void FillOpenCounts()
-        {
-            OpenCountBox.Items.Clear();
-
-            foreach (OpenClashCount which in OpenClashes.All())
-            {
-                OpenCountBox.Items.Add(OpenClashes.Describe(which));
-            }
-
-            OpenCountBox.SelectedIndex = Array.IndexOf(OpenClashes.All(), OpenClashes.Default);
-        }
-
-        private OpenClashCount ChosenOpenCount()
-        {
-            OpenClashCount[] all = OpenClashes.All();
-            int at = OpenCountBox == null ? -1 : OpenCountBox.SelectedIndex;
-
-            return at >= 0 && at < all.Length ? all[at] : OpenClashes.Default;
         }
 
         private GroupingMode ChosenGrouping()
@@ -1000,7 +975,7 @@ namespace Federator.Addin.Ui
             RefreshRunPaths();
         }
 
-        private void OnRepublishChanged(object sender, RoutedEventArgs e)
+        private void OnXmlChanged(object sender, RoutedEventArgs e)
         {
             RefreshOutputsSummary();
         }
@@ -1019,14 +994,11 @@ namespace Federator.Addin.Ui
             options.SourceFolder = Trimmed(SourceFolderBox.Text);
             options.WriteXml = WriteClashXml.IsChecked == true;
 
-            // Fixed on. A weekly run wants the NWD, the client page and the photos every
-            // time, so all three stopped being decisions.
-            options.WriteHtml = true;
-            options.OpenCount = ChosenOpenCount();
+            // The page, the units and the photos are fixed on in the options themselves,
+            // so nothing here sets them. A weekly run wants all three every time.
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
             options.CompactResolved = CompactResolved.IsChecked == true;
             options.LogoPath = Trimmed(LogoBox.Text);
-            options.SetDocumentUnits = true;
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
             options.Names = settings;
@@ -1041,7 +1013,6 @@ namespace Federator.Addin.Ui
         private ImageOptions ImagesWanted()
         {
             ImageOptions images = new ImageOptions();
-            images.Write = true;
             images.EmbedThumbnail = EmbedThumbnails.IsChecked == true;
 
             int pixels = Number(ImagePixelsBox.Text, ImageOptions.DefaultPixels);
@@ -1249,7 +1220,6 @@ namespace Federator.Addin.Ui
                 groups.Count);
 
             log.Line("grouping         : " + GroupingModes.Describe(ChosenGrouping()));
-            log.Line("outstanding      : " + OpenClashes.Describe(ChosenOpenCount()));
             log.Line("apply file to old: "
                 + (ApplyFileSettings.IsChecked == true
                     ? "YES, which RESETS the results of every test it changes"
@@ -1476,7 +1446,7 @@ namespace Federator.Addin.Ui
             log.TryCopyTo(nwfFolder, out copied);
         }
 
-        // ---------- Step 4, clash. Sets only in this session ----------
+        // ---------- Step 4, clash ----------
 
         /// <summary>
         /// One picker, one file. Nothing about any one file is in here, the file is
@@ -1518,7 +1488,9 @@ namespace Federator.Addin.Ui
 
         /// <summary>
         /// Says what the picked file actually holds, counted out of the file itself, so a
-        /// file with no tests in it is obvious before a run rather than after one.
+        /// file with no tests in it is obvious before a run rather than after one, and
+        /// what HealthCheck makes of it, so a damaged export is obvious then too. D1. The
+        /// check's whole summary goes in the log and one line of it under the file.
         /// </summary>
         private string Describe(string path)
         {
@@ -1538,7 +1510,11 @@ namespace Federator.Addin.Ui
                 + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test." : " tests.");
 
             log.Line("PICK     " + path + " holds " + held);
-            return "Picked " + path + ". It holds " + held;
+
+            HealthCheckResult health = HealthCheck.Run(exchange);
+            log.Block("HEALTH " + Path.GetFileName(path), health.Summary());
+
+            return "Picked " + path + ". It holds " + held + " " + health.Line(exchange.HasSets);
         }
 
         private static string Trimmed(string value)
@@ -1571,10 +1547,6 @@ namespace Federator.Addin.Ui
                 : new ExchangeReader().ReadFile(path);
         }
 
-        /// <summary>
-        /// Reads whichever file was picked and rebuilds its sets into whatever document is
-        /// open. Runs on the plugin thread, like everything else that touches the API.
-        /// </summary>
         /// <summary>
         /// The whole job on the file already open. No scan, no source folder, no grouping.
         ///
@@ -1725,6 +1697,12 @@ namespace Federator.Addin.Ui
             }
         }
 
+        /// <summary>
+        /// The Build sets button. The picked file's sets into whatever document is open,
+        /// nothing else, through the same engine method the run uses per group, so the
+        /// SETS lines in the log read the same either way. D4. Runs on the plugin thread,
+        /// like everything else that touches the API.
+        /// </summary>
         private void OnBuildSets(object sender, RoutedEventArgs e)
         {
             if (running)
@@ -1745,56 +1723,15 @@ namespace Federator.Addin.Ui
 
             try
             {
-                log.Line("SETS     started, reading " + path);
+                log.Line("SETS     started by hand, reading " + path);
                 ExchangeDocument exchange = new ExchangeReader().ReadFile(path);
 
-                log.Line("SETS     the file holds " + exchange.Sets.Count
-                    + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
-                    + exchange.Tests.Count
-                    + (exchange.Tests.Count == 1 ? " test" : " tests"));
+                FederationEngine engine = new FederationEngine(SetProgress, log, exchange, ReportsWanted());
+                SetBuildOutcome outcome = engine.BuildSetsByHand();
 
-                SetBuildPlan plan = SetBuildPlan.From(exchange);
-
-                foreach (string unknown in plan.UnknownTestValues)
-                {
-                    log.Line("SETS     condition test \"" + unknown
-                        + "\" is not one this tool rebuilds, every set using it is skipped");
-                }
-
-                if (!plan.HasWork)
-                {
-                    // A project keeping its sets in the model and supplying only tests is a
-                    // normal case, not an error.
-                    string nothing = plan.Skipped.Count > 0
-                        ? "No set in this file can be rebuilt. " + plan.Skipped.Count + " skipped."
-                        : "This file holds no sets. Nothing to build.";
-
-                    log.Line("SETS     " + nothing);
-                    SetsSummary.Text = nothing;
-                    ShowSetLines(PlanOnlyLines(plan));
-                    return;
-                }
-
-                log.Line("SETS     " + plan.Buildable.Count + " to build, "
-                    + plan.Skipped.Count + " skipped, deepest folder depth "
-                    + plan.DeepestFolderDepth());
-
-                SetBuilder builder = new SetBuilder(SetProgress, log);
-                SetBuildOutcome outcome = builder.Build(plan);
-
-                log.Block(SetsSectionTitle, outcome.Lines());
                 ShowSetLines(outcome.Lines());
-
-                string summary = outcome.CreatedCount + " created, "
-                    + outcome.FindingItemsCount + " finding items, "
-                    + outcome.ZeroCount + " at zero"
-                    + (outcome.FailedCount > 0 ? ", " + outcome.FailedCount + " failed" : string.Empty)
-                    + (outcome.SkippedCount > 0 ? ", " + outcome.SkippedCount + " skipped" : string.Empty)
-                    + ".";
-
-                SetsSummary.Text = summary;
-                SetProgress("Sets finished. " + summary);
-                log.Line("SETS     finished. " + summary);
+                SetsSummary.Text = outcome.Summary();
+                SetProgress("Sets finished. " + outcome.Summary());
             }
             catch (Exception error)
             {
@@ -1810,10 +1747,11 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// Creates the tests the picked file holds and runs them against whatever document
-        /// is open right now, without federating anything. This is the one off. The Run
-        /// button does the same work per group, in the right order, and saves the NWF
-        /// after it. Runs on the plugin thread, like everything else that touches the API.
+        /// The Run tests button. The picked file's tests created into and run against
+        /// whatever document is open, without federating anything and with no NWF saved,
+        /// through the same engine method the run uses per group, so the CLASH lines in
+        /// the log read the same either way. D4. Runs on the plugin thread, like
+        /// everything else that touches the API.
         /// </summary>
         private void OnRunTests(object sender, RoutedEventArgs e)
         {
@@ -1835,38 +1773,25 @@ namespace Federator.Addin.Ui
 
             try
             {
-                log.Line("CLASH    started, reading " + path);
+                log.Line("CLASH    started by hand, reading " + path);
                 ExchangeDocument exchange = new ExchangeReader().ReadFile(path);
 
-                if (!exchange.HasTests)
+                FederationEngine engine = new FederationEngine(SetProgress, log, exchange, ReportsWanted());
+                ClashRunOutcome outcome = engine.RunTestsByHand();
+
+                if (outcome == null)
                 {
-                    string nothing = "This file holds no clash test. Nothing to create.";
-                    log.Line("CLASH    " + nothing);
+                    // The engine said why in the log: nothing open, or a file holding no
+                    // clash test, or a throw it caught.
+                    string nothing = "Nothing was created or run. The log says why.";
                     SetsSummary.Text = nothing;
                     ShowSetLines(new List<string> { nothing });
                     return;
                 }
 
-                string units = ClashRunner.DocumentUnits();
-                ClashTestPlan plan = ClashTestPlan.From(exchange, units);
-
-                foreach (string unknown in plan.UnknownTestTypes)
-                {
-                    log.Line("CLASH    test type \"" + unknown
-                        + "\" is not one this tool creates, every test using it is skipped by name");
-                }
-
-                log.Line("CLASH    " + plan.TestsInFile + " in the file, " + plan.Buildable.Count
-                    + " to create, " + plan.Skipped.Count + " skipped before the model");
-
-                ClashRunOutcome outcome = new ClashRunner(SetProgress, log).Run(plan);
-
-                log.Block(ClashSectionTitle, outcome.Lines());
                 ShowSetLines(outcome.Lines());
-
                 SetsSummary.Text = outcome.Summary();
                 SetProgress("Clash tests finished. " + outcome.Summary());
-                log.Line("CLASH    finished. " + outcome.Summary());
             }
             catch (Exception error)
             {
@@ -1882,27 +1807,6 @@ namespace Federator.Addin.Ui
                 running = false;
                 RunTestsButton.IsEnabled = true;
             }
-        }
-
-        private const string ClashSectionTitle = "CLASH";
-
-        private const string SetsSectionTitle = "SETS";
-
-        private static IList<string> PlanOnlyLines(SetBuildPlan plan)
-        {
-            List<string> lines = new List<string>();
-
-            foreach (SkippedSet skipped in plan.Skipped)
-            {
-                lines.Add("SKIPPED " + skipped.Path + "  " + skipped.Reason);
-            }
-
-            if (lines.Count == 0)
-            {
-                lines.Add("This file holds no sets.");
-            }
-
-            return lines;
         }
 
         private void ShowSetLines(IEnumerable<string> lines)

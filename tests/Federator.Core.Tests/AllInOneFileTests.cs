@@ -472,5 +472,14 @@ namespace Federator.Core.Tests
             Assert.That(health.SetsAtRoot.Count, Is.EqualTo(0));
             Assert.That(health.DuplicateNames.Count, Is.EqualTo(0));
         }
+        // D1. The one sentence the window puts under the picked file.
+        [Test]
+        public void TheHealthLineSaysEveryLocatorResolves()
+        {
+            HealthCheckResult health = HealthCheck.Run(document);
+
+            Assert.That(health.Line(document.HasSets),
+                Is.EqualTo("Every locator resolves against its sets."));
+        }
     }
 }

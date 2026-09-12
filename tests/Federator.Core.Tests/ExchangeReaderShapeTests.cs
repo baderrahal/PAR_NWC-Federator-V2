@@ -209,5 +209,36 @@ namespace Federator.Core.Tests
 
             Assert.That(reader.ReadText(SetsOnly).Sets[0].Path, Is.EqualTo("other_root/A/One"));
         }
+        // D1. The one sentence the window puts under the picked file.
+        [Test]
+        public void TheHealthLineOfATestsOnlyFileSaysTheModelSetsAreUsed()
+        {
+            ExchangeDocument document = new ExchangeReader().ReadText(TestsOnly);
+            HealthCheckResult health = HealthCheck.Run(document);
+
+            Assert.That(health.Line(document.HasSets),
+                Is.EqualTo("Its tests will resolve against the sets already in the model."));
+        }
+
+        [Test]
+        public void TheHealthLineNamesHowManyLocatorsMissWhenTheFileHoldsSets()
+        {
+            // One set, One, and a test whose right side names Two, which is not there.
+            string oneSet = TestsOnly.Replace("</exchange>",
+                "<selectionsets><selectionset name=\"One\"><findspec mode=\"all\"><conditions>"
+                + "<condition test=\"equals\" flags=\"10\">"
+                + "<property><name internal=\"LcOaNodeSourceFile\">Source File</name></property>"
+                + "<value><data type=\"wstring\">a.nwc</data></value></condition>"
+                + "</conditions><locator>/</locator></findspec></selectionset>"
+                + "</selectionsets></exchange>")
+                .Replace("lcop_selection_set_tree/A/One", "lcop_selection_set_tree/One");
+
+            ExchangeDocument document = new ExchangeReader().ReadText(oneSet);
+            HealthCheckResult health = HealthCheck.Run(document);
+
+            Assert.That(document.HasSets, Is.True);
+            Assert.That(health.Line(true),
+                Is.EqualTo("1 of 2 locators name no set in the file, so 1 test would be skipped by name."));
+        }
     }
 }

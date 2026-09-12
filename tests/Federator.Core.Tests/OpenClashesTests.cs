@@ -37,8 +37,6 @@ namespace Federator.Core.Tests
         public void NavisworksOpenIsTheDefaultBecauseItIsTheProductsOwnDefinition()
         {
             Assert.That(OpenClashes.Default, Is.EqualTo(OpenClashCount.NavisworksOpen));
-            Assert.That(new ClashReport("b", "n").OpenCount, Is.EqualTo(OpenClashCount.NavisworksOpen));
-            Assert.That(new ReportOptions().OpenCount, Is.EqualTo(OpenClashCount.NavisworksOpen));
         }
 
         [Test]
@@ -79,11 +77,10 @@ namespace Federator.Core.Tests
 
         // ---------- a report to count over ----------
 
-        private static ClashReport Report(OpenClashCount which)
+        private static ClashReport Report()
         {
             ClashReport report = new ClashReport("1C07BC", "1104-PAR-1C07BC-ZZZ-BM-MOD-000001");
             report.SetTreeRoot = Root;
-            report.OpenCount = which;
 
             TestReport test = report.AddTest("AR v ME");
             test.LeftLocator = Floors;
@@ -136,7 +133,7 @@ namespace Federator.Core.Tests
         [Test]
         public void EachTestReportsHowManyAreResolved()
         {
-            TestReport test = Report(OpenClashCount.NavisworksOpen).Tests[0];
+            TestReport test = Report().Tests[0];
 
             Assert.That(test.Resolved, Is.EqualTo(40),
                 "resolved clashes stay in the file and this is how the growth is seen");
@@ -147,7 +144,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheReportAddsUpTheResolvedAcrossEveryTest()
         {
-            Assert.That(Report(OpenClashCount.NavisworksOpen).TotalResolved, Is.EqualTo(40));
+            Assert.That(Report().TotalResolved, Is.EqualTo(40));
         }
 
         [Test]

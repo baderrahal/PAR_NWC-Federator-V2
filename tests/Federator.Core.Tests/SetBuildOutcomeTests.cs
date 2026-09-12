@@ -325,5 +325,48 @@ namespace Federator.Core.Tests
             Assert.That(result.IsZero, Is.False);
             Assert.That(result.Line(), Is.EqualTo("present lcop_selection_set_tree/B/Ducts  1 condition  140 items  already there, left alone"));
         }
+        // ---------- the one summary line, F34 ----------
+
+        [Test]
+        public void TheSummaryCountsCreatedPresentFindingZeroFailedAndSkipped()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddCreated("lcop_selection_set_tree/A/One", "One", 1, 12);
+            outcome.AddCreated("lcop_selection_set_tree/A/Two", "Two", 1, 0);
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Three", "Three", 2, 5);
+            outcome.AddFailed("lcop_selection_set_tree/A/Four", "Four", 1, "it threw");
+
+            Assert.That(outcome.Summary(),
+                Is.EqualTo("2 created, 1 already there, 1 finding items, 1 at zero, 1 failed."));
+        }
+
+        [Test]
+        public void NothingBuiltAndNothingSkippedIsAFileHoldingNoSets()
+        {
+            Assert.That(new SetBuildOutcome().Summary(),
+                Is.EqualTo("This file holds no sets. Nothing to build."));
+        }
+
+        [Test]
+        public void NothingBuiltWithSetsSkippedSaysHowMany()
+        {
+            ExchangeDocument document = new ExchangeReader().ReadText(
+                "<exchange units=\"ft\"><selectionsets>"
+                + "<selectionset name=\"Odd\"><findspec mode=\"all\"><conditions>"
+                + "<condition test=\"wildcard\" flags=\"10\">"
+                + "<property><name internal=\"n\">Name</name></property>"
+                + "<value><data type=\"wstring\">v</data></value></condition>"
+                + "</conditions><locator>/</locator></findspec></selectionset>"
+                + "</selectionsets></exchange>");
+
+            SetBuildOutcome outcome = new SetBuildOutcome();
+
+            foreach (SkippedSet skipped in SetBuildPlan.From(document).Skipped)
+            {
+                outcome.AddSkipped(skipped);
+            }
+
+            Assert.That(outcome.Summary(), Is.EqualTo("No set in this file can be rebuilt. 1 skipped."));
+        }
     }
 }

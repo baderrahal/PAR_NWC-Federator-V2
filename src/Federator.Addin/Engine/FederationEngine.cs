@@ -27,7 +27,6 @@ namespace Federator.Addin.Engine
     {
         private readonly Action<string> progress;
         private readonly RunLog log;
-        private readonly bool republishNwd;
         private readonly ExchangeDocument exchange;
         private readonly ReportOptions reports;
         /// <summary>
@@ -47,39 +46,21 @@ namespace Federator.Addin.Engine
         /// <summary>Why the run was abandoned, or null while it is still going.</summary>
         private string stopTheRun;
 
-        public FederationEngine(Action<string> progress, RunLog log)
-            : this(progress, log, true, null)
-        {
-        }
-
-        public FederationEngine(Action<string> progress, RunLog log, bool republishNwd)
-            : this(progress, log, republishNwd, null)
-        {
-        }
-
         /// <summary>
-        /// The exchange document is whatever was picked in the Clash step, read once. It
-        /// can hold sets, tests, or both, and any of the three is a normal case. Null when
-        /// nothing was picked, and then no set is built and no test is created.
-        /// </summary>
-        public FederationEngine(
-            Action<string> progress, RunLog log, bool republishNwd, ExchangeDocument exchange)
-            : this(progress, log, republishNwd, exchange, null, null)
-        {
-        }
-
-        /// <summary>
-        /// The report folder is worked out once, from the picked folder or from beside the
-        /// NWF folder, so every group in the run writes into the same place.
+        /// For a scanned run. The exchange document is whatever was picked in the Clash
+        /// step, read once. It can hold sets, tests, or both, and any of the three is a
+        /// normal case. Null when nothing was picked, and then no set is built and no test
+        /// is created. The report folder is worked out once, from the picked folder or
+        /// from beside the NWF folder, so every group in the run writes into the same
+        /// place.
         /// </summary>
         public FederationEngine(
             Action<string> progress,
             RunLog log,
-            bool republishNwd,
             ExchangeDocument exchange,
             ReportOptions reports,
             string nwfFolder)
-            : this(progress, log, republishNwd, exchange, reports)
+            : this(progress, log, exchange, reports)
         {
             this.reportFolder = string.IsNullOrEmpty(nwfFolder)
                     && string.IsNullOrEmpty(this.reports.ExcelFolder)
@@ -88,16 +69,17 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// For the open file. No folder is handed in, because the report folder is read
-        /// off the open file in RunOpenDocument through OpenDocumentJob.ReportFolder, the
-        /// same rule the window uses for its line. Handing a folder in here is what once
-        /// wrote to Clash Reports\Clash Reports: the window passed the report folder as
-        /// the NWF folder and the constructor built Clash Reports beside it again.
+        /// For the open file and for the two hand buttons on the Clash step. No folder is
+        /// handed in, because the report folder is read off the open file in
+        /// RunOpenDocument through OpenDocumentJob.ReportFolder, the same rule the window
+        /// uses for its line, and the hand buttons write no file at all. Handing a folder
+        /// in here is what once wrote to Clash Reports\Clash Reports: the window passed the
+        /// report folder as the NWF folder and the constructor built Clash Reports beside
+        /// it again.
         /// </summary>
         public FederationEngine(
             Action<string> progress,
             RunLog log,
-            bool republishNwd,
             ExchangeDocument exchange,
             ReportOptions reports)
         {
@@ -108,7 +90,6 @@ namespace Federator.Addin.Engine
 
             this.progress = progress ?? delegate { };
             this.log = log;
-            this.republishNwd = republishNwd;
             this.exchange = exchange;
             this.reports = reports ?? new ReportOptions();
             this.reportFolder = null;
@@ -217,7 +198,6 @@ namespace Federator.Addin.Engine
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
             outcome.NwdSize = -1;
-            outcome.NwdRequested = republishNwd;
 
             // The open file is one group, and it starts and finishes the way a scanned
             // group does, so GroupJudgement gives it DONE, PARTIAL or FAILED by the same
@@ -332,7 +312,6 @@ namespace Federator.Addin.Engine
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
             outcome.NwdSize = -1;
-            outcome.NwdRequested = republishNwd;
 
             try
             {
@@ -1079,6 +1058,55 @@ namespace Federator.Addin.Engine
             return CreateAndRunTheTests(document, job, outcome, source) || changed;
         }
 
+        /// <summary>
+        /// The Build sets button on the Clash step: the picked file's sets into the open
+        /// document, nothing else. No scan, no NWF saved, no test created. It is the same
+        /// BuildTheSets the run calls per group, so the SETS lines in the log read the
+        /// same whichever way the sets were built. The open file stands as the group. D4.
+        /// </summary>
+        public SetBuildOutcome BuildSetsByHand()
+        {
+            Document document = NavisworksApplication.ActiveDocument;
+
+            if (document == null)
+            {
+                log.Line("SETS     stopped, there is no active document");
+                return new SetBuildOutcome();
+            }
+
+            FederationJob job = OpenJob(Or(document.FileName));
+            JobOutcome outcome = new JobOutcome(job);
+
+            BuildTheSets(document, job, outcome);
+            return outcome.Sets ?? new SetBuildOutcome();
+        }
+
+        /// <summary>
+        /// The Run tests button on the Clash step: the picked file's tests created into
+        /// and run against the open document, nothing federated and no NWF saved. It is
+        /// the same CreateAndRunTheTests the run calls per group, so the CLASH lines in
+        /// the log read the same either way, and the report is built in memory the way a
+        /// run's is. With no report folder no picture and no file is written. Null when
+        /// nothing is open, when the file holds no test, or when the step threw, and the
+        /// log says which. D4.
+        /// </summary>
+        public ClashRunOutcome RunTestsByHand()
+        {
+            Document document = NavisworksApplication.ActiveDocument;
+
+            if (document == null)
+            {
+                log.Line("CLASH    stopped, there is no active document");
+                return null;
+            }
+
+            FederationJob job = OpenJob(Or(document.FileName));
+            JobOutcome outcome = new JobOutcome(job);
+
+            CreateAndRunTheTests(document, job, outcome, ClashSource.TestsFromXml);
+            return outcome.Clash;
+        }
+
         private bool BuildTheSets(Document document, FederationJob job, JobOutcome outcome)
         {
             try
@@ -1093,8 +1121,19 @@ namespace Federator.Addin.Engine
 
                 if (!plan.HasWork)
                 {
-                    log.Line("SETS     the picked file holds no set this tool rebuilds, "
-                        + "so the tests will resolve against whatever sets the model already holds");
+                    // Nothing to build is still an outcome, so the window's Build sets
+                    // button has lines and a summary to show, and the skipped sets are in
+                    // them by name rather than lost.
+                    SetBuildOutcome nothing = new SetBuildOutcome();
+
+                    foreach (SkippedSet skipped in plan.Skipped)
+                    {
+                        nothing.AddSkipped(skipped);
+                    }
+
+                    outcome.Sets = nothing;
+                    log.Line("SETS     " + nothing.Summary()
+                        + " The tests will resolve against whatever sets the model already holds.");
                     return false;
                 }
 
@@ -1202,7 +1241,6 @@ namespace Federator.Addin.Engine
                     report.DocumentUnits = units;
                     report.RunAt = DateTime.Now;
                     report.BuildStamp = BuildStamp.Of(typeof(FederationEngine).Assembly);
-                    report.OpenCount = reports.OpenCount;
                     runner.Report = report;
                     outcome.Report = report;
 
@@ -1700,16 +1738,13 @@ namespace Federator.Addin.Engine
             outcome.NwfOnDisk = outcome.NwfSize >= 0;
         }
 
+        /// <summary>
+        /// Publishes the NWD, every run. It used to be a tick box, on by default, and a
+        /// weekly run wanted it every time, so it is fixed on and there is no branch here
+        /// for a run that does not want it.
+        /// </summary>
         private void WriteNwd(Document document, FederationJob job, JobOutcome outcome)
         {
-            if (!republishNwd)
-            {
-                log.Line("NWD      not republished, this run was started without republishing");
-                outcome.NwdSize = SizeOnDiskOrMinusOne(job.NwdPath);
-                outcome.NwdOnDisk = outcome.NwdSize >= 0;
-                return;
-            }
-
             progress("Publishing NWD for " + job.Building);
             log.WriteAttempted("NWD", job.NwdPath);
 

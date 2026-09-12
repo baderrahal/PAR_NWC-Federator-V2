@@ -134,6 +134,35 @@ namespace Federator.Core.Health
             get { return AllSetsShareOneRule; }
         }
 
+        /// <summary>
+        /// The one sentence the window puts under the picked file, in a person's words.
+        /// D1. A file with no sets is a normal case, its tests resolve against the sets
+        /// already in the model, so its unresolved locators are not a fault of the file.
+        /// </summary>
+        public string Line(bool fileHoldsSets)
+        {
+            if (ExportUnusable)
+            {
+                return "This export is unusable, every set in it carries the same rule.";
+            }
+
+            if (!fileHoldsSets)
+            {
+                return "Its tests will resolve against the sets already in the model.";
+            }
+
+            if (UnresolvedLocatorCount == 0)
+            {
+                return "Every locator resolves against its sets.";
+            }
+
+            return UnresolvedLocatorCount + " of " + TotalLocatorCount
+                + " locators name no set in the file, so "
+                + TestsWithUnresolvedSide.Count
+                + (TestsWithUnresolvedSide.Count == 1 ? " test" : " tests")
+                + " would be skipped by name.";
+        }
+
         public IList<string> Summary()
         {
             List<string> lines = new List<string>

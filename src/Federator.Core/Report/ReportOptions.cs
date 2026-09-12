@@ -14,9 +14,11 @@ namespace Federator.Core.Report
             WriteXml = false;
             ExcelFolder = string.Empty;
             SourceFolder = string.Empty;
-            OpenCount = Federator.Core.Clash.OpenClashes.Default;
             ApplyFileSettings = false;
             CompactResolved = false;
+
+            // Fixed on, and the window no longer sets them. A weekly run wants the page
+            // and the units every time, so neither is a decision any more. F34.
             WriteHtml = true;
             SetDocumentUnits = true;
             UnitsName = DefaultUnits;
@@ -89,9 +91,6 @@ namespace Federator.Core.Report
         /// input.
         /// </summary>
         public string SourceFolder { get; set; }
-
-        /// <summary>What the matrix counts as still outstanding. Navisworks open by default.</summary>
-        public Federator.Core.Clash.OpenClashCount OpenCount { get; set; }
 
         /// <summary>
         /// Put the file's settings onto tests already in the document. Off by default,

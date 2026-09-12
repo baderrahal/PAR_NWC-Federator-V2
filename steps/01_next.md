@@ -267,6 +267,7 @@ F19 is dropped.
 - Files `src/Federator.Addin/Ui/FederatorWindow.xaml`, `FederatorWindow.xaml.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, `FederationJob.cs`, `src/Federator.Core/Report/ReportOptions.cs`, `ClashReportModel.cs`, `src/Federator.Core/Diagnostics/GroupOutcome.cs`
 - LOCAL MACHINE ONLY for the window, CONTAINER for the option defaults
 - D1 HealthCheck wired under the file line, D3 the outstanding count setting deleted, D4 the two hand buttons share the engine wording. The NWD folder box refreshes the summary, the XML box has a handler named for it, the republish field and the three unused engine constructors go
+- DONE on 2026-09-12, proof pending on the local machine for the window and the engine. `NwdRequested` stays on `GroupFacts` because `GroupJudgement` reads it, `JobOutcome` no longer carries it
 
 ## F35 Clash only where two disciplines meet
 

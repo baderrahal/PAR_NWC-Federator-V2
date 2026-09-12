@@ -141,5 +141,13 @@ namespace Federator.Core.Tests
         {
             Assert.That(document.Units, Is.EqualTo("ft"));
         }
+        // D1. The one sentence the window puts under a damaged export.
+        [Test]
+        public void TheHealthLineSaysTheExportIsUnusable()
+        {
+            HealthCheckResult health = HealthCheck.Run(document);
+
+            Assert.That(health.Line(document.HasSets), Does.StartWith("This export is unusable"));
+        }
     }
 }
