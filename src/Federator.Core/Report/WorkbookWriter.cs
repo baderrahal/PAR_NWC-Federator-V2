@@ -42,12 +42,6 @@ namespace Federator.Core.Report
             this.options = options ?? new ReportOptions();
         }
 
-        /// <summary>What this writer was told to do. Never null.</summary>
-        public ReportOptions Options
-        {
-            get { return options; }
-        }
-
         // ---------- where every cell of a block sits, measured off theirs ----------
 
         /// <summary>
@@ -541,7 +535,7 @@ namespace Federator.Core.Report
         /// Every sheet name the workbook would use, so a test can check them without
         /// writing a file. One now, where there used to be one per test plus two.
         /// </summary>
-        public static IList<string> SheetNamesFor(ClashReport report)
+        internal static IList<string> SheetNamesFor(ClashReport report)
         {
             return new List<string> { SheetNames.ForReport(report.OutputName) };
         }

@@ -222,13 +222,6 @@ namespace Federator.Core.Report
             return any ? worst : fallback;
         }
 
-        public string Position()
-        {
-            return X.ToString("0.###", CultureInfo.InvariantCulture) + ", "
-                + Y.ToString("0.###", CultureInfo.InvariantCulture) + ", "
-                + Z.ToString("0.###", CultureInfo.InvariantCulture);
-        }
-
         public override string ToString()
         {
             return Name;
@@ -365,12 +358,6 @@ namespace Federator.Core.Report
             get { return tally; }
         }
 
-        /// <summary>Rows on the sheet. A group is one row however many clashes it holds.</summary>
-        public int GroupCount
-        {
-            get { return rows.Count; }
-        }
-
         /// <summary>Every clash behind those rows, so the grouping hides nothing.</summary>
         public int RawClashes
         {
@@ -388,22 +375,6 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// New plus Active. Kept because it is what this tool counted before there was a
-        /// choice, and never labelled "open", because the clash API has no open against
-        /// closed notion. See docs/scan.md section 4h.
-        /// </summary>
-        public int NewPlusActive
-        {
-            get { return OpenClashes.Of(tally, OpenClashCount.NewAndActive); }
-        }
-
-        /// <summary>How many are still outstanding under whichever rule was chosen.</summary>
-        public int OpenUnder(OpenClashCount which)
-        {
-            return OpenClashes.Of(tally, which);
-        }
-
-        /// <summary>
         /// How many are Resolved. Resolved clashes stay in the file and keep counting, so
         /// this is how the growth becomes visible before anyone decides to compact.
         /// </summary>
@@ -416,21 +387,6 @@ namespace Federator.Core.Report
         public bool HasSheet
         {
             get { return rows.Count > 0; }
-        }
-
-        /// <summary>What the Summary says in its outcome column.</summary>
-        public string DescribeState()
-        {
-            switch (State)
-            {
-                case TestState.Passed:
-                    return "passed, ran and found nothing";
-                case TestState.FoundClashes:
-                    return "ran";
-                default:
-                    return "skipped, not run"
-                        + (SkippedReason.Length == 0 ? string.Empty : ", " + SkippedReason);
-            }
         }
 
         public override string ToString()
@@ -530,12 +486,6 @@ namespace Federator.Core.Report
 
         public double ClashStepSeconds { get; set; }
 
-        /// <summary>Resolved clashes across every test, which is what compacting removes.</summary>
-        public int TotalResolved
-        {
-            get { return Totals.Of(ClashStatus.Resolved); }
-        }
-
         /// <summary>How many results compacting removed, or minus one when it was not run.</summary>
         public int CompactedAway { get; set; }
 
@@ -627,21 +577,6 @@ namespace Federator.Core.Report
             get { return CountOf(TestState.Passed) + CountOf(TestState.FoundClashes); }
         }
 
-        public int TotalRawClashes
-        {
-            get
-            {
-                int raw = 0;
-
-                foreach (TestReport test in tests)
-                {
-                    raw += test.RawClashes;
-                }
-
-                return raw;
-            }
-        }
-
         public ClashTally Totals
         {
             get
@@ -655,47 +590,6 @@ namespace Federator.Core.Report
 
                 return total;
             }
-        }
-
-        /// <summary>
-        /// The discipline a set path belongs to, which is the first folder under the tree
-        /// root. Read out of the path the file itself carries, never off a list in the
-        /// code, because every project names its folders differently.
-        ///
-        /// lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals reads
-        /// as Mechanical. A set sitting at the root has no folder, so it is its own group.
-        /// </summary>
-        public string DisciplineOf(string locator)
-        {
-            if (string.IsNullOrEmpty(locator))
-            {
-                return string.Empty;
-            }
-
-            string[] parts = locator.Split('/');
-            int start = 0;
-
-            if (parts.Length > 0
-                && string.Equals(parts[0], SetTreeRoot, StringComparison.Ordinal))
-            {
-                start = 1;
-            }
-
-            // The last part is the set itself, so a folder only exists when there is
-            // something between the root and the name.
-            return parts.Length - start >= 2 ? parts[start] : string.Empty;
-        }
-
-        /// <summary>The set name on its own, which is the last part of the path.</summary>
-        public static string SetNameOf(string locator)
-        {
-            if (string.IsNullOrEmpty(locator))
-            {
-                return string.Empty;
-            }
-
-            string[] parts = locator.Split('/');
-            return parts[parts.Length - 1];
         }
     }
 }

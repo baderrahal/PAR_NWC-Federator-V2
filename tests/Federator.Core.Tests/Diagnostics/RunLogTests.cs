@@ -275,10 +275,10 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
-                log.GroupFinished("1C07AA", GroupOutcome.Done, 12.5);
-                log.GroupFinished("1C07BC", GroupOutcome.Done, 30.25);
-                log.GroupFinished("1C07K1", GroupOutcome.Partial, 8.0, "1 of 4 files did not append");
-                log.GroupFinished("1C07ZZ", GroupOutcome.Failed, 1.5, "nothing appended");
+                log.GroupFinished("1C07AA", GroupOutcome.Done, 12.5, null, null);
+                log.GroupFinished("1C07BC", GroupOutcome.Done, 30.25, null, null);
+                log.GroupFinished("1C07K1", GroupOutcome.Partial, 8.0, "1 of 4 files did not append", null);
+                log.GroupFinished("1C07ZZ", GroupOutcome.Failed, 1.5, "nothing appended", null);
 
                 string one = Path.Combine(folder, "one.nwf");
                 string two = Path.Combine(folder, "two.nwd");
@@ -326,7 +326,7 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
-                log.GroupFinished("1C07AA", GroupOutcome.Done, 1.0);
+                log.GroupFinished("1C07AA", GroupOutcome.Done, 1.0, null, null);
                 log.WriteResultBlock();
 
                 string text = ReadWhileOpen(log);
@@ -491,7 +491,7 @@ namespace Federator.Core.Tests
                 log.UnreadableFile("badname.nwc", "Split on \"-\" gave 1 parts");
                 log.ScanFinished(7, 6, 1);
                 log.GroupStarted("1C07BC", new List<string> { @"C:\in\a.nwc", @"C:\in\b.nwc" });
-                log.GroupFinished("1C07BC", GroupOutcome.Done, 42.125);
+                log.GroupFinished("1C07BC", GroupOutcome.Done, 42.125, null, null);
 
                 string text = ReadWhileOpen(log);
                 Assert.That(text, Does.Contain("SCAN     started"));
@@ -586,7 +586,7 @@ namespace Federator.Core.Tests
 
             using (RunLog log = Start())
             {
-                log.GroupFinished("a", GroupOutcome.Done, 1.0);
+                log.GroupFinished("a", GroupOutcome.Done, 1.0, null, null);
                 log.WriteResultBlock();
                 text = ReadWhileOpen(log);
             }

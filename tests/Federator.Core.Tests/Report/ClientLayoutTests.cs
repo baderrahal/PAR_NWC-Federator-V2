@@ -26,21 +26,9 @@ namespace Federator.Core.Tests
 
         private static string Find()
         {
-            DirectoryInfo at = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
+            string path = Path.Combine(Samples.Folder(), "client-report", Sample);
 
-            while (at != null)
-            {
-                string path = Path.Combine(at.FullName, "samples", "client-report", Sample);
-
-                if (File.Exists(path))
-                {
-                    return path;
-                }
-
-                at = at.Parent;
-            }
-
-            return null;
+            return File.Exists(path) ? path : null;
         }
 
         private static IXLWorksheet Theirs(out XLWorkbook book)

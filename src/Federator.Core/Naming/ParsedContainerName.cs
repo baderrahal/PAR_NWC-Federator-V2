@@ -12,7 +12,6 @@ namespace Federator.Core.Naming
     public sealed class ParsedContainerName
     {
         private ParsedContainerName(
-            string sourceName,
             string stem,
             IList<string> parts,
             bool isReadable,
@@ -22,7 +21,6 @@ namespace Federator.Core.Naming
             string discipline,
             string unreadableReason)
         {
-            SourceName = sourceName;
             Stem = stem;
             Parts = new ReadOnlyCollection<string>(parts ?? new List<string>());
             IsReadable = isReadable;
@@ -33,13 +31,10 @@ namespace Federator.Core.Naming
             UnreadableReason = unreadableReason;
         }
 
-        /// <summary>The name exactly as it was handed in, folder and extension included.</summary>
-        public string SourceName { get; private set; }
-
         /// <summary>The file name with any folder and extension removed.</summary>
         public string Stem { get; private set; }
 
-        public ReadOnlyCollection<string> Parts { get; private set; }
+        internal ReadOnlyCollection<string> Parts { get; private set; }
 
         public bool IsReadable { get; private set; }
 
@@ -57,7 +52,6 @@ namespace Federator.Core.Naming
         public string UnreadableReason { get; private set; }
 
         internal static ParsedContainerName Readable(
-            string sourceName,
             string stem,
             IList<string> parts,
             string project,
@@ -66,18 +60,18 @@ namespace Federator.Core.Naming
             string discipline)
         {
             return new ParsedContainerName(
-                sourceName, stem, parts, true, project, originator, building, discipline, null);
+                stem, parts, true, project, originator, building, discipline, null);
         }
 
         internal static ParsedContainerName Unreadable(
-            string sourceName, string stem, IList<string> parts, string reason)
+            string stem, IList<string> parts, string reason)
         {
             if (string.IsNullOrEmpty(reason))
             {
                 throw new ArgumentException("An unreadable name needs a reason.", "reason");
             }
 
-            return new ParsedContainerName(sourceName, stem, parts, false, null, null, null, null, reason);
+            return new ParsedContainerName(stem, parts, false, null, null, null, null, reason);
         }
 
         public override string ToString()

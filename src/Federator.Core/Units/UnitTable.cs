@@ -88,7 +88,7 @@ namespace Federator.Core.Units
         };
 
         /// <summary>Every unit this tool knows.</summary>
-        public static IList<UnitRow> All
+        internal static IList<UnitRow> All
         {
             get { return Rows; }
         }

@@ -93,7 +93,7 @@ namespace Federator.Core.Tests
                 Assert.Ignore("Navisworks is not on this machine.");
             }
 
-            string repo = RepoRoot();
+            string repo = Samples.Repo();
 
             if (repo == null)
             {
@@ -138,7 +138,7 @@ namespace Federator.Core.Tests
         [Test]
         public void NoLogoFileIsAnywhereInTheRepoOrTheBundle()
         {
-            string repo = RepoRoot();
+            string repo = Samples.Repo();
 
             if (repo == null)
             {
@@ -188,7 +188,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheOnlyLogosInTheCheckoutAreInsideTheSuppliedClientExports()
         {
-            string repo = RepoRoot();
+            string repo = Samples.Repo();
 
             if (repo == null)
             {
@@ -211,23 +211,6 @@ namespace Federator.Core.Tests
                 Assert.That(found, Does.Contain("_files"),
                     "it is not inside a report folder, so it did not get there by being copied");
             }
-        }
-
-        private static string RepoRoot()
-        {
-            DirectoryInfo at = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
-
-            while (at != null)
-            {
-                if (File.Exists(Path.Combine(at.FullName, "ParsonsNwcFederator.sln")))
-                {
-                    return at.FullName;
-                }
-
-                at = at.Parent;
-            }
-
-            return null;
         }
 
         // ---------- it goes into the report's own folder ----------

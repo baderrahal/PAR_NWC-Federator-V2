@@ -33,7 +33,7 @@ namespace Federator.Core.Sets
         /// <summary>Every distinct test value that stopped a set, in the order first seen.</summary>
         public ReadOnlyCollection<string> UnknownTestValues { get; private set; }
 
-        public int TotalSets
+        internal int TotalSets
         {
             get { return Buildable.Count + Skipped.Count; }
         }
@@ -48,7 +48,7 @@ namespace Federator.Core.Sets
         /// children, with no repeats. A folder tree of any depth comes back in an order
         /// that can be created straight through.
         /// </summary>
-        public IList<IList<string>> FolderPaths()
+        internal IList<IList<string>> FolderPaths()
         {
             List<IList<string>> paths = new List<IList<string>>();
             HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
@@ -77,7 +77,7 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>The deepest folder nesting in the plan. Zero when every set is at the root.</summary>
-        public int DeepestFolderDepth()
+        internal int DeepestFolderDepth()
         {
             int deepest = 0;
 

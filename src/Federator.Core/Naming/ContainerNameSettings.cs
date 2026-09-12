@@ -70,18 +70,6 @@ namespace Federator.Core.Naming
             }
         }
 
-        public ContainerNameSettings Copy()
-        {
-            return new ContainerNameSettings
-            {
-                Separator = Separator,
-                ProjectPart = ProjectPart,
-                OriginatorPart = OriginatorPart,
-                BuildingPart = BuildingPart,
-                DisciplinePart = DisciplinePart
-            };
-        }
-
         private static void RequireOneBased(int value, string name)
         {
             if (value < 1)

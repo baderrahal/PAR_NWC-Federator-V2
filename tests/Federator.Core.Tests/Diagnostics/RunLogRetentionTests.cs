@@ -271,7 +271,8 @@ namespace Federator.Core.Tests
         {
             MakeOldLogs(35);
 
-            using (RunLog log = RunLog.StartOrDisabled(folder, new DateTime(2026, 8, 30, 14, 23, 5)))
+            using (RunLog log = RunLog.StartOrDisabled(
+                       folder, new DateTime(2026, 8, 30, 14, 23, 5), RunLog.DefaultKeepLogs))
             {
                 Assert.That(log.IsWritingToDisk, Is.True);
                 Assert.That(LogsIn(folder).Length, Is.EqualTo(30));

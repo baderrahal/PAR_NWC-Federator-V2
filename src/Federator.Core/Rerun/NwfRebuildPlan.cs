@@ -43,7 +43,7 @@ namespace Federator.Core.Rerun
         public bool Rebuild { get; private set; }
 
         /// <summary>Every file to append, in scan order. Empty where nothing is rebuilt.</summary>
-        public ReadOnlyCollection<string> Files { get; private set; }
+        internal ReadOnlyCollection<string> Files { get; private set; }
 
         /// <summary>In the scan and not in the NWF under any folder.</summary>
         public ReadOnlyCollection<string> Added { get; private set; }
@@ -54,7 +54,7 @@ namespace Federator.Core.Rerun
         /// <summary>In the NWF and not in the scan under any folder.</summary>
         public ReadOnlyCollection<string> Removed { get; private set; }
 
-        public ReadOnlyCollection<string> Unchanged { get; private set; }
+        internal ReadOnlyCollection<string> Unchanged { get; private set; }
 
         public static NwfRebuildPlan From(NwfComparison comparison)
         {

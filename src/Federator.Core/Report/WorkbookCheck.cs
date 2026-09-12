@@ -85,7 +85,7 @@ namespace Federator.Core.Report
         public IList<int> BlockCounts { get; private set; }
 
         /// <summary>Everything wrong, each a plain sentence, worst first.</summary>
-        public IList<string> Problems
+        internal IList<string> Problems
         {
             get { return problems.AsReadOnly(); }
         }

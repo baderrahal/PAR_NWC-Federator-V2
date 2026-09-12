@@ -407,12 +407,6 @@ namespace Federator.Core.Clash
             return locators;
         }
 
-        /// <summary>How many were skipped for each reason, for the totals block.</summary>
-        public IDictionary<ClashSkipReason, int> SkipReasonCounts()
-        {
-            return CountReasons(skipped);
-        }
-
         internal static IDictionary<ClashSkipReason, int> CountReasons(IEnumerable<SkippedClashTest> from)
         {
             Dictionary<ClashSkipReason, int> counts = new Dictionary<ClashSkipReason, int>();

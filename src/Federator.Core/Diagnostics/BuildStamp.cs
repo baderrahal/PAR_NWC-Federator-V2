@@ -40,15 +40,15 @@ namespace Federator.Core.Diagnostics
                     + error.GetType().Name + ": " + error.Message;
             }
         }
-
         /// <summary>
         /// True when the stamp looks like one this build produced rather than a bare
         /// version number. Used by the tests to prove the stamping actually ran.
         /// </summary>
-        public static bool LooksStamped(string stamp)
+        internal static bool LooksStamped(string stamp)
         {
             return !string.IsNullOrEmpty(stamp)
                 && stamp.IndexOf(" built ", StringComparison.Ordinal) > 0;
         }
+
     }
 }

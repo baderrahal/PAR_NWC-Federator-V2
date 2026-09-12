@@ -43,7 +43,7 @@ namespace Federator.Core.Report
         /// picked, a subfolder beside the NWF folder so the reports sit next to the models
         /// they came from rather than somewhere nobody looks.
         /// </summary>
-        public static string Folder(string pickedFolder, string nwfFolder)
+        internal static string Folder(string pickedFolder, string nwfFolder)
         {
             return Choose(pickedFolder, nwfFolder, null).Folder;
         }

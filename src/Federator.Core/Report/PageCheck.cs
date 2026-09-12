@@ -59,7 +59,7 @@ namespace Federator.Core.Report
         public string FirstItemId { get; private set; }
 
         /// <summary>Any header on the page that is not one of the client's own.</summary>
-        public IList<string> ExtraColumns
+        internal IList<string> ExtraColumns
         {
             get { return extraColumns.AsReadOnly(); }
         }
@@ -80,7 +80,7 @@ namespace Federator.Core.Report
         public int PicturesOnDisk { get; private set; }
 
         /// <summary>The picture references that point at nothing, up to a readable few.</summary>
-        public IList<string> MissingPictures
+        internal IList<string> MissingPictures
         {
             get { return missingPictures.AsReadOnly(); }
         }
@@ -93,7 +93,7 @@ namespace Federator.Core.Report
         public string LogoReference { get; private set; }
 
         /// <summary>Everything wrong, each as a plain sentence. Empty means nothing is.</summary>
-        public IList<string> Problems
+        internal IList<string> Problems
         {
             get { return problems.AsReadOnly(); }
         }
@@ -107,7 +107,7 @@ namespace Federator.Core.Report
         /// The first thing that differs, or an empty string. One fault often has forty
         /// consequences and the first is the one to act on.
         /// </summary>
-        public string FirstProblem
+        internal string FirstProblem
         {
             get { return problems.Count == 0 ? string.Empty : problems[0]; }
         }
@@ -152,7 +152,7 @@ namespace Federator.Core.Report
         }
 
         /// <summary>The same, on text already in hand, so a test needs no file.</summary>
-        public static PageCheck Of(string html, string beside, string path)
+        internal static PageCheck Of(string html, string beside, string path)
         {
             PageCheck check = new PageCheck();
             check.Path = path ?? string.Empty;
@@ -290,15 +290,9 @@ namespace Federator.Core.Report
         }
 
         /// <summary>The clashes in each test block, in page order.</summary>
-        public IList<int> BlockCounts
+        internal IList<int> BlockCounts
         {
             get { return blockCounts.AsReadOnly(); }
-        }
-
-        /// <summary>The clash table header exactly as the page has it, in order.</summary>
-        public IList<string> HeaderColumns
-        {
-            get { return headerColumns.AsReadOnly(); }
         }
 
         private void ReadRows(string html)

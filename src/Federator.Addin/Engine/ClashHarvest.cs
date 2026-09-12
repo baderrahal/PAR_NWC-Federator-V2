@@ -68,15 +68,6 @@ namespace Federator.Addin.Engine
         public string[] ElementIdNames { get; set; }
 
         /// <summary>
-        /// Every row for one test. A result group is one row carrying the count behind it,
-        /// and an ungrouped clash is its own row.
-        /// </summary>
-        public void Into(Document document, ClashTest test, TestReport into)
-        {
-            Into(document, null, test, null, into);
-        }
-
-        /// <summary>
         /// Every row for one test, and a picture for each row that asked for one.
         ///
         /// The picture is rendered here rather than in a second pass because this is

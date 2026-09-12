@@ -22,26 +22,9 @@ namespace Federator.Core.Tests
     {
         private const string Install = @"C:\Program Files\Autodesk\Navisworks Manage 2025";
 
-        private static string RepoRoot()
-        {
-            DirectoryInfo at = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
-
-            while (at != null)
-            {
-                if (File.Exists(Path.Combine(at.FullName, "ParsonsNwcFederator.sln")))
-                {
-                    return at.FullName;
-                }
-
-                at = at.Parent;
-            }
-
-            return null;
-        }
-
         private static IList<string> Samples()
         {
-            string repo = RepoRoot();
+            string repo = Federator.Core.Tests.Samples.Repo();
 
             if (repo == null)
             {

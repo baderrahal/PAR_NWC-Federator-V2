@@ -19,10 +19,12 @@ namespace Federator.Core.Report
         public const int DefaultPixels = 1024;
 
         /// <summary>
-        /// How many failures of the same kind end the run, matching the clash step. Fifty
-        /// images that all failed the same way is a broken run, not a bad model.
+        /// How many failures of the same kind end the run. Read off the clash step's own
+        /// guard rather than typed again, because the rule is that both stop the same way
+        /// after the same count. Fifty images that all failed the same way is a broken
+        /// run, not a bad model.
         /// </summary>
-        public const int DefaultStopAfterFailures = 50;
+        public const int DefaultStopAfterFailures = Federator.Core.Clash.RepeatedFailureGuard.DefaultThreshold;
 
         private readonly HashSet<ClashStatus> statuses = new HashSet<ClashStatus>();
 
@@ -70,12 +72,6 @@ namespace Federator.Core.Report
 
         /// <summary>How many failures in a row end the run. Zero switches the guard off.</summary>
         public int StopAfterFailures { get; set; }
-
-        /// <summary>Which statuses are worth a picture.</summary>
-        public ICollection<ClashStatus> Statuses
-        {
-            get { return statuses; }
-        }
 
         /// <summary>Is this clash one to render.</summary>
         public bool Wants(ClashStatus status)

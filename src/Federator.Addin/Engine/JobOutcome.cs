@@ -54,28 +54,6 @@ namespace Federator.Addin.Engine
             get { return errors.Count > 0; }
         }
 
-        private readonly List<string> reportWarnings = new List<string>();
-
-        /// <summary>
-        /// What the report checks found wrong, kept apart from the errors on purpose.
-        ///
-        /// A page with a column too many is worth saying loudly and is NOT a failed group.
-        /// The NWF, the NWD and the workbook were all written. Judging the group on this
-        /// would report a whole clean run as failed the way an earlier one did.
-        /// </summary>
-        public IList<string> ReportWarnings
-        {
-            get { return reportWarnings; }
-        }
-
-        public void AddReportWarning(string warning)
-        {
-            if (!string.IsNullOrEmpty(warning))
-            {
-                reportWarnings.Add(warning);
-            }
-        }
-
         /// <summary>
         /// Whether the publish call reported success. On a rerun last week's NWD sits at
         /// the same path, so File.Exists on its own cannot tell a fresh publish from a

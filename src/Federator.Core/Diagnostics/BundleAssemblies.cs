@@ -154,20 +154,6 @@ namespace Federator.Core.Diagnostics
             }
         }
 
-        /// <summary>Every assembly this handler has answered for, in the order it answered.</summary>
-        public static IList<string> Resolved
-        {
-            get
-            {
-                lock (Gate)
-                {
-                    return new List<string>(resolved);
-                }
-            }
-        }
-
-        private static readonly List<string> resolved = new List<string>();
-
         private static Assembly Resolve(object sender, ResolveEventArgs args)
         {
             try
@@ -226,11 +212,6 @@ namespace Federator.Core.Diagnostics
 
         private static void Remember(string what)
         {
-            lock (Gate)
-            {
-                resolved.Add(what);
-            }
-
             Say("BUNDLE   " + what);
         }
 
@@ -255,93 +236,6 @@ namespace Federator.Core.Diagnostics
             catch (Exception)
             {
                 // Reporting is never the thing that stops a load.
-            }
-        }
-
-
-        /// <summary>
-        /// Every assembly the bundle has to carry, worked out from what is actually in the
-        /// folder rather than from a list. Each one that is referenced by something in the
-        /// folder and is not in the folder is named, so a missing file is caught here
-        /// rather than ninety seconds into a run.
-        /// </summary>
-        public static IList<string> MissingFrom(string folder, IEnumerable<string> satisfiedElsewhere)
-        {
-            List<string> missing = new List<string>();
-
-            if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
-            {
-                return missing;
-            }
-
-            HashSet<string> present = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (string file in Directory.GetFiles(folder, "*.dll"))
-            {
-                present.Add(Path.GetFileNameWithoutExtension(file));
-            }
-
-            HashSet<string> elsewhere = new HashSet<string>(
-                satisfiedElsewhere ?? new string[0], StringComparer.OrdinalIgnoreCase);
-
-            HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (string file in Directory.GetFiles(folder, "*.dll"))
-            {
-                AssemblyName[] references = ReferencesOf(file);
-
-                if (references == null)
-                {
-                    continue;
-                }
-
-                foreach (AssemblyName reference in references)
-                {
-                    if (present.Contains(reference.Name)
-                        || elsewhere.Contains(reference.Name)
-                        || !seen.Add(reference.Name))
-                    {
-                        continue;
-                    }
-
-                    missing.Add(reference.Name);
-                }
-            }
-
-            missing.Sort(StringComparer.OrdinalIgnoreCase);
-            return missing;
-        }
-
-        /// <summary>
-        /// What one file references, read without holding the file open.
-        ///
-        /// ReflectionOnlyLoadFrom keeps a lock on the file for the life of the process,
-        /// which would stop the bundle being reinstalled after a check and left temp
-        /// folders undeletable in the tests. The bytes are read and closed instead, and an
-        /// identity already in the reflection only context is reused rather than loaded a
-        /// second time, which is refused.
-        /// </summary>
-        private static AssemblyName[] ReferencesOf(string file)
-        {
-            try
-            {
-                AssemblyName identity = AssemblyName.GetAssemblyName(file);
-
-                foreach (Assembly already in AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies())
-                {
-                    if (string.Equals(already.FullName, identity.FullName, StringComparison.Ordinal))
-                    {
-                        return already.GetReferencedAssemblies();
-                    }
-                }
-
-                return Assembly.ReflectionOnlyLoad(File.ReadAllBytes(file)).GetReferencedAssemblies();
-            }
-            catch (Exception)
-            {
-                // Not a managed assembly, or one this process will not read. Nothing to
-                // say about it, and never worth throwing over.
-                return null;
             }
         }
     }

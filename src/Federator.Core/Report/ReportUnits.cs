@@ -43,7 +43,7 @@ namespace Federator.Core.Report
         /// One number from the document's units into meters. Throws on a unit the table
         /// has not been taught, rather than guessing at a factor.
         /// </summary>
-        public static double ToMeters(double value, string fromUnits)
+        internal static double ToMeters(double value, string fromUnits)
         {
             return ExchangeUnits.Convert(value, fromUnits, Short);
         }

@@ -68,19 +68,6 @@ namespace Federator.Core.Naming
         /// </summary>
         public string DateFormat { get; set; }
 
-        public NamePattern Copy()
-        {
-            return new NamePattern
-            {
-                Level = Level,
-                Discipline = Discipline,
-                TypeCode = TypeCode,
-                Number = Number,
-                AllBuildings = AllBuildings,
-                DateFormat = DateFormat
-            };
-        }
-
         /// <summary>
         /// Refuses an empty field rather than writing a name with a hole in it. Returns
         /// the reason, or null when the pattern is usable.

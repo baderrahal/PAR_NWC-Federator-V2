@@ -126,13 +126,13 @@ namespace Federator.Core.Grouping
             }
         }
 
-        public static BuildingGroupingResult GroupNames(
+        internal static BuildingGroupingResult GroupNames(
             IEnumerable<string> names, ContainerNameSettings settings)
         {
             return GroupNames(names, settings, GroupingModes.Default);
         }
 
-        public static BuildingGroupingResult GroupNames(
+        internal static BuildingGroupingResult GroupNames(
             IEnumerable<string> names, ContainerNameSettings settings, GroupingMode mode)
         {
             return Group(ContainerName.ParseAll(names, settings), mode, settings);

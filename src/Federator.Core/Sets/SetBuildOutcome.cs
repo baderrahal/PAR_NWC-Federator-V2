@@ -18,7 +18,7 @@ namespace Federator.Core.Sets
             get { return new ReadOnlyCollection<SetResult>(results); }
         }
 
-        public ReadOnlyCollection<SkippedSet> Skipped
+        internal ReadOnlyCollection<SkippedSet> Skipped
         {
             get { return new ReadOnlyCollection<SkippedSet>(skipped); }
         }
@@ -74,7 +74,7 @@ namespace Federator.Core.Sets
             skipped.Add(set);
         }
 
-        public SetResult AddCreated(string path, string name, int conditionCount, int itemCount)
+        internal SetResult AddCreated(string path, string name, int conditionCount, int itemCount)
         {
             return AddCreated(path, name, conditionCount, itemCount, null);
         }

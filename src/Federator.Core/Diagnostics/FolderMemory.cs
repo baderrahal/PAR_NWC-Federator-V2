@@ -50,11 +50,6 @@ namespace Federator.Core.Diagnostics
         /// <summary>Why nothing is being remembered, or null when it is.</summary>
         public string DisabledReason { get; private set; }
 
-        public bool IsRemembering
-        {
-            get { return Path != null; }
-        }
-
         public static string DefaultPath()
         {
             return System.IO.Path.Combine(RunLog.DefaultLogFolder(), FileName);
