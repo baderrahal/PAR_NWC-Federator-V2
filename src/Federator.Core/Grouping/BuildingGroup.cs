@@ -49,13 +49,25 @@ namespace Federator.Core.Grouping
         public string DisciplineCode { get; private set; }
 
         /// <summary>
-        /// One NWC on its own cannot clash with anything, whatever the tests say. The
+        /// A group with fewer than two disciplines cannot clash, whatever the tests say,
+        /// because every clash test here is one discipline against another. One NWC is
+        /// the plain case, and two NWCs of the same discipline are the same case, which
+        /// is why the count is of disciplines and not of files. D5, 2026-09-12. The
         /// clash step still creates every test so the NWF matches the others, and then
         /// records them as not run for this reason rather than as a side finding nothing.
         /// </summary>
-        public bool IsSingleModel
+        public bool IsSingleDiscipline
         {
-            get { return Files.Count == 1; }
+            get { return CannotClashWith(Disciplines.Count); }
+        }
+
+        /// <summary>
+        /// The one rule, so the window row and the engine read the same answer off the
+        /// same count: fewer than two disciplines and nothing here can clash.
+        /// </summary>
+        public static bool CannotClashWith(int disciplineCount)
+        {
+            return disciplineCount < 2;
         }
 
         /// <summary>The project code every file in this group agreed on.</summary>

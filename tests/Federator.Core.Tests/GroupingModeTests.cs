@@ -178,14 +178,14 @@ namespace Federator.Core.Tests
                 Is.EqualTo(string.Empty));
         }
 
-        // ---------- a single file group, whatever the mode ----------
+        // ---------- a single discipline group, whatever the mode ----------
 
         [Test]
-        public void AGroupHoldingOneFileKnowsItCannotClash()
+        public void AGroupHoldingOneDisciplineKnowsItCannotClash()
         {
-            Assert.That(Group(GroupingMode.PerBuildingAndDiscipline).Find("1C07BC-ST").IsSingleModel,
+            Assert.That(Group(GroupingMode.PerBuildingAndDiscipline).Find("1C07BC-ST").IsSingleDiscipline,
                 Is.True);
-            Assert.That(Group(GroupingMode.PerBuilding).Find("1C07BC").IsSingleModel, Is.False);
+            Assert.That(Group(GroupingMode.PerBuilding).Find("1C07BC").IsSingleDiscipline, Is.False);
         }
 
         // ---------- the files still have to agree, whatever the mode ----------

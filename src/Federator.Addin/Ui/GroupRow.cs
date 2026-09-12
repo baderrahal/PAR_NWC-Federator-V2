@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Federator.Core.Grouping;
 using Federator.Core.Naming;
 using Federator.Core.Rerun;
 
@@ -23,6 +24,7 @@ namespace Federator.Addin.Ui
             Building = building;
             Files = files;
             Disciplines = string.Join(", ", new List<string>(disciplines).ToArray());
+            DisciplineCount = disciplines.Count;
             this.names = names;
         }
 
@@ -56,6 +58,9 @@ namespace Federator.Addin.Ui
         }
 
         public string Disciplines { get; private set; }
+
+        /// <summary>How many disciplines the scan found in this group, handed on to the job.</summary>
+        public int DisciplineCount { get; private set; }
 
         /// <summary>The row in the name table this shows, or null for a blocked group.</summary>
         public OutputNameRow Names
@@ -144,12 +149,12 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// One NWC on its own cannot clash with anything. The tests are still created so
-        /// the NWF matches the others, and none of them is run.
+        /// Fewer than two disciplines cannot clash, by the one rule in BuildingGroup. The
+        /// tests are still created so the NWF matches the others, and none of them is run.
         /// </summary>
-        public bool IsSingleModel
+        public bool IsSingleDiscipline
         {
-            get { return Files.Count == 1; }
+            get { return BuildingGroup.CannotClashWith(DisciplineCount); }
         }
 
         public bool Include
@@ -201,8 +206,8 @@ namespace Federator.Addin.Ui
                     return "BLOCKED: " + BlockedReason;
                 }
 
-                return IsSingleModel
-                    ? "Ready. One model, so every test is created and none is run."
+                return IsSingleDiscipline
+                    ? "Ready. One discipline, so every test is created and none is run."
                     : "Ready";
             }
         }

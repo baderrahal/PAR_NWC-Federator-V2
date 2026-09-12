@@ -274,6 +274,7 @@ F19 is dropped.
 - Files `src/Federator.Core/Grouping/BuildingGroup.cs`, `src/Federator.Core/Clash/ClashTestPlan.cs`, `src/Federator.Addin/Engine/FederationJob.cs`, `FederationEngine.cs`, `ClashRunner.cs`, `src/Federator.Addin/Ui/GroupRow.cs`
 - CONTAINER for the count, LOCAL MACHINE ONLY to see the status
 - D5. A group with fewer than two disciplines creates every test and runs none, the same as a one model group today. `ClashSkipReason.SingleModel` becomes `SingleDiscipline`
+- DONE on 2026-09-12, proof pending on the local machine for the row status and the CLASH line
 
 ## F36 Dead code and copies out
 

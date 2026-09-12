@@ -403,13 +403,18 @@ and 6 does not read as broken.
 - Copy findings puts them on the clipboard as tab separated rows with a header, so
   pasting into Excel gives a table. A run with nothing odd still copies a header and
   one row saying so, because an empty clipboard reads as a failed copy
-- A group holding one NWC cannot clash with anything, whatever the test list says. Every
-  test is still created, so the NWF is complete and matches the other groups and a later
-  run against a fuller model finds them already there, and none of them is run. The
-  reason is SingleModel and it is counted apart from EmptySide on purpose. A side finding
-  nothing says a discipline was not exported. One model says the group was never going to
-  clash and no export would change that. In the last real folder that was 1B06BS and
-  1C06PK, and both ran 1830 tests for nothing
+- A group holding fewer than two disciplines cannot clash with anything, whatever the
+  test list says, because every clash test is one discipline against another. One NWC is
+  the plain case and two NWCs of the same discipline are the same case, D5 on
+  2026-09-12, so the count is of disciplines and not of files, in
+  Federator.Core.Grouping.BuildingGroup.CannotClashWith, read by the window row and the
+  engine alike. Every test is still created, so the NWF is complete and matches the
+  other groups and a later run against a fuller model finds them already there, and none
+  of them is run. The reason is SingleDiscipline and it is counted apart from EmptySide on
+  purpose. A side finding nothing says a discipline was not exported. One discipline says
+  the group was never going to clash and no export would change that. In the last real
+  folder that was 1B06BS and 1C06PK, and both ran 1830 tests for nothing. The open file
+  is never judged this way, because nothing was scanned and its count is UNKNOWN
 - The add-in resolves its own assemblies from its bundle folder by simple name,
   ignoring the version, through an AssemblyResolve handler registered in the static
   constructor of FederatorPlugin. This is not belt and braces, it is the only thing
