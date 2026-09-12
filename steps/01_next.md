@@ -357,6 +357,7 @@ F19 is dropped.
 - `RunLog.DisabledReason` names the two folders tried in plain words and keeps the type and message for the log lines. The guard carries a plain reason for the label and the exception for the log. `FederationEngine.Describe` says how many errors the log holds and not what they say. `Describe(path)` in the window says the log says why. The Clash step heading and the `ClashWork` class comment say that with no XML the tests saved in each NWF run and no set is built. The photo size box and the five status ticks are filled from `ImageOptions` in the window constructor, the way the naming boxes are, and the XAML carries neither
 - Every label wording lives in Core where a test can read it, as `ReportPaths.WhereTheyGo` does
 - Size: medium
+- DONE on 2026-09-12, proof pending. See `log.md`. The cap box and the paste into cells tick went with the photo size and the five ticks, and `FolderMemory.DisabledReason` is reported rather than changed
 
 ## F43 Three settings that are constants
 

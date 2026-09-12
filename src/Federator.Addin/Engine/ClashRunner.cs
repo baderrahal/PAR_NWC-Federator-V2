@@ -449,7 +449,9 @@ namespace Federator.Addin.Engine
                 {
                     outcome.StopTheWholeRun(guard.Reason);
                     log.Line("CLASH    RUN STOPPED  " + guard.Reason);
-                    progress("The run was stopped. " + guard.Reason);
+
+                    // The log gets what was thrown, the label gets plain words.
+                    progress(guard.ReasonInPlainWords);
                     return;
                 }
             }

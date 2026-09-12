@@ -16,9 +16,11 @@ namespace Federator.Core.Clash
     /// <summary>
     /// What the run should do about clash, given whatever was picked in the Clash step.
     ///
-    /// Nothing picked is a step switched off, not a failure. The run does the model side
-    /// and nothing else, and says so once. A file holding only sets, only tests, or both
-    /// are all normal, so each half is decided on its own rather than together.
+    /// Nothing picked is not the step switched off. With no XML the tests already saved in
+    /// each NWF are run and no set is built, which is F8, and the run says which of the
+    /// three it is doing once. Only a run with no XML and no saved test does the model
+    /// side alone. A file holding only sets, only tests, or both are all normal, so each
+    /// half is decided on its own rather than together.
     /// </summary>
     public static class ClashWork
     {

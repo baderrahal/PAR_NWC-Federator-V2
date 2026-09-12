@@ -1819,10 +1819,9 @@ namespace Federator.Addin.Engine
                     .Append(outcome.Clash.TotalClashes).Append(" clashes");
             }
 
-            foreach (string error in outcome.Errors)
-            {
-                line.Append("  error: ").Append(error);
-            }
+            // How many, never what they say. This line is a label, and the errors carry
+            // the type name and the message of whatever threw.
+            line.Append(RunLog.ErrorsAreInTheLog(outcome.Errors.Count));
 
             return line.ToString();
         }

@@ -79,6 +79,7 @@ namespace Federator.Addin.Ui
             // by hand, which is where MOD-00001 came from instead of MOD-000001.
             ShowNaming();
             ShowTheInstallsLogo();
+            ShowImageDefaults();
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
@@ -99,9 +100,8 @@ namespace Federator.Addin.Ui
             LogBox.AppendText(log.ReadAll());
             LogBox.ScrollToEnd();
 
-            ProgressLine.Text = log.IsWritingToDisk
-                ? "Log: " + log.Path
-                : "WARNING the log is not being written to disk. " + log.DisabledReason;
+            // The words are in Core where a test reads them, the way ReportPaths.WhereTheyGo is.
+            ProgressLine.Text = log.WhereTheLogIs();
         }
 
         private void OnLogLine(string line)
@@ -1055,6 +1055,32 @@ namespace Federator.Addin.Ui
             return value < 0 ? fallback : value;
         }
 
+        /// <summary>
+        /// The photo boxes and the five status ticks are filled from ImageOptions, which
+        /// is where the defaults live, rather than typed into the XAML as well. A default
+        /// written in two places drifts, and the 1024 is measured off the accepted report.
+        /// Filled here for the same reason the naming boxes are, before anything reads
+        /// them back.
+        /// </summary>
+        private void ShowImageDefaults()
+        {
+            ImageOptions defaults = new ImageOptions();
+
+            ImagePixelsBox.Text = defaults.Width.ToString(
+                System.Globalization.CultureInfo.InvariantCulture);
+            ImageCapBox.Text = defaults.CapPerTest.ToString(
+                System.Globalization.CultureInfo.InvariantCulture);
+            EmbedThumbnails.IsChecked = defaults.EmbedThumbnail;
+
+            ImageNew.IsChecked = defaults.Wants(ClashStatus.New);
+            ImageActive.IsChecked = defaults.Wants(ClashStatus.Active);
+            ImageReviewed.IsChecked = defaults.Wants(ClashStatus.Reviewed);
+            ImageApproved.IsChecked = defaults.Wants(ClashStatus.Approved);
+            ImageResolved.IsChecked = defaults.Wants(ClashStatus.Resolved);
+
+            RefreshImageSummary();
+        }
+
         private void OnImageSettingChanged(object sender, RoutedEventArgs e)
         {
             RefreshImageSummary();
@@ -1499,7 +1525,9 @@ namespace Federator.Addin.Ui
             catch (Exception error)
             {
                 log.Failure("reading " + path, error, "the file stays picked, nothing was read from it");
-                return "Picked " + path + ", but it would not read. " + error.Message;
+
+                // A label, so it says where to look and never what was thrown.
+                return "Picked " + path + ", but it would not read. " + RunLog.TheLogSaysWhy();
             }
 
             string held = exchange.Sets.Count + (exchange.Sets.Count == 1 ? " set and " : " sets and ")

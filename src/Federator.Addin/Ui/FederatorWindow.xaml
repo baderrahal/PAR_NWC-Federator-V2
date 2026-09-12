@@ -295,7 +295,7 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="2" Grid.ColumnSpan="5">
-                                    <CheckBox x:Name="EmbedThumbnails" IsChecked="False"
+                                    <CheckBox x:Name="EmbedThumbnails"
                                               Content="Paste the photos into the cells"
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
                                     <TextBlock Style="{StaticResource TickHelp}"
@@ -304,26 +304,26 @@
 
                                 <Label Grid.Row="3" Grid.Column="0" Content="Photo size" VerticalAlignment="Center" />
                                 <TextBox Grid.Row="3" Grid.Column="1" x:Name="ImagePixelsBox"
-                                         Text="1024" MinWidth="70" VerticalAlignment="Center" Margin="0,0,12,4"
+                                         MinWidth="70" VerticalAlignment="Center" Margin="0,0,12,4"
                                          TextChanged="OnImageSettingChanged" />
                                 <Label Grid.Row="3" Grid.Column="2" Content="At most per test, 0 for no cap"
                                        VerticalAlignment="Center" />
                                 <TextBox Grid.Row="3" Grid.Column="3" x:Name="ImageCapBox"
-                                         Text="0" MinWidth="70" VerticalAlignment="Center" Margin="0,0,0,4"
+                                         MinWidth="70" VerticalAlignment="Center" Margin="0,0,0,4"
                                          TextChanged="OnImageSettingChanged" />
 
                                 <Label Grid.Row="4" Grid.Column="0" Content="Photo of" VerticalAlignment="Center" />
                                 <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4"
                                             Orientation="Horizontal" VerticalAlignment="Center">
-                                    <CheckBox x:Name="ImageNew" Content="New" IsChecked="True" Margin="0,0,10,0"
+                                    <CheckBox x:Name="ImageNew" Content="New" Margin="0,0,10,0"
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                    <CheckBox x:Name="ImageActive" Content="Active" IsChecked="True" Margin="0,0,10,0"
+                                    <CheckBox x:Name="ImageActive" Content="Active" Margin="0,0,10,0"
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                    <CheckBox x:Name="ImageReviewed" Content="Reviewed" IsChecked="True" Margin="0,0,10,0"
+                                    <CheckBox x:Name="ImageReviewed" Content="Reviewed" Margin="0,0,10,0"
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                    <CheckBox x:Name="ImageApproved" Content="Approved" IsChecked="False" Margin="0,0,10,0"
+                                    <CheckBox x:Name="ImageApproved" Content="Approved" Margin="0,0,10,0"
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                    <CheckBox x:Name="ImageResolved" Content="Resolved" IsChecked="False"
+                                    <CheckBox x:Name="ImageResolved" Content="Resolved"
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
                                 </StackPanel>
 
@@ -423,7 +423,7 @@
             <TabItem Header="4. Clash">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="Pick one XML here and press Run on any step. The run does the whole job for every ticked group: append, save the NWF, build the sets, create the tests, run them, save the NWF again, publish the NWD last. The file can hold sets, clash tests, or both, and the tool reads whatever is in it. Leave this empty and Run does the model side only." />
+                               Text="Pick one XML here and press Run on any step. The run does the whole job for every ticked group: append, save the NWF, build the sets, create the tests, run them, save the NWF again, publish the NWD last. The file can hold sets, clash tests, or both, and the tool reads whatever is in it. Leave this empty and the tests already saved in each NWF are run, with no set built and no test created." />
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />

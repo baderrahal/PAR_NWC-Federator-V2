@@ -199,8 +199,14 @@ and 6 does not read as broken.
   "Workbooks go in UNKNOWN" before a scan, with "Parameter name: nwfFolder" behind it,
   because an empty NWF folder threw and the message went straight to the window. Nothing was
   wrong at that point, the folder had not been picked. A failure DIALOG may carry the
-  exception message, because that is what gets sent back. A label may not. The wording lives
-  in Federator.Core.Report.ReportPaths.WhereTheyGo so it can be proved
+  exception message, because that is what gets sent back. A label may not. Every wording a
+  label carries lives in Core where a test can read it, and the test hands it the thing the
+  label must not carry and asserts it is not in what comes back. ReportPaths.WhereTheyGo for
+  where the workbooks go. RunLog.WhereTheLogIs, NoLogFileOpened, ErrorsAreInTheLog and
+  TheLogSaysWhy for anything about the log, so a run that could not open one names the
+  folders it tried and the log line keeps what threw. RepeatedFailureGuard.Reason for the
+  log and ReasonInPlainWords for the label, so the stopped run says how many tests failed
+  the same way and never what they threw
 - Findings are written in the words a person would say, never in the words the tool
   thinks in. A shape is described by naming a real code that has it, not by printing
   9A99AA. A shared Revit source says two federations are being built from one Revit
