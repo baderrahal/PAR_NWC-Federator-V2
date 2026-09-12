@@ -2,6 +2,37 @@
 
 Newest entry at the top.
 
+## 2026-09-12 The second audit round is closed
+
+### What was done
+
+- Eight fixes merged today, in the order the brief set: F46, F40, F41, F42, F43, F44, F45 and F16. Each on its own branch off main, each a draft pull request merged once Actions was green, each with its own entry above. No pull request is open and nothing was committed on main
+- `steps/03_bader_next.md` read end to end against the code, which is the last thing the round asked for. 90 Look for lines checked. Eight lines corrected, covering ten things the file promised that the code does not do
+- How it was checked. One reader per section of the file, eight of them, each told to find the code that prints or shows what its Look for lines promise. Every claim one of them made was then handed to a separate reader told to REFUTE it and to default to refuted. Twelve claims were made and ten survived. Then each of the ten was read again here against the code before a word of the file was changed. Two were refuted and the file was left alone: the second `NWF attempt` line does follow the CLASH block on a rerun, and the CLASH block does say the tests ran
+- Separately, every string the file quotes in backticks was matched against the source by a script that strips the seams a C# concatenation leaves. 72 strings, and every one of them is written somewhere under src
+- The ten. Two, the GROUPS block and its unticked count, were promised after a Cancel, and the block is written when a run STARTS, so a Cancel leaves nothing to read. Three, the label counting the NWFs, the `Rebuilt: 6` in the dialog and the Rebuilt labels in the Run as column, were broken by that same Cancel: the preview behind it opens each NWF and leaves the last one open, and the preview will not run at all while something is open. One more of the same kind further down, `Rebuilt: 1`, where a document was still open from the run before. One said the blocks come UNITS, SETS, CLASH on a run with no XML, and with no XML no set is built at all, so there is no SETS block after UNITS. Two said a GROUP finished line ends with `DONE`, and `DONE` sits before the seconds and the path. One said the CLASH block counts the pictures, and it counts clashes: the pictures have their own IMAGES line after it. One was written today, in F45, and said to expect `Element ID` in the ITEM IDS block, and what that block names is the property that actually matched, which is `Id`, with `Element ID` as the label this tool writes
+- The five that were about the preview came from one cause, the Run and Cancel in the F27 proof, so that Run is gone. F27 now costs a Scan and no run at all, and its block is read off the 1B06PH run further down where thirteen groups are unticked. Everything after it reads true again, and one step was added to close what is open before the F9 run
+- The D6 branch list rebuilt. `git ls-remote --heads origin` and the GitHub branches API both answered 38 names after the last merge of the round, and the branch this entry is written on makes 39, so 38 to delete. The command names all 38. Bader runs it, not the worker
+- `steps/01_next.md` renumbered. Three fixes are left, F21 which can be started here, F18 which waits for the sample Bader uploads, and F23 which waits for Q20. F15, dispose in `SetBuilder` and `ClashRunner.Resolve`, is CLOSED by F41, which is the same two files and more, so B5 and B6 close with it
+- The opening line of the file said twenty fixes have merged since the last run. It names the range now, F5 to F46, because the count could not be measured off anything
+- Core tests: 957 passed, 0 failed, 32 skipped, 989 total. Unchanged by this entry, which touched no code
+
+### What remains
+
+- Nothing in this round. `steps/01_next.md` has F21, F15, F18 when the sample arrives, and F23 when Q20 is answered
+- Q24 to Q30 are open for Bader. Q24 and Q25 from the first audit, Q26 and Q27 from F40, Q28 from F41, Q29 from F43, Q30 from F44
+- The whole of `03_bader_next.md`, 201 steps, waits for the machine with Navisworks on it. Nothing in this round was proved by a run
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Bader builds, installs and works `03_bader_next.md` from step 1
+2. The run logs come back into `steps/logs` on their own branch, as step 183 says
+3. Bader runs the D6 delete command himself
+
 ## 2026-09-12 F16, the tests path neutral
 
 ### What was done
