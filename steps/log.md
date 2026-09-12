@@ -2,6 +2,59 @@
 
 Newest entry at the top.
 
+## 2026-09-12 The plan for the second audit round, F46 and F40 to F16
+
+### What was read first
+
+- CLAUDE.md, the four files under `.claude/rules`, `steps/log.md` top entry, `steps/01_next.md`, `steps/02_questions.md`, `steps/03_bader_next.md` and `steps/04_audit.md`, all of them whole. Then `.gitignore`, `steps/README.md`, `steps/logs/README.md` and the files each F46 part names
+- Ground state on main at 8902ff06, the round close merge. Core tests under mono on Linux: 905 passed, 37 failed, 33 skipped, 975 total. That is the baseline every entry in this round compares against, and the 37 and the 33 are the ones `04_audit.md` names one by one
+- There is no `gh` on this machine, so the checks are watched through the GitHub tools the session holds and through the Actions API over curl, the same way the last round watched them. Merge only when the tests job is green on the branch head
+- The add-in still does not build here and has not been built on Bader's machine since 1 Sep. So before every add-in edit the arity check runs again over `src`, every `new` and every static call against the parameter counts declared under src, and its result goes in the PR body. After every add-in edit the changed file and every caller of what changed are read, not the diff alone. That is the reading F34 got through
+
+### The four the chat audit found, checked here before the plan was written
+
+- 46a. `steps/03_bader_next.md` step 188 names `claude/parsons-nwc-analysis-rlzgdr`, which is not a branch on the remote, and leaves out `fix-F39` and `round-close`, which are. Both readings agree: `git ls-remote --heads origin` and the GitHub branches API each return 30 branches, so 29 to delete. The wrong name came from `git branch -r`, which shows a stale remote-tracking ref that no longer exists on the remote, and that trap goes in the file beside the command
+- 46b. `git check-ignore -v steps/logs/2026-09-20-1C07BC.log` answers `.gitignore:50:*.log`, so a log Bader copies in tomorrow is invisible to GitHub Desktop. `run-20260907-093440.log` reads as not ignored only because it is already tracked, which is what hid this
+- 46c. `steps/README.md` lists four files. The folder holds six and the `logs` folder
+- 46d. `RunLog.GroupRecords` is public, `RunLog` itself reads it at line 892 and one test reads it. F36 kept it public for that test. The rule says the test is not a caller, so it goes private and the test reads the result the property was standing in for
+
+### The order and what each PR does
+
+1. F46. Branch `fix-F46`. The four above in one PR, because two of them break Bader's next hour and none of them is code. The D6 command rebuilt from the live list with the reading named, the `.gitignore` negation with `git check-ignore -v` output in the PR body, `steps/README.md` rewritten for six files and the logs folder, `GroupRecords` private with its test reading the RESULT block instead. This plan entry goes in with it
+2. F40. Branch `fix-F40`. Dead members out, second pass. The 43 with no reference at all, the 34 uncalled once the type is checked, the 9 public for nothing made private, each re-grepped over `src` and the XAML before it goes and the results pasted in the PR body. `ReleaseToPattern` and the five item properties stay, Q24 and Q25 are unanswered. The copies go with them: `NwfComparison.Moves`, `Moved` and its `LeafOf`, `RepoRoot` in four test files reading `Samples.Folder`, `ImageOptions.DefaultStopAfterFailures` reading `RepeatedFailureGuard.DefaultThreshold`, `ScanFindings` reading `BuildingGroup.IsSingleDiscipline`, one `LogoName`
+3. F41. Branch `fix-F41`. Every handle disposed in `SetBuilder`, `SavedTests` and `ClashRunner`, and `FindSelectionSet` reading the index the count held before the add rather than walking the collection. Add-in only, so the arity check runs first and every changed file is read after
+4. F42. Branch `fix-F42`. No framework message in a label. `RunLog.DisabledReason`, the guard reason, `FederationEngine.Describe` and the window's `Describe(path)` each carry plain words to the label and keep the exception for the log. The Clash step heading at XAML line 426 and the `ClashWork` class comment both still say a run with no XML does the model side only, and since F8 the saved tests run, so both say that instead. The photo size and the five status ticks are filled from `ImageOptions` in the window constructor. Every wording lives in Core where a test reads it
+5. F43. Branch `fix-F43`. Three settings that are constants: the stop after count, the log count and the report subfolder each become a property with the same default, read where the guard is built, the log is started and the folder is chosen. The progress interval stays a const, no rule names it
+6. F44. Branch `fix-F44`. The docs and the comments agree with the code. The old doc path is in 28 places and not seventeen, both spellings, and `test-model-side.md` and `build\probe-window-scroll.ps1` go the same way. Then the wrong counts, the rules file made to agree with itself, the Summary sheet comments, `HasSheet` renamed, the logo comments, the doubled and copied comments, the three project names in comments, the Health tests into a Health folder, and the probes README made true
+7. F45. Branch `fix-F45`. The clash step keeps its rules. A test with no tolerance attribute is skipped by name, the OLD line logs the status word alone, the compacted count is read after the compact, an UNKNOWN locator is left out of the drift comparison. `IdFrom` waits on Q25
+8. F16. Branch `fix-F16`. The tests path neutral. The 37 that fail here, the six skips that misname their reason, the three collection comparisons, the one test that passes off Windows without proving anything, `Samples.Folder` in place of the four `RepoRoot` copies, one temp folder helper in place of nineteen copies of its comment
+9. `steps/03_bader_next.md` read end to end against the code one more time. Every Look for line matched against what the code prints or shows, the ones that do not match corrected, and the count of corrections in the log
+10. The closing entry
+
+### Rules held through the round
+
+- One PR per fix, branched off main, merged only when the tests job is green on the branch head, the local branch deleted after. Never a PR left open at the end of a step. The remote branches are not deleted, Bader has the command
+- .NET Framework 4.8 and C# 7.3. No Navisworks type reaches `Federator.Core`
+- A public member nothing in src calls is deleted with its tests, unless a decision in `02_questions.md` keeps it. No member is added that no running code calls
+- The arity check before every add-in edit, the changed file and its callers read after, both said in the PR body
+- No em dash, no semicolon in prose, no emoji, plain words, in every comment, doc, log line and window text
+- `samples` and `steps/logs` are never touched
+- A new question goes in `02_questions.md` as Q26 onward
+
+### What remains
+
+- Everything in the order above. Nothing in this round is proved on the local machine, because the add-in cannot build here
+
+### Known bugs
+
+- Unchanged from the round close entry until each fix lands
+
+### What comes next
+
+1. F46 on `fix-F46`, this plan goes in with it
+2. F40 to F45 and F16 in order, one PR each
+3. `03_bader_next.md` read against the code, then the closing entry
+
 ## 2026-09-12 The round closes, F27 to F39, the audit and D6
 
 ### What was done
