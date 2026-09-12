@@ -242,5 +242,44 @@ namespace Federator.Core.Tests
             Assert.That(NwfRebuildPlan.SavedTestsLine(0, 0, 0), Does.Contain("none, the NWF held no clash test"));
             Assert.That(NwfRebuildPlan.SavedTestsKept(0, 0), Is.True);
         }
+        // ---------- the sets line, F29 ----------
+
+        [Test]
+        public void TheSetsLineCarriesTheThreeCountsInOrder()
+        {
+            Assert.That(NwfRebuildPlan.SetsLine(61, 61, 61),
+                Is.EqualTo("SETS     before clear 61, after appends 61, after restore 61"));
+            Assert.That(NwfRebuildPlan.SetsLine(61, 0, 61),
+                Is.EqualTo("SETS     before clear 61, after appends 0, after restore 61"));
+        }
+
+        [Test]
+        public void SetsThatDidNotComeBackAreLostAndTheLineSaysTheNwfWasNotSavedOver()
+        {
+            string line = NwfRebuildPlan.SetsLine(61, 0, 0);
+
+            Assert.That(line, Does.StartWith("SETS     before clear 61, after appends 0, after restore 0"));
+            Assert.That(line, Does.Contain("LOST"));
+            Assert.That(line, Does.Contain("NOT saved over"));
+            Assert.That(NwfRebuildPlan.SetsKept(61, 0), Is.False);
+            Assert.That(NwfRebuildPlan.SetsKept(61, 60), Is.False, "one short is still lost");
+            Assert.That(NwfRebuildPlan.SetsKept(61, 61), Is.True);
+        }
+
+        [Test]
+        public void TheSetsArePutBackOnAnyDropWhetherOrNotTheTestsDropped()
+        {
+            Assert.That(NwfRebuildPlan.SetsNeedRestoring(61, 0), Is.True);
+            Assert.That(NwfRebuildPlan.SetsNeedRestoring(61, 60), Is.True);
+            Assert.That(NwfRebuildPlan.SetsNeedRestoring(61, 61), Is.False);
+        }
+
+        [Test]
+        public void AnNwfWithNoSetHasNothingToKeepOrRestore()
+        {
+            Assert.That(NwfRebuildPlan.SetsKept(0, 0), Is.True);
+            Assert.That(NwfRebuildPlan.SetsNeedRestoring(0, 0), Is.False);
+            Assert.That(NwfRebuildPlan.SetsLine(0, 0, 0), Is.EqualTo("SETS     before clear 0, after appends 0, after restore 0"));
+        }
     }
 }

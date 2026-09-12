@@ -231,6 +231,7 @@ F19 is dropped.
 - Files `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Core/Rerun/NwfRebuildPlan.cs`
 - CONTAINER for the set line and the judgement, LOCAL MACHINE ONLY to prove the restore
 - The sets are counted before the clear and after the appends and put back on their own count, `setsCopy` is disposed, the dead Changed branch at the top of `ClashStep` goes
+- DONE on 2026-09-12, proof pending on the local machine
 
 ## F30 One tail for both run paths
 

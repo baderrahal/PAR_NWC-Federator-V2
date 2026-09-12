@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F29, the rebuild keeps the sets on their own count
+
+### What was done
+
+- F29 done. `RebuildFromScan` used to put the sets back only when the test count had dropped, and never counted them, so a clear that kept the tests and lost the sets would have saved an NWF whose tests point at nothing. Now the sets are counted by walking `SelectionSets.RootItem` before the clear, after the appends and after the copy is put back, every wrapper disposed on the way, and put back whenever the count after the appends is lower than before, whether or not the tests dropped. Sets first, then the tests as before, because a test side points at a set
+- One line, `SETS     before clear <n>, after appends <n>, after restore <n>`, then the saved tests line. When the sets cannot be put back the error goes on the group's list the way the tests do, so the group is FAILED and the NWF on disk is not saved over
+- `setsCopy` is disposed in the finally beside `testsCopy`, through `as IDisposable`, because `SavedItemCollection` was not IDisposable on the DLL measured on 2026-08-31, docs/scan.md 4g, and a plain `Dispose()` would not compile if it still is not
+- The `Decision == Changed` branch at the top of `ClashStep` is deleted. Since F24 a CHANGED group is rebuilt before the clash step or returns before reaching it, so it could not run
+- The set line and the two rules live in `NwfRebuildPlan`: `SetsLine`, `SetsKept`, `SetsNeedRestoring`
+- Proved here: `NwfRebuildPlanTests` gains `TheSetsLineCarriesTheThreeCountsInOrder`, `SetsThatDidNotComeBackAreLostAndTheLineSaysTheNwfWasNotSavedOver`, `TheSetsArePutBackOnAnyDropWhetherOrNotTheTestsDropped`, `AnNwfWithNoSetHasNothingToKeepOrRestore`. Core tests under mono on Linux, before: 884 passed, 39 failed, 32 skipped, 955 total. After: 888 passed, 39 failed, 32 skipped, 959 total. The 39 are the same Windows path and file locking failures, none new
+- Waits for the local machine: the add-in does not build here. The engine change is read twice. `DocumentSelectionSets.CreateCopy` and `CopyFrom` are still unmeasured, as under F24. Proof: scan the C06 folder against the old NWFs, the six rebuilt groups must each log a SETS line whose three numbers agree, and the sets tree of the rebuilt NWF opened in Navisworks must hold the same sets as before
+
+### What remains
+
+- F30 to F38 in order, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F27 entry
+
+### What comes next
+
+1. Merge the F29 PR
+2. F30, one tail for both run paths
+
 ## 2026-09-12 F28, a set already there is not counted as created
 
 ### What was done

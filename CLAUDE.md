@@ -277,8 +277,10 @@ and 6 does not read as broken.
   clear, how many were there after the appends, how many after the copy was put back.
   The copy is DocumentClashTests.CreateCopy and CopyFrom for the tests and the same
   pair on DocumentSelectionSets for the sets, the sets first because a side points at
-  a set. Whether Document.Clear keeps them is UNKNOWN until a run, so the numbers are
-  read and never assumed. The NWF on disk is only saved over once every test read before
+  a set. The sets are counted by walking the tree, before the clear, after the appends
+  and after the copy is put back, and put back on their own count whether or not the
+  tests dropped, on one SETS line with the three numbers. Whether Document.Clear keeps
+  either is UNKNOWN until a run, so the numbers are read and never assumed. The NWF on disk is only saved over once every test read before
   the clear is back, and otherwise the group fails, says so, and the NWF keeps its file
   list and its tests. A rebuilt group ends as Rebuilt and is judged DONE when everything
   after the rebuild went right, in Federator.Core.Rerun.GroupJudgement. Q22
