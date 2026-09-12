@@ -61,18 +61,25 @@ namespace Federator.Addin.Engine
 
                     if (test != null)
                     {
-                        saved.Add(new SavedClashTest(
-                            test.DisplayName,
-                            (int)test.TestType,
-                            test.Tolerance,
-                            test.MergeComposites,
-                            test.SelectionA.SelfIntersect,
-                            (int)test.SelectionA.PrimitiveTypes,
-                            SideA,
-                            test.SelectionB.SelfIntersect,
-                            (int)test.SelectionB.PrimitiveTypes,
-                            SideB,
-                            path));
+                        // Each read of SelectionA or SelectionB creates a wrapper, so they
+                        // are read once each and the four values taken from inside rather
+                        // than four wrappers a test being left for a finalizer.
+                        using (ClashSelection left = test.SelectionA)
+                        using (ClashSelection right = test.SelectionB)
+                        {
+                            saved.Add(new SavedClashTest(
+                                test.DisplayName,
+                                (int)test.TestType,
+                                test.Tolerance,
+                                test.MergeComposites,
+                                left.SelfIntersect,
+                                (int)left.PrimitiveTypes,
+                                SideA,
+                                right.SelfIntersect,
+                                (int)right.PrimitiveTypes,
+                                SideB,
+                                path));
+                        }
                     }
                     else
                     {

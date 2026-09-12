@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F41, every handle disposed
+
+### What was done
+
+- F41 done. Three add-in files, `SetBuilder`, `SavedTests` and `ClashRunner`. No logic changed and no line the log prints changed. Every handle this tool creates or resolves is now released where it is finished with, rather than left to a finalizer
+- The rule behind it was measured and is in the history file. All of `ClashTest`, `ClashResult`, `ClashSelection`, `SelectionSet`, `SelectionSource`, `Selection`, `ModelItemCollection`, `Search` and `SavedItem` are disposable, and releasing a wrapper releases the wrapper and never the document's object. `SavedItemCollection` is not disposable and is never disposed, so no collection is touched
+- `SetBuilder`. The `Search` and the `SelectionSet` built from it are in a using each, the set released first so nothing it shares with the search goes while the search is still read. The folder the set is added under, which came back from `EnsureFolders`, is in a using around the whole build. The `FolderItem` handed to `AddCopy` is in a using, because `AddCopy` takes a copy. The four folder reads inside `EnsureFolders` that answered a question and were then dropped are released. `ResolveFolders` releases each level it walks past. `FindFolder` and `FindSelectionSet` release every child they do not hand back, `Describe` releases every child it names, and all three `ModelItemCollection` reads are in usings
+- `SavedTests`. `SelectionA` and `SelectionB` are read once each into a using instead of twice each, so a walk of 1830 tests makes two wrappers a test and not four
+- `ClashRunner`. The root of the set tree in `IndexSets`, the sides read for the comparison, the sides filled when a test is created and when one is replaced, the `Selection` behind each side in `LocatorOf`, `FillSide` and `ItemsOn`, and the leaf that turns out not to be a test in `Resolve`. `Resolve` releases each level it walks past, and releases it only once the child below has been read off it, which is the order `ResolveFolders` in `SetBuilder` and `WalkTests` here already use. Nothing reads a collection whose owner has gone
+- `AddedAt` in `SetBuilder` reads the child at the index the count held before the add and checks its name, the way `Create` in `ClashRunner` already does for tests, and says so in the log when the tree is not that shape and it has to look by name instead. That is the read that made the set path O(n squared)
+- Counted on the reference file, 61 sets and 1830 tests in one group. The side reads alone were 14,640 wrappers a comparison run before this and are 7,320 now, and the four folder reads dropped in `EnsureFolders` were one a folder a set
+- Two reads were left alone on purpose and are Q28. `search.Selection` in `SetBuilder`, once a set, and the source read out of a side's own collection in `LocatorOf`, which sits inside the loop over the indexed sets and so is read once a set rather than once. Neither is named in the F41 list, both are small beside what was fixed, and the ownership of a sub object read off a handle this tool owns is not in the measured record. Bader decides rather than the worker assuming
+- Proved here: a parse of the whole add-in through the Roslyn compiler with no references, which reports every syntax error and nothing else. Before the edits and after them the error codes are the same six, all of them the missing framework and the missing Navisworks types that no references means, and not one `CS1xxx`. That is the first check of add-in syntax this repo has had in the container. The arity check over the whole add-in, every `new` and every static call against the parameter counts declared under src, 0 mismatches. Core is untouched, so the tests are the same before and after: 885 passed, 37 failed, 33 skipped, 955 total
+- Waits for the local machine: the build, then one building run twice with the XML, the SETS and CLASH blocks read as before and the run no slower. The steps are in `03_bader_next.md`
+
+### What remains
+
+- F42 to F45 and F16 in order, then the read of `03_bader_next.md` against the code, then the closing entry
+- Q28 for Bader, raised by this fix
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F41 PR
+2. F42, no framework message in a label
+
 ## 2026-09-12 F40, dead members out, second pass
 
 ### What was done

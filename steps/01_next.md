@@ -347,6 +347,7 @@ F19 is dropped.
 - `SetBuilder`: the `Search`, the `SelectionSet`, the three `ModelItemCollection`, every `SavedItem` in `Describe`, every child not returned in `FindFolder` and `FindSelectionSet`. `SavedTests`: `SelectionA` and `SelectionB` read once each into a using block. `ClashRunner`: the root `FolderItem` in `IndexSets`, the intermediate `GroupItem` in `Resolve`, every `SelectionA`, `SelectionB` and `Selection` read. And `FindSelectionSet` reads the child at the index the count held before `AddCopy` and checks its name, as `ClashRunner` does for tests
 - Proof: one building run twice with the XML, the SETS and CLASH blocks read as before and the run is not slower
 - Size: medium
+- DONE on 2026-09-12, proof pending. See `log.md`. Two reads were left where they are and are Q28
 
 ## F42 No framework message in a label
 

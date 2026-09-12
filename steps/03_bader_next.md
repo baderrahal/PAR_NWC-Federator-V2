@@ -277,26 +277,32 @@ powershell -ExecutionPolicy Bypass -File tools\probes\probe-window-labels.ps1
 
 187. Look for: it says how many tick boxes are visible without opening anything, which must be 1, and reports no label over eight words and no help line over twelve
 
+## Proof F41, the handles, off the two runs above
+
+188. Before you press Run the second time in step 70, open Task Manager, the Details tab, right click a column heading, Select columns, and tick Handles
+189. Look for: the handle count on the Navisworks row at the end of the second run, beside the one at the end of the first. Copy both into the chat. F41 releases every wrapper this tool creates where it is finished with it instead of leaving it to a finalizer, so a second run over the same 61 sets and 1830 tests should not sit higher than the first. A count that climbs run on run is the thing worth reporting
+190. Look for, in the log of either run: no line saying a set was not at the index the count gave before the add. That line is written only when the tree is not the shape the fast read assumes, and it means the set was then looked for by name
+
 ## Delete the old branches, D6
 
 Every branch except main is merged into main. The container cannot delete a branch: `git push origin --delete` comes back HTTP 403 from the proxy in front of it, and there is no GitHub tool in it that deletes a branch. So this is yours, one command from the repo folder in the VS Code terminal.
 
-The list below was read on 2026-09-12 with the command in step 188, which asks the remote what it holds right now. Read it again yourself before you run the delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. `git ls-remote` asks the remote and remembers nothing.
+The list below was read on 2026-09-12 with the command in step 191, which asks the remote what it holds right now. Read it again yourself before you run the delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. `git ls-remote` asks the remote and remembers nothing.
 
-188. Read the live list:
+191. Read the live list:
 
 ```
 git ls-remote --heads origin
 ```
 
-189. Look for: one line per branch, the name after `refs/heads/`. On 2026-09-12 there were 30 of them, so 29 to delete
-190. Delete every one of them except main:
+192. Look for: one line per branch, the name after `refs/heads/`. On 2026-09-12 there were 30 of them, so 29 to delete
+193. Delete every one of them except main:
 
 ```
 git push origin --delete analysis-pass fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close
 ```
 
-191. Look for: one `- [deleted]` line per branch and no error
-192. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
-193. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
-194. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main
+194. Look for: one `- [deleted]` line per branch and no error
+195. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
+196. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
+197. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main

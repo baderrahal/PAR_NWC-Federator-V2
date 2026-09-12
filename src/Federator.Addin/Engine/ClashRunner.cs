@@ -518,8 +518,12 @@ namespace Federator.Addin.Engine
                         return;
                     }
 
-                    leftItems = ItemsOn(document, before.SelectionA, byPath, planned.Left.Locator);
-                    rightItems = ItemsOn(document, before.SelectionB, byPath, planned.Right.Locator);
+                    using (ClashSelection left = before.SelectionA)
+                    using (ClashSelection right = before.SelectionB)
+                    {
+                        leftItems = ItemsOn(document, left, byPath, planned.Left.Locator);
+                        rightItems = ItemsOn(document, right, byPath, planned.Right.Locator);
+                    }
                 }
 
                 TestReport summary = ReportFor(planned);
@@ -695,13 +699,19 @@ namespace Federator.Addin.Engine
             settings.TestTypeName = test.TestType.ToString();
             settings.MergeComposites = test.MergeComposites;
 
-            settings.LeftSelfIntersect = test.SelectionA.SelfIntersect;
-            settings.RightSelfIntersect = test.SelectionB.SelfIntersect;
-            settings.LeftPrimitiveTypes = (int)test.SelectionA.PrimitiveTypes;
-            settings.RightPrimitiveTypes = (int)test.SelectionB.PrimitiveTypes;
+            // Each read of SelectionA or SelectionB creates a wrapper. Four reads a side
+            // over 1830 compared tests is 14,640 handles, so each side is read once.
+            using (ClashSelection left = test.SelectionA)
+            using (ClashSelection right = test.SelectionB)
+            {
+                settings.LeftSelfIntersect = left.SelfIntersect;
+                settings.RightSelfIntersect = right.SelfIntersect;
+                settings.LeftPrimitiveTypes = (int)left.PrimitiveTypes;
+                settings.RightPrimitiveTypes = (int)right.PrimitiveTypes;
 
-            settings.LeftLocator = LocatorOf(test.SelectionA);
-            settings.RightLocator = LocatorOf(test.SelectionB);
+                settings.LeftLocator = LocatorOf(left);
+                settings.RightLocator = LocatorOf(right);
+            }
 
             return settings;
         }
@@ -721,25 +731,28 @@ namespace Federator.Addin.Engine
         {
             try
             {
-                SelectionSourceCollection sources = side.Selection.SelectionSources;
-
-                if (sources == null || sources.Count == 0)
+                using (Selection selection = side.Selection)
                 {
-                    return string.Empty;
-                }
+                    SelectionSourceCollection sources = selection.SelectionSources;
 
-                foreach (KeyValuePair<string, SelectionSource> pair in sourceByPath)
-                {
-                    for (int i = 0; i < sources.Count; i++)
+                    if (sources == null || sources.Count == 0)
                     {
-                        if (sources[i].Equals(pair.Value))
+                        return string.Empty;
+                    }
+
+                    foreach (KeyValuePair<string, SelectionSource> pair in sourceByPath)
+                    {
+                        for (int i = 0; i < sources.Count; i++)
                         {
-                            return pair.Key;
+                            if (sources[i].Equals(pair.Value))
+                            {
+                                return pair.Key;
+                            }
                         }
                     }
-                }
 
-                return string.Empty;
+                    return string.Empty;
+                }
             }
             catch (Exception error)
             {
@@ -777,8 +790,12 @@ namespace Federator.Addin.Engine
                     replacement.Tolerance = planned.Tolerance;
                     replacement.MergeComposites = planned.MergeComposites;
 
-                    FillSide(sets, replacement.SelectionA, planned.Left, byPath);
-                    FillSide(sets, replacement.SelectionB, planned.Right, byPath);
+                    using (ClashSelection left = replacement.SelectionA)
+                    using (ClashSelection right = replacement.SelectionB)
+                    {
+                        FillSide(sets, left, planned.Left, byPath);
+                        FillSide(sets, right, planned.Right, byPath);
+                    }
 
                     using (ClashTest existing = Resolve(clashTests, address, planned.Name))
                     {
@@ -865,8 +882,12 @@ namespace Federator.Addin.Engine
                 test.Tolerance = planned.Tolerance;
                 test.MergeComposites = planned.MergeComposites;
 
-                FillSide(sets, test.SelectionA, planned.Left, byPath);
-                FillSide(sets, test.SelectionB, planned.Right, byPath);
+                using (ClashSelection left = test.SelectionA)
+                using (ClashSelection right = test.SelectionB)
+                {
+                    FillSide(sets, left, planned.Left, byPath);
+                    FillSide(sets, right, planned.Right, byPath);
+                }
 
                 clashTests.TestsAddCopy(test);
             }
@@ -907,6 +928,7 @@ namespace Federator.Addin.Engine
         {
             SavedItemCollection children = clashTests.Tests;
             SavedItem item = null;
+            GroupItem walked = null;
 
             for (int level = 0; level < address.Depth; level++)
             {
@@ -914,10 +936,23 @@ namespace Federator.Addin.Engine
 
                 if (children == null || index < 0 || index >= children.Count)
                 {
+                    if (walked != null)
+                    {
+                        walked.Dispose();
+                    }
+
                     return null;
                 }
 
                 item = children[index];
+
+                // The level walked past is released only once the child below it has been
+                // read, which is the order ResolveFolders in SetBuilder uses.
+                if (walked != null)
+                {
+                    walked.Dispose();
+                    walked = null;
+                }
 
                 if (level + 1 == address.Depth)
                 {
@@ -928,16 +963,24 @@ namespace Federator.Addin.Engine
 
                 if (group == null)
                 {
+                    item.Dispose();
                     return null;
                 }
 
                 children = group.Children;
+                walked = group;
+                item = null;
             }
 
             ClashTest test = item as ClashTest;
 
             if (test == null)
             {
+                if (item != null)
+                {
+                    item.Dispose();
+                }
+
                 return null;
             }
 
@@ -973,11 +1016,14 @@ namespace Federator.Addin.Engine
 
             SelectionSet set = byPath[planned.Locator];
 
-            side.Selection.Clear();
+            using (Selection selection = side.Selection)
+            {
+                selection.Clear();
 
-            // The source is handed to the collection, which takes it from here. Disposing
-            // it after the Add would take it back out from under the test.
-            side.Selection.SelectionSources.Add(sets.CreateSelectionSource(set));
+                // The source is handed to the collection, which takes it from here. Disposing
+                // it after the Add would take it back out from under the test.
+                selection.SelectionSources.Add(sets.CreateSelectionSource(set));
+            }
         }
 
         /// <summary>
@@ -1019,7 +1065,8 @@ namespace Federator.Addin.Engine
         {
             int fromSide;
 
-            using (ModelItemCollection found = side.Selection.GetSelectedItems(document))
+            using (Selection selection = side.Selection)
+            using (ModelItemCollection found = selection.GetSelectedItems(document))
             {
                 fromSide = found == null ? 0 : found.Count;
             }
@@ -1155,7 +1202,13 @@ namespace Federator.Addin.Engine
             try
             {
                 List<string> folders = new List<string>();
-                WalkSets(sets.RootItem, folders, byPath);
+
+                // WalkSets releases every folder it steps into, but not the one it is
+                // handed, so the root is read into a using here.
+                using (GroupItem root = sets.RootItem)
+                {
+                    WalkSets(root, folders, byPath);
+                }
 
                 foreach (KeyValuePair<string, SelectionSet> pair in byPath)
                 {

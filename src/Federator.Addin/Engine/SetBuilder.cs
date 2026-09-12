@@ -78,48 +78,67 @@ namespace Federator.Addin.Engine
         {
             try
             {
-                GroupItem parent = EnsureFolders(sets, planned.Folders);
-
-                // A reused NWF already holds last week's sets. Adding another copy would
-                // leave the tree with two sets at one path and a clash locator resolving
-                // to whichever came first, so an existing one is left exactly as it is.
-                SelectionSet existing = FindSelectionSet(parent, planned.Name);
-
-                if (existing != null)
+                using (GroupItem parent = EnsureFolders(sets, planned.Folders))
                 {
-                    // One call, so a present set is counted as present and never as
-                    // created. It used to be added to both lists, which made every
-                    // weekly run report sixty one created and save the NWF again.
-                    SetResult present = outcome.AddAlreadyPresent(
-                        planned.Path, planned.Name, planned.ConditionCount, CountOf(document, existing));
-                    log.Line("SET      " + present.Line());
-                    return;
+                    // A reused NWF already holds last week's sets. Adding another copy would
+                    // leave the tree with two sets at one path and a clash locator resolving
+                    // to whichever came first, so an existing one is left exactly as it is.
+                    SelectionSet existing = FindSelectionSet(parent, planned.Name);
+
+                    if (existing != null)
+                    {
+                        using (existing)
+                        {
+                            // One call, so a present set is counted as present and never as
+                            // created. It used to be added to both lists, which made every
+                            // weekly run report sixty one created and save the NWF again.
+                            SetResult present = outcome.AddAlreadyPresent(
+                                planned.Path, planned.Name, planned.ConditionCount,
+                                CountOf(document, existing));
+                            log.Line("SET      " + present.Line());
+                        }
+
+                        return;
+                    }
+
+                    // Both of these are this tool's own and both are disposed. They live to
+                    // the end of the block because Resolve falls back to the search, and the
+                    // set is disposed first so nothing it shares with the search is released
+                    // while the search is still being read.
+                    using (Search search = new Search())
+                    {
+                        search.Selection.SelectAll();
+                        search.Locations = SearchLocations.DescendantsAndSelf;
+
+                        foreach (PlannedCondition condition in planned.Conditions)
+                        {
+                            search.SearchConditions.Add(BuildCondition(condition));
+                        }
+
+                        int before = CountIn(parent);
+
+                        using (SelectionSet set = new SelectionSet(search))
+                        {
+                            set.DisplayName = planned.Name;
+                            sets.AddCopy(parent, set);
+                        }
+
+                        // AddCopy takes a copy, so the item in the tree is not the object
+                        // above. Read the parent again from a fresh RootItem before looking,
+                        // for the same reason the folders are resolved that way.
+                        int items;
+
+                        using (GroupItem fresh = ResolveFolders(sets, planned.Folders, planned.Folders.Count))
+                        using (SelectionSet created = AddedAt(fresh ?? parent, before, planned.Name))
+                        {
+                            items = Resolve(document, created, search);
+                        }
+
+                        outcome.AddCreated(
+                            planned.Path, planned.Name, planned.ConditionCount, items, planned.Describe());
+                        log.Line("SET      " + outcome.Results[outcome.Results.Count - 1].Line());
+                    }
                 }
-
-                Search search = new Search();
-                search.Selection.SelectAll();
-                search.Locations = SearchLocations.DescendantsAndSelf;
-
-                foreach (PlannedCondition condition in planned.Conditions)
-                {
-                    search.SearchConditions.Add(BuildCondition(condition));
-                }
-
-                SelectionSet set = new SelectionSet(search);
-                set.DisplayName = planned.Name;
-
-                sets.AddCopy(parent, set);
-
-                // AddCopy takes a copy, so the item in the tree is not the object above.
-                // Read the parent again from a fresh RootItem before looking, for the same
-                // reason the folders are resolved that way.
-                GroupItem fresh = ResolveFolders(sets, planned.Folders, planned.Folders.Count);
-                SelectionSet created = FindSelectionSet(fresh ?? parent, planned.Name);
-                int items = Resolve(document, created, search);
-
-                outcome.AddCreated(
-                    planned.Path, planned.Name, planned.ConditionCount, items, planned.Describe());
-                log.Line("SET      " + outcome.Results[outcome.Results.Count - 1].Line());
             }
             catch (Exception error)
             {
@@ -142,37 +161,51 @@ namespace Federator.Addin.Engine
         {
             for (int depth = 0; depth < folders.Count; depth++)
             {
-                if (ResolveFolders(sets, folders, depth + 1) != null)
+                GroupItem already = ResolveFolders(sets, folders, depth + 1);
+
+                // Every folder this walk hands back is a wrapper of this tool's, including
+                // the ones read only to answer a question, so each one is released here.
+                if (already != null)
                 {
+                    already.Dispose();
                     continue;
                 }
 
-                GroupItem parent = ResolveFolders(sets, folders, depth);
-
-                if (parent == null)
+                using (GroupItem parent = ResolveFolders(sets, folders, depth))
                 {
-                    throw new InvalidOperationException(
-                        "The folder \"" + folders[depth] + "\" cannot be created because the path above it "
-                            + "is not there.");
-                }
+                    if (parent == null)
+                    {
+                        throw new InvalidOperationException(
+                            "The folder \"" + folders[depth] + "\" cannot be created because the path above it "
+                                + "is not there.");
+                    }
 
-                FolderItem folder = new FolderItem();
-                folder.DisplayName = folders[depth];
-                sets.AddCopy(parent, folder);
+                    using (FolderItem folder = new FolderItem())
+                    {
+                        folder.DisplayName = folders[depth];
+                        sets.AddCopy(parent, folder);
+                    }
+                }
 
                 // Resolved again from a fresh RootItem rather than from the handle used
                 // for the add. A handle held across an AddCopy does not show the new
                 // child, which is what made the very first folder look like it had not
                 // been created. See docs\scan.md.
-                if (ResolveFolders(sets, folders, depth + 1) == null)
+                using (GroupItem added = ResolveFolders(sets, folders, depth + 1))
                 {
-                    // AddCopy returns void, so there is no handle to hold on to and the
-                    // only way back to the new folder is to read it again. If that read
-                    // still does not show it, say what the level above does hold, so a
-                    // repeat of this is diagnosable from the log alone.
-                    throw new InvalidOperationException(
-                        "The folder \"" + folders[depth] + "\" was added and a fresh read still does not show it. "
-                            + "The level above holds: " + Describe(ResolveFolders(sets, folders, depth)) + ".");
+                    if (added == null)
+                    {
+                        // AddCopy returns void, so there is no handle to hold on to and the
+                        // only way back to the new folder is to read it again. If that read
+                        // still does not show it, say what the level above does hold, so a
+                        // repeat of this is diagnosable from the log alone.
+                        using (GroupItem above = ResolveFolders(sets, folders, depth))
+                        {
+                            throw new InvalidOperationException(
+                                "The folder \"" + folders[depth] + "\" was added and a fresh read still does not show it. "
+                                    + "The level above holds: " + Describe(above) + ".");
+                        }
+                    }
                 }
 
                 log.Line("SET      folder   " + string.Join("/", Prefix(folders, depth + 1)));
@@ -193,6 +226,10 @@ namespace Federator.Addin.Engine
             for (int i = 0; i < depth; i++)
             {
                 FolderItem next = FindFolder(current, folders[i]);
+
+                // The level just walked past is not the one handed back, so its wrapper
+                // is released here rather than left to a finalizer.
+                current.Dispose();
 
                 if (next == null)
                 {
@@ -218,8 +255,10 @@ namespace Federator.Addin.Engine
 
             for (int i = 0; i < children.Count; i++)
             {
-                SavedItem child = children[i];
-                names.Add((child is FolderItem ? "folder " : "set ") + child.DisplayName);
+                using (SavedItem child = children[i])
+                {
+                    names.Add((child is FolderItem ? "folder " : "set ") + child.DisplayName);
+                }
             }
 
             return names.Count == 0 ? "nothing" : string.Join(", ", names.ToArray());
@@ -243,12 +282,17 @@ namespace Federator.Addin.Engine
 
             for (int i = 0; i < children.Count; i++)
             {
-                FolderItem folder = children[i] as FolderItem;
+                SavedItem child = children[i];
+                FolderItem folder = child as FolderItem;
 
                 if (folder != null && string.Equals(folder.DisplayName, name, StringComparison.Ordinal))
                 {
                     return folder;
                 }
+
+                // Every child read out of the collection is a wrapper of this tool's, so
+                // the ones not handed back are released here.
+                child.Dispose();
             }
 
             return null;
@@ -261,15 +305,61 @@ namespace Federator.Addin.Engine
             // Backwards, because the one just added is at the end.
             for (int i = children.Count - 1; i >= 0; i--)
             {
-                SelectionSet set = children[i] as SelectionSet;
+                SavedItem child = children[i];
+                SelectionSet set = child as SelectionSet;
 
                 if (set != null && string.Equals(set.DisplayName, name, StringComparison.Ordinal))
                 {
                     return set;
                 }
+
+                child.Dispose();
             }
 
             return null;
+        }
+
+        /// <summary>How many children a folder holds right now, or zero when it is null.</summary>
+        private static int CountIn(GroupItem parent)
+        {
+            return parent == null ? 0 : parent.Children.Count;
+        }
+
+        /// <summary>
+        /// The set just added, read at the index the count held before the add rather than
+        /// by walking the collection. AddCopy appends, so that index is where it is, and
+        /// the name is checked rather than assumed. Walking once per set is the shape the
+        /// rules forbid, and it is what cost 1.7 million native handles a group over the
+        /// clash tests before it was found there.
+        ///
+        /// A tree that is not the shape this expects says so and falls back to the walk,
+        /// because a set reported missing when it is there is worse than a slow read.
+        /// </summary>
+        private SelectionSet AddedAt(GroupItem parent, int index, string name)
+        {
+            if (parent == null)
+            {
+                return null;
+            }
+
+            SavedItemCollection children = parent.Children;
+
+            if (index >= 0 && index < children.Count)
+            {
+                SavedItem child = children[index];
+                SelectionSet set = child as SelectionSet;
+
+                if (set != null && string.Equals(set.DisplayName, name, StringComparison.Ordinal))
+                {
+                    return set;
+                }
+
+                child.Dispose();
+                log.Line("SET      \"" + name + "\" was not at index " + index
+                    + ", the index the count gave before the add, so it was looked for by name");
+            }
+
+            return FindSelectionSet(parent, name);
         }
 
         /// <summary>
@@ -280,21 +370,28 @@ namespace Federator.Addin.Engine
         /// <summary>How many items a set that is already in the tree finds as it stands.</summary>
         private static int CountOf(Document document, SelectionSet set)
         {
-            ModelItemCollection found = set.GetSelectedItems(document);
-            return found == null ? 0 : found.Count;
+            using (ModelItemCollection found = set.GetSelectedItems(document))
+            {
+                return found == null ? 0 : found.Count;
+            }
         }
 
         private int Resolve(Document document, SelectionSet created, Search search)
         {
             if (created != null)
             {
-                ModelItemCollection found = created.GetSelectedItems(document);
-                return found == null ? 0 : found.Count;
+                using (ModelItemCollection found = created.GetSelectedItems(document))
+                {
+                    return found == null ? 0 : found.Count;
+                }
             }
 
             log.Line("SET      the created set could not be found again, resolving the search directly");
-            ModelItemCollection direct = search.FindAll(document, false);
-            return direct == null ? 0 : direct.Count;
+
+            using (ModelItemCollection direct = search.FindAll(document, false))
+            {
+                return direct == null ? 0 : direct.Count;
+            }
         }
 
         /// <summary>
