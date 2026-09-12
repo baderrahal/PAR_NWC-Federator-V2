@@ -2,6 +2,42 @@
 
 Newest entry at the top.
 
+## 2026-09-12 The round closes, F27 to F39, the audit and D6
+
+### What was done
+
+- Thirteen fixes merged today, F27 to F39, each on its own branch through its own pull request with Actions green, and each local branch deleted after. F12, F13 and F14 closed with F37 and F38, F25 closed with F27. D1 to D5 are in the code. D6 is not, see below
+- The audit ran over every file under src, tests, build, tools, docs, steps and the root, and is written up in `steps/04_audit.md`: fourteen readers, a verifier per finding, and three checks of my own that need no judgement. 393 findings, condensed into seven fixes, F39 to F45, and F16 widened, each a section in `01_next.md` with its files, and two questions, Q24 and Q25, in `02_questions.md`
+- The audit found that the add-in had not compiled since F34 merged. Two calls in the window kept passing a `true` that F34's constructors no longer take, and the diff reading that every add-in change gets could not see it, because a diff shows the constructors that went and not the callers that stayed. F39 fixed it and is merged. The build is the first step of `03_bader_next.md` and the reason it comes before every proof is written there
+- `steps/03_bader_next.md` rewritten so the proofs for F27 to F35 sit in one build, one install and one Navisworks session, 191 numbered steps, F34 first because it is seen the moment the window opens, then F33 in the same look, then F27 for the cost of a Scan and a Cancel, then the C06 run which proves F24, F29, F30 and F33 in one press, then F28 and F31 together, then F35, and the older pending proofs after. Four steps the audit found wrong in it were corrected the same day
+- D6 is handed to Bader as one command at the end of that file. Every branch except main is merged into main, checked with `git branch -r --merged origin/main`. The container cannot delete a remote branch: `git push origin --delete` returns HTTP 403 from the proxy in front of the session, there is no GitHub tool in the session that deletes a branch, and a workflow file that would have done it from Actions was refused by the permission classifier as destructive, which it is. The command lists all 27 branches and says what to look for
+- Proved here: Core tests under mono on Linux at the end of the round: 905 passed, 37 failed, 33 skipped, 975 total, the same 37 and 33 as after F32, every one named in `04_audit.md` with its cause. The audit found six of the 33 skips misname their reason, saying a sample is not in the checkout when it is, because two test files join the samples path with a backslash
+- Waits for the local machine: the build first, then every proof in `03_bader_next.md`, then the two hooks of F38 tried under Claude Code on Windows
+
+### What remains
+
+- F40 to F45 and F16 in that order, then F21, F15, F18 when the sample arrives, F23 when Q20 is answered
+- Q24 and Q25 for Bader, both from the audit
+- The verifier pass of the audit was 27 of about 50 batches done at commit time. Its journal lives in the session and not in the repo, so a later session re-checks a finding by grep rather than trusting it. Every finding in `04_audit.md` was checked by grep here before it went in
+
+### Known bugs
+
+- B12 OPEN, waiting on Q20. Narrowed by F32: an NWD, an address, no folder and an unreadable folder are each refused with the reason named. The ACC case itself still waits
+- B13, B14 fixed in code, pending local proof, F24 and F26 in `03_bader_next.md`
+- B1, B2, B11, L1, L2, L3, L4 and F22 fixed in code, pending local proof, each in `03_bader_next.md`
+- B7 fixed in code, pending a local run of `tools/probes/probe-window-defaults.ps1`
+- B9 fixed, and the local proof is now the build after F39
+- M5 closed on the Core side, open on the add-in side until the build runs locally
+- B3, B4, B8, B10, B15 fixed or closed. B5, B6, L5 to L8, M1 to M4, M6 to M8 as in `00_analysis.md`, of which M8 is F16 and L5 to L7 closed with F37
+- New from the audit, all in `04_audit.md`: the add-in did not compile from F34 to F39, fixed. Handles not disposed in three add-in files, F41. Framework messages reaching four labels, F42. Four settings that are constants, F43. A missing tolerance read as zero, the Old sentence, the compact count read before, an UNKNOWN locator reported as drift, F45
+
+### What comes next
+
+1. Bader pulls main, builds, installs and follows `03_bader_next.md`, the build first
+2. Bader answers Q24 and Q25
+3. F40, then F41 to F45, then F16
+4. The worker reads the logs Bader drops in `steps/logs` and records the proofs in this file
+
 ## 2026-09-12 F39, the window compiles again
 
 ### What was done

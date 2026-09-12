@@ -102,3 +102,11 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 23. Not in the first list. Units. The same log says THE DOCUMENT DID NOT FOLLOW on 11 of 14 groups and the report went out in feet. See B14
 
    Answer: the report is always in meters, never feet. Force the document to meters and fail the group loudly if it will not follow. F26.
+
+24. From the audit of 2026-09-12. The rules say a name cell typed over can be given back to the pattern, and `OutputNameRow.ReleaseToPattern` does that, but no control in the window reaches it, so nobody can. Wire a way in the Grouping step, a right click or a button per cell, or drop the sentence and the member with its test? See `04_audit.md`, F40
+
+   Answer:
+
+25. From the audit of 2026-09-12. Family, type name, material, source file and discipline are read off every clash item and written to no output, because the workbook became the client's one sheet with none of ours on it and the page never carried them. They cost a property lookup per item per run. Delete them and their harvest, or keep them for a workbook column that does not exist yet? See `04_audit.md`, F40 and F45
+
+   Answer:

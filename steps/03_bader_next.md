@@ -37,7 +37,7 @@ dotnet build ParsonsNwcFederator.sln -c Release -p:NavisworksPath="D:\Autodesk\N
 powershell -ExecutionPolicy Bypass -File build\install.ps1
 ```
 
-12. Read the last lines of the install. It must say the bundle is complete. If it refuses, copy the whole output into the chat
+12. Read the last lines of the install. Look for: a line saying all the expected files are present and a line saying every reference is satisfied. If it stops with Install incomplete, copy the whole output into the chat
 
 ## Proof F34, the window, and F33, the units combo
 
@@ -47,7 +47,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 16. Look for: the window title carries today's commit and build time, not be0b9b37
 17. Look for: the window has four tabs, Source, Grouping, Outputs, Clash
 18. Go to the Outputs step
-19. Look for: the Model units combo lists Metres, Millimetres, Centimetres, Feet, Inches, in that order, with Metres chosen
+19. Look for: the Model units combo lists `Metres, which is what the models are set to`, then Millimetres, Centimetres, Feet, Inches, in that order, with the first chosen
 20. Look for: the grey line under it says the report is always in metres
 21. Go to the Clash step
 22. Look for: there is no Outstanding counts combo on the Clash step. It used to sit under the tick boxes
@@ -101,7 +101,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 61. Go to the Clash step and pick the clash XML
 62. Go to the Grouping step and tick 1B06PH only
 63. Press Run
-64. Look for: the confirm dialog says `Weekly run plus XML: 1` and does not say cleared
+64. Look for: the confirm dialog says `Weekly run plus XML: 1` and its line ends with `Nothing is cleared.`
 65. Press OK and wait for it to finish
 66. Note the time the run took, from the GROUP started line to the GROUP finished line
 67. Look for: the log says OPENED for the group
@@ -110,7 +110,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 70. Press Run again on the same building, same folders, same XML
 71. Press OK and wait for it to finish
 72. Look for, F28: the SETS block reads `sets created      : 0` and `already there     : 61, left alone, not copied again`, and the line after it reads `put into the document: 0 created, 61 already there and left alone`
-73. Look for, F28: no second `NWF      attempt` line after the CLASH block, because nothing was put into the document
+73. Look for, F28: the SETS block's put into the document line reads `0 created, 61 already there and left alone`. A second `NWF      attempt` line still follows the CLASH block, because the tests ran and their results went into the document
 74. Look for, F31: the DRIFT block reports no locator difference on any test. A locator difference on every test would mean the source held since the sets were indexed does not compare equal to a fresh one, which is the one thing F31 could not measure here
 75. Look for, F31: the CLASH block shows the same created, already there, run, skipped and passed counts as the first run
 76. Look for, F31: the second run took no longer than the first
