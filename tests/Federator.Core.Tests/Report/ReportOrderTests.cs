@@ -29,25 +29,14 @@ namespace Federator.Core.Tests
         [SetUp]
         public void MakeFolder()
         {
-            folder = Path.Combine(Path.GetTempPath(), "FederatorReportOrder", Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(folder);
+            folder = TempFolder.Make("FederatorReportOrder");
             workbook = Path.Combine(folder, "1104-PAR-1C07BC-ZZZ-BM-MOD-000001.xlsx");
         }
 
         [TearDown]
         public void RemoveFolder()
         {
-            try
-            {
-                if (Directory.Exists(folder))
-                {
-                    Directory.Delete(folder, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
+            TempFolder.Remove(folder);
         }
 
         // ---------- the sample ----------

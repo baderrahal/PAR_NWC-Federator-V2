@@ -2,6 +2,38 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F16, the tests path neutral
+
+### What was done
+
+- F16 done. The whole test set now PASSES in this container. Before: 918 passed, 37 failed, 33 skipped, 988 total. After: 957 passed, 0 failed, 32 skipped, 989 total. That is the number every log entry has carried since F32 and it is zero now
+- Why there were 37. Every one was a test written for a Windows path, not a fault in Core, and all of them passed on the Windows runner. A backslash is an ordinary character off Windows, so a path typed as `C:\out\reports` has no folder in it at all: `Path.GetDirectoryName` finds none and `Path.Combine` joins with a forward slash, and the expectation and the answer differ at whichever index the separator sits
+- Paths are BUILT now, in `TestPaths.At`, which gives a rooted path in the spelling of whatever machine is running. 28 of the 37 were that and they run on both
+- Five are about a rule of the file SYSTEM and not of this tool, so they say what they need and skip: a drive letter that names no drive, matching two paths without case, twice, and a file held open refusing to be deleted or read, twice. `TestPaths.OnWindowsOnly` is the one place that decision is written
+- Two of them did not need skipping and were proved another way instead. A copy into a folder that cannot exist, and a settings file in a place that cannot be written, are now a folder under a FILE that is already there, which no system makes. Those two rules are proved everywhere rather than on Windows alone
+- One test passed off Windows without proving anything. `ReadsAFullPathThroughToTheName` handed the parser a path with no separator in it, which is one long file name whose parts after the first still read correctly, so it passed while the folder was never taken off. It builds the path now and asserts the Stem, which is the part that shows the folder went
+- Three compared a `ReadOnlyCollection` against an array with `Is.EqualTo`. They passed on the Windows runner and failed under mono, and which of the two is the odd one is UNKNOWN. They compare the count and then each element, which answers neither question and needs no answer
+- Six skips misnamed their reason. They said the supplied exports or the exchange file were not in this checkout, and they ARE: the paths were joined with a backslash, so nothing was found under that name. They read the files now and run. A skip that misnames its reason is worse than a failure, because it reads as a missing sample
+- One Core fault came out of it. `NamePattern` and `ReportPaths` both asked `Path.GetInvalidFileNameChars` what a file name may not carry, and off Windows that is the null character and the forward slash and nothing else, so a date format holding a colon or a pipe passed the check that exists to catch it. `Federator.Core.Naming.FileNames` now names Windows' own list, the nine printable ones and every control character, and both read it. The tool runs on Windows and writes Windows names, so the platform running the test is the wrong thing to ask
+- One sentence about a leftover temp folder sat above the same catch block in nineteen test files. `TempFolder.Make` and `TempFolder.Remove` are that rule in one place, used by all nineteen
+- The four copies of the walk up to the checkout were already one, `Samples.Repo`, which F40 did
+- Proved here: the whole set, 957 passed and 0 failed. The 32 skips are 26 that need Navisworks on the machine, 1 UNC path, and the 5 Windows file system rules, and every one of them says which. Core builds with no warning. The arity check over the whole add-in, 0 mismatches. The parse of the whole add-in with no references, the same six error codes as before
+- Waits for the local machine: nothing in F16 is an add-in change. The proof is Actions, which runs the same set on Windows and is green
+
+### What remains
+
+- The read of `03_bader_next.md` against the code, then the closing entry
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F16 PR
+2. Read `03_bader_next.md` end to end against the code and correct every Look for line that does not match
+3. The closing entry
+
 ## 2026-09-12 F45, the clash step keeps its rules
 
 ### What was done

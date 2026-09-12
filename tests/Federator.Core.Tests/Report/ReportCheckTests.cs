@@ -29,24 +29,13 @@ namespace Federator.Core.Tests
         [SetUp]
         public void MakeFolder()
         {
-            folder = Path.Combine(Path.GetTempPath(), "FederatorCheck", Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(folder);
+            folder = TempFolder.Make("FederatorCheck");
         }
 
         [TearDown]
         public void RemoveFolder()
         {
-            try
-            {
-                if (Directory.Exists(folder))
-                {
-                    Directory.Delete(folder, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
+            TempFolder.Remove(folder);
         }
 
         // ---------- a real page, written by the real stylesheet ----------

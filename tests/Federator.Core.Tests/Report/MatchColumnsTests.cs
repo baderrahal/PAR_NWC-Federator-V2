@@ -252,7 +252,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheWorkbookLinkIsStillAForwardSlashUri()
         {
-            Assert.That(ImageNaming.LinkFor(@"C:\out\name.xlsx", 0, 1),
+            Assert.That(ImageNaming.LinkFor(TestPaths.At("out", "name.xlsx"), 0, 1),
                 Is.EqualTo("name_files/cd000001.jpg"));
         }
     }

@@ -153,7 +153,9 @@ namespace Federator.Core.Naming
             // comes back as "noA a real 0or0aA". Measured on 2026-08-31. What matters is
             // whether the result can be part of a file name, so that is what is checked
             // rather than an exception that never arrives.
-            if (written.Length == 0 || written.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
+            // The characters are Windows' own, read off FileNames rather than off the
+            // platform running this, which off Windows names only two of them.
+            if (!FileNames.CanBeAName(written))
             {
                 return Number;
             }

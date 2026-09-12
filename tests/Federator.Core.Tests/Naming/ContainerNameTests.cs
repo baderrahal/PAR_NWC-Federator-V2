@@ -32,12 +32,21 @@ namespace Federator.Core.Tests
             Assert.That(parsed.Building, Is.EqualTo("1C07BC"));
         }
 
+        /// <summary>
+        /// The folder in front of the name is dropped and the name is read. The path used
+        /// to be typed with backslashes, and off Windows that is one long file name whose
+        /// parts after the first are still the right ones, so this passed while proving
+        /// nothing. The Stem is asserted too, because that is the part that shows the
+        /// folder was actually taken off.
+        /// </summary>
         [Test]
         public void ReadsAFullPathThroughToTheName()
         {
-            ParsedContainerName parsed = ContainerName.Parse(@"C:\models\incoming\" + Sample + ".nwc");
+            ParsedContainerName parsed = ContainerName.Parse(
+                TestPaths.At("models", "incoming", Sample + ".nwc"));
 
             Assert.That(parsed.IsReadable, Is.True, parsed.UnreadableReason);
+            Assert.That(parsed.Stem, Is.EqualTo(Sample), "the folder was not taken off the name");
             Assert.That(parsed.Building, Is.EqualTo("1C07BC"));
             Assert.That(parsed.Discipline, Is.EqualTo("AR"));
         }

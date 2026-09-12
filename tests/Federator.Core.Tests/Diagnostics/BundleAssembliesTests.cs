@@ -28,28 +28,13 @@ namespace Federator.Core.Tests
         [SetUp]
         public void MakeFolder()
         {
-            folder = Path.Combine(Path.GetTempPath(), "FederatorBundle", Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(folder);
+            folder = TempFolder.Make("FederatorBundle");
         }
 
         [TearDown]
         public void RemoveFolder()
         {
-            try
-            {
-                if (Directory.Exists(folder))
-                {
-                    Directory.Delete(folder, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
-            catch (UnauthorizedAccessException)
-            {
-                // Same, and it is what a file still held open looks like.
-            }
+            TempFolder.Remove(folder);
         }
 
         // ---------- reading the request ----------

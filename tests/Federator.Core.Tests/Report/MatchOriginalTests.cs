@@ -55,7 +55,11 @@ namespace Federator.Core.Tests
         /// <summary>The order the tests sit in the exchange file they came out of.</summary>
         private static IList<string> ExchangeOrder(string repo)
         {
-            string path = Path.Combine(repo, @"samples\1104-PAR_CLASH_AllInOne (2) (1).xml");
+            // Samples.AllInOne finds it whichever of its two names it carries, and joins
+            // the path with this machine's own separator. Joined with a backslash it was
+            // not found off Windows, and the skip then said the checkout was missing a
+            // file it holds.
+            string path = Samples.AllInOne();
 
             if (!File.Exists(path))
             {
@@ -234,7 +238,7 @@ namespace Federator.Core.Tests
                 Assert.Ignore("The checkout is not beside the test binaries.");
             }
 
-            string folder = Path.Combine(repo, @"samples\client-report");
+            string folder = Path.Combine(repo, "samples", "client-report");
 
             if (!Directory.Exists(folder))
             {

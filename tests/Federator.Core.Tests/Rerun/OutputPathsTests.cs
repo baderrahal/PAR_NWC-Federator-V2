@@ -20,24 +20,13 @@ namespace Federator.Core.Tests
         [SetUp]
         public void MakeFolder()
         {
-            folder = Path.Combine(Path.GetTempPath(), "FederatorOutputPaths", Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(folder);
+            folder = TempFolder.Make("FederatorOutputPaths");
         }
 
         [TearDown]
         public void RemoveFolder()
         {
-            try
-            {
-                if (Directory.Exists(folder))
-                {
-                    Directory.Delete(folder, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
+            TempFolder.Remove(folder);
         }
 
         private const string OutputName = "1104-PAR-1C07BC-ZZZ-BM-MOD-000001";
@@ -45,15 +34,19 @@ namespace Federator.Core.Tests
         [Test]
         public void TheNwfPathIsTheNameWithAnNwfExtension()
         {
-            Assert.That(OutputPaths.Nwf(@"C:\out\nwf", OutputName),
-                Is.EqualTo(@"C:\out\nwf\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf"));
+            string folder = TestPaths.At("out", "nwf");
+
+            Assert.That(OutputPaths.Nwf(folder, OutputName),
+                Is.EqualTo(Path.Combine(folder, OutputName + ".nwf")));
         }
 
         [Test]
         public void TheNwdPathIsTheNameWithAnNwdExtension()
         {
-            Assert.That(OutputPaths.Nwd(@"C:\out\nwd", OutputName),
-                Is.EqualTo(@"C:\out\nwd\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd"));
+            string folder = TestPaths.At("out", "nwd");
+
+            Assert.That(OutputPaths.Nwd(folder, OutputName),
+                Is.EqualTo(Path.Combine(folder, OutputName + ".nwd")));
         }
 
         // This is the one that matters. An NWF written at the computed path on one run has

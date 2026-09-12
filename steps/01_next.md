@@ -191,6 +191,7 @@ F19 is dropped.
 - CONTAINER, then confirm on Windows
 - Size: medium. Q11 answered yes
 - Widened by the audit of 2026-09-12, see `04_audit.md`. The 37 tests that fail here, the six that skip saying a sample is missing when it is there, the three ReadOnlyCollection against array comparisons, `ContainerNameTests.ReadsAFullPathThroughToTheName` which passes off Windows without proving anything, `Samples.Folder` in place of the four `RepoRoot` copies, and one temp folder helper in place of the nineteen copies of its comment
+- DONE on 2026-09-12. The whole set passes in the container, 957 passed, 0 failed, 32 skipped, 989 total, where it was 37 failing. Five of the 37 skip because they are about a Windows file system rule and two were proved another way instead. One Core fault came out of it: both places that asked the running platform what a file name may not carry now read Windows' own list from `FileNames`
 
 ## F18 Add the 1A04WE sample
 
