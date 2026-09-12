@@ -227,7 +227,7 @@ namespace Federator.Core.Tests
 
             for (int i = 0; i < 60; i++)
             {
-                outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Old" + i);
+                outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Old" + i, "Old" + i, 1, 40);
             }
 
             Assert.That(outcome.CreatedCount, Is.EqualTo(1));
@@ -239,8 +239,8 @@ namespace Federator.Core.Tests
         public void EverySetAlreadyPresentPutNothingIn()
         {
             SetBuildOutcome outcome = new SetBuildOutcome();
-            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/One");
-            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Two");
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/One", "One", 1, 12);
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Two", "Two", 2, 0);
 
             Assert.That(outcome.PutAnythingIn, Is.False);
         }
@@ -261,6 +261,69 @@ namespace Federator.Core.Tests
             outcome.AddCreated("lcop_selection_set_tree/A/One", "One", 1, 0);
 
             Assert.That(outcome.PutAnythingIn, Is.True);
+        }
+
+        // F28. A present set is one call, printed as present with its item count, counted
+        // as present and never as created. BuildOne used to add it to both lists, so a
+        // weekly run reported sixty one created and saved the NWF a second time for nothing.
+        [Test]
+        public void SixtyOnePresentAndNoneCreatedPutNothingInAndPrintsNoOkLine()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+
+            for (int i = 0; i < 61; i++)
+            {
+                outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Set" + i, "Set" + i, 2, 10 + i);
+            }
+
+            Assert.That(outcome.PutAnythingIn, Is.False);
+            Assert.That(outcome.CreatedCount, Is.EqualTo(0));
+            Assert.That(outcome.AlreadyPresentCount, Is.EqualTo(61));
+            Assert.That(outcome.FindingItemsCount, Is.EqualTo(0));
+            Assert.That(outcome.ZeroCount, Is.EqualTo(0));
+            Assert.That(outcome.FailedCount, Is.EqualTo(0));
+            Assert.That(outcome.TotalItems, Is.EqualTo(0));
+
+            foreach (string line in outcome.Lines())
+            {
+                Assert.That(line, Does.Not.StartWith("ok"), "a present set is not an ok line");
+            }
+
+            string all = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
+            Assert.That(all, Does.Contain("present lcop_selection_set_tree/A/Set0  2 conditions  10 items  already there, left alone"));
+            Assert.That(all, Does.Contain("sets created      : 0"));
+            Assert.That(all, Does.Contain("already there     : 61"));
+        }
+
+        [Test]
+        public void SixtyPresentAndOneCreatedPutSomethingIn()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+
+            for (int i = 0; i < 60; i++)
+            {
+                outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Set" + i, "Set" + i, 1, 5);
+            }
+
+            outcome.AddCreated("lcop_selection_set_tree/A/New", "New", 1, 3);
+
+            Assert.That(outcome.PutAnythingIn, Is.True);
+            Assert.That(outcome.CreatedCount, Is.EqualTo(1));
+            Assert.That(outcome.AlreadyPresentCount, Is.EqualTo(60));
+            Assert.That(outcome.FindingItemsCount, Is.EqualTo(1), "only the created set counts as finding items");
+            Assert.That(outcome.TotalItems, Is.EqualTo(3), "the present sets do not add their items");
+        }
+
+        [Test]
+        public void APresentLineCarriesItsItemCountAndIsNotCreated()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            SetResult result = outcome.AddAlreadyPresent("lcop_selection_set_tree/B/Ducts", "Ducts", 1, 140);
+
+            Assert.That(result.Present, Is.True);
+            Assert.That(result.Created, Is.False);
+            Assert.That(result.IsZero, Is.False);
+            Assert.That(result.Line(), Is.EqualTo("present lcop_selection_set_tree/B/Ducts  1 condition  140 items  already there, left alone"));
         }
     }
 }

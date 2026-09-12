@@ -87,11 +87,12 @@ namespace Federator.Addin.Engine
 
                 if (existing != null)
                 {
-                    outcome.AddAlreadyPresent(planned.Path);
-                    outcome.AddCreated(
-                        planned.Path, planned.Name, planned.ConditionCount,
-                        CountOf(document, existing), planned.Describe());
-                    log.Line("SET      already there, left alone  " + planned.Path);
+                    // One call, so a present set is counted as present and never as
+                    // created. It used to be added to both lists, which made every
+                    // weekly run report sixty one created and save the NWF again.
+                    SetResult present = outcome.AddAlreadyPresent(
+                        planned.Path, planned.Name, planned.ConditionCount, CountOf(document, existing));
+                    log.Line("SET      " + present.Line());
                     return;
                 }
 
