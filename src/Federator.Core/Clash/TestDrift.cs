@@ -10,6 +10,14 @@ namespace Federator.Core.Clash
     /// </summary>
     public sealed class TestSettings
     {
+        /// <summary>
+        /// What a side reads when this tool could not read which set it points at. It is
+        /// here rather than in the add-in because the comparison is in Core and has to
+        /// leave such a side out, and a marker written in two places is a rule in two
+        /// places.
+        /// </summary>
+        public const string UnknownLocator = "UNKNOWN";
+
         public TestSettings()
         {
             TestTypeName = string.Empty;
@@ -166,6 +174,14 @@ namespace Federator.Core.Clash
             int filePrimitives,
             int documentPrimitives)
         {
+            // A side this tool could not read is not compared at all. Comparing the word
+            // UNKNOWN against a real locator reports drift when the truth is that nothing
+            // was read, which is worse than saying so.
+            if (!WasRead(fileLocator) || !WasRead(documentLocator))
+            {
+                return;
+            }
+
             // Ordinal and never trimmed. The rule, and the two set names that are the
             // reason for it, are in .claude\rules\core.md.
             if (!string.Equals(fileLocator, documentLocator, StringComparison.Ordinal))
@@ -185,6 +201,36 @@ namespace Federator.Core.Clash
                     filePrimitives.ToString(CultureInfo.InvariantCulture),
                     documentPrimitives.ToString(CultureInfo.InvariantCulture));
             }
+        }
+
+        /// <summary>
+        /// True when a locator was actually read. The marker is the whole reason this
+        /// exists, because it is a real string and compares like any other.
+        /// </summary>
+        public static bool WasRead(string locator)
+        {
+            return !string.Equals(
+                locator == null ? string.Empty : locator,
+                TestSettings.UnknownLocator,
+                StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// How many of this test's two sides were left out because one end of the pair
+        /// could not be read. Counted so the DRIFT block says how many were not compared
+        /// rather than letting them read as matching.
+        /// </summary>
+        public static int SidesNotCompared(TestSettings inFile, TestSettings inDocument)
+        {
+            if (inFile == null || inDocument == null)
+            {
+                return 0;
+            }
+
+            int left = WasRead(inFile.LeftLocator) && WasRead(inDocument.LeftLocator) ? 0 : 1;
+            int right = WasRead(inFile.RightLocator) && WasRead(inDocument.RightLocator) ? 0 : 1;
+
+            return left + right;
         }
 
         private static void Add(
@@ -213,7 +259,10 @@ namespace Federator.Core.Clash
         /// line saying nothing drifted rather than an empty block.
         /// </summary>
         public static IList<string> Lines(
-            IEnumerable<TestDifference> differences, int testsCompared, bool applying)
+            IEnumerable<TestDifference> differences,
+            int testsCompared,
+            bool applying,
+            int sidesNotCompared)
         {
             List<string> lines = new List<string>();
             List<TestDifference> all = new List<TestDifference>(differences ?? new TestDifference[0]);
@@ -222,9 +271,19 @@ namespace Federator.Core.Clash
                 + (testsCompared == 1 ? " test was" : " tests were")
                 + " already in the document and were compared against the file.");
 
+            if (sidesNotCompared > 0)
+            {
+                lines.Add(sidesNotCompared
+                    + (sidesNotCompared == 1 ? " side was" : " sides were")
+                    + " left out, because which set it points at could not be read. "
+                    + "Not compared is not the same as matching.");
+            }
+
             if (all.Count == 0)
             {
-                lines.Add("Nothing has drifted. Every one of them matches the file.");
+                lines.Add(sidesNotCompared > 0
+                    ? "Nothing has drifted in what was compared."
+                    : "Nothing has drifted. Every one of them matches the file.");
                 return lines;
             }
 

@@ -130,6 +130,57 @@ namespace Federator.Core.Tests
             Assert.That(plan.Skipped[0].Reason, Does.Contain("no units"));
         }
 
+        // ---------- a tolerance that is not in the file ----------
+
+        /// <summary>
+        /// Everything about a test comes from the file and never from a constant. A test
+        /// with no tolerance attribute used to become a test with a tolerance of zero,
+        /// which reads as a real one, so it is skipped by name the way an unknown test
+        /// type is.
+        /// </summary>
+        [Test]
+        public void ATestWithNoToleranceAttributeIsSkippedByName()
+        {
+            ClashTestPlan plan = Plan(Xml().Replace(" tolerance=\"0.2460629921\"", string.Empty), "m");
+
+            Assert.That(plan.Buildable.Count, Is.EqualTo(0));
+            Assert.That(plan.Skipped.Count, Is.EqualTo(1));
+            Assert.That(plan.Skipped[0].Name, Is.EqualTo("AR-Floors v ME-Air Terminals"));
+            Assert.That(plan.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.NoTolerance));
+            Assert.That(plan.Skipped[0].Reason, Does.Contain("no tolerance"));
+        }
+
+        [Test]
+        public void AnEmptyToleranceAttributeIsNoToleranceEither()
+        {
+            ClashTestPlan plan = Plan(Xml(tolerance: string.Empty), "m");
+
+            Assert.That(plan.Buildable.Count, Is.EqualTo(0));
+            Assert.That(plan.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.NoTolerance));
+        }
+
+        /// <summary>
+        /// Zero is a real tolerance, written by somebody who meant it, and it is planned.
+        /// Only an absent attribute is the skip.
+        /// </summary>
+        [Test]
+        public void AToleranceOfZeroIsARealOneAndIsPlanned()
+        {
+            ClashTestPlan plan = Plan(Xml(tolerance: "0"), "m");
+
+            Assert.That(plan.Skipped.Count, Is.EqualTo(0));
+            Assert.That(plan.Buildable.Count, Is.EqualTo(1));
+            Assert.That(plan.Buildable[0].Tolerance, Is.EqualTo(0.0));
+        }
+
+        [Test]
+        public void TheSkipReadsOnItsOwnInTheLog()
+        {
+            Assert.That(
+                ClashTestPlan.Describe(ClashSkipReason.NoTolerance),
+                Does.Contain("no tolerance"));
+        }
+
         /// <summary>
         /// The unknown file unit line in Convert. It could not be reached before F33,
         /// because the reader converted the tolerance itself and threw on the whole file

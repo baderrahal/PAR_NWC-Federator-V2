@@ -160,15 +160,23 @@ and 6 does not read as broken.
   Tolerances are compared within an epsilon because the file's number travels through a
   unit conversion, and an exact comparison would report drift on all 1830. Locators are
   compared Ordinal and never trimmed, because two set names in the reference file end in
-  a space
+  a space. A side this tool could not read comes back as the word UNKNOWN, which is a real
+  string and compares like any other, so it is left OUT of the comparison and counted as
+  not compared. The block says how many, because not compared is not the same as matching.
+  The marker lives in Federator.Core.Clash.TestSettings.UnknownLocator, where the
+  comparison can read it
 - Resolved clashes stay in the file forever and that is the point of them, so the count
   is reported per test and as a total for the group. A test running weekly for months
   accumulates them without limit and nothing else prunes them
 - Nothing removed and nothing asked to be removed are different, so the compacted count
-  is minus one until a compact actually runs. Zero removed is a real answer
+  is minus one until a compact actually runs. Zero removed is a real answer. The count is
+  the Resolved total read BEFORE less the Resolved total read again after the compact, so
+  it is measured rather than assumed, and the log carries both numbers
 - Per test, everything comes from the file and never from a constant: the name, the
   test type, the tolerance, merge composites, and per side the self intersect and the
-  primitive type flags
+  primitive type flags. A test whose tolerance attribute is not there at all is SKIPPED by
+  name, the way an unknown test type is, because a missing tolerance became zero and zero
+  reads as a real tolerance. A tolerance written as zero is a real one and is created
 - Tolerance is read per test and converted from the file units attribute into the
   units of the open document before it is set. There is no global tolerance setting
   in this tool. Both numbers and both unit names go in the log, because which units

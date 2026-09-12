@@ -283,26 +283,33 @@ powershell -ExecutionPolicy Bypass -File tools\probes\probe-window-labels.ps1
 189. Look for: the handle count on the Navisworks row at the end of the second run, beside the one at the end of the first. Copy both into the chat. F41 releases every wrapper this tool creates where it is finished with it instead of leaving it to a finalizer, so a second run over the same 61 sets and 1830 tests should not sit higher than the first. A count that climbs run on run is the thing worth reporting
 190. Look for, in the log of either run: no line saying a set was not at the index the count gave before the add. That line is written only when the tree is not the shape the fast read assumes, and it means the set was then looked for by name
 
+## Proof F45, the clash step keeps its rules, off the two runs above
+
+191. Look for, in the DRIFT block of either run: either no line about sides left out at all, or one saying how many sides were left out because which set one end points at could not be read. That line is new and says not compared is not the same as matching
+192. Look for: a block headed `ITEM IDS 1B06PH`, one line per property that supplied an item id with a count out of the total, and never a line per item. On a Revit sourced model expect `Element ID` to supply most of them
+193. Look for, if any `CLASH    OLD` line appears: it reads the test name and `Navisworks has this test marked Old.` and nothing after that. It used to carry a sentence about what Old means, which is UNKNOWN
+194. Look for, only if you tick compacting on the Clash step: the compacted line carries both numbers, the Resolved count before and the count read again after, and the number reported as removed is the difference between them
+
 ## Delete the old branches, D6
 
 Every branch except main is merged into main. The container cannot delete a branch: `git push origin --delete` comes back HTTP 403 from the proxy in front of it, and there is no GitHub tool in it that deletes a branch. So this is yours, one command from the repo folder in the VS Code terminal.
 
-The list below was read on 2026-09-12 with the command in step 191, which asks the remote what it holds right now. Read it again yourself before you run the delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. `git ls-remote` asks the remote and remembers nothing.
+The list below was read on 2026-09-12 with the command in step 195, which asks the remote what it holds right now. Read it again yourself before you run the delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. `git ls-remote` asks the remote and remembers nothing.
 
-191. Read the live list:
+195. Read the live list:
 
 ```
 git ls-remote --heads origin
 ```
 
-192. Look for: one line per branch, the name after `refs/heads/`. On 2026-09-12 there were 30 of them, so 29 to delete
-193. Delete every one of them except main:
+196. Look for: one line per branch, the name after `refs/heads/`. On 2026-09-12 there were 30 of them, so 29 to delete
+197. Delete every one of them except main:
 
 ```
 git push origin --delete analysis-pass fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close
 ```
 
-194. Look for: one `- [deleted]` line per branch and no error
-195. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
-196. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
-197. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main
+198. Look for: one `- [deleted]` line per branch and no error
+199. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
+200. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
+201. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main

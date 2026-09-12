@@ -48,6 +48,61 @@ namespace Federator.Core.Tests
             return TestDrift.Compare("AR-Floors v ME-Ducts", FromFile(), inDocument);
         }
 
+        // ---------- a side that could not be read ----------
+
+        /// <summary>
+        /// A side this tool could not read comes back as the word UNKNOWN, which is a real
+        /// string and compares like any other, so it used to be reported as drift when the
+        /// truth was that nothing was read. It is left out, and counted as left out.
+        /// </summary>
+        [Test]
+        public void ASideThatCouldNotBeReadIsNotReportedAsDrift()
+        {
+            TestSettings inDocument = InDocument();
+            inDocument.LeftLocator = TestSettings.UnknownLocator;
+
+            Assert.That(Compare(inDocument).Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TheOtherSideIsStillCompared()
+        {
+            TestSettings inDocument = InDocument();
+            inDocument.LeftLocator = TestSettings.UnknownLocator;
+            inDocument.RightLocator = "lcop_selection_set_tree/somewhere else";
+
+            IList<TestDifference> found = Compare(inDocument);
+
+            Assert.That(found.Count, Is.EqualTo(1));
+            Assert.That(found[0].Sentence(), Does.Contain("right side"));
+        }
+
+        [Test]
+        public void EachSideThatWasNotReadIsCounted()
+        {
+            TestSettings inDocument = InDocument();
+
+            Assert.That(TestDrift.SidesNotCompared(FromFile(), inDocument), Is.EqualTo(0));
+
+            inDocument.LeftLocator = TestSettings.UnknownLocator;
+            Assert.That(TestDrift.SidesNotCompared(FromFile(), inDocument), Is.EqualTo(1));
+
+            inDocument.RightLocator = TestSettings.UnknownLocator;
+            Assert.That(TestDrift.SidesNotCompared(FromFile(), inDocument), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void TheBlockSaysHowManySidesWereLeftOutRatherThanLettingThemReadAsMatching()
+        {
+            string block = string.Join("\n",
+                new List<string>(
+                    TestDrift.Lines(new List<TestDifference>(), 1830, false, 7)).ToArray());
+
+            Assert.That(block, Does.Contain("7 sides were left out"));
+            Assert.That(block, Does.Contain("Not compared is not the same as matching"));
+            Assert.That(block, Does.Not.Contain("Every one of them matches the file"));
+        }
+
         // ---------- nothing drifted ----------
 
         [Test]
@@ -196,7 +251,7 @@ namespace Federator.Core.Tests
             inDocument.Tolerance = 0.05;
 
             string block = string.Join("\n",
-                new List<string>(TestDrift.Lines(Compare(inDocument), 1830, false)).ToArray());
+                new List<string>(TestDrift.Lines(Compare(inDocument), 1830, false, 0)).ToArray());
 
             Assert.That(block, Does.Contain("1830 tests were already in the document"));
             Assert.That(block, Does.Contain("Nothing was changed"));
@@ -211,7 +266,7 @@ namespace Federator.Core.Tests
             inDocument.Tolerance = 0.05;
 
             string block = string.Join("\n",
-                new List<string>(TestDrift.Lines(Compare(inDocument), 3, true)).ToArray());
+                new List<string>(TestDrift.Lines(Compare(inDocument), 3, true, 0)).ToArray());
 
             Assert.That(block, Does.Contain("RESETS their results"));
             Assert.That(block, Does.Contain("goes back to New"));
@@ -221,7 +276,7 @@ namespace Federator.Core.Tests
         public void NothingDriftedSaysSoRatherThanShowingAnEmptyBlock()
         {
             string block = string.Join("\n",
-                new List<string>(TestDrift.Lines(new List<TestDifference>(), 1830, false)).ToArray());
+                new List<string>(TestDrift.Lines(new List<TestDifference>(), 1830, false, 0)).ToArray());
 
             Assert.That(block, Does.Contain("Nothing has drifted"));
             Assert.That(block, Does.Not.Contain("Nothing was changed"));

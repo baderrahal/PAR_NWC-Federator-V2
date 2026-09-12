@@ -163,6 +163,13 @@ namespace Federator.Addin.Engine
         public int Compared { get; private set; }
 
         /// <summary>
+        /// How many sides were left out of the comparison because which set one end points
+        /// at could not be read. Not compared is not the same as matching, so it is counted
+        /// and said rather than left to read as agreement.
+        /// </summary>
+        public int SidesNotCompared { get; private set; }
+
+        /// <summary>
         /// Creates whatever the plan holds and runs it. The plan is resolved against the
         /// sets actually in the document first, so a locator naming a set that is not
         /// there skips its test by name rather than creating one with an empty side.
@@ -180,6 +187,7 @@ namespace Federator.Addin.Engine
             reports = null;
             drift.Clear();
             Compared = 0;
+            SidesNotCompared = 0;
 
             Stopwatch stepClock = Stopwatch.StartNew();
 
@@ -276,7 +284,7 @@ namespace Federator.Addin.Engine
                 if (drift.Count > 0 || Compared > 0)
                 {
                     log.Block("DRIFT " + Words.Or(outcome.OpenDocument, "this document"),
-                        TestDrift.Lines(drift, Compared, ApplyFileSettings));
+                        TestDrift.Lines(drift, Compared, ApplyFileSettings, SidesNotCompared));
                 }
 
                 Compact(clashTests, outcome);
@@ -398,9 +406,26 @@ namespace Federator.Addin.Engine
             try
             {
                 clashTests.TestsCompactAllTests();
-                outcome.Compacted = before;
-                log.Line("CLASH    compacted. " + before
-                    + (before == 1 ? " Resolved clash was removed." : " Resolved clashes were removed."));
+
+                // Read again after the call. Reporting the count that was there before as
+                // the count removed says a number nothing measured, and zero removed is a
+                // real answer that the before count can never give.
+                int after = ResolvedInTheDocument(clashTests);
+                int removed = before - after;
+
+                if (removed < 0)
+                {
+                    log.Line("CLASH    compacted, and the document now holds " + after
+                        + " Resolved clashes against " + before
+                        + " before, which is more rather than fewer. Nothing is reported as removed.");
+                    outcome.Compacted = 0;
+                    return;
+                }
+
+                outcome.Compacted = removed;
+                log.Line("CLASH    compacted. " + removed
+                    + (removed == 1 ? " Resolved clash was removed, " : " Resolved clashes were removed, ")
+                    + before + " before and " + after + " after.");
             }
             catch (Exception error)
             {
@@ -659,8 +684,13 @@ namespace Federator.Addin.Engine
                 Compared++;
                 ReportStatus(test, planned.Name);
 
+                TestSettings inFile = TestSettings.FromFile(planned);
+                TestSettings inDocument = SettingsOf(test);
+
+                SidesNotCompared += TestDrift.SidesNotCompared(inFile, inDocument);
+
                 IList<TestDifference> differences = TestDrift.Compare(
-                    planned.Name, TestSettings.FromFile(planned), SettingsOf(test));
+                    planned.Name, inFile, inDocument);
 
                 if (differences.Count == 0)
                 {
@@ -757,15 +787,9 @@ namespace Federator.Addin.Engine
                     "reading which set a clash side points at",
                     error,
                     "kept going, that side is reported as UNKNOWN rather than as changed");
-                return UnknownLocator;
+                return TestSettings.UnknownLocator;
             }
         }
-
-        /// <summary>
-        /// A side this tool could not read. Never compared, so it is not reported as drift
-        /// when the truth is that nothing was read.
-        /// </summary>
-        public const string UnknownLocator = "UNKNOWN";
 
         /// <summary>
         /// Puts the file's settings onto a test already in the document. This RESETS its
@@ -822,10 +846,8 @@ namespace Federator.Addin.Engine
         /// What the document says about this test's state.
         ///
         /// ClashTest.Status is the only thing on the type that could carry it, and its
-        /// enum is New, Old, Partial, Complete. Old is the one Clash Detective shows when
-        /// a test has been run and something has changed since. Whether Old is set for
-        /// exactly the reasons a person means by altered is UNKNOWN from the DLL, so the
-        /// status is reported as itself and no meaning is put on it here. See
+        /// enum is New, Old, Partial, Complete. What puts a test into Old is UNKNOWN from
+        /// the DLL, so the status is reported as itself and no sentence is put on it. See
         /// docs\history\scan.md section 4j.
         /// </summary>
         private void ReportStatus(ClashTest test, string name)
@@ -834,10 +856,10 @@ namespace Federator.Addin.Engine
             {
                 if (test.Status == ClashTestStatus.Old)
                 {
-                    log.Line("CLASH    OLD      " + name
-                        + "  Navisworks has this test marked Old, which it does when a test has "
-                        + "run and something changed after. Its results may not match the model "
-                        + "as it stands.");
+                    // The word and nothing else. What Navisworks means by it is UNKNOWN, so
+                    // saying what it means would be inventing the meaning.
+                    log.Line("CLASH    OLD      " + name + "  Navisworks has this test marked "
+                        + ClashTestStatus.Old + ".");
                 }
             }
             catch (Exception)
@@ -1104,6 +1126,56 @@ namespace Federator.Addin.Engine
         /// The test handed in must be freshly resolved. Running a test replaces the native
         /// object, so a handle taken before the run throws here rather than counting.
         /// </summary>
+        /// <summary>
+        /// How many Resolved clashes the document holds right now, over every test in it.
+        ///
+        /// Walked once, descending folders, and each test's results counted where they sit.
+        /// Nothing looks a test up by name and nothing walks the whole collection per test,
+        /// which is the shape that once built 1.7 million handles a group.
+        /// </summary>
+        private int ResolvedInTheDocument(DocumentClashTests clashTests)
+        {
+            ClashTally tally = new ClashTally();
+            int groups = 0;
+
+            CountEveryTestInto(clashTests.Tests, tally, ref groups);
+            return tally.Of(CoreClashStatus.Resolved);
+        }
+
+        /// <summary>
+        /// Every test under this collection, folders included. A ClashTest is itself a
+        /// GroupItem holding its results, so it is tested for before a folder is, or the
+        /// walk would descend into the results and count them twice.
+        /// </summary>
+        private void CountEveryTestInto(SavedItemCollection items, ClashTally tally, ref int groups)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    ClashTest test = item as ClashTest;
+
+                    if (test != null)
+                    {
+                        CountInto(test.Children, tally, ref groups);
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        CountEveryTestInto(folder.Children, tally, ref groups);
+                    }
+                }
+            }
+        }
+
         private ClashTally Count(ClashTest test, string name)
         {
             ClashTally tally = new ClashTally();

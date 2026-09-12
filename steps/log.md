@@ -2,6 +2,34 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F45, the clash step keeps its rules
+
+### What was done
+
+- F45 done. Four rules the clash step broke, and one the docs promised and the code did not keep
+- A missing tolerance is a skip and not a zero. `ExchangeReader.ReadDouble` returned 0.0 for a test with no tolerance attribute, and zero is a real tolerance, so a test the file said nothing about read as one set to zero. The definition now carries whether the attribute was there at all, and a test without it is skipped by name with a new reason, `NoTolerance`, the way an unknown test type is. A tolerance written as zero is a real one and is still created, which is the line between the two and is its own test
+- The OLD line says the status word and nothing else. It used to say Navisworks marks a test Old when it has run and something changed after, and what puts a test into Old is UNKNOWN from the DLL. The rules file already said no sentence is put on it. Now the code agrees
+- The compacted count is measured. It reported the Resolved count read BEFORE compacting as the number removed, so the number was never measured and zero removed could not be said. It is now the count before less the count read again after `TestsCompactAllTests`, over every test in the document, walked once and descending folders. Both numbers go in the line. A count after that is higher than before is said plainly and nothing is reported as removed
+- A side that could not be read is left out of the comparison. It comes back as the word UNKNOWN, which is a real string and compared like any other, so a side nothing could read was reported as drift. The marker moved to Core, `TestSettings.UnknownLocator`, because the comparison is in Core and the marker was in the add-in, and the comparison now leaves such a side out and counts it. The DRIFT block says how many were left out and that not compared is not the same as matching
+- `IdFrom` reaches the log. The rules file says which property supplied the id goes in the log, and it was set on every item and read by nothing. `ClashReport.IdSourceLines` counts the items by the property that supplied each id, and the engine writes an `ITEM IDS` block per group. One line per property and never one per item, because a line per item is the flood the log has been drowned by once already
+- Q25 is still unanswered, so the five extra item properties stay where they are
+- Proved here: ten new tests. A test with no tolerance attribute, one with an empty one, one written as zero, and the words the skip reads in the log. A side reading UNKNOWN left out, the other side still compared, each unread side counted, and the block saying so. The id sources counted per property, and a report with no items writing no block. The arity check over the whole add-in, 0 mismatches. The parse of the whole add-in with no references, the same six error codes as before and not one `CS1xxx`. Core builds with no warning. Core tests before: 908 passed, 37 failed, 33 skipped, 978 total. After: 918 passed, 37 failed, 33 skipped, 988 total
+- The F44 entry said F16 comes next. F45 does, and this is it. The order in the brief is F40 to F45 and then F16
+- Waits for the local machine: two add-in files changed, the clash runner and the engine. Steps 191 to 194 of `03_bader_next.md` carry the four lines to read off the runs already planned
+
+### What remains
+
+- F16, then the read of `03_bader_next.md` against the code, then the closing entry
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F45 PR
+2. F16, the tests path neutral
+
 ## 2026-09-12 F44, the docs and the comments agree with the code
 
 ### What was done
