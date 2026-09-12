@@ -162,7 +162,7 @@ F19 is dropped.
 
 ## F13 Split CLAUDE.md into rules
 
-- Absorbed by F38 on 2026-09-12
+- CLOSED by F38 on 2026-09-12. CLAUDE.md holds the rules for every file in 164 lines, the rules per folder are under `.claude/rules`, and the old file is whole in `docs/history/claude-md-history.md`
 - Closes M4, part of L5
 - Files `CLAUDE.md`, new `.claude/rules/*.md`, `docs/`
 - CONTAINER
@@ -212,6 +212,7 @@ F19 is dropped.
 - LOCAL MACHINE ONLY to prove, CONTAINER for the judgement
 - The report is always in meters, never feet. Force the document to meters and fail the group loudly if it will not follow. The run log of 2026-09-07 says THE DOCUMENT DID NOT FOLLOW on 11 of 14 groups
 - Size: medium. Which call moves Document.Units is UNKNOWN, docs/scan.md says Document.Units is read only and only the models can be set
+- DONE on 2026-09-07, proof pending. See `log.md`. The numbers are converted in Core rather than waiting for the document to follow
 
 ## F27 The GROUPS block tells the truth
 
@@ -295,7 +296,7 @@ F19 is dropped.
 - Closes F13
 - CONTAINER
 - History to `docs/history/claude-md-history.md`, four rules files under `.claude/rules` with paths frontmatter, two PreToolUse hooks under `.claude/hooks` in `.claude/settings.json`, the pre-commit hook kept
-- DONE on 2026-09-07, proof pending. See `log.md`. The numbers are converted in Core rather than waiting for the document to follow
+- DONE on 2026-09-12. CLAUDE.md is 164 lines, `.claude/rules` holds addin, core, tests and steps with a paths line each, `.claude/settings.json` runs two hooks from `.claude/hooks` and both were tried with piped tool calls, the old CLAUDE.md is whole in `docs/history/claude-md-history.md`, the pre-commit hook is unchanged
 
 ## F25 Drop the hidden discipline rule
 

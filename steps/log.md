@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F38, CLAUDE.md under 200 lines, rules in .claude, walls in hooks
+
+### What was done
+
+- F38 done, no code. Closes F13
+- CLAUDE.md is 164 lines, down from 1004, and holds only what applies to every file: the host, what done means, a map of where things are, the rules for every file, how a fix is worked, the build, the tests, the two walls, what to confirm against the install, and the writing rules. The rule that C# stays at 7.3 is written down for the first time, it was only in the project files before
+- The old file is whole in `docs/history/claude-md-history.md` with a first line saying it is history and where the current rules are, and a diff against main's CLAUDE.md shows it verbatim. Every date, count and measurement is there and nothing was cut from it
+- The 122 bullets of Rules the code holds were split by which project holds the rule. 32 that name a Navisworks call, the window, the engine or the installer went to `.claude/rules/addin.md` with the tick box section. The other 90 went to `.claude/rules/core.md` with the file naming section, the clash XML section and the diagnostic log. The split was by a script that cut at each bullet, so no bullet was retyped, and the two files together hold all 122. Each starts with a paths line, `src/Federator.Addin/**` and `src/Federator.Core/**`, and a short intro saying what the other file holds
+- `.claude/rules/tests.md` and `.claude/rules/steps.md` are new, written by hand from the Tests section, the F37 test layout, the round's rules for the steps files, and the reasons the rules files carry: the break one thing test, reading a written file back as a file, the client lists asserted against the client's files, the samples never written, the Assert.Ignore off Windows, Ordinal never trimmed, and one entry per fix in the F26 shape
+- Two walls. `.claude/settings.json` runs two PreToolUse hooks from `.claude/hooks`. `refuse-protected-paths.sh` reads the tool call off standard input and exits 2 for an Edit, Write or MultiEdit whose file_path is under `samples`, `steps/logs` or `bundle`, with Windows backslashes read as slashes and the project folder stripped off. `refuse-git-on-main.sh` exits 2 for a Bash command holding git commit or git push, options between git and the verb allowed, while `git rev-parse --abbrev-ref HEAD` says main or master. Both were tried here with thirteen piped tool calls: three refused paths including one Windows path into `bundle`, three allowed paths including `steps/log.md`, a Bash call the path hook ignores, and on main three refused commits and pushes, `git pushover` and `git log | grep commit` allowed, and the same commit allowed on `fix-F38`. The first pattern let `git -c core.hooksPath=/dev/null commit` through because it only allowed dash options between git and commit, and that is the exact form this round commits with, so it was widened and the case is in the list
+- The pre-commit hook in `.githooks` is unchanged and CLAUDE.md still says how to switch it on
+- `steps/01_next.md` had F26's DONE line under F38, left there by the F26 session. It is under F26 now. F38 has its DONE line and F13 reads CLOSED by F38
+- Proved here: Core tests under mono on Linux, before and after: 905 passed, 37 failed, 33 skipped, 975 total. No code changed, so the run is the same run, and the 37 are the same Windows path and file locking failures
+- Waits for the local machine: whether Claude Code on Windows runs the two hooks through a sh it can find. Both need a POSIX sh, Git for Windows ships one, and whether it is found without help is UNKNOWN until a session on the local machine tries an edit under `samples` and sees it refused. Nothing else in F38 needs the local machine
+
+### What remains
+
+- D6, the audit into `steps/04_audit.md`, `steps/03_bader_next.md` rewritten, the closing entry
+
+### Known bugs
+
+- As in the F32 entry
+
+### What comes next
+
+1. Merge the F38 PR
+2. D6, delete every fix branch and master so main is the only branch, once a route that is not a push works
+3. The audit
+
 ## 2026-09-12 F37, one type per file and one place per kind of file
 
 ### What was done
