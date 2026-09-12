@@ -36,31 +36,22 @@ namespace Federator.Core.Report
         };
 
         /// <summary>
-        /// The per clash columns, their order and their words. Seven general ones, then
-        /// three per item, which is what the accepted report carries.
+        /// The per clash columns, their order and their words, read off
+        /// ClientReportColumns, the one list, which is checked against the client's own
+        /// exports by a test. Seven general ones, then four per item, twice. F36, this
+        /// used to be a second copy of the same fifteen words.
         /// </summary>
         public static readonly string[] ClashColumns =
-        {
-            "Image", "Clash Name", "Status", "Distance", "Grid Location", "Description",
-            "Clash Point",
-            "Item ID", "Layer", "Item Name", "Item Type",
-            "Item ID", "Layer", "Item Name", "Item Type"
-        };
+            new List<string>(ClientReportColumns.All()).ToArray();
 
-        /// <summary>
-        /// The four columns each item block carries, in their order. Measured on both
-        /// exports in samples\client-report, which agree exactly.
-        /// </summary>
-        public static readonly string[] PerItemColumns =
-        {
-            "Item ID", "Layer", "Item Name", "Item Type"
-        };
+        /// <summary>The four columns each item block carries, in their order.</summary>
+        public static readonly string[] PerItemColumns = ClientReportColumns.PerItem;
 
         /// <summary>Where the Item 1 block starts in <see cref="ClashColumns"/>, zero based.</summary>
-        public const int FirstItemColumn = 7;
+        public static readonly int FirstItemColumn = ClientReportColumns.General.Length;
 
         /// <summary>How many columns each item block holds. Four, with Layer among them.</summary>
-        public const int ItemColumns = 4;
+        public static readonly int ItemColumns = ClientReportColumns.PerItem.Length;
 
         /// <summary>The merged labels sitting above the two item blocks.</summary>
         public const string ItemGroup1 = "Item 1";
@@ -165,11 +156,6 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The tolerance carrying its unit, "0.025m". The stylesheet writes the tolerance
-        /// attribute and the units attribute one after the other with nothing between
-        /// them, so there is no space and this is one field.
-        /// </summary>
-        /// <summary>
         /// The test status in the client's word.
         ///
         /// Ours read "Complete" because that is what the API returns: ClashRunner sets it
@@ -195,6 +181,11 @@ namespace Federator.Core.Report
         /// <summary>What theirs says on every test that ran.</summary>
         public const string ClientStatusOk = "OK";
 
+        /// <summary>
+        /// The tolerance carrying its unit, "0.025m". The stylesheet writes the tolerance
+        /// attribute and the units attribute one after the other with nothing between
+        /// them, so there is no space and this is one field.
+        /// </summary>
         public static string Tolerance(double value, string units)
         {
             return value.ToString(ToleranceFormat, CultureInfo.InvariantCulture)

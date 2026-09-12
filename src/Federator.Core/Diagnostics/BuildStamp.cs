@@ -41,12 +41,6 @@ namespace Federator.Core.Diagnostics
             }
         }
 
-        /// <summary>The stamp of the assembly this type lives in.</summary>
-        public static string OfCore()
-        {
-            return Of(typeof(BuildStamp).Assembly);
-        }
-
         /// <summary>
         /// True when the stamp looks like one this build produced rather than a bare
         /// version number. Used by the tests to prove the stamping actually ran.

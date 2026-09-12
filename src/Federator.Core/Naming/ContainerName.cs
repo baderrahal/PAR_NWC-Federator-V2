@@ -5,9 +5,10 @@ using System.IO;
 namespace Federator.Core.Naming
 {
     /// <summary>
-    /// Reads a container name such as 1104-PAR-1C07BC-ZZZ-AR-MOD-000001 and builds the
-    /// matching output name. The separator and the part positions come from
-    /// <see cref="ContainerNameSettings"/>.
+    /// Reads a container name such as 1104-PAR-1C07BC-ZZZ-AR-MOD-000001 into its parts.
+    /// The separator and the part positions come from <see cref="ContainerNameSettings"/>.
+    /// The output name is NamePattern's, built from a pattern with defaults, never from
+    /// here.
     /// </summary>
     public static class ContainerName
     {
@@ -102,86 +103,6 @@ namespace Federator.Core.Naming
             }
 
             return parsed;
-        }
-
-        /// <summary>
-        /// The output name for a federation, built rather than patched. It is always
-        /// seven fields: project, originator, building, the fixed level, the output
-        /// discipline code, the fixed type code, the fixed number. Only parts 1, 2, 3
-        /// and 5 of the input are read, so a five part input still produces a full
-        /// output name.
-        /// </summary>
-        public static string BuildOutputName(ParsedContainerName parsed, ContainerNameSettings settings)
-        {
-            if (parsed == null)
-            {
-                throw new ArgumentNullException("parsed");
-            }
-
-            if (settings == null)
-            {
-                throw new ArgumentNullException("settings");
-            }
-
-            if (!parsed.IsReadable)
-            {
-                throw new InvalidOperationException(
-                    "An output name cannot be built from an unreadable name: " + parsed.UnreadableReason);
-            }
-
-            settings.Validate();
-
-            string[] fields =
-            {
-                parsed.Project,
-                parsed.Originator,
-                parsed.Building,
-                settings.ForcedLevel,
-                settings.OutputDisciplineCode,
-                settings.ForcedTypeCode,
-                settings.ForcedNumber
-            };
-
-            return string.Join(settings.Separator.ToString(), fields);
-        }
-
-        public static string BuildOutputName(ParsedContainerName parsed)
-        {
-            return BuildOutputName(parsed, new ContainerNameSettings());
-        }
-
-        public static string BuildOutputName(string name, ContainerNameSettings settings)
-        {
-            return BuildOutputName(Parse(name, settings), settings);
-        }
-
-        /// <summary>
-        /// The output name for a whole group. Every file in a group agrees on the
-        /// project, the originator and the building, so any one of them gives the same
-        /// answer, and this makes that explicit.
-        /// </summary>
-        public static string BuildOutputName(
-            string project, string originator, string building, ContainerNameSettings settings)
-        {
-            if (settings == null)
-            {
-                throw new ArgumentNullException("settings");
-            }
-
-            settings.Validate();
-
-            string[] fields =
-            {
-                project,
-                originator,
-                building,
-                settings.ForcedLevel,
-                settings.OutputDisciplineCode,
-                settings.ForcedTypeCode,
-                settings.ForcedNumber
-            };
-
-            return string.Join(settings.Separator.ToString(), fields);
         }
 
         private static string Quoted(char separator)

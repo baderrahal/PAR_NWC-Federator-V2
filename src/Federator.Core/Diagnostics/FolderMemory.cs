@@ -299,7 +299,7 @@ namespace Federator.Core.Diagnostics
                 lines.Add(kind.ToString().PadRight(10) + remembered
                     + (string.Equals(opening, remembered, StringComparison.OrdinalIgnoreCase)
                         ? string.Empty
-                        : "   [gone, opening at " + Or(opening, "nowhere") + "]"));
+                        : "   [gone, opening at " + Words.Or(opening, "nowhere") + "]"));
             }
 
             if (lines.Count == 0)
@@ -310,9 +310,5 @@ namespace Federator.Core.Diagnostics
             return lines;
         }
 
-        private static string Or(string value, string fallback)
-        {
-            return string.IsNullOrEmpty(value) ? fallback : value;
-        }
     }
 }

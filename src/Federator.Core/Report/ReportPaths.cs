@@ -49,15 +49,6 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// Where the reports go, and whether a picked folder had to be refused.
-        ///
-        /// The reports never go inside the folder being scanned. A real run put them in
-        /// C:\00_NM\NWC Fed\NWC\test001, which is where the NWC files it was reading
-        /// live. The Clash step picks an XML at run time, so a report written there is a
-        /// file a later run can be pointed at as its own input, and even where it is not
-        /// it fills the source folder with output.
-        /// </summary>
-        /// <summary>
         /// Where the reports will go, in words a person would say, for the line under the
         /// Outputs step. Never throws and never shows a code identifier.
         ///
@@ -92,6 +83,15 @@ namespace Federator.Core.Report
             }
         }
 
+        /// <summary>
+        /// Where the reports go, and whether a picked folder had to be refused.
+        ///
+        /// The reports never go inside the folder being scanned. A real run put them in
+        /// C:\00_NM\NWC Fed\NWC\test001, which is where the NWC files it was reading
+        /// live. The Clash step picks an XML at run time, so a report written there is a
+        /// file a later run can be pointed at as its own input, and even where it is not
+        /// it fills the source folder with output.
+        /// </summary>
         public static ReportFolderChoice Choose(
             string pickedFolder, string nwfFolder, string sourceFolder)
         {

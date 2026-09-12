@@ -21,13 +21,6 @@ namespace Federator.Core.Tests
             Assert.That(parsed.Parts.Count, Is.EqualTo(7));
         }
 
-        [Test]
-        public void BuildsTheOutputNameBySwappingTheDisciplineForBm()
-        {
-            string output = ContainerName.BuildOutputName(ContainerName.Parse(Sample));
-
-            Assert.That(output, Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
-        }
 
         [Test]
         public void ReadsAnNwcFileNameThroughItsExtension()
@@ -71,13 +64,6 @@ namespace Federator.Core.Tests
             Assert.That(parsed.UnreadableReason, Is.Not.Null.And.Contains("4 parts"));
         }
 
-        [Test]
-        public void AnUnreadableNameNeverProducesAnOutputName()
-        {
-            ParsedContainerName parsed = ContainerName.Parse("1104-PAR-1C07BC-ZZZ");
-
-            Assert.Throws<InvalidOperationException>(() => ContainerName.BuildOutputName(parsed));
-        }
 
         [Test]
         public void TheSeparatorIsASetting()
@@ -88,9 +74,7 @@ namespace Federator.Core.Tests
             Assert.That(parsed.IsReadable, Is.True, parsed.UnreadableReason);
             Assert.That(parsed.Building, Is.EqualTo("1C07BC"));
             Assert.That(parsed.Discipline, Is.EqualTo("AR"));
-            Assert.That(
-                ContainerName.BuildOutputName(parsed, settings),
-                Is.EqualTo("1104_PAR_1C07BC_ZZZ_BM_MOD_000001"));
+            Assert.That(parsed.Project, Is.EqualTo("1104"));
         }
 
         [Test]
@@ -113,84 +97,11 @@ namespace Federator.Core.Tests
             Assert.That(parsed.Originator, Is.EqualTo("YY"));
         }
 
-        [Test]
-        public void TheOutputDisciplineCodeIsASetting()
-        {
-            ContainerNameSettings settings = new ContainerNameSettings { OutputDisciplineCode = "FD" };
 
-            Assert.That(
-                ContainerName.BuildOutputName(ContainerName.Parse(Sample, settings), settings),
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-FD-MOD-000001"));
-        }
 
-        // The output name reads one way only: project, originator, building, ZZZ, BM,
-        // the type code, 000001. Level and number are fixed because outputs overwrite
-        // and because the files in one group may disagree on both.
-        [Test]
-        public void TheOutputNameFixesTheLevelAndTheNumberWhateverTheInputCarried()
-        {
-            Assert.That(
-                ContainerName.BuildOutputName(ContainerName.Parse("1104-PAR-1C07BC-L02-AR-MOD-000456")),
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
 
-            Assert.That(
-                ContainerName.BuildOutputName(ContainerName.Parse("1104-PAR-1C07BC-L07-EL-MOD-000912")),
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
-        }
 
-        [Test]
-        public void FourFilesOfOneBuildingAllGiveTheSameOutputName()
-        {
-            string[] inputs =
-            {
-                "1104-PAR-1C07BC-ZZZ-AR-MOD-000001",
-                "1104-PAR-1C07BC-L01-ST-MOD-000004",
-                "1104-PAR-1C07BC-L02-ME-MOD-000117",
-                "1104-PAR-1C07BC-B01-EL-MOD-000999"
-            };
 
-            foreach (string input in inputs)
-            {
-                Assert.That(
-                    ContainerName.BuildOutputName(ContainerName.Parse(input)),
-                    Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"),
-                    input);
-            }
-        }
-
-        // The type code is pinned, like the level and the number. Only parts 1, 2, 3 and
-        // 5 of the input reach the output name.
-        [Test]
-        public void TheTypeCodeIsPinnedToModWhateverTheInputCarried()
-        {
-            Assert.That(
-                ContainerName.BuildOutputName(ContainerName.Parse("1104-PAR-1C07BC-L02-AR-DOC-000456")),
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
-        }
-
-        [Test]
-        public void EveryPinnedFieldIsASetting()
-        {
-            ContainerNameSettings settings = new ContainerNameSettings
-            {
-                ForcedLevel = "L00",
-                OutputDisciplineCode = "FD",
-                ForcedTypeCode = "FED",
-                ForcedNumber = "000009"
-            };
-
-            Assert.That(
-                ContainerName.BuildOutputName("1104-PAR-1C07BC-L02-AR-DOC-000456", settings),
-                Is.EqualTo("1104-PAR-1C07BC-L00-FD-FED-000009"));
-        }
-
-        [Test]
-        public void AGroupOutputNameCanBeBuiltFromTheThreeAgreedFields()
-        {
-            Assert.That(
-                ContainerName.BuildOutputName("1104", "PAR", "1C07BC", new ContainerNameSettings()),
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
-        }
 
         [Test]
         public void ReadsTheProjectCodeAndTheOriginator()
@@ -202,29 +113,26 @@ namespace Federator.Core.Tests
         }
 
         // The floor is five parts, because only parts 1, 2, 3 and 5 are read. A six part
-        // name and a five part name both parse, and both still give a full output name.
+        // name and a five part name both parse. The full seven field output name is the
+        // pattern's job, proved in NamePatternTests.
         [Test]
-        public void ASixPartNameParsesAndStillGivesAFullOutputName()
+        public void ASixPartNameParses()
         {
             ParsedContainerName parsed = ContainerName.Parse("1104-PAR-1C07BC-ZZZ-AR-MOD");
 
             Assert.That(parsed.IsReadable, Is.True, parsed.UnreadableReason);
             Assert.That(parsed.Building, Is.EqualTo("1C07BC"));
             Assert.That(parsed.Discipline, Is.EqualTo("AR"));
-            Assert.That(
-                ContainerName.BuildOutputName(parsed),
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
         }
 
         [Test]
-        public void AFivePartNameParsesAndStillGivesAFullOutputName()
+        public void AFivePartNameParses()
         {
             ParsedContainerName parsed = ContainerName.Parse("1104-PAR-1C07BC-ZZZ-AR");
 
             Assert.That(parsed.IsReadable, Is.True, parsed.UnreadableReason);
-            Assert.That(
-                ContainerName.BuildOutputName(parsed),
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
+            Assert.That(parsed.Building, Is.EqualTo("1C07BC"));
+            Assert.That(parsed.Discipline, Is.EqualTo("AR"));
         }
 
         [Test]

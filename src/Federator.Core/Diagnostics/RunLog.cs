@@ -388,9 +388,9 @@ namespace Federator.Core.Diagnostics
         {
             Section("SESSION");
             Line("started        : " + StartedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
-            Line("plugin version : " + Or(pluginVersion, "UNKNOWN"));
-            Line("navisworks     : " + Or(navisworksVersion, "UNKNOWN"));
-            Line("open document  : " + Or(openDocument, "none"));
+            Line("plugin version : " + Words.Or(pluginVersion, "UNKNOWN"));
+            Line("navisworks     : " + Words.Or(navisworksVersion, "UNKNOWN"));
+            Line("open document  : " + Words.Or(openDocument, "none"));
             Line("log file       : " + Path);
         }
 
@@ -404,10 +404,10 @@ namespace Federator.Core.Diagnostics
             int groupsBuilt)
         {
             Section("RUN SETTINGS");
-            Line("source folder     : " + Or(sourceFolder, "none"));
+            Line("source folder     : " + Words.Or(sourceFolder, "none"));
             Line("include subfolders: " + (includeSubfolders ? "yes" : "no"));
-            Line("NWF folder        : " + Or(nwfFolder, "none"));
-            Line("NWD folder        : " + Or(nwdFolder, "none"));
+            Line("NWF folder        : " + Words.Or(nwfFolder, "none"));
+            Line("NWD folder        : " + Words.Or(nwdFolder, "none"));
             Line("files found       : " + filesFound);
             Line("files ticked      : " + filesTicked);
             Line("groups built      : " + groupsBuilt);
@@ -471,7 +471,7 @@ namespace Federator.Core.Diagnostics
         public void UnreadableFile(string fileName, string reason)
         {
             Line("UNREAD   " + fileName);
-            Detail("reason   : " + Or(reason, "UNKNOWN"));
+            Detail("reason   : " + Words.Or(reason, "UNKNOWN"));
         }
 
         public void GroupStarted(string building, IList<string> files)
@@ -700,12 +700,9 @@ namespace Federator.Core.Diagnostics
         // ---------- failures ----------
 
         /// <summary>
-        /// A failure with its full type name, message, inner exception and stack trace,
-        /// then what the tool did next. A swallowed failure is the one bug this log
-        /// exists to prevent, so nothing calls this without saying what happened after.
-        /// </summary>
-        /// <summary>
-        /// One failure, with its type, message, inner exceptions and stack trace.
+        /// One failure, with its type, message, inner exceptions and stack trace, then
+        /// what the tool did next. A swallowed failure is the one bug this log exists to
+        /// prevent, so nothing calls this without saying what happened after.
         ///
         /// The same failure repeating is written out in full once and counted after
         /// that. One run threw the same ObjectDisposedException tens of thousands of
@@ -723,7 +720,7 @@ namespace Federator.Core.Diagnostics
             lock (gate)
             {
                 LoggedFailure already;
-                string signature = Or(what, string.Empty) + FailureSeparator + detail;
+                string signature = Words.Or(what, string.Empty) + FailureSeparator + detail;
 
                 if (repeats.TryGetValue(signature, out already))
                 {
@@ -743,14 +740,14 @@ namespace Federator.Core.Diagnostics
 
             if (firstTime)
             {
-                Line("FAILURE  " + Or(what, "unnamed failure"));
+                Line("FAILURE  " + Words.Or(what, "unnamed failure"));
 
                 foreach (string line in detail.Split(SplitOnNewLine))
                 {
                     Detail(line.TrimEnd(TrimCarriageReturn));
                 }
 
-                Detail("next     : " + Or(whatNext, "UNKNOWN"));
+                Detail("next     : " + Words.Or(whatNext, "UNKNOWN"));
                 return;
             }
 
@@ -758,52 +755,11 @@ namespace Federator.Core.Diagnostics
             // silence. The RESULT block carries the total beside the one trace.
             if (times == 2)
             {
-                Line("FAILURE  the same failure again for " + Or(what, "unnamed failure")
+                Line("FAILURE  the same failure again for " + Words.Or(what, "unnamed failure")
                     + ". Every further repeat of this exact trace is counted, not written out.");
             }
         }
 
-        /// <summary>How many times this exact failure happened, the first one included.</summary>
-        public int TimesFailed(string what, Exception error)
-        {
-            lock (gate)
-            {
-                LoggedFailure found;
-                string signature = Or(what, string.Empty) + FailureSeparator + Describe(error);
-                return repeats.TryGetValue(signature, out found) ? found.Times : 0;
-            }
-        }
-
-        /// <summary>Distinct failures. A trace repeating is one thing that went wrong.</summary>
-        public int DistinctFailureCount
-        {
-            get
-            {
-                lock (gate)
-                {
-                    return failures.Count;
-                }
-            }
-        }
-
-        /// <summary>Every failure including the repeats, which is what actually happened.</summary>
-        public int TotalFailureCount
-        {
-            get
-            {
-                lock (gate)
-                {
-                    int total = 0;
-
-                    foreach (LoggedFailure failure in failures)
-                    {
-                        total += failure.Times;
-                    }
-
-                    return total;
-                }
-            }
-        }
 
         private static string Describe(Exception error)
         {
@@ -990,7 +946,7 @@ namespace Federator.Core.Diagnostics
                     numbered++;
                     Blank();
                     Line("  [" + numbered + "] group " + record.Building + " ended FAILED");
-                    Detail("reason   : " + Or(record.Reason, "UNKNOWN"));
+                    Detail("reason   : " + Words.Or(record.Reason, "UNKNOWN"));
                 }
 
                 for (int i = 0; i < errors.Count; i++)
@@ -1011,7 +967,7 @@ namespace Federator.Core.Diagnostics
                         Detail(line.TrimEnd('\r'));
                     }
 
-                    Detail("next     : " + Or(errors[i].WhatNext, "UNKNOWN"));
+                    Detail("next     : " + Words.Or(errors[i].WhatNext, "UNKNOWN"));
                 }
             }
 
@@ -1145,10 +1101,6 @@ namespace Federator.Core.Diagnostics
             return size.ToString("#,##0", CultureInfo.InvariantCulture) + " bytes";
         }
 
-        private static string Or(string value, string fallback)
-        {
-            return string.IsNullOrEmpty(value) ? fallback : value;
-        }
 
         public void Dispose()
         {

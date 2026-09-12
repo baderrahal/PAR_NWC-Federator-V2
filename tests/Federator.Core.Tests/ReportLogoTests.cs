@@ -74,7 +74,7 @@ namespace Federator.Core.Tests
                 Assert.Ignore("Navisworks is not on this machine.");
             }
 
-            string found = LogoLocator.Find(Install, "en-US");
+            string found = InstallFiles.FindLogo(Install, "en-US");
 
             Assert.That(found, Is.Not.Empty, "the install's own logo was not found");
             Assert.That(found, Is.EqualTo(Path.Combine(Install, @"Images\logo.jpg")));
@@ -100,7 +100,7 @@ namespace Federator.Core.Tests
                 Assert.Ignore("The checkout is not beside the test binaries.");
             }
 
-            string mine = LogoLocator.Find(Install, "en-US");
+            string mine = InstallFiles.FindLogo(Install, "en-US");
 
             // Found from the solution file rather than counted in ..\ steps, which is how
             // this test came to be silently skipped instead of run.
@@ -116,7 +116,7 @@ namespace Federator.Core.Tests
         [Test]
         public void ImagesSitsAtTheTopOfTheInstallAndIsTriedFirst()
         {
-            IList<string> tried = LogoLocator.CandidatesIn(@"C:\NW", "de-DE");
+            IList<string> tried = InstallFiles.LogoCandidates(@"C:\NW", "de-DE");
 
             Assert.That(tried[0], Is.EqualTo(@"C:\NW\Images\logo.jpg"),
                 "Images is at the top of the install, with no language folder");
@@ -127,9 +127,9 @@ namespace Federator.Core.Tests
         [Test]
         public void NoInstallFolderIsNoCandidatesRatherThanAThrow()
         {
-            Assert.That(LogoLocator.CandidatesIn(string.Empty, "en-US").Count, Is.EqualTo(0));
-            Assert.That(LogoLocator.Find(string.Empty, "en-US"), Is.Empty);
-            Assert.That(LogoLocator.Find(@"Q:\nowhere", "en-US"), Is.Empty);
+            Assert.That(InstallFiles.LogoCandidates(string.Empty, "en-US").Count, Is.EqualTo(0));
+            Assert.That(InstallFiles.FindLogo(string.Empty, "en-US"), Is.Empty);
+            Assert.That(InstallFiles.FindLogo(@"Q:\nowhere", "en-US"), Is.Empty);
         }
 
         // ---------- nothing of theirs is in the repo or the bundle ----------
@@ -303,7 +303,7 @@ namespace Federator.Core.Tests
 
         private string WritePage(string logoHref)
         {
-            string stylesheet = StylesheetLocator.Find(Install, "en-US");
+            string stylesheet = InstallFiles.FindStylesheet(Install, "en-US");
 
             if (stylesheet.Length == 0)
             {
@@ -394,7 +394,7 @@ namespace Federator.Core.Tests
         public void ItNamesEveryPathItLookedAtWhenItCannotFindOne()
         {
             string block = string.Join("\n",
-                new List<string>(LogoLocator.WhyNotFound(@"C:\Nowhere", "fr-FR")).ToArray());
+                new List<string>(InstallFiles.WhyNoLogo(@"C:\Nowhere", "fr-FR")).ToArray());
 
             Assert.That(block, Does.Contain(@"C:\Nowhere\Images\logo.jpg"));
             Assert.That(block, Does.Contain(@"C:\Nowhere\fr-FR\Images\logo.jpg"));
@@ -407,7 +407,7 @@ namespace Federator.Core.Tests
         public void NoInstallFolderSaysSoRatherThanListingNothing()
         {
             string block = string.Join("\n",
-                new List<string>(LogoLocator.WhyNotFound(string.Empty, "en-US")).ToArray());
+                new List<string>(InstallFiles.WhyNoLogo(string.Empty, "en-US")).ToArray());
 
             Assert.That(block, Does.Contain("No install folder was given"));
         }

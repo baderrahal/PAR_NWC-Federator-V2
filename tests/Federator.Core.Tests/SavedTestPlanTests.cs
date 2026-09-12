@@ -52,7 +52,6 @@ namespace Federator.Core.Tests
             Assert.That(plan.TestsInFile, Is.EqualTo(0));
             Assert.That(plan.Buildable.Count, Is.EqualTo(0));
             Assert.That(plan.HasWork, Is.False);
-            Assert.That(ClashWork.AnyIn(plan), Is.False);
         }
 
         [Test]
@@ -61,9 +60,9 @@ namespace Federator.Core.Tests
             ClashTestPlan plan = ClashTestPlan.FromDocument(
                 new List<SavedClashTest> { Saved("AR v ST", 0) }, "m");
 
-            Assert.That(ClashWork.AnyIn(plan), Is.True);
-            Assert.That(ClashWork.Any(null, 1), Is.True);
-            Assert.That(ClashWork.Any(null, 0), Is.False);
+            Assert.That(plan.HasWork, Is.True);
+            Assert.That(ClashWork.SourceFor(null, 1), Is.EqualTo(ClashSource.TestsSavedInDocument));
+            Assert.That(ClashWork.SourceFor(null, 0), Is.EqualTo(ClashSource.Nothing));
         }
 
         [Test]

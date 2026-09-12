@@ -257,12 +257,12 @@ namespace Federator.Core.Rerun
         {
             List<string> lines = new List<string>();
 
-            lines.Add("file          : " + Or(openPath, Unsaved + ", nothing to run"));
+            lines.Add("file          : " + Words.Or(openPath, Unsaved + ", nothing to run"));
             lines.Add("decision      : opened file, no Decide, nothing appended and nothing cleared");
-            lines.Add("clash file    : " + Or(clashFile, "none picked"));
-            lines.Add("clash         : " + Or(clashSummary, "no clash step ran"));
-            lines.Add("NWD           : " + Or(nwdPath, "not written, the file has no folder"));
-            lines.Add("report folder : " + Or(reportFolder, "not worked out, the file has no folder"));
+            lines.Add("clash file    : " + Words.Or(clashFile, "none picked"));
+            lines.Add("clash         : " + Words.Or(clashSummary, "no clash step ran"));
+            lines.Add("NWD           : " + Words.Or(nwdPath, "not written, the file has no folder"));
+            lines.Add("report folder : " + Words.Or(reportFolder, "not worked out, the file has no folder"));
             lines.Add("source folder : not applicable, nothing was scanned");
             lines.Add("grouping      : not applicable, the open file is the one group");
             lines.Add("files ticked  : not applicable, the models are the ones inside the file");
@@ -272,10 +272,6 @@ namespace Federator.Core.Rerun
             return lines;
         }
 
-        private static string Or(string value, string fallback)
-        {
-            return string.IsNullOrEmpty(value) ? fallback : value;
-        }
 
         /// <summary>
         /// What the window says the run will do, in one line, so a person can read it

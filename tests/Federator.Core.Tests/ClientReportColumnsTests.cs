@@ -159,7 +159,7 @@ namespace Federator.Core.Tests
         [Test]
         public void EveryColumnIsEitherAStylesheetLiteralOrAQuickProperty()
         {
-            string path = StylesheetLocator.Find(Install, "en-US");
+            string path = InstallFiles.FindStylesheet(Install, "en-US");
 
             if (path.Length == 0)
             {
@@ -248,6 +248,19 @@ namespace Federator.Core.Tests
             Assert.That(said, Does.Contain("clash_report_html_tabular.xsl"));
             Assert.That(said, Does.Contain(@"samples\client-report"));
             Assert.That(said, Does.Contain("never from a list typed into this tool"));
+        }
+        // F36. Every other column list in Core reads this one, so a column can only be
+        // added or moved here, where the test above checks it against their exports.
+        [Test]
+        public void EveryOtherColumnListReadsThisOne()
+        {
+            Assert.That(ClientFormat.ClashColumns, Is.EqualTo(ClientReportColumns.All()));
+            Assert.That(ClientFormat.PerItemColumns, Is.SameAs(ClientReportColumns.PerItem));
+            Assert.That(ClientFormat.FirstItemColumn, Is.EqualTo(ClientReportColumns.General.Length));
+            Assert.That(ClientFormat.ItemColumns, Is.EqualTo(ClientReportColumns.PerItem.Length));
+            Assert.That(ClashReportXml.QuickProperties, Is.SameAs(ClientReportColumns.QuickProperties));
+            Assert.That(ClashReportXml.QuickName, Is.EqualTo(ClientReportColumns.QuickProperties[0]));
+            Assert.That(ClashReportXml.QuickType, Is.EqualTo(ClientReportColumns.QuickProperties[1]));
         }
     }
 }

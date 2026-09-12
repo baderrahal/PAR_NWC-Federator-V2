@@ -38,15 +38,6 @@ namespace Federator.Core.Diagnostics
             return memory == null ? string.Empty : memory.OpenAt(kind);
         }
 
-        /// <summary>
-        /// True when this picker has a folder of its own to go back to, whatever is in the
-        /// box. What the per picker tests assert.
-        /// </summary>
-        public static bool Remembers(FolderMemory memory, PickerKind kind)
-        {
-            return memory != null && memory.LastFor(kind).Length > 0;
-        }
-
         private static string Tidy(string value)
         {
             return value == null ? string.Empty : value.Trim();

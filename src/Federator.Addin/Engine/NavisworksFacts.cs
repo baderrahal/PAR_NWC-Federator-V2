@@ -5,6 +5,7 @@ using System.Text;
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.ApplicationParts;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Addin.Engine
 {
@@ -30,7 +31,7 @@ namespace Federator.Addin.Engine
                 }
 
                 StringBuilder text = new StringBuilder();
-                text.Append(Or(version.RuntimeProductName, "unnamed product"));
+                text.Append(Words.Or(version.RuntimeProductName, "unnamed product"));
                 text.Append("  runtime ").Append(Number(version.RuntimeMajor))
                     .Append('.').Append(Number(version.RuntimeMinor));
                 text.Append("  build ").Append(Number(version.Build));
@@ -43,8 +44,8 @@ namespace Federator.Addin.Engine
                     text.Append("  RUNTIME IS BETA");
                 }
 
-                text.Append("  language ").Append(Or(version.RuntimeLanguage, "unknown"));
-                text.Append("  runtime string ").Append(Or(version.Runtime, "none"));
+                text.Append("  language ").Append(Words.Or(version.RuntimeLanguage, "unknown"));
+                text.Append("  runtime string ").Append(Words.Or(version.Runtime, "none"));
                 return text.ToString();
             }
             catch (Exception error)
@@ -85,7 +86,7 @@ namespace Federator.Addin.Engine
             {
                 ApplicationVersion version = NavisworksApplication.Version;
 
-                return version == null ? string.Empty : Or(version.RuntimeLanguage, string.Empty);
+                return version == null ? string.Empty : Words.Or(version.RuntimeLanguage, string.Empty);
             }
             catch (Exception)
             {
@@ -110,10 +111,10 @@ namespace Federator.Addin.Engine
                     return "none, the document is clear";
                 }
 
-                string name = Or(document.CurrentFileName, document.FileName);
+                string name = Words.Or(document.CurrentFileName, document.FileName);
                 int models = document.Models == null ? 0 : document.Models.Count;
 
-                return Or(name, "an unsaved document")
+                return Words.Or(name, "an unsaved document")
                     + "  (" + models + (models == 1 ? " model" : " models") + " loaded)";
             }
             catch (Exception error)
@@ -145,9 +146,5 @@ namespace Federator.Addin.Engine
             return value.ToString(CultureInfo.InvariantCulture);
         }
 
-        private static string Or(string value, string fallback)
-        {
-            return string.IsNullOrEmpty(value) ? fallback : value;
-        }
     }
 }

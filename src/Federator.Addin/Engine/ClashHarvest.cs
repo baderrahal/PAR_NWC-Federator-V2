@@ -163,10 +163,10 @@ namespace Federator.Addin.Engine
             ClashRow row = new ClashRow();
             row.IsGroup = true;
             row.RawClashes = raw < 1 ? 1 : raw;
-            row.Name = Or(group.DisplayName, "group");
+            row.Name = Words.Or(group.DisplayName, "group");
             row.Status = (CoreClashStatus)(int)group.Status;
             row.Distance = ClashRow.MostSevere(distances, group.Distance);
-            row.Description = Or(group.Description, string.Empty);
+            row.Description = Words.Or(group.Description, string.Empty);
 
             // The representative result is the clash Navisworks itself shows for the
             // group, so its items are the ones a reader would be looking at.
@@ -190,7 +190,7 @@ namespace Federator.Addin.Engine
             ClashRow row = new ClashRow();
             row.IsGroup = false;
             row.RawClashes = 1;
-            row.Name = Or(result.DisplayName, "clash");
+            row.Name = Words.Or(result.DisplayName, "clash");
             row.Status = (CoreClashStatus)(int)result.Status;
             row.Distance = result.Distance;
 
@@ -201,7 +201,7 @@ namespace Federator.Addin.Engine
         private void Fill(Document document, GridSystem grid, ClashRow row, ClashResult result)
         {
             row.Found = result.CreatedTime;
-            row.Description = Or(result.Description, string.Empty);
+            row.Description = Words.Or(result.Description, string.Empty);
             Place(grid, row, result.Center);
 
             // Item1 is the geometry the clash was found on, which for a Revit sourced
@@ -249,13 +249,13 @@ namespace Federator.Addin.Engine
                         return;
                     }
 
-                    row.GridLocation = Or(intersection.DisplayName, string.Empty);
+                    row.GridLocation = Words.Or(intersection.DisplayName, string.Empty);
 
                     using (GridLevel level = intersection.Level)
                     {
                         if (level != null)
                         {
-                            row.Level = Or(level.DisplayName, string.Empty);
+                            row.Level = Words.Or(level.DisplayName, string.Empty);
                         }
                     }
                 }
@@ -288,7 +288,7 @@ namespace Federator.Addin.Engine
                 // found wins.
                 IList<ModelItem> lookIn = Upwards(item, whole);
 
-                into.Name = Or(item.DisplayName, string.Empty);
+                into.Name = Words.Or(item.DisplayName, string.Empty);
                 into.Family = FirstProperty(lookIn, FamilyNames);
                 into.Type = FirstProperty(lookIn, TypeNames);
                 into.Material = FirstProperty(lookIn, MaterialNames);
@@ -296,7 +296,7 @@ namespace Federator.Addin.Engine
                 // The client's Item Type column, which reads Solid on every item cell of
                 // the accepted report. ClassDisplayName is what the Item tab shows as the
                 // type, so it is what that column is.
-                into.ItemType = Or(item.ClassDisplayName, string.Empty);
+                into.ItemType = Words.Or(item.ClassDisplayName, string.Empty);
 
                 // The id and, separately, the name of whatever property carried it,
                 // because the client's Item ID column is that name and the value in one
@@ -386,15 +386,10 @@ namespace Federator.Addin.Engine
         {
             using (Model model = item.Model)
             {
-                return model == null ? string.Empty : Or(model.FileName, string.Empty);
+                return model == null ? string.Empty : Words.Or(model.FileName, string.Empty);
             }
         }
 
-        /// <summary>
-        /// The first property with one of these display names, looked for in any category,
-        /// because which category holds Family differs between exporters. An empty string
-        /// where none of them is there, never a guess.
-        /// </summary>
         /// <summary>
         /// How far up the tree a property is looked for. The most a real model needs is a
         /// few steps, and a bound stops a malformed tree turning one cell into a walk.
@@ -454,6 +449,11 @@ namespace Federator.Addin.Engine
             return string.Empty;
         }
 
+        /// <summary>
+        /// The first property with one of these display names, looked for in any category,
+        /// because which category holds Family differs between exporters. An empty string
+        /// where none of them is there, never a guess.
+        /// </summary>
         private static string FirstProperty(IList<ModelItem> lookIn, string[] wanted)
         {
             string which;
@@ -606,7 +606,7 @@ namespace Federator.Addin.Engine
                 case VariantDataType.NamedConstant:
                     using (NamedConstant named = value.ToNamedConstant())
                     {
-                        return named == null ? string.Empty : Or(named.DisplayName, string.Empty);
+                        return named == null ? string.Empty : Words.Or(named.DisplayName, string.Empty);
                     }
 
                 default:
@@ -674,9 +674,5 @@ namespace Federator.Addin.Engine
             }
         }
 
-        private static string Or(string value, string fallback)
-        {
-            return string.IsNullOrEmpty(value) ? fallback : value;
-        }
     }
 }

@@ -192,7 +192,7 @@ namespace Federator.Addin.Engine
         public JobOutcome RunOpenDocument()
         {
             Document document = NavisworksApplication.ActiveDocument;
-            string open = document == null ? string.Empty : Or(document.FileName);
+            string open = document == null ? string.Empty : Words.Or(document.FileName, "none");
 
             FederationJob job = OpenJob(open);
             JobOutcome outcome = new JobOutcome(job);
@@ -510,7 +510,7 @@ namespace Federator.Addin.Engine
 
                 log.Line("         holds   " + (string.IsNullOrEmpty(use) ? "an unnamed model" : use)
                     + (ModelFileNames.Disagree(cached, source)
-                        ? "   [source " + Or(source) + ", file " + Or(cached) + "]"
+                        ? "   [source " + Words.Or(source, "none") + ", file " + Words.Or(cached, "none") + "]"
                         : string.Empty));
 
                 RecordSource(building, cached, source);
@@ -559,8 +559,8 @@ namespace Federator.Addin.Engine
 
                     if (ModelFileNames.Disagree(cached, source))
                     {
-                        log.Line("         holds   " + Or(cached)
-                            + "   [source " + Or(source) + ", file " + Or(cached) + "]");
+                        log.Line("         holds   " + Words.Or(cached, "none")
+                            + "   [source " + Words.Or(source, "none") + ", file " + Words.Or(cached, "none") + "]");
                     }
 
                     RecordSource(building, cached, source);
@@ -575,10 +575,6 @@ namespace Federator.Addin.Engine
             }
         }
 
-        private static string Or(string value)
-        {
-            return string.IsNullOrEmpty(value) ? "none" : value;
-        }
 
         /// <summary>
         /// Clears the document and builds the group from nothing. Runs when there is no
@@ -1075,7 +1071,7 @@ namespace Federator.Addin.Engine
                 return new SetBuildOutcome();
             }
 
-            FederationJob job = OpenJob(Or(document.FileName));
+            FederationJob job = OpenJob(Words.Or(document.FileName, "none"));
             JobOutcome outcome = new JobOutcome(job);
 
             BuildTheSets(document, job, outcome);
@@ -1101,7 +1097,7 @@ namespace Federator.Addin.Engine
                 return null;
             }
 
-            FederationJob job = OpenJob(Or(document.FileName));
+            FederationJob job = OpenJob(Words.Or(document.FileName, "none"));
             JobOutcome outcome = new JobOutcome(job);
 
             CreateAndRunTheTests(document, job, outcome, ClashSource.TestsFromXml);
@@ -1434,12 +1430,12 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            string stylesheet = StylesheetLocator.Find(
+            string stylesheet = InstallFiles.FindStylesheet(
                 NavisworksFacts.InstallFolder(), NavisworksFacts.Language());
 
             if (stylesheet.Length == 0)
             {
-                foreach (string line in StylesheetLocator.WhyNotFound(
+                foreach (string line in InstallFiles.WhyNoStylesheet(
                     NavisworksFacts.InstallFolder(), NavisworksFacts.Language()))
                 {
                     log.Line(line);
@@ -1562,7 +1558,7 @@ namespace Federator.Addin.Engine
             {
                 if (!System.IO.File.Exists(picked))
                 {
-                    foreach (string line in LogoLocator.WhyNotFound(
+                    foreach (string line in InstallFiles.WhyNoLogo(
                         NavisworksFacts.InstallFolder(), NavisworksFacts.Language()))
                     {
                         log.Line(line);

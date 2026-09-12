@@ -85,11 +85,10 @@ namespace Federator.Core.Tests
                     log.Failure("clash test T" + 1, error, "kept going");
                 }
 
-                Assert.That(log.DistinctFailureCount, Is.EqualTo(1),
+                Assert.That(log.Failures.Count, Is.EqualTo(1),
                     "one trace repeating is one thing that went wrong");
-                Assert.That(log.TotalFailureCount, Is.EqualTo(1830),
+                Assert.That(log.Failures[0].Times, Is.EqualTo(1830),
                     "every repeat still has to be counted");
-                Assert.That(log.Failures[0].Times, Is.EqualTo(1830));
             }
         }
 
@@ -167,8 +166,9 @@ namespace Federator.Core.Tests
                 log.Failure("appending a file", Thrown("the file is locked"), "kept going");
                 log.Failure("saving the NWF", Thrown("no such drive"), "kept going");
 
-                Assert.That(log.DistinctFailureCount, Is.EqualTo(2));
-                Assert.That(log.TotalFailureCount, Is.EqualTo(2));
+                Assert.That(log.Failures.Count, Is.EqualTo(2));
+                Assert.That(log.Failures[0].Times, Is.EqualTo(1));
+                Assert.That(log.Failures[1].Times, Is.EqualTo(1));
 
                 string text = ReadWhileOpen(log);
                 Assert.That(text, Does.Contain("the file is locked"));
@@ -188,7 +188,7 @@ namespace Federator.Core.Tests
                 log.Failure("clash test AR v ME", error, "kept going");
                 log.Failure("clash test AR v ST", error, "kept going");
 
-                Assert.That(log.DistinctFailureCount, Is.EqualTo(2));
+                Assert.That(log.Failures.Count, Is.EqualTo(2));
             }
         }
 
@@ -208,23 +208,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TimesFailedReportsTheCountForOneFailure()
-        {
-            using (RunLog log = Start())
-            {
-                Exception error = Thrown("Object has been Disposed (WeakRef)");
-
-                Assert.That(log.TimesFailed("clash test T1", error), Is.EqualTo(0));
-
-                log.Failure("clash test T1", error, "kept going");
-                log.Failure("clash test T1", error, "kept going");
-                log.Failure("clash test T1", error, "kept going");
-
-                Assert.That(log.TimesFailed("clash test T1", error), Is.EqualTo(3));
-            }
-        }
-
-        [Test]
         public void ANullExceptionStillLogsAndStillDedupes()
         {
             using (RunLog log = Start())
@@ -232,8 +215,8 @@ namespace Federator.Core.Tests
                 log.Failure("something", null, "kept going");
                 log.Failure("something", null, "kept going");
 
-                Assert.That(log.DistinctFailureCount, Is.EqualTo(1));
-                Assert.That(log.TotalFailureCount, Is.EqualTo(2));
+                Assert.That(log.Failures.Count, Is.EqualTo(1));
+                Assert.That(log.Failures[0].Times, Is.EqualTo(2));
                 Assert.That(ReadWhileOpen(log), Does.Contain("no exception was supplied"));
             }
         }

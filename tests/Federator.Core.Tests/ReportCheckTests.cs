@@ -113,7 +113,7 @@ namespace Federator.Core.Tests
 
         private static string Stylesheet()
         {
-            string path = StylesheetLocator.Find(Install, "en-US");
+            string path = InstallFiles.FindStylesheet(Install, "en-US");
 
             if (path.Length == 0)
             {
