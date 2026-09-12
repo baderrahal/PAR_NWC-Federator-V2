@@ -18,7 +18,7 @@ Newest entry at the top.
 
 - F40 to F45 and F16 in that order, then F21, F15, F18 when the sample arrives, F23 when Q20 is answered
 - Q24 and Q25 for Bader, both from the audit
-- The verifier pass of the audit was 27 of about 50 batches done at commit time. Its journal lives in the session and not in the repo, so a later session re-checks a finding by grep rather than trusting it. Every finding in `04_audit.md` was checked by grep here before it went in
+- The verifier pass of the audit ran 30 of its 54 batches and the other 24 died on the session's usage limit, so 180 findings carry a reader's evidence and my grep and no verifier, which `04_audit.md` says. Its journal lives in the session and not in the repo, so a later session re-checks a finding by grep rather than trusting it. Every finding in `04_audit.md` was checked by grep here before it went in
 
 ### Known bugs
 
@@ -29,7 +29,7 @@ Newest entry at the top.
 - B9 fixed, and the local proof is now the build after F39
 - M5 closed on the Core side, open on the add-in side until the build runs locally
 - B3, B4, B8, B10, B15 fixed or closed. B5, B6, L5 to L8, M1 to M4, M6 to M8 as in `00_analysis.md`, of which M8 is F16 and L5 to L7 closed with F37
-- New from the audit, all in `04_audit.md`: the add-in did not compile from F34 to F39, fixed. Handles not disposed in three add-in files, F41. Framework messages reaching four labels, F42. Four settings that are constants, F43. A missing tolerance read as zero, the Old sentence, the compact count read before, an UNKNOWN locator reported as drift, F45
+- New from the audit, all in `04_audit.md`: the add-in did not compile from F34 to F39, fixed. Handles not disposed in three add-in files, F41. Framework messages reaching four labels, F42. Three settings that are constants, F43. A missing tolerance read as zero, the Old sentence, the compact count read before, an UNKNOWN locator reported as drift, F45
 
 ### What comes next
 

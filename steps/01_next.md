@@ -41,7 +41,7 @@ Changed on 2026-09-12 from the audit in chat. F27 to F38 are new and go before F
 27. F40, dead members out, second pass, from the audit
 28. F41, every handle disposed
 29. F42, no framework message in a label
-30. F43, four settings that are constants
+30. F43, three settings that are constants
 31. F44, the docs and the comments agree with the code
 32. F45, the clash step keeps its rules
 33. F16, widened by the audit
@@ -342,12 +342,12 @@ F19 is dropped.
 - Every label wording lives in Core where a test can read it, as `ReportPaths.WhereTheyGo` does
 - Size: medium
 
-## F43 Four settings that are constants
+## F43 Three settings that are constants
 
 - From the audit, Settings that are constants
-- Files `src/Federator.Core/Clash/RepeatedFailureGuard.cs`, `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`, `src/Federator.Core/Report/ReportPaths.cs`, `ReportOptions.cs`, `FederationEngine.cs`, `FederatorPlugin.cs`
+- Files `src/Federator.Core/Clash/RepeatedFailureGuard.cs`, `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Core/Report/ReportPaths.cs`, `ReportOptions.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`, `FederationEngine.cs`, `FederatorPlugin.cs`
 - CONTAINER for Core, the add-in read twice
-- The stop after count, the log count, the progress interval and the report subfolder each become a settable property with the same default, read by the code that constructs the guard, starts the log, counts progress and chooses the folder. No new box in the window, a setting is a property with a default and not a tick box, and the rule is that the number can be changed without a recompile
+- The stop after count, the log count and the report subfolder each become a settable property with the same default, read by the code that constructs the guard, starts the log and chooses the folder. The progress interval in `ClashRunner` stays a const, because no rule names it, which the audit's verifier pointed out. No new box in the window, a setting is a property with a default and not a tick box, and the rule is that the number can be changed without a recompile
 - Size: small
 
 ## F44 The docs and the comments agree with the code

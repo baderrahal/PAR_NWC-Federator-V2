@@ -24,7 +24,7 @@ Settings that are constants. CLAUDE.md says every number that shapes a run is a 
 
 - `RepeatedFailureGuard.DefaultThreshold` is 50 and the two places that construct the guard, `FederationEngine.cs` line 44 and `ClashRunner.cs` line 68, pass nothing, so no run can change it. The rules file says the 50 is a setting
 - `RunLog.DefaultKeepLogs` is 30 and the one add-in caller, `FederatorPlugin.cs` line 46, passes nothing. The verifier refuted this one, saying the shape is the same as the stop after count, a named default threaded through as a parameter. Both are the same shape and neither is reachable from a run, so both stay on the list
-- `ClashRunner.ProgressEvery` is a const of 25 that nothing can set
+- `ClashRunner.ProgressEvery` is a const of 25 that nothing can set. The verifier refuted this one: no rule names the progress interval, and the log count the rule names is the number of log files kept. It is dropped from F43 and stays here as a const nobody has asked to change
 - `ReportPaths.DefaultSubfolder` is a const with a comment above it saying a setting, not a constant, and nothing under src carries it as a property
 - `ImageOptions.DefaultStopAfterFailures` repeats the 50 rather than reading `RepeatedFailureGuard.DefaultThreshold`
 
@@ -168,7 +168,7 @@ All of the above is F16, make the tests path neutral, which is next in the order
 
 ## What the verifiers refuted
 
-Seven of 393 by the time this was committed, and each is answered above: the log count stays on the settings list because the shape it shares with the stop after count is the shape of the fault, the PickerStart line is 9 and not 8, the two `LogoName` constants are the same file copied and stay a copy, the `ClashReportXml` finding about Found being in the workbook is at the `Windows` summary rather than line 260, the 1A04WE and 1A02WE names are measurements recorded in `docs\history` and not wrong names, so F44 makes them say so rather than replacing them, and the `NwfComparison` class comment about a move called out on its own describes the Moved list the class does carry, so that finding is dropped and only the copy of the rule stays. The verifier pass was still running when this was committed, 27 of about 50 batches done, and a later refutation is the next session's to read off the journal and add here.
+Eight of the 213 verdicts returned, and each is answered above: the progress interval is not a number any rule names, so it leaves F43, the log count stays on the settings list because the shape it shares with the stop after count is the shape of the fault, the PickerStart line is 9 and not 8, the two `LogoName` constants are the same file copied and stay a copy, the `ClashReportXml` finding about Found being in the workbook is at the `Windows` summary rather than line 260, the 1A04WE and 1A02WE names are measurements recorded in `docs\history` and not wrong names, so F44 makes them say so rather than replacing them, and the `NwfComparison` class comment about a move called out on its own describes the Moved list the class does carry, so that finding is dropped and only the copy of the rule stays. The verifier pass ran 30 of its 54 batches, 213 verdicts, and the other 24 batches died on the session's usage limit before they ran, so 180 findings, most of them in the add-in, the tests and the docs areas, carry a reader's evidence and my grep and no verifier. That is said here so nobody reads the whole list as verified twice.
 
 ## The fix list
 
@@ -178,7 +178,7 @@ Every finding above is in one of these, and each is a section in `01_next.md` wi
 - F40. Dead members out, second pass: the 43, the 34 and the 9 above, with their tests, less the two that wait on Q24 and Q25. The copies: `NwfComparison.Moves` and `LeafOf`, `RepoRoot` in four test files, `ImageOptions.DefaultStopAfterFailures` reading the guard, `ScanFindings` reading `IsSingleDiscipline`, one `LogoName`
 - F41. Every handle disposed in `SetBuilder`, `SavedTests` and `ClashRunner`, and `FindSelectionSet` reading the index the count held
 - F42. No framework message in a label: `RunLog.DisabledReason`, the guard reason, `FederationEngine.Describe`, the window's `Describe(path)`. The Clash step heading and `ClashWork`'s comment saying what a run with no XML does. The photo size and the status ticks read off `ImageOptions` rather than typed into the XAML
-- F43. Four settings that are constants: the stop after count, the log count, the progress interval, the report subfolder
+- F43. Three settings that are constants: the stop after count, the log count, the report subfolder
 - F44. Every doc line above, the doubled comments, the three project names in comments, `HasSheet` renamed, the rules file made to agree with itself, the Health tests into a Health folder, the probes README made true or the probes made to match it
 - F45. The clash step: a test with no tolerance skipped by name, Old logged as itself, the compacted count read after, an UNKNOWN locator left out of the drift comparison, `IdFrom` logged or dropped with Q25
 - F16, widened. Every windows-only test above, the six misnamed skips, the three collection comparisons, the one test that passes off Windows without proving anything, `Samples.Folder` used everywhere, one temp folder helper
