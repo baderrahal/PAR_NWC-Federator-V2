@@ -44,7 +44,11 @@ namespace Federator.Core.Report
             }
         }
 
-        /// <summary>On. The accepted report has images, so ours does too.</summary>
+        /// <summary>
+        /// On, and the window no longer sets it. The accepted report has images, so ours
+        /// does too. Off only when every status is unticked, which is no picture said a
+        /// longer way. F34.
+        /// </summary>
         public bool Write { get; set; }
 
         /// <summary>

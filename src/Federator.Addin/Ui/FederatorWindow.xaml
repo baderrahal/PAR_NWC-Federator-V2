@@ -230,7 +230,8 @@
                         <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowseNwf" Margin="4,0,0,4" />
                         <Label Grid.Row="1" Grid.Column="0" Content="NWD folder" />
                         <TextBox Grid.Row="1" Grid.Column="1" x:Name="NwdFolderBox"
-                                 VerticalAlignment="Center" Margin="0,0,0,4" />
+                                 VerticalAlignment="Center" Margin="0,0,0,4"
+                                 TextChanged="OnOutputFolderChanged" />
                         <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowseNwd" Margin="4,0,0,4" />
                         <Label Grid.Row="2" Grid.Column="0" Content="Excel folder" />
                         <TextBox Grid.Row="2" Grid.Column="1" x:Name="ExcelFolderBox"
@@ -288,7 +289,7 @@
                                 <StackPanel Grid.Row="1" Grid.ColumnSpan="5">
                                     <CheckBox x:Name="WriteClashXml" IsChecked="False"
                                               Content="Write a clash XML beside each workbook"
-                                              Checked="OnRepublishChanged" Unchecked="OnRepublishChanged" />
+                                              Checked="OnXmlChanged" Unchecked="OnXmlChanged" />
                                     <TextBlock Style="{StaticResource TickHelp}"
                                                Text="One extra file per building, under a megabyte." />
                                 </StackPanel>
@@ -417,7 +418,8 @@
             </TabItem>
 
 
-            <!-- Step 4. Sets and clash tests. No Excel, that is the session after. -->
+            <!-- Step 4. The clash XML, the two boxes that destroy data, the two hand
+                 buttons, and the second way to run, on the file that is open. -->
             <TabItem Header="4. Clash">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
@@ -440,8 +442,6 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
@@ -474,10 +474,6 @@
                                 </StackPanel>
                             </StackPanel>
                         </Expander>
-
-                        <Label Grid.Row="2" Grid.Column="0" Content="Outstanding counts" VerticalAlignment="Center" />
-                        <ComboBox Grid.Row="2" Grid.Column="1" x:Name="OpenCountBox"
-                                  HorizontalAlignment="Left" MinWidth="440" VerticalAlignment="Center" />
                     </Grid>
 
                     <!-- The second way to run. A federation that already exists needs no

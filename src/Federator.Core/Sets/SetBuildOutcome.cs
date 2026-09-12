@@ -292,6 +292,30 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
+        /// One line for the window and the log, the same words whether the sets were
+        /// built by the run or by the Build sets button. Counted off the same list the
+        /// lines come from. Nothing built and nothing skipped is a file holding no set,
+        /// which is a normal case for a project keeping its sets in the model.
+        /// </summary>
+        public string Summary()
+        {
+            if (results.Count == 0)
+            {
+                return skipped.Count > 0
+                    ? "No set in this file can be rebuilt. " + skipped.Count + " skipped."
+                    : "This file holds no sets. Nothing to build.";
+            }
+
+            return CreatedCount + " created, "
+                + AlreadyPresentCount + " already there, "
+                + FindingItemsCount + " finding items, "
+                + ZeroCount + " at zero"
+                + (FailedCount > 0 ? ", " + FailedCount + " failed" : string.Empty)
+                + (SkippedCount > 0 ? ", " + SkippedCount + " skipped" : string.Empty)
+                + ".";
+        }
+
+        /// <summary>
         /// One line per set, then the totals. The totals are counted off the same list
         /// the lines came from, so they cannot disagree with them.
         /// </summary>

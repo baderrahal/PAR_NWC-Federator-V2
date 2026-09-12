@@ -2,6 +2,33 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F34, window wiring
+
+### What was done
+
+- F34 done. The wiring: `NwdFolderBox` fires `OnOutputFolderChanged` like the other two folder boxes, so the Outputs summary and the run paths refresh when it is typed into. The clash XML tick box's handler is `OnXmlChanged`, it was `OnRepublishChanged`, a name left over from the box that went. The window class comment says four tabs, it said three steps. The Step 4 comment in the XAML said no Excel, that is the session after, and the marker in the code said sets only in this session, both years stale, both say what the step holds now
+- The republish field is gone: `republishNwd` out of the engine, out of both constructors that stay, and the not republished branch out of `WriteNwd`, which says it publishes every run. The three engine constructors nothing called are gone. `JobOutcome.NwdRequested` is gone, `Facts()` hands `GroupFacts` a true with the reason. `GroupFacts.NwdRequested` stays, because `GroupJudgement` reads it and its tests pin the rule that a step switched off is not a failure. `GroupOutcome.cs` says the tick box used to exist
+- `ReportsWanted` no longer sets `WriteHtml`, `SetDocumentUnits` or `Images.Write`. All three are true in the Core constructors, with one comment each saying they are fixed on and the window does not set them
+- D3. The Outstanding counts combo is gone from the Clash step with its label and its row, `FillOpenCounts`, `ChosenOpenCount` and the outstanding log line with it. `ReportOptions.OpenCount` and `ClashReport.OpenCount` are gone, and the engine no longer copies one into the other. `OpenClashesTests` lost the two asserts on the deleted defaults and its report helper lost the parameter it set. `OpenClashes` itself stays with its tests, because `ImageOptions` reads Navisworks open off it. CLAUDE.md's bullet says the choice is no longer offered
+- D4. `OnBuildSets` and `OnRunTests` each read the file, make an engine with `ReportsWanted()` and call one method: `BuildSetsByHand`, which is `BuildTheSets` on the open document with the open file standing as the group, and `RunTestsByHand`, which is `CreateAndRunTheTests` the same way with the tests from the XML. The SETS and CLASH lines in the log now read the same whichever way the work was started, the window's copies of them are gone, and so are `PlanOnlyLines` and the two section title constants. `BuildTheSets` fills `outcome.Sets` with the skipped sets when there is nothing to build, so the button has lines and a summary to show, and `SetBuildOutcome.Summary()` is the one summary line, in Core, tested. A hand run now builds the report in memory the way a run does and writes nothing, because there is no report folder
+- D1. Picking an XML runs `HealthCheck` on it: the whole summary goes in the log as a `HEALTH` block and one sentence goes under the file line, from `HealthCheckResult.Line(bool fileHoldsSets)`, in Core, tested: unusable export, tests only file, every locator resolves, or how many locators miss and how many tests would be skipped
+- The orphan summary that sat above `OnRunOpenDocument`, which belonged to `OnBuildSets` before it drifted, is gone, and `OnBuildSets` has its own. One fewer for F36's list of eleven
+- Proved here: `SetBuildOutcomeTests` gains `TheSummaryCountsCreatedPresentFindingZeroFailedAndSkipped`, `NothingBuiltAndNothingSkippedIsAFileHoldingNoSets`, `NothingBuiltWithSetsSkippedSaysHowMany`. `AllInOneFileTests` gains `TheHealthLineSaysEveryLocatorResolves`, `InfraSetsFileTests` gains `TheHealthLineSaysTheExportIsUnusable`, `ExchangeReaderShapeTests` gains `TheHealthLineOfATestsOnlyFileSaysTheModelSetsAreUsed` and `TheHealthLineNamesHowManyLocatorsMissWhenTheFileHoldsSets`. Core tests under mono on Linux, before: 907 passed, 37 failed, 33 skipped, 977 total. After: 914 passed, 37 failed, 33 skipped, 984 total. The 37 are the same Windows path and file locking failures, none new. A grep for `republishNwd`, `OpenCountBox`, `ChosenOpenCount`, `FillOpenCounts`, `OnRepublishChanged`, `PlanOnlyLines`, `SetsSectionTitle`, `ClashSectionTitle` and `.OpenCount` over src finds nothing
+- Waits for the local machine: the add-in does not build here, and this is the largest add-in change of the round, the window, the XAML, the engine and the job, read twice. Proof: build, install, open the window, the Clash step must have no Outstanding counts row, pick the reference XML and the line under it must end with every locator resolves and the log must carry a HEALTH block, press Build sets on an open model and the SETS block in the log must read as a run's does, press Run tests and the CLASH block likewise, and type into the NWD folder box and watch the Outputs summary change
+
+### What remains
+
+- F35 to F38 in order, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F32 entry
+
+### What comes next
+
+1. Merge the F34 PR
+2. F35, clash only where two disciplines meet
+
 ## 2026-09-12 F33, one unit table
 
 ### What was done

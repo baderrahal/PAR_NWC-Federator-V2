@@ -455,7 +455,6 @@ namespace Federator.Core.Report
             SourceFile = string.Empty;
             DocumentUnits = string.Empty;
             SetTreeRoot = "lcop_selection_set_tree";
-            OpenCount = OpenClashes.Default;
             CompactedAway = -1;
             Images = new ImageTally();
         }
@@ -528,12 +527,6 @@ namespace Federator.Core.Report
 
         /// <summary>The prefix every set path is built with. A setting, not a constant.</summary>
         public string SetTreeRoot { get; set; }
-
-        /// <summary>
-        /// What the matrix counts as still outstanding. A setting with two choices, and
-        /// the sheet says which one it used.
-        /// </summary>
-        public OpenClashCount OpenCount { get; set; }
 
         public double ClashStepSeconds { get; set; }
 

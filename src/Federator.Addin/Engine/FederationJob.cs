@@ -130,13 +130,6 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Whether this run was asked to republish the NWD. When the tick box is off the
-        /// NWD is not a requested step, so its absence is not a failure. Reporting it as
-        /// one made every group of a clean 22 group run read FAILED.
-        /// </summary>
-        public bool NwdRequested { get; set; }
-
-        /// <summary>
         /// Whether the publish call reported success. On a rerun last week's NWD sits at
         /// the same path, so File.Exists on its own cannot tell a fresh publish from a
         /// stale file.
@@ -169,7 +162,12 @@ namespace Federator.Addin.Engine
             {
                 Decision = Decision,
                 NwfOnDisk = NwfOnDisk,
-                NwdRequested = NwdRequested,
+
+                // Republishing the NWD is fixed on, so it is always a requested step. The
+                // fact stays on GroupFacts because the rule that a step switched off is not
+                // a failure is tested there, and it is what once reported a clean 22 group
+                // run as FAILED.
+                NwdRequested = true,
                 NwdOnDisk = NwdOnDisk,
                 NwdPublishReportedSuccess = NwdPublishReportedSuccess,
                 AppendedCount = AppendedCount,

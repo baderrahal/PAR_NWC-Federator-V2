@@ -244,7 +244,11 @@ and 6 does not read as broken.
   nowhere else, so with no XML the sets in the document are left alone. The two buttons on
   the Clash step are for trying one open model by hand and are labelled as that. They
   are not steps in the run. Splitting one job across three presses is what let a user
-  run clash against a document with no sets in it
+  run clash against a document with no sets in it. Since F34 each button calls the one
+  engine method the run calls per group, BuildSetsByHand and RunTestsByHand, so the SETS
+  and CLASH lines in the log read the same whichever way the work was started, D4, and
+  picking an XML runs HealthCheck on it, with the whole summary in the log under HEALTH
+  and one sentence under the file in the window, D1
 - Republishing the NWD happens in the Build and Open cases, and it is no longer a tick box. It was
   one, on by default, and a weekly run wanted it every time, so it is fixed on. That is the
   point of a rerun. The NWF pointers are unchanged, so reopening picks up whatever the NWC
@@ -546,7 +550,9 @@ and 6 does not read as broken.
   Approved and Resolved are closed under both. The choice is written to the log, so
   nobody reads an API meaning into a number that has none. The word open never appears
   unqualified. Since the Summary and Matrix sheets went, no output shows that number,
-  and the setting is kept because the window and the report options still carry it
+  so the window no longer offers the choice and the report options no longer carry it,
+  D3 on 2026-09-12. The two rules stay in OpenClashes with their tests, because the
+  image filter reads Navisworks open off the same place
 - The test sheet carries the CLIENT'S columns, in their order and in their words, because
   they have already accepted a report in that shape. Per test:
     Tolerance, Clashes, New, Active, Reviewed, Approved, Resolved, Type, Status
