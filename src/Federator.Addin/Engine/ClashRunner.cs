@@ -213,6 +213,10 @@ namespace Federator.Addin.Engine
 
             Stopwatch stepClock = Stopwatch.StartNew();
 
+            // Declared outside the try, so the one finally at the end releases the set
+            // wrappers and the sources built beside them whichever way Run leaves.
+            Dictionary<string, SelectionSet> byPath = null;
+
             try
             {
                 Document document = NavisworksApplication.ActiveDocument;
@@ -233,8 +237,7 @@ namespace Federator.Addin.Engine
                     + ", every tolerance was converted into it");
 
                 DocumentSelectionSets sets = document.SelectionSets;
-                setsForLookup = sets;
-                Dictionary<string, SelectionSet> byPath = IndexSets(sets);
+                byPath = IndexSets(sets);
                 ClashTestPlan resolved;
 
                 if (plan.Source == ClashPlanSource.Document)
@@ -310,6 +313,7 @@ namespace Federator.Addin.Engine
             }
             finally
             {
+                ReleaseTheIndex(byPath);
                 stepClock.Stop();
                 outcome.Seconds = stepClock.Elapsed.TotalSeconds;
             }
@@ -511,7 +515,7 @@ namespace Federator.Addin.Engine
                 }
                 else
                 {
-                    address = Create(document, sets, clashTests, byPath, planned);
+                    address = Create(sets, clashTests, byPath, planned);
 
                     if (address == null)
                     {
@@ -680,7 +684,7 @@ namespace Federator.Addin.Engine
                 ReportStatus(test, planned.Name);
 
                 IList<TestDifference> differences = TestDrift.Compare(
-                    planned.Name, TestSettings.FromFile(planned), SettingsOf(test, byPath));
+                    planned.Name, TestSettings.FromFile(planned), SettingsOf(test));
 
                 if (differences.Count == 0)
                 {
@@ -705,9 +709,10 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// What the test in the document is actually set to. The side locators are read
-        /// back by asking the document which saved set each side points at.
+        /// back by matching each side's sources against the one source per set built when
+        /// the sets were indexed.
         /// </summary>
-        private TestSettings SettingsOf(ClashTest test, Dictionary<string, SelectionSet> byPath)
+        private TestSettings SettingsOf(ClashTest test)
         {
             TestSettings settings = new TestSettings();
             settings.Tolerance = test.Tolerance;
@@ -720,18 +725,24 @@ namespace Federator.Addin.Engine
             settings.LeftPrimitiveTypes = (int)test.SelectionA.PrimitiveTypes;
             settings.RightPrimitiveTypes = (int)test.SelectionB.PrimitiveTypes;
 
-            settings.LeftLocator = LocatorOf(test.SelectionA, byPath);
-            settings.RightLocator = LocatorOf(test.SelectionB, byPath);
+            settings.LeftLocator = LocatorOf(test.SelectionA);
+            settings.RightLocator = LocatorOf(test.SelectionB);
 
             return settings;
         }
 
         /// <summary>
-        /// Which set path a side points at, found by matching the sets this run indexed.
-        /// Empty when the side points at something that is not one of them, which is a
-        /// difference worth reporting rather than hiding.
+        /// Which set path a side points at, found by matching the side's sources against
+        /// the one source per set that IndexSets built. Empty when the side points at
+        /// something that is not one of them, which is a difference worth reporting
+        /// rather than hiding.
+        ///
+        /// It used to create a source for every indexed set, per side, per compared test,
+        /// and dispose each straight after. On a weekly run plus XML that is every test
+        /// compared, and 61 sets by two sides by 1830 tests is 223,260 sources made and
+        /// thrown away for the comparison alone.
         /// </summary>
-        private string LocatorOf(ClashSelection side, Dictionary<string, SelectionSet> byPath)
+        private string LocatorOf(ClashSelection side)
         {
             try
             {
@@ -742,16 +753,13 @@ namespace Federator.Addin.Engine
                     return string.Empty;
                 }
 
-                foreach (KeyValuePair<string, SelectionSet> pair in byPath)
+                foreach (KeyValuePair<string, SelectionSource> pair in sourceByPath)
                 {
-                    using (SelectionSource mine = setsForLookup.CreateSelectionSource(pair.Value))
+                    for (int i = 0; i < sources.Count; i++)
                     {
-                        for (int i = 0; i < sources.Count; i++)
+                        if (sources[i].Equals(pair.Value))
                         {
-                            if (sources[i].Equals(mine))
-                            {
-                                return pair.Key;
-                            }
+                            return pair.Key;
                         }
                     }
                 }
@@ -774,8 +782,6 @@ namespace Federator.Addin.Engine
         /// </summary>
         public const string UnknownLocator = "UNKNOWN";
 
-        private DocumentSelectionSets setsForLookup;
-
         /// <summary>
         /// Puts the file's settings onto a test already in the document. This RESETS its
         /// results, which is why it is off by default and said loudly in the log.
@@ -796,10 +802,8 @@ namespace Federator.Addin.Engine
                     replacement.Tolerance = planned.Tolerance;
                     replacement.MergeComposites = planned.MergeComposites;
 
-                    FillSide(document: null, sets: sets, side: replacement.SelectionA,
-                        planned: planned.Left, byPath: byPath);
-                    FillSide(document: null, sets: sets, side: replacement.SelectionB,
-                        planned: planned.Right, byPath: byPath);
+                    FillSide(sets, replacement.SelectionA, planned.Left, byPath);
+                    FillSide(sets, replacement.SelectionB, planned.Right, byPath);
 
                     using (ClashTest existing = Resolve(clashTests, address, planned.Name))
                     {
@@ -872,7 +876,6 @@ namespace Federator.Addin.Engine
         /// squared) over 1830 tests.
         /// </summary>
         private TestAddress Create(
-            Document document,
             DocumentSelectionSets sets,
             DocumentClashTests clashTests,
             Dictionary<string, SelectionSet> byPath,
@@ -887,8 +890,8 @@ namespace Federator.Addin.Engine
                 test.Tolerance = planned.Tolerance;
                 test.MergeComposites = planned.MergeComposites;
 
-                FillSide(document, sets, test.SelectionA, planned.Left, byPath);
-                FillSide(document, sets, test.SelectionB, planned.Right, byPath);
+                FillSide(sets, test.SelectionA, planned.Left, byPath);
+                FillSide(sets, test.SelectionB, planned.Right, byPath);
 
                 clashTests.TestsAddCopy(test);
             }
@@ -979,9 +982,12 @@ namespace Federator.Addin.Engine
         /// of items into it. CreateSelectionSource is the only way to make a SelectionSource,
         /// its constructors are not public, and pointing at the set is what Clash Detective
         /// itself does, so the counts match the panel.
+        ///
+        /// A fresh source every time and never one out of the index, because the
+        /// collection takes the source it is handed and releasing the index at the end of
+        /// Run would then take it back out from under the test.
         /// </summary>
         private void FillSide(
-            Document document,
             DocumentSelectionSets sets,
             ClashSelection side,
             PlannedClashSide planned,
@@ -1158,16 +1164,86 @@ namespace Federator.Addin.Engine
         /// trimmed, because two set names in the reference file end in a space.
         ///
         /// These wrappers are held for the whole group on purpose. Nothing in the clash
-        /// step mutates the sets tree, so nothing invalidates them.
+        /// step mutates the sets tree, so nothing invalidates them. Beside them, one
+        /// SelectionSource per set, built here once, so reading which set a side points
+        /// at compares against a source that already exists. Both are released by
+        /// ReleaseTheIndex in the one finally at the end of Run, and here before a throw
+        /// part way through building leaves, so nothing half built is held.
         /// </summary>
         public Dictionary<string, SelectionSet> IndexSets(DocumentSelectionSets sets)
         {
             Dictionary<string, SelectionSet> byPath =
                 new Dictionary<string, SelectionSet>(StringComparer.Ordinal);
 
-            List<string> folders = new List<string>();
-            WalkSets(sets.RootItem, folders, byPath);
+            sourceByPath = new Dictionary<string, SelectionSource>(StringComparer.Ordinal);
+
+            try
+            {
+                List<string> folders = new List<string>();
+                WalkSets(sets.RootItem, folders, byPath);
+
+                foreach (KeyValuePair<string, SelectionSet> pair in byPath)
+                {
+                    sourceByPath.Add(pair.Key, sets.CreateSelectionSource(pair.Value));
+                }
+            }
+            catch
+            {
+                ReleaseTheIndex(byPath);
+                throw;
+            }
+
             return byPath;
+        }
+
+        /// <summary>
+        /// One SelectionSource per indexed set, keyed the same way as the sets. A field
+        /// rather than a parameter because LocatorOf is reached through SettingsOf from
+        /// CompareAndMaybeApply, while the set wrappers travel as a parameter the way they
+        /// already did. Built by IndexSets, read by LocatorOf, released with the sets.
+        /// </summary>
+        private Dictionary<string, SelectionSource> sourceByPath;
+
+        /// <summary>
+        /// Disposes the sources first and then the set wrappers they point at. Disposing
+        /// an eEXTERNAL wrapper releases the wrapper and never the document's set. A null
+        /// set index is nothing to release, which is what Run holds when it stopped before
+        /// indexing. Nothing here stops a run, a throw is logged and the rest is left to
+        /// the finalizer.
+        /// </summary>
+        private void ReleaseTheIndex(Dictionary<string, SelectionSet> byPath)
+        {
+            try
+            {
+                if (sourceByPath != null)
+                {
+                    foreach (SelectionSource source in sourceByPath.Values)
+                    {
+                        source.Dispose();
+                    }
+
+                    sourceByPath = null;
+                }
+
+                if (byPath == null)
+                {
+                    return;
+                }
+
+                foreach (SelectionSet set in byPath.Values)
+                {
+                    set.Dispose();
+                }
+
+                byPath.Clear();
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "releasing the set index",
+                    error,
+                    "kept going, whatever was not released goes to the finalizer");
+            }
         }
 
         private void WalkSets(
