@@ -2,6 +2,84 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F27, the GROUPS block tells the truth
+
+### What was done
+
+- F27 done, F25 closed. The claim was checked: nothing in src sets `GroupRow.Include` to false except the Run column binding and `GroupRow.Blocked`, and `git show be0b9b37:src/Federator.Addin/Ui/GroupRow.cs` shows the same. There is no hidden discipline rule. The run log of 2026-09-07 showed 12 groups as skipped because the GROUPS block printed skipped for any group unticked in the Run column
+- The block now prints `unticked` for such a group and ends with one line, `<n> groups unticked in the Run column, nothing else drops a group`. The line lives in `RunLog.UntickedGroupsLine` so it is tested, and the window calls it
+- `01_next.md` rewritten: F25 closed with the reason, F27 to F38 added after F26 in the order set on 2026-09-12, F12, F13 and F14 marked absorbed by F37 and F38. B15 closed in `00_analysis.md` and Q21 closed in `02_questions.md` with the same reason
+- `00_analysis.md` step 8 fixed. `HealthCheck.Run` is not called by anything in src today. F34 wires it, D1
+- README label table matches `RunPath.All`: Rebuilt added, Skipped kept and reworded, because a rebuild that does not finish still ends its group as Changed and the GROUP line reads Skipped
+- Proved here: `RunLogTests` gains `TheUntickedLineCountsTheGroupsAndNamesTheRunColumn` and `NothingUntickedStillSaysSo`. Core tests under mono on Linux, before: 879 passed, 39 failed, 32 skipped, 950 total. After: 881 passed, 39 failed, 32 skipped, 952 total. The 39 are the same Windows path and file locking failures, none new
+- Waits for the local machine: the add-in does not build here. The window change is nine lines in `GroupListLines`, read twice. The proof is to scan any folder, untick two groups, press Run and Cancel, and read the GROUPS block in the log
+
+### What remains
+
+- F28 to F38 in order, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- B15 closed. Everything else as in the F26 entry
+
+### What comes next
+
+1. Merge the F27 PR
+2. F28, a set already there is not counted as created
+
+## 2026-09-12 The plan for the audit round, F27 to F38
+
+### What was done
+
+- Read first: CLAUDE.md, `steps/00_analysis.md`, `steps/01_next.md`, `steps/02_questions.md`, `steps/03_bader_next.md`, `steps/log.md`, then every file under `src`, `tests`, `build`, `docs`, `.github`, `.githooks`, `bundle` and the root. 47,658 lines. The files every fix touches were read by hand. One reader per folder is still walking the rest for members without a caller, doubled comment blocks and stale comments, and what they find goes into F36 and the audit at the end
+- Ground state on main at c89dad07. Core tests under mono on Linux: 879 passed, 39 failed, 32 skipped, 950 total. The 39 are the Windows path and file locking failures recorded since F5
+- `dotnet build src/Federator.Addin/Federator.Addin.csproj -c Release` was run once. It cannot build here: `Autodesk.Navisworks.Api.dll` is not on this machine and the build says so by name. So every add-in change is read twice before it is pushed, the PR body says so, and the local proof goes into `steps/03_bader_next.md` as numbered one action steps
+- There is no `gh` on this machine. The checks are watched through the GitHub tools the session has, the same way F5 to F26 were. Merge only when the tests job is green on the branch head. A branch delete through git is refused by the session's proxy, so D6 goes through the GitHub tools
+- Eleven doubled summary blocks found by grep, in `RunLog.cs`, `PageCheck.cs`, `WorkbookWriter.cs`, `ReportPaths.cs` twice, `ClientFormat.cs`, `ClashHarvest.cs`, `SetBuilder.cs`, `ClashRunner.cs` and `FederatorWindow.xaml.cs` twice. Twelve private `Or` helpers across Core and the add-in. All for F36
+- The F36 greps run on main: `OutputNameCheck`, `ClashWork.Any`, `BuildStamp.OfCore`, `PickerStart.Remembers`, `RunLog.TimesFailed`, `DistinctFailureCount` and `TotalFailureCount` have no caller in src. `BuildOutputName` is called only by itself and `ForcedLevel`, `ForcedTypeCode`, `ForcedNumber` and `OutputDisciplineCode` only by it. `GroupRecords` is read once inside `RunLog` itself. `RunPath.Skipped` IS reached: a rebuild that fails ends the group as Changed and the GROUP line reads it, so it stays
+
+### The order and what each PR does
+
+1. F27. Branch `fix-F27`. The GROUPS block says unticked instead of skipped and adds one line counting the unticked groups. The line lives in `RunLog` so it is tested. F25 rewritten as never in the code, B15 and Q21 closed with that. `00_analysis.md` step 8 fixed, HealthCheck does not run on pick today. README label table matches `RunPath.All`. This entry and the F27 entry go in with it
+2. F28. Branch `fix-F28`. `SetBuildOutcome.AddAlreadyPresent` takes the path, the name, the condition count and the item count, prints as present, counts in `AlreadyPresentCount` only. `BuildOne` makes that one call. Two new tests on `PutAnythingIn`
+3. F29. Branch `fix-F29`. `RebuildFromScan` counts the sets before the clear and after the appends by walking `SelectionSets.RootItem`, puts the sets back on their own count, logs `SETS before clear <n>, after appends <n>, after restore <n>`, fails the group when they cannot come back, disposes `setsCopy`. The dead Changed branch at the top of `ClashStep` goes. The set line and the set judgement live in `NwfRebuildPlan` with tests
+4. F30. Branch `fix-F30`. One private tail method for `RunOne` and `RunOpenDocument`. The PR body lists every line that still differs
+5. F31. Branch `fix-F31`. `IndexSets` builds one `SelectionSource` per set beside `byPath`, `LocatorOf` compares against that, both dictionaries disposed in one finally at the end of `Run`. `FillSide` loses its document parameter. `Resolve`, `Upwards` and `SetBuilder` untouched, that is F15
+6. F32. Branch `fix-F32`. `OpenDocumentJob.CanRun` refuses a non .nwf extension, a path with no readable folder, and an NWD path equal to the open path, `WhyNot` names which. Five tests. The window shows `WhyNot`. F23 in `01_next.md` notes the narrowing
+7. F33. Branch `fix-F33`. `src/Federator.Core/Units/UnitTable.cs` is the one table. `ExchangeUnits`, `DocumentUnits.Short`, `ClashRunner.UnitName`, the window's `UnitChoices` and `UnitWording` read it. `WantedUnits` fails the group on a name the table does not know. `ExchangeReader` stops converting, `ToleranceMillimetres` and `ToleranceIn` go, `ClashTestPlan.Convert` is the one place a file unit is judged, with a test that reaches its unknown unit line
+8. F34. Branch `fix-F34`. Window wiring: `NwdFolderBox` TextChanged, `OnXmlChanged`, `OnRepublishChanged` and `republishNwd` and the three unused engine constructors deleted, `NwdRequested` deleted if nothing reads it, `ReportsWanted` stops setting the three fixed flags, D3 the outstanding count setting deleted, D4 the two hand buttons call one engine method each, D1 HealthCheck wired under the file line, the XAML comments and the window class comment fixed, `GroupOutcome.cs` docs stop naming a republish tick box
+9. F35. Branch `fix-F35`. D5. `BuildingGroup` and `FederationJob` carry the discipline count, the flag comes from it, `ClashSkipReason.SingleModel` becomes `SingleDiscipline`, every one model wording becomes one discipline. Two Core tests
+10. F36. Branch `fix-F36`. Dead code and copies out, each name grepped and the empty result pasted in the PR body. One `Or` in `Words.cs`. One client column list. `InstallFiles` replaces the two locators. The eleven doubled summaries fixed. `probe-window-defaults.ps1` stops listing the two boxes that are gone
+11. F37. Branch `fix-F37`. Moves only. One type per file, tests into src folder names, probes into `tools/probes` with a README and a path parameter, the two docs into `docs/history` with a first line, `docs/workflow.md` written from README and `RunPath`. Closes F12 and F14
+12. F38. Branch `fix-F38`. CLAUDE.md under 200 lines, history to `docs/history/claude-md-history.md`, four rules files under `.claude/rules` with paths frontmatter, two PreToolUse hooks under `.claude/hooks` wired in `.claude/settings.json`, the pre-commit hook kept. Closes F13
+13. D6. Every `fix-*` branch, `analysis-pass` and `master` deleted on GitHub so main is the only branch
+14. The audit. Every file read again, what still contradicts CLAUDE.md, every member without a caller, every doubled comment, every doc line that disagrees with the code, every test that cannot run here, written to `steps/04_audit.md` with a fix list, and the fixes added to `01_next.md`
+15. `steps/03_bader_next.md` rewritten so the proofs for F28, F29, F31, F32, F33, F34 and F35 sit in one build, one install and one Navisworks session, with the first proof named and why
+16. The closing log entry
+
+### Rules held through the round
+
+- One PR per fix, off main, merged only when the tests job is green on the branch head, the branch deleted after. Never a PR left open at the end of a step
+- .NET Framework 4.8 and C# 7.3. No Navisworks type reaches `Federator.Core`
+- A public member nothing in src calls is deleted with its tests, unless a decision keeps it. No member is added that no running code calls
+- No em dash, no semicolon in prose, no emoji, plain words. Every log line starts with its block word
+- Each PR body says what was proved here and what waits for the local machine. Each log entry records the Core test counts before and after
+- `samples` and `steps/logs` are never touched
+
+### What remains
+
+- Everything in the order above. Nothing in this round is proved on the local machine, the add-in cannot build here
+
+### Known bugs
+
+- Unchanged from the F26 entry until each fix lands. B15 closes with F27, F25 was never in the code
+
+### What comes next
+
+1. F27 on `fix-F27`, this plan goes in with it
+2. F28 to F38 in order, one PR each
+3. D6, the audit, `03_bader_next.md`, the closing entry
+
 ## 2026-09-07 F26, the report is always in metres
 
 ### What was done

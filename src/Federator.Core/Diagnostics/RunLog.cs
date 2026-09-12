@@ -419,6 +419,19 @@ namespace Federator.Core.Diagnostics
         public const string FindingsSectionTitle = "FINDINGS";
 
         /// <summary>
+        /// The one line after the group list saying how many groups were unticked in the
+        /// Run column. F27. The list used to print skipped for an unticked group, and the
+        /// run log of 2026-09-07 was read as a hidden rule dropping 12 of 26 groups. There
+        /// is no such rule: nothing in the code unticks a group except the Run column and
+        /// a blocked group, so the line says so.
+        /// </summary>
+        public static string UntickedGroupsLine(int unticked)
+        {
+            return unticked + (unticked == 1 ? " group" : " groups")
+                + " unticked in the Run column, nothing else drops a group";
+        }
+
+        /// <summary>
         /// Where the Revit container inside an NWC is a different building from the NWC.
         /// Only knowable once a document is open, so it goes in after the run rather than
         /// with the scan findings.

@@ -28,9 +28,14 @@ confirm dialog:
     First run                  no NWF at the output path yet
     Weekly run                 the NWF is there and no XML is picked
     Weekly run plus XML        the NWF is there and an XML is picked
-    Skipped (changed on disk)  the NWF points at a different file list. Only known
-                               once the NWF is opened, so it shows in the log, not
-                               before the run
+    Rebuilt                    the NWF is there and points at a different file list,
+                               so it is cleared and rebuilt from the scan folder with
+                               its saved tests kept, then run as a Weekly run. Only
+                               known once the NWF is opened, so the window opens each
+                               NWF at Run where nothing open would be lost, and
+                               otherwise the run settles it and the list shows it after
+    Skipped (changed on disk)  a group whose file list differed and whose rebuild
+                               did not finish, so it was left alone
     Unknown                    the NWF folder is not picked yet, or a case the rule
                                cannot name
 
