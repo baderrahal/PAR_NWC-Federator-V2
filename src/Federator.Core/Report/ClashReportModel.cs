@@ -554,6 +554,65 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
+        /// Which property actually supplied each item's id, counted.
+        ///
+        /// The label on the report is always Element ID and this tool CHOOSES it rather
+        /// than reading it off whichever property matched, so what was renamed has to stay
+        /// visible somewhere, and that somewhere is the log. One line per property and
+        /// never one per item: a group holds hundreds of items and the log has already been
+        /// drowned once by a line each.
+        ///
+        /// Empty when the report holds no item at all, so the block is not written.
+        /// </summary>
+        public IList<string> IdSourceLines()
+        {
+            Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
+            int items = 0;
+
+            foreach (TestReport test in tests)
+            {
+                foreach (ClashRow row in test.Rows)
+                {
+                    items += CountIdSource(row.Left, counts);
+                    items += CountIdSource(row.Right, counts);
+                }
+            }
+
+            List<string> lines = new List<string>();
+
+            if (items == 0)
+            {
+                return lines;
+            }
+
+            List<string> names = new List<string>(counts.Keys);
+            names.Sort(StringComparer.Ordinal);
+
+            foreach (string name in names)
+            {
+                lines.Add(name + " supplied " + counts[name]
+                    + (counts[name] == 1 ? " item id" : " item ids")
+                    + " of " + items + ", written as \"" + ClientFormat.DefaultIdLabel + "\"");
+            }
+
+            return lines;
+        }
+
+        private static int CountIdSource(ClashItem item, IDictionary<string, int> counts)
+        {
+            if (item == null)
+            {
+                return 0;
+            }
+
+            string from = string.IsNullOrEmpty(item.IdFrom) ? "no id property" : item.IdFrom;
+            int already;
+
+            counts[from] = counts.TryGetValue(from, out already) ? already + 1 : 1;
+            return 1;
+        }
+
+        /// <summary>
         /// Adds the next test. The number is handed out here rather than by the caller, so
         /// the sheet names cannot repeat or skip.
         /// </summary>

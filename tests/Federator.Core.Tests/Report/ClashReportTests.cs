@@ -43,6 +43,50 @@ namespace Federator.Core.Tests
             return row;
         }
 
+        // ---------- which property supplied each id ----------
+
+        /// <summary>
+        /// The label on the report is always Element ID and this tool chooses it, so what
+        /// was renamed has to stay visible somewhere. These lines are that somewhere, one
+        /// per property and never one per item.
+        /// </summary>
+        [Test]
+        public void TheIdSourcesAreCountedPerPropertyAndNotPerItem()
+        {
+            ClashReport report = Report();
+            TestReport test = Ran(report, "T", Root + "/a", Root + "/b");
+
+            test.Add(WithIds(ClashStatus.New, "Element ID", "Element ID"));
+            test.Add(WithIds(ClashStatus.New, "Id", "Element ID"));
+            test.Add(WithIds(ClashStatus.Active, "Id", string.Empty));
+
+            IList<string> lines = report.IdSourceLines();
+
+            Assert.That(lines.Count, Is.EqualTo(3), "one line per property, not one per item");
+            Assert.That(string.Join("\n", new List<string>(lines).ToArray()),
+                Does.Contain("Element ID supplied 3 item ids of 6"));
+            Assert.That(string.Join("\n", new List<string>(lines).ToArray()),
+                Does.Contain("Id supplied 2 item ids of 6"));
+            Assert.That(string.Join("\n", new List<string>(lines).ToArray()),
+                Does.Contain("no id property supplied 1 item id of 6"));
+        }
+
+        [Test]
+        public void AReportWithNoItemsWritesNoBlockAtAll()
+        {
+            Assert.That(Report().IdSourceLines().Count, Is.EqualTo(0));
+        }
+
+        private static ClashRow WithIds(ClashStatus status, string leftFrom, string rightFrom)
+        {
+            ClashRow row = Row(status, -0.1, 1);
+            row.Left = new ClashItem();
+            row.Right = new ClashItem();
+            row.Left.IdFrom = leftFrom;
+            row.Right.IdFrom = rightFrom;
+            return row;
+        }
+
         // ---------- grouped rows take the most severe distance ----------
 
         // A hard clash reports a negative distance, which is how far the two things

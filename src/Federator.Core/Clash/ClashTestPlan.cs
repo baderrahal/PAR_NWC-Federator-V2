@@ -242,6 +242,17 @@ namespace Federator.Core.Clash
                 return;
             }
 
+            if (!test.HasTolerance)
+            {
+                skipped.Add(new SkippedClashTest(
+                    test.Name,
+                    ClashSkipReason.NoTolerance,
+                    "the file gives this test no tolerance at all, and a tolerance is never "
+                        + "supplied from anywhere else",
+                    fileIndex));
+                return;
+            }
+
             double tolerance;
             string unitsProblem = Convert(test, documentUnits, out tolerance);
 
@@ -433,6 +444,8 @@ namespace Federator.Core.Clash
                     return "a side names no set";
                 case ClashSkipReason.UnknownUnits:
                     return "the tolerance could not be converted";
+                case ClashSkipReason.NoTolerance:
+                    return "the file gives it no tolerance";
                 case ClashSkipReason.NoName:
                     return "no name";
                 case ClashSkipReason.LocatorNotResolved:

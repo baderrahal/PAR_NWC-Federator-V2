@@ -1275,6 +1275,19 @@ namespace Federator.Addin.Engine
                 outcome.Clash = clash;
                 log.Block("CLASH " + job.Building, clash.Lines());
 
+                if (outcome.Report != null)
+                {
+                    // The Item ID label is always Element ID and this tool chooses it, so
+                    // which property actually supplied each id is said here. Counted per
+                    // property, never a line per item.
+                    IList<string> idSources = outcome.Report.IdSourceLines();
+
+                    if (idSources.Count > 0)
+                    {
+                        log.Block("ITEM IDS " + job.Building, idSources);
+                    }
+                }
+
                 if (outcome.Report != null && runner.Images != null)
                 {
                     // The pictures were rendered under run order numbers while the tests

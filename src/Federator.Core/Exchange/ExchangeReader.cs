@@ -133,6 +133,7 @@ namespace Federator.Core.Exchange
                 name,
                 Attribute(test, "test_type"),
                 Attribute(test, "status"),
+                !string.IsNullOrEmpty(toleranceText),
                 tolerance,
                 units,
                 ReadFlag(Attribute(test, "merge_composites")),
@@ -388,6 +389,11 @@ namespace Federator.Core.Exchange
                 : 0;
         }
 
+        /// <summary>
+        /// The number as written. An absent attribute reads as zero here and the caller
+        /// carries the fact that it was absent, because zero is a real tolerance and a
+        /// missing one is not.
+        /// </summary>
         private static double ReadDouble(string text, string attributeName, string testName)
         {
             if (string.IsNullOrEmpty(text))

@@ -18,6 +18,13 @@ namespace Federator.Core.Clash
         /// <summary>The units are missing or not ones this tool converts.</summary>
         UnknownUnits,
 
+        /// <summary>
+        /// The file carried no tolerance attribute for this test. Everything about a test
+        /// comes from the file and never from a constant, and a zero tolerance reads as a
+        /// real one, so the test is skipped by name the way an unknown test type is.
+        /// </summary>
+        NoTolerance,
+
         /// <summary>The test carried no name, so it could never be found again.</summary>
         NoName,
 

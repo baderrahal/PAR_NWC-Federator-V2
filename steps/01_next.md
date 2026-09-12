@@ -384,6 +384,7 @@ F19 is dropped.
 - CONTAINER for Core, the add-in read twice, LOCAL MACHINE ONLY to prove the compact count
 - A test whose tolerance attribute is missing is skipped by name the way an unknown test type is, never given 0.0. The OLD line logs the status word and nothing else. The compacted count is the Resolved count before less the count read after `TestsCompactAllTests`. A side whose locator reads UNKNOWN is left out of the drift comparison and counted as not compared. `IdFrom` goes in the log once per item, or goes with Q25
 - Size: small
+- DONE on 2026-09-12, proof pending. See `log.md`. `IdFrom` goes in the log counted per property rather than once per item, because a line per item is the flood the log has already been drowned by. The UNKNOWN marker moved to `TestSettings` so the comparison in Core can read it
 
 
 ## F25 Drop the hidden discipline rule

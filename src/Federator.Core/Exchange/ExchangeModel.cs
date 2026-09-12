@@ -40,6 +40,7 @@ namespace Federator.Core.Exchange
             string name,
             string testType,
             string status,
+            bool hasTolerance,
             double toleranceInFileUnits,
             string fileUnits,
             bool mergeComposites,
@@ -51,6 +52,7 @@ namespace Federator.Core.Exchange
             Name = name;
             TestType = testType;
             Status = status;
+            HasTolerance = hasTolerance;
             ToleranceInFileUnits = toleranceInFileUnits;
             FileUnits = fileUnits;
             MergeComposites = mergeComposites;
@@ -68,7 +70,17 @@ namespace Federator.Core.Exchange
         /// <summary>The raw status string, for example new.</summary>
         public string Status { get; private set; }
 
-        /// <summary>The tolerance exactly as written, in <see cref="FileUnits"/>.</summary>
+        /// <summary>
+        /// False when the file carried no tolerance attribute at all. Everything about a
+        /// test comes from the file and never from a constant, so a test with no tolerance
+        /// is skipped by name rather than given a zero that reads as a real one.
+        /// </summary>
+        public bool HasTolerance { get; private set; }
+
+        /// <summary>
+        /// The tolerance exactly as written, in <see cref="FileUnits"/>. Zero when
+        /// <see cref="HasTolerance"/> is false, and that test is never planned.
+        /// </summary>
         public double ToleranceInFileUnits { get; private set; }
 
         public string FileUnits { get; private set; }
