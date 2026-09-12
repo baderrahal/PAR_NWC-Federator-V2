@@ -238,6 +238,7 @@ F19 is dropped.
 - Files `src/Federator.Addin/Engine/FederationEngine.cs`
 - LOCAL MACHINE ONLY, the add-in does not build here
 - `RunOne` and `RunOpenDocument` share one private tail, the PR body lists every line that still differs
+- DONE on 2026-09-12, proof pending on the local machine
 
 ## F31 The clash side lookup is built once per run
 

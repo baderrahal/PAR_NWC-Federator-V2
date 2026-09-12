@@ -265,19 +265,7 @@ namespace Federator.Addin.Engine
                     outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
                     outcome.NwfOnDisk = outcome.NwfSize >= 0;
 
-                    if (reports.SetDocumentUnits)
-                    {
-                        new DocumentUnits(log).Apply(document, WantedUnits());
-                    }
-
-                    if (ClashStep(document, job, outcome))
-                    {
-                        SaveTheNwfAgain(document, job, outcome);
-                    }
-
-                    WriteWorkbook(job, outcome);
-                    WriteNwd(document, job, outcome);
-                    ConfirmTheNwfSurvived(job, outcome);
+                    FinishTheGroup(document, job, outcome);
                 }
                 catch (Exception error)
                 {
@@ -400,35 +388,7 @@ namespace Federator.Addin.Engine
                         + (outcome.NwfOnDisk ? outcome.NwfSize.ToString("#,##0") + " bytes" : "NOT ON DISK"));
                 }
 
-                // The sets, the tests and the results all live in the NWF, so the clash
-                // work happens BEFORE the NWF is saved for the last time and long before
-                // the NWD is published. The NWD used to go first, which shipped it with no
-                // sets and no results in it.
-                // BEFORE the clash step, so every tolerance and every distance is read in
-                // the units the report is going out in. Converting afterwards would mean a
-                // report whose numbers and whose unit label disagree.
-                if (reports.SetDocumentUnits)
-                {
-                    new DocumentUnits(log).Apply(document, WantedUnits());
-                }
-
-                if (ClashStep(document, job, outcome))
-                {
-                    SaveTheNwfAgain(document, job, outcome);
-                }
-
-                // After the clash step and before the NWD, so the three outputs of a group
-                // agree with each other rather than the workbook describing a state the
-                // NWD does not carry.
-                WriteWorkbook(job, outcome);
-
-                WriteNwd(document, job, outcome);
-
-                // The NWD is published last, and the NWF is the only record of what has
-                // been fixed, so the NWF is looked at once more AFTER it. Nothing was
-                // checking this, and a RESULT block reporting the size of the first save
-                // made it read as though publishing the NWD had emptied the file.
-                ConfirmTheNwfSurvived(job, outcome);
+                FinishTheGroup(document, job, outcome);
             }
             catch (Exception error)
             {
@@ -450,6 +410,47 @@ namespace Federator.Addin.Engine
             }
 
             return outcome;
+        }
+
+        /// <summary>
+        /// The tail every group runs once its document holds the models, whether it came
+        /// from a scan through RunOne or is the open file through RunOpenDocument: the
+        /// units, the clash step, the NWF saved again, the workbook, the NWD, and the NWF
+        /// looked at once more. One method, so the two paths cannot drift apart in what
+        /// they do or in what order. The two used to carry the same six calls each, and
+        /// the comments sat on one of them only.
+        /// </summary>
+        private void FinishTheGroup(Document document, FederationJob job, JobOutcome outcome)
+        {
+            // The sets, the tests and the results all live in the NWF, so the clash
+            // work happens BEFORE the NWF is saved for the last time and long before
+            // the NWD is published. The NWD used to go first, which shipped it with no
+            // sets and no results in it.
+            // BEFORE the clash step, so every tolerance and every distance is read in
+            // the units the report is going out in. Converting afterwards would mean a
+            // report whose numbers and whose unit label disagree.
+            if (reports.SetDocumentUnits)
+            {
+                new DocumentUnits(log).Apply(document, WantedUnits());
+            }
+
+            if (ClashStep(document, job, outcome))
+            {
+                SaveTheNwfAgain(document, job, outcome);
+            }
+
+            // After the clash step and before the NWD, so the three outputs of a group
+            // agree with each other rather than the workbook describing a state the
+            // NWD does not carry.
+            WriteWorkbook(job, outcome);
+
+            WriteNwd(document, job, outcome);
+
+            // The NWD is published last, and the NWF is the only record of what has
+            // been fixed, so the NWF is looked at once more AFTER it. Nothing was
+            // checking this, and a RESULT block reporting the size of the first save
+            // made it read as though publishing the NWD had emptied the file.
+            ConfirmTheNwfSurvived(job, outcome);
         }
 
         /// <summary>
