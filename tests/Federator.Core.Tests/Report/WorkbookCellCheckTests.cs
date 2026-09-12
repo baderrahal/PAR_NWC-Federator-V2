@@ -35,17 +35,7 @@ namespace Federator.Core.Tests
         [TearDown]
         public void Teardown()
         {
-            try
-            {
-                if (Directory.Exists(folder))
-                {
-                    Directory.Delete(folder, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
+            TempFolder.Remove(folder);
         }
 
         // ---------- a workbook to break ----------

@@ -19,8 +19,16 @@ namespace Federator.Core.Tests
     [TestFixture]
     public class OpenDocumentJobTests
     {
-        private const string Open =
-            @"D:\Federations\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf";
+        private const string OpenName = "1104-PAR-1C07BC-ZZZ-BM-MOD-000001";
+
+        /// <summary>
+        /// The open file, on a path this machine can take apart. It used to be typed as
+        /// D:\Federations\..., and off Windows a backslash is an ordinary character, so
+        /// Path.GetDirectoryName found no folder at all and the rule under test could not
+        /// be read. The rule is the same on both, so the path is built.
+        /// </summary>
+        private static readonly string Open =
+            TestPaths.At("Federations", OpenName + ".nwf");
 
         /// <summary>
         /// The same file on a path the running system can take apart. D:\ has no folder
@@ -32,15 +40,14 @@ namespace Federator.Core.Tests
         [Test]
         public void TheNameIsReadOffTheOpenFile()
         {
-            Assert.That(OpenDocumentJob.NameFrom(Open),
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
+            Assert.That(OpenDocumentJob.NameFrom(Open), Is.EqualTo(OpenName));
         }
 
         [Test]
         public void TheNwdSitsBesideItWithTheExtensionSwapped()
         {
             Assert.That(OpenDocumentJob.NwdBeside(Open),
-                Is.EqualTo(@"D:\Federations\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd"));
+                Is.EqualTo(TestPaths.At("Federations", OpenName + ".nwd")));
         }
 
         [Test]
@@ -177,10 +184,7 @@ namespace Federator.Core.Tests
         /// </summary>
         private static string AFolderOnDisk()
         {
-            string folder = Path.Combine(
-                Path.GetTempPath(), "open-document-job-" + Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(folder);
-            return folder;
+            return TempFolder.Make("open-document-job");
         }
 
         [Test]

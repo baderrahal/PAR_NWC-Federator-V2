@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Federator.Core.Naming;
 
 namespace Federator.Core.Report
 {
@@ -72,23 +73,13 @@ namespace Federator.Core.Report
         private static readonly char[] NotInAFolderName = BuildNotInAFolderName();
 
         /// <summary>
-        /// Both slashes by name, not whichever one this machine calls a separator. The
-        /// tool runs on Windows, where both are separators, and a test that asked the
-        /// running platform passed a backslash straight through in the container.
+        /// Windows' own list, which carries both slashes, read off FileNames rather than
+        /// off whichever platform is running. Asking the platform passed a backslash
+        /// straight through in the container.
         /// </summary>
         private static char[] BuildNotInAFolderName()
         {
-            List<char> refused = new List<char>(Path.GetInvalidFileNameChars());
-
-            foreach (char slash in new[] { '\\', '/' })
-            {
-                if (!refused.Contains(slash))
-                {
-                    refused.Add(slash);
-                }
-            }
-
-            return refused.ToArray();
+            return FileNames.Refused;
         }
 
         public const string WorkbookExtension = ".xlsx";

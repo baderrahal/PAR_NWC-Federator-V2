@@ -19,7 +19,7 @@ namespace Federator.Core.Tests
             return Path.Combine(folder, name);
         }
 
-        private static readonly string Incoming = @"C:\models\incoming";
+        private static readonly string Incoming = TestPaths.At("models", "incoming");
 
         private static string[] Group(params string[] names)
         {
@@ -92,8 +92,10 @@ namespace Federator.Core.Tests
         [Test]
         public void APathThatDiffersOnlyInCaseStillMatches()
         {
+            TestPaths.OnWindowsOnly("matching two paths without case");
+
             NwfComparison comparison = NwfComparison.Compare(
-                new[] { @"C:\MODELS\INCOMING\" + Ar.ToUpperInvariant() },
+                new[] { Incoming.ToUpperInvariant() + Path.DirectorySeparatorChar + Ar.ToUpperInvariant() },
                 new[] { In(Incoming, Ar) });
 
             Assert.That(comparison.Decision, Is.EqualTo(RerunDecision.Open),
@@ -133,7 +135,8 @@ namespace Federator.Core.Tests
                 Group(Ar, St, Me));
 
             Assert.That(comparison.Decision, Is.EqualTo(RerunDecision.Changed));
-            Assert.That(comparison.Added, Is.EqualTo(new[] { In(Incoming, Me) }));
+            Assert.That(comparison.Added.Count, Is.EqualTo(1));
+            Assert.That(comparison.Added[0], Is.EqualTo(In(Incoming, Me)));
             Assert.That(comparison.Removed.Count, Is.EqualTo(0));
             Assert.That(comparison.Unchanged.Count, Is.EqualTo(2));
         }
@@ -147,7 +150,8 @@ namespace Federator.Core.Tests
 
             Assert.That(comparison.Decision, Is.EqualTo(RerunDecision.Changed));
             Assert.That(comparison.Added.Count, Is.EqualTo(0));
-            Assert.That(comparison.Removed, Is.EqualTo(new[] { In(Incoming, Me) }));
+            Assert.That(comparison.Removed.Count, Is.EqualTo(1));
+            Assert.That(comparison.Removed[0], Is.EqualTo(In(Incoming, Me)));
         }
 
         // The case the brief asked for by name.
@@ -159,8 +163,10 @@ namespace Federator.Core.Tests
                 Group(Ar, St, El));
 
             Assert.That(comparison.Decision, Is.EqualTo(RerunDecision.Changed));
-            Assert.That(comparison.Added, Is.EqualTo(new[] { In(Incoming, El) }));
-            Assert.That(comparison.Removed, Is.EqualTo(new[] { In(Incoming, Me) }));
+            Assert.That(comparison.Added.Count, Is.EqualTo(1));
+            Assert.That(comparison.Added[0], Is.EqualTo(In(Incoming, El)));
+            Assert.That(comparison.Removed.Count, Is.EqualTo(1));
+            Assert.That(comparison.Removed[0], Is.EqualTo(In(Incoming, Me)));
             Assert.That(comparison.Unchanged.Count, Is.EqualTo(2));
         }
 

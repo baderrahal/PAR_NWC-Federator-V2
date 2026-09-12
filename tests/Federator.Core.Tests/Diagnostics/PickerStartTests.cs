@@ -23,25 +23,14 @@ namespace Federator.Core.Tests
         [SetUp]
         public void MakeFolder()
         {
-            root = Path.Combine(Path.GetTempPath(), "FederatorPickers", Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(root);
+            root = TempFolder.Make("FederatorPickers");
             file = Path.Combine(root, FolderMemory.FileName);
         }
 
         [TearDown]
         public void RemoveFolder()
         {
-            try
-            {
-                if (Directory.Exists(root))
-                {
-                    Directory.Delete(root, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
+            TempFolder.Remove(root);
         }
 
         private string Make(string name)

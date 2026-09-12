@@ -21,24 +21,13 @@ namespace Federator.Core.Tests
         [SetUp]
         public void MakeFolder()
         {
-            folder = Path.Combine(Path.GetTempPath(), "FederatorRunLogTests", Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(folder);
+            folder = TempFolder.Make("FederatorRunLogTests");
         }
 
         [TearDown]
         public void RemoveFolder()
         {
-            try
-            {
-                if (Directory.Exists(folder))
-                {
-                    Directory.Delete(folder, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
+            TempFolder.Remove(folder);
         }
 
         /// <summary>
@@ -342,8 +331,14 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
+                // A folder UNDER a file that is already there. No system makes one, which
+                // is what the missing drive letter used to mean here and only meant on
+                // Windows: off it, Z:\no-such-drive is an ordinary relative folder name and
+                // the copy succeeded.
+                string nowhere = Path.Combine(log.Path, "nowhere");
+
                 string copied;
-                bool ok = log.TryCopyTo("Z:\\no-such-drive\\nowhere", out copied);
+                bool ok = log.TryCopyTo(nowhere, out copied);
 
                 Assert.That(ok, Is.False);
                 Assert.That(copied, Is.Null);
@@ -352,7 +347,7 @@ namespace Federator.Core.Tests
 
                 string text = ReadWhileOpen(log);
                 Assert.That(text, Does.Contain("FAILURE"));
-                Assert.That(text, Does.Contain("Z:\\no-such-drive\\nowhere"));
+                Assert.That(text, Does.Contain(nowhere));
                 Assert.That(text, Does.Contain("kept going"));
             }
         }
@@ -539,6 +534,8 @@ namespace Federator.Core.Tests
         [Test]
         public void APlainFileReadCannotOpenTheLogWhileTheRunIsStillWriting()
         {
+            TestPaths.OnWindowsOnly("a file held open refusing a plain read");
+
             using (RunLog log = Start())
             {
                 log.Line("mid run");

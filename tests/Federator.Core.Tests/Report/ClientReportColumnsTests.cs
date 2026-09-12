@@ -31,7 +31,7 @@ namespace Federator.Core.Tests
                 Assert.Ignore("The checkout is not beside the test binaries.");
             }
 
-            string folder = Path.Combine(repo, @"samples\client-report");
+            string folder = Path.Combine(repo, "samples", "client-report");
 
             if (!Directory.Exists(folder))
             {
@@ -229,6 +229,8 @@ namespace Federator.Core.Tests
             string said = ClientReportColumns.ReadFrom();
 
             Assert.That(said, Does.Contain("clash_report_html_tabular.xsl"));
+            // The sentence the tool writes, spelled the way it writes it. This one is not
+            // a path being built, it is words in a log line, and the tool runs on Windows.
             Assert.That(said, Does.Contain(@"samples\client-report"));
             Assert.That(said, Does.Contain("never from a list typed into this tool"));
         }

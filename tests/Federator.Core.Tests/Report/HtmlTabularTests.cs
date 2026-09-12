@@ -35,24 +35,13 @@ namespace Federator.Core.Tests
         [SetUp]
         public void MakeFolder()
         {
-            folder = Path.Combine(Path.GetTempPath(), "FederatorHtml", Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(folder);
+            folder = TempFolder.Make("FederatorHtml");
         }
 
         [TearDown]
         public void RemoveFolder()
         {
-            try
-            {
-                if (Directory.Exists(folder))
-                {
-                    Directory.Delete(folder, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
+            TempFolder.Remove(folder);
         }
 
         private static string Stylesheet()
@@ -435,12 +424,13 @@ namespace Federator.Core.Tests
         [Test]
         public void ItSaysEveryPathItLookedAtWhenItCannotFindOne()
         {
-            IList<string> lines = InstallFiles.WhyNoStylesheet(@"C:\Nowhere", "fr-FR");
+            string install = TestPaths.At("Nowhere");
+            IList<string> lines = InstallFiles.WhyNoStylesheet(install, "fr-FR");
             string block = string.Join("\n", new List<string>(lines).ToArray());
 
             Assert.That(block, Does.Contain("clash_report_html_tabular.xsl"));
-            Assert.That(block, Does.Contain(@"C:\Nowhere\fr-FR\stylesheets"));
-            Assert.That(block, Does.Contain(@"C:\Nowhere\en-US\stylesheets"),
+            Assert.That(block, Does.Contain(Path.Combine(install, "fr-FR", "stylesheets")));
+            Assert.That(block, Does.Contain(Path.Combine(install, "en-US", "stylesheets")),
                 "en-US is the fallback every install has");
             Assert.That(block, Does.Contain("workbook and the XML are unaffected"));
         }
@@ -448,18 +438,21 @@ namespace Federator.Core.Tests
         [Test]
         public void TheLanguageTheApplicationReportsIsTriedFirst()
         {
-            IList<string> tried = InstallFiles.StylesheetCandidates(@"C:\NW", "de-DE");
+            IList<string> tried = InstallFiles.StylesheetCandidates(TestPaths.At("NW"), "de-DE");
+            string separator = Path.DirectorySeparatorChar.ToString();
 
             Assert.That(tried.Count, Is.EqualTo(2));
-            Assert.That(tried[0], Does.Contain(@"\de-DE\"));
-            Assert.That(tried[1], Does.Contain(@"\en-US\"));
+            Assert.That(tried[0], Does.Contain(separator + "de-DE" + separator));
+            Assert.That(tried[1], Does.Contain(separator + "en-US" + separator));
         }
 
         [Test]
         public void OneLanguageIsOneCandidateRatherThanTheSameTwice()
         {
-            Assert.That(InstallFiles.StylesheetCandidates(@"C:\NW", "en-US").Count, Is.EqualTo(1));
-            Assert.That(InstallFiles.StylesheetCandidates(@"C:\NW", null).Count, Is.EqualTo(1));
+            Assert.That(
+                InstallFiles.StylesheetCandidates(TestPaths.At("NW"), "en-US").Count, Is.EqualTo(1));
+            Assert.That(
+                InstallFiles.StylesheetCandidates(TestPaths.At("NW"), null).Count, Is.EqualTo(1));
             Assert.That(InstallFiles.StylesheetCandidates(string.Empty, "en-US").Count, Is.EqualTo(0));
         }
 

@@ -16,8 +16,11 @@ namespace Federator.Core.Tests
     [TestFixture]
     public class ImageNamingTests
     {
-        private const string Workbook = @"C:\out\reports\1104-PAR-1A02WO-XXX-BM-RPT-000001.xlsx";
-        private const string Folder = "1104-PAR-1A02WO-XXX-BM-RPT-000001_files";
+        private const string ReportName = "1104-PAR-1A02WO-XXX-BM-RPT-000001";
+        private const string Folder = ReportName + "_files";
+
+        private static readonly string Reports = TestPaths.At("out", "reports");
+        private static readonly string Workbook = Path.Combine(Reports, ReportName + ".xlsx");
 
         // ---------- the folder is named after the report ----------
 
@@ -27,7 +30,7 @@ namespace Federator.Core.Tests
         {
             Assert.That(ImageNaming.FolderNameFor(Workbook), Is.EqualTo(Folder));
             Assert.That(ImageNaming.FolderFor(Workbook),
-                Is.EqualTo(Path.Combine(@"C:\out\reports", Folder)));
+                Is.EqualTo(Path.Combine(Reports, Folder)));
         }
 
         [Test]
@@ -40,8 +43,12 @@ namespace Federator.Core.Tests
         [Test]
         public void TheExtensionOnTheWorkbookMakesNoDifference()
         {
-            Assert.That(ImageNaming.FolderNameFor(@"C:\out\name.xlsx"), Is.EqualTo("name_files"));
-            Assert.That(ImageNaming.FolderNameFor(@"C:\out\name"), Is.EqualTo("name_files"));
+            Assert.That(
+                ImageNaming.FolderNameFor(TestPaths.At("out", "name.xlsx")),
+                Is.EqualTo("name_files"));
+            Assert.That(
+                ImageNaming.FolderNameFor(TestPaths.At("out", "name")),
+                Is.EqualTo("name_files"));
         }
 
         [Test]
@@ -136,7 +143,7 @@ namespace Federator.Core.Tests
         public void ThePathIsTheFolderAndTheName()
         {
             Assert.That(ImageNaming.PathFor(Workbook, 0, 1),
-                Is.EqualTo(Path.Combine(@"C:\out\reports", Folder, "cd000001.jpg")));
+                Is.EqualTo(Path.Combine(Reports, Folder, "cd000001.jpg")));
         }
 
         // Relative and forward slashed, so moving the workbook and its folder together

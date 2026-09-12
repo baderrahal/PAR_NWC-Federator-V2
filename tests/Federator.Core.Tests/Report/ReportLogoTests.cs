@@ -38,24 +38,13 @@ namespace Federator.Core.Tests
         [SetUp]
         public void MakeFolder()
         {
-            folder = Path.Combine(Path.GetTempPath(), "FederatorLogo", Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(folder);
+            folder = TempFolder.Make("FederatorLogo");
         }
 
         [TearDown]
         public void RemoveFolder()
         {
-            try
-            {
-                if (Directory.Exists(folder))
-                {
-                    Directory.Delete(folder, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
+            TempFolder.Remove(folder);
         }
 
         private string Workbook()
@@ -104,8 +93,12 @@ namespace Federator.Core.Tests
 
             // Found from the solution file rather than counted in ..\ steps, which is how
             // this test came to be silently skipped instead of run.
-            string theirs = Path.Combine(repo,
-                @"samples\client-report\1104-PAR-1A02WN-XXX-BM-RPT-000001_files\logo.jpg");
+            string theirs = Path.Combine(
+                repo,
+                "samples",
+                "client-report",
+                "1104-PAR-1A02WN-XXX-BM-RPT-000001_files",
+                "logo.jpg");
 
             Assert.That(File.Exists(theirs), Is.True,
                 "the supplied client export is not in this checkout: " + theirs);
@@ -116,12 +109,13 @@ namespace Federator.Core.Tests
         [Test]
         public void ImagesSitsAtTheTopOfTheInstallAndIsTriedFirst()
         {
-            IList<string> tried = InstallFiles.LogoCandidates(@"C:\NW", "de-DE");
+            string install = TestPaths.At("NW");
+            IList<string> tried = InstallFiles.LogoCandidates(install, "de-DE");
 
-            Assert.That(tried[0], Is.EqualTo(@"C:\NW\Images\logo.jpg"),
+            Assert.That(tried[0], Is.EqualTo(Path.Combine(install, "Images", "logo.jpg")),
                 "Images is at the top of the install, with no language folder");
-            Assert.That(tried, Does.Contain(@"C:\NW\de-DE\Images\logo.jpg"));
-            Assert.That(tried, Does.Contain(@"C:\NW\en-US\Images\logo.jpg"));
+            Assert.That(tried, Does.Contain(Path.Combine(install, "de-DE", "Images", "logo.jpg")));
+            Assert.That(tried, Does.Contain(Path.Combine(install, "en-US", "Images", "logo.jpg")));
         }
 
         [Test]
@@ -197,7 +191,10 @@ namespace Federator.Core.Tests
 
             foreach (string found in Directory.GetFiles(repo, "logo.*", SearchOption.AllDirectories))
             {
-                if (found.IndexOf(@"\.git\", StringComparison.OrdinalIgnoreCase) >= 0)
+                string gitFolder =
+                    Path.DirectorySeparatorChar + ".git" + Path.DirectorySeparatorChar;
+
+                if (found.IndexOf(gitFolder, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     continue;
                 }
@@ -206,7 +203,9 @@ namespace Federator.Core.Tests
                 // tool ships. client-report holds the exports Bader received, and
                 // our-report holds one this tool produced, where the logo was copied in
                 // beside the clash pictures exactly as it is meant to be.
-                Assert.That(found, Does.Contain(@"samples\"),
+                Assert.That(
+                    found,
+                    Does.Contain("samples" + Path.DirectorySeparatorChar),
                     "a logo file is in the checkout outside the sample reports");
                 Assert.That(found, Does.Contain("_files"),
                     "it is not inside a report folder, so it did not get there by being copied");
@@ -376,12 +375,13 @@ namespace Federator.Core.Tests
         [Test]
         public void ItNamesEveryPathItLookedAtWhenItCannotFindOne()
         {
+            string install = TestPaths.At("Nowhere");
             string block = string.Join("\n",
-                new List<string>(InstallFiles.WhyNoLogo(@"C:\Nowhere", "fr-FR")).ToArray());
+                new List<string>(InstallFiles.WhyNoLogo(install, "fr-FR")).ToArray());
 
-            Assert.That(block, Does.Contain(@"C:\Nowhere\Images\logo.jpg"));
-            Assert.That(block, Does.Contain(@"C:\Nowhere\fr-FR\Images\logo.jpg"));
-            Assert.That(block, Does.Contain(@"C:\Nowhere\en-US\Images\logo.jpg"));
+            Assert.That(block, Does.Contain(Path.Combine(install, "Images", "logo.jpg")));
+            Assert.That(block, Does.Contain(Path.Combine(install, "fr-FR", "Images", "logo.jpg")));
+            Assert.That(block, Does.Contain(Path.Combine(install, "en-US", "Images", "logo.jpg")));
             Assert.That(block, Does.Contain("written without one"));
             Assert.That(block, Does.Contain("unaffected"));
         }

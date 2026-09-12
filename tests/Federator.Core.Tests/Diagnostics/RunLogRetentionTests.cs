@@ -19,25 +19,13 @@ namespace Federator.Core.Tests
         [SetUp]
         public void MakeFolder()
         {
-            folder = Path.Combine(
-                Path.GetTempPath(), "FederatorRetentionTests", Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(folder);
+            folder = TempFolder.Make("FederatorRetentionTests");
         }
 
         [TearDown]
         public void RemoveFolder()
         {
-            try
-            {
-                if (Directory.Exists(folder))
-                {
-                    Directory.Delete(folder, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
+            TempFolder.Remove(folder);
         }
 
         /// <summary>
@@ -185,6 +173,8 @@ namespace Federator.Core.Tests
         [Test]
         public void ALockedFileLogsTheReasonAndDoesNotThrow()
         {
+            TestPaths.OnWindowsOnly("a file held open refusing to be deleted");
+
             List<string> made = MakeOldLogs(35);
             string locked = made[0];
 

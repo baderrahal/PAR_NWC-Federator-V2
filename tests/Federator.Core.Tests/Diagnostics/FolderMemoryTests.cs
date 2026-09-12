@@ -18,25 +18,14 @@ namespace Federator.Core.Tests
         [SetUp]
         public void MakeFolder()
         {
-            root = Path.Combine(Path.GetTempPath(), "FederatorFolders", Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(root);
+            root = TempFolder.Make("FederatorFolders");
             file = Path.Combine(root, FolderMemory.FileName);
         }
 
         [TearDown]
         public void RemoveFolder()
         {
-            try
-            {
-                if (Directory.Exists(root))
-                {
-                    Directory.Delete(root, true);
-                }
-            }
-            catch (IOException)
-            {
-                // A leftover temp folder is not worth failing a test over.
-            }
+            TempFolder.Remove(root);
         }
 
         private string Make(string name)
@@ -165,6 +154,8 @@ namespace Federator.Core.Tests
         [Test]
         public void ADriveThatIsNotThereFallsAllTheWayBackToNothing()
         {
+            TestPaths.OnWindowsOnly("a drive letter that names no drive");
+
             Assert.That(FolderMemory.NearestExisting(@"Q:\nothing\here"), Is.EqualTo(string.Empty));
         }
 
@@ -204,10 +195,18 @@ namespace Federator.Core.Tests
         [Test]
         public void AnUnwritableLocationIsRecordedRatherThanThrown()
         {
-            FolderMemory memory = FolderMemory.Load(@"Q:\nowhere\folders.txt");
-            memory.Remember(PickerKind.Source, @"C:\in\nwc");
+            // A file UNDER a file that is already there. No system writes one, which is
+            // what the missing drive letter used to mean here and only meant on Windows.
+            string here = Path.Combine(root, "not-a-folder.txt");
+            File.WriteAllText(here, "a file, not a folder");
 
-            Assert.That(memory.LastFor(PickerKind.Source), Is.EqualTo(@"C:\in\nwc"),
+            string unwritable = Path.Combine(here, "folders.txt");
+            string remembered = TestPaths.At("in", "nwc");
+
+            FolderMemory memory = FolderMemory.Load(unwritable);
+            memory.Remember(PickerKind.Source, remembered);
+
+            Assert.That(memory.LastFor(PickerKind.Source), Is.EqualTo(remembered),
                 "it should still remember for this session");
             Assert.That(memory.Save(), Is.False);
             Assert.That(memory.DisabledReason, Is.Not.Null.And.Not.Empty);

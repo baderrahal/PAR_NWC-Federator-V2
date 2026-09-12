@@ -33,7 +33,8 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
 
     src\Federator.Core      every rule a test can prove, no Navisworks type in it
     src\Federator.Addin     the window, the engine and every call into Navisworks
-    tests\Federator.Core.Tests  NUnit, one folder per Core folder, Samples.cs at the root
+    tests\Federator.Core.Tests  NUnit, one folder per Core folder. Samples.cs at the root
+                            holds the sample files, the path helper and the temp folder
     build\install.ps1       the only way the bundle reaches the 27 machines
     tools\probes            PowerShell that measures the install or the window
     docs\workflow.md        the two workflows, the labels and the open file run
@@ -139,9 +140,11 @@ off until switched on, once per clone:
 
     git config core.hooksPath .githooks
 
-In a container without Windows the same tests report a fixed set of path and file
-locking failures. That count is recorded in every log entry, before and after, so a
-new failure shows as a change in the number.
+Since F16 the whole set passes in a container without Windows. What cannot run here skips
+and says why: the tests that need Navisworks on the machine, and the handful about a
+Windows file system rule rather than a rule of this tool. The passed, failed and skipped
+counts are recorded in every log entry, before and after, so a new failure shows as a
+change in the number.
 
 ## The two walls
 
