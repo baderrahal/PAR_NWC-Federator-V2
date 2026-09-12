@@ -39,9 +39,10 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// One guard for the whole run, not one per group. Every group of that nine hour
         /// run failed the same way, so a guard that reset between groups would have let
-        /// all 24 of them through.
+        /// all 24 of them through. Its count comes from the run's own options, so the
+        /// number can be changed without a recompile.
         /// </summary>
-        private readonly RepeatedFailureGuard guard = new RepeatedFailureGuard();
+        private readonly RepeatedFailureGuard guard;
 
         /// <summary>Why the run was abandoned, or null while it is still going.</summary>
         private string stopTheRun;
@@ -92,6 +93,7 @@ namespace Federator.Addin.Engine
             this.log = log;
             this.exchange = exchange;
             this.reports = reports ?? new ReportOptions();
+            this.guard = new RepeatedFailureGuard(this.reports.StopAfterFailures);
             this.reportFolder = null;
         }
 

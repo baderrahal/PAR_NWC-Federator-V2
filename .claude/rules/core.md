@@ -179,7 +179,8 @@ and 6 does not read as broken.
 - A run that is failing everything stops the run, not the group. After the first 50 tests,
   if every one has failed for the same reason, the whole run stops and says so in one
   line. Every group of that nine hour run failed the same way, so a per group stop would
-  have saved none of it. The 50 is a setting. A test skipped because a side finds nothing
+  have saved none of it. The 50 is a setting, ReportOptions.StopAfterFailures, and the one
+  guard the whole run shares is built from it. A test skipped because a side finds nothing
   is the ordinary answer and counts neither way
 - An exception repeating with the same heading and the same trace is written out in full
   once and counted after that, and the RESULT block carries the total beside the one
@@ -317,7 +318,11 @@ and 6 does not read as broken.
   so the three outputs of a group agree with each other. Named like the group's other
   outputs with an xlsx extension, and it overwrites, the same as the NWF and the NWD. The
   Excel folder is picked on the Outputs step, and when it is empty the workbooks go beside
-  the NWF folder in a subfolder called Clash Reports, which is a setting
+  the NWF folder in a subfolder called Clash Reports, which is a setting,
+  ReportPaths.Subfolder. It is static because the open file run and the line under the
+  Outputs step both work the folder out with no options object in front of them, and a
+  name carrying either slash is refused where it is set, by name and never by asking the
+  running platform which one it calls a separator
 - Results are grouped, not one row per raw clash. A group is one row and its distance is
   the most severe clash in it, which is the minimum: a hard clash reports a negative
   overlap so the worst is the most negative, and a clearance test reports a gap so the
@@ -657,7 +662,9 @@ survive the crash rather than to be tidy.
   Never log a size that was not read
 - on start, the oldest logs are deleted until 30 remain, the live file included.
   The live file is never a candidate. A delete that fails writes one line naming
-  the file and the reason. 30 is a setting
+  the file and the reason. 30 is a setting, RunLog.KeepLogs, static because the log opens
+  on the first line of the button handler before a window or any options object exists.
+  Zero keeps the live file alone and is a real answer, fewer than none is refused
 
 Two things that look like mistakes and are not:
 

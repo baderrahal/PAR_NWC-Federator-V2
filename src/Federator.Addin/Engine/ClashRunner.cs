@@ -64,11 +64,6 @@ namespace Federator.Addin.Engine
         /// <summary>The Summary row for each buildable test, keyed on where it sat in the file.</summary>
         private Dictionary<int, TestReport> reports;
 
-        public ClashRunner(Action<string> progress, RunLog log)
-            : this(progress, log, new RepeatedFailureGuard())
-        {
-        }
-
         /// <summary>
         /// The guard is handed in so it can live for the whole run rather than for one
         /// group. A run failing uniformly must stop the run, and a per group guard would

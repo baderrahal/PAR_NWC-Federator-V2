@@ -366,6 +366,7 @@ F19 is dropped.
 - CONTAINER for Core, the add-in read twice
 - The stop after count, the log count and the report subfolder each become a settable property with the same default, read by the code that constructs the guard, starts the log and chooses the folder. The progress interval in `ClashRunner` stays a const, because no rule names it, which the audit's verifier pointed out. No new box in the window, a setting is a property with a default and not a tick box, and the rule is that the number can be changed without a recompile
 - Size: small
+- DONE on 2026-09-12, proof pending. See `log.md`. Nothing outside the code sets them yet, which is Q29, and `ClashRunner`'s dead two argument constructor went with the fix
 
 ## F44 The docs and the comments agree with the code
 

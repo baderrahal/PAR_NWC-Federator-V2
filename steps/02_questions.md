@@ -122,3 +122,7 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 28. From F41 on 2026-09-12. Two handle reads were left where they are, because neither is in the F41 list and neither is covered by what the history file measured. `search.Selection` in `SetBuilder`, read once a set to call `SelectAll` on a `Search` this tool owns. The source read out of a side's own collection in `ClashRunner.LocatorOf`, which sits inside the loop over the 61 indexed sets, so one side costs up to 61 reads of the same source. The measured rule says releasing a wrapper releases the wrapper and never the document's object, but it was measured on items read out of a document collection, not on a sub object read off a handle this tool created. Release both the same way as the rest, or leave them until the ownership of a sub object is measured off the installed DLL?
 
    Answer:
+
+29. From F43 on 2026-09-12. The stop after count, the log count and the report subfolder are settable properties now, each with the default it always had, and nothing outside the code sets any of them. A property can be changed where the code reads it, which still means a recompile, and the rule says these numbers can be changed without one. A settings file beside the logs, read once when the log opens and written by nothing, would do it with no new box in the window. Is that wanted, and if it is, which numbers go in it and what happens when it holds a value the code refuses?
+
+   Answer:
