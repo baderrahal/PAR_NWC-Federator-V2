@@ -87,8 +87,91 @@ namespace Federator.Core.Diagnostics
             get { return writer != null; }
         }
 
-        /// <summary>Null while the log is writing to disk, the reason when it is not.</summary>
+        /// <summary>
+        /// Null while the log is writing to disk, and when it is not, the reason in the
+        /// words a label may carry. It names the folders that were tried and nothing else.
+        /// The exception type and message go into the log lines, where they belong.
+        /// </summary>
         public string DisabledReason { get; private set; }
+
+        /// <summary>
+        /// The one line the window carries about the log. Here rather than in the window
+        /// because the words are a rule a test can read, the way ReportPaths.WhereTheyGo is.
+        /// </summary>
+        public string WhereTheLogIs()
+        {
+            return WhereTheLogIs(IsWritingToDisk, Path, DisabledReason);
+        }
+
+        /// <summary>
+        /// The same words, worked out from the three things they depend on, so a test can
+        /// read the rule without a log on a disk.
+        /// </summary>
+        public static string WhereTheLogIs(bool onDisk, string path, string disabledReason)
+        {
+            return onDisk
+                ? "Log: " + path
+                : "WARNING the log is not being written to disk. " + disabledReason;
+        }
+
+        /// <summary>
+        /// Why no log file could be opened, in plain words. Folder names are what the
+        /// person reading the label can act on. What threw is in the log lines.
+        /// </summary>
+        public static string NoLogFileOpened(IList<string> folders)
+        {
+            if (folders == null || folders.Count == 0)
+            {
+                return "No log file could be opened and no folder could be tried.";
+            }
+
+            return "No log file could be opened. Tried " + Join(folders)
+                + ". These lines are in this window only.";
+        }
+
+        /// <summary>
+        /// How many errors a run gathered, for a label. What each one says is in the log,
+        /// because a label never carries a framework message.
+        /// </summary>
+        public static string ErrorsAreInTheLog(int count)
+        {
+            if (count < 1)
+            {
+                return string.Empty;
+            }
+
+            return count == 1
+                ? "  1 error, the log says what it was"
+                : "  " + count + " errors, the log says what they were";
+        }
+
+        /// <summary>The end of a label about something that failed. The detail is in the log.</summary>
+        public static string TheLogSaysWhy()
+        {
+            return "The log says why.";
+        }
+
+        private static string Join(IList<string> parts)
+        {
+            if (parts.Count == 1)
+            {
+                return parts[0];
+            }
+
+            if (parts.Count == 2)
+            {
+                return parts[0] + " and " + parts[1];
+            }
+
+            string[] all = new string[parts.Count];
+
+            for (int i = 0; i < parts.Count; i++)
+            {
+                all[i] = parts[i];
+            }
+
+            return string.Join(", ", all, 0, all.Length - 1) + " and " + all[all.Length - 1];
+        }
 
         /// <summary>
         /// The fixed folder. It never depends on any folder the user picked, so a bad
@@ -114,6 +197,7 @@ namespace Federator.Core.Diagnostics
         public static RunLog StartOrDisabled(string preferredFolder, DateTime startedAt, int keepLogs)
         {
             List<string> tried = new List<string>();
+            List<string> whatThrew = new List<string>();
 
             foreach (string folder in new[] { preferredFolder, System.IO.Path.GetTempPath() })
             {
@@ -128,15 +212,21 @@ namespace Federator.Core.Diagnostics
                 }
                 catch (Exception error)
                 {
-                    tried.Add(folder + " (" + error.GetType().Name + ": " + error.Message + ")");
+                    tried.Add(folder);
+                    whatThrew.Add(folder + " (" + error.GetType().Name + ": " + error.Message + ")");
                 }
             }
 
-            RunLog disabled = new RunLog(
-                null, startedAt, null,
-                "No log file could be opened. Tried: " + string.Join("; ", tried.ToArray()));
+            // Two reasons and not one. The label gets the folders, the log gets what threw.
+            RunLog disabled = new RunLog(null, startedAt, null, NoLogFileOpened(tried));
 
             disabled.Line("LOG DISABLED. " + disabled.DisabledReason);
+
+            if (whatThrew.Count > 0)
+            {
+                disabled.Line("Each one threw: " + string.Join("; ", whatThrew.ToArray()));
+            }
+
             disabled.Line("The run carries on. These lines are in the window only, not on disk.");
             return disabled;
         }

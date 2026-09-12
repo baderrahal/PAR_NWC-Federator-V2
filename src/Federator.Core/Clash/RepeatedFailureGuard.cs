@@ -49,7 +49,10 @@ namespace Federator.Core.Clash
             get { return consecutive >= threshold; }
         }
 
-        /// <summary>Null until the guard has fired.</summary>
+        /// <summary>
+        /// Null until the guard has fired, and then the reason for the log, which carries
+        /// what the failing tests threw.
+        /// </summary>
         public string Reason
         {
             get
@@ -60,6 +63,24 @@ namespace Federator.Core.Clash
                         + firstReason
                     : null;
             }
+        }
+
+        /// <summary>
+        /// The same thing for a label. Null until the guard has fired. It never carries
+        /// what was thrown, because a label carries no framework message and no type name,
+        /// and the log holds both a line and a laid out failure for it.
+        /// </summary>
+        public string ReasonInPlainWords
+        {
+            get { return ShouldStopTheRun ? Stopped(consecutive) : null; }
+        }
+
+        /// <summary>What the window says when the guard stops a run.</summary>
+        public static string Stopped(int consecutive)
+        {
+            return "The run was stopped. The first " + consecutive
+                + " tests all failed the same way, so the rest was not attempted. "
+                + "The log says what the failure was.";
         }
 
         /// <summary>

@@ -152,6 +152,11 @@ docs/history/claude-md-history.md, kept whole.
   default with nothing, and the window then opened with all fifteen naming boxes blank, so
   every field had to be typed by hand. That is where MOD-00001 came from instead of
   MOD-000001. The defaults were always six digits in the code and never reached the window
+- Every default the window shows is read from the Core object that holds it, in the
+  constructor, and is never typed into the XAML as well. The photo size, the cap, the paste
+  into cells tick and the five status ticks are read from ImageOptions, which is where the
+  1024 measured off the accepted report lives. Two copies of a default drift, and the XAML
+  copy is the one nothing can test
 - A step whose content is taller than the window scrolls. Only the Outputs step is,
   measured at 1024x680, 1280x800 and 1600x1000 with tools\probes\probe-window-scroll.ps1 and
   cut off at all three, which is why the naming table could not be reached. The other three

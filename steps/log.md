@@ -2,6 +2,33 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F42, no framework message in a label
+
+### What was done
+
+- F42 done. Four labels that carried a type name and a framework message now carry plain words, two stale sentences about what a run with no XML does are corrected, and seven defaults that were typed into the XAML as well as into Core are read from Core
+- The four labels. `RunLog.DisabledReason` named the folders it tried with the exception behind each one, and the window wrote the lot into the progress line. It now names the folders and nothing else, and the log line under it carries what each one threw. The repeated failure guard built its reason from the exception type name and message and handed it to the progress label. It now has two, `Reason` for the log, which keeps what was thrown, and `ReasonInPlainWords` for the label, which says how many tests failed the same way and that the log says what the failure was. `FederationEngine.Describe` appended every error, type names included, into the open file run's summary label. It now says how many errors there are and that the log says what they were. The window's `Describe(path)` returned the exception message when a picked file would not read. It now says the log says why, and the failure is already laid out in the log by the line above it
+- Every one of those wordings lives in Core where a test reads it, the way `ReportPaths.WhereTheyGo` does. `RunLog.WhereTheLogIs`, `NoLogFileOpened`, `ErrorsAreInTheLog` and `TheLogSaysWhy`, and `RepeatedFailureGuard.Stopped`. `WhereTheLogIs` has a static form taking the three things the line depends on, so the rule can be read without a log on a disk
+- The two stale sentences. The Clash step heading said leaving the XML empty makes Run do the model side only, and the `ClashWork` class comment said the same. Since F8 a run with no XML runs the tests already saved in each NWF and builds no set, which is what both say now. Only a run with no XML and no saved test does the model side alone
+- The seven defaults. The photo size, the cap, the paste into cells tick and the five status ticks were typed into the XAML while `ImageOptions` held the same values in Core, the 1024 among them, which is measured off all 60 pictures of the accepted report. The XAML carries none of them now and the constructor fills them from a fresh `ImageOptions`, filled where the naming boxes are filled and for the same reason. The audit named the size and the five ticks. The cap and the paste tick are the same duplication in the same grid, so they went with them
+- `probe-window-defaults.ps1` builds the real window and reads the controls, so it reads whatever the constructor set and needed no change. It will now print the `ImageOptions` values rather than the XAML's
+- Noticed and not acted on. `FolderMemory.DisabledReason` is written in four places, carries `error.Message`, and nothing under src reads it. It reaches no label, so it is not this fix's, and it is the same kind of member F40 made internal, which is Q26. Bader decides
+- Proved here: ten new tests in `LabelWordsTests`, each handing the wording the very thing a label must not carry and asserting it is not in what comes back, which is the rule that a test reading only the good case proves nothing. The arity check over the whole add-in, 0 mismatches. The parse of the whole add-in with no references, the same six error codes as before the edits and not one `CS1xxx`. Core builds with no warning. Core tests before: 885 passed, 37 failed, 33 skipped, 955 total. After: 895 passed, 37 failed, 33 skipped, 965 total. The ten more are the new fixture and the 37 and the 33 are unchanged
+- Waits for the local machine: the add-in does not build here. Three add-in files and the XAML changed. The proof is the window opening with the photo size reading 1024, the cap 0, New, Active and Reviewed ticked and Approved and Resolved clear, and the Clash step heading reading the new sentence
+
+### What remains
+
+- F43 to F45 and F16 in order, then the read of `03_bader_next.md` against the code, then the closing entry
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F42 PR
+2. F43, three settings that are constants
+
 ## 2026-09-12 F41, every handle disposed
 
 ### What was done
