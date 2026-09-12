@@ -106,7 +106,7 @@ namespace Federator.Core.Tests
                 ClashTestPlan plan = Plan(Xml(units: "mm", tolerance: "75"), units);
 
                 Assert.That(plan.Buildable.Count, Is.EqualTo(1), units);
-                Assert.That(ExchangeUnits.ToMillimetres(plan.Buildable[0].Tolerance, units),
+                Assert.That(ExchangeUnits.Convert(plan.Buildable[0].Tolerance, units, "mm"),
                     Is.EqualTo(75.0).Within(0.000001), units);
             }
         }
@@ -128,6 +128,24 @@ namespace Federator.Core.Tests
             Assert.That(plan.Skipped[0].Name, Is.EqualTo("T"), "the test has to be reported by name");
             Assert.That(plan.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.UnknownUnits));
             Assert.That(plan.Skipped[0].Reason, Does.Contain("no units"));
+        }
+
+        /// <summary>
+        /// The unknown file unit line in Convert. It could not be reached before F33,
+        /// because the reader converted the tolerance itself and threw on the whole file
+        /// first. Now the file reads and each test is skipped here, by name.
+        /// </summary>
+        [Test]
+        public void AFileUnitTheToolDoesNotKnowSkipsEveryTestByNameRatherThanThrowing()
+        {
+            ClashTestPlan plan = Plan(Xml(units: "cubits"), "m");
+
+            Assert.That(plan.Buildable.Count, Is.EqualTo(0));
+            Assert.That(plan.Skipped.Count, Is.EqualTo(1));
+            Assert.That(plan.Skipped[0].Name, Is.EqualTo("AR-Floors v ME-Air Terminals"));
+            Assert.That(plan.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.UnknownUnits));
+            Assert.That(plan.Skipped[0].Reason, Does.Contain("cubits"));
+            Assert.That(plan.Skipped[0].Reason, Does.Contain("not one this tool converts"));
         }
 
         [Test]

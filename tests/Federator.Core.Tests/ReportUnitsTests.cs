@@ -37,8 +37,8 @@ namespace Federator.Core.Tests
 
         // ---------- the table ----------
 
-        // One conversion table in Core, which is ExchangeUnits. These are the five units a
-        // document on this project can realistically be in.
+        // One unit table in Core, UnitTable, read through ExchangeUnits. These are the five
+        // units a document on this project can realistically be in.
         [TestCase("m", 1.0)]
         [TestCase("ft", 0.3048)]
         [TestCase("in", 0.0254)]

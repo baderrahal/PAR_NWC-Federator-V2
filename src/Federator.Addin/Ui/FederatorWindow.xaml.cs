@@ -17,6 +17,7 @@ using Federator.Core.Naming;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
+using Federator.Core.Units;
 
 namespace Federator.Addin.Ui
 {
@@ -916,41 +917,34 @@ namespace Federator.Addin.Ui
         /// what the MODELS are put into, which is what a person sees in Navisworks. The
         /// report itself is always metres, converted in Core before anything is written.
         /// </summary>
-        private static readonly string[] UnitChoices =
-        {
-            "Meters", "Millimeters", "Centimeters", "Feet", "Inches"
-        };
+        private static readonly IList<UnitRow> UnitChoices = UnitTable.Offered();
 
         private void FillUnits()
         {
             UnitsBox.Items.Clear();
 
-            foreach (string name in UnitChoices)
+            foreach (UnitRow row in UnitChoices)
             {
-                UnitsBox.Items.Add(UnitWording(name));
+                UnitsBox.Items.Add(UnitWording(row));
             }
 
             UnitsBox.SelectedIndex = 0;
         }
 
-        private static string UnitWording(string name)
+        /// <summary>The table's display name, and on the default a word on what it is for.</summary>
+        private static string UnitWording(UnitRow row)
         {
-            switch (name)
-            {
-                case "Meters": return "Metres, which is what the models are set to";
-                case "Millimeters": return "Millimetres";
-                case "Centimeters": return "Centimetres";
-                case "Feet": return "Feet";
-                default: return name;
-            }
+            return row.EnumName == ReportOptions.DefaultUnits
+                ? row.DisplayName + ", which is what the models are set to"
+                : row.DisplayName;
         }
 
         private string ChosenUnits()
         {
             int at = UnitsBox == null ? 0 : UnitsBox.SelectedIndex;
 
-            return at >= 0 && at < UnitChoices.Length
-                ? UnitChoices[at]
+            return at >= 0 && at < UnitChoices.Count
+                ? UnitChoices[at].EnumName
                 : ReportOptions.DefaultUnits;
         }
 

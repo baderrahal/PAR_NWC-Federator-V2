@@ -158,10 +158,9 @@ namespace Federator.Core.Exchange
             string toleranceText = Attribute(test, "tolerance");
             double tolerance = ReadDouble(toleranceText, "tolerance", name);
 
-            double toleranceMillimetres = string.IsNullOrEmpty(units)
-                ? tolerance
-                : ExchangeUnits.ToMillimetres(tolerance, units);
-
+            // Read as written, in the file units, and never converted here. A unit the
+            // tool does not know is judged once, in ClashTestPlan.Convert, where the test
+            // is skipped by name. Converting here threw on the whole file instead.
             XElement linkage = Child(test, "linkage");
 
             return new ClashTestDefinition(
@@ -170,7 +169,6 @@ namespace Federator.Core.Exchange
                 Attribute(test, "status"),
                 tolerance,
                 units,
-                toleranceMillimetres,
                 ReadFlag(Attribute(test, "merge_composites")),
                 linkage == null ? null : Attribute(linkage, "mode"),
                 ReadRules(test),

@@ -9,6 +9,7 @@ using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Naming;
 using Federator.Core.Report;
+using Federator.Core.Units;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 using CoreClashStatus = Federator.Core.Clash.ClashStatus;
 
@@ -101,40 +102,15 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Autodesk.Navisworks.Api.Units to the unit strings ExchangeUnits converts with.
-        /// The enum values were read off the installed DLL, see docs\scan.md. A value this
-        /// tool has not been taught returns null rather than a guessed factor, and every
-        /// test is then skipped by name saying so.
+        /// Autodesk.Navisworks.Api.Units to the unit code ExchangeUnits converts with,
+        /// read off UnitTable. The enum values were read off the installed DLL, see
+        /// docs\scan.md. A value the table has not been taught returns null rather than a
+        /// guessed factor, and every test is then skipped by name saying so.
         /// </summary>
         public static string UnitName(Units units)
         {
-            switch (units)
-            {
-                case Units.Millimeters:
-                    return "mm";
-                case Units.Centimeters:
-                    return "cm";
-                case Units.Meters:
-                    return "m";
-                case Units.Kilometers:
-                    return "km";
-                case Units.Inches:
-                    return "in";
-                case Units.Feet:
-                    return "ft";
-                case Units.Yards:
-                    return "yd";
-                case Units.Miles:
-                    return "mi";
-                case Units.Micrometers:
-                    return "um";
-                case Units.Mils:
-                    return "mil";
-                case Units.Microinches:
-                    return "uin";
-                default:
-                    return null;
-            }
+            UnitRow row = UnitTable.FindByEnumName(units.ToString());
+            return row == null ? null : row.ExchangeCode;
         }
 
         /// <summary>

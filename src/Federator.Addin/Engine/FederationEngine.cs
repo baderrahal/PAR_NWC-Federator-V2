@@ -13,6 +13,7 @@ using Federator.Core.Findings;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
+using Federator.Core.Units;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 
 namespace Federator.Addin.Engine
@@ -431,7 +432,26 @@ namespace Federator.Addin.Engine
             // report whose numbers and whose unit label disagree.
             if (reports.SetDocumentUnits)
             {
-                new DocumentUnits(log).Apply(document, WantedUnits());
+                Autodesk.Navisworks.Api.Units wanted;
+
+                if (!TryWantedUnits(out wanted))
+                {
+                    // A unit name nobody can act on. The group stops here with nothing
+                    // converted and nothing written, rather than running in units it
+                    // was not asked for. It used to fall back to Meters without a word.
+                    string name = string.IsNullOrEmpty(reports.UnitsName)
+                        ? "an empty unit name"
+                        : reports.UnitsName;
+
+                    log.Line("UNITS    " + name + " is not one this tool knows");
+                    outcome.AddError(
+                        "the model units setting, " + name + ", is not one this tool knows, "
+                            + "so nothing was converted and the group did not run. Known units are "
+                            + string.Join(", ", new List<string>(UnitTable.EnumNames()).ToArray()));
+                    return;
+                }
+
+                new DocumentUnits(log).Apply(document, wanted);
             }
 
             if (ClashStep(document, job, outcome))
@@ -1423,19 +1443,33 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The units the report is going out in, read off the setting. A name nobody can
-        /// read falls back to metres rather than stopping a run.
+        /// The units the Outputs step asked for, by the name on the Navisworks enum, read
+        /// through UnitTable so the name is one this tool knows before Enum.Parse sees it.
+        /// False is a name the table does not know, or one the installed enum does not
+        /// carry, and the caller fails the group. It used to fall back to Meters on any
+        /// name it could not parse, silently, which is a setting replaced by a guess.
         /// </summary>
-        private Autodesk.Navisworks.Api.Units WantedUnits()
+        private bool TryWantedUnits(out Autodesk.Navisworks.Api.Units wanted)
         {
+            wanted = Autodesk.Navisworks.Api.Units.Meters;
+
+            UnitRow row = UnitTable.FindByEnumName(reports.UnitsName);
+
+            if (row == null)
+            {
+                return false;
+            }
+
             try
             {
-                return (Autodesk.Navisworks.Api.Units)Enum.Parse(
-                    typeof(Autodesk.Navisworks.Api.Units), reports.UnitsName, true);
+                wanted = (Autodesk.Navisworks.Api.Units)Enum.Parse(
+                    typeof(Autodesk.Navisworks.Api.Units), row.EnumName, false);
+                return true;
             }
-            catch (Exception)
+            catch (ArgumentException)
             {
-                return Autodesk.Navisworks.Api.Units.Meters;
+                log.Line("UNITS    " + row.EnumName + " is in this tool's table and not on the installed enum");
+                return false;
             }
         }
 
