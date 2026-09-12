@@ -1,5 +1,6 @@
+param([string]$NavisworksPath = "C:\Program Files\Autodesk\Navisworks Manage 2025")
 $ErrorActionPreference = "Stop"
-$nw = "C:/Program Files/Autodesk/Navisworks Manage 2025"
+$nw = $NavisworksPath
 $clash = Join-Path $nw "Autodesk.Navisworks.Clash.dll"
 if (-not (Test-Path $clash)) { Write-Output "UNKNOWN: no Autodesk.Navisworks.Clash.dll at $clash"; exit 1 }
 

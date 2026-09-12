@@ -1,5 +1,6 @@
+param([string]$NavisworksPath = "C:\Program Files\Autodesk\Navisworks Manage 2025")
 $ErrorActionPreference = "Stop"
-$nw = "C:/Program Files/Autodesk/Navisworks Manage 2025"
+$nw = $NavisworksPath
 $api = Join-Path $nw "Autodesk.Navisworks.Api.dll"
 $clash = Join-Path $nw "Autodesk.Navisworks.Clash.dll"
 foreach ($f in @($api, $clash)) { if (-not (Test-Path $f)) { Write-Output "UNKNOWN: missing $f"; exit 1 } }

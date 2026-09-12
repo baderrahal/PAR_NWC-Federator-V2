@@ -1,12 +1,12 @@
 # Measures each step of the window against the height it actually gets, so which ones
 # need a scrollbar is read rather than guessed. Bader reported the Outputs step cutting
 # off its naming table.
-param([double]$w = 1280, [double]$h = 800)
+param([string]$NavisworksPath = "C:\Program Files\Autodesk\Navisworks Manage 2025", [double]$w = 1280, [double]$h = 800)
 $ErrorActionPreference = "Stop"
 $bundle = "$env:APPDATA\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22"
-$repo = Split-Path $PSScriptRoot
+$repo = Split-Path (Split-Path $PSScriptRoot)
 $addin = Join-Path $repo "src\Federator.Addin\bin\Release\net48\Federator.Addin.dll"
-$nw = "C:\Program Files\Autodesk\Navisworks Manage 2025"
+$nw = $NavisworksPath
 
 [System.AppDomain]::CurrentDomain.add_AssemblyResolve({
   param($s, $e)

@@ -1,8 +1,9 @@
+param([string]$NavisworksPath = "C:\Program Files\Autodesk\Navisworks Manage 2025")
 $ErrorActionPreference = "Stop"
 $bundle = "$env:APPDATA\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22"
-$repo = Split-Path $PSScriptRoot
+$repo = Split-Path (Split-Path $PSScriptRoot)
 $addin = Join-Path $repo "src\Federator.Addin\bin\Release\net48\Federator.Addin.dll"
-$nw = "C:\Program Files\Autodesk\Navisworks Manage 2025"
+$nw = $NavisworksPath
 
 [System.AppDomain]::CurrentDomain.add_AssemblyResolve({
   param($s, $e)

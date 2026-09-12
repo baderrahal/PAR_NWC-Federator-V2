@@ -303,7 +303,7 @@ and 6 does not read as broken.
   act. What drifted is worth knowing every week. Overwriting it is worth doing once
 - There is no stale marker on the clash API. Nothing named stale, altered, out of date,
   dirty or needs rerun exists on any type in Autodesk.Navisworks.Clash, public or
-  private, measured on 2026-08-31, see docs\scan.md section 4j. The only thing there is
+  private, measured on 2026-08-31, see docs\history\scan.md section 4j. The only thing there is
   ClashTest.Status, a four value enum of New, Old, Partial and Complete. What puts a test
   into Old is UNKNOWN and cannot be read off the DLL, so the status is logged as itself
   and no sentence is put on it. Never translate Old into "your models have changed". The
@@ -382,7 +382,7 @@ and 6 does not read as broken.
   drive is not mounted yet. Remembering never stops a run: an unwritable location is
   recorded as a reason and the session still remembers, it just does not survive a restart
 - A step whose content is taller than the window scrolls. Only the Outputs step is,
-  measured at 1024x680, 1280x800 and 1600x1000 with build\probe-window-scroll.ps1 and
+  measured at 1024x680, 1280x800 and 1600x1000 with tools\probes\probe-window-scroll.ps1 and
   cut off at all three, which is why the naming table could not be reached. The other three
   fit at all three sizes and are left alone, because a ScrollViewer around a step whose grid
   is meant to fill stops it filling
@@ -424,7 +424,7 @@ and 6 does not read as broken.
   does not have. Every file was already present when a run failed on this, so adding
   files fixes nothing. The rule lives in Federator.Core.Diagnostics.BundleAssemblies
   so it can be tested, and it is proved by a console exe with its config deleted, see
-  docs\scan.md section 4i
+  docs\history\scan.md section 4i
 - install.ps1 copies the bundle CONTENTS, never the bundle folder. Copy-Item of a
   directory puts it inside the destination when the destination exists and creates it
   when it does not, so the same line does two different things depending on whether
@@ -459,7 +459,7 @@ and 6 does not read as broken.
   fixed string and never a fourth name pattern
 - DateTime.ToString does NOT throw on a format string nobody can read, it treats what
   it does not recognise as literal text, so "not a real format" comes back as
-  "noA a real 0or0aA". Measured, see docs\scan.md section 4j. So what is checked is
+  "noA a real 0or0aA". Measured, see docs\history\scan.md section 4j. So what is checked is
   what the format PRODUCED, not whether it threw. A result that is empty or holds a
   character Windows refuses in a file name falls back to the number. Anything else is
   used as typed, because the format is the person's setting and their mistakes should
@@ -571,7 +571,7 @@ and 6 does not read as broken.
   label is read off whatever property carried the id rather than being a constant.
   Tolerance carries its unit with no space, "0.025m". Distance is the raw signed number,
   negative on a hard clash, written as a number so it still sorts. Type reads
-  "Hard (Conservative)". Measured, see docs\scan.md section 4k
+  "Hard (Conservative)". Measured, see docs\history\scan.md section 4k
 - Our extra columns, family, type name, material, source file and discipline, come AFTER
   theirs and never in place of any of them, on the CLASH XML and nowhere else. The Client
   columns only tick box that used to switch them off is GONE, because the workbook became
@@ -631,7 +631,7 @@ and 6 does not read as broken.
 - Our XML feeds that stylesheet, so its shape is not ours to choose either. Measured on
   2026-09-01, it answered every column test but three: description, smarttags and the href
   on a result, which are the Description column, the Item Name and Item Type columns, and
-  the Image column. See docs\scan.md section 4m for the whole table
+  the Image column. See docs\history\scan.md section 4m for the whole table
 - Every report this tool writes is READ BACK off the disk and checked, and what the check
   found goes in the log as a block and in the window as one line. Bader was opening every
   report in Excel and searching it by hand, and the tool wrote the file. The FILE is read,
@@ -654,7 +654,7 @@ and 6 does not read as broken.
   writes Item Type as a literal, reads ./Name with a capital where the rest of the file
   reads name, and puts Item ID and Layer after the quick properties rather than before.
   None of that is what the reports carry. The live one is mainTableHeader and it is the
-  only one anything here reads. Measured, see docs\scan.md section 4o
+  only one anything here reads. Measured, see docs\history\scan.md section 4o
 - A property value is read by its KIND, never with ToDisplayString alone. Every accessor
   on VariantData is kind specific and throws on any other kind, and a Revit element id is
   an Int32, so ToDisplayString threw 426 times on one run and took the whole of Describe
@@ -662,7 +662,7 @@ and 6 does not read as broken.
   member that returns a value regardless of kind is ToString, whose IL switches on
   GetDataType, but it prefixes the kind and hands back "Int32:702888". So the kind is read
   and the right accessor called, with ToString as the fallback for a kind nobody has seen
-  and its prefix stripped. Measured, see docs\scan.md section 4n
+  and its prefix stripped. Measured, see docs\history\scan.md section 4n
 - Anything that can throw per item goes in its own try. The source file and the discipline
   are read last and were lost to a throw three properties earlier, on all 426 items, which
   is one throw costing three columns
@@ -854,7 +854,7 @@ and 6 does not read as broken.
   so what it cannot catch is written into its pass line rather than left to be discovered.
   Four things. The table being wrong, which only ClientLayoutTests catches by reading their
   file. Anything not in the compared list, which is fonts, the sheet name, freeze panes,
-  print setup and merged ranges, all listed in docs\scan.md 4q with both sides. Whether a
+  print setup and merged ranges, all listed in docs\history\scan.md 4q with both sides. Whether a
   value is TRUE, since a number to three decimals off the wrong clash still reads right.
   And a block that was never written at all
 - Every check gets a test that BREAKS one thing and asserts the check names it. A test that
@@ -901,9 +901,9 @@ There were fifteen and there are eleven, of which ONE is visible without opening
 A box only stays if a normal weekly run genuinely has to choose. Everything else became a
 fixed behaviour with the sensible answer chosen, or moved under an expander. The two that
 destroy data are under one of their own, because they do not belong beside ordinary output
-options. Which box went where and what each removed one was fixed to is in docs\scan.md 4q.
+options. Which box went where and what each removed one was fixed to is in docs\history\scan.md 4q.
 
-build\probe-window-labels.ps1 reads every tick box out of the real window and checks all
+tools\probes\probe-window-labels.ps1 reads every tick box out of the real window and checks all
 of this, so the limits are proved rather than remembered. It OPENS every expander first,
 because a collapsed one has no visual tree behind it and the probe found one box and
 reported no problems, and it says how many are visible without opening anything, which is
@@ -952,7 +952,7 @@ Two things that look like mistakes and are not:
 
 ## Build
 
-Filled in from docs\scan.md after the scan ran on 2026-08-27.
+Filled in from docs\history\scan.md after the scan ran on 2026-08-27.
 
 Everything, which needs Navisworks on the machine because of the add-in project:
 
@@ -976,7 +976,7 @@ install folder, never recurse it, never wildcard it. Exists() in MSBuild and Tes
 on a joined path are the only two forms used, and each referenced DLL is checked on
 its own so a missing file is named. A recursive walk of that folder was investigated
 on 2026-08-30 and works fine, so this rule is about keeping the check direct and
-self-diagnosing, not about working around the machine. docs\scan.md holds the
+self-diagnosing, not about working around the machine. docs\history\scan.md holds the
 measurements.
 
 Tests are NUnit. The pre-commit hook runs them and refuses the commit on a failure. Turn

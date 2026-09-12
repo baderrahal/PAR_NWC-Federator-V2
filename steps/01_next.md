@@ -154,7 +154,7 @@ F19 is dropped.
 
 ## F12 Fix the docs that contradict the code
 
-- Absorbed by F37 on 2026-09-12. The two docs move to `docs/history` with a first line saying they are measurement history, and `docs/workflow.md` becomes the one current description
+- CLOSED by F37 on 2026-09-12. The two docs move to `docs/history` with a first line saying they are measurement history, and `docs/workflow.md` becomes the one current description
 - Closes L5, L6, L7
 - Files `CLAUDE.md`, `docs/scan.md`, `docs/test-model-side.md`
 - CONTAINER
@@ -170,7 +170,7 @@ F19 is dropped.
 
 ## F14 Add a root README
 
-- Absorbed by F37 on 2026-09-12. README.md exists since F20 and F37 points it at `docs/workflow.md`
+- CLOSED by F37 on 2026-09-12. README.md exists since F20 and F37 points it at `docs/workflow.md`
 - Closes M6
 - Files `README.md`
 - CONTAINER
@@ -288,6 +288,7 @@ F19 is dropped.
 - Moves only, no logic. Closes F12 and F14
 - CONTAINER
 - One type per file in nine files, the tests into src folder names, the probes into `tools/probes` with a README and a path parameter, the two docs into `docs/history`, `docs/workflow.md` written
+- DONE on 2026-09-12. Thirty files out of nine, sixty five test files into ten folders, six probes moved with a `-NavisworksPath` parameter, two docs into `docs/history` with a first line, `docs/workflow.md` written and README pointing at it
 
 ## F38 CLAUDE.md under 200 lines, rules in .claude, walls in hooks
 
