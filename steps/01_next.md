@@ -96,13 +96,13 @@ F19 is dropped.
 ## F1 Fix the test name typo
 
 - Closes B8
-- Files `tests/Federator.Core.Tests/ReportCheckTests.cs`
+- Files `tests/Federator.Core.Tests/Report/ReportCheckTests.cs`
 - DONE on 2026-09-07 in one PR with F2 and F4
 
 ## F2 Fix the hardcoded probe path
 
 - Closes B7
-- Files `build/probe-window-defaults.ps1`, `docs/test-model-side.md`
+- Files `tools/probes/probe-window-defaults.ps1`, `docs/history/test-model-side.md`, both moved there by F37
 - DONE on 2026-09-07 in one PR with F1 and F4, pending a local run of the probe
 
 ## F3 Fix the two wrong messages
@@ -223,7 +223,7 @@ F19 is dropped.
 
 ## F28 A set already there is not counted as created
 
-- Files `src/Federator.Core/Sets/SetBuildOutcome.cs`, `src/Federator.Addin/Engine/SetBuilder.cs`, `tests/Federator.Core.Tests/SetBuildOutcomeTests.cs`
+- Files `src/Federator.Core/Sets/SetBuildOutcome.cs`, `src/Federator.Addin/Engine/SetBuilder.cs`, `tests/Federator.Core.Tests/Sets/SetBuildOutcomeTests.cs`
 - CONTAINER for the outcome, LOCAL MACHINE ONLY to see the second NWF save stop on a weekly run
 - `BuildOne` calls `AddAlreadyPresent` and then `AddCreated` for the same set, so `CreatedCount` and `PutAnythingIn` count present sets and the second NWF save fires on every weekly run
 - DONE on 2026-09-12, proof pending on the local machine
