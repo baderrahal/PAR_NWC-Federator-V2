@@ -42,7 +42,6 @@ namespace Federator.Core.Exchange
             string status,
             double toleranceInFileUnits,
             string fileUnits,
-            double toleranceMillimetres,
             bool mergeComposites,
             string linkageMode,
             IList<string> rules,
@@ -54,7 +53,6 @@ namespace Federator.Core.Exchange
             Status = status;
             ToleranceInFileUnits = toleranceInFileUnits;
             FileUnits = fileUnits;
-            ToleranceMillimetres = toleranceMillimetres;
             MergeComposites = mergeComposites;
             LinkageMode = linkageMode;
             Rules = new ReadOnlyCollection<string>(rules ?? new List<string>());
@@ -75,8 +73,6 @@ namespace Federator.Core.Exchange
 
         public string FileUnits { get; private set; }
 
-        public double ToleranceMillimetres { get; private set; }
-
         public bool MergeComposites { get; private set; }
 
         /// <summary>The linkage mode, for example none. Read even though these files never use it.</summary>
@@ -88,11 +84,6 @@ namespace Federator.Core.Exchange
         public ClashSideDefinition Left { get; private set; }
 
         public ClashSideDefinition Right { get; private set; }
-
-        public double ToleranceIn(string units)
-        {
-            return ExchangeUnits.FromMillimetres(ToleranceMillimetres, units);
-        }
 
         public override string ToString()
         {

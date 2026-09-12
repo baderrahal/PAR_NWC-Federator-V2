@@ -11,14 +11,14 @@ namespace Federator.Core.Tests
         public void TheClashFileToleranceIsSeventyFiveMillimetres()
         {
             Assert.That(
-                ExchangeUnits.ToMillimetres(0.2460629921, "ft"), Is.EqualTo(75.0).Within(1e-6));
+                ExchangeUnits.Convert(0.2460629921, "ft", "mm"), Is.EqualTo(75.0).Within(1e-6));
         }
 
         [Test]
         public void TheBuildingFileToleranceIsFiftyMillimetres()
         {
             Assert.That(
-                ExchangeUnits.ToMillimetres(0.1640419948, "ft"), Is.EqualTo(50.0).Within(1e-6));
+                ExchangeUnits.Convert(0.1640419948, "ft", "mm"), Is.EqualTo(50.0).Within(1e-6));
         }
 
         [TestCase("mm", 1.0)]

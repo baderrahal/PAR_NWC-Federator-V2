@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
+using Federator.Core.Units;
 
 namespace Federator.Addin.Engine
 {
@@ -173,21 +174,15 @@ namespace Federator.Addin.Engine
             }
         }
 
-        /// <summary>The short name the report writes, which is what the samples use.</summary>
+        /// <summary>
+        /// The short name the log writes, read off UnitTable so it is the same short name
+        /// everywhere. An enum value the table does not carry is written as its own name,
+        /// which is what a person would need to read to add the row.
+        /// </summary>
         public static string Short(Units units)
         {
-            switch (units)
-            {
-                case Units.Meters: return "m";
-                case Units.Centimeters: return "cm";
-                case Units.Millimeters: return "mm";
-                case Units.Feet: return "ft";
-                case Units.Inches: return "in";
-                case Units.Yards: return "yd";
-                case Units.Kilometers: return "km";
-                case Units.Miles: return "mi";
-                default: return units.ToString().ToLowerInvariant();
-            }
+            UnitRow row = UnitTable.FindByEnumName(units.ToString());
+            return row == null ? units.ToString() : row.Short;
         }
 
         private static string Name(Units units)

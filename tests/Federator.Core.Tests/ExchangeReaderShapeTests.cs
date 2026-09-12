@@ -67,7 +67,8 @@ namespace Federator.Core.Tests
             Assert.That(document.Tests.Count, Is.EqualTo(1));
             Assert.That(document.Sets.Count, Is.EqualTo(0));
             Assert.That(document.HasSets, Is.False);
-            Assert.That(document.Tests[0].ToleranceMillimetres, Is.EqualTo(75.0).Within(1e-6));
+            Assert.That(document.Tests[0].ToleranceInFileUnits, Is.EqualTo(0.2460629921).Within(1e-10));
+            Assert.That(document.Tests[0].FileUnits, Is.EqualTo("ft"));
             Assert.That(document.Tests[0].Right.SelfIntersect, Is.True);
             Assert.That(document.Tests[0].Right.PrimitiveTypes, Is.EqualTo(3));
         }
@@ -112,8 +113,10 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void ToleranceIsConvertedFromWhateverUnitsTheFileUses()
+        public void TheToleranceIsReadInTheFileUnitsAndNotConverted()
         {
+            // The reader reads. Converting is ClashTestPlan.Convert's job, F33, so a
+            // file in metres carries 0.075 and m, and nothing derived from either.
             string inMetres = TestsOnly
                 .Replace("units=\"ft\"", "units=\"m\"")
                 .Replace("tolerance=\"0.2460629921\"", "tolerance=\"0.075\"");
@@ -122,8 +125,20 @@ namespace Federator.Core.Tests
 
             Assert.That(document.Tests[0].FileUnits, Is.EqualTo("m"));
             Assert.That(document.Tests[0].ToleranceInFileUnits, Is.EqualTo(0.075).Within(1e-12));
-            Assert.That(document.Tests[0].ToleranceMillimetres, Is.EqualTo(75.0).Within(1e-9));
-            Assert.That(document.Tests[0].ToleranceIn("ft"), Is.EqualTo(0.2460629921).Within(1e-9));
+        }
+
+        [Test]
+        public void AFileInUnitsTheToolDoesNotKnowIsStillRead()
+        {
+            // The reader used to throw on the whole file here, from a conversion it had
+            // no business doing. Now the file reads and the plan skips each test by name.
+            string inCubits = TestsOnly.Replace("units=\"ft\"", "units=\"cubits\"");
+
+            ExchangeDocument document = new ExchangeReader().ReadText(inCubits);
+
+            Assert.That(document.Tests.Count, Is.EqualTo(1));
+            Assert.That(document.Tests[0].FileUnits, Is.EqualTo("cubits"));
+            Assert.That(document.Tests[0].ToleranceInFileUnits, Is.EqualTo(0.2460629921).Within(1e-10));
         }
 
         [Test]

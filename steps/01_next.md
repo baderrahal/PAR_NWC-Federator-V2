@@ -260,6 +260,7 @@ F19 is dropped.
 - Files new `src/Federator.Core/Units/UnitTable.cs`, `ExchangeUnits.cs`, `ExchangeReader.cs`, `ExchangeModel.cs`, `ClashTestPlan.cs`, `DocumentUnits.cs`, `ClashRunner.cs`, `FederationEngine.cs`, `FederatorWindow.xaml.cs`
 - CONTAINER for the table, LOCAL MACHINE ONLY for the window and the engine
 - One table, every other unit list deleted. `WantedUnits` fails the group on a name the table does not know. `ClashTestPlan.Convert` is the one place a file unit is judged
+- DONE on 2026-09-12, proof pending on the local machine for the engine and the window
 
 ## F34 Window wiring
 

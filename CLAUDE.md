@@ -760,9 +760,20 @@ and 6 does not read as broken.
   All three read the same converted report, and the same pass writes the unit label, so a
   number and its label still cannot disagree. What is converted is the tolerance of every
   test and the distance and the clash point of every row, and nothing else, because a grid
-  location is text and a raw count is a count. The factors are ExchangeUnits, the one
-  conversion table in this repo, and a unit it has not been taught is REFUSED: nothing is
-  written and the group FAILS, because a report in the wrong unit reads as real and is not
+  location is text and a raw count is a count. The factors are UnitTable, the one unit
+  table in this repo, read through ExchangeUnits, and a unit it has not been taught is
+  REFUSED: nothing is written and the group FAILS, because a report in the wrong unit
+  reads as real and is not
+- Every unit this tool knows is one row of Federator.Core.Units.UnitTable, F33: the name
+  on the Navisworks enum, the words the window shows, the short label the report and the
+  log write, the exchange file's units code, and the millimetres in one. ExchangeUnits
+  converts through it, DocumentUnits and ClashRunner name units through it, and the
+  Outputs step offers the rows it offers. There is no other list, because the lists had
+  drifted, the same unit was micrometers in one and um in another. A model units name the
+  table does not know FAILS the group with nothing converted, it used to fall back to
+  Meters without a word. The exchange reader reads the tolerance as written and converts
+  nothing, so a file in a unit the tool does not know reads, and ClashTestPlan.Convert,
+  the one place a file unit is judged, skips each of its tests by name
 - Setting the models is still done, BEFORE the clash step, and it is kept because it fixes
   what the person sees in Navisworks. Measured on 2026-09-01 across all 4027 types:
   Document.Units is read only, Model.Units is read only, and the only public managed member

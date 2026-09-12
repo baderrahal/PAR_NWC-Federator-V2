@@ -2,6 +2,30 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F33, one unit table
+
+### What was done
+
+- F33 done. Four lists named units and they had drifted: `ExchangeUnits` held eleven codes with factors, `DocumentUnits.Short` held eight short labels and lowercased the enum name for the rest, so Micrometers wrote "micrometers" where `ClashRunner.UnitName` wrote "um" for the same unit, and the window held five names with its own wording. Now `src/Federator.Core/Units/UnitTable.cs` is the one table, one `UnitRow` per unit with the Navisworks enum name as text, the display name, the short label, the exchange code and the millimetres in one. `ExchangeUnits` converts through it and holds no factor, `DocumentUnits.Short` and `ClashRunner.UnitName` look their enum value up in it, and the window fills its combo from `UnitTable.Offered()`, five rows with the default first, wording the default as before
+- `TryWantedUnits` replaces `WantedUnits`. A model units name the table does not know is no longer parsed with a silent fallback to Meters. `FinishTheGroup` logs `UNITS    <name> is not one this tool knows`, puts the reason with every known name on the group's error list, and returns before anything is converted, run or written, so the group is FAILED. A name in the table that the installed enum does not carry is logged as that and fails the same way
+- `ExchangeReader.ReadTest` reads the tolerance as written and converts nothing. `ClashTestDefinition.ToleranceMillimetres` and `ToleranceIn` are gone with their asserts. So a file whose units attribute the tool does not know now reads, and `ClashTestPlan.Convert`, the one place a file unit is judged, skips each test by name with the line that says the unit is not one this tool converts. That line could not be reached before, because the reader threw on the whole file first. `ExchangeUnits.ToMillimetres` and `FromMillimetres` are gone too, nothing in src called them once the reader stopped
+- `ReportUnits` and CLAUDE.md say the factors are `UnitTable` read through `ExchangeUnits`, and CLAUDE.md gains one bullet on the table and the failed group
+- Proved here: `UnitTableTests`, eight tests, every column filled, no enum name or exchange code twice, every offered row in the table with `ReportOptions.DefaultUnits` first, lookups case blind and trimmed, an unknown enum name refused naming every known one, the feet row giving the reference file's 75 mm, the report label being the metres row, and `ExchangeUnits` knowing exactly the table. `ExchangeReaderShapeTests` gains `AFileInUnitsTheToolDoesNotKnowIsStillRead`, `ClashTestPlanTests` gains `AFileUnitTheToolDoesNotKnowSkipsEveryTestByNameRatherThanThrowing`. Core tests under mono on Linux, before: 897 passed, 37 failed, 33 skipped, 967 total. After: 907 passed, 37 failed, 33 skipped, 977 total. The 37 are the same Windows path and file locking failures, none new
+- Waits for the local machine: the add-in does not build here. Four add-in files changed, `ClashRunner.UnitName`, `DocumentUnits.Short`, `FederationEngine.TryWantedUnits` with the guard in `FinishTheGroup`, and the window's three unit methods, read twice. Proof: open the window, the Model units combo must list Metres, which is what the models are set to, Millimetres, Centimetres, Feet, Inches in that order, and a run must log the same UNITS lines as before
+
+### What remains
+
+- F34 to F38 in order, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F32 entry
+
+### What comes next
+
+1. Merge the F33 PR
+2. F34, window wiring
+
 ## 2026-09-12 F32, the open file is guarded
 
 ### What was done

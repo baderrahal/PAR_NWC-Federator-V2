@@ -21,9 +21,10 @@ namespace Federator.Core.Report
     /// finished report, and the unit label is written from the same pass. So the numbers
     /// and the label cannot disagree, which is the thing the old rule was guarding against.
     ///
-    /// The factors are ExchangeUnits, which is the one conversion table in this repo. A
-    /// unit that table has not been taught is REFUSED: the report is not written and the
-    /// group fails, because a report in the wrong unit reads as real and is not.
+    /// The factors come from UnitTable, the one unit table in this repo, through
+    /// ExchangeUnits. A unit that table has not been taught is REFUSED: the report is not
+    /// written and the group fails, because a report in the wrong unit reads as real and
+    /// is not.
     /// </summary>
     public static class ReportUnits
     {
