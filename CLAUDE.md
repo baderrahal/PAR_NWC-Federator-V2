@@ -789,9 +789,15 @@ and 6 does not read as broken.
   holding none runs nothing and the log says so. The outputs are named after the open
   file with the extension swapped and the report in Clash Reports beside it, which is
   exactly where the scanned path puts them, so the same building run either way writes the
-  same files. No pattern is applied, because the name is already on the file. An unsaved
-  document is refused by name, because there is nowhere to put an NWD beside it. The rule
-  lives in Federator.Core.Rerun.OpenDocumentJob so it can be tested without Navisworks
+  same files. No pattern is applied, because the name is already on the file. Five things
+  are checked before it runs and the first that fails is named in the window and the log,
+  D2 on 2026-09-12: it has a name, because an unsaved document has nowhere to put an NWD
+  beside it, it was opened from a folder and not from an address, it is an NWF, because
+  that is where the clash tests and their results live and the NWD this tool publishes
+  would otherwise be written over the file that is open, it has a folder in front of its
+  name, and that folder can be read from here. The NWD path is never the open path, read
+  case blind, as a second lock on the same door. The rule lives in
+  Federator.Core.Rerun.OpenDocumentJob so it can be tested without Navisworks
 - Distance is the ROUNDED number and carries no number format, because that is what theirs
   holds. Ours stored -0.328083992004395 behind a format of 0.000, so the cell read -0.328
   and anyone sorting, filtering or copying the column got the long value. Rounding the

@@ -52,29 +52,123 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// True where this document can be run at all. An unsaved document has nowhere to
-        /// put an NWD or a workbook, and saving it somewhere of our choosing would be this
-        /// tool deciding where a person's federation lives.
+        /// True where this document can be run at all. Five things are checked in order
+        /// and WhyNot names the first that fails, in the words a person would say:
+        ///   it has a name, because an unsaved document has nowhere to put an NWD or a
+        ///     workbook, and saving it somewhere of our choosing would be this tool
+        ///     deciding where a person's federation lives
+        ///   it was opened from a folder and not from an address, because acc:// and
+        ///     https:// name nothing on a disk
+        ///   it is an NWF, because the NWF is where the clash tests and their results
+        ///     live, and an NWD or an NWC opened directly holds neither
+        ///   it has a folder in front of its name, because that is where the outputs go
+        ///   that folder can be read from here
+        /// D2, decided on 2026-09-12. An NWD opened directly used to be allowed, and the
+        /// NWD this tool publishes would have been written over the file that was open.
         /// </summary>
         public static bool CanRun(string openPath)
         {
-            return !string.IsNullOrEmpty(openPath)
-                && !string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(openPath));
+            return CanRun(openPath, Directory.Exists);
         }
 
-        /// <summary>Why it cannot, in the words a person would say.</summary>
+        /// <summary>
+        /// The same rule with the disk read handed in, so every reason can be proved
+        /// without a folder that exists on the machine running the tests.
+        /// </summary>
+        public static bool CanRun(string openPath, Func<string, bool> folderReadable)
+        {
+            return WhyNot(openPath, folderReadable).Length == 0;
+        }
+
+        /// <summary>Why it cannot, in the words a person would say. Empty where it can.</summary>
         public static string WhyNot(string openPath)
         {
-            return CanRun(openPath)
-                ? string.Empty
-                : "This document has not been saved anywhere, so there is nowhere to put "
-                    + "the NWD and the report beside it. Save it first.";
+            return WhyNot(openPath, Directory.Exists);
         }
 
-        /// <summary>The NWD, beside the open file with the extension swapped.</summary>
+        /// <summary>The same, with the disk read handed in.</summary>
+        public static string WhyNot(string openPath, Func<string, bool> folderReadable)
+        {
+            if (folderReadable == null)
+            {
+                throw new ArgumentNullException("folderReadable");
+            }
+
+            if (string.IsNullOrEmpty(openPath)
+                || string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(openPath)))
+            {
+                return "This document has not been saved anywhere, so there is nowhere to put "
+                    + "the NWD and the report beside it. Save it first.";
+            }
+
+            if (openPath.IndexOf("://", StringComparison.Ordinal) >= 0)
+            {
+                return "This document was opened from " + openPath + ", which is an address "
+                    + "and not a folder on a disk, so there is nowhere to put the NWD and the "
+                    + "report beside it. Open it from a folder this machine can read.";
+            }
+
+            string extension = ExtensionOf(openPath);
+
+            if (!string.Equals(extension, ".nwf", StringComparison.OrdinalIgnoreCase))
+            {
+                return "This document is " + DescribeExtension(extension) + " and this tool "
+                    + "runs an NWF, which is where the clash tests and their results live. "
+                    + "Open the NWF instead.";
+            }
+
+            string folder = FolderOf(openPath);
+
+            if (folder.Length == 0)
+            {
+                return "This document, " + openPath + ", has no folder in front of its name, "
+                    + "so there is nowhere to put the NWD and the report beside it. Open it "
+                    + "from a folder this machine can read.";
+            }
+
+            if (!folderReadable(folder))
+            {
+                return "The folder this document was opened from, " + folder + ", cannot be "
+                    + "read from here, so there is nowhere to put the NWD and the report "
+                    + "beside it. Open it from a folder this machine can read.";
+            }
+
+            return string.Empty;
+        }
+
+        private static string ExtensionOf(string openPath)
+        {
+            try
+            {
+                return Path.GetExtension(openPath) ?? string.Empty;
+            }
+            catch (ArgumentException)
+            {
+                return string.Empty;
+            }
+        }
+
+        private static string DescribeExtension(string extension)
+        {
+            return extension.Length == 0
+                ? "a file with no extension"
+                : "a " + extension.ToLowerInvariant() + " file";
+        }
+
+        /// <summary>
+        /// The NWD, beside the open file with the extension swapped. Never the open file
+        /// itself. Where the swap lands on the same path, read case blind because Windows
+        /// reads file names that way, there is no NWD to name and empty comes back, so
+        /// nothing can be published over the file that is open. CanRun refuses such a
+        /// file before anything is written, and this is the second lock on the same door.
+        /// </summary>
         public static string NwdBeside(string openPath)
         {
-            return Beside(openPath, ".nwd");
+            string nwd = Beside(openPath, ".nwd");
+
+            return string.Equals(nwd, openPath, StringComparison.OrdinalIgnoreCase)
+                ? string.Empty
+                : nwd;
         }
 
         /// <summary>

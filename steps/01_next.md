@@ -87,6 +87,7 @@ F19 is dropped.
 ## F23 Fix B12, the NWD opened from ACC
 
 - Closes B12
+- Narrowed by F32 on 2026-09-12. A document opened from an address rather than a folder, one that is not an NWF, one with no folder in front of its name, and one whose folder cannot be read are each refused with the reason in the window and the log. What Navisworks reports as the file name of a document opened from Autodesk Docs is still UNKNOWN, so the ACC case itself waits on Q20
 - Files UNKNOWN until Q20 is answered
 - LOCAL MACHINE ONLY to see, CONTAINER to read
 - Before the fix, read every code path that touches a file path and list in the PR every place the add-in refuses or fails on a path, so the ACC case can be matched when the details arrive
@@ -252,6 +253,7 @@ F19 is dropped.
 - Files `src/Federator.Core/Rerun/OpenDocumentJob.cs`, its tests, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`
 - CONTAINER for the rule, LOCAL MACHINE ONLY to see the refusal
 - D2. A path whose extension is not .nwf, a path whose folder cannot be read, and an NWD path equal to the open path are refused with the reason named. Narrows B12, the ACC case still waits on Q20
+- DONE on 2026-09-12. The window already shows `WhyNot` through `Describe` and disables the button, so no window line changed
 
 ## F33 One unit table
 
