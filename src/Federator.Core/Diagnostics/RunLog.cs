@@ -839,7 +839,12 @@ namespace Federator.Core.Diagnostics
             }
         }
 
-        public IList<GroupRecord> GroupRecords
+        /// <summary>
+        /// A copy of the group records, taken under the lock, for this class alone.
+        /// Private, because the RESULT block is the only reader and a test reads the
+        /// block off the disk rather than the list behind it.
+        /// </summary>
+        private IList<GroupRecord> GroupRecords
         {
             get
             {

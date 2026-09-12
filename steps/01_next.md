@@ -38,17 +38,18 @@ Changed on 2026-09-12 from the audit in chat. F27 to F38 are new and go before F
 24. F37, closes F12 and F14
 25. F38, closes F13
 26. F39, the window compiles again, found by the audit of 2026-09-12
-27. F40, dead members out, second pass, from the audit
-28. F41, every handle disposed
-29. F42, no framework message in a label
-30. F43, three settings that are constants
-31. F44, the docs and the comments agree with the code
-32. F45, the clash step keeps its rules
-33. F16, widened by the audit
-34. F21
-35. F15
-36. F18 when the sample arrives
-37. F23 when Q20 is answered
+27. F46, the four the chat audit of 2026-09-12 found, two of them blocking Bader
+28. F40, dead members out, second pass, from the audit
+29. F41, every handle disposed
+30. F42, no framework message in a label
+31. F43, three settings that are constants
+32. F44, the docs and the comments agree with the code
+33. F45, the clash step keeps its rules
+34. F16, widened by the audit
+35. F21
+36. F15
+37. F18 when the sample arrives
+38. F23 when Q20 is answered
 
 F19 is dropped.
 
@@ -314,6 +315,19 @@ F19 is dropped.
 - F34 deleted the republish flag and the three engine constructors that took it, and left the two calls in the window that passed `true` as the third argument. The Run button and the Run the open file button both construct the engine that way, so the add-in has not compiled since F34 merged and F35, F36 and F37 were read, never built. The fix is the two calls losing the `true`
 - Size: two lines
 - DONE on 2026-09-12. Both calls read `SetProgress, log, exchange, options` with `nwfFolder` on the first, matching the two constructors. A heuristic check of every `new` and every static call in the add-in against the declared arities finds nothing else. The proof is the build in `03_bader_next.md`, and it is the reason the build comes first
+
+## F46 The four the chat audit found
+
+- From the audit in chat on 2026-09-12, which read main after the round closed. Two of the four break Bader's next hour, so they come before F40
+- Files `steps/03_bader_next.md`, `.gitignore`, `steps/README.md`, `src/Federator.Core/Diagnostics/RunLog.cs`, `tests/Federator.Core.Tests/Diagnostics/ResultBlockInvariantTests.cs`
+- CONTAINER
+- 46a. The D6 command named `claude/parsons-nwc-analysis-rlzgdr`, which is not on the remote, and left out `fix-F39` and `round-close`, which are. It was built from `git branch -r`, which prints remote-tracking refs the clone remembers rather than what the remote holds. Rebuilt from `git ls-remote --heads origin`, with that trap written beside it and a prune step after
+- 46b. `.gitignore` hid every new `.log`, so the run log Bader is asked to copy into `steps/logs` could not reach the repo. A negation for that one folder, with the reason in the file
+- 46c. `steps/README.md` listed four files. There are six and the logs folder
+- 46d. `RunLog.GroupRecords` was public for one test. It is private, and the test reads the RESULT block off the disk instead
+- Size: small, no logic
+- DONE on 2026-09-12. The branch list read two ways and both agree on 30 branches. `git status` shows a new log under `steps/logs` as untracked rather than ignored. The README names every file in the folder, checked by a script. The Core tests are unchanged at 905 passed, 37 failed, 33 skipped, 975 total
+
 
 ## F40 Dead members out, second pass
 
