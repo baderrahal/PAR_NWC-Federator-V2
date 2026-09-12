@@ -1,5 +1,7 @@
 # Testing the model side
 
+Measurement history, not current. Moved here on 2026-09-12, F37. The steps below were written against the tool as it was on 2026-08-30 and several of them name things that have since changed or gone. The current steps for the local machine are in steps/03_bader_next.md.
+
 For Bader. This covers scan, group, federate, save NWF, build the sets, create and run the
 clash tests, write the workbook, write NWD. Images inside the workbook are not built yet.
 

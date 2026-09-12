@@ -2,6 +2,32 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F37, one type per file and one place per kind of file
+
+### What was done
+
+- F37 done, moves only, no logic. Closes F12 and F14
+- One type per file. Nine files held thirty types and now hold one each, split by a script that cut at each type's doc comment and gave every new file the old file's usings and namespace, so nothing but the file boundary moved. `FederationJob.cs` gave `JobOutcome.cs`, `ClashRunner.cs` gave `TestAddress.cs`, `ClashTestPlan.cs` gave `ClashTestKind`, `ClashSkipReason`, `PlannedClashSide`, `ClashPlanSource`, `PlannedClashTest` and `SkippedClashTest`, `ClashRunOutcome.cs` gave `ClashStatus`, `ClashTally`, `ClashSideCheck` and `ClashTestResult`, `GroupOutcome.cs` gave `GroupRecord`, `WrittenFile` and `LoggedFailure`, `NamePattern.cs` gave `OutputNaming`, `NameCollisions` and `NameCollision`, `ScanFinding.cs` gave `FindingKind`, `FindingsTable.cs` gave `ScanCounts`, and `SetBuildOutcome.cs` gave `SetResult`. Both projects glob their sources, so no project file changed
+- The sixty five test files are in folders named after the src folder they test: Clash, Diagnostics, Exchange, Findings, Grouping, Naming, Report, Rerun, Sets, Units, with `Samples.cs` at the root. Every move is a `git mv`, so history follows. The tests that read the checkout find it by walking up from the test assembly, so none of them cares where its source sits
+- The six probes are in `tools/probes`, each with a `-NavisworksPath` parameter defaulting to the folder the add-in project defaults to, and the three window probes find the repo one level higher than before, because their folder is one level deeper. `tools/probes/README.md` says what each measures and how to run it. `build` holds `install.ps1` alone
+- `docs/scan.md` and `docs/test-model-side.md` are `docs/history/scan.md` and `docs/history/test-model-side.md`, each with a first line saying measurement history, not current, and the date of the move. The eleven `docs\scan.md` references in CLAUDE.md and the probe line in `steps/03_bader_next.md` point at the new paths. The references inside the two history files stay as they were, because they are part of the history
+- `docs/workflow.md` is the one current description of the two workflows, the rebuild, the labels and the three `RunPath` rules that give them, the open file, and the two hand buttons, written from README and `RunPath`. README keeps its introduction and points at it, at CLAUDE.md, at `steps`, at `docs/history`, at `tools/probes` and at the installer, and no longer carries a copy of the workflows
+- Proved here: Core tests under mono on Linux, before and after: 905 passed, 37 failed, 33 skipped, 975 total. The same tests in new folders, and the Core splits compile. The 37 are the same Windows path and file locking failures, none new
+- Waits for the local machine: the add-in does not build here. The two add-in splits, `JobOutcome.cs` and `TestAddress.cs`, and the two files they came out of were read after the split, every line of them is a line that was there before. The probes were not run here and cannot be. Proof is the build, then one probe with and one without the parameter
+
+### What remains
+
+- F38, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F32 entry
+
+### What comes next
+
+1. Merge the F37 PR
+2. F38, CLAUDE.md under 200 lines, rules in .claude, walls in hooks
+
 ## 2026-09-12 F36, dead code and copies out
 
 ### What was done

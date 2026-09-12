@@ -1,6 +1,7 @@
 # Can the document's units be set, and what controls them. Read off the installed DLL.
+param([string]$NavisworksPath = "C:\Program Files\Autodesk\Navisworks Manage 2025")
 $ErrorActionPreference = "Stop"
-$nw = "C:/Program Files/Autodesk/Navisworks Manage 2025"
+$nw = $NavisworksPath
 $a = [System.Reflection.Assembly]::ReflectionOnlyLoadFrom((Join-Path $nw "Autodesk.Navisworks.Api.dll"))
 
 function Sig($m) {

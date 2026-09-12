@@ -1,5 +1,7 @@
 # Scan
 
+Measurement history, not current. Moved here on 2026-09-12, F37. Every path and line number in it is as it was on the date at the top, and the code has moved on since.
+
 Everything below was observed on this machine in one session, on 2026-08-27, on branch
 build-core. Nothing here is carried over from another machine or another session.
 Where a check could not run it says UNKNOWN.

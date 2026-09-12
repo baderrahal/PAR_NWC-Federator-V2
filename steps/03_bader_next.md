@@ -204,7 +204,7 @@ This one is its own small run, with the clash XML, because the conversion only h
 137. In the VS Code terminal run:
 
 ```
-powershell -ExecutionPolicy Bypass -File build\probe-window-defaults.ps1
+powershell -ExecutionPolicy Bypass -File tools\probes\probe-window-defaults.ps1
 ```
 
 138. Look for: it prints the window defaults and no error about a path

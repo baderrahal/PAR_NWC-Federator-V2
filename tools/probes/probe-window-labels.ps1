@@ -1,12 +1,12 @@
 # Reads every tick box in the window and checks its label and help line against the
 # limits, and that no code identifier reaches a label. Bader called the old ones a
 # nightmare: they ran off the edge, shouted in capitals, and explained the off state too.
-param([int]$maxLabelWords = 8, [int]$maxHelpWords = 12)
+param([string]$NavisworksPath = "C:\Program Files\Autodesk\Navisworks Manage 2025", [int]$maxLabelWords = 8, [int]$maxHelpWords = 12)
 $ErrorActionPreference = "Stop"
 $bundle = "$env:APPDATA\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22"
-$repo = Split-Path $PSScriptRoot
+$repo = Split-Path (Split-Path $PSScriptRoot)
 $addin = Join-Path $repo "src\Federator.Addin\bin\Release\net48\Federator.Addin.dll"
-$nw = "C:\Program Files\Autodesk\Navisworks Manage 2025"
+$nw = $NavisworksPath
 
 [System.AppDomain]::CurrentDomain.add_AssemblyResolve({
   param($s, $e)
