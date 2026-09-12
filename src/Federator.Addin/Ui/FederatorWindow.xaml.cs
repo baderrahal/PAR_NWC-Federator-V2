@@ -1389,7 +1389,7 @@ namespace Federator.Addin.Ui
                     + (options.WriteXml ? "written beside each workbook" : "off"));
 
                 FederationEngine engine = new FederationEngine(
-                    SetProgress, log, true, exchange, options, nwfFolder);
+                    SetProgress, log, exchange, options, nwfFolder);
                 IList<JobOutcome> outcomes = engine.Run(jobs);
 
                 // What each group actually did, in the list. A group that was rebuilt
@@ -1595,7 +1595,7 @@ namespace Federator.Addin.Ui
                 // uses for the line above the button. Handing the report folder in as the
                 // NWF folder is what once wrote to Clash Reports\Clash Reports.
                 FederationEngine engine = new FederationEngine(
-                    SetProgress, log, true, exchange, options);
+                    SetProgress, log, exchange, options);
 
                 // The engine writes the GROUP lines and the OPEN FILE block itself, so
                 // they are there whatever happens inside it.
