@@ -2,6 +2,32 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F31, the clash side lookup is built once per run
+
+### What was done
+
+- F31 done. `LocatorOf` created a `SelectionSource` for every indexed set, per side, per compared test, and disposed each straight after. On a weekly run plus XML every test is compared, and 61 sets by two sides by 1830 tests is 223,260 sources made and thrown away for the comparison alone. `IndexSets` now builds one source per indexed set into `sourceByPath` beside `byPath`, keyed the same way, and `LocatorOf` compares each side's sources against those. The set wrappers were never disposed at all, now both dictionaries are released by `ReleaseTheIndex` in the one finally at the end of `Run`, sources first and then the set wrappers they point at, and inside `IndexSets` before a throw part way through building leaves
+- `byPath` is declared before the try in `Run` so the finally can see it, and `ReleaseTheIndex` takes null as nothing to release, which is what a run that stopped before indexing holds. A throw while releasing is logged and never stops the run
+- `sourceByPath` is a field, replacing the `setsForLookup` field, because `LocatorOf` is reached through `SettingsOf` from `CompareAndMaybeApply` and the set wrappers already travel as a parameter. `SettingsOf` and `LocatorOf` lose their `byPath` parameter, which they no longer read
+- `FillSide` loses the document parameter nothing in it read. `Create` only handed that parameter on, so it loses it too, and `OneTest` calls `Create` without it. `Apply` and `Create` call `FillSide` positionally. `FillSide` still creates a fresh source each time and says why: the collection takes the source it is handed, so one out of the index would be taken back out from under the test when the index is released
+- `Resolve`, `Upwards` and `SetBuilder` are untouched, that is F15
+- UNKNOWN until a run: whether `SelectionSource.Equals` matches a source held since the sets were indexed the way it matched one created a moment before. The old code relied on the same `Equals` and it was never measured either. The DRIFT block on the proof run answers it, a locator difference on every compared test would say no
+- Proved here: Core tests under mono on Linux, before and after: 888 passed, 39 failed, 32 skipped, 959 total. No Core file changed. The 39 are the same Windows path and file locking failures, none new
+- Waits for the local machine: the add-in does not build here. The diff is 108 added against 32 removed, read twice, every call of `FillSide`, `Create`, `SettingsOf`, `LocatorOf`, `IndexSets` and `ReleaseTheIndex` checked against its signature by grep. Proof: run one building twice with the XML picked, the second run's DRIFT block must report no locator difference and the CLASH block must show the same counts as the first, and the run must not be slower
+
+### What remains
+
+- F32 to F38 in order, then D6, the audit, `03_bader_next.md`, the closing entry
+
+### Known bugs
+
+- As in the F30 entry
+
+### What comes next
+
+1. Merge the F31 PR
+2. F32, the open file is guarded
+
 ## 2026-09-12 F30, one tail for both run paths
 
 ### What was done

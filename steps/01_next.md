@@ -245,6 +245,7 @@ F19 is dropped.
 - Files `src/Federator.Addin/Engine/ClashRunner.cs`
 - LOCAL MACHINE ONLY
 - One `SelectionSource` per indexed set, built in `IndexSets`, disposed with the set wrappers in one finally at the end of `Run`. `FillSide` loses its unused document parameter. `Resolve`, `Upwards` and `SetBuilder` stay for F15
+- DONE on 2026-09-12, proof pending on the local machine
 
 ## F32 The open file is guarded
 
