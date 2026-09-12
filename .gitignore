@@ -49,3 +49,11 @@ coverage*.xml
 # Local scratch
 *.log
 *.tmp
+
+# NOT steps/logs/*.log. That folder is where Bader drops the run log after a
+# local run, and it is the only evidence of what the tool did on a real model.
+# *.log above hid a new one from GitHub Desktop, so the one thing this repo
+# needs back could not reach it, and the log already committed looked fine
+# because git does not re-ignore a file it is already tracking. Checked with
+# git check-ignore -v on a name that is not there yet.
+!steps/logs/*.log

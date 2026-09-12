@@ -136,7 +136,15 @@ namespace Federator.Core.Tests
                 Assert.That(log.CountOf(GroupOutcome.Done), Is.EqualTo(1));
                 Assert.That(log.CountOf(GroupOutcome.Partial), Is.EqualTo(1));
                 Assert.That(log.CountOf(GroupOutcome.Failed), Is.EqualTo(2));
-                Assert.That(log.GroupRecords.Count, Is.EqualTo(4));
+
+                // All four groups reached the one list, read off the block on the disk
+                // rather than off the list the block is built from.
+                log.WriteResultBlock();
+                string text = ReadWhileOpen(log);
+
+                Assert.That(text, Does.Contain("groups done    : 1"));
+                Assert.That(text, Does.Contain("groups partial : 1"));
+                Assert.That(text, Does.Contain("groups failed  : 2"));
             }
         }
 

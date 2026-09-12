@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-09-12 F46, the four the chat audit found
+
+### What was done
+
+- F46 done, four parts, no logic. Each was checked here before it was written, and the checks are in the PR body
+- 46a. The D6 command in `steps/03_bader_next.md` named `claude/parsons-nwc-analysis-rlzgdr`, which is not a branch on the remote, and left out `fix-F39` and `round-close`, which are. The wrong name came from `git branch -r`, which prints the remote-tracking refs a clone remembers, and that ref survived here because nothing had pruned it. The command is rebuilt from `git ls-remote --heads origin`, which asks the remote and remembers nothing, and both that and the GitHub branches API return the same 30 branches, so 29 to delete. The steps now read the live list first, delete from it, read it again, and prune the clone. The trap is written beside the command so the next person does not repeat it
+- 46b. `.gitignore` ignored `*.log` everywhere, and `steps/logs/README.md` asks Bader to copy a run log in and commit it. `git check-ignore -v steps/logs/2026-09-20-1C07BC.log` answered `.gitignore:50:*.log`, so a new log would never appear in GitHub Desktop. The log already in the folder looked fine only because git does not re-ignore a file it is already tracking, which is what hid this for six days. One negation line, `!steps/logs/*.log`, with the reason above it in the style of the `build/` block. Proved by writing a file into the folder from the shell and reading `git status`, which now says `?? steps/logs/zzz-check-2026-09-20.log` where before it said nothing. The file was removed the same second and nothing under `steps/logs` was edited
+- 46c. `steps/README.md` listed four files and the folder holds six and the logs folder. It names all seven now, says what each is for, and says where to start. `03_bader_next.md` gets its own line saying to read it at the machine with Navisworks on it. A script compares the names in the Files list against the folder and finds nothing missing either way
+- 46d. `RunLog.GroupRecords` was public and F36 kept it that way because one test read it. The rule is that a test is not a caller, so it is private, and `TheFailedCountAndTheFailedListAlwaysAgree` writes the RESULT block and reads the three group count lines back off the disk, which is what the property was standing in for and what every other test in that fixture already does
+- Proved here: Core tests under mono on Linux, before and after: 905 passed, 37 failed, 33 skipped, 975 total. The changed fixture on its own: 9 passed, 0 failed
+- Waits for the local machine: nothing in F46. The D6 command is Bader's to run and the list in it will have this round's own branches in it by then, which is why the steps read the live list first
+
+### What remains
+
+- F40 to F45 and F16 in that order, then the read of `03_bader_next.md` against the code, then the closing entry
+
+### Known bugs
+
+- As in the round close entry
+
+### What comes next
+
+1. Merge the F46 PR
+2. F40, dead members out, second pass
+
 ## 2026-09-12 The plan for the second audit round, F46 and F40 to F16
 
 ### What was read first
