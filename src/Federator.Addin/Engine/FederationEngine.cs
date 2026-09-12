@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
+using Autodesk.Navisworks.Api.DocumentParts;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
@@ -674,7 +675,14 @@ namespace Federator.Addin.Engine
 
             progress("Rebuilding the NWF for " + job.Building + " from the scan folder");
 
+            // What the NWF holds, read BEFORE the clear. The tests as Core sees them and
+            // the sets as a count off the tree, which is what the log and the check use,
+            // plus the document's own value copies of both, which are what can be put
+            // back. F29: the sets are counted and put back on their own, because a test
+            // side points at a set, and a document that came back with its tests and
+            // without its sets would run every test against nothing.
             IList<SavedClashTest> saved = SavedTests.Read(document);
+            int setsBefore = CountSets(document.SelectionSets);
             ClashTestsData testsCopy = null;
             SavedItemCollection setsCopy = null;
 
@@ -698,8 +706,30 @@ namespace Federator.Addin.Engine
 
                 if (!AppendAll(document, job, outcome))
                 {
-                    log.Line("NWF      NOT saved over, the NWF on disk keeps its file list and its tests");
+                    log.Line("NWF      NOT saved over, the NWF on disk keeps its file list, its sets and its tests");
                     return false;
+                }
+
+                // Sets first, on their own count, whatever the tests did. A test side
+                // points at a set, so the tests go back into a document that already
+                // holds what they point at.
+                int setsAfterAppends = CountSets(document.SelectionSets);
+                int setsAfterRestore = setsAfterAppends;
+
+                if (NwfRebuildPlan.SetsNeedRestoring(setsBefore, setsAfterAppends) && setsCopy != null)
+                {
+                    try
+                    {
+                        document.SelectionSets.CopyFrom(setsCopy);
+                        setsAfterRestore = CountSets(document.SelectionSets);
+                    }
+                    catch (Exception error)
+                    {
+                        log.Failure(
+                            "putting the saved sets back into " + job.Building,
+                            error,
+                            "the SETS line below carries what the document holds now");
+                    }
                 }
 
                 int afterClear = SavedTests.Count(document);
@@ -709,34 +739,43 @@ namespace Federator.Addin.Engine
                 {
                     try
                     {
-                        // Sets first. A test side points at a set, so the tests go back
-                        // into a document that already holds what they point at.
-                        if (setsCopy != null)
-                        {
-                            document.SelectionSets.CopyFrom(setsCopy);
-                        }
-
                         document.GetClash().TestsData.CopyFrom(testsCopy);
                         afterRestore = SavedTests.Count(document);
                     }
                     catch (Exception error)
                     {
                         log.Failure(
-                            "putting the saved sets and tests back into " + job.Building,
+                            "putting the saved tests back into " + job.Building,
                             error,
                             "the saved tests line below carries what the document holds now");
                     }
                 }
 
+                log.Line(NwfRebuildPlan.SetsLine(setsBefore, setsAfterAppends, setsAfterRestore));
                 log.Line(NwfRebuildPlan.SavedTestsLine(saved.Count, afterClear, afterRestore));
 
-                if (!NwfRebuildPlan.SavedTestsKept(saved.Count, afterRestore))
+                bool setsKept = NwfRebuildPlan.SetsKept(setsBefore, setsAfterRestore);
+                bool testsKept = NwfRebuildPlan.SavedTestsKept(saved.Count, afterRestore);
+
+                if (!setsKept)
+                {
+                    outcome.AddError(
+                        "the rebuild could not keep the " + setsBefore
+                        + " selection sets, " + setsAfterRestore
+                        + " are in the document, so the NWF on disk was not saved over");
+                }
+
+                if (!testsKept)
                 {
                     outcome.AddError(
                         "the rebuild could not keep the " + saved.Count
                         + " saved clash tests, " + afterRestore
                         + " are in the document, so the NWF on disk was not saved over");
-                    log.Line("NWF      NOT saved over, the NWF on disk keeps its file list and its tests");
+                }
+
+                if (!setsKept || !testsKept)
+                {
+                    log.Line("NWF      NOT saved over, the NWF on disk keeps its file list, its sets and its tests");
                     return false;
                 }
 
@@ -750,7 +789,68 @@ namespace Federator.Addin.Engine
                 {
                     testsCopy.Dispose();
                 }
+
+                // SavedItemCollection was not IDisposable on the DLL measured on 2026-08-31,
+                // docs/scan.md section 4g, so the copy is disposed only where the type
+                // turns out to be. This compiles either way.
+                IDisposable setsHandle = setsCopy as IDisposable;
+
+                if (setsHandle != null)
+                {
+                    setsHandle.Dispose();
+                }
             }
+        }
+
+        /// <summary>
+        /// How many selection sets the tree holds, walked from the root with every wrapper
+        /// disposed on the way. A count and never a handle, because a handle onto anything
+        /// the document owns dies the moment the document replaces the object behind it,
+        /// which a clear does.
+        /// </summary>
+        private static int CountSets(DocumentSelectionSets sets)
+        {
+            if (sets == null)
+            {
+                return 0;
+            }
+
+            using (FolderItem root = sets.RootItem)
+            {
+                return CountSetsUnder(root);
+            }
+        }
+
+        private static int CountSetsUnder(GroupItem parent)
+        {
+            if (parent == null)
+            {
+                return 0;
+            }
+
+            int count = 0;
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    if (child is SelectionSet)
+                    {
+                        count++;
+                        continue;
+                    }
+
+                    GroupItem folder = child as GroupItem;
+
+                    if (folder != null)
+                    {
+                        count += CountSetsUnder(folder);
+                    }
+                }
+            }
+
+            return count;
         }
 
         /// <summary>
@@ -935,17 +1035,6 @@ namespace Federator.Addin.Engine
         /// </summary>
         private bool ClashStep(Document document, FederationJob job, JobOutcome outcome)
         {
-            if (outcome.Decision == RerunDecision.Changed)
-            {
-                // A CHANGED group that was not rebuilt is left alone, so nothing is built
-                // into it and nothing in it is run. Since F24 a CHANGED group is rebuilt
-                // and reaches here as Rebuilt, so this only holds where the rebuild never
-                // started.
-                log.Line("CLASH    " + job.Building
-                    + " was left alone because its file list changed, so no set was built and no test created or run");
-                return false;
-            }
-
             // Three things can happen and the log names which, in the same words on the
             // scanned run and on the open file run: tests from the picked XML, the tests
             // already saved in the document when no XML was picked, or nothing. The

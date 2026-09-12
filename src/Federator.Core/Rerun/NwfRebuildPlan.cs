@@ -182,6 +182,33 @@ namespace Federator.Core.Rerun
             return readBefore <= 0 || afterRestore >= readBefore;
         }
 
+        /// <summary>
+        /// The one line that says what became of the selection sets across the rebuild.
+        /// F29. Three numbers read off the document by walking the sets tree: before the
+        /// clear, after the appends, and after the copy was put back. The sets are put
+        /// back on their own count, whether or not the tests dropped, because a test side
+        /// points at a set and a document that lost its sets runs every test against
+        /// nothing.
+        /// </summary>
+        public static string SetsLine(int before, int afterAppends, int afterRestore)
+        {
+            return "SETS     before clear " + before + ", after appends " + afterAppends
+                + ", after restore " + afterRestore
+                + (SetsKept(before, afterRestore) ? string.Empty : ". LOST, the NWF on disk was NOT saved over, so it keeps them");
+        }
+
+        /// <summary>True when every set counted before the clear is in the document at the end.</summary>
+        public static bool SetsKept(int before, int afterRestore)
+        {
+            return before <= 0 || afterRestore >= before;
+        }
+
+        /// <summary>True when the sets have to be put back, which is any drop in the count.</summary>
+        public static bool SetsNeedRestoring(int before, int afterAppends)
+        {
+            return before > 0 && afterAppends < before;
+        }
+
         private static int IndexOfLeaf(IList<string> paths, string leaf)
         {
             for (int i = 0; i < paths.Count; i++)
