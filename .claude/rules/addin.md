@@ -63,6 +63,22 @@ docs/history/claude-md-history.md, kept whole.
   and CLASH lines in the log read the same whichever way the work was started, D4, and
   picking an XML runs HealthCheck on it, with the whole summary in the log under HEALTH
   and one sentence under the file in the window, D1
+- The NWD publish sets `AllowResave` TRUE, and with it `EmbedDatabaseProperties` true and
+  `PreventObjectPropertyExport` false. An NWD published without May be re-saved cannot be
+  translated by the ACC and Forma viewer, which is why every NWD this tool published before
+  F51 showed a processing error beside it up there, and the other two are the second thing
+  Autodesk describe, an NWD reaching ACC with no properties and every object showing as
+  solid. All three are on the list read off the installed DLL on 2026-08-29, section 4b,
+  each with a getter and a setter, so none of them is assumed. Every publish property this
+  run set goes in the log on ONE line before the publish, through
+  Federator.Core.Diagnostics.PublishedProperties, because an NWD that will not open is
+  diagnosed months later off the log and the file by somebody who cannot read the build
+  that wrote it. It records what was SET and never what the type offers, because a name on
+  the measured list that this code stopped setting would otherwise read as still set, and
+  it is written BEFORE the publish so a publish that throws still leaves behind what it was
+  asked to carry. Nothing appears beside the NWF in ACC and that is not a fault: ACC does
+  not translate an NWF, because an NWF holds no geometry, only pointers to the NWCs, so
+  there is no viewable file to make. Whether the NWF belongs up there at all is Q32
 - Republishing the NWD happens in the Build and Open cases, and it is no longer a tick box. It was
   one, on by default, and a weekly run wanted it every time, so it is fixed on. That is the
   point of a rerun. The NWF pointers are unchanged, so reopening picks up whatever the NWC
@@ -128,8 +144,9 @@ docs/history/claude-md-history.md, kept whole.
   a single discipline group and running none. A viewpoint already at its path is left
   exactly as it is and counted as already there, never made again, because a second copy
   at one path leaves the tree holding both, which is F28's rule for sets. The plan and the
-  VIEWS block are Federator.Core.Views, so both are tested, and the block reads as the
-  SETS block does with its totals counted off the same list the lines came from. A group
+  VIEWS block are Federator.Core.Views.ViewpointPlan and
+  Federator.Core.Views.ViewpointBuildOutcome, so both are tested, and the block reads as
+  the SETS block does with its totals counted off the same list the lines came from. A group
   whose viewpoints failed is not DONE. The API itself is UNMEASURED: nothing in
   docs\history\scan.md records DocumentSavedViewpoints, section 5b says so, and
   SavedViewpoints.CanBuild is false until tools\probes\probe-viewpoints.ps1 has been run.

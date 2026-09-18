@@ -341,13 +341,13 @@ Two halves. The first is true today and the second waits on the probe in the sec
 above, so do the first on the next ordinary run and the second only once the probe has
 been run and the add-in rebuilt.
 
-210. Look for, on any run since F52: a `VIEWS` line per group reading `N viewpoints planned:` and then the paths, such as `AR/AR only, ME/ME only, EL/EL only`, one per discipline in that group
-211. Look for: a group with only one discipline STILL gets a line with one viewpoint planned. If a single discipline group plans none, that is a fault and the log line is the evidence
+210. Look for, on any run since F52: a `VIEWS` line per group reading `N viewpoints planned:` and then the paths. A group of AR, ME and EL plans FIVE and not three, `AR/AR only, ME/ME only, ME/Over 150mm/ME over 150mm, EL/EL only, EL/Over 150mm/EL over 150mm`, because F53 gives Mechanical and Electrical a sub group for their large items and Architecture has no pipe in it
+211. Look for: a group with only one discipline STILL gets a line, never none. One AR group plans one viewpoint and one ME group plans two, its own and its large items sub group. A single discipline group planning NONE is the fault to watch for, and the log line is the evidence
 212. Look for, while the probe is outstanding: the line under it reading `VIEWS    not attempted.` and naming section 5b and the probe. That is the honest case and not a failure. No group should be marked down for it, so check the GROUP finished lines still read `DONE`
 213. Once the probe above has been run and the add-in rebuilt with what it found, run one building again
 214. Look for: a `VIEWS` block in the shape of the SETS block, one `VIEW` line per viewpoint then `views created     :` and `put into the document:`
 215. Open the NWF in Navisworks and open the Saved Viewpoints panel
-216. Look for: one folder per discipline, named with the discipline code, each holding one viewpoint. Press one and look for that discipline showing and the others hidden
+216. Look for: one folder per discipline, named with the discipline code. AR holds one viewpoint. ME and EL each hold one viewpoint and one sub folder named `Over 150mm` holding one more. Press the plain one and look for that discipline showing and the others hidden
 217. Run the SAME building again without changing anything
 218. Look for, F28's rule carried to viewpoints: every line reads `already there, left alone, not made again` and `views created     : 0`. A second copy of any viewpoint is a fault
 

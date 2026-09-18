@@ -16,7 +16,7 @@ Newest entry at the top.
 - A status written into the document is a write, so the NWF is saved again on it, even where nothing was created and nothing ran
 - WHAT IS NOT BUILT AND WHY. How the tool learns which clashes cannot be solved is Q33. The method takes a list of clash names with the status wanted and applies it. Nothing supplies that list. Building a guess at the input would mean writing a rule nobody agreed to into the only file that records what has been fixed, and Q33 sets out the four shapes it could take so Bader can pick one rather than discover the wrong one on a real model
 - Proved here: Core tests before 1035 passed, 0 failed, 32 skipped, 1067 total. After 1045 passed, 0 failed, 32 skipped, 1077 total. Core builds in Release with 0 warnings. The add-in parsed with the same six error codes and not one `CS1xxx`
-- Waits for the local machine: steps 238 to 246. Two of them can be done today and they are the ones that matter while Q33 is open, because both check that NOTHING moved: no `STATUS` line on an ordinary run, and no clash at a status it was not at before
+- Waits for the local machine: steps 228 to 236. Two of them can be done today and they are the ones that matter while Q33 is open, because both check that NOTHING moved: no `STATUS` line on an ordinary run, and no clash at a status it was not at before
 
 ### What remains
 
@@ -45,7 +45,7 @@ Newest entry at the top.
 - The sub groups. The large items of Mechanical and Electrical sit in a sub group of their own, so the tree reads ME, then ME only, then Over 150mm, then ME over 150mm. The sub folder is named FROM the threshold, so a folder reading Over 150mm beside a rule using 250 cannot happen, which is the kind of drift nobody notices. Which disciplines get one is a setting, because ME and EL are codes this project uses and nothing in this code decides that for another project
 - The add-in reads and does not judge. `ItemSizes` reads the named properties off an item by KIND, never with `ToDisplayString` and never with a cast, which is the rule section 4n was written for after one throw cost three report columns on every row of a run. A property that throws is left out in its own try, and a size written as a display string is not read at all, because parsing "150 mm" would mean guessing the unit written in it while the number this tool converts is in the document's units
 - Proved here: Core tests before 1004 passed, 0 failed, 32 skipped, 1036 total. After 1035 passed, 0 failed, 32 skipped, 1067 total. Core builds in Release with 0 warnings. The add-in parsed with the same six error codes and not one `CS1xxx`. Three existing viewpoint plan tests failed when the sub groups went in, which was the correct new behaviour and they now assert it
-- Waits for the local machine: the SIZE block itself, because the sub group IS a viewpoint and nothing can build a viewpoint until F52's probe has answered. The rule underneath it is settled and proved and does not wait for anything
+- Waits for the local machine: steps 219 to 227, and the SIZE block itself, because the sub group IS a viewpoint and nothing can build a viewpoint until F52's probe has answered. The rule underneath it is settled and proved and does not wait for anything
 
 ### What remains
 
@@ -75,7 +75,7 @@ Newest entry at the top.
 - That last decision is the one worth defending. Wiring the builder in while those two methods throw would have reported EVERY group FAILED over a feature that was never attempted, which is precisely the fault that once called a clean 22 group run failed because an NWD nobody had asked for was missing. A step this tool cannot do is not a step that failed
 - One rule that was checked and stands. `core.md` says no clash is ever saved as a viewpoint in the NWF. A discipline viewpoint is not a clash viewpoint, so the rule is untouched, and `docs/workflow.md` now says which is which rather than leaving two sentences that read as one rule
 - Proved here: Core tests before 978 passed, 0 failed, 32 skipped, 1010 total. After 1004 passed, 0 failed, 32 skipped, 1036 total. Core builds in Release with 0 warnings. The add-in parsed with the same six error codes and not one `CS1xxx`, which caught a real ambiguity the new overload introduced and which is fixed
-- Waits for the local machine: the probe, then the add-in half, then the run. Steps 220 to 228 are the two halves, and the first of them is true on the next ordinary run
+- Waits for the local machine: the probe, then the add-in half, then the run. Steps 210 to 218 are the two halves, and the first of them is true on the next ordinary run
 
 ### What remains
 
@@ -132,7 +132,7 @@ Newest entry at the top.
 - Why the line is worth its own type. An NWD that will not open in ACC is diagnosed months later off the log and the file, by someone who cannot read the build that wrote it. Reading the code answers a different question, which is what the code says now
 - `docs/workflow.md` gains a section on the NWD in ACC, and says why nothing appears beside the NWF: ACC does not translate an NWF at all, because an NWF holds no geometry, only pointers to the NWC files, so there is no viewable file to make from one. Nothing beside an NWF up there is a fault
 - Proved here: Core tests before 957 passed, 0 failed, 32 skipped, 989 total. After 966 passed, 0 failed, 32 skipped, 998 total, the nine being the new ones. The add-in parsed through the Roslyn compiler with no references and gave the same six error codes as before the edit, 945 CS0518, 464 CS0246, 63 CS0234, 2 CS0115, 1 CS0656 and 1 CS0103, and not one `CS1xxx`
-- Waits for the local machine: everything that matters. The three flags only mean something once an NWD goes up. Steps 195 to 203 of `03_bader_next.md` are the run, the log line, the upload, the missing warning and the properties panel
+- Waits for the local machine: everything that matters. The three flags only mean something once an NWD goes up. Steps 201 to 209 of `03_bader_next.md` are the run, the log line, the upload, the missing warning and the properties panel
 
 ### What remains
 
@@ -217,7 +217,7 @@ F51 is first because the brief puts it first and because it is the only one of t
 
 - Three fixes merged today, in the order the brief set: F47a, F47b and F47c. Each on its own branch off main, each a draft pull request merged once Actions was green, each with its own entry above. No pull request is open and nothing was committed on main
 - F47a, the walls. `.gitattributes` added at the root, `text=auto` for everything, `eol=lf` forced on `*.sh` and on `.githooks/pre-commit` by path, and `-text` on `samples` and `steps/logs` so the evidence is never normalised. `git add --renormalize .` changed no bytes here, because the index already held LF for every text file in it, 216 when F47a measured it and 217 now that `.gitattributes` is one of them, and the one CRLF file in it is the run log, which is now pinned. The fix changes what a checkout gets, not what the repo holds
-- Both walls were proved to refuse here, with the exit code and the line each prints, and each was also proved to allow a call it must allow. The branch wall proved itself twice over, because it blocked a command of the worker's own that carried the words git and commit while main was checked out. What is still UNKNOWN is the one thing only a Windows machine can answer, whether Claude Code there finds the sh that runs them. That is D7 in `03_bader_next.md`, steps 195 to 202
+- Both walls were proved to refuse here, with the exit code and the line each prints, and each was also proved to allow a call it must allow. The branch wall proved itself twice over, because it blocked a command of the worker's own that carried the words git and commit while main was checked out. What is still UNKNOWN is the one thing only a Windows machine can answer, whether Claude Code there finds the sh that runs them. That is D7 in `03_bader_next.md`, steps 237 to 244
 - F47b, the last doubled comment. It was moved, not deleted. It describes `Count`, which is still there and had lost its own comment when F45 inserted a method above it. F44's own check now reads 0 stacked blocks over all 102 files under src, where it read 1
 - F47c, the record. `WorkbookWriter.ClientColumns` deleted, nothing anywhere referenced it. The brief named two wrong records in the F40 entry and there are five. Every one of the 53 names on that list was read against the code and against the F40 commit's own diff, and the table is in the pull request
 - `steps/03_bader_next.md` read again, which is what the round asked for last. The numbering runs 1 to 209 with no gap and no repeat. The D6 branch list was stale by exactly the three branches this round pushed, so it was rebuilt off `git ls-remote --heads origin`, 42 names now, checked name for name against the live remote plus the branch this entry is written on. The same clone was holding a remote tracking ref for a branch the remote no longer has, which is the trap that section already warns about, so the warning is now a measurement as well
@@ -238,7 +238,7 @@ F51 is first because the brief puts it first and because it is the only one of t
 
 ### What comes next
 
-1. Bader works D7, steps 195 to 202, which is four minutes and settles whether the walls run on his machine
+1. Bader works D7, steps 237 to 244, which is four minutes and settles whether the walls run on his machine
 2. Bader builds, installs and works `03_bader_next.md` from step 1
 3. The run logs come back into `steps/logs` on their own branch, as step 183 says
 4. Bader runs the D6 delete command himself

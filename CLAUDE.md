@@ -166,6 +166,14 @@ to LF on every checkout and carries the measurement. Never remove those three li
 - the ClashTestType value that matches hard_conservative
 - the Clash Detective report defaults, so the tool starts where Navisworks starts
 - NwdExportOptions is a 2026 class. It does not exist in 2025
+- whether ONE MODEL can be taken out of an open document without a clear. Nothing named
+  Remove, Delete or Detach against a model has ever been read off the DLL, so it is UNKNOWN
+  rather than absent. docs\history\scan.md 5a, tools\probes\probe-model-remove.ps1, F50
+- the whole SAVED VIEWPOINT API. DocumentSavedViewpoints has never been touched by this
+  repo and nothing about it is measured: how a folder is made, how a viewpoint goes in one,
+  whether a name can be set, what has to be disposed, and how a discipline is shown while
+  the others are hidden. docs\history\scan.md 5b, tools\probes\probe-viewpoints.ps1, F52.
+  SavedViewpoints.CanBuild is false until that probe has been run
 
 ## Writing
 
