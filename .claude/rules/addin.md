@@ -119,6 +119,25 @@ docs/history/claude-md-history.md, kept whole.
   are somebody's decision. Whether a model can be taken out of an open document WITHOUT a
   clear, which would retire the whole dance, is UNKNOWN, see docs\history\scan.md 5a and
   tools\probes\probe-model-remove.ps1
+- One folder per discipline goes in the NWF with one viewpoint in each, showing that
+  discipline and hiding the others, made after the clash run and before the NWF is saved
+  again so the viewpoint is inside the file the NWD is published from. A group of ONE
+  discipline still gets its folder and its viewpoint: it hides nothing, which is not the
+  same as having no viewpoint, and skipping it would make one NWF in a set a different
+  shape from every other, which is the reasoning F35 used for creating every clash test in
+  a single discipline group and running none. A viewpoint already at its path is left
+  exactly as it is and counted as already there, never made again, because a second copy
+  at one path leaves the tree holding both, which is F28's rule for sets. The plan and the
+  VIEWS block are Federator.Core.Views, so both are tested, and the block reads as the
+  SETS block does with its totals counted off the same list the lines came from. A group
+  whose viewpoints failed is not DONE. The API itself is UNMEASURED: nothing in
+  docs\history\scan.md records DocumentSavedViewpoints, section 5b says so, and
+  SavedViewpoints.CanBuild is false until tools\probes\probe-viewpoints.ps1 has been run.
+  While it is false the run PLANS the viewpoints, says in the log what it would have made,
+  and attempts nothing, and the judgement is told they were not requested, because a step
+  this tool cannot do is not a step that failed. No clash is ever saved as a viewpoint,
+  which is a different rule and still holds: a discipline viewpoint is not a clash
+  viewpoint
 - Applying the file's settings to a test already in the document is a tick box, off by
   default, and it says plainly that changing a test RESETS its results and every clash
   in it goes back to New. That is the whole reason the default is to report and not to

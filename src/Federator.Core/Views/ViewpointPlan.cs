@@ -82,6 +82,15 @@ namespace Federator.Core.Views
                 throw new ArgumentNullException("group");
             }
 
+            return For(group.Disciplines, settings);
+        }
+
+        /// <summary>
+        /// The same plan from the discipline codes alone, which is what the engine holds per
+        /// job. One rule, two ways in, so the engine never works a plan out for itself.
+        /// </summary>
+        public static IList<PlannedViewpoint> For(IList<string> disciplines, ViewpointSettings settings)
+        {
             if (settings == null)
             {
                 throw new ArgumentNullException("settings");
@@ -89,9 +98,14 @@ namespace Federator.Core.Views
 
             List<PlannedViewpoint> planned = new List<PlannedViewpoint>();
 
-            for (int i = 0; i < group.Disciplines.Count; i++)
+            if (disciplines == null)
             {
-                string discipline = group.Disciplines[i];
+                return planned;
+            }
+
+            for (int i = 0; i < disciplines.Count; i++)
+            {
+                string discipline = disciplines[i];
 
                 if (string.IsNullOrEmpty(discipline))
                 {
@@ -100,11 +114,11 @@ namespace Federator.Core.Views
 
                 List<string> hides = new List<string>();
 
-                for (int other = 0; other < group.Disciplines.Count; other++)
+                for (int other = 0; other < disciplines.Count; other++)
                 {
-                    if (other != i && !string.IsNullOrEmpty(group.Disciplines[other]))
+                    if (other != i && !string.IsNullOrEmpty(disciplines[other]))
                     {
-                        hides.Add(group.Disciplines[other]);
+                        hides.Add(disciplines[other]);
                     }
                 }
 

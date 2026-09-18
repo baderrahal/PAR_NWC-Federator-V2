@@ -24,6 +24,7 @@ namespace Federator.Addin.Ui
             Building = building;
             Files = files;
             Disciplines = string.Join(", ", new List<string>(disciplines).ToArray());
+            DisciplineCodes = new List<string>(disciplines);
             DisciplineCount = disciplines.Count;
             this.names = names;
         }
@@ -61,6 +62,13 @@ namespace Federator.Addin.Ui
 
         /// <summary>How many disciplines the scan found in this group, handed on to the job.</summary>
         public int DisciplineCount { get; private set; }
+
+        /// <summary>
+        /// The codes themselves, kept beside the joined string the column shows, because
+        /// F52 makes one viewpoint folder per code and a joined string would have to be
+        /// split again by whoever needed it.
+        /// </summary>
+        public IList<string> DisciplineCodes { get; private set; }
 
         public string NwfName
         {

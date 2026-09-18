@@ -147,8 +147,15 @@ namespace Federator.Core.Tests
         [Test]
         public void ANullGroupOrNullSettingsIsRefused()
         {
-            Assert.That(() => ViewpointPlan.For(null, Settings()), Throws.ArgumentNullException);
+            Assert.That(
+                () => ViewpointPlan.For((BuildingGroup)null, Settings()),
+                Throws.ArgumentNullException);
+
             Assert.That(() => ViewpointPlan.For(Group("AR"), null), Throws.ArgumentNullException);
+
+            // The list form takes a missing list as no disciplines rather than throwing,
+            // because the open file run holds none and that is a real answer there.
+            Assert.That(ViewpointPlan.For((IList<string>)null, Settings()), Is.Empty);
         }
 
         [Test]

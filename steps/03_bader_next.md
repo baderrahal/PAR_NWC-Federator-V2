@@ -335,6 +335,22 @@ browser as well as Navisworks.
 208. Look for: a properties panel with real Revit properties in it, not one row reading Solid. Object properties missing means `EmbedDatabaseProperties` did not carry them and `PreventObjectPropertyExport` is the next thing to look at
 209. Q32 is whether the NWF needs to be in ACC at all. Nothing appears beside an NWF because ACC does not translate one: an NWF holds no geometry, only pointers to the NWCs, so there is no viewable file to make. Answer it in `steps/02_questions.md` when you have seen the NWD work
 
+## Proof F52, a viewpoint per discipline
+
+Two halves. The first is true today and the second waits on the probe in the section
+above, so do the first on the next ordinary run and the second only once the probe has
+been run and the add-in rebuilt.
+
+210. Look for, on any run since F52: a `VIEWS` line per group reading `N viewpoints planned:` and then the paths, such as `AR/AR only, ME/ME only, EL/EL only`, one per discipline in that group
+211. Look for: a group with only one discipline STILL gets a line with one viewpoint planned. If a single discipline group plans none, that is a fault and the log line is the evidence
+212. Look for, while the probe is outstanding: the line under it reading `VIEWS    not attempted.` and naming section 5b and the probe. That is the honest case and not a failure. No group should be marked down for it, so check the GROUP finished lines still read `DONE`
+213. Once the probe above has been run and the add-in rebuilt with what it found, run one building again
+214. Look for: a `VIEWS` block in the shape of the SETS block, one `VIEW` line per viewpoint then `views created     :` and `put into the document:`
+215. Open the NWF in Navisworks and open the Saved Viewpoints panel
+216. Look for: one folder per discipline, named with the discipline code, each holding one viewpoint. Press one and look for that discipline showing and the others hidden
+217. Run the SAME building again without changing anything
+218. Look for, F28's rule carried to viewpoints: every line reads `already there, left alone, not made again` and `views created     : 0`. A second copy of any viewpoint is a fault
+
 ## The two walls are live, D7
 
 There are three files here that `sh` reads: the two hooks Claude Code runs before a tool
@@ -352,45 +368,45 @@ otherwise. F47a added `.gitattributes`, which pins these three to LF on every ch
 
 This is a one time check per clone. Do it once and the rest of this file never needs it.
 
-210. In the VS Code terminal, in the repo folder, run:
+219. In the VS Code terminal, in the repo folder, run:
 
 ```
 git ls-files --eol .claude/hooks .githooks
 ```
 
-211. Look for: three lines, each reading `i/lf` and `w/lf` and `attr/text eol=lf`. A `w/crlf` on any of them means this checkout still holds the old copy, so run `git add --renormalize . ; git checkout -- .` and read it again
-212. Switch the test wall on, which git needs told once per clone:
+220. Look for: three lines, each reading `i/lf` and `w/lf` and `attr/text eol=lf`. A `w/crlf` on any of them means this checkout still holds the old copy, so run `git add --renormalize . ; git checkout -- .` and read it again
+221. Switch the test wall on, which git needs told once per clone:
 
 ```
 git config core.hooksPath .githooks
 ```
 
-213. Look for: `git config core.hooksPath` answers `.githooks`
-214. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
-215. Look for: the commit pauses and prints `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall. Throw the branch away afterwards
-216. Open Claude Code in this folder and ask it to write one word into any file under `samples`
-217. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
+222. Look for: `git config core.hooksPath` answers `.githooks`
+223. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
+224. Look for: the commit pauses and prints `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall. Throw the branch away afterwards
+225. Open Claude Code in this folder and ask it to write one word into any file under `samples`
+226. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
 
 ## Delete the old branches, D6
 
 Every branch except main is merged into main. The container cannot delete a branch: `git push origin --delete` comes back HTTP 403 from the proxy in front of it, and there is no GitHub tool in it that deletes a branch. So this is yours, one command from the repo folder in the VS Code terminal.
 
-The list below was read on 2026-09-18 with the command in step 218, after the last merge of the third audit round, and `git ls-remote --heads origin` gave 42 names. The branch this round's own closing pull request came from, `round-close-3`, is in the delete list too and was not on the remote yet when the list was read, which makes 43 lines and 42 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
+The list below was read on 2026-09-18 with the command in step 227, after the last merge of the third audit round, and `git ls-remote --heads origin` gave 42 names. The branch this round's own closing pull request came from, `round-close-3`, is in the delete list too and was not on the remote yet when the list was read, which makes 43 lines and 42 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
 
-218. Read the live list:
+227. Read the live list:
 
 ```
 git ls-remote --heads origin
 ```
 
-219. Look for: one line per branch, the name after `refs/heads/`. Expect 43 of them, so 42 to delete. It was 39 after the second audit round, and the third added three fix branches and its closing one
-220. Delete every one of them except main:
+228. Look for: one line per branch, the name after `refs/heads/`. Expect 43 of them, so 42 to delete. It was 39 after the second audit round, and the third added three fix branches and its closing one
+229. Delete every one of them except main:
 
 ```
 git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-F40 fix-F41 fix-F42 fix-F43 fix-F44 fix-F45 fix-F46 fix-F47a fix-F47b fix-F47c fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close round-close-2 round-close-3
 ```
 
-221. Look for: one `- [deleted]` line per branch and no error
-222. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
-223. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
-224. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main
+230. Look for: one `- [deleted]` line per branch and no error
+231. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
+232. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
+233. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main

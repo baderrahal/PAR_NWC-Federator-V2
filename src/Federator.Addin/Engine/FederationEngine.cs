@@ -13,6 +13,7 @@ using Federator.Core.Findings;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
+using Federator.Core.Views;
 using Federator.Core.Units;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 
@@ -436,7 +437,13 @@ namespace Federator.Addin.Engine
                 new DocumentUnits(log).Apply(document, wanted);
             }
 
-            if (ClashStep(document, job, outcome))
+            bool clashPutSomethingIn = ClashStep(document, job, outcome);
+
+            // F52. After the clash run and before the NWF is saved again, so a viewpoint
+            // this run made is inside the file the NWD is published from.
+            bool viewsPutSomethingIn = BuildViewpoints(document, job, outcome);
+
+            if (clashPutSomethingIn || viewsPutSomethingIn)
             {
                 SaveTheNwfAgain(document, job, outcome);
             }
@@ -1764,6 +1771,46 @@ namespace Federator.Addin.Engine
         /// weekly run wanted it every time, so it is fixed on and there is no branch here
         /// for a run that does not want it.
         /// </summary>
+        /// <summary>
+        /// One folder per discipline with one viewpoint in each, F52. Returns whether
+        /// anything new went into the document, which is what asks for the second NWF save.
+        ///
+        /// WHILE THE API IS UNMEASURED this plans the viewpoints, says in the log what it
+        /// would have made, and attempts nothing. SavedViewpoints.CanBuild is the one
+        /// switch, and it is false until tools\probes\probe-viewpoints.ps1 has been run.
+        /// The group is told the viewpoints were NOT REQUESTED, because a step this tool
+        /// cannot do is not a step that failed, and reporting every group FAILED over a
+        /// feature that was never attempted is the fault that once called a clean 22 group
+        /// run failed over a missing NWD nobody had asked for.
+        /// </summary>
+        private bool BuildViewpoints(Document document, FederationJob job, JobOutcome outcome)
+        {
+            IList<PlannedViewpoint> planned = ViewpointPlan.For(job.Disciplines, new ViewpointSettings());
+
+            log.Line("VIEWS    " + ViewpointPlan.Describe(planned));
+
+            if (planned.Count == 0)
+            {
+                return false;
+            }
+
+            if (!SavedViewpoints.CanBuild)
+            {
+                log.Line(SavedViewpoints.WhyNotYet());
+                outcome.ViewpointsRequested = false;
+                return false;
+            }
+
+            outcome.ViewpointsRequested = true;
+
+            ViewpointBuildOutcome views = new ViewpointBuilder(progress, log).Build(document, planned);
+
+            log.Block("VIEWS", views.Lines());
+            outcome.FailedViewpointCount = views.FailedCount;
+
+            return views.PutAnythingIn;
+        }
+
         private void WriteNwd(Document document, FederationJob job, JobOutcome outcome)
         {
             progress("Publishing NWD for " + job.Building);
