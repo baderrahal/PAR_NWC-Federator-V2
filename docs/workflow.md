@@ -84,3 +84,36 @@ Nothing appears beside the NWF up there and nothing is wrong. ACC does not trans
 NWF at all. An NWF holds no geometry, only pointers to the NWC files, so there is no
 viewable file to make from one and no translation to succeed or fail. Whether the NWF
 needs to be in ACC at all is Q32.
+
+## The NWF is the record
+
+The NWD is the picture and the NWF is the ledger. Everything anyone has decided about a
+clash lives in the NWF and nowhere else. There is no second copy on disk, none in the
+NWD, and none in the workbook, which is a report of what the NWF held at the moment it
+was written.
+
+The NWF carries five things:
+
+    the file list      pointers to the NWC files, not copies
+    the sets           the selection sets every clash test side points at
+    the tests          the clash tests themselves
+    the results        every clash, with the status a person set on it
+    the viewpoints     one folder per discipline, since F52
+
+A Weekly run touches none of that. It opens the NWF, lets Navisworks reload the newer
+NWCs, runs the tests where they sit and saves. Nothing is cleared and nothing is at risk.
+
+A Rebuilt run is the one that has to be careful. The file list changed, so the document is
+cleared and appended again from the scan, and a clear takes everything above with it. So
+each of the five is counted before the clear, counted after the appends, and counted again
+after the saved copy is put back. The NWF on disk is saved over only when every one of
+them came back. One short and the NWF is left exactly as it was, the group fails, and the
+log says which of them went and how many.
+
+A count that could not be taken is not a count of zero. It reports as not counted and it
+holds the NWF shut in the same way, because a rebuild that could not see the viewpoints
+must not report that it kept them.
+
+Whether a model can be removed from an open document without a clear at all, which would
+make all of this unnecessary, is UNKNOWN. It has never been read off the installed DLL.
+`tools\probes\probe-model-remove.ps1` answers it and Q34 is what happens when it does.

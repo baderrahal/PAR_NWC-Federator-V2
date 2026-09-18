@@ -1,6 +1,6 @@
 # Probes
 
-Six PowerShell scripts that read facts off the machine they run on: the installed
+Eight PowerShell scripts that read facts off the machine they run on: the installed
 Navisworks DLLs, and the real window once the add-in is built and installed. They were
 how docs/history/scan.md was measured. Nothing here is part of the build or the install.
 
@@ -10,7 +10,7 @@ folder the add-in project defaults to:
     powershell -ExecutionPolicy Bypass -File tools\probes\probe-units.ps1
     powershell -ExecutionPolicy Bypass -File tools\probes\probe-units.ps1 -NavisworksPath "D:\Autodesk\Navisworks Manage 2025"
 
-The three DLL probes need only the install:
+The five DLL probes need only the install:
 
 - `probe-clash-api.ps1` reads every type and member of Autodesk.Navisworks.Clash.dll,
   which is how the copy forms, the eEXTERNAL ownership and the absence of any stale
@@ -18,6 +18,15 @@ The three DLL probes need only the install:
 - `probe-clash-images.ps1` reads the members that render a clash picture
 - `probe-units.ps1` reads which members can set a document's or a model's units, which
   is how DocumentModels.SetModelUnitsAndTransform was found to be the only one
+- `probe-model-remove.ps1` answers F50: whether one model can be taken out of an open
+  document without clearing the whole thing. Nothing named Remove, Delete or Detach
+  against a model had ever been read off the DLL, so it was UNKNOWN rather than absent.
+  See docs/history/scan.md section 5a
+- `probe-viewpoints.ps1` answers F52: how a saved viewpoint folder is made, how a
+  viewpoint goes in it, whether a name can be set and what has to be disposed. The repo
+  had never touched DocumentSavedViewpoints and nothing about it was measured. It prints
+  DocumentSelectionSets beside it, because the sets tree is the closest shape this tool
+  already builds. See docs/history/scan.md section 5b
 
 The three window probes need the add-in built in Release and installed by
 build\install.ps1, because they construct the real window:

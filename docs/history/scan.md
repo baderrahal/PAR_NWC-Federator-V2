@@ -2794,3 +2794,88 @@ reported unreadable rather than guessed at. Before this change the floor was 5 p
 2. The output name carries the type code through from the input, MOD in every sample seen.
    Only the level and the number are fixed. If the type code should be pinned to MOD as
    well, say so and it becomes one more forced part.
+
+## 5a. Can a model be taken out of an open document, NOT MEASURED, asked 2026-09-18
+
+This section records a QUESTION and is not a measurement. Nothing below was read off a
+DLL. It is here so the next person does not spend the search again, and so the answer has
+somewhere to land.
+
+F50 asks whether one model can be removed from an open document without clearing the
+whole thing. It matters because the NWF is the record: it carries the file list, the
+sets, the tests, every clash result with the statuses a person set by hand, and since F52
+the viewpoints. A CHANGED group today clears the document and appends again, then puts
+the sets and the tests back and fails loudly if either does not come back. Every new thing
+the NWF carries makes that longer and riskier. If a model can be taken out on its own,
+the rebuild becomes append what is missing and remove what is gone, nothing needs putting
+back and nothing can be lost.
+
+What this file already holds, and it is not enough:
+
+- section 4b records `public Autodesk.Navisworks.Api.DocumentParts.DocumentModels Models { get }`
+  on `Document`, and says `DocumentModels.Count` is an int
+- section 4q records `public void DocumentModels.SetModelUnitsAndTransform(...)`
+- nothing named Remove, Delete or Detach against a model appears anywhere in this file.
+  The only two Remove members recorded in the whole of it are `RemoveExpiryDate` and
+  `RemovePassword` on `PublishProperties`, which are nothing to do with models
+
+So whether such a member exists is **UNKNOWN**. It was not searched for and found absent.
+It was simply never read.
+
+`tools\probes\probe-model-remove.ps1` is the probe that answers it. It prints every member
+of `DocumentModels`, every member of `Model`, and every method anywhere in the API
+assembly, public or not, whose name holds remove, delete, detach, unload, close, drop,
+eject or discard AND which takes a `Model` or an index on a model or document type. If it
+prints nothing under THE QUESTION, the answer is no and the clear stays.
+
+Why it was not run when this section was written: there is no `Autodesk.Navisworks.Api.dll`
+and no PowerShell in the container this repo is developed in, and the add-in has never
+compiled there either. The probe is Bader's to run, as a numbered step in
+`steps\03_bader_next.md`.
+
+Until it is answered, F50 takes the other branch: the clear and restore stays and widens
+from two things to four, so the viewpoints and the statuses are counted out and counted
+back the same way the sets and the tests always were.
+
+## 5b. The saved viewpoint API, NOT MEASURED, asked 2026-09-18
+
+This section records a QUESTION and is not a measurement. Nothing below was read off a
+DLL.
+
+F52 puts one folder per discipline into the NWF with one saved viewpoint inside it. The
+repo has never touched this collection. What this file holds about viewpoints is all of
+section 4k and it is about a CLASH's own viewpoint, not a saved one:
+
+```
+public Viewpoint DocumentClashTests.TestsViewpointForResult(IClashResult result)
+public void Document.CurrentViewpoint.CopyFrom(Viewpoint viewpoint)
+public void View.CopyViewpointFrom(Viewpoint viewpoint, ViewChange change)
+public Viewpoint View.CreateViewpointCopy()
+public bool ClashResult.HasSavedViewpoint { get }
+```
+
+and the sentence "Nothing here writes a viewpoint into the NWF."
+
+`DocumentSavedViewpoints` appears nowhere in this file and nowhere in the repo. So all
+four things F52 needs are **UNKNOWN**: how a folder is made, how a viewpoint is added into
+one, whether a name can be set, and whether anything has to be disposed.
+
+`tools\probes\probe-viewpoints.ps1` answers it. It prints `DocumentSavedViewpoints`,
+`SavedViewpoint`, `Viewpoint`, `FolderItem`, `GroupItem` and `SavedItem` whole, and prints
+`DocumentSelectionSets` beside them, because the sets tree is the closest thing this tool
+already builds and section 4d records its shape:
+
+```
+public Autodesk.Navisworks.Api.FolderItem RootItem { get }
+public System.Void AddCopy(Autodesk.Navisworks.Api.SavedItem item)
+public System.Void AddCopy(Autodesk.Navisworks.Api.GroupItem parent, Autodesk.Navisworks.Api.SavedItem item)
+```
+
+If the two collections have the same shape, that is a measurement and F52 follows it. If
+they differ, the difference is what the probe exists to find. The shape is NOT assumed to
+be the same on the strength of the pattern, because that is how a member gets written down
+as if it had been read.
+
+`src\Federator.Addin\Engine\SavedViewpoints.cs` is the one place in the add-in that rests
+on this, and it says so at the top. A build error there means the assumption was wrong,
+which is the whole reason it is one file and one method.
