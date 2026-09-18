@@ -179,3 +179,43 @@ all. Leaving it out would mean a run quietly drops real geometry from a viewpoin
 nothing in the output to say it happened. So it goes in, and the SIZE block says how many
 did, says plainly that nothing was dropped, and names every one of them. That number is
 expected to be large and it is the one most likely to say the rule needs changing.
+
+## What a status means, and which ones this tool sets
+
+Two different sets of words get confused because they share one of them.
+
+A CLASH carries one of five:
+
+    New        it has not been looked at
+    Active     somebody is dealing with it
+    Reviewed   somebody looked at it and moved on
+    Approved   somebody with the authority to accept it accepted it
+    Resolved   it is gone from the model
+
+A TEST carries one of four:
+
+    New   Old   Partial   Complete
+
+They are different things. The only word they share is New. **Old is a test word and never
+a clash word**, so no clash is ever at Old and nothing in this tool ever moves one from it.
+What puts a test into Old is UNKNOWN and is not guessed at either, so the test status is
+written in the report exactly as the API reports it.
+
+This tool sets **Reviewed** and nothing else. A clash that cannot be solved should not sit
+at New or Active forever, and Reviewed says it was looked at and passed over.
+
+It never sets Approved or Resolved. Both are a person's statement about work that was
+actually done, the NWF is the only record of what has been fixed, and there is nothing to
+check either claim against afterwards. It does not set New or Active either, because
+running a test produces them and setting one by hand would overwrite a decision somebody
+had already made.
+
+A status is applied between the run and the report, never after, so the workbook and the
+page carry the new status and not the one read before the change. Writing a status is a
+write, so the NWF is saved again on it.
+
+**How the tool learns which clashes cannot be solved is not decided.** That is Q33. The
+part that needs no answer is built: hand it a list of clash names with the status wanted
+and it applies them and logs every one it changed and every one it could not find. Nothing
+supplies that list yet, and guessing it would mean writing a rule nobody agreed to into the
+only record of what has been fixed.

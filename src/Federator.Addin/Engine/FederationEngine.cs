@@ -1089,6 +1089,8 @@ namespace Federator.Addin.Engine
 
             // Deliberately not short circuited. A file holding tests only is a normal
             // case, so the tests are created whether or not any set was built here.
+            // F54. A status written into the document is a change, so it asks for the NWF
+            // the same way a test that ran does.
             return CreateAndRunTheTests(document, job, outcome, source) || changed;
         }
 
@@ -1359,7 +1361,10 @@ namespace Federator.Addin.Engine
                     outcome.AddError(clash.StopTheRunReason);
                 }
 
-                return clash.CreatedCount > 0 || clash.RanCount > 0;
+                // F54. A status written into the document is a write like any other, so it
+                // asks for the NWF to be saved again even where nothing was created and
+                // nothing ran.
+                return clash.CreatedCount > 0 || clash.RanCount > 0 || runner.ChangedAStatus;
             }
             catch (Exception error)
             {

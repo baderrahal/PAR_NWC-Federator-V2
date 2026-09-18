@@ -367,6 +367,23 @@ viewpoint and nothing can build one yet.
 226. Look for: large pipes, ducts and trays showing, small ones hidden, and the fittings still there. A fitting missing means the include on unknown rule is not working and the SIZE block is the evidence
 227. Look for, on a document measured in FEET rather than millimetres: the same items in and out as the same building measured in millimetres. The conversion is what makes that true, and a difference means the raw number is being compared somewhere
 
+## Proof F54, clashes that cannot be solved become Reviewed
+
+Only the part that needs no answer is built, so only that part can be proved. How the
+tool learns WHICH clashes cannot be solved is Q33 and nothing supplies a list yet, so no
+run today changes a single status. What can be checked is that nothing changed one by
+accident and that the words are right.
+
+228. Run any building the ordinary way
+229. Look for: NO `STATUS` line anywhere in the log. Nothing supplies a list while Q33 is open, so a status line on an ordinary run means something is supplying one and that is a fault
+230. Look for: the clash counts per test in the workbook still read New, Active, Reviewed, Approved and Resolved as they always did, and no clash has moved
+231. Open `docs\workflow.md` and read the section What a status means
+232. Look for: it says a clash carries five and a test carries four, that Old is a test word and never a clash word, and that this tool sets Reviewed and nothing else. If Q33 is answered and that section still says nothing supplies a list, the doc and the code have drifted
+233. When Q33 IS answered and the input is built, run one building and look for a `STATUS` block of five lines naming the five and the four, written once per run
+234. Look for: one line per clash moved, reading the clash name then the old status then the new, and one line per name it could not find
+235. Look for: a second `NWF      attempt` line after the clash step, because writing a status is a write and the NWF is saved again on it
+236. Look for: the workbook shows the NEW status for every clash that moved. If it shows the old one, the status is being applied after the harvest instead of before it, which is the one thing this feature must not do
+
 ## The two walls are live, D7
 
 There are three files here that `sh` reads: the two hooks Claude Code runs before a tool
@@ -384,45 +401,45 @@ otherwise. F47a added `.gitattributes`, which pins these three to LF on every ch
 
 This is a one time check per clone. Do it once and the rest of this file never needs it.
 
-228. In the VS Code terminal, in the repo folder, run:
+237. In the VS Code terminal, in the repo folder, run:
 
 ```
 git ls-files --eol .claude/hooks .githooks
 ```
 
-229. Look for: three lines, each reading `i/lf` and `w/lf` and `attr/text eol=lf`. A `w/crlf` on any of them means this checkout still holds the old copy, so run `git add --renormalize . ; git checkout -- .` and read it again
-230. Switch the test wall on, which git needs told once per clone:
+238. Look for: three lines, each reading `i/lf` and `w/lf` and `attr/text eol=lf`. A `w/crlf` on any of them means this checkout still holds the old copy, so run `git add --renormalize . ; git checkout -- .` and read it again
+239. Switch the test wall on, which git needs told once per clone:
 
 ```
 git config core.hooksPath .githooks
 ```
 
-231. Look for: `git config core.hooksPath` answers `.githooks`
-232. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
-233. Look for: the commit pauses and prints `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall. Throw the branch away afterwards
-234. Open Claude Code in this folder and ask it to write one word into any file under `samples`
-235. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
+240. Look for: `git config core.hooksPath` answers `.githooks`
+241. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
+242. Look for: the commit pauses and prints `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall. Throw the branch away afterwards
+243. Open Claude Code in this folder and ask it to write one word into any file under `samples`
+244. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
 
 ## Delete the old branches, D6
 
 Every branch except main is merged into main. The container cannot delete a branch: `git push origin --delete` comes back HTTP 403 from the proxy in front of it, and there is no GitHub tool in it that deletes a branch. So this is yours, one command from the repo folder in the VS Code terminal.
 
-The list below was read on 2026-09-18 with the command in step 236, after the last merge of the third audit round, and `git ls-remote --heads origin` gave 42 names. The branch this round's own closing pull request came from, `round-close-3`, is in the delete list too and was not on the remote yet when the list was read, which makes 43 lines and 42 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
+The list below was read on 2026-09-18 with the command in step 245, after the last merge of the third audit round, and `git ls-remote --heads origin` gave 42 names. The branch this round's own closing pull request came from, `round-close-3`, is in the delete list too and was not on the remote yet when the list was read, which makes 43 lines and 42 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
 
-236. Read the live list:
+245. Read the live list:
 
 ```
 git ls-remote --heads origin
 ```
 
-237. Look for: one line per branch, the name after `refs/heads/`. Expect 43 of them, so 42 to delete. It was 39 after the second audit round, and the third added three fix branches and its closing one
-238. Delete every one of them except main:
+246. Look for: one line per branch, the name after `refs/heads/`. Expect 43 of them, so 42 to delete. It was 39 after the second audit round, and the third added three fix branches and its closing one
+247. Delete every one of them except main:
 
 ```
 git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-F40 fix-F41 fix-F42 fix-F43 fix-F44 fix-F45 fix-F46 fix-F47a fix-F47b fix-F47c fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close round-close-2 round-close-3
 ```
 
-239. Look for: one `- [deleted]` line per branch and no error
-240. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
-241. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
-242. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main
+248. Look for: one `- [deleted]` line per branch and no error
+249. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
+250. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
+251. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main

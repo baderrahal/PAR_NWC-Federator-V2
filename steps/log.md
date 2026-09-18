@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-09-18 F54, clashes that cannot be solved become Reviewed
+
+### What was done
+
+- F54 done as far as Q33 allows, which is the part that needs no answer, and nothing above it was guessed at
+- The words, which is the half of this that was always buildable. A CLASH carries New, Active, Reviewed, Approved or Resolved. A TEST carries New, Old, Partial or Complete. They are different sets on different things and they share only the word New, which is how they get confused. Old is a TEST word, so no clash is ever at Old and nothing here ever moves one from it. The wording is `Federator.Core.Clash.StatusWords`, in Core so the log and `docs/workflow.md` cannot drift apart, and there is a test asserting each of those sentences by name
+- Reviewed and nothing else. `StatusesThisToolMaySet` decides, and a status it refuses is logged BY NAME with the reason rather than silently dropped. Approved and Resolved are never set because each is a person's statement about work that was actually done, and the NWF is the only record of what has been fixed, so there would be nothing to check the claim against afterwards. New and Active are not set either, for a duller reason: running a test produces them and setting one by hand would overwrite a decision somebody had already made
+- The member was already measured, so nothing here was assumed. `DocumentClashTests.TestsEditResultStatus(IClashResult result, ClashResultStatus status)` at `scan.md` line 137, and the enum at line 216
+- TWO ORDERING FACTS THAT CAME OUT OF READING THE CODE, AND BOTH CHANGED THE DESIGN. First, `ClashHarvest.Into` reads a result's status while it builds the report rows, immediately after the test runs and inside the same handle. So the status has to be applied BETWEEN the run and the harvest. Applying it after the clash step, which is where it would naturally go, would leave the workbook and the page carrying the status read before the change, which is the one thing the brief says the feature must not do
+- Second, `TestsEditResultStatus` is a mutator, and the rule says every mutator on `DocumentClashTests` is a copy form that kills the handle handed to it. So the edit gets its OWN resolve rather than sharing the handle the count and the harvest use. Sharing it is the exact shape that threw once per test for 8 hours 52 minutes and produced nothing
+- Nothing is resolved at all when no status is wanted, which is every run while Q33 is open, so the call costs one comparison per test and does not slow a run
+- A status written into the document is a write, so the NWF is saved again on it, even where nothing was created and nothing ran
+- WHAT IS NOT BUILT AND WHY. How the tool learns which clashes cannot be solved is Q33. The method takes a list of clash names with the status wanted and applies it. Nothing supplies that list. Building a guess at the input would mean writing a rule nobody agreed to into the only file that records what has been fixed, and Q33 sets out the four shapes it could take so Bader can pick one rather than discover the wrong one on a real model
+- Proved here: Core tests before 1035 passed, 0 failed, 32 skipped, 1067 total. After 1045 passed, 0 failed, 32 skipped, 1077 total. Core builds in Release with 0 warnings. The add-in parsed with the same six error codes and not one `CS1xxx`
+- Waits for the local machine: steps 238 to 246. Two of them can be done today and they are the ones that matter while Q33 is open, because both check that NOTHING moved: no `STATUS` line on an ordinary run, and no clash at a status it was not at before
+
+### What remains
+
+- F55, then the read of `03_bader_next.md` end to end, then the closing entry
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F54 pull request
+2. F55, the rules and the docs catch up
+
 ## 2026-09-18 F53, the 150 mm rule and the sub groups
 
 ### What was done
