@@ -2,6 +2,67 @@
 
 Newest entry at the top.
 
+## 2026-09-18 F47a, the hooks do not run on a Windows checkout
+
+### What was done
+
+- F47a done. One new file, `.gitattributes`, and one section in `03_bader_next.md`. No code changed
+- What was actually wrong, measured before anything was written. In THIS container the three hook files are LF and both walls work: `git ls-files --eol` read `i/lf w/lf` for all three and the stored blobs carry no carriage return at all. The brief said they are checked out with CRLF and that reading one through `sh` gives a syntax error, and that is not true here. It is true on Bader's machine, and the difference is the whole fault
+- The repo had no `.gitattributes`, so nothing told git what these files are. Git for Windows sets `core.autocrlf` to true when it installs, which converts LF to CRLF on the way out of the object store. Proved here by cloning this repo with `core.autocrlf=true`: all three came out with CRLF line terminators, 24, 33 and 27 carriage returns. With the new file in place the same clone gives 0, 0 and 0
+- What a CRLF copy does, proved here by making one and running it. The branch hook dies at its `case` line with `Syntax error: word unexpected (expecting "in")`, which is the message the brief quotes. The paths hook dies earlier, at the pipe on line 10, with `Syntax error: "|" unexpected`. The pre-commit reads `set -e` as `set: Illegal option`
+- One thing the brief has the wrong way round, and it changes what the damage is. A dead hook does not fail open. `sh` exits 2 on a syntax error and 2 is the code that REFUSES, so on that machine the paths wall and the branch wall refuse EVERY call rather than none, which reads as Claude Code being broken rather than as a wall doing its job. The pre-commit is the one that fails open: it stumbles past the bad `set -e` and exits 0, so every commit goes through with no test run
+- The file itself. `text=auto` is the default, so git decides what is text and stores it with LF. `eol=lf` is forced on `*.sh` and on `.githooks/pre-commit` by path, so those three are LF in the working tree whatever `core.autocrlf` says. `steps/logs` and `samples` are marked `-text`, because they are evidence: the one run log in the repo is stored with CRLF, it came off a Windows run, and its line endings are part of what it records
+- Which files changed bytes: NONE. `git add --renormalize` over the whole repo staged nothing but the new file. Everything was already stored the right way here, so this changes what a future checkout gets and nothing in the index
+- Proved here, and the whole output is in the pull request body. The paths wall in seven cases: it refuses a write under `samples`, under `steps/logs`, under `bundle` and a Windows spelled path under `samples`, each with exit 2 and its refusal line, and it allows a write under `src`, a write under `steps` and a call carrying no file path, each with exit 0. The branch wall in five cases, run against a checkout with main out: it refuses `commit`, `push` and `git -C . commit` with exit 2 and its line, and allows `git status`, a command with the word commitment in it, and a commit on a fix branch. The pre-commit in three: exit 1 with its own line when `dotnet` is not on PATH, exit 1 with `REFUSED. The tests failed.` when one assertion is broken in a throwaway clone, and exit 0 after running all 989
+- What cannot be proved here and is said rather than claimed. `core.hooksPath` is unset in this container, so the pre-commit is not installed and no real commit here passes through it. It was run directly instead, which is the same script and not the same wiring. Step 197 of `03_bader_next.md` is where Bader switches it on
+- Core tests before: 957 passed, 0 failed, 32 skipped, 989 total. After: the same. This fix touches no code
+
+### What remains
+
+- F47b, one doubled comment left, and F47c, two names recorded wrongly in the F40 entry
+- D7 in `03_bader_next.md`, eight steps, waits for Bader like everything else in that file
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F47a pull request
+2. F47b, the doubled comment on `ResolvedInTheDocument`
+
+## 2026-09-18 The plan for the third audit round, F47a to F47c
+
+### What was read first
+
+- CLAUDE.md, the four files under `.claude/rules`, the top entry of `steps/log.md`, `steps/01_next.md`, `steps/02_questions.md` and `steps/04_audit.md`, all of them whole. Then the three hook files, `.claude/settings.json`, and the F40 entry of this log, which F47c corrects
+- Ground state on main at 4793987, the close of the second round. Core tests under mono on Linux: 957 passed, 0 failed, 32 skipped, 989 total. That is the baseline every entry in this round compares against
+- There is no `gh` on this machine, so the checks are watched through the Actions API over curl and the GitHub tools the session holds, the same way both earlier rounds watched them. Merge only when the tests job is green on the branch head
+
+### What was measured before the plan was written, and one correction to the brief
+
+- The brief says the three hook files are checked out with CRLF and that reading one through `sh` gives a syntax error. **In this container they are LF and both hooks work.** `git ls-files --eol` reads `i/lf w/lf attr/` for all three, the stored blobs carry no carriage return at all, and the paths hook refuses a write under `samples` with exit 2 and allows one under `src` with exit 0. The branch hook refused a Bash call of mine during this reading, which is the second wall proving itself
+- The fault is real and it is a WINDOWS checkout. The repo has no `.gitattributes`, so `core.autocrlf`, which Git for Windows sets to true when it installs, converts LF to CRLF on the way out. Proved here: a local clone of this repo with `core.autocrlf=true` checks all three out with CRLF line terminators, 24, 33 and 27 carriage returns
+- What a CRLF copy then does, proved here by making one and running it. The branch hook dies with `Syntax error: word unexpected (expecting "in")` at its `case` line, which is the message the brief quotes. The paths hook dies earlier, at the pipe on line 10, with `Syntax error: "|" unexpected`. The pre-commit hook takes `set -e` as `set: Illegal option`
+- One thing the brief gets the wrong way round, and it matters. A dead hook does not fail open. `sh` exits 2 on a syntax error, and 2 is the code that REFUSES, so on Bader's machine both hooks refuse every call rather than none, and the pre-commit stumbles through to exit 0 and lets every commit past untested. So the paths wall and the branch wall are not down, they are jammed shut, and the test wall is down
+- `core.hooksPath` is unset in this container and `dotnet` is not on PATH here, so the pre-commit hook is not installed and its own refusal is the one thing that cannot be proved by a real commit here. It can be run directly and that is what will be shown
+- F47b checked. `ClashRunner.cs` has two summary blocks stacked at line 1129. The first describes `Count`, which is twelve lines below and now carries no comment of its own. So it is not a comment for a method that is gone, it is a comment that was displaced when F45 inserted `ResolvedInTheDocument` above `Count`
+- F47c checked. `WorkbookWriter.ClientColumns` is public at line 84 with no reference anywhere in src, the XAML or the tests, and its comment says it exists so a test can assert the header, which no test does. `ReportOptions.FolderFor` is internal at line 141 and two tests read it. Both lines of the F40 entry are wrong as the brief says
+
+### The order and what each PR does
+
+1. **F47a. Branch `fix-F47a`.** The hooks. A `.gitattributes` at the root, `text=auto` by default and `eol=lf` forced on `*.sh` and on `.githooks/pre-commit` by path, with the reason in a comment. The three files renormalised so git and the disk both hold LF. Then both walls proved on this machine, each shown refusing what it must refuse and allowing what it must allow, with the output in the PR body, and the same clone test run again to show a Windows checkout now gets LF. A short section in `03_bader_next.md` so Bader sees for himself that the hooks are live. This plan entry goes in with it
+2. **F47b. Branch `fix-F47b`.** The one doubled comment. The displaced block is MOVED onto `Count`, which it describes and which has no comment, rather than deleted. The brief says delete, and deleting would throw away a measured comment and leave a method undocumented, which is not what F44 did with the other three. Then the stacked summary check run again over the whole of src, with the count in the PR body. It is 1 now and it will be 0
+3. **F47c. Branch `fix-F47c`.** The two wrong names in the F40 entry. `WorkbookWriter.ClientColumns` deleted, because nothing reads it and the reason its comment gives is not true, and Q26 is unanswered so the rule decides. The F40 entry corrected in place on both lines, with one short line saying what the chat audit of 2026-09-18 found. Then every other name on the F40 deleted list checked the same way, by the bare name and again with the type in front, and any other line that says deleted where the member is internal or still there corrected too, with the table in the PR body
+4. `steps/03_bader_next.md` read once more for what F47a added or changed
+5. The closing entry
+
+### Rules held through the round
+
+- One PR per fix, branched off main, merged only when the tests job is green on the branch head, the local branch deleted after. Never a pull request left open at the end of a step. The remote branches are not deleted, Bader has that command
+- .NET Framework 4.8 and C# 7.3. No Navisworks type reaches `Federator.Core`
+- Nothing is claimed that was not run here. Where the container cannot show a thing, the entry says so rather than filling the gap
+
 ## 2026-09-12 The second audit round is closed
 
 ### What was done
