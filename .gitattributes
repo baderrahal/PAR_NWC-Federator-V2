@@ -1,0 +1,29 @@
+# Line endings.
+#
+# WHY THIS FILE EXISTS. Three files here are read by sh: the two hooks under
+# .claude\hooks that Claude Code runs before a tool call, and .githooks\pre-commit.
+# sh treats a carriage return as part of the word, so a CRLF copy dies on its first
+# case statement before it reaches a single rule. Measured on 2026-09-18: the branch
+# hook gives "Syntax error: word unexpected (expecting in)" and the paths hook gives
+# "Syntax error: | unexpected".
+#
+# That is not a wall that fails open. sh exits 2 on a syntax error, and 2 is the code
+# that REFUSES, so a CRLF checkout jams both walls shut and refuses every call rather
+# than the protected ones, while the pre-commit stumbles past set -e and exits 0, which
+# lets every commit through with no tests run.
+#
+# With no .gitattributes, Git for Windows converts LF to CRLF on checkout, because its
+# installer sets core.autocrlf to true. Proved on 2026-09-18 by cloning this repo with
+# core.autocrlf=true, which checked all three out with CRLF line terminators.
+
+# The default. Git decides what is text and stores it with LF.
+* text=auto
+
+# Read by sh. LF in the working tree on every machine, whatever core.autocrlf says.
+*.sh text eol=lf
+.githooks/pre-commit text eol=lf
+
+# Evidence, never edited and never normalised. The run log came off a Windows machine
+# and its line endings are part of what it records, the same as its contents.
+steps/logs/** -text
+samples/** -text
