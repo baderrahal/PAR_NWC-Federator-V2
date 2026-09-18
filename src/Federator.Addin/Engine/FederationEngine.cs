@@ -1751,10 +1751,41 @@ namespace Federator.Addin.Engine
                 // a 2026 class and does not exist here.
                 using (PublishProperties properties = new PublishProperties())
                 {
+                    PublishedProperties whatWasSet = new PublishedProperties();
+
                     properties.Title = job.OutputName;
+                    whatWasSet.Set("Title", job.OutputName);
+
                     properties.Publisher = "Parsons NWC Federator";
+                    whatWasSet.Set("Publisher", "Parsons NWC Federator");
+
                     properties.Subject = "Federation of building " + job.Building;
+                    whatWasSet.Set("Subject", properties.Subject);
+
                     properties.Author = Environment.UserName;
+                    whatWasSet.Set("Author", properties.Author);
+
+                    // F51. An NWD published without May be re-saved cannot be translated by
+                    // the ACC and Forma viewer, which is why every NWD this tool has
+                    // published so far shows a processing error beside it up there. All
+                    // three names below are on the list read off the installed DLL on
+                    // 2026-08-29, docs\history\scan.md section 4b, each with a getter and a
+                    // setter, so none of them is assumed.
+                    properties.AllowResave = true;
+                    whatWasSet.Set("AllowResave", true);
+
+                    // The second Autodesk article: an NWD reaching ACC with no properties,
+                    // every object showing as solid. These two are what carry the object
+                    // properties into the published file.
+                    properties.EmbedDatabaseProperties = true;
+                    whatWasSet.Set("EmbedDatabaseProperties", true);
+
+                    properties.PreventObjectPropertyExport = false;
+                    whatWasSet.Set("PreventObjectPropertyExport", false);
+
+                    // Written BEFORE the publish, so an NWD whose publish throws still
+                    // leaves behind what it was asked to carry.
+                    log.Line(whatWasSet.Line());
 
                     // TryPublishFile returns a bool. Discarding it and trusting
                     // File.Exists would call a stale NWD from last week a success.

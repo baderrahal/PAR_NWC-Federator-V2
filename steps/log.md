@@ -2,6 +2,97 @@
 
 Newest entry at the top.
 
+## 2026-09-18 F51, the ACC warning
+
+### What was done
+
+- F51 done. Three properties set on the publish that were never set, one new Core type carrying the log line, and the reason written down in `docs/workflow.md`
+- What was wrong. `WriteNwd` built a `PublishProperties`, set Title, Publisher, Subject and Author, and published. It never set `AllowResave`, so every NWD this tool has ever published went out without May be re-saved, and Autodesk say an NWD published without it cannot be translated by the ACC and Forma viewer. That is the processing error beside every one of them
+- What is set now. `AllowResave` true, which is the fix. `EmbedDatabaseProperties` true and `PreventObjectPropertyExport` false with it, which are the second thing Autodesk describe, an NWD reaching ACC with no properties and every object showing as solid
+- Nothing was assumed. All three names are on the list read off the installed DLL on 2026-08-29, `scan.md` section 4b, under the heading saying `PublishProperties` has a parameterless constructor and a base type of `NativeHandle`. The list carries `public bool AllowResave { get; set }`, `public bool EmbedDatabaseProperties { get; set }` and `public bool PreventObjectPropertyExport { get; set }`, each with a getter and a setter. So no probe was needed and no name had to be left out, which was the one thing the brief allowed for
+- The log line. `Federator.Core.Diagnostics.PublishedProperties` records each property as the add-in sets it and writes one line naming all seven with their values. It is in Core because it is a rule a test can prove, and it has nine tests. It records what was SET and never what the type offers, because a name on the list that the add-in stopped setting would read as still set, which is the one way this line can lie. It is written BEFORE the publish, so an NWD whose publish throws still leaves behind what it was asked to carry, and an empty list says so in words rather than trailing off after the word set
+- Why the line is worth its own type. An NWD that will not open in ACC is diagnosed months later off the log and the file, by someone who cannot read the build that wrote it. Reading the code answers a different question, which is what the code says now
+- `docs/workflow.md` gains a section on the NWD in ACC, and says why nothing appears beside the NWF: ACC does not translate an NWF at all, because an NWF holds no geometry, only pointers to the NWC files, so there is no viewable file to make from one. Nothing beside an NWF up there is a fault
+- Proved here: Core tests before 957 passed, 0 failed, 32 skipped, 989 total. After 966 passed, 0 failed, 32 skipped, 998 total, the nine being the new ones. The add-in parsed through the Roslyn compiler with no references and gave the same six error codes as before the edit, 945 CS0518, 464 CS0246, 63 CS0234, 2 CS0115, 1 CS0656 and 1 CS0103, and not one `CS1xxx`
+- Waits for the local machine: everything that matters. The three flags only mean something once an NWD goes up. Steps 195 to 203 of `03_bader_next.md` are the run, the log line, the upload, the missing warning and the properties panel
+
+### What remains
+
+- F50, F52, F53, F54 and F55, in that order
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F51 pull request
+2. F50, the NWF strategy, which starts with a probe this container cannot run
+
+## 2026-09-18 The plan for the feature round, F51 then F50, F52, F53, F54, F55
+
+### What was read first
+
+- CLAUDE.md, the four files under `.claude/rules`, the top entry of `steps/log.md`, `steps/01_next.md`, `steps/02_questions.md`, `steps/03_bader_next.md` and `steps/04_audit.md`, all of them whole. Then `docs/workflow.md`, `tools/probes/README.md` and one probe for its shape, and `docs/history/scan.md`, whose 2796 lines are where most of what this round needs was already measured
+- Ground state on main at f5596b3, the close of the third audit round. Core tests under mono on Linux: 957 passed, 0 failed, 32 skipped, 989 total. That is the baseline every entry in this round compares against
+- F50 to F55 are all free. F47 is the highest number `steps/01_next.md` holds and nothing in `steps` names an F48 or an F49, so the six numbers in the brief are taken as they are and nothing is renumbered. Q31 is the last question, so the new ones are Q32 onward, which is what the brief already assumes
+
+### What was measured before the plan was written
+
+The rule for this round is measure before you write. Three of the six need an API fact. One of the three is already measured and two are not, and this section says which is which rather than leaving it to be found later.
+
+- **F51 needs no new measurement.** All three properties are on the list read off the installed DLL on 2026-08-29, in section 4b of `scan.md`, under a heading saying `PublishProperties` has a parameterless constructor and a base type of `NativeHandle`. The list carries `public bool AllowResave { get; set }`, `public bool EmbedDatabaseProperties { get; set }` and `public bool PreventObjectPropertyExport { get; set }`, each with a getter and a setter. So all three names exist, none has to be left out, and no probe is needed. `WriteNwd` is at `FederationEngine.cs` line 1739 and sets Title, Publisher, Subject and Author inside a `using` over a `PublishProperties`, exactly as the brief says, and sets none of the three
+- **F50 needs a measurement that cannot be taken here. UNKNOWN.** `scan.md` records `Document.Models` as returning a `DocumentModels` and records exactly two things about that type: `Count` is an int, and `SetModelUnitsAndTransform(Model, Units, Transform3D, bool)` is the only public managed member that sets units. Nothing named Remove, Delete or Detach appears anywhere in the file against a model. The only two Remove members in all of `scan.md` are `RemoveExpiryDate` and `RemovePassword` on `PublishProperties`. So whether one model can be taken out of an open document without a clear is UNKNOWN
+- **F52 needs a measurement that cannot be taken here. UNKNOWN.** `DocumentSavedViewpoints` appears nowhere in this repo. The whole of `scan.md` names `Viewpoint`, `DocumentCurrentViewpoint`, `View.CreateViewpointCopy` and `ClashResult.HasSavedViewpoint`, and says in section 4k that nothing here writes a viewpoint into the NWF. The one other mention in the checkout is a comment in `ClashImages.cs` line 39 saying nothing there touches SavedViewpoints. So how a viewpoint folder is made, how a viewpoint is put in it, whether its name can be set and whether anything has to be disposed are all UNKNOWN
+- **F54 needs no new measurement.** `scan.md` line 137 carries `public System.Void TestsEditResultStatus(IClashResult result, ClashResultStatus status)` and line 216 carries `ClashResultStatus : New = 0, Active = 1, Reviewed = 2, Approved = 3, Resolved = 4`, both as the brief states them
+- **F53 needs no new measurement to be written, and one to be trusted.** The reader is already there: `ClashHarvest.FirstProperty` with its `out string matched`, and `Text(VariantData)` which sends `DoubleLength` through `ToAnyDouble`. `UnitTable` carries `MillimetresPerUnit` on every row and `ByEnumName`, which is the conversion the rule needs. What is UNKNOWN is whether `ToAnyDouble` on a `DoubleLength` hands back the document's units or something else, and the brief states it is the document's. It is built that way and the assumption is named in one place and put to Bader as a step
+
+### Why no probe can be run here, and what happens instead
+
+There is no `Autodesk.Navisworks.Api.dll` anywhere in this container and no PowerShell on the path, so not one probe under `tools/probes` can be RUN here, and the add-in has never compiled here either. That means this round cannot append a measured answer to `scan.md` for F50 or F52. It can do the three things the brief asks for in that case, and it does all three:
+
+1. the probe is WRITTEN here, under `tools/probes`, in the shape the six existing ones use, saying UNKNOWN and the path it looked at when it cannot find the DLL
+2. `scan.md` gets a dated section per unknown that records the QUESTION and says plainly that it is not measured, with the probe that answers it named. No answer is invented and no member is written down as if it had been read
+3. `03_bader_next.md` gets a numbered step per probe, one action each, with its Look for line, so the answer comes back from the machine that has the DLL
+
+Every line of add-in code that rests on one of those unknowns goes behind ONE method that names what it assumes, so a build error or a wrong answer lands in one place and not in five.
+
+### The order and what each PR does
+
+F51 is first because the brief puts it first and because it is the only one of the six that is finished the moment it is written. The sections go into `steps/01_next.md` in this same order, before F21.
+
+1. **F51. Branch `fix-F51`.** The ACC warning. `AllowResave` true, `EmbedDatabaseProperties` true and `PreventObjectPropertyExport` false in `WriteNwd`, all three on the measured list. One log line naming every publish property this run set, built in Core so a test can read it, because a future NWD that will not open in ACC has to be readable off the log alone. `docs/workflow.md` gains the reason nothing appears beside the NWF, which is that ACC does not translate an NWF because it holds no geometry, only pointers to the NWCs, so there is no viewable file to make. Q32 asks whether the NWF needs to be up there at all. `03_bader_next.md` gains the four steps: publish one NWD, upload it, look for no warning, open it and look for properties in the panel
+2. **F50. Branch `fix-F50`.** The NWF strategy. `tools/probes/probe-model-remove.ps1` written, reading every member of `DocumentModels` and of `Document.Models` and anything anywhere in the API assembly named Remove, Delete or Detach that takes a model or an index. Because the answer is UNKNOWN today, the branch the code takes now is the SECOND one the brief names: the clear and restore stays and is widened from two things to four, so viewpoints and clash result statuses are counted before the clear and after the restore exactly as the sets are today, and the group FAILS with the NWF left alone if any of the four does not come back. The counting rules go in Core with their tests. The rule goes in `.claude/rules/addin.md` in one paragraph and `docs/workflow.md` gains a section named The NWF is the record. The three labels are untouched and `RunPath` still decides what the person is told. Q34 asks whether Bader wants the rewrite once the probe says a model can be taken out on its own
+3. **F52. Branch `fix-F52`.** A viewpoint per discipline. `tools/probes/probe-viewpoints.ps1` written, reading `DocumentSavedViewpoints` whole, every member of `SavedViewpoint`, and what a folder and an add look like, against the `DocumentSelectionSets` shape beside it so the two can be read together. The Core half is written and tested here in full: a `ViewpointPlan` naming one folder and one viewpoint per discipline off part 5 of the NWC name, and a `ViewpointBuildOutcome` that is the twin of `SetBuildOutcome`, so the VIEWS block reads exactly as the SETS block does, one line per viewpoint then created, already there and failed. A viewpoint already at its path is left as it is and counted as already there, which is the rule F28 set for sets. A group of one discipline still gets its folder and its viewpoint. The counts reach the RESULT block and `GroupJudgement`, so a group whose viewpoints failed is not DONE. The add-in half goes behind one method that names what it assumes about the collection
+4. **F53. Branch `fix-F53`.** The 150 mm rule. This one is entirely Core and entirely provable here, which is why it is worth doing properly. The threshold is a setting with 150 as its default, in millimetres, named once. The property names are a setting too, starting at Diameter, Width, Height, Size, Nominal Diameter and Overall Size. The size is converted from the document's units through `UnitTable.MillimetresPerUnit` and never compared raw. Anything whose size cannot be read is INCLUDED and every one of them is named in the log under a line saying how many were included because their size could not be read. The sub groups under Mechanical and under Electrical are part of the plan the viewpoints read. The add-in only reads properties and calls the rule
+5. **F54. Branch `fix-F54`.** Reviewed. Only the part that needs no answer: one method in the add-in taking a list of clash names with the status wanted, applying it through `TestsEditResultStatus`, logging every one it changed and every one it could not find. Nothing above that method is built, because how the tool learns which clashes cannot be solved is Q33. Reviewed is the only status this tool ever sets. The NWF is saved again after a status changes, because the change is written into the document, and the workbook and the page read the status AFTER the change and never the one read before it. The log and `docs/workflow.md` both say plainly that a clash carries New, Active, Reviewed, Approved or Resolved and a test carries New, Old, Partial or Complete, and that Old is a test word and never a clash word
+6. **F55. Branch `fix-F55`.** The rules and the docs catch up. Every rule above into `.claude/rules`, `docs/workflow.md` and `03_bader_next.md`, one numbered proof per feature, one action per step, each with its Look for line
+7. `steps/03_bader_next.md` read end to end against the code again, the way the third round did, and the log says how many Look for lines were checked and how many were corrected
+8. The closing entry
+
+### One thing the round must not break
+
+`core.md` says no clash is ever saved as a viewpoint in the NWF, and that rule survives F52 untouched, because a discipline viewpoint is not a clash viewpoint. The sentence in `ClashImages.cs` saying nothing there touches SavedViewpoints stays true of that file and stops being true of the engine, so F52 says which is which rather than leaving two sentences that read as one rule.
+
+### Rules held through the round
+
+- One PR per feature, branched off main, merged only when the tests job is green on the branch head, the local branch deleted after. Never a pull request left open at the end of a step. The remote branches are not deleted, Bader has that command
+- .NET Framework 4.8 and C# 7.3. No Navisworks type reaches `Federator.Core`, and every rule that can be proved without Navisworks is in Core with its test
+- No member is written down as measured unless it was read off a DLL. Where the container cannot read one, the entry says UNKNOWN, the probe is written and the step goes to Bader
+- No generated-by and no co-authored-by line on a commit or a pull request body, which is what the writing rule at the end of CLAUDE.md asks for
+
+### What remains
+
+- The whole round. Nothing is edited yet beyond this entry
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. F51, the ACC warning
+
 ## 2026-09-18 The third audit round is closed
 
 ### What was done

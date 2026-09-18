@@ -65,3 +65,22 @@ Sets into open model and Tests into open model, on the Clash step, are for tryin
 open model by hand and are labelled as that. They are not steps in the run. Each calls the one engine method
 the run calls per group, so the SETS and CLASH lines in the log read the same whichever
 way the work was started.
+
+## The NWD in ACC, and why nothing appears beside the NWF
+
+The NWD is the file that goes up. Every NWD this tool published before F51 showed a
+processing error beside it in ACC and in Forma, because an NWD published without
+May be re-saved cannot be translated by that viewer. Since F51 the publish sets
+`AllowResave` true, and it sets `EmbedDatabaseProperties` true and
+`PreventObjectPropertyExport` false with it, which is the second thing Autodesk describe:
+an NWD that reaches ACC with no properties, every object showing as solid. All three were
+already on the list read off the installed DLL on 2026-08-29.
+
+Every publish property this run set goes in the log on one line, because an NWD that will
+not open is diagnosed months later off the log and the file, by someone who cannot read
+the build that wrote it.
+
+Nothing appears beside the NWF up there and nothing is wrong. ACC does not translate an
+NWF at all. An NWF holds no geometry, only pointers to the NWC files, so there is no
+viewable file to make from one and no translation to succeed or fail. Whether the NWF
+needs to be in ACC at all is Q32.
