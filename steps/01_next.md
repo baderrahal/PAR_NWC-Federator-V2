@@ -10,11 +10,17 @@ can be written here and only proved on the local machine.
 
 ## Order
 
-Renumbered on 2026-09-18 when the third audit round closed. F47a, F47b and F47c are done and each carries its DONE line below. The same three are left as before, and only the first of them can be started here.
+Renumbered on 2026-09-18 for the feature round. Six features were asked for in chat, F50 to F55, and all six numbers were free. F51 is first because it is one line of real change and it fixes something every NWD this tool has ever published. They go before F21, which is where the plan stood.
 
-1. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
-2. F18, when Bader uploads the 1A04WE sample, Q9
-3. F23, when Q20 is answered
+1. F51, the ACC warning
+2. F50, the NWF strategy, new against existing
+3. F52, a viewpoint per discipline, grouped by discipline
+4. F53, the 150 mm rule and the sub groups
+5. F54, clashes that cannot be solved become Reviewed
+6. F55, the rules and the docs catch up
+7. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
+8. F18, when Bader uploads the 1A04WE sample, Q9
+9. F23, when Q20 is answered
 
 Nothing else is open. F19 is dropped.
 
@@ -48,7 +54,7 @@ Three things, none of them a rule the code breaks at run time. The first is the 
 
 ## Done, in the order they were worked
 
-F5, F6, F7, F8, F22, then F1 with F2 and F4 in one pull request, F3 inside F22, then F9, F10, F11, F17, F20, F24, F26, F27 which closes F25, F28, F29, F30, F31, F32, F33, F34, F35, F36, F37 which closes F12 and F14, F38 which closes F13, F39, then the second audit round: F46, F40, F41 which closes F15, F42, F43, F44, F45 and F16, then the third: F47a, F47b and F47c.
+F5, F6, F7, F8, F22, then F1 with F2 and F4 in one pull request, F3 inside F22, then F9, F10, F11, F17, F20, F24, F26, F27 which closes F25, F28, F29, F30, F31, F32, F33, F34, F35, F36, F37 which closes F12 and F14, F38 which closes F13, F39, then the second audit round: F46, F40, F41 which closes F15, F42, F43, F44, F45 and F16, then the third: F47a, F47b and F47c, then the feature round: F51 first, then F50, F52, F53, F54 and F55.
 
 Every one of them carries its DONE line in its own section below, and its entry in `log.md`. None of them is proved on a machine with Navisworks yet. That is `03_bader_next.md`.
 
@@ -387,6 +393,65 @@ Every one of them carries its DONE line in its own section below, and its entry 
 
 - CLOSED on 2026-09-12 by F27. The rule was never in the code. Nothing in src sets `GroupRow.Include` to false except the Run column and a blocked group, and it was the same at be0b9b37. The 12 groups the run log of 2026-09-07 showed as skipped were unticked by hand, and the GROUPS block printed skipped for an unticked group
 - B15 and Q21 close with that. Clash only where two disciplines meet is F35
+
+## F51 The ACC warning
+
+- Files `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Core/Diagnostics/PublishedProperties.cs` which is new, `docs/workflow.md`, `steps/03_bader_next.md`
+- CONTAINER for the Core line and the parse, LOCAL MACHINE ONLY to see the NWD reach ACC
+- Every NWD this tool publishes shows a processing error beside it in ACC and in Forma. Autodesk say an NWD published without May be re-saved cannot be translated by that viewer. `WriteNwd` builds a `PublishProperties` and sets Title, Publisher, Subject and Author, and never sets `AllowResave`. `EmbedDatabaseProperties` and `PreventObjectPropertyExport` go with it, because of the second article about an NWD reaching ACC with no properties and every object showing as solid. All three are on the list read off the DLL on 2026-08-29, section 4b, each with a getter and a setter, so none is assumed and none has to be left out
+- One log line names every publish property this run set, so a future NWD that will not open in ACC can be read off the log
+- Size: three lines of real change, one new Core type with its tests, and the proof is Bader's
+- DONE on 2026-09-18. `AllowResave` true, `EmbedDatabaseProperties` true, `PreventObjectPropertyExport` false. `PublishedProperties` in Core carries the line and has nine tests. Core tests before: 957 passed, 0 failed, 32 skipped, 989 total. After: 966 passed, 0 failed, 32 skipped, 998 total. The add-in parses with the same six error codes as before the edit and not one `CS1xxx`. Q32 raised
+
+## F50 The NWF strategy, new against existing
+
+- Files UNKNOWN until the probe answers, `tools/probes/probe-model-remove.ps1` which is new, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Core/Rerun/NwfRebuildPlan.cs`, `.claude/rules/addin.md`, `docs/workflow.md`
+- CONTAINER for the counting rules in Core, LOCAL MACHINE ONLY for the measurement and the proof
+- The NWF is the record. It carries the file list, the sets, the tests, the clash results, the statuses a person set by hand and, after F52, the viewpoints. Today a CHANGED group clears the document and appends again, then restores the sets and the tests and fails loudly if either does not come back. Every new thing the NWF carries makes that dance longer
+- FIRST the measurement: can the installed DLL take one model out of an open document without a clear. `scan.md` records `Document.Models` and exactly two members of `DocumentModels`, `Count` and `SetModelUnitsAndTransform`, and nothing named Remove, Delete or Detach against a model anywhere in the file. So it is UNKNOWN and the probe answers it
+- If it CAN: the rebuild appends what the scan has and the NWF does not, takes out what the NWF has and the scan does not, and never clears. Nothing then needs restoring and nothing can be lost. The log says added, removed and kept, with counts
+- If it CANNOT: the clear and restore stays and widens to cover viewpoints and statuses as well as sets and tests, counted before and after the same way the sets are today, with the group FAILED and the NWF left alone if any of the four does not come back
+- Either way the three labels stay as they are and `RunPath` keeps deciding what the person is told
+- Size: medium either way. The widening is the branch taken while the answer is UNKNOWN
+
+## F52 A viewpoint per discipline, grouped by discipline
+
+- Files `tools/probes/probe-viewpoints.ps1` which is new, Core under `src/Federator.Core/Views` which is new, `src/Federator.Addin/Engine/`, `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Core/Rerun/GroupJudgement.cs`
+- CONTAINER for the plan, the outcome and the VIEWS block, LOCAL MACHINE ONLY for the measurement and the proof
+- `DocumentSavedViewpoints` appears nowhere in this repo. `scan.md` names `Viewpoint`, `DocumentCurrentViewpoint`, `View.CreateViewpointCopy` and `ClashResult.HasSavedViewpoint` and says nothing here writes a viewpoint into the NWF. So how a folder is made, how a viewpoint is added into it, whether a name can be set and whether anything has to be disposed are all UNKNOWN and nothing about the collection may be assumed
+- After the clash run and before the NWF is saved again, one folder per discipline in the group, named with the discipline code the scan reads off part 5 of the NWC name, and one saved viewpoint inside it showing that discipline and hiding the others
+- A group with one discipline still gets its folder and its viewpoint
+- A viewpoint already at that path is left exactly as it is and counted as already there, the rule F28 set for sets. Never a second copy at one path
+- The log gets a VIEWS block in the shape the SETS block uses: one line per viewpoint, then created, already there and failed. The counts go in the RESULT block and the judgement, so a group whose viewpoints failed is not reported as DONE
+- Size: large. The Core half is all of the rule and the add-in half is the part that waits on the measurement
+
+## F53 The 150 mm rule and the sub groups
+
+- Files Core under `src/Federator.Core/Views`, `src/Federator.Addin/Engine/ClashHarvest.cs`, `.claude/rules/core.md`
+- CONTAINER for all of it, LOCAL MACHINE ONLY to see it pick the right pipes
+- Pipes, ducts, cable trays and their fittings over 150 mm are in the viewpoints and smaller ones are out. The large ones sit as sub groups under Mechanical and under Electrical
+- 150 is a setting with 150 as its default, in millimetres, named once in Core. The property names are a setting too, starting from Diameter, Width, Height, Size, Nominal Diameter and Overall Size, because which one carries the size differs per kind and per exporter
+- The number the property returns is in the document's units, so it converts through `UnitTable` and never compares a raw double against 150
+- A fitting usually carries no size property at all. Anything whose size cannot be read is INCLUDED, and every one is named in the log under a line saying how many were included because their size could not be read. Nothing disappears quietly. This is the rule most likely to be wrong on the first run, so it is loud
+- Size: medium, and all of the rule is provable here
+
+## F54 Clashes that cannot be solved become Reviewed
+
+- Files `src/Federator.Addin/Engine/ClashRunner.cs`, `docs/workflow.md`, `.claude/rules/addin.md`
+- CONTAINER to read, LOCAL MACHINE ONLY to prove
+- The member is already measured. `DocumentClashTests.TestsEditResultStatus(IClashResult result, ClashResultStatus status)` at `scan.md` line 137, and `ClashResultStatus : New = 0, Active = 1, Reviewed = 2, Approved = 3, Resolved = 4` at line 216
+- A clash carries New, Active, Reviewed, Approved or Resolved. A TEST carries New, Old, Partial or Complete. Old is a test word and never a clash word, so nothing in this tool ever moves a clash from Old
+- How the tool learns which clashes cannot be solved is Q33. Until it is answered, only the part that needs no answer is built: one method that takes a list of clash names with the status wanted, applies it through `TestsEditResultStatus`, and logs every one it changed and every one it could not find
+- Changing a status writes into the document, so the NWF is saved again after it, and the workbook and the page show the new status and not the one read before the change
+- Never Resolved and never Approved. Reviewed is the only status this tool sets, because the other two are a person's decision about work that was actually done
+- Size: small while Q33 is open
+
+## F55 The rules and the docs catch up
+
+- Files `.claude/rules/*.md`, `docs/workflow.md`, `steps/03_bader_next.md`
+- CONTAINER
+- Every rule from F50 to F54 into the rules files and the docs. One numbered proof per feature, one action per step, each with its Look for line, in the shape the file already uses
+- Size: medium, and it is the one that keeps the next audit short
 
 ## F21 The log answers timing and counts
 

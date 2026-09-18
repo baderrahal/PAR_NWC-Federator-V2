@@ -1751,10 +1751,52 @@ namespace Federator.Addin.Engine
                 // a 2026 class and does not exist here.
                 using (PublishProperties properties = new PublishProperties())
                 {
-                    properties.Title = job.OutputName;
-                    properties.Publisher = "Parsons NWC Federator";
-                    properties.Subject = "Federation of building " + job.Building;
-                    properties.Author = Environment.UserName;
+                    // Every value below is written once, into a local, and then used
+                    // twice: once to set the property and once to record it. Reading a
+                    // value back off the handle to record it would make the line mean two
+                    // different things row by row, what we asked for on some and what the
+                    // native object holds on others, and this line is read months later by
+                    // someone who cannot ask which.
+                    PublishedProperties whatWasSet = new PublishedProperties();
+
+                    string title = job.OutputName;
+                    string publisher = "Parsons NWC Federator";
+                    string subject = "Federation of building " + job.Building;
+                    string author = Environment.UserName;
+
+                    properties.Title = title;
+                    whatWasSet.Set("Title", title);
+
+                    properties.Publisher = publisher;
+                    whatWasSet.Set("Publisher", publisher);
+
+                    properties.Subject = subject;
+                    whatWasSet.Set("Subject", subject);
+
+                    properties.Author = author;
+                    whatWasSet.Set("Author", author);
+
+                    // F51. An NWD published without May be re-saved cannot be translated by
+                    // the ACC and Forma viewer, which is why every NWD this tool has
+                    // published so far shows a processing error beside it up there. All
+                    // three names below are on the list read off the installed DLL on
+                    // 2026-08-29, docs\history\scan.md section 4b, each with a getter and a
+                    // setter, so none of them is assumed.
+                    properties.AllowResave = true;
+                    whatWasSet.Set("AllowResave", true);
+
+                    // The second Autodesk article: an NWD reaching ACC with no properties,
+                    // every object showing as solid. These two are what carry the object
+                    // properties into the published file.
+                    properties.EmbedDatabaseProperties = true;
+                    whatWasSet.Set("EmbedDatabaseProperties", true);
+
+                    properties.PreventObjectPropertyExport = false;
+                    whatWasSet.Set("PreventObjectPropertyExport", false);
+
+                    // Written BEFORE the publish, so an NWD whose publish throws still
+                    // leaves behind what it was asked to carry.
+                    log.Line(whatWasSet.Line());
 
                     // TryPublishFile returns a bool. Discarding it and trusting
                     // File.Exists would call a stale NWD from last week a success.
