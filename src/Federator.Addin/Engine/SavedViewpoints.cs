@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
+using Federator.Core.Diagnostics;
+using Federator.Core.Views;
 
 namespace Federator.Addin.Engine
 {
@@ -136,6 +138,34 @@ namespace Federator.Addin.Engine
                     + "DLL. docs\\history\\scan.md section 5b records the question and "
                     + "tools\\probes\\probe-viewpoints.ps1 answers it. Run that probe and this "
                     + "method is the one place that changes. Nothing was written into the NWF.");
+        }
+
+        /// <summary>
+        /// Shows only the items of one discipline that are over the size threshold, hiding
+        /// the rest. F53.
+        ///
+        /// UNMEASURED in the same way ShowOnly is, and for the same reason: what hides a
+        /// model item was never read off the DLL. What IS settled and tested is the rule
+        /// that decides which items count, Federator.Core.Views.SizeRule, and the reader
+        /// that feeds it, ItemSizes. When the probe answers, this method walks the items of
+        /// the discipline, calls ItemSizes.Read then SizeRule.Decide on each, tallies them
+        /// into a SizeTally and hides the ones that come back Small. Every item whose size
+        /// could not be read is INCLUDED and the tally names it.
+        /// </summary>
+        public static void ShowOnlyLargeItems(
+            Document document, string shows, IList<string> hides, SizeSettings sizes, RunLog log)
+        {
+            if (document == null || string.IsNullOrEmpty(shows))
+            {
+                throw new ArgumentException("A viewpoint needs a discipline to show.", "shows");
+            }
+
+            throw new NotSupportedException(
+                "How a discipline is shown and the others hidden was never read off the installed "
+                    + "DLL, so the large items sub group cannot be built either. The rule that "
+                    + "decides which items are large is settled and tested, in "
+                    + "Federator.Core.Views.SizeRule. Run tools\\probes\\probe-viewpoints.ps1 "
+                    + "and this method is the one place that changes. Nothing was written into the NWF.");
         }
 
         /// <summary>

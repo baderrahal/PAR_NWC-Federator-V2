@@ -640,6 +640,29 @@ and 6 does not read as broken.
 - Every check gets a test that BREAKS one thing and asserts the check names it. A test that
   only asserts the good file passes would have passed against all eight of the differences
   above. Fourteen of them live in WorkbookCellCheckTests
+- Pipes, ducts, cable trays and their fittings OVER 150 mm go in the viewpoints and
+  smaller ones do not, and the large ones of Mechanical and Electrical sit in a sub group
+  of their own. 150 is a setting in millimetres, named once in
+  Federator.Core.Views.SizeSettings, and over 150 means over: exactly 150 is out. Which
+  properties carry a size is a setting too, Diameter, Width, Height, Size, Nominal
+  Diameter and Overall Size, tried in that order with the first found winning, because
+  which one holds the size differs per kind and per exporter and reading one name would
+  drop every item that calls it something else. The number a property hands back is in the
+  DOCUMENT'S units and is converted through UnitTable before anything is compared, never
+  compared raw: a document in feet reporting 0.5 is 152.4 mm and is IN, and comparing 0.5
+  against 150 would put it out while the same model in millimetres put it in, so one
+  building would give two different sets of viewpoints depending on a setting nobody
+  changed. A unit the table does not know FAILS rather than falling back, which is F33's
+  rule. ANYTHING WHOSE SIZE CANNOT BE READ IS INCLUDED, because a fitting usually carries
+  no size property at all and dropping it would leave real geometry out of a viewpoint with
+  nothing in the output to say so. Every one of them is named in the SIZE block under a
+  line saying how many are in for that reason and that nothing was dropped. That is a
+  deliberate departure from the rule about logging a count and five examples, which is
+  about many lines saying ONE thing: these lines each name a different item that may be
+  wrongly in or out, and reading five tells you nothing about the sixth. Naming every one
+  is a setting and turning it off makes the block SAY it truncated. The whole rule is
+  Federator.Core.Views, SizeSettings, SizeRule and SizeTally, with its tests. The add-in
+  reads the properties and calls it and has no opinion about any number in it
 - The scan reports what it noticed and never acts on it. ODD SHAPE, NEAR MATCH,
   SINGLE DISCIPLINE and MISSING are information. Nothing is blocked, unticked or
   merged, and no code is assumed right. Bader decides

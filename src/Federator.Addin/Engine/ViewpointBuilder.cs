@@ -41,11 +41,13 @@ namespace Federator.Addin.Engine
     {
         private readonly Action<string> progress;
         private readonly RunLog log;
+        private readonly SizeSettings sizes;
 
-        public ViewpointBuilder(Action<string> progress, RunLog log)
+        public ViewpointBuilder(Action<string> progress, RunLog log, SizeSettings sizes)
         {
             this.progress = progress;
             this.log = log;
+            this.sizes = sizes ?? new SizeSettings();
         }
 
         /// <summary>
@@ -102,7 +104,19 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            SavedViewpoints.ShowOnly(document, want.Shows, want.Hides);
+            // F53. A sub group viewpoint holds only the items over the size threshold.
+            // ItemSizes reads the properties and Federator.Core.Views.SizeRule decides, so
+            // the 150 and the six property names are testable without Navisworks and this
+            // file has no opinion about either.
+            if (want.LargeItemsOnly)
+            {
+                SavedViewpoints.ShowOnlyLargeItems(document, want.Shows, want.Hides, sizes, log);
+            }
+            else
+            {
+                SavedViewpoints.ShowOnly(document, want.Shows, want.Hides);
+            }
+
             SavedViewpoints.Add(document, want.Folder, want.Name);
 
             // Read back rather than trusted. AddCopy returns void everywhere else in this

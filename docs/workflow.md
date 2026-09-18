@@ -147,3 +147,35 @@ clash, and the pictures in the report are how a clash is shown.
 read off the installed DLL. Until `tools\probes\probe-viewpoints.ps1` has been run, the run
 plans the viewpoints, writes what it would have made into the log, and attempts nothing. A
 step this tool cannot do is not a step that failed, so the group is not marked down for it.
+
+## The 150 mm rule and the sub groups
+
+Pipes, ducts, cable trays and their fittings over 150 mm are in the viewpoints. Smaller
+ones are not. The large ones of Mechanical and Electrical sit in a sub group of their own,
+so the tree reads:
+
+    ME
+      ME only
+      Over 150mm
+        ME over 150mm
+
+The sub folder is named from the threshold, so the folder and the rule that fills it can
+never disagree. Which disciplines get a sub group is a setting, because ME and EL are
+codes this project uses and another project may code its disciplines differently.
+
+150 is a setting, in millimetres, and over 150 means over: exactly 150 is out. Which
+properties carry a size is a setting too, tried in order, Diameter then Width, Height,
+Size, Nominal Diameter and Overall Size. Which one holds the size differs per kind and per
+exporter, so reading one name would quietly drop every item that calls it something else.
+
+The number a property gives back is in the document's units and is converted to
+millimetres before anything is compared. A document in feet reporting 0.5 is 152.4 mm and
+is in. Comparing 0.5 against 150 would put it out, and the same model measured in
+millimetres would put it in, so one building would produce two different sets of
+viewpoints depending on a setting nobody changed.
+
+**Anything whose size cannot be read is IN.** A fitting usually carries no size property at
+all. Leaving it out would mean a run quietly drops real geometry from a viewpoint with
+nothing in the output to say it happened. So it goes in, and the SIZE block says how many
+did, says plainly that nothing was dropped, and names every one of them. That number is
+expected to be large and it is the one most likely to say the rule needs changing.

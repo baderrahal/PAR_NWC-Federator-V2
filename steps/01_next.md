@@ -436,6 +436,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - The number the property returns is in the document's units, so it converts through `UnitTable` and never compares a raw double against 150
 - A fitting usually carries no size property at all. Anything whose size cannot be read is INCLUDED, and every one is named in the log under a line saying how many were included because their size could not be read. Nothing disappears quietly. This is the rule most likely to be wrong on the first run, so it is loud
 - Size: medium, and all of the rule is provable here
+- DONE on 2026-09-18. `SizeSettings`, `SizeRule` and `SizeTally` in `Federator.Core.Views`, with 26 tests. The threshold, the six property names, which disciplines get a sub group and whether every unmeasurable item is named are all settings. The sub group folder is named from the threshold, so the folder and the rule cannot drift apart. `ItemSizes` in the add-in reads the properties by kind and decides nothing. Core tests before: 1004 passed, 0 failed, 32 skipped, 1036 total. After: 1035 passed, 0 failed, 32 skipped, 1067 total. The SIZE block appears once F52's API is measured, because the sub group is a viewpoint
 
 ## F54 Clashes that cannot be solved become Reviewed
 
