@@ -20,10 +20,17 @@ namespace Federator.Addin.Engine
     /// WHAT IS ASSUMED, and it is assumed because every other document part measured on this
     /// install follows it, not because anyone read it:
     ///
+    /// USED BY THE CODE IN THIS FILE, so a wrong answer breaks the build here:
+    ///
     ///     Document.SavedViewpoints            is a DocumentSavedViewpoints
     ///     DocumentSavedViewpoints.RootItem    is a GroupItem
     ///     GroupItem.Children                  is a SavedItemCollection, which it is, measured
     ///     a leaf under it                     is a SavedViewpoint, and a branch a FolderItem
+    ///
+    /// EXPECTED BY THE WORK THAT IS NOT BUILT YET, and called by nothing today, so a wrong
+    /// answer here breaks no build and changes what F52 can be finished with:
+    ///
+    ///     DocumentSavedViewpoints.AddCopy(GroupItem parent, SavedItem item)
     ///
     /// tools\probes\probe-model-remove.ps1 is F50's probe and tools\probes\probe-viewpoints.ps1
     /// is the one that answers this. Until it has been run on a machine with Navisworks, a
