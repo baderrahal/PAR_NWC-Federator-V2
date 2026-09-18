@@ -2,6 +2,38 @@
 
 Newest entry at the top.
 
+## 2026-09-18 The third audit round is closed
+
+### What was done
+
+- Three fixes merged today, in the order the brief set: F47a, F47b and F47c. Each on its own branch off main, each a draft pull request merged once Actions was green, each with its own entry above. No pull request is open and nothing was committed on main
+- F47a, the walls. `.gitattributes` added at the root, `text=auto` for everything, `eol=lf` forced on `*.sh` and on `.githooks/pre-commit` by path, and `-text` on `samples` and `steps/logs` so the evidence is never normalised. `git add --renormalize .` changed no bytes here, because the index already held LF for every text file in it, 216 when F47a measured it and 217 now that `.gitattributes` is one of them, and the one CRLF file in it is the run log, which is now pinned. The fix changes what a checkout gets, not what the repo holds
+- Both walls were proved to refuse here, with the exit code and the line each prints, and each was also proved to allow a call it must allow. The branch wall proved itself twice over, because it blocked a command of the worker's own that carried the words git and commit while main was checked out. What is still UNKNOWN is the one thing only a Windows machine can answer, whether Claude Code there finds the sh that runs them. That is D7 in `03_bader_next.md`, steps 195 to 202
+- F47b, the last doubled comment. It was moved, not deleted. It describes `Count`, which is still there and had lost its own comment when F45 inserted a method above it. F44's own check now reads 0 stacked blocks over all 102 files under src, where it read 1
+- F47c, the record. `WorkbookWriter.ClientColumns` deleted, nothing anywhere referenced it. The brief named two wrong records in the F40 entry and there are five. Every one of the 53 names on that list was read against the code and against the F40 commit's own diff, and the table is in the pull request
+- `steps/03_bader_next.md` read again, which is what the round asked for last. The numbering runs 1 to 209 with no gap and no repeat. The D6 branch list was stale by exactly the three branches this round pushed, so it was rebuilt off `git ls-remote --heads origin`, 42 names now, checked name for name against the live remote plus the branch this entry is written on. The same clone was holding a remote tracking ref for a branch the remote no longer has, which is the trap that section already warns about, so the warning is now a measurement as well
+- `CLAUDE.md` says why the walls need LF, in four lines under The two walls, pointing at `.gitattributes`. That belonged in F47a and was missed there. The file is 175 lines, still under the 200 F38 set
+- `steps/01_next.md` renumbered. Three fixes are left, the same three as before this round: F21 which can be started here, F18 which waits for the sample, F23 which waits for Q20
+- Core tests: 957 passed, 0 failed, 32 skipped, 989 total, before the round and after it. The one member deleted had no test and the comment moved is not code
+
+### What remains
+
+- Nothing in this round. `steps/01_next.md` has F21, F18 when the sample arrives, and F23 when Q20 is answered
+- Q24 to Q31 are open for Bader. Q24 and Q25 from the first audit, Q26 and Q27 from F40, Q28 from F41, Q29 from F43, Q30 from F44, Q31 from F47c on the two counts in the F40 entry
+- The whole of `03_bader_next.md`, 209 steps, waits for the machine with Navisworks on it. Nothing in this round was proved by a run, and nothing in it needed one
+- The walls are proved on Linux only. Whether Claude Code on Windows runs them at all is UNKNOWN until D7 is worked
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Bader works D7, steps 195 to 202, which is four minutes and settles whether the walls run on his machine
+2. Bader builds, installs and works `03_bader_next.md` from step 1
+3. The run logs come back into `steps/logs` on their own branch, as step 183 says
+4. Bader runs the D6 delete command himself
+
 ## 2026-09-18 F47c, names recorded wrongly in the F40 entry
 
 ### What was done

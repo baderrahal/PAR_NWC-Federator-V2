@@ -155,6 +155,11 @@ standard input and exit 2 with one line saying why. They need a POSIX sh, which 
 for Windows provides. Whether Claude Code on Windows finds it without help is UNKNOWN
 until tried.
 
+They also need LF. sh reads a carriage return as part of the word, so a CRLF copy dies
+on its first case line and exits 2, which is the code that refuses, so the two walls jam
+shut and refuse every call. .gitattributes pins the two hooks and .githooks\pre-commit
+to LF on every checkout and carries the measurement. Never remove those three lines.
+
 ## Confirm against the install, do not assume
 
 - exact signatures of Document.AppendFile, SaveFile, PublishFile and Clear

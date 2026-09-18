@@ -10,14 +10,11 @@ can be written here and only proved on the local machine.
 
 ## Order
 
-Renumbered on 2026-09-18 for the third audit round. F47 is this round's work, three small fixes, each its own pull request. After it the same three are left as before, and only the first of those can be started here.
+Renumbered on 2026-09-18 when the third audit round closed. F47a, F47b and F47c are done and each carries its DONE line below. The same three are left as before, and only the first of them can be started here.
 
-1. F47a, the hooks do not run on a Windows checkout
-2. F47b, one doubled comment left
-3. F47c, two names recorded wrongly in the F40 entry
-4. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
-5. F18, when Bader uploads the 1A04WE sample, Q9
-6. F23, when Q20 is answered
+1. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
+2. F18, when Bader uploads the 1A04WE sample, Q9
+3. F23, when Q20 is answered
 
 Nothing else is open. F19 is dropped.
 
@@ -51,7 +48,7 @@ Three things, none of them a rule the code breaks at run time. The first is the 
 
 ## Done, in the order they were worked
 
-F5, F6, F7, F8, F22, then F1 with F2 and F4 in one pull request, F3 inside F22, then F9, F10, F11, F17, F20, F24, F26, F27 which closes F25, F28, F29, F30, F31, F32, F33, F34, F35, F36, F37 which closes F12 and F14, F38 which closes F13, F39, then the second audit round: F46, F40, F41 which closes F15, F42, F43, F44, F45 and F16.
+F5, F6, F7, F8, F22, then F1 with F2 and F4 in one pull request, F3 inside F22, then F9, F10, F11, F17, F20, F24, F26, F27 which closes F25, F28, F29, F30, F31, F32, F33, F34, F35, F36, F37 which closes F12 and F14, F38 which closes F13, F39, then the second audit round: F46, F40, F41 which closes F15, F42, F43, F44, F45 and F16, then the third: F47a, F47b and F47c.
 
 Every one of them carries its DONE line in its own section below, and its entry in `log.md`. None of them is proved on a machine with Navisworks yet. That is `03_bader_next.md`.
 
