@@ -1751,19 +1751,30 @@ namespace Federator.Addin.Engine
                 // a 2026 class and does not exist here.
                 using (PublishProperties properties = new PublishProperties())
                 {
+                    // Every value below is written once, into a local, and then used
+                    // twice: once to set the property and once to record it. Reading a
+                    // value back off the handle to record it would make the line mean two
+                    // different things row by row, what we asked for on some and what the
+                    // native object holds on others, and this line is read months later by
+                    // someone who cannot ask which.
                     PublishedProperties whatWasSet = new PublishedProperties();
 
-                    properties.Title = job.OutputName;
-                    whatWasSet.Set("Title", job.OutputName);
+                    string title = job.OutputName;
+                    string publisher = "Parsons NWC Federator";
+                    string subject = "Federation of building " + job.Building;
+                    string author = Environment.UserName;
 
-                    properties.Publisher = "Parsons NWC Federator";
-                    whatWasSet.Set("Publisher", "Parsons NWC Federator");
+                    properties.Title = title;
+                    whatWasSet.Set("Title", title);
 
-                    properties.Subject = "Federation of building " + job.Building;
-                    whatWasSet.Set("Subject", properties.Subject);
+                    properties.Publisher = publisher;
+                    whatWasSet.Set("Publisher", publisher);
 
-                    properties.Author = Environment.UserName;
-                    whatWasSet.Set("Author", properties.Author);
+                    properties.Subject = subject;
+                    whatWasSet.Set("Subject", subject);
+
+                    properties.Author = author;
+                    whatWasSet.Set("Author", author);
 
                     // F51. An NWD published without May be re-saved cannot be translated by
                     // the ACC and Forma viewer, which is why every NWD this tool has
