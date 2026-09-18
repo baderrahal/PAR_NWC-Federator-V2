@@ -65,6 +65,15 @@ namespace Federator.Addin.Engine
         private Dictionary<int, TestReport> reports;
 
         /// <summary>
+        /// Moves named clashes to a status, F54. Made once per runner so its counts cover
+        /// the whole group and the five and the four are written into the log once.
+        /// </summary>
+        private readonly ClashStatusEditor statuses;
+
+        /// <summary>Whether a status was actually written, which is what asks for the NWF again.</summary>
+        private bool changedTheDocument;
+
+        /// <summary>
         /// The guard is handed in so it can live for the whole run rather than for one
         /// group. A run failing uniformly must stop the run, and a per group guard would
         /// have let the same nine hours pass 24 times over.
@@ -79,6 +88,7 @@ namespace Federator.Addin.Engine
             this.progress = progress ?? delegate { };
             this.log = log;
             this.guard = guard ?? new RepeatedFailureGuard();
+            this.statuses = new ClashStatusEditor(log);
             SetTreeRoot = ExchangeReader.SelectionSetTreeRoot;
         }
 
@@ -152,6 +162,23 @@ namespace Federator.Addin.Engine
         /// done silently, because it destroys the record of what was resolved.
         /// </summary>
         public bool CompactResolved { get; set; }
+
+        /// <summary>
+        /// Which clashes to move to which status, F54. Empty on every run while Q33 is
+        /// open, because how the tool learns which clashes cannot be solved is not decided
+        /// and guessing it would write a rule nobody agreed to into the only file that
+        /// records what has been fixed.
+        /// </summary>
+        public IList<WantedStatus> WantedStatuses { get; set; }
+
+        /// <summary>
+        /// Whether a status was actually changed in the document. The NWF is saved again
+        /// on this, because a status change is a write.
+        /// </summary>
+        public bool ChangedAStatus
+        {
+            get { return changedTheDocument; }
+        }
 
         /// <summary>
         /// Everything the file and the document disagree about, by test name. Read inside
@@ -602,6 +629,27 @@ namespace Federator.Addin.Engine
                 }
 
                 clock.Stop();
+
+                // F54. Between the run and the harvest, and never after the clash step.
+                // ClashHarvest reads a result's status while building the report rows, so
+                // a status applied later would leave the workbook and the page carrying
+                // the status read BEFORE the change.
+                //
+                // Its own resolve, because TestsEditResultStatus is a mutator and every
+                // mutator on DocumentClashTests is a copy form that kills the handle handed
+                // to it. Sharing the handle with the count below is exactly the fault that
+                // threw once per test for 8 hours 52 minutes. Nothing is resolved at all
+                // when no status is wanted, which is every run while Q33 is open.
+                if (statuses != null && WantedStatuses != null && WantedStatuses.Count > 0)
+                {
+                    using (ClashTest toEdit = Resolve(clashTests, address, planned.Name))
+                    {
+                        if (toEdit != null && statuses.Apply(clashTests, toEdit, WantedStatuses))
+                        {
+                            changedTheDocument = true;
+                        }
+                    }
+                }
 
                 // A fresh handle. The one handed to TestsRunTest is dead by now, and
                 // reading Children off it is exactly what threw tens of thousands of times.

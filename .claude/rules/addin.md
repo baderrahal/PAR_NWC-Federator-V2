@@ -138,6 +138,27 @@ docs/history/claude-md-history.md, kept whole.
   this tool cannot do is not a step that failed. No clash is ever saved as a viewpoint,
   which is a different rule and still holds: a discipline viewpoint is not a clash
   viewpoint
+- A CLASH carries one of five, New, Active, Reviewed, Approved or Resolved. A TEST carries
+  one of four, New, Old, Partial or Complete. They are different sets on different things
+  and they share only the word New, which is how they get confused. OLD IS A TEST WORD AND
+  NEVER A CLASH WORD, so no clash is ever at Old and nothing here ever moves one from it.
+  The wording is Federator.Core.Clash.StatusWords so the log and docs\workflow.md cannot
+  drift apart. This tool sets REVIEWED and nothing else, which
+  Federator.Core.Clash.StatusesThisToolMaySet decides and a refused status is logged by
+  name rather than silently dropped. Approved and Resolved are never set, because each is a
+  person's statement about work that was actually done and the NWF is the only record of
+  what has been fixed, so there is nothing to check it against afterwards. New and Active
+  are not set either, because running a test produces them and setting one by hand would
+  overwrite what a person had already decided. The status is applied BETWEEN the run and
+  the harvest and never after the clash step, because ClashHarvest reads a result's status
+  while it builds the report rows, so a status applied later would leave the workbook and
+  the page carrying the status read before the change. It gets its OWN resolve, because
+  TestsEditResultStatus is a mutator and every mutator on DocumentClashTests is a copy form
+  that kills the handle handed to it, and sharing a handle with the count is the fault that
+  threw once per test for 8 hours 52 minutes. A status written is a write, so the NWF is
+  saved again on it. HOW THE TOOL LEARNS WHICH CLASHES CANNOT BE SOLVED IS Q33 and is not
+  built: the method takes a list and applies it, nothing supplies one yet, and guessing the
+  input would mean writing a rule nobody agreed to into the record
 - Applying the file's settings to a test already in the document is a tick box, off by
   default, and it says plainly that changing a test RESETS its results and every clash
   in it goes back to New. That is the whole reason the default is to report and not to

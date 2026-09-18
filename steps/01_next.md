@@ -448,6 +448,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - Changing a status writes into the document, so the NWF is saved again after it, and the workbook and the page show the new status and not the one read before the change
 - Never Resolved and never Approved. Reviewed is the only status this tool sets, because the other two are a person's decision about work that was actually done
 - Size: small while Q33 is open
+- DONE on 2026-09-18. `StatusesThisToolMaySet` and `StatusWords` in Core with 11 tests, and `ClashStatusEditor` in the add-in. Reviewed and nothing else, and a refused status is logged by name. The editor runs BETWEEN the run and the harvest with its own resolve, because the harvest reads a result's status and because `TestsEditResultStatus` is a mutator that kills the handle handed to it. A status written asks for the NWF again. Nothing supplies a list while Q33 is open, so no run changes a status today. Core tests before: 1035 passed, 0 failed, 32 skipped, 1067 total. After: 1045 passed, 0 failed, 32 skipped, 1077 total
 
 ## F55 The rules and the docs catch up
 
