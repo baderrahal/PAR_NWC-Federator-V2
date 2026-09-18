@@ -39,6 +39,7 @@ Three things, none of them a rule the code breaks at run time. The first is the 
 - CONTAINER
 - Two summary blocks stacked at line 1129. The first describes `Count`, twelve lines below, which F45 left with no comment of its own when it inserted `ResolvedInTheDocument` above it. F44 said the doubled comments were done and this one was left
 - Size: one comment moved
+- DONE on 2026-09-18. Moved rather than deleted, because it describes `Count`, which is still there and had lost its own comment. F44's own check rerun over the whole of src reads 0 stacked, where it read 1
 
 ### F47c Two names recorded wrongly in the F40 entry
 
