@@ -117,3 +117,33 @@ must not report that it kept them.
 Whether a model can be removed from an open document without a clear at all, which would
 make all of this unnecessary, is UNKNOWN. It has never been read off the installed DLL.
 `tools\probes\probe-model-remove.ps1` answers it and Q34 is what happens when it does.
+
+## A viewpoint per discipline
+
+Every federation this tool writes carries one folder per discipline, named with the
+discipline code the scan reads off part 5 of the NWC name, with one saved viewpoint inside
+it showing that discipline and hiding the others. They are made after the clash run and
+before the NWF is saved again, so a viewpoint this run made is inside the file the NWD is
+published from.
+
+A group of one discipline still gets its folder and its viewpoint. It hides nothing,
+because there is nothing else in the group to hide, and that is not the same as having no
+viewpoint. Every NWF this tool writes then has the same shape in it, and a group that
+quietly had none would read as one where the step failed.
+
+A viewpoint already at its path is left exactly as it is and counted as already there. A
+second copy at one path would leave the tree holding both, and whichever came first is
+what anything resolving that path finds. That is the rule already in force for sets.
+
+The log carries a VIEWS block in the shape the SETS block uses, one line per viewpoint
+then the totals, and the counts reach the RESULT block and the judgement, so a group whose
+viewpoints failed is not reported as DONE.
+
+This is not the same as saving a clash as a viewpoint, which this tool does not do and has
+never done. A discipline viewpoint shows a discipline. A clash viewpoint would show one
+clash, and the pictures in the report are how a clash is shown.
+
+**Not working yet, and the log says so.** How a saved viewpoint folder is made was never
+read off the installed DLL. Until `tools\probes\probe-viewpoints.ps1` has been run, the run
+plans the viewpoints, writes what it would have made into the log, and attempts nothing. A
+step this tool cannot do is not a step that failed, so the group is not marked down for it.

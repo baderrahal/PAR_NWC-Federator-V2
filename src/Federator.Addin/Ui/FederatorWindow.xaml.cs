@@ -1209,7 +1209,8 @@ namespace Federator.Addin.Ui
                     OutputPaths.Nwd(nwdFolder, group.NwdName),
                     group.Files,
                     group.WorkbookName,
-                    group.DisciplineCount));
+                    group.DisciplineCount,
+                    group.DisciplineCodes));
             }
 
             if (jobs.Count == 0)

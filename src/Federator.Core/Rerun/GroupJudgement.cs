@@ -54,6 +54,19 @@ namespace Federator.Core.Rerun
         public int FailedFileCount { get; set; }
 
         /// <summary>
+        /// Whether this run was asked to put viewpoints in. F52. A run that was not asked
+        /// cannot fail at it, which is the same rule the NWD follows: a step deliberately
+        /// switched off is not a failure.
+        /// </summary>
+        public bool ViewpointsRequested { get; set; }
+
+        /// <summary>
+        /// How many planned viewpoints threw or produced nothing. Only meaningful when
+        /// ViewpointsRequested is true.
+        /// </summary>
+        public int FailedViewpointCount { get; set; }
+
+        /// <summary>
         /// Everything that threw for this group, in the order it threw. A list rather
         /// than one slot, because a group now has several steps that can each throw
         /// independently of the others. The model side can append cleanly and the clash
@@ -157,6 +170,18 @@ namespace Federator.Core.Rerun
             if (facts.Decision == RerunDecision.Rebuilt && facts.AppendedCount == 0)
             {
                 reason = "nothing appended, so the rebuild produced nothing";
+                return GroupOutcome.Failed;
+            }
+
+            // F52. A group whose viewpoints failed is not DONE. The viewpoints live in
+            // the NWF and the NWF is the record, so a group that wrote every output and
+            // silently lost a viewpoint has not done what it was asked. Judged on what was
+            // ASKED FOR, so a run that wanted none cannot fail here.
+            if (facts.ViewpointsRequested && facts.FailedViewpointCount > 0)
+            {
+                reason = facts.FailedViewpointCount
+                    + (facts.FailedViewpointCount == 1 ? " viewpoint" : " viewpoints")
+                    + " could not be put into the NWF";
                 return GroupOutcome.Failed;
             }
 

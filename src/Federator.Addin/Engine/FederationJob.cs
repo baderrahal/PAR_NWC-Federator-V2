@@ -24,7 +24,8 @@ namespace Federator.Addin.Engine
             string nwdPath,
             IList<string> files,
             string workbookName,
-            int? disciplineCount)
+            int? disciplineCount,
+            IList<string> disciplines = null)
         {
             if (building == null)
             {
@@ -43,6 +44,7 @@ namespace Federator.Addin.Engine
             Files = files;
             WorkbookName = string.IsNullOrEmpty(workbookName) ? outputName : workbookName;
             DisciplineCount = disciplineCount;
+            Disciplines = disciplines ?? new List<string>();
         }
 
         public string Building { get; private set; }
@@ -65,6 +67,13 @@ namespace Federator.Addin.Engine
         /// by BuildingGroup.CannotClashWith. D5.
         /// </summary>
         public int? DisciplineCount { get; private set; }
+
+        /// <summary>
+        /// The discipline codes in this group, which F52 makes one viewpoint folder from
+        /// each of. Empty for the open file, where nothing was scanned, and empty is a real
+        /// answer there rather than a gap.
+        /// </summary>
+        public IList<string> Disciplines { get; private set; }
 
         /// <summary>
         /// True where the scan found fewer than two disciplines. The open file is never

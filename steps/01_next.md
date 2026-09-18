@@ -425,6 +425,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - A viewpoint already at that path is left exactly as it is and counted as already there, the rule F28 set for sets. Never a second copy at one path
 - The log gets a VIEWS block in the shape the SETS block uses: one line per viewpoint, then created, already there and failed. The counts go in the RESULT block and the judgement, so a group whose viewpoints failed is not reported as DONE
 - Size: large. The Core half is all of the rule and the add-in half is the part that waits on the measurement
+- DONE on 2026-09-18. The Core half is finished and tested: `ViewpointPlan` with its settings, `ViewpointBuildOutcome` as the twin of `SetBuildOutcome`, and the judgement rule that a group whose viewpoints failed is not DONE. The add-in half is written and wired in, and `SavedViewpoints.CanBuild` is FALSE, so the run plans the viewpoints, logs what it would have made and attempts nothing until `probe-viewpoints.ps1` has been run. A step this tool cannot do is not a step that failed, so no group is marked down for it. Core tests before: 978 passed, 0 failed, 32 skipped, 1010 total. After: 1004 passed, 0 failed, 32 skipped, 1036 total
 
 ## F53 The 150 mm rule and the sub groups
 

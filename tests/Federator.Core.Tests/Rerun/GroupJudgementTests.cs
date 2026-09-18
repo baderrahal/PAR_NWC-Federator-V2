@@ -507,5 +507,61 @@ namespace Federator.Core.Tests
             Assert.That(GroupJudgement.Judge(gone), Is.EqualTo(GroupOutcome.Failed));
             Assert.That(GroupJudgement.Judge(threw), Is.EqualTo(GroupOutcome.Failed));
         }
+
+        // ---------- F52, the viewpoints ----------
+
+        /// <summary>
+        /// The viewpoints live in the NWF and the NWF is the record, so a group that wrote
+        /// every output and silently lost a viewpoint has not done what it was asked.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseViewpointsFailedIsNotDone()
+        {
+            GroupFacts facts = Clean();
+            facts.ViewpointsRequested = true;
+            facts.FailedViewpointCount = 1;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Does.Contain("1 viewpoint could not be put into the NWF"));
+        }
+
+        [Test]
+        public void TwoFailedViewpointsReadAsViewpointsAndNotViewpoint()
+        {
+            GroupFacts facts = Clean();
+            facts.ViewpointsRequested = true;
+            facts.FailedViewpointCount = 2;
+
+            string reason;
+            GroupJudgement.Judge(facts, out reason);
+
+            Assert.That(reason, Does.Contain("2 viewpoints could not be put into the NWF"));
+        }
+
+        /// <summary>
+        /// Judged on what was ASKED FOR, which is the rule that stopped a clean 22 group
+        /// run being reported as FAILED over an NWD nobody asked for.
+        /// </summary>
+        [Test]
+        public void ARunThatWantedNoViewpointCannotFailAtThem()
+        {
+            GroupFacts facts = Clean();
+            facts.ViewpointsRequested = false;
+            facts.FailedViewpointCount = 3;
+
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
+        }
+
+        [Test]
+        public void EveryViewpointMadeLeavesTheGroupDone()
+        {
+            GroupFacts facts = Clean();
+            facts.ViewpointsRequested = true;
+            facts.FailedViewpointCount = 0;
+
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
+        }
     }
 }

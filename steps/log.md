@@ -2,6 +2,36 @@
 
 Newest entry at the top.
 
+## 2026-09-18 F52, a viewpoint per discipline
+
+### What was done
+
+- F52 done as far as a container with no Navisworks can take it, and the part that is not done says so in the log on every run rather than looking finished
+- The Core half is finished and proved. `ViewpointPlan` makes one folder per discipline in the group, named with the discipline code the scan reads off part 5 of the NWC name, with one viewpoint in each showing that discipline and hiding the others. `ViewpointSettings` holds the two names, because a name that shapes a run is a setting. `ViewpointBuildOutcome` is the twin of `SetBuildOutcome`, so the VIEWS block reads as the SETS block does and its totals are counted off the same list the lines come from, which is what stops a block reporting three created over two lines
+- A group of ONE discipline still gets its folder and its viewpoint. It hides nothing, which is not the same as having no viewpoint. Skipping it would make one NWF in a set a different shape from every other, and a group that quietly had none would read as one where the step failed. That is the reasoning F35 used for creating every clash test in a single discipline group and running none of them, and there is a test on it by name
+- A viewpoint already at its path is left exactly as it is and counted as already there, never made again. F28 set that rule for sets and the reason carries over without change: a second copy at one path leaves the tree holding both, and whichever came first is what anything resolving that path finds
+- `GroupJudgement` gains the rule the brief asked for. A group whose viewpoints failed is not DONE. It is judged on what was ASKED FOR, so a run that wanted no viewpoint cannot fail at them, which is the rule that stopped a clean 22 group run being reported as FAILED over an NWD nobody had asked for
+- THE PART THAT IS NOT DONE, AND WHY IT IS WIRED IN ANYWAY. Every Navisworks call the creation needs is unmeasured. `DocumentSavedViewpoints` appears nowhere in `scan.md` and nowhere in this repo, so how a folder is made, how a viewpoint is added, whether a name can be set and what has to be disposed are four UNKNOWNs, and how a discipline is shown and the others hidden is a fifth
+- Writing five unknowns deep would have produced code nobody could review and that would need rewriting the moment the probe answered. So the structure is written and the API surface is not: `SavedViewpoints.ShowOnly` and `Add` throw with a message naming section 5b and the probe, and every assumption is listed at the top of that one file
+- `SavedViewpoints.CanBuild` is FALSE and it is the one line to change. While it is false the run PLANS the viewpoints, writes one line saying what it would have made, writes a second saying the measurement is outstanding, and attempts nothing. The judgement is told the viewpoints were not requested
+- That last decision is the one worth defending. Wiring the builder in while those two methods throw would have reported EVERY group FAILED over a feature that was never attempted, which is precisely the fault that once called a clean 22 group run failed because an NWD nobody had asked for was missing. A step this tool cannot do is not a step that failed
+- One rule that was checked and stands. `core.md` says no clash is ever saved as a viewpoint in the NWF. A discipline viewpoint is not a clash viewpoint, so the rule is untouched, and `docs/workflow.md` now says which is which rather than leaving two sentences that read as one rule
+- Proved here: Core tests before 978 passed, 0 failed, 32 skipped, 1010 total. After 1004 passed, 0 failed, 32 skipped, 1036 total. Core builds in Release with 0 warnings. The add-in parsed with the same six error codes and not one `CS1xxx`, which caught a real ambiguity the new overload introduced and which is fixed
+- Waits for the local machine: the probe, then the add-in half, then the run. Steps 220 to 228 are the two halves, and the first of them is true on the next ordinary run
+
+### What remains
+
+- F53, F54 and F55, in that order
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F52 pull request
+2. F53, the 150 mm rule, which is all Core and all provable here
+
 ## 2026-09-18 F50, the NWF strategy, new against existing
 
 ### What was done
