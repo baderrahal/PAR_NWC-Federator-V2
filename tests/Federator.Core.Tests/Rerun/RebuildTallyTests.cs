@@ -123,7 +123,7 @@ namespace Federator.Core.Tests
             RebuiltThing sets = tally.Count("SETS", "selection sets");
             RebuiltThing tests = tally.Count("TESTS", "saved clash tests");
             RebuiltThing views = tally.Count("VIEWS", "saved viewpoints");
-            RebuiltThing status = tally.Count("STATUS", "clash results carrying a status a person set");
+            RebuiltThing status = tally.Count("RESULTS", "clash results carrying a status a person set");
 
             foreach (RebuiltThing thing in new[] { sets, tests, views })
             {
@@ -147,7 +147,7 @@ namespace Federator.Core.Tests
         {
             RebuildTally tally = new RebuildTally();
 
-            foreach (string label in new[] { "SETS", "TESTS", "VIEWS", "STATUS" })
+            foreach (string label in new[] { "SETS", "TESTS", "VIEWS", "RESULTS" })
             {
                 RebuiltThing thing = tally.Count(label, label.ToLowerInvariant());
                 thing.Before = 3;
@@ -168,7 +168,7 @@ namespace Federator.Core.Tests
         {
             RebuildTally tally = new RebuildTally();
 
-            foreach (string label in new[] { "SETS", "TESTS", "VIEWS", "STATUS" })
+            foreach (string label in new[] { "SETS", "TESTS", "VIEWS", "RESULTS" })
             {
                 RebuiltThing thing = tally.Count(label, "things");
                 thing.Before = 1;

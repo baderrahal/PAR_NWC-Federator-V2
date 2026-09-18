@@ -12,9 +12,10 @@ can be written here and only proved on the local machine.
 
 Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 and F55 are all done and each carries its DONE line below. The three that were left before the round are left after it, and only the first of them can be started here.
 
-1. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
-2. F18, when Bader uploads the 1A04WE sample, Q9
-3. F23, when Q20 is answered
+1. F57, five Look for lines older than the feature round, for Bader to judge
+2. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
+3. F18, when Bader uploads the 1A04WE sample, Q9
+4. F23, when Q20 is answered
 
 Nothing else is open. F19 is dropped.
 
@@ -451,6 +452,24 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - Every rule from F50 to F54 into the rules files and the docs. One numbered proof per feature, one action per step, each with its Look for line, in the shape the file already uses
 - Size: medium, and it is the one that keeps the next audit short
 - DONE on 2026-09-18. Four gaps the per feature work left, found by auditing what each feature actually landed: F51's rule was in no rules file, `CLAUDE.md` did not name this round's two unknowns, six step references in the log were wrong and four of those were written without measuring, and two Core types were named in no rule. Then the end to end read: 36 backtick strings checked in the round's own steps, three wrong, and all three were F52's steps broken by F53 adding the sub groups after they were written. Core tests unchanged at 1045 passed, 0 failed, 32 skipped, 1077 total, because it touches no code
+
+## F56 What the real read of 03_bader_next.md found
+
+- Files `steps/03_bader_next.md`, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/SavedViewpoints.cs`, `.claude/rules/addin.md`, `tests/Federator.Core.Tests/Rerun/RebuildTallyTests.cs`
+- CONTAINER
+- The feature round reported its end to end read as done off a mechanical check of quoted strings in its own 42 steps. The real read covers all 251 and asks what each step PROMISES. 120 Look for lines read, nine wrong, four of them the round's own drift
+- Size: four steps, one log label and its tests
+- DONE on 2026-09-18. Step 51's block order, which F52 broke. Step 199's claim about `AddCopy`, which names a member nothing calls. Step 210's ORDER, which F55 left wrong when it fixed the count, because the disciplines come sorted Ordinal. And step 229, where F50's rebuild row and F54's clash lines both wrote `STATUS`, now separated so the rebuild row is `RESULTS` and one prefix means one thing. Core tests before and after: 1045 passed, 0 failed, 32 skipped, 1077 total
+
+## F57 Five Look for lines older than the feature round
+
+- Files `steps/03_bader_next.md`
+- CONTAINER
+- Found by the same read that found F56's four, each confirmed by a verifier told to refute it. They are older than the feature round and NOT this round's drift, so they are listed rather than corrected, because one of them is wording an earlier round wrote on purpose and reversing that on a quick verification is the fault the rules exist to prevent
+- Step 73 says a SECOND `NWF      attempt` line follows the CLASH block. The group in that proof is a Weekly run plus XML, which takes the OPENED branch, and that branch logs `NWF      reused` and never an attempt before the clash step. So there is one attempt line, not a second. The 2026-09-12 round wrote this wording deliberately and may have meant a different path
+- Steps 148 and 166 both say the CLASH block says the workbook was written. It does not. The block is `ClashRunOutcome.Lines()` and names no output file. The workbook has its own `XLSX     attempt` and `XLSX     written` lines after it
+- Steps 152 and 157 say a line sits ABOVE the Run the open file button. `OpenDocumentLine` and `RunOpenButton` are the two children of one horizontal StackPanel with the button first, so the line is beside it and to its right. What the line SAYS is right in both steps
+- Size: five wordings, once Bader says which readings he meant
 
 ## F21 The log answers timing and counts
 

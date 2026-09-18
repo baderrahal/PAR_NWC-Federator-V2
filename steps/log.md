@@ -2,6 +2,34 @@
 
 Newest entry at the top.
 
+## 2026-09-18 F56, what the real read of 03_bader_next.md found
+
+### What was done
+
+- F56 is a follow up to the feature round, opened because the read that round reported as done was not done. The closing entry is corrected in place to say so
+- WHAT WENT WRONG IN THE REPORTING. The round's last step was to read `03_bader_next.md` end to end against the code. What was actually done was a mechanical check of every backtick quoted STRING in the round's own 42 new steps, 36 of them, and that was reported as the read. A step can promise a block ORDER, a count, or which file does a thing, and none of those is a quoted string. The real read covers all 251 steps and asks what each one promises
+- The real read: 120 Look for lines against the code, eight readers over eight ranges, every finding handed to a verifier told to refute it and to default to refuted. NINE survived. FOUR are this round's own drift and five are older than it
+- F52 broke the block order in step 51. `BuildViewpoints` runs between `ClashStep` and `SaveTheNwfAgain` and always writes a VIEWS line, so the real order is UNITS, CLASH, ITEM IDS, VIEWS, NWF attempt, XLSX, NWD. The step still listed the order from before F52, so Bader would have followed it and found a block that is not in it
+- Step 199 named the wrong file. It said `SavedViewpoints.cs` would fail to build without `AddCopy`. It would not: the word appears nowhere in that file and nothing calls it, because `Add` throws first. Only `RootItem` is used. The step and the file's own summary now separate what the code USES, where a wrong probe answer breaks the build, from what the work that is not built yet EXPECTS, where a wrong answer changes what F52 can be finished with and breaks nothing
+- Step 210 was wrong in the correction F55 made to it. F55 fixed the COUNT, five paths and not three, and left the ORDER wrong. `BuildingGrouping` sorts the disciplines Ordinal before they reach the plan, so a group of AR, ME and EL is held as AR, EL, ME and the line reads in that order. A reader checking a correct log against that step would have called a correct run a fault, which is the exact thing the step exists to prevent
+- TWO OF THIS ROUND'S OWN FEATURES TOOK THE SAME LOG PREFIX. F50's rebuild tally labelled its fourth row STATUS, and F54 writes STATUS lines about a clash moving. A rebuilt group on an ordinary run therefore writes a STATUS line that has nothing to do with F54, and step 229 says there should be none. The fix is not to reword the step: the rebuild row is RESULTS now, so one prefix means one thing. One prefix reading as two different things is how a log stops being trusted, and the step says which is which
+- The five older findings are NOT fixed here and are listed in `01_next.md` as F57 with their evidence. One of them, step 73, is wording an earlier round wrote deliberately, and reversing that on a quick verification is the fault this project's rules exist to prevent. They are Bader's to judge
+- Proved here: Core tests 1045 passed, 0 failed, 32 skipped, 1077 total, before and after, because the only code change is a log label and its tests. The add-in parsed with the same six error codes and not one `CS1xxx`
+
+### What remains
+
+- F57, the five older findings, for Bader to judge
+- Everything the feature round left: the two probes, Q33, and the run
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F56 pull request
+2. Bader reads F57 and says which of the five to correct
+
 ## 2026-09-18 The feature round is closed, F51 to F55
 
 ### What was done
@@ -16,7 +44,8 @@ Newest entry at the top.
 - Three copies of one rule that did not get written. F50 widened the rebuild from two things to four, and the keep rule was already written TWICE in `NwfRebuildPlan`, the same expression under two names. Copying it twice more would have made four. It is written once now, in `RebuildTally`, the four things are four rows, and the five superseded members went with their eight tests because nothing in src called them any more
 - One rule departed from on purpose. `core.md` says to log a count and five examples when many lines say one thing. F53 names EVERY item whose size could not be read, because those lines each name a different item that may be wrongly in or out of a viewpoint and reading five tells you nothing about the sixth. Naming every one is a setting and turning it off makes the block say it truncated
 - Two ordering facts came out of reading the code rather than the brief, and both would have been real bugs. F54's status edit had to go BETWEEN the run and the harvest, because `ClashHarvest` reads a result's status while it builds the report rows, so an edit after the clash step would have left the workbook carrying the status read before the change. And it needed its own resolve, because `TestsEditResultStatus` is a mutator that kills the handle handed to it, which is the shape that once threw per test for 8 hours 52 minutes
-- THE READ OF `03_bader_next.md`, which is what the round asked for last. Every backtick quoted string in the steps this round added was checked against the source, with C# concatenation seams stripped so a string built in two pieces still matches. 36 checked in steps 195 to 236. THREE were wrong, and all three were F52's steps broken by F53 adding the sub groups after they were written: the example paths, the count for a single discipline group, and what a discipline folder holds. The other eight flagged strings are composed at run time and each was read against the code it comes from rather than waved through. The file holds 120 Look for lines in total and 25 of them are this round's
+- THE READ OF `03_bader_next.md`, PART ONE, and this entry claimed it was the whole thing when it was written. Every backtick quoted string in the steps this round added was checked against the source, with C# concatenation seams stripped so a string built in two pieces still matches. 36 checked in steps 195 to 236. THREE were wrong, and all three were F52's steps broken by F53 adding the sub groups after they were written: the example paths, the count for a single discipline group, and what a discipline folder holds. The other eight flagged strings are composed at run time and each was read against the code it comes from rather than waved through. The file holds 120 Look for lines in total and 25 of them are this round's
+- THE READ, PART TWO, which is the one the round actually asked for and which this entry originally reported as done off part one alone. Part one checked quoted STRINGS in this round's own 42 steps. The real read checks what a step PROMISES, across all 251, and it found things a string check cannot see. F56 carries it: 120 Look for lines read against the code, nine wrong, FOUR of them this round's own drift and five older. The correction to this entry is that the read was reported finished before it was finished
 - F55 found four more gaps by auditing what each feature actually landed rather than trusting it had. F51's rule was in no rules file. `CLAUDE.md` did not name this round's two unknowns in the list somebody reads before assuming. Six step references in this log were wrong, and FOUR of those were numbers written without measuring, which is the thing CLAUDE.md forbids. Two Core types were named in no rule
 - The D6 branch list rebuilt off `git ls-remote --heads origin`, 49 names, checked name for name against the live remote plus the branch this entry is written on. It was 42
 - Core tests: 957 passed, 0 failed, 32 skipped, 989 total before the round. 1045 passed, 0 failed, 32 skipped, 1077 total after it. 88 tests added and not one failure introduced at any point. Core builds in Release with 0 warnings and the add-in parses with the same six error codes and not one `CS1xxx`, which caught a real `CS0121` ambiguity in F52 that would otherwise have reached the local build

@@ -699,7 +699,7 @@ namespace Federator.Addin.Engine
             RebuiltThing sets = tally.Count("SETS", "selection sets");
             RebuiltThing tests = tally.Count("TESTS", "saved clash tests");
             RebuiltThing views = tally.Count("VIEWS", "saved viewpoints");
-            RebuiltThing statuses = tally.Count("STATUS", "clash results carrying a status a person set");
+            RebuiltThing statuses = tally.Count("RESULTS", "clash results carrying a status a person set");
 
             sets.Before = CountSets(document.SelectionSets);
             tests.Before = saved.Count;
@@ -797,7 +797,7 @@ namespace Federator.Addin.Engine
 
                 if (statuses.Before > 0)
                 {
-                    log.Line("STATUS   before the clear that was " + statusesBefore
+                    log.Line("RESULTS  before the clear that was " + statusesBefore
                         + ", and now " + StatusesAPersonSet.Describe(SavedStatuses.In(document)));
                 }
 

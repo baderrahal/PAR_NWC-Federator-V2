@@ -129,8 +129,10 @@ docs/history/claude-md-history.md, kept whole.
   minus one and holds the NWF shut, because a viewpoint count that came back as zero
   would let a rebuild throw them away and report that it kept them all. The keep rule is
   Federator.Core.Rerun.RebuildTally, written ONCE and read by all four, where it used to
-  be written twice in the same words for the sets and the tests. Which statuses are worth
-  keeping is Federator.Core.Clash.StatusesAPersonSet, which is everything except New,
+  be written twice in the same words for the sets and the tests. The four rows are SETS, TESTS, VIEWS and RESULTS, and the last of
+  those is deliberately not called STATUS, because F54 writes STATUS lines about a clash
+  moving and one prefix reading as two different things is how a log stops being trusted.
+  Which statuses are worth keeping is Federator.Core.Clash.StatusesAPersonSet, which is everything except New,
   because New is where a clash starts and the next run makes it again while the other four
   are somebody's decision. Whether a model can be taken out of an open document WITHOUT a
   clear, which would retire the whole dance, is UNKNOWN, see docs\history\scan.md 5a and
