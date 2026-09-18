@@ -43,10 +43,11 @@ Three things, none of them a rule the code breaks at run time. The first is the 
 
 ### F47c Two names recorded wrongly in the F40 entry
 
-- Files `src/Federator.Core/Report/WorkbookWriter.cs`, `steps/log.md`
+- Files `src/Federator.Core/Report/WorkbookWriter.cs`, `steps/log.md`, `steps/02_questions.md`
 - CONTAINER
 - `WorkbookWriter.ClientColumns` is listed in the F40 entry as deleted and is still there, public, with no reference anywhere in src, the XAML or the tests. Its comment says it exists so a test can assert the header, and no test does, so the reason is not true and the rule decides. `ReportOptions.FolderFor` is listed in the same entry as deleted and was made internal. Both lines corrected in place, and every other name on that list checked the same way
 - Size: one member, two log lines, and the check over the rest of the list
+- DONE on 2026-09-18. `WorkbookWriter.ClientColumns` deleted, nothing referenced it anywhere. All 54 names on the F40 outright list read against the code and against the F40 commit itself. Five were recorded wrongly, not two, and each is marked in the list in place. The count of 45 counts five that did not go, which is Q31. Core tests before and after: 957 passed, 0 failed, 32 skipped, 989 total
 
 ## Done, in the order they were worked
 
