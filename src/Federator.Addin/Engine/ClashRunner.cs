@@ -1119,14 +1119,6 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Counts the results of one test by status. A result group is one row in the
-        /// panel holding several clashes, so the leaves are counted and the grouping is
-        /// reported, rather than a group silently counting as one.
-        ///
-        /// The test handed in must be freshly resolved. Running a test replaces the native
-        /// object, so a handle taken before the run throws here rather than counting.
-        /// </summary>
-        /// <summary>
         /// How many Resolved clashes the document holds right now, over every test in it.
         ///
         /// Walked once, descending folders, and each test's results counted where they sit.
@@ -1176,6 +1168,14 @@ namespace Federator.Addin.Engine
             }
         }
 
+        /// <summary>
+        /// Counts the results of one test by status. A result group is one row in the
+        /// panel holding several clashes, so the leaves are counted and the grouping is
+        /// reported, rather than a group silently counting as one.
+        ///
+        /// The test handed in must be freshly resolved. Running a test replaces the native
+        /// object, so a handle taken before the run throws here rather than counting.
+        /// </summary>
         private ClashTally Count(ClashTest test, string name)
         {
             ClashTally tally = new ClashTally();

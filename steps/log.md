@@ -2,6 +2,30 @@
 
 Newest entry at the top.
 
+## 2026-09-18 F47b, one doubled comment left
+
+### What was done
+
+- F47b done. One comment, in `ClashRunner.cs`. No logic and no line the log prints changed
+- What was there. Two summary blocks stacked at line 1121, both on `ResolvedInTheDocument`. The first describes counting the results of ONE test, which is `Count`, twelve lines below, and `Count` carried no comment at all. F45 inserted `ResolvedInTheDocument` above it and the comment stayed where it was
+- The brief said to delete the block that does not describe the method under it, and it is MOVED instead. It is not a comment for a method that is gone, it is a comment for a method that is still there and has lost it, and it carries the measured reason a handle taken before the run throws rather than counting. Deleting it would throw that away and leave `Count` undocumented, which is not what F44 did with the other three: each of those was moved onto the member it describes
+- Both methods now carry the comment that describes them and neither carries the other's
+- Proved here: the same check F44 used, a regex over every `.cs` and `.xaml` under src for two summary blocks separated only by blank or comment lines. It read 102 files and found 0, where it found 1 before this fix. The same check over the 69 files under tests also finds 0. The add-in parsed with no references, the same six error codes as before the edit and not one `CS1xxx`. Core builds with no warning. Core tests before: 957 passed, 0 failed, 32 skipped, 989 total. After: the same
+- Waits for the local machine: nothing. A comment is not a run
+
+### What remains
+
+- F47c, two names recorded wrongly in the F40 entry
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F47b pull request
+2. F47c, `WorkbookWriter.ClientColumns` and `ReportOptions.FolderFor`
+
 ## 2026-09-18 F47a, the hooks do not run on a Windows checkout
 
 ### What was done
