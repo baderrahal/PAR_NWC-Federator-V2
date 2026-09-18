@@ -81,11 +81,11 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 44. Go to the Grouping step
 45. Look for: 1B06BC, 1B06G1, 1B06K1, 1B06M1, 1B06P1 and 1B06PE read Rebuilt in the Run as column, and the other eight read Weekly run
 46. Press Run again, then OK, and wait for it to finish. The confirm dialog now also says the NWF the preview opened will be discarded, which is right, and the preview does not run a second time for the same reason
-47. Look for: per rebuilt group the log has a CHANGED line with the counts, then a REBUILT block, `REBUILT <nwf>  1 added, 4 moved, 0 removed` for 1B06BC, then one line per file, then one `saved tests` line
-48. Look for: the `saved tests` line says `kept` or `none`, never `LOST`
-49. Look for, F29: per rebuilt group one `SETS` line with three numbers, read before the clear, after the appends and after the copy is put back, and the first and the third agree
+47. Look for, F50: per rebuilt group the log has a CHANGED line with the counts, then a REBUILT block, `REBUILT <nwf>  1 added, 4 moved, 0 removed` for 1B06BC, then one line per file, then FOUR lines together, starting `SETS`, `TESTS`, `VIEWS` and `STATUS`. Before F50 there were two and they read in two different shapes
+48. Look for, F50: each of those four says `kept` or `none`, and never `LOST` and never `NOT COUNTED`. Any one of them saying either means the NWF on disk was left alone on purpose, which the line after them says in words
+49. Look for, F29 and F50: the `SETS` line carries three numbers, read before the clear, after the appends and after the copy is put back, and the first and the third agree. The other three lines read the same way, because four things reading four ways is how a log stops being read
 50. Look for, F33: per group a `UNITS` line saying how many models were set and what the document shows, in the words `model set` or `models set`, and no line anywhere says DID NOT FOLLOW
-51. Look for, F30: per group, after the models are in, the blocks come in this order: UNITS, then CLASH, then `ITEM IDS` where the report carries item ids, then `NWF      attempt`, then XLSX, then NWD, then the final NWF line saying intact and the size. No SETS block follows UNITS on this run, because sets come from the clash XML and the box is empty. The one SETS line the rebuilt groups carry is written during the rebuild, before UNITS
+51. Look for, F30: per group, after the models are in, the blocks come in this order: UNITS, then CLASH, then `ITEM IDS` where the report carries item ids, then `NWF      attempt`, then XLSX, then NWD, then the final NWF line saying intact and the size. No SETS block follows UNITS on this run, because sets come from the clash XML and the box is empty. The four SETS, TESTS, VIEWS and STATUS lines the rebuilt groups carry are written during the rebuild, before UNITS
 52. Look for: the GROUP finished line of each of the six reads the building, then `DONE`, then the seconds, and ends with `Rebuilt`
 53. Look for: the RESULT block carries `rebuilt        : 6` and `weekly run     : 8`
 54. In Explorer open the NWF folder and open the NWF of 1B06BC in Navisworks
@@ -290,6 +290,29 @@ powershell -ExecutionPolicy Bypass -File tools\probes\probe-window-labels.ps1
 193. Look for, if any `CLASH    OLD` line appears: it reads the test name and `Navisworks has this test marked Old.` and nothing after that. It used to carry a sentence about what Old means, which is UNKNOWN
 194. Look for, only if you tick compacting on the Clash step: the compacted line carries both numbers, the Resolved count before and the count read again after, and the number reported as removed is the difference between them
 
+## Two probes, F50 and F52. Run these BEFORE the run proofs above need them
+
+Both answer a question the container cannot answer, because it has no Navisworks DLL and
+no PowerShell on it. Neither needs the add-in built. Neither opens a model. Each takes
+about ten seconds and each prints a block to paste back.
+
+195. Open PowerShell in the repo folder and run:
+
+```
+powershell -ExecutionPolicy Bypass -File tools\probes\probe-model-remove.ps1
+```
+
+196. Look for: a block headed `THE QUESTION: anything anywhere that takes a Model or an index and removes it`. Either it lists one or more members, or it says `none, public or not, anywhere in the assembly`. Both are real answers and the second is the one F50 is built for
+197. Run:
+
+```
+powershell -ExecutionPolicy Bypass -File tools\probes\probe-viewpoints.ps1
+```
+
+198. Look for: a block headed `The viewpoint collection, every member`. If it says `UNKNOWN: no type named ...DocumentSavedViewpoints`, that name is wrong and F52 cannot be finished until the right one is found, so send the whole output either way
+199. Look for, in the same output: whether `DocumentSavedViewpoints` carries `RootItem` and `AddCopy`, the two members the sets collection has. `src\Federator.Addin\Engine\SavedViewpoints.cs` assumes it does and says so at the top, and it is the only file that would fail to build if it does not
+200. Paste both outputs into the chat, or into `docs\history\scan.md` under sections 5a and 5b where they say NOT MEASURED, with the date. Those two sections record the questions and deliberately hold no answer
+
 ## Proof F51, the NWD carries May be re-saved and its properties reach ACC
 
 Every NWD this tool has published so far shows a processing error beside it in ACC and
@@ -302,15 +325,15 @@ false. All three were already on the list read off the DLL on 2026-08-29.
 This proof needs one NWD and an upload. It is the only thing in this file that needs a
 browser as well as Navisworks.
 
-195. Run any one building the ordinary way, so a fresh NWD is published
-196. Look for: one line in the log reading `NWD      publish properties set:` and then seven names, ending `AllowResave=true, EmbedDatabaseProperties=true, PreventObjectPropertyExport=false`. If that line is missing, the build is older than F51 and nothing below proves anything
-197. Open the published NWD in Navisworks on your own machine, then File, then look at the file properties
-198. Look for: the NWD opens and the title, the publisher, the subject and the author read as the log line says they were set
-199. Upload that NWD to ACC, into whatever folder the project uses
-200. Look for: no processing error and no warning triangle beside it once the translation finishes. That is the whole point of `AllowResave`. A warning still there means the flag did not take and the answer is a screenshot of the warning and the log line from step 196
-201. Open the NWD in the ACC viewer and click one object, any object
-202. Look for: a properties panel with real Revit properties in it, not one row reading Solid. Object properties missing means `EmbedDatabaseProperties` did not carry them and `PreventObjectPropertyExport` is the next thing to look at
-203. Q32 is whether the NWF needs to be in ACC at all. Nothing appears beside an NWF because ACC does not translate one: an NWF holds no geometry, only pointers to the NWCs, so there is no viewable file to make. Answer it in `steps/02_questions.md` when you have seen the NWD work
+201. Run any one building the ordinary way, so a fresh NWD is published
+202. Look for: one line in the log reading `NWD      publish properties set:` and then seven names, ending `AllowResave=true, EmbedDatabaseProperties=true, PreventObjectPropertyExport=false`. If that line is missing, the build is older than F51 and nothing below proves anything
+203. Open the published NWD in Navisworks on your own machine, then File, then look at the file properties
+204. Look for: the NWD opens and the title, the publisher, the subject and the author read as the log line says they were set
+205. Upload that NWD to ACC, into whatever folder the project uses
+206. Look for: no processing error and no warning triangle beside it once the translation finishes. That is the whole point of `AllowResave`. A warning still there means the flag did not take and the answer is a screenshot of the warning and the log line from step 202
+207. Open the NWD in the ACC viewer and click one object, any object
+208. Look for: a properties panel with real Revit properties in it, not one row reading Solid. Object properties missing means `EmbedDatabaseProperties` did not carry them and `PreventObjectPropertyExport` is the next thing to look at
+209. Q32 is whether the NWF needs to be in ACC at all. Nothing appears beside an NWF because ACC does not translate one: an NWF holds no geometry, only pointers to the NWCs, so there is no viewable file to make. Answer it in `steps/02_questions.md` when you have seen the NWD work
 
 ## The two walls are live, D7
 
@@ -329,45 +352,45 @@ otherwise. F47a added `.gitattributes`, which pins these three to LF on every ch
 
 This is a one time check per clone. Do it once and the rest of this file never needs it.
 
-204. In the VS Code terminal, in the repo folder, run:
+210. In the VS Code terminal, in the repo folder, run:
 
 ```
 git ls-files --eol .claude/hooks .githooks
 ```
 
-205. Look for: three lines, each reading `i/lf` and `w/lf` and `attr/text eol=lf`. A `w/crlf` on any of them means this checkout still holds the old copy, so run `git add --renormalize . ; git checkout -- .` and read it again
-206. Switch the test wall on, which git needs told once per clone:
+211. Look for: three lines, each reading `i/lf` and `w/lf` and `attr/text eol=lf`. A `w/crlf` on any of them means this checkout still holds the old copy, so run `git add --renormalize . ; git checkout -- .` and read it again
+212. Switch the test wall on, which git needs told once per clone:
 
 ```
 git config core.hooksPath .githooks
 ```
 
-207. Look for: `git config core.hooksPath` answers `.githooks`
-208. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
-209. Look for: the commit pauses and prints `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall. Throw the branch away afterwards
-210. Open Claude Code in this folder and ask it to write one word into any file under `samples`
-211. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
+213. Look for: `git config core.hooksPath` answers `.githooks`
+214. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
+215. Look for: the commit pauses and prints `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall. Throw the branch away afterwards
+216. Open Claude Code in this folder and ask it to write one word into any file under `samples`
+217. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
 
 ## Delete the old branches, D6
 
 Every branch except main is merged into main. The container cannot delete a branch: `git push origin --delete` comes back HTTP 403 from the proxy in front of it, and there is no GitHub tool in it that deletes a branch. So this is yours, one command from the repo folder in the VS Code terminal.
 
-The list below was read on 2026-09-18 with the command in step 212, after the last merge of the third audit round, and `git ls-remote --heads origin` gave 42 names. The branch this round's own closing pull request came from, `round-close-3`, is in the delete list too and was not on the remote yet when the list was read, which makes 43 lines and 42 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
+The list below was read on 2026-09-18 with the command in step 218, after the last merge of the third audit round, and `git ls-remote --heads origin` gave 42 names. The branch this round's own closing pull request came from, `round-close-3`, is in the delete list too and was not on the remote yet when the list was read, which makes 43 lines and 42 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
 
-212. Read the live list:
+218. Read the live list:
 
 ```
 git ls-remote --heads origin
 ```
 
-213. Look for: one line per branch, the name after `refs/heads/`. Expect 43 of them, so 42 to delete. It was 39 after the second audit round, and the third added three fix branches and its closing one
-214. Delete every one of them except main:
+219. Look for: one line per branch, the name after `refs/heads/`. Expect 43 of them, so 42 to delete. It was 39 after the second audit round, and the third added three fix branches and its closing one
+220. Delete every one of them except main:
 
 ```
 git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-F40 fix-F41 fix-F42 fix-F43 fix-F44 fix-F45 fix-F46 fix-F47a fix-F47b fix-F47c fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close round-close-2 round-close-3
 ```
 
-215. Look for: one `- [deleted]` line per branch and no error
-216. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
-217. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
-218. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main
+221. Look for: one `- [deleted]` line per branch and no error
+222. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
+223. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
+224. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main

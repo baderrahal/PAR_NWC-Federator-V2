@@ -2,6 +2,36 @@
 
 Newest entry at the top.
 
+## 2026-09-18 F50, the NWF strategy, new against existing
+
+### What was done
+
+- F50 done, on the branch the measurement forced. The question the brief asks first, whether one model can be taken out of an open document without a clear, is UNKNOWN and could not be answered here, so the clear and restore stays and widens from two things to four
+- Why it is UNKNOWN rather than no. `scan.md` records `Document.Models` and exactly two members of `DocumentModels`, `Count` in section 4b and `SetModelUnitsAndTransform` in 4q. Nothing named Remove, Delete or Detach against a model appears anywhere in the file, and the only two Remove members in the whole of it are `RemoveExpiryDate` and `RemovePassword` on `PublishProperties`. That is not a search that came back empty, it is a thing nobody ever read
+- Why the probe was not run. There is no `Autodesk.Navisworks.Api.dll` and no PowerShell in this container, and the add-in has never compiled here. So `tools/probes/probe-model-remove.ps1` is written and Bader runs it, steps 195 and 196. `probe-viewpoints.ps1` went in beside it rather than waiting for F52, because F50's own viewpoint count rests on the same unmeasured collection and there is no sense making Bader come back for a second ten second run. `scan.md` gains section 5a, which records the QUESTION and says NOT MEASURED in its heading, because a section that reads like a measurement and is not is worse than no section
+- What the widening actually is. Four things counted out and counted back, not two: the sets, the tests, the viewpoints and the clash results carrying a status a person set. Each is counted before the clear, after the appends and after the copy is put back, and the NWF on disk is saved over only when every one came back
+- The fault the widening would have created, and did not. `NwfRebuildPlan` held the keep rule TWICE, `SetsKept` and `SavedTestsKept`, the same expression under two names, with `SetsNeedRestoring` the same shape again. Widening by the same means would have made four copies of one rule, which is the exact thing CLAUDE.md forbids and the thing the last round spent three pull requests removing. So the rule is now written ONCE, in `Federator.Core.Rerun.RebuildTally`, and the four things are four rows
+- The five superseded members went with their eight tests, because once the tally replaced them nothing in src called any of them. That is the rule about a public member with no caller, applied to code written earlier in the same round rather than found by a later audit
+- Not counted is not kept, and this is the part worth reading twice. `SavedViewpoints.Count` returns MINUS ONE where it could not count, never zero, and a thing that was never counted holds the NWF shut exactly as a thing that was lost does. A viewpoint count coming back as zero would let a rebuild throw every viewpoint away and report that it kept them all
+- Which statuses are worth keeping is its own Core rule, `StatusesAPersonSet`, and it is everything except New. A result at New is what running a test produces and the next run makes it again. A result somebody moved to Active, Reviewed, Approved or Resolved is a decision made while looking at the model, and this tool runs weekly, so losing those is losing however many weeks of review the file has collected. A status the enum does not name counts too, because one this code does not recognise is the one most worth keeping
+- The one place the unmeasured API is touched is `SavedViewpoints.cs`, and its summary says so in full: what is assumed, why it is assumed, that it was NOT read off a DLL, and that a build error there means the assumption was wrong. That is the whole reason it is one file and one method
+- One deliberate change to the log. The two lines had different shapes, `SETS     before clear 61, ...` and `         saved tests kept: ...`. Four things reading four ways is how a log stops being read, so all four take the SETS shape, and steps 47, 48, 49 and 51 of `03_bader_next.md` were corrected in the same fix rather than left to F55. The words kept, none and LOST all survive, so what Bader looks for did not change, only where it sits
+- Proved here: Core tests before 966 passed, 0 failed, 32 skipped, 998 total. After 978 passed, 0 failed, 32 skipped, 1010 total, which is twelve for the tally, eight for the statuses rule and eight deleted with the members they proved. Core builds in Release with 0 warnings. The add-in parsed with the same six error codes and not one `CS1xxx`
+- Waits for the local machine: the two probes, and then a rebuilt run. Nothing about the four counts can be proved without Navisworks, and the viewpoint count cannot even be compiled here
+
+### What remains
+
+- F52, F53, F54 and F55, in that order
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F50 pull request
+2. F52, which is the other half of the viewpoint work and waits on the same probe
+
 ## 2026-09-18 F51, the ACC warning
 
 ### What was done

@@ -681,7 +681,28 @@ namespace Federator.Addin.Engine
             // side points at a set, and a document that came back with its tests and
             // without its sets would run every test against nothing.
             IList<SavedClashTest> saved = SavedTests.Read(document);
-            int setsBefore = CountSets(document.SelectionSets);
+
+            // F50. Four things, one rule. The sets and the tests were always counted out
+            // and counted back. The viewpoints and the clash result statuses are counted
+            // the same way now, because the NWF carries those too and neither has a second
+            // copy anywhere. Any one of the four not coming back leaves the NWF on disk
+            // alone. The keep rule itself is Federator.Core.Rerun.RebuildTally, written
+            // once, where it used to be written twice in the same words.
+            RebuildTally tally = new RebuildTally();
+            RebuiltThing sets = tally.Count("SETS", "selection sets");
+            RebuiltThing tests = tally.Count("TESTS", "saved clash tests");
+            RebuiltThing views = tally.Count("VIEWS", "saved viewpoints");
+            RebuiltThing statuses = tally.Count("STATUS", "clash results carrying a status a person set");
+
+            sets.Before = CountSets(document.SelectionSets);
+            tests.Before = saved.Count;
+            views.Before = SavedViewpoints.Count(document);
+            statuses.Before = SavedStatuses.SetByAPerson(document);
+
+            // What kind of decision is at stake, read before the clear, so a rebuild that
+            // loses something says which kind went and not only how many.
+            string statusesBefore = StatusesAPersonSet.Describe(SavedStatuses.In(document));
+
             ClashTestsData testsCopy = null;
             SavedItemCollection setsCopy = null;
 
@@ -712,15 +733,15 @@ namespace Federator.Addin.Engine
                 // Sets first, on their own count, whatever the tests did. A test side
                 // points at a set, so the tests go back into a document that already
                 // holds what they point at.
-                int setsAfterAppends = CountSets(document.SelectionSets);
-                int setsAfterRestore = setsAfterAppends;
+                sets.AfterAppends = CountSets(document.SelectionSets);
+                sets.AfterRestore = sets.AfterAppends;
 
-                if (NwfRebuildPlan.SetsNeedRestoring(setsBefore, setsAfterAppends) && setsCopy != null)
+                if (sets.NeedsRestoring && setsCopy != null)
                 {
                     try
                     {
                         document.SelectionSets.CopyFrom(setsCopy);
-                        setsAfterRestore = CountSets(document.SelectionSets);
+                        sets.AfterRestore = CountSets(document.SelectionSets);
                     }
                     catch (Exception error)
                     {
@@ -731,50 +752,57 @@ namespace Federator.Addin.Engine
                     }
                 }
 
-                int afterClear = SavedTests.Count(document);
-                int afterRestore = afterClear;
+                tests.AfterAppends = SavedTests.Count(document);
+                tests.AfterRestore = tests.AfterAppends;
 
-                if (saved.Count > 0 && afterClear < saved.Count && testsCopy != null)
+                if (tests.NeedsRestoring && testsCopy != null)
                 {
                     try
                     {
                         document.GetClash().TestsData.CopyFrom(testsCopy);
-                        afterRestore = SavedTests.Count(document);
+                        tests.AfterRestore = SavedTests.Count(document);
                     }
                     catch (Exception error)
                     {
                         log.Failure(
                             "putting the saved tests back into " + job.Building,
                             error,
-                            "the saved tests line below carries what the document holds now");
+                            "the TESTS line below carries what the document holds now");
                     }
                 }
 
-                log.Line(NwfRebuildPlan.SetsLine(setsBefore, setsAfterAppends, setsAfterRestore));
-                log.Line(NwfRebuildPlan.SavedTestsLine(saved.Count, afterClear, afterRestore));
+                // The viewpoints and the statuses ride back inside the two copies above and
+                // nothing puts them back on their own. They are counted because a count is
+                // the only way to know they came, and because counting them is what turns a
+                // silent loss into a group that fails with the NWF left alone. Both are read
+                // after everything else has been put back, so what they report is the final
+                // state of the document and not a stage of it.
+                views.AfterAppends = SavedViewpoints.Count(document);
+                views.AfterRestore = views.AfterAppends;
 
-                bool setsKept = NwfRebuildPlan.SetsKept(setsBefore, setsAfterRestore);
-                bool testsKept = NwfRebuildPlan.SavedTestsKept(saved.Count, afterRestore);
+                statuses.AfterAppends = SavedStatuses.SetByAPerson(document);
+                statuses.AfterRestore = statuses.AfterAppends;
 
-                if (!setsKept)
+                foreach (string line in tally.Lines())
                 {
-                    outcome.AddError(
-                        "the rebuild could not keep the " + setsBefore
-                        + " selection sets, " + setsAfterRestore
-                        + " are in the document, so the NWF on disk was not saved over");
+                    log.Line(line);
                 }
 
-                if (!testsKept)
+                if (statuses.Before > 0)
                 {
-                    outcome.AddError(
-                        "the rebuild could not keep the " + saved.Count
-                        + " saved clash tests, " + afterRestore
-                        + " are in the document, so the NWF on disk was not saved over");
+                    log.Line("STATUS   before the clear that was " + statusesBefore
+                        + ", and now " + StatusesAPersonSet.Describe(SavedStatuses.In(document)));
                 }
 
-                if (!setsKept || !testsKept)
+                foreach (string reason in tally.LostReasons())
                 {
-                    log.Line("NWF      NOT saved over, the NWF on disk keeps its file list, its sets and its tests");
+                    outcome.AddError(reason);
+                }
+
+                if (!tally.EverythingKept)
+                {
+                    log.Line("NWF      NOT saved over, the NWF on disk keeps its file list, its sets, its tests, "
+                        + "its viewpoints and every status a person set");
                     return false;
                 }
 

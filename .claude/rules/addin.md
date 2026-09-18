@@ -102,6 +102,23 @@ docs/history/claude-md-history.md, kept whole.
   the clear is back, and otherwise the group fails, says so, and the NWF keeps its file
   list and its tests. A rebuilt group ends as Rebuilt and is judged DONE when everything
   after the rebuild went right, in Federator.Core.Rerun.GroupJudgement. Q22
+- The NWF is the record, so a rebuild counts FOUR things out and counts all four back.
+  It carries the file list, the sets, the tests, every clash result with the status a
+  person set on it, and since F52 the viewpoints, and not one of those has a second copy
+  anywhere. A CHANGED group clears the document, so each of the four is counted before the
+  clear, counted after the appends, and counted again after the copy is put back, and the
+  NWF on disk is saved over only when every one of them came back. Any one short, or any
+  one that could not be counted at all, leaves the NWF exactly as it was and fails the
+  group. Not counted is not the same as kept: a count that could not be taken reports
+  minus one and holds the NWF shut, because a viewpoint count that came back as zero
+  would let a rebuild throw them away and report that it kept them all. The keep rule is
+  Federator.Core.Rerun.RebuildTally, written ONCE and read by all four, where it used to
+  be written twice in the same words for the sets and the tests. Which statuses are worth
+  keeping is Federator.Core.Clash.StatusesAPersonSet, which is everything except New,
+  because New is where a clash starts and the next run makes it again while the other four
+  are somebody's decision. Whether a model can be taken out of an open document WITHOUT a
+  clear, which would retire the whole dance, is UNKNOWN, see docs\history\scan.md 5a and
+  tools\probes\probe-model-remove.ps1
 - Applying the file's settings to a test already in the document is a tick box, off by
   default, and it says plainly that changing a test RESETS its results and every clash
   in it goes back to New. That is the whole reason the default is to report and not to
