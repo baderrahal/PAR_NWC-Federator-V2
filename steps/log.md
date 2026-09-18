@@ -2,6 +2,43 @@
 
 Newest entry at the top.
 
+## 2026-09-18 The feature round is closed, F51 to F55
+
+### What was done
+
+- Six features merged today, in the order the brief set: F51 first, then F50, F52, F53, F54 and F55. Each on its own branch off main, each a draft pull request merged once Actions was green, each with its own entry above. No pull request is open and nothing was committed on main
+- MEASURE BEFORE YOU WRITE, which is what this round turned on. Three of the six needed an API fact. One was already measured and two were not, and saying which was which before writing anything is what kept the round honest
+- F51 needed nothing new. `AllowResave`, `EmbedDatabaseProperties` and `PreventObjectPropertyExport` were all on the list read off the installed DLL on 2026-08-29, each with a getter and a setter, so the case the brief allowed for, a name not being on the type, did not arise. Every NWD this tool has ever published went out without May be re-saved, which is the processing error beside every one of them in ACC
+- F50 and F52 needed measurements this container cannot take. There is no `Autodesk.Navisworks.Api.dll` and no PowerShell here and the add-in has never compiled here, so both probes are WRITTEN and neither is RUN. `scan.md` gains sections 5a and 5b, each headed NOT MEASURED, each recording the question and naming the probe that answers it. No member was written down as if it had been read
+- What 5a says. `scan.md` records two members of `DocumentModels`, `Count` and `SetModelUnitsAndTransform`, and nothing named Remove, Delete or Detach against a model anywhere in 2796 lines. That is not a search that came back empty, it is a thing nobody ever read, and the difference is the whole point of the section
+- What 5b says. `DocumentSavedViewpoints` appears nowhere in this repo. Five things F52 needs are UNKNOWN, so the structure was written and the API surface was not, and `SavedViewpoints.CanBuild` is false with the run saying so in the log on every run rather than looking finished
+- THE DECISION THIS ROUND TURNED ON, TWICE. A step this tool cannot do is not a step that failed. Wiring F52's builder in while its two API methods throw would have reported every group FAILED over a feature never attempted, which is the fault that once called a clean 22 group run failed because an NWD nobody had asked for was missing. So the viewpoints are planned, logged and not attempted, and the judgement is told they were not requested. The same reasoning put `SavedViewpoints.Count` at minus one rather than zero when it cannot count, because not counted is not kept and a zero would let a rebuild throw viewpoints away and report that it kept them all
+- Three copies of one rule that did not get written. F50 widened the rebuild from two things to four, and the keep rule was already written TWICE in `NwfRebuildPlan`, the same expression under two names. Copying it twice more would have made four. It is written once now, in `RebuildTally`, the four things are four rows, and the five superseded members went with their eight tests because nothing in src called them any more
+- One rule departed from on purpose. `core.md` says to log a count and five examples when many lines say one thing. F53 names EVERY item whose size could not be read, because those lines each name a different item that may be wrongly in or out of a viewpoint and reading five tells you nothing about the sixth. Naming every one is a setting and turning it off makes the block say it truncated
+- Two ordering facts came out of reading the code rather than the brief, and both would have been real bugs. F54's status edit had to go BETWEEN the run and the harvest, because `ClashHarvest` reads a result's status while it builds the report rows, so an edit after the clash step would have left the workbook carrying the status read before the change. And it needed its own resolve, because `TestsEditResultStatus` is a mutator that kills the handle handed to it, which is the shape that once threw per test for 8 hours 52 minutes
+- THE READ OF `03_bader_next.md`, which is what the round asked for last. Every backtick quoted string in the steps this round added was checked against the source, with C# concatenation seams stripped so a string built in two pieces still matches. 36 checked in steps 195 to 236. THREE were wrong, and all three were F52's steps broken by F53 adding the sub groups after they were written: the example paths, the count for a single discipline group, and what a discipline folder holds. The other eight flagged strings are composed at run time and each was read against the code it comes from rather than waved through. The file holds 120 Look for lines in total and 25 of them are this round's
+- F55 found four more gaps by auditing what each feature actually landed rather than trusting it had. F51's rule was in no rules file. `CLAUDE.md` did not name this round's two unknowns in the list somebody reads before assuming. Six step references in this log were wrong, and FOUR of those were numbers written without measuring, which is the thing CLAUDE.md forbids. Two Core types were named in no rule
+- The D6 branch list rebuilt off `git ls-remote --heads origin`, 49 names, checked name for name against the live remote plus the branch this entry is written on. It was 42
+- Core tests: 957 passed, 0 failed, 32 skipped, 989 total before the round. 1045 passed, 0 failed, 32 skipped, 1077 total after it. 88 tests added and not one failure introduced at any point. Core builds in Release with 0 warnings and the add-in parses with the same six error codes and not one `CS1xxx`, which caught a real `CS0121` ambiguity in F52 that would otherwise have reached the local build
+
+### What remains
+
+- Nothing in this round. `steps/01_next.md` has F21, F18 when the sample arrives, and F23 when Q20 is answered
+- Q24 to Q34 are open. Q32, Q33 and Q34 are this round's: whether the NWF belongs in ACC at all, how the tool learns which clashes cannot be solved, and whether the never clear rewrite is wanted once the probe answers
+- TWO PROBES ARE THE ROUND'S ONLY REAL BLOCKERS. `probe-model-remove.ps1` and `probe-viewpoints.ps1`, steps 195 to 200, ten seconds each and neither needs the add-in built. Until they are run, F52's viewpoints cannot be created and F53's SIZE block cannot appear, because the sub group is a viewpoint
+- The whole of `03_bader_next.md`, 251 steps, waits for the machine with Navisworks on it. Nothing in this round was proved by a run
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Bader runs the two probes, steps 195 to 200, and pastes both outputs into `scan.md` under 5a and 5b
+2. Bader answers Q33, which is the only thing standing between F54 and a finished feature
+3. Bader builds, installs and works `03_bader_next.md` from step 1
+4. Bader runs the D6 delete command himself
+
 ## 2026-09-18 F54, clashes that cannot be solved become Reviewed
 
 ### What was done

@@ -424,7 +424,7 @@ git config core.hooksPath .githooks
 
 Every branch except main is merged into main. The container cannot delete a branch: `git push origin --delete` comes back HTTP 403 from the proxy in front of it, and there is no GitHub tool in it that deletes a branch. So this is yours, one command from the repo folder in the VS Code terminal.
 
-The list below was read on 2026-09-18 with the command in step 245, after the last merge of the third audit round, and `git ls-remote --heads origin` gave 42 names. The branch this round's own closing pull request came from, `round-close-3`, is in the delete list too and was not on the remote yet when the list was read, which makes 43 lines and 42 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
+The list below was read on 2026-09-18 with the command in step 245, after the last merge of the feature round F51 to F55, and `git ls-remote --heads origin` gave 49 names. The branch this round's own closing pull request came from, `round-close-4`, is in the delete list too and was not on the remote yet when the list was read, which makes 50 lines and 49 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
 
 245. Read the live list:
 
@@ -432,11 +432,11 @@ The list below was read on 2026-09-18 with the command in step 245, after the la
 git ls-remote --heads origin
 ```
 
-246. Look for: one line per branch, the name after `refs/heads/`. Expect 43 of them, so 42 to delete. It was 39 after the second audit round, and the third added three fix branches and its closing one
+246. Look for: one line per branch, the name after `refs/heads/`. Expect 50 of them, so 49 to delete. It was 43 after the third audit round, and the feature round added six fix branches and its closing one
 247. Delete every one of them except main:
 
 ```
-git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-F40 fix-F41 fix-F42 fix-F43 fix-F44 fix-F45 fix-F46 fix-F47a fix-F47b fix-F47c fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close round-close-2 round-close-3
+git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-F40 fix-F41 fix-F42 fix-F43 fix-F44 fix-F45 fix-F46 fix-F47a fix-F47b fix-F47c fix-F50 fix-F51 fix-F52 fix-F53 fix-F54 fix-F55 fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close round-close-2 round-close-3 round-close-4
 ```
 
 248. Look for: one `- [deleted]` line per branch and no error
