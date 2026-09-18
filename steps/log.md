@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-09-18 F47a, the hooks do not run on a Windows checkout
+
+### What was done
+
+- F47a done. One new file, `.gitattributes`, and one section in `03_bader_next.md`. No code changed
+- What was actually wrong, measured before anything was written. In THIS container the three hook files are LF and both walls work: `git ls-files --eol` read `i/lf w/lf` for all three and the stored blobs carry no carriage return at all. The brief said they are checked out with CRLF and that reading one through `sh` gives a syntax error, and that is not true here. It is true on Bader's machine, and the difference is the whole fault
+- The repo had no `.gitattributes`, so nothing told git what these files are. Git for Windows sets `core.autocrlf` to true when it installs, which converts LF to CRLF on the way out of the object store. Proved here by cloning this repo with `core.autocrlf=true`: all three came out with CRLF line terminators, 24, 33 and 27 carriage returns. With the new file in place the same clone gives 0, 0 and 0
+- What a CRLF copy does, proved here by making one and running it. The branch hook dies at its `case` line with `Syntax error: word unexpected (expecting "in")`, which is the message the brief quotes. The paths hook dies earlier, at the pipe on line 10, with `Syntax error: "|" unexpected`. The pre-commit reads `set -e` as `set: Illegal option`
+- One thing the brief has the wrong way round, and it changes what the damage is. A dead hook does not fail open. `sh` exits 2 on a syntax error and 2 is the code that REFUSES, so on that machine the paths wall and the branch wall refuse EVERY call rather than none, which reads as Claude Code being broken rather than as a wall doing its job. The pre-commit is the one that fails open: it stumbles past the bad `set -e` and exits 0, so every commit goes through with no test run
+- The file itself. `text=auto` is the default, so git decides what is text and stores it with LF. `eol=lf` is forced on `*.sh` and on `.githooks/pre-commit` by path, so those three are LF in the working tree whatever `core.autocrlf` says. `steps/logs` and `samples` are marked `-text`, because they are evidence: the one run log in the repo is stored with CRLF, it came off a Windows run, and its line endings are part of what it records
+- Which files changed bytes: NONE. `git add --renormalize` over the whole repo staged nothing but the new file. Everything was already stored the right way here, so this changes what a future checkout gets and nothing in the index
+- Proved here, and the whole output is in the pull request body. The paths wall in seven cases: it refuses a write under `samples`, under `steps/logs`, under `bundle` and a Windows spelled path under `samples`, each with exit 2 and its refusal line, and it allows a write under `src`, a write under `steps` and a call carrying no file path, each with exit 0. The branch wall in five cases, run against a checkout with main out: it refuses `commit`, `push` and `git -C . commit` with exit 2 and its line, and allows `git status`, a command with the word commitment in it, and a commit on a fix branch. The pre-commit in three: exit 1 with its own line when `dotnet` is not on PATH, exit 1 with `REFUSED. The tests failed.` when one assertion is broken in a throwaway clone, and exit 0 after running all 989
+- What cannot be proved here and is said rather than claimed. `core.hooksPath` is unset in this container, so the pre-commit is not installed and no real commit here passes through it. It was run directly instead, which is the same script and not the same wiring. Step 197 of `03_bader_next.md` is where Bader switches it on
+- Core tests before: 957 passed, 0 failed, 32 skipped, 989 total. After: the same. This fix touches no code
+
+### What remains
+
+- F47b, one doubled comment left, and F47c, two names recorded wrongly in the F40 entry
+- D7 in `03_bader_next.md`, eight steps, waits for Bader like everything else in that file
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F47a pull request
+2. F47b, the doubled comment on `ResolvedInTheDocument`
+
 ## 2026-09-18 The plan for the third audit round, F47a to F47c
 
 ### What was read first

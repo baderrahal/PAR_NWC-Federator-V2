@@ -10,13 +10,42 @@ can be written here and only proved on the local machine.
 
 ## Order
 
-Renumbered on 2026-09-12 when the second audit round closed. What is left is three. Only the first can be started here, and the other two wait on Bader.
+Renumbered on 2026-09-18 for the third audit round. F47 is this round's work, three small fixes, each its own pull request. After it the same three are left as before, and only the first of those can be started here.
 
-1. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
-2. F18, when Bader uploads the 1A04WE sample, Q9
-3. F23, when Q20 is answered
+1. F47a, the hooks do not run on a Windows checkout
+2. F47b, one doubled comment left
+3. F47c, two names recorded wrongly in the F40 entry
+4. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
+5. F18, when Bader uploads the 1A04WE sample, Q9
+6. F23, when Q20 is answered
 
 Nothing else is open. F19 is dropped.
+
+## F47 What the chat audit of 2026-09-18 found
+
+Three things, none of them a rule the code breaks at run time. The first is the one that matters, because it takes both walls out on the machine the tool is actually developed on.
+
+### F47a The hooks do not run on a Windows checkout
+
+- Files `.gitattributes` which is new, `steps/03_bader_next.md`
+- CONTAINER for the fix and for both proofs
+- The repo has no `.gitattributes`, so Git for Windows converts LF to CRLF on checkout, because its installer sets `core.autocrlf` to true. `sh` reads a carriage return as part of the word, so all three hook files die on their first `case` line before they reach a rule. `sh` exits 2 on a syntax error and 2 is the code that REFUSES, so the two Claude Code hooks then refuse every call rather than the protected ones, and the pre-commit stumbles past `set -e` and lets every commit through untested
+- Size: small. One new file, and the proof is what takes the time
+- DONE on 2026-09-18. `.gitattributes` added, `text=auto` by default, `eol=lf` forced on `*.sh` and on `.githooks/pre-commit` by path, `steps/logs` and `samples` marked `-text` so evidence is never normalised. `git add --renormalize` over the whole repo staged no file, because everything was already stored the right way here. Both walls proved on this machine in twelve cases, and the pre-commit in three. D7 in `03_bader_next.md` is how Bader sees it for himself
+
+### F47b One doubled comment left
+
+- Files `src/Federator.Addin/Engine/ClashRunner.cs`
+- CONTAINER
+- Two summary blocks stacked at line 1129. The first describes `Count`, twelve lines below, which F45 left with no comment of its own when it inserted `ResolvedInTheDocument` above it. F44 said the doubled comments were done and this one was left
+- Size: one comment moved
+
+### F47c Two names recorded wrongly in the F40 entry
+
+- Files `src/Federator.Core/Report/WorkbookWriter.cs`, `steps/log.md`
+- CONTAINER
+- `WorkbookWriter.ClientColumns` is listed in the F40 entry as deleted and is still there, public, with no reference anywhere in src, the XAML or the tests. Its comment says it exists so a test can assert the header, and no test does, so the reason is not true and the rule decides. `ReportOptions.FolderFor` is listed in the same entry as deleted and was made internal. Both lines corrected in place, and every other name on that list checked the same way
+- Size: one member, two log lines, and the check over the rest of the list
 
 ## Done, in the order they were worked
 
