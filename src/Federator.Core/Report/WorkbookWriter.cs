@@ -78,12 +78,6 @@ namespace Federator.Core.Report
         public const int RowsBetweenBlocks = 3;
 
         /// <summary>
-        /// The columns of a clash row, in their order and their words, so a test can
-        /// assert the header without spelling it out again.
-        /// </summary>
-        public static readonly string[] ClientColumns = ClientFormat.ClashColumns;
-
-        /// <summary>
         /// Writes the workbook and returns the path. Overwrites, the same as the NWF and
         /// the NWD. The caller reads the size back off the disk, this never reports one.
         /// </summary>
