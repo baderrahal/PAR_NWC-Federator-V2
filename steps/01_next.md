@@ -10,17 +10,11 @@ can be written here and only proved on the local machine.
 
 ## Order
 
-Renumbered on 2026-09-18 for the feature round. Six features were asked for in chat, F50 to F55, and all six numbers were free. F51 is first because it is one line of real change and it fixes something every NWD this tool has ever published. They go before F21, which is where the plan stood.
+Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 and F55 are all done and each carries its DONE line below. The three that were left before the round are left after it, and only the first of them can be started here.
 
-1. F51, the ACC warning
-2. F50, the NWF strategy, new against existing
-3. F52, a viewpoint per discipline, grouped by discipline
-4. F53, the 150 mm rule and the sub groups
-5. F54, clashes that cannot be solved become Reviewed
-6. F55, the rules and the docs catch up
-7. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
-8. F18, when Bader uploads the 1A04WE sample, Q9
-9. F23, when Q20 is answered
+1. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
+2. F18, when Bader uploads the 1A04WE sample, Q9
+3. F23, when Q20 is answered
 
 Nothing else is open. F19 is dropped.
 
@@ -54,7 +48,7 @@ Three things, none of them a rule the code breaks at run time. The first is the 
 
 ## Done, in the order they were worked
 
-F5, F6, F7, F8, F22, then F1 with F2 and F4 in one pull request, F3 inside F22, then F9, F10, F11, F17, F20, F24, F26, F27 which closes F25, F28, F29, F30, F31, F32, F33, F34, F35, F36, F37 which closes F12 and F14, F38 which closes F13, F39, then the second audit round: F46, F40, F41 which closes F15, F42, F43, F44, F45 and F16, then the third: F47a, F47b and F47c, then the feature round: F51 first, then F50, F52, F53, F54 and F55.
+F5, F6, F7, F8, F22, then F1 with F2 and F4 in one pull request, F3 inside F22, then F9, F10, F11, F17, F20, F24, F26, F27 which closes F25, F28, F29, F30, F31, F32, F33, F34, F35, F36, F37 which closes F12 and F14, F38 which closes F13, F39, then the second audit round: F46, F40, F41 which closes F15, F42, F43, F44, F45 and F16, then the third: F47a, F47b and F47c, then the feature round: F51, F50, F52, F53, F54 and F55.
 
 Every one of them carries its DONE line in its own section below, and its entry in `log.md`. None of them is proved on a machine with Navisworks yet. That is `03_bader_next.md`.
 
@@ -456,6 +450,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - CONTAINER
 - Every rule from F50 to F54 into the rules files and the docs. One numbered proof per feature, one action per step, each with its Look for line, in the shape the file already uses
 - Size: medium, and it is the one that keeps the next audit short
+- DONE on 2026-09-18. Four gaps the per feature work left, found by auditing what each feature actually landed: F51's rule was in no rules file, `CLAUDE.md` did not name this round's two unknowns, six step references in the log were wrong and four of those were written without measuring, and two Core types were named in no rule. Then the end to end read: 36 backtick strings checked in the round's own steps, three wrong, and all three were F52's steps broken by F53 adding the sub groups after they were written. Core tests unchanged at 1045 passed, 0 failed, 32 skipped, 1077 total, because it touches no code
 
 ## F21 The log answers timing and counts
 
