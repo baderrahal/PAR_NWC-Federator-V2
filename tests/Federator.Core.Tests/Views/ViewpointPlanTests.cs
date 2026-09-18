@@ -40,12 +40,16 @@ namespace Federator.Core.Tests
         [Test]
         public void OneFolderAndOneViewpointPerDiscipline()
         {
+            // Five and not three, because F53 gives Mechanical and Electrical a sub group
+            // for their large items and Architecture has no pipe in it.
             IList<PlannedViewpoint> planned = ViewpointPlan.For(Group("AR", "ME", "EL"), Settings());
 
-            Assert.That(planned.Count, Is.EqualTo(3));
-            Assert.That(planned[0].Folder, Is.EqualTo("AR"));
-            Assert.That(planned[1].Folder, Is.EqualTo("ME"));
-            Assert.That(planned[2].Folder, Is.EqualTo("EL"));
+            Assert.That(planned.Count, Is.EqualTo(5));
+            Assert.That(planned[0].Path, Is.EqualTo("AR/AR only"));
+            Assert.That(planned[1].Path, Is.EqualTo("ME/ME only"));
+            Assert.That(planned[2].Path, Is.EqualTo("ME/Over 150mm/ME over 150mm"));
+            Assert.That(planned[3].Path, Is.EqualTo("EL/EL only"));
+            Assert.That(planned[4].Path, Is.EqualTo("EL/Over 150mm/EL over 150mm"));
         }
 
         [Test]
@@ -58,6 +62,77 @@ namespace Federator.Core.Tests
 
             Assert.That(planned[1].Shows, Is.EqualTo("ME"));
             Assert.That(planned[1].Hides, Is.EqualTo(new[] { "AR", "EL" }).AsCollection);
+        }
+
+        // ---------- F53, the sub groups ----------
+
+        /// <summary>
+        /// The large pipes, ducts and cable trays of Mechanical and Electrical get a sub
+        /// group of their own. Architecture does not, because an architecture model has no
+        /// pipe in it and a sub group holding everything is not a sub group.
+        /// </summary>
+        [Test]
+        public void OnlyTheNamedDisciplinesGetASubGroupForTheirLargeItems()
+        {
+            IList<PlannedViewpoint> planned = ViewpointPlan.For(Group("AR", "ME"), Settings());
+
+            Assert.That(planned[0].SubFolder, Is.Null, "AR has no sub group");
+            Assert.That(planned[0].LargeItemsOnly, Is.False);
+
+            Assert.That(planned[1].SubFolder, Is.Null, "the plain ME viewpoint holds everything mechanical");
+            Assert.That(planned[1].LargeItemsOnly, Is.False);
+
+            Assert.That(planned[2].SubFolder, Is.EqualTo("Over 150mm"));
+            Assert.That(planned[2].LargeItemsOnly, Is.True);
+            Assert.That(planned[2].Shows, Is.EqualTo("ME"));
+        }
+
+        /// <summary>
+        /// The folder name is built from the threshold, so a folder reading Over 150mm
+        /// beside a rule using 250 cannot happen. That is the kind of drift nobody notices.
+        /// </summary>
+        [Test]
+        public void TheSubGroupFolderIsNamedFromTheThresholdItUses()
+        {
+            ViewpointSettings settings = new ViewpointSettings();
+            settings.Sizes.ThresholdMillimetres = 250;
+
+            IList<PlannedViewpoint> planned = ViewpointPlan.For(Group("ME"), settings);
+
+            Assert.That(planned[1].SubFolder, Is.EqualTo("Over 250mm"));
+            Assert.That(planned[1].Path, Is.EqualTo("ME/Over 250mm/ME over 250mm"));
+        }
+
+        [Test]
+        public void WhichDisciplinesGetASubGroupIsASetting()
+        {
+            ViewpointSettings settings = new ViewpointSettings();
+            settings.SubGroupDisciplines = new List<string> { "AR" };
+
+            IList<PlannedViewpoint> planned = ViewpointPlan.For(Group("AR", "ME"), settings);
+
+            Assert.That(planned.Count, Is.EqualTo(3));
+            Assert.That(planned[1].SubFolder, Is.EqualTo("Over 150mm"), "AR has one now");
+            Assert.That(planned[2].SubFolder, Is.Null, "and ME does not");
+        }
+
+        [Test]
+        public void ADisciplineCodeIsMatchedExactlyAndNeverCased()
+        {
+            ViewpointSettings settings = new ViewpointSettings();
+
+            Assert.That(settings.HasSubGroup("ME"), Is.True);
+            Assert.That(settings.HasSubGroup("me"), Is.False);
+            Assert.That(settings.HasSubGroup("ME "), Is.False);
+            Assert.That(settings.HasSubGroup(null), Is.False);
+        }
+
+        [Test]
+        public void ASubGroupViewpointHidesTheSameOtherDisciplinesThePlainOneDoes()
+        {
+            IList<PlannedViewpoint> planned = ViewpointPlan.For(Group("AR", "ME"), Settings());
+
+            Assert.That(planned[2].Hides, Is.EqualTo(planned[1].Hides).AsCollection);
         }
 
         /// <summary>
@@ -110,7 +185,7 @@ namespace Federator.Core.Tests
         {
             IList<PlannedViewpoint> planned = ViewpointPlan.For(Group("AR", string.Empty, "ME"), Settings());
 
-            Assert.That(planned.Count, Is.EqualTo(2));
+            Assert.That(planned.Count, Is.EqualTo(3), "AR, ME, and ME's large items sub group");
             Assert.That(planned[0].Shows, Is.EqualTo("AR"));
             Assert.That(planned[1].Shows, Is.EqualTo("ME"));
             Assert.That(planned[1].Hides, Is.EqualTo(new[] { "AR" }).AsCollection, "the empty one is not hidden either");
@@ -131,9 +206,10 @@ namespace Federator.Core.Tests
             IList<PlannedViewpoint> planned = ViewpointPlan.For(Group("AR", "ME"), Settings());
             string said = ViewpointPlan.Describe(planned);
 
-            Assert.That(said, Does.StartWith("2 viewpoints planned: "));
+            Assert.That(said, Does.StartWith("3 viewpoints planned: "));
             Assert.That(said, Does.Contain("AR/AR only"));
             Assert.That(said, Does.Contain("ME/ME only"));
+            Assert.That(said, Does.Contain("ME/Over 150mm/ME over 150mm"));
         }
 
         [Test]

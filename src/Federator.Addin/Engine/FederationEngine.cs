@@ -1785,7 +1785,8 @@ namespace Federator.Addin.Engine
         /// </summary>
         private bool BuildViewpoints(Document document, FederationJob job, JobOutcome outcome)
         {
-            IList<PlannedViewpoint> planned = ViewpointPlan.For(job.Disciplines, new ViewpointSettings());
+            ViewpointSettings views = new ViewpointSettings();
+            IList<PlannedViewpoint> planned = ViewpointPlan.For(job.Disciplines, views);
 
             log.Line("VIEWS    " + ViewpointPlan.Describe(planned));
 
@@ -1803,7 +1804,7 @@ namespace Federator.Addin.Engine
 
             outcome.ViewpointsRequested = true;
 
-            ViewpointBuildOutcome views = new ViewpointBuilder(progress, log).Build(document, planned);
+            ViewpointBuildOutcome views = new ViewpointBuilder(progress, log, views.Sizes).Build(document, planned);
 
             log.Block("VIEWS", views.Lines());
             outcome.FailedViewpointCount = views.FailedCount;

@@ -15,16 +15,32 @@ namespace Federator.Core.Views
     /// </summary>
     public sealed class PlannedViewpoint
     {
-        internal PlannedViewpoint(string folder, string name, string shows, IList<string> hides)
+        internal PlannedViewpoint(
+            string folder, string subFolder, string name, string shows,
+            IList<string> hides, bool largeItemsOnly)
         {
             Folder = folder;
+            SubFolder = subFolder;
             Name = name;
             Shows = shows;
             Hides = new ReadOnlyCollection<string>(hides);
+            LargeItemsOnly = largeItemsOnly;
         }
 
         /// <summary>The folder it sits in, which is the discipline code.</summary>
         public string Folder { get; private set; }
+
+        /// <summary>
+        /// The sub folder under that discipline, or null where it sits directly in the
+        /// discipline folder. F53 puts the large items of Mechanical and Electrical in one.
+        /// </summary>
+        public string SubFolder { get; private set; }
+
+        /// <summary>
+        /// Whether this viewpoint holds only the items over the size threshold. False for
+        /// the plain discipline viewpoint, which holds everything of that discipline.
+        /// </summary>
+        public bool LargeItemsOnly { get; private set; }
 
         /// <summary>What the viewpoint is called inside that folder.</summary>
         public string Name { get; private set; }
@@ -44,7 +60,12 @@ namespace Federator.Core.Views
         /// </summary>
         public string Path
         {
-            get { return Folder + "/" + Name; }
+            get
+            {
+                return string.IsNullOrEmpty(SubFolder)
+                    ? Folder + "/" + Name
+                    : Folder + "/" + SubFolder + "/" + Name;
+            }
         }
 
         public override string ToString()
@@ -122,11 +143,32 @@ namespace Federator.Core.Views
                     }
                 }
 
+                string folder = settings.FolderNameFor(discipline);
+
                 planned.Add(new PlannedViewpoint(
-                    settings.FolderNameFor(discipline),
+                    folder,
+                    null,
                     settings.ViewpointNameFor(discipline),
                     discipline,
-                    hides));
+                    hides,
+                    false));
+
+                // F53. The large pipes, ducts and cable trays of this discipline, in a sub
+                // group of their own. Only for the disciplines the settings name, because
+                // an architecture model has no pipe in it and a sub group holding
+                // everything is not a sub group.
+                if (settings.HasSubGroup(discipline))
+                {
+                    string subFolder = settings.SubGroupFolderName();
+
+                    planned.Add(new PlannedViewpoint(
+                        folder,
+                        subFolder,
+                        discipline + " " + subFolder.ToLowerInvariant(),
+                        discipline,
+                        hides,
+                        true));
+                }
             }
 
             return planned;

@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-09-18 F53, the 150 mm rule and the sub groups
+
+### What was done
+
+- F53 done. This is the one feature of the round that is entirely Core and entirely provable in this container, and all 26 of its tests pass here, so it is the one that needed no probe and no waiting
+- The rule. Pipes, ducts, cable trays and their fittings over 150 mm are in the viewpoints and smaller ones are out. Over 150 means OVER, and exactly 150 is out, which is the kind of boundary that gets read both ways so there is a test on it by name
+- Every number is a setting. `SizeSettings` holds the threshold at 150 in millimetres, the six property names in the order they are tried, which disciplines carry a sub group, and whether every unmeasurable item is named. Nothing in the rule is a constant
+- Six property names and not one, because which property carries the size differs per kind and per exporter. A round duct has a Diameter, a rectangular one has Width and Height, a cable tray usually has Width, and some exporters write only Size or Overall Size. Reading one name would silently drop every item that calls it something else
+- THE NUMBER IS NEVER COMPARED RAW. What a property hands back is in the document's units, so it goes through `UnitTable` first. A document in feet reporting 0.5 is 152.4 mm and is IN, and comparing 0.5 against 150 would have put it out while the same model in millimetres put it in, so one building would have produced two different sets of viewpoints depending on a setting nobody changed. There is a test that runs the same size through millimetres, centimetres and metres and asserts one answer. A unit the table does not know FAILS rather than falling back, which is F33's rule
+- INCLUDE ON UNKNOWN, and it is the loud one. A fitting usually carries no size property at all. Anything whose size cannot be read is IN, because leaving it out means a run quietly drops real geometry from a viewpoint with nothing in the output to say it happened. The SIZE block says how many are in for that reason, says plainly that nothing was dropped, says the number is expected to be large, and then names every one of them
+- ONE DELIBERATE DEPARTURE FROM AN EXISTING RULE, AND THE REASON. `core.md` says that when tests skip for the same reason, log the count and at most five examples. That rule was written after a run wrote 1830 near identical SKIPPED lines and a 1 MB log. It is about MANY LINES SAYING ONE THING. These lines each say a different thing: every one names an item that may be wrongly in or out of a viewpoint, and reading five of them tells you nothing about the sixth. So every one is named, `NameEveryUnknown` is a setting defaulting to true, and turning it off makes the block SAY it truncated, because a truncated list that does not say so is the fault both rules exist to prevent
+- The sub groups. The large items of Mechanical and Electrical sit in a sub group of their own, so the tree reads ME, then ME only, then Over 150mm, then ME over 150mm. The sub folder is named FROM the threshold, so a folder reading Over 150mm beside a rule using 250 cannot happen, which is the kind of drift nobody notices. Which disciplines get one is a setting, because ME and EL are codes this project uses and nothing in this code decides that for another project
+- The add-in reads and does not judge. `ItemSizes` reads the named properties off an item by KIND, never with `ToDisplayString` and never with a cast, which is the rule section 4n was written for after one throw cost three report columns on every row of a run. A property that throws is left out in its own try, and a size written as a display string is not read at all, because parsing "150 mm" would mean guessing the unit written in it while the number this tool converts is in the document's units
+- Proved here: Core tests before 1004 passed, 0 failed, 32 skipped, 1036 total. After 1035 passed, 0 failed, 32 skipped, 1067 total. Core builds in Release with 0 warnings. The add-in parsed with the same six error codes and not one `CS1xxx`. Three existing viewpoint plan tests failed when the sub groups went in, which was the correct new behaviour and they now assert it
+- Waits for the local machine: the SIZE block itself, because the sub group IS a viewpoint and nothing can build a viewpoint until F52's probe has answered. The rule underneath it is settled and proved and does not wait for anything
+
+### What remains
+
+- F54 and F55, in that order
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F53 pull request
+2. F54, Reviewed, which is small while Q33 is open
+
 ## 2026-09-18 F52, a viewpoint per discipline
 
 ### What was done
