@@ -19,6 +19,7 @@ namespace Federator.Core.Report
             SourceFolder = string.Empty;
             ApplyFileSettings = false;
             Tolerance = ToleranceChoice.FromTheFile();
+            MarkByDesign = false;
             PriorityPath = string.Empty;
             ByDesignPath = string.Empty;
             CompactResolved = false;
@@ -156,6 +157,16 @@ namespace Federator.Core.Report
         /// destroy data.
         /// </summary>
         public bool MarkPenetrations { get; set; }
+
+        /// <summary>
+        /// Move a clash between two sets named as a by design connection to Reviewed,
+        /// F72b. OFF by default, for the same reason the penetration box is: it writes
+        /// into the NWF, which is the only record of what has been fixed.
+        ///
+        /// It reads ByDesignPath, and with the box on and no file picked it moves nothing
+        /// and says so, rather than inventing a list.
+        /// </summary>
+        public bool MarkByDesign { get; set; }
 
         /// <summary>
         /// Which categories are a service and which are a solid. F72. The SIZE is not here

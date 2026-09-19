@@ -832,6 +832,47 @@ and 6 does not read as broken.
   StatusesThisToolMaySet still answers the other half, which is that Reviewed is the only
   status this tool ever sets, and the two together are what stop a caller moving an
   Approved clash by mistake
+- A SECOND RULE MOVES A CLASH TO REVIEWED, F72b, AND IT IS A LIST AND NOT A JUDGEMENT.
+  A column on its foundation, a door in a wall, a valve in a pipe run. Every one is a
+  clash and none is a problem. `Federator.Core.Clash.ByDesignPairs` reads a CSV of
+  left_set, right_set, reason, `ByDesignRule` decides and `ByDesignTally` is the block.
+  It knows nothing about items, categories, sizes or disciplines, deliberately: reading
+  every item once per clash is the walk shape that once built 1.7 million native handles
+  in one group, and this rule needs none of it. THE TWO SET NAMES ARE SORTED BEFORE
+  MATCHING, so a pair written one way round matches a test written the other way round.
+  Set names are Ordinal and NEVER trimmed or lowered, which is the opposite of how a
+  CATEGORY is matched and is deliberate: two set names in the reference file end in a
+  space and the pairs file carries two different ampersand spellings, both real. OFF by
+  default, the same status guard, `StatusesThisToolMayMoveFrom`, and Reviewed is still
+  the only status set. THE PENETRATION RULE OWNS A CLASH THEY BOTH WANT, counted here
+  under ThePenetrationRuleHasIt, so the two blocks add up to the number of clashes that
+  moved rather than to twice it. A pair naming a set not in this run is a FINDING, named
+  once across the whole run and not once per group, and nothing acts on it
+- THE REVIEWED LINE IS ONE RULE IN ONE PLACE, `Federator.Core.Clash.ReviewedLine`. Two
+  rules now write one and only the WHY differs. A second copy of that string in a second
+  tally is how the two would start reading differently, and a person scanning a log for
+  REVIEWED would then find one rule's moves and not the other's
+- THIS TOOL LEAVES A RECORD IN THE NWF OF EVERY CLASH IT MOVED, F72c, and the record IS
+  the comment. `AutoReviewRecord` is the shape: a marker no person would type, the rule,
+  THE STATUS THE CLASH WAS MOVED OFF, then the reason in plain words. The old status is
+  on it because New and Active are both statuses this tool may move from and an undo that
+  put everything back to New would destroy a real difference somebody made. It goes in
+  the NWF and never in a side file, because the NWF travels and a side file is lost the
+  first time somebody copies the federation. WHETHER A COMMENT CAN BE WRITTEN ON A CLASH
+  RESULT AT ALL IS UNKNOWN, scan.md 5h. If it cannot, this tool says so in ONE LINE and
+  carries on with the status alone, and NOTHING stands in for it: no side file, no
+  encoded clash name, no second copy anywhere. A comment that could not be written is not
+  a comment
+- THE UNDO TOUCHES ONLY WHAT THIS TOOL MOVED AND ONLY WHERE NOBODY HAS MOVED IT SINCE,
+  F72c. `UndoAutoReview` judges: it carries one of our records AND it is still at
+  Reviewed. A clash this tool set to Reviewed in week one that a person moved to Approved
+  in week two still carries the record and is LEFT ALONE, because that person's decision
+  is the one thing this tool never overwrites. `StatusesThisToolMaySet.AllowsAsUndo` is a
+  separate answer from `Allows` and NOT a loosening of it: an undo may set the exact
+  status one of this tool's own records names and nothing else, so Approved and Resolved
+  are still never set, because a record can only be written for a status this tool was
+  allowed to move from and the record's own constructor refuses the other three. Q50 asks
+  whether that is the right shape
 - NOTHING MOVES SILENTLY. A PENETRATION block per group names every clash moved with both
   categories and the service size, then the totals and ONE LINE PER REASON for every clash
   left alone, including the reasons at zero, because a reason missing from the block reads
