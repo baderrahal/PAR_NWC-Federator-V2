@@ -1,0 +1,30 @@
+22:31:03.835  probe started, mode hidden, 1 file(s)
+22:31:03.837  opening C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\probe\probe-1A0215.nwf
+22:31:04.005  models 3, saved viewpoints at the root 4
+22:31:04.007  hiding two model roots: C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwc and C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A0215-ZZZ-LT-MOD-000001.nwc
+22:31:04.011  after SetHidden: IsHidden(two) = True, root0.IsHidden = True, root1.IsHidden = True
+22:31:04.012  A  new SavedViewpoint(Viewpoint) made, adding it
+22:31:04.020  probe A camera alone: ContainsVisibilityOverrides = False, ContainsAppearanceOverrides = False
+22:31:04.020     GetVisibilityOverrides() returned null
+22:31:04.022  B  CaptureRuntimeOverrides() returned a SavedViewpoint, adding it
+22:31:04.022  probe B runtime overrides: ContainsVisibilityOverrides = True, ContainsAppearanceOverrides = True
+22:31:04.023     GetVisibilityOverrides() returned Autodesk.Navisworks.Api.VisibilityOverrides
+22:31:04.023     Hidden = "Autodesk.Navisworks.Api.ModelItemCollection", HashCode=-1384064224
+22:31:04.024  saved viewpoints at the root now 6
+22:31:04.026  ResetAllHidden: IsHidden(two) = False
+22:31:04.028  press probe A camera alone: IsHidden(two) = False, root0.IsHidden = False, root1.IsHidden = False
+22:31:04.033  press probe B runtime overrides: IsHidden(two) = True, root0.IsHidden = True, root1.IsHidden = True
+22:31:04.035  saving the copy
+22:31:04.062  TrySaveFile = True, size on disk 66233 bytes
+22:31:04.062  clearing and reopening
+22:31:04.084  after Clear: models 0
+22:31:04.235  reopened: models 3, saved viewpoints at the root 6
+22:31:04.235  after reopen, before pressing anything: IsHidden(two) = False
+22:31:04.235  probe A camera alone after reopen: ContainsVisibilityOverrides = False, ContainsAppearanceOverrides = False
+22:31:04.235     GetVisibilityOverrides() returned null
+22:31:04.237  press probe A camera alone: IsHidden(two) = False, root0.IsHidden = False, root1.IsHidden = False
+22:31:04.237  probe B runtime overrides after reopen: ContainsVisibilityOverrides = True, ContainsAppearanceOverrides = True
+22:31:04.237     GetVisibilityOverrides() returned Autodesk.Navisworks.Api.VisibilityOverrides
+22:31:04.237     Hidden = "Autodesk.Navisworks.Api.ModelItemCollection", HashCode=-1384064176
+22:31:04.243  press probe B runtime overrides: IsHidden(two) = True, root0.IsHidden = True, root1.IsHidden = True
+22:31:04.244  probe finished

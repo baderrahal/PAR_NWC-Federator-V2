@@ -3409,3 +3409,64 @@ it is a list read off the client's models and it will change when their models d
 UNTIL THEN the health check has nothing to compare against and that half of F84 reports
 nothing rather than guessing. The other two halves, identical condition pairs and a set
 name breaking its siblings' pattern, need no measurement and are built.
+
+## 5j. Does a saved viewpoint record the hidden state it was saved with, MEASURED 2026-09-19
+
+The one thing 5d could not read off the DLL, measured on a run. `tools\probes\ViewpointProbe`
+is a plugin assembly with no Core reference, loaded into a Navisworks started through
+`Autodesk.Navisworks.Api.Automation` with `AddPluginAssembly` and run with
+`ExecuteAddInPlugin("ViewpointProbe.PARS", ...)`, on DESKTOP-5VL7LTJ against a COPY of
+`1104-PAR-1A0215-ZZZ-BM-MOD-000001.nwf`, three models, under
+`C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\probe`. The whole result file is
+what follows, cut only where a line repeats.
+
+```
+models 3, saved viewpoints at the root 4
+after SetHidden: IsHidden(two) = True, root0.IsHidden = True, root1.IsHidden = True
+A  new SavedViewpoint(Viewpoint) made, adding it
+probe A camera alone: ContainsVisibilityOverrides = False, ContainsAppearanceOverrides = False
+   GetVisibilityOverrides() returned null
+B  CaptureRuntimeOverrides() returned a SavedViewpoint, adding it
+probe B runtime overrides: ContainsVisibilityOverrides = True, ContainsAppearanceOverrides = True
+   GetVisibilityOverrides() returned Autodesk.Navisworks.Api.VisibilityOverrides
+ResetAllHidden: IsHidden(two) = False
+press probe A camera alone: IsHidden(two) = False, root0.IsHidden = False, root1.IsHidden = False
+press probe B runtime overrides: IsHidden(two) = True, root0.IsHidden = True, root1.IsHidden = True
+TrySaveFile = True, size on disk 66233 bytes
+after Clear: models 0
+reopened: models 3, saved viewpoints at the root 6
+after reopen, before pressing anything: IsHidden(two) = False
+probe A camera alone after reopen: ContainsVisibilityOverrides = False
+press probe A camera alone: IsHidden(two) = False
+probe B runtime overrides after reopen: ContainsVisibilityOverrides = True
+press probe B runtime overrides: IsHidden(two) = True, root0.IsHidden = True, root1.IsHidden = True
+```
+
+**THE ANSWER IS YES, BY ONE OF THE TWO WAYS AND NOT THE OTHER.**
+
+- `new SavedViewpoint(Viewpoint)` records the CAMERA ALONE. `ContainsVisibilityOverrides`
+  reads false, `GetVisibilityOverrides()` returns null, and pressing it from a clean view
+  hides nothing. A viewpoint written this way opens on the whole federation
+- `DocumentSavedViewpoints.CaptureRuntimeOverrides()` records the current view WITH what
+  is hidden. `ContainsVisibilityOverrides` reads true, the overrides carry a
+  `ModelItemCollection` called `Hidden`, and pressing it from a clean view hides the two
+  models again. It reads true and presses the same way after the NWF is saved, cleared
+  and reopened, so the record is in the file and not in the session
+- `ContainsAppearanceOverrides` reads true on the captured one too, so it carries the
+  colour and transparency state of the moment as well. Nothing here set any, so what it
+  carries is whatever the document had, and a writer that wants a clean viewpoint sets
+  the view up before capturing rather than after
+
+Two things read on the way. `ContainsVisibilityOverrides` THROWS `NullReferenceException`
+inside its getter on a `SavedViewpoint` that is not yet in a document, so it is read off
+the copy in the tree after `AddCopy` and never off the object handed to it. And the probe
+copy went from 78,341 bytes to 66,233 after the API saved it with two more viewpoints in
+it, so the size of a file this API writes is not the size the last save left, and every
+size in the round is read off the disk rather than reasoned about.
+
+WHAT THIS DECIDES. The writing half of F85 is built, capturing each clash viewpoint with
+`CaptureRuntimeOverrides` after the other disciplines are hidden and the camera is set
+from `TestsViewpointForResult`, and `SavedViewpoints.CanBuild` goes true once the run
+shows the tree. The unknown named at 5d, in `SavedViewpoints.cs`, in `ViewpointBuilder.cs`
+and in `03_bader_next.md` step 375 is closed by this section.
+
