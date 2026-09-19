@@ -25,6 +25,8 @@ Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixe
 9. F18, when Bader uploads the 1A04WE sample, Q9
 10. F23, when Q20 is answered
 
+The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 237 to 249 are for.
+
 Nothing else is open. F19 is dropped.
 
 ## F47 What the chat audit of 2026-09-18 found

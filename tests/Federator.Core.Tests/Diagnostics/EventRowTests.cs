@@ -152,6 +152,24 @@ namespace Federator.Core.Tests
             Assert.That(EventRow.Exact(5.0), Is.EqualTo("5"));
         }
 
+        /// <summary>
+        /// The break. A size in bytes is a LONG. An NWD of a large federation goes past
+        /// 2,147,483,647, and a size clamped to that is a number nothing on the disk
+        /// matches, written into a file whose whole purpose is numbers. A size is only
+        /// ever logged after it has been read back, and a clamped one breaks that rule
+        /// quietly, which is the worst way to break it.
+        /// </summary>
+        [Test]
+        public void ASizeBeyondTwoGigabytesIsNotClamped()
+        {
+            long big = 3L * 1024L * 1024L * 1024L;
+
+            Assert.That(EventRow.Count(big), Is.EqualTo("3221225472"));
+            Assert.That(EventRow.Count(big), Is.Not.EqualTo(int.MaxValue.ToString()));
+            Assert.That(EventRow.Count(long.MaxValue), Is.EqualTo("9223372036854775807"));
+            Assert.That(EventRow.Count(0L), Is.EqualTo("0"));
+        }
+
         [Test]
         public void TheRowFileSitsBesideTheTextLogWithADifferentExtension()
         {

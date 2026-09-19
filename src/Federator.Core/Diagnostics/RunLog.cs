@@ -1200,7 +1200,7 @@ namespace Federator.Core.Diagnostics
                     + "  " + DescribeSize(size),
                 succeeded ? "appended" : "append failed",
                 "APPEND",
-                EventRow.Count((int)Math.Min(size < 0 ? 0 : size, int.MaxValue)),
+                EventRow.Count(size < 0 ? 0L : size),
                 file);
         }
 
@@ -1270,7 +1270,7 @@ namespace Federator.Core.Diagnostics
                 kind.PadRight(8) + " written  " + path + "  " + DescribeSize(size),
                 "written",
                 kind,
-                EventRow.Count((int)Math.Min(size, int.MaxValue)),
+                EventRow.Count(size),
                 path);
 
             return size;

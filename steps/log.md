@@ -2,6 +2,51 @@
 
 Newest entry at the top.
 
+## 2026-09-19 The log round is closed, F58 to F64
+
+### What was done
+
+- SEVEN FIXES MERGED TODAY, each on its own branch off main, each a draft pull request merged once Actions was green, each with its own entry above. No pull request is open and nothing was committed on main. Six were the round's, F59 to F64, and the seventh went first because the reading found something that outranked all of them
+- THE ADD-IN HAD NOT COMPILED SINCE THE DAY BEFORE, and nothing knew. `BuildViewpoints` declared one name twice, which is CS0128, shipped by F52 on 2026-09-18. Step 8 of `03_bader_next.md` is the build and every one of the 251 steps waited behind it, so a round about the log would have been unprovable from its first step. That is F58 and it went before anything else
+- WHY NOTHING SAW IT IS WORTH MORE THAN THE FIX. The parse check behind five log entries passes `-nostdlib` with no references, so Roslyn stops before it binds one method body. It reads SYNTAX and nothing else, and an entry saying the add-in parses with the same six error codes is true and is not a build. Giving it the net48 reference assemblies and the built Core assembly makes it bind every body whose signature resolves, which is a real improvement and still cannot see inside a method that takes a Navisworks type, which is most of the engine. The rule is in `addin.md` now so parses and builds cannot be swapped again, and `tools/checks/check-locals.sh` runs the one rule of the compiler's that needs no compiler, in the pre-commit and twice in Actions, once over `src` and once over a folder that is wrong on purpose
+- A SECOND GAP OF THE SAME SHAPE, found in F61. The parse check was running off a fixed list of add-in files written by hand in an earlier session, so a NEW add-in file would not have been checked at all. The list is built from the tree now
+- THE NUMBERING. F51 was already done and merged on 2026-09-18, so the brief's one line pull request was not done twice. F56 and F57 were taken, so the brief's F56 to F61 became F59 to F64, one for one and in order. The questions file ran to 34 and not to 38, so the gaps went in as Q35 onward
+- WHAT THE ROUND BUILT. Fourteen named steps, each opened in a using block so it closes whether the work finished, returned early or threw, on a monotonic clock that never reports less than no time. A timing block per group and for the run, where whatever the steps do not account for is a ROW of its own so the shares read down to a hundred. Five counts of the open document before and after every step, with a rule saying which step may move which, and a count that could not be taken reading UNKNOWN and never zero. A live line carrying group, building, step and two clocks through the one callback the engine always had. A gap block saying what the run measured and the report does not show. And a second file beside the log, one row per event, that a spreadsheet opens
+- THE THING THE ROUND KEPT HAVING TO DECIDE was how much log is too much. TESTS RUN is entered 1830 times in a real group. A start and finish pair per visit is 3660 lines, a census per visit is 3660 walks of the whole document, and a window repaint per visit is 1830 repaints. Every one of those is counted once and reported once instead, which is the rule `RunLog.Failure` already followed after a run left a 17.8 MB log
+- AND WHAT IT KEPT REFUSING TO DO. Nothing added here changes what a run does. No step is skipped, reordered or waited for. The census costs are measured and said, and narrow themselves if they get expensive. The live line renders when something calls it and says plainly that it cannot tick inside a single Navisworks call, rather than starting a thread to look livelier than the run is
+- Core tests: 1045 passed, 0 failed, 32 skipped, 1077 total before the round. 1205 passed, 0 failed, 32 skipped, 1237 total after it. 160 tests added and not one failure introduced at any point. Core builds in Release with 0 warnings throughout
+- FOUR TESTS FAILED ON THE WAY AND EVERY ONE OF THEM WAS RIGHT TO. Two were existing tests that a new block legitimately changed, one was an assertion of mine that pinned padding the step list owns, and one was an assertion of mine that said correct escaping was wrong. Each is named in its own entry
+
+### The read of 03_bader_next.md, end to end
+
+- THE FILE RUNS 1 TO 308 NOW AND HOLDS 163 LOOK FOR LINES. It was 251 steps and 120 Look for lines this morning. This round added 72 steps and 49 Look for lines
+- WHAT WAS CHECKED, AND THIS IS THE HALF THAT CAN BE SAID EXACTLY. All 219 distinct backtick quoted strings in the whole file, against every `.cs` and `.xaml` under `src` plus `install.ps1`, `workflow.md` and `CLAUDE.md`, with C# concatenation seams flattened so a string built in two pieces still matches. 91 could not be found by the checker and every one of those was then resolved by hand against the code that composes it. All 91 are composed at run time, are shell output from a probe or from git, or are file names Bader types himself. One looked like a real miss, the `Navisworks has this test marked Old.` line, and it is correct: the seam there is an ENUM between two literals and no flattener sees that
+- WHAT WAS READ AGAINST THE CODE, LINE BY LINE: this round's 49 Look for lines, every one of them, because they are this round's own drift and nobody else has read them
+- SIX WERE WRONG AND ALL SIX ARE CORRECTED. The indent claim said HARVEST and IMAGES are both nested and only IMAGES is. The one clock claim pointed at the NWD attempt and written stamps, which bracket slightly less work than the step does, and then its first correction pinned padding by hand and got it wrong, and then it still had to say that one decimal against three is agreement. The census claim did not say that TESTS CREATE and TESTS RUN move by one test's worth, because the census is taken around the first visit only. The live line claim left `XML` off its list and did not say that `IMAGES` is the one step that never reaches that line. The gap block claim said the first line always says nothing acts on it, which is not true of an empty block. And one new step referred to another new step by a number the renumbering script had moved
+- THE RENUMBERING SCRIPT CANNOT TELL A REFERENCE FORWARD FROM A REFERENCE INSIDE ITS OWN BLOCK, which is how that last one happened. Written down here because it will happen again
+- WHAT WAS NOT RE-READ, SAID PLAINLY RATHER THAN LEFT TO BE ASSUMED. The 114 older Look for lines' non quoted promises, which is what a step says about an ORDER, a COUNT or which file does a thing. Those were read end to end yesterday by F56, which found nine and fixed four, and F57 still holds the other five open for Bader. Reading them again today would have been reading yesterday's work rather than this round's, and saying it was done is what F56 was opened for
+- ONE NEW SECTION FOR THE LOG ITSELF, steps 237 to 249, and it is deliberately FIRST. One folder with every group ticked, watch the live line while it runs, then open the log and find the TIMING block, the CENSUS lines and the GAP block, with a Look for line on each. Everything after it is the detail behind those five things. A single building cannot show group N of M and cannot fill the run timing block, which is why it asks for the folder
+- THE D6 BRANCH LIST REBUILT off `git ls-remote --heads origin` read live, 58 names plus this round's closing branch, checked name for name against the remote in both directions. It was 49
+- AND THE CLOSING READ FOUND ONE DEFECT IN F64'S OWN CODE, fixed here rather than left. The row file wrote a file size through `EventRow.Count(int)` with the long clamped to `int.MaxValue`, so an NWD past 2,147,483,647 bytes would have been written into the row file as exactly 2147483647, a number nothing on the disk matches. A large federation's NWD goes past that. `Count` takes a long now and there is a test on three gigabytes by name. A size is only ever logged after it has been read back, and a clamped one breaks that rule quietly, which is the worst way to break it. Core tests 1205 to 1206
+
+### What remains
+
+- Everything in this round waits for the machine with Navisworks on it. Not one line of it has been seen on a real run
+- Q35 to Q40 are this round's questions, one per gap, and step 284 is what makes them answerable
+- F57, the five older Look for lines, is still Bader's to judge
+- The two probes, Q33 and the rest of `01_next.md` are where they were
+
+### Known bugs
+
+- As in the F46 entry, and the add-in compiles again
+
+### What comes next
+
+1. Bader pulls main and BUILDS. That is step 8 and it is the one thing that has changed most: it would have failed this morning
+2. Bader runs one folder and works steps 237 to 249, which is this round in one section
+3. Bader answers Q35 to Q40 with the counts from step 284 in front of him
+4. Bader runs the D6 delete command himself
+
 ## 2026-09-19 F64, the machine readable log
 
 ### What was done

@@ -183,6 +183,18 @@ namespace Federator.Core.Diagnostics
             return number.ToString(CultureInfo.InvariantCulture);
         }
 
+        /// <summary>
+        /// The same, for a size in bytes. A LONG and not an int, because an NWD of a
+        /// large federation goes past 2,147,483,647 bytes and clamping it to that would
+        /// put a number in this file that nothing on the disk matches. A size is only
+        /// ever logged after it has been read back, and reporting a clamped one would
+        /// break that rule quietly.
+        /// </summary>
+        public static string Count(long number)
+        {
+            return number.ToString(CultureInfo.InvariantCulture);
+        }
+
         /// <summary>A size or a duration, with three decimals and no separators.</summary>
         public static string Exact(double number)
         {
