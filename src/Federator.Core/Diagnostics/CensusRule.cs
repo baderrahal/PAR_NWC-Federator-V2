@@ -27,51 +27,73 @@ namespace Federator.Core.Diagnostics
     public static class CensusRule
     {
         /// <summary>
-        /// Whether that step is allowed to change that count.
+        /// What the rule says about that step changing that count, F73. One answer, read
+        /// by the line writer and the reason writer alike, so the two can never disagree
+        /// about whether something was a fault.
         ///
         /// DECIDE opens the NWF that is already on disk, and opening a document replaces
         /// everything in it, so all five may move there and only there.
-        /// APPEND puts the NWC files in, so the models move. Nothing else comes in with
-        /// them: an NWC carries geometry and properties, not sets or tests.
+        /// APPEND puts the NWC files in, so the models move. The saved viewpoints move
+        /// with them and that is NOTED rather than refused: an NWC exported from Revit
+        /// carries the saved viewpoints that model was exported with. The first real run
+        /// raised them from 0 to 20 in every group and every group was reported FAILED
+        /// for it. Sets, tests and results still may not move there, because an NWC
+        /// carries geometry, properties and viewpoints, and none of those three.
         /// SETS builds the selection sets out of the picked file.
         /// TESTS CREATE creates the clash tests.
         /// TESTS RUN produces the clash results, and creates none of the rest.
         /// Every other step writes a FILE and not the document, so none of them may move
         /// anything at all.
         /// </summary>
-        public static bool MayMove(string step, CensusCount what)
+        public static CensusMove Judge(string step, CensusCount what)
         {
             if (string.IsNullOrEmpty(step))
             {
-                return false;
+                return CensusMove.Refused;
             }
 
             if (string.Equals(step, RunSteps.Decide, StringComparison.Ordinal))
             {
-                return true;
+                return CensusMove.Allowed;
             }
 
             if (string.Equals(step, RunSteps.Append, StringComparison.Ordinal))
             {
-                return what == CensusCount.Models;
+                if (what == CensusCount.Models)
+                {
+                    return CensusMove.Allowed;
+                }
+
+                return what == CensusCount.Viewpoints ? CensusMove.Noted : CensusMove.Refused;
             }
 
             if (string.Equals(step, RunSteps.Sets, StringComparison.Ordinal))
             {
-                return what == CensusCount.Sets;
+                return what == CensusCount.Sets ? CensusMove.Allowed : CensusMove.Refused;
             }
 
             if (string.Equals(step, RunSteps.TestsCreate, StringComparison.Ordinal))
             {
-                return what == CensusCount.Tests;
+                return what == CensusCount.Tests ? CensusMove.Allowed : CensusMove.Refused;
             }
 
             if (string.Equals(step, RunSteps.TestsRun, StringComparison.Ordinal))
             {
-                return what == CensusCount.Results;
+                return what == CensusCount.Results ? CensusMove.Allowed : CensusMove.Refused;
             }
 
-            return false;
+            return CensusMove.Refused;
+        }
+
+        /// <summary>
+        /// Whether that step exists to change that count. This is the narrow reading, and
+        /// it is what StepsThatMayWrite is built from, so a step that only ever moves a
+        /// count as a side effect does not become a step the census has to be taken
+        /// around when the census is costing too much.
+        /// </summary>
+        public static bool MayMove(string step, CensusCount what)
+        {
+            return Judge(step, what) == CensusMove.Allowed;
         }
 
         /// <summary>
@@ -116,6 +138,44 @@ namespace Federator.Core.Diagnostics
         /// <summary>The words that begin a refused move, so nothing else can use them.</summary>
         public const string ChangedPrefix = "CENSUS CHANGED";
 
+        /// <summary>The words that begin a noted move, F73. A different prefix on purpose,
+        /// so a reader scanning for CENSUS CHANGED finds only the faults and a search for
+        /// either word still finds both.</summary>
+        public const string NotedPrefix = "CENSUS NOTED";
+
+        /// <summary>
+        /// Why a noted move is the ordinary thing rather than a fault. One sentence per
+        /// pair, because a line saying a count moved and not saying why reads exactly
+        /// like the fault it is not.
+        /// </summary>
+        public static string WhyNoted(string step, CensusCount what)
+        {
+            if (string.Equals(step, RunSteps.Append, StringComparison.Ordinal)
+                && what == CensusCount.Viewpoints)
+            {
+                return "an NWC exported from Revit carries the saved viewpoints that model "
+                    + "was exported with, so appending files brings them in";
+            }
+
+            return "that step is known to move them while doing its own work";
+        }
+
+        /// <summary>
+        /// The line for one noted move. It says the same numbers the refused line says and
+        /// ends the opposite way, because the whole difference between the two is whether
+        /// the group can still be DONE.
+        /// </summary>
+        public static string NotedLine(string step, CensusCount what, int before, int after)
+        {
+            string named = string.IsNullOrEmpty(step) ? "UNKNOWN step" : step;
+
+            return NotedPrefix + "  " + named
+                + "  " + DocumentCensus.Words(what)
+                + " went from " + before + " to " + after
+                + ", which is what that step does: " + WhyNoted(step, what)
+                + ". Nothing was undone and this group can still be DONE";
+        }
+
         /// <summary>
         /// The line for one refused move: the step, the count, the before and the after.
         /// Every number on it was read off the document and none is worked out from
@@ -158,19 +218,26 @@ namespace Federator.Core.Diagnostics
 
             foreach (CensusCount what in after.MovedSince(before))
             {
-                if (MayMove(step, what))
+                CensusMove move = Judge(step, what);
+
+                if (move == CensusMove.Allowed)
                 {
                     continue;
                 }
 
-                lines.Add(ChangedLine(step, what, before.Of(what), after.Of(what)));
+                lines.Add(move == CensusMove.Noted
+                    ? NotedLine(step, what, before.Of(what), after.Of(what))
+                    : ChangedLine(step, what, before.Of(what), after.Of(what)));
             }
 
             return lines;
         }
 
         /// <summary>
-        /// Every refused move as a reason, in the same order as the lines, for the group.
+        /// Every REFUSED move as a reason, for the group. A noted move writes a line and
+        /// no reason, F73, so this list is shorter than the lines above it whenever one
+        /// of those is a noted one. That is the whole of what F73 changed: the group that
+        /// got a line is no longer the group that gets a reason.
         /// </summary>
         public static IList<string> Reasons(string step, DocumentCensus before, DocumentCensus after)
         {
@@ -183,7 +250,7 @@ namespace Federator.Core.Diagnostics
 
             foreach (CensusCount what in after.MovedSince(before))
             {
-                if (MayMove(step, what))
+                if (Judge(step, what) != CensusMove.Refused)
                 {
                     continue;
                 }

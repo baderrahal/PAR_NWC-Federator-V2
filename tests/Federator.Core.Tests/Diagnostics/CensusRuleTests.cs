@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Diagnostics;
+using Federator.Core.Rerun;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -25,14 +26,35 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// APPEND exists to bring the models in. It brings the saved viewpoints too, which
+        /// is F73 and is NOTED rather than allowed, so the census is still taken around it
+        /// for the reason it always was and the viewpoint move still writes a line.
+        /// </summary>
         [Test]
-        public void AppendingMovesTheModelsAndNothingElse()
+        public void AppendingIsThereToMoveTheModels()
         {
-            Assert.That(CensusRule.MayMove(RunSteps.Append, CensusCount.Models), Is.True);
-            Assert.That(CensusRule.MayMove(RunSteps.Append, CensusCount.Sets), Is.False);
-            Assert.That(CensusRule.MayMove(RunSteps.Append, CensusCount.Tests), Is.False);
-            Assert.That(CensusRule.MayMove(RunSteps.Append, CensusCount.Results), Is.False);
-            Assert.That(CensusRule.MayMove(RunSteps.Append, CensusCount.Viewpoints), Is.False);
+            Assert.That(CensusRule.Judge(RunSteps.Append, CensusCount.Models),
+                Is.EqualTo(CensusMove.Allowed));
+            Assert.That(CensusRule.Judge(RunSteps.Append, CensusCount.Sets),
+                Is.EqualTo(CensusMove.Refused));
+            Assert.That(CensusRule.Judge(RunSteps.Append, CensusCount.Tests),
+                Is.EqualTo(CensusMove.Refused));
+            Assert.That(CensusRule.Judge(RunSteps.Append, CensusCount.Results),
+                Is.EqualTo(CensusMove.Refused));
+        }
+
+        /// <summary>
+        /// F73. The first real run raised the saved viewpoints from 0 to 20 during APPEND
+        /// in all seven groups and every group was reported FAILED for it, while 28 files
+        /// had been written correctly. An NWC exported from Revit carries that model's
+        /// saved viewpoints and appending it brings them in.
+        /// </summary>
+        [Test]
+        public void AppendingBringingTheViewpointsInIsNoted()
+        {
+            Assert.That(CensusRule.Judge(RunSteps.Append, CensusCount.Viewpoints),
+                Is.EqualTo(CensusMove.Noted));
         }
 
         [Test]
@@ -199,6 +221,131 @@ namespace Federator.Core.Tests
             DocumentCensus after = new DocumentCensus(5, 61, 1830, 412, 4);
 
             Assert.That(CensusRule.Lines(RunSteps.Nwd, before, after), Is.Empty);
+        }
+
+        // ---------- F73, the noted move ----------
+
+        /// <summary>
+        /// The whole of F73 in one test: the line is still written, it no longer reads as
+        /// a fault, and no reason goes on the group.
+        /// </summary>
+        [Test]
+        public void AppendRaisingTheViewpointsWritesALineAndNoReason()
+        {
+            DocumentCensus before = new DocumentCensus(0, 0, 0, 0, 0);
+            DocumentCensus after = new DocumentCensus(4, 0, 0, 0, 20);
+
+            IList<string> lines = CensusRule.Lines(RunSteps.Append, before, after);
+            IList<string> reasons = CensusRule.Reasons(RunSteps.Append, before, after);
+
+            Assert.That(lines.Count, Is.EqualTo(1), "the models were allowed, the views are noted");
+            Assert.That(lines[0], Does.StartWith(CensusRule.NotedPrefix));
+            Assert.That(lines[0], Does.Contain("saved viewpoints went from 0 to 20"));
+            Assert.That(lines[0], Does.Contain("can still be DONE"));
+            Assert.That(lines[0], Does.Not.Contain(CensusRule.ChangedPrefix));
+
+            Assert.That(reasons, Is.Empty, "a noted move puts no group out of DONE");
+        }
+
+        /// <summary>
+        /// The other half of the same fix. A group whose only census line is the noted one
+        /// collects no error and is judged DONE, which is the thing the run got wrong.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseOnlyCensusLineIsTheNotedOneIsStillDone()
+        {
+            DocumentCensus before = new DocumentCensus(0, 0, 0, 0, 0);
+            DocumentCensus after = new DocumentCensus(4, 0, 0, 0, 20);
+
+            GroupFacts facts = new GroupFacts
+            {
+                Decision = RerunDecision.Build,
+                NwfOnDisk = true,
+                NwdRequested = true,
+                NwdOnDisk = true,
+                NwdPublishReportedSuccess = true,
+                AppendedCount = 4,
+                FileCount = 4,
+                NwfPath = TestPaths.At("out", "a.nwf"),
+                NwdPath = TestPaths.At("out", "a.nwd")
+            };
+
+            foreach (string reason in CensusRule.Reasons(RunSteps.Append, before, after))
+            {
+                facts.AddError(reason);
+            }
+
+            string why;
+
+            Assert.That(GroupJudgement.Judge(facts, out why), Is.EqualTo(GroupOutcome.Done));
+            Assert.That(why, Is.Null);
+        }
+
+        /// <summary>
+        /// The break. A viewpoint count moving during a step that is NOT allowed to move
+        /// it still writes CENSUS CHANGED and still puts the group out of DONE, so F73
+        /// widened one pair and nothing else.
+        /// </summary>
+        [Test]
+        public void ViewpointsMovingOutsideAppendStillFailsTheGroup()
+        {
+            DocumentCensus before = new DocumentCensus(4, 61, 1830, 412, 20);
+            DocumentCensus after = new DocumentCensus(4, 61, 1830, 412, 0);
+
+            IList<string> lines = CensusRule.Lines(RunSteps.Nwd, before, after);
+            IList<string> reasons = CensusRule.Reasons(RunSteps.Nwd, before, after);
+
+            Assert.That(lines.Count, Is.EqualTo(1));
+            Assert.That(lines[0], Does.StartWith(CensusRule.ChangedPrefix));
+            Assert.That(lines[0], Does.Contain("is not DONE"));
+            Assert.That(reasons.Count, Is.EqualTo(1));
+
+            GroupFacts facts = new GroupFacts
+            {
+                Decision = RerunDecision.Build,
+                NwfOnDisk = true,
+                AppendedCount = 4,
+                FileCount = 4,
+                NwfPath = TestPaths.At("out", "a.nwf")
+            };
+
+            facts.AddError(reasons[0]);
+
+            string why;
+
+            Assert.That(GroupJudgement.Judge(facts, out why), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(why, Does.Contain("saved viewpoints"));
+        }
+
+        /// <summary>
+        /// The noted line says WHY, because a line naming a count that moved and not
+        /// saying why reads exactly like the fault it is not.
+        /// </summary>
+        [Test]
+        public void TheNotedLineSaysWhyThatStepMovesThem()
+        {
+            string line = CensusRule.NotedLine(RunSteps.Append, CensusCount.Viewpoints, 0, 20);
+
+            Assert.That(line, Does.Contain("NWC"));
+            Assert.That(line, Does.Contain("Revit"));
+            Assert.That(CensusRule.WhyNoted(RunSteps.Append, CensusCount.Viewpoints),
+                Does.Contain("appending files brings them in"));
+        }
+
+        [Test]
+        public void NothingElseAnywhereIsNoted()
+        {
+            foreach (string step in RunSteps.All)
+            {
+                foreach (CensusCount what in DocumentCensus.All)
+                {
+                    bool theOne = string.Equals(step, RunSteps.Append, StringComparison.Ordinal)
+                        && what == CensusCount.Viewpoints;
+
+                    Assert.That(CensusRule.Judge(step, what) == CensusMove.Noted,
+                        Is.EqualTo(theOne), step + " and " + what);
+                }
+            }
         }
 
         [Test]

@@ -857,10 +857,21 @@ moved where nothing should have moved it is named rather than discovered a week 
   everything in it, so all five may move there and only there. APPEND moves the models.
   SETS the sets, TESTS CREATE the tests, TESTS RUN the results. Every other step writes
   a FILE and not the document, so none of them may move anything
-- a move the rule does not allow gets a line beginning CENSUS CHANGED, naming the step,
-  the count, the before and the after, and the reason goes on the group so it is not
-  reported DONE. Nothing is undone, nothing is skipped and the run carries on. The tool
-  reports what it noticed and Bader decides
+- THE RULE HAS THREE ANSWERS AND NOT TWO, F73. `CensusRule.Judge` gives Allowed, Noted
+  or Refused, and `CensusMove` is the enum. Allowed is the step doing the job it exists
+  for and writes nothing. Refused is the fault. NOTED is a count a step moves while
+  doing its own work, which writes a line and no reason. APPEND raising the saved
+  viewpoints is the one noted pair today: an NWC exported from Revit carries that
+  model's saved viewpoints and appending it brings them in. On the first real run that
+  was refused, so all seven groups were reported FAILED while 28 files had been written
+  correctly. `MayMove` is the narrow reading, Allowed only, and `StepsThatMayWrite` is
+  built from it, so a side effect never widens what the census is taken around
+- a move the rule REFUSES gets a line beginning CENSUS CHANGED, naming the step, the
+  count, the before and the after, and the reason goes on the group so it is not
+  reported DONE. A move it NOTES gets a line beginning CENSUS NOTED with the same
+  numbers, a sentence saying why that step moves them, and no reason at all, so the
+  group can still be DONE. Nothing is undone, nothing is skipped and the run carries on.
+  The tool reports what it noticed and Bader decides
 - THE CENSUS IS TAKEN AT MOST ONCE PER STEP PER GROUP, on the first visit, for the same
   reason the start and finish lines are written once. TESTS RUN is entered 1830 times
   and counting the whole document around every visit would be the log slowing the thing
