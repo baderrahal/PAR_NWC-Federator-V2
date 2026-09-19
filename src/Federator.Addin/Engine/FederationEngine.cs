@@ -152,6 +152,48 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// Where the tolerance on every report row was READ, counted across the run, F76.
+        /// Every row should read off the document, and a count under any other origin is
+        /// the report saying a number the run did not clash at. The window writes them as
+        /// one line, ToleranceChoice.ReadFromLine, before RESULT.
+        /// </summary>
+        public int ToleranceFromDocument { get; private set; }
+
+        public int ToleranceFromFile { get; private set; }
+
+        public int ToleranceFromTool { get; private set; }
+
+        public int ToleranceUnknown { get; private set; }
+
+        /// <summary>Counts one group's rows into the four, F76. Read, never worked out.</summary>
+        private void CountToleranceOrigins(ClashReport report)
+        {
+            if (report == null)
+            {
+                return;
+            }
+
+            foreach (TestReport test in report.Tests)
+            {
+                switch (test.ToleranceFrom)
+                {
+                    case ToleranceOrigin.Document:
+                        ToleranceFromDocument++;
+                        break;
+                    case ToleranceOrigin.File:
+                        ToleranceFromFile++;
+                        break;
+                    case ToleranceOrigin.Tool:
+                        ToleranceFromTool++;
+                        break;
+                    default:
+                        ToleranceUnknown++;
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
         /// Works through the jobs in order. Each group's NWF and NWD are written before
         /// the next group starts, so a failure part way through keeps everything already
         /// written.
@@ -1743,6 +1785,7 @@ namespace Federator.Addin.Engine
                     outcome.Report.CompactedAway = clash.Compacted;
                 }
                 outcome.Clash = clash;
+                CountToleranceOrigins(outcome.Report);
                 log.Block("CLASH " + job.Building, clash.Lines());
 
                 // F72. Straight after the CLASH block, because it is about the clashes that

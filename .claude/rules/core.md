@@ -232,8 +232,7 @@ and 6 does not read as broken.
   the converted value. Why it exists: the matrix is written at 25 mm, the NWFs on disk
   held tests at 75 mm, a test already in the document is left exactly as it is, so the
   run clashed at 75 while everybody believed it was clashing at 25
-- THE CORE HALF ONLY until 03_bader_next.md step 368 is done.
-  THE REPORT READS ITS TOLERANCE OFF THE CLASH TEST IN THE DOCUMENT, F76, because the
+- THE REPORT READS ITS TOLERANCE OFF THE CLASH TEST IN THE DOCUMENT, F76, because the
   document is what produced the row. It used to be copied off the PLAN, which is the
   XML, so on every weekly run the cell said what the file asked for and the run had
   clashed at something else. `ClashReportModel.TestReport.ToleranceFrom` carries WHERE it

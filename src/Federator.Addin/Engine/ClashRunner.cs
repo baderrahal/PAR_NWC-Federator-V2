@@ -432,6 +432,9 @@ namespace Federator.Addin.Engine
                     report.RightLocator = planned.Right.Locator;
                     report.Tolerance = planned.Tolerance;
                     report.ToleranceUnits = planned.DocumentUnits;
+                    report.ToleranceFrom = plan.Source == ClashPlanSource.Document
+                        ? ToleranceOrigin.Document
+                        : ToleranceOrigin.File;
                     report.TestTypeName = planned.TestTypeName;
                     report.State = TestState.Skipped;
                     byIndex.Add(index, report);
@@ -788,6 +791,14 @@ namespace Federator.Addin.Engine
                         // on ClashTestStatus, and what puts a test into any of the four is
                         // UNKNOWN, so nothing is translated. See docs\history\scan.md section 4j.
                         summary.StatusWord = after.Status.ToString();
+
+                        // F76. The tolerance on the row is READ off the test in the
+                        // document, because the document is what produced the row. It was
+                        // copied off the plan, which is the XML, so on every weekly run the
+                        // cell said what the file asked for while the run had clashed at
+                        // what the document held.
+                        summary.Tolerance = after.Tolerance;
+                        summary.ToleranceFrom = ToleranceOrigin.Document;
 
                         ClashHarvest harvest = new ClashHarvest(log, NameSettings);
                         harvest.Images = Images;

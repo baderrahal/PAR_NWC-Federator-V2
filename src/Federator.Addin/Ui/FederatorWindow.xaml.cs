@@ -1709,6 +1709,13 @@ namespace Federator.Addin.Ui
                         EventRow.Count(row.GroupsAtZero), row.Phrase());
                 }
 
+                // F76. Where every report row's tolerance was read, counted across the
+                // run. Every row should read off the document, and the line says so when
+                // one did not.
+                log.Line(ToleranceChoice.ReadFromLine(
+                    engine.ToleranceFromDocument, engine.ToleranceFromFile,
+                    engine.ToleranceFromTool, engine.ToleranceUnknown));
+
                 log.RunFinished();
                 SetProgress("Run finished. " + log.CountOf(GroupOutcome.Done) + " done, "
                     + log.CountOf(GroupOutcome.Partial) + " partial, "
@@ -1908,6 +1915,13 @@ namespace Federator.Addin.Ui
                 // The engine writes the GROUP lines and the OPEN FILE block itself, so
                 // they are there whatever happens inside it.
                 JobOutcome outcome = engine.RunOpenDocument();
+
+                // F76. Where every report row's tolerance was read, counted across the
+                // run. Every row should read off the document, and the line says so when
+                // one did not.
+                log.Line(ToleranceChoice.ReadFromLine(
+                    engine.ToleranceFromDocument, engine.ToleranceFromFile,
+                    engine.ToleranceFromTool, engine.ToleranceUnknown));
 
                 SetsSummary.Text = FederationEngine.Describe(outcome);
                 SetProgress(SetsSummary.Text);
