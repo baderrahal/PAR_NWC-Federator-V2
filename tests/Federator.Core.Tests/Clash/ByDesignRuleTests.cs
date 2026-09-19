@@ -397,7 +397,7 @@ namespace Federator.Core.Tests
         {
             Assert.That(ByDesignTally.ResultLine(false, 47), Is.Null);
             Assert.That(ByDesignTally.ResultLine(true, 47),
-                Is.EqualTo("by design     : 47 clashes moved to Reviewed"));
+                Is.EqualTo("by design      : 47 clashes moved to Reviewed"));
             Assert.That(ByDesignTally.ResultLine(true, 1), Does.Contain("1 clash moved"));
         }
 
