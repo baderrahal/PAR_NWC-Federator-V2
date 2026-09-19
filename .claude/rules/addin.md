@@ -221,37 +221,36 @@ check is proved to refuse as well as to pass.
   the sets, the tests, the results and the viewpoints that point into that model, because a
   rebuild that removed one file and lost every clash result would be worse than the clear it
   replaces. Bader decides
-- One folder per discipline goes in the NWF with one viewpoint in each, showing that
-  discipline and hiding the others, made after the clash run and before the NWF is saved
-  again so the viewpoint is inside the file the NWD is published from. A group of ONE
-  discipline still gets its folder and its viewpoint: it hides nothing, which is not the
-  same as having no viewpoint, and skipping it would make one NWF in a set a different
-  shape from every other, which is the reasoning F35 used for creating every clash test in
-  a single discipline group and running none. A viewpoint already at its path is left
-  exactly as it is and counted as already there, never made again, because a second copy
-  at one path leaves the tree holding both, which is F28's rule for sets. The plan and the
-  VIEWS block are Federator.Core.Views.ViewpointPlan and
-  Federator.Core.Views.ViewpointBuildOutcome, so both are tested, and the block reads as
-  the SETS block does with its totals counted off the same list the lines came from. A group
-  whose viewpoints failed is not DONE. The API was MEASURED on 2026-09-19,
-  docs\history\scan.md 5d, and it has the shape SavedViewpoints.cs assumed:
-  DocumentSavedViewpoints.RootItem is a FolderItem, AddCopy(GroupItem, SavedItem) puts one
-  in a folder, EditDisplayName sets a name, FolderItem has a public constructor, and
-  SavedViewpoint and Viewpoint are both IDisposable. ONE HALF IS STILL UNKNOWN: items are
-  hidden through DocumentModels.SetHidden, and whether a viewpoint saved while they are
-  hidden RECORDS that hiding is not readable off the DLL.
-  SavedViewpoint.ContainsVisibilityOverrides is what answers it on a run.
-  SavedViewpoints.CanBuild is still false, because the writing half is not built.
-  While it is false the run PLANS the viewpoints, says in the log what it would have made,
-  and attempts nothing, and the judgement is told they were not requested, because a step
-  this tool cannot do is not a step that failed
+- ONE SAVED VIEWPOINT PER CLASH goes into the NWF, three folders deep, F85, made after the
+  clash run and before the NWF is saved again so the viewpoints are inside the file the NWD
+  is published from. The plan is Federator.Core.Views.ClashViewpointPlan and nothing about
+  it is decided in the add-in. ViewpointBuilder reads every clash the report holds rows for
+  in one walk, the status, the two set names off the test's locators, the priority off the
+  report and the service size through the same reader the penetration rule uses, keeps a
+  COPY of the camera Clash Detective frames the clash with, TestsViewpointForResult, runs
+  the plan over all of them at once, and writes what the plan kept in a second walk. A
+  viewpoint shows the two disciplines of its pair, every model of each, hides every other
+  model, and is captured with DocumentSavedViewpoints.CaptureRuntimeOverrides, which is the
+  one way that records the hidden state, MEASURED on 2026-09-19, docs\history\scan.md 5j:
+  a viewpoint made from the camera alone, new SavedViewpoint(Viewpoint), records nothing and
+  opens on the whole federation. The hidden state and the view the document had are put
+  back when the group's writing ends, whichever way it ends. Every folder is made outermost
+  first and re-resolved from a fresh RootItem after every AddCopy, which is the shape
+  SetBuilder measured for the sets, and every viewpoint is read back by name rather than
+  trusted. A viewpoint already at its path is left exactly as it is and counted as already
+  there, never made again, because a second copy at one path leaves the tree holding both,
+  which is F28's rule for sets. The VIEWS step is timed like every other step and it is the
+  one step allowed to move the viewpoint count, Federator.Core.Diagnostics.CensusRule. The
+  VIEWS block names five and counts the rest, because a group puts hundreds in. A group
+  whose viewpoints failed is not DONE. SavedViewpoints.CanBuild is true since the
+  viewpoints round on 2026-09-19 and it is the one switch
 - SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
   said no clash is ever saved as a viewpoint and that a discipline viewpoint is not a
   clash viewpoint. The first real run answered the question the other way: the thing a
   person presses has to be the thing they are looking at, and a viewpoint showing a whole
   discipline does not take anybody to a clash. The plan is
-  `Federator.Core.Views.ClashViewpointPlan`, three folders deep, and nothing writes it
-  while `SavedViewpoints.CanBuild` is false. Do not read the old sentence out of an older
+  `Federator.Core.Views.ClashViewpointPlan`, three folders deep, written by ViewpointBuilder
+  since the viewpoints round on 2026-09-19. Do not read the old sentence out of an older
   log or an older comment and undo this
 - A CLASH carries one of five, New, Active, Reviewed, Approved or Resolved. A TEST carries
   one of four, New, Old, Partial or Complete. They are different sets on different things

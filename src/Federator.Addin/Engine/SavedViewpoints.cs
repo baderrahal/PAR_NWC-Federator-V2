@@ -44,17 +44,9 @@ namespace Federator.Addin.Engine
         /// </summary>
         public static bool CanBuild
         {
-            get { return false; }
+            get { return true; }
         }
 
-        /// <summary>What the log says while CanBuild is false, so the run is never silent about it.</summary>
-        public static string WhyNotYet()
-        {
-            return "VIEWS    not attempted. The API is measured, docs\\history\\scan.md 5d, and the "
-                + "writing half of this feature is not built, so nothing was written into the NWF. "
-                + "Whether a saved viewpoint records hidden state is the one thing still UNKNOWN "
-                + "and only a run answers it";
-        }
 
         /// <summary>
         /// How many saved viewpoints the document holds, walked from the root with every

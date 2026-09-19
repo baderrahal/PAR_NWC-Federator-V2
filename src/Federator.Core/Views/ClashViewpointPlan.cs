@@ -309,10 +309,10 @@ namespace Federator.Core.Views
     /// together for F53's own reasons and would put every fitting with no size property
     /// into Over 150mm.
     ///
-    /// NOTHING IS BUILT UNTIL SavedViewpoints.CanBuild IS TRUE. Whether a viewpoint saved
-    /// while items are hidden records that hiding is scan.md 5d and is not measured, so the
-    /// whole of this plan exists and nothing writes it yet. A planned viewpoint that was
-    /// not written is not a viewpoint.
+    /// WRITTEN BY ViewpointBuilder SINCE THE VIEWPOINTS ROUND, 2026-09-19. Whether a
+    /// viewpoint saved while items are hidden records that hiding is MEASURED, scan.md 5j,
+    /// and it does when it is captured with the runtime overrides. A planned viewpoint that
+    /// was not written is still not a viewpoint, and the VIEWS BUILT block says which were.
     /// </summary>
     public static class ClashViewpointPlan
     {

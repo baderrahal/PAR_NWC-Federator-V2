@@ -2612,18 +2612,10 @@ namespace Federator.Addin.Engine
         /// Returns whether anything went into the document, which is what asks for the
         /// second NWF save.
         ///
-        /// While SavedViewpoints.CanBuild is false the group is told the viewpoints were
-        /// NOT REQUESTED, because a step this tool cannot do is not a step that failed.
+        /// SavedViewpoints.CanBuild is the one switch, true since the viewpoints round.
         /// </summary>
         private bool BuildViewpoints(Document document, FederationJob job, JobOutcome outcome)
         {
-            if (!SavedViewpoints.CanBuild)
-            {
-                log.Line(SavedViewpoints.WhyNotYet());
-                outcome.ViewpointsRequested = false;
-                return false;
-            }
-
             if (outcome.Report == null)
             {
                 log.Line("VIEWS    no report was built for this group, so there is nothing to plan a viewpoint from");

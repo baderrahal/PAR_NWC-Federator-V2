@@ -790,8 +790,7 @@ and 6 does not read as broken.
 - Every check gets a test that BREAKS one thing and asserts the check names it. A test that
   only asserts the good file passes would have passed against all eight of the differences
   above. Fourteen of them live in WorkbookCellCheckTests
-- THE CORE HALF ONLY until 03_bader_next.md step 375 is done.
-  THE SAVED VIEWPOINTS ARE THREE FOLDERS DEEP AND ONE PER CLASH, F85, planned by
+- THE SAVED VIEWPOINTS ARE THREE FOLDERS DEEP AND ONE PER CLASH, F85, planned by
   `Federator.Core.Views.ClashViewpointPlan` with `DisciplinePairRule` for layer 2. ONE PER
   CLASH AND NOT PER TEST, because the thing a person presses has to be the thing they are
   looking at. Layer 1 is the priority off the client's matrix, A, B, C or No priority, and
@@ -1039,7 +1038,6 @@ it if the same work carries the same name every time it is timed.
   types a step name as a string. Fifteen of them, in the order a group meets them:
   DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES,
   VIEWS, WORKBOOK, HTML, XML, NWD, CONFIRM.
-  THE CORE HALF ONLY until 03_bader_next.md step 374 is done.
   VIEWS is F85's and it was untimed before
   that: building the viewpoints was called outside every step, so its seconds came off
   no total and the run read as faster than it was. A name that is not on the list is refused where the

@@ -762,10 +762,12 @@ without reading the brief again.**
      measured `EnsureFolders` shape, re-resolving from a FRESH `RootItem` after every
      `AddCopy`. Open the step as `RunSteps.Views`, which is new. LEAVE `CanBuild` FALSE
      until step 375 answers
+     DONE on 2026-09-19 in the viewpoints round, commit 11d7ec2: Build takes the clash plan, the old per discipline plan is gone, the folder walk is EnsureFolders re-resolved from a fresh RootItem, and the VIEWS step is opened around it.
 375. F85. On a run, save one viewpoint by hand while some items are hidden, then read
      `SavedViewpoint.ContainsVisibilityOverrides` on it and press it again from a clean
      view. That answers whether a viewpoint records the hiding, which is the last thing
      `CanBuild` waits on, and the answer goes in `docs\history\scan.md` 5d
+     DONE on 2026-09-19 in the viewpoints round by toolsprobesViewpointProbe, written into scan.md 5j and not 5d: a viewpoint captured with CaptureRuntimeOverrides records the hiding and brings it back after a save and a reopen, and CanBuild is true.
 376. F80. Two lines in the window changed already: `log.RunStarted(jobs.Count)` and
      `log.RunFinished()` in place of the two `log.Line` calls that wrote the same
      sentences. Read them once and check the log reads `RUN      started, 7 groups` and
