@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Clash
 {
@@ -33,7 +34,7 @@ namespace Federator.Core.Clash
         public const string Prefix = "PRIORITY";
 
         /// <summary>How many unmatched rows are named. The five examples rule.</summary>
-        public const int ExamplesShown = 5;
+        public const int ExamplesShown = RunLog.KeptOfARepeat;
 
         private readonly Dictionary<string, ClashPriority> byTestName;
         private readonly List<string> problems;
@@ -232,73 +233,6 @@ namespace Federator.Core.Clash
             }
 
             return string.Equals(cells[0].Trim(), Columns[0], StringComparison.OrdinalIgnoreCase);
-        }
-    }
-
-    /// <summary>
-    /// Reading one line of a CSV somebody typed, for the two small files this tool is
-    /// handed, F83 and F72b. One rule in one place, because a second copy would drift on
-    /// the quoting.
-    ///
-    /// A quoted cell may hold a comma and a doubled quote. A newline inside a quoted cell
-    /// is NOT supported and never will be: these files have one row per line and are read
-    /// line by line so a fault in one row cannot swallow the next twenty.
-    /// </summary>
-    public static class Csv
-    {
-        public static IList<string> Cells(string line)
-        {
-            List<string> cells = new List<string>();
-
-            if (line == null)
-            {
-                return cells;
-            }
-
-            System.Text.StringBuilder cell = new System.Text.StringBuilder();
-            bool inQuotes = false;
-
-            for (int i = 0; i < line.Length; i++)
-            {
-                char c = line[i];
-
-                if (inQuotes)
-                {
-                    if (c != '"')
-                    {
-                        cell.Append(c);
-                        continue;
-                    }
-
-                    if (i + 1 < line.Length && line[i + 1] == '"')
-                    {
-                        cell.Append('"');
-                        i++;
-                        continue;
-                    }
-
-                    inQuotes = false;
-                    continue;
-                }
-
-                if (c == '"' && cell.Length == 0)
-                {
-                    inQuotes = true;
-                    continue;
-                }
-
-                if (c == ',')
-                {
-                    cells.Add(cell.ToString());
-                    cell.Length = 0;
-                    continue;
-                }
-
-                cell.Append(c);
-            }
-
-            cells.Add(cell.ToString());
-            return cells;
         }
     }
 }
