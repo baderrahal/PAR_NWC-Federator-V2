@@ -17,7 +17,7 @@ Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixe
 Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. They go before everything that was left, because the build is what every one of the 308 steps waits behind.
 
 1. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
-2. F66, the check that would have caught it
+2. F66, DONE, the check that would have caught it
 3. F67, one doubled comment
 4. F68, the build section learns what today cost
 5. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
@@ -578,6 +578,18 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - With the line, a hand sweep of the other three files these two rounds added, `SavedViewpoints.cs`, `ItemSizes.cs` and `ClashStatusEditor.cs`, against every Autodesk type each one names
 - Size: one line, and the sweep is what takes the time
 - DONE on 2026-09-19. `using Autodesk.Navisworks.Api.DocumentParts;` added in the order the other three files use. The sweep read all four files by hand, named every Autodesk type each one puts in a type position and which import covers it, and found nothing else missing. `SavedViewpoints.cs` is the near miss that proves the sweep: it names `DocumentSavedViewpoints` four times and every one of them is inside a comment, so it needs no `DocumentParts` import and has none. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+## F66 The check that would have caught it
+
+- Files `tools/checks/check-imports.sh` and four files under `tools/checks/broken/` which are new, `tools/checks/broken/README.md`, `.githooks/pre-commit`, `.github/workflows/tests.yml`, `.claude/rules/addin.md`
+- CONTAINER for the check and for both proofs
+- F52 shipped CS0128 and F58 wrote `check-locals.sh` for it. F61 shipped CS0246 and nothing here saw that either, because `check-locals.sh` reads one shape of fault and this is another. Two rounds, two compiler errors, both shipped from here
+- For every `.cs` file under `src`, the type names it uses in a TYPE POSITION only: after `new`, `is`, `as` or `typeof`, in the head of a `using` block, as a field, a parameter, a local or a `foreach` type, or inside generic brackets. A bare capitalised word anywhere else is a member name and not a type
+- For a type this repo DECLARES, the namespace is a fact read off the file that declares it. For every other type, which is the whole BCL and the whole Navisworks API, the check LEARNS from what the rest of the tree imports, so it needs no Autodesk DLL and no compiler
+- What it cannot do goes in a comment at the top. It reads text and not a program, and it cannot know a namespace no file here imports yet, so the FIRST use of a brand new Autodesk type is invisible to it and only the build on Bader's machine sees that. It is not a build and it never says a build passed
+- Wired into the pre-commit and into Actions exactly the way `check-locals.sh` is, the second Actions step against a folder that is wrong on purpose included
+- Size: medium, and the noise is the whole of it
+- DONE on 2026-09-19. `tools/checks/check-imports.sh` reads clean over `src` and refuses `tools/checks/broken` with exactly one line naming the file, the type and the namespace. The rule as first written returned 170 lines of noise over `src`, so it carries two conditions that cut it to none: a type only one other file names teaches nothing and is left alone, and a namespace is only taken as a type's home when at least `MinimumShare` per cent of the files importing it name that type, measured at 50 where `src` reads clean and 40, 34 and 20 read one, three and ten lines of noise. The broken folder gains the exact shape that failed, two correct files that are the map, and a near miss that names the type only in a comment and in a string and must pass, which is `SavedViewpoints.cs` in miniature. `.claude/rules/addin.md` now says a new add-in file that names an Autodesk type copies its imports from the file here that already uses it. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
 
 ## F21 The log answers timing and counts
 

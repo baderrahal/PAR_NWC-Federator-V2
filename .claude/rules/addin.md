@@ -27,13 +27,29 @@ So the words are parses and never builds, and a round says what it could not che
 rather than leaving the reader to assume. The build is step 8 of
 steps/03_bader_next.md and it is the first thing on the machine that has Navisworks.
 
-tools/checks/check-locals.sh is the one rule of the compiler's that runs without it. It
-refuses a local declared twice in one method scope, which is CS0128, and that is the
-fault F52 shipped and nothing here saw for a day. It reads text and not a program, it
-knows nothing about types or members, and it catches one shape and no other. The
-pre-commit hook runs it before the tests and Actions runs it twice, once over src and
-once over tools/checks/broken, which is wrong on purpose so the check is proved to
-refuse as well as to pass.
+Two rules of the compiler's run without it, and there are two because two rounds each
+shipped a different compiler error from here.
+
+tools/checks/check-locals.sh refuses a local declared twice in one method scope, which is
+CS0128, and that is the fault F52 shipped and nothing here saw for a day. It reads text and
+not a program, it knows nothing about types or members, and it catches one shape and no
+other.
+
+tools/checks/check-imports.sh refuses a file that names a type and imports no namespace
+that has it, which is CS0246, and that is the fault F61 shipped and nothing here saw until
+Bader's build failed on it. It has no Autodesk DLL, so for a type this repo declares it
+reads the namespace off the file that declares it, and for every other type it LEARNS from
+what the rest of the tree imports. What it cannot do is written at the top of it: the FIRST
+use of a brand new Autodesk type, in the first file that ever names it, is invisible to it.
+
+A NEW ADD-IN FILE THAT NAMES AN AUTODESK TYPE COPIES ITS IMPORTS FROM THE FILE IN THIS REPO
+THAT ALREADY USES THAT TYPE. Nothing here can compile the add-in, so the only evidence
+available is what the files that already build carry, and a namespace guessed at reads
+exactly like one that was measured until the build says otherwise.
+
+The pre-commit hook runs both before the tests and Actions runs each of them twice, once
+over src and once over tools/checks/broken, which is wrong on purpose in two ways so each
+check is proved to refuse as well as to pass.
 
 ## The live line, F62
 

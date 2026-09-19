@@ -2,6 +2,42 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F66, the check that would have caught it
+
+### What was done
+
+- A SECOND RULE OF THE COMPILER'S NOW RUNS WITHOUT THE COMPILER. `tools/checks/check-imports.sh` refuses a file that names a type and imports no namespace that has it, which is CS0246. It sits beside `check-locals.sh`, is wired into the pre-commit before the tests and into Actions twice, once over `src` and once over a folder that is wrong on purpose
+- WHY THERE ARE TWO CHECKS AND NOT ONE. F52 shipped CS0128 and F58 wrote the first check for it. F61 shipped CS0246 and the first check could not see it, because it reads ONE shape of fault. Two rounds, two compiler errors, both shipped from here, both found by Bader's machine rather than by this one
+- WHAT COUNTS AS A USE, WHICH IS THE WHOLE DESIGN. A type name is read only in a TYPE POSITION: after `new`, `is`, `as` or `typeof`, in the head of a `using` block, as a field, a parameter, a local or a `foreach` type, or inside generic brackets. A bare capitalised word anywhere else is a member name, a property or an enum value. Literals and comments are stripped before anything is read, which is the whole of the difference between `SavedViewpoints.cs`, which names `DocumentSavedViewpoints` four times in comments and correctly imports nothing for it, and `DocumentCensusReader.cs`, which named `DocumentSelectionSets` once in a parameter list and did not build
+- HOW IT KNOWS WHERE A TYPE LIVES, AND IT IS TWO DIFFERENT THINGS SAID DIFFERENTLY. For a type this repo DECLARES, the namespace is a FACT read off the file that declares it, and a file naming that type from outside that namespace and its children must import it. A namespace is in scope inside its own children, so `Federator.Addin.Engine` sees `Federator.Addin` with no import and that is not a fault. For every other type, which is the whole BCL and the whole Navisworks API, nothing here can know, so it LEARNS from what the rest of the tree imports and its line says so in words: every other file here that names it imports X. It reports a correlation and never a claim about where a type lives
+- THE FIRST VERSION RETURNED 170 LINES OF NOISE OVER `src` AND THAT IS THE MEASUREMENT THAT SHAPED IT. The rule as briefed, every other file that names the type imports a namespace this one does not, is true of `System` and `System.Collections.Generic` for almost any pair of files, so it answers with whatever the other file happens to carry. Two conditions cut 170 to 0 without weakening what it catches
+- THE FIRST CONDITION IS THAT ONE OTHER FILE TEACHES NOTHING. With a single other user the intersection is that file's whole import list, so every import it has and this one lacks is reported. Below two other users the type is left alone, and the check says that is what it does
+- THE SECOND IS A SHARE, AND IT IS A SETTING WITH ITS MEASUREMENT BESIDE IT. A namespace is taken as a type's home only where at least `MinimumShare` per cent of the files importing it name that type. Measured on 2026-09-19 over `src`: at 50 the check reads clean, at 40 one line, at 34 three and at 20 ten. At every one of those values, with the F65 import taken back out, it names `Autodesk.Navisworks.Api.DocumentParts` on the real fault. So 50 is where it sits and the number is in the file with the numbers behind it
+- WHAT IT CANNOT DO IS WRITTEN AT THE TOP OF IT AND IN ITS PASS LINE. It reads TEXT and not a program. It cannot know a namespace no file here imports yet, so the FIRST use of a brand new Autodesk type, in the first file that ever names it, is invisible to it and only the build on Bader's machine sees that one. And it is not a build and it never says a build passed, which is the same sentence `check-locals.sh` carries and for the same reason
+- THE WRONG ON PURPOSE FOLDER IS NOW WRONG IN TWO WAYS, ONE PER CHECK. `MissingImport.cs` is the exact shape that failed, the type as a parameter with no `DocumentParts` import. `HasImportAsAParameter.cs` and `HasImportAsALocal.cs` are correct and are the map, and there are two of them because of the first condition above, in the two positions the real tree uses. `NearMiss.cs` must PASS: every `DocumentSelectionSets` in it is a word and not a type, one in a comment and one inside a string, which is `SavedViewpoints.cs` in miniature. The check comes back with exactly one fault, naming the file, the type and the namespace, and `check-locals.sh` still comes back with exactly its own one
+- THE RULE IS IN `addin.md` NOW, and it is the one a person follows rather than the one a script runs: a new add-in file that names an Autodesk type copies its imports from the file in this repo that already uses that type, because nothing here can compile the add-in and a namespace guessed at reads exactly like one that was measured until the build says otherwise
+- Proved here: `check-imports.sh src` exits 0. `check-imports.sh tools/checks/broken` exits 1 with one line. `check-locals.sh src` exits 0 and `check-locals.sh tools/checks/broken` exits 1 with one line, unchanged by the four new files. The script is stored LF, which `*.sh text eol=lf` in `.gitattributes` already pinned. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+### What this check will still not catch, listed rather than left
+
+- A type nothing else here names. That is the brand new Autodesk type case and it is the one that will happen again
+- A namespace that is imported but wrong, because it resolves nothing and never reads a DLL
+- A member that does not exist on a type it can see, which is CS1061 and is the next shape along. F39 was that fault and it took an audit to find
+- Everything else the compiler knows. The build is step 8 and it stays the only thing that says the add-in builds
+
+### What remains
+
+- F67, one doubled comment, then F68, then the closing work
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F66 pull request
+2. F67, one doubled comment
+
 ## 2026-09-19 F65, the missing import
 
 ### What was done
