@@ -803,6 +803,40 @@ and 6 does not read as broken.
   carries it in the CLIENT'S OWN Reviewed column, per test, because the status is applied
   before the harvest reads it. No column of ours goes on that sheet, which is the rule
   above about the workbook being their one sheet
+- THE PROPERTY PROBE READS AND CHANGES NOTHING, F86. `Federator.Core.Probe` holds the
+  whole of its rule: ProbeSettings for what is read and where the CSV goes, ProbeTally for
+  the counting, the cap and the order, ProbeCsv for the file, ProbeVerdict for the block.
+  It takes a folder of NWC files or the open document, and writes one
+  `<file>-properties.csv` beside each file with five columns, category, property tab,
+  property name, distinct value, how many elements. IT NEVER OPENS AN NWF, never saves and
+  never publishes, and `ProbeSettings.MayRead` is what makes that enforceable rather than a
+  promise in a comment: an NWF is refused by name because opening one replaces whatever is
+  open and the NWF is where every clash result lives, and an NWD is refused because it is
+  something this tool writes. THE SEVENTEEN CATEGORIES ARE NOT TYPED. They are the
+  thirteen `PenetrationSettings.DefaultServiceCategories` plus the four
+  `DefaultNotAServiceCategories`, which together are every category a service discipline
+  set in the client's matrix asks for, and a test reads the matrix and asserts it on every
+  run. Distinct values are capped at 100 per property, a setting, and what was left out is
+  SAID in a line of its own in the CSV and again in the verdict block, never dropped
+  silently. Rows are sorted by category, then property tab, then property name, then how
+  many elements carry the value, highest first, with the value itself as the tie break so
+  the same model gives the same file twice running. Nothing is trimmed, because a value
+  with a space on the end is a real thing in these files and the probe exists to find out
+  what is really there. The verdict block says whether FS or Fire Suppression appears in
+  any tab, name or value, and says so as plainly when it does not, because a probe that
+  only speaks up when it finds something reads as one that found nothing rather than as
+  one that ran. FS is matched as a WHOLE TOKEN and never inside a word, or OFFSET and
+  TRANSFER would both read as fire suppression
+- A CATEGORY A SERVICE SET ASKS FOR IS EITHER A SERVICE OR DECIDED NOT TO BE ONE, F72a.
+  `PenetrationSettings.IsDecided` is the rule and `DefaultNotAServiceCategories` is the
+  second list: Air Terminals, Mechanical Equipment, Plumbing Fixtures, Sprinklers. The
+  test that reads the client's matrix asserts the DECISION and not the membership, because
+  the literal reading would force Mechanical Equipment onto the service list and an air
+  handling unit against a wall would be moved to Reviewed automatically, which is the
+  opposite of what the penetration rule is for. A condition written as CONTAINS is a STEM
+  and not a category: Cable Tray matches Cable Trays and Cable Tray Fittings, Conduit
+  matches Conduits and Conduit Fittings, and all four are on the service list. Air
+  Terminals and Sprinklers are arguable both ways and are Q47
 - The scan reports what it noticed and never acts on it. ODD SHAPE, NEAR MATCH,
   SINGLE DISCIPLINE and MISSING are information. Nothing is blocked, unticked or
   merged, and no code is assumed right. Bader decides

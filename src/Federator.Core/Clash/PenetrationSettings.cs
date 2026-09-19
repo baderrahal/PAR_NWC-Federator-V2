@@ -57,6 +57,34 @@ namespace Federator.Core.Clash
         };
 
         /// <summary>
+        /// The categories a SERVICE DISCIPLINE SET asks for that this tool deliberately
+        /// does not call a service, F72a.
+        ///
+        /// WHY THE LIST EXISTS AT ALL. The test that reads the client's matrix asserts
+        /// that every category named in a service set is accounted for, so a set added to
+        /// the matrix later cannot be silently missed. Without this list that test would
+        /// force all four of these onto the service list, and an air handling unit against
+        /// a wall would be moved to Reviewed automatically, which is the opposite of what
+        /// the penetration rule is for: an AHU through a wall is a real coordination item
+        /// and somebody has to look at it.
+        ///
+        /// SO THE RULE IS NOT "IS IT ON THE SERVICE LIST". It is "has somebody decided
+        /// about it", and these four are the decided-no. Mechanical Equipment and Plumbing
+        /// Fixtures are plainly right to leave off. AIR TERMINALS AND SPRINKLERS ARE
+        /// ARGUABLE BOTH WAYS and are Q47, which is Bader's to answer. They sit here
+        /// rather than on the service list because leaving a clash at New for a person to
+        /// look at is the safe mistake, which is the same way round every other unknown in
+        /// this rule reads.
+        /// </summary>
+        public static readonly string[] DefaultNotAServiceCategories =
+        {
+            "Air Terminals",
+            "Mechanical Equipment",
+            "Plumbing Fixtures",
+            "Sprinklers"
+        };
+
+        /// <summary>
         /// The categories that are a solid to go through. Q41 answered: floors and roofs
         /// count as well as walls, because a service dropping through a slab is the same
         /// kind of thing as one going through a wall.
@@ -86,6 +114,7 @@ namespace Federator.Core.Clash
             ServiceCategories = new List<string>(DefaultServiceCategories);
             SolidCategories = new List<string>(DefaultSolidCategories);
             CategoryNames = new List<string>(DefaultCategoryNames);
+            NotAServiceCategories = new List<string>(DefaultNotAServiceCategories);
         }
 
         /// <summary>The categories that are a service.</summary>
@@ -108,6 +137,20 @@ namespace Federator.Core.Clash
         {
             return Holds(SolidCategories, category);
         }
+
+        /// <summary>
+        /// Whether somebody has DECIDED about that category, either way, F72a. True for a
+        /// service and true for one of the four decided not to be one. The matrix test
+        /// reads this rather than IsService, so a category added to the client's matrix
+        /// later fails the test until a person says which it is.
+        /// </summary>
+        public bool IsDecided(string category)
+        {
+            return IsService(category) || Holds(NotAServiceCategories, category);
+        }
+
+        /// <summary>The four a service discipline set asks for that are not services.</summary>
+        public IList<string> NotAServiceCategories { get; set; }
 
         /// <summary>
         /// The grey line under the tick box. The threshold is READ from the size settings
