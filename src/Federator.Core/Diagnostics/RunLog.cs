@@ -66,6 +66,20 @@ namespace Federator.Core.Diagnostics
         private readonly List<GroupRecord> groupRecords = new List<GroupRecord>();
         private bool closed;
 
+        // ---------- the steps, F59 ----------
+        //
+        // Three lists and not one. openSteps is the stack, so a step knows how deep it
+        // is and a group end knows what nobody closed. stepRecords is what the group and
+        // the run read their time off. visitsInGroup is what keeps a step entered 1830
+        // times from writing 3660 lines, which is the fault that once left a 17.8 MB log
+        // holding one stack trace.
+        private readonly List<RunStep> openSteps = new List<RunStep>();
+        private readonly List<StepRecord> stepRecords = new List<StepRecord>();
+        private readonly Dictionary<string, int> visitsInGroup =
+            new Dictionary<string, int>(StringComparer.Ordinal);
+
+        private string currentGroup;
+
         private static int keepLogs = DefaultKeepLogs;
 
         private RunLog(string path, DateTime startedAt, FileStream stream, string disabledReason)
@@ -484,6 +498,182 @@ namespace Federator.Core.Diagnostics
             }
         }
 
+        // ---------- the steps ----------
+
+        /// <summary>
+        /// Opens a step and returns it. ALWAYS called in a using block, so the step closes
+        /// on the way out whether the work finished, returned early or threw.
+        ///
+        /// A step left open is the one thing that would make the timing block lie, because
+        /// seconds it never recorded come off no total and the run reads as faster than it
+        /// was. The using block is what makes that impossible, and a group that ends with a
+        /// step still open says so by name rather than quietly dropping it.
+        ///
+        /// A step entered more than once in a group writes its start and finish pair the
+        /// first time, one line the second time saying the rest are counted, and nothing
+        /// after that. The totals go in the line the group writes when it finishes.
+        /// TESTS RUN is entered once per test and a real group holds 1830 of them.
+        /// </summary>
+        public RunStep Step(string name)
+        {
+            int depth;
+            int visits;
+            bool insideAGroup;
+
+            lock (gate)
+            {
+                depth = openSteps.Count;
+                insideAGroup = currentGroup != null;
+                visits = 0;
+
+                if (insideAGroup)
+                {
+                    visitsInGroup.TryGetValue(name ?? string.Empty, out visits);
+                }
+            }
+
+            // Built outside the lock, because the constructor refuses a name that is not
+            // one of the steps and a throw must not be taken while the gate is held.
+            RunStep step = new RunStep(name, depth, ElapsedSeconds_, StepClosed);
+
+            lock (gate)
+            {
+                openSteps.Add(step);
+                visits++;
+
+                // Only inside a group. The two hand buttons on the Clash step run outside
+                // one, and each press is its own occasion, so a second press has to write
+                // its pair of lines rather than reading as a repeat of the first.
+                if (insideAGroup)
+                {
+                    visitsInGroup[step.Name] = visits;
+                }
+            }
+
+            if (visits == 1)
+            {
+                Line(step.StartLine());
+            }
+            else if (visits == 2)
+            {
+                Line(StepRecord.CountingFromHere(step.Name));
+            }
+
+            return step;
+        }
+
+        /// <summary>
+        /// The monotonic clock every step reads, as a function, so RunStep holds no
+        /// Stopwatch of its own and a test can drive it without waiting for real seconds
+        /// to pass.
+        /// </summary>
+        private double ElapsedSeconds_()
+        {
+            return ElapsedSeconds;
+        }
+
+        /// <summary>
+        /// Called by the step as it closes. Records it, takes it off the stack, and writes
+        /// the finish line for the first visit of this step in this group only.
+        /// </summary>
+        private void StepClosed(RunStep step)
+        {
+            int visits;
+
+            lock (gate)
+            {
+                openSteps.Remove(step);
+                stepRecords.Add(new StepRecord(
+                    currentGroup, step.Name, step.Depth, step.StartedAt, step.Seconds, step.Threw));
+                visitsInGroup.TryGetValue(step.Name, out visits);
+            }
+
+            if (visits <= 1)
+            {
+                Line(step.FinishLine());
+            }
+        }
+
+        /// <summary>
+        /// Every step this run has closed, newest last. The timing blocks are built off
+        /// this and nothing else, so what the log says about time and what the block says
+        /// cannot disagree.
+        /// </summary>
+        public IList<StepRecord> StepRecords
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return new List<StepRecord>(stepRecords);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Closes anything still open when a group ends and says so by name, then writes
+        /// one line per step the group entered more than once, with the visits and the
+        /// total seconds. Called by GroupFinished and by nothing else.
+        /// </summary>
+        private void CloseTheGroupsSteps()
+        {
+            List<RunStep> stillOpen;
+
+            lock (gate)
+            {
+                stillOpen = new List<RunStep>(openSteps);
+            }
+
+            // Deepest first, so a step inside another one closes before its parent and the
+            // lines read the way the work happened.
+            for (int i = stillOpen.Count - 1; i >= 0; i--)
+            {
+                Line(stillOpen[i].NeverClosedLine());
+                stillOpen[i].Dispose();
+            }
+
+            List<string> repeated = new List<string>();
+
+            lock (gate)
+            {
+                foreach (string name in RunSteps.All)
+                {
+                    int visits;
+
+                    if (!visitsInGroup.TryGetValue(name, out visits) || visits < 2)
+                    {
+                        continue;
+                    }
+
+                    double seconds = 0.0;
+                    int threw = 0;
+
+                    foreach (StepRecord record in stepRecords)
+                    {
+                        if (string.Equals(record.Group, currentGroup, StringComparison.Ordinal)
+                            && string.Equals(record.Name, name, StringComparison.Ordinal))
+                        {
+                            seconds += record.Seconds;
+
+                            if (record.Threw)
+                            {
+                                threw++;
+                            }
+                        }
+                    }
+
+                    repeated.Add(StepRecord.RepeatedLine(name, visits, seconds, threw));
+                }
+
+                visitsInGroup.Clear();
+            }
+
+            foreach (string line in repeated)
+            {
+                Line(line);
+            }
+        }
+
         // ---------- header ----------
 
         /// <summary>
@@ -582,6 +772,14 @@ namespace Federator.Core.Diagnostics
 
         public void GroupStarted(string building, IList<string> files)
         {
+            lock (gate)
+            {
+                // The steps of the group that just ended are already recorded and counted,
+                // so this only has to say which building the next ones belong to.
+                currentGroup = building;
+                visitsInGroup.Clear();
+            }
+
             Line("GROUP    started  " + building + "  " + (files == null ? 0 : files.Count) + " files");
 
             if (files != null)
@@ -608,6 +806,10 @@ namespace Federator.Core.Diagnostics
         public void GroupFinished(
             string building, GroupOutcome outcome, double seconds, string reason, string runPath)
         {
+            // Before the GROUP finished line, so a step nobody closed is named while the
+            // group is still the subject, and so the repeated step totals sit with it.
+            CloseTheGroupsSteps();
+
             string recorded = reason;
 
             if (outcome == GroupOutcome.Failed && string.IsNullOrEmpty(recorded))
@@ -618,6 +820,7 @@ namespace Federator.Core.Diagnostics
             lock (gate)
             {
                 groupRecords.Add(new GroupRecord(building, outcome, recorded, runPath));
+                currentGroup = null;
             }
 
             Line("GROUP    finished " + building + "  " + outcome.ToString().ToUpperInvariant()

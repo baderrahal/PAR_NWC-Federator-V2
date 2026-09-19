@@ -328,7 +328,13 @@ namespace Federator.Addin.Engine
                     return outcome;
                 }
 
-                NwfComparison comparison = Decide(document, job);
+                NwfComparison comparison = null;
+
+                InStep(
+                    RunSteps.Decide,
+                    () => comparison = Decide(document, job),
+                    () => RunPath.Label(comparison.Decision, exchange != null));
+
                 outcome.Decision = comparison.Decision;
 
                 foreach (string line in comparison.Lines(job.NwfPath))
@@ -434,7 +440,10 @@ namespace Federator.Addin.Engine
                     return;
                 }
 
-                new DocumentUnits(log).Apply(document, wanted);
+                InStep(
+                    RunSteps.Units,
+                    () => new DocumentUnits(log).Apply(document, wanted),
+                    () => "the document was asked for " + wanted);
             }
 
             bool clashPutSomethingIn = ClashStep(document, job, outcome);
@@ -445,7 +454,10 @@ namespace Federator.Addin.Engine
 
             if (clashPutSomethingIn || viewsPutSomethingIn)
             {
-                SaveTheNwfAgain(document, job, outcome);
+                InStep(
+                    RunSteps.NwfSave,
+                    () => SaveTheNwfAgain(document, job, outcome),
+                    () => outcome.NwfOnDisk ? "saved " + outcome.NwfSize + " bytes" : "not saved");
             }
 
             // After the clash step and before the NWD, so the three outputs of a group
@@ -453,19 +465,83 @@ namespace Federator.Addin.Engine
             // NWD does not carry.
             WriteWorkbook(job, outcome);
 
-            WriteNwd(document, job, outcome);
+            InStep(
+                RunSteps.Nwd,
+                () => WriteNwd(document, job, outcome),
+                () => outcome.NwdOnDisk ? "published " + outcome.NwdSize + " bytes" : "nothing published");
 
             // The NWD is published last, and the NWF is the only record of what has
             // been fixed, so the NWF is looked at once more AFTER it. Nothing was
             // checking this, and a RESULT block reporting the size of the first save
             // made it read as though publishing the NWD had emptied the file.
-            ConfirmTheNwfSurvived(job, outcome);
+            InStep(
+                RunSteps.Confirm,
+                () => ConfirmTheNwfSurvived(job, outcome),
+                () => outcome.NwfOnDisk ? "the NWF is " + outcome.NwfSize + " bytes" : "the NWF is NOT ON DISK");
+        }
+
+        // ---------- the steps, F59 ----------
+
+        /// <summary>
+        /// One named step around one piece of work.
+        ///
+        /// WHY A HELPER AND NOT A USING BLOCK AT EVERY STEP. The try, the Failed and the
+        /// phrase are the same three lines at all fourteen of them, and fourteen copies of
+        /// three lines is fourteen places for one of them to be left out. The one that
+        /// matters is Failed: a step whose work threw has to say so and still carry its
+        /// seconds, because time spent failing is time the run spent.
+        ///
+        /// THE STEP NEVER CHANGES WHAT THE RUN DOES. It opens, the work runs exactly as it
+        /// did before, and it closes. Nothing is skipped, reordered or waited for, and a
+        /// throw goes straight on up to the caller that already handled it.
+        /// </summary>
+        private void InStep(string name, Action work, Func<string> phrase)
+        {
+            using (RunStep step = log.Step(name))
+            {
+                try
+                {
+                    work();
+                }
+                catch (Exception)
+                {
+                    step.Failed();
+                    throw;
+                }
+
+                step.Changed(phrase == null ? null : phrase());
+            }
+        }
+
+        /// <summary>The same, for work that answers whether it changed the document.</summary>
+        private bool InStepReturning(string name, Func<bool> work, Func<string> phrase)
+        {
+            using (RunStep step = log.Step(name))
+            {
+                bool answer;
+
+                try
+                {
+                    answer = work();
+                }
+                catch (Exception)
+                {
+                    step.Failed();
+                    throw;
+                }
+
+                step.Changed(phrase == null ? null : phrase());
+                return answer;
+            }
         }
 
         /// <summary>
         /// Works out which of the three cases this group is in. When an NWF is already
         /// there it is opened, because reading the file list out of it is the only way to
         /// compare, and the NWF is the record. No side file is kept.
+        ///
+        /// The DECIDE step is around the work itself, in RunOne, because the comparison it
+        /// answers with is what the phrase on the finish line says.
         /// </summary>
         private NwfComparison Decide(Document document, FederationJob job)
         {
@@ -611,6 +687,17 @@ namespace Federator.Addin.Engine
         /// false when nothing appended, which is a group that produced nothing.
         /// </summary>
         private bool AppendAll(Document document, FederationJob job, JobOutcome outcome)
+        {
+            // The step is here and not at the two call sites, because both the first build
+            // and the rebuild put the models in and a reader asking where the time went
+            // wants one number for that.
+            return InStepReturning(
+                RunSteps.Append,
+                () => AppendEveryFile(document, job, outcome),
+                () => outcome.AppendedCount + " of " + job.Files.Count + " appended");
+        }
+
+        private bool AppendEveryFile(Document document, FederationJob job, JobOutcome outcome)
         {
             foreach (string file in job.Files)
             {
@@ -1028,6 +1115,16 @@ namespace Federator.Addin.Engine
 
         private void WriteNwf(Document document, FederationJob job, JobOutcome outcome)
         {
+            // Inside the method, because the first build and the rebuild both call it and
+            // one step name belongs in one place.
+            InStep(
+                RunSteps.NwfSave,
+                () => SaveTheNwf(document, job, outcome),
+                () => outcome.NwfOnDisk ? "saved " + outcome.NwfSize + " bytes" : "not saved");
+        }
+
+        private void SaveTheNwf(Document document, FederationJob job, JobOutcome outcome)
+        {
             progress("Saving NWF for " + job.Building);
             log.WriteAttempted("NWF", job.NwfPath);
 
@@ -1144,6 +1241,16 @@ namespace Federator.Addin.Engine
         }
 
         private bool BuildTheSets(Document document, FederationJob job, JobOutcome outcome)
+        {
+            // Inside the method, because the run and the Sets into open model button both
+            // call it and the SETS lines have to read the same whichever way they were built.
+            return InStepReturning(
+                RunSteps.Sets,
+                () => BuildTheSetsFromTheFile(document, job, outcome),
+                () => outcome.Sets == null ? "UNKNOWN, no set outcome was recorded" : outcome.Sets.Summary());
+        }
+
+        private bool BuildTheSetsFromTheFile(Document document, FederationJob job, JobOutcome outcome)
         {
             try
             {
@@ -1687,30 +1794,19 @@ namespace Federator.Addin.Engine
             else
             {
                 string path = ReportPaths.Workbook(reportFolder, job.WorkbookName);
-                progress("Writing the workbook for " + job.Building);
-                log.WriteAttempted("XLSX", path);
 
-                try
-                {
-                    new WorkbookWriter(reports).Write(report, path);
-                }
-                catch (Exception error)
-                {
-                    outcome.AddError(
-                        "writing the workbook threw " + error.GetType().Name + ": " + error.Message);
-                    log.Failure(
-                        "writing the workbook for " + job.Building,
-                        error,
-                        "kept going, the disk is checked next to see whether anything landed");
-                }
-
-                outcome.WorkbookSize = log.WriteFinished("XLSX", path);
-                outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
-
-                CheckTheWorkbook(job, path);
+                InStep(
+                    RunSteps.Workbook,
+                    () => WriteTheWorkbook(job, outcome, report, path),
+                    () => outcome.WorkbookOnDisk
+                        ? "wrote " + outcome.WorkbookSize + " bytes"
+                        : "nothing on disk");
             }
 
-            WriteHtmlTabular(job, outcome, report);
+            InStep(
+                RunSteps.Html,
+                () => WriteHtmlTabular(job, outcome, report),
+                () => outcome.HtmlOnDisk ? "wrote " + outcome.HtmlSize + " bytes" : "nothing on disk");
 
             if (!outputs.WriteXml)
             {
@@ -1719,6 +1815,47 @@ namespace Federator.Addin.Engine
             }
 
             string xmlPath = ReportPaths.Xml(reportFolder, job.WorkbookName);
+
+            InStep(
+                RunSteps.Xml,
+                () => WriteTheClashXml(job, outcome, report, xmlPath),
+                () => outcome.XmlSize >= 0 ? "wrote " + outcome.XmlSize + " bytes" : "nothing on disk");
+        }
+
+        /// <summary>
+        /// The workbook itself. Split out of WriteWorkbook so the WORKBOOK step is around
+        /// the write, the read back and the check, and around nothing else.
+        /// </summary>
+        private void WriteTheWorkbook(
+            FederationJob job, JobOutcome outcome, ClashReport report, string path)
+        {
+            progress("Writing the workbook for " + job.Building);
+            log.WriteAttempted("XLSX", path);
+
+            try
+            {
+                new WorkbookWriter(reports).Write(report, path);
+            }
+            catch (Exception error)
+            {
+                outcome.AddError(
+                    "writing the workbook threw " + error.GetType().Name + ": " + error.Message);
+                log.Failure(
+                    "writing the workbook for " + job.Building,
+                    error,
+                    "kept going, the disk is checked next to see whether anything landed");
+            }
+
+            outcome.WorkbookSize = log.WriteFinished("XLSX", path);
+            outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
+
+            CheckTheWorkbook(job, path);
+        }
+
+        /// <summary>The clash XML itself, split out for the same reason.</summary>
+        private void WriteTheClashXml(
+            FederationJob job, JobOutcome outcome, ClashReport report, string xmlPath)
+        {
             log.WriteAttempted("XML", xmlPath);
 
             try

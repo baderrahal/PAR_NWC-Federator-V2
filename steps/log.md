@@ -2,6 +2,39 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F59, every step is named and timed
+
+### What was done
+
+- FOURTEEN STEPS, ONE PLACE. `Federator.Core.Diagnostics.RunSteps` holds DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES, WORKBOOK, HTML, XML, NWD and CONFIRM, in the order a group meets them, and nothing anywhere types a step name as a string. A name not on the list is REFUSED where the step opens, because a timing block holding a step nobody named is worse than a short one. The column width is read off the longest name rather than typed, so adding a longer step cannot leave the block ragged with nothing saying so
+- A STEP IS ALWAYS OPENED IN A USING BLOCK, so it closes on the way out whether the work finished, returned early or threw. This is the whole design. A step left open is the one thing that would make the timing block LIE, because the seconds it never recorded come off no total and the run reads as faster than it was. A group that ends with a step still open names it, says NEVER CLOSED, and gives it the seconds it had been open
+- A STEP WHOSE WORK THREW SAYS THREW AND KEEPS ITS SECONDS. Time spent failing is time the run spent, and a failed step whose seconds vanished would make a run that spent eight hours failing read as a fast one
+- THE CLOCK IS MONOTONIC AND IS NEVER TWO WALL CLOCK READINGS SUBTRACTED. It is the run's `Stopwatch` through `RunLog.ElapsedSeconds`. A clock that goes back, which is what a machine syncing its time does, would otherwise give a step a negative duration and a group a total smaller than one of its own steps. A step never reports less than no time, and there is a test that drives the clock backwards by thirty seconds and asserts zero
+- The clock reaches `RunStep` as a FUNCTION rather than as a Stopwatch of its own, so a test drives it and the line shapes are proved exactly. Nothing here waits for a real second to pass, which is how a timing test turns into a test that fails on a busy machine
+- ONE CLOCK PER PIECE OF WORK. `ClashRunner` was already timing the test run with a Stopwatch of its own, and that Stopwatch is gone. The step IS the measurement now, so the seconds the log reports and the seconds the report row carries come off one reading and cannot disagree
+- THE LINE COUNT, WHICH IS THE PART THAT WOULD HAVE RUINED IT. TESTS RUN is entered once per test and a real group holds 1830 of them, so a start and finish pair per visit is 3660 lines. A step entered more than once writes its pair the FIRST time, one line the second time saying the rest are counted, and nothing after that, then one line per repeated step when the group finishes with the visits and the total seconds. That is the same rule `RunLog.Failure` already follows, and it is here for the same reason: one run left a 17.8 MB log that was almost entirely one thing said over and over
+- A STEP INSIDE A STEP is indented by its depth and carries that depth, because the timing block has to work its shares out over the top level alone or they add up to more than the group took. HARVEST and IMAGES sit inside the clash step and are the two that do
+- OUTSIDE A GROUP THERE IS NO GROUP TO COUNT AGAINST. The two hand buttons on the Clash step run outside one, so each press is its own occasion and writes its own pair of lines. Without that rule a second press would have read as a repeat of the first and gone silent
+- THE STEP NEVER CHANGES WHAT THE RUN DOES. It opens, the work runs exactly as it did before, and it closes. Nothing is skipped, reordered or waited for, and a throw goes straight up to the caller that already handled it. The one thing that moved is the Stopwatch that was doing the same job twice
+- ONE HELPER AND NOT FOURTEEN COPIES. `InStep` and `InStepReturning` in the engine carry the try, the Failed and the phrase once. Fourteen copies of three lines is fourteen places for one of them to be left out, and the one that matters is Failed
+- WHERE THE STEP SITS WAS A DECISION PER STEP. APPEND is inside `AppendAll` and not at its two call sites, because the first build and the rebuild both put the models in and a reader asking where the time went wants one number for that. NWF SAVE is inside `WriteNwf` for the same reason. SETS is inside `BuildTheSets`, because the run and the Sets into open model button both call it and the lines have to read the same whichever way the sets were built. The rest are at their one call site
+- Proved here: Core tests before 1045 passed, 0 failed, 32 skipped, 1077 total. After 1075 passed, 0 failed, 32 skipped, 1107 total. 30 tests added and none broken. Core builds in Release with 0 warnings. `check-locals.sh` clean over `src`. The add-in parses with the same six error codes and not one `CS1xxx`, and the widened check with the reference assemblies gives 205 `CS0246` and 1 `CS0103`, every one of them a Navisworks name, so `RunStep`, `RunSteps` and `StepRecord` all resolve
+- Two shapes the parse check cannot see were proved on their own against the real Core assembly rather than assumed: that a local assigned inside a using block and read after it is definitely assigned, which is what `ranFor` does in `ClashRunner`, and that `test` is not already a name in that scope
+- Waits for the local machine: steps 237 to 244, a new section in `03_bader_next.md` read off an ordinary run. The file runs 1 to 259 now
+
+### What remains
+
+- F60 to F64. F60 is the timing blocks, which is what these records were kept for
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F59 pull request
+2. F60, the timing blocks, and F21 closes with it
+
 ## 2026-09-19 F58, the add-in compiles again
 
 ### What was done

@@ -709,6 +709,43 @@ survive the crash rather than to be tidy.
   on the first line of the button handler before a window or any options object exists.
   Zero keeps the live file alone and is a real answer, fewer than none is refused
 
+### The steps, F59
+
+Where the time went is the question the log exists to answer, and it can only answer
+it if the same work carries the same name every time it is timed.
+
+- the step names live in `Federator.Core.Diagnostics.RunSteps` and nowhere else. Nothing
+  types a step name as a string. Fourteen of them, in the order a group meets them:
+  DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES,
+  WORKBOOK, HTML, XML, NWD, CONFIRM. A name that is not on the list is refused where the
+  step opens, because a timing block holding a step nobody named is worse than a short one
+- a step is always opened in a using block, so it closes on the way out whether the work
+  finished, returned early or threw. A step left open is the one thing that would make
+  the block lie, because seconds it never recorded come off no total and the run reads as
+  faster than it was. A group that ends with one still open names it and says NEVER CLOSED
+- a step whose work threw says THREW and still carries its seconds. Time spent failing is
+  time the run spent
+- the clock is monotonic, `Stopwatch` through `RunLog.ElapsedSeconds`, and never two wall
+  clock readings subtracted. A clock that goes back, which is what a machine syncing its
+  time does, would otherwise give a step a negative duration and a group a total smaller
+  than one of its own steps. A step never reports less than no time
+- one clock per piece of work. The step IS the measurement, so where a Stopwatch was
+  already timing the same thing it went, and the seconds the log reports and the seconds
+  the report row carries come off one reading
+- a step entered more than once in a group writes its start and finish pair the FIRST
+  time, one line the second time saying the rest are counted, and nothing after that. The
+  totals go in one line per repeated step when the group finishes, with the visits and the
+  seconds. TESTS RUN is entered once per test and a real group holds 1830 of them, so the
+  pair per visit would be 3660 lines. This is the same rule the repeated failure follows
+  and it is here for the same reason, a run that once left a 17.8 MB log
+- a step inside a step is indented by its depth and carries that depth, so the timing
+  block can work its shares out over the top level alone. HARVEST and IMAGES sit inside
+  the clash step and are the two that do
+- outside a group there is no group to count visits against, so each press of the two
+  hand buttons on the Clash step is its own occasion and writes its own pair of lines
+- the step never changes what the run does. It opens, the work runs exactly as it did,
+  and it closes. Nothing is skipped, reordered or waited for
+
 Two things that look like mistakes and are not:
 
 - while a run holds the log open, File.ReadAllText fails with a sharing error.
