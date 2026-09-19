@@ -32,12 +32,19 @@ namespace Federator.Core.Clash
         /// <summary>
         /// The categories that are a service. Pipes, ducts, cable trays, conduits and the
         /// fittings and accessories of each. Given by Bader on 2026-09-19.
+        ///
+        /// PIPE INSULATION IS ONE OF THEM, F72a. An insulated 100 mm pipe through a wall
+        /// makes TWO clashes, the pipe and its insulation, and they are the same
+        /// penetration. Without insulation on this list the pipe moved to Reviewed and its
+        /// insulation stayed at New, so one hole through one wall came back with two
+        /// different answers and somebody had to work out why.
         /// </summary>
         public static readonly string[] DefaultServiceCategories =
         {
             "Pipes",
             "Pipe Fittings",
             "Pipe Accessories",
+            "Pipe Insulation",
             "Ducts",
             "Duct Fittings",
             "Duct Accessories",

@@ -388,13 +388,16 @@ namespace Federator.Core.Tests
         // ---------- the categories are settings ----------
 
         [Test]
-        public void TheTwelveServiceCategoriesAreTheDefaults()
+        public void TheThirteenServiceCategoriesAreTheDefaults()
         {
             IList<string> services = new PenetrationSettings().ServiceCategories;
 
-            Assert.That(services.Count, Is.EqualTo(12));
+            // Twelve until F72a. Pipe Insulation is the thirteenth and it sits beside the
+            // pipe it wraps, so the list reads in the order a person would name them.
+            Assert.That(services.Count, Is.EqualTo(13));
             Assert.That(services[0], Is.EqualTo("Pipes"));
-            Assert.That(services[11], Is.EqualTo("Conduit Fittings"));
+            Assert.That(services[3], Is.EqualTo("Pipe Insulation"));
+            Assert.That(services[12], Is.EqualTo("Conduit Fittings"));
         }
 
         [Test]
@@ -572,5 +575,46 @@ namespace Federator.Core.Tests
         {
             Assert.That(PenetrationSettings.TickLabel, Is.Not.EqualTo(PenetrationSettings.TickLabel.ToUpperInvariant()));
         }
+        // ---------- F72a, the insulation ----------
+
+        /// <summary>
+        /// The one F72a exists for. An insulated 100 mm pipe through a wall makes TWO
+        /// clashes, the pipe and its insulation, and they are the same hole through the
+        /// same wall. Before Pipe Insulation was on the service list the pipe moved to
+        /// Reviewed and the insulation stayed at New, so one penetration came back with
+        /// two different answers.
+        /// </summary>
+        [Test]
+        public void AnInsulatedPipeThroughAWallMovesOnBothSides()
+        {
+            PenetrationDecision pipe =
+                Decide(Side("Pipes", 100.0), Side("Walls", null), ClashStatus.New);
+
+            PenetrationDecision insulation =
+                Decide(Side("Pipe Insulation", 120.0), Side("Walls", null), ClashStatus.New);
+
+            Assert.That(pipe.Verdict, Is.EqualTo(PenetrationVerdict.Reviewed));
+            Assert.That(insulation.Verdict, Is.EqualTo(PenetrationVerdict.Reviewed),
+                "the insulation is the same penetration as the pipe inside it");
+            Assert.That(insulation.Service.Category, Is.EqualTo("Pipe Insulation"));
+        }
+
+        [Test]
+        public void InsulationIsStillMeasuredLikeEveryOtherService()
+        {
+            // Over the threshold is over the threshold, insulation or not. A 200 mm
+            // insulated riser is a coordination item exactly as a 200 mm pipe is.
+            Assert.That(
+                Decide(Side("Pipe Insulation", 200.0), Side("Walls", null), ClashStatus.New).Verdict,
+                Is.Not.EqualTo(PenetrationVerdict.Reviewed));
+        }
+
+        [Test]
+        public void PipeInsulationIsOnTheServiceList()
+        {
+            Assert.That(PenetrationSettings.DefaultServiceCategories, Does.Contain("Pipe Insulation"));
+            Assert.That(new PenetrationSettings().IsService("Pipe Insulation"), Is.True);
+        }
+
     }
 }
