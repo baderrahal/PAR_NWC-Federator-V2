@@ -781,6 +781,43 @@ it if the same work carries the same name every time it is timed.
   than clashes is the grouping and the line says so. MORE rows than clashes is a finding
   nothing in this tool explains, said in capitals, and nothing acts on it
 
+### The document census, F61
+
+Five counts read out of the open document, before and after a step, so a count that
+moved where nothing should have moved it is named rather than discovered a week later.
+
+- the five are models, selection sets, clash tests, clash results and saved viewpoints.
+  Every one is something the NWF carries and something there is no second copy of
+- A COUNT THAT COULD NOT BE TAKEN IS MINUS ONE AND NEVER ZERO. Zero reads as a real
+  count and would let a run throw 1830 clash tests away and report that nothing moved.
+  A census holding a minus one says UNKNOWN for that count, and a count either census
+  could not take is never called a move, in either direction
+- `CensusRule` says which step may move which count, and the useful half is the
+  refusals. DECIDE opens the NWF that is on disk, and opening a document replaces
+  everything in it, so all five may move there and only there. APPEND moves the models.
+  SETS the sets, TESTS CREATE the tests, TESTS RUN the results. Every other step writes
+  a FILE and not the document, so none of them may move anything
+- a move the rule does not allow gets a line beginning CENSUS CHANGED, naming the step,
+  the count, the before and the after, and the reason goes on the group so it is not
+  reported DONE. Nothing is undone, nothing is skipped and the run carries on. The tool
+  reports what it noticed and Bader decides
+- THE CENSUS IS TAKEN AT MOST ONCE PER STEP PER GROUP, on the first visit, for the same
+  reason the start and finish lines are written once. TESTS RUN is entered 1830 times
+  and counting the whole document around every visit would be the log slowing the thing
+  it is watching
+- what the census COSTS is measured off the same monotonic clock and said once per
+  group. Over `CensusCost.TooLongSeconds`, one second by default and a setting, the
+  census narrows to the steps that may write and the next group says so at its top, so
+  no reader ever wonders why a step has no census around it
+- `DocumentCensusReader` in the add-in is the ONE place that reads all five. Each is
+  walked and not asked for, every wrapper disposed on the way down, and each read is in
+  its own try so one count failing does not turn the other four into UNKNOWN. The set
+  walk `FederationEngine.CountSets` used to carry moved into it, so the rebuild and the
+  census read the same number the same way
+- clash results are counted as LEAVES, descending every result group, the same rule
+  `ClashRunner` counts by. A result group counting as one would let a run lose every
+  clash inside it and report the same number
+
 Two things that look like mistakes and are not:
 
 - while a run holds the log open, File.ReadAllText fails with a sharing error.

@@ -2,6 +2,38 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F61, the document census
+
+### What was done
+
+- FIVE COUNTS, READ BEFORE AND AFTER A STEP: models, selection sets, clash tests, clash results and saved viewpoints. Every one of them is something the NWF carries and something there is no second copy of anywhere. A run that lost 1830 clash tests during the workbook write would have written the workbook, published the NWD and reported DONE, and nothing in the log would have said a word
+- MINUS ONE IS NOT ZERO, AND THAT IS THE RULE THE WHOLE THING RESTS ON. A count that could not be taken is minus one and prints as UNKNOWN. Zero reads as a real count, so a census answering zero would let a run throw everything away and report that nothing moved. It is the same answer `SavedViewpoints.Count` already gives for the same reason, and a count either census could not take is NEVER called a move, in either direction, because comparing a real number against UNKNOWN answers nothing and would bury the real moves under noise
+- THE RULE IS THE REFUSALS. `CensusRule` says which step may move which count, read off the engine step by step. DECIDE opens the NWF that is already on disk, and opening a document replaces everything in it, so all five may move there and only there. APPEND moves the models, because an NWC carries geometry and properties and not sets or tests. SETS moves the sets, TESTS CREATE the tests, TESTS RUN the results. Every other step writes a FILE and not the document, so none of them may move anything at all, and that is the half that catches what nobody would think to look for
+- A MOVE THE RULE DOES NOT ALLOW gets a line beginning `CENSUS CHANGED` naming the step, the count, the before and the after, and the reason goes on the group so it is not reported DONE. Nothing is undone, nothing is skipped and the run carries on. The tool reports what it noticed and Bader decides
+- A STEP ALLOWED ONE COUNT IS STILL CALLED OUT ON ANOTHER, which is the case a rule written as a single may-write flag would have missed. TESTS RUN may move the results and may not move the tests, and there is a test on exactly that
+- THE COST, WHICH IS WHAT THE BRIEF WARNED ABOUT. The census is real work: the sets and the viewpoints are walked from their roots and the results are walked per test. So it is taken AT MOST ONCE PER STEP PER GROUP, on the first visit, for the same reason the start and finish lines are written once. TESTS RUN is entered 1830 times and counting the whole document around every visit would be the log slowing the thing it is meant to be watching
+- AND THE COST IS MEASURED, NOT ASSUMED. Every census is timed off the same monotonic clock the steps use, and one line per group says what the group's counting cost and how many counts it took. Over a second a group the census narrows to the steps that may write, and the next group says `CENSUS   narrowed` at its top, so no reader ever wonders why a step has none around it. The threshold is a setting and a value at or below zero is refused where it is set
+- ONE PLACE READS ALL FIVE. `DocumentCensusReader` walks each one with every wrapper disposed on the way down, in the shape `FederationEngine.CountSets` was already using, because a walk that leaves a wrapper behind leaves it for a finalizer on a thread Navisworks does not own and one run built 1.7 million handles in a group doing that. Each of the five reads is in its OWN try, so one count failing does not turn the other four into UNKNOWN
+- A COPY OF A WALK WENT RATHER THAN A SECOND ONE ARRIVING. `FederationEngine.CountSets` and `CountSetsUnder` are gone, 51 lines, and the three callers in the rebuild read `DocumentCensusReader.Sets` now. The rebuild and the census read the same number the same way, where a new census walk would have made two copies of one rule
+- CLASH RESULTS ARE COUNTED AS LEAVES, descending every result group, which is the rule `ClashRunner` already counts by. A result group counting as one would let a run lose every clash inside it and report the same number
+- NO NAVISWORKS TYPE REACHES CORE. The log holds a reader, the add-in supplies it, and every rule about what the five numbers mean is Core with its tests. A reader that throws comes back as UNKNOWN with a line saying what threw, and never stops the run
+- A GAP FOUND AND CLOSED ON THE WAY. The parse check has been running off a fixed list of add-in files written by hand in an earlier session, so a NEW add-in file would not have been checked at all. `DocumentCensusReader.cs` was the first one to land since, and the list is built from the tree now. That is the same shape of fault F58 was opened for
+- Proved here: Core tests before 1103 passed, 0 failed, 32 skipped, 1135 total. After 1149 passed, 0 failed, 32 skipped, 1181 total. 46 added and none broken. Core builds in Release with 0 warnings, `check-locals.sh` clean over `src`, the add-in parses with the same six error codes and not one `CS1xxx`, and every unresolved name in the widened check was read and every one is a Navisworks type
+- Waits for the local machine: steps 254 to 260, including the first real measurement of what the census costs on a real model, which is the number that decides whether it stays wide
+
+### What remains
+
+- F62, F63 and F64
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F61 pull request
+2. F62, the live line in the window
+
 ## 2026-09-19 F60, the timing blocks, and F21 closes here
 
 ### What was done

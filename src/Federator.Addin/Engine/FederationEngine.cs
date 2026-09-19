@@ -96,6 +96,12 @@ namespace Federator.Addin.Engine
             this.reports = reports ?? new ReportOptions();
             this.guard = new RepeatedFailureGuard(this.reports.StopAfterFailures);
             this.reportFolder = null;
+
+            // F61. The log decides WHEN to count and Core decides what a move means. This
+            // is the only line that tells it HOW, and it reads the document that is open
+            // at that moment rather than one captured here, because a group opening its
+            // NWF replaces the open document.
+            log.CensusReader = () => DocumentCensusReader.Read(NavisworksApplication.ActiveDocument);
         }
 
         /// <summary>
@@ -265,6 +271,13 @@ namespace Federator.Addin.Engine
                     outcome.NwdOnDisk = outcome.NwdSize >= 0;
                 }
 
+                // F61, the same as the scanned run. Before the return, so the outcome the
+                // finally below reports already carries them.
+                foreach (string reason in log.CensusFaults)
+                {
+                    outcome.AddError(reason);
+                }
+
                 return outcome;
             }
             finally
@@ -397,6 +410,15 @@ namespace Federator.Addin.Engine
                 outcome.NwdSize = log.CheckOnDisk("NWD", job.NwdPath);
                 outcome.NwfOnDisk = outcome.NwfSize >= 0;
                 outcome.NwdOnDisk = outcome.NwdSize >= 0;
+            }
+
+            // F61. Outside the try, so a group that threw still carries whatever the
+            // census saw before it did. Nothing was undone and nothing was skipped: the
+            // count moved where the rule says it may not, the log said so, and the group
+            // is not reported DONE.
+            foreach (string reason in log.CensusFaults)
+            {
+                outcome.AddError(reason);
             }
 
             return outcome;
@@ -788,7 +810,7 @@ namespace Federator.Addin.Engine
             RebuiltThing views = tally.Count("VIEWS", "saved viewpoints");
             RebuiltThing statuses = tally.Count("RESULTS", "clash results carrying a status a person set");
 
-            sets.Before = CountSets(document.SelectionSets);
+            sets.Before = DocumentCensusReader.Sets(document.SelectionSets);
             tests.Before = saved.Count;
             views.Before = SavedViewpoints.Count(document);
             statuses.Before = SavedStatuses.SetByAPerson(document);
@@ -827,7 +849,7 @@ namespace Federator.Addin.Engine
                 // Sets first, on their own count, whatever the tests did. A test side
                 // points at a set, so the tests go back into a document that already
                 // holds what they point at.
-                sets.AfterAppends = CountSets(document.SelectionSets);
+                sets.AfterAppends = DocumentCensusReader.Sets(document.SelectionSets);
                 sets.AfterRestore = sets.AfterAppends;
 
                 if (sets.NeedsRestoring && setsCopy != null)
@@ -835,7 +857,7 @@ namespace Federator.Addin.Engine
                     try
                     {
                         document.SelectionSets.CopyFrom(setsCopy);
-                        sets.AfterRestore = CountSets(document.SelectionSets);
+                        sets.AfterRestore = DocumentCensusReader.Sets(document.SelectionSets);
                     }
                     catch (Exception error)
                     {
@@ -921,57 +943,6 @@ namespace Federator.Addin.Engine
                     setsHandle.Dispose();
                 }
             }
-        }
-
-        /// <summary>
-        /// How many selection sets the tree holds, walked from the root with every wrapper
-        /// disposed on the way. A count and never a handle, because a handle onto anything
-        /// the document owns dies the moment the document replaces the object behind it,
-        /// which a clear does.
-        /// </summary>
-        private static int CountSets(DocumentSelectionSets sets)
-        {
-            if (sets == null)
-            {
-                return 0;
-            }
-
-            using (FolderItem root = sets.RootItem)
-            {
-                return CountSetsUnder(root);
-            }
-        }
-
-        private static int CountSetsUnder(GroupItem parent)
-        {
-            if (parent == null)
-            {
-                return 0;
-            }
-
-            int count = 0;
-            SavedItemCollection children = parent.Children;
-
-            for (int i = 0; i < children.Count; i++)
-            {
-                using (SavedItem child = children[i])
-                {
-                    if (child is SelectionSet)
-                    {
-                        count++;
-                        continue;
-                    }
-
-                    GroupItem folder = child as GroupItem;
-
-                    if (folder != null)
-                    {
-                        count += CountSetsUnder(folder);
-                    }
-                }
-            }
-
-            return count;
         }
 
         /// <summary>

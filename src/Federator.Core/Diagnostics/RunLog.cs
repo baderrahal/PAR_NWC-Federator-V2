@@ -80,6 +80,16 @@ namespace Federator.Core.Diagnostics
 
         private string currentGroup;
 
+        // ---------- the census, F61 ----------
+        //
+        // The log cannot count anything in a Navisworks document and must not try. The
+        // add-in hands a reader in, the log decides WHEN to call it, and Core decides what
+        // the answer means. Null where nothing supplied one, and then no census is taken
+        // and no census line is written, which is what the tests and the hand buttons do.
+        private readonly CensusCost censusCost = new CensusCost();
+        private readonly List<string> censusFaults = new List<string>();
+        private bool censusNarrowed;
+
         private static int keepLogs = DefaultKeepLogs;
 
         private RunLog(string path, DateTime startedAt, FileStream stream, string disabledReason)
@@ -498,6 +508,80 @@ namespace Federator.Core.Diagnostics
             }
         }
 
+        // ---------- the census ----------
+
+        /// <summary>
+        /// How the log reads the five counts. The add-in sets this once, and everything
+        /// about WHEN it is called and what the answer means is here and in Core.
+        ///
+        /// A reader that throws is the reader's problem to swallow: it hands back a census
+        /// of UNKNOWNs rather than throwing, because logging is never the thing that stops
+        /// a run.
+        /// </summary>
+        public Func<DocumentCensus> CensusReader { get; set; }
+
+        /// <summary>
+        /// Every count that moved under a step the rule says may not move it, since the
+        /// group started, in the words the log used. The engine puts these on the group so
+        /// it is not reported DONE.
+        /// </summary>
+        public IList<string> CensusFaults
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return new List<string>(censusFaults);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Takes one census and records what it cost. Null where no reader was supplied
+        /// or where the reader could not be called at all.
+        /// </summary>
+        private DocumentCensus TakeCensus()
+        {
+            Func<DocumentCensus> reader = CensusReader;
+
+            if (reader == null)
+            {
+                return null;
+            }
+
+            double before = ElapsedSeconds;
+            DocumentCensus census;
+
+            try
+            {
+                census = reader();
+            }
+            catch (Exception error)
+            {
+                // Swallowed on purpose. A census is a diagnostic and a diagnostic never
+                // stops a run. What it must not do is come back as zeros, so it comes back
+                // as UNKNOWN, which no rule ever reads as a change.
+                census = DocumentCensus.Unknown();
+                Line("CENSUS   could not be taken, " + error.GetType().Name + ": " + error.Message);
+            }
+
+            censusCost.Took(ElapsedSeconds - before);
+            return census ?? DocumentCensus.Unknown();
+        }
+
+        /// <summary>
+        /// Whether a census is taken around this step now. At most once per step per
+        /// group, the first time it is entered, for the same reason the start and finish
+        /// lines are written once: TESTS RUN is entered 1830 times and counting the whole
+        /// document around every one of them would be the log making the run slower.
+        /// </summary>
+        private bool CensusWanted(string name, int visits)
+        {
+            return CensusReader != null
+                && visits == 1
+                && CensusRule.TakenAround(name, !censusNarrowed);
+        }
+
         // ---------- the steps ----------
 
         /// <summary>
@@ -559,6 +643,17 @@ namespace Federator.Core.Diagnostics
                 Line(StepRecord.CountingFromHere(step.Name));
             }
 
+            // After the start line, so the census reads under the step it belongs to.
+            if (CensusWanted(step.Name, visits))
+            {
+                step.CensusBefore = TakeCensus();
+
+                if (step.CensusBefore != null)
+                {
+                    Line(step.CensusBefore.Line("before " + step.Name));
+                }
+            }
+
             return step;
         }
 
@@ -588,9 +683,57 @@ namespace Federator.Core.Diagnostics
                 visitsInGroup.TryGetValue(step.Name, out visits);
             }
 
+            // Before the finish line, so a count that moved is named while the step is
+            // still the subject rather than after it has been closed off.
+            CensusAfter(step);
+
             if (visits <= 1)
             {
                 Line(step.FinishLine());
+            }
+        }
+
+        /// <summary>
+        /// The census after a step, against the one taken before it. Writes the line, then
+        /// one line per count that moved where the rule says it may not, and keeps the
+        /// reason so the engine can put the group out of DONE.
+        ///
+        /// Nothing here undoes anything, skips anything or stops the run. It reports what
+        /// it saw and Bader decides.
+        /// </summary>
+        private void CensusAfter(RunStep step)
+        {
+            if (step.CensusBefore == null)
+            {
+                return;
+            }
+
+            DocumentCensus after = TakeCensus();
+
+            if (after == null)
+            {
+                return;
+            }
+
+            Line(after.Line("after  " + step.Name));
+
+            IList<string> faults = CensusRule.Lines(step.Name, step.CensusBefore, after);
+            IList<string> reasons = CensusRule.Reasons(step.Name, step.CensusBefore, after);
+
+            foreach (string line in faults)
+            {
+                Line(line);
+            }
+
+            if (reasons.Count > 0)
+            {
+                lock (gate)
+                {
+                    foreach (string reason in reasons)
+                    {
+                        censusFaults.Add(reason);
+                    }
+                }
             }
         }
 
@@ -778,9 +921,18 @@ namespace Federator.Core.Diagnostics
                 // so this only has to say which building the next ones belong to.
                 currentGroup = building;
                 visitsInGroup.Clear();
+                censusFaults.Clear();
+                censusCost.NextGroup();
             }
 
             Line("GROUP    started  " + building + "  " + (files == null ? 0 : files.Count) + " files");
+
+            // Said at the top of the group rather than where a census is missing, so no
+            // reader ever wonders why a step has none around it.
+            if (CensusReader != null && censusNarrowed)
+            {
+                Line(CensusCost.NarrowedLine());
+            }
 
             if (files != null)
             {
@@ -809,6 +961,19 @@ namespace Federator.Core.Diagnostics
             // Before the GROUP finished line, so a step nobody closed is named while the
             // group is still the subject, and so the repeated step totals sit with it.
             CloseTheGroupsSteps();
+
+            // What the census cost this group, measured and never estimated, said once per
+            // group. Over its second the census narrows from the next group on, and this
+            // is the line that says so.
+            if (CensusReader != null)
+            {
+                Line(censusCost.Line());
+
+                if (censusCost.TooExpensive)
+                {
+                    censusNarrowed = true;
+                }
+            }
 
             string recorded = reason;
 
