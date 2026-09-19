@@ -1994,11 +1994,6 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Publishes the NWD, every run. It used to be a tick box, on by default, and a
-        /// weekly run wanted it every time, so it is fixed on and there is no branch here
-        /// for a run that does not want it.
-        /// </summary>
-        /// <summary>
         /// One folder per discipline with one viewpoint in each, F52. Returns whether
         /// anything new went into the document, which is what asks for the second NWF save.
         ///
@@ -2043,6 +2038,11 @@ namespace Federator.Addin.Engine
             return built.PutAnythingIn;
         }
 
+        /// <summary>
+        /// Publishes the NWD, every run. It used to be a tick box, on by default, and a
+        /// weekly run wanted it every time, so it is fixed on and there is no branch here
+        /// for a run that does not want it.
+        /// </summary>
         private void WriteNwd(Document document, FederationJob job, JobOutcome outcome)
         {
             Say("Publishing NWD for " + job.Building);

@@ -2,6 +2,30 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F67, one doubled comment
+
+### What was done
+
+- TWO SUMMARY BLOCKS WERE STACKED AT LINE 1996 of `FederationEngine.cs`, both sitting on `BuildViewpoints`. The first describes publishing the NWD, every run, and why it is fixed on with no branch for a run that does not want it. That is `WriteNwd`, and F52 pushed it down the file when it inserted `BuildViewpoints` above it and left its comment behind
+- IT WAS MOVED AND NOT DELETED, AND THE BRIEF SAID DELETE. `WriteNwd` carried no summary at all. The displaced block is its and records a decision, that the NWD publish stopped being a tick box because a weekly run wanted it every time, which is not readable off the lines under it. Deleting it would throw a measured decision away and leave a method undocumented
+- F47B IS THE SAME SHAPE, THE SAME BRIEF WORDING AND THE SAME ANSWER, on 2026-09-18, one file along in `ClashRunner.cs`. The reasoning is in this log under it and in `01_next.md`. Doing the opposite today on the same shape would make the rule depend on which round read it
+- WHAT THE BRIEF IS ACTUALLY AFTER IS REACHED EITHER WAY, which is that no two summary blocks are stacked anywhere under `src`. Bader reverses this in one line if he meant the block gone
+- THE CHECK RERUN OVER THE WHOLE OF `src`. A summary closing and another opening with nothing between them, over all 132 `.cs` files, `obj` and `bin` excluded. It reads 0 where it read 1. F44 ran it at eleven, F47b at one and it has been 0 since, and this is the first time since that a round added enough files to be worth saying: it was 102 files then and it is 132 now
+- Proved here: the check at 0, `check-locals.sh src` clean, `check-imports.sh src` clean. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total. No code changed, only where a comment sits
+
+### What remains
+
+- F68, the build section, then the closing work
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F67 pull request
+2. F68, the build section learns what today cost
+
 ## 2026-09-19 F66, the check that would have caught it
 
 ### What was done

@@ -18,7 +18,7 @@ Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, r
 
 1. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
 2. F66, DONE, the check that would have caught it
-3. F67, one doubled comment
+3. F67, DONE, one doubled comment
 4. F68, the build section learns what today cost
 5. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
 6. F59, DONE, every step is named and timed
@@ -590,6 +590,15 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - Wired into the pre-commit and into Actions exactly the way `check-locals.sh` is, the second Actions step against a folder that is wrong on purpose included
 - Size: medium, and the noise is the whole of it
 - DONE on 2026-09-19. `tools/checks/check-imports.sh` reads clean over `src` and refuses `tools/checks/broken` with exactly one line naming the file, the type and the namespace. The rule as first written returned 170 lines of noise over `src`, so it carries two conditions that cut it to none: a type only one other file names teaches nothing and is left alone, and a namespace is only taken as a type's home when at least `MinimumShare` per cent of the files importing it name that type, measured at 50 where `src` reads clean and 40, 34 and 20 read one, three and ten lines of noise. The broken folder gains the exact shape that failed, two correct files that are the map, and a near miss that names the type only in a comment and in a string and must pass, which is `SavedViewpoints.cs` in miniature. `.claude/rules/addin.md` now says a new add-in file that names an Autodesk type copies its imports from the file here that already uses it. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+## F67 One doubled comment
+
+- Files `src/Federator.Addin/Engine/FederationEngine.cs`
+- CONTAINER
+- Two summary blocks stacked at line 1996, both sitting on `BuildViewpoints`. The first describes publishing the NWD and belongs to `WriteNwd`, which F52 pushed down the file when it inserted `BuildViewpoints` above it
+- Size: one comment moved
+- THE BRIEF SAYS DELETE AND THIS MOVES IT. `WriteNwd` carries no summary of its own, and the displaced block is its, recording why the NWD publish is fixed on and has no branch for a run that does not want it. Deleting it would throw away a decision and leave a method undocumented. F47b on 2026-09-18 is the same shape, the same brief wording and the same answer, and the reasoning is in `log.md` under it. Either way no two summary blocks are stacked anywhere under `src`, which is what the brief is after
+- DONE on 2026-09-19. Moved onto `WriteNwd`, which it describes and which had no comment. The stacked summary check rerun over all 132 `.cs` files under `src` reads 0, where it read 1. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
 
 ## F21 The log answers timing and counts
 
