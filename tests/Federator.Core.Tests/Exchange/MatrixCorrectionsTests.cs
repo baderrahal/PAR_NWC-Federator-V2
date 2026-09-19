@@ -37,7 +37,11 @@ namespace Federator.Core.Tests
         {
             return new List<CategoryRewrite>
             {
-                new CategoryRewrite(DevicesSet, DevicesAskedFor, DevicesShouldAskFor)
+                new CategoryRewrite(
+                    DevicesSet,
+                    DevicesAskedFor,
+                    DevicesShouldAskFor,
+                    "F87 fallback: equals on one named category until scan.md 5g measures whether a negated condition imports")
             };
         }
 
@@ -124,6 +128,7 @@ namespace Federator.Core.Tests
                 outcome.Text.Split(new[] { asked }, StringSplitOptions.None).Length - 1,
                 Is.EqualTo(2));
             Assert.That(outcome.Text, Does.Contain(DevicesShouldAskFor));
+            Assert.That(outcome.Lines(), Has.Some.Contains("scan.md 5g"), "the note rides on the outcome line, A15");
             Assert.That(outcome.Text, Does.Contain("name=\"BLD-EL-Electrical Fixtures\""),
                 "the set name is not a value and is never rewritten");
         }

@@ -46,6 +46,12 @@ namespace Federator.Core.Exchange
     public sealed class CategoryRewrite
     {
         public CategoryRewrite(string setName, string from, string to)
+            : this(setName, from, to, null)
+        {
+        }
+
+        /// <summary>The same, with a note saying why this rewrite is what it is, A15, carried into the outcome line.</summary>
+        public CategoryRewrite(string setName, string from, string to, string note)
         {
             if (string.IsNullOrEmpty(setName))
             {
@@ -60,6 +66,7 @@ namespace Federator.Core.Exchange
             SetName = setName;
             From = from;
             To = to;
+            Note = note ?? string.Empty;
         }
 
         public string SetName { get; private set; }
@@ -67,6 +74,9 @@ namespace Federator.Core.Exchange
         public string From { get; private set; }
 
         public string To { get; private set; }
+
+        /// <summary>Why this rewrite is what it is, or empty. Said on the outcome line so a person reading a run knows which form a set carries.</summary>
+        public string Note { get; private set; }
     }
 
     /// <summary>What one correction changed, counted rather than assumed.</summary>
@@ -227,7 +237,7 @@ namespace Federator.Core.Exchange
                     outcome.Add(
                         rewrite.SetName + " asks for " + rewrite.To + " and not " + rewrite.From,
                         changed,
-                        Why(changed, text, rewrite));
+                        Noted(Why(changed, text, rewrite), rewrite));
                 }
             }
 
@@ -267,6 +277,23 @@ namespace Federator.Core.Exchange
             }
 
             return text.Substring(0, at) + block.Replace(rewrite.From, rewrite.To) + text.Substring(ends);
+        }
+
+        /// <summary>
+        /// The why and the rewrite's own note together, A15, either on its own where the
+        /// other is empty, so the outcome line says both what happened and which form the
+        /// set carries.
+        /// </summary>
+        private static string Noted(string why, CategoryRewrite rewrite)
+        {
+            string note = rewrite == null ? string.Empty : rewrite.Note;
+
+            if (string.IsNullOrEmpty(note))
+            {
+                return why;
+            }
+
+            return string.IsNullOrEmpty(why) ? note : why + ". " + note;
         }
 
         /// <summary>
