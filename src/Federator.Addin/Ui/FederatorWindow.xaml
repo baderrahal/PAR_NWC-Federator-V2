@@ -616,6 +616,21 @@
                                        Margin="0,6,0,0" />
                         </StackPanel>
                     </Border>
+
+                    <!-- F86. The property probe. Not part of the run, reads and changes
+                         nothing, and never opens an NWF. Its label and grey line are read
+                         off Core in the constructor. -->
+                    <Border DockPanel.Dock="Top" BorderBrush="#FFBBBBBB" BorderThickness="1"
+                            Padding="8" Margin="0,0,0,8">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="ProbeButton" Click="OnProbeModelProperties"
+                                        MinWidth="170" Margin="0,0,10,0" />
+                                <TextBlock x:Name="ProbeLine" VerticalAlignment="Center" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <TextBlock x:Name="ProbeHelp" Style="{StaticResource TickHelp}" Margin="0,6,0,0" />
+                        </StackPanel>
+                    </Border>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="SetsSummary" Margin="0,6,0,0"
                                Text="No file picked." />
                     <TextBox x:Name="SetsBox" IsReadOnly="True" TextWrapping="NoWrap"

@@ -383,5 +383,31 @@ namespace Federator.Core.Tests
             Assert.That(ProbeSettings.ButtonLabel, Is.EqualTo("Probe model properties"));
             Assert.That(ProbeSettings.HelpLine.Split(' ').Length, Is.LessThanOrEqualTo(12));
         }
+
+        /// <summary>
+        /// F86. The probe asks for a category the way the penetration rule reads one,
+        /// trimmed and case blind, so the two agree, and a category neither list holds is
+        /// not asked for.
+        /// </summary>
+        [Test]
+        public void TheProbeAsksForACategoryTheWayThePenetrationRuleReadsOne()
+        {
+            ProbeSettings settings = new ProbeSettings();
+            PenetrationSettings rule = new PenetrationSettings();
+
+            foreach (string category in settings.Categories)
+            {
+                Assert.That(settings.Asks(category), Is.True, category);
+                Assert.That(settings.Asks(" " + category.ToUpperInvariant() + " "), Is.True, category);
+                Assert.That(rule.IsDecided(category), Is.True, category);
+            }
+
+            Assert.That(settings.Asks("Walls"), Is.False);
+            Assert.That(settings.Asks(string.Empty), Is.False);
+            Assert.That(settings.Asks(null), Is.False);
+
+            settings.Categories = new List<string> { "Ducts" };
+            Assert.That(settings.Asks("Pipes"), Is.False, "a narrowed list is the list");
+        }
     }
 }

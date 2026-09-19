@@ -15,6 +15,7 @@ using Federator.Core.Grouping;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
 using Federator.Core.Naming;
+using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -86,6 +87,7 @@ namespace Federator.Addin.Ui
             ShowPriorityWording();
             ShowByDesignWording();
             ShowUndoWording();
+            ShowProbeWording();
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
@@ -1268,6 +1270,135 @@ namespace Federator.Addin.Ui
                 running = false;
                 UndoAutoReviewedButton.IsEnabled = true;
             }
+        }
+
+        /// <summary>The probe button's label and grey line, both read off Core, F86.</summary>
+        private void ShowProbeWording()
+        {
+            if (ProbeButton == null)
+            {
+                return;
+            }
+
+            ProbeButton.Content = ProbeSettings.ButtonLabel;
+
+            if (ProbeHelp != null)
+            {
+                ProbeHelp.Text = ProbeSettings.HelpLine;
+            }
+        }
+
+        /// <summary>
+        /// The Probe model properties button, F86. A folder of NWC files, each opened in
+        /// turn, or the document that is open. Opening a folder replaces whatever is open,
+        /// so that is confirmed the way the run confirms it. Runs on the plugin thread.
+        /// </summary>
+        private void OnProbeModelProperties(object sender, RoutedEventArgs e)
+        {
+            if (running)
+            {
+                return;
+            }
+
+            MessageBoxResult which = MessageBox.Show(
+                this,
+                "Probe a folder of NWC files?" + Environment.NewLine + Environment.NewLine
+                    + "Yes picks the folder and opens each NWC in turn, which replaces whatever is open."
+                    + Environment.NewLine
+                    + "No reads the document that is open now, without opening anything."
+                    + Environment.NewLine
+                    + "Cancel does nothing.",
+                "Parsons NWC Federator",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question);
+
+            if (which == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+
+            string folder = null;
+
+            if (which == MessageBoxResult.Yes)
+            {
+                // The source folder is where the NWC files usually are, so the picker
+                // starts there, and nothing is remembered because this is not that picker.
+                folder = PickFolder(
+                    "Pick the folder of NWC files to probe", StartFor(PickerKind.Source, SourceFolderBox.Text));
+
+                if (folder == null)
+                {
+                    return;
+                }
+
+                if (!ConfirmTheOpenDocumentGoes())
+                {
+                    Log("Probe cancelled before anything was opened.");
+                    return;
+                }
+            }
+
+            running = true;
+            ProbeButton.IsEnabled = false;
+
+            try
+            {
+                log.Line("PROBE    started by hand, "
+                    + (folder == null ? "on the open document" : "over " + folder));
+
+                FederationEngine engine = new FederationEngine(SetProgress, log, null, ReportsWanted());
+                IList<string> lines = folder == null
+                    ? engine.ProbeTheOpenDocumentByHand()
+                    : engine.ProbeTheFolderByHand(folder);
+
+                ShowSetLines(lines);
+                ProbeLine.Text = lines.Count == 0 ? "Nothing was read." : lines[lines.Count - 1].Trim();
+                SetProgress("Probe finished. " + RunLog.TheLogSaysWhy());
+            }
+            catch (Exception error)
+            {
+                log.Failure("the probe", error, "stopped, every CSV already written is kept");
+                SetProgress("The probe stopped on an error.");
+                Warn("The probe stopped." + Environment.NewLine + Environment.NewLine + error.Message);
+            }
+            finally
+            {
+                running = false;
+                ProbeButton.IsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Says what opening a file would discard, the way the run's confirm dialog does,
+        /// and asks. Nothing open means nothing is lost and nothing is asked.
+        /// </summary>
+        private bool ConfirmTheOpenDocumentGoes()
+        {
+            string discarded;
+
+            try
+            {
+                discarded = DocumentGuard.WhatClearWouldDiscard();
+            }
+            catch (Exception error)
+            {
+                discarded = "Navisworks would not say what is open (" + error.Message + ").";
+            }
+
+            if (discarded == null)
+            {
+                return true;
+            }
+
+            MessageBoxResult answer = MessageBox.Show(
+                this,
+                "This will be discarded without saving:" + Environment.NewLine + "    " + discarded
+                    + Environment.NewLine + Environment.NewLine + "Carry on?",
+                "Parsons NWC Federator",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning);
+
+            return answer == MessageBoxResult.OK;
         }
         /// <summary>The table's display name, and on the default a word on what it is for.</summary>
         private static string UnitWording(UnitRow row)

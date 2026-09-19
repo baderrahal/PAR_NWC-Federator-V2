@@ -129,13 +129,13 @@ namespace Federator.Core.Clash
         /// <summary>Whether that category is one this tool calls a service.</summary>
         public bool IsService(string category)
         {
-            return Holds(ServiceCategories, category);
+            return Names(ServiceCategories, category);
         }
 
         /// <summary>Whether that category is one this tool calls a solid.</summary>
         public bool IsSolid(string category)
         {
-            return Holds(SolidCategories, category);
+            return Names(SolidCategories, category);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Federator.Core.Clash
         /// </summary>
         public bool IsDecided(string category)
         {
-            return IsService(category) || Holds(NotAServiceCategories, category);
+            return IsService(category) || Names(NotAServiceCategories, category);
         }
 
         /// <summary>The four a service discipline set asks for that are not services.</summary>
@@ -185,7 +185,7 @@ namespace Federator.Core.Clash
         /// set names in the reference file end in a space on purpose. A category is not a
         /// set name.
         /// </summary>
-        private static bool Holds(IList<string> list, string category)
+        public static bool Names(IList<string> list, string category)
         {
             if (list == null || string.IsNullOrEmpty(category))
             {

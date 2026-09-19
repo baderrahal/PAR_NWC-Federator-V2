@@ -11,6 +11,7 @@ using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Findings;
+using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -1704,6 +1705,93 @@ namespace Federator.Addin.Engine
             // F54. A status written into the document is a change, so it asks for the NWF
             // the same way a test that ran does.
             return CreateAndRunTheTests(document, job, outcome, source) || changed;
+        }
+
+        /// <summary>
+        /// The property probe over the document that is open, F86. Reads and changes
+        /// nothing, and opens nothing. One CSV per model, beside that model's own file.
+        /// </summary>
+        public IList<string> ProbeTheOpenDocumentByHand()
+        {
+            PropertyProbe probe = new PropertyProbe(log, new ProbeSettings());
+            Document document = NavisworksApplication.ActiveDocument;
+
+            if (document == null || document.Models == null)
+            {
+                log.Line("PROBE    nothing is open, so there is nothing to read");
+                return probe.Lines;
+            }
+
+            log.Line("PROBE    the open document, " + document.Models.Count
+                + (document.Models.Count == 1 ? " model" : " models"));
+
+            foreach (Model model in document.Models)
+            {
+                probe.ProbeModel(model);
+            }
+
+            return probe.Lines;
+        }
+
+        /// <summary>
+        /// The property probe over a folder of NWC files, F86. Each NWC is OPENED, which
+        /// replaces whatever is open, so the window confirms that first. An NWF or an NWD
+        /// in the folder is refused by name and never opened, because the NWF is where
+        /// every clash result lives and the NWD is something this tool writes.
+        /// </summary>
+        public IList<string> ProbeTheFolderByHand(string folder)
+        {
+            PropertyProbe probe = new PropertyProbe(log, new ProbeSettings());
+
+            if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
+            {
+                log.Line("PROBE    no folder at " + Words.Or(folder, "an empty path") + ", so nothing was read");
+                return probe.Lines;
+            }
+
+            List<string> files = new List<string>();
+
+            foreach (string path in Directory.GetFiles(folder))
+            {
+                string extension = Path.GetExtension(path);
+
+                if (string.Equals(extension, ".nwc", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(extension, ".nwf", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(extension, ".nwd", StringComparison.OrdinalIgnoreCase))
+                {
+                    files.Add(path);
+                }
+            }
+
+            files.Sort(StringComparer.OrdinalIgnoreCase);
+            log.Line("PROBE    " + folder + ", " + files.Count + (files.Count == 1 ? " file" : " files"));
+
+            foreach (string path in files)
+            {
+                string why;
+
+                if (!ProbeSettings.MayRead(path, out why))
+                {
+                    log.Line("PROBE    " + Path.GetFileName(path) + "  not opened, " + why);
+                    continue;
+                }
+
+                Document document = NavisworksApplication.ActiveDocument;
+                ModelLoadWait wait;
+
+                if (document == null || !OpenAndWaitForTheModels(document, path, log, out wait))
+                {
+                    log.Line("PROBE    " + Path.GetFileName(path) + "  would not open, so it was not read");
+                    continue;
+                }
+
+                foreach (Model model in document.Models)
+                {
+                    probe.ProbeModel(model);
+                }
+            }
+
+            return probe.Lines;
         }
 
         /// <summary>

@@ -950,8 +950,7 @@ and 6 does not read as broken.
   carries it in the CLIENT'S OWN Reviewed column, per test, because the status is applied
   before the harvest reads it. No column of ours goes on that sheet, which is the rule
   above about the workbook being their one sheet
-- THE CORE HALF ONLY until 03_bader_next.md steps 358 to 364 are done.
-  THE PROPERTY PROBE READS AND CHANGES NOTHING, F86. `Federator.Core.Probe` holds the
+- THE PROPERTY PROBE READS AND CHANGES NOTHING, F86. `Federator.Core.Probe` holds the
   whole of its rule: ProbeSettings for what is read and where the CSV goes, ProbeTally for
   the counting, the cap and the order, ProbeCsv for the file, ProbeVerdict for the block.
   It takes a folder of NWC files or the open document, and writes one
