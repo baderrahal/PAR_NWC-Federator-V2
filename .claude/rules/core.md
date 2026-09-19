@@ -161,7 +161,8 @@ and 6 does not read as broken.
   Never import a test with an empty side. It returns zero clashes and reads as passed
 - A test where either side resolves to zero items in this model counts as skipped,
   not passed. Skipped and passed are counted as different numbers in the report
-- A TEST WHOSE SIDE FINDS NOTHING IS NOT CREATED AT ALL, F77. The sets are built and
+- THE CORE HALF ONLY until 03_bader_next.md step 369 is done.
+  A TEST WHOSE SIDE FINDS NOTHING IS NOT CREATED AT ALL, F77. The sets are built and
   resolved before any test is created, so how many items each locator finds is already in
   hand, and creating a test to discover a thing already known was 631 seconds of a 1424
   second run: 1830 created, 1619 of them thrown away moments later by the empty side
@@ -213,7 +214,8 @@ and 6 does not read as broken.
   primitive type flags. A test whose tolerance attribute is not there at all is SKIPPED by
   name, the way an unknown test type is, because a missing tolerance became zero and zero
   reads as a real tolerance. A tolerance written as zero is a real one and is created
-- THE TOLERANCE CAN BE CHOSEN IN THE TOOL AND THEN IT BEATS EVERYTHING, F76. The Clash
+- THE CORE HALF ONLY until 03_bader_next.md step 367 is done.
+  THE TOLERANCE CAN BE CHOSEN IN THE TOOL AND THEN IT BEATS EVERYTHING, F76. The Clash
   step carries a drop down, `Federator.Core.Clash.ToleranceChoice`: Use the value in the
   XML, which is the default and changes nothing, then 25 mm, 50 mm, 75 mm, then Other
   with a number box. When anything but the default is chosen that value is set on EVERY
@@ -231,7 +233,8 @@ and 6 does not read as broken.
   the converted value. Why it exists: the matrix is written at 25 mm, the NWFs on disk
   held tests at 75 mm, a test already in the document is left exactly as it is, so the
   run clashed at 75 while everybody believed it was clashing at 25
-- THE REPORT READS ITS TOLERANCE OFF THE CLASH TEST IN THE DOCUMENT, F76, because the
+- THE CORE HALF ONLY until 03_bader_next.md step 368 is done.
+  THE REPORT READS ITS TOLERANCE OFF THE CLASH TEST IN THE DOCUMENT, F76, because the
   document is what produced the row. It used to be copied off the PLAN, which is the
   XML, so on every weekly run the cell said what the file asked for and the run had
   clashed at something else. `ClashReportModel.TestReport.ToleranceFrom` carries WHERE it
@@ -443,7 +446,8 @@ and 6 does not read as broken.
   Tolerance carries its unit with no space, "0.025m". Distance is the raw signed number,
   negative on a hard clash, written as a number so it still sorts. Type reads
   "Hard (Conservative)". Measured, see docs\history\scan.md section 4k
-- THE CLASH PRIORITY IS THE ONE COLUMN OF OURS ON THE CLIENT'S SHEET, F83, and only
+- THE CORE HALF ONLY until 03_bader_next.md step 370 is done.
+  THE CLASH PRIORITY IS THE ONE COLUMN OF OURS ON THE CLIENT'S SHEET, F83, and only
   when a priority CSV is picked. It sits in T, one past the end of their table, and
   `WorkbookWriter.LastColumn` stays 19 so the title merge, both item fills, the boxing,
   the width loop and every loop in the check still describe THEIR table. Nothing picked
@@ -455,7 +459,8 @@ and 6 does not read as broken.
   priority sorted workbook is in priority order on purpose and the order check would
   otherwise call every one of them wrongly ordered, and because a column past their table
   is invisible to every other check in there
-- WITH A PRIORITY FILE PICKED THE BLOCK ORDER CHANGES, F83: A, then B, then C, then the
+- THE CORE HALF ONLY until 03_bader_next.md step 370 is done.
+  WITH A PRIORITY FILE PICKED THE BLOCK ORDER CHANGES, F83: A, then B, then C, then the
   tests the file says nothing about, and inside each block by test name. THE DEFAULT
   ORDER IS STILL THE MEASURED ONE and picking a file is the only thing that replaces it.
   That the two disagree is Q49. `ReportOrder.Tests` is the ONE place the order is
@@ -693,7 +698,8 @@ and 6 does not read as broken.
   Meters without a word. The exchange reader reads the tolerance as written and converts
   nothing, so a file in a unit the tool does not know reads, and ClashTestPlan.Convert,
   the one place a file unit is judged, skips each of its tests by name
-- DECIDE WAITS FOR THE MODELS BEFORE IT COUNTS THEM, F74. `Document.TryOpenFile`
+- THE CORE HALF ONLY until 03_bader_next.md step 365 is done.
+  DECIDE WAITS FOR THE MODELS BEFORE IT COUNTS THEM, F74. `Document.TryOpenFile`
   returning true does not mean the models are in the document. On the first real run all
   five existing NWFs reported 0 unchanged, 4 added, 0 removed and were rebuilt, and the
   step finished in 0.248 seconds against 2.3 to 4.8 seconds for every open in the one
@@ -705,7 +711,8 @@ and 6 does not read as broken.
   thirty second ceiling. All three numbers are settings. One LOADING line is written
   either way. Whether the API reports readiness on its own is UNKNOWN, scan.md 5e, and
   the poll is written so a member can replace it without anything else moving
-- AN NWF THAT OPENED AND READ EMPTY IS STOPPED, NEVER REBUILT AND NEVER OPENED, F74.
+- THE CORE HALF ONLY until 03_bader_next.md step 365 is done.
+  AN NWF THAT OPENED AND READ EMPTY IS STOPPED, NEVER REBUILT AND NEVER OPENED, F74.
   `NwfComparison.ReadEmpty` gives `RerunDecision.Refused` and a reason naming the file
   and what to do. Rebuilding one threw five federations and every clash result and status
   decision in them away. Treating it as a match would run every test against an empty
@@ -716,7 +723,8 @@ and 6 does not read as broken.
   `RunPath.Stopped` is the label and both the confirm dialog and the RESULT block count
   it. The preview reads the same two rules, because a preview that says Rebuilt about a
   healthy NWF is the confirm dialog lying
-- THE DOCUMENT IS EMPTIED AT THE TOP OF EVERY GROUP, BEFORE DECIDE, F75. Before this
+- THE CORE HALF ONLY until 03_bader_next.md step 366 is done.
+  THE DOCUMENT IS EMPTIED AT THE TOP OF EVERY GROUP, BEFORE DECIDE, F75. Before this
   there were two clears in the whole engine and both ran AFTER Decide had read the file
   list, so Decide compared the scan against whatever the previous building had left
   behind. `CensusRule.StartOfGroupLine` and `StartOfGroupReason` are the Core half: the
@@ -790,7 +798,8 @@ and 6 does not read as broken.
 - Every check gets a test that BREAKS one thing and asserts the check names it. A test that
   only asserts the good file passes would have passed against all eight of the differences
   above. Fourteen of them live in WorkbookCellCheckTests
-- THE SAVED VIEWPOINTS ARE THREE FOLDERS DEEP AND ONE PER CLASH, F85, planned by
+- THE CORE HALF ONLY until 03_bader_next.md step 375 is done.
+  THE SAVED VIEWPOINTS ARE THREE FOLDERS DEEP AND ONE PER CLASH, F85, planned by
   `Federator.Core.Views.ClashViewpointPlan` with `DisciplinePairRule` for layer 2. ONE PER
   CLASH AND NOT PER TEST, because the thing a person presses has to be the thing they are
   looking at. Layer 1 is the priority off the client's matrix, A, B, C or No priority, and
@@ -900,7 +909,8 @@ and 6 does not read as broken.
   StatusesThisToolMaySet still answers the other half, which is that Reviewed is the only
   status this tool ever sets, and the two together are what stop a caller moving an
   Approved clash by mistake
-- A SECOND RULE MOVES A CLASH TO REVIEWED, F72b, AND IT IS A LIST AND NOT A JUDGEMENT.
+- THE CORE HALF ONLY until 03_bader_next.md step 371 is done.
+  A SECOND RULE MOVES A CLASH TO REVIEWED, F72b, AND IT IS A LIST AND NOT A JUDGEMENT.
   A column on its foundation, a door in a wall, a valve in a pipe run. Every one is a
   clash and none is a problem. `Federator.Core.Clash.ByDesignPairs` reads a CSV of
   left_set, right_set, reason, `ByDesignRule` decides and `ByDesignTally` is the block.
@@ -920,7 +930,8 @@ and 6 does not read as broken.
   rules now write one and only the WHY differs. A second copy of that string in a second
   tally is how the two would start reading differently, and a person scanning a log for
   REVIEWED would then find one rule's moves and not the other's
-- THIS TOOL LEAVES A RECORD IN THE NWF OF EVERY CLASH IT MOVED, F72c, and the record IS
+- THE CORE HALF ONLY until 03_bader_next.md step 372 is done.
+  THIS TOOL LEAVES A RECORD IN THE NWF OF EVERY CLASH IT MOVED, F72c, and the record IS
   the comment. `AutoReviewRecord` is the shape: a marker no person would type, the rule,
   THE STATUS THE CLASH WAS MOVED OFF, then the reason in plain words. The old status is
   on it because New and Active are both statuses this tool may move from and an undo that
@@ -931,7 +942,8 @@ and 6 does not read as broken.
   carries on with the status alone, and NOTHING stands in for it: no side file, no
   encoded clash name, no second copy anywhere. A comment that could not be written is not
   a comment
-- THE UNDO TOUCHES ONLY WHAT THIS TOOL MOVED AND ONLY WHERE NOBODY HAS MOVED IT SINCE,
+- THE CORE HALF ONLY until 03_bader_next.md step 373 is done.
+  THE UNDO TOUCHES ONLY WHAT THIS TOOL MOVED AND ONLY WHERE NOBODY HAS MOVED IT SINCE,
   F72c. `UndoAutoReview` judges: it carries one of our records AND it is still at
   Reviewed. A clash this tool set to Reviewed in week one that a person moved to Approved
   in week two still carries the record and is LEFT ALONE, because that person's decision
@@ -949,7 +961,8 @@ and 6 does not read as broken.
   carries it in the CLIENT'S OWN Reviewed column, per test, because the status is applied
   before the harvest reads it. No column of ours goes on that sheet, which is the rule
   above about the workbook being their one sheet
-- THE PROPERTY PROBE READS AND CHANGES NOTHING, F86. `Federator.Core.Probe` holds the
+- THE CORE HALF ONLY until 03_bader_next.md steps 358 to 364 are done.
+  THE PROPERTY PROBE READS AND CHANGES NOTHING, F86. `Federator.Core.Probe` holds the
   whole of its rule: ProbeSettings for what is read and where the CSV goes, ProbeTally for
   the counting, the cap and the order, ProbeCsv for the file, ProbeVerdict for the block.
   It takes a folder of NWC files or the open document, and writes one
@@ -1037,7 +1050,9 @@ it if the same work carries the same name every time it is timed.
 - the step names live in `Federator.Core.Diagnostics.RunSteps` and nowhere else. Nothing
   types a step name as a string. Fifteen of them, in the order a group meets them:
   DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES,
-  VIEWS, WORKBOOK, HTML, XML, NWD, CONFIRM. VIEWS is F85's and it was untimed before
+  VIEWS, WORKBOOK, HTML, XML, NWD, CONFIRM.
+  THE CORE HALF ONLY until 03_bader_next.md step 374 is done.
+  VIEWS is F85's and it was untimed before
   that: building the viewpoints was called outside every step, so its seconds came off
   no total and the run read as faster than it was. A name that is not on the list is refused where the
   step opens, because a timing block holding a step nobody named is worse than a short one
