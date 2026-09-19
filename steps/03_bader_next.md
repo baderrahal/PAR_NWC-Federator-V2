@@ -770,7 +770,7 @@ without reading the brief again.**
      `SavedViewpoint.ContainsVisibilityOverrides` on it and press it again from a clean
      view. That answers whether a viewpoint records the hiding, which is the last thing
      `CanBuild` waits on, and the answer goes in `docs\history\scan.md` 5d
-     DONE on 2026-09-19 in the viewpoints round by toolsprobesViewpointProbe, written into scan.md 5j and not 5d: a viewpoint captured with CaptureRuntimeOverrides records the hiding and brings it back after a save and a reopen, and CanBuild is true.
+     DONE on 2026-09-19 in the viewpoints round by tools\probes\ViewpointProbe, written into scan.md 5j and not 5d: a viewpoint captured with CaptureRuntimeOverrides records the hiding and brings it back after a save and a reopen, and CanBuild is true.
 376. F80. Two lines in the window changed already: `log.RunStarted(jobs.Count)` and
      `log.RunFinished()` in place of the two `log.Line` calls that wrote the same
      sentences. Read them once and check the log reads `RUN      started, 7 groups` and
