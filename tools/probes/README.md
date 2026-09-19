@@ -35,6 +35,10 @@ The eight DLL probes need only the install:
   ModelItem.PropertyCategories, the two name pairs, every reader on VariantData and its
   fourteen data types, and whether a Search walks a model in one pass. It also reads what
   reflection can say about 5g, the negated condition. See sections 5f and 5g
+- `probe-clash-comments.ps1` answers 5h for F72c: whether a comment can be written on a
+  clash result. Every text member on ClashResult, IClashResult, ClashResultGroup and
+  ClashTest, every Comment member on DocumentClashTests, and the Comment type whole. See
+  section 5h
 
 The three window probes need the add-in built in Release and installed by
 build\install.ps1, because they construct the real window:

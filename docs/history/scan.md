@@ -3277,9 +3277,9 @@ that bit when a person exports a set built with a negation, and whether it READS
 on import. Neither can be read off a DLL. Both need the hand built set and the round trip
 above, on a run. The fallback stays in `exchange\` until then.
 
-## 5h. Can a comment be written on a clash result, asked 2026-09-19, NOT MEASURED
+## 5h. Can a comment be written on a clash result, asked 2026-09-19, MEASURED 2026-09-19
 
-THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
+THE ANSWER IS AT THE END OF THIS SECTION. The question is left standing above it.
 
 WHY IT IS ASKED. F72c wants the NWF itself to say WHY a clash was moved to Reviewed, so a
 person reading the Clash Detective panel next week sees the reason without opening a log,
@@ -3300,6 +3300,64 @@ HOW TO WRITE THE ANSWER. The member list, then one line saying whether a comment
 written, and one saying whether it comes back after a save and reopen. IF IT CANNOT BE
 DONE, the answer is one line in the log saying so and the status alone is set. Nothing is
 faked and no second file stands in for a comment the NWF does not hold.
+
+THE ANSWER, read by `tools\probes\probe-clash-comments.ps1` on DESKTOP-5VL7LTJ on
+2026-09-19 against `Autodesk.Navisworks.Api 22.0.0.0` and `Autodesk.Navisworks.Clash
+22.0.0.0`. The question above is left standing because it says what the answer is for.
+
+A COMMENT CAN BE WRITTEN ON A CLASH RESULT, through one member on the document part,
+which is the same shape the status edit has:
+
+```
+public void DocumentClashTests.TestsEditResultComments(IClashResult result, CommentCollection comments)
+public void DocumentClashTests.TestsEditResultStatus(IClashResult result, ClashResultStatus status)
+```
+
+The comments already on a result are read off it, and the same member is on the group,
+the interface and every `SavedItem`:
+
+```
+public CommentCollection ClashResult.Comments        { get; }
+public CommentCollection ClashResultGroup.Comments   { get; }
+public CommentCollection IClashResult.Comments       { get; }
+public CommentCollection SavedItem.Comments          { get; }
+```
+
+`CommentCollection` is a list with `Add`, `Insert`, `Remove`, `Clear`, `Count`, an indexer
+and a copy constructor `CommentCollection(CommentCollection from)`. One `Comment` is made
+two ways and every property on it is read only once it is made:
+
+```
+public Comment(string body, CommentStatus status)
+public Comment(string body, CommentStatus status, string author)
+public Comment Document.CreateCommentWithUniqueId(string body, CommentStatus status)
+public Comment Document.CreateCommentWithUniqueId(string body, CommentStatus status, string author)
+
+long         Id
+DateTime     CreationDate
+string       Author
+CommentStatus Status        New = 0, Active = 1, Approved = 2, Resolved = 3
+string       Body
+```
+
+The other writable text on a result, for the record, is `Description`, `ApprovedBy` and
+`ApprovedTime`, each with its own `TestsEditResult` member, and `TestsEditResultAssignedTo`.
+None of them is used for the record, because a description is the clash's own field in the
+panel and a person may type in it, and the record has to be somewhere a person would not.
+`ClashTest` itself has no text member of the seven words at all, only `Status`.
+
+HOW THE RECORD IS WRITTEN, which step 372 wires: copy `result.Comments` into a new
+`CommentCollection`, add a comment made by `Document.CreateCommentWithUniqueId` with
+`AutoReviewRecord.Text()` as the body, `CommentStatus.New` and this tool's name as the
+author, and call `TestsEditResultComments` with the result and the collection, BEFORE
+`TestsEditResultStatus` on the same handle. Whether the handle survives the first edit for
+the second is not readable off the DLL, for the reason at the top of section 5: every
+mutator on `DocumentClashTests` is a copy form. If it does not, the status edit throws,
+the log says so by clash name and the run goes on, and that line is the next measurement.
+
+WHAT IS STILL NOT MEASURED. Whether the comment SURVIVES a save and a reopen of the NWF,
+and whether it shows in the Clash Detective panel. Both wait for the run in PART 5 of the
+wiring round, with the by design box on, and the answer goes here.
 
 ## 5i. Which category values are real Revit categories, asked 2026-09-19, NOT MEASURED
 
