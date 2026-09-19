@@ -18,6 +18,10 @@ namespace Federator.Core.Report
             ExcelFolder = string.Empty;
             SourceFolder = string.Empty;
             ApplyFileSettings = false;
+            Tolerance = ToleranceChoice.FromTheFile();
+            MarkByDesign = false;
+            PriorityPath = string.Empty;
+            ByDesignPath = string.Empty;
             CompactResolved = false;
             MarkPenetrations = false;
             Penetrations = new PenetrationSettings();
@@ -104,8 +108,36 @@ namespace Federator.Core.Report
         /// <summary>
         /// Put the file's settings onto tests already in the document. Off by default,
         /// because it RESETS their results.
+        ///
+        /// IT KEEPS EXACTLY THE MEANING IT HAD, F76, which is whether the FILE'S settings
+        /// reach a saved test. A tolerance chosen on the Clash step wins over it, because
+        /// a value a person typed beats a value read out of a file, and the two answer
+        /// different questions.
         /// </summary>
         public bool ApplyFileSettings { get; set; }
+
+        /// <summary>
+        /// The clash priority CSV picked on the Clash step, F83, or empty. Empty means
+        /// none and NOTHING CHANGES: no Priority column, no extra RESULT line, and the
+        /// measured block order. The same shape LogoPath has, which is the other optional
+        /// picked file, because one optional picker is enough of a pattern.
+        /// </summary>
+        public string PriorityPath { get; set; }
+
+        /// <summary>
+        /// The by design pairs CSV picked on the Clash step, F72b, or empty. Empty means
+        /// none. It is read only when MarkByDesign is on, because a file picked with the
+        /// box off would be read and then ignored, which reads as a file that did nothing.
+        /// </summary>
+        public string ByDesignPath { get; set; }
+
+        /// <summary>
+        /// The tolerance chosen on the Clash step, F76. Never null: the default is
+        /// ToleranceChoice.FromTheFile, which is what this tool has always done. When a
+        /// value is chosen it is set on every clash test in the run, created fresh or
+        /// already saved in the NWF, and it beats both the XML and the document.
+        /// </summary>
+        public ToleranceChoice Tolerance { get; set; }
 
         /// <summary>
         /// Remove Resolved clashes after the tests run. Off by default, because it
@@ -125,6 +157,16 @@ namespace Federator.Core.Report
         /// destroy data.
         /// </summary>
         public bool MarkPenetrations { get; set; }
+
+        /// <summary>
+        /// Move a clash between two sets named as a by design connection to Reviewed,
+        /// F72b. OFF by default, for the same reason the penetration box is: it writes
+        /// into the NWF, which is the only record of what has been fixed.
+        ///
+        /// It reads ByDesignPath, and with the box on and no file picked it moves nothing
+        /// and says so, rather than inventing a list.
+        /// </summary>
+        public bool MarkByDesign { get; set; }
 
         /// <summary>
         /// Which categories are a service and which are a solid. F72. The SIZE is not here

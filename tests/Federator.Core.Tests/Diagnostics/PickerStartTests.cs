@@ -102,12 +102,30 @@ namespace Federator.Core.Tests
             ProveOnePicker(PickerKind.Logo, "branding");
         }
 
+        /// <summary>
+        /// F83. The priority CSV gets its own kind and not the clash XML's, because the
+        /// two live in different folders as often as not and one shared memory moves the
+        /// other picker, which is the whole reason every picker remembers its own.
+        /// </summary>
+        [Test]
+        public void ThePriorityPickerRemembersItsOwnFolder()
+        {
+            ProveOnePicker(PickerKind.Priority, "priority");
+        }
+
+        /// <summary>F72b. The by design pairs CSV, the same way.</summary>
+        [Test]
+        public void TheByDesignPickerRemembersItsOwnFolder()
+        {
+            ProveOnePicker(PickerKind.ByDesign, "by-design");
+        }
+
         [Test]
         public void EveryPickerInTheWindowIsCoveredHere()
         {
-            // Six Browse buttons, six kinds, six tests above. If a seventh picker is
+            // Eight Browse buttons, eight kinds, eight tests above. If a ninth picker is
             // added this fails until it is proved too.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(6));
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(8));
         }
 
         // ---------- the one that was actually broken ----------

@@ -3047,3 +3047,130 @@ WHAT WAS NOT DONE. `SavedViewpoints.CanBuild` is still false and nothing in
 `Add`, `ShowOnly` and `ShowOnlyLargeItems` against the members above, which is the second
 half of F52 and a feature rather than a build fix. The measurement is here so that work
 starts from what was read rather than from what was assumed. Bader decides when.
+
+## 5e. Does anything report that an opened document has finished loading, asked 2026-09-19, NOT MEASURED
+
+THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it, written
+where the answer will go. Nothing in the code reads a number from here.
+
+WHY IT IS ASKED. On the first real run all five existing NWFs reported
+`0 unchanged, 4 added, 0 removed` and were rebuilt, and `STEP DECIDE finished 0.248s`.
+Every open in the one earlier log on record, run-20260907-093440.log, took between 2.3
+and 4.8 seconds and produced a file list. So `Document.TryOpenFile` returning true does
+not mean `Document.Models` is filled, and reading the model count the instant it returns
+reads a document that is still filling.
+
+WHAT TO READ, on a machine with Navisworks Manage 2025 installed, against
+`Autodesk.Navisworks.Api.dll`:
+
+    Document                  every member whose name holds Load, Ready, Busy, Progress,
+                              State, Pending or Complete, and every event on it
+    Document.Models           the same, plus whether the collection raises a changed event
+    DocumentParts.DocumentModels   the same again
+    Application               the same, because a progress or busy notion may live there
+                              rather than on the document
+
+HOW TO WRITE THE ANSWER. Paste the member list the way 5c and 5d paste theirs, then say
+in one line whether any of them answers "the models are all in now". If one does,
+`Federator.Core.Rerun.ModelLoadWait` becomes the fallback rather than the answer and the
+add-in reads the member instead. If none does, the poll stands and this section says so,
+and that sentence is the reason it stands.
+
+WHAT IS ALREADY DECIDED AND DOES NOT WAIT ON THIS. A count of zero out of an NWF that
+opened with no error is never a rebuild. `NwfComparison.ReadEmpty` stops the group with
+a reason that names the file and says what to do. That is F74 and it holds whichever way
+this measurement goes.
+
+## 5f. What the property API offers for walking an item's properties, asked 2026-09-19, NOT MEASURED
+
+THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
+
+WHY IT IS ASKED. F86 writes one CSV per NWC saying, per Revit category, which property
+tabs and property names the items carry and which distinct values appear on each, so the
+mechanical selection sets can be rewritten against what the models actually hold rather
+than against what a set name implies. Nothing in this tool has ever walked every property
+of an item. `ClashHarvest` reads named properties one at a time and stops at the first
+that answers.
+
+WHAT TO READ:
+
+    ModelItem.PropertyCategories            the collection, and what one element is
+    PropertyCategory.DisplayName             the tab a person sees
+    PropertyCategory.Name                    the internal name the API matches on
+    PropertyCategory.Properties              the collection under one tab
+    DataProperty.DisplayName, .Name          the same pair for one property
+    DataProperty.Value                       and every ToDisplayString or typed reader on
+                                             VariantData, because a value that comes back
+                                             as a type name rather than a value is the
+                                             whole probe wasted
+    Search / SearchCondition                 whether a whole model can be walked without
+                                             recursing every item by hand
+
+HOW TO WRITE THE ANSWER. The member list, then one line saying how a value is turned
+into the text a CSV cell holds, and one line saying whether the walk is per item or
+whether a search can do it in one pass. The Core half, `Federator.Core.Probe`, already
+fixes the CSV columns, the cap and the sort, so only the reading is open.
+
+## 5g. Does Navisworks import a NEGATED search condition, asked 2026-09-19, NOT MEASURED
+
+THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
+
+WHY IT IS ASKED. F87 rewrites `BLD-EL-Devices`, which asks for Electrical Fixtures and is
+therefore the same set as `BLD-EL-Electrical Fixtures`. What it should ask for is category
+CONTAINS "Devices" AND NOT the six named device categories. Whether the exchange format
+carries a negation at all, and what the `test` attribute reads when it does, cannot be
+read off the two sample files, because every condition in both is `equals` or `contains`.
+
+WHAT TO DO. In Clash Detective, build one search set by hand with a negated condition,
+export the selection sets to XML, and read the `<condition>` element back. Paste the
+element here. Then import that same XML into a fresh document and confirm the set comes
+back with the negation still on it, because a format that writes a thing it will not read
+is worse than one that writes nothing.
+
+WHAT WAS SHIPPED WITHOUT IT. The fallback, `Category equals "Nurse Call Devices"`, which
+is in `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` today. `equals` is proved to
+import, because the whole file uses it and the real run imported all 61 sets. The negated
+form is the better set and is not written until this is measured.
+
+## 5h. Can a comment be written on a clash result, asked 2026-09-19, NOT MEASURED
+
+THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
+
+WHY IT IS ASKED. F72c wants the NWF itself to say WHY a clash was moved to Reviewed, so a
+person reading the Clash Detective panel next week sees the reason without opening a log,
+and wants an undo that touches only the clashes this tool moved.
+
+WHAT TO READ, against `Autodesk.Navisworks.Clash.dll` and `Autodesk.Navisworks.Api.dll`:
+
+    ClashResult                  every member whose name holds Comment, Note, Description,
+                                 Tag, UserName, Status or Approved
+    IClashResult                 the same
+    SavedItem / Comment          whether the general Comments collection reaches a clash
+                                 result at all, and whether a comment survives a save and
+                                 reopen of the NWF
+    ClashTest                    the same list, because a per test note may be the only
+                                 writable text
+
+HOW TO WRITE THE ANSWER. The member list, then one line saying whether a comment can be
+written, and one saying whether it comes back after a save and reopen. IF IT CANNOT BE
+DONE, the answer is one line in the log saying so and the status alone is set. Nothing is
+faked and no second file stands in for a comment the NWF does not hold.
+
+## 5i. Which category values are real Revit categories, asked 2026-09-19, NOT MEASURED
+
+THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
+
+WHY IT IS ASKED. F84 warns about a selection set asking for a category value that is not
+a Revit category at all, which is what `BLD-EL-Telecom Equipment` does: it asks for
+"Telephone Equipment", and nothing in any model is in a category of that name, so the set
+can never match anything and its 60 clash tests can never find a clash.
+
+WHAT TO DO. Open one real federation, walk every item's category property, and write the
+distinct values out. That is the same walk F86's probe does, so the probe answers this as
+a side effect and the two should be measured on the same run. The list goes in a FILE
+under `src\Federator.Core`, read by the health check, never typed into a method, because
+it is a list read off the client's models and it will change when their models do.
+
+UNTIL THEN the health check has nothing to compare against and that half of F84 reports
+nothing rather than guessing. The other two halves, identical condition pairs and a set
+name breaking its siblings' pattern, need no measurement and are built.

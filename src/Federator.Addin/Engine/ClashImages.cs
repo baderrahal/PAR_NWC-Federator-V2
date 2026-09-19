@@ -36,7 +36,10 @@ namespace Federator.Addin.Engine
     /// with System.Drawing, Image.Save(string, ImageFormat), which is why jpg is reachable
     /// at all.
     ///
-    /// No clash is saved as a viewpoint in the NWF. Nothing here touches SavedViewpoints.
+    /// NOTHING HERE TOUCHES SavedViewpoints, and that half is still true. The other half
+    /// of this sentence said no clash is ever saved as a viewpoint, and F85 reverses it: a
+    /// clash gets a viewpoint as well as a picture now, planned by ClashViewpointPlan and
+    /// written by ViewpointBuilder, neither of which is this file.
     ///
     /// The number a picture is written under here is the RUN order, because the report
     /// order is only known once every test has run. ImageRenumbering in Federator.Core

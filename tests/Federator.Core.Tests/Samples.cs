@@ -137,6 +137,94 @@ namespace Federator.Core.Tests
             return Resolve(AllInOneNames);
         }
 
+        /// <summary>
+        /// The client's matrix as it stands today, at 25 mm, which is the SOURCE the
+        /// corrections are applied to. It holds the same 61 sets and 1830 tests as the
+        /// export above and differs in the tolerance and in the faults F87 corrects.
+        /// </summary>
+        public static readonly string[] MatrixNames =
+        {
+            "1104-PAR_CLASH_AllInOne_25mm.xml"
+        };
+
+        public static string Matrix()
+        {
+            return Resolve(MatrixNames);
+        }
+
+        /// <summary>
+        /// The corrected matrix, which this tool WRITES rather than reads as evidence, so
+        /// it lives beside samples rather than in it. samples holds what came from the
+        /// project and exchange holds what this tool made from it.
+        /// </summary>
+        public const string CorrectedMatrixName = "1104-PAR_CLASH_AllInOne_25mm_FIXED.xml";
+
+        /// <summary>
+        /// The exchange folder, found off the CHECKOUT and never by walking up for a
+        /// folder of that name.
+        ///
+        /// IT USED TO WALK AND THAT WAS A WINDOWS ONLY FAULT. The walk looked for a folder
+        /// called "exchange" and returned the first one it found. There is a folder called
+        /// "Exchange" under this test project, one per Core folder, and Directory.Exists
+        /// is CASE BLIND on Windows and case sensitive off it. So the walk stopped at the
+        /// test folder on the runner and at the checkout root in the container, and twelve
+        /// tests passed here and failed there with a path nobody could explain.
+        ///
+        /// Repo() walks for the solution FILE by its exact name, which is one walk already
+        /// written and cannot match anything else. This joins onto it.
+        /// </summary>
+        public static string ExchangeFolder()
+        {
+            string repo = Repo();
+
+            if (repo == null)
+            {
+                throw new DirectoryNotFoundException(
+                    "No checkout found above the test assembly, so there is no exchange folder.");
+            }
+
+            string folder = Path.Combine(repo, "exchange");
+
+            if (!Directory.Exists(folder))
+            {
+                throw new DirectoryNotFoundException("No exchange folder at " + folder + ".");
+            }
+
+            return folder;
+        }
+
+        public static string CorrectedMatrix()
+        {
+            return Path.Combine(ExchangeFolder(), CorrectedMatrixName);
+        }
+
+        /// <summary>
+        /// THE FILE OF THE SAME NAME THAT BADER UPLOADED TO samples ON 2026-09-19, which
+        /// is not the same file. It is in samples, so it is evidence and is never edited,
+        /// and `SuppliedCorrectedMatrixTests` pins what it differs by rather than leaving
+        /// two files of one name to be discovered later.
+        /// </summary>
+        public static string SuppliedCorrectedMatrix()
+        {
+            return Path.Combine(Folder(), CorrectedMatrixName);
+        }
+
+        /// <summary>The clash priority file, F83, one priority per test off the matrix.</summary>
+        public static readonly string[] PriorityMapNames = { "clash-priority-map.csv" };
+
+        public static string PriorityMap()
+        {
+            return Resolve(PriorityMapNames);
+        }
+
+        /// <summary>The by design pairs, F72b, one pair of set names and a reason each.</summary>
+        public static readonly string[] ByDesignNames = { "by-design-pairs.csv" };
+
+        public static string ByDesign()
+        {
+            return Resolve(ByDesignNames);
+        }
+
         public static string Building()
         {
             return Resolve(BuildingNames);
@@ -170,25 +258,30 @@ namespace Federator.Core.Tests
             return null;
         }
 
+        /// <summary>
+        /// The samples folder, found off the CHECKOUT, for the same reason ExchangeFolder
+        /// is. This one has never been caught by it, because the only thing named Samples
+        /// under the test project is a FILE and Directory.Exists says no to a file. That
+        /// is luck and not a rule, so it is joined onto the one walk as well.
+        /// </summary>
         public static string Folder()
         {
-            string start = Path.GetDirectoryName(new Uri(typeof(Samples).Assembly.CodeBase).LocalPath);
-            DirectoryInfo directory = new DirectoryInfo(start);
+            string repo = Repo();
 
-            while (directory != null)
+            if (repo == null)
             {
-                string candidate = Path.Combine(directory.FullName, "samples");
-
-                if (Directory.Exists(candidate))
-                {
-                    return candidate;
-                }
-
-                directory = directory.Parent;
+                throw new DirectoryNotFoundException(
+                    "No checkout found above the test assembly, so there is no samples folder.");
             }
 
-            throw new DirectoryNotFoundException(
-                "No samples folder found at or above " + start + ".");
+            string folder = Path.Combine(repo, "samples");
+
+            if (!Directory.Exists(folder))
+            {
+                throw new DirectoryNotFoundException("No samples folder at " + folder + ".");
+            }
+
+            return folder;
         }
 
         private static string Resolve(IEnumerable<string> candidates)

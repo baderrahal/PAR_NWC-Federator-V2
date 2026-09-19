@@ -526,8 +526,8 @@ above, or of any ordinary run.
 309. Look for, F21: NO line anywhere reads `THERE ARE MORE ROWS THAN CLASHES`. Nothing in this tool produces more rows than clashes, so that line means something is wrong and the whole log is worth sending
 310. This is criterion 3 without opening Excel. Pick any test whose `ROWS` line says they agree, open the workbook at that test's block and count the rows, then open Clash Detective on the same test and read the panel count. All three should be the one number
 311. Look for, F61: a pair of lines around each step reading `CENSUS   before ` then the step name, and `CENSUS   after  ` then the same name, each carrying five counts: `models`, `sets`, `tests`, `results` and `views`
-312. Look for, F61: the `views` count reads `0` on every line, not `UNKNOWN`. `SavedViewpoints.Count` walks the saved viewpoints and returns minus one only where it could NOT count them, and minus one prints as `UNKNOWN`. An `UNKNOWN` here means the viewpoint collection is not the shape it was MEASURED to have on 2026-09-19, `docs\history\scan.md` 5d, and the whole log is worth sending
-313. Look for, F61: NO line anywhere begins `CENSUS CHANGED`. That line means a count moved during a step that may not move it, which is a real fault, and the group carrying it will read FAILED rather than DONE. If you see one, send the whole log
+312. Look for, F61: the `views` count is a NUMBER and not `UNKNOWN`. It reads `0` before `APPEND` and whatever the NWC files brought after it, which on the run of 2026-09-19 was 20. It used to say this count reads 0 on every line, and that was wrong: an NWC exported from Revit carries that model's saved viewpoints and appending it brings them in. `SavedViewpoints.Count` returns minus one only where it could NOT count, and minus one prints as `UNKNOWN`. An `UNKNOWN` here means the viewpoint collection is not the shape it was MEASURED to have on 2026-09-19, `docs\history\scan.md` 5d, and the whole log is worth sending
+313. Look for, F73: NO line anywhere begins `CENSUS CHANGED`. That line means a count moved during a step that may not move it, which is a real fault, and the group carrying it will read FAILED rather than DONE. If you see one, send the whole log. A line beginning `CENSUS NOTED` is NOT that line and is not a fault: it is the saved viewpoints moving during `APPEND`, it says why, and it ends `can still be DONE`. On the run of 2026-09-19 the refused line was written in all seven groups and put every one of them out of DONE while 28 files had been written correctly
 314. Look for, F61: the counts move where they should. `sets` goes up across `SETS`, `tests` goes up across `TESTS CREATE`, `results` goes up across `TESTS RUN`, and `models` goes up across `APPEND`. None of them moves across `NWD`, `WORKBOOK`, `HTML`, `XML` or `CONFIRM`. Expect `TESTS CREATE` and `TESTS RUN` to move by ONE test's worth and not by the whole group, because those two are entered once per test and the census is taken around the first visit only. That is step 315 and it is not a fault
 315. Look for, F61: `CENSUS   before TESTS RUN` appears ONCE per group and not once per test. The census is taken around the first visit of a step and no more, because counting the whole document 1830 times would be the log making the run slower
 316. Look for, F61: one line per group reading `CENSUS   cost ` then the seconds then the number of counts. This is the measurement of what the census itself costs, and it is the number that decides whether it stays wide
@@ -612,3 +612,154 @@ git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 f
 350. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
 351. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
 352. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main
+
+## The first run round, F73 to F88
+
+**READ THIS FIRST. This round was worked in a LINUX CONTAINER with no Navisworks on it.
+Every rule below is in Federator.Core, every one has tests, and the whole Core set passes.
+NOTHING IN THE ADD-IN WAS COMPILED, because the add-in cannot be compiled without
+Navisworks and this session had none. Five of the eighteen fixes turn on a measurement
+only Navisworks can give and those five are steps 353 to 357. The add-in wiring each fix
+still needs is steps 358 onward, and every one of them is written out so it can be done
+without reading the brief again.**
+
+### The five measurements, before any of the wiring
+
+353. Open a Developer Command Prompt and dump the members of `Autodesk.Navisworks.Api.dll`
+     looking for anything that says a document has finished LOADING. Every member on
+     `Document`, `Document.Models`, `DocumentParts.DocumentModels` and `Application` whose
+     name holds Load, Ready, Busy, Progress, State, Pending or Complete, and every event on
+     each. Paste the list into `docs\history\scan.md` under 5e, where the question is
+     already written, and say in one line whether any of them answers "the models are all
+     in now". If one does, `ModelLoadWait` becomes the fallback and the add-in reads the
+     member instead. If none does, the poll stands and that sentence is why
+354. Dump the property members the same way, for F86, into 5f: `ModelItem
+     .PropertyCategories`, `PropertyCategory.DisplayName`, `.Name`, `.Properties`,
+     `DataProperty.DisplayName`, `.Name`, `.Value`, every reader on `VariantData`, and
+     whether a `Search` can walk a whole model in one pass rather than per item. One line
+     saying how a value becomes the text a CSV cell holds, and one saying whether the walk
+     is per item or per search
+355. In Clash Detective, build ONE search set by hand with a NEGATED condition, export the
+     selection sets to XML, and paste the `<condition>` element into 5g. Then import that
+     same XML into a fresh document and confirm the set comes back with the negation still
+     on it. That answers whether `BLD-EL-Devices` can be written as category contains
+     Devices AND NOT the six named device categories. Until it is answered the file in
+     `exchange\` carries the fallback, `Category equals "Nurse Call Devices"`, which is
+     proved to import because the whole file uses `equals`
+356. Dump the clash members for F72c into 5h: every member on `ClashResult`,
+     `IClashResult` and `ClashTest` whose name holds Comment, Note, Description, Tag,
+     UserName, Status or Approved, and whether the general `Comments` collection reaches a
+     clash result. Then write one comment on one clash by hand, save the NWF, close it,
+     open it again and see whether the comment is still there. IF IT CANNOT BE DONE the
+     answer is one line in 5h saying so, and the tool then sets the status alone and fakes
+     nothing
+357. Open one real federation and walk every item's category property, writing the
+     distinct values out. That is F84's list and it is the same walk F86's probe does, so
+     the two are measured on one run. Paste the values into
+     `src\Federator.Core\Exchange\revit-categories.txt`, one per line, exactly as the model
+     spells them, and leave the comment block at the top where it is. Until that file has
+     names in it the health check compares against nothing and says so
+
+### How to run the Property Probe, F86, and where its CSV goes
+
+358. The button reads `Probe model properties` and it is on the Clash step. It does not run
+     as part of a federation run and it never touches an NWF
+359. Press it and pick either a FOLDER of NWC files or the document you already have open.
+     It reads NWC and refuses an NWF or an NWD by name, because opening an NWF replaces
+     whatever is open and an NWF is where every clash result lives
+360. It writes ONE CSV per file, beside that file, named after it with
+     `-properties.csv` on the end. So `1104-PAR-1C07BC-ZZZ-ME-MOD-000001.nwc` gives
+     `1104-PAR-1C07BC-ZZZ-ME-MOD-000001-properties.csv` in the same folder
+361. The CSV has five columns: category, property tab, property name, distinct value, how
+     many elements. It covers seventeen categories, which are the thirteen this tool calls
+     a service plus the four it has decided are not one, and that list is read off the
+     client's own matrix rather than typed
+362. A property carrying more than 100 distinct values keeps the commonest 100 and gets ONE
+     extra row saying how many were left out and how many elements they covered. Nothing is
+     dropped silently
+363. Look for, F86: a `PROBE` block in the log, one per file, saying how many categories
+     were asked for, how many were found, how many found no element at all, how many
+     properties and distinct values there were, which properties were capped, and whether
+     FS or Fire Suppression appears in any tab, name or value. IT SAYS SO AS PLAINLY WHEN
+     IT DOES NOT, because a probe that only speaks up when it finds something reads as one
+     that found nothing rather than as one that ran
+364. Send the CSV for one mechanical NWC and the PROBE block beside it. That pair is what
+     the mechanical sets get rewritten from, and rewriting them is a later round
+
+### The add-in wiring each fix still needs
+
+365. F74. In `FederationEngine.Decide`, after `document.TryOpenFile` returns true, poll
+     `document.Models.Count` through `Federator.Core.Rerun.ModelLoadWait`, handing it the
+     count and `RunLog.ElapsedSeconds` each time, pausing `PauseMilliseconds` between
+     readings, and write `wait.Line()` when it ends. Where the wait SETTLES, carry on into
+     `NwfComparison.Compare` exactly as today. Where it gives up at the ceiling AND the
+     count is still zero, return `NwfComparison.ReadEmpty(job.NwfPath, job.Files,
+     "after waiting " + seconds)` instead, and carry its `Reason` onto the group as
+     `GroupFacts.NwfReadEmptyReason`. Do the SAME thing in `PreviewRunPaths`, which is a
+     second reader of the same NWF, or the confirm dialog says Rebuilt about a healthy file
+366. F75. Empty the document at the TOP of `RunOne`, before `Decide`, on the scanned path
+     only. Take the census straight after and write `CensusRule.StartOfGroupLine(census,
+     true)`, and put `StartOfGroupReason(census, true)` on the group where it is not null.
+     The open file run passes `false` and empties nothing, because the document IS the file
+     list there
+367. F76. Read the drop down into `ReportOptions.Tolerance`. In `ClashRunner`, where a test
+     is created and where a test already in the document is left alone, call
+     `options.Tolerance.For(planned.Tolerance, documentUnits)` and set THAT. Write
+     `LogLine(created, alreadyThere, documentUnits)` once per group. Put
+     `WarningLines(groups, testsInTheFile)` on the confirm dialog
+368. F76 second half. `ClashRunner` line 406 sets `report.Tolerance = planned.Tolerance`,
+     which is the XML and not the document. Read it off the `ClashTest` in the document
+     instead and set `report.ToleranceFrom = ToleranceOrigin.Document`. Count the four
+     origins across the run and write `ToleranceChoice.ReadFromLine`
+369. F77. Before creating any test, build a dictionary of locator to item count off the
+     sets just resolved, hand it and the plan to `CreationPlan.For`, create only
+     `plan.Create`, feed `plan.NotCreated` into the existing skip machinery, and write
+     `plan.CountedLine(testsInTheFile)`
+370. F83. A second picker beside the clash XML picker on the Clash step, optional, and
+     `PickerKind.Priority` for where it opens. Read the file into `PriorityMap.Read`, put
+     it on `report.Priorities`, set `test.Priority` on every `TestReport`, write
+     `map.MatchLines(testNames)`, and pass `picked` into `WorkbookCheck.Of(path, picked)`.
+     Count the clashes into a `PriorityTally` and write `ResultLine` in RESULT
+371. F72b. A second tick box under the penetration one, off by default, its label and grey
+     line read off `ByDesignPairs.TickLabel` and `HelpLine` and never typed into the XAML.
+     A third picker for the pairs file. In the same pass that applies the penetration
+     statuses, and NOT a second write path, call `ByDesignRule.Judge` per clash, add the
+     wanted ones to the one `statuses.Apply` list, and write the block. The XAML grid has
+     two rows today and needs a third, with the Things that destroy data expander moved
+     down
+372. F72c. Write `record.Text()` as a comment on the clash BEFORE the status is set and on
+     the same handle, because every mutator on `DocumentClashTests` is a copy form that
+     kills the handle handed to it. If step 356 says a comment cannot be written, write
+     `UndoAutoReview.CannotLine(why)` once and set the status alone
+373. F72c. The `Undo auto Reviewed` button reads every clash, calls `UndoAutoReview.Judge`
+     and puts back only the ones that carry our record AND are still at Reviewed, each to
+     the status the record names. It goes through the one `ClashStatusEditor` like
+     everything else
+374. F85. `ViewpointBuilder` loops CLASHES and not disciplines now, reading
+     `ClashViewpointPlan.For`. `SavedViewpoints.Exists` resolves one folder under the root
+     today and cannot see a three deep path, so rebuild the folder walk on `SetBuilder`'s
+     measured `EnsureFolders` shape, re-resolving from a FRESH `RootItem` after every
+     `AddCopy`. Open the step as `RunSteps.Views`, which is new. LEAVE `CanBuild` FALSE
+     until step 375 answers
+375. F85. On a run, save one viewpoint by hand while some items are hidden, then read
+     `SavedViewpoint.ContainsVisibilityOverrides` on it and press it again from a clean
+     view. That answers whether a viewpoint records the hiding, which is the last thing
+     `CanBuild` waits on, and the answer goes in `docs\history\scan.md` 5d
+376. F80. Two lines in the window changed already: `log.RunStarted(jobs.Count)` and
+     `log.RunFinished()` in place of the two `log.Line` calls that wrote the same
+     sentences. Read them once and check the log reads `RUN      started, 7 groups` and
+     `RUN      finished` exactly as before
+377. F81. Four call sites changed already: three in `ClashRunner` now use
+     `log.NumberedRepeat` and the per group SETS block in `FederationEngine` is gone. Read
+     them once, then on the next run check the `.log` is under 300 KB and the `.tsv` still
+     carries a row for every test
+378. F82. `FederationEngine` feeds `SetsAcrossTheRun` beside `outcome.Sets` already and the
+     window writes the block after SOURCE FINDINGS already. Read both once
+379. Build it: `dotnet build ParsonsNwcFederator.sln -c Release`. EXPECT ERRORS the first
+     time. Eighteen fixes touched the add-in and none of them was compiled. Send the whole
+     error list if there is one
+380. Run one building and send the log. Look for, in order: `LOADING` then `STOPPED` or a
+     model count, `CENSUS CLEAR` at the top of the group, `CENSUS NOTED` and NOT `CENSUS
+     CHANGED` around APPEND, `TOLERANCE`, `CLASH 1830 in the file`, `PRIORITY` if a file
+     was picked, `REVIEWED rule B`, `VIEWS`, `SETS ACROSS THE RUN`, and a RESULT block
+     carrying `run time`, `waiting for the person` and both file sizes

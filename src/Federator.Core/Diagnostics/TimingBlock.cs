@@ -464,7 +464,12 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>Hours, minutes and seconds, for the sentence about the forty five.</summary>
-        private static string Clock(double seconds)
+        /// <summary>
+        /// Seconds as a clock, h:mm:ss. Public since F80, because RunClock says where the
+        /// session went in the same shape and two spellings of one duration in one block
+        /// is how a reader stops trusting either.
+        /// </summary>
+        public static string Clock(double seconds)
         {
             if (seconds < 0)
             {

@@ -14,16 +14,19 @@ namespace Federator.Core.Tests
     public class RunStepsTests
     {
         [Test]
-        public void TheFourteenStepsAreThereInTheOrderAGroupMeetsThem()
+        public void TheFifteenStepsAreThereInTheOrderAGroupMeetsThem()
         {
             IList<string> all = RunSteps.All;
 
-            Assert.That(all.Count, Is.EqualTo(14));
+            Assert.That(all.Count, Is.EqualTo(15));
 
+            // VIEWS is F85's, between IMAGES and WORKBOOK, because building the viewpoints
+            // runs after the clash step and before the second NWF save. It was untimed
+            // before, so the seconds it cost came off no total.
             string[] expected =
             {
                 "DECIDE", "APPEND", "NWF SAVE", "UNITS", "SETS", "TESTS CREATE", "TESTS RUN",
-                "HARVEST", "IMAGES", "WORKBOOK", "HTML", "XML", "NWD", "CONFIRM"
+                "HARVEST", "IMAGES", "VIEWS", "WORKBOOK", "HTML", "XML", "NWD", "CONFIRM"
             };
 
             for (int i = 0; i < expected.Length; i++)
@@ -51,7 +54,7 @@ namespace Federator.Core.Tests
             {
                 RunSteps.Decide, RunSteps.Append, RunSteps.NwfSave, RunSteps.Units,
                 RunSteps.Sets, RunSteps.TestsCreate, RunSteps.TestsRun, RunSteps.Harvest,
-                RunSteps.Images, RunSteps.Workbook, RunSteps.Html, RunSteps.Xml,
+                RunSteps.Images, RunSteps.Views, RunSteps.Workbook, RunSteps.Html, RunSteps.Xml,
                 RunSteps.Nwd, RunSteps.Confirm
             })
             {
@@ -77,7 +80,15 @@ namespace Federator.Core.Tests
         public void TheOrderIsThePositionOnTheList()
         {
             Assert.That(RunSteps.OrderOf(RunSteps.Decide), Is.EqualTo(0));
-            Assert.That(RunSteps.OrderOf(RunSteps.Confirm), Is.EqualTo(13));
+            Assert.That(RunSteps.OrderOf(RunSteps.Confirm), Is.EqualTo(14));
+            Assert.That(
+                RunSteps.OrderOf(RunSteps.Views),
+                Is.GreaterThan(RunSteps.OrderOf(RunSteps.Harvest)),
+                "the viewpoints are built after the clash step");
+            Assert.That(
+                RunSteps.OrderOf(RunSteps.Views),
+                Is.LessThan(RunSteps.OrderOf(RunSteps.Nwd)),
+                "and before the NWD is published");
             Assert.That(
                 RunSteps.OrderOf(RunSteps.TestsRun),
                 Is.GreaterThan(RunSteps.OrderOf(RunSteps.TestsCreate)));

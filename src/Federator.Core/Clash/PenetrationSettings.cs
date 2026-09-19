@@ -32,12 +32,19 @@ namespace Federator.Core.Clash
         /// <summary>
         /// The categories that are a service. Pipes, ducts, cable trays, conduits and the
         /// fittings and accessories of each. Given by Bader on 2026-09-19.
+        ///
+        /// PIPE INSULATION IS ONE OF THEM, F72a. An insulated 100 mm pipe through a wall
+        /// makes TWO clashes, the pipe and its insulation, and they are the same
+        /// penetration. Without insulation on this list the pipe moved to Reviewed and its
+        /// insulation stayed at New, so one hole through one wall came back with two
+        /// different answers and somebody had to work out why.
         /// </summary>
         public static readonly string[] DefaultServiceCategories =
         {
             "Pipes",
             "Pipe Fittings",
             "Pipe Accessories",
+            "Pipe Insulation",
             "Ducts",
             "Duct Fittings",
             "Duct Accessories",
@@ -47,6 +54,34 @@ namespace Federator.Core.Clash
             "Cable Tray Fittings",
             "Conduits",
             "Conduit Fittings"
+        };
+
+        /// <summary>
+        /// The categories a SERVICE DISCIPLINE SET asks for that this tool deliberately
+        /// does not call a service, F72a.
+        ///
+        /// WHY THE LIST EXISTS AT ALL. The test that reads the client's matrix asserts
+        /// that every category named in a service set is accounted for, so a set added to
+        /// the matrix later cannot be silently missed. Without this list that test would
+        /// force all four of these onto the service list, and an air handling unit against
+        /// a wall would be moved to Reviewed automatically, which is the opposite of what
+        /// the penetration rule is for: an AHU through a wall is a real coordination item
+        /// and somebody has to look at it.
+        ///
+        /// SO THE RULE IS NOT "IS IT ON THE SERVICE LIST". It is "has somebody decided
+        /// about it", and these four are the decided-no. Mechanical Equipment and Plumbing
+        /// Fixtures are plainly right to leave off. AIR TERMINALS AND SPRINKLERS ARE
+        /// ARGUABLE BOTH WAYS and are Q47, which is Bader's to answer. They sit here
+        /// rather than on the service list because leaving a clash at New for a person to
+        /// look at is the safe mistake, which is the same way round every other unknown in
+        /// this rule reads.
+        /// </summary>
+        public static readonly string[] DefaultNotAServiceCategories =
+        {
+            "Air Terminals",
+            "Mechanical Equipment",
+            "Plumbing Fixtures",
+            "Sprinklers"
         };
 
         /// <summary>
@@ -79,6 +114,7 @@ namespace Federator.Core.Clash
             ServiceCategories = new List<string>(DefaultServiceCategories);
             SolidCategories = new List<string>(DefaultSolidCategories);
             CategoryNames = new List<string>(DefaultCategoryNames);
+            NotAServiceCategories = new List<string>(DefaultNotAServiceCategories);
         }
 
         /// <summary>The categories that are a service.</summary>
@@ -101,6 +137,20 @@ namespace Federator.Core.Clash
         {
             return Holds(SolidCategories, category);
         }
+
+        /// <summary>
+        /// Whether somebody has DECIDED about that category, either way, F72a. True for a
+        /// service and true for one of the four decided not to be one. The matrix test
+        /// reads this rather than IsService, so a category added to the client's matrix
+        /// later fails the test until a person says which it is.
+        /// </summary>
+        public bool IsDecided(string category)
+        {
+            return IsService(category) || Holds(NotAServiceCategories, category);
+        }
+
+        /// <summary>The four a service discipline set asks for that are not services.</summary>
+        public IList<string> NotAServiceCategories { get; set; }
 
         /// <summary>
         /// The grey line under the tick box. The threshold is READ from the size settings

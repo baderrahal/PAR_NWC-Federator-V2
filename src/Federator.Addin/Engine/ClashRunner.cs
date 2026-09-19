@@ -783,7 +783,16 @@ namespace Federator.Addin.Engine
                         // opening Excel and Navisworks side by side for every one of
                         // 1830 tests. The wording is Core and the rule about what the
                         // difference means is there with it.
-                        log.Numbered(
+                        // F81. NumberedRepeat and not Numbered: one run wrote 936 of these
+                        // and every one said the two numbers agree. The ROW is still
+                        // written for every single test, because the .tsv keeps everything
+                        // and only the .log is trimmed. The key is what the line SAYS and
+                        // never the sentence, because the sentence carries the test name
+                        // and the names are exactly what varies.
+                        log.NumberedRepeat(
+                            "ROWS " + (summary.Rows.Count == tally.Total
+                                ? "the two numbers agree"
+                                : "the two numbers differ"),
                             ReportedCount.Line(planned.Name, summary.Rows.Count, tally.Total),
                             "rows for the workbook",
                             planned.Name,
@@ -800,7 +809,18 @@ namespace Federator.Addin.Engine
                     planned.Name, leftItems, rightItems, tally, ranFor);
 
                 guard.RecordSuccess();
-                log.Line("CLASH    " + result.Line());
+
+                // F81. A test that found CLASHES gets its own line every time, because
+                // every one of those says something different. A test that PASSED says
+                // the same sentence about a different name, 792 times in one run, so it
+                // collapses. The row is written either way.
+                log.NumberedRepeat(
+                    result.Passed ? "CLASH passed, found nothing" : "CLASH found clashes",
+                    "CLASH    " + result.Line(),
+                    result.Passed ? "test passed" : "test found clashes",
+                    planned.Name,
+                    EventRow.Count(tally.Total),
+                    result.Passed ? "ran and found nothing" : "ran and found clashes");
             }
             catch (Exception error)
             {
@@ -1065,10 +1085,24 @@ namespace Federator.Addin.Engine
                 clashTests.TestsAddCopy(test);
             }
 
-            log.Detail("CLASH    created  " + planned.Name
-                + "  " + planned.TestTypeName
-                + "  tolerance " + planned.DescribeTolerance()
-                + "  merge composites " + (planned.MergeComposites ? "on" : "off"));
+            // F81. One run wrote 10,980 of these, three lines for every test created, and
+            // every one said the same thing about a different name. The row carries all of
+            // it and the .tsv keeps every row.
+            //
+            // It was a Detail line, which is indented 26 spaces and writes NO row. It is a
+            // plain line now, on purpose: one of five examples of a repeated event reads
+            // at the left margin like every other collapsed example in this log, and a
+            // Detail with nothing above it to be a detail OF is just an indented line.
+            log.NumberedRepeat(
+                "CLASH created",
+                "CLASH    created  " + planned.Name
+                    + "  " + planned.TestTypeName
+                    + "  tolerance " + planned.DescribeTolerance()
+                    + "  merge composites " + (planned.MergeComposites ? "on" : "off"),
+                "test created",
+                planned.Name,
+                EventRow.Exact(planned.Tolerance),
+                planned.TestTypeName + ", " + planned.DescribeTolerance());
 
             int after = clashTests.Tests.Count;
 

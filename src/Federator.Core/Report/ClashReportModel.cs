@@ -282,6 +282,8 @@ namespace Federator.Core.Report
             SkippedReason = string.Empty;
             TestTypeName = string.Empty;
             ToleranceUnits = string.Empty;
+            ToleranceFrom = ToleranceOrigin.Unknown;
+            Priority = ClashPriority.None;
             StatusWord = string.Empty;
             ImageIndex = -1;
         }
@@ -304,6 +306,20 @@ namespace Federator.Core.Report
 
         public string ToleranceUnits { get; set; }
 
+        /// <summary>
+        /// Where that tolerance was READ, F76. The row is produced by a clash test in the
+        /// open document, so the number in the Tolerance cell has to be the one that test
+        /// carries, not the one the XML asked for. Those two are different whenever a test
+        /// was already saved in the NWF, which is every weekly run: the matrix is written
+        /// at 25 mm and the NWFs on disk held tests at 75 mm, and the run clashed at 75
+        /// while the report said 25.
+        ///
+        /// It is kept for the same reason the Item ID keeps which property supplied it. A
+        /// number is only honest while what produced it is still visible, and the report
+        /// check names this rather than a reader having to trust it.
+        /// </summary>
+        public ToleranceOrigin ToleranceFrom { get; set; }
+
         public string TestTypeName { get; set; }
 
         public TestState State { get; set; }
@@ -318,6 +334,17 @@ namespace Federator.Core.Report
         /// test rather than a translation, and it is left empty rather than invented.
         /// </summary>
         public string StatusWord { get; set; }
+
+        /// <summary>
+        /// This test's priority off the client's clash matrix, F83. None where no priority
+        /// file was picked and None where the file says nothing about this test, which are
+        /// two different things and are told apart by the PRIORITY line rather than here.
+        ///
+        /// PRIORITY IS NOT STATUS. This is A, B or C off the matrix. StatusWord above is
+        /// the Navisworks word on the test header and the two are never used for each
+        /// other.
+        /// </summary>
+        public ClashPriority Priority { get; set; }
 
         /// <summary>
         /// This test's number in the picture names, zero based, or minus one until it
@@ -433,7 +460,18 @@ namespace Federator.Core.Report
             SetTreeRoot = "lcop_selection_set_tree";
             CompactedAway = -1;
             Images = new ImageTally();
+            Priorities = PriorityMap.NothingPicked();
         }
+
+        /// <summary>
+        /// The clash priority file, F83, or NothingPicked. NEVER null, so nothing has to
+        /// test for it, and nothing picked means every output reads exactly as it did.
+        ///
+        /// It lives on the report rather than being handed to each writer, because the
+        /// block order, the picture numbers and the Priority column all have to agree and
+        /// three callers each passing their own copy is how they stop agreeing.
+        /// </summary>
+        public PriorityMap Priorities { get; set; }
 
         /// <summary>What the pictures cost for this group. Measured, never estimated.</summary>
         public ImageTally Images { get; private set; }
@@ -607,7 +645,85 @@ namespace Federator.Core.Report
                     + " of " + items + ", written as \"" + ClientFormat.DefaultIdLabel + "\"");
             }
 
+            lines.AddRange(MissingIdLines());
             return lines;
+        }
+
+        /// <summary>The words the block uses for an item with no id property at all.</summary>
+        public const string NoIdProperty = "no id property";
+
+        /// <summary>
+        /// How many of the missing ids belong to a clash this run FOUND and how many to a
+        /// clash that was already in the NWF, F79.
+        ///
+        /// WHY IT MATTERS. One run left 192 item id cells blank and nothing said whether
+        /// that was this run failing to read a property or last week's results carrying
+        /// items that were never read in the first place. Those are two different faults
+        /// and only one of them is this run's to fix.
+        ///
+        /// THE SPLIT IS THE ROW'S Found DATE AGAINST THE GROUP'S RunAt AND NOTHING ELSE. A
+        /// row found at or after the run started is this run's. One found before it was
+        /// carried over. A row with NO date is UNKNOWN and is counted as its own third
+        /// number, never folded into carried over, because whether the clash date and the
+        /// run date share a clock and a time zone is not readable off the DLL and only a
+        /// run answers it.
+        ///
+        /// IT COUNTS ROWS AND SAYS SO. A row is a result GROUP and one date stands for
+        /// every clash inside it, which is the same difference ReportedCount already
+        /// explains between rows and clashes.
+        /// </summary>
+        public IList<string> MissingIdLines()
+        {
+            int thisRun = 0;
+            int carriedOver = 0;
+            int noDate = 0;
+
+            foreach (TestReport test in tests)
+            {
+                foreach (ClashRow row in test.Rows)
+                {
+                    int missing = Missing(row.Left) + Missing(row.Right);
+
+                    if (missing == 0)
+                    {
+                        continue;
+                    }
+
+                    if (!row.Found.HasValue)
+                    {
+                        noDate += missing;
+                    }
+                    else if (row.Found.Value < RunAt)
+                    {
+                        carriedOver += missing;
+                    }
+                    else
+                    {
+                        thisRun += missing;
+                    }
+                }
+            }
+
+            List<string> lines = new List<string>();
+            int all = thisRun + carriedOver + noDate;
+
+            if (all == 0)
+            {
+                return lines;
+            }
+
+            lines.Add(all + (all == 1 ? " item id is missing" : " item ids are missing")
+                + ", counted on the rows this report holds: " + thisRun
+                + " on results this run found, " + carriedOver
+                + " on results carried over from an earlier run, " + noDate
+                + " on rows carrying no date at all, which is UNKNOWN and not carried over");
+
+            return lines;
+        }
+
+        private static int Missing(ClashItem item)
+        {
+            return item != null && string.IsNullOrEmpty(item.IdFrom) ? 1 : 0;
         }
 
         private static int CountIdSource(ClashItem item, IDictionary<string, int> counts)
@@ -617,7 +733,7 @@ namespace Federator.Core.Report
                 return 0;
             }
 
-            string from = string.IsNullOrEmpty(item.IdFrom) ? "no id property" : item.IdFrom;
+            string from = string.IsNullOrEmpty(item.IdFrom) ? NoIdProperty : item.IdFrom;
             int already;
 
             counts[from] = counts.TryGetValue(from, out already) ? already + 1 : 1;

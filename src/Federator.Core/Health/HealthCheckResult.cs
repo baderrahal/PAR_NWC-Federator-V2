@@ -68,8 +68,14 @@ namespace Federator.Core.Health
             int distinctRuleCount,
             bool allSetsShareOneRule,
             IList<DuplicateSetName> duplicateNames,
-            IList<SelectionSetDefinition> setsAtRoot)
+            IList<SelectionSetDefinition> setsAtRoot,
+            IList<IdenticalSets> identicalSets,
+            IList<CategoryNobodyHas> categoriesNobodyHas,
+            IList<OddSetName> oddSetNames)
         {
+            IdenticalSets = new ReadOnlyCollection<IdenticalSets>(identicalSets);
+            CategoriesNobodyHas = new ReadOnlyCollection<CategoryNobodyHas>(categoriesNobodyHas);
+            OddSetNames = new ReadOnlyCollection<OddSetName>(oddSetNames);
             TestCount = testCount;
             SetCount = setCount;
             ResolvedLocators = new ReadOnlyCollection<string>(resolvedLocators);
@@ -163,6 +169,24 @@ namespace Federator.Core.Health
                 + " would be skipped by name.";
         }
 
+        /// <summary>
+        /// Sets asking the model exactly the same question, F84. Every clash test of one
+        /// is the same test as the matching test of the other.
+        /// </summary>
+        public ReadOnlyCollection<IdenticalSets> IdenticalSets { get; private set; }
+
+        /// <summary>
+        /// Sets asking for a category value no model in this project carries, F84. Always
+        /// empty while the category list is unmeasured, and the block says which.
+        /// </summary>
+        public ReadOnlyCollection<CategoryNobodyHas> CategoriesNobodyHas { get; private set; }
+
+        /// <summary>Sets whose name breaks the pattern their own folder follows, F84.</summary>
+        public ReadOnlyCollection<OddSetName> OddSetNames { get; private set; }
+
+        /// <summary>How many of the five examples rule a finding list shows.</summary>
+        public const int ExamplesShown = 5;
+
         public IList<string> Summary()
         {
             List<string> lines = new List<string>
@@ -176,9 +200,94 @@ namespace Federator.Core.Health
                 "Duplicate set names: " + DuplicateNames.Count
             };
 
+            // F84. A set that cannot match anything is a set whose every clash test can
+            // never find a clash, and none of these three was visible anywhere before.
+            // Every one is INFORMATION: nothing is corrected, nothing is dropped and no
+            // group is judged on it.
+            lines.Add("Sets asking exactly the same question: " + IdenticalSets.Count);
+
+            foreach (string line in Examples(IdenticalNames()))
+            {
+                lines.Add(line);
+            }
+
+            lines.Add(RevitCategories.Line());
+            lines.Add("Sets asking for a category no model carries: " + CategoriesNobodyHas.Count);
+
+            foreach (string line in Examples(CategoryNames()))
+            {
+                lines.Add(line);
+            }
+
+            lines.Add("Set names breaking their folder's pattern: " + OddSetNames.Count);
+
+            foreach (string line in Examples(OddNames()))
+            {
+                lines.Add(line);
+            }
+
             if (AllSetsShareOneRule)
             {
                 lines.Add("UNUSABLE: every set carries the same rule.");
+            }
+
+            return lines;
+        }
+
+        private IList<string> IdenticalNames()
+        {
+            List<string> said = new List<string>();
+
+            foreach (IdenticalSets pair in IdenticalSets)
+            {
+                said.Add(pair.ToString());
+            }
+
+            return said;
+        }
+
+        private IList<string> CategoryNames()
+        {
+            List<string> said = new List<string>();
+
+            foreach (CategoryNobodyHas one in CategoriesNobodyHas)
+            {
+                said.Add(one.ToString());
+            }
+
+            return said;
+        }
+
+        private IList<string> OddNames()
+        {
+            List<string> said = new List<string>();
+
+            foreach (OddSetName one in OddSetNames)
+            {
+                said.Add(one.ToString());
+            }
+
+            return said;
+        }
+
+        /// <summary>
+        /// A count and at most five examples, then how many were not shown. The rule every
+        /// other list in this log follows, and it is here for the same reason: one run
+        /// wrote 1830 near identical lines and buried everything worth reading.
+        /// </summary>
+        private static IList<string> Examples(IList<string> all)
+        {
+            List<string> lines = new List<string>();
+
+            for (int i = 0; i < all.Count && i < ExamplesShown; i++)
+            {
+                lines.Add("    " + all[i]);
+            }
+
+            if (all.Count > ExamplesShown)
+            {
+                lines.Add("    and " + (all.Count - ExamplesShown)
+                    + " more, counted and not listed");
             }
 
             return lines;

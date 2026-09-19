@@ -70,6 +70,20 @@ namespace Federator.Addin.Engine
         private readonly GapTally gaps = new GapTally();
 
         /// <summary>
+        /// Which sets found nothing, across the whole run, F82. A set at zero in ONE group
+        /// says a discipline was not exported for that building. A set at zero in EVERY
+        /// group says the set itself is wrong, and 38 of the client's 61 were in that
+        /// state on the first real run with nothing anywhere adding it up.
+        /// </summary>
+        private readonly SetsAcrossTheRun setsAcrossTheRun = new SetsAcrossTheRun();
+
+        /// <summary>What every set did across this run, for the block the window writes.</summary>
+        public SetsAcrossTheRun SetsAcrossTheRun
+        {
+            get { return setsAcrossTheRun; }
+        }
+
+        /// <summary>
         /// For a scanned run. The exchange document is whatever was picked in the Clash
         /// step, read once. It can hold sets, tests, or both, and any of the three is a
         /// normal case. Null when nothing was picked, and then no set is built and no test
@@ -1384,7 +1398,12 @@ namespace Federator.Addin.Engine
 
                 SetBuildOutcome sets = new SetBuilder(Tick, log).Build(plan);
                 outcome.Sets = sets;
-                log.Block("SETS " + job.Building, sets.Lines());
+                setsAcrossTheRun.Add(sets);
+
+                // F81. The per group SETS block is GONE. SetBuilder already writes a live
+                // line per set as it builds, so this block was a second copy of all 61 of
+                // them, 854 lines across one run. The totals it also carried are still
+                // said, in the one line below and in the SETS step's own finish phrase.
 
                 // What decides the second NWF save is whether this build put anything
                 // into the document. A set already there was left alone and put nothing

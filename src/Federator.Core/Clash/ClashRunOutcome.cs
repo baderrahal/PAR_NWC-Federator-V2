@@ -236,11 +236,7 @@ namespace Federator.Core.Clash
                 return lines;
             }
 
-            foreach (ClashTestResult result in ran)
-            {
-                lines.Add(result.Line());
-            }
-
+            lines.AddRange(RanLines());
             lines.AddRange(SkipLines());
 
             lines.Add(string.Empty);
@@ -280,6 +276,68 @@ namespace Federator.Core.Clash
             // to find in a log that is thousands of lines long.
             lines.Add("clash step took   : " + Seconds.ToString("0.0", CultureInfo.InvariantCulture)
                 + " seconds");
+
+            return lines;
+        }
+
+        /// <summary>
+        /// How many tests that PASSED are written out in full. The same rule and the same
+        /// number the skips follow, F81.
+        /// </summary>
+        public const int MaxPassedExamples = MaxSkipExamples;
+
+        /// <summary>
+        /// The tests that ran, F81. A test that found CLASHES gets its own line, because
+        /// every one of those says something different. A test that PASSED gets a count
+        /// and five examples, because 792 of them in one run said "passed ... none" and
+        /// every single line was the same sentence about a different name.
+        ///
+        /// The per test seconds are not lost: they are on the ROWS in the machine readable
+        /// log, which F81 does not trim, and the TIMING block adds them across the run.
+        /// </summary>
+        public IList<string> RanLines()
+        {
+            List<string> lines = new List<string>();
+            List<ClashTestResult> passed = new List<ClashTestResult>();
+
+            foreach (ClashTestResult result in ran)
+            {
+                if (result.Passed)
+                {
+                    passed.Add(result);
+                }
+                else
+                {
+                    lines.Add(result.Line());
+                }
+            }
+
+            if (passed.Count == 0)
+            {
+                return lines;
+            }
+
+            lines.Add("PASSED " + passed.Count + (passed.Count == 1 ? " test, " : " tests, ")
+                + "ran and found nothing");
+
+            int shown = 0;
+
+            foreach (ClashTestResult result in passed)
+            {
+                if (shown == MaxPassedExamples)
+                {
+                    break;
+                }
+
+                lines.Add("        " + result.Line());
+                shown++;
+            }
+
+            if (passed.Count > shown)
+            {
+                lines.Add("        and " + (passed.Count - shown)
+                    + " more that ran and found nothing, counted and not listed");
+            }
 
             return lines;
         }

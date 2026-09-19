@@ -29,6 +29,16 @@ namespace Federator.Core.Diagnostics
         public const string TestsCreate = "TESTS CREATE";
         public const string TestsRun = "TESTS RUN";
         public const string Harvest = "HARVEST";
+
+        /// <summary>
+        /// Building the saved viewpoints, F85. It runs after the clash step and before the
+        /// second NWF save, and it was UNTIMED before this: BuildViewpoints was called
+        /// outside every step, so the seconds it cost came off no total and the run read as
+        /// faster than it was. One viewpoint per clash is the most expensive thing this
+        /// tool does and criterion 2 is forty five minutes, so where that time went is the
+        /// question the log exists to answer.
+        /// </summary>
+        public const string Views = "VIEWS";
         public const string Images = "IMAGES";
         public const string Workbook = "WORKBOOK";
         public const string Html = "HTML";
@@ -47,6 +57,7 @@ namespace Federator.Core.Diagnostics
             TestsRun,
             Harvest,
             Images,
+            Views,
             Workbook,
             Html,
             Xml,

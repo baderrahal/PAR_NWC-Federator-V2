@@ -163,8 +163,10 @@ namespace Federator.Core.Clash
                 : decision.Service.LargestMillimetres.Value
                     .ToString("0.###", CultureInfo.InvariantCulture) + "mm";
 
-            return "REVIEWED " + Words(clashName) + "  in " + Words(testName)
-                + "  " + service + " " + size + " through " + solid;
+            // The shape of the line is ReviewedLine's, because the by design rule writes
+            // one too and one rule lives in one place. Only the WHY is this rule's.
+            return ReviewedLine.For(clashName, testName,
+                service + " " + size + " through " + solid);
         }
 
         private static string Words(string value)

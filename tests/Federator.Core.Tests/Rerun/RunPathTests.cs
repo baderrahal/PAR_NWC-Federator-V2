@@ -13,15 +13,16 @@ namespace Federator.Core.Tests
     public class RunPathTests
     {
         [Test]
-        public void TheSixLabelsAreExactlyTheseWords()
+        public void TheSevenLabelsAreExactlyTheseWords()
         {
             Assert.That(RunPath.FirstRun, Is.EqualTo("First run"));
             Assert.That(RunPath.WeeklyRun, Is.EqualTo("Weekly run"));
             Assert.That(RunPath.WeeklyRunPlusXml, Is.EqualTo("Weekly run plus XML"));
             Assert.That(RunPath.Rebuilt, Is.EqualTo("Rebuilt"));
             Assert.That(RunPath.Skipped, Is.EqualTo("Skipped (changed on disk)"));
+            Assert.That(RunPath.Stopped, Is.EqualTo("Stopped (the NWF read empty)"));
             Assert.That(RunPath.Unknown, Is.EqualTo("Unknown"));
-            Assert.That(RunPath.All, Has.Length.EqualTo(6));
+            Assert.That(RunPath.All, Has.Length.EqualTo(7));
         }
 
         // F24. A group whose NWF was rebuilt from the scan reads Rebuilt, with or without
@@ -139,7 +140,8 @@ namespace Federator.Core.Tests
 
             Assert.That(all, Does.Contain("First run: 0."));
             Assert.That(all, Does.Not.Contain("cleared before"));
-            Assert.That(all, Does.Contain("Nothing is cleared"));
+            Assert.That(all, Does.Contain("Nothing inside it is cleared"),
+                "F75 empties the document at the top of every group, so the old wording was untrue");
         }
 
         [Test]

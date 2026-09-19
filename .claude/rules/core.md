@@ -108,6 +108,24 @@ The sets:
       no category element at all
         property LcOaNodeSourceFile display Source File
 
+- FLAGS 64 IS StartGroup AND IT MEANS OR, F78. Measured on 2026-09-19 over all 102
+  conditions: five carry flags="64" and each of those five is the third condition of one
+  of the five sets that hold four. A condition with that bit STARTS A NEW GROUP, the
+  first group of a set is implicit and carries no flag, the conditions inside a group are
+  ANDed and the groups are ORed. So BLD-ME-Ducts&Duct Fittings reads
+  (Category equals Ducts and Workset equals ME-DUCTWORK) or (Category equals Duct
+  Fittings and Workset equals ME-DUCTWORK). Everything used to be joined with "and", so
+  that set was described as asking a question no element can answer, and a set finding
+  thousands of items read as one that could find none. The brackets only appear where
+  there is more than one group, so the 56 ordinary sets read exactly as they did
+- A PROPERTY'S FRIENDLY NAME RIDES BESIDE ITS INTERNAL ONE AND NEVER IN PLACE OF IT, F78.
+  lcldrevit_parameter_-1002053 tells a reader nothing and Workset tells them everything,
+  and the internal name is what the API matches on. The friendly half is READ OFF THE
+  FILE, which carries display="Workset" on every property, and there is NO LOOKUP TABLE
+  anywhere: a table would be a second copy of a mapping the file already supplies and it
+  would go stale the moment a project used a different parameter. It is left off where
+  both halves are the same word
+
 - condition test values seen: equals and contains
 - a condition can arrive with no category element. The reader must not assume one
 - rebuilding a search through the API uses the internal strings, never the display
@@ -129,7 +147,9 @@ file and they answer different questions:
 - 59 is the number of distinct sets, comparing each set's whole ordered list of
   conditions. It is 59 rather than 61 because two pairs of sets carry identical
   rule lists: Telecom Fixtures with Telephone Devices, and Electrical Fixtures
-  with Devices
+  with Devices. AFTER F87 IT IS 60, because Devices now asks for Nurse Call Devices
+  and is no longer the same set as Electrical Fixtures. The Telecom pair is left
+  exactly as it is, waiting on the client, and F84 reporting it is correct
 
 The set level number cannot be used for the damaged export check. On Infra it
 gives 6, because the sets differ in how many copies of the one rule they hold,
@@ -141,6 +161,22 @@ and 6 does not read as broken.
   Never import a test with an empty side. It returns zero clashes and reads as passed
 - A test where either side resolves to zero items in this model counts as skipped,
   not passed. Skipped and passed are counted as different numbers in the report
+- A TEST WHOSE SIDE FINDS NOTHING IS NOT CREATED AT ALL, F77. The sets are built and
+  resolved before any test is created, so how many items each locator finds is already in
+  hand, and creating a test to discover a thing already known was 631 seconds of a 1424
+  second run: 1830 created, 1619 of them thrown away moments later by the empty side
+  check. `Federator.Core.Clash.CreationPlan` is the rule. It CALLS `ClashSideCheck` rather
+  than carrying a second copy of it, and that check STAYS as the second line of defence
+  before a test is run. A LOCATOR NOBODY COUNTED IS NOT A LOCATOR FINDING NOTHING: a
+  count missing from what the plan is handed means the test is created and the run-time
+  check answers, because the safe mistake is an extra test and the unsafe one is leaving
+  a real test out of the NWF over a number nobody took. One counted line,
+  `CLASH 1830 in the file, 211 created, 1619 not created, a side finds nothing`, and which
+  tests they were is said by the ordinary skip block, a count and five examples, where
+  every other skip reason is already said. THE WORKBOOK STILL CARRIES A BLOCK FOR EVERY
+  TEST IN THE FILE. Not creating a test changes what goes in the DOCUMENT and never what
+  goes in the report, because the client's report is the whole matrix and a test missing
+  from it reads as a test nobody ran rather than as a test that could not clash
 - The Revit container inside an NWC is often a different building from the NWC.
   Where the building code parsed from the NWC name differs from the code in the
   Revit source name, report SOURCE MISMATCH naming both, and where one Revit
@@ -177,6 +213,33 @@ and 6 does not read as broken.
   primitive type flags. A test whose tolerance attribute is not there at all is SKIPPED by
   name, the way an unknown test type is, because a missing tolerance became zero and zero
   reads as a real tolerance. A tolerance written as zero is a real one and is created
+- THE TOLERANCE CAN BE CHOSEN IN THE TOOL AND THEN IT BEATS EVERYTHING, F76. The Clash
+  step carries a drop down, `Federator.Core.Clash.ToleranceChoice`: Use the value in the
+  XML, which is the default and changes nothing, then 25 mm, 50 mm, 75 mm, then Other
+  with a number box. When anything but the default is chosen that value is set on EVERY
+  test in the run, the ones created fresh from the XML and the ones already saved in the
+  NWF alike, and it beats the XML and it beats the document. ApplyFileSettings keeps
+  exactly the meaning it had, which is whether the FILE'S settings reach a saved test,
+  and this wins over it, because a value a person typed beats a value read out of a file.
+  The choice is in MILLIMETRES because that is what a person says, converted through
+  UnitTable like any other, and a unit the table has not been taught throws rather than
+  falling back. Zero is a real tolerance and is allowed. A negative one is refused where
+  it is set rather than reaching 1830 tests. The confirm screen says the value, the
+  counts, what it beats, and that changing a saved test RESETS its results, and says
+  nothing at all under the default, because a line that reads the same on every run
+  teaches people to skip the screen. One TOLERANCE line per group carries both counts and
+  the converted value. Why it exists: the matrix is written at 25 mm, the NWFs on disk
+  held tests at 75 mm, a test already in the document is left exactly as it is, so the
+  run clashed at 75 while everybody believed it was clashing at 25
+- THE REPORT READS ITS TOLERANCE OFF THE CLASH TEST IN THE DOCUMENT, F76, because the
+  document is what produced the row. It used to be copied off the PLAN, which is the
+  XML, so on every weekly run the cell said what the file asked for and the run had
+  clashed at something else. `ClashReportModel.TestReport.ToleranceFrom` carries WHERE it
+  was read, an origin of Document, File, Tool or Unknown, kept for the same reason the
+  Item ID keeps which property supplied it: a number is only honest while what produced
+  it is still visible. `ToleranceChoice.ReadFromLine` counts the four across the run, so
+  a report reading the file rather than the document shows as a number rather than being
+  trusted
 - Tolerance is read per test and converted from the file units attribute into the
   units of the open document before it is set. There is no global tolerance setting
   in this tool. Both numbers and both unit names go in the log, because which units
@@ -226,9 +289,11 @@ and 6 does not read as broken.
   the plain case and two NWCs of the same discipline are the same case, D5 on
   2026-09-12, so the count is of disciplines and not of files, in
   Federator.Core.Grouping.BuildingGroup.CannotClashWith, read by the window row and the
-  engine alike. Every test is still created, so the NWF is complete and matches the
-  other groups and a later run against a fuller model finds them already there, and none
-  of them is run. The reason is SingleDiscipline and it is counted apart from EmptySide on
+  engine alike, and none of them is run. SINCE F77 THEY ARE NOT ALL CREATED EITHER,
+  which is a change from the rule this bullet used to state. That rule said every test is
+  still created so the NWF is complete and matches the other groups. It cost 631 seconds
+  of a 1424 second run to create 1619 tests that were thrown away moments later, and Q46
+  asks whether the completeness was worth it. The reason is SingleDiscipline and it is counted apart from EmptySide on
   purpose. A side finding nothing says a discipline was not exported. One discipline says
   the group was never going to clash and no export would change that. In the last real
   folder that was 1B06BS and 1C06PK, and both ran 1830 tests for nothing. The open file
@@ -313,6 +378,15 @@ and 6 does not read as broken.
   129 distances in the two exports: nine are of that second kind and 0.000 appears nowhere
   in either file. Whether theirs rounds or truncates is UNKNOWN, because both files carry
   only the formatted text, so ours rounds
+- HOW MANY MISSING ITEM IDS ARE THIS RUN'S IS ITS OWN NUMBER, F79. One run left 192 item
+  id cells blank and nothing said whether that was this run failing to read a property or
+  last week's results carrying items that were never read in the first place. Those are
+  two different faults and only one is this run's to fix. `ClashReportModel
+  .MissingIdLines` splits them on the row's Found date against the group's RunAt and
+  nothing else. A row with NO date is UNKNOWN and is its own third number, never folded
+  into carried over, because whether the clash date and the run date share a clock and a
+  time zone is not readable off the DLL and only a run answers it. It counts ROWS and says
+  so: a row is a result group and one date stands for every clash inside it
 - The Item ID label is Element ID, and this tool CHOOSES it rather than reading it. It used
   to be the display name of whichever property matched, and since Id is first in the search
   list that came out as "Id: 990299" against their "Element ID: 702888". Which property
@@ -369,8 +443,45 @@ and 6 does not read as broken.
   Tolerance carries its unit with no space, "0.025m". Distance is the raw signed number,
   negative on a hard clash, written as a number so it still sorts. Type reads
   "Hard (Conservative)". Measured, see docs\history\scan.md section 4k
+- THE CLASH PRIORITY IS THE ONE COLUMN OF OURS ON THE CLIENT'S SHEET, F83, and only
+  when a priority CSV is picked. It sits in T, one past the end of their table, and
+  `WorkbookWriter.LastColumn` stays 19 so the title merge, both item fills, the boxing,
+  the width loop and every loop in the check still describe THEIR table. Nothing picked
+  means nothing changes: no heading, no cells, no width, no RESULT line and the measured
+  block order. Priority is NEVER added to `ClientReportColumns`, which is theirs and is
+  re-read off their own exports on every run, and never written into the clash XML,
+  because the stylesheet makes a column out of every smarttag and it would then be on the
+  page the client receives. `WorkbookCheck.Of` takes whether a file was picked, because a
+  priority sorted workbook is in priority order on purpose and the order check would
+  otherwise call every one of them wrongly ordered, and because a column past their table
+  is invisible to every other check in there
+- WITH A PRIORITY FILE PICKED THE BLOCK ORDER CHANGES, F83: A, then B, then C, then the
+  tests the file says nothing about, and inside each block by test name. THE DEFAULT
+  ORDER IS STILL THE MEASURED ONE and picking a file is the only thing that replaces it.
+  That the two disagree is Q49. `ReportOrder.Tests` is the ONE place the order is
+  decided, and the workbook, the clash XML and the picture numbering all read it, so the
+  page and the workbook cannot list the same tests differently and a picture cannot keep
+  a number from an order nothing else uses. The map lives on the report, `ClashReport
+  .Priorities`, never null, because three callers each passing their own copy is how they
+  stop agreeing
+- THE PRIORITY FILE IS MATCHED ON THE TEST NAME, EXACTLY, Ordinal and never trimmed,
+  F83. A test name is built out of two set names and two of those end in a space. The
+  file carries test_name, left_set, right_set and priority, and the sets are read and
+  kept so a person can see what a row meant, but nothing matches on them. A row whose
+  letter is not A, B or C is a PROBLEM named in the log and left out, never a silent
+  None, because a silent None reads exactly like a test the matrix never mentioned.
+  Picking a file NEVER fails a run: a missing or damaged file is a finding in the log and
+  a line in the window and the run goes on with no Priority column. `Priorities` is the
+  words and the order, None last, and the workbook cell is EMPTY for None while the
+  viewpoint folder is called No priority, because an unnamed folder is not a folder
+- PRIORITY IS NOT STATUS AND THE TWO ARE NEVER USED FOR EACH OTHER. Priority is A, B or
+  C off the client's clash matrix. Status is the Navisworks word, New, Active, Reviewed,
+  Approved or Resolved, and lives on a clash. Nothing in ClashPriority names a status and
+  nothing in ClashStatus names a priority
 - Our extra columns, family, type name, material, source file and discipline, come AFTER
-  theirs and never in place of any of them, on the CLASH XML and nowhere else. The Client
+  theirs and never in place of any of them, on the CLASH XML and nowhere else. THE ONE
+  EXCEPTION IS THE PRIORITY COLUMN ABOVE, which goes on the workbook and not on the clash
+  XML, and only when a file is picked. The Client
   columns only tick box that used to switch them off is GONE, because the workbook became
   one sheet laid out as theirs with none of ours on it, so there was nothing left for it to
   remove and it sat in the window doing nothing. Ours says Type Name
@@ -525,7 +636,11 @@ and 6 does not read as broken.
   puts them, in a folder beside the workbook named after it with _files on the end, as
   loose jpg. The workbook links to them and does not paste them in. A thumbnail in the
   cell is a tick box, off, because pasting is not what the accepted report does and it
-  makes the file many times larger. No clash is ever saved as a viewpoint in the NWF
+  makes the file many times larger. A PICTURE IS NOT A VIEWPOINT and nothing in the image
+  code touches SavedViewpoints. This bullet used to end by saying no clash is ever saved
+  as a viewpoint, and F85 reverses that half of it: a clash now gets a viewpoint as well
+  as a picture, planned by `Federator.Core.Views.ClashViewpointPlan` and written by
+  nothing while `SavedViewpoints.CanBuild` is false
 - The picture names are theirs and are NOT one running sequence, which is what the first
   dozen look like. It is cd, then the test formatted 00, then the clash within that test
   formatted 0000. Test 0 clash 1 is cd000001.jpg and test 100 clash 1 is cd1000001.jpg,
@@ -578,6 +693,41 @@ and 6 does not read as broken.
   Meters without a word. The exchange reader reads the tolerance as written and converts
   nothing, so a file in a unit the tool does not know reads, and ClashTestPlan.Convert,
   the one place a file unit is judged, skips each of its tests by name
+- DECIDE WAITS FOR THE MODELS BEFORE IT COUNTS THEM, F74. `Document.TryOpenFile`
+  returning true does not mean the models are in the document. On the first real run all
+  five existing NWFs reported 0 unchanged, 4 added, 0 removed and were rebuilt, and the
+  step finished in 0.248 seconds against 2.3 to 4.8 seconds for every open in the one
+  earlier log on record. `Federator.Core.Rerun.ModelLoadWait` is the rule: the add-in
+  reads the count and the monotonic clock and hands both over, so the run and the preview
+  read one rule and cannot disagree. A count above zero that stops moving over three
+  readings a quarter second apart is settled. ZERO NEVER SETTLES, because zero cannot be
+  told apart from a document that has not started filling, so it is only accepted at the
+  thirty second ceiling. All three numbers are settings. One LOADING line is written
+  either way. Whether the API reports readiness on its own is UNKNOWN, scan.md 5e, and
+  the poll is written so a member can replace it without anything else moving
+- AN NWF THAT OPENED AND READ EMPTY IS STOPPED, NEVER REBUILT AND NEVER OPENED, F74.
+  `NwfComparison.ReadEmpty` gives `RerunDecision.Refused` and a reason naming the file
+  and what to do. Rebuilding one threw five federations and every clash result and status
+  decision in them away. Treating it as a match would run every test against an empty
+  document, which reports every test as passing, and a wrong answer that reads as a good
+  one is worse than a stop. `NwfComparison.Compare` must NOT try to answer this: handed
+  an empty list it cannot tell an empty NWF from one that has not loaded, because both
+  are an empty list, and only the caller knows the NWF was just opened and waited on.
+  `RunPath.Stopped` is the label and both the confirm dialog and the RESULT block count
+  it. The preview reads the same two rules, because a preview that says Rebuilt about a
+  healthy NWF is the confirm dialog lying
+- THE DOCUMENT IS EMPTIED AT THE TOP OF EVERY GROUP, BEFORE DECIDE, F75. Before this
+  there were two clears in the whole engine and both ran AFTER Decide had read the file
+  list, so Decide compared the scan against whatever the previous building had left
+  behind. `CensusRule.StartOfGroupLine` and `StartOfGroupReason` are the Core half: the
+  first census of a group must read models 0, sets 0, tests 0, results 0, views 0, and a
+  group that was emptied and still holds something is named count by count and is not
+  DONE, because everything it goes on to read comes out of that document. A count that
+  could not be taken is never called dirty, the same way UNKNOWN is never called a move.
+  THE OPEN FILE RUN EMPTIES NOTHING, because the document IS the file list there, so it
+  passes cleared false, says what it found and is never a fault. The two weekly lines in
+  the confirm dialog say nothing INSIDE the NWF is cleared, which is what a person is
+  asking about, rather than the old "Nothing is cleared" that F75 made untrue
 - A federation that already exists needs NO SCAN. In Navisworks a person opens a file,
   opens Clash Detective, presses Run and reads the results, and nothing asks them where
   their models came from. So there are two ways to run and they are told apart by what they
@@ -640,6 +790,41 @@ and 6 does not read as broken.
 - Every check gets a test that BREAKS one thing and asserts the check names it. A test that
   only asserts the good file passes would have passed against all eight of the differences
   above. Fourteen of them live in WorkbookCellCheckTests
+- THE SAVED VIEWPOINTS ARE THREE FOLDERS DEEP AND ONE PER CLASH, F85, planned by
+  `Federator.Core.Views.ClashViewpointPlan` with `DisciplinePairRule` for layer 2. ONE PER
+  CLASH AND NOT PER TEST, because the thing a person presses has to be the thing they are
+  looking at. Layer 1 is the priority off the client's matrix, A, B, C or No priority, and
+  it is DROPPED ENTIRELY when no priority file was picked, which the block says in so many
+  words. Layer 2 is the two disciplines SORTED, so AR vs ST and ST vs AR are one folder,
+  or half the clashes of a pair go in one folder and half in another. Layer 3 is the size
+  folder, named by `ViewpointSettings.SubGroupFolderName` off the threshold so it can
+  never read Over 150mm beside a rule using 250, and it appears ONLY under a pair
+  involving one of `SubGroupDisciplines`, which F53 already asks the same question
+  through. The seven codes are a SETTING, `DisciplineCodes`, matched Ordinal and never
+  cased, and the code is whichever hyphen separated part of a set name is exactly one of
+  them. A SET NAME CARRYING NO KNOWN CODE IS REPORTED AND NEVER GUESSED: the client's own
+  file holds BLD-Security Devices, which breaks the pattern its siblings follow, so the
+  folder says UNKNOWN and the count goes in the block
+- THE SMALL SERVICE RULE IN F85 IS ITS OWN AND IS NOT INHERITED FROM F72a. A service at or
+  under the threshold stays out of the tree, decided on the SIZE and never on the status.
+  F72a is off by default, and it leaves a service against another service exactly as it
+  was, Q44, so a tree that read the status would fill with every small pipe through every
+  wall on a run with that box off. And Reviewed is one of the three statuses the tree
+  carries, so a service F72a DID move is still in scope and is kept out by the size branch
+  rather than by the status filter. The three statuses are read off
+  `OpenClashes.StatusesFor(NavisworksOpen)` and never typed, because the image filter
+  reads the same place
+- F85 BRANCHES ON `SizeVerdict` AND NEVER ON `SizeDecision.Included`, which folds Large
+  and SizeUnknown together for F53's own reasons and would put every fitting with no size
+  property into Over 150mm. A size that could not be read goes in the PAIR folder and is
+  COUNTED, and none is dropped. A clash side is read the way F72a reads one, the LARGEST
+  size property the item carries, or the same 600 by 150 duct could be set Reviewed by
+  F72a as a large service and filed here as a small one. Q51
+- A VIEWPOINT'S NAME CARRIES THE TEST AS WELL AS THE CLASH, F85. A clash name is unique
+  only within its test and this tree puts clashes from many tests into one pair folder, so
+  a leaf named after the clash alone would collide and the already there check and the
+  read back would both stop meaning anything. How many viewpoints one test may write is a
+  SETTING, off by default, the same shape and the same reason the images cap has
 - Pipes, ducts, cable trays and their fittings OVER 150 mm go in the viewpoints and
   smaller ones do not, and the large ones of Mechanical and Electrical sit in a sub group
   of their own. 150 is a setting in millimetres, named once in
@@ -715,6 +900,47 @@ and 6 does not read as broken.
   StatusesThisToolMaySet still answers the other half, which is that Reviewed is the only
   status this tool ever sets, and the two together are what stop a caller moving an
   Approved clash by mistake
+- A SECOND RULE MOVES A CLASH TO REVIEWED, F72b, AND IT IS A LIST AND NOT A JUDGEMENT.
+  A column on its foundation, a door in a wall, a valve in a pipe run. Every one is a
+  clash and none is a problem. `Federator.Core.Clash.ByDesignPairs` reads a CSV of
+  left_set, right_set, reason, `ByDesignRule` decides and `ByDesignTally` is the block.
+  It knows nothing about items, categories, sizes or disciplines, deliberately: reading
+  every item once per clash is the walk shape that once built 1.7 million native handles
+  in one group, and this rule needs none of it. THE TWO SET NAMES ARE SORTED BEFORE
+  MATCHING, so a pair written one way round matches a test written the other way round.
+  Set names are Ordinal and NEVER trimmed or lowered, which is the opposite of how a
+  CATEGORY is matched and is deliberate: two set names in the reference file end in a
+  space and the pairs file carries two different ampersand spellings, both real. OFF by
+  default, the same status guard, `StatusesThisToolMayMoveFrom`, and Reviewed is still
+  the only status set. THE PENETRATION RULE OWNS A CLASH THEY BOTH WANT, counted here
+  under ThePenetrationRuleHasIt, so the two blocks add up to the number of clashes that
+  moved rather than to twice it. A pair naming a set not in this run is a FINDING, named
+  once across the whole run and not once per group, and nothing acts on it
+- THE REVIEWED LINE IS ONE RULE IN ONE PLACE, `Federator.Core.Clash.ReviewedLine`. Two
+  rules now write one and only the WHY differs. A second copy of that string in a second
+  tally is how the two would start reading differently, and a person scanning a log for
+  REVIEWED would then find one rule's moves and not the other's
+- THIS TOOL LEAVES A RECORD IN THE NWF OF EVERY CLASH IT MOVED, F72c, and the record IS
+  the comment. `AutoReviewRecord` is the shape: a marker no person would type, the rule,
+  THE STATUS THE CLASH WAS MOVED OFF, then the reason in plain words. The old status is
+  on it because New and Active are both statuses this tool may move from and an undo that
+  put everything back to New would destroy a real difference somebody made. It goes in
+  the NWF and never in a side file, because the NWF travels and a side file is lost the
+  first time somebody copies the federation. WHETHER A COMMENT CAN BE WRITTEN ON A CLASH
+  RESULT AT ALL IS UNKNOWN, scan.md 5h. If it cannot, this tool says so in ONE LINE and
+  carries on with the status alone, and NOTHING stands in for it: no side file, no
+  encoded clash name, no second copy anywhere. A comment that could not be written is not
+  a comment
+- THE UNDO TOUCHES ONLY WHAT THIS TOOL MOVED AND ONLY WHERE NOBODY HAS MOVED IT SINCE,
+  F72c. `UndoAutoReview` judges: it carries one of our records AND it is still at
+  Reviewed. A clash this tool set to Reviewed in week one that a person moved to Approved
+  in week two still carries the record and is LEFT ALONE, because that person's decision
+  is the one thing this tool never overwrites. `StatusesThisToolMaySet.AllowsAsUndo` is a
+  separate answer from `Allows` and NOT a loosening of it: an undo may set the exact
+  status one of this tool's own records names and nothing else, so Approved and Resolved
+  are still never set, because a record can only be written for a status this tool was
+  allowed to move from and the record's own constructor refuses the other three. Q50 asks
+  whether that is the right shape
 - NOTHING MOVES SILENTLY. A PENETRATION block per group names every clash moved with both
   categories and the service size, then the totals and ONE LINE PER REASON for every clash
   left alone, including the reasons at zero, because a reason missing from the block reads
@@ -723,6 +949,40 @@ and 6 does not read as broken.
   carries it in the CLIENT'S OWN Reviewed column, per test, because the status is applied
   before the harvest reads it. No column of ours goes on that sheet, which is the rule
   above about the workbook being their one sheet
+- THE PROPERTY PROBE READS AND CHANGES NOTHING, F86. `Federator.Core.Probe` holds the
+  whole of its rule: ProbeSettings for what is read and where the CSV goes, ProbeTally for
+  the counting, the cap and the order, ProbeCsv for the file, ProbeVerdict for the block.
+  It takes a folder of NWC files or the open document, and writes one
+  `<file>-properties.csv` beside each file with five columns, category, property tab,
+  property name, distinct value, how many elements. IT NEVER OPENS AN NWF, never saves and
+  never publishes, and `ProbeSettings.MayRead` is what makes that enforceable rather than a
+  promise in a comment: an NWF is refused by name because opening one replaces whatever is
+  open and the NWF is where every clash result lives, and an NWD is refused because it is
+  something this tool writes. THE SEVENTEEN CATEGORIES ARE NOT TYPED. They are the
+  thirteen `PenetrationSettings.DefaultServiceCategories` plus the four
+  `DefaultNotAServiceCategories`, which together are every category a service discipline
+  set in the client's matrix asks for, and a test reads the matrix and asserts it on every
+  run. Distinct values are capped at 100 per property, a setting, and what was left out is
+  SAID in a line of its own in the CSV and again in the verdict block, never dropped
+  silently. Rows are sorted by category, then property tab, then property name, then how
+  many elements carry the value, highest first, with the value itself as the tie break so
+  the same model gives the same file twice running. Nothing is trimmed, because a value
+  with a space on the end is a real thing in these files and the probe exists to find out
+  what is really there. The verdict block says whether FS or Fire Suppression appears in
+  any tab, name or value, and says so as plainly when it does not, because a probe that
+  only speaks up when it finds something reads as one that found nothing rather than as
+  one that ran. FS is matched as a WHOLE TOKEN and never inside a word, or OFFSET and
+  TRANSFER would both read as fire suppression
+- A CATEGORY A SERVICE SET ASKS FOR IS EITHER A SERVICE OR DECIDED NOT TO BE ONE, F72a.
+  `PenetrationSettings.IsDecided` is the rule and `DefaultNotAServiceCategories` is the
+  second list: Air Terminals, Mechanical Equipment, Plumbing Fixtures, Sprinklers. The
+  test that reads the client's matrix asserts the DECISION and not the membership, because
+  the literal reading would force Mechanical Equipment onto the service list and an air
+  handling unit against a wall would be moved to Reviewed automatically, which is the
+  opposite of what the penetration rule is for. A condition written as CONTAINS is a STEM
+  and not a category: Cable Tray matches Cable Trays and Cable Tray Fittings, Conduit
+  matches Conduits and Conduit Fittings, and all four are on the service list. Air
+  Terminals and Sprinklers are arguable both ways and are Q47
 - The scan reports what it noticed and never acts on it. ODD SHAPE, NEAR MATCH,
   SINGLE DISCIPLINE and MISSING are information. Nothing is blocked, unticked or
   merged, and no code is assumed right. Bader decides
@@ -775,9 +1035,11 @@ Where the time went is the question the log exists to answer, and it can only an
 it if the same work carries the same name every time it is timed.
 
 - the step names live in `Federator.Core.Diagnostics.RunSteps` and nowhere else. Nothing
-  types a step name as a string. Fourteen of them, in the order a group meets them:
+  types a step name as a string. Fifteen of them, in the order a group meets them:
   DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES,
-  WORKBOOK, HTML, XML, NWD, CONFIRM. A name that is not on the list is refused where the
+  VIEWS, WORKBOOK, HTML, XML, NWD, CONFIRM. VIEWS is F85's and it was untimed before
+  that: building the viewpoints was called outside every step, so its seconds came off
+  no total and the run read as faster than it was. A name that is not on the list is refused where the
   step opens, because a timing block holding a step nobody named is worse than a short one
 - a step is always opened in a using block, so it closes on the way out whether the work
   finished, returned early or threw. A step left open is the one thing that would make
@@ -834,7 +1096,7 @@ it if the same work carries the same name every time it is timed.
   second over is OVER. The forty five is `TimingBlock.UnattendedSeconds`, a setting, and
   a value at or below zero is refused where it is set
 - one line per test, `ROWS`, carries what the workbook got beside what the document
-  holds, so criterion 3 is answered off the log rather than by opening Excel and
+  holds, COLLAPSED in the text log since F81 and never in the machine readable one, so criterion 3 is answered off the log rather than by opening Excel and
   Navisworks side by side for 1830 tests. The two numbers are not the same thing: the
   tally counts leaves, descending into every result group, and the harvest writes one
   row per group without descending, which is also what the panel shows. So FEWER rows
@@ -857,10 +1119,21 @@ moved where nothing should have moved it is named rather than discovered a week 
   everything in it, so all five may move there and only there. APPEND moves the models.
   SETS the sets, TESTS CREATE the tests, TESTS RUN the results. Every other step writes
   a FILE and not the document, so none of them may move anything
-- a move the rule does not allow gets a line beginning CENSUS CHANGED, naming the step,
-  the count, the before and the after, and the reason goes on the group so it is not
-  reported DONE. Nothing is undone, nothing is skipped and the run carries on. The tool
-  reports what it noticed and Bader decides
+- THE RULE HAS THREE ANSWERS AND NOT TWO, F73. `CensusRule.Judge` gives Allowed, Noted
+  or Refused, and `CensusMove` is the enum. Allowed is the step doing the job it exists
+  for and writes nothing. Refused is the fault. NOTED is a count a step moves while
+  doing its own work, which writes a line and no reason. APPEND raising the saved
+  viewpoints is the one noted pair today: an NWC exported from Revit carries that
+  model's saved viewpoints and appending it brings them in. On the first real run that
+  was refused, so all seven groups were reported FAILED while 28 files had been written
+  correctly. `MayMove` is the narrow reading, Allowed only, and `StepsThatMayWrite` is
+  built from it, so a side effect never widens what the census is taken around
+- a move the rule REFUSES gets a line beginning CENSUS CHANGED, naming the step, the
+  count, the before and the after, and the reason goes on the group so it is not
+  reported DONE. A move it NOTES gets a line beginning CENSUS NOTED with the same
+  numbers, a sentence saying why that step moves them, and no reason at all, so the
+  group can still be DONE. Nothing is undone, nothing is skipped and the run carries on.
+  The tool reports what it noticed and Bader decides
 - THE CENSUS IS TAKEN AT MOST ONCE PER STEP PER GROUP, on the first visit, for the same
   reason the start and finish lines are written once. TESTS RUN is entered 1830 times
   and counting the whole document around every visit would be the log slowing the thing
@@ -906,6 +1179,75 @@ is exactly it, found by an audit of every file under src. The run says it itself
   HtmlTabularWriter and ClientReportColumns name none of Family, Type, Material,
   SourceFile, Discipline or IdFrom anywhere, and ClashReportXml writes two quick
   properties and says in its own comment that the five used to be written and are not
+
+### The run against the session, F80
+
+- THE HEADLINE TIME IS THE RUN AND NOT THE SESSION. `Federator.Core.Diagnostics.RunClock`
+  holds three stretches off the ONE monotonic clock: waiting for the person, the run
+  itself, and whatever happened after the run finished. `RunLog.RunStarted` and
+  `RunFinished` take the two marks and write the two lines together, so the marks and the
+  lines can never disagree. The run of 2026-09-19 read 1424 seconds, of which 473 were a
+  person reading the group table and pressing Run, and every share in the timing block was
+  worked off the bigger number so every step read as a smaller part of the run than it was
+- NONE OF THE THREE VANISHES. The tail between the last group finishing and the result
+  block being written is small and is NAMED, for the same reason the timing block has a
+  row for everything outside every step. Both numbers reach RESULT, because how long the
+  run took and how long the window was open answer different questions, and criterion 2 is
+  about the run
+- WITH NO RUN MARK THE RUN IS THE SESSION AND THE BLOCK SAYS IT FELL BACK. The open file
+  run and the two hand buttons on the Clash step never mark a run, and a block that
+  divided by zero or reported a negative there would be worse than one that says what it
+  did. A clock that went back gives no time rather than time owed
+- THE LOG STILL OPENS ON THE FIRST LINE OF THE BUTTON HANDLER and the session clock still
+  starts there, so a run that dies at startup still leaves a file. The run is two MARKS on
+  that clock and never a second stopwatch and never two wall clock readings subtracted
+
+### Trimming the .log and never the .tsv, F81
+
+- THE TEXT LOG IS TRIMMED AND THE MACHINE READABLE LOG KEEPS EVERYTHING. That is the whole
+  rule and it is the thing that would be easy to get wrong. `RunLog.NumberedRepeat` writes
+  the ROW FIRST and then decides about the sentence, so collapsing a line can never cost
+  the .tsv a row. One run wrote 936 ROWS lines all saying the two numbers agree, and
+  collapsing them by simply not calling Numbered would have lost all 936 rows
+- THE KEY IS WHAT MAKES TWO LINES THE SAME LINE and it is NEVER the sentence, because the
+  sentence carries the test name and the names are exactly what varies. Five go out in
+  full, then ONE line saying the rest are counted, then nothing, which is the same shape
+  the skips and the drift already use. The count is carried into RESULT by
+  `RunLog.CollapsedLines`, because a log that quietly wrote fewer lines than it had is a
+  log nobody can check
+- WHAT WAS COLLAPSED, measured on the run of 2026-09-19: 10,980 CLASH created lines, 1830
+  drift lines, 854 duplicate SET lines, 1584 passed lines and 936 ROWS lines. The drift
+  is GROUPED by `TestDrift.Grouped` on the field and both values, because every one of the
+  1830 said the same thing about a different name. The passed tests are collapsed by
+  `ClashRunOutcome.RanLines`, and a test that found CLASHES still gets its own line,
+  because every one of those says something different
+- THE PER GROUP SETS BLOCK IS GONE. `SetBuilder` already writes a live line per set as it
+  builds, so the block was a second copy of all 61 of them. The totals it also carried are
+  still said, in the one line after it and in the SETS step's own finish phrase
+- RESULT SAYS WHAT BOTH FILES CAME TO. The .log number is read BEFORE the last lines are
+  flushed and the line says so, because a size is only ever reported as what was actually
+  read off the disk
+
+### Sets across the run, F82
+
+- A SET AT ZERO IN ONE GROUP AND A SET AT ZERO IN EVERY GROUP ARE DIFFERENT FINDINGS. The
+  first says a discipline was not exported for that building. The second says the set
+  itself is wrong, and 38 of the client's 61 were in that state on the first real run with
+  nothing anywhere adding it up. `Federator.Core.Sets.SetsAcrossTheRun` is the tally and
+  the block goes straight after SOURCE FINDINGS, because it is the same kind of thing:
+  something the run noticed that no output carries
+- IT COUNTS A SET THAT WAS ALREADY THERE AS WELL AS ONE THIS RUN CREATED. `SetResult
+  .IsZero` is true only of a CREATED set that found nothing, because that is what the SETS
+  totals and the NWF save decision read. On a weekly run every set is already there, so
+  IsZero is false for all 61 while 38 of them found nothing, and reading it here would
+  make the block empty on exactly the runs it was written for
+- A SET THAT NEVER RESOLVED IS UNKNOWN AND NOT ZERO. It carries an item count of minus one
+  and is left out of both counts, the same way a census minus one is never called a move.
+  A set a group never looked at was not at zero there, so the tally counts groups SEEN as
+  well as groups at zero
+- TEN ARE NAMED AND THE REST ARE COUNTED, and the block SAYS it truncated. One row per set
+  is written on its own, because `Block` writes no row at all and the .tsv has to carry
+  what the block carries
 
 ### The machine readable log, F64
 

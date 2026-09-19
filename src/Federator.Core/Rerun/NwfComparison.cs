@@ -26,7 +26,15 @@ namespace Federator.Core.Rerun
         /// scan folder, keeping the tests saved inside it. Bader decided this on 2026-09-07,
         /// Q22, after six groups in one run were left alone with NWFs missing files.
         /// </summary>
-        Rebuilt
+        Rebuilt,
+
+        /// <summary>
+        /// The NWF opened with no error and then reported no models at all, F74. Nothing
+        /// can be decided from that. It is NOT a rebuild, because the one run that treated
+        /// it as one threw five real federations and every clash result in them away. The
+        /// group is stopped and the reason says what to do about it.
+        /// </summary>
+        Refused
     }
 
     /// <summary>
@@ -49,6 +57,7 @@ namespace Federator.Core.Rerun
             IList<string> unchanged)
         {
             Decision = decision;
+            Reason = null;
             InNwf = new ReadOnlyCollection<string>(inNwf);
             Scanned = new ReadOnlyCollection<string>(scanned);
             Added = new ReadOnlyCollection<string>(added);
@@ -57,6 +66,12 @@ namespace Federator.Core.Rerun
         }
 
         public RerunDecision Decision { get; private set; }
+
+        /// <summary>
+        /// Why the group was stopped, in the words a person would say, or null where it
+        /// was not. Only a Refused comparison carries one, F74.
+        /// </summary>
+        public string Reason { get; private set; }
 
         /// <summary>The files the NWF already points at. Empty when there is no NWF.</summary>
         public ReadOnlyCollection<string> InNwf { get; private set; }
@@ -91,8 +106,65 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
+        /// What to do about a group stopped this way, which is the half of the reason that
+        /// is the same every time. Named once so the log line and the group reason cannot
+        /// drift, F74.
+        /// </summary>
+        public const string WhatToDo =
+            "It was NOT rebuilt, because rebuilding an NWF that had simply not finished "
+            + "loading would throw away every clash result and every status decision "
+            + "inside it. Open it in Navisworks and look: a federation that really is "
+            + "empty can be deleted, and this group builds it again on the next run. One "
+            + "that opens with its models in it is a loading fault to report";
+
+        /// <summary>
+        /// The NWF opened with no error, was waited on, and still reported no models at
+        /// all, F74. The group is stopped, nothing is cleared and nothing is rebuilt.
+        ///
+        /// WHY A STOP AND NOT A REBUILD. On the first real run five existing NWFs each
+        /// reported "0 unchanged, 4 added, 0 removed", which reads as a file list that has
+        /// changed completely, so all five were cleared and rebuilt from the scan. They
+        /// had not changed. They had not finished loading. What was thrown away was five
+        /// federations and every clash result and status decision inside them, which is
+        /// the one thing in this tool there is no second copy of.
+        ///
+        /// WHY IT IS NOT AN OPEN EITHER. Zero against zero would read as a match and the
+        /// group would carry on and run its tests against an empty document, which reports
+        /// every test as passing. A wrong answer that reads as a good one is worse than a
+        /// stop.
+        ///
+        /// The reason names the file and says what to do, because a stopped group with no
+        /// next action is just a group that did not run.
+        /// </summary>
+        public static NwfComparison ReadEmpty(string nwfPath, IEnumerable<string> scanned, string howLongWaited)
+        {
+            List<string> files = Normalise(scanned);
+
+            NwfComparison refused = new NwfComparison(
+                RerunDecision.Refused,
+                new List<string>(),
+                files,
+                new List<string>(),
+                new List<string>(),
+                new List<string>());
+
+            refused.Reason = "the NWF at " + Words(nwfPath)
+                + " opened with no error and then reported no models at all"
+                + (string.IsNullOrEmpty(howLongWaited) ? string.Empty : ", " + howLongWaited)
+                + ". " + WhatToDo;
+
+            return refused;
+        }
+
+        /// <summary>
         /// Compares what the NWF holds against what the scan found. An empty NWF still
         /// counts as existing, so a group whose scan is also empty matches it.
+        ///
+        /// THIS METHOD CANNOT ANSWER F74 AND MUST NOT TRY. Handed an empty list it cannot
+        /// tell a genuinely empty NWF from one whose models have not loaded yet, because
+        /// both are an empty list. Only the caller knows the NWF was just opened off disk
+        /// and waited on, so the caller calls ReadEmpty instead. Leaving that judgement
+        /// here would put a rule in two places and the one that saw less would win.
         /// </summary>
         public static NwfComparison Compare(IEnumerable<string> inNwf, IEnumerable<string> scanned)
         {
@@ -205,6 +277,11 @@ namespace Federator.Core.Rerun
                         + ", so it was not cleared and nothing was re-appended");
                     break;
 
+                case RerunDecision.Refused:
+                    lines.Add("STOPPED  " + nwfPath + " opened and reported no models at all");
+                    lines.Add("         " + WhatToDo);
+                    break;
+
                 default:
                     // The heading and the counts only. Which file was added, which moved
                     // and which was removed is said once, by NwfRebuildPlan, in the
@@ -223,6 +300,11 @@ namespace Federator.Core.Rerun
         private static string Word(int count, string one, string many)
         {
             return count == 1 ? one : many;
+        }
+
+        private static string Words(string value)
+        {
+            return string.IsNullOrEmpty(value) ? "an unknown path" : value;
         }
 
         public override string ToString()

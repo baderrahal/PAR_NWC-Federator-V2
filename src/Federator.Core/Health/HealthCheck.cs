@@ -114,8 +114,23 @@ namespace Federator.Core.Health
                 distinctRuleCount,
                 allShareOneRule,
                 FindDuplicateNames(setList),
-                FindSetsAtRoot(setList));
+                FindSetsAtRoot(setList),
+                SetWarnings.FindIdentical(setList),
+                SetWarnings.FindCategoriesNobodyHas(setList, CategoryPropertyInternalName),
+                SetWarnings.FindOddNames(setList, SetNameSeparator));
         }
+
+        /// <summary>
+        /// The property internal name a category condition carries, F84. It is the name
+        /// the API matches on and not the word a person reads, which is Category, and it
+        /// is named here once so the warning and the reader cannot drift.
+        /// </summary>
+        public const string CategoryPropertyInternalName = "LcRevitPropertyElementCategory";
+
+        /// <summary>What separates the parts of a set name, F84. A setting in every other
+        /// place this tool splits a name, and a constant here only because a health check
+        /// runs before any options object exists.</summary>
+        public const char SetNameSeparator = '-';
 
         /// <summary>
         /// Records the locator a side names. Returns false when the side is missing or

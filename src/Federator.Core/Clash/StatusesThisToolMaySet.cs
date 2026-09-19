@@ -36,6 +36,52 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// Whether this tool may set that status AS AN UNDO, F72c.
+        ///
+        /// THIS IS NOT A LOOSENING OF THE RULE ABOVE AND IT MUST NOT BECOME ONE. The rule
+        /// above stops this tool INVENTING a status. An undo invents nothing: it puts a
+        /// clash back to the exact status one of this tool's own records says this tool
+        /// moved it off, in this file, and it refuses anything else. Approved and Resolved
+        /// are still never set, because no record can name one: a record can only be
+        /// written for a status this tool was allowed to move from, which is New or
+        /// Active, and the record's own constructor refuses the other three.
+        ///
+        /// So the whole of what an undo may do is: read our record, read the status it
+        /// names, set that. A record that names something else, or no record at all, is a
+        /// refusal.
+        ///
+        /// Whether the record can be written at all is the measurement in scan.md 5h. If
+        /// a comment cannot be written on a clash result there is no record, so there is
+        /// nothing to undo, and the button says that in one line rather than guessing.
+        /// </summary>
+        public static bool AllowsAsUndo(ClashStatus asked, AutoReviewRecord record)
+        {
+            return record != null && asked == record.WasAt;
+        }
+
+        /// <summary>
+        /// Why an undo may not set that status, or null where it may. Every refusal says
+        /// WHICH status was asked for, the same as the one above.
+        /// </summary>
+        public static string WhyNotAsUndo(ClashStatus asked, AutoReviewRecord record)
+        {
+            if (record == null)
+            {
+                return "there is no record of this tool moving that clash, so there is "
+                    + "nothing to undo and " + asked + " would be a status this tool invented";
+            }
+
+            if (asked != record.WasAt)
+            {
+                return "the record says the clash was at " + record.WasAt + " and the undo "
+                    + "asked for " + asked + ". An undo puts a clash back where it was and "
+                    + "nowhere else";
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Why not, in the words the log carries, or null where it is allowed. Every
         /// refusal says WHICH status was asked for, because a line saying only that
         /// something was refused sends the reader back to the code.

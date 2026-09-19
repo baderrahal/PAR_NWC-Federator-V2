@@ -41,11 +41,19 @@ namespace Federator.Core.Rerun
         /// </summary>
         public const string Skipped = "Skipped (changed on disk)";
 
+        /// <summary>
+        /// A group whose NWF opened with no error and reported no models at all, F74. It
+        /// is stopped rather than rebuilt, because the run that rebuilt five of them threw
+        /// five federations and every clash result in them away.
+        /// </summary>
+        public const string Stopped = "Stopped (the NWF read empty)";
+
         /// <summary>For a decision the rule cannot name. Never shown for the known ones.</summary>
         public const string Unknown = "Unknown";
 
-        /// <summary>The six labels, in the order the counts are listed.</summary>
-        public static readonly string[] All = { FirstRun, WeeklyRun, WeeklyRunPlusXml, Rebuilt, Skipped, Unknown };
+        /// <summary>The seven labels, in the order the counts are listed.</summary>
+        public static readonly string[] All =
+            { FirstRun, WeeklyRun, WeeklyRunPlusXml, Rebuilt, Skipped, Stopped, Unknown };
 
         /// <summary>The label for a group once Decide has run and the group has ended.</summary>
         public static string Label(RerunDecision decision, bool xmlPicked)
@@ -60,6 +68,8 @@ namespace Federator.Core.Rerun
                     return Rebuilt;
                 case RerunDecision.Changed:
                     return Skipped;
+                case RerunDecision.Refused:
+                    return Stopped;
                 default:
                     return Unknown;
             }
@@ -135,6 +145,12 @@ namespace Federator.Core.Rerun
         /// Rebuilt groups. Rebuilt is only known once each NWF is opened, and where the
         /// window could not open them first the line says so rather than pretending to a
         /// number.
+        ///
+        /// SINCE F75 THE DOCUMENT IS EMPTIED AT THE TOP OF EVERY GROUP on the scanned
+        /// path, so the two weekly lines no longer say "Nothing is cleared". They say
+        /// nothing INSIDE the NWF is cleared, which is what a person is actually asking
+        /// about and is still true: the document is emptied and then opening the NWF fills
+        /// it again from the file on disk.
         /// </summary>
         public static IList<string> ConfirmLines(IEnumerable<string> labels)
         {
@@ -155,11 +171,11 @@ namespace Federator.Core.Rerun
                     : "."));
             lines.Add(WeeklyRun + ": " + counts[WeeklyRun]
                 + (counts[WeeklyRun] > 0
-                    ? ". The NWF already there is opened and the saved tests run. Nothing is cleared."
+                    ? ". The NWF already there is opened and the saved tests run. Nothing inside it is cleared."
                     : "."));
             lines.Add(WeeklyRunPlusXml + ": " + counts[WeeklyRunPlusXml]
                 + (counts[WeeklyRunPlusXml] > 0
-                    ? ". The NWF already there is opened and the XML adds or updates tests. Nothing is cleared."
+                    ? ". The NWF already there is opened and the XML adds or updates tests. Nothing inside it is cleared."
                     : "."));
             lines.Add(Rebuilt + ": " + counts[Rebuilt]
                 + (counts[Rebuilt] > 0
@@ -169,6 +185,17 @@ namespace Federator.Core.Rerun
             if (counts[Skipped] > 0)
             {
                 lines.Add(Skipped + ": " + counts[Skipped] + ".");
+            }
+
+            // F74. Only ever shown with a count, because the preview is the only thing
+            // that can know it before the run, and a line reading zero on every run
+            // teaches people to skip it.
+            if (counts[Stopped] > 0)
+            {
+                lines.Add(Stopped + ": " + counts[Stopped]
+                    + ". The NWF opened with no error and reported no models at all, so "
+                    + "the group is stopped rather than rebuilt and nothing in it is "
+                    + "cleared. The log says which file and what to do.");
             }
 
             if (counts[Unknown] > 0)
@@ -190,6 +217,11 @@ namespace Federator.Core.Rerun
             lines.Add("weekly + XML   : " + counts[WeeklyRunPlusXml]);
             lines.Add("rebuilt        : " + counts[Rebuilt]);
             lines.Add("skipped        : " + counts[Skipped]);
+
+            if (counts[Stopped] > 0)
+            {
+                lines.Add("NWF read empty : " + counts[Stopped]);
+            }
 
             if (counts[Unknown] > 0)
             {

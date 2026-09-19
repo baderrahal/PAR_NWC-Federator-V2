@@ -41,6 +41,9 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
     docs\workflow.md        the two workflows, the labels and the open file run
     docs\history            measurements and old rules, never current
     samples                 real files from the project, read by tests, never edited
+    exchange                what this tool wrote from a sample, such as the corrected
+                            matrix. Committed, and proved by a test to be exactly what
+                            the rule produces from the sample, so it cannot drift
     steps                   the plan, the questions, what Bader does next, the log
     bundle                  one hand written manifest, PackageContents.xml, copied by
                             install.ps1. Not build output and not edited in a fix

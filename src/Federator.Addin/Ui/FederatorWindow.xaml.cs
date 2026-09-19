@@ -1519,7 +1519,10 @@ namespace Federator.Addin.Ui
 
             try
             {
-                log.Line("RUN      started, " + jobs.Count + " groups");
+                // F80. The mark and the line together, off the log's own monotonic clock,
+                // so the run time in the timing block is RUN started to RUN finished and
+                // not the session, which carried 473 seconds of a person reading a table.
+                log.RunStarted(jobs.Count);
 
                 // Read once, before the first group, so a file that will not read stops
                 // the run here rather than part way through the second building.
@@ -1565,7 +1568,22 @@ namespace Federator.Addin.Ui
                 log.Block(RunLog.SourceFindingsSectionTitle, sourceFindings.Lines());
                 ShowFindings();
 
-                log.Line("RUN      finished");
+                // F82. Straight after the source findings, because it is the same kind of
+                // thing: something the run noticed that no output carries. A set at zero
+                // in ONE group says a discipline was not exported for that building. A set
+                // at zero in EVERY group says the set itself is wrong, and 38 of 61 were
+                // in that state with nothing anywhere adding it up.
+                log.Block(SetsAcrossTheRun.BlockTitle, engine.SetsAcrossTheRun.Lines());
+
+                // The rows on their own, because Block writes none, so the machine
+                // readable log carries what the block carries.
+                foreach (SetRunRow row in engine.SetsAcrossTheRun.Rows())
+                {
+                    log.Row("set across the run", row.Path,
+                        EventRow.Count(row.GroupsAtZero), row.Phrase());
+                }
+
+                log.RunFinished();
                 SetProgress("Run finished. " + log.CountOf(GroupOutcome.Done) + " done, "
                     + log.CountOf(GroupOutcome.Partial) + " partial, "
                     + log.CountOf(GroupOutcome.Failed) + " failed.");

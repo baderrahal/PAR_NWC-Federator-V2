@@ -238,7 +238,7 @@ namespace Federator.Core.Tests
         [Test]
         public void EveryPickerHasItsOwnSlot()
         {
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(6));
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(8));
             Assert.That(FolderMemory.AllKinds().Length,
                 Is.EqualTo(Enum.GetValues(typeof(PickerKind)).Length),
                 "a picker was added and the memory does not know about it");

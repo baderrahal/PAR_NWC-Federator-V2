@@ -350,8 +350,11 @@ namespace Federator.Core.Tests
 
             PlannedCondition condition = SetBuildPlan.From(document).Buildable[0].Conditions[0];
 
+            // The friendly name rides BESIDE the internal one, F78, never in place of it.
+            // lcldrevit_parameter_-1002053 tells a reader nothing and Workset tells them
+            // everything, and the internal name is what the API matches on.
             Assert.That(condition.Describe(),
-                Is.EqualTo("LcRevitData_Element/LcRevitPropertyElementCategory equals \"Roofs\""));
+                Is.EqualTo("LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals \"Roofs\""));
             Assert.That(condition.Describe(), Does.Not.Contain("Element/Category"),
                 "the display words must not be what gets reported as the question");
         }
@@ -364,7 +367,7 @@ namespace Federator.Core.Tests
                         "LcOaNodeSourceFile", "Source File", "-AR-"))));
 
             Assert.That(SetBuildPlan.From(document).Buildable[0].Conditions[0].Describe(),
-                Is.EqualTo("LcOaNodeSourceFile contains \"-AR-\""));
+                Is.EqualTo("LcOaNodeSourceFile (Source File) contains \"-AR-\""));
         }
 
         [Test]
@@ -378,8 +381,130 @@ namespace Federator.Core.Tests
                         "LcOaNodeSourceFile", "Source File", "-AR-"))));
 
             Assert.That(SetBuildPlan.From(document).Buildable[0].Describe(),
-                Is.EqualTo("LcRevitData_Element/LcRevitPropertyElementCategory equals \"Walls\""
-                    + " and LcOaNodeSourceFile contains \"-AR-\""));
+                Is.EqualTo("LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals \"Walls\""
+                    + " and LcOaNodeSourceFile (Source File) contains \"-AR-\""));
+        }
+
+        /// <summary>
+        /// F78. Every condition used to be joined with "and", so the four conditions of
+        /// BLD-ME-Ducts&amp;Duct Fittings read as Category equals Ducts AND Category equals
+        /// Duct Fittings, which is a question no element can answer. A set that found
+        /// thousands of items was described as one that could find none.
+        ///
+        /// The file says otherwise. flags="64" is StartGroup, the conditions inside a group
+        /// are ANDed and the groups are ORed.
+        /// </summary>
+        [Test]
+        public void AGroupStartedByTheFlagIsOrredAgainstTheOneBeforeIt()
+        {
+            ExchangeDocument document = Read(SetsXml(
+                Set("BLD-ME-Ducts&amp;Duct Fittings",
+                    Condition("equals", "0", "LcRevitData_Element", "Element",
+                        "LcRevitPropertyElementCategory", "Category", "Ducts")
+                    + Condition("equals", "0", "LcRevitData_Element", "Element",
+                        "lcldrevit_parameter_-1002053", "Workset", "ME-DUCTWORK")
+                    + Condition("equals", "64", "LcRevitData_Element", "Element",
+                        "LcRevitPropertyElementCategory", "Category", "Duct Fittings")
+                    + Condition("equals", "0", "LcRevitData_Element", "Element",
+                        "lcldrevit_parameter_-1002053", "Workset", "ME-DUCTWORK"))));
+
+            PlannedSet set = SetBuildPlan.From(document).Buildable[0];
+
+            Assert.That(set.GroupCount, Is.EqualTo(2));
+            Assert.That(set.Describe(), Does.Contain(") or ("));
+            Assert.That(set.Describe(), Does.Contain("(Workset)"),
+                "lcldrevit_parameter_-1002053 tells a reader nothing on its own");
+            Assert.That(set.Describe(), Does.StartWith("("));
+            Assert.That(set.Describe(), Does.EndWith(")"));
+
+            Assert.That(set.Describe(), Is.EqualTo(
+                "(LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals \"Ducts\""
+                + " and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals \"ME-DUCTWORK\")"
+                + " or (LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals \"Duct Fittings\""
+                + " and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals \"ME-DUCTWORK\")"));
+        }
+
+        /// <summary>
+        /// With one group there is nothing to bracket, so the 56 ordinary sets of the
+        /// client's matrix read exactly as they did.
+        /// </summary>
+        [Test]
+        public void OneGroupIsNotBracketedAndSaysNoOr()
+        {
+            ExchangeDocument document = Read(SetsXml(
+                Set("BLD-AR-Walls",
+                    Condition("equals", "0", "LcRevitData_Element", "Element",
+                        "LcRevitPropertyElementCategory", "Category", "Walls")
+                    + Condition("contains", "0", null, null,
+                        "LcOaNodeSourceFile", "Source File", "-AR-"))));
+
+            PlannedSet set = SetBuildPlan.From(document).Buildable[0];
+
+            Assert.That(set.GroupCount, Is.EqualTo(1));
+            Assert.That(set.Describe(), Does.Not.Contain(" or "));
+            Assert.That(set.Describe(), Does.Not.StartWith("("));
+        }
+
+        [Test]
+        public void TheFlagIsReadOffTheBitAndNotOffTheWholeNumber()
+        {
+            ExchangeDocument document = Read(SetsXml(
+                Set("S",
+                    Condition("equals", "0", null, null, "P", "P", "a")
+                    + Condition("equals", "65", null, null, "P", "P", "b"))));
+
+            PlannedSet set = SetBuildPlan.From(document).Buildable[0];
+
+            Assert.That(set.Conditions[1].StartsAGroup, Is.True,
+                "65 carries the 64 bit and something else, and the bit is what matters");
+            Assert.That(set.Conditions[0].StartsAGroup, Is.False);
+            Assert.That(set.GroupCount, Is.EqualTo(2));
+        }
+
+        /// <summary>
+        /// Measured off the client's own matrix on 2026-09-19. Five conditions of 102 carry
+        /// the flag, one in each of the five sets that hold four conditions, and every one
+        /// of those five reads as two groups ORed.
+        /// </summary>
+        [Test]
+        public void FiveSetsInTheClientsMatrixAskAnOrAndTheRestDoNot()
+        {
+            ExchangeDocument document = new ExchangeReader().ReadFile(Samples.CorrectedMatrix());
+            SetBuildPlan plan = SetBuildPlan.From(document);
+
+            int withAnOr = 0;
+            int conditionsWithTheFlag = 0;
+
+            foreach (PlannedSet set in plan.Buildable)
+            {
+                if (set.GroupCount > 1)
+                {
+                    withAnOr++;
+                    Assert.That(set.Describe(), Does.Contain(") or ("), set.Name);
+                }
+
+                foreach (PlannedCondition condition in set.Conditions)
+                {
+                    if (condition.StartsAGroup)
+                    {
+                        conditionsWithTheFlag++;
+                    }
+                }
+            }
+
+            Assert.That(plan.Buildable.Count, Is.EqualTo(61));
+            Assert.That(withAnOr, Is.EqualTo(5));
+            Assert.That(conditionsWithTheFlag, Is.EqualTo(5), "one in each of the five");
+        }
+
+        [Test]
+        public void ThePropertyNameIsNotPrintedTwiceWhenBothHalvesAreTheSameWord()
+        {
+            ExchangeDocument document = Read(SetsXml(
+                Set("S", Condition("equals", "0", null, null, "Name", "Name", "a"))));
+
+            Assert.That(SetBuildPlan.From(document).Buildable[0].Conditions[0].Describe(),
+                Is.EqualTo("Name equals \"a\""));
         }
 
         // ---------- a file with no sets ----------

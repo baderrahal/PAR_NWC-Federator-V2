@@ -43,7 +43,163 @@ The build round closed on 2026-09-19. F65 to F70 are all done and each carries i
 
 The penetration round closed on 2026-09-19. F71 and F72 are both done and each carries its DONE line below. Q33 is answered and Q41 to Q45 are recorded. The two branches are pushed and not merged, because nothing in this session could open a pull request, and Bader merges them in order.
 
+Renumbered again on 2026-09-19 when the first run round opened. Bader ran the tool for real against seven buildings and briefed seventeen items off that one log. F73 to F87 were all free and the seventeen map onto the brief in the brief's own order, with F72a, F72b and F72c kept as the brief wrote them because they extend F72 rather than replacing it. F88 is an eighteenth, not briefed: `samples\Search Set Infra.xml` had been deleted and thirteen tests read it, so main was red before the round started.
+
+THE WHOLE ROUND IS ONE BRANCH AND ONE PULL REQUEST, `round-first-run`, which Bader asked for on 2026-09-19 because the repo already carries seventy branches waiting on the D6 delete and eighteen more unmerged would be worse. Each fix is still its own commit, so the history reads one fix per commit.
+
+EVERY FIX IN THIS ROUND IS THE CORE HALF ONLY. The round was worked in a Linux container with no Navisworks on it, so nothing in the add-in was compiled. Every rule is in Federator.Core, every one has tests, and the whole Core set passes. The add-in wiring is `03_bader_next.md` steps 358 to 380 and the five measurements the round could not take are steps 353 to 357.
+
+19. F88, DONE, restore the sample thirteen tests read. Not briefed, found by running the tests on main
+20. F87, DONE, correct the matrix, the hyphen and BLD-EL-Devices
+21. F72a, DONE, Pipe Insulation is a service, and the matrix test
+22. F73, DONE, appending brings the viewpoints in, which is not a fault
+23. F74, DONE, the NWF that read empty is stopped and never rebuilt
+24. F75, DONE, the document is emptied at the top of every group
+25. F76, DONE, the tolerance can be chosen in the tool and it wins
+26. F77, DONE, a test whose side finds nothing is not created at all
+27. F86, DONE, the property probe
+28. F83, DONE, the clash priority reaches the report
+29. F72b, DONE, by design connections become Reviewed
+30. F72c, DONE, the record in the NWF and the undo
+31. F85, DONE, the saved viewpoints in three layers, planned and not written
+32. F84, DONE, the sets that cannot match anything
+33. F78, DONE, the log says or where the file says or
+34. F79, DONE, which missing item ids are this run's
+35. F80, DONE, the run time is the run and not the session
+36. F81, DONE, the .log is trimmed and the .tsv keeps everything
+37. F82, DONE, sets across the run
+
 Nothing else is open. F19 is dropped.
+
+## The first run round, F73 to F88
+
+Every one of these came off ONE log, `run-20260919-144319.log`, the first real run of the tool in Navisworks. Seven groups, 28 files written correctly, 0 reported done and 7 reported failed.
+
+### F88 Restore the sample thirteen tests read
+
+- Files `samples/Search Set Infra.xml`
+- CONTAINER
+- Not briefed. `samples\Search Set Infra.xml` was deleted at 13:33 on 2026-09-19, commit e641c9a, one minute before PR #59 merged. Thirteen tests read it and main was red
+- DONE on 2026-09-19. Restored from `e641c9a^`, 1,085,755 bytes, 30,074 lines, byte for byte the file that was there. Core tests 1293 to 1306 passed
+
+### F87 Correct the matrix, the hyphen and BLD-EL-Devices
+
+- Files `src/Federator.Core/Exchange/MatrixCorrections.cs` which is new, `exchange/1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` which is new, `tests/Federator.Core.Tests/Samples.cs`, `CLAUDE.md`
+- CONTAINER for the corrections, LOCAL MACHINE for whether a negated condition imports
+- TWO JOBS. `BLD-DRPipe Accessories` is missing a hyphen, in the set name, its locator and all 120 test names, 121 occurrences. And `BLD-EL-Devices` asks for Electrical Fixtures, which is the same set as `BLD-EL-Electrical Fixtures`
+- The corrected file is WRITTEN to `exchange\` and never over the sample, because samples is evidence and a hook refuses the edit
+- DONE on 2026-09-19. 121 renames then one category rewrite. The rule is generic, because nothing in the code names any one project's file, and it is IDEMPOTENT by construction: `SetRename`'s constructor refuses a To that contains its From, so a second run reads 0 and that is what proves it. The negated form is NOT written, because whether Navisworks imports a negation is UNKNOWN, `scan.md` 5g, and the fallback `Category equals "Nurse Call Devices"` is proved to import since the whole file uses `equals`. Two other things fell out of it: the priority file matches the CORRECTED matrix on all 1830 tests and the uncorrected one on 1770, and the health check finds one odd set name in the corrected file and two in the uncorrected one
+
+### F72a Pipe Insulation is a service, and the matrix test
+
+- Files `src/Federator.Core/Clash/PenetrationSettings.cs`, `tests/Federator.Core.Tests/Clash/PenetrationRuleTests.cs`
+- CONTAINER
+- An insulated 100 mm pipe through a wall makes TWO clashes, the pipe and its insulation, and they are the same penetration. Without insulation on the list the pipe moved and its insulation stayed at New
+- DONE on 2026-09-19. Thirteen service categories now. The second half is the test that reads the corrected matrix, and the brief's literal wording would have forced Mechanical Equipment onto the service list, which would move an air handling unit against a wall to Reviewed automatically. So the test asserts the DECISION and not the membership, through a second list, `DefaultNotAServiceCategories`, holding Air Terminals, Mechanical Equipment, Plumbing Fixtures and Sprinklers. Two of those four are arguable and are Q47
+
+### F73 Appending brings the viewpoints in, which is not a fault
+
+- Files `src/Federator.Core/Diagnostics/CensusMove.cs` which is new, `CensusRule.cs`, `.claude/rules/core.md`
+- CONTAINER
+- `CENSUS CHANGED  APPEND  saved viewpoints went from 0 to 20` in all seven groups, and that one line put every group out of DONE while 28 files had been written correctly
+- DONE on 2026-09-19. The rule has three answers now, Allowed, Noted and Refused, and `Judge` is the one place that answers. APPEND and the viewpoints is Noted: the line is still written, reworded, says why, and ends can still be DONE. No reason reaches the group. Sets, tests and results still may not move during APPEND, and viewpoints moving during any other step is still refused
+
+### F74 The NWF that read empty is stopped and never rebuilt
+
+- Files `src/Federator.Core/Rerun/ModelLoadWait.cs` which is new, `NwfComparison.cs`, `RunPath.cs`, `GroupJudgement.cs`, `docs/history/scan.md`
+- CONTAINER for both rules, LOCAL MACHINE for whether the API reports readiness
+- All five existing NWFs reported 0 unchanged, 4 added, 0 removed and were thrown away, and `STEP DECIDE finished 0.248s` against 2.3 to 4.8 seconds for every open on record
+- DONE on 2026-09-19. `ModelLoadWait` polls until the count stops moving, three identical readings a quarter second apart, with a thirty second ceiling, and ZERO NEVER SETTLES because zero cannot be told apart from a document that has not started filling. `NwfComparison.ReadEmpty` is the refusal: a new `RerunDecision.Refused`, a reason naming the file and saying what to do, a `RunPath.Stopped` label counted in both blocks, and a FAILED group. `Compare` is unchanged and its comment now says why it must not try to answer this. Whether the API reports readiness on its own is UNKNOWN, `scan.md` 5e
+
+### F75 The document is emptied at the top of every group
+
+- Files `src/Federator.Core/Diagnostics/CensusRule.cs`, `src/Federator.Core/Rerun/RunPath.cs`
+- CONTAINER for the rule, LOCAL MACHINE for the clear itself
+- There were two clears in the whole engine and both ran AFTER Decide had read the file list
+- DONE on 2026-09-19. `StartOfGroupLine` and `StartOfGroupReason` are the Core half. The first census of a group must read five zeros, and a group that was emptied and still holds something is named count by count and is not DONE. A count that could not be taken is never called dirty. The open file run empties nothing on purpose and is never a fault. The two weekly lines in the confirm dialog said "Nothing is cleared" and now say nothing INSIDE the NWF is cleared, which is what a person is asking about
+
+### F76 The tolerance can be chosen in the tool and it wins
+
+- Files `src/Federator.Core/Clash/ToleranceChoice.cs` which is new, `src/Federator.Core/Report/ReportOptions.cs`, `ClashReportModel.cs`
+- CONTAINER for the rule, LOCAL MACHINE to set it on a test
+- The matrix is written at 25 mm, the NWFs held tests at 75 mm, and the run clashed at 75 while everybody believed it was clashing at 25
+- DONE on 2026-09-19. A drop down with five entries, the first of which changes nothing. A chosen value is set on EVERY test in the run and beats both the XML and the document. Millimetres in, document units out, through UnitTable, and a unit it does not know throws. Zero is a real tolerance and a negative one is refused where it is set. The confirm screen says the value, the counts, what it beats and that a saved test's results are RESET. Separately the report reads its tolerance off the clash test in the DOCUMENT, and `ToleranceFrom` carries where it was read so a report reading the file shows as a number
+
+### F77 A test whose side finds nothing is not created at all
+
+- Files `src/Federator.Core/Clash/CreationPlan.cs` which is new, `.claude/rules/core.md`
+- CONTAINER
+- TESTS CREATE took 631 seconds of a 1424 second run and 1619 of the 1830 tests it created were thrown away moments later
+- DONE on 2026-09-19. `CreationPlan` CALLS `ClashSideCheck` rather than carrying a second copy, and that check stays as the second line of defence. A locator nobody counted is created and left to the run-time check, because the safe mistake is an extra test. One counted line and not 1619. The workbook still carries a block for every test in the file. This changes a rule that was stated the other way, which is Q46
+
+### F86 The property probe
+
+- Files `src/Federator.Core/Probe/ProbeSettings.cs`, `ProbeRow.cs`, `ProbeTally.cs`, `ProbeCsv.cs`, `ProbeVerdict.cs`, all new
+- CONTAINER for the CSV, the cap, the order and the verdict, LOCAL MACHINE for the walk
+- Nobody knows what the models carry, and whether fire suppression pipework is told apart by a property has been guessed at rather than read
+- DONE on 2026-09-19. One CSV per NWC beside the file, five columns, seventeen categories read off the matrix rather than typed, 100 distinct values per property with what was left out SAID. It never opens an NWF and `MayRead` is what makes that enforceable. The verdict says whether FS or Fire Suppression appears anywhere and says so as plainly when it does not, and FS is matched as a whole token so OFFSET does not read as fire suppression. The walk itself is `scan.md` 5f. Rewriting the mechanical sets is not in this round
+
+### F83 The clash priority reaches the report
+
+- Files `src/Federator.Core/Clash/ClashPriority.cs`, `PriorityMap.cs`, `PriorityTally.cs`, all new, `src/Federator.Core/Report/ReportOrder.cs`, `WorkbookWriter.cs`, `WorkbookCheck.cs`, `ClashReportModel.cs`, `ReportOptions.cs`, `src/Federator.Core/Diagnostics/FolderMemory.cs`
+- CONTAINER
+- The priority is a decision the project made about which clashes matter and it is in nothing Navisworks exports
+- DONE on 2026-09-19. The file is optional and when nothing is picked nothing changes. The test name is matched exactly and a letter that is not A, B or C is a problem named in the log rather than a silent None. `ReportOrder.Tests` is now the ONE place the block order is decided and the workbook, the clash XML and the picture numbering all read it. The Priority column sits one past the client's table, `LastColumn` stays 19, and the check was told which order was asked for or it would call every priority sorted workbook wrongly ordered. Whether the client wants the report in that order at all is Q49
+
+### F72b By design connections become Reviewed
+
+- Files `src/Federator.Core/Clash/ByDesignPairs.cs`, `ByDesignRule.cs`, `ByDesignTally.cs`, `ReviewedLine.cs`, all new
+- CONTAINER for the rule, LOCAL MACHINE to see a status move
+- A column on its foundation, a door in a wall, a valve in a pipe run. Every one is a clash and none is a problem
+- DONE on 2026-09-19. A LIST and not a judgement: it knows nothing about items, categories or sizes, deliberately, because reading every item once per clash is the walk that once built 1.7 million native handles. The two set names are sorted before matching and are Ordinal and never trimmed, which is the opposite of how a category is matched. The penetration rule owns a clash they both want. `ReviewedLine` is new because two rules write that line now. The brief's grey line was thirteen words and a grey line is twelve, so the word list came off
+
+### F72c The record in the NWF and the undo
+
+- Files `src/Federator.Core/Clash/AutoReviewRecord.cs`, `UndoAutoReview.cs`, both new, `StatusesThisToolMaySet.cs`
+- CONTAINER for the record and the rule, LOCAL MACHINE for whether a comment can be written at all
+- DONE on 2026-09-19. The record is a marker no person would type, the rule, the status the clash was moved OFF, then the reason. The old status is on it because putting an Active clash back to New would destroy a real difference. A comment a person wrote is never read as one of ours. The undo touches a clash only where it carries our record AND is still at Reviewed. `AllowsAsUndo` is a separate answer from `Allows` and not a loosening of it, which is Q50. Whether a comment can be written at all is `scan.md` 5h, and if it cannot the tool says so in one line and fakes nothing
+
+### F85 The saved viewpoints in three layers, planned and not written
+
+- Files `src/Federator.Core/Views/ClashViewpointPlan.cs`, `DisciplinePairRule.cs`, both new, `ViewpointSettings.cs`, `ViewpointPlan.cs`, `src/Federator.Core/Diagnostics/RunSteps.cs`, `.claude/rules/addin.md`, `.claude/rules/core.md`, `src/Federator.Addin/Engine/ClashImages.cs`
+- CONTAINER for the whole plan, LOCAL MACHINE for everything that writes one
+- DONE on 2026-09-19. Priority, then the discipline pair sorted, then Over 150mm under a Mechanical or Electrical pair. One viewpoint per CLASH and the name carries the test as well, because a clash name is unique only within its test. Small services stay out on the SIZE and never on the status, because F72a is off by default and leaves service against service alone. It branches on `SizeVerdict` and never on `Included`. A set name with no known code is reported and never guessed. `VIEWS` is a new step because building them was untimed. NOTHING WRITES ANY OF IT: `CanBuild` is still false and a planned viewpoint that was not written is not a viewpoint. Three files said no clash is ever saved as a viewpoint and all three now say the opposite and why
+
+### F84 The sets that cannot match anything
+
+- Files `src/Federator.Core/Health/SetWarnings.cs` which is new, `src/Federator.Core/Exchange/RevitCategories.cs` and `revit-categories.txt` which are new, `HealthCheck.cs`, `HealthCheckResult.cs`, `Federator.Core.csproj`
+- CONTAINER for two of the three, LOCAL MACHINE for the category list
+- DONE on 2026-09-19. Identical sets, a category no model carries, and a name breaking its own folder's pattern. All three are information. The category list is a FILE embedded in Core and it is EMPTY until it is measured, and while it is empty the check reports nothing and the block says so. The corrected matrix breaks the name pattern exactly once and holds one identical pair, and the uncorrected one breaks it twice and holds two, which is F87 made visible
+
+### F78 The log says or where the file says or
+
+- Files `src/Federator.Core/Sets/SetBuildPlan.cs`, `.claude/rules/core.md`
+- CONTAINER
+- DONE on 2026-09-19. Measured over all 102 conditions: five carry flags 64, StartGroup, one in each of the five sets holding four. Conditions inside a group are ANDed and groups are ORed. The friendly name of a property rides beside its internal one, read off the file's own display attribute, and there is no lookup table anywhere
+
+### F79 Which missing item ids are this run's
+
+- Files `src/Federator.Core/Report/ClashReportModel.cs`
+- CONTAINER
+- DONE on 2026-09-19. The split is the row's Found date against the group's RunAt and nothing else. A row with NO date is UNKNOWN and its own third number, because whether the two share a clock is not readable off the DLL. It counts ROWS and says so
+
+### F80 The run time is the run and not the session
+
+- Files `src/Federator.Core/Diagnostics/RunClock.cs` which is new, `RunLog.cs`, `TimingBlock.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`
+- CONTAINER for the rule, LOCAL MACHINE to see it on a run
+- DONE on 2026-09-19. Three stretches off one monotonic clock, none of them vanishing, and the tail after the run finished is named. Both numbers reach RESULT. With no mark the run is the session and the block says it fell back
+
+### F81 The .log is trimmed and the .tsv keeps everything
+
+- Files `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Core/Clash/TestDrift.cs`, `ClashRunOutcome.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`, `FederationEngine.cs`
+- CONTAINER for the rules, LOCAL MACHINE to measure the file
+- DONE on 2026-09-19. `NumberedRepeat` writes the ROW first and then decides about the sentence, which is the thing that would be easy to get wrong: collapsing by not calling Numbered would have cost the .tsv 936 rows. 10,980 created lines, 1830 drift lines grouped, 854 duplicate set lines by dropping the block, 1584 passed lines and 936 ROWS lines. The count of what was collapsed goes in RESULT, and so do both file sizes
+
+### F82 Sets across the run
+
+- Files `src/Federator.Core/Sets/SetsAcrossTheRun.cs` which is new, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`
+- CONTAINER for the tally, LOCAL MACHINE to see the block
+- DONE on 2026-09-19. 38 of 61 sets found nothing in every group and nothing anywhere added it up. It counts a set already there as well as one created, because `IsZero` is true only of a created set and on a weekly run every set is present. A set that never resolved is UNKNOWN and not zero
 
 ## F47 What the chat audit of 2026-09-18 found
 

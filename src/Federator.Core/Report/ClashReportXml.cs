@@ -157,7 +157,7 @@ namespace Federator.Core.Report
             // Most clashes first, ties in the order they were created, which is what both
             // client exports do. Ours followed the order the tests sat in the file, so it
             // opened with empty tests and a reader scrolled past hundreds of them.
-            foreach (TestReport test in report.InReportOrder())
+            foreach (TestReport test in ReportOrder.Tests(report))
             {
                 tests.Add(Test(test));
             }

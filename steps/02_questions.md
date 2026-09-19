@@ -193,3 +193,31 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 45. From F72 on 2026-09-19. The brief asks for the penetration count to go in the workbook, and it is there: the status is applied before the harvest reads it, so the Reviewed cell on every test header row already counts what this run moved, in the client's own column. What is NOT there is a count of ours saying how many THIS RUN moved, as against how many are Reviewed for any reason. The standing rule says the workbook is the client's one sheet laid out as theirs with none of ours on it, and that if it is not in theirs it is not in ours, so a column or a cell of ours would break it. The log carries the run total in the RESULT block and the per group detail in the PENETRATION block. Is the client's own Reviewed column enough, or does a cell of ours belong on that sheet after all, and if it does, where on it
 
    Answer:
+
+46. From F77 on 2026-09-19. F77 vs the single discipline rule. Not creating a test whose side finds nothing means the NWF no longer carries every test in the matrix. The rule it replaces said every test is still created so the NWF is complete, matches the other groups, and a later run against a fuller model finds them already there. Under F77 that only holds while an XML is picked, because a weekly run with no XML creates nothing and the missing tests stay missing. Is 631 seconds a group worth that, or should a group that is going to be run weekly with no XML create the whole matrix once
+
+    Answer:
+
+47. From F72a on 2026-09-19. Four categories the service discipline sets ask for are NOT on the service list: Air Terminals, Mechanical Equipment, Plumbing Fixtures, Sprinklers. Mechanical Equipment and Plumbing Fixtures are plainly right to leave off, because an air handling unit through a wall is a real coordination item and not a penetration. Air Terminals and Sprinklers are arguable both ways. Which of the four are services
+
+    Answer:
+
+48. From F87 on 2026-09-19. The old reference file. `samples\1104-PAR_CLASH_AllInOne (2) (1).xml` is at 75 mm and 44 assertions across 7 fixtures measure it. `samples\1104-PAR_CLASH_AllInOne_25mm.xml` is the same matrix at 25 mm and is the source F87 corrects. Does the old file stay as the reference the tests measure, or does the 25 mm one become it, which means re-reading and rewriting 44 recorded measurements
+
+    Answer:
+
+49. From F83 on 2026-09-19. F83 replaces a MEASURED order with a chosen one. The block order, most clashes first with ties in creation order, was read off both of the client's own exports over all 1830 blocks, and the tie rule is explicitly not alphabetical, including in one tie group of 1807. A priority file sorts A, then B, then C, then by test name, which is a different order from the one the client accepted. It only applies when a file is picked and the measured order is still the default. Is the client happy to receive the report in priority order, or is priority a column to sort on in Excel and the blocks stay where they were
+
+    Answer:
+
+50. From F72c on 2026-09-19. F72c widens one written guard. `StatusesThisToolMaySet` says Reviewed is the only status this tool ever sets, and an undo has to put a clash back to New or Active. It is written as `AllowsAsUndo`, a separate answer: an undo may set the exact status one of this tool's own records names in this file, and nothing else, so Approved and Resolved are still never set because no record can name one. Is that the right shape, or should an undo instead leave the status alone and only remove the record, so a person sees which clashes the tool had moved and decides one by one
+
+    Answer:
+
+51. From F85 on 2026-09-19. F53 and F72a read a size two different ways and F85 had to pick one. `SizeRule.Decide` takes the FIRST size property on the list, which is what a viewpoint wants, one representative number nobody argues about. `SizeRule.LargestMillimetres` takes the LARGEST, which is what a penetration wants, because a 600 by 150 duct has to fit a 600 through the wall. F85 reads a CLASH SIDE and so does F72a, so F85 reads it the way F72a does, the largest. Reading it the other way would let the same duct be set Reviewed by F72a as a large service and filed by F85 under Over 150mm, and the two rules would disagree about one clash with nothing saying so. Is the largest the right reading for a viewpoint folder as well, or should the two stay different and the difference be reported
+
+    Answer:
+
+52. From F87 on 2026-09-19, found when main was merged at the end of the round. TWO FILES CARRY THE NAME `1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` AND THEY ARE NOT THE SAME FILE. Bader uploaded one to `samples\` on 2026-09-19 while the round was being worked, and F87 wrote one to `exchange\` from the sample. They differ in exactly ONE line. Both correct the missing hyphen, all 121 occurrences. Only the one F87 wrote also makes `BLD-EL-Devices` ask for something other than Electrical Fixtures, which is the second half the brief asked for, so in the supplied file Devices is still the same set as `BLD-EL-Electrical Fixtures` and F84 still reports the pair. Neither file is deleted and neither is edited, because samples is evidence and exchange is proved by a test to be exactly what the rule produces, and `SuppliedCorrectedMatrixTests` pins the difference instead. Which of the two should the tool be pointed at, and should the one that is not it be renamed so two files of one name cannot be picked by mistake
+
+    Answer:

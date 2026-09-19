@@ -37,7 +37,16 @@ paths:
   mono one is UNKNOWN. Comparing the way the assertion reads answers neither question and
   needs no answer
 - A test that reads the checkout finds it by walking up from the test assembly, so
-  moving the test file does not break it
+  moving the test file does not break it. THERE IS EXACTLY ONE SUCH WALK, `Samples.Repo`,
+  and it looks for the solution FILE by its exact name. Every folder under the checkout is
+  joined onto what it returns and NEVER found by a second walk of its own.
+  `Samples.ExchangeFolder` had a second walk, looking for a folder called "exchange", and
+  there is a folder called "Exchange" under the test project because there is one per Core
+  folder. `Directory.Exists` is CASE BLIND on Windows and case sensitive off it, so the
+  walk stopped at the test folder on the runner and at the checkout root in the container,
+  and twelve tests passed here and failed there on one CI run. `SamplesPathTests` asserts
+  the decoy folder is still there and is not what comes back, so the trap is pinned rather
+  than described
 - A test that only means anything on Windows calls TestPaths.OnWindowsOnly, which skips
   it off Windows with a line saying what it needs, so it reads as skipped and not as
   failed. That is for a rule of the file SYSTEM and never for a rule of this tool: a UNC

@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using Federator.Core.Clash;
 using Federator.Core.Views;
+using System.IO;
+using System.Text.RegularExpressions;
+using Federator.Core.Probe;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -388,13 +391,16 @@ namespace Federator.Core.Tests
         // ---------- the categories are settings ----------
 
         [Test]
-        public void TheTwelveServiceCategoriesAreTheDefaults()
+        public void TheThirteenServiceCategoriesAreTheDefaults()
         {
             IList<string> services = new PenetrationSettings().ServiceCategories;
 
-            Assert.That(services.Count, Is.EqualTo(12));
+            // Twelve until F72a. Pipe Insulation is the thirteenth and it sits beside the
+            // pipe it wraps, so the list reads in the order a person would name them.
+            Assert.That(services.Count, Is.EqualTo(13));
             Assert.That(services[0], Is.EqualTo("Pipes"));
-            Assert.That(services[11], Is.EqualTo("Conduit Fittings"));
+            Assert.That(services[3], Is.EqualTo("Pipe Insulation"));
+            Assert.That(services[12], Is.EqualTo("Conduit Fittings"));
         }
 
         [Test]
@@ -572,5 +578,195 @@ namespace Federator.Core.Tests
         {
             Assert.That(PenetrationSettings.TickLabel, Is.Not.EqualTo(PenetrationSettings.TickLabel.ToUpperInvariant()));
         }
+        // ---------- F72a, the insulation ----------
+
+        /// <summary>
+        /// The one F72a exists for. An insulated 100 mm pipe through a wall makes TWO
+        /// clashes, the pipe and its insulation, and they are the same hole through the
+        /// same wall. Before Pipe Insulation was on the service list the pipe moved to
+        /// Reviewed and the insulation stayed at New, so one penetration came back with
+        /// two different answers.
+        /// </summary>
+        [Test]
+        public void AnInsulatedPipeThroughAWallMovesOnBothSides()
+        {
+            PenetrationDecision pipe =
+                Decide(Side("Pipes", 100.0), Side("Walls", null), ClashStatus.New);
+
+            PenetrationDecision insulation =
+                Decide(Side("Pipe Insulation", 120.0), Side("Walls", null), ClashStatus.New);
+
+            Assert.That(pipe.Verdict, Is.EqualTo(PenetrationVerdict.Reviewed));
+            Assert.That(insulation.Verdict, Is.EqualTo(PenetrationVerdict.Reviewed),
+                "the insulation is the same penetration as the pipe inside it");
+            Assert.That(insulation.Service.Category, Is.EqualTo("Pipe Insulation"));
+        }
+
+        [Test]
+        public void InsulationIsStillMeasuredLikeEveryOtherService()
+        {
+            // Over the threshold is over the threshold, insulation or not. A 200 mm
+            // insulated riser is a coordination item exactly as a 200 mm pipe is.
+            Assert.That(
+                Decide(Side("Pipe Insulation", 200.0), Side("Walls", null), ClashStatus.New).Verdict,
+                Is.Not.EqualTo(PenetrationVerdict.Reviewed));
+        }
+
+        /// <summary>
+        /// F72a. The service list answers to the client's matrix and not to whoever typed
+        /// it. Every category a SERVICE DISCIPLINE set asks for has to have been DECIDED
+        /// about, either a service or one of the four decided not to be one, so a set added
+        /// to the matrix later cannot be silently missed.
+        ///
+        /// IT IS NOT "IS IT A SERVICE" AND THAT MATTERS. The literal reading would force
+        /// Mechanical Equipment onto the service list, and an air handling unit against a
+        /// wall would then be moved to Reviewed automatically, which is the opposite of
+        /// what the penetration rule is for.
+        ///
+        /// A condition written as contains is a STEM and not a category. Cable Tray
+        /// matches Cable Trays and Cable Tray Fittings, and Conduit matches Conduits and
+        /// Conduit Fittings, which are four real Revit categories and all four are on the
+        /// list.
+        /// </summary>
+        [Test]
+        public void EveryCategoryAServiceSetAsksForHasBeenDecidedAbout()
+        {
+            PenetrationSettings settings = new PenetrationSettings();
+            string xml = File.ReadAllText(Samples.CorrectedMatrix());
+
+            // The four whole service disciplines. Electrical is NOT one of them: most of
+            // its sets are equipment and fixtures, and only two of them are services. The
+            // two are named below as sample data, the same way every other name off the
+            // client's file appears in a test.
+            string[] serviceDisciplines = { "BLD-ME-", "BLD-FF-", "BLD-PL-", "BLD-DR-" };
+            string[] electricalServiceSets =
+            {
+                "BLD-EL-Cable Tray&Cable Tray Fittings",
+                "BLD-EL-Conduits & Conduit Fittings"
+            };
+            List<string> unaccounted = new List<string>();
+            int looked = 0;
+            int electricalSeen = 0;
+
+            foreach (Match set in Regex.Matches(
+                xml, "<selectionset name=\"([^\"]*)\"(.*?)</selectionset>", RegexOptions.Singleline))
+            {
+                // The attribute is XML, so an ampersand in a set name arrives escaped.
+                // Comparing the raw text would silently match nothing and the test would
+                // pass without having looked at the two sets it was written for.
+                string name = set.Groups[1].Value.Replace("&amp;", "&");
+                bool isService = false;
+
+                foreach (string prefix in serviceDisciplines)
+                {
+                    if (name.StartsWith(prefix, StringComparison.Ordinal))
+                    {
+                        isService = true;
+                    }
+                }
+
+                foreach (string named in electricalServiceSets)
+                {
+                    if (string.Equals(name, named, StringComparison.Ordinal))
+                    {
+                        isService = true;
+                        electricalSeen++;
+                    }
+                }
+
+                if (!isService)
+                {
+                    continue;
+                }
+
+                foreach (Match condition in Regex.Matches(
+                    set.Groups[2].Value, "<condition test=\"([^\"]*)\"(.*?)</condition>",
+                    RegexOptions.Singleline))
+                {
+                    if (condition.Groups[2].Value.IndexOf(
+                        "LcRevitPropertyElementCategory", StringComparison.Ordinal) < 0)
+                    {
+                        continue;
+                    }
+
+                    Match value = Regex.Match(
+                        condition.Groups[2].Value, "<data type=\"wstring\">([^<]*)</data>");
+
+                    if (!value.Success)
+                    {
+                        continue;
+                    }
+
+                    string asked = value.Groups[1].Value;
+                    bool contains = string.Equals(
+                        condition.Groups[1].Value, "contains", StringComparison.Ordinal);
+
+                    looked++;
+
+                    if (!Decided(settings, asked, contains))
+                    {
+                        unaccounted.Add(name + " asks for \"" + asked + "\"");
+                    }
+                }
+            }
+
+            Assert.That(looked, Is.GreaterThan(20), "the service sets were found at all");
+            Assert.That(electricalSeen, Is.EqualTo(electricalServiceSets.Length),
+                "both electrical service sets were looked at, rather than silently missed");
+            Assert.That(unaccounted, Is.Empty,
+                "a category the matrix asks for that nobody has decided about: "
+                    + string.Join("; ", unaccounted.ToArray()));
+        }
+
+        /// <summary>
+        /// Whether somebody has decided about that asked-for value. A condition written as
+        /// CONTAINS is a stem and not a category: Cable Tray matches Cable Trays and Cable
+        /// Tray Fittings, and Conduit matches Conduits and Conduit Fittings, which are four
+        /// real Revit categories and all four are on the service list.
+        /// </summary>
+        private static bool Decided(PenetrationSettings settings, string asked, bool contains)
+        {
+            if (settings.IsDecided(asked))
+            {
+                return true;
+            }
+
+            if (!contains)
+            {
+                return false;
+            }
+
+            foreach (string category in ProbeSettings.DefaultCategories())
+            {
+                if (category.IndexOf(asked, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>The break. A category nobody has decided about is caught.</summary>
+        [Test]
+        public void ACategoryNobodyHasDecidedAboutIsCaught()
+        {
+            PenetrationSettings settings = new PenetrationSettings();
+
+            Assert.That(Decided(settings, "Ducts", false), Is.True, "a service");
+            Assert.That(Decided(settings, "Mechanical Equipment", false), Is.True,
+                "decided NOT to be a service, which is still decided");
+            Assert.That(Decided(settings, "Cable Tray", true), Is.True, "a stem, not a category");
+            Assert.That(Decided(settings, "Structural Framing", false), Is.False);
+            Assert.That(Decided(settings, "Telephone Equipment", false), Is.False);
+        }
+
+        [Test]
+        public void PipeInsulationIsOnTheServiceList()
+        {
+            Assert.That(PenetrationSettings.DefaultServiceCategories, Does.Contain("Pipe Insulation"));
+            Assert.That(new PenetrationSettings().IsService("Pipe Insulation"), Is.True);
+        }
+
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Federator.Core.Grouping;
 
 namespace Federator.Core.Views
 {
@@ -92,23 +91,12 @@ namespace Federator.Core.Views
     public static class ViewpointPlan
     {
         /// <summary>
-        /// The viewpoints wanted for one group, in the order the group's disciplines are
-        /// held. An empty list where the group has no discipline at all, which nothing in a
-        /// real scan produces but which is not worth throwing over.
-        /// </summary>
-        public static IList<PlannedViewpoint> For(BuildingGroup group, ViewpointSettings settings)
-        {
-            if (group == null)
-            {
-                throw new ArgumentNullException("group");
-            }
-
-            return For(group.Disciplines, settings);
-        }
-
-        /// <summary>
-        /// The same plan from the discipline codes alone, which is what the engine holds per
-        /// job. One rule, two ways in, so the engine never works a plan out for itself.
+        /// The viewpoints wanted for one group, from the discipline codes the engine holds
+        /// per job. An empty list where the group has no discipline at all, which nothing
+        /// in a real scan produces but which is not worth throwing over.
+        ///
+        /// THE OVERLOAD THAT TOOK A BuildingGroup IS GONE. Nothing in src called it, only
+        /// the fixture did, and a public member nothing calls is deleted with its tests.
         /// </summary>
         public static IList<PlannedViewpoint> For(IList<string> disciplines, ViewpointSettings settings)
         {
