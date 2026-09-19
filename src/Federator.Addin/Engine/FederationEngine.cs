@@ -542,10 +542,18 @@ namespace Federator.Addin.Engine
             // F63. Last thing the group does, after every output is written, because the
             // question it answers is what the outputs DO NOT carry. Written even when it
             // is empty, because a missing block reads as a check that did not run.
-            gaps.Add(GapRule.For(outcome.Report));
+            IList<ReportGap> found = GapRule.For(outcome.Report);
+            gaps.Add(found);
             log.Block(
                 GapRule.BlockTitle + " " + Words.Or(job.Building, "this group"),
                 GapRule.Lines(outcome.Report));
+
+            // F64. The same gaps as numbers, so the row file carries what the block
+            // carries and a script can add them up across a run without reading prose.
+            foreach (ReportGap gap in found)
+            {
+                log.Row("gap", gap.Name, EventRow.Count(gap.Carried), gap.WouldBelong);
+            }
         }
 
         // ---------- the live line, F62 ----------

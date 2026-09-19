@@ -426,6 +426,13 @@ run, so do it on the next building you run for any other proof in this file.
 271. Read the counts on those six lines. They are the first real measurement of how much of each property a real model actually carries. `Material` is expected to be low and `Family` high, and if `Material` is at zero it may be worth deleting rather than keeping, which is Q37
 272. Look for, F63: one line at the end of the run reading `GAPS     ` then a number then the names. It counts by NAME and not by line, so a run of fourteen groups says six and not eighty four
 273. The six are now Q35 to Q40 in `steps\02_questions.md`, one per property, because one answer for five different properties is a decision nobody can make. Answer them with the counts from step 271 in front of you
+274. Look for, F64: in `%LOCALAPPDATA%\ParsonsNwcFederator\logs`, beside every `run-*.log`, a `run-*.tsv` with the SAME name and a different extension
+275. Look for, F64: near the top of the text log, one line reading `ROWS     the machine readable log is` and the path. If it says `no machine readable log` instead, the text log is unaffected and the reason is on that line, so send it
+276. Open the `.tsv` in Excel. It should open straight into columns with no import dialog and no question about separators
+277. Look for, F64: a header row reading time, seconds, group, step, event, name, number, text, and then one row per event under it
+278. Look for, F64: every row has eight columns. Sort by the `event` column and read the kinds: `step started`, `step finished`, `timing`, `census before`, `census after`, `gap`, `written`, `rows for the workbook`, `group finished`
+279. Filter the `event` column to `step finished` and sort the `number` column biggest first. The top row is the slowest single step of the whole run, in seconds. That is the number this round exists for, and it should agree with the TIMING block in the text log
+280. Look for, F64: nothing in the text log got worse. It still has its blocks, its indenting and its sentences, and it is still the one to read first and the one to send
 
 ## The two walls are live, D7
 
@@ -444,45 +451,45 @@ otherwise. F47a added `.gitattributes`, which pins these three to LF on every ch
 
 This is a one time check per clone. Do it once and the rest of this file never needs it.
 
-274. In the VS Code terminal, in the repo folder, run:
+281. In the VS Code terminal, in the repo folder, run:
 
 ```
 git ls-files --eol .claude/hooks .githooks
 ```
 
-275. Look for: three lines, each reading `i/lf` and `w/lf` and `attr/text eol=lf`. A `w/crlf` on any of them means this checkout still holds the old copy, so run `git add --renormalize . ; git checkout -- .` and read it again
-276. Switch the test wall on, which git needs told once per clone:
+282. Look for: three lines, each reading `i/lf` and `w/lf` and `attr/text eol=lf`. A `w/crlf` on any of them means this checkout still holds the old copy, so run `git add --renormalize . ; git checkout -- .` and read it again
+283. Switch the test wall on, which git needs told once per clone:
 
 ```
 git config core.hooksPath .githooks
 ```
 
-277. Look for: `git config core.hooksPath` answers `.githooks`
-278. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
-279. Look for: the commit pauses and prints `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall. Throw the branch away afterwards
-280. Open Claude Code in this folder and ask it to write one word into any file under `samples`
-281. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
+284. Look for: `git config core.hooksPath` answers `.githooks`
+285. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
+286. Look for: the commit pauses and prints `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall. Throw the branch away afterwards
+287. Open Claude Code in this folder and ask it to write one word into any file under `samples`
+288. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
 
 ## Delete the old branches, D6
 
 Every branch except main is merged into main. The container cannot delete a branch: `git push origin --delete` comes back HTTP 403 from the proxy in front of it, and there is no GitHub tool in it that deletes a branch. So this is yours, one command from the repo folder in the VS Code terminal.
 
-The list below was read on 2026-09-18 with the command in step 282, after the last merge of the feature round F51 to F55, and `git ls-remote --heads origin` gave 49 names. The branch this round's own closing pull request came from, `round-close-4`, is in the delete list too and was not on the remote yet when the list was read, which makes 50 lines and 49 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
+The list below was read on 2026-09-18 with the command in step 289, after the last merge of the feature round F51 to F55, and `git ls-remote --heads origin` gave 49 names. The branch this round's own closing pull request came from, `round-close-4`, is in the delete list too and was not on the remote yet when the list was read, which makes 50 lines and 49 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
 
-282. Read the live list:
+289. Read the live list:
 
 ```
 git ls-remote --heads origin
 ```
 
-283. Look for: one line per branch, the name after `refs/heads/`. Expect 50 of them, so 49 to delete. It was 43 after the third audit round, and the feature round added six fix branches and its closing one
-284. Delete every one of them except main:
+290. Look for: one line per branch, the name after `refs/heads/`. Expect 50 of them, so 49 to delete. It was 43 after the third audit round, and the feature round added six fix branches and its closing one
+291. Delete every one of them except main:
 
 ```
 git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-F40 fix-F41 fix-F42 fix-F43 fix-F44 fix-F45 fix-F46 fix-F47a fix-F47b fix-F47c fix-F50 fix-F51 fix-F52 fix-F53 fix-F54 fix-F55 fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close round-close-2 round-close-3 round-close-4
 ```
 
-285. Look for: one `- [deleted]` line per branch and no error
-286. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
-287. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
-288. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main
+292. Look for: one `- [deleted]` line per branch and no error
+293. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
+294. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
+295. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main

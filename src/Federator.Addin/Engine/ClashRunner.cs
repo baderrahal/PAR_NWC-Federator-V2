@@ -744,7 +744,12 @@ namespace Federator.Addin.Engine
                         // opening Excel and Navisworks side by side for every one of
                         // 1830 tests. The wording is Core and the rule about what the
                         // difference means is there with it.
-                        log.Line(ReportedCount.Line(planned.Name, summary.Rows.Count, tally.Total));
+                        log.Numbered(
+                            ReportedCount.Line(planned.Name, summary.Rows.Count, tally.Total),
+                            "rows for the workbook",
+                            planned.Name,
+                            EventRow.Count(summary.Rows.Count),
+                            EventRow.Count(tally.Total) + " in the document");
 
                         summary.State = summary.HasRows
                             ? TestState.FoundClashes

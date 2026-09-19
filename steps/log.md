@@ -2,6 +2,37 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F64, the machine readable log
+
+### What was done
+
+- A SECOND FILE BESIDE THE TEXT LOG, same name and a different extension, `.tsv`. One row per event, eight columns, tab separated, with a header reading time, seconds, group, step, event, name, number, text
+- WHY IT EXISTS, AND IT IS WRITTEN AT THE TOP OF THE WRITER. The text log is written for a person: blocks, indenting, sentences, and a shape that is free to change when a line reads badly. Getting a number out of it means a regular expression against that shape, and every round that improves a line breaks whatever was reading it. This file is the same run in a shape nothing has to parse
+- THE TEXT LOG IS STILL THE ONE A PERSON READS and nothing about it got worse. Where the two disagree the text log is right, because it is the one that has been read against a real run
+- ONE WRITER, SO THE TWO CANNOT DRIFT, which is the part that needed designing. `RunLog.Numbered` writes the text line and the row TOGETHER and is the only way a line carrying a number reaches the log. A line cannot be added without its row and a row cannot say something the text log does not
+- A SENTENCE WITH NO NUMBER WRITES NO ROW, and that is the rule rather than an oversight. A row whose number column is empty is noise in a file whose whole purpose is numbers, so anything carrying a number goes through `Numbered` and anything else calls `Line`. The writer's comment says exactly that, including what is therefore NOT in the file
+- WHAT IS IN IT. Every step starting and finishing with its seconds, every repeated step's total, all five census counts before and after each step, every timing row, every gap, every file written with its size, the per test rows for the workbook against the clashes in the document, and every group finishing with its seconds and its outcome
+- TAB AND NOT COMMA. A clash name, a set locator and a file path all hold commas and none of them holds a tab, and Excel opens a tab separated file with no import dialog and no question about separators
+- THE ESCAPING, WHICH IS THE PART THAT MATTERS MOST. One stray tab inside a value moves every column after it on that row and a reader has no way of telling. A tab, a newline, a carriage return and a backslash are all escaped, and THE BACKSLASH GOES FIRST: without that, reading a value back would turn a path ending in a t into a tab, and every Windows path in this tool holds backslashes. It is proved by reading the value back rather than by asserting that it changed, over eleven awkward values including a real NWF path, a set name ending in a space and the reference file's own name
+- A TEST OF MINE WAS WRONG AND THE CODE WAS RIGHT. The first version asserted that an escaped path holds no backslash followed by N, which correct escaping produces the moment a doubled backslash is followed by a capital N. Replaced with the assertion that actually pins the ordering: a real tab and the two characters backslash and t escape differently, so reading a value back cannot turn one into the other
+- LINE BY LINE AND FLUSHED with `Flush(true)`, exactly like the text log, so a run that dies mid group leaves BOTH files whole up to that moment. There is a test that reads the file off the disk after each call and counts the rows
+- AND IT NEVER STOPS A RUN. A row file that cannot be opened leaves the text log untouched and says why in it, and a write that throws is swallowed. The break for that is a folder that cannot exist because a file is already sitting where it would go, which no file system makes
+- Proved here: Core tests before 1184 passed, 0 failed, 32 skipped, 1216 total. After 1205 passed, 0 failed, 32 skipped, 1237 total. 21 added and none broken. Core builds in Release with 0 warnings, `check-locals.sh` clean over `src`, the add-in parses with the same six error codes and not one `CS1xxx`
+- Waits for the local machine: steps 274 to 280, and step 279 is the one worth doing first. Filter the event column to `step finished`, sort the number column biggest first, and the top row is the slowest single step of the whole run. That is the number this round exists for
+
+### What remains
+
+- The closing work: the read of `03_bader_next.md` end to end, the numbered section for the log itself, and the closing entry
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F64 pull request
+2. The closing work
+
 ## 2026-09-19 F63, the report gap block
 
 ### What was done

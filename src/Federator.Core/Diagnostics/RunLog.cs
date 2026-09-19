@@ -80,6 +80,19 @@ namespace Federator.Core.Diagnostics
 
         private string currentGroup;
 
+        /// <summary>
+        /// The step the run is in, so a row carries it without every caller having to
+        /// hand it over. Empty outside a step.
+        /// </summary>
+        private string currentStep;
+
+        // ---------- the machine readable log, F64 ----------
+        //
+        // ONE WRITER, so the two files cannot drift. Everything that carries a number
+        // goes through Numbered below, which writes the text line and the row together,
+        // and nothing writes a row on its own.
+        private RowLog rows;
+
         // ---------- the census, F61 ----------
         //
         // The log cannot count anything in a Navisworks document and must not try. The
@@ -332,6 +345,11 @@ namespace Federator.Core.Diagnostics
             RunLog log = new RunLog(path, startedAt, stream, null);
             log.Line("Log opened at " + path);
 
+            // Beside the text log and opened straight after it, so a run that dies at
+            // startup still leaves both. F64.
+            log.rows = RowLog.StartBeside(path);
+            log.Line(log.rows.WhereItIs());
+
             // After the new file is open, so the live file is in the list and can be held
             // back from deletion by name rather than by hoping it sorts newest.
             log.PruneOldLogs(folder, keepLogs);
@@ -508,6 +526,91 @@ namespace Federator.Core.Diagnostics
             }
         }
 
+        // ---------- the machine readable log ----------
+
+        /// <summary>
+        /// Where the row file is, or why there is none. Read by the window for its label
+        /// and by the tests.
+        /// </summary>
+        public string RowLogPath
+        {
+            get { return rows == null ? null : rows.Path; }
+        }
+
+        /// <summary>
+        /// ONE LINE AND ONE ROW, WRITTEN TOGETHER. This is the only way a line carrying a
+        /// number reaches the log, so a line cannot be added without its row and a row
+        /// cannot say something the text log does not.
+        ///
+        /// A caller that has a sentence and no number calls Line. That is not an
+        /// oversight: a row whose number column is empty is noise in a file whose whole
+        /// purpose is numbers.
+        /// </summary>
+        public void Numbered(string message, string happening, string name, string number, string text)
+        {
+            Line(message);
+
+            RowLog writer;
+            string group;
+            string step;
+
+            lock (gate)
+            {
+                writer = rows;
+                group = currentGroup;
+                step = currentStep;
+            }
+
+            if (writer == null)
+            {
+                return;
+            }
+
+            writer.Write(new EventRow(
+                DateTime.Now.ToString(TimeFormat, CultureInfo.InvariantCulture),
+                ElapsedSeconds,
+                group,
+                step,
+                happening,
+                name,
+                number,
+                text));
+        }
+
+        /// <summary>
+        /// A row with no text line of its own, for the rows of a block whose lines are
+        /// written by Block. The block's line and this row are still written by the one
+        /// object, in the one place, so they cannot drift.
+        /// </summary>
+        public void Row(string happening, string name, string number, string text)
+        {
+            RowLog writer;
+            string group;
+            string step;
+
+            lock (gate)
+            {
+                writer = rows;
+                group = currentGroup;
+                step = currentStep;
+            }
+
+            if (writer == null)
+            {
+                return;
+            }
+
+            writer.Write(new EventRow(
+                DateTime.Now.ToString(TimeFormat, CultureInfo.InvariantCulture),
+                ElapsedSeconds,
+                group,
+                step,
+                happening,
+                name,
+                number,
+                text));
+        }
+
         // ---------- the census ----------
 
         /// <summary>
@@ -623,6 +726,7 @@ namespace Federator.Core.Diagnostics
             lock (gate)
             {
                 openSteps.Add(step);
+                currentStep = step.Name;
                 visits++;
 
                 // Only inside a group. The two hand buttons on the Clash step run outside
@@ -636,7 +740,7 @@ namespace Federator.Core.Diagnostics
 
             if (visits == 1)
             {
-                Line(step.StartLine());
+                Numbered(step.StartLine(), "step started", step.Name, "0", null);
             }
             else if (visits == 2)
             {
@@ -651,6 +755,7 @@ namespace Federator.Core.Diagnostics
                 if (step.CensusBefore != null)
                 {
                     Line(step.CensusBefore.Line("before " + step.Name));
+                    Census("census before", step.CensusBefore);
                 }
             }
 
@@ -681,6 +786,10 @@ namespace Federator.Core.Diagnostics
                 stepRecords.Add(new StepRecord(
                     currentGroup, step.Name, step.Depth, step.StartedAt, step.Seconds, step.Threw));
                 visitsInGroup.TryGetValue(step.Name, out visits);
+
+                // Back to whatever was open underneath, which is the parent of a nested
+                // step and nothing at all at the top.
+                currentStep = openSteps.Count > 0 ? openSteps[openSteps.Count - 1].Name : null;
             }
 
             // Before the finish line, so a count that moved is named while the step is
@@ -689,7 +798,12 @@ namespace Federator.Core.Diagnostics
 
             if (visits <= 1)
             {
-                Line(step.FinishLine());
+                Numbered(
+                    step.FinishLine(),
+                    step.Threw ? "step threw" : "step finished",
+                    step.Name,
+                    EventRow.Exact(step.Seconds),
+                    step.Phrase);
             }
         }
 
@@ -716,6 +830,7 @@ namespace Federator.Core.Diagnostics
             }
 
             Line(after.Line("after  " + step.Name));
+            Census("census after", after);
 
             IList<string> faults = CensusRule.Lines(step.Name, step.CensusBefore, after);
             IList<string> reasons = CensusRule.Reasons(step.Name, step.CensusBefore, after);
@@ -750,6 +865,53 @@ namespace Federator.Core.Diagnostics
                 {
                     return new List<StepRecord>(stepRecords);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Every step this group entered more than once, as one record each carrying the
+        /// total, so the rows say the same thing the repeated lines do.
+        /// </summary>
+        private IList<StepRecord> RepeatedTotals()
+        {
+            List<StepRecord> totals = new List<StepRecord>();
+
+            lock (gate)
+            {
+                foreach (string name in RunSteps.All)
+                {
+                    double seconds = 0.0;
+                    int visits = 0;
+
+                    foreach (StepRecord record in stepRecords)
+                    {
+                        if (string.Equals(record.Group, currentGroup, StringComparison.Ordinal)
+                            && string.Equals(record.Name, name, StringComparison.Ordinal))
+                        {
+                            seconds += record.Seconds;
+                            visits++;
+                        }
+                    }
+
+                    if (visits > 1)
+                    {
+                        totals.Add(new StepRecord(currentGroup, name, 0, 0.0, seconds, false));
+                    }
+                }
+            }
+
+            return totals;
+        }
+
+        /// <summary>
+        /// One row per count in a census, so the machine readable log carries five
+        /// numbers where the text log carries one line of five.
+        /// </summary>
+        private void Census(string happening, DocumentCensus census)
+        {
+            foreach (CensusCount what in DocumentCensus.All)
+            {
+                Row(happening, DocumentCensus.Short(what), census.Show(what), null);
             }
         }
 
@@ -814,6 +976,11 @@ namespace Federator.Core.Diagnostics
             foreach (string line in repeated)
             {
                 Line(line);
+            }
+
+            foreach (StepRecord record in RepeatedTotals())
+            {
+                Row("step total", record.Name, EventRow.Exact(record.Seconds), null);
             }
         }
 
@@ -988,10 +1155,16 @@ namespace Federator.Core.Diagnostics
                 currentGroup = null;
             }
 
-            Line("GROUP    finished " + building + "  " + outcome.ToString().ToUpperInvariant()
-                + "  " + seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s"
-                + (string.IsNullOrEmpty(runPath) ? string.Empty : "  " + runPath)
-                + (string.IsNullOrEmpty(recorded) ? string.Empty : "  " + recorded));
+            Numbered(
+                "GROUP    finished " + building + "  " + outcome.ToString().ToUpperInvariant()
+                    + "  " + seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s"
+                    + (string.IsNullOrEmpty(runPath) ? string.Empty : "  " + runPath)
+                    + (string.IsNullOrEmpty(recorded) ? string.Empty : "  " + recorded),
+                "group finished",
+                building,
+                EventRow.Exact(seconds),
+                outcome.ToString().ToUpperInvariant()
+                    + (string.IsNullOrEmpty(runPath) ? string.Empty : " " + runPath));
 
             // After the finished line, because the group total the block works its shares
             // out of is the number on that line and a reader should meet them in that
@@ -999,6 +1172,15 @@ namespace Federator.Core.Diagnostics
             Block(
                 TimingBlock.GroupTitle + " " + Words.Or(building, "this group"),
                 TimingBlock.ForGroup(building, StepRecords, seconds));
+
+            foreach (TimedThing thing in TimingBlock.ThingsForGroup(building, StepRecords))
+            {
+                Row(
+                    thing.Nested ? "timing nested" : "timing",
+                    thing.Name,
+                    EventRow.Exact(thing.Seconds),
+                    EventRow.Count(thing.Visits) + " visits");
+            }
         }
 
         public void AppendAttempted(string file)
@@ -1013,8 +1195,13 @@ namespace Federator.Core.Diagnostics
         public void AppendFinished(string file, bool succeeded)
         {
             long size = SizeOnDisk(file);
-            Line("APPEND   " + (succeeded ? "ok      " : "FAILED  ") + file
-                + "  " + DescribeSize(size));
+            Numbered(
+                "APPEND   " + (succeeded ? "ok      " : "FAILED  ") + file
+                    + "  " + DescribeSize(size),
+                succeeded ? "appended" : "append failed",
+                "APPEND",
+                EventRow.Count((int)Math.Min(size < 0 ? 0 : size, int.MaxValue)),
+                file);
         }
 
         public void WriteAttempted(string kind, string path)
@@ -1079,7 +1266,13 @@ namespace Federator.Core.Diagnostics
                 }
             }
 
-            Line(kind.PadRight(8) + " written  " + path + "  " + DescribeSize(size));
+            Numbered(
+                kind.PadRight(8) + " written  " + path + "  " + DescribeSize(size),
+                "written",
+                kind,
+                EventRow.Count((int)Math.Min(size, int.MaxValue)),
+                path);
+
             return size;
         }
 
@@ -1606,6 +1799,11 @@ namespace Federator.Core.Diagnostics
                 catch (Exception)
                 {
                     // Closing the log is never worth throwing over.
+                }
+
+                if (rows != null)
+                {
+                    rows.Dispose();
                 }
             }
         }
