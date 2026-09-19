@@ -12,7 +12,7 @@ namespace Federator.Core.Clash
         /// <summary>This tool never moved it, so there is nothing of ours to undo.</summary>
         NotOurs = 1,
 
-        /// <summary>This tool moved it and somebody has since moved it on. That stands.</summary>
+        /// <summary>This tool moved it and somebody has since moved it again, on or back. That stands.</summary>
         SomebodyMovedItOn = 2
     }
 
@@ -81,7 +81,7 @@ namespace Federator.Core.Clash
                 case UndoVerdict.NotOurs:
                     return "this tool never moved it, so there was nothing of ours to undo";
                 case UndoVerdict.SomebodyMovedItOn:
-                    return "this tool moved it and somebody has since moved it on, so that stands";
+                    return "this tool moved it and somebody has since moved it again, so that stands";
                 default:
                     return "UNKNOWN";
             }
