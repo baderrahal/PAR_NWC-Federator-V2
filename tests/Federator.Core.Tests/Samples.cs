@@ -137,6 +137,54 @@ namespace Federator.Core.Tests
             return Resolve(AllInOneNames);
         }
 
+        /// <summary>
+        /// The client's matrix as it stands today, at 25 mm, which is the SOURCE the
+        /// corrections are applied to. It holds the same 61 sets and 1830 tests as the
+        /// export above and differs in the tolerance and in the faults F87 corrects.
+        /// </summary>
+        public static readonly string[] MatrixNames =
+        {
+            "1104-PAR_CLASH_AllInOne_25mm.xml"
+        };
+
+        public static string Matrix()
+        {
+            return Resolve(MatrixNames);
+        }
+
+        /// <summary>
+        /// The corrected matrix, which this tool WRITES rather than reads as evidence, so
+        /// it lives beside samples rather than in it. samples holds what came from the
+        /// project and exchange holds what this tool made from it.
+        /// </summary>
+        public const string CorrectedMatrixName = "1104-PAR_CLASH_AllInOne_25mm_FIXED.xml";
+
+        public static string ExchangeFolder()
+        {
+            string start = Path.GetDirectoryName(new Uri(typeof(Samples).Assembly.CodeBase).LocalPath);
+            DirectoryInfo directory = new DirectoryInfo(start);
+
+            while (directory != null)
+            {
+                string candidate = Path.Combine(directory.FullName, "exchange");
+
+                if (Directory.Exists(candidate))
+                {
+                    return candidate;
+                }
+
+                directory = directory.Parent;
+            }
+
+            throw new DirectoryNotFoundException(
+                "No exchange folder found at or above " + start + ".");
+        }
+
+        public static string CorrectedMatrix()
+        {
+            return Path.Combine(ExchangeFolder(), CorrectedMatrixName);
+        }
+
         public static string Building()
         {
             return Resolve(BuildingNames);
