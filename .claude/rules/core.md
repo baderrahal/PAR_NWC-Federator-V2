@@ -378,6 +378,15 @@ and 6 does not read as broken.
   129 distances in the two exports: nine are of that second kind and 0.000 appears nowhere
   in either file. Whether theirs rounds or truncates is UNKNOWN, because both files carry
   only the formatted text, so ours rounds
+- HOW MANY MISSING ITEM IDS ARE THIS RUN'S IS ITS OWN NUMBER, F79. One run left 192 item
+  id cells blank and nothing said whether that was this run failing to read a property or
+  last week's results carrying items that were never read in the first place. Those are
+  two different faults and only one is this run's to fix. `ClashReportModel
+  .MissingIdLines` splits them on the row's Found date against the group's RunAt and
+  nothing else. A row with NO date is UNKNOWN and is its own third number, never folded
+  into carried over, because whether the clash date and the run date share a clock and a
+  time zone is not readable off the DLL and only a run answers it. It counts ROWS and says
+  so: a row is a result group and one date stands for every clash inside it
 - The Item ID label is Element ID, and this tool CHOOSES it rather than reading it. It used
   to be the display name of whichever property matched, and since Id is first in the search
   list that came out as "Id: 990299" against their "Element ID: 702888". Which property
@@ -1087,7 +1096,7 @@ it if the same work carries the same name every time it is timed.
   second over is OVER. The forty five is `TimingBlock.UnattendedSeconds`, a setting, and
   a value at or below zero is refused where it is set
 - one line per test, `ROWS`, carries what the workbook got beside what the document
-  holds, so criterion 3 is answered off the log rather than by opening Excel and
+  holds, COLLAPSED in the text log since F81 and never in the machine readable one, so criterion 3 is answered off the log rather than by opening Excel and
   Navisworks side by side for 1830 tests. The two numbers are not the same thing: the
   tally counts leaves, descending into every result group, and the harvest writes one
   row per group without descending, which is also what the panel shows. So FEWER rows
@@ -1170,6 +1179,75 @@ is exactly it, found by an audit of every file under src. The run says it itself
   HtmlTabularWriter and ClientReportColumns name none of Family, Type, Material,
   SourceFile, Discipline or IdFrom anywhere, and ClashReportXml writes two quick
   properties and says in its own comment that the five used to be written and are not
+
+### The run against the session, F80
+
+- THE HEADLINE TIME IS THE RUN AND NOT THE SESSION. `Federator.Core.Diagnostics.RunClock`
+  holds three stretches off the ONE monotonic clock: waiting for the person, the run
+  itself, and whatever happened after the run finished. `RunLog.RunStarted` and
+  `RunFinished` take the two marks and write the two lines together, so the marks and the
+  lines can never disagree. The run of 2026-09-19 read 1424 seconds, of which 473 were a
+  person reading the group table and pressing Run, and every share in the timing block was
+  worked off the bigger number so every step read as a smaller part of the run than it was
+- NONE OF THE THREE VANISHES. The tail between the last group finishing and the result
+  block being written is small and is NAMED, for the same reason the timing block has a
+  row for everything outside every step. Both numbers reach RESULT, because how long the
+  run took and how long the window was open answer different questions, and criterion 2 is
+  about the run
+- WITH NO RUN MARK THE RUN IS THE SESSION AND THE BLOCK SAYS IT FELL BACK. The open file
+  run and the two hand buttons on the Clash step never mark a run, and a block that
+  divided by zero or reported a negative there would be worse than one that says what it
+  did. A clock that went back gives no time rather than time owed
+- THE LOG STILL OPENS ON THE FIRST LINE OF THE BUTTON HANDLER and the session clock still
+  starts there, so a run that dies at startup still leaves a file. The run is two MARKS on
+  that clock and never a second stopwatch and never two wall clock readings subtracted
+
+### Trimming the .log and never the .tsv, F81
+
+- THE TEXT LOG IS TRIMMED AND THE MACHINE READABLE LOG KEEPS EVERYTHING. That is the whole
+  rule and it is the thing that would be easy to get wrong. `RunLog.NumberedRepeat` writes
+  the ROW FIRST and then decides about the sentence, so collapsing a line can never cost
+  the .tsv a row. One run wrote 936 ROWS lines all saying the two numbers agree, and
+  collapsing them by simply not calling Numbered would have lost all 936 rows
+- THE KEY IS WHAT MAKES TWO LINES THE SAME LINE and it is NEVER the sentence, because the
+  sentence carries the test name and the names are exactly what varies. Five go out in
+  full, then ONE line saying the rest are counted, then nothing, which is the same shape
+  the skips and the drift already use. The count is carried into RESULT by
+  `RunLog.CollapsedLines`, because a log that quietly wrote fewer lines than it had is a
+  log nobody can check
+- WHAT WAS COLLAPSED, measured on the run of 2026-09-19: 10,980 CLASH created lines, 1830
+  drift lines, 854 duplicate SET lines, 1584 passed lines and 936 ROWS lines. The drift
+  is GROUPED by `TestDrift.Grouped` on the field and both values, because every one of the
+  1830 said the same thing about a different name. The passed tests are collapsed by
+  `ClashRunOutcome.RanLines`, and a test that found CLASHES still gets its own line,
+  because every one of those says something different
+- THE PER GROUP SETS BLOCK IS GONE. `SetBuilder` already writes a live line per set as it
+  builds, so the block was a second copy of all 61 of them. The totals it also carried are
+  still said, in the one line after it and in the SETS step's own finish phrase
+- RESULT SAYS WHAT BOTH FILES CAME TO. The .log number is read BEFORE the last lines are
+  flushed and the line says so, because a size is only ever reported as what was actually
+  read off the disk
+
+### Sets across the run, F82
+
+- A SET AT ZERO IN ONE GROUP AND A SET AT ZERO IN EVERY GROUP ARE DIFFERENT FINDINGS. The
+  first says a discipline was not exported for that building. The second says the set
+  itself is wrong, and 38 of the client's 61 were in that state on the first real run with
+  nothing anywhere adding it up. `Federator.Core.Sets.SetsAcrossTheRun` is the tally and
+  the block goes straight after SOURCE FINDINGS, because it is the same kind of thing:
+  something the run noticed that no output carries
+- IT COUNTS A SET THAT WAS ALREADY THERE AS WELL AS ONE THIS RUN CREATED. `SetResult
+  .IsZero` is true only of a CREATED set that found nothing, because that is what the SETS
+  totals and the NWF save decision read. On a weekly run every set is already there, so
+  IsZero is false for all 61 while 38 of them found nothing, and reading it here would
+  make the block empty on exactly the runs it was written for
+- A SET THAT NEVER RESOLVED IS UNKNOWN AND NOT ZERO. It carries an item count of minus one
+  and is left out of both counts, the same way a census minus one is never called a move.
+  A set a group never looked at was not at zero there, so the tally counts groups SEEN as
+  well as groups at zero
+- TEN ARE NAMED AND THE REST ARE COUNTED, and the block SAYS it truncated. One row per set
+  is written on its own, because `Block` writes no row at all and the .tsv has to carry
+  what the block carries
 
 ### The machine readable log, F64
 

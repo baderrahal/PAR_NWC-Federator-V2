@@ -464,6 +464,57 @@ namespace Federator.Core.Diagnostics
             get { return clock.Elapsed.TotalSeconds; }
         }
 
+        private double runStartedAt = -1.0;
+        private double runFinishedAt = -1.0;
+
+        /// <summary>
+        /// Marks where the run started, F80, and writes the line that says so. The mark is
+        /// taken off the SAME monotonic clock the session uses and never off a second
+        /// stopwatch, so the two can never disagree about how long anything took.
+        ///
+        /// The log still opens on the first line of the button handler, before this, so a
+        /// run that dies at startup still leaves a file. The session clock starts there
+        /// and stays there. This is a mark on it and nothing else.
+        /// </summary>
+        public void RunStarted(int groups)
+        {
+            lock (gate)
+            {
+                runStartedAt = ElapsedSeconds;
+            }
+
+            Line("RUN      started, " + groups + (groups == 1 ? " group" : " groups"));
+        }
+
+        /// <summary>Marks where the run finished, F80, and writes the line that says so.</summary>
+        public void RunFinished()
+        {
+            lock (gate)
+            {
+                runFinishedAt = ElapsedSeconds;
+            }
+
+            Line("RUN      finished");
+        }
+
+        /// <summary>
+        /// Where the session went, F80. The run is RUN started to RUN finished and it is
+        /// the number criterion 2 is about. With no mark it falls back to the session and
+        /// SAYS so, which is what the open file run and the two hand buttons give.
+        /// </summary>
+        public RunClock WhereTheTimeWent
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return runStartedAt < 0 || runFinishedAt < 0
+                        ? RunClock.NotMarked(ElapsedSeconds)
+                        : RunClock.From(ElapsedSeconds, runStartedAt, runFinishedAt);
+                }
+            }
+        }
+
         /// <summary>Raised for every line, so the window can show it as it is written.</summary>
         public event Action<string> LineWritten;
 
@@ -575,6 +626,95 @@ namespace Federator.Core.Diagnostics
                 name,
                 number,
                 text));
+        }
+
+        /// <summary>
+        /// How many of one repeated sentence reach the TEXT log before it collapses, F81.
+        /// The same number the skips and the drift use, because a reader who has learned
+        /// what five examples and a count look like should not have to learn a second
+        /// shape.
+        /// </summary>
+        public const int KeptOfARepeat = 5;
+
+        private readonly Dictionary<string, int> collapsedLines = new Dictionary<string, int>(StringComparer.Ordinal);
+
+        /// <summary>
+        /// A numbered line that COLLAPSES in the text log and never in the machine
+        /// readable one, F81.
+        ///
+        /// THE ROW IS ALWAYS WRITTEN. That is the whole point and it is the thing that
+        /// would be easy to get wrong: one run wrote 936 ROWS lines all saying the two
+        /// numbers agree, and collapsing them by simply not calling Numbered would have
+        /// cost the .tsv 936 rows. The .tsv keeps everything and the .log is what gets
+        /// trimmed, so this writes the row first and then decides about the sentence.
+        ///
+        /// The KEY is what makes two lines the same line. It is the caller's to choose and
+        /// it is never the whole sentence, because the sentence carries the test name and
+        /// the names are exactly what varies.
+        ///
+        /// Five go out in full, then ONE line saying the rest are counted and not written,
+        /// then nothing. A truncated list that does not say it truncated is the fault this
+        /// log has been caught by before, so the count is also carried into the RESULT
+        /// block by CollapsedLines.
+        /// </summary>
+        public void NumberedRepeat(
+            string key, string message, string happening, string name, string number, string text)
+        {
+            Row(happening, name, number, text);
+
+            int already;
+            string said = key ?? string.Empty;
+
+            lock (gate)
+            {
+                already = collapsedLines.ContainsKey(said) ? collapsedLines[said] : 0;
+                collapsedLines[said] = already + 1;
+            }
+
+            if (already < KeptOfARepeat)
+            {
+                Line(message);
+                return;
+            }
+
+            if (already == KeptOfARepeat)
+            {
+                Line("         every further line of this kind is counted and not written out. "
+                    + "The machine readable log carries every one of them");
+            }
+        }
+
+        /// <summary>
+        /// What the collapsing left out, counted by key, F81. It goes in the RESULT block,
+        /// because a log that quietly wrote fewer lines than it had is a log nobody can
+        /// check.
+        /// </summary>
+        public IList<string> CollapsedLines()
+        {
+            List<string> lines = new List<string>();
+            List<string> keys;
+
+            lock (gate)
+            {
+                keys = new List<string>(collapsedLines.Keys);
+                keys.Sort(StringComparer.Ordinal);
+
+                foreach (string key in keys)
+                {
+                    int all = collapsedLines[key];
+
+                    if (all <= KeptOfARepeat)
+                    {
+                        continue;
+                    }
+
+                    lines.Add(key + ": " + all + " written as " + KeptOfARepeat
+                        + " and " + (all - KeptOfARepeat)
+                        + " counted. Every one is in the machine readable log");
+                }
+            }
+
+            return lines;
         }
 
         /// <summary>
@@ -1559,11 +1699,22 @@ namespace Federator.Core.Diagnostics
         public void WriteResultBlock()
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
-            // to be scrolled for, and so where the time went is read on the way to it. The
-            // run total is the log's own elapsed clock, measured here and not added up
-            // from the groups, because the scan and the preview happen outside every group
-            // and a total that left them out would be a smaller number than the run took.
-            Block(TimingBlock.RunTitle, TimingBlock.ForRun(GroupRecords, StepRecords, ElapsedSeconds));
+            // to be scrolled for, and so where the time went is read on the way to it.
+            //
+            // THE RUN TOTAL IS RUN STARTED TO RUN FINISHED, F80, and not the session. It
+            // used to be the session, so a headline of 1424 seconds carried 473 of a
+            // person reading the group table, and every share in the block was worked off
+            // the bigger number so every step read as a smaller part of the run than it
+            // was. Both numbers are still said, and the one criterion 2 is about is the
+            // run. It is measured here and never added up from the groups, because the
+            // scan and the preview happen outside every group.
+            RunClock where = WhereTheTimeWent;
+
+            List<string> timing = new List<string>(where.Lines());
+            timing.Add(string.Empty);
+            timing.AddRange(TimingBlock.ForRun(GroupRecords, StepRecords, where.RunSeconds));
+
+            Block(TimingBlock.RunTitle, timing);
 
             Section("RESULT");
 
@@ -1670,8 +1821,43 @@ namespace Federator.Core.Diagnostics
                 }
             }
 
+            // F81. What the text log left out, so a reader knows the file was trimmed on
+            // purpose rather than wondering where the lines went. Nothing is missing from
+            // the machine readable log.
+            IList<string> collapsed = CollapsedLines();
+
+            if (collapsed.Count > 0)
+            {
+                Blank();
+                Line("lines collapsed in this file, all of them kept in the .tsv beside it:");
+
+                foreach (string line in collapsed)
+                {
+                    Line("    " + line);
+                }
+            }
+
             Blank();
+
+            // Both numbers, because they answer different questions. The run is what
+            // criterion 2 is about and the session is how long the window was open.
+            RunClock spent = WhereTheTimeWent;
+
+            Line("run time       : " + spent.RunSeconds.ToString("0.000", CultureInfo.InvariantCulture)
+                + "s" + (spent.Marked ? string.Empty : ", which is the session, no run was marked"));
+            Line("waiting for the person : "
+                + spent.WaitingSeconds.ToString("0.000", CultureInfo.InvariantCulture)
+                + "s, which is not work this tool did");
             Line("total elapsed  : " + ElapsedSeconds.ToString("0.000", CultureInfo.InvariantCulture) + "s");
+
+            // F81. What the two files came to, so a run says whether the trimming worked
+            // rather than leaving somebody to look at a folder. The .log number is read
+            // BEFORE these last lines are flushed and it says so, because a size is only
+            // ever reported as what was actually read off the disk.
+            Line("the .log so far: " + DescribeSize(SizeOnDisk(Path))
+                + ", read before this block finished writing");
+            Line("the .tsv       : " + DescribeSize(SizeOnDisk(RowLogPath))
+                + ", which keeps every line the .log collapsed");
         }
 
         // ---------- the copy next to the outputs ----------

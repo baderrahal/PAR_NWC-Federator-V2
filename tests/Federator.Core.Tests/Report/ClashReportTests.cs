@@ -62,13 +62,89 @@ namespace Federator.Core.Tests
 
             IList<string> lines = report.IdSourceLines();
 
-            Assert.That(lines.Count, Is.EqualTo(3), "one line per property, not one per item");
+            Assert.That(lines.Count, Is.EqualTo(4),
+                "one line per property, not one per item, and F79's missing id split on the end");
             Assert.That(string.Join("\n", new List<string>(lines).ToArray()),
                 Does.Contain("Element ID supplied 3 item ids of 6"));
             Assert.That(string.Join("\n", new List<string>(lines).ToArray()),
                 Does.Contain("Id supplied 2 item ids of 6"));
             Assert.That(string.Join("\n", new List<string>(lines).ToArray()),
                 Does.Contain("no id property supplied 1 item id of 6"));
+        }
+
+        // ---------- F79, which missing ids are this run's ----------
+
+        /// <summary>
+        /// F79. One run left 192 item id cells blank and nothing said whether that was
+        /// this run failing to read a property or last week's results carrying items that
+        /// were never read in the first place. Those are two different faults and only one
+        /// of them is this run's to fix.
+        /// </summary>
+        [Test]
+        public void TheMissingIdsAreSplitByWhetherThisRunFoundTheResult()
+        {
+            ClashReport report = Report();
+            report.RunAt = new DateTime(2026, 9, 19, 14, 0, 0);
+
+            TestReport test = Ran(report, "T", Root + "/a", Root + "/b");
+
+            test.Add(Missing(new DateTime(2026, 9, 19, 14, 5, 0)));
+            test.Add(Missing(new DateTime(2026, 9, 12, 9, 0, 0)));
+            test.Add(Missing(null));
+
+            IList<string> lines = report.MissingIdLines();
+
+            Assert.That(lines.Count, Is.EqualTo(1), "one counted line, not one per item");
+            Assert.That(lines[0], Does.Contain("6 item ids are missing"));
+            Assert.That(lines[0], Does.Contain("2 on results this run found"));
+            Assert.That(lines[0], Does.Contain("2 on results carried over"));
+            Assert.That(lines[0], Does.Contain("2 on rows carrying no date at all"));
+        }
+
+        /// <summary>
+        /// A row with NO date is UNKNOWN and is its own third number, never folded into
+        /// carried over, because whether the clash date and the run date share a clock and
+        /// a time zone is not readable off the DLL and only a run answers it.
+        /// </summary>
+        [Test]
+        public void ARowWithNoDateIsUnknownAndNotCarriedOver()
+        {
+            ClashReport report = Report();
+            report.RunAt = new DateTime(2026, 9, 19, 14, 0, 0);
+            Ran(report, "T", Root + "/a", Root + "/b").Add(Missing(null));
+
+            Assert.That(report.MissingIdLines()[0], Does.Contain("0 on results carried over"));
+            Assert.That(report.MissingIdLines()[0], Does.Contain("UNKNOWN and not carried over"));
+        }
+
+        [Test]
+        public void ARowFoundExactlyWhenTheRunStartedIsThisRuns()
+        {
+            ClashReport report = Report();
+            report.RunAt = new DateTime(2026, 9, 19, 14, 0, 0);
+            Ran(report, "T", Root + "/a", Root + "/b").Add(Missing(report.RunAt));
+
+            Assert.That(report.MissingIdLines()[0], Does.Contain("2 on results this run found"));
+        }
+
+        [Test]
+        public void WithNothingMissingThereIsNoLineAtAll()
+        {
+            ClashReport report = Report();
+            report.RunAt = new DateTime(2026, 9, 19, 14, 0, 0);
+            Ran(report, "T", Root + "/a", Root + "/b")
+                .Add(WithIds(ClashStatus.New, "Element ID", "Element ID"));
+
+            Assert.That(report.MissingIdLines(), Is.Empty);
+        }
+
+        private static ClashRow Missing(DateTime? found)
+        {
+            ClashRow row = Row(ClashStatus.New, -0.1, 1);
+            row.Left = new ClashItem();
+            row.Right = new ClashItem();
+            row.Found = found;
+            return row;
         }
 
         [Test]

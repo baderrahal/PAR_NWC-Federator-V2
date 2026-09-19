@@ -304,10 +304,89 @@ namespace Federator.Core.Clash
                     + "yours. Tick apply the file's settings on the Clash step to change them.");
 
             lines.Add(string.Empty);
+            lines.AddRange(Grouped(all));
 
-            foreach (TestDifference difference in all)
+            return lines;
+        }
+
+        /// <summary>How many tests are named under one grouped difference.</summary>
+        public const int ExamplesShown = 5;
+
+        /// <summary>
+        /// The differences GROUPED, F81. One run wrote 1830 of these lines and every one
+        /// of them said the same thing: the file says tolerance 0.025 and the test in the
+        /// document has 0.075. What varies is the test name and nothing else.
+        ///
+        /// So the grouping key is the field, the value in the file and the value in the
+        /// document, and the test names are what the group carries. Five are named and the
+        /// rest are counted, and the line SAYS how many it did not name, because a
+        /// truncated list that does not say it truncated is the fault this log has already
+        /// been caught by.
+        ///
+        /// THE GROUPS KEEP THE ORDER THEY WERE FIRST SEEN IN, so two runs of one model
+        /// give the same block.
+        /// </summary>
+        public static IList<string> Grouped(IEnumerable<TestDifference> differences)
+        {
+            List<string> order = new List<string>();
+            Dictionary<string, List<TestDifference>> byDifference =
+                new Dictionary<string, List<TestDifference>>(StringComparer.Ordinal);
+
+            if (differences != null)
             {
-                lines.Add(difference.Sentence());
+                foreach (TestDifference difference in differences)
+                {
+                    if (difference == null)
+                    {
+                        continue;
+                    }
+
+                    // A separator no field name or value carries, so two different
+                    // differences cannot join into one key.
+                    string key = difference.Field + "\u001F" + difference.InFile
+                        + "\u001F" + difference.InDocument;
+                    List<TestDifference> bucket;
+
+                    if (!byDifference.TryGetValue(key, out bucket))
+                    {
+                        bucket = new List<TestDifference>();
+                        byDifference.Add(key, bucket);
+                        order.Add(key);
+                    }
+
+                    bucket.Add(difference);
+                }
+            }
+
+            List<string> lines = new List<string>();
+
+            foreach (string key in order)
+            {
+                List<TestDifference> bucket = byDifference[key];
+                TestDifference first = bucket[0];
+
+                lines.Add(bucket.Count + (bucket.Count == 1 ? " test: " : " tests: ")
+                    + "the file says " + first.Field + " " + first.InFile
+                    + " and the test in the document has " + first.InDocument + ".");
+
+                int shown = 0;
+
+                foreach (TestDifference difference in bucket)
+                {
+                    if (shown == ExamplesShown)
+                    {
+                        break;
+                    }
+
+                    lines.Add("        " + difference.TestName);
+                    shown++;
+                }
+
+                if (bucket.Count > shown)
+                {
+                    lines.Add("        and " + (bucket.Count - shown)
+                        + " more with the same difference, counted and not listed");
+                }
             }
 
             return lines;

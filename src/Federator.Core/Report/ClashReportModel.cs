@@ -645,7 +645,85 @@ namespace Federator.Core.Report
                     + " of " + items + ", written as \"" + ClientFormat.DefaultIdLabel + "\"");
             }
 
+            lines.AddRange(MissingIdLines());
             return lines;
+        }
+
+        /// <summary>The words the block uses for an item with no id property at all.</summary>
+        public const string NoIdProperty = "no id property";
+
+        /// <summary>
+        /// How many of the missing ids belong to a clash this run FOUND and how many to a
+        /// clash that was already in the NWF, F79.
+        ///
+        /// WHY IT MATTERS. One run left 192 item id cells blank and nothing said whether
+        /// that was this run failing to read a property or last week's results carrying
+        /// items that were never read in the first place. Those are two different faults
+        /// and only one of them is this run's to fix.
+        ///
+        /// THE SPLIT IS THE ROW'S Found DATE AGAINST THE GROUP'S RunAt AND NOTHING ELSE. A
+        /// row found at or after the run started is this run's. One found before it was
+        /// carried over. A row with NO date is UNKNOWN and is counted as its own third
+        /// number, never folded into carried over, because whether the clash date and the
+        /// run date share a clock and a time zone is not readable off the DLL and only a
+        /// run answers it.
+        ///
+        /// IT COUNTS ROWS AND SAYS SO. A row is a result GROUP and one date stands for
+        /// every clash inside it, which is the same difference ReportedCount already
+        /// explains between rows and clashes.
+        /// </summary>
+        public IList<string> MissingIdLines()
+        {
+            int thisRun = 0;
+            int carriedOver = 0;
+            int noDate = 0;
+
+            foreach (TestReport test in tests)
+            {
+                foreach (ClashRow row in test.Rows)
+                {
+                    int missing = Missing(row.Left) + Missing(row.Right);
+
+                    if (missing == 0)
+                    {
+                        continue;
+                    }
+
+                    if (!row.Found.HasValue)
+                    {
+                        noDate += missing;
+                    }
+                    else if (row.Found.Value < RunAt)
+                    {
+                        carriedOver += missing;
+                    }
+                    else
+                    {
+                        thisRun += missing;
+                    }
+                }
+            }
+
+            List<string> lines = new List<string>();
+            int all = thisRun + carriedOver + noDate;
+
+            if (all == 0)
+            {
+                return lines;
+            }
+
+            lines.Add(all + (all == 1 ? " item id is missing" : " item ids are missing")
+                + ", counted on the rows this report holds: " + thisRun
+                + " on results this run found, " + carriedOver
+                + " on results carried over from an earlier run, " + noDate
+                + " on rows carrying no date at all, which is UNKNOWN and not carried over");
+
+            return lines;
+        }
+
+        private static int Missing(ClashItem item)
+        {
+            return item != null && string.IsNullOrEmpty(item.IdFrom) ? 1 : 0;
         }
 
         private static int CountIdSource(ClashItem item, IDictionary<string, int> counts)
@@ -655,7 +733,7 @@ namespace Federator.Core.Report
                 return 0;
             }
 
-            string from = string.IsNullOrEmpty(item.IdFrom) ? "no id property" : item.IdFrom;
+            string from = string.IsNullOrEmpty(item.IdFrom) ? NoIdProperty : item.IdFrom;
             int already;
 
             counts[from] = counts.TryGetValue(from, out already) ? already + 1 : 1;
