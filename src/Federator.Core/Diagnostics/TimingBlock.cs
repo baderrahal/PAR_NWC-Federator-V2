@@ -91,6 +91,29 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
+        /// The same steps the group block lists, as values rather than as lines, so the
+        /// machine readable log carries the numbers the block carries and the two cannot
+        /// say different things. Slowest first, the top level ones and then the nested.
+        /// </summary>
+        public static IList<TimedThing> ThingsForGroup(string building, IList<StepRecord> records)
+        {
+            IList<TimedThing> things = Gather(records, building);
+            List<TimedThing> inOrder = new List<TimedThing>();
+
+            foreach (TimedThing thing in Slowest(things, false))
+            {
+                inOrder.Add(thing);
+            }
+
+            foreach (TimedThing thing in Slowest(things, true))
+            {
+                inOrder.Add(thing);
+            }
+
+            return inOrder;
+        }
+
+        /// <summary>
         /// Every step of one group, slowest first, with its share of the group, then the
         /// group total. The nested steps come after, under a line saying their seconds
         /// are already inside the step above them.

@@ -847,6 +847,32 @@ is exactly it, found by an audit of every file under src. The run says it itself
   SourceFile, Discipline or IdFrom anywhere, and ClashReportXml writes two quick
   properties and says in its own comment that the five used to be written and are not
 
+### The machine readable log, F64
+
+A second file beside the text log, same name and a different extension, `.tsv`. One row
+per event, eight columns, tab separated, with a header.
+
+- the text log is STILL the one a person reads and nothing about it got worse for this
+  file existing. Where the two disagree the text log is right, because it is the one
+  that has been read against a real run
+- ONE WRITER, so the two cannot drift. `RunLog.Numbered` writes the text line and the
+  row together and is the only way a line carrying a number reaches the log. A line
+  cannot be added without its row and a row cannot say something the text log does not
+- a sentence with no number in it writes NO row. That is the rule and not an oversight:
+  a row whose number column is empty is noise in a file whose whole purpose is numbers
+- tab separated and not comma, because a clash name, a set locator and a file path all
+  hold commas and none of them holds a tab, and Excel opens a tab separated file with no
+  import dialog
+- a tab, a newline, a carriage return or a backslash inside a value is escaped. The
+  BACKSLASH GOES FIRST, or reading a value back would turn a path ending in a t into a
+  tab, and every Windows path in this tool holds backslashes. Escaping is proved by
+  reading the value back and not by asserting that it changed
+- line by line and flushed with `Flush(true)`, exactly like the text log, so a run that
+  dies mid group leaves both files whole up to that moment
+- it never stops a run. A row file that cannot be opened leaves the text log untouched
+  and says why in it, and a write that throws is swallowed. The second log is a
+  convenience and the first one is the record
+
 Two things that look like mistakes and are not:
 
 - while a run holds the log open, File.ReadAllText fails with a sharing error.
