@@ -38,9 +38,8 @@ namespace Federator.Addin.Engine
     ///
     /// NOTHING HERE TOUCHES SavedViewpoints, and that half is still true. The other half
     /// of this sentence said no clash is ever saved as a viewpoint, and F85 reverses it: a
-    /// clash gets a viewpoint as well as a picture, planned by ClashViewpointPlan and, once
-    /// SavedViewpoints.CanBuild is true, written by ViewpointBuilder. Today neither happens
-    /// and neither is this file, A10.
+    /// clash gets a viewpoint as well as a picture, planned by ClashViewpointPlan and, since
+    /// the viewpoints round on 2026-09-19, written by ViewpointBuilder. Neither is this file.
     ///
     /// The number a picture is written under here is the RUN order, because the report
     /// order is only known once every test has run. ImageRenumbering in Federator.Core
