@@ -2,6 +2,131 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F69, the other eighteen errors, and the first proved build
+
+### THE ADD-IN BUILDS. 0 errors, 0 warnings
+
+```
+dotnet build ParsonsNwcFederator.sln -c Release
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+```
+
+That is the first proved build in this repo's history. Every round before this one wrote
+add-in code that nothing compiled, said so honestly, and handed the build to Bader.
+
+### What was found, and how
+
+- F68'S OWN MEASUREMENT IS WHAT FOUND IT. Step 18 of the new build section is
+  `dotnet build ParsonsNwcFederator.sln -c Release --no-restore`, and a step whose Look for
+  line is written from memory is exactly what this repo refuses, so it was run. It did not
+  fail on a missing Navisworks DLL. It compiled, and answered with eighteen errors
+- THIS SESSION IS ON BADER'S OWN MACHINE AND NAVISWORKS MANAGE 2025 IS INSTALLED ON IT.
+  `C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Api.dll` and
+  `Autodesk.Navisworks.Clash.dll` are both there. Every earlier round ran in a container
+  with no install, and the rules, the log and the whole shape of `03_bader_next.md` are
+  built around that. It is not true today and the rules say so now
+- F65 FIXED THE ONE ERROR BADER SENT BACK. Eighteen more were behind it, and none of them
+  is a cascade of the first: they are in a different file, on different types
+- THE ERROR COUNT IS EIGHTEEN AND THE FAULT COUNT IS THREE. Fourteen CS0200, one CS0029 and
+  three CS1061, all in `FederationEngine.cs`, all from three different rounds
+
+### Fault one, fourteen errors. The counts could not be written by the only thing that counts them
+
+- `RebuiltThing.Before`, `.AfterAppends` and `.AfterRestore` were declared `internal set`.
+  F50 wrote them that way
+- THE COUNTS ARE READ OFF THE OPEN DOCUMENT, which only the add-in can do, and the add-in
+  is a DIFFERENT ASSEMBLY. `internal` reaches Core and, through the `InternalsVisibleTo` in
+  `Federator.Core.csproj`, the test project. It does not reach `Federator.Addin`
+- WHICH IS WHY EVERY TEST PASSED THE WHOLE TIME. `RebuildTallyTests` sets all three on
+  every one of its cases and always could. The one caller that cannot is the one that
+  matters, and nothing in this repo put those two facts side by side until a compiler did
+- The three setters are public now, with the reason written above them so nobody narrows
+  them again
+
+### Fault two, one error. The member step 10 has been asking about since F24
+
+- `setsCopy = document.SelectionSets.CreateCopy();` was held in a `SavedItemCollection`,
+  which is CS0029
+- MEASURED OFF THE INSTALLED DLL ON 2026-09-19, by reflection, and written into
+  `docs/history/scan.md` 4d:
+
+```
+public System.Collections.ObjectModel.Collection<Autodesk.Navisworks.Api.SavedItem> CreateCopy()
+public System.Void CopyFrom(Autodesk.Navisworks.Api.SavedItemCollection)
+public System.Void CopyFrom(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.SavedItem>)
+```
+
+- THE COPY IS AN ORDINARY BCL COLLECTION AND NOT ONE OF NAVISWORKS' OWN. `CopyFrom` has two
+  overloads and the copy goes back through the `IEnumerable` one, so the round trip needs
+  nothing converted in between
+- STEP 10 OF `03_bader_next.md` HAS CARRIED A LINE SINCE F24 asking Bader to paste the error
+  if a build ever named `CreateCopy` or `CopyFrom` on `DocumentSelectionSets`. It named
+  both. The answer is in `scan.md` now rather than in a question
+- AND ONE THING BEYOND THE BUILD FIX, said plainly because it is beyond it. `CreateCopy`
+  CREATES, every `SavedItem` in the copy is `IDisposable`, and `Collection<SavedItem>` is
+  not, so the old `as IDisposable` line disposed nothing and never could. Each item is
+  disposed now, in the same `finally`, after every use of the copy. That is the rule in
+  `addin.md` and section 4g is why it matters
+- ALSO READ IN THE SAME PASS AND RECORDED: `DocumentSelectionSets` has `Remove(SavedItem)`
+  and `RemoveAt(int)`. Those are about the SETS tree and say nothing about taking a MODEL
+  out of an open document, which is 5a and is still UNKNOWN
+
+### Fault three, three errors. F52 set two properties that were never added
+
+- `JobOutcome.ViewpointsRequested` and `JobOutcome.FailedViewpointCount` did not exist
+- `GroupFacts` has carried both since F52 and `GroupJudgement` reads both, so the Core half
+  was written, tested and right. The add-in half was never added, and `Facts()` never
+  copied them across
+- Both added, and `Facts()` hands them over, which finishes F52's wiring: a group whose
+  viewpoints failed is not DONE, and a group that never asked for them is not judged on
+  them at all
+
+### What this changes about the repo, beyond the three fixes
+
+- `.claude/rules/addin.md` no longer says nothing here has ever built the add-in. It says
+  where a session can build it and where it cannot, and that a session says which it is
+  rather than leaving it to be assumed
+- THE F65 ENTRY IS CORRECTED IN PLACE, not deleted. It says the add-in was not built and
+  that nothing here could build it, and the second half of that was wrong rather than out
+  of date. The correction sits under it naming what was wrong, which is what F47c did with
+  the F40 entry
+- THE PARSE CHECK IS NOW THE SECOND BEST THING AVAILABLE and it was the best thing for four
+  rounds. Where a session can build, it builds
+- AND THE TWO PROBES CAN BE RUN HERE. `tools\probes\probe-viewpoints.ps1` answers the whole
+  saved viewpoint API, which is what `SavedViewpoints.CanBuild` being false is waiting on,
+  and `probe-model-remove.ps1` answers 5a. Neither was run, because neither is this round's
+  brief and F52 is a feature rather than a build fix. They are the first thing worth doing
+  next and Bader decides
+
+### Proved here
+
+- `dotnet build ParsonsNwcFederator.sln -c Release` with 0 errors and 0 warnings
+- `check-locals.sh src` clean, `check-imports.sh src` clean
+- Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+### What is still NOT proved
+
+- NOTHING HAS BEEN RUN. A build is not a run. Not one line of F50 to F69 has been seen
+  against a real model, and every one of the 319 steps of `03_bader_next.md` is still
+  outstanding. What changed today is that step 8 will now pass, which is what all 319 of
+  them were waiting behind
+
+### What remains
+
+- The closing work, and it is bigger than it was this morning
+
+### Known bugs
+
+- As in the F46 entry, and the add-in compiles
+
+### What comes next
+
+1. Merge the F69 pull request
+2. The closing work
+3. The two probes, if Bader wants them, because they can be run here now
+
 ## 2026-09-19 F68, the build section learns what today cost
 
 ### What was done
@@ -118,7 +243,8 @@ Every Autodesk type each file puts in a TYPE POSITION, and the import that cover
 
 ### What was NOT proved, said plainly
 
-- The add-in was not built. Nothing in this container can build it and nothing here has ever built it. What is known is that Bader's compiler reported exactly one error, that error was this line, and this line is now correct against a namespace measured off the installed DLL. Whether a SECOND error waits behind it is UNKNOWN until step 8 runs on his machine
+- The add-in was not built. What is known is that Bader's compiler reported this error, that this line is now correct against a namespace measured off the installed DLL, and that whether a SECOND error waits behind it is UNKNOWN
+- CORRECTED IN PLACE ON 2026-09-19 BY F69, which is the entry above. This bullet said "Nothing in this container can build it and nothing here has ever built it" and that was wrong, not out of date. This session is running on Bader's own machine, Navisworks Manage 2025 is installed on it, and the add-in builds here. F69 ran the build, found the second error and the sixteen behind it, and fixed every one. The sentence is left showing rather than deleted, because a log that quietly edits what it claimed is worth less than one that says where it was wrong
 - Core tests before and after, on this machine, which is Windows: 1238 passed, 0 failed, 0 skipped, 1238 total. Nothing in Core was touched. The container figure the log round closed on was 1205 passed with 32 skipped, and the 32 are the Windows file system rules, which run here
 
 ### What remains

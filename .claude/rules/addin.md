@@ -12,7 +12,18 @@ written into steps/03_bader_next.md. Rules whose logic lives in Core are in core
 The reasons and the measurements behind every rule are in
 docs/history/claude-md-history.md, kept whole.
 
-## Nothing here has ever built the add-in, and a log entry must not say it did
+## A parse is not a build, and where the add-in CAN be built
+
+THE ADD-IN WAS BUILT FOR THE FIRST TIME ON 2026-09-19, by F69, on the machine that has
+Navisworks Manage 2025 installed. Before that it had never been compiled anywhere that
+this repo records, which is how F52 shipped CS0128, F61 shipped CS0246 and sixteen more
+errors sat behind those two, unseen, across two rounds.
+
+WHERE A SESSION RUNS DECIDES WHAT IT CAN PROVE, and a session says which it is rather
+than assuming. A session on Bader's own machine has the install, so it runs
+dotnet build ParsonsNwcFederator.sln -c Release and the add-in is PROVED to compile. A
+session in a container has no install, cannot build the add-in at all, and everything
+below applies to it.
 
 Five log entries report that the add-in parses with the same error codes and not one
 CS1xxx, and every one of them is true and none of them is a build. The check behind
@@ -23,9 +34,10 @@ every body whose signature it can resolve, and it still cannot see inside a meth
 takes a Navisworks type, because Roslyn skips the body of any method whose signature it
 cannot bind, which is most of the engine.
 
-So the words are parses and never builds, and a round says what it could not check
-rather than leaving the reader to assume. The build is step 8 of
-steps/03_bader_next.md and it is the first thing on the machine that has Navisworks.
+So the words are parses and never builds, a round says what it could not check rather
+than leaving the reader to assume, and a session that CAN build says the build succeeded
+with the error and warning counts beside it. The build is step 8 of
+steps/03_bader_next.md and no runner anywhere has Navisworks, so Actions can never do it.
 
 Two rules of the compiler's run without it, and there are two because two rounds each
 shipped a different compiler error from here.
@@ -43,9 +55,10 @@ what the rest of the tree imports. What it cannot do is written at the top of it
 use of a brand new Autodesk type, in the first file that ever names it, is invisible to it.
 
 A NEW ADD-IN FILE THAT NAMES AN AUTODESK TYPE COPIES ITS IMPORTS FROM THE FILE IN THIS REPO
-THAT ALREADY USES THAT TYPE. Nothing here can compile the add-in, so the only evidence
-available is what the files that already build carry, and a namespace guessed at reads
-exactly like one that was measured until the build says otherwise.
+THAT ALREADY USES THAT TYPE. Where a session cannot compile the add-in that is the only
+evidence there is, and a namespace guessed at reads exactly like one that was measured
+until a build says otherwise. Where a session CAN compile it, the build is run and the rule
+costs nothing anyway.
 
 The pre-commit hook runs both before the tests and Actions runs each of them twice, once
 over src and once over tools/checks/broken, which is wrong on purpose in two ways so each

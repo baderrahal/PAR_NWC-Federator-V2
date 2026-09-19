@@ -2297,6 +2297,42 @@ genuinely lacks that content or because the condition is wrong. The tool cannot 
 apart, so a ZERO line now prints the question the set asked, in internal names, and leaves
 the judgement to the reader.
 
+#### CreateCopy and CopyFrom, the two F24 and F29 could not measure, measured 2026-09-19
+
+Step 10 of `steps\03_bader_next.md` has carried a line since F24 asking Bader to paste the
+error if a build ever named `CreateCopy` or `CopyFrom` on `DocumentSelectionSets`, because
+neither could be read from where the code was being written. Both are read now, by
+reflection off `C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Api.dll`
+on the machine that has the install:
+
+```
+Autodesk.Navisworks.Api.DocumentParts.DocumentSelectionSets
+    public System.Collections.ObjectModel.Collection<Autodesk.Navisworks.Api.SavedItem> CreateCopy()
+    public System.Void CopyFrom(Autodesk.Navisworks.Api.SavedItemCollection)
+    public System.Void CopyFrom(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.SavedItem>)
+```
+
+THE COPY IS NOT A `SavedItemCollection`. It is a `Collection<SavedItem>`, which is an
+ordinary BCL collection and not one of Navisworks' own. The rebuild held it in a
+`SavedItemCollection` and that is CS0029, which is one of the eighteen errors F69 found and
+fixed. `CopyFrom` has two overloads and the copy goes back in through the `IEnumerable`
+one, so the round trip is `CreateCopy` then `CopyFrom` with nothing converted in between.
+
+`Collection<SavedItem>` is not itself `IDisposable` and every `SavedItem` in it is, and
+`CreateCopy` CREATES, so the rebuild disposes each item once the copy has been put back.
+Section 4g is why that matters.
+
+Two more members on the same type, not needed by anything today and recorded because they
+were read in the same pass and the list above is what a reader will trust next time:
+
+```
+    public System.Boolean Remove(Autodesk.Navisworks.Api.SavedItem)
+    public System.Void RemoveAt(System.Int32)
+```
+
+Those are about the SETS tree. They say nothing about whether a MODEL can be taken out of
+an open document, which is section 5a and is still UNKNOWN.
+
 ### 5. Is nuget.org reachable
 
 YES. Tested by restoring ClosedXML into a scratch folder outside this repo, at

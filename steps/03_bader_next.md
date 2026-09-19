@@ -30,7 +30,7 @@ dotnet build ParsonsNwcFederator.sln -c Release
 dotnet build ParsonsNwcFederator.sln -c Release -p:NavisworksPath="D:\Autodesk\Navisworks Manage 2025"
 ```
 
-10. Look for: the build finishes with no error. If it names CreateCopy or CopyFrom on DocumentSelectionSets, copy the whole error into the chat, that is the one member F24 and F29 could not measure from the container
+10. Look for: `Build succeeded.` with `0 Error(s)` and `0 Warning(s)`. That was proved on this machine on 2026-09-19 by F69, which is the first build this repo has ever had, so anything else here is new and the whole output goes into the chat. `CreateCopy` and `CopyFrom` on `DocumentSelectionSets`, which F24 and F29 could not measure, are measured now and written into `docs\history\scan.md` 4d, so a build naming either of them is a real fault and no longer an open question
 11. Look for: the build stamp. If it reads `nogit` where an eight character commit hash belongs, git is not on the PATH for the terminal that ran the build. The build itself is fine and only the stamp is affected, and the title bar and the log will read `nogit` until you build from a terminal that has git on it
 
 ### If the build fails on NuGet rather than on the code

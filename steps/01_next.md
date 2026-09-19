@@ -14,22 +14,23 @@ Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 
 
 Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixes as F56 to F61. F56 and F57 were already taken, so the six are F59 to F64 and they map onto the brief one for one and in order. F51, which the brief asks for as its own one line pull request, was already done and merged on 2026-09-18 and is not done twice. F58 is a seventh, found by the reading that opened the round and put first because the add-in does not compile and every one of the 251 steps waits behind the build.
 
-Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. They go before everything that was left, because the build is what every one of the 319 steps waits behind.
+Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. F69 is a fifth, not briefed, found by running the build while measuring F68 and put after the four it came out of. They go before everything that was left, because the build is what every one of the 319 steps waits behind.
 
 1. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
 2. F66, DONE, the check that would have caught it
 3. F67, DONE, one doubled comment
 4. F68, DONE, the build section learns what today cost
-5. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
-6. F59, DONE, every step is named and timed
-7. F60, DONE, the timing blocks, and F21 closes here
-8. F61, DONE, the document census
-9. F62, DONE, the live line in the window
-10. F63, DONE, the report gap block
-11. F64, DONE, the machine readable log
-12. F57, five Look for lines older than the feature round, for Bader to judge
-13. F18, when Bader uploads the 1A04WE sample, Q9
-14. F23, when Q20 is answered
+5. F69, DONE, the other eighteen errors, and the first proved build. Not briefed, found by running the build
+6. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
+7. F59, DONE, every step is named and timed
+8. F60, DONE, the timing blocks, and F21 closes here
+9. F61, DONE, the document census
+10. F62, DONE, the live line in the window
+11. F63, DONE, the report gap block
+12. F64, DONE, the machine readable log
+13. F57, five Look for lines older than the feature round, for Bader to judge
+14. F18, when Bader uploads the 1A04WE sample, Q9
+15. F23, when Q20 is answered
 
 The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 248 to 260 are for.
 
@@ -609,6 +610,18 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - One more line under the build step: a build stamp reading `nogit` rather than a commit hash means git is not on the PATH for that terminal. The build is fine and only the stamp is affected
 - Size: eleven steps and the renumbering behind them
 - DONE on 2026-09-19. Eleven steps in, 11 to 21, each with its Look for line, and the file runs 1 to 319 where it ran 1 to 308. Every command in them was RUN on this machine rather than written from memory: the `obj` and `bin` listing gives six folders, two per project, and the cold `--disable-parallel` restore gives three `Restored` lines and no error. The one thing not measured is what `dotnet nuget locals all --clear` prints, because clearing the cache here would cost the re-download it warns about, and the step says that rather than guessing. The `nogit` line is read off `Directory.Build.targets`, which sets the hash to `nogit` when git exits non zero or answers nothing. Five cross references were bumped with the renumbering, from steps 65, 70, 202, 271 and 284 to 76, 81, 213, 282 and 295, and each was read against the step it now points at. Core tests unchanged, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+## F69 The other eighteen errors, and the first proved build
+
+- Files `src/Federator.Core/Rerun/RebuildTally.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/JobOutcome.cs`, `docs/history/scan.md`, `.claude/rules/addin.md`
+- LOCAL MACHINE, and it was done on the local machine
+- NOT BRIEFED. Found by running `dotnet build ParsonsNwcFederator.sln -c Release` while measuring F68's steps, which is when it became clear that this session is on Bader's own machine and Navisworks Manage 2025 is installed on it. F65 fixed the one error Bader sent back. Eighteen more were behind it
+- Three faults, not eighteen. Fourteen CS0200, one CS0029, three CS1061
+- `RebuiltThing.Before`, `.AfterAppends` and `.AfterRestore` were `internal set`. The add-in is a different assembly, so the one caller that fills them in could not reach them, while Core and the tests could, which is why every test passed. F50
+- `DocumentSelectionSets.CreateCopy()` returns `Collection<SavedItem>` and not `SavedItemCollection`. That is the member step 10 has been asking Bader to paste since F24, now measured off the installed DLL and recorded in `docs/history/scan.md` 4d. F29
+- `JobOutcome` never got `ViewpointsRequested` or `FailedViewpointCount`, which `GroupFacts` has carried and the judgement has read since F52, so the engine was setting two properties that did not exist. F52
+- Size: three faults, and the measurement is what makes them safe to fix
+- DONE on 2026-09-19. `dotnet build ParsonsNwcFederator.sln -c Release` finishes with 0 errors and 0 warnings, which is the first proved build this repo has. The three setters are public with the reason written beside them. The copy is a `Collection<SavedItem>`, goes back through the measured `CopyFrom(IEnumerable<SavedItem>)` overload, and every item in it is disposed, because `CreateCopy` creates and what this tool creates it disposes. `JobOutcome` carries the two viewpoint facts and `Facts()` hands them to the judgement, which finishes F52's wiring. `.claude/rules/addin.md` says where the add-in can and cannot be built and stops saying nothing here has ever built it. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
 
 ## F21 The log answers timing and counts
 
