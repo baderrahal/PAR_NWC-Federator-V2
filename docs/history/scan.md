@@ -3135,9 +3135,9 @@ monotonic clock. That is information and the run acts on none of it. When a real
 it firing after the open returns and before the count settles, on every open, it becomes
 the answer and the poll becomes the fallback, which is the order asked for above.
 
-## 5f. What the property API offers for walking an item's properties, asked 2026-09-19, NOT MEASURED
+## 5f. What the property API offers for walking an item's properties, asked 2026-09-19, MEASURED 2026-09-19
 
-THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
+THE ANSWER IS AT THE END OF THIS SECTION. The question is left standing above it.
 
 WHY IT IS ASKED. F86 writes one CSV per NWC saying, per Revit category, which property
 tabs and property names the items carry and which distinct values appear on each, so the
@@ -3165,6 +3165,75 @@ into the text a CSV cell holds, and one line saying whether the walk is per item
 whether a search can do it in one pass. The Core half, `Federator.Core.Probe`, already
 fixes the CSV columns, the cap and the sort, so only the reading is open.
 
+THE ANSWER, read by `tools\probes\probe-properties.ps1` on DESKTOP-5VL7LTJ on 2026-09-19
+against `Autodesk.Navisworks.Api 22.0.0.0`. The question above is left standing because
+it says what the answer is for.
+
+The walk starts on `ModelItem`, whose members of interest are all get only:
+
+```
+PropertyCategoryCollection    PropertyCategories
+ModelItemEnumerableCollection Children, Descendants, DescendantsAndSelf
+ModelItem                     Parent
+String                        DisplayName, ClassDisplayName, ClassName
+Boolean                       IsComposite, IsInsert, IsLayer, HasGeometry
+Model                         Model
+```
+
+`PropertyCategoryCollection` is `IEnumerable<PropertyCategory>` and `IDisposable`, with
+finders by name, by display name and by combined name for a category and for a property.
+One element of it is a `PropertyCategory`, which is `IDisposable` and carries the tab:
+
+```
+String                 Name            the internal name the API matches on
+String                 DisplayName     the tab a person sees
+DataPropertyCollection Properties      the collection under one tab
+NamedConstant          CombinedName
+```
+
+`DataPropertyCollection` is an `IList<DataProperty>` with `Count` and an indexer and the
+same three finders. One element is a `DataProperty`, `IDisposable`, with the same pair:
+
+```
+String      Name
+String      DisplayName
+VariantData Value
+```
+
+`VariantData` is `IDisposable` and carries a `DataType` of `VariantDataType`, fourteen
+values:
+
+```
+None = 0, Double = 1, Int32 = 2, Boolean = 3, DisplayString = 4, DateTime = 5,
+DoubleLength = 6, DoubleAngle = 7, NamedConstant = 8, IdentifierString = 9,
+DoubleArea = 10, DoubleVolume = 11, Point3D = 12, Point2D = 13
+```
+
+with one `Is` property and one `To` reader per value: `ToDisplayString`,
+`ToIdentifierString`, `ToNamedConstant`, `ToBoolean`, `ToInt32`, `ToDouble`,
+`ToDoubleLength`, `ToDoubleArea`, `ToDoubleVolume`, `ToDoubleAngle`, `ToAnyDouble`,
+`ToDateTime`, `ToPoint2D`, `ToPoint3D`. It also overrides `ToString`, and what that
+returns is UNKNOWN off the DLL, so nothing here reads it as a cell.
+
+HOW A VALUE BECOMES THE TEXT A CSV CELL HOLDS, in one line: switch on `DataType` and call
+the one reader for it, a display string as itself, an identifier string as itself, a named
+constant by its `DisplayName`, the five doubles through `ToAnyDouble` written invariant,
+an integer and a boolean as themselves, a date written invariant round trip, a point as its
+coordinates joined with a space, and None as an empty cell. A length is in the DOCUMENT'S
+units, the same as the size properties F53 reads, and the probe writes the number as read
+and does not convert it, because the probe reports what is there.
+
+WHETHER THE WALK IS PER ITEM OR PER SEARCH, in one line: both exist and the wiring uses
+the per item walk. `Search.FindAll(document, false)` with
+`SearchCondition.HasPropertyByDisplayName(tab, property).EqualValue(...)` over
+`SearchLocations.DescendantsAndSelf` finds every item of one category in one pass, which
+is the shape `SetBuilder` already builds a set with. `Model.RootItem.DescendantsAndSelf`
+walks a whole model item by item. The probe walks item by item and asks each item its
+category through the same reader the penetration rule uses, `ClashHarvest.FirstPropertyOn`
+over `ProbeSettings.CategoryNames`, because a search would match on a TAB name that the
+settings do not carry and the probe exists to find out what the tabs are called. What that
+walk costs is measured and written in the PROBE block, per file.
+
 ## 5g. Does Navisworks import a NEGATED search condition, asked 2026-09-19, NOT MEASURED
 
 THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
@@ -3185,6 +3254,28 @@ WHAT WAS SHIPPED WITHOUT IT. The fallback, `Category equals "Nurse Call Devices"
 is in `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` today. `equals` is proved to
 import, because the whole file uses it and the real run imported all 61 sets. The negated
 form is the better set and is not written until this is measured.
+
+WHAT REFLECTION CAN SAY, read by `tools\probes\probe-properties.ps1` on DESKTOP-5VL7LTJ
+on 2026-09-19 against `Autodesk.Navisworks.Api 22.0.0.0`, which is not the measurement
+above and does not close it:
+
+```
+public SearchCondition SearchCondition.Negate()
+SearchConditionOptions.NegateCondition = 32
+```
+
+The API carries a negation, as a method on the condition and as a bit on the options enum,
+between `IgnoreDisplayStringValueCase = 16` and `StartGroup = 64`. F78 measured that the
+file's `flags` attribute IS this enum, because the five conditions carrying `flags="64"`
+are the five that start a group. So IF the exporter writes a negated condition it would
+carry `flags="32"`, or `96` where it also starts a group, and `SetBuilder.BuildCondition`
+passes the flags through as `SearchConditionOptions` unchanged, so a file carrying 32
+would build a negated condition through the API without a line changing.
+
+WHAT IS STILL NOT MEASURED, which is the whole of the question: whether Navisworks WRITES
+that bit when a person exports a set built with a negation, and whether it READS it back
+on import. Neither can be read off a DLL. Both need the hand built set and the round trip
+above, on a run. The fallback stays in `exchange\` until then.
 
 ## 5h. Can a comment be written on a clash result, asked 2026-09-19, NOT MEASURED
 

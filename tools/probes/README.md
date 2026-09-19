@@ -31,6 +31,10 @@ The eight DLL probes need only the install:
   opened document has finished loading. Every member of Document, DocumentModels and
   Application whose name holds Load, Ready, Busy, Progress, State, Pending or Complete,
   and every event on each. See docs/history/scan.md section 5e
+- `probe-properties.ps1` answers 5f for F86, the property API: the collection types under
+  ModelItem.PropertyCategories, the two name pairs, every reader on VariantData and its
+  fourteen data types, and whether a Search walks a model in one pass. It also reads what
+  reflection can say about 5g, the negated condition. See sections 5f and 5g
 
 The three window probes need the add-in built in Release and installed by
 build\install.ps1, because they construct the real window:
