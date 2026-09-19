@@ -82,6 +82,7 @@ namespace Federator.Addin.Ui
             ShowTheInstallsLogo();
             ShowImageDefaults();
             ShowPenetrationWording();
+            FillTolerance();
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
@@ -1017,6 +1018,100 @@ namespace Federator.Addin.Ui
             }
         }
 
+
+        /// <summary>
+        /// The tolerance drop down, F76. Every entry, the label, the grey line and the unit
+        /// beside the number box come off Core, because the offered values are a setting
+        /// and a copy typed into the XAML is the one nothing can test.
+        /// </summary>
+        private void FillTolerance()
+        {
+            if (ToleranceBox == null)
+            {
+                return;
+            }
+
+            ToleranceLabel.Content = ToleranceChoice.PickerLabel;
+            ToleranceHelp.Text = ToleranceChoice.HelpLine;
+            ToleranceBox.Items.Clear();
+
+            foreach (string choice in ToleranceChoice.Choices())
+            {
+                ToleranceBox.Items.Add(choice);
+            }
+
+            ToleranceBox.SelectedIndex = 0;
+
+            // The number box is in millimetres, which is what a person says, and the word
+            // beside it is the unit table's rather than typed here.
+            UnitRow millimetres = UnitTable.FindByExchangeCode("mm");
+            ToleranceOtherUnit.Text = millimetres == null ? string.Empty : millimetres.DisplayName;
+        }
+
+        /// <summary>The number box only takes a value under Other, which is the last entry.</summary>
+        private void OnToleranceChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ToleranceBox == null || ToleranceOtherBox == null)
+            {
+                return;
+            }
+
+            ToleranceOtherBox.IsEnabled = ToleranceBox.SelectedIndex == ToleranceBox.Items.Count - 1;
+        }
+
+        /// <summary>
+        /// What the drop down says, F76. The entries are the list Choices() gave, in its
+        /// order: the file first, the offered values, then Other with the number box. A
+        /// number that is not a tolerance is refused by ToleranceChoice.Of in its own
+        /// words, and the caller shows those before the run starts.
+        /// </summary>
+        private ToleranceChoice ChosenTolerance()
+        {
+            int at = ToleranceBox == null ? 0 : ToleranceBox.SelectedIndex;
+
+            if (at <= 0)
+            {
+                return ToleranceChoice.FromTheFile();
+            }
+
+            if (at <= ToleranceChoice.OfferedMillimetres.Length)
+            {
+                return ToleranceChoice.Of(ToleranceChoice.OfferedMillimetres[at - 1]);
+            }
+
+            double typed;
+
+            if (!double.TryParse(
+                Trimmed(ToleranceOtherBox.Text),
+                System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out typed))
+            {
+                // Not a number, handed over as one so the refusal is Core's wording and
+                // not a second one here.
+                typed = double.NaN;
+            }
+
+            return ToleranceChoice.Of(typed);
+        }
+
+        /// <summary>
+        /// How many tests the picked file holds, for the confirm dialog, or zero where
+        /// nothing is picked or the file will not read. The run reads and reports the
+        /// file itself, so a failure here is not said twice.
+        /// </summary>
+        private int TestsInThePickedFile()
+        {
+            try
+            {
+                ExchangeDocument exchange = PickedExchange();
+                return exchange == null ? 0 : exchange.Tests.Count;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
         /// <summary>The table's display name, and on the default a word on what it is for.</summary>
         private static string UnitWording(UnitRow row)
         {
@@ -1110,6 +1205,7 @@ namespace Federator.Addin.Ui
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
             options.CompactResolved = CompactResolved.IsChecked == true;
             options.MarkPenetrations = MarkPenetrations.IsChecked == true;
+            options.Tolerance = ChosenTolerance();
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
@@ -1336,6 +1432,20 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            // F76. A tolerance that is not one is refused here, in Core's words, rather
+            // than reaching 1830 tests and being discovered in a report.
+            ToleranceChoice tolerance;
+
+            try
+            {
+                tolerance = ChosenTolerance();
+            }
+            catch (ArgumentOutOfRangeException error)
+            {
+                Warn(error.Message);
+                return;
+            }
+
             // The NWF folder may have changed since the list was last refreshed, so the
             // labels are read again right before they are counted.
             RefreshRunPaths();
@@ -1344,7 +1454,7 @@ namespace Federator.Addin.Ui
             // the dialog can count the Rebuilt groups and the list can show them.
             PreviewRunPaths(jobs);
 
-            if (!ConfirmClear(TickedRunPaths()))
+            if (!ConfirmClear(TickedRunPaths(), tolerance))
             {
                 Log("Run cancelled before anything was cleared.");
                 return;
@@ -1372,6 +1482,10 @@ namespace Federator.Addin.Ui
                 + (MarkPenetrations.IsChecked == true
                     ? "YES, a small service through a wall, floor or roof becomes Reviewed"
                     : "no, every clash keeps the status it has"));
+            log.Line("clash tolerance  : " + tolerance.Label()
+                + (tolerance.ChosenInTheTool
+                    ? ", chosen in the tool, set on every test and beats the XML and the document"
+                    : ", read per test out of the XML"));
             log.Line("NWD naming       : "
                 + (DateTheNwd.IsChecked == true
                     ? "dated, so every week is kept"
@@ -1471,7 +1585,7 @@ namespace Federator.Addin.Ui
         /// run groups. Whatever is open is replaced either way, so it is named and the
         /// user can cancel. Asked once, before the first group.
         /// </summary>
-        private bool ConfirmClear(IList<string> runPaths)
+        private bool ConfirmClear(IList<string> runPaths, ToleranceChoice tolerance)
         {
             string discarded;
 
@@ -1486,6 +1600,18 @@ namespace Federator.Addin.Ui
 
             string message = string.Join(
                 Environment.NewLine, new List<string>(RunPath.ConfirmLines(runPaths)).ToArray());
+
+            // F76. Said only when a tolerance was chosen, because a line that reads the
+            // same on every run teaches people to skip the screen. The test count is read
+            // off the picked file only then, since it is the one number the lines need.
+            IList<string> toleranceLines = tolerance.WarningLines(
+                runPaths.Count, tolerance.ChosenInTheTool ? TestsInThePickedFile() : 0);
+
+            if (toleranceLines.Count > 0)
+            {
+                message += Environment.NewLine + Environment.NewLine
+                    + string.Join(Environment.NewLine, new List<string>(toleranceLines).ToArray());
+            }
 
             if (discarded != null)
             {

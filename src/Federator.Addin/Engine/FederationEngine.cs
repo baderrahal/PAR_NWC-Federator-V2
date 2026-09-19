@@ -1671,6 +1671,9 @@ namespace Federator.Addin.Engine
                 runner.ApplyFileSettings = reports.ApplyFileSettings;
                 runner.CompactResolved = reports.CompactResolved;
 
+                // F76. The tolerance chosen on the Clash step, or the file per test.
+                runner.Tolerance = reports.Tolerance;
+
                 // F72. Built only when the box is on, so a run that did not ask for it
                 // hands the runner a null and the runner resolves nothing and walks
                 // nothing. The tally is per GROUP, because the block is per group, and the

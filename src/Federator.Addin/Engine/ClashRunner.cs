@@ -83,6 +83,25 @@ namespace Federator.Addin.Engine
         private bool changedTheDocument;
 
         /// <summary>
+        /// The tolerance chosen on the Clash step, F76, never null. The default is the
+        /// file's own value per test. A chosen one is set on every test in the run, created
+        /// fresh or already in the document, and beats the XML and the document.
+        /// </summary>
+        public ToleranceChoice Tolerance { get; set; }
+
+        /// <summary>The document units a tolerance is set in, read once per group.</summary>
+        private string documentUnits;
+
+        /// <summary>
+        /// How many tests this group set a tolerance on, created fresh and already in
+        /// the document. Both are counted under the default too, because the one
+        /// TOLERANCE line per group carries both numbers whichever way it reads.
+        /// </summary>
+        private int toleranceOnCreated;
+
+        private int toleranceOnExisting;
+
+        /// <summary>
         /// The guard is handed in so it can live for the whole run rather than for one
         /// group. A run failing uniformly must stop the run, and a per group guard would
         /// have let the same nine hours pass 24 times over.
@@ -98,6 +117,7 @@ namespace Federator.Addin.Engine
             this.log = log;
             this.guard = guard ?? new RepeatedFailureGuard();
             this.statuses = new ClashStatusEditor(log);
+            Tolerance = ToleranceChoice.FromTheFile();
             SetTreeRoot = ExchangeReader.SelectionSetTreeRoot;
         }
 
@@ -243,6 +263,9 @@ namespace Federator.Addin.Engine
             drift.Clear();
             Compared = 0;
             SidesNotCompared = 0;
+            toleranceOnCreated = 0;
+            toleranceOnExisting = 0;
+            documentUnits = null;
 
             Stopwatch stepClock = Stopwatch.StartNew();
 
@@ -265,6 +288,7 @@ namespace Federator.Addin.Engine
                 // Named before the first test, because a clash count means nothing without
                 // knowing what it was counted against.
                 outcome.OpenDocument = NavisworksFacts.OpenDocument();
+                documentUnits = UnitName(document.Units);
                 log.Line("CLASH    ran against " + outcome.OpenDocument);
                 log.Line("CLASH    the document measures in " + Words.Or(UnitName(document.Units), "UNKNOWN units")
                     + ", every tolerance was converted into it");
@@ -335,6 +359,9 @@ namespace Federator.Addin.Engine
                         : ", they keep their results and are not recreated"));
 
                 RunEach(document, sets, clashTests, byPath, present, resolved, outcome);
+
+                // F76. One line per group, whichever way the choice reads.
+                WriteTheToleranceLine();
 
                 if (drift.Count > 0 || Compared > 0)
                 {
@@ -552,6 +579,7 @@ namespace Federator.Addin.Engine
                     // it is neither created nor checked for drift.
                     address = TestAddress.At(planned.Address);
                     outcome.AddAlreadyPresent(planned.Name);
+                    ApplyChosenTolerance(clashTests, address, planned.Name);
                 }
                 else if (present.TryGetValue(planned.Name, out address))
                 {
@@ -564,6 +592,7 @@ namespace Federator.Addin.Engine
                     // the two are compared and every difference is reported by name.
                     outcome.AddAlreadyPresent(planned.Name);
                     CompareAndMaybeApply(clashTests, address, planned, byPath, sets);
+                    ApplyChosenTolerance(clashTests, address, planned.Name);
                 }
                 else
                 {
@@ -594,6 +623,7 @@ namespace Federator.Addin.Engine
                     }
 
                     outcome.AddCreated(planned.Name);
+                    toleranceOnCreated++;
                 }
 
                 int leftItems;
@@ -982,7 +1012,7 @@ namespace Federator.Addin.Engine
                 {
                     replacement.DisplayName = planned.Name;
                     replacement.TestType = (ClashTestType)(int)planned.TestType;
-                    replacement.Tolerance = planned.Tolerance;
+                    replacement.Tolerance = ToleranceFor(planned);
                     replacement.MergeComposites = planned.MergeComposites;
 
                     using (ClashSelection left = replacement.SelectionA)
@@ -1014,6 +1044,129 @@ namespace Federator.Addin.Engine
                     error,
                     "kept going, that test still holds what it held before");
             }
+        }
+
+        /// <summary>
+        /// What one test's tolerance is set to, F76: the chosen value converted into the
+        /// document units, or otherwise the file's, which the plan already converted. A
+        /// unit the table does not know throws here and the test is then skipped by name
+        /// through the catch in OneTest, which is F33's rule and never a fallback.
+        /// </summary>
+        private double ToleranceFor(PlannedClashTest planned)
+        {
+            return Tolerance.For(planned.Tolerance, documentUnits);
+        }
+
+        /// <summary>The words on the created line, saying which of the two won.</summary>
+        private string DescribeSetTolerance(PlannedClashTest planned, double set)
+        {
+            if (!Tolerance.ChosenInTheTool)
+            {
+                return planned.DescribeTolerance();
+            }
+
+            return Tolerance.Label() + " chosen in the tool is " + Plain(set) + " "
+                + Words.Or(documentUnits, "UNKNOWN units");
+        }
+
+        /// <summary>
+        /// Puts the chosen tolerance onto a test already in the document, F76, and counts
+        /// the test either way. Nothing is touched under the default, and a test already
+        /// at the chosen value is left exactly as it is, because an edit resets its
+        /// results and there would be nothing to change. The copy is the test's OWN,
+        /// through SavedItem.CreateCopy, so only the tolerance moves and the file's other
+        /// settings never ride in on it, which is what ApplyFileSettings is for.
+        /// </summary>
+        private void ApplyChosenTolerance(DocumentClashTests clashTests, TestAddress address, string name)
+        {
+            toleranceOnExisting++;
+
+            if (!Tolerance.ChosenInTheTool)
+            {
+                return;
+            }
+
+            try
+            {
+                double wanted = Tolerance.InDocumentUnits(documentUnits);
+
+                using (ClashTest existing = Resolve(clashTests, address, name))
+                {
+                    if (existing == null)
+                    {
+                        return;
+                    }
+
+                    double already = existing.Tolerance;
+
+                    if (Math.Abs(already - wanted) <= TestDrift.ToleranceEpsilon)
+                    {
+                        return;
+                    }
+
+                    using (SavedItem copied = existing.CreateCopy())
+                    {
+                        ClashTest copy = copied as ClashTest;
+
+                        if (copy == null)
+                        {
+                            log.Line("CLASH    " + name + "  the test would not copy as a clash test, so "
+                                + "its tolerance stays at " + Plain(already) + " and not the chosen "
+                                + Plain(wanted));
+                            return;
+                        }
+
+                        copy.Tolerance = wanted;
+                        clashTests.TestsEditTestFromCopy(existing, copy);
+                    }
+
+                    changedTheDocument = true;
+
+                    log.NumberedRepeat(
+                        "CLASH tolerance set on a saved test",
+                        "CLASH    TOLERANCE " + name + "  " + Plain(already) + " to " + Plain(wanted) + " "
+                            + Words.Or(documentUnits, string.Empty)
+                            + ", chosen in the tool, which reset its results",
+                        "tolerance set on a saved test",
+                        name,
+                        EventRow.Exact(wanted),
+                        "was " + Plain(already));
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "setting the chosen tolerance on " + name,
+                    error,
+                    "kept going, that test keeps the tolerance it had");
+            }
+        }
+
+        /// <summary>
+        /// The one TOLERANCE line per group, F76. Both counts are read and the converted
+        /// value is on it, so nobody does the arithmetic to find out what 25 mm was in a
+        /// document measuring feet. A unit the table does not know cannot be converted,
+        /// and then the counts are still said.
+        /// </summary>
+        private void WriteTheToleranceLine()
+        {
+            try
+            {
+                log.Line(Tolerance.LogLine(toleranceOnCreated, toleranceOnExisting, documentUnits));
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "writing the tolerance line",
+                    error,
+                    "kept going, the counts are " + toleranceOnCreated + " created and "
+                        + toleranceOnExisting + " already in the document");
+            }
+        }
+
+        private static string Plain(double value)
+        {
+            return value.ToString("0.############", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -1067,12 +1220,13 @@ namespace Federator.Addin.Engine
             PlannedClashTest planned)
         {
             int before = clashTests.Tests.Count;
+            double set = ToleranceFor(planned);
 
             using (ClashTest test = new ClashTest())
             {
                 test.DisplayName = planned.Name;
                 test.TestType = (ClashTestType)(int)planned.TestType;
-                test.Tolerance = planned.Tolerance;
+                test.Tolerance = set;
                 test.MergeComposites = planned.MergeComposites;
 
                 using (ClashSelection left = test.SelectionA)
@@ -1097,12 +1251,12 @@ namespace Federator.Addin.Engine
                 "CLASH created",
                 "CLASH    created  " + planned.Name
                     + "  " + planned.TestTypeName
-                    + "  tolerance " + planned.DescribeTolerance()
+                    + "  tolerance " + DescribeSetTolerance(planned, set)
                     + "  merge composites " + (planned.MergeComposites ? "on" : "off"),
                 "test created",
                 planned.Name,
-                EventRow.Exact(planned.Tolerance),
-                planned.TestTypeName + ", " + planned.DescribeTolerance());
+                EventRow.Exact(set),
+                planned.TestTypeName + ", " + DescribeSetTolerance(planned, set));
 
             int after = clashTests.Tests.Count;
 

@@ -456,10 +456,30 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Content="Clash XML" />
-                        <TextBox Grid.Column="1" x:Name="ExchangeFileBox" VerticalAlignment="Center"
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Clash XML" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="ExchangeFileBox" VerticalAlignment="Center"
                                  TextChanged="OnExchangeFileChanged" />
-                        <Button Grid.Column="2" Content="Browse" Click="OnBrowseExchangeFile" />
+                        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowseExchangeFile" />
+                        <!-- F76. The tolerance chosen here beats the XML and the document.
+                             The entries, the label, the grey line and the unit beside the
+                             number box are read off Core in the constructor and never
+                             typed here, because the offered values are a setting and a
+                             copy in the XAML is the one nothing can test. -->
+                        <Label Grid.Row="1" Grid.Column="0" x:Name="ToleranceLabel" />
+                        <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+                            <ComboBox x:Name="ToleranceBox" MinWidth="200" VerticalAlignment="Center"
+                                      SelectionChanged="OnToleranceChanged" />
+                            <TextBox x:Name="ToleranceOtherBox" Width="80" Margin="8,0,0,0"
+                                     VerticalAlignment="Center" IsEnabled="False" />
+                            <TextBlock x:Name="ToleranceOtherUnit" VerticalAlignment="Center" Margin="4,0,0,0" />
+                        </StackPanel>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ToleranceHelp"
+                                   Style="{StaticResource TickHelp}" />
                     </Grid>
 
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">

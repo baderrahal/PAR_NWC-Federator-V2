@@ -214,8 +214,7 @@ and 6 does not read as broken.
   primitive type flags. A test whose tolerance attribute is not there at all is SKIPPED by
   name, the way an unknown test type is, because a missing tolerance became zero and zero
   reads as a real tolerance. A tolerance written as zero is a real one and is created
-- THE CORE HALF ONLY until 03_bader_next.md step 367 is done.
-  THE TOLERANCE CAN BE CHOSEN IN THE TOOL AND THEN IT BEATS EVERYTHING, F76. The Clash
+- THE TOLERANCE CAN BE CHOSEN IN THE TOOL AND THEN IT BEATS EVERYTHING, F76. The Clash
   step carries a drop down, `Federator.Core.Clash.ToleranceChoice`: Use the value in the
   XML, which is the default and changes nothing, then 25 mm, 50 mm, 75 mm, then Other
   with a number box. When anything but the default is chosen that value is set on EVERY
