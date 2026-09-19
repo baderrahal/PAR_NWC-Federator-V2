@@ -18,6 +18,7 @@ namespace Federator.Core.Report
             ExcelFolder = string.Empty;
             SourceFolder = string.Empty;
             ApplyFileSettings = false;
+            Tolerance = ToleranceChoice.FromTheFile();
             CompactResolved = false;
             MarkPenetrations = false;
             Penetrations = new PenetrationSettings();
@@ -104,8 +105,21 @@ namespace Federator.Core.Report
         /// <summary>
         /// Put the file's settings onto tests already in the document. Off by default,
         /// because it RESETS their results.
+        ///
+        /// IT KEEPS EXACTLY THE MEANING IT HAD, F76, which is whether the FILE'S settings
+        /// reach a saved test. A tolerance chosen on the Clash step wins over it, because
+        /// a value a person typed beats a value read out of a file, and the two answer
+        /// different questions.
         /// </summary>
         public bool ApplyFileSettings { get; set; }
+
+        /// <summary>
+        /// The tolerance chosen on the Clash step, F76. Never null: the default is
+        /// ToleranceChoice.FromTheFile, which is what this tool has always done. When a
+        /// value is chosen it is set on every clash test in the run, created fresh or
+        /// already saved in the NWF, and it beats both the XML and the document.
+        /// </summary>
+        public ToleranceChoice Tolerance { get; set; }
 
         /// <summary>
         /// Remove Resolved clashes after the tests run. Off by default, because it

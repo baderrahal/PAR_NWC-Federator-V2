@@ -282,6 +282,7 @@ namespace Federator.Core.Report
             SkippedReason = string.Empty;
             TestTypeName = string.Empty;
             ToleranceUnits = string.Empty;
+            ToleranceFrom = ToleranceOrigin.Unknown;
             StatusWord = string.Empty;
             ImageIndex = -1;
         }
@@ -303,6 +304,20 @@ namespace Federator.Core.Report
         public double Tolerance { get; set; }
 
         public string ToleranceUnits { get; set; }
+
+        /// <summary>
+        /// Where that tolerance was READ, F76. The row is produced by a clash test in the
+        /// open document, so the number in the Tolerance cell has to be the one that test
+        /// carries, not the one the XML asked for. Those two are different whenever a test
+        /// was already saved in the NWF, which is every weekly run: the matrix is written
+        /// at 25 mm and the NWFs on disk held tests at 75 mm, and the run clashed at 75
+        /// while the report said 25.
+        ///
+        /// It is kept for the same reason the Item ID keeps which property supplied it. A
+        /// number is only honest while what produced it is still visible, and the report
+        /// check names this rather than a reader having to trust it.
+        /// </summary>
+        public ToleranceOrigin ToleranceFrom { get; set; }
 
         public string TestTypeName { get; set; }
 

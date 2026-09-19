@@ -177,6 +177,33 @@ and 6 does not read as broken.
   primitive type flags. A test whose tolerance attribute is not there at all is SKIPPED by
   name, the way an unknown test type is, because a missing tolerance became zero and zero
   reads as a real tolerance. A tolerance written as zero is a real one and is created
+- THE TOLERANCE CAN BE CHOSEN IN THE TOOL AND THEN IT BEATS EVERYTHING, F76. The Clash
+  step carries a drop down, `Federator.Core.Clash.ToleranceChoice`: Use the value in the
+  XML, which is the default and changes nothing, then 25 mm, 50 mm, 75 mm, then Other
+  with a number box. When anything but the default is chosen that value is set on EVERY
+  test in the run, the ones created fresh from the XML and the ones already saved in the
+  NWF alike, and it beats the XML and it beats the document. ApplyFileSettings keeps
+  exactly the meaning it had, which is whether the FILE'S settings reach a saved test,
+  and this wins over it, because a value a person typed beats a value read out of a file.
+  The choice is in MILLIMETRES because that is what a person says, converted through
+  UnitTable like any other, and a unit the table has not been taught throws rather than
+  falling back. Zero is a real tolerance and is allowed. A negative one is refused where
+  it is set rather than reaching 1830 tests. The confirm screen says the value, the
+  counts, what it beats, and that changing a saved test RESETS its results, and says
+  nothing at all under the default, because a line that reads the same on every run
+  teaches people to skip the screen. One TOLERANCE line per group carries both counts and
+  the converted value. Why it exists: the matrix is written at 25 mm, the NWFs on disk
+  held tests at 75 mm, a test already in the document is left exactly as it is, so the
+  run clashed at 75 while everybody believed it was clashing at 25
+- THE REPORT READS ITS TOLERANCE OFF THE CLASH TEST IN THE DOCUMENT, F76, because the
+  document is what produced the row. It used to be copied off the PLAN, which is the
+  XML, so on every weekly run the cell said what the file asked for and the run had
+  clashed at something else. `ClashReportModel.TestReport.ToleranceFrom` carries WHERE it
+  was read, an origin of Document, File, Tool or Unknown, kept for the same reason the
+  Item ID keeps which property supplied it: a number is only honest while what produced
+  it is still visible. `ToleranceChoice.ReadFromLine` counts the four across the run, so
+  a report reading the file rather than the document shows as a number rather than being
+  trusted
 - Tolerance is read per test and converted from the file units attribute into the
   units of the open document before it is set. There is no global tolerance setting
   in this tool. Both numbers and both unit names go in the log, because which units
