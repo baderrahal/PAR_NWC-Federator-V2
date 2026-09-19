@@ -2,6 +2,111 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F65, the missing import
+
+### What was done
+
+- ONE LINE. `using Autodesk.Navisworks.Api.DocumentParts;` into `DocumentCensusReader.cs`, fourth of five, in the order the three files that already use the type carry theirs: Api, then Api.Clash, then Api.DocumentParts, then the Federator ones
+- WHAT THE ERROR ACTUALLY WAS. Line 88 is `public static int Sets(DocumentSelectionSets sets)` and column 32 is where the type name starts, so the fault is a PARAMETER type and not a call. The file named the type and imported no namespace that has it
+- THE NAMESPACE WAS MEASURED AND NOT GUESSED. `docs/history/scan.md` line 2108 carries `public Autodesk.Navisworks.Api.DocumentParts.DocumentSelectionSets SelectionSets { get }`, read off the installed DLL, and line 463 names the type the same way. `ClashRunner.cs`, `SetBuilder.cs` and `FederationEngine.cs` all carry exactly that import and all three use the type
+- WHY NOTHING HERE SAW IT, AND THIS IS WORTH MORE THAN THE FIX. Core and the test project compile in Actions on every push and neither of them names a Navisworks type, which is the rule that makes them compilable at all. The add-in compiles on no machine but Bader's. `check-locals.sh`, which F58 added for exactly this class of problem, reads ONE shape of fault, a local declared twice in one scope, and this is a different shape entirely, so the one check this repo has could not have caught it and was never going to. That gap is F66
+- F58 WAS CS0128 AND THIS IS CS0246. Two rounds, two compiler errors, both shipped from here, both invisible from here
+
+### The sweep, done by hand and not taken on trust
+
+Every Autodesk type each file puts in a TYPE POSITION, and the import that covers it. A name that only appears inside a comment is listed as that, because it is what makes the difference between a file that needs an import and a file that does not.
+
+- `DocumentCensusReader.cs`, the file that failed. `Document`, `GroupItem`, `FolderItem`, `SavedItemCollection`, `SavedItem` and `SelectionSet` are covered by `Autodesk.Navisworks.Api`. `DocumentClash`, `DocumentClashTests`, `ClashTest`, `ClashResultGroup` and `ClashResult` are covered by `Autodesk.Navisworks.Api.Clash`, which also carries the `GetClash` extension the file calls, measured at `scan.md` line 445. `DocumentSelectionSets` is covered by `Autodesk.Navisworks.Api.DocumentParts`, which is the line that was missing and is now there. `SavedTests` and `SavedViewpoints` are this file's own namespace and need no import
+- `SavedViewpoints.cs`, F50. `Document`, `GroupItem`, `SavedItemCollection` and `SavedItem`, all covered by `Autodesk.Navisworks.Api`, which the file carries. AND IT IS THE NEAR MISS THAT PROVES THE SWEEP: it names `DocumentSavedViewpoints` four times, at lines 17, 25, 26 and 33, and every one of them is inside a `///` comment recording what the API is assumed to look like. A name in a comment is not a type position, so the file needs no `DocumentParts` import and correctly has none. A sweep that matched on the word alone would have added an import this file does not need
+- `ItemSizes.cs`, F53. `ModelItem`, `PropertyCategoryCollection`, `PropertyCategory`, `DataProperty`, `VariantData` and `VariantDataType`, all covered by `Autodesk.Navisworks.Api`, which the file carries. All six are also named by `ClashHarvest.cs`, which walks the same property tree, carries the same import and predates the rounds that have not been compiled
+- `ClashStatusEditor.cs`, F54. `DocumentClashTests`, `ClashTest`, `ClashResultGroup`, `ClashResult` and `ClashResultStatus` are covered by `Autodesk.Navisworks.Api.Clash`, and `SavedItemCollection` and `SavedItem` by `Autodesk.Navisworks.Api`. The file carries both
+- NOTHING ELSE WAS MISSING, so nothing else was changed. The sweep run in chat was right and this is the reading that says so rather than the assertion that it was
+
+### What was NOT proved, said plainly
+
+- The add-in was not built. Nothing in this container can build it and nothing here has ever built it. What is known is that Bader's compiler reported exactly one error, that error was this line, and this line is now correct against a namespace measured off the installed DLL. Whether a SECOND error waits behind it is UNKNOWN until step 8 runs on his machine
+- Core tests before and after, on this machine, which is Windows: 1238 passed, 0 failed, 0 skipped, 1238 total. Nothing in Core was touched. The container figure the log round closed on was 1205 passed with 32 skipped, and the 32 are the Windows file system rules, which run here
+
+### What remains
+
+- F66, the check that would have caught it, which is the fix this one exists to justify
+- F67, F68, then the closing work
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F65 pull request
+2. F66, the check that would have caught it
+
+## 2026-09-19 The plan for the build round, F65 to F68
+
+### This is the plan, written before the first edit
+
+- Bader pulled main on 2026-09-19, ran step 8 of `03_bader_next.md` on his own machine, and the build failed. One error, on one line, in the add-in. Core and the test project both built. This entry is the plan and nothing in the repo was edited before it was written
+- The reading the brief asks for was done first and in full: `CLAUDE.md`, all four files under `.claude/rules`, the top entry of this file, `01_next.md` end to end, `tools/checks/check-locals.sh` end to end, and with them `.githooks/pre-commit`, `.github/workflows/tests.yml`, `tools/checks/broken`, every using block under `src/Federator.Addin`, and `docs/history/scan.md` where it records which namespace a type was measured in
+- The error in full, as Bader sent it back:
+
+```
+src\Federator.Addin\Engine\DocumentCensusReader.cs(88,32): error CS0246: The type or namespace name 'DocumentSelectionSets' could not be found (are you missing a using directive or an assembly reference?)
+```
+
+### The numbers. F65 to F68 are free and are the ones used
+
+- `01_next.md` runs to F64 and the log round closed on it. F65, F66, F67 and F68 are the next four free numbers, none of them is taken, and the four fixes of this brief map onto them one for one and in order. Nothing is renumbered
+- The remote holds 59 branches and every one of them is merged. `fix-F65` to `fix-F68` are new names and collide with nothing
+
+### What the reading found before any of it
+
+- LINE 88 IS A PARAMETER TYPE. `public static int Sets(DocumentSelectionSets sets)`, and column 32 is where that type name starts. `DocumentCensusReader.cs` imports `Autodesk.Navisworks.Api`, `Autodesk.Navisworks.Api.Clash` and `Federator.Core.Diagnostics`, and not `Autodesk.Navisworks.Api.DocumentParts`
+- THE NAMESPACE IS MEASURED AND NOT GUESSED. `docs/history/scan.md` line 2108 records `public Autodesk.Navisworks.Api.DocumentParts.DocumentSelectionSets SelectionSets { get }` read off the installed DLL. Line 463 names the type the same way. So the import is `Autodesk.Navisworks.Api.DocumentParts`, and the three files that already use the type, `ClashRunner.cs`, `SetBuilder.cs` and `FederationEngine.cs`, all carry exactly that line
+- WHY NOTHING HERE SAW IT, AND THIS IS THE PART WORTH MORE THAN THE FIX. Core and the tests compile in Actions and neither of them names a Navisworks type. The add-in compiles on no machine but Bader's. `check-locals.sh`, which F58 added for exactly this reason, reads ONE shape of fault, a local declared twice, and this is another shape entirely. So the one check this repo has could not have caught it and was never going to
+- F58 FOUND CS0128 AND THIS IS CS0246. Two rounds, two compiler errors, both shipped, both invisible here. That is the reason F66 exists and is not optional
+
+### The order, one pull request each, branch off main, merged green, branch left on the remote for Bader
+
+1. **F65 The missing import.** One line into `DocumentCensusReader.cs`, `using Autodesk.Navisworks.Api.DocumentParts;`, in the order the other three files use: Api, then Api.Clash, then Api.DocumentParts, then the Federator ones. With it, a hand sweep of the three other files these two rounds added, `SavedViewpoints.cs`, `ItemSizes.cs` and `ClashStatusEditor.cs`, naming which Autodesk type each one uses and which import covers it, done by reading the files and not by trusting the sweep that was run in chat. Anything the sweep missed is fixed in the same pull request
+2. **F66 The check that would have caught it.** `tools/checks/check-imports.sh` beside `check-locals.sh`, wired into `.githooks/pre-commit` and into `.github/workflows/tests.yml` exactly the way `check-locals.sh` is wired, the second Actions step against a folder that is wrong on purpose included. It reads every `.cs` file under `src`, takes the type names in a TYPE POSITION ONLY, and for each type asks whether every OTHER file under `src` that uses it imports a namespace this file does not. It learns the map from this repo and needs no Autodesk DLL and no compiler. What it cannot do goes in a comment at the top: it reads text and not a program, it cannot know a namespace no file here imports yet, so the FIRST use of a brand new Autodesk type is invisible to it and only the build on Bader's machine sees that, and it is not a build and never says a build passed. The wrong on purpose folder gets a copy of the exact broken shape and a near miss beside it that must pass, and both runs go in the pull request body. One line into `.claude/rules/addin.md`: a new add-in file that names an Autodesk type copies its imports from the file in this repo that already uses that type, because nothing here can compile the add-in
+3. **F67 One doubled comment.** `FederationEngine.cs` line 1996. Two summary blocks stacked above `BuildViewpoints`, and the first describes publishing the NWD. Then the doubled summary check over the whole of `src` again with the count in the pull request body
+4. **F68 The build section learns what today cost.** Bader lost time before the compiler error to a NuGet failure that has nothing to do with the code, `NuGet.targets(198,5): error Cannot create a file when that file already exists.` `dotnet build` restores all three projects at once, they collide on the same package, and it is a known race in NuGet's restore task. It goes into the build section of `03_bader_next.md` as numbered one action steps, in the order that costs least first: build again because the race is intermittent, then clear every obj and bin, then restore with `--disable-parallel`, then build with `--no-restore`, and only as a last resort clear the NuGet cache, because that re-downloads every package. Each step gets its Look for line. One more line under the build step: a build stamp reading `nogit` rather than a commit hash means git is not on the PATH for that terminal, the build is fine and only the stamp is affected
+
+### One thing in the brief this round does differently, said here rather than buried
+
+- F67 SAYS DELETE THE DISPLACED BLOCK AND THIS ROUND MOVES IT INSTEAD. `WriteNwd` at line 2046 carries NO summary of its own, and the displaced block is its, describing why publishing the NWD is fixed on and has no branch for a run that does not want it. Deleting it would throw away a recorded decision and leave a method undocumented. This is the same shape as F47b on 2026-09-18, where the brief also said delete and the block was moved for this same reason, and that reasoning is in this file and in `01_next.md` already. The outcome the brief asks for is reached either way, which is that no two summary blocks are stacked anywhere under `src`. Bader reverses it in one line if he meant delete
+
+### What this round holds itself to
+
+- .NET Framework 4.8 and C# 7.3. No Navisworks type reaches `Federator.Core`, and this round adds no Core code at all
+- F66 is a check and not a build, and nothing it prints is allowed to read as one. It catches one shape of fault, the shape that cost today, and says what it cannot see
+- Every check gets a test that breaks one thing and asserts the check names it, which for a shell check is the wrong on purpose folder Actions runs it against
+- One pull request per fix, branch off main, merged once Actions is green, never merged red, never left open. Nothing is committed on main. The remote branches are not deleted, because D6 is Bader's command
+- `steps/log.md` gets one entry per fix, newest at the top, and `01_next.md` is renumbered. Nothing under `samples`, `steps/logs` or `bundle` is touched
+
+### The Core test count before the round
+
+- 1238 passed, 0 failed, 0 skipped, 1238 total, measured on this machine, which is Windows. The log round closed on 1205 passed, 0 failed, 32 skipped, 1237 total, measured in the container. The 32 that skip there are the Windows file system rules, which RUN here. Why the total is one higher on Windows is UNKNOWN and was not measured, beyond it being a difference between the two machines and not a test that was added
+- Nothing in this round touches Core, so the count is expected to be unchanged at the end of it
+
+### What remains
+
+- The whole round. This entry is the plan and no file has changed yet
+- The closing work: `03_bader_next.md` read end to end against the code again with the Look for count said out loud, then the closing entry
+- F57, the five older Look for lines, is still Bader's to judge and is not touched here
+- The two probes, Q33, Q35 to Q40 and every one of the 308 steps still wait for the machine with Navisworks on it
+
+### Known bugs
+
+- The add-in does not compile. `DocumentCensusReader.cs` line 88, CS0246. F65 is the first thing this round does
+- Everything else as in the F46 entry
+
+### What comes next
+
+1. F65, so the add-in builds again
+2. F66, F67 and F68 in the order above, one pull request each
+3. The closing work
+
 ## 2026-09-19 The log round is closed, F58 to F64
 
 ### What was done

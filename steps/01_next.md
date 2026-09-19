@@ -14,16 +14,22 @@ Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 
 
 Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixes as F56 to F61. F56 and F57 were already taken, so the six are F59 to F64 and they map onto the brief one for one and in order. F51, which the brief asks for as its own one line pull request, was already done and merged on 2026-09-18 and is not done twice. F58 is a seventh, found by the reading that opened the round and put first because the add-in does not compile and every one of the 251 steps waits behind the build.
 
-1. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
-2. F59, DONE, every step is named and timed
-3. F60, DONE, the timing blocks, and F21 closes here
-4. F61, DONE, the document census
-5. F62, DONE, the live line in the window
-6. F63, DONE, the report gap block
-7. F64, DONE, the machine readable log
-8. F57, five Look for lines older than the feature round, for Bader to judge
-9. F18, when Bader uploads the 1A04WE sample, Q9
-10. F23, when Q20 is answered
+Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. They go before everything that was left, because the build is what every one of the 308 steps waits behind.
+
+1. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
+2. F66, the check that would have caught it
+3. F67, one doubled comment
+4. F68, the build section learns what today cost
+5. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
+6. F59, DONE, every step is named and timed
+7. F60, DONE, the timing blocks, and F21 closes here
+8. F61, DONE, the document census
+9. F62, DONE, the live line in the window
+10. F63, DONE, the report gap block
+11. F64, DONE, the machine readable log
+12. F57, five Look for lines older than the feature round, for Bader to judge
+13. F18, when Bader uploads the 1A04WE sample, Q9
+14. F23, when Q20 is answered
 
 The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 237 to 249 are for.
 
@@ -561,6 +567,17 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - A tab or a newline inside a value is escaped, because one stray tab moves every column after it
 - Size: medium
 - DONE on 2026-09-19. `EventRow` and `RowLog` in Core. `RunLog.Numbered` writes the text line and the row together and is the only way a numbered line reaches the log, so the two cannot drift. A sentence with no number writes no row, which is the rule and not an oversight. Tab separated, and the backslash is escaped FIRST or a path ending in a t would read back as a tab. Line by line and flushed like the text log. A row file that cannot be opened leaves the text log untouched and says why. Core tests before: 1184 passed, 0 failed, 32 skipped, 1216 total. After: 1205 passed, 0 failed, 32 skipped, 1237 total
+
+## F65 The missing import
+
+- Files `src/Federator.Addin/Engine/DocumentCensusReader.cs`
+- CONTAINER for the fix and for the sweep, LOCAL MACHINE ONLY for the build itself
+- `DocumentCensusReader.Sets(DocumentSelectionSets sets)` at line 88 names a type whose namespace the file does not import. That is CS0246 and the add-in has not built since F61 merged on 2026-09-19. Step 8 of `03_bader_next.md` is the build and all 308 steps wait behind it
+- The namespace is measured and not guessed. `docs/history/scan.md` line 2108 records `public Autodesk.Navisworks.Api.DocumentParts.DocumentSelectionSets SelectionSets { get }` read off the installed DLL, and the three files that already use the type, `ClashRunner.cs`, `SetBuilder.cs` and `FederationEngine.cs`, all carry `using Autodesk.Navisworks.Api.DocumentParts;`
+- WHY NOTHING HERE SAW IT. Core and the tests compile in Actions and neither names a Navisworks type. The add-in compiles on no machine but Bader's. `check-locals.sh` reads ONE shape of fault, a local declared twice, and this is another shape entirely
+- With the line, a hand sweep of the other three files these two rounds added, `SavedViewpoints.cs`, `ItemSizes.cs` and `ClashStatusEditor.cs`, against every Autodesk type each one names
+- Size: one line, and the sweep is what takes the time
+- DONE on 2026-09-19. `using Autodesk.Navisworks.Api.DocumentParts;` added in the order the other three files use. The sweep read all four files by hand, named every Autodesk type each one puts in a type position and which import covers it, and found nothing else missing. `SavedViewpoints.cs` is the near miss that proves the sweep: it names `DocumentSavedViewpoints` four times and every one of them is inside a comment, so it needs no `DocumentParts` import and has none. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
 
 ## F21 The log answers timing and counts
 
