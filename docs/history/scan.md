@@ -3470,3 +3470,55 @@ from `TestsViewpointForResult`, and `SavedViewpoints.CanBuild` goes true once th
 shows the tree. The unknown named at 5d, in `SavedViewpoints.cs`, in `ViewpointBuilder.cs`
 and in `03_bader_next.md` step 375 is closed by this section.
 
+
+## 5k. How the hidden state the document holds is read and put back, MEASURED 2026-09-19
+
+The review of the viewpoints round found that `ViewpointBuilder` put the hidden state back
+with `DocumentModels.ResetAllHiddenToModelState`, whose XML doc reads "Resets the hidden
+status to that defined in the constituent models", which is the NWC files' state and not
+what the NWF held, and that nothing read the state before the writer hid anything. The
+probe in `tools\probes\ViewpointProbe`, mode `restore`, measured four routes on a copy of
+the 1A02MM NWF, four models, through the automation host, the same day. The result file
+is `tools\probes\ViewpointProbe\5k-result-20260919.txt`.
+
+```
+SetHidden(root0): IsHidden(root0) = True
+ResetAllHiddenToModelState: IsHidden(root0) = False   (false means the document level hide is LOST by that call)
+GetAllHiddenAtModelState: 0 item(s) in 0 ms
+route 1: CaptureRuntimeOverrides in 0 ms, returned a SavedViewpoint
+route 1: GetVisibilityOverrides off the un-added capture returned an object, Hidden.Count = 1
+route 1: ContainsVisibilityOverrides off the un-added capture = True
+route 2: the setter threw ArgumentException: Argument 'item' is not in SavedViewpoints
+route 2b: added, root count 7 -> 8
+route 2b: pressed the tree copy, IsHidden(root0) = True
+route 2b: Remove returned True, root count now 7
+route 3: walked 2606 items in 7 ms, 1 hidden
+route 3: SetHidden(kept, true) in 0 ms, IsHidden(root0) = True   (true means the walk puts the hide back)
+```
+
+**WHAT IT SAYS.**
+
+- `ResetAllHiddenToModelState` LOSES a hide the document holds. The review was right and
+  the builder no longer calls it anywhere
+- a capture from `CaptureRuntimeOverrides` can be READ WITHOUT being put into the tree:
+  `GetVisibilityOverrides().Hidden` is a `ModelItemCollection` of exactly the hidden
+  items, and `ContainsVisibilityOverrides` reads true on it. 5j said that flag threw
+  `NullReferenceException` on a viewpoint not yet in a document, and it did, on the
+  camera-alone `new SavedViewpoint(Viewpoint)` which carries no overrides object. On a
+  capture it reads
+- a capture NOT in the tree cannot be pressed: `CurrentSavedViewpoint` refuses it with
+  `ArgumentException`. Added to the tree it presses and `Remove(SavedItem)` takes it out
+  again, so that route exists, and it is not the one used
+- `ResetAllHidden` then `SetHidden(collection, true)` puts the same items back, whether
+  the collection came off a capture or off a walk, and `IsHidden(collection)` reads true
+  after, which is the check the builder writes to the log
+- the walk of every item reading `IsHidden` cost 7 ms over 2,606 items on this file, so
+  it is affordable, and it is not needed
+
+**WHAT THIS DECIDES.** `SavedViewpoints.SnapshotHidden` captures once, before the first
+viewpoint changes anything, and holds the capture and its `Hidden` collection without
+adding either to the tree. `SavedViewpoints.RestoreHiddenState(document, snapshot)` is
+`ResetAllHidden` then `SetHidden(snapshot.Hidden, true)` and returns `IsHidden` on that
+collection, which the VIEWS block says. A group that hid nothing takes no snapshot and
+restores nothing. The line in `SavedViewpoints.cs` that listed `ResetAllHiddenToModelState`
+among the measured members lists it no longer.

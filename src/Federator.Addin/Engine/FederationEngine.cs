@@ -2631,10 +2631,27 @@ namespace Federator.Addin.Engine
             ViewpointBuilder builder = new ViewpointBuilder(Tick, log, reports.Penetrations, reports.Sizes, views);
             ViewpointBuildOutcome built = null;
 
-            InStep(
-                RunSteps.Views,
-                () => built = builder.BuildForGroup(document, outcome.Report, ThePriorities().Picked, ModelDisciplines(document)),
-                () => built == null ? "nothing" : built.Summary());
+            try
+            {
+                InStep(
+                    RunSteps.Views,
+                    () => built = builder.BuildForGroup(document, outcome.Report, ThePriorities().Picked, ModelDisciplines(document)),
+                    () => built == null ? "nothing" : built.Summary());
+            }
+            catch (Exception error)
+            {
+                // Caught here like SETS and CLASH catch theirs, so a throw out of the
+                // viewpoints cannot skip the second NWF save, the workbook, the NWD and
+                // the confirm that sit after this step in FinishTheGroup. The builder
+                // catches per viewpoint and per test, so what reaches here threw before
+                // anything was written, which is why the answer is that nothing went in.
+                outcome.AddError("putting the viewpoints in threw " + error.GetType().Name + ": " + error.Message);
+                log.Failure(
+                    "putting the viewpoints into the NWF for " + job.Building,
+                    error,
+                    "kept going, the NWF is saved with whatever the clash step put in and the workbook, the NWD and the confirm still run");
+                built = null;
+            }
 
             if (builder.Plan != null)
             {
@@ -2655,8 +2672,9 @@ namespace Federator.Addin.Engine
         /// Which discipline each model in the document is, by its index, read off the
         /// model's own file name with the naming settings the scan uses, so a viewpoint
         /// that shows AR and ST hides exactly the models that are neither. A name that
-        /// will not parse gives an empty discipline, which no pair names, so that model is
-        /// hidden in every pair's viewpoint and the log says so once.
+        /// will not parse gives an empty discipline, and the builder never hides a model
+        /// it cannot name, because hiding on a guess hides the thing the person is looking
+        /// for, so that model stays in every viewpoint and the log says so once.
         /// </summary>
         private IDictionary<int, string> ModelDisciplines(Document document)
         {
@@ -2675,7 +2693,7 @@ namespace Federator.Addin.Engine
 
                 if (discipline.Length == 0)
                 {
-                    log.Line("VIEWS    the model " + Words.Or(file, "with no name") + " carries no discipline this tool can read, so every pair's viewpoint hides it");
+                    log.Line("VIEWS    the model " + Words.Or(file, "with no name") + " carries no discipline this tool can read, so no viewpoint hides it");
                 }
 
                 disciplines[i] = discipline;

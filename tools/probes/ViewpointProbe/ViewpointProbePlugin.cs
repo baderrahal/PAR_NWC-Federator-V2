@@ -62,6 +62,10 @@ namespace ViewpointProbe
                     {
                         WalkCategories(parameters, 2);
                     }
+                    else if (mode == "restore")
+                    {
+                        MeasureRestore(parameters[2]);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -302,6 +306,229 @@ namespace ViewpointProbe
             Say("press " + name + ": IsHidden(two) = " + document.Models.IsHidden(two)
                 + ", root0.IsHidden = " + document.Models[0].RootItem.IsHidden
                 + ", root1.IsHidden = " + document.Models[1].RootItem.IsHidden);
+        }
+
+        // ---------- 5k, putting the hidden state back ----------
+
+        /// <summary>
+        /// Measures how a hidden state the DOCUMENT holds, not the model files, can be
+        /// read before the viewpoint writer hides things and put back after. The review
+        /// of the viewpoints round found that ResetAllHiddenToModelState ends at the
+        /// state the NWC files define, which is not what the NWF held. Four routes are
+        /// tried on the copy, each one timed and read back:
+        ///
+        ///     1   CaptureRuntimeOverrides() before anything, then read its Hidden
+        ///         collection WITHOUT adding it to the tree
+        ///     2   press that capture, CurrentSavedViewpoint = it, without it being in the tree
+        ///     3   walk RootItemDescendantsAndSelf and keep every item whose IsHidden is
+        ///         true, then ResetAllHidden and SetHidden(kept, true)
+        ///     4   what ResetAllHiddenToModelState does to a document level hide, and what
+        ///         GetAllHiddenAtModelState returns
+        ///
+        /// Nothing is saved. The copy is opened, measured and left.
+        /// </summary>
+        private void MeasureRestore(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            Say("models " + document.Models.Count);
+
+            if (document.Models.Count < 2)
+            {
+                Say("UNKNOWN: the copy holds fewer than two models");
+                return;
+            }
+
+            System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+
+            using (ModelItemCollection one = new ModelItemCollection())
+            {
+                one.Add(document.Models[0].RootItem);
+                document.Models.ResetAllHidden();
+                Say("start: IsHidden(root0) = " + document.Models.IsHidden(one));
+
+                // A document level hide, the thing a reviewer does and saves
+                document.Models.SetHidden(one, true);
+                Say("SetHidden(root0): IsHidden(root0) = " + document.Models.IsHidden(one));
+
+                // Route 4a, what the writer's restore does to it today
+                document.Models.ResetAllHiddenToModelState();
+                Say("ResetAllHiddenToModelState: IsHidden(root0) = " + document.Models.IsHidden(one)
+                    + "   (false means the document level hide is LOST by that call)");
+
+                watch.Restart();
+                using (ModelItemCollection atModel = document.Models.GetAllHiddenAtModelState())
+                {
+                    Say("GetAllHiddenAtModelState: " + atModel.Count + " item(s) in " + watch.ElapsedMilliseconds + " ms");
+                }
+
+                document.Models.SetHidden(one, true);
+
+                // Route 1, capture before and read it without adding it
+                SavedViewpoint before = null;
+
+                try
+                {
+                    watch.Restart();
+                    before = document.SavedViewpoints.CaptureRuntimeOverrides();
+                    Say("route 1: CaptureRuntimeOverrides in " + watch.ElapsedMilliseconds + " ms, returned " + (before == null ? "null" : "a SavedViewpoint"));
+
+                    try
+                    {
+                        VisibilityOverrides overrides = before.GetVisibilityOverrides();
+                        Say("route 1: GetVisibilityOverrides off the un-added capture returned " + (overrides == null ? "null" : "an object")
+                            + ", Hidden.Count = " + (overrides == null ? "n/a" : overrides.Hidden.Count.ToString()));
+                    }
+                    catch (Exception error)
+                    {
+                        Say("route 1: reading the un-added capture threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    try
+                    {
+                        Say("route 1: ContainsVisibilityOverrides off the un-added capture = " + before.ContainsVisibilityOverrides);
+                    }
+                    catch (Exception error)
+                    {
+                        Say("route 1: ContainsVisibilityOverrides threw " + error.GetType().Name);
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("route 1: CaptureRuntimeOverrides threw " + error.GetType().Name + ": " + error.Message);
+                }
+
+                // Route 2, press the un-added capture
+                document.Models.ResetAllHidden();
+                Say("ResetAllHidden: IsHidden(root0) = " + document.Models.IsHidden(one));
+
+                if (before != null)
+                {
+                    try
+                    {
+                        watch.Restart();
+                        document.SavedViewpoints.CurrentSavedViewpoint = before;
+                        Say("route 2: CurrentSavedViewpoint = the un-added capture in " + watch.ElapsedMilliseconds
+                            + " ms, IsHidden(root0) = " + document.Models.IsHidden(one)
+                            + "   (true means pressing an un-added capture puts the hide back)");
+                    }
+                    catch (Exception error)
+                    {
+                        Say("route 2: the setter threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    // Route 2b, add it, press the tree copy, remove it
+                    try
+                    {
+                        int rootBefore = document.SavedViewpoints.Value.Count;
+                        before.DisplayName = "probe restore";
+                        document.SavedViewpoints.AddCopy(before);
+                        Say("route 2b: added, root count " + rootBefore + " -> " + document.SavedViewpoints.Value.Count);
+                        document.Models.ResetAllHidden();
+
+                        using (SavedViewpoint found = FindAtRoot(document, "probe restore"))
+                        {
+                            if (found != null)
+                            {
+                                document.SavedViewpoints.CurrentSavedViewpoint = found;
+                                Say("route 2b: pressed the tree copy, IsHidden(root0) = " + document.Models.IsHidden(one));
+                                bool removed = document.SavedViewpoints.Remove(found);
+                                Say("route 2b: Remove returned " + removed + ", root count now " + document.SavedViewpoints.Value.Count);
+                            }
+                            else
+                            {
+                                Say("route 2b: the added copy was not found by name");
+                            }
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Say("route 2b threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    before.Dispose();
+                }
+
+                // Route 3, the walk
+                document.Models.ResetAllHidden();
+                document.Models.SetHidden(one, true);
+                watch.Restart();
+                int walked = 0;
+
+                using (ModelItemCollection kept = new ModelItemCollection())
+                {
+                    foreach (ModelItem item in document.Models.RootItemDescendantsAndSelf)
+                    {
+                        walked++;
+
+                        if (item.IsHidden)
+                        {
+                            kept.Add(item);
+                        }
+                    }
+
+                    Say("route 3: walked " + walked + " items in " + watch.ElapsedMilliseconds + " ms, " + kept.Count + " hidden");
+                    document.Models.ResetAllHidden();
+                    Say("route 3: ResetAllHidden, IsHidden(root0) = " + document.Models.IsHidden(one));
+                    watch.Restart();
+                    document.Models.SetHidden(kept, true);
+                    Say("route 3: SetHidden(kept, true) in " + watch.ElapsedMilliseconds + " ms, IsHidden(root0) = " + document.Models.IsHidden(one)
+                        + "   (true means the walk puts the hide back)");
+                }
+
+                // Route 3b, a walk that keeps only the topmost hidden item of each branch
+                watch.Restart();
+                int topmost = 0;
+
+                using (ModelItemCollection tops = new ModelItemCollection())
+                {
+                    foreach (Model model in document.Models)
+                    {
+                        using (ModelItem root = model.RootItem)
+                        {
+                            topmost += CollectTopmostHidden(root, tops);
+                        }
+                    }
+
+                    Say("route 3b: topmost hidden items " + tops.Count + " in " + watch.ElapsedMilliseconds + " ms");
+                }
+
+                document.Models.ResetAllHidden();
+                Say("end: ResetAllHidden, IsHidden(root0) = " + document.Models.IsHidden(one));
+            }
+        }
+
+        /// <summary>Adds the topmost hidden item of every branch and does not descend below it.</summary>
+        private static int CollectTopmostHidden(ModelItem item, ModelItemCollection into)
+        {
+            if (item.IsHidden)
+            {
+                into.Add(item);
+                return 1;
+            }
+
+            int count = 0;
+
+            foreach (ModelItem child in item.Children)
+            {
+                count += CollectTopmostHidden(child, into);
+            }
+
+            return count;
         }
 
         // ---------- 5i, the category walk ----------

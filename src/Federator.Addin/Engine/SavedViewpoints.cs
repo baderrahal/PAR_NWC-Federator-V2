@@ -22,7 +22,11 @@ namespace Federator.Addin.Engine
     ///         hides the same items again when pressed, after a save and a reopen too
     ///     new SavedViewpoint(Viewpoint)                  makes one of the camera ALONE,
     ///         which opens on the whole federation, and is never used here
-    ///     DocumentModels.SetHidden, ResetAllHidden, ResetAllHiddenToModelState
+    ///     DocumentModels.SetHidden, ResetAllHidden, IsHidden
+    ///     SavedViewpoint.GetVisibilityOverrides().Hidden read off a capture NOT in the
+    ///         tree, 5k, which is how the hidden state is read before the writer hides
+    ///         anything and put back after. ResetAllHiddenToModelState is measured too,
+    ///         5k, and measured to LOSE a hide the document held, so it is not called
     ///
     /// EVERY WALK STARTS FROM A FRESH RootItem. AddCopy takes a copy, so a handle read
     /// before it does not see what it put in, which is what SetBuilder learned with the
@@ -183,8 +187,10 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// Hides every model whose index is not in the list and shows the rest, so the
-        /// viewpoint captured next carries exactly that. Hidden state is put back to what
-        /// the file held through RestoreHiddenState when the group's writing ends.
+        /// viewpoint captured next carries exactly that. The hidden state the document
+        /// held before the first call is put back through RestoreHiddenState with the
+        /// snapshot the builder took, when the group's writing ends. Each model and each
+        /// root read here is a fresh wrapper and is released once its path is copied in.
         /// </summary>
         public static int ShowOnlyModels(Document document, ICollection<int> keep)
         {
@@ -199,9 +205,15 @@ namespace Federator.Addin.Engine
             {
                 for (int i = 0; i < document.Models.Count; i++)
                 {
-                    if (!keep.Contains(i))
+                    if (keep.Contains(i))
                     {
-                        hide.Add(document.Models[i].RootItem);
+                        continue;
+                    }
+
+                    using (Model model = document.Models[i])
+                    using (ModelItem root = model.RootItem)
+                    {
+                        hide.Add(root);
                     }
                 }
 
@@ -214,13 +226,55 @@ namespace Federator.Addin.Engine
             }
         }
 
-        /// <summary>Back to the hidden state the file held, so the NWF saved next carries what it always did.</summary>
-        public static void RestoreHiddenState(Document document)
+        /// <summary>
+        /// The hidden state the document holds right now, read off a runtime capture that
+        /// never goes into the tree, so it can be put back after the writer has hidden and
+        /// shown models for every viewpoint. MEASURED on 2026-09-19, docs\history\scan.md
+        /// 5k: GetVisibilityOverrides().Hidden reads off the un-added capture, and
+        /// ResetAllHidden followed by SetHidden on that collection hides the same items
+        /// again. ResetAllHiddenToModelState, which this once called instead, ends at the
+        /// state the NWC files define and LOSES a hide the document held, measured on the
+        /// same run, so it is not called anywhere now. The caller disposes what comes back.
+        /// </summary>
+        public static HiddenSnapshot SnapshotHidden(Document document)
         {
-            if (document != null)
+            if (document == null)
             {
-                document.Models.ResetAllHiddenToModelState();
+                throw new ArgumentNullException("document");
             }
+
+            SavedViewpoint captured = document.SavedViewpoints.CaptureRuntimeOverrides();
+
+            if (captured == null)
+            {
+                throw new InvalidOperationException("CaptureRuntimeOverrides returned nothing, so the hidden state could not be read.");
+            }
+
+            return new HiddenSnapshot(captured);
+        }
+
+        /// <summary>
+        /// Back to the hidden state the snapshot read: everything shown, then exactly the
+        /// items that were hidden hidden again. Returns whether the document reads those
+        /// items as hidden afterwards, which is a check and not a trust, and true where
+        /// nothing was hidden to begin with.
+        /// </summary>
+        public static bool RestoreHiddenState(Document document, HiddenSnapshot snapshot)
+        {
+            if (document == null || snapshot == null)
+            {
+                return false;
+            }
+
+            document.Models.ResetAllHidden();
+
+            if (snapshot.HiddenCount == 0)
+            {
+                return true;
+            }
+
+            document.Models.SetHidden(snapshot.Hidden, true);
+            return document.Models.IsHidden(snapshot.Hidden);
         }
 
         /// <summary>
@@ -326,6 +380,45 @@ namespace Federator.Addin.Engine
             string[] array = new string[list.Count];
             list.CopyTo(array, 0);
             return array;
+        }
+    }
+
+    /// <summary>
+    /// What the document had hidden at one moment, held on a runtime capture that is
+    /// never put into the tree. The Hidden collection is read once, because the getter
+    /// hands out a wrapper, and both are released together.
+    /// </summary>
+    public sealed class HiddenSnapshot : IDisposable
+    {
+        private readonly SavedViewpoint captured;
+        private readonly ModelItemCollection hidden;
+
+        internal HiddenSnapshot(SavedViewpoint captured)
+        {
+            this.captured = captured;
+            VisibilityOverrides overrides = captured.GetVisibilityOverrides();
+            hidden = overrides == null ? null : overrides.Hidden;
+        }
+
+        /// <summary>The items that were hidden, or null where the capture carried no overrides.</summary>
+        public ModelItemCollection Hidden
+        {
+            get { return hidden; }
+        }
+
+        public int HiddenCount
+        {
+            get { return hidden == null ? 0 : hidden.Count; }
+        }
+
+        public void Dispose()
+        {
+            if (hidden != null)
+            {
+                hidden.Dispose();
+            }
+
+            captured.Dispose();
         }
     }
 }

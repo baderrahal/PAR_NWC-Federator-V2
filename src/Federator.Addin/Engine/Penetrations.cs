@@ -182,8 +182,10 @@ namespace Federator.Addin.Engine
         /// structure. Read through the same two readers the penetration rule uses, the
         /// largest size property through SizeRule.LargestMillimetres, and judged by
         /// SizeRule.VerdictFor, so the viewpoint tree and F72a cannot disagree about one
-        /// duct. Never throws: a side that will not read is a side with no size, which is
-        /// SizeUnknown, in and said.
+        /// duct against a wall. Where BOTH sides are services, a duct against a pipe,
+        /// F72a reads no size at all, Q44, and this takes the larger of the two, so which
+        /// side Clash Detective listed first decides nothing. Never throws: a side that
+        /// will not read is a side with no size, which is SizeUnknown, in and said.
         /// </summary>
         internal static SizeVerdict? ServiceSizeOf(
             ClashResult result, PenetrationSettings settings, SizeSettings sizes, string unitEnumName)
@@ -195,17 +197,34 @@ namespace Federator.Addin.Engine
 
             PenetrationSide first = ReadSide(result.Selection1, unitEnumName, settings, sizes);
             PenetrationSide second = ReadSide(result.Selection2, unitEnumName, settings, sizes);
+            bool firstIsService = settings.IsService(first.Category);
+            bool secondIsService = settings.IsService(second.Category);
 
-            PenetrationSide service = settings.IsService(first.Category)
-                ? first
-                : settings.IsService(second.Category) ? second : null;
-
-            if (service == null)
+            if (!firstIsService && !secondIsService)
             {
                 return null;
             }
 
-            return SizeRule.VerdictFor(service.LargestMillimetres, sizes);
+            double? largest = firstIsService && secondIsService
+                ? Larger(first.LargestMillimetres, second.LargestMillimetres)
+                : firstIsService ? first.LargestMillimetres : second.LargestMillimetres;
+
+            return SizeRule.VerdictFor(largest, sizes);
+        }
+
+        private static double? Larger(double? a, double? b)
+        {
+            if (!a.HasValue)
+            {
+                return b;
+            }
+
+            if (!b.HasValue)
+            {
+                return a;
+            }
+
+            return a.Value >= b.Value ? a : b;
         }
 
         /// <summary>
@@ -216,27 +235,50 @@ namespace Federator.Addin.Engine
         /// clash over 1830 tests is the shape of walk that once built 1.7 million handles
         /// in a group. Where a side somehow holds several, the first is the one the panel
         /// shows, which is the one a person looking at this clash sees.
+        ///
+        /// EVERYTHING READ HERE IS RELEASED HERE. Selection1 and Selection2 are a fresh
+        /// collection on every read, the indexer hands out a fresh item, and every parent
+        /// on the walk up is a fresh wrapper, which is 4g's list, so the side collection
+        /// the caller read is disposed on the way out with the item and the chain above
+        /// it. The chain is read once and handed to both lookups rather than walked twice.
         /// </summary>
         private static PenetrationSide ReadSide(
             ModelItemCollection selection, string unitEnumName, PenetrationSettings settings, SizeSettings sizes)
         {
-            if (selection == null || selection.Count == 0)
+            using (selection)
             {
-                return new PenetrationSide(string.Empty, string.Empty, null);
+                if (selection == null || selection.Count == 0)
+                {
+                    return new PenetrationSide(string.Empty, string.Empty, null);
+                }
+
+                using (ModelItem item = selection[0])
+                {
+                    if (item == null)
+                    {
+                        return new PenetrationSide(string.Empty, string.Empty, null);
+                    }
+
+                    IList<ModelItem> lookIn = Upwards(item);
+
+                    try
+                    {
+                        string name = Words.Or(item.DisplayName, string.Empty);
+                        string category = CategoryOf(lookIn, settings);
+                        double? largest = LargestOf(lookIn, unitEnumName, sizes);
+
+                        return new PenetrationSide(name, category, largest);
+                    }
+                    finally
+                    {
+                        // Index zero is the item itself, owned by the using above.
+                        for (int i = 1; i < lookIn.Count; i++)
+                        {
+                            lookIn[i].Dispose();
+                        }
+                    }
+                }
             }
-
-            ModelItem item = selection[0];
-
-            if (item == null)
-            {
-                return new PenetrationSide(string.Empty, string.Empty, null);
-            }
-
-            string name = Words.Or(item.DisplayName, string.Empty);
-            string category = CategoryOf(item, settings);
-            double? largest = LargestOf(item, unitEnumName, sizes);
-
-            return new PenetrationSide(name, category, largest);
         }
 
         /// <summary>
@@ -249,12 +291,10 @@ namespace Federator.Addin.Engine
         /// read after it. That rule was written after a single throw lost three columns of
         /// every row on one run.
         /// </summary>
-        private static string CategoryOf(ModelItem item, PenetrationSettings settings)
+        private static string CategoryOf(IList<ModelItem> lookIn, PenetrationSettings settings)
         {
             try
             {
-                IList<ModelItem> lookIn = Upwards(item);
-
                 for (int i = 0; i < lookIn.Count; i++)
                 {
                     string found = ClashHarvest.FirstPropertyOn(lookIn[i], settings.CategoryNames);
@@ -281,12 +321,10 @@ namespace Federator.Addin.Engine
         /// unit conversion are SizeRule, which F53 already wrote too. Nothing here does
         /// either, so the two features cannot disagree about what a size is.
         /// </summary>
-        private static double? LargestOf(ModelItem item, string unitEnumName, SizeSettings sizes)
+        private static double? LargestOf(IList<ModelItem> lookIn, string unitEnumName, SizeSettings sizes)
         {
             try
             {
-                IList<ModelItem> lookIn = Upwards(item);
-
                 for (int i = 0; i < lookIn.Count; i++)
                 {
                     IDictionary<string, double> read = ItemSizes.Read(lookIn[i], sizes);
