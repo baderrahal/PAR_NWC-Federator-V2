@@ -71,6 +71,29 @@ namespace Federator.Core.Report
         /// <summary>The last column any block touches, which is S.</summary>
         public const int LastColumn = 19;
 
+        /// <summary>
+        /// OURS AND NOT THEIRS, F83. The priority off the client's clash matrix, written
+        /// only when a priority file was picked, in T, one past the last column of theirs.
+        ///
+        /// LastColumn STAYS 19 and this is deliberate. That number drives the title merge,
+        /// both item fills, the boxing, the width loop and three loops in the workbook
+        /// check, and every one of them is about the CLIENT'S table. Widening it would
+        /// make the check demand client banding and a measured client width on a column
+        /// the client has never had. Our extra column sits beside their table and never
+        /// inside it, which is the standing rule about our columns coming after theirs.
+        /// </summary>
+        public const int ColumnPriority = 20;      // T
+
+        /// <summary>The heading over it. Priority means A, B or C off the matrix, never a status.</summary>
+        public const string PriorityHeading = "Priority";
+
+        /// <summary>
+        /// The width of our one column, in the same units as theirs and not measured off
+        /// their file, because their file has never had this column. A letter and a
+        /// heading of eight characters is what it has to hold.
+        /// </summary>
+        public const double PriorityWidth = 9.5546875;
+
         /// <summary>The nine cells of the test header, which start in C beside the name.</summary>
         public const int ColumnTestHeader = 3;
 
@@ -105,16 +128,19 @@ namespace Federator.Core.Report
                 IXLWorksheet sheet = workbook.Worksheets.Add(SheetNames.ForReport(report.OutputName));
 
                 int row = WriteTitle(sheet, report);
+                bool priority = HasPriority(report);
 
-                // Most clashes first, ties in the order they were created. Theirs is
-                // sorted this way and ours followed the order the tests sat in the file,
-                // so it opened with empty tests.
-                foreach (TestReport test in report.InReportOrder())
+                // The one order, ReportOrder.Tests. With no priority file that is the
+                // measured order, most clashes first with ties in creation order, which is
+                // theirs. With one picked it is A, then B, then C, then the tests the file
+                // says nothing about. Ours once followed the order the tests sat in the
+                // file, so it opened with empty tests.
+                foreach (TestReport test in ReportOrder.Tests(report))
                 {
-                    row = WriteBlock(sheet, row, test);
+                    row = WriteBlock(sheet, row, test, priority);
                 }
 
-                Widths(sheet);
+                Widths(sheet, priority);
 
                 // Theirs, measured. ClosedXML's own defaults are a different four numbers.
                 sheet.PageSetup.Margins.Top = 1.0;
@@ -176,7 +202,7 @@ namespace Federator.Core.Report
         ///     start + 5  one row per clash
         ///     then three blank rows
         /// </summary>
-        private int WriteBlock(IXLWorksheet sheet, int start, TestReport test)
+        private int WriteBlock(IXLWorksheet sheet, int start, TestReport test, bool priority)
         {
             WriteTestHeader(sheet, start, test);
 
@@ -186,13 +212,22 @@ namespace Federator.Core.Report
             sheet.Row(start + 2).Height = ClientStyle.GapRowHeight;
 
             WriteItemGroupLabels(sheet, groupRow);
-            WriteColumnHeadings(sheet, headerRow);
+            WriteColumnHeadings(sheet, headerRow, priority);
 
             int row = headerRow + 1;
 
             foreach (ClashRow clash in test.Rows)
             {
                 WriteClashRow(sheet, row, clash);
+
+                if (priority)
+                {
+                    // Every row of a block carries its test's letter, because a person
+                    // filtering the sheet filters rows and not blocks. Empty where the
+                    // file says nothing about this test, which is what an unanswered
+                    // question looks like.
+                    sheet.Cell(row, ColumnPriority).Value = Priorities.Cell(test.Priority);
+                }
 
                 // Measured off every clash row of theirs, so a picture fits rather than
                 // being squashed into a default row.
@@ -346,7 +381,17 @@ namespace Federator.Core.Report
         /// and Clash Point over three, which is where the gaps in the column numbers come
         /// from.
         /// </summary>
-        private static void WriteColumnHeadings(IXLWorksheet sheet, int row)
+        /// <summary>
+        /// Whether this report carries a priority at all, F83. Read once here rather than
+        /// tested at each of the three places that write the column, so a run can never
+        /// write a heading with no cells under it or cells with no heading over them.
+        /// </summary>
+        private static bool HasPriority(ClashReport report)
+        {
+            return report != null && report.Priorities != null && report.Priorities.Picked;
+        }
+
+        private static void WriteColumnHeadings(IXLWorksheet sheet, int row, bool priority)
         {
             sheet.Row(row).Height = ClientStyle.HeadingRowHeight;
 
@@ -362,6 +407,11 @@ namespace Federator.Core.Report
             Heading(sheet, row, ColumnGridLocation, "Grid Location", 1);
             Heading(sheet, row, ColumnDescription, "Description", 1);
             Heading(sheet, row, ColumnClashPoint, "Clash Point", 3);
+
+            if (priority)
+            {
+                Heading(sheet, row, ColumnPriority, PriorityHeading, 1);
+            }
 
             for (int side = 0; side < 2; side++)
             {
@@ -514,8 +564,13 @@ namespace Federator.Core.Report
         /// Column widths off theirs, measured on
         /// 1104-PAR-1A04WN-XXX-BM-RPT-000001.xlsx, so a side by side comparison lines up.
         /// </summary>
-        private static void Widths(IXLWorksheet sheet)
+        private static void Widths(IXLWorksheet sheet, bool priority)
         {
+            if (priority)
+            {
+                sheet.Column(ColumnPriority).Width = PriorityWidth - ClosedXmlWidthPadding;
+            }
+
             for (int i = 0; i < TheirWidths.Length && i < LastColumn; i++)
             {
                 // What ClosedXML writes is what it is given PLUS a fixed padding, measured

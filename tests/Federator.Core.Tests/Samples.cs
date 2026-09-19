@@ -185,6 +185,22 @@ namespace Federator.Core.Tests
             return Path.Combine(ExchangeFolder(), CorrectedMatrixName);
         }
 
+        /// <summary>The clash priority file, F83, one priority per test off the matrix.</summary>
+        public static readonly string[] PriorityMapNames = { "clash-priority-map.csv" };
+
+        public static string PriorityMap()
+        {
+            return Resolve(PriorityMapNames);
+        }
+
+        /// <summary>The by design pairs, F72b, one pair of set names and a reason each.</summary>
+        public static readonly string[] ByDesignNames = { "by-design-pairs.csv" };
+
+        public static string ByDesign()
+        {
+            return Resolve(ByDesignNames);
+        }
+
         public static string Building()
         {
             return Resolve(BuildingNames);

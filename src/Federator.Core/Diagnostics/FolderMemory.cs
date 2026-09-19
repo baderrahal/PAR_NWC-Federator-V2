@@ -17,6 +17,16 @@ namespace Federator.Core.Diagnostics
         Excel,
         ClashXml,
 
+        /// <summary>
+        /// The clash priority CSV, F83, picked beside the clash XML and optional. Its own
+        /// kind and not the clash XML's, because the two live in different folders as
+        /// often as not and one shared memory moves the other picker.
+        /// </summary>
+        Priority,
+
+        /// <summary>The by design pairs CSV, F72b, optional and picked on the Clash step.</summary>
+        ByDesign,
+
         /// <summary>The picture the client report page carries, if anyone picks one.</summary>
         Logo
     }
@@ -122,6 +132,8 @@ namespace Federator.Core.Diagnostics
                 PickerKind.Nwd,
                 PickerKind.Excel,
                 PickerKind.ClashXml,
+                PickerKind.Priority,
+                PickerKind.ByDesign,
                 PickerKind.Logo
             };
         }

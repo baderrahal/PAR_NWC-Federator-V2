@@ -414,8 +414,45 @@ and 6 does not read as broken.
   Tolerance carries its unit with no space, "0.025m". Distance is the raw signed number,
   negative on a hard clash, written as a number so it still sorts. Type reads
   "Hard (Conservative)". Measured, see docs\history\scan.md section 4k
+- THE CLASH PRIORITY IS THE ONE COLUMN OF OURS ON THE CLIENT'S SHEET, F83, and only
+  when a priority CSV is picked. It sits in T, one past the end of their table, and
+  `WorkbookWriter.LastColumn` stays 19 so the title merge, both item fills, the boxing,
+  the width loop and every loop in the check still describe THEIR table. Nothing picked
+  means nothing changes: no heading, no cells, no width, no RESULT line and the measured
+  block order. Priority is NEVER added to `ClientReportColumns`, which is theirs and is
+  re-read off their own exports on every run, and never written into the clash XML,
+  because the stylesheet makes a column out of every smarttag and it would then be on the
+  page the client receives. `WorkbookCheck.Of` takes whether a file was picked, because a
+  priority sorted workbook is in priority order on purpose and the order check would
+  otherwise call every one of them wrongly ordered, and because a column past their table
+  is invisible to every other check in there
+- WITH A PRIORITY FILE PICKED THE BLOCK ORDER CHANGES, F83: A, then B, then C, then the
+  tests the file says nothing about, and inside each block by test name. THE DEFAULT
+  ORDER IS STILL THE MEASURED ONE and picking a file is the only thing that replaces it.
+  That the two disagree is Q49. `ReportOrder.Tests` is the ONE place the order is
+  decided, and the workbook, the clash XML and the picture numbering all read it, so the
+  page and the workbook cannot list the same tests differently and a picture cannot keep
+  a number from an order nothing else uses. The map lives on the report, `ClashReport
+  .Priorities`, never null, because three callers each passing their own copy is how they
+  stop agreeing
+- THE PRIORITY FILE IS MATCHED ON THE TEST NAME, EXACTLY, Ordinal and never trimmed,
+  F83. A test name is built out of two set names and two of those end in a space. The
+  file carries test_name, left_set, right_set and priority, and the sets are read and
+  kept so a person can see what a row meant, but nothing matches on them. A row whose
+  letter is not A, B or C is a PROBLEM named in the log and left out, never a silent
+  None, because a silent None reads exactly like a test the matrix never mentioned.
+  Picking a file NEVER fails a run: a missing or damaged file is a finding in the log and
+  a line in the window and the run goes on with no Priority column. `Priorities` is the
+  words and the order, None last, and the workbook cell is EMPTY for None while the
+  viewpoint folder is called No priority, because an unnamed folder is not a folder
+- PRIORITY IS NOT STATUS AND THE TWO ARE NEVER USED FOR EACH OTHER. Priority is A, B or
+  C off the client's clash matrix. Status is the Navisworks word, New, Active, Reviewed,
+  Approved or Resolved, and lives on a clash. Nothing in ClashPriority names a status and
+  nothing in ClashStatus names a priority
 - Our extra columns, family, type name, material, source file and discipline, come AFTER
-  theirs and never in place of any of them, on the CLASH XML and nowhere else. The Client
+  theirs and never in place of any of them, on the CLASH XML and nowhere else. THE ONE
+  EXCEPTION IS THE PRIORITY COLUMN ABOVE, which goes on the workbook and not on the clash
+  XML, and only when a file is picked. The Client
   columns only tick box that used to switch them off is GONE, because the workbook became
   one sheet laid out as theirs with none of ours on it, so there was nothing left for it to
   remove and it sat in the window doing nothing. Ours says Type Name

@@ -283,6 +283,7 @@ namespace Federator.Core.Report
             TestTypeName = string.Empty;
             ToleranceUnits = string.Empty;
             ToleranceFrom = ToleranceOrigin.Unknown;
+            Priority = ClashPriority.None;
             StatusWord = string.Empty;
             ImageIndex = -1;
         }
@@ -333,6 +334,17 @@ namespace Federator.Core.Report
         /// test rather than a translation, and it is left empty rather than invented.
         /// </summary>
         public string StatusWord { get; set; }
+
+        /// <summary>
+        /// This test's priority off the client's clash matrix, F83. None where no priority
+        /// file was picked and None where the file says nothing about this test, which are
+        /// two different things and are told apart by the PRIORITY line rather than here.
+        ///
+        /// PRIORITY IS NOT STATUS. This is A, B or C off the matrix. StatusWord above is
+        /// the Navisworks word on the test header and the two are never used for each
+        /// other.
+        /// </summary>
+        public ClashPriority Priority { get; set; }
 
         /// <summary>
         /// This test's number in the picture names, zero based, or minus one until it
@@ -448,7 +460,18 @@ namespace Federator.Core.Report
             SetTreeRoot = "lcop_selection_set_tree";
             CompactedAway = -1;
             Images = new ImageTally();
+            Priorities = PriorityMap.NothingPicked();
         }
+
+        /// <summary>
+        /// The clash priority file, F83, or NothingPicked. NEVER null, so nothing has to
+        /// test for it, and nothing picked means every output reads exactly as it did.
+        ///
+        /// It lives on the report rather than being handed to each writer, because the
+        /// block order, the picture numbers and the Priority column all have to agree and
+        /// three callers each passing their own copy is how they stop agreeing.
+        /// </summary>
+        public PriorityMap Priorities { get; set; }
 
         /// <summary>What the pictures cost for this group. Measured, never estimated.</summary>
         public ImageTally Images { get; private set; }

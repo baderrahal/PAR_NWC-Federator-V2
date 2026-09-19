@@ -96,6 +96,12 @@ namespace Federator.Core.Report
             get { return Ran && problems.Count == 0; }
         }
 
+        /// <summary>Whether this workbook was asked for in priority order, F83.</summary>
+        public bool SortedByPriority { get; private set; }
+
+        /// <summary>Whether the Priority column heading was found, F83.</summary>
+        public bool HasPriorityColumn { get; private set; }
+
         /// <summary>The first thing that differs, or an empty string.</summary>
         public string FirstDivergence
         {
@@ -104,8 +110,28 @@ namespace Federator.Core.Report
 
         public static WorkbookCheck Of(string path)
         {
+            return Of(path, false);
+        }
+
+        /// <summary>
+        /// The check, told WHICH ORDER was asked for, F83.
+        ///
+        /// A workbook written with a priority file picked is sorted A, then B, then C,
+        /// then by test name, which is not most clashes first, so the order check would
+        /// call every one of them wrongly ordered and that complaint would be the headline
+        /// of the block on every run. Telling the check what was asked for keeps it
+        /// catching a real ordering fault on every run that did not pick one. Silencing it
+        /// instead would remove the check.
+        ///
+        /// THE PRIORITY COLUMN IS OURS AND SITS PAST THEIR TABLE, so none of the cell,
+        /// width or column order checks reach it. This one is what covers it: with a file
+        /// picked the heading has to be there, and with none picked it has to not be.
+        /// </summary>
+        public static WorkbookCheck Of(string path, bool sortedByPriority)
+        {
             WorkbookCheck check = new WorkbookCheck();
             check.Path = path ?? string.Empty;
+            check.SortedByPriority = sortedByPriority;
             check.BlockCounts = new List<int>();
 
             try
@@ -182,6 +208,11 @@ namespace Federator.Core.Report
 
                 Blocks++;
                 CheckColumnOrder(sheet, row);
+
+                if (Blocks == 1)
+                {
+                    CheckPriorityColumn(sheet, row);
+                }
 
                 // Only the first block is walked cell by cell. Every block is painted by
                 // the same code, so a fault in one is a fault in all of them, and 1830
@@ -549,10 +580,58 @@ namespace Federator.Core.Report
             }
         }
 
+        // ---------- our one column, F83 ----------
+
+        /// <summary>
+        /// The Priority column, which sits past the client's table so no other check here
+        /// reaches it. With a file picked the heading has to be there and every clash row
+        /// of the block has to carry a cell. With none picked the column has to be empty,
+        /// because nothing picked means nothing changes.
+        /// </summary>
+        private void CheckPriorityColumn(IXLWorksheet sheet, int headingRow)
+        {
+            string heading = sheet.Cell(headingRow, WorkbookWriter.ColumnPriority).GetString();
+            HasPriorityColumn = heading.Length > 0;
+
+            if (SortedByPriority && !HasPriorityColumn)
+            {
+                Say("A clash priority file was picked and the workbook carries no "
+                    + WorkbookWriter.PriorityHeading + " column. It should sit one column "
+                    + "past the client's table, beside Item 2.");
+                return;
+            }
+
+            if (!SortedByPriority && HasPriorityColumn)
+            {
+                Say("The workbook carries a " + heading + " column and no clash priority "
+                    + "file was picked. With none picked nothing of ours goes on the sheet.");
+                return;
+            }
+
+            if (!SortedByPriority)
+            {
+                return;
+            }
+
+            if (!string.Equals(heading, WorkbookWriter.PriorityHeading, StringComparison.Ordinal))
+            {
+                Say("The column past the client's table is headed " + Quote(heading)
+                    + " and it should read " + Quote(WorkbookWriter.PriorityHeading) + ".");
+            }
+        }
+
         // ---------- in what order ----------
 
         private void CheckOrder(IList<int> counts)
         {
+            if (SortedByPriority)
+            {
+                // A priority sorted workbook is in priority order on purpose. What the
+                // clash counts do inside that order says nothing about whether the sort
+                // was right, so there is nothing here to compare.
+                return;
+            }
+
             for (int i = 1; i < counts.Count; i++)
             {
                 if (counts[i] <= counts[i - 1])

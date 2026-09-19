@@ -19,6 +19,8 @@ namespace Federator.Core.Report
             SourceFolder = string.Empty;
             ApplyFileSettings = false;
             Tolerance = ToleranceChoice.FromTheFile();
+            PriorityPath = string.Empty;
+            ByDesignPath = string.Empty;
             CompactResolved = false;
             MarkPenetrations = false;
             Penetrations = new PenetrationSettings();
@@ -112,6 +114,21 @@ namespace Federator.Core.Report
         /// different questions.
         /// </summary>
         public bool ApplyFileSettings { get; set; }
+
+        /// <summary>
+        /// The clash priority CSV picked on the Clash step, F83, or empty. Empty means
+        /// none and NOTHING CHANGES: no Priority column, no extra RESULT line, and the
+        /// measured block order. The same shape LogoPath has, which is the other optional
+        /// picked file, because one optional picker is enough of a pattern.
+        /// </summary>
+        public string PriorityPath { get; set; }
+
+        /// <summary>
+        /// The by design pairs CSV picked on the Clash step, F72b, or empty. Empty means
+        /// none. It is read only when MarkByDesign is on, because a file picked with the
+        /// box off would be read and then ignored, which reads as a file that did nothing.
+        /// </summary>
+        public string ByDesignPath { get; set; }
 
         /// <summary>
         /// The tolerance chosen on the Clash step, F76. Never null: the default is
