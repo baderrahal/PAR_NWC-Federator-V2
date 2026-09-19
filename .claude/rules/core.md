@@ -640,7 +640,8 @@ and 6 does not read as broken.
   code touches SavedViewpoints. This bullet used to end by saying no clash is ever saved
   as a viewpoint, and F85 reverses that half of it: a clash now gets a viewpoint as well
   as a picture, planned by `Federator.Core.Views.ClashViewpointPlan` and written by
-  nothing while `SavedViewpoints.CanBuild` is false
+  `ViewpointBuilder` since the viewpoints round on 2026-09-19, when 5j measured that a
+  captured viewpoint records the hidden state
 - The picture names are theirs and are NOT one running sequence, which is what the first
   dozen look like. It is cd, then the test formatted 00, then the clash within that test
   formatted 0000. Test 0 clash 1 is cd000001.jpg and test 100 clash 1 is cd1000001.jpg,
@@ -1117,8 +1118,9 @@ moved where nothing should have moved it is named rather than discovered a week 
   could not take is never called a move, in either direction
 - `CensusRule` says which step may move which count, and the useful half is the
   refusals. DECIDE opens the NWF that is on disk, and opening a document replaces
-  everything in it, so all five may move there and only there. APPEND moves the models.
-  SETS the sets, TESTS CREATE the tests, TESTS RUN the results. Every other step writes
+  everything in it, so all six may move there and only there. APPEND moves the models.
+  SETS the sets, TESTS CREATE the tests, TESTS RUN the results, VIEWS the viewpoints,
+  F85. Every other step writes
   a FILE and not the document, so none of them may move anything
 - THE RULE HAS THREE ANSWERS AND NOT TWO, F73. `CensusRule.Judge` gives Allowed, Noted
   or Refused, and `CensusMove` is the enum. Allowed is the step doing the job it exists

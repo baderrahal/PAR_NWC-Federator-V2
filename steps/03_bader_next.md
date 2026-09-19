@@ -416,6 +416,9 @@ probe was run on 2026-09-19 and the API is measured in `docs\history\scan.md` 5d
 on the WRITING half of F52 being built against what was measured, which is a decision and
 not a measurement, so `SavedViewpoints.CanBuild` is still false. Do the first on the next
 ordinary run and the second once that half exists and the add-in has been rebuilt.
+SINCE THE VIEWPOINTS ROUND ON 2026-09-19 the second half exists, `SavedViewpoints.CanBuild` is
+true and the `not attempted` line of step 237 is gone. Steps 374 and 375 carry what was done
+and the viewpoints round entry in `steps\log.md` carries the run.
 
 235. Look for, on any run since F52: a `VIEWS` line per group reading `N viewpoints planned:` and then the paths. The disciplines come SORTED, so a group of AR, ME and EL reads AR, EL, ME and plans FIVE and not three, `AR/AR only, EL/EL only, EL/Over 150mm/EL over 150mm, ME/ME only, ME/Over 150mm/ME over 150mm`, because F53 gives Mechanical and Electrical a sub group for their large items and Architecture has no pipe in it
 236. Look for: a group with only one discipline STILL gets a line, never none. One AR group plans one viewpoint and one ME group plans two, its own and its large items sub group. A single discipline group planning NONE is the fault to watch for, and the log line is the evidence
