@@ -14,28 +14,34 @@ Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 
 
 Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixes as F56 to F61. F56 and F57 were already taken, so the six are F59 to F64 and they map onto the brief one for one and in order. F51, which the brief asks for as its own one line pull request, was already done and merged on 2026-09-18 and is not done twice. F58 is a seventh, found by the reading that opened the round and put first because the add-in does not compile and every one of the 251 steps waits behind the build.
 
-Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. F69 is a fifth and F70 a sixth, neither briefed. F69 came out of running the build while measuring F68 and F70 out of checking the probe steps against what the probes actually print. Both go after the four they came out of. They go before everything that was left, because the build is what every one of the 319 steps waits behind.
+Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. F69 is a fifth and F70 a sixth, neither briefed. F69 came out of running the build while measuring F68 and F70 out of checking the probe steps against what the probes actually print. Both go after the four they came out of. They go before everything that was left, because the build is what every one of the 352 steps waits behind.
 
-1. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
-2. F66, DONE, the check that would have caught it
-3. F67, DONE, one doubled comment
-4. F68, DONE, the build section learns what today cost
-5. F69, DONE, the other eighteen errors, and the first proved build. Not briefed, found by running the build
-6. F70, DONE, both probes run, and two standing unknowns answered. Not briefed, found by checking the probe steps against what the probes print
-7. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
-8. F59, DONE, every step is named and timed
-9. F60, DONE, the timing blocks, and F21 closes here
-10. F61, DONE, the document census
-11. F62, DONE, the live line in the window
-12. F63, DONE, the report gap block
-13. F64, DONE, the machine readable log
-14. F57, five Look for lines older than the feature round, for Bader to judge
-15. F18, when Bader uploads the 1A04WE sample, Q9
-16. F23, when Q20 is answered
+Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the tool for real, the first run since the add-in was proved to build, and briefed two fixes. F71 and F72 were both free and the two map onto the brief one for one and in order. The four answers the brief calls Q47 to Q50 go in as Q41 to Q44, because the questions file runs to 40 and Q41 to Q46 do not exist, and they map one for one and in order too.
 
-The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 248 to 260 are for.
+1. F71, DONE, say when an NWF is nearly matched
+2. F72, DONE, penetrations become Reviewed, which answers Q33
+3. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
+4. F66, DONE, the check that would have caught it
+5. F67, DONE, one doubled comment
+6. F68, DONE, the build section learns what today cost
+7. F69, DONE, the other eighteen errors, and the first proved build. Not briefed, found by running the build
+8. F70, DONE, both probes run, and two standing unknowns answered. Not briefed, found by checking the probe steps against what the probes print
+9. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
+10. F59, DONE, every step is named and timed
+11. F60, DONE, the timing blocks, and F21 closes here
+12. F61, DONE, the document census
+13. F62, DONE, the live line in the window
+14. F63, DONE, the report gap block
+15. F64, DONE, the machine readable log
+16. F57, five Look for lines older than the feature round, for Bader to judge
+17. F18, when Bader uploads the 1A04WE sample, Q9
+18. F23, when Q20 is answered
+
+The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 281 to 293 are for.
 
 The build round closed on 2026-09-19. F65 to F70 are all done and each carries its DONE line below. THE ADD-IN BUILDS, 0 errors and 0 warnings, which is the first proved build this repo has had. The six branches are pushed and not merged, because nothing in this session could open a pull request, and Bader merges them in order.
+
+The penetration round closed on 2026-09-19. F71 and F72 are both done and each carries its DONE line below. Q33 is answered and Q41 to Q45 are recorded. The two branches are pushed and not merged, because nothing in this session could open a pull request, and Bader merges them in order.
 
 Nothing else is open. F19 is dropped.
 
@@ -174,7 +180,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 
 ## F15 Dispose in SetBuilder and ClashRunner.Resolve
 
-- CLOSED on 2026-09-12 by F41, which is the same two files and more. B5, the intermediate levels `Resolve` walks past, and B6, everything `SetBuilder` creates or resolves, are both done, and `SavedTests` went with them. The proof is the same one F15 asked for, a run with no ObjectDisposedException, and it is steps 199 to 201 of `03_bader_next.md`
+- CLOSED on 2026-09-12 by F41, which is the same two files and more. B5, the intermediate levels `Resolve` walks past, and B6, everything `SetBuilder` creates or resolves, are both done, and `SavedTests` went with them. The proof is the same one F15 asked for, a run with no ObjectDisposedException, and it is steps 213 to 215 of `03_bader_next.md`
 
 ## F12 Fix the docs that contradict the code
 
@@ -489,7 +495,8 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - Step 73 says a SECOND `NWF      attempt` line follows the CLASH block. The group in that proof is a Weekly run plus XML, which takes the OPENED branch, and that branch logs `NWF      reused` and never an attempt before the clash step. So there is one attempt line, not a second. The 2026-09-12 round wrote this wording deliberately and may have meant a different path
 - Steps 148 and 166 both say the CLASH block says the workbook was written. It does not. The block is `ClashRunOutcome.Lines()` and names no output file. The workbook has its own `XLSX     attempt` and `XLSX     written` lines after it
 - Steps 152 and 157 say a line sits ABOVE the Run the open file button. `OpenDocumentLine` and `RunOpenButton` are the two children of one horizontal StackPanel with the button first, so the line is beside it and to its right. What the line SAYS is right in both steps
-- Size: five wordings, once Bader says which readings he meant
+- A SIXTH, found by the read that closed the penetration round on 2026-09-19 and listed here rather than corrected because it is the same shape as the two above. Step 34 says the two hand buttons read `Sets into open model` and `Tests into open model` UNDER the line `Not part of the run. Try the file above against the model open right now:`. Both labels and the line are exactly right. They are not under it: the TextBlock and the two Buttons are the three children of one horizontal StackPanel at `FederatorWindow.xaml` line 542, so the line sits to the LEFT of the buttons on one row. Three steps now say ABOVE or UNDER where the layout says BESIDE, which is enough of a pattern that the answer is probably one wording rule rather than three edits
+- Size: six wordings, once Bader says which readings he meant
 
 ## F58 The add-in compiles again
 
@@ -635,6 +642,28 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - `probe-viewpoints.ps1`: `DocumentSavedViewpoints` exists with the shape `SavedViewpoints.cs` assumed, and with more besides. All four of 5b's questions are answered and the two collections turn out to have the same shape, which 5b said must not be assumed from the pattern
 - Size: two probe runs, and the writing is the rest of it
 - DONE on 2026-09-19. Both outputs recorded in `docs/history/scan.md` as 5c and 5d, with the assembly version and the date, which is what step 211 asks for. 5a and 5b keep the questions, because the reasoning in them is why the answers matter. `CLAUDE.md`, `addin.md`, `SavedViewpoints.cs` and `ViewpointBuilder.cs` all said the two were unmeasured and none of them does now. NEITHER FEATURE WAS CHANGED: `SavedViewpoints.CanBuild` is still false and the rebuild still clears and copies back, because what a member DOES is a run and a decision, not a reflection pass. One thing is still UNKNOWN and is named as such: whether a saved viewpoint records hidden state. Core tests unchanged, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total. The add-in builds with 0 errors and 0 warnings
+
+## F71 Say when an NWF is nearly matched
+
+- Files `src/Federator.Core/Naming/SimilarNames.cs` which is new, `src/Federator.Core/Naming/ContainerName.cs`, `src/Federator.Core/Rerun/RunPath.cs`, `src/Federator.Addin/Ui/GroupRow.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`, `.claude/rules/core.md`
+- CONTAINER for the rule and its tests, LOCAL MACHINE to see the column
+- Bader pressed Run on buildings that already had an NWF and got First run, because the NWF folder and the name pattern together did not resolve to his file. The tool did exactly what it was told and said nothing about why
+- A group that is about to BUILD an NWF beside a file whose name is nearly the one it would write says so, in the Run as column, in the group list block, and on one line under the group table. Close means the same building code in the name, or a name differing only in the level, the discipline, the type or the number
+- The comparison is Core, is handed a list of names and knows nothing about the file system. The add-in lists the folder once per refresh and hands the names over
+- Nothing is auto corrected. It reports and the person decides, which is the rule this repo already keeps for findings
+- Size: one Core type and the wiring
+- DONE on 2026-09-19. `Federator.Core.Naming.SimilarNames` with 29 tests. An EXACT match is never reported and is compared on the STEM, which a test caught: a folder gives `X.nwf` and the wanted name is `X`, so comparing the two raw called every exact match a near miss, the opposite of the truth. THE LABEL IS NEVER WIDENED, because `RunPath.Count` maps an unknown label onto Unknown and the confirm dialog and the RESULT block both count off it. `RunAs` stays one of the six and the sentence rides beside it in `RunAsShown`, pinned by a test that counts both. `ContainerName.Stem` went from private to internal so one rule decides what a name is. `check-imports.sh` refused the first version, because the nested type was called `Match` and this repo declares `Regex.Match` users in two files, so it is `NearbyName`. Core tests before: 1238 passed, 0 failed, 0 skipped, 1238 total. After: 1271 passed, 0 failed, 0 skipped, 1271 total. The add-in BUILDS, 0 errors and 0 warnings
+
+## F72 Penetrations become Reviewed, which answers Q33
+
+- Closes Q33, and Q41 to Q44 are the four details it raised
+- Files `src/Federator.Core/Clash/PenetrationSettings.cs`, `PenetrationRule.cs`, `PenetrationTally.cs` and `StatusesThisToolMayMoveFrom.cs` which are new, `src/Federator.Core/Views/SizeRule.cs`, `SizeSettings.cs`, `src/Federator.Core/Report/ReportOptions.cs`, `ClashReportModel.cs`, `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Addin/Engine/Penetrations.cs` which is new, `ClashRunner.cs`, `ClashHarvest.cs`, `FederationEngine.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml` and `.xaml.cs`, `tools/checks/check-imports.sh`, `.claude/rules/core.md`, `.claude/rules/addin.md`
+- CONTAINER for every rule and its tests, LOCAL MACHINE to see a status move
+- A clash becomes Reviewed when ALL FOUR are true: one side is a service by item category, the other side is a solid by item category, the service measures 150 mm or less, and the clash is at New or Active. Everything else is left exactly as it is and counted by reason
+- Every list and the 150 are settings with the defaults Bader gave. The 150 is the SAME number F53 reads and it is named once
+- Off by default, one tick box on the Clash step with the threshold read off the setting
+- Size: large, and the rule is the whole of it
+- DONE on 2026-09-19. `PenetrationRule`, `PenetrationSettings`, `PenetrationTally` and `StatusesThisToolMayMoveFrom` in Core with 67 tests. The threshold is `SizeSettings.ThresholdMillimetres` and nothing else, read OVER by F53 and AT OR UNDER by F72, with both readings written at the one number and a test asserting exactly 150 falls on a different side in each. `SizeRule.LargestMillimetres` takes the largest of every size property, so a 600 by 150 duct is a 600 and stays New, pinned by a test that also shows `Decide` reading 150 off the same lookup. A service whose size cannot be read is LEFT ALONE, the opposite of F53, with the reason written at both places and a test asserting the two answers differ. `Penetrations` in the add-in only READS, and the list it hands back goes through `ClashStatusEditor`, so there is still exactly one place that calls `TestsEditResultStatus`. `ClashHarvest` gains Category through the reader it already had, made internal rather than copied. `check-imports.sh` went from 50 to 60 after a measured false positive, clean at 51 and 60 and still refusing the real CS0246 at both, missing it at 75. Core tests before: 1271 passed, 0 failed, 0 skipped, 1271 total. After: 1338 passed, 0 failed, 0 skipped, 1338 total. The add-in BUILDS, 0 errors and 0 warnings
 
 ## F21 The log answers timing and counts
 

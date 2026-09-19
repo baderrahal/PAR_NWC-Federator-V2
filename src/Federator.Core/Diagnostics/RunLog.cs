@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
-
+using Federator.Core.Clash;
 using Federator.Core.Rerun;
 
 namespace Federator.Core.Diagnostics
@@ -1543,6 +1543,19 @@ namespace Federator.Core.Diagnostics
         /// The last section, so the summary is at the bottom and does not have to be
         /// scrolled for.
         /// </summary>
+        /// <summary>
+        /// Whether this run asked for penetrations to be marked. F72. False by default, so
+        /// a log from a run that never turned the box on carries no line about it at all.
+        /// </summary>
+        public bool PenetrationsWanted { get; set; }
+
+        /// <summary>
+        /// How many clashes this run moved to Reviewed, added up across every group. The
+        /// engine adds each group's count as that group finishes, so the number in RESULT
+        /// and the numbers in the per group blocks come from the same additions.
+        /// </summary>
+        public int PenetrationsMoved { get; set; }
+
         public void WriteResultBlock()
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
@@ -1579,6 +1592,18 @@ namespace Federator.Core.Diagnostics
                 {
                     Line(line);
                 }
+            }
+
+            // F72. How many clash statuses this RUN changed, in the one place a person
+            // looks for what a run did. Only where the box was on: a run that never asked
+            // for it has nothing to say, and a line reading zero on every run would teach
+            // people to skip it. Line and not Numbered, which is what every other count in
+            // this block uses, so the RESULT block keeps one shape.
+            string penetrations = PenetrationTally.ResultLine(PenetrationsWanted, PenetrationsMoved);
+
+            if (penetrations != null)
+            {
+                Line(penetrations);
             }
 
             IList<WrittenFile> files = WrittenFiles;

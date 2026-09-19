@@ -88,6 +88,18 @@ namespace Federator.Core.Report
 
         public string Material { get; set; }
 
+        /// <summary>
+        /// The item category, Pipes or Walls or whatever the model calls it. F72.
+        ///
+        /// It is read the same way the family, the type and the material are and off the
+        /// same item, and it reaches no output today, exactly like those three. The
+        /// difference is that this one is not only a report column waiting to be asked
+        /// for: the penetration rule turns on it, so a run with the box on has already
+        /// read it off every item of every clash. What it feeds is a decision and not a
+        /// cell, which is why it is here beside them rather than instead of them
+        /// </summary>
+        public string Category { get; set; }
+
         /// <summary>The NWC the item came from, which is how a discipline is traced back.</summary>
         public string SourceFile { get; set; }
 

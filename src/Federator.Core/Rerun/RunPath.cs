@@ -89,6 +89,24 @@ namespace Federator.Core.Rerun
             return Label(nwfOnDisk ? RerunDecision.Open : RerunDecision.Build, xmlPicked);
         }
 
+        /// <summary>
+        /// The label with the near miss sentence on the end, for the column and the group
+        /// list. F71.
+        ///
+        /// THE LABEL ITSELF IS NEVER CHANGED and that is the whole reason this is a second
+        /// method rather than a different return out of Expected. Count maps a label it
+        /// does not know onto Unknown, and the confirm dialog and the RESULT block both
+        /// count off it, so a group reading First run followed by a sentence would be
+        /// counted as a path nobody can name. What the person reads widens. What the run
+        /// counts does not.
+        /// </summary>
+        public static string Shown(string label, string note)
+        {
+            string plain = string.IsNullOrEmpty(label) ? Unknown : label;
+
+            return string.IsNullOrEmpty(note) ? plain : plain + note;
+        }
+
         /// <summary>How many groups carry each label. Every label is present, at zero where none does.</summary>
         public static IDictionary<string, int> Count(IEnumerable<string> labels)
         {

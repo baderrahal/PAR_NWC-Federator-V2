@@ -1,6 +1,7 @@
 using System;
 using Federator.Core.Clash;
 using Federator.Core.Naming;
+using Federator.Core.Views;
 
 namespace Federator.Core.Report
 {
@@ -18,6 +19,9 @@ namespace Federator.Core.Report
             SourceFolder = string.Empty;
             ApplyFileSettings = false;
             CompactResolved = false;
+            MarkPenetrations = false;
+            Penetrations = new PenetrationSettings();
+            Sizes = new SizeSettings();
             StopAfterFailures = RepeatedFailureGuard.DefaultThreshold;
 
             // Fixed on, and the window no longer sets them. A weekly run wants the page
@@ -108,6 +112,32 @@ namespace Federator.Core.Report
         /// destroys the record of what was resolved.
         /// </summary>
         public bool CompactResolved { get; set; }
+
+        /// <summary>
+        /// Move a small service through a wall, a floor or a roof to Reviewed. F72, and
+        /// the answer to Q33. OFF by default, because it writes into the NWF, which is the
+        /// only record of what has been fixed, and a project has to say it wants this
+        /// before a run starts changing statuses in it.
+        ///
+        /// Nothing is destroyed either way: a person moves a clash back in one click and
+        /// only New and Active ever move, so a decision somebody made is never overwritten.
+        /// That is why it is an ordinary box and not one of the two under Things that
+        /// destroy data.
+        /// </summary>
+        public bool MarkPenetrations { get; set; }
+
+        /// <summary>
+        /// Which categories are a service and which are a solid. F72. The SIZE is not here
+        /// and is Federator.Core.Views.SizeSettings, which F53 reads too.
+        /// </summary>
+        public PenetrationSettings Penetrations { get; set; }
+
+        /// <summary>
+        /// The one threshold, read by F53 for the viewpoints and by F72 for the
+        /// penetrations, in opposite directions. The comment at
+        /// SizeSettings.DefaultThresholdMillimetres says which way round each reads it.
+        /// </summary>
+        public SizeSettings Sizes { get; set; }
 
         /// <summary>
         /// How many clash tests failing in a row for the same reason stop the whole run.

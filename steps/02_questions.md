@@ -143,7 +143,7 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
 33. From F54 on 2026-09-18. A clash that cannot be solved should end up Reviewed rather than sitting at New or Active forever. The tool can set a status, `DocumentClashTests.TestsEditResultStatus` is measured and the method that applies it is written. What is missing is the input. How does the tool LEARN which clashes cannot be solved. Four shapes it could take, and each means a different feature: a list of clash names Bader supplies per run, a rule over the clash itself such as a distance under some number or a pair of disciplines that always overlap, a status carried in the clash XML that gets applied on import, or a person marking them in Navisworks once and the tool leaving them alone after. Which of those is the ask, and if it is the second, what is the rule
 
-   Answer:
+   Answer: the SECOND shape, a rule over the clash itself. Answered on 2026-09-19 and carried out by F72. A clash becomes Reviewed when all four are true: one side is a service by item category, the other is a solid by item category, the service measures 150 mm or less, and the clash is at New or Active. The other three shapes are NOT chosen and are recorded as such: no list is supplied per run, nothing is read off a status in the clash XML, and nothing watches what a person marked last week. Q41 to Q44 answer the four details this raised.
 
 34. From F50 on 2026-09-18. Whether one model can be taken out of an open document without clearing the whole thing was never measured, so F50 kept the clear and restore and widened it from two things to four. `tools\probes\probe-model-remove.ps1` answers the question. If the answer comes back yes, the rebuild could instead append what the scan has and the NWF does not, remove what the NWF has and the scan does not, and never clear at all, which would mean nothing needs putting back and nothing can be lost. That is a rewrite of the rebuild rather than a tweak, and the widened version now works and is tested. Once the probe has answered, is the rewrite wanted, or does the counted clear and restore stay because it is proved and the risk of changing it outweighs the tidiness
 
@@ -173,3 +173,23 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
    Answer:
 
+
+41. From F72 on 2026-09-19. Briefed as Q47 and recorded here as Q41, because this file runs to 40 and Q41 to Q46 do not exist. The solid side of a penetration. A service going through a WALL is the plain case. Does a service dropping through a FLOOR or up through a ROOF count as the same thing, or is the rule about walls alone
+
+   Answer: floors and roofs count as well as walls. The default solid list is Walls, Floors, Roofs, and it is a setting. Carried out by F72.
+
+42. From F72 on 2026-09-19. Briefed as Q48. Whether the solid side needs a discipline filter. A wall can arrive on an architecture file, a structural file or a coordination file, and reading part 5 of the NWC name would let the rule be limited to one of them
+
+   Answer: NO discipline filter. ANY wall counts whichever file it came in. Nothing in the rule reads part 5 of a name and nothing in it knows what a discipline is, which is pinned by a test. Carried out by F72.
+
+43. From F72 on 2026-09-19. Briefed as Q49. Which way round the 150 reads for a penetration. F53 puts an item in a viewpoint when it is OVER 150. Does a penetration mean a service over 150 or a service at 150 and under
+
+   Answer: 150 OR LESS, so it is a CEILING and not a floor. A service over 150 stays at New, because a large service through a wall is a real coordination item. It is the same number F53 reads and the two read it in opposite directions with no gap and no overlap, which is written at the setting. Carried out by F72.
+
+44. From F72 on 2026-09-19. Briefed as Q50. What happens when BOTH sides of the clash are a service. A pipe against a duct is not a penetration of anything, but it is also not obviously something to leave at New forever
+
+   Answer: leave it alone. It is counted in the block under both sides a service, so a run says how many it saw rather than passing over them silently. Carried out by F72.
+
+45. From F72 on 2026-09-19. The brief asks for the penetration count to go in the workbook, and it is there: the status is applied before the harvest reads it, so the Reviewed cell on every test header row already counts what this run moved, in the client's own column. What is NOT there is a count of ours saying how many THIS RUN moved, as against how many are Reviewed for any reason. The standing rule says the workbook is the client's one sheet laid out as theirs with none of ours on it, and that if it is not in theirs it is not in ours, so a column or a cell of ours would break it. The log carries the run total in the RESULT block and the per group detail in the PENETRATION block. Is the client's own Reviewed column enough, or does a cell of ours belong on that sheet after all, and if it does, where on it
+
+   Answer:

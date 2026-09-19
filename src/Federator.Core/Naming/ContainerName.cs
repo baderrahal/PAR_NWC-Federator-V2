@@ -109,7 +109,15 @@ namespace Federator.Core.Naming
             return "\"" + separator + "\"";
         }
 
-        private static string Stem(string name)
+        /// <summary>
+        /// The file name with any folder and extension taken off.
+        ///
+        /// INTERNAL AND NOT PRIVATE SINCE F71, because SimilarNames compares a name in the
+        /// NWF folder against the name a group would write and one of the two usually
+        /// carries an extension. Taking the stem the same way in both places is the point:
+        /// a second copy of this would be a second rule about what a name is.
+        /// </summary>
+        internal static string Stem(string name)
         {
             string trimmed = name.Trim();
 

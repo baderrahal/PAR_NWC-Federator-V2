@@ -19,6 +19,7 @@ using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
 using Federator.Core.Units;
+using Federator.Core.Views;
 
 namespace Federator.Addin.Ui
 {
@@ -80,6 +81,7 @@ namespace Federator.Addin.Ui
             ShowNaming();
             ShowTheInstallsLogo();
             ShowImageDefaults();
+            ShowPenetrationWording();
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
@@ -656,6 +658,13 @@ namespace Federator.Addin.Ui
             string nwfFolder = Trimmed(NwfFolderBox.Text);
             bool xmlPicked = XmlIsPicked();
 
+            // Listed ONCE for the whole refresh and not once per group. F71 asks every
+            // group whether the folder already holds a name close to the one it would
+            // write, and reading the folder per group would walk it as many times as
+            // there are buildings for an answer that cannot change between them.
+            IList<string> namesInFolder = NwfNamesIn(nwfFolder);
+            int nearby = 0;
+
             foreach (GroupRow group in groups)
             {
                 if (group.IsBlocked)
@@ -666,6 +675,7 @@ namespace Federator.Addin.Ui
                 if (nwfFolder.Length == 0 || group.NwfName.Length == 0)
                 {
                     group.RunAs = RunPath.Unknown;
+                    group.NearbyNwf = string.Empty;
                     continue;
                 }
 
@@ -678,11 +688,90 @@ namespace Federator.Addin.Ui
                 catch (Exception)
                 {
                     group.RunAs = RunPath.Unknown;
+                    group.NearbyNwf = string.Empty;
                     continue;
                 }
 
                 group.RunAs = RunPath.Expected(nwfOnDisk, xmlPicked);
+
+                // Only where the group is about to BUILD one. A group whose NWF is
+                // already there is opened, so a second file with a similar name beside it
+                // is somebody else's business and not a thing to warn about. F71.
+                string note = nwfOnDisk
+                    ? string.Empty
+                    : SimilarNames.Note(
+                        SimilarNames.ClosestIn(group.NwfName, namesInFolder, settings));
+
+                group.NearbyNwf = note;
+
+                if (note.Length > 0)
+                {
+                    nearby++;
+                }
             }
+
+            ShowNearbyNwfLine(nearby);
+        }
+
+        /// <summary>
+        /// Every NWF name in that folder, or an empty list. F71 hands these to Core, which
+        /// compares names and knows nothing about a disk.
+        ///
+        /// A folder that is not there, cannot be read or was typed half way through is the
+        /// ordinary case while somebody is filling the box in, so it is an empty list and
+        /// never an error. Nothing here stops a run or reaches a label.
+        /// </summary>
+        private static IList<string> NwfNamesIn(string folder)
+        {
+            List<string> names = new List<string>();
+
+            if (string.IsNullOrEmpty(folder))
+            {
+                return names;
+            }
+
+            try
+            {
+                if (!Directory.Exists(folder))
+                {
+                    return names;
+                }
+
+                foreach (string path in Directory.GetFiles(folder, "*" + OutputPaths.NwfExtension))
+                {
+                    names.Add(Path.GetFileName(path));
+                }
+            }
+            catch (Exception)
+            {
+                // A drive that went away, a permission, a path too long. An empty list is
+                // the honest answer and the column simply says nothing extra.
+                return names;
+            }
+
+            return names;
+        }
+
+        /// <summary>
+        /// The one line under the group table, shown only while a group is in that state.
+        /// The words are Core's so a test can read them.
+        /// </summary>
+        private void ShowNearbyNwfLine(int nearby)
+        {
+            if (NearbyNwfLine == null)
+            {
+                return;
+            }
+
+            if (nearby == 0)
+            {
+                NearbyNwfLine.Text = string.Empty;
+                NearbyNwfLine.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            NearbyNwfLine.Text = SimilarNames.WhatToDo(nearby);
+            NearbyNwfLine.Visibility = Visibility.Visible;
         }
 
         /// <summary>The same test the run uses: a path in the box that is really on disk.</summary>
@@ -901,6 +990,33 @@ namespace Federator.Addin.Ui
             UnitsBox.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// The penetration box's label and its grey line, both read off Core. F72.
+        ///
+        /// The help line names the threshold, and the threshold is a SETTING, so typing
+        /// the number into the XAML would put a second copy of it in the one place nothing
+        /// can test. A project that changes the setting gets a window that says the new
+        /// number, because the window asks rather than remembers.
+        /// </summary>
+        private void ShowPenetrationWording()
+        {
+            if (MarkPenetrations == null)
+            {
+                return;
+            }
+
+            // The defaults come from the Core object that holds them, the same way
+            // ShowImageDefaults reads a fresh ImageOptions.
+            SizeSettings defaults = new SizeSettings();
+
+            MarkPenetrations.Content = PenetrationSettings.TickLabel;
+
+            if (MarkPenetrationsHelp != null)
+            {
+                MarkPenetrationsHelp.Text = PenetrationSettings.HelpLine(defaults);
+            }
+        }
+
         /// <summary>The table's display name, and on the default a word on what it is for.</summary>
         private static string UnitWording(UnitRow row)
         {
@@ -993,6 +1109,7 @@ namespace Federator.Addin.Ui
             // so nothing here sets them. A weekly run wants all three every time.
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
             options.CompactResolved = CompactResolved.IsChecked == true;
+            options.MarkPenetrations = MarkPenetrations.IsChecked == true;
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
@@ -1251,6 +1368,10 @@ namespace Federator.Addin.Ui
                 + (CompactResolved.IsChecked == true
                     ? "YES, which permanently removes every Resolved clash"
                     : "no"));
+            log.Line("penetrations     : "
+                + (MarkPenetrations.IsChecked == true
+                    ? "YES, a small service through a wall, floor or roof becomes Reviewed"
+                    : "no, every clash keeps the status it has"));
             log.Line("NWD naming       : "
                 + (DateTheNwd.IsChecked == true
                     ? "dated, so every week is kept"
@@ -1292,6 +1413,7 @@ namespace Federator.Addin.Ui
         {
             List<string> lines = new List<string>();
             int unticked = 0;
+            int nearby = 0;
 
             foreach (GroupRow group in groups)
             {
@@ -1310,11 +1432,16 @@ namespace Federator.Addin.Ui
                     + (group.FileCount == 1 ? " file   " : " files  ")
                     + (group.OutputName.Length == 0 ? "no output name" : group.OutputName)
                     + "  [" + group.Disciplines + "]"
-                    + (group.IsBlocked ? string.Empty : "  " + group.RunAs));
+                    + (group.IsBlocked ? string.Empty : "  " + group.RunAsShown));
 
                 if (group.IsBlocked)
                 {
                     lines.Add("          " + group.BlockedReason);
+                }
+
+                if (group.HasNearbyNwf)
+                {
+                    nearby++;
                 }
             }
 
@@ -1325,6 +1452,14 @@ namespace Federator.Addin.Ui
             else
             {
                 lines.Add(RunLog.UntickedGroupsLine(unticked));
+
+                // F71. Only where at least one group is in that state, and it says what to
+                // do rather than doing it, which is the rule this tool keeps for every
+                // finding. The words are Core's so the window and the log read the same.
+                if (nearby > 0)
+                {
+                    lines.Add(SimilarNames.WhatToDo(nearby));
+                }
             }
 
             return lines;

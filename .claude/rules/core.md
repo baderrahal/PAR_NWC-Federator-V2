@@ -663,6 +663,66 @@ and 6 does not read as broken.
   is a setting and turning it off makes the block SAY it truncated. The whole rule is
   Federator.Core.Views, SizeSettings, SizeRule and SizeTally, with its tests. The add-in
   reads the properties and calls it and has no opinion about any number in it
+- A group about to BUILD an NWF beside a file whose name is nearly the one it would write
+  says so, and does nothing about it. On the run of 2026-09-19 Bader got First run on
+  buildings that already had an NWF, because the NWF folder and the name pattern together
+  did not resolve to his file, and nothing anywhere said so. CLOSE MEANS ONE OF TWO
+  THINGS: the same building code sits in both names, or project, originator and building
+  all agree and one of the four SUPPLIED fields differs, which is the level, the
+  discipline, the type or the number. Those four are exactly the ones NamePattern supplies
+  rather than reads, so they are the four a person is most likely to have set differently
+  from the file on disk. The rule is Federator.Core.Naming.SimilarNames, it is handed a
+  list of names and knows nothing about a disk, and the add-in lists the folder ONCE per
+  refresh and hands the names over. An EXACT match is never reported, compared on the stem
+  so a name with an extension and one without compare the same, because that file being
+  there is what makes the group a Weekly run and not a finding. THE LABEL IS NEVER
+  WIDENED: RunPath.Count maps a label it does not know onto Unknown and both the confirm
+  dialog and the RESULT block read those counts, so RunAs stays one of the six and the
+  sentence rides beside it in RunAsShown, which is what the column and the group list
+  block read. One grey line under the group table when any group is in that state, saying
+  the NWF Name cell can be typed over. Nothing is auto corrected, nothing is unticked and
+  no name is changed. Bader decides, which is the rule this tool keeps for every finding
+- A CLASH BECOMES REVIEWED WHEN ALL FOUR ARE TRUE, F72, which answers Q33: one side is a
+  SERVICE by item category, the other side is a SOLID by item category, the service
+  measures the threshold OR LESS, and the clash is at New or Active. Everything else is
+  left exactly as it is and counted by reason. The rule is
+  Federator.Core.Clash.PenetrationRule, the lists are PenetrationSettings and the block is
+  PenetrationTally, all three with their tests. OFF by default, because it writes into the
+  NWF and a project has to say it wants that
+- THE 150 IS THE SAME NUMBER F53 USES AND IT IS NAMED ONCE, in
+  Federator.Core.Views.SizeSettings. F53 puts an item in a viewpoint when it is OVER the
+  threshold, so exactly 150 is OUT there. F72 marks a service Reviewed when it is AT OR
+  UNDER, so exactly 150 is IN here. That is not a contradiction: one rule is over and the
+  other is at or under, and together they cover every size with no gap and no overlap. Two
+  copies of 150 would drift and nobody would notice until a report was wrong, so the
+  comment at that one number says both readings side by side
+- A DUCT IS NOT ONE NUMBER. The penetration rule reads EVERY size property the item
+  carries and takes the LARGEST, through SizeRule.LargestMillimetres, because a 600 by 150
+  duct has to fit a 600 through the wall and is a real coordination item. F53 takes the
+  FIRST property on the list instead, which is what a viewpoint wants: one representative
+  size in a rule nobody has to argue about. The two readings live beside each other in
+  SizeRule so neither can be mistaken for the other
+- THE UNREADABLE SIZE GOES THE OPPOSITE WAY IN THE TWO RULES ON PURPOSE. F53 INCLUDES an
+  item whose size cannot be read, because a fitting usually carries no size property and
+  the safe mistake there is showing something unnecessary in a viewpoint. F72 LEAVES ALONE
+  a service whose size cannot be read, because the safe mistake here is leaving a clash at
+  New for a person to look at. Both reasons are written at both places. Do not make them
+  agree
+- NEVER OVERWRITE A DECISION. Only New and Active move, which is
+  Federator.Core.Clash.StatusesThisToolMayMoveFrom, a rule with its own tests rather than a
+  condition inside a loop. Reviewed, Approved and Resolved are all somebody's statement
+  about a clash and the NWF is the only record that they made it.
+  StatusesThisToolMaySet still answers the other half, which is that Reviewed is the only
+  status this tool ever sets, and the two together are what stop a caller moving an
+  Approved clash by mistake
+- NOTHING MOVES SILENTLY. A PENETRATION block per group names every clash moved with both
+  categories and the service size, then the totals and ONE LINE PER REASON for every clash
+  left alone, including the reasons at zero, because a reason missing from the block reads
+  as one nobody thought of. The run total goes in the RESULT block, but only where the box
+  was on, because a line reading zero on every run teaches people to skip it. The workbook
+  carries it in the CLIENT'S OWN Reviewed column, per test, because the status is applied
+  before the harvest reads it. No column of ours goes on that sheet, which is the rule
+  above about the workbook being their one sheet
 - The scan reports what it noticed and never acts on it. ODD SHAPE, NEAR MATCH,
   SINGLE DISCIPLINE and MISSING are information. Nothing is blocked, unticked or
   merged, and no code is assumed right. Bader decides

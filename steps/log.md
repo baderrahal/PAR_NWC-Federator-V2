@@ -2,6 +2,421 @@
 
 Newest entry at the top.
 
+## 2026-09-19 The penetration round is closed, F71 and F72
+
+### What was done
+
+- TWO FIXES, both briefed, both on their own branch, each with its own entry above. F71 is
+  what the window failed to tell Bader on the first real run. F72 answers Q33, which has
+  been open since F54 on 2026-09-18
+- THE ADD-IN BUILDS after every add-in change, which is what this session can do and what
+  the last two rounds could not. `dotnet build ParsonsNwcFederator.sln -c Release`, 0
+  errors and 0 warnings, run after F71 and again after F72
+- Core tests: 1238 passed, 0 failed, 0 skipped, 1238 total before the round. 1338 passed,
+  0 failed, 0 skipped, 1338 total after it. 100 added and not one broken at any point
+- Q33 IS ANSWERED and the other three shapes it offered are recorded as not chosen, so
+  nobody builds one later thinking it was wanted. Q41 to Q44 are the four details, at the
+  next free numbers because the file runs to 40 and the brief's Q47 to Q50 do not exist.
+  Q45 is new, and it is the one thing in the brief this round did not do
+
+### The one thing in the brief this round did not do, said plainly
+
+- THE BRIEF ASKS FOR THE PENETRATION COUNT IN THE WORKBOOK. It is there, in the CLIENT'S
+  OWN Reviewed column: `WriteTestHeader` writes all five statuses per test and the status
+  is applied before the harvest reads it, so that cell IS what this run moved
+- WHAT IS NOT THERE is a count of OURS saying how many this run moved, as against how many
+  are Reviewed for any reason. Adding one would break a standing rule that this repo states
+  twice: the workbook is the client's one sheet laid out as theirs, and if it is not in
+  theirs it is not in ours
+- SO IT IS Q45 RATHER THAN A DECISION TAKEN HERE. The log carries the run total in RESULT
+  and the per group detail in the PENETRATION block, so nothing is hidden either way
+
+### The read of 03_bader_next.md, end to end
+
+- THE FILE RUNS 1 TO 352 NOW AND HOLDS 189 LOOK FOR LINES. It was 319 steps and 170 Look
+  for lines this morning. F71 added 14 steps, F72 added 17 and the closing read added 2
+- ALL 189 WERE READ, by nine readers over nine ranges, and 164 OF THEM COULD ACTUALLY BE
+  CHECKED against the code. The other 25 are things only a run shows: a handle count in
+  Task Manager, a picture on screen, an upload to ACC, the Selection Tree, whether a build
+  succeeds. Those are named as not checked rather than counted as passed
+- NINE POSSIBLE DRIFTS WERE RAISED and every one was then handed to a second reader told to
+  REFUTE it, with the instruction to default to not-a-drift. ALL NINE CAME BACK REFUTED
+  under a strict reading of the word: in each case the step was loose or incomplete rather
+  than false, or the code had never moved away from it
+- SIX WERE CORRECTED ANYWAY, and the reason is worth writing down. A step that is true but
+  incomplete still costs Bader time at the machine, which is the whole thing this file
+  exists to save. Refuted as drift is not the same as fine to leave
+- TWO OF THE SIX ARE THIS ROUND'S OWN. Step 212, the window probe, said the visible tick
+  box count must be 1, and F72 makes it 2. Step 270, which F72 itself wrote, said to look
+  for a SECOND `NWF      attempt` line after the clash step, and on a Weekly run it is the
+  FIRST, because the opened branch logs `NWF      reused` and never an attempt before the
+  clash. That is the identical fault F57 already holds open for step 73, written again by
+  me on the same day, which is worth more than the correction
+- THE OTHER FOUR ARE OLDER. Step 336 said the top `step finished` row sorted by seconds is
+  the slowest single step of the run, and `RunLog` writes that row only on a step's FIRST
+  visit, so `TESTS RUN` contributes one row for one test out of 1830. Step 343 quoted two
+  pre-commit lines as the whole of it and the hook prints four since F58 and F66. Step 326
+  said the GAP block lists all six properties, and `GapRule.Add` returns early on a
+  property nothing carried, so it can list fewer. Step 60 said the `SETS` line carries
+  three numbers, and the ordinary case, where the clear kept them, carries two
+- ONE WAS LISTED RATHER THAN CORRECTED, which is the repo's own rule for this shape. Step
+  34 says the two hand buttons sit UNDER their line, and the TextBlock and both Buttons are
+  the three children of one horizontal StackPanel, so the line is to the LEFT of them. F57
+  already holds two steps open for exactly this, so this is the sixth on that list rather
+  than a seventh correction. Three steps now say ABOVE or UNDER where the layout says
+  BESIDE, and that is a pattern rather than three typos
+- THE MECHANICAL HALF, WHICH CAN BE SAID EXACTLY. All 289 distinct backtick quoted strings
+  in the file, checked against every `.cs` and `.xaml` under `src` plus `install.ps1`,
+  `workflow.md`, `CLAUDE.md`, the checks, the probes, the hooks, `.gitattributes`,
+  `Directory.Build.targets`, the project files and the Actions workflow, with C#
+  concatenation seams flattened and with whitespace both collapsed and kept. 184 matched.
+  The other 105 were resolved by hand and every one is composed at run time, is git or
+  dotnet or PowerShell output, is a file name Bader types, or is a padded log prefix the
+  writer builds
+- EVERY CROSS REFERENCE READ AGAINST THE STEP IT NOW POINTS AT. There are nine and the
+  renumbering moved four of them. The renumbering script skipped a `step NNN` sitting
+  INSIDE a numbered line again, twice, which the F63 and F68 entries both already wrote
+  down. It is written down a third time here because it will happen a fourth
+
+### The thing found on the way that had nothing to do with either fix
+
+- THE TWO CLAUDE CODE WALLS WERE JAMMED SHUT IN THIS CHECKOUT. `git ls-files --eol` read
+  `w/crlf` on both `.claude/hooks/refuse-protected-paths.sh` and
+  `refuse-git-on-main.sh`, against an index of `i/lf` and an attribute of `text eol=lf`.
+  `sh` reads a carriage return as part of the word, so both die on their first case line
+  and exit 2, and 2 is the code that REFUSES
+- THAT IS THE EXACT CASE F47a WROTE `.gitattributes` FOR and the exact case step 339 exists
+  to catch. The remedy is the one step 339 gives, and it was applied here: the two files
+  were checked out again from the index and both now read `w/lf`. Nothing tracked changed,
+  and the paths wall was then proved by hand, refusing a write under `samples` with exit 2
+  and allowing one under `src` with exit 0
+- WHY IT MATTERS BEYOND TODAY. A jammed wall does not fail loudly. It refuses everything or
+  it refuses nothing, and either way nobody notices until something gets through that
+  should not have. Steps 338 and 339 are how Bader sees it for himself and they are worth
+  doing early rather than at the end
+
+### What remains
+
+- THE PULL REQUESTS COULD NOT BE OPENED FROM HERE, the same as the build round. `gh` is not
+  installed on this machine and the GitHub connector answers
+  `403 Resource not accessible by integration` to a create pull request call. So the
+  branches are PUSHED and merged into nothing, and Bader opens and merges them in order
+- THEY ARE STACKED, `fix-F71` then `fix-F72` then `round-close-penetrations`, each off the
+  one before rather than off main, because three branches all prepending to `steps/log.md`
+  would conflict on the second merge. Merged in that order each merges clean
+- NOTHING HAS BEEN RUN. Not one line of F50 to F72 has been seen against a real model. What
+  F72 COSTS is the number nothing here could measure: with the box on, every clash has a
+  category read off both sides and a size read off the service, up to four levels each, so
+  the cost is per CLASH and not per test. Steps 279 and 280 are the comparison that answers
+  it, and until they are run it is UNKNOWN
+- F57 has six wordings now and is still Bader's to judge
+- Q35 to Q40, Q45, F52's writing half and F50's rebuild are where they were
+
+### Known bugs
+
+- None open in the code. The add-in builds, both checks are clean and the whole test set
+  passes
+- One thing is UNKNOWN and is named rather than filled in: what the penetration pass costs
+  on a real model
+
+### What comes next
+
+1. Bader opens and merges `fix-F71`, then `fix-F72`, then `round-close-penetrations`
+2. Bader pulls main and builds
+3. Bader works steps 123 to 136, which is F71 in one section and takes no run at all
+4. Bader runs one building with the penetration box OFF, then one with it ON, and reads
+   steps 253 to 280
+5. Bader runs the D6 delete command himself
+
+## 2026-09-19 F72, penetrations become Reviewed, and Q33 is answered
+
+### What was done
+
+- Q33 HAS BEEN OPEN SINCE F54 ON 2026-09-18 and it is answered. It offered four shapes and
+  asked which one the ask was. The answer is the SECOND, a rule over the clash itself, and
+  the other three are recorded as not chosen so nobody builds one later thinking it was
+  wanted: no list is supplied per run, nothing is read off a status in the clash XML, and
+  nothing watches what a person marked last week
+- A CLASH BECOMES REVIEWED WHEN ALL FOUR ARE TRUE. One side is a service by item category.
+  The other side is a solid by item category. The service measures 150 mm or less. The
+  clash is at New or Active. Everything else is left exactly as it is and counted by reason
+- F54 BUILT THE HALF THAT NEEDED NO ANSWER and it is untouched. `ClashStatusEditor` still
+  applies a list through the one measured mutator, `StatusesThisToolMaySet` still refuses
+  everything but Reviewed, and the slot between the run and the harvest is still the slot.
+  F72 supplies the list that was missing and changes nothing about how it is applied
+- AND IT RESCUES THREE DEAD MEMBERS. `ChangedCount`, `NotFoundCount` and `RefusedCount`
+  were declared by F54 and read nowhere in src, because nothing supplied a list. The rule
+  says a public member nothing calls is deleted unless a decision in `02_questions.md`
+  keeps it, and Q33 was that decision. Now they have a caller
+
+### The four questions Bader answered, and what each one settled
+
+- THEY ARE Q41 TO Q44 AND THE BRIEF CALLS THEM Q47 TO Q50. The questions file runs to 40
+  and Q41 to Q46 do not exist, so they went in at the next free numbers, one for one and in
+  order. The same thing happened to the log round, which was briefed as F56 to F61
+- Q41, THE SOLID SIDE. Floors and roofs count as well as walls, so the default solid list
+  is Walls, Floors, Roofs. A service dropping through a slab is the same kind of thing as
+  one going through a wall
+- Q42, NO DISCIPLINE FILTER. Any wall counts whichever file it came in. Nothing in the rule
+  reads part 5 of a name and nothing in it knows what a discipline is, and there is a test
+  that asserts exactly that, because the temptation to add one later will be real
+- Q43, WHICH WAY ROUND THE 150 READS. It is a CEILING and not a floor: 150 or less becomes
+  Reviewed, and a service over it stays at New because a large service through a wall is a
+  real coordination item
+- Q44, BOTH SIDES A SERVICE. Leave it alone, and count it, so a run says how many it saw
+  rather than passing over them silently
+
+### The four things this had to get right, and each one is a rule that fails quietly
+
+- THE 150 IS NAMED ONCE AND READ TWO WAYS. `SizeSettings.ThresholdMillimetres` is the only
+  150 in the repo. F53 puts an item in a viewpoint when it is OVER it. F72 marks a service
+  Reviewed when it is AT OR UNDER it. So exactly 150 falls on a DIFFERENT SIDE in each, and
+  that is not a contradiction: one rule is over and the other is at or under, and together
+  they cover every size with no gap and no overlap. Both readings are written at that one
+  number, and a test takes 150 through both rules in one method and asserts it is IN for
+  the penetration and OUT for the viewpoint. Two copies of 150 would drift and nobody would
+  notice until a report was wrong
+- A DUCT IS NOT ONE NUMBER. `SizeRule.LargestMillimetres` takes the LARGEST of every size
+  property the item carries, so a 600 by 150 duct is a 600 and stays at New. `SizeRule.Decide`,
+  which F53 uses, takes the FIRST on the settings list instead, and that is right for a
+  viewpoint: one representative size in a rule nobody has to argue about. The test that
+  pins this feeds ONE lookup to both and asserts 600 out of one and 150 out of the other,
+  because Width is first on the default list and a 150 wide by 600 high duct would
+  otherwise read 150 and move
+- THE UNREADABLE SIZE GOES THE OPPOSITE WAY FROM F53 ON PURPOSE. F53 INCLUDES an item whose
+  size cannot be read, because a fitting usually carries no size property and the safe
+  mistake there is showing something unnecessary in a viewpoint. F72 LEAVES ALONE a service
+  whose size cannot be read, because the safe mistake here is leaving a clash at New for a
+  person to look at. Both reasons are written at both places and there is a test whose whole
+  job is to assert the two answers DIFFER, so a later reader who tries to make them agree
+  breaks a test that tells them why not
+- NEVER OVERWRITE A DECISION. `StatusesThisToolMayMoveFrom` is New and Active and nothing
+  else, and it is a Core rule with its own tests rather than a condition inside a loop.
+  That matters more than it looks: before F72 the editor would have moved an Approved clash
+  to Reviewed if something asked it to, and nothing ever asked because nothing supplied a
+  list. F72 supplies one, so the guard had to become real
+
+### What the log and the workbook say, because a silent change is the fault this repo exists to avoid
+
+- A PENETRATION BLOCK PER GROUP, in the shape the SETS block uses. One line per clash moved
+  naming the test, the clash, BOTH categories and the service size, so somebody auditing
+  this a month later can tell whether the rule picked the right thing without opening the
+  model. Then the totals and ONE LINE PER REASON for every clash left alone
+- EVERY REASON IS PRINTED INCLUDING THE ONES AT ZERO, which is a deliberate departure from
+  the SETS block, which hides a zero. The difference is that SETS counts things MADE and
+  this counts things NOT DONE, and a reason missing from a list of things not done reads as
+  a reason nobody thought of
+- THE RUN TOTAL IN THE RESULT BLOCK, and only where the box was on. A run that never asked
+  for it has nothing to say, and a line reading zero on every run teaches people to skip it
+- THE WORKBOOK CARRIES IT IN THE CLIENT'S OWN REVIEWED COLUMN. `WriteTestHeader` already
+  writes all five statuses per test off `ClashTally.AllStatuses`, and the status is applied
+  before the harvest reads it, so the Reviewed cell of every test block IS the number this
+  run moved. NO COLUMN OF OURS WENT ON THAT SHEET. The brief asks for the count in the
+  workbook and the standing rule says the workbook is their one sheet with none of ours on
+  it, and the client's own column satisfies both. Whether Bader wants a cell of ours as
+  well is Q45 rather than a decision taken here
+
+### Two things the checks caught while this was written
+
+- `check-imports.sh` REPORTED `Penetrations.cs` FOR A TYPE THE COMPILER IS HAPPY WITH.
+  `ModelItemCollection` is in `Autodesk.Navisworks.Api`, which the file imports, but the
+  only two other files that name it both import `Autodesk.Navisworks.Api.DocumentParts` for
+  an unrelated reason. Two of the four files importing DocumentParts is exactly 50 per
+  cent, which was the threshold, so a coincidence tipped it over
+- IT WAS RE-MEASURED RATHER THAN SILENCED. Adding an import the file does not need would
+  have been a lie in the one place a later reader will trust. Measured over src with F72
+  in: clean at 51 and at 60, and with the F65 import taken back out it still names
+  DocumentParts on the real fault at both. At 75 it reads clean and MISSES the real fault,
+  so the window is 51 to 60 and it sits at 60, the middle rather than the edge. The whole
+  measurement is in the file, including the sentence saying this will happen again
+
+### Proved here
+
+- `dotnet build ParsonsNwcFederator.sln -c Release` with 0 errors and 0 warnings, run after
+  every add-in change
+- `check-locals.sh src` clean and `check-imports.sh src` clean, and
+  `check-imports.sh tools/checks/broken` still refuses with exactly one line
+- Core tests before: 1271 passed, 0 failed, 0 skipped, 1271 total. After: 1338 passed, 0
+  failed, 0 skipped, 1338 total. 67 added, none broken
+
+### Waits for the local machine
+
+- Steps 253 to 278. The first seven are the run with the box OFF, which has to change
+  nothing at all, and the rest are the run with it on. Step 268 is the one worth doing
+  first: read how many services the tool could not measure, because that number is what
+  says whether the property list is right for this project
+
+### What remains
+
+- The closing work
+
+### Known bugs
+
+- As in the F46 entry. The add-in compiles
+
+### What comes next
+
+1. The closing work
+2. Bader runs one building with the box off, then one with it on
+
+## 2026-09-19 F71, say when an NWF is nearly matched
+
+### What was done
+
+- BADER PRESSED RUN ON BUILDINGS THAT ALREADY HAD AN NWF AND GOT FIRST RUN. The NWF folder
+  and the name pattern together did not resolve to his file, so the tool found nothing at
+  the output path, decided to build, and said nothing at all about the file sitting beside
+  it under a nearly identical name. The tool did exactly what it was told. What it did not
+  do was notice
+- THE RULE IT ALREADY HAD IS RIGHT AND IS UNTOUCHED. An NWF at the output path is opened
+  and one that is not there is built. F71 adds no branch, changes no decision and corrects
+  no name. It notices, it says so in three places, and the person decides
+- WHAT CLOSE MEANS, AND IT IS TWO THINGS RATHER THAN A DISTANCE. The same building code
+  sits in both names, or project, originator and building all agree and one of the four
+  SUPPLIED fields differs. Those four are the level, the discipline, the type and the
+  number, which are exactly the four `NamePattern` supplies rather than reads out of the
+  input, so they are the four a person is most likely to have set differently from the
+  file on disk. A fuzzy distance would have been a number nobody could argue with and
+  nobody could explain. These two are rules, and each has its own tests
+- THE MORE SPECIFIC REASON WINS where both are true, and the line NAMES WHICH FIELD
+  DIFFERS. A sentence saying only that something is similar sends the reader back to the
+  folder to work out what, which is the trip this whole fix exists to save
+- NO FILE SYSTEM IN CORE. `SimilarNames` is handed a list of names and compares names. The
+  window lists the folder ONCE per refresh, not once per group, because the answer cannot
+  change between two groups and the folder would otherwise be walked as many times as
+  there are buildings
+
+### Three things the tests and the checks caught, each of which would have shipped
+
+- AN EXACT MATCH READ AS A NEAR MISS. A folder listing gives
+  `1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf` and the name a group would write has no
+  extension on it. The first version compared the two raw, so the exact file came back as
+  similar, which is the OPPOSITE of the truth: that file being there is what makes the
+  group a Weekly run rather than a finding. The comparison is on the STEM now, and
+  `ContainerName.Stem` went from private to internal so one rule decides what a name is
+  rather than a second copy of it living in the new file
+- THE LABEL MUST NEVER BE WIDENED, and this one was designed for rather than found, then
+  pinned by a test that would have failed if it had not been. `RunPath.Count` maps a label
+  it does not know onto Unknown, and both the confirm dialog and the RESULT block read
+  those counts. A row reading First run followed by a sentence would have been counted as
+  a path nobody can name, so the confirm dialog would have said `First run: 0` on a run
+  that was about to build fourteen NWFs. `RunAs` stays one of the six, the sentence rides
+  beside it in `RunAsShown`, and the test counts both to prove the two cannot be confused
+- `check-imports.sh` REFUSED THE FIRST VERSION, and it was right to. The nested type was
+  called `Match`, which this repo declares nowhere and which `ClientShapes.cs` and
+  `PageCheck.cs` both use as `System.Text.RegularExpressions.Match`. The compiler was
+  perfectly happy, because neither of those files can see a type in
+  `Federator.Core.Naming` without importing it. The check could not know that and said so,
+  and the name was a genuine readability fault whatever the compiler thought, so it is
+  `NearbyName` now. F66's check earned its keep on a fault the build could not see
+
+### What it says, and where
+
+- THE RUN AS COLUMN reads `First run` and then `, but the NWF folder holds a similar name:`
+  and the file. The column went from 150 wide to 300, because the sentence names a file
+- THE GROUP LIST BLOCK in the log carries the same sentence on the same row, off the same
+  Core wording, so the log and the window cannot drift
+- ONE GREY LINE UNDER THE GROUP TABLE, only while at least one group is in that state and
+  collapsed the rest of the time, saying how many and that the NWF Name cell can be typed
+  over. Its own style rather than `TickHelp`, because `TickHelp` is indented twenty to sit
+  under a tick box and a line under a table starts at the edge of the table
+- ONLY WHERE THE GROUP WOULD BUILD. A group whose NWF is already there is opened, so
+  another file with a similar name beside it is somebody else's business
+
+### Proved here
+
+- `dotnet build ParsonsNwcFederator.sln -c Release` with 0 errors and 0 warnings, run after
+  the add-in changes
+- `check-locals.sh src` clean and `check-imports.sh src` clean, the second one after the
+  rename it asked for
+- Core tests before: 1238 passed, 0 failed, 0 skipped, 1238 total. After: 1271 passed, 0
+  failed, 0 skipped, 1271 total. 33 added, none broken
+
+### Waits for the local machine
+
+- Steps 123 to 136, which change the Level field to `L01` so every name differs from the
+  file on disk in one field, and read the column, the line under the table and the log
+
+### What remains
+
+- F72, the penetration rule, which answers Q33, then the closing work
+
+### Known bugs
+
+- As in the F46 entry. The add-in compiles
+
+### What comes next
+
+1. F72, penetrations become Reviewed
+2. The closing work
+
+## 2026-09-19 The plan for the penetration round, F71 and F72
+
+### This is the plan, written before the first edit
+
+- Bader ran the tool for real on 2026-09-19, the first run since the add-in was proved to build, and came back with two things. One is what the window failed to tell him. The other is the answer to Q33, which has been open since F54 on 2026-09-18. This entry is the plan and nothing in the repo was edited before it was written
+- The reading the brief asks for was done first and in full: `CLAUDE.md`, all four files under `.claude/rules`, the top entry of this file, `01_next.md`, `02_questions.md` end to end, `docs/history/scan.md` section 4, then `ClashStatusEditor.cs`, `StatusesThisToolMaySet.cs`, `SizeRule.cs`, `SizeSettings.cs`, `ItemSizes.cs`, `ClashHarvest.cs` and `FederationEngine.Decide`
+- AND THEN SEVEN READERS OVER THE SURFACES THE TWO FIXES TOUCH, each one checked afterwards by a second reader told to assume at least one claim was wrong. Every one of the seven came back with something corrected. That is not a formality and three of the corrections change what gets built. They are in the section below
+
+### The numbers. Two F numbers free, and the questions are not the ones the brief names
+
+- `01_next.md` runs to F70. F71 and F72 are the next two free, neither is taken, and the two fixes map onto the brief one for one and in order
+- THE QUESTIONS FILE RUNS 1 TO 40 AND NOT TO 46. The brief calls the four answers Q47 to Q50. Q41 to Q46 do not exist, so the four go in as Q41 to Q44 and they map onto the brief one for one and in order: Q41 is the brief's Q47, floors and roofs count as solids, Q42 is Q48, any wall whichever file it came in, Q43 is Q49, 150 is a ceiling and not a floor, Q44 is Q50, both sides a service is left alone. The same thing happened to the log round, which was briefed as F56 to F61 and went in as F59 to F64
+- Q33 IS ANSWERED BY F72 AND IS MARKED ANSWERED, not closed by a new number. It asked which of four shapes the ask was, and the answer is the second: a rule over the clash itself. The other three shapes are recorded as not chosen
+
+### What the readers found that changes the build
+
+- THE F54 SEAT IS NOT WHERE THE STATUS PASS CAN SIT. `ClashRunner.cs:683` is the F54 slot and it runs BEFORE `using (ClashTest after ...)` at :698 resolves the handle the results are read from. `ClashTally tally` is not declared until :696, so a pass written at :683 cannot refer to it at all, and C# refuses a use before the declaration point rather than treating it as unassigned. The penetration pass needs the results and needs to run before the harvest, so it takes its own resolve at the F54 slot exactly as F54 does, and reads nothing the tally holds
+- NOTHING IN `src` READS `ChangedCount`, `NotFoundCount` OR `RefusedCount`. F54 declared all three and no caller was ever written, because Q33 was open. The rule says a public member nothing in src calls is deleted. F72 gives all three a reader rather than deleting them, which is the answer the rule allows when a decision in `02_questions.md` keeps the member, and Q33 is that decision
+- THE WORKBOOK ALREADY CARRIES THE COUNT AND A COLUMN OF OURS WOULD BREAK A STANDING RULE. `WorkbookWriter.WriteTestHeader` writes all five statuses per test off `ClashTally.AllStatuses`, so the Reviewed cell of every test block IS the number this run moved, because the status is applied before the harvest reads it. The brief asks for the count in the workbook. The rule says the workbook is the client's one sheet with none of ours on it and that if it is not in theirs it is not in ours. Both are satisfied by the client's own Reviewed column, that is what F72 does, and whether Bader wants a cell of ours as well goes in as a numbered question rather than being decided here
+- `ClashItem` CARRIES NO CATEGORY and neither does any of the other three report classes, so Category is genuinely new. `ClashHarvest.FirstProperty` is the reader the brief says to copy the shape of, and it is private, so F72 makes it and its `Text` helpers internal and calls them from the new pass. Same assembly, no attribute needed, and ONE reader rather than a second copy
+- `ClashRunner.UnitName` HANDS BACK THE EXCHANGE CODE AND NOT THE ENUM NAME. It returns `row.ExchangeCode`, which is `m` or `mm`, while `SizeRule` keys on the Navisworks enum name through `UnitTable.ByEnumName`. Handing one to the other would throw on every clash. The pass reads `document.Units.ToString()` and nothing else
+- NOTHING IN `src` SPLITS AN OUTPUT NAME and `ContainerName.Parse` is never called on one. It reads parts 1, 2, 3 and 5 and F71 needs all seven, so F71's comparison is new Core work rather than a call into something that exists
+- `Directory.GetFiles` APPEARS EXACTLY ONCE IN THE ADD-IN, at the scan. F71 adds the second, in the window, and hands Core a list of names
+
+### The order, one pull request each, branch off main, merged green
+
+1. **F71 SAY WHEN AN NWF IS NEARLY MATCHED.** Bader pressed Run on buildings that already had an NWF and got First run, because the NWF folder plus the name pattern did not resolve to his file, and nothing said so. A new Core type, `Federator.Core.Naming.SimilarNames`, takes the name this group would write and the list of names the add-in found in the NWF folder and answers which of them are close. CLOSE MEANS ONE OF TWO THINGS, both of them the brief's: the same building code in the name, or a name differing only in the level, the discipline, the type or the number field. It knows nothing about the file system, takes a list of names and the separator settings, and every rule in it has a test. The window lists the NWF folder once per refresh and hands the names over. A group in that state keeps `First run` as its LABEL, because `RunPath.Count` maps an unknown label to Unknown and the confirm dialog and the RESULT block count off it, and the warning rides beside the label in a second property the column and the group list block both read. One line under the group table when any group is in that state, saying the NWF Name cell can be typed over. Nothing is auto corrected
+2. **F72 PENETRATIONS BECOME REVIEWED.** A clash moves to Reviewed when all four are true: one side is a service by item category, the other is a solid by item category, the service measures 150 mm OR LESS, and the clash is at New or Active. Everything else is left exactly as it is and counted by reason. `PenetrationSettings` holds the two category lists and the wording. `PenetrationRule` decides and names its reason. `PenetrationTally` builds the PENETRATION block in the shape the SETS block uses. `StatusesThisToolMayMoveFrom` is the fourth condition as a Core rule with its own tests, so no caller can overwrite a decision even by mistake. In the add-in, `Penetrations` walks a test's results, reads both sides' categories through the one reader `ClashHarvest` already has and the service's size through `ItemSizes`, and hands the facts to Core. `ClashHarvest` gains Category with the same reader and the same settings shape. Off by default, one tick box on the Clash step
+
+### The five things F72 holds itself to, and each one is a rule that could go wrong quietly
+
+- THE 150 IS NAMED ONCE AND READ TWO WAYS. `SizeSettings.ThresholdMillimetres` is the only 150 in the repo and both features read it. F53 puts an item in a viewpoint when it is OVER the threshold. F72 marks a clash Reviewed when the service is AT OR UNDER it. The comment at the setting says both readings side by side, because two copies of 150 would drift and nobody would notice until a report was wrong
+- A DUCT IS NOT ONE NUMBER. `ItemSizes.Read` already hands back every wanted property the item carries, so the pass takes the LARGEST of them and not the first. A 600 by 150 duct is a 600 and stays New. `SizeRule` gains the reduction, so the unit conversion stays in the one place that has it, and a test pins the 600 by 150 case by name
+- THE UNREADABLE CASE GOES THE OPPOSITE WAY FROM F53 ON PURPOSE. F53 INCLUDES an item whose size cannot be read, because the safe mistake there is showing something unnecessary. F72 LEAVES ALONE a service whose size cannot be read, because the safe mistake here is leaving a clash New for a person to look at. Both reasons are written at both places, so a later reader cannot make them agree
+- NEVER OVERWRITE A DECISION. Only New and Active move. Reviewed, Approved and Resolved are left exactly as they are, and that is a Core rule with tests rather than a condition inside a loop, because the existing editor would happily move an Approved clash to Reviewed if something asked it to
+- NOTHING MOVES SILENTLY. The PENETRATION block names every clash moved with both categories and the service size, then the totals and one line per reason for every clash left alone. The run total goes in the RESULT block. The workbook carries it in the client's own Reviewed column
+
+### What this round holds itself to
+
+- .NET Framework 4.8 and C# 7.3. No Navisworks type reaches `Federator.Core`. Every rule lives in Core with its tests and the add-in reads properties and calls
+- THE ADD-IN IS BUILT AFTER EVERY CHANGE TO IT and the result goes in the pull request body. This session is on Bader's machine with Navisworks Manage 2025 installed, so there is no excuse for shipping a compiler error, which is what the last two rounds did
+- Every list and every number is a SETTING with the brief's defaults, never a constant
+- `steps/log.md` gets one entry per fix, newest at the top. Q41 to Q44 go into `02_questions.md` with their answers, and Q33 is marked answered. Nothing under `samples`, `steps/logs` or `bundle` is touched
+- One pull request per fix, branch off main, merged once Actions is green. If nothing here can open one, the branches stack in order and the closing entry says so plainly with one compare link
+
+### The Core test count before the round
+
+- 1238 passed, 0 failed, 0 skipped, 1238 total, measured on this machine, which is Windows. `dotnet build ParsonsNwcFederator.sln -c Release` finishes with 0 errors and 0 warnings before anything is touched
+
+### What remains
+
+- The whole round. This entry is the plan and no file has changed yet
+- The closing work: the add-in built and the result said, `03_bader_next.md` read end to end against the code with the Look for count said out loud, then the closing entry
+- F57, the five older Look for lines, is still Bader's to judge
+- F52's writing half, F50's rebuild, Q35 to Q40 and the 319 steps are where they were
+
+### Known bugs
+
+- None open in the code. The add-in builds and the last round's six fixes are merged
+- What Bader hit is not a bug in the code. The tool did exactly what it was told and said nothing about why, which is F71
+
+### What comes next
+
+1. F71, so the window says what it noticed
+2. F72, the penetration rule, which answers Q33
+3. The closing work
+
 ## 2026-09-19 The build round is closed, F65 to F70
 
 ### What was done

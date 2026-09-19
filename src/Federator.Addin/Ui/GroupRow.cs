@@ -196,7 +196,52 @@ namespace Federator.Addin.Ui
 
                 runAs = tidied;
                 Raise("RunAs");
+                Raise("RunAsShown");
             }
+        }
+
+        private string nearbyNwf = string.Empty;
+
+        /// <summary>
+        /// The sentence about a file in the NWF folder whose name is nearly the one this
+        /// group would write, or empty. F71.
+        ///
+        /// KEPT APART FROM RunAs ON PURPOSE. RunAs is what the run COUNTS by, through
+        /// Federator.Core.Rerun.RunPath.Count, which maps a label it does not know onto
+        /// Unknown, and both the confirm dialog and the RESULT block read those counts. So
+        /// the label stays exactly one of the six and the warning rides beside it.
+        /// </summary>
+        public string NearbyNwf
+        {
+            get { return IsBlocked ? string.Empty : nearbyNwf; }
+            set
+            {
+                string tidied = value ?? string.Empty;
+
+                if (string.Equals(nearbyNwf, tidied, System.StringComparison.Ordinal))
+                {
+                    return;
+                }
+
+                nearbyNwf = tidied;
+                Raise("NearbyNwf");
+                Raise("RunAsShown");
+            }
+        }
+
+        /// <summary>Whether this group is about to build an NWF beside one nearly named the same.</summary>
+        public bool HasNearbyNwf
+        {
+            get { return NearbyNwf.Length > 0; }
+        }
+
+        /// <summary>
+        /// What the Run as column shows: the label, and the near miss sentence after it
+        /// where there is one. The column reads this and the counting reads RunAs.
+        /// </summary>
+        public string RunAsShown
+        {
+            get { return IsBlocked ? string.Empty : RunPath.Shown(runAs, nearbyNwf); }
         }
 
         public string Status

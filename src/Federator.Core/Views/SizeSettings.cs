@@ -15,6 +15,23 @@ namespace Federator.Core.Views
         /// <summary>
         /// 150 mm. The threshold Bader gave, in millimetres, because a threshold in the
         /// document's units would mean a different rule per document.
+        ///
+        /// ONE NUMBER, READ TWO WAYS, AND THIS IS THE ONLY PLACE EITHER OF THEM IS WRITTEN.
+        /// Two features turn on it and they read it in OPPOSITE directions, so a second
+        /// copy of 150 anywhere would drift and nobody would notice until a report was
+        /// wrong.
+        ///
+        ///   F53, the viewpoints. An item OVER the threshold goes in. Exactly 150 is OUT,
+        ///   because over 150 is what was asked for and 150 itself is not over it.
+        ///
+        ///   F72, the penetrations. A service AT OR UNDER the threshold becomes Reviewed.
+        ///   Exactly 150 is IN, because 150 or less is what was asked for. A service over
+        ///   it stays New, because a large service through a wall is a real coordination
+        ///   item and not a penetration somebody should stop looking at.
+        ///
+        /// So exactly 150 falls on a different side in each, which is not a contradiction:
+        /// one rule is over and the other is at or under, and together they cover every
+        /// size with no gap and no overlap.
         /// </summary>
         public const double DefaultThresholdMillimetres = 150.0;
 

@@ -27,10 +27,22 @@
 # file under the root that names that type imports it, and when at least MinimumShare per
 # cent of the files importing that namespace name that type. Without that second condition
 # the answer comes back as System or System.Collections.Generic, which nearly every file
-# carries and which supplies nothing in particular. Measured on 2026-09-19 over src: at 50
-# the check reads clean, at 40 it reads one line of noise, at 34 three and at 20 ten, and
-# with the real fault put back it names Autodesk.Navisworks.Api.DocumentParts at every one
-# of those values.
+# carries and which supplies nothing in particular.
+#
+# WHERE MinimumShare CAME FROM, MEASURED TWICE. On 2026-09-19 at 50 the check read clean
+# over src, at 40 one line of noise, at 34 three and at 20 ten. Later the same day F72
+# added Penetrations.cs, which names ModelItemCollection, a type only ClashRunner.cs and
+# SetBuilder.cs name and which both of those import Autodesk.Navisworks.Api.DocumentParts
+# for an unrelated reason. Two files of the four importing DocumentParts is exactly 50 per
+# cent, so the check reported a file the compiler is perfectly happy with. Re-measured over
+# src with F72 in: clean at 51 and at 60, and with the F65 import taken back out it still
+# names DocumentParts on the real fault at both. At 75 it reads clean over src and MISSES
+# the real fault, so 75 is too high and the window is 51 to 60. It sits at 60, which is the
+# middle of the proven window rather than its edge.
+#
+# A COINCIDENCE LIKE THAT WILL HAPPEN AGAIN and the answer is to re-measure this number,
+# not to add an import a file does not need. An unused import to quieten a check is a lie
+# in the one place a later reader will trust.
 #
 # WHAT IT CANNOT DO, said here rather than left to be discovered.
 #   It reads TEXT and not a program. It has no compiler, no Autodesk DLL and no reference
@@ -51,7 +63,7 @@ root=${1:-src}
 
 # At least this share of the files importing a namespace must name a type before that
 # namespace is taken as the type's home. See the measurement above.
-MinimumShare=${2:-50}
+MinimumShare=${2:-60}
 
 if [ ! -d "$root" ]; then
     echo "check-imports: no folder named $root" >&2

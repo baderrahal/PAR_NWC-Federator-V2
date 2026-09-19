@@ -27,6 +27,14 @@
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="Margin" Value="20,1,0,8" />
         </Style>
+        <!-- A grey line under a TABLE saying what the tool noticed. Its own style and not
+             TickHelp, because TickHelp is indented 20 to sit under a tick box and a line
+             under a table starts at the edge of the table. F71. -->
+        <Style x:Key="FindingLine" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#707070" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,6,0,0" />
+        </Style>
         <!-- The mark on the two that destroy something. A mark rather than capitals,
              because capitals in every label made all of them shout equally. -->
         <Style x:Key="WarningMark" TargetType="TextBlock">
@@ -163,6 +171,13 @@
                     </StackPanel>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="GroupingSummary" Margin="0,6,0,0" />
 
+                    <!-- F71. One line, and only when at least one group is about to build a
+                         new NWF beside a file whose name is nearly the same. Collapsed the
+                         rest of the time, because a panel that is always there saying
+                         nothing is one nobody reads. Its text is composed in Core. -->
+                    <TextBlock DockPanel.Dock="Bottom" x:Name="NearbyNwfLine"
+                               Style="{StaticResource FindingLine}" Visibility="Collapsed" />
+
                     <DataGrid x:Name="GroupsGrid" AutoGenerateColumns="False" CanUserAddRows="False"
                               GridLinesVisibility="Horizontal" HeadersVisibility="Column">
                         <DataGrid.Columns>
@@ -180,8 +195,12 @@
                                                 Binding="{Binding FileCount}" />
                             <DataGridTextColumn Header="Disciplines" Width="200" IsReadOnly="True"
                                                 Binding="{Binding Disciplines}" />
-                            <DataGridTextColumn Header="Run as" Width="150" IsReadOnly="True"
-                                                Binding="{Binding RunAs}" />
+                            <!-- RunAsShown and not RunAs. The column carries the near miss
+                                 sentence after the label, F71, and the counting reads the
+                                 bare label so a widened one never reaches it. Wider than
+                                 the other columns because the sentence names a file. -->
+                            <DataGridTextColumn Header="Run as" Width="300" IsReadOnly="True"
+                                                Binding="{Binding RunAsShown}" />
                             <DataGridTextColumn Header="Status" Width="*" IsReadOnly="True"
                                                 Binding="{Binding Status}" />
                         </DataGrid.Columns>
@@ -450,11 +469,25 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+
+                        <!-- F72. Visible rather than under an expander, because a weekly
+                             run genuinely has to choose: it writes statuses into the NWF,
+                             which is the only record of what has been fixed. It is NOT
+                             under Things that destroy data, because nothing is destroyed,
+                             only New and Active ever move and a person moves one back in
+                             one click. Its help line is filled in the constructor from the
+                             size setting, never typed here, because two copies of 150
+                             drift and the XAML copy is the one nothing can test. -->
+                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,8">
+                            <CheckBox x:Name="MarkPenetrations" IsChecked="False" />
+                            <TextBlock x:Name="MarkPenetrationsHelp" Style="{StaticResource TickHelp}" />
+                        </StackPanel>
 
                         <!-- The two that destroy data. Collapsed and on their own, because
                              they do not belong beside ordinary output options. -->
-                        <Expander Grid.Row="0" Grid.ColumnSpan="2" IsExpanded="False"
+                        <Expander Grid.Row="1" Grid.ColumnSpan="2" IsExpanded="False"
                                   Header="Things that destroy data" Margin="0,0,0,8">
                             <StackPanel Margin="20,4,0,0">
                                 <!-- One StackPanel each, never two boxes in one, because the

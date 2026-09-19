@@ -265,9 +265,17 @@ check is proved to refuse as well as to pass.
   TestsEditResultStatus is a mutator and every mutator on DocumentClashTests is a copy form
   that kills the handle handed to it, and sharing a handle with the count is the fault that
   threw once per test for 8 hours 52 minutes. A status written is a write, so the NWF is
-  saved again on it. HOW THE TOOL LEARNS WHICH CLASHES CANNOT BE SOLVED IS Q33 and is not
-  built: the method takes a list and applies it, nothing supplies one yet, and guessing the
-  input would mean writing a rule nobody agreed to into the record
+  saved again on it. HOW THE TOOL LEARNS WHICH CLASHES CANNOT BE SOLVED WAS Q33 AND IS
+  ANSWERED, on 2026-09-19, by the second of the four shapes that question offered: a rule
+  over the clash itself. F72 supplies the list. Penetrations in the add-in walks the
+  results of one test, reads a category off each side with the reader ClashHarvest already
+  has and the service size with ItemSizes, and hands the facts to
+  Federator.Core.Clash.PenetrationRule, which decides. It is OFF by default, so a run that
+  did not ask for it resolves nothing and walks nothing and costs what it cost before F72.
+  The pass only READS, and the list it hands back goes through ClashStatusEditor, so there
+  is still exactly one place that calls TestsEditResultStatus. Two walks rather than one is
+  the price of that, and it is worth paying because the mutator kills the handle given to
+  it and a walk that both read and wrote would be holding one across it
 - Applying the file's settings to a test already in the document is a tick box, off by
   default, and it says plainly that changing a test RESETS its results and every clash
   in it goes back to New. That is the whole reason the default is to report and not to
@@ -388,8 +396,8 @@ check is proved to refuse as well as to pass.
   is not readable off the DLL, so it is not claimed. The words DID NOT FOLLOW are gone from
   the log. The combo on the Outputs step is MODEL units, defaulting to Meters, and its help
   line says the report is always in metres
-- A tick box has to earn being a decision. Fifteen went to eleven, of which ONE is visible
-  without opening anything. Republishing the NWD, writing the client page and rendering the
+- A tick box has to earn being a decision. Fifteen went to eleven, and F72 makes twelve, of
+  which TWO are visible without opening anything. Republishing the NWD, writing the client page and rendering the
   photos are fixed ON, because a weekly run wants all three every time. Client columns only
   is gone outright, dead since the workbook became one sheet with none of ours on it.
   Dating the NWD, the clash XML, the thumbnails and the five image status boxes are
@@ -413,8 +421,10 @@ and they explained the off state as well as the on state, so nothing stood out.
 The numbers in a help line are measured, never estimated. Photos are about 0.08 seconds
 each and 213 took 17 seconds. Pasting them takes the workbook from 0.3 MB to 52 MB.
 
-There were fifteen and there are eleven, of which ONE is visible without opening anything.
-A box only stays if a normal weekly run genuinely has to choose. Everything else became a
+There were fifteen, then eleven, and F72 makes twelve, of which TWO are visible without
+opening anything. A box only stays if a normal weekly run genuinely has to choose, and
+Mark penetrations as Reviewed earns it: it writes statuses into the NWF, which is the only
+record of what has been fixed, so a run has to be told to do that rather than told not to. Everything else became a
 fixed behaviour with the sensible answer chosen, or moved under an expander. The two that
 destroy data are under one of their own, because they do not belong beside ordinary output
 options. Which box went where and what each removed one was fixed to is in docs\history\scan.md 4q.

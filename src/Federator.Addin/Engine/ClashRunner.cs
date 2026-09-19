@@ -181,6 +181,25 @@ namespace Federator.Addin.Engine
         public IList<WantedStatus> WantedStatuses { get; set; }
 
         /// <summary>
+        /// The penetration pass, F72, or null where the box is off. Null is the default
+        /// and a null one resolves nothing and walks nothing.
+        /// </summary>
+        public Penetrations Penetrations
+        {
+            get { return penetrations; }
+            set { penetrations = value; }
+        }
+
+        private Penetrations penetrations;
+
+        /// <summary>
+        /// Where the penetration decisions are counted for this group, or null where the
+        /// box is off. The engine owns it, so one tally covers the group and the run total
+        /// can be added up across every group.
+        /// </summary>
+        public PenetrationTally PenetrationTally { get; set; }
+
+        /// <summary>
         /// Whether a status was actually changed in the document. The NWF is saved again
         /// on this, because a status change is a write.
         /// </summary>
@@ -680,11 +699,31 @@ namespace Federator.Addin.Engine
                 // to it. Sharing the handle with the count below is exactly the fault that
                 // threw once per test for 8 hours 52 minutes. Nothing is resolved at all
                 // when no status is wanted, which is every run while Q33 is open.
-                if (statuses != null && WantedStatuses != null && WantedStatuses.Count > 0)
+                // F72. The penetration rule decides WHICH clashes of this test should move,
+                // by reading both sides of each one, and it runs here for the same reason
+                // F54's slot is here. Its own resolve again, and a walk that only reads,
+                // so nothing is holding a handle across the mutator below.
+                //
+                // Off by default, so a run that did not ask for it resolves nothing and
+                // walks nothing and costs exactly what it cost before F72.
+                IList<WantedStatus> wanted = WantedStatuses;
+
+                if (penetrations != null && PenetrationTally != null)
+                {
+                    using (ClashTest toRead = Resolve(clashTests, address, planned.Name))
+                    {
+                        if (toRead != null)
+                        {
+                            wanted = penetrations.WantedFor(document, toRead, PenetrationTally);
+                        }
+                    }
+                }
+
+                if (statuses != null && wanted != null && wanted.Count > 0)
                 {
                     using (ClashTest toEdit = Resolve(clashTests, address, planned.Name))
                     {
-                        if (toEdit != null && statuses.Apply(clashTests, toEdit, WantedStatuses))
+                        if (toEdit != null && statuses.Apply(clashTests, toEdit, wanted))
                         {
                             changedTheDocument = true;
                         }
