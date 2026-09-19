@@ -19,7 +19,7 @@ Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixe
 3. F60, DONE, the timing blocks, and F21 closes here
 4. F61, DONE, the document census
 5. F62, DONE, the live line in the window
-6. F63, the report gap block
+6. F63, DONE, the report gap block
 7. F64, the machine readable log
 8. F57, five Look for lines older than the feature round, for Bader to judge
 9. F18, when Bader uploads the 1A04WE sample, Q9
@@ -546,6 +546,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - The block is written even when it is empty, saying nothing was held back. One line at the end of the run says how many gaps in total
 - Every gap this round finds goes into `02_questions.md` as a numbered question. The file runs 1 to 34, so they start at Q35
 - Size: medium
+- DONE on 2026-09-19. `ReportGap`, `GapRule` and `GapTally` in Core. A gap is something the run MEASURED that no output carries, and a property nothing carried is not one. The block names what is missing, what it came to and where it would belong, is written even when empty, and says in its own first line that nothing acts on it. The six were measured by reading all three writers rather than taken from the audit on trust. The run line counts by NAME, because the same six on 22 groups is still six things. Q35 to Q40 raised, one per gap, and Q25 split because one answer for five different properties is a decision nobody can make. Core tests before: 1168 passed, 0 failed, 32 skipped, 1200 total. After: 1184 passed, 0 failed, 32 skipped, 1216 total
 
 ## F64 The machine readable log
 

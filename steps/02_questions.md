@@ -109,6 +109,8 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
 25. From the audit of 2026-09-12. Family, type name, material, source file and discipline are read off every clash item and written to no output, because the workbook became the client's one sheet with none of ours on it and the page never carried them. They cost a property lookup per item per run. Delete them and their harvest, or keep them for a workbook column that does not exist yet? See `04_audit.md`, F40 and F45
 
+   Split on 2026-09-19 by F63, which made the run report these itself in the GAP block. One answer for five different properties is a decision nobody can make, so they are asked one at a time as Q35 to Q39, and Q40 is a sixth this question never covered. Answer them there. This one stays because the reasoning behind all five is here.
+
    Answer:
 
 26. From F40 on 2026-09-12. The rule says a public member nothing in src calls is deleted with its tests. Thirty of them are read only by a test that pins a rule the repo states: the reference file holds one batchtest and 1830 tests, 61 distinct locators, linkage none and rules empty in every test, two set names ending in a space, the stamping actually ran, the picture name round trips, the report check names what it found. Deleting the member deletes that proof. F40 made those members `internal` instead, so they are off the public surface and the tests still reach them through the `InternalsVisibleTo` the Core project already carries. Is that the right answer, or should the member and its test both go? See the list in the F40 pull request
@@ -146,3 +148,28 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 34. From F50 on 2026-09-18. Whether one model can be taken out of an open document without clearing the whole thing was never measured, so F50 kept the clear and restore and widened it from two things to four. `tools\probes\probe-model-remove.ps1` answers the question. If the answer comes back yes, the rebuild could instead append what the scan has and the NWF does not, remove what the NWF has and the scan does not, and never clear at all, which would mean nothing needs putting back and nothing can be lost. That is a rewrite of the rebuild rather than a tweak, and the widened version now works and is tested. Once the probe has answered, is the rewrite wanted, or does the counted clear and restore stay because it is proved and the risk of changing it outweighs the tidiness
 
    Answer:
+
+35. From F63 on 2026-09-19. The GAP block. Family is read off every clash item by `ClashHarvest` and reaches no output: not the workbook, which carries the client's fifteen columns and nothing of ours, not the page, which is theirs, and not the clash XML, which writes two quick properties and says so in its own comment. It costs a property lookup per item per run. Q25 asks about all five together and this asks it for one, because a single answer for five different properties is a decision nobody can make. Keep Family for a workbook column of ours, or delete it and its harvest
+
+   Answer:
+
+36. From F63 on 2026-09-19. The same question for Type Name, which is the REVIT type name and not the client's Item Type column. Their Item Type reads Solid on every one of the 120 item cells in the accepted report, so the two are different things and dropping ours changes nothing on their page. Keep it for a workbook column of ours, or delete it and its harvest
+
+   Answer:
+
+37. From F63 on 2026-09-19. The same question for Material. Of the five it is the one most likely to be empty on a real model, because it is read off the item and a great many items carry none, and the GAP block says how many of the item cells actually had one. Keep it for a workbook column of ours, or delete it and its harvest
+
+   Answer:
+
+38. From F63 on 2026-09-19. The same question for Source File. This one is different from the other four: the tool already reports the Revit source per NWC in the SOURCE FINDINGS block, so the building level answer is in the log and this is the per ITEM answer. Keep it for a workbook column of ours, delete it and its harvest, or is the SOURCE FINDINGS block enough
+
+   Answer:
+
+39. From F63 on 2026-09-19. The same question for Discipline. The discipline is already in every output name, in the grouping and in the viewpoint folders, all read off part 5 of the NWC name. This one is read off the ITEM, which can disagree with the file it came in. Keep it for a workbook column of ours, delete it and its harvest, or is it worth keeping only where it disagrees with the file
+
+   Answer:
+
+40. From F63 on 2026-09-19. Id From, which is not in Q25 and is a different shape from the other five. The client's cell says Element ID to match their own report, and the property the id ACTUALLY came from is held per item and written nowhere. Since F45 the ITEM IDS block counts it per PROPERTY with a total, which answers how a run behaved as a whole, and the per item answer is still held and still shown nowhere. Is the block enough, or does the per item value belong somewhere, and if so where
+
+   Answer:
+

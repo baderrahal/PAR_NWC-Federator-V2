@@ -2,6 +2,38 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F63, the report gap block
+
+### What was done
+
+- BADER'S STANDING RULE IS IN THE TOOL NOW. When the code knows something the report does not show, it becomes a question. That rule has been worked by hand every time: somebody reads the code, notices a property being read and written nowhere, and writes a question. Q25 is exactly that, and it took an audit of every file under src to find it. The run says it itself now, at the end of every group
+- WHAT COUNTS AS A GAP, WHICH IS THE PART THAT NEEDED A RULE. Something the run MEASURED off the model that no output carries. Not something the code could have measured and did not, and not something the report leaves out on purpose that a reader can see anyway. It has to be a number the run paid for and then threw away
+- A GAP NAMES THREE THINGS: what is missing, what it came to on this group, and where it would belong. A gap with no value is a complaint and a gap with no place to go is a shrug
+- A PROPERTY NOTHING CARRIED IS NOT A GAP, and that is the break the tests turn on. Reporting one would say the run is holding back something it never read, which is the opposite of true
+- THE BLOCK IS WRITTEN EVEN WHEN IT IS EMPTY, saying nothing was held back, because a missing block reads as a check that did not run
+- NOTHING ACTS ON IT. A gap does not fail a group, does not stop a run and does not change a single output. It is information in the log and Bader decides, which is the rule this whole tool is built on, and the block says so in its own first line
+- THE SIX WERE MEASURED AND NOT TAKEN FROM THE AUDIT ON TRUST. All three writers were read on 2026-09-19. `WorkbookWriter`, `HtmlTabularWriter` and `ClientReportColumns` name none of Family, Type, Material, SourceFile, Discipline or IdFrom anywhere, and `ClashReportXml` writes two quick properties and says in its own comment that the five used to be written and are not. `ClashHarvest` reads every one of them off every item of every clash, which is a property lookup per item per run
+- THE RUN LINE COUNTS BY NAME AND NOT BY LINE. The same six are held back on every group, so a run of twenty two groups would report 132 gaps, which says nothing except that there were twenty two groups. The number that means something is how many distinct things this tool knows and does not show, and that is six however many buildings it ran over
+- THE VALUE IS COUNTED PER ITEM CELL AND NOT PER ROW, because each clash has two items and a property can be on one and not the other. A row with one side counts once. This is the first real measurement of how much of each property a model actually carries, and it is what turns Q25 from a yes or no into a decision with numbers under it
+- SIX QUESTIONS AND NOT ONE, Q35 TO Q40. The brief asks for one per gap and that is right here for a reason the work made plain: Q25 lumps five different properties into one answer, and a single answer for five different things is a decision nobody can make. Split, Bader can keep Source File and drop Material. Q25 stays, because the reasoning behind all five is in it, and it now says where the per property decisions live
+- ONE OF THE SIX IS NEW AND WAS NEVER IN Q25. `Id From` is the property the item id actually came from, held per item and written nowhere. Since F45 the `ITEM IDS` block counts it per PROPERTY with a total, which answers how a run behaved as a whole, and the per item answer is still held and still shown nowhere. That is Q40 and it is a different shape from the other five
+- Proved here: Core tests before 1168 passed, 0 failed, 32 skipped, 1200 total. After 1184 passed, 0 failed, 32 skipped, 1216 total. 16 added and none broken. Core builds in Release with 0 warnings, `check-locals.sh` clean over `src`, the add-in parses with the same six error codes and not one `CS1xxx`, and the widened check is unchanged at 205 plus the nine this round added, every one a Navisworks name
+- A CROSS REFERENCE I BROKE AND CAUGHT. The script that renumbers `03_bader_next.md` bumps every `step NNN` at or after the insertion point, and one of the new steps refers to another new step, so it was bumped to a number six past where it should be. Corrected. It is the same class of fault F56 was opened for and it is worth writing down that the renumbering script cannot tell a reference forward from a reference inside its own block
+- Waits for the local machine: steps 268 to 273, and step 271 is the one that matters, because the counts it asks for are what Q35 to Q40 need to be answerable
+
+### What remains
+
+- F64, the machine readable log, and then the closing work
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F63 pull request
+2. F64, the machine readable log
+
 ## 2026-09-19 F62, the live line in the window
 
 ### What was done
