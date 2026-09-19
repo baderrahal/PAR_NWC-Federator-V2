@@ -2,6 +2,128 @@
 
 Newest entry at the top.
 
+## 2026-09-19 The first run round is closed, F73 to F88
+
+### What the round was
+
+Bader ran the tool for real in Navisworks against seven buildings, the first run since the
+add-in was proved to build, and briefed seventeen items off that one log,
+`run-20260919-144319.log`. Seven groups, 28 files written correctly, 0 reported done and 7
+reported failed. An eighteenth was found before any of them: `samples\Search Set Infra.xml`
+had been deleted at 13:33 the same day and thirteen tests read it, so main was red.
+
+ONE BRANCH AND ONE PULL REQUEST for the whole round, `round-first-run`, which Bader asked
+for because the repo already carries seventy branches waiting on the D6 delete and
+eighteen more unmerged would be worse. Each fix is still its own commit.
+
+### The thing that has to be read first
+
+THIS ROUND WAS WORKED IN A LINUX CONTAINER WITH NO NAVISWORKS ON IT, and Bader asked for
+it to be moved to his machine. It could not be. That was checked three ways before it was
+reported: `uname` says Linux, there is no `/mnt/c` and no Autodesk folder, a search of the
+whole file system finds no `Autodesk.Navisworks.Api.dll`, `ListAgents` finds no other
+session, and both environments this account can reach are cloud containers. There is no
+route from here to that machine.
+
+So the round was split, which is what Bader chose when he was told: EVERY RULE IS IN
+FEDERATOR.CORE AND EVERY ONE HAS TESTS, and the add-in wiring is written out as numbered
+steps rather than guessed at. The add-in was NOT compiled. Eighteen fixes touched it in
+the sense that its call sites change, and `03_bader_next.md` step 379 says to expect
+errors on the first build and to send the whole list.
+
+FIVE MEASUREMENTS THE ROUND COULD NOT TAKE are written into `docs\history\scan.md` as 5e
+to 5i, each one saying in its first line that it holds NO measurement, what the question
+is, and exactly what to run. They are the readiness API for F74, the property API for F86,
+whether a negated condition imports for F87, whether a comment can be written on a clash
+for F72c, and the real list of Revit categories for F84. Nothing was filled in on a guess.
+
+### What was done
+
+- EIGHTEEN FIXES, seventeen briefed and one not, each on its own commit on one branch
+- Core tests at the start of the round: 1293 passed, 13 FAILED, 32 skipped, 1338 total.
+  The thirteen were the deleted sample and F88 was the first commit. At the end: 1568
+  passed, 0 failed, 32 skipped, 1600 total. 262 tests added and not one broken at any
+  point after the thirteen were fixed
+- `tools/checks/check-locals.sh` and `check-imports.sh` both clean after every fix
+- Six questions raised, Q46 to Q51, and every one of them is a decision this round refused
+  to make quietly
+
+### The five that made the run useless, and what each really was
+
+- F73 was one line. `CENSUS CHANGED  APPEND  saved viewpoints went from 0 to 20` was
+  written in all seven groups and put every one of them out of DONE. An NWC exported from
+  Revit carries that model's saved viewpoints and appending it brings them in. The census
+  rule had two answers and needed three
+- F74 was worse than it looked. Five existing NWFs reported 0 unchanged, 4 added, 0 removed
+  and were rebuilt, which threw away five federations and every clash result and status
+  decision in them. `TryOpenFile` returning true does not mean the models are in the
+  document. The wait is one half of the fix and the refusal is the other, and the refusal
+  holds whichever way the measurement goes
+- F75 was two clears in the whole engine and both ran AFTER Decide had read the file list
+- F76 was the matrix at 25 mm, the NWFs at 75 mm, and the run clashing at 75 while
+  everybody believed it was clashing at 25. There has never been a tolerance setting in
+  this tool
+- F77 was 631 seconds of 1424 spent creating 1619 tests that were thrown away moments
+  later, when the side counts were already in hand
+
+### What was found that nobody asked about
+
+- THE PRIORITY FILE MATCHES THE CORRECTED MATRIX EXACTLY. All 1830 test names and all 61
+  set names. Against the uncorrected one, 60 test names do not match. That is independent
+  evidence that F87's rename is the right one, and it came out of writing F83's test rather
+  than out of looking for it
+- THE HEALTH CHECK CATCHES F87 TWICE OVER. The corrected matrix breaks its own folder
+  naming pattern once and holds one identical set pair. The uncorrected one breaks it twice
+  and holds two. Neither number was known before F84 counted them
+- F87 CHANGES A RECORDED MEASUREMENT. `.claude/rules/core.md` records 59 distinct sets out
+  of 61, because two pairs carry identical rule lists. After F87 it is 60, because Devices
+  is no longer the same set as Electrical Fixtures. The old number is kept beside the new
+  one rather than overwritten
+- FOUR CATEGORIES THE SERVICE SETS ASK FOR ARE NOT SERVICES. Air Terminals, Mechanical
+  Equipment, Plumbing Fixtures and Sprinklers. The brief's wording for F72a's second test
+  would have forced all four onto the service list, and an air handling unit against a wall
+  would then be moved to Reviewed automatically. Q47
+- THE BRIEF'S GREY LINE FOR F72b IS THIRTEEN WORDS and a grey line is twelve at most. The
+  word list came off, because a file picked beside a tick box is a list and the picker
+  beside it says so
+
+### What the code knows and the log still does not, raised as questions
+
+The standing rule is that a thing the code knows and no output shows becomes a question.
+Six came out of this round.
+
+- Q46, F77 against the single discipline rule. The NWF no longer carries every test in the
+  matrix, and on a weekly run with no XML the missing ones stay missing
+- Q47, which of the four arguable categories are services
+- Q48, whether the 25 mm matrix becomes the reference the tests measure, which would mean
+  re-reading 44 recorded measurements
+- Q49, F83 replaces a MEASURED block order with a chosen one. The order the client accepted
+  was read off both their own exports over 1830 blocks
+- Q50, F72c widens one written guard, and the alternative shape is an undo that removes the
+  record and leaves the status alone
+- Q51, F53 and F72a read a size two different ways and F85 had to pick one in the open
+
+### What is NOT done, said plainly
+
+- NO VIEWPOINT IS WRITTEN. F85's plan is complete and tested and `SavedViewpoints.CanBuild`
+  is still false, because whether a viewpoint saved while items are hidden records that
+  hiding is not measured. A planned viewpoint that was not written is not a viewpoint
+- NO COMMENT IS WRITTEN on any clash, because whether the API allows it is not measured. If
+  it cannot be done the tool says so in one line and sets the status alone
+- THE CATEGORY LIST IS EMPTY, so one third of F84 reports nothing and the block says which
+  check did not run rather than leaving a reader to read no findings as a clean file
+- THE NEGATED CONDITION IS NOT WRITTEN into the corrected matrix. The fallback is, because
+  `equals` is proved to import and the negation is not
+- NOTHING IN THE ADD-IN WAS COMPILED OR RUN
+
+### The numbers
+
+- Core tests before: 1293 passed, 13 failed, 32 skipped, 1338 total
+- Core tests after: 1568 passed, 0 failed, 32 skipped, 1600 total
+- F87 changed 121 occurrences of the missing hyphen and 1 category value. A second run
+  reads 0, which is what proves it idempotent
+- Questions before: 45. After: 51
+
 ## 2026-09-19 The penetration round is closed, F71 and F72
 
 ### What was done
