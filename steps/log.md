@@ -2,6 +2,183 @@
 
 Newest entry at the top.
 
+## 2026-09-19 The wiring round, the plan, written before the first edit
+
+### What the round is
+
+The first run round wrote the Core half of eighteen fixes in a container with no
+Navisworks on it, and the audit in steps\04_audit_first_run.md found that eight of them
+have a rule, tests for the rule, and NO add-in caller: F74, F75, F76, F77, F83, F72b, F72c
+and F86. FederatorWindow.xaml has not changed since 2026-09-19 12:40, so the tolerance
+drop down, the by design tick box, the priority picker and the probe button do not exist.
+This round wires the eight, following the instructions already written in
+steps\03_bader_next.md steps 353 to 380, and invents no design.
+
+THIS ROUND IS ON THE MACHINE WITH NAVISWORKS. The brief said to stop if the build failed
+on the Navisworks reference. It did not. On DESKTOP-5VL7LTJ, Windows 11, dotnet 10.0.400,
+the full solution build in Release finished with 0 errors and 0 warnings before anything
+was written, with the add-in project inside it. Every wiring below is compiled here after
+it lands.
+
+Three things the brief says that were checked and found otherwise, so nothing below
+carries them as written:
+
+- the install script is build\install.ps1. There is no tools\install.ps1
+- the run log the audit read, run-20260919-144319.log, is not in steps\logs. That folder
+  holds README.md and run-20260907-093440.log only. Nothing here depends on it
+- a pull request cannot be opened from this session. There is no gh and the GitHub
+  connector refused create_pull_request on the last two rounds. The branch is pushed and
+  Bader merges it. The one branch the brief asks for, round-wiring, is what is made
+
+Q46 to Q52 are all unanswered. No decision the last round deferred to Bader is taken here,
+and where a wiring would need one it is done the way 03_bader_next.md already says and
+the question is named beside it.
+
+### The order, and nothing starts before the step before it is committed
+
+PART 1, its own commit first. The fourteen lines of .claude\rules\core.md that state a
+behaviour nothing in the add-in does, lines 164, 216, 234, 446, 458, 696, 708, 719, 793,
+903, 923, 934, 952 and 1040, each get one sentence at the top: THE CORE HALF ONLY until
+03_bader_next.md step N is done, naming the step. Lines 793 and 1040 are F85, which is
+not one of the eight and has no step in this round, so their sentence names step 375
+and stays. Each of the other twelve sentences is removed in the same commit as the
+wiring that makes it true.
+
+PART 2, the five measurements, one commit each, written into docs\history\scan.md under
+the letter that already waits for it:
+
+- 5e, the readiness API, F74. A PowerShell reflection probe in tools\probes, in the
+  shape of probe-model-remove.ps1, reads every member of Document, DocumentModels and
+  Application whose name holds Load, Ready, Busy, Progress, State, Pending or Complete,
+  and every event on each. Pasted as 5c and 5d paste theirs
+- 5f, the property API, F86. The same shape, over ModelItem.PropertyCategories,
+  PropertyCategory, DataProperty, VariantData and Search
+- 5h, a comment on a clash result, F72c. The same shape, over ClashResult, IClashResult,
+  ClashTest, SavedItem and Comment in the Clash DLL and the Api DLL. Whether a comment
+  SURVIVES a save and reopen cannot be read off the DLL and waits for the run in PART 5
+- 5g, the negated condition, and 5i, the real category list, are not reflection
+  questions. 5g needs a search set built by hand and exported, then imported back. 5i
+  needs a walk of every item in one real federation, which is the probe F86 builds. What
+  reflection CAN say about 5g, whether SearchCondition carries a negate member at all, is
+  read in the 5f probe and written under 5g. The rest of both waits for PART 5, and if
+  PART 5 cannot reach a Navisworks session from here, both stay NOT MEASURED and say so
+
+A measurement that comes back the way the fallback already assumes is written as that,
+and the fallback stays.
+
+PART 3, the eight wirings, in the order the brief gives, one commit each, built after
+every one with the full solution and the error list reported if there is one:
+
+1. step 366, F75. FederationEngine.RunOne empties the document at the top, before
+   Decide, on the scanned path only, takes the census straight after through
+   DocumentCensusReader, writes CensusRule.StartOfGroupLine(census, true), and puts
+   StartOfGroupReason on the group where it is not null. RunOpenDocument passes false
+2. step 365, F74. FederationEngine.Decide, after TryOpenFile returns true, polls
+   document.Models.Count through Federator.Core.Rerun.ModelLoadWait with
+   RunLog.ElapsedSeconds, pausing PauseMilliseconds between readings, writes wait.Line(),
+   and where the count settled at zero or gave up at zero returns
+   NwfComparison.ReadEmpty with how long it waited. RunOne carries the Reason onto the
+   group as GroupFacts.NwfReadEmptyReason. PreviewRunPaths does the same wait and the
+   same refusal so the confirm dialog cannot say Rebuilt about a healthy NWF
+3. step 367, F76. The Clash step gets a drop down filled from ToleranceChoice.Choices()
+   with an Other box, its label and help line read off ToleranceChoice.PickerLabel and
+   HelpLine. ReportsWanted sets options.Tolerance. ClashRunner calls
+   options.Tolerance.For(planned.Tolerance, documentUnits) where a test is created and
+   where one already in the document is left alone, writes LogLine once per group, and
+   the confirm dialog carries WarningLines
+4. step 368, F76. ClashRunner reads report.Tolerance off the ClashTest in the document
+   instead of off the plan, sets ToleranceFrom to Document, counts the four origins and
+   writes ToleranceChoice.ReadFromLine once per run
+5. step 369, F77. ClashRunner.Run builds a dictionary of locator to item count off the
+   sets just resolved, hands it and the resolved plan to CreationPlan.For, creates only
+   plan.Create, feeds plan.NotCreated into the existing skip machinery, and writes
+   plan.CountedLine(testsInTheFile). BlockCountLine goes where the workbook is checked
+6. step 370, F83. A second picker beside the clash XML picker, PickerKind.Priority,
+   optional. The engine reads the file through PriorityMap.Read, puts the map on
+   report.Priorities, sets test.Priority on every TestReport, writes map.MatchLines,
+   passes picked into WorkbookCheck.Of(path, picked), counts the clashes into a
+   PriorityTally per group and across the run, and writes PriorityTally.ResultLine in
+   RESULT
+7. step 371, F72b. A second tick box under the penetration one, off by default, its
+   label and grey line read off ByDesignPairs.TickLabel and HelpLine, and a third picker
+   for the pairs file, PickerKind.ByDesign. The grid gains its third row. In the same
+   per test pass that applies the penetration statuses, ByDesignRule.Judge runs per
+   clash with the two set names off the locators through ByDesignRule.SetNameIn, the
+   wanted ones join the one statuses.Apply list, ByDesignTally writes the block, and the
+   run line and the RESULT line follow
+8. steps 372 and 373, F72c. ClashStatusEditor writes record.Text() as a comment on the
+   clash BEFORE the status is set and on the same handle, the way 5h says it can be. If
+   5h says it cannot, UndoAutoReview.CannotLine is written once and the status alone is
+   set. The Undo auto Reviewed button on the Clash step walks every clash of every test
+   in the open document, calls UndoAutoReview.Judge, and puts back only the ones that
+   carry our record and are still at Reviewed, through the one ClashStatusEditor, which
+   gains the AllowsAsUndo path beside its Reviewed only path
+9. steps 358 to 364, F86. The Probe model properties button on the Clash step, label
+   and help line off ProbeSettings. It picks a folder of NWC files or takes the open
+   document, refuses an NWF or an NWD by name through ProbeSettings.MayRead, walks the
+   items of each of the seventeen categories the way 5f says the properties are read,
+   counts into ProbeTally, writes one CSV beside each file through ProbeCsv at
+   ProbeSettings.CsvPathFor, and writes ProbeVerdict.Lines to the log
+
+Each of the nine removes its PART 1 sentence from core.md in the same commit.
+
+WHAT IS NOT CHANGED TO EASE A WIRING. If any of the nine needs a Core rule to move, the
+rule stays, the wiring stops at that point, the log entry says which rule and why, and
+Bader decides. Nothing is written as done because a rule exists.
+
+PART 4, A10 to A23 of the audit, one commit each, A19 and A11 first:
+
+- A19, every new threshold tested AT the number and one past it. ProbeTally at 100 and
+  101, RunLog.KeptOfARepeat at 5 and 6, and the four ExamplesShown at their number and
+  one past. The proof is the one the audit gives: change the less than at RunLog.cs line
+  674 to at most and the fixture must go red
+- A11, RevitCategories gets a third state, ResourceFound, and Line() says the list could
+  not be read out of the DLL when the stream is null or the read throws. The test
+  asserts ResourceFound true and Measured false. The proof is dropping the
+  EmbeddedResource line and watching the fixture go red
+- A10 the comment, A12 the separator named once, A13 No priority named once, A14 the
+  five examples named once with SetsAcrossTheRun saying why ten, A15 a Note on
+  CategoryRewrite and a HEALTH sentence when the picked file carries the fallback,
+  A16 falls away as the wirings land and IsDecided is judged on its own, A17 the test
+  renamed for what it checks, A18 the test run through HealthCheck.Run, A20 the undo
+  wording, A21 the open file tail says a one file run has no across the run block, A22
+  the space
+- A23, only Csv moves out of PriorityMap.cs, to its own file. The other twelve files
+  stay as they are and the closing entry says so, because the brief said so
+
+PART 5, in this order, each result written down as it was read and never as expected:
+
+- the full solution builds 0 errors 0 warnings
+- the Core tests run and the passed, failed and skipped counts are recorded beside the
+  counts from the start of the round
+- tools\checks\check-locals.sh and check-imports.sh both run clean
+- build\install.ps1 puts the bundle under %APPDATA%\Autodesk\ApplicationPlugins
+- Navisworks Manage 2025 opens with the add-in loaded, and ONE folder is run with the
+  tolerance at 25 mm, by design ticked with a pairs file, and a priority file picked.
+  The log is read for, by name: CENSUS CLEAR at the top of every group, TOLERANCE,
+  LOADING, CLASH 1830 in the file, PRIORITY, REVIEWED rule B, and the Priority column in
+  the workbook. The log goes in steps\logs under its own name
+- WHETHER A NAVISWORKS SESSION CAN BE DRIVEN FROM HERE IS UNKNOWN UNTIL TRIED. Every
+  probe in tools\probes loads a DLL by reflection and none of them opens the
+  application. What PART 5 needs is the application open, the add-in loaded, the
+  window filled in and Run pressed. If that cannot be done from this session, the run
+  is written into 03_bader_next.md as numbered steps, the closing entry says the run
+  was NOT done and by whom it waits to be done, and no line of the log is reported as
+  seen
+
+### The counts at the start
+
+The build before the first edit: 0 errors, 0 warnings, the whole solution. The Core
+test counts before the first edit are recorded in the closing entry beside the counts
+after, read off the same command.
+
+### What comes next
+
+The closing entry above this one, written when the round is closed, says what was
+proved here, what the run showed line by line, and what still waits. 03_bader_next.md
+is updated so every completed step says so, and 01_next.md so the eight say WIRED
+rather than DONE.
+
 ## 2026-09-19 The first run round is closed, F73 to F88
 
 ### What the round was
