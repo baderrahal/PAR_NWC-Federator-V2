@@ -739,8 +739,9 @@ it if the same work carries the same name every time it is timed.
   pair per visit would be 3660 lines. This is the same rule the repeated failure follows
   and it is here for the same reason, a run that once left a 17.8 MB log
 - a step inside a step is indented by its depth and carries that depth, so the timing
-  block can work its shares out over the top level alone. HARVEST and IMAGES sit inside
-  the clash step and are the two that do
+  block can work its shares out over the top level alone. IMAGES is the only one nested
+  today, inside HARVEST, because a picture is written while the harvest walks the results.
+  TESTS CREATE, TESTS RUN and HARVEST each open and close on their own
 - outside a group there is no group to count visits against, so each press of the two
   hand buttons on the Clash step is its own occasion and writes its own pair of lines
 - the step never changes what the run does. It opens, the work runs exactly as it did,
