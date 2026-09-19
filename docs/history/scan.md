@@ -3048,10 +3048,9 @@ WHAT WAS NOT DONE. `SavedViewpoints.CanBuild` is still false and nothing in
 half of F52 and a feature rather than a build fix. The measurement is here so that work
 starts from what was read rather than from what was assumed. Bader decides when.
 
-## 5e. Does anything report that an opened document has finished loading, asked 2026-09-19, NOT MEASURED
+## 5e. Does anything report that an opened document has finished loading, asked 2026-09-19, MEASURED 2026-09-19
 
-THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it, written
-where the answer will go. Nothing in the code reads a number from here.
+THE ANSWER IS AT THE END OF THIS SECTION. The question is left standing above it.
 
 WHY IT IS ASKED. On the first real run all five existing NWFs reported
 `0 unchanged, 4 added, 0 removed` and were rebuilt, and `STEP DECIDE finished 0.248s`.
@@ -3080,6 +3079,61 @@ WHAT IS ALREADY DECIDED AND DOES NOT WAIT ON THIS. A count of zero out of an NWF
 opened with no error is never a rebuild. `NwfComparison.ReadEmpty` stops the group with
 a reason that names the file and says what to do. That is F74 and it holds whichever way
 this measurement goes.
+
+THE ANSWER, read by `tools\probes\probe-document-ready.ps1` on DESKTOP-5VL7LTJ on
+2026-09-19 against `Autodesk.Navisworks.Api 22.0.0.0`. The question above is left standing
+because the reasoning in it is why the answer matters.
+
+`Document` carries ONE member of the seven words and it is not about loading:
+
+```
+public LcOwDocument State { get; }
+```
+
+and fourteen events, none about loading:
+
+```
+ActiveViewChanged, ActiveViewChanging, ViewRemoved, ViewAdded, ActiveSheetChanged,
+ActiveSheetChanging, TransactionEnded, TransactionBeginning, FilesUpdated, FilesUpdating,
+FileSaved, FileSaving, UnitsChanged, FileNameChanged
+```
+
+`DocumentModels` carries the one member in the assembly that names the thing asked about,
+and a private watcher behind it:
+
+```
+public event EventHandler<...> SceneLoaded
+private SceneLoadedEventStateWatcher m_scene_loaded
+```
+
+beside six more events, `ModelItemPropertiesChanged`, `ModelTransformChanged`,
+`ModelTransformChanging`, `ModelGeometryMaterialChanged`, `CollectionChanging` and
+`CollectionChanged`. So the collection DOES raise a changed event, which was the second half
+of the question.
+
+`Application` carries the progress machinery and nothing about a document being loaded:
+`BeginProgress` in three overloads, `EndProgress`, eight events from `ProgressBeginning` to
+`ProgressEnded`, an `Idle` event, and `LoadDocumentInfo` and `TryLoadDocumentInfo`, which
+read a file's info without opening it. Elsewhere in the assembly `DocumentDatabase` has
+`Loaded` and `Unloading` and `IApplicationBim360` has `RefreshComplete`. None of those is
+the models.
+
+WHAT THIS SETTLES AND WHAT IT DOES NOT. There is a member that says the models are in,
+`DocumentModels.SceneLoaded`. What a DLL cannot say is WHEN it fires against a call to
+`Document.TryOpenFile`: inside the call before it returns, after it returns once the message
+loop runs, or not at all for a file whose models are already on disk. A handler subscribed
+after an event that already fired waits for ever, and a run that waits for ever is worse
+than the run that rebuilt five NWFs. So THE POLL STANDS AS THE READER, because the poll
+reads the count itself and needs no promise about timing, and this sentence is why it
+stands. `Federator.Core.Rerun.ModelLoadWait` is the rule and the add-in reads
+`Document.Models.Count` into it.
+
+WHAT THE WIRING DOES ABOUT THE EVENT, so the next run measures what this could not. Step
+365 subscribes to `SceneLoaded` before the open and unsubscribes when the wait ends, and
+writes ONE line beside the LOADING line saying whether it fired and at what second on the
+monotonic clock. That is information and the run acts on none of it. When a real run shows
+it firing after the open returns and before the count settles, on every open, it becomes
+the answer and the poll becomes the fallback, which is the order asked for above.
 
 ## 5f. What the property API offers for walking an item's properties, asked 2026-09-19, NOT MEASURED
 

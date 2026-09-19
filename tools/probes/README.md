@@ -1,6 +1,6 @@
 # Probes
 
-Eight PowerShell scripts that read facts off the machine they run on: the installed
+Eleven PowerShell scripts that read facts off the machine they run on: the installed
 Navisworks DLLs, and the real window once the add-in is built and installed. They were
 how docs/history/scan.md was measured. Nothing here is part of the build or the install.
 
@@ -10,7 +10,7 @@ folder the add-in project defaults to:
     powershell -ExecutionPolicy Bypass -File tools\probes\probe-units.ps1
     powershell -ExecutionPolicy Bypass -File tools\probes\probe-units.ps1 -NavisworksPath "D:\Autodesk\Navisworks Manage 2025"
 
-The five DLL probes need only the install:
+The eight DLL probes need only the install:
 
 - `probe-clash-api.ps1` reads every type and member of Autodesk.Navisworks.Clash.dll,
   which is how the copy forms, the eEXTERNAL ownership and the absence of any stale
@@ -27,6 +27,10 @@ The five DLL probes need only the install:
   had never touched DocumentSavedViewpoints and nothing about it was measured. It prints
   DocumentSelectionSets beside it, because the sets tree is the closest shape this tool
   already builds. See docs/history/scan.md section 5b
+- `probe-document-ready.ps1` answers 5e for F74: whether anything on the API says an
+  opened document has finished loading. Every member of Document, DocumentModels and
+  Application whose name holds Load, Ready, Busy, Progress, State, Pending or Complete,
+  and every event on each. See docs/history/scan.md section 5e
 
 The three window probes need the add-in built in Release and installed by
 build\install.ps1, because they construct the real window:
