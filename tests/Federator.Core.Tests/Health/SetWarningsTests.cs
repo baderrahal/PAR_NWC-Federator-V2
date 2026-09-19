@@ -354,5 +354,20 @@ namespace Federator.Core.Tests
             Assert.That(past, Does.Not.Contain("ODD" + HealthCheckResult.ExamplesShown + "-x"));
             Assert.That(past, Does.Contain("and 1 more, counted and not listed"));
         }
+
+        /// <summary>
+        /// A11. The resource IS in the DLL and the list in it is empty, which are two
+        /// different facts, and this pins both so a build that loses the resource goes red
+        /// here rather than saying none yet on every run.
+        /// </summary>
+        [Test]
+        public void TheCategoryResourceIsInTheDllAndTheListIsStillUnmeasured()
+        {
+            Assert.That(RevitCategories.ResourceFound, Is.True,
+                "the embedded resource " + RevitCategories.ResourceName + " is not in Federator.Core.dll");
+            Assert.That(RevitCategories.Measured, Is.False);
+            Assert.That(RevitCategories.Line(), Does.Contain("none yet"));
+            Assert.That(RevitCategories.Line(), Does.Not.Contain("UNKNOWN"));
+        }
     }
 }

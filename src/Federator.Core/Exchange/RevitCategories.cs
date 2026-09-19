@@ -39,6 +39,7 @@ namespace Federator.Core.Exchange
 
         private static readonly object Gate = new object();
         private static List<string> known;
+        private static bool resourceFound;
 
         /// <summary>
         /// Every category the list names, in the order the file wrote them. Empty until
@@ -81,11 +82,34 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
+        /// Whether the list could be READ out of the DLL at all, A11. A resource that is
+        /// missing or will not read is a different fact from a list nobody has filled in
+        /// yet, and the two used to give the same empty list and the same words, so a
+        /// build that lost the resource would have said none yet on every run and nobody
+        /// would have known the check had stopped running.
+        /// </summary>
+        public static bool ResourceFound
+        {
+            get
+            {
+                Load();
+                return resourceFound;
+            }
+        }
+
+        /// <summary>
         /// The one line the health block carries about the list itself, so a reader knows
         /// whether the check ran at all rather than reading no findings as a clean file.
+        /// A list that could not be read says UNKNOWN, never none yet.
         /// </summary>
         public static string Line()
         {
+            if (!ResourceFound)
+            {
+                return "Revit categories known: UNKNOWN, the category list could not be read out of "
+                    + "Federator.Core.dll, so no set was checked against them";
+            }
+
             return Measured
                 ? "Revit categories known: " + Count
                 : "Revit categories known: none yet, so no set was checked against them. "
@@ -116,8 +140,11 @@ namespace Federator.Core.Exchange
                     {
                         if (stream == null)
                         {
+                            resourceFound = false;
                             return known;
                         }
+
+                        resourceFound = true;
 
                         using (StreamReader reader = new StreamReader(stream))
                         {
@@ -140,6 +167,7 @@ namespace Federator.Core.Exchange
                     // A list that cannot be read is no list. The check then reports
                     // nothing, which is the same answer an unmeasured list gives.
                     known = new List<string>();
+                    resourceFound = false;
                 }
 
                 return known;
