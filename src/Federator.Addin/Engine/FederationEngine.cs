@@ -167,6 +167,11 @@ namespace Federator.Addin.Engine
 
         public int ToleranceUnknown { get; private set; }
 
+        /// <summary>Every test block across the run, and how many of them ran, Q54, read off the report rows.</summary>
+        public int ReportBlocks { get; private set; }
+
+        public int ReportRan { get; private set; }
+
         /// <summary>Counts one group's rows into the four, F76. Read, never worked out.</summary>
         private void CountToleranceOrigins(ClashReport report)
         {
@@ -175,6 +180,8 @@ namespace Federator.Addin.Engine
                 return;
             }
 
+            ReportBlocks += report.Tests.Count;
+            ReportRan += report.RanCount;
             foreach (TestReport test in report.Tests)
             {
                 switch (test.ToleranceFrom)

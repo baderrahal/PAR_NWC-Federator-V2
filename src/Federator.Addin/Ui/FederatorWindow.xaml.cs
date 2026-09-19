@@ -2015,6 +2015,7 @@ namespace Federator.Addin.Ui
                 // F76. Where every report row's tolerance was read, counted across the
                 // run. Every row should read off the document, and the line says so when
                 // one did not.
+                log.Line(ToleranceChoice.BlocksLine(engine.ReportBlocks, engine.ReportRan));
                 log.Line(ToleranceChoice.ReadFromLine(
                     engine.ToleranceFromDocument, engine.ToleranceFromFile,
                     engine.ToleranceFromTool, engine.ToleranceUnknown));
@@ -2228,6 +2229,7 @@ namespace Federator.Addin.Ui
                 // F76. Where every report row's tolerance was read, counted across the
                 // run. Every row should read off the document, and the line says so when
                 // one did not.
+                log.Line(ToleranceChoice.BlocksLine(engine.ReportBlocks, engine.ReportRan));
                 log.Line(ToleranceChoice.ReadFromLine(
                     engine.ToleranceFromDocument, engine.ToleranceFromFile,
                     engine.ToleranceFromTool, engine.ToleranceUnknown));
