@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -930,7 +931,16 @@ namespace Federator.Addin.Engine
             string statusesBefore = StatusesAPersonSet.Describe(SavedStatuses.In(document));
 
             ClashTestsData testsCopy = null;
-            SavedItemCollection setsCopy = null;
+
+            // MEASURED OFF THE INSTALLED DLL ON 2026-09-19, which is what step 10 of
+            // 03_bader_next.md has been asking for since F24:
+            //   Collection<SavedItem> DocumentSelectionSets.CreateCopy()
+            //   void DocumentSelectionSets.CopyFrom(SavedItemCollection)
+            //   void DocumentSelectionSets.CopyFrom(IEnumerable<SavedItem>)
+            // The copy comes back as a Collection<SavedItem> and NOT a SavedItemCollection,
+            // which is CS0029 and is why the add-in did not build. It goes back in through
+            // the IEnumerable overload, which is the one this binds to.
+            Collection<SavedItem> setsCopy = null;
 
             try
             {
@@ -1043,14 +1053,22 @@ namespace Federator.Addin.Engine
                     testsCopy.Dispose();
                 }
 
-                // SavedItemCollection was not IDisposable on the DLL measured on 2026-08-31,
-                // docs/history/scan.md section 4g, so the copy is disposed only where the type
-                // turns out to be. This compiles either way.
-                IDisposable setsHandle = setsCopy as IDisposable;
-
-                if (setsHandle != null)
+                // CreateCopy CREATES, and what this tool creates it disposes. The copy is a
+                // Collection<SavedItem>, which is not itself IDisposable, and every SavedItem
+                // in it is. Disposing them here is safe because every use of the copy is
+                // inside the try above, and disposing a wrapper releases the wrapper and
+                // never the document's own object.
+                if (setsCopy != null)
                 {
-                    setsHandle.Dispose();
+                    for (int i = 0; i < setsCopy.Count; i++)
+                    {
+                        SavedItem copied = setsCopy[i];
+
+                        if (copied != null)
+                        {
+                            copied.Dispose();
+                        }
+                    }
                 }
             }
         }
@@ -1994,11 +2012,6 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Publishes the NWD, every run. It used to be a tick box, on by default, and a
-        /// weekly run wanted it every time, so it is fixed on and there is no branch here
-        /// for a run that does not want it.
-        /// </summary>
-        /// <summary>
         /// One folder per discipline with one viewpoint in each, F52. Returns whether
         /// anything new went into the document, which is what asks for the second NWF save.
         ///
@@ -2043,6 +2056,11 @@ namespace Federator.Addin.Engine
             return built.PutAnythingIn;
         }
 
+        /// <summary>
+        /// Publishes the NWD, every run. It used to be a tick box, on by default, and a
+        /// weekly run wanted it every time, so it is fixed on and there is no branch here
+        /// for a run that does not want it.
+        /// </summary>
         private void WriteNwd(Document document, FederationJob job, JobOutcome outcome)
         {
             Say("Publishing NWD for " + job.Building);

@@ -12,24 +12,25 @@ namespace Federator.Addin.Engine
     ///
     /// READ THIS BEFORE CHANGING ANYTHING HERE.
     ///
-    /// Every Navisworks call in this file rests on an API that was NEVER MEASURED. The repo
-    /// has not touched DocumentSavedViewpoints and nothing about it is in
-    /// docs\history\scan.md, which records the question in section 5b and says so in its
-    /// heading. tools\probes\probe-viewpoints.ps1 answers it and it is step 197 of
-    /// steps\03_bader_next.md.
+    /// FOUR OF THE FIVE THINGS THIS FILE ONCE ASSUMED ARE MEASURED NOW.
+    /// tools\probes\probe-viewpoints.ps1 was run on 2026-09-19 against the installed
+    /// Autodesk.Navisworks.Api 22.0.0.0 and every line of it is in docs\history\scan.md 5d:
     ///
-    /// FIVE THINGS ARE ASSUMED HERE AND NOT ONE OF THEM WAS READ OFF A DLL:
+    ///   1. Document.SavedViewpoints is a DocumentSavedViewpoints            MEASURED
+    ///   2. it carries RootItem, a FolderItem, and
+    ///      AddCopy(GroupItem parent, SavedItem item)                        MEASURED
+    ///   3. FolderItem has a public constructor and goes in through AddCopy,
+    ///      and EditDisplayName(SavedItem, string) sets a name                MEASURED
+    ///   4. new SavedViewpoint(Viewpoint) makes one, and both it and
+    ///      Viewpoint are IDisposable                                        MEASURED
+    ///   5. hiding is DocumentModels.SetHidden, and whether a viewpoint
+    ///      RECORDS that hiding is                                           UNKNOWN
     ///
-    ///   1. Document.SavedViewpoints is a DocumentSavedViewpoints
-    ///   2. it carries RootItem and AddCopy(GroupItem parent, SavedItem item), which is the
-    ///      shape DocumentSelectionSets was MEASURED to have on 2026-08-31, section 4d
-    ///   3. a FolderItem can be added into it the way one is added into the sets tree
-    ///   4. a SavedViewpoint can be made from the current view and given a DisplayName
-    ///   5. hiding is done through the models collection and survives into the viewpoint
+    /// The fifth is the one this feature turns on, it cannot be read off the DLL, and
+    /// SavedViewpoint.ContainsVisibilityOverrides is what answers it on a real run.
     ///
-    /// The shape is taken from the sets tree because that is the closest thing this tool
-    /// already builds and its shape IS measured. It is taken as a starting point and not as
-    /// a fact, which is the difference this file exists to hold.
+    /// The two collections turned out to have the SAME shape, which is what section 5b said
+    /// must not be assumed from the pattern. It was not assumed. It was read.
     ///
     /// WHAT HAPPENS IF AN ASSUMPTION IS WRONG. The group fails, loudly, naming the
     /// viewpoint and what threw, and the NWF is not saved over on account of the

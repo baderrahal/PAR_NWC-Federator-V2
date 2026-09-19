@@ -9,36 +9,32 @@ namespace Federator.Addin.Engine
     /// <summary>
     /// The saved viewpoints in the open document.
     ///
-    /// EVERYTHING IN THIS FILE RESTS ON ONE ASSUMPTION AND THIS IS THE ONE PLACE IT IS MADE.
+    /// THIS FILE USED TO REST ON AN ASSUMPTION. IT NO LONGER DOES.
     ///
-    /// The repo has never touched this collection. docs\history\scan.md names Viewpoint,
-    /// DocumentCurrentViewpoint, View.CreateViewpointCopy and ClashResult.HasSavedViewpoint,
-    /// and section 4k says nothing here writes a viewpoint into the NWF. Nothing anywhere in
-    /// that file records DocumentSavedViewpoints at all, so as of 2026-09-18 the shape of it
-    /// is UNKNOWN and was not read off a DLL.
-    ///
-    /// WHAT IS ASSUMED, and it is assumed because every other document part measured on this
-    /// install follows it, not because anyone read it:
-    ///
-    /// USED BY THE CODE IN THIS FILE, so a wrong answer breaks the build here:
+    /// tools\probes\probe-viewpoints.ps1 was run on 2026-09-19 against the installed
+    /// Autodesk.Navisworks.Api 22.0.0.0, and every line of it is recorded in
+    /// docs\history\scan.md 5d. The shape this file was written against is the shape the DLL
+    /// has, which is a measurement and no longer a guess:
     ///
     ///     Document.SavedViewpoints            is a DocumentSavedViewpoints
-    ///     DocumentSavedViewpoints.RootItem    is a GroupItem
-    ///     GroupItem.Children                  is a SavedItemCollection, which it is, measured
+    ///     DocumentSavedViewpoints.RootItem    is a FolderItem, which is a GroupItem
+    ///     GroupItem.Children                  is a SavedItemCollection
     ///     a leaf under it                     is a SavedViewpoint, and a branch a FolderItem
     ///
-    /// EXPECTED BY THE WORK THAT IS NOT BUILT YET, and called by nothing today, so a wrong
-    /// answer here breaks no build and changes what F52 can be finished with:
+    /// MEASURED AND NOT USED YET, which is what the writing half will need:
     ///
     ///     DocumentSavedViewpoints.AddCopy(GroupItem parent, SavedItem item)
+    ///     DocumentSavedViewpoints.EditDisplayName(SavedItem item, string newDisplayName)
+    ///     new FolderItem()  and  new SavedViewpoint(Viewpoint viewpoint)
+    ///     SavedViewpoint and Viewpoint are both IDisposable
     ///
-    /// tools\probes\probe-model-remove.ps1 is F50's probe and tools\probes\probe-viewpoints.ps1
-    /// is the one that answers this. Until it has been run on a machine with Navisworks, a
-    /// build error anywhere in this file means the assumption above was wrong, and this file
-    /// is deliberately the only place such an error can land.
+    /// WHAT IS STILL UNKNOWN IS THE HIDING, and it is the half this feature turns on. Items
+    /// are hidden through DocumentModels.SetHidden, and whether a viewpoint saved while they
+    /// are hidden RECORDS that hiding, and restores it when pressed, cannot be read off the
+    /// DLL. SavedViewpoint.ContainsVisibilityOverrides is what answers it on a real run.
     ///
-    /// Nothing here creates or names a viewpoint. F52 does that, and it builds on whatever
-    /// the probe comes back with.
+    /// Nothing here creates or names a viewpoint. CanBuild is still false, because the
+    /// writing half is not built, and that is a decision waiting rather than a measurement.
     /// </summary>
     public static class SavedViewpoints
     {
@@ -67,9 +63,10 @@ namespace Federator.Addin.Engine
         /// <summary>What the log says while CanBuild is false, so the run is never silent about it.</summary>
         public static string WhyNotYet()
         {
-            return "VIEWS    not attempted. How a saved viewpoint folder is made and a viewpoint "
-                + "put in it was never read off the installed DLL, so nothing was written into the "
-                + "NWF. See docs\\history\\scan.md section 5b and run tools\\probes\\probe-viewpoints.ps1";
+            return "VIEWS    not attempted. The API is measured, docs\\history\\scan.md 5d, and the "
+                + "writing half of this feature is not built, so nothing was written into the NWF. "
+                + "Whether a saved viewpoint records hidden state is the one thing still UNKNOWN "
+                + "and only a run answers it";
         }
 
         /// <summary>

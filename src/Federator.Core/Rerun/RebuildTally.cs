@@ -31,14 +31,20 @@ namespace Federator.Core.Rerun
         /// <summary>What it is in words, such as selection sets, for a failure a person reads.</summary>
         public string Name { get; private set; }
 
+        // THE THREE SETTERS ARE PUBLIC AND THEY HAVE TO BE. The counts are read off the
+        // open document, which only the add-in can do, and the add-in is a different
+        // assembly. Written internal they were reachable from Core and from the tests,
+        // which is why the tests passed, and unreachable from the one caller that fills
+        // them in, which is CS0200 and is why the add-in did not build. F69.
+
         /// <summary>Counted before the clear.</summary>
-        public int Before { get; internal set; }
+        public int Before { get; set; }
 
         /// <summary>Counted after the clear and the appends. Minus one until it is read.</summary>
-        public int AfterAppends { get; internal set; }
+        public int AfterAppends { get; set; }
 
         /// <summary>Counted after the copy was put back. Minus one until it is read.</summary>
-        public int AfterRestore { get; internal set; }
+        public int AfterRestore { get; set; }
 
         /// <summary>
         /// Whether the copy has to be put back, which is any drop in the count. Nothing

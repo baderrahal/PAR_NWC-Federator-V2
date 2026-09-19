@@ -44,3 +44,21 @@ jobs:
             exit 1
           fi
           echo "check-locals refused the broken folder, which is what it is for"
+
+      # The second rule of the compiler's that runs without it. F61 shipped a file naming a
+      # type whose namespace it did not import, which is CS0246, and the add-in did not
+      # build on 2026-09-19. check-locals reads one shape of fault and this is another.
+      - name: No file names a type it does not import
+        shell: bash
+        run: sh tools/checks/check-imports.sh src
+
+      # The same folder, wrong on purpose in a second way, and this check has to refuse it
+      # as well. A check that only ever runs against a clean tree proves nothing.
+      - name: The import check refuses the fault it was written for
+        shell: bash
+        run: |
+          if sh tools/checks/check-imports.sh tools/checks/broken; then
+            echo "check-imports passed a folder it is supposed to refuse"
+            exit 1
+          fi
+          echo "check-imports refused the broken folder, which is what it is for"

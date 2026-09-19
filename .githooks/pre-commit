@@ -19,6 +19,17 @@ if ! sh "$repo/tools/checks/check-locals.sh" src; then
     exit 1
 fi
 
+# Second, and the same reason. F61 shipped a file naming DocumentSelectionSets with no
+# Autodesk.Navisworks.Api.DocumentParts import, which is CS0246, and the add-in did not
+# build. check-locals reads one shape of fault and this is another.
+echo "pre-commit: checking the add-in for a type with no import"
+
+if ! sh "$repo/tools/checks/check-imports.sh" src; then
+    echo ""
+    echo "pre-commit: REFUSED. See the line above."
+    exit 1
+fi
+
 echo "pre-commit: running the full test set"
 
 if ! command -v dotnet >/dev/null 2>&1; then

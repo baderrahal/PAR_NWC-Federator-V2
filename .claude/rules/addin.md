@@ -12,7 +12,18 @@ written into steps/03_bader_next.md. Rules whose logic lives in Core are in core
 The reasons and the measurements behind every rule are in
 docs/history/claude-md-history.md, kept whole.
 
-## Nothing here has ever built the add-in, and a log entry must not say it did
+## A parse is not a build, and where the add-in CAN be built
+
+THE ADD-IN WAS BUILT FOR THE FIRST TIME ON 2026-09-19, by F69, on the machine that has
+Navisworks Manage 2025 installed. Before that it had never been compiled anywhere that
+this repo records, which is how F52 shipped CS0128, F61 shipped CS0246 and sixteen more
+errors sat behind those two, unseen, across two rounds.
+
+WHERE A SESSION RUNS DECIDES WHAT IT CAN PROVE, and a session says which it is rather
+than assuming. A session on Bader's own machine has the install, so it runs
+dotnet build ParsonsNwcFederator.sln -c Release and the add-in is PROVED to compile. A
+session in a container has no install, cannot build the add-in at all, and everything
+below applies to it.
 
 Five log entries report that the add-in parses with the same error codes and not one
 CS1xxx, and every one of them is true and none of them is a build. The check behind
@@ -23,17 +34,35 @@ every body whose signature it can resolve, and it still cannot see inside a meth
 takes a Navisworks type, because Roslyn skips the body of any method whose signature it
 cannot bind, which is most of the engine.
 
-So the words are parses and never builds, and a round says what it could not check
-rather than leaving the reader to assume. The build is step 8 of
-steps/03_bader_next.md and it is the first thing on the machine that has Navisworks.
+So the words are parses and never builds, a round says what it could not check rather
+than leaving the reader to assume, and a session that CAN build says the build succeeded
+with the error and warning counts beside it. The build is step 8 of
+steps/03_bader_next.md and no runner anywhere has Navisworks, so Actions can never do it.
 
-tools/checks/check-locals.sh is the one rule of the compiler's that runs without it. It
-refuses a local declared twice in one method scope, which is CS0128, and that is the
-fault F52 shipped and nothing here saw for a day. It reads text and not a program, it
-knows nothing about types or members, and it catches one shape and no other. The
-pre-commit hook runs it before the tests and Actions runs it twice, once over src and
-once over tools/checks/broken, which is wrong on purpose so the check is proved to
-refuse as well as to pass.
+Two rules of the compiler's run without it, and there are two because two rounds each
+shipped a different compiler error from here.
+
+tools/checks/check-locals.sh refuses a local declared twice in one method scope, which is
+CS0128, and that is the fault F52 shipped and nothing here saw for a day. It reads text and
+not a program, it knows nothing about types or members, and it catches one shape and no
+other.
+
+tools/checks/check-imports.sh refuses a file that names a type and imports no namespace
+that has it, which is CS0246, and that is the fault F61 shipped and nothing here saw until
+Bader's build failed on it. It has no Autodesk DLL, so for a type this repo declares it
+reads the namespace off the file that declares it, and for every other type it LEARNS from
+what the rest of the tree imports. What it cannot do is written at the top of it: the FIRST
+use of a brand new Autodesk type, in the first file that ever names it, is invisible to it.
+
+A NEW ADD-IN FILE THAT NAMES AN AUTODESK TYPE COPIES ITS IMPORTS FROM THE FILE IN THIS REPO
+THAT ALREADY USES THAT TYPE. Where a session cannot compile the add-in that is the only
+evidence there is, and a namespace guessed at reads exactly like one that was measured
+until a build says otherwise. Where a session CAN compile it, the build is run and the rule
+costs nothing anyway.
+
+The pre-commit hook runs both before the tests and Actions runs each of them twice, once
+over src and once over tools/checks/broken, which is wrong on purpose in two ways so each
+check is proved to refuse as well as to pass.
 
 ## The live line, F62
 
@@ -185,9 +214,13 @@ refuse as well as to pass.
   moving and one prefix reading as two different things is how a log stops being trusted.
   Which statuses are worth keeping is Federator.Core.Clash.StatusesAPersonSet, which is everything except New,
   because New is where a clash starts and the next run makes it again while the other four
-  are somebody's decision. Whether a model can be taken out of an open document WITHOUT a
-  clear, which would retire the whole dance, is UNKNOWN, see docs\history\scan.md 5a and
-  tools\probes\probe-model-remove.ps1
+  are somebody's decision. A model CAN be taken out of an open document without a clear,
+  measured on 2026-09-19, docs\history\scan.md 5c: Document.RemoveFile(int) and
+  TryRemoveFile(int), on Document and not on DocumentModels, which is why searching the
+  collection found nothing. The dance stays until a RUN says what removing a file does to
+  the sets, the tests, the results and the viewpoints that point into that model, because a
+  rebuild that removed one file and lost every clash result would be worse than the clear it
+  replaces. Bader decides
 - One folder per discipline goes in the NWF with one viewpoint in each, showing that
   discipline and hiding the others, made after the clash run and before the NWF is saved
   again so the viewpoint is inside the file the NWD is published from. A group of ONE
@@ -200,9 +233,15 @@ refuse as well as to pass.
   VIEWS block are Federator.Core.Views.ViewpointPlan and
   Federator.Core.Views.ViewpointBuildOutcome, so both are tested, and the block reads as
   the SETS block does with its totals counted off the same list the lines came from. A group
-  whose viewpoints failed is not DONE. The API itself is UNMEASURED: nothing in
-  docs\history\scan.md records DocumentSavedViewpoints, section 5b says so, and
-  SavedViewpoints.CanBuild is false until tools\probes\probe-viewpoints.ps1 has been run.
+  whose viewpoints failed is not DONE. The API was MEASURED on 2026-09-19,
+  docs\history\scan.md 5d, and it has the shape SavedViewpoints.cs assumed:
+  DocumentSavedViewpoints.RootItem is a FolderItem, AddCopy(GroupItem, SavedItem) puts one
+  in a folder, EditDisplayName sets a name, FolderItem has a public constructor, and
+  SavedViewpoint and Viewpoint are both IDisposable. ONE HALF IS STILL UNKNOWN: items are
+  hidden through DocumentModels.SetHidden, and whether a viewpoint saved while they are
+  hidden RECORDS that hiding is not readable off the DLL.
+  SavedViewpoint.ContainsVisibilityOverrides is what answers it on a run.
+  SavedViewpoints.CanBuild is still false, because the writing half is not built.
   While it is false the run PLANS the viewpoints, says in the log what it would have made,
   and attempts nothing, and the judgement is told they were not requested, because a step
   this tool cannot do is not a step that failed. No clash is ever saved as a viewpoint,

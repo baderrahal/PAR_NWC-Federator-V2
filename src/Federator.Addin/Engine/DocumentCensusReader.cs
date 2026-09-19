@@ -1,6 +1,7 @@
 using System;
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
+using Autodesk.Navisworks.Api.DocumentParts;
 using Federator.Core.Diagnostics;
 
 namespace Federator.Addin.Engine

@@ -64,6 +64,20 @@ namespace Federator.Addin.Engine
         public bool NwdPublishReportedSuccess { get; set; }
 
         /// <summary>
+        /// Whether this run ASKED for viewpoints, F52. False while
+        /// SavedViewpoints.CanBuild is false, because a step this tool cannot do is not a
+        /// step that failed, and reporting every group FAILED over a feature that was never
+        /// attempted is the fault that once called a clean 22 group run failed.
+        /// </summary>
+        public bool ViewpointsRequested { get; set; }
+
+        /// <summary>
+        /// How many viewpoints this group asked for and did not get. Only read where
+        /// ViewpointsRequested is true.
+        /// </summary>
+        public int FailedViewpointCount { get; set; }
+
+        /// <summary>
         /// How this group ended. The rule itself lives in Federator.Core.Rerun so it can
         /// be tested without Navisworks. This only gathers the facts.
         /// </summary>
@@ -98,6 +112,12 @@ namespace Federator.Addin.Engine
                 NwdOnDisk = NwdOnDisk,
                 NwdPublishReportedSuccess = NwdPublishReportedSuccess,
                 AppendedCount = AppendedCount,
+
+                // F52, and it was written on GroupFacts and never filled in from here,
+                // which is what F69 found. A group whose viewpoints failed is not DONE, and
+                // a group that never asked for them is not judged on them at all.
+                ViewpointsRequested = ViewpointsRequested,
+                FailedViewpointCount = FailedViewpointCount,
                 FileCount = Job == null ? 0 : Job.Files.Count,
                 FailedFileCount = FailedFiles.Count,
                 NwfPath = Job == null ? null : Job.NwfPath,

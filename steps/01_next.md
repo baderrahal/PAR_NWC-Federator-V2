@@ -14,18 +14,28 @@ Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 
 
 Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixes as F56 to F61. F56 and F57 were already taken, so the six are F59 to F64 and they map onto the brief one for one and in order. F51, which the brief asks for as its own one line pull request, was already done and merged on 2026-09-18 and is not done twice. F58 is a seventh, found by the reading that opened the round and put first because the add-in does not compile and every one of the 251 steps waits behind the build.
 
-1. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
-2. F59, DONE, every step is named and timed
-3. F60, DONE, the timing blocks, and F21 closes here
-4. F61, DONE, the document census
-5. F62, DONE, the live line in the window
-6. F63, DONE, the report gap block
-7. F64, DONE, the machine readable log
-8. F57, five Look for lines older than the feature round, for Bader to judge
-9. F18, when Bader uploads the 1A04WE sample, Q9
-10. F23, when Q20 is answered
+Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. F69 is a fifth and F70 a sixth, neither briefed. F69 came out of running the build while measuring F68 and F70 out of checking the probe steps against what the probes actually print. Both go after the four they came out of. They go before everything that was left, because the build is what every one of the 319 steps waits behind.
 
-The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 237 to 249 are for.
+1. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
+2. F66, DONE, the check that would have caught it
+3. F67, DONE, one doubled comment
+4. F68, DONE, the build section learns what today cost
+5. F69, DONE, the other eighteen errors, and the first proved build. Not briefed, found by running the build
+6. F70, DONE, both probes run, and two standing unknowns answered. Not briefed, found by checking the probe steps against what the probes print
+7. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
+8. F59, DONE, every step is named and timed
+9. F60, DONE, the timing blocks, and F21 closes here
+10. F61, DONE, the document census
+11. F62, DONE, the live line in the window
+12. F63, DONE, the report gap block
+13. F64, DONE, the machine readable log
+14. F57, five Look for lines older than the feature round, for Bader to judge
+15. F18, when Bader uploads the 1A04WE sample, Q9
+16. F23, when Q20 is answered
+
+The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 248 to 260 are for.
+
+The build round closed on 2026-09-19. F65 to F70 are all done and each carries its DONE line below. THE ADD-IN BUILDS, 0 errors and 0 warnings, which is the first proved build this repo has had. The six branches are pushed and not merged, because nothing in this session could open a pull request, and Bader merges them in order.
 
 Nothing else is open. F19 is dropped.
 
@@ -164,7 +174,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 
 ## F15 Dispose in SetBuilder and ClashRunner.Resolve
 
-- CLOSED on 2026-09-12 by F41, which is the same two files and more. B5, the intermediate levels `Resolve` walks past, and B6, everything `SetBuilder` creates or resolves, are both done, and `SavedTests` went with them. The proof is the same one F15 asked for, a run with no ObjectDisposedException, and it is steps 188 to 190 of `03_bader_next.md`
+- CLOSED on 2026-09-12 by F41, which is the same two files and more. B5, the intermediate levels `Resolve` walks past, and B6, everything `SetBuilder` creates or resolves, are both done, and `SavedTests` went with them. The proof is the same one F15 asked for, a run with no ObjectDisposedException, and it is steps 199 to 201 of `03_bader_next.md`
 
 ## F12 Fix the docs that contradict the code
 
@@ -561,6 +571,70 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - A tab or a newline inside a value is escaped, because one stray tab moves every column after it
 - Size: medium
 - DONE on 2026-09-19. `EventRow` and `RowLog` in Core. `RunLog.Numbered` writes the text line and the row together and is the only way a numbered line reaches the log, so the two cannot drift. A sentence with no number writes no row, which is the rule and not an oversight. Tab separated, and the backslash is escaped FIRST or a path ending in a t would read back as a tab. Line by line and flushed like the text log. A row file that cannot be opened leaves the text log untouched and says why. Core tests before: 1184 passed, 0 failed, 32 skipped, 1216 total. After: 1205 passed, 0 failed, 32 skipped, 1237 total
+
+## F65 The missing import
+
+- Files `src/Federator.Addin/Engine/DocumentCensusReader.cs`
+- CONTAINER for the fix and for the sweep, LOCAL MACHINE ONLY for the build itself
+- `DocumentCensusReader.Sets(DocumentSelectionSets sets)` at line 88 names a type whose namespace the file does not import. That is CS0246 and the add-in has not built since F61 merged on 2026-09-19. Step 8 of `03_bader_next.md` is the build and all 308 steps wait behind it
+- The namespace is measured and not guessed. `docs/history/scan.md` line 2108 records `public Autodesk.Navisworks.Api.DocumentParts.DocumentSelectionSets SelectionSets { get }` read off the installed DLL, and the three files that already use the type, `ClashRunner.cs`, `SetBuilder.cs` and `FederationEngine.cs`, all carry `using Autodesk.Navisworks.Api.DocumentParts;`
+- WHY NOTHING HERE SAW IT. Core and the tests compile in Actions and neither names a Navisworks type. The add-in compiles on no machine but Bader's. `check-locals.sh` reads ONE shape of fault, a local declared twice, and this is another shape entirely
+- With the line, a hand sweep of the other three files these two rounds added, `SavedViewpoints.cs`, `ItemSizes.cs` and `ClashStatusEditor.cs`, against every Autodesk type each one names
+- Size: one line, and the sweep is what takes the time
+- DONE on 2026-09-19. `using Autodesk.Navisworks.Api.DocumentParts;` added in the order the other three files use. The sweep read all four files by hand, named every Autodesk type each one puts in a type position and which import covers it, and found nothing else missing. `SavedViewpoints.cs` is the near miss that proves the sweep: it names `DocumentSavedViewpoints` four times and every one of them is inside a comment, so it needs no `DocumentParts` import and has none. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+## F66 The check that would have caught it
+
+- Files `tools/checks/check-imports.sh` and four files under `tools/checks/broken/` which are new, `tools/checks/broken/README.md`, `.githooks/pre-commit`, `.github/workflows/tests.yml`, `.claude/rules/addin.md`
+- CONTAINER for the check and for both proofs
+- F52 shipped CS0128 and F58 wrote `check-locals.sh` for it. F61 shipped CS0246 and nothing here saw that either, because `check-locals.sh` reads one shape of fault and this is another. Two rounds, two compiler errors, both shipped from here
+- For every `.cs` file under `src`, the type names it uses in a TYPE POSITION only: after `new`, `is`, `as` or `typeof`, in the head of a `using` block, as a field, a parameter, a local or a `foreach` type, or inside generic brackets. A bare capitalised word anywhere else is a member name and not a type
+- For a type this repo DECLARES, the namespace is a fact read off the file that declares it. For every other type, which is the whole BCL and the whole Navisworks API, the check LEARNS from what the rest of the tree imports, so it needs no Autodesk DLL and no compiler
+- What it cannot do goes in a comment at the top. It reads text and not a program, and it cannot know a namespace no file here imports yet, so the FIRST use of a brand new Autodesk type is invisible to it and only the build on Bader's machine sees that. It is not a build and it never says a build passed
+- Wired into the pre-commit and into Actions exactly the way `check-locals.sh` is, the second Actions step against a folder that is wrong on purpose included
+- Size: medium, and the noise is the whole of it
+- DONE on 2026-09-19. `tools/checks/check-imports.sh` reads clean over `src` and refuses `tools/checks/broken` with exactly one line naming the file, the type and the namespace. The rule as first written returned 170 lines of noise over `src`, so it carries two conditions that cut it to none: a type only one other file names teaches nothing and is left alone, and a namespace is only taken as a type's home when at least `MinimumShare` per cent of the files importing it name that type, measured at 50 where `src` reads clean and 40, 34 and 20 read one, three and ten lines of noise. The broken folder gains the exact shape that failed, two correct files that are the map, and a near miss that names the type only in a comment and in a string and must pass, which is `SavedViewpoints.cs` in miniature. `.claude/rules/addin.md` now says a new add-in file that names an Autodesk type copies its imports from the file here that already uses it. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+## F67 One doubled comment
+
+- Files `src/Federator.Addin/Engine/FederationEngine.cs`
+- CONTAINER
+- Two summary blocks stacked at line 1996, both sitting on `BuildViewpoints`. The first describes publishing the NWD and belongs to `WriteNwd`, which F52 pushed down the file when it inserted `BuildViewpoints` above it
+- Size: one comment moved
+- THE BRIEF SAYS DELETE AND THIS MOVES IT. `WriteNwd` carries no summary of its own, and the displaced block is its, recording why the NWD publish is fixed on and has no branch for a run that does not want it. Deleting it would throw away a decision and leave a method undocumented. F47b on 2026-09-18 is the same shape, the same brief wording and the same answer, and the reasoning is in `log.md` under it. Either way no two summary blocks are stacked anywhere under `src`, which is what the brief is after
+- DONE on 2026-09-19. Moved onto `WriteNwd`, which it describes and which had no comment. The stacked summary check rerun over all 132 `.cs` files under `src` reads 0, where it read 1. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+## F68 The build section learns what today cost
+
+- Files `steps/03_bader_next.md`
+- CONTAINER
+- Bader lost time on 2026-09-19 before he ever reached a compiler error, to a NuGet failure that has nothing to do with the code: `C:\Program Files\dotnet\sdk\10.0.400\NuGet.targets(198,5): error Cannot create a file when that file already exists.` `dotnet build` restores all three projects at once, they collide on the same package folder, and it is a known race in NuGet's restore task
+- Four recoveries as numbered one action steps, cheapest first: build again because the race is intermittent, then clear every `obj` and `bin`, then restore with `--disable-parallel`, then build with `--no-restore`. Clearing the NuGet cache is last on its own, because it re-downloads every package
+- One more line under the build step: a build stamp reading `nogit` rather than a commit hash means git is not on the PATH for that terminal. The build is fine and only the stamp is affected
+- Size: eleven steps and the renumbering behind them
+- DONE on 2026-09-19. Eleven steps in, 11 to 21, each with its Look for line, and the file runs 1 to 319 where it ran 1 to 308. Every command in them was RUN on this machine rather than written from memory: the `obj` and `bin` listing gives six folders, two per project, and the cold `--disable-parallel` restore gives three `Restored` lines and no error. The one thing not measured is what `dotnet nuget locals all --clear` prints, because clearing the cache here would cost the re-download it warns about, and the step says that rather than guessing. The `nogit` line is read off `Directory.Build.targets`, which sets the hash to `nogit` when git exits non zero or answers nothing. Five cross references were bumped with the renumbering, from steps 65, 70, 202, 271 and 284 to 76, 81, 213, 282 and 295, and each was read against the step it now points at. Core tests unchanged, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+## F69 The other eighteen errors, and the first proved build
+
+- Files `src/Federator.Core/Rerun/RebuildTally.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/JobOutcome.cs`, `docs/history/scan.md`, `.claude/rules/addin.md`
+- LOCAL MACHINE, and it was done on the local machine
+- NOT BRIEFED. Found by running `dotnet build ParsonsNwcFederator.sln -c Release` while measuring F68's steps, which is when it became clear that this session is on Bader's own machine and Navisworks Manage 2025 is installed on it. F65 fixed the one error Bader sent back. Eighteen more were behind it
+- Three faults, not eighteen. Fourteen CS0200, one CS0029, three CS1061
+- `RebuiltThing.Before`, `.AfterAppends` and `.AfterRestore` were `internal set`. The add-in is a different assembly, so the one caller that fills them in could not reach them, while Core and the tests could, which is why every test passed. F50
+- `DocumentSelectionSets.CreateCopy()` returns `Collection<SavedItem>` and not `SavedItemCollection`. That is the member step 10 has been asking Bader to paste since F24, now measured off the installed DLL and recorded in `docs/history/scan.md` 4d. F29
+- `JobOutcome` never got `ViewpointsRequested` or `FailedViewpointCount`, which `GroupFacts` has carried and the judgement has read since F52, so the engine was setting two properties that did not exist. F52
+- Size: three faults, and the measurement is what makes them safe to fix
+- DONE on 2026-09-19. `dotnet build ParsonsNwcFederator.sln -c Release` finishes with 0 errors and 0 warnings, which is the first proved build this repo has. The three setters are public with the reason written beside them. The copy is a `Collection<SavedItem>`, goes back through the measured `CopyFrom(IEnumerable<SavedItem>)` overload, and every item in it is disposed, because `CreateCopy` creates and what this tool creates it disposes. `JobOutcome` carries the two viewpoint facts and `Facts()` hands them to the judgement, which finishes F52's wiring. `.claude/rules/addin.md` says where the add-in can and cannot be built and stops saying nothing here has ever built it. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+## F70 Both probes run, and two standing unknowns answered
+
+- Files `docs/history/scan.md`, `CLAUDE.md`, `.claude/rules/addin.md`, `src/Federator.Addin/Engine/SavedViewpoints.cs`, `src/Federator.Addin/Engine/ViewpointBuilder.cs`, `steps/03_bader_next.md`
+- LOCAL MACHINE, and it was done on the local machine
+- NOT BRIEFED. Steps 206 to 211 say the two probes answer a question the container cannot answer. F69 established that this session is not in a container, so the Look for lines in those steps could be checked against what the probes actually print rather than against what they were expected to print. Both were run. Both answered
+- `probe-model-remove.ps1`: `Document.RemoveFile(int)` and `Document.TryRemoveFile(int)` are public. A model CAN be taken out of an open document without a clear. The member is on `Document` and not on `DocumentModels`, which is why searching the collection for it found nothing. That is 5a, open since 2026-09-18
+- `probe-viewpoints.ps1`: `DocumentSavedViewpoints` exists with the shape `SavedViewpoints.cs` assumed, and with more besides. All four of 5b's questions are answered and the two collections turn out to have the same shape, which 5b said must not be assumed from the pattern
+- Size: two probe runs, and the writing is the rest of it
+- DONE on 2026-09-19. Both outputs recorded in `docs/history/scan.md` as 5c and 5d, with the assembly version and the date, which is what step 211 asks for. 5a and 5b keep the questions, because the reasoning in them is why the answers matter. `CLAUDE.md`, `addin.md`, `SavedViewpoints.cs` and `ViewpointBuilder.cs` all said the two were unmeasured and none of them does now. NEITHER FEATURE WAS CHANGED: `SavedViewpoints.CanBuild` is still false and the rebuild still clears and copies back, because what a member DOES is a run and a decision, not a reflection pass. One thing is still UNKNOWN and is named as such: whether a saved viewpoint records hidden state. Core tests unchanged, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total. The add-in builds with 0 errors and 0 warnings
 
 ## F21 The log answers timing and counts
 
