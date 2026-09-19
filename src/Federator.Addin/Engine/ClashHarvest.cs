@@ -599,7 +599,7 @@ namespace Federator.Addin.Engine
             }
         }
 
-        private static string Text(VariantData value)
+        internal static string Text(VariantData value)
         {
             switch (value.DataType)
             {

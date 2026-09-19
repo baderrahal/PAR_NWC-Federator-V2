@@ -162,7 +162,13 @@ namespace Federator.Addin.Engine
 
             if (decision.Moves)
             {
-                wanted.Add(new WantedStatus(clashName, CoreClashStatus.Reviewed));
+                // F72c. The record carries the status the clash was moved OFF and why, so
+                // the NWF says it and the undo can put it back where it was.
+                wanted.Add(new WantedStatus(
+                    clashName,
+                    CoreClashStatus.Reviewed,
+                    new AutoReviewRecord(AutoReviewRule.Penetration, status, decision.Reason),
+                    false));
             }
         }
 

@@ -75,6 +75,18 @@ namespace Federator.Core.Probe
         /// <summary>How many distinct values are listed per property.</summary>
         public int DistinctValueCap { get; set; }
 
+        /// <summary>
+        /// Whether that category is one the probe asks for, F86, read the way the
+        /// penetration rule reads a category against its own lists, through the one
+        /// comparison in PenetrationSettings.Names, so the probe finds exactly the items
+        /// the rule would judge and the two can never disagree about a trailing space or
+        /// a capital.
+        /// </summary>
+        public bool Asks(string category)
+        {
+            return PenetrationSettings.Names(Categories, category);
+        }
+
         /// <summary>The CSV this file gets, beside the file and named after it.</summary>
         public static string CsvPathFor(string modelPath)
         {

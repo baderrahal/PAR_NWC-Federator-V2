@@ -3048,10 +3048,9 @@ WHAT WAS NOT DONE. `SavedViewpoints.CanBuild` is still false and nothing in
 half of F52 and a feature rather than a build fix. The measurement is here so that work
 starts from what was read rather than from what was assumed. Bader decides when.
 
-## 5e. Does anything report that an opened document has finished loading, asked 2026-09-19, NOT MEASURED
+## 5e. Does anything report that an opened document has finished loading, asked 2026-09-19, MEASURED 2026-09-19
 
-THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it, written
-where the answer will go. Nothing in the code reads a number from here.
+THE ANSWER IS AT THE END OF THIS SECTION. The question is left standing above it.
 
 WHY IT IS ASKED. On the first real run all five existing NWFs reported
 `0 unchanged, 4 added, 0 removed` and were rebuilt, and `STEP DECIDE finished 0.248s`.
@@ -3081,9 +3080,85 @@ opened with no error is never a rebuild. `NwfComparison.ReadEmpty` stops the gro
 a reason that names the file and says what to do. That is F74 and it holds whichever way
 this measurement goes.
 
-## 5f. What the property API offers for walking an item's properties, asked 2026-09-19, NOT MEASURED
+THE ANSWER, read by `tools\probes\probe-document-ready.ps1` on DESKTOP-5VL7LTJ on
+2026-09-19 against `Autodesk.Navisworks.Api 22.0.0.0`. The question above is left standing
+because the reasoning in it is why the answer matters.
 
-THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
+`Document` carries ONE member of the seven words and it is not about loading:
+
+```
+public LcOwDocument State { get; }
+```
+
+and fourteen events, none about loading:
+
+```
+ActiveViewChanged, ActiveViewChanging, ViewRemoved, ViewAdded, ActiveSheetChanged,
+ActiveSheetChanging, TransactionEnded, TransactionBeginning, FilesUpdated, FilesUpdating,
+FileSaved, FileSaving, UnitsChanged, FileNameChanged
+```
+
+`DocumentModels` carries the one member in the assembly that names the thing asked about,
+and a private watcher behind it:
+
+```
+public event EventHandler<...> SceneLoaded
+private SceneLoadedEventStateWatcher m_scene_loaded
+```
+
+beside six more events, `ModelItemPropertiesChanged`, `ModelTransformChanged`,
+`ModelTransformChanging`, `ModelGeometryMaterialChanged`, `CollectionChanging` and
+`CollectionChanged`. So the collection DOES raise a changed event, which was the second half
+of the question.
+
+`Application` carries the progress machinery and nothing about a document being loaded:
+`BeginProgress` in three overloads, `EndProgress`, eight events from `ProgressBeginning` to
+`ProgressEnded`, an `Idle` event, and `LoadDocumentInfo` and `TryLoadDocumentInfo`, which
+read a file's info without opening it. Elsewhere in the assembly `DocumentDatabase` has
+`Loaded` and `Unloading` and `IApplicationBim360` has `RefreshComplete`. None of those is
+the models.
+
+WHAT THIS SETTLES AND WHAT IT DOES NOT. There is a member that says the models are in,
+`DocumentModels.SceneLoaded`. What a DLL cannot say is WHEN it fires against a call to
+`Document.TryOpenFile`: inside the call before it returns, after it returns once the message
+loop runs, or not at all for a file whose models are already on disk. A handler subscribed
+after an event that already fired waits for ever, and a run that waits for ever is worse
+than the run that rebuilt five NWFs. So THE POLL STANDS AS THE READER, because the poll
+reads the count itself and needs no promise about timing, and this sentence is why it
+stands. `Federator.Core.Rerun.ModelLoadWait` is the rule and the add-in reads
+`Document.Models.Count` into it.
+
+WHAT THE WIRING DOES ABOUT THE EVENT, so the next run measures what this could not. Step
+365 subscribes to `SceneLoaded` before the open and unsubscribes when the wait ends, and
+writes ONE line beside the LOADING line saying whether it fired and at what second on the
+monotonic clock. That is information and the run acts on none of it. When a real run shows
+it firing after the open returns and before the count settles, on every open, it becomes
+the answer and the poll becomes the fallback, which is the order asked for above.
+
+WHAT THE RUN THEN SHOWED, 2026-09-19 21:13, ten groups, seven of them opening an NWF. The
+event line beside every LOADING line read the same way each time, for example:
+
+```
+LOADING  the NWF reported 4 models after 0.721s, steady over 3 reads 0.250s apart, over 3 readings in all
+LOADING  the scene loaded event fired 4 times, first at 0.0s and last at 0.1s after the open began, and the open returned at 0.2s
+```
+
+So `SceneLoaded` fires ONCE PER MODEL, INSIDE `TryOpenFile`, before it returns. A handler
+subscribed after the open would never hear it, which is the case this section warned
+about. On every one of the seven opens the first reading of the count was already the
+full count and the wait settled on the third reading, under a second. Nothing on this run
+read empty, so the refusal was not exercised and neither was the ceiling.
+
+WHAT THAT LEAVES. The poll stays as the reader, because it reads the thing itself and
+costs half a second. The event is now MEASURED as usable, but only subscribed before the
+open, and it could replace the poll as the primary signal with the poll as the fallback.
+Whether to make that change is Bader's, and it is not made here. What the first real run
+saw, five NWFs reading empty the instant the open returned, was NOT reproduced on this
+machine with these files, so what caused it there is still UNKNOWN.
+
+## 5f. What the property API offers for walking an item's properties, asked 2026-09-19, MEASURED 2026-09-19
+
+THE ANSWER IS AT THE END OF THIS SECTION. The question is left standing above it.
 
 WHY IT IS ASKED. F86 writes one CSV per NWC saying, per Revit category, which property
 tabs and property names the items carry and which distinct values appear on each, so the
@@ -3111,6 +3186,75 @@ into the text a CSV cell holds, and one line saying whether the walk is per item
 whether a search can do it in one pass. The Core half, `Federator.Core.Probe`, already
 fixes the CSV columns, the cap and the sort, so only the reading is open.
 
+THE ANSWER, read by `tools\probes\probe-properties.ps1` on DESKTOP-5VL7LTJ on 2026-09-19
+against `Autodesk.Navisworks.Api 22.0.0.0`. The question above is left standing because
+it says what the answer is for.
+
+The walk starts on `ModelItem`, whose members of interest are all get only:
+
+```
+PropertyCategoryCollection    PropertyCategories
+ModelItemEnumerableCollection Children, Descendants, DescendantsAndSelf
+ModelItem                     Parent
+String                        DisplayName, ClassDisplayName, ClassName
+Boolean                       IsComposite, IsInsert, IsLayer, HasGeometry
+Model                         Model
+```
+
+`PropertyCategoryCollection` is `IEnumerable<PropertyCategory>` and `IDisposable`, with
+finders by name, by display name and by combined name for a category and for a property.
+One element of it is a `PropertyCategory`, which is `IDisposable` and carries the tab:
+
+```
+String                 Name            the internal name the API matches on
+String                 DisplayName     the tab a person sees
+DataPropertyCollection Properties      the collection under one tab
+NamedConstant          CombinedName
+```
+
+`DataPropertyCollection` is an `IList<DataProperty>` with `Count` and an indexer and the
+same three finders. One element is a `DataProperty`, `IDisposable`, with the same pair:
+
+```
+String      Name
+String      DisplayName
+VariantData Value
+```
+
+`VariantData` is `IDisposable` and carries a `DataType` of `VariantDataType`, fourteen
+values:
+
+```
+None = 0, Double = 1, Int32 = 2, Boolean = 3, DisplayString = 4, DateTime = 5,
+DoubleLength = 6, DoubleAngle = 7, NamedConstant = 8, IdentifierString = 9,
+DoubleArea = 10, DoubleVolume = 11, Point3D = 12, Point2D = 13
+```
+
+with one `Is` property and one `To` reader per value: `ToDisplayString`,
+`ToIdentifierString`, `ToNamedConstant`, `ToBoolean`, `ToInt32`, `ToDouble`,
+`ToDoubleLength`, `ToDoubleArea`, `ToDoubleVolume`, `ToDoubleAngle`, `ToAnyDouble`,
+`ToDateTime`, `ToPoint2D`, `ToPoint3D`. It also overrides `ToString`, and what that
+returns is UNKNOWN off the DLL, so nothing here reads it as a cell.
+
+HOW A VALUE BECOMES THE TEXT A CSV CELL HOLDS, in one line: switch on `DataType` and call
+the one reader for it, a display string as itself, an identifier string as itself, a named
+constant by its `DisplayName`, the five doubles through `ToAnyDouble` written invariant,
+an integer and a boolean as themselves, a date written invariant round trip, a point as its
+coordinates joined with a space, and None as an empty cell. A length is in the DOCUMENT'S
+units, the same as the size properties F53 reads, and the probe writes the number as read
+and does not convert it, because the probe reports what is there.
+
+WHETHER THE WALK IS PER ITEM OR PER SEARCH, in one line: both exist and the wiring uses
+the per item walk. `Search.FindAll(document, false)` with
+`SearchCondition.HasPropertyByDisplayName(tab, property).EqualValue(...)` over
+`SearchLocations.DescendantsAndSelf` finds every item of one category in one pass, which
+is the shape `SetBuilder` already builds a set with. `Model.RootItem.DescendantsAndSelf`
+walks a whole model item by item. The probe walks item by item and asks each item its
+category through the same reader the penetration rule uses, `ClashHarvest.FirstPropertyOn`
+over `ProbeSettings.CategoryNames`, because a search would match on a TAB name that the
+settings do not carry and the probe exists to find out what the tabs are called. What that
+walk costs is measured and written in the PROBE block, per file.
+
 ## 5g. Does Navisworks import a NEGATED search condition, asked 2026-09-19, NOT MEASURED
 
 THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
@@ -3132,9 +3276,31 @@ is in `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` today. `equals` is prove
 import, because the whole file uses it and the real run imported all 61 sets. The negated
 form is the better set and is not written until this is measured.
 
-## 5h. Can a comment be written on a clash result, asked 2026-09-19, NOT MEASURED
+WHAT REFLECTION CAN SAY, read by `tools\probes\probe-properties.ps1` on DESKTOP-5VL7LTJ
+on 2026-09-19 against `Autodesk.Navisworks.Api 22.0.0.0`, which is not the measurement
+above and does not close it:
 
-THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
+```
+public SearchCondition SearchCondition.Negate()
+SearchConditionOptions.NegateCondition = 32
+```
+
+The API carries a negation, as a method on the condition and as a bit on the options enum,
+between `IgnoreDisplayStringValueCase = 16` and `StartGroup = 64`. F78 measured that the
+file's `flags` attribute IS this enum, because the five conditions carrying `flags="64"`
+are the five that start a group. So IF the exporter writes a negated condition it would
+carry `flags="32"`, or `96` where it also starts a group, and `SetBuilder.BuildCondition`
+passes the flags through as `SearchConditionOptions` unchanged, so a file carrying 32
+would build a negated condition through the API without a line changing.
+
+WHAT IS STILL NOT MEASURED, which is the whole of the question: whether Navisworks WRITES
+that bit when a person exports a set built with a negation, and whether it READS it back
+on import. Neither can be read off a DLL. Both need the hand built set and the round trip
+above, on a run. The fallback stays in `exchange\` until then.
+
+## 5h. Can a comment be written on a clash result, asked 2026-09-19, MEASURED 2026-09-19
+
+THE ANSWER IS AT THE END OF THIS SECTION. The question is left standing above it.
 
 WHY IT IS ASKED. F72c wants the NWF itself to say WHY a clash was moved to Reviewed, so a
 person reading the Clash Detective panel next week sees the reason without opening a log,
@@ -3155,6 +3321,75 @@ HOW TO WRITE THE ANSWER. The member list, then one line saying whether a comment
 written, and one saying whether it comes back after a save and reopen. IF IT CANNOT BE
 DONE, the answer is one line in the log saying so and the status alone is set. Nothing is
 faked and no second file stands in for a comment the NWF does not hold.
+
+THE ANSWER, read by `tools\probes\probe-clash-comments.ps1` on DESKTOP-5VL7LTJ on
+2026-09-19 against `Autodesk.Navisworks.Api 22.0.0.0` and `Autodesk.Navisworks.Clash
+22.0.0.0`. The question above is left standing because it says what the answer is for.
+
+A COMMENT CAN BE WRITTEN ON A CLASH RESULT, through one member on the document part,
+which is the same shape the status edit has:
+
+```
+public void DocumentClashTests.TestsEditResultComments(IClashResult result, CommentCollection comments)
+public void DocumentClashTests.TestsEditResultStatus(IClashResult result, ClashResultStatus status)
+```
+
+The comments already on a result are read off it, and the same member is on the group,
+the interface and every `SavedItem`:
+
+```
+public CommentCollection ClashResult.Comments        { get; }
+public CommentCollection ClashResultGroup.Comments   { get; }
+public CommentCollection IClashResult.Comments       { get; }
+public CommentCollection SavedItem.Comments          { get; }
+```
+
+`CommentCollection` is a list with `Add`, `Insert`, `Remove`, `Clear`, `Count`, an indexer
+and a copy constructor `CommentCollection(CommentCollection from)`. One `Comment` is made
+two ways and every property on it is read only once it is made:
+
+```
+public Comment(string body, CommentStatus status)
+public Comment(string body, CommentStatus status, string author)
+public Comment Document.CreateCommentWithUniqueId(string body, CommentStatus status)
+public Comment Document.CreateCommentWithUniqueId(string body, CommentStatus status, string author)
+
+long         Id
+DateTime     CreationDate
+string       Author
+CommentStatus Status        New = 0, Active = 1, Approved = 2, Resolved = 3
+string       Body
+```
+
+The other writable text on a result, for the record, is `Description`, `ApprovedBy` and
+`ApprovedTime`, each with its own `TestsEditResult` member, and `TestsEditResultAssignedTo`.
+None of them is used for the record, because a description is the clash's own field in the
+panel and a person may type in it, and the record has to be somewhere a person would not.
+`ClashTest` itself has no text member of the seven words at all, only `Status`.
+
+HOW THE RECORD IS WRITTEN, which step 372 wires: copy `result.Comments` into a new
+`CommentCollection`, add a comment made by `Document.CreateCommentWithUniqueId` with
+`AutoReviewRecord.Text()` as the body, `CommentStatus.New` and this tool's name as the
+author, and call `TestsEditResultComments` with the result and the collection, BEFORE
+`TestsEditResultStatus` on the same handle. Whether the handle survives the first edit for
+the second is not readable off the DLL, for the reason at the top of section 5: every
+mutator on `DocumentClashTests` is a copy form. If it does not, the status edit throws,
+the log says so by clash name and the run goes on, and that line is the next measurement.
+
+WHAT IS STILL NOT MEASURED. Whether the comment SURVIVES a save and a reopen of the NWF,
+and whether it shows in the Clash Detective panel. Both wait for the run in PART 5 of the
+wiring round, with the by design box on, and the answer goes here.
+
+WHAT THE RUN THEN SHOWED, 2026-09-19 21:13 and the second run at 21:29, log
+`steps\logs\run-20260919-211323.log`. 145 clashes were moved to Reviewed by rule B with a
+record written on each through `TestsEditResultComments`, before the status and on the
+same handle, and not one write threw: the handle survived the comment edit for the
+status edit that followed. The second run opened every NWF off the disk, and the Undo
+auto Reviewed button pressed on the last of them, 1A02WO, read the records back:
+`10 put back of 69 looked at`, each `back to Active`, which is the status its record
+named, and 59 `this tool never moved it`. So the comment SURVIVES a save and a reopen and
+comes back readable. Whether it shows in the Clash Detective panel was not looked at and
+is still UNKNOWN.
 
 ## 5i. Which category values are real Revit categories, asked 2026-09-19, NOT MEASURED
 

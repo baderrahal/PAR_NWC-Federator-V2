@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Clash
 {
@@ -310,7 +311,7 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>How many tests are named under one grouped difference.</summary>
-        public const int ExamplesShown = 5;
+        public const int ExamplesShown = RunLog.KeptOfARepeat;
 
         /// <summary>
         /// The differences GROUPED, F81. One run wrote 1830 of these lines and every one

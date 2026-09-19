@@ -230,7 +230,7 @@ namespace Federator.Core.Clash
                 return null;
             }
 
-            return "by design     : " + movedAcrossTheRun
+            return "by design      : " + movedAcrossTheRun
                 + (movedAcrossTheRun == 1 ? " clash moved to Reviewed" : " clashes moved to Reviewed");
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Exchange;
+using Federator.Core.Views;
 
 namespace Federator.Core.Health
 {
@@ -127,10 +128,10 @@ namespace Federator.Core.Health
         /// </summary>
         public const string CategoryPropertyInternalName = "LcRevitPropertyElementCategory";
 
-        /// <summary>What separates the parts of a set name, F84. A setting in every other
-        /// place this tool splits a name, and a constant here only because a health check
-        /// runs before any options object exists.</summary>
-        public const char SetNameSeparator = '-';
+        /// <summary>What separates the parts of a set name, F84. Read off ViewpointSettings, the
+        /// one place it is named, because a second copy here drifted from the first, A12, and
+        /// a constant because a health check runs before any options object exists.</summary>
+        public const char SetNameSeparator = ViewpointSettings.DefaultSetNameSeparator;
 
         /// <summary>
         /// Records the locator a side names. Returns false when the side is missing or

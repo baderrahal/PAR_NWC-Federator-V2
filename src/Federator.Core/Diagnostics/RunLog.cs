@@ -632,7 +632,9 @@ namespace Federator.Core.Diagnostics
         /// How many of one repeated sentence reach the TEXT log before it collapses, F81.
         /// The same number the skips and the drift use, because a reader who has learned
         /// what five examples and a count look like should not have to learn a second
-        /// shape.
+        /// shape. THE ONE NUMBER, A14: the skips, the drift, the priorities, the probe, the
+        /// health findings and the sizes all read this and name this many. SetsAcrossTheRun
+        /// names ten and its own comment says why it differs.
         /// </summary>
         public const int KeptOfARepeat = 5;
 
@@ -1696,6 +1698,27 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public int PenetrationsMoved { get; set; }
 
+        /// <summary>
+        /// Every group's clashes by priority, F83, or null where no priority file was
+        /// picked. The engine sets it once the file has read and adds each group's tally
+        /// into it, so the number in RESULT and the per group PRIORITY blocks come from
+        /// the same additions. Null keeps the line out of a run that picked nothing.
+        /// </summary>
+        public PriorityTally PriorityAcrossTheRun { get; set; }
+
+
+        /// <summary>
+        /// Whether this run asked for by design connections to be marked, F72b. False by
+        /// default, so a run that never turned the box on carries no line about it.
+        /// </summary>
+        public bool ByDesignWanted { get; set; }
+
+        /// <summary>
+        /// How many clashes rule B moved to Reviewed across every group, added as each
+        /// group finishes, so RESULT and the per group blocks come from the same additions.
+        /// </summary>
+        public int ByDesignMoved { get; set; }
+
         public void WriteResultBlock()
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
@@ -1759,6 +1782,23 @@ namespace Federator.Core.Diagnostics
             if (penetrations != null)
             {
                 Line(penetrations);
+            }
+
+            // F83. Clashes by priority across the run, only where a file was picked, for
+            // the same reason the penetration line is only there when the box was on.
+            string priority = PriorityTally.ResultLine(PriorityAcrossTheRun != null, PriorityAcrossTheRun);
+
+            if (priority != null)
+            {
+                Line(priority);
+            }
+
+            // F72b. The second rule's count, only where its box was on.
+            string byDesign = ByDesignTally.ResultLine(ByDesignWanted, ByDesignMoved);
+
+            if (byDesign != null)
+            {
+                Line(byDesign);
             }
 
             IList<WrittenFile> files = WrittenFiles;

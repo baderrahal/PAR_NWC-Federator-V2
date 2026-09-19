@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Clash
 {
@@ -204,7 +205,7 @@ namespace Federator.Core.Clash
         /// a 1 MB log, which buries everything worth reading. A count and a few examples
         /// say the same thing.
         /// </summary>
-        public const int MaxSkipExamples = 5;
+        public const int MaxSkipExamples = RunLog.KeptOfARepeat;
 
         /// <summary>
         /// One line per test that was created or run, then the skips summarised by reason,

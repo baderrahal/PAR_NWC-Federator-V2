@@ -11,6 +11,7 @@ using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Findings;
+using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -149,6 +150,221 @@ namespace Federator.Addin.Engine
         public IList<SourcePair> SourcePairs
         {
             get { return sourcePairs; }
+        }
+
+        /// <summary>
+        /// Where the tolerance on every report row was READ, counted across the run, F76.
+        /// Every row should read off the document, and a count under any other origin is
+        /// the report saying a number the run did not clash at. The window writes them as
+        /// one line, ToleranceChoice.ReadFromLine, before RESULT.
+        /// </summary>
+        public int ToleranceFromDocument { get; private set; }
+
+        public int ToleranceFromFile { get; private set; }
+
+        public int ToleranceFromTool { get; private set; }
+
+        public int ToleranceUnknown { get; private set; }
+
+        /// <summary>Counts one group's rows into the four, F76. Read, never worked out.</summary>
+        private void CountToleranceOrigins(ClashReport report)
+        {
+            if (report == null)
+            {
+                return;
+            }
+
+            foreach (TestReport test in report.Tests)
+            {
+                switch (test.ToleranceFrom)
+                {
+                    case ToleranceOrigin.Document:
+                        ToleranceFromDocument++;
+                        break;
+                    case ToleranceOrigin.File:
+                        ToleranceFromFile++;
+                        break;
+                    case ToleranceOrigin.Tool:
+                        ToleranceFromTool++;
+                        break;
+                    default:
+                        ToleranceUnknown++;
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The clash priorities off the client's matrix, F83, read once per run from the
+        /// CSV picked on the Clash step, or NothingPicked. A file that will not read is a
+        /// finding in the log and a line in the window, and the run goes on with no
+        /// Priority column, because picking a file never fails a run.
+        /// </summary>
+        private PriorityMap priorities;
+
+        /// <summary>Every group's clashes by priority, added up for the RESULT line.</summary>
+        private readonly PriorityTally priorityAcrossTheRun = new PriorityTally();
+
+        private PriorityMap ThePriorities()
+        {
+            if (priorities != null)
+            {
+                return priorities;
+            }
+
+            string path = reports.PriorityPath ?? string.Empty;
+
+            if (path.Length == 0)
+            {
+                priorities = PriorityMap.NothingPicked();
+                return priorities;
+            }
+
+            try
+            {
+                priorities = PriorityMap.Read(File.ReadAllText(path), path);
+                log.Line(PriorityMap.Prefix + " read " + path + ", " + priorities.RowCount
+                    + (priorities.RowCount == 1 ? " row" : " rows"));
+
+                foreach (string problem in priorities.Problems)
+                {
+                    log.Line(PriorityMap.Prefix + " " + problem);
+                }
+
+                // The RESULT line is the log's to write, and only where a file was picked.
+                log.PriorityAcrossTheRun = priorityAcrossTheRun;
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the priority file " + path,
+                    error,
+                    "kept going with no Priority column, a picked file never fails a run");
+                Say("The priority file would not read. " + RunLog.TheLogSaysWhy());
+                priorities = PriorityMap.NothingPicked();
+            }
+
+            return priorities;
+        }
+
+        /// <summary>
+        /// Puts the priorities on one group's report, F83: the map itself, so the one
+        /// order in ReportOrder.Tests reads it, and the letter on every test row, matched
+        /// on the test name exactly. Then the PRIORITY lines and the clashes counted by
+        /// priority, for this group and for the run. Nothing here changes a status, and
+        /// priority is never used for one.
+        /// </summary>
+        private void ApplyThePriorities(FederationJob job, ClashReport report)
+        {
+            PriorityMap map = ThePriorities();
+
+            if (report == null || !map.Picked)
+            {
+                return;
+            }
+
+            report.Priorities = map;
+            List<string> names = new List<string>();
+            PriorityTally group = new PriorityTally();
+
+            foreach (TestReport test in report.Tests)
+            {
+                test.Priority = map.Of(test.Name);
+                names.Add(test.Name);
+                group.Add(test.Priority, test.RawClashes);
+            }
+
+            foreach (string line in map.MatchLines(names))
+            {
+                log.Line(line);
+            }
+
+            log.Block(PriorityMap.Prefix + " " + job.Building, group.Lines());
+            priorityAcrossTheRun.Add(group);
+        }
+
+        /// <summary>
+        /// The by design pairs, F72b, read once per run from the CSV picked on the Clash
+        /// step, or NothingPicked. Read only when the box is on, because a file picked with
+        /// the box off would be read and then ignored, which reads as a file that did
+        /// nothing. A file that will not read is a finding and the run goes on moving
+        /// nothing under this rule.
+        /// </summary>
+        private ByDesignPairs pairs;
+
+        /// <summary>Every group's decisions, added up for the run line and the RESULT line.</summary>
+        private readonly ByDesignTally byDesignAcrossTheRun = new ByDesignTally();
+
+        private ByDesignPairs ThePairs()
+        {
+            if (pairs != null)
+            {
+                return pairs;
+            }
+
+            string path = reports.ByDesignPath ?? string.Empty;
+
+            if (!reports.MarkByDesign || path.Length == 0)
+            {
+                if (reports.MarkByDesign)
+                {
+                    log.Line(ReviewedLine.Prefix + " rule B is on and no pairs file was picked, "
+                        + "so it moves nothing and no list is invented");
+                }
+
+                pairs = ByDesignPairs.NothingPicked();
+                return pairs;
+            }
+
+            try
+            {
+                pairs = ByDesignPairs.Read(File.ReadAllText(path), path);
+                log.Line(ReviewedLine.Prefix + " rule B reads " + path + ", " + pairs.Count
+                    + (pairs.Count == 1 ? " pair" : " pairs"));
+
+                foreach (string problem in pairs.Problems)
+                {
+                    log.Line(ReviewedLine.Prefix + " rule B " + problem);
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the by design pairs file " + path,
+                    error,
+                    "kept going, rule B moves nothing and a picked file never fails a run");
+                Say("The by design pairs file would not read. " + RunLog.TheLogSaysWhy());
+                pairs = ByDesignPairs.NothingPicked();
+            }
+
+            return pairs;
+        }
+
+        /// <summary>
+        /// The lines about rule B across the whole run, F72b: how many it set and which
+        /// pairs in the file matched no test anywhere in the run. Named once across the
+        /// run and not once per group, because a pair naming sets that are only in one
+        /// building would otherwise be reported missing by six groups out of seven. A pair
+        /// matching nothing is a FINDING and nothing acts on it.
+        /// </summary>
+        public IList<string> ByDesignRunLines()
+        {
+            List<string> lines = new List<string>();
+
+            if (!reports.MarkByDesign)
+            {
+                return lines;
+            }
+
+            IList<ByDesignPair> missed = ThePairs().NotMatched(byDesignAcrossTheRun.PairsSeen);
+            lines.Add(ByDesignTally.RunLine(byDesignAcrossTheRun.MovedCount, missed.Count));
+
+            foreach (ByDesignPair pair in missed)
+            {
+                lines.Add("         " + pair);
+            }
+
+            return lines;
         }
 
         /// <summary>
@@ -295,6 +511,10 @@ namespace Federator.Addin.Engine
 
                 try
                 {
+                    // F75. Nothing is emptied on this path, so the census line says what
+                    // the document held and puts no reason on the group.
+                    StartOfGroupCensus(document, outcome, false);
+
                     // Nothing is appended and nothing is cleared. The models in it are
                     // what somebody put there, and the clash history lives in the same
                     // file.
@@ -394,6 +614,16 @@ namespace Federator.Addin.Engine
                     return outcome;
                 }
 
+                // F75. Emptied at the TOP of every scanned group, BEFORE Decide reads the
+                // file list. Before this there were two clears in the whole engine and both
+                // ran after Decide, so Decide compared the scan against whatever the
+                // previous building had left behind. A clear that throws leaves the group
+                // through the catch below, FAILED with the reason, because a group that
+                // could not be emptied would read the last building's models.
+                log.Line("CLEAR    the document, at the top of " + job.Building + ", before Decide");
+                document.Clear();
+                StartOfGroupCensus(document, outcome, true);
+
                 NwfComparison comparison = null;
 
                 InStep(
@@ -406,6 +636,15 @@ namespace Federator.Addin.Engine
                 foreach (string line in comparison.Lines(job.NwfPath))
                 {
                     log.Line(line);
+                }
+
+                if (comparison.Decision == RerunDecision.Refused)
+                {
+                    // F74. Stopped. The reason names the file and says what to do, and it
+                    // goes on the group so GroupJudgement reports it FAILED in those words
+                    // rather than DONE over an empty document. Nothing is written.
+                    outcome.NwfReadEmptyReason = comparison.Reason;
+                    return outcome;
                 }
 
                 if (comparison.Decision == RerunDecision.Changed)
@@ -475,6 +714,144 @@ namespace Federator.Addin.Engine
             }
 
             return outcome;
+        }
+
+        /// <summary>
+        /// The census that proves the top of a group is what it should be, F75. The first
+        /// census of a scanned group must read models 0, sets 0, tests 0, results 0 and
+        /// views 0, and a group that was emptied and still holds something is named count
+        /// by count and is not DONE, because everything it goes on to read comes out of
+        /// that document. The open file run passes false: it empties nothing, because the
+        /// document IS the file list there, and the line says what it found and calls it
+        /// no fault. The rule and both wordings are Federator.Core.Diagnostics.CensusRule,
+        /// and a count the reader could not take is UNKNOWN there and never called dirty.
+        /// </summary>
+        private void StartOfGroupCensus(Document document, JobOutcome outcome, bool cleared)
+        {
+            DocumentCensus census = DocumentCensusReader.Read(document);
+            log.Line(CensusRule.StartOfGroupLine(census, cleared));
+            outcome.AddError(CensusRule.StartOfGroupReason(census, cleared));
+        }
+
+        /// <summary>
+        /// Opens an NWF and waits for its models, F74. TryOpenFile returning true does not
+        /// mean the models are in the document: on the first real run all five existing
+        /// NWFs read empty the instant the open returned and were rebuilt, throwing away
+        /// every clash result in them. The rule is Federator.Core.Rerun.ModelLoadWait, and
+        /// this hands it the count and the seconds since the open returned, off one
+        /// monotonic clock, pausing between readings. Both readers of an NWF, Decide and
+        /// the preview, come through here, so the two cannot disagree.
+        ///
+        /// THE PAUSE PUMPS THE DISPATCHER BEFORE IT SLEEPS. Whether Navisworks fills the
+        /// models inside the open call or on the message loop afterwards is what scan.md
+        /// 5e could not read off the DLL. A sleep alone would never let the second happen,
+        /// and the window already pumps between groups on this same thread.
+        ///
+        /// THE SCENE LOADED EVENT IS COUNTED AND NEVER WAITED FOR. It exists, 5e, and when
+        /// it fires against the open is UNKNOWN, so one line says how many times it fired
+        /// and when, and the run acts on none of it. When a run shows it firing after the
+        /// open returns and before the count settles, every time, it becomes the reader.
+        /// </summary>
+        private static bool OpenAndWaitForTheModels(
+            Document document, string path, RunLog log, out ModelLoadWait wait)
+        {
+            wait = new ModelLoadWait();
+            Stopwatch clock = Stopwatch.StartNew();
+            DocumentModels models = document.Models;
+            int fired = 0;
+            double firstFiredAt = -1.0;
+            double lastFiredAt = -1.0;
+
+            EventHandler<Autodesk.Navisworks.Api.Interop.SceneLoadedEventArgs> onSceneLoaded =
+                delegate
+                {
+                    fired++;
+                    lastFiredAt = clock.Elapsed.TotalSeconds;
+
+                    if (firstFiredAt < 0)
+                    {
+                        firstFiredAt = lastFiredAt;
+                    }
+                };
+
+            bool subscribed = false;
+
+            try
+            {
+                try
+                {
+                    models.SceneLoaded += onSceneLoaded;
+                    subscribed = true;
+                }
+                catch (Exception error)
+                {
+                    if (log != null)
+                    {
+                        log.Failure(
+                            "listening for the scene loaded event",
+                            error,
+                            "kept going, the model count is read either way");
+                    }
+                }
+
+                if (!document.TryOpenFile(path))
+                {
+                    return false;
+                }
+
+                double opened = clock.Elapsed.TotalSeconds;
+
+                while (wait.Read(document.Models.Count, clock.Elapsed.TotalSeconds - opened)
+                    == LoadWaitVerdict.KeepWaiting)
+                {
+                    System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(
+                        System.Windows.Threading.DispatcherPriority.Background,
+                        new Action(delegate { }));
+                    System.Threading.Thread.Sleep(wait.PauseMilliseconds);
+                }
+
+                if (log != null)
+                {
+                    log.Line(wait.Line());
+                    log.Line(ModelLoadWait.Prefix
+                        + SceneLoadedWords(fired, firstFiredAt, lastFiredAt, opened));
+                }
+
+                return true;
+            }
+            finally
+            {
+                if (subscribed)
+                {
+                    try
+                    {
+                        models.SceneLoaded -= onSceneLoaded;
+                    }
+                    catch (Exception)
+                    {
+                        // A handler that will not come off only counts, on a document
+                        // part that outlives this call, and counting changes nothing.
+                    }
+                }
+            }
+        }
+
+        /// <summary>The one line about the event, 5e. Every number on it was read.</summary>
+        private static string SceneLoadedWords(int fired, double firstAt, double lastAt, double opened)
+        {
+            if (fired == 0)
+            {
+                return "the scene loaded event did not fire between the open beginning and the wait ending";
+            }
+
+            return "the scene loaded event fired " + fired + (fired == 1 ? " time" : " times")
+                + ", first at " + Fixed(firstAt) + "s and last at " + Fixed(lastAt)
+                + "s after the open began, and the open returned at " + Fixed(opened) + "s";
+        }
+
+        private static string Fixed(double seconds)
+        {
+            return seconds.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -700,10 +1077,26 @@ namespace Federator.Addin.Engine
             Say("Opening the existing NWF for " + job.Building);
             log.Line("OPEN     reading the file list out of " + job.NwfPath);
 
-            if (!document.TryOpenFile(job.NwfPath))
+            // F74. The open is waited on, because TryOpenFile returning true does not mean
+            // the models are in the document. See OpenAndWaitForTheModels.
+            ModelLoadWait wait;
+
+            if (!OpenAndWaitForTheModels(document, job.NwfPath, log, out wait))
             {
                 throw new InvalidOperationException(
                     "The NWF at " + job.NwfPath + " is there but would not open, so the group was left alone.");
+            }
+
+            if (wait.GaveUp && wait.LastCount == 0)
+            {
+                // F74. It opened with no error and reported no models for the whole of
+                // the ceiling. Never rebuilt, because that threw five federations and
+                // every clash result in them away, and never opened, because every test
+                // would pass against an empty document. Compare cannot answer this,
+                // because handed an empty list it cannot tell an empty NWF from one that
+                // has not loaded, so the caller says it.
+                return NwfComparison.ReadEmpty(
+                    job.NwfPath, job.Files, "after waiting " + Fixed(wait.Seconds) + "s");
             }
 
             return NwfComparison.Compare(FilesInsideTheOpenDocument(job.Building), job.Files);
@@ -1131,9 +1524,19 @@ namespace Federator.Addin.Engine
 
                         Document document = NavisworksApplication.ActiveDocument;
 
-                        if (document == null || !document.TryOpenFile(job.NwfPath))
+                        ModelLoadWait wait;
+
+                        if (document == null || !OpenAndWaitForTheModels(document, job.NwfPath, log, out wait))
                         {
                             label = RunPath.Unknown;
+                        }
+                        else if (wait.GaveUp && wait.LastCount == 0)
+                        {
+                            // F74. The same refusal the run makes, read through the same
+                            // two rules, or the confirm dialog says Rebuilt about a
+                            // healthy NWF.
+                            opened++;
+                            label = RunPath.AfterOpening(RerunDecision.Refused, xmlPicked);
                         }
                         else
                         {
@@ -1302,6 +1705,105 @@ namespace Federator.Addin.Engine
             // F54. A status written into the document is a change, so it asks for the NWF
             // the same way a test that ran does.
             return CreateAndRunTheTests(document, job, outcome, source) || changed;
+        }
+
+        /// <summary>
+        /// The property probe over the document that is open, F86. Reads and changes
+        /// nothing, and opens nothing. One CSV per model, beside that model's own file.
+        /// </summary>
+        public IList<string> ProbeTheOpenDocumentByHand()
+        {
+            PropertyProbe probe = new PropertyProbe(log, new ProbeSettings());
+            Document document = NavisworksApplication.ActiveDocument;
+
+            if (document == null || document.Models == null)
+            {
+                log.Line("PROBE    nothing is open, so there is nothing to read");
+                return probe.Lines;
+            }
+
+            log.Line("PROBE    the open document, " + document.Models.Count
+                + (document.Models.Count == 1 ? " model" : " models"));
+
+            foreach (Model model in document.Models)
+            {
+                probe.ProbeModel(model);
+            }
+
+            return probe.Lines;
+        }
+
+        /// <summary>
+        /// The property probe over a folder of NWC files, F86. Each NWC is OPENED, which
+        /// replaces whatever is open, so the window confirms that first. An NWF or an NWD
+        /// in the folder is refused by name and never opened, because the NWF is where
+        /// every clash result lives and the NWD is something this tool writes.
+        /// </summary>
+        public IList<string> ProbeTheFolderByHand(string folder)
+        {
+            PropertyProbe probe = new PropertyProbe(log, new ProbeSettings());
+
+            if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
+            {
+                log.Line("PROBE    no folder at " + Words.Or(folder, "an empty path") + ", so nothing was read");
+                return probe.Lines;
+            }
+
+            List<string> files = new List<string>();
+
+            foreach (string path in Directory.GetFiles(folder))
+            {
+                string extension = Path.GetExtension(path);
+
+                if (string.Equals(extension, ".nwc", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(extension, ".nwf", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(extension, ".nwd", StringComparison.OrdinalIgnoreCase))
+                {
+                    files.Add(path);
+                }
+            }
+
+            files.Sort(StringComparer.OrdinalIgnoreCase);
+            log.Line("PROBE    " + folder + ", " + files.Count + (files.Count == 1 ? " file" : " files"));
+
+            foreach (string path in files)
+            {
+                string why;
+
+                if (!ProbeSettings.MayRead(path, out why))
+                {
+                    log.Line("PROBE    " + Path.GetFileName(path) + "  not opened, " + why);
+                    continue;
+                }
+
+                Document document = NavisworksApplication.ActiveDocument;
+                ModelLoadWait wait;
+
+                if (document == null || !OpenAndWaitForTheModels(document, path, log, out wait))
+                {
+                    log.Line("PROBE    " + Path.GetFileName(path) + "  would not open, so it was not read");
+                    continue;
+                }
+
+                foreach (Model model in document.Models)
+                {
+                    probe.ProbeModel(model);
+                }
+            }
+
+            return probe.Lines;
+        }
+
+        /// <summary>
+        /// The Undo auto Reviewed button, F72c. Runs on the open document and saves
+        /// nothing, the same as the two hand buttons. The pass, the block and the words
+        /// are UndoAutoReviewed and Federator.Core.Clash.UndoAutoReview.
+        /// </summary>
+        public UndoAutoReviewed UndoAutoReviewedByHand()
+        {
+            UndoAutoReviewed undo = new UndoAutoReviewed(log);
+            undo.Run(NavisworksApplication.ActiveDocument);
+            return undo;
         }
 
         /// <summary>
@@ -1484,6 +1986,9 @@ namespace Federator.Addin.Engine
                 runner.ApplyFileSettings = reports.ApplyFileSettings;
                 runner.CompactResolved = reports.CompactResolved;
 
+                // F76. The tolerance chosen on the Clash step, or the file per test.
+                runner.Tolerance = reports.Tolerance;
+
                 // F72. Built only when the box is on, so a run that did not ask for it
                 // hands the runner a null and the runner resolves nothing and walks
                 // nothing. The tally is per GROUP, because the block is per group, and the
@@ -1498,10 +2003,23 @@ namespace Federator.Addin.Engine
                     runner.PenetrationTally = penetrationTally;
                 }
 
+                // F72b. The same shape as the penetration pass, and judged after it so the
+                // penetration rule keeps a clash they both want.
+                ByDesignTally byDesignTally = null;
+
+                if (reports.MarkByDesign)
+                {
+                    log.ByDesignWanted = true;
+                    byDesignTally = new ByDesignTally();
+                    runner.ByDesign = new ByDesign(log, ThePairs());
+                    runner.ByDesignTally = byDesignTally;
+                }
+
                 if (runner.SingleDisciplineGroup)
                 {
-                    log.Line("CLASH    " + job.Building + " holds one discipline, so every test is created "
-                        + "and none is run. One discipline cannot clash with itself.");
+                    log.Line("CLASH    " + job.Building + " holds one discipline, so no test is run, and "
+                        + "only the tests whose sides both find something are created. One discipline "
+                        + "cannot clash with itself.");
                 }
 
                 // Each output answers to its own flag. The report is built when the
@@ -1553,6 +2071,8 @@ namespace Federator.Addin.Engine
                     outcome.Report.CompactedAway = clash.Compacted;
                 }
                 outcome.Clash = clash;
+                CountToleranceOrigins(outcome.Report);
+                ApplyThePriorities(job, outcome.Report);
                 log.Block("CLASH " + job.Building, clash.Lines());
 
                 // F72. Straight after the CLASH block, because it is about the clashes that
@@ -1566,6 +2086,16 @@ namespace Federator.Addin.Engine
                         penetrationTally.Lines(reports.Penetrations, reports.Sizes));
 
                     log.PenetrationsMoved += penetrationTally.MovedCount;
+                }
+
+                // F72b. Straight after the PENETRATION block, the same shape, written even
+                // when nothing moved. The run total goes to RESULT and the pairs seen are
+                // kept so the pairs that matched nothing are named once across the run.
+                if (byDesignTally != null)
+                {
+                    log.Block("BY DESIGN " + job.Building, byDesignTally.Lines());
+                    log.ByDesignMoved += byDesignTally.MovedCount;
+                    byDesignAcrossTheRun.Add(byDesignTally);
                 }
 
                 if (outcome.Report != null)
@@ -1665,11 +2195,20 @@ namespace Federator.Addin.Engine
         /// This is the check that would have caught Source File and Discipline coming out
         /// empty on every row, without anyone opening the file to find out.
         /// </summary>
-        private void CheckTheWorkbook(FederationJob job, string path)
+        private void CheckTheWorkbook(FederationJob job, string path, int testsInTheFile)
         {
-            WorkbookCheck check = WorkbookCheck.Of(path);
+            WorkbookCheck check = WorkbookCheck.Of(path, ThePriorities().Picked);
 
             log.Block("WORKBOOK CHECK " + job.Building, check.Lines());
+
+            // F77. The workbook carries a block for every test in the file whether or not
+            // the test was created, and a count that differs is said in capitals. Only
+            // where the tests came from a file, because that is what the count is of.
+            if (check.Ran && testsInTheFile >= 0)
+            {
+                log.Line(CreationPlan.BlockCountLine(check.Blocks, testsInTheFile));
+            }
+
             Say(job.Building + ". " + check.Summary());
         }
 
@@ -1998,7 +2537,7 @@ namespace Federator.Addin.Engine
             outcome.WorkbookSize = log.WriteFinished("XLSX", path);
             outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
 
-            CheckTheWorkbook(job, path);
+            CheckTheWorkbook(job, path, outcome.Clash == null || exchange == null ? -1 : outcome.Clash.TestsInFile);
         }
 
         /// <summary>The clash XML itself, split out for the same reason.</summary>

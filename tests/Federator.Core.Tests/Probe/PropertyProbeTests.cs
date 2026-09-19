@@ -383,5 +383,65 @@ namespace Federator.Core.Tests
             Assert.That(ProbeSettings.ButtonLabel, Is.EqualTo("Probe model properties"));
             Assert.That(ProbeSettings.HelpLine.Split(' ').Length, Is.LessThanOrEqualTo(12));
         }
+
+        /// <summary>
+        /// F86. The probe asks for a category the way the penetration rule reads one,
+        /// trimmed and case blind, so the two agree, and a category neither list holds is
+        /// not asked for.
+        /// </summary>
+        [Test]
+        public void TheProbeAsksForACategoryTheWayThePenetrationRuleReadsOne()
+        {
+            ProbeSettings settings = new ProbeSettings();
+            PenetrationSettings rule = new PenetrationSettings();
+
+            foreach (string category in settings.Categories)
+            {
+                Assert.That(settings.Asks(category), Is.True, category);
+                Assert.That(settings.Asks(" " + category.ToUpperInvariant() + " "), Is.True, category);
+                Assert.That(rule.IsDecided(category), Is.True, category);
+            }
+
+            Assert.That(settings.Asks("Walls"), Is.False);
+            Assert.That(settings.Asks(string.Empty), Is.False);
+            Assert.That(settings.Asks(null), Is.False);
+
+            settings.Categories = new List<string> { "Ducts" };
+            Assert.That(settings.Asks("Pipes"), Is.False, "a narrowed list is the list");
+        }
+
+        /// <summary>
+        /// A19. The cap tested AT the number and one past it. Exactly a hundred values is
+        /// the cap and not over it, so no cap line, and the hundred and first is the first
+        /// that must write one, saying one value was left out.
+        /// </summary>
+        [Test]
+        public void ExactlyTheCapWritesNoCapLineAndOnePastItWritesOne()
+        {
+            ProbeTally at = new ProbeTally(100);
+
+            for (int i = 0; i < 100; i++)
+            {
+                at.Add("Pipes", "Element", "Mark", "P-" + i.ToString("000"));
+            }
+
+            Assert.That(at.Rows().Count, Is.EqualTo(100), "a hundred values is the cap, not over it");
+            Assert.That(at.Capped(), Is.Empty);
+
+            ProbeTally past = new ProbeTally(100);
+
+            for (int i = 0; i < 101; i++)
+            {
+                past.Add("Pipes", "Element", "Mark", "P-" + i.ToString("000"));
+            }
+
+            IList<ProbeRow> rows = past.Rows();
+
+            Assert.That(rows.Count, Is.EqualTo(101), "a hundred values and one line saying so");
+            Assert.That(rows[100].IsTheCapLine, Is.True);
+            Assert.That(rows[100].Value, Does.Contain("1 more distinct value here"));
+            Assert.That(rows[100].Elements, Is.EqualTo(1));
+            Assert.That(past.Capped().Count, Is.EqualTo(1));
+        }
     }
 }

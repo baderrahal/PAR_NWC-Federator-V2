@@ -436,7 +436,7 @@ namespace Federator.Core.Tests
         /// written is not a viewpoint.
         /// </summary>
         [Test]
-        public void ThePlanIsBuiltAndNothingWritesItYet()
+        public void ThePlanIsBuiltFromOneClash()
         {
             Assert.That(Plan(false, Simple("BLD-AR-Walls", "BLD-ST-Columns")).Planned.Count,
                 Is.EqualTo(1),

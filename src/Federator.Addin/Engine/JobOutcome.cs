@@ -102,6 +102,7 @@ namespace Federator.Addin.Engine
             GroupFacts facts = new GroupFacts
             {
                 Decision = Decision,
+                NwfReadEmptyReason = NwfReadEmptyReason,
                 NwfOnDisk = NwfOnDisk,
 
                 // Republishing the NWD is fixed on, so it is always a requested step. The
@@ -134,6 +135,12 @@ namespace Federator.Addin.Engine
 
         /// <summary>Which of the three rerun cases this group turned out to be.</summary>
         public RerunDecision Decision { get; set; }
+
+        /// <summary>
+        /// Why the NWF was refused, F74, or null. Only a Refused group carries one, and
+        /// GroupJudgement reads it as the words the group is FAILED with.
+        /// </summary>
+        public string NwfReadEmptyReason { get; set; }
 
         /// <summary>Size read back off the disk, or minus one when the NWF is not there.</summary>
         public long NwfSize { get; set; }

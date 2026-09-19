@@ -435,5 +435,27 @@ namespace Federator.Core.Tests
 
             return names;
         }
+
+        /// <summary>A19. Exactly five unmatched are all named and one past it is counted.</summary>
+        [Test]
+        public void ExactlyFiveUnmatchedAreAllNamedAndOnePastItIsCounted()
+        {
+            PriorityMap map = PriorityMap.Read(
+                "test_name,left_set,right_set,priority\nT,L,R,A\n", "a.csv");
+
+            string at = string.Join("\n", new List<string>(
+                map.MatchLines(new[] { "T", "u1", "u2", "u3", "u4", "u5" })).ToArray());
+
+            Assert.That(at, Does.Contain("5 not named by the file"));
+            Assert.That(at, Does.Contain("u5"));
+            Assert.That(at, Does.Not.Contain("more not named by the file"));
+
+            string past = string.Join("\n", new List<string>(
+                map.MatchLines(new[] { "T", "u1", "u2", "u3", "u4", "u5", "u6" })).ToArray());
+
+            Assert.That(past, Does.Contain("u5"));
+            Assert.That(past, Does.Not.Contain("u6"));
+            Assert.That(past, Does.Contain("and 1 more not named by the file"));
+        }
     }
 }

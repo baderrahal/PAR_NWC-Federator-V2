@@ -487,5 +487,108 @@ namespace Federator.Core.Tests
         {
             Assert.That(SetsAcrossTheRun.BlockTitle, Is.EqualTo("SETS ACROSS THE RUN"));
         }
+
+        /// <summary>
+        /// A19. The repeat threshold AT the number. Exactly five go out in full and nothing
+        /// says the rest were counted, because there is no rest. A less than written as at
+        /// most would pass every test above this one and fail here.
+        /// </summary>
+        [Test]
+        public void ExactlyTheKeptCountWritesEveryLineAndNoCountedLine()
+        {
+            using (RunLog log = Start())
+            {
+                for (int i = 1; i <= RunLog.KeptOfARepeat; i++)
+                {
+                    log.NumberedRepeat("k", "line " + i + "  they agree", "h", "n" + i, "1", "t");
+                }
+
+                string text = ReadWhileOpen(log.Path);
+
+                Assert.That(Occurrences(text, "they agree"), Is.EqualTo(RunLog.KeptOfARepeat));
+                Assert.That(text, Does.Not.Contain("counted and not written out"));
+            }
+        }
+
+        /// <summary>A19. One past the threshold is the first that must collapse.</summary>
+        [Test]
+        public void OnePastTheKeptCountWritesFiveAndTheCountedLine()
+        {
+            using (RunLog log = Start())
+            {
+                for (int i = 1; i <= RunLog.KeptOfARepeat + 1; i++)
+                {
+                    log.NumberedRepeat("k", "line " + i + "  they agree", "h", "n" + i, "1", "t");
+                }
+
+                string text = ReadWhileOpen(log.Path);
+
+                Assert.That(Occurrences(text, "they agree"), Is.EqualTo(RunLog.KeptOfARepeat));
+                Assert.That(text, Does.Contain("counted and not written out"));
+                Assert.That(text, Does.Contain("line " + RunLog.KeptOfARepeat + "  they agree"));
+                Assert.That(text, Does.Not.Contain("line " + (RunLog.KeptOfARepeat + 1) + "  they agree"));
+            }
+        }
+
+        /// <summary>A19. The sets block AT ten names all ten and says nothing about more.</summary>
+        [Test]
+        public void ExactlyTenSetsAtZeroAreAllNamedAndOnePastItIsCounted()
+        {
+            SetsAcrossTheRun at = new SetsAcrossTheRun();
+            SetBuildOutcome ten = new SetBuildOutcome();
+
+            for (int i = 0; i < SetsAcrossTheRun.ExamplesShown; i++)
+            {
+                ten.AddAlreadyPresent("tree/set " + i.ToString("00"), "set", 1, 0);
+            }
+
+            at.Add(ten);
+            string all = string.Join("\n", new List<string>(at.Lines()).ToArray());
+
+            Assert.That(all, Does.Contain("tree/set " + (SetsAcrossTheRun.ExamplesShown - 1).ToString("00")));
+            Assert.That(all, Does.Not.Contain("more that found nothing in every group"));
+
+            SetsAcrossTheRun past = new SetsAcrossTheRun();
+            SetBuildOutcome eleven = new SetBuildOutcome();
+
+            for (int i = 0; i <= SetsAcrossTheRun.ExamplesShown; i++)
+            {
+                eleven.AddAlreadyPresent("tree/set " + i.ToString("00"), "set", 1, 0);
+            }
+
+            past.Add(eleven);
+            all = string.Join("\n", new List<string>(past.Lines()).ToArray());
+
+            Assert.That(all, Does.Not.Contain("tree/set " + SetsAcrossTheRun.ExamplesShown.ToString("00")));
+            Assert.That(all, Does.Contain("and 1 more that found nothing in every group, counted and not listed"));
+        }
+
+        /// <summary>A19. Exactly five in one bucket are all named and six is the first that counts.</summary>
+        [Test]
+        public void ExactlyFiveDriftingTestsAreAllNamedAndOnePastItIsCounted()
+        {
+            List<TestDifference> all = new List<TestDifference>();
+
+            for (int i = 1; i <= TestDrift.ExamplesShown; i++)
+            {
+                all.Add(new TestDifference("test " + i, "tolerance", "0.025m", "0.075m"));
+            }
+
+            IList<string> lines = TestDrift.Grouped(all);
+            string text = string.Join("\n", new List<string>(lines).ToArray());
+
+            Assert.That(lines.Count, Is.EqualTo(1 + TestDrift.ExamplesShown), "the bucket line and five names");
+            Assert.That(text, Does.Contain("test " + TestDrift.ExamplesShown));
+            Assert.That(text, Does.Not.Contain("more with the same difference"));
+
+            all.Add(new TestDifference("test " + (TestDrift.ExamplesShown + 1), "tolerance", "0.025m", "0.075m"));
+            lines = TestDrift.Grouped(all);
+            text = string.Join("\n", new List<string>(lines).ToArray());
+
+            Assert.That(lines.Count, Is.EqualTo(1 + TestDrift.ExamplesShown + 1));
+            Assert.That(text, Does.Not.Contain("test " + (TestDrift.ExamplesShown + 1)));
+            Assert.That(lines[lines.Count - 1],
+                Does.Contain("and 1 more with the same difference, counted and not listed"));
+        }
     }
 }

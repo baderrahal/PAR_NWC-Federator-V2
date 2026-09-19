@@ -15,6 +15,7 @@ using Federator.Core.Grouping;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
 using Federator.Core.Naming;
+using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -82,6 +83,11 @@ namespace Federator.Addin.Ui
             ShowTheInstallsLogo();
             ShowImageDefaults();
             ShowPenetrationWording();
+            FillTolerance();
+            ShowPriorityWording();
+            ShowByDesignWording();
+            ShowUndoWording();
+            ShowProbeWording();
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
@@ -1017,6 +1023,383 @@ namespace Federator.Addin.Ui
             }
         }
 
+
+        /// <summary>
+        /// The tolerance drop down, F76. Every entry, the label, the grey line and the unit
+        /// beside the number box come off Core, because the offered values are a setting
+        /// and a copy typed into the XAML is the one nothing can test.
+        /// </summary>
+        private void FillTolerance()
+        {
+            if (ToleranceBox == null)
+            {
+                return;
+            }
+
+            ToleranceLabel.Content = ToleranceChoice.PickerLabel;
+            ToleranceHelp.Text = ToleranceChoice.HelpLine;
+            ToleranceBox.Items.Clear();
+
+            foreach (string choice in ToleranceChoice.Choices())
+            {
+                ToleranceBox.Items.Add(choice);
+            }
+
+            ToleranceBox.SelectedIndex = 0;
+
+            // The number box is in millimetres, which is what a person says, and the word
+            // beside it is the unit table's rather than typed here.
+            UnitRow millimetres = UnitTable.FindByExchangeCode("mm");
+            ToleranceOtherUnit.Text = millimetres == null ? string.Empty : millimetres.DisplayName;
+        }
+
+        /// <summary>The number box only takes a value under Other, which is the last entry.</summary>
+        private void OnToleranceChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ToleranceBox == null || ToleranceOtherBox == null)
+            {
+                return;
+            }
+
+            ToleranceOtherBox.IsEnabled = ToleranceBox.SelectedIndex == ToleranceBox.Items.Count - 1;
+        }
+
+        /// <summary>
+        /// What the drop down says, F76. The entries are the list Choices() gave, in its
+        /// order: the file first, the offered values, then Other with the number box. A
+        /// number that is not a tolerance is refused by ToleranceChoice.Of in its own
+        /// words, and the caller shows those before the run starts.
+        /// </summary>
+        private ToleranceChoice ChosenTolerance()
+        {
+            int at = ToleranceBox == null ? 0 : ToleranceBox.SelectedIndex;
+
+            if (at <= 0)
+            {
+                return ToleranceChoice.FromTheFile();
+            }
+
+            if (at <= ToleranceChoice.OfferedMillimetres.Length)
+            {
+                return ToleranceChoice.Of(ToleranceChoice.OfferedMillimetres[at - 1]);
+            }
+
+            double typed;
+
+            if (!double.TryParse(
+                Trimmed(ToleranceOtherBox.Text),
+                System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out typed))
+            {
+                // Not a number, handed over as one so the refusal is Core's wording and
+                // not a second one here.
+                typed = double.NaN;
+            }
+
+            return ToleranceChoice.Of(typed);
+        }
+
+        /// <summary>
+        /// How many tests the picked file holds, for the confirm dialog, or zero where
+        /// nothing is picked or the file will not read. The run reads and reports the
+        /// file itself, so a failure here is not said twice.
+        /// </summary>
+        private int TestsInThePickedFile()
+        {
+            try
+            {
+                ExchangeDocument exchange = PickedExchange();
+                return exchange == null ? 0 : exchange.Tests.Count;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>The grey line under the priority picker names the file's columns off Core, F83.</summary>
+        private void ShowPriorityWording()
+        {
+            if (PriorityHelp == null)
+            {
+                return;
+            }
+
+            PriorityHelp.Text = "Optional. Columns " + string.Join(", ", PriorityMap.Columns)
+                + ", the priority A, B or C.";
+        }
+
+        /// <summary>
+        /// The priority CSV picker, F83. Optional, and its own remembered folder, because
+        /// the matrix and the clash XML live in different folders as often as not.
+        /// </summary>
+        private void OnBrowsePriorityFile(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.Title = "Pick the clash priority CSV, one row per test name";
+                dialog.Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*";
+                dialog.CheckFileExists = true;
+
+                string folder = StartFor(PickerKind.Priority, PriorityBox.Text);
+
+                if (folder.Length > 0 && Directory.Exists(folder))
+                {
+                    dialog.InitialDirectory = folder;
+                }
+
+                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                folders.Remember(PickerKind.Priority, dialog.FileName);
+                PriorityBox.Text = dialog.FileName;
+            }
+        }
+
+        /// <summary>
+        /// The by design box's label and grey line, and the picker's grey line, all read
+        /// off Core, F72b. Nothing here is typed into the XAML.
+        /// </summary>
+        private void ShowByDesignWording()
+        {
+            if (MarkByDesign == null)
+            {
+                return;
+            }
+
+            MarkByDesign.Content = ByDesignPairs.TickLabel;
+
+            if (MarkByDesignHelp != null)
+            {
+                MarkByDesignHelp.Text = ByDesignPairs.HelpLine;
+            }
+
+            if (ByDesignHelp != null)
+            {
+                ByDesignHelp.Text = "Read only with the box below on. Columns "
+                    + string.Join(", ", ByDesignPairs.Columns) + ".";
+            }
+        }
+
+        /// <summary>The by design pairs picker, F72b. Its own remembered folder, like the others.</summary>
+        private void OnBrowseByDesignFile(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.Title = "Pick the by design pairs CSV, one row per pair of sets";
+                dialog.Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*";
+                dialog.CheckFileExists = true;
+
+                string folder = StartFor(PickerKind.ByDesign, ByDesignBox.Text);
+
+                if (folder.Length > 0 && Directory.Exists(folder))
+                {
+                    dialog.InitialDirectory = folder;
+                }
+
+                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                folders.Remember(PickerKind.ByDesign, dialog.FileName);
+                ByDesignBox.Text = dialog.FileName;
+            }
+        }
+
+        /// <summary>The undo button's label and grey line, both read off Core, F72c.</summary>
+        private void ShowUndoWording()
+        {
+            if (UndoAutoReviewedButton == null)
+            {
+                return;
+            }
+
+            UndoAutoReviewedButton.Content = UndoAutoReview.ButtonLabel;
+
+            if (UndoAutoReviewedHelp != null)
+            {
+                UndoAutoReviewedHelp.Text = UndoAutoReview.HelpLine;
+            }
+        }
+
+        /// <summary>
+        /// The Undo auto Reviewed button, F72c. Every test in the open document, and only
+        /// the clashes carrying this tool's record that are still at Reviewed, each put
+        /// back to the status its record names. Nothing is saved, the same as the two hand
+        /// buttons above it. Runs on the plugin thread like everything else.
+        /// </summary>
+        private void OnUndoAutoReviewed(object sender, RoutedEventArgs e)
+        {
+            if (running)
+            {
+                return;
+            }
+
+            running = true;
+            UndoAutoReviewedButton.IsEnabled = false;
+
+            try
+            {
+                log.Line(UndoAutoReview.Prefix + " started by hand on the open document, nothing is saved");
+
+                FederationEngine engine = new FederationEngine(SetProgress, log, null, ReportsWanted());
+                UndoAutoReviewed undo = engine.UndoAutoReviewedByHand();
+
+                string said = undo.Tally == null
+                    ? "Nothing was read."
+                    : undo.Tally.PutBackCount + " put back of " + undo.Tally.Considered + " looked at."
+                        + (undo.ChangedTheDocument
+                            ? " The open file is changed and not saved."
+                            : string.Empty);
+
+                UndoAutoReviewedLine.Text = said;
+                SetProgress(said);
+            }
+            catch (Exception error)
+            {
+                log.Failure("the undo", error, "stopped, whatever was already put back stays put back");
+                SetProgress("The undo stopped on an error.");
+                Warn("The undo stopped." + Environment.NewLine + Environment.NewLine + error.Message);
+            }
+            finally
+            {
+                running = false;
+                UndoAutoReviewedButton.IsEnabled = true;
+            }
+        }
+
+        /// <summary>The probe button's label and grey line, both read off Core, F86.</summary>
+        private void ShowProbeWording()
+        {
+            if (ProbeButton == null)
+            {
+                return;
+            }
+
+            ProbeButton.Content = ProbeSettings.ButtonLabel;
+
+            if (ProbeHelp != null)
+            {
+                ProbeHelp.Text = ProbeSettings.HelpLine;
+            }
+        }
+
+        /// <summary>
+        /// The Probe model properties button, F86. A folder of NWC files, each opened in
+        /// turn, or the document that is open. Opening a folder replaces whatever is open,
+        /// so that is confirmed the way the run confirms it. Runs on the plugin thread.
+        /// </summary>
+        private void OnProbeModelProperties(object sender, RoutedEventArgs e)
+        {
+            if (running)
+            {
+                return;
+            }
+
+            MessageBoxResult which = MessageBox.Show(
+                this,
+                "Probe a folder of NWC files?" + Environment.NewLine + Environment.NewLine
+                    + "Yes picks the folder and opens each NWC in turn, which replaces whatever is open."
+                    + Environment.NewLine
+                    + "No reads the document that is open now, without opening anything."
+                    + Environment.NewLine
+                    + "Cancel does nothing.",
+                "Parsons NWC Federator",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question);
+
+            if (which == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+
+            string folder = null;
+
+            if (which == MessageBoxResult.Yes)
+            {
+                // The source folder is where the NWC files usually are, so the picker
+                // starts there, and nothing is remembered because this is not that picker.
+                folder = PickFolder(
+                    "Pick the folder of NWC files to probe", StartFor(PickerKind.Source, SourceFolderBox.Text));
+
+                if (folder == null)
+                {
+                    return;
+                }
+
+                if (!ConfirmTheOpenDocumentGoes())
+                {
+                    Log("Probe cancelled before anything was opened.");
+                    return;
+                }
+            }
+
+            running = true;
+            ProbeButton.IsEnabled = false;
+
+            try
+            {
+                log.Line("PROBE    started by hand, "
+                    + (folder == null ? "on the open document" : "over " + folder));
+
+                FederationEngine engine = new FederationEngine(SetProgress, log, null, ReportsWanted());
+                IList<string> lines = folder == null
+                    ? engine.ProbeTheOpenDocumentByHand()
+                    : engine.ProbeTheFolderByHand(folder);
+
+                ShowSetLines(lines);
+                ProbeLine.Text = lines.Count == 0 ? "Nothing was read." : lines[lines.Count - 1].Trim();
+                SetProgress("Probe finished. " + RunLog.TheLogSaysWhy());
+            }
+            catch (Exception error)
+            {
+                log.Failure("the probe", error, "stopped, every CSV already written is kept");
+                SetProgress("The probe stopped on an error.");
+                Warn("The probe stopped." + Environment.NewLine + Environment.NewLine + error.Message);
+            }
+            finally
+            {
+                running = false;
+                ProbeButton.IsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Says what opening a file would discard, the way the run's confirm dialog does,
+        /// and asks. Nothing open means nothing is lost and nothing is asked.
+        /// </summary>
+        private bool ConfirmTheOpenDocumentGoes()
+        {
+            string discarded;
+
+            try
+            {
+                discarded = DocumentGuard.WhatClearWouldDiscard();
+            }
+            catch (Exception error)
+            {
+                discarded = "Navisworks would not say what is open (" + error.Message + ").";
+            }
+
+            if (discarded == null)
+            {
+                return true;
+            }
+
+            MessageBoxResult answer = MessageBox.Show(
+                this,
+                "This will be discarded without saving:" + Environment.NewLine + "    " + discarded
+                    + Environment.NewLine + Environment.NewLine + "Carry on?",
+                "Parsons NWC Federator",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning);
+
+            return answer == MessageBoxResult.OK;
+        }
         /// <summary>The table's display name, and on the default a word on what it is for.</summary>
         private static string UnitWording(UnitRow row)
         {
@@ -1110,6 +1493,10 @@ namespace Federator.Addin.Ui
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
             options.CompactResolved = CompactResolved.IsChecked == true;
             options.MarkPenetrations = MarkPenetrations.IsChecked == true;
+            options.Tolerance = ChosenTolerance();
+            options.PriorityPath = Trimmed(PriorityBox.Text);
+            options.MarkByDesign = MarkByDesign.IsChecked == true;
+            options.ByDesignPath = Trimmed(ByDesignBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
@@ -1336,6 +1723,20 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            // F76. A tolerance that is not one is refused here, in Core's words, rather
+            // than reaching 1830 tests and being discovered in a report.
+            ToleranceChoice tolerance;
+
+            try
+            {
+                tolerance = ChosenTolerance();
+            }
+            catch (ArgumentOutOfRangeException error)
+            {
+                Warn(error.Message);
+                return;
+            }
+
             // The NWF folder may have changed since the list was last refreshed, so the
             // labels are read again right before they are counted.
             RefreshRunPaths();
@@ -1344,7 +1745,7 @@ namespace Federator.Addin.Ui
             // the dialog can count the Rebuilt groups and the list can show them.
             PreviewRunPaths(jobs);
 
-            if (!ConfirmClear(TickedRunPaths()))
+            if (!ConfirmClear(TickedRunPaths(), tolerance))
             {
                 Log("Run cancelled before anything was cleared.");
                 return;
@@ -1372,6 +1773,16 @@ namespace Federator.Addin.Ui
                 + (MarkPenetrations.IsChecked == true
                     ? "YES, a small service through a wall, floor or roof becomes Reviewed"
                     : "no, every clash keeps the status it has"));
+            log.Line("clash tolerance  : " + tolerance.Label()
+                + (tolerance.ChosenInTheTool
+                    ? ", chosen in the tool, set on every test and beats the XML and the document"
+                    : ", read per test out of the XML"));
+            log.Line("priority file    : " + (Trimmed(PriorityBox.Text).Length == 0
+                ? "none, so no Priority column and the measured block order"
+                : Trimmed(PriorityBox.Text)));
+            log.Line("by design        : " + (MarkByDesign.IsChecked == true
+                ? "YES, a clash between two sets the pairs file names becomes Reviewed"
+                : "no, the pairs file is not read"));
             log.Line("NWD naming       : "
                 + (DateTheNwd.IsChecked == true
                     ? "dated, so every week is kept"
@@ -1471,7 +1882,7 @@ namespace Federator.Addin.Ui
         /// run groups. Whatever is open is replaced either way, so it is named and the
         /// user can cancel. Asked once, before the first group.
         /// </summary>
-        private bool ConfirmClear(IList<string> runPaths)
+        private bool ConfirmClear(IList<string> runPaths, ToleranceChoice tolerance)
         {
             string discarded;
 
@@ -1486,6 +1897,18 @@ namespace Federator.Addin.Ui
 
             string message = string.Join(
                 Environment.NewLine, new List<string>(RunPath.ConfirmLines(runPaths)).ToArray());
+
+            // F76. Said only when a tolerance was chosen, because a line that reads the
+            // same on every run teaches people to skip the screen. The test count is read
+            // off the picked file only then, since it is the one number the lines need.
+            IList<string> toleranceLines = tolerance.WarningLines(
+                runPaths.Count, tolerance.ChosenInTheTool ? TestsInThePickedFile() : 0);
+
+            if (toleranceLines.Count > 0)
+            {
+                message += Environment.NewLine + Environment.NewLine
+                    + string.Join(Environment.NewLine, new List<string>(toleranceLines).ToArray());
+            }
 
             if (discarded != null)
             {
@@ -1582,6 +2005,19 @@ namespace Federator.Addin.Ui
                     log.Row("set across the run", row.Path,
                         EventRow.Count(row.GroupsAtZero), row.Phrase());
                 }
+
+                // F72b. Rule B across the run, and the pairs that matched nothing, named once.
+                foreach (string line in engine.ByDesignRunLines())
+                {
+                    log.Line(line);
+                }
+
+                // F76. Where every report row's tolerance was read, counted across the
+                // run. Every row should read off the document, and the line says so when
+                // one did not.
+                log.Line(ToleranceChoice.ReadFromLine(
+                    engine.ToleranceFromDocument, engine.ToleranceFromFile,
+                    engine.ToleranceFromTool, engine.ToleranceUnknown));
 
                 log.RunFinished();
                 SetProgress("Run finished. " + log.CountOf(GroupOutcome.Done) + " done, "
@@ -1783,6 +2219,19 @@ namespace Federator.Addin.Ui
                 // they are there whatever happens inside it.
                 JobOutcome outcome = engine.RunOpenDocument();
 
+                // F72b. Rule B across the run, and the pairs that matched nothing, named once.
+                foreach (string line in engine.ByDesignRunLines())
+                {
+                    log.Line(line);
+                }
+
+                // F76. Where every report row's tolerance was read, counted across the
+                // run. Every row should read off the document, and the line says so when
+                // one did not.
+                log.Line(ToleranceChoice.ReadFromLine(
+                    engine.ToleranceFromDocument, engine.ToleranceFromFile,
+                    engine.ToleranceFromTool, engine.ToleranceUnknown));
+
                 SetsSummary.Text = FederationEngine.Describe(outcome);
                 SetProgress(SetsSummary.Text);
             }
@@ -1801,6 +2250,12 @@ namespace Federator.Addin.Ui
                 // scanned NWC name, and nothing was scanned here, so there is nothing to
                 // compare. Said in the log rather than left as a missing block.
                 log.Line("SOURCE   findings skipped, the open file run has no scanned source folder to compare against");
+
+                // A21. The open file run feeds the sets tally and nothing wrote the block, so
+                // a reader could not tell whether that was by design. It is: one file is one
+                // group and there is nothing to add up across groups.
+                log.Line("SETS     " + SetsAcrossTheRun.BlockTitle.ToLowerInvariant()
+                    + " is not written for the open file run, one file is one group and there is nothing to add up across groups");
 
                 // The RESULT block and the second copy of the log are written whatever
                 // happened, the same as the scanned run. The copy goes beside the open

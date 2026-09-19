@@ -83,6 +83,25 @@ namespace Federator.Addin.Engine
         private bool changedTheDocument;
 
         /// <summary>
+        /// The tolerance chosen on the Clash step, F76, never null. The default is the
+        /// file's own value per test. A chosen one is set on every test in the run, created
+        /// fresh or already in the document, and beats the XML and the document.
+        /// </summary>
+        public ToleranceChoice Tolerance { get; set; }
+
+        /// <summary>The document units a tolerance is set in, read once per group.</summary>
+        private string documentUnits;
+
+        /// <summary>
+        /// How many tests this group set a tolerance on, created fresh and already in
+        /// the document. Both are counted under the default too, because the one
+        /// TOLERANCE line per group carries both numbers whichever way it reads.
+        /// </summary>
+        private int toleranceOnCreated;
+
+        private int toleranceOnExisting;
+
+        /// <summary>
         /// The guard is handed in so it can live for the whole run rather than for one
         /// group. A run failing uniformly must stop the run, and a per group guard would
         /// have let the same nine hours pass 24 times over.
@@ -98,6 +117,7 @@ namespace Federator.Addin.Engine
             this.log = log;
             this.guard = guard ?? new RepeatedFailureGuard();
             this.statuses = new ClashStatusEditor(log);
+            Tolerance = ToleranceChoice.FromTheFile();
             SetTreeRoot = ExchangeReader.SelectionSetTreeRoot;
         }
 
@@ -138,9 +158,9 @@ namespace Federator.Addin.Engine
         public ContainerNameSettings NameSettings { get; set; }
 
         /// <summary>
-        /// True when this group holds fewer than two disciplines. Every test is still
-        /// created, so the NWF is complete and matches the other groups, and none of them
-        /// is run, because one discipline cannot clash with itself. Recorded as
+        /// True when this group holds fewer than two disciplines. None of its tests is run,
+        /// because one discipline cannot clash with itself, and since F77 only the tests
+        /// whose sides both find something are created. Recorded as
         /// SingleDiscipline rather than as a side finding nothing, which is a different
         /// fact about a different problem. D5.
         /// </summary>
@@ -200,6 +220,24 @@ namespace Federator.Addin.Engine
         public PenetrationTally PenetrationTally { get; set; }
 
         /// <summary>
+        /// The by design pass, F72b, or null where the box is off. Null is the default and
+        /// a null one resolves nothing and walks nothing.
+        /// </summary>
+        public ByDesign ByDesign
+        {
+            get { return byDesign; }
+            set { byDesign = value; }
+        }
+
+        private ByDesign byDesign;
+
+        /// <summary>
+        /// Where the by design decisions are counted for this group, or null where the
+        /// box is off. The engine owns it, the same as the penetration tally.
+        /// </summary>
+        public ByDesignTally ByDesignTally { get; set; }
+
+        /// <summary>
         /// Whether a status was actually changed in the document. The NWF is saved again
         /// on this, because a status change is a write.
         /// </summary>
@@ -243,6 +281,9 @@ namespace Federator.Addin.Engine
             drift.Clear();
             Compared = 0;
             SidesNotCompared = 0;
+            toleranceOnCreated = 0;
+            toleranceOnExisting = 0;
+            documentUnits = null;
 
             Stopwatch stepClock = Stopwatch.StartNew();
 
@@ -265,6 +306,7 @@ namespace Federator.Addin.Engine
                 // Named before the first test, because a clash count means nothing without
                 // knowing what it was counted against.
                 outcome.OpenDocument = NavisworksFacts.OpenDocument();
+                documentUnits = UnitName(document.Units);
                 log.Line("CLASH    ran against " + outcome.OpenDocument);
                 log.Line("CLASH    the document measures in " + Words.Or(UnitName(document.Units), "UNKNOWN units")
                     + ", every tolerance was converted into it");
@@ -334,7 +376,17 @@ namespace Federator.Addin.Engine
                         ? ", so everything created here is new"
                         : ", they keep their results and are not recreated"));
 
-                RunEach(document, sets, clashTests, byPath, present, resolved, outcome);
+                // F77. Which of the planned tests are worth CREATING. The sets are already
+                // resolved, so how many items each locator finds is counted once per set,
+                // and a test whose side finds nothing is not created at all rather than
+                // created and thrown away by the side check moments later, which was 631
+                // seconds of a 1424 second run.
+                IList<PlannedClashTest> toRun = PlanTheCreation(document, byPath, present, resolved, outcome);
+
+                RunEach(document, sets, clashTests, byPath, present, toRun, outcome);
+
+                // F76. One line per group, whichever way the choice reads.
+                WriteTheToleranceLine();
 
                 if (drift.Count > 0 || Compared > 0)
                 {
@@ -405,6 +457,9 @@ namespace Federator.Addin.Engine
                     report.RightLocator = planned.Right.Locator;
                     report.Tolerance = planned.Tolerance;
                     report.ToleranceUnits = planned.DocumentUnits;
+                    report.ToleranceFrom = plan.Source == ClashPlanSource.Document
+                        ? ToleranceOrigin.Document
+                        : ToleranceOrigin.File;
                     report.TestTypeName = planned.TestTypeName;
                     report.State = TestState.Skipped;
                     byIndex.Add(index, report);
@@ -497,14 +552,14 @@ namespace Federator.Addin.Engine
             DocumentClashTests clashTests,
             Dictionary<string, SelectionSet> byPath,
             Dictionary<string, TestAddress> present,
-            ClashTestPlan plan,
+            IList<PlannedClashTest> toRun,
             ClashRunOutcome outcome)
         {
-            int total = plan.Buildable.Count;
+            int total = toRun.Count;
 
             for (int i = 0; i < total; i++)
             {
-                PlannedClashTest planned = plan.Buildable[i];
+                PlannedClashTest planned = toRun[i];
                 progress("Test " + (i + 1) + " of " + total + ": " + planned.Name);
 
                 if ((i + 1) % ProgressEvery == 0 || i + 1 == total)
@@ -552,6 +607,7 @@ namespace Federator.Addin.Engine
                     // it is neither created nor checked for drift.
                     address = TestAddress.At(planned.Address);
                     outcome.AddAlreadyPresent(planned.Name);
+                    ApplyChosenTolerance(clashTests, address, planned.Name);
                 }
                 else if (present.TryGetValue(planned.Name, out address))
                 {
@@ -564,6 +620,7 @@ namespace Federator.Addin.Engine
                     // the two are compared and every difference is reported by name.
                     outcome.AddAlreadyPresent(planned.Name);
                     CompareAndMaybeApply(clashTests, address, planned, byPath, sets);
+                    ApplyChosenTolerance(clashTests, address, planned.Name);
                 }
                 else
                 {
@@ -594,6 +651,7 @@ namespace Federator.Addin.Engine
                     }
 
                     outcome.AddCreated(planned.Name);
+                    toleranceOnCreated++;
                 }
 
                 int leftItems;
@@ -626,8 +684,8 @@ namespace Federator.Addin.Engine
 
                 if (SingleDisciplineGroup)
                 {
-                    // Created, so the NWF matches every other group and a later run against
-                    // a fuller model finds the tests already there. Not run, because there
+                    // Created because both its sides find something, F77, so a later run
+                    // against a fuller model finds it already there. Not run, because there
                     // is nothing here for them to run against.
                     LogSkip(outcome.AddSkipped(
                         planned.Name,
@@ -719,11 +777,35 @@ namespace Federator.Addin.Engine
                     }
                 }
 
+                // F72b. The by design pairs, judged AFTER the penetration rule so that rule
+                // keeps a clash they both want, and the wanted names join the ONE list the
+                // editor applies below. Its own resolve and a walk that only reads, like
+                // the penetration pass, and it reads no item at all.
+                if (byDesign != null && ByDesignTally != null)
+                {
+                    using (ClashTest forPairs = Resolve(clashTests, address, planned.Name))
+                    {
+                        if (forPairs != null)
+                        {
+                            List<WantedStatus> merged = new List<WantedStatus>();
+
+                            if (wanted != null)
+                            {
+                                merged.AddRange(wanted);
+                            }
+
+                            merged.AddRange(byDesign.WantedFor(
+                                forPairs, planned.Left.Locator, planned.Right.Locator, wanted, ByDesignTally));
+                            wanted = merged;
+                        }
+                    }
+                }
+
                 if (statuses != null && wanted != null && wanted.Count > 0)
                 {
                     using (ClashTest toEdit = Resolve(clashTests, address, planned.Name))
                     {
-                        if (toEdit != null && statuses.Apply(clashTests, toEdit, wanted))
+                        if (toEdit != null && statuses.Apply(document, clashTests, toEdit, wanted))
                         {
                             changedTheDocument = true;
                         }
@@ -758,6 +840,14 @@ namespace Federator.Addin.Engine
                         // on ClashTestStatus, and what puts a test into any of the four is
                         // UNKNOWN, so nothing is translated. See docs\history\scan.md section 4j.
                         summary.StatusWord = after.Status.ToString();
+
+                        // F76. The tolerance on the row is READ off the test in the
+                        // document, because the document is what produced the row. It was
+                        // copied off the plan, which is the XML, so on every weekly run the
+                        // cell said what the file asked for while the run had clashed at
+                        // what the document held.
+                        summary.Tolerance = after.Tolerance;
+                        summary.ToleranceFrom = ToleranceOrigin.Document;
 
                         ClashHarvest harvest = new ClashHarvest(log, NameSettings);
                         harvest.Images = Images;
@@ -982,7 +1072,7 @@ namespace Federator.Addin.Engine
                 {
                     replacement.DisplayName = planned.Name;
                     replacement.TestType = (ClashTestType)(int)planned.TestType;
-                    replacement.Tolerance = planned.Tolerance;
+                    replacement.Tolerance = ToleranceFor(planned);
                     replacement.MergeComposites = planned.MergeComposites;
 
                     using (ClashSelection left = replacement.SelectionA)
@@ -1014,6 +1104,129 @@ namespace Federator.Addin.Engine
                     error,
                     "kept going, that test still holds what it held before");
             }
+        }
+
+        /// <summary>
+        /// What one test's tolerance is set to, F76: the chosen value converted into the
+        /// document units, or otherwise the file's, which the plan already converted. A
+        /// unit the table does not know throws here and the test is then skipped by name
+        /// through the catch in OneTest, which is F33's rule and never a fallback.
+        /// </summary>
+        private double ToleranceFor(PlannedClashTest planned)
+        {
+            return Tolerance.For(planned.Tolerance, documentUnits);
+        }
+
+        /// <summary>The words on the created line, saying which of the two won.</summary>
+        private string DescribeSetTolerance(PlannedClashTest planned, double set)
+        {
+            if (!Tolerance.ChosenInTheTool)
+            {
+                return planned.DescribeTolerance();
+            }
+
+            return Tolerance.Label() + " chosen in the tool is " + Plain(set) + " "
+                + Words.Or(documentUnits, "UNKNOWN units");
+        }
+
+        /// <summary>
+        /// Puts the chosen tolerance onto a test already in the document, F76, and counts
+        /// the test either way. Nothing is touched under the default, and a test already
+        /// at the chosen value is left exactly as it is, because an edit resets its
+        /// results and there would be nothing to change. The copy is the test's OWN,
+        /// through SavedItem.CreateCopy, so only the tolerance moves and the file's other
+        /// settings never ride in on it, which is what ApplyFileSettings is for.
+        /// </summary>
+        private void ApplyChosenTolerance(DocumentClashTests clashTests, TestAddress address, string name)
+        {
+            toleranceOnExisting++;
+
+            if (!Tolerance.ChosenInTheTool)
+            {
+                return;
+            }
+
+            try
+            {
+                double wanted = Tolerance.InDocumentUnits(documentUnits);
+
+                using (ClashTest existing = Resolve(clashTests, address, name))
+                {
+                    if (existing == null)
+                    {
+                        return;
+                    }
+
+                    double already = existing.Tolerance;
+
+                    if (Math.Abs(already - wanted) <= TestDrift.ToleranceEpsilon)
+                    {
+                        return;
+                    }
+
+                    using (SavedItem copied = existing.CreateCopy())
+                    {
+                        ClashTest copy = copied as ClashTest;
+
+                        if (copy == null)
+                        {
+                            log.Line("CLASH    " + name + "  the test would not copy as a clash test, so "
+                                + "its tolerance stays at " + Plain(already) + " and not the chosen "
+                                + Plain(wanted));
+                            return;
+                        }
+
+                        copy.Tolerance = wanted;
+                        clashTests.TestsEditTestFromCopy(existing, copy);
+                    }
+
+                    changedTheDocument = true;
+
+                    log.NumberedRepeat(
+                        "CLASH tolerance set on a saved test",
+                        "CLASH    TOLERANCE " + name + "  " + Plain(already) + " to " + Plain(wanted) + " "
+                            + Words.Or(documentUnits, string.Empty)
+                            + ", chosen in the tool, which reset its results",
+                        "tolerance set on a saved test",
+                        name,
+                        EventRow.Exact(wanted),
+                        "was " + Plain(already));
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "setting the chosen tolerance on " + name,
+                    error,
+                    "kept going, that test keeps the tolerance it had");
+            }
+        }
+
+        /// <summary>
+        /// The one TOLERANCE line per group, F76. Both counts are read and the converted
+        /// value is on it, so nobody does the arithmetic to find out what 25 mm was in a
+        /// document measuring feet. A unit the table does not know cannot be converted,
+        /// and then the counts are still said.
+        /// </summary>
+        private void WriteTheToleranceLine()
+        {
+            try
+            {
+                log.Line(Tolerance.LogLine(toleranceOnCreated, toleranceOnExisting, documentUnits));
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "writing the tolerance line",
+                    error,
+                    "kept going, the counts are " + toleranceOnCreated + " created and "
+                        + toleranceOnExisting + " already in the document");
+            }
+        }
+
+        private static string Plain(double value)
+        {
+            return value.ToString("0.############", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -1067,12 +1280,13 @@ namespace Federator.Addin.Engine
             PlannedClashTest planned)
         {
             int before = clashTests.Tests.Count;
+            double set = ToleranceFor(planned);
 
             using (ClashTest test = new ClashTest())
             {
                 test.DisplayName = planned.Name;
                 test.TestType = (ClashTestType)(int)planned.TestType;
-                test.Tolerance = planned.Tolerance;
+                test.Tolerance = set;
                 test.MergeComposites = planned.MergeComposites;
 
                 using (ClashSelection left = test.SelectionA)
@@ -1097,12 +1311,12 @@ namespace Federator.Addin.Engine
                 "CLASH created",
                 "CLASH    created  " + planned.Name
                     + "  " + planned.TestTypeName
-                    + "  tolerance " + planned.DescribeTolerance()
+                    + "  tolerance " + DescribeSetTolerance(planned, set)
                     + "  merge composites " + (planned.MergeComposites ? "on" : "off"),
                 "test created",
                 planned.Name,
-                EventRow.Exact(planned.Tolerance),
-                planned.TestTypeName + ", " + planned.DescribeTolerance());
+                EventRow.Exact(set),
+                planned.TestTypeName + ", " + DescribeSetTolerance(planned, set));
 
             int after = clashTests.Tests.Count;
 
@@ -1445,6 +1659,119 @@ namespace Federator.Addin.Engine
         /// then one line saying the rest are counted. Everything skipped still reaches the
         /// block at the end, where it is counted by reason with its examples.
         /// </summary>
+        /// <summary>
+        /// The tests to run, F77: every test already in the document or read out of it,
+        /// plus the planned ones Federator.Core.Clash.CreationPlan says are worth creating.
+        /// The rest are fed into the same skip machinery every other reason goes through
+        /// and their report rows carry why, because the workbook still carries a block for
+        /// every test in the file. File order is kept, so the NWF's tests sit in the order
+        /// the file lists them. A test already in the document is not the plan's to
+        /// create, so it is never handed to it and still gets compared and run.
+        /// </summary>
+        private IList<PlannedClashTest> PlanTheCreation(
+            Document document,
+            Dictionary<string, SelectionSet> byPath,
+            Dictionary<string, TestAddress> present,
+            ClashTestPlan resolved,
+            ClashRunOutcome outcome)
+        {
+            List<PlannedClashTest> toRun = new List<PlannedClashTest>();
+
+            if (resolved.Source == ClashPlanSource.Document)
+            {
+                toRun.AddRange(resolved.Buildable);
+                return toRun;
+            }
+
+            List<PlannedClashTest> absent = new List<PlannedClashTest>();
+
+            foreach (PlannedClashTest planned in resolved.Buildable)
+            {
+                if (!present.ContainsKey(planned.Name))
+                {
+                    absent.Add(planned);
+                }
+            }
+
+            Dictionary<string, int> itemsByLocator =
+                CountItemsPerSet(document, byPath, resolved.DistinctLocators());
+            CreationPlan creation = CreationPlan.For(absent, itemsByLocator);
+            log.Line(creation.CountedLine(resolved.TestsInFile));
+
+            HashSet<string> notCreated = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (SkippedClashTest skipped in creation.NotCreated)
+            {
+                notCreated.Add(skipped.Name);
+                outcome.AddSkipped(skipped);
+                LogSkip(skipped);
+
+                TestReport row;
+
+                if (reports != null && reports.TryGetValue(skipped.FileIndex, out row))
+                {
+                    row.State = TestState.Skipped;
+                    row.SkippedReason = skipped.Reason;
+                }
+            }
+
+            foreach (PlannedClashTest planned in resolved.Buildable)
+            {
+                if (!notCreated.Contains(planned.Name))
+                {
+                    toRun.Add(planned);
+                }
+            }
+
+            return toRun;
+        }
+
+        /// <summary>
+        /// How many items each set the tests name finds in this document, F77, one resolve
+        /// per set and never one per test side. A set that is not in the document is not
+        /// counted, and CreationPlan then creates the test and lets the run time check
+        /// answer, because a count nobody took is not a count of zero. What it cost is
+        /// said, because the whole point of the plan is what creating cost before it.
+        /// </summary>
+        private Dictionary<string, int> CountItemsPerSet(
+            Document document, Dictionary<string, SelectionSet> byPath, IList<string> locators)
+        {
+            Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
+            Stopwatch clock = Stopwatch.StartNew();
+
+            foreach (string locator in locators)
+            {
+                SelectionSet set;
+
+                if (!byPath.TryGetValue(locator, out set))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    using (ModelItemCollection found = set.GetSelectedItems(document))
+                    {
+                        counts[locator] = found == null ? 0 : found.Count;
+                    }
+                }
+                catch (Exception error)
+                {
+                    log.Failure(
+                        "counting the items of the set \"" + locator + "\"",
+                        error,
+                        "kept going, every test naming it is created and the run time check answers");
+                }
+            }
+
+            clock.Stop();
+            log.Line("CLASH    counted the items of " + counts.Count
+                + (counts.Count == 1 ? " set" : " sets") + " for the creation plan in "
+                + Plain(clock.Elapsed.TotalSeconds) + "s");
+
+            return counts;
+        }
+
         private void LogSkip(SkippedClashTest test)
         {
             int already;

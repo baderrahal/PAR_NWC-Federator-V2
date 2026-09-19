@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Federator.Core.Clash;
 
 namespace Federator.Core.Views
 {
@@ -54,8 +55,8 @@ namespace Federator.Core.Views
         /// </summary>
         public const string DefaultUnknownDiscipline = "UNKNOWN";
 
-        /// <summary>The folder layer 1 uses for a test the priority file says nothing about.</summary>
-        public const string DefaultNoPriorityFolder = "No priority";
+        /// <summary>The folder layer 1 uses for a test the priority file says nothing about. The words are Priorities.Words, named once, A13.</summary>
+        public static readonly string DefaultNoPriorityFolder = Priorities.Words(ClashPriority.None);
 
         /// <summary>What goes between the test name and the clash name in a viewpoint name.</summary>
         public const string DefaultNameSeparator = "  ";

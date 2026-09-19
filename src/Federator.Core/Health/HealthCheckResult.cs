@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 
 namespace Federator.Core.Health
@@ -185,7 +186,7 @@ namespace Federator.Core.Health
         public ReadOnlyCollection<OddSetName> OddSetNames { get; private set; }
 
         /// <summary>How many of the five examples rule a finding list shows.</summary>
-        public const int ExamplesShown = 5;
+        public const int ExamplesShown = RunLog.KeptOfARepeat;
 
         public IList<string> Summary()
         {
