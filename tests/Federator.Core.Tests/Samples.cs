@@ -198,17 +198,6 @@ namespace Federator.Core.Tests
             return Path.Combine(ExchangeFolder(), CorrectedMatrixName);
         }
 
-        /// <summary>
-        /// THE FILE OF THE SAME NAME THAT BADER UPLOADED TO samples ON 2026-09-19, which
-        /// is not the same file. It is in samples, so it is evidence and is never edited,
-        /// and `SuppliedCorrectedMatrixTests` pins what it differs by rather than leaving
-        /// two files of one name to be discovered later.
-        /// </summary>
-        public static string SuppliedCorrectedMatrix()
-        {
-            return Path.Combine(Folder(), CorrectedMatrixName);
-        }
-
         /// <summary>The clash priority file, F83, one priority per test off the matrix.</summary>
         public static readonly string[] PriorityMapNames = { "clash-priority-map.csv" };
 
