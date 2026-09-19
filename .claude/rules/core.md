@@ -747,6 +747,40 @@ it if the same work carries the same name every time it is timed.
 - the step never changes what the run does. It opens, the work runs exactly as it did,
   and it closes. Nothing is skipped, reordered or waited for
 
+### The timing blocks, F60, which closes F21
+
+- a TIMING block per group, written straight after its GROUP finished line, and a
+  TIMING, THE WHOLE RUN block just before RESULT so RESULT stays the last thing in the
+  file. Both are `Federator.Core.Diagnostics.TimingBlock` and nothing else builds them
+- every number is measured. The group total is the engine's own clock as GroupFinished
+  read it, and the run total is the log's elapsed clock read where the block is written,
+  NOT the groups added up, because the scan and the preview happen outside every group
+  and a total that left them out would be smaller than the run took
+- whatever the steps do not account for is a ROW of its own, named outside every step,
+  so the share column reads down to a hundred. A block that spread it over the steps it
+  does know about would be inventing numbers, and one that left it off the page would
+  leave a reader guessing. There is a test that adds the column up
+- steps adding to MORE than the group took is said in words. It means something was
+  timed outside the stretch the group clock covered, which is a fault in the timing and
+  not in the run
+- a nested step is left out of the share column and listed under the total, because its
+  seconds are already inside its parent's and counting both would give a group shares
+  adding to more than a hundred
+- the run block reads twice: the groups slowest first, then the same seconds by STEP
+  NAME added across every group. Which building cost the run and which step cost it are
+  two questions and only the second one says what to fix
+- the run block ends by saying whether the run fitted in the forty five minutes
+  criterion 2 asks for, with the measured time in minutes and in seconds either way. One
+  second over is OVER. The forty five is `TimingBlock.UnattendedSeconds`, a setting, and
+  a value at or below zero is refused where it is set
+- one line per test, `ROWS`, carries what the workbook got beside what the document
+  holds, so criterion 3 is answered off the log rather than by opening Excel and
+  Navisworks side by side for 1830 tests. The two numbers are not the same thing: the
+  tally counts leaves, descending into every result group, and the harvest writes one
+  row per group without descending, which is also what the panel shows. So FEWER rows
+  than clashes is the grouping and the line says so. MORE rows than clashes is a finding
+  nothing in this tool explains, said in capitals, and nothing acts on it
+
 Two things that look like mistakes and are not:
 
 - while a run holds the log open, File.ReadAllText fails with a sharing error.
