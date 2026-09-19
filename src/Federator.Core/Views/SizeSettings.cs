@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Views
 {
@@ -59,7 +60,7 @@ namespace Federator.Core.Views
             ThresholdMillimetres = DefaultThresholdMillimetres;
             PropertyNames = new List<string>(DefaultPropertyNames);
             NameEveryUnknown = true;
-            ExamplesWhenNotNamingEvery = 5;
+            ExamplesWhenNotNamingEvery = RunLog.KeptOfARepeat;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Probe
 {
@@ -97,7 +98,7 @@ namespace Federator.Core.Probe
         }
 
         /// <summary>How many rows of the fire suppression list are named in the block.</summary>
-        public const int ExamplesShown = 5;
+        public const int ExamplesShown = RunLog.KeptOfARepeat;
 
         /// <summary>
         /// The block. Every number on it is READ off the tally or the rows and none is

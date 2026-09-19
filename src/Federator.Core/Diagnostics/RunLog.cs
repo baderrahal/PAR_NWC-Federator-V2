@@ -632,7 +632,9 @@ namespace Federator.Core.Diagnostics
         /// How many of one repeated sentence reach the TEXT log before it collapses, F81.
         /// The same number the skips and the drift use, because a reader who has learned
         /// what five examples and a count look like should not have to learn a second
-        /// shape.
+        /// shape. THE ONE NUMBER, A14: the skips, the drift, the priorities, the probe, the
+        /// health findings and the sizes all read this and name this many. SetsAcrossTheRun
+        /// names ten and its own comment says why it differs.
         /// </summary>
         public const int KeptOfARepeat = 5;
 

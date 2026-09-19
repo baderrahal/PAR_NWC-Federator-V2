@@ -76,7 +76,11 @@ namespace Federator.Core.Sets
         /// <summary>The title of the block, so nothing else spells it.</summary>
         public const string BlockTitle = "SETS ACROSS THE RUN";
 
-        /// <summary>How many are named before the count takes over.</summary>
+        /// <summary>
+        /// How many are named before the count takes over. TEN and not the five every other
+        /// list reads off RunLog.KeptOfARepeat, A14. Why ten is UNKNOWN: F82 chose it and its
+        /// log entry does not say, so it is left as F82 wrote it rather than changed on a guess.
+        /// </summary>
         public const int ExamplesShown = 10;
 
         private readonly List<string> order = new List<string>();
