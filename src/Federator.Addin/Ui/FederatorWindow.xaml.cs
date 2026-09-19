@@ -2251,6 +2251,12 @@ namespace Federator.Addin.Ui
                 // compare. Said in the log rather than left as a missing block.
                 log.Line("SOURCE   findings skipped, the open file run has no scanned source folder to compare against");
 
+                // A21. The open file run feeds the sets tally and nothing wrote the block, so
+                // a reader could not tell whether that was by design. It is: one file is one
+                // group and there is nothing to add up across groups.
+                log.Line("SETS     " + SetsAcrossTheRun.BlockTitle.ToLowerInvariant()
+                    + " is not written for the open file run, one file is one group and there is nothing to add up across groups");
+
                 // The RESULT block and the second copy of the log are written whatever
                 // happened, the same as the scanned run. The copy goes beside the open
                 // file, where the scanned run puts it beside the NWF folder. This used to
