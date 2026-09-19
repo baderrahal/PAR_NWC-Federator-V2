@@ -1,12 +1,23 @@
 #!/bin/sh
 #
-# Runs the full test set and refuses the commit if anything fails.
+# Runs the add-in checks and the full test set, and refuses the commit if anything fails.
 # Install with:  git config core.hooksPath .githooks
 
 set -e
 
 repo=$(git rev-parse --show-toplevel)
 cd "$repo"
+
+# First, because it costs no compiler and it guards the half of this repo no compiler
+# here can reach. F52 shipped a method declaring one name twice, which the build refuses,
+# and nothing saw it until it was read by hand a day later.
+echo "pre-commit: checking the add-in for a local declared twice"
+
+if ! sh "$repo/tools/checks/check-locals.sh" src; then
+    echo ""
+    echo "pre-commit: REFUSED. See the line above."
+    exit 1
+fi
 
 echo "pre-commit: running the full test set"
 

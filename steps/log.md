@@ -2,6 +2,92 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F58, the add-in compiles again
+
+### What was done
+
+- THE ADD-IN HAD NOT BUILT SINCE F52 MERGED. `FederationEngine.BuildViewpoints` declared `views` twice in one scope, `ViewpointSettings views` at line 1793 and `ViewpointBuildOutcome views` at line 1812, and the second one read `views.Sizes` while it was being declared. That is CS0128. The second local is called `built` now, which is one word of change, and the comment above it says why the name matters
+- FOUND BY READING, NOT BY A CHECK, WHICH IS THE REAL FAULT HERE. The round's brief asked for `RunLog.cs` end to end and for `01_next.md`, and the engine was read alongside them to plan where a step would open and close. The line was sitting there. Nothing automated had seen it in a day
+- MEASURED AND NOT GUESSED. The two Core types and the two declarations were compiled in this container against the real `Federator.Core.dll` and the net48 reference assemblies, and the answer is `error CS0128: A local variable or function named 'views' is already defined in this scope`. `ViewpointBuilder.Build`, `ViewpointBuildOutcome.Lines`, `FailedCount` and `PutAnythingIn` were each read off the source before the replacement was written, so the fixed line names four members that exist
+- WHY THE CHECK THIS REPO RUNS COULD NOT SEE IT, WHICH IS WORTH MORE THAN THE FIX. The parse check behind five log entries passes `-nostdlib` with no references at all. Roslyn then stops before it binds a single method body, so it reads SYNTAX and nothing else, and a log entry saying the add-in parses with the same six error codes and not one `CS1xxx` is true and is not a build. Handing it the net48 reference assemblies and the built `Federator.Core.dll` makes it bind every body whose signature it can resolve, which is a real improvement and still does not see this one: `BuildViewpoints` takes a Navisworks `Document`, that type cannot resolve here, and Roslyn skips the body of any method whose signature it cannot bind. That is most of the engine. The rule is written into `.claude/rules/addin.md` so the words parses and builds cannot be swapped again
+- THIS IS F39 HAPPENING A SECOND TIME. F34 deleted three constructors, the window kept calling them, and nothing noticed until an audit put the caller and the callee side by side. Step 8 of `03_bader_next.md` is the build and all 251 steps wait behind it, so a round about the log would have been unprovable from its first step
+- SO THE FIX CARRIES A CHECK. `tools/checks/check-locals.sh` refuses a local declared twice in one method scope. It is sh and awk, which is the one shell this repo already depends on, so it runs in the container, on the Windows runner and on Bader's machine through Git for Windows. It strips string and character literals before it counts a brace, because a brace inside a string is text and would move every scope after it
+- IT IS NOT A COPY OF A RULE THAT LIVES SOMEWHERE ELSE. The compiler owns this rule and the compiler is the right place for it, and for `src/Federator.Addin` the compiler runs exactly once, on Bader's machine, after a whole round is already written. This is the one place the rule can run before then, and the comment at the top of the script says what it cannot do: it reads text and not a program, it knows nothing about types, members or arguments, and it is not a build and never says one passed
+- THE CHECK IS PROVED TO REFUSE AND NOT ONLY TO PASS. `tools/checks/broken` holds `DeclaredTwice.cs`, which is the exact shape F52 shipped, and `Fine.cs`, which holds every legal shape close enough to be worth pinning: two sibling scopes sharing a name, two loops sharing a counter, two methods sharing a name, a brace inside a string and a brace as a character. The check refuses the first naming the file, the line and the name, and says nothing about the second. Actions runs it both ways and fails if the broken folder passes
+- The pre-commit hook runs it before the tests, so it costs nothing on a machine with no compiler and refuses the commit rather than the round
+- `CLAUDE.md` gains `tools\checks` in the map of where things are, at 184 lines, still under 200
+- Proved here: Core tests before and after 1045 passed, 0 failed, 32 skipped, 1077 total, unchanged because no Core code moved. `check-locals.sh` over `src` comes back clean and over `tools/checks/broken` comes back with one fault. Both parse checks give the same profile as before the edit, 1075 `CS0518`, 533 `CS0246`, 74 `CS0234`, 2 `CS0115`, 1 `CS0656`, 1 `CS0103` with no references, and 202 `CS0246` and 1 `CS0103` with them, and not one `CS1xxx` either way
+
+### What remains
+
+- The build itself. Nothing in this container can build the add-in, so step 8 of `03_bader_next.md` is still where this is proved, and it is now expected to pass where it would have failed
+- F59 to F64, the six the round is actually for
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F58 pull request
+2. F59, every step is named and timed
+
+## 2026-09-19 The plan for the round, the log becomes the third eye
+
+### This is the plan, written before the first edit
+
+- Bader asked on 2026-09-18 for the log to show what happened inside Navisworks, what is running while it runs, and where the time went, and called it the most important thing in the tool. Six fixes were briefed. This entry is the plan and nothing in the repo was edited before it was written
+- The reading the brief asks for was done first and in full: `CLAUDE.md`, the four files under `.claude/rules`, the top entry of this file, `01_next.md`, `02_questions.md`, `03_bader_next.md` at all 251 steps, `04_audit.md`, and `src/Federator.Core/Diagnostics/RunLog.cs` end to end, all 1231 lines of it
+
+### The numbers. Three were taken and one fix is already done
+
+- F51, THE ACC WARNING, IS ALREADY DONE AND MERGED. The brief asks for it as its own one line pull request riding this round. It went in on 2026-09-18 as exactly that. `AllowResave` true at `FederationEngine.cs` line 1866, `EmbedDatabaseProperties` true at 1872, `PreventObjectPropertyExport` false at 1875, and the one line naming every publish property this run set at 1880. The DONE line is in `01_next.md` and the proof is steps 201 to 209 of `03_bader_next.md`, upload included. It is not done twice
+- F56 and F57 are taken. F56 is done and merged, F57 is open and waiting on Bader's judgement. So the six fixes take the next free numbers, F59 to F64, and the brief's F56 to F61 map onto them one for one and in order
+- F58 is a seventh fix nobody asked for, and it goes first. Why is the next section
+- The questions file runs 1 to 34 and not to 38, so the gaps F63 finds go in as Q35 onward and not Q39 onward
+
+### What the reading found before any of it. THE ADD-IN DOES NOT COMPILE
+
+- `FederationEngine.BuildViewpoints` declares `views` twice in one scope. `ViewpointSettings views` at line 1793, then `ViewpointBuildOutcome views` at line 1812, which also reads `views.Sizes` while it is being declared. That is CS0128, and the add-in has not built since F52 merged on 2026-09-18
+- MEASURED HERE AND NOT GUESSED. The same two Core types and the same two declarations, compiled in this container against the real `Federator.Core.dll` and the net48 reference assemblies, answer `error CS0128: A local variable or function named 'views' is already defined in this scope`
+- WHY THE CHECK THIS REPO RUNS MISSED IT. The parse check passes `-nostdlib` with no references at all, and Roslyn then stops before it binds a single method body. It reads syntax and nothing else, which is why every add-in round has been able to report no `CS1xxx` and still ship a broken build. Handing it the net48 reference assemblies and the built `Federator.Core.dll` makes it bind every body whose signature it can resolve, which is a real improvement and still not enough for this one: `BuildViewpoints` takes a Navisworks `Document`, that type does not resolve, and Roslyn skips the body of any method whose signature it cannot bind
+- THIS IS F39 HAPPENING AGAIN. F34 deleted three constructors, the window kept calling them, and nothing noticed until the audit put the caller and the callee side by side. Step 8 of `03_bader_next.md` is the build, and all 251 steps wait behind it. A round about the log is worth nothing on a machine that cannot build the add-in, so this is fixed first
+- Nothing else of this class is in the tree. A scan of every method in `src` for a local redeclared in a scope that already holds one returns this one hit and no other, and zero in Core, which builds clean and is the control
+
+### The order, one pull request each, branch off main, merged green, branch deleted
+
+1. **F58 The add-in compiles again.** The one line. Then the parse check widened to bind every body it can, so the next fault of this class is caught by the check rather than by a reading. Then the scan above kept as a check that needs no Navisworks, and what it cannot see said plainly: a body whose signature names a Navisworks type is never bound here and never will be until the add-in is built on a machine that has the DLL
+2. **F59 Every step is named and timed.** One Core type owns the step list and the words: DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES, WORKBOOK, HTML, XML, NWD, CONFIRM. Nothing anywhere types a step name as a string. `RunLog` gains a step that is opened and closed and closes itself when the work inside it throws, one line when it starts and one when it finishes with the seconds and a short phrase for what it changed. The clock is monotonic, a `Stopwatch` and never two wall clock readings subtracted, because a run that crosses a clock change would otherwise report a negative step. Core tests for both line shapes, a step that throws, a step inside a step, and a step never closed
+3. **F60 The timing blocks. F21 closes here.** A TIMING block per group with every step, its seconds, its share of the group, slowest first, then the group total. A TIMING block for the run with every group and its total, slowest first, then the run total, then the same table by step name added across every group, so one reading answers which STEP costs the run and not only which building. The run block says in words whether the run fitted in forty five minutes, which is criterion 2 of done. Every number measured and nothing rounded up into a claim. Core tests for the block shape, the ordering, the shares adding to a hundred, and a run of one group
+4. **F61 The document census.** Five counts, models, selection sets, clash tests, clash results and saved viewpoints, read in ONE place in the add-in that disposes every wrapper the way `FederationEngine.CountSets` already does. A CENSUS line before and after every step that can change the document. A Core rule says which steps may move which count, and a count that moves when the rule says it may not gets a line beginning `CENSUS CHANGED` naming the step, the count, the before and the after, and that group is not DONE. What the census COSTS is measured and logged once per group, and if it runs over a second a group it drops to counting only before and after the steps that write, and says in the log that it did. Core tests for the rule, every allowed move, every refused move, and the wording
+5. **F62 The live line in the window.** Group N of M, the building, the step, the seconds on that step and the seconds on the run, updated as the step changes and at least once a second inside a step that has a loop to tick from. The engine already hands progress out through one callback, so what the callback CARRIES widens and no second route is added, and it stays on the plugin thread. A step running longer than twice what the same step took on the group before says so on the line. The log pane keeps following the log and the live line above it never scrolls away. What this cannot do is tick inside a single Navisworks call that has no loop in it, and the line will say when it last changed rather than pretend
+6. **F63 The report gap block.** Bader's standing rule built into the tool: when the code knows something the report does not show, it becomes a question. At the end of each group everything the run measured is compared against what the report carries, and every number held back gets one line in a GAP block naming the number, its value and where it would belong. The rule for what counts as a gap is Core with its tests, seeded from `04_audit.md` and the five per item properties of Q25. The block is written even when it is empty, saying nothing was held back, and one line at the end of the run says how many gaps in total. Every gap this round finds goes into `02_questions.md` as a numbered question from Q35
+7. **F64 The machine readable log.** A second file beside the text log, same name and a different extension, one row per event, tab separated, with a header row: time, seconds since start, group, step, event, name, number, text. Every line the text log writes that carries a number writes a row here too, through ONE writer, so the two cannot drift. The purpose is stated in a comment at the top of that writer. The text log stays the one a person reads and nothing about it gets worse. Core tests for the row shape, for a tab or a newline inside a value, and for the header
+
+### What this round holds itself to
+
+- The log is written line by line and flushed all the way to the disk, and that stays true. `RunLog.WriteRaw` already calls `writer.Flush()` and then `stream.Flush(true)` under the lock, and nothing added here buffers. A run that dies mid group leaves everything up to that moment on disk
+- The log never changes what the run does. No step is skipped, reordered or slowed to make a line easier to write. Where measuring costs real time it is measured ONCE and the log says what the measurement cost, which is why F61 carries its own cost line
+- .NET Framework 4.8 and C# 7.3. No Navisworks type reaches `Federator.Core`. Every shape, every line of wording and every rule about what counts as a gap lives in Core with its tests, and the add-in only measures and calls
+- `steps/log.md` gets one entry per fix, newest at the top. New questions go to `02_questions.md`. Nothing under `samples` or `steps/logs` is touched
+
+### What remains
+
+- The whole round. This entry is the plan and no code has changed yet
+- F57, the five older Look for lines, is still Bader's to judge and is not touched here
+- The two probes, Q33 and every one of the 251 steps still wait for the machine with Navisworks on it
+
+### Known bugs
+
+- The add-in does not compile. `FederationEngine.cs` line 1812. F58 is the first thing this round does
+- Everything else as in the F46 entry
+
+### What comes next
+
+1. F58, so the add-in builds again
+2. F59 to F64 in the order above, one pull request each
+3. The closing work: `03_bader_next.md` read end to end against the code again with the counts said out loud, one new numbered section for the log itself, and the closing entry
+
 ## 2026-09-18 F56, what the real read of 03_bader_next.md found
 
 ### What was done

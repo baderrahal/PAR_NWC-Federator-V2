@@ -12,10 +12,18 @@ can be written here and only proved on the local machine.
 
 Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 and F55 are all done and each carries its DONE line below. The three that were left before the round are left after it, and only the first of them can be started here.
 
-1. F57, five Look for lines older than the feature round, for Bader to judge
-2. F21, the log answers timing and counts. The block shape is Core and can be written here, the run proves it
-3. F18, when Bader uploads the 1A04WE sample, Q9
-4. F23, when Q20 is answered
+Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixes as F56 to F61. F56 and F57 were already taken, so the six are F59 to F64 and they map onto the brief one for one and in order. F51, which the brief asks for as its own one line pull request, was already done and merged on 2026-09-18 and is not done twice. F58 is a seventh, found by the reading that opened the round and put first because the add-in does not compile and every one of the 251 steps waits behind the build.
+
+1. F58, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
+2. F59, every step is named and timed
+3. F60, the timing blocks, and F21 closes here
+4. F61, the document census
+5. F62, the live line in the window
+6. F63, the report gap block
+7. F64, the machine readable log
+8. F57, five Look for lines older than the feature round, for Bader to judge
+9. F18, when Bader uploads the 1A04WE sample, Q9
+10. F23, when Q20 is answered
 
 Nothing else is open. F19 is dropped.
 
@@ -471,8 +479,84 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - Steps 152 and 157 say a line sits ABOVE the Run the open file button. `OpenDocumentLine` and `RunOpenButton` are the two children of one horizontal StackPanel with the button first, so the line is beside it and to its right. What the line SAYS is right in both steps
 - Size: five wordings, once Bader says which readings he meant
 
+## F58 The add-in compiles again
+
+- Files `src/Federator.Addin/Engine/FederationEngine.cs`, `tools/checks/check-locals.sh` and `tools/checks/broken/` which are new, `.githooks/pre-commit`, `.github/workflows/tests.yml`, `.claude/rules/addin.md`, `CLAUDE.md`
+- CONTAINER for the fix and for both proofs, LOCAL MACHINE ONLY for the build itself
+- `FederationEngine.BuildViewpoints` declares `views` twice in one scope, `ViewpointSettings views` at line 1793 and `ViewpointBuildOutcome views` at line 1812, and the second one reads `views.Sizes` while it is being declared. That is CS0128 and the add-in has not built since F52 merged on 2026-09-18. Step 8 of `03_bader_next.md` is the build and all 251 steps wait behind it
+- Measured here against the real `Federator.Core.dll` and the net48 reference assemblies, which answer `error CS0128: A local variable or function named 'views' is already defined in this scope`
+- WHY NOTHING SAW IT. The parse check this repo has been running passes `-nostdlib` with no references, so Roslyn stops before it binds one method body. It reads syntax and nothing else. Adding the reference assemblies makes it bind every body whose signature resolves, and it still cannot see this one, because `BuildViewpoints` takes a Navisworks `Document` and Roslyn skips the body of any method whose signature it cannot bind
+- So the fix carries a check as well as the line. `tools/checks/check-locals.sh` refuses a local declared twice in one method scope, the pre-commit runs it before the tests, and Actions runs it twice, once over `src` and once over `tools/checks/broken`, which is wrong on purpose so the check is proved to refuse and not only to pass
+- Size: one line of real change, one check, one fixture and the rule
+- DONE on 2026-09-19. The second local is `built`. `tools/checks/check-locals.sh` refuses a local declared twice in one method scope, the pre-commit runs it before the tests and Actions runs it over `src` and over `tools/checks/broken`, which it has to refuse. `.claude/rules/addin.md` now says what the container can and cannot check, so parses and builds cannot be swapped again. Core tests before and after: 1045 passed, 0 failed, 32 skipped, 1077 total
+
+## F59 Every step is named and timed
+
+- Files `src/Federator.Core/Diagnostics/RunStep.cs` and `RunSteps.cs` which are new, `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`
+- CONTAINER for the type, the words and both line shapes, LOCAL MACHINE ONLY to see a real run wear them
+- One Core type owns the step list and the words: DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES, WORKBOOK, HTML, XML, NWD, CONFIRM. Nothing anywhere types a step name as a string
+- `RunLog` gains a step that is opened and closed, and closes itself when the work inside it throws, so a step can never be left open by a failure. One line when it starts and one when it finishes, with the seconds and a short phrase for what it changed
+- The clock is monotonic, a `Stopwatch` and never two wall clock readings subtracted, because a run crossing a clock change would otherwise report a step that took less than no time
+- Size: medium, and all of the shape is provable here
+
+## F60 The timing blocks, and F21 closes here
+
+- Closes F21, M1, M2 and M3 as far as a log can
+- Files `src/Federator.Core/Diagnostics/TimingBlock.cs` which is new, `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`
+- CONTAINER for the block, LOCAL MACHINE ONLY for the numbers in it
+- A TIMING block per group: every step, its seconds, its share of the group, slowest first, then the group total
+- A TIMING block for the run: every group with its total, slowest first, then the run total, then the same table by STEP NAME added across every group, so one reading answers which step costs the run and not only which building
+- The run block says in words whether the run fitted in forty five minutes, which is criterion 2 of done
+- Every number measured. Nothing estimated and nothing rounded up into a claim
+- Size: medium
+
+## F61 The document census
+
+- Files `src/Federator.Core/Diagnostics/DocumentCensus.cs` and `CensusRule.cs` which are new, `src/Federator.Addin/Engine/FederationEngine.cs`
+- CONTAINER for the rule and the wording, LOCAL MACHINE ONLY for the counts and the cost
+- Five counts: models, selection sets, clash tests, clash results and saved viewpoints. ONE place in the add-in reads all five and disposes every wrapper, the way `FederationEngine.CountSets` already does
+- A CENSUS line before and after every step that can change the document
+- A Core rule says which steps may move which count. A count that moves when the rule says it may not gets a line beginning `CENSUS CHANGED` naming the step, the count, the before and the after, and that group is not DONE
+- What the census COSTS is measured and logged once per group. Over a second a group it drops to counting only before and after the steps that write, and says in the log that it did
+- Size: large, because the rule is the whole of it
+
+## F62 The live line in the window
+
+- Files `src/Federator.Core/Diagnostics/RunProgress.cs` which is new, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`, `src/Federator.Addin/Engine/SetBuilder.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml`
+- CONTAINER for the line and its rules, LOCAL MACHINE ONLY to watch it move
+- While the run works the line says group N of M, the building, the step, the seconds on that step and the seconds on the run
+- It updates as the step changes and at least once a second inside a step that has a loop to tick from
+- The engine already hands progress out through ONE callback, so what that callback carries widens and no second route is added, and it stays on the thread the run is on
+- A step running longer than twice what the same step took on the group before says so on the line
+- The log pane keeps following the log and the live line above it never scrolls away
+- What this cannot do is tick inside a single Navisworks call with no loop in it. The line says when it last changed rather than pretending
+- Size: medium
+
+## F63 The report gap block
+
+- Files `src/Federator.Core/Diagnostics/ReportGap.cs` and `GapRule.cs` which are new, `src/Federator.Addin/Engine/FederationEngine.cs`, `steps/02_questions.md`
+- CONTAINER for the rule and the block, LOCAL MACHINE ONLY for what a real run holds
+- Bader's standing rule, built into the tool: when the code knows something the report does not show, it becomes a question in the next round
+- At the end of each group, what the run holds is compared against what the report carries. Every number measured and not printed gets one line in a GAP block naming the number, its value and where it would belong
+- The rule for what counts as a gap lives in Core with its tests, seeded from `04_audit.md` and the five per item properties of Q25
+- The block is written even when it is empty, saying nothing was held back. One line at the end of the run says how many gaps in total
+- Every gap this round finds goes into `02_questions.md` as a numbered question. The file runs 1 to 34, so they start at Q35
+- Size: medium
+
+## F64 The machine readable log
+
+- Files `src/Federator.Core/Diagnostics/EventRow.cs` and `RowLog.cs` which are new, `src/Federator.Core/Diagnostics/RunLog.cs`
+- CONTAINER for all of it
+- A second file beside the text log, same name and a different extension, one row per event, tab separated, with a header row: time, seconds since start, group, step, event, name, number, text
+- Every line the text log writes that carries a number writes a row here too, through ONE writer, so the two cannot drift
+- The purpose is stated in a comment at the top of that writer
+- The text log stays the one a person reads and nothing about it gets worse
+- A tab or a newline inside a value is escaped, because one stray tab moves every column after it
+- Size: medium
+
 ## F21 The log answers timing and counts
 
+- ABSORBED on 2026-09-19. The log round asks for the same thing in more detail, so F21 closes with F60, the timing blocks, and the per test clash count goes in with it. The section stays because the reasons under it are the reasons F60 is built the way it is
 - Closes M1, M2 and M3 as far as a log can
 - Files `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`
 - CONTAINER for the block shape in Core, LOCAL MACHINE ONLY to prove
