@@ -3380,6 +3380,17 @@ WHAT IS STILL NOT MEASURED. Whether the comment SURVIVES a save and a reopen of 
 and whether it shows in the Clash Detective panel. Both wait for the run in PART 5 of the
 wiring round, with the by design box on, and the answer goes here.
 
+WHAT THE RUN THEN SHOWED, 2026-09-19 21:13 and the second run at 21:29, log
+`steps\logs\run-20260919-211323.log`. 145 clashes were moved to Reviewed by rule B with a
+record written on each through `TestsEditResultComments`, before the status and on the
+same handle, and not one write threw: the handle survived the comment edit for the
+status edit that followed. The second run opened every NWF off the disk, and the Undo
+auto Reviewed button pressed on the last of them, 1A02WO, read the records back:
+`10 put back of 69 looked at`, each `back to Active`, which is the status its record
+named, and 59 `this tool never moved it`. So the comment SURVIVES a save and a reopen and
+comes back readable. Whether it shows in the Clash Detective panel was not looked at and
+is still UNKNOWN.
+
 ## 5i. Which category values are real Revit categories, asked 2026-09-19, NOT MEASURED
 
 THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
