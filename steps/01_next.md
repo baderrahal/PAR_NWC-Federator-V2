@@ -18,7 +18,7 @@ Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixe
 2. F59, DONE, every step is named and timed
 3. F60, DONE, the timing blocks, and F21 closes here
 4. F61, DONE, the document census
-5. F62, the live line in the window
+5. F62, DONE, the live line in the window
 6. F63, the report gap block
 7. F64, the machine readable log
 8. F57, five Look for lines older than the feature round, for Bader to judge
@@ -534,6 +534,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - The log pane keeps following the log and the live line above it never scrolls away
 - What this cannot do is tick inside a single Navisworks call with no loop in it. The line says when it last changed rather than pretending
 - Size: medium
+- DONE on 2026-09-19. `LiveLine` in Core holds the shape and every rule. The callback the engine always had now carries the whole line rather than a bare sentence, so there is still one route out and it stays on the plugin thread. `Say` renders every time and `Tick` at most once a second, for the three pieces that speak once per item. `ClashRunner` opens three of the fourteen steps and was handed the line, without which the steps where the time goes would never have shown. A step over twice what the same step took on the group before says so, read off the step records so the line and the timing block are the same numbers. The line has its own row above the log box, outside it and trimmed. Core tests before: 1149 passed, 0 failed, 32 skipped, 1181 total. After: 1168 passed, 0 failed, 32 skipped, 1200 total
 
 ## F63 The report gap block
 
