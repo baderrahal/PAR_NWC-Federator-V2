@@ -422,6 +422,15 @@ namespace Federator.Addin.Engine
                     log.Line(line);
                 }
 
+                if (comparison.Decision == RerunDecision.Refused)
+                {
+                    // F74. Stopped. The reason names the file and says what to do, and it
+                    // goes on the group so GroupJudgement reports it FAILED in those words
+                    // rather than DONE over an empty document. Nothing is written.
+                    outcome.NwfReadEmptyReason = comparison.Reason;
+                    return outcome;
+                }
+
                 if (comparison.Decision == RerunDecision.Changed)
                 {
                     // Rebuilt from the scan folder, keeping the tests saved inside it.
@@ -506,6 +515,127 @@ namespace Federator.Addin.Engine
             DocumentCensus census = DocumentCensusReader.Read(document);
             log.Line(CensusRule.StartOfGroupLine(census, cleared));
             outcome.AddError(CensusRule.StartOfGroupReason(census, cleared));
+        }
+
+        /// <summary>
+        /// Opens an NWF and waits for its models, F74. TryOpenFile returning true does not
+        /// mean the models are in the document: on the first real run all five existing
+        /// NWFs read empty the instant the open returned and were rebuilt, throwing away
+        /// every clash result in them. The rule is Federator.Core.Rerun.ModelLoadWait, and
+        /// this hands it the count and the seconds since the open returned, off one
+        /// monotonic clock, pausing between readings. Both readers of an NWF, Decide and
+        /// the preview, come through here, so the two cannot disagree.
+        ///
+        /// THE PAUSE PUMPS THE DISPATCHER BEFORE IT SLEEPS. Whether Navisworks fills the
+        /// models inside the open call or on the message loop afterwards is what scan.md
+        /// 5e could not read off the DLL. A sleep alone would never let the second happen,
+        /// and the window already pumps between groups on this same thread.
+        ///
+        /// THE SCENE LOADED EVENT IS COUNTED AND NEVER WAITED FOR. It exists, 5e, and when
+        /// it fires against the open is UNKNOWN, so one line says how many times it fired
+        /// and when, and the run acts on none of it. When a run shows it firing after the
+        /// open returns and before the count settles, every time, it becomes the reader.
+        /// </summary>
+        private static bool OpenAndWaitForTheModels(
+            Document document, string path, RunLog log, out ModelLoadWait wait)
+        {
+            wait = new ModelLoadWait();
+            Stopwatch clock = Stopwatch.StartNew();
+            DocumentModels models = document.Models;
+            int fired = 0;
+            double firstFiredAt = -1.0;
+            double lastFiredAt = -1.0;
+
+            EventHandler<Autodesk.Navisworks.Api.Interop.SceneLoadedEventArgs> onSceneLoaded =
+                delegate
+                {
+                    fired++;
+                    lastFiredAt = clock.Elapsed.TotalSeconds;
+
+                    if (firstFiredAt < 0)
+                    {
+                        firstFiredAt = lastFiredAt;
+                    }
+                };
+
+            bool subscribed = false;
+
+            try
+            {
+                try
+                {
+                    models.SceneLoaded += onSceneLoaded;
+                    subscribed = true;
+                }
+                catch (Exception error)
+                {
+                    if (log != null)
+                    {
+                        log.Failure(
+                            "listening for the scene loaded event",
+                            error,
+                            "kept going, the model count is read either way");
+                    }
+                }
+
+                if (!document.TryOpenFile(path))
+                {
+                    return false;
+                }
+
+                double opened = clock.Elapsed.TotalSeconds;
+
+                while (wait.Read(document.Models.Count, clock.Elapsed.TotalSeconds - opened)
+                    == LoadWaitVerdict.KeepWaiting)
+                {
+                    System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(
+                        System.Windows.Threading.DispatcherPriority.Background,
+                        new Action(delegate { }));
+                    System.Threading.Thread.Sleep(wait.PauseMilliseconds);
+                }
+
+                if (log != null)
+                {
+                    log.Line(wait.Line());
+                    log.Line(ModelLoadWait.Prefix
+                        + SceneLoadedWords(fired, firstFiredAt, lastFiredAt, opened));
+                }
+
+                return true;
+            }
+            finally
+            {
+                if (subscribed)
+                {
+                    try
+                    {
+                        models.SceneLoaded -= onSceneLoaded;
+                    }
+                    catch (Exception)
+                    {
+                        // A handler that will not come off only counts, on a document
+                        // part that outlives this call, and counting changes nothing.
+                    }
+                }
+            }
+        }
+
+        /// <summary>The one line about the event, 5e. Every number on it was read.</summary>
+        private static string SceneLoadedWords(int fired, double firstAt, double lastAt, double opened)
+        {
+            if (fired == 0)
+            {
+                return "the scene loaded event did not fire between the open beginning and the wait ending";
+            }
+
+            return "the scene loaded event fired " + fired + (fired == 1 ? " time" : " times")
+                + ", first at " + Fixed(firstAt) + "s and last at " + Fixed(lastAt)
+                + "s after the open began, and the open returned at " + Fixed(opened) + "s";
+        }
+
+        private static string Fixed(double seconds)
+        {
+            return seconds.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -731,10 +861,26 @@ namespace Federator.Addin.Engine
             Say("Opening the existing NWF for " + job.Building);
             log.Line("OPEN     reading the file list out of " + job.NwfPath);
 
-            if (!document.TryOpenFile(job.NwfPath))
+            // F74. The open is waited on, because TryOpenFile returning true does not mean
+            // the models are in the document. See OpenAndWaitForTheModels.
+            ModelLoadWait wait;
+
+            if (!OpenAndWaitForTheModels(document, job.NwfPath, log, out wait))
             {
                 throw new InvalidOperationException(
                     "The NWF at " + job.NwfPath + " is there but would not open, so the group was left alone.");
+            }
+
+            if (wait.GaveUp && wait.LastCount == 0)
+            {
+                // F74. It opened with no error and reported no models for the whole of
+                // the ceiling. Never rebuilt, because that threw five federations and
+                // every clash result in them away, and never opened, because every test
+                // would pass against an empty document. Compare cannot answer this,
+                // because handed an empty list it cannot tell an empty NWF from one that
+                // has not loaded, so the caller says it.
+                return NwfComparison.ReadEmpty(
+                    job.NwfPath, job.Files, "after waiting " + Fixed(wait.Seconds) + "s");
             }
 
             return NwfComparison.Compare(FilesInsideTheOpenDocument(job.Building), job.Files);
@@ -1162,9 +1308,19 @@ namespace Federator.Addin.Engine
 
                         Document document = NavisworksApplication.ActiveDocument;
 
-                        if (document == null || !document.TryOpenFile(job.NwfPath))
+                        ModelLoadWait wait;
+
+                        if (document == null || !OpenAndWaitForTheModels(document, job.NwfPath, log, out wait))
                         {
                             label = RunPath.Unknown;
+                        }
+                        else if (wait.GaveUp && wait.LastCount == 0)
+                        {
+                            // F74. The same refusal the run makes, read through the same
+                            // two rules, or the confirm dialog says Rebuilt about a
+                            // healthy NWF.
+                            opened++;
+                            label = RunPath.AfterOpening(RerunDecision.Refused, xmlPicked);
                         }
                         else
                         {

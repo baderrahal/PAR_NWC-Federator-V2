@@ -698,8 +698,7 @@ and 6 does not read as broken.
   Meters without a word. The exchange reader reads the tolerance as written and converts
   nothing, so a file in a unit the tool does not know reads, and ClashTestPlan.Convert,
   the one place a file unit is judged, skips each of its tests by name
-- THE CORE HALF ONLY until 03_bader_next.md step 365 is done.
-  DECIDE WAITS FOR THE MODELS BEFORE IT COUNTS THEM, F74. `Document.TryOpenFile`
+- DECIDE WAITS FOR THE MODELS BEFORE IT COUNTS THEM, F74. `Document.TryOpenFile`
   returning true does not mean the models are in the document. On the first real run all
   five existing NWFs reported 0 unchanged, 4 added, 0 removed and were rebuilt, and the
   step finished in 0.248 seconds against 2.3 to 4.8 seconds for every open in the one
@@ -711,8 +710,7 @@ and 6 does not read as broken.
   thirty second ceiling. All three numbers are settings. One LOADING line is written
   either way. Whether the API reports readiness on its own is UNKNOWN, scan.md 5e, and
   the poll is written so a member can replace it without anything else moving
-- THE CORE HALF ONLY until 03_bader_next.md step 365 is done.
-  AN NWF THAT OPENED AND READ EMPTY IS STOPPED, NEVER REBUILT AND NEVER OPENED, F74.
+- AN NWF THAT OPENED AND READ EMPTY IS STOPPED, NEVER REBUILT AND NEVER OPENED, F74.
   `NwfComparison.ReadEmpty` gives `RerunDecision.Refused` and a reason naming the file
   and what to do. Rebuilding one threw five federations and every clash result and status
   decision in them away. Treating it as a match would run every test against an empty
