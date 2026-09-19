@@ -27,3 +27,11 @@
 # and its line endings are part of what it records, the same as its contents.
 steps/logs/** -text
 samples/** -text
+
+# Written by this tool from a sample and proved byte for byte against what the rule
+# produces, so its bytes are the artifact in exactly the way a sample's are. It had no
+# rule here, so "* text=auto" applied and the Windows runner checked it out with CRLF
+# while samples stayed LF, and MatrixCorrectionsTests compared a converted file against
+# an unconverted one. Measured on 2026-09-19: expected 1472388 bytes and got 1443382,
+# which is 29006 lines of difference and is the line count of the file.
+exchange/** -text

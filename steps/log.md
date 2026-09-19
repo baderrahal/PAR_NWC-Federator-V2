@@ -42,11 +42,11 @@ for F72c, and the real list of Revit categories for F84. Nothing was filled in o
 - EIGHTEEN FIXES, seventeen briefed and one not, each on its own commit on one branch
 - Core tests at the start of the round: 1293 passed, 13 FAILED, 32 skipped, 1338 total.
   The thirteen were the deleted sample and F88 was the first commit. At the end: 1568
-  passed, 0 failed, 32 skipped, 1600 total. 262 tests added and not one broken at any
+  passed, 0 failed, 32 skipped, 1609 total. 271 tests added and not one broken at any
   point after the thirteen were fixed
 - `tools/checks/check-locals.sh` and `check-imports.sh` both clean after every fix
-- Six questions raised, Q46 to Q51, and every one of them is a decision this round refused
-  to make quietly
+- Seven questions raised, Q46 to Q52, and every one of them is a decision this round
+  refused to make quietly
 
 ### The five that made the run useless, and what each really was
 
@@ -116,13 +116,35 @@ Six came out of this round.
   `equals` is proved to import and the negation is not
 - NOTHING IN THE ADD-IN WAS COMPILED OR RUN
 
+### Two things the close of the round found
+
+- CI WAS RED THE FIRST TIME AND IT WAS THIS ROUND'S FAULT. Twelve tests passed in the
+  container and failed on the Windows runner. `Samples.ExchangeFolder` walked up looking
+  for a folder called "exchange" and returned the first one it found, and there is a
+  folder called "Exchange" under the test project because there is one per Core folder.
+  `Directory.Exists` is CASE BLIND on Windows and case sensitive off it, so the walk
+  stopped at the test folder there and at the checkout root here. The rules already name
+  matching two paths without case as a Windows file system difference. Both folders now
+  join onto `Samples.Repo`, the one walk already written, which looks for the solution
+  FILE by its exact name. `SamplesPathTests` asserts the decoy folder is still there AND
+  is not what comes back
+- TWO FILES CARRY THE NAME `1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` AND THEY ARE NOT THE
+  SAME FILE. Bader uploaded one to `samples\` while the round was being worked, and F87
+  wrote one to `exchange\` from the sample. They differ in exactly one line. Both correct
+  the missing hyphen, all 121 occurrences. Only the one F87 wrote also makes
+  BLD-EL-Devices ask for something other than Electrical Fixtures, so in the supplied file
+  Devices is still the same set as BLD-EL-Electrical Fixtures and F84 still reports the
+  pair. Neither file is deleted and neither is edited. The DIFFERENCE is pinned by a test
+  instead, because two files of one name quietly disagreeing is how the wrong one gets
+  picked a month from now. Q52
+
 ### The numbers
 
 - Core tests before: 1293 passed, 13 failed, 32 skipped, 1338 total
-- Core tests after: 1568 passed, 0 failed, 32 skipped, 1600 total
+- Core tests after: 1577 passed, 0 failed, 32 skipped, 1609 total
 - F87 changed 121 occurrences of the missing hyphen and 1 category value. A second run
   reads 0, which is what proves it idempotent
-- Questions before: 45. After: 51
+- Questions before: 45. After: 52
 
 ## 2026-09-19 The penetration round is closed, F71 and F72
 
