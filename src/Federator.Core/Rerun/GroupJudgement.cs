@@ -105,6 +105,13 @@ namespace Federator.Core.Rerun
 
         public string NwfPath { get; set; }
 
+        /// <summary>
+        /// Why the NWF read empty, F74, carried across so the FAILED reason says what to
+        /// do rather than only what happened. Null on every group that did not stop this
+        /// way. It comes off NwfComparison.Reason and is never typed anywhere else.
+        /// </summary>
+        public string NwfReadEmptyReason { get; set; }
+
         public string NwdPath { get; set; }
     }
 
@@ -136,6 +143,18 @@ namespace Federator.Core.Rerun
             if (facts.HasErrors)
             {
                 reason = facts.DescribeErrors();
+                return GroupOutcome.Failed;
+            }
+
+            // F74. The NWF was there, it opened, and it reported no models. Nothing after
+            // this point can be judged, because every later test reads a document that was
+            // never loaded. It is FAILED and not PARTIAL: PARTIAL is a group that was left
+            // alone on purpose, and this one was stopped because the tool could not tell
+            // what it was looking at.
+            if (facts.Decision == RerunDecision.Refused)
+            {
+                reason = Words.Or(facts.NwfReadEmptyReason,
+                    "the NWF opened and reported no models at all, so the group was stopped");
                 return GroupOutcome.Failed;
             }
 

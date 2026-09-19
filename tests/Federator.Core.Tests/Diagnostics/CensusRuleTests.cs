@@ -348,6 +348,123 @@ namespace Federator.Core.Tests
             }
         }
 
+        // ---------- F75, the census at the top of a group ----------
+
+        /// <summary>
+        /// F75. Nothing cleared the document between groups. Both Clear calls in the whole
+        /// engine ran AFTER Decide had read the file list, so Decide compared the scan
+        /// against whatever the previous building had left behind.
+        /// </summary>
+        [Test]
+        public void AGroupThatStartedEmptySaysSoAndCarriesNoReason()
+        {
+            DocumentCensus census = new DocumentCensus(0, 0, 0, 0, 0);
+
+            Assert.That(CensusRule.NotClear(census), Is.Empty);
+            Assert.That(CensusRule.StartOfGroupLine(census, true),
+                Does.StartWith(CensusRule.ClearPrefix));
+            Assert.That(CensusRule.StartOfGroupReason(census, true), Is.Null);
+        }
+
+        [Test]
+        public void AGroupStillHoldingTheLastBuildingIsNamedCountByCount()
+        {
+            DocumentCensus census = new DocumentCensus(4, 61, 1830, 412, 20);
+
+            IList<CensusCount> dirty = CensusRule.NotClear(census);
+
+            Assert.That(dirty.Count, Is.EqualTo(5));
+
+            string line = CensusRule.StartOfGroupLine(census, true);
+
+            Assert.That(line, Does.StartWith(CensusRule.NotClearPrefix));
+            Assert.That(line, Does.Contain("4 models"));
+            Assert.That(line, Does.Contain("61 selection sets"));
+            Assert.That(line, Does.Contain("1830 clash tests"));
+            Assert.That(line, Does.Contain("412 clash results"));
+            Assert.That(line, Does.Contain("20 saved viewpoints"));
+
+            Assert.That(CensusRule.StartOfGroupReason(census, true), Does.Contain("4 models"));
+        }
+
+        [Test]
+        public void OneCountLeftBehindIsStillNotClear()
+        {
+            DocumentCensus census = new DocumentCensus(0, 0, 0, 0, 20);
+
+            Assert.That(CensusRule.NotClear(census).Count, Is.EqualTo(1));
+            Assert.That(CensusRule.StartOfGroupLine(census, true),
+                Does.StartWith(CensusRule.NotClearPrefix));
+            Assert.That(CensusRule.StartOfGroupReason(census, true),
+                Does.Contain("20 saved viewpoints"));
+        }
+
+        /// <summary>
+        /// UNKNOWN is not a number. Calling a count that could not be taken dirty would
+        /// report a reading that never happened, which is the same mistake as calling it
+        /// zero.
+        /// </summary>
+        [Test]
+        public void ACountThatCouldNotBeTakenIsNeverCalledDirty()
+        {
+            DocumentCensus census = new DocumentCensus(0, 0, 0, 0, -1);
+
+            Assert.That(CensusRule.NotClear(census), Is.Empty);
+            Assert.That(CensusRule.StartOfGroupReason(census, true), Is.Null);
+            Assert.That(CensusRule.StartOfGroupLine(census, true), Does.Contain("UNKNOWN"));
+        }
+
+        /// <summary>
+        /// The open file run empties nothing, because the document IS the file list there.
+        /// It still says what it found and it is never a fault.
+        /// </summary>
+        [Test]
+        public void TheOpenFileRunHoldingAWholeFederationIsNoFault()
+        {
+            DocumentCensus census = new DocumentCensus(4, 61, 1830, 412, 20);
+
+            string line = CensusRule.StartOfGroupLine(census, false);
+
+            Assert.That(line, Does.StartWith(CensusRule.ClearPrefix));
+            Assert.That(line, Does.Contain("not emptied"));
+            Assert.That(line, Does.Contain("4 models"));
+            Assert.That(CensusRule.StartOfGroupReason(census, false), Is.Null);
+        }
+
+        [Test]
+        public void NoCensusAtAllSaysUnknownRatherThanClear()
+        {
+            Assert.That(CensusRule.StartOfGroupLine(null, true), Does.Contain("UNKNOWN"));
+            Assert.That(CensusRule.StartOfGroupReason(null, true), Is.Null);
+            Assert.That(CensusRule.NotClear(null), Is.Empty);
+        }
+
+        /// <summary>
+        /// The half that matters: a group that did not start clear is not DONE, because
+        /// everything it goes on to read comes out of that document.
+        /// </summary>
+        [Test]
+        public void AGroupThatDidNotStartClearIsNotDone()
+        {
+            DocumentCensus census = new DocumentCensus(4, 0, 0, 0, 0);
+
+            GroupFacts facts = new GroupFacts
+            {
+                Decision = RerunDecision.Build,
+                NwfOnDisk = true,
+                AppendedCount = 4,
+                FileCount = 4,
+                NwfPath = TestPaths.At("out", "a.nwf")
+            };
+
+            facts.AddError(CensusRule.StartOfGroupReason(census, true));
+
+            string why;
+
+            Assert.That(GroupJudgement.Judge(facts, out why), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(why, Does.Contain("4 models"));
+        }
+
         [Test]
         public void NothingToCompareAgainstWritesNothingAndDoesNotThrow()
         {

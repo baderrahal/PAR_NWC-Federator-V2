@@ -201,6 +201,122 @@ namespace Federator.Core.Diagnostics
                 + ", which is not a step that may change them";
         }
 
+        // ---------- the census at the top of a group, F75 ----------
+
+        /// <summary>The words that begin a group that did not start clear.</summary>
+        public const string NotClearPrefix = "CENSUS DIRTY";
+
+        /// <summary>The words that begin a group that did.</summary>
+        public const string ClearPrefix = "CENSUS CLEAR";
+
+        /// <summary>
+        /// The counts that were not zero at the top of a group, F75. A count that could
+        /// not be taken is NOT one of them, because UNKNOWN is not a number and calling it
+        /// dirty would report a reading that never happened.
+        /// </summary>
+        public static IList<CensusCount> NotClear(DocumentCensus census)
+        {
+            List<CensusCount> dirty = new List<CensusCount>();
+
+            if (census == null)
+            {
+                return dirty;
+            }
+
+            foreach (CensusCount what in DocumentCensus.All)
+            {
+                if (census.Knows(what) && census.Of(what) != 0)
+                {
+                    dirty.Add(what);
+                }
+            }
+
+            return dirty;
+        }
+
+        /// <summary>
+        /// The one line the top of a group writes, F75.
+        ///
+        /// WHY THIS EXISTS. Nothing cleared the document between groups. There were two
+        /// Clear calls in the whole engine and both ran AFTER Decide had already read the
+        /// file list, so Decide compared the scan against whatever the previous building
+        /// had left behind. Since F75 the document is emptied at the top of every group on
+        /// the scanned path, before Decide, and this line is what proves it happened.
+        ///
+        /// THE OPEN FILE RUN CLEARS NOTHING, on purpose, because the document IS the file
+        /// list there and emptying it would be emptying the thing being run. So that path
+        /// passes cleared false, the line reports what was in the document and calls it no
+        /// fault, and the reason below is null.
+        /// </summary>
+        public static string StartOfGroupLine(DocumentCensus census, bool cleared)
+        {
+            if (census == null)
+            {
+                return NotClearPrefix + "  no census could be taken at the top of this group, "
+                    + "so whether the document started empty is UNKNOWN";
+            }
+
+            IList<CensusCount> dirty = NotClear(census);
+
+            if (!cleared)
+            {
+                return ClearPrefix + "  the document was not emptied for this group, which is "
+                    + "what the open file run does, and it held " + Held(census, dirty);
+            }
+
+            if (dirty.Count == 0)
+            {
+                return ClearPrefix + "  the document was emptied and every count read zero"
+                    + (census.KnowsEverything
+                        ? string.Empty
+                        : ", except the ones that could not be taken, which read UNKNOWN");
+            }
+
+            return NotClearPrefix + "  the document was emptied for this group and still held "
+                + Held(census, dirty)
+                + ". Everything this group goes on to read comes out of that document, so "
+                + "what it reports is not only about this group. Nothing was undone and the "
+                + "run carried on";
+        }
+
+        /// <summary>
+        /// The reason that goes on the group where it did not start clear, or null where
+        /// it did or where nothing asked it to, F75. A group reading the last building's
+        /// models is not a group that can be called DONE.
+        /// </summary>
+        public static string StartOfGroupReason(DocumentCensus census, bool cleared)
+        {
+            if (!cleared || census == null)
+            {
+                return null;
+            }
+
+            IList<CensusCount> dirty = NotClear(census);
+
+            return dirty.Count == 0
+                ? null
+                : "the document was emptied at the top of this group and still held "
+                    + Held(census, dirty);
+        }
+
+        /// <summary>What was left in the document, in the words the census uses.</summary>
+        private static string Held(DocumentCensus census, IList<CensusCount> counts)
+        {
+            if (counts == null || counts.Count == 0)
+            {
+                return "nothing";
+            }
+
+            List<string> said = new List<string>();
+
+            foreach (CensusCount what in counts)
+            {
+                said.Add(census.Of(what) + " " + DocumentCensus.Words(what));
+            }
+
+            return string.Join(", ", said.ToArray());
+        }
+
         /// <summary>
         /// Every line one step's before and after asks for. Empty where nothing moved and
         /// everything that moved was allowed to, which is the ordinary case and writes no

@@ -578,6 +578,41 @@ and 6 does not read as broken.
   Meters without a word. The exchange reader reads the tolerance as written and converts
   nothing, so a file in a unit the tool does not know reads, and ClashTestPlan.Convert,
   the one place a file unit is judged, skips each of its tests by name
+- DECIDE WAITS FOR THE MODELS BEFORE IT COUNTS THEM, F74. `Document.TryOpenFile`
+  returning true does not mean the models are in the document. On the first real run all
+  five existing NWFs reported 0 unchanged, 4 added, 0 removed and were rebuilt, and the
+  step finished in 0.248 seconds against 2.3 to 4.8 seconds for every open in the one
+  earlier log on record. `Federator.Core.Rerun.ModelLoadWait` is the rule: the add-in
+  reads the count and the monotonic clock and hands both over, so the run and the preview
+  read one rule and cannot disagree. A count above zero that stops moving over three
+  readings a quarter second apart is settled. ZERO NEVER SETTLES, because zero cannot be
+  told apart from a document that has not started filling, so it is only accepted at the
+  thirty second ceiling. All three numbers are settings. One LOADING line is written
+  either way. Whether the API reports readiness on its own is UNKNOWN, scan.md 5e, and
+  the poll is written so a member can replace it without anything else moving
+- AN NWF THAT OPENED AND READ EMPTY IS STOPPED, NEVER REBUILT AND NEVER OPENED, F74.
+  `NwfComparison.ReadEmpty` gives `RerunDecision.Refused` and a reason naming the file
+  and what to do. Rebuilding one threw five federations and every clash result and status
+  decision in them away. Treating it as a match would run every test against an empty
+  document, which reports every test as passing, and a wrong answer that reads as a good
+  one is worse than a stop. `NwfComparison.Compare` must NOT try to answer this: handed
+  an empty list it cannot tell an empty NWF from one that has not loaded, because both
+  are an empty list, and only the caller knows the NWF was just opened and waited on.
+  `RunPath.Stopped` is the label and both the confirm dialog and the RESULT block count
+  it. The preview reads the same two rules, because a preview that says Rebuilt about a
+  healthy NWF is the confirm dialog lying
+- THE DOCUMENT IS EMPTIED AT THE TOP OF EVERY GROUP, BEFORE DECIDE, F75. Before this
+  there were two clears in the whole engine and both ran AFTER Decide had read the file
+  list, so Decide compared the scan against whatever the previous building had left
+  behind. `CensusRule.StartOfGroupLine` and `StartOfGroupReason` are the Core half: the
+  first census of a group must read models 0, sets 0, tests 0, results 0, views 0, and a
+  group that was emptied and still holds something is named count by count and is not
+  DONE, because everything it goes on to read comes out of that document. A count that
+  could not be taken is never called dirty, the same way UNKNOWN is never called a move.
+  THE OPEN FILE RUN EMPTIES NOTHING, because the document IS the file list there, so it
+  passes cleared false, says what it found and is never a fault. The two weekly lines in
+  the confirm dialog say nothing INSIDE the NWF is cleared, which is what a person is
+  asking about, rather than the old "Nothing is cleared" that F75 made untrue
 - A federation that already exists needs NO SCAN. In Navisworks a person opens a file,
   opens Clash Detective, presses Run and reads the results, and nothing asks them where
   their models came from. So there are two ways to run and they are told apart by what they
