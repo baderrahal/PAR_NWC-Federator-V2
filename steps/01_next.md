@@ -14,9 +14,9 @@ Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 
 
 Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixes as F56 to F61. F56 and F57 were already taken, so the six are F59 to F64 and they map onto the brief one for one and in order. F51, which the brief asks for as its own one line pull request, was already done and merged on 2026-09-18 and is not done twice. F58 is a seventh, found by the reading that opened the round and put first because the add-in does not compile and every one of the 251 steps waits behind the build.
 
-1. F58, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
-2. F59, every step is named and timed
-3. F60, the timing blocks, and F21 closes here
+1. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
+2. F59, DONE, every step is named and timed
+3. F60, DONE, the timing blocks, and F21 closes here
 4. F61, the document census
 5. F62, the live line in the window
 6. F63, the report gap block
@@ -510,6 +510,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - The run block says in words whether the run fitted in forty five minutes, which is criterion 2 of done
 - Every number measured. Nothing estimated and nothing rounded up into a claim
 - Size: medium
+- DONE on 2026-09-19. `TimingBlock` in Core builds both. Whatever the steps do not account for is a row of its own, so the share column adds to a hundred, and a nested step is left out of it and listed under the total. The group total is the engine's clock and the run total is the log's elapsed clock, never the groups added up. The last line answers criterion 2 in words, and one second over is OVER. F21's second half is the `ROWS` line per test: what the workbook got beside what the document holds, with fewer rows than clashes explained as the result groups, which was measured off `CountInto` and `Walk` rather than assumed. Core tests before: 1075 passed, 0 failed, 32 skipped, 1107 total. After: 1103 passed, 0 failed, 32 skipped, 1135 total
 
 ## F61 The document census
 
@@ -557,7 +558,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 
 ## F21 The log answers timing and counts
 
-- ABSORBED on 2026-09-19. The log round asks for the same thing in more detail, so F21 closes with F60, the timing blocks, and the per test clash count goes in with it. The section stays because the reasons under it are the reasons F60 is built the way it is
+- CLOSED on 2026-09-19 by F60. The log round asked for the same thing in more detail. The timing block per group and for the run is F60, and the per test clash count written to Excel is the `ROWS` line that went in with it. The section stays because the reasons under it are the reasons F60 is built the way it is
 - Closes M1, M2 and M3 as far as a log can
 - Files `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, `src/Federator.Addin/Engine/ClashRunner.cs`
 - CONTAINER for the block shape in Core, LOCAL MACHINE ONLY to prove

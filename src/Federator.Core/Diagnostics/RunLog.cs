@@ -819,7 +819,7 @@ namespace Federator.Core.Diagnostics
 
             lock (gate)
             {
-                groupRecords.Add(new GroupRecord(building, outcome, recorded, runPath));
+                groupRecords.Add(new GroupRecord(building, outcome, recorded, runPath, seconds));
                 currentGroup = null;
             }
 
@@ -827,6 +827,13 @@ namespace Federator.Core.Diagnostics
                 + "  " + seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s"
                 + (string.IsNullOrEmpty(runPath) ? string.Empty : "  " + runPath)
                 + (string.IsNullOrEmpty(recorded) ? string.Empty : "  " + recorded));
+
+            // After the finished line, because the group total the block works its shares
+            // out of is the number on that line and a reader should meet them in that
+            // order. F60.
+            Block(
+                TimingBlock.GroupTitle + " " + Words.Or(building, "this group"),
+                TimingBlock.ForGroup(building, StepRecords, seconds));
         }
 
         public void AppendAttempted(string file)
@@ -1180,6 +1187,13 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public void WriteResultBlock()
         {
+            // Before RESULT, so RESULT stays the last thing in the file and does not have
+            // to be scrolled for, and so where the time went is read on the way to it. The
+            // run total is the log's own elapsed clock, measured here and not added up
+            // from the groups, because the scan and the preview happen outside every group
+            // and a total that left them out would be a smaller number than the run took.
+            Block(TimingBlock.RunTitle, TimingBlock.ForRun(GroupRecords, StepRecords, ElapsedSeconds));
+
             Section("RESULT");
 
             Line("groups done    : " + CountOf(GroupOutcome.Done));

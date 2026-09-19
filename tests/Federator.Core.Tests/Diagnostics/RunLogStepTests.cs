@@ -248,8 +248,12 @@ namespace Federator.Core.Tests
                 string text = ReadWhileOpen(log);
 
                 // Two groups, so two start lines and two repeat totals, not one of each.
+                // The repeat total is matched with its own prefix, because the TIMING
+                // block of each group carries a visit count on its rows as well.
                 Assert.That(Occurrences(text, "STEP     TESTS RUN     started"), Is.EqualTo(2));
-                Assert.That(Occurrences(text, "3 visits"), Is.EqualTo(2));
+                Assert.That(
+                    Occurrences(text, "STEP     " + RunSteps.Padded(RunSteps.TestsRun) + "  3 visits"),
+                    Is.EqualTo(2));
             }
         }
 

@@ -703,6 +703,13 @@ namespace Federator.Addin.Engine
                             harvesting.Changed(planned.Name);
                         }
 
+                        // F21. What the workbook got beside what the document holds, per
+                        // test, so criterion 3 can be checked off the log instead of by
+                        // opening Excel and Navisworks side by side for every one of
+                        // 1830 tests. The wording is Core and the rule about what the
+                        // difference means is there with it.
+                        log.Line(ReportedCount.Line(planned.Name, summary.Rows.Count, tally.Total));
+
                         summary.State = summary.HasRows
                             ? TestState.FoundClashes
                             : TestState.Passed;

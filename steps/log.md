@@ -2,6 +2,38 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F60, the timing blocks, and F21 closes here
+
+### What was done
+
+- TWO BLOCKS. A `TIMING` block per group, written straight after its `GROUP    finished` line, and a `TIMING, THE WHOLE RUN` block just before `RESULT`, so `RESULT` stays the last thing in the file and where the time went is read on the way to it
+- EVERY NUMBER IS MEASURED AND NOTHING IS WORKED OUT FROM ANYTHING ELSE. The group total is the engine's own clock as `GroupFinished` read it, which is why `GroupRecord` carries its seconds now. The run total is the log's elapsed clock read where the block is written, and deliberately NOT the groups added up: the scan and the preview happen outside every group, and a run total that left them out would be a smaller number than the run took
+- THE ROW THAT MAKES THE SHARES HONEST. Whatever the steps do not account for is a ROW of its own, named `outside every step`, so the share column reads down to a hundred. A block that spread that time over the steps it does know about would be inventing numbers, which is the one thing a timing block must not do, and one that left it off the page would leave a reader guessing where the missing fifth went. There is a test that adds the column up and asserts a hundred
+- STEPS ADDING TO MORE THAN THE GROUP TOOK IS SAID IN WORDS, with the difference named. It means something was timed outside the stretch the group clock covered, which is a fault in the timing rather than in the run, and it is exactly the shape that would otherwise print a share over a hundred and be read past
+- A NESTED STEP IS LEFT OUT OF THE SHARE COLUMN and listed under the total with a line saying its seconds are already counted above. IMAGES runs inside HARVEST, so counting both would give a group shares adding to more than a hundred. It is listed rather than dropped, because IMAGES taking most of HARVEST is exactly the sort of thing this block exists to show
+- THE RUN BLOCK READS TWICE. The groups slowest first, then the same seconds by STEP NAME added across every group. Which BUILDING cost the run and which STEP cost it are two different questions and only the second one says what to fix. A run of twenty two groups answers the second only when the steps are added across all of them
+- THE BLOCK ANSWERS CRITERION 2 ITSELF. The last line says the run took so long, in minutes and in seconds, and then either that it is inside the forty five minutes a run has to finish in, by so much, or that it is OVER by so much. One second over is OVER, because criterion 2 is a number and not a feeling, and there is a test on that boundary by name. The forty five is a setting and a value at or below zero is refused where it is set
+- F21 CLOSES HERE, AND ITS SECOND HALF WAS THE INTERESTING ONE. F21 asks for the clash count written to Excel per test, so the Excel and the log can be checked against the panel. That is criterion 3, and nothing in the log answered it: checking meant opening Excel and Navisworks side by side for every one of 1830 tests
+- THE TWO NUMBERS ARE NOT THE SAME THING, AND THAT WAS MEASURED OFF THE CODE RATHER THAN ASSUMED. `ClashRunner.CountInto` counts LEAVES, descending into every result group, because a group silently counting as one would understate what a test found. `ClashHarvest.Walk` writes ONE row per result group and does not descend into it, which is also what the Clash Detective panel shows. So fewer rows than clashes is the GROUPING and not a loss, and the `ROWS` line says which. A rule asserting the two must be equal would have been wrong, and it would have called a correct run a fault on every test holding a group
+- WHAT IS A FINDING IS MORE ROWS THAN CLASHES. Nothing in this tool produces that, so the line says so in capitals with the difference named, and nothing acts on it. That is the rule: the tool reports what it noticed and Bader decides
+- Proved here: Core tests before 1075 passed, 0 failed, 32 skipped, 1107 total. After 1103 passed, 0 failed, 32 skipped, 1135 total. 28 added and none broken. One existing test failed on the way and was right to: it counted the words `3 visits` in a log and the new TIMING block carries a visit count on its rows too, so it now matches the repeated step line by its own prefix
+- The blocks were RENDERED and read rather than only asserted. A group of 1830 tests was put through `TimingBlock` against the real Core assembly and the output read by eye, which is what caught the `outside every step` row sitting under the nested heading where it read as a nested step. The row moved up and the nested section moved below the total
+- Core builds in Release with 0 warnings, `check-locals.sh` clean over `src`, the add-in parses with the same six error codes and not one `CS1xxx`, and the widened check gives 205 `CS0246` and 1 `CS0103`, every one a Navisworks name
+- Waits for the local machine: steps 245 to 253, nine of them, including the one that checks criterion 3 off the log and the workbook and the panel together
+
+### What remains
+
+- F61 to F64
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F60 pull request
+2. F61, the document census
+
 ## 2026-09-19 F59, every step is named and timed
 
 ### What was done
