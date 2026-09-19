@@ -214,9 +214,13 @@ check is proved to refuse as well as to pass.
   moving and one prefix reading as two different things is how a log stops being trusted.
   Which statuses are worth keeping is Federator.Core.Clash.StatusesAPersonSet, which is everything except New,
   because New is where a clash starts and the next run makes it again while the other four
-  are somebody's decision. Whether a model can be taken out of an open document WITHOUT a
-  clear, which would retire the whole dance, is UNKNOWN, see docs\history\scan.md 5a and
-  tools\probes\probe-model-remove.ps1
+  are somebody's decision. A model CAN be taken out of an open document without a clear,
+  measured on 2026-09-19, docs\history\scan.md 5c: Document.RemoveFile(int) and
+  TryRemoveFile(int), on Document and not on DocumentModels, which is why searching the
+  collection found nothing. The dance stays until a RUN says what removing a file does to
+  the sets, the tests, the results and the viewpoints that point into that model, because a
+  rebuild that removed one file and lost every clash result would be worse than the clear it
+  replaces. Bader decides
 - One folder per discipline goes in the NWF with one viewpoint in each, showing that
   discipline and hiding the others, made after the clash run and before the NWF is saved
   again so the viewpoint is inside the file the NWD is published from. A group of ONE
@@ -229,9 +233,15 @@ check is proved to refuse as well as to pass.
   VIEWS block are Federator.Core.Views.ViewpointPlan and
   Federator.Core.Views.ViewpointBuildOutcome, so both are tested, and the block reads as
   the SETS block does with its totals counted off the same list the lines came from. A group
-  whose viewpoints failed is not DONE. The API itself is UNMEASURED: nothing in
-  docs\history\scan.md records DocumentSavedViewpoints, section 5b says so, and
-  SavedViewpoints.CanBuild is false until tools\probes\probe-viewpoints.ps1 has been run.
+  whose viewpoints failed is not DONE. The API was MEASURED on 2026-09-19,
+  docs\history\scan.md 5d, and it has the shape SavedViewpoints.cs assumed:
+  DocumentSavedViewpoints.RootItem is a FolderItem, AddCopy(GroupItem, SavedItem) puts one
+  in a folder, EditDisplayName sets a name, FolderItem has a public constructor, and
+  SavedViewpoint and Viewpoint are both IDisposable. ONE HALF IS STILL UNKNOWN: items are
+  hidden through DocumentModels.SetHidden, and whether a viewpoint saved while they are
+  hidden RECORDS that hiding is not readable off the DLL.
+  SavedViewpoint.ContainsVisibilityOverrides is what answers it on a run.
+  SavedViewpoints.CanBuild is still false, because the writing half is not built.
   While it is false the run PLANS the viewpoints, says in the log what it would have made,
   and attempts nothing, and the judgement is told they were not requested, because a step
   this tool cannot do is not a step that failed. No clash is ever saved as a viewpoint,

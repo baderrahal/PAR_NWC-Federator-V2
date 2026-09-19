@@ -2,6 +2,99 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F70, both probes run, and two standing unknowns answered
+
+### Why this happened at all
+
+- STEPS 206 TO 211 SAY THE TWO PROBES ANSWER A QUESTION THE CONTAINER CANNOT ANSWER. F69
+  established that this session is not in a container, so those Look for lines could be
+  checked against what the probes actually print. Checking them meant running them. Both
+  are reflection over a DLL, both are read only, neither opens a model and each takes about
+  ten seconds
+- BOTH ANSWERED, and both answers had been open since 2026-09-18
+
+### 5a. A model CAN be taken out of an open document
+
+```
+Autodesk.Navisworks.Api.Document  ->  public void RemoveFile(int index)
+Autodesk.Navisworks.Api.Document  ->  public bool TryRemoveFile(int index)
+```
+
+- THE MEMBER IS ON `Document` AND NOT ON `DocumentModels`, which is exactly why it was never
+  found. 5a says nothing named Remove, Delete or Detach against a model appears anywhere in
+  `scan.md`, and every search behind that sentence had been of the collection
+- `DocumentModels` carries `InternalRemove` and `InternalRemoveAt` and a get only
+  `IsReadOnly`, so the list is not meant to be edited through the collection at all
+- WHAT THIS DOES NOT SETTLE, AND IT IS THE HALF THAT MATTERS. It settles that the member
+  exists, its name, where it lives and what it takes. It settles NOTHING about what removing
+  a file does to the sets, the clash tests, the clash results and the saved viewpoints that
+  point into that model, and that is the only question F50's rebuild turns on. A rebuild that
+  removed one file and lost every clash result would be worse than the clear and copy it
+  replaces
+- SO THE REBUILD WAS NOT CHANGED. The clear, the copy and the four counts stay exactly as
+  F50 built them. Bader decides, with a run, and the measurement is now in front of him
+
+### 5b. The saved viewpoint API, and the shape the code guessed was right
+
+- `Document.SavedViewpoints` is an `Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints`,
+  which is the name `SavedViewpoints.cs` has been using since F50 on the strength of a pattern
+- ALL FOUR OF 5b'S QUESTIONS ANSWERED. A folder is a `FolderItem` with a public constructor,
+  put in with `AddCopy(GroupItem, SavedItem)`. A viewpoint goes in the same way and is made
+  with `new SavedViewpoint(Viewpoint)`. A name is set with `EditDisplayName(SavedItem, string)`.
+  `SavedViewpoint` and `Viewpoint` are both `IDisposable`, so both are disposed
+- THE TWO COLLECTIONS HAVE THE SAME SHAPE. `DocumentSavedViewpoints` and
+  `DocumentSelectionSets` carry the same `RootItem`, `AddCopy`, `InsertCopy`, `Move`,
+  `Remove`, `RemoveAt` and `ReplaceWithCopy` with the same signatures. 5b said that must NOT
+  be assumed from the pattern, and it was not assumed. It was read, and the pattern held
+- ONE THING IS STILL UNKNOWN AND IT IS THE ONE THE FEATURE TURNS ON. Items are hidden through
+  `DocumentModels.SetHidden(IEnumerable<ModelItem>, bool)`. Whether a viewpoint saved while
+  they are hidden RECORDS that hiding, and restores it when pressed, cannot be read off a
+  DLL. `SavedViewpoint.ContainsVisibilityOverrides` is what answers it, on a run
+- SO `CanBuild` IS STILL FALSE AND NOTHING WAS TURNED ON. Writing `Add`, `ShowOnly` and
+  `ShowOnlyLargeItems` against the measured members is the second half of F52, which is a
+  feature and not a build fix. The measurement is here so that work starts from what was
+  read. Bader decides when
+
+### Everything that said they were unmeasured, and does not now
+
+- `docs/history/scan.md` gains 5c and 5d, the two answers with the assembly version and the
+  date, which is what step 211 asks for. 5a and 5b keep the questions, because the reasoning
+  in them is why the answers matter, and their headings now point at the answers
+- `CLAUDE.md`'s Confirm against the install list carried both as UNKNOWN. It now carries what
+  is actually still unknown about each, which is what a run costs for one and what a viewpoint
+  records for the other
+- `.claude/rules/addin.md` said the viewpoint API is UNMEASURED and that whether a model can
+  be removed is UNKNOWN. Both replaced with the measurement and with what is still open
+- `SavedViewpoints.cs` opened with EVERYTHING IN THIS FILE RESTS ON ONE ASSUMPTION. It does
+  not any more, and the comment says which four things were measured and which one was not
+- `ViewpointBuilder.cs` listed FIVE THINGS ARE ASSUMED HERE AND NOT ONE OF THEM WAS READ OFF
+  A DLL. Four of the five are measured now and the list says so line by line
+- `WhyNotYet()`, the line the log writes on every group, said the API was never read off the
+  installed DLL. That was true this morning and is not now, so it says the API is measured,
+  names 5d, and says the writing half is what is missing
+
+### Proved here
+
+- Both probes run on this machine against `Autodesk.Navisworks.Api 22.0.0.0`
+- `dotnet build ParsonsNwcFederator.sln -c Release` with 0 errors and 0 warnings
+- `check-locals.sh src` clean, `check-imports.sh src` clean
+- Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+### What remains
+
+- The closing entry
+
+### Known bugs
+
+- As in the F46 entry, and the add-in compiles
+
+### What comes next
+
+1. Merge the F70 pull request
+2. The closing entry
+3. F52's writing half and F50's rebuild, if Bader wants them, because both now start from a
+   measurement rather than a guess
+
 ## 2026-09-19 F69, the other eighteen errors, and the first proved build
 
 ### THE ADD-IN BUILDS. 0 errors, 0 warnings

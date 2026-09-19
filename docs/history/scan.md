@@ -2831,7 +2831,7 @@ reported unreadable rather than guessed at. Before this change the floor was 5 p
    Only the level and the number are fixed. If the type code should be pinned to MOD as
    well, say so and it becomes one more forced part.
 
-## 5a. Can a model be taken out of an open document, NOT MEASURED, asked 2026-09-18
+## 5a. Can a model be taken out of an open document, asked 2026-09-18, ANSWERED in 5c on 2026-09-19
 
 This section records a QUESTION and is not a measurement. Nothing below was read off a
 DLL. It is here so the next person does not spend the search again, and so the answer has
@@ -2873,7 +2873,7 @@ Until it is answered, F50 takes the other branch: the clear and restore stays an
 from two things to four, so the viewpoints and the statuses are counted out and counted
 back the same way the sets and the tests always were.
 
-## 5b. The saved viewpoint API, NOT MEASURED, asked 2026-09-18
+## 5b. The saved viewpoint API, asked 2026-09-18, ANSWERED in 5d on 2026-09-19
 
 This section records a QUESTION and is not a measurement. Nothing below was read off a
 DLL.
@@ -2915,3 +2915,135 @@ as if it had been read.
 `src\Federator.Addin\Engine\SavedViewpoints.cs` is the one place in the add-in that rests
 on this, and it says so at the top. A build error there means the assumption was wrong,
 which is the whole reason it is one file and one method.
+
+## 5c. The answer to 5a, MEASURED 2026-09-19
+
+`tools\probes\probe-model-remove.ps1` was run on the machine with Navisworks Manage 2025
+installed, against `Autodesk.Navisworks.Api 22.0.0.0`. Section 5a above is the question and
+this is the answer. 5a is left standing because the reasoning in it is why the answer
+matters.
+
+**A MODEL CAN BE TAKEN OUT OF AN OPEN DOCUMENT. The member is on `Document` and not on
+`DocumentModels`, which is why searching `DocumentModels` for it found nothing:**
+
+```
+Autodesk.Navisworks.Api.Document  ->  public void RemoveFile(int index)
+Autodesk.Navisworks.Api.Document  ->  public bool TryRemoveFile(int index)
+```
+
+Both take an INDEX and not a `Model`. The Try form returns a bool, which this tool reads
+and never discards.
+
+What `DocumentModels` itself carries, for the record, is a removal pair that is not public
+API in any useful sense:
+
+```
+public bool InternalRemove(Model item)
+public void InternalRemoveAt(int index)
+```
+
+and `DocumentModels.IsReadOnly` is a get only property, so the list is not meant to be
+edited through the collection.
+
+The append side, printed in the same pass for the comparison:
+
+```
+public void AppendFile(string fileName)
+public void AppendFiles(IEnumerable<string> fileNames)
+public bool TryAppendFile(string fileName)
+public bool TryAppendFiles(IEnumerable<string> fileNames)
+public void Clear()
+public bool IsClear { get }
+```
+
+WHAT THIS DOES AND DOES NOT SETTLE. It settles that the member exists, its name, where it
+lives and what it takes. It settles NOTHING about what removing a file does to the sets,
+the clash tests, the clash results or the saved viewpoints that point into that model, and
+that is the only question F50's rebuild actually turns on. A rebuild that removed one file
+and lost every clash result would be worse than the clear and copy it replaces. Whether to
+change the rebuild is Bader's decision and it needs a run, not a reflection pass.
+
+## 5d. The answer to 5b, MEASURED 2026-09-19
+
+`tools\probes\probe-viewpoints.ps1` was run on the same machine and the same assembly.
+Section 5b is the question and this is the answer.
+
+**THE TYPE EXISTS AND THE NAME THE CODE ASSUMED IS RIGHT.**
+
+```
+Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints Document.SavedViewpoints { get }
+```
+
+The collection, with the members F52 needs marked:
+
+```
+Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints
+    base type: System.Object
+    IDisposable: False
+    public FolderItem RootItem { get }                                  a folder tree, as assumed
+    public SavedItemCollection Value { get }
+    public SavedItem CurrentSavedViewpoint { get; set }
+    public void AddCopy(SavedItem item)                                 puts one in at the root
+    public void AddCopy(GroupItem parent, SavedItem item)               puts one in a folder
+    public void EditDisplayName(SavedItem item, string newDisplayName)  a name CAN be set
+    public void InsertCopy(GroupItem parent, int index, SavedItem item)
+    public bool Remove(GroupItem parent, SavedItem item)
+    public void RemoveAt(GroupItem parent, int index)
+    public void ReplaceWithCopy(GroupItem parent, int index, SavedItem item)
+    public void ReplaceFromCurrentView(SavedViewpoint savedViewpoint)
+    public SavedViewpoint CaptureRuntimeOverrides()
+    public Collection<SavedItem> CreateCopy()
+    public void CopyFrom(SavedItemCollection value)
+    public void CopyFrom(IEnumerable<SavedItem> value)
+    public void Clear()
+```
+
+The item that goes in it:
+
+```
+Autodesk.Navisworks.Api.SavedViewpoint : SavedItem
+    IDisposable: True                                   so it IS disposed
+    public SavedViewpoint()
+    public SavedViewpoint(Viewpoint viewpoint)          made from a viewpoint
+    public Viewpoint Viewpoint { get }
+    public bool ContainsVisibilityOverrides { get }
+    public bool ContainsAppearanceOverrides { get }
+    public VisibilityOverrides GetVisibilityOverrides()
+    public AppearanceOverrides GetAppearanceOverrides()
+```
+
+`Autodesk.Navisworks.Api.Viewpoint` is `IDisposable` too, and `FolderItem` has a public
+parameterless constructor, which is how a folder is made.
+
+**THE TWO COLLECTIONS HAVE THE SAME SHAPE.** `DocumentSavedViewpoints` and
+`DocumentSelectionSets` carry the same `RootItem`, `AddCopy`, `InsertCopy`, `Move`,
+`Remove`, `RemoveAt` and `ReplaceWithCopy` members with the same signatures. 5b said the
+shape was NOT to be assumed from the pattern. It was not assumed, it was read, and the
+pattern held.
+
+**ALL FOUR OF 5b's QUESTIONS ARE ANSWERED.** A folder is a `FolderItem`, made with its
+public constructor and put in with `AddCopy(GroupItem, SavedItem)`. A viewpoint goes in
+the same way. A name is set with `EditDisplayName`. `SavedViewpoint` and `Viewpoint` are
+both `IDisposable` and both are disposed.
+
+**HIDING IS THE HALF THAT IS STILL NOT SETTLED.** What the probe found for it:
+
+```
+Autodesk.Navisworks.Api.ModelItem.IsHidden                        get only
+Autodesk.Navisworks.Api.DocumentParts.DocumentModels.SetHidden(IEnumerable<ModelItem>, bool)
+Autodesk.Navisworks.Api.DocumentParts.DocumentModels.ResetAllHidden()
+Autodesk.Navisworks.Api.SavedViewpoint.GetVisibilityOverrides()
+Autodesk.Navisworks.Api.SavedViewpoint.ContainsVisibilityOverrides
+```
+
+So items are hidden through `DocumentModels.SetHidden` and a saved viewpoint can CARRY
+visibility overrides. Whether a viewpoint saved while items are hidden RECORDS that
+hiding, and whether it restores it when the viewpoint is pressed, is not readable off the
+DLL and is still **UNKNOWN**. `ContainsVisibilityOverrides` is the thing to read on a real
+run, because it answers that question directly.
+
+WHAT WAS NOT DONE. `SavedViewpoints.CanBuild` is still false and nothing in
+`src\Federator.Addin\Engine\SavedViewpoints.cs` was changed. Turning it on means writing
+`Add`, `ShowOnly` and `ShowOnlyLargeItems` against the members above, which is the second
+half of F52 and a feature rather than a build fix. The measurement is here so that work
+starts from what was read rather than from what was assumed. Bader decides when.

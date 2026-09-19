@@ -14,23 +14,24 @@ Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 
 
 Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixes as F56 to F61. F56 and F57 were already taken, so the six are F59 to F64 and they map onto the brief one for one and in order. F51, which the brief asks for as its own one line pull request, was already done and merged on 2026-09-18 and is not done twice. F58 is a seventh, found by the reading that opened the round and put first because the add-in does not compile and every one of the 251 steps waits behind the build.
 
-Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. F69 is a fifth, not briefed, found by running the build while measuring F68 and put after the four it came out of. They go before everything that was left, because the build is what every one of the 319 steps waits behind.
+Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. F69 is a fifth and F70 a sixth, neither briefed. F69 came out of running the build while measuring F68 and F70 out of checking the probe steps against what the probes actually print. Both go after the four they came out of. They go before everything that was left, because the build is what every one of the 319 steps waits behind.
 
 1. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
 2. F66, DONE, the check that would have caught it
 3. F67, DONE, one doubled comment
 4. F68, DONE, the build section learns what today cost
 5. F69, DONE, the other eighteen errors, and the first proved build. Not briefed, found by running the build
-6. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
-7. F59, DONE, every step is named and timed
-8. F60, DONE, the timing blocks, and F21 closes here
-9. F61, DONE, the document census
-10. F62, DONE, the live line in the window
-11. F63, DONE, the report gap block
-12. F64, DONE, the machine readable log
-13. F57, five Look for lines older than the feature round, for Bader to judge
-14. F18, when Bader uploads the 1A04WE sample, Q9
-15. F23, when Q20 is answered
+6. F70, DONE, both probes run, and two standing unknowns answered. Not briefed, found by checking the probe steps against what the probes print
+7. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
+8. F59, DONE, every step is named and timed
+9. F60, DONE, the timing blocks, and F21 closes here
+10. F61, DONE, the document census
+11. F62, DONE, the live line in the window
+12. F63, DONE, the report gap block
+13. F64, DONE, the machine readable log
+14. F57, five Look for lines older than the feature round, for Bader to judge
+15. F18, when Bader uploads the 1A04WE sample, Q9
+16. F23, when Q20 is answered
 
 The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 248 to 260 are for.
 
@@ -622,6 +623,16 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - `JobOutcome` never got `ViewpointsRequested` or `FailedViewpointCount`, which `GroupFacts` has carried and the judgement has read since F52, so the engine was setting two properties that did not exist. F52
 - Size: three faults, and the measurement is what makes them safe to fix
 - DONE on 2026-09-19. `dotnet build ParsonsNwcFederator.sln -c Release` finishes with 0 errors and 0 warnings, which is the first proved build this repo has. The three setters are public with the reason written beside them. The copy is a `Collection<SavedItem>`, goes back through the measured `CopyFrom(IEnumerable<SavedItem>)` overload, and every item in it is disposed, because `CreateCopy` creates and what this tool creates it disposes. `JobOutcome` carries the two viewpoint facts and `Facts()` hands them to the judgement, which finishes F52's wiring. `.claude/rules/addin.md` says where the add-in can and cannot be built and stops saying nothing here has ever built it. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+## F70 Both probes run, and two standing unknowns answered
+
+- Files `docs/history/scan.md`, `CLAUDE.md`, `.claude/rules/addin.md`, `src/Federator.Addin/Engine/SavedViewpoints.cs`, `src/Federator.Addin/Engine/ViewpointBuilder.cs`, `steps/03_bader_next.md`
+- LOCAL MACHINE, and it was done on the local machine
+- NOT BRIEFED. Steps 206 to 211 say the two probes answer a question the container cannot answer. F69 established that this session is not in a container, so the Look for lines in those steps could be checked against what the probes actually print rather than against what they were expected to print. Both were run. Both answered
+- `probe-model-remove.ps1`: `Document.RemoveFile(int)` and `Document.TryRemoveFile(int)` are public. A model CAN be taken out of an open document without a clear. The member is on `Document` and not on `DocumentModels`, which is why searching the collection for it found nothing. That is 5a, open since 2026-09-18
+- `probe-viewpoints.ps1`: `DocumentSavedViewpoints` exists with the shape `SavedViewpoints.cs` assumed, and with more besides. All four of 5b's questions are answered and the two collections turn out to have the same shape, which 5b said must not be assumed from the pattern
+- Size: two probe runs, and the writing is the rest of it
+- DONE on 2026-09-19. Both outputs recorded in `docs/history/scan.md` as 5c and 5d, with the assembly version and the date, which is what step 211 asks for. 5a and 5b keep the questions, because the reasoning in them is why the answers matter. `CLAUDE.md`, `addin.md`, `SavedViewpoints.cs` and `ViewpointBuilder.cs` all said the two were unmeasured and none of them does now. NEITHER FEATURE WAS CHANGED: `SavedViewpoints.CanBuild` is still false and the rebuild still clears and copies back, because what a member DOES is a run and a decision, not a reflection pass. One thing is still UNKNOWN and is named as such: whether a saved viewpoint records hidden state. Core tests unchanged, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total. The add-in builds with 0 errors and 0 warnings
 
 ## F21 The log answers timing and counts
 

@@ -1,6 +1,6 @@
 # 03 Bader next
 
-**The last run, 2026-09-07 09:34, was on the old build be0b9b37 of 1 Sep. Every fix from F5 to F46 has merged since, F16 and the eight of the second audit round among them. Pull main and build before anything.**
+**The last run, 2026-09-07 09:34, was on the old build be0b9b37 of 1 Sep. Every fix from F5 to F70 has merged since. THE ADD-IN BUILDS as of 2026-09-19, proved by F69 with 0 errors and 0 warnings, where before that nothing anywhere had ever compiled it. Pull main and build before anything.**
 
 One action per step. Do them in order. One build, one install and one Navisworks session cover every proof: the window checks first, then the C06 rebuild run, then one building twice, then the rest.
 
@@ -300,9 +300,9 @@ This one is its own small run, with the clash XML, because the conversion only h
 185. Open the folder `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
 186. Copy every `run-*.log` written today
 187. Paste them into `steps\logs` in the repo folder
-188. Rename each with the date, the building and the press, like `2026-09-14-C06-rebuilt.log`, `2026-09-14-1B06PH-first.log`, `2026-09-14-1B06PH-second.log`, `2026-09-14-onediscipline.log`, `2026-09-14-1B06PH-noxml.log` and `2026-09-14-1B06PH-openfile.log`
+188. Rename each with the DATE OF THE RUN, the building and the press. The shape, with 2026-09-14 standing for whatever day you run them: `2026-09-14-C06-rebuilt.log`, `2026-09-14-1B06PH-first.log`, `2026-09-14-1B06PH-second.log`, `2026-09-14-onediscipline.log`, `2026-09-14-1B06PH-noxml.log` and `2026-09-14-1B06PH-openfile.log`
 189. Open GitHub Desktop
-190. Press New Branch, name it `logs-2026-09-14`, and press Create Branch
+190. Press New Branch, name it `logs-` and the date of the run, so `logs-2026-09-14` on the fourteenth, and press Create Branch
 191. Write a summary like `logs from C06, F34 to F7 proofs`
 192. Press Commit
 193. Press Publish branch
@@ -338,11 +338,16 @@ powershell -ExecutionPolicy Bypass -File tools\probes\probe-window-labels.ps1
 204. Look for, if any `CLASH    OLD` line appears: it reads the test name and `Navisworks has this test marked Old.` and nothing after that. It used to carry a sentence about what Old means, which is UNKNOWN
 205. Look for, only if you tick compacting on the Clash step: the compacted line carries both numbers, the Resolved count before and the count read again after, and the number reported as removed is the difference between them
 
-## Two probes, F50 and F52. Run these BEFORE the run proofs above need them
+## Two probes, F50 and F52. BOTH ALREADY RUN on 2026-09-19
 
-Both answer a question the container cannot answer, because it has no Navisworks DLL and
-no PowerShell on it. Neither needs the add-in built. Neither opens a model. Each takes
-about ten seconds and each prints a block to paste back.
+Both were run on this machine on 2026-09-19 and both answers are in
+`docs\history\scan.md`, 5c and 5d, with the assembly version and the date. Sections 5a and
+5b still hold the questions, because the reasoning in them is why the answers matter.
+
+Nothing below is outstanding. The four steps are kept so the answers can be checked rather
+than trusted, and because the probes are the right thing to rerun when Navisworks is
+upgraded. Each takes about ten seconds, neither needs the add-in built and neither opens a
+model.
 
 206. Open PowerShell in the repo folder and run:
 
@@ -350,16 +355,16 @@ about ten seconds and each prints a block to paste back.
 powershell -ExecutionPolicy Bypass -File tools\probes\probe-model-remove.ps1
 ```
 
-207. Look for: a block headed `THE QUESTION: anything anywhere that takes a Model or an index and removes it`. Either it lists one or more members, or it says `none, public or not, anywhere in the assembly`. Both are real answers and the second is the one F50 is built for
+207. Look for, under `THE QUESTION: anything anywhere that takes a Model or an index and removes it`: two members on `Autodesk.Navisworks.Api.Document`, `public Void RemoveFile(Int32 index)` and `public Boolean TryRemoveFile(Int32 index)`. So a model CAN be taken out without a clear, and the member is on `Document` and not on `DocumentModels`, which is why searching the collection for it found nothing. `DocumentModels` carries only `InternalRemove` and `InternalRemoveAt`. If this list is now EMPTY, the install has changed and `scan.md` 5c is wrong
 208. Run:
 
 ```
 powershell -ExecutionPolicy Bypass -File tools\probes\probe-viewpoints.ps1
 ```
 
-209. Look for: a block headed `The viewpoint collection, every member`. If it says `UNKNOWN: no type named ...DocumentSavedViewpoints`, that name is wrong and F52 cannot be finished until the right one is found, so send the whole output either way
-210. Look for, in the same output: whether `DocumentSavedViewpoints` carries `RootItem` and `AddCopy`, the two members the sets collection has. Of those two only `RootItem` is USED today, by `src\Federator.Addin\Engine\SavedViewpoints.cs`, which is the only file that would fail to build without it. `AddCopy` is what the creation will need and nothing calls it yet, so a missing `AddCopy` breaks no build and changes what F52 can be finished with. Both answers matter and neither is a failure of this probe
-211. Paste both outputs into the chat, or into `docs\history\scan.md` under sections 5a and 5b where they say NOT MEASURED, with the date. Those two sections record the questions and deliberately hold no answer
+209. Look for: a block headed `The viewpoint collection, every member` listing `Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints`. It must NOT say `UNKNOWN: no type named ...DocumentSavedViewpoints`, and on 2026-09-19 it did not, so the name the code uses is right
+210. Look for, in the same output: `public FolderItem RootItem`, `public Void AddCopy(GroupItem parent, SavedItem item)` and `public Void EditDisplayName(SavedItem item, String newDisplayName)`. All three were there, so a folder is made, a viewpoint goes in it and a name can be set. `SavedViewpoint` reads `IDisposable: True` and has a `SavedViewpoint(Viewpoint viewpoint)` constructor. The sets collection printed beside it carries the same members with the same signatures, which is the comparison the probe exists to make
+211. Look for, at the end, under `How a viewpoint could be made to show one discipline and hide the rest`: `DocumentModels.SetHidden` and `SavedViewpoint.GetVisibilityOverrides`. That is the ONE thing still UNKNOWN. Items are hidden through `SetHidden`, and whether a viewpoint saved while they are hidden RECORDS that hiding cannot be read off a DLL. The answer is `SavedViewpoint.ContainsVisibilityOverrides` read on a real run, once the writing half of F52 is built. `SavedViewpoints.CanBuild` is still false and that is a decision waiting, not a measurement
 
 ## Proof F51, the NWD carries May be re-saved and its properties reach ACC
 
@@ -385,14 +390,16 @@ browser as well as Navisworks.
 
 ## Proof F52, a viewpoint per discipline
 
-Two halves. The first is true today and the second waits on the probe in the section
-above, so do the first on the next ordinary run and the second only once the probe has
-been run and the add-in rebuilt.
+Two halves. The first is true today. The second no longer waits on a probe, because the
+probe was run on 2026-09-19 and the API is measured in `docs\history\scan.md` 5d. It waits
+on the WRITING half of F52 being built against what was measured, which is a decision and
+not a measurement, so `SavedViewpoints.CanBuild` is still false. Do the first on the next
+ordinary run and the second once that half exists and the add-in has been rebuilt.
 
 221. Look for, on any run since F52: a `VIEWS` line per group reading `N viewpoints planned:` and then the paths. The disciplines come SORTED, so a group of AR, ME and EL reads AR, EL, ME and plans FIVE and not three, `AR/AR only, EL/EL only, EL/Over 150mm/EL over 150mm, ME/ME only, ME/Over 150mm/ME over 150mm`, because F53 gives Mechanical and Electrical a sub group for their large items and Architecture has no pipe in it
 222. Look for: a group with only one discipline STILL gets a line, never none. One AR group plans one viewpoint and one ME group plans two, its own and its large items sub group. A single discipline group planning NONE is the fault to watch for, and the log line is the evidence
-223. Look for, while the probe is outstanding: the line under it reading `VIEWS    not attempted.` and naming section 5b and the probe. That is the honest case and not a failure. No group should be marked down for it, so check the GROUP finished lines still read `DONE`
-224. Once the probe above has been run and the add-in rebuilt with what it found, run one building again
+223. Look for, while `SavedViewpoints.CanBuild` is false: the line under it reading `VIEWS    not attempted.` then saying the API is measured, naming `docs\history\scan.md` 5d, and saying the one thing still UNKNOWN is whether a saved viewpoint records hidden state. That is the honest case and not a failure. No group should be marked down for it, so check the GROUP finished lines still read `DONE`
+224. Once the writing half of F52 is built against `docs\history\scan.md` 5d and the add-in rebuilt, run one building again
 225. Look for: a `VIEWS` block in the shape of the SETS block, one `VIEW` line per viewpoint then `views created     :` and `put into the document:`
 226. Open the NWF in Navisworks and open the Saved Viewpoints panel
 227. Look for: one folder per discipline, named with the discipline code. AR holds one viewpoint. ME and EL each hold one viewpoint and one sub folder named `Over 150mm` holding one more. Press the plain one and look for that discipline showing and the others hidden
@@ -402,12 +409,12 @@ been run and the add-in rebuilt.
 ## Proof F53, the 150 mm rule and the sub groups
 
 This one is proved in Core here and in the tree on your machine. The Core half needs
-nothing from you. The rest waits on the viewpoint probe, because the sub group IS a
-viewpoint and nothing can build one yet.
+nothing from you. The rest waits on the writing half of F52, because the sub group IS a
+viewpoint and nothing builds one yet. The API it needs is measured, scan.md 5d.
 
 230. Look for, on any run since F53: the `VIEWS` planned line now carries a sub group path per Mechanical and per Electrical group, reading `ME/Over 150mm/ME over 150mm`. A group with no ME or EL in it has none, and that is right
 231. Look for: the number in the folder name is the threshold in use. If you change the threshold and it still reads `Over 150mm`, that is a fault and the folder and the rule have drifted apart
-232. Once the viewpoint probe has been run and the add-in rebuilt, run one Mechanical building
+232. Once the writing half of F52 is built and the add-in rebuilt, run one Mechanical building
 233. Look for: a `SIZE` block per group with three numbers, `over 150mm`, `not over`, and `size could not be read`
 234. Look for, and this is the one most likely to be wrong: the line reading `N items are in the viewpoint because no size could be read off them. Nothing was dropped.` followed by every one of them named. That number is EXPECTED to be large, because a fitting usually carries no size property. A large number here is not a fault
 235. Read a few of the names under it. If they are all fittings, elbows and tees, the rule is behaving. If real straight pipes are in that list, the size is on a property this tool is not looking for, and the answer is the property name so it can be added to the setting
@@ -477,7 +484,7 @@ above, or of any ordinary run.
 276. Look for, F21: NO line anywhere reads `THERE ARE MORE ROWS THAN CLASHES`. Nothing in this tool produces more rows than clashes, so that line means something is wrong and the whole log is worth sending
 277. This is criterion 3 without opening Excel. Pick any test whose `ROWS` line says they agree, open the workbook at that test's block and count the rows, then open Clash Detective on the same test and read the panel count. All three should be the one number
 278. Look for, F61: a pair of lines around each step reading `CENSUS   before ` then the step name, and `CENSUS   after  ` then the same name, each carrying five counts: `models`, `sets`, `tests`, `results` and `views`
-279. Look for, F61: the `views` count reads `0` on every line, not `UNKNOWN`. `SavedViewpoints.Count` walks the saved viewpoints and returns minus one only where it could NOT count them, and minus one prints as `UNKNOWN`. An `UNKNOWN` here means the viewpoint collection is not the shape `SavedViewpoints.cs` assumes, which is the F52 measurement, and the whole log is worth sending
+279. Look for, F61: the `views` count reads `0` on every line, not `UNKNOWN`. `SavedViewpoints.Count` walks the saved viewpoints and returns minus one only where it could NOT count them, and minus one prints as `UNKNOWN`. An `UNKNOWN` here means the viewpoint collection is not the shape it was MEASURED to have on 2026-09-19, `docs\history\scan.md` 5d, and the whole log is worth sending
 280. Look for, F61: NO line anywhere begins `CENSUS CHANGED`. That line means a count moved during a step that may not move it, which is a real fault, and the group carrying it will read FAILED rather than DONE. If you see one, send the whole log
 281. Look for, F61: the counts move where they should. `sets` goes up across `SETS`, `tests` goes up across `TESTS CREATE`, `results` goes up across `TESTS RUN`, and `models` goes up across `APPEND`. None of them moves across `NWD`, `WORKBOOK`, `HTML`, `XML` or `CONFIRM`. Expect `TESTS CREATE` and `TESTS RUN` to move by ONE test's worth and not by the whole group, because those two are entered once per test and the census is taken around the first visit only. That is step 282 and it is not a fault
 282. Look for, F61: `CENSUS   before TESTS RUN` appears ONCE per group and not once per test. The census is taken around the first visit of a step and no more, because counting the whole document 1830 times would be the log making the run slower
@@ -500,7 +507,7 @@ above, or of any ordinary run.
 299. Look for, F64: near the top of the text log, one line reading `ROWS     the machine readable log is` and the path. If it says `no machine readable log` instead, the text log is unaffected and the reason is on that line, so send it
 300. Open the `.tsv` in Excel. It should open straight into columns with no import dialog and no question about separators
 301. Look for, F64: a header row reading time, seconds, group, step, event, name, number, text, and then one row per event under it
-302. Look for, F64: every row has eight columns. Sort by the `event` column and read the kinds: `step started`, `step finished`, `timing`, `census before`, `census after`, `gap`, `written`, `rows for the workbook`, `group finished`
+302. Look for, F64: every row has eight columns. Sort by the `event` column and read the kinds. There are fourteen and they are all of them: `step started`, `step finished`, `step threw`, `step total`, `timing`, `timing nested`, `census before`, `census after`, `appended`, `append failed`, `written`, `gap`, `rows for the workbook` and `group finished`. A kind not on that list is something new and the whole file is worth sending
 303. Filter the `event` column to `step finished` and sort the `number` column biggest first. The top row is the slowest single step of the whole run, in seconds. That is the number this round exists for, and it should agree with the TIMING block in the text log
 304. Look for, F64: nothing in the text log got worse. It still has its blocks, its indenting and its sentences, and it is still the one to read first and the one to send
 
@@ -542,9 +549,9 @@ git config core.hooksPath .githooks
 
 ## Delete the old branches, D6
 
-Every branch except main is merged into main. The container cannot delete a branch: `git push origin --delete` comes back HTTP 403 from the proxy in front of it, and there is no GitHub tool in it that deletes a branch. So this is yours, one command from the repo folder in the VS Code terminal.
+Every branch except main is merged into main. This is yours, one command from the repo folder in the VS Code terminal. A session working in a container cannot do it: `git push origin --delete` comes back HTTP 403 from the proxy in front of it, and no GitHub tool in it deletes a branch.
 
-The list below was read on 2026-09-19 with the command in step 313, after the last merge of the log round F58 to F64, and `git ls-remote --heads origin` gave 58 names. The branch this round's own closing pull request comes from, `round-close-log`, is in the delete list too and was not on the remote yet when the list was read, which makes 59 lines and 58 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
+The list below was read on 2026-09-19 with the command in step 313, after the build round, and `git ls-remote --heads origin` gave 64 names. Two more go up with this round's own closing work, `fix-F70` and `round-close-build`, and neither was on the remote when the list was read, which makes 66 lines and 65 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. A clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
 
 313. Read the live list:
 
@@ -552,11 +559,11 @@ The list below was read on 2026-09-19 with the command in step 313, after the la
 git ls-remote --heads origin
 ```
 
-314. Look for: one line per branch, the name after `refs/heads/`. Expect 59 of them, so 58 to delete. It was 49 after the feature round, and the log round added seven fix branches and its closing one
+314. Look for: one line per branch, the name after `refs/heads/`. Expect 66 of them, so 65 to delete. It was 59 after the log round, and the build round added six branches, F65 to F70, and its closing one
 315. Delete every one of them except main:
 
 ```
-git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-F40 fix-F41 fix-F42 fix-F43 fix-F44 fix-F45 fix-F46 fix-F47a fix-F47b fix-F47c fix-F50 fix-F51 fix-F52 fix-F53 fix-F54 fix-F55 fix-F56 fix-F58 fix-F59 fix-F60 fix-F61 fix-F62 fix-F63 fix-F64 fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close round-close-2 round-close-3 round-close-4 round-close-log
+git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-F40 fix-F41 fix-F42 fix-F43 fix-F44 fix-F45 fix-F46 fix-F47a fix-F47b fix-F47c fix-F50 fix-F51 fix-F52 fix-F53 fix-F54 fix-F55 fix-F56 fix-F58 fix-F59 fix-F60 fix-F61 fix-F62 fix-F63 fix-F64 fix-F65 fix-F66 fix-F67 fix-F68 fix-F69 fix-F70 fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close round-close-2 round-close-3 round-close-4 round-close-build round-close-log
 ```
 
 316. Look for: one `- [deleted]` line per branch and no error
