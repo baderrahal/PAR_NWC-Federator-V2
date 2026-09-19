@@ -62,6 +62,13 @@ namespace Federator.Addin.Engine
         private string currentBuilding;
 
         /// <summary>
+        /// How many distinct things this run measured and no output carries. F63. Counted
+        /// by name across the run, because the same ones are held back on every group and
+        /// adding them up would say nothing except how many groups there were.
+        /// </summary>
+        private readonly GapTally gaps = new GapTally();
+
+        /// <summary>
         /// For a scanned run. The exchange document is whatever was picked in the Clash
         /// step, read once. It can hold sets, tests, or both, and any of the three is a
         /// normal case. Null when nothing was picked, and then no set is built and no test
@@ -193,6 +200,9 @@ namespace Federator.Addin.Engine
                 }
             }
 
+            // F63. One line for the whole run, so the standing rule has a number on it.
+            log.Line(gaps.Line());
+
             return outcomes;
         }
 
@@ -315,6 +325,11 @@ namespace Federator.Addin.Engine
                     groupClock.Elapsed.TotalSeconds,
                     outcome.Reason,
                     RunPath.Label(RerunDecision.Open, exchange != null));
+
+                // F63. One group, so the run line and the group block say the same thing,
+                // and it is still written, because a run that held nothing back saying so
+                // is a check that ran and silence is not.
+                log.Line(gaps.Line());
 
                 // The same fields the scanned run's RUN SETTINGS and GROUPS blocks carry,
                 // where they apply, written just before the window writes RESULT.
@@ -523,6 +538,14 @@ namespace Federator.Addin.Engine
                 RunSteps.Confirm,
                 () => ConfirmTheNwfSurvived(job, outcome),
                 () => outcome.NwfOnDisk ? "the NWF is " + outcome.NwfSize + " bytes" : "the NWF is NOT ON DISK");
+
+            // F63. Last thing the group does, after every output is written, because the
+            // question it answers is what the outputs DO NOT carry. Written even when it
+            // is empty, because a missing block reads as a check that did not run.
+            gaps.Add(GapRule.For(outcome.Report));
+            log.Block(
+                GapRule.BlockTitle + " " + Words.Or(job.Building, "this group"),
+                GapRule.Lines(outcome.Report));
         }
 
         // ---------- the live line, F62 ----------

@@ -818,6 +818,35 @@ moved where nothing should have moved it is named rather than discovered a week 
   `ClashRunner` counts by. A result group counting as one would let a run lose every
   clash inside it and report the same number
 
+### The gap block, F63
+
+Bader's standing rule built into the tool: when the code knows something the report
+does not show, it becomes a question. That rule was worked by hand every time, and Q25
+is exactly it, found by an audit of every file under src. The run says it itself now.
+
+- a GAP is something the run MEASURED off the model that no output carries. Not
+  something the code could have measured and did not, and not something the report
+  leaves out on purpose that a reader can see anyway. It has to be a number the run
+  paid for and then threw away
+- a gap names three things: what is missing, what it came to on this group, and where
+  it would belong. A gap with no value is a complaint and one with no place to go is a
+  shrug
+- a property NOTHING carried is not a gap. Reporting it would say the run is holding
+  back something it never read
+- the block is written even when it is empty, saying nothing was held back, because a
+  missing block reads as a check that did not run
+- nothing acts on it. A gap does not fail a group, does not stop a run and does not
+  change an output. It is information in the log, which is the rule this tool is built
+  on
+- the run line counts gaps by NAME and not by line. The same ones are held back on
+  every group, so a run of twenty two groups would report 132 and say nothing except
+  how many groups there were. The number that means something is how many distinct
+  things this tool knows and does not show
+- the six were MEASURED on 2026-09-19 by reading all three writers. WorkbookWriter,
+  HtmlTabularWriter and ClientReportColumns name none of Family, Type, Material,
+  SourceFile, Discipline or IdFrom anywhere, and ClashReportXml writes two quick
+  properties and says in its own comment that the five used to be written and are not
+
 Two things that look like mistakes and are not:
 
 - while a run holds the log open, File.ReadAllText fails with a sharing error.
