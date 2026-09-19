@@ -2,6 +2,58 @@
 
 Newest entry at the top.
 
+## 2026-09-19 The build round is closed, F65 to F70
+
+### What was done
+
+- SIX FIXES, each on its own branch off the one before it, each with its own entry above. Four were briefed, F65 to F68. Two were not, F69 and F70, and both came out of doing the four properly rather than out of looking for extra work
+- THE ADD-IN BUILDS. `dotnet build ParsonsNwcFederator.sln -c Release` finishes with 0 errors and 0 warnings. That is the first proved build in this repo's history and it is the whole point of the round. Every fix from F5 onward was written against a project nothing had ever compiled
+- THE ONE ERROR BADER SENT BACK WAS THE NINETEENTH OF NINETEEN. F65 fixed the CS0246 he pasted. F69 found eighteen more behind it, from three different rounds, none of them a cascade of the first
+- WHAT THE ROUND ACTUALLY DISCOVERED, AND IT OUTRANKS ALL SIX FIXES. This session runs on Bader's own machine and Navisworks Manage 2025 is installed on it. Every earlier round ran in a container with no install, and the rules, this log and the shape of `03_bader_next.md` were all built around that. The rules say so now: a session says whether it can build the add-in rather than leaving it to be assumed, and a session that can, builds
+- IT WAS FOUND BY REFUSING TO WRITE A LOOK FOR LINE FROM MEMORY. F68 adds a step reading `dotnet build ParsonsNwcFederator.sln -c Release --no-restore`, and the rule here is that a number or an output in a step is measured and never estimated. Running it is what compiled the add-in. Nothing was looking for this
+- AND THE SAME THING HAPPENED AGAIN AT THE END. Steps 206 to 211 say the two probes answer a question the container cannot answer. Checking those Look for lines meant running the probes, and both answered questions that had been open since 2026-09-18
+- Core tests: 1238 passed, 0 failed, 0 skipped, 1238 total, before the round and after it, measured on this machine, which is Windows. Nothing in this round adds a Core test because nothing in it adds a Core rule. The container figure the log round closed on was 1205 passed with 32 skipped, and the 32 are the Windows file system rules, which run here
+
+### The six, in order
+
+1. **F65 the missing import.** `using Autodesk.Navisworks.Api.DocumentParts;` into `DocumentCensusReader.cs`, which named `DocumentSelectionSets` in a parameter list and imported no namespace that has it. With it, a hand sweep of the other three files these rounds added, naming every Autodesk type each one puts in a type position and the import that covers it. `SavedViewpoints.cs` is the near miss that proves the sweep: it names `DocumentSavedViewpoints` four times and every one is in a comment
+2. **F66 the check that would have caught it.** `tools/checks/check-imports.sh`, wired into the pre-commit and twice into Actions, once over `src` and once over a folder wrong on purpose. The rule as briefed returned 170 lines of noise, and two conditions cut it to none: a type only one other file names teaches nothing, and a namespace is a type's home only where at least half the files importing it name that type, measured at 50, 40, 34 and 20
+3. **F67 one doubled comment.** The block describing the NWD publish, stacked on `BuildViewpoints` and belonging to `WriteNwd`. Moved rather than deleted, which is what F47b did with the same shape, and said out loud in the plan rather than buried. 0 stacked summaries over all 132 files under `src`
+4. **F68 the build section learns what today cost.** Eleven steps for the NuGet restore race, cheapest first, each with its Look for line and every command in them run on this machine. One more line: a stamp reading `nogit` means git is not on the PATH of that terminal and only the stamp is affected
+5. **F69 the other eighteen errors.** Three faults. `RebuiltThing`'s three count setters were `internal`, so the add-in, which is a different assembly and the only thing that reads the counts, could not write them, while Core and the tests could, which is why every test passed. `DocumentSelectionSets.CreateCopy()` returns `Collection<SavedItem>` and not `SavedItemCollection`, measured off the installed DLL and recorded in `scan.md` 4d, which is the member step 10 has been asking about since F24. `JobOutcome` never got `ViewpointsRequested` or `FailedViewpointCount`, which `GroupFacts` has carried and the judgement has read since F52
+6. **F70 both probes run.** `Document.RemoveFile(int)` and `TryRemoveFile(int)` are public, so a model CAN be taken out of an open document without a clear, and the member is on `Document` and not on `DocumentModels`, which is why searching the collection found nothing. `DocumentSavedViewpoints` has the shape the code assumed and the two collections carry the same members. Both recorded as `scan.md` 5c and 5d
+
+### The read of 03_bader_next.md, end to end
+
+- THE FILE RUNS 1 TO 319 NOW AND HOLDS 170 LOOK FOR LINES. It was 308 steps and 163 Look for lines this morning
+- ALL 170 WERE READ. Seven are new, six from F68's build section and one because step 211 stopped being an instruction and became a Look for line
+- NINE WERE WRONG AND ALL NINE ARE CORRECTED. Step 10, which asked Bader to paste the error if a build ever named `CreateCopy` or `CopyFrom` on `DocumentSelectionSets`, and both are measured now. Steps 207, 209, 210 and 211, the whole probe section, which described output nobody had seen and now describes what the probes actually printed. Step 223, the `VIEWS    not attempted.` wording, which said the API was never read off a DLL. Step 279, which said an `UNKNOWN` views count means the collection is not the shape `SavedViewpoints.cs` ASSUMES, where the shape is measured. Step 302, which named nine `.tsv` event kinds as if they were the list, and there are fourteen. And step 314, the branch count
+- FIVE MORE LINES THAT ARE NOT LOOK FOR LINES WERE CORRECTED TOO. The file's own header, which said every fix from F5 to F46 had merged and said nothing about the build. Steps 188 and 190, which told Bader to name log files and a branch with 2026-09-14, a date now in the past, where the date is meant to be the day he runs them. Steps 224 and 232, which waited on a probe that has been run. And the two section openers for F52 and F53, which said the same
+- THE MECHANICAL HALF, WHICH CAN BE SAID EXACTLY. All 245 distinct backtick quoted strings in the file, checked against every `.cs` and `.xaml` under `src` plus `install.ps1`, `workflow.md`, `CLAUDE.md`, the checks, the probes, the hooks, `.gitattributes`, `Directory.Build.targets`, the project files and the Actions workflow, with C# concatenation seams flattened. 157 matched. The other 88 were resolved by hand and every one is a line composed at run time, a git or dotnet or PowerShell output, a file name Bader types, or a padded log prefix the writer builds
+- WHAT WAS READ AGAINST THE CODE RATHER THAN AGAINST A STRING. The claims about ORDER and COUNT, which is where F56 found drift hides. `CensusRule` against step 281, which names which step may move which count and is right in all five cases. `RunStep.Head()` against step 266, which says `IMAGES` is indented two spaces further and it is, because the line is padded by depth times two. `RunSteps` against step 263, all fourteen names in order. `ReportedCount.Line` against step 275. `RunPath.ConfirmLines` against steps 52 and 75. `OpenDocumentJob` against step 163. `UnitTable` and `ReportUnits.Name` against steps 30, 106 and 107
+- THE D6 BRANCH LIST REBUILT off `git ls-remote --heads origin` read live, 64 names, plus the two this round's closing work puts up, which makes 66 and 65 to delete
+
+### What remains, and the first item is not a small one
+
+- THE PULL REQUESTS COULD NOT BE OPENED FROM HERE. `gh` is not installed on this machine and the GitHub connector in this session answers `403 Resource not accessible by integration` to a create pull request call, twice, as a draft and not as a draft. So the six branches are PUSHED and merged into nothing. Bader opens and merges them, in order, F65 then F66 then F67 then F68 then F69 then F70 then `round-close-build`
+- THEY ARE STACKED AND THAT IS DELIBERATE. Each branch is off the one before it rather than off main, because branching all six off main would have every one of them conflict in `steps/log.md` on merge. Merged in the order above, each merges clean. It is the same tree that would have existed had each been merged before the next was started
+- NOTHING HAS BEEN RUN. A build is not a run. Not one line of F50 to F70 has been seen against a real model, and all 319 steps are still outstanding. What changed today is that step 8 will now pass, which is what all 319 were waiting behind
+- F52's writing half and F50's rebuild both now start from a measurement rather than a guess, and neither was touched. Bader decides
+- F57, the five older Look for lines, is still Bader's to judge
+- Q33, and Q35 to Q40, are where they were
+
+### Known bugs
+
+- As in the F46 entry, with two struck off. The add-in compiles. The two probe questions are answered
+- One thing is UNKNOWN and is named rather than filled in: whether a saved viewpoint records hidden state. Only a run answers it
+
+### What comes next
+
+1. Bader opens and merges the six pull requests in order, then `round-close-build`
+2. Bader pulls main and BUILDS. It will pass, and this is the first time that sentence has been written here
+3. Bader runs one folder and works steps 248 to 260, which is the log round in one section
+4. Bader runs the D6 delete command himself
+
 ## 2026-09-19 F70, both probes run, and two standing unknowns answered
 
 ### Why this happened at all

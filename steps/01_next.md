@@ -35,6 +35,8 @@ Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, r
 
 The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 248 to 260 are for.
 
+The build round closed on 2026-09-19. F65 to F70 are all done and each carries its DONE line below. THE ADD-IN BUILDS, 0 errors and 0 warnings, which is the first proved build this repo has had. The six branches are pushed and not merged, because nothing in this session could open a pull request, and Bader merges them in order.
+
 Nothing else is open. F19 is dropped.
 
 ## F47 What the chat audit of 2026-09-18 found
