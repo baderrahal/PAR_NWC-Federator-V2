@@ -2,6 +2,143 @@
 
 Newest entry at the top.
 
+## 2026-09-19 The viewpoints round, the plan, written before the first edit
+
+### What the round is
+
+Main is red, one measurement decides whether the saved viewpoint tree is worth writing,
+and if it is, this round writes it. Four rules from the brief hold over everything below:
+nothing is written into a live project folder, every program started and every file
+written outside the repo is listed in the round report, everything opened is closed and
+the check that it was closed is run, and nothing of Bader's is deleted or overwritten.
+
+THE BUILD GATE PASSED. On DESKTOP-5VL7LTJ the whole solution built in Release with 0
+errors and 0 warnings before anything was written, with the add-in inside it. The Core
+suite on main reads 54 failed, 1568 passed, 1622 total. Every one of the 54 is a fixture
+that resolves a sample by name and finds it gone, which is PART 0.
+
+One thing the brief says the other way round from Samples.cs, and Samples.cs is what the
+tests read: `1104-PAR_CLASH_AllInOne (2) (1).xml` is `AllInOne()`, the client's export at
+75 mm that the 44 assertions measure, and `1104-PAR_CLASH_AllInOne_25mm.xml` is
+`Matrix()`, the source the F87 corrections are applied to. Q48 in 02_questions.md says
+the same as Samples.cs. Both files are restored either way and nothing here depends on
+which is which.
+
+### The order
+
+PART 0, main green, one commit for the fix and one for the answers:
+
+- restore both deleted samples out of the parent of the commit that deleted each,
+  `git checkout 4a70f89^` and `f4e510b^`, byte for byte
+- delete `samples\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`, which is Bader's answer to
+  Q52 and the one exception to the rule that nothing in samples is touched. The exchange
+  copy stays and is the one the tool is pointed at
+- take `Samples.SuppliedCorrectedMatrix()` and `SuppliedCorrectedMatrixTests` out, four
+  tests, and say in the report what each proved. What they proved about the exchange
+  file itself is still pinned by the test that proves the exchange file is what the rule
+  produces from the sample, which reads `CorrectedMatrix()` and stays
+- record Q52, Q48 and Q53 as answered by Bader on 2026-09-19, and put one line above
+  `IsDecided` saying a test is its only caller and Bader chose to keep it
+- the Core suite green before anything else is touched, counts before and after
+
+PART 1, the one unknown answered on a run. The measurement needs code running INSIDE
+Navisworks, and the add-in has no button for it, so a probe plugin is built for it:
+`tools\probes\ViewpointProbe`, a plugin assembly with no Core reference, loaded into a
+Navisworks started through the automation API with `AddPluginAssembly` and run with
+`ExecuteAddInPlugin`, which ran the add-in's own plugin on 2026-09-19 21:05. It opens a
+COPY of one NWF under `C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints`, hides
+two models, saves a viewpoint two ways, `new SavedViewpoint(Viewpoint)` and
+`DocumentSavedViewpoints.CaptureRuntimeOverrides()`, reads `ContainsVisibilityOverrides`
+on each, presses each from a clean view and reads `IsHidden` back, then saves the copy,
+clears, reopens it and reads the same things again. Every step goes to a result file as
+it happens, so a plugin the host stops early still leaves what it measured. The result is
+scan.md 5j. IF THE ANSWER IS NO the tree is not built, `CanBuild` stays false, PART 3
+and PART 4 are done and the round stops there. If the automation host will not run the
+probe, the fallback is the probe in its own bundle under ApplicationPlugins and the
+button pressed in a Navisworks started the ordinary way, and the report says which route
+was used.
+
+PART 2, the tree written, only on a yes, built after every change:
+
+- `ViewpointBuilder.Build` CHANGES to take the clash plan rather than gaining a second
+  method, because the per discipline plan it takes today has no caller once the engine
+  reads the clash plan, and a method nothing calls is deleted with its tests. The old
+  `ViewpointPlan` and `PlannedViewpoint` go the same way once nothing reads them, and
+  the report says what went
+- the engine builds `ClashToPlan` per clash off the document, in one walk of the tests
+  the report names: the two set names off the test's locators, the status, the test's
+  priority off the report, and the service size read the way F72a reads a side, the
+  largest size property, through the one reader `Penetrations` already has. Each clash's
+  camera comes from `TestsViewpointForResult`, which is what frames the pictures today
+- `ClashViewpointPlan.For` is called exactly as it is and nothing about the plan changes
+- the writer, per planned viewpoint: hide every model whose discipline is not one of the
+  pair's two, set the current view from the clash's camera, capture the viewpoint the way
+  5j says records the hiding, put it in its folder through `AddCopy` with the folders
+  made on the `EnsureFolders` shape and re-resolved from a fresh `RootItem` after every
+  `AddCopy`, name it with `EditDisplayName`, read it back, dispose everything. Hidden
+  state is put back to what it was when the group's writing ends
+- the VIEWS step is opened around it with `RunSteps.Views`, so it is timed like every
+  other step, and `CensusRule` gains the one line that VIEWS may move the viewpoint count,
+  with its test, because without it every group would read CENSUS CHANGED and FAILED
+  over the step doing its job. That is the one Core rule this round touches and it is
+  said here rather than slipped in
+- `SavedViewpoints.CanBuild` goes true last, in its own commit, once the writing works
+
+PART 3, the two places that say done: the ClashImages comment corrected now and again
+when PART 2 lands, `RunSteps.Views` timed by PART 2 or the core.md sentence taken out on
+a no, and F85's two CORE HALF ONLY sentences taken out only on a yes.
+
+PART 4, the WORKBOOK line, Core wording with a test, written beside the tolerance line
+at the run's tail. The brief's wording says 1,041 carry a clash. On the wiring round's
+run 1,041 was the tests that RAN and read their tolerance off the document, and some of
+those found nothing, so the line says ran rather than carry a clash, and the report says
+so. Q54 recorded as waiting on this round's run with that line named.
+
+PART 5, the run, everything measured and nothing decided:
+
+- build at 0 and 0, the full Core suite, both scripts under tools\checks,
+  `build\install.ps1`, which is where the install script is, the brief's tools\install.ps1
+  does not exist
+- the NWF, NWD and Clash Report folders of C02 copied under
+  `C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints`, and the run pointed at
+  those copies. The NWC folder is READ from where it is and nothing is written beside it,
+  because the NWFs point at those NWC paths and copying them would turn every weekly
+  group into a rebuild and break the like for like comparison
+- the same boxes as the wiring round plus penetrations on: tolerance 25 mm, by design on
+  with samples\by-design-pairs.csv, penetrations on, samples\clash-priority-map.csv
+- one NWF copy then opened in Navisworks by hand, the tree read off a screenshot, one
+  viewpoint pressed and the view read off a screenshot
+- reported by measurement: viewpoints and folders per group off the VIEWS block, the NWF
+  size before and after per group off the disk, the VIEWS seconds off the STEP lines, the
+  run total against 294.3 seconds, and what the pressed viewpoint showed. An NWF size
+  that would worry a person is said as a number and becomes a question, never a cap
+
+PART 6, only on green: the category walk through the same probe plugin, over every NWF
+copy, written into `src\Federator.Core\Exchange\revit-categories.txt`, the tests that
+pin none yet updated to the measured state, and scan.md 5i. 5g is not in this round.
+
+### What is checked before the run, by agents rather than by me
+
+The viewpoint writer is the one piece of this round that touches a native handle across
+a mutation, which is the fault that once threw for 8 hours 52 minutes. Before the run,
+a review workflow reads the PART 2 diff with several independent readers, each told to
+refute the code on one axis, handle lifetime and disposal, the census, the hidden state
+being put back, the folder re-resolve, and the plan being called unchanged, and every
+finding is verified by a second reader before it reaches me.
+
+### What is started and what is left, to be listed in the round report
+
+Navisworks through the automation host for PART 1 and PART 6, Navisworks started the
+ordinary way for PART 5 and the look by hand, the window driver, and every file under
+`C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints`. Nothing beside his NWC
+files this round. The four probe CSV files the wiring round wrote beside his NWC files
+are his to delete and are named in the report. Every process is checked closed at the
+end and the check is reported.
+
+### What comes next
+
+The closing entry above this one, written when the round is closed.
+
 ## 2026-09-19 The wiring round is closed, the eight Core halves have their add-in callers
 
 ### What the round was
