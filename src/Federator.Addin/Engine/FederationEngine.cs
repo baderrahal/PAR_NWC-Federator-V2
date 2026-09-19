@@ -27,6 +27,13 @@ namespace Federator.Addin.Engine
     public sealed class FederationEngine
     {
         private readonly Action<string> progress;
+
+        /// <summary>
+        /// What the window shows while the run works. F62. The callback is the one that
+        /// was always there and this widens WHAT it carries rather than adding a second
+        /// way out, so everything stays on the thread the run is on.
+        /// </summary>
+        private readonly LiveLine live;
         private readonly RunLog log;
         private readonly ExchangeDocument exchange;
         private readonly ReportOptions reports;
@@ -47,6 +54,12 @@ namespace Federator.Addin.Engine
 
         /// <summary>Why the run was abandoned, or null while it is still going.</summary>
         private string stopTheRun;
+
+        /// <summary>
+        /// The group being worked on, so the live line can find what the SAME step took
+        /// on the group before this one. Null outside a group.
+        /// </summary>
+        private string currentBuilding;
 
         /// <summary>
         /// For a scanned run. The exchange document is whatever was picked in the Clash
@@ -96,6 +109,8 @@ namespace Federator.Addin.Engine
             this.reports = reports ?? new ReportOptions();
             this.guard = new RepeatedFailureGuard(this.reports.StopAfterFailures);
             this.reportFolder = null;
+            this.live = new LiveLine(() => log.ElapsedSeconds);
+            this.live.PaceReader = OnTheGroupBefore;
 
             // F61. The log decides WHEN to count and Core decides what a move means. This
             // is the only line that tells it HOW, and it reads the document that is open
@@ -131,9 +146,12 @@ namespace Federator.Addin.Engine
             for (int i = 0; i < jobs.Count; i++)
             {
                 FederationJob job = jobs[i];
-                progress(
-                    "Group " + (i + 1) + " of " + jobs.Count + ": " + job.Building
-                        + " (" + job.Files.Count + " files)");
+
+                // The live line carries the group from here on, so the sentence beside it
+                // says what is NEW rather than repeating what the line already holds.
+                currentBuilding = job.Building;
+                live.Groups(i + 1, jobs.Count, job.Building);
+                Say(job.Files.Count + (job.Files.Count == 1 ? " file" : " files"));
 
                 Stopwatch groupClock = Stopwatch.StartNew();
                 log.GroupStarted(job.Building, job.Files);
@@ -170,7 +188,7 @@ namespace Federator.Addin.Engine
                             + " not attempted. Everything already written is kept.");
                     }
 
-                    progress("The run was stopped. " + stopTheRun);
+                    Say("The run was stopped. " + stopTheRun);
                     break;
                 }
             }
@@ -204,6 +222,11 @@ namespace Federator.Addin.Engine
             string open = document == null ? string.Empty : Words.Or(document.FileName, "none");
 
             FederationJob job = OpenJob(open);
+
+            // One group of one. The open file run has no scan and no grouping, and the
+            // live line says so rather than reading as the first of an unknown number.
+            currentBuilding = job.Building;
+            live.Groups(1, 1, job.Building);
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
             outcome.NwdSize = -1;
@@ -502,6 +525,48 @@ namespace Federator.Addin.Engine
                 () => outcome.NwfOnDisk ? "the NWF is " + outcome.NwfSize + " bytes" : "the NWF is NOT ON DISK");
         }
 
+        // ---------- the live line, F62 ----------
+
+        /// <summary>
+        /// Says something, with the group, the building, the step and both clocks in
+        /// front of it. Everything the run used to hand to the callback goes through
+        /// here, so there is still exactly one route out and it now carries the whole
+        /// live line instead of a bare sentence.
+        /// </summary>
+        private void Say(string sentence)
+        {
+            progress(live.Line(sentence));
+        }
+
+        /// <summary>
+        /// The same, for the places that say something once per test, once per set and
+        /// once per viewpoint. It renders at most once a second, so a loop over 1830
+        /// tests repaints the window about as often as a person can read it rather than
+        /// 1830 times, and the step changing always shows.
+        ///
+        /// Anything said through here is in the log as well, so a message the throttle
+        /// skips is never a message that was lost.
+        /// </summary>
+        private void Tick(string sentence)
+        {
+            if (live.ShouldSay())
+            {
+                progress(live.Line(sentence));
+            }
+        }
+
+        /// <summary>
+        /// What the same step took on the group before, off the records the log already
+        /// keeps, so the pace on the live line and the seconds in the timing block are
+        /// the same numbers.
+        /// </summary>
+        private double OnTheGroupBefore(string step)
+        {
+            IList<StepRecord> records = log.StepRecords;
+            return LiveLine.OnTheGroupBefore(
+                records, LiveLine.TheGroupBefore(records, currentBuilding), step);
+        }
+
         // ---------- the steps, F59 ----------
 
         /// <summary>
@@ -521,6 +586,9 @@ namespace Federator.Addin.Engine
         {
             using (RunStep step = log.Step(name))
             {
+                live.StepStarted(name);
+                Say(null);
+
                 try
                 {
                     work();
@@ -529,6 +597,10 @@ namespace Federator.Addin.Engine
                 {
                     step.Failed();
                     throw;
+                }
+                finally
+                {
+                    live.StepEnded();
                 }
 
                 step.Changed(phrase == null ? null : phrase());
@@ -540,6 +612,9 @@ namespace Federator.Addin.Engine
         {
             using (RunStep step = log.Step(name))
             {
+                live.StepStarted(name);
+                Say(null);
+
                 bool answer;
 
                 try
@@ -550,6 +625,10 @@ namespace Federator.Addin.Engine
                 {
                     step.Failed();
                     throw;
+                }
+                finally
+                {
+                    live.StepEnded();
                 }
 
                 step.Changed(phrase == null ? null : phrase());
@@ -572,7 +651,7 @@ namespace Federator.Addin.Engine
                 return NwfComparison.NoNwfYet(job.Files);
             }
 
-            progress("Opening the existing NWF for " + job.Building);
+            Say("Opening the existing NWF for " + job.Building);
             log.Line("OPEN     reading the file list out of " + job.NwfPath);
 
             if (!document.TryOpenFile(job.NwfPath))
@@ -788,7 +867,7 @@ namespace Federator.Addin.Engine
                 log.Line(line);
             }
 
-            progress("Rebuilding the NWF for " + job.Building + " from the scan folder");
+            Say("Rebuilding the NWF for " + job.Building + " from the scan folder");
 
             // What the NWF holds, read BEFORE the clear. The tests as Core sees them and
             // the sets as a count off the tree, which is what the log and the check use,
@@ -1096,7 +1175,7 @@ namespace Federator.Addin.Engine
 
         private void SaveTheNwf(Document document, FederationJob job, JobOutcome outcome)
         {
-            progress("Saving NWF for " + job.Building);
+            Say("Saving NWF for " + job.Building);
             log.WriteAttempted("NWF", job.NwfPath);
 
             try
@@ -1254,7 +1333,7 @@ namespace Federator.Addin.Engine
                 log.Line("SETS     " + job.Building + ", " + plan.Buildable.Count + " to build, "
                     + plan.Skipped.Count + " skipped");
 
-                SetBuildOutcome sets = new SetBuilder(progress, log).Build(plan);
+                SetBuildOutcome sets = new SetBuilder(Tick, log).Build(plan);
                 outcome.Sets = sets;
                 log.Block("SETS " + job.Building, sets.Lines());
 
@@ -1327,7 +1406,11 @@ namespace Federator.Addin.Engine
                         + plan.Buildable.Count + " to run, " + plan.Skipped.Count + " skipped before the model");
                 }
 
-                ClashRunner runner = new ClashRunner(progress, log, guard);
+                ClashRunner runner = new ClashRunner(Tick, log, guard);
+
+                // The three steps that run per test are opened in there, so the live line
+                // is handed over rather than the engine guessing at what it is doing.
+                runner.Live = live;
                 runner.NameSettings = reports.Names;
                 runner.SingleDisciplineGroup = job.IsSingleDiscipline;
                 runner.ApplyFileSettings = reports.ApplyFileSettings;
@@ -1492,7 +1575,7 @@ namespace Federator.Addin.Engine
             WorkbookCheck check = WorkbookCheck.Of(path);
 
             log.Block("WORKBOOK CHECK " + job.Building, check.Lines());
-            progress(job.Building + ". " + check.Summary());
+            Say(job.Building + ". " + check.Summary());
         }
 
         /// <summary>
@@ -1567,7 +1650,7 @@ namespace Federator.Addin.Engine
             string path = HtmlTabularWriter.PathFor(
                 ReportPaths.Workbook(reportFolder, job.WorkbookName));
 
-            progress("Writing the client report for " + job.Building);
+            Say("Writing the client report for " + job.Building);
             log.WriteAttempted("HTML", path);
 
             try
@@ -1640,7 +1723,7 @@ namespace Federator.Addin.Engine
             PageCheck check = PageCheck.Of(path);
 
             log.Block("REPORT CHECK " + job.Building, check.Lines());
-            progress(job.Building + ". " + check.Summary());
+            Say(job.Building + ". " + check.Summary());
         }
 
         /// <summary>
@@ -1800,7 +1883,7 @@ namespace Federator.Addin.Engine
         private void WriteTheWorkbook(
             FederationJob job, JobOutcome outcome, ClashReport report, string path)
         {
-            progress("Writing the workbook for " + job.Building);
+            Say("Writing the workbook for " + job.Building);
             log.WriteAttempted("XLSX", path);
 
             try
@@ -1853,7 +1936,7 @@ namespace Federator.Addin.Engine
         /// </summary>
         private void SaveTheNwfAgain(Document document, FederationJob job, JobOutcome outcome)
         {
-            progress("Saving the NWF for " + job.Building + " with its sets and results");
+            Say("Saving the NWF for " + job.Building + " with its sets and results");
             log.WriteAttempted("NWF", job.NwfPath);
 
             try
@@ -1920,7 +2003,7 @@ namespace Federator.Addin.Engine
             // BUILT and not views. The settings above are already called views, and a
             // second local of that name in the same scope is CS0128, which is why the
             // add-in did not build between F52 and F58.
-            ViewpointBuildOutcome built = new ViewpointBuilder(progress, log, views.Sizes)
+            ViewpointBuildOutcome built = new ViewpointBuilder(Tick, log, views.Sizes)
                 .Build(document, planned);
 
             log.Block("VIEWS", built.Lines());
@@ -1931,7 +2014,7 @@ namespace Federator.Addin.Engine
 
         private void WriteNwd(Document document, FederationJob job, JobOutcome outcome)
         {
-            progress("Publishing NWD for " + job.Building);
+            Say("Publishing NWD for " + job.Building);
             log.WriteAttempted("NWD", job.NwdPath);
 
             bool published = false;

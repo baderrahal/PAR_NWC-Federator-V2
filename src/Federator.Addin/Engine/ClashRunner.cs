@@ -54,6 +54,15 @@ namespace Federator.Addin.Engine
         public const int ProgressEvery = 25;
 
         /// <summary>
+        /// The line the window shows while the run works, or null where nothing supplied
+        /// one, which is what the two hand buttons on the Clash step do. The three steps
+        /// that run once per test are opened in here, so this is how the line knows which
+        /// one it is in and how it comes to say that a step is running over twice as long
+        /// as it did on the group before.
+        /// </summary>
+        public LiveLine Live { get; set; }
+
+        /// <summary>
         /// How many skips are written out in full for each reason as the run goes. One
         /// real run wrote 1830 near identical SKIPPED lines and a 1 MB log. The rest are
         /// counted and reported once, in the block at the end.
@@ -541,8 +550,17 @@ namespace Federator.Addin.Engine
                 {
                     using (RunStep creating = log.Step(RunSteps.TestsCreate))
                     {
-                        address = Create(sets, clashTests, byPath, planned);
-                        creating.Changed(planned.Name);
+                        StepStarted(RunSteps.TestsCreate);
+
+                        try
+                        {
+                            address = Create(sets, clashTests, byPath, planned);
+                            creating.Changed(planned.Name);
+                        }
+                        finally
+                        {
+                            StepEnded();
+                        }
                     }
 
                     if (address == null)
@@ -627,16 +645,25 @@ namespace Federator.Addin.Engine
 
                 using (RunStep running = log.Step(RunSteps.TestsRun))
                 {
-                    using (ClashTest test = Resolve(clashTests, address, planned.Name))
-                    {
-                        if (test == null)
-                        {
-                            running.Failed();
-                            Failed(outcome, planned.Name, "the test is no longer where it was put");
-                            return;
-                        }
+                    StepStarted(RunSteps.TestsRun);
 
-                        clashTests.TestsRunTest(test);
+                    try
+                    {
+                        using (ClashTest test = Resolve(clashTests, address, planned.Name))
+                        {
+                            if (test == null)
+                            {
+                                running.Failed();
+                                Failed(outcome, planned.Name, "the test is no longer where it was put");
+                                return;
+                            }
+
+                            clashTests.TestsRunTest(test);
+                        }
+                    }
+                    finally
+                    {
+                        StepEnded();
                     }
 
                     running.Changed(planned.Name);
@@ -699,8 +726,17 @@ namespace Federator.Addin.Engine
 
                         using (RunStep harvesting = log.Step(RunSteps.Harvest))
                         {
-                            harvest.Into(document, clashTests, after, Report, summary);
-                            harvesting.Changed(planned.Name);
+                            StepStarted(RunSteps.Harvest);
+
+                            try
+                            {
+                                harvest.Into(document, clashTests, after, Report, summary);
+                                harvesting.Changed(planned.Name);
+                            }
+                            finally
+                            {
+                                StepEnded();
+                            }
                         }
 
                         // F21. What the workbook got beside what the document holds, per
@@ -1294,6 +1330,35 @@ namespace Federator.Addin.Engine
                         tally.Add((CoreClashStatus)(int)result.Status);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tells the live line which step this is, where one was supplied, and renders it
+        /// once. Null is the ordinary case for the two hand buttons and costs one
+        /// comparison.
+        /// </summary>
+        private void StepStarted(string name)
+        {
+            if (Live == null)
+            {
+                return;
+            }
+
+            Live.StepStarted(name);
+
+            // The EMPTY sentence and not the rendered line. The callback handed in is the
+            // engine's throttle, which asks the line whether it is worth rendering, and
+            // rendering it here would mark it as said and make the throttle skip the one
+            // render that matters. A step that just started always answers yes.
+            progress(string.Empty);
+        }
+
+        private void StepEnded()
+        {
+            if (Live != null)
+            {
+                Live.StepEnded();
             }
         }
 

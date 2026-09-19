@@ -35,6 +35,34 @@ pre-commit hook runs it before the tests and Actions runs it twice, once over sr
 once over tools/checks/broken, which is wrong on purpose so the check is proved to
 refuse as well as to pass.
 
+## The live line, F62
+
+- the engine hands progress out through ONE callback and always has. F62 widened what
+  that callback carries rather than adding a second route, and everything stays on the
+  plugin thread the run is on. Nothing here starts a thread
+- `Federator.Core.Diagnostics.LiveLine` holds the shape and every rule about it. The
+  add-in owns one per engine and hands it to `ClashRunner`, because the three steps that
+  run once per test are opened in there
+- `Say` renders every time and `Tick` renders at most once a second. The pieces that
+  speak once per test, once per set and once per viewpoint get `Tick`, so a loop over
+  1830 tests repaints the window about as often as a person can read it. Anything said
+  through `Tick` is in the log as well, so a message the throttle skips is never lost
+- RENDERING THE LINE IS WHAT MARKS IT AS SAID. A caller that renders the line itself and
+  then hands the result to the throttle gets skipped by that throttle, which is how the
+  step name nearly never reached the window. A caller that wants the throttle to render
+  hands it a SENTENCE and never a line
+- a step running longer than twice what the SAME step took on the group before says so
+  on the line. The comparison reads the step records the log already keeps, so the pace
+  on the line and the seconds in the timing block are the same numbers. Twice is a
+  setting and a value at or below one is refused where it is set
+- the line sits in its own row above the log box and outside it, so it never scrolls
+  away while the log pane follows the log, and it is trimmed rather than wrapped so a
+  long line cannot push the log box down the window mid run
+- WHAT IT CANNOT DO, said rather than papered over. It renders when something calls it.
+  Every loop in the run ticks it, but a single Navisworks call with no loop inside,
+  which is what publishing an NWD is, cannot be ticked from the thread it runs on, so
+  the line sits at the seconds it last showed until that call returns
+
 ## Rules the code holds
 
 - Each building writes its NWF, NWD and Excel before the next building starts.

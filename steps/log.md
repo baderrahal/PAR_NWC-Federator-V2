@@ -2,6 +2,36 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F62, the live line in the window
+
+### What was done
+
+- WHILE THE RUN WORKS THE LINE READS `Group 3 of 14  1B06PH  TESTS RUN  12s on this step  4m 02s on the run`. Group N of M, the building, the step, the seconds on that step and the seconds on the run, with whatever the run wanted to say on the end of it
+- ONE ROUTE AND NOT TWO, WHICH IS WHAT THE BRIEF ASKED FOR. The engine has always handed progress out through a single callback, and this widens what that callback CARRIES rather than adding a second way out. Everything stays on the plugin thread the run is on and nothing here starts a thread
+- WHY THE CALLBACK'S SIGNATURE DID NOT CHANGE, AND THIS WAS A DECISION. Changing `Action<string>` to an object would have rippled through the engine, `SetBuilder`, `ClashRunner`, `ViewpointBuilder`, `PreviewRunPaths` and about ten call sites in the window, on a project that cannot be compiled in this container and whose add-in was found not compiling one day ago. The string the callback carries is the whole live line now, which is the widening that matters, at a fraction of the risk
+- `Say` renders every time and `Tick` renders at most once a second. The three pieces that speak once per test, once per set and once per viewpoint get `Tick`, so a loop over 1830 tests repaints the window about as often as a person can read it rather than 1830 times. Anything said through `Tick` is in the log as well, so a message the throttle skips is never a message that was lost
+- A FAULT OF MY OWN, FOUND AND FIXED BEFORE IT WAS PUSHED, AND IT IS THE INTERESTING ONE. `ClashRunner` opens three of the fourteen steps, once per test, so without it the live line would never have shown TESTS CREATE, TESTS RUN or HARVEST, which are the steps where the time actually goes. Handing the line over fixed that. The first version then rendered the line inside `ClashRunner` and passed the result to the engine's throttle, and RENDERING THE LINE IS WHAT MARKS IT AS SAID, so the throttle skipped the one render that mattered and the step name still never appeared. A caller that wants the throttle to render hands it a SENTENCE and never a line. There is a test pinning exactly that, because it is the kind of thing that reads as working and is not
+- THE PACE WARNING. A step running longer than twice what the SAME step took on the group before says `SLOWER, the group before took 40s on this step`. The comparison reads the step records the log already keeps, so the pace on the line and the seconds in the timing block are the same numbers rather than two counts of one thing. Twice is a setting and a value at or below one is refused where it is set, because a step is not slower than the one before until it is longer than it
+- The pace is found through a reader set once on the line, so every piece of the run that opens a step says so the same way without carrying the records around. A reader that throws says nothing about the pace and never stops the run
+- ON THE FIRST GROUP IT NEVER SAYS SLOWER, because there is nothing to compare against, and minus one means say nothing rather than guess
+- THE WINDOW. The line has its own row above the log box now, where it used to sit fourth in a row of buttons and be cut off at the window edge. It is outside the log box, so it never scrolls away while the log pane follows the log, and it is trimmed rather than wrapped so a long line cannot push the log box down the window mid run. The log pane already scrolled to the newest line on every line written, which was read off the code rather than assumed
+- WHAT IT CANNOT DO, WRITTEN DOWN RATHER THAN PAPERED OVER. It renders when something calls it. Every loop in the run ticks it, but a single Navisworks call with no loop inside, which is what publishing an NWD is, cannot be ticked from the thread it runs on. So the line sits at the seconds it last showed until that call returns. Nothing here starts a thread to make it look livelier than the run is, and there is a proof step telling Bader to expect exactly that
+- Proved here: Core tests before 1149 passed, 0 failed, 32 skipped, 1181 total. After 1168 passed, 0 failed, 32 skipped, 1200 total. 19 added and none broken. Core builds in Release with 0 warnings, `check-locals.sh` clean over `src`, the add-in parses with the same six error codes and not one `CS1xxx`
+- Waits for the local machine: steps 261 to 267, all of them watched while the run is WORKING rather than read off the log afterwards, which is the one thing in this round that cannot be checked any other way
+
+### What remains
+
+- F63 and F64
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F62 pull request
+2. F63, the report gap block
+
 ## 2026-09-19 F61, the document census
 
 ### What was done

@@ -51,9 +51,16 @@
                             MinWidth="120" />
                     <Button x:Name="CopyLogButton" Content="Copy log" Click="OnCopyLog" />
                     <Button x:Name="CloseButton" Content="Close" Click="OnClose" Margin="12,0,12,0" />
-                    <TextBlock x:Name="ProgressLine" VerticalAlignment="Center"
-                               Text="Pick a folder and press Scan." />
                 </StackPanel>
+
+                <!-- F62. Its own row, above the log and outside it, so the live line is
+                     never clipped by the buttons beside it and never scrolls away when
+                     the log pane follows the log. Trimmed rather than wrapped, so a long
+                     line cannot push the log box down the window mid run. -->
+                <TextBlock x:Name="ProgressLine" DockPanel.Dock="Top" Margin="0,0,0,6"
+                           TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                           Text="Pick a folder and press Scan." />
+
                 <TextBox x:Name="LogBox" Height="150"
                          IsReadOnly="True" TextWrapping="NoWrap"
                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
