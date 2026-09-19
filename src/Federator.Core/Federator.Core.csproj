@@ -19,6 +19,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- F84's list of every category the client's Revit models really carry. EMBEDDED
+         and not loose, because the bundle copies what install.ps1 names and a loose file
+         beside the assembly is a file that arrives on 26 machines and not on the 27th.
+         It is a FILE and not a list in a method because it is read off the client's
+         models and changes when their models do, which is the opposite of UnitTable. -->
+    <EmbeddedResource Include="Exchange\revit-categories.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- A BuildingGroup is built by the grouping and nothing else, which is right. The
          name collision guard has to be tested against two groups that would be written to
          one name, and the four grouping modes cannot currently produce that pair, so the

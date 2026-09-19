@@ -1,0 +1,23 @@
+# Every category value a Revit model in this project really carries, F84.
+#
+# THIS FILE IS EMPTY OF NAMES ON PURPOSE AND THAT IS NOT AN OVERSIGHT. The list can
+# only be MEASURED, by walking every item of a real federation and writing out the
+# distinct values of its category property, which needs Navisworks on the machine.
+# That measurement is docs\history\scan.md 5i and it has not been taken. The property
+# probe, F86, does that walk as part of its own job, so the two are measured on the
+# same run.
+#
+# WHILE IT IS EMPTY THE CHECK REPORTS NOTHING. An empty list means nothing to compare
+# against, and a check with nothing to compare against says so rather than calling
+# every category in the file unknown. Saying UNKNOWN is the rule here, not filling
+# the gap.
+#
+# IT IS A FILE AND NOT A LIST IN A METHOD because it is read off the CLIENT'S MODELS
+# and it changes when their models do. UnitTable is compiled in for the opposite
+# reason: the Navisworks units enum never changes.
+#
+# THE FORMAT. One category per line, exactly as the model spells it, Ordinal and never
+# trimmed. A line beginning # is a comment. A blank line is ignored. Nothing else.
+#
+# It is NOT the penetration rule's service or solid list. Those are a handful of
+# categories this tool has made a judgement about. This is every category that exists.

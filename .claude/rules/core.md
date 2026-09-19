@@ -108,6 +108,24 @@ The sets:
       no category element at all
         property LcOaNodeSourceFile display Source File
 
+- FLAGS 64 IS StartGroup AND IT MEANS OR, F78. Measured on 2026-09-19 over all 102
+  conditions: five carry flags="64" and each of those five is the third condition of one
+  of the five sets that hold four. A condition with that bit STARTS A NEW GROUP, the
+  first group of a set is implicit and carries no flag, the conditions inside a group are
+  ANDed and the groups are ORed. So BLD-ME-Ducts&Duct Fittings reads
+  (Category equals Ducts and Workset equals ME-DUCTWORK) or (Category equals Duct
+  Fittings and Workset equals ME-DUCTWORK). Everything used to be joined with "and", so
+  that set was described as asking a question no element can answer, and a set finding
+  thousands of items read as one that could find none. The brackets only appear where
+  there is more than one group, so the 56 ordinary sets read exactly as they did
+- A PROPERTY'S FRIENDLY NAME RIDES BESIDE ITS INTERNAL ONE AND NEVER IN PLACE OF IT, F78.
+  lcldrevit_parameter_-1002053 tells a reader nothing and Workset tells them everything,
+  and the internal name is what the API matches on. The friendly half is READ OFF THE
+  FILE, which carries display="Workset" on every property, and there is NO LOOKUP TABLE
+  anywhere: a table would be a second copy of a mapping the file already supplies and it
+  would go stale the moment a project used a different parameter. It is left off where
+  both halves are the same word
+
 - condition test values seen: equals and contains
 - a condition can arrive with no category element. The reader must not assume one
 - rebuilding a search through the API uses the internal strings, never the display
@@ -129,7 +147,9 @@ file and they answer different questions:
 - 59 is the number of distinct sets, comparing each set's whole ordered list of
   conditions. It is 59 rather than 61 because two pairs of sets carry identical
   rule lists: Telecom Fixtures with Telephone Devices, and Electrical Fixtures
-  with Devices
+  with Devices. AFTER F87 IT IS 60, because Devices now asks for Nurse Call Devices
+  and is no longer the same set as Electrical Fixtures. The Telecom pair is left
+  exactly as it is, waiting on the client, and F84 reporting it is correct
 
 The set level number cannot be used for the damaged export check. On Infra it
 gives 6, because the sets differ in how many copies of the one rule they hold,
