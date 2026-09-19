@@ -409,5 +409,39 @@ namespace Federator.Core.Tests
             settings.Categories = new List<string> { "Ducts" };
             Assert.That(settings.Asks("Pipes"), Is.False, "a narrowed list is the list");
         }
+
+        /// <summary>
+        /// A19. The cap tested AT the number and one past it. Exactly a hundred values is
+        /// the cap and not over it, so no cap line, and the hundred and first is the first
+        /// that must write one, saying one value was left out.
+        /// </summary>
+        [Test]
+        public void ExactlyTheCapWritesNoCapLineAndOnePastItWritesOne()
+        {
+            ProbeTally at = new ProbeTally(100);
+
+            for (int i = 0; i < 100; i++)
+            {
+                at.Add("Pipes", "Element", "Mark", "P-" + i.ToString("000"));
+            }
+
+            Assert.That(at.Rows().Count, Is.EqualTo(100), "a hundred values is the cap, not over it");
+            Assert.That(at.Capped(), Is.Empty);
+
+            ProbeTally past = new ProbeTally(100);
+
+            for (int i = 0; i < 101; i++)
+            {
+                past.Add("Pipes", "Element", "Mark", "P-" + i.ToString("000"));
+            }
+
+            IList<ProbeRow> rows = past.Rows();
+
+            Assert.That(rows.Count, Is.EqualTo(101), "a hundred values and one line saying so");
+            Assert.That(rows[100].IsTheCapLine, Is.True);
+            Assert.That(rows[100].Value, Does.Contain("1 more distinct value here"));
+            Assert.That(rows[100].Elements, Is.EqualTo(1));
+            Assert.That(past.Capped().Count, Is.EqualTo(1));
+        }
     }
 }

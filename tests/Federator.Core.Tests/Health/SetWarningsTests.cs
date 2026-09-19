@@ -296,29 +296,63 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain("BLD-Security Devices"));
         }
 
-        [Test]
-        public void AFindingListShowsFiveExamplesAndThenACount()
+
+        private static string OddSetsUnder(string folder, int odd)
         {
             string body = string.Empty;
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < odd; i++)
             {
                 body += "<selectionset name=\"ODD" + i + "-x\"><findspec mode=\"all\" disjoint=\"0\">"
                     + "<conditions>" + Condition("equals", Category, "v" + i)
                     + "</conditions></findspec></selectionset>";
             }
 
-            IList<SelectionSetDefinition> sets = Sets(
-                "<viewfolder name=\"F\">"
+            return "<viewfolder name=\"" + folder + "\">"
                 + "<selectionset name=\"SAME-a\"><findspec mode=\"all\" disjoint=\"0\">"
                 + "<conditions>" + Condition("equals", Category, "1") + "</conditions></findspec></selectionset>"
                 + "<selectionset name=\"SAME-b\"><findspec mode=\"all\" disjoint=\"0\">"
                 + "<conditions>" + Condition("equals", Category, "2") + "</conditions></findspec></selectionset>"
-                + body + "</viewfolder>");
+                + body + "</viewfolder>";
+        }
 
-            IList<OddSetName> odd = SetWarnings.FindOddNames(sets, '-');
+        private static string HealthSummaryOf(string body)
+        {
+            HealthCheckResult result = HealthCheck.Run(new ExchangeReader().ReadText(
+                "<exchange units=\"ft\"><selectionsets>" + body + "</selectionsets></exchange>"));
 
-            Assert.That(odd.Count, Is.EqualTo(8));
+            return string.Join("\n", new List<string>(result.Summary()).ToArray());
+        }
+
+        /// <summary>
+        /// A18. The block, through HealthCheck.Run, names five and counts the rest. The
+        /// test before this one built eight odd names and asserted a count of eight, which
+        /// Examples could have stopped truncating without it noticing.
+        /// </summary>
+        [Test]
+        public void AFindingListShowsFiveExamplesAndThenACount()
+        {
+            string all = HealthSummaryOf(OddSetsUnder("F", 8));
+
+            Assert.That(all, Does.Contain("Set names breaking their folder's pattern: 8"));
+            Assert.That(all, Does.Contain("ODD4"));
+            Assert.That(all, Does.Not.Contain("ODD5"));
+            Assert.That(all, Does.Contain("and 3 more, counted and not listed"));
+        }
+
+        /// <summary>A19. Exactly five are all named with no count, and six is the first that counts.</summary>
+        [Test]
+        public void ExactlyFiveFindingsAreAllNamedAndOnePastItIsCounted()
+        {
+            string at = HealthSummaryOf(OddSetsUnder("F", HealthCheckResult.ExamplesShown));
+
+            Assert.That(at, Does.Contain("ODD" + (HealthCheckResult.ExamplesShown - 1)));
+            Assert.That(at, Does.Not.Contain("more, counted and not listed"));
+
+            string past = HealthSummaryOf(OddSetsUnder("F", HealthCheckResult.ExamplesShown + 1));
+
+            Assert.That(past, Does.Not.Contain("ODD" + HealthCheckResult.ExamplesShown + "-x"));
+            Assert.That(past, Does.Contain("and 1 more, counted and not listed"));
         }
     }
 }
