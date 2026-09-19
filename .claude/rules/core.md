@@ -443,8 +443,7 @@ and 6 does not read as broken.
   Tolerance carries its unit with no space, "0.025m". Distance is the raw signed number,
   negative on a hard clash, written as a number so it still sorts. Type reads
   "Hard (Conservative)". Measured, see docs\history\scan.md section 4k
-- THE CORE HALF ONLY until 03_bader_next.md step 370 is done.
-  THE CLASH PRIORITY IS THE ONE COLUMN OF OURS ON THE CLIENT'S SHEET, F83, and only
+- THE CLASH PRIORITY IS THE ONE COLUMN OF OURS ON THE CLIENT'S SHEET, F83, and only
   when a priority CSV is picked. It sits in T, one past the end of their table, and
   `WorkbookWriter.LastColumn` stays 19 so the title merge, both item fills, the boxing,
   the width loop and every loop in the check still describe THEIR table. Nothing picked
@@ -456,8 +455,7 @@ and 6 does not read as broken.
   priority sorted workbook is in priority order on purpose and the order check would
   otherwise call every one of them wrongly ordered, and because a column past their table
   is invisible to every other check in there
-- THE CORE HALF ONLY until 03_bader_next.md step 370 is done.
-  WITH A PRIORITY FILE PICKED THE BLOCK ORDER CHANGES, F83: A, then B, then C, then the
+- WITH A PRIORITY FILE PICKED THE BLOCK ORDER CHANGES, F83: A, then B, then C, then the
   tests the file says nothing about, and inside each block by test name. THE DEFAULT
   ORDER IS STILL THE MEASURED ONE and picking a file is the only thing that replaces it.
   That the two disagree is Q49. `ReportOrder.Tests` is the ONE place the order is

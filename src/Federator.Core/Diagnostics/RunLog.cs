@@ -1696,6 +1696,14 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public int PenetrationsMoved { get; set; }
 
+        /// <summary>
+        /// Every group's clashes by priority, F83, or null where no priority file was
+        /// picked. The engine sets it once the file has read and adds each group's tally
+        /// into it, so the number in RESULT and the per group PRIORITY blocks come from
+        /// the same additions. Null keeps the line out of a run that picked nothing.
+        /// </summary>
+        public PriorityTally PriorityAcrossTheRun { get; set; }
+
         public void WriteResultBlock()
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
@@ -1759,6 +1767,15 @@ namespace Federator.Core.Diagnostics
             if (penetrations != null)
             {
                 Line(penetrations);
+            }
+
+            // F83. Clashes by priority across the run, only where a file was picked, for
+            // the same reason the penetration line is only there when the box was on.
+            string priority = PriorityTally.ResultLine(PriorityAcrossTheRun != null, PriorityAcrossTheRun);
+
+            if (priority != null)
+            {
+                Line(priority);
             }
 
             IList<WrittenFile> files = WrittenFiles;

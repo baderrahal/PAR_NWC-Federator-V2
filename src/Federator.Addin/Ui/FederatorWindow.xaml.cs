@@ -83,6 +83,7 @@ namespace Federator.Addin.Ui
             ShowImageDefaults();
             ShowPenetrationWording();
             FillTolerance();
+            ShowPriorityWording();
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
@@ -1112,6 +1113,47 @@ namespace Federator.Addin.Ui
                 return 0;
             }
         }
+
+        /// <summary>The grey line under the priority picker names the file's columns off Core, F83.</summary>
+        private void ShowPriorityWording()
+        {
+            if (PriorityHelp == null)
+            {
+                return;
+            }
+
+            PriorityHelp.Text = "Optional. Columns " + string.Join(", ", PriorityMap.Columns)
+                + ", the priority A, B or C.";
+        }
+
+        /// <summary>
+        /// The priority CSV picker, F83. Optional, and its own remembered folder, because
+        /// the matrix and the clash XML live in different folders as often as not.
+        /// </summary>
+        private void OnBrowsePriorityFile(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.Title = "Pick the clash priority CSV, one row per test name";
+                dialog.Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*";
+                dialog.CheckFileExists = true;
+
+                string folder = StartFor(PickerKind.Priority, PriorityBox.Text);
+
+                if (folder.Length > 0 && Directory.Exists(folder))
+                {
+                    dialog.InitialDirectory = folder;
+                }
+
+                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                folders.Remember(PickerKind.Priority, dialog.FileName);
+                PriorityBox.Text = dialog.FileName;
+            }
+        }
         /// <summary>The table's display name, and on the default a word on what it is for.</summary>
         private static string UnitWording(UnitRow row)
         {
@@ -1206,6 +1248,7 @@ namespace Federator.Addin.Ui
             options.CompactResolved = CompactResolved.IsChecked == true;
             options.MarkPenetrations = MarkPenetrations.IsChecked == true;
             options.Tolerance = ChosenTolerance();
+            options.PriorityPath = Trimmed(PriorityBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
@@ -1486,6 +1529,9 @@ namespace Federator.Addin.Ui
                 + (tolerance.ChosenInTheTool
                     ? ", chosen in the tool, set on every test and beats the XML and the document"
                     : ", read per test out of the XML"));
+            log.Line("priority file    : " + (Trimmed(PriorityBox.Text).Length == 0
+                ? "none, so no Priority column and the measured block order"
+                : Trimmed(PriorityBox.Text)));
             log.Line("NWD naming       : "
                 + (DateTheNwd.IsChecked == true
                     ? "dated, so every week is kept"

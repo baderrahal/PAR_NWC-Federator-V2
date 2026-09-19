@@ -460,6 +460,8 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Clash XML" />
                         <TextBox Grid.Row="0" Grid.Column="1" x:Name="ExchangeFileBox" VerticalAlignment="Center"
@@ -479,6 +481,15 @@
                             <TextBlock x:Name="ToleranceOtherUnit" VerticalAlignment="Center" Margin="4,0,0,0" />
                         </StackPanel>
                         <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ToleranceHelp"
+                                   Style="{StaticResource TickHelp}" />
+                        <!-- F83. Optional. With a file picked the workbook gains a Priority
+                             column past the client's table and the blocks are ordered A, B,
+                             C. With none picked nothing changes. The help line names the
+                             columns off Core in the constructor. -->
+                        <Label Grid.Row="3" Grid.Column="0" Content="Priority CSV" />
+                        <TextBox Grid.Row="3" Grid.Column="1" x:Name="PriorityBox" VerticalAlignment="Center" />
+                        <Button Grid.Row="3" Grid.Column="2" Content="Browse" Click="OnBrowsePriorityFile" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="PriorityHelp"
                                    Style="{StaticResource TickHelp}" />
                     </Grid>
 

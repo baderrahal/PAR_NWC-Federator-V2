@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Rerun;
 using NUnit.Framework;
@@ -628,6 +629,48 @@ namespace Federator.Core.Tests
         {
             Assert.That(RunLog.UntickedGroupsLine(0),
                 Is.EqualTo("0 groups unticked in the Run column, nothing else drops a group"));
+        }
+
+        /// <summary>
+        /// F83. The RESULT block carries no priority line at all where no file was picked,
+        /// for the reason the penetration line gives: a line reading the same on every
+        /// run teaches people to skip the block.
+        /// </summary>
+        [Test]
+        public void TheResultBlockHasNoPriorityLineWhereNoFileWasPicked()
+        {
+            using (RunLog log = Start())
+            {
+                log.WriteResultBlock();
+                Assert.That(ReadWhileOpen(log), Does.Not.Contain("by priority"));
+            }
+        }
+
+        /// <summary>
+        /// F83. With a file picked the line is INSIDE the RESULT block and carries the
+        /// tally the engine added every group into, so the number here and the numbers
+        /// in the per group blocks come from the same additions.
+        /// </summary>
+        [Test]
+        public void TheResultBlockCarriesThePriorityLineWhereAFileWasPicked()
+        {
+            using (RunLog log = Start())
+            {
+                PriorityTally tally = new PriorityTally();
+                tally.Add(ClashPriority.A, 3);
+                tally.Add(ClashPriority.C, 1);
+                log.PriorityAcrossTheRun = tally;
+                log.WriteResultBlock();
+
+                string text = ReadWhileOpen(log);
+                string line = PriorityTally.ResultLine(true, tally);
+
+                Assert.That(text, Does.Contain(line));
+                Assert.That(
+                    text.IndexOf(line, StringComparison.Ordinal),
+                    Is.GreaterThan(text.IndexOf("RESULT", StringComparison.Ordinal)),
+                    "the priority line is inside the RESULT block and not before it");
+            }
         }
     }
 }

@@ -194,6 +194,95 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// The clash priorities off the client's matrix, F83, read once per run from the
+        /// CSV picked on the Clash step, or NothingPicked. A file that will not read is a
+        /// finding in the log and a line in the window, and the run goes on with no
+        /// Priority column, because picking a file never fails a run.
+        /// </summary>
+        private PriorityMap priorities;
+
+        /// <summary>Every group's clashes by priority, added up for the RESULT line.</summary>
+        private readonly PriorityTally priorityAcrossTheRun = new PriorityTally();
+
+        private PriorityMap ThePriorities()
+        {
+            if (priorities != null)
+            {
+                return priorities;
+            }
+
+            string path = reports.PriorityPath ?? string.Empty;
+
+            if (path.Length == 0)
+            {
+                priorities = PriorityMap.NothingPicked();
+                return priorities;
+            }
+
+            try
+            {
+                priorities = PriorityMap.Read(File.ReadAllText(path), path);
+                log.Line(PriorityMap.Prefix + " read " + path + ", " + priorities.RowCount
+                    + (priorities.RowCount == 1 ? " row" : " rows"));
+
+                foreach (string problem in priorities.Problems)
+                {
+                    log.Line(PriorityMap.Prefix + " " + problem);
+                }
+
+                // The RESULT line is the log's to write, and only where a file was picked.
+                log.PriorityAcrossTheRun = priorityAcrossTheRun;
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the priority file " + path,
+                    error,
+                    "kept going with no Priority column, a picked file never fails a run");
+                Say("The priority file would not read. " + RunLog.TheLogSaysWhy());
+                priorities = PriorityMap.NothingPicked();
+            }
+
+            return priorities;
+        }
+
+        /// <summary>
+        /// Puts the priorities on one group's report, F83: the map itself, so the one
+        /// order in ReportOrder.Tests reads it, and the letter on every test row, matched
+        /// on the test name exactly. Then the PRIORITY lines and the clashes counted by
+        /// priority, for this group and for the run. Nothing here changes a status, and
+        /// priority is never used for one.
+        /// </summary>
+        private void ApplyThePriorities(FederationJob job, ClashReport report)
+        {
+            PriorityMap map = ThePriorities();
+
+            if (report == null || !map.Picked)
+            {
+                return;
+            }
+
+            report.Priorities = map;
+            List<string> names = new List<string>();
+            PriorityTally group = new PriorityTally();
+
+            foreach (TestReport test in report.Tests)
+            {
+                test.Priority = map.Of(test.Name);
+                names.Add(test.Name);
+                group.Add(test.Priority, test.RawClashes);
+            }
+
+            foreach (string line in map.MatchLines(names))
+            {
+                log.Line(line);
+            }
+
+            log.Block(PriorityMap.Prefix + " " + job.Building, group.Lines());
+            priorityAcrossTheRun.Add(group);
+        }
+
+        /// <summary>
         /// Works through the jobs in order. Each group's NWF and NWD are written before
         /// the next group starts, so a failure part way through keeps everything already
         /// written.
@@ -1787,6 +1876,7 @@ namespace Federator.Addin.Engine
                 }
                 outcome.Clash = clash;
                 CountToleranceOrigins(outcome.Report);
+                ApplyThePriorities(job, outcome.Report);
                 log.Block("CLASH " + job.Building, clash.Lines());
 
                 // F72. Straight after the CLASH block, because it is about the clashes that
@@ -1901,7 +1991,7 @@ namespace Federator.Addin.Engine
         /// </summary>
         private void CheckTheWorkbook(FederationJob job, string path, int testsInTheFile)
         {
-            WorkbookCheck check = WorkbookCheck.Of(path);
+            WorkbookCheck check = WorkbookCheck.Of(path, ThePriorities().Picked);
 
             log.Block("WORKBOOK CHECK " + job.Building, check.Lines());
 
