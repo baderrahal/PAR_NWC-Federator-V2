@@ -723,8 +723,7 @@ and 6 does not read as broken.
   `RunPath.Stopped` is the label and both the confirm dialog and the RESULT block count
   it. The preview reads the same two rules, because a preview that says Rebuilt about a
   healthy NWF is the confirm dialog lying
-- THE CORE HALF ONLY until 03_bader_next.md step 366 is done.
-  THE DOCUMENT IS EMPTIED AT THE TOP OF EVERY GROUP, BEFORE DECIDE, F75. Before this
+- THE DOCUMENT IS EMPTIED AT THE TOP OF EVERY GROUP, BEFORE DECIDE, F75. Before this
   there were two clears in the whole engine and both ran AFTER Decide had read the file
   list, so Decide compared the scan against whatever the previous building had left
   behind. `CensusRule.StartOfGroupLine` and `StartOfGroupReason` are the Core half: the

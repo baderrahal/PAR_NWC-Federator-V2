@@ -295,6 +295,10 @@ namespace Federator.Addin.Engine
 
                 try
                 {
+                    // F75. Nothing is emptied on this path, so the census line says what
+                    // the document held and puts no reason on the group.
+                    StartOfGroupCensus(document, outcome, false);
+
                     // Nothing is appended and nothing is cleared. The models in it are
                     // what somebody put there, and the clash history lives in the same
                     // file.
@@ -394,6 +398,16 @@ namespace Federator.Addin.Engine
                     return outcome;
                 }
 
+                // F75. Emptied at the TOP of every scanned group, BEFORE Decide reads the
+                // file list. Before this there were two clears in the whole engine and both
+                // ran after Decide, so Decide compared the scan against whatever the
+                // previous building had left behind. A clear that throws leaves the group
+                // through the catch below, FAILED with the reason, because a group that
+                // could not be emptied would read the last building's models.
+                log.Line("CLEAR    the document, at the top of " + job.Building + ", before Decide");
+                document.Clear();
+                StartOfGroupCensus(document, outcome, true);
+
                 NwfComparison comparison = null;
 
                 InStep(
@@ -475,6 +489,23 @@ namespace Federator.Addin.Engine
             }
 
             return outcome;
+        }
+
+        /// <summary>
+        /// The census that proves the top of a group is what it should be, F75. The first
+        /// census of a scanned group must read models 0, sets 0, tests 0, results 0 and
+        /// views 0, and a group that was emptied and still holds something is named count
+        /// by count and is not DONE, because everything it goes on to read comes out of
+        /// that document. The open file run passes false: it empties nothing, because the
+        /// document IS the file list there, and the line says what it found and calls it
+        /// no fault. The rule and both wordings are Federator.Core.Diagnostics.CensusRule,
+        /// and a count the reader could not take is UNKNOWN there and never called dirty.
+        /// </summary>
+        private void StartOfGroupCensus(Document document, JobOutcome outcome, bool cleared)
+        {
+            DocumentCensus census = DocumentCensusReader.Read(document);
+            log.Line(CensusRule.StartOfGroupLine(census, cleared));
+            outcome.AddError(CensusRule.StartOfGroupReason(census, cleared));
         }
 
         /// <summary>
