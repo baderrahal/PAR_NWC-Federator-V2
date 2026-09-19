@@ -3135,6 +3135,27 @@ monotonic clock. That is information and the run acts on none of it. When a real
 it firing after the open returns and before the count settles, on every open, it becomes
 the answer and the poll becomes the fallback, which is the order asked for above.
 
+WHAT THE RUN THEN SHOWED, 2026-09-19 21:13, ten groups, seven of them opening an NWF. The
+event line beside every LOADING line read the same way each time, for example:
+
+```
+LOADING  the NWF reported 4 models after 0.721s, steady over 3 reads 0.250s apart, over 3 readings in all
+LOADING  the scene loaded event fired 4 times, first at 0.0s and last at 0.1s after the open began, and the open returned at 0.2s
+```
+
+So `SceneLoaded` fires ONCE PER MODEL, INSIDE `TryOpenFile`, before it returns. A handler
+subscribed after the open would never hear it, which is the case this section warned
+about. On every one of the seven opens the first reading of the count was already the
+full count and the wait settled on the third reading, under a second. Nothing on this run
+read empty, so the refusal was not exercised and neither was the ceiling.
+
+WHAT THAT LEAVES. The poll stays as the reader, because it reads the thing itself and
+costs half a second. The event is now MEASURED as usable, but only subscribed before the
+open, and it could replace the poll as the primary signal with the poll as the fallback.
+Whether to make that change is Bader's, and it is not made here. What the first real run
+saw, five NWFs reading empty the instant the open returned, was NOT reproduced on this
+machine with these files, so what caused it there is still UNKNOWN.
+
 ## 5f. What the property API offers for walking an item's properties, asked 2026-09-19, MEASURED 2026-09-19
 
 THE ANSWER IS AT THE END OF THIS SECTION. The question is left standing above it.
