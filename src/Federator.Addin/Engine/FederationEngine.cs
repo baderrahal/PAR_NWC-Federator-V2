@@ -283,6 +283,90 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// The by design pairs, F72b, read once per run from the CSV picked on the Clash
+        /// step, or NothingPicked. Read only when the box is on, because a file picked with
+        /// the box off would be read and then ignored, which reads as a file that did
+        /// nothing. A file that will not read is a finding and the run goes on moving
+        /// nothing under this rule.
+        /// </summary>
+        private ByDesignPairs pairs;
+
+        /// <summary>Every group's decisions, added up for the run line and the RESULT line.</summary>
+        private readonly ByDesignTally byDesignAcrossTheRun = new ByDesignTally();
+
+        private ByDesignPairs ThePairs()
+        {
+            if (pairs != null)
+            {
+                return pairs;
+            }
+
+            string path = reports.ByDesignPath ?? string.Empty;
+
+            if (!reports.MarkByDesign || path.Length == 0)
+            {
+                if (reports.MarkByDesign)
+                {
+                    log.Line(ReviewedLine.Prefix + " rule B is on and no pairs file was picked, "
+                        + "so it moves nothing and no list is invented");
+                }
+
+                pairs = ByDesignPairs.NothingPicked();
+                return pairs;
+            }
+
+            try
+            {
+                pairs = ByDesignPairs.Read(File.ReadAllText(path), path);
+                log.Line(ReviewedLine.Prefix + " rule B reads " + path + ", " + pairs.Count
+                    + (pairs.Count == 1 ? " pair" : " pairs"));
+
+                foreach (string problem in pairs.Problems)
+                {
+                    log.Line(ReviewedLine.Prefix + " rule B " + problem);
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the by design pairs file " + path,
+                    error,
+                    "kept going, rule B moves nothing and a picked file never fails a run");
+                Say("The by design pairs file would not read. " + RunLog.TheLogSaysWhy());
+                pairs = ByDesignPairs.NothingPicked();
+            }
+
+            return pairs;
+        }
+
+        /// <summary>
+        /// The lines about rule B across the whole run, F72b: how many it set and which
+        /// pairs in the file matched no test anywhere in the run. Named once across the
+        /// run and not once per group, because a pair naming sets that are only in one
+        /// building would otherwise be reported missing by six groups out of seven. A pair
+        /// matching nothing is a FINDING and nothing acts on it.
+        /// </summary>
+        public IList<string> ByDesignRunLines()
+        {
+            List<string> lines = new List<string>();
+
+            if (!reports.MarkByDesign)
+            {
+                return lines;
+            }
+
+            IList<ByDesignPair> missed = ThePairs().NotMatched(byDesignAcrossTheRun.PairsSeen);
+            lines.Add(ByDesignTally.RunLine(byDesignAcrossTheRun.MovedCount, missed.Count));
+
+            foreach (ByDesignPair pair in missed)
+            {
+                lines.Add("         " + pair);
+            }
+
+            return lines;
+        }
+
+        /// <summary>
         /// Works through the jobs in order. Each group's NWF and NWD are written before
         /// the next group starts, so a failure part way through keeps everything already
         /// written.
@@ -1819,6 +1903,18 @@ namespace Federator.Addin.Engine
                     runner.PenetrationTally = penetrationTally;
                 }
 
+                // F72b. The same shape as the penetration pass, and judged after it so the
+                // penetration rule keeps a clash they both want.
+                ByDesignTally byDesignTally = null;
+
+                if (reports.MarkByDesign)
+                {
+                    log.ByDesignWanted = true;
+                    byDesignTally = new ByDesignTally();
+                    runner.ByDesign = new ByDesign(log, ThePairs());
+                    runner.ByDesignTally = byDesignTally;
+                }
+
                 if (runner.SingleDisciplineGroup)
                 {
                     log.Line("CLASH    " + job.Building + " holds one discipline, so no test is run, and "
@@ -1890,6 +1986,16 @@ namespace Federator.Addin.Engine
                         penetrationTally.Lines(reports.Penetrations, reports.Sizes));
 
                     log.PenetrationsMoved += penetrationTally.MovedCount;
+                }
+
+                // F72b. Straight after the PENETRATION block, the same shape, written even
+                // when nothing moved. The run total goes to RESULT and the pairs seen are
+                // kept so the pairs that matched nothing are named once across the run.
+                if (byDesignTally != null)
+                {
+                    log.Block("BY DESIGN " + job.Building, byDesignTally.Lines());
+                    log.ByDesignMoved += byDesignTally.MovedCount;
+                    byDesignAcrossTheRun.Add(byDesignTally);
                 }
 
                 if (outcome.Report != null)

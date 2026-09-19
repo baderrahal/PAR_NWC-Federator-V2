@@ -901,8 +901,7 @@ and 6 does not read as broken.
   StatusesThisToolMaySet still answers the other half, which is that Reviewed is the only
   status this tool ever sets, and the two together are what stop a caller moving an
   Approved clash by mistake
-- THE CORE HALF ONLY until 03_bader_next.md step 371 is done.
-  A SECOND RULE MOVES A CLASH TO REVIEWED, F72b, AND IT IS A LIST AND NOT A JUDGEMENT.
+- A SECOND RULE MOVES A CLASH TO REVIEWED, F72b, AND IT IS A LIST AND NOT A JUDGEMENT.
   A column on its foundation, a door in a wall, a valve in a pipe run. Every one is a
   clash and none is a problem. `Federator.Core.Clash.ByDesignPairs` reads a CSV of
   left_set, right_set, reason, `ByDesignRule` decides and `ByDesignTally` is the block.

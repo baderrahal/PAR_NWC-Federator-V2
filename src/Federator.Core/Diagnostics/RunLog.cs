@@ -1704,6 +1704,19 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public PriorityTally PriorityAcrossTheRun { get; set; }
 
+
+        /// <summary>
+        /// Whether this run asked for by design connections to be marked, F72b. False by
+        /// default, so a run that never turned the box on carries no line about it.
+        /// </summary>
+        public bool ByDesignWanted { get; set; }
+
+        /// <summary>
+        /// How many clashes rule B moved to Reviewed across every group, added as each
+        /// group finishes, so RESULT and the per group blocks come from the same additions.
+        /// </summary>
+        public int ByDesignMoved { get; set; }
+
         public void WriteResultBlock()
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
@@ -1776,6 +1789,14 @@ namespace Federator.Core.Diagnostics
             if (priority != null)
             {
                 Line(priority);
+            }
+
+            // F72b. The second rule's count, only where its box was on.
+            string byDesign = ByDesignTally.ResultLine(ByDesignWanted, ByDesignMoved);
+
+            if (byDesign != null)
+            {
+                Line(byDesign);
             }
 
             IList<WrittenFile> files = WrittenFiles;

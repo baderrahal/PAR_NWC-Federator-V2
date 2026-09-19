@@ -84,6 +84,7 @@ namespace Federator.Addin.Ui
             ShowPenetrationWording();
             FillTolerance();
             ShowPriorityWording();
+            ShowByDesignWording();
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
@@ -1154,6 +1155,57 @@ namespace Federator.Addin.Ui
                 PriorityBox.Text = dialog.FileName;
             }
         }
+
+        /// <summary>
+        /// The by design box's label and grey line, and the picker's grey line, all read
+        /// off Core, F72b. Nothing here is typed into the XAML.
+        /// </summary>
+        private void ShowByDesignWording()
+        {
+            if (MarkByDesign == null)
+            {
+                return;
+            }
+
+            MarkByDesign.Content = ByDesignPairs.TickLabel;
+
+            if (MarkByDesignHelp != null)
+            {
+                MarkByDesignHelp.Text = ByDesignPairs.HelpLine;
+            }
+
+            if (ByDesignHelp != null)
+            {
+                ByDesignHelp.Text = "Read only with the box below on. Columns "
+                    + string.Join(", ", ByDesignPairs.Columns) + ".";
+            }
+        }
+
+        /// <summary>The by design pairs picker, F72b. Its own remembered folder, like the others.</summary>
+        private void OnBrowseByDesignFile(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.Title = "Pick the by design pairs CSV, one row per pair of sets";
+                dialog.Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*";
+                dialog.CheckFileExists = true;
+
+                string folder = StartFor(PickerKind.ByDesign, ByDesignBox.Text);
+
+                if (folder.Length > 0 && Directory.Exists(folder))
+                {
+                    dialog.InitialDirectory = folder;
+                }
+
+                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                folders.Remember(PickerKind.ByDesign, dialog.FileName);
+                ByDesignBox.Text = dialog.FileName;
+            }
+        }
         /// <summary>The table's display name, and on the default a word on what it is for.</summary>
         private static string UnitWording(UnitRow row)
         {
@@ -1249,6 +1301,8 @@ namespace Federator.Addin.Ui
             options.MarkPenetrations = MarkPenetrations.IsChecked == true;
             options.Tolerance = ChosenTolerance();
             options.PriorityPath = Trimmed(PriorityBox.Text);
+            options.MarkByDesign = MarkByDesign.IsChecked == true;
+            options.ByDesignPath = Trimmed(ByDesignBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
@@ -1532,6 +1586,9 @@ namespace Federator.Addin.Ui
             log.Line("priority file    : " + (Trimmed(PriorityBox.Text).Length == 0
                 ? "none, so no Priority column and the measured block order"
                 : Trimmed(PriorityBox.Text)));
+            log.Line("by design        : " + (MarkByDesign.IsChecked == true
+                ? "YES, a clash between two sets the pairs file names becomes Reviewed"
+                : "no, the pairs file is not read"));
             log.Line("NWD naming       : "
                 + (DateTheNwd.IsChecked == true
                     ? "dated, so every week is kept"
@@ -1755,6 +1812,12 @@ namespace Federator.Addin.Ui
                         EventRow.Count(row.GroupsAtZero), row.Phrase());
                 }
 
+                // F72b. Rule B across the run, and the pairs that matched nothing, named once.
+                foreach (string line in engine.ByDesignRunLines())
+                {
+                    log.Line(line);
+                }
+
                 // F76. Where every report row's tolerance was read, counted across the
                 // run. Every row should read off the document, and the line says so when
                 // one did not.
@@ -1961,6 +2024,12 @@ namespace Federator.Addin.Ui
                 // The engine writes the GROUP lines and the OPEN FILE block itself, so
                 // they are there whatever happens inside it.
                 JobOutcome outcome = engine.RunOpenDocument();
+
+                // F72b. Rule B across the run, and the pairs that matched nothing, named once.
+                foreach (string line in engine.ByDesignRunLines())
+                {
+                    log.Line(line);
+                }
 
                 // F76. Where every report row's tolerance was read, counted across the
                 // run. Every row should read off the document, and the line says so when

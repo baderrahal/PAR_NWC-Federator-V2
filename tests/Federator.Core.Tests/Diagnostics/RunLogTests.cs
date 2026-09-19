@@ -672,5 +672,38 @@ namespace Federator.Core.Tests
                     "the priority line is inside the RESULT block and not before it");
             }
         }
+
+        /// <summary>F72b. No line at all where the box was off, the same as the penetration line.</summary>
+        [Test]
+        public void TheResultBlockHasNoByDesignLineWhereTheBoxWasOff()
+        {
+            using (RunLog log = Start())
+            {
+                log.ByDesignMoved = 4;
+                log.WriteResultBlock();
+                Assert.That(ReadWhileOpen(log), Does.Not.Contain("by design"));
+            }
+        }
+
+        /// <summary>F72b. With the box on the line is inside RESULT and carries the run total.</summary>
+        [Test]
+        public void TheResultBlockCarriesTheByDesignLineWhereTheBoxWasOn()
+        {
+            using (RunLog log = Start())
+            {
+                log.ByDesignWanted = true;
+                log.ByDesignMoved = 4;
+                log.WriteResultBlock();
+
+                string text = ReadWhileOpen(log);
+                string line = ByDesignTally.ResultLine(true, 4);
+
+                Assert.That(text, Does.Contain(line));
+                Assert.That(
+                    text.IndexOf(line, StringComparison.Ordinal),
+                    Is.GreaterThan(text.IndexOf("RESULT", StringComparison.Ordinal)),
+                    "the by design line is inside the RESULT block and not before it");
+            }
+        }
     }
 }

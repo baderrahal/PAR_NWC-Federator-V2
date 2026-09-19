@@ -220,6 +220,24 @@ namespace Federator.Addin.Engine
         public PenetrationTally PenetrationTally { get; set; }
 
         /// <summary>
+        /// The by design pass, F72b, or null where the box is off. Null is the default and
+        /// a null one resolves nothing and walks nothing.
+        /// </summary>
+        public ByDesign ByDesign
+        {
+            get { return byDesign; }
+            set { byDesign = value; }
+        }
+
+        private ByDesign byDesign;
+
+        /// <summary>
+        /// Where the by design decisions are counted for this group, or null where the
+        /// box is off. The engine owns it, the same as the penetration tally.
+        /// </summary>
+        public ByDesignTally ByDesignTally { get; set; }
+
+        /// <summary>
         /// Whether a status was actually changed in the document. The NWF is saved again
         /// on this, because a status change is a write.
         /// </summary>
@@ -755,6 +773,30 @@ namespace Federator.Addin.Engine
                         if (toRead != null)
                         {
                             wanted = penetrations.WantedFor(document, toRead, PenetrationTally);
+                        }
+                    }
+                }
+
+                // F72b. The by design pairs, judged AFTER the penetration rule so that rule
+                // keeps a clash they both want, and the wanted names join the ONE list the
+                // editor applies below. Its own resolve and a walk that only reads, like
+                // the penetration pass, and it reads no item at all.
+                if (byDesign != null && ByDesignTally != null)
+                {
+                    using (ClashTest forPairs = Resolve(clashTests, address, planned.Name))
+                    {
+                        if (forPairs != null)
+                        {
+                            List<WantedStatus> merged = new List<WantedStatus>();
+
+                            if (wanted != null)
+                            {
+                                merged.AddRange(wanted);
+                            }
+
+                            merged.AddRange(byDesign.WantedFor(
+                                forPairs, planned.Left.Locator, planned.Right.Locator, wanted, ByDesignTally));
+                            wanted = merged;
                         }
                     }
                 }

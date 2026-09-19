@@ -462,6 +462,8 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Clash XML" />
                         <TextBox Grid.Row="0" Grid.Column="1" x:Name="ExchangeFileBox" VerticalAlignment="Center"
@@ -491,6 +493,13 @@
                         <Button Grid.Row="3" Grid.Column="2" Content="Browse" Click="OnBrowsePriorityFile" />
                         <TextBlock Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="PriorityHelp"
                                    Style="{StaticResource TickHelp}" />
+                        <!-- F72b. The by design pairs file, read only when the box below is
+                             on. The help line names the columns off Core in the constructor. -->
+                        <Label Grid.Row="5" Grid.Column="0" Content="By design CSV" />
+                        <TextBox Grid.Row="5" Grid.Column="1" x:Name="ByDesignBox" VerticalAlignment="Center" />
+                        <Button Grid.Row="5" Grid.Column="2" Content="Browse" Click="OnBrowseByDesignFile" />
+                        <TextBlock Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ByDesignHelp"
+                                   Style="{StaticResource TickHelp}" />
                     </Grid>
 
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
@@ -499,6 +508,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
@@ -516,9 +526,19 @@
                             <TextBlock x:Name="MarkPenetrationsHelp" Style="{StaticResource TickHelp}" />
                         </StackPanel>
 
+                        <!-- F72b. The second rule that moves a clash to Reviewed, a LIST and
+                             not a judgement, off by default for the same reason the box
+                             above is. Its label and grey line are read off Core in the
+                             constructor and never typed here. The pairs file is picked in
+                             the grid above, beside the clash XML. -->
+                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,8">
+                            <CheckBox x:Name="MarkByDesign" IsChecked="False" />
+                            <TextBlock x:Name="MarkByDesignHelp" Style="{StaticResource TickHelp}" />
+                        </StackPanel>
+
                         <!-- The two that destroy data. Collapsed and on their own, because
                              they do not belong beside ordinary output options. -->
-                        <Expander Grid.Row="1" Grid.ColumnSpan="2" IsExpanded="False"
+                        <Expander Grid.Row="2" Grid.ColumnSpan="2" IsExpanded="False"
                                   Header="Things that destroy data" Margin="0,0,0,8">
                             <StackPanel Margin="20,4,0,0">
                                 <!-- One StackPanel each, never two boxes in one, because the
