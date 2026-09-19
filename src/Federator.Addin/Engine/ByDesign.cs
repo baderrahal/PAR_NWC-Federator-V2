@@ -149,7 +149,12 @@ namespace Federator.Addin.Engine
 
                     if (verdict == ByDesignVerdict.Reviewed && clashName.Length > 0)
                     {
-                        wanted.Add(new WantedStatus(clashName, CoreClashStatus.Reviewed));
+                        // F72c. The record, the same shape the penetration rule leaves.
+                        wanted.Add(new WantedStatus(
+                            clashName,
+                            CoreClashStatus.Reviewed,
+                            new AutoReviewRecord(AutoReviewRule.ByDesign, status, pair.ToString()),
+                            false));
                     }
                 }
             }

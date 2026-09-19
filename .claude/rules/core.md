@@ -921,8 +921,7 @@ and 6 does not read as broken.
   rules now write one and only the WHY differs. A second copy of that string in a second
   tally is how the two would start reading differently, and a person scanning a log for
   REVIEWED would then find one rule's moves and not the other's
-- THE CORE HALF ONLY until 03_bader_next.md step 372 is done.
-  THIS TOOL LEAVES A RECORD IN THE NWF OF EVERY CLASH IT MOVED, F72c, and the record IS
+- THIS TOOL LEAVES A RECORD IN THE NWF OF EVERY CLASH IT MOVED, F72c, and the record IS
   the comment. `AutoReviewRecord` is the shape: a marker no person would type, the rule,
   THE STATUS THE CLASH WAS MOVED OFF, then the reason in plain words. The old status is
   on it because New and Active are both statuses this tool may move from and an undo that
@@ -933,8 +932,7 @@ and 6 does not read as broken.
   carries on with the status alone, and NOTHING stands in for it: no side file, no
   encoded clash name, no second copy anywhere. A comment that could not be written is not
   a comment
-- THE CORE HALF ONLY until 03_bader_next.md step 373 is done.
-  THE UNDO TOUCHES ONLY WHAT THIS TOOL MOVED AND ONLY WHERE NOBODY HAS MOVED IT SINCE,
+- THE UNDO TOUCHES ONLY WHAT THIS TOOL MOVED AND ONLY WHERE NOBODY HAS MOVED IT SINCE,
   F72c. `UndoAutoReview` judges: it carries one of our records AND it is still at
   Reviewed. A clash this tool set to Reviewed in week one that a person moved to Approved
   in week two still carries the record and is LEFT ALONE, because that person's decision

@@ -85,6 +85,7 @@ namespace Federator.Addin.Ui
             FillTolerance();
             ShowPriorityWording();
             ShowByDesignWording();
+            ShowUndoWording();
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
@@ -1204,6 +1205,68 @@ namespace Federator.Addin.Ui
 
                 folders.Remember(PickerKind.ByDesign, dialog.FileName);
                 ByDesignBox.Text = dialog.FileName;
+            }
+        }
+
+        /// <summary>The undo button's label and grey line, both read off Core, F72c.</summary>
+        private void ShowUndoWording()
+        {
+            if (UndoAutoReviewedButton == null)
+            {
+                return;
+            }
+
+            UndoAutoReviewedButton.Content = UndoAutoReview.ButtonLabel;
+
+            if (UndoAutoReviewedHelp != null)
+            {
+                UndoAutoReviewedHelp.Text = UndoAutoReview.HelpLine;
+            }
+        }
+
+        /// <summary>
+        /// The Undo auto Reviewed button, F72c. Every test in the open document, and only
+        /// the clashes carrying this tool's record that are still at Reviewed, each put
+        /// back to the status its record names. Nothing is saved, the same as the two hand
+        /// buttons above it. Runs on the plugin thread like everything else.
+        /// </summary>
+        private void OnUndoAutoReviewed(object sender, RoutedEventArgs e)
+        {
+            if (running)
+            {
+                return;
+            }
+
+            running = true;
+            UndoAutoReviewedButton.IsEnabled = false;
+
+            try
+            {
+                log.Line(UndoAutoReview.Prefix + " started by hand on the open document, nothing is saved");
+
+                FederationEngine engine = new FederationEngine(SetProgress, log, null, ReportsWanted());
+                UndoAutoReviewed undo = engine.UndoAutoReviewedByHand();
+
+                string said = undo.Tally == null
+                    ? "Nothing was read."
+                    : undo.Tally.PutBackCount + " put back of " + undo.Tally.Considered + " looked at."
+                        + (undo.ChangedTheDocument
+                            ? " The open file is changed and not saved."
+                            : string.Empty);
+
+                UndoAutoReviewedLine.Text = said;
+                SetProgress(said);
+            }
+            catch (Exception error)
+            {
+                log.Failure("the undo", error, "stopped, whatever was already put back stays put back");
+                SetProgress("The undo stopped on an error.");
+                Warn("The undo stopped." + Environment.NewLine + Environment.NewLine + error.Message);
+            }
+            finally
+            {
+                running = false;
+                UndoAutoReviewedButton.IsEnabled = true;
             }
         }
         /// <summary>The table's display name, and on the default a word on what it is for.</summary>

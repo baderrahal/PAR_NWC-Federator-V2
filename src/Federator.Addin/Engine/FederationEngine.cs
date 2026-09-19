@@ -1707,6 +1707,18 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// The Undo auto Reviewed button, F72c. Runs on the open document and saves
+        /// nothing, the same as the two hand buttons. The pass, the block and the words
+        /// are UndoAutoReviewed and Federator.Core.Clash.UndoAutoReview.
+        /// </summary>
+        public UndoAutoReviewed UndoAutoReviewedByHand()
+        {
+            UndoAutoReviewed undo = new UndoAutoReviewed(log);
+            undo.Run(NavisworksApplication.ActiveDocument);
+            return undo;
+        }
+
+        /// <summary>
         /// The Build sets button on the Clash step: the picked file's sets into the open
         /// document, nothing else. No scan, no NWF saved, no test created. It is the same
         /// BuildTheSets the run calls per group, so the SETS lines in the log read the

@@ -599,6 +599,23 @@
                                     Click="OnRunTests" MinWidth="150" />
                         </StackPanel>
                     </Border>
+
+                    <!-- F72c. The undo for the two rules above. A hand action on the open
+                         document, like the two buttons above it, and it saves nothing. Its
+                         label and grey line are read off Core in the constructor. -->
+                    <Border DockPanel.Dock="Top" BorderBrush="#FFBBBBBB" BorderThickness="1"
+                            Padding="8" Margin="0,0,0,8">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="UndoAutoReviewedButton" Click="OnUndoAutoReviewed"
+                                        MinWidth="170" Margin="0,0,10,0" />
+                                <TextBlock x:Name="UndoAutoReviewedLine" VerticalAlignment="Center"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                            <TextBlock x:Name="UndoAutoReviewedHelp" Style="{StaticResource TickHelp}"
+                                       Margin="0,6,0,0" />
+                        </StackPanel>
+                    </Border>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="SetsSummary" Margin="0,6,0,0"
                                Text="No file picked." />
                     <TextBox x:Name="SetsBox" IsReadOnly="True" TextWrapping="NoWrap"

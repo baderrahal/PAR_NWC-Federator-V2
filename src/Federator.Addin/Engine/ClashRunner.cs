@@ -805,7 +805,7 @@ namespace Federator.Addin.Engine
                 {
                     using (ClashTest toEdit = Resolve(clashTests, address, planned.Name))
                     {
-                        if (toEdit != null && statuses.Apply(clashTests, toEdit, wanted))
+                        if (toEdit != null && statuses.Apply(document, clashTests, toEdit, wanted))
                         {
                             changedTheDocument = true;
                         }
