@@ -14,12 +14,12 @@ Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 
 
 Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixes as F56 to F61. F56 and F57 were already taken, so the six are F59 to F64 and they map onto the brief one for one and in order. F51, which the brief asks for as its own one line pull request, was already done and merged on 2026-09-18 and is not done twice. F58 is a seventh, found by the reading that opened the round and put first because the add-in does not compile and every one of the 251 steps waits behind the build.
 
-Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. F69 is a fifth and F70 a sixth, neither briefed. F69 came out of running the build while measuring F68 and F70 out of checking the probe steps against what the probes actually print. Both go after the four they came out of. They go before everything that was left, because the build is what every one of the 333 steps waits behind.
+Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. F69 is a fifth and F70 a sixth, neither briefed. F69 came out of running the build while measuring F68 and F70 out of checking the probe steps against what the probes actually print. Both go after the four they came out of. They go before everything that was left, because the build is what every one of the 350 steps waits behind.
 
 Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the tool for real, the first run since the add-in was proved to build, and briefed two fixes. F71 and F72 were both free and the two map onto the brief one for one and in order. The four answers the brief calls Q47 to Q50 go in as Q41 to Q44, because the questions file runs to 40 and Q41 to Q46 do not exist, and they map one for one and in order too.
 
 1. F71, DONE, say when an NWF is nearly matched
-2. F72, penetrations become Reviewed, which answers Q33
+2. F72, DONE, penetrations become Reviewed, which answers Q33
 3. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
 4. F66, DONE, the check that would have caught it
 5. F67, DONE, one doubled comment
@@ -37,7 +37,7 @@ Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the 
 17. F18, when Bader uploads the 1A04WE sample, Q9
 18. F23, when Q20 is answered
 
-The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 262 to 274 are for.
+The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 279 to 291 are for.
 
 The build round closed on 2026-09-19. F65 to F70 are all done and each carries its DONE line below. THE ADD-IN BUILDS, 0 errors and 0 warnings, which is the first proved build this repo has had. The six branches are pushed and not merged, because nothing in this session could open a pull request, and Bader merges them in order.
 
@@ -650,6 +650,17 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - Nothing is auto corrected. It reports and the person decides, which is the rule this repo already keeps for findings
 - Size: one Core type and the wiring
 - DONE on 2026-09-19. `Federator.Core.Naming.SimilarNames` with 29 tests. An EXACT match is never reported and is compared on the STEM, which a test caught: a folder gives `X.nwf` and the wanted name is `X`, so comparing the two raw called every exact match a near miss, the opposite of the truth. THE LABEL IS NEVER WIDENED, because `RunPath.Count` maps an unknown label onto Unknown and the confirm dialog and the RESULT block both count off it. `RunAs` stays one of the six and the sentence rides beside it in `RunAsShown`, pinned by a test that counts both. `ContainerName.Stem` went from private to internal so one rule decides what a name is. `check-imports.sh` refused the first version, because the nested type was called `Match` and this repo declares `Regex.Match` users in two files, so it is `NearbyName`. Core tests before: 1238 passed, 0 failed, 0 skipped, 1238 total. After: 1271 passed, 0 failed, 0 skipped, 1271 total. The add-in BUILDS, 0 errors and 0 warnings
+
+## F72 Penetrations become Reviewed, which answers Q33
+
+- Closes Q33, and Q41 to Q44 are the four details it raised
+- Files `src/Federator.Core/Clash/PenetrationSettings.cs`, `PenetrationRule.cs`, `PenetrationTally.cs` and `StatusesThisToolMayMoveFrom.cs` which are new, `src/Federator.Core/Views/SizeRule.cs`, `SizeSettings.cs`, `src/Federator.Core/Report/ReportOptions.cs`, `ClashReportModel.cs`, `src/Federator.Core/Diagnostics/RunLog.cs`, `src/Federator.Addin/Engine/Penetrations.cs` which is new, `ClashRunner.cs`, `ClashHarvest.cs`, `FederationEngine.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml` and `.xaml.cs`, `tools/checks/check-imports.sh`, `.claude/rules/core.md`, `.claude/rules/addin.md`
+- CONTAINER for every rule and its tests, LOCAL MACHINE to see a status move
+- A clash becomes Reviewed when ALL FOUR are true: one side is a service by item category, the other side is a solid by item category, the service measures 150 mm or less, and the clash is at New or Active. Everything else is left exactly as it is and counted by reason
+- Every list and the 150 are settings with the defaults Bader gave. The 150 is the SAME number F53 reads and it is named once
+- Off by default, one tick box on the Clash step with the threshold read off the setting
+- Size: large, and the rule is the whole of it
+- DONE on 2026-09-19. `PenetrationRule`, `PenetrationSettings`, `PenetrationTally` and `StatusesThisToolMayMoveFrom` in Core with 67 tests. The threshold is `SizeSettings.ThresholdMillimetres` and nothing else, read OVER by F53 and AT OR UNDER by F72, with both readings written at the one number and a test asserting exactly 150 falls on a different side in each. `SizeRule.LargestMillimetres` takes the largest of every size property, so a 600 by 150 duct is a 600 and stays New, pinned by a test that also shows `Decide` reading 150 off the same lookup. A service whose size cannot be read is LEFT ALONE, the opposite of F53, with the reason written at both places and a test asserting the two answers differ. `Penetrations` in the add-in only READS, and the list it hands back goes through `ClashStatusEditor`, so there is still exactly one place that calls `TestsEditResultStatus`. `ClashHarvest` gains Category through the reader it already had, made internal rather than copied. `check-imports.sh` went from 50 to 60 after a measured false positive, clean at 51 and 60 and still refusing the real CS0246 at both, missing it at 75. Core tests before: 1271 passed, 0 failed, 0 skipped, 1271 total. After: 1338 passed, 0 failed, 0 skipped, 1338 total. The add-in BUILDS, 0 errors and 0 warnings
 
 ## F21 The log answers timing and counts
 

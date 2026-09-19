@@ -126,6 +126,105 @@ namespace Federator.Core.Views
                 "none of " + string.Join(", ", Names(settings)) + " is on it, so it is IN");
         }
 
+        /// <summary>
+        /// The LARGEST of every size property read off one item, in millimetres, or null
+        /// where none could be read. F72.
+        ///
+        /// A DUCT IS NOT ONE NUMBER, which is why this exists beside Decide rather than
+        /// inside it. Decide takes the FIRST property on the settings list that is there,
+        /// which is what a viewpoint wants: one representative size, cheaply, in a rule
+        /// nobody has to argue about. A penetration wants the opposite. A 600 by 150 duct
+        /// carries Width 600 and Height 150, and asking whether it fits through a wall as
+        /// a small service has to read the 600, because that is what has to fit. Taking
+        /// the first would read whichever of the two the settings list happens to name
+        /// earlier, which is Width today and would be Height if anybody reordered the
+        /// list, and the answer would change with it.
+        ///
+        /// The conversion is HERE and not in the caller, for the reason written above
+        /// Decide: what a property hands back is in the document's units, and a raw double
+        /// compared against 150 gives one building two different answers depending on a
+        /// setting nobody changed. A unit the table does not know throws, the same way.
+        /// </summary>
+        public static double? LargestMillimetres(
+            IDictionary<string, double> read, string unitEnumName, SizeSettings settings)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            UnitRow unit = UnitTable.ByEnumName(unitEnumName);
+
+            if (read == null || read.Count == 0 || settings.PropertyNames == null)
+            {
+                return null;
+            }
+
+            double? largest = null;
+
+            // Every WANTED property, and never every property the item happens to carry.
+            // The settings list is what this tool calls a size, so a value under some
+            // other name is not one, whatever its number.
+            for (int i = 0; i < settings.PropertyNames.Count; i++)
+            {
+                string name = settings.PropertyNames[i];
+
+                if (string.IsNullOrEmpty(name) || !read.ContainsKey(name))
+                {
+                    continue;
+                }
+
+                double millimetres = read[name] * unit.MillimetresPerUnit;
+
+                if (!largest.HasValue || millimetres > largest.Value)
+                {
+                    largest = millimetres;
+                }
+            }
+
+            return largest;
+        }
+
+        /// <summary>Which property carried the largest size, or null where none did.</summary>
+        public static string LargestProperty(
+            IDictionary<string, double> read, string unitEnumName, SizeSettings settings)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            UnitRow unit = UnitTable.ByEnumName(unitEnumName);
+
+            if (read == null || read.Count == 0 || settings.PropertyNames == null)
+            {
+                return null;
+            }
+
+            string which = null;
+            double largest = 0.0;
+
+            for (int i = 0; i < settings.PropertyNames.Count; i++)
+            {
+                string name = settings.PropertyNames[i];
+
+                if (string.IsNullOrEmpty(name) || !read.ContainsKey(name))
+                {
+                    continue;
+                }
+
+                double millimetres = read[name] * unit.MillimetresPerUnit;
+
+                if (which == null || millimetres > largest)
+                {
+                    which = name;
+                    largest = millimetres;
+                }
+            }
+
+            return which;
+        }
+
         private static string[] Names(SizeSettings settings)
         {
             return new List<string>(settings.PropertyNames).ToArray();

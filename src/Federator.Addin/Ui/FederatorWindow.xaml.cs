@@ -19,6 +19,7 @@ using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
 using Federator.Core.Units;
+using Federator.Core.Views;
 
 namespace Federator.Addin.Ui
 {
@@ -80,6 +81,7 @@ namespace Federator.Addin.Ui
             ShowNaming();
             ShowTheInstallsLogo();
             ShowImageDefaults();
+            ShowPenetrationWording();
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
@@ -988,6 +990,33 @@ namespace Federator.Addin.Ui
             UnitsBox.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// The penetration box's label and its grey line, both read off Core. F72.
+        ///
+        /// The help line names the threshold, and the threshold is a SETTING, so typing
+        /// the number into the XAML would put a second copy of it in the one place nothing
+        /// can test. A project that changes the setting gets a window that says the new
+        /// number, because the window asks rather than remembers.
+        /// </summary>
+        private void ShowPenetrationWording()
+        {
+            if (MarkPenetrations == null)
+            {
+                return;
+            }
+
+            // The defaults come from the Core object that holds them, the same way
+            // ShowImageDefaults reads a fresh ImageOptions.
+            SizeSettings defaults = new SizeSettings();
+
+            MarkPenetrations.Content = PenetrationSettings.TickLabel;
+
+            if (MarkPenetrationsHelp != null)
+            {
+                MarkPenetrationsHelp.Text = PenetrationSettings.HelpLine(defaults);
+            }
+        }
+
         /// <summary>The table's display name, and on the default a word on what it is for.</summary>
         private static string UnitWording(UnitRow row)
         {
@@ -1080,6 +1109,7 @@ namespace Federator.Addin.Ui
             // so nothing here sets them. A weekly run wants all three every time.
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
             options.CompactResolved = CompactResolved.IsChecked == true;
+            options.MarkPenetrations = MarkPenetrations.IsChecked == true;
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
@@ -1338,6 +1368,10 @@ namespace Federator.Addin.Ui
                 + (CompactResolved.IsChecked == true
                     ? "YES, which permanently removes every Resolved clash"
                     : "no"));
+            log.Line("penetrations     : "
+                + (MarkPenetrations.IsChecked == true
+                    ? "YES, a small service through a wall, floor or roof becomes Reviewed"
+                    : "no, every clash keeps the status it has"));
             log.Line("NWD naming       : "
                 + (DateTheNwd.IsChecked == true
                     ? "dated, so every week is kept"

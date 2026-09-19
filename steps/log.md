@@ -2,6 +2,137 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F72, penetrations become Reviewed, and Q33 is answered
+
+### What was done
+
+- Q33 HAS BEEN OPEN SINCE F54 ON 2026-09-18 and it is answered. It offered four shapes and
+  asked which one the ask was. The answer is the SECOND, a rule over the clash itself, and
+  the other three are recorded as not chosen so nobody builds one later thinking it was
+  wanted: no list is supplied per run, nothing is read off a status in the clash XML, and
+  nothing watches what a person marked last week
+- A CLASH BECOMES REVIEWED WHEN ALL FOUR ARE TRUE. One side is a service by item category.
+  The other side is a solid by item category. The service measures 150 mm or less. The
+  clash is at New or Active. Everything else is left exactly as it is and counted by reason
+- F54 BUILT THE HALF THAT NEEDED NO ANSWER and it is untouched. `ClashStatusEditor` still
+  applies a list through the one measured mutator, `StatusesThisToolMaySet` still refuses
+  everything but Reviewed, and the slot between the run and the harvest is still the slot.
+  F72 supplies the list that was missing and changes nothing about how it is applied
+- AND IT RESCUES THREE DEAD MEMBERS. `ChangedCount`, `NotFoundCount` and `RefusedCount`
+  were declared by F54 and read nowhere in src, because nothing supplied a list. The rule
+  says a public member nothing calls is deleted unless a decision in `02_questions.md`
+  keeps it, and Q33 was that decision. Now they have a caller
+
+### The four questions Bader answered, and what each one settled
+
+- THEY ARE Q41 TO Q44 AND THE BRIEF CALLS THEM Q47 TO Q50. The questions file runs to 40
+  and Q41 to Q46 do not exist, so they went in at the next free numbers, one for one and in
+  order. The same thing happened to the log round, which was briefed as F56 to F61
+- Q41, THE SOLID SIDE. Floors and roofs count as well as walls, so the default solid list
+  is Walls, Floors, Roofs. A service dropping through a slab is the same kind of thing as
+  one going through a wall
+- Q42, NO DISCIPLINE FILTER. Any wall counts whichever file it came in. Nothing in the rule
+  reads part 5 of a name and nothing in it knows what a discipline is, and there is a test
+  that asserts exactly that, because the temptation to add one later will be real
+- Q43, WHICH WAY ROUND THE 150 READS. It is a CEILING and not a floor: 150 or less becomes
+  Reviewed, and a service over it stays at New because a large service through a wall is a
+  real coordination item
+- Q44, BOTH SIDES A SERVICE. Leave it alone, and count it, so a run says how many it saw
+  rather than passing over them silently
+
+### The four things this had to get right, and each one is a rule that fails quietly
+
+- THE 150 IS NAMED ONCE AND READ TWO WAYS. `SizeSettings.ThresholdMillimetres` is the only
+  150 in the repo. F53 puts an item in a viewpoint when it is OVER it. F72 marks a service
+  Reviewed when it is AT OR UNDER it. So exactly 150 falls on a DIFFERENT SIDE in each, and
+  that is not a contradiction: one rule is over and the other is at or under, and together
+  they cover every size with no gap and no overlap. Both readings are written at that one
+  number, and a test takes 150 through both rules in one method and asserts it is IN for
+  the penetration and OUT for the viewpoint. Two copies of 150 would drift and nobody would
+  notice until a report was wrong
+- A DUCT IS NOT ONE NUMBER. `SizeRule.LargestMillimetres` takes the LARGEST of every size
+  property the item carries, so a 600 by 150 duct is a 600 and stays at New. `SizeRule.Decide`,
+  which F53 uses, takes the FIRST on the settings list instead, and that is right for a
+  viewpoint: one representative size in a rule nobody has to argue about. The test that
+  pins this feeds ONE lookup to both and asserts 600 out of one and 150 out of the other,
+  because Width is first on the default list and a 150 wide by 600 high duct would
+  otherwise read 150 and move
+- THE UNREADABLE SIZE GOES THE OPPOSITE WAY FROM F53 ON PURPOSE. F53 INCLUDES an item whose
+  size cannot be read, because a fitting usually carries no size property and the safe
+  mistake there is showing something unnecessary in a viewpoint. F72 LEAVES ALONE a service
+  whose size cannot be read, because the safe mistake here is leaving a clash at New for a
+  person to look at. Both reasons are written at both places and there is a test whose whole
+  job is to assert the two answers DIFFER, so a later reader who tries to make them agree
+  breaks a test that tells them why not
+- NEVER OVERWRITE A DECISION. `StatusesThisToolMayMoveFrom` is New and Active and nothing
+  else, and it is a Core rule with its own tests rather than a condition inside a loop.
+  That matters more than it looks: before F72 the editor would have moved an Approved clash
+  to Reviewed if something asked it to, and nothing ever asked because nothing supplied a
+  list. F72 supplies one, so the guard had to become real
+
+### What the log and the workbook say, because a silent change is the fault this repo exists to avoid
+
+- A PENETRATION BLOCK PER GROUP, in the shape the SETS block uses. One line per clash moved
+  naming the test, the clash, BOTH categories and the service size, so somebody auditing
+  this a month later can tell whether the rule picked the right thing without opening the
+  model. Then the totals and ONE LINE PER REASON for every clash left alone
+- EVERY REASON IS PRINTED INCLUDING THE ONES AT ZERO, which is a deliberate departure from
+  the SETS block, which hides a zero. The difference is that SETS counts things MADE and
+  this counts things NOT DONE, and a reason missing from a list of things not done reads as
+  a reason nobody thought of
+- THE RUN TOTAL IN THE RESULT BLOCK, and only where the box was on. A run that never asked
+  for it has nothing to say, and a line reading zero on every run teaches people to skip it
+- THE WORKBOOK CARRIES IT IN THE CLIENT'S OWN REVIEWED COLUMN. `WriteTestHeader` already
+  writes all five statuses per test off `ClashTally.AllStatuses`, and the status is applied
+  before the harvest reads it, so the Reviewed cell of every test block IS the number this
+  run moved. NO COLUMN OF OURS WENT ON THAT SHEET. The brief asks for the count in the
+  workbook and the standing rule says the workbook is their one sheet with none of ours on
+  it, and the client's own column satisfies both. Whether Bader wants a cell of ours as
+  well is Q45 rather than a decision taken here
+
+### Two things the checks caught while this was written
+
+- `check-imports.sh` REPORTED `Penetrations.cs` FOR A TYPE THE COMPILER IS HAPPY WITH.
+  `ModelItemCollection` is in `Autodesk.Navisworks.Api`, which the file imports, but the
+  only two other files that name it both import `Autodesk.Navisworks.Api.DocumentParts` for
+  an unrelated reason. Two of the four files importing DocumentParts is exactly 50 per
+  cent, which was the threshold, so a coincidence tipped it over
+- IT WAS RE-MEASURED RATHER THAN SILENCED. Adding an import the file does not need would
+  have been a lie in the one place a later reader will trust. Measured over src with F72
+  in: clean at 51 and at 60, and with the F65 import taken back out it still names
+  DocumentParts on the real fault at both. At 75 it reads clean and MISSES the real fault,
+  so the window is 51 to 60 and it sits at 60, the middle rather than the edge. The whole
+  measurement is in the file, including the sentence saying this will happen again
+
+### Proved here
+
+- `dotnet build ParsonsNwcFederator.sln -c Release` with 0 errors and 0 warnings, run after
+  every add-in change
+- `check-locals.sh src` clean and `check-imports.sh src` clean, and
+  `check-imports.sh tools/checks/broken` still refuses with exactly one line
+- Core tests before: 1271 passed, 0 failed, 0 skipped, 1271 total. After: 1338 passed, 0
+  failed, 0 skipped, 1338 total. 67 added, none broken
+
+### Waits for the local machine
+
+- Steps 253 to 278. The first seven are the run with the box OFF, which has to change
+  nothing at all, and the rest are the run with it on. Step 268 is the one worth doing
+  first: read how many services the tool could not measure, because that number is what
+  says whether the property list is right for this project
+
+### What remains
+
+- The closing work
+
+### Known bugs
+
+- As in the F46 entry. The add-in compiles
+
+### What comes next
+
+1. The closing work
+2. Bader runs one building with the box off, then one with it on
+
 ## 2026-09-19 F71, say when an NWF is nearly matched
 
 ### What was done

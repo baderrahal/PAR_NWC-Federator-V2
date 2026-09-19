@@ -1465,6 +1465,20 @@ namespace Federator.Addin.Engine
                 runner.ApplyFileSettings = reports.ApplyFileSettings;
                 runner.CompactResolved = reports.CompactResolved;
 
+                // F72. Built only when the box is on, so a run that did not ask for it
+                // hands the runner a null and the runner resolves nothing and walks
+                // nothing. The tally is per GROUP, because the block is per group, and the
+                // run total is added up as each group finishes.
+                PenetrationTally penetrationTally = null;
+
+                if (reports.MarkPenetrations)
+                {
+                    log.PenetrationsWanted = true;
+                    penetrationTally = new PenetrationTally();
+                    runner.Penetrations = new Penetrations(log, reports.Penetrations, reports.Sizes);
+                    runner.PenetrationTally = penetrationTally;
+                }
+
                 if (runner.SingleDisciplineGroup)
                 {
                     log.Line("CLASH    " + job.Building + " holds one discipline, so every test is created "
@@ -1521,6 +1535,19 @@ namespace Federator.Addin.Engine
                 }
                 outcome.Clash = clash;
                 log.Block("CLASH " + job.Building, clash.Lines());
+
+                // F72. Straight after the CLASH block, because it is about the clashes that
+                // block just counted. Written even when nothing moved, saying so, because a
+                // missing block reads as a check that did not run. The run total is kept so
+                // the RESULT block can answer how many statuses the whole run changed.
+                if (penetrationTally != null)
+                {
+                    log.Block(
+                        "PENETRATION " + job.Building,
+                        penetrationTally.Lines(reports.Penetrations, reports.Sizes));
+
+                    log.PenetrationsMoved += penetrationTally.MovedCount;
+                }
 
                 if (outcome.Report != null)
                 {

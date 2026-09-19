@@ -265,9 +265,17 @@ check is proved to refuse as well as to pass.
   TestsEditResultStatus is a mutator and every mutator on DocumentClashTests is a copy form
   that kills the handle handed to it, and sharing a handle with the count is the fault that
   threw once per test for 8 hours 52 minutes. A status written is a write, so the NWF is
-  saved again on it. HOW THE TOOL LEARNS WHICH CLASHES CANNOT BE SOLVED IS Q33 and is not
-  built: the method takes a list and applies it, nothing supplies one yet, and guessing the
-  input would mean writing a rule nobody agreed to into the record
+  saved again on it. HOW THE TOOL LEARNS WHICH CLASHES CANNOT BE SOLVED WAS Q33 AND IS
+  ANSWERED, on 2026-09-19, by the second of the four shapes that question offered: a rule
+  over the clash itself. F72 supplies the list. Penetrations in the add-in walks the
+  results of one test, reads a category off each side with the reader ClashHarvest already
+  has and the service size with ItemSizes, and hands the facts to
+  Federator.Core.Clash.PenetrationRule, which decides. It is OFF by default, so a run that
+  did not ask for it resolves nothing and walks nothing and costs what it cost before F72.
+  The pass only READS, and the list it hands back goes through ClashStatusEditor, so there
+  is still exactly one place that calls TestsEditResultStatus. Two walks rather than one is
+  the price of that, and it is worth paying because the mutator kills the handle given to
+  it and a walk that both read and wrote would be holding one across it
 - Applying the file's settings to a test already in the document is a tick box, off by
   default, and it says plainly that changing a test RESETS its results and every clash
   in it goes back to New. That is the whole reason the default is to report and not to

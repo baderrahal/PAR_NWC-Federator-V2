@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
+using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Naming;
 using Federator.Core.Report;
@@ -41,6 +42,10 @@ namespace Federator.Addin.Engine
             TypeNames = new[] { "Type", "Type Name" };
             MaterialNames = new[] { "Material", "Material Name", "Structural Material" };
             ElementIdNames = new[] { "Id", "Element Id", "ElementId", "Element ID" };
+
+            // F72. The same shape as the four above and the same defaults the penetration
+            // settings carry, so the two read a category the same way.
+            CategoryNames = new List<string>(PenetrationSettings.DefaultCategoryNames).ToArray();
             LookUpLevels = DefaultLookUpLevels;
         }
 
@@ -66,6 +71,9 @@ namespace Federator.Addin.Engine
         public string[] MaterialNames { get; set; }
 
         public string[] ElementIdNames { get; set; }
+
+        /// <summary>Where the item category is read from, in order. F72.</summary>
+        public string[] CategoryNames { get; set; }
 
         /// <summary>
         /// Every row for one test, and a picture for each row that asked for one.
@@ -284,6 +292,12 @@ namespace Federator.Addin.Engine
                 into.Type = FirstProperty(lookIn, TypeNames);
                 into.Material = FirstProperty(lookIn, MaterialNames);
 
+                // F72. The penetration rule turns on this one, and it is read here as
+                // well so the row carries what the decision was made on. The pass that
+                // decides runs before the harvest and reads it off the same items by the
+                // same reader, so the two cannot disagree.
+                into.Category = FirstProperty(lookIn, CategoryNames);
+
                 // The client's Item Type column, which reads Solid on every item cell of
                 // the accepted report. ClassDisplayName is what the Item tab shows as the
                 // type, so it is what that column is.
@@ -451,10 +465,28 @@ namespace Federator.Addin.Engine
         /// because which category holds Family differs between exporters. An empty string
         /// where none of them is there, never a guess.
         /// </summary>
-        private static string FirstProperty(IList<ModelItem> lookIn, string[] wanted)
+        /// INTERNAL AND NOT PRIVATE SINCE F72, because the penetration pass reads an item
+        /// category off the same items by the same rule, and it runs BEFORE the harvest so
+        /// it cannot read one off a row this has already built. One reader in one place. A
+        /// second copy of this would be a second rule about what a property is.
+        internal static string FirstProperty(IList<ModelItem> lookIn, string[] wanted)
         {
             string which;
             return FirstProperty(lookIn, wanted, out which);
+        }
+
+        /// <summary>
+        /// The same, up from one item, for a caller that has an item rather than the list
+        /// this class builds with Upwards. F72.
+        /// </summary>
+        internal static string FirstPropertyOn(ModelItem item, IList<string> wanted)
+        {
+            if (item == null || wanted == null || wanted.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            return FirstProperty(item, new List<string>(wanted).ToArray());
         }
 
         /// <summary>The first of these items to carry one of the names wins.</summary>
