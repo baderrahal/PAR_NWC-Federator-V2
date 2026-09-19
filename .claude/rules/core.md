@@ -663,6 +663,25 @@ and 6 does not read as broken.
   is a setting and turning it off makes the block SAY it truncated. The whole rule is
   Federator.Core.Views, SizeSettings, SizeRule and SizeTally, with its tests. The add-in
   reads the properties and calls it and has no opinion about any number in it
+- A group about to BUILD an NWF beside a file whose name is nearly the one it would write
+  says so, and does nothing about it. On the run of 2026-09-19 Bader got First run on
+  buildings that already had an NWF, because the NWF folder and the name pattern together
+  did not resolve to his file, and nothing anywhere said so. CLOSE MEANS ONE OF TWO
+  THINGS: the same building code sits in both names, or project, originator and building
+  all agree and one of the four SUPPLIED fields differs, which is the level, the
+  discipline, the type or the number. Those four are exactly the ones NamePattern supplies
+  rather than reads, so they are the four a person is most likely to have set differently
+  from the file on disk. The rule is Federator.Core.Naming.SimilarNames, it is handed a
+  list of names and knows nothing about a disk, and the add-in lists the folder ONCE per
+  refresh and hands the names over. An EXACT match is never reported, compared on the stem
+  so a name with an extension and one without compare the same, because that file being
+  there is what makes the group a Weekly run and not a finding. THE LABEL IS NEVER
+  WIDENED: RunPath.Count maps a label it does not know onto Unknown and both the confirm
+  dialog and the RESULT block read those counts, so RunAs stays one of the six and the
+  sentence rides beside it in RunAsShown, which is what the column and the group list
+  block read. One grey line under the group table when any group is in that state, saying
+  the NWF Name cell can be typed over. Nothing is auto corrected, nothing is unticked and
+  no name is changed. Bader decides, which is the rule this tool keeps for every finding
 - The scan reports what it noticed and never acts on it. ODD SHAPE, NEAR MATCH,
   SINGLE DISCIPLINE and MISSING are information. Nothing is blocked, unticked or
   merged, and no code is assumed right. Bader decides
