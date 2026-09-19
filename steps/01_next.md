@@ -17,7 +17,7 @@ Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixe
 1. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
 2. F59, DONE, every step is named and timed
 3. F60, DONE, the timing blocks, and F21 closes here
-4. F61, the document census
+4. F61, DONE, the document census
 5. F62, the live line in the window
 6. F63, the report gap block
 7. F64, the machine readable log
@@ -521,6 +521,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - A Core rule says which steps may move which count. A count that moves when the rule says it may not gets a line beginning `CENSUS CHANGED` naming the step, the count, the before and the after, and that group is not DONE
 - What the census COSTS is measured and logged once per group. Over a second a group it drops to counting only before and after the steps that write, and says in the log that it did
 - Size: large, because the rule is the whole of it
+- DONE on 2026-09-19. `DocumentCensus`, `CensusRule` and `CensusCost` in Core, `DocumentCensusReader` in the add-in as the one place that reads all five. Minus one and never zero for a count that could not be taken, and a count either census could not take is never a move. A refused move writes `CENSUS CHANGED` and puts the group out of DONE without undoing anything. Taken at most once per step per group, because TESTS RUN is entered 1830 times. The cost is measured off the same clock and said once per group, and over a second it narrows and says so. `FederationEngine.CountSets` moved into the reader rather than a second walk being written. Core tests before: 1103 passed, 0 failed, 32 skipped, 1135 total. After: 1149 passed, 0 failed, 32 skipped, 1181 total
 
 ## F62 The live line in the window
 

@@ -50,6 +50,13 @@ namespace Federator.Core.Diagnostics
         public string Name { get; private set; }
 
         /// <summary>
+        /// What the document held when this step opened, or null where no census was
+        /// taken around it. F61. Set by the log and read by the log, so a step carries
+        /// its own before and nothing has to match one up with the other afterwards.
+        /// </summary>
+        internal DocumentCensus CensusBefore { get; set; }
+
+        /// <summary>
         /// How many steps were already open when this one opened. Zero at the top. The
         /// timing block works its shares out over the steps at zero alone, because a step
         /// inside another one is counted in both and shares over all of them would add up
