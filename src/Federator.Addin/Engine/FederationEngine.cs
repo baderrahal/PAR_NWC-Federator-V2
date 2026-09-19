@@ -1732,8 +1732,9 @@ namespace Federator.Addin.Engine
 
                 if (runner.SingleDisciplineGroup)
                 {
-                    log.Line("CLASH    " + job.Building + " holds one discipline, so every test is created "
-                        + "and none is run. One discipline cannot clash with itself.");
+                    log.Line("CLASH    " + job.Building + " holds one discipline, so no test is run, and "
+                        + "only the tests whose sides both find something are created. One discipline "
+                        + "cannot clash with itself.");
                 }
 
                 // Each output answers to its own flag. The report is built when the
@@ -1898,11 +1899,20 @@ namespace Federator.Addin.Engine
         /// This is the check that would have caught Source File and Discipline coming out
         /// empty on every row, without anyone opening the file to find out.
         /// </summary>
-        private void CheckTheWorkbook(FederationJob job, string path)
+        private void CheckTheWorkbook(FederationJob job, string path, int testsInTheFile)
         {
             WorkbookCheck check = WorkbookCheck.Of(path);
 
             log.Block("WORKBOOK CHECK " + job.Building, check.Lines());
+
+            // F77. The workbook carries a block for every test in the file whether or not
+            // the test was created, and a count that differs is said in capitals. Only
+            // where the tests came from a file, because that is what the count is of.
+            if (check.Ran && testsInTheFile >= 0)
+            {
+                log.Line(CreationPlan.BlockCountLine(check.Blocks, testsInTheFile));
+            }
+
             Say(job.Building + ". " + check.Summary());
         }
 
@@ -2231,7 +2241,7 @@ namespace Federator.Addin.Engine
             outcome.WorkbookSize = log.WriteFinished("XLSX", path);
             outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
 
-            CheckTheWorkbook(job, path);
+            CheckTheWorkbook(job, path, outcome.Clash == null || exchange == null ? -1 : outcome.Clash.TestsInFile);
         }
 
         /// <summary>The clash XML itself, split out for the same reason.</summary>

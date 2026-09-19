@@ -158,9 +158,9 @@ namespace Federator.Addin.Engine
         public ContainerNameSettings NameSettings { get; set; }
 
         /// <summary>
-        /// True when this group holds fewer than two disciplines. Every test is still
-        /// created, so the NWF is complete and matches the other groups, and none of them
-        /// is run, because one discipline cannot clash with itself. Recorded as
+        /// True when this group holds fewer than two disciplines. None of its tests is run,
+        /// because one discipline cannot clash with itself, and since F77 only the tests
+        /// whose sides both find something are created. Recorded as
         /// SingleDiscipline rather than as a side finding nothing, which is a different
         /// fact about a different problem. D5.
         /// </summary>
@@ -358,7 +358,14 @@ namespace Federator.Addin.Engine
                         ? ", so everything created here is new"
                         : ", they keep their results and are not recreated"));
 
-                RunEach(document, sets, clashTests, byPath, present, resolved, outcome);
+                // F77. Which of the planned tests are worth CREATING. The sets are already
+                // resolved, so how many items each locator finds is counted once per set,
+                // and a test whose side finds nothing is not created at all rather than
+                // created and thrown away by the side check moments later, which was 631
+                // seconds of a 1424 second run.
+                IList<PlannedClashTest> toRun = PlanTheCreation(document, byPath, present, resolved, outcome);
+
+                RunEach(document, sets, clashTests, byPath, present, toRun, outcome);
 
                 // F76. One line per group, whichever way the choice reads.
                 WriteTheToleranceLine();
@@ -527,14 +534,14 @@ namespace Federator.Addin.Engine
             DocumentClashTests clashTests,
             Dictionary<string, SelectionSet> byPath,
             Dictionary<string, TestAddress> present,
-            ClashTestPlan plan,
+            IList<PlannedClashTest> toRun,
             ClashRunOutcome outcome)
         {
-            int total = plan.Buildable.Count;
+            int total = toRun.Count;
 
             for (int i = 0; i < total; i++)
             {
-                PlannedClashTest planned = plan.Buildable[i];
+                PlannedClashTest planned = toRun[i];
                 progress("Test " + (i + 1) + " of " + total + ": " + planned.Name);
 
                 if ((i + 1) % ProgressEvery == 0 || i + 1 == total)
@@ -659,8 +666,8 @@ namespace Federator.Addin.Engine
 
                 if (SingleDisciplineGroup)
                 {
-                    // Created, so the NWF matches every other group and a later run against
-                    // a fuller model finds the tests already there. Not run, because there
+                    // Created because both its sides find something, F77, so a later run
+                    // against a fuller model finds it already there. Not run, because there
                     // is nothing here for them to run against.
                     LogSkip(outcome.AddSkipped(
                         planned.Name,
@@ -1610,6 +1617,119 @@ namespace Federator.Addin.Engine
         /// then one line saying the rest are counted. Everything skipped still reaches the
         /// block at the end, where it is counted by reason with its examples.
         /// </summary>
+        /// <summary>
+        /// The tests to run, F77: every test already in the document or read out of it,
+        /// plus the planned ones Federator.Core.Clash.CreationPlan says are worth creating.
+        /// The rest are fed into the same skip machinery every other reason goes through
+        /// and their report rows carry why, because the workbook still carries a block for
+        /// every test in the file. File order is kept, so the NWF's tests sit in the order
+        /// the file lists them. A test already in the document is not the plan's to
+        /// create, so it is never handed to it and still gets compared and run.
+        /// </summary>
+        private IList<PlannedClashTest> PlanTheCreation(
+            Document document,
+            Dictionary<string, SelectionSet> byPath,
+            Dictionary<string, TestAddress> present,
+            ClashTestPlan resolved,
+            ClashRunOutcome outcome)
+        {
+            List<PlannedClashTest> toRun = new List<PlannedClashTest>();
+
+            if (resolved.Source == ClashPlanSource.Document)
+            {
+                toRun.AddRange(resolved.Buildable);
+                return toRun;
+            }
+
+            List<PlannedClashTest> absent = new List<PlannedClashTest>();
+
+            foreach (PlannedClashTest planned in resolved.Buildable)
+            {
+                if (!present.ContainsKey(planned.Name))
+                {
+                    absent.Add(planned);
+                }
+            }
+
+            Dictionary<string, int> itemsByLocator =
+                CountItemsPerSet(document, byPath, resolved.DistinctLocators());
+            CreationPlan creation = CreationPlan.For(absent, itemsByLocator);
+            log.Line(creation.CountedLine(resolved.TestsInFile));
+
+            HashSet<string> notCreated = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (SkippedClashTest skipped in creation.NotCreated)
+            {
+                notCreated.Add(skipped.Name);
+                outcome.AddSkipped(skipped);
+                LogSkip(skipped);
+
+                TestReport row;
+
+                if (reports != null && reports.TryGetValue(skipped.FileIndex, out row))
+                {
+                    row.State = TestState.Skipped;
+                    row.SkippedReason = skipped.Reason;
+                }
+            }
+
+            foreach (PlannedClashTest planned in resolved.Buildable)
+            {
+                if (!notCreated.Contains(planned.Name))
+                {
+                    toRun.Add(planned);
+                }
+            }
+
+            return toRun;
+        }
+
+        /// <summary>
+        /// How many items each set the tests name finds in this document, F77, one resolve
+        /// per set and never one per test side. A set that is not in the document is not
+        /// counted, and CreationPlan then creates the test and lets the run time check
+        /// answer, because a count nobody took is not a count of zero. What it cost is
+        /// said, because the whole point of the plan is what creating cost before it.
+        /// </summary>
+        private Dictionary<string, int> CountItemsPerSet(
+            Document document, Dictionary<string, SelectionSet> byPath, IList<string> locators)
+        {
+            Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
+            Stopwatch clock = Stopwatch.StartNew();
+
+            foreach (string locator in locators)
+            {
+                SelectionSet set;
+
+                if (!byPath.TryGetValue(locator, out set))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    using (ModelItemCollection found = set.GetSelectedItems(document))
+                    {
+                        counts[locator] = found == null ? 0 : found.Count;
+                    }
+                }
+                catch (Exception error)
+                {
+                    log.Failure(
+                        "counting the items of the set \"" + locator + "\"",
+                        error,
+                        "kept going, every test naming it is created and the run time check answers");
+                }
+            }
+
+            clock.Stop();
+            log.Line("CLASH    counted the items of " + counts.Count
+                + (counts.Count == 1 ? " set" : " sets") + " for the creation plan in "
+                + Plain(clock.Elapsed.TotalSeconds) + "s");
+
+            return counts;
+        }
+
         private void LogSkip(SkippedClashTest test)
         {
             int already;

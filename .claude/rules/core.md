@@ -161,8 +161,7 @@ and 6 does not read as broken.
   Never import a test with an empty side. It returns zero clashes and reads as passed
 - A test where either side resolves to zero items in this model counts as skipped,
   not passed. Skipped and passed are counted as different numbers in the report
-- THE CORE HALF ONLY until 03_bader_next.md step 369 is done.
-  A TEST WHOSE SIDE FINDS NOTHING IS NOT CREATED AT ALL, F77. The sets are built and
+- A TEST WHOSE SIDE FINDS NOTHING IS NOT CREATED AT ALL, F77. The sets are built and
   resolved before any test is created, so how many items each locator finds is already in
   hand, and creating a test to discover a thing already known was 631 seconds of a 1424
   second run: 1830 created, 1619 of them thrown away moments later by the empty side
