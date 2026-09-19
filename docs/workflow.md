@@ -214,8 +214,29 @@ A status is applied between the run and the report, never after, so the workbook
 page carry the new status and not the one read before the change. Writing a status is a
 write, so the NWF is saved again on it.
 
-**How the tool learns which clashes cannot be solved is not decided.** That is Q33. The
-part that needs no answer is built: hand it a list of clash names with the status wanted
-and it applies them and logs every one it changed and every one it could not find. Nothing
-supplies that list yet, and guessing it would mean writing a rule nobody agreed to into the
-only record of what has been fixed.
+**How the tool learns which clashes cannot be solved was Q33 and is ANSWERED**, on
+2026-09-19. It is a rule over the clash itself, and it is called a PENETRATION.
+
+A clash becomes Reviewed when all four of these are true:
+
+    one side is a SERVICE by item category
+        Pipes, Pipe Fittings, Pipe Accessories, Ducts, Duct Fittings, Duct Accessories,
+        Flex Pipes, Flex Ducts, Cable Trays, Cable Tray Fittings, Conduits, Conduit Fittings
+    the OTHER side is a SOLID by item category
+        Walls, Floors, Roofs
+    the service measures 150 mm OR LESS
+        every size property on the item is read and the LARGEST is taken, so a 600 by 150
+        duct is a 600 and stays where it is
+    the clash is at New or Active
+        Reviewed, Approved and Resolved are somebody's decision and are never overwritten
+
+Everything else is left exactly as it is and counted by reason, and the reasons are in a
+PENETRATION block in the log with one line per clash moved and one line per reason nothing
+moved. Both lists and the 150 are settings. The 150 is the same number the viewpoints read,
+named once, and the two read it in opposite directions: a viewpoint takes an item OVER it
+and a penetration takes a service AT OR UNDER it.
+
+It is OFF by default, because it writes into the NWF. A service whose size cannot be read
+is LEFT ALONE, which is the opposite of what the viewpoints do with the same unknown, and
+that is deliberate: the safe mistake in a viewpoint is showing something unnecessary, and
+the safe mistake here is leaving a clash for a person to look at.

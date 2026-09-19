@@ -396,8 +396,8 @@ check is proved to refuse as well as to pass.
   is not readable off the DLL, so it is not claimed. The words DID NOT FOLLOW are gone from
   the log. The combo on the Outputs step is MODEL units, defaulting to Meters, and its help
   line says the report is always in metres
-- A tick box has to earn being a decision. Fifteen went to eleven, of which ONE is visible
-  without opening anything. Republishing the NWD, writing the client page and rendering the
+- A tick box has to earn being a decision. Fifteen went to eleven, and F72 makes twelve, of
+  which TWO are visible without opening anything. Republishing the NWD, writing the client page and rendering the
   photos are fixed ON, because a weekly run wants all three every time. Client columns only
   is gone outright, dead since the workbook became one sheet with none of ours on it.
   Dating the NWD, the clash XML, the thumbnails and the five image status boxes are
@@ -421,8 +421,10 @@ and they explained the off state as well as the on state, so nothing stood out.
 The numbers in a help line are measured, never estimated. Photos are about 0.08 seconds
 each and 213 took 17 seconds. Pasting them takes the workbook from 0.3 MB to 52 MB.
 
-There were fifteen and there are eleven, of which ONE is visible without opening anything.
-A box only stays if a normal weekly run genuinely has to choose. Everything else became a
+There were fifteen, then eleven, and F72 makes twelve, of which TWO are visible without
+opening anything. A box only stays if a normal weekly run genuinely has to choose, and
+Mark penetrations as Reviewed earns it: it writes statuses into the NWF, which is the only
+record of what has been fixed, so a run has to be told to do that rather than told not to. Everything else became a
 fixed behaviour with the sensible answer chosen, or moved under an expander. The two that
 destroy data are under one of their own, because they do not belong beside ordinary output
 options. Which box went where and what each removed one was fixed to is in docs\history\scan.md 4q.

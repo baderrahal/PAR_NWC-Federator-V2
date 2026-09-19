@@ -14,7 +14,7 @@ Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 
 
 Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixes as F56 to F61. F56 and F57 were already taken, so the six are F59 to F64 and they map onto the brief one for one and in order. F51, which the brief asks for as its own one line pull request, was already done and merged on 2026-09-18 and is not done twice. F58 is a seventh, found by the reading that opened the round and put first because the add-in does not compile and every one of the 251 steps waits behind the build.
 
-Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. F69 is a fifth and F70 a sixth, neither briefed. F69 came out of running the build while measuring F68 and F70 out of checking the probe steps against what the probes actually print. Both go after the four they came out of. They go before everything that was left, because the build is what every one of the 350 steps waits behind.
+Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. F69 is a fifth and F70 a sixth, neither briefed. F69 came out of running the build while measuring F68 and F70 out of checking the probe steps against what the probes actually print. Both go after the four they came out of. They go before everything that was left, because the build is what every one of the 352 steps waits behind.
 
 Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the tool for real, the first run since the add-in was proved to build, and briefed two fixes. F71 and F72 were both free and the two map onto the brief one for one and in order. The four answers the brief calls Q47 to Q50 go in as Q41 to Q44, because the questions file runs to 40 and Q41 to Q46 do not exist, and they map one for one and in order too.
 
@@ -37,9 +37,11 @@ Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the 
 17. F18, when Bader uploads the 1A04WE sample, Q9
 18. F23, when Q20 is answered
 
-The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 279 to 291 are for.
+The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 281 to 293 are for.
 
 The build round closed on 2026-09-19. F65 to F70 are all done and each carries its DONE line below. THE ADD-IN BUILDS, 0 errors and 0 warnings, which is the first proved build this repo has had. The six branches are pushed and not merged, because nothing in this session could open a pull request, and Bader merges them in order.
+
+The penetration round closed on 2026-09-19. F71 and F72 are both done and each carries its DONE line below. Q33 is answered and Q41 to Q45 are recorded. The two branches are pushed and not merged, because nothing in this session could open a pull request, and Bader merges them in order.
 
 Nothing else is open. F19 is dropped.
 
@@ -493,7 +495,8 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - Step 73 says a SECOND `NWF      attempt` line follows the CLASH block. The group in that proof is a Weekly run plus XML, which takes the OPENED branch, and that branch logs `NWF      reused` and never an attempt before the clash step. So there is one attempt line, not a second. The 2026-09-12 round wrote this wording deliberately and may have meant a different path
 - Steps 148 and 166 both say the CLASH block says the workbook was written. It does not. The block is `ClashRunOutcome.Lines()` and names no output file. The workbook has its own `XLSX     attempt` and `XLSX     written` lines after it
 - Steps 152 and 157 say a line sits ABOVE the Run the open file button. `OpenDocumentLine` and `RunOpenButton` are the two children of one horizontal StackPanel with the button first, so the line is beside it and to its right. What the line SAYS is right in both steps
-- Size: five wordings, once Bader says which readings he meant
+- A SIXTH, found by the read that closed the penetration round on 2026-09-19 and listed here rather than corrected because it is the same shape as the two above. Step 34 says the two hand buttons read `Sets into open model` and `Tests into open model` UNDER the line `Not part of the run. Try the file above against the model open right now:`. Both labels and the line are exactly right. They are not under it: the TextBlock and the two Buttons are the three children of one horizontal StackPanel at `FederatorWindow.xaml` line 542, so the line sits to the LEFT of the buttons on one row. Three steps now say ABOVE or UNDER where the layout says BESIDE, which is enough of a pattern that the answer is probably one wording rule rather than three edits
+- Size: six wordings, once Bader says which readings he meant
 
 ## F58 The add-in compiles again
 

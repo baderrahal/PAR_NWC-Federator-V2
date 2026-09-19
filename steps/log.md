@@ -2,6 +2,132 @@
 
 Newest entry at the top.
 
+## 2026-09-19 The penetration round is closed, F71 and F72
+
+### What was done
+
+- TWO FIXES, both briefed, both on their own branch, each with its own entry above. F71 is
+  what the window failed to tell Bader on the first real run. F72 answers Q33, which has
+  been open since F54 on 2026-09-18
+- THE ADD-IN BUILDS after every add-in change, which is what this session can do and what
+  the last two rounds could not. `dotnet build ParsonsNwcFederator.sln -c Release`, 0
+  errors and 0 warnings, run after F71 and again after F72
+- Core tests: 1238 passed, 0 failed, 0 skipped, 1238 total before the round. 1338 passed,
+  0 failed, 0 skipped, 1338 total after it. 100 added and not one broken at any point
+- Q33 IS ANSWERED and the other three shapes it offered are recorded as not chosen, so
+  nobody builds one later thinking it was wanted. Q41 to Q44 are the four details, at the
+  next free numbers because the file runs to 40 and the brief's Q47 to Q50 do not exist.
+  Q45 is new, and it is the one thing in the brief this round did not do
+
+### The one thing in the brief this round did not do, said plainly
+
+- THE BRIEF ASKS FOR THE PENETRATION COUNT IN THE WORKBOOK. It is there, in the CLIENT'S
+  OWN Reviewed column: `WriteTestHeader` writes all five statuses per test and the status
+  is applied before the harvest reads it, so that cell IS what this run moved
+- WHAT IS NOT THERE is a count of OURS saying how many this run moved, as against how many
+  are Reviewed for any reason. Adding one would break a standing rule that this repo states
+  twice: the workbook is the client's one sheet laid out as theirs, and if it is not in
+  theirs it is not in ours
+- SO IT IS Q45 RATHER THAN A DECISION TAKEN HERE. The log carries the run total in RESULT
+  and the per group detail in the PENETRATION block, so nothing is hidden either way
+
+### The read of 03_bader_next.md, end to end
+
+- THE FILE RUNS 1 TO 352 NOW AND HOLDS 189 LOOK FOR LINES. It was 319 steps and 170 Look
+  for lines this morning. F71 added 14 steps, F72 added 17 and the closing read added 2
+- ALL 189 WERE READ, by nine readers over nine ranges, and 164 OF THEM COULD ACTUALLY BE
+  CHECKED against the code. The other 25 are things only a run shows: a handle count in
+  Task Manager, a picture on screen, an upload to ACC, the Selection Tree, whether a build
+  succeeds. Those are named as not checked rather than counted as passed
+- NINE POSSIBLE DRIFTS WERE RAISED and every one was then handed to a second reader told to
+  REFUTE it, with the instruction to default to not-a-drift. ALL NINE CAME BACK REFUTED
+  under a strict reading of the word: in each case the step was loose or incomplete rather
+  than false, or the code had never moved away from it
+- SIX WERE CORRECTED ANYWAY, and the reason is worth writing down. A step that is true but
+  incomplete still costs Bader time at the machine, which is the whole thing this file
+  exists to save. Refuted as drift is not the same as fine to leave
+- TWO OF THE SIX ARE THIS ROUND'S OWN. Step 212, the window probe, said the visible tick
+  box count must be 1, and F72 makes it 2. Step 270, which F72 itself wrote, said to look
+  for a SECOND `NWF      attempt` line after the clash step, and on a Weekly run it is the
+  FIRST, because the opened branch logs `NWF      reused` and never an attempt before the
+  clash. That is the identical fault F57 already holds open for step 73, written again by
+  me on the same day, which is worth more than the correction
+- THE OTHER FOUR ARE OLDER. Step 336 said the top `step finished` row sorted by seconds is
+  the slowest single step of the run, and `RunLog` writes that row only on a step's FIRST
+  visit, so `TESTS RUN` contributes one row for one test out of 1830. Step 343 quoted two
+  pre-commit lines as the whole of it and the hook prints four since F58 and F66. Step 326
+  said the GAP block lists all six properties, and `GapRule.Add` returns early on a
+  property nothing carried, so it can list fewer. Step 60 said the `SETS` line carries
+  three numbers, and the ordinary case, where the clear kept them, carries two
+- ONE WAS LISTED RATHER THAN CORRECTED, which is the repo's own rule for this shape. Step
+  34 says the two hand buttons sit UNDER their line, and the TextBlock and both Buttons are
+  the three children of one horizontal StackPanel, so the line is to the LEFT of them. F57
+  already holds two steps open for exactly this, so this is the sixth on that list rather
+  than a seventh correction. Three steps now say ABOVE or UNDER where the layout says
+  BESIDE, and that is a pattern rather than three typos
+- THE MECHANICAL HALF, WHICH CAN BE SAID EXACTLY. All 289 distinct backtick quoted strings
+  in the file, checked against every `.cs` and `.xaml` under `src` plus `install.ps1`,
+  `workflow.md`, `CLAUDE.md`, the checks, the probes, the hooks, `.gitattributes`,
+  `Directory.Build.targets`, the project files and the Actions workflow, with C#
+  concatenation seams flattened and with whitespace both collapsed and kept. 184 matched.
+  The other 105 were resolved by hand and every one is composed at run time, is git or
+  dotnet or PowerShell output, is a file name Bader types, or is a padded log prefix the
+  writer builds
+- EVERY CROSS REFERENCE READ AGAINST THE STEP IT NOW POINTS AT. There are nine and the
+  renumbering moved four of them. The renumbering script skipped a `step NNN` sitting
+  INSIDE a numbered line again, twice, which the F63 and F68 entries both already wrote
+  down. It is written down a third time here because it will happen a fourth
+
+### The thing found on the way that had nothing to do with either fix
+
+- THE TWO CLAUDE CODE WALLS WERE JAMMED SHUT IN THIS CHECKOUT. `git ls-files --eol` read
+  `w/crlf` on both `.claude/hooks/refuse-protected-paths.sh` and
+  `refuse-git-on-main.sh`, against an index of `i/lf` and an attribute of `text eol=lf`.
+  `sh` reads a carriage return as part of the word, so both die on their first case line
+  and exit 2, and 2 is the code that REFUSES
+- THAT IS THE EXACT CASE F47a WROTE `.gitattributes` FOR and the exact case step 339 exists
+  to catch. The remedy is the one step 339 gives, and it was applied here: the two files
+  were checked out again from the index and both now read `w/lf`. Nothing tracked changed,
+  and the paths wall was then proved by hand, refusing a write under `samples` with exit 2
+  and allowing one under `src` with exit 0
+- WHY IT MATTERS BEYOND TODAY. A jammed wall does not fail loudly. It refuses everything or
+  it refuses nothing, and either way nobody notices until something gets through that
+  should not have. Steps 338 and 339 are how Bader sees it for himself and they are worth
+  doing early rather than at the end
+
+### What remains
+
+- THE PULL REQUESTS COULD NOT BE OPENED FROM HERE, the same as the build round. `gh` is not
+  installed on this machine and the GitHub connector answers
+  `403 Resource not accessible by integration` to a create pull request call. So the
+  branches are PUSHED and merged into nothing, and Bader opens and merges them in order
+- THEY ARE STACKED, `fix-F71` then `fix-F72` then `round-close-penetrations`, each off the
+  one before rather than off main, because three branches all prepending to `steps/log.md`
+  would conflict on the second merge. Merged in that order each merges clean
+- NOTHING HAS BEEN RUN. Not one line of F50 to F72 has been seen against a real model. What
+  F72 COSTS is the number nothing here could measure: with the box on, every clash has a
+  category read off both sides and a size read off the service, up to four levels each, so
+  the cost is per CLASH and not per test. Steps 279 and 280 are the comparison that answers
+  it, and until they are run it is UNKNOWN
+- F57 has six wordings now and is still Bader's to judge
+- Q35 to Q40, Q45, F52's writing half and F50's rebuild are where they were
+
+### Known bugs
+
+- None open in the code. The add-in builds, both checks are clean and the whole test set
+  passes
+- One thing is UNKNOWN and is named rather than filled in: what the penetration pass costs
+  on a real model
+
+### What comes next
+
+1. Bader opens and merges `fix-F71`, then `fix-F72`, then `round-close-penetrations`
+2. Bader pulls main and builds
+3. Bader works steps 123 to 136, which is F71 in one section and takes no run at all
+4. Bader runs one building with the penetration box OFF, then one with it ON, and reads
+   steps 253 to 280
+5. Bader runs the D6 delete command himself
+
 ## 2026-09-19 F72, penetrations become Reviewed, and Q33 is answered
 
 ### What was done
