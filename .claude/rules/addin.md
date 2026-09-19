@@ -244,9 +244,15 @@ check is proved to refuse as well as to pass.
   SavedViewpoints.CanBuild is still false, because the writing half is not built.
   While it is false the run PLANS the viewpoints, says in the log what it would have made,
   and attempts nothing, and the judgement is told they were not requested, because a step
-  this tool cannot do is not a step that failed. No clash is ever saved as a viewpoint,
-  which is a different rule and still holds: a discipline viewpoint is not a clash
-  viewpoint
+  this tool cannot do is not a step that failed
+- SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
+  said no clash is ever saved as a viewpoint and that a discipline viewpoint is not a
+  clash viewpoint. The first real run answered the question the other way: the thing a
+  person presses has to be the thing they are looking at, and a viewpoint showing a whole
+  discipline does not take anybody to a clash. The plan is
+  `Federator.Core.Views.ClashViewpointPlan`, three folders deep, and nothing writes it
+  while `SavedViewpoints.CanBuild` is false. Do not read the old sentence out of an older
+  log or an older comment and undo this
 - A CLASH carries one of five, New, Active, Reviewed, Approved or Resolved. A TEST carries
   one of four, New, Old, Partial or Complete. They are different sets on different things
   and they share only the word New, which is how they get confused. OLD IS A TEST WORD AND

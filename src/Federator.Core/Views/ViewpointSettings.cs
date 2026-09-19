@@ -27,11 +27,99 @@ namespace Federator.Core.Views
         /// </summary>
         public static readonly string[] DefaultSubGroupDisciplines = { "ME", "EL" };
 
+        /// <summary>
+        /// The discipline codes a set name can carry, F85. The seven this project uses:
+        /// Architecture, Structure, Mechanical, Fire fighting, Plumbing, Drainage and
+        /// Electrical. A SETTING and not a constant, because another project codes its
+        /// disciplines differently and nothing in this code decides that for them.
+        /// </summary>
+        public static readonly string[] DefaultDisciplineCodes =
+            { "AR", "ST", "ME", "FF", "PL", "DR", "EL" };
+
+        /// <summary>
+        /// What separates the parts of a SET name. A set name is not a file name and this
+        /// is not the file name split character, which is its own setting.
+        /// </summary>
+        public const char DefaultSetNameSeparator = '-';
+
+        /// <summary>What goes between the two codes of a pair folder.</summary>
+        public const string DefaultPairSeparator = " vs ";
+
+        /// <summary>
+        /// The pair folder for a clash where a side's set name carries no code this tool
+        /// knows. The client's own file holds one: BLD-Security Devices breaks the pattern
+        /// its siblings follow, so it has no code in the place the others carry one. The
+        /// clash still gets a viewpoint and the folder SAYS the code is unknown rather
+        /// than guessing at one.
+        /// </summary>
+        public const string DefaultUnknownDiscipline = "UNKNOWN";
+
+        /// <summary>The folder layer 1 uses for a test the priority file says nothing about.</summary>
+        public const string DefaultNoPriorityFolder = "No priority";
+
+        /// <summary>What goes between the test name and the clash name in a viewpoint name.</summary>
+        public const string DefaultNameSeparator = "  ";
+
         public ViewpointSettings()
         {
             NameSuffix = DefaultNameSuffix;
             SubGroupDisciplines = new List<string>(DefaultSubGroupDisciplines);
             Sizes = new SizeSettings();
+            DisciplineCodes = new List<string>(DefaultDisciplineCodes);
+            SetNameSeparator = DefaultSetNameSeparator;
+            PairSeparator = DefaultPairSeparator;
+            UnknownDiscipline = DefaultUnknownDiscipline;
+            NoPriorityFolder = DefaultNoPriorityFolder;
+            NameSeparator = DefaultNameSeparator;
+            MaxPerTest = 0;
+        }
+
+        /// <summary>The discipline codes a set name can carry, F85.</summary>
+        public IList<string> DisciplineCodes { get; set; }
+
+        /// <summary>What separates the parts of a set name.</summary>
+        public char SetNameSeparator { get; set; }
+
+        /// <summary>What goes between the two codes of a pair folder.</summary>
+        public string PairSeparator { get; set; }
+
+        /// <summary>What a code this tool does not know reads as in a folder name.</summary>
+        public string UnknownDiscipline { get; set; }
+
+        /// <summary>The layer 1 folder for a test the priority file says nothing about.</summary>
+        public string NoPriorityFolder { get; set; }
+
+        /// <summary>What goes between the test name and the clash name.</summary>
+        public string NameSeparator { get; set; }
+
+        /// <summary>
+        /// How many viewpoints one test may write, or zero for no cap. Off by default and
+        /// a SETTING, the same shape and the same reason the images cap has: one artefact
+        /// per clash across 1830 tests is how a run stops fitting in forty five minutes.
+        /// </summary>
+        public int MaxPerTest { get; set; }
+
+        /// <summary>
+        /// Whether that word is a discipline code this tool knows. Matched Ordinal and
+        /// never trimmed or cased, the same way HasSubGroup matches, because a code is
+        /// read off a name and every other comparison here treats it as it was read.
+        /// </summary>
+        public bool IsADisciplineCode(string code)
+        {
+            if (string.IsNullOrEmpty(code) || DisciplineCodes == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < DisciplineCodes.Count; i++)
+            {
+                if (string.Equals(DisciplineCodes[i], code, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>Which disciplines carry a sub group for their large items.</summary>

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Federator.Core.Grouping;
-using Federator.Core.Naming;
 using Federator.Core.Views;
 using NUnit.Framework;
 
@@ -17,19 +15,15 @@ namespace Federator.Core.Tests
     [TestFixture]
     public class ViewpointPlanTests
     {
-        private static BuildingGroup Group(params string[] disciplines)
+        /// <summary>
+        /// The discipline codes alone, which is what the engine holds per job and now the
+        /// only way in. The overload that took a BuildingGroup was called by no code in
+        /// src, only by this fixture, so it went with its tests, which is the rule about a
+        /// public member nothing calls.
+        /// </summary>
+        private static IList<string> Group(params string[] disciplines)
         {
-            List<ParsedContainerName> files = new List<ParsedContainerName>();
-            List<string> codes = new List<string>(disciplines);
-
-            return new BuildingGroup(
-                "1C07BC",
-                "1104",
-                "PAR",
-                files,
-                codes,
-                "1C07BC",
-                codes.Count == 1 ? codes[0] : null);
+            return new List<string>(disciplines);
         }
 
         private static ViewpointSettings Settings()
@@ -221,16 +215,12 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void ANullGroupOrNullSettingsIsRefused()
+        public void NullSettingsIsRefusedAndAMissingListIsNot()
         {
-            Assert.That(
-                () => ViewpointPlan.For((BuildingGroup)null, Settings()),
-                Throws.ArgumentNullException);
-
             Assert.That(() => ViewpointPlan.For(Group("AR"), null), Throws.ArgumentNullException);
 
-            // The list form takes a missing list as no disciplines rather than throwing,
-            // because the open file run holds none and that is a real answer there.
+            // A missing list is no disciplines rather than a throw, because the open file
+            // run holds none and that is a real answer there.
             Assert.That(ViewpointPlan.For((IList<string>)null, Settings()), Is.Empty);
         }
 

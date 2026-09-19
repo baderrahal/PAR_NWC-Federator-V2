@@ -607,7 +607,11 @@ and 6 does not read as broken.
   puts them, in a folder beside the workbook named after it with _files on the end, as
   loose jpg. The workbook links to them and does not paste them in. A thumbnail in the
   cell is a tick box, off, because pasting is not what the accepted report does and it
-  makes the file many times larger. No clash is ever saved as a viewpoint in the NWF
+  makes the file many times larger. A PICTURE IS NOT A VIEWPOINT and nothing in the image
+  code touches SavedViewpoints. This bullet used to end by saying no clash is ever saved
+  as a viewpoint, and F85 reverses that half of it: a clash now gets a viewpoint as well
+  as a picture, planned by `Federator.Core.Views.ClashViewpointPlan` and written by
+  nothing while `SavedViewpoints.CanBuild` is false
 - The picture names are theirs and are NOT one running sequence, which is what the first
   dozen look like. It is cd, then the test formatted 00, then the clash within that test
   formatted 0000. Test 0 clash 1 is cd000001.jpg and test 100 clash 1 is cd1000001.jpg,
@@ -757,6 +761,41 @@ and 6 does not read as broken.
 - Every check gets a test that BREAKS one thing and asserts the check names it. A test that
   only asserts the good file passes would have passed against all eight of the differences
   above. Fourteen of them live in WorkbookCellCheckTests
+- THE SAVED VIEWPOINTS ARE THREE FOLDERS DEEP AND ONE PER CLASH, F85, planned by
+  `Federator.Core.Views.ClashViewpointPlan` with `DisciplinePairRule` for layer 2. ONE PER
+  CLASH AND NOT PER TEST, because the thing a person presses has to be the thing they are
+  looking at. Layer 1 is the priority off the client's matrix, A, B, C or No priority, and
+  it is DROPPED ENTIRELY when no priority file was picked, which the block says in so many
+  words. Layer 2 is the two disciplines SORTED, so AR vs ST and ST vs AR are one folder,
+  or half the clashes of a pair go in one folder and half in another. Layer 3 is the size
+  folder, named by `ViewpointSettings.SubGroupFolderName` off the threshold so it can
+  never read Over 150mm beside a rule using 250, and it appears ONLY under a pair
+  involving one of `SubGroupDisciplines`, which F53 already asks the same question
+  through. The seven codes are a SETTING, `DisciplineCodes`, matched Ordinal and never
+  cased, and the code is whichever hyphen separated part of a set name is exactly one of
+  them. A SET NAME CARRYING NO KNOWN CODE IS REPORTED AND NEVER GUESSED: the client's own
+  file holds BLD-Security Devices, which breaks the pattern its siblings follow, so the
+  folder says UNKNOWN and the count goes in the block
+- THE SMALL SERVICE RULE IN F85 IS ITS OWN AND IS NOT INHERITED FROM F72a. A service at or
+  under the threshold stays out of the tree, decided on the SIZE and never on the status.
+  F72a is off by default, and it leaves a service against another service exactly as it
+  was, Q44, so a tree that read the status would fill with every small pipe through every
+  wall on a run with that box off. And Reviewed is one of the three statuses the tree
+  carries, so a service F72a DID move is still in scope and is kept out by the size branch
+  rather than by the status filter. The three statuses are read off
+  `OpenClashes.StatusesFor(NavisworksOpen)` and never typed, because the image filter
+  reads the same place
+- F85 BRANCHES ON `SizeVerdict` AND NEVER ON `SizeDecision.Included`, which folds Large
+  and SizeUnknown together for F53's own reasons and would put every fitting with no size
+  property into Over 150mm. A size that could not be read goes in the PAIR folder and is
+  COUNTED, and none is dropped. A clash side is read the way F72a reads one, the LARGEST
+  size property the item carries, or the same 600 by 150 duct could be set Reviewed by
+  F72a as a large service and filed here as a small one. Q51
+- A VIEWPOINT'S NAME CARRIES THE TEST AS WELL AS THE CLASH, F85. A clash name is unique
+  only within its test and this tree puts clashes from many tests into one pair folder, so
+  a leaf named after the clash alone would collide and the already there check and the
+  read back would both stop meaning anything. How many viewpoints one test may write is a
+  SETTING, off by default, the same shape and the same reason the images cap has
 - Pipes, ducts, cable trays and their fittings OVER 150 mm go in the viewpoints and
   smaller ones do not, and the large ones of Mechanical and Electrical sit in a sub group
   of their own. 150 is a setting in millimetres, named once in
@@ -967,9 +1006,11 @@ Where the time went is the question the log exists to answer, and it can only an
 it if the same work carries the same name every time it is timed.
 
 - the step names live in `Federator.Core.Diagnostics.RunSteps` and nowhere else. Nothing
-  types a step name as a string. Fourteen of them, in the order a group meets them:
+  types a step name as a string. Fifteen of them, in the order a group meets them:
   DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES,
-  WORKBOOK, HTML, XML, NWD, CONFIRM. A name that is not on the list is refused where the
+  VIEWS, WORKBOOK, HTML, XML, NWD, CONFIRM. VIEWS is F85's and it was untimed before
+  that: building the viewpoints was called outside every step, so its seconds came off
+  no total and the run read as faster than it was. A name that is not on the list is refused where the
   step opens, because a timing block holding a step nobody named is worse than a short one
 - a step is always opened in a using block, so it closes on the way out whether the work
   finished, returned early or threw. A step left open is the one thing that would make
