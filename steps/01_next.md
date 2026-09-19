@@ -14,12 +14,12 @@ Renumbered on 2026-09-18 when the feature round closed. F51, F50, F52, F53, F54 
 
 Renumbered again on 2026-09-19 when the log round opened. Bader briefed six fixes as F56 to F61. F56 and F57 were already taken, so the six are F59 to F64 and they map onto the brief one for one and in order. F51, which the brief asks for as its own one line pull request, was already done and merged on 2026-09-18 and is not done twice. F58 is a seventh, found by the reading that opened the round and put first because the add-in does not compile and every one of the 251 steps waits behind the build.
 
-Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. They go before everything that was left, because the build is what every one of the 308 steps waits behind.
+Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, ran step 8 and the build failed on one line of the add-in. Four fixes were briefed, F65 to F68 were all free, and the four map onto the brief one for one and in order. They go before everything that was left, because the build is what every one of the 319 steps waits behind.
 
 1. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
 2. F66, DONE, the check that would have caught it
 3. F67, DONE, one doubled comment
-4. F68, the build section learns what today cost
+4. F68, DONE, the build section learns what today cost
 5. F58, DONE, the add-in compiles again. `BuildViewpoints` declares one name twice, which is CS0128
 6. F59, DONE, every step is named and timed
 7. F60, DONE, the timing blocks, and F21 closes here
@@ -31,7 +31,7 @@ Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, r
 13. F18, when Bader uploads the 1A04WE sample, Q9
 14. F23, when Q20 is answered
 
-The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 237 to 249 are for.
+The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 248 to 260 are for.
 
 Nothing else is open. F19 is dropped.
 
@@ -170,7 +170,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 
 ## F15 Dispose in SetBuilder and ClashRunner.Resolve
 
-- CLOSED on 2026-09-12 by F41, which is the same two files and more. B5, the intermediate levels `Resolve` walks past, and B6, everything `SetBuilder` creates or resolves, are both done, and `SavedTests` went with them. The proof is the same one F15 asked for, a run with no ObjectDisposedException, and it is steps 188 to 190 of `03_bader_next.md`
+- CLOSED on 2026-09-12 by F41, which is the same two files and more. B5, the intermediate levels `Resolve` walks past, and B6, everything `SetBuilder` creates or resolves, are both done, and `SavedTests` went with them. The proof is the same one F15 asked for, a run with no ObjectDisposedException, and it is steps 199 to 201 of `03_bader_next.md`
 
 ## F12 Fix the docs that contradict the code
 
@@ -599,6 +599,16 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - Size: one comment moved
 - THE BRIEF SAYS DELETE AND THIS MOVES IT. `WriteNwd` carries no summary of its own, and the displaced block is its, recording why the NWD publish is fixed on and has no branch for a run that does not want it. Deleting it would throw away a decision and leave a method undocumented. F47b on 2026-09-18 is the same shape, the same brief wording and the same answer, and the reasoning is in `log.md` under it. Either way no two summary blocks are stacked anywhere under `src`, which is what the brief is after
 - DONE on 2026-09-19. Moved onto `WriteNwd`, which it describes and which had no comment. The stacked summary check rerun over all 132 `.cs` files under `src` reads 0, where it read 1. Core tests before and after, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
+
+## F68 The build section learns what today cost
+
+- Files `steps/03_bader_next.md`
+- CONTAINER
+- Bader lost time on 2026-09-19 before he ever reached a compiler error, to a NuGet failure that has nothing to do with the code: `C:\Program Files\dotnet\sdk\10.0.400\NuGet.targets(198,5): error Cannot create a file when that file already exists.` `dotnet build` restores all three projects at once, they collide on the same package folder, and it is a known race in NuGet's restore task
+- Four recoveries as numbered one action steps, cheapest first: build again because the race is intermittent, then clear every `obj` and `bin`, then restore with `--disable-parallel`, then build with `--no-restore`. Clearing the NuGet cache is last on its own, because it re-downloads every package
+- One more line under the build step: a build stamp reading `nogit` rather than a commit hash means git is not on the PATH for that terminal. The build is fine and only the stamp is affected
+- Size: eleven steps and the renumbering behind them
+- DONE on 2026-09-19. Eleven steps in, 11 to 21, each with its Look for line, and the file runs 1 to 319 where it ran 1 to 308. Every command in them was RUN on this machine rather than written from memory: the `obj` and `bin` listing gives six folders, two per project, and the cold `--disable-parallel` restore gives three `Restored` lines and no error. The one thing not measured is what `dotnet nuget locals all --clear` prints, because clearing the cache here would cost the re-download it warns about, and the step says that rather than guessing. The `nogit` line is read off `Directory.Build.targets`, which sets the hash to `nogit` when git exits non zero or answers nothing. Five cross references were bumped with the renumbering, from steps 65, 70, 202, 271 and 284 to 76, 81, 213, 282 and 295, and each was read against the step it now points at. Core tests unchanged, on Windows: 1238 passed, 0 failed, 0 skipped, 1238 total
 
 ## F21 The log answers timing and counts
 

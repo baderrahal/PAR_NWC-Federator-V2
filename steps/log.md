@@ -2,6 +2,40 @@
 
 Newest entry at the top.
 
+## 2026-09-19 F68, the build section learns what today cost
+
+### What was done
+
+- BADER LOST TIME TODAY BEFORE HE EVER REACHED A COMPILER ERROR, to a failure that has nothing to do with the code:
+
+```
+C:\Program Files\dotnet\sdk\10.0.400\NuGet.targets(198,5): error Cannot create a file when that file already exists.
+```
+
+- WHAT IT IS. `dotnet build` restores all three projects at once, they collide on the same package folder, and it is a known race in NuGet's restore task. It is intermittent, which is why the cheapest recovery is also the first one
+- ELEVEN STEPS, 11 TO 21, EACH WITH ITS LOOK FOR LINE, cheapest first. Run the same build again. Then delete every `obj` and `bin`, because a half written package folder is what the race leaves behind. Then restore on its own with `--disable-parallel`, which is what actually takes the race out. Then build with `--no-restore`, so nothing can collide. And only after all of that, clear the NuGet cache, on its own and last, because it re-downloads every package this solution uses and nuget.org is a hard requirement for building at all
+- EVERY COMMAND IN THEM WAS RUN ON THIS MACHINE rather than written from memory. `Get-ChildItem -Path src,tests -Include obj,bin -Recurse -Directory` lists six folders, two per project, and prints nothing once they are deleted. A cold `dotnet restore ParsonsNwcFederator.sln --disable-parallel`, run with every `obj` folder deleted, gives three `Restored` lines, one per project, and no error, and on a warm tree it says `All projects are up-to-date for restore` instead. Both are in the Look for line, because either is a correct answer and a step that names only one of them reads as a failure half the time
+- THE ONE THING NOT MEASURED IS SAID AS NOT MEASURED. What `dotnet nuget locals all --clear` prints was not read, because clearing the cache on this machine would cost the re-download the step warns about. The Look for line says exactly that rather than inventing the wording
+- THE `nogit` LINE IS READ OFF THE CODE. `Directory.Build.targets` sets `FederatorGitHash` to `nogit` when the `git rev-parse` exec exits non zero or comes back empty, so a stamp reading `nogit` means git was not on the PATH of the terminal that ran the build. The build itself is unaffected and only the stamp is, and the step says that so nobody rebuilds chasing it
+- THE FILE RUNS 1 TO 319 WHERE IT RAN 1 TO 308, and it holds 169 Look for lines where it held 163
+- FIVE CROSS REFERENCES MOVED WITH THE RENUMBERING and every one was read against the step it now points at: step 65 to 76, which is the OK press of the 1B06PH run, step 70 to 81, the second Run on the same building, step 202 to 213, the publish properties line, step 271 to 282, the census taken once per group, and step 284 to 295, the six gap counts
+- AND THE RENUMBERING BIT ONCE MORE, in the way the F63 entry already wrote down. The first pass skipped every `step NNN` sitting INSIDE a numbered line, because the rule that renumbers the line returns before the rule that renumbers the reference runs, so five references were left pointing at the old numbers while a sixth, in a plain paragraph, had moved. Caught by reading the references out afterwards rather than by trusting the pass
+- TWO POINTERS IN `01_next.md` MOVED WITH IT, the log round's `steps 237 to 249` to `248 to 260` and F41's proof from `steps 188 to 190` to `199 to 201`, both read against the steps they now name. The step numbers inside the F56 DONE line were LEFT ALONE and are stale, and that is deliberate: they record what that fix read on 2026-09-18 and rewriting them would rewrite what it found
+- Proved here: Core tests unchanged, on Windows, 1238 passed, 0 failed, 0 skipped, 1238 total. No code touched
+
+### What remains
+
+- The closing work, and it is bigger than it was this morning. See the entry above this one
+
+### Known bugs
+
+- As in the F46 entry
+
+### What comes next
+
+1. Merge the F68 pull request
+2. The closing work
+
 ## 2026-09-19 F67, one doubled comment
 
 ### What was done
