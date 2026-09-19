@@ -384,6 +384,20 @@ accident and that the words are right.
 235. Look for: a second `NWF      attempt` line after the clash step, because writing a status is a write and the NWF is saved again on it
 236. Look for: the workbook shows the NEW status for every clash that moved. If it shows the old one, the status is being applied after the harvest instead of before it, which is the one thing this feature must not do
 
+## The log round, F59 to F64. Every step named and timed
+
+Nothing here needs a new folder or a new file. It is all read off the log of an ordinary
+run, so do it on the next building you run for any other proof in this file.
+
+237. Run any one building the ordinary way, with the clash XML picked
+238. Open the log for that run
+239. Look for, F59: a pair of lines per step, reading `STEP     ` then the step name then `started`, and later the same name then `finished`, the seconds and a few words for what it changed. The step names are `DECIDE`, `APPEND`, `NWF SAVE`, `UNITS`, `SETS`, `TESTS CREATE`, `TESTS RUN`, `HARVEST`, `IMAGES`, `WORKBOOK`, `HTML`, `XML`, `NWD` and `CONFIRM`
+240. Look for, F59: `STEP     TESTS RUN` appears ONCE as a started line and once as a finished line for the whole group, then one line reading `entered again. Every further visit in this group is counted, not written out`. A pair of lines per test would be 3660 lines for 1830 tests, which is the fault that once left a 17.8 MB log
+241. Look for, F59: one line per repeated step at the end of the group, before the `GROUP    finished` line, reading the step name then the visits then the total seconds, like `STEP     TESTS RUN     1830 visits, 742.113s in total`
+242. Look for, F59: `STEP       IMAGES` is indented two spaces further than every other step line. It is the only one that runs INSIDE another step, because a picture is written while the harvest is walking the results. `HARVEST` is NOT indented, because it opens and closes on its own
+243. Look for, F59: NO line anywhere reads `NEVER CLOSED`. That line means a step was opened and nothing closed it, which would make every total after it wrong. If you see one, send the whole log
+244. Look for, F59: the seconds on the `STEP     NWD     finished` line and the seconds between the NWD attempt and written lines are the same number. Two clocks reporting one piece of work differently is the thing this round removes
+
 ## The two walls are live, D7
 
 There are three files here that `sh` reads: the two hooks Claude Code runs before a tool
@@ -401,45 +415,45 @@ otherwise. F47a added `.gitattributes`, which pins these three to LF on every ch
 
 This is a one time check per clone. Do it once and the rest of this file never needs it.
 
-237. In the VS Code terminal, in the repo folder, run:
+245. In the VS Code terminal, in the repo folder, run:
 
 ```
 git ls-files --eol .claude/hooks .githooks
 ```
 
-238. Look for: three lines, each reading `i/lf` and `w/lf` and `attr/text eol=lf`. A `w/crlf` on any of them means this checkout still holds the old copy, so run `git add --renormalize . ; git checkout -- .` and read it again
-239. Switch the test wall on, which git needs told once per clone:
+246. Look for: three lines, each reading `i/lf` and `w/lf` and `attr/text eol=lf`. A `w/crlf` on any of them means this checkout still holds the old copy, so run `git add --renormalize . ; git checkout -- .` and read it again
+247. Switch the test wall on, which git needs told once per clone:
 
 ```
 git config core.hooksPath .githooks
 ```
 
-240. Look for: `git config core.hooksPath` answers `.githooks`
-241. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
-242. Look for: the commit pauses and prints `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall. Throw the branch away afterwards
-243. Open Claude Code in this folder and ask it to write one word into any file under `samples`
-244. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
+248. Look for: `git config core.hooksPath` answers `.githooks`
+249. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
+250. Look for: the commit pauses and prints `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall. Throw the branch away afterwards
+251. Open Claude Code in this folder and ask it to write one word into any file under `samples`
+252. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
 
 ## Delete the old branches, D6
 
 Every branch except main is merged into main. The container cannot delete a branch: `git push origin --delete` comes back HTTP 403 from the proxy in front of it, and there is no GitHub tool in it that deletes a branch. So this is yours, one command from the repo folder in the VS Code terminal.
 
-The list below was read on 2026-09-18 with the command in step 245, after the last merge of the feature round F51 to F55, and `git ls-remote --heads origin` gave 49 names. The branch this round's own closing pull request came from, `round-close-4`, is in the delete list too and was not on the remote yet when the list was read, which makes 50 lines and 49 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
+The list below was read on 2026-09-18 with the command in step 253, after the last merge of the feature round F51 to F55, and `git ls-remote --heads origin` gave 49 names. The branch this round's own closing pull request came from, `round-close-4`, is in the delete list too and was not on the remote yet when the list was read, which makes 50 lines and 49 to delete by the time you run it. Read the live list again yourself before you delete, because a branch may have come or gone since. Do not build the list from `git branch -r`. That prints remote-tracking refs your clone remembers, and a branch deleted by someone else is still in it until you prune, which is how a name that does not exist on the remote reached this file once already. The container's own clone showed it again on 2026-09-18, still holding `origin/claude/parsons-nwc-analysis-rlzgdr` after the remote had lost it. `git ls-remote` asks the remote and remembers nothing.
 
-245. Read the live list:
+253. Read the live list:
 
 ```
 git ls-remote --heads origin
 ```
 
-246. Look for: one line per branch, the name after `refs/heads/`. Expect 50 of them, so 49 to delete. It was 43 after the third audit round, and the feature round added six fix branches and its closing one
-247. Delete every one of them except main:
+254. Look for: one line per branch, the name after `refs/heads/`. Expect 50 of them, so 49 to delete. It was 43 after the third audit round, and the feature round added six fix branches and its closing one
+255. Delete every one of them except main:
 
 ```
 git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 fix-F31 fix-F32 fix-F33 fix-F34 fix-F35 fix-F36 fix-F37 fix-F38 fix-F39 fix-F40 fix-F41 fix-F42 fix-F43 fix-F44 fix-F45 fix-F46 fix-F47a fix-F47b fix-F47c fix-F50 fix-F51 fix-F52 fix-F53 fix-F54 fix-F55 fix-f1-f2-f4-small fix-f10-gate-outputs fix-f11-dead-code fix-f17-picture-order fix-f20-tests-on-push fix-f22-two-workflows fix-f24-rebuild-changed-nwf fix-f26-units-meters fix-f5-sets-built fix-f6-open-file-folder fix-f7-open-file-result fix-f8-run-saved-tests fix-f9-changed-skip-units master round-close round-close-2 round-close-3 round-close-4
 ```
 
-248. Look for: one `- [deleted]` line per branch and no error
-249. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
-250. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
-251. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main
+256. Look for: one `- [deleted]` line per branch and no error
+257. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
+258. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
+259. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main

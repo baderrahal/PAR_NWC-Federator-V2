@@ -370,7 +370,13 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            Images.Write(clashTests, result, report, test, row, WorkbookPath);
+            // After the guard, so a run with the pictures switched off carries no IMAGES
+            // step at all rather than thousands of steps that did nothing.
+            using (RunStep step = log.Step(RunSteps.Images))
+            {
+                Images.Write(clashTests, result, report, test, row, WorkbookPath);
+                step.Changed(test == null ? "one row" : test.Name);
+            }
         }
 
         private static string SourceFileOf(ModelItem item)

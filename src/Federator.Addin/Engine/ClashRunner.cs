@@ -539,7 +539,11 @@ namespace Federator.Addin.Engine
                 }
                 else
                 {
-                    address = Create(sets, clashTests, byPath, planned);
+                    using (RunStep creating = log.Step(RunSteps.TestsCreate))
+                    {
+                        address = Create(sets, clashTests, byPath, planned);
+                        creating.Changed(planned.Name);
+                    }
 
                     if (address == null)
                     {
@@ -615,20 +619,29 @@ namespace Federator.Addin.Engine
                     return;
                 }
 
-                Stopwatch clock = Stopwatch.StartNew();
+                // One clock and not two. The step IS the measurement of this test, so the
+                // seconds the log reports and the seconds the report row carries come off
+                // the same reading and cannot disagree. It is a Stopwatch underneath,
+                // monotonic, and never two wall clock readings subtracted.
+                double ranFor;
 
-                using (ClashTest running = Resolve(clashTests, address, planned.Name))
+                using (RunStep running = log.Step(RunSteps.TestsRun))
                 {
-                    if (running == null)
+                    using (ClashTest test = Resolve(clashTests, address, planned.Name))
                     {
-                        Failed(outcome, planned.Name, "the test is no longer where it was put");
-                        return;
+                        if (test == null)
+                        {
+                            running.Failed();
+                            Failed(outcome, planned.Name, "the test is no longer where it was put");
+                            return;
+                        }
+
+                        clashTests.TestsRunTest(test);
                     }
 
-                    clashTests.TestsRunTest(running);
+                    running.Changed(planned.Name);
+                    ranFor = running.SecondsSoFar();
                 }
-
-                clock.Stop();
 
                 // F54. Between the run and the harvest, and never after the clash step.
                 // ClashHarvest reads a result's status while building the report rows, so
@@ -672,7 +685,7 @@ namespace Federator.Addin.Engine
                     // while this document is open and this handle is fresh.
                     if (summary != null)
                     {
-                        summary.Seconds = clock.Elapsed.TotalSeconds;
+                        summary.Seconds = ranFor;
 
                         // The client's Status column on the test header. Whatever the API
                         // reports, written as itself. Theirs says OK, which is not a value
@@ -683,7 +696,13 @@ namespace Federator.Addin.Engine
                         ClashHarvest harvest = new ClashHarvest(log, NameSettings);
                         harvest.Images = Images;
                         harvest.WorkbookPath = WorkbookPath;
-                        harvest.Into(document, clashTests, after, Report, summary);
+
+                        using (RunStep harvesting = log.Step(RunSteps.Harvest))
+                        {
+                            harvest.Into(document, clashTests, after, Report, summary);
+                            harvesting.Changed(planned.Name);
+                        }
+
                         summary.State = summary.HasRows
                             ? TestState.FoundClashes
                             : TestState.Passed;
@@ -691,7 +710,7 @@ namespace Federator.Addin.Engine
                 }
 
                 ClashTestResult result = outcome.AddRan(
-                    planned.Name, leftItems, rightItems, tally, clock.Elapsed.TotalSeconds);
+                    planned.Name, leftItems, rightItems, tally, ranFor);
 
                 guard.RecordSuccess();
                 log.Line("CLASH    " + result.Line());

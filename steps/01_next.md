@@ -498,6 +498,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - `RunLog` gains a step that is opened and closed, and closes itself when the work inside it throws, so a step can never be left open by a failure. One line when it starts and one when it finishes, with the seconds and a short phrase for what it changed
 - The clock is monotonic, a `Stopwatch` and never two wall clock readings subtracted, because a run crossing a clock change would otherwise report a step that took less than no time
 - Size: medium, and all of the shape is provable here
+- DONE on 2026-09-19. `RunSteps` holds the fourteen names and nothing types one as a string. `RunStep` opens in a using block, closes itself on a throw, says THREW and keeps its seconds, and a step nobody closed is named NEVER CLOSED when its group ends. The clock is the run's `Stopwatch` and never two wall clock readings subtracted. A step entered again is counted rather than written out, which is what keeps 1830 tests from writing 3660 lines. `ClashRunner`'s own Stopwatch went, so one piece of work is timed by one clock. Core tests before: 1045 passed, 0 failed, 32 skipped, 1077 total. After: 1075 passed, 0 failed, 32 skipped, 1107 total
 
 ## F60 The timing blocks, and F21 closes here
 
