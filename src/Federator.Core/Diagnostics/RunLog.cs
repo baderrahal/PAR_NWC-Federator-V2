@@ -1708,6 +1708,10 @@ namespace Federator.Core.Diagnostics
             // was. Both numbers are still said, and the one criterion 2 is about is the
             // run. It is measured here and never added up from the groups, because the
             // scan and the preview happen outside every group.
+            // ONE reading for the whole block. Asking twice would read the session clock
+            // twice and put two different session totals in one block, which is the fault
+            // the timing rule already names about feeding one total to the percentages and
+            // another to the sentence.
             RunClock where = WhereTheTimeWent;
 
             List<string> timing = new List<string>(where.Lines());
@@ -1840,8 +1844,9 @@ namespace Federator.Core.Diagnostics
             Blank();
 
             // Both numbers, because they answer different questions. The run is what
-            // criterion 2 is about and the session is how long the window was open.
-            RunClock spent = WhereTheTimeWent;
+            // criterion 2 is about and the session is how long the window was open. The
+            // SAME reading the timing block used, never a second one.
+            RunClock spent = where;
 
             Line("run time       : " + spent.RunSeconds.ToString("0.000", CultureInfo.InvariantCulture)
                 + "s" + (spent.Marked ? string.Empty : ", which is the session, no run was marked"));

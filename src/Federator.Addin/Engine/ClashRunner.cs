@@ -1088,6 +1088,11 @@ namespace Federator.Addin.Engine
             // F81. One run wrote 10,980 of these, three lines for every test created, and
             // every one said the same thing about a different name. The row carries all of
             // it and the .tsv keeps every row.
+            //
+            // It was a Detail line, which is indented 26 spaces and writes NO row. It is a
+            // plain line now, on purpose: one of five examples of a repeated event reads
+            // at the left margin like every other collapsed example in this log, and a
+            // Detail with nothing above it to be a detail OF is just an indented line.
             log.NumberedRepeat(
                 "CLASH created",
                 "CLASH    created  " + planned.Name
