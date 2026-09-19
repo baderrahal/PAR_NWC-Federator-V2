@@ -1,59 +1,46 @@
 using System;
 using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
-using Federator.Core.Diagnostics;
-using Federator.Core.Views;
 
 namespace Federator.Addin.Engine
 {
     /// <summary>
-    /// The saved viewpoints in the open document.
+    /// The saved viewpoints in the open document, F85: how one is counted, found, and
+    /// put in with the hidden state it was saved with.
     ///
-    /// THIS FILE USED TO REST ON AN ASSUMPTION. IT NO LONGER DOES.
+    /// EVERY MEMBER THIS FILE CALLS IS MEASURED. tools\probes\probe-viewpoints.ps1 read
+    /// the shape off the installed Autodesk.Navisworks.Api 22.0.0.0 on 2026-09-19,
+    /// docs\history\scan.md 5d, and tools\probes\ViewpointProbe measured the one thing a
+    /// DLL cannot say on a run the same day, 5j:
     ///
-    /// tools\probes\probe-viewpoints.ps1 was run on 2026-09-19 against the installed
-    /// Autodesk.Navisworks.Api 22.0.0.0, and every line of it is recorded in
-    /// docs\history\scan.md 5d. The shape this file was written against is the shape the DLL
-    /// has, which is a measurement and no longer a guess:
+    ///     Document.SavedViewpoints                       is a DocumentSavedViewpoints
+    ///     DocumentSavedViewpoints.RootItem               is a FolderItem, a GroupItem
+    ///     DocumentSavedViewpoints.AddCopy(GroupItem, SavedItem)   puts one in a folder
+    ///     new FolderItem()                               makes a folder
+    ///     DocumentSavedViewpoints.CaptureRuntimeOverrides()       makes a SavedViewpoint of the
+    ///         current view WITH what is hidden, ContainsVisibilityOverrides true, and it
+    ///         hides the same items again when pressed, after a save and a reopen too
+    ///     new SavedViewpoint(Viewpoint)                  makes one of the camera ALONE,
+    ///         which opens on the whole federation, and is never used here
+    ///     DocumentModels.SetHidden, ResetAllHidden, ResetAllHiddenToModelState
     ///
-    ///     Document.SavedViewpoints            is a DocumentSavedViewpoints
-    ///     DocumentSavedViewpoints.RootItem    is a FolderItem, which is a GroupItem
-    ///     GroupItem.Children                  is a SavedItemCollection
-    ///     a leaf under it                     is a SavedViewpoint, and a branch a FolderItem
-    ///
-    /// MEASURED AND NOT USED YET, which is what the writing half will need:
-    ///
-    ///     DocumentSavedViewpoints.AddCopy(GroupItem parent, SavedItem item)
-    ///     DocumentSavedViewpoints.EditDisplayName(SavedItem item, string newDisplayName)
-    ///     new FolderItem()  and  new SavedViewpoint(Viewpoint viewpoint)
-    ///     SavedViewpoint and Viewpoint are both IDisposable
-    ///
-    /// WHAT IS STILL UNKNOWN IS THE HIDING, and it is the half this feature turns on. Items
-    /// are hidden through DocumentModels.SetHidden, and whether a viewpoint saved while they
-    /// are hidden RECORDS that hiding, and restores it when pressed, cannot be read off the
-    /// DLL. SavedViewpoint.ContainsVisibilityOverrides is what answers it on a real run.
-    ///
-    /// Nothing here creates or names a viewpoint. CanBuild is still false, because the
-    /// writing half is not built, and that is a decision waiting rather than a measurement.
+    /// EVERY WALK STARTS FROM A FRESH RootItem. AddCopy takes a copy, so a handle read
+    /// before it does not see what it put in, which is what SetBuilder learned with the
+    /// sets and 5b said not to assume from the pattern. It was read, and the pattern held.
+    /// Everything read is disposed on the way, because a wrapper over a document object is
+    /// borrowed and never kept.
     /// </summary>
     public static class SavedViewpoints
     {
         /// <summary>
-        /// Whether this build knows how to put a viewpoint into the NWF. FALSE until
-        /// tools\probes\probe-viewpoints.ps1 has been run and ShowOnly and Add below have
-        /// been written against what it found.
+        /// Whether this build knows how to put a viewpoint into the NWF. It went TRUE in
+        /// the viewpoints round on 2026-09-19, once 5j had measured that a captured
+        /// viewpoint records the hidden state and the run had shown the tree.
         ///
-        /// WHY A FLAG AND NOT JUST THE THROW. A step this tool cannot do is not a step that
-        /// failed. Wiring the builder into the run while the two methods below throw would
-        /// report every group FAILED over a feature that was never attempted, which is
-        /// exactly the fault that once reported a clean 22 group run as failed because an
-        /// NWD nobody asked for was missing. So the engine asks for viewpoints only when
-        /// this reads true, the judgement is told they were not requested, and the log says
-        /// plainly that the measurement is outstanding.
-        ///
-        /// This is the ONE line to change when the probe comes back, and the Core half,
-        /// the plan, the VIEWS block and the judgement rule are all written and tested
-        /// behind it.
+        /// WHY A FLAG AT ALL. A step this tool cannot do is not a step that failed. While
+        /// this was false the engine asked for no viewpoints, the judgement was told they
+        /// were not requested, and the log said the measurement was outstanding, which is
+        /// the opposite of reporting every group FAILED over a feature never attempted.
         /// </summary>
         public static bool CanBuild
         {
@@ -102,96 +89,173 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Whether a viewpoint of that name is already in that folder. UNMEASURED, see the
-        /// note at the top of this file. False where the folder is not there at all, which
-        /// is the ordinary first run case and not a failure.
+        /// Whether a viewpoint of that name is already in that folder path. False where
+        /// any folder on the path is not there, which is the ordinary first run case and
+        /// not a failure.
         /// </summary>
-        public static bool Exists(Document document, string folder, string name)
+        public static bool Exists(Document document, IList<string> folders, string name)
         {
-            if (document == null || string.IsNullOrEmpty(folder) || string.IsNullOrEmpty(name))
+            if (document == null || folders == null || string.IsNullOrEmpty(name))
             {
                 return false;
             }
 
-            using (GroupItem root = document.SavedViewpoints.RootItem)
-            using (GroupItem parent = FindFolder(root, folder))
+            using (GroupItem parent = ResolveFolders(document, folders, folders.Count))
             {
                 return parent != null && FindLeaf(parent, name);
             }
         }
 
         /// <summary>
-        /// Shows one discipline and hides every other named one, so the viewpoint saved
-        /// straight after carries that state.
-        ///
-        /// UNMEASURED. How a model item is hidden was never read off the DLL, and neither
-        /// was whether a viewpoint records hidden state at all. If it does not, this whole
-        /// feature is a different shape and the probe is what says so. It throws rather
-        /// than doing nothing, because a viewpoint that shows every discipline is not the
-        /// thing that was asked for and would read as a working feature.
+        /// Makes every folder on the path that is not there yet, outermost first, each one
+        /// re-resolved from a fresh RootItem after the AddCopy that made it, which is the
+        /// shape SetBuilder.EnsureFolders measured for the sets.
         /// </summary>
-        public static void ShowOnly(Document document, string shows, IList<string> hides)
+        public static void EnsureFolders(Document document, IList<string> folders)
         {
-            if (document == null || string.IsNullOrEmpty(shows))
+            if (document == null || folders == null)
             {
-                throw new ArgumentException("A viewpoint needs a discipline to show.", "shows");
+                return;
             }
 
-            throw new NotSupportedException(
-                "How a discipline is shown and the others hidden was never read off the installed "
-                    + "DLL. docs\\history\\scan.md section 5b records the question and "
-                    + "tools\\probes\\probe-viewpoints.ps1 answers it. Run that probe and this "
-                    + "method is the one place that changes. Nothing was written into the NWF.");
+            for (int depth = 0; depth < folders.Count; depth++)
+            {
+                using (GroupItem already = ResolveFolders(document, folders, depth + 1))
+                {
+                    if (already != null)
+                    {
+                        continue;
+                    }
+                }
+
+                using (GroupItem parent = ResolveFolders(document, folders, depth))
+                {
+                    if (parent == null)
+                    {
+                        throw new InvalidOperationException(
+                            "The folder above \"" + folders[depth] + "\" is not there, so it cannot be made.");
+                    }
+
+                    using (FolderItem folder = new FolderItem())
+                    {
+                        folder.DisplayName = folders[depth];
+                        document.SavedViewpoints.AddCopy(parent, folder);
+                    }
+                }
+
+                using (GroupItem made = ResolveFolders(document, folders, depth + 1))
+                {
+                    if (made == null)
+                    {
+                        throw new InvalidOperationException(
+                            "The folder \"" + folders[depth] + "\" was added and a fresh read does not show it.");
+                    }
+                }
+            }
         }
 
         /// <summary>
-        /// Shows only the items of one discipline that are over the size threshold, hiding
-        /// the rest. F53.
-        ///
-        /// UNMEASURED in the same way ShowOnly is, and for the same reason: what hides a
-        /// model item was never read off the DLL. What IS settled and tested is the rule
-        /// that decides which items count, Federator.Core.Views.SizeRule, and the reader
-        /// that feeds it, ItemSizes. When the probe answers, this method walks the items of
-        /// the discipline, calls ItemSizes.Read then SizeRule.Decide on each, tallies them
-        /// into a SizeTally and hides the ones that come back Small. Every item whose size
-        /// could not be read is INCLUDED and the tally names it.
+        /// Captures the current view WITH what is hidden as a saved viewpoint of that name
+        /// in that folder path, 5j route B. The name goes on the object before it is
+        /// copied in, so nothing has to guess which child the copy became, and the caller
+        /// reads it back by name rather than trusting the add.
         /// </summary>
-        public static void ShowOnlyLargeItems(
-            Document document, string shows, IList<string> hides, SizeSettings sizes, RunLog log)
+        public static void Capture(Document document, IList<string> folders, string name)
         {
-            if (document == null || string.IsNullOrEmpty(shows))
+            if (document == null || folders == null || string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("A viewpoint needs a discipline to show.", "shows");
+                throw new ArgumentException("A viewpoint needs a document, a folder path and a name.", "name");
             }
 
-            throw new NotSupportedException(
-                "How a discipline is shown and the others hidden was never read off the installed "
-                    + "DLL, so the large items sub group cannot be built either. The rule that "
-                    + "decides which items are large is settled and tested, in "
-                    + "Federator.Core.Views.SizeRule. Run tools\\probes\\probe-viewpoints.ps1 "
-                    + "and this method is the one place that changes. Nothing was written into the NWF.");
+            using (SavedViewpoint captured = document.SavedViewpoints.CaptureRuntimeOverrides())
+            {
+                if (captured == null)
+                {
+                    throw new InvalidOperationException("CaptureRuntimeOverrides returned nothing.");
+                }
+
+                captured.DisplayName = name;
+
+                using (GroupItem parent = ResolveFolders(document, folders, folders.Count))
+                {
+                    if (parent == null)
+                    {
+                        throw new InvalidOperationException(
+                            "The folder path " + string.Join("/", ToArray(folders)) + " is not there.");
+                    }
+
+                    document.SavedViewpoints.AddCopy(parent, captured);
+                }
+            }
         }
 
         /// <summary>
-        /// Puts a viewpoint of the current view into that folder, making the folder where it
-        /// is not there. UNMEASURED, see the note at the top of this file.
+        /// Hides every model whose index is not in the list and shows the rest, so the
+        /// viewpoint captured next carries exactly that. Hidden state is put back to what
+        /// the file held through RestoreHiddenState when the group's writing ends.
         /// </summary>
-        public static void Add(Document document, string folder, string name)
+        public static int ShowOnlyModels(Document document, ICollection<int> keep)
         {
-            if (document == null || string.IsNullOrEmpty(folder) || string.IsNullOrEmpty(name))
+            if (document == null || keep == null)
             {
-                throw new ArgumentException("A viewpoint needs a folder and a name.", "name");
+                return 0;
             }
 
-            throw new NotSupportedException(
-                "How a saved viewpoint folder is made and a viewpoint added to it was never read "
-                    + "off the installed DLL. docs\\history\\scan.md section 5b records the "
-                    + "question and tools\\probes\\probe-viewpoints.ps1 answers it. Run that "
-                    + "probe and this method is the one place that changes. Nothing was written "
-                    + "into the NWF.");
+            document.Models.ResetAllHidden();
+
+            using (ModelItemCollection hide = new ModelItemCollection())
+            {
+                for (int i = 0; i < document.Models.Count; i++)
+                {
+                    if (!keep.Contains(i))
+                    {
+                        hide.Add(document.Models[i].RootItem);
+                    }
+                }
+
+                if (hide.Count > 0)
+                {
+                    document.Models.SetHidden(hide, true);
+                }
+
+                return hide.Count;
+            }
         }
 
-        /// <summary>The folder of that name directly under this group, or null.</summary>
+        /// <summary>Back to the hidden state the file held, so the NWF saved next carries what it always did.</summary>
+        public static void RestoreHiddenState(Document document)
+        {
+            if (document != null)
+            {
+                document.Models.ResetAllHiddenToModelState();
+            }
+        }
+
+        /// <summary>
+        /// Walks the folder path from a freshly read RootItem and returns the folder at
+        /// that depth, or null when any level is missing. The caller disposes what comes
+        /// back. Depth zero is the root itself.
+        /// </summary>
+        private static GroupItem ResolveFolders(Document document, IList<string> folders, int depth)
+        {
+            GroupItem current = document.SavedViewpoints.RootItem;
+
+            for (int i = 0; i < depth; i++)
+            {
+                GroupItem next = FindFolder(current, folders[i]);
+                current.Dispose();
+
+                if (next == null)
+                {
+                    return null;
+                }
+
+                current = next;
+            }
+
+            return current;
+        }
+
         private static GroupItem FindFolder(GroupItem parent, string folder)
         {
             if (parent == null)
@@ -201,19 +265,14 @@ namespace Federator.Addin.Engine
 
             SavedItemCollection children = parent.Children;
 
-            if (children == null)
-            {
-                return null;
-            }
-
             for (int i = 0; i < children.Count; i++)
             {
                 SavedItem child = children[i];
-                GroupItem asFolder = child as GroupItem;
+                GroupItem group = child as GroupItem;
 
-                if (asFolder != null && string.Equals(child.DisplayName, folder, StringComparison.Ordinal))
+                if (group != null && string.Equals(child.DisplayName, folder, StringComparison.Ordinal))
                 {
-                    return asFolder;
+                    return group;
                 }
 
                 child.Dispose();
@@ -222,22 +281,15 @@ namespace Federator.Addin.Engine
             return null;
         }
 
-        /// <summary>Whether a leaf of that name sits directly under this group.</summary>
         private static bool FindLeaf(GroupItem parent, string name)
         {
             SavedItemCollection children = parent.Children;
-
-            if (children == null)
-            {
-                return false;
-            }
 
             for (int i = 0; i < children.Count; i++)
             {
                 using (SavedItem child = children[i])
                 {
-                    if (!(child is GroupItem)
-                        && string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                    if (!(child is GroupItem) && string.Equals(child.DisplayName, name, StringComparison.Ordinal))
                     {
                         return true;
                     }
@@ -247,11 +299,6 @@ namespace Federator.Addin.Engine
             return false;
         }
 
-        /// <summary>
-        /// Every leaf under this group, descending folders. A count and never a handle,
-        /// because a handle onto anything the document owns dies the moment the document
-        /// replaces the object behind it, which a clear does.
-        /// </summary>
         private static int CountUnder(GroupItem parent)
         {
             if (parent == null)
@@ -259,32 +306,34 @@ namespace Federator.Addin.Engine
                 return 0;
             }
 
-            SavedItemCollection children = parent.Children;
-
-            if (children == null)
-            {
-                return 0;
-            }
-
             int count = 0;
+            SavedItemCollection children = parent.Children;
 
             for (int i = 0; i < children.Count; i++)
             {
                 using (SavedItem child = children[i])
                 {
-                    GroupItem folder = child as GroupItem;
+                    GroupItem group = child as GroupItem;
 
-                    if (folder != null)
+                    if (group != null)
                     {
-                        count += CountUnder(folder);
-                        continue;
+                        count += CountUnder(group);
                     }
-
-                    count++;
+                    else
+                    {
+                        count++;
+                    }
                 }
             }
 
             return count;
+        }
+
+        private static string[] ToArray(IList<string> list)
+        {
+            string[] array = new string[list.Count];
+            list.CopyTo(array, 0);
+            return array;
         }
     }
 }

@@ -32,6 +32,10 @@ namespace Federator.Addin.Engine
     ///
     /// IT IS OFF BY DEFAULT and a run with the box off never calls this at all, so a
     /// weekly run costs exactly what it cost before F72.
+    ///
+    /// THE SIDE READER IS SHARED WITH F85, ServiceSizeOf below, so the viewpoint tree reads
+    /// a clash side exactly the way this rule does, the largest size property, and the two
+    /// cannot disagree about one duct. Q51.
     /// </summary>
     public sealed class Penetrations
     {
@@ -151,8 +155,8 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            PenetrationSide first = SideOf(result.Selection1, unitEnumName);
-            PenetrationSide second = SideOf(result.Selection2, unitEnumName);
+            PenetrationSide first = ReadSide(result.Selection1, unitEnumName, settings, sizes);
+            PenetrationSide second = ReadSide(result.Selection2, unitEnumName, settings, sizes);
             CoreClashStatus status = (CoreClashStatus)(int)result.Status;
 
             PenetrationDecision decision =
@@ -173,6 +177,38 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// The size verdict of the SERVICE side of one clash, F85, or null where neither
+        /// side is a service, which is the ordinary case for architecture against
+        /// structure. Read through the same two readers the penetration rule uses, the
+        /// largest size property through SizeRule.LargestMillimetres, and judged by
+        /// SizeRule.VerdictFor, so the viewpoint tree and F72a cannot disagree about one
+        /// duct. Never throws: a side that will not read is a side with no size, which is
+        /// SizeUnknown, in and said.
+        /// </summary>
+        internal static SizeVerdict? ServiceSizeOf(
+            ClashResult result, PenetrationSettings settings, SizeSettings sizes, string unitEnumName)
+        {
+            if (result == null || settings == null || sizes == null)
+            {
+                return null;
+            }
+
+            PenetrationSide first = ReadSide(result.Selection1, unitEnumName, settings, sizes);
+            PenetrationSide second = ReadSide(result.Selection2, unitEnumName, settings, sizes);
+
+            PenetrationSide service = settings.IsService(first.Category)
+                ? first
+                : settings.IsService(second.Category) ? second : null;
+
+            if (service == null)
+            {
+                return null;
+            }
+
+            return SizeRule.VerdictFor(service.LargestMillimetres, sizes);
+        }
+
+        /// <summary>
         /// One side of a clash, read off the first item it holds.
         ///
         /// THE FIRST ITEM AND NOT EVERY ITEM. A clash side is one geometry item on a
@@ -181,7 +217,8 @@ namespace Federator.Addin.Engine
         /// in a group. Where a side somehow holds several, the first is the one the panel
         /// shows, which is the one a person looking at this clash sees.
         /// </summary>
-        private PenetrationSide SideOf(ModelItemCollection selection, string unitEnumName)
+        private static PenetrationSide ReadSide(
+            ModelItemCollection selection, string unitEnumName, PenetrationSettings settings, SizeSettings sizes)
         {
             if (selection == null || selection.Count == 0)
             {
@@ -196,8 +233,8 @@ namespace Federator.Addin.Engine
             }
 
             string name = Words.Or(item.DisplayName, string.Empty);
-            string category = CategoryOf(item);
-            double? largest = LargestOf(item, unitEnumName);
+            string category = CategoryOf(item, settings);
+            double? largest = LargestOf(item, unitEnumName, sizes);
 
             return new PenetrationSide(name, category, largest);
         }
@@ -212,7 +249,7 @@ namespace Federator.Addin.Engine
         /// read after it. That rule was written after a single throw lost three columns of
         /// every row on one run.
         /// </summary>
-        private string CategoryOf(ModelItem item)
+        private static string CategoryOf(ModelItem item, PenetrationSettings settings)
         {
             try
             {
@@ -244,7 +281,7 @@ namespace Federator.Addin.Engine
         /// unit conversion are SizeRule, which F53 already wrote too. Nothing here does
         /// either, so the two features cannot disagree about what a size is.
         /// </summary>
-        private double? LargestOf(ModelItem item, string unitEnumName)
+        private static double? LargestOf(ModelItem item, string unitEnumName, SizeSettings sizes)
         {
             try
             {
@@ -329,7 +366,7 @@ namespace Federator.Addin.Engine
         /// tolerance conversion. Feeding that to UnitTable.ByEnumName would throw on every
         /// clash, so the enum's own name is read here and nowhere else.
         /// </summary>
-        private static string UnitEnumName(Document document)
+        internal static string UnitEnumName(Document document)
         {
             return document == null ? string.Empty : document.Units.ToString();
         }

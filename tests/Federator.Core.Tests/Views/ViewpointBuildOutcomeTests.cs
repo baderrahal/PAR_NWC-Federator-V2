@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Diagnostics;
 using Federator.Core.Views;
 using NUnit.Framework;
 
@@ -160,6 +161,42 @@ namespace Federator.Core.Tests
             {
                 Assert.That(line, Does.Not.Contain("views that failed"));
             }
+        }
+
+        /// <summary>
+        /// F85. A group puts hundreds of viewpoints in, so the block names five and counts
+        /// the rest, at the number and one past it, and a FAILED one is always named
+        /// wherever it sits, because every failure says something different.
+        /// </summary>
+        [Test]
+        public void TheBlockNamesFiveAndCountsTheRestAndEveryFailureIsNamed()
+        {
+            ViewpointBuildOutcome at = new ViewpointBuildOutcome();
+
+            for (int i = 0; i < RunLog.KeptOfARepeat; i++)
+            {
+                at.AddCreated("A/AR vs ST/view " + i, "AR vs ST", 2);
+            }
+
+            string atText = string.Join("\n", new List<string>(at.Lines()).ToArray());
+            Assert.That(atText, Does.Contain("view " + (RunLog.KeptOfARepeat - 1)));
+            Assert.That(atText, Does.Not.Contain("counted and not listed"));
+
+            ViewpointBuildOutcome past = new ViewpointBuildOutcome();
+
+            for (int i = 0; i <= RunLog.KeptOfARepeat; i++)
+            {
+                past.AddCreated("A/AR vs ST/view " + i, "AR vs ST", 2);
+            }
+
+            past.AddFailed("A/AR vs ST/view broken", "AR vs ST", "the API said no");
+
+            string pastText = string.Join("\n", new List<string>(past.Lines()).ToArray());
+            Assert.That(pastText, Does.Not.Contain("view " + RunLog.KeptOfARepeat + "  "));
+            Assert.That(pastText, Does.Contain("and 1 more created or already there, counted and not listed"));
+            Assert.That(pastText, Does.Contain("view broken  FAILED"));
+            Assert.That(pastText, Does.Contain("views created     : " + (RunLog.KeptOfARepeat + 1)));
+            Assert.That(pastText, Does.Contain("views that failed : 1"));
         }
     }
 }

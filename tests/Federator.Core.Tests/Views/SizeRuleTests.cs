@@ -223,5 +223,24 @@ namespace Federator.Core.Tests
                 () => SizeRule.Decide(Read("Diameter", 1.0), "Millimeters", null),
                 Throws.ArgumentNullException);
         }
+
+        /// <summary>
+        /// F85. The largest size of a clash side, already in millimetres, judged at the
+        /// number, one past it and with no size at all. Exactly the threshold is Small,
+        /// because over means over, which is the same reading Decide gives.
+        /// </summary>
+        [Test]
+        public void TheVerdictForMillimetresIsSmallAtTheThresholdAndLargeOnePastIt()
+        {
+            SizeSettings settings = new SizeSettings();
+            double at = settings.ThresholdMillimetres;
+
+            Assert.That(SizeRule.VerdictFor(at, settings), Is.EqualTo(SizeVerdict.Small));
+            Assert.That(SizeRule.VerdictFor(at + 0.001, settings), Is.EqualTo(SizeVerdict.Large));
+            Assert.That(SizeRule.VerdictFor(at - 0.001, settings), Is.EqualTo(SizeVerdict.Small));
+            Assert.That(SizeRule.VerdictFor(0, settings), Is.EqualTo(SizeVerdict.Small));
+            Assert.That(SizeRule.VerdictFor(null, settings), Is.EqualTo(SizeVerdict.SizeUnknown));
+            Assert.Throws<ArgumentNullException>(delegate { SizeRule.VerdictFor(1, null); });
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Views
 {
@@ -161,13 +162,41 @@ namespace Federator.Core.Views
         /// came from so the two cannot disagree. This is the VIEWS block and it is shaped
         /// on the SETS block on purpose.
         /// </summary>
+        /// <summary>
+        /// The block. Every FAILED viewpoint is named, because each says something
+        /// different. The created and the already there ones are named five deep and then
+        /// counted, RunLog.KeptOfARepeat, because F85 puts hundreds into one group and a
+        /// block that names all of them buries everything worth reading, which is the
+        /// fault every other list in this log already guards against. The totals under it
+        /// are counted off the same list the lines came from.
+        /// </summary>
         public IList<string> Lines()
         {
             List<string> lines = new List<string>();
+            int shown = 0;
+            int notShown = 0;
 
             for (int i = 0; i < results.Count; i++)
             {
-                lines.Add(results[i].Line());
+                if (results[i].Failed)
+                {
+                    lines.Add(results[i].Line());
+                    continue;
+                }
+
+                if (shown < RunLog.KeptOfARepeat)
+                {
+                    lines.Add(results[i].Line());
+                    shown++;
+                    continue;
+                }
+
+                notShown++;
+            }
+
+            if (notShown > 0)
+            {
+                lines.Add("VIEW     and " + notShown + " more created or already there, counted and not listed");
             }
 
             lines.Add(string.Empty);
@@ -185,7 +214,6 @@ namespace Federator.Core.Views
 
             lines.Add("put into the document: " + CreatedCount + " created, "
                 + AlreadyPresentCount + " already there and left alone");
-
             return lines;
         }
     }
