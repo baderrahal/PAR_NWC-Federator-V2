@@ -139,6 +139,8 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// A TEST IS THIS MEMBER'S ONLY CALLER AND BADER CHOSE TO KEEP IT, Q53, 2026-09-19. It is
+        /// a stated rule worth stating, so the next audit does not raise it again.
         /// Whether somebody has DECIDED about that category, either way, F72a. True for a
         /// service and true for one of the four decided not to be one. The matrix test
         /// reads this rather than IsService, so a category added to the client's matrix
