@@ -141,6 +141,22 @@ and 6 does not read as broken.
   Never import a test with an empty side. It returns zero clashes and reads as passed
 - A test where either side resolves to zero items in this model counts as skipped,
   not passed. Skipped and passed are counted as different numbers in the report
+- A TEST WHOSE SIDE FINDS NOTHING IS NOT CREATED AT ALL, F77. The sets are built and
+  resolved before any test is created, so how many items each locator finds is already in
+  hand, and creating a test to discover a thing already known was 631 seconds of a 1424
+  second run: 1830 created, 1619 of them thrown away moments later by the empty side
+  check. `Federator.Core.Clash.CreationPlan` is the rule. It CALLS `ClashSideCheck` rather
+  than carrying a second copy of it, and that check STAYS as the second line of defence
+  before a test is run. A LOCATOR NOBODY COUNTED IS NOT A LOCATOR FINDING NOTHING: a
+  count missing from what the plan is handed means the test is created and the run-time
+  check answers, because the safe mistake is an extra test and the unsafe one is leaving
+  a real test out of the NWF over a number nobody took. One counted line,
+  `CLASH 1830 in the file, 211 created, 1619 not created, a side finds nothing`, and which
+  tests they were is said by the ordinary skip block, a count and five examples, where
+  every other skip reason is already said. THE WORKBOOK STILL CARRIES A BLOCK FOR EVERY
+  TEST IN THE FILE. Not creating a test changes what goes in the DOCUMENT and never what
+  goes in the report, because the client's report is the whole matrix and a test missing
+  from it reads as a test nobody ran rather than as a test that could not clash
 - The Revit container inside an NWC is often a different building from the NWC.
   Where the building code parsed from the NWC name differs from the code in the
   Revit source name, report SOURCE MISMATCH naming both, and where one Revit
@@ -253,9 +269,11 @@ and 6 does not read as broken.
   the plain case and two NWCs of the same discipline are the same case, D5 on
   2026-09-12, so the count is of disciplines and not of files, in
   Federator.Core.Grouping.BuildingGroup.CannotClashWith, read by the window row and the
-  engine alike. Every test is still created, so the NWF is complete and matches the
-  other groups and a later run against a fuller model finds them already there, and none
-  of them is run. The reason is SingleDiscipline and it is counted apart from EmptySide on
+  engine alike, and none of them is run. SINCE F77 THEY ARE NOT ALL CREATED EITHER,
+  which is a change from the rule this bullet used to state. That rule said every test is
+  still created so the NWF is complete and matches the other groups. It cost 631 seconds
+  of a 1424 second run to create 1619 tests that were thrown away moments later, and Q46
+  asks whether the completeness was worth it. The reason is SingleDiscipline and it is counted apart from EmptySide on
   purpose. A side finding nothing says a discipline was not exported. One discipline says
   the group was never going to clash and no export would change that. In the last real
   folder that was 1B06BS and 1C06PK, and both ran 1830 tests for nothing. The open file
