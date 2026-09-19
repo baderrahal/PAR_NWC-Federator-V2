@@ -49,18 +49,20 @@ THE WHOLE ROUND IS ONE BRANCH AND ONE PULL REQUEST, `round-first-run`, which Bad
 
 EVERY FIX IN THIS ROUND IS THE CORE HALF ONLY. The round was worked in a Linux container with no Navisworks on it, so nothing in the add-in was compiled. Every rule is in Federator.Core, every one has tests, and the whole Core set passes. The add-in wiring is `03_bader_next.md` steps 358 to 380 and the five measurements the round could not take are steps 353 to 357.
 
+THE EIGHT WITHOUT AN ADD-IN CALLER WERE WIRED IN THE WIRING ROUND ON 2026-09-19, on the machine with Navisworks, one commit each on the branch round-wiring, built after every one and proved by a run. They read WIRED above and under their own sections, and the run they were proved on is in the wiring round's entry in log.md. F85 is still the Core half only, waiting on steps 374 and 375.
+
 19. F88, DONE, restore the sample thirteen tests read. Not briefed, found by running the tests on main
 20. F87, DONE, correct the matrix, the hyphen and BLD-EL-Devices
 21. F72a, DONE, Pipe Insulation is a service, and the matrix test
 22. F73, DONE, appending brings the viewpoints in, which is not a fault
-23. F74, DONE, the NWF that read empty is stopped and never rebuilt
-24. F75, DONE, the document is emptied at the top of every group
-25. F76, DONE, the tolerance can be chosen in the tool and it wins
-26. F77, DONE, a test whose side finds nothing is not created at all
-27. F86, DONE, the property probe
-28. F83, DONE, the clash priority reaches the report
-29. F72b, DONE, by design connections become Reviewed
-30. F72c, DONE, the record in the NWF and the undo
+23. F74, WIRED, the NWF that read empty is stopped and never rebuilt
+24. F75, WIRED, the document is emptied at the top of every group
+25. F76, WIRED, the tolerance can be chosen in the tool and it wins
+26. F77, WIRED, a test whose side finds nothing is not created at all
+27. F86, WIRED, the property probe
+28. F83, WIRED, the clash priority reaches the report
+29. F72b, WIRED, by design connections become Reviewed
+30. F72c, WIRED, the record in the NWF and the undo
 31. F85, DONE, the saved viewpoints in three layers, planned and not written
 32. F84, DONE, the sets that cannot match anything
 33. F78, DONE, the log says or where the file says or
@@ -109,55 +111,63 @@ Every one of these came off ONE log, `run-20260919-144319.log`, the first real r
 - Files `src/Federator.Core/Rerun/ModelLoadWait.cs` which is new, `NwfComparison.cs`, `RunPath.cs`, `GroupJudgement.cs`, `docs/history/scan.md`
 - CONTAINER for both rules, LOCAL MACHINE for whether the API reports readiness
 - All five existing NWFs reported 0 unchanged, 4 added, 0 removed and were thrown away, and `STEP DECIDE finished 0.248s` against 2.3 to 4.8 seconds for every open on record
-- DONE on 2026-09-19. `ModelLoadWait` polls until the count stops moving, three identical readings a quarter second apart, with a thirty second ceiling, and ZERO NEVER SETTLES because zero cannot be told apart from a document that has not started filling. `NwfComparison.ReadEmpty` is the refusal: a new `RerunDecision.Refused`, a reason naming the file and saying what to do, a `RunPath.Stopped` label counted in both blocks, and a FAILED group. `Compare` is unchanged and its comment now says why it must not try to answer this. Whether the API reports readiness on its own is UNKNOWN, `scan.md` 5e
+- CORE HALF DONE on 2026-09-19. `ModelLoadWait` polls until the count stops moving, three identical readings a quarter second apart, with a thirty second ceiling, and ZERO NEVER SETTLES because zero cannot be told apart from a document that has not started filling. `NwfComparison.ReadEmpty` is the refusal: a new `RerunDecision.Refused`, a reason naming the file and saying what to do, a `RunPath.Stopped` label counted in both blocks, and a FAILED group. `Compare` is unchanged and its comment now says why it must not try to answer this. Whether the API reports readiness on its own is UNKNOWN, `scan.md` 5e
+- WIRED on 2026-09-19 in the wiring round, step 365, commit fcbdb6b. `Decide` and the preview both open through one method that hands `ModelLoadWait` the count and the seconds since the open returned, pumps the dispatcher and sleeps between readings, and refuses a count that gave up at zero. Proved on the run of 2026-09-19 21:13: every LOADING line settled within a second, and the scene loaded event fired once per model INSIDE the open, before it returned, which is written into scan.md 5e
 
 ### F75 The document is emptied at the top of every group
 
 - Files `src/Federator.Core/Diagnostics/CensusRule.cs`, `src/Federator.Core/Rerun/RunPath.cs`
 - CONTAINER for the rule, LOCAL MACHINE for the clear itself
 - There were two clears in the whole engine and both ran AFTER Decide had read the file list
-- DONE on 2026-09-19. `StartOfGroupLine` and `StartOfGroupReason` are the Core half. The first census of a group must read five zeros, and a group that was emptied and still holds something is named count by count and is not DONE. A count that could not be taken is never called dirty. The open file run empties nothing on purpose and is never a fault. The two weekly lines in the confirm dialog said "Nothing is cleared" and now say nothing INSIDE the NWF is cleared, which is what a person is asking about
+- CORE HALF DONE on 2026-09-19. `StartOfGroupLine` and `StartOfGroupReason` are the Core half. The first census of a group must read five zeros, and a group that was emptied and still holds something is named count by count and is not DONE. A count that could not be taken is never called dirty. The open file run empties nothing on purpose and is never a fault. The two weekly lines in the confirm dialog said "Nothing is cleared" and now say nothing INSIDE the NWF is cleared, which is what a person is asking about
+- WIRED on 2026-09-19 in the wiring round, step 366, commit b5ce89f. `RunOne` empties the document at its top, before `Decide`, and the census line follows. Proved on the run of 2026-09-19 21:13: CENSUS CLEAR at the top of all ten groups, every count read zero, and no CENSUS DIRTY anywhere
 
 ### F76 The tolerance can be chosen in the tool and it wins
 
 - Files `src/Federator.Core/Clash/ToleranceChoice.cs` which is new, `src/Federator.Core/Report/ReportOptions.cs`, `ClashReportModel.cs`
 - CONTAINER for the rule, LOCAL MACHINE to set it on a test
 - The matrix is written at 25 mm, the NWFs held tests at 75 mm, and the run clashed at 75 while everybody believed it was clashing at 25
-- DONE on 2026-09-19. A drop down with five entries, the first of which changes nothing. A chosen value is set on EVERY test in the run and beats both the XML and the document. Millimetres in, document units out, through UnitTable, and a unit it does not know throws. Zero is a real tolerance and a negative one is refused where it is set. The confirm screen says the value, the counts, what it beats and that a saved test's results are RESET. Separately the report reads its tolerance off the clash test in the DOCUMENT, and `ToleranceFrom` carries where it was read so a report reading the file shows as a number
+- CORE HALF DONE on 2026-09-19. A drop down with five entries, the first of which changes nothing. A chosen value is set on EVERY test in the run and beats both the XML and the document. Millimetres in, document units out, through UnitTable, and a unit it does not know throws. Zero is a real tolerance and a negative one is refused where it is set. The confirm screen says the value, the counts, what it beats and that a saved test's results are RESET. Separately the report reads its tolerance off the clash test in the DOCUMENT, and `ToleranceFrom` carries where it was read so a report reading the file shows as a number
+- WIRED on 2026-09-19 in the wiring round, steps 367 and 368, commits b6ec0f2 and ee62966. The drop down, the Other box in millimetres, the refusal before the run, the confirm lines, the tolerance set on every created test and put onto every saved one through its own copy, one TOLERANCE line per group, and the report row reading its tolerance off the test in the document with the four origins counted across the run. Proved on the run of 2026-09-19 21:13 at 25 mm
 
 ### F77 A test whose side finds nothing is not created at all
 
 - Files `src/Federator.Core/Clash/CreationPlan.cs` which is new, `.claude/rules/core.md`
 - CONTAINER
 - TESTS CREATE took 631 seconds of a 1424 second run and 1619 of the 1830 tests it created were thrown away moments later
-- DONE on 2026-09-19. `CreationPlan` CALLS `ClashSideCheck` rather than carrying a second copy, and that check stays as the second line of defence. A locator nobody counted is created and left to the run-time check, because the safe mistake is an extra test. One counted line and not 1619. The workbook still carries a block for every test in the file. This changes a rule that was stated the other way, which is Q46
+- CORE HALF DONE on 2026-09-19. `CreationPlan` CALLS `ClashSideCheck` rather than carrying a second copy, and that check stays as the second line of defence. A locator nobody counted is created and left to the run-time check, because the safe mistake is an extra test. One counted line and not 1619. The workbook still carries a block for every test in the file. This changes a rule that was stated the other way, which is Q46
+- WIRED on 2026-09-19 in the wiring round, step 369, commit 03a913e. The sets are counted once per group and `CreationPlan` decides what is created. Proved on the run of 2026-09-19 21:13: `CLASH 1830 in the file, 21 created, 1809 not created, a side finds nothing` on the first group, and BLOCKS 1830 in every workbook
 
 ### F86 The property probe
 
 - Files `src/Federator.Core/Probe/ProbeSettings.cs`, `ProbeRow.cs`, `ProbeTally.cs`, `ProbeCsv.cs`, `ProbeVerdict.cs`, all new
 - CONTAINER for the CSV, the cap, the order and the verdict, LOCAL MACHINE for the walk
 - Nobody knows what the models carry, and whether fire suppression pipework is told apart by a property has been guessed at rather than read
-- DONE on 2026-09-19. One CSV per NWC beside the file, five columns, seventeen categories read off the matrix rather than typed, 100 distinct values per property with what was left out SAID. It never opens an NWF and `MayRead` is what makes that enforceable. The verdict says whether FS or Fire Suppression appears anywhere and says so as plainly when it does not, and FS is matched as a whole token so OFFSET does not read as fire suppression. The walk itself is `scan.md` 5f. Rewriting the mechanical sets is not in this round
+- CORE HALF DONE on 2026-09-19. One CSV per NWC beside the file, five columns, seventeen categories read off the matrix rather than typed, 100 distinct values per property with what was left out SAID. It never opens an NWF and `MayRead` is what makes that enforceable. The verdict says whether FS or Fire Suppression appears anywhere and says so as plainly when it does not, and FS is matched as a whole token so OFFSET does not read as fire suppression. The walk itself is `scan.md` 5f. Rewriting the mechanical sets is not in this round
+- WIRED on 2026-09-19 in the wiring round, steps 358 to 364, commit dcbbf67. The button, the folder or the open document, one CSV per model beside its file, the PROBE block. The category is read the way the penetration rule reads one and whether it is one of the seventeen is `ProbeSettings.Asks`, a Core member added for it with a test. See the wiring round's log entry for what the run showed
 
 ### F83 The clash priority reaches the report
 
 - Files `src/Federator.Core/Clash/ClashPriority.cs`, `PriorityMap.cs`, `PriorityTally.cs`, all new, `src/Federator.Core/Report/ReportOrder.cs`, `WorkbookWriter.cs`, `WorkbookCheck.cs`, `ClashReportModel.cs`, `ReportOptions.cs`, `src/Federator.Core/Diagnostics/FolderMemory.cs`
 - CONTAINER
 - The priority is a decision the project made about which clashes matter and it is in nothing Navisworks exports
-- DONE on 2026-09-19. The file is optional and when nothing is picked nothing changes. The test name is matched exactly and a letter that is not A, B or C is a problem named in the log rather than a silent None. `ReportOrder.Tests` is now the ONE place the block order is decided and the workbook, the clash XML and the picture numbering all read it. The Priority column sits one past the client's table, `LastColumn` stays 19, and the check was told which order was asked for or it would call every priority sorted workbook wrongly ordered. Whether the client wants the report in that order at all is Q49
+- CORE HALF DONE on 2026-09-19. The file is optional and when nothing is picked nothing changes. The test name is matched exactly and a letter that is not A, B or C is a problem named in the log rather than a silent None. `ReportOrder.Tests` is now the ONE place the block order is decided and the workbook, the clash XML and the picture numbering all read it. The Priority column sits one past the client's table, `LastColumn` stays 19, and the check was told which order was asked for or it would call every priority sorted workbook wrongly ordered. Whether the client wants the report in that order at all is Q49
+- WIRED on 2026-09-19 in the wiring round, step 370, commit 580fe51. The picker, the map on the report, the letter on every row, the PRIORITY lines and block, the workbook check told the order, and the RESULT line through one hook on `RunLog` added with two tests. Proved on the run of 2026-09-19 21:13: `PRIORITY 1830 in the file, 1830 tests in this run, 1830 matched, 0 not named by the file`
 
 ### F72b By design connections become Reviewed
 
 - Files `src/Federator.Core/Clash/ByDesignPairs.cs`, `ByDesignRule.cs`, `ByDesignTally.cs`, `ReviewedLine.cs`, all new
 - CONTAINER for the rule, LOCAL MACHINE to see a status move
 - A column on its foundation, a door in a wall, a valve in a pipe run. Every one is a clash and none is a problem
-- DONE on 2026-09-19. A LIST and not a judgement: it knows nothing about items, categories or sizes, deliberately, because reading every item once per clash is the walk that once built 1.7 million native handles. The two set names are sorted before matching and are Ordinal and never trimmed, which is the opposite of how a category is matched. The penetration rule owns a clash they both want. `ReviewedLine` is new because two rules write that line now. The brief's grey line was thirteen words and a grey line is twelve, so the word list came off
+- CORE HALF DONE on 2026-09-19. A LIST and not a judgement: it knows nothing about items, categories or sizes, deliberately, because reading every item once per clash is the walk that once built 1.7 million native handles. The two set names are sorted before matching and are Ordinal and never trimmed, which is the opposite of how a category is matched. The penetration rule owns a clash they both want. `ReviewedLine` is new because two rules write that line now. The brief's grey line was thirteen words and a grey line is twelve, so the word list came off
+- WIRED on 2026-09-19 in the wiring round, step 371, commit 8f7cedd. The tick box and the pairs picker with Core wording, `ByDesign` in the add-in walking names and statuses only, judged after the penetration rule in the one status pass, the BY DESIGN block, the run line naming the pairs that matched nothing, and the RESULT line through the same `RunLog` hook shape. Proved on the run of 2026-09-19 21:13: clashes moved New to Reviewed under rule B
 
 ### F72c The record in the NWF and the undo
 
 - Files `src/Federator.Core/Clash/AutoReviewRecord.cs`, `UndoAutoReview.cs`, both new, `StatusesThisToolMaySet.cs`
 - CONTAINER for the record and the rule, LOCAL MACHINE for whether a comment can be written at all
-- DONE on 2026-09-19. The record is a marker no person would type, the rule, the status the clash was moved OFF, then the reason. The old status is on it because putting an Active clash back to New would destroy a real difference. A comment a person wrote is never read as one of ours. The undo touches a clash only where it carries our record AND is still at Reviewed. `AllowsAsUndo` is a separate answer from `Allows` and not a loosening of it, which is Q50. Whether a comment can be written at all is `scan.md` 5h, and if it cannot the tool says so in one line and fakes nothing
+- CORE HALF DONE on 2026-09-19. The record is a marker no person would type, the rule, the status the clash was moved OFF, then the reason. The old status is on it because putting an Active clash back to New would destroy a real difference. A comment a person wrote is never read as one of ours. The undo touches a clash only where it carries our record AND is still at Reviewed. `AllowsAsUndo` is a separate answer from `Allows` and not a loosening of it, which is Q50. Whether a comment can be written at all is `scan.md` 5h, and if it cannot the tool says so in one line and fakes nothing
+- WIRED on 2026-09-19 in the wiring round, steps 372 and 373, commit 377d1f0. The record is a comment written through `TestsEditResultComments` before the status on the same handle, both rules hand over the status they moved from and why, and the Undo auto Reviewed button walks every test of the open document through the one editor with the undo half of the guard. See the wiring round's log entry for what the run showed about the comment surviving
 
 ### F85 The saved viewpoints in three layers, planned and not written
 

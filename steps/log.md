@@ -2,6 +2,176 @@
 
 Newest entry at the top.
 
+## 2026-09-19 The wiring round is closed, the eight Core halves have their add-in callers
+
+### What the round was
+
+The plan is the entry below this one, written before the first edit. Eight fixes of the
+first run round had a rule, tests, and no add-in caller: F74, F75, F76, F77, F83, F72b,
+F72c and F86. This round wired them in the order the brief gave, following the steps
+already in 03_bader_next.md, on the machine with Navisworks Manage 2025 on it, one commit
+per item on the branch round-wiring, the whole solution built after every one, and proved
+by two runs of a real folder driven from this session. Nothing about the eight designs was
+invented here, and no Core rule was changed to ease a wiring.
+
+### What was done, in the brief's order
+
+- PART 1. Fourteen sentences in core.md saying which rules were the Core half only, each
+  naming its step. Twelve came back out in the same commit as the wiring that made the
+  rule true. Two stay, both F85, steps 374 and 375, which are not in this round
+- PART 2. Three of the five measurements taken by reflection and written into scan.md 5e,
+  5f and 5h, each with its probe in tools\probes. 5e: DocumentModels.SceneLoaded exists,
+  and the run then showed it fires once per model INSIDE TryOpenFile, before it returns,
+  so the poll stands as the reader and the event is counted beside it. 5f: the whole
+  property walk, and how a value becomes a cell by its kind. 5h: a comment CAN be
+  written on a clash result, through DocumentClashTests.TestsEditResultComments. 5g got
+  what reflection can say, SearchCondition.Negate and NegateCondition as bit 32, and its
+  round trip still needs a hand built set. 5i is NOT measured, and the probe as built
+  cannot answer it, see below
+- PART 3. The eight wirings, one commit each: F75 b5ce89f, F74 fcbdb6b, F76 b6ec0f2 and
+  ee62966, F77 03a913e, F83 580fe51, F72b 8f7cedd, F72c 377d1f0, F86 dcbbf67. Every one
+  built with 0 errors and 0 warnings before it was committed, and both tools\checks
+  scripts were clean after every one
+- PART 4. A19 and A11 first with the audit's own proofs run, then A10, A12, A13, A14,
+  A15, A17, A18, A20, A21, A22 and A23, one commit each. A16 became Q53 rather than a
+  deletion, below. A23 moved Csv out of PriorityMap.cs and nothing else, as the brief said
+- PART 5. The build at 0 and 0, the Core tests, both checks, build\install.ps1, and TWO
+  runs of the C02 folder, ten groups, from this session. The first with the tolerance at
+  25 mm, the by design box on with samples\by-design-pairs.csv, and
+  samples\clash-priority-map.csv picked. The second with the same boxes, so every NWF the
+  first had written was opened again off the disk. The log is
+  steps\logs\run-20260919-211323.log with its .tsv beside it
+
+### What the run showed, line by line, the seven the brief named
+
+Ten groups, three First run and seven Weekly run plus XML, all ten DONE, none partial,
+none failed. The run took 4 minutes 54 seconds against the 45 the criterion allows, and
+the first run round's seven groups had taken 24 minutes.
+
+- CENSUS CLEAR at the top of every group: ten lines, every count read zero, and no
+  CENSUS CHANGED or CENSUS DIRTY anywhere in either run
+- TOLERANCE: one per group, for example `TOLERANCE 25 mm chosen in the tool, so it beats
+  both the XML and the document. Set on 1770 tests, 0 created fresh and 1770 already in
+  the document. 25 mm is 0.082021 ft in this document`, and on a saved test
+  `CLASH TOLERANCE BLD-AR-Stairs-vs-BLD-AR-Floors 0.2460629921 to 0.082020997375 ft,
+  chosen in the tool, which reset its results`. The confirm dialog carried the four
+  warning lines, read off a screenshot
+- LOADING: two lines per opened NWF, `the NWF reported 4 models after 0.721s, steady over
+  3 reads 0.250s apart` and the event line beside it. Nothing read empty, so the refusal
+  and the ceiling were not exercised
+- CLASH 1830 in the file: ten lines. First run groups `21 created, 1809 not created, a
+  side finds nothing`, `105 created, 1725 not created`, `15 created, 1815 not created`.
+  Weekly groups `0 created, 60 not created`, the 60 being the tests the corrected XML
+  names differently from the tests saved in the NWF. BLOCKS 1830 in every workbook
+- PRIORITY: `PRIORITY 1830 in the file, 1830 tests in this run, 1830 matched, 0 not named
+  by the file` in every group, a block per group such as `526 in all, A 379, B 51,
+  C 96, No priority 0`, and in RESULT `by priority : A 742, B 91, C 238, No priority 0,
+  1071 in all`
+- REVIEWED rule B: 145 clashes moved to Reviewed across the run, each with its pair and
+  reason, `REVIEWED rule B 145 set, 29 pairs in the file matched no test in this run`,
+  and in RESULT `by design : 145 clashes moved to Reviewed`
+- The Priority column: `Priority` is in the shared strings of every workbook, and the
+  WORKBOOK CHECK block of every group reads `Every column, value shape, fill, border, row
+  height and column width matches the client's report, and the blocks are in their order`
+
+### What the second run showed
+
+Every NWF the first run wrote was opened again off the disk. Rule B found the clashes it
+had moved `already Reviewed, Approved or Resolved, so somebody decided and it stands`, 17
+in 1A02BS and 44 in 1A02MM, so the STATUS half of the record survived a save and a
+reopen.
+
+The Undo auto Reviewed button was then pressed on the open document, 1A02WO, which the
+second run had opened off the disk: `10 put back of 69 looked at`, every one `back to
+Active`, the status its record named, and 59 `this tool never moved it, so there was
+nothing of ours to undo`. So the COMMENT half of the record survived the save and the
+reopen too, and TestsEditResultComments writes a record that comes back readable. The
+undo changed the open document and saved nothing, as its line says.
+
+The Probe model properties button was then pressed for the open document: four models
+walked in under a second each, 222, 188, 946 and 62 items, one CSV beside each NWC in the
+source folder. The mechanical one: 17 categories asked for, 6 found, the 11 with no
+element named, 1939 properties, 4855 distinct values, none capped, and `FS and Fire
+Suppression appear in NO property tab, property name or value anywhere in this model`.
+The structural one is a header alone, because none of the seventeen is a structural
+category. Two values in the mechanical file carry a newline inside a quoted cell, a URL
+and a drawing number, which is what the model holds and the CSV keeps. The four CSV files
+sit beside the NWC files in the C02 NWC folder, where step 360 says they go, and nothing
+else in that folder was touched.
+
+### What the run showed that nobody asked about
+
+- THE REPORT TOLERANCE LINE READS ALARMING AND IS RIGHT. `TOLERANCE on the report, read
+  off the clash test in the document for 1041, the clash XML for 17259, chosen in the
+  tool for 0, UNKNOWN for 0, 18300 tests in all`. The 17259 are rows of tests that never
+  ran, and a row the document never produced keeps what the plan gave it. That is Q54
+- THE SET COUNT FOR THE CREATION PLAN COSTS NOTHING. `counted the items of 61 sets for the
+  creation plan in 0.0000344s` on every group. Navisworks answers GetSelectedItems off a
+  cache once the sets step has resolved them, so the cost F77 was written to avoid, 631
+  seconds of creating, went to under a millisecond of counting
+- 192 item ids are missing on 1A02MM and every one is on a result carried over from an
+  earlier run, F79's line, which is the first time that split has been read off a run
+- The scene loaded event fires INSIDE the open on this machine, which is not what the
+  first real run saw. What made five NWFs read empty there is still UNKNOWN, 5e says so
+
+### How the run was driven, because it could not be pressed by hand
+
+Navisworks started through the automation API ran the plugin and the window closed on
+its own after 8.5 seconds, why UNKNOWN. Started the ordinary way it stayed open. The
+add-in's ribbon button has no element in the automation tree, the window is not a child
+of the desktop root because Navisworks owns it, and a control on an unselected tab has
+no visual tree. All of that is measured and written at the top of
+tools\probes\drive-window-run.ps1, which is the driver, and a person at the machine
+opened the NWD and the add-in while this was being worked out. The audit's own proofs for
+A19 and A11 were run the way it asked: the comparison flipped and the resource removed,
+each fixture went red, and each was put back
+
+### What is NOT done, said plainly
+
+- 5g's round trip and 5i. 5g needs a search set built by hand in Clash Detective. 5i is
+  not a side effect of F86 as built: the probe reads only the seventeen categories the
+  settings ask for, so it cannot list every category a model carries, and 03_bader_next.md
+  says so at step 357
+- F85, steps 374 and 375, was never in this round. Its two sentences stay in core.md
+- The pull request. There is no gh here and the GitHub connector refuses to create one,
+  as on the two rounds before. The branch round-wiring is pushed and Bader merges it
+- The DEFAULT tolerance path, the by design box off and no priority file were not run
+  this round, because the brief asked for the one run with all three on. The first run
+  round's log covers the defaults as they were before the wiring
+
+### The Core changes that were not wirings, each said
+
+- RunLog gained PriorityAcrossTheRun, ByDesignWanted and ByDesignMoved, the hooks the
+  two RESULT lines needed, the same shape the penetration line already had, four tests
+- PenetrationSettings.Holds became the public Names, and ProbeSettings gained Asks, so
+  the probe asks for a category the way the penetration rule reads one, one test
+- ClashHarvest.Text became internal so the probe reads a value by its kind through the
+  one reader. A19 added seven tests, A11 a third state and one test, A14 made
+  RunLog.KeptOfARepeat the one number, A15 a note on a rewrite, A22 one space, A23 one
+  file, A13 and A12 one name each, A20 one sentence, A17 one name, A21 one line
+
+### The numbers
+
+- Build before the first edit: 0 errors, 0 warnings. After every commit: the same
+- Core tests before the first edit: 1609 passed, 0 failed, 0 skipped, 1609 total, the
+  same 1609 the last round left. After: 1622 passed, 0 failed, 0 skipped, 1622 total.
+  Thirteen tests added: two for the priority RESULT line, two for the by design RESULT
+  line, one for Asks, seven for A19 and A18, one for A11. Zero skipped rather than the
+  container's 32, because this machine has Navisworks and a Windows file system
+- 30 commits on round-wiring, one per item, and the two checks clean after every one
+
+### Questions raised
+
+Q53, whether IsDecided stays as a stated rule with a test only caller. Q54, what a
+skipped row's tolerance origin should be. Q46 to Q52 are still unanswered and nothing
+here decided any of them.
+
+### What comes next
+
+Bader merges round-wiring. Then 5g by hand, 5i with its own walk, the F85 steps 374 and
+375, and the seven questions. The defaults path deserves one run with every new box off,
+to prove the wiring changed nothing where nothing was asked for.
+
 ## 2026-09-19 The wiring round, the plan, written before the first edit
 
 ### What the round is

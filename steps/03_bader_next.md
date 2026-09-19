@@ -633,12 +633,14 @@ without reading the brief again.**
      already written, and say in one line whether any of them answers "the models are all
      in now". If one does, `ModelLoadWait` becomes the fallback and the add-in reads the
      member instead. If none does, the poll stands and that sentence is why
+     DONE on 2026-09-19 in the wiring round by toolsprobesprobe-document-ready.ps1, written into scan.md 5e. SceneLoaded exists on DocumentModels, its timing does not read off the DLL, so the poll stands and step 365 counts the event beside it.
 354. Dump the property members the same way, for F86, into 5f: `ModelItem
      .PropertyCategories`, `PropertyCategory.DisplayName`, `.Name`, `.Properties`,
      `DataProperty.DisplayName`, `.Name`, `.Value`, every reader on `VariantData`, and
      whether a `Search` can walk a whole model in one pass rather than per item. One line
      saying how a value becomes the text a CSV cell holds, and one saying whether the walk
      is per item or per search
+     DONE on 2026-09-19 in the wiring round by toolsprobesprobe-properties.ps1, written into scan.md 5f.
 355. In Clash Detective, build ONE search set by hand with a NEGATED condition, export the
      selection sets to XML, and paste the `<condition>` element into 5g. Then import that
      same XML into a fresh document and confirm the set comes back with the negation still
@@ -646,6 +648,7 @@ without reading the brief again.**
      Devices AND NOT the six named device categories. Until it is answered the file in
      `exchange\` carries the fallback, `Category equals "Nurse Call Devices"`, which is
      proved to import because the whole file uses `equals`
+     NOT done in the wiring round. What reflection can say is under 5g: SearchCondition.Negate exists and NegateCondition is bit 32. The hand built set and the round trip still wait for you.
 356. Dump the clash members for F72c into 5h: every member on `ClashResult`,
      `IClashResult` and `ClashTest` whose name holds Comment, Note, Description, Tag,
      UserName, Status or Approved, and whether the general `Comments` collection reaches a
@@ -653,6 +656,7 @@ without reading the brief again.**
      open it again and see whether the comment is still there. IF IT CANNOT BE DONE the
      answer is one line in 5h saying so, and the tool then sets the status alone and fakes
      nothing
+     DONE on 2026-09-19 in the wiring round by toolsprobesprobe-clash-comments.ps1, written into scan.md 5h. TestsEditResultComments writes one, and step 372 is wired to it. Whether it survives a save and reopen is what the run log of the wiring round shows.
 357. Open one real federation and walk every item's category property, writing the
      distinct values out. That is F84's list and it is the same walk F86's probe does, so
      the two are measured on one run. Paste the values into
@@ -661,32 +665,40 @@ without reading the brief again.**
      names in it the health check compares against nothing and says so
 
 ### How to run the Property Probe, F86, and where its CSV goes
+     NOT done in the wiring round. The probe as built reads only the seventeen categories the settings ask for, so it cannot list every category a model carries, and 5i needs its own walk.
 
 358. The button reads `Probe model properties` and it is on the Clash step. It does not run
      as part of a federation run and it never touches an NWF
+     WIRED on 2026-09-19 in the wiring round, F86, commit dcbbf67.
 359. Press it and pick either a FOLDER of NWC files or the document you already have open.
      It reads NWC and refuses an NWF or an NWD by name, because opening an NWF replaces
      whatever is open and an NWF is where every clash result lives
+     WIRED on 2026-09-19 in the wiring round, F86, commit dcbbf67.
 360. It writes ONE CSV per file, beside that file, named after it with
      `-properties.csv` on the end. So `1104-PAR-1C07BC-ZZZ-ME-MOD-000001.nwc` gives
      `1104-PAR-1C07BC-ZZZ-ME-MOD-000001-properties.csv` in the same folder
+     WIRED on 2026-09-19 in the wiring round, F86, commit dcbbf67.
 361. The CSV has five columns: category, property tab, property name, distinct value, how
      many elements. It covers seventeen categories, which are the thirteen this tool calls
      a service plus the four it has decided are not one, and that list is read off the
      client's own matrix rather than typed
+     WIRED on 2026-09-19 in the wiring round, F86, commit dcbbf67.
 362. A property carrying more than 100 distinct values keeps the commonest 100 and gets ONE
      extra row saying how many were left out and how many elements they covered. Nothing is
      dropped silently
+     WIRED on 2026-09-19 in the wiring round, F86, commit dcbbf67.
 363. Look for, F86: a `PROBE` block in the log, one per file, saying how many categories
      were asked for, how many were found, how many found no element at all, how many
      properties and distinct values there were, which properties were capped, and whether
      FS or Fire Suppression appears in any tab, name or value. IT SAYS SO AS PLAINLY WHEN
      IT DOES NOT, because a probe that only speaks up when it finds something reads as one
      that found nothing rather than as one that ran
+     WIRED on 2026-09-19 in the wiring round, F86, commit dcbbf67.
 364. Send the CSV for one mechanical NWC and the PROBE block beside it. That pair is what
      the mechanical sets get rewritten from, and rewriting them is a later round
 
 ### The add-in wiring each fix still needs
+     WIRED on 2026-09-19 in the wiring round, F86, commit dcbbf67.
 
 365. F74. In `FederationEngine.Decide`, after `document.TryOpenFile` returns true, poll
      `document.Models.Count` through `Federator.Core.Rerun.ModelLoadWait`, handing it the
@@ -697,29 +709,35 @@ without reading the brief again.**
      "after waiting " + seconds)` instead, and carry its `Reason` onto the group as
      `GroupFacts.NwfReadEmptyReason`. Do the SAME thing in `PreviewRunPaths`, which is a
      second reader of the same NWF, or the confirm dialog says Rebuilt about a healthy file
+     WIRED on 2026-09-19 in the wiring round, F74, commit fcbdb6b. The seconds handed to the wait are counted from the open RETURNING, off a stopwatch started for it, not RunLog.ElapsedSeconds, because the ceiling is thirty seconds from the open and not from the session.
 366. F75. Empty the document at the TOP of `RunOne`, before `Decide`, on the scanned path
      only. Take the census straight after and write `CensusRule.StartOfGroupLine(census,
      true)`, and put `StartOfGroupReason(census, true)` on the group where it is not null.
      The open file run passes `false` and empties nothing, because the document IS the file
      list there
+     WIRED on 2026-09-19 in the wiring round, F75, commit b5ce89f.
 367. F76. Read the drop down into `ReportOptions.Tolerance`. In `ClashRunner`, where a test
      is created and where a test already in the document is left alone, call
      `options.Tolerance.For(planned.Tolerance, documentUnits)` and set THAT. Write
      `LogLine(created, alreadyThere, documentUnits)` once per group. Put
      `WarningLines(groups, testsInTheFile)` on the confirm dialog
+     WIRED on 2026-09-19 in the wiring round, F76, commit b6ec0f2.
 368. F76 second half. `ClashRunner` line 406 sets `report.Tolerance = planned.Tolerance`,
      which is the XML and not the document. Read it off the `ClashTest` in the document
      instead and set `report.ToleranceFrom = ToleranceOrigin.Document`. Count the four
      origins across the run and write `ToleranceChoice.ReadFromLine`
+     WIRED on 2026-09-19 in the wiring round, F76, commit ee62966.
 369. F77. Before creating any test, build a dictionary of locator to item count off the
      sets just resolved, hand it and the plan to `CreationPlan.For`, create only
      `plan.Create`, feed `plan.NotCreated` into the existing skip machinery, and write
      `plan.CountedLine(testsInTheFile)`
+     WIRED on 2026-09-19 in the wiring round, F77, commit 03a913e.
 370. F83. A second picker beside the clash XML picker on the Clash step, optional, and
      `PickerKind.Priority` for where it opens. Read the file into `PriorityMap.Read`, put
      it on `report.Priorities`, set `test.Priority` on every `TestReport`, write
      `map.MatchLines(testNames)`, and pass `picked` into `WorkbookCheck.Of(path, picked)`.
      Count the clashes into a `PriorityTally` and write `ResultLine` in RESULT
+     WIRED on 2026-09-19 in the wiring round, F83, commit 580fe51.
 371. F72b. A second tick box under the penetration one, off by default, its label and grey
      line read off `ByDesignPairs.TickLabel` and `HelpLine` and never typed into the XAML.
      A third picker for the pairs file. In the same pass that applies the penetration
@@ -727,14 +745,17 @@ without reading the brief again.**
      wanted ones to the one `statuses.Apply` list, and write the block. The XAML grid has
      two rows today and needs a third, with the Things that destroy data expander moved
      down
+     WIRED on 2026-09-19 in the wiring round, F72b, commit 8f7cedd.
 372. F72c. Write `record.Text()` as a comment on the clash BEFORE the status is set and on
      the same handle, because every mutator on `DocumentClashTests` is a copy form that
      kills the handle handed to it. If step 356 says a comment cannot be written, write
      `UndoAutoReview.CannotLine(why)` once and set the status alone
+     WIRED on 2026-09-19 in the wiring round, F72c, commit 377d1f0.
 373. F72c. The `Undo auto Reviewed` button reads every clash, calls `UndoAutoReview.Judge`
      and puts back only the ones that carry our record AND are still at Reviewed, each to
      the status the record names. It goes through the one `ClashStatusEditor` like
      everything else
+     WIRED on 2026-09-19 in the wiring round, F72c, commit 377d1f0.
 374. F85. `ViewpointBuilder` loops CLASHES and not disciplines now, reading
      `ClashViewpointPlan.For`. `SavedViewpoints.Exists` resolves one folder under the root
      today and cannot see a three deep path, so rebuild the folder walk on `SetBuilder`'s
