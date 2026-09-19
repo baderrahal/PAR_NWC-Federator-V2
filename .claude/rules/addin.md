@@ -12,6 +12,29 @@ written into steps/03_bader_next.md. Rules whose logic lives in Core are in core
 The reasons and the measurements behind every rule are in
 docs/history/claude-md-history.md, kept whole.
 
+## Nothing here has ever built the add-in, and a log entry must not say it did
+
+Five log entries report that the add-in parses with the same error codes and not one
+CS1xxx, and every one of them is true and none of them is a build. The check behind
+those words passes -nostdlib with no references, and Roslyn then stops before it binds
+a single method body, so it reads SYNTAX and nothing else. Measured on 2026-09-19:
+adding the net48 reference assemblies and the built Federator.Core.dll makes it bind
+every body whose signature it can resolve, and it still cannot see inside a method that
+takes a Navisworks type, because Roslyn skips the body of any method whose signature it
+cannot bind, which is most of the engine.
+
+So the words are parses and never builds, and a round says what it could not check
+rather than leaving the reader to assume. The build is step 8 of
+steps/03_bader_next.md and it is the first thing on the machine that has Navisworks.
+
+tools/checks/check-locals.sh is the one rule of the compiler's that runs without it. It
+refuses a local declared twice in one method scope, which is CS0128, and that is the
+fault F52 shipped and nothing here saw for a day. It reads text and not a program, it
+knows nothing about types or members, and it catches one shape and no other. The
+pre-commit hook runs it before the tests and Actions runs it twice, once over src and
+once over tools/checks/broken, which is wrong on purpose so the check is proved to
+refuse as well as to pass.
+
 ## Rules the code holds
 
 - Each building writes its NWF, NWD and Excel before the next building starts.

@@ -26,3 +26,21 @@ jobs:
 
       - name: Test
         run: dotnet test tests/Federator.Core.Tests/Federator.Core.Tests.csproj --nologo -v minimal
+
+      # The add-in cannot be built by any runner, because no runner has Navisworks on it.
+      # This is the one rule of the compiler's that can be run without it, and it is the
+      # one that cost a day between F52 and F58.
+      - name: No local declared twice
+        shell: bash
+        run: sh tools/checks/check-locals.sh src
+
+      # A check that only ever runs against a clean tree proves nothing. This folder is
+      # wrong on purpose and the check has to refuse it.
+      - name: The check refuses the fault it was written for
+        shell: bash
+        run: |
+          if sh tools/checks/check-locals.sh tools/checks/broken; then
+            echo "check-locals passed a folder it is supposed to refuse"
+            exit 1
+          fi
+          echo "check-locals refused the broken folder, which is what it is for"

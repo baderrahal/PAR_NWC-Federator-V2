@@ -1809,12 +1809,16 @@ namespace Federator.Addin.Engine
 
             outcome.ViewpointsRequested = true;
 
-            ViewpointBuildOutcome views = new ViewpointBuilder(progress, log, views.Sizes).Build(document, planned);
+            // BUILT and not views. The settings above are already called views, and a
+            // second local of that name in the same scope is CS0128, which is why the
+            // add-in did not build between F52 and F58.
+            ViewpointBuildOutcome built = new ViewpointBuilder(progress, log, views.Sizes)
+                .Build(document, planned);
 
-            log.Block("VIEWS", views.Lines());
-            outcome.FailedViewpointCount = views.FailedCount;
+            log.Block("VIEWS", built.Lines());
+            outcome.FailedViewpointCount = built.FailedCount;
 
-            return views.PutAnythingIn;
+            return built.PutAnythingIn;
         }
 
         private void WriteNwd(Document document, FederationJob job, JobOutcome outcome)

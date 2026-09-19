@@ -37,6 +37,7 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
                             holds the sample files, the path helper and the temp folder
     build\install.ps1       the only way the bundle reaches the 27 machines
     tools\probes            PowerShell that measures the install or the window
+    tools\checks            what can be checked without Navisworks, run by Actions
     docs\workflow.md        the two workflows, the labels and the open file run
     docs\history            measurements and old rules, never current
     samples                 real files from the project, read by tests, never edited
