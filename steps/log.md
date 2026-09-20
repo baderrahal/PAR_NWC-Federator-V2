@@ -37,7 +37,7 @@ public API driven over the 46 names.
 | 1A04WL | 8 | ME, ST | 2 | yes |
 | 1A04WM | 4 | AR, EL, ME, ST | 4 | yes |
 | 1A04WN | 4 | AR, EL, ME, ST | 4 | yes |
-| 1A04WO | 4 | AR, **El**, ME, ST | 4 | yes |
+| 1A04WO | 4 | AR, EL, ME, ST | 4 | yes |
 | 1WAW15 | 3 | LS, LT, SW | 3 | yes |
 
 Every group takes FIRST RUN, because no NWF exists for any of them. Every group writes
@@ -52,28 +52,41 @@ are `1A0415` at shape `9A9999` and `1WAW15` at `9AAA99` against the other ten at
 0 NEAR MATCH. 2 SINGLE DISCIPLINE, which are `1A04MS` and `1A04PK`, one ST file each. And
 **10 MISSING**, which is where the third oddity shows itself.
 
-**THE THIRD ODDITY, AND IT IS THE ONE WORTH READING.**
-`1104-PAR-1A04WO-ZZZ-El-MOD-000001.nwc` carries `El` with a LOWERCASE L where all 45
-others carry `EL`. Confirmed off the bytes, not off a listing. Every discipline comparer
-in this tool is `Ordinal` or `StringComparer.Ordinal` and not one is case blind, so the
-tool reads `El` as a discipline of its own. What that does to this run:
+**THE THIRD ODDITY, AND THIS PARAGRAPH WAS WRONG WHEN IT WAS FIRST WRITTEN.**
 
-- the run reports **EIGHT disciplines, not seven**: AR, EL, El, LS, LT, ME, ST, SW
-- **six healthy buildings are told they are MISSING a discipline called `El`** that does
-  not exist, and 1A04WO, the one building that actually has electrical, is told it is
-  missing `EL`. That is 7 of the 10 MISSING rows
-- `ViewpointSettings.IsADisciplineCode("El")` is FALSE, so 1A04WO's viewpoints will log
-  `no model in this group carries EL`, which is FALSE IN SUBSTANCE. The model is there and
-  spelled differently. Only the fallback that keeps whatever model a clash item lives in
-  stops that viewpoint hiding half the clash
-- 1A04WO still CLASHES NORMALLY, because it counts 4 disciplines either way
-- **the latent trap, which C04 does not hit but a later folder could**: a building holding
-  only `EL` and `El` would count 2, would pass the cannot-clash rule, and the tool would
-  run a full matrix on what is one discipline with nothing anywhere saying so
+WHAT IT SAID. That `1104-PAR-1A04WO-ZZZ-El-MOD-000001.nwc` carries `El` with a lowercase
+L where all 45 others carry `EL`, and that because every discipline comparer in this tool
+is Ordinal, the run would report eight disciplines instead of seven and tell six healthy
+buildings they were missing a discipline that does not exist.
 
-THE TOOL REPORTS AND NEVER ACTS, so nothing here renames his file. But ten confusing
-MISSING rows is the tool reporting badly rather than reporting. That becomes a new
-question and a finding in the round report, and it is NOT fixed in this round.
+WHAT IS TRUE. **THE NWC FILE IS `EL`, UPPERCASE, AND THERE IS NO CASE SLIP IN ANY OF THE
+46 FILE NAMES.** Read off the bytes with `od -c`: `E L`. A case sensitive count gives 7
+matches for `-EL-` and 0 for `-El-`. The folder holds SEVEN disciplines, AR EL LS LT ME
+ST SW, not eight. So the ten MISSING rows keep their count and lose the contents this
+plan gave them: `1A0415` and `1WAW15` are missing AR, EL, ME and ST, the six four
+discipline buildings and `1A04WO` are missing LS, LT and SW, and `1A04WL` is missing AR,
+EL, LS, LT and SW. Nothing is told it is missing a discipline that does not exist,
+`IsADisciplineCode("EL")` is true, and 1A04WO's viewpoints will not log that no model
+carries EL.
+
+HOW IT WAS CAUGHT. Not by a later run and not by Bader. The recon that answered this gate
+was adversarially verified, and the verifier listed the live folder itself and refused the
+claim. The file's own modification time is 23:31:37 and has not moved, so nothing was
+renamed underneath the reading. The first reading was simply wrong and the check that was
+built to doubt it did its job.
+
+**AND THE LOWERCASE `El` IS REAL, IN A PLACE THAT MATTERS LESS AND IS MORE INTERESTING.**
+It is in the REVIT SOURCE NAME, not the NWC name. `steps\logs\run-20260919-211323.log`
+carries it in the committed evidence of an earlier run:
+
+    holds  ...\1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+    [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A02WO-ZZZ-El-MOD-000001.rvt
+
+So the Revit file in Autodesk Docs is spelled `El` and the NWC published from it is
+spelled `EL`, on the C02 twin of this same building. It reaches NOTHING this tool
+compares: `SourceMismatchFindings` and the shared source rule both compare BUILDING CODES
+only and never the discipline, so the case never bites. It is model hygiene and it is
+worth Bader knowing, and it is a finding in the round report rather than anything built.
 
 ### What C04 can and cannot prove, said before it runs
 
