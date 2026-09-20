@@ -1,6 +1,166 @@
 # log
 
 Newest entry at the top.
+## 2026-09-21 The close round, THE PLAN, written before the first edit
+
+### The build gate and the three gates, all four passed
+
+`dotnet build ParsonsNwcFederator.sln -c Release`, 0 errors and 0 warnings, Navisworks
+Manage 2025 found.
+
+**0a, the merge gate. PASSED.** `origin/main` is `017f797`, the merge of pull request 67,
+and `round-drift` is an ancestor of it. Nothing is stacked. `round-close` branches off
+that main.
+
+**0b, the C04 gate. PASSED, AND THE FOLDER CHANGED SINCE YESTERDAY.** The drift round read
+`C:\00-NM\Federation Task\C02 + 04\C04` as empty, zero files, on 2026-09-20. It now holds
+**46 files, every one an NWC, 150,272,153 bytes, 143.3 MB**, written at 23:32 that night.
+**0 NWF, 0 NWD**, and the `Clash Report` folder is empty too.
+
+SO EVERY C04 GROUP TAKES FIRST RUN and every set in it is built FRESH FROM THE CORRECTED
+MATRIX. That is the only way the case correction can be proved, because on C02 the sets
+were already in the file and `ME-Ductwork` could never reach them.
+
+**0c, the scan gate. PASSED, 46 files make 12 groups, 0 unreadable, 0 blocked, 0 name
+collisions.** This was not simulated by hand: Core was built from source and its real
+public API driven over the 46 names.
+
+| group | files | disciplines as the code sorts them | count | can clash |
+| --- | --- | --- | --- | --- |
+| 1A0415 | 3 | LS, LT, SW | 3 | yes |
+| 1A04EP | 5 | AR, EL, ME, ST | 4 | yes |
+| 1A04KI | 4 | AR, EL, ME, ST | 4 | yes |
+| 1A04MS | 1 | ST | 1 | NO |
+| 1A04PK | 1 | ST | 1 | NO |
+| 1A04PW | 5 | AR, EL, ME, ST | 4 | yes |
+| 1A04WE | 4 | AR, EL, ME, ST | 4 | yes |
+| 1A04WL | 8 | ME, ST | 2 | yes |
+| 1A04WM | 4 | AR, EL, ME, ST | 4 | yes |
+| 1A04WN | 4 | AR, EL, ME, ST | 4 | yes |
+| 1A04WO | 4 | AR, EL, ME, ST | 4 | yes |
+| 1WAW15 | 3 | LS, LT, SW | 3 | yes |
+
+Every group takes FIRST RUN, because no NWF exists for any of them. Every group writes
+`1104-PAR-<building>-ZZZ-BM-MOD-000001` with three extensions, and the discipline field
+is `BM` on all twelve because every group spans more than one discipline.
+
+NO FILE FAILS TO GROUP. All 46 split into seven non-empty parts, all are `1104` and `PAR`,
+none is blocked and none is dropped.
+
+**THE SCAN WILL RAISE 14 FINDINGS AND NONE OF THEM STOPS ANYTHING.** 2 ODD SHAPE, which
+are `1A0415` at shape `9A9999` and `1WAW15` at `9AAA99` against the other ten at `9A99AA`.
+0 NEAR MATCH. 2 SINGLE DISCIPLINE, which are `1A04MS` and `1A04PK`, one ST file each. And
+**10 MISSING**, which is where the third oddity shows itself.
+
+**THE THIRD ODDITY, AND THIS PARAGRAPH WAS WRONG WHEN IT WAS FIRST WRITTEN.**
+
+WHAT IT SAID. That `1104-PAR-1A04WO-ZZZ-El-MOD-000001.nwc` carries `El` with a lowercase
+L where all 45 others carry `EL`, and that because every discipline comparer in this tool
+is Ordinal, the run would report eight disciplines instead of seven and tell six healthy
+buildings they were missing a discipline that does not exist.
+
+WHAT IS TRUE. **THE NWC FILE IS `EL`, UPPERCASE, AND THERE IS NO CASE SLIP IN ANY OF THE
+46 FILE NAMES.** Read off the bytes with `od -c`: `E L`. A case sensitive count gives 7
+matches for `-EL-` and 0 for `-El-`. The folder holds SEVEN disciplines, AR EL LS LT ME
+ST SW, not eight. So the ten MISSING rows keep their count and lose the contents this
+plan gave them: `1A0415` and `1WAW15` are missing AR, EL, ME and ST, the six four
+discipline buildings and `1A04WO` are missing LS, LT and SW, and `1A04WL` is missing AR,
+EL, LS, LT and SW. Nothing is told it is missing a discipline that does not exist,
+`IsADisciplineCode("EL")` is true, and 1A04WO's viewpoints will not log that no model
+carries EL.
+
+HOW IT WAS CAUGHT. Not by a later run and not by Bader. The recon that answered this gate
+was adversarially verified, and the verifier listed the live folder itself and refused the
+claim. The file's own modification time is 23:31:37 and has not moved, so nothing was
+renamed underneath the reading. The first reading was simply wrong and the check that was
+built to doubt it did its job.
+
+**AND THE LOWERCASE `El` IS REAL, IN A PLACE THAT MATTERS LESS AND IS MORE INTERESTING.**
+It is in the REVIT SOURCE NAME, not the NWC name. `steps\logs\run-20260919-211323.log`
+carries it in the committed evidence of an earlier run:
+
+    holds  ...\1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+    [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A02WO-ZZZ-El-MOD-000001.rvt
+
+So the Revit file in Autodesk Docs is spelled `El` and the NWC published from it is
+spelled `EL`, on the C02 twin of this same building. It reaches NOTHING this tool
+compares: `SourceMismatchFindings` and the shared source rule both compare BUILDING CODES
+only and never the discipline, so the case never bites. It is model hygiene and it is
+worth Bader knowing, and it is a finding in the round report rather than anything built.
+
+### What C04 can and cannot prove, said before it runs
+
+C04 CAN prove the case correction, because its sets are built fresh. C04 CANNOT prove
+PART 2's removal, because a first run has no drifted set and no duplicate to remove, and
+it cannot prove the reshape, because a first run is never a CHANGED group. That is why
+PART 7 runs both folders and why PART 5 forces the reshape on a copy.
+
+### The order of work, and why it is that order
+
+**MEASURE FIRST. BUILD. THEN RUN.** Navisworks is started ONCE for the whole of PART 1
+and nothing in PART 2 is written until 5z has answered.
+
+1. **PART 1, one probe pass.** 5z, what REMOVING a set costs, against COPIES under
+   `C:\Users\bader\AppData\Local\Temp\claude\round-close` and never his own files, with a
+   clash set to Reviewed first so there is something to lose, a set in the MIDDLE and not
+   only the last, and five read-backs after a save, a close and a reopen off the disk.
+   Plus the count that decides what PART 2 may do: how many clash tests in his seven C02
+   groups point at `BLD-DRPipe Accessories`. And 6a, what C04's models carry, which needs
+   NO new probe code because the existing `survey` mode already reads the model root's
+   properties, the first geometry leaf, its composite parent, and walks for worksets and
+   element ids. 5z and 6a into `docs\history\scan.md`.
+2. **PART 2, Q74**, built on 5z and nothing else. The tick box also REMOVES a set the
+   picked file no longer names, naming what pointed at it first, every time, and REFUSING
+   where 5z says the results would not survive. Plus the `BLD-Security Devices` name fix
+   in `MatrixCorrections`.
+3. **PART 3, Q73.** An empty test becomes ONE ROW. Every test still appears.
+4. **PART 4**, Q55 and Q56 recorded, and the category block says which folder its list was
+   measured from, which matters more now than yesterday because the list is C02's and the
+   run is C04's.
+5. **PART 6**, the record and the register, including the F numbers the drift round never
+   got and the two corrections 6d, 6e and 6f ask for.
+6. **PART 5, Q75, the forced reshape**, run AFTER 2 to 4 and 6 so one install covers it.
+   A copy of a C02 group under the temp folder with one NWC added and one removed, so the
+   group takes the CHANGED path for real.
+7. **PART 7a, C04**, backed up and read back first even though it holds no NWF.
+8. **PART 7b, C02**, backed up and read back first.
+9. **PART 8**, the closing pass over both logs, a workbook from each run counted, and
+   `steps\03_bader_next.md` read end to end against the code.
+
+### What PART 1c already found, before any of it was built
+
+The source file column comes out empty on every row of every report, measured in scan.md
+5n, and Bader has decided it stays that way. The question the brief asked is what else
+depends on it. The answer, read across the whole tree:
+
+- **`ClashHarvest.SourceFileOf` returns the empty string on every item of every clash**,
+  and `ContainerName.Parse("")` does not throw, so the discipline it derives is empty too
+  and nothing in the log ever says so
+- **ONE consumer, and it is not the report.** `Federator.Core.Report.GapRule` counts how
+  many items carried a source file and a discipline, and a property carried by nothing is
+  deliberately left out of the GAP block. Both are always zero, so NEITHER EVER APPEARS,
+  and a reader concludes they are not being held back. They are not being held back
+  because they were never read, which is the opposite reason, and the block cannot tell
+  those two apart. **That is a new question. Q55 settled the report and not this.**
+- **Everything else is safe, including the two that would have been serious.** The
+  viewpoint discipline folders come from the SET NAME through `DisciplinePairRule` and
+  never from the source file, so no viewpoint folder on any run has been wrong. Which
+  models a viewpoint hides comes from `document.Models[i].FileName`, its own read. The
+  workbook writes four cells per item and none is the source file. The clash XML writes
+  two quick properties and says so in its own comment
+- **Two side findings.** A comment on `FederationEngine`'s workbook check claims it is
+  the check that would have caught the empty column, and it is not and cannot be, because
+  there is no such column in the workbook to count. And `ClashReport.SourceFile` is
+  assigned and read nowhere in src or tests, which the public member rule covers
+
+NOTHING IS FIXED FOR ANY OF THAT IN THIS ROUND and the harvest does not climb.
+
+### What is already known to be untested and will be said again at the end
+
+The reshape stops being untested in PART 5. Q67's consequence is answered or carried
+forward by 6a. F18 stays open and it waits on a FILE and not a decision: the samples hold
+the 1A02WN and 1A04WN client exports and not 1A04WE.
+
 ## 2026-09-20 The drift round, DONE, the record
 
 Core tests 1666 before the round and 1703 after, 0 failed and 0 skipped in both. Build

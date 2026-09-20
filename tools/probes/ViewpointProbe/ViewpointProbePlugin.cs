@@ -125,6 +125,14 @@ namespace ViewpointProbe
                     {
                         MeasureSurvey(parameters, 2);
                     }
+                    else if (mode == "setremove")
+                    {
+                        MeasureSetRemove(parameters[2]);
+                    }
+                    else if (mode == "pointsat")
+                    {
+                        CountWhatPointsAtSets(parameters, 2);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -5830,6 +5838,648 @@ namespace ViewpointProbe
             catch (Exception error)
             {
                 Say("   " + when + ": reading threw " + error.GetType().Name);
+            }
+        }
+
+        /// <summary>
+        /// 5z. WHAT REMOVING A SET COSTS, which 5v did NOT measure.
+        ///
+        /// 5v measured REPLACING a set and found it keeps everything that points at it.
+        /// REMOVING IS NOT THE SAME THING. A replace leaves an object in the slot for the
+        /// clash test's SelectionSource to resolve to. A remove takes the slot away, and
+        /// what a live SelectionSource pointing into nothing does is unmeasured. Nothing
+        /// in src has ever called Remove, RemoveAt, Clear or Move on DocumentSelectionSets.
+        ///
+        /// A SET IN THE MIDDLE AND NOT ONLY THE LAST. 5x removed the LAST model of four and
+        /// left the middle case UNKNOWN, and that gap is why PART 5 of the drift round has
+        /// to remove by name rather than by a remembered index. This does not repeat it:
+        /// the set measured is chosen to have siblings AFTER it, so whether the ones behind
+        /// it shift is read rather than assumed.
+        ///
+        /// Against a COPY under the temp folder. Never his own files.
+        /// </summary>
+        private void MeasureSetRemove(string nwf)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+            Say(string.Empty);
+            Say("================ 5z, WHAT REMOVING A SET COSTS ================");
+            document.Clear();
+
+            if (!document.TryOpenFile(nwf))
+            {
+                Say("UNKNOWN: TryOpenFile returned false for " + nwf);
+                return;
+            }
+
+            Say("opened " + Path.GetFileName(nwf) + ", " + document.Models.Count + " model(s)");
+            SayRemovalMembers();
+
+            // The set a clash test WITH RESULTS points at, and which has siblings after it,
+            // so the middle case is what gets measured.
+            string setName;
+            int setIndex;
+            string parentName;
+
+            if (!FindAMiddleSetATestPointsAt(document, out setName, out setIndex, out parentName))
+            {
+                Say("UNKNOWN: no clash test with results points at a set that has siblings after it");
+                return;
+            }
+
+            Say("the set measured: [" + setName + "] at index " + setIndex + " under [" + parentName + "]");
+            Say("what it finds now: " + FoundBy(document, setName) + " item(s)");
+
+            // The siblings, in order, so a shift behind the removal is read and not guessed.
+            List<string> siblingsBefore = SiblingsOf(document, setName);
+            Say("its folder holds " + siblingsBefore.Count + " child(ren) in this order:");
+
+            for (int i = 0; i < siblingsBefore.Count; i++)
+            {
+                Say("      " + i + "  " + siblingsBefore[i] + (i == setIndex ? "   <= the one being removed" : string.Empty));
+            }
+
+            // Something to lose.
+            string testName;
+            int resultsBefore;
+            int reviewedBefore;
+            SetOneReviewed(document, setName, out testName, out resultsBefore, out reviewedBefore);
+
+            Say("the test pointing at it: [" + Words(testName) + "]");
+            Say("BEFORE the remove: " + resultsBefore + " result(s), " + reviewedBefore + " at Reviewed");
+
+            int viewpointsBefore = CountViewpoints(document);
+            SayCounts(document, "BEFORE the remove");
+
+            bool removed = RemoveThatSet(document, setName);
+            Say("the remove returned without throwing: " + removed);
+
+            if (!removed)
+            {
+                Say("NOTHING WAS REMOVED, so there is nothing to read back and 5z answers nothing.");
+                return;
+            }
+
+            SayCounts(document, "AFTER the remove, before any save");
+
+            string saved = Path.Combine(Path.GetDirectoryName(nwf), "probe-remove-saved.nwf");
+            Say("TrySaveFile = " + document.TrySaveFile(saved));
+            document.Clear();
+
+            if (!document.TryOpenFile(saved))
+            {
+                Say("UNKNOWN: the saved copy would not reopen");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("REOPENED OFF THE DISK. The five read backs:");
+            SayCounts(document, "AFTER a save and a reopen");
+
+            int resultsAfter;
+            int reviewedAfter;
+            bool pointsAtASet;
+            string pointsAt;
+
+            ReadTestBack(document, testName, out pointsAtASet, out pointsAt, out resultsAfter, out reviewedAfter);
+
+            Say("   1. the clash test still EXISTS         : " + (resultsAfter >= 0)
+                + ". It points at a set: " + pointsAtASet
+                + (pointsAtASet ? ", at [" + pointsAt + "]" : ", SO ITS SIDE NOW RESOLVES TO NOTHING"));
+            Say("   2. the clash test still holds results  : " + resultsAfter + " against " + resultsBefore + " before"
+                + (resultsAfter == resultsBefore ? ", KEPT" : ", LOST " + (resultsBefore - resultsAfter)));
+            Say("   3. the Reviewed status survived        : " + reviewedAfter + " against " + reviewedBefore + " before"
+                + (reviewedAfter == reviewedBefore ? ", KEPT" : ", LOST " + (reviewedBefore - reviewedAfter)));
+
+            int viewpointsAfter = CountViewpoints(document);
+            Say("   4. the saved viewpoints survived       : " + viewpointsAfter + " against " + viewpointsBefore + " before"
+                + (viewpointsAfter == viewpointsBefore ? ", KEPT" : ", LOST " + (viewpointsBefore - viewpointsAfter)));
+
+            // 5. THE POSITIONS. The whole point of measuring a middle set.
+            int goneAt;
+            string goneUnder;
+            bool stillThere = WhereIsSet(document, setName, out goneAt, out goneUnder);
+            Say("   5. the removed set is still in the tree: " + stillThere
+                + (stillThere ? " AT INDEX " + goneAt + ", SO THE REMOVE DID NOT TAKE" : ", which is what a remove should do"));
+
+            List<string> siblingsAfter = SiblingsOfFolder(document, parentName);
+            Say("      its folder now holds " + siblingsAfter.Count + " child(ren), was " + siblingsBefore.Count + ":");
+
+            for (int i = 0; i < siblingsAfter.Count; i++)
+            {
+                string wasAt = "not in the before list";
+
+                for (int b = 0; b < siblingsBefore.Count; b++)
+                {
+                    if (string.Equals(siblingsBefore[b], siblingsAfter[i], StringComparison.Ordinal))
+                    {
+                        wasAt = "was at " + b;
+                        break;
+                    }
+                }
+
+                Say("      " + i + "  " + siblingsAfter[i] + "   " + wasAt);
+            }
+
+            Say(string.Empty);
+            Say("AND DOES ANYTHING THAT RESOLVES A SET BY INDEX STILL RESOLVE TO THE RIGHT ONE:");
+            SayEverySetAndWhatPointsAtIt(document);
+
+            Say(string.Empty);
+            Say("A REMOVE IS ONLY USABLE WHERE 2, 3 AND 4 ALL HOLD. If the test that pointed at");
+            Say("the removed set loses its results or its statuses, the tick box must REFUSE that");
+            Say("set, name it, and say what would be lost, rather than removing and mentioning it.");
+        }
+
+        /// <summary>
+        /// What the installed DLL really offers for removal, read by reflection rather than
+        /// trusted. scan.md records Remove(SavedItem) and RemoveAt(Int32) verbatim, and a
+        /// PARENT SCOPED RemoveAt(GroupItem, Int32) only in prose about a different
+        /// collection, so it is asserted and not quoted. This prints what is actually there.
+        /// </summary>
+        private void SayRemovalMembers()
+        {
+            try
+            {
+                Type type = typeof(DocumentSelectionSets);
+                Say("DocumentSelectionSets removal and ordering members on THIS install:");
+
+                foreach (System.Reflection.MethodInfo method in type.GetMethods())
+                {
+                    string name = method.Name;
+
+                    if (name != "Remove" && name != "RemoveAt" && name != "Move"
+                        && name != "Clear" && name != "ResolveIndexPath" && name != "CreateIndexPath")
+                    {
+                        continue;
+                    }
+
+                    List<string> args = new List<string>();
+
+                    foreach (System.Reflection.ParameterInfo parameter in method.GetParameters())
+                    {
+                        args.Add(parameter.ParameterType.Name);
+                    }
+
+                    Say("   " + method.ReturnType.Name + " " + name + "(" + string.Join(", ", args.ToArray()) + ")");
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   reading the members threw " + error.GetType().Name);
+            }
+        }
+
+        /// <summary>
+        /// A set a clash test with results points at AND which has siblings after it in its
+        /// own folder, so removing it measures the middle case. Falls back to any set a test
+        /// points at, saying so, because a measurement on the last one is worth more than none.
+        /// </summary>
+        private bool FindAMiddleSetATestPointsAt(Document document, out string name, out int index, out string parent)
+        {
+            name = null;
+            index = -1;
+            parent = null;
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+            string firstAny = null;
+            int firstAnyIndex = -1;
+            string firstAnyParent = null;
+
+            for (int t = 0; t < tests.Tests.Count; t++)
+            {
+                ClashTest test = tests.Tests[t] as ClashTest;
+
+                if (test == null || test.Children.Count == 0)
+                {
+                    continue;
+                }
+
+                string pointed = SideOneSetOf(document, test);
+
+                if (pointed == null)
+                {
+                    continue;
+                }
+
+                int at;
+                string under;
+
+                if (!WhereIsSet(document, pointed, out at, out under))
+                {
+                    continue;
+                }
+
+                if (firstAny == null)
+                {
+                    firstAny = pointed;
+                    firstAnyIndex = at;
+                    firstAnyParent = under;
+                }
+
+                if (at < SiblingsOf(document, pointed).Count - 1)
+                {
+                    name = pointed;
+                    index = at;
+                    parent = under;
+                    Say("chosen because the test [" + Words(test.DisplayName) + "] holds "
+                        + test.Children.Count + " result(s), its first side points at it, AND IT HAS SIBLINGS AFTER IT");
+                    return true;
+                }
+            }
+
+            if (firstAny == null)
+            {
+                return false;
+            }
+
+            name = firstAny;
+            index = firstAnyIndex;
+            parent = firstAnyParent;
+            Say("NO SET A TEST POINTS AT HAS SIBLINGS AFTER IT, so the LAST one is measured and the middle case stays UNKNOWN");
+            return true;
+        }
+
+        /// <summary>Every child of the folder that set sits in, in order.</summary>
+        private static List<string> SiblingsOf(Document document, string setName)
+        {
+            int at;
+            string under;
+
+            if (!WhereIsSet(document, setName, out at, out under))
+            {
+                return new List<string>();
+            }
+
+            return SiblingsOfFolder(document, under);
+        }
+
+        /// <summary>Every child of the named folder, in order. The root is named "root".</summary>
+        private static List<string> SiblingsOfFolder(Document document, string folderName)
+        {
+            List<string> names = new List<string>();
+
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                GroupItem folder = string.Equals(folderName, "root", StringComparison.Ordinal)
+                    ? (GroupItem)root
+                    : FindFolderNamed(root, folderName);
+
+                if (folder == null)
+                {
+                    return names;
+                }
+
+                SavedItemCollection children = folder.Children;
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    using (SavedItem child = children[i])
+                    {
+                        names.Add(child.DisplayName + (child is GroupItem ? "  (folder)" : string.Empty));
+                    }
+                }
+            }
+
+            return names;
+        }
+
+        private static GroupItem FindFolderNamed(GroupItem parent, string name)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+                GroupItem group = child as GroupItem;
+
+                if (group != null)
+                {
+                    if (string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                    {
+                        return group;
+                    }
+
+                    GroupItem deeper = FindFolderNamed(group, name);
+
+                    if (deeper != null)
+                    {
+                        child.Dispose();
+                        return deeper;
+                    }
+                }
+
+                child.Dispose();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Takes that set out. The set is RESOLVED FRESH at the moment of the call, because
+        /// a wrapper read earlier is a borrowed handle and every mutator on these collections
+        /// is a copy form that kills what it is handed, which is rule 4g.
+        /// </summary>
+        private bool RemoveThatSet(Document document, string setName)
+        {
+            try
+            {
+                int[] path = PathToSet(document, setName);
+
+                if (path == null)
+                {
+                    Say("   the set could not be found again to remove");
+                    return false;
+                }
+
+                using (SavedItem found = document.SelectionSets.ResolveIndexPath(path))
+                {
+                    if (found == null)
+                    {
+                        Say("   ResolveIndexPath gave nothing back");
+                        return false;
+                    }
+
+                    // THE ONE ARGUMENT FORM IS TRIED FIRST AND IS EXPECTED TO FAIL for a
+                    // nested set, because it addresses the ROOT collection. It returns
+                    // FALSE rather than throwing, which is the quiet kind of failure a
+                    // caller reads as "there was nothing to remove".
+                    bool atRoot = document.SelectionSets.Remove(found);
+                    Say("   Remove(SavedItem), the root form, returned " + atRoot);
+
+                    if (atRoot)
+                    {
+                        return true;
+                    }
+                }
+
+                // The PARENT SCOPED form, on a parent resolved fresh at the moment of the
+                // call. Both the parent and the index come off the same walk, so they
+                // cannot disagree.
+                int last = path[path.Length - 1];
+
+                if (path.Length == 1)
+                {
+                    using (FolderItem root = document.SelectionSets.RootItem)
+                    {
+                        document.SelectionSets.RemoveAt(root, last);
+                    }
+
+                    Say("   RemoveAt(root, " + last + ") returned without throwing");
+                    return true;
+                }
+
+                int[] parentPath = new int[path.Length - 1];
+                Array.Copy(path, parentPath, parentPath.Length);
+
+                using (SavedItem parentItem = document.SelectionSets.ResolveIndexPath(parentPath))
+                {
+                    GroupItem parent = parentItem as GroupItem;
+
+                    if (parent == null)
+                    {
+                        Say("   the parent index path did not resolve to a folder");
+                        return false;
+                    }
+
+                    document.SelectionSets.RemoveAt(parent, last);
+                    Say("   RemoveAt(parent, " + last + ") returned without throwing");
+                    return true;
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   the remove THREW " + error.GetType().Name + ": " + error.Message);
+                return false;
+            }
+        }
+
+        /// <summary>The index path to that set, as plain ints, which survive across a mutator.</summary>
+        private static int[] PathToSet(Document document, string setName)
+        {
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                List<int> path = new List<int>();
+
+                return WalkToSet(root, setName, path) ? path.ToArray() : null;
+            }
+        }
+
+        private static bool WalkToSet(GroupItem parent, string setName, List<int> path)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+
+                if (child is SelectionSet && string.Equals(child.DisplayName, setName, StringComparison.Ordinal))
+                {
+                    path.Add(i);
+                    child.Dispose();
+                    return true;
+                }
+
+                GroupItem group = child as GroupItem;
+
+                if (group != null)
+                {
+                    path.Add(i);
+
+                    if (WalkToSet(group, setName, path))
+                    {
+                        child.Dispose();
+                        return true;
+                    }
+
+                    path.RemoveAt(path.Count - 1);
+                }
+
+                child.Dispose();
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Every clash test, what each side resolves to now, and how many resolve to
+        /// NOTHING. That last number is the whole question: a side pointing into a set
+        /// that is gone is a test that can never find anything again.
+        /// </summary>
+        private void SayEverySetAndWhatPointsAtIt(Document document)
+        {
+            try
+            {
+                Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+                int bothResolve = 0;
+                int oneDangling = 0;
+                int bothDangling = 0;
+                List<string> dangling = new List<string>();
+
+                for (int t = 0; t < tests.Tests.Count; t++)
+                {
+                    ClashTest test = tests.Tests[t] as ClashTest;
+
+                    if (test == null)
+                    {
+                        continue;
+                    }
+
+                    bool left = SideResolves(document, test.SelectionA);
+                    bool right = SideResolves(document, test.SelectionB);
+
+                    if (left && right)
+                    {
+                        bothResolve++;
+                    }
+                    else if (left || right)
+                    {
+                        oneDangling++;
+
+                        if (dangling.Count < 5)
+                        {
+                            dangling.Add(Words(test.DisplayName));
+                        }
+                    }
+                    else
+                    {
+                        bothDangling++;
+
+                        if (dangling.Count < 5)
+                        {
+                            dangling.Add(Words(test.DisplayName));
+                        }
+                    }
+                }
+
+                Say("   tests whose two sides both resolve to a set : " + bothResolve);
+                Say("   tests with ONE side resolving to nothing    : " + oneDangling);
+                Say("   tests with BOTH sides resolving to nothing  : " + bothDangling);
+
+                for (int i = 0; i < dangling.Count; i++)
+                {
+                    Say("      dangling: " + dangling[i]);
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   walking the tests threw " + error.GetType().Name);
+            }
+        }
+
+        private static bool SideResolves(Document document, ClashSelection side)
+        {
+            try
+            {
+                SelectionSourceCollection sources = side.Selection.SelectionSources;
+
+                if (sources == null || sources.Count == 0)
+                {
+                    return false;
+                }
+
+                using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[0]))
+                {
+                    return pointed != null;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// HOW MANY CLASH TESTS POINT AT EACH SET, read off his own NWFs and changing
+        /// nothing. That number decides what PART 2 is allowed to do: a set nothing points
+        /// at can be removed freely, and one that 300 tests point at cannot.
+        /// Read only. Nothing is saved.
+        /// </summary>
+        private void CountWhatPointsAtSets(string[] parameters, int from)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            for (int f = from; f < parameters.Length; f++)
+            {
+                string nwf = parameters[f];
+                Say(string.Empty);
+                Say("================ " + Path.GetFileName(nwf) + " ================");
+                document.Clear();
+
+                if (!document.TryOpenFile(nwf))
+                {
+                    Say("UNKNOWN: TryOpenFile returned false for " + nwf);
+                    continue;
+                }
+
+                Dictionary<string, int> byName = new Dictionary<string, int>(StringComparer.Ordinal);
+                int sidesThatResolveToNothing = 0;
+                int testCount = 0;
+
+                try
+                {
+                    Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+                    testCount = tests.Tests.Count;
+
+                    for (int t = 0; t < tests.Tests.Count; t++)
+                    {
+                        ClashTest test = tests.Tests[t] as ClashTest;
+
+                        if (test == null)
+                        {
+                            continue;
+                        }
+
+                        CountOneSide(document, test.SelectionA, byName, ref sidesThatResolveToNothing);
+                        CountOneSide(document, test.SelectionB, byName, ref sidesThatResolveToNothing);
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("   walking the tests threw " + error.GetType().Name + ": " + error.Message);
+                    continue;
+                }
+
+                Say(testCount + " clash test(s), " + byName.Count + " distinct set(s) pointed at, "
+                    + sidesThatResolveToNothing + " side(s) resolving to nothing");
+
+                List<string> names = new List<string>(byName.Keys);
+                names.Sort(StringComparer.Ordinal);
+
+                foreach (string name in names)
+                {
+                    Say("   " + byName[name].ToString().PadLeft(5) + "  test side(s) point at  [" + name + "]");
+                }
+            }
+        }
+
+        private static void CountOneSide(
+            Document document, ClashSelection side, Dictionary<string, int> byName, ref int nothing)
+        {
+            try
+            {
+                SelectionSourceCollection sources = side.Selection.SelectionSources;
+
+                if (sources == null || sources.Count == 0)
+                {
+                    nothing++;
+                    return;
+                }
+
+                using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[0]))
+                {
+                    if (pointed == null)
+                    {
+                        nothing++;
+                        return;
+                    }
+
+                    string name = Words(pointed.DisplayName);
+                    byName[name] = byName.ContainsKey(name) ? byName[name] + 1 : 1;
+                }
+            }
+            catch (Exception)
+            {
+                nothing++;
             }
         }
     }
