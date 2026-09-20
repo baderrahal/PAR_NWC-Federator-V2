@@ -511,6 +511,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <!-- F72. Visible rather than under an expander, because a weekly
@@ -536,9 +537,20 @@
                             <TextBlock x:Name="MarkByDesignHelp" Style="{StaticResource TickHelp}" />
                         </StackPanel>
 
+                        <!-- Q72. A set already in the NWF keeps the question it was built
+                             with, so a value corrected in the picked file since then never
+                             reaches it. Off by default because it changes the NWF, and NOT
+                             under the destroy data expander because it destroys nothing:
+                             5v measured that the clash tests pointing at a replaced set
+                             keep their results and their statuses. -->
+                        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,8">
+                            <CheckBox x:Name="RebuildDriftedSets" IsChecked="False" />
+                            <TextBlock x:Name="RebuildDriftedSetsHelp" Style="{StaticResource TickHelp}" />
+                        </StackPanel>
+
                         <!-- The two that destroy data. Collapsed and on their own, because
                              they do not belong beside ordinary output options. -->
-                        <Expander Grid.Row="2" Grid.ColumnSpan="2" IsExpanded="False"
+                        <Expander Grid.Row="3" Grid.ColumnSpan="2" IsExpanded="False"
                                   Header="Things that destroy data" Margin="0,0,0,8">
                             <StackPanel Margin="20,4,0,0">
                                 <!-- One StackPanel each, never two boxes in one, because the

@@ -12,6 +12,8 @@ namespace Federator.Core.Sets
     {
         private readonly List<SetResult> results = new List<SetResult>();
         private readonly List<SkippedSet> skipped = new List<SkippedSet>();
+        private readonly List<SetDrift> drifted = new List<SetDrift>();
+        private int rebuiltCount;
 
         public ReadOnlyCollection<SetResult> Results
         {
@@ -43,6 +45,38 @@ namespace Federator.Core.Sets
             SetResult result = new SetResult(path, name, conditionCount, itemCount, null, null, true);
             results.Add(result);
             return result;
+        }
+
+        /// <summary>
+        /// Every set whose question in the document differs from what the picked file
+        /// asks, Q72, and whether this run rebuilt it. Kept apart from the results list
+        /// because a drifted set is still a present set and is counted as one.
+        /// </summary>
+        public void AddDrift(SetDrift drift, bool rebuilt)
+        {
+            if (drift == null)
+            {
+                return;
+            }
+
+            drifted.Add(drift);
+
+            if (rebuilt)
+            {
+                rebuiltCount++;
+            }
+        }
+
+        /// <summary>Sets whose question no longer matches the picked file.</summary>
+        public ReadOnlyCollection<SetDrift> Drifted
+        {
+            get { return new ReadOnlyCollection<SetDrift>(drifted); }
+        }
+
+        /// <summary>How many of them this run rebuilt. Zero where the box is off, which is the default.</summary>
+        public int RebuiltCount
+        {
+            get { return rebuiltCount; }
         }
 
         /// <summary>Sets already there and left alone. Never in CreatedCount.</summary>

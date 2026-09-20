@@ -1177,6 +1177,18 @@ namespace Federator.Addin.Ui
                 MarkByDesignHelp.Text = ByDesignPairs.HelpLine;
             }
 
+            // Q72. Read off Core in the constructor the way every other label is, because
+            // a default typed into the XAML as well is a second copy that drifts.
+            if (RebuildDriftedSets != null)
+            {
+                RebuildDriftedSets.Content = SetRebuildSettings.TickLabel;
+            }
+
+            if (RebuildDriftedSetsHelp != null)
+            {
+                RebuildDriftedSetsHelp.Text = SetRebuildSettings.HelpLine;
+            }
+
             if (ByDesignHelp != null)
             {
                 ByDesignHelp.Text = "Read only with the box below on. Columns "
@@ -1496,6 +1508,7 @@ namespace Federator.Addin.Ui
             options.Tolerance = ChosenTolerance();
             options.PriorityPath = Trimmed(PriorityBox.Text);
             options.MarkByDesign = MarkByDesign.IsChecked == true;
+            options.RebuildDriftedSets = RebuildDriftedSets.IsChecked == true;
             options.ByDesignPath = Trimmed(ByDesignBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();

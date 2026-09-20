@@ -20,8 +20,14 @@ namespace Federator.Addin.Engine
     {
         private readonly Action<string> progress;
         private readonly RunLog log;
+        private readonly SetRebuildSettings rebuilds;
 
         public SetBuilder(Action<string> progress, RunLog log)
+            : this(progress, log, null)
+        {
+        }
+
+        public SetBuilder(Action<string> progress, RunLog log, SetRebuildSettings rebuilds)
         {
             if (log == null)
             {
@@ -30,6 +36,162 @@ namespace Federator.Addin.Engine
 
             this.progress = progress ?? delegate { };
             this.log = log;
+            this.rebuilds = rebuilds ?? new SetRebuildSettings();
+        }
+
+        /// <summary>
+        /// What a set already in the document is asking, against what the picked file
+        /// asks. Read off `SelectionSet.Search`, which is a getter nothing in this tool
+        /// read until 5w measured that it works on every set of all ten of his groups.
+        /// A search that will not read comes back as NOT READ and is never called
+        /// drifted, the way a census count that could not be taken is never called a move.
+        /// </summary>
+        private static SetDrift DriftOf(PlannedSet planned, SelectionSet existing)
+        {
+            List<ReadCondition> asked = null;
+
+            try
+            {
+                if (existing.HasSearch)
+                {
+                    asked = new List<ReadCondition>();
+                    Search search = existing.Search;
+
+                    if (search != null)
+                    {
+                        foreach (SearchCondition condition in search.SearchConditions)
+                        {
+                            asked.Add(Read(condition));
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                asked = null;
+            }
+
+            List<string> keys = new List<string>();
+            List<string> described = new List<string>();
+
+            foreach (PlannedCondition condition in planned.Conditions)
+            {
+                keys.Add(KeyOf(condition));
+                described.Add(condition.Describe());
+            }
+
+            return SetDrift.Compare(planned.Path, planned.Name, asked, keys, described);
+        }
+
+        /// <summary>One condition off a set in the document, in the plain strings Core compares.</summary>
+        private static ReadCondition Read(SearchCondition condition)
+        {
+            return new ReadCondition(
+                condition.CategoryCombinedName == null ? string.Empty : Words.Or(condition.CategoryCombinedName.Name, string.Empty),
+                condition.PropertyCombinedName == null ? string.Empty : Words.Or(condition.PropertyCombinedName.Name, string.Empty),
+                condition.Comparison == SearchConditionComparison.DisplayStringContains ? "contains" : "equals",
+                ValueOf(condition.Value));
+        }
+
+        /// <summary>The same key from the FILE's side, so the two are compared on one shape.</summary>
+        private static string KeyOf(PlannedCondition condition)
+        {
+            return (condition.HasCategory ? condition.CategoryInternalName : string.Empty)
+                + "|" + condition.PropertyInternalName
+                + "|" + (condition.Test == ConditionTest.Contains ? "contains" : "equals")
+                + "|" + condition.Value;
+        }
+
+        private static string ValueOf(VariantData value)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                return value.DataType == VariantDataType.IdentifierString
+                    ? value.ToIdentifierString()
+                    : value.ToDisplayString();
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Replaces a drifted set in its own slot with one built from the picked file,
+        /// Q72. `ReplaceWithCopy` and never a remove and an add, because 5v measured that
+        /// the replace keeps the clash test pointing at it, its results, its statuses and
+        /// its place in the tree, through a save and a reopen.
+        ///
+        /// The parent is resolved FRESH and the index read off the tree at the moment of
+        /// the call, because the walk that found the set released its own wrappers on the
+        /// way out and a folder handed across that boundary is refused by name.
+        /// </summary>
+        private bool Rebuild(Document document, DocumentSelectionSets sets, PlannedSet planned, GroupItem parent)
+        {
+            try
+            {
+                int at = IndexOfSet(parent, planned.Name);
+
+                if (at < 0)
+                {
+                    log.Line("SET      " + planned.Path + " drifted and could not be found again to rebuild");
+                    return false;
+                }
+
+                using (Search search = new Search())
+                {
+                    search.Selection.SelectAll();
+                    search.Locations = SearchLocations.DescendantsAndSelf;
+
+                    foreach (PlannedCondition condition in planned.Conditions)
+                    {
+                        search.SearchConditions.Add(BuildCondition(condition));
+                    }
+
+                    using (SelectionSet made = new SelectionSet(search))
+                    {
+                        made.DisplayName = planned.Name;
+                        sets.ReplaceWithCopy(parent, at, made);
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception error)
+            {
+                // A rebuild that threw leaves the set exactly as it was, which is the
+                // safe end, and it is said rather than swallowed.
+                log.Failure(
+                    "rebuilding the set " + planned.Path,
+                    error,
+                    "the set is left exactly as it was and the run goes on");
+
+                return false;
+            }
+        }
+
+        /// <summary>Where that set sits under that folder right now, or minus one.</summary>
+        private static int IndexOfSet(GroupItem parent, string name)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    if (child is SelectionSet && string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
         }
 
         public SetBuildOutcome Build(SetBuildPlan plan)
@@ -87,6 +249,18 @@ namespace Federator.Addin.Engine
 
                     if (existing != null)
                     {
+                        // WHAT IT IS ACTUALLY ASKING, read off the set itself, 5w. Nothing
+                        // in this tool read SelectionSet.Search until the drift round, so
+                        // a value corrected in the file since the set was built reached
+                        // the document nowhere and nothing said so. Q72.
+                        SetDrift drift = DriftOf(planned, existing);
+                        bool rebuilt = false;
+
+                        if (drift.Drifted && rebuilds.RebuildDriftedSets)
+                        {
+                            rebuilt = Rebuild(document, sets, planned, parent);
+                        }
+
                         using (existing)
                         {
                             // One call, so a present set is counted as present and never as
@@ -96,6 +270,20 @@ namespace Federator.Addin.Engine
                                 planned.Path, planned.Name, planned.ConditionCount,
                                 CountOf(document, existing));
                             log.Line("SET      " + present.Line());
+                        }
+
+                        if (drift.Drifted)
+                        {
+                            outcome.AddDrift(drift, rebuilt);
+
+                            foreach (string line in drift.Lines())
+                            {
+                                log.Line("SET      " + line);
+                            }
+
+                            log.Line("SET      " + (rebuilt
+                                ? "   REBUILT from the picked file. The clash tests pointing at it keep their results and their statuses, 5v"
+                                : "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"));
                         }
 
                         return;

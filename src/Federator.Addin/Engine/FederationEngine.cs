@@ -1833,6 +1833,14 @@ namespace Federator.Addin.Engine
             return lines;
         }
 
+        /// <summary>The set rebuild settings this run was given, Q72, or the default which is off.</summary>
+        private SetRebuildSettings Rebuilds()
+        {
+            SetRebuildSettings settings = new SetRebuildSettings();
+            settings.RebuildDriftedSets = reports != null && reports.RebuildDriftedSets;
+            return settings;
+        }
+
         private bool ClashStep(Document document, FederationJob job, JobOutcome outcome)
         {
             // Three things can happen and the log names which, in the same words on the
@@ -2051,7 +2059,7 @@ namespace Federator.Addin.Engine
                 log.Line("SETS     " + job.Building + ", " + plan.Buildable.Count + " to build, "
                     + plan.Skipped.Count + " skipped");
 
-                SetBuildOutcome sets = new SetBuilder(Tick, log).Build(plan);
+                SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds()).Build(plan);
                 outcome.Sets = sets;
                 setsAcrossTheRun.Add(sets);
 
