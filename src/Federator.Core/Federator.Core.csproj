@@ -25,6 +25,7 @@
          It is a FILE and not a list in a method because it is read off the client's
          models and changes when their models do, which is the opposite of UnitTable. -->
     <EmbeddedResource Include="Exchange\revit-categories.txt" />
+    <EmbeddedResource Include="Exchange\revit-worksets.txt" />
   </ItemGroup>
 
   <ItemGroup>
