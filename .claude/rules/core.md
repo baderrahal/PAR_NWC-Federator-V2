@@ -225,7 +225,8 @@ and 6 does not read as broken.
   UnitTable like any other, and a unit the table has not been taught throws rather than
   falling back. Zero is a real tolerance and is allowed. A negative one is refused where
   it is set rather than reaching 1830 tests. The confirm screen says the value, the
-  counts, what it beats, and that changing a saved test RESETS its results, and says
+  counts, what it beats, and what changing a saved test actually costs, which is that it
+  finds DIFFERENT clashes next run and NOT that its results are reset, 5y, and says
   nothing at all under the default, because a line that reads the same on every run
   teaches people to skip the screen. One TOLERANCE line per group carries both counts and
   the converted value. Why it exists: the matrix is written at 25 mm, the NWFs on disk

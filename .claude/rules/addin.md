@@ -217,10 +217,18 @@ check is proved to refuse as well as to pass.
   are somebody's decision. A model CAN be taken out of an open document without a clear,
   measured on 2026-09-19, docs\history\scan.md 5c: Document.RemoveFile(int) and
   TryRemoveFile(int), on Document and not on DocumentModels, which is why searching the
-  collection found nothing. The dance stays until a RUN says what removing a file does to
-  the sets, the tests, the results and the viewpoints that point into that model, because a
-  rebuild that removed one file and lost every clash result would be worse than the clear it
-  replaces. Bader decides
+  collection found nothing. WHAT IT COSTS WAS MEASURED ON 2026-09-20, docs\history\scan.md
+  5x, and IT COSTS NOTHING: removing a model from 1A02MM left the sets at 62, the tests at
+  1830, the results at 526, the statuses at 526 and the viewpoints at 509, and every one of
+  them came back whole through a save and a reopen off the disk. So the dance is no longer
+  the default. FederationEngine.ReshapeFromScan takes out what is gone and appends what is
+  new WITHOUT clearing, and the clear and rebuild is the FALLBACK for a shape the reshape
+  cannot do. THE COUNT OUT AND THE COUNT BACK STAYS EXACTLY AS IT WAS, because it is what
+  proves nothing was lost and a path that needs no copying still has to prove it. The
+  reshape declines BEFORE it changes anything, so the fallback always reads a document
+  nothing has touched, and a failure part way through is a fault that stops both. A file is
+  removed by its NAME and from the END, because 5x removed the LAST model of four and
+  whether removing a middle one shifts the indexes after it is UNKNOWN. Q34
 - ONE SAVED VIEWPOINT PER CLASH goes into the NWF, three folders deep, F85, made after the
   clash run and before the NWF is saved again so the viewpoints are inside the file the NWD
   is published from. The plan is Federator.Core.Views.ClashViewpointPlan and nothing about
@@ -289,9 +297,15 @@ check is proved to refuse as well as to pass.
   the price of that, and it is worth paying because the mutator kills the handle given to
   it and a walk that both read and wrote would be holding one across it
 - Applying the file's settings to a test already in the document is a tick box, off by
-  default, and it says plainly that changing a test RESETS its results and every clash
-  in it goes back to New. That is the whole reason the default is to report and not to
-  act. What drifted is worth knowing every week. Overwriting it is worth doing once
+  default. IT DOES NOT RESET ANYTHING, and this rule said for months that it did. 5y
+  measured it on 2026-09-20, docs\history\scan.md 5y: setting a tolerance on a saved
+  test, the same value or a doubled one, keeps every result and every status a person
+  set, through a save and a reopen off the disk, and 175,434 saved tests across his runs
+  had had one set on them while the confirm screen told him in capitals it reset them
+  all. WHAT IT ACTUALLY COSTS is different and real: the test finds DIFFERENT clashes the
+  next time it runs, so a clash somebody marked Reviewed may not come back, and a clash
+  nobody has seen may appear. That is why the default is still to report and not to act.
+  What drifted is worth knowing every week. Overwriting it is worth doing once
 - There is no stale marker on the clash API. Nothing named stale, altered, out of date,
   dirty or needs rerun exists on any type in Autodesk.Navisworks.Clash, public or
   private, measured on 2026-08-31, see docs\history\scan.md section 4j. The only thing there is
