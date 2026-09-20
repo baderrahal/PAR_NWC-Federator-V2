@@ -38,67 +38,11 @@ namespace Federator.Core.Exchange
         private static readonly object Gate = new object();
         private static List<string> known;
         private static List<string[]> decided;
-        private static bool resourceFound;
 
         /// <summary>Every workset the list names, in the order the file wrote them.</summary>
         public static IList<string> All()
         {
             return new List<string>(Load());
-        }
-
-        /// <summary>How many the list names. Zero until it is measured.</summary>
-        public static int Count
-        {
-            get { return Load().Count; }
-        }
-
-        /// <summary>Whether the list has been measured at all. Everything that reads it asks this first.</summary>
-        public static bool Measured
-        {
-            get { return Count > 0; }
-        }
-
-        /// <summary>
-        /// Whether the list could be READ out of the DLL at all. A resource that is
-        /// missing is a different fact from a list nobody has filled in yet, and the two
-        /// would otherwise give the same empty list and the same words.
-        /// </summary>
-        public static bool ResourceFound
-        {
-            get
-            {
-                Load();
-                return resourceFound;
-            }
-        }
-
-        /// <summary>
-        /// The spellings the models carry for that value, differing from it by CASE
-        /// ALONE, in the order the list holds them. A name differing by a letter is a
-        /// different word and is never offered, which 5t proved twice over on this
-        /// project: `AR-EXTERIOR` against `AR-INTERIOR` and `ST-SUB` against `ST-SUP` are
-        /// two pairs of real worksets one and two letters apart.
-        /// </summary>
-        public static IList<string> SpelledLike(string value)
-        {
-            List<string> found = new List<string>();
-
-            if (string.IsNullOrEmpty(value))
-            {
-                return found;
-            }
-
-            List<string> all = Load();
-
-            for (int i = 0; i < all.Count; i++)
-            {
-                if (string.Equals(all[i], value, StringComparison.OrdinalIgnoreCase))
-                {
-                    found.Add(all[i]);
-                }
-            }
-
-            return found;
         }
 
         /// <summary>
@@ -162,21 +106,6 @@ namespace Federator.Core.Exchange
             }
         }
 
-        /// <summary>The one line about the list itself, so a reader knows whether it was read at all.</summary>
-        public static string Line()
-        {
-            if (!ResourceFound)
-            {
-                return "Revit worksets known: UNKNOWN, the workset list could not be read out of "
-                    + "Federator.Core.dll, so no value was corrected against them";
-            }
-
-            return Measured
-                ? "Revit worksets known: " + Count
-                : "Revit worksets known: none yet, so no value was corrected against them. "
-                    + "The list is measured off a real federation, see the scan notes";
-        }
-
         /// <summary>
         /// Reads the list once. A resource that cannot be read is an EMPTY list and never
         /// a throw, and an empty list corrects nothing, which is the safe answer.
@@ -201,11 +130,9 @@ namespace Federator.Core.Exchange
                     {
                         if (stream == null)
                         {
-                            resourceFound = false;
                             return known;
                         }
 
-                        resourceFound = true;
 
                         using (StreamReader reader = new StreamReader(stream))
                         {
@@ -233,7 +160,6 @@ namespace Federator.Core.Exchange
                 {
                     known = new List<string>();
                 decided = new List<string[]>();
-                    resourceFound = false;
                 }
 
                 return known;

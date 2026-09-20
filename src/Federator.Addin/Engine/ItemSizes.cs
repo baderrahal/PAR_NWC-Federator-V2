@@ -26,19 +26,15 @@ namespace Federator.Addin.Engine
     public static class ItemSizes
     {
         /// <summary>
-        /// The wanted properties that are on this item, by name, in the document's units.
-        /// Never throws: anything that cannot be read is left out, and an empty lookup is a
-        /// real answer meaning no size was found.
-        /// </summary>
-        public static IDictionary<string, double> Read(ModelItem item, SizeSettings settings)
-        {
-            return Read(item, settings, null);
-        }
-
-        /// <summary>
-        /// The same, told which unit the document measures in, so a size written as WORDS
-        /// can be put back into those units. Without it a worded size is left out, which
-        /// is what this reader did for every one of them until 5s.
+        /// The wanted properties that are on this item, by name, in the document units.
+        /// Never throws: anything that cannot be read is left out, and an empty lookup is
+        /// a real answer meaning no size was found.
+        ///
+        /// IT HAS TO BE TOLD THE DOCUMENT UNIT, so a size written as WORDS can be put
+        /// back into it. Without that a worded size is left out, which is what this
+        /// reader did for every one of them until 5s. There was a two argument overload
+        /// passing null and nothing called it, so it is gone under the rule about a
+        /// public member nothing in src calls.
         /// </summary>
         public static IDictionary<string, double> Read(ModelItem item, SizeSettings settings, string unitEnumName)
         {
