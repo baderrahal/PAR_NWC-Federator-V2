@@ -220,7 +220,7 @@ which is Q67.
 
 ### The closing pass, PART 8
 
-`steps_bader_next.md` was read end to end against the code, which is how every round
+the Bader steps file `03_bader_next.md` was read end to end against the code, which is how every round
 closes, and TWENTY TWO things had drifted. Three of them were checks that could never
 fire, which is the shape this repo refuses everywhere else: a step looking for a line
 reading `VIEWS    not attempted.` that is in no source file, a step checking that nothing
