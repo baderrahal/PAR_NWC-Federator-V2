@@ -1475,7 +1475,11 @@ namespace ViewpointProbe
 
                                     if (solidNames.Count < 4)
                                     {
-                                        solidNames.Add(item.DisplayName + " in " + Path.GetFileName(model.FileName));
+                                        // THE COLOUR AS WELL AS THE NAME, Q58. A solid item
+                                        // in the wrong colour is as wrong as a dim one, and
+                                        // a screenshot leaves which shade it is to the eye.
+                                        solidNames.Add(item.DisplayName + " " + Rgb(geometry.ActiveColor)
+                                            + " in " + Path.GetFileName(model.FileName));
                                     }
                                 }
                             }

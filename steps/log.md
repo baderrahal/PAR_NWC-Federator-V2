@@ -108,6 +108,22 @@ THE VIEWPOINTS: 975 written over seven groups, 109, 430, 29, 16, 245, 77 and 69,
 every single one dimmed at 0.85 AND painted red and green AND read back on all four
 counts. Not one failed.
 
+AND IT WAS LOOKED AT AFTERWARDS, on HIS OWN 1A02MM opened off the disk and pressed
+through the probe, which counts what a person would see rather than squinting at a
+screenshot:
+
+```
+/A/AR vs ST/BLD-ST-Columns-vs-BLD-AR-Floors  Clash4
+   2 model(s) hidden carrying 841 item(s), then of what is left:
+   153 dimmed at 0.85 and SOLID 2:
+   ARC-FLOOR-INT-EPOXY(1)-PAR (0,1,0) in ...-AR-MOD-000001.nwc
+   Concrete, Cast-in-Place Fcu35 Mpa (1,0,0) in ...-ST-MOD-000001.nwc
+```
+
+Exactly two items solid, they are the two the clash is between, and they carry RED on the
+first side of the clash and GREEN on the second, which is the order Clash Detective
+paints them. The same on all three pressed.
+
 ALIGNMENT, across the run: 25 models sit somewhere their group's reference does not.
 1A02MM's four agree in X and Y and differ in Z by up to 95 mm, and they name FOUR
 different shared sites, one of them `Internal`, which is what Revit calls a model that
