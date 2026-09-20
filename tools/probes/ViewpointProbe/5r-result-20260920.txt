@@ -1,0 +1,319 @@
+14:19:35.940  probe started, mode pen, 1 file(s)
+14:19:37.987  document units Feet, 4 model(s)
+14:19:37.993  
+14:19:37.994  CLASH 1: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash19
+14:19:37.994     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:37.997     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.000        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.000        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.001        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.001        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.001        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.002     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.002        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.002        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.002        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.002        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.002        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.002     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.008        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.008        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.008        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.010        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.010        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.011        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.012        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.012        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.012        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.012        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.012  
+14:19:38.012  CLASH 2: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash20
+14:19:38.012     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.012     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.012        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.012        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.012        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.012        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.012        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.012     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.012        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.012        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.012        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.012        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.012        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.012     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.013        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.013        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.013        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.014        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Schedule Level]=Levels  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.014        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.014        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.016        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.016        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.016        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.016        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.016  
+14:19:38.016  CLASH 3: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash21
+14:19:38.016     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.016     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.016        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.016        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.016        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.016        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.016        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.016     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.016        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.016        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.016        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.016        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.016        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.016     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.018        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.018        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.018        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.018        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.018        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.020        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.020        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.020        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.020        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.020        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.020  
+14:19:38.020  CLASH 4: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash22
+14:19:38.020     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.020     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.020        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.020        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.021        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.021        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.021        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.021     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.021        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.021        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.021        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.021        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.021        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.021     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.022        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.022        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.022        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.022        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.022        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.023        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.024        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.024        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.024        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.024        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.024  
+14:19:38.024  CLASH 5: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash23
+14:19:38.024     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.024     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.024        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.024        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.024        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.024        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.024        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.024     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.024        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.024        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.024        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.024        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.024        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.024     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.026        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.026        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.026        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.026        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.026        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.027        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.028        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.028        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.028        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.028        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.028  
+14:19:38.028  CLASH 6: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash24
+14:19:38.028     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.028     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.028        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.028        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.028        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.028        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.028        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.028     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.028        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.028        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.028        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.028        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.028        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.028     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.029        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.030        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.030        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.030        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.030        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.034        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.035        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.035        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.035        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.035        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.035  
+14:19:38.035  CLASH 7: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash25
+14:19:38.035     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.035     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.035        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.035        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.035        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.035        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.035        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.035     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.035        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.035        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.035        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.035        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.035        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.035     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.037        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.037        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.037        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.037        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.037        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.038        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.039        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.039        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.039        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.039        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.039  
+14:19:38.039  CLASH 8: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash26
+14:19:38.039     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.039     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.039        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.039        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.039        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.039        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.039        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.039     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.039        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.039        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.039        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.039        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.039        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.039     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.040        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.040        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.040        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.040        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.040        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.041        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.042        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.042        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.042        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.042        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.042  
+14:19:38.042  CLASH 9: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash27
+14:19:38.042     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.042     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.042        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.042        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.042        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.042        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.042        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.042     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.042        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.042        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.042        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.042        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.042        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.042     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.044        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.044        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.044        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.044        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.044        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.046        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.046        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.046        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.046        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.046        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.046  
+14:19:38.046  CLASH 10: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash28
+14:19:38.046     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.046     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.046        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.046        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.046        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.046        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.046        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.046     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.046        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.046        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.046        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.046        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.046        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.046     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.047        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.047        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.048        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.048        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.048        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.049        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.051        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.051        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.051        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.051        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.051  
+14:19:38.051  CLASH 11: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash29
+14:19:38.051     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.051     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.051        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.051        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.051        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.051        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.051        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.051     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.051        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.051        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.051        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.051        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.051        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.051     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.054        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.054        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.054        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.055        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.055        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.057        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.058        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.058        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.058        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.058        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.058  
+14:19:38.058  CLASH 12: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash30
+14:19:38.058     --- what Selection1 and Selection2 give, which is what the penetration rule reads ---
+14:19:38.058     side 1: 1 item(s) selected, the rule reads the FIRST
+14:19:38.058        level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.058        level 1 [Default] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.058        level 2 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.058        level 3 [Pipe Types] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.059        level 4 [Default] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.059     side 2: 1 item(s) selected, the rule reads the FIRST
+14:19:38.059        level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.059        level 1 [Floor] geometry False composite True   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.059        level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.059        level 3 [Floor] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.059        level 4 [Floors] geometry False composite False   Category = []   every Category on it: reading threw NotSupportedException
+14:19:38.059     --- what Item1 and Item2 give, which is what the harvest reads ---
+14:19:38.061        item 1 level 0 [Thorn Steel Cables] geometry True composite False   Category = []   every Category on it: none
+14:19:38.061        item 1 level 1 [Default] geometry False composite True   Category = []   every Category on it: none
+14:19:38.062        item 1 level 2 [Default] geometry False composite False   Category = []   every Category on it: none
+14:19:38.062        item 1 level 3 [Pipe Types] geometry False composite True   Category = [Lighting Fixtures]   every Category on it: [Element]=Lighting Fixtures  [RevitLinkInstance]=RVT Links  [Phase Created]=Phases  [Revit Type]=Lighting Fixtures
+14:19:38.062        item 1 level 4 [Default] geometry False composite False   Category = [Lighting Fixtures]   every Category on it: [Type]=Lighting Fixtures
+14:19:38.064        item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa] geometry True composite False   Category = []   every Category on it: none
+14:19:38.065        item 2 level 1 [Floor] geometry False composite True   Category = [Floors]   every Category on it: [Element]=Floors  [Level]=Levels  [Phase Created]=Phases  [Rebar Cover - Top Face]=Cover Type  [Revit Type]=Floors
+14:19:38.065        item 2 level 2 [PAR-STR_FLR-250MM] geometry False composite False   Category = [Floors]   every Category on it: [Type]=Floors
+14:19:38.065        item 2 level 3 [Floor] geometry False composite False   Category = []   every Category on it: none
+14:19:38.065        item 2 level 4 [Floors] geometry False composite False   Category = []   every Category on it: none
+14:19:38.065  
+14:19:38.065  The rule asks: is one side a SERVICE category and the other a SOLID category.
+14:19:38.065  services: Pipes, Pipe Fittings, Ducts, Duct Fittings, Cable Trays, Conduits and the rest.
+14:19:38.065  solids: Walls, Floors, Roofs, Structural Foundations.
+14:19:38.065  probe finished

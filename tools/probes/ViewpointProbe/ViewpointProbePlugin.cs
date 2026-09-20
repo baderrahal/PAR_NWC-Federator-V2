@@ -105,6 +105,10 @@ namespace ViewpointProbe
                     {
                         MeasureColour(parameters[2]);
                     }
+                    else if (mode == "pen")
+                    {
+                        MeasurePenetration(parameters[2]);
+                    }
                     else if (mode == "survey")
                     {
                         MeasureSurvey(parameters, 2);
@@ -3655,6 +3659,213 @@ namespace ViewpointProbe
             {
                 return "reading threw " + error.GetType().Name;
             }
+        }
+
+        // ---------- why the penetration rule has never moved a clash ----------
+
+        /// <summary>
+        /// Opens an NWF this tool wrote and reads, for the first clashes in it, exactly
+        /// what the penetration rule reads: the item each side gives back, and the
+        /// Category property found on it and on each of the four ancestors above it, the
+        /// way ClashHarvest.FirstPropertyOn looks for one.
+        ///
+        /// WHY. Two real runs moved ZERO clashes to Reviewed and put every single clash
+        /// in the one bucket "not a service against a solid", with zero in all five other
+        /// buckets. A rule that never fires and never says why is worse than no rule, and
+        /// which of the two it is, no category at all or a category nobody expected, is
+        /// not guessable off the log.
+        /// </summary>
+        private void MeasurePenetration(string nwf)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            document.Clear();
+
+            if (!document.TryOpenFile(nwf))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            Say("document units " + document.Units + ", " + document.Models.Count + " model(s)");
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+            int shown = 0;
+
+            for (int t = 0; t < tests.Tests.Count && shown < 12; t++)
+            {
+                ClashTest test = tests.Tests[t] as ClashTest;
+
+                if (test == null || test.Children.Count == 0)
+                {
+                    continue;
+                }
+
+                for (int r = 0; r < test.Children.Count && shown < 12; r++)
+                {
+                    ClashResult result = test.Children[r] as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    shown++;
+                    Say(string.Empty);
+                    Say("CLASH " + shown + ": " + test.DisplayName + "  " + result.DisplayName);
+                    Say("   --- what Selection1 and Selection2 give, which is what the penetration rule reads ---");
+                    SaySide(document, result.Selection1, "side 1");
+                    SaySide(document, result.Selection2, "side 2");
+                    Say("   --- what Item1 and Item2 give, which is what the harvest reads ---");
+                    SayItem(document, result.Item1, "item 1");
+                    SayItem(document, result.Item2, "item 2");
+                }
+            }
+
+            Say(string.Empty);
+            Say("The rule asks: is one side a SERVICE category and the other a SOLID category.");
+            Say("services: Pipes, Pipe Fittings, Ducts, Duct Fittings, Cable Trays, Conduits and the rest.");
+            Say("solids: Walls, Floors, Roofs, Structural Foundations.");
+        }
+
+        /// <summary>
+        /// What one clash side gives back and what Category reads on it and above it. The
+        /// SAME four levels and the same property names Penetrations uses, so what this
+        /// prints is what that rule sees and not a near relative of it.
+        /// </summary>
+        private void SaySide(Document document, ModelItemCollection selection, string which)
+        {
+            using (selection)
+            {
+                if (selection == null || selection.Count == 0)
+                {
+                    Say("   " + which + ": nothing selected");
+                    return;
+                }
+
+                Say("   " + which + ": " + selection.Count + " item(s) selected, the rule reads the FIRST");
+
+                using (ModelItem item = selection[0])
+                {
+                    if (item == null)
+                    {
+                        Say("      the first item is null");
+                        return;
+                    }
+
+                    ModelItem walker = item;
+
+                    for (int level = 0; level <= 4 && walker != null; level++)
+                    {
+                        Say("      level " + level + " [" + Words(walker.DisplayName) + "]"
+                            + " geometry " + walker.HasGeometry
+                            + " composite " + walker.IsComposite
+                            + "   Category = [" + FirstOf(walker, PenetrationCategoryNames) + "]"
+                            + "   every Category on it: " + EveryCategoryOn(walker));
+
+                        ModelItem parent = walker.Parent;
+
+                        if (level > 0)
+                        {
+                            walker.Dispose();
+                        }
+
+                        walker = parent;
+                    }
+
+                    if (walker != null)
+                    {
+                        walker.Dispose();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The same walk on the item ClashResult.Item1 gives, which is the OTHER route to
+        /// the same clash side and the one the harvest reads its ids off. If one throws
+        /// and the other does not, that is the whole answer.
+        /// </summary>
+        private void SayItem(Document document, ModelItem item, string which)
+        {
+            if (item == null)
+            {
+                Say("   " + which + ": null");
+                return;
+            }
+
+            ModelItem walker = item;
+
+            for (int level = 0; level <= 4 && walker != null; level++)
+            {
+                Say("      " + which + " level " + level + " [" + Words(walker.DisplayName) + "]"
+                    + " geometry " + walker.HasGeometry
+                    + " composite " + walker.IsComposite
+                    + "   Category = [" + FirstOf(walker, PenetrationCategoryNames) + "]"
+                    + "   every Category on it: " + EveryCategoryOn(walker));
+
+                ModelItem parent = walker.Parent;
+                walker.Dispose();
+                walker = parent;
+            }
+
+            if (walker != null)
+            {
+                walker.Dispose();
+            }
+        }
+
+        /// <summary>The same three names PenetrationSettings.DefaultCategoryNames holds, in the same order.</summary>
+        private static readonly string[] PenetrationCategoryNames = { "Category", "Revit Category", "Element Category" };
+
+        /// <summary>
+        /// EVERY property called Category on that item, with the tab it came from, because
+        /// the rule takes the FIRST one and a tab order nobody looked at would decide
+        /// which. Measured rather than reasoned about.
+        /// </summary>
+        private static string EveryCategoryOn(ModelItem item)
+        {
+            List<string> found = new List<string>();
+
+            try
+            {
+                using (PropertyCategoryCollection tabs = item.PropertyCategories)
+                {
+                    if (tabs == null)
+                    {
+                        return "no tabs";
+                    }
+
+                    foreach (PropertyCategory tab in tabs)
+                    {
+                        using (DataPropertyCollection properties = tab.Properties)
+                        {
+                            for (int i = 0; i < properties.Count; i++)
+                            {
+                                using (DataProperty property = properties[i])
+                                {
+                                    if (string.Equals(Words(property.DisplayName), "Category", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        found.Add("[" + Words(tab.DisplayName) + "]=" + AnyText(property));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                return "reading threw " + error.GetType().Name;
+            }
+
+            return found.Count == 0 ? "none" : string.Join("  ", found.ToArray());
         }
     }
 }

@@ -4038,3 +4038,76 @@ PL-Drainage equipment    and  PL-Drainage equipmen
 
 Two spellings of the same workset, one of them a typo, in models that are meant to
 federate. This is what the EXPORT CHECK block puts in front of a person every run.
+
+## 5r. WHY THE PENETRATION RULE NEVER MOVED A CLASH, MEASURED 2026-09-20
+
+Found by PART 8 of the alignment round, reading the run log of 2026-09-20 end to end.
+The probe is `tools\probes\ViewpointProbe` in its `pen` mode, against a copy of the
+1A02MM NWF the run had just written. The result file is
+`tools\probes\ViewpointProbe\5r-result-20260920.txt`.
+
+**THE SYMPTOM.** F72 shipped on 2026-09-19 and has never moved one clash. Two real runs,
+the dimming round's of 11:33 and the alignment round's of 14:03, both read:
+
+```
+clashes looked at : 526
+moved to Reviewed : 0
+        0  the service is over the size, left alone
+        0  no size could be read off the service, left alone
+        0  a person had already set it, left alone
+        0  both sides a service, left alone
+        0  both sides a solid, left alone
+      526  not a service against a solid, left alone
+```
+
+Every clash in one bucket and ZERO in all five others is not a rule deciding, it is a
+rule reading nothing. A category that reads empty on both sides is "not a service
+against a solid", and so is every other clash, so the block looked like a considered
+answer and was an empty one.
+
+**THE CAUSE. A CLASH HAS TWO WAYS TO HAND YOU ITS SIDES AND ONLY ONE OF THEM CAN BE
+READ.** `Penetrations.ReadSide` took `ClashResult.Selection1` and `Selection2`.
+`ClashHarvest` beside it takes `Item1` and `Item2`. The same clash, the same named item:
+
+```
+CLASH 1: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash19
+
+--- Selection1 and Selection2, what the penetration rule read ---
+   side 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa]   Category = []   reading threw NotSupportedException
+   side 2 level 1 [Floor]                               Category = []   reading threw NotSupportedException
+   side 2 level 2 [PAR-STR_FLR-250MM]                   Category = []   reading threw NotSupportedException
+
+--- Item1 and Item2, what the harvest reads ---
+   item 2 level 0 [Concrete, Cast-in-Place Fcu35 Mpa]   Category = []   none
+   item 2 level 1 [Floor]        Category = [Floors]    [Element]=Floors [Level]=Levels [Revit Type]=Floors
+   item 2 level 2 [PAR-STR_FLR-250MM]  Category = [Floors]   [Type]=Floors
+```
+
+**`ModelItem.PropertyCategories` THROWS `NotSupportedException` ON AN ITEM A CLASH
+SELECTION HANDED BACK**, at level 0 and at every level of the walk up, on both sides of
+every clash tried. The same item reached through `Item1` reads its properties perfectly.
+Twelve clashes were read and all twelve behaved the same way.
+
+That also explains the thing that looked like a contradiction in the log. The ITEM IDS
+block on the same run reads `Id supplied 860 item ids of 1052`, so the tool plainly CAN
+read a Revit property off a clash item. It can, through `Item1`. It never could through
+`Selection1`.
+
+**WHAT IT COST, beyond the rule not firing.** `Penetrations.ServiceSizeOf` reads a side
+the same way, and F85's viewpoint tree asks it for the service size of every clash. So
+the `Over 150mm` sub folder could never be reached either: every size read came back as
+not read. That is two features off one line, and neither said a word, because both are
+written so that a side which will not read is a side with no category and no size, which
+is a real answer and never an error.
+
+**THE FIX IS TWO WORDS**, `Item1` and `Item2` in place of `Selection1` and `Selection2`,
+and nothing else in the rule changed. What it came to on the same ten groups is in the
+alignment round's entry in `steps\log.md`.
+
+**WHAT IS STILL UNKNOWN.** WHY the selection's item refuses `PropertyCategories` is not
+readable off the DLL and this does not need it. Whether every clash side behaves this
+way on every project, or only on a Revit sourced NWC of this shape, is UNKNOWN too, and
+it does not matter: `Item1` reads on this project's files and the rule now uses the one
+that reads. The lesson is the general one this repo keeps learning, which is that a rule
+whose every clash lands in one bucket is reporting nothing, and that a count of zero
+under every OTHER reason is the thing to look at, not the zero at the top.

@@ -64,6 +64,16 @@ public static class DriveWin32 {
   [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int max);
   [DllImport("user32.dll")] public static extern IntPtr GetTopWindow(IntPtr hWnd);
   [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern IntPtr FindWindow(string cls, string title);
+  [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+  [DllImport("user32.dll")] public static extern void mouse_event(uint flags, uint dx, uint dy, uint data, UIntPtr extra);
+  // A REAL MOUSE CLICK, because the tolerance list item answers no pattern that takes.
+  public static void Click(int x, int y) {
+    SetCursorPos(x, y);
+    System.Threading.Thread.Sleep(150);
+    mouse_event(0x0002, 0, 0, 0, UIntPtr.Zero);
+    System.Threading.Thread.Sleep(80);
+    mouse_event(0x0004, 0, 0, 0, UIntPtr.Zero);
+  }
   public static IntPtr FindByPrefix(string prefix) {
     IntPtr h = GetTopWindow(IntPtr.Zero);
     var sb = new System.Text.StringBuilder(512);
@@ -83,6 +93,16 @@ $TS = [System.Windows.Automation.TreeScope]
 
 function ById($parent, $id) {
   return $parent.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::AutomationIdProperty, $id)))
+}
+# What a combo box actually reads, by whichever pattern answers, or UNKNOWN. Never a
+# guess: the caller refuses to run on UNKNOWN the same way it refuses on a wrong value.
+function ComboText($combo) {
+  try { return $combo.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value } catch { }
+  try {
+    $sel = $combo.GetCurrentPattern([System.Windows.Automation.SelectionPattern]::Pattern).Current.GetSelection()
+    if ($sel.Length -gt 0) { return $sel[0].Current.Name }
+  } catch { }
+  return "UNKNOWN"
 }
 function ByNameAndType($parent, $name, $type) {
   $c = New-Object System.Windows.Automation.AndCondition(@(
@@ -135,18 +155,29 @@ SetText (ById $win "ExcelFolderBox") $Excel "ExcelFolderBox" | Out-Null
 
 if (-not (SelectTab $win "4. Clash")) { exit 1 }
 if ($Xml.Length -gt 0) { SetText (ById $win "ExchangeFileBox") $Xml "ExchangeFileBox" | Out-Null; Start-Sleep -Seconds 6 }
+# THE TOLERANCE IS CLICKED AND THEN READ BACK, and the run does not start if it did not
+# take. SelectionItemPattern.Select on this list item does NOTHING and throws nothing,
+# measured on 2026-09-20, so the line under it said "tolerance selected" on a box that
+# still read the default. That is a check that could not fail, which is the one shape
+# this repo refuses everywhere else, and it would have run ten groups at the wrong
+# tolerance while the notes said otherwise. A real mouse click on the item's rectangle
+# takes, and the box is read back afterwards because the click is the action and the
+# read is the check.
 if ($Tolerance.Length -gt 0) {
   $combo = ById $win "ToleranceBox"
-  if ($null -eq $combo) { Say "UNKNOWN: no ToleranceBox" } else {
-    $combo.GetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern).Expand()
-    Start-Sleep -Milliseconds 800
-    $item = ByNameAndType $win $Tolerance ([System.Windows.Automation.ControlType]::ListItem)
-    if ($null -eq $item) { Say "UNKNOWN: no list item [$Tolerance] in ToleranceBox" } else {
-      $item.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select()
-      Say ("tolerance selected: [" + $Tolerance + "]")
-    }
-    try { $combo.GetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern).Collapse() } catch { }
-  }
+  if ($null -eq $combo) { Say "UNKNOWN: no ToleranceBox"; exit 1 }
+  $combo.GetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern).Expand()
+  Start-Sleep -Milliseconds 900
+  $item = ByNameAndType $win $Tolerance ([System.Windows.Automation.ControlType]::ListItem)
+  if ($null -eq $item) { Say "UNKNOWN: no list item [$Tolerance] in ToleranceBox"; exit 1 }
+  $r = $item.Current.BoundingRectangle
+  [DriveWin32]::Click([int]($r.X + $r.Width / 2), [int]($r.Y + $r.Height / 2))
+  Start-Sleep -Milliseconds 700
+  try { $combo.GetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern).Collapse() } catch { }
+  Start-Sleep -Milliseconds 300
+  $reads = ComboText $combo
+  Say ("tolerance box READ BACK as [" + $reads + "]")
+  if ($reads -ne $Tolerance) { Say ("REFUSED: the box reads [" + $reads + "] and not [" + $Tolerance + "], so nothing was run"); exit 1 }
 }
 if ($Pairs.Length -gt 0) {
   $tick = ById $win "MarkByDesign"
