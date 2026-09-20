@@ -21,13 +21,17 @@ namespace Federator.Core.Rerun
     ///      itself.
     ///   2. A FAILURE AFTER A MODIFICATION NEVER SAVES. Not the step that failed and not a
     ///      fallback after it. The in memory document is thrown away by the next group
-    ///      clearing it, and the NWF on disk is the last good copy because nothing wrote
-    ///      over it.
-    ///   3. THE MESSAGE SAYS WHICH OF THE TWO HAPPENED. Nothing was touched, so the file
-    ///      on disk is exactly as it was, OR the document in memory is damaged and was not
-    ///      saved, so the file on disk is the last good copy. Those are different
-    ///      sentences because they are different facts, and the second one is only true
-    ///      because part 2 is kept.
+    ///      clearing it, and the NWF on disk is untouched because nothing wrote over it.
+    ///   3. THE MESSAGE SAYS WHICH OF THE TWO HAPPENED AND CLAIMS NOTHING MORE. Nothing in
+    ///      the open file had been changed yet, or it had been changed and was not saved.
+    ///      Either way the file on disk is UNCHANGED BY THIS RUN, and the second case is
+    ///      only true because part 2 is kept.
+    ///
+    /// IT DOES NOT SAY THE FILE ON DISK IS GOOD, and the first draft of this rule did.
+    /// "The last good copy" is a claim about HISTORY. This tool knows exactly one thing,
+    /// that it did not write, and whether what sits there is good was decided by whatever
+    /// wrote it last, which could itself have been a run that failed some other way.
+    /// UNCHANGED BY THIS RUN is what the save gate proves, so that is what it says.
     ///
     /// WHO CALLS IT. The reshape of a CHANGED group, and the set rename and removal pair
     /// of Q74, which has the same shape: a remove and a rename that are two calls and one
@@ -37,24 +41,26 @@ namespace Federator.Core.Rerun
     {
         /// <summary>
         /// What to say when the work stopped BEFORE anything in the document was changed.
-        /// The file on disk is untouched and so is the document, so a fallback may still
-        /// run and the next thing to read the document reads it as it was.
+        /// The document is untouched, so a fallback may still run and the next thing to
+        /// read the document reads it as it was.
         /// </summary>
         public static string NothingWasTouched(string what)
         {
-            return Reason(what) + "nothing in the open file had been changed yet, so the file on disk is exactly as it was";
+            return Reason(what)
+                + "nothing in the open file had been changed yet, so the file on disk is unchanged by this run";
         }
 
         /// <summary>
         /// What to say when the work stopped AFTER something in the document was changed.
         /// NOTHING IS SAVED FROM HERE, which is what makes the second half of the sentence
-        /// true rather than a hope.
+        /// true rather than a hope. It says unchanged by this run and never that the file
+        /// is good, because this tool knows it did not write and knows nothing else.
         /// </summary>
         public static string TheDocumentIsDamaged(string what)
         {
             return Reason(what)
                 + "the open file had already been changed by then, so it was NOT saved and "
-                + "the file on disk is the last good copy";
+                + "the file on disk is unchanged by this run";
         }
 
         /// <summary>

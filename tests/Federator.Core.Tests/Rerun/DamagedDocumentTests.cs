@@ -17,28 +17,38 @@ namespace Federator.Core.Tests.Rerun
     public class DamagedDocumentTests
     {
         [Test]
-        public void NothingTouchedSaysTheFileOnDiskIsExactlyAsItWas()
+        public void NothingTouchedSaysTheFileOnDiskIsUnchangedByThisRun()
         {
             string line = DamagedDocument.NothingWasTouched("a model this group no longer holds could not be found");
 
             Assert.That(line, Does.Contain("nothing in the open file had been changed yet"));
-            Assert.That(line, Does.Contain("exactly as it was"));
+            Assert.That(line, Does.Contain("unchanged by this run"));
+
+            // IT NEVER CLAIMS THE FILE ON DISK IS GOOD. That is a claim about history and
+            // this tool knows only that it did not write.
             Assert.That(line, Does.Not.Contain("last good copy"));
+            Assert.That(line, Does.Not.Contain("good"));
         }
 
         /// <summary>
-        /// THE SENTENCE THAT WAS WRONG. A failure after a change must never say the file
-        /// was left as it was, because the file was about to be written over.
+        /// THE SENTENCE THAT WAS WRONG TWICE OVER. A failure after a change must never say
+        /// the file was left as it was, because it was about to be written over, and must not
+        /// say the file is GOOD either, because that is a claim about history.
         /// </summary>
         [Test]
-        public void ADamagedDocumentNeverSaysTheFileWasLeftAsItWas()
+        public void ADamagedDocumentSaysUnchangedByThisRunAndNeverThatItIsGood()
         {
             string line = DamagedDocument.TheDocumentIsDamaged("a model would not come out");
 
             Assert.That(line, Does.Contain("had already been changed"));
             Assert.That(line, Does.Contain("NOT saved"));
-            Assert.That(line, Does.Contain("last good copy"));
-            Assert.That(line, Does.Not.Contain("exactly as it was"));
+            Assert.That(line, Does.Contain("unchanged by this run"));
+
+            // THE OVERCLAIM THE FIRST DRAFT CARRIED. "The last good copy" says the file on
+            // disk is GOOD, which this tool cannot know: whatever wrote it last may itself
+            // have failed some other way. It knows it did not write, and nothing else.
+            Assert.That(line, Does.Not.Contain("last good copy"));
+            Assert.That(line, Does.Not.Contain("good"));
         }
 
         [Test]
@@ -66,8 +76,8 @@ namespace Federator.Core.Tests.Rerun
         [Test]
         public void NoReasonStillGivesAWholeSentence()
         {
-            Assert.That(DamagedDocument.Line(null, true), Does.Contain("last good copy"));
-            Assert.That(DamagedDocument.Line(string.Empty, false), Does.Contain("exactly as it was"));
+            Assert.That(DamagedDocument.Line(null, true), Does.Contain("unchanged by this run"));
+            Assert.That(DamagedDocument.Line(string.Empty, false), Does.Contain("unchanged by this run"));
         }
 
         /// <summary>
@@ -84,7 +94,7 @@ namespace Federator.Core.Tests.Rerun
 
         /// <summary>
         /// THE SAVE GATE, and the row that matters is the third: changed, and it failed,
-        /// so nothing is written. That is what makes "the last good copy" true rather than
+        /// so nothing is written. That is what makes "unchanged by this run" true rather than
         /// a hope.
         /// </summary>
         [Test]
