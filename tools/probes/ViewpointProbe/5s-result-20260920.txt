@@ -1,0 +1,226 @@
+15:50:47.017  probe started, mode census, 1 file(s)
+15:50:47.019  
+15:50:47.019  ================ 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf ================
+15:50:48.189  4 model(s), document units Feet
+15:50:48.206     AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   site [SWLS-02-SharedCoordinate]   2 workset name(s)
+15:50:48.206        AR-EXTERIOR
+15:50:48.206        AR-INTERIOR
+15:50:48.231     EL  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc   site [LTB2]   9 workset name(s)
+15:50:48.231        EL-Containment
+15:50:48.231        EL-Fire Alarm
+15:50:48.231        EL-Lighting
+15:50:48.231        EL-Lightining Protection
+15:50:48.232        EL-Lightning Protection
+15:50:48.232        EL-Power
+15:50:48.232        EV-Access Control
+15:50:48.232        EV-Cctv System
+15:50:48.232        EV-IT
+15:50:48.247     ME  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc   site [PW3_Shared_Location]   6 workset name(s)
+15:50:48.247        ME-Air Terminal
+15:50:48.247        ME-Ductwork
+15:50:48.247        ME-Equipment
+15:50:48.247        PL-Drainage
+15:50:48.247        PL-Drainage equipmen
+15:50:48.247        PL-Fire Protection
+15:50:48.249     ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc   site [Internal]   2 workset name(s)
+15:50:48.249        ST-SUB
+15:50:48.249        ST-SUP
+15:50:48.253  
+15:50:48.253  ================ 5s, THE SERVICES WITH NO READABLE SIZE ================
+15:50:48.354  
+15:50:48.355  NO SIZE 1: BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors  Clash11   the service side is [Conduits]
+15:50:48.355     level 0 [] geometry True composite False
+15:50:48.356        tabs: Item, Geometry, TimeLiner
+15:50:48.357        size properties on it: NONE of the six
+15:50:48.357     level 1 [Conduit without Fittings] geometry False composite True
+15:50:48.357        tabs: Item, Element, Phase Created, Reference Level, Revit Type, Element ID, TimeLiner
+15:50:48.357        size properties on it: [Element] Size = 53 mmø <DisplayString>
+15:50:48.357     level 2 [ELE-CNF-70mm² BARE COPPER CABLE] geometry False composite False
+15:50:48.357        tabs: Item, Type, TimeLiner
+15:50:48.357        size properties on it: NONE of the six
+15:50:48.357     level 3 [Conduit without Fittings] geometry False composite False
+15:50:48.357        tabs: Item, TimeLiner
+15:50:48.357        size properties on it: NONE of the six
+15:50:48.357     level 4 [Conduits] geometry False composite False
+15:50:48.357        tabs: Item, TimeLiner
+15:50:48.358        size properties on it: NONE of the six
+15:50:48.359  
+15:50:48.359  NO SIZE 2: BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors  Clash12   the service side is [Conduits]
+15:50:48.359     level 0 [] geometry True composite False
+15:50:48.359        tabs: Item, Geometry, TimeLiner
+15:50:48.359        size properties on it: NONE of the six
+15:50:48.359     level 1 [Conduit without Fittings] geometry False composite True
+15:50:48.360        tabs: Item, Element, Phase Created, Reference Level, Revit Type, Element ID, TimeLiner
+15:50:48.360        size properties on it: [Element] Size = 53 mmø <DisplayString>
+15:50:48.360     level 2 [ELE-CNF-70mm² BARE COPPER CABLE] geometry False composite False
+15:50:48.360        tabs: Item, Type, TimeLiner
+15:50:48.360        size properties on it: NONE of the six
+15:50:48.360     level 3 [Conduit without Fittings] geometry False composite False
+15:50:48.360        tabs: Item, TimeLiner
+15:50:48.360        size properties on it: NONE of the six
+15:50:48.360     level 4 [Conduits] geometry False composite False
+15:50:48.360        tabs: Item, TimeLiner
+15:50:48.360        size properties on it: NONE of the six
+15:50:48.361  
+15:50:48.361  NO SIZE 3: BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls  Clash9   the service side is [Cable Tray Fittings]
+15:50:48.361     level 0 [] geometry True composite False
+15:50:48.361        tabs: Item, Geometry, TimeLiner
+15:50:48.361        size properties on it: NONE of the six
+15:50:48.361     level 1 [ELE-CBF-Standard] geometry False composite True
+15:50:48.361        tabs: Item, Element ID, TimeLiner
+15:50:48.361        size properties on it: NONE of the six
+15:50:48.361     level 2 [ELE-CBF-Standard] geometry False composite False
+15:50:48.361        tabs: Item, Transform, TimeLiner
+15:50:48.362        size properties on it: NONE of the six
+15:50:48.362     level 3 [PAR-EL-CBF-CHANNELHORIZONTALBEND-PAR] geometry False composite True
+15:50:48.362        tabs: Item, Element, Level, Phase Created, Revit Type, Element ID, TimeLiner
+15:50:48.362        size properties on it: [Element] Size = 600 mmx100 mm-600 mmx100 mm <DisplayString>
+15:50:48.362     level 4 [ELE-CBF-Standard] geometry False composite False
+15:50:48.362        tabs: Item, Type, TimeLiner
+15:50:48.362        size properties on it: NONE of the six
+15:50:48.364  
+15:50:48.364  NO SIZE 4: BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls  Clash10   the service side is [Cable Tray Fittings]
+15:50:48.364     level 0 [] geometry True composite False
+15:50:48.364        tabs: Item, Geometry, TimeLiner
+15:50:48.364        size properties on it: NONE of the six
+15:50:48.364     level 1 [ELE-CBF-Standard] geometry False composite True
+15:50:48.364        tabs: Item, Element ID, TimeLiner
+15:50:48.364        size properties on it: NONE of the six
+15:50:48.364     level 2 [ELE-CBF-Standard] geometry False composite False
+15:50:48.364        tabs: Item, Transform, TimeLiner
+15:50:48.364        size properties on it: NONE of the six
+15:50:48.364     level 3 [PAR-EL-CBF-CHANNELHORIZONTALBEND-PAR] geometry False composite True
+15:50:48.364        tabs: Item, Element, Level, Phase Created, Revit Type, Element ID, TimeLiner
+15:50:48.364        size properties on it: [Element] Size = 600 mmx100 mm-600 mmx100 mm <DisplayString>
+15:50:48.364     level 4 [ELE-CBF-Standard] geometry False composite False
+15:50:48.364        tabs: Item, Type, TimeLiner
+15:50:48.364        size properties on it: NONE of the six
+15:50:48.369  
+15:50:48.369  NO SIZE 5: BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls  Clash13   the service side is [Cable Tray Fittings]
+15:50:48.369     level 0 [] geometry True composite False
+15:50:48.369        tabs: Item, Geometry, TimeLiner
+15:50:48.369        size properties on it: NONE of the six
+15:50:48.369     level 1 [ELE-CBF-Standard] geometry False composite True
+15:50:48.369        tabs: Item, Element ID, TimeLiner
+15:50:48.369        size properties on it: NONE of the six
+15:50:48.369     level 2 [ELE-CBF-Standard] geometry False composite False
+15:50:48.369        tabs: Item, Transform, TimeLiner
+15:50:48.369        size properties on it: NONE of the six
+15:50:48.369     level 3 [PAR-EL-CBF-CHANNELHORIZONTALBEND-PAR] geometry False composite True
+15:50:48.369        tabs: Item, Element, Level, Phase Created, Revit Type, Element ID, TimeLiner
+15:50:48.369        size properties on it: [Element] Size = 600 mmx100 mm-600 mmx100 mm <DisplayString>
+15:50:48.369     level 4 [ELE-CBF-Standard] geometry False composite False
+15:50:48.369        tabs: Item, Type, TimeLiner
+15:50:48.369        size properties on it: NONE of the six
+15:50:48.385  
+15:50:48.386  NO SIZE 6: BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls  Clash17   the service side is [Cable Tray Fittings]
+15:50:48.386     level 0 [] geometry True composite False
+15:50:48.386        tabs: Item, Geometry, TimeLiner
+15:50:48.386        size properties on it: NONE of the six
+15:50:48.386     level 1 [ELE-CBF-Standard] geometry False composite True
+15:50:48.386        tabs: Item, Element ID, TimeLiner
+15:50:48.386        size properties on it: NONE of the six
+15:50:48.386     level 2 [ELE-CBF-Standard] geometry False composite False
+15:50:48.386        tabs: Item, Transform, TimeLiner
+15:50:48.386        size properties on it: NONE of the six
+15:50:48.386     level 3 [PAR-EL-CBF-CHANNELHORIZONTALBEND-PAR] geometry False composite True
+15:50:48.386        tabs: Item, Element, Level, Phase Created, Revit Type, Element ID, TimeLiner
+15:50:48.386        size properties on it: [Element] Size = 600 mmx100 mm-600 mmx100 mm <DisplayString>
+15:50:48.386     level 4 [ELE-CBF-Standard] geometry False composite False
+15:50:48.386        tabs: Item, Type, TimeLiner
+15:50:48.386        size properties on it: NONE of the six
+15:50:48.388  
+15:50:48.388  NO SIZE 7: BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls  Clash18   the service side is [Cable Tray Fittings]
+15:50:48.388     level 0 [] geometry True composite False
+15:50:48.388        tabs: Item, Geometry, TimeLiner
+15:50:48.388        size properties on it: NONE of the six
+15:50:48.388     level 1 [ELE-CBF-Standard] geometry False composite True
+15:50:48.388        tabs: Item, Element ID, TimeLiner
+15:50:48.388        size properties on it: NONE of the six
+15:50:48.388     level 2 [ELE-CBF-Standard] geometry False composite False
+15:50:48.388        tabs: Item, Transform, TimeLiner
+15:50:48.388        size properties on it: NONE of the six
+15:50:48.388     level 3 [PAR-EL-CBF-CHANNELHORIZONTALBEND-PAR] geometry False composite True
+15:50:48.388        tabs: Item, Element, Level, Phase Created, Revit Type, Element ID, TimeLiner
+15:50:48.388        size properties on it: [Element] Size = 600 mmx100 mm-600 mmx100 mm <DisplayString>
+15:50:48.388     level 4 [ELE-CBF-Standard] geometry False composite False
+15:50:48.388        tabs: Item, Type, TimeLiner
+15:50:48.388        size properties on it: NONE of the six
+15:50:48.390  
+15:50:48.390  NO SIZE 8: BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls  Clash19   the service side is [Cable Tray Fittings]
+15:50:48.390     level 0 [] geometry True composite False
+15:50:48.390        tabs: Item, Geometry, TimeLiner
+15:50:48.390        size properties on it: NONE of the six
+15:50:48.390     level 1 [ELE-CBF-Radius_12"] geometry False composite True
+15:50:48.390        tabs: Item, Element ID, TimeLiner
+15:50:48.390        size properties on it: NONE of the six
+15:50:48.390     level 2 [ELE-CBF-Radius_12"] geometry False composite False
+15:50:48.390        tabs: Item, Transform, TimeLiner
+15:50:48.390        size properties on it: NONE of the six
+15:50:48.390     level 3 [PAR-EL-CBF-HORIZONTALCROSSRADUIS12"-PAR] geometry False composite True
+15:50:48.390        tabs: Item, Element, Level, Phase Created, Revit Type, Element ID, TimeLiner
+15:50:48.390        size properties on it: [Element] Size = 600 mmx100 mm-600 mmx100 mm-600 mmx100 mm-600 mmx100 mm <DisplayString>
+15:50:48.390     level 4 [ELE-CBF-Radius_12"] geometry False composite False
+15:50:48.390        tabs: Item, Type, TimeLiner
+15:50:48.390        size properties on it: NONE of the six
+15:50:49.742  
+15:50:49.742  clashes in this document              : 526
+15:50:49.742  a service against a solid             : 74
+15:50:49.742  of those, NO READABLE SIZE            : 29
+15:50:49.742  by category:
+15:50:49.742     [Conduits]  18
+15:50:49.742     [Cable Tray Fittings]  10
+15:50:49.742     [Pipe Fittings]  1
+15:50:49.742  
+15:50:49.742  READ THE DUMPS ABOVE. If a level carries Diameter, Width, Height, Size,
+15:50:49.742  Nominal Diameter or Overall Size and the reader still said no size, the
+15:50:49.742  reader is on the wrong node and it is a BUG. If no level carries any of
+15:50:49.742  the six, the service genuinely has no size property and PART 5 names them.
+15:50:49.745  
+15:50:49.745  ================ 5t, EVERY WORKSET NAME IN THIS FOLDER ================
+15:50:49.745  19 distinct name(s) across every model read
+15:50:49.745  
+15:50:49.745  --- names that differ ONLY BY CASE, which a correction rule may fix ---
+15:50:49.745     none
+15:50:49.745  
+15:50:49.745  --- names that differ by MORE THAN CASE, which are a different word and may be a typo ---
+15:50:49.745     [AR-EXTERIOR] and [AR-INTERIOR] differ by 2 letter(s), which is MORE than case, so they are two different words
+15:50:49.745        [AR-EXTERIOR] in 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc
+15:50:49.745        [AR-INTERIOR] in 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc
+15:50:49.745     [EL-Lightining Protection] and [EL-Lightning Protection] differ by 1 letter(s), which is MORE than case, so they are two different words
+15:50:49.745        [EL-Lightining Protection] in 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745        [EL-Lightning Protection] in 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745     [ST-SUB] and [ST-SUP] differ by 1 letter(s), which is MORE than case, so they are two different words
+15:50:49.745        [ST-SUB] in 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc
+15:50:49.745        [ST-SUP] in 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc
+15:50:49.745  
+15:50:49.745  --- every name and every model that carries it ---
+15:50:49.745     [AR-EXTERIOR]  1 model(s): 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc
+15:50:49.745     [AR-INTERIOR]  1 model(s): 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc
+15:50:49.745     [EL-Containment]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745     [EL-Fire Alarm]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745     [EL-Lighting]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745     [EL-Lightining Protection]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745     [EL-Lightning Protection]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745     [EL-Power]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745     [EV-Access Control]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745     [EV-Cctv System]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745     [EV-IT]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:50:49.745     [ME-Air Terminal]  1 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+15:50:49.745     [ME-Ductwork]  1 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+15:50:49.745     [ME-Equipment]  1 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+15:50:49.745     [PL-Drainage]  1 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+15:50:49.745     [PL-Drainage equipmen]  1 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+15:50:49.745     [PL-Fire Protection]  1 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+15:50:49.745     [ST-SUB]  1 model(s): 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc
+15:50:49.745     [ST-SUP]  1 model(s): 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc
+15:50:49.746  
+15:50:49.746  ================ 5u, THE SHARED SITE OF EVERY MODEL ================
+15:50:49.746     1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf   reference 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   names Internal: True   a model with no site at all: False
+15:50:49.746  
+15:50:49.746  GROUPS READ                                  : 1
+15:50:49.746  groups with a model naming Internal          : 1
+15:50:49.746  groups with a model carrying no site at all  : 0
+15:50:49.746  GROUPS THAT WOULD FAIL UNDER Q70             : 1
+15:50:49.746  Q70 fails a group where ANY model names Internal OR carries no site at all.
+15:50:49.746  probe finished

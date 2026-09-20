@@ -21,6 +21,12 @@ namespace Federator.Core.Clash
     public sealed class PenetrationTally
     {
         private readonly List<string> moved = new List<string>();
+
+        // Q71. Which services this tool could not measure, by category, and one row per
+        // clash for the machine readable log. A count on its own says nothing about what
+        // they are, and 5s found all 29 of one group carried a size the reader dropped.
+        private readonly Dictionary<string, int> unmeasured = new Dictionary<string, int>(StringComparer.Ordinal);
+        private readonly List<string> unmeasuredClashes = new List<string>();
         private readonly Dictionary<PenetrationVerdict, int> counts =
             new Dictionary<PenetrationVerdict, int>();
 
@@ -46,6 +52,24 @@ namespace Federator.Core.Clash
             }
 
             counts[decision.Verdict]++;
+
+            // Q71 answered b on 2026-09-20. A count of services this tool could not
+            // measure says nothing about WHICH they are, and 5s found that every one of
+            // 29 of them carried a size the reader was throwing away. So the categories
+            // are kept, and the clash names go in the machine readable log, which is
+            // what turns the next count of this kind into something a person can check.
+            if (decision.Verdict == PenetrationVerdict.SizeUnknown)
+            {
+                string category = decision.Service == null ? string.Empty : Words(decision.Service.Category);
+
+                if (!unmeasured.ContainsKey(category))
+                {
+                    unmeasured[category] = 0;
+                }
+
+                unmeasured[category]++;
+                unmeasuredClashes.Add(Words(testName) + "  " + Words(clashName) + "  [" + category + "]");
+            }
 
             if (!decision.Moves)
             {
@@ -115,6 +139,18 @@ namespace Federator.Core.Clash
 
                 lines.Add("    " + Of(order[i]).ToString().PadLeft(5) + "  "
                     + PenetrationRule.Describe(order[i]));
+
+                // Q71 answered b. The unmeasured services are NAMED and not just counted,
+                // straight under their own reason line where a reader is already looking.
+                // Two lines at most: what they are, and where the rest of it is.
+                if (order[i] == PenetrationVerdict.SizeUnknown && unmeasured.Count > 0)
+                {
+                    lines.Add("           they are " + ByCategory()
+                        + ". Every one is left at the status it had, because a service this"
+                        + " tool cannot measure is one a person looks at");
+                    lines.Add("           each is a row in the machine readable log beside this one,"
+                        + " with its test and its clash name, so the next count of these can be checked");
+                }
             }
 
             lines.Add("the size in use   : "
@@ -127,6 +163,48 @@ namespace Federator.Core.Clash
             }
 
             return lines;
+        }
+
+        /// <summary>
+        /// The unmeasured services by category, most first, as one phrase. Never
+        /// truncated, because a category list is short and the whole point of Q71 is
+        /// knowing WHAT they are.
+        /// </summary>
+        private string ByCategory()
+        {
+            List<string> names = new List<string>(unmeasured.Keys);
+
+            names.Sort(delegate(string a, string b)
+            {
+                int byCount = unmeasured[b].CompareTo(unmeasured[a]);
+                return byCount != 0 ? byCount : string.Compare(a, b, StringComparison.Ordinal);
+            });
+
+            List<string> said = new List<string>();
+
+            for (int i = 0; i < names.Count; i++)
+            {
+                said.Add(unmeasured[names[i]].ToString(CultureInfo.InvariantCulture)
+                    + " " + (names[i].Length == 0 ? "with no category this tool could read" : names[i]));
+            }
+
+            return string.Join(", ", said.ToArray());
+        }
+
+        /// <summary>
+        /// One row per service this tool could not measure, for the machine readable log,
+        /// because `Block` writes none and a count nobody can check is a count nobody
+        /// should trust. Empty where every service was measured.
+        /// </summary>
+        public ReadOnlyCollection<string> UnmeasuredRows
+        {
+            get { return new ReadOnlyCollection<string>(unmeasuredClashes); }
+        }
+
+        /// <summary>How many services this tool could not measure, across this group.</summary>
+        public int UnmeasuredCount
+        {
+            get { return Of(PenetrationVerdict.SizeUnknown); }
         }
 
         /// <summary>

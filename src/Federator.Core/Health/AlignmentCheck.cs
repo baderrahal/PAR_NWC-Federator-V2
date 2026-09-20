@@ -207,7 +207,83 @@ namespace Federator.Core.Health
                     + "\", which is what Revit calls a model that was not exported on a shared site at all");
             }
 
+            // Q70. The block says the group is failed and why, and the group still
+            // writes its NWF, its NWD and its report, which is the evidence.
+            string fails = WhyItFailsTheGroup(models, internalName);
+
+            if (fails != null)
+            {
+                lines.Add("THIS GROUP IS FAILED. " + fails);
+            }
+
             return lines;
+        }
+
+        /// <summary>
+        /// Why this group is FAILED, or null where it is not, Q70 answered b on
+        /// 2026-09-20. A group fails when any of its models names the internal origin as
+        /// its shared site, or names no site at all.
+        ///
+        /// FAILED DOES NOT MEAN THE GROUP PRODUCES NOTHING. The federation, the NWD and
+        /// the clash report are all still written, because Bader needs the evidence to
+        /// take to the people who own the models, and a group that produces nothing gives
+        /// him nothing to send. This says the group is not DONE and names the model, and
+        /// the engine carries on.
+        ///
+        /// WHY IT IS A FAILURE AND NOT A WARNING. A model on the internal origin is not
+        /// slightly out of place, it is in a different coordinate system, so every clash
+        /// the run reports against it is either a clash that is not there or a miss that
+        /// is. The numbers are worse than useless because they read as real.
+        /// </summary>
+        public static string WhyItFailsTheGroup(IList<ModelPlacement> models)
+        {
+            return WhyItFailsTheGroup(models, DefaultInternalName);
+        }
+
+        public static string WhyItFailsTheGroup(IList<ModelPlacement> models, string internalName)
+        {
+            if (models == null || models.Count == 0)
+            {
+                return null;
+            }
+
+            List<string> onInternal = new List<string>();
+            List<string> withNoSite = new List<string>();
+
+            for (int i = 0; i < models.Count; i++)
+            {
+                if (!models[i].NamesASharedCoordinate)
+                {
+                    withNoSite.Add(Named(models[i]));
+                }
+                else if (string.Equals(models[i].SharedCoordinate, internalName, StringComparison.Ordinal))
+                {
+                    onInternal.Add(Named(models[i]));
+                }
+            }
+
+            if (onInternal.Count == 0 && withNoSite.Count == 0)
+            {
+                return null;
+            }
+
+            string why = string.Empty;
+
+            if (onInternal.Count > 0)
+            {
+                why = onInternal.Count + " model(s) were exported on Revit's internal origin and not on a"
+                    + " shared site, which puts them in a different coordinate system from the rest of"
+                    + " the group: " + string.Join(", ", onInternal.ToArray());
+            }
+
+            if (withNoSite.Count > 0)
+            {
+                why += (why.Length > 0 ? ". And " : string.Empty)
+                    + withNoSite.Count + " model(s) name no shared site at all: "
+                    + string.Join(", ", withNoSite.ToArray());
+            }
+
+            return why + ". Every output of this group was still written, so the evidence is there to send.";
         }
 
         /// <summary>How many models sit somewhere the reference does not, for the run line. Never fails anything.</summary>

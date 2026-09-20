@@ -127,6 +127,167 @@ namespace Federator.Core.Exchange
         public string Note { get; private set; }
     }
 
+
+    /// <summary>
+    /// One property VALUE in the matrix corrected to the spelling the models actually
+    /// carry, Q68 answered a on 2026-09-20.
+    ///
+    /// WHY THIS EXISTS. The client's matrix asks for a workset called `ME-DUCTWORK` and
+    /// every model in the project carries `ME-Ductwork`. A search condition compares a
+    /// value CASE SENSITIVELY unless `IgnoreDisplayStringValueCase` is set, nothing sets
+    /// it, and so three mechanical sets found nothing in every group of every run since
+    /// the tool was first pointed at this project, 5q.
+    ///
+    /// IT IS NOT AN IGNORE CASE FLAG AND IT NEVER SETS ONE. Bader refused that on
+    /// 2026-09-20 and the reason stands: the flag would also make two genuinely different
+    /// worksets match, quietly, on every set in the file, and `AR-EXTERIOR` against
+    /// `AR-INTERIOR` and `ST-SUB` against `ST-SUP` are two pairs of real worksets in this
+    /// very project that are one and two letters apart, 5t.
+    ///
+    /// SO IT CORRECTS ONE VALUE TO ONE SPELLING, AND ONLY WHERE THERE IS EXACTLY ONE.
+    /// The candidates are the workset names READ OFF THE MODELS, never a list in the
+    /// code. Where two model spellings differ from the matrix by case alone the rule
+    /// REFUSES, leaves the value exactly as it was, and names both, because a rule that
+    /// guesses between two real worksets is worse than a set that finds nothing.
+    /// </summary>
+    public sealed class ValueRewrite
+    {
+        public ValueRewrite(string from, IList<string> candidates)
+        {
+            From = from ?? string.Empty;
+            Candidates = candidates ?? new List<string>();
+        }
+
+        /// <summary>The value as the matrix writes it.</summary>
+        public string From { get; private set; }
+
+        /// <summary>
+        /// Every spelling the MODELS carry that differs from it by case alone. None means
+        /// nothing to correct, one is the correction, and two or more is a refusal.
+        /// </summary>
+        public IList<string> Candidates { get; private set; }
+
+        /// <summary>The one spelling to write, or null where there is not exactly one.</summary>
+        public string To
+        {
+            get { return Candidates.Count == 1 ? Candidates[0] : null; }
+        }
+
+        /// <summary>
+        /// Whether this is a correction at all. A value the models spell exactly as the
+        /// matrix does needs none, and one with two candidates gets none.
+        /// </summary>
+        public bool Corrects
+        {
+            get
+            {
+                return To != null
+                    && !string.Equals(To, From, StringComparison.Ordinal);
+            }
+        }
+
+        /// <summary>
+        /// Every value the matrix asks for, matched against every workset name the models
+        /// carry, case blind. The one place a candidate list is built, so the rule and
+        /// the log cannot disagree about what was on offer.
+        /// </summary>
+        public static IList<ValueRewrite> For(IEnumerable<string> matrixValues, IEnumerable<string> modelWorksets)
+        {
+            List<ValueRewrite> rewrites = new List<ValueRewrite>();
+
+            if (matrixValues == null)
+            {
+                return rewrites;
+            }
+
+            List<string> models = new List<string>();
+
+            if (modelWorksets != null)
+            {
+                foreach (string workset in modelWorksets)
+                {
+                    if (!string.IsNullOrEmpty(workset) && !models.Contains(workset))
+                    {
+                        models.Add(workset);
+                    }
+                }
+            }
+
+            List<string> seen = new List<string>();
+
+            foreach (string value in matrixValues)
+            {
+                if (string.IsNullOrEmpty(value) || seen.Contains(value))
+                {
+                    continue;
+                }
+
+                seen.Add(value);
+                List<string> candidates = new List<string>();
+
+                for (int i = 0; i < models.Count; i++)
+                {
+                    // CASE ALONE and nothing wider. A name differing by a letter is a
+                    // different word, which 5t proved twice over on this project.
+                    if (string.Equals(models[i], value, StringComparison.OrdinalIgnoreCase))
+                    {
+                        candidates.Add(models[i]);
+                    }
+                }
+
+                rewrites.Add(new ValueRewrite(value, candidates));
+            }
+
+            return rewrites;
+        }
+    }
+    /// <summary>
+    /// One value the matrix asks for, carrying a SECOND spelling beside it as an Or row,
+    /// Q69 answered b on 2026-09-20.
+    ///
+    /// WHY. Where this project's own models disagree about the name of a workset, a set
+    /// asking for one spelling finds only the models that used it. Carrying both means
+    /// the set finds everything it was meant to find while the models are still wrong.
+    ///
+    /// THE OR ROW IS `flags="64"`, StartGroup, which this repo already measured, F78: a
+    /// condition with that bit starts a new group, the conditions inside a group are
+    /// ANDed and the groups are ORed. So a second condition on the same property with
+    /// that bit reads "or the workset equals the other spelling".
+    ///
+    /// IT IS BUILT FROM WHAT WAS MEASURED IN THE MODELS AND NEVER FROM A LIST IN THE
+    /// CODE, and it never runs on a spelling no model carries, because the whole reason
+    /// it exists is that a real model somewhere used the other word.
+    ///
+    /// AND THE EXPORT CHECK STILL NAMES THE PAIR AS MISSPELLED. Absorbing a typo and
+    /// saying nothing would mean nobody ever fixes the model and the next building
+    /// repeats it, which is `Federator.Core.Health.WorksetDisagreements`.
+    /// </summary>
+    public sealed class ValueOrRow
+    {
+        public ValueOrRow(string value, string alsoAccept)
+        {
+            Value = value ?? string.Empty;
+            AlsoAccept = alsoAccept ?? string.Empty;
+        }
+
+        /// <summary>The value the matrix already asks for.</summary>
+        public string Value { get; private set; }
+
+        /// <summary>The other spelling a model carries, added beside it as an Or row.</summary>
+        public string AlsoAccept { get; private set; }
+
+        /// <summary>Whether there is anything to do. Two identical spellings are not a disagreement.</summary>
+        public bool Adds
+        {
+            get
+            {
+                return Value.Length > 0
+                    && AlsoAccept.Length > 0
+                    && !string.Equals(Value, AlsoAccept, StringComparison.Ordinal);
+            }
+        }
+    }
+
     public sealed class CorrectionCount
     {
         public CorrectionCount(string what, int count, string note)
@@ -251,6 +412,36 @@ namespace Federator.Core.Exchange
             IList<CategoryRewrite> rewrites,
             IList<ConditionsRewrite> conditions)
         {
+            return Apply(xml, renames, rewrites, conditions, null);
+        }
+
+        /// <summary>
+        /// The same, plus the VALUE corrections of Q68: a workset the matrix spells one
+        /// way and every model spells another. Pass null for the last and it is the four
+        /// argument form exactly.
+        /// </summary>
+        public static CorrectionOutcome Apply(
+            string xml,
+            IList<SetRename> renames,
+            IList<CategoryRewrite> rewrites,
+            IList<ConditionsRewrite> conditions,
+            IList<ValueRewrite> values)
+        {
+            return Apply(xml, renames, rewrites, conditions, values, null);
+        }
+
+        /// <summary>
+        /// The same, plus the Or rows of Q69: a second spelling a model carries, accepted
+        /// beside the one the matrix asks for. Pass null and it is the five argument form.
+        /// </summary>
+        public static CorrectionOutcome Apply(
+            string xml,
+            IList<SetRename> renames,
+            IList<CategoryRewrite> rewrites,
+            IList<ConditionsRewrite> conditions,
+            IList<ValueRewrite> values,
+            IList<ValueOrRow> orRows)
+        {
             if (xml == null)
             {
                 throw new ArgumentNullException("xml");
@@ -318,8 +509,188 @@ namespace Federator.Core.Exchange
                 }
             }
 
+            if (values != null)
+            {
+                foreach (ValueRewrite value in values)
+                {
+                    if (value == null)
+                    {
+                        continue;
+                    }
+
+                    if (value.Candidates.Count > 1)
+                    {
+                        // REFUSED, and both named. The value is left exactly as it was.
+                        outcome.Add(
+                            "the value " + value.From + " is left alone",
+                            0,
+                            "the models carry " + value.Candidates.Count + " spellings of it, "
+                                + Listed(value.Candidates)
+                                + ", and a rule that guesses between two real worksets is worse than a set that finds nothing");
+                        continue;
+                    }
+
+                    if (!value.Corrects)
+                    {
+                        outcome.Add(
+                            "the value " + value.From + " is left alone",
+                            0,
+                            value.Candidates.Count == 0
+                                ? "no model in this run carries a workset spelled that way but for its case"
+                                : "the models spell it exactly as the matrix does");
+                        continue;
+                    }
+
+                    int changed;
+                    text = RewriteValue(text, value.From, value.To, out changed);
+
+                    outcome.Add(
+                        "the value " + value.From + " becomes " + value.To + ", which is how the models spell it",
+                        changed,
+                        changed == 0 ? "this file does not ask for that value" : null);
+                }
+            }
+
+            if (orRows != null)
+            {
+                foreach (ValueOrRow row in orRows)
+                {
+                    if (row == null)
+                    {
+                        continue;
+                    }
+
+                    if (!row.Adds)
+                    {
+                        outcome.Add(
+                            "the value " + row.Value + " gains no Or row",
+                            0,
+                            "no model carries a second spelling of it that this tool would accept");
+                        continue;
+                    }
+
+                    int added;
+                    text = AddOrRow(text, row, out added);
+
+                    outcome.Add(
+                        "the value " + row.Value + " also accepts " + row.AlsoAccept
+                            + ", which a model in this run spells that way",
+                        added,
+                        added == 0 ? "this file holds no condition asking for that value" : null);
+                }
+            }
+
             outcome.Text = text;
             return outcome;
+        }
+
+        /// <summary>
+        /// A second condition on the same property, carrying the other spelling and the
+        /// StartGroup bit, put straight after every condition asking for that value.
+        ///
+        /// IT COPIES THE CONDITION BESIDE IT, so the category and the property come off
+        /// the file itself and nothing here has to know what either is called on this
+        /// project, which is the same way the negation rewrite is built.
+        ///
+        /// Safe to run twice: a condition that already has the Or row after it is left
+        /// alone and counted as zero.
+        /// </summary>
+        private static string AddOrRow(string xml, ValueOrRow row, out int added)
+        {
+            added = 0;
+
+            // THE WHOLE OPENING TAG AND NOT THE CLASS CONSTANT. DataOpens is "<data ",
+            // which is what the rewriters scan FOR, and gluing a value onto it gives
+            // "<data PL-Drainage equipment</data>", which matches nothing anywhere.
+            string wanted = ValueOpens + row.Value + ValueCloses;
+            string already = ValueOpens + row.AlsoAccept + ValueCloses;
+            string text = xml;
+            int at = 0;
+
+            while (true)
+            {
+                int value = text.IndexOf(wanted, at, StringComparison.Ordinal);
+
+                if (value < 0)
+                {
+                    return text;
+                }
+
+                int closes = text.IndexOf(ConditionCloses, value, StringComparison.Ordinal);
+                int opens = text.LastIndexOf(ConditionOpens, value, StringComparison.Ordinal);
+
+                if (closes < 0 || opens < 0)
+                {
+                    return text;
+                }
+
+                closes += ConditionCloses.Length;
+                // The template is the condition element itself, plus the indentation in
+                // front of it where the file has any. Falling back to the START OF THE
+                // FILE when there is no newline would make the template the whole
+                // document, which is what it did on a one line file.
+                int line = text.LastIndexOf('\n', opens);
+                int from = line < 0 ? opens : line;
+                string template = text.Substring(from, closes - from);
+
+                // Already done, so nothing is added and the walk moves past it.
+                if (text.IndexOf(already, closes, StringComparison.Ordinal) == closes + Gap(text, closes))
+                {
+                    at = closes;
+                    continue;
+                }
+
+                string or = OneCondition(template, "equals", StartGroup, row.AlsoAccept);
+                text = text.Substring(0, closes) + or + text.Substring(closes);
+                added++;
+                at = closes + or.Length;
+            }
+        }
+
+        /// <summary>
+        /// How far past that point the next data element opens, so an Or row already
+        /// there is recognised whatever whitespace sits between the two conditions.
+        /// Minus one where there is no next one, which never equals a real offset.
+        /// </summary>
+        private static int Gap(string text, int from)
+        {
+            int next = text.IndexOf(DataOpens, from, StringComparison.Ordinal);
+            return next < 0 ? -1 : next - from;
+        }
+
+        /// <summary>
+        /// The bit that starts a new condition group, which is what makes an Or, F78.
+        /// Measured over all 102 conditions of the reference file on 2026-09-19.
+        /// </summary>
+        /// <summary>A whole wstring value element, which is what a workset value is written as.</summary>
+        private const string ValueOpens = "<data type=\"wstring\">";
+
+        private const string ValueCloses = "</data>";
+
+        public const int StartGroup = 64;
+
+        /// <summary>
+        /// One value rewritten wherever it is the whole text of a data element, and
+        /// NOWHERE ELSE. Scoped to `&lt;data type="wstring"&gt;VALUE&lt;/data&gt;` rather
+        /// than replaced across the file, because a workset name can be a substring of a
+        /// set name, of a category or of another workset, and a blind replace would
+        /// rewrite all of them. Matched Ordinal, because the whole point is that the
+        /// spelling differs.
+        /// </summary>
+        private static string RewriteValue(string xml, string from, string to, out int changed)
+        {
+            string was = ValueOpens + from + ValueCloses;
+            string now = ValueOpens + to + ValueCloses;
+
+            changed = Occurrences(xml, was);
+            return changed == 0 ? xml : xml.Replace(was, now);
+        }
+
+        private static string Listed(IList<string> values)
+        {
+            string[] array = new string[values.Count];
+            values.CopyTo(array, 0);
+            return string.Join(" and ", array);
         }
 
         /// <summary>

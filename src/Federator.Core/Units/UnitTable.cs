@@ -127,6 +127,45 @@ namespace Federator.Core.Units
             return null;
         }
 
+        /// <summary>
+        /// The row whose SHORT LABEL this is, case blind and trimmed, or null. Added for
+        /// 5s, where a size arrives as the words "600 mm" and the unit has to be read out
+        /// of the text rather than off a document. It reads the same table every other
+        /// conversion reads, so a unit this tool does not know is refused here too.
+        /// </summary>
+        public static UnitRow FindByShortLabel(string label)
+        {
+            if (label == null)
+            {
+                return null;
+            }
+
+            string wanted = label.Trim();
+
+            foreach (UnitRow row in Rows)
+            {
+                if (string.Equals(row.Short, wanted, StringComparison.OrdinalIgnoreCase))
+                {
+                    return row;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>Every short label this tool knows, for a reader matching one out of a string.</summary>
+        public static IList<string> ShortLabels()
+        {
+            List<string> labels = new List<string>();
+
+            foreach (UnitRow row in Rows)
+            {
+                labels.Add(row.Short);
+            }
+
+            return labels;
+        }
+
         /// <summary>The row whose Navisworks enum name this is, case blind and trimmed, or null.</summary>
         public static UnitRow FindByEnumName(string enumName)
         {

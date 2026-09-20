@@ -1,0 +1,297 @@
+15:48:47.229  probe started, mode census, 11 file(s)
+15:48:47.231  
+15:48:47.232  ================ 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf ================
+15:48:48.979  4 model(s), document units Feet
+15:48:49.004     AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   site [SWLS-02-SharedCoordinate]   2 workset name(s)
+15:48:49.004        AR-EXTERIOR
+15:48:49.005        AR-INTERIOR
+15:48:49.035     EL  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc   site [LTB2]   9 workset name(s)
+15:48:49.035        EL-Containment
+15:48:49.035        EL-Fire Alarm
+15:48:49.035        EL-Lighting
+15:48:49.035        EL-Lightining Protection
+15:48:49.035        EL-Lightning Protection
+15:48:49.035        EL-Power
+15:48:49.035        EV-Access Control
+15:48:49.035        EV-Cctv System
+15:48:49.035        EV-IT
+15:48:49.059     ME  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc   site [PW3_Shared_Location]   6 workset name(s)
+15:48:49.059        ME-Air Terminal
+15:48:49.059        ME-Ductwork
+15:48:49.059        ME-Equipment
+15:48:49.059        PL-Drainage
+15:48:49.059        PL-Drainage equipmen
+15:48:49.059        PL-Fire Protection
+15:48:49.061     ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc   site [Internal]   2 workset name(s)
+15:48:49.061        ST-SUB
+15:48:49.061        ST-SUP
+15:48:49.067  
+15:48:49.067  ================ 5s, THE SERVICES WITH NO READABLE SIZE ================
+15:48:50.585  
+15:48:50.585  clashes in this document              : 526
+15:48:50.585  a service against a solid             : 74
+15:48:50.585  of those, NO READABLE SIZE            : 0
+15:48:50.585  by category:
+15:48:50.585  
+15:48:50.585  READ THE DUMPS ABOVE. If a level carries Diameter, Width, Height, Size,
+15:48:50.585  Nominal Diameter or Overall Size and the reader still said no size, the
+15:48:50.585  reader is on the wrong node and it is a BUG. If no level carries any of
+15:48:50.585  the six, the service genuinely has no size property and PART 5 names them.
+15:48:50.585  
+15:48:50.585  ================ 1104-PAR-1000BS-ZZZ-BM-MOD-000001.nwf ================
+15:48:50.848  2 model(s), document units Feet
+15:48:50.850     AR  1104-PAR-1000BS-ZZZ-AR-MOD-003001.nwc   site [Community-2-BS1]   1 workset name(s)
+15:48:50.850        AR-EXTERIOR
+15:48:50.852     AR  1104-PAR-1000BS-ZZZ-AR-MOD-003002.nwc   site [Community-2-BS2]   1 workset name(s)
+15:48:50.852        AR-EXTERIOR
+15:48:50.852  
+15:48:50.852  ================ 1104-PAR-1A0215-ZZZ-BM-MOD-000001.nwf ================
+15:48:51.096  3 model(s), document units Feet
+15:48:51.492     LS  1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwc   site [Mukaab]   4 workset name(s)
+15:48:51.492        LA-HARDSCAPE
+15:48:51.492        LA-LEVELS
+15:48:51.492        LA-SOFTSCAPE
+15:48:51.492        LA-TREES
+15:48:51.505     LT  1104-PAR-1A0215-ZZZ-LT-MOD-000001.nwc   site [Default Site]   2 workset name(s)
+15:48:51.505        LA-LANDSCAPE LIGHTING
+15:48:51.505        Shared Levels and Grids
+15:48:51.514     SW  1104-PAR-1A0215-ZZZ-SW-MOD-000001.nwc   site [Default Site]   1 workset name(s)
+15:48:51.514        LA-LANDSCAPE SIGNAGE
+15:48:51.514  
+15:48:51.514  ================ 1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwf ================
+15:48:51.591  0 model(s), document units Feet
+15:48:51.591  
+15:48:51.591  ================ 1104-PAR-1A02BS-ZZZ-BM-MOD-000001.nwf ================
+15:48:51.819  6 model(s), document units Feet
+15:48:51.820     AR  1104-PAR-1A02BS-ZZZ-AR-MOD-001000.nwc   site [Exhibition Pavilion]   1 workset name(s)
+15:48:51.820        AR-EXTERIOR
+15:48:51.820     AR  1104-PAR-1A02BS-ZZZ-AR-MOD-002000.nwc   site [Exhibition Pavilion]   1 workset name(s)
+15:48:51.820        AR-EXTERIOR
+15:48:51.822     AR  1104-PAR-1A02BS-ZZZ-AR-MOD-003000.nwc   site [Bus-3]   1 workset name(s)
+15:48:51.822        AR-EXTERIOR
+15:48:51.823     AR  1104-PAR-1A02BS-ZZZ-AR-MOD-004000.nwc   site [Exhibition Pavilion]   1 workset name(s)
+15:48:51.823        AR-EXTERIOR
+15:48:51.837     EL  1104-PAR-1A02BS-ZZZ-EL-MOD-003000.nwc   site [Community-2-BS1]   5 workset name(s)
+15:48:51.837        EL-Lighting
+15:48:51.837        EL-Lightning Protection
+15:48:51.837        EL-Power
+15:48:51.837        EV-Access Control
+15:48:51.837        EV-IT
+15:48:51.839     EL  1104-PAR-1A02BS-ZZZ-EL-MOD-003001.nwc   site [Community-2-BS2]   5 workset name(s)
+15:48:51.839        EL-Lighting
+15:48:51.839        EL-Lightning Protection
+15:48:51.839        EL-Power
+15:48:51.839        EV-Access Control
+15:48:51.839        EV-IT
+15:48:51.839  
+15:48:51.839  ================ 1104-PAR-1A02MS-ZZZ-BM-MOD-000001.nwf ================
+15:48:51.969  1 model(s), document units Meters
+15:48:52.046     ST  1104-PAR-1A02MS-ZZZ-ST-MOD-000001.nwc   site [Default Site]   1 workset name(s)
+15:48:52.046        ST-SUB
+15:48:52.046  
+15:48:52.046  ================ 1104-PAR-1A02WE-ZZZ-BM-MOD-000001.nwf ================
+15:48:52.206  4 model(s), document units Feet
+15:48:52.207     AR  1104-PAR-1A02WE-ZZZ-AR-MOD-000001.nwc   site [IRPS-SharedCoordinate]   2 workset name(s)
+15:48:52.207        AR-EXTERIOR
+15:48:52.207        AR-INTERIOR
+15:48:52.210     EL  1104-PAR-1A02WE-ZZZ-EL-MOD-000001.nwc   site [BUL_0105_SharedCoordinate]   5 workset name(s)
+15:48:52.210        EL-Fire alarm
+15:48:52.210        EL-Lighting
+15:48:52.210        EL-Panels
+15:48:52.210        EL-Power
+15:48:52.210        EL_Grounding System
+15:48:52.211     ME  1104-PAR-1A02WE-ZZZ-ME-MOD-000001.nwc   site [PW5_Shared_Location]   4 workset name(s)
+15:48:52.211        ME-Air Terminal
+15:48:52.211        ME-Equipment
+15:48:52.211        PL-Drainage
+15:48:52.211        PL-Fire Protection
+15:48:52.212     ST  1104-PAR-1A02WE-ZZZ-ST-MOD-000001.nwc   site [BUL_0105_SharedCoordinate]   2 workset name(s)
+15:48:52.212        ST-SUB
+15:48:52.212        ST-SUP
+15:48:52.212  
+15:48:52.212  ================ 1104-PAR-1A02WL-ZZZ-BM-MOD-000001.nwf ================
+15:48:52.417  8 model(s), document units Feet
+15:48:52.433     ME  1104-PAR-1A02WL-ZZZ-ME-MOD-000001.nwc   site [PW3_Shared_Location]   4 workset name(s)
+15:48:52.433        ME-Fuel
+15:48:52.433        PL-Domestic water
+15:48:52.433        PL-Drainage
+15:48:52.433        PL-Drainage equipment
+15:48:52.453     ME  1104-PAR-1A02WL-ZZZ-ME-MOD-000002.nwc   site [SWLS-02 MECH]   3 workset name(s)
+15:48:52.453        ME-Equipment
+15:48:52.453        ME-Piping
+15:48:52.453        Me-Piping-Odor
+15:48:52.456     ST  1104-PAR-1A02WL-ZZZ-ST-MOD-000001.nwc   site [LS]   4 workset name(s)
+15:48:52.456        +Link-ST-***
+15:48:52.456        ST-SUB
+15:48:52.456        ST-SUP
+15:48:52.456        XX-St_placeholder
+15:48:52.456     ST  1104-PAR-1A02WL-ZZZ-ST-MOD-000002.nwc   site [PWPS_FUEL TANK 01]   1 workset name(s)
+15:48:52.456        ST-SUB
+15:48:52.456     ST  1104-PAR-1A02WL-ZZZ-ST-MOD-000003.nwc   site [NHC-PUMP STATION]   1 workset name(s)
+15:48:52.456        ST-SUB
+15:48:52.456     ST  1104-PAR-1A02WL-ZZZ-ST-MOD-000004.nwc   site [Internal]   1 workset name(s)
+15:48:52.456        ST-SUB
+15:48:52.457     ST  1104-PAR-1A02WL-ZZZ-ST-MOD-000005.nwc   site [Internal]   1 workset name(s)
+15:48:52.457        ST-SUB
+15:48:52.457     ST  1104-PAR-1A02WL-ZZZ-ST-MOD-000007.nwc   site [NHC-PUMP STATION]   2 workset name(s)
+15:48:52.457        ST-SUB
+15:48:52.457        XX-St_placeholder
+15:48:52.457  
+15:48:52.457  ================ 1104-PAR-1A02WM-ZZZ-BM-MOD-000001.nwf ================
+15:48:52.990  4 model(s), document units Feet
+15:48:52.992     AR  1104-PAR-1A02WM-ZZZ-AR-MOD-000001.nwc   site [SWLS-04-SharedCoordinate]   2 workset name(s)
+15:48:52.992        AR-EXTERIOR
+15:48:52.992        AR-INTERIOR
+15:48:53.017     EL  1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc   site [LTB2]   9 workset name(s)
+15:48:53.017        EL-Containment
+15:48:53.017        EL-Fire alarm
+15:48:53.017        EL-Lighting
+15:48:53.017        EL-Lightining Protection
+15:48:53.017        EL-Lightning Protection
+15:48:53.017        EL-Power
+15:48:53.017        EV-Access Control
+15:48:53.017        EV-Ccctv system
+15:48:53.017        EV-IT
+15:48:53.033     ME  1104-PAR-1A02WM-ZZZ-ME-MOD-000001.nwc   site [PW3_Shared_Location]   5 workset name(s)
+15:48:53.033        ME-Equipment
+15:48:53.033        ME-Piping
+15:48:53.033        PL-Drainage
+15:48:53.033        PL-Drainage equipment
+15:48:53.033        PL-Fire Protection
+15:48:53.036     ST  1104-PAR-1A02WM-ZZZ-ST-MOD-000001.nwc   site [ST_PW5_CHLORINATION]   2 workset name(s)
+15:48:53.036        ST-SUB
+15:48:53.036        ST-SUP
+15:48:53.037  
+15:48:53.037  ================ 1104-PAR-1A02WN-ZZZ-BM-MOD-000001.nwf ================
+15:48:53.319  4 model(s), document units Feet
+15:48:53.320     AR  1104-PAR-1A02WN-ZZZ-AR-MOD-000001.nwc   site [SWLS-04-SharedCoordinate]   2 workset name(s)
+15:48:53.320        AR-EXTERIOR
+15:48:53.321        AR-INTERIOR
+15:48:53.324     EL  1104-PAR-1A02WN-ZZZ-EL-MOD-000001.nwc   site [IGN2]   6 workset name(s)
+15:48:53.324        EL-Containment
+15:48:53.324        EL-Fire alarm
+15:48:53.324        EL-Lighting
+15:48:53.324        EL-Lightning Protection
+15:48:53.324        EL-Power
+15:48:53.324        EV-Access control
+15:48:53.329     ME  1104-PAR-1A02WN-ZZZ-ME-MOD-000001.nwc   site [PW5_Shared_Location]   4 workset name(s)
+15:48:53.329        ME-Air Terminal
+15:48:53.329        ME-Equipment
+15:48:53.329        PL-Drainage
+15:48:53.329        PL-Fire Protection
+15:48:53.331     ST  1104-PAR-1A02WN-ZZZ-ST-MOD-000001.nwc   site [ST_PW5_CHLORINATION]   2 workset name(s)
+15:48:53.331        ST-SUB
+15:48:53.331        ST-SUP
+15:48:53.331  
+15:48:53.331  ================ 1104-PAR-1A02WO-ZZZ-BM-MOD-000001.nwf ================
+15:48:53.532  4 model(s), document units Feet
+15:48:53.533     AR  1104-PAR-1A02WO-ZZZ-AR-MOD-000001.nwc   site [IRPS-SharedCoordinate]   3 workset name(s)
+15:48:53.533        AR-EXTERIOR
+15:48:53.533        AR-FFE FURNITURE
+15:48:53.533        AR-INTERIOR
+15:48:53.534     EL  1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc   site [BUL_0004_SharedCoordiante]   6 workset name(s)
+15:48:53.534        EL-Containment
+15:48:53.534        EL-Fire alarm
+15:48:53.534        EL-Lighting
+15:48:53.534        EL-Lightning Protection
+15:48:53.534        EL-Power
+15:48:53.534        EV-IT
+15:48:53.547     ME  1104-PAR-1A02WO-ZZZ-ME-MOD-000001.nwc   site [PW2_Shared_Location]   6 workset name(s)
+15:48:53.547        ME-Equipment
+15:48:53.547        ME-Piping
+15:48:53.547        PL-Domestic water
+15:48:53.547        PL-Drainage
+15:48:53.547        PL-Drainage equipment
+15:48:53.547        PL-Fire Protection
+15:48:53.548     ST  1104-PAR-1A02WO-ZZZ-ST-MOD-000001.nwc   site [ST_PW2_GUARD HOUSE]   2 workset name(s)
+15:48:53.548        ST-SUB
+15:48:53.548        ST-SUP
+15:48:53.550  
+15:48:53.550  ================ 5t, EVERY WORKSET NAME IN THIS FOLDER ================
+15:48:53.550  39 distinct name(s) across every model read
+15:48:53.551  
+15:48:53.551  --- names that differ ONLY BY CASE, which a correction rule may fix ---
+15:48:53.551     the one word "el-fire alarm" is spelled 2 ways:
+15:48:53.551        [EL-Fire Alarm] in 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:48:53.551        [EL-Fire alarm] in 1104-PAR-1A02WE-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+15:48:53.551     the one word "ev-access control" is spelled 2 ways:
+15:48:53.551        [EV-Access Control] in 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003000.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc
+15:48:53.551        [EV-Access control] in 1104-PAR-1A02WN-ZZZ-EL-MOD-000001.nwc
+15:48:53.551  
+15:48:53.551  --- names that differ by MORE THAN CASE, which are a different word and may be a typo ---
+15:48:53.551     [AR-EXTERIOR] and [AR-INTERIOR] differ by 2 letter(s), which is MORE than case, so they are two different words
+15:48:53.551        [AR-EXTERIOR] in 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1000BS-ZZZ-AR-MOD-003001.nwc, 1104-PAR-1000BS-ZZZ-AR-MOD-003002.nwc, 1104-PAR-1A02BS-ZZZ-AR-MOD-001000.nwc, 1104-PAR-1A02BS-ZZZ-AR-MOD-002000.nwc, 1104-PAR-1A02BS-ZZZ-AR-MOD-003000.nwc, 1104-PAR-1A02BS-ZZZ-AR-MOD-004000.nwc, 1104-PAR-1A02WE-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-AR-MOD-000001.nwc
+15:48:53.551        [AR-INTERIOR] in 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WE-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-AR-MOD-000001.nwc
+15:48:53.551     [EL-Lightining Protection] and [EL-Lightning Protection] differ by 1 letter(s), which is MORE than case, so they are two different words
+15:48:53.551        [EL-Lightining Protection] in 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc
+15:48:53.551        [EL-Lightning Protection] in 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003000.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EV-Ccctv system] and [EV-Cctv System] differ by 1 letter(s), which is MORE than case, so they are two different words
+15:48:53.552        [EV-Ccctv system] in 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc
+15:48:53.552        [EV-Cctv System] in 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [PL-Drainage equipmen] and [PL-Drainage equipment] differ by 1 letter(s), which is MORE than case, so they are two different words
+15:48:53.552        [PL-Drainage equipmen] in 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+15:48:53.552        [PL-Drainage equipment] in 1104-PAR-1A02WL-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [ST-SUB] and [ST-SUP] differ by 1 letter(s), which is MORE than case, so they are two different words
+15:48:53.552        [ST-SUB] in 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02MS-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WE-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000002.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000003.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000004.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000005.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000007.nwc, 1104-PAR-1A02WM-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ST-MOD-000001.nwc
+15:48:53.552        [ST-SUP] in 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WE-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ST-MOD-000001.nwc
+15:48:53.552  
+15:48:53.552  --- every name and every model that carries it ---
+15:48:53.552     [+Link-ST-***]  1 model(s): 1104-PAR-1A02WL-ZZZ-ST-MOD-000001.nwc
+15:48:53.552     [AR-EXTERIOR]  11 model(s): 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1000BS-ZZZ-AR-MOD-003001.nwc, 1104-PAR-1000BS-ZZZ-AR-MOD-003002.nwc, 1104-PAR-1A02BS-ZZZ-AR-MOD-001000.nwc, 1104-PAR-1A02BS-ZZZ-AR-MOD-002000.nwc, 1104-PAR-1A02BS-ZZZ-AR-MOD-003000.nwc, 1104-PAR-1A02BS-ZZZ-AR-MOD-004000.nwc, 1104-PAR-1A02WE-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-AR-MOD-000001.nwc
+15:48:53.552     [AR-FFE FURNITURE]  1 model(s): 1104-PAR-1A02WO-ZZZ-AR-MOD-000001.nwc
+15:48:53.552     [AR-INTERIOR]  5 model(s): 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WE-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-AR-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-AR-MOD-000001.nwc
+15:48:53.552     [EL-Containment]  4 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EL-Fire Alarm]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EL-Fire alarm]  4 model(s): 1104-PAR-1A02WE-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EL-Lighting]  7 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003000.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003001.nwc, 1104-PAR-1A02WE-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EL-Lightining Protection]  2 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EL-Lightning Protection]  6 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003000.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EL-Panels]  1 model(s): 1104-PAR-1A02WE-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EL-Power]  7 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003000.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003001.nwc, 1104-PAR-1A02WE-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EL_Grounding System]  1 model(s): 1104-PAR-1A02WE-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EV-Access Control]  4 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003000.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EV-Access control]  1 model(s): 1104-PAR-1A02WN-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EV-Ccctv system]  1 model(s): 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EV-Cctv System]  1 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [EV-IT]  5 model(s): 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003000.nwc, 1104-PAR-1A02BS-ZZZ-EL-MOD-003001.nwc, 1104-PAR-1A02WM-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+15:48:53.552     [LA-HARDSCAPE]  1 model(s): 1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwc
+15:48:53.552     [LA-LANDSCAPE LIGHTING]  1 model(s): 1104-PAR-1A0215-ZZZ-LT-MOD-000001.nwc
+15:48:53.552     [LA-LANDSCAPE SIGNAGE]  1 model(s): 1104-PAR-1A0215-ZZZ-SW-MOD-000001.nwc
+15:48:53.552     [LA-LEVELS]  1 model(s): 1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwc
+15:48:53.552     [LA-SOFTSCAPE]  1 model(s): 1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwc
+15:48:53.552     [LA-TREES]  1 model(s): 1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwc
+15:48:53.552     [ME-Air Terminal]  3 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WE-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [ME-Ductwork]  1 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [ME-Equipment]  6 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WE-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WL-ZZZ-ME-MOD-000002.nwc, 1104-PAR-1A02WM-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [ME-Fuel]  1 model(s): 1104-PAR-1A02WL-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [ME-Piping]  3 model(s): 1104-PAR-1A02WL-ZZZ-ME-MOD-000002.nwc, 1104-PAR-1A02WM-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [Me-Piping-Odor]  1 model(s): 1104-PAR-1A02WL-ZZZ-ME-MOD-000002.nwc
+15:48:53.552     [PL-Domestic water]  2 model(s): 1104-PAR-1A02WL-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [PL-Drainage]  6 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WE-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WL-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [PL-Drainage equipmen]  1 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [PL-Drainage equipment]  3 model(s): 1104-PAR-1A02WL-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [PL-Fire Protection]  5 model(s): 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WE-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ME-MOD-000001.nwc
+15:48:53.552     [Shared Levels and Grids]  1 model(s): 1104-PAR-1A0215-ZZZ-LT-MOD-000001.nwc
+15:48:53.552     [ST-SUB]  12 model(s): 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02MS-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WE-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000002.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000003.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000004.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000005.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000007.nwc, 1104-PAR-1A02WM-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ST-MOD-000001.nwc
+15:48:53.552     [ST-SUP]  6 model(s): 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WE-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WM-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WN-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WO-ZZZ-ST-MOD-000001.nwc
+15:48:53.552     [XX-St_placeholder]  2 model(s): 1104-PAR-1A02WL-ZZZ-ST-MOD-000001.nwc, 1104-PAR-1A02WL-ZZZ-ST-MOD-000007.nwc
+15:48:53.552  
+15:48:53.552  ================ 5u, THE SHARED SITE OF EVERY MODEL ================
+15:48:53.552     1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf   reference 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   names Internal: True   a model with no site at all: False
+15:48:53.552     1104-PAR-1000BS-ZZZ-BM-MOD-000001.nwf   reference 1104-PAR-1000BS-ZZZ-AR-MOD-003001.nwc   names Internal: False   a model with no site at all: False
+15:48:53.552     1104-PAR-1A0215-ZZZ-BM-MOD-000001.nwf   reference none   names Internal: False   a model with no site at all: False
+15:48:53.552     1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwf   reference none   names Internal: False   a model with no site at all: False
+15:48:53.552     1104-PAR-1A02BS-ZZZ-BM-MOD-000001.nwf   reference 1104-PAR-1A02BS-ZZZ-AR-MOD-001000.nwc   names Internal: False   a model with no site at all: False
+15:48:53.552     1104-PAR-1A02MS-ZZZ-BM-MOD-000001.nwf   reference none   names Internal: False   a model with no site at all: False
+15:48:53.552     1104-PAR-1A02WE-ZZZ-BM-MOD-000001.nwf   reference 1104-PAR-1A02WE-ZZZ-AR-MOD-000001.nwc   names Internal: False   a model with no site at all: False
+15:48:53.552     1104-PAR-1A02WL-ZZZ-BM-MOD-000001.nwf   reference none   names Internal: True   a model with no site at all: False
+15:48:53.552     1104-PAR-1A02WM-ZZZ-BM-MOD-000001.nwf   reference 1104-PAR-1A02WM-ZZZ-AR-MOD-000001.nwc   names Internal: False   a model with no site at all: False
+15:48:53.552     1104-PAR-1A02WN-ZZZ-BM-MOD-000001.nwf   reference 1104-PAR-1A02WN-ZZZ-AR-MOD-000001.nwc   names Internal: False   a model with no site at all: False
+15:48:53.552     1104-PAR-1A02WO-ZZZ-BM-MOD-000001.nwf   reference 1104-PAR-1A02WO-ZZZ-AR-MOD-000001.nwc   names Internal: False   a model with no site at all: False
+15:48:53.552  
+15:48:53.552  GROUPS READ                                  : 11
+15:48:53.552  groups with a model naming Internal          : 2
+15:48:53.552  groups with a model carrying no site at all  : 0
+15:48:53.553  GROUPS THAT WOULD FAIL UNDER Q70             : 2
+15:48:53.553  Q70 fails a group where ANY model names Internal OR carries no site at all.
+15:48:53.553  probe finished

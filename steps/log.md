@@ -1,6 +1,326 @@
 # log
 
 Newest entry at the top.
+## 2026-09-20 The worksets round, a size reader that dropped every worded size, and two groups failed on purpose
+
+### What was done
+
+Five build items off Bader's answers Q67 to Q71, all measured before any of them was
+built, because the last three rounds each cost an extra run for a rule built on a guess.
+PART 1 found a bug and fixed it, and that bug turned out to be the largest number in
+the round.
+
+**PART 1a, 5s, the 29 services with no readable size.** 5r one day earlier had found a
+reader that returned nothing and looked like an answer, so 29 of one kind the next day
+was worth looking at rather than reporting. EVERY ONE OF THE 29 CARRIED A SIZE THE WHOLE
+TIME. Revit writes a conduit's Size as the DisplayString `53 mmø` and a cable tray
+fitting's as `600 mmx100 mm-600 mmx100 mm`, one pair per connector, and `ItemSizes` took
+only `DoubleLength` and `Double` and dropped every string. Its own comment said a worded
+size was deliberately not read because parsing "150 mm" would mean guessing at the unit.
+THAT REASONING WAS WRONG ON THIS DATA: the text names its own unit, every time.
+
+`Federator.Core.Views.SizeText` reads it now, through `UnitTable`, which is the one unit
+table in this repo. Two things the client's own strings taught it and both have tests: a
+number with NO unit is refused and never guessed at, because the penetration rule leaves
+alone a service it cannot measure and guessing costs a hole in a wall nobody checked;
+and `x` is a dimension separator and not a letter, because the first version read
+`600 mmx100 mm` as no measurement at all.
+
+**PART 1b and 1c, 5t and 5u.** 39 workset names across every model of all ten groups,
+and the shared site of every model. Both are the source of truth for what follows and
+neither rule is built from a name read off a log.
+
+**PART 2, Q68.** The matrix is corrected to the spelling the models carry. NOT an ignore
+case flag, and 5t proved Bader right twice over: `AR-EXTERIOR` against `AR-INTERIOR` and
+`ST-SUB` against `ST-SUP` are two pairs of REAL worksets one and two letters apart. The
+candidates come from `RevitWorksets`, measured and embedded in the DLL the way the
+category list already is, so the tool never invents a spelling. One candidate is a
+correction, two is a REFUSAL with both named, none is left alone.
+
+**PART 3, Q69.** The Or row, `flags="64"`, built off the condition beside it. AND the
+export check still names every near-pair as misspelled with which model carries which,
+which is the half that matters, because a tool that absorbs a typo silently means nobody
+ever fixes the models.
+
+**PART 4, Q70**, built only after 5u had counted. A group is FAILED when a model names
+`Internal` or no site at all, AND IT STILL WRITES ITS THREE OUTPUTS, because the evidence
+is what Bader takes to the people who own the models.
+
+**PART 5, Q71.** The penetration block names the services it could not measure, by
+category, with a row each in the machine readable log.
+
+### Measured
+
+ONE RUN AGAINST HIS OWN LIVE FOLDERS after the backup was read back: 14 files against 14,
+every byte size compared one for one, 0 mismatches. Settings as briefed, 25 mm READ BACK
+off the box and never reported as selected, penetrations on, by design on, the priority
+file picked, viewpoints on, the corrected matrix.
+
+Against the alignment round's run of 14:24 the same day:
+
+| | 14:24 | 16:20 |
+|---|---|---|
+| groups done | 10 | 8 |
+| groups FAILED | 0 | 2, on purpose |
+| penetrations moved | 4 | **56** |
+| services with no readable size | 29 | **0** |
+| sets finding nothing in every group | 33 | 33 |
+| the run | 15 min 16 s | 25 min 22 s |
+
+**THE PENETRATION RULE WENT FROM 4 TO 56** and every one of the new ones is a worded
+size the tool could not read yesterday: `Conduits 53mm through Walls`,
+`Cable Tray Fittings 150mm through Floors`. The unmeasured count went to ZERO in every
+group of the run.
+
+**TWO GROUPS FAILED AND THEY ARE THE TWO 5u NAMED**, 1A02MM on one model and 1A02WL on
+two, every one of them a structural model exported on the internal origin. Both wrote
+their NWF, their NWD and their report, which is what the answer to Q70 asked for.
+
+25 minutes 22 seconds, inside the 45 minute criterion by 19 minutes 38 seconds. It is
+slower than the 15 minutes before it because more sets now find items, so more tests
+actually run rather than being skipped for an empty side.
+
+**AND THE MATRIX CORRECTION CHANGED NO CLASH COUNT, WHICH IS THE ROUND'S OTHER FINDING.**
+33 sets found nothing before and 33 after. A SET ALREADY IN THE NWF KEEPS THE CONDITIONS
+IT WAS BUILT WITH, F28, so a value corrected in the picked file since then never reaches
+the document. It is proved by consequence and not assumed: the models carry `ME-Ductwork`
+on 236 elements of 1A02MM, the corrected file asks for exactly that, and
+`BLD-ME-Ducts&Duct Fittings` still found nothing, so the set in his NWF is still asking
+the old question. The run SAYS this now, under the already-there count, and nothing is
+done about it, because replacing a set changes what every clash test pointing at it
+finds and that is a decision. Q72.
+
+His NWF folder, the backup against what is there now, bytes:
+
+| group | before | after |
+|---|---|---|
+| 1A02MM | 24,642,386 | 24,835,774 |
+| 1A02WM | 6,256,447 | 6,257,126 |
+| 1A02BS | 1,296,720 | 1,296,725 |
+| 1A02WO | 986,849 | 986,967 |
+| 1A02WN | 913,096 | 913,251 |
+| 1A02WE | 481,534 | 481,727 |
+| 1A02WL | 249,834 | 249,786 |
+| 1A0215 | 78,366 | 78,366 |
+| 1A02MS | 81,957 | 81,957 |
+| 1000BS | 13,091 | 13,091 |
+
+Small, because the viewpoints were already there: 9 written new and the rest left alone,
+every one of the 9 dimmed, painted and read back on all four counts, none failed.
+
+### Every program started, every file written outside the repo, every process stopped
+
+Started: Navisworks Manage 2025 through Roamer.exe once for the run and twice as the
+automation host for the probe, `census` mode both times, each of which exited on its own.
+`dotnet build`, `dotnet test` and `build\install.ps1`, which built and copied the bundle
+once. PowerShell drivers for the window, the ribbon clicks, the confirm dialog and the
+close, every one of which exited.
+
+Stopped: NOTHING. Navisworks closed through its own window, answering No to the save prompt, and no Stop-Process was needed this round, which is the first round that has been true of. Two `AdskLicensingAgent` processes started at 16:43 when Navisworks did and are still running, which is Autodesk own licensing agent and not something this round can close. No browser and no sign in page opened at any point.
+
+WRITTEN INTO HIS LIVE PROJECT FOLDER, which PART 7 asked for:
+
+- `C:\00-NM\Federation Task\C02 + 04\C02\NWF-backup-2026-09-20-worksets`, taken first and
+  READ BACK before anything else happened, 14 files against 14, 0 mismatches, 40,008,819
+  bytes. His to delete when he is satisfied
+- his 11 NWF files rewritten, 10 NWDs, 10 workbooks with 10 pages and their picture
+  folders, and a copy of the run log in `C02\NWF`, which is where the tool always puts one
+
+Everything else is under `C:\Users\bader\AppData\Local\Temp\claude\round-worksets`: the
+probe folder with a copy of all eleven of his NWFs and the probe result files, and the
+driver notes. The tool's own log is in
+`C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs` and is copied into `steps\logs`.
+The bundle at `%APPDATA%\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle` was
+replaced once.
+
+His NWC folder was read and nothing was written there. The four properties CSVs the
+wiring round left beside his NWCs on 2026-09-19 are still there and still his to delete,
+and so is the alignment round's backup from this morning.
+
+### What works, what does not, and what is untested
+
+WHAT WORKS, proved by a run on his own files: the worded size reader, which took the
+penetration rule from 4 clashes to 56 and the unmeasured count to zero; the matrix case
+correction, which produces exactly the four corrections 5t predicted and refuses where it
+should; the Or row; the export check naming the misspelled pairs; and Internal failing a
+group while still writing every output.
+
+WHAT DOES NOT: the matrix correction reaches no set that is already in an NWF, so it
+changed no clash count on his folders and will only help a building whose NWF has not
+been built yet. That is Q72 and it is a decision, not a correction.
+
+WHAT IS UNTESTED, and this is Q67's consequence, recorded every round until a model shows
+one: the ALIGNMENT path for a model carrying no shared coordinate at all, and the EXPORT
+CHECK path for a model missing an element id. Both have tests that break one thing and
+assert the check names it. Neither has ever met a real file, because every model in C02
+carries both, and on Bader's answer to Q67 the building that would show them is not
+coming onto this machine.
+
+### The closing pass, PART 8
+
+The PART 7 log was read end to end and TWO CHECKS WERE REPORTING NOTHING. The workset
+disagreement block was naming `AR-EXTERIOR` against `AR-INTERIOR` and `ST-SUB` against
+`ST-SUP` on every group, and 5t had already settled that both pairs are real worksets, so
+the block was training a reader to skip past the three genuine typos beside them. A
+person decided once, the decision lives in the measured list as a `not-a-typo` line, and
+the block COUNTS what it left out rather than going quiet about it. And `SETS ACROSS THE
+RUN` said `asked UNKNOWN` on every single line, because on a weekly run every set is
+already in the NWF and its question is never read, so the block that exists to say WHICH
+sets are wrong said nothing about any of them. It says why now, and points at Q72.
+
+Then `steps\03_bader_next.md` was read end to end against the code and TWENTY TWO things
+had drifted, FOUR of them checks that could never pass:
+
+- step 387 told Bader to look for `Nothing failed`, which cannot appear now that Q70
+  fails two groups, and the string is written only when failed groups plus errors is zero
+- step 392 sent him to `run-20260920-142412.log` for the workset disagreement lines, and
+  that log holds none of them, because the block was added today
+- step 75 quoted `Nothing is cleared.`, which F75 changed to `Nothing inside it is
+  cleared.` and which is in no source file
+- steps 248, 249 and 268 expected the count of unmeasured services to be LARGE. It is
+  zero on every group since 5s, so the step was telling him to read a number for a
+  reason that no longer exists
+
+Four more steps still said the viewpoint writer was unbuilt, two rounds after it shipped,
+and three quoted strings were a word out: the by design tick label, the penetration help
+line that Q63 changed this morning, and the health block's folder pattern line.
+
+AND THE RULE ABOUT A PUBLIC MEMBER NOTHING CALLS was applied to this round's own work
+rather than only to old code: the two argument `ItemSizes.Read` overload and four
+`RevitWorksets` members had no caller anywhere, so they are deleted, and a dead field
+went with them.
+
+One answer in `steps\02_questions.md` was corrected too. Q65 says neither new block can
+fail a group, and Q70, answered later the same day, makes exactly one case where one can.
+The note sits under Q65 so the two are not read as contradicting each other.
+
+### What comes next
+
+Bader answers Q72. Core tests 1636 before the round and 1666 after, 0 failed and 0
+skipped. Build 0 errors and 0 warnings after every change. Both checks pass.
+
+## 2026-09-20 The worksets round, THE PLAN, written before the first edit
+
+### The two gates, both passed
+
+`dotnet build ParsonsNwcFederator.sln -c Release`, 0 errors and 0 warnings, Navisworks
+Manage 2025 found. This is not a container.
+
+`origin/main` carries the alignment round: Bader merged it as pull request 65, and
+`289dad3` is an ancestor of `fe936f4`. So nothing is stacked and `round-worksets`
+branches off a main that holds everything the last round measured.
+
+### What is already known going in, and what is not
+
+The alignment round left three numbers this round is briefed off, and NONE of them is
+taken as read.
+
+- 33 of 61 sets find nothing, and 5q says the cause is a case mismatch, `ME-Ductwork`
+  in the models against `ME-DUCTWORK` in the matrix
+- four workset names disagree with each other by MORE than case, and three of those
+  four look like typos rather than variants
+- 25 models sit somewhere their group's reference does not, and at least one names
+  `Internal`, which is Revit's word for a model exported on no shared site at all
+- 29 services in one group reported no readable size, ONE DAY after 5r found a reader
+  that returned nothing and looked like an answer
+
+Every one of those was read off a log written for a person. None of them is a list the
+code can be built from, and this round builds three rules and a group judgement on them.
+So PART 1 measures all four properly first, and PART 2 to PART 5 are built from what it
+writes and from nothing else.
+
+### The order, and why it is that order
+
+MEASURE ONCE, THEN BUILD, THEN RUN ONCE. Navisworks is started ONCE for the whole of
+PART 1, because the last three rounds each cost an extra run for a rule built on a guess.
+
+1. **PART 1a, 5s.** The 29 services with no readable size in 1A02MM, one at a time: the
+   item name, the category, every property tab it carries, and every property `SizeRule`
+   looks under. THE QUESTION IS WHICH OF TWO THINGS IT IS, and the round says which:
+   the services genuinely carry no size property, or the reader is on the wrong node
+   the way the penetration rule was. `ItemSizes.Read` walks `item.PropertyCategories`
+   and `Penetrations.LargestOf` walks the same five level chain the category read walks,
+   so after 5r's fix it SHOULD read. If it does not, that is a bug and it is fixed in
+   PART 1, and PART 5 then reports a real number instead of dressing up a broken one
+2. **PART 1b, 5t.** Every distinct workset name in C02, across all ten groups and every
+   model, with which models carry it. Grouped so that a name differing from another
+   ONLY BY CASE sits beside it, and a name differing by more than case sits beside it
+   too and is MARKED as a different word. This is the source of truth for PART 2 and
+   PART 3 and neither is built from a name read off a log
+3. **PART 1c, 5u.** The shared site of every model in all ten groups, which model is
+   each group's architecture reference, and how many models name `Internal`. THEN THE
+   ONE NUMBER PART 4 WAITS ON: how many of the ten groups would FAIL under Q70
+
+All three into `docs\history\scan.md` as 5s, 5t and 5u.
+
+Then the build, each its own commit, built after every change and not at the end.
+
+4. **PART 2, Q68 answered a.** A fourth `MatrixCorrections` rule beside the hyphen rule
+   and the negation rule, correcting a workset value in the matrix to the spelling the
+   models carry. NEVER AN IGNORE CASE FLAG: Bader refused it and the reason stands, it
+   would also make two genuinely different worksets match, quietly, on every set. The
+   rule corrects a value ONLY where 5t found exactly ONE model spelling differing by
+   case alone, and REFUSES where it found two, naming both. Four tests
+5. **PART 3, Q69 answered b.** Where his models carry two spellings differing by more
+   than case, the set condition carries both as an Or row, `flags="64"`, which F87
+   already writes. BUILT FROM 5t AND NEVER FROM A HARDCODED LIST. And the EXPORT CHECK
+   block STILL NAMES THEM AS MISSPELLED, one line per pair, saying which model carries
+   which, because if the tool absorbs a typo silently nobody ever fixes it and the next
+   building repeats it. Three tests
+6. **PART 4, Q70 answered b**, built only after 5u's number is known. A group is FAILED
+   when any model names `Internal` or names no site at all, the ALIGNMENT block says
+   which model and why, AND THE GROUP STILL WRITES ITS THREE OUTPUTS, because Bader
+   needs the evidence to take to NMDC and a group that produces nothing gives him
+   nothing to send. If 5u says more than half the groups would fail, it is built exactly
+   as briefed and the report says so plainly, because that is a finding about his models
+   and not a reason to soften the rule. Three tests
+7. **PART 5, Q71 answered b.** The penetration block names what the unmeasured services
+   are, in at most two lines, with the ids in the `.tsv`. What it reports depends on
+   what 1a found. Two tests
+8. **PART 6**, the five answers into `steps\02_questions.md`, Q67 WITH ITS CONSEQUENCE
+   WRITTEN OUT: the alignment path for a model with no shared coordinate and the export
+   path for a model with no element id have tests and have never met a real file, and on
+   Bader's decision they stay that way. That goes in the round report's untested section
+   every round until a model shows one
+
+Then the proving.
+
+9. **PART 7.** His NWF folder copied to a dated folder beside it, the count and every
+   byte size compared one for one, and the backup SAID to be read back before anything
+   else happens. Then the real run over the ten C02 groups, 25 mm READ BACK off the box
+   and never reported as selected, penetrations on, by design on, the priority file
+   picked, viewpoints on, the corrected matrix. Reported against the alignment round's
+   run of 14:24 on every number the brief lists
+10. **PART 8.** The whole log read end to end, every count that does not add up and
+    every check that reports nothing written down as a finding, fixed or named.
+    `tools\checks` and the full Core suite after each. Then `steps\03_bader_next.md`
+    read end to end against the code. ANY CHECK THAT COULD NEVER FAIL IS A BUG, and
+    three were found last round
+
+### What is decided and is not reopened
+
+Q67 c, C02 is enough and 1A04PW does not come onto this machine. Q68 a, the matrix is
+corrected to the models. Q69 b, both spellings as an Or row. Q70 b, Internal fails the
+group. Q71 b, the 29 are named.
+
+### The one thing most likely to go wrong, said in advance
+
+PART 4 can fail most of the run. 5q already saw four different shared sites in one group
+of four models and two models on `Internal` in another. If 5u says six or eight of the
+ten groups fail, the rule is still built as briefed and the round report says the number
+plainly. What it must NOT do is quietly become a warning because the number was
+uncomfortable, and it must not stop the group producing its NWF, NWD and report, which
+is the evidence Bader takes to NMDC.
+
+### The four standing rules of a run on his machine
+
+Nothing is written into a live project folder except PART 7's run and PART 7's backup,
+and everything else goes under
+`C:\Users\bader\AppData\Local\Temp\claude\round-worksets`. Every program started, every
+file written outside the repo with its full path and every process stopped is listed in
+the round report. Everything opened is closed, the check is run and it is said. Nothing
+of his is deleted or overwritten.
+
 ## 2026-09-20 The alignment round, run for real against his own folders, and a rule that had never fired
 
 ### What was done

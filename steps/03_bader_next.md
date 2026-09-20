@@ -1,6 +1,6 @@
 # 03 Bader next
 
-**The last run, 2026-09-20 14:24, was the alignment round proving run against HIS OWN C02 folders, log `run-20260920-142412.log`, 10 groups DONE and 0 failed. Every fix to F88 has merged, and the wiring, viewpoints, dimming and alignment rounds with them. THE ADD-IN BUILDS, 0 errors and 0 warnings. Pull main and build before anything.**
+**The last run, 2026-09-20 16:20, was the worksets round proving run against HIS OWN C02 folders, log `run-20260920-162006.log`, and it reads 8 groups DONE and 2 FAILED. The two are 1A02MM and 1A02WL, failed on purpose under Q70 because a structural model in each was exported on Revit`s internal origin, and BOTH still wrote their NWF, their NWD and their report. THE WORKSETS ROUND IS NOT ON MAIN YET: it is the branch `round-worksets` and has to be merged before a build here carries any of what these steps describe. THE ADD-IN BUILDS, 0 errors and 0 warnings.**
 
 One action per step. Do them in order. One build, one install and one Navisworks session cover every proof: the window checks first, then the C06 rebuild run, then one building twice, then the rest.
 
@@ -102,7 +102,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 34. Look for: the two buttons read `Sets into open model` and `Tests into open model`, under the line `Not part of the run. Try the file above against the model open right now:`
 35. Pick the clash XML, 1104-PAR_CLASH_AllInOne
 36. Look for: the line under the file box ends with `Every locator resolves against its sets.`
-37. Look for: the log pane holds a block headed `HEALTH 1104-PAR_CLASH_AllInOne.xml` with `Tests: 1830`, `Sets: 61`, a `Locators resolved` line whose two numbers are equal F84 added four more lines to that block since this step was written: `Sets asking exactly the same question:`, `Revit categories known: 374`, `Sets asking for a category no model carries:` and `Set names breaking their folder pattern:`, so the three above are no longer the whole block.
+37. Look for: the log pane holds a block headed `HEALTH 1104-PAR_CLASH_AllInOne.xml` with `Tests: 1830`, `Sets: 61`, a `Locators resolved` line whose two numbers are equal F84 added four more lines to that block since this step was written: `Sets asking exactly the same question:`, `Revit categories known: 374`, `Sets asking for a category no model carries:` and `Set names breaking their folder's pattern:`, so the three above are no longer the whole block.
 38. Clear the clash XML box
 
 ## Proof F27, the GROUPS block tells the truth
@@ -133,7 +133,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 59. Look for, F50: each of those four says `kept` or `none`, and never `LOST` and never `NOT COUNTED`. Any one of them saying either means the NWF on disk was left alone on purpose, which the line after them says in words
 60. Look for, F29 and F50: the `SETS` line reads one of two shapes and BOTH are right. Where the clear kept the sets it carries TWO numbers, `kept: before clear N, after appends N, nothing to put back`, which is the ordinary case. Where the count dropped and the copy was put back it carries THREE, `kept: before clear N, after appends N, after restore N, put back from the copy`, and then the first and the third have to agree. The other three lines read the same way, because four things reading four ways is how a log stops being read. A line reading `LOST` or `NOT COUNTED` is the fault, and step 59 is where that is checked
 61. Look for, F33: per group a `UNITS` line saying how many models were set and what the document shows, in the words `model set` or `models set`. THE OLD SECOND HALF OF THIS STEP IS GONE. It said to check that no line anywhere reads DID NOT FOLLOW, and that string is in no source file, so it was a check that could never fire. The words went when it was measured that a MODEL can be set and a DOCUMENT cannot, and that what Document.Units reports is UNKNOWN
-62. Look for, F30 and F52: per group, after the models are in, the blocks come in this order: UNITS, then `ALIGNMENT` and `EXPORT CHECK`, which the alignment round added and which are read where every model is open and nothing has clashed, then CLASH, then `PENETRATION` and `BY DESIGN` where their boxes are on, then `ITEM IDS` where the report carries item ids, then `VIEWS` and `VIEWS BUILT`, which are TWO blocks and not one, then `NWF      attempt`, then XLSX, then NWD, then CONFIRM, the final NWF line saying intact and the size, and the `GAP` block. The `VIEWS` line sits between the clash step and the NWF because F52 makes the viewpoints there, so a viewpoint this run made is inside the file the NWD is published from. No SETS block follows UNITS on this run, because sets come from the clash XML and the box is empty. The four SETS, TESTS, VIEWS and RESULTS lines the rebuilt groups carry are written during the rebuild, before UNITS
+62. Look for, F30 and F52: per group, after the models are in, the blocks come in this order: UNITS, then `ALIGNMENT` and `EXPORT CHECK`, which the alignment round added and which are read where every model is open and nothing has clashed, then CLASH, then `PENETRATION` and `BY DESIGN` where their boxes are on, then `ITEM IDS` where the report carries item ids, then `VIEWS` and `VIEWS BUILT`, which are TWO blocks and not one, then `NWF      attempt`, then XLSX and `WORKBOOK CHECK`, then the page and `REPORT CHECK`, then XLSX, then NWD, then CONFIRM, the final NWF line saying intact and the size, and the `GAP` block. The `VIEWS` line sits between the clash step and the NWF because F52 makes the viewpoints there, so a viewpoint this run made is inside the file the NWD is published from. No SETS block follows UNITS on this run, because sets come from the clash XML and the box is empty. The four SETS, TESTS, VIEWS and RESULTS lines the rebuilt groups carry are written during the rebuild, before UNITS
 63. Look for: the GROUP finished line of each of the six reads the building, then `DONE`, then the seconds, and ends with `Rebuilt`
 64. Look for: the RESULT block carries `rebuilt        : 6` and `weekly run     : 8`
 65. In Explorer open the NWF folder and open the NWF of 1B06BC in Navisworks
@@ -149,7 +149,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 72. Go to the Clash step and pick the clash XML
 73. Go to the Grouping step and tick 1B06PH only
 74. Press Run
-75. Look for: the confirm dialog says `Weekly run plus XML: 1` and its line ends with `Nothing is cleared.`
+75. Look for: the confirm dialog says `Weekly run plus XML: 1` and its line ends with `Nothing inside it is cleared.`, which is the wording since F75 and not the older `Nothing is cleared.`
 76. Press OK and wait for it to finish
 77. Note the time the run took, from the GROUP started line to the GROUP finished line
 78. Look for: the log says OPENED for the group
@@ -157,7 +157,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 80. Look for: the line `CLASH    source   tests from XML` and the tests running after it
 81. Press Run again on the same building, same folders, same XML
 82. Press OK and wait for it to finish
-83. Look for, F28: the SETS block reads `sets created      : 0` and `already there     : 61, left alone, not copied again`, and the line after it reads `put into the document: 0 created, 61 already there and left alone`
+83. Look for, F28: the SETS block reads `sets created      : 0` and `already there     : 61, left alone, not copied again`, and the line after it reads `put into the document: 0 created, 61 already there and left alone` SINCE THE WORKSETS ROUND THREE MORE LINES follow `already there`, indented, ending `so a set that finds nothing here may be asking a question the file no longer asks. Q72`. They appear only when `already there` is above zero, which on a weekly run is always.
 84. Look for, F28: the SETS block's put into the document line reads `0 created, 61 already there and left alone`. A second `NWF      attempt` line still follows the CLASH block, because the tests ran and their results went into the document
 85. Look for, F31: the DRIFT block reports no locator difference on any test. A locator difference on every test would mean the source held since the sets were indexed does not compare equal to a fresh one, which is the one thing F31 could not measure here
 86. Look for, F31: the CLASH block shows the same created, already there, run, skipped and passed counts as the first run
@@ -295,7 +295,7 @@ about a file sitting beside it under a nearly identical name.
 182. Look for, F32: the blue line above Run the open file starts with `Weekly run.`, names the NWD it will write beside the NWF and names one Clash Reports folder beside the NWF, and the button is enabled
 183. Leave the clash XML box empty
 184. Press Run the open file and wait for it to finish
-185. Look for, F30: after the models are in, the blocks come in the same order as on the scanned run: UNITS, then `ALIGNMENT` and `EXPORT CHECK`, which the alignment round put on the one path BOTH runs pass through so the open file run writes them too, then CLASH, then the `VIEWS` blocks, then `NWF      attempt`, then XLSX, then NWD, then the final NWF line
+185. Look for, F30: after the models are in, the blocks come in the same order as on the scanned run: UNITS, then `ALIGNMENT` and `EXPORT CHECK`, which the alignment round put on the one path BOTH runs pass through so the open file run writes them too, then CLASH, then the `VIEWS` blocks, then `NWF      attempt`, then XLSX and `WORKBOOK CHECK`, then the page and `REPORT CHECK`, then XLSX, then NWD, then the final NWF line
 186. Open the NWF's folder in Explorer
 187. Look for: one folder named Clash Reports beside the NWF, with the workbook and the page inside it
 188. Look for: no Clash Reports folder inside that Clash Reports folder
@@ -344,7 +344,7 @@ powershell -ExecutionPolicy Bypass -File tools\probes\probe-window-defaults.ps1
 powershell -ExecutionPolicy Bypass -File tools\probes\probe-window-labels.ps1
 ```
 
-212. Look for: it says how many tick boxes are visible without opening anything, which must be 3: `Include subfolders` on the Source step, and `Mark penetrations as Reviewed` and `Mark by design pairs as Reviewed` on the Clash step. It was 2 until F72b added the by design box beside the penetration one, and reports no label over eight words and no help line over twelve. It was 1 before F72 added `Mark penetrations as Reviewed` to the Clash step, which is visible on purpose because a weekly run genuinely has to choose whether this run writes statuses into the NWF
+212. Look for: it says how many tick boxes are visible without opening anything, which must be 3: `Include subfolders` on the Source step, and `Mark penetrations as Reviewed` and `Mark by design connections as Reviewed` on the Clash step. It was 2 until F72b added the by design box beside the penetration one, and reports no label over eight words and no help line over twelve. It was 1 before F72 added `Mark penetrations as Reviewed` to the Clash step, which is visible on purpose because a weekly run genuinely has to choose whether this run writes statuses into the NWF
 
 ## Proof F41, the handles, off the two runs above
 
@@ -385,7 +385,7 @@ powershell -ExecutionPolicy Bypass -File tools\probes\probe-viewpoints.ps1
 
 223. Look for: a block headed `The viewpoint collection, every member` listing `Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints`. It must NOT say `UNKNOWN: no type named ...DocumentSavedViewpoints`, and on 2026-09-19 it did not, so the name the code uses is right
 224. Look for, in the same output: `public FolderItem RootItem`, `public Void AddCopy(GroupItem parent, SavedItem item)` and `public Void EditDisplayName(SavedItem item, String newDisplayName)`. All three were there, so a folder is made, a viewpoint goes in it and a name can be set. `SavedViewpoint` reads `IDisposable: True` and has a `SavedViewpoint(Viewpoint viewpoint)` constructor. The sets collection printed beside it carries the same members with the same signatures, which is the comparison the probe exists to make
-225. Look for, at the end, under `How a viewpoint could be made to show one discipline and hide the rest`: `DocumentModels.SetHidden` and `SavedViewpoint.GetVisibilityOverrides`. That is the ONE thing still UNKNOWN. Items are hidden through `SetHidden`, and whether a viewpoint saved while they are hidden RECORDS that hiding cannot be read off a DLL. The answer is `SavedViewpoint.ContainsVisibilityOverrides` read on a real run, once the writing half of F52 is built. `SavedViewpoints.CanBuild` is still false and that is a decision waiting, not a measurement
+225. DONE in the viewpoints round on 2026-09-19, the way steps 374 and 375 read. This said `SavedViewpoints.CanBuild` is still false and that whether a saved viewpoint records hiding could not be read off a DLL. It was measured on a real run instead, scan.md 5j to 5m, and the answer is that NEITHER .NET route records both: `new SavedViewpoint(Viewpoint)` keeps the camera alone and `CaptureRuntimeOverrides` keeps the hidden state and no camera. The COM view with `ApplyHideAttribs` records both and is what the tool writes through. `CanBuild` has been a hard true since. The flags this step names are worthless as a read back, 5o: both read TRUE on a viewpoint that recorded nothing.
 
 ## Proof F51, the NWD carries May be re-saved and its properties reach ACC
 
@@ -423,7 +423,7 @@ and the viewpoints round entry in `steps\log.md` carries the run.
 235. Look for, and THIS STEP WAS REWRITTEN ON 2026-09-20 because F85 changed what a viewpoint is: a `VIEWS` block per group reading `clashes looked at : N` then `viewpoints planned: N`, with the number AFTER the words, then one line per reason a clash was left out. THE PATHS ARE DELIBERATELY NOT LISTED, because a real group plans hundreds. There is ONE VIEWPOINT PER CLASH now, not one per discipline, so the old arithmetic on this step, which said a group of AR, ME and EL plans five, is gone with the shape it described
 236. Look for: a group with only one discipline plans NONE and says so, because every clash test is one discipline against another and a group that cannot clash has no clash to point a viewpoint at. That is the opposite of what this step said before F85, when a viewpoint was per discipline. The block still gets written, which is the part that has not changed: a group with nothing to plan says so rather than going quiet
 237. GONE. It said to look for a line reading `VIEWS    not attempted.` while `SavedViewpoints.CanBuild` was false. That flag has been a hard true since the viewpoints round on 2026-09-19 and the string is in no source file, so this was a check that could never fire. Steps 383 to 385 and 391 are what prove the viewpoints now
-238. Once the writing half of F52 is built against `docs\history\scan.md` 5d and the add-in rebuilt, run one building again
+238. DONE in the viewpoints round on 2026-09-19 and proved on every run since. This said to wait for the writing half of F52 to be built, and it was. Run one building again
 239. Look for: a `VIEWS` block in the shape of the SETS block, a `VIEW` line per viewpoint, CAPPED at `RunLog.KeptOfARepeat` with `VIEW     and N more created or already there, counted and not listed` under them, because a real group writes hundreds, then `views created     :` and `put into the document:`
 240. Open the NWF in Navisworks and open the Saved Viewpoints panel
 241. Look for: THREE folder layers, not one per discipline, which is what this step said before F85. Layer 1 is the priority off the clash matrix, `A`, `B`, `C` or the no priority folder, and it is DROPPED ENTIRELY when no priority file was picked. Layer 2 is the two disciplines SORTED, so `AR vs ST` holds the clashes of both directions. Layer 3 is `Over 150mm` and appears only under a pair carrying Mechanical or Electrical. Steps 383 to 385 and 391 walk this shape on a real file
@@ -433,16 +433,16 @@ and the viewpoints round entry in `steps\log.md` carries the run.
 ## Proof F53, the 150 mm rule and the sub groups
 
 This one is proved in Core here and in the tree on your machine. The Core half needs
-nothing from you. The rest waits on the writing half of F52, because the sub group IS a
-viewpoint and nothing builds one yet. The API it needs is measured, scan.md 5d.
+nothing from you. The rest WAS waiting on the writing half of F52 and no longer is, because the sub group IS a
+viewpoint and the writer has been building them since the viewpoints round on 2026-09-19, scan.md 5d and 5m.
 
-244. Look for, on any run since F53: the `VIEWS` planned line now carries a sub group path per Mechanical and per Electrical group, reading a PAIR folder and then the size folder, such as `A/ME vs ST/Over 150mm`, and never `ME/Over 150mm/ME over 150mm`, which was the shape before F85 made a viewpoint per clash. A group with no ME or EL in it has none, and that is right
+244. Look for, on any run since F53: the `VIEWS` planned line now carries a sub group path per Mechanical and per Electrical group, NO PATHS AT ALL. The planned line writes counts and never paths, which step 235 above says in so many words. The paths are in the `VIEWS BUILT` block instead, five per group and then `and N more created or already there, counted and not listed`, and the shape there is a PAIR folder and then the size folder, such as `A/ME vs ST/Over 150mm`, and never `ME/Over 150mm/ME over 150mm`, which was the shape before F85 made a viewpoint per clash. A group with no ME or EL in it has none, and that is right
 245. Look for: the number in the folder name is the threshold in use. If you change the threshold and it still reads `Over 150mm`, that is a fault and the folder and the rule have drifted apart
-246. Once the writing half of F52 is built and the add-in rebuilt, run one Mechanical building
+246. DONE since the viewpoints round on 2026-09-19. It said to wait for the writing half of F52. Run one Mechanical building
 247. GONE, and this is worth knowing rather than just deleting. It said to look for a `SIZE` block per group with three numbers. `Federator.Core.Views.SizeTally` still writes that block and NOTHING IN SRC CALLS IT, so no SIZE block is written on any run. What replaced it is one line inside the `VIEWS` block: `size could not be read : N, every one of them is in its pair folder and none was dropped`. The dead class is raised under the CLAUDE.md rule about a public member nothing in src calls
-248. Look for, and this is still the one most likely to be wrong, now read off that one line: `size could not be read : N`. That number is EXPECTED to be large, because a fitting usually carries no size property at all, and every one of them is IN its pair folder and none was dropped, which is F53's rule and the opposite of how F72 reads an unknown size
-249. Read a few of the names under it. If they are all fittings, elbows and tees, the rule is behaving. If real straight pipes are in that list, the size is on a property this tool is not looking for, and the answer is the property name so it can be added to the setting
-250. Open the NWF and press the `ME over 150mm` viewpoint
+248. Look for, and this was rewritten AGAIN by the worksets round because the number changed: `size could not be read : N`. It is EXPECTED TO BE ZERO now, on every group. It used to be large, 59 and 36 and 8 on the run before, because a fitting was thought to carry no size property. 5s found that every one of them did, written as words, `53 mmo` for a conduit and `600 mmx100 mm` per connector for a cable tray fitting, and `ItemSizes` was dropping every string. `Federator.Core.Views.SizeText` reads them now. A number ABOVE zero here is a size shape `SizeText` has not been taught and is worth sending.
+249. GONE with the number it read. It said to read the names under that line and judge whether they were all fittings. No names are written under it, `ClashViewpointPlan.Lines` writes the count alone, and the count is zero on every group since 5s. Where one ever comes back non zero, the `.tsv` rows are where the names are.
+250. Open the NWF and press any viewpoint under a folder named `Over 150mm`, which sits under a PAIR folder such as `A/ME vs ST/Over 150mm`, and never a folder called `ME over 150mm`, which was the shape before F85 and which step 244 above already corrects.
 251. Look for: large pipes, ducts and trays showing, small ones hidden, and the fittings still there. A fitting missing means the include on unknown rule is not working and that `size could not be read` line is the evidence
 252. Look for, on a document measured in FEET rather than millimetres: the same items in and out as the same building measured in millimetres. The conversion is what makes that true, and a difference means the raw number is being compared somewhere
 
@@ -463,14 +463,14 @@ change nothing at all. The second is the run with it on.
 ### Now with the box on
 
 260. Go to the Clash step
-261. Look for, F72: a tick box reading `Mark penetrations as Reviewed`, unticked, with one grey line under it reading `Services 150mm and under through walls, floors, roofs. New and Active only`. The 150 is read off the setting, so if you ever change the threshold this line changes with it
+261. Look for, F72: a tick box reading `Mark penetrations as Reviewed`, unticked, with one grey line under it reading `Services 150mm and under through walls, floors, roofs, foundations. New and Active`, with foundations since Q63 and no trailing `only`, which the twelve word limit had to give up to name the fourth solid. The 150 is read off the setting, so if you ever change the threshold this line changes with it
 262. Look for, F72: it is NOT inside `Things that destroy data`. Nothing is destroyed, only New and Active ever move and a person moves one back in one click
 263. Tick it, and run ONE building that has mechanical or electrical services in it
 264. Look for, F72: a `PENETRATION` block per group, straight after the `CLASH` block
 265. Look for, F72: one line per clash moved, starting `REVIEWED `, then the clash name, then the test it is in, then the service category, the size in millimetres, and the solid category. For example a `Pipes 100mm through Walls`. If that line names a category you would not call a service, the list is a setting and it is wrong for this project
-266. Look for, F72: after the moved lines, `clashes looked at :` and `moved to Reviewed :`, then ONE LINE PER REASON for everything left alone, including the reasons at zero. The seven are moved, over the size, no size could be read, a person had already set it, both sides a service, both sides a solid, and not a service against a solid
+266. Look for, F72: after the moved lines, `clashes looked at :` and `moved to Reviewed :`, then ONE LINE PER REASON for everything left alone, including the reasons at zero. The seven are moved, over the size, no size could be read, a person had already set it, both sides a service, both sides a solid, and not a service against a solid SINCE Q71 TWO MORE LINES sit under the `no size could be read` reason WHEN IT IS ABOVE ZERO, naming what the services are by category and saying each is a row in the machine readable log. On his folders that reason is now zero, so neither line appears.
 267. Look for, F72: the line `the size in use   : 150mm or under is a penetration, over it stays as it was`
-268. Look for, F72: the number beside `no size could be read off the service, left alone` and READ IT. That is the count of services this tool could not measure, and every one of them was LEFT AT NEW rather than moved. It goes the opposite way from F53, which INCLUDES an item it could not measure, and both are right: the safe mistake in a viewpoint is showing something unnecessary and the safe mistake here is leaving a clash for a person. If that number is large, the size is on a property this tool is not looking for, and the answer is the property name so it can be added to the setting
+268. Look for, F72: the number beside `no size could be read off the service, left alone` and READ IT. IT IS ZERO ON EVERY GROUP SINCE THE WORKSETS ROUND, where it read 29, 30, 5 and 1 the run before. That is the count of services this tool could not measure, and every one of them was LEFT AT NEW rather than moved. It goes the opposite way from F53, which INCLUDES an item it could not measure, and both are right: the safe mistake in a viewpoint is showing something unnecessary and the safe mistake here is leaving a clash for a person. If that number is large, the size is on a property this tool is not looking for, and the answer is the property name so it can be added to the setting
 269. Look for, F72: one line in the RESULT block reading `penetrations   : N clashes moved to Reviewed`, and N is the sum of every group's `moved to Reviewed`
 270. Look for, F72: an `NWF      attempt` line AFTER the clash step, because writing a status is a write and the NWF is saved again on it. SINCE F85 THE VIEWS STEP CAUSES THAT SECOND SAVE TOO, so the line appears on a weekly run with the penetration box off, and its absence is still the fault to report but its presence no longer proves the penetration pass ran. Whether it is the first or the second such line depends on the path this group took, so count them rather than looking for a second: a First run or a Rebuilt group writes one before the clash step as well, and a Weekly run does not, because the opened branch logs `NWF      reused` instead. On a Weekly run the line after the clash step is the ONLY one, and its absence is the fault to report
 271. Open the workbook for that building
@@ -552,7 +552,7 @@ above, or of any ordinary run.
 332. Look for, F64: near the top of the text log, one line reading `ROWS     the machine readable log is` and the path. If it says `no machine readable log` instead, the text log is unaffected and the reason is on that line, so send it
 333. Open the `.tsv` in Excel. It should open straight into columns with no import dialog and no question about separators
 334. Look for, F64: a header row reading time, seconds, group, step, event, name, number, text, and then one row per event under it
-335. Look for, F64: every row has eight columns. Sort by the `event` column and read the kinds. THERE ARE TWENTY ONE, not the fourteen this step used to name, and seven were added after it was written. From the log itself: `step started`, `step finished`, `step threw`, `step total`, `timing`, `timing nested`, `census before`, `census after`, `appended`, `append failed`, `written`, `group finished`. From the clash step, F76 and F81: `test created`, `test passed`, `test found clashes`, `tolerance set on a saved test`, `rows for the workbook`. From the blocks: `gap`, `set across the run` (F82), and `model placement` and `model export` (the alignment round). NOT EVERY KIND APPEARS ON EVERY RUN: a weekly run appends nothing so `appended` is absent, and nothing throwing means no `step threw`. The proving run of 2026-09-20 carried sixteen of the twenty one. A kind not on that list of twenty one is something new and the whole file is worth sending
+335. Look for, F64: every row has eight columns. Sort by the `event` column and read the kinds. THERE ARE TWENTY TWO since the worksets round added `service with no readable size`, which is Q71, and it is ABSENT from both proving runs because every service is now measured. Before that there were twenty one, not the fourteen this step used to name, and seven were added after it was written. From the log itself: `step started`, `step finished`, `step threw`, `step total`, `timing`, `timing nested`, `census before`, `census after`, `appended`, `append failed`, `written`, `group finished`. From the clash step, F76 and F81: `test created`, `test passed`, `test found clashes`, `tolerance set on a saved test`, `rows for the workbook`. From the blocks: `gap`, `set across the run` (F82), and `model placement` and `model export` (the alignment round). NOT EVERY KIND APPEARS ON EVERY RUN: a weekly run appends nothing so `appended` is absent, and nothing throwing means no `step threw`. The proving run of 2026-09-20 carried sixteen of the twenty one. A kind not on that list of twenty two is something new and the whole file is worth sending
 336. Filter the `event` column to `step finished` and sort the `number` column biggest first. The top row is the slowest step of those entered ONCE in their group, in seconds. It is NOT the slowest step of the run, and that is worth knowing: a `step finished` row is written only on a step's first visit, so `TESTS RUN` and `TESTS CREATE`, which are entered once per test, each contribute one row for their first visit and reach the file again only as a single `step total` row per group. To find the slowest step of the run, read the `step total` rows beside these, or read the TIMING block in the text log, which adds both kinds up already
 337. Look for, F64: nothing in the text log got worse. It still has its blocks, its indenting and its sentences, and it is still the one to read first and the one to send
 
@@ -604,7 +604,7 @@ The list below was read on 2026-09-19 with the command in step 346, after the pe
 git ls-remote --heads origin
 ```
 
-347. Look for: one line per branch, the name after `refs/heads/`. Expect 75 of them on 2026-09-20, so 74 to delete, READ OFF THE LIVE REMOTE just now and not off this clone. It was 66 after the build round and 69 after the penetration round, and the six added since are `audit-first-run`, `round-wiring`, `round-first-run`, `round-viewpoints`, `round-dimming` and `round-alignment`. The delete command below names 68 and does NOT name those six, so read the live list first, which is what step 346 is for
+347. Look for: one line per branch, the name after `refs/heads/`. Expect 76 of them on 2026-09-20, so 75 to delete, READ OFF THE LIVE REMOTE just now and not off this clone. It was 66 after the build round and 69 after the penetration round, and the seven added since are `audit-first-run`, `round-wiring`, `round-first-run`, `round-viewpoints`, `round-dimming`, `round-alignment` and `round-worksets`. The delete command below names 68 and does NOT name those six, so read the live list first, which is what step 346 is for
 348. Delete every one of them except main:
 
 ```
@@ -652,7 +652,10 @@ without reading the brief again.**
      on it. That answers whether `BLD-EL-Devices` can be written as category contains
      Devices AND NOT the six named device categories. Until it is answered the file in
      `exchange\` carries the fallback, `Category equals "Nurse Call Devices"`, which is
-     proved to import because the whole file uses `equals`
+     proved to import because the whole file uses `equals`. THOSE TWO LINES ARE HISTORY
+     AND NOT THE FILE TODAY: 5g was measured on 2026-09-20, the fallback is gone, and the
+     committed file carries one `contains` and six negations at `flags="32"` for that set.
+     The words "Nurse Call Devices" appear in it nowhere.
      NOT done in the wiring round. What reflection can say is under 5g: SearchCondition.Negate exists and NegateCondition is bit 32. The hand built set and the round trip still wait for you.
 356. Dump the clash members for F72c into 5h: every member on `ClashResult`,
      `IClashResult` and `ClashTest` whose name holds Comment, Note, Description, Tag,
@@ -825,7 +828,15 @@ Bader may touch.
      penetrations on, the priority file. Look for, per group with clashes:
      `VIEWS    read back on N created viewpoint(s)`, `VIEWS    the model each clash item
      lives in was read for N of N`, and `hidden state put back`, then a `VIEWS` step of a
-     few seconds in the timing block and `Nothing failed`
+     few seconds in the timing block.
+
+     DO NOT EXPECT `Nothing failed` ANY MORE, and this step said to until the worksets
+     round. Since Q70 a group whose model names `Internal` as its shared site is FAILED,
+     and two of the ten are: 1A02MM and 1A02WL. The run of 2026-09-20 16:20 reads
+     `groups done : 8` and `groups failed : 2`, and `Nothing failed.` is written only
+     when failed groups plus errors is zero, so on his folders it cannot appear at all.
+     Expect instead `ALIGNMENT failed 2 group(s)` at the run tail with one line naming
+     each, and remember that BOTH still wrote their NWF, their NWD and their report.
 388. Look for, IN TWO DIFFERENT PLACES, which this step used to get wrong by putting both
      at the run tail. `Revit categories known: 374` and `Sets asking for a category no
      model carries: 14`, which is question 56, are in the `HEALTH <file>.xml` block, which
@@ -871,7 +882,12 @@ The backup was taken first and read back before anything else happened, 9 files 
 
 `C:\00-NM\Federation Task\C02 + 04\C02\NWF-backup-2026-09-20`
 
-That folder is yours to delete once you are satisfied. Nothing else of yours was touched.
+THERE IS A SECOND ONE NOW, taken by the worksets round before its own run on the live
+folders the same day, 14 files, 40,008,819 bytes, read back the same way:
+
+`C:\00-NM\Federation Task\C02 + 04\C02\NWF-backup-2026-09-20-worksets`
+
+Both folders are yours to delete once you are satisfied. Nothing else of yours was touched.
 
 391. Open your own 1A02MM federation, which now carries the viewpoints with the colours:
 
@@ -905,22 +921,27 @@ That folder is yours to delete once you are satisfied. Nothing else of yours was
 392. Read the ALIGNMENT and EXPORT CHECK blocks for 1A02MM in the run log, which is
      already beside your NWFs:
 
-     `C:\00-NM\Federation Task\C02 + 04\C02\NWF\run-20260920-142412.log`
+     `C:\00-NM\Federation Task\C02 + 04\C02\NWF\run-20260920-162006.log`
 
      Search it for `ALIGNMENT 1A02MM`. It says your four models agree in X and Y, differ
      in Z by up to 95 mm, and name FOUR different Revit shared sites, one of them
      `Internal`, which is what Revit calls a model that was not exported on a shared site
-     at all. Nothing was changed and every group ran, which is Q65.
+     at all. SINCE Q70 THAT FAILS THE GROUP, so 1A02MM now ends FAILED with the line `THIS GROUP IS FAILED` under the block naming the model. It still wrote its NWF, its NWD and its report, because the evidence is the point. Q65 said neither block can fail a group and Q70 answered later overrides it for this one case.
 
      Then search for `EXPORT CHECK 1A02MM`. Every model carries a workset on every
      element and an element id on every element, so the export itself is clean. THE LINE
      UNDER IT IS THE ONE THAT MATTERS: your models carry `ME-Ductwork` and the matrix
      asks for `ME-DUCTWORK`, the match is case sensitive, and that is why 33 of your 61
-     sets find nothing in every group. Question 68 asks which way you want that fixed,
-     and this tool will not fix it on its own because setting the ignore case bit would
-     change what every set in the file finds.
+     sets find nothing in every group. QUESTION 68 IS ANSWERED and the matrix is corrected: it asks for `ME-Ductwork` now, four values and 17 conditions.
+     AND IT CHANGED NO CLASH COUNT, which is Q72: a set already in your NWF keeps the conditions it was built with, so the corrected file never reaches it. The SETS block says so now, under the already-there count. What the correction cannot do is
+     reach a set that is already there.
 
-     THE OTHER THING IN THAT BLOCK is that your own workset names disagree with each
-     other: `EL-Fire Alarm` beside `EL-Fire alarm`, `EL-Lightning Protection` beside
-     `EL-Lightining Protection`, `EV-Cctv System` beside `EV-Ccctv system`,
-     `PL-Drainage equipment` beside `PL-Drainage equipmen`. No rule can fix those.
+     THE OTHER THING IN THAT BLOCK, and it is only in the 16:20 log because the worksets
+     round added it: your own workset names disagree with each other. The block NAMES the
+     three that look like typos, `EL-Lightining Protection` against `EL-Lightning
+     Protection`, `EV-Ccctv system` against `EV-Cctv System`, and `PL-Drainage equipmen`
+     against `PL-Drainage equipment`, with which model carries which. It does NOT name
+     `AR-EXTERIOR` against `AR-INTERIOR` or `ST-SUB` against `ST-SUP`, because those are
+     two pairs of real worksets and a person has decided so once, in the measured list.
+     It still COUNTS them, so nothing went quiet. No rule can fix the three typos, and
+     the tool deliberately does not absorb them, because then nobody would fix the models.

@@ -325,7 +325,7 @@ namespace Federator.Addin.Engine
             {
                 for (int i = 0; i < lookIn.Count; i++)
                 {
-                    IDictionary<string, double> read = ItemSizes.Read(lookIn[i], sizes);
+                    IDictionary<string, double> read = ItemSizes.Read(lookIn[i], sizes, unitEnumName);
 
                     if (read.Count == 0)
                     {

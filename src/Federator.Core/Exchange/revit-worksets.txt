@@ -1,0 +1,81 @@
+# Every workset name a Revit model in this project really carries, Q68 and Q69.
+#
+# MEASURED on 2026-09-20 in the worksets round, docs\history\scan.md 5t, by
+# tools\probes\ViewpointProbe in its census mode over the ten NWFs of the C02 folder,
+# every model of every group, read off the [Element] tab of each Revit element, which
+# is where a workset lives and where the geometry under it carries none, 5q. The
+# result file is tools\probes\ViewpointProbe\5t-5u-result-20260920.txt and a test
+# proves this list is exactly its names, so it cannot drift.
+#
+# WHAT IT IS FOR. The client's matrix asks for a workset called ME-DUCTWORK and every
+# model writes ME-Ductwork, and a search condition compares a value CASE SENSITIVELY
+# unless IgnoreDisplayStringValueCase is set, which nothing sets. So three mechanical
+# sets found nothing in every group of every run. MatrixCorrections corrects the
+# matrix to the spelling the models use, and this file is where the spellings come
+# from. THE TOOL NEVER INVENTS ONE.
+#
+# WHY IT IS NOT AN IGNORE CASE FLAG. Bader refused that on 2026-09-20 and the reason
+# is in this list twice over: AR-EXTERIOR against AR-INTERIOR, and ST-SUB against
+# ST-SUP, are two pairs of REAL worksets one and two letters apart. A flag that
+# forgave case would not have merged those, but a rule that forgave more would, and
+# the line between the two is not one this tool is allowed to draw.
+#
+# FIVE PAIRS IN HERE DISAGREE WITH EACH OTHER AND ONLY THREE ARE TYPOS:
+#   EL-Lightining Protection  against  EL-Lightning Protection   a typo
+#   EV-Ccctv system           against  EV-Cctv System            a typo
+#   PL-Drainage equipmen      against  PL-Drainage equipment     a truncation
+#   AR-EXTERIOR               against  AR-INTERIOR               two real worksets
+#   ST-SUB                    against  ST-SUP                    two real worksets
+# Nothing here is merged. The export check names the pairs and a person fixes the
+# models, because a tool that absorbs a typo silently means nobody ever fixes it.
+#
+# A PERSON HAS DECIDED ABOUT TWO OF THE FIVE PAIRS, and the tool reads the decision
+# rather than guessing again every run. A pair written as "not-a-typo: A | B" is two
+# DIFFERENT worksets that happen to be a letter or two apart, so the export check counts
+# it and does not name it. The other three are left unmarked and are named every run,
+# because nobody has fixed the models yet and a tool that stops mentioning a typo is a
+# tool nobody fixes anything because of.
+not-a-typo: AR-EXTERIOR | AR-INTERIOR
+not-a-typo: ST-SUB | ST-SUP
+
+# One name per line. A line starting with # is a comment and a blank line is skipped.
+
++Link-ST-***
+AR-EXTERIOR
+AR-FFE FURNITURE
+AR-INTERIOR
+EL-Containment
+EL-Fire Alarm
+EL-Fire alarm
+EL-Lighting
+EL-Lightining Protection
+EL-Lightning Protection
+EL-Panels
+EL-Power
+EL_Grounding System
+EV-Access Control
+EV-Access control
+EV-Ccctv system
+EV-Cctv System
+EV-IT
+LA-HARDSCAPE
+LA-LANDSCAPE LIGHTING
+LA-LANDSCAPE SIGNAGE
+LA-LEVELS
+LA-SOFTSCAPE
+LA-TREES
+ME-Air Terminal
+ME-Ductwork
+ME-Equipment
+ME-Fuel
+ME-Piping
+Me-Piping-Odor
+PL-Domestic water
+PL-Drainage
+PL-Drainage equipmen
+PL-Drainage equipment
+PL-Fire Protection
+ST-SUB
+ST-SUP
+Shared Levels and Grids
+XX-St_placeholder

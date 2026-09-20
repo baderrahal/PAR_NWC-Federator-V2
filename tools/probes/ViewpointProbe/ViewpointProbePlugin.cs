@@ -109,6 +109,10 @@ namespace ViewpointProbe
                     {
                         MeasurePenetration(parameters[2]);
                     }
+                    else if (mode == "census")
+                    {
+                        MeasureCensus(parameters, 2);
+                    }
                     else if (mode == "survey")
                     {
                         MeasureSurvey(parameters, 2);
@@ -3870,6 +3874,795 @@ namespace ViewpointProbe
             }
 
             return found.Count == 0 ? "none" : string.Join("  ", found.ToArray());
+        }
+
+        // ---------- 5s, 5t and 5u, the whole of the worksets round's PART 1 ----------
+
+        /// <summary>
+        /// THREE MEASUREMENTS IN ONE PASS, because Navisworks is started once for all of
+        /// them and because all three walk the same ten files.
+        ///
+        ///   5t  every distinct workset name in the folder, and which models carry it,
+        ///       grouped so a name differing only by CASE sits beside its twin
+        ///   5u  the shared site of every model, the architecture reference of each
+        ///       group, and how many groups would FAIL on a model naming Internal
+        ///   5s  for the FIRST file handed that has clash results, every clash whose
+        ///       service side reports no readable size, dumped property by property
+        ///
+        /// NOTHING HERE DECIDES ANYTHING. It reads and writes what it read. The rules
+        /// this feeds are built afterwards, from this file and from nothing else.
+        /// </summary>
+        private void MeasureCensus(string[] parameters, int from)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            // 5t, every workset name against the models that carry it, across the folder.
+            Dictionary<string, List<string>> worksets = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+
+            // 5u, one row per group.
+            List<string> siteRows = new List<string>();
+            int groupsWithInternal = 0;
+            int groupsWithNoSite = 0;
+            int groupsRead = 0;
+            bool sizeDone = false;
+
+            for (int f = from; f < parameters.Length; f++)
+            {
+                string file = parameters[f];
+                Say(string.Empty);
+                Say("================ " + Path.GetFileName(file) + " ================");
+                document.Clear();
+
+                if (!document.TryOpenFile(file))
+                {
+                    Say("UNKNOWN: TryOpenFile returned false for " + file);
+                    continue;
+                }
+
+                groupsRead++;
+                string group = Path.GetFileName(file);
+                bool anyInternal = false;
+                bool anyWithoutSite = false;
+                string reference = "none";
+
+                Say(document.Models.Count + " model(s), document units " + document.Units);
+
+                for (int m = 0; m < document.Models.Count; m++)
+                {
+                    using (Model model = document.Models[m])
+                    {
+                        string name = Path.GetFileName(Words(model.FileName));
+                        string discipline = DisciplineOf(name);
+                        string site;
+
+                        using (ModelItem root = model.RootItem)
+                        {
+                            site = SiteOn(root);
+                        }
+
+                        if (site.Length == 0)
+                        {
+                            anyWithoutSite = true;
+                        }
+                        else if (string.Equals(site, "Internal", StringComparison.Ordinal))
+                        {
+                            anyInternal = true;
+                        }
+
+                        if (string.Equals(discipline, "AR", StringComparison.Ordinal) && string.Equals(reference, "none", StringComparison.Ordinal))
+                        {
+                            reference = name;
+                        }
+
+                        List<string> mine = WorksetsIn(model);
+                        Say("   " + (discipline.Length == 0 ? "??" : discipline) + "  " + name
+                            + "   site [" + (site.Length == 0 ? "NONE" : site) + "]"
+                            + "   " + mine.Count + " workset name(s)");
+
+                        for (int w = 0; w < mine.Count; w++)
+                        {
+                            Say("      " + mine[w]);
+
+                            if (!worksets.ContainsKey(mine[w]))
+                            {
+                                worksets[mine[w]] = new List<string>();
+                            }
+
+                            if (!worksets[mine[w]].Contains(name))
+                            {
+                                worksets[mine[w]].Add(name);
+                            }
+                        }
+                    }
+                }
+
+                if (anyInternal)
+                {
+                    groupsWithInternal++;
+                }
+
+                if (anyWithoutSite)
+                {
+                    groupsWithNoSite++;
+                }
+
+                siteRows.Add(group + "   reference " + reference
+                    + "   names Internal: " + anyInternal
+                    + "   a model with no site at all: " + anyWithoutSite);
+
+                if (!sizeDone && SayUnmeasuredServices(document))
+                {
+                    sizeDone = true;
+                }
+            }
+
+            SayWorksets(worksets);
+            SaySites(siteRows, groupsRead, groupsWithInternal, groupsWithNoSite);
+        }
+
+        // ---------- 5t ----------
+
+        /// <summary>
+        /// The whole folder's workset names, grouped so a name differing from another
+        /// ONLY BY CASE sits beside it and one differing by more than case sits beside it
+        /// too and is MARKED as a different word. That grouping is the whole point: one
+        /// is a correction the tool can make and the other is a typo a person has to fix.
+        /// </summary>
+        private void SayWorksets(Dictionary<string, List<string>> worksets)
+        {
+            Say(string.Empty);
+            Say("================ 5t, EVERY WORKSET NAME IN THIS FOLDER ================");
+            Say(worksets.Count + " distinct name(s) across every model read");
+
+            List<string> names = new List<string>(worksets.Keys);
+            names.Sort(StringComparer.OrdinalIgnoreCase);
+
+            // Grouped on the name lowered, so two spellings of one word land together.
+            Dictionary<string, List<string>> byLowered = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+
+            for (int i = 0; i < names.Count; i++)
+            {
+                string key = names[i].ToLowerInvariant();
+
+                if (!byLowered.ContainsKey(key))
+                {
+                    byLowered[key] = new List<string>();
+                }
+
+                byLowered[key].Add(names[i]);
+            }
+
+            Say(string.Empty);
+            Say("--- names that differ ONLY BY CASE, which a correction rule may fix ---");
+            int caseOnly = 0;
+
+            foreach (KeyValuePair<string, List<string>> pair in byLowered)
+            {
+                if (pair.Value.Count < 2)
+                {
+                    continue;
+                }
+
+                caseOnly++;
+                Say("   the one word \"" + pair.Key + "\" is spelled " + pair.Value.Count + " ways:");
+
+                for (int i = 0; i < pair.Value.Count; i++)
+                {
+                    Say("      [" + pair.Value[i] + "] in " + Joined(worksets[pair.Value[i]]));
+                }
+            }
+
+            if (caseOnly == 0)
+            {
+                Say("   none");
+            }
+
+            Say(string.Empty);
+            Say("--- names that differ by MORE THAN CASE, which are a different word and may be a typo ---");
+            int near = 0;
+
+            for (int i = 0; i < names.Count; i++)
+            {
+                for (int j = i + 1; j < names.Count; j++)
+                {
+                    if (string.Equals(names[i], names[j], StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    int distance = Distance(names[i].ToLowerInvariant(), names[j].ToLowerInvariant());
+
+                    if (distance == 0 || distance > 2)
+                    {
+                        continue;
+                    }
+
+                    near++;
+                    Say("   [" + names[i] + "] and [" + names[j] + "] differ by " + distance
+                        + " letter(s), which is MORE than case, so they are two different words");
+                    Say("      [" + names[i] + "] in " + Joined(worksets[names[i]]));
+                    Say("      [" + names[j] + "] in " + Joined(worksets[names[j]]));
+                }
+            }
+
+            if (near == 0)
+            {
+                Say("   none");
+            }
+
+            Say(string.Empty);
+            Say("--- every name and every model that carries it ---");
+
+            for (int i = 0; i < names.Count; i++)
+            {
+                Say("   [" + names[i] + "]  " + worksets[names[i]].Count + " model(s): " + Joined(worksets[names[i]]));
+            }
+        }
+
+        /// <summary>
+        /// How many single letter edits turn one word into the other, capped so a long
+        /// walk cannot cost the pass. Plain Levenshtein, no library, because Core has
+        /// none and this is a probe.
+        /// </summary>
+        private static int Distance(string a, string b)
+        {
+            if (Math.Abs(a.Length - b.Length) > 2)
+            {
+                return int.MaxValue;
+            }
+
+            int[] previous = new int[b.Length + 1];
+            int[] current = new int[b.Length + 1];
+
+            for (int j = 0; j <= b.Length; j++)
+            {
+                previous[j] = j;
+            }
+
+            for (int i = 1; i <= a.Length; i++)
+            {
+                current[0] = i;
+
+                for (int j = 1; j <= b.Length; j++)
+                {
+                    int cost = a[i - 1] == b[j - 1] ? 0 : 1;
+                    int best = Math.Min(current[j - 1] + 1, previous[j] + 1);
+                    current[j] = Math.Min(best, previous[j - 1] + cost);
+                }
+
+                int[] swap = previous;
+                previous = current;
+                current = swap;
+            }
+
+            return previous[b.Length];
+        }
+
+        /// <summary>Every distinct workset name in one model, read off the Revit element tab.</summary>
+        private static List<string> WorksetsIn(Model model)
+        {
+            List<string> found = new List<string>();
+
+            try
+            {
+                using (ModelItem root = model.RootItem)
+                {
+                    foreach (ModelItem item in root.DescendantsAndSelf)
+                    {
+                        using (item)
+                        {
+                            string id;
+                            string workset;
+
+                            if (!ReadElementTab(item, out id, out workset))
+                            {
+                                continue;
+                            }
+
+                            if (workset.Length > 0 && !found.Contains(workset))
+                            {
+                                found.Add(workset);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // A walk that threw part way has read part of the model, and the names it
+                // did read are still real names. Nothing is invented and nothing is lost.
+            }
+
+            found.Sort(StringComparer.Ordinal);
+            return found;
+        }
+
+        // ---------- 5u ----------
+
+        private void SaySites(IList<string> rows, int groups, int withInternal, int withNoSite)
+        {
+            Say(string.Empty);
+            Say("================ 5u, THE SHARED SITE OF EVERY MODEL ================");
+
+            for (int i = 0; i < rows.Count; i++)
+            {
+                Say("   " + rows[i]);
+            }
+
+            Say(string.Empty);
+            Say("GROUPS READ                                  : " + groups);
+            Say("groups with a model naming Internal          : " + withInternal);
+            Say("groups with a model carrying no site at all  : " + withNoSite);
+            Say("GROUPS THAT WOULD FAIL UNDER Q70             : " + WouldFail(rows));
+            Say("Q70 fails a group where ANY model names Internal OR carries no site at all.");
+        }
+
+        /// <summary>How many rows say either fault, counted once per group and not once per model.</summary>
+        private static int WouldFail(IList<string> rows)
+        {
+            int failed = 0;
+
+            for (int i = 0; i < rows.Count; i++)
+            {
+                if (rows[i].IndexOf("names Internal: True", StringComparison.Ordinal) >= 0
+                    || rows[i].IndexOf("no site at all: True", StringComparison.Ordinal) >= 0)
+                {
+                    failed++;
+                }
+            }
+
+            return failed;
+        }
+
+        private static string SiteOn(ModelItem root)
+        {
+            try
+            {
+                using (PropertyCategoryCollection tabs = root.PropertyCategories)
+                {
+                    if (tabs == null)
+                    {
+                        return string.Empty;
+                    }
+
+                    foreach (PropertyCategory tab in tabs)
+                    {
+                        if (!string.Equals(Words(tab.Name), "LcRevitPropertyLocation", StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+
+                        using (DataPropertyCollection properties = tab.Properties)
+                        {
+                            for (int i = 0; i < properties.Count; i++)
+                            {
+                                using (DataProperty property = properties[i])
+                                {
+                                    if (string.Equals(Words(property.Name), "revit_ProjectLocation", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        return AnyText(property);
+                                    }
+                                }
+                            }
+                        }
+
+                        return string.Empty;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>Part 5 of the file name, split the way the tool splits one.</summary>
+        private static string DisciplineOf(string file)
+        {
+            string[] parts = Path.GetFileNameWithoutExtension(file).Split('-');
+            return parts.Length >= 5 ? parts[4] : string.Empty;
+        }
+
+        // ---------- 5s ----------
+
+        /// <summary>
+        /// Every clash in this document whose SERVICE side reports no readable size,
+        /// dumped property by property. Returns whether the document held clashes at all.
+        ///
+        /// IT MIRRORS Penetrations EXACTLY: Item1 and Item2, never Selection1 and
+        /// Selection2, five levels up, the same three category names and the same six
+        /// size property names. What this prints is what that rule sees, so the answer to
+        /// "is it the models or is it the reader" is read off one run and not argued about.
+        /// </summary>
+        private bool SayUnmeasuredServices(Document document)
+        {
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests tests;
+
+            try
+            {
+                tests = document.GetClash().TestsData;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            if (tests == null || tests.Tests.Count == 0)
+            {
+                return false;
+            }
+
+            int clashes = 0;
+            int serviceAgainstSolid = 0;
+            int noSize = 0;
+            int shown = 0;
+            Dictionary<string, int> byCategory = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            Say(string.Empty);
+            Say("================ 5s, THE SERVICES WITH NO READABLE SIZE ================");
+
+            for (int t = 0; t < tests.Tests.Count; t++)
+            {
+                ClashTest test = tests.Tests[t] as ClashTest;
+
+                if (test == null)
+                {
+                    continue;
+                }
+
+                for (int r = 0; r < test.Children.Count; r++)
+                {
+                    ClashResult result = test.Children[r] as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    clashes++;
+
+                    string firstCategory;
+                    bool firstSized;
+                    string secondCategory;
+                    bool secondSized;
+
+                    using (ModelItem a = result.Item1)
+                    using (ModelItem b = result.Item2)
+                    {
+                        firstCategory = CategoryUp(a, out firstSized);
+                        secondCategory = CategoryUp(b, out secondSized);
+
+                        bool firstIsService = IsService(firstCategory);
+                        bool secondIsService = IsService(secondCategory);
+                        bool firstIsSolid = IsSolid(firstCategory);
+                        bool secondIsSolid = IsSolid(secondCategory);
+
+                        if (!((firstIsService && secondIsSolid) || (secondIsService && firstIsSolid)))
+                        {
+                            continue;
+                        }
+
+                        serviceAgainstSolid++;
+                        bool serviceIsFirst = firstIsService && secondIsSolid;
+                        bool sized = serviceIsFirst ? firstSized : secondSized;
+
+                        if (sized)
+                        {
+                            continue;
+                        }
+
+                        noSize++;
+                        string category = serviceIsFirst ? firstCategory : secondCategory;
+                        Bump(byCategory, category);
+
+                        if (shown < 8)
+                        {
+                            shown++;
+                            Say(string.Empty);
+                            Say("NO SIZE " + shown + ": " + test.DisplayName + "  " + result.DisplayName
+                                + "   the service side is [" + category + "]");
+                            SayEveryLevel(serviceIsFirst ? a : b);
+                        }
+                    }
+                }
+            }
+
+            Say(string.Empty);
+            Say("clashes in this document              : " + clashes);
+            Say("a service against a solid             : " + serviceAgainstSolid);
+            Say("of those, NO READABLE SIZE            : " + noSize);
+            Say("by category:");
+
+            foreach (KeyValuePair<string, int> pair in byCategory)
+            {
+                Say("   [" + pair.Key + "]  " + pair.Value);
+            }
+
+            Say(string.Empty);
+            Say("READ THE DUMPS ABOVE. If a level carries Diameter, Width, Height, Size,");
+            Say("Nominal Diameter or Overall Size and the reader still said no size, the");
+            Say("reader is on the wrong node and it is a BUG. If no level carries any of");
+            Say("the six, the service genuinely has no size property and PART 5 names them.");
+            return true;
+        }
+
+        /// <summary>Every level of one clash side, with its tabs and every size property on it.</summary>
+        private void SayEveryLevel(ModelItem item)
+        {
+            ModelItem walker = item;
+
+            for (int level = 0; level <= 4 && walker != null; level++)
+            {
+                Say("   level " + level + " [" + Words(walker.DisplayName) + "]"
+                    + " geometry " + walker.HasGeometry + " composite " + walker.IsComposite);
+                Say("      tabs: " + TabNames(walker));
+                Say("      size properties on it: " + SizePropertiesOn(walker));
+
+                ModelItem parent = walker.Parent;
+
+                if (level > 0)
+                {
+                    walker.Dispose();
+                }
+
+                walker = parent;
+            }
+
+            if (walker != null)
+            {
+                walker.Dispose();
+            }
+        }
+
+        private static string TabNames(ModelItem item)
+        {
+            List<string> names = new List<string>();
+
+            try
+            {
+                using (PropertyCategoryCollection tabs = item.PropertyCategories)
+                {
+                    if (tabs == null)
+                    {
+                        return "none";
+                    }
+
+                    foreach (PropertyCategory tab in tabs)
+                    {
+                        names.Add(Words(tab.DisplayName));
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                return "reading threw " + error.GetType().Name;
+            }
+
+            return names.Count == 0 ? "none" : string.Join(", ", names.ToArray());
+        }
+
+        /// <summary>The six names SizeSettings.DefaultPropertyNames holds, in the same order.</summary>
+        private static readonly string[] SizePropertyNames =
+            { "Diameter", "Width", "Height", "Size", "Nominal Diameter", "Overall Size" };
+        /// <summary>
+        /// Whether ItemSizes.Read WOULD get a number off that item, which is a narrower
+        /// question than whether a size property is there at all. It takes the value only
+        /// where the kind is DoubleLength or Double, so a Size written as a STRING is a
+        /// property that is there and unreadable, and that difference is the whole of 5s.
+        /// </summary>
+        private static bool ReadableSizeOn(ModelItem item)
+        {
+            try
+            {
+                using (PropertyCategoryCollection tabs = item.PropertyCategories)
+                {
+                    if (tabs == null)
+                    {
+                        return false;
+                    }
+
+                    foreach (PropertyCategory tab in tabs)
+                    {
+                        using (DataPropertyCollection properties = tab.Properties)
+                        {
+                            for (int i = 0; i < properties.Count; i++)
+                            {
+                                using (DataProperty property = properties[i])
+                                {
+                                    string name = Words(property.DisplayName);
+
+                                    for (int s = 0; s < SizePropertyNames.Length; s++)
+                                    {
+                                        if (!string.Equals(name, SizePropertyNames[s], StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            continue;
+                                        }
+
+                                        using (VariantData value = property.Value)
+                                        {
+                                            if (value != null
+                                                && (value.DataType == VariantDataType.DoubleLength
+                                                    || value.DataType == VariantDataType.Double))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return false;
+        }
+
+        /// <summary>The VariantData kind of that property, which is what ItemSizes judges on.</summary>
+        private static string TypeOf(DataProperty property)
+        {
+            try
+            {
+                using (VariantData value = property.Value)
+                {
+                    return value == null ? "null" : value.DataType.ToString();
+                }
+            }
+            catch (Exception)
+            {
+                return "threw";
+            }
+        }
+
+
+
+        private static string SizePropertiesOn(ModelItem item)
+        {
+            List<string> found = new List<string>();
+
+            try
+            {
+                using (PropertyCategoryCollection tabs = item.PropertyCategories)
+                {
+                    if (tabs == null)
+                    {
+                        return "none";
+                    }
+
+                    foreach (PropertyCategory tab in tabs)
+                    {
+                        using (DataPropertyCollection properties = tab.Properties)
+                        {
+                            for (int i = 0; i < properties.Count; i++)
+                            {
+                                using (DataProperty property = properties[i])
+                                {
+                                    string name = Words(property.DisplayName);
+
+                                    for (int s = 0; s < SizePropertyNames.Length; s++)
+                                    {
+                                        if (string.Equals(name, SizePropertyNames[s], StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            // THE TYPE AS WELL AS THE VALUE. ItemSizes only
+                                            // takes DoubleLength or Double and leaves every
+                                            // other kind out, so a size written as a STRING
+                                            // is a property that is there and unreadable.
+                                            found.Add("[" + Words(tab.DisplayName) + "] " + name
+                                                + " = " + AnyText(property) + " <" + TypeOf(property) + ">");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                return "reading threw " + error.GetType().Name;
+            }
+
+            return found.Count == 0 ? "NONE of the six" : string.Join("   ", found.ToArray());
+        }
+
+        /// <summary>The category off this item or the four above it, and whether any level carried a size.</summary>
+        private static string CategoryUp(ModelItem item, out bool sized)
+        {
+            sized = false;
+            string category = string.Empty;
+
+            if (item == null)
+            {
+                return category;
+            }
+
+            ModelItem walker = item;
+
+            for (int level = 0; level <= 4 && walker != null; level++)
+            {
+                if (category.Length == 0)
+                {
+                    category = FirstOf(walker, PenetrationCategoryNames);
+                }
+
+                if (!sized && ReadableSizeOn(walker))
+                {
+                    sized = true;
+                }
+
+                ModelItem parent = walker.Parent;
+
+                if (level > 0)
+                {
+                    walker.Dispose();
+                }
+
+                walker = parent;
+            }
+
+            if (walker != null)
+            {
+                walker.Dispose();
+            }
+
+            return category;
+        }
+
+        private static readonly string[] ServiceCategories =
+        {
+            "Pipes", "Pipe Fittings", "Pipe Accessories", "Pipe Insulation",
+            "Ducts", "Duct Fittings", "Duct Accessories", "Flex Pipes", "Flex Ducts",
+            "Cable Trays", "Cable Tray Fittings", "Conduits", "Conduit Fittings"
+        };
+
+        private static readonly string[] SolidCategories =
+            { "Walls", "Floors", "Roofs", "Structural Foundations" };
+
+        private static bool IsService(string category)
+        {
+            return Names(ServiceCategories, category);
+        }
+
+        private static bool IsSolid(string category)
+        {
+            return Names(SolidCategories, category);
+        }
+
+        private static bool Names(string[] list, string category)
+        {
+            if (string.IsNullOrEmpty(category))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < list.Length; i++)
+            {
+                if (string.Equals(list[i], category, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static string Joined(IList<string> values)
+        {
+            string[] array = new string[values.Count];
+            values.CopyTo(array, 0);
+            return string.Join(", ", array);
         }
     }
 }

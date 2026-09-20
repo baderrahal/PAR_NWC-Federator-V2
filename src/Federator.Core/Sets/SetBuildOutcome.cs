@@ -250,6 +250,23 @@ namespace Federator.Core.Sets
             if (AlreadyPresentCount > 0)
             {
                 lines.Add("already there     : " + AlreadyPresentCount + ", left alone, not copied again");
+
+                // THE CORRECTED FILE DOES NOT REACH A SET THAT IS ALREADY THERE, and that
+                // was silent until the worksets round. A set in the NWF was built from
+                // whatever file was picked the FIRST time, so a value corrected in the
+                // matrix since, such as ME-DUCTWORK becoming ME-Ductwork, changes the
+                // file and changes nothing in the document. The run of 2026-09-20 proved
+                // it by consequence: the models carry ME-Ductwork on 236 elements, the
+                // corrected matrix asks for it, and the set still found nothing, so the
+                // set in the document is still asking the old question.
+                //
+                // NOTHING IS DONE ABOUT IT HERE. Replacing a set changes what every clash
+                // test pointing at it finds, and that is Bader's decision, Q72. This is
+                // the same shape as the tolerance, F76, which is reported and applied
+                // only when a person ticks a box.
+                lines.Add("      a set already in the NWF keeps the conditions it was built with. A value");
+                lines.Add("      corrected in the picked file since then does NOT reach it, so a set that");
+                lines.Add("      finds nothing here may be asking a question the file no longer asks. Q72");
             }
             lines.Add("sets finding items: " + FindingItemsCount);
             lines.Add("sets at zero      : " + ZeroCount);

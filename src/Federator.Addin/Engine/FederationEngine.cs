@@ -83,6 +83,8 @@ namespace Federator.Addin.Engine
         // What the two new blocks found across the whole run, for the RESULT block. A
         // count and never an action: the tool reports what it noticed and Bader decides.
         private int alignmentDifferences;
+        private int failedOnAlignment;
+        private readonly List<string> alignmentFailures = new List<string>();
         private int modelsWithNoWorkset;
         private int modelsMissingAnId;
 
@@ -918,7 +920,7 @@ namespace Federator.Addin.Engine
             // both are read for the scanned run and the open file run alike because this
             // is the one place both paths pass through. Neither can fail a group: report
             // it and run anyway, never skip a group and never stop a run for it.
-            WhereTheModelsSit(document, job);
+            WhereTheModelsSit(document, job, outcome);
             WhatTheModelsCarry(document, job);
 
             bool clashPutSomethingIn = ClashStep(document, job, outcome);
@@ -1711,11 +1713,25 @@ namespace Federator.Addin.Engine
         /// It writes and changes nothing, so it cannot itself break a group, and a read
         /// that throws costs one line and never the run.
         /// </summary>
-        private void WhereTheModelsSit(Document document, FederationJob job)
+        private void WhereTheModelsSit(Document document, FederationJob job, JobOutcome outcome)
         {
             try
             {
                 IList<ModelPlacement> placements = ModelFactsReader.Placements(document, reports.Names, log);
+
+                // Q70 answered b on 2026-09-20. A model on the internal origin is in a
+                // different coordinate system from the rest of the group, so every clash
+                // against it is either one that is not there or a miss that is. The group
+                // is FAILED and it still writes every output, because the evidence is
+                // what Bader takes to the people who own the models.
+                string fails = AlignmentCheck.WhyItFailsTheGroup(placements);
+
+                if (fails != null)
+                {
+                    outcome.AddError(fails);
+                    failedOnAlignment++;
+                    alignmentFailures.Add(Words.Or(job.Building, "this group") + ": " + fails);
+                }
 
                 log.Block(
                     AlignmentCheck.BlockTitle + " " + Words.Or(job.Building, "this group"),
@@ -1794,6 +1810,18 @@ namespace Federator.Addin.Engine
             lines.Add("ALIGNMENT across the run: " + alignmentDifferences
                 + " model(s) sit somewhere their group's reference model does not"
                 + (alignmentDifferences == 0 ? string.Empty : ". Nothing was changed and every group ran."));
+
+            // Q70. Counted APART from the models that merely sit somewhere else, because
+            // a model on the internal origin fails its group and a model 95 mm out does
+            // not, and one line carrying both numbers would read as one fault.
+            lines.Add("ALIGNMENT failed " + failedOnAlignment
+                + " group(s), each because a model was exported on the internal origin or names no shared site"
+                + (failedOnAlignment == 0 ? string.Empty : ". Every one of them still wrote its NWF, its NWD and its report."));
+
+            for (int i = 0; i < alignmentFailures.Count; i++)
+            {
+                lines.Add("   FAILED " + alignmentFailures[i]);
+            }
 
             lines.Add("EXPORT CHECK across the run: " + modelsWithNoWorkset
                 + " model(s) carry no workset at all and " + modelsMissingAnId
@@ -2211,6 +2239,14 @@ namespace Federator.Addin.Engine
                         penetrationTally.Lines(reports.Penetrations, reports.Sizes));
 
                     log.PenetrationsMoved += penetrationTally.MovedCount;
+
+                    // Q71. One row per service this tool could not measure, because the
+                    // block writes none and a count nobody can check is a count nobody
+                    // should trust.
+                    foreach (string row in penetrationTally.UnmeasuredRows)
+                    {
+                        log.Row("service with no readable size", row, string.Empty, string.Empty);
+                    }
                 }
 
                 // F72b. Straight after the PENETRATION block, the same shape, written even

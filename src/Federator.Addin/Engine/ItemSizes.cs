@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
+using Federator.Core.Units;
 using Federator.Core.Views;
 
 namespace Federator.Addin.Engine
@@ -25,11 +26,17 @@ namespace Federator.Addin.Engine
     public static class ItemSizes
     {
         /// <summary>
-        /// The wanted properties that are on this item, by name, in the document's units.
-        /// Never throws: anything that cannot be read is left out, and an empty lookup is a
-        /// real answer meaning no size was found.
+        /// The wanted properties that are on this item, by name, in the document units.
+        /// Never throws: anything that cannot be read is left out, and an empty lookup is
+        /// a real answer meaning no size was found.
+        ///
+        /// IT HAS TO BE TOLD THE DOCUMENT UNIT, so a size written as WORDS can be put
+        /// back into it. Without that a worded size is left out, which is what this
+        /// reader did for every one of them until 5s. There was a two argument overload
+        /// passing null and nothing called it, so it is gone under the rule about a
+        /// public member nothing in src calls.
         /// </summary>
-        public static IDictionary<string, double> Read(ModelItem item, SizeSettings settings)
+        public static IDictionary<string, double> Read(ModelItem item, SizeSettings settings, string unitEnumName)
         {
             Dictionary<string, double> found = new Dictionary<string, double>(StringComparer.Ordinal);
 
@@ -56,7 +63,7 @@ namespace Federator.Addin.Engine
 
                 double value;
 
-                if (TryReadOne(categories, wanted, out value))
+                if (TryReadOne(categories, wanted, MillimetresPerUnit(unitEnumName), out value))
                 {
                     found.Add(wanted, value);
                 }
@@ -71,7 +78,8 @@ namespace Federator.Addin.Engine
         /// the display name, because an exporter writing Diameter and another writing
         /// DIAMETER are the same property to anyone reading the model.
         /// </summary>
-        private static bool TryReadOne(PropertyCategoryCollection categories, string wanted, out double value)
+        private static bool TryReadOne(
+            PropertyCategoryCollection categories, string wanted, double millimetresPerUnit, out double value)
         {
             value = 0.0;
 
@@ -96,6 +104,28 @@ namespace Federator.Addin.Engine
                                 value = data.ToAnyDouble();
                                 return true;
                             }
+
+                            // A SIZE WRITTEN AS WORDS IS STILL A SIZE, 5s. Revit writes a
+                            // conduit's Size as the DisplayString "53 mmø" and a cable
+                            // tray fitting's as "600 mmx100 mm", and taking only the two
+                            // numeric kinds left 29 of 74 services in one group reported
+                            // as having no readable size while every one of them carried
+                            // one. The text names its own unit, so Federator.Core.Views
+                            // .SizeText reads it through UnitTable and refuses a number
+                            // with no unit rather than guessing at one.
+                            if (data.DataType == VariantDataType.DisplayString)
+                            {
+                                double? millimetres = SizeText.LargestMillimetres(data.ToDisplayString());
+
+                                if (millimetres.HasValue && millimetresPerUnit > 0.0)
+                                {
+                                    // Put back into DOCUMENT units, because every other
+                                    // value in this dictionary is in them and SizeRule
+                                    // stays the one place that converts to millimetres.
+                                    value = millimetres.Value / millimetresPerUnit;
+                                    return true;
+                                }
+                            }
                         }
                     }
                     catch (Exception)
@@ -115,6 +145,18 @@ namespace Federator.Addin.Engine
         /// "150 mm" would mean guessing at the unit written in it while the number this
         /// tool converts is in the document's units.
         /// </summary>
+        /// <summary>How many millimetres one document unit is, or zero where the unit is not known.</summary>
+        private static double MillimetresPerUnit(string unitEnumName)
+        {
+            if (string.IsNullOrEmpty(unitEnumName))
+            {
+                return 0.0;
+            }
+
+            UnitRow row = UnitTable.FindByEnumName(unitEnumName);
+            return row == null ? 0.0 : row.MillimetresPerUnit;
+        }
+
         private static bool IsALength(VariantDataType kind)
         {
             return kind == VariantDataType.DoubleLength

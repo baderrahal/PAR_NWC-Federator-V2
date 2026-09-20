@@ -27926,7 +27926,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-DUCTWORK</data>
+                    <data type="wstring">ME-Ductwork</data>
                   </value>
                 </condition>
                 <condition test="equals" flags="64">
@@ -27948,7 +27948,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-DUCTWORK</data>
+                    <data type="wstring">ME-Ductwork</data>
                   </value>
                 </condition>
               </conditions>
@@ -27977,7 +27977,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-DUCTWORK</data>
+                    <data type="wstring">ME-Ductwork</data>
                   </value>
                 </condition>
               </conditions>
@@ -28006,7 +28006,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-EQUIPMENT</data>
+                    <data type="wstring">ME-Equipment</data>
                   </value>
                 </condition>
               </conditions>
@@ -28035,7 +28035,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-DUCTWORK</data>
+                    <data type="wstring">ME-Ductwork</data>
                   </value>
                 </condition>
               </conditions>
@@ -28064,7 +28064,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-DUCTWORK</data>
+                    <data type="wstring">ME-Ductwork</data>
                   </value>
                 </condition>
               </conditions>
@@ -28093,7 +28093,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-PIPING</data>
+                    <data type="wstring">ME-Piping</data>
                   </value>
                 </condition>
                 <condition test="equals" flags="64">
@@ -28115,7 +28115,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-PIPING</data>
+                    <data type="wstring">ME-Piping</data>
                   </value>
                 </condition>
               </conditions>
@@ -28144,7 +28144,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-PIPING</data>
+                    <data type="wstring">ME-Piping</data>
                   </value>
                 </condition>
               </conditions>
@@ -28173,7 +28173,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-PIPING</data>
+                    <data type="wstring">ME-Piping</data>
                   </value>
                 </condition>
               </conditions>
@@ -28202,7 +28202,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">ME-PIPING</data>
+                    <data type="wstring">ME-Piping</data>
                   </value>
                 </condition>
               </conditions>
@@ -28431,7 +28431,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">PL-Domestic Water</data>
+                    <data type="wstring">PL-Domestic water</data>
                   </value>
                 </condition>
               </conditions>
@@ -28460,7 +28460,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">PL-Domestic Water</data>
+                    <data type="wstring">PL-Domestic water</data>
                   </value>
                 </condition>
                 <condition test="equals" flags="64">
@@ -28482,7 +28482,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">PL-Domestic Water</data>
+                    <data type="wstring">PL-Domestic water</data>
                   </value>
                 </condition>
               </conditions>
@@ -28511,7 +28511,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">PL-Domestic Water</data>
+                    <data type="wstring">PL-Domestic water</data>
                   </value>
                 </condition>
               </conditions>
@@ -28540,7 +28540,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">PL-Domestic Water</data>
+                    <data type="wstring">PL-Domestic water</data>
                   </value>
                 </condition>
               </conditions>
@@ -28569,7 +28569,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">PL-Domestic Water</data>
+                    <data type="wstring">PL-Domestic water</data>
                   </value>
                 </condition>
               </conditions>
