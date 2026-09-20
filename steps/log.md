@@ -1,6 +1,94 @@
 # log
 
 Newest entry at the top.
+## 2026-09-20 The alignment round, THE PLAN, written before the first edit
+
+The round is briefed off Bader's own 422 hand marked decisions in 1A04PW and his answers
+Q58 to Q67 of 2026-09-20. The plan is written first and nothing is edited until it is.
+
+WHAT THE BUILD GATE SAID. `dotnet build ParsonsNwcFederator.sln -c Release`, 0 errors and
+0 warnings, Navisworks 2025 found. This is not a container and every part below can be
+proved by a run.
+
+TWO THINGS READ OFF THE MACHINE BEFORE PLANNING, both of which shape PART 7.
+
+- `C:\00-NM\Federation Task\C02 + 04\C04` IS EMPTY. Zero files, no NWC, no NWF, no NWD.
+  So "every ticked building in C02 + 04" is the ten C02 buildings and nothing else, and
+  the round says so rather than reporting ten groups as though it had run fourteen
+- 1A04PW, the building whose 422 decisions brief this whole round, IS NOT ON THIS MACHINE
+  as a model. Only its report is, `C:\Users\bader\Downloads\1104-PAR-1A04PW-XXX-BM-RPT-000001.xlsx`,
+  which is read only to this round. So PART 3's rules are proved by tests against that
+  report's own categories, and PART 4 and PART 5 are proved on C02's ten groups. The
+  round cannot show the 1A04PW block Bader wrote in the brief, and will show C02's
+
+### The order, and why it is that order
+
+MEASURE, THEN BUILD, THEN RUN ONCE. Three of the five build items rest on something this
+API has not been asked yet, and the last two rounds each cost an extra run for guessing
+one. Every measurement is taken in ONE probe pass so Navisworks is started once for all
+three, and the build items that need no measurement are done while that is being read.
+
+1. PART 1 measure. Does `InwOpFolderView.SavedViews().Add` record a viewpoint AT ALL, and
+   does it record the camera, the hidden state, the dimming and the two solid items. The
+   count is four and not one, because a route that looks right and records nothing is how
+   this feature failed twice
+2. PART 2 measure. What `AppearanceOverrides.MaterialOverrides` hands back for an item
+   whose colour was overridden, because the colour has to be READ BACK and nothing has
+   read one back yet. Whether a temporary colour override and a temporary transparency
+   override on the same item both survive into one viewpoint
+3. PART 4 measure, 5q. What an NWC carries of the Revit shared coordinate: the origin,
+   the project base point, the survey point, under what property name, on the model root
+   or per item, and whether a transform is there and is the identity. NOTHING IS BUILT
+   FOR PART 4 UNTIL THIS IS READ, and if it is not readable the block says so in one line
+   rather than falling back to a bounding box and calling it an alignment check
+4. PART 5 measure. Worksets and Element ID, per model, off the same pass. These two are
+   said to be readable with what the probe already reads and that is checked, not assumed
+
+Then the build, each its own commit, each built after the change and not at the end.
+
+5. PART 3a, Foundation joins the solid list. Framing and Columns stay out and the comment
+   says why, with Bader's own 7 beams left Active against 69 slabs moved as the reason.
+   Three tests: through a foundation moves, through a beam does not, through a column does not
+6. PART 3b, his replacement `by-design-pairs.csv`, 55 pairs up from 41, which he left in
+   `Claude outputs\`. A test that asserts 55 and asserts the AR against ST pairs by name
+7. PART 1 build, the cheap route behind a SETTING with both routes in the code, so the
+   A and the B are the same binary and the comparison is honest
+8. PART 2 build, the two colours as settings defaulting to red and green, read back
+9. PART 4 build, the ALIGNMENT block, only what step 3 supports
+10. PART 5 build, the EXPORT CHECK block
+11. PART 6, the nine answers into `steps\02_questions.md`
+
+Then the proving.
+
+12. PART 1's A against B, the SAME group written both ways, VIEWS seconds and NWF bytes
+    and all four read back counts side by side into `docs\history\scan.md` as 5p. The
+    switch is taken ONLY if all four hold
+13. PART 7. His NWF folder copied to a dated folder beside it, the count and every byte
+    size compared one for one, and the backup SAID to be read back before anything else.
+    Then the real run against the real folders, 25 mm, penetrations on, by design on, the
+    priority file picked, viewpoints on
+14. PART 8. The whole PART 7 log read end to end, every count that does not add up and
+    every check that reports nothing written down as a finding, fixed where it can be
+    fixed and named where it cannot, `tools\checks` and the full Core suite after each
+15. `steps\03_bader_next.md` re-read end to end against the code, and what drifted corrected
+
+### What is already decided and is not reopened
+
+- The solid list stops at Foundation. Framing and Columns stay out
+- No bounding box anywhere near the alignment check
+- The cheap write route is not taken on its speed alone
+- PART 7's run does not start until PART 7's backup has been read back
+- Nothing in `samples` is touched except the by-design file Bader replaced
+
+### The four standing rules of a run on his machine
+
+Nothing is written into a live project folder except PART 7's run and PART 7's backup,
+and every copy this round needs goes under
+`C:\Users\bader\AppData\Local\Temp\claude\round-alignment`. Every program started, every
+file written outside the repo and every process stopped is listed in the round report.
+Everything opened is closed and the check is run and said. Nothing of his is deleted or
+overwritten outside PART 7.
+
 ## 2026-09-20 The dimming round, the viewpoints show the clash, proved by three runs
 
 ### What was done
