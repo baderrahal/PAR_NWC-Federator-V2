@@ -156,9 +156,47 @@ assert the check names it. Neither has ever met a real file, because every model
 carries both, and on Bader's answer to Q67 the building that would show them is not
 coming onto this machine.
 
+### The closing pass, PART 8
+
+The PART 7 log was read end to end and TWO CHECKS WERE REPORTING NOTHING. The workset
+disagreement block was naming `AR-EXTERIOR` against `AR-INTERIOR` and `ST-SUB` against
+`ST-SUP` on every group, and 5t had already settled that both pairs are real worksets, so
+the block was training a reader to skip past the three genuine typos beside them. A
+person decided once, the decision lives in the measured list as a `not-a-typo` line, and
+the block COUNTS what it left out rather than going quiet about it. And `SETS ACROSS THE
+RUN` said `asked UNKNOWN` on every single line, because on a weekly run every set is
+already in the NWF and its question is never read, so the block that exists to say WHICH
+sets are wrong said nothing about any of them. It says why now, and points at Q72.
+
+Then `steps\03_bader_next.md` was read end to end against the code and TWENTY TWO things
+had drifted, FOUR of them checks that could never pass:
+
+- step 387 told Bader to look for `Nothing failed`, which cannot appear now that Q70
+  fails two groups, and the string is written only when failed groups plus errors is zero
+- step 392 sent him to `run-20260920-142412.log` for the workset disagreement lines, and
+  that log holds none of them, because the block was added today
+- step 75 quoted `Nothing is cleared.`, which F75 changed to `Nothing inside it is
+  cleared.` and which is in no source file
+- steps 248, 249 and 268 expected the count of unmeasured services to be LARGE. It is
+  zero on every group since 5s, so the step was telling him to read a number for a
+  reason that no longer exists
+
+Four more steps still said the viewpoint writer was unbuilt, two rounds after it shipped,
+and three quoted strings were a word out: the by design tick label, the penetration help
+line that Q63 changed this morning, and the health block's folder pattern line.
+
+AND THE RULE ABOUT A PUBLIC MEMBER NOTHING CALLS was applied to this round's own work
+rather than only to old code: the two argument `ItemSizes.Read` overload and four
+`RevitWorksets` members had no caller anywhere, so they are deleted, and a dead field
+went with them.
+
+One answer in `steps\02_questions.md` was corrected too. Q65 says neither new block can
+fail a group, and Q70, answered later the same day, makes exactly one case where one can.
+The note sits under Q65 so the two are not read as contradicting each other.
+
 ### What comes next
 
-Bader answers Q72. Core tests 1636 before the round and 1663 after, 0 failed and 0
+Bader answers Q72. Core tests 1636 before the round and 1666 after, 0 failed and 0
 skipped. Build 0 errors and 0 warnings after every change. Both checks pass.
 
 ## 2026-09-20 The worksets round, THE PLAN, written before the first edit

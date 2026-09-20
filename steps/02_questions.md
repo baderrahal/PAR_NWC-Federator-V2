@@ -283,7 +283,9 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
 65. From the alignment round on 2026-09-20. The alignment check and the export check can both find something wrong with a model before the group has clashed anything. Should a group with a fault in it be skipped, should the run stop, or should it be reported and run anyway
 
-    Answer: Bader, 2026-09-20. REPORT IT AND RUN ANYWAY. Never skip a group and never stop a run for it. Both blocks are written where every model is open and nothing has clashed, neither can fail a group, and both name their run total even at zero, because a line that only appears when something is wrong reads as a check that did not run.
+    Answer: Bader, 2026-09-20. REPORT IT AND RUN ANYWAY. Never skip a group and never stop a run for it. Both blocks are written where every model is open and nothing has clashed, and both name their run total even at zero, because a line that only appears when something is wrong reads as a check that did not run.
+
+    SUPERSEDED IN ONE CASE ON THE SAME DAY, and the note is here so the two answers are not read as contradicting each other. Q70 answered b makes a group FAILED where a model names Internal as its shared site or names no site at all. That is the one thing either block may now do to a group, and the reason is that such a model is in a different coordinate system, so every clash against it is either one that is not there or a miss that is. Everything else in both blocks still reports and runs anyway, and even a failed group writes its NWF, its NWD and its report.
 
 66. From the alignment round on 2026-09-20. The clash matrix has been exported at two tolerances and both files are in `samples`. Which is the project's tolerance from now on
 
