@@ -218,9 +218,27 @@ ids, because every model in C02 carries them. Both paths have tests behind them 
 neither has been seen on a real file. 1A04PW would show both and is not on this machine,
 which is Q67.
 
+### The closing pass, PART 8
+
+`steps_bader_next.md` was read end to end against the code, which is how every round
+closes, and TWENTY TWO things had drifted. Three of them were checks that could never
+fire, which is the shape this repo refuses everywhere else: a step looking for a line
+reading `VIEWS    not attempted.` that is in no source file, a step checking that nothing
+says `DID NOT FOLLOW` when nothing ever could, and the `.tsv` step naming fourteen event
+kinds when the code writes twenty one, which would have had Bader send the whole file
+every run. The viewpoint steps still described the per discipline tree F85 replaced a
+round ago. The block order left out four blocks on both run paths. Two measurements the
+file still called outstanding, 5g and 5i, are done.
+
+ONE CODE FIX CAME OUT OF IT, and it was this round's own doing. The penetration tick
+box's grey line still read `walls, floors, roofs` after Q63 added foundations that
+morning, so the window understated the rule a person is being asked to tick. A test now
+asserts the line names every solid the rule covers and stays inside the twelve words a
+help line is allowed.
+
 ### What comes next
 
-Bader answers Q67 and Q68. Core tests 1609 before the round and 1635 after, 0 failed and
+Bader answers Q67 and Q68. Core tests 1609 before the round and 1636 after, 0 failed and
 0 skipped. Build 0 errors and 0 warnings after every change. Both checks pass.
 
 ## 2026-09-20 The alignment round, THE PLAN, written before the first edit
