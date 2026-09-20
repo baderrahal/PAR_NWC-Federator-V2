@@ -1,0 +1,30 @@
+ME-Ductwork	BLD-ME-Ducts&amp;Duct Fittings
+ME-Ductwork	BLD-ME-Ducts&amp;Duct Fittings
+ME-Ductwork	BLD-ME-Duct Accessory
+ME-Equipment	BLD-ME-Mechanical Equipment
+ME-Ductwork	BLD-ME-Flex Ducts
+ME-Ductwork	BLD-ME-Air Terminals
+ME-Piping	BLD-ME-Pipes&amp;Pipe Fittings
+ME-Piping	BLD-ME-Pipes&amp;Pipe Fittings
+ME-Piping	BLD-ME-Pipe Accessories
+ME-Piping	BLD-ME-Plumbing Fixtures
+ME-Piping	BLD-ME-Flex Pipes
+FF-FIRE FIGHTING	BLD-FF-Mechanical Equipment
+FP-PIPING	BLD-FF-Pipes &amp; Pipe Fittings
+FP-PIPING	BLD-FF-Pipes &amp; Pipe Fittings
+FP-PIPING	BLD-FF-Pipe Accessories
+FP-PIPING	BLD-FF-Pipe Insulations
+FF-FIRE FIGHTING	BLD-FF-Plumbing Fixtures
+FP-PIPING	BLD-FF-Sprinklers
+PL-Domestic water	BLD-PL-Mechanical Equipment
+PL-Domestic water	BLD-PL-Pipes &amp; Pipe Fittings
+PL-Domestic water	BLD-PL-Pipes &amp; Pipe Fittings
+PL-Domestic water	BLD-PL-Pipe Accessories
+PL-Domestic water	BLD-PL-Pipe Insulations
+PL-Domestic water	BLD-PL-Plumbing Fixtures
+PL-Drainage	BLD-DR-Mechanical Equipment
+PL-Drainage	BLD-DR-Pipes &amp; Pipe Fittings
+PL-Drainage	BLD-DR-Pipes &amp; Pipe Fittings
+PL-Drainage	BLD-DR-Pipe Accessories
+PL-Drainage	BLD-DR-Pipe Insulations
+PL-Drainage	BLD-DR-Plumbing Fixtures

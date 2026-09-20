@@ -1,6 +1,94 @@
 # log
 
 Newest entry at the top.
+## 2026-09-21 The close round, THE PLAN REVISED AGAIN, written before the next edit
+
+Third brief, round still in flight, nothing already done is redone. This says what changes
+against the revised plan at `34b662c` and in what order the rest goes.
+
+### What stands unchanged
+
+PART 3, PART 4, PART 6a to 6c and 6e to 6h, PART 7a and PART 8 are word for word what the
+second brief made them. PART 2's shape is settled and confirmed: remove the unused twin,
+rename the broken set into the freed name, both in memory, verify, then save, with the
+parent scoped remove and a read back instead of a trusted return value. PART 5's fix is
+`DamagedDocument`, already built.
+
+### The six changes
+
+**1. THE MESSAGE CLAIMS ONE WORD MORE THAN IT KNOWS, AND IT IS ALREADY COMMITTED.**
+`DamagedDocument.TheDocumentIsDamaged` says the file on disk is `the last good copy`. That
+is a claim about HISTORY. This tool knows one thing: it did not write. Whether what is on
+disk is good was decided by whatever wrote it last, which may have been a run that failed
+in some other way. The sentence becomes UNCHANGED BY THIS RUN, which is exactly what the
+save gate proves and nothing more. The first sentence carries the same shape and gets the
+same treatment.
+
+THIS GOES FIRST, because PART 2 and PART 5 both call it and both would otherwise inherit
+the overclaim.
+
+**2. A NEW QUESTION THAT HAS TO BE ANSWERED BEFORE THE ROUND REPORTS: DID THIS DEFECT EVER
+FIRE ON HIS FILES.** He will ask whether it has already eaten one, and the answer should
+be ready rather than assembled under the question.
+
+The drift round says `ReshapeFromScan` was never executed, because all ten groups took
+Weekly run plus XML on all four runs. If that holds, the reshape's own two damaging exits
+never ran. BUT THAT IS ONLY ONE PATH. Before the drift round a CHANGED group used the
+clear and rebuild DIRECTLY, not as a fallback inside the reshape, and the question is
+whether THAT path read its before counts off an already modified document too. So: read
+every run log he has, find every group that ever ended Rebuilt, and say per run whether a
+defective path ran. Answer yes or no, plainly, with the evidence.
+
+**3. 6d IS ANSWERED WITH 2 IN HAND AND NOT AS A SEPARATE PUZZLE.** 1A02BS lost 54 bytes
+between the backup and the run of 22:28 and nothing explains it. Fifty four unexplained
+bytes is the size of trace a partially written document leaves. It is probably unrelated
+and its census was unchanged, but the two are looked at together.
+
+**4. THE `El` IS FOUND AND FIXED, NOT AN OPEN FINDING.** Bader renamed the Revit file in
+Autodesk Docs to `EL` on 2026-09-21. It was a modeller's mistake. 5z-c changes from
+reporting a live model hygiene issue to recording it as FOUND on 2026-09-19 in a committed
+run log, REPORTED on 2026-09-21, and FIXED AT SOURCE by Bader the same day. It is not
+deleted, because the evidence in `steps\logs\run-20260919-211323.log` is history and the
+record of how it was found is worth keeping. Nothing is built.
+
+**5. PART 7b GAINS A FREEZE GATE AND IT CAN STOP THE RUN.** C02 is frozen while the
+renamed model is not republished. After the C02 backup is read back, if the file count
+does not match the drift round's ELEVEN NWFs, or a new NWC has appeared in the folder,
+the C02 run STOPS and says so. Reporting a Rebuilt group as though it were a weekly one
+would make every comparison against the run of 22:28 meaningless, and that comparison is
+the whole of what 7b is for.
+
+**6. THE CLOSING GAINS A THING TO WATCH, NOT WORK FOR THIS ROUND.** When the renamed
+Revit model is republished, whether the publish ADDS an NWC beside the old one rather than
+replacing it. Two models of one discipline in one group read as a file added, which sends
+that group down the Rebuilt path, which is the path PART 5 is fixing. That is a sentence
+in the round report and nothing else.
+
+### The order of the remainder
+
+1. **The wording fix to `DamagedDocument`**, first, because two parts call it
+2. **Did it ever fire**, over every run log he has, and **6d answered with it**
+3. **PART 5, the reshape fix**, wiring `DamagedDocument` into the three exits and taking
+   the counts at the top
+4. **PART 2**, remove the twin then rename, atomic against the save
+5. **PART 3**, the empty block becomes one row
+6. **PART 4**, the questions recorded and the category line naming its folder
+7. **PART 6**, the record and the register
+8. **Build, full suite, both checks, install**
+9. **PART 5's proofs**: the three failure paths forced on copies and read back byte for
+   byte, then the happy path
+10. **PART 7a, C04**, backed up and read back first
+11. **PART 7b, C02**, backed up, read back, and STOPPED if the freeze gate trips
+12. **PART 8**, the closing pass
+13. **Closing**: the report, the six questions, the pull request or the compare link
+
+### What the four design agents have already returned
+
+All four finished and all four verifications are running. The designs cover the reshape
+fix, the workbook one row change, the C04 model survey and the record reconciliation.
+Nothing is built on any of them until its verification lands, because the one time this
+round trusted a survey without that, the survey was wrong about a live folder.
+
 ## 2026-09-21 The close round, THE PLAN REVISED, written before the next edit
 
 The brief was revised while the round was underway. Nothing already done is redone. This
