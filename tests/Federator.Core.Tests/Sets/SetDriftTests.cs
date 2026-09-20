@@ -36,7 +36,6 @@ namespace Federator.Core.Tests.Sets
         {
             SetDrift drift = SetDrift.Compare(
                 "a/path/BLD-ME-Ducts&Duct Fittings",
-                "BLD-ME-Ducts&Duct Fittings",
                 new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
                 new List<string> { Key(Workset, "equals", "ME-Ductwork") },
                 new List<string> { "asks ME-Ductwork" });
@@ -52,7 +51,6 @@ namespace Federator.Core.Tests.Sets
         {
             SetDrift drift = SetDrift.Compare(
                 "a/path/BLD-AR-Floors",
-                "BLD-AR-Floors",
                 new List<ReadCondition> { Asked(Category, "equals", "Floors") },
                 new List<string> { Key(Category, "equals", "Floors") },
                 new List<string> { "asks Floors" });
@@ -65,7 +63,6 @@ namespace Federator.Core.Tests.Sets
         {
             SetDrift drift = SetDrift.Compare(
                 "a/path/BLD-AR-Floors",
-                "BLD-AR-Floors",
                 new List<ReadCondition> { Asked(Category, "equals", "Floors") },
                 new List<string> { Key(Category, "equals", "Floors"), Key(Workset, "equals", "AR-EXTERIOR") },
                 new List<string> { "asks Floors", "and a workset" });
@@ -82,7 +79,7 @@ namespace Federator.Core.Tests.Sets
         public void ASetWhoseSearchWouldNotReadIsNeverCalledDrifted()
         {
             SetDrift drift = SetDrift.Compare(
-                "a/path/BLD-AR-Floors", "BLD-AR-Floors", null,
+                "a/path/BLD-AR-Floors", null,
                 new List<string> { Key(Category, "equals", "Floors") },
                 new List<string> { "asks Floors" });
 
@@ -96,7 +93,6 @@ namespace Federator.Core.Tests.Sets
         {
             SetDrift drift = SetDrift.Compare(
                 "lcop_selection_set_tree/Mechanical/BLD-ME-Ducts",
-                "BLD-ME-Ducts",
                 new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
                 new List<string> { Key(Workset, "equals", "ME-Ductwork") },
                 new List<string> { "LcRevitData_Element/" + Workset + " equals \"ME-Ductwork\"" });
@@ -148,7 +144,7 @@ namespace Federator.Core.Tests.Sets
             SetBuildOutcome outcome = new SetBuildOutcome();
 
             SetDrift one = SetDrift.Compare(
-                "a", "a", new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
+                "a", new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
                 new List<string> { Key(Workset, "equals", "ME-Ductwork") }, new List<string> { "x" });
 
             outcome.AddDrift(one, true);
@@ -156,6 +152,76 @@ namespace Federator.Core.Tests.Sets
 
             Assert.That(outcome.Drifted.Count, Is.EqualTo(2), "both are drift");
             Assert.That(outcome.RebuiltCount, Is.EqualTo(1), "and only one was rebuilt");
+        }
+
+        private static SetBuildOutcome OutcomeWithOnePresentSet()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent("a/BLD-ME-Ducts", "BLD-ME-Ducts", 1, 0);
+            return outcome;
+        }
+
+        private static string SetsBlock(SetBuildOutcome outcome)
+        {
+            return string.Join("\n", new List<string>(outcome.Lines()).ToArray());
+        }
+
+        private static SetDrift OneDrift()
+        {
+            return SetDrift.Compare(
+                "a/BLD-ME-Ducts", new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
+                new List<string> { Key(Workset, "equals", "ME-Ductwork") }, new List<string> { "x" });
+        }
+
+        /// <summary>
+        /// The SETS block used to say a set finding nothing MAY be asking a question the
+        /// file no longer asks, because nothing had ever read the question. It is read
+        /// now, so the block says what this run FOUND. Three states and a test each,
+        /// because a block that reads the same whatever happened proves nothing.
+        /// </summary>
+        [Test]
+        public void ThePresentSetsBlockSaysNoneDriftedWhenNoneDid()
+        {
+            string block = SetsBlock(OutcomeWithOnePresentSet());
+
+            Assert.That(block, Does.Contain("none of them drifted"));
+            Assert.That(block, Does.Not.Contain("DRIFTED and"));
+        }
+
+        [Test]
+        public void ThePresentSetsBlockCountsTheDriftWhenTheBoxIsOff()
+        {
+            SetBuildOutcome outcome = OutcomeWithOnePresentSet();
+            outcome.AddDrift(OneDrift(), false);
+
+            string block = SetsBlock(outcome);
+
+            Assert.That(block, Does.Contain("1 of them DRIFTED and none was rebuilt"));
+            Assert.That(block, Does.Contain("because the box is off"));
+            Assert.That(block, Does.Not.Contain("none of them drifted"));
+        }
+
+        [Test]
+        public void ThePresentSetsBlockSaysHowManyWereRebuiltWhenTheBoxIsOn()
+        {
+            SetBuildOutcome outcome = OutcomeWithOnePresentSet();
+            outcome.AddDrift(OneDrift(), true);
+            outcome.AddDrift(OneDrift(), false);
+
+            string block = SetsBlock(outcome);
+
+            Assert.That(block, Does.Contain("2 of them DRIFTED and 1 were REBUILT"));
+            Assert.That(block, Does.Contain("keep their results and their statuses, measured 5v"));
+        }
+
+        /// <summary>
+        /// The whole block is under the already-there count, so a run that created every
+        /// set fresh carries none of it. Nothing drifted, because nothing was there.
+        /// </summary>
+        [Test]
+        public void ThereIsNoDriftBlockAtAllWhenNoSetWasAlreadyThere()
+        {
+            Assert.That(SetsBlock(new SetBuildOutcome()), Does.Not.Contain("drifted"));
         }
     }
 }

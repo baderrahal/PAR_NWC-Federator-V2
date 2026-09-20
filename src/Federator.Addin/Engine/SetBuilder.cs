@@ -22,11 +22,6 @@ namespace Federator.Addin.Engine
         private readonly RunLog log;
         private readonly SetRebuildSettings rebuilds;
 
-        public SetBuilder(Action<string> progress, RunLog log)
-            : this(progress, log, null)
-        {
-        }
-
         public SetBuilder(Action<string> progress, RunLog log, SetRebuildSettings rebuilds)
         {
             if (log == null)
@@ -80,7 +75,7 @@ namespace Federator.Addin.Engine
                 described.Add(condition.Describe());
             }
 
-            return SetDrift.Compare(planned.Path, planned.Name, asked, keys, described);
+            return SetDrift.Compare(planned.Path, asked, keys, described);
         }
 
         /// <summary>One condition off a set in the document, in the plain strings Core compares.</summary>

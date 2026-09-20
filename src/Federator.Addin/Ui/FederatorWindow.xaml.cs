@@ -1923,6 +1923,18 @@ namespace Federator.Addin.Ui
                     + string.Join(Environment.NewLine, new List<string>(toleranceLines).ToArray());
             }
 
+            // Q72, and the same rule as the tolerance line above it: said only when the
+            // box is ON, because a sentence that appears on every run saying nothing will
+            // happen teaches people to skip the screen. The box changes the NWF and the
+            // NWF is the only record of what has been fixed, so the screen says so.
+            string rebuildLine = SetRebuildSettings.ConfirmLine(
+                RebuildDriftedSets.IsChecked == true);
+
+            if (rebuildLine != null)
+            {
+                message += Environment.NewLine + Environment.NewLine + rebuildLine;
+            }
+
             if (discarded != null)
             {
                 message += Environment.NewLine + Environment.NewLine

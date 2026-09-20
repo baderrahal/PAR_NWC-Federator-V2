@@ -70,18 +70,15 @@ namespace Federator.Core.Sets
     /// </summary>
     public sealed class SetDrift
     {
-        private SetDrift(string path, string name, bool couldNotRead, IList<ReadCondition> asked, IList<string> wanted)
+        private SetDrift(string path, bool couldNotRead, IList<ReadCondition> asked, IList<string> wanted)
         {
             Path = path ?? string.Empty;
-            Name = name ?? string.Empty;
             CouldNotRead = couldNotRead;
             Asked = asked ?? new List<ReadCondition>();
             Wanted = wanted ?? new List<string>();
         }
 
         public string Path { get; private set; }
-
-        public string Name { get; private set; }
 
         /// <summary>The set's search would not read. Never called drifted, the way a census count that could not be taken is never called a move.</summary>
         public bool CouldNotRead { get; private set; }
@@ -101,9 +98,9 @@ namespace Federator.Core.Sets
         /// one asking B and then A once a StartGroup bit is involved, and this tool does
         /// not pretend to know which orderings are equivalent.
         /// </summary>
-        public static SetDrift Compare(string path, string name, IList<ReadCondition> asked, IList<string> wantedKeys, IList<string> wantedDescribed)
+        public static SetDrift Compare(string path, IList<ReadCondition> asked, IList<string> wantedKeys, IList<string> wantedDescribed)
         {
-            SetDrift drift = new SetDrift(path, name, asked == null, asked, wantedDescribed);
+            SetDrift drift = new SetDrift(path, asked == null, asked, wantedDescribed);
 
             if (asked == null || wantedKeys == null)
             {

@@ -313,13 +313,33 @@ namespace Federator.Core.Sets
                 // corrected matrix asks for it, and the set still found nothing, so the
                 // set in the document is still asking the old question.
                 //
-                // NOTHING IS DONE ABOUT IT HERE. Replacing a set changes what every clash
-                // test pointing at it finds, and that is Bader's decision, Q72. This is
-                // the same shape as the tolerance, F76, which is reported and applied
-                // only when a person ticks a box.
-                lines.Add("      a set already in the NWF keeps the conditions it was built with. A value");
-                lines.Add("      corrected in the picked file since then does NOT reach it, so a set that");
-                lines.Add("      finds nothing here may be asking a question the file no longer asks. Q72");
+                // NOTHING IS DONE ABOUT IT UNLESS A PERSON TICKS THE BOX. Replacing a set
+                // changes what every clash test pointing at it finds, and that is Bader's
+                // decision, Q72, answered a. This is the same shape as the tolerance, F76,
+                // which is reported and applied only when a person ticks a box.
+                //
+                // THESE LINES SAY WHAT THIS RUN FOUND AND NOT WHAT MIGHT BE TRUE. Until
+                // the drift round nothing had ever read the question a set in the document
+                // asks, so all this block could say was that a set finding nothing MAY be
+                // asking an old question. It is read now, so the count is said instead.
+                lines.Add("      a set already in the NWF keeps the conditions it was built with, so a value");
+                lines.Add("      corrected in the picked file since then does not reach it on its own. Q72");
+
+                if (Drifted.Count == 0)
+                {
+                    lines.Add("      none of them drifted. Every set in the document asks what the file asks");
+                }
+                else if (RebuiltCount == 0)
+                {
+                    lines.Add("      " + Drifted.Count + " of them DRIFTED and none was rebuilt, because the box is off. Each is"
+                        + " named above with the old question and the new one");
+                }
+                else
+                {
+                    lines.Add("      " + Drifted.Count + " of them DRIFTED and " + RebuiltCount
+                        + " were REBUILT from the picked file. The clash tests");
+                    lines.Add("      pointing at a rebuilt set keep their results and their statuses, measured 5v");
+                }
             }
             lines.Add("sets finding items: " + FindingItemsCount);
             lines.Add("sets at zero      : " + ZeroCount);

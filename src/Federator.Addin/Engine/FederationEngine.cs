@@ -2469,6 +2469,12 @@ namespace Federator.Addin.Engine
                 ApplyThePriorities(job, outcome.Report);
                 log.Block("CLASH " + job.Building, clash.Lines());
 
+                // The run total, added as the group's own block is written so the two can
+                // never disagree. The RESULT block had no clash total of any kind before
+                // the drift round: the number sat in ten CLASH blocks and adding it up
+                // meant reading a log thousands of lines long.
+                log.ClashesFound.Add(job.Building, clash.TotalClashes, clash.WithClashesCount);
+
                 // 3b, the block his own report made urgent. A set that finds nothing is
                 // not one dead set, it is every clash test that points at it, and until
                 // now nothing said which of those sets is WRONG and which is a model with
