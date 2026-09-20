@@ -79,6 +79,10 @@ namespace ViewpointProbe
                     {
                         MeasureComRoute(parameters[2]);
                     }
+                    else if (mode == "home")
+                    {
+                        MeasureHome(parameters[2]);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -952,6 +956,113 @@ namespace ViewpointProbe
                 Say("after reopen, pressed: root0 hidden " + document.Models.IsHidden(one) + ", " + Describe(document.CurrentViewpoint.Value));
                 parent.Dispose();
                 document.Models.ResetAllHidden();
+            }
+        }
+
+        // ---------- 5n, which model a clashing item lives in ----------
+
+        /// <summary>
+        /// Three runs read no home model for any clash through ClashResult.Item1.Model
+        /// and through Selection1[0].Model, while ClashHarvest fills the source file
+        /// column through Item1.Model on every run. Measures, for the first results of
+        /// the first tests that have any: what Item1.Model and its FileName read, what
+        /// HasModel reads, what the ancestors' Model read, and what the document's own
+        /// Models list its FileName as, so the two strings can be compared by eye.
+        /// </summary>
+        private void MeasureHome(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            for (int i = 0; i < document.Models.Count; i++)
+            {
+                using (Model model = document.Models[i])
+                {
+                    Say("document.Models[" + i + "].FileName = [" + model.FileName + "]  SourceFileName = [" + model.SourceFileName + "]");
+                }
+            }
+
+            DocumentClashTests clashTests = document.GetClash().TestsData;
+            int shown = 0;
+
+            for (int t = 0; t < clashTests.Tests.Count && shown < 4; t++)
+            {
+                ClashTest test = clashTests.Tests[t] as ClashTest;
+
+                if (test == null || test.Children.Count == 0)
+                {
+                    continue;
+                }
+
+                for (int r = 0; r < test.Children.Count && shown < 4; r++)
+                {
+                    ClashResult result = test.Children[r] as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    shown++;
+                    Say("--- " + test.DisplayName + "  " + result.DisplayName);
+
+                    foreach (string side in new[] { "Item1", "Item2" })
+                    {
+                        try
+                        {
+                            using (ModelItem item = side == "Item1" ? result.Item1 : result.Item2)
+                            {
+                                if (item == null)
+                                {
+                                    Say("   " + side + " is null");
+                                    continue;
+                                }
+
+                                string line = "   " + side + " [" + item.DisplayName + "] HasModel " + item.HasModel;
+
+                                using (Model model = item.Model)
+                                {
+                                    line += ", Model " + (model == null ? "null" : "[" + model.FileName + "]");
+                                }
+
+                                int depth = 0;
+                                string top = "none";
+
+                                foreach (ModelItem ancestor in item.AncestorsAndSelf)
+                                {
+                                    depth++;
+
+                                    if (ancestor.HasModel)
+                                    {
+                                        using (Model model = ancestor.Model)
+                                        {
+                                            top = model == null ? "null" : "[" + model.FileName + "] at depth " + depth;
+                                        }
+                                    }
+                                }
+
+                                Say(line + ", ancestors and self " + depth + ", the one with a model " + top);
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            Say("   " + side + " threw " + error.GetType().Name + ": " + error.Message);
+                        }
+                    }
+                }
             }
         }
 

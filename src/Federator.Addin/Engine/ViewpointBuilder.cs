@@ -326,13 +326,13 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// The model one clashing item lives in, by its index in the document, matched on
-        /// the model's file name because that is a string and not a wrapper. The item is
-        /// ClashResult.Item1 or Item2 and its Model is read off it directly, which is the
-        /// shape ClashHarvest.SourceFileOf fills the source file column with on every
-        /// run. Two other shapes were tried on runs and read no home for any clash: the
-        /// first item of Selection1 behind a HasModel check, which answers whether the
-        /// item IS a model, and the same item without the check. Item1 is a fresh
-        /// wrapper on every read, so the caller's read is disposed here.
+        /// the model's file name because that is a string and not a wrapper. MEASURED on
+        /// 2026-09-20, docs\history\scan.md 5n: on a clash leaf HasModel reads false and
+        /// Model reads null, and the one item that carries the model is the TOPMOST of
+        /// AncestorsAndSelf, six to nine levels up. Three runs before that measurement
+        /// read Model off the leaf and found no home for any clash. Item1 is a fresh
+        /// wrapper on every read, and so is every ancestor enumerated, so each is released
+        /// here.
         /// </summary>
         private static void AddHome(ModelItem item, IDictionary<string, int> indexByFile, HashSet<int> into)
         {
@@ -343,13 +343,26 @@ namespace Federator.Addin.Engine
                     return;
                 }
 
-                using (Model model = item.Model)
+                foreach (ModelItem ancestor in item.AncestorsAndSelf)
                 {
-                    int index;
-
-                    if (model != null && indexByFile.TryGetValue(Words.Or(model.FileName, string.Empty), out index))
+                    using (ancestor)
                     {
-                        into.Add(index);
+                        if (!ancestor.HasModel)
+                        {
+                            continue;
+                        }
+
+                        using (Model model = ancestor.Model)
+                        {
+                            int index;
+
+                            if (model != null && indexByFile.TryGetValue(Words.Or(model.FileName, string.Empty), out index))
+                            {
+                                into.Add(index);
+                            }
+                        }
+
+                        return;
                     }
                 }
             }

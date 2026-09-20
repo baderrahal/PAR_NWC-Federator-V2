@@ -3393,6 +3393,9 @@ is still UNKNOWN.
 
 ## 5i. Which category values are real Revit categories, asked 2026-09-19, NOT MEASURED
 
+MEASURED on 2026-09-20 in the viewpoints round. The measurement and what it decided are
+under 5i, measured, further down, after 5m. What follows here is what was asked.
+
 THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
 
 WHY IT IS ASKED. F84 warns about a selection set asking for a category value that is not
@@ -3611,3 +3614,69 @@ within `ViewpointSettings.CameraReadBackTolerance` of the clash camera, and that
 carries visibility overrides where it was meant to hide a discipline. The window's view is
 never touched, so nothing of it has to be put back. `CaptureRuntimeOverrides` stays for
 one thing, reading the hidden state before the writer hides anything, 5k.
+
+## 5i, measured. Every category value the C02 models carry, MEASURED 2026-09-20
+
+The probe in `tools\probes\ViewpointProbe`, mode `walk`, opened the ten NWFs of the C02
+folder one after another through the automation host and read, off every item of every
+model, the first property whose display name is Category, Revit Category or Element
+Category, the way the add-in's harvest and the penetration rule read one. The result
+file is `tools\probes\ViewpointProbe\5i-result-20260920.txt`.
+
+```
+walked 482 items, 144 carrying a category, 2 models        1000BS
+walked 31127 items, 9273 carrying a category, 3 models     1A0215
+walked 828 items, 333 carrying a category, 6 models        1A02BS
+walked 2606 items, 909 carrying a category, 4 models       1A02MM
+walked 4505 items, 2196 carrying a category, 1 models      1A02MS
+walked 568 items, 240 carrying a category, 4 models        1A02WE
+walked 2860 items, 1041 carrying a category, 8 models      1A02WL
+walked 2361 items, 898 carrying a category, 4 models       1A02WM
+walked 716 items, 277 carrying a category, 4 models        1A02WN
+walked 1418 items, 555 carrying a category, 4 models       1A02WO
+DISTINCT 374
+```
+
+47,471 items across 40 models in 21 seconds, 374 distinct values. Around sixty of them
+are Revit categories as a person would name them, Walls with 457 items, Floors with
+7,035, Structural Framing with 1,745, Lighting Fixtures with 424, Cable Trays with 44,
+Ducts with 36. The rest are family and type names, PAR-AR-DOR-SW-SG-MTL-EXT-900 and
+three hundred like it, plant species such as Acacia farnesiana, and the names of linked
+DWG files, each carried by one or two items, because on these NWCs a node above the
+geometry carries a property called Category whose value is its own name.
+
+**WHAT THIS DECIDES.** The list goes into `src\Federator.Core\Exchange\revit-categories.txt`
+whole, family names and all, because a list that left them out would not be what was
+measured and the tool reads them as a category. `RevitCategories.Measured` is true, the
+HEALTH block reads `Revit categories known: 374`, and `SetWarnings.FindCategoriesNobodyHas`
+runs. It is one folder of the project, so a category another building carries and these
+do not reads as one nobody has until the walk is run over that building too. A test
+proves the resource is exactly the probe result's CATEGORY lines.
+
+## 5n. Which model a clashing item lives in, MEASURED 2026-09-20
+
+Three runs of the viewpoint writer read no home model for any clash. Two shapes were
+tried, `ClashResult.Selection1[0].Model` behind a `HasModel` check and `ClashResult.Item1.Model`
+without one, and both read null on every clash. The probe, mode `home`, measured the
+first results of the 1A02MM copy. The result file is
+`tools\probes\ViewpointProbe\5n-result-20260920.txt`.
+
+```
+Item1 [Thorn Steel Cables] HasModel False, Model null, ancestors and self 9, the one with a model [...\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc] at depth 9
+Item2 [Concrete, Cast-in-Place Fcu35 Mpa] HasModel False, Model null, ancestors and self 6, the one with a model [...\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] at depth 6
+```
+
+- on a clash leaf `HasModel` reads false and `Model` reads null. The API doc's "does
+  this item refer to a model" means IS this item a model's root
+- the one item of `AncestorsAndSelf` that carries the model is the TOPMOST, the file
+  node, six to nine levels above the geometry, and its `Model.FileName` is the same
+  string `document.Models[i].FileName` reads, the NWC path
+- `ClashHarvest.SourceFileOf` reads `item.Model` off the clash leaf and so, on the
+  evidence here, fills the source file column with nothing. That column is not this
+  round's and is left for Bader, question 55
+
+**WHAT THIS DECIDES.** `ViewpointBuilder.AddHome` walks `AncestorsAndSelf` to the item
+that has a model and reads the file name off that, releasing every wrapper on the way.
+A viewpoint of a pair whose code no model carries, DR vs ST, keeps the model the door
+lives in as well as the structural ones, which is what the log line promised on three
+runs and only the fourth delivered.
