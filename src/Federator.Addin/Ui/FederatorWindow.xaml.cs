@@ -2006,6 +2006,14 @@ namespace Federator.Addin.Ui
                         EventRow.Count(row.GroupsAtZero), row.Phrase());
                 }
 
+                // PART 4 and PART 5 across the run, one line each. The blocks themselves
+                // are per group, because a model sits in a group and a workset belongs
+                // to one. Nothing acts on either: report it and run anyway, Q65.
+                foreach (string line in engine.ModelCheckRunLines())
+                {
+                    log.Line(line);
+                }
+
                 // F72b. Rule B across the run, and the pairs that matched nothing, named once.
                 foreach (string line in engine.ByDesignRunLines())
                 {
@@ -2219,6 +2227,14 @@ namespace Federator.Addin.Ui
                 // The engine writes the GROUP lines and the OPEN FILE block itself, so
                 // they are there whatever happens inside it.
                 JobOutcome outcome = engine.RunOpenDocument();
+
+                // PART 4 and PART 5 across the run, one line each. The blocks themselves
+                // are per group, because a model sits in a group and a workset belongs
+                // to one. Nothing acts on either: report it and run anyway, Q65.
+                foreach (string line in engine.ModelCheckRunLines())
+                {
+                    log.Line(line);
+                }
 
                 // F72b. Rule B across the run, and the pairs that matched nothing, named once.
                 foreach (string line in engine.ByDesignRunLines())

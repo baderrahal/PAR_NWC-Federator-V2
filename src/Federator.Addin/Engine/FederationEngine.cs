@@ -11,6 +11,7 @@ using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Findings;
+using Federator.Core.Health;
 using Federator.Core.Naming;
 using Federator.Core.Probe;
 using Federator.Core.Report;
@@ -78,6 +79,12 @@ namespace Federator.Addin.Engine
         /// state on the first real run with nothing anywhere adding it up.
         /// </summary>
         private readonly SetsAcrossTheRun setsAcrossTheRun = new SetsAcrossTheRun();
+
+        // What the two new blocks found across the whole run, for the RESULT block. A
+        // count and never an action: the tool reports what it noticed and Bader decides.
+        private int alignmentDifferences;
+        private int modelsWithNoWorkset;
+        private int modelsMissingAnId;
 
         /// <summary>What every set did across this run, for the block the window writes.</summary>
         public SetsAcrossTheRun SetsAcrossTheRun
@@ -906,6 +913,14 @@ namespace Federator.Addin.Engine
                     () => "the document was asked for " + wanted);
             }
 
+            // PART 4 and PART 5, Q64 and Q65 answered on 2026-09-20. Both are read HERE,
+            // where every model of the group is open and nothing has clashed yet, and
+            // both are read for the scanned run and the open file run alike because this
+            // is the one place both paths pass through. Neither can fail a group: report
+            // it and run anyway, never skip a group and never stop a run for it.
+            WhereTheModelsSit(document, job);
+            WhatTheModelsCarry(document, job);
+
             bool clashPutSomethingIn = ClashStep(document, job, outcome);
 
             // F52. After the clash run and before the NWF is saved again, so a viewpoint
@@ -1688,6 +1703,108 @@ namespace Federator.Addin.Engine
         /// holding tests only where the sets already live in the model, or one file
         /// holding both.
         /// </summary>
+        /// <summary>
+        /// The ALIGNMENT block, PART 4. Whether the models of this group agree about
+        /// where they are, by SHARED COORDINATE, which is what Q64 answered and what 5q
+        /// measured to be readable. It is not a bounding box and must never become one.
+        ///
+        /// It writes and changes nothing, so it cannot itself break a group, and a read
+        /// that throws costs one line and never the run.
+        /// </summary>
+        private void WhereTheModelsSit(Document document, FederationJob job)
+        {
+            try
+            {
+                IList<ModelPlacement> placements = ModelFactsReader.Placements(document, reports.Names, log);
+
+                log.Block(
+                    AlignmentCheck.BlockTitle + " " + Words.Or(job.Building, "this group"),
+                    AlignmentCheck.Lines(placements));
+
+                foreach (ModelPlacement model in placements)
+                {
+                    log.Row(
+                        "model placement",
+                        model.File,
+                        model.Placed ? model.Z.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) : string.Empty,
+                        Words.Or(model.SharedCoordinate, "no shared coordinate on the model"));
+                }
+
+                alignmentDifferences += AlignmentCheck.DifferentCount(
+                    placements, AlignmentCheck.DefaultToleranceMillimetres);
+            }
+            catch (Exception error)
+            {
+                log.Failure("reading where the models sit", error, "the run goes on and this group is not judged on it");
+            }
+        }
+
+        /// <summary>
+        /// The EXPORT CHECK block, PART 5. Worksets and element ids per model, because a
+        /// set that finds nothing and a report column that comes out blank are both
+        /// invisible until somebody goes looking. The workset NAMES are listed, because
+        /// the names are what a person holds beside the matrix, and on 2026-09-20 that
+        /// comparison was the answer to why 33 sets found nothing, 5q.
+        /// </summary>
+        private void WhatTheModelsCarry(Document document, FederationJob job)
+        {
+            try
+            {
+                IList<ModelExport> exports = ModelFactsReader.Exports(document, reports.Names, log);
+
+                log.Block(
+                    ExportCheck.BlockTitle + " " + Words.Or(job.Building, "this group"),
+                    ExportCheck.Lines(exports));
+
+                foreach (ModelExport model in exports)
+                {
+                    log.Row(
+                        "model export",
+                        model.File,
+                        EventRow.Count(model.Elements),
+                        model.Worksets.Count + " workset(s), element id "
+                            + (model.IdShare == ModelExport.NotCounted ? "UNKNOWN" : model.IdShare + "%"));
+
+                    if (model.Elements > 0 && !model.CarriesAWorkset)
+                    {
+                        modelsWithNoWorkset++;
+                    }
+
+                    if (model.IdShare != ModelExport.NotCounted && model.IdShare < 100)
+                    {
+                        modelsMissingAnId++;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure("reading what the models carry", error, "the run goes on and this group is not judged on it");
+            }
+        }
+
+        /// <summary>
+        /// What the ALIGNMENT and EXPORT CHECK blocks came to across the whole run, one
+        /// line each, written even when both are zero, because a line that only appears
+        /// when something is wrong reads as a check that did not run.
+        /// </summary>
+        public IList<string> ModelCheckRunLines()
+        {
+            List<string> lines = new List<string>();
+
+            lines.Add("ALIGNMENT across the run: " + alignmentDifferences
+                + " model(s) sit somewhere their group's reference model does not"
+                + (alignmentDifferences == 0 ? string.Empty : ". Nothing was changed and every group ran."));
+
+            lines.Add("EXPORT CHECK across the run: " + modelsWithNoWorkset
+                + " model(s) carry no workset at all and " + modelsMissingAnId
+                + " do not carry an element id on every element"
+                + (modelsWithNoWorkset == 0 && modelsMissingAnId == 0
+                    ? string.Empty
+                    : ". Nothing was changed and every group ran."));
+
+            return lines;
+        }
+
         private bool ClashStep(Document document, FederationJob job, JobOutcome outcome)
         {
             // Three things can happen and the log names which, in the same words on the
