@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
 using NUnit.Framework;
@@ -137,30 +138,72 @@ namespace Federator.Core.Tests
         // ---------- a category no model carries ----------
 
         /// <summary>
-        /// The list is measured off a real federation and has not been. A check with
-        /// nothing to compare against says so rather than calling every category in the
-        /// client's file one nobody has heard of.
+        /// The list was measured off the ten C02 federations on 2026-09-20, scan.md 5i,
+        /// so the check runs: a category the models carry passes, one they do not is
+        /// reported, and the block carries the count rather than none yet.
         /// </summary>
         [Test]
-        public void WithNoCategoryListNothingIsReportedAndTheBlockSaysWhy()
+        public void WithTheMeasuredListACategoryNobodyHasIsReportedAndOneTheyHaveIsNot()
         {
-            Assert.That(RevitCategories.Measured, Is.False,
-                "the list is measured off a real federation, see the scan notes");
-            Assert.That(RevitCategories.Count, Is.EqualTo(0));
-            Assert.That(RevitCategories.Line(), Does.Contain("none yet"));
-            Assert.That(RevitCategories.Line(), Does.Contain("no set was checked"));
+            Assert.That(RevitCategories.Measured, Is.True,
+                "the list was measured off the C02 federations, see the scan notes");
+            Assert.That(RevitCategories.Count, Is.EqualTo(374));
+            Assert.That(RevitCategories.Line(), Is.EqualTo("Revit categories known: 374"));
 
             Assert.That(SetWarnings.FindCategoriesNobodyHas(
                 Sets(Set("A", null, Condition("equals", Category, "Telephone Equipment"))),
+                Category).Count, Is.EqualTo(1));
+            Assert.That(SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set("A", null, Condition("equals", Category, "Cable Trays"))),
                 Category), Is.Empty);
+            Assert.That(SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set("A", null, Condition("contains", Category, "Cable Tray"))),
+                Category), Is.Empty, "a stem the measured names hold is known");
         }
 
+        /// <summary>
+        /// A measured list holds what it names and nothing else, Ordinal, so a category
+        /// spelt with a different case or an extra space is one the models do not carry.
+        /// </summary>
         [Test]
-        public void AnUnmeasuredListHoldsEverythingRatherThanNothing()
+        public void AMeasuredListHoldsWhatItNamesAndNothingElse()
         {
-            Assert.That(RevitCategories.Holds("anything at all"), Is.True,
-                "an empty list must never read as a list that excludes everything");
-            Assert.That(RevitCategories.All(), Is.Empty);
+            Assert.That(RevitCategories.Holds("Walls"), Is.True);
+            Assert.That(RevitCategories.Holds("walls"), Is.False);
+            Assert.That(RevitCategories.Holds("Walls "), Is.False);
+            Assert.That(RevitCategories.Holds("anything at all"), Is.False);
+            Assert.That(RevitCategories.All().Count, Is.EqualTo(374));
+        }
+
+        /// <summary>
+        /// The list in the DLL is EXACTLY the CATEGORY lines of the probe result it was
+        /// measured from, in the same order, so the two cannot drift, which is the rule
+        /// for anything this tool wrote from a measurement. The result file is kept
+        /// beside the probe that wrote it.
+        /// </summary>
+        [Test]
+        public void TheListIsExactlyWhatTheWalkMeasured()
+        {
+            string result = Samples.ProbeResult("5i-result-20260920.txt");
+            Assert.That(File.Exists(result), Is.True, result);
+
+            List<string> measured = new List<string>();
+
+            foreach (string line in File.ReadAllLines(result))
+            {
+                int at = line.IndexOf("CATEGORY\t", StringComparison.Ordinal);
+
+                if (at < 0)
+                {
+                    continue;
+                }
+
+                string[] parts = line.Substring(at).Split('\t');
+                measured.Add(parts[1]);
+            }
+
+            Assert.That(measured.Count, Is.EqualTo(374));
+            Assert.That(RevitCategories.All(), Is.EqualTo(measured));
         }
 
         // ---------- a name breaking its folder's pattern ----------
@@ -282,20 +325,37 @@ namespace Federator.Core.Tests
 
         // ---------- the block ----------
 
+        /// <summary>
+        /// All three checks run on the client's corrected matrix. Since the category list
+        /// was measured off the ten C02 federations, 5i, fourteen of the 61 sets ask for a
+        /// category none of those models carries, Ramps and Roofs among them, which is
+        /// information about C02 and not a fault in the file: those buildings have no
+        /// item of that category. The block names five and counts the rest.
+        /// </summary>
         [Test]
-        public void TheHealthBlockCarriesAllThreeCountsAndSaysWhichCheckDidNotRun()
+        public void TheHealthBlockCarriesAllThreeCountsAndEveryCheckRan()
         {
             HealthCheckResult result = HealthCheck.Run(
                 new ExchangeReader().ReadFile(Samples.CorrectedMatrix()));
             string all = string.Join("\n", new List<string>(result.Summary()).ToArray());
 
             Assert.That(all, Does.Contain("Sets asking exactly the same question: 1"));
-            Assert.That(all, Does.Contain("Sets asking for a category no model carries: 0"));
-            Assert.That(all, Does.Contain("Revit categories known: none yet"));
+            Assert.That(all, Does.Contain("Revit categories known: 374"));
+            Assert.That(all, Does.Contain("Sets asking for a category no model carries: 14"));
+            Assert.That(all, Does.Contain("BLD-AR-Roofs asks for \"Roofs\""));
+            Assert.That(all, Does.Contain("and 9 more, counted and not listed"));
             Assert.That(all, Does.Contain("Set names breaking their folder's pattern: 1"));
             Assert.That(all, Does.Contain("BLD-Security Devices"));
         }
 
+
+        /// <summary>
+        /// Categories the measured list holds, one per synthetic set, so the odd sets
+        /// exercise the pattern check alone and the category check, live since 5i, has
+        /// nothing to say about them.
+        /// </summary>
+        private static readonly string[] RealCategories =
+            { "Walls", "Floors", "Doors", "Windows", "Ceilings", "Stairs", "Furniture", "Ducts", "Pipes", "Conduits" };
 
         private static string OddSetsUnder(string folder, int odd)
         {
@@ -304,15 +364,15 @@ namespace Federator.Core.Tests
             for (int i = 0; i < odd; i++)
             {
                 body += "<selectionset name=\"ODD" + i + "-x\"><findspec mode=\"all\" disjoint=\"0\">"
-                    + "<conditions>" + Condition("equals", Category, "v" + i)
+                    + "<conditions>" + Condition("equals", Category, RealCategories[i + 2])
                     + "</conditions></findspec></selectionset>";
             }
 
             return "<viewfolder name=\"" + folder + "\">"
                 + "<selectionset name=\"SAME-a\"><findspec mode=\"all\" disjoint=\"0\">"
-                + "<conditions>" + Condition("equals", Category, "1") + "</conditions></findspec></selectionset>"
+                + "<conditions>" + Condition("equals", Category, RealCategories[0]) + "</conditions></findspec></selectionset>"
                 + "<selectionset name=\"SAME-b\"><findspec mode=\"all\" disjoint=\"0\">"
-                + "<conditions>" + Condition("equals", Category, "2") + "</conditions></findspec></selectionset>"
+                + "<conditions>" + Condition("equals", Category, RealCategories[1]) + "</conditions></findspec></selectionset>"
                 + body + "</viewfolder>";
         }
 
@@ -356,17 +416,17 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// A11. The resource IS in the DLL and the list in it is empty, which are two
+        /// A11. The resource IS in the DLL and the list in it is measured, which are two
         /// different facts, and this pins both so a build that loses the resource goes red
-        /// here rather than saying none yet on every run.
+        /// here rather than saying UNKNOWN on every run.
         /// </summary>
         [Test]
-        public void TheCategoryResourceIsInTheDllAndTheListIsStillUnmeasured()
+        public void TheCategoryResourceIsInTheDllAndTheListIsMeasured()
         {
             Assert.That(RevitCategories.ResourceFound, Is.True,
                 "the embedded resource " + RevitCategories.ResourceName + " is not in Federator.Core.dll");
-            Assert.That(RevitCategories.Measured, Is.False);
-            Assert.That(RevitCategories.Line(), Does.Contain("none yet"));
+            Assert.That(RevitCategories.Measured, Is.True);
+            Assert.That(RevitCategories.Line(), Does.Not.Contain("none yet"));
             Assert.That(RevitCategories.Line(), Does.Not.Contain("UNKNOWN"));
         }
     }

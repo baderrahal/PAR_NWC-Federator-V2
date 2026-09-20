@@ -198,6 +198,24 @@ namespace Federator.Core.Tests
             return Path.Combine(ExchangeFolder(), CorrectedMatrixName);
         }
 
+        /// <summary>
+        /// A result file the viewpoint probe wrote, kept beside the probe under tools, found
+        /// off the checkout the same way the exchange folder is. The category list in
+        /// Federator.Core is proved to be exactly one of these, 5i.
+        /// </summary>
+        public static string ProbeResult(string name)
+        {
+            string repo = Repo();
+
+            if (repo == null)
+            {
+                throw new DirectoryNotFoundException(
+                    "No checkout found above the test assembly, so there is no probe folder.");
+            }
+
+            return Path.Combine(repo, "tools", "probes", "ViewpointProbe", name);
+        }
+
         /// <summary>The clash priority file, F83, one priority per test off the matrix.</summary>
         public static readonly string[] PriorityMapNames = { "clash-priority-map.csv" };
 
