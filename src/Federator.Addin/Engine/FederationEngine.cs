@@ -1319,9 +1319,12 @@ namespace Federator.Addin.Engine
         /// document after the appends, the copies are put back only where the count
         /// dropped, and the count is read again. The log line says which happened.
         /// CreateCopy and CopyFrom on DocumentClashTests were read off the DLL on
-        /// 2026-08-27, docs\history\scan.md section 4. The same pair on DocumentSelectionSets was
-        /// NOT measured and is used on the strength of the Navisworks pattern every
-        /// document part follows, so a build error there names exactly this.
+        /// 2026-08-27, docs\history\scan.md section 4. The same pair on
+        /// DocumentSelectionSets was MEASURED OFF THE INSTALLED DLL ON 2026-09-19 and the
+        /// measurement is at scan.md 2299: the copy comes back as a Collection of
+        /// SavedItem and not a SavedItemCollection, which is why the IEnumerable overload
+        /// is the one this binds to. THIS SUMMARY SAID THE PAIR WAS NOT MEASURED while
+        /// the comment forty six lines below said it was, and the two disagreed for a day.
         ///
         /// WHAT IS NOT DONE. The NWF on disk is only saved over once every test read
         /// before the clear is back in the document. Where they cannot be put back the

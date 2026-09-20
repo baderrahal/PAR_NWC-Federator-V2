@@ -99,7 +99,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 31. Look for: the grey line under it says the report is always in metres
 32. Go to the Clash step
 33. Look for: there is no Outstanding counts combo on the Clash step. It used to sit under the tick boxes
-34. Look for: the two buttons read `Sets into open model` and `Tests into open model`, under the line `Not part of the run. Try the file above against the model open right now:`
+34. Look for: the two buttons read `Sets into open model` and `Tests into open model`, BESIDE the line, on one row with the line to their LEFT, which the XAML settles: the TextBlock and the two Buttons are the three children of one horizontal StackPanel. The step said UNDER and the labels and the line are exactly right, which is F57. The line is `Not part of the run. Try the file above against the model open right now:`
 35. Pick the clash XML, 1104-PAR_CLASH_AllInOne
 36. Look for: the line under the file box ends with `Every locator resolves against its sets.`
 37. Look for: the log pane holds a block headed `HEALTH 1104-PAR_CLASH_AllInOne.xml` with `Tests: 1830`, `Sets: 61`, a `Locators resolved` line whose two numbers are equal F84 added four more lines to that block since this step was written: `Sets asking exactly the same question:`, `Revit categories known: 374`, `Sets asking for a category no model carries:` and `Set names breaking their folder's pattern:`, so the three above are no longer the whole block.
@@ -158,7 +158,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 81. Press Run again on the same building, same folders, same XML
 82. Press OK and wait for it to finish
 83. Look for, F28: the SETS block reads `sets created      : 0` and `already there     : 61, left alone, not copied again`, and the line after it reads `put into the document: 0 created, 61 already there and left alone` SINCE THE WORKSETS ROUND THREE MORE LINES follow `already there`, indented, ending `so a set that finds nothing here may be asking a question the file no longer asks. Q72`. They appear only when `already there` is above zero, which on a weekly run is always.
-84. Look for, F28: the SETS block's put into the document line reads `0 created, 61 already there and left alone`. A second `NWF      attempt` line still follows the CLASH block, because the tests ran and their results went into the document
+84. Look for, F28: the SETS block's put into the document line reads `0 created, 61 already there and left alone`. ONE `NWF      attempt` line follows the CLASH block and not a second one, which is F57. This group is a Weekly run plus XML, so it takes the OPENED branch, and that branch logs `NWF      reused` and never an attempt BEFORE the clash step, so the one after it is the only one and their results went into the document
 85. Look for, F31: the DRIFT block reports no locator difference on any test. A locator difference on every test would mean the source held since the sets were indexed does not compare equal to a fresh one, which is the one thing F31 could not measure here
 86. Look for, F31: the CLASH block shows the same created, already there, run, skipped and passed counts as the first run
 87. Look for, F31: the second run took no longer than the first
@@ -277,14 +277,14 @@ about a file sitting beside it under a nearly identical name.
 170. Look for: 1B06PH reads Weekly run
 171. Press Run, then OK
 172. Look for: the line `CLASH    source   tests saved in the document, 1830 of them, no XML picked`
-173. Look for: the CLASH block says the tests ran and the workbook was written
+173. Look for: the CLASH block says the tests ran. IT SAYS NOTHING ABOUT THE WORKBOOK, which is F57: the block is `ClashRunOutcome.Lines` and it names no output file at all. The workbook has its own `XLSX     attempt` and `XLSX     written` lines after it
 174. Look for: no SETS block, because no XML means the sets are left alone
 
 ## Proof F32, an NWD open is refused
 
 175. In Navisworks open the NWD of 1B06PH from the NWD folder
 176. Open the add-in from the ribbon and go to the Clash step
-177. Look for: the line above Run the open file reads `This document is a .nwd file and this tool runs an NWF, which is where the clash tests and their results live. Open the NWF instead.` and the Run the open file button is greyed
+177. Look for: the line BESIDE Run the open file, to its right, reads `This document is a .nwd file and this tool runs an NWF, which is where the clash tests and their results live. Open the NWF instead.` and the Run the open file button is greyed
 178. Close the NWD
 
 ## Proof F6, the open file report folder, with F30 and F32 on the NWF
@@ -292,7 +292,7 @@ about a file sitting beside it under a nearly identical name.
 179. In Navisworks open the NWF of 1B06PH
 180. Open the add-in from the ribbon
 181. Go to the Clash step
-182. Look for, F32: the blue line above Run the open file starts with `Weekly run.`, names the NWD it will write beside the NWF and names one Clash Reports folder beside the NWF, and the button is enabled
+182. Look for, F32: the blue line BESIDE Run the open file, to its right, starts with `Weekly run.`, names the NWD it will write beside the NWF and names one Clash Reports folder beside the NWF, and the button is enabled
 183. Leave the clash XML box empty
 184. Press Run the open file and wait for it to finish
 185. Look for, F30: after the models are in, the blocks come in the same order as on the scanned run: UNITS, then `ALIGNMENT` and `EXPORT CHECK`, which the alignment round put on the one path BOTH runs pass through so the open file run writes them too, then CLASH, then the `VIEWS` blocks, then `NWF      attempt`, then XLSX and `WORKBOOK CHECK`, then the page and `REPORT CHECK`, then XLSX, then NWD, then the final NWF line
@@ -304,7 +304,7 @@ about a file sitting beside it under a nearly identical name.
 
 189. Stay on the run just finished
 190. Look for: the line `CLASH    source   tests saved in the document, 1830 of them, no XML picked`
-191. Look for: the CLASH block says the tests ran and the workbook was written
+191. Look for: the CLASH block says the tests ran, and the workbook is on its own `XLSX     attempt` and `XLSX     written` lines after it, never in the CLASH block, which is F57
 
 ## Proof F7, the RESULT block and the log copy
 

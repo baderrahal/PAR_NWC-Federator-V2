@@ -233,7 +233,12 @@ WRITTEN INTO HIS LIVE PROJECT FOLDER, which PART 7 asked for:
 
 - `C:\00-NM\Federation Task\C02 + 04\C02\NWF-backup-2026-09-20-worksets`, taken first and
   READ BACK before anything else happened, 14 files against 14, 0 mismatches, 40,008,819
-  bytes. His to delete when he is satisfied
+  bytes. His to delete when he is satisfied.
+  THE THREE NUMBERS IN THIS ENTRY ARE THREE DIFFERENT THINGS and the entry said them
+  without saying so. The folder held 14 FILES at backup time, which is 11 NWF files and
+  3 run logs the tool had already copied there. 11 NWF FILES were rewritten. The byte
+  table below lists 10 GROUPS, because the run builds ten and the eleventh NWF,
+  1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwf, is not one of them and opens with zero models
 - his 11 NWF files rewritten, 10 NWDs, 10 workbooks with 10 pages and their picture
   folders, and a copy of the run log in `C02\NWF`, which is where the tool always puts one
 

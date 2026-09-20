@@ -33,7 +33,7 @@ Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the 
 13. F62, DONE, the live line in the window
 14. F63, DONE, the report gap block
 15. F64, DONE, the machine readable log
-16. F57, five Look for lines older than the feature round, for Bader to judge
+16. F57, DONE, six Look for lines older than the feature round
 17. F18, when Bader uploads the 1A04WE sample, Q9
 18. F23, when Q20 is answered
 
@@ -665,6 +665,7 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - Steps 152 and 157 say a line sits ABOVE the Run the open file button. `OpenDocumentLine` and `RunOpenButton` are the two children of one horizontal StackPanel with the button first, so the line is beside it and to its right. What the line SAYS is right in both steps
 - A SIXTH, found by the read that closed the penetration round on 2026-09-19 and listed here rather than corrected because it is the same shape as the two above. Step 34 says the two hand buttons read `Sets into open model` and `Tests into open model` UNDER the line `Not part of the run. Try the file above against the model open right now:`. Both labels and the line are exactly right. They are not under it: the TextBlock and the two Buttons are the three children of one horizontal StackPanel at `FederatorWindow.xaml` line 542, so the line sits to the LEFT of the buttons on one row. Three steps now say ABOVE or UNDER where the layout says BESIDE, which is enough of a pattern that the answer is probably one wording rule rather than three edits
 - Size: six wordings, once Bader says which readings he meant
+- DONE on 2026-09-20 in the drift round, and not by asking him. THE CODE IS THE TRUTH AND THE STEPS FILE DESCRIBES THE CODE, so all six were read against it and corrected to what it does. Step 34 now says the two buttons sit BESIDE the line with the line to their left, and so do the two about the open file line, because in all three the TextBlock and the Buttons are children of one horizontal StackPanel. The step about a SECOND NWF attempt line now says there is ONE, because a Weekly run plus XML takes the OPENED branch which logs NWF reused and never an attempt before the clash step. The two saying the CLASH block reports the workbook now say it reports nothing of the kind, because ClashRunOutcome.Lines names no output file and the workbook has its own XLSX attempt and XLSX written lines
 
 ## F58 The add-in compiles again
 

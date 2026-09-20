@@ -2331,7 +2331,11 @@ were read in the same pass and the list above is what a reader will trust next t
 ```
 
 Those are about the SETS tree. They say nothing about whether a MODEL can be taken out of
-an open document, which is section 5a and is still UNKNOWN.
+an open document, which is section 5a and WAS answered in 5c on 2026-09-19: both
+Document.RemoveFile(int) and TryRemoveFile(int) are there. What it COSTS was the part
+left open, and 5x answered that on 2026-09-20: nothing at all. This line said 5a was
+still UNKNOWN while 5a own heading said it had been answered, and the two disagreed
+for a day.
 
 ### 5. Is nuget.org reachable
 
