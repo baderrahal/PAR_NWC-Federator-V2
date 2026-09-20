@@ -1,0 +1,105 @@
+20:36:12.736  probe started, mode drift, 1 file(s)
+20:36:12.738  
+20:36:12.738  ================ 5v, CAN A SET BE REPLACED ================
+20:36:13.835  opened 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf, 4 model(s)
+20:36:13.844  chosen because the test [BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors] holds 36 result(s) and its first side points at it
+20:36:13.844  the set measured: [BLD-EL-Lighting Fixtures] at index 5 under [Electrical]
+20:36:13.847  what it asks now: LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Lighting Fixtures" [None]
+20:36:13.851  what it finds now: 49 item(s)
+20:36:13.855  set one clash of [BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors] to Reviewed so there is something to lose
+20:36:13.856  the test pointing at it: [BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors]
+20:36:13.856  BEFORE the replace: 36 result(s), 1 at Reviewed
+20:36:13.867  ReplaceWithCopy returned without throwing: True
+20:36:15.624  TrySaveFile = True
+20:36:16.964  
+20:36:16.964  REOPENED OFF THE DISK. The five read backs:
+20:36:16.966     1. the clash test still points at a set : True, at [BLD-EL-Lighting Fixtures], WHICH IS THE RIGHT ONE
+20:36:16.966     2. the clash test still holds results   : 36 against 36 before, KEPT
+20:36:16.966     3. the Reviewed status survived         : 1 against 1 before, KEPT
+20:36:16.967     4. what the set finds now               : 4 item(s)
+20:36:16.968        what it asks now                     : Item/Name HasProperty "None" [IgnoreNames]
+20:36:16.968     5. the set is still in the tree         : True, at index 5 under [Electrical], which was 5 under [Electrical]
+20:36:16.968  
+20:36:16.968  A REPLACE IS ONLY USABLE WHERE 1, 2, 3 AND 5 ALL HOLD. Losing 2 or 3 means the
+20:36:16.968  tick box would destroy a week of review, and then it must refuse rather than act.
+20:36:16.968  
+20:36:16.968  ================ 5w, 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf ================
+20:36:18.122  62 set(s), 62 carry a search, 0 could not be read
+20:36:18.122     /Architecture/BLD-AR-Floors   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Floors" [None] and LcOaNodeSourceFile (Source File) DisplayStringContains "-AR-" [None]
+20:36:18.122     /Architecture/BLD-AR-Stairs   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Stairs" [None] and LcOaNodeSourceFile (Source File) DisplayStringContains "-AR-" [None]
+20:36:18.122     /Architecture/BLD-AR-Ramps   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Ramps" [None]
+20:36:18.122     /Architecture/BLD-AR-Roofs   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Roofs" [None]
+20:36:18.122     /Architecture/BLD-AR-Ceilings   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Ceilings" [None]
+20:36:18.122     /Architecture/BLD-AR-Columns   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Columns" [None]
+20:36:18.122     /Architecture/BLD-AR-Walls   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Walls" [None] and LcOaNodeSourceFile (Source File) DisplayStringContains "-AR-" [None]
+20:36:18.122     /Architecture/BLD-AR-Windows   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Windows" [None]
+20:36:18.122     /Architecture/BLD-AR-Curtain Panels   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Curtain Panels" [None]
+20:36:18.122     /Architecture/BLD-AR-Curtain Mullions   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Curtain Wall Mullions" [None]
+20:36:18.122     /Architecture/BLD-AR-Doors   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Doors" [None]
+20:36:18.122     /Architecture/BLD-AR-Casework   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Casework" [None]
+20:36:18.122     /Architecture/BLD-AR-Furniture   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Furniture" [None]
+20:36:18.122     /Architecture/BLD-AR-Parking   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Parking" [None]
+20:36:18.122     /Architecture/BLD-AR-Railings   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Railings" [None]
+20:36:18.122     /Architecture/BLD-AR-Site   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Site" [None]
+20:36:18.122     /Structure/BLD-ST-Foundation   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Structural Foundations" [None]
+20:36:18.122     /Structure/BLD-ST-Columns   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Structural Columns" [None]
+20:36:18.122     /Structure/BLD-ST-Framing   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Structural Framing" [None]
+20:36:18.122     /Structure/BLD-ST-Walls   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Walls" [None] and LcOaNodeSourceFile (Source File) DisplayStringContains "-ST-" [None]
+20:36:18.122     /Structure/BLD-ST-Floors   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Floors" [None] and LcOaNodeSourceFile (Source File) DisplayStringContains "-ST-" [None]
+20:36:18.122     /Structure/BLD-ST-Stair   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Stairs" [None] and LcOaNodeSourceFile (Source File) DisplayStringContains "-ST-" [None]
+20:36:18.122     /Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Ducts" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-DUCTWORK" [None] and LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Duct Fittings" [StartGroup] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-DUCTWORK" [None]
+20:36:18.122     /Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Duct Accessories" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-DUCTWORK" [None]
+20:36:18.122     /Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Mechanical Equipment" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-EQUIPMENT" [None]
+20:36:18.122     /Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Flex Ducts" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-DUCTWORK" [None]
+20:36:18.122     /Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Air Terminals" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-DUCTWORK" [None]
+20:36:18.122     /Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipes" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-PIPING" [None] and LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Fittings" [StartGroup] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-PIPING" [None]
+20:36:18.122     /Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Accessories" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-PIPING" [None]
+20:36:18.122     /Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Plumbing Fixtures" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-PIPING" [None]
+20:36:18.122     /Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Flex Pipes" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "ME-PIPING" [None]
+20:36:18.122     /Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Mechanical Equipment" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "FF-FIRE FIGHTING" [None]
+20:36:18.122     /Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipes" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "FP-PIPING" [None] and LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Fittings" [StartGroup] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "FP-PIPING" [None]
+20:36:18.122     /Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Accessories" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "FP-PIPING" [None]
+20:36:18.122     /Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Insulation" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "FP-PIPING" [None]
+20:36:18.122     /Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Plumbing Fixtures" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "FF-FIRE FIGHTING" [None]
+20:36:18.122     /Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Sprinklers" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "FP-PIPING" [None]
+20:36:18.122     /Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Mechanical Equipment" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Domestic Water" [None]
+20:36:18.122     /Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipes" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Domestic Water" [None] and LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Fittings" [StartGroup] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Domestic Water" [None]
+20:36:18.122     /Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Accessories" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Domestic Water" [None]
+20:36:18.122     /Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Insulation" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Domestic Water" [None]
+20:36:18.122     /Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Plumbing Fixtures" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Domestic Water" [None]
+20:36:18.122     /Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Mechanical Equipment" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Drainage" [None]
+20:36:18.122     /Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipes" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Drainage" [None] and LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Fittings" [StartGroup] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Drainage" [None]
+20:36:18.122     /Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Accessories" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Drainage" [None]
+20:36:18.122     /Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Insulation" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Drainage" [None]
+20:36:18.122     /Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Plumbing Fixtures" [None] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Drainage" [None]
+20:36:18.122     /Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Pipe Accessories" [IgnoreDisplayNames] and LcRevitData_Element (Element)/lcldrevit_parameter_-1002053 (Workset) Equal "PL-Drainage" [IgnoreDisplayNames]
+20:36:18.122     /Electrical/BLD-EL-Cable Tray&Cable Tray Fittings   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) DisplayStringContains "Cable Tray" [None]
+20:36:18.122     /Electrical/BLD-EL-Electrical Equipment   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Electrical Equipment" [None]
+20:36:18.122     /Electrical/BLD-EL-Electrical Fixtures   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Electrical Fixtures" [None]
+20:36:18.122     /Electrical/BLD-EL-Conduits & Conduit Fittings   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) DisplayStringContains "Conduit" [None]
+20:36:18.122     /Electrical/BLD-EL-Devices   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Electrical Fixtures" [None]
+20:36:18.122     /Electrical/BLD-EL-Lighting Fixtures   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Lighting Fixtures" [None]
+20:36:18.122     /Electrical/BLD-EL-Lighting Devices   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Lighting Devices" [None]
+20:36:18.122     /Electrical/BLD-EL-Fire Alarm Devices   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Fire Alarm Devices" [None]
+20:36:18.122     /Electrical/BLD-EL-Telecom Equipment   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Telephone Equipment" [None]
+20:36:18.122     /Electrical/BLD-EL-Telecom Fixtures   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Telephone Devices" [None]
+20:36:18.122     /Electrical/BLD-Security Devices   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Security Devices" [None]
+20:36:18.122     /Electrical/BLD-EL-Communication Devices   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Communication Devices" [None]
+20:36:18.122     /Electrical/BLD-EL-Telephone Devices   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Telephone Devices" [None]
+20:36:18.122     /Electrical/BLD-EL-Data Devices   asks LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Data Devices" [None]
+20:36:18.123  
+20:36:18.123  ================ 5x, WHAT REMOVING ONE MODEL COSTS ================
+20:36:19.449     BEFORE the remove:
+20:36:19.450        models 4   sets 62   tests 1830   results 526   statuses a person set 526   viewpoints 509
+20:36:19.451  removing the LAST model, [1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc], index 3
+20:36:19.498  TryRemoveFile returned True
+20:36:19.505     AFTER the remove, before any save:
+20:36:19.505        models 3   sets 62   tests 1830   results 526   statuses a person set 526   viewpoints 509
+20:36:21.149  TrySaveFile = True
+20:36:22.422     AFTER a save and a reopen off the disk:
+20:36:22.422        models 3   sets 62   tests 1830   results 526   statuses a person set 526   viewpoints 509
+20:36:22.422  
+20:36:22.423  REMOVING A MODEL IS ONLY USABLE WHERE THE SETS, THE TESTS, THE RESULTS, THE
+20:36:22.423  STATUSES AND THE VIEWPOINTS ALL COME BACK. Anything lost means F50 keeps its
+20:36:22.423  clear and rebuild, which is a good answer and closes Q34 either way.
+20:36:22.423  probe finished

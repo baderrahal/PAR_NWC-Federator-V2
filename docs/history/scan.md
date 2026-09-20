@@ -4278,3 +4278,164 @@ with no architecture at all.
 An eleventh file, `1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwf`, opens with ZERO models. It is
 in his NWF folder and is not one of the ten groups the run builds, and nothing in this
 round touches it.
+
+## 5v. CAN A SET BE REPLACED WITHOUT LOSING WHAT POINTS AT IT, MEASURED 2026-09-20
+
+PART 1a of the drift round, and Q72's tick box was not written until this was read. The
+probe is `tools\probes\ViewpointProbe` in its `drift` mode. The result file is
+`tools\probes\ViewpointProbe\5v-result-20260920.txt`.
+
+**THE ANSWER IS YES, ON ALL FIVE COUNTS, AND IT SURVIVES THE DISK.**
+`DocumentSelectionSets.ReplaceWithCopy(GroupItem, int, SavedItem)`, the route 4d named:
+
+```
+the set measured: [BLD-EL-Lighting Fixtures] at index 5 under [Electrical]
+chosen because the test [BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors] holds 36 result(s)
+  and its first side points at it
+BEFORE the replace: 36 result(s), 1 at Reviewed
+
+REOPENED OFF THE DISK:
+   1. the clash test still points at a set : True, at [BLD-EL-Lighting Fixtures], WHICH IS THE RIGHT ONE
+   2. the clash test still holds results   : 36 against 36 before, KEPT
+   3. the Reviewed status survived         : 1 against 1 before, KEPT
+   4. what the set asks now                : the NEW question, so the replace took
+   5. the set is still in the tree         : True, index 5 under [Electrical], unmoved
+```
+
+**TWO THINGS THE FIRST ATTEMPT GOT WRONG, and both are worth recording because both are
+the shape that makes a measurement worthless.**
+
+The first pass replaced the first set in the tree, `BLD-AR-Floors`, and read back the
+first test that had results, which pointed at `BLD-EL-Lighting Fixtures`. All five counts
+came back clean AND THE MEASUREMENT PROVED NOTHING, because the test it watched was not
+the test pointing at the set it replaced. The probe now finds a set that a test WITH
+RESULTS actually points at, and replaces that one.
+
+The first pass also threw `ArgumentException: Argument 'parent' has been Disposed`,
+because the walk that found the parent folder disposed it on the way out and handed back
+a dead wrapper. The parent is resolved from an INDEX PATH now, plain ints out and a fresh
+wrapper in, which is the shape the viewpoint writer already uses for the same reason.
+
+**WHAT THIS DECIDES.** The tick box Q72 asked for can rebuild a drifted set WITHOUT
+refusing, because nothing that points at it is lost. The brief's fallback, a tick box
+that refuses a set whose test holds results, is NOT needed and is not built.
+
+
+## 5w. WHAT EVERY SET IN AN NWF IS ACTUALLY ASKING, MEASURED 2026-09-20
+
+PART 1b. `SelectionSet.Search` is a getter and nothing in this tool had ever read it.
+Read for every set in all ten of his groups. **Every one read: 0 unreadable anywhere.**
+
+A set's question comes back in the shape `SetBuildPlan.Describe` already writes, so what
+the SET asks and what the FILE asks can be put beside each other:
+
+```
+/Architecture/BLD-AR-Floors   asks
+  LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Floors"
+  and LcOaNodeSourceFile (Source File) DisplayStringContains "-AR-"
+```
+
+**SEVEN OF HIS TEN GROUPS CARRY 62 SETS WHERE THE MATRIX HOLDS 61, AND THE EXTRA ONE IS
+A DUPLICATE.** 1A02MM's Mechanical-Drainage folder holds BOTH:
+
+```
+BLD-DRPipe Accessories    asks Category Equal "Pipe Accessories" and Workset Equal "PL-Drainage"   [None]
+BLD-DR-Pipe Accessories   the same question                                                        [IgnoreDisplayNames]
+```
+
+The first is the name F87 corrected, still sitting in his file. The second is the one
+this tool created later, because the corrected name was not there to find. F28 leaves a
+set already at its path alone, so neither was ever touched again, and the clash tests
+created before the correction still point at the broken one. THIS IS Q72 VISIBLE IN A
+FILE and it is in 1A0215, 1A02MM, 1A02WE, 1A02WL, 1A02WM, 1A02WN and 1A02WO. The three
+that are clean, 1000BS, 1A02BS and 1A02MS, are the three whose NWF was first built AFTER
+the correction.
+
+**AND THE CONDITION FLAGS SAY WHERE EACH SET CAME FROM.** Counted across every set of
+every group:
+
+```
+1A02MM     61 conditions read [None]   and 1 reads [IgnoreDisplayNames]
+every other group   0 read [None]      and 61 or 62 read [IgnoreDisplayNames]
+```
+
+`SetBuilder.BuildCondition` always adds `IgnoreCategoryDisplayName` and
+`IgnorePropertyDisplayName`. So a set reading `[None]` was NOT built by this tool.
+1A02MM's 61 sets are the ORIGINAL import, carried in the NWF from before this tool ever
+ran on it, and the one exception is the single set the tool had to create. Every other
+group's sets are this tool's own.
+
+That is worth knowing beside Bader's own reading of his 1A02MM report, where 1,677 of
+1,830 tests touch a set that finds nothing. It is not proof that the flags are the cause:
+the `[None]` sets in that file DO find items, `BLD-AR-Floors` finds 4 and
+`BLD-EL-Lighting Fixtures` finds 49. It is proof that 1A02MM's sets have a different
+history from every other group's, which is the first thing to know about them.
+
+
+## 5x. WHAT TAKING ONE MODEL OUT OF AN OPEN DOCUMENT COSTS, MEASURED 2026-09-20
+
+PART 1c, and it closes Q34, open since 2026-09-18. 5c measured that
+`Document.RemoveFile(int)` and `TryRemoveFile(int)` exist and scan.md said in as many
+words that what they do to what points INTO that model was UNKNOWN.
+
+**IT COSTS NOTHING.** On 1A02MM, four models, 526 results and 509 viewpoints, removing
+the last model:
+
+```
+                              models  sets  tests  results  statuses  viewpoints
+BEFORE the remove                  4    62   1830      526       526         509
+AFTER the remove                   3    62   1830      526       526         509
+AFTER a save and a reopen          3    62   1830      526       526         509
+```
+
+`TryRemoveFile` returned true, the model went, and the sets, the clash tests, every
+clash result, every status a person set and every saved viewpoint came back whole,
+through the disk.
+
+**WHAT THIS DECIDES.** A CHANGED group does not have to clear and rebuild. It can append
+what is missing and remove what is gone, and F50's count out and count back stays
+exactly as it is, because that is what proves nothing was lost. Q34 is answered.
+
+WHAT IS NOT MEASURED, said rather than left open: this removed the LAST model of four.
+Whether removing a middle model shifts the indexes of the ones after it, and whether a
+viewpoint's index path survives that shift, is UNKNOWN and is why PART 5 removes by
+reading the file name back rather than trusting an index.
+
+
+## 5y. WHAT SETTING A TOLERANCE ON A SAVED TEST ACTUALLY COSTS, MEASURED 2026-09-20
+
+PART 1d. `ClashRunner` says in four places that setting a tolerance on a saved test
+RESETS its results, and `FederatorWindow` says so in capitals on the confirm screen:
+"YES, which RESETS the results of every test it changes".
+
+**IT RESETS NOTHING.** Measured both ways on 1A02MM, on a test holding 36 results all of
+which carry a status a person set:
+
+```
+                            tolerance  results  statuses  test status
+at the start                    0.082       36        36          Old
+CASE ONE, set to 0.082          0.082       36        36          Old
+  after a save and a reopen     0.082       36        36          Old
+CASE TWO, set to 0.164          0.164       36        36          Old
+  after a save and a reopen     0.164       36        36          Old
+```
+
+Not the same value, not a different one. The results stay, the statuses stay, and both
+survive the disk.
+
+**WHAT IT HAS ALREADY COST HIM, counted off his own logs**, both
+`%LOCALAPPDATA%\ParsonsNwcFederator\logs` and `steps\logs`, 16 logs, 140 lines:
+
+```
+saved tests that had a chosen tolerance set on them, across every run : 175,434
+per run, over the last twelve runs                                    :  12,531
+```
+
+**NONE OF IT COST HIM ANYTHING**, and he has been told on every confirm screen, in
+capitals, that it reset the results of all of them.
+
+**WHAT THE WARNING SHOULD HAVE SAID.** Re-running a clash test replaces its results,
+which is what running a test does whatever its tolerance, and a test whose tolerance
+changed will find different clashes when it next runs. Neither of those is the tolerance
+resetting anything, and the difference matters because the warning as written has been
+making a person hesitate over an action that is free.
