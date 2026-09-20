@@ -143,5 +143,90 @@ namespace Federator.Core.Tests.Health
                 AlignmentCheck.DifferentCount(TheRealGroup(), AlignmentCheck.DefaultToleranceMillimetres),
                 Is.EqualTo(3), "three of the four sit somewhere the architecture does not");
         }
+
+        // ---------- Q70, a model on the internal origin fails its group ----------
+
+        /// <summary>
+        /// 1A02MM's real shape on 2026-09-20: four models, one of them on Internal. The
+        /// group is FAILED and the block says which model and why.
+        /// </summary>
+        [Test]
+        public void AGroupWithAModelOnTheInternalOriginIsFailedAndTheBlockSaysWhich()
+        {
+            string why = AlignmentCheck.WhyItFailsTheGroup(TheRealGroup());
+
+            Assert.That(why, Is.Not.Null);
+            Assert.That(why, Does.Contain("1 model(s) were exported on Revit's internal origin"));
+            Assert.That(why, Does.Contain("ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
+
+            Assert.That(Joined(AlignmentCheck.Lines(TheRealGroup())), Does.Contain("THIS GROUP IS FAILED"));
+        }
+
+        /// <summary>
+        /// The half that stops this being a blunt instrument. A failed group still writes
+        /// its federation, its NWD and its report, because Bader needs the evidence to
+        /// take to the people who own the models and a group that produces nothing gives
+        /// him nothing to send.
+        /// </summary>
+        [Test]
+        public void AFailedGroupStillSaysEveryOutputWasWritten()
+        {
+            Assert.That(
+                AlignmentCheck.WhyItFailsTheGroup(TheRealGroup()),
+                Does.Contain("Every output of this group was still written"));
+        }
+
+        [Test]
+        public void AGroupWithEveryModelOnOneNamedSiteIsNotFailed()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "SWLS-02-SharedCoordinate", 0.0, 0.0, 0.0),
+                At("ST", "SWLS-02-SharedCoordinate", 0.0, 0.0, 0.0)
+            };
+
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models), Is.Null);
+            Assert.That(Joined(AlignmentCheck.Lines(models)), Does.Not.Contain("THIS GROUP IS FAILED"));
+        }
+
+        /// <summary>
+        /// The case that must NOT fail, and it is the one most of C02 is in. Models on
+        /// different REAL shared sites are reported, with the difference in X, Y and Z,
+        /// and the group runs, because different named sites can still be the same
+        /// coordinates and only a person can say.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseModelsNameDifferentRealSitesIsReportedAndNotFailed()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "SWLS-02-SharedCoordinate", 0.0, 0.0, 0.0),
+                At("EL", "LTB2", 0.0, 0.0, 95.0),
+                At("ME", "PW3_Shared_Location", 0.0, 0.0, 5.0)
+            };
+
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models), Is.Null, "different real sites is not a failure");
+
+            string block = Joined(AlignmentCheck.Lines(models));
+
+            Assert.That(block, Does.Contain("this group names 3 different shared coordinates"));
+            Assert.That(block, Does.Contain("DIFFERENT"));
+            Assert.That(block, Does.Not.Contain("THIS GROUP IS FAILED"));
+        }
+
+        [Test]
+        public void AModelNamingNoSiteAtAllAlsoFailsTheGroup()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "A site", 0.0, 0.0, 0.0),
+                At("ST", string.Empty, 0.0, 0.0, 0.0)
+            };
+
+            string why = AlignmentCheck.WhyItFailsTheGroup(models);
+
+            Assert.That(why, Is.Not.Null);
+            Assert.That(why, Does.Contain("1 model(s) name no shared site at all"));
+        }
     }
 }
