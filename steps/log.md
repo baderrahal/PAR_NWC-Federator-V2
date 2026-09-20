@@ -1,6 +1,212 @@
 # log
 
 Newest entry at the top.
+## 2026-09-20 The drift round, DONE, the record
+
+Core tests 1666 before the round and 1703 after, 0 failed and 0 skipped in both. Build
+0 errors and 0 warnings after every change. Both `tools\checks` pass. Bader answers Q72.
+Q34 is answered by a measurement rather than by him. Q73 is new.
+
+THIS ROUND RAN ON HIS MACHINE AND NOTHING WAITS FOR HIM TO PROVE IT. The add-in was
+built, installed and run over his live C02 folders four times, and every number below is
+read off a log or off a file this tool wrote, never off the object that wrote it.
+
+### What PART 1 measured, and three of the four came back the opposite way
+
+One probe pass, Navisworks started once, and nothing in PARTS 2 to 5 was written until
+all four had answered. The last three rounds each found a reader that returned nothing
+and looked like an answer, and two of these four were that shape.
+
+- **5v, can a set be replaced without losing what points at it. YES.** `ReplaceWithCopy`
+  at the set's own index, then a save, a close and a REOPEN OFF THE DISK, and five
+  read-backs: the clash test still points at the set, its 36 results are there, the
+  Reviewed status a person set is there, the set is in the same place in the tree, and it
+  finds items. So PART 2's box never has to refuse and is not under Things that destroy
+  data
+- **5w, what every set in an NWF is actually asking. IT READS.** `SelectionSet.Search` is
+  readable for every set of all ten groups, 0 unreadable, which is what PART 3 rests on.
+  It also found SEVEN of the ten groups holding **62** sets where the matrix holds 61,
+  because `BLD-DRPipe Accessories` and `BLD-DR-Pipe Accessories` are BOTH in there, which
+  is Q72 visible in a file. And the condition flags say 1A02MM's 61 sets are an original
+  import while every other group's are this tool's own
+- **5x, what taking one model out of an open document costs. NOTHING.** On 1A02MM the
+  sets stayed at 62, the tests at 1830, the results at 526, the statuses at 526 and the
+  viewpoints at 509, through a save and a reopen. That closes Q34, open since 2026-09-18
+- **5y, what setting a tolerance on a saved test costs. IT RESETS NOTHING.** Not the same
+  value and not a doubled one. Every result and every status a person set survived a save
+  and a reopen. His own logs show 175,434 saved tests have had one set on them while the
+  confirm screen told him in capitals it reset them all
+
+### What was built
+
+- **PART 2, Q72 answered a.** A tick box, off by default, `Rebuild sets that drifted from
+  the file`, grey line `Only sets whose question changed. Results and statuses are kept,
+  measured`. It compares the QUESTION and not the flags, rebuilds only what drifted and
+  never all 61, and leaves alone a set the picked file does not name
+- **PART 3, the sets block tells the truth and says WHY.** 3a prints what the set in the
+  DOCUMENT asks, where it used to say `asked UNKNOWN` on every line because nothing had
+  ever read one. 3b puts a set finding zero in ONE of three named buckets and says what
+  it COSTS in clash tests
+- **PART 4, and 5y inverted its premise.** SIX places said setting a tolerance resets a
+  test's results, including the confirm screen in capitals, and it does not. All six now
+  say what it actually costs, which is that the test finds DIFFERENT clashes next run.
+  THREE TESTS ASSERTED THE FALSE CLAIM and now assert the measurement. Neither of the
+  brief's two options was built, because the thing they would warn about does not happen
+- **PART 5, built because 5x allowed it.** A CHANGED group is brought up to date WITHOUT
+  clearing. The count out and the count back stays exactly as it was, the clear and
+  rebuild is kept as the fallback, and the decline happens before anything is changed
+- **PART 6, five record corrections**, including F57's six Look for lines read against
+  the code and corrected to what it does
+
+### PART 7, four runs over his live C02 folders
+
+The backup was taken first and read back, 15 files against 15 with 0 byte mismatches, at
+`C:\00-NM\Federation Task\C02 + 04\C02\NWF-backup-2026-09-20-drift`. Four runs, because
+PART 8 found faults in this round's own work and each fix had to be proved on a run:
+
+| run | what it proved |
+| --- | --- |
+| 21:06 | the tick box works. 147 sets drifted across the ten groups and were rebuilt |
+| 21:36 | the stale handle fix. 28 still drifted, because 21:06 had corrected the rest |
+| 22:08 | the run tail's new clash total |
+| 22:28 | the corrected empty-side cost and the bucket wording. THE NUMBERS BELOW |
+
+**THE RUN OF 22:28:54 to 22:48:09.** Run time 1110.688s, which is 18 minutes 31 seconds,
+inside the 45 criterion 2 asks for. Total elapsed 1155.564s. 38 files written, every size
+read back off the disk.
+
+- **groups: 8 done, 2 failed**, against 2 last round, and the same two. 1A02MM and 1A02WL
+  fail on the alignment round's rule, models exported on Revit's internal origin. Every
+  output of both was still written
+- **TOTAL CLASHES FOUND, the number the last two round reports did not carry at all.**
+  `clashes found  : 1225 across 10 groups, 3 of which found none`, and under it one line
+  per group: 1000BS 0, 1A0215 0, 1A02BS 109, **1A02MM 542**, 1A02MS 0, 1A02WE 29,
+  1A02WL 135, 1A02WM 239, 1A02WN 77, 1A02WO 94. It agrees exactly with the by priority
+  line, A 842, B 190, C 193, No priority 0, 1225 in all, which is two independent
+  additions of the same clashes
+- **against 395 in his 1A02MM report: 542.** And 57 tests found something against his 49
+- **sets finding nothing, against the 33 the alignment round reported**: 54, 59, 46, 38,
+  55, 43, 47, 40, 42, 37 across the ten groups. 1A02MM is 38, of which 19 ask for a value
+  NO MODEL IN THIS PROJECT CARRIES, 19 ask for a value models in this project DO carry,
+  and 0 this reader cannot tell about
+- **tests with an empty side, against his 1,677 of 1,830**: ten different numbers,
+  1809, 1829, 1725, **1577**, 1815, 1677, 1739, 1620, 1659, 1554. 1A02MM is 1577, which
+  is 100 fewer than his 1,677, and that difference is what the tick box bought. 0 tests
+  had a side no count was taken for
+- **sets rebuilt**: 28 drifted on this run and were rebuilt. The first run with the box
+  on, 21:06, found and rebuilt 147. `BLD-DRPipe Accessories`, the one with the missing
+  hyphen, is NOT among them and is correct not to be: the picked file names it, so it is
+  not drifted, and 5w found it and `BLD-DR-Pipe Accessories` both present in seven groups
+- **penetrations: 0 moved**, against 56 in the worksets round and 12 at 21:06. The block
+  says why in its own numbers: of 1A02MM's 542 clashes, 20 are `a person had already set
+  it, left alone`. The earlier runs moved them and they are at Reviewed now, which
+  `StatusesThisToolMayMoveFrom` refuses to touch. NEVER OVERWRITE A DECISION worked
+- **by design: 0 moved**, for the same reason
+- **viewpoints**: 1A02MM carries 403, all `already there, left alone, not made again`, 0
+  created, and the census reads models 4, sets 62, tests 1830, results 568, views 551
+  before and after the NWF save
+- **how many results the tolerance cost: NONE.** 5y measured that setting one resets
+  nothing, and the census confirms it across the run: 1A02MM's results went 526 to 568
+  and its viewpoints 509 to 551, both UP
+
+**EVERY NWF BEFORE AND AFTER**, 11 files in the backup against 11 on disk now, none gone:
+
+| group | before | after |
+| --- | --- | --- |
+| 1000BS | 13,091 | 13,091 |
+| 1A0215 BM | 78,366 | 78,428 |
+| 1A0215 LS | 4,300 | 4,300 |
+| 1A02BS | 1,296,725 | 1,296,671 |
+| 1A02MM | 24,835,774 | 27,465,014 |
+| 1A02MS | 81,957 | 81,957 |
+| 1A02WE | 481,727 | 481,805 |
+| 1A02WL | 249,786 | 3,189,245 |
+| 1A02WM | 6,257,126 | 6,293,678 |
+| 1A02WN | 913,251 | 913,393 |
+| 1A02WO | 986,967 | 1,259,238 |
+
+The folder held 15 files at backup time, 11 NWF and 4 logs, and holds 19 now, the same
+11 NWF and 8 logs, the four extra being tonight's runs. Three NWFs are byte for byte
+unchanged and those are the three groups that found no clashes, so nothing was saved over
+them. 1A02WL grew twelve times, from 249,786 to 3,189,245, which is the 135 clashes and
+their viewpoints going in. 1A02BS shrank by 54 bytes, which is not explained here and is
+too small to be a lost result, since its census is unchanged.
+
+### PART 8 found four faults in this round's own work
+
+Every one was found by reading the run or the code, not by a test failing.
+
+1. **A stale handle in PART 2's own code.** The item count was read through the wrapper
+   obtained BEFORE `ReplaceWithCopy`, which is a borrowed handle over an object that is
+   no longer there, rule 4g. Every rebuilt set logged `0 items, already there, left
+   alone` about a set it had just replaced, and 3b then judged the OLD question and said
+   a set asks for `ME-DUCTWORK` and NO MODEL CARRIES IT about a set corrected one line
+   earlier. The set is read again AFTER the rebuild now
+2. **3b REPORTED A NUMBER THAT LOOKS LIKE AN ANSWER**, which is the shape three rounds
+   running have produced. The cost said `IT COSTS 60 of this group's 1830 clash tests` on
+   SEVEN of the ten groups while they held between 37 and 55 dead sets. It was counting
+   the tests NOT CREATED, and on a weekly run almost nothing is absent to create.
+   `EmptySideCost` counts over EVERY test now, and the ten numbers are all different
+3. **3b's second bucket claimed to know a thing it cannot see.** The measured lists are
+   the whole PROJECT, so `the models DO carry it` means some model somewhere does, not
+   that a model of THIS group does. It told him `something else is wrong` about 33 of
+   1000BS's 54, every one of which was ordinary. It now says it cannot tell which
+4. **THE RUN TAIL HAD NO CLASH TOTAL OF ANY KIND**, which is why the last two round
+   reports carried none. `ClashesAcrossTheRun` adds it, and unlike the priority and
+   penetration lines beside it, it is ALWAYS written
+
+**The public member rule applied to this round's own work** found five. Two were deleted,
+`SetDrift.Name` and the two argument `SetBuilder` constructor. Three were NOT, because
+the rule found a MISSING CALLER rather than a dead member: `SetRebuildSettings.ConfirmLine`
+was built for the confirm screen and never wired to it, so the box that changes the NWF
+said nothing on the one screen a person can still cancel from, and `SetBuildOutcome.Drifted`
+and `RebuiltCount` had no reader while the SETS block still carried the worksets round's
+sentence saying nothing is done about drift here.
+
+**`steps\03_bader_next.md` read end to end against the code**, 20 drifts corrected, SIX
+of them checks that could never pass or fired falsely on a healthy run. Step 97 quoted
+words the code has not written since F77. Step 98 expected 1830 created where F77 made it
+impossible. Step 212 said 3 visible tick boxes where this round made it 4. Step 266 said
+seven indented reasons where there are six. Step 335 said twenty two event kinds where
+PART 3 made it twenty three. Step 61 expected `models set` where a document already in
+the wanted unit says `nothing was changed`. Four more described a SETS block the log has
+not had since F81.
+
+**And `.claude\rules` carried three claims this round disproved**: addin.md and core.md
+both said changing a saved test RESETS its results, and addin.md said the clear and
+restore dance stays until a run says what removing a file costs.
+
+### What is UNTESTED, said rather than left to be discovered
+
+- **Q67's consequence still stands and is unchanged.** `C:\00-NM\Federation Task\C02 + 04\C04`
+  IS EMPTY, so every number in this round is measured on the ten C02 buildings and on
+  nothing else. 1A04PW, the building whose 422 hand marked decisions briefed two rounds
+  now, is not on this machine as a model at all, only as a report in Downloads. The
+  ALIGNMENT and EXPORT CHECK blocks, the penetration rule and now the empty set buckets
+  are all proved on C02 rather than on the building they were designed off
+- **3b's buckets answer to the PROJECT and not to the group.** The line says so now, but
+  the limit remains: this reader cannot tell a set that is wrong from a set whose
+  discipline is simply not in that federation
+- **5x removed the LAST model of four.** Whether removing a middle model shifts the
+  indexes of the ones after it, and whether a viewpoint's index path survives that shift,
+  is UNKNOWN, which is why PART 5 removes by NAME and from the END
+- **PART 5's reshape has not run on a real CHANGED group.** All ten groups took Weekly
+  run plus XML on all four runs, so `ReshapeFromScan` was compiled, reviewed and tested
+  in Core and NEVER EXECUTED against a real changed folder. That is the single largest
+  untested thing in this round
+- **1A02BS lost 54 bytes** between the backup and now and nothing here explains it
+- **The tolerance combo would not read back** through UI Automation on three of the four
+  runs, so the driver logged it as empty. The value was confirmed off the log instead,
+  which says `25 mm chosen in the tool` per group. The window was not the evidence
+
+### What comes next
+
+- Q73 is Bader's: 93 per cent of his 1A02MM workbook is headings for tests that found
+  nothing, 14,184 rows of 15,182, and the four ways out are all somebody's decision
+- Q68's three ways out, Q69's Or rows and Q71's naming are all done and their consequences
+  are in the worksets round entry below
+- F18 still waits on the 1A04WE sample, Q9. F23 still waits on Q20. Neither was touched
+
 ## 2026-09-20 The drift round, THE PLAN, written before the first edit
 
 ### The two gates, both passed
