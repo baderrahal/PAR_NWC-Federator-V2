@@ -2330,6 +2330,32 @@ were read in the same pass and the list above is what a reader will trust next t
     public System.Void RemoveAt(System.Int32)
 ```
 
+**CORRECTED ON 2026-09-20 BY 5z. THAT LIST OF TWO IS FOUR, AND THERE ARE TWO MORE BESIDE
+IT.** What this section printed was the SINGLE ARGUMENT forms only. The parent scoped
+forms exist on the installed 2025 DLL and were named nowhere except in prose about a
+DIFFERENT collection, which is how a reader ends up believing they are not there. Read by
+reflection off `DocumentSelectionSets` on 2026-09-20:
+
+```
+    Void    RemoveAt(GroupItem, Int32)
+    Void    RemoveAt(Int32)
+    Boolean Remove(GroupItem, SavedItem)
+    Boolean Remove(SavedItem)
+    Void    Move(GroupItem, Int32, GroupItem, Int32)
+    Void    Move(Int32, Int32)
+    Void    Clear()
+```
+
+`Move` is in that list too, on this collection, where no printed member list anywhere in
+this document had recorded it.
+
+**AND THE ONE ARGUMENT FORM IS A TRAP, NOT A CONVENIENCE.** `Remove(SavedItem)` addresses
+the ROOT collection. Against a set nested in a folder it returns **False** and throws
+nothing. A caller reads that false as "there was nothing to remove" when the truth is
+"the removal did not happen", which is the same family of fault as a reader that returns
+nothing and looks like an answer. Anything removing a nested item uses the parent scoped
+form AND reads the tree back rather than trusting the return value.
+
 Those are about the SETS tree. They say nothing about whether a MODEL can be taken out of
 an open document, which is section 5a and WAS answered in 5c on 2026-09-19: both
 Document.RemoveFile(int) and TryRemoveFile(int) are there. What it COSTS was the part
@@ -3024,6 +3050,16 @@ parameterless constructor, which is how a folder is made.
 `Remove`, `RemoveAt` and `ReplaceWithCopy` members with the same signatures. 5b said the
 shape was NOT to be assumed from the pattern. It was not assumed, it was read, and the
 pattern held.
+
+**CORRECTED ON 2026-09-20 BY 5z: THIS SENTENCE WAS RIGHT AND IT WAS IN THE WRONG PLACE.**
+It is the only record anywhere in this document that `DocumentSelectionSets` carries the
+parent scoped `Remove(GroupItem, SavedItem)` and `RemoveAt(GroupItem, Int32)`, or any
+`Move` at all, and it says so in prose about the VIEWPOINT collection while the printed
+member list for the SET collection, section 4b, showed only the single argument forms. A
+reader who went to the list for sets found two members and concluded that was all there
+is. Section 4b now carries the measured list, and this paragraph stays as the record of
+how the gap happened: a fact recorded only as a comparison to something else is a fact a
+reader will miss.
 
 **ALL FOUR OF 5b's QUESTIONS ARE ANSWERED.** A folder is a `FolderItem`, made with its
 public constructor and put in with `AddCopy(GroupItem, SavedItem)`. A viewpoint goes in
