@@ -86,6 +86,14 @@ namespace Federator.Core.Views
         /// </summary>
         public const double DefaultDimTransparency = 0.85;
 
+        /// <summary>
+        /// Whether the two clashing items are painted as well as left solid, Q58
+        /// answered b on 2026-09-20: red and green, the way Clash Detective does it.
+        /// Off switches the painting and leaves the dimming, which is what the dimming
+        /// round shipped.
+        /// </summary>
+        public const bool DefaultColoursTheTwoItems = true;
+
         public ViewpointSettings()
         {
             NameSuffix = DefaultNameSuffix;
@@ -100,6 +108,33 @@ namespace Federator.Core.Views
             MaxPerTest = 0;
             CameraReadBackTolerance = DefaultCameraReadBackTolerance;
             DimTransparency = DefaultDimTransparency;
+            ColoursTheTwoItems = DefaultColoursTheTwoItems;
+            FirstItemColour = ViewpointColour.DefaultFirst();
+            SecondItemColour = ViewpointColour.DefaultSecond();
+        }
+
+        /// <summary>Whether the two clashing items are painted as well as left solid, Q58.</summary>
+        public bool ColoursTheTwoItems { get; set; }
+
+        /// <summary>
+        /// What the FIRST item of a clash is painted, red by default. First and second
+        /// are the clash's own two sides in the order Clash Detective holds them, so a
+        /// person reading a viewpoint and reading the panel sees the same item in the
+        /// same colour.
+        /// </summary>
+        public ViewpointColour FirstItemColour { get; set; }
+
+        /// <summary>What the SECOND item of a clash is painted, green by default.</summary>
+        public ViewpointColour SecondItemColour { get; set; }
+
+        /// <summary>
+        /// Whether the painting is on AND both colours are there to paint with. A colour
+        /// set to nothing is off rather than black, because black is a colour a person
+        /// might mean and null is not.
+        /// </summary>
+        public bool ColoursAnything
+        {
+            get { return ColoursTheTwoItems && FirstItemColour != null && SecondItemColour != null; }
         }
 
         /// <summary>How far a written viewpoint's camera may sit from the one asked for, in document units.</summary>

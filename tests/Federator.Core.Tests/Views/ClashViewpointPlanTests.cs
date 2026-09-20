@@ -95,6 +95,67 @@ namespace Federator.Core.Tests
             Assert.That(settings.DimsAnything, Is.True);
         }
 
+        // ---------- Q58, the two colours ----------
+
+        [Test]
+        public void TheTwoColoursAreSettingsAndTheyDefaultToRedAndGreen()
+        {
+            ViewpointSettings settings = Settings();
+
+            Assert.That(settings.ColoursTheTwoItems, Is.True);
+            Assert.That(ViewpointSettings.DefaultColoursTheTwoItems, Is.True);
+            Assert.That(settings.ColoursAnything, Is.True);
+
+            Assert.That(settings.FirstItemColour.Red, Is.EqualTo(1.0), "the first item is red, the way Clash Detective paints it");
+            Assert.That(settings.FirstItemColour.Green, Is.EqualTo(0.0));
+            Assert.That(settings.FirstItemColour.Blue, Is.EqualTo(0.0));
+
+            Assert.That(settings.SecondItemColour.Red, Is.EqualTo(0.0));
+            Assert.That(settings.SecondItemColour.Green, Is.EqualTo(1.0), "the second item is green");
+            Assert.That(settings.SecondItemColour.Blue, Is.EqualTo(0.0));
+        }
+
+        [Test]
+        public void TheColouringCanBeSwitchedOffAndAMissingColourIsOffAndNotBlack()
+        {
+            ViewpointSettings settings = Settings();
+
+            settings.ColoursTheTwoItems = false;
+            Assert.That(settings.ColoursAnything, Is.False, "switched off");
+
+            settings.ColoursTheTwoItems = true;
+            settings.SecondItemColour = null;
+            Assert.That(settings.ColoursAnything, Is.False,
+                "a colour set to nothing is off rather than black, because black is a colour a person might mean");
+        }
+
+        [Test]
+        public void AColourPartOutsideZeroToOneIsRefusedRatherThanClamped()
+        {
+            Assert.That(() => new ViewpointColour(1.5, 0.0, 0.0), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => new ViewpointColour(0.0, -0.1, 0.0), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => new ViewpointColour(0.0, 0.0, double.NaN), Throws.TypeOf<ArgumentOutOfRangeException>());
+
+            Assert.That(() => new ViewpointColour(0.0, 0.0, 0.0), Throws.Nothing, "black is a real colour");
+            Assert.That(() => new ViewpointColour(1.0, 1.0, 1.0), Throws.Nothing, "white is a real colour");
+        }
+
+        /// <summary>
+        /// The tolerance is what a round trip through the NWF costs, 5p, because the file
+        /// stores a colour as a byte per part. A viewpoint read back one step out is the
+        /// same colour and a viewpoint read back green where red was asked for is not.
+        /// </summary>
+        [Test]
+        public void ACoulourReadBackOneFileStepOutIsStillTheSameColour()
+        {
+            ViewpointColour red = ViewpointColour.DefaultFirst();
+
+            Assert.That(red.Same(1.0, 0.0, 0.0), Is.True, "exactly");
+            Assert.That(red.Same(0.998, 0.002, 0.0), Is.True, "within what a byte per part costs");
+            Assert.That(red.Same(0.0, 1.0, 0.0), Is.False, "green is not red");
+            Assert.That(red.Same(0.9, 0.0, 0.0), Is.False, "a tenth out is a different colour");
+        }
+
         // ---------- layer 2, the discipline pair ----------
 
         [Test]
