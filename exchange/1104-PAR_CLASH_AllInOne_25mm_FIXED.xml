@@ -28823,7 +28823,7 @@
         <selectionset name="BLD-EL-Devices" guid="cfe3a170-2dd7-482c-9c46-383153ae5991">
           <findspec mode="all" disjoint="0">
             <conditions>
-              <condition test="equals" flags="0">
+              <condition test="contains" flags="0">
                 <category>
                   <name internal="LcRevitData_Element">Element</name>
                 </category>
@@ -28831,10 +28831,75 @@
                   <name internal="LcRevitPropertyElementCategory">Category</name>
                 </property>
                 <value>
-                  <data type="wstring">Nurse Call Devices</data>
+                  <data type="wstring">Devices</data>
                 </value>
               </condition>
-            </conditions>
+              <condition test="equals" flags="32">
+                <category>
+                  <name internal="LcRevitData_Element">Element</name>
+                </category>
+                <property>
+                  <name internal="LcRevitPropertyElementCategory">Category</name>
+                </property>
+                <value>
+                  <data type="wstring">Communication Devices</data>
+                </value>
+              </condition>
+              <condition test="equals" flags="32">
+                <category>
+                  <name internal="LcRevitData_Element">Element</name>
+                </category>
+                <property>
+                  <name internal="LcRevitPropertyElementCategory">Category</name>
+                </property>
+                <value>
+                  <data type="wstring">Data Devices</data>
+                </value>
+              </condition>
+              <condition test="equals" flags="32">
+                <category>
+                  <name internal="LcRevitData_Element">Element</name>
+                </category>
+                <property>
+                  <name internal="LcRevitPropertyElementCategory">Category</name>
+                </property>
+                <value>
+                  <data type="wstring">Fire Alarm Devices</data>
+                </value>
+              </condition>
+              <condition test="equals" flags="32">
+                <category>
+                  <name internal="LcRevitData_Element">Element</name>
+                </category>
+                <property>
+                  <name internal="LcRevitPropertyElementCategory">Category</name>
+                </property>
+                <value>
+                  <data type="wstring">Lighting Devices</data>
+                </value>
+              </condition>
+              <condition test="equals" flags="32">
+                <category>
+                  <name internal="LcRevitData_Element">Element</name>
+                </category>
+                <property>
+                  <name internal="LcRevitPropertyElementCategory">Category</name>
+                </property>
+                <value>
+                  <data type="wstring">Security Devices</data>
+                </value>
+              </condition>
+              <condition test="equals" flags="32">
+                <category>
+                  <name internal="LcRevitData_Element">Element</name>
+                </category>
+                <property>
+                  <name internal="LcRevitPropertyElementCategory">Category</name>
+                </property>
+                <value>
+                  <data type="wstring">Telephone Devices</data>
+                </value>
+              </condition></conditions>
             <locator>/</locator>
           </findspec>
         </selectionset>

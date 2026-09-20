@@ -99,6 +99,33 @@ namespace Federator.Core.Tests
             Assert.That(condition.Value.Data, Is.EqualTo("-AR-"));
         }
 
+        /// <summary>
+        /// 5g. The exchange file's flags attribute IS Navisworks' SearchConditionOptions,
+        /// F78 measured that off the five conditions carrying 64, which are the five that
+        /// start a group. NegateCondition is 32 in the same enum, so a negated condition
+        /// reads as flags 32, or 96 where it also starts a group, and the reader has to
+        /// carry the number through untouched for SetBuilder to hand it to the API. This
+        /// is the half of 5g that needs no Navisworks.
+        /// </summary>
+        [Test]
+        public void ANegatedConditionsFlagsAreCarriedThroughUntouched()
+        {
+            ExchangeReader reader = new ExchangeReader();
+
+            SearchConditionDefinition negated =
+                reader.ReadText(SetsOnly.Replace("flags=\"64\"", "flags=\"32\"")).Sets[1].Conditions[0];
+            Assert.That(negated.Flags, Is.EqualTo(32));
+
+            SearchConditionDefinition both =
+                reader.ReadText(SetsOnly.Replace("flags=\"64\"", "flags=\"96\"")).Sets[1].Conditions[0];
+            Assert.That(both.Flags, Is.EqualTo(96), "32 negate and 64 start a group, together");
+
+            // And a negation is not a different question, the same way flags never are:
+            // two sets asking the same thing one negated still read as one rule, so F84's
+            // duplicate check would still pair them and a person reads why.
+            Assert.That(negated.RuleSignature, Is.EqualTo(both.RuleSignature));
+        }
+
         [Test]
         public void FlagsDoNotChangeTheRuleAConditionAsksFor()
         {

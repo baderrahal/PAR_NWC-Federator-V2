@@ -31,19 +31,37 @@ namespace Federator.Addin.Engine
     /// file code are not the same list: a DR set, drainage, lives in the ME model, and a
     /// viewpoint that hid ME for DR vs ST would hide the pipe the person is looking for,
     /// which is what the third and fourth runs did before 5n measured where the model
-    /// sits. A pair
-    /// with a code this tool does not know hides nothing, a model whose name will not
-    /// parse is never hidden, and a pair no model carries hides nothing and says so.
+    /// sits. A pair with a code this tool does not know hides nothing, a model whose name
+    /// will not parse is never hidden, and a pair no model carries hides nothing and says so.
+    ///
+    /// AND EVERYTHING BUT THE TWO CLASHING ITEMS IS DIMMED, the dimming round. F85 shipped
+    /// without it, and Bader pressed two of its viewpoints and saw a grey wall: the camera
+    /// Clash Detective computes sits inside a beam, and a solid beam fills the screen.
+    /// Clash Detective only looks right because its own view makes everything but the two
+    /// items transparent. So walk one keeps the INDEX PATH of each clashing item, plain
+    /// ints rather than a handle held across the group, and walk two overrides temporary
+    /// transparency on the model roots, which reaches every leaf, and resets it on those
+    /// two, which brings back exactly those two. Two calls and not one per item: 2,606
+    /// items dimmed one at a time, 430 times, is 1.1 million calls in one group.
+    /// docs\history\scan.md 5o measured all of it, including that the record survives a
+    /// save and a reopen and that the permanent override would have risked his own.
     ///
     /// EVERYTHING IS PUT BACK, MEASURED. Before the first viewpoint changes anything the
     /// hidden state the document holds is read off a runtime capture that never goes
-    /// into the tree, and the view is copied. When the group's writing ends, whichever
-    /// way it ends, everything is shown, exactly the items that were hidden are hidden
-    /// again and read back as hidden, and the view is put back, each in its own try so
-    /// one failing cannot skip the other. scan.md 5k measured this route and measured
-    /// that ResetAllHiddenToModelState, which this once called, LOSES a hide the
-    /// document held. A group that hid nothing, because nothing was planned or every
-    /// viewpoint was already there, touches none of it.
+    /// into the tree. When the group's writing ends, whichever way it ends, the dimming
+    /// is taken off the models this tool dimmed, everything is shown, and exactly the
+    /// items that were hidden are hidden again and read back as hidden, each in its own
+    /// try so one failing cannot skip the other. scan.md 5k measured the hidden half and
+    /// measured that ResetAllHiddenToModelState, which this once called, LOSES a hide the
+    /// document held, and 5o measured the same trap in the permanent material override,
+    /// whose only undo would clear an appearance override of his that nothing can read
+    /// back first. A group that hid and dimmed nothing touches none of it.
+    ///
+    /// AND NOTHING HERE IS A FLAG. Both flags this API offers, ContainsVisibilityOverrides
+    /// and ContainsAppearanceOverrides, read TRUE on a viewpoint that recorded neither,
+    /// 5o, so F85's check that a viewpoint carries visibility overrides could not fail.
+    /// The read back is four counts: it is there, its camera is within the tolerance, it
+    /// hides as many items as it meant to, and it dims as many as it meant to.
     /// </summary>
     public sealed class ViewpointBuilder
     {
@@ -56,7 +74,45 @@ namespace Federator.Addin.Engine
 
         private HiddenSnapshot snapshot;
         private int cameraRead;
+        private int dimmed;
+        private int notDimmed;
+        private bool dimmedAnything;
         private Exception firstHomeError;
+
+        // Where the VIEWS step's seconds go, per call, because the dimming took one
+        // group from 7.5 seconds to 476 and the shape of the cost was not what it
+        // looked like: the group with the MOST items was one of the fastest. A step
+        // that got slower says which call did it rather than leaving it to be guessed.
+        private readonly System.Diagnostics.Stopwatch alreadyThereWatch = new System.Diagnostics.Stopwatch();
+        private readonly System.Diagnostics.Stopwatch dimWatch = new System.Diagnostics.Stopwatch();
+        private readonly System.Diagnostics.Stopwatch recordWatch = new System.Diagnostics.Stopwatch();
+        private readonly System.Diagnostics.Stopwatch readBackWatch = new System.Diagnostics.Stopwatch();
+
+        /// <summary>
+        /// Where one clash is: the models its two items live in, and the index path of
+        /// each item. The PATH and not the item, because walk one names every clash in
+        /// the group and walk two resolves them one at a time, and 1,950 native handles
+        /// held across a group is the shape that once built 1.7 million of them.
+        /// </summary>
+        private sealed class ClashPlace
+        {
+            public ClashPlace()
+            {
+                Models = new HashSet<int>();
+            }
+
+            public HashSet<int> Models { get; private set; }
+
+            public int[] FirstPath { get; set; }
+
+            public int[] SecondPath { get; set; }
+
+            /// <summary>Whether both items can be pointed at, which is what dimming all but two needs.</summary>
+            public bool BothPlaced
+            {
+                get { return FirstPath != null && SecondPath != null; }
+            }
+        }
 
         public ViewpointBuilder(
             Action<string> progress,
@@ -100,15 +156,22 @@ namespace Federator.Addin.Engine
             DocumentClashTests clashTests = document.GetClash().TestsData;
             List<ClashToPlan> clashes = new List<ClashToPlan>();
             Dictionary<string, Viewpoint> cameras = new Dictionary<string, Viewpoint>(StringComparer.Ordinal);
-            Dictionary<string, HashSet<int>> homes = new Dictionary<string, HashSet<int>>(StringComparer.Ordinal);
+            Dictionary<string, ClashPlace> places = new Dictionary<string, ClashPlace>(StringComparer.Ordinal);
             IDictionary<int, string> disciplines = modelDisciplines ?? new Dictionary<int, string>();
             snapshot = null;
             cameraRead = 0;
+            dimmed = 0;
+            notDimmed = 0;
+            dimmedAnything = false;
             firstHomeError = null;
+            alreadyThereWatch.Reset();
+            dimWatch.Reset();
+            recordWatch.Reset();
+            readBackWatch.Reset();
 
             try
             {
-                Collect(document, clashTests, report, clashes, cameras, homes, ModelIndexByFile(document));
+                Collect(document, clashTests, report, clashes, cameras, places, ModelIndexByFile(document));
                 Plan = ClashViewpointPlan.For(clashes, views, priorityPicked);
 
                 if (Plan.Planned.Count == 0)
@@ -121,7 +184,7 @@ namespace Federator.Addin.Engine
                     try
                     {
                         progress("Viewpoint " + planned.Path);
-                        WriteOne(document, planned, cameras, homes, disciplines, outcome);
+                        WriteOne(document, planned, cameras, places, disciplines, outcome);
                     }
                     catch (Exception error)
                     {
@@ -140,7 +203,21 @@ namespace Federator.Addin.Engine
                 {
                     log.Line("VIEWS    read back on " + cameraRead + " created viewpoint(s): each sits within "
                         + views.CameraReadBackTolerance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                        + " units of its clash camera and each that hides a discipline carries visibility overrides");
+                        + " units of its clash camera, and the items each one hides and dims were counted off it and not trusted");
+
+                    log.Line("VIEWS    the step's seconds went: "
+                        + Seconds(alreadyThereWatch) + " looking whether each was already there, "
+                        + Seconds(dimWatch) + " dimming, "
+                        + Seconds(recordWatch) + " recording, "
+                        + Seconds(readBackWatch) + " reading back");
+
+                    if (views.DimsAnything)
+                    {
+                        log.Line("VIEWS    dimmed to "
+                            + views.DimTransparency.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
+                            + " with the two clashing items left solid: " + dimmed + " viewpoint(s)"
+                            + (notDimmed > 0 ? ", and " + notDimmed + " written undimmed because their two items could not both be pointed at" : string.Empty));
+                    }
                 }
             }
             finally
@@ -169,7 +246,7 @@ namespace Federator.Addin.Engine
             ClashReport report,
             List<ClashToPlan> clashes,
             Dictionary<string, Viewpoint> cameras,
-            Dictionary<string, HashSet<int>> homes,
+            Dictionary<string, ClashPlace> places,
             IDictionary<string, int> indexByFile)
         {
             string unitEnumName = Penetrations.UnitEnumName(document);
@@ -203,7 +280,8 @@ namespace Federator.Addin.Engine
                     try
                     {
                         homesUnread += CollectResults(
-                            found.Children, clashTests, test, leftSet, rightSet, unitEnumName, clashes, cameras, homes, indexByFile);
+                            document,
+                            found.Children, clashTests, test, leftSet, rightSet, unitEnumName, clashes, cameras, places, indexByFile);
                     }
                     catch (Exception error)
                     {
@@ -229,20 +307,33 @@ namespace Federator.Addin.Engine
             }
 
             int withHome = 0;
+            int withBothItems = 0;
 
-            foreach (HashSet<int> home in homes.Values)
+            foreach (ClashPlace place in places.Values)
             {
-                if (home.Count > 0)
+                if (place.Models.Count > 0)
                 {
                     withHome++;
                 }
+
+                if (place.BothPlaced)
+                {
+                    withBothItems++;
+                }
             }
 
-            log.Line("VIEWS    the model each clash item lives in was read for " + withHome + " of " + homes.Count
-                + " clash(es) in scope" + (withHome == homes.Count ? string.Empty : ", and the rest keep the pair's models only"));
+            log.Line("VIEWS    the model each clash item lives in was read for " + withHome + " of " + places.Count
+                + " clash(es) in scope" + (withHome == places.Count ? string.Empty : ", and the rest keep the pair's models only"));
+
+            if (views.DimsAnything)
+            {
+                log.Line("VIEWS    both clashing items were pointed at for " + withBothItems + " of " + places.Count
+                    + " clash(es) in scope" + (withBothItems == places.Count ? string.Empty : ", and the rest are not dimmed, because dimming all but two needs both"));
+            }
         }
 
         private int CollectResults(
+            Document document,
             SavedItemCollection items,
             DocumentClashTests clashTests,
             TestReport test,
@@ -251,7 +342,7 @@ namespace Federator.Addin.Engine
             string unitEnumName,
             List<ClashToPlan> clashes,
             Dictionary<string, Viewpoint> cameras,
-            Dictionary<string, HashSet<int>> homes,
+            Dictionary<string, ClashPlace> places,
             IDictionary<string, int> indexByFile)
         {
             if (items == null)
@@ -270,7 +361,8 @@ namespace Federator.Addin.Engine
                     if (group != null)
                     {
                         homesUnread += CollectResults(
-                            group.Children, clashTests, test, leftSet, rightSet, unitEnumName, clashes, cameras, homes, indexByFile);
+                            document,
+                            group.Children, clashTests, test, leftSet, rightSet, unitEnumName, clashes, cameras, places, indexByFile);
                         continue;
                     }
 
@@ -314,12 +406,12 @@ namespace Federator.Addin.Engine
                         }
                     }
 
-                    HashSet<int> home = new HashSet<int>();
+                    ClashPlace place = new ClashPlace();
 
                     try
                     {
-                        AddHome(result.Item1, indexByFile, home);
-                        AddHome(result.Item2, indexByFile, home);
+                        place.FirstPath = ReadPlace(document, result.Item1, indexByFile, place.Models);
+                        place.SecondPath = ReadPlace(document, result.Item2, indexByFile, place.Models);
                     }
                     catch (Exception error)
                     {
@@ -336,7 +428,7 @@ namespace Federator.Addin.Engine
                         }
                     }
 
-                    homes[key] = home;
+                    places[key] = place;
                 }
             }
 
@@ -353,11 +445,12 @@ namespace Federator.Addin.Engine
         /// wrapper on every read, and so is every ancestor enumerated, so each is released
         /// here.
         /// </summary>
-        private static void AddHome(ModelItem item, IDictionary<string, int> indexByFile, HashSet<int> into)
+        private static int[] ReadPlace(
+            Document document, ModelItem item, IDictionary<string, int> indexByFile, HashSet<int> into)
         {
             if (item == null)
             {
-                return;
+                return null;
             }
 
             // Parent by Parent, each a fresh wrapper, all released at the end, which is
@@ -369,6 +462,11 @@ namespace Federator.Addin.Engine
 
             try
             {
+                // The path of the LEAF, which is the item that clashed and the one the
+                // dimming brings back to solid, taken as plain ints here so walk two can
+                // find it again without this handle, 5o.
+                int[] path = SavedViewpoints.PathOf(document, item);
+
                 ModelItem walker = item;
 
                 while (chain.Count < HomeWalkBound)
@@ -388,7 +486,7 @@ namespace Federator.Addin.Engine
 
                 if (!top.HasModel)
                 {
-                    return;
+                    return path;
                 }
 
                 using (Model model = top.Model)
@@ -400,6 +498,8 @@ namespace Federator.Addin.Engine
                         into.Add(index);
                     }
                 }
+
+                return path;
             }
             finally
             {
@@ -446,14 +546,18 @@ namespace Federator.Addin.Engine
             Document document,
             PlannedClashViewpoint planned,
             Dictionary<string, Viewpoint> cameras,
-            Dictionary<string, HashSet<int>> homes,
+            Dictionary<string, ClashPlace> places,
             IDictionary<int, string> disciplines,
             ViewpointBuildOutcome outcome)
         {
             // Already there is left exactly as it is. F28's rule, carried to viewpoints: a
             // second copy at one path leaves the tree holding both and whichever came first
             // is what anything resolving that path finds.
-            if (SavedViewpoints.Exists(document, planned.Folders, planned.Name))
+            alreadyThereWatch.Start();
+            bool alreadyThere = SavedViewpoints.Exists(document, planned.Folders, planned.Name);
+            alreadyThereWatch.Stop();
+
+            if (alreadyThere)
             {
                 outcome.AddAlreadyPresent(planned.Path, planned.Pair.Folder, 0);
                 return;
@@ -471,10 +575,12 @@ namespace Federator.Addin.Engine
             HashSet<string> hidden = new HashSet<string>(StringComparer.Ordinal);
             string hidesNothingBecause = null;
 
+            ClashPlace place;
+            places.TryGetValue(planned.Name, out place);
+            HashSet<int> home = place == null ? null : place.Models;
+
             if (planned.Pair.BothKnown)
             {
-                HashSet<int> home;
-                homes.TryGetValue(planned.Name, out home);
                 bool firstHasModel = false;
                 bool secondHasModel = false;
 
@@ -536,8 +642,48 @@ namespace Federator.Addin.Engine
                 document.Models.ResetAllHidden();
             }
 
+            // THE DIMMING, the whole of this round. Everything goes transparent and the
+            // two items the clash is between come back solid, so the viewpoint opens the
+            // way Clash Detective looks at a clash. F85 shipped without it and Bader
+            // pressed two viewpoints and saw a grey wall, because the camera Clash
+            // Detective computes sits inside a beam and a solid beam fills the screen.
+            // A clash whose two items cannot both be pointed at is left undimmed rather
+            // than dimmed whole, because everything transparent and nothing solid is
+            // worse than what F85 shipped, and it is counted and said.
+            int solid = 0;
+            bool dimmedThisOne = false;
+
+            if (views.DimsAnything && place != null && place.BothPlaced)
+            {
+                dimWatch.Start();
+
+                using (ModelItem firstItem = SavedViewpoints.ItemAt(document, place.FirstPath))
+                using (ModelItem secondItem = SavedViewpoints.ItemAt(document, place.SecondPath))
+                {
+                    if (firstItem != null && secondItem != null)
+                    {
+                        solid = SavedViewpoints.DimAllBut(
+                            document, views.DimTransparency, hidesNothingBecause == null ? keep : null, firstItem, secondItem);
+                        dimmedThisOne = solid == 2;
+                        dimmedAnything = true;
+                    }
+                }
+
+                if (!dimmedThisOne)
+                {
+                    // Dimmed on a path that resolved nothing, so it is taken straight off
+                    // again and the viewpoint is written the way F85 wrote one.
+                    SavedViewpoints.Undim(document);
+                    solid = 0;
+                }
+
+                dimWatch.Stop();
+            }
+
+            recordWatch.Start();
             SavedViewpoints.EnsureFolders(document, planned.Folders);
             SavedViewpoints.Record(document, planned.Folders, planned.Name, camera);
+            recordWatch.Stop();
 
             // Read back rather than trusted, all three of it. The first run's tree looked
             // complete and every viewpoint opened on sky, because the route it used
@@ -545,7 +691,9 @@ namespace Federator.Addin.Engine
             // recorded camera is not the clash camera, or which carries no overrides
             // while it was meant to hide something, is not a viewpoint of that clash and
             // is counted as failed with the reason a person can check.
+            readBackWatch.Start();
             ViewpointReadBack read = SavedViewpoints.ReadBack(document, planned.Folders, planned.Name, camera);
+            readBackWatch.Stop();
 
             if (!read.Found)
             {
@@ -563,13 +711,32 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            if (hidden.Count > 0 && !read.ContainsVisibilityOverrides)
+            // THE COUNT AND NOT THE FLAG, 5o. ContainsVisibilityOverrides reads true on a
+            // viewpoint that hides nothing, so the check F85 shipped could not fail. The
+            // number of items the viewpoint hides can.
+            if (hidden.Count > 0 && read.HiddenCount == 0)
             {
                 outcome.AddFailed(planned.Path, planned.Pair.Folder, "it was added without its hidden state, so it would show every discipline");
                 return;
             }
 
+            if (dimmedThisOne && read.MaterialOverrideCount == 0)
+            {
+                outcome.AddFailed(planned.Path, planned.Pair.Folder, "it was added without its dimming, so the clash would be behind whatever is in front of it");
+                return;
+            }
+
             cameraRead++;
+
+            if (dimmedThisOne)
+            {
+                dimmed++;
+            }
+            else
+            {
+                notDimmed++;
+            }
+
             outcome.AddCreated(planned.Path, planned.Pair.Folder, hidden.Count);
         }
 
@@ -593,6 +760,26 @@ namespace Federator.Addin.Engine
         /// </summary>
         private void PutBack(Document document)
         {
+            if (dimmedAnything)
+            {
+                try
+                {
+                    SavedViewpoints.Undim(document);
+                    log.Line("VIEWS    the dimming was taken off the models this tool dimmed, so the document is back to its own appearance");
+                }
+                catch (Exception error)
+                {
+                    log.Failure(
+                        "taking the dimming off after the viewpoints",
+                        error,
+                        "kept going, the models this tool dimmed are left transparent in this session and nothing of that is saved");
+                }
+                finally
+                {
+                    dimmedAnything = false;
+                }
+            }
+
             if (snapshot != null)
             {
                 try
@@ -623,6 +810,12 @@ namespace Federator.Addin.Engine
                     snapshot = null;
                 }
             }
+        }
+
+        /// <summary>One watch's total, in seconds, the way every other timing in the log reads.</summary>
+        private static string Seconds(System.Diagnostics.Stopwatch watch)
+        {
+            return (watch.ElapsedMilliseconds / 1000.0).ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + "s";
         }
 
         private void SayOnce(string line)

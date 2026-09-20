@@ -62,6 +62,39 @@ namespace Federator.Core.Tests
             Assert.That(settings.CameraReadBackTolerance, Is.EqualTo(0.5));
         }
 
+        // ---------- the dimming, 5o ----------
+
+        /// <summary>
+        /// How far everything but the two clashing items is dimmed is a setting with a
+        /// default that is CHOSEN, because Clash Detective's own value is not readable off
+        /// this API, 5o. Zero switches it off and a value a transparency cannot take is
+        /// refused rather than handed to the API.
+        /// </summary>
+        [Test]
+        public void TheDimTransparencyIsASettingAndAValueTheApiCannotTakeIsRefused()
+        {
+            ViewpointSettings settings = Settings();
+
+            Assert.That(settings.DimTransparency, Is.EqualTo(0.85));
+            Assert.That(ViewpointSettings.DefaultDimTransparency, Is.EqualTo(0.85));
+            Assert.That(settings.DimsAnything, Is.True);
+
+            settings.DimTransparency = 0.0;
+            Assert.That(settings.DimsAnything, Is.False, "zero is the dimming switched off");
+
+            settings.DimTransparency = 1.0;
+            Assert.That(settings.DimsAnything, Is.False, "one would make everything invisible");
+
+            settings.DimTransparency = -0.5;
+            Assert.That(settings.DimsAnything, Is.False);
+
+            settings.DimTransparency = 1.5;
+            Assert.That(settings.DimsAnything, Is.False);
+
+            settings.DimTransparency = 0.5;
+            Assert.That(settings.DimsAnything, Is.True);
+        }
+
         // ---------- layer 2, the discipline pair ----------
 
         [Test]

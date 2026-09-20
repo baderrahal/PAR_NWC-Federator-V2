@@ -1,0 +1,11 @@
+11:20:45.805  probe started, mode press, 2 file(s)
+11:20:45.807  opening C:\Users\bader\AppData\Local\Temp\claude\round-dimming\NWF2\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+11:20:46.716  models 4
+11:20:46.718  pressing 3 viewpoint(s) out of the tree under A
+11:20:46.718  --- /A/AR vs ST/BLD-ST-Columns-vs-BLD-AR-Floors  Clash4
+11:20:46.731     2 model(s) hidden carrying 841 item(s), then of what is left: 153 dimmed at 0.85 and SOLID 2: ARC-FLOOR-INT-EPOXY(1)-PAR in 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | Concrete, Cast-in-Place Fcu35 Mpa in 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc
+11:20:46.731  --- /A/AR vs ST/BLD-ST-Columns-vs-BLD-AR-Floors  Clash5
+11:20:46.736     2 model(s) hidden carrying 841 item(s), then of what is left: 153 dimmed at 0.85 and SOLID 2: ARC-FLOOR-INT-EPOXY(1)-PAR in 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | Concrete, Cast-in-Place Fcu35 Mpa in 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc
+11:20:46.736  --- /A/AR vs ST/BLD-ST-Columns-vs-BLD-AR-Floors  Clash6
+11:20:46.740     2 model(s) hidden carrying 841 item(s), then of what is left: 153 dimmed at 0.85 and SOLID 2: ARC-FLOOR-INT-EPOXY(1)-PAR in 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | Concrete, Cast-in-Place Fcu35 Mpa in 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc
+11:20:46.741  probe finished
