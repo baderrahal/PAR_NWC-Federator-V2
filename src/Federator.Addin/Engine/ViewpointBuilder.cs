@@ -306,8 +306,8 @@ namespace Federator.Addin.Engine
 
                     try
                     {
-                        AddHome(result.Selection1, indexByFile, home);
-                        AddHome(result.Selection2, indexByFile, home);
+                        AddHome(result.Item1, indexByFile, home);
+                        AddHome(result.Item2, indexByFile, home);
                     }
                     catch (Exception)
                     {
@@ -325,40 +325,31 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The model the first item of one clash side lives in, by its index in the
-        /// document, matched on the model's file name because that is a string and not a
-        /// wrapper. The side collection is a fresh object on every read of Selection1 and
-        /// Selection2, so the caller's read is disposed here.
+        /// The model one clashing item lives in, by its index in the document, matched on
+        /// the model's file name because that is a string and not a wrapper. The item is
+        /// ClashResult.Item1 or Item2 and its Model is read off it directly, which is the
+        /// shape ClashHarvest.SourceFileOf fills the source file column with on every
+        /// run. Two other shapes were tried on runs and read no home for any clash: the
+        /// first item of Selection1 behind a HasModel check, which answers whether the
+        /// item IS a model, and the same item without the check. Item1 is a fresh
+        /// wrapper on every read, so the caller's read is disposed here.
         /// </summary>
-        private static void AddHome(ModelItemCollection side, IDictionary<string, int> indexByFile, HashSet<int> into)
+        private static void AddHome(ModelItem item, IDictionary<string, int> indexByFile, HashSet<int> into)
         {
-            using (side)
+            using (item)
             {
-                if (side == null || side.Count == 0)
+                if (item == null)
                 {
                     return;
                 }
 
-                using (ModelItem item = side[0])
+                using (Model model = item.Model)
                 {
-                    if (item == null)
-                    {
-                        return;
-                    }
+                    int index;
 
-                    // Model on the leaf itself, the shape ClashHarvest.SourceFileOf has
-                    // filled the source file column with on every run. HasModel is not
-                    // asked first: it answers whether the item IS a model, and the second
-                    // run asked it, read no home for any clash and kept every viewpoint of
-                    // a code no model carries on nothing.
-                    using (Model model = item.Model)
+                    if (model != null && indexByFile.TryGetValue(Words.Or(model.FileName, string.Empty), out index))
                     {
-                        int index;
-
-                        if (model != null && indexByFile.TryGetValue(Words.Or(model.FileName, string.Empty), out index))
-                        {
-                            into.Add(index);
-                        }
+                        into.Add(index);
                     }
                 }
             }
