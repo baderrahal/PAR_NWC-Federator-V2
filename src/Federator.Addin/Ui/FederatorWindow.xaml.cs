@@ -1776,7 +1776,7 @@ namespace Federator.Addin.Ui
             log.Line("grouping         : " + GroupingModes.Describe(ChosenGrouping()));
             log.Line("apply file to old: "
                 + (ApplyFileSettings.IsChecked == true
-                    ? "YES, which RESETS the results of every test it changes"
+                    ? "YES, which changes WHICH CLASHES every test it changes will find next time it runs. It resets nothing by itself, measured 5y"
                     : "no, differences are reported and nothing is changed"));
             log.Line("compact resolved : "
                 + (CompactResolved.IsChecked == true

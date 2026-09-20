@@ -167,9 +167,16 @@ namespace Federator.Addin.Engine
         public bool SingleDisciplineGroup { get; set; }
 
         /// <summary>
-        /// Apply the file's settings to tests already in the document. Off by default,
-        /// because doing it RESETS their results, and those results are the only record of
+        /// Apply the file settings to tests already in the document. Off by default,
+        /// because it changes WHICH CLASHES the test finds when it next runs, and a clash
+        /// somebody marked Reviewed may then not come back, which is the only record of
         /// what has been fixed. Off, this only reports what has drifted.
+        ///
+        /// IT DOES NOT RESET ANYTHING BY ITSELF, and this comment said it did until 5y
+        /// measured it on 2026-09-20: setting a tolerance on a saved test, the same value
+        /// or a doubled one, keeps every result and every status, through a save and a
+        /// reopen. 175,434 saved tests across his runs had one set on them and none of
+        /// them cost him anything.
         /// </summary>
         public bool ApplyFileSettings { get; set; }
 
@@ -929,7 +936,8 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// Compares one test already in the document against what the file says it should
         /// be, and reports every difference by name. Changes nothing unless
-        /// ApplyFileSettings is on, because changing a test resets its results.
+        /// ApplyFileSettings is on, because changing a test changes which clashes it finds
+        /// next time it runs. It does not reset anything by itself, 5y.
         /// </summary>
         private void CompareAndMaybeApply(
             DocumentClashTests clashTests,
@@ -1056,8 +1064,10 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Puts the file's settings onto a test already in the document. This RESETS its
-        /// results, which is why it is off by default and said loudly in the log.
+        /// Puts the file settings onto a test already in the document. This changes WHICH
+        /// CLASHES it finds when it next runs, which is why it is off by default and said
+        /// in the log. It RESETS NOTHING by itself, measured 5y, and this comment said it
+        /// reset the results until that was read.
         /// </summary>
         private void Apply(
             DocumentClashTests clashTests,
@@ -1186,7 +1196,7 @@ namespace Federator.Addin.Engine
                         "CLASH tolerance set on a saved test",
                         "CLASH    TOLERANCE " + name + "  " + Plain(already) + " to " + Plain(wanted) + " "
                             + Words.Or(documentUnits, string.Empty)
-                            + ", chosen in the tool, which reset its results",
+                            + ", chosen in the tool. Its results and its statuses are KEPT, measured 5y",
                         "tolerance set on a saved test",
                         name,
                         EventRow.Exact(wanted),

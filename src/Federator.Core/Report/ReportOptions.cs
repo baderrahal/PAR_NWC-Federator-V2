@@ -108,8 +108,9 @@ namespace Federator.Core.Report
         public string SourceFolder { get; set; }
 
         /// <summary>
-        /// Put the file's settings onto tests already in the document. Off by default,
-        /// because it RESETS their results.
+        /// Put the file settings onto tests already in the document. Off by default,
+        /// because it changes WHICH CLASHES a saved test finds the next time it runs. It
+        /// resets nothing by itself, measured 5y.
         ///
         /// IT KEEPS EXACTLY THE MEANING IT HAD, F76, which is whether the FILE'S settings
         /// reach a saved test. A tolerance chosen on the Clash step wins over it, because

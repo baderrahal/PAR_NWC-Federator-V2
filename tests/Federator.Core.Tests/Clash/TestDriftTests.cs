@@ -255,7 +255,7 @@ namespace Federator.Core.Tests
 
             Assert.That(block, Does.Contain("1830 tests were already in the document"));
             Assert.That(block, Does.Contain("Nothing was changed"));
-            Assert.That(block, Does.Contain("Changing a test resets its results"));
+            Assert.That(block, Does.Contain("Changing a test changes which clashes it finds next time"));
             Assert.That(block, Does.Contain("the file says the tolerance 0.075"));
         }
 
@@ -268,8 +268,9 @@ namespace Federator.Core.Tests
             string block = string.Join("\n",
                 new List<string>(TestDrift.Lines(Compare(inDocument), 3, true, 0)).ToArray());
 
-            Assert.That(block, Does.Contain("RESETS their results"));
-            Assert.That(block, Does.Contain("goes back to New"));
+            Assert.That(block, Does.Contain("statuses on them are KEPT"));
+            Assert.That(block, Does.Contain("which clashes each test finds the next time it runs"),
+                "5y measured that nothing goes back to New: the results and the statuses are kept");
         }
 
         [Test]

@@ -152,7 +152,10 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain("1830 tests"));
             Assert.That(all, Does.Contain("already saved in each NWF"));
             Assert.That(all, Does.Contain("beats the tolerance in the XML and the tolerance in the document"));
-            Assert.That(all, Does.Contain("resets that test's results"));
+            // 5y measured on 2026-09-20 that it resets NOTHING, and this line asserted
+            // it did. The real cost is which clashes the test finds next time.
+            Assert.That(all, Does.Contain("Every recorded result and every status a person set is KEPT"));
+            Assert.That(all, Does.Contain("may not come back at the new tolerance"));
         }
 
         [Test]
