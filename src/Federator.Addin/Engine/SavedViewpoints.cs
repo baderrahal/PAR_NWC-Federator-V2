@@ -188,7 +188,14 @@ namespace Federator.Addin.Engine
             InwOpView view = (InwOpView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpView, null, null);
             view.name = name;
             view.ApplyHideAttribs = true;
-            view.ApplyMaterialAttribs = false;
+
+            // Both flags on since the dimming round. ApplyMaterialAttribs is what records
+            // that everything but the two clashing items is dimmed, MEASURED on 2026-09-20,
+            // docs\history\scan.md 5o: with it on the viewpoint carries one material
+            // override per item that has a material, and pressing it after a save and a
+            // reopen dims them again. With it off the viewpoint carries none, which is
+            // what F85 shipped and what Bader could not read.
+            view.ApplyMaterialAttribs = true;
             view.anonview = ComApiBridge.ToInwOpAnonView(camera);
             state.SavedViews().Add(view);
 
@@ -247,7 +254,16 @@ namespace Federator.Addin.Engine
                     }
 
                     read.Found = true;
-                    read.ContainsVisibilityOverrides = found.ContainsVisibilityOverrides;
+
+                    // THE COUNTS AND NOT THE FLAGS. ContainsVisibilityOverrides and
+                    // ContainsAppearanceOverrides both read TRUE in the same session on a
+                    // viewpoint that overrides nothing at all, MEASURED on 2026-09-20,
+                    // docs\history\scan.md 5o, so F85's check that a viewpoint carries
+                    // visibility overrides was a check that could not fail. The two
+                    // collections underneath carry real numbers before the save and are
+                    // what this reads.
+                    read.HiddenCount = CountOf(found.GetVisibilityOverrides());
+                    read.MaterialOverrideCount = CountOf(found.GetAppearanceOverrides());
 
                     using (Viewpoint recorded = found.Viewpoint)
                     {
@@ -303,6 +319,128 @@ namespace Federator.Addin.Engine
 
                 return hide.Count;
             }
+        }
+
+        /// <summary>How many items the overrides name, or zero where there are none. Both collections are borrowed.</summary>
+        private static int CountOf(VisibilityOverrides overrides)
+        {
+            if (overrides == null)
+            {
+                return 0;
+            }
+
+            using (ModelItemCollection hidden = overrides.Hidden)
+            {
+                return hidden == null ? 0 : hidden.Count;
+            }
+        }
+
+        private static int CountOf(AppearanceOverrides overrides)
+        {
+            return overrides == null || overrides.MaterialOverrides == null ? 0 : overrides.MaterialOverrides.Count;
+        }
+
+        /// <summary>
+        /// Makes everything transparent except the two items the clash is between, so the
+        /// viewpoint recorded next opens the way Clash Detective looks at a clash, which
+        /// is the whole of the dimming round. Returns how many of the two were brought
+        /// back to solid, which the caller reads back.
+        ///
+        /// TWO CALLS AND NOT ONE PER ITEM. The override goes on the model ROOTS and
+        /// reaches every leaf under them, and the reset goes on the two items and brings
+        /// exactly those back, MEASURED on 2026-09-20, docs\history\scan.md 5o. Dimming
+        /// 2,606 items one at a time, 430 times, is 1.1 million calls in one group.
+        ///
+        /// TEMPORARY AND NOT PERMANENT. Both record and both survive a save and a reopen,
+        /// 5o. The permanent one writes the transparency onto the item, so it lands in the
+        /// NWF if a save arrives before the reset, and its only undo clears every
+        /// appearance override the file already held, which nothing can read back first.
+        /// That is 5k's trap again and the answer is the same one.
+        /// </summary>
+        public static int DimAllBut(Document document, double transparency, ModelItem first, ModelItem second)
+        {
+            if (document == null)
+            {
+                return 0;
+            }
+
+            using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+            {
+                document.Models.OverrideTemporaryTransparency(roots, transparency);
+            }
+
+            using (ModelItemCollection solid = new ModelItemCollection())
+            {
+                if (first != null)
+                {
+                    solid.Add(first);
+                }
+
+                if (second != null)
+                {
+                    solid.Add(second);
+                }
+
+                if (solid.Count > 0)
+                {
+                    document.Models.ResetTemporaryMaterials(solid);
+                }
+
+                return solid.Count;
+            }
+        }
+
+        /// <summary>
+        /// Takes the dimming off again, scoped to the roots this tool overrode rather than
+        /// ResetAllTemporaryMaterials, which would also clear a temporary override this
+        /// tool did not set. Measured at under a millisecond, 5o.
+        /// </summary>
+        public static void Undim(Document document)
+        {
+            if (document == null)
+            {
+                return;
+            }
+
+            using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+            {
+                document.Models.ResetTemporaryMaterials(roots);
+            }
+        }
+
+        /// <summary>
+        /// The item at that index path, or null. The path is plain ints, so walk one can
+        /// name an item and walk two resolve it without keeping a native handle alive
+        /// across the group, which is what 1,950 handles would be. The caller disposes.
+        /// </summary>
+        public static ModelItem ItemAt(Document document, int[] path)
+        {
+            if (document == null || path == null || path.Length == 0)
+            {
+                return null;
+            }
+
+            return document.Models.ResolveIndexPath(path);
+        }
+
+        /// <summary>The index path of that item, as plain ints, or null where it has none.</summary>
+        public static int[] PathOf(Document document, ModelItem item)
+        {
+            if (document == null || item == null)
+            {
+                return null;
+            }
+
+            System.Collections.ObjectModel.Collection<int> path = document.Models.CreateIndexPath(item);
+
+            if (path == null || path.Count == 0)
+            {
+                return null;
+            }
+
+            int[] copy = new int[path.Count];
+            path.CopyTo(copy, 0);
+            return copy;
         }
 
         /// <summary>
@@ -504,7 +642,11 @@ namespace Federator.Addin.Engine
         }
     }
 
-    /// <summary>What a written viewpoint recorded, read off the tree. Nothing here is trusted from the write.</summary>
+    /// <summary>
+    /// What a written viewpoint recorded, read off the tree. Nothing here is trusted from
+    /// the write, and nothing here is a FLAG, because both flags this API offers read true
+    /// on a viewpoint that recorded nothing, 5o.
+    /// </summary>
     public sealed class ViewpointReadBack
     {
         /// <summary>Whether a viewpoint of that name sits at that path at all.</summary>
@@ -513,8 +655,11 @@ namespace Federator.Addin.Engine
         /// <summary>How far its camera sits from the one asked for, in document units, meaningful only where Found.</summary>
         public double CameraDistance { get; set; }
 
-        /// <summary>Whether it carries visibility overrides, which is what makes it hide anything when pressed.</summary>
-        public bool ContainsVisibilityOverrides { get; set; }
+        /// <summary>How many items it hides, which is what makes it show one pair of disciplines when pressed.</summary>
+        public int HiddenCount { get; set; }
+
+        /// <summary>How many items it dims, which is what makes the clash readable when pressed.</summary>
+        public int MaterialOverrideCount { get; set; }
     }
 
     /// <summary>

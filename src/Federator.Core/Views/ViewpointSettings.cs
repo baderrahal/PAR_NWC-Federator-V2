@@ -72,6 +72,20 @@ namespace Federator.Core.Views
         /// </summary>
         public const double DefaultCameraReadBackTolerance = 0.001;
 
+        /// <summary>
+        /// How transparent everything that is not the two clashing items is made in a
+        /// viewpoint, where 0 is solid and 1 is invisible.
+        ///
+        /// 0.85 IS CHOSEN AND NOT MEASURED, and it says so because the rule is to say
+        /// UNKNOWN rather than fill a gap. Clash Detective's own dim value was looked for
+        /// on 2026-09-20 and this API will not say it: Application.Options on the install
+        /// exposes one member, Grids, and the COM state exposes no option member at all,
+        /// docs\history\scan.md 5o. The number a person can see through is somewhere near
+        /// four fifths, and this is a setting so the next person can move it without a
+        /// build.
+        /// </summary>
+        public const double DefaultDimTransparency = 0.85;
+
         public ViewpointSettings()
         {
             NameSuffix = DefaultNameSuffix;
@@ -85,10 +99,28 @@ namespace Federator.Core.Views
             NameSeparator = DefaultNameSeparator;
             MaxPerTest = 0;
             CameraReadBackTolerance = DefaultCameraReadBackTolerance;
+            DimTransparency = DefaultDimTransparency;
         }
 
         /// <summary>How far a written viewpoint's camera may sit from the one asked for, in document units.</summary>
         public double CameraReadBackTolerance { get; set; }
+
+        /// <summary>
+        /// How transparent everything but the two clashing items is made, 0 solid and 1
+        /// invisible. Zero switches the dimming off and the viewpoints go back to what
+        /// F85 shipped, which a person could not read. A value outside 0 to 1 is refused
+        /// by DimsAnything so a typo cannot ask the API for something it will not take.
+        /// </summary>
+        public double DimTransparency { get; set; }
+
+        /// <summary>
+        /// Whether the dimming is on at all. A value at or below zero is off, and one at
+        /// or above one would make everything invisible and is refused rather than obeyed.
+        /// </summary>
+        public bool DimsAnything
+        {
+            get { return DimTransparency > 0.0 && DimTransparency < 1.0; }
+        }
 
         /// <summary>The discipline codes a set name can carry, F85.</summary>
         public IList<string> DisciplineCodes { get; set; }
