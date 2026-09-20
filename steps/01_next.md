@@ -63,7 +63,7 @@ THE EIGHT WITHOUT AN ADD-IN CALLER WERE WIRED IN THE WIRING ROUND ON 2026-09-19,
 28. F83, WIRED, the clash priority reaches the report
 29. F72b, WIRED, by design connections become Reviewed
 30. F72c, WIRED, the record in the NWF and the undo
-31. F85, WIRED, the saved viewpoints in three layers, written and read back
+31. F85, WIRED, the saved viewpoints in three layers, written, dimmed and read back
 32. F84, DONE, the sets that cannot match anything
 33. F78, DONE, the log says or where the file says or
 34. F79, DONE, which missing item ids are this run's
@@ -169,8 +169,9 @@ Every one of these came off ONE log, `run-20260919-144319.log`, the first real r
 - CORE HALF DONE on 2026-09-19. The record is a marker no person would type, the rule, the status the clash was moved OFF, then the reason. The old status is on it because putting an Active clash back to New would destroy a real difference. A comment a person wrote is never read as one of ours. The undo touches a clash only where it carries our record AND is still at Reviewed. `AllowsAsUndo` is a separate answer from `Allows` and not a loosening of it, which is Q50. Whether a comment can be written at all is `scan.md` 5h, and if it cannot the tool says so in one line and fakes nothing
 - WIRED on 2026-09-19 in the wiring round, steps 372 and 373, commit 377d1f0. The record is a comment written through `TestsEditResultComments` before the status on the same handle, both rules hand over the status they moved from and why, and the Undo auto Reviewed button walks every test of the open document through the one editor with the undo half of the guard. See the wiring round's log entry for what the run showed about the comment surviving
 
-### F85 The saved viewpoints in three layers, written and read back
+### F85 The saved viewpoints in three layers, written, dimmed and read back
 
+- AND DIMMED on 2026-09-20 in the dimming round, branch round-dimming, because Bader pressed two of the 975 the viewpoints round wrote and could not see the clash: the camera Clash Detective computes lands inside a beam and a solid beam fills the screen. Everything but the two clashing items now goes to 0.85 transparency through a temporary override on the roots of the models the viewpoint shows and a reset on those two, recorded by the COM view's `ApplyMaterialAttribs`, measured through a save and a reopen in docs\history\scan.md 5o. The read back is FOUR counts and not three flags, because both flags this API offers read true on a viewpoint that recorded nothing. The transparency is a setting and zero switches it off. It costs: the run went 5 minutes 3 seconds to 10 minutes 26 and the worst NWF 195 times bigger, which is question 59
 - WIRED on 2026-09-20 in the viewpoints round, branch round-viewpoints. `ViewpointBuilder` reads every clash, plans through `ClashViewpointPlan`, and writes one saved viewpoint per clash through the COM view with `ApplyHideAttribs`, the one route measured to record both the camera and the hidden state, docs\history\scan.md 5l to 5n. Every written viewpoint is read back three ways before it is counted. Six runs of ten groups: the first wrote 975 viewpoints that opened on sky because the capture records no camera, the second failed all 975 on the camera read back, the third and fourth wrote 975 that open on their clash with the other disciplines hidden, the fifth and sixth added the model each clash item lives in, the sixth for 975 of 975. 5 minutes 3 seconds against 5 minutes 9 seconds without viewpoints. The log entry carries every number
 - Files `src/Federator.Core/Views/ClashViewpointPlan.cs`, `DisciplinePairRule.cs`, both new, `ViewpointSettings.cs`, `ViewpointPlan.cs`, `src/Federator.Core/Diagnostics/RunSteps.cs`, `.claude/rules/addin.md`, `.claude/rules/core.md`, `src/Federator.Addin/Engine/ClashImages.cs`
 - CONTAINER for the whole plan, LOCAL MACHINE for everything that writes one

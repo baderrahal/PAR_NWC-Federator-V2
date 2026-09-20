@@ -1,6 +1,179 @@
 # log
 
 Newest entry at the top.
+## 2026-09-20 The dimming round, the viewpoints show the clash, proved by three runs
+
+### What was done
+
+Bader pressed two of F85's 975 viewpoints and could not see the clash. The camera was
+the one Clash Detective computes and read back exact, the hidden state was right, and
+the view was a grey wall, because the camera lands inside a beam and a solid beam fills
+the screen. Clash Detective only looks right because its own view ghosts everything that
+is not the two clashing items. This round makes a saved viewpoint do the same.
+
+NOTHING WAS BUILT UNTIL THE ROUTE WAS MEASURED, because the camera took three runs last
+round for exactly that reason. The probe wrote a viewpoint with the scene dimmed, saved
+the NWF, CLOSED it, reopened it off the disk and read back what it carried, scan.md 5o:
+
+- both flags this API offers are worthless. `ContainsAppearanceOverrides` and
+  `ContainsVisibilityOverrides` read TRUE on a viewpoint that recorded neither, so F85's
+  third read back, that a viewpoint carries visibility overrides, was a check that could
+  not fail and never could. The counts underneath are real and the read back is now four
+  counts and not three flags
+- a temporary transparency override on the model roots reaches every leaf, and a reset on
+  two leaves brings exactly those two back. So a viewpoint costs TWO calls, not one per
+  item: dimming 2,606 items one at a time, 430 times, would be 1.1 million calls
+- the record survives the reopen. Pressing a dimmed viewpoint off a reopened file leaves
+  the two clashing items solid and everything else at 0.85
+- the permanent override records the same and is NOT used, because its only undo clears
+  every appearance override the file already held and nothing can read those back first.
+  That is 5k's trap in a second shape and the answer is the same one
+
+Then the writer: walk one keeps the index path of each clashing item, plain ints rather
+than 1,950 native handles held across a group, and walk two hides the models outside the
+pair, dims what is left, brings the two back to solid, records through the COM view with
+`ApplyMaterialAttribs` beside `ApplyHideAttribs`, and reads back four counts. The
+transparency is a setting, 0.85, CHOSEN and not measured, and it says so where it is
+declared: Clash Detective's own value is not readable off this API, `Application.Options`
+exposes one member and the COM state exposes none. Zero switches the dimming off.
+
+THE FIRST RUN PUT 33 MB INTO A 120 KB NWF and the fix was obvious once the number was in
+front of me: it was dimming the models it had just hidden. Scoped to the models a
+viewpoint shows, 1A02MM came down from 33,622,598 bytes to 23,327,744 and the run from
+15 minutes 23 seconds to 10 minutes 26. The VIEWS step now says where its seconds go, per
+call, because the shape of the cost was not what it looked like.
+
+PART 3 closed 5g, which had been NOT MEASURED since 2026-09-19. A negated condition
+builds, finds exactly the right items and keeps its bit through a save and a reopen, so
+the corrected matrix carries F87 in full rather than its fallback. PART 4 recorded the
+three answers.
+
+### Measured
+
+Three runs over the ten C02 groups, every one against a FRESH copy of his NWF folder so
+the 975 were written new and not added to, same settings every time: 25 mm chosen in the
+tool, by design on, penetrations on, the priority file picked, his NWC folder read only.
+
+| run | what changed | viewpoints | total | VIEWS |
+|---|---|---|---|---|
+| run-20260920-104116 | dimming, every model | 975 dimmed | 15 min 23 s | 611 s |
+| run-20260920-110157 | dimming scoped to the models shown | 975 dimmed | 10 min 42 s | 338 s |
+| run-20260920-113312 | the corrected matrix as well | 975 dimmed | 10 min 26 s | 335 s |
+
+The viewpoints round's run, with viewpoints and no dimming, took 5 minutes 3 seconds.
+Ten groups done, none partial, none failed, nothing failed, on all three.
+
+WHERE THE SECONDS GO, off the proving run, which is the line the round added:
+
+    1A02BS, 109 viewpoints:  0.002s already there, 0.038s dimming, 8.142s recording, 0.073s reading back
+    1A02MM, 430 viewpoints:  0.014s already there, 0.354s dimming, 240.369s recording, 4.147s reading back
+    1A02WM, 245 viewpoints:  0.004s already there, 0.166s dimming, 62.290s recording, 2.927s reading back
+
+The dimming itself is a third of a second over 430 viewpoints. 96 per cent of the step is
+RECORDING, which is the COM add, the copy into the folder and the remove from the root,
+each one carrying the viewpoint's material overrides with it. The COM API can add
+straight into a folder, `InwOpFolderView.SavedViews().Add`, which would be one tree
+operation instead of three, and that is measured and NOT taken in this round, because the
+write path took three runs to get right last round and the time is well inside the rule.
+
+NWF, his file before and the proving run's copy after, bytes:
+
+| group | before | after | times | viewpoints |
+|---|---|---|---|---|
+| 1A02MM | 119,542 | 23,327,744 | 195 | 430 |
+| 1A02WM | 111,709 | 4,966,163 | 44 | 245 |
+| 1A02WO | 83,819 | 949,965 | 11 | 69 |
+| 1A02WN | 83,291 | 865,396 | 10 | 77 |
+| 1A02WE | 77,234 | 430,811 | 5 | 29 |
+| 1A02WL | 71,858 | 249,226 | 3 | 16 |
+| 1A0215 | 78,341 | 78,451 | 1 | none |
+
+The three built new came out 13,153, 1,200,657 and 82,015. The cause is one number: a
+dimmed viewpoint records ONE MATERIAL OVERRIDE PER ITEM it dims, 5o. Nothing is capped
+and nothing is thinned, because that is Bader's call and it is question 59.
+
+WHAT A WRITTEN VIEWPOINT ACTUALLY SHOWS, counted rather than squinted at. The probe
+opened the proving run's own 1A02MM off the disk and pressed three viewpoints under A:
+
+    /A/AR vs ST/BLD-ST-Columns-vs-BLD-AR-Floors  Clash4
+       2 model(s) hidden carrying 841 item(s), then of what is left:
+       153 dimmed at 0.85 and SOLID 2:
+       ARC-FLOOR-INT-EPOXY(1)-PAR in ...-AR-MOD-000001.nwc
+       Concrete, Cast-in-Place Fcu35 Mpa in ...-ST-MOD-000001.nwc
+
+Exactly two items solid and they are the two the clash is between. The same on all three.
+
+AND I LOOKED AT IT MYSELF, on the proving run's file, opened by hand. Three viewpoints:
+
+- `A/AR vs EL`, a cable tray against a floor: a ghosted scene with the tray and the slab
+  readable. Depth all the way through, where F85's viewpoints were a flat grey face
+- `A/DR vs ST/...Framing Clash2`, which is the kind Bader pressed: the camera is inside
+  the structural member, the member fills most of the frame, and the pipe end now reads
+  as a distinct solid shape against it. Before this round that view was featureless grey
+  with nothing in it to look at. It is readable now. It is still a close view, because
+  the camera Clash Detective computes is inside the member and this round did not move it
+- `A/DR vs ST/...Floors Clash1`: the roof slab ghosted with the plant equipment visible
+  through it and the floor solid in front. This is the one that looks most like Clash
+  Detective
+
+### Every program started, every file written outside the repo, every process stopped
+
+Started: Navisworks Manage 2025 through Roamer.exe five times, three for the runs and two
+to look at the files by hand, and six more as the automation host for the probe, modes
+dim twice, press three times and negate three times, each of which exited on its own.
+dotnet build, dotnet test and build\install.ps1, which built and copied the bundle three
+times. PowerShell drivers from the scratchpad for the window, the tolerance box, the
+confirm dialog, the screenshots and the close, every one of which exited.
+
+Stopped: Roamer.exe was stopped with Stop-Process twice, after the first dimming run and
+after the proving run's probe pass, when the add-in window had closed and the main window
+did not follow. Both times the open document was a temp copy with nothing to save. Every
+other close went through the window, answering No to the save prompt. No browser and no
+sign in page opened at any point.
+
+Written outside the repo, all under `C:\Users\bader\AppData\Local\Temp\claude\round-dimming`:
+NWF1, NWF2 and NWF3, three copies of his NWF folder, one per run, with what each run
+wrote into them, NWD and Excel with the outputs, `probe` with the probe result files and
+the three NWF copies it opened and the two it saved as probe-dim-saved.nwf and
+probe-negate-saved.nwf, the driver notes and nine screenshots. The tool's own logs are in
+`C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs`, three pairs from
+run-20260920-104116 to run-20260920-113312, and the last two pairs are copied into
+steps\logs. The bundle at `%APPDATA%\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle`
+was replaced three times. Navisworks wrote autosaves of the open temp copies into
+`%APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave`.
+
+His folders: the NWC folder was read and nothing was written there. The NWF, NWD and
+Clash Report folders were listed at the end and every file carries the size and time it
+had before the round. The four properties CSVs the wiring round left beside his NWCs on
+2026-09-19 are still there and are still his to delete.
+
+The closing check ran: no Roamer, no Autodesk process and no driver process was running.
+
+### What remains
+
+- Bader's look, step 390, one file and two viewpoints named by their full path
+- Q59, whether doubling the run and multiplying the worst NWF by 195 is worth the picture,
+  with the off switch named and the middle options laid out
+- Q58, whether the two items should be coloured red and green the way Clash Detective
+  paints them. Deliberately not built, because which colours a viewpoint carries is a
+  judgement about what the client's people read
+- Q55 and Q56 from the viewpoints round, the harvest's source file column and whether the
+  category list should be walked over more than one folder, both still open
+- the COM folder route, measured and not taken, which would cut the recording
+
+### Known bugs
+
+None open from this round. The corrected matrix's catch-all set, `BLD-EL-Devices`, finds
+ZERO items in C02 and that is not a bug: it asks for a Devices category no sibling set
+claims, and all five Devices categories in that folder are claimed. The fallback it
+replaces also found zero, so no clash count changed. It will catch a device category a
+future building carries, which the fallback never could.
+
+### What comes next
+
+Bader answers 58 and 59. Core tests 1605 before the round and 1609 after, 0 failed and 0
+skipped. Build 0 errors and 0 warnings after every change. Both checks pass.
+
 ## 2026-09-20 The dimming round, the plan, written before the first edit
 
 ### What the round is

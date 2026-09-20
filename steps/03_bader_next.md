@@ -826,3 +826,33 @@ Bader may touch.
      category no model carries: 14`, which is question 56, and the
      `WORKBOOK 18,300 test blocks` line, which is question 54
 389. Answer questions 54, 55 and 56 in `02_questions.md`
+
+## Proof of the dimming round, one step, 2026-09-20
+
+The viewpoints now dim everything but the two clashing items, the way Clash Detective
+does, which is what you asked for when you pressed two and could not see the clash. One
+step, about a minute.
+
+390. Open this file in Navisworks, which is a copy and yours to delete afterwards:
+
+     `C:\Users\bader\AppData\Local\Temp\claude\round-dimming\NWF3\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`
+
+     In Saved Viewpoints open `A`, then `DR vs ST`, and press these two:
+
+     `BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing  Clash2`
+     `BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors  Clash1`
+
+     Look for: everything ghosted except the pipe and the thing it hits, which stay
+     solid, and AR and EL greyed out in the Selection Tree. The first of those two is
+     the one that was a featureless grey wall before this round. The second shows the
+     roof ghosted with the plant visible through it.
+
+     If the dimming is too strong or too weak, it is one number and no rebuild of your
+     models: `ViewpointSettings.DimTransparency`, 0.85 today, and 0 switches it off.
+
+     WHAT TO WEIGH WHILE YOU LOOK. Dimming is not free and the numbers are in the round
+     entry in `steps\log.md`. The run went from 5 minutes 3 seconds to 10 minutes 26, and
+     1A02MM's NWF went from 119,542 bytes to 23,327,744, which is 195 times, because a
+     dimmed viewpoint records one material override per item it dims and that group
+     writes 430 of them. Question 59 asks whether that is worth it to you. Nothing is
+     capped and nothing is thinned, because that is your call and not mine.
