@@ -3,6 +3,7 @@ BLD-ST-Columns,BLD-ST-Foundation,column sits on its foundation
 BLD-ST-Framing,BLD-ST-Columns,beam frames into its column
 BLD-ST-Framing,BLD-ST-Foundation,beam bears on foundation
 BLD-ST-Walls,BLD-ST-Foundation,wall sits on foundation
+BLD-ST-Walls,BLD-ST-Framing,wall meets beam
 BLD-ST-Floors,BLD-ST-Walls,slab meets wall
 BLD-ST-Floors,BLD-ST-Columns,slab forms around column
 BLD-ST-Stair,BLD-ST-Floors,stair lands on slab
@@ -14,6 +15,19 @@ BLD-AR-Railings,BLD-AR-Floors,railing sits on slab
 BLD-AR-Stairs,BLD-AR-Floors,stair lands on slab
 BLD-AR-Ramps,BLD-AR-Floors,ramp meets slab
 BLD-AR-Ceilings,BLD-AR-Walls,ceiling meets wall
+BLD-AR-Walls,BLD-AR-Floors,wall sits on floor finish
+BLD-ST-Walls,BLD-AR-Floors,floor finish laps the structural wall
+BLD-ST-Walls,BLD-AR-Walls,architectural wall build-up laps the structural wall
+BLD-ST-Walls,BLD-AR-Doors,door frame sits in the structural wall
+BLD-ST-Walls,BLD-AR-Ceilings,ceiling meets the structural wall
+BLD-ST-Framing,BLD-AR-Walls,wall meets beam
+BLD-ST-Framing,BLD-AR-Floors,floor finish laps the beam
+BLD-ST-Framing,BLD-AR-Ceilings,ceiling meets beam
+BLD-ST-Floors,BLD-AR-Floors,floor finish sits on the structural slab
+BLD-ST-Floors,BLD-AR-Walls,wall sits on the structural slab
+BLD-ST-Columns,BLD-AR-Floors,floor finish laps the column
+BLD-ST-Columns,BLD-AR-Walls,wall meets column
+BLD-ST-Foundation,BLD-AR-Floors,floor finish sits on the foundation
 BLD-EL-Lighting Fixtures,BLD-AR-Ceilings,light is recessed in ceiling
 BLD-ME-Ducts&Duct Fittings,BLD-ME-Duct Accessory,damper sits in duct run
 BLD-ME-Ducts&Duct Fittings,BLD-ME-Air Terminals,diffuser connects to duct
