@@ -1,0 +1,18 @@
+14:24:48  driver started
+14:24:48  window found: [Parsons NWC Federator   [1.0.0.0 775da580+edits built 2026-09-20 14:22:59]]
+14:24:48  selected tab 1. Source
+14:24:49  set SourceFolderBox -> [C:\00-NM\Federation Task\C02 + 04\C02\NWC]
+14:24:49  clicked Scan
+14:24:58  selected tab 3. Outputs
+14:24:58  set NwfFolderBox -> [C:\00-NM\Federation Task\C02 + 04\C02\NWF]
+14:24:58  set NwdFolderBox -> [C:\00-NM\Federation Task\C02 + 04\C02\NWD]
+14:24:59  set ExcelFolderBox -> [C:\00-NM\Federation Task\C02 + 04\C02\Clash Report]
+14:25:00  selected tab 4. Clash
+14:25:00  set ExchangeFileBox -> [C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2\exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml]
+14:25:08  tolerance box READ BACK as [25 mm]
+14:25:08  MarkByDesign is On
+14:25:09  set ByDesignBox -> [C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2\samples\by-design-pairs.csv]
+14:25:09  set PriorityBox -> [C:\Users\bader\Downloads\clash-priority-map.csv]
+14:25:09  MarkPenetrations is On
+14:25:09  clicked Run
+14:25:23  UNKNOWN: no OK button on the confirm dialog, press it by hand
