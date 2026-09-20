@@ -3677,6 +3677,8 @@ Item2 [Concrete, Cast-in-Place Fcu35 Mpa] HasModel False, Model null, ancestors 
 
 **WHAT THIS DECIDES.** `ViewpointBuilder.AddHome` walks `AncestorsAndSelf` to the item
 that has a model and reads the file name off that, releasing every wrapper on the way.
-A viewpoint of a pair whose code no model carries, DR vs ST, keeps the model the door
-lives in as well as the structural ones, which is what the log line promised on three
-runs and only the fourth delivered.
+A viewpoint of a pair whose code no model carries, DR vs ST, drainage against structure,
+keeps the ME model the drainage pipe lives in as well as the structural one, which is what
+the log line promised on three runs and only the sixth delivered, after the fifth threw on
+every clash enumerating AncestorsAndSelf while disposing each item, and the writer went
+back to the Parent walk the size reader uses.

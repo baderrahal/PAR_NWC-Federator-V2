@@ -28,8 +28,10 @@ namespace Federator.Addin.Engine
     /// person pressing AR vs ST expects to see, the two things that clashed in their own
     /// context, and the hiding is what 5j measured a captured viewpoint to keep. The
     /// models the items live in are kept as well as the pair's because a set code and a
-    /// file code are not the same list: a DR set lives in the AR model, and a viewpoint
-    /// that hid AR for DR vs ST would hide the door the person is looking for. A pair
+    /// file code are not the same list: a DR set, drainage, lives in the ME model, and a
+    /// viewpoint that hid ME for DR vs ST would hide the pipe the person is looking for,
+    /// which is what the third and fourth runs did before 5n measured where the model
+    /// sits. A pair
     /// with a code this tool does not know hides nothing, a model whose name will not
     /// parse is never hidden, and a pair no model carries hides nothing and says so.
     ///

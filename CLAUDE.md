@@ -177,11 +177,12 @@ to LF on every checkout and carries the measurement. Never remove those three li
   and the viewpoints that point into it. Document.RemoveFile(int) and TryRemoveFile(int)
   exist and were measured on 2026-09-19, docs\history\scan.md 5c, so the member is no
   longer the question. What it costs is, and only a run answers that. F50
-- whether a SAVED VIEWPOINT records hidden state was MEASURED on 2026-09-19, docs\history\scan.md
-  5j: a viewpoint made with DocumentSavedViewpoints.CaptureRuntimeOverrides carries what is
-  hidden and hides it again when pressed, after a save and a reopen too, and one made from
-  the camera alone, new SavedViewpoint(Viewpoint), records nothing. F85 is written against
-  that and SavedViewpoints.CanBuild is true since the viewpoints round
+- how a SAVED VIEWPOINT records hidden state was MEASURED on 2026-09-19 and 2026-09-20,
+  docs\history\scan.md 5j to 5m: new SavedViewpoint(Viewpoint) records the camera alone,
+  DocumentSavedViewpoints.CaptureRuntimeOverrides records what is hidden and NO camera, and
+  the one thing that records both is the COM API's InwOpView with ApplyHideAttribs, which
+  is what F85 writes through, read back on every viewpoint. SavedViewpoints.CanBuild is
+  true since the viewpoints round
 
 ## Writing
 

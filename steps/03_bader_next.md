@@ -789,3 +789,40 @@ without reading the brief again.**
      CHANGED` around APPEND, `TOLERANCE`, `CLASH 1830 in the file`, `PRIORITY` if a file
      was picked, `REVIEWED rule B`, `VIEWS`, `SETS ACROSS THE RUN`, and a RESULT block
      carrying `run time`, `waiting for the person` and both file sizes
+
+## Proof of the viewpoints round, F85 written, 2026-09-20
+
+Six runs of ten groups were driven from the session on this machine against copies of the
+C02 NWF folder, the last two clean, and every number is in the round's entry in
+`steps\log.md`. What is left is the look a person gives it and the two folders nobody but
+Bader may touch.
+
+381. Pull `round-viewpoints` and read the round entry at the top of `steps\log.md`, the list
+     of every program it started, every file it wrote outside the repo and the two times
+     Navisworks had to be stopped rather than closed
+382. Open `C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\NWF6\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`
+     in Navisworks. It is a copy of the 1A02MM NWF after the sixth run, in the temp folder,
+     so it can be deleted after
+383. Look for, in Saved Viewpoints: the four folders the file already had, then `A`, `B` and
+     `C`, and under `A` the pair folders `AR vs ST`, `ST vs ST`, `AR vs DR`, `DR vs ST`,
+     `AR vs EL`, `EL vs ST` and `ST vs UNKNOWN`
+384. Press one viewpoint under `A`, `AR vs EL`. Look for: the view jumps to the clash, framed
+     the way its picture in the report frames it, and in the Selection Tree the ME and ST
+     models grey out while AR and EL stay
+385. Press one under `A`, `DR vs ST`, drainage against structure. Look for: the ME model
+     stays shown as well as ST, because the drainage pipe lives in it, and only AR and EL
+     grey out. Clash 2 of the framing test opens on grey, the camera inside a member,
+     which is question 57
+386. Beside his NWCs in `C:\00-NM\Federation Task\C02 + 04\C02\NWC` sit four files the
+     WIRING round's probe button wrote on 2026-09-19, `1104-PAR-1A02WO-ZZZ-AR-MOD-000001-properties.csv`
+     and its EL, ME and ST siblings. This round wrote nothing there and deleted nothing.
+     They are Bader's to delete
+387. When ready, run once on the real folders with the same boxes: 25 mm, by design on,
+     penetrations on, the priority file. Look for, per group with clashes:
+     `VIEWS    read back on N created viewpoint(s)`, `VIEWS    the model each clash item
+     lives in was read for N of N`, and `hidden state put back`, then a `VIEWS` step of a
+     few seconds in the timing block and `Nothing failed`
+388. Look for, at the run tail: `Revit categories known: 374` and `Sets asking for a
+     category no model carries: 14`, which is question 56, and the
+     `WORKBOOK 18,300 test blocks` line, which is question 54
+389. Answer questions 54, 55 and 56 in `02_questions.md`
