@@ -3522,3 +3522,92 @@ adding either to the tree. `SavedViewpoints.RestoreHiddenState(document, snapsho
 collection, which the VIEWS block says. A group that hid nothing takes no snapshot and
 restores nothing. The line in `SavedViewpoints.cs` that listed `ResetAllHiddenToModelState`
 among the measured members lists it no longer.
+
+## 5l. What a runtime capture records and what the clash viewpoint call returns, MEASURED 2026-09-19 and 2026-09-20
+
+The first viewpoints run wrote 975 viewpoints into ten NWFs and the tree looked complete.
+Pressed by hand, every one of them opened on the same empty top view, at grid A(-10)-2(14)
+on level LGF, with the right disciplines hidden. The probe in `tools\probes\ViewpointProbe`,
+mode `camera`, measured the pieces on a copy of the 1A02MM NWF. The result file is
+`tools\probes\ViewpointProbe\5l-result-20260920.txt`, and the failing run is
+`steps\logs\run-20260920-082641.log`.
+
+- `DocumentClashTests.TestsViewpointForResult(result)` returns a DIFFERENT camera per
+  clash, positioned beside the clash items' bounding boxes, focal distance 20 to 60 units,
+  so the camera the writer asked for was right
+- `Viewpoint.CreateCopy()` of it survives the disposal of the original, and
+  `DocumentCurrentViewpoint.CopyFrom(copy)` reads back the same position, so the copy
+  route the writer used was right too
+- `DocumentSavedViewpoints.CaptureRuntimeOverrides()` returns a SavedViewpoint whose
+  `Viewpoint.Position` THROWS `InvalidOperationException: Camera not set`, in the
+  automation host and in the window alike. It records the overrides and NO camera. A
+  viewpoint with no camera opens on a default view, which is the empty top view every
+  pressed viewpoint showed. The API doc says only "Creates a view that captures current
+  runtime overrides", and it means exactly that
+- the second run, with the camera read back off every written viewpoint, failed every
+  one of the 975 planned with that exception and created none, which is the read back
+  doing its job. The seven groups with clashes came out FAILED and the three without
+  came out DONE, the second NWF save, the workbook, the NWD and the confirm still ran in
+  every group, and the run took 8 minutes 10 seconds, 490.483s, against 5 minutes 9
+  seconds the first time, because the failure text was written 667 times
+
+So the writer's two halves each recorded half: `new SavedViewpoint(Viewpoint)` the camera
+alone, 5j, and `CaptureRuntimeOverrides` the hidden state alone. `SavedViewpoint.Viewpoint`
+has no setter, and nothing on `SavedViewpoint` sets overrides.
+
+## 5m. A saved viewpoint with BOTH the camera and the hidden state, MEASURED 2026-09-20
+
+Two routes were measured on a copy of the 1A02MM NWF, modes `record` and `com` of the
+probe. The result files are `tools\probes\ViewpointProbe\5m-replace-result-20260920.txt`
+and `5m-com-result-20260920.txt`.
+
+**`DocumentSavedViewpoints.ReplaceFromCurrentView`, whose doc reads "Viewpoint, Redlines
+and visibility are updated to those in the current View", does NOT record the hidden
+state.** A camera only viewpoint put in a folder, then replaced while a model root was
+hidden, read back with `ContainsVisibilityOverrides` false and pressed without hiding
+anything. Whether the window's own option, Save Hide/Required Attributes, would change
+that is UNKNOWN and beside the point: 27 machines cannot depend on an option.
+
+**The COM API's saved view records both.** `Autodesk.Navisworks.ComApi.dll` and
+`Autodesk.Navisworks.Interop.ComApi.dll`, both in the install folder:
+
+```
+InwOpState10 state = ComApiBridge.State;
+InwOpView view = (InwOpView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpView, null, null);
+view.name = name;
+view.ApplyHideAttribs = true;
+view.ApplyMaterialAttribs = false;
+view.anonview = ComApiBridge.ToInwOpAnonView(camera);
+state.SavedViews().Add(view);
+```
+
+```
+camera applied and root0 hidden: True
+COM view added, root count 7 -> 8
+read back through .NET at the root: ContainsVisibilityOverrides True, camera position (12.5, -34.25, 56.125)
+copied into the folder, removing the root one: True
+the folder copy: ContainsVisibilityOverrides True, camera position (12.5, -34.25, 56.125)
+moved away: root0 hidden False, position (100, 100, 100)
+pressed the folder copy: root0 hidden True, position (12.5, -34.25, 56.125)
+TrySaveFile = True
+after reopen, the folder copy: ContainsVisibilityOverrides True, camera position (12.5, -34.25, 56.125)
+after reopen, pressed: root0 hidden True, position (12.5, -34.25, 56.125)
+```
+
+- the view is added at the ROOT of the tree. `AddCopy(folder, it)` puts a copy in the
+  folder that keeps both the camera and the overrides, and `Remove(it)` takes the root
+  one out, so the tree ends with one viewpoint where the plan put it
+- read back through the .NET API it is an ordinary `SavedViewpoint`, and pressing it
+  through `CurrentSavedViewpoint` hides what was hidden and moves the camera to what
+  was given, before and after a save, a clear and a reopen
+- `heightField` read 0.953 after pressing where 0.785 was given, so the field of view is
+  the window's and not the recorded one. The position is exact
+
+**WHAT THIS DECIDES.** `SavedViewpoints.Record` writes every clash viewpoint through the
+COM view, the add-in references the two COM DLLs the same way it references the other
+two, copy local false, and `SavedViewpoints.ReadBack` reads three things off every
+written viewpoint before it is counted as created: that it is there, that its camera sits
+within `ViewpointSettings.CameraReadBackTolerance` of the clash camera, and that it
+carries visibility overrides where it was meant to hide a discipline. The window's view is
+never touched, so nothing of it has to be put back. `CaptureRuntimeOverrides` stays for
+one thing, reading the hidden state before the writer hides anything, 5k.

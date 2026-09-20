@@ -226,24 +226,31 @@ check is proved to refuse as well as to pass.
   is published from. The plan is Federator.Core.Views.ClashViewpointPlan and nothing about
   it is decided in the add-in. ViewpointBuilder reads every clash the report holds rows for
   in one walk, the status, the two set names off the test's locators, the priority off the
-  report and the service size through the same reader the penetration rule uses, keeps a
-  COPY of the camera Clash Detective frames the clash with, TestsViewpointForResult, runs
-  the plan over all of them at once, and writes what the plan kept in a second walk. A
-  viewpoint shows the two disciplines of its pair, every model of each, hides every other
-  model, and is captured with DocumentSavedViewpoints.CaptureRuntimeOverrides, which is the
-  one way that records the hidden state, MEASURED on 2026-09-19, docs\history\scan.md 5j:
-  a viewpoint made from the camera alone, new SavedViewpoint(Viewpoint), records nothing and
-  opens on the whole federation. The hidden state and the view the document had are put
-  back when the group's writing ends, whichever way it ends. Every folder is made outermost
-  first and re-resolved from a fresh RootItem after every AddCopy, which is the shape
-  SetBuilder measured for the sets, and every viewpoint is read back by name rather than
-  trusted. A viewpoint already at its path is left exactly as it is and counted as already
-  there, never made again, because a second copy at one path leaves the tree holding both,
-  which is F28's rule for sets. The VIEWS step is timed like every other step and it is the
-  one step allowed to move the viewpoint count, Federator.Core.Diagnostics.CensusRule. The
-  VIEWS block names five and counts the rest, because a group puts hundreds in. A group
-  whose viewpoints failed is not DONE. SavedViewpoints.CanBuild is true since the
-  viewpoints round on 2026-09-19 and it is the one switch
+  report, the service size through the same reader the penetration rule uses and the model
+  each clashing item lives in, keeps a COPY of the camera Clash Detective frames the clash
+  with, TestsViewpointForResult, runs the plan over all of them at once, and writes what
+  the plan kept in a second walk. A viewpoint shows the two disciplines of its pair, every
+  model of each, plus the model each clashing item lives in, and hides every other model.
+  It is written through the COM API's saved view with ApplyHideAttribs on, which is the ONE
+  route measured to record both the camera and the hidden state, docs\history\scan.md 5m,
+  after the two .NET routes each recorded half: new SavedViewpoint(Viewpoint) the camera
+  alone, 5j, and CaptureRuntimeOverrides the hidden state and no camera at all, 5l, which
+  is why the first viewpoints run opened every viewpoint on sky. Every written viewpoint is
+  read back three ways before it is counted, that it is there, that its camera sits within
+  ViewpointSettings.CameraReadBackTolerance of the clash camera, and that it carries
+  visibility overrides where it hides a discipline, and one that fails any of the three is
+  FAILED with the reason. The hidden state the document held is read once off a capture
+  that never enters the tree, 5k, and put back when the group's writing ends, whichever
+  way it ends, and read back as hidden. The window's view is never touched. Every folder
+  is made outermost first and re-resolved from a fresh RootItem after every AddCopy, which
+  is the shape SetBuilder measured for the sets. A viewpoint already at its path is left
+  exactly as it is and counted as already there, never made again, because a second copy
+  at one path leaves the tree holding both, which is F28's rule for sets. The VIEWS step is
+  timed like every other step and it is the one step allowed to move the viewpoint count,
+  Federator.Core.Diagnostics.CensusRule. The VIEWS block names five and counts the rest,
+  because a group puts hundreds in. A group whose viewpoints failed is not DONE.
+  SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and it is the
+  one switch
 - SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
   said no clash is ever saved as a viewpoint and that a discipline viewpoint is not a
   clash viewpoint. The first real run answered the question the other way: the thing a

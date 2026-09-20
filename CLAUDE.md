@@ -18,7 +18,10 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
   did not move. No syntax newer than 7.3 anywhere, because the add-in cannot be
   built with a newer compiler than the one Navisworks binds to
 - References are the DLLs in the Navisworks install folder, copy local false:
-  Autodesk.Navisworks.Api.dll and Autodesk.Navisworks.Clash.dll
+  Autodesk.Navisworks.Api.dll, Autodesk.Navisworks.Clash.dll and, since the viewpoints
+  round, Autodesk.Navisworks.ComApi.dll with Autodesk.Navisworks.Interop.ComApi.dll,
+  because the one way to save a viewpoint with its camera AND its hidden state is the
+  COM view's ApplyHideAttribs, docs\history\scan.md 5m
 - Installs to %APPDATA%\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle
 - 27 people run it. No compiler on their machines, no admin step, no path that
   exists on one machine only

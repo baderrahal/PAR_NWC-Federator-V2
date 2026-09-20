@@ -53,9 +53,7 @@ namespace Federator.Addin.Engine
         private readonly HashSet<string> saidOnce = new HashSet<string>(StringComparer.Ordinal);
 
         private HiddenSnapshot snapshot;
-        private Viewpoint viewBefore;
         private int cameraRead;
-        private int cameraUnread;
 
         public ViewpointBuilder(
             Action<string> progress,
@@ -102,9 +100,7 @@ namespace Federator.Addin.Engine
             Dictionary<string, HashSet<int>> homes = new Dictionary<string, HashSet<int>>(StringComparer.Ordinal);
             IDictionary<int, string> disciplines = modelDisciplines ?? new Dictionary<int, string>();
             snapshot = null;
-            viewBefore = null;
             cameraRead = 0;
-            cameraUnread = 0;
 
             try
             {
@@ -136,12 +132,11 @@ namespace Federator.Addin.Engine
                     }
                 }
 
-                if (cameraRead + cameraUnread > 0)
+                if (cameraRead > 0)
                 {
-                    log.Line("VIEWS    camera read back on " + cameraRead + " created viewpoint(s), each within "
+                    log.Line("VIEWS    read back on " + cameraRead + " created viewpoint(s): each sits within "
                         + views.CameraReadBackTolerance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                        + " units of its clash camera"
-                        + (cameraUnread > 0 ? ", and " + cameraUnread + " whose recorded camera could not be read, counted as created and said" : string.Empty));
+                        + " units of its clash camera and each that hides a discipline carries visibility overrides");
                 }
             }
             finally
@@ -220,6 +215,19 @@ namespace Federator.Addin.Engine
             {
                 log.Line("VIEWS    " + homesUnread + " clash(es) whose items' models could not be read, so their viewpoints keep the pair's models only");
             }
+
+            int withHome = 0;
+
+            foreach (HashSet<int> home in homes.Values)
+            {
+                if (home.Count > 0)
+                {
+                    withHome++;
+                }
+            }
+
+            log.Line("VIEWS    the model each clash item lives in was read for " + withHome + " of " + homes.Count
+                + " clash(es) in scope" + (withHome == homes.Count ? string.Empty : ", and the rest keep the pair's models only"));
         }
 
         private int CollectResults(
@@ -333,11 +341,16 @@ namespace Federator.Addin.Engine
 
                 using (ModelItem item = side[0])
                 {
-                    if (item == null || !item.HasModel)
+                    if (item == null)
                     {
                         return;
                     }
 
+                    // Model on the leaf itself, the shape ClashHarvest.SourceFileOf has
+                    // filled the source file column with on every run. HasModel is not
+                    // asked first: it answers whether the item IS a model, and the second
+                    // run asked it, read no home for any clash and kept every viewpoint of
+                    // a code no model carries on nothing.
                     using (Model model = item.Model)
                     {
                         int index;
@@ -443,8 +456,10 @@ namespace Federator.Addin.Engine
 
                 if (keep.Count == 0)
                 {
-                    hidesNothingBecause = "no model in this group carries " + planned.Pair.First + " or " + planned.Pair.Second
-                        + " and the clash items' models could not be read";
+                    bool sameCode = string.Equals(planned.Pair.First, planned.Pair.Second, StringComparison.Ordinal);
+                    hidesNothingBecause = "no model in this group carries "
+                        + (sameCode ? planned.Pair.First : planned.Pair.First + " or " + planned.Pair.Second)
+                        + " and the models its clash items live in could not be read";
                 }
             }
             else
@@ -468,49 +483,48 @@ namespace Federator.Addin.Engine
                 document.Models.ResetAllHidden();
             }
 
-            SavedViewpoints.ApplyCamera(document, camera);
             SavedViewpoints.EnsureFolders(document, planned.Folders);
-            SavedViewpoints.Capture(document, planned.Folders, planned.Name);
+            SavedViewpoints.Record(document, planned.Folders, planned.Name, camera);
 
-            // Read back rather than trusted. AddCopy returns void everywhere in this API,
-            // so the only way to know the viewpoint is there is to look for it.
-            if (!SavedViewpoints.Exists(document, planned.Folders, planned.Name))
+            // Read back rather than trusted, all three of it. The first run's tree looked
+            // complete and every viewpoint opened on sky, because the route it used
+            // recorded no camera, 5l, and nothing read the camera back. A viewpoint whose
+            // recorded camera is not the clash camera, or which carries no overrides
+            // while it was meant to hide something, is not a viewpoint of that clash and
+            // is counted as failed with the reason a person can check.
+            ViewpointReadBack read = SavedViewpoints.ReadBack(document, planned.Folders, planned.Name, camera);
+
+            if (!read.Found)
             {
                 outcome.AddFailed(planned.Path, planned.Pair.Folder, "it was added and a fresh read does not show it");
                 return;
             }
 
-            // The camera read back too, because the first run wrote every viewpoint on
-            // the one view the window showed and the tree looked complete, 5l. A
-            // viewpoint whose recorded camera is not the clash camera is not a viewpoint
-            // of that clash, and it is counted as failed with the distance in the reason.
-            double distance = SavedViewpoints.CameraDistance(document, planned.Folders, planned.Name, camera);
-
-            if (distance < 0)
-            {
-                cameraUnread++;
-            }
-            else if (distance > views.CameraReadBackTolerance)
+            if (read.CameraDistance > views.CameraReadBackTolerance)
             {
                 outcome.AddFailed(
                     planned.Path,
                     planned.Pair.Folder,
-                    "it was added with a camera " + distance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    "it was added with a camera " + read.CameraDistance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
                     + " units from the clash camera, so it would not open on the clash");
                 return;
             }
-            else
+
+            if (hidden.Count > 0 && !read.ContainsVisibilityOverrides)
             {
-                cameraRead++;
+                outcome.AddFailed(planned.Path, planned.Pair.Folder, "it was added without its hidden state, so it would show every discipline");
+                return;
             }
 
+            cameraRead++;
             outcome.AddCreated(planned.Path, planned.Pair.Folder, hidden.Count);
         }
 
         /// <summary>
         /// Reads what will have to be put back, once, before the first viewpoint changes
-        /// the document: the hidden state off a capture that never goes into the tree,
-        /// and a copy of the view.
+        /// the document: the hidden state, off a capture that never goes into the tree.
+        /// The view is never touched, because the camera goes into the viewpoint directly
+        /// and not through the window, 5m, so there is nothing of it to put back.
         /// </summary>
         private void Touch(Document document)
         {
@@ -518,16 +532,11 @@ namespace Federator.Addin.Engine
             {
                 snapshot = SavedViewpoints.SnapshotHidden(document);
             }
-
-            if (viewBefore == null)
-            {
-                viewBefore = SavedViewpoints.ReadCamera(document);
-            }
         }
 
         /// <summary>
-        /// The hidden state and the view, each put back in its own try and each released
-        /// whether or not its restore worked, and the hidden one read back and said.
+        /// The hidden state put back in its own try, released whether or not the restore
+        /// worked, and read back and said.
         /// </summary>
         private void PutBack(Document document)
         {
@@ -559,26 +568,6 @@ namespace Federator.Addin.Engine
                 {
                     snapshot.Dispose();
                     snapshot = null;
-                }
-            }
-
-            if (viewBefore != null)
-            {
-                try
-                {
-                    SavedViewpoints.ApplyCamera(document, viewBefore);
-                }
-                catch (Exception error)
-                {
-                    log.Failure(
-                        "putting the view back after the viewpoints",
-                        error,
-                        "kept going, the document is left on the last clash camera");
-                }
-                finally
-                {
-                    viewBefore.Dispose();
-                    viewBefore = null;
                 }
             }
         }

@@ -31,6 +31,12 @@
          check below both use these, so they can never drift apart. -->
     <NavisworksApiDll>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</NavisworksApiDll>
     <NavisworksClashDll>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</NavisworksClashDll>
+    <!-- The COM API, since the viewpoints round on 2026-09-20, for ONE call: a saved
+         viewpoint that records both its camera and what is hidden, which no .NET member
+         of this API writes, docs\history\scan.md 5m. Two files, the bridge and the
+         interop types, both in the install folder beside the other two. -->
+    <NavisworksComApiDll>$(NavisworksPath)\Autodesk.Navisworks.ComApi.dll</NavisworksComApiDll>
+    <NavisworksInteropComApiDll>$(NavisworksPath)\Autodesk.Navisworks.Interop.ComApi.dll</NavisworksInteropComApiDll>
   </PropertyGroup>
 
   <ItemGroup>
@@ -52,6 +58,17 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+    <Reference Include="Autodesk.Navisworks.ComApi">
+      <HintPath>$(NavisworksComApiDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.Interop.ComApi">
+      <HintPath>$(NavisworksInteropComApiDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+    </Reference>
   </ItemGroup>
 
   <!--
@@ -72,6 +89,12 @@
 
     <Error Condition="!Exists('$(NavisworksClashDll)')"
            Text="Autodesk.Navisworks.Clash.dll was not found at '$(NavisworksClashDll)'. NavisworksPath is '$(NavisworksPath)'. Set NavisworksPath to the Navisworks Manage 2025 install folder, for example -p:NavisworksPath=&quot;D:\Autodesk\Navisworks Manage 2025&quot;." />
+
+    <Error Condition="!Exists('$(NavisworksComApiDll)')"
+           Text="Autodesk.Navisworks.ComApi.dll was not found at '$(NavisworksComApiDll)'. NavisworksPath is '$(NavisworksPath)'. Set NavisworksPath to the Navisworks Manage 2025 install folder." />
+
+    <Error Condition="!Exists('$(NavisworksInteropComApiDll)')"
+           Text="Autodesk.Navisworks.Interop.ComApi.dll was not found at '$(NavisworksInteropComApiDll)'. NavisworksPath is '$(NavisworksPath)'. Set NavisworksPath to the Navisworks Manage 2025 install folder." />
   </Target>
 
 </Project>

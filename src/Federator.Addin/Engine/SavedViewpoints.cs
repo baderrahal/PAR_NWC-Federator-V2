@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
+using Autodesk.Navisworks.Api.ComApi;
+using Autodesk.Navisworks.Api.Interop.ComApi;
 
 namespace Federator.Addin.Engine
 {
@@ -10,18 +12,25 @@ namespace Federator.Addin.Engine
     ///
     /// EVERY MEMBER THIS FILE CALLS IS MEASURED. tools\probes\probe-viewpoints.ps1 read
     /// the shape off the installed Autodesk.Navisworks.Api 22.0.0.0 on 2026-09-19,
-    /// docs\history\scan.md 5d, and tools\probes\ViewpointProbe measured the one thing a
-    /// DLL cannot say on a run the same day, 5j:
+    /// docs\history\scan.md 5d, and tools\probes\ViewpointProbe measured what a DLL
+    /// cannot say on runs the same day and the next, 5j to 5m:
     ///
     ///     Document.SavedViewpoints                       is a DocumentSavedViewpoints
     ///     DocumentSavedViewpoints.RootItem               is a FolderItem, a GroupItem
-    ///     DocumentSavedViewpoints.AddCopy(GroupItem, SavedItem)   puts one in a folder
+    ///     DocumentSavedViewpoints.AddCopy(GroupItem, SavedItem)   puts a copy in a folder,
+    ///         keeping the camera and the overrides of what it copies, 5m
+    ///     DocumentSavedViewpoints.Remove(SavedItem)      takes one out, 5k and 5m
     ///     new FolderItem()                               makes a folder
-    ///     DocumentSavedViewpoints.CaptureRuntimeOverrides()       makes a SavedViewpoint of the
-    ///         current view WITH what is hidden, ContainsVisibilityOverrides true, and it
-    ///         hides the same items again when pressed, after a save and a reopen too
-    ///     new SavedViewpoint(Viewpoint)                  makes one of the camera ALONE,
-    ///         which opens on the whole federation, and is never used here
+    ///     new SavedViewpoint(Viewpoint)                  records the camera ALONE, 5j
+    ///     DocumentSavedViewpoints.CaptureRuntimeOverrides()       records what is hidden
+    ///         and NO camera at all, its Viewpoint throwing Camera not set, 5l. It is used
+    ///         here for one thing, reading the hidden state before the writer hides
+    ///         anything, and never to write a viewpoint
+    ///     InwOpView with ApplyHideAttribs true, the COM API, added to InwOpState.SavedViews
+    ///         records BOTH the camera it is given and what is hidden, reads back through
+    ///         the .NET API with ContainsVisibilityOverrides true, and presses with both
+    ///         after a save and a reopen, 5m. It is the one way found to write a viewpoint
+    ///         that opens on its clash with the other disciplines hidden
     ///     DocumentModels.SetHidden, ResetAllHidden, IsHidden
     ///     SavedViewpoint.GetVisibilityOverrides().Hidden read off a capture NOT in the
     ///         tree, 5k, which is how the hidden state is read before the writer hides
@@ -151,26 +160,44 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Captures the current view WITH what is hidden as a saved viewpoint of that name
-        /// in that folder path, 5j route B. The name goes on the object before it is
-        /// copied in, so nothing has to guess which child the copy became, and the caller
-        /// reads it back by name rather than trusting the add.
+        /// Puts a saved viewpoint with BOTH that camera and what is hidden right now into
+        /// that folder path, under that name. MEASURED on 2026-09-20, docs\history\scan.md
+        /// 5m, after two .NET routes each recorded half: new SavedViewpoint(Viewpoint)
+        /// records the camera and no overrides, 5j, and CaptureRuntimeOverrides records
+        /// the overrides and NO camera, its Viewpoint throwing Camera not set, 5l, which
+        /// is why the first viewpoints run opened every viewpoint on sky. The COM view is
+        /// the one object that carries a flag for it, InwOpView.ApplyHideAttribs, and a
+        /// view added with that flag on reads back through the .NET API with
+        /// ContainsVisibilityOverrides true and the camera it was given, presses with
+        /// both, and keeps both across a save and a reopen.
+        ///
+        /// The COM collection adds at the ROOT, so the view is copied into the folder
+        /// with AddCopy, which keeps both, and the root one is removed, which is the
+        /// shape 5m measured. The root one is found as the LAST root child of that name,
+        /// because the add appends and a file may already hold a root item so named.
+        /// The caller reads the folder copy back rather than trusting any of it.
         /// </summary>
-        public static void Capture(Document document, IList<string> folders, string name)
+        public static void Record(Document document, IList<string> folders, string name, Viewpoint camera)
         {
-            if (document == null || folders == null || string.IsNullOrEmpty(name))
+            if (document == null || folders == null || string.IsNullOrEmpty(name) || camera == null)
             {
-                throw new ArgumentException("A viewpoint needs a document, a folder path and a name.", "name");
+                throw new ArgumentException("A viewpoint needs a document, a folder path, a name and a camera.", "name");
             }
 
-            using (SavedViewpoint captured = document.SavedViewpoints.CaptureRuntimeOverrides())
-            {
-                if (captured == null)
-                {
-                    throw new InvalidOperationException("CaptureRuntimeOverrides returned nothing.");
-                }
+            InwOpState10 state = ComApiBridge.State;
+            InwOpView view = (InwOpView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpView, null, null);
+            view.name = name;
+            view.ApplyHideAttribs = true;
+            view.ApplyMaterialAttribs = false;
+            view.anonview = ComApiBridge.ToInwOpAnonView(camera);
+            state.SavedViews().Add(view);
 
-                captured.DisplayName = name;
+            using (SavedViewpoint atRoot = FindLastAtRoot(document, name))
+            {
+                if (atRoot == null)
+                {
+                    throw new InvalidOperationException("The view was added and a fresh read of the root does not show it.");
+                }
 
                 using (GroupItem parent = ResolveFolders(document, folders, folders.Count))
                 {
@@ -180,9 +207,61 @@ namespace Federator.Addin.Engine
                             "The folder path " + string.Join("/", ToArray(folders)) + " is not there.");
                     }
 
-                    document.SavedViewpoints.AddCopy(parent, captured);
+                    document.SavedViewpoints.AddCopy(parent, atRoot);
+                }
+
+                if (!document.SavedViewpoints.Remove(atRoot))
+                {
+                    throw new InvalidOperationException("The view was copied into its folder and the root copy would not remove.");
                 }
             }
+        }
+
+        /// <summary>
+        /// What the viewpoint at that path actually recorded, read off the tree: whether
+        /// it is there, how far its camera sits from the one asked for in document units,
+        /// and whether it carries visibility overrides. Read back rather than trusted,
+        /// because the first run's tree looked complete and every viewpoint opened on sky.
+        /// </summary>
+        public static ViewpointReadBack ReadBack(Document document, IList<string> folders, string name, Viewpoint camera)
+        {
+            ViewpointReadBack read = new ViewpointReadBack();
+
+            if (document == null || folders == null || string.IsNullOrEmpty(name) || camera == null)
+            {
+                return read;
+            }
+
+            using (GroupItem parent = ResolveFolders(document, folders, folders.Count))
+            {
+                if (parent == null)
+                {
+                    return read;
+                }
+
+                using (SavedViewpoint found = FindLeafItem(parent, name))
+                {
+                    if (found == null)
+                    {
+                        return read;
+                    }
+
+                    read.Found = true;
+                    read.ContainsVisibilityOverrides = found.ContainsVisibilityOverrides;
+
+                    using (Viewpoint recorded = found.Viewpoint)
+                    {
+                        Point3D a = recorded.Position;
+                        Point3D b = camera.Position;
+                        double dx = a.X - b.X;
+                        double dy = a.Y - b.Y;
+                        double dz = a.Z - b.Z;
+                        read.CameraDistance = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+                    }
+                }
+            }
+
+            return read;
         }
 
         /// <summary>
@@ -223,89 +302,6 @@ namespace Federator.Addin.Engine
                 }
 
                 return hide.Count;
-            }
-        }
-
-        /// <summary>
-        /// Puts a camera on the view the person sees AND on the document's current
-        /// viewpoint. MEASURED on 2026-09-19, docs\history\scan.md 5l: CaptureRuntimeOverrides
-        /// captures the ACTIVE VIEW, the 3D window, and not Document.CurrentViewpoint. On
-        /// the first viewpoints run every viewpoint was captured on the same view, the one
-        /// the window happened to show, because CurrentViewpoint.CopyFrom alone never
-        /// reached the window while the run held the thread, while in the automation host,
-        /// which has no window, the capture's own Viewpoint cannot even be read. So the
-        /// camera goes through View.CopyViewpointFrom with JumpCut, which the API doc says
-        /// jumps straight there with no collision or gravity, and the document's current
-        /// viewpoint is set as well so the two agree. Where there is no active view the
-        /// document's is all there is.
-        /// </summary>
-        public static void ApplyCamera(Document document, Viewpoint camera)
-        {
-            if (document == null || camera == null)
-            {
-                return;
-            }
-
-            View view = document.ActiveView;
-
-            if (view != null)
-            {
-                view.CopyViewpointFrom(camera, ViewChange.JumpCut);
-            }
-
-            document.CurrentViewpoint.CopyFrom(camera);
-        }
-
-        /// <summary>A copy of the camera the person sees, or the document's where there is no view. The caller disposes it.</summary>
-        public static Viewpoint ReadCamera(Document document)
-        {
-            View view = document.ActiveView;
-            return view != null ? view.CreateViewpointCopy() : document.CurrentViewpoint.CreateCopy();
-        }
-
-        /// <summary>
-        /// How far the camera recorded on the viewpoint at that path sits from the camera
-        /// the writer asked for, in document units, or MINUS ONE where the viewpoint or its
-        /// camera could not be read. This is the read back that proves a viewpoint opens
-        /// where its clash is, and a distance is a number a person can check rather than a
-        /// trust.
-        /// </summary>
-        public static double CameraDistance(Document document, IList<string> folders, string name, Viewpoint camera)
-        {
-            if (document == null || folders == null || string.IsNullOrEmpty(name) || camera == null)
-            {
-                return -1;
-            }
-
-            using (GroupItem parent = ResolveFolders(document, folders, folders.Count))
-            {
-                if (parent == null)
-                {
-                    return -1;
-                }
-
-                using (SavedViewpoint found = FindLeafItem(parent, name))
-                {
-                    if (found == null)
-                    {
-                        return -1;
-                    }
-
-                    using (Viewpoint recorded = found.Viewpoint)
-                    {
-                        if (recorded == null)
-                        {
-                            return -1;
-                        }
-
-                        Point3D a = recorded.Position;
-                        Point3D b = camera.Position;
-                        double dx = a.X - b.X;
-                        double dy = a.Y - b.Y;
-                        double dz = a.Z - b.Z;
-                        return Math.Sqrt(dx * dx + dy * dy + dz * dz);
-                    }
-                }
             }
         }
 
@@ -428,6 +424,27 @@ namespace Federator.Addin.Engine
             return false;
         }
 
+        /// <summary>The LAST saved viewpoint of that name at the root, where the COM add appends, or null. The caller disposes it.</summary>
+        private static SavedViewpoint FindLastAtRoot(Document document, string name)
+        {
+            SavedItemCollection items = document.SavedViewpoints.Value;
+
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                SavedItem item = items[i];
+                SavedViewpoint viewpoint = item as SavedViewpoint;
+
+                if (viewpoint != null && string.Equals(item.DisplayName, name, StringComparison.Ordinal))
+                {
+                    return viewpoint;
+                }
+
+                item.Dispose();
+            }
+
+            return null;
+        }
+
         /// <summary>The saved viewpoint of that name directly under the folder, or null. The caller disposes it.</summary>
         private static SavedViewpoint FindLeafItem(GroupItem parent, string name)
         {
@@ -485,6 +502,19 @@ namespace Federator.Addin.Engine
             list.CopyTo(array, 0);
             return array;
         }
+    }
+
+    /// <summary>What a written viewpoint recorded, read off the tree. Nothing here is trusted from the write.</summary>
+    public sealed class ViewpointReadBack
+    {
+        /// <summary>Whether a viewpoint of that name sits at that path at all.</summary>
+        public bool Found { get; set; }
+
+        /// <summary>How far its camera sits from the one asked for, in document units, meaningful only where Found.</summary>
+        public double CameraDistance { get; set; }
+
+        /// <summary>Whether it carries visibility overrides, which is what makes it hide anything when pressed.</summary>
+        public bool ContainsVisibilityOverrides { get; set; }
     }
 
     /// <summary>
