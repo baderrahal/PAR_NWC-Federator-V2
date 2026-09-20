@@ -262,32 +262,57 @@ namespace Federator.Addin.Engine
                             rebuilt = Rebuild(document, sets, planned, parent);
                         }
 
-                        using (existing)
+                        existing.Dispose();
+
+                        // THE SET IS READ AGAIN AFTER THE REBUILD AND NEVER BEFORE IT.
+                        // ReplaceWithCopy puts a new object in the slot, so the wrapper
+                        // read before it is a borrowed handle over something that is no
+                        // longer there, which is 4g's rule. Counting through it reported
+                        // 0 items for every set this run rebuilt and said "left alone"
+                        // about a set it had just replaced, and 3b then judged the OLD
+                        // question and called a set wrong that had just been corrected.
+                        IList<ReadCondition> asking = drift.Asked;
+                        string askedNow = drift.AskedNow();
+
+                        using (SelectionSet now = FindSelectionSet(parent, planned.Name))
                         {
-                            // One call, so a present set is counted as present and never as
-                            // created. It used to be added to both lists, which made every
-                            // weekly run report sixty one created and save the NWF again.
-                            found = CountOf(document, existing);
+                            if (now != null)
+                            {
+                                found = CountOf(document, now);
 
-                            SetResult present = outcome.AddAlreadyPresent(
-                                planned.Path, planned.Name, planned.ConditionCount, found);
-
-                            log.Line("SET      " + present.Line());
-
-                            // 3a. What the set in the DOCUMENT asks, read off the set and
-                            // never off the picked file. SETS ACROSS THE RUN used to say
-                            // "asked UNKNOWN, because it was already in the NWF and this
-                            // run never read its question". 5w reads it.
-                            present.Asked = drift.AskedNow();
+                                if (rebuilt)
+                                {
+                                    SetDrift after = DriftOf(planned, now);
+                                    asking = after.Asked;
+                                    askedNow = after.AskedNow();
+                                }
+                            }
                         }
+
+                        // One call, so a present set is counted as present and never as
+                        // created. It used to be added to both lists, which made every
+                        // weekly run report sixty one created and save the NWF again.
+                        SetResult present = outcome.AddAlreadyPresent(
+                            planned.Path, planned.Name, planned.ConditionCount, found);
+
+                        log.Line("SET      " + present.Line()
+                            + (rebuilt ? ", and REBUILT from the picked file" : string.Empty));
+
+                        // 3a. What the set in the DOCUMENT asks, read off the set and
+                        // never off the picked file. SETS ACROSS THE RUN used to say
+                        // "asked UNKNOWN, because it was already in the NWF and this
+                        // run never read its question". 5w reads it.
+                        present.Asked = askedNow;
 
                         // 3b. A set that found NOTHING says which of three things is wrong,
                         // because his own report shows 1,677 of 1,830 tests touching a
                         // set that never produces a clash, and nothing told him which of
                         // those sets is wrong and which is a model with no such content.
+                        // Judged on what it asks NOW, so a set this run corrected is not
+                        // reported as asking the question it no longer asks.
                         if (found == 0 && !drift.CouldNotRead)
                         {
-                            outcome.AddEmpty(EmptySets.Why(planned.Path, drift.Asked));
+                            outcome.AddEmpty(EmptySets.Why(planned.Path, asking));
                         }
 
                         if (drift.Drifted)
@@ -300,7 +325,7 @@ namespace Federator.Addin.Engine
                             }
 
                             log.Line("SET      " + (rebuilt
-                                ? "   REBUILT from the picked file. The clash tests pointing at it keep their results and their statuses, 5v"
+                                ? "   REBUILT from the picked file, and it now finds " + found + " item(s). The clash tests pointing at it keep their results and their statuses, 5v"
                                 : "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"));
                         }
 
