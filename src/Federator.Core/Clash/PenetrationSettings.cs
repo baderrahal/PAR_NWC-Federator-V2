@@ -173,13 +173,21 @@ namespace Federator.Core.Clash
         /// have to be the same number, and the XAML is the one copy nothing can test.
         ///
         /// Twelve words is the limit a tick box help line has, and this one is twelve.
+        ///
+        /// IT NAMES EVERY SOLID THE RULE COVERS AND A TEST HOLDS IT TO THAT. When Q63
+        /// added Structural Foundations on 2026-09-20 this line still read walls, floors
+        /// and roofs, so the window understated the rule it describes and nothing caught
+        /// it until a round read the steps file against the code. The words cannot be
+        /// built from the list, because the list can grow and the limit cannot, so a test
+        /// asserts that every default solid category is named here and that the line is
+        /// still twelve words. A fifth solid means rewording this line, on purpose.
         /// </summary>
         public static string HelpLine(SizeSettings sizes)
         {
             SizeSettings how = sizes ?? new SizeSettings();
 
             return "Services " + Millimetres(how.ThresholdMillimetres)
-                + " and under through walls, floors, roofs. New and Active only";
+                + " and under through walls, floors, roofs, foundations. New and Active";
         }
 
         /// <summary>

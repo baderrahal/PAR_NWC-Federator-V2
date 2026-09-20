@@ -417,6 +417,31 @@ namespace Federator.Core.Tests
 
         // ---------- Q63, what a foundation is and what a beam and a column are not ----------
 
+        /// <summary>
+        /// The grey line under the tick box has to name every solid the rule covers, or
+        /// the window understates what ticking the box will do. That is exactly what
+        /// happened when Q63 added Structural Foundations and the line still read walls,
+        /// floors and roofs. Twelve words is the limit CLAUDE.md sets for a help line,
+        /// so a fifth solid means rewording it on purpose rather than by accident.
+        /// </summary>
+        [Test]
+        public void TheHelpLineNamesEverySolidTheRuleCoversAndStaysWithinTwelveWords()
+        {
+            string line = PenetrationSettings.HelpLine(new SizeSettings());
+
+            Assert.That(line.Split(' ').Length, Is.LessThanOrEqualTo(12), line);
+
+            foreach (string solid in PenetrationSettings.DefaultSolidCategories)
+            {
+                // The line says them in plain words, so "Structural Foundations" is named
+                // by "foundations", which is the word a person reads on the window.
+                string word = solid.Replace("Structural ", string.Empty).ToLowerInvariant();
+
+                Assert.That(line.ToLowerInvariant(), Does.Contain(word.TrimEnd('s')),
+                    solid + " is a solid this rule moves a service through and the help line does not name it");
+            }
+        }
+
         [Test]
         public void APipeThroughAFoundationMoves()
         {
