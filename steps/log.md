@@ -1,6 +1,117 @@
 # log
 
 Newest entry at the top.
+## 2026-09-20 The drift round, THE PLAN, written before the first edit
+
+### The two gates, both passed
+
+`dotnet build ParsonsNwcFederator.sln -c Release`, 0 errors and 0 warnings, Navisworks
+Manage 2025 found. `origin/main` carries the worksets round: Bader merged it as pull
+request 66 and `f4e4f78` is an ancestor of `f5fc146`. Nothing is stacked, and
+`round-drift` branches off a main that holds everything the last round measured.
+
+### What was read off the installed DLL before planning, because three parts turn on it
+
+- `DocumentSelectionSets.ReplaceWithCopy(GroupItem, int, SavedItem)` is there, and so are
+  `InsertCopy`, `RemoveAt`, `Move` and `EditDisplayName`. So PART 2 has a route to try
+  and a second one to fall back on, and the misnamed set has a route of its own
+- `Search.SearchConditions` is a readable collection and `SearchCondition` exposes
+  `CategoryCombinedName`, `PropertyCombinedName`, `Comparison`, `Options` and `Value`.
+  So 5w CAN read what a set in the document is asking, which is what PART 3 rests on
+- `Document.RemoveFile(int)` and `TryRemoveFile(int)` are there, which 5c already said.
+  What they COST is what 5x measures and nothing has measured yet
+
+None of that says any of it WORKS. A member on a DLL is not a measurement, which is the
+lesson of the last three rounds, and every one of the four is measured on a real file
+before a line of PART 2 to PART 5 is written.
+
+### The order, and why it is that order
+
+MEASURE ONCE, THEN BUILD, THEN RUN ONCE. Navisworks is started ONCE for the whole of
+PART 1. The last three rounds each found a reader that returned nothing and looked like
+an answer, and two of the four things below are exactly that shape.
+
+1. **5v, can a set be replaced without losing what points at it.** Against a copy of
+   1000BS, 13,091 bytes. One clash set to Reviewed FIRST so there is something to lose.
+   `ReplaceWithCopy` at the set's own index, save, close, REOPEN OFF THE DISK, and read
+   back all five: the test still points at a set and the right one, the test still holds
+   its results, the Reviewed status survived, what the set finds now against before, and
+   the set is at the same place in the tree. If it does not work, measure delete and re
+   add on the same five counts and say what that costs
+2. **5w, what every set in an NWF is actually asking.** `SelectionSet.Search` read for
+   every set in every one of his NWFs, put beside what the picked file asks. How many
+   have drifted, per group and across the run, and named. `BLD-DRPipe Accessories` in
+   1A02MM is the check that the read works at all, because it is a known drift
+3. **5x, what taking one model out costs.** Open a copy with several models and real
+   results, remove one model, read back what happened to the sets, the tests, the
+   results, the statuses and the viewpoints that pointed into it. Save, reopen, read
+   again. THE ANSWER MAY BE THAT IT COSTS TOO MUCH and that is a good outcome, because
+   it closes Q34 either way
+4. **5y, the tolerance reset.** On a copy with a test holding Reviewed and Active
+   clashes, pick a different tolerance, run, read back how many results and statuses
+   were lost. THEN count across every log he already has, both folders, how many tests
+   and how many clashes his past runs reset this way. That half needs no Navisworks
+
+All four into `docs\history\scan.md` as 5v, 5w, 5x and 5y.
+
+Then the build, each its own commit, built after every change and not at the end.
+
+5. **PART 2, Q72 answered a.** The tick box, off by default, twelve word help line,
+   rebuilding ONLY the sets 5w counted as drifted and never all 61. Per set it says the
+   old and new question AND the old and new name. IF 5v SHOWED RESULTS OR STATUSES DO
+   NOT SURVIVE it REFUSES a set whose test holds results, names them, and says what
+   would be lost. Proved on copies, 1000BS then 1A02MM at 24.8 MB, results and statuses
+   counted before and after both times. Five tests
+6. **PART 3, the sets block tells the truth.** 3a prints what the set in the DOCUMENT
+   asks, read off the set, and says both where the file differs. 3b is the most
+   important thing in the round: every set finding zero goes in ONE of three named
+   buckets, and the block says what it costs in clash tests, which for 1A02MM is 1,677
+   of 1,830. Tests for each bucket, the cost line, and the block absent when no set is
+   empty
+7. **PART 4, the tolerance trap.** The count read off the open document and never
+   estimated, before the run if this window allows a confirm and as a red warning line
+   plus a per test log line if it does not. The round says which was built and why
+8. **PART 5, the model remove, ONLY IF 5x ALLOWS IT.** If anything is lost, BUILD
+   NOTHING, write the cost into scan.md and answer Q34 with the measurement
+9. **PART 6, the record.** Five corrections: 5a's UNKNOWN line, the CreateCopy summary,
+   the worksets entry's three numbers for one folder, F57's six Look for lines against
+   the code, and the four chosen constants checked to still say they were chosen
+
+Then the proving.
+
+10. **PART 7.** Backup read back byte for byte first. Then the real run with the NEW
+    TICK BOX ON, reported against the run of 16:20 on every number the brief lists,
+    INCLUDING A RUN TOTAL FOR CLASHES, which the last two round reports did not carry
+11. **PART 8.** The log read end to end, then ONE OF THE WORKBOOKS THE RUN WROTE opened
+    and its blocks counted the way his 1A02MM was counted, then the steps file read
+    against the code. Any check that could never pass or never fail is a bug, and the
+    rule about a public member nothing calls is applied to this round's own work
+
+### What is decided and is not reopened
+
+Q72 is answered a, the tick box, and not b or c. F18 and F23 wait on Bader and are not
+touched or guessed at. F57 IS closed here, because the code is the truth and the steps
+file describes the code.
+
+### The two things most likely to go wrong, said in advance
+
+**5v MAY SAY NO.** If replacing a set loses the clash results or the statuses pointing
+at it, the tick box becomes a thing that refuses more often than it acts, and the round
+says so plainly rather than quietly rebuilding anyway. A tick box that destroys a week
+of review is worse than eight NWFs with a wrong set in them.
+
+**3b CAN ONLY GUESS AT THE NEAREST VALUE.** Naming the nearest value a model does carry
+is a suggestion and not a correction, and it will be written as one. The workset round
+already proved that a name one letter away can be a completely different thing.
+
+### The four standing rules of a run on his machine
+
+Nothing is written into a live project folder except PART 7's run and PART 7's backup,
+and everything else goes under `C:\Users\bader\AppData\Local\Temp\claude\round-drift`.
+Every program started, every file written outside the repo with its full path and every
+process stopped is listed in the round report. Everything opened is closed, the check is
+run and it is said. Nothing of his is deleted or overwritten.
+
 ## 2026-09-20 The worksets round, a size reader that dropped every worded size, and two groups failed on purpose
 
 ### What was done
