@@ -57,3 +57,6 @@ coverage*.xml
 # because git does not re-ignore a file it is already tracking. Checked with
 # git check-ignore -v on a name that is not there yet.
 !steps/logs/*.log
+
+# Bader drops files here for a round to pick up. Not part of the repo.
+Claude outputs/
