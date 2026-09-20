@@ -45,6 +45,39 @@ namespace Federator.Core.Tests
             };
         }
 
+        /// <summary>
+        /// The six device categories this project's OTHER sets already claim, so the catch
+        /// all must not double count them. Sample data off the client's own matrix, read
+        /// out of it by TheSixDeviceSetsThatKeepTheirOwnGeometryAreAllInTheMatrix below,
+        /// and in the order the file would sort them so the artefact is stable.
+        /// </summary>
+        private static readonly string[] DeviceCategoriesOtherSetsClaim =
+        {
+            "Communication Devices", "Data Devices", "Fire Alarm Devices",
+            "Lighting Devices", "Security Devices", "Telephone Devices"
+        };
+
+        /// <summary>
+        /// WHAT THE CORRECTED FILE CARRIES SINCE THE DIMMING ROUND. BLD-EL-Devices asks
+        /// for a category holding Devices and none of the six its siblings claim, which
+        /// is what F87 wanted from the start. It shipped the one equals fallback because
+        /// whether a negated condition imports was not measured, and 5g measured it on
+        /// 2026-09-20: it does, exactly, and the fallback found ZERO items in 1A02MM.
+        /// ProjectRewrites above is kept as sample data for the generic rewrite tests and
+        /// is no longer what the committed file is made with.
+        /// </summary>
+        private static IList<ConditionsRewrite> ProjectConditions()
+        {
+            return new List<ConditionsRewrite>
+            {
+                new ConditionsRewrite(
+                    DevicesSet,
+                    "Devices",
+                    new List<string>(DeviceCategoriesOtherSetsClaim),
+                    "F87 in full since scan.md 5g: contains, then one negated equals per sibling category")
+            };
+        }
+
         private static string Read(string path)
         {
             using (StreamReader reader = new StreamReader(path, Encoding.UTF8))
@@ -192,6 +225,27 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// The corrections the committed file is actually made with: the hyphen 121 times
+        /// and the catch all set rewritten into seven conditions, one contains and six
+        /// negated equals.
+        /// </summary>
+        [Test]
+        public void TheCatchAllSetIsRewrittenIntoOneContainsAndSixNegations()
+        {
+            string xml = Read(Samples.Matrix());
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(
+                xml, ProjectRenames(), null, ProjectConditions());
+
+            Assert.That(outcome.Counts[0].Count, Is.EqualTo(121), "the hyphen, measured");
+            Assert.That(outcome.Counts[1].Count, Is.EqualTo(7), "one contains and six negated");
+            Assert.That(outcome.TotalChanged, Is.EqualTo(128));
+
+            Assert.That(outcome.Text, Does.Contain("<condition test=\"contains\" flags=\"0\">"));
+            Assert.That(outcome.Text, Does.Contain("<condition test=\"equals\" flags=\"32\">"));
+        }
+
+        /// <summary>
         /// THE ONE THAT KEEPS THE ARTIFACT HONEST. The file committed under exchange is
         /// byte for byte what the rule produces from the file under samples. If anyone
         /// edits either by hand, this fails.
@@ -203,7 +257,7 @@ namespace Federator.Core.Tests
             string committed = Read(Samples.CorrectedMatrix());
 
             CorrectionOutcome outcome = MatrixCorrections.Apply(
-                source, ProjectRenames(), ProjectRewrites());
+                source, ProjectRenames(), null, ProjectConditions());
 
             Assert.That(outcome.Text, Is.EqualTo(committed));
         }
@@ -217,10 +271,50 @@ namespace Federator.Core.Tests
             Assert.That(committed, Does.Contain(CorrectName));
 
             CorrectionOutcome again = MatrixCorrections.Apply(
-                committed, ProjectRenames(), ProjectRewrites());
+                committed, ProjectRenames(), null, ProjectConditions());
 
             Assert.That(again.TotalChanged, Is.EqualTo(0),
                 "a second run reading zero is what proves the corrections are idempotent");
+        }
+
+        /// <summary>
+        /// What the catch all set asks for, read off the committed file rather than off
+        /// the rule that wrote it, so the artefact is checked and not the intention. One
+        /// contains and six negated equals, and the fallback value is gone.
+        /// </summary>
+        [Test]
+        public void TheCommittedFileCarriesTheNegatedFormAndNotTheFallback()
+        {
+            string committed = Read(Samples.CorrectedMatrix());
+            int at = committed.IndexOf("<selectionset name=\"" + DevicesSet + "\"", StringComparison.Ordinal);
+            Assert.That(at, Is.GreaterThan(-1));
+
+            int ends = committed.IndexOf("</selectionset>", at, StringComparison.Ordinal);
+            string block = committed.Substring(at, ends - at);
+
+            Assert.That(Occurrences(block, "<condition test=\"contains\" flags=\"0\">"), Is.EqualTo(1));
+            Assert.That(Occurrences(block, "<condition test=\"equals\" flags=\"32\">"), Is.EqualTo(6));
+            Assert.That(block, Does.Contain(">Devices<"));
+            Assert.That(block, Does.Not.Contain(DevicesShouldAskFor), "the one equals fallback is gone");
+
+            foreach (string category in DeviceCategoriesOtherSetsClaim)
+            {
+                Assert.That(block, Does.Contain(">" + category + "<"), category);
+            }
+        }
+
+        private static int Occurrences(string text, string what)
+        {
+            int count = 0;
+            int at = text.IndexOf(what, StringComparison.Ordinal);
+
+            while (at >= 0)
+            {
+                count++;
+                at = text.IndexOf(what, at + what.Length, StringComparison.Ordinal);
+            }
+
+            return count;
         }
 
         [Test]

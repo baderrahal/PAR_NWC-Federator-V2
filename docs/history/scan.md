@@ -3255,7 +3255,8 @@ over `ProbeSettings.CategoryNames`, because a search would match on a TAB name t
 settings do not carry and the probe exists to find out what the tabs are called. What that
 walk costs is measured and written in the PROBE block, per file.
 
-## 5g. Does Navisworks import a NEGATED search condition, asked 2026-09-19, NOT MEASURED
+## 5g. Does Navisworks import a NEGATED search condition, asked 2026-09-19, MEASURED 2026-09-20
+MEASURED on 2026-09-20 in the dimming round. The measurement and what it decided areunder 5g, measured, further down, after 5o. What follows here is what was asked.
 
 THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
 
@@ -3775,3 +3776,83 @@ roots and resets it on the two clashing items, the viewpoint is recorded through
 view with `ApplyMaterialAttribs` true beside `ApplyHideAttribs`, the read back becomes
 four counts and not three flags, and the temporary override is undone on the roots when
 the group's writing ends, the way the hidden state already is.
+
+## 5g, measured. Does Navisworks import a NEGATED search condition, MEASURED 2026-09-20
+
+The question above was asked on 2026-09-19 and is answered here. The probe is
+`tools\probes\ViewpointProbe` in its `negate` mode, run through the automation host
+against a copy of the 1A02MM NWF, 2,606 items in 4 models. The result file is
+`tools\probes\ViewpointProbe\5g-result-20260920.txt`.
+
+**THE ANSWER IS YES, EXACTLY, AND IT SURVIVES THE FILE.**
+
+```
+flags=0,  Category equals Lighting Fixtures  found 49 item(s)
+flags=32, the same condition negated,        found 4 item(s)
+the built condition's Options read IgnoreDisplayNames, NegateCondition = 37, NegateCondition in it: True
+TrySaveFile = True
+reopened off the disk
+after the reopen the set [probe negated set] is there, HasSearch True
+   condition 0 Options IgnoreDisplayNames, NegateCondition = 37, NegateCondition in it: True
+   it finds 4 item(s) after the reopen
+```
+
+The condition is built through the SAME constructor `SetBuilder.BuildCondition` calls,
+with the same two Ignore bits it always adds, so 37 is 32 negate plus 1 and 4, and what
+was measured is the tool's own call and not a near relative of it. The bit goes into the
+NWF and comes back out of it.
+
+**A NEGATION NEEDS A POSITIVE CONDITION BESIDE IT, and that is the whole of why the
+standalone number reads 4.** The four are the four MODEL ROOTS:
+
+```
+NOT equals Lighting Fixtures, what the 4 are:
+   [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc] geometry False, model True
+   [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc] geometry False, model True
+   [1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] geometry False, model True
+   [1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] geometry False, model True
+```
+
+A root carries no category at all, so "category is not Lighting Fixtures" is true of it,
+it matches, and the search prunes below a match. A negated condition written on its own
+therefore selects four file nodes and nothing a person would call an item.
+
+**WITH A POSITIVE BESIDE IT THE ARITHMETIC IS EXACT.** This is the shape F87 wants, a
+contains and then one negated equals per category a sibling set already claims:
+
+```
+contains Devices                                          found 67 item(s)
+   equals [Nurse Call Devices]    on its own 0,  and contains Devices NOT equals it 67
+   equals [Data Devices]          on its own 4,  and contains Devices NOT equals it 63
+   equals [Security Devices]      on its own 38, and contains Devices NOT equals it 29
+   equals [Lighting Devices]      on its own 8,  and contains Devices NOT equals it 59
+   equals [Communication Devices] on its own 2,  and contains Devices NOT equals it 65
+   equals [Fire Alarm Devices]    on its own 15, and contains Devices NOT equals it 52
+```
+
+Every one comes down by exactly the number that named category holds. Conditions in one
+group are ANDed, F78, so the negations stack and the set ends up holding the Devices
+categories no sibling claims.
+
+**AND THE FALLBACK IT REPLACES FOUND NOTHING.** `equals Nurse Call Devices`, which is
+what `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` carried until today, matched ZERO
+items in 1A02MM. The set was in every clash test in that building and could never clash
+with anything.
+
+**WHAT WAS NOT REACHABLE, said rather than left open.** Whether Navisworks' own EXPORTER
+writes `flags="32"` when a person builds a negated set by hand and exports the sets is
+still UNKNOWN, and it is not reachable from here: nothing in the .NET API exports a
+search set to XML. `Document.ExportAsDwf` is the only export on the document and
+`DocumentSelectionSets` has no writer at all, read off the installed
+Autodesk.Navisworks.Api 22.0.0.0 on 2026-09-20. It does not block anything: the tool
+WRITES this file itself and READS it itself, and both halves are measured. A person who
+exports a set by hand and compares is the only way to close the last part, and nothing
+waits on it.
+
+**WHAT THIS DECIDES.** `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` carries the real
+negated form since 2026-09-20: `BLD-EL-Devices` holds one `contains` condition for
+Devices and six `equals` conditions at `flags="32"`, one per category its siblings claim.
+`Federator.Core.Exchange.ConditionsRewrite` is the rule that writes it, built off the
+set's OWN first condition so nothing in the code names a category or a property of this
+project, and the byte for byte test still proves the committed file is exactly what the
+rule produces from the sample. The NOT MEASURED wording is gone from the question above.

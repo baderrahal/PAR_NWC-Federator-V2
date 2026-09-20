@@ -89,6 +89,14 @@ namespace ViewpointProbe
                     {
                         MeasureDim(parameters[2]);
                     }
+                    else if (mode == "negate")
+                    {
+                        MeasureNegate(parameters[2]);
+                    }
+                    else if (mode == "press")
+                    {
+                        MeasurePress(parameters[2], parameters.Length > 3 ? parameters[3] : null);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -1283,6 +1291,418 @@ namespace ViewpointProbe
             }
 
             Say("done. A route works only where, after the reopen, pressing it leaves the two items solid and the third dim.");
+        }
+
+        // ---------- what a WRITTEN viewpoint actually shows when it is pressed ----------
+
+        /// <summary>
+        /// Opens an NWF this tool wrote and presses the first viewpoints it finds, three
+        /// folders down, counting what a person would see: how many items are hidden, how
+        /// many are dimmed and how many are left solid. A screenshot shows a grey shape
+        /// and leaves which shape it is to the eye. This counts it.
+        ///
+        /// A dimmed viewpoint is right where exactly TWO items read solid, which are the
+        /// two the clash is between, and everything else visible reads at the dim value.
+        /// </summary>
+        private void MeasurePress(string nwf, string under)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwf);
+
+            if (!document.TryOpenFile(nwf))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            Say("models " + document.Models.Count);
+
+            List<SavedViewpoint> found = new List<SavedViewpoint>();
+            List<string> paths = new List<string>();
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                if (string.IsNullOrEmpty(under))
+                {
+                    FirstFew(root, string.Empty, found, paths, 3);
+                }
+                else
+                {
+                    // Only under the named top folder, because a client's NWF carries its
+                    // own viewpoints at the root and those are not the ones being judged.
+                    SavedItemCollection children = root.Children;
+
+                    for (int i = 0; i < children.Count; i++)
+                    {
+                        SavedItem child = children[i];
+                        GroupItem folder = child as GroupItem;
+
+                        if (folder != null && string.Equals(child.DisplayName, under, StringComparison.Ordinal))
+                        {
+                            FirstFew(folder, "/" + child.DisplayName, found, paths, 3);
+                        }
+
+                        child.Dispose();
+                    }
+                }
+            }
+
+            Say("pressing " + found.Count + " viewpoint(s) out of the tree"
+                + (string.IsNullOrEmpty(under) ? string.Empty : " under " + under));
+
+            for (int i = 0; i < found.Count; i++)
+            {
+                using (SavedViewpoint viewpoint = found[i])
+                {
+                    Say("--- " + paths[i]);
+                    document.Models.ResetAllTemporaryMaterials();
+                    document.Models.ResetAllHidden();
+                    document.SavedViewpoints.CurrentSavedViewpoint = viewpoint;
+                    CountWhatIsSeen(document);
+                }
+            }
+
+            document.Models.ResetAllTemporaryMaterials();
+            document.Models.ResetAllHidden();
+        }
+
+        /// <summary>The first few leaf viewpoints under the tree, with the path each sits at.</summary>
+        private static void FirstFew(GroupItem parent, string path, List<SavedViewpoint> into, List<string> paths, int want)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count && into.Count < want; i++)
+            {
+                SavedItem child = children[i];
+                GroupItem folder = child as GroupItem;
+
+                if (folder != null)
+                {
+                    FirstFew(folder, path + "/" + child.DisplayName, into, paths, want);
+                    folder.Dispose();
+                    continue;
+                }
+
+                SavedViewpoint viewpoint = child as SavedViewpoint;
+
+                if (viewpoint != null && path.Length > 0)
+                {
+                    into.Add(viewpoint);
+                    paths.Add(path + "/" + child.DisplayName);
+                    continue;
+                }
+
+                child.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// PER MODEL, because hiding a model ROOT does not set IsHidden on the leaves
+        /// under it: the first press measured 817 solid items and they were the hidden
+        /// models' items counted as visible. A model whose root is hidden contributes
+        /// nothing a person sees.
+        /// </summary>
+        private void CountWhatIsSeen(Document document)
+        {
+            int hiddenModels = 0;
+            int hiddenItems = 0;
+            int solid = 0;
+            int dim = 0;
+            string dimValue = "none";
+            List<string> solidNames = new List<string>();
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                using (Model model = document.Models[m])
+                using (ModelItem root = model.RootItem)
+                {
+                    bool modelHidden;
+
+                    using (ModelItemCollection one = new ModelItemCollection())
+                    {
+                        one.Add(root);
+                        modelHidden = document.Models.IsHidden(one);
+                    }
+
+                    foreach (ModelItem item in root.DescendantsAndSelf)
+                    {
+                        using (item)
+                        {
+                            if (!item.HasGeometry)
+                            {
+                                continue;
+                            }
+
+                            if (modelHidden)
+                            {
+                                hiddenItems++;
+                                continue;
+                            }
+
+                            using (ModelGeometry geometry = item.Geometry)
+                            {
+                                if (geometry.ActiveTransparency > 0.0)
+                                {
+                                    dim++;
+                                    dimValue = Round(geometry.ActiveTransparency);
+                                }
+                                else
+                                {
+                                    solid++;
+
+                                    if (solidNames.Count < 4)
+                                    {
+                                        solidNames.Add(item.DisplayName + " in " + Path.GetFileName(model.FileName));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (modelHidden)
+                    {
+                        hiddenModels++;
+                    }
+                }
+            }
+
+            Say("   " + hiddenModels + " model(s) hidden carrying " + hiddenItems + " item(s), then of what is left: "
+                + dim + " dimmed at " + dimValue + " and SOLID " + solid
+                + (solidNames.Count == 0 ? string.Empty : ": " + string.Join(" | ", solidNames.ToArray())));
+        }
+
+        // ---------- 5g, does a NEGATED search condition build, find and survive ----------
+
+        /// <summary>
+        /// F87 wants BLD-EL-Devices to ask for category CONTAINS Devices AND NOT each of
+        /// six named device categories, and shipped the fallback, one equals, because
+        /// nothing had measured whether a negation survives the exchange file. The
+        /// exchange file's flags attribute IS SearchConditionOptions, F78, and
+        /// NegateCondition is 32, so the question is whether a condition built with that
+        /// bit finds the right items and keeps the bit when the NWF is saved and reopened.
+        ///
+        /// The condition is built through the SAME constructor SetBuilder.BuildCondition
+        /// calls, with the same two Ignore bits it always adds, so what is measured here
+        /// is the tool's own call and not a near relative of it.
+        /// </summary>
+        private void MeasureNegate(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            int all = 0;
+
+            foreach (ModelItem item in document.Models.RootItemDescendantsAndSelf)
+            {
+                using (item)
+                {
+                    all++;
+                }
+            }
+
+            Say("the copy holds " + all + " items in " + document.Models.Count + " models");
+
+            // flags="0" and flags="32", the two the exchange file could carry
+            int plain = CountBySearch(document, 0, "Lighting Fixtures");
+            int negated = CountBySearch(document, 32, "Lighting Fixtures");
+
+            Say("flags=0,  Category equals Lighting Fixtures  found " + plain + " item(s)");
+            Say("flags=32, the same condition negated,        found " + negated + " item(s)");
+            Say("   negation works where the second is neither the first nor zero, out of " + all + " items");
+
+            // The options read back off the built condition, so the bit is seen to survive
+            // the constructor the tool calls
+            using (Search search = BuildSearch(32, "Lighting Fixtures"))
+            {
+                using (SearchCondition built = search.SearchConditions[0])
+                {
+                    Say("the built condition's Options read " + built.Options + " = " + (int)built.Options
+                        + ", NegateCondition in it: " + ((built.Options & SearchConditionOptions.NegateCondition) == SearchConditionOptions.NegateCondition));
+                }
+            }
+
+            // Into the document as a set, then saved, cleared, reopened, and read back
+            using (Search search = BuildSearch(32, "Lighting Fixtures"))
+            using (SelectionSet set = new SelectionSet(search))
+            {
+                set.DisplayName = "probe negated set";
+                document.SelectionSets.AddCopy(set);
+            }
+
+            Say("added the negated set, the document now holds " + document.SelectionSets.Value.Count + " at the root");
+
+            string saved = Path.Combine(Path.GetDirectoryName(nwfCopy), "probe-negate-saved.nwf");
+            Say("TrySaveFile to " + saved + " = " + document.TrySaveFile(saved));
+            document.Clear();
+
+            if (!document.TryOpenFile(saved))
+            {
+                Say("UNKNOWN: the saved copy would not reopen");
+                return;
+            }
+
+            Say("reopened off the disk");
+            ReadSetBack(document, "probe negated set");
+
+            // THE SHAPE F87 ACTUALLY WANTS, which is two conditions and not one: category
+            // CONTAINS Devices, and NOT one named category. One negated condition on its
+            // own answered 4 items above and that number needs explaining before the
+            // corrected matrix is written with a negation in it.
+            Say("--- the two condition shape F87 wants ---");
+            Say("contains Devices                          found " + CountContains(document, 0, "Devices", 0, null) + " item(s)");
+
+            foreach (string category in new[] { "Nurse Call Devices", "Data Devices", "Security Devices", "Lighting Devices", "Communication Devices", "Fire Alarm Devices" })
+            {
+                Say("   equals [" + category + "] on its own " + CountBySearch(document, 0, category)
+                    + ", and contains Devices NOT equals it " + CountContains(document, 0, "Devices", 32, category));
+            }
+            Say("NOT equals Lighting Fixtures, what the 4 are:");
+            NameWhatItFinds(document, 32, "Lighting Fixtures");
+        }
+
+        private void NameWhatItFinds(Document document, int flags, string value)
+        {
+            using (Search search = BuildSearch(flags, value))
+            using (ModelItemCollection found = search.FindAll(document, false))
+            {
+                for (int i = 0; i < found.Count && i < 6; i++)
+                {
+                    using (ModelItem item = found[i])
+                    {
+                        Say("      [" + item.DisplayName + "] geometry " + item.HasGeometry + ", model " + item.HasModel);
+                    }
+                }
+            }
+        }
+
+        private static int CountContains(Document document, int firstFlags, string firstValue, int secondFlags, string secondValue)
+        {
+            SearchConditionOptions common = SearchConditionOptions.IgnoreCategoryDisplayName
+                | SearchConditionOptions.IgnorePropertyDisplayName;
+
+            using (Search search = new Search())
+            {
+                search.Selection.SelectAll();
+                search.SearchConditions.Add(new SearchCondition(
+                    new NamedConstant("LcRevitData_Element", "Element"),
+                    new NamedConstant("LcRevitPropertyElementCategory", "Category"),
+                    (SearchConditionOptions)firstFlags | common,
+                    SearchConditionComparison.DisplayStringContains,
+                    VariantData.FromDisplayString(firstValue)));
+
+                if (secondValue != null)
+                {
+                    search.SearchConditions.Add(new SearchCondition(
+                        new NamedConstant("LcRevitData_Element", "Element"),
+                        new NamedConstant("LcRevitPropertyElementCategory", "Category"),
+                        (SearchConditionOptions)secondFlags | common,
+                        SearchConditionComparison.Equal,
+                        VariantData.FromDisplayString(secondValue)));
+                }
+
+                using (ModelItemCollection found = search.FindAll(document, false))
+                {
+                    return found.Count;
+                }
+            }
+        }
+
+        private void ReadSetBack(Document document, string name)
+        {
+            SavedItemCollection items = document.SelectionSets.Value;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    SelectionSet set = item as SelectionSet;
+
+                    if (set == null || !string.Equals(item.DisplayName, name, StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    Say("after the reopen the set [" + name + "] is there, HasSearch " + set.HasSearch);
+
+                    if (!set.HasSearch)
+                    {
+                        return;
+                    }
+
+                    using (Search search = set.Search)
+                    {
+                        Say("   it holds " + search.SearchConditions.Count + " condition(s)");
+
+                        for (int c = 0; c < search.SearchConditions.Count; c++)
+                        {
+                            using (SearchCondition condition = search.SearchConditions[c])
+                            {
+                                Say("   condition " + c + " Options " + condition.Options + " = " + (int)condition.Options
+                                    + ", NegateCondition in it: "
+                                    + ((condition.Options & SearchConditionOptions.NegateCondition) == SearchConditionOptions.NegateCondition));
+                            }
+                        }
+
+                        using (ModelItemCollection found = search.FindAll(document, false))
+                        {
+                            Say("   it finds " + found.Count + " item(s) after the reopen");
+                        }
+                    }
+
+                    return;
+                }
+            }
+
+            Say("after the reopen the set [" + name + "] is NOT THERE");
+        }
+
+        private static Search BuildSearch(int flags, string value)
+        {
+            // The same options SetBuilder.BuildCondition assembles: the file's flags, then
+            // the two Ignore bits it always adds.
+            SearchConditionOptions options = (SearchConditionOptions)flags
+                | SearchConditionOptions.IgnoreCategoryDisplayName
+                | SearchConditionOptions.IgnorePropertyDisplayName;
+
+            Search search = new Search();
+            search.Selection.SelectAll();
+            search.SearchConditions.Add(new SearchCondition(
+                new NamedConstant("LcRevitData_Element", "Element"),
+                new NamedConstant("LcRevitPropertyElementCategory", "Category"),
+                options,
+                SearchConditionComparison.Equal,
+                VariantData.FromDisplayString(value)));
+
+            return search;
+        }
+
+        private static int CountBySearch(Document document, int flags, string value)
+        {
+            using (Search search = BuildSearch(flags, value))
+            using (ModelItemCollection found = search.FindAll(document, false))
+            {
+                return found.Count;
+            }
         }
 
         /// <summary>Clash Detective's own dim value, if anything in this API will say it.</summary>

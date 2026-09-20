@@ -1,0 +1,28 @@
+11:22:45.083  probe started, mode negate, 1 file(s)
+11:22:45.084  opening C:\Users\bader\AppData\Local\Temp\claude\round-dimming\probe\probe-negate.nwf
+11:22:45.169  the copy holds 2606 items in 4 models
+11:22:45.176  flags=0,  Category equals Lighting Fixtures  found 49 item(s)
+11:22:45.176  flags=32, the same condition negated,        found 4 item(s)
+11:22:45.176     negation works where the second is neither the first nor zero, out of 2606 items
+11:22:45.177  the built condition's Options read IgnoreDisplayNames, NegateCondition = 37, NegateCondition in it: True
+11:22:45.179  added the negated set, the document now holds 5 at the root
+11:22:45.208  TrySaveFile to C:\Users\bader\AppData\Local\Temp\claude\round-dimming\probe\probe-negate-saved.nwf = True
+11:22:45.285  reopened off the disk
+11:22:45.287  after the reopen the set [probe negated set] is there, HasSearch True
+11:22:45.287     it holds 1 condition(s)
+11:22:45.287     condition 0 Options IgnoreDisplayNames, NegateCondition = 37, NegateCondition in it: True
+11:22:45.287     it finds 4 item(s) after the reopen
+11:22:45.287  --- the two condition shape F87 wants ---
+11:22:45.289  contains Devices                          found 67 item(s)
+11:22:45.292     equals [Nurse Call Devices] on its own 0, and contains Devices NOT equals it 67
+11:22:45.295     equals [Data Devices] on its own 4, and contains Devices NOT equals it 63
+11:22:45.298     equals [Security Devices] on its own 38, and contains Devices NOT equals it 29
+11:22:45.302     equals [Lighting Devices] on its own 8, and contains Devices NOT equals it 59
+11:22:45.305     equals [Communication Devices] on its own 2, and contains Devices NOT equals it 65
+11:22:45.308     equals [Fire Alarm Devices] on its own 15, and contains Devices NOT equals it 52
+11:22:45.308  NOT equals Lighting Fixtures, what the 4 are:
+11:22:45.309        [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc] geometry False, model True
+11:22:45.309        [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc] geometry False, model True
+11:22:45.309        [1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] geometry False, model True
+11:22:45.309        [1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] geometry False, model True
+11:22:45.309  probe finished
