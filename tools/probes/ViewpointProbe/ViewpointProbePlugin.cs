@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Autodesk.Navisworks.Api;
+using Autodesk.Navisworks.Api.Clash;
 using Autodesk.Navisworks.Api.DocumentParts;
 using Autodesk.Navisworks.Api.Plugins;
 
@@ -65,6 +66,10 @@ namespace ViewpointProbe
                     else if (mode == "restore")
                     {
                         MeasureRestore(parameters[2]);
+                    }
+                    else if (mode == "camera")
+                    {
+                        MeasureCamera(parameters[2]);
                     }
                     else
                     {
@@ -510,6 +515,207 @@ namespace ViewpointProbe
                 document.Models.ResetAllHidden();
                 Say("end: ResetAllHidden, IsHidden(root0) = " + document.Models.IsHidden(one));
             }
+        }
+
+        // ---------- 5l, the camera of a clash viewpoint ----------
+
+        /// <summary>
+        /// Measures what DocumentClashTests.TestsViewpointForResult gives back, because
+        /// every viewpoint the viewpoints round wrote opened on the same empty top view
+        /// while the picture of the same clash, TestsImageForResult, framed it. For the
+        /// first results of the first tests that have any: the position that method
+        /// returns, the centre of the bounding box of each side's first item, and then
+        /// a camera BUILT from those boxes, position above and beside the centre, pointed
+        /// at it, applied through CurrentViewpoint.CopyFrom and read back.
+        /// </summary>
+        private void MeasureCamera(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            using (Viewpoint opened = document.CurrentViewpoint.CreateCopy())
+            {
+                Say("the view the file opened on: " + Describe(opened));
+            }
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests clashTests = document.GetClash().TestsData;
+            Say("tests " + clashTests.Tests.Count);
+            int shown = 0;
+
+            for (int t = 0; t < clashTests.Tests.Count && shown < 6; t++)
+            {
+                Autodesk.Navisworks.Api.Clash.ClashTest test = clashTests.Tests[t] as Autodesk.Navisworks.Api.Clash.ClashTest;
+
+                if (test == null || test.Children.Count == 0)
+                {
+                    continue;
+                }
+
+                for (int r = 0; r < test.Children.Count && shown < 6; r++)
+                {
+                    Autodesk.Navisworks.Api.Clash.ClashResult result = test.Children[r] as Autodesk.Navisworks.Api.Clash.ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    shown++;
+                    Say("--- " + test.DisplayName + "  " + result.DisplayName + "  status " + result.Status);
+
+                    try
+                    {
+                        using (Viewpoint framed = clashTests.TestsViewpointForResult(result))
+                        {
+                            Say("TestsViewpointForResult: " + (framed == null ? "null" : Describe(framed)));
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Say("TestsViewpointForResult threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    // Route a, what the builder did: a CreateCopy of the framed viewpoint
+                    // kept after the framed one is disposed, applied later through CopyFrom.
+                    try
+                    {
+                        Viewpoint copy;
+
+                        using (Viewpoint framed = clashTests.TestsViewpointForResult(result))
+                        {
+                            copy = framed.CreateCopy();
+                        }
+
+                        Say("   route a, the copy after the framed one is disposed: " + Describe(copy));
+                        document.CurrentViewpoint.CopyFrom(copy);
+                        Say("   route a, read back after CopyFrom(copy): " + Describe(document.CurrentViewpoint.Value));
+
+                        using (SavedViewpoint captured = document.SavedViewpoints.CaptureRuntimeOverrides())
+                        {
+                            Say("   route a, the capture's own Viewpoint: " + Describe(captured.Viewpoint));
+                        }
+
+                        copy.Dispose();
+                    }
+                    catch (Exception error)
+                    {
+                        Say("   route a threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    // Route b, the framed viewpoint itself kept, the result wrapper it came
+                    // from disposed first, applied through CopyFrom.
+                    try
+                    {
+                        Viewpoint framed = clashTests.TestsViewpointForResult(result);
+                        result.Dispose();
+                        Say("   route b, the framed one after its result is disposed: " + Describe(framed));
+                        document.CurrentViewpoint.CopyFrom(framed);
+                        Say("   route b, read back after CopyFrom(framed): " + Describe(document.CurrentViewpoint.Value));
+                        framed.Dispose();
+                        result = test.Children[r] as ClashResult;
+                    }
+                    catch (Exception error)
+                    {
+                        Say("   route b threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    BoundingBox3D box = null;
+
+                    foreach (ModelItemCollection side in new[] { result.Selection1, result.Selection2 })
+                    {
+                        using (side)
+                        {
+                            if (side.Count == 0)
+                            {
+                                Say("   a side with no item");
+                                continue;
+                            }
+
+                            using (ModelItem item = side[0])
+                            {
+                                BoundingBox3D b = item.BoundingBox();
+                                Say("   item " + item.DisplayName + "  box " + Describe(b));
+                                box = box == null ? b : box.Extend(b);
+                            }
+                        }
+                    }
+
+                    if (box == null || box.IsEmpty)
+                    {
+                        Say("   no box to build a camera from");
+                        continue;
+                    }
+
+                    Point3D centre = box.Center;
+                    double size = Math.Max(box.Size.X, Math.Max(box.Size.Y, box.Size.Z));
+                    double back = Math.Max(size, 0.5) * 2.5;
+
+                    using (Viewpoint built = document.CurrentViewpoint.CreateCopy())
+                    {
+                        built.Position = new Point3D(centre.X - back * 0.6, centre.Y - back * 0.6, centre.Z + back * 0.5);
+                        built.PointAt(centre);
+                        built.FocalDistance = back;
+                        Say("   built camera: " + Describe(built));
+                        document.CurrentViewpoint.CopyFrom(built);
+                    }
+
+                    using (Viewpoint now = document.CurrentViewpoint.CreateCopy())
+                    {
+                        Say("   read back after CopyFrom: " + Describe(now));
+                    }
+                }
+            }
+        }
+
+        private static string Describe(Viewpoint v)
+        {
+            if (v == null)
+            {
+                return "null";
+            }
+
+            try
+            {
+                Point3D p = v.Position;
+                return "position (" + Round(p.X) + ", " + Round(p.Y) + ", " + Round(p.Z) + ")"
+                    + " projection " + v.Projection
+                    + " focal " + (v.HasFocalDistance ? Round(v.FocalDistance) : "none")
+                    + " heightField " + Round(v.HeightField);
+            }
+            catch (Exception error)
+            {
+                return "describe threw " + error.GetType().Name;
+            }
+        }
+
+        private static string Describe(BoundingBox3D b)
+        {
+            if (b == null || b.IsEmpty)
+            {
+                return "empty";
+            }
+
+            Point3D c = b.Center;
+            return "centre (" + Round(c.X) + ", " + Round(c.Y) + ", " + Round(c.Z) + ") size ("
+                + Round(b.Size.X) + ", " + Round(b.Size.Y) + ", " + Round(b.Size.Z) + ")";
+        }
+
+        private static string Round(double d)
+        {
+            return d.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>Adds the topmost hidden item of every branch and does not descend below it.</summary>

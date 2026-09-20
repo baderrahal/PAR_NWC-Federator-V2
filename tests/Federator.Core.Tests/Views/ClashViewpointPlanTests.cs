@@ -43,6 +43,25 @@ namespace Federator.Core.Tests
             return ClashViewpointPlan.For(clashes, Settings(), priorityPicked);
         }
 
+        // ---------- the camera read back, 5l ----------
+
+        /// <summary>
+        /// The distance a written viewpoint's camera may sit from the clash camera is a
+        /// setting with a default a person cannot see and rounding cannot reach, and it
+        /// is not a constant, because it is a number that shapes a run.
+        /// </summary>
+        [Test]
+        public void TheCameraReadBackToleranceIsASettingWithASmallDefault()
+        {
+            ViewpointSettings settings = Settings();
+
+            Assert.That(settings.CameraReadBackTolerance, Is.EqualTo(0.001));
+            Assert.That(ViewpointSettings.DefaultCameraReadBackTolerance, Is.EqualTo(0.001));
+
+            settings.CameraReadBackTolerance = 0.5;
+            Assert.That(settings.CameraReadBackTolerance, Is.EqualTo(0.5));
+        }
+
         // ---------- layer 2, the discipline pair ----------
 
         [Test]

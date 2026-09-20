@@ -54,6 +54,8 @@ namespace Federator.Addin.Engine
 
         private HiddenSnapshot snapshot;
         private Viewpoint viewBefore;
+        private int cameraRead;
+        private int cameraUnread;
 
         public ViewpointBuilder(
             Action<string> progress,
@@ -101,6 +103,8 @@ namespace Federator.Addin.Engine
             IDictionary<int, string> disciplines = modelDisciplines ?? new Dictionary<int, string>();
             snapshot = null;
             viewBefore = null;
+            cameraRead = 0;
+            cameraUnread = 0;
 
             try
             {
@@ -130,6 +134,14 @@ namespace Federator.Addin.Engine
                             error,
                             "kept going, the other viewpoints are still tried and the block carries the total");
                     }
+                }
+
+                if (cameraRead + cameraUnread > 0)
+                {
+                    log.Line("VIEWS    camera read back on " + cameraRead + " created viewpoint(s), each within "
+                        + views.CameraReadBackTolerance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                        + " units of its clash camera"
+                        + (cameraUnread > 0 ? ", and " + cameraUnread + " whose recorded camera could not be read, counted as created and said" : string.Empty));
                 }
             }
             finally
@@ -456,7 +468,7 @@ namespace Federator.Addin.Engine
                 document.Models.ResetAllHidden();
             }
 
-            document.CurrentViewpoint.CopyFrom(camera);
+            SavedViewpoints.ApplyCamera(document, camera);
             SavedViewpoints.EnsureFolders(document, planned.Folders);
             SavedViewpoints.Capture(document, planned.Folders, planned.Name);
 
@@ -466,6 +478,30 @@ namespace Federator.Addin.Engine
             {
                 outcome.AddFailed(planned.Path, planned.Pair.Folder, "it was added and a fresh read does not show it");
                 return;
+            }
+
+            // The camera read back too, because the first run wrote every viewpoint on
+            // the one view the window showed and the tree looked complete, 5l. A
+            // viewpoint whose recorded camera is not the clash camera is not a viewpoint
+            // of that clash, and it is counted as failed with the distance in the reason.
+            double distance = SavedViewpoints.CameraDistance(document, planned.Folders, planned.Name, camera);
+
+            if (distance < 0)
+            {
+                cameraUnread++;
+            }
+            else if (distance > views.CameraReadBackTolerance)
+            {
+                outcome.AddFailed(
+                    planned.Path,
+                    planned.Pair.Folder,
+                    "it was added with a camera " + distance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " units from the clash camera, so it would not open on the clash");
+                return;
+            }
+            else
+            {
+                cameraRead++;
             }
 
             outcome.AddCreated(planned.Path, planned.Pair.Folder, hidden.Count);
@@ -485,7 +521,7 @@ namespace Federator.Addin.Engine
 
             if (viewBefore == null)
             {
-                viewBefore = document.CurrentViewpoint.CreateCopy();
+                viewBefore = SavedViewpoints.ReadCamera(document);
             }
         }
 
@@ -530,7 +566,7 @@ namespace Federator.Addin.Engine
             {
                 try
                 {
-                    document.CurrentViewpoint.CopyFrom(viewBefore);
+                    SavedViewpoints.ApplyCamera(document, viewBefore);
                 }
                 catch (Exception error)
                 {

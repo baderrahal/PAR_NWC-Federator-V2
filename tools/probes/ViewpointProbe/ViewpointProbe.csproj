@@ -5,7 +5,9 @@
     not part of the solution. It is loaded into a Navisworks started through the
     automation API with AddPluginAssembly and run with ExecuteAddInPlugin, and it
     measures the one thing the DLL cannot say: whether a saved viewpoint records the
-    hidden state it was saved with, and brings it back after a save and a reopen.
+    hidden state it was saved with, and brings it back after a save and a reopen. Since
+    the review of the viewpoints round it also measures how the hidden state is put back,
+    5k, and what the clash viewpoint call returns, 5l, so it references the Clash DLL too.
 
     Built the same way the add-in is, against the DLLs in the install, copy local false:
 
@@ -28,6 +30,7 @@
     <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2025</NavisworksPath>
     <NavisworksPath>$(NavisworksPath.TrimEnd('\'))</NavisworksPath>
     <NavisworksApiDll>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</NavisworksApiDll>
+    <NavisworksClashDll>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</NavisworksClashDll>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,10 +43,16 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+    <Reference Include="Autodesk.Navisworks.Clash">
+      <HintPath>$(NavisworksClashDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
   </ItemGroup>
 
   <Target Name="CheckNavisworks" BeforeTargets="ResolveAssemblyReferences">
     <Error Condition="!Exists('$(NavisworksApiDll)')" Text="Autodesk.Navisworks.Api.dll was not found at $(NavisworksApiDll). Pass -p:NavisworksPath with the real install folder." />
+    <Error Condition="!Exists('$(NavisworksClashDll)')" Text="Autodesk.Navisworks.Clash.dll was not found at $(NavisworksClashDll). Pass -p:NavisworksPath with the real install folder." />
   </Target>
 
 </Project>

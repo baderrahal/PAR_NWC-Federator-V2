@@ -227,6 +227,89 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// Puts a camera on the view the person sees AND on the document's current
+        /// viewpoint. MEASURED on 2026-09-19, docs\history\scan.md 5l: CaptureRuntimeOverrides
+        /// captures the ACTIVE VIEW, the 3D window, and not Document.CurrentViewpoint. On
+        /// the first viewpoints run every viewpoint was captured on the same view, the one
+        /// the window happened to show, because CurrentViewpoint.CopyFrom alone never
+        /// reached the window while the run held the thread, while in the automation host,
+        /// which has no window, the capture's own Viewpoint cannot even be read. So the
+        /// camera goes through View.CopyViewpointFrom with JumpCut, which the API doc says
+        /// jumps straight there with no collision or gravity, and the document's current
+        /// viewpoint is set as well so the two agree. Where there is no active view the
+        /// document's is all there is.
+        /// </summary>
+        public static void ApplyCamera(Document document, Viewpoint camera)
+        {
+            if (document == null || camera == null)
+            {
+                return;
+            }
+
+            View view = document.ActiveView;
+
+            if (view != null)
+            {
+                view.CopyViewpointFrom(camera, ViewChange.JumpCut);
+            }
+
+            document.CurrentViewpoint.CopyFrom(camera);
+        }
+
+        /// <summary>A copy of the camera the person sees, or the document's where there is no view. The caller disposes it.</summary>
+        public static Viewpoint ReadCamera(Document document)
+        {
+            View view = document.ActiveView;
+            return view != null ? view.CreateViewpointCopy() : document.CurrentViewpoint.CreateCopy();
+        }
+
+        /// <summary>
+        /// How far the camera recorded on the viewpoint at that path sits from the camera
+        /// the writer asked for, in document units, or MINUS ONE where the viewpoint or its
+        /// camera could not be read. This is the read back that proves a viewpoint opens
+        /// where its clash is, and a distance is a number a person can check rather than a
+        /// trust.
+        /// </summary>
+        public static double CameraDistance(Document document, IList<string> folders, string name, Viewpoint camera)
+        {
+            if (document == null || folders == null || string.IsNullOrEmpty(name) || camera == null)
+            {
+                return -1;
+            }
+
+            using (GroupItem parent = ResolveFolders(document, folders, folders.Count))
+            {
+                if (parent == null)
+                {
+                    return -1;
+                }
+
+                using (SavedViewpoint found = FindLeafItem(parent, name))
+                {
+                    if (found == null)
+                    {
+                        return -1;
+                    }
+
+                    using (Viewpoint recorded = found.Viewpoint)
+                    {
+                        if (recorded == null)
+                        {
+                            return -1;
+                        }
+
+                        Point3D a = recorded.Position;
+                        Point3D b = camera.Position;
+                        double dx = a.X - b.X;
+                        double dy = a.Y - b.Y;
+                        double dz = a.Z - b.Z;
+                        return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// The hidden state the document holds right now, read off a runtime capture that
         /// never goes into the tree, so it can be put back after the writer has hidden and
         /// shown models for every viewpoint. MEASURED on 2026-09-19, docs\history\scan.md
@@ -343,6 +426,27 @@ namespace Federator.Addin.Engine
             }
 
             return false;
+        }
+
+        /// <summary>The saved viewpoint of that name directly under the folder, or null. The caller disposes it.</summary>
+        private static SavedViewpoint FindLeafItem(GroupItem parent, string name)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+                SavedViewpoint viewpoint = child as SavedViewpoint;
+
+                if (viewpoint != null && string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                {
+                    return viewpoint;
+                }
+
+                child.Dispose();
+            }
+
+            return null;
         }
 
         private static int CountUnder(GroupItem parent)
