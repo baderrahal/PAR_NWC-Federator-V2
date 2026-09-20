@@ -1,6 +1,145 @@
 # log
 
 Newest entry at the top.
+## 2026-09-20 The dimming round, the plan, written before the first edit
+
+### What the round is
+
+F85 shipped 975 viewpoints and Bader pressed two of them. They do not show the clash. The
+camera is the one Clash Detective computes and reads back exact, the hidden state is
+right, and a person still sees a grey wall, because the camera lands inside a beam and the
+beam is solid. Q55 and Q56 are answered the same way: dim everything that is not the two
+clashing items, the way Clash Detective does. That is this round.
+
+THE BUILD GATE PASSED. On this machine the whole solution built in Release with 0 errors
+and 0 warnings on main at 32dac19, with the add-in inside it, before anything was written.
+This is not a container.
+
+Four rules from the brief hold over everything below: nothing is written into a live
+project folder, every program started and every file written outside the repo is listed in
+the round report, everything opened is closed and the check is run and reported, and
+nothing of Bader's is deleted or overwritten.
+
+### What is already known, so the round does not measure it twice
+
+- `SavedViewpoint.GetAppearanceOverrides()` returns an `AppearanceOverrides` carrying ONE
+  member, `MaterialOverrides`, a collection. `ContainsAppearanceOverrides` is a bool beside
+  `ContainsVisibilityOverrides`
+- `ModelGeometry` carries `ActiveTransparency`, `PermanentTransparency` and
+  `OriginalTransparency`, and the same three for colour, so a dimming can be READ BACK off
+  an item rather than trusted
+- `DocumentModels` carries four override calls and four resets, permanent and temporary,
+  for colour and transparency, and `ResetAllPermanentMaterials` and
+  `ResetAllTemporaryMaterials`
+- the COM view this tool already writes through carries `ApplyMaterialAttribs`, set FALSE
+  today beside `ApplyHideAttribs` set true
+- `DocumentModels.CreateIndexPath(ModelItem)` gives a `Collection<int>` and
+  `ResolveIndexPath` takes it back, and `CreatePathId` and `ResolvePathId` are a second
+  pair. Both hand out plain values, which is how an item can be named in walk one and
+  resolved in walk two without keeping 1,950 native handles alive
+- `SearchCondition.Negate()` and `SearchConditionOptions.NegateCondition = 32` exist, and
+  F78 measured that the exchange file's `flags` attribute IS that enum
+- NOTHING in the .NET API exports a search set to XML. `Document.ExportAsDwf` is the only
+  export on the document, and `DocumentSelectionSets` has no writer. So the export half of
+  5g is not reachable the way the import half is, and the round says so rather than
+  inventing a route
+
+### The order
+
+PART 1, the dimming measurement, one commit. The camera took three runs because two
+routes each recorded half a viewpoint and both looked right, so nothing is built until a
+route is measured through a save, a close and a reopen off the disk.
+
+The probe in `tools\probes\ViewpointProbe` gains a `dim` mode, run through the automation
+host against a COPY of one NWF, and it measures, in order:
+
+1. what `ContainsAppearanceOverrides` and `MaterialOverrides.Count` read on a viewpoint
+   written with NO override at all, because 5j noted the flag reading true on a capture
+   that set none, and a flag that is always true is no read back
+2. TEMPORARY transparency, `OverrideTemporaryTransparency`, on the model roots, with the
+   COM view's `ApplyMaterialAttribs` true. Read the flag and the count, then SAVE, CLEAR,
+   REOPEN off the disk, read them again, press the viewpoint from a clean document, and
+   read `ActiveTransparency` off an item that should be dim and off one that should be solid
+3. PERMANENT transparency, `OverridePermanentTransparency`, the same way
+4. whether an override on a model ROOT reaches the leaves, and whether
+   `ResetTemporaryMaterials` on two leaves brings just those two back to solid while the
+   rest stay dim. That is the shape the writer needs: two calls per viewpoint rather than
+   2,606, because 1A02MM alone would otherwise be 1.1 million override calls in one group
+5. what each route costs in milliseconds, so the VIEWS step can be predicted
+6. whether `CreateIndexPath` and `ResolveIndexPath` round trip an item through plain values
+
+Written into `docs\history\scan.md` as 5o, saying which route records the dimming, which
+does not, and what each one records instead.
+
+IF NO ROUTE SURVIVES THE REOPEN, the round stops there. PART 2 is not built, the
+viewpoints are left exactly as they are, PART 3 and PART 4 are still done, and the report
+says in one line that this API cannot do what was asked.
+
+PART 2, the dimming, only on a yes, one commit per change with a build after each.
+
+- the transparency is a SETTING in `ViewpointSettings` beside the camera tolerance, with a
+  default. Clash Detective's own value is looked for in `Application.Options` first and the
+  default says where it came from. If it cannot be read the default is 85 per cent and the
+  comment says it was CHOSEN and not measured
+- walk one keeps, per clash, the index path of each of the two clashing items, as plain
+  ints beside the home model it already reads
+- walk two, per viewpoint, in this order: hide the models outside the pair as now, dim what
+  is left, bring the two items back to solid, record the COM view with
+  `ApplyMaterialAttribs` true, and read back
+- the read back becomes FOUR checks and not three: it is there, its camera is within the
+  tolerance, it carries visibility overrides where it hides a discipline, and it carries
+  the material overrides where it dims. A viewpoint failing any of the four is FAILED with
+  the reason and is not counted
+- the material state of the document is put back when the group's writing ends, the way the
+  hidden state already is, whichever way it ends, and the log says it was put back
+- the two items are NOT coloured. Whether they get Clash Detective's red and green is a
+  question for Bader and is raised as one
+
+PART 3, 5g, one commit. The probe gains a `negate` mode and measures three things on a
+run, because the question has three halves and only two are reachable:
+
+- through the API: a search with a negated condition, resolved, counted, against the same
+  search without the negation
+- through the ADD-IN'S OWN ROUTE, which is what actually matters, because the tool does not
+  ask Navisworks to import an XML: `ExchangeReader` parses the file and `SetBuilder` builds
+  each set through the API, passing `flags` straight into `SearchConditionOptions`. So a
+  small XML carrying `flags="32"` is read and built and the set's condition is read back
+- through NAVISWORKS' OWN IMPORT, the Sets panel's import, driven by hand if it is
+  reachable, on the same file
+- the export half is not reachable, and 5g will say so by name rather than leaving it open
+
+If negation imports, `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` is rewritten with
+the real negated form and the byte for byte test is kept green. If it does not, the
+fallback stays and the NOT MEASURED wording goes, so nobody measures it a third time.
+
+PART 4, the three answers, one commit. Q54 right as it is and closed, Q55 answered and
+carried out by this round, Q56 recording what Bader saw, because it is the only user
+report this feature has.
+
+PART 5, the proof, one commit. Build 0 and 0, the full Core suite, both scripts under
+`tools\checks`, `build\install.ps1`, then a run against a FRESH copy of his NWF folder, so
+the 975 are written new and not added to, with the same settings as the last two rounds:
+25 mm chosen in the tool, by design on, penetrations on, the priority file picked, his NWC
+folder read only. Reported per group: viewpoints written and read back on all four things,
+the NWF size before and after, the VIEWS seconds, and the run total against the viewpoints
+round's 5 minutes 3 seconds.
+
+Then I open one NWF myself, press three viewpoints, and say in plain words what is on the
+screen. Not what the code intends. If one opens on grey I say which and why.
+
+The log goes into `steps\logs`. ONE step goes into `steps\03_bader_next.md` naming the
+file by its full path and the two viewpoints to press, so his check takes a minute.
+
+WHEN DONE: one branch `round-dimming`, one commit per item, the round report at the top of
+`steps\log.md`, `01_next.md` and `03_bader_next.md` updated, and a pull request, or the
+compare link if the connector refuses it again.
+
+### What this round will not do
+
+It will not guess the dimming route, it will not colour the two items, it will not cap or
+thin the viewpoints, it will not change the three layer tree, and it will not touch
+anything in `samples`.
+
 
 ## 2026-09-20 The viewpoints round, F85 written and proved by six runs
 
