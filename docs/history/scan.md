@@ -3857,3 +3857,184 @@ Devices and six `equals` conditions at `flags="32"`, one per category its siblin
 set's OWN first condition so nothing in the code names a category or a property of this
 project, and the byte for byte test still proves the committed file is exactly what the
 rule produces from the sample. The NOT MEASURED wording is gone from the question above.
+
+## 5p. The CHEAPER WRITE ROUTE, and what a viewpoint records of a COLOUR, MEASURED 2026-09-20
+
+Q59 answered d, take the cheap route and measure it. The dimming round found
+`InwOpFolderView.SavedViews().Add` and deliberately did not take it. The probe is
+`tools\probes\ViewpointProbe` in its `route` and `colour` modes, run through the
+automation host against a copy of the 1A02WL NWF, 1,027 items in 8 models. The result
+files are `tools\probes\ViewpointProbe\5p-route-20260920.txt` and
+`5p-colour-20260920.txt`.
+
+**THE CHEAP ROUTE RECORDS EVERYTHING THE OLD ONE DOES.** Twenty viewpoints of the same
+scene, written both ways, saved, closed and reopened off the disk:
+
+```
+ROUTE A READ BACK of 20: found 20, with a camera 20, hiding something 20, dimming something 20
+ROUTE B READ BACK of 20: found 20, with a camera 20, hiding something 20, dimming something 20
+pressed A 1: 1 model(s) hidden carrying 12 item(s), 1015 dimmed at 0.85 and SOLID 2
+pressed B 1: 1 model(s) hidden carrying 12 item(s), 1015 dimmed at 0.85 and SOLID 2
+```
+
+All four counts hold, and pressing one leaves exactly the two clashing items solid. So
+the route is allowed on the rule the brief set.
+
+**AND ON THIS GROUP IT SAVES ALMOST NOTHING.**
+
+```
+route A, root add then AddCopy then Remove:   158 ms, 151,743 bytes
+route B, straight into the folder collection: 153 ms, 152,158 bytes
+```
+
+Three per cent over twenty viewpoints, and 415 bytes MORE on disk. That is not the
+saving the dimming round expected, and the reason is that the cost is not the tree
+operation count. The dimming round measured 1A02MM at 240 seconds for 430 viewpoints,
+558 ms each, where this measures 7.9 ms each for twenty. Seventy times the cost per
+viewpoint for two and a half times the items. WHAT GROWS IS THE TREE THE WRITE WALKS,
+not the number of calls per write, so a route that makes three walks instead of one
+saves three per cent and not two thirds. The real A against B on the real group is in
+the round entry in `steps\log.md`.
+
+**WHAT A VIEWPOINT RECORDS OF A COLOUR, which is PART 2's whole read back.** Three
+colour pairs on the same two clashing items, each recorded into its own viewpoint,
+saved, closed and reopened:
+
+```
+ORIGINAL colours: item 1 (0.969,0.969,0.969)   item 2 (0,1,0)
+
+PAIR 1  item 1 red (1,0,0), item 2 green (0,1,0)
+   item 1 NAMED, colour (1,0,0)      item 2 NOT NAMED by any override
+PAIR 2  item 1 red (1,0,0), item 2 blue (0,0,1)
+   item 1 NAMED, colour (1,0,0)      item 2 NAMED, colour (0,0,1)
+PAIR 3  item 1 yellow, item 2 magenta
+   item 1 NAMED, colour (1,1,0)      item 2 NAMED, colour (1,0,1)
+```
+
+**A COLOUR IS RECORDED ONLY WHERE IT DIFFERS FROM THE ITEM'S OWN COLOUR.** Item 2's
+original colour IS green, so painting it green writes no override, and the viewpoint
+names 1,027 items where pair 2 names 1,028. Pressing pair 1 still shows item 2 green,
+because green is what it already was, so THE PICTURE IS RIGHT AND THE RECORD IS EMPTY.
+
+That decides how the read back is written. A read back that insists the viewpoint names
+both items would fail a viewpoint that is perfectly correct, roughly as often as a
+clashing item happens to be the colour it is being given. So the read back asks what the
+viewpoint WILL SHOW for that item: the override's colour where it names the item, and
+the item's own colour where it does not. That is the same question a person answers by
+looking, and it has one right answer either way.
+
+Everything else about a colour holds. It survives the save and the reopen, pressing the
+viewpoint puts it back, and a colour override and a transparency override live in the
+same `MaterialOverride` list without either losing the other. `MaterialOverride` carries
+`Item`, `Color` and a nullable `Transparency`, read off the installed
+Autodesk.Navisworks.Api 22.0.0.0 on 2026-09-20. The two colour overrides REPLACE the
+dim entry for those items rather than adding to it, which is why the count goes 1,027
+and not 1,029.
+
+
+## 5q. What an NWC carries of the SHARED COORDINATE, the WORKSETS and the ELEMENT IDS, MEASURED 2026-09-20
+
+Q64 answered: alignment is by shared coordinate, and by eye where that is not readable.
+NOTHING WAS BUILT UNTIL THIS WAS READ, because the brief forbids falling back to a
+bounding box and calling it an alignment check. The probe is
+`tools\probes\ViewpointProbe` in its `survey` mode, which dumps every property of the
+model root, of the first item with geometry and of the item above it, then walks every
+item. The result file is `tools\probes\ViewpointProbe\5q-result-20260920.txt`.
+
+**THE SHARED COORDINATE IS READABLE, ON THE MODEL ROOT, AND IT IS NAMED.** Every model
+root carries a `[Location]` tab, internal `LcRevitPropertyLocation`:
+
+```
+[Location] internal LcRevitPropertyLocation
+   Latitude         internal revit_Latitude         =  18.219
+   Longitude        internal revit_Longitude        =  42.5
+   Elevation        internal revit_Elevation        =  0
+   ProjectLocation  internal revit_ProjectLocation  =  PW3_Shared_Location
+```
+
+`revit_ProjectLocation` is the NAME of the Revit shared site the model was exported on.
+It is on the root and nowhere else, one per model, so a group can be compared model
+against model with one read each and no walk.
+
+**AND THE MODEL ROOT ALSO CARRIES ITS TRANSFORM**, tab `[Transform]`, internal
+`LcOaTransform`, with `Translation.X`, `.Y` and `.Z`, a rotation axis and angle and a
+scale. The same numbers come off `Model.Transform` in the .NET API as a `Transform3D`
+with `IsIdentity()`, `IsTranslation()` and `Translation`, which is the cheaper read and
+is what the tool uses.
+
+**IT IS NOT THE IDENTITY ON ANY MODEL IN THIS PROJECT, so the identity is not the test.**
+Across the two groups read, every single model returns `IsIdentity False`, including the
+ones whose translation is exactly (0, 0, 0), because the export carries a scale of 3.281
+as well. WHAT MATTERS IS WHETHER THE MODELS IN ONE GROUP AGREE WITH EACH OTHER, not
+whether any one of them is the identity.
+
+1A02MM, four models, agreeing in X and Y and differing in Z by up to 312 mm:
+
+```
+AR  Translation (0, -13.419, -0.509)   ProjectLocation SWLS-02-SharedCoordinate
+EL  Translation (0, -13.419, -0.197)   ProjectLocation LTB2
+ME  Translation (0, -13.419, -0.492)   ProjectLocation PW3_Shared_Location
+ST  Translation (0, -13.419, -0.254)   ProjectLocation Internal
+```
+
+1A02WL, eight models, scattered over hundreds of metres:
+
+```
+ME-000001  (0, 0, 0)               PW3_Shared_Location
+ME-000002  (169.665, -42.536, 0)   SWLS-02 MECH
+ST-000001  (111.262, -33.034, 0.656)   LS
+ST-000002  (60.529, -86.636, 0)    PWPS_FUEL TANK 01
+ST-000003  (-96.606, -166.245, 5.366)  NHC-PUMP STATION
+ST-000004  (104.856, -72.521, -9.022)  Internal
+ST-000005  (157.279, -12.232, -8.18)   Internal
+ST-000007  (-54.565, 160.105, 5.335)   NHC-PUMP STATION
+```
+
+**FOUR DIFFERENT SHARED LOCATIONS IN ONE GROUP AND TWO MODELS ON `Internal`.** A model
+whose ProjectLocation reads `Internal` was exported on Revit's internal origin and not
+on the project's shared coordinates at all, which is the fault Q64 is about. This is
+reported and never acted on, Q65.
+
+**WORKSETS AND ELEMENT IDS ARE ON THE REVIT ELEMENT, NOT ON THE GEOMETRY.** The first
+survey counted them over items with geometry and read ZERO everywhere, against a real
+run that reads 860 of 1,052 ids. The reason is the tree shape: a Revit element reaches
+Navisworks as a COMPOSITE item carrying the `[Element]` tab, internal
+`LcRevitData_Element`, with `Id` (internal `LcRevitPropertyElementId`) and `Workset`
+(internal `lcldrevit_parameter_-1002053`) on it, and the geometry solids UNDER it carry
+neither. Counted on the tab and not on the geometry:
+
+```
+1A02MM  AR  233 items, 102 with geometry, 86 elements. Workset 86 of 86, Element ID 86 of 86, 100%
+1A02MM  EL  1375 items, 494 with geometry, 308 elements. Workset 308 of 308, Element ID 100%
+1A02MM  ME  869 items, 347 with geometry, 236 elements. Workset 236 of 236, Element ID 100%
+1A02MM  ST  129 items, 53 with geometry, 53 elements. Workset 53 of 53, Element ID 100%
+```
+
+So the brief's expectation that worksets would be missing is WRONG for these two groups,
+and the real fault is a different one.
+
+**THE WORKSET NAMES DO NOT MATCH WHAT THE MATRIX ASKS FOR, AND THAT IS WHY 33 SETS FIND
+NOTHING.** The models carry `ME-Ductwork`, `ME-Piping` and `ME-Equipment`. The matrix
+asks for `ME-DUCTWORK`, `ME-PIPING` and `ME-EQUIPMENT`. The condition carries
+`flags="64"`, which is `StartGroup` and NOT a case flag: the one that would forgive this
+is `IgnoreDisplayStringValueCase`, value 16, read off the installed
+Autodesk.Navisworks.Api 22.0.0.0 on 2026-09-20, and nothing sets it, not the client's
+file and not `SetBuilder.BuildCondition`, which adds 1 and 4 only. So the comparison is
+case sensitive and `ME-DUCTWORK` cannot match `ME-Ductwork`.
+
+The run of 2026-09-20 bears it out. `BLD-ME-Ducts&Duct Fittings`, `BLD-ME-Duct Accessory`
+and `BLD-ME-Mechanical Equipment` are all in the 33 that found nothing in every group,
+and all three ask for an all capitals workset.
+
+**AND THE CLIENT'S OWN WORKSET NAMES DISAGREE WITH EACH OTHER**, which no rule can fix
+and a person has to see. Across two groups:
+
+```
+EL-Fire Alarm            and  EL-Fire alarm
+EL-Lightning Protection  and  EL-Lightining Protection
+EV-Cctv System           and  EV-Ccctv system
+PL-Drainage equipment    and  PL-Drainage equipmen
+```
+
+Two spellings of the same workset, one of them a typo, in models that are meant to
+federate. This is what the EXPORT CHECK block puts in front of a person every run.

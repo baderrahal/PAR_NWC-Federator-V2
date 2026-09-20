@@ -1,0 +1,58 @@
+13:35:12.267  probe started, mode route, 1 file(s)
+13:35:12.270  
+13:35:12.270  ROUTE A, opening C:\Users\bader\AppData\Local\Temp\claude\round-alignment\probe\1104-PAR-1A02WL-ZZZ-BM-MOD-000001.nwf
+13:35:12.384  the clash measured against: BLD-ST-Columns-vs-BLD-ST-Foundation  Clash1
+13:35:12.388  hid [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02WL-ZZZ-ST-MOD-000007.nwc], IsHidden True
+13:35:12.394     the scene every viewpoint records:
+13:35:12.396        item 1 [Metal - Steel - S275] active 0 permanent 0 original 0
+13:35:12.396        item 2 [Concrete, Cast-in-Place Fcu20 Mpa] active 0 permanent 0 original 0
+13:35:12.396        other  no item
+13:35:12.396     colours live, before any viewpoint is written:
+13:35:12.398        item 1 active (1,0,0) original (0.969,0.969,0.969)
+13:35:12.398        item 2 active (0,1,0) original (0,1,0)
+13:35:12.561  ROUTE A: 20 viewpoints written in 158 ms, 7.9 ms each
+13:35:12.600  TrySaveFile to C:\Users\bader\AppData\Local\Temp\claude\round-alignment\probe\probe-route-a.nwf = True
+13:35:12.709  ROUTE A, reopened off the disk, 151743 bytes
+13:35:12.718     the first one: hidden 1, material overrides 1027, the two colours NOT BOTH THERE
+13:35:12.720        the viewpoint recorded for item 1: colour (1,0,0), transparency none
+13:35:13.138  ROUTE A READ BACK of 20: found 20, with a camera 20, hiding something 20, dimming something 20, both colours 0
+13:35:13.144     pressed A 1, what a person sees:
+13:35:13.148     1 model(s) hidden carrying 12 item(s), then of what is left: 1015 dimmed at 0.85 and SOLID 2: Metal - Steel - S275 in 1104-PAR-1A02WL-ZZZ-ST-MOD-000001.nwc | Concrete, Cast-in-Place Fcu20 Mpa in 1104-PAR-1A02WL-ZZZ-ST-MOD-000005.nwc
+13:35:13.148        after pressing A 1:
+13:35:13.148        item 1 [Metal - Steel - S275] active 0 permanent 0 original 0
+13:35:13.148        item 2 [Concrete, Cast-in-Place Fcu20 Mpa] active 0 permanent 0 original 0
+13:35:13.148        other  no item
+13:35:13.148     colours    after pressing A 1:
+13:35:13.148        item 1 active (1,0,0) original (0.969,0.969,0.969)
+13:35:13.148        item 2 active (0,1,0) original (0,1,0)
+13:35:13.150  
+13:35:13.150  ROUTE B, opening C:\Users\bader\AppData\Local\Temp\claude\round-alignment\probe\1104-PAR-1A02WL-ZZZ-BM-MOD-000001.nwf
+13:35:13.274  the clash measured against: BLD-ST-Columns-vs-BLD-ST-Foundation  Clash1
+13:35:13.275  hid [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02WL-ZZZ-ST-MOD-000007.nwc], IsHidden True
+13:35:13.278     the scene every viewpoint records:
+13:35:13.278        item 1 [Metal - Steel - S275] active 0 permanent 0 original 0
+13:35:13.278        item 2 [Concrete, Cast-in-Place Fcu20 Mpa] active 0 permanent 0 original 0
+13:35:13.278        other  no item
+13:35:13.278     colours live, before any viewpoint is written:
+13:35:13.278        item 1 active (1,0,0) original (0.969,0.969,0.969)
+13:35:13.278        item 2 active (0,1,0) original (0,1,0)
+13:35:13.431  ROUTE B: 20 viewpoints written in 153 ms, 7.65 ms each
+13:35:13.469  TrySaveFile to C:\Users\bader\AppData\Local\Temp\claude\round-alignment\probe\probe-route-b.nwf = True
+13:35:13.579  ROUTE B, reopened off the disk, 152158 bytes
+13:35:13.584     the first one: hidden 1, material overrides 1027, the two colours NOT BOTH THERE
+13:35:13.588        the viewpoint recorded for item 1: colour (1,0,0), transparency none
+13:35:13.938  ROUTE B READ BACK of 20: found 20, with a camera 20, hiding something 20, dimming something 20, both colours 0
+13:35:13.942     pressed B 1, what a person sees:
+13:35:13.943     1 model(s) hidden carrying 12 item(s), then of what is left: 1015 dimmed at 0.85 and SOLID 2: Metal - Steel - S275 in 1104-PAR-1A02WL-ZZZ-ST-MOD-000001.nwc | Concrete, Cast-in-Place Fcu20 Mpa in 1104-PAR-1A02WL-ZZZ-ST-MOD-000005.nwc
+13:35:13.943        after pressing B 1:
+13:35:13.943        item 1 [Metal - Steel - S275] active 0 permanent 0 original 0
+13:35:13.943        item 2 [Concrete, Cast-in-Place Fcu20 Mpa] active 0 permanent 0 original 0
+13:35:13.943        other  no item
+13:35:13.943     colours    after pressing B 1:
+13:35:13.943        item 1 active (1,0,0) original (0.969,0.969,0.969)
+13:35:13.943        item 2 active (0,1,0) original (0,1,0)
+13:35:13.946  
+13:35:13.946  THE TWO SIDE BY SIDE, 20 viewpoints of the same scene:
+13:35:13.946     route A, root add then AddCopy then Remove:   158 ms, 151743 bytes
+13:35:13.946     route B, straight into the folder collection: 153 ms, 152158 bytes
+13:35:13.946  probe finished

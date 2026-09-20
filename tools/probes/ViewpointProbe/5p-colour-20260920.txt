@@ -1,0 +1,50 @@
+13:36:53.810  probe started, mode colour, 1 file(s)
+13:36:53.931  the clash measured against: BLD-ST-Columns-vs-BLD-ST-Foundation  Clash1
+13:36:53.931  ORIGINAL colours, before anything is overridden:
+13:36:53.935     item 1 active (0.969,0.969,0.969) original (0.969,0.969,0.969)
+13:36:53.935     item 2 active (0,1,0) original (0,1,0)
+13:36:53.941  
+13:36:53.941  PAIR 1: item 1 (1,0,0), item 2 (0,1,0)
+13:36:53.950     live after painting: item 1 active (1,0,0) original (0.969,0.969,0.969)
+13:36:53.950     live after painting: item 2 active (0,1,0) original (0,1,0)
+13:36:53.981     before the save, C 1: 1027 material override(s) in all
+13:36:53.986        item 1 NAMED, colour (1,0,0), transparency none
+13:36:53.988        item 2 NOT NAMED by any override
+13:36:53.988  
+13:36:53.988  PAIR 2: item 1 (1,0,0), item 2 (0,0,1)
+13:36:53.992     live after painting: item 1 active (1,0,0) original (0.969,0.969,0.969)
+13:36:53.992     live after painting: item 2 active (0,0,1) original (0,1,0)
+13:36:54.001     before the save, C 2: 1028 material override(s) in all
+13:36:54.012        item 1 NAMED, colour (1,0,0), transparency none
+13:36:54.014        item 2 NAMED, colour (0,0,1), transparency none
+13:36:54.014  
+13:36:54.014  PAIR 3: item 1 (1,1,0), item 2 (1,0,1)
+13:36:54.018     live after painting: item 1 active (1,1,0) original (0.969,0.969,0.969)
+13:36:54.018     live after painting: item 2 active (1,0,1) original (0,1,0)
+13:36:54.035     before the save, C 3: 1028 material override(s) in all
+13:36:54.038        item 1 NAMED, colour (1,1,0), transparency none
+13:36:54.042        item 2 NAMED, colour (1,0,1), transparency none
+13:36:54.044  
+13:36:54.087  TrySaveFile to C:\Users\bader\AppData\Local\Temp\claude\round-alignment\probe\probe-colour-saved.nwf = True
+13:36:54.202  reopened off the disk, 199824 bytes
+13:36:54.202  
+13:36:54.204  AFTER THE REOPEN, C 1: 1027 material override(s) in all
+13:36:54.208        item 1 NAMED, colour (1,0,0), transparency none
+13:36:54.209        item 2 NOT NAMED by any override
+13:36:54.214     pressed C 1: item 1 active (1,0,0) original (0.969,0.969,0.969)
+13:36:54.214     pressed C 1: item 2 active (0,1,0) original (0,1,0)
+13:36:54.216  
+13:36:54.217  AFTER THE REOPEN, C 2: 1028 material override(s) in all
+13:36:54.223        item 1 NAMED, colour (1,0,0), transparency none
+13:36:54.225        item 2 NAMED, colour (0,0,1), transparency none
+13:36:54.227     pressed C 2: item 1 active (1,0,0) original (0.969,0.969,0.969)
+13:36:54.227     pressed C 2: item 2 active (0,0,1) original (0,1,0)
+13:36:54.228  
+13:36:54.229  AFTER THE REOPEN, C 3: 1028 material override(s) in all
+13:36:54.239        item 1 NAMED, colour (1,1,0), transparency none
+13:36:54.241        item 2 NAMED, colour (1,0,1), transparency none
+13:36:54.243     pressed C 3: item 1 active (1,1,0) original (0.969,0.969,0.969)
+13:36:54.243     pressed C 3: item 2 active (1,0,1) original (0,1,0)
+13:36:54.245  
+13:36:54.245  A colour is recorded only where the viewpoint's own MaterialOverrides name the item.
+13:36:54.245  probe finished
