@@ -54,6 +54,7 @@ namespace Federator.Addin.Engine
 
         private HiddenSnapshot snapshot;
         private int cameraRead;
+        private Exception firstHomeError;
 
         public ViewpointBuilder(
             Action<string> progress,
@@ -101,6 +102,7 @@ namespace Federator.Addin.Engine
             IDictionary<int, string> disciplines = modelDisciplines ?? new Dictionary<int, string>();
             snapshot = null;
             cameraRead = 0;
+            firstHomeError = null;
 
             try
             {
@@ -214,6 +216,14 @@ namespace Federator.Addin.Engine
             if (homesUnread > 0)
             {
                 log.Line("VIEWS    " + homesUnread + " clash(es) whose items' models could not be read, so their viewpoints keep the pair's models only");
+
+                if (firstHomeError != null)
+                {
+                    log.Failure(
+                        "reading the model a clash item lives in, the first of " + homesUnread,
+                        firstHomeError,
+                        "kept going, those viewpoints keep the pair's models only");
+                }
             }
 
             int withHome = 0;
@@ -309,12 +319,19 @@ namespace Federator.Addin.Engine
                         AddHome(result.Item1, indexByFile, home);
                         AddHome(result.Item2, indexByFile, home);
                     }
-                    catch (Exception)
+                    catch (Exception error)
                     {
-                        // Counted and said once per group. The viewpoint still keeps the
-                        // pair's models, it just cannot also keep a model the code did
-                        // not name, and a clash whose items will not read is not lost.
+                        // Counted, and the FIRST one is written in full once per group,
+                        // because the fifth run counted 975 of these and could not say
+                        // what threw. The viewpoint still keeps the pair's models, it
+                        // just cannot also keep a model the code did not name, and a
+                        // clash whose items will not read is not lost.
                         homesUnread++;
+
+                        if (firstHomeError == null)
+                        {
+                            firstHomeError = error;
+                        }
                     }
 
                     homes[key] = home;
@@ -336,37 +353,67 @@ namespace Federator.Addin.Engine
         /// </summary>
         private static void AddHome(ModelItem item, IDictionary<string, int> indexByFile, HashSet<int> into)
         {
-            using (item)
+            if (item == null)
             {
-                if (item == null)
+                return;
+            }
+
+            // Parent by Parent, each a fresh wrapper, all released at the end, which is
+            // the shape Penetrations.Upwards has read sizes with on every run. Enumerating
+            // AncestorsAndSelf and disposing each item as it went threw on every clash of
+            // the fifth run, and disposing nothing is not an option under 4g.
+            List<ModelItem> chain = new List<ModelItem>();
+            chain.Add(item);
+
+            try
+            {
+                ModelItem walker = item;
+
+                while (chain.Count < HomeWalkBound)
+                {
+                    ModelItem parent = walker.Parent;
+
+                    if (parent == null)
+                    {
+                        break;
+                    }
+
+                    chain.Add(parent);
+                    walker = parent;
+                }
+
+                ModelItem top = chain[chain.Count - 1];
+
+                if (!top.HasModel)
                 {
                     return;
                 }
 
-                foreach (ModelItem ancestor in item.AncestorsAndSelf)
+                using (Model model = top.Model)
                 {
-                    using (ancestor)
+                    int index;
+
+                    if (model != null && indexByFile.TryGetValue(Words.Or(model.FileName, string.Empty), out index))
                     {
-                        if (!ancestor.HasModel)
-                        {
-                            continue;
-                        }
-
-                        using (Model model = ancestor.Model)
-                        {
-                            int index;
-
-                            if (model != null && indexByFile.TryGetValue(Words.Or(model.FileName, string.Empty), out index))
-                            {
-                                into.Add(index);
-                            }
-                        }
-
-                        return;
+                        into.Add(index);
                     }
                 }
             }
+            finally
+            {
+                for (int i = 0; i < chain.Count; i++)
+                {
+                    chain[i].Dispose();
+                }
+            }
         }
+
+        /// <summary>
+        /// The most levels the home walk climbs. 5n measured six and nine on this project,
+        /// and a bound stops a malformed tree turning one clash into an endless climb. It
+        /// is a guard on a walk and not a number that shapes a run.
+        /// </summary>
+        private const int HomeWalkBound = 64;
 
         private static IDictionary<string, int> ModelIndexByFile(Document document)
         {
