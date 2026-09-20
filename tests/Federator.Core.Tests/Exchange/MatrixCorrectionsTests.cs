@@ -574,5 +574,83 @@ namespace Federator.Core.Tests
                 TestContext.WriteLine(line);
             }
         }
+
+        // ---------- Q69, the Or row for a workset his models spell two ways ----------
+
+        /// <summary>
+        /// The Or row is flags="64", StartGroup, which F78 measured: a condition with
+        /// that bit starts a new group, conditions inside a group are ANDed and groups
+        /// are ORed. So the set finds both spellings while the models are still wrong.
+        /// </summary>
+        [Test]
+        public void AWorksetSpelledTwoWaysBuildsAnOrRowCarryingBoth()
+        {
+            string xml = Set("BLD-ME-Ducts", "PL-Drainage equipment");
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(
+                xml, null, null, null, null,
+                new List<ValueOrRow> { new ValueOrRow("PL-Drainage equipment", "PL-Drainage equipmen") });
+
+            Assert.That(outcome.Text, Does.Contain("<data type=\"wstring\">PL-Drainage equipment</data>"));
+            Assert.That(outcome.Text, Does.Contain("<data type=\"wstring\">PL-Drainage equipmen</data>"));
+            Assert.That(outcome.Text, Does.Contain("<condition test=\"equals\" flags=\"64\">"));
+            Assert.That(outcome.TotalChanged, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void AWorksetSpelledOneWayBuildsOneConditionAndNoOrRow()
+        {
+            string xml = Set("BLD-ME-Ducts", "ME-Ductwork");
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(
+                xml, null, null, null, null,
+                new List<ValueOrRow> { new ValueOrRow("ME-Ductwork", "ME-Ductwork") });
+
+            Assert.That(outcome.Text, Is.EqualTo(xml), "left exactly as it was");
+            Assert.That(outcome.Text, Does.Not.Contain("flags=\"64\""));
+            Assert.That(outcome.TotalChanged, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void AddingTheOrRowTwiceAddsItOnce()
+        {
+            IList<ValueOrRow> rows = new List<ValueOrRow>
+            {
+                new ValueOrRow("PL-Drainage equipment", "PL-Drainage equipmen")
+            };
+
+            CorrectionOutcome once = MatrixCorrections.Apply(
+                Set("BLD-ME-Ducts", "PL-Drainage equipment"), null, null, null, null, rows);
+
+            CorrectionOutcome twice = MatrixCorrections.Apply(once.Text, null, null, null, null, rows);
+
+            Assert.That(twice.Text, Is.EqualTo(once.Text));
+            Assert.That(twice.TotalChanged, Is.EqualTo(0));
+        }
+
+        /// <summary>
+        /// 5t on the real matrix: NOT ONE of the five disagreeing pairs is a value any
+        /// set filters on, so the Or row correctly produces nothing here. Saying that is
+        /// more use than an Or row that changes no number, and this test pins it so a
+        /// later matrix that DOES ask for one of them fails and gets looked at.
+        /// </summary>
+        [Test]
+        public void NoneOfHisDisagreeingWorksetsIsAValueTheMatrixAsksFor()
+        {
+            IList<string> asked = WorksetValuesIn(Read(Samples.CorrectedMatrix()));
+
+            foreach (string disagreeing in new[]
+            {
+                "EL-Fire Alarm", "EL-Fire alarm", "EV-Access Control", "EV-Access control",
+                "EL-Lightning Protection", "EL-Lightining Protection",
+                "EV-Cctv System", "EV-Ccctv system",
+                "PL-Drainage equipment", "PL-Drainage equipmen"
+            })
+            {
+                Assert.That(asked, Does.Not.Contain(disagreeing),
+                    disagreeing + " is now a value the matrix filters on, so Q69's Or row has work to do and "
+                        + "the round report saying it produced nothing is out of date");
+            }
+        }
     }
 }

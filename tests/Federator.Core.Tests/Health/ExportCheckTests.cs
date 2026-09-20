@@ -118,12 +118,16 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void ItNamesTenWorksetsAndSaysHowManyItLeftOut()
         {
-            List<string> many = new List<string>();
-
-            for (int i = 1; i <= 14; i++)
+            // Names far enough apart that none is near another, or the disagreement
+            // block under this one would name them and this test would be measuring
+            // two things at once. WS-1 and WS-11 are one letter apart.
+            string[] apart =
             {
-                many.Add("WS-" + i);
-            }
+                "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf",
+                "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November"
+            };
+
+            List<string> many = new List<string>(apart);
 
             IList<ModelExport> models = new List<ModelExport>
             {
@@ -132,8 +136,8 @@ namespace Federator.Core.Tests.Health
 
             string block = Joined(ExportCheck.Lines(models));
 
-            Assert.That(block, Does.Contain("WS-10"));
-            Assert.That(block, Does.Not.Contain("WS-11"));
+            Assert.That(block, Does.Contain("Juliett"));
+            Assert.That(block, Does.Not.Contain("Kilo"));
             Assert.That(block, Does.Contain("and 4 more, counted and not listed"));
         }
 

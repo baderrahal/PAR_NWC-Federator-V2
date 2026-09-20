@@ -145,7 +145,58 @@ namespace Federator.Core.Health
 
             lines.Add(Sentence(models.Count, withoutAnyWorkset, withoutEveryId));
             AddWorksets(lines, everyWorkset, namesShown);
+            AddDisagreements(lines, models);
             return lines;
+        }
+
+        /// <summary>
+        /// Where these models disagree with each other about the name of a workset, Q69,
+        /// one line per pair saying which model carries which.
+        ///
+        /// THIS IS THE HALF THAT MATTERS, and it is why the tool never merges a typo
+        /// silently. `EL-Lightining Protection` is a misspelling of `EL-Lightning
+        /// Protection` and `AR-EXTERIOR` against `AR-INTERIOR` is two real worksets, and
+        /// no rule can tell them apart, 5t. If this tool absorbed the first kind quietly
+        /// nobody would ever fix the models and the next building would repeat it.
+        /// </summary>
+        private static void AddDisagreements(IList<string> lines, IList<ModelExport> models)
+        {
+            Dictionary<string, IList<string>> byWorkset = new Dictionary<string, IList<string>>(StringComparer.Ordinal);
+
+            for (int i = 0; i < models.Count; i++)
+            {
+                for (int w = 0; w < models[i].Worksets.Count; w++)
+                {
+                    string workset = models[i].Worksets[w];
+
+                    if (!byWorkset.ContainsKey(workset))
+                    {
+                        byWorkset[workset] = new List<string>();
+                    }
+
+                    if (!byWorkset[workset].Contains(models[i].File))
+                    {
+                        byWorkset[workset].Add(models[i].File);
+                    }
+                }
+            }
+
+            IList<WorksetDisagreement> found = WorksetDisagreements.In(byWorkset);
+
+            if (found.Count == 0)
+            {
+                lines.Add("no two workset names in this group are close enough to be one word typed twice");
+                return;
+            }
+
+            lines.Add(found.Count + " pair(s) of workset names are close enough to be one word typed twice."
+                + " NOTHING IS MERGED: a person reads these and fixes the models, because two of them in"
+                + " this project are real worksets one letter apart and no rule can tell which is which");
+
+            for (int i = 0; i < found.Count; i++)
+            {
+                lines.Add("   " + found[i].Line());
+            }
         }
 
         /// <summary>
