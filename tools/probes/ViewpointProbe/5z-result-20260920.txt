@@ -1,0 +1,85 @@
+23:56:00.611  probe started, mode setremove, 1 file(s)
+23:56:00.614  
+23:56:00.614  ================ 5z, WHAT REMOVING A SET COSTS ================
+23:56:00.701  opened 1104-PAR-1A02WE-ZZZ-BM-MOD-000001.nwf, 4 model(s)
+23:56:00.702  DocumentSelectionSets removal and ordering members on THIS install:
+23:56:00.702     Collection`1 CreateIndexPath(SavedItem)
+23:56:00.702     SavedItem ResolveIndexPath(IEnumerable`1)
+23:56:00.702     Void RemoveAt(GroupItem, Int32)
+23:56:00.702     Void RemoveAt(Int32)
+23:56:00.702     Boolean Remove(GroupItem, SavedItem)
+23:56:00.702     Boolean Remove(SavedItem)
+23:56:00.702     Void Move(GroupItem, Int32, GroupItem, Int32)
+23:56:00.702     Void Move(Int32, Int32)
+23:56:00.702     Void Clear()
+23:56:00.709  chosen because the test [BLD-AR-Windows-vs-BLD-AR-Walls] holds 3 result(s), its first side points at it, AND IT HAS SIBLINGS AFTER IT
+23:56:00.709  the set measured: [BLD-AR-Windows] at index 7 under [Architecture]
+23:56:00.712  what it finds now: 1 item(s)
+23:56:00.712  its folder holds 16 child(ren) in this order:
+23:56:00.712        0  BLD-AR-Floors
+23:56:00.712        1  BLD-AR-Stairs
+23:56:00.712        2  BLD-AR-Ramps
+23:56:00.712        3  BLD-AR-Roofs
+23:56:00.712        4  BLD-AR-Ceilings
+23:56:00.712        5  BLD-AR-Columns
+23:56:00.712        6  BLD-AR-Walls
+23:56:00.712        7  BLD-AR-Windows   <= the one being removed
+23:56:00.712        8  BLD-AR-Curtain Panels
+23:56:00.712        9  BLD-AR-Curtain Mullions
+23:56:00.712        10  BLD-AR-Doors
+23:56:00.712        11  BLD-AR-Casework
+23:56:00.712        12  BLD-AR-Furniture
+23:56:00.712        13  BLD-AR-Parking
+23:56:00.712        14  BLD-AR-Railings
+23:56:00.712        15  BLD-AR-Site
+23:56:00.716  set one clash of [BLD-AR-Windows-vs-BLD-AR-Walls] to Reviewed so there is something to lose
+23:56:00.717  the test pointing at it: [BLD-AR-Windows-vs-BLD-AR-Walls]
+23:56:00.717  BEFORE the remove: 3 result(s), 3 at Reviewed
+23:56:00.722     BEFORE the remove:
+23:56:00.722        models 4   sets 62   tests 1830   results 29   statuses a person set 29   viewpoints 52
+23:56:00.724     Remove(SavedItem), the root form, returned False
+23:56:00.728     RemoveAt(parent, 7) returned without throwing
+23:56:00.728  the remove returned without throwing: True
+23:56:00.730     AFTER the remove, before any save:
+23:56:00.730        models 4   sets 61   tests 1830   results 29   statuses a person set 29   viewpoints 52
+23:56:00.808  TrySaveFile = True
+23:56:00.886  
+23:56:00.886  REOPENED OFF THE DISK. The five read backs:
+23:56:00.892     AFTER a save and a reopen:
+23:56:00.892        models 4   sets 61   tests 1830   results 29   statuses a person set 29   viewpoints 52
+23:56:00.893     1. the clash test still EXISTS         : True. It points at a set: False, SO ITS SIDE NOW RESOLVES TO NOTHING
+23:56:00.893     2. the clash test still holds results  : 3 against 3 before, KEPT
+23:56:00.893     3. the Reviewed status survived        : 3 against 3 before, KEPT
+23:56:00.893     4. the saved viewpoints survived       : 52 against 52 before, KEPT
+23:56:00.893     5. the removed set is still in the tree: False, which is what a remove should do
+23:56:00.893        its folder now holds 15 child(ren), was 16:
+23:56:00.893        0  BLD-AR-Floors   was at 0
+23:56:00.893        1  BLD-AR-Stairs   was at 1
+23:56:00.893        2  BLD-AR-Ramps   was at 2
+23:56:00.893        3  BLD-AR-Roofs   was at 3
+23:56:00.893        4  BLD-AR-Ceilings   was at 4
+23:56:00.893        5  BLD-AR-Columns   was at 5
+23:56:00.893        6  BLD-AR-Walls   was at 6
+23:56:00.893        7  BLD-AR-Curtain Panels   was at 8
+23:56:00.893        8  BLD-AR-Curtain Mullions   was at 9
+23:56:00.893        9  BLD-AR-Doors   was at 10
+23:56:00.893        10  BLD-AR-Casework   was at 11
+23:56:00.893        11  BLD-AR-Furniture   was at 12
+23:56:00.893        12  BLD-AR-Parking   was at 13
+23:56:00.893        13  BLD-AR-Railings   was at 14
+23:56:00.893        14  BLD-AR-Site   was at 15
+23:56:00.893  
+23:56:00.893  AND DOES ANYTHING THAT RESOLVES A SET BY INDEX STILL RESOLVE TO THE RIGHT ONE:
+23:56:00.907     tests whose two sides both resolve to a set : 1770
+23:56:00.907     tests with ONE side resolving to nothing    : 60
+23:56:00.907     tests with BOTH sides resolving to nothing  : 0
+23:56:00.907        dangling: BLD-AR-Windows-vs-BLD-AR-Floors
+23:56:00.907        dangling: BLD-AR-Windows-vs-BLD-AR-Stairs
+23:56:00.907        dangling: BLD-AR-Windows-vs-BLD-AR-Ramps
+23:56:00.907        dangling: BLD-AR-Windows-vs-BLD-AR-Roofs
+23:56:00.907        dangling: BLD-AR-Windows-vs-BLD-AR-Ceilings
+23:56:00.907  
+23:56:00.907  A REMOVE IS ONLY USABLE WHERE 2, 3 AND 4 ALL HOLD. If the test that pointed at
+23:56:00.907  the removed set loses its results or its statuses, the tick box must REFUSE that
+23:56:00.907  set, name it, and say what would be lost, rather than removing and mentioning it.
+23:56:00.907  probe finished

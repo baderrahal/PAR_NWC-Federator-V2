@@ -1,0 +1,79 @@
+00:53:39.624  probe started, mode setrename, 1 file(s)
+00:53:39.626  
+00:53:39.626  ================ 5z-b, DOES RENAMING A SET KEEP WHAT POINTS AT IT ================
+00:53:39.720  opened rename-test.nwf, 4 model(s)
+00:53:39.722  DocumentSelectionSets rename members on THIS install:
+00:53:39.722     Void EditDisplayName(SavedItem, String)
+00:53:39.722     SavedItem.DisplayName has a setter: True
+00:53:39.728  chosen because the test [BLD-AR-Windows-vs-BLD-AR-Walls] holds 3 result(s), its first side points at it, AND IT HAS SIBLINGS AFTER IT
+00:53:39.728  the set measured: [BLD-AR-Windows] at index 7 under [Architecture]
+00:53:39.729  the new name    : [BLD-AR-Windows RENAMED BY 5z-b]
+00:53:39.733  what it finds now: 1 item(s)
+00:53:39.733  its folder holds 16 child(ren) in this order:
+00:53:39.733        0  BLD-AR-Floors
+00:53:39.733        1  BLD-AR-Stairs
+00:53:39.733        2  BLD-AR-Ramps
+00:53:39.733        3  BLD-AR-Roofs
+00:53:39.733        4  BLD-AR-Ceilings
+00:53:39.733        5  BLD-AR-Columns
+00:53:39.733        6  BLD-AR-Walls
+00:53:39.733        7  BLD-AR-Windows   <= the one being renamed
+00:53:39.733        8  BLD-AR-Curtain Panels
+00:53:39.733        9  BLD-AR-Curtain Mullions
+00:53:39.733        10  BLD-AR-Doors
+00:53:39.733        11  BLD-AR-Casework
+00:53:39.733        12  BLD-AR-Furniture
+00:53:39.733        13  BLD-AR-Parking
+00:53:39.733        14  BLD-AR-Railings
+00:53:39.733        15  BLD-AR-Site
+00:53:39.743  test sides pointing at it BEFORE the rename: 60
+00:53:39.748  set one clash of [BLD-AR-Windows-vs-BLD-AR-Walls] to Reviewed so there is something to lose
+00:53:39.748  the test pointing at it: [BLD-AR-Windows-vs-BLD-AR-Walls]
+00:53:39.748  BEFORE the rename: 3 result(s), 3 at Reviewed
+00:53:39.758     BEFORE the rename:
+00:53:39.758        models 4   sets 62   tests 1830   results 29   statuses a person set 29   viewpoints 52
+00:53:39.766     EditDisplayName returned without throwing
+00:53:39.766  the rename returned without throwing: True
+00:53:39.769     AFTER the rename, before any save:
+00:53:39.769        models 4   sets 62   tests 1830   results 29   statuses a person set 29   viewpoints 52
+00:53:39.851  TrySaveFile = True
+00:53:39.938  
+00:53:39.938  REOPENED OFF THE DISK. The five read backs:
+00:53:39.940     AFTER a save and a reopen:
+00:53:39.940        models 4   sets 62   tests 1830   results 29   statuses a person set 29   viewpoints 52
+00:53:39.973     1. the test side still resolves        : True, to [BLD-AR-Windows RENAMED BY 5z-b]
+00:53:39.973        and it is the RIGHT set             : True
+00:53:39.973        sides pointing at the NEW name      : 60 against 60 before, ALL FOLLOWED THE RENAME
+00:53:39.973        sides pointing at the OLD name      : 0, which should be 0
+00:53:39.973     2. the clash test still holds results  : 3 against 3 before, KEPT
+00:53:39.973     3. the Reviewed status survived        : 3 against 3 before, KEPT
+00:53:39.973     4. the saved viewpoints survived       : 52 against 52 before, KEPT
+00:53:39.977     5. what the set finds under its new name: 1 item(s)
+00:53:39.977        what it asks now                    : LcRevitData_Element (Element)/LcRevitPropertyElementCategory (Category) Equal "Windows" [IgnoreDisplayNames]
+00:53:39.977        it is in the tree under the new name: True at index 7 under [Architecture], which was 7 under [Architecture]
+00:53:39.977        its folder now holds 16 child(ren), was 16:
+00:53:39.977        0  BLD-AR-Floors
+00:53:39.977        1  BLD-AR-Stairs
+00:53:39.977        2  BLD-AR-Ramps
+00:53:39.977        3  BLD-AR-Roofs
+00:53:39.977        4  BLD-AR-Ceilings
+00:53:39.977        5  BLD-AR-Columns
+00:53:39.977        6  BLD-AR-Walls
+00:53:39.977        7  BLD-AR-Windows RENAMED BY 5z-b
+00:53:39.977        8  BLD-AR-Curtain Panels
+00:53:39.977        9  BLD-AR-Curtain Mullions
+00:53:39.977        10  BLD-AR-Doors
+00:53:39.977        11  BLD-AR-Casework
+00:53:39.977        12  BLD-AR-Furniture
+00:53:39.977        13  BLD-AR-Parking
+00:53:39.977        14  BLD-AR-Railings
+00:53:39.977        15  BLD-AR-Site
+00:53:39.977  
+00:53:39.987     tests whose two sides both resolve to a set : 1830
+00:53:39.987     tests with ONE side resolving to nothing    : 0
+00:53:39.987     tests with BOTH sides resolving to nothing  : 0
+00:53:39.987  
+00:53:39.987  A RENAME IS ONLY USABLE WHERE 1, 2, 3 AND 4 ALL HOLD AND EVERY SIDE FOLLOWED IT.
+00:53:39.987  If one side stops resolving, PART 2 builds nothing for this case and the box
+00:53:39.987  refuses, names what points at the set, and says a rename would lose them.
+00:53:39.987  probe finished
