@@ -4111,3 +4111,170 @@ it does not matter: `Item1` reads on this project's files and the rule now uses 
 that reads. The lesson is the general one this repo keeps learning, which is that a rule
 whose every clash lands in one bucket is reporting nothing, and that a count of zero
 under every OTHER reason is the thing to look at, not the zero at the top.
+
+## 5s. WHY 29 SERVICES HAD NO READABLE SIZE, MEASURED 2026-09-20
+
+PART 1a of the worksets round. The probe is `tools\probes\ViewpointProbe` in its
+`census` mode, which mirrors `Penetrations` exactly: `Item1` and `Item2` and never
+`Selection1`, five levels up, the same three category names and the same six size
+property names. The result file is `tools\probes\ViewpointProbe\5s-result-20260920.txt`.
+
+**THE QUESTION WAS WHICH OF TWO THINGS IT WAS**, because 5r one day earlier had found a
+reader that returned nothing and looked like an answer, and 29 services with no readable
+size is the same shape.
+
+**IT IS THE READER, AND IT IS A BUG.** The first pass asked only whether a size property
+was on the chain at all and found that ALL 74 service against solid clashes carry one:
+
+```
+clashes in this document              : 526
+a service against a solid             : 74
+of those, with no size property at all: 0
+```
+
+The second pass asked the narrower question the rule actually asks, whether
+`ItemSizes.Read` would get a NUMBER off it, and reproduced the run exactly:
+
+```
+of those, NO READABLE SIZE            : 29
+by category:  [Conduits] 18   [Cable Tray Fittings] 10   [Pipe Fittings] 1
+```
+
+45 read plus 29 not read is the 74, and 45 and 29 are the two numbers the run of 14:24
+printed. So the probe is measuring the same thing the rule measures.
+
+**WHAT THE 29 ACTUALLY CARRY.** Every one of them has its size on the composite Revit
+element, one level above the geometry, written as WORDS:
+
+```
+NO SIZE 1: BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors  Clash11, service side [Conduits]
+   level 0 []                          tabs Item, Geometry, TimeLiner      NONE of the six
+   level 1 [Conduit without Fittings]  tabs Item, Element, ...             [Element] Size = 53 mmø <DisplayString>
+   level 2 [ELE-CNF-70mm BARE COPPER]  tabs Item, Type, TimeLiner          NONE of the six
+```
+
+The three forms across the 29, read off the client's own models:
+
+```
+53 mmø                                                   a conduit diameter
+600 mmx100 mm-600 mmx100 mm                              a cable tray fitting, one pair per connector
+600 mmx100 mm-600 mmx100 mm-600 mmx100 mm-600 mmx100 mm  a four way fitting
+```
+
+**`ItemSizes.TryReadOne` TOOK ONLY TWO KINDS**, `DoubleLength` and `Double`, and a
+`DisplayString` was dropped. Its own comment said a worded size was deliberately not
+read because parsing "150 mm" would mean guessing at the unit. THAT REASONING WAS WRONG
+ON THIS DATA: the text names its own unit, every time, so nothing has to be guessed.
+
+**THE FIX.** `Federator.Core.Views.SizeText` reads every number in the text that is
+FOLLOWED BY A UNIT this tool knows, through `UnitTable`, which is the one unit table in
+this repo, and `UnitTable.FindByShortLabel` and `ShortLabels` are the two lookups added
+for it. `ItemSizes` calls it for a `DisplayString` and puts the answer back into document
+units, so every value in that dictionary still means the same thing and `SizeRule` stays
+the one place that converts to millimetres.
+
+Two things the client's own strings taught it, and both have tests:
+
+- **A NUMBER WITH NO UNIT IS REFUSED AND NEVER GUESSED AT.** `300x300` carries no unit,
+  so whether it is millimetres or inches is UNKNOWN. The penetration rule LEAVES ALONE a
+  service it cannot measure, so refusing costs a clash a person looks at and guessing
+  costs a hole in a wall nobody checked
+- **`x` IS A DIMENSION SEPARATOR AND NOT A LETTER.** The first version read `600 mmx100 mm`
+  as no measurement at all, because it refused a unit with a letter after it so that
+  "minutes" could not be read as miles. No unit this tool knows contains an x, so the
+  separator is the one exception and the guard still holds for every real word
+
+**WHAT THIS MEANS FOR THE COUNT.** The 29 are not 29 services with no size. They are 18
+conduits, 10 cable tray fittings and 1 pipe fitting whose size this tool could not read
+until today. PART 5 reports what is left after the fix, on a run.
+
+
+## 5t. EVERY WORKSET NAME IN C02, MEASURED 2026-09-20
+
+PART 1b. The same probe pass, over every model of all ten groups. **39 distinct names.**
+The full list and which models carry each is in the result file.
+
+**TWO NAMES DIFFER FROM ANOTHER ONLY BY CASE**, which a correction rule can fix because
+no judgement is involved:
+
+```
+EL-Fire Alarm       1A02MM EL          against  EL-Fire alarm     1A02WE, 1A02WM, 1A02WN, 1A02WO EL
+EV-Access Control   1A02MM, 1A02BS x2, 1A02WM   against  EV-Access control   1A02WN EL
+```
+
+**FIVE PAIRS DIFFER BY MORE THAN CASE, AND ONLY THREE OF THE FIVE ARE TYPOS.** This is
+the part that decides the shape of the rule, because an edit distance alone cannot tell
+them apart:
+
+```
+EL-Lightining Protection  against  EL-Lightning Protection   ONE letter. A typo
+EV-Ccctv system           against  EV-Cctv System            ONE letter. A typo
+PL-Drainage equipmen      against  PL-Drainage equipment     ONE letter. A truncation
+AR-EXTERIOR               against  AR-INTERIOR               TWO letters. TWO REAL WORKSETS
+ST-SUB                    against  ST-SUP                    ONE letter. TWO REAL WORKSETS
+```
+
+Sub structure against super structure, and exterior against interior, are one letter
+apart and both real. **SO NOTHING MAY BE MERGED ON DISTANCE ALONE**, and the rule this
+round builds never does.
+
+**AND THE MATRIX ASKS FOR ONLY SEVEN WORKSET VALUES**, which is what makes the rule safe:
+
+```
+PL-Drainage 6,  PL-Domestic Water 6,  ME-PIPING 5,  ME-DUCTWORK 5,
+FP-PIPING 5,  FF-FIRE FIGHTING 2,  ME-EQUIPMENT 1
+```
+
+Matched against the 39 the models carry:
+
+```
+ME-DUCTWORK       -> ME-Ductwork        one candidate, case only.  CORRECT
+ME-PIPING         -> ME-Piping          one candidate, case only.  CORRECT
+ME-EQUIPMENT      -> ME-Equipment       one candidate, case only.  CORRECT
+PL-Domestic Water -> PL-Domestic water  one candidate, case only.  CORRECT
+PL-Drainage       -> PL-Drainage        exact.                     LEAVE ALONE
+FP-PIPING         -> nothing            no model carries FP-.      LEAVE ALONE
+FF-FIRE FIGHTING  -> nothing            no candidate.              LEAVE ALONE
+```
+
+Four corrections, covering 17 of the matrix's conditions. `AR-EXTERIOR`, `ST-SUB` and
+every other name the models carry are never touched, because the rule only ever looks at
+a value the matrix asks for.
+
+**AND THE FIVE DISAGREEING PAIRS AFFECT NO CLASH SET AT ALL.** Not one of
+`EL-Fire Alarm`, `EV-Access Control`, `EL-Lightning Protection`, `EV-Cctv System` or
+`PL-Drainage equipment` is a value any set in the matrix filters on. So the Or row Q69
+asks for is built and correctly produces NOTHING on this matrix, and the thing that does
+the work is the export check naming them. They are a model hygiene problem and not a
+clash problem, and saying so is more use than an Or row that changes no number.
+
+
+## 5u. THE SHARED SITE OF EVERY MODEL IN EVERY GROUP, MEASURED 2026-09-20
+
+PART 1c, and PART 4 was not built until this number was known.
+
+```
+1A02MM   reference AR-MOD-000001   names Internal: TRUE    no site at all: false
+1A02WL   reference none            names Internal: TRUE    no site at all: false
+1000BS   reference AR-MOD-003001   names Internal: false   no site at all: false
+1A0215   reference none            names Internal: false   no site at all: false
+1A02BS   reference AR-MOD-001000   names Internal: false   no site at all: false
+1A02MS   reference none            names Internal: false   no site at all: false
+1A02WE   reference AR-MOD-000001   names Internal: false   no site at all: false
+1A02WM   reference AR-MOD-000001   names Internal: false   no site at all: false
+1A02WN   reference AR-MOD-000001   names Internal: false   no site at all: false
+1A02WO   reference AR-MOD-000001   names Internal: false   no site at all: false
+```
+
+**TWO OF THE TEN GROUPS WOULD FAIL UNDER Q70**, 1A02MM and 1A02WL, and NO model in C02
+carries no site at all. Two is well under half, so PART 4 is built exactly as briefed
+and the number is not uncomfortable enough to be worth arguing about.
+
+**FOUR OF THE TEN CARRY NO ARCHITECTURE MODEL** and fall back to their first placed
+model as the alignment reference, which the block already says in words. 1A0215 is
+landscape, 1A02MS is one model, and 1A02WL is eight structural and mechanical models
+with no architecture at all.
+
+An eleventh file, `1104-PAR-1A0215-ZZZ-LS-MOD-000001.nwf`, opens with ZERO models. It is
+in his NWF folder and is not one of the ten groups the run builds, and nothing in this
+round touches it.
