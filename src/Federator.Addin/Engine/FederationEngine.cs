@@ -672,7 +672,13 @@ namespace Federator.Addin.Engine
                     // alone, and had NWDs published off them with models missing. The
                     // rebuild happens BEFORE the units change and the clash step, and
                     // from here the group is treated exactly as an opened one.
-                    if (!RebuildFromScan(document, job, outcome, comparison))
+                    // F50 and Q34. Bringing the NWF up to date without clearing it is
+                    // the route 5x measured as safe, and the clear and rebuild is kept
+                    // as the fallback for a shape it cannot do, because that one can
+                    // always do it and neither of them saves the NWF unless every one
+                    // of the four things it held came back.
+                    if (!ReshapeFromScan(document, job, outcome, comparison)
+                        && !RebuildFromScan(document, job, outcome, comparison))
                     {
                         return outcome;
                     }
@@ -1321,6 +1327,230 @@ namespace Federator.Addin.Engine
         /// before the clear is back in the document. Where they cannot be put back the
         /// group fails, says so, and the NWF on disk keeps its file list and its tests.
         /// </summary>
+
+        /// <summary>
+        /// A CHANGED group brought up to date by taking out what is gone and appending
+        /// what is new, without clearing the document, F50 and Q34 answered on
+        /// 2026-09-20.
+        ///
+        /// WHY THIS REPLACES THE CLEAR AND REBUILD. Clearing throws the sets, the clash
+        /// tests, every result, every status a person set and every saved viewpoint out
+        /// of the document, and the whole of RebuildFromScan is the dance of copying all
+        /// four out and putting them back. 5x measured that none of that is necessary:
+        /// removing one model from a four model federation left the sets at 62, the tests
+        /// at 1830, the results at 526, the statuses at 526 and the viewpoints at 509,
+        /// and every one of them survived a save and a reopen off the disk. Nothing
+        /// points into a removed model hard enough to go with it.
+        ///
+        /// THE COUNT OUT AND THE COUNT BACK STAYS EXACTLY AS IT IS. It is what proves
+        /// nothing was lost, and a path that needs no copying still has to prove that.
+        /// Any one of the four short leaves the NWF on disk alone and fails the group,
+        /// the same as before.
+        ///
+        /// A FILE IS REMOVED BY ITS NAME AND NEVER BY A REMEMBERED INDEX. Indexes shift
+        /// as models go, so the ones to remove are found by file name, sorted, and taken
+        /// from the END, which is the only order that leaves the rest where they were.
+        /// </summary>
+        private bool ReshapeFromScan(
+            Document document, FederationJob job, JobOutcome outcome, NwfComparison comparison)
+        {
+            NwfRebuildPlan plan = NwfRebuildPlan.From(comparison);
+
+            foreach (string line in plan.Lines(job.NwfPath))
+            {
+                log.Line(line);
+            }
+
+            Say("Bringing " + job.Building + " up to date without clearing it");
+
+            RebuildTally tally = new RebuildTally();
+            RebuiltThing sets = tally.Count("SETS", "selection sets");
+            RebuiltThing tests = tally.Count("TESTS", "saved clash tests");
+            RebuiltThing views = tally.Count("VIEWS", "saved viewpoints");
+            RebuiltThing statuses = tally.Count("RESULTS", "clash results carrying a status a person set");
+
+            sets.Before = DocumentCensusReader.Sets(document.SelectionSets);
+            tests.Before = SavedTests.Read(document).Count;
+            views.Before = SavedViewpoints.Count(document);
+            statuses.Before = SavedStatuses.SetByAPerson(document);
+
+            // Everything a move or a removal takes out, by file name, so one pass covers
+            // both. A move is a remove and an add, because the file is in a new folder.
+            List<string> going = new List<string>(comparison.Removed);
+
+            foreach (NwfMove move in plan.Moved)
+            {
+                going.Add(move.From);
+            }
+
+            // EVERY INDEX IS FOUND BEFORE ANYTHING IS REMOVED, so this path declines
+            // before it has changed anything. That is what makes the fallback safe: the
+            // clear and rebuild then reads a document nothing has touched.
+            List<int> indexes = IndexesOf(document, going);
+
+            if (indexes == null)
+            {
+                // NOT A FAULT, this path saying it cannot do the job. No error goes on
+                // the outcome and the caller falls back to the clear and rebuild.
+                log.Line("RESHAPE  a model this group no longer holds is not in the open NWF, "
+                    + "so the clear and rebuild is used instead");
+
+                return false;
+            }
+
+            if (!RemoveThem(document, indexes))
+            {
+                // PART WAY THROUGH AND IT STOPPED, which IS a fault. The document has
+                // already changed, so the clear and rebuild must not run on top of it.
+                outcome.AddError(
+                    "a model could not be taken out of the open NWF part way through, "
+                        + "so the file on disk is left exactly as it was");
+
+                return true;
+            }
+
+            // What to append: everything added, plus every moved file at its new path.
+            List<string> coming = new List<string>(comparison.Added);
+
+            foreach (NwfMove move in plan.Moved)
+            {
+                coming.Add(move.To);
+            }
+
+            int appended = 0;
+
+            foreach (string file in coming)
+            {
+                log.AppendAttempted(file);
+
+                if (AppendOne(document, file))
+                {
+                    appended++;
+                }
+            }
+
+            log.Line("RESHAPE  " + going.Count + (going.Count == 1 ? " file" : " files")
+                + " taken out, " + appended + " of " + coming.Count + " appended, without clearing the document");
+
+            // NOTHING IS RESTORED ON THIS PATH, because nothing was taken out, so the
+            // two counts after are the same reading. The tally still wants both, because
+            // it is the one rule all four things are judged by and a path that reported
+            // only one of them would be judged differently from the clear and rebuild.
+            sets.AfterAppends = DocumentCensusReader.Sets(document.SelectionSets);
+            tests.AfterAppends = SavedTests.Read(document).Count;
+            views.AfterAppends = SavedViewpoints.Count(document);
+            statuses.AfterAppends = SavedStatuses.SetByAPerson(document);
+
+            sets.AfterRestore = sets.AfterAppends;
+            tests.AfterRestore = tests.AfterAppends;
+            views.AfterRestore = views.AfterAppends;
+            statuses.AfterRestore = statuses.AfterAppends;
+
+            foreach (string line in tally.Lines())
+            {
+                log.Line(line);
+            }
+
+            if (!tally.EverythingKept)
+            {
+                outcome.AddError(
+                    "the NWF was brought up to date and something it held did not come back, "
+                        + "so the file on disk is left exactly as it was");
+
+                return false;
+            }
+
+            if (appended < coming.Count)
+            {
+                outcome.AddError(
+                    appended + " of " + coming.Count + " new files were appended, so the file on disk is left alone");
+
+                return false;
+            }
+
+            outcome.AppendedCount = document.Models.Count;
+            return true;
+        }
+
+        /// <summary>
+        /// Where each of those files sits in the open document, highest index FIRST, or
+        /// null where any one of them is not there. Found before anything is removed, so
+        /// the caller can decline without having changed the document.
+        ///
+        /// Model.FileName and never SourceFileName, which is the Revit container and can
+        /// never equal a scanned NWC path. That is the rule the file list already keeps
+        /// and the one that once reported 22 of 22 groups as CHANGED.
+        /// </summary>
+        private List<int> IndexesOf(Document document, IList<string> files)
+        {
+            List<int> indexes = new List<int>();
+
+            foreach (string file in files)
+            {
+                int at = IndexOfModel(document, file);
+
+                if (at < 0)
+                {
+                    log.Line("RESHAPE  " + Path.GetFileName(file) + " is not in the open NWF");
+                    return null;
+                }
+
+                indexes.Add(at);
+            }
+
+            // FROM THE END, which is the only order that leaves the indexes of the ones
+            // still to go where they were.
+            indexes.Sort();
+            indexes.Reverse();
+            return indexes;
+        }
+
+        /// <summary>Takes those models out, highest index first. Returns whether every one went.</summary>
+        private bool RemoveThem(Document document, List<int> indexes)
+        {
+            foreach (int at in indexes)
+            {
+                try
+                {
+                    if (!document.TryRemoveFile(at))
+                    {
+                        log.Line("RESHAPE  the model at " + at + " would not come out");
+                        return false;
+                    }
+                }
+                catch (Exception error)
+                {
+                    log.Failure(
+                        "taking the model at " + at + " out of the open NWF",
+                        error,
+                        "the file on disk is left exactly as it was");
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>Where that file sits in the open document, compared the way the file list is compared, or minus one.</summary>
+        private static int IndexOfModel(Document document, string file)
+        {
+            for (int i = 0; i < document.Models.Count; i++)
+            {
+                using (Model model = document.Models[i])
+                {
+                    // Compared the way the file list is compared everywhere else in this
+                    // tool, OrdinalIgnoreCase on the whole path, which is what NwfComparison
+                    // uses to decide a group is CHANGED in the first place.
+                    if (string.Equals(Words.Or(model.FileName, string.Empty), file, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
+        }
         private bool RebuildFromScan(
             Document document, FederationJob job, JobOutcome outcome, NwfComparison comparison)
         {
