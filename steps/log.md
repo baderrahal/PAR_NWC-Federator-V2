@@ -1,6 +1,107 @@
 # log
 
 Newest entry at the top.
+## 2026-09-21 The close round, THE PLAN REVISED A THIRD TIME, written before the next edit
+
+Fourth brief, round still in flight, nothing already done is redone. This says what changes
+against the revised plan at `ef5c5fc` and in what order the rest goes.
+
+### The change that reorders everything else: THE FIXTURE
+
+Bader asked why the tool is not simply run over and over until it works, and the answer is
+that nothing sits between a probe and a full live run. A probe measures ONE API call. A
+live run writes into his project folder and takes 15 to 25 minutes. So every fix this
+round and the last has cost a whole live run to prove, which is why four runs were needed
+last night to land four fixes.
+
+**PART 1d BUILDS THE MISSING RUNG AND IT GOES FIRST.** A small copy group under
+`C:\Users\bader\AppData\Local\Temp\claude\round-close\fixture`, and PARTS 2, 3 and 5 each
+run the tool END TO END against it, read the log, fix, and run again, as many times as it
+takes, before anything goes near C02 or C04.
+
+**THE CHOICE, AND WHY.** It has to span more than one discipline or no `BLD-` set pair can
+clash, and it has to put a SERVICE against a SOLID or the penetration rule never runs.
+Measured off 6a, `1A04WE` is by far the smallest building that does both:
+
+| building | AR | EL | ME | ST | elements in AR+ME+ST |
+| --- | --- | --- | --- | --- | --- |
+| 1A04WE | 139K | 2,233K | 120K | 38K | 25 + 23 + 33 = **81** |
+| 1A04WO | 1,395K | 601K | 786K | 27K | larger |
+| 1A04PW | 1,689K | 8,793K | 5,649K | 3,501K | 271 + 4,010 + 250 |
+
+So the first pick is **1A04WE's AR, ME and ST, three files, 297 KB, 81 elements**, which
+exercises AR against ME, AR against ST and ME against ST, and puts a service against a
+solid for the penetration rule. EL is left out because it is 2,233K of the building's
+2,532K and adds one more discipline for eight times the size.
+
+**AND THE FIXTURE HAS TO EARN ITS PLACE ON ITS FIRST RUN.** 81 elements may produce no
+clashes at all, and a fixture that finds nothing exercises neither the clash step, the
+viewpoints, the penetrations nor a non empty workbook block. If the first run finds zero
+clashes the fixture moves to `1A04PW`'s ME and ST, which carry 4,010 and 250 elements and
+will certainly clash, at the cost of 9 MB and a slower loop. That decision is made on the
+first fixture run and reported either way.
+
+**WHAT THE FIXTURE CANNOT SHOW, said now rather than after a green run.** It is one small
+group, so it cannot show scale, the weekly path, a CHANGED group, alignment across many
+models, the two non buildings, the single discipline groups, or anything needing the real
+matrix against real content. A green fixture is not a green run and the report says so.
+
+### The four other changes
+
+**PART 4 GAINS TWO BUILD ITEMS, BOTH ABOUT NOT CRYING WOLF.**
+
+4d, THE NEAR TYPO RULE IS FIXED AS A CLASS. `FP-PIPING` against `ME-PIPING` is edit
+distance 2 and they are two different disciplines, Fire Protection and Mechanical.
+Flagging them is the same fault the drift round fixed once for `AR-EXTERIOR` against
+`AR-INTERIOR`, and it costs the real typo sitting beside it, `EL-Lightining Protection` in
+1A04WM. THE DISCIPLINE PREFIX IS NOT PART OF THE COMPARISON: two names whose prefixes
+differ are never a typo pair however close the rest is, and two sharing a prefix and
+differing in the body still are.
+
+4e, AN INVISIBLE DIFFERENCE IS NAMED BY ITS CHARACTER. `EL-Fire alarm` exists in two
+spellings across C04, one carrying a NON-BREAKING SPACE. Today no single group carries
+both so nothing compares them, and that stops being true the moment one group gets both
+models or somebody types the matrix value with an ordinary space. Then a set finds nothing
+and the screen shows two identical looking strings. So the report says NON-BREAKING SPACE,
+U+00A0, AT CHARACTER N, and the same for a tab, a double space, a trailing space or a zero
+width character.
+
+**PART 6 GAINS 6j AND 6k.** 6j gives the WL finding its own heading rather than a log
+line: 1A04WL's ST-000004 and ST-000005 are on the internal origin, and C02's 1A02WL failed
+the drift round on THE SAME TWO FILE NUMBERS. One structural modeller, the same mistake
+twice, in the WL building of two communities, written so Bader can send it as it stands.
+6k adds a question about `DEFUALT`, which matters more than its spelling: a model on a site
+named DEFAULT is probably not on an agreed project shared site, which is close to what
+`Internal` means and is what Q70 fails a group for. The fail rule does NOT change, both
+names are reported as they are, and the question asks whether a DEFAULT site should fail a
+group or be reported only.
+
+**Q67'S CONSEQUENCE HALF CLOSES AND THE OTHER HALF GETS A BETTER REASON.** The internal
+origin path fires on 1A04WL, so that half is proved on a second building. The NO SHARED
+COORDINATE path and the MISSING ELEMENT ID path have still never fired, because all 46 C04
+models name a coordinate and all 46 are at 100 per cent element id. Both carry forward in
+the untested section with the reason that C04 WAS THE CHANCE AND HAS NOW BEEN TRIED.
+
+**THE CLOSING SAYS WHAT THE FIXTURE COST AND WHAT IT SAVED, IN RUNS**, so the next round
+knows whether to keep it, and PART 8 adds it to `steps\03_bader_next.md` as a numbered
+step so Bader can run it himself.
+
+### The order of the remainder
+
+1. **PART 1d, the fixture**, built and run once to see whether it clashes
+2. **The duplication bug** the verification found in the removal list, read before wiring
+3. **PART 5, the reshape fix**, then forced failure paths on the fixture
+4. **PART 2**, remove the twin then rename, proved on the fixture then on copies
+5. **PART 3**, the empty block becomes one row, proved by opening the fixture's workbook
+6. **PART 4**, the four reporting fixes, 4d and 4e with their tests
+7. **PART 6**, the record, the register, the two new findings
+8. **Build, full suite, both checks, install**
+9. **PART 5's happy path** on a copy of a C02 group with one NWC added and one removed
+10. **PART 7a, C04**, only after the fixture is green
+11. **PART 7b, C02**, behind the freeze gate that can stop it
+12. **PART 8**, the closing pass
+13. **Closing**: the report, the questions, the pull request or the compare link
+
 ## 2026-09-21 The close round, THE PLAN REVISED AGAIN, written before the next edit
 
 Third brief, round still in flight, nothing already done is redone. This says what changes
