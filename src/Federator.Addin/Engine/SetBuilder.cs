@@ -255,6 +255,7 @@ namespace Federator.Addin.Engine
                         // the document nowhere and nothing said so. Q72.
                         SetDrift drift = DriftOf(planned, existing);
                         bool rebuilt = false;
+                        int found = 0;
 
                         if (drift.Drifted && rebuilds.RebuildDriftedSets)
                         {
@@ -266,10 +267,27 @@ namespace Federator.Addin.Engine
                             // One call, so a present set is counted as present and never as
                             // created. It used to be added to both lists, which made every
                             // weekly run report sixty one created and save the NWF again.
+                            found = CountOf(document, existing);
+
                             SetResult present = outcome.AddAlreadyPresent(
-                                planned.Path, planned.Name, planned.ConditionCount,
-                                CountOf(document, existing));
+                                planned.Path, planned.Name, planned.ConditionCount, found);
+
                             log.Line("SET      " + present.Line());
+
+                            // 3a. What the set in the DOCUMENT asks, read off the set and
+                            // never off the picked file. SETS ACROSS THE RUN used to say
+                            // "asked UNKNOWN, because it was already in the NWF and this
+                            // run never read its question". 5w reads it.
+                            present.Asked = drift.AskedNow();
+                        }
+
+                        // 3b. A set that found NOTHING says which of three things is wrong,
+                        // because his own report shows 1,677 of 1,830 tests touching a
+                        // set that never produces a clash, and nothing told him which of
+                        // those sets is wrong and which is a model with no such content.
+                        if (found == 0 && !drift.CouldNotRead)
+                        {
+                            outcome.AddEmpty(EmptySets.Why(planned.Path, drift.Asked));
                         }
 
                         if (drift.Drifted)

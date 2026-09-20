@@ -24,6 +24,15 @@ namespace Federator.Core.Clash
         /// <summary>How many clashtest elements the picked file held.</summary>
         public int TestsInFile { get; set; }
 
+        /// <summary>
+        /// How many tests of this group were NOT created because a side finds nothing,
+        /// 3b. It is the cost of a set that finds nothing, and it is the number his own
+        /// 1A02MM report made urgent: 1,677 of 1,830 tests there touch a set that never
+        /// produces a clash. Counted apart from every other skip reason, because a side
+        /// with no items and a test nobody could read are different faults.
+        /// </summary>
+        public int NotCreatedASideFindsNothing { get; set; }
+
         /// <summary>The document the tests ran against, because a count means nothing without it.</summary>
         public string OpenDocument { get; set; }
 

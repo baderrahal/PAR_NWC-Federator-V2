@@ -1696,6 +1696,7 @@ namespace Federator.Addin.Engine
             Dictionary<string, int> itemsByLocator =
                 CountItemsPerSet(document, byPath, resolved.DistinctLocators());
             CreationPlan creation = CreationPlan.For(absent, itemsByLocator);
+            outcome.NotCreatedASideFindsNothing = creation.NotCreatedCount;
             log.Line(creation.CountedLine(resolved.TestsInFile));
 
             HashSet<string> notCreated = new HashSet<string>(StringComparer.Ordinal);

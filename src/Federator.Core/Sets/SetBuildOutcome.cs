@@ -13,6 +13,7 @@ namespace Federator.Core.Sets
         private readonly List<SetResult> results = new List<SetResult>();
         private readonly List<SkippedSet> skipped = new List<SkippedSet>();
         private readonly List<SetDrift> drifted = new List<SetDrift>();
+        private readonly List<EmptySet> empty = new List<EmptySet>();
         private int rebuiltCount;
 
         public ReadOnlyCollection<SetResult> Results
@@ -65,6 +66,24 @@ namespace Federator.Core.Sets
             {
                 rebuiltCount++;
             }
+        }
+
+        /// <summary>
+        /// Every set that found NOTHING, with which of three things is wrong with it, 3b.
+        /// A set finding zero is not one dead set, it is every clash test pointing at it.
+        /// </summary>
+        public void AddEmpty(EmptySet empty)
+        {
+            if (empty != null)
+            {
+                this.empty.Add(empty);
+            }
+        }
+
+        /// <summary>The sets that found nothing and why.</summary>
+        public ReadOnlyCollection<EmptySet> Empty
+        {
+            get { return new ReadOnlyCollection<EmptySet>(empty); }
         }
 
         /// <summary>Sets whose question no longer matches the picked file.</summary>

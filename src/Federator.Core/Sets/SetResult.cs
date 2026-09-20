@@ -26,7 +26,13 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>What the set asked the model for. Shown on a ZERO line so it explains itself.</summary>
-        public string Asked { get; private set; }
+        /// <summary>
+        /// What the set asks. For a CREATED set it is what the file asked, and since the
+        /// drift round a PRESENT set carries what the set itself asks, read off it, 5w.
+        /// Settable for that second case, because a present set is recorded before its
+        /// question has been read.
+        /// </summary>
+        public string Asked { get; set; }
 
         public string Path { get; private set; }
 

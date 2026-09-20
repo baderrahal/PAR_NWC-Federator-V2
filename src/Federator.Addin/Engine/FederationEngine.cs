@@ -2236,6 +2236,23 @@ namespace Federator.Addin.Engine
                 ApplyThePriorities(job, outcome.Report);
                 log.Block("CLASH " + job.Building, clash.Lines());
 
+                // 3b, the block his own report made urgent. A set that finds nothing is
+                // not one dead set, it is every clash test that points at it, and until
+                // now nothing said which of those sets is WRONG and which is a model with
+                // no such content. Written after the clash step because the cost is the
+                // number of tests a side emptied, which only the creation plan knows.
+                if (outcome.Sets != null && outcome.Sets.Empty.Count > 0)
+                {
+                    log.Block(
+                        "EMPTY SETS " + Words.Or(job.Building, "this group"),
+                        EmptySets.Lines(outcome.Sets.Empty, clash.NotCreatedASideFindsNothing, clash.TestsInFile));
+
+                    foreach (EmptySet empty in outcome.Sets.Empty)
+                    {
+                        log.Row("set finding nothing", empty.Path, string.Empty, empty.Line());
+                    }
+                }
+
                 // F72. Straight after the CLASH block, because it is about the clashes that
                 // block just counted. Written even when nothing moved, saying so, because a
                 // missing block reads as a check that did not run. The run total is kept so

@@ -187,13 +187,15 @@ namespace Federator.Core.Sets
 
                 lines.Add("    " + set.Path + "  "
                     // A BARE UNKNOWN IS NOT A FINDING, it is a check that reported nothing.
-                    // This block exists to say WHICH sets are wrong, and on a weekly run
-                    // every set is already in the NWF, so its question was never read and
-                    // every line of the block said UNKNOWN. Saying WHY turns it back into
-                    // a fact a person can act on, and the action is Q72.
+                    // This block exists to say WHICH sets are wrong, and it used to say
+                    // UNKNOWN on every line, because on a weekly run every set is already
+                    // in the NWF and nothing read its question. 5w reads it now, off
+                    // SelectionSet.Search, so what is printed is what the set in the
+                    // DOCUMENT asks and never what the picked file asks. Where the two
+                    // differ the SET DRIFT lines beside the group say both, Q72.
                     + (string.IsNullOrEmpty(set.Asked)
-                        ? "asked UNKNOWN, because it was already in the NWF and this run never read its question. Q72"
-                        : "asked " + set.Asked));
+                        ? "asked UNKNOWN, and its search would not read, which is a fault in the set and not in this block"
+                        : "asks " + set.Asked));
                 shown++;
             }
 
