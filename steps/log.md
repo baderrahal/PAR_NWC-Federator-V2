@@ -1,6 +1,114 @@
 # log
 
 Newest entry at the top.
+## 2026-09-21 The close round, THE PLAN REVISED, written before the next edit
+
+The brief was revised while the round was underway. Nothing already done is redone. This
+says what changes against the plan committed at `77d03f9`, and in what order the rest goes.
+
+### What stands, unchanged
+
+The build gate and all three PART 0 gates. The `El` correction at `d083ea3`. 5z. The C02
+baselines. PART 3, Q73, is word for word what it was. PART 4b and 4c are unchanged.
+PART 6a to 6f are unchanged. PART 8 is unchanged except that it now also checks rule 2
+was kept.
+
+### The six changes, and the one that matters most
+
+**1. PART 5 STOPS BEING A PROOF AND BECOMES A FIX, AND IT IS NOW THE HEADLINE.**
+The committed plan had PART 5 forcing the reshape on a copy to prove it works. The
+verification pass found it does not. `ReshapeFromScan` has THREE `return false` sites and
+two of them fire AFTER the document has been modified. `return false` makes the caller
+try `RebuildFromScan`, which reads its before counts off the already damaged document,
+finds everything present, reports everything kept, and SAVES THE NWF OVER, while the
+error the reshape added says the file on disk was left exactly as it was.
+
+THAT IS WORSE THAN ANY FAULT THIS TOOL HAS HAD. The worksets round's reader returned
+nothing and looked like an answer. This one tells him a true sentence about his data is
+false and then writes the damage to disk. So PART 5 is now: hold the before counts from
+the TOP, never re read them off a touched document; make any `return false` after a
+modification refuse to save and say the NWF on disk is the last good copy; keep the
+fallback off a modified document entirely. AND PROVE THE THREE FAILURE PATHS by forcing
+each one on a copy and reading the NWF back byte for byte, because a path only ever
+proved when it succeeds is exactly how this survived.
+
+**2. PART 1 GAINS 5z-b AND PART 2 IS BLOCKED ON IT.**
+5v measured a CONDITIONS replace. 5z measured a REMOVE. A DISPLAY NAME change is a third
+field and nobody has measured it. On a copy: rename a set in the MIDDLE that test sides
+point at, save, close, reopen off the disk, and read back whether those sides still
+resolve and to the right set, the results, the statuses, the viewpoints, and what it finds.
+
+**3. PART 2 TURNS FROM REMOVE INTO RENAME, ON THE STRENGTH OF THIS ROUND'S OWN
+MEASUREMENT.** Q74 was answered before 5z existed. 5z found 60 test sides point at the
+BROKEN `BLD-DRPipe Accessories` in each of seven groups and NOTHING points at the
+corrected spelling. So the broken set is the one doing the work and the corrected one is
+sitting unused. Removing the broken one orphans 420 test sides across seven groups.
+Removing the corrected one changes nothing. The fix is to RENAME the broken set to the
+corrected name, so its 60 sides keep working and start asking the right question, then
+remove the unused duplicate, which 5z already proved is safe.
+
+AND THE REFUSAL CONDITION WIDENS. The brief said refuse when a test LOSES ITS RESULTS. 5z
+found the results survive and the SIDE stops resolving, which that wording would not
+catch. The condition is now: refuse when anything pointing at the set would stop
+resolving, whatever happens to the results. If 5z-b says a rename does not keep what
+points at a set, NOTHING IS BUILT for this case and the box refuses and names the 420.
+The same measurement governs `BLD-Security Devices`.
+
+**4. THE CASE BLIND DISCIPLINE COMPARE IS WITHDRAWN**, because it rested on the `El` that
+was not there. In its place scan.md records the MEASURED fact that the discipline code is
+uniformly uppercase across all 46 C04 files and across C02, dated, and a question is
+written so the reasoning already exists if a lowercase code ever arrives: a discipline
+code is a CLOSED set of seven and could be matched case blind safely, where a workset
+value is an OPEN set and could not, which is exactly why Q68 refused the flag there.
+
+**5. PART 4a GETS BIGGER THAN IT LOOKED.** Q55 has NO `Answer:` line in the file at all,
+so recording his answer means ADDING one rather than filling a blank. And PART 6 gains
+6g, the `HelpLine` that is 11 words while its own comment says 12, and 6h, reconciling
+the question count, because the GAP block's own text points at Q25, Q38 and Q39 as live
+while an earlier read of that file counted only Q55, Q56 and Q73 as unanswered.
+
+**6. PART 7a GAINS FOUR RULES ABOUT C04'S GROUPS**, and the first protects the one number
+the round exists to produce. `1A0415` and `1WAW15` are NOT buildings: their disciplines
+are LS, LT and SW, none of the seven, and every set in the picked matrix is a `BLD-` set,
+so both will find nothing and it will look identical to the case mismatch being measured.
+They are reported as "no set in this matrix applies to this group" and are EXCLUDED from
+the empty set figures compared against C02. `1A04MS` and `1A04PK` hold one discipline each
+and get one line rather than 1,830 tests that found nothing. `1A04WL`'s ST files are
+numbered 1, 2, 3, 4, 5, 7 and the missing SIX is named without guessing why. And where the
+round shows an example it shows `1A04PW`.
+
+### The order of the remainder
+
+1. **5z-b**, one probe pass, because PART 2 is blocked on it
+2. **6a read and reported**, and scan.md written for 5z, 5z-b, 6a and the uppercase fact
+3. **PART 5, the FIX**, first of the code, because every run after it depends on the
+   engine not lying about his data
+4. **PART 2**, rename or refuse, whichever 5z-b allows
+5. **PART 3**, the empty block becomes one row
+6. **PART 4**, the questions recorded and the category line naming its folder
+7. **PART 6**, the record, the register and the two new reconciliations
+8. **Build, full suite, both checks, install**
+9. **PART 5's proofs**: the three failure paths forced on copies and read back byte for
+   byte, then the happy path on a copy with one NWC added and one removed
+10. **PART 7a, C04**, backed up and read back first
+11. **PART 7b, C02**, backed up and read back first
+12. **PART 8**, the closing pass over both logs, a workbook from each, and
+    `steps\03_bader_next.md` read end to end against the code
+13. **Closing**: the round report carrying the `El` error as plainly as any finding and
+    saying the verify pass caught it by listing the live folder, the six questions
+    recorded, and the pull request or the compare link
+
+### What 6a already shows, before it is written up
+
+All 46 models surveyed, 1,656,930 bytes of output. Two things are already visible and
+both go in the report. NOT ONE of the 46 carries a property named for a shared
+coordinate, shared site or project location, so how the ALIGNMENT check reads that fact
+has to be established against the code before Q67 can be called closed or carried
+forward. And `1A04PW`'s architecture model is published from
+`Autodesk Docs://KSA_New Murabba/1104-PAR-0000PW-ZZZ-AR-MOD-000001.rvt`, whose building
+code is `0000PW` where the NWC says `1A04PW`, which is precisely the SOURCE MISMATCH the
+tool already looks for and has never met on a model that was on this machine.
+
 ## 2026-09-21 The close round, THE PLAN, written before the first edit
 
 ### The build gate and the three gates, all four passed
