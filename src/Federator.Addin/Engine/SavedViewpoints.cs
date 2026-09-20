@@ -357,14 +357,20 @@ namespace Federator.Addin.Engine
         /// appearance override the file already held, which nothing can read back first.
         /// That is 5k's trap again and the answer is the same one.
         /// </summary>
-        public static int DimAllBut(Document document, double transparency, ModelItem first, ModelItem second)
+        public static int DimAllBut(
+            Document document, double transparency, ICollection<int> shown, ModelItem first, ModelItem second)
         {
             if (document == null)
             {
                 return 0;
             }
 
-            using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+            // ONLY THE MODELS THIS VIEWPOINT SHOWS. A viewpoint records one material
+            // override per item it dimmed, measured at 994 for a four model group, and
+            // the first dimming run put 33 MB into a 120 KB NWF because it dimmed the
+            // models it had just hidden as well. Dimming something already hidden changes
+            // no picture and costs a record in every viewpoint.
+            using (ModelItemCollection roots = RootsOf(document, shown))
             {
                 document.Models.OverrideTemporaryTransparency(roots, transparency);
             }
@@ -406,6 +412,37 @@ namespace Federator.Addin.Engine
             {
                 document.Models.ResetTemporaryMaterials(roots);
             }
+        }
+
+        /// <summary>
+        /// The root items of the models at those indexes, or of every model where the
+        /// list is empty or missing. The caller disposes the collection, and each root
+        /// read on the way is released once its path is copied in.
+        /// </summary>
+        private static ModelItemCollection RootsOf(Document document, ICollection<int> shown)
+        {
+            if (shown == null || shown.Count == 0)
+            {
+                return document.Models.CreateCollectionFromRootItems();
+            }
+
+            ModelItemCollection roots = new ModelItemCollection();
+
+            for (int i = 0; i < document.Models.Count; i++)
+            {
+                if (!shown.Contains(i))
+                {
+                    continue;
+                }
+
+                using (Model model = document.Models[i])
+                using (ModelItem root = model.RootItem)
+                {
+                    roots.Add(root);
+                }
+            }
+
+            return roots;
         }
 
         /// <summary>

@@ -79,6 +79,15 @@ namespace Federator.Addin.Engine
         private bool dimmedAnything;
         private Exception firstHomeError;
 
+        // Where the VIEWS step's seconds go, per call, because the dimming took one
+        // group from 7.5 seconds to 476 and the shape of the cost was not what it
+        // looked like: the group with the MOST items was one of the fastest. A step
+        // that got slower says which call did it rather than leaving it to be guessed.
+        private readonly System.Diagnostics.Stopwatch alreadyThereWatch = new System.Diagnostics.Stopwatch();
+        private readonly System.Diagnostics.Stopwatch dimWatch = new System.Diagnostics.Stopwatch();
+        private readonly System.Diagnostics.Stopwatch recordWatch = new System.Diagnostics.Stopwatch();
+        private readonly System.Diagnostics.Stopwatch readBackWatch = new System.Diagnostics.Stopwatch();
+
         /// <summary>
         /// Where one clash is: the models its two items live in, and the index path of
         /// each item. The PATH and not the item, because walk one names every clash in
@@ -155,6 +164,10 @@ namespace Federator.Addin.Engine
             notDimmed = 0;
             dimmedAnything = false;
             firstHomeError = null;
+            alreadyThereWatch.Reset();
+            dimWatch.Reset();
+            recordWatch.Reset();
+            readBackWatch.Reset();
 
             try
             {
@@ -191,6 +204,12 @@ namespace Federator.Addin.Engine
                     log.Line("VIEWS    read back on " + cameraRead + " created viewpoint(s): each sits within "
                         + views.CameraReadBackTolerance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
                         + " units of its clash camera, and the items each one hides and dims were counted off it and not trusted");
+
+                    log.Line("VIEWS    the step's seconds went: "
+                        + Seconds(alreadyThereWatch) + " looking whether each was already there, "
+                        + Seconds(dimWatch) + " dimming, "
+                        + Seconds(recordWatch) + " recording, "
+                        + Seconds(readBackWatch) + " reading back");
 
                     if (views.DimsAnything)
                     {
@@ -534,7 +553,11 @@ namespace Federator.Addin.Engine
             // Already there is left exactly as it is. F28's rule, carried to viewpoints: a
             // second copy at one path leaves the tree holding both and whichever came first
             // is what anything resolving that path finds.
-            if (SavedViewpoints.Exists(document, planned.Folders, planned.Name))
+            alreadyThereWatch.Start();
+            bool alreadyThere = SavedViewpoints.Exists(document, planned.Folders, planned.Name);
+            alreadyThereWatch.Stop();
+
+            if (alreadyThere)
             {
                 outcome.AddAlreadyPresent(planned.Path, planned.Pair.Folder, 0);
                 return;
@@ -632,12 +655,15 @@ namespace Federator.Addin.Engine
 
             if (views.DimsAnything && place != null && place.BothPlaced)
             {
+                dimWatch.Start();
+
                 using (ModelItem firstItem = SavedViewpoints.ItemAt(document, place.FirstPath))
                 using (ModelItem secondItem = SavedViewpoints.ItemAt(document, place.SecondPath))
                 {
                     if (firstItem != null && secondItem != null)
                     {
-                        solid = SavedViewpoints.DimAllBut(document, views.DimTransparency, firstItem, secondItem);
+                        solid = SavedViewpoints.DimAllBut(
+                            document, views.DimTransparency, hidesNothingBecause == null ? keep : null, firstItem, secondItem);
                         dimmedThisOne = solid == 2;
                         dimmedAnything = true;
                     }
@@ -650,10 +676,14 @@ namespace Federator.Addin.Engine
                     SavedViewpoints.Undim(document);
                     solid = 0;
                 }
+
+                dimWatch.Stop();
             }
 
+            recordWatch.Start();
             SavedViewpoints.EnsureFolders(document, planned.Folders);
             SavedViewpoints.Record(document, planned.Folders, planned.Name, camera);
+            recordWatch.Stop();
 
             // Read back rather than trusted, all three of it. The first run's tree looked
             // complete and every viewpoint opened on sky, because the route it used
@@ -661,7 +691,9 @@ namespace Federator.Addin.Engine
             // recorded camera is not the clash camera, or which carries no overrides
             // while it was meant to hide something, is not a viewpoint of that clash and
             // is counted as failed with the reason a person can check.
+            readBackWatch.Start();
             ViewpointReadBack read = SavedViewpoints.ReadBack(document, planned.Folders, planned.Name, camera);
+            readBackWatch.Stop();
 
             if (!read.Found)
             {
@@ -778,6 +810,12 @@ namespace Federator.Addin.Engine
                     snapshot = null;
                 }
             }
+        }
+
+        /// <summary>One watch's total, in seconds, the way every other timing in the log reads.</summary>
+        private static string Seconds(System.Diagnostics.Stopwatch watch)
+        {
+            return (watch.ElapsedMilliseconds / 1000.0).ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + "s";
         }
 
         private void SayOnce(string line)
