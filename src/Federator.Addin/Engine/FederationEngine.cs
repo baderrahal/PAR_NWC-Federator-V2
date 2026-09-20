@@ -2484,7 +2484,7 @@ namespace Federator.Addin.Engine
                 {
                     log.Block(
                         "EMPTY SETS " + Words.Or(job.Building, "this group"),
-                        EmptySets.Lines(outcome.Sets.Empty, clash.NotCreatedASideFindsNothing, clash.TestsInFile));
+                        EmptySets.Lines(outcome.Sets.Empty, clash.TestsWithAnEmptySide, clash.TestsInFile, clash.TestsNoSideCountFor));
 
                     foreach (EmptySet empty in outcome.Sets.Empty)
                     {

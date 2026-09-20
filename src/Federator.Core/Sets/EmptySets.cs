@@ -136,6 +136,17 @@ namespace Federator.Core.Sets
         /// <summary>The block, one line per empty set plus the counts and what it costs.</summary>
         public static IList<string> Lines(IList<EmptySet> empty, int testsWithAnEmptySide, int testsInAll)
         {
+            return Lines(empty, testsWithAnEmptySide, testsInAll, 0);
+        }
+
+        /// <summary>
+        /// The same block, plus how many tests this run could form no opinion about
+        /// because a side of theirs was in no count. Said rather than folded into the
+        /// cost, because a cost with a silent hole in it reads as a smaller cost.
+        /// </summary>
+        public static IList<string> Lines(
+            IList<EmptySet> empty, int testsWithAnEmptySide, int testsInAll, int testsNoSideCountFor)
+        {
             List<string> lines = new List<string>();
 
             if (empty == null || empty.Count == 0)
@@ -160,6 +171,13 @@ namespace Federator.Core.Sets
             // WHAT IT COSTS, which is the number his own report made urgent. A set that
             // finds nothing is not one dead set, it is every clash test that points at it.
             lines.Add(Cost(testsWithAnEmptySide, testsInAll));
+
+            if (testsNoSideCountFor > 0)
+            {
+                lines.Add("   and " + testsNoSideCountFor
+                    + " more test(s) had a side no count was taken for, so they are in neither number");
+            }
+
             return lines;
         }
 
@@ -168,6 +186,15 @@ namespace Federator.Core.Sets
             if (inAll <= 0)
             {
                 return "how many clash tests that costs is UNKNOWN, because no test count was read";
+            }
+
+            // A COUNT THAT WAS NOT TAKEN IS NOT A COST OF ZERO. The sides are only counted
+            // on the path that creates tests from a picked file. A run over the tests saved
+            // in the document never resolves a locator, so it has nothing to count with,
+            // and it says so rather than reporting that the empty sets cost nothing.
+            if (withAnEmptySide < 0)
+            {
+                return "how many clash tests that costs is UNKNOWN, because no side of any test was counted this run";
             }
 
             return "IT COSTS " + withAnEmptySide + " of this group's " + inAll

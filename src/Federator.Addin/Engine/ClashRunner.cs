@@ -1709,6 +1709,15 @@ namespace Federator.Addin.Engine
             outcome.NotCreatedASideFindsNothing = creation.NotCreatedCount;
             log.Line(creation.CountedLine(resolved.TestsInFile));
 
+            // 3b's cost, and it is counted over EVERY test and not over the absent ones,
+            // because a test already in the document still points at a set that finds
+            // nothing. Counting the absent ones reported 60 on seven groups holding 37 to
+            // 55 empty sets, which is what the weekly run had left to create and nothing
+            // to do with what the empty sets cost.
+            EmptySideTally cost = EmptySideCost.Count(resolved.Buildable, itemsByLocator);
+            outcome.TestsWithAnEmptySide = cost.WithAnEmptySide;
+            outcome.TestsNoSideCountFor = cost.CouldNotTell;
+
             HashSet<string> notCreated = new HashSet<string>(StringComparer.Ordinal);
 
             foreach (SkippedClashTest skipped in creation.NotCreated)
