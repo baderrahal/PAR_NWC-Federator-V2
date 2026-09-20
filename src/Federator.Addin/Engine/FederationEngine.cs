@@ -2239,6 +2239,14 @@ namespace Federator.Addin.Engine
                         penetrationTally.Lines(reports.Penetrations, reports.Sizes));
 
                     log.PenetrationsMoved += penetrationTally.MovedCount;
+
+                    // Q71. One row per service this tool could not measure, because the
+                    // block writes none and a count nobody can check is a count nobody
+                    // should trust.
+                    foreach (string row in penetrationTally.UnmeasuredRows)
+                    {
+                        log.Row("service with no readable size", row, string.Empty, string.Empty);
+                    }
                 }
 
                 // F72b. Straight after the PENETRATION block, the same shape, written even

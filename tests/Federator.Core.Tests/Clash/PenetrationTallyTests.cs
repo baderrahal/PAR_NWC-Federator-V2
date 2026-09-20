@@ -256,5 +256,74 @@ namespace Federator.Core.Tests
         {
             Assert.That(PenetrationTally.ResultLine(true, 90), Does.StartWith("penetrations   : "));
         }
+
+        // ---------- Q71, the services this tool could not measure are NAMED ----------
+
+        /// <summary>
+        /// 1A02MM's real shape before 5s fixed the reader: 18 conduits, 10 cable tray
+        /// fittings and 1 pipe fitting whose size was written as words and dropped. A
+        /// count on its own said nothing about which they were, which is why 5s had to
+        /// go and look and why this line exists.
+        /// </summary>
+        [Test]
+        public void TheServicesWithNoReadableSizeAreNamedByCategory()
+        {
+            PenetrationTally tally = new PenetrationTally();
+
+            AddUnmeasured(tally, "Conduits", 18);
+            AddUnmeasured(tally, "Cable Tray Fittings", 10);
+            AddUnmeasured(tally, "Pipe Fittings", 1);
+
+            string block = Joined(tally.Lines(new PenetrationSettings(), new SizeSettings()));
+
+            Assert.That(tally.UnmeasuredCount, Is.EqualTo(29));
+            Assert.That(block, Does.Contain("they are 18 Conduits, 10 Cable Tray Fittings, 1 Pipe Fittings"));
+            Assert.That(block, Does.Contain("a service this tool cannot measure is one a person looks at"));
+            Assert.That(block, Does.Contain("each is a row in the machine readable log"));
+        }
+
+        [Test]
+        public void TheLineDoesNotAppearWhenEveryServiceWasMeasured()
+        {
+            PenetrationTally tally = new PenetrationTally();
+
+            tally.Add("a test", "Clash1", PenetrationRule.Decide(
+                new PenetrationSide("a pipe", "Pipes", 100.0),
+                new PenetrationSide("a wall", "Walls", null),
+                ClashStatus.New,
+                new PenetrationSettings(),
+                new SizeSettings()));
+
+            string block = Joined(tally.Lines(new PenetrationSettings(), new SizeSettings()));
+
+            Assert.That(tally.UnmeasuredCount, Is.EqualTo(0));
+            Assert.That(block, Does.Contain("no size could be read off the service"), "the reason line stays, at zero");
+            Assert.That(block, Does.Not.Contain("they are "), "and says nothing about what they are, because there are none");
+            Assert.That(tally.UnmeasuredRows, Is.Empty);
+        }
+
+        [Test]
+        public void EveryUnmeasuredServiceIsARowForTheMachineReadableLog()
+        {
+            PenetrationTally tally = new PenetrationTally();
+            AddUnmeasured(tally, "Conduits", 2);
+
+            Assert.That(tally.UnmeasuredRows.Count, Is.EqualTo(2));
+            Assert.That(tally.UnmeasuredRows[0], Does.Contain("Conduits"));
+            Assert.That(tally.UnmeasuredRows[0], Does.Contain("a test"));
+        }
+
+        private static void AddUnmeasured(PenetrationTally tally, string category, int howMany)
+        {
+            for (int i = 1; i <= howMany; i++)
+            {
+                tally.Add("a test", "Clash" + i, PenetrationRule.Decide(
+                    new PenetrationSide("a service", category, null),
+                    new PenetrationSide("a wall", "Walls", null),
+                    ClashStatus.New,
+                    new PenetrationSettings(),
+                    new SizeSettings()));
+            }
+        }
     }
 }
