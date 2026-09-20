@@ -94,6 +94,18 @@ namespace Federator.Core.Views
         /// </summary>
         public const bool DefaultColoursTheTwoItems = true;
 
+        /// <summary>
+        /// Which route a viewpoint is written by, Q59 answered d on 2026-09-20. TRUE is
+        /// the COM folder collection, one tree operation. FALSE is the root add, the copy
+        /// into the folder and the remove, three of them, which is what the dimming round
+        /// shipped and what every viewpoint on disk today was written by.
+        ///
+        /// IT IS A SETTING AND NOT A REPLACEMENT, so the two can be run against each
+        /// other on a real group out of one binary, and so a route that turns out to lose
+        /// something on a shape not yet seen can be turned off without a build.
+        /// </summary>
+        public const bool DefaultRecordsThroughTheFolder = true;
+
         public ViewpointSettings()
         {
             NameSuffix = DefaultNameSuffix;
@@ -111,7 +123,11 @@ namespace Federator.Core.Views
             ColoursTheTwoItems = DefaultColoursTheTwoItems;
             FirstItemColour = ViewpointColour.DefaultFirst();
             SecondItemColour = ViewpointColour.DefaultSecond();
+            RecordsThroughTheFolder = DefaultRecordsThroughTheFolder;
         }
+
+        /// <summary>Which route a viewpoint is written by, Q59. True is the one tree operation route.</summary>
+        public bool RecordsThroughTheFolder { get; set; }
 
         /// <summary>Whether the two clashing items are painted as well as left solid, Q58.</summary>
         public bool ColoursTheTwoItems { get; set; }

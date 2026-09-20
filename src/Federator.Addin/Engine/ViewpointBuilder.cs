@@ -709,7 +709,7 @@ namespace Federator.Addin.Engine
 
             recordWatch.Start();
             SavedViewpoints.EnsureFolders(document, planned.Folders);
-            SavedViewpoints.Record(document, planned.Folders, planned.Name, camera);
+            SavedViewpoints.Record(document, planned.Folders, planned.Name, camera, views.RecordsThroughTheFolder);
             recordWatch.Stop();
 
             // Read back rather than trusted, all three of it. The first run's tree looked
