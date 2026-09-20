@@ -3256,7 +3256,8 @@ settings do not carry and the probe exists to find out what the tabs are called.
 walk costs is measured and written in the PROBE block, per file.
 
 ## 5g. Does Navisworks import a NEGATED search condition, asked 2026-09-19, MEASURED 2026-09-20
-MEASURED on 2026-09-20 in the dimming round. The measurement and what it decided areunder 5g, measured, further down, after 5o. What follows here is what was asked.
+MEASURED on 2026-09-20 in the dimming round. The measurement and what it decided are
+under 5g, measured, further down, after 5o. What follows here is what was asked.
 
 THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
 
