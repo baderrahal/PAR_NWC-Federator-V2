@@ -4,7 +4,9 @@ using System.IO;
 using System.Text;
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
+using Autodesk.Navisworks.Api.ComApi;
 using Autodesk.Navisworks.Api.DocumentParts;
+using Autodesk.Navisworks.Api.Interop.ComApi;
 using Autodesk.Navisworks.Api.Plugins;
 
 namespace ViewpointProbe
@@ -82,6 +84,10 @@ namespace ViewpointProbe
                     else if (mode == "home")
                     {
                         MeasureHome(parameters[2]);
+                    }
+                    else if (mode == "dim")
+                    {
+                        MeasureDim(parameters[2]);
                     }
                     else
                     {
@@ -1064,6 +1070,496 @@ namespace ViewpointProbe
                     }
                 }
             }
+        }
+
+        // ---------- 5o, does a saved viewpoint record that items are dimmed ----------
+
+        /// <summary>
+        /// F85 writes a viewpoint that opens on its clash with the other disciplines
+        /// hidden, and Bader pressed two and could not see the clash, because the camera
+        /// lands inside a solid beam. Clash Detective dims everything but the two clashing
+        /// items. This measures whether a saved viewpoint can record that dimming, and
+        /// whether the record survives a save, a close and a reopen off the disk, which is
+        /// the part 5l caught the camera route failing.
+        ///
+        /// It measures the writer's REAL sequence, including the reset before the save, so
+        /// a viewpoint that only holds a reference to live document state is caught here
+        /// rather than on a run.
+        /// </summary>
+        private void MeasureDim(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            TryReadClashOptions();
+
+            // The two items of the first clash that has two with geometry, named by index
+            // path so they can be resolved again after the reopen without a live handle.
+            int[] firstPath = null;
+            int[] secondPath = null;
+            string clashName = null;
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests clashTests = document.GetClash().TestsData;
+
+            for (int t = 0; t < clashTests.Tests.Count && firstPath == null; t++)
+            {
+                ClashTest test = clashTests.Tests[t] as ClashTest;
+
+                if (test == null)
+                {
+                    continue;
+                }
+
+                for (int r = 0; r < test.Children.Count && firstPath == null; r++)
+                {
+                    ClashResult result = test.Children[r] as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    using (ModelItem a = result.Item1)
+                    using (ModelItem b = result.Item2)
+                    {
+                        if (a == null || b == null || !a.HasGeometry || !b.HasGeometry)
+                        {
+                            continue;
+                        }
+
+                        firstPath = PathOf(document, a);
+                        secondPath = PathOf(document, b);
+                        clashName = test.DisplayName + "  " + result.DisplayName;
+                    }
+                }
+            }
+
+            if (firstPath == null)
+            {
+                Say("UNKNOWN: no clash in this copy has two items with geometry");
+                return;
+            }
+
+            Say("the clash measured against: " + clashName);
+            Say("index path of item 1: " + string.Join(",", Strings(firstPath)) + "   item 2: " + string.Join(",", Strings(secondPath)));
+
+            // A third item, neither of the two, to prove the dimming reached the rest
+            int[] otherPath = FindOther(document, firstPath, secondPath);
+            Say("index path of a third item: " + (otherPath == null ? "none found" : string.Join(",", Strings(otherPath))));
+
+            SayThree(document, firstPath, secondPath, otherPath, "at the start");
+
+            // The index path round trip on its own, because the writer names an item in
+            // walk one and resolves it in walk two, and must not keep a handle to do it.
+            using (ModelItem resolved = Resolve(document, firstPath))
+            {
+                Say("index path round trip: " + (resolved == null ? "RESOLVED NOTHING" : "[" + resolved.DisplayName + "] has geometry " + resolved.HasGeometry));
+            }
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                // Control. No override at all, ApplyMaterialAttribs true. 5j noted the
+                // appearance flag reading true on a capture that set none, and a flag
+                // that is always true is no read back.
+                AddComView("probe dim none", camera, true);
+                Say("CONTROL, no override at all: " + MaterialFlags(document, "probe dim none"));
+
+                // Route T, temporary materials
+                document.Models.ResetAllTemporaryMaterials();
+                System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+
+                using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+                {
+                    document.Models.OverrideTemporaryTransparency(roots, 0.85);
+                }
+
+                Say("route T: OverrideTemporaryTransparency 0.85 on " + document.Models.Count + " root(s) in " + watch.ElapsedMilliseconds + " ms");
+                SayThree(document, firstPath, secondPath, otherPath, "after the root override");
+
+                watch.Restart();
+                ResetTwo(document, firstPath, secondPath, false);
+                Say("route T: ResetTemporaryMaterials on the two items in " + watch.ElapsedMilliseconds + " ms");
+                SayThree(document, firstPath, secondPath, otherPath, "after the two were reset");
+
+                AddComView("probe dim temporary", camera, true);
+                Say("route T, the view just added: " + MaterialFlags(document, "probe dim temporary"));
+
+                // Route T with a model HIDDEN as well, which is what the writer does, so
+                // the visibility read back F85 relies on can be judged. The appearance
+                // flag reads true on the control above with nothing overridden, so a flag
+                // may be no read back at all and the COUNT is what has to be looked at.
+                using (ModelItemCollection one = new ModelItemCollection())
+                using (Model model = document.Models[document.Models.Count - 1])
+                using (ModelItem root = model.RootItem)
+                {
+                    one.Add(root);
+                    document.Models.SetHidden(one, true);
+                    Say("route T with a hide: hid [" + model.FileName + "], IsHidden " + document.Models.IsHidden(one));
+                }
+
+                AddComView("probe dim temporary hidden", camera, true);
+                Say("route T with a hide, the view just added: " + MaterialFlags(document, "probe dim temporary hidden"));
+                document.Models.ResetAllHidden();
+
+                // The SCOPED undo, because ResetAllTemporaryMaterials would also clear a
+                // temporary override this tool did not set, which is the 5k trap in a
+                // second shape. Reset only the roots this writer overrode.
+                watch.Restart();
+
+                using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+                {
+                    document.Models.ResetTemporaryMaterials(roots);
+                }
+
+                Say("route T: the SCOPED undo, ResetTemporaryMaterials on the roots, in " + watch.ElapsedMilliseconds + " ms");
+                SayThree(document, firstPath, secondPath, otherPath, "after the scoped undo");
+
+                // Route P, permanent materials
+                document.Models.ResetAllTemporaryMaterials();
+                document.Models.ResetAllPermanentMaterials();
+                watch.Restart();
+
+                using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+                {
+                    document.Models.OverridePermanentTransparency(roots, 0.85);
+                }
+
+                Say("route P: OverridePermanentTransparency 0.85 on the roots in " + watch.ElapsedMilliseconds + " ms");
+                ResetTwo(document, firstPath, secondPath, true);
+                SayThree(document, firstPath, secondPath, otherPath, "after the permanent override and the two resets");
+
+                AddComView("probe dim permanent", camera, true);
+                Say("route P, the view just added: " + MaterialFlags(document, "probe dim permanent"));
+            }
+
+            // THE WRITER'S REAL SEQUENCE. Everything is put back before the NWF is saved,
+            // so a viewpoint holding a reference to live state rather than a snapshot
+            // comes back empty and is caught here.
+            document.Models.ResetAllTemporaryMaterials();
+            document.Models.ResetAllPermanentMaterials();
+            SayThree(document, firstPath, secondPath, otherPath, "after both resets, before the save");
+
+            string saved = Path.Combine(Path.GetDirectoryName(nwfCopy), "probe-dim-saved.nwf");
+            Say("TrySaveFile to " + saved + " = " + document.TrySaveFile(saved));
+            document.Clear();
+
+            if (!document.TryOpenFile(saved))
+            {
+                Say("UNKNOWN: the saved copy would not reopen");
+                return;
+            }
+
+            Say("reopened off the disk");
+
+            foreach (string name in new[] { "probe dim none", "probe dim temporary", "probe dim temporary hidden", "probe dim permanent" })
+            {
+                Say("AFTER THE REOPEN, " + name + ": " + MaterialFlags(document, name));
+
+                using (SavedViewpoint press = FindAtRoot(document, name))
+                {
+                    if (press == null)
+                    {
+                        continue;
+                    }
+
+                    document.SavedViewpoints.CurrentSavedViewpoint = press;
+                }
+
+                SayThree(document, firstPath, secondPath, otherPath, "after pressing " + name);
+                document.Models.ResetAllTemporaryMaterials();
+            }
+
+            Say("done. A route works only where, after the reopen, pressing it leaves the two items solid and the third dim.");
+        }
+
+        /// <summary>Clash Detective's own dim value, if anything in this API will say it.</summary>
+        private void TryReadClashOptions()
+        {
+            try
+            {
+                object options = Autodesk.Navisworks.Api.Application.Options;
+                Say("Application.Options is " + (options == null ? "null" : options.GetType().FullName)
+                    + ", public members: " + string.Join(", ", MemberNames(options)));
+            }
+            catch (Exception error)
+            {
+                Say("reading Application.Options threw " + error.GetType().Name);
+            }
+
+            try
+            {
+                InwOpState10 state = ComApiBridge.State;
+                Say("the COM state is " + state.GetType().FullName + ", members naming an option: "
+                    + string.Join(", ", OptionMemberNames(state)));
+            }
+            catch (Exception error)
+            {
+                Say("reading the COM state threw " + error.GetType().Name);
+            }
+        }
+
+        private static string[] MemberNames(object value)
+        {
+            if (value == null)
+            {
+                return new string[0];
+            }
+
+            List<string> names = new List<string>();
+
+            foreach (System.Reflection.MemberInfo member in value.GetType().GetMembers(
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly))
+            {
+                if (member.Name.IndexOf("get_", StringComparison.Ordinal) != 0)
+                {
+                    names.Add(member.Name);
+                }
+            }
+
+            return names.ToArray();
+        }
+
+        private static string[] OptionMemberNames(object value)
+        {
+            List<string> names = new List<string>();
+
+            foreach (string name in MemberNames(value))
+            {
+                if (name.IndexOf("Option", StringComparison.OrdinalIgnoreCase) >= 0
+                    || name.IndexOf("Setting", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    names.Add(name);
+                }
+            }
+
+            return names.Count == 0 ? new[] { "none" } : names.ToArray();
+        }
+
+        private void AddComView(string name, Viewpoint camera, bool applyMaterial)
+        {
+            InwOpState10 state = ComApiBridge.State;
+            InwOpView view = (InwOpView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpView, null, null);
+            view.name = name;
+            view.ApplyHideAttribs = true;
+            view.ApplyMaterialAttribs = applyMaterial;
+            view.anonview = ComApiBridge.ToInwOpAnonView(camera);
+            state.SavedViews().Add(view);
+        }
+
+        private string MaterialFlags(Document document, string name)
+        {
+            using (SavedViewpoint found = FindAtRoot(document, name))
+            {
+                if (found == null)
+                {
+                    return "NOT FOUND at the root";
+                }
+
+                string line;
+
+                try
+                {
+                    line = "ContainsAppearanceOverrides " + found.ContainsAppearanceOverrides;
+                }
+                catch (Exception error)
+                {
+                    line = "ContainsAppearanceOverrides threw " + error.GetType().Name;
+                }
+
+                try
+                {
+                    AppearanceOverrides overrides = found.GetAppearanceOverrides();
+                    line += ", MaterialOverrides " + (overrides == null ? "null" : overrides.MaterialOverrides.Count.ToString());
+                }
+                catch (Exception error)
+                {
+                    line += ", GetAppearanceOverrides threw " + error.GetType().Name + ": " + error.Message;
+                }
+
+                try
+                {
+                    line += ", ContainsVisibilityOverrides " + found.ContainsVisibilityOverrides;
+                }
+                catch (Exception error)
+                {
+                    line += ", ContainsVisibilityOverrides threw " + error.GetType().Name;
+                }
+
+                try
+                {
+                    VisibilityOverrides hidden = found.GetVisibilityOverrides();
+
+                    if (hidden == null)
+                    {
+                        line += ", Hidden null";
+                    }
+                    else
+                    {
+                        using (ModelItemCollection items = hidden.Hidden)
+                        {
+                            line += ", Hidden " + items.Count;
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    line += ", GetVisibilityOverrides threw " + error.GetType().Name + ": " + error.Message;
+                }
+
+                return line;
+            }
+        }
+
+        private void SayThree(Document document, int[] first, int[] second, int[] other, string when)
+        {
+            Say("   " + when + ":");
+            Say("      item 1 " + Transparency(document, first));
+            Say("      item 2 " + Transparency(document, second));
+            Say("      other  " + Transparency(document, other));
+        }
+
+        private static string Transparency(Document document, int[] path)
+        {
+            if (path == null)
+            {
+                return "no item";
+            }
+
+            using (ModelItem item = Resolve(document, path))
+            {
+                if (item == null)
+                {
+                    return "resolved nothing";
+                }
+
+                if (!item.HasGeometry)
+                {
+                    return "[" + item.DisplayName + "] has no geometry";
+                }
+
+                using (ModelGeometry geometry = item.Geometry)
+                {
+                    return "[" + item.DisplayName + "] active " + Round(geometry.ActiveTransparency)
+                        + " permanent " + Round(geometry.PermanentTransparency)
+                        + " original " + Round(geometry.OriginalTransparency);
+                }
+            }
+        }
+
+        private static void ResetTwo(Document document, int[] first, int[] second, bool permanent)
+        {
+            using (ModelItemCollection two = new ModelItemCollection())
+            using (ModelItem a = Resolve(document, first))
+            using (ModelItem b = Resolve(document, second))
+            {
+                if (a != null)
+                {
+                    two.Add(a);
+                }
+
+                if (b != null)
+                {
+                    two.Add(b);
+                }
+
+                if (two.Count == 0)
+                {
+                    return;
+                }
+
+                if (permanent)
+                {
+                    document.Models.ResetPermanentMaterials(two);
+                }
+                else
+                {
+                    document.Models.ResetTemporaryMaterials(two);
+                }
+            }
+        }
+
+        private static int[] PathOf(Document document, ModelItem item)
+        {
+            System.Collections.ObjectModel.Collection<int> path = document.Models.CreateIndexPath(item);
+            int[] copy = new int[path.Count];
+            path.CopyTo(copy, 0);
+            return copy;
+        }
+
+        private static ModelItem Resolve(Document document, int[] path)
+        {
+            if (path == null)
+            {
+                return null;
+            }
+
+            return document.Models.ResolveIndexPath(path);
+        }
+
+        private static int[] FindOther(Document document, int[] first, int[] second)
+        {
+            foreach (ModelItem item in document.Models.RootItemDescendantsAndSelf)
+            {
+                using (item)
+                {
+                    if (!item.HasGeometry)
+                    {
+                        continue;
+                    }
+
+                    int[] path = PathOf(document, item);
+
+                    if (!Same(path, first) && !Same(path, second))
+                    {
+                        return path;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static bool Same(int[] a, int[] b)
+        {
+            if (a == null || b == null || a.Length != b.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] != b[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static string[] Strings(int[] path)
+        {
+            string[] text = new string[path.Length];
+
+            for (int i = 0; i < path.Length; i++)
+            {
+                text[i] = path[i].ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+            return text;
         }
 
         private string Flags(SavedViewpoint v)

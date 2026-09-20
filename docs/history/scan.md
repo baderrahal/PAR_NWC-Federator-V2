@@ -3682,3 +3682,96 @@ keeps the ME model the drainage pipe lives in as well as the structural one, whi
 the log line promised on three runs and only the sixth delivered, after the fifth threw on
 every clash enumerating AncestorsAndSelf while disposing each item, and the writer went
 back to the Parent walk the size reader uses.
+
+## 5o. Does a saved viewpoint record that items are DIMMED, MEASURED 2026-09-20
+
+F85 shipped 975 viewpoints that open on their clash with the other disciplines hidden.
+Bader pressed two and could not see the clash: the camera Clash Detective computes sits
+inside a solid beam, and Clash Detective only looks right because its own view dims
+everything that is not the two clashing items. Q55 and Q56 answer the same way, dim them.
+Whether a SAVED viewpoint can record a dimming at all, and whether the record survives a
+save and a reopen, is what 5l caught the camera route failing, so it was measured before
+anything was built. The probe is `tools\probes\ViewpointProbe` in its `dim` mode, run
+through the automation host against a copy of the 1A02MM NWF, 4 models and 2,606 items.
+The result file is `tools\probes\ViewpointProbe\5o-result-20260920.txt`.
+
+**THE ANSWER IS YES, BY BOTH ROUTES, AND THE FLAGS THAT REPORT IT ARE WORTHLESS.**
+
+```
+CONTROL, no override at all:  ContainsAppearanceOverrides True, MaterialOverrides 0,   ContainsVisibilityOverrides True, Hidden 0
+route T, the view just added: ContainsAppearanceOverrides True, MaterialOverrides 994, ContainsVisibilityOverrides True, Hidden 0
+route T with a hide, added:   ContainsAppearanceOverrides True, MaterialOverrides 994, ContainsVisibilityOverrides True, Hidden 1
+```
+
+- `SavedViewpoint.ContainsAppearanceOverrides` reads TRUE on a viewpoint written with no
+  override of any kind. It is not a report of anything. `GetAppearanceOverrides().MaterialOverrides.Count`
+  is the real number: 0 with nothing overridden and 994 with the roots dimmed
+- `SavedViewpoint.ContainsVisibilityOverrides` reads TRUE in the same session on every
+  viewpoint, including one with nothing hidden. **F85's third read back, that a viewpoint
+  carries visibility overrides where it hides a discipline, is a check that cannot fail
+  and never could.** `GetVisibilityOverrides().Hidden.Count` is real in the same session,
+  0 with nothing hidden and 1 with one model hidden, and this round moves the read back
+  onto it
+- after a save and a reopen both flags start telling the truth, which is no help to a
+  writer that reads back before it saves
+
+**THE OVERRIDE CASCADES AND TWO ITEMS CAN BE BROUGHT BACK, WHICH IS WHAT MAKES IT AFFORDABLE.**
+
+```
+route T: OverrideTemporaryTransparency 0.85 on 4 root(s) in 3 ms
+   item 1 active 0.85    item 2 active 0.85    other active 0.85
+route T: ResetTemporaryMaterials on the two items in 0 ms
+   item 1 active 0       item 2 active 0       other active 0.85
+route T: the SCOPED undo, ResetTemporaryMaterials on the roots, in 0 ms
+   item 1 active 0       item 2 active 0       other active 0
+```
+
+An override on the four model roots reaches every leaf under them, and a reset on two
+leaves brings exactly those two back while the rest stay dim. So a viewpoint costs TWO
+calls and not one per item: dimming 2,606 items one at a time, 430 times, would be 1.1
+million calls in the 1A02MM group alone.
+
+**THE WRITER'S REAL SEQUENCE SURVIVES THE REOPEN.** Everything was put back before the
+NWF was saved, so a viewpoint holding a reference to live state rather than a snapshot
+would come back empty. The document read clean, was saved, cleared and reopened off the
+disk:
+
+```
+AFTER THE REOPEN, probe dim none:             MaterialOverrides 0,   Hidden null
+   after pressing:  item 1 active 0     item 2 active 0     other active 0
+AFTER THE REOPEN, probe dim temporary:        MaterialOverrides 994, Hidden null
+   after pressing:  item 1 active 0     item 2 active 0     other active 0.85
+AFTER THE REOPEN, probe dim temporary hidden: MaterialOverrides 994, Hidden 1
+   after pressing:  item 1 active 0     item 2 active 0     other active 0.85
+```
+
+Pressing a dimmed viewpoint off a reopened file leaves the two clashing items solid and
+everything else at 0.85, and the one that also hid a model brings the hiding back as well.
+Hiding and dimming live in one viewpoint and neither costs the other.
+
+**TEMPORARY AND PERMANENT BOTH RECORD, AND TEMPORARY IS THE ONE USED.** Route P,
+`OverridePermanentTransparency`, records the same 994 and presses the same way after a
+reopen. It is not used, for three measured reasons: it took 8 ms against 3, it writes
+`permanent 0.85` onto the item, which goes into the NWF if a save lands before the reset,
+and its undo is `ResetAllPermanentMaterials`, which would clear an appearance override the
+file already carried with nothing able to read those back first. That is 5k's trap in a
+second shape, and the answer is the same. `OverrideTemporaryTransparency` writes nothing
+permanent, and its undo is scoped to the roots this tool overrode rather than
+`ResetAllTemporaryMaterials`, which would clear a temporary override this tool did not set.
+
+**CLASH DETECTIVE'S OWN DIM VALUE IS NOT READABLE.** `Application.Options` on this install
+exposes one member, `Grids`, and the COM state exposes no option member at all. So the
+transparency is a SETTING whose default is 0.85, CHOSEN and not measured, and the setting
+says so where it is declared.
+
+**ONE NUMBER TO WATCH.** A dimmed viewpoint records 994 material overrides in this file,
+one per item carrying a material, where an undimmed one records none. 430 viewpoints in
+one group is 427,420 override records where there were none, so the NWF will grow. How far
+is not predictable from here and is read off the disk on the run, per group, before and
+after.
+
+**WHAT THIS DECIDES.** `SavedViewpoints.Dim` overrides temporary transparency on the model
+roots and resets it on the two clashing items, the viewpoint is recorded through the COM
+view with `ApplyMaterialAttribs` true beside `ApplyHideAttribs`, the read back becomes
+four counts and not three flags, and the temporary override is undone on the roots when
+the group's writing ends, the way the hidden state already is.

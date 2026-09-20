@@ -1,0 +1,65 @@
+10:30:44.109  probe started, mode dim, 1 file(s)
+10:30:44.113  opening C:\Users\bader\AppData\Local\Temp\claude\round-dimming\probe\probe-dim-1A02MM.nwf
+10:30:44.211  Application.Options is Autodesk.Navisworks.Api.ApplicationParts.ApplicationOptions, public members: Grids
+10:30:44.212  the COM state is System.__ComObject, members naming an option: none
+10:30:44.217  the clash measured against: BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash19
+10:30:44.218  index path of item 1: 1,0,4,1,0,3,0,0,3   item 2: 3,0,0,1,0,0
+10:30:44.220  index path of a third item: 0,0,0,0,0,0,0,0
+10:30:44.220     at the start:
+10:30:44.223        item 1 [Thorn Steel Cables] active 0 permanent 0 original 0
+10:30:44.223        item 2 [Concrete, Cast-in-Place Fcu35 Mpa] active 0 permanent 0 original 0
+10:30:44.223        other  [ARC-Titanium-PAR] active 0 permanent 0 original 0
+10:30:44.223  index path round trip: [Thorn Steel Cables] has geometry True
+10:30:44.232  CONTROL, no override at all: ContainsAppearanceOverrides True, MaterialOverrides 0, ContainsVisibilityOverrides True, Hidden 0
+10:30:44.235  route T: OverrideTemporaryTransparency 0.85 on 4 root(s) in 3 ms
+10:30:44.235     after the root override:
+10:30:44.235        item 1 [Thorn Steel Cables] active 0.85 permanent 0 original 0
+10:30:44.235        item 2 [Concrete, Cast-in-Place Fcu35 Mpa] active 0.85 permanent 0 original 0
+10:30:44.235        other  [ARC-Titanium-PAR] active 0.85 permanent 0 original 0
+10:30:44.236  route T: ResetTemporaryMaterials on the two items in 0 ms
+10:30:44.236     after the two were reset:
+10:30:44.236        item 1 [Thorn Steel Cables] active 0 permanent 0 original 0
+10:30:44.236        item 2 [Concrete, Cast-in-Place Fcu35 Mpa] active 0 permanent 0 original 0
+10:30:44.236        other  [ARC-Titanium-PAR] active 0.85 permanent 0 original 0
+10:30:44.239  route T, the view just added: ContainsAppearanceOverrides True, MaterialOverrides 994, ContainsVisibilityOverrides True, Hidden 0
+10:30:44.243  route T with a hide: hid [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc], IsHidden True
+10:30:44.253  route T with a hide, the view just added: ContainsAppearanceOverrides True, MaterialOverrides 994, ContainsVisibilityOverrides True, Hidden 1
+10:30:44.255  route T: the SCOPED undo, ResetTemporaryMaterials on the roots, in 0 ms
+10:30:44.255     after the scoped undo:
+10:30:44.255        item 1 [Thorn Steel Cables] active 0 permanent 0 original 0
+10:30:44.255        item 2 [Concrete, Cast-in-Place Fcu35 Mpa] active 0 permanent 0 original 0
+10:30:44.255        other  [ARC-Titanium-PAR] active 0 permanent 0 original 0
+10:30:44.265  route P: OverridePermanentTransparency 0.85 on the roots in 8 ms
+10:30:44.265     after the permanent override and the two resets:
+10:30:44.265        item 1 [Thorn Steel Cables] active 0 permanent 0 original 0
+10:30:44.265        item 2 [Concrete, Cast-in-Place Fcu35 Mpa] active 0 permanent 0 original 0
+10:30:44.265        other  [ARC-Titanium-PAR] active 0.85 permanent 0.85 original 0
+10:30:44.278  route P, the view just added: ContainsAppearanceOverrides True, MaterialOverrides 994, ContainsVisibilityOverrides True, Hidden 0
+10:30:44.287     after both resets, before the save:
+10:30:44.287        item 1 [Thorn Steel Cables] active 0 permanent 0 original 0
+10:30:44.287        item 2 [Concrete, Cast-in-Place Fcu35 Mpa] active 0 permanent 0 original 0
+10:30:44.287        other  [ARC-Titanium-PAR] active 0 permanent 0 original 0
+10:30:44.330  TrySaveFile to C:\Users\bader\AppData\Local\Temp\claude\round-dimming\probe\probe-dim-saved.nwf = True
+10:30:44.418  reopened off the disk
+10:30:44.418  AFTER THE REOPEN, probe dim none: ContainsAppearanceOverrides True, MaterialOverrides 0, ContainsVisibilityOverrides False, Hidden null
+10:30:44.421     after pressing probe dim none:
+10:30:44.421        item 1 [Thorn Steel Cables] active 0 permanent 0 original 0
+10:30:44.421        item 2 [Concrete, Cast-in-Place Fcu35 Mpa] active 0 permanent 0 original 0
+10:30:44.421        other  [ARC-Titanium-PAR] active 0 permanent 0 original 0
+10:30:44.422  AFTER THE REOPEN, probe dim temporary: ContainsAppearanceOverrides True, MaterialOverrides 994, ContainsVisibilityOverrides False, Hidden null
+10:30:44.423     after pressing probe dim temporary:
+10:30:44.423        item 1 [Thorn Steel Cables] active 0 permanent 0 original 0
+10:30:44.423        item 2 [Concrete, Cast-in-Place Fcu35 Mpa] active 0 permanent 0 original 0
+10:30:44.423        other  [ARC-Titanium-PAR] active 0.85 permanent 0 original 0
+10:30:44.426  AFTER THE REOPEN, probe dim temporary hidden: ContainsAppearanceOverrides True, MaterialOverrides 994, ContainsVisibilityOverrides True, Hidden 1
+10:30:44.428     after pressing probe dim temporary hidden:
+10:30:44.428        item 1 [Thorn Steel Cables] active 0 permanent 0 original 0
+10:30:44.428        item 2 [Concrete, Cast-in-Place Fcu35 Mpa] active 0 permanent 0 original 0
+10:30:44.428        other  [ARC-Titanium-PAR] active 0.85 permanent 0 original 0
+10:30:44.432  AFTER THE REOPEN, probe dim permanent: ContainsAppearanceOverrides True, MaterialOverrides 994, ContainsVisibilityOverrides True, Hidden 0
+10:30:44.434     after pressing probe dim permanent:
+10:30:44.434        item 1 [Thorn Steel Cables] active 0 permanent 0 original 0
+10:30:44.434        item 2 [Concrete, Cast-in-Place Fcu35 Mpa] active 0 permanent 0 original 0
+10:30:44.434        other  [ARC-Titanium-PAR] active 0.85 permanent 0 original 0
+10:30:44.435  done. A route works only where, after the reopen, pressing it leaves the two items solid and the third dim.
+10:30:44.435  probe finished
