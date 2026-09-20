@@ -133,6 +133,10 @@ namespace ViewpointProbe
                     {
                         CountWhatPointsAtSets(parameters, 2);
                     }
+                    else if (mode == "setrename")
+                    {
+                        MeasureSetRename(parameters[2]);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -6480,6 +6484,293 @@ namespace ViewpointProbe
             catch (Exception)
             {
                 nothing++;
+            }
+        }
+
+        /// <summary>
+        /// 5z-b. WHETHER RENAMING A SET KEEPS WHAT POINTS AT IT, and PART 2 is blocked on
+        /// the answer.
+        ///
+        /// THREE DIFFERENT FIELDS, THREE DIFFERENT MEASUREMENTS. 5v changed a set's
+        /// CONDITIONS through ReplaceWithCopy and found the clash test kept its side, its
+        /// results and its statuses. 5z REMOVED a set and found the results and statuses
+        /// survive while 60 test sides stop resolving. A DISPLAY NAME is a third field and
+        /// nothing has measured it. It cannot be inferred from either: a rename might be a
+        /// cheap label change that a SelectionSource never notices, or it might be a
+        /// replace underneath, in which case whether the source follows is exactly the
+        /// open question.
+        ///
+        /// A SET IN THE MIDDLE, because 5z found the ones behind a removal shift up by one
+        /// and a rename that reorders the tree would do the same to anything resolving by
+        /// index.
+        ///
+        /// Against a COPY under the temp folder. Never his own files.
+        /// </summary>
+        private void MeasureSetRename(string nwf)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+            Say(string.Empty);
+            Say("================ 5z-b, DOES RENAMING A SET KEEP WHAT POINTS AT IT ================");
+            document.Clear();
+
+            if (!document.TryOpenFile(nwf))
+            {
+                Say("UNKNOWN: TryOpenFile returned false for " + nwf);
+                return;
+            }
+
+            Say("opened " + Path.GetFileName(nwf) + ", " + document.Models.Count + " model(s)");
+            SayRenameMembers();
+
+            string setName;
+            int setIndex;
+            string parentName;
+
+            if (!FindAMiddleSetATestPointsAt(document, out setName, out setIndex, out parentName))
+            {
+                Say("UNKNOWN: no clash test with results points at a set that has siblings after it");
+                return;
+            }
+
+            string renamed = setName + " RENAMED BY 5z-b";
+            Say("the set measured: [" + setName + "] at index " + setIndex + " under [" + parentName + "]");
+            Say("the new name    : [" + renamed + "]");
+            Say("what it finds now: " + FoundBy(document, setName) + " item(s)");
+
+            List<string> siblingsBefore = SiblingsOf(document, setName);
+            Say("its folder holds " + siblingsBefore.Count + " child(ren) in this order:");
+
+            for (int i = 0; i < siblingsBefore.Count; i++)
+            {
+                Say("      " + i + "  " + siblingsBefore[i] + (i == setIndex ? "   <= the one being renamed" : string.Empty));
+            }
+
+            // HOW MANY SIDES POINT AT IT, counted before, because that is the number the
+            // whole question is about.
+            int sidesBefore = SidesPointingAt(document, setName);
+            Say("test sides pointing at it BEFORE the rename: " + sidesBefore);
+
+            string testName;
+            int resultsBefore;
+            int reviewedBefore;
+            SetOneReviewed(document, setName, out testName, out resultsBefore, out reviewedBefore);
+
+            Say("the test pointing at it: [" + Words(testName) + "]");
+            Say("BEFORE the rename: " + resultsBefore + " result(s), " + reviewedBefore + " at Reviewed");
+
+            int viewpointsBefore = CountViewpoints(document);
+            SayCounts(document, "BEFORE the rename");
+
+            bool wasRenamed = RenameThatSet(document, setName, renamed);
+            Say("the rename returned without throwing: " + wasRenamed);
+
+            if (!wasRenamed)
+            {
+                Say("NOTHING WAS RENAMED, so there is nothing to read back and 5z-b answers nothing.");
+                return;
+            }
+
+            SayCounts(document, "AFTER the rename, before any save");
+
+            string saved = Path.Combine(Path.GetDirectoryName(nwf), "probe-rename-saved.nwf");
+            Say("TrySaveFile = " + document.TrySaveFile(saved));
+            document.Clear();
+
+            if (!document.TryOpenFile(saved))
+            {
+                Say("UNKNOWN: the saved copy would not reopen");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("REOPENED OFF THE DISK. The five read backs:");
+            SayCounts(document, "AFTER a save and a reopen");
+
+            int sidesAtNew = SidesPointingAt(document, renamed);
+            int sidesAtOld = SidesPointingAt(document, setName);
+            int resultsAfter;
+            int reviewedAfter;
+            bool pointsAtASet;
+            string pointsAt;
+
+            ReadTestBack(document, testName, out pointsAtASet, out pointsAt, out resultsAfter, out reviewedAfter);
+
+            Say("   1. the test side still resolves        : " + pointsAtASet
+                + (pointsAtASet ? ", to [" + pointsAt + "]" : ", SO IT NOW RESOLVES TO NOTHING"));
+            Say("      and it is the RIGHT set             : "
+                + string.Equals(pointsAt, renamed, StringComparison.Ordinal));
+            Say("      sides pointing at the NEW name      : " + sidesAtNew + " against " + sidesBefore + " before"
+                + (sidesAtNew == sidesBefore ? ", ALL FOLLOWED THE RENAME" : ", " + (sidesBefore - sidesAtNew) + " DID NOT"));
+            Say("      sides pointing at the OLD name      : " + sidesAtOld + ", which should be 0");
+            Say("   2. the clash test still holds results  : " + resultsAfter + " against " + resultsBefore + " before"
+                + (resultsAfter == resultsBefore ? ", KEPT" : ", LOST " + (resultsBefore - resultsAfter)));
+            Say("   3. the Reviewed status survived        : " + reviewedAfter + " against " + reviewedBefore + " before"
+                + (reviewedAfter == reviewedBefore ? ", KEPT" : ", LOST " + (reviewedBefore - reviewedAfter)));
+
+            int viewpointsAfter = CountViewpoints(document);
+            Say("   4. the saved viewpoints survived       : " + viewpointsAfter + " against " + viewpointsBefore + " before"
+                + (viewpointsAfter == viewpointsBefore ? ", KEPT" : ", LOST " + (viewpointsBefore - viewpointsAfter)));
+
+            Say("   5. what the set finds under its new name: " + FoundBy(document, renamed) + " item(s)");
+            Say("      what it asks now                    : " + AskedBy(document, renamed));
+
+            int nowAt;
+            string nowUnder;
+            bool stillThere = WhereIsSet(document, renamed, out nowAt, out nowUnder);
+            Say("      it is in the tree under the new name: " + stillThere
+                + (stillThere ? " at index " + nowAt + " under [" + nowUnder + "], which was " + setIndex + " under [" + parentName + "]" : string.Empty));
+
+            List<string> siblingsAfter = SiblingsOfFolder(document, parentName);
+            Say("      its folder now holds " + siblingsAfter.Count + " child(ren), was " + siblingsBefore.Count + ":");
+
+            for (int i = 0; i < siblingsAfter.Count; i++)
+            {
+                Say("      " + i + "  " + siblingsAfter[i]);
+            }
+
+            Say(string.Empty);
+            SayEverySetAndWhatPointsAtIt(document);
+
+            Say(string.Empty);
+            Say("A RENAME IS ONLY USABLE WHERE 1, 2, 3 AND 4 ALL HOLD AND EVERY SIDE FOLLOWED IT.");
+            Say("If one side stops resolving, PART 2 builds nothing for this case and the box");
+            Say("refuses, names what points at the set, and says a rename would lose them.");
+        }
+
+        /// <summary>What the installed DLL offers for renaming, read rather than trusted.</summary>
+        private void SayRenameMembers()
+        {
+            try
+            {
+                Type type = typeof(DocumentSelectionSets);
+                Say("DocumentSelectionSets rename members on THIS install:");
+
+                foreach (System.Reflection.MethodInfo method in type.GetMethods())
+                {
+                    if (method.Name != "EditDisplayName")
+                    {
+                        continue;
+                    }
+
+                    List<string> args = new List<string>();
+
+                    foreach (System.Reflection.ParameterInfo parameter in method.GetParameters())
+                    {
+                        args.Add(parameter.ParameterType.Name);
+                    }
+
+                    Say("   " + method.ReturnType.Name + " " + method.Name + "(" + string.Join(", ", args.ToArray()) + ")");
+                }
+
+                Say("   SavedItem.DisplayName has a setter: "
+                    + (typeof(SavedItem).GetProperty("DisplayName") != null
+                        && typeof(SavedItem).GetProperty("DisplayName").CanWrite));
+            }
+            catch (Exception error)
+            {
+                Say("   reading the members threw " + error.GetType().Name);
+            }
+        }
+
+        /// <summary>
+        /// Renames that set through EditDisplayName, on an item RESOLVED FRESH at the
+        /// moment of the call, because every mutator on this collection is a copy form
+        /// that kills the handle it is handed, which is rule 4g.
+        /// </summary>
+        private bool RenameThatSet(Document document, string setName, string newName)
+        {
+            try
+            {
+                int[] path = PathToSet(document, setName);
+
+                if (path == null)
+                {
+                    Say("   the set could not be found again to rename");
+                    return false;
+                }
+
+                using (SavedItem found = document.SelectionSets.ResolveIndexPath(path))
+                {
+                    if (found == null)
+                    {
+                        Say("   ResolveIndexPath gave nothing back");
+                        return false;
+                    }
+
+                    document.SelectionSets.EditDisplayName(found, newName);
+                    Say("   EditDisplayName returned without throwing");
+                }
+
+                // Read it back off the tree rather than off the handle, which the mutator
+                // may have killed.
+                int at;
+                string under;
+                return WhereIsSet(document, newName, out at, out under);
+            }
+            catch (Exception error)
+            {
+                Say("   the rename THREW " + error.GetType().Name + ": " + error.Message);
+                return false;
+            }
+        }
+
+        /// <summary>How many clash test SIDES resolve to the set of that name.</summary>
+        private static int SidesPointingAt(Document document, string setName)
+        {
+            int count = 0;
+
+            try
+            {
+                Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+
+                for (int t = 0; t < tests.Tests.Count; t++)
+                {
+                    ClashTest test = tests.Tests[t] as ClashTest;
+
+                    if (test == null)
+                    {
+                        continue;
+                    }
+
+                    if (SideNames(document, test.SelectionA, setName))
+                    {
+                        count++;
+                    }
+
+                    if (SideNames(document, test.SelectionB, setName))
+                    {
+                        count++;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+
+            return count;
+        }
+
+        private static bool SideNames(Document document, ClashSelection side, string setName)
+        {
+            try
+            {
+                SelectionSourceCollection sources = side.Selection.SelectionSources;
+
+                if (sources == null || sources.Count == 0)
+                {
+                    return false;
+                }
+
+                using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[0]))
+                {
+                    return pointed != null
+                        && string.Equals(Words(pointed.DisplayName), setName, StringComparison.Ordinal);
+                }
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

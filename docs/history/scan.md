@@ -4443,3 +4443,167 @@ which is what running a test does whatever its tolerance, and a test whose toler
 changed will find different clashes when it next runs. Neither of those is the tolerance
 resetting anything, and the difference matters because the warning as written has been
 making a person hesitate over an action that is free.
+
+
+## 5z. WHAT REMOVING A SET COSTS, MEASURED 2026-09-20
+
+PART 1a of the close round. 5v measured REPLACING a set's conditions and found everything
+that points at it survives, and the drift round's tick box was built on that. REMOVING IS
+NOT THE SAME THING and nothing had measured it. Nothing in `src` has ever called `Remove`,
+`RemoveAt`, `Clear` or `Move` on `DocumentSelectionSets`.
+
+Against a COPY of 1A02WE under the temp folder, never his own file.
+
+**FIRST, THE MEMBERS, BECAUSE THE RECORD WAS INCOMPLETE.** scan.md quoted only the single
+argument forms `Remove(SavedItem)` and `RemoveAt(Int32)` from a reflection dump, and named
+the parent scoped forms only in prose about a DIFFERENT collection, so they were asserted
+and not measured. Read off the installed 2025 DLL:
+
+```
+Collection`1 CreateIndexPath(SavedItem)
+SavedItem   ResolveIndexPath(IEnumerable`1)
+Void        RemoveAt(GroupItem, Int32)
+Void        RemoveAt(Int32)
+Boolean     Remove(GroupItem, SavedItem)
+Boolean     Remove(SavedItem)
+Void        Move(GroupItem, Int32, GroupItem, Int32)
+Void        Move(Int32, Int32)
+Void        Clear()
+```
+
+All of them are there, the parent scoped pair included, and `Move` is there too where no
+dump anywhere had recorded it for this collection.
+
+**AND THE ONE ARGUMENT FORM FAILS QUIETLY ON A NESTED SET.** `Remove(SavedItem)` against
+`BLD-AR-Windows`, which sits under the `Architecture` folder, returned **False** and threw
+nothing. It addresses the root collection. A caller reads a false back as "there was
+nothing to remove" rather than as "you asked the wrong overload", which is the shape of
+failure this repo keeps finding. `RemoveAt(parent, 7)` on a parent resolved fresh worked.
+
+**WHAT IT COSTS.** `BLD-AR-Windows` removed from index 7 of a folder of 16, through a
+save, a close and a reopen off the disk:
+
+```
+                          models  sets  tests  results  statuses  viewpoints
+BEFORE the remove              4    62   1830       29        29          52
+AFTER the remove               4    61   1830       29        29          52
+AFTER a save and a reopen      4    61   1830       29        29          52
+```
+
+1. the clash test still EXISTS and keeps its identity
+2. its results: **3 against 3, KEPT**
+3. its Reviewed statuses: **3 against 3, KEPT**
+4. the saved viewpoints: **52 against 52, KEPT**
+5. the removed set is gone from the tree, and the fifteen left keep their identities
+
+**THE MIDDLE CASE, WHICH 5x LEFT UNKNOWN FOR MODELS.** The eight sets behind the removal
+all SHIFTED UP BY ONE, 8 to 7 through 15 to 14. So an index remembered across a removal
+addresses a different set afterwards, which is why anything removing more than one goes
+from the END or works by name.
+
+**AND THE THING THAT ACTUALLY COSTS SOMETHING.** 60 clash tests now have ONE SIDE THAT
+RESOLVES TO NOTHING, out of 1830. Not one has both sides dangling. Those 60 tests still
+exist, still hold their results and still hold the status a person set on them, and they
+can never find anything again.
+
+```
+tests whose two sides both resolve to a set : 1770
+tests with ONE side resolving to nothing    : 60
+tests with BOTH sides resolving to nothing  : 0
+```
+
+So a removal does not destroy review history. It orphans tests, silently, and the number
+is 60 per set in a 61 set matrix because every set pairs with every other.
+
+**WHAT POINTS AT WHAT, READ OFF HIS OWN SEVEN GROUPS.** Read only, nothing saved. In each
+of the seven C02 groups that carry 1830 tests, **60 test sides point at
+`BLD-DRPipe Accessories`**, the spelling with the missing hyphen, and **nothing at all
+points at `BLD-DR-Pipe Accessories`**, the corrected spelling this tool created. 60 sides
+point at `BLD-Security Devices` in the same groups, and 14 in 1A02BS.
+
+THAT INVERTS WHAT REMOVAL WOULD DO. The broken name is the set doing the work. The
+corrected name is the set sitting unused. Removing what the picked file no longer names
+means removing the broken one, which orphans 420 test sides across seven groups. Removing
+the unused duplicate changes nothing at all.
+
+
+## 5z-b. DOES RENAMING A SET KEEP WHAT POINTS AT IT, MEASURED 2026-09-21
+
+PART 1a of the close round, and PART 2 was blocked on it. THREE DIFFERENT FIELDS, THREE
+DIFFERENT MEASUREMENTS: 5v changed a set's CONDITIONS, 5z REMOVED a set, and a DISPLAY
+NAME is a third field that neither answers. A rename might be a label a `SelectionSource`
+never notices, or a replace underneath, and which it is decides whether PART 2 can be
+built at all.
+
+Against a COPY of 1A02WE under the temp folder. `BLD-AR-Windows`, index 7 of 16 under
+`Architecture`, the middle case, with **60 test sides pointing at it** before the rename.
+
+The route is `EditDisplayName(SavedItem, String)`, the only rename member on the
+collection, on an item resolved fresh at the moment of the call.
+
+**IT IS A CLEAN YES ON ALL FIVE**, through a save, a close and a reopen off the disk:
+
+```
+                          models  sets  tests  results  statuses  viewpoints
+BEFORE the rename              4    62   1830       29        29          52
+AFTER a save and a reopen      4    62   1830       29        29          52
+```
+
+1. the test side still resolves, **to the right set**, and every one of the **60 sides
+   followed the rename**. Sides still pointing at the old name: **0**
+2. results: **3 against 3, KEPT**
+3. Reviewed statuses: **3 against 3, KEPT**
+4. saved viewpoints: **52 against 52, KEPT**
+5. the set keeps its conditions unchanged, finds the same 1 item, and sits at **index 7
+   under `Architecture`**, exactly where it was. Its folder still holds 16
+
+And across the whole document afterwards, **1830 tests with both sides resolving and 0
+dangling**, against the 60 dangling that 5z's removal produced on the same file.
+
+**WHAT THIS DECIDES.** A rename is the right operation and a removal is the wrong one for
+a set that is carrying tests. The clash test's `SelectionSource` follows the set through a
+name change, so renaming the broken spelling to the corrected one keeps all 60 sides
+working AND makes them ask the right question, where removing it would have orphaned them.
+The unused duplicate can then be removed, which 5z already proved costs nothing because
+nothing points at it.
+
+
+## 5z-c. THE DISCIPLINE CODE IS UNIFORMLY UPPERCASE, MEASURED 2026-09-21
+
+Recorded because a round planned a rule on the opposite belief and the belief was wrong.
+
+The close round's first reading of C04 reported
+`1104-PAR-1A04WO-ZZZ-El-MOD-000001.nwc` carrying a lowercase L, and planned a case blind
+discipline compare on it. **THE FILE IS `EL`.** Read off the bytes with `od -c`: `E L`. A
+case sensitive count over the folder gives **7 matches for `-EL-` and 0 for `-El-`**, and
+the file's modification time is 23:31:37 on 2026-09-20 and has not moved, so nothing was
+renamed underneath the reading. It was simply wrong, and an adversarial check that listed
+the folder itself rather than trusting the reading is what caught it.
+
+MEASURED ACROSS BOTH FOLDERS ON 2026-09-21: every discipline code in all 46 C04 file names
+and in every C02 file name is UPPERCASE. C04 carries seven distinct codes, AR EL LS LT ME
+ST SW, and not one lowercase or mixed case code exists in either folder.
+
+**SO NO CASE BLIND COMPARE IS BUILT**, because a rule for a case that exists in none of
+the files is the same shape as a public member nothing calls, and this repo deletes those.
+
+**AND THE LOWERCASE `El` IS REAL, ONE LEVEL AWAY.** It is in the REVIT SOURCE NAME in
+Autodesk Docs, not in any NWC name. `steps\logs\run-20260919-211323.log` carries it:
+
+```
+holds  ...\1104-PAR-1A02WO-ZZZ-EL-MOD-000001.nwc
+[source Autodesk Docs://KSA_New Murabba/1104-PAR-1A02WO-ZZZ-El-MOD-000001.rvt
+```
+
+It reaches NOTHING this tool compares. `SourceMismatchFindings` and the shared source rule
+both compare BUILDING CODES only and never the discipline, so the case never bites. Model
+hygiene, worth Bader knowing, and nothing is built for it.
+
+**IF A LOWERCASE CODE EVER DOES ARRIVE IN AN NWC NAME**, the reasoning is already done and
+it is the opposite of Q68's. A DISCIPLINE CODE IS A CLOSED SET of seven values this project
+defines, so matching it case blind cannot merge two things that were never the same and
+would be safe. A WORKSET VALUE IS AN OPEN SET that anybody can add to, which is why Q68
+refused the ignore case flag there: `AR-EXTERIOR` against `AR-INTERIOR` and `ST-SUB`
+against `ST-SUP` are two pairs of real worksets one and two letters apart. The two cases
+look alike and the answers are opposite, which is exactly why this is written down now
+rather than re-argued later.
