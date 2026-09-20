@@ -1,6 +1,212 @@
 # log
 
 Newest entry at the top.
+## 2026-09-20 The alignment round, run for real against his own folders, and a rule that had never fired
+
+### What was done
+
+Eight parts, briefed off Bader's 422 hand marked decisions in 1A04PW and his answers Q58
+to Q67 of 2026-09-20. THE MEASUREMENTS CAME FIRST, in one probe pass, because three of
+the five build items rested on something this API had not been asked and the last two
+rounds each cost an extra run for guessing one.
+
+TWO THINGS READ OFF THE MACHINE BEFORE THE PLAN WAS WRITTEN, both of which shaped the
+round and neither of which anybody had said. `C02 + 04\C04` IS EMPTY, zero files, so
+"every ticked building in C02 and C04" is the ten C02 buildings and nothing else. And
+1A04PW, the building whose 422 decisions briefed the whole round, IS NOT ON THIS MACHINE
+as a model at all, only as a report in Downloads. So the two new checks are proved on
+C02 and not on the building the rules came from, and that is Q67.
+
+**PART 1, the cheaper write route, Q59 answered d.** 5p. Both routes record all four
+counts, the camera, the hidden state, the dimming and the two solid items, and pressing
+either leaves exactly the two clashing items solid. SO THE SWITCH WAS ALLOWED AND IT
+SAVES ALMOST NOTHING: 153 ms against 158 over twenty viewpoints, and 415 bytes MORE on
+disk. Three per cent, not the two thirds the operation count suggests, because what grows
+is the TREE THE WRITE WALKS and not the calls per write. The same route costs 7.9 ms a
+viewpoint at twenty and 558 ms at four hundred and thirty. Both routes are in the one
+binary behind `ViewpointSettings.RecordsThroughTheFolder`.
+
+**PART 2, the two colours, Q58 answered b.** Red on the first item and green on the
+second, the order Clash Detective holds them, on top of the ghosting, both settings.
+
+THE READ BACK IS NOT WHAT IT LOOKS LIKE AND 5p IS WHY. A viewpoint records a colour
+override only where the colour DIFFERS from the item's own. The second item of the first
+clash measured was already green, so painting it green recorded NOTHING, the viewpoint
+named 1,027 items where the blue version named 1,028, and pressing it still showed the
+item green because green is what it was. A read back insisting the viewpoint names both
+items would have failed a viewpoint that was perfectly right. So it asks what the
+viewpoint WILL SHOW for each item, the override's colour where it names the item and the
+item's own colour where it does not, which has one right answer either way.
+
+**PART 3, the two rule extensions from his 422.** Structural Foundations joins the solid
+list a service may pass through, and Structural Framing and Structural Columns STAY OUT
+with the reason in the comment so nobody widens it later: he moved 69 pipes through slabs
+to Reviewed and LEFT 7 through precast beams Active. His replacement `by-design-pairs.csv`
+went in, 55 pairs up from 41, with two tests asserting the fourteen new ones BY NAME and
+both ways round. After both, 420 of his 422 decisions are covered by rule. The two left
+are a plumbing fixture through a foundation and a fire alarm device through a wall, both
+single clashes, both correctly left manual.
+
+**PART 4 and PART 5, the two new blocks, Q64 and Q65.** NOTHING WAS BUILT UNTIL 5q HAD
+BEEN READ, because the brief forbids falling back to a bounding box and calling it an
+alignment check. The shared coordinate IS readable: every model root carries a
+`[Location]` tab with `revit_ProjectLocation` on it, the NAME of the Revit shared site,
+beside a Transform with a translation in X, Y and Z. So ALIGNMENT compares every model
+against the architecture model on both, with the difference in X, Y and Z separately.
+
+5q also corrected the round's own first attempt. Worksets and element ids were counted
+over items with GEOMETRY and read zero everywhere, against a real run reading 860 ids of
+1,052. A Revit element reaches Navisworks as a COMPOSITE item carrying the Element tab,
+and the geometry solids under it carry neither, so the count was taken on the wrong node.
+Counted on the tab it reads 100 per cent.
+
+**PART 8 FOUND THE THING THIS ROUND IS REALLY ABOUT, 5r.** Reading the first run's log
+end to end: the penetration rule had moved ZERO clashes, and every clash was in the one
+bucket "not a service against a solid" with zero in all five others. That is not a rule
+deciding, it is a rule reading nothing. `Penetrations` read a clash side through
+`ClashResult.Selection1`, and `ModelItem.PropertyCategories` THROWS NotSupportedException
+on the item a clash selection hands back, at every level of the walk up, on both sides of
+every clash measured. The same item through `Item1` reads perfectly, which is why the
+harvest beside it reads 860 element ids off the same clashes. F72 shipped on 2026-09-19
+and had never fired once. IT ALSO COST THE VIEWPOINT SIZE FOLDER, because `ServiceSizeOf`
+reads a side the same way, so `Over 150mm` could never be reached. The fix is two words.
+
+### Measured
+
+TWO RUNS AGAINST HIS OWN LIVE FOLDERS, Q60 answered b, both after the backup was read
+back. Same settings both times: 25 mm chosen in the tool and READ BACK off the box,
+penetrations on, by design on, the priority file picked, viewpoints on, the corrected
+matrix.
+
+| run | what changed | groups | penetrations moved | the run |
+|---|---|---|---|---|
+| run-20260920-140347 | the colours, both new blocks | 10 done, 0 failed | 0, the rule was broken | 11 min 6 s |
+| run-20260920-142412 | 5r's two word fix | 10 done, 0 failed | 4 | 15 min 16 s |
+
+Both are inside the 45 minutes criterion 2 asks for. Nothing failed in either.
+
+THE PENETRATION BLOCK BEFORE AND AFTER, one group, which is the whole of 5r in six lines:
+
+```
+                       before   after
+clashes looked at        526      526
+moved to Reviewed          0        0
+the service is over the size   0     45
+no size could be read          0     29
+a person had already set it    0      0
+both sides a service           0      0
+both sides a solid             0     46
+not a service against a solid 526    406
+```
+
+Zero moved in 1A02MM is now a REAL answer: 74 of its clashes ARE a service against a
+solid and every one of them is over 150 mm, which the rule deliberately leaves at New.
+Across the ten groups it moved 4, all Active to Reviewed, the first four clashes this
+rule has ever moved.
+
+THE VIEWPOINTS: 975 written over seven groups, 109, 430, 29, 16, 245, 77 and 69, and
+every single one dimmed at 0.85 AND painted red and green AND read back on all four
+counts. Not one failed.
+
+ALIGNMENT, across the run: 25 models sit somewhere their group's reference does not.
+1A02MM's four agree in X and Y and differ in Z by up to 95 mm, and they name FOUR
+different shared sites, one of them `Internal`, which is what Revit calls a model that
+was not exported on a shared site at all.
+
+EXPORT CHECK, across the run: 0 models carry no workset and 0 are missing an element id.
+C02's export is clean on both counts, WHICH IS NOT WHAT THE BRIEF EXPECTED, and the real
+fault is the one the block was built to show. The models carry `ME-Ductwork`, `ME-Piping`
+and `ME-Equipment`. The matrix asks for `ME-DUCTWORK`, `ME-PIPING` and `ME-EQUIPMENT`.
+The condition carries `flags="64"`, which is StartGroup and NOT a case flag: the one that
+would forgive it is `IgnoreDisplayStringValueCase`, value 16, and nothing sets it, not
+the client's file and not `SetBuilder.BuildCondition`. So the comparison is case
+sensitive and THAT is why 33 of 61 sets find nothing in every group. The block lists the
+names and says the match is case sensitive in so many words.
+
+AND HIS OWN WORKSET NAMES DISAGREE WITH EACH OTHER, which no rule can fix: `EL-Fire
+Alarm` beside `EL-Fire alarm`, `EL-Lightning Protection` beside `EL-Lightining
+Protection`, `EV-Cctv System` beside `EV-Ccctv system`, `PL-Drainage equipment` beside
+`PL-Drainage equipmen`.
+
+HIS NWF FOLDER, the backup against what is there now, bytes:
+
+| group | before | after |
+|---|---|---|
+| 1A02MM | 119,542 | 24,642,386 |
+| 1A02WM | 111,709 | 6,256,447 |
+| 1A02WO | 83,819 | 986,849 |
+| 1A02WN | 83,291 | 913,096 |
+| 1A02WE | 77,234 | 481,534 |
+| 1A02WL | 71,858 | 249,834 |
+| 1A0215 | 78,341 | 78,366 |
+| 1A0215-LS | 4,300 | 4,300 |
+
+Three are new: 1000BS 13,091, 1A02BS 1,296,720, 1A02MS 81,957. The growth is the dimming
+and it is Q59's arithmetic, not this round's.
+
+### Every program started, every file written outside the repo, every process stopped
+
+Started: Navisworks Manage 2025 through Roamer.exe twice, once per run, and four times as
+the automation host for the probe, modes route, colour, survey three times and pen twice,
+each of which exited on its own. dotnet build, dotnet test and build\install.ps1, which
+built and copied the bundle twice. PowerShell drivers for the window, the ribbon clicks,
+the confirm dialog and the close, every one of which exited.
+
+Stopped: Roamer.exe was stopped with Stop-Process ONCE, between the two runs, when the
+add-in window had closed and the main window did not follow. The open document was his
+own 1A02WO federation with nothing unsaved, because the run had already saved and the
+close was answered No. The second close went through the window on its own and needed no
+Stop-Process, which the check below says. No browser and no sign in page opened at any
+point.
+
+WRITTEN INTO HIS LIVE PROJECT FOLDER, which PART 7 asked for and which rule 1 otherwise
+forbids:
+
+- `C:\00-NM\Federation Task\C02 + 04\C02\NWF-backup-2026-09-20`, the backup, taken first
+  and READ BACK before anything else happened: 9 files against 9, every byte size
+  compared one for one, 0 mismatches. It is his to delete when he is satisfied
+- his 8 NWF files rewritten and 3 new ones written, listed above
+- 10 NWDs in `C02\NWD` and 10 workbooks with 10 pages and their picture folders in
+  `C02\Clash Report`
+- two copies of the run log in `C02\NWF`, which is where the tool always puts one
+
+Everything else is under `C:\Users\bader\AppData\Local\Temp\claude\round-alignment`: the
+probe folder with three copies of his NWFs, the probe result files and the two NWFs the
+route probe saved, and the driver notes. The tool's own logs are in
+`C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs` and both pairs are copied into
+`steps\logs`. The bundle at
+`%APPDATA%\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle` was replaced twice.
+
+His NWC folder was read and nothing was written there. The four properties CSVs the
+wiring round left beside his NWCs on 2026-09-19 are still there and still his to delete.
+
+THE CLOSING CHECK RAN: no Roamer, no driver process and no PowerShell left. Two Autodesk
+processes are running, AdskLicensingService and AdSSO, and NEITHER was started by this
+round: AdSSO has been up since 2026-09-19 10:46 and the licensing service is a Windows
+service that is always there.
+
+### Known bugs, and what is untested
+
+WHAT WORKS, proved by a run on his own files: the colours, both new blocks, the foundation
+rule, the by design file, the cheap write route, and the penetration rule for the first
+time since it shipped.
+
+WHAT DOES NOT: 33 of 61 sets still find nothing, and the cause is now named rather than
+guessed at. It is a CASE MISMATCH between the client's matrix and the client's models and
+this tool must not silently fix it, because `ME-DUCTWORK` matching `ME-Ductwork` would
+also make two genuinely different worksets match. That is Q68.
+
+WHAT IS UNTESTED: the two new blocks have never seen a model with NO shared coordinate
+property, because every model in C02 carries one, and never seen a model missing element
+ids, because every model in C02 carries them. Both paths have tests behind them and
+neither has been seen on a real file. 1A04PW would show both and is not on this machine,
+which is Q67.
+
+### What comes next
+
+Bader answers Q67 and Q68. Core tests 1609 before the round and 1635 after, 0 failed and
+0 skipped. Build 0 errors and 0 warnings after every change. Both checks pass.
+
 ## 2026-09-20 The alignment round, THE PLAN, written before the first edit
 
 The round is briefed off Bader's own 422 hand marked decisions in 1A04PW and his answers

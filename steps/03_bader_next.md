@@ -856,3 +856,58 @@ step, about a minute.
      dimmed viewpoint records one material override per item it dims and that group
      writes 430 of them. Question 59 asks whether that is worth it to you. Nothing is
      capped and nothing is thinned, because that is your call and not mine.
+
+## Proof of the alignment round, two steps, 2026-09-20
+
+THIS ROUND RAN AGAINST YOUR OWN FOLDERS, not a copy, which is what you asked for in Q60.
+The backup was taken first and read back before anything else happened, 9 files against
+9 with every byte size compared one for one and no mismatch:
+
+`C:\00-NM\Federation Task\C02 + 04\C02\NWF-backup-2026-09-20`
+
+That folder is yours to delete once you are satisfied. Nothing else of yours was touched.
+
+391. Open your own 1A02MM federation, which now carries the viewpoints with the colours:
+
+     `C:\00-NM\Federation Task\C02 + 04\C02\NWF\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`
+
+     In Saved Viewpoints open `A`, then `DR vs ST`, and press these two:
+
+     `BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing  Clash2`
+     `BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors  Clash1`
+
+     Look for: everything ghosted as before, and now the two clashing items RED and
+     GREEN, red on the first side of the clash and green on the second, which is the
+     order Clash Detective paints them so the viewpoint and the panel agree.
+
+     Both colours are settings, `ViewpointSettings.FirstItemColour` and
+     `SecondItemColour`, and `ColoursTheTwoItems` switches the painting off and leaves
+     the ghosting.
+
+     ONE THING TO KNOW WHILE YOU LOOK. A viewpoint only records a colour where it
+     DIFFERS from the item's own colour, so an item that already is the colour it is
+     being given records nothing and still looks right. That is measured, scan.md 5p, and
+     it is why the read back asks what the viewpoint will SHOW rather than what it wrote.
+
+392. Read the ALIGNMENT and EXPORT CHECK blocks for 1A02MM in the run log, which is
+     already beside your NWFs:
+
+     `C:\00-NM\Federation Task\C02 + 04\C02\NWF\run-20260920-142412.log`
+
+     Search it for `ALIGNMENT 1A02MM`. It says your four models agree in X and Y, differ
+     in Z by up to 95 mm, and name FOUR different Revit shared sites, one of them
+     `Internal`, which is what Revit calls a model that was not exported on a shared site
+     at all. Nothing was changed and every group ran, which is Q65.
+
+     Then search for `EXPORT CHECK 1A02MM`. Every model carries a workset on every
+     element and an element id on every element, so the export itself is clean. THE LINE
+     UNDER IT IS THE ONE THAT MATTERS: your models carry `ME-Ductwork` and the matrix
+     asks for `ME-DUCTWORK`, the match is case sensitive, and that is why 33 of your 61
+     sets find nothing in every group. Question 68 asks which way you want that fixed,
+     and this tool will not fix it on its own because setting the ignore case bit would
+     change what every set in the file finds.
+
+     THE OTHER THING IN THAT BLOCK is that your own workset names disagree with each
+     other: `EL-Fire Alarm` beside `EL-Fire alarm`, `EL-Lightning Protection` beside
+     `EL-Lightining Protection`, `EV-Cctv System` beside `EV-Ccctv system`,
+     `PL-Drainage equipment` beside `PL-Drainage equipmen`. No rule can fix those.
