@@ -61,6 +61,17 @@ namespace Federator.Core.Views
         /// <summary>What goes between the test name and the clash name in a viewpoint name.</summary>
         public const string DefaultNameSeparator = "  ";
 
+        /// <summary>
+        /// How far, in document units, the camera read back off a written viewpoint may
+        /// sit from the camera the writer asked for before the viewpoint is counted as
+        /// failed. The first viewpoints run wrote every viewpoint on the one view the
+        /// window happened to show, and nothing read the camera back, so the tree looked
+        /// complete and every viewpoint opened on sky. A thousandth of a unit is a
+        /// millimetre in a metre file and a third of a millimetre in a foot file, well
+        /// under anything a person could see and well over rounding.
+        /// </summary>
+        public const double DefaultCameraReadBackTolerance = 0.001;
+
         public ViewpointSettings()
         {
             NameSuffix = DefaultNameSuffix;
@@ -73,7 +84,11 @@ namespace Federator.Core.Views
             NoPriorityFolder = DefaultNoPriorityFolder;
             NameSeparator = DefaultNameSeparator;
             MaxPerTest = 0;
+            CameraReadBackTolerance = DefaultCameraReadBackTolerance;
         }
+
+        /// <summary>How far a written viewpoint's camera may sit from the one asked for, in document units.</summary>
+        public double CameraReadBackTolerance { get; set; }
 
         /// <summary>The discipline codes a set name can carry, F85.</summary>
         public IList<string> DisciplineCodes { get; set; }

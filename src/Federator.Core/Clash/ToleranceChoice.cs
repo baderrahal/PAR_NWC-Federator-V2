@@ -233,6 +233,27 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// The line beside ReadFromLine that says what its numbers ARE, Q54. On the wiring
+        /// round's run the line above read 17,259 rows off the clash XML and it was right:
+        /// those are the test blocks of tests that never ran, not created because a side
+        /// finds nothing or already in the document with an empty side, and a row the
+        /// document never produced keeps what the plan gave it. Bader wants to decide off
+        /// a run rather than in the abstract, so the workbook is unchanged and this line
+        /// makes the split visible. It says RAN and not carry a clash, because a test that
+        /// ran and found nothing is among the ran. Every number is read off the report
+        /// rows and the third is the first two subtracted, said so a reader can check it.
+        /// </summary>
+        public static string BlocksLine(int blocks, int ran)
+        {
+            int neverRan = blocks - ran;
+            System.Globalization.CultureInfo invariant = System.Globalization.CultureInfo.InvariantCulture;
+
+            return "WORKBOOK " + blocks.ToString("N0", invariant) + " test blocks, "
+                + ran.ToString("N0", invariant) + " ran and " + neverRan.ToString("N0", invariant)
+                + " are tests that never ran. Their tolerance reads off the picked file";
+        }
+
+        /// <summary>
         /// The line that says where the tolerance on every report row was READ, F76. The
         /// report is produced by the clash tests in the open document, so every one of
         /// them should read off the document. A count under any of the other three is the

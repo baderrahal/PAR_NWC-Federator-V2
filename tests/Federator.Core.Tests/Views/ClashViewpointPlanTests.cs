@@ -14,8 +14,8 @@ namespace Federator.Core.Tests
     ///     Layer 2   the two disciplines, sorted, so AR vs ST and ST vs AR are one folder
     ///     Layer 3   Over 150mm, and only under a pair involving Mechanical or Electrical
     ///
-    /// Nothing is written until SavedViewpoints.CanBuild is true, which waits on whether a
-    /// viewpoint saved while items are hidden records that hiding, scan.md 5d. A planned
+    /// Written by the add-in, ViewpointBuilder, since the viewpoints round on 2026-09-19,
+    /// when scan.md 5j measured that a captured viewpoint records its hiding. A planned
     /// viewpoint that was not written is not a viewpoint.
     /// </summary>
     [TestFixture]
@@ -41,6 +41,25 @@ namespace Federator.Core.Tests
         private static ClashViewpointPlanOutcome Plan(bool priorityPicked, params ClashToPlan[] clashes)
         {
             return ClashViewpointPlan.For(clashes, Settings(), priorityPicked);
+        }
+
+        // ---------- the camera read back, 5l ----------
+
+        /// <summary>
+        /// The distance a written viewpoint's camera may sit from the clash camera is a
+        /// setting with a default a person cannot see and rounding cannot reach, and it
+        /// is not a constant, because it is a number that shapes a run.
+        /// </summary>
+        [Test]
+        public void TheCameraReadBackToleranceIsASettingWithASmallDefault()
+        {
+            ViewpointSettings settings = Settings();
+
+            Assert.That(settings.CameraReadBackTolerance, Is.EqualTo(0.001));
+            Assert.That(ViewpointSettings.DefaultCameraReadBackTolerance, Is.EqualTo(0.001));
+
+            settings.CameraReadBackTolerance = 0.5;
+            Assert.That(settings.CameraReadBackTolerance, Is.EqualTo(0.5));
         }
 
         // ---------- layer 2, the discipline pair ----------
@@ -427,12 +446,12 @@ namespace Federator.Core.Tests
             Assert.That(() => ClashViewpointPlan.For(null, null, false), Throws.ArgumentNullException);
         }
 
-        // ---------- what is not built yet ----------
+        // ---------- the plan on its own ----------
 
         /// <summary>
-        /// The whole plan exists and NOTHING writes it. Whether a viewpoint saved while
-        /// items are hidden records that hiding is scan.md 5d and is not measured, so the
-        /// writing half stays off until a run answers it. A planned viewpoint that was not
+        /// The plan is complete on its own, with no writer in the room. Nothing in Core can
+        /// write a viewpoint or assert on the add-in that does, so this pins the shape one
+        /// clash gives the plan and nothing about the writing. A planned viewpoint that was not
         /// written is not a viewpoint.
         /// </summary>
         [Test]
@@ -440,7 +459,7 @@ namespace Federator.Core.Tests
         {
             Assert.That(Plan(false, Simple("BLD-AR-Walls", "BLD-ST-Columns")).Planned.Count,
                 Is.EqualTo(1),
-                "the plan is complete, and SavedViewpoints.CanBuild is what keeps it unwritten");
+                "the plan is complete on its own, and ViewpointBuilder in the add-in is what writes it");
         }
 
         private static ClashToPlan Simple2(string test, string clash)

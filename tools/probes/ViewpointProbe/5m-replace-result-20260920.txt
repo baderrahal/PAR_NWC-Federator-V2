@@ -1,0 +1,13 @@
+08:32:49.976  probe started, mode record, 1 file(s)
+08:32:49.977  opening C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\probe\probe-1A02MM.nwf
+08:32:50.105  ActiveView in this host: a View 196x0
+08:32:50.111  view.CopyViewpointFrom done
+08:32:50.114  camera applied: position (12.5, -34.25, 56.125) projection Perspective focal none heightField 0.785
+08:32:50.116  root0 hidden: True
+08:32:50.121  folder added: True
+08:32:50.124  before replace: ContainsVisibilityOverrides False, camera position (12.5, -34.25, 56.125) projection Perspective focal none heightField 0.785
+08:32:50.125  ReplaceFromCurrentView done
+08:32:50.125  after replace: ContainsVisibilityOverrides False, camera position (12.5, -34.25, 56.125) projection Perspective focal none heightField 0.785
+08:32:50.127  moved away: root0 hidden False, position (100, 100, 100) projection Perspective focal none heightField 0.785
+08:32:50.131  pressed: root0 hidden False, position (12.5, -34.25, 56.125) projection Perspective focal none heightField 0.785   (hidden true and position 12.5, -34.25, 56.125 means the route records both)
+08:32:50.133  probe finished

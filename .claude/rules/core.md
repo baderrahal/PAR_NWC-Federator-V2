@@ -640,7 +640,8 @@ and 6 does not read as broken.
   code touches SavedViewpoints. This bullet used to end by saying no clash is ever saved
   as a viewpoint, and F85 reverses that half of it: a clash now gets a viewpoint as well
   as a picture, planned by `Federator.Core.Views.ClashViewpointPlan` and written by
-  nothing while `SavedViewpoints.CanBuild` is false
+  `ViewpointBuilder` since the viewpoints round on 2026-09-19, when 5j measured that a
+  captured viewpoint records the hidden state
 - The picture names are theirs and are NOT one running sequence, which is what the first
   dozen look like. It is cd, then the test formatted 00, then the clash within that test
   formatted 0000. Test 0 clash 1 is cd000001.jpg and test 100 clash 1 is cd1000001.jpg,
@@ -790,8 +791,7 @@ and 6 does not read as broken.
 - Every check gets a test that BREAKS one thing and asserts the check names it. A test that
   only asserts the good file passes would have passed against all eight of the differences
   above. Fourteen of them live in WorkbookCellCheckTests
-- THE CORE HALF ONLY until 03_bader_next.md step 375 is done.
-  THE SAVED VIEWPOINTS ARE THREE FOLDERS DEEP AND ONE PER CLASH, F85, planned by
+- THE SAVED VIEWPOINTS ARE THREE FOLDERS DEEP AND ONE PER CLASH, F85, planned by
   `Federator.Core.Views.ClashViewpointPlan` with `DisciplinePairRule` for layer 2. ONE PER
   CLASH AND NOT PER TEST, because the thing a person presses has to be the thing they are
   looking at. Layer 1 is the priority off the client's matrix, A, B, C or No priority, and
@@ -1039,7 +1039,6 @@ it if the same work carries the same name every time it is timed.
   types a step name as a string. Fifteen of them, in the order a group meets them:
   DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES,
   VIEWS, WORKBOOK, HTML, XML, NWD, CONFIRM.
-  THE CORE HALF ONLY until 03_bader_next.md step 374 is done.
   VIEWS is F85's and it was untimed before
   that: building the viewpoints was called outside every step, so its seconds came off
   no total and the run read as faster than it was. A name that is not on the list is refused where the
@@ -1119,8 +1118,9 @@ moved where nothing should have moved it is named rather than discovered a week 
   could not take is never called a move, in either direction
 - `CensusRule` says which step may move which count, and the useful half is the
   refusals. DECIDE opens the NWF that is on disk, and opening a document replaces
-  everything in it, so all five may move there and only there. APPEND moves the models.
-  SETS the sets, TESTS CREATE the tests, TESTS RUN the results. Every other step writes
+  everything in it, so all six may move there and only there. APPEND moves the models.
+  SETS the sets, TESTS CREATE the tests, TESTS RUN the results, VIEWS the viewpoints,
+  F85. Every other step writes
   a FILE and not the document, so none of them may move anything
 - THE RULE HAS THREE ANSWERS AND NOT TWO, F73. `CensusRule.Judge` gives Allowed, Noted
   or Refused, and `CensusMove` is the enum. Allowed is the step doing the job it exists

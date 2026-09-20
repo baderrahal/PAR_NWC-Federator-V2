@@ -127,6 +127,29 @@ namespace Federator.Core.Views
         }
 
         /// <summary>
+        /// The verdict for a size already reduced to millimetres, F85. The LARGEST size a
+        /// clash side carries goes through here, because F85 reads a side the way F72a
+        /// does and Decide above reads the FIRST property, which is F53's own reading, Q51.
+        /// Over the threshold is Large, at or under is Small, exactly the threshold is
+        /// Small, and no size at all is SizeUnknown, which is in and said, the same three
+        /// answers Decide gives.
+        /// </summary>
+        public static SizeVerdict VerdictFor(double? millimetres, SizeSettings settings)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            if (!millimetres.HasValue)
+            {
+                return SizeVerdict.SizeUnknown;
+            }
+
+            return millimetres.Value > settings.ThresholdMillimetres ? SizeVerdict.Large : SizeVerdict.Small;
+        }
+
+        /// <summary>
         /// The LARGEST of every size property read off one item, in millimetres, or null
         /// where none could be read. F72.
         ///

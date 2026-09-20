@@ -1,0 +1,71 @@
+08:20:09.329  probe started, mode camera, 1 file(s)
+08:20:09.331  opening C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\probe\probe-1A02MM.nwf
+08:20:09.436  the view the file opened on: position (170.334, -151.889, 179.164) projection Perspective focal none heightField 0.785
+08:20:09.437  tests 1830
+08:20:09.439  --- BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash19  status Active
+08:20:09.441  TestsViewpointForResult: position (110.376, -54.584, 75.549) projection Perspective focal 59.936 heightField 0.785
+08:20:09.442     route a, the copy after the framed one is disposed: position (110.376, -54.584, 75.549) projection Perspective focal 59.936 heightField 0.785
+08:20:09.444     route a, read back after CopyFrom(copy): position (110.376, -54.584, 75.549) projection Perspective focal 59.936 heightField 0.785
+08:20:09.445     route a, the capture's own Viewpoint: describe threw InvalidOperationException
+08:20:09.446     route b, the framed one after its result is disposed: position (110.376, -54.584, 75.549) projection Perspective focal 59.936 heightField 0.785
+08:20:09.447     route b, read back after CopyFrom(framed): position (110.376, -54.584, 75.549) projection Perspective focal 59.936 heightField 0.785
+08:20:09.451     item Thorn Steel Cables  box centre (71.047, -19.979, 38.784) size (9.494, 0.022, 8.258)
+08:20:09.452     item Concrete, Cast-in-Place Fcu35 Mpa  box centre (87.623, 1.543, 42.29) size (106.563, 99.028, 2.691)
+08:20:09.453     built camera: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.454     read back after CopyFrom: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.454  --- BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash20  status Active
+08:20:09.454  TestsViewpointForResult: position (87.402, -10.087, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.455     route a, the copy after the framed one is disposed: position (87.402, -10.087, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.456     route a, read back after CopyFrom(copy): position (87.402, -10.087, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.456     route a, the capture's own Viewpoint: describe threw InvalidOperationException
+08:20:09.458     route b, the framed one after its result is disposed: position (87.402, -10.087, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.459     route b, read back after CopyFrom(framed): position (87.402, -10.087, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.459     item Thorn Steel Cables  box centre (71.047, 1.543, 38.784) size (9.494, 0.022, 8.258)
+08:20:09.459     item Concrete, Cast-in-Place Fcu35 Mpa  box centre (87.623, 1.543, 42.29) size (106.563, 99.028, 2.691)
+08:20:09.459     built camera: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.459     read back after CopyFrom: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.459  --- BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash21  status Active
+08:20:09.460  TestsViewpointForResult: position (57.812, -1.761, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.460     route a, the copy after the framed one is disposed: position (57.812, -1.761, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.461     route a, read back after CopyFrom(copy): position (57.812, -1.761, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.461     route a, the capture's own Viewpoint: describe threw InvalidOperationException
+08:20:09.463     route b, the framed one after its result is disposed: position (57.812, -1.761, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.464     route b, read back after CopyFrom(framed): position (57.812, -1.761, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.464     item Thorn Steel Cables  box centre (46.182, 14.594, 38.784) size (0.022, 9.494, 8.258)
+08:20:09.464     item Concrete, Cast-in-Place Fcu35 Mpa  box centre (87.623, 1.543, 42.29) size (106.563, 99.028, 2.691)
+08:20:09.464     built camera: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.464     read back after CopyFrom: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.464  --- BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash22  status Active
+08:20:09.464  TestsViewpointForResult: position (57.812, -26.787, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.465     route a, the copy after the framed one is disposed: position (57.812, -26.787, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.466     route a, read back after CopyFrom(copy): position (57.812, -26.787, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.466     route a, the capture's own Viewpoint: describe threw InvalidOperationException
+08:20:09.467     route b, the framed one after its result is disposed: position (57.812, -26.787, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.468     route b, read back after CopyFrom(framed): position (57.812, -26.787, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.468     item Thorn Steel Cables  box centre (46.182, -10.432, 38.784) size (0.022, 9.494, 8.258)
+08:20:09.468     item Concrete, Cast-in-Place Fcu35 Mpa  box centre (87.623, 1.543, 42.29) size (106.563, 99.028, 2.691)
+08:20:09.468     built camera: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.469     read back after CopyFrom: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.469  --- BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash23  status Active
+08:20:09.469  TestsViewpointForResult: position (57.812, -49.661, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.469     route a, the copy after the framed one is disposed: position (57.812, -49.661, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.470     route a, read back after CopyFrom(copy): position (57.812, -49.661, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.470     route a, the capture's own Viewpoint: describe threw InvalidOperationException
+08:20:09.472     route b, the framed one after its result is disposed: position (57.812, -49.661, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.473     route b, read back after CopyFrom(framed): position (57.812, -49.661, 52.575) projection Perspective focal 20.144 heightField 0.785
+08:20:09.473     item Thorn Steel Cables  box centre (46.182, -33.305, 38.784) size (0.022, 9.494, 8.258)
+08:20:09.473     item Concrete, Cast-in-Place Fcu35 Mpa  box centre (87.623, 1.543, 42.29) size (106.563, 99.028, 2.691)
+08:20:09.473     built camera: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.473     read back after CopyFrom: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.473  --- BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash24  status Active
+08:20:09.473  TestsViewpointForResult: position (102.877, -67.538, 68.049) projection Perspective focal 46.946 heightField 0.785
+08:20:09.474     route a, the copy after the framed one is disposed: position (102.877, -67.538, 68.049) projection Perspective focal 46.946 heightField 0.785
+08:20:09.475     route a, read back after CopyFrom(copy): position (102.877, -67.538, 68.049) projection Perspective focal 46.946 heightField 0.785
+08:20:09.475     route a, the capture's own Viewpoint: describe threw InvalidOperationException
+08:20:09.477     route b, the framed one after its result is disposed: position (102.877, -67.538, 68.049) projection Perspective focal 46.946 heightField 0.785
+08:20:09.477     route b, read back after CopyFrom(framed): position (102.877, -67.538, 68.049) projection Perspective focal 46.946 heightField 0.785
+08:20:09.477     item Thorn Steel Cables  box centre (71.047, -40.433, 38.784) size (9.494, 0.022, 8.258)
+08:20:09.477     item Concrete, Cast-in-Place Fcu35 Mpa  box centre (87.623, 1.543, 42.29) size (106.563, 99.028, 2.691)
+08:20:09.477     built camera: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.478     read back after CopyFrom: position (-72.221, -158.301, 172.349) projection Perspective focal 266.407 heightField 0.785
+08:20:09.478  probe finished

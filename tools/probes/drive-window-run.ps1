@@ -7,6 +7,7 @@ param(
   [string]$Pairs = "",
   [string]$Priority = "",
   [string]$Tolerance = "",
+  [switch]$Penetrations,
   [string]$Notes = (Join-Path $env:TEMP "drive-window-run.txt"),
   [int]$WindowWaitSeconds = 600
 )
@@ -157,6 +158,14 @@ if ($Pairs.Length -gt 0) {
   SetText (ById $win "ByDesignBox") $Pairs "ByDesignBox" | Out-Null
 }
 if ($Priority.Length -gt 0) { SetText (ById $win "PriorityBox") $Priority "PriorityBox" | Out-Null }
+if ($Penetrations) {
+  $pen = ById $win "MarkPenetrations"
+  if ($null -eq $pen) { Say "UNKNOWN: no MarkPenetrations" } else {
+    $pp = $pen.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern)
+    if ($pp.Current.ToggleState -ne [System.Windows.Automation.ToggleState]::On) { $pp.Toggle() }
+    Say ("MarkPenetrations is " + $pen.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Current.ToggleState)
+  }
+}
 
 Click (ById $win "RunButton") "Run" | Out-Null
 

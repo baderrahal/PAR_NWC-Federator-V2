@@ -1,16 +1,26 @@
 # Every category value a Revit model in this project really carries, F84.
 #
-# THIS FILE IS EMPTY OF NAMES ON PURPOSE AND THAT IS NOT AN OVERSIGHT. The list can
-# only be MEASURED, by walking every item of a real federation and writing out the
-# distinct values of its category property, which needs Navisworks on the machine.
-# That measurement is docs\history\scan.md 5i and it has not been taken. The property
-# probe, F86, does that walk as part of its own job, so the two are measured on the
-# same run.
+# MEASURED on 2026-09-20 in the viewpoints round, docs\history\scan.md 5i, by
+# tools\probes\ViewpointProbe in its walk mode over the ten NWFs of the C02 folder,
+# 47,471 items across 40 models, read the way the add-in reads a category: the
+# first property whose display name is Category, Revit Category or Element Category
+# on the item itself. The result file is tools\probes\ViewpointProbe\5i-result-20260920.txt
+# and a test proves this list is exactly its CATEGORY lines, so it cannot drift.
 #
-# WHILE IT IS EMPTY THE CHECK REPORTS NOTHING. An empty list means nothing to compare
-# against, and a check with nothing to compare against says so rather than calling
-# every category in the file unknown. Saying UNKNOWN is the rule here, not filling
-# the gap.
+# WHAT IS IN IT. 374 distinct values. Around sixty are Revit categories as a person
+# would name them, Walls, Floors, Doors, Ducts, Cable Trays. The rest are family and
+# type names such as PAR-AR-DOR-SW-SG-MTL-EXT-900, plant species, and the names of
+# linked DWG files, because on these NWCs a node above the geometry carries a
+# property called Category whose value is its own name. They are in the list because
+# the tool reads them as a category, and a list that left them out would not be what
+# was measured. A set asking for one of them by equals matches it, which is right,
+# because the model does carry it.
+#
+# IT IS ONE FOLDER OF THE PROJECT. C02 is ten buildings. A category another building
+# carries and these do not is reported as one nobody has until the walk is run over
+# that building too, and the HEALTH block says how many are known so a reader can
+# tell. Re-measure by running the probe's walk mode over more NWFs and replacing the
+# lines below.
 #
 # IT IS A FILE AND NOT A LIST IN A METHOD because it is read off the CLIENT'S MODELS
 # and it changes when their models do. UnitTable is compiled in for the opposite
@@ -21,3 +31,377 @@
 #
 # It is NOT the penetration rule's service or solid list. Those are a handful of
 # categories this tool has made a judgement about. This is every category that exists.
+Acacia farnesiana
+Air Terminals
+Assembled Stair
+BAUHINIA VARIEGATA 'ALBA'
+CONCRETE RECTANGULAR BEAM
+CONCRETE RECTANGULAR COLUMN
+Cable Tray Fittings
+Cable Trays
+Ceilings
+Center Line
+Center line
+Communication Devices
+Concrete Round
+Conduit Fittings
+Conduits
+Curtain Panels
+Curtain Wall Mullions
+Data Devices
+Doors
+Duct Accessories
+Duct Fittings
+Ducts
+ELE-DAT-DATA CABINET1
+ELE-DAT-RJ45_DATA_OUTLET
+ELE-FIR-ADDRESSABLEMANUALPULLSTATION-PAR
+Eleagnus Angustifolia
+Electrical Equipment
+Electrical Fixtures
+Erythrina Indica
+Fire Alarm Devices
+Flex Duct Rectangular
+Flex Duct Round
+Flex Pipes
+Floors
+Floors 1
+Floors 2
+Floors 3
+Floors 6
+Floors 7
+Floors 8
+Furniture
+Generic Models
+Isolated Foundation
+LGD_CeilingPIRDetector
+Lagerstroemia Speciosa
+Landings
+Levels
+Lighting Devices
+Lighting Fixtures
+Lines
+MELIA AZEDARACH
+Mechanical Equipment
+NMDC Baseplan.dwg
+NMDC Road Layout_C-02 _C-04 60% DD.dwg
+PAR-AR-Bus Stop - benches
+PAR-AR-Bus Stop - smart screen
+PAR-AR-Bus Stop- smart screen-AC-3
+PAR-AR-Bus shedding
+PAR-AR-Bus shedding-Ceiling
+PAR-AR-CLG-WPC
+PAR-AR-CTM-Rectangular Mullion
+PAR-AR-CWA-System Panel
+PAR-AR-DOR-DSW-DOUBLE-STEEL-DOOR_LOUVER
+PAR-AR-DOR-Door-Double-Flush-Panel3m
+PAR-AR-DOR-SW-DG-MTL-EXT-2400
+PAR-AR-DOR-SW-SG-MTL-EXT-900
+PAR-AR-DOR-SW-SG-WD-INT-750
+PAR-AR-DOR-With-Side-Panel-In-Wall
+PAR-AR-DOR-With-Side-Panel_In-Wall
+PAR-AR-FRN-bench68_1500mm
+PAR-AR-FUN-bench68-1500mm
+PAR-AR-FUN-bench68_1500mm
+PAR-AR-FXP-BASIN PEDESTAL
+PAR-AR-FXP-PLINT-WC
+PAR-AR-GEN-EXT-LADDER
+PAR-AR-SPC-EXT-LADDER WITH CAGE
+PAR-AR-SPC-Specialty Equipment 1
+PAR-AR-SPC-Specialty Equipment 2
+PAR-AR-Structural Connections 1
+PAR-AR-WAL-WINDOW SHADE1
+PAR-AR-WND-FX-SG-AL-EXT-900X600
+PAR-AR-WND-LD-SP-AL-EXT-1500X2000
+PAR-AR-WND-MLV-FXD-EXT-FIXED LOUVER
+PAR-AR-WND-SL-DP-AL-EXT-1200X2000
+PAR-EL-ACS-ACCESSCONTROLSYSTEM-PAR
+PAR-EL-CBF-CHANNELHORIZONTALBEND-PAR
+PAR-EL-CBF-CHANNELREDUCER-PAR
+PAR-EL-CBF-CHANNELVERTICALINSIDEBEND-PAR
+PAR-EL-CBF-CHANNELVERTICALOUTSIDEBEND-PAR
+PAR-EL-CBF-HORIZONTALCROSSRADUIS12"-PAR
+PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR
+PAR-EL-CND-Conduit Elbow - Plain End - PVC-PAR
+PAR-EL-CND-JUNCTIONBOXTEEPVC-PAR
+PAR-EL-CND-JunctionBoxCrossPVC-PAR
+PAR-EL-CND-JunctionBoxTeePVC-PAR
+PAR-EL-CND-WITHOUTFITTINGSRNC-PAR
+PAR-EL-CNF-JUNCTIONBOXTEEPVC-PAR
+PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR
+PAR-EL-DAT-RJ45-DATA OUTLET WALL MOUNTED-PAR
+PAR-EL-DAT-RJ45-VOICE OUTLET WALL MOUNTED-PAR
+PAR-EL-DAT-RJ45VOICE OUTLET WALL MOUNTED-PAR
+PAR-EL-DAT-RJ45_DATA_OUTLET_WALLMOUNTED
+PAR-EL-EE-ELP PANEL-PAR
+PAR-EL-EE-MAIN_DISTRIBUTION_BOARD-PAR
+PAR-EL-EE-UNISTRUT SUPPORT
+PAR-EL-ELE-600MMAIRTERMINAL-PAR
+PAR-EL-ELE-C13 60Hz 400 ekW Standby Tier 3-PAR
+PAR-EL-ELE-DAT_INT_ONU-PAR
+PAR-EL-ELE-DISTRIBUTION-BOARD-PAR
+PAR-EL-ELE-DISTRIBUTIONBOARD-PAR
+PAR-EL-ELE-EARTHBAR-PAR
+PAR-EL-ELE-EARTHING-EARTHBAR-PAR
+PAR-EL-ELE-EARTHING-EARTHPITWITHTESTLINK-PAR
+PAR-EL-ELE-EARTHPIT
+PAR-EL-ELE-EARTHPIT-PAR
+PAR-EL-ELE-EARTHPITWITHTESTLINK-PAR
+PAR-EL-ELE-EARTHPIT_WITH_TESTLINK
+PAR-EL-ELE-EL-EARTHPIT-PAR
+PAR-EL-ELE-EL-ELECTRICAL_EQUIPMENT-PAR
+PAR-EL-ELE-ELECTRICAL_EQUIPMENT-PANELS-PAR
+PAR-EL-ELE-FireAlarmControlPanel-PAR
+PAR-EL-ELE-UPS-PAR
+PAR-EL-ELF-13ADOUBLESOCKETOUTLET-PAR
+PAR-EL-ELF-13ASINGLESOCKETOUTLET-PAR
+PAR-EL-ELF-13A_DUPLEX_SOCKET_OUTLET-PAR
+PAR-EL-ELF-13A_SINGLE_SOCKET_OUTLETIP44-PAR
+PAR-EL-ELF-1PHASEISOLATORSWITCHIP66-PAR
+PAR-EL-ELF-1PHASEPOWERPOINT-PAR
+PAR-EL-ELF-DoublePoleSwitch-PAR
+PAR-EL-ELF-POWER_OUTLET-PAR
+PAR-EL-ELF-SPNISOLATORSWITCHIP66-PAR
+PAR-EL-FIR-ADDRESSABLEMANUALPULLSTATION-PAR
+PAR-EL-FIR-ADDRESSABLESMOKEDETECTOR-PAR
+PAR-EL-FIR-ADDRESSABLE_MANUAL_PULL_STATION-PAR
+PAR-EL-FIR-ADDRESSABLE_SMOKE_DETECTOR-PAR
+PAR-EL-FIR-Electrical_Controls_Conspec_SafeCable-Linear-Heat-Detection-PAR
+PAR-EL-FIR-InputOutputModules-PAR
+PAR-EL-FIR-VISUALALARMWALLMOUNTEDSTROBE-PAR
+PAR-EL-FIR-VISUAL_ALARM_WALLMOUNTED_STROBE-PAR
+PAR-EL-LGD-10ASWITCHONEGANG-PAR
+PAR-EL-LGD-10ATHREEGANGSWITCH-PAR
+PAR-EL-LGD-10ATwoGangSwitch-PAR
+PAR-EL-LGF-CoreLineDownlight-PAR
+PAR-EL-LGF-EMERGENCYLIGHTING-PAR
+PAR-EL-LGF-EMERGENCY_LIGHTING-PAR
+PAR-EL-LGF-EXT_BULKHEAD-PAR
+PAR-EL-LGF-EXT_BULKHEAD2-PAR
+PAR-EL-LGF-LIGHTINGSOURCE-PAR
+PAR-EL-LGF-LINEAR LIGHTINGFIXTURE-PAR
+PAR-EL-LGF-OUTDOOR_BULKHEAD-PAR
+PAR-EL-LGF-OUTDOOR_BULKHEAD2-PAR
+PAR-EL-LGF-WALLMOUNTEDEXITSIGN-PAR
+PAR-EL-LTD_10ASWITCHONEGANG-PAR
+PAR-EL-PAR-EL-600MMAIRTERMINAL-PAR
+PAR-EL-PAR-EL-CONTROL_PANEL-FM200-PAR
+PAR-EL-PAR-EL-DISTRIBUTIONBOARD-PAR
+PAR-EL-PAR-EL-EARTHBAR-PAR
+PAR-EL-PAR-EL-EARTHPIT-PAR
+PAR-EL-PAR-EL-EARTHPITWITHTESTLINK-PAR
+PAR-EL-PAR-EL-FireAlarmControlPanel-PAR
+PAR-EL-PAR-EL-PAR-EL-ELECTRICAL_EQUIPMENT-PAR
+PAR-EL-SEC-AccessControlSystemDevice-PAR
+PAR-EL-SEC-CCTV-IP-WALLCAMERA-PAR
+PAR-EL-SEC-CCTV-IP-WallCamera-PAR
+PAR-EL_SIT_EXT_MANHOLE
+PAR-Enclosed KWHM
+PAR-FL-SPK-Nozzle
+PAR-LA-FRN-MOBILITY HUB5
+PAR-LA-FRN-MOBILITY HUB7
+PAR-LA-FRN_EXT_RECYCLE BIN_Open Spaces1
+PAR-LA-LTF-Pendant Cattenary Light
+PAR-LA-LTF_Cattenary Light Wire
+PAR-LA-LTF_Cattenary Lighting Pole_5m
+PAR-LA-LTF_Darb Light Pole - 6m
+PAR-LA-LTF_Spike Mounted Projector_Trees
+PAR-LA-SIT-SIGNAGE TYPE 01
+PAR-LA-SIT-SIGNAGE TYPE 02
+PAR-ME-AIR-Louver
+PAR-ME-GEN-MECH EQ  Base
+PAR-ME-MEC-ACCU-EXT-AIR-COOLED-CONDENSING-UNIT
+PAR-ME-MEC-ACCU-EXT-AIR-COOLED-CONDENSING-UNIT1
+PAR-ME-MEC-ALM-ALP
+PAR-ME-MEC-Compressor
+PAR-ME-MEC-EF-INT-VENTELATION-PROPELLER-FANS
+PAR-ME-MEC-ELECTRIC-WATER-HEATER
+PAR-ME-MEC-FCU-INT-WALL-MOUNTED
+PAR-ME-MEC-FCU-INT-WALL-MOUNTED-FCU1
+PAR-ME-MEC-FE-EXT-FIRE-EXTINGUISHER-TROLLY-TYPE
+PAR-ME-MEC-FIRE-EXTINGUISHER
+PAR-ME-MEC-FIRE-EXTINGUISHER1
+PAR-ME-MEC-FM-200-Cylinder
+PAR-ME-MEC-FT-EXT-UNDERGROUND-FUEL-TANK-10-Lit1
+PAR-ME-MEC-Fire-Extenguisher
+PAR-ME-MEC-GULLY-TRAP
+PAR-ME-MEC-Hilti_INS_rod_Threaded Rod 8.8
+PAR-ME-MEC-MONORAIL CRANE
+PAR-ME-MEC-Mechanical-Screen
+PAR-ME-MEC-ODOR EQUIPMENT
+PAR-ME-MEC-Package-Unit-Roof-Top
+PAR-ME-MEC-SEWAGE-MANHOLE-HOSTED
+PAR-ME-MEC-SKIP
+PAR-ME-MEC-SURGE TANK
+PAR-ME-MEC-Screw Convoyer
+PAR-ME-MEC-Shade2
+PAR-ME-MEC-Supmersible Pump Flygt
+PAR-ME-MEC-VALVE-BOX
+PAR-ME-MEC-VENTELATION-PROPELLER-FANS
+PAR-ME-MISC-Ladder-Cage
+PAR-ME-MISC-STEPS_LADDER
+PAR-ME-PPA-AIR VALVE SEWAGE
+PAR-ME-PPA-Ball Valve DN25
+PAR-ME-PPA-Check Valve (Swing)
+PAR-ME-PPA-DI Flange
+PAR-ME-PPA-DI Flange N
+PAR-ME-PPA-Dismantle Piece
+PAR-ME-PPA-FM_DN200_1200
+PAR-ME-PPA-Gate Valve Flanged
+PAR-ME-PPA-Hilti_INS_pipering_MP-MXI-F
+PAR-ME-PPA-KNIFE GATE VALVE
+PAR-ME-PPA-MECH_PIPE-ACC_GV_DN300
+PAR-ME-PPA-MECH_PIPE-ACC_GV_DN80-150
+PAR-ME-PPA-PIPE SUPPORT
+PAR-ME-PPA-Penstock
+PAR-ME-PPA-Pressure Gauge DN25
+PAR-ME-PPA-Soleniod-Valve
+PAR-ME-PPA-VENT PUDDLE
+PAR-ME-PPA-V_Penstock - Gate
+PAR-ME-PPF-CS Branch
+PAR-ME-PPF-CS Theaded Elbow
+PAR-ME-PPF-DI COLLAR
+PAR-ME-PPF-DI Elbow
+PAR-ME-PPF-DI Elbow Flanged
+PAR-ME-PPF-DI Reducer
+PAR-ME-PPF-DI Reducer Flanged
+PAR-ME-PPF-DI Spigot
+PAR-ME-PPF-DI Tee (Spigot Branch)
+PAR-ME-PPF-DI Tee Y Flanged
+PAR-ME-PPF-ELBOW GRP
+PAR-ME-PPF-REDUCER GRP
+PAR-ME-PPF-TEE GRP
+PAR-MEC-AIR-Fresh-Air-Grill
+PAR-MEC-AIR-Return-Air-Grill
+PAR-MEC-AIR-Supply-Air-Grill
+PAR-MEC-AIR-TERMINAL-SAND-TRAP-LOUVER
+PAR-MEC-DCF-Rectangular-Elbow-Radius
+PAR-MEC-DCF-Rectangular-Endcap
+PAR-MEC-DCF-Rectangular-Tap-Beveled
+PAR-MEC-DCF-Rectangular-Wye-Curved-Transition-DTL
+PAR-MEC-DTA-Fire-Control-Damper
+PAR-MEC-DTA-Volume-Control-Damper
+PAR-MEC-MEC-FIRE-EXTINGUISHER1
+PAR-MEC-MEC-VENTELATION-PROPELLER-FANS
+PAR-PL-PFT-Coupling-PVC-Sch-40-DWV
+PAR-PL-PFT-Elbow-Welded--Generic
+PAR-PL-PFT-Elbow-Welded-Generic
+PAR-PL-PFT-Reducer-PVC-Sch-40-DWV
+PAR-PL-PFT-Tee-Branch-Reduced-Butt-Welded-CS
+PAR-PL-PFT-Tee-PVC-Sch-40
+PAR-PL-PFT-Transition-Welded-Generic
+PAR-PL-PLM-ACUPPER-DRAIN
+PAR-PL-PLM-CLEANOUT
+PAR-PL-PLM-FLOOR-DRAIN
+PAR-PL-PLM-GULLY-TRAP
+PAR-PL-PLM-HOSE-BIBB
+PAR-PL-PLM-SEWAGE-MANHOLE-HOSTED
+PAR-PL-PLM-VENTCAP
+PAR-PL-PPA-ANGLE-VALVE
+PAR-PL-PPA-BALL-VALVE
+PAR-PL-PPA-Ball-Valve-50-150-mm
+PAR-PL-PPA-Bell
+PAR-PL-PPA-Check-Valve-10-100-mm-Threaded
+PAR-PL-PPA-HAND-SPRAY
+PAR-PL-PPA-Motor-Control-Valve-15-50-mm
+PAR-PL-PPA-Pressure-Gauge
+PAR-PL-PPA-Solenoid-Valve-15-80-mm
+PAR-PL-PPA-Strainer-6-100-mm-Threaded
+PAR-PL-PPA-VALVE-BOX
+PAR-PL-PPA-WATER-HAMMER-ARRESTOR
+PAR-PL-PPA-Water-Meter
+PAR-PL-PPF-BEND-PVC--SCH-40-DWV
+PAR-PL-PPF-Bend-PVC-Sch-40-DWV
+PAR-PL-PPF-CAP--PVC-SCH40
+PAR-PL-PPF-CAP-GENERIC
+PAR-PL-PPF-ELBOW-WELDED-GENERIC
+PAR-PL-PPF-Elbow-Threaded-GM
+PAR-PL-PPF-Elbow-Welded-Generic
+PAR-PL-PPF-M-Cap-PVC-Sch-40
+PAR-PL-PPF-P-Trap-UTP-No-Hub-Series
+PAR-PL-PPF-REDUCER-PVC-SCH-40-DWV
+PAR-PL-PPF-Reducer-PVC-Sch-40-DWV
+PAR-PL-PPF-TEE-PVC-SCH-40
+PAR-PL-PPF-TEE-REDUCING-SANITARY-PVC-SCH-40-DWV
+PAR-PL-PPF-TEE-SANITARY-PVC-SCH-40-DWV
+PAR-PL-PPF-Tee-Branch-Reduced-Threaded
+PAR-PL-PPF-WYE-45-DEG-REDUCING-PVC-SCH-40-DWV
+PAR-PL-PPF-Wye-45-Deg-Reducing-PVC-Sch-40-DWV
+PAR-RL-LGF-Deltalight_Luminaires_M-INFOMR_L11
+PAR-ST-1000 X 1000
+PAR-ST-COL-WWF-Welded Wide Flange-Column
+PAR-ST-GEN-CIRICLE COVER1
+PAR-ST-GEN-REMOVABLE CONCRETE COVER
+PAR-ST-PPA-STEPS_LADDER
+PAR-ST-REC-SLEEVE 5
+PAR-ST-SCL-CONCRETE COLUMN
+PAR-ST-SCL-CONCRETE-RECTANGULAR-COLUMN
+PAR-ST-SCL-REC CONCRETE COLUMN
+PAR-ST-SFA-CONCRETE FRAMINIG
+PAR-ST-SFA-CONCRETE-RECTANGULAR BEAM
+PAR-ST-SFA-Concrete-Rectangular Beam
+PAR-ST-SFA-M_W-Wide Flange
+PAR-ST-SFA-PAN JOIST
+PAR-ST-SFA-REC CONCRETE FRAMINIG
+PAR-ST-SFA-Rctanguler
+PAR-ST-SFA-S Shapes
+PAR-ST-SFD-CONCRETE FOUNDATION
+PAR-ST-SFO-CONCRETE FOUNDATION
+PAR-ST-SFO-Footing-Rectangular
+PAR-ST-SFO-STRUCTURAL FOUNDATIONS 1
+PAR-ST-SFO-STRUCTURAL FOUNDATIONS 2
+PAR-ST-SFO-Structural Foundations 1
+PAR-ST-SFR-REC CONCRETE FRAMINIG
+PAR-ST-WAL-WALLS 1
+PAR-ST-WAL-WALLS 2
+PAR-ST-WAL-Walls 1
+PAR_EL_SIT_EXT_MANHOLE
+PAR_EN_SIT_TL_MANHOLE
+PSN_EF_FIR_INT_ADDRESSABLEMANUALPULLSTATION
+PSN_EF_FIR_INT_ADDRESSABLESMOKEDETECTOR
+PSN_EF_FIR_INT_VISUALALARMWALLMOUNTEDSTROBE
+PSN_EG_CND_EXT_JUNCTIONBOXTEEPVC
+PSN_EG_CND_EXT_WITHOUTFITTINGSRNC
+PSN_EG_EXT_EARTHBAR
+PSN_EG_EXT_EARTHPIT
+PSN_EG_EXT_EARTHPITWITHTESTLINK
+PSN_EL_LGD_INT_10ASWITCHONEGANG1
+PSN_EL_LGD_INT_10ATwoGangSwitch
+PSN_EL_LGF_EXT_BULKHEAD
+PSN_EL_LGF_EXT_BULKHEAD2
+PSN_EL_LGF_INT_EMERGENCYLIGHTING
+PSN_EL_LGF_INT_LINEAR LIGHTINGFIXTURE
+PSN_EP_ELE_INT_DISTRIBUTIONBOARD
+PSN_EP_ELF_INT_13ADOUBLESOCKETOUTLET
+PSN_EP_ELF_INT_13ASINGLESOCKETOUTLETIP44
+PSN_EP_ELF_INT_1PHASEPOWERPOINT
+PSN_EU_EXT_RINGMAINUNIT
+PSN_EU_EXT_TRANSFORMER
+Pad
+Pipe Accessories
+Pipe Fittings
+Pipe Types
+Pipes
+Piping System
+Planting
+Plumbing Fixtures
+Plumeria Acutifolia
+Runs
+Security Devices
+Signage
+Site
+Slab Edges
+Specialty Equipment
+Sprinklers
+Stairs
+Structural Columns
+Structural Connections
+Structural Foundations
+Structural Framing
+Tamarix Aphylla
+Walls
+Windows
+XR-C02 & C04 TRAFFIC SIGNS & ROAD MARKING LAYOUT.dwg
+XR-C02&C04 STREET LIGHTING.dwg
+callistemon viminalis
+seat new

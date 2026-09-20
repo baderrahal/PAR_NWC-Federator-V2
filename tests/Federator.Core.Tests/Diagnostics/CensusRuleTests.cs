@@ -58,15 +58,18 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheThreeThatBuildMoveOneCountEach()
+        public void TheFourThatBuildMoveOneCountEach()
         {
             Assert.That(CensusRule.MayMove(RunSteps.Sets, CensusCount.Sets), Is.True);
             Assert.That(CensusRule.MayMove(RunSteps.TestsCreate, CensusCount.Tests), Is.True);
             Assert.That(CensusRule.MayMove(RunSteps.TestsRun, CensusCount.Results), Is.True);
+            Assert.That(CensusRule.MayMove(RunSteps.Views, CensusCount.Viewpoints), Is.True);
 
             Assert.That(CensusRule.MayMove(RunSteps.Sets, CensusCount.Tests), Is.False);
             Assert.That(CensusRule.MayMove(RunSteps.TestsCreate, CensusCount.Results), Is.False);
             Assert.That(CensusRule.MayMove(RunSteps.TestsRun, CensusCount.Tests), Is.False);
+            Assert.That(CensusRule.MayMove(RunSteps.Views, CensusCount.Results), Is.False);
+            Assert.That(CensusRule.MayMove(RunSteps.Views, CensusCount.Models), Is.False);
         }
 
         /// <summary>
@@ -101,22 +104,24 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheStepsThatMayWriteAreTheFiveAndOnlyThose()
+        public void TheStepsThatMayWriteAreTheSixAndOnlyThose()
         {
             IList<string> writes = CensusRule.StepsThatMayWrite();
 
-            Assert.That(writes.Count, Is.EqualTo(5));
+            Assert.That(writes.Count, Is.EqualTo(6));
             Assert.That(writes, Does.Contain(RunSteps.Decide));
             Assert.That(writes, Does.Contain(RunSteps.Append));
             Assert.That(writes, Does.Contain(RunSteps.Sets));
             Assert.That(writes, Does.Contain(RunSteps.TestsCreate));
             Assert.That(writes, Does.Contain(RunSteps.TestsRun));
+            Assert.That(writes, Does.Contain(RunSteps.Views));
             Assert.That(writes, Does.Not.Contain(RunSteps.Nwd));
 
             // In the order a group meets them, so the narrowed line reads the same way
             // the run does.
             Assert.That(writes[0], Is.EqualTo(RunSteps.Decide));
             Assert.That(writes[4], Is.EqualTo(RunSteps.TestsRun));
+            Assert.That(writes[5], Is.EqualTo(RunSteps.Views));
         }
 
         [Test]

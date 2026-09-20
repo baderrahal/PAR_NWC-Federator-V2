@@ -199,14 +199,21 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// THE FILE OF THE SAME NAME THAT BADER UPLOADED TO samples ON 2026-09-19, which
-        /// is not the same file. It is in samples, so it is evidence and is never edited,
-        /// and `SuppliedCorrectedMatrixTests` pins what it differs by rather than leaving
-        /// two files of one name to be discovered later.
+        /// A result file the viewpoint probe wrote, kept beside the probe under tools, found
+        /// off the checkout the same way the exchange folder is. The category list in
+        /// Federator.Core is proved to be exactly one of these, 5i.
         /// </summary>
-        public static string SuppliedCorrectedMatrix()
+        public static string ProbeResult(string name)
         {
-            return Path.Combine(Folder(), CorrectedMatrixName);
+            string repo = Repo();
+
+            if (repo == null)
+            {
+                throw new DirectoryNotFoundException(
+                    "No checkout found above the test assembly, so there is no probe folder.");
+            }
+
+            return Path.Combine(repo, "tools", "probes", "ViewpointProbe", name);
         }
 
         /// <summary>The clash priority file, F83, one priority per test off the matrix.</summary>

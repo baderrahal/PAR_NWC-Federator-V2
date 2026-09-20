@@ -1,0 +1,19 @@
+09:07:20.785  probe started, mode home, 1 file(s)
+09:07:20.787  opening C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\probe\probe-1A02MM.nwf
+09:07:20.880  document.Models[0].FileName = [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc]  SourceFileName = [Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-AR-MOD-000001.rvt]
+09:07:20.880  document.Models[1].FileName = [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc]  SourceFileName = [Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-EL-MOD-000001.rvt]
+09:07:20.880  document.Models[2].FileName = [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc]  SourceFileName = [Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-ME-MOD-000001.rvt]
+09:07:20.880  document.Models[3].FileName = [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc]  SourceFileName = [Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-ST-MOD-000001.rvt]
+09:07:20.883  --- BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash19
+09:07:20.884     Item1 [Thorn Steel Cables] HasModel False, Model null, ancestors and self 9, the one with a model [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc] at depth 9
+09:07:20.884     Item2 [Concrete, Cast-in-Place Fcu35 Mpa] HasModel False, Model null, ancestors and self 6, the one with a model [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] at depth 6
+09:07:20.884  --- BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash20
+09:07:20.884     Item1 [Thorn Steel Cables] HasModel False, Model null, ancestors and self 9, the one with a model [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc] at depth 9
+09:07:20.884     Item2 [Concrete, Cast-in-Place Fcu35 Mpa] HasModel False, Model null, ancestors and self 6, the one with a model [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] at depth 6
+09:07:20.884  --- BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash21
+09:07:20.884     Item1 [Thorn Steel Cables] HasModel False, Model null, ancestors and self 9, the one with a model [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc] at depth 9
+09:07:20.884     Item2 [Concrete, Cast-in-Place Fcu35 Mpa] HasModel False, Model null, ancestors and self 6, the one with a model [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] at depth 6
+09:07:20.884  --- BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  Clash22
+09:07:20.884     Item1 [Thorn Steel Cables] HasModel False, Model null, ancestors and self 9, the one with a model [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc] at depth 9
+09:07:20.884     Item2 [Concrete, Cast-in-Place Fcu35 Mpa] HasModel False, Model null, ancestors and self 6, the one with a model [C:\00-NM\Federation Task\C02 + 04\C02\NWC\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] at depth 6
+09:07:20.884  probe finished

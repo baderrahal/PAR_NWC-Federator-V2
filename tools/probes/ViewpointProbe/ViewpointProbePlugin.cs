@@ -1,0 +1,1321 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using Autodesk.Navisworks.Api;
+using Autodesk.Navisworks.Api.Clash;
+using Autodesk.Navisworks.Api.DocumentParts;
+using Autodesk.Navisworks.Api.Plugins;
+
+namespace ViewpointProbe
+{
+    /// <summary>
+    /// Measures, inside Navisworks, whether a saved viewpoint records the hidden state it
+    /// was saved with and brings it back after a save and a reopen. scan.md 5j, F85.
+    ///
+    /// Two ways of making a saved viewpoint are tried side by side, because the DLL
+    /// offers both and says nothing about which records hiding:
+    ///
+    ///     A   new SavedViewpoint(Viewpoint)                     the camera alone, on its face
+    ///     B   DocumentSavedViewpoints.CaptureRuntimeOverrides() the current view with its overrides
+    ///
+    /// Every step is written to the result file as it happens and flushed, so a plugin
+    /// the host stops early still leaves behind what it measured. Nothing here touches
+    /// anything but the copy it is handed.
+    ///
+    /// The second parameter, walk, turns it into the category walk for scan.md 5i: it
+    /// opens each NWF it is handed and writes every distinct value of the category
+    /// property, read the way the add-in reads one, into the result file.
+    /// </summary>
+    [Plugin(PluginName, DeveloperCode, DisplayName = "Viewpoint probe", ToolTip = "Measures saved viewpoints, scan.md 5j")]
+    [AddInPlugin(AddInLocation.AddIn)]
+    public sealed class ViewpointProbePlugin : AddInPlugin
+    {
+        public const string PluginName = "ViewpointProbe";
+        public const string DeveloperCode = "PARS";
+
+        private static readonly string[] CategoryNames = { "Category", "Revit Category", "Element Category" };
+
+        private StreamWriter results;
+
+        public override int Execute(params string[] parameters)
+        {
+            if (parameters == null || parameters.Length < 2)
+            {
+                return 2;
+            }
+
+            string mode = parameters[0];
+            string resultPath = parameters[1];
+
+            using (results = new StreamWriter(resultPath, true, new UTF8Encoding(false)))
+            {
+                results.AutoFlush = true;
+                Say("probe started, mode " + mode + ", " + (parameters.Length - 2) + " file(s)");
+
+                try
+                {
+                    if (mode == "hidden")
+                    {
+                        MeasureHiddenState(parameters[2]);
+                    }
+                    else if (mode == "walk")
+                    {
+                        WalkCategories(parameters, 2);
+                    }
+                    else if (mode == "restore")
+                    {
+                        MeasureRestore(parameters[2]);
+                    }
+                    else if (mode == "camera")
+                    {
+                        MeasureCamera(parameters[2]);
+                    }
+                    else if (mode == "record")
+                    {
+                        MeasureRecord(parameters[2]);
+                    }
+                    else if (mode == "com")
+                    {
+                        MeasureComRoute(parameters[2]);
+                    }
+                    else if (mode == "home")
+                    {
+                        MeasureHome(parameters[2]);
+                    }
+                    else
+                    {
+                        Say("UNKNOWN mode " + mode);
+                        return 3;
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("THREW " + error.GetType().Name + ": " + error.Message);
+                    Say(error.StackTrace ?? string.Empty);
+                    return 1;
+                }
+
+                Say("probe finished");
+            }
+
+            return 0;
+        }
+
+        private void Say(string line)
+        {
+            results.WriteLine(DateTime.Now.ToString("HH:mm:ss.fff") + "  " + line);
+        }
+
+        // ---------- 5j, the hidden state ----------
+
+        private void MeasureHiddenState(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            Say("models " + document.Models.Count + ", saved viewpoints at the root " + document.SavedViewpoints.Value.Count);
+
+            if (document.Models.Count < 2)
+            {
+                Say("UNKNOWN: the copy holds fewer than two models, so two cannot be hidden");
+                return;
+            }
+
+            using (ModelItemCollection two = new ModelItemCollection())
+            {
+                two.Add(document.Models[0].RootItem);
+                two.Add(document.Models[1].RootItem);
+                Say("hiding two model roots: " + document.Models[0].FileName + " and " + document.Models[1].FileName);
+
+                document.Models.SetHidden(two, true);
+                Say("after SetHidden: IsHidden(two) = " + document.Models.IsHidden(two)
+                    + ", root0.IsHidden = " + document.Models[0].RootItem.IsHidden
+                    + ", root1.IsHidden = " + document.Models[1].RootItem.IsHidden);
+
+                // A, the camera alone. The flag is read off the copy in the tree, because
+                // reading it off a saved viewpoint that is not in a document yet threw
+                // NullReferenceException inside the getter on the first attempt.
+                using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+                using (SavedViewpoint a = new SavedViewpoint(camera))
+                {
+                    Say("A  new SavedViewpoint(Viewpoint) made, adding it");
+                    document.SavedViewpoints.AddCopy(a);
+                }
+
+                NameAt(document, document.SavedViewpoints.Value.Count - 1, "probe A camera alone");
+                ReadFlags(document, "probe A camera alone");
+
+                // B, the current view with its overrides captured
+                using (SavedViewpoint b = document.SavedViewpoints.CaptureRuntimeOverrides())
+                {
+                    Say("B  CaptureRuntimeOverrides() returned " + (b == null ? "null" : "a SavedViewpoint") + ", adding it");
+
+                    if (b != null)
+                    {
+                        document.SavedViewpoints.AddCopy(b);
+                    }
+                }
+
+                NameAt(document, document.SavedViewpoints.Value.Count - 1, "probe B runtime overrides");
+                ReadFlags(document, "probe B runtime overrides");
+                Say("saved viewpoints at the root now " + document.SavedViewpoints.Value.Count);
+
+                // Pressed from a clean view, before any save
+                document.Models.ResetAllHidden();
+                Say("ResetAllHidden: IsHidden(two) = " + document.Models.IsHidden(two));
+                PressAndRead(document, "probe A camera alone", two);
+                document.Models.ResetAllHidden();
+                PressAndRead(document, "probe B runtime overrides", two);
+                document.Models.ResetAllHidden();
+
+                Say("saving the copy");
+                bool saved = document.TrySaveFile(nwfCopy);
+                Say("TrySaveFile = " + saved + ", size on disk " + new FileInfo(nwfCopy).Length + " bytes");
+            }
+
+            Say("clearing and reopening");
+            document.Clear();
+            Say("after Clear: models " + document.Models.Count);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: the copy would not reopen");
+                return;
+            }
+
+            Say("reopened: models " + document.Models.Count + ", saved viewpoints at the root " + document.SavedViewpoints.Value.Count);
+
+            using (ModelItemCollection two = new ModelItemCollection())
+            {
+                two.Add(document.Models[0].RootItem);
+                two.Add(document.Models[1].RootItem);
+                Say("after reopen, before pressing anything: IsHidden(two) = " + document.Models.IsHidden(two));
+
+                foreach (string name in new[] { "probe A camera alone", "probe B runtime overrides" })
+                {
+                    ReadFlags(document, name + " after reopen", name);
+                    document.Models.ResetAllHidden();
+                    PressAndRead(document, name, two);
+                }
+
+                document.Models.ResetAllHidden();
+            }
+        }
+
+        private void ReadFlags(Document document, string name)
+        {
+            ReadFlags(document, name, name);
+        }
+
+        private void ReadFlags(Document document, string said, string name)
+        {
+            using (SavedViewpoint found = FindAtRoot(document, name))
+            {
+                if (found == null)
+                {
+                    Say(said + ": NOT FOUND in the tree");
+                    return;
+                }
+
+                try
+                {
+                    Say(said + ": ContainsVisibilityOverrides = " + found.ContainsVisibilityOverrides
+                        + ", ContainsAppearanceOverrides = " + found.ContainsAppearanceOverrides);
+                }
+                catch (Exception error)
+                {
+                    Say(said + ": reading the flags threw " + error.GetType().Name + ": " + error.Message);
+                }
+
+                DescribeOverrides(found);
+            }
+        }
+
+        private void DescribeOverrides(SavedViewpoint viewpoint)
+        {
+            try
+            {
+                VisibilityOverrides overrides = viewpoint.GetVisibilityOverrides();
+
+                if (overrides == null)
+                {
+                    Say("   GetVisibilityOverrides() returned null");
+                    return;
+                }
+
+                Say("   GetVisibilityOverrides() returned " + overrides.GetType().FullName);
+
+                foreach (System.Reflection.PropertyInfo property in overrides.GetType().GetProperties())
+                {
+                    try
+                    {
+                        object value = property.GetValue(overrides, null);
+                        System.Collections.ICollection collection = value as System.Collections.ICollection;
+                        Say("   " + property.Name + " = " + (collection != null ? collection.Count + " item(s)" : Convert.ToString(value)));
+                    }
+                    catch (Exception error)
+                    {
+                        Say("   " + property.Name + " threw " + error.GetType().Name);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   GetVisibilityOverrides threw " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        private void NameAt(Document document, int index, string name)
+        {
+            using (SavedItem item = document.SavedViewpoints.Value[index])
+            {
+                document.SavedViewpoints.EditDisplayName(item, name);
+            }
+        }
+
+        private SavedViewpoint FindAtRoot(Document document, string name)
+        {
+            SavedItemCollection items = document.SavedViewpoints.Value;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                SavedItem item = items[i];
+                SavedViewpoint viewpoint = item as SavedViewpoint;
+
+                if (viewpoint != null && string.Equals(viewpoint.DisplayName, name, StringComparison.Ordinal))
+                {
+                    return viewpoint;
+                }
+
+                item.Dispose();
+            }
+
+            return null;
+        }
+
+        private void PressAndRead(Document document, string name, ModelItemCollection two)
+        {
+            using (SavedViewpoint found = FindAtRoot(document, name))
+            {
+                if (found == null)
+                {
+                    Say("press " + name + ": NOT FOUND");
+                    return;
+                }
+
+                document.SavedViewpoints.CurrentSavedViewpoint = found;
+            }
+
+            Say("press " + name + ": IsHidden(two) = " + document.Models.IsHidden(two)
+                + ", root0.IsHidden = " + document.Models[0].RootItem.IsHidden
+                + ", root1.IsHidden = " + document.Models[1].RootItem.IsHidden);
+        }
+
+        // ---------- 5k, putting the hidden state back ----------
+
+        /// <summary>
+        /// Measures how a hidden state the DOCUMENT holds, not the model files, can be
+        /// read before the viewpoint writer hides things and put back after. The review
+        /// of the viewpoints round found that ResetAllHiddenToModelState ends at the
+        /// state the NWC files define, which is not what the NWF held. Four routes are
+        /// tried on the copy, each one timed and read back:
+        ///
+        ///     1   CaptureRuntimeOverrides() before anything, then read its Hidden
+        ///         collection WITHOUT adding it to the tree
+        ///     2   press that capture, CurrentSavedViewpoint = it, without it being in the tree
+        ///     3   walk RootItemDescendantsAndSelf and keep every item whose IsHidden is
+        ///         true, then ResetAllHidden and SetHidden(kept, true)
+        ///     4   what ResetAllHiddenToModelState does to a document level hide, and what
+        ///         GetAllHiddenAtModelState returns
+        ///
+        /// Nothing is saved. The copy is opened, measured and left.
+        /// </summary>
+        private void MeasureRestore(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            Say("models " + document.Models.Count);
+
+            if (document.Models.Count < 2)
+            {
+                Say("UNKNOWN: the copy holds fewer than two models");
+                return;
+            }
+
+            System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+
+            using (ModelItemCollection one = new ModelItemCollection())
+            {
+                one.Add(document.Models[0].RootItem);
+                document.Models.ResetAllHidden();
+                Say("start: IsHidden(root0) = " + document.Models.IsHidden(one));
+
+                // A document level hide, the thing a reviewer does and saves
+                document.Models.SetHidden(one, true);
+                Say("SetHidden(root0): IsHidden(root0) = " + document.Models.IsHidden(one));
+
+                // Route 4a, what the writer's restore does to it today
+                document.Models.ResetAllHiddenToModelState();
+                Say("ResetAllHiddenToModelState: IsHidden(root0) = " + document.Models.IsHidden(one)
+                    + "   (false means the document level hide is LOST by that call)");
+
+                watch.Restart();
+                using (ModelItemCollection atModel = document.Models.GetAllHiddenAtModelState())
+                {
+                    Say("GetAllHiddenAtModelState: " + atModel.Count + " item(s) in " + watch.ElapsedMilliseconds + " ms");
+                }
+
+                document.Models.SetHidden(one, true);
+
+                // Route 1, capture before and read it without adding it
+                SavedViewpoint before = null;
+
+                try
+                {
+                    watch.Restart();
+                    before = document.SavedViewpoints.CaptureRuntimeOverrides();
+                    Say("route 1: CaptureRuntimeOverrides in " + watch.ElapsedMilliseconds + " ms, returned " + (before == null ? "null" : "a SavedViewpoint"));
+
+                    try
+                    {
+                        VisibilityOverrides overrides = before.GetVisibilityOverrides();
+                        Say("route 1: GetVisibilityOverrides off the un-added capture returned " + (overrides == null ? "null" : "an object")
+                            + ", Hidden.Count = " + (overrides == null ? "n/a" : overrides.Hidden.Count.ToString()));
+                    }
+                    catch (Exception error)
+                    {
+                        Say("route 1: reading the un-added capture threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    try
+                    {
+                        Say("route 1: ContainsVisibilityOverrides off the un-added capture = " + before.ContainsVisibilityOverrides);
+                    }
+                    catch (Exception error)
+                    {
+                        Say("route 1: ContainsVisibilityOverrides threw " + error.GetType().Name);
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("route 1: CaptureRuntimeOverrides threw " + error.GetType().Name + ": " + error.Message);
+                }
+
+                // Route 2, press the un-added capture
+                document.Models.ResetAllHidden();
+                Say("ResetAllHidden: IsHidden(root0) = " + document.Models.IsHidden(one));
+
+                if (before != null)
+                {
+                    try
+                    {
+                        watch.Restart();
+                        document.SavedViewpoints.CurrentSavedViewpoint = before;
+                        Say("route 2: CurrentSavedViewpoint = the un-added capture in " + watch.ElapsedMilliseconds
+                            + " ms, IsHidden(root0) = " + document.Models.IsHidden(one)
+                            + "   (true means pressing an un-added capture puts the hide back)");
+                    }
+                    catch (Exception error)
+                    {
+                        Say("route 2: the setter threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    // Route 2b, add it, press the tree copy, remove it
+                    try
+                    {
+                        int rootBefore = document.SavedViewpoints.Value.Count;
+                        before.DisplayName = "probe restore";
+                        document.SavedViewpoints.AddCopy(before);
+                        Say("route 2b: added, root count " + rootBefore + " -> " + document.SavedViewpoints.Value.Count);
+                        document.Models.ResetAllHidden();
+
+                        using (SavedViewpoint found = FindAtRoot(document, "probe restore"))
+                        {
+                            if (found != null)
+                            {
+                                document.SavedViewpoints.CurrentSavedViewpoint = found;
+                                Say("route 2b: pressed the tree copy, IsHidden(root0) = " + document.Models.IsHidden(one));
+                                bool removed = document.SavedViewpoints.Remove(found);
+                                Say("route 2b: Remove returned " + removed + ", root count now " + document.SavedViewpoints.Value.Count);
+                            }
+                            else
+                            {
+                                Say("route 2b: the added copy was not found by name");
+                            }
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Say("route 2b threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    before.Dispose();
+                }
+
+                // Route 3, the walk
+                document.Models.ResetAllHidden();
+                document.Models.SetHidden(one, true);
+                watch.Restart();
+                int walked = 0;
+
+                using (ModelItemCollection kept = new ModelItemCollection())
+                {
+                    foreach (ModelItem item in document.Models.RootItemDescendantsAndSelf)
+                    {
+                        walked++;
+
+                        if (item.IsHidden)
+                        {
+                            kept.Add(item);
+                        }
+                    }
+
+                    Say("route 3: walked " + walked + " items in " + watch.ElapsedMilliseconds + " ms, " + kept.Count + " hidden");
+                    document.Models.ResetAllHidden();
+                    Say("route 3: ResetAllHidden, IsHidden(root0) = " + document.Models.IsHidden(one));
+                    watch.Restart();
+                    document.Models.SetHidden(kept, true);
+                    Say("route 3: SetHidden(kept, true) in " + watch.ElapsedMilliseconds + " ms, IsHidden(root0) = " + document.Models.IsHidden(one)
+                        + "   (true means the walk puts the hide back)");
+                }
+
+                // Route 3b, a walk that keeps only the topmost hidden item of each branch
+                watch.Restart();
+                int topmost = 0;
+
+                using (ModelItemCollection tops = new ModelItemCollection())
+                {
+                    foreach (Model model in document.Models)
+                    {
+                        using (ModelItem root = model.RootItem)
+                        {
+                            topmost += CollectTopmostHidden(root, tops);
+                        }
+                    }
+
+                    Say("route 3b: topmost hidden items " + tops.Count + " in " + watch.ElapsedMilliseconds + " ms");
+                }
+
+                document.Models.ResetAllHidden();
+                Say("end: ResetAllHidden, IsHidden(root0) = " + document.Models.IsHidden(one));
+            }
+        }
+
+        // ---------- 5l, the camera of a clash viewpoint ----------
+
+        /// <summary>
+        /// Measures what DocumentClashTests.TestsViewpointForResult gives back, because
+        /// every viewpoint the viewpoints round wrote opened on the same empty top view
+        /// while the picture of the same clash, TestsImageForResult, framed it. For the
+        /// first results of the first tests that have any: the position that method
+        /// returns, the centre of the bounding box of each side's first item, and then
+        /// a camera BUILT from those boxes, position above and beside the centre, pointed
+        /// at it, applied through CurrentViewpoint.CopyFrom and read back.
+        /// </summary>
+        private void MeasureCamera(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            using (Viewpoint opened = document.CurrentViewpoint.CreateCopy())
+            {
+                Say("the view the file opened on: " + Describe(opened));
+            }
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests clashTests = document.GetClash().TestsData;
+            Say("tests " + clashTests.Tests.Count);
+            int shown = 0;
+
+            for (int t = 0; t < clashTests.Tests.Count && shown < 6; t++)
+            {
+                Autodesk.Navisworks.Api.Clash.ClashTest test = clashTests.Tests[t] as Autodesk.Navisworks.Api.Clash.ClashTest;
+
+                if (test == null || test.Children.Count == 0)
+                {
+                    continue;
+                }
+
+                for (int r = 0; r < test.Children.Count && shown < 6; r++)
+                {
+                    Autodesk.Navisworks.Api.Clash.ClashResult result = test.Children[r] as Autodesk.Navisworks.Api.Clash.ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    shown++;
+                    Say("--- " + test.DisplayName + "  " + result.DisplayName + "  status " + result.Status);
+
+                    try
+                    {
+                        using (Viewpoint framed = clashTests.TestsViewpointForResult(result))
+                        {
+                            Say("TestsViewpointForResult: " + (framed == null ? "null" : Describe(framed)));
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Say("TestsViewpointForResult threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    // Route a, what the builder did: a CreateCopy of the framed viewpoint
+                    // kept after the framed one is disposed, applied later through CopyFrom.
+                    try
+                    {
+                        Viewpoint copy;
+
+                        using (Viewpoint framed = clashTests.TestsViewpointForResult(result))
+                        {
+                            copy = framed.CreateCopy();
+                        }
+
+                        Say("   route a, the copy after the framed one is disposed: " + Describe(copy));
+                        document.CurrentViewpoint.CopyFrom(copy);
+                        Say("   route a, read back after CopyFrom(copy): " + Describe(document.CurrentViewpoint.Value));
+
+                        using (SavedViewpoint captured = document.SavedViewpoints.CaptureRuntimeOverrides())
+                        {
+                            Say("   route a, the capture's own Viewpoint: " + Describe(captured.Viewpoint));
+                        }
+
+                        copy.Dispose();
+                    }
+                    catch (Exception error)
+                    {
+                        Say("   route a threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    // Route b, the framed viewpoint itself kept, the result wrapper it came
+                    // from disposed first, applied through CopyFrom.
+                    try
+                    {
+                        Viewpoint framed = clashTests.TestsViewpointForResult(result);
+                        result.Dispose();
+                        Say("   route b, the framed one after its result is disposed: " + Describe(framed));
+                        document.CurrentViewpoint.CopyFrom(framed);
+                        Say("   route b, read back after CopyFrom(framed): " + Describe(document.CurrentViewpoint.Value));
+                        framed.Dispose();
+                        result = test.Children[r] as ClashResult;
+                    }
+                    catch (Exception error)
+                    {
+                        Say("   route b threw " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    BoundingBox3D box = null;
+
+                    foreach (ModelItemCollection side in new[] { result.Selection1, result.Selection2 })
+                    {
+                        using (side)
+                        {
+                            if (side.Count == 0)
+                            {
+                                Say("   a side with no item");
+                                continue;
+                            }
+
+                            using (ModelItem item = side[0])
+                            {
+                                BoundingBox3D b = item.BoundingBox();
+                                Say("   item " + item.DisplayName + "  box " + Describe(b));
+                                box = box == null ? b : box.Extend(b);
+                            }
+                        }
+                    }
+
+                    if (box == null || box.IsEmpty)
+                    {
+                        Say("   no box to build a camera from");
+                        continue;
+                    }
+
+                    Point3D centre = box.Center;
+                    double size = Math.Max(box.Size.X, Math.Max(box.Size.Y, box.Size.Z));
+                    double back = Math.Max(size, 0.5) * 2.5;
+
+                    using (Viewpoint built = document.CurrentViewpoint.CreateCopy())
+                    {
+                        built.Position = new Point3D(centre.X - back * 0.6, centre.Y - back * 0.6, centre.Z + back * 0.5);
+                        built.PointAt(centre);
+                        built.FocalDistance = back;
+                        Say("   built camera: " + Describe(built));
+                        document.CurrentViewpoint.CopyFrom(built);
+                    }
+
+                    using (Viewpoint now = document.CurrentViewpoint.CreateCopy())
+                    {
+                        Say("   read back after CopyFrom: " + Describe(now));
+                    }
+                }
+            }
+        }
+
+        // ---------- 5m, a saved viewpoint with BOTH a camera and the hidden state ----------
+
+        /// <summary>
+        /// 5j measured that new SavedViewpoint(Viewpoint) records the camera and no
+        /// overrides, and 5l measured that CaptureRuntimeOverrides records the overrides
+        /// and NO camera, its Viewpoint throwing Camera not set. The API doc of
+        /// DocumentSavedViewpoints.ReplaceFromCurrentView reads "Viewpoint, Redlines and
+        /// visibility are updated to those in the current View", so this measures that
+        /// route: a camera only viewpoint put into a folder, then replaced from the
+        /// current view while a model is hidden, then read back and pressed.
+        /// </summary>
+        private void MeasureRecord(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            View view = document.ActiveView;
+            Say("ActiveView in this host: " + (view == null ? "null" : "a View " + view.Width + "x" + view.Height));
+
+            using (ModelItemCollection one = new ModelItemCollection())
+            {
+                one.Add(document.Models[0].RootItem);
+                document.Models.ResetAllHidden();
+
+                // A camera somewhere definite, applied to the view and the document
+                using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+                {
+                    camera.Position = new Point3D(12.5, -34.25, 56.125);
+                    camera.PointAt(new Point3D(0, 0, 0));
+
+                    if (view != null)
+                    {
+                        try { view.CopyViewpointFrom(camera, ViewChange.JumpCut); Say("view.CopyViewpointFrom done"); }
+                        catch (Exception error) { Say("view.CopyViewpointFrom threw " + error.GetType().Name + ": " + error.Message); }
+                    }
+
+                    document.CurrentViewpoint.CopyFrom(camera);
+                    Say("camera applied: " + Describe(document.CurrentViewpoint.Value));
+                    document.Models.SetHidden(one, true);
+                    Say("root0 hidden: " + document.Models.IsHidden(one));
+
+                    // A folder, a camera only viewpoint in it, then the replace
+                    using (FolderItem folder = new FolderItem())
+                    {
+                        folder.DisplayName = "probe record folder";
+                        document.SavedViewpoints.AddCopy(folder);
+                    }
+
+                    GroupItem parent = FindFolderAtRoot(document, "probe record folder");
+                    Say("folder added: " + (parent != null));
+
+                    using (SavedViewpoint fresh = new SavedViewpoint(camera))
+                    {
+                        fresh.DisplayName = "probe record";
+                        document.SavedViewpoints.AddCopy(parent, fresh);
+                    }
+
+                    parent.Dispose();
+                    parent = FindFolderAtRoot(document, "probe record folder");
+
+                    using (SavedViewpoint added = FindUnder(parent, "probe record"))
+                    {
+                        Say("before replace: " + (added == null ? "NOT FOUND" : Flags(added)));
+
+                        if (added != null)
+                        {
+                            try
+                            {
+                                document.SavedViewpoints.ReplaceFromCurrentView(added);
+                                Say("ReplaceFromCurrentView done");
+                            }
+                            catch (Exception error)
+                            {
+                                Say("ReplaceFromCurrentView threw " + error.GetType().Name + ": " + error.Message);
+                            }
+                        }
+                    }
+
+                    parent.Dispose();
+                    parent = FindFolderAtRoot(document, "probe record folder");
+
+                    using (SavedViewpoint replaced = FindUnder(parent, "probe record"))
+                    {
+                        Say("after replace: " + (replaced == null ? "NOT FOUND" : Flags(replaced)));
+                    }
+
+                    // Then pressed from elsewhere with nothing hidden
+                    document.Models.ResetAllHidden();
+                    camera.Position = new Point3D(100, 100, 100);
+                    document.CurrentViewpoint.CopyFrom(camera);
+                    Say("moved away: root0 hidden " + document.Models.IsHidden(one) + ", " + Describe(document.CurrentViewpoint.Value));
+
+                    using (SavedViewpoint press = FindUnder(parent, "probe record"))
+                    {
+                        if (press != null)
+                        {
+                            document.SavedViewpoints.CurrentSavedViewpoint = press;
+                        }
+                    }
+
+                    Say("pressed: root0 hidden " + document.Models.IsHidden(one) + ", " + Describe(document.CurrentViewpoint.Value)
+                        + "   (hidden true and position 12.5, -34.25, 56.125 means the route records both)");
+                    parent.Dispose();
+                }
+
+                document.Models.ResetAllHidden();
+            }
+        }
+
+        // ---------- 5m, the COM route, a view with ApplyHideAttribs ----------
+
+        /// <summary>
+        /// The COM API's saved view carries a flag, InwOpView.ApplyHideAttribs, that the
+        /// .NET SavedViewpoint does not expose, and the .NET route that writes the camera
+        /// records no overrides. Measures: a COM view made with that flag on, its camera
+        /// set from a .NET Viewpoint through ComApiBridge, added to the COM SavedViews
+        /// while a model is hidden, then read back THROUGH THE .NET API, copied into a
+        /// folder with AddCopy, removed from the root, and pressed.
+        /// </summary>
+        private void MeasureComRoute(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            using (ModelItemCollection one = new ModelItemCollection())
+            {
+                one.Add(document.Models[0].RootItem);
+                document.Models.ResetAllHidden();
+
+                using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+                {
+                    camera.Position = new Point3D(12.5, -34.25, 56.125);
+                    camera.PointAt(new Point3D(0, 0, 0));
+                    document.CurrentViewpoint.CopyFrom(camera);
+                    document.Models.SetHidden(one, true);
+                    Say("camera applied and root0 hidden: " + document.Models.IsHidden(one));
+
+                    int rootBefore = document.SavedViewpoints.Value.Count;
+
+                    try
+                    {
+                        Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10 state = Autodesk.Navisworks.Api.ComApi.ComApiBridge.State;
+                        Autodesk.Navisworks.Api.Interop.ComApi.InwOpView view =
+                            (Autodesk.Navisworks.Api.Interop.ComApi.InwOpView)state.ObjectFactory(
+                                Autodesk.Navisworks.Api.Interop.ComApi.nwEObjectType.eObjectType_nwOpView, null, null);
+                        view.name = "probe com";
+                        view.ApplyHideAttribs = true;
+                        view.ApplyMaterialAttribs = false;
+                        view.anonview = Autodesk.Navisworks.Api.ComApi.ComApiBridge.ToInwOpAnonView(camera);
+                        state.SavedViews().Add(view);
+                        Say("COM view added, root count " + rootBefore + " -> " + document.SavedViewpoints.Value.Count);
+                    }
+                    catch (Exception error)
+                    {
+                        Say("COM route threw " + error.GetType().Name + ": " + error.Message);
+                        return;
+                    }
+
+                    using (SavedViewpoint found = FindAtRoot(document, "probe com"))
+                    {
+                        Say("read back through .NET at the root: " + (found == null ? "NOT FOUND" : Flags(found)));
+                    }
+
+                    // Into a folder by AddCopy, then the root one removed
+                    using (FolderItem folder = new FolderItem())
+                    {
+                        folder.DisplayName = "probe com folder";
+                        document.SavedViewpoints.AddCopy(folder);
+                    }
+
+                    GroupItem parent = FindFolderAtRoot(document, "probe com folder");
+
+                    using (SavedViewpoint found = FindAtRoot(document, "probe com"))
+                    {
+                        if (found != null && parent != null)
+                        {
+                            document.SavedViewpoints.AddCopy(parent, found);
+                            Say("copied into the folder, removing the root one: " + document.SavedViewpoints.Remove(found));
+                        }
+                    }
+
+                    parent.Dispose();
+                    parent = FindFolderAtRoot(document, "probe com folder");
+
+                    using (SavedViewpoint inFolder = FindUnder(parent, "probe com"))
+                    {
+                        Say("the folder copy: " + (inFolder == null ? "NOT FOUND" : Flags(inFolder)));
+                    }
+
+                    document.Models.ResetAllHidden();
+                    camera.Position = new Point3D(100, 100, 100);
+                    document.CurrentViewpoint.CopyFrom(camera);
+                    Say("moved away: root0 hidden " + document.Models.IsHidden(one) + ", " + Describe(document.CurrentViewpoint.Value));
+
+                    using (SavedViewpoint press = FindUnder(parent, "probe com"))
+                    {
+                        if (press != null)
+                        {
+                            document.SavedViewpoints.CurrentSavedViewpoint = press;
+                        }
+                    }
+
+                    Say("pressed the folder copy: root0 hidden " + document.Models.IsHidden(one) + ", " + Describe(document.CurrentViewpoint.Value)
+                        + "   (hidden true and position 12.5, -34.25, 56.125 means the route records both)");
+                    parent.Dispose();
+
+                    // Saved, cleared, reopened, pressed again
+                    document.Models.ResetAllHidden();
+                    string saved = Path.Combine(Path.GetDirectoryName(nwfCopy), "probe-com-saved.nwf");
+                    Say("TrySaveFile to " + saved + " = " + document.TrySaveFile(saved));
+                    document.Clear();
+
+                    if (!document.TryOpenFile(saved))
+                    {
+                        Say("UNKNOWN: the saved copy would not reopen");
+                        return;
+                    }
+                }
+            }
+
+            using (ModelItemCollection one = new ModelItemCollection())
+            {
+                one.Add(document.Models[0].RootItem);
+                GroupItem parent = FindFolderAtRoot(document, "probe com folder");
+
+                using (SavedViewpoint press = FindUnder(parent, "probe com"))
+                {
+                    Say("after reopen, the folder copy: " + (press == null ? "NOT FOUND" : Flags(press)));
+
+                    if (press != null)
+                    {
+                        document.SavedViewpoints.CurrentSavedViewpoint = press;
+                    }
+                }
+
+                Say("after reopen, pressed: root0 hidden " + document.Models.IsHidden(one) + ", " + Describe(document.CurrentViewpoint.Value));
+                parent.Dispose();
+                document.Models.ResetAllHidden();
+            }
+        }
+
+        // ---------- 5n, which model a clashing item lives in ----------
+
+        /// <summary>
+        /// Three runs read no home model for any clash through ClashResult.Item1.Model
+        /// and through Selection1[0].Model, while ClashHarvest fills the source file
+        /// column through Item1.Model on every run. Measures, for the first results of
+        /// the first tests that have any: what Item1.Model and its FileName read, what
+        /// HasModel reads, what the ancestors' Model read, and what the document's own
+        /// Models list its FileName as, so the two strings can be compared by eye.
+        /// </summary>
+        private void MeasureHome(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + nwfCopy);
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            for (int i = 0; i < document.Models.Count; i++)
+            {
+                using (Model model = document.Models[i])
+                {
+                    Say("document.Models[" + i + "].FileName = [" + model.FileName + "]  SourceFileName = [" + model.SourceFileName + "]");
+                }
+            }
+
+            DocumentClashTests clashTests = document.GetClash().TestsData;
+            int shown = 0;
+
+            for (int t = 0; t < clashTests.Tests.Count && shown < 4; t++)
+            {
+                ClashTest test = clashTests.Tests[t] as ClashTest;
+
+                if (test == null || test.Children.Count == 0)
+                {
+                    continue;
+                }
+
+                for (int r = 0; r < test.Children.Count && shown < 4; r++)
+                {
+                    ClashResult result = test.Children[r] as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    shown++;
+                    Say("--- " + test.DisplayName + "  " + result.DisplayName);
+
+                    foreach (string side in new[] { "Item1", "Item2" })
+                    {
+                        try
+                        {
+                            using (ModelItem item = side == "Item1" ? result.Item1 : result.Item2)
+                            {
+                                if (item == null)
+                                {
+                                    Say("   " + side + " is null");
+                                    continue;
+                                }
+
+                                string line = "   " + side + " [" + item.DisplayName + "] HasModel " + item.HasModel;
+
+                                using (Model model = item.Model)
+                                {
+                                    line += ", Model " + (model == null ? "null" : "[" + model.FileName + "]");
+                                }
+
+                                int depth = 0;
+                                string top = "none";
+
+                                foreach (ModelItem ancestor in item.AncestorsAndSelf)
+                                {
+                                    depth++;
+
+                                    if (ancestor.HasModel)
+                                    {
+                                        using (Model model = ancestor.Model)
+                                        {
+                                            top = model == null ? "null" : "[" + model.FileName + "] at depth " + depth;
+                                        }
+                                    }
+                                }
+
+                                Say(line + ", ancestors and self " + depth + ", the one with a model " + top);
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            Say("   " + side + " threw " + error.GetType().Name + ": " + error.Message);
+                        }
+                    }
+                }
+            }
+        }
+
+        private string Flags(SavedViewpoint v)
+        {
+            string flags;
+
+            try
+            {
+                flags = "ContainsVisibilityOverrides " + v.ContainsVisibilityOverrides;
+            }
+            catch (Exception error)
+            {
+                flags = "ContainsVisibilityOverrides threw " + error.GetType().Name;
+            }
+
+            try
+            {
+                using (Viewpoint recorded = v.Viewpoint)
+                {
+                    flags += ", camera " + Describe(recorded);
+                }
+            }
+            catch (Exception error)
+            {
+                flags += ", camera threw " + error.GetType().Name + ": " + error.Message;
+            }
+
+            return flags;
+        }
+
+        private static GroupItem FindFolderAtRoot(Document document, string name)
+        {
+            SavedItemCollection items = document.SavedViewpoints.Value;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                SavedItem item = items[i];
+                GroupItem group = item as GroupItem;
+
+                if (group != null && string.Equals(item.DisplayName, name, StringComparison.Ordinal))
+                {
+                    return group;
+                }
+
+                item.Dispose();
+            }
+
+            return null;
+        }
+
+        private static SavedViewpoint FindUnder(GroupItem parent, string name)
+        {
+            if (parent == null)
+            {
+                return null;
+            }
+
+            SavedItemCollection items = parent.Children;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                SavedItem item = items[i];
+                SavedViewpoint viewpoint = item as SavedViewpoint;
+
+                if (viewpoint != null && string.Equals(item.DisplayName, name, StringComparison.Ordinal))
+                {
+                    return viewpoint;
+                }
+
+                item.Dispose();
+            }
+
+            return null;
+        }
+
+        private static string Describe(Viewpoint v)
+        {
+            if (v == null)
+            {
+                return "null";
+            }
+
+            try
+            {
+                Point3D p = v.Position;
+                return "position (" + Round(p.X) + ", " + Round(p.Y) + ", " + Round(p.Z) + ")"
+                    + " projection " + v.Projection
+                    + " focal " + (v.HasFocalDistance ? Round(v.FocalDistance) : "none")
+                    + " heightField " + Round(v.HeightField);
+            }
+            catch (Exception error)
+            {
+                return "describe threw " + error.GetType().Name;
+            }
+        }
+
+        private static string Describe(BoundingBox3D b)
+        {
+            if (b == null || b.IsEmpty)
+            {
+                return "empty";
+            }
+
+            Point3D c = b.Center;
+            return "centre (" + Round(c.X) + ", " + Round(c.Y) + ", " + Round(c.Z) + ") size ("
+                + Round(b.Size.X) + ", " + Round(b.Size.Y) + ", " + Round(b.Size.Z) + ")";
+        }
+
+        private static string Round(double d)
+        {
+            return d.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>Adds the topmost hidden item of every branch and does not descend below it.</summary>
+        private static int CollectTopmostHidden(ModelItem item, ModelItemCollection into)
+        {
+            if (item.IsHidden)
+            {
+                into.Add(item);
+                return 1;
+            }
+
+            int count = 0;
+
+            foreach (ModelItem child in item.Children)
+            {
+                count += CollectTopmostHidden(child, into);
+            }
+
+            return count;
+        }
+
+        // ---------- 5i, the category walk ----------
+
+        private void WalkCategories(string[] parameters, int from)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Dictionary<string, int> categories = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            for (int i = from; i < parameters.Length; i++)
+            {
+                string path = parameters[i];
+                Say("opening " + path);
+
+                if (!document.TryOpenFile(path))
+                {
+                    Say("UNKNOWN: TryOpenFile returned false for " + path);
+                    continue;
+                }
+
+                int items = 0;
+                int withCategory = 0;
+
+                foreach (Model model in document.Models)
+                {
+                    ModelItem root = model.RootItem;
+
+                    if (root == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (ModelItem item in root.DescendantsAndSelf)
+                    {
+                        items++;
+                        string category = FirstProperty(item, CategoryNames);
+
+                        if (category.Length == 0)
+                        {
+                            continue;
+                        }
+
+                        withCategory++;
+                        categories[category] = categories.ContainsKey(category) ? categories[category] + 1 : 1;
+                    }
+                }
+
+                Say("walked " + items + " items, " + withCategory + " carrying a category, " + document.Models.Count + " models");
+            }
+
+            List<string> names = new List<string>(categories.Keys);
+            names.Sort(StringComparer.Ordinal);
+            Say("DISTINCT " + names.Count);
+
+            foreach (string name in names)
+            {
+                Say("CATEGORY\t" + name + "\t" + categories[name]);
+            }
+        }
+
+        /// <summary>The first property with one of those display names, read by kind, the way ClashHarvest reads one.</summary>
+        private static string FirstProperty(ModelItem item, string[] wanted)
+        {
+            PropertyCategoryCollection categories = item.PropertyCategories;
+
+            if (categories == null)
+            {
+                return string.Empty;
+            }
+
+            foreach (string name in wanted)
+            {
+                foreach (PropertyCategory category in categories)
+                {
+                    foreach (DataProperty property in category.Properties)
+                    {
+                        if (!string.Equals(property.DisplayName, name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+
+                        string text = Text(property.Value);
+
+                        if (text.Length > 0)
+                        {
+                            return text;
+                        }
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string Text(VariantData value)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
+            switch (value.DataType)
+            {
+                case VariantDataType.DisplayString:
+                    return value.ToDisplayString();
+                case VariantDataType.IdentifierString:
+                    return value.ToIdentifierString();
+                case VariantDataType.NamedConstant:
+                    using (NamedConstant named = value.ToNamedConstant())
+                    {
+                        return named == null ? string.Empty : (named.DisplayName ?? string.Empty);
+                    }
+                default:
+                    return string.Empty;
+            }
+        }
+    }
+}

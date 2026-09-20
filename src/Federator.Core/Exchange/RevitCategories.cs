@@ -15,13 +15,16 @@ namespace Federator.Core.Exchange
     /// project added a family in a category nobody had seen, and the check built on it
     /// would then report a perfectly good set as broken.
     ///
-    /// IT IS EMPTY UNTIL IT IS MEASURED, AND WHILE IT IS EMPTY THE CHECK REPORTS NOTHING.
-    /// The only way to fill it is to walk every item of a real federation and write out
-    /// the distinct values of its category property, which needs Navisworks on the
-    /// machine. That is docs\history\scan.md 5i, and the property probe does the same walk
-    /// as part of its own job so the two are measured on one run. A check with nothing to
-    /// compare against says so rather than calling every category in the client's file
-    /// unknown, which is the rule about saying UNKNOWN rather than filling a gap.
+    /// IT WAS EMPTY UNTIL IT WAS MEASURED, AND WHILE IT WAS EMPTY THE CHECK REPORTED
+    /// NOTHING. The only way to fill it is to walk every item of a real federation and
+    /// write out the distinct values of its category property, which needs Navisworks on
+    /// the machine. That walk was run on 2026-09-20 over the ten C02 federations,
+    /// docs\history\scan.md 5i, and the 374 values it found are the list, family names
+    /// and all, because that is what the tool reads as a category. A test proves the
+    /// list is exactly the probe's result. A check with nothing to compare against says
+    /// so rather than calling every category in the client's file unknown, which is the
+    /// rule about saying UNKNOWN rather than filling a gap, and that path stays for a
+    /// build whose list is emptied to re-measure.
     ///
     /// IT IS NOT THE PENETRATION RULE'S LISTS. Those are a handful of categories this tool
     /// has made a judgement about, a service or a solid. This is every category that

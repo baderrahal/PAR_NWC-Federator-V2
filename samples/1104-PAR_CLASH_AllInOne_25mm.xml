@@ -14192,12 +14192,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Floors" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Floors" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14207,12 +14207,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Stairs" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Stairs" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14222,12 +14222,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Ramps" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Ramps" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14237,12 +14237,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Roofs" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Roofs" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14252,12 +14252,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Ceilings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Ceilings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14267,12 +14267,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Columns" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Columns" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14282,12 +14282,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Walls" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Walls" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14297,12 +14297,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Windows" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Windows" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14312,12 +14312,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Curtain Panels" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Curtain Panels" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14327,12 +14327,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Curtain Mullions" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Curtain Mullions" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14342,12 +14342,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Doors" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Doors" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14357,12 +14357,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Casework" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Casework" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14372,12 +14372,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Furniture" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Furniture" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14387,12 +14387,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Parking" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Parking" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14402,12 +14402,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Railings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Railings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14417,12 +14417,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-AR-Site" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-AR-Site" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14432,12 +14432,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ST-Foundation" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ST-Foundation" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14447,12 +14447,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ST-Columns" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ST-Columns" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14462,12 +14462,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ST-Framing" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ST-Framing" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14477,12 +14477,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ST-Walls" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ST-Walls" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14492,12 +14492,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ST-Floors" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ST-Floors" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14507,12 +14507,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ST-Stair" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ST-Stair" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14522,12 +14522,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ME-Ducts&amp;Duct Fittings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ME-Ducts&amp;Duct Fittings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14537,12 +14537,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ME-Duct Accessory" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ME-Duct Accessory" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14552,12 +14552,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ME-Mechanical Equipment" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ME-Mechanical Equipment" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14567,12 +14567,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ME-Flex Ducts" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ME-Flex Ducts" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14582,12 +14582,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ME-Air Terminals" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ME-Air Terminals" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14597,12 +14597,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ME-Pipes&amp;Pipe Fittings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ME-Pipes&amp;Pipe Fittings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14612,12 +14612,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ME-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ME-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14627,12 +14627,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ME-Plumbing Fixtures" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ME-Plumbing Fixtures" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14642,12 +14642,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-ME-Flex Pipes" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-ME-Flex Pipes" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14657,12 +14657,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-FF-Mechanical Equipment" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-FF-Mechanical Equipment" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14672,12 +14672,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-FF-Pipes &amp; Pipe Fittings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-FF-Pipes &amp; Pipe Fittings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14687,12 +14687,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-FF-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-FF-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14702,12 +14702,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-FF-Pipe Insulations" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-FF-Pipe Insulations" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14717,12 +14717,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-FF-Plumbing Fixtures" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-FF-Plumbing Fixtures" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14732,12 +14732,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-FF-Sprinklers" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-FF-Sprinklers" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14747,12 +14747,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-PL-Mechanical Equipment" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-PL-Mechanical Equipment" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14762,12 +14762,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-PL-Pipes &amp; Pipe Fittings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-PL-Pipes &amp; Pipe Fittings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14777,12 +14777,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-PL-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-PL-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14792,12 +14792,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-PL-Pipe Insulations" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-PL-Pipe Insulations" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14807,12 +14807,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-PL-Plumbing Fixtures" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-PL-Plumbing Fixtures" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14822,12 +14822,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-DR-Mechanical Equipment" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-DR-Mechanical Equipment" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -14837,12 +14837,12 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Accessories-vs-BLD-DR-Pipes &amp; Pipe Fittings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DRPipe Accessories-vs-BLD-DR-Pipes &amp; Pipe Fittings" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </left>
         <right>
@@ -15512,7 +15512,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Pipe Insulations-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DR-Pipe Insulations-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -15522,7 +15522,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -16187,7 +16187,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-DR-Plumbing Fixtures-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -16197,7 +16197,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -16877,7 +16877,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Cable Tray&amp;Cable Tray Fittings-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Cable Tray&amp;Cable Tray Fittings-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -16887,7 +16887,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -17582,7 +17582,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Electrical Equipment-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Electrical Equipment-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -17592,7 +17592,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -18302,7 +18302,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Electrical Fixtures-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -18312,7 +18312,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -19037,7 +19037,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Conduits &amp; Conduit Fittings-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Conduits &amp; Conduit Fittings-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -19047,7 +19047,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -19787,7 +19787,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Devices-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Devices-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -19797,7 +19797,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -20552,7 +20552,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Lighting Fixtures-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Lighting Fixtures-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -20562,7 +20562,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -21332,7 +21332,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Lighting Devices-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Lighting Devices-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -21342,7 +21342,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -22127,7 +22127,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Fire Alarm Devices-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Fire Alarm Devices-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -22137,7 +22137,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -22937,7 +22937,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Telecom Equipment-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Telecom Equipment-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -22947,7 +22947,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -23762,7 +23762,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Telecom Fixtures-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -23772,7 +23772,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -24602,7 +24602,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-Security Devices-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-Security Devices-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -24612,7 +24612,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -25457,7 +25457,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Communication Devices-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Communication Devices-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -25467,7 +25467,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -26327,7 +26327,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Telephone Devices-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Telephone Devices-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -26337,7 +26337,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -27212,7 +27212,7 @@
         </right>
         <rules/>
       </clashtest>
-      <clashtest name="BLD-EL-Data Devices-vs-BLD-DR-Pipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
+      <clashtest name="BLD-EL-Data Devices-vs-BLD-DRPipe Accessories" test_type="hard_conservative" status="new" tolerance="0.0820209974" merge_composites="1">
         <linkage mode="none"/>
         <tolerances rel_touch="1" rel_touch_tol="0.0000010000" abs_touch_tol="0.0000010000"/>
         <left>
@@ -27222,7 +27222,7 @@
         </left>
         <right>
           <clashselection selfintersect="0" primtypes="1">
-            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories</locator>
+            <locator>lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DRPipe Accessories</locator>
           </clashselection>
         </right>
         <rules/>
@@ -28658,7 +28658,7 @@
               <locator>/</locator>
             </findspec>
           </selectionset>
-          <selectionset name="BLD-DR-Pipe Accessories" guid="0ace64a1-d61a-4936-bbe0-e52002d93535">
+          <selectionset name="BLD-DRPipe Accessories" guid="0ace64a1-d61a-4936-bbe0-e52002d93535">
             <findspec mode="all" disjoint="0">
               <conditions>
                 <condition test="equals" flags="0">

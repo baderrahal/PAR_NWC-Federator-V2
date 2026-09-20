@@ -64,10 +64,11 @@ namespace Federator.Addin.Engine
         public bool NwdPublishReportedSuccess { get; set; }
 
         /// <summary>
-        /// Whether this run ASKED for viewpoints, F52. False while
-        /// SavedViewpoints.CanBuild is false, because a step this tool cannot do is not a
-        /// step that failed, and reporting every group FAILED over a feature that was never
-        /// attempted is the fault that once called a clean 22 group run failed.
+        /// Whether this run ASKED for viewpoints, F52. False only when the group built no
+        /// report to plan them from, because a step this tool did not attempt is not a step
+        /// that failed, and reporting every group FAILED over a feature that was never
+        /// attempted is the fault that once called a clean 22 group run failed. The writing
+        /// half is built since the viewpoints round on 2026-09-19.
         /// </summary>
         public bool ViewpointsRequested { get; set; }
 

@@ -3393,6 +3393,9 @@ is still UNKNOWN.
 
 ## 5i. Which category values are real Revit categories, asked 2026-09-19, NOT MEASURED
 
+MEASURED on 2026-09-20 in the viewpoints round. The measurement and what it decided are
+under 5i, measured, further down, after 5m. What follows here is what was asked.
+
 THIS SECTION HOLDS NO MEASUREMENT. It is the question and how to answer it.
 
 WHY IT IS ASKED. F84 warns about a selection set asking for a category value that is not
@@ -3409,3 +3412,273 @@ it is a list read off the client's models and it will change when their models d
 UNTIL THEN the health check has nothing to compare against and that half of F84 reports
 nothing rather than guessing. The other two halves, identical condition pairs and a set
 name breaking its siblings' pattern, need no measurement and are built.
+
+## 5j. Does a saved viewpoint record the hidden state it was saved with, MEASURED 2026-09-19
+
+The one thing 5d could not read off the DLL, measured on a run. `tools\probes\ViewpointProbe`
+is a plugin assembly with no Core reference, loaded into a Navisworks started through
+`Autodesk.Navisworks.Api.Automation` with `AddPluginAssembly` and run with
+`ExecuteAddInPlugin("ViewpointProbe.PARS", ...)`, on DESKTOP-5VL7LTJ against a COPY of
+`1104-PAR-1A0215-ZZZ-BM-MOD-000001.nwf`, three models, under
+`C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\probe`. The whole result file is
+what follows, cut only where a line repeats.
+
+```
+models 3, saved viewpoints at the root 4
+after SetHidden: IsHidden(two) = True, root0.IsHidden = True, root1.IsHidden = True
+A  new SavedViewpoint(Viewpoint) made, adding it
+probe A camera alone: ContainsVisibilityOverrides = False, ContainsAppearanceOverrides = False
+   GetVisibilityOverrides() returned null
+B  CaptureRuntimeOverrides() returned a SavedViewpoint, adding it
+probe B runtime overrides: ContainsVisibilityOverrides = True, ContainsAppearanceOverrides = True
+   GetVisibilityOverrides() returned Autodesk.Navisworks.Api.VisibilityOverrides
+ResetAllHidden: IsHidden(two) = False
+press probe A camera alone: IsHidden(two) = False, root0.IsHidden = False, root1.IsHidden = False
+press probe B runtime overrides: IsHidden(two) = True, root0.IsHidden = True, root1.IsHidden = True
+TrySaveFile = True, size on disk 66233 bytes
+after Clear: models 0
+reopened: models 3, saved viewpoints at the root 6
+after reopen, before pressing anything: IsHidden(two) = False
+probe A camera alone after reopen: ContainsVisibilityOverrides = False
+press probe A camera alone: IsHidden(two) = False
+probe B runtime overrides after reopen: ContainsVisibilityOverrides = True
+press probe B runtime overrides: IsHidden(two) = True, root0.IsHidden = True, root1.IsHidden = True
+```
+
+**THE ANSWER IS YES, BY ONE OF THE TWO WAYS AND NOT THE OTHER.**
+
+- `new SavedViewpoint(Viewpoint)` records the CAMERA ALONE. `ContainsVisibilityOverrides`
+  reads false, `GetVisibilityOverrides()` returns null, and pressing it from a clean view
+  hides nothing. A viewpoint written this way opens on the whole federation
+- `DocumentSavedViewpoints.CaptureRuntimeOverrides()` records the current view WITH what
+  is hidden. `ContainsVisibilityOverrides` reads true, the overrides carry a
+  `ModelItemCollection` called `Hidden`, and pressing it from a clean view hides the two
+  models again. It reads true and presses the same way after the NWF is saved, cleared
+  and reopened, so the record is in the file and not in the session
+- `ContainsAppearanceOverrides` reads true on the captured one too, so it carries the
+  colour and transparency state of the moment as well. Nothing here set any, so what it
+  carries is whatever the document had, and a writer that wants a clean viewpoint sets
+  the view up before capturing rather than after
+
+Two things read on the way. `ContainsVisibilityOverrides` THROWS `NullReferenceException`
+inside its getter on a `SavedViewpoint` that is not yet in a document, so it is read off
+the copy in the tree after `AddCopy` and never off the object handed to it. And the probe
+copy went from 78,341 bytes to 66,233 after the API saved it with two more viewpoints in
+it, so the size of a file this API writes is not the size the last save left, and every
+size in the round is read off the disk rather than reasoned about.
+
+WHAT THIS DECIDES. The writing half of F85 is built, capturing each clash viewpoint with
+`CaptureRuntimeOverrides` after the other disciplines are hidden and the camera is set
+from `TestsViewpointForResult`, and `SavedViewpoints.CanBuild` goes true once the run
+shows the tree. The unknown named at 5d, in `SavedViewpoints.cs`, in `ViewpointBuilder.cs`
+and in `03_bader_next.md` step 375 is closed by this section.
+
+
+## 5k. How the hidden state the document holds is read and put back, MEASURED 2026-09-19
+
+The review of the viewpoints round found that `ViewpointBuilder` put the hidden state back
+with `DocumentModels.ResetAllHiddenToModelState`, whose XML doc reads "Resets the hidden
+status to that defined in the constituent models", which is the NWC files' state and not
+what the NWF held, and that nothing read the state before the writer hid anything. The
+probe in `tools\probes\ViewpointProbe`, mode `restore`, measured four routes on a copy of
+the 1A02MM NWF, four models, through the automation host, the same day. The result file
+is `tools\probes\ViewpointProbe\5k-result-20260919.txt`.
+
+```
+SetHidden(root0): IsHidden(root0) = True
+ResetAllHiddenToModelState: IsHidden(root0) = False   (false means the document level hide is LOST by that call)
+GetAllHiddenAtModelState: 0 item(s) in 0 ms
+route 1: CaptureRuntimeOverrides in 0 ms, returned a SavedViewpoint
+route 1: GetVisibilityOverrides off the un-added capture returned an object, Hidden.Count = 1
+route 1: ContainsVisibilityOverrides off the un-added capture = True
+route 2: the setter threw ArgumentException: Argument 'item' is not in SavedViewpoints
+route 2b: added, root count 7 -> 8
+route 2b: pressed the tree copy, IsHidden(root0) = True
+route 2b: Remove returned True, root count now 7
+route 3: walked 2606 items in 7 ms, 1 hidden
+route 3: SetHidden(kept, true) in 0 ms, IsHidden(root0) = True   (true means the walk puts the hide back)
+```
+
+**WHAT IT SAYS.**
+
+- `ResetAllHiddenToModelState` LOSES a hide the document holds. The review was right and
+  the builder no longer calls it anywhere
+- a capture from `CaptureRuntimeOverrides` can be READ WITHOUT being put into the tree:
+  `GetVisibilityOverrides().Hidden` is a `ModelItemCollection` of exactly the hidden
+  items, and `ContainsVisibilityOverrides` reads true on it. 5j said that flag threw
+  `NullReferenceException` on a viewpoint not yet in a document, and it did, on the
+  camera-alone `new SavedViewpoint(Viewpoint)` which carries no overrides object. On a
+  capture it reads
+- a capture NOT in the tree cannot be pressed: `CurrentSavedViewpoint` refuses it with
+  `ArgumentException`. Added to the tree it presses and `Remove(SavedItem)` takes it out
+  again, so that route exists, and it is not the one used
+- `ResetAllHidden` then `SetHidden(collection, true)` puts the same items back, whether
+  the collection came off a capture or off a walk, and `IsHidden(collection)` reads true
+  after, which is the check the builder writes to the log
+- the walk of every item reading `IsHidden` cost 7 ms over 2,606 items on this file, so
+  it is affordable, and it is not needed
+
+**WHAT THIS DECIDES.** `SavedViewpoints.SnapshotHidden` captures once, before the first
+viewpoint changes anything, and holds the capture and its `Hidden` collection without
+adding either to the tree. `SavedViewpoints.RestoreHiddenState(document, snapshot)` is
+`ResetAllHidden` then `SetHidden(snapshot.Hidden, true)` and returns `IsHidden` on that
+collection, which the VIEWS block says. A group that hid nothing takes no snapshot and
+restores nothing. The line in `SavedViewpoints.cs` that listed `ResetAllHiddenToModelState`
+among the measured members lists it no longer.
+
+## 5l. What a runtime capture records and what the clash viewpoint call returns, MEASURED 2026-09-19 and 2026-09-20
+
+The first viewpoints run wrote 975 viewpoints into ten NWFs and the tree looked complete.
+Pressed by hand, every one of them opened on the same empty top view, at grid A(-10)-2(14)
+on level LGF, with the right disciplines hidden. The probe in `tools\probes\ViewpointProbe`,
+mode `camera`, measured the pieces on a copy of the 1A02MM NWF. The result file is
+`tools\probes\ViewpointProbe\5l-result-20260920.txt`, and the failing run is
+`steps\logs\run-20260920-082641.log`.
+
+- `DocumentClashTests.TestsViewpointForResult(result)` returns a DIFFERENT camera per
+  clash, positioned beside the clash items' bounding boxes, focal distance 20 to 60 units,
+  so the camera the writer asked for was right
+- `Viewpoint.CreateCopy()` of it survives the disposal of the original, and
+  `DocumentCurrentViewpoint.CopyFrom(copy)` reads back the same position, so the copy
+  route the writer used was right too
+- `DocumentSavedViewpoints.CaptureRuntimeOverrides()` returns a SavedViewpoint whose
+  `Viewpoint.Position` THROWS `InvalidOperationException: Camera not set`, in the
+  automation host and in the window alike. It records the overrides and NO camera. A
+  viewpoint with no camera opens on a default view, which is the empty top view every
+  pressed viewpoint showed. The API doc says only "Creates a view that captures current
+  runtime overrides", and it means exactly that
+- the second run, with the camera read back off every written viewpoint, failed every
+  one of the 975 planned with that exception and created none, which is the read back
+  doing its job. The seven groups with clashes came out FAILED and the three without
+  came out DONE, the second NWF save, the workbook, the NWD and the confirm still ran in
+  every group, and the run took 8 minutes 10 seconds, 490.483s, against 5 minutes 9
+  seconds the first time, because the failure text was written 667 times
+
+So the writer's two halves each recorded half: `new SavedViewpoint(Viewpoint)` the camera
+alone, 5j, and `CaptureRuntimeOverrides` the hidden state alone. `SavedViewpoint.Viewpoint`
+has no setter, and nothing on `SavedViewpoint` sets overrides.
+
+## 5m. A saved viewpoint with BOTH the camera and the hidden state, MEASURED 2026-09-20
+
+Two routes were measured on a copy of the 1A02MM NWF, modes `record` and `com` of the
+probe. The result files are `tools\probes\ViewpointProbe\5m-replace-result-20260920.txt`
+and `5m-com-result-20260920.txt`.
+
+**`DocumentSavedViewpoints.ReplaceFromCurrentView`, whose doc reads "Viewpoint, Redlines
+and visibility are updated to those in the current View", does NOT record the hidden
+state.** A camera only viewpoint put in a folder, then replaced while a model root was
+hidden, read back with `ContainsVisibilityOverrides` false and pressed without hiding
+anything. Whether the window's own option, Save Hide/Required Attributes, would change
+that is UNKNOWN and beside the point: 27 machines cannot depend on an option.
+
+**The COM API's saved view records both.** `Autodesk.Navisworks.ComApi.dll` and
+`Autodesk.Navisworks.Interop.ComApi.dll`, both in the install folder:
+
+```
+InwOpState10 state = ComApiBridge.State;
+InwOpView view = (InwOpView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpView, null, null);
+view.name = name;
+view.ApplyHideAttribs = true;
+view.ApplyMaterialAttribs = false;
+view.anonview = ComApiBridge.ToInwOpAnonView(camera);
+state.SavedViews().Add(view);
+```
+
+```
+camera applied and root0 hidden: True
+COM view added, root count 7 -> 8
+read back through .NET at the root: ContainsVisibilityOverrides True, camera position (12.5, -34.25, 56.125)
+copied into the folder, removing the root one: True
+the folder copy: ContainsVisibilityOverrides True, camera position (12.5, -34.25, 56.125)
+moved away: root0 hidden False, position (100, 100, 100)
+pressed the folder copy: root0 hidden True, position (12.5, -34.25, 56.125)
+TrySaveFile = True
+after reopen, the folder copy: ContainsVisibilityOverrides True, camera position (12.5, -34.25, 56.125)
+after reopen, pressed: root0 hidden True, position (12.5, -34.25, 56.125)
+```
+
+- the view is added at the ROOT of the tree. `AddCopy(folder, it)` puts a copy in the
+  folder that keeps both the camera and the overrides, and `Remove(it)` takes the root
+  one out, so the tree ends with one viewpoint where the plan put it
+- read back through the .NET API it is an ordinary `SavedViewpoint`, and pressing it
+  through `CurrentSavedViewpoint` hides what was hidden and moves the camera to what
+  was given, before and after a save, a clear and a reopen
+- `heightField` read 0.953 after pressing where 0.785 was given, so the field of view is
+  the window's and not the recorded one. The position is exact
+
+**WHAT THIS DECIDES.** `SavedViewpoints.Record` writes every clash viewpoint through the
+COM view, the add-in references the two COM DLLs the same way it references the other
+two, copy local false, and `SavedViewpoints.ReadBack` reads three things off every
+written viewpoint before it is counted as created: that it is there, that its camera sits
+within `ViewpointSettings.CameraReadBackTolerance` of the clash camera, and that it
+carries visibility overrides where it was meant to hide a discipline. The window's view is
+never touched, so nothing of it has to be put back. `CaptureRuntimeOverrides` stays for
+one thing, reading the hidden state before the writer hides anything, 5k.
+
+## 5i, measured. Every category value the C02 models carry, MEASURED 2026-09-20
+
+The probe in `tools\probes\ViewpointProbe`, mode `walk`, opened the ten NWFs of the C02
+folder one after another through the automation host and read, off every item of every
+model, the first property whose display name is Category, Revit Category or Element
+Category, the way the add-in's harvest and the penetration rule read one. The result
+file is `tools\probes\ViewpointProbe\5i-result-20260920.txt`.
+
+```
+walked 482 items, 144 carrying a category, 2 models        1000BS
+walked 31127 items, 9273 carrying a category, 3 models     1A0215
+walked 828 items, 333 carrying a category, 6 models        1A02BS
+walked 2606 items, 909 carrying a category, 4 models       1A02MM
+walked 4505 items, 2196 carrying a category, 1 models      1A02MS
+walked 568 items, 240 carrying a category, 4 models        1A02WE
+walked 2860 items, 1041 carrying a category, 8 models      1A02WL
+walked 2361 items, 898 carrying a category, 4 models       1A02WM
+walked 716 items, 277 carrying a category, 4 models        1A02WN
+walked 1418 items, 555 carrying a category, 4 models       1A02WO
+DISTINCT 374
+```
+
+47,471 items across 40 models in 21 seconds, 374 distinct values. Around sixty of them
+are Revit categories as a person would name them, Walls with 457 items, Floors with
+7,035, Structural Framing with 1,745, Lighting Fixtures with 424, Cable Trays with 44,
+Ducts with 36. The rest are family and type names, PAR-AR-DOR-SW-SG-MTL-EXT-900 and
+three hundred like it, plant species such as Acacia farnesiana, and the names of linked
+DWG files, each carried by one or two items, because on these NWCs a node above the
+geometry carries a property called Category whose value is its own name.
+
+**WHAT THIS DECIDES.** The list goes into `src\Federator.Core\Exchange\revit-categories.txt`
+whole, family names and all, because a list that left them out would not be what was
+measured and the tool reads them as a category. `RevitCategories.Measured` is true, the
+HEALTH block reads `Revit categories known: 374`, and `SetWarnings.FindCategoriesNobodyHas`
+runs. It is one folder of the project, so a category another building carries and these
+do not reads as one nobody has until the walk is run over that building too. A test
+proves the resource is exactly the probe result's CATEGORY lines.
+
+## 5n. Which model a clashing item lives in, MEASURED 2026-09-20
+
+Three runs of the viewpoint writer read no home model for any clash. Two shapes were
+tried, `ClashResult.Selection1[0].Model` behind a `HasModel` check and `ClashResult.Item1.Model`
+without one, and both read null on every clash. The probe, mode `home`, measured the
+first results of the 1A02MM copy. The result file is
+`tools\probes\ViewpointProbe\5n-result-20260920.txt`.
+
+```
+Item1 [Thorn Steel Cables] HasModel False, Model null, ancestors and self 9, the one with a model [...\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc] at depth 9
+Item2 [Concrete, Cast-in-Place Fcu35 Mpa] HasModel False, Model null, ancestors and self 6, the one with a model [...\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] at depth 6
+```
+
+- on a clash leaf `HasModel` reads false and `Model` reads null. The API doc's "does
+  this item refer to a model" means IS this item a model's root
+- the one item of `AncestorsAndSelf` that carries the model is the TOPMOST, the file
+  node, six to nine levels above the geometry, and its `Model.FileName` is the same
+  string `document.Models[i].FileName` reads, the NWC path
+- `ClashHarvest.SourceFileOf` reads `item.Model` off the clash leaf and so, on the
+  evidence here, fills the source file column with nothing. That column is not this
+  round's and is left for Bader, question 55
+
+**WHAT THIS DECIDES.** `ViewpointBuilder.AddHome` walks `AncestorsAndSelf` to the item
+that has a model and reads the file name off that, releasing every wrapper on the way.
+A viewpoint of a pair whose code no model carries, DR vs ST, drainage against structure,
+keeps the ME model the drainage pipe lives in as well as the structural one, which is what
+the log line promised on three runs and only the sixth delivered, after the fifth threw on
+every clash enumerating AncestorsAndSelf while disposing each item, and the writer went
+back to the Parent walk the size reader uses.

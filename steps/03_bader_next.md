@@ -416,6 +416,9 @@ probe was run on 2026-09-19 and the API is measured in `docs\history\scan.md` 5d
 on the WRITING half of F52 being built against what was measured, which is a decision and
 not a measurement, so `SavedViewpoints.CanBuild` is still false. Do the first on the next
 ordinary run and the second once that half exists and the add-in has been rebuilt.
+SINCE THE VIEWPOINTS ROUND ON 2026-09-19 the second half exists, `SavedViewpoints.CanBuild` is
+true and the `not attempted` line of step 237 is gone. Steps 374 and 375 carry what was done
+and the viewpoints round entry in `steps\log.md` carries the run.
 
 235. Look for, on any run since F52: a `VIEWS` line per group reading `N viewpoints planned:` and then the paths. The disciplines come SORTED, so a group of AR, ME and EL reads AR, EL, ME and plans FIVE and not three, `AR/AR only, EL/EL only, EL/Over 150mm/EL over 150mm, ME/ME only, ME/Over 150mm/ME over 150mm`, because F53 gives Mechanical and Electrical a sub group for their large items and Architecture has no pipe in it
 236. Look for: a group with only one discipline STILL gets a line, never none. One AR group plans one viewpoint and one ME group plans two, its own and its large items sub group. A single discipline group planning NONE is the fault to watch for, and the log line is the evidence
@@ -762,10 +765,12 @@ without reading the brief again.**
      measured `EnsureFolders` shape, re-resolving from a FRESH `RootItem` after every
      `AddCopy`. Open the step as `RunSteps.Views`, which is new. LEAVE `CanBuild` FALSE
      until step 375 answers
+     DONE on 2026-09-19 in the viewpoints round, commit 11d7ec2: Build takes the clash plan, the old per discipline plan is gone, the folder walk is EnsureFolders re-resolved from a fresh RootItem, and the VIEWS step is opened around it.
 375. F85. On a run, save one viewpoint by hand while some items are hidden, then read
      `SavedViewpoint.ContainsVisibilityOverrides` on it and press it again from a clean
      view. That answers whether a viewpoint records the hiding, which is the last thing
      `CanBuild` waits on, and the answer goes in `docs\history\scan.md` 5d
+     DONE on 2026-09-19 in the viewpoints round by tools\probes\ViewpointProbe, written into scan.md 5j and not 5d: a viewpoint captured with CaptureRuntimeOverrides records the hiding and brings it back after a save and a reopen, and CanBuild is true.
 376. F80. Two lines in the window changed already: `log.RunStarted(jobs.Count)` and
      `log.RunFinished()` in place of the two `log.Line` calls that wrote the same
      sentences. Read them once and check the log reads `RUN      started, 7 groups` and
@@ -784,3 +789,40 @@ without reading the brief again.**
      CHANGED` around APPEND, `TOLERANCE`, `CLASH 1830 in the file`, `PRIORITY` if a file
      was picked, `REVIEWED rule B`, `VIEWS`, `SETS ACROSS THE RUN`, and a RESULT block
      carrying `run time`, `waiting for the person` and both file sizes
+
+## Proof of the viewpoints round, F85 written, 2026-09-20
+
+Six runs of ten groups were driven from the session on this machine against copies of the
+C02 NWF folder, the last two clean, and every number is in the round's entry in
+`steps\log.md`. What is left is the look a person gives it and the two folders nobody but
+Bader may touch.
+
+381. Pull `round-viewpoints` and read the round entry at the top of `steps\log.md`, the list
+     of every program it started, every file it wrote outside the repo and the two times
+     Navisworks had to be stopped rather than closed
+382. Open `C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\NWF6\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`
+     in Navisworks. It is a copy of the 1A02MM NWF after the sixth run, in the temp folder,
+     so it can be deleted after
+383. Look for, in Saved Viewpoints: the four folders the file already had, then `A`, `B` and
+     `C`, and under `A` the pair folders `AR vs ST`, `ST vs ST`, `AR vs DR`, `DR vs ST`,
+     `AR vs EL`, `EL vs ST` and `ST vs UNKNOWN`
+384. Press one viewpoint under `A`, `AR vs EL`. Look for: the view jumps to the clash, framed
+     the way its picture in the report frames it, and in the Selection Tree the ME and ST
+     models grey out while AR and EL stay
+385. Press one under `A`, `DR vs ST`, drainage against structure. Look for: the ME model
+     stays shown as well as ST, because the drainage pipe lives in it, and only AR and EL
+     grey out. Clash 2 of the framing test opens on grey, the camera inside a member,
+     which is question 57
+386. Beside his NWCs in `C:\00-NM\Federation Task\C02 + 04\C02\NWC` sit four files the
+     WIRING round's probe button wrote on 2026-09-19, `1104-PAR-1A02WO-ZZZ-AR-MOD-000001-properties.csv`
+     and its EL, ME and ST siblings. This round wrote nothing there and deleted nothing.
+     They are Bader's to delete
+387. When ready, run once on the real folders with the same boxes: 25 mm, by design on,
+     penetrations on, the priority file. Look for, per group with clashes:
+     `VIEWS    read back on N created viewpoint(s)`, `VIEWS    the model each clash item
+     lives in was read for N of N`, and `hidden state put back`, then a `VIEWS` step of a
+     few seconds in the timing block and `Nothing failed`
+388. Look for, at the run tail: `Revit categories known: 374` and `Sets asking for a
+     category no model carries: 14`, which is question 56, and the
+     `WORKBOOK 18,300 test blocks` line, which is question 54
+389. Answer questions 54, 55 and 56 in `02_questions.md`

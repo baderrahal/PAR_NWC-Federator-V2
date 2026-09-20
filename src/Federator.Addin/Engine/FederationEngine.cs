@@ -11,6 +11,7 @@ using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Findings;
+using Federator.Core.Naming;
 using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
@@ -166,6 +167,11 @@ namespace Federator.Addin.Engine
 
         public int ToleranceUnknown { get; private set; }
 
+        /// <summary>Every test block across the run, and how many of them ran, Q54, read off the report rows.</summary>
+        public int ReportBlocks { get; private set; }
+
+        public int ReportRan { get; private set; }
+
         /// <summary>Counts one group's rows into the four, F76. Read, never worked out.</summary>
         private void CountToleranceOrigins(ClashReport report)
         {
@@ -174,6 +180,8 @@ namespace Federator.Addin.Engine
                 return;
             }
 
+            ReportBlocks += report.Tests.Count;
+            ReportRan += report.RanCount;
             foreach (TestReport test in report.Tests)
             {
                 switch (test.ToleranceFrom)
@@ -2597,48 +2605,101 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// One folder per discipline with one viewpoint in each, F52. Returns whether
-        /// anything new went into the document, which is what asks for the second NWF save.
+        /// One saved viewpoint per clash, three folders deep, F85, made after the clash
+        /// step and before the NWF is saved again so they are inside the file the NWD is
+        /// published from. The plan is Federator.Core.Views.ClashViewpointPlan, the
+        /// writing is ViewpointBuilder, and the step is timed like every other one.
+        /// Returns whether anything went into the document, which is what asks for the
+        /// second NWF save.
         ///
-        /// WHILE THE API IS UNMEASURED this plans the viewpoints, says in the log what it
-        /// would have made, and attempts nothing. SavedViewpoints.CanBuild is the one
-        /// switch, and it is false until tools\probes\probe-viewpoints.ps1 has been run.
-        /// The group is told the viewpoints were NOT REQUESTED, because a step this tool
-        /// cannot do is not a step that failed, and reporting every group FAILED over a
-        /// feature that was never attempted is the fault that once called a clean 22 group
-        /// run failed over a missing NWD nobody had asked for.
+        /// SavedViewpoints.CanBuild is the one switch, true since the viewpoints round.
         /// </summary>
         private bool BuildViewpoints(Document document, FederationJob job, JobOutcome outcome)
         {
-            ViewpointSettings views = new ViewpointSettings();
-            IList<PlannedViewpoint> planned = ViewpointPlan.For(job.Disciplines, views);
-
-            log.Line("VIEWS    " + ViewpointPlan.Describe(planned));
-
-            if (planned.Count == 0)
+            if (outcome.Report == null)
             {
-                return false;
-            }
-
-            if (!SavedViewpoints.CanBuild)
-            {
-                log.Line(SavedViewpoints.WhyNotYet());
+                log.Line("VIEWS    no report was built for this group, so there is nothing to plan a viewpoint from");
                 outcome.ViewpointsRequested = false;
                 return false;
             }
 
             outcome.ViewpointsRequested = true;
 
-            // BUILT and not views. The settings above are already called views, and a
-            // second local of that name in the same scope is CS0128, which is why the
-            // add-in did not build between F52 and F58.
-            ViewpointBuildOutcome built = new ViewpointBuilder(Tick, log, views.Sizes)
-                .Build(document, planned);
+            ViewpointSettings views = new ViewpointSettings();
+            views.Sizes = reports.Sizes;
 
-            log.Block("VIEWS", built.Lines());
+            ViewpointBuilder builder = new ViewpointBuilder(Tick, log, reports.Penetrations, reports.Sizes, views);
+            ViewpointBuildOutcome built = null;
+
+            try
+            {
+                InStep(
+                    RunSteps.Views,
+                    () => built = builder.BuildForGroup(document, outcome.Report, ThePriorities().Picked, ModelDisciplines(document)),
+                    () => built == null ? "nothing" : built.Summary());
+            }
+            catch (Exception error)
+            {
+                // Caught here like SETS and CLASH catch theirs, so a throw out of the
+                // viewpoints cannot skip the second NWF save, the workbook, the NWD and
+                // the confirm that sit after this step in FinishTheGroup. The builder
+                // catches per viewpoint and per test, so what reaches here threw before
+                // anything was written, which is why the answer is that nothing went in.
+                outcome.AddError("putting the viewpoints in threw " + error.GetType().Name + ": " + error.Message);
+                log.Failure(
+                    "putting the viewpoints into the NWF for " + job.Building,
+                    error,
+                    "kept going, the NWF is saved with whatever the clash step put in and the workbook, the NWD and the confirm still run");
+                built = null;
+            }
+
+            if (builder.Plan != null)
+            {
+                log.Block("VIEWS " + job.Building, builder.Plan.Lines());
+            }
+
+            if (built == null)
+            {
+                return false;
+            }
+
+            log.Block("VIEWS BUILT " + job.Building, built.Lines());
             outcome.FailedViewpointCount = built.FailedCount;
-
             return built.PutAnythingIn;
+        }
+
+        /// <summary>
+        /// Which discipline each model in the document is, by its index, read off the
+        /// model's own file name with the naming settings the scan uses, so a viewpoint
+        /// that shows AR and ST hides exactly the models that are neither. A name that
+        /// will not parse gives an empty discipline, and the builder never hides a model
+        /// it cannot name, because hiding on a guess hides the thing the person is looking
+        /// for, so that model stays in every viewpoint and the log says so once.
+        /// </summary>
+        private IDictionary<int, string> ModelDisciplines(Document document)
+        {
+            Dictionary<int, string> disciplines = new Dictionary<int, string>();
+
+            if (document == null || document.Models == null)
+            {
+                return disciplines;
+            }
+
+            for (int i = 0; i < document.Models.Count; i++)
+            {
+                string file = Path.GetFileNameWithoutExtension(Words.Or(document.Models[i].FileName, string.Empty));
+                ParsedContainerName parsed = ContainerName.Parse(file, reports.Names);
+                string discipline = parsed.IsReadable ? Words.Or(parsed.Discipline, string.Empty) : string.Empty;
+
+                if (discipline.Length == 0)
+                {
+                    log.Line("VIEWS    the model " + Words.Or(file, "with no name") + " carries no discipline this tool can read, so no viewpoint hides it");
+                }
+
+                disciplines[i] = discipline;
+            }
+
+            return disciplines;
         }
 
         /// <summary>

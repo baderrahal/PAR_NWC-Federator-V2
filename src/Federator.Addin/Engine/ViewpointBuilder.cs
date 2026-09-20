@@ -1,140 +1,684 @@
 using System;
 using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
+using Autodesk.Navisworks.Api.Clash;
+using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
+using Federator.Core.Report;
 using Federator.Core.Views;
+using CoreClashStatus = Federator.Core.Clash.ClashStatus;
 
 namespace Federator.Addin.Engine
 {
     /// <summary>
-    /// Puts one folder per discipline into the NWF with one viewpoint in each, showing that
-    /// discipline and hiding the others.
+    /// Puts one saved viewpoint per clash into the NWF, three folders deep, F85. The plan
+    /// is Federator.Core.Views.ClashViewpointPlan and nothing about it is decided here.
     ///
-    /// READ THIS BEFORE CHANGING ANYTHING HERE.
+    /// TWO WALKS OVER THE RESULTS AND NOT ONE. The first reads every clash the report
+    /// names into a ClashToPlan, the status, the two set names, the priority and the
+    /// service size, keeps a COPY of the camera Clash Detective frames it with, and notes
+    /// which models the two clashing items live in. The plan then runs over all of them
+    /// at once, because a cap per test and the counts in the block are about the whole
+    /// group. The second writes what the plan kept. Nothing borrowed from the document is
+    /// held across either.
     ///
-    /// FOUR OF THE FIVE THINGS THIS FILE ONCE ASSUMED ARE MEASURED NOW.
-    /// tools\probes\probe-viewpoints.ps1 was run on 2026-09-19 against the installed
-    /// Autodesk.Navisworks.Api 22.0.0.0 and every line of it is in docs\history\scan.md 5d:
+    /// WHAT A VIEWPOINT SHOWS. The two disciplines of the pair, every model of each, plus
+    /// the model each clashing item lives in, and every other model hidden, framed on the
+    /// clash the way the picture of it is framed, TestsViewpointForResult. That is what a
+    /// person pressing AR vs ST expects to see, the two things that clashed in their own
+    /// context, and the hiding is what 5j measured a captured viewpoint to keep. The
+    /// models the items live in are kept as well as the pair's because a set code and a
+    /// file code are not the same list: a DR set, drainage, lives in the ME model, and a
+    /// viewpoint that hid ME for DR vs ST would hide the pipe the person is looking for,
+    /// which is what the third and fourth runs did before 5n measured where the model
+    /// sits. A pair
+    /// with a code this tool does not know hides nothing, a model whose name will not
+    /// parse is never hidden, and a pair no model carries hides nothing and says so.
     ///
-    ///   1. Document.SavedViewpoints is a DocumentSavedViewpoints            MEASURED
-    ///   2. it carries RootItem, a FolderItem, and
-    ///      AddCopy(GroupItem parent, SavedItem item)                        MEASURED
-    ///   3. FolderItem has a public constructor and goes in through AddCopy,
-    ///      and EditDisplayName(SavedItem, string) sets a name                MEASURED
-    ///   4. new SavedViewpoint(Viewpoint) makes one, and both it and
-    ///      Viewpoint are IDisposable                                        MEASURED
-    ///   5. hiding is DocumentModels.SetHidden, and whether a viewpoint
-    ///      RECORDS that hiding is                                           UNKNOWN
-    ///
-    /// The fifth is the one this feature turns on, it cannot be read off the DLL, and
-    /// SavedViewpoint.ContainsVisibilityOverrides is what answers it on a real run.
-    ///
-    /// The two collections turned out to have the SAME shape, which is what section 5b said
-    /// must not be assumed from the pattern. It was not assumed. It was read.
-    ///
-    /// WHAT HAPPENS IF AN ASSUMPTION IS WRONG. The group fails, loudly, naming the
-    /// viewpoint and what threw, and the NWF is not saved over on account of the
-    /// viewpoints. It never half creates one and it never creates a viewpoint that failed
-    /// to hide the other disciplines, because a viewpoint showing everything is not the
-    /// thing that was asked for and would read as a working feature.
+    /// EVERYTHING IS PUT BACK, MEASURED. Before the first viewpoint changes anything the
+    /// hidden state the document holds is read off a runtime capture that never goes
+    /// into the tree, and the view is copied. When the group's writing ends, whichever
+    /// way it ends, everything is shown, exactly the items that were hidden are hidden
+    /// again and read back as hidden, and the view is put back, each in its own try so
+    /// one failing cannot skip the other. scan.md 5k measured this route and measured
+    /// that ResetAllHiddenToModelState, which this once called, LOSES a hide the
+    /// document held. A group that hid nothing, because nothing was planned or every
+    /// viewpoint was already there, touches none of it.
     /// </summary>
     public sealed class ViewpointBuilder
     {
         private readonly Action<string> progress;
         private readonly RunLog log;
+        private readonly PenetrationSettings penetrations;
         private readonly SizeSettings sizes;
+        private readonly ViewpointSettings views;
+        private readonly HashSet<string> saidOnce = new HashSet<string>(StringComparer.Ordinal);
 
-        public ViewpointBuilder(Action<string> progress, RunLog log, SizeSettings sizes)
+        private HiddenSnapshot snapshot;
+        private int cameraRead;
+        private Exception firstHomeError;
+
+        public ViewpointBuilder(
+            Action<string> progress,
+            RunLog log,
+            PenetrationSettings penetrations,
+            SizeSettings sizes,
+            ViewpointSettings views)
         {
-            this.progress = progress;
+            if (log == null)
+            {
+                throw new ArgumentNullException("log");
+            }
+
+            this.progress = progress ?? delegate { };
             this.log = log;
+            this.penetrations = penetrations ?? new PenetrationSettings();
             this.sizes = sizes ?? new SizeSettings();
+            this.views = views ?? new ViewpointSettings();
         }
 
+        /// <summary>The plan for the group, kept so the engine can write its block.</summary>
+        public ClashViewpointPlanOutcome Plan { get; private set; }
+
         /// <summary>
-        /// Every planned viewpoint, one at a time. One that throws is recorded and the rest
-        /// are still tried, because a folder that could not be made for one discipline says
-        /// nothing about the next.
+        /// The whole of one group: read, plan, write. Never throws past a viewpoint: one
+        /// that throws is recorded as failed and the rest are still tried.
         /// </summary>
-        public ViewpointBuildOutcome Build(Document document, IList<PlannedViewpoint> planned)
+        public ViewpointBuildOutcome BuildForGroup(
+            Document document,
+            ClashReport report,
+            bool priorityPicked,
+            IDictionary<int, string> modelDisciplines)
         {
             ViewpointBuildOutcome outcome = new ViewpointBuildOutcome();
 
-            if (document == null || planned == null)
+            if (document == null || report == null)
             {
                 return outcome;
             }
 
-            for (int i = 0; i < planned.Count; i++)
+            DocumentClashTests clashTests = document.GetClash().TestsData;
+            List<ClashToPlan> clashes = new List<ClashToPlan>();
+            Dictionary<string, Viewpoint> cameras = new Dictionary<string, Viewpoint>(StringComparer.Ordinal);
+            Dictionary<string, HashSet<int>> homes = new Dictionary<string, HashSet<int>>(StringComparer.Ordinal);
+            IDictionary<int, string> disciplines = modelDisciplines ?? new Dictionary<int, string>();
+            snapshot = null;
+            cameraRead = 0;
+            firstHomeError = null;
+
+            try
             {
-                PlannedViewpoint want = planned[i];
+                Collect(document, clashTests, report, clashes, cameras, homes, ModelIndexByFile(document));
+                Plan = ClashViewpointPlan.For(clashes, views, priorityPicked);
 
-                try
+                if (Plan.Planned.Count == 0)
                 {
-                    progress("Viewpoint " + want.Path);
-                    BuildOne(document, want, outcome);
+                    return outcome;
                 }
-                catch (Exception error)
-                {
-                    // The message carries the type as well as the text, because the most
-                    // likely failure in this file is one of the five assumptions above
-                    // being wrong, and the type name is what says which.
-                    outcome.AddFailed(
-                        want.Path, want.Shows,
-                        error.GetType().Name + ": " + error.Message);
 
-                    log.Failure(
-                        "putting the viewpoint " + want.Path + " into the NWF",
-                        error,
-                        "kept going, the other disciplines are still tried and the VIEWS block carries the total");
+                foreach (PlannedClashViewpoint planned in Plan.Planned)
+                {
+                    try
+                    {
+                        progress("Viewpoint " + planned.Path);
+                        WriteOne(document, planned, cameras, homes, disciplines, outcome);
+                    }
+                    catch (Exception error)
+                    {
+                        // The type as well as the text, because a member of this API
+                        // behaving differently from the way 5d, 5j and 5k measured it is
+                        // the most likely failure, and the type name is what says which.
+                        outcome.AddFailed(planned.Path, planned.Pair.Folder, error.GetType().Name + ": " + error.Message);
+                        log.Failure(
+                            "putting the viewpoint " + planned.Path + " into the NWF",
+                            error,
+                            "kept going, the other viewpoints are still tried and the block carries the total");
+                    }
                 }
+
+                if (cameraRead > 0)
+                {
+                    log.Line("VIEWS    read back on " + cameraRead + " created viewpoint(s): each sits within "
+                        + views.CameraReadBackTolerance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                        + " units of its clash camera and each that hides a discipline carries visibility overrides");
+                }
+            }
+            finally
+            {
+                foreach (Viewpoint camera in cameras.Values)
+                {
+                    camera.Dispose();
+                }
+
+                PutBack(document);
             }
 
             return outcome;
         }
 
-        private void BuildOne(Document document, PlannedViewpoint want, ViewpointBuildOutcome outcome)
+        /// <summary>
+        /// Every clash of every test the report holds rows for, read into what the plan
+        /// needs, with a copy of its camera and the models its items live in kept by the
+        /// name the plan will give it. A test name the report carries twice is read once,
+        /// because both rows would resolve to the same document test and every clash of
+        /// it would be handed to the plan twice.
+        /// </summary>
+        private void Collect(
+            Document document,
+            DocumentClashTests clashTests,
+            ClashReport report,
+            List<ClashToPlan> clashes,
+            Dictionary<string, Viewpoint> cameras,
+            Dictionary<string, HashSet<int>> homes,
+            IDictionary<string, int> indexByFile)
+        {
+            string unitEnumName = Penetrations.UnitEnumName(document);
+            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+            int homesUnread = 0;
+
+            foreach (TestReport test in report.Tests)
+            {
+                if (!test.HasRows)
+                {
+                    continue;
+                }
+
+                if (!seen.Add(test.Name))
+                {
+                    log.Line("VIEWS    " + test.Name + " is on the report twice, so its clashes are read once and planned once");
+                    continue;
+                }
+
+                string leftSet = ByDesignRule.SetNameIn(test.LeftLocator);
+                string rightSet = ByDesignRule.SetNameIn(test.RightLocator);
+
+                using (ClashTest found = FindTest(clashTests.Tests, test.Name))
+                {
+                    if (found == null)
+                    {
+                        log.Line("VIEWS    " + test.Name + " is on the report and not in the document, so its clashes get no viewpoint");
+                        continue;
+                    }
+
+                    try
+                    {
+                        homesUnread += CollectResults(
+                            found.Children, clashTests, test, leftSet, rightSet, unitEnumName, clashes, cameras, homes, indexByFile);
+                    }
+                    catch (Exception error)
+                    {
+                        log.Failure(
+                            "reading the clashes of " + test.Name + " for the viewpoints",
+                            error,
+                            "kept going, the clashes read before it threw are planned and the rest are not");
+                    }
+                }
+            }
+
+            if (homesUnread > 0)
+            {
+                log.Line("VIEWS    " + homesUnread + " clash(es) whose items' models could not be read, so their viewpoints keep the pair's models only");
+
+                if (firstHomeError != null)
+                {
+                    log.Failure(
+                        "reading the model a clash item lives in, the first of " + homesUnread,
+                        firstHomeError,
+                        "kept going, those viewpoints keep the pair's models only");
+                }
+            }
+
+            int withHome = 0;
+
+            foreach (HashSet<int> home in homes.Values)
+            {
+                if (home.Count > 0)
+                {
+                    withHome++;
+                }
+            }
+
+            log.Line("VIEWS    the model each clash item lives in was read for " + withHome + " of " + homes.Count
+                + " clash(es) in scope" + (withHome == homes.Count ? string.Empty : ", and the rest keep the pair's models only"));
+        }
+
+        private int CollectResults(
+            SavedItemCollection items,
+            DocumentClashTests clashTests,
+            TestReport test,
+            string leftSet,
+            string rightSet,
+            string unitEnumName,
+            List<ClashToPlan> clashes,
+            Dictionary<string, Viewpoint> cameras,
+            Dictionary<string, HashSet<int>> homes,
+            IDictionary<string, int> indexByFile)
+        {
+            if (items == null)
+            {
+                return 0;
+            }
+
+            int homesUnread = 0;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    ClashResultGroup group = item as ClashResultGroup;
+
+                    if (group != null)
+                    {
+                        homesUnread += CollectResults(
+                            group.Children, clashTests, test, leftSet, rightSet, unitEnumName, clashes, cameras, homes, indexByFile);
+                        continue;
+                    }
+
+                    ClashResult result = item as ClashResult;
+
+                    if (result == null || string.IsNullOrEmpty(result.DisplayName))
+                    {
+                        continue;
+                    }
+
+                    CoreClashStatus status = (CoreClashStatus)(int)result.Status;
+
+                    // The size is read only where the plan will ask about it, which is a
+                    // clash it would otherwise keep. A closed clash is left out on its
+                    // status before the size is looked at, so its items are not read.
+                    SizeVerdict? serviceSize = ClashViewpointPlan.InScope(status)
+                        ? Penetrations.ServiceSizeOf(result, penetrations, sizes, unitEnumName)
+                        : null;
+
+                    ClashToPlan clash = new ClashToPlan(
+                        test.Name, result.DisplayName, leftSet, rightSet, status, test.Priority, serviceSize);
+                    clashes.Add(clash);
+
+                    if (!ClashViewpointPlan.InScope(status))
+                    {
+                        continue;
+                    }
+
+                    string key = ClashViewpointPlan.NameFor(clash, views);
+
+                    if (cameras.ContainsKey(key))
+                    {
+                        continue;
+                    }
+
+                    using (Viewpoint framed = clashTests.TestsViewpointForResult(result))
+                    {
+                        if (framed != null)
+                        {
+                            cameras.Add(key, framed.CreateCopy());
+                        }
+                    }
+
+                    HashSet<int> home = new HashSet<int>();
+
+                    try
+                    {
+                        AddHome(result.Item1, indexByFile, home);
+                        AddHome(result.Item2, indexByFile, home);
+                    }
+                    catch (Exception error)
+                    {
+                        // Counted, and the FIRST one is written in full once per group,
+                        // because the fifth run counted 975 of these and could not say
+                        // what threw. The viewpoint still keeps the pair's models, it
+                        // just cannot also keep a model the code did not name, and a
+                        // clash whose items will not read is not lost.
+                        homesUnread++;
+
+                        if (firstHomeError == null)
+                        {
+                            firstHomeError = error;
+                        }
+                    }
+
+                    homes[key] = home;
+                }
+            }
+
+            return homesUnread;
+        }
+
+        /// <summary>
+        /// The model one clashing item lives in, by its index in the document, matched on
+        /// the model's file name because that is a string and not a wrapper. MEASURED on
+        /// 2026-09-20, docs\history\scan.md 5n: on a clash leaf HasModel reads false and
+        /// Model reads null, and the one item that carries the model is the TOPMOST of
+        /// AncestorsAndSelf, six to nine levels up. Three runs before that measurement
+        /// read Model off the leaf and found no home for any clash. Item1 is a fresh
+        /// wrapper on every read, and so is every ancestor enumerated, so each is released
+        /// here.
+        /// </summary>
+        private static void AddHome(ModelItem item, IDictionary<string, int> indexByFile, HashSet<int> into)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            // Parent by Parent, each a fresh wrapper, all released at the end, which is
+            // the shape Penetrations.Upwards has read sizes with on every run. Enumerating
+            // AncestorsAndSelf and disposing each item as it went threw on every clash of
+            // the fifth run, and disposing nothing is not an option under 4g.
+            List<ModelItem> chain = new List<ModelItem>();
+            chain.Add(item);
+
+            try
+            {
+                ModelItem walker = item;
+
+                while (chain.Count < HomeWalkBound)
+                {
+                    ModelItem parent = walker.Parent;
+
+                    if (parent == null)
+                    {
+                        break;
+                    }
+
+                    chain.Add(parent);
+                    walker = parent;
+                }
+
+                ModelItem top = chain[chain.Count - 1];
+
+                if (!top.HasModel)
+                {
+                    return;
+                }
+
+                using (Model model = top.Model)
+                {
+                    int index;
+
+                    if (model != null && indexByFile.TryGetValue(Words.Or(model.FileName, string.Empty), out index))
+                    {
+                        into.Add(index);
+                    }
+                }
+            }
+            finally
+            {
+                for (int i = 0; i < chain.Count; i++)
+                {
+                    chain[i].Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The most levels the home walk climbs. 5n measured six and nine on this project,
+        /// and a bound stops a malformed tree turning one clash into an endless climb. It
+        /// is a guard on a walk and not a number that shapes a run.
+        /// </summary>
+        private const int HomeWalkBound = 64;
+
+        private static IDictionary<string, int> ModelIndexByFile(Document document)
+        {
+            Dictionary<string, int> index = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            if (document.Models == null)
+            {
+                return index;
+            }
+
+            for (int i = 0; i < document.Models.Count; i++)
+            {
+                using (Model model = document.Models[i])
+                {
+                    string file = Words.Or(model.FileName, string.Empty);
+
+                    if (file.Length > 0 && !index.ContainsKey(file))
+                    {
+                        index.Add(file, i);
+                    }
+                }
+            }
+
+            return index;
+        }
+
+        private void WriteOne(
+            Document document,
+            PlannedClashViewpoint planned,
+            Dictionary<string, Viewpoint> cameras,
+            Dictionary<string, HashSet<int>> homes,
+            IDictionary<int, string> disciplines,
+            ViewpointBuildOutcome outcome)
         {
             // Already there is left exactly as it is. F28's rule, carried to viewpoints: a
             // second copy at one path leaves the tree holding both and whichever came first
             // is what anything resolving that path finds.
-            if (SavedViewpoints.Exists(document, want.Folder, want.Name))
+            if (SavedViewpoints.Exists(document, planned.Folders, planned.Name))
             {
-                outcome.AddAlreadyPresent(want.Path, want.Shows, want.Hides.Count);
-                log.Line(outcome.Results[outcome.Results.Count - 1].Line());
+                outcome.AddAlreadyPresent(planned.Path, planned.Pair.Folder, 0);
                 return;
             }
 
-            // F53. A sub group viewpoint holds only the items over the size threshold.
-            // ItemSizes reads the properties and Federator.Core.Views.SizeRule decides, so
-            // the 150 and the six property names are testable without Navisworks and this
-            // file has no opinion about either.
-            if (want.LargeItemsOnly)
+            Viewpoint camera;
+
+            if (!cameras.TryGetValue(planned.Name, out camera))
             {
-                SavedViewpoints.ShowOnlyLargeItems(document, want.Shows, want.Hides, sizes, log);
+                outcome.AddFailed(planned.Path, planned.Pair.Folder, "Clash Detective gave no camera for this clash");
+                return;
+            }
+
+            HashSet<int> keep = new HashSet<int>();
+            HashSet<string> hidden = new HashSet<string>(StringComparer.Ordinal);
+            string hidesNothingBecause = null;
+
+            if (planned.Pair.BothKnown)
+            {
+                HashSet<int> home;
+                homes.TryGetValue(planned.Name, out home);
+                bool firstHasModel = false;
+                bool secondHasModel = false;
+
+                foreach (KeyValuePair<int, string> model in disciplines)
+                {
+                    bool first = string.Equals(model.Value, planned.Pair.First, StringComparison.Ordinal);
+                    bool second = string.Equals(model.Value, planned.Pair.Second, StringComparison.Ordinal);
+                    firstHasModel |= first;
+                    secondHasModel |= second;
+
+                    if (first || second || model.Value.Length == 0 || (home != null && home.Contains(model.Key)))
+                    {
+                        keep.Add(model.Key);
+                    }
+                    else
+                    {
+                        hidden.Add(model.Value);
+                    }
+                }
+
+                if (!firstHasModel)
+                {
+                    SayOnce("VIEWS    no model in this group carries " + planned.Pair.First
+                        + ", so a viewpoint of its pair keeps the model each clash item lives in");
+                }
+
+                if (!secondHasModel && !string.Equals(planned.Pair.First, planned.Pair.Second, StringComparison.Ordinal))
+                {
+                    SayOnce("VIEWS    no model in this group carries " + planned.Pair.Second
+                        + ", so a viewpoint of its pair keeps the model each clash item lives in");
+                }
+
+                if (keep.Count == 0)
+                {
+                    bool sameCode = string.Equals(planned.Pair.First, planned.Pair.Second, StringComparison.Ordinal);
+                    hidesNothingBecause = "no model in this group carries "
+                        + (sameCode ? planned.Pair.First : planned.Pair.First + " or " + planned.Pair.Second)
+                        + " and the models its clash items live in could not be read";
+                }
             }
             else
             {
-                SavedViewpoints.ShowOnly(document, want.Shows, want.Hides);
+                // A code this tool does not know. Nothing is hidden, because hiding on a
+                // guess would hide the thing the person is looking for, and the plan has
+                // already counted it under UNKNOWN.
+                hidesNothingBecause = "its pair has a code this tool does not know";
             }
 
-            SavedViewpoints.Add(document, want.Folder, want.Name);
+            Touch(document);
 
-            // Read back rather than trusted. AddCopy returns void everywhere else in this
-            // API, so the only way to know the viewpoint is there is to look for it, which
-            // is exactly what SetBuilder learned to do with a folder.
-            if (!SavedViewpoints.Exists(document, want.Folder, want.Name))
+            if (hidesNothingBecause == null)
+            {
+                SavedViewpoints.ShowOnlyModels(document, keep);
+            }
+            else
+            {
+                SayOnce("VIEWS    " + planned.Pair.Folder + ": " + hidesNothingBecause + ", so its viewpoints hide nothing");
+                hidden.Clear();
+                document.Models.ResetAllHidden();
+            }
+
+            SavedViewpoints.EnsureFolders(document, planned.Folders);
+            SavedViewpoints.Record(document, planned.Folders, planned.Name, camera);
+
+            // Read back rather than trusted, all three of it. The first run's tree looked
+            // complete and every viewpoint opened on sky, because the route it used
+            // recorded no camera, 5l, and nothing read the camera back. A viewpoint whose
+            // recorded camera is not the clash camera, or which carries no overrides
+            // while it was meant to hide something, is not a viewpoint of that clash and
+            // is counted as failed with the reason a person can check.
+            ViewpointReadBack read = SavedViewpoints.ReadBack(document, planned.Folders, planned.Name, camera);
+
+            if (!read.Found)
+            {
+                outcome.AddFailed(planned.Path, planned.Pair.Folder, "it was added and a fresh read does not show it");
+                return;
+            }
+
+            if (read.CameraDistance > views.CameraReadBackTolerance)
             {
                 outcome.AddFailed(
-                    want.Path, want.Shows,
-                    "it was added and a fresh read does not show it");
-            }
-            else
-            {
-                outcome.AddCreated(want.Path, want.Shows, want.Hides.Count);
+                    planned.Path,
+                    planned.Pair.Folder,
+                    "it was added with a camera " + read.CameraDistance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " units from the clash camera, so it would not open on the clash");
+                return;
             }
 
-            log.Line(outcome.Results[outcome.Results.Count - 1].Line());
+            if (hidden.Count > 0 && !read.ContainsVisibilityOverrides)
+            {
+                outcome.AddFailed(planned.Path, planned.Pair.Folder, "it was added without its hidden state, so it would show every discipline");
+                return;
+            }
+
+            cameraRead++;
+            outcome.AddCreated(planned.Path, planned.Pair.Folder, hidden.Count);
+        }
+
+        /// <summary>
+        /// Reads what will have to be put back, once, before the first viewpoint changes
+        /// the document: the hidden state, off a capture that never goes into the tree.
+        /// The view is never touched, because the camera goes into the viewpoint directly
+        /// and not through the window, 5m, so there is nothing of it to put back.
+        /// </summary>
+        private void Touch(Document document)
+        {
+            if (snapshot == null)
+            {
+                snapshot = SavedViewpoints.SnapshotHidden(document);
+            }
+        }
+
+        /// <summary>
+        /// The hidden state put back in its own try, released whether or not the restore
+        /// worked, and read back and said.
+        /// </summary>
+        private void PutBack(Document document)
+        {
+            if (snapshot != null)
+            {
+                try
+                {
+                    int count = snapshot.HiddenCount;
+                    bool readsHidden = SavedViewpoints.RestoreHiddenState(document, snapshot);
+
+                    if (count == 0)
+                    {
+                        log.Line("VIEWS    hidden state put back: nothing was hidden before the viewpoints and nothing is hidden now");
+                    }
+                    else
+                    {
+                        log.Line("VIEWS    hidden state put back: " + count + " item(s) were hidden before the viewpoints and "
+                            + (readsHidden ? "read as hidden again" : "DO NOT read as hidden again, said and not hidden"));
+                    }
+                }
+                catch (Exception error)
+                {
+                    log.Failure(
+                        "putting the hidden state back after the viewpoints",
+                        error,
+                        "kept going, the NWF saved next carries whatever is hidden now");
+                }
+                finally
+                {
+                    snapshot.Dispose();
+                    snapshot = null;
+                }
+            }
+        }
+
+        private void SayOnce(string line)
+        {
+            if (saidOnce.Add(line))
+            {
+                log.Line(line);
+            }
+        }
+
+        /// <summary>
+        /// The test of that name, wherever it sits, descending folders. The caller disposes
+        /// what comes back, and every other wrapper is released on the way.
+        /// </summary>
+        private static ClashTest FindTest(SavedItemCollection items, string name)
+        {
+            if (items == null)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                SavedItem item = items[i];
+                ClashTest test = item as ClashTest;
+
+                if (test != null)
+                {
+                    if (string.Equals(test.DisplayName, name, StringComparison.Ordinal))
+                    {
+                        return test;
+                    }
+
+                    test.Dispose();
+                    continue;
+                }
+
+                GroupItem folder = item as GroupItem;
+
+                if (folder != null)
+                {
+                    ClashTest below = FindTest(folder.Children, name);
+                    folder.Dispose();
+
+                    if (below != null)
+                    {
+                        return below;
+                    }
+
+                    continue;
+                }
+
+                item.Dispose();
+            }
+
+            return null;
         }
     }
 }

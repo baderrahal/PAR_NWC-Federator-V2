@@ -42,6 +42,8 @@ namespace Federator.Core.Diagnostics
         /// SETS builds the selection sets out of the picked file.
         /// TESTS CREATE creates the clash tests.
         /// TESTS RUN produces the clash results, and creates none of the rest.
+        /// VIEWS puts the saved viewpoints in, F85, so the viewpoint count moves there and
+        /// nothing else does.
         /// Every other step writes a FILE and not the document, so none of them may move
         /// anything at all.
         /// </summary>
@@ -80,6 +82,11 @@ namespace Federator.Core.Diagnostics
             if (string.Equals(step, RunSteps.TestsRun, StringComparison.Ordinal))
             {
                 return what == CensusCount.Results ? CensusMove.Allowed : CensusMove.Refused;
+            }
+
+            if (string.Equals(step, RunSteps.Views, StringComparison.Ordinal))
+            {
+                return what == CensusCount.Viewpoints ? CensusMove.Allowed : CensusMove.Refused;
             }
 
             return CensusMove.Refused;

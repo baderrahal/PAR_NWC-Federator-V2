@@ -18,7 +18,10 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
   did not move. No syntax newer than 7.3 anywhere, because the add-in cannot be
   built with a newer compiler than the one Navisworks binds to
 - References are the DLLs in the Navisworks install folder, copy local false:
-  Autodesk.Navisworks.Api.dll and Autodesk.Navisworks.Clash.dll
+  Autodesk.Navisworks.Api.dll, Autodesk.Navisworks.Clash.dll and, since the viewpoints
+  round, Autodesk.Navisworks.ComApi.dll with Autodesk.Navisworks.Interop.ComApi.dll,
+  because the one way to save a viewpoint with its camera AND its hidden state is the
+  COM view's ApplyHideAttribs, docs\history\scan.md 5m
 - Installs to %APPDATA%\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle
 - 27 people run it. No compiler on their machines, no admin step, no path that
   exists on one machine only
@@ -174,12 +177,12 @@ to LF on every checkout and carries the measurement. Never remove those three li
   and the viewpoints that point into it. Document.RemoveFile(int) and TryRemoveFile(int)
   exist and were measured on 2026-09-19, docs\history\scan.md 5c, so the member is no
   longer the question. What it costs is, and only a run answers that. F50
-- whether a SAVED VIEWPOINT records hidden state. The collection, the folder, the name and
-  what has to be disposed were all measured on 2026-09-19, docs\history\scan.md 5d, and
-  items are hidden through DocumentModels.SetHidden. Whether a viewpoint saved while items
-  are hidden carries that hiding, and restores it when pressed, is not readable off the DLL.
-  SavedViewpoint.ContainsVisibilityOverrides is what answers it on a run. F52.
-  SavedViewpoints.CanBuild is still false, because the writing half is not built
+- how a SAVED VIEWPOINT records hidden state was MEASURED on 2026-09-19 and 2026-09-20,
+  docs\history\scan.md 5j to 5m: new SavedViewpoint(Viewpoint) records the camera alone,
+  DocumentSavedViewpoints.CaptureRuntimeOverrides records what is hidden and NO camera, and
+  the one thing that records both is the COM API's InwOpView with ApplyHideAttribs, which
+  is what F85 writes through, read back on every viewpoint. SavedViewpoints.CanBuild is
+  true since the viewpoints round
 
 ## Writing
 

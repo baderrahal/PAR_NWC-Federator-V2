@@ -218,5 +218,20 @@ namespace Federator.Core.Tests
             Assert.That(ToleranceChoice.HelpLine, Does.Not.Contain("ApplyFileSettings"));
             Assert.That(ToleranceChoice.PickerLabel, Is.EqualTo("Clash tolerance"));
         }
+
+        /// <summary>
+        /// Q54. The line that says what the report tolerance line's numbers are, with the
+        /// wiring round's own numbers, thousands separated the way Bader wrote them, and
+        /// the third number the first two subtracted.
+        /// </summary>
+        [Test]
+        public void TheBlocksLineSaysHowManyRanAndHowManyNeverRan()
+        {
+            string line = ToleranceChoice.BlocksLine(18300, 1041);
+
+            Assert.That(line, Does.StartWith("WORKBOOK 18,300 test blocks, 1,041 ran and 17,259 are tests that never ran"));
+            Assert.That(line, Does.Contain("Their tolerance reads off the picked file"));
+            Assert.That(ToleranceChoice.BlocksLine(0, 0), Does.StartWith("WORKBOOK 0 test blocks, 0 ran and 0 are tests that never ran"));
+        }
     }
 }

@@ -49,7 +49,7 @@ THE WHOLE ROUND IS ONE BRANCH AND ONE PULL REQUEST, `round-first-run`, which Bad
 
 EVERY FIX IN THIS ROUND IS THE CORE HALF ONLY. The round was worked in a Linux container with no Navisworks on it, so nothing in the add-in was compiled. Every rule is in Federator.Core, every one has tests, and the whole Core set passes. The add-in wiring is `03_bader_next.md` steps 358 to 380 and the five measurements the round could not take are steps 353 to 357.
 
-THE EIGHT WITHOUT AN ADD-IN CALLER WERE WIRED IN THE WIRING ROUND ON 2026-09-19, on the machine with Navisworks, one commit each on the branch round-wiring, built after every one and proved by a run. They read WIRED above and under their own sections, and the run they were proved on is in the wiring round's entry in log.md. F85 is still the Core half only, waiting on steps 374 and 375.
+THE EIGHT WITHOUT AN ADD-IN CALLER WERE WIRED IN THE WIRING ROUND ON 2026-09-19, on the machine with Navisworks, one commit each on the branch round-wiring, built after every one and proved by a run. They read WIRED above and under their own sections, and the run they were proved on is in the wiring round's entry in log.md. F85 was wired in the viewpoints round on 2026-09-20, branch round-viewpoints, and proved by six runs of ten groups, the last two clean, the round's entry in log.md.
 
 19. F88, DONE, restore the sample thirteen tests read. Not briefed, found by running the tests on main
 20. F87, DONE, correct the matrix, the hyphen and BLD-EL-Devices
@@ -63,7 +63,7 @@ THE EIGHT WITHOUT AN ADD-IN CALLER WERE WIRED IN THE WIRING ROUND ON 2026-09-19,
 28. F83, WIRED, the clash priority reaches the report
 29. F72b, WIRED, by design connections become Reviewed
 30. F72c, WIRED, the record in the NWF and the undo
-31. F85, DONE, the saved viewpoints in three layers, planned and not written
+31. F85, WIRED, the saved viewpoints in three layers, written and read back
 32. F84, DONE, the sets that cannot match anything
 33. F78, DONE, the log says or where the file says or
 34. F79, DONE, which missing item ids are this run's
@@ -169,8 +169,9 @@ Every one of these came off ONE log, `run-20260919-144319.log`, the first real r
 - CORE HALF DONE on 2026-09-19. The record is a marker no person would type, the rule, the status the clash was moved OFF, then the reason. The old status is on it because putting an Active clash back to New would destroy a real difference. A comment a person wrote is never read as one of ours. The undo touches a clash only where it carries our record AND is still at Reviewed. `AllowsAsUndo` is a separate answer from `Allows` and not a loosening of it, which is Q50. Whether a comment can be written at all is `scan.md` 5h, and if it cannot the tool says so in one line and fakes nothing
 - WIRED on 2026-09-19 in the wiring round, steps 372 and 373, commit 377d1f0. The record is a comment written through `TestsEditResultComments` before the status on the same handle, both rules hand over the status they moved from and why, and the Undo auto Reviewed button walks every test of the open document through the one editor with the undo half of the guard. See the wiring round's log entry for what the run showed about the comment surviving
 
-### F85 The saved viewpoints in three layers, planned and not written
+### F85 The saved viewpoints in three layers, written and read back
 
+- WIRED on 2026-09-20 in the viewpoints round, branch round-viewpoints. `ViewpointBuilder` reads every clash, plans through `ClashViewpointPlan`, and writes one saved viewpoint per clash through the COM view with `ApplyHideAttribs`, the one route measured to record both the camera and the hidden state, docs\history\scan.md 5l to 5n. Every written viewpoint is read back three ways before it is counted. Six runs of ten groups: the first wrote 975 viewpoints that opened on sky because the capture records no camera, the second failed all 975 on the camera read back, the third and fourth wrote 975 that open on their clash with the other disciplines hidden, the fifth and sixth added the model each clash item lives in, the sixth for 975 of 975. 5 minutes 3 seconds against 5 minutes 9 seconds without viewpoints. The log entry carries every number
 - Files `src/Federator.Core/Views/ClashViewpointPlan.cs`, `DisciplinePairRule.cs`, both new, `ViewpointSettings.cs`, `ViewpointPlan.cs`, `src/Federator.Core/Diagnostics/RunSteps.cs`, `.claude/rules/addin.md`, `.claude/rules/core.md`, `src/Federator.Addin/Engine/ClashImages.cs`
 - CONTAINER for the whole plan, LOCAL MACHINE for everything that writes one
 - DONE on 2026-09-19. Priority, then the discipline pair sorted, then Over 150mm under a Mechanical or Electrical pair. One viewpoint per CLASH and the name carries the test as well, because a clash name is unique only within its test. Small services stay out on the SIZE and never on the status, because F72a is off by default and leaves service against service alone. It branches on `SizeVerdict` and never on `Included`. A set name with no known code is reported and never guessed. `VIEWS` is a new step because building them was untimed. NOTHING WRITES ANY OF IT: `CanBuild` is still false and a planned viewpoint that was not written is not a viewpoint. Three files said no clash is ever saved as a viewpoint and all three now say the opposite and why

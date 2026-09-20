@@ -1,0 +1,13 @@
+08:34:43.666  probe started, mode com, 1 file(s)
+08:34:43.681  opening C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\probe\probe-1A02MM.nwf
+08:34:43.822  camera applied and root0 hidden: True
+08:34:43.852  COM view added, root count 7 -> 8
+08:34:43.857  read back through .NET at the root: ContainsVisibilityOverrides True, camera position (12.5, -34.25, 56.125) projection Perspective focal none heightField 0.785
+08:34:43.863  copied into the folder, removing the root one: True
+08:34:43.863  the folder copy: ContainsVisibilityOverrides True, camera position (12.5, -34.25, 56.125) projection Perspective focal none heightField 0.785
+08:34:43.864  moved away: root0 hidden False, position (100, 100, 100) projection Perspective focal none heightField 0.785
+08:34:43.869  pressed the folder copy: root0 hidden True, position (12.5, -34.25, 56.125) projection Perspective focal none heightField 0.953   (hidden true and position 12.5, -34.25, 56.125 means the route records both)
+08:34:43.909  TrySaveFile to C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\probe\probe-com-saved.nwf = True
+08:34:44.033  after reopen, the folder copy: ContainsVisibilityOverrides True, camera position (12.5, -34.25, 56.125) projection Perspective focal none heightField 0.785
+08:34:44.036  after reopen, pressed: root0 hidden True, position (12.5, -34.25, 56.125) projection Perspective focal none heightField 0.953
+08:34:44.037  probe finished
