@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Exchange;
 
 namespace Federator.Core.Health
 {
@@ -89,13 +90,22 @@ namespace Federator.Core.Health
         public const int Nearest = 2;
 
         /// <summary>
-        /// Every pair of names in that lookup close enough to be one word typed twice.
-        /// The lookup is workset name against the models carrying it, which is what the
-        /// export check already gathers, so nothing is read twice.
+        /// How many pairs were found and NOT named because a person has already decided
+        /// they are two different worksets. Counted rather than hidden, because a check
+        /// that quietly stops looking at something is a check nobody can audit.
+        /// </summary>
+        public static int DecidedInLastRead { get; private set; }
+
+        /// <summary>
+        /// Every pair of names in that lookup close enough to be one word typed twice,
+        /// less the ones a person has already decided about. The lookup is workset name
+        /// against the models carrying it, which is what the export check already
+        /// gathers, so nothing is read twice.
         /// </summary>
         public static IList<WorksetDisagreement> In(IDictionary<string, IList<string>> byWorkset)
         {
             List<WorksetDisagreement> found = new List<WorksetDisagreement>();
+            DecidedInLastRead = 0;
 
             if (byWorkset == null || byWorkset.Count < 2)
             {
@@ -113,6 +123,17 @@ namespace Federator.Core.Health
 
                     if (!caseOnly && Distance(names[i].ToLowerInvariant(), names[j].ToLowerInvariant()) > Nearest)
                     {
+                        continue;
+                    }
+
+                    // A PERSON HAS ALREADY DECIDED ABOUT THIS PAIR, so the tool does not
+                    // ask again on every group of every run. It was naming AR-EXTERIOR
+                    // against AR-INTERIOR ten times a run, and a check that cries wolf on
+                    // something known good is one a person learns to skip past, which
+                    // costs the three real typos beside it.
+                    if (RevitWorksets.DecidedDifferent(names[i], names[j]))
+                    {
+                        DecidedInLastRead++;
                         continue;
                     }
 

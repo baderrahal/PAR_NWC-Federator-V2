@@ -29,6 +29,15 @@
 # Nothing here is merged. The export check names the pairs and a person fixes the
 # models, because a tool that absorbs a typo silently means nobody ever fixes it.
 #
+# A PERSON HAS DECIDED ABOUT TWO OF THE FIVE PAIRS, and the tool reads the decision
+# rather than guessing again every run. A pair written as "not-a-typo: A | B" is two
+# DIFFERENT worksets that happen to be a letter or two apart, so the export check counts
+# it and does not name it. The other three are left unmarked and are named every run,
+# because nobody has fixed the models yet and a tool that stops mentioning a typo is a
+# tool nobody fixes anything because of.
+not-a-typo: AR-EXTERIOR | AR-INTERIOR
+not-a-typo: ST-SUB | ST-SUP
+
 # One name per line. A line starting with # is a comment and a blank line is skipped.
 
 +Link-ST-***

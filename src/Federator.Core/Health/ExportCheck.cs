@@ -183,15 +183,22 @@ namespace Federator.Core.Health
 
             IList<WorksetDisagreement> found = WorksetDisagreements.In(byWorkset);
 
+            string alreadyDecided = WorksetDisagreements.DecidedInLastRead == 0
+                ? string.Empty
+                : " " + WorksetDisagreements.DecidedInLastRead
+                    + " more pair(s) are close enough too and are NOT listed, because a person has already"
+                    + " decided they are two different worksets.";
+
             if (found.Count == 0)
             {
-                lines.Add("no two workset names in this group are close enough to be one word typed twice");
+                lines.Add("no two workset names in this group are close enough to be one word typed twice."
+                    + alreadyDecided);
                 return;
             }
 
             lines.Add(found.Count + " pair(s) of workset names are close enough to be one word typed twice."
-                + " NOTHING IS MERGED: a person reads these and fixes the models, because two of them in"
-                + " this project are real worksets one letter apart and no rule can tell which is which");
+                + " NOTHING IS MERGED: a person reads these and fixes the models, and this tool never"
+                + " decides which of two spellings is the right one." + alreadyDecided);
 
             for (int i = 0; i < found.Count; i++)
             {
