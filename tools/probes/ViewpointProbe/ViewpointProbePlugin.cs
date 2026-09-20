@@ -97,6 +97,22 @@ namespace ViewpointProbe
                     {
                         MeasurePress(parameters[2], parameters.Length > 3 ? parameters[3] : null);
                     }
+                    else if (mode == "route")
+                    {
+                        MeasureRoute(parameters[2]);
+                    }
+                    else if (mode == "colour")
+                    {
+                        MeasureColour(parameters[2]);
+                    }
+                    else if (mode == "pen")
+                    {
+                        MeasurePenetration(parameters[2]);
+                    }
+                    else if (mode == "survey")
+                    {
+                        MeasureSurvey(parameters, 2);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -1459,7 +1475,11 @@ namespace ViewpointProbe
 
                                     if (solidNames.Count < 4)
                                     {
-                                        solidNames.Add(item.DisplayName + " in " + Path.GetFileName(model.FileName));
+                                        // THE COLOUR AS WELL AS THE NAME, Q58. A solid item
+                                        // in the wrong colour is as wrong as a dim one, and
+                                        // a screenshot leaves which shade it is to the eye.
+                                        solidNames.Add(item.DisplayName + " " + Rgb(geometry.ActiveColor)
+                                            + " in " + Path.GetFileName(model.FileName));
                                     }
                                 }
                             }
@@ -2232,6 +2252,1624 @@ namespace ViewpointProbe
                 default:
                     return string.Empty;
             }
+        }
+
+        // ---------- PART 1 and PART 2, the cheap write route and the colours ----------
+
+        /// <summary>
+        /// Writes the SAME scene twice, once through the route the tool uses today and
+        /// once through the COM folder collection, and reads both back off the disk on
+        /// the four counts that matter: the camera, the hidden state, the dimming, and
+        /// the two clashing items left solid. The colours are measured beside them,
+        /// because a viewpoint that records no colour must not be counted either.
+        ///
+        /// ROUTE A, what the tool does today: add the view to the COM root collection,
+        /// copy it into its folder with the .NET AddCopy, remove the root one. Three
+        /// tree operations per viewpoint.
+        /// ROUTE B, the cheap one: find the folder's own InwOpFolderView and add the
+        /// view straight into its SavedViews collection. One tree operation.
+        ///
+        /// Nothing is decided here on speed. A route that writes fast and records
+        /// nothing is how this feature failed twice, so the read back is the whole test
+        /// and the milliseconds are a footnote.
+        /// </summary>
+        private void MeasureRoute(string nwfCopy)
+        {
+            string folder = Path.GetDirectoryName(nwfCopy);
+            string aFile = Path.Combine(folder, "probe-route-a.nwf");
+            string bFile = Path.Combine(folder, "probe-route-b.nwf");
+
+            long aMs = WriteOneRoute(nwfCopy, aFile, "A", false);
+
+            if (aMs < 0)
+            {
+                return;
+            }
+
+            ReadRouteBack(aFile, "A");
+
+            long bMs = WriteOneRoute(nwfCopy, bFile, "B", true);
+
+            if (bMs < 0)
+            {
+                return;
+            }
+
+            ReadRouteBack(bFile, "B");
+
+            Say(string.Empty);
+            Say("THE TWO SIDE BY SIDE, " + RouteViews + " viewpoints of the same scene:");
+            Say("   route A, root add then AddCopy then Remove:   " + aMs + " ms, " + Bytes(aFile) + " bytes");
+            Say("   route B, straight into the folder collection: " + bMs + " ms, " + Bytes(bFile) + " bytes");
+        }
+
+        /// <summary>How many viewpoints each route writes, enough that a per call figure means something.</summary>
+        private const int RouteViews = 20;
+
+        /// <summary>
+        /// Opens the copy, builds the one scene both routes are measured on, writes
+        /// RouteViews viewpoints through the named route and saves. Returns the
+        /// milliseconds the writing took, or minus one where it could not be done.
+        /// </summary>
+        private long WriteOneRoute(string nwfCopy, string saveAs, string route, bool throughFolder)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return -1;
+            }
+
+            Say(string.Empty);
+            Say("ROUTE " + route + ", opening " + nwfCopy);
+            document.Clear();
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return -1;
+            }
+
+            int[] firstPath;
+            int[] secondPath;
+            string clashName;
+
+            if (!FindClashPair(document, out firstPath, out secondPath, out clashName))
+            {
+                Say("UNKNOWN: no clash in this copy has two items with geometry");
+                return -1;
+            }
+
+            Say("the clash measured against: " + clashName);
+
+            // The scene every viewpoint records: one model hidden, everything else dimmed,
+            // the two clashing items solid and coloured. The same sequence the writer runs.
+            using (ModelItemCollection one = new ModelItemCollection())
+            using (Model last = document.Models[document.Models.Count - 1])
+            using (ModelItem lastRoot = last.RootItem)
+            {
+                one.Add(lastRoot);
+                document.Models.SetHidden(one, true);
+                Say("hid [" + last.FileName + "], IsHidden " + document.Models.IsHidden(one));
+            }
+
+            using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+            {
+                document.Models.OverrideTemporaryTransparency(roots, 0.85);
+            }
+
+            ResetTwo(document, firstPath, secondPath, false);
+            ColourTwo(document, firstPath, secondPath);
+            SayThree(document, firstPath, secondPath, null, "the scene every viewpoint records");
+            SayColours(document, firstPath, secondPath, "live, before any viewpoint is written");
+
+            EnsureFolder(document, route);
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+
+                for (int i = 1; i <= RouteViews; i++)
+                {
+                    string name = route + " " + i;
+
+                    if (throughFolder)
+                    {
+                        AddComViewIntoFolder(route, name, camera);
+                    }
+                    else
+                    {
+                        AddComView(name, camera, true);
+                        MoveRootViewIntoFolder(document, route, name);
+                    }
+                }
+
+                watch.Stop();
+                Say("ROUTE " + route + ": " + RouteViews + " viewpoints written in " + watch.ElapsedMilliseconds
+                    + " ms, " + Per(watch.ElapsedMilliseconds, RouteViews) + " ms each");
+
+                // Everything put back before the save, exactly as the writer does it, so
+                // a viewpoint holding live state rather than a snapshot comes back empty.
+                document.Models.ResetAllTemporaryMaterials();
+                document.Models.ResetAllHidden();
+
+                Say("TrySaveFile to " + saveAs + " = " + document.TrySaveFile(saveAs));
+                return watch.ElapsedMilliseconds;
+            }
+        }
+
+        /// <summary>
+        /// Reopens what a route saved and reads every viewpoint it wrote on the four
+        /// counts, plus the two colours. Counts rather than flags, because both flags
+        /// this API offers read true on a viewpoint that recorded nothing, 5o.
+        /// </summary>
+        private void ReadRouteBack(string file, string route)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+            document.Clear();
+
+            if (!document.TryOpenFile(file))
+            {
+                Say("UNKNOWN: route " + route + " saved a file that would not reopen");
+                return;
+            }
+
+            Say("ROUTE " + route + ", reopened off the disk, " + Bytes(file) + " bytes");
+
+            int[] firstPath;
+            int[] secondPath;
+            string clashName;
+            FindClashPair(document, out firstPath, out secondPath, out clashName);
+
+            int found = 0;
+            int withCamera = 0;
+            int withHidden = 0;
+            int withMaterial = 0;
+            int withBothColours = 0;
+
+            using (GroupItem folder = FindFolderItem(document, route))
+            {
+                if (folder == null)
+                {
+                    Say("ROUTE " + route + ": THE FOLDER IS NOT THERE after the reopen. Nothing was recorded.");
+                    return;
+                }
+
+                for (int i = 1; i <= RouteViews; i++)
+                {
+                    using (SavedViewpoint view = FindUnder(folder, route + " " + i))
+                    {
+                        if (view == null)
+                        {
+                            continue;
+                        }
+
+                        found++;
+
+                        try
+                        {
+                            using (Viewpoint recorded = view.Viewpoint)
+                            {
+                                if (recorded != null)
+                                {
+                                    withCamera++;
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            // A viewpoint with no camera throws here, which is 5l's shape
+                            // and is exactly what this count is for.
+                        }
+
+                        int hidden = HiddenCount(view);
+                        int material = MaterialCount(view);
+                        bool colours = ColoursRecorded(document, view, firstPath, secondPath);
+
+                        if (hidden > 0)
+                        {
+                            withHidden++;
+                        }
+
+                        if (material > 0)
+                        {
+                            withMaterial++;
+                        }
+
+                        if (colours)
+                        {
+                            withBothColours++;
+                        }
+
+                        if (i == 1)
+                        {
+                            Say("   the first one: hidden " + hidden + ", material overrides " + material
+                                + ", the two colours " + (colours ? "BOTH THERE" : "NOT BOTH THERE"));
+                            SayRecordedColours(document, view, firstPath, secondPath);
+                        }
+                    }
+                }
+            }
+
+            Say("ROUTE " + route + " READ BACK of " + RouteViews + ": found " + found
+                + ", with a camera " + withCamera + ", hiding something " + withHidden
+                + ", dimming something " + withMaterial + ", both colours " + withBothColours);
+
+            // And what a person actually sees when one is pressed.
+            using (GroupItem folder = FindFolderItem(document, route))
+            {
+                if (folder == null)
+                {
+                    return;
+                }
+
+                using (SavedViewpoint press = FindUnder(folder, route + " 1"))
+                {
+                    if (press == null)
+                    {
+                        return;
+                    }
+
+                    document.SavedViewpoints.CurrentSavedViewpoint = press;
+                }
+            }
+
+            Say("   pressed " + route + " 1, what a person sees:");
+            CountWhatIsSeen(document);
+            SayThree(document, firstPath, secondPath, null, "   after pressing " + route + " 1");
+            SayColours(document, firstPath, secondPath, "   after pressing " + route + " 1");
+            document.Models.ResetAllTemporaryMaterials();
+            document.Models.ResetAllHidden();
+        }
+
+        /// <summary>Red on the first item and green on the second, the order Clash Detective paints them.</summary>
+        private static void ColourTwo(Document document, int[] first, int[] second)
+        {
+            using (ModelItem a = Resolve(document, first))
+            using (ModelItem b = Resolve(document, second))
+            {
+                if (a != null)
+                {
+                    using (ModelItemCollection one = new ModelItemCollection())
+                    {
+                        one.Add(a);
+                        document.Models.OverrideTemporaryColor(one, new Color(1.0, 0.0, 0.0));
+                    }
+                }
+
+                if (b != null)
+                {
+                    using (ModelItemCollection one = new ModelItemCollection())
+                    {
+                        one.Add(b);
+                        document.Models.OverrideTemporaryColor(one, new Color(0.0, 1.0, 0.0));
+                    }
+                }
+            }
+        }
+
+        private void SayColours(Document document, int[] first, int[] second, string when)
+        {
+            Say("   colours " + when + ":");
+            Say("      item 1 " + LiveColour(document, first));
+            Say("      item 2 " + LiveColour(document, second));
+        }
+
+        /// <summary>What the viewpoint itself recorded for the two, item by item, off its own overrides.</summary>
+        private void SayRecordedColours(Document document, SavedViewpoint view, int[] first, int[] second)
+        {
+            try
+            {
+                AppearanceOverrides overrides = view.GetAppearanceOverrides();
+
+                if (overrides == null || overrides.MaterialOverrides == null)
+                {
+                    Say("      the viewpoint carries no appearance overrides at all");
+                    return;
+                }
+
+                foreach (MaterialOverride material in overrides.MaterialOverrides)
+                {
+                    using (ModelItem item = material.Item)
+                    {
+                        if (item == null)
+                        {
+                            continue;
+                        }
+
+                        int[] path = PathOf(document, item);
+                        string which = Same(path, first) ? "item 1" : (Same(path, second) ? "item 2" : null);
+
+                        if (which == null)
+                        {
+                            continue;
+                        }
+
+                        Say("      the viewpoint recorded for " + which + ": colour " + Rgb(material.Color)
+                            + ", transparency " + (material.Transparency.HasValue ? Round(material.Transparency.Value) : "none"));
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say("      reading the recorded colours threw " + error.GetType().Name);
+            }
+        }
+
+        private static string LiveColour(Document document, int[] path)
+        {
+            if (path == null)
+            {
+                return "no item";
+            }
+
+            using (ModelItem item = Resolve(document, path))
+            {
+                if (item == null || !item.HasGeometry)
+                {
+                    return "no geometry";
+                }
+
+                using (ModelGeometry geometry = item.Geometry)
+                {
+                    return "active " + Rgb(geometry.ActiveColor) + " original " + Rgb(geometry.OriginalColor);
+                }
+            }
+        }
+
+        private static string Rgb(Color colour)
+        {
+            return "(" + Round(colour.R) + "," + Round(colour.G) + "," + Round(colour.B) + ")";
+        }
+
+        /// <summary>
+        /// Whether that viewpoint recorded a colour for BOTH clashing items, read off its
+        /// own MaterialOverrides rather than off the live scene. MaterialOverride carries
+        /// the item, a Color and a nullable Transparency, read off the installed
+        /// Autodesk.Navisworks.Api 22.0.0.0 on 2026-09-20.
+        /// </summary>
+        private static bool ColoursRecorded(Document document, SavedViewpoint view, int[] first, int[] second)
+        {
+            if (first == null || second == null)
+            {
+                return false;
+            }
+
+            bool one = false;
+            bool two = false;
+
+            try
+            {
+                AppearanceOverrides overrides = view.GetAppearanceOverrides();
+
+                if (overrides == null || overrides.MaterialOverrides == null)
+                {
+                    return false;
+                }
+
+                foreach (MaterialOverride material in overrides.MaterialOverrides)
+                {
+                    using (ModelItem item = material.Item)
+                    {
+                        if (item == null)
+                        {
+                            continue;
+                        }
+
+                        int[] path = PathOf(document, item);
+
+                        if (Same(path, first))
+                        {
+                            one = true;
+                        }
+
+                        if (Same(path, second))
+                        {
+                            two = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return one && two;
+        }
+
+        private static int HiddenCount(SavedViewpoint view)
+        {
+            try
+            {
+                VisibilityOverrides overrides = view.GetVisibilityOverrides();
+
+                if (overrides == null)
+                {
+                    return 0;
+                }
+
+                using (ModelItemCollection hidden = overrides.Hidden)
+                {
+                    return hidden == null ? 0 : hidden.Count;
+                }
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        private static int MaterialCount(SavedViewpoint view)
+        {
+            try
+            {
+                AppearanceOverrides overrides = view.GetAppearanceOverrides();
+                return overrides == null || overrides.MaterialOverrides == null ? 0 : overrides.MaterialOverrides.Count;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        /// <summary>Makes a top level folder of that name through the .NET API, which is how the tool makes one.</summary>
+        private static void EnsureFolder(Document document, string name)
+        {
+            using (GroupItem already = FindFolderItem(document, name))
+            {
+                if (already != null)
+                {
+                    return;
+                }
+            }
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            using (FolderItem folder = new FolderItem())
+            {
+                folder.DisplayName = name;
+                document.SavedViewpoints.AddCopy(root, folder);
+            }
+        }
+
+        private static GroupItem FindFolderItem(Document document, string name)
+        {
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SavedItemCollection children = root.Children;
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    SavedItem child = children[i];
+                    GroupItem group = child as GroupItem;
+
+                    if (group != null && string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                    {
+                        return group;
+                    }
+
+                    child.Dispose();
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>Route A's tail: the view is at the COM root, so copy it into the folder and take the root one out.</summary>
+        private static void MoveRootViewIntoFolder(Document document, string folderName, string name)
+        {
+            using (SavedViewpoint atRoot = LastAtRoot(document, name))
+            {
+                if (atRoot == null)
+                {
+                    return;
+                }
+
+                using (GroupItem folder = FindFolderItem(document, folderName))
+                {
+                    if (folder != null)
+                    {
+                        document.SavedViewpoints.AddCopy(folder, atRoot);
+                    }
+                }
+
+                document.SavedViewpoints.Remove(atRoot);
+            }
+        }
+
+        private static SavedViewpoint LastAtRoot(Document document, string name)
+        {
+            SavedItemCollection items = document.SavedViewpoints.Value;
+
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                SavedItem item = items[i];
+                SavedViewpoint view = item as SavedViewpoint;
+
+                if (view != null && string.Equals(item.DisplayName, name, StringComparison.Ordinal))
+                {
+                    return view;
+                }
+
+                item.Dispose();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Route B: the folder's OWN saved views collection, found by walking the COM root
+        /// collection for a folder view of that name, and one Add into it. One tree
+        /// operation where route A costs three.
+        /// </summary>
+        private void AddComViewIntoFolder(string folderName, string name, Viewpoint camera)
+        {
+            InwOpState10 state = ComApiBridge.State;
+            InwOpFolderView folder = FindComFolder(state, folderName);
+
+            if (folder == null)
+            {
+                Say("ROUTE B: no COM folder view called " + folderName + " at the root, so nothing was added");
+                return;
+            }
+
+            InwOpView view = (InwOpView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpView, null, null);
+            view.name = name;
+            view.ApplyHideAttribs = true;
+            view.ApplyMaterialAttribs = true;
+            view.anonview = ComApiBridge.ToInwOpAnonView(camera);
+            folder.SavedViews().Add(view);
+        }
+
+        private static InwOpFolderView FindComFolder(InwOpState10 state, string name)
+        {
+            InwSavedViewsColl views = state.SavedViews();
+
+            for (int i = 1; i <= views.Count; i++)
+            {
+                InwOpFolderView folder = views[i] as InwOpFolderView;
+
+                if (folder != null && string.Equals(folder.name, name, StringComparison.Ordinal))
+                {
+                    return folder;
+                }
+            }
+
+            return null;
+        }
+
+        private static string Per(long total, int count)
+        {
+            return count == 0 ? "UNKNOWN" : Round((double)total / count);
+        }
+
+        private static string Bytes(string file)
+        {
+            try
+            {
+                return new FileInfo(file).Length.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+            catch (Exception)
+            {
+                return "UNKNOWN";
+            }
+        }
+
+        /// <summary>The first clash in the document whose two items both have geometry, named by index path.</summary>
+        private static bool FindClashPair(Document document, out int[] first, out int[] second, out string name)
+        {
+            first = null;
+            second = null;
+            name = null;
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+
+            for (int t = 0; t < tests.Tests.Count; t++)
+            {
+                ClashTest test = tests.Tests[t] as ClashTest;
+
+                if (test == null)
+                {
+                    continue;
+                }
+
+                for (int r = 0; r < test.Children.Count; r++)
+                {
+                    ClashResult result = test.Children[r] as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    using (ModelItem a = result.Item1)
+                    using (ModelItem b = result.Item2)
+                    {
+                        if (a == null || b == null || !a.HasGeometry || !b.HasGeometry)
+                        {
+                            continue;
+                        }
+
+                        first = PathOf(document, a);
+                        second = PathOf(document, b);
+                        name = test.DisplayName + "  " + result.DisplayName;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        // ---------- PART 4 and PART 5, the shared coordinate, the worksets and the ids ----------
+
+        /// <summary>
+        /// Reads, per model, everything this API will say about where a model sits and
+        /// what its elements carry. Nothing is built on any of it until this has been
+        /// read, because a check that reports the wrong thing confidently is worse than
+        /// no check, and a bounding box comparison is exactly that.
+        ///
+        /// What is asked, scan.md 5q:
+        ///     Model.Transform, whether it is the identity on a correct export
+        ///     every property the model ROOT carries, by tab and name, so a shared
+        ///         coordinate or a base point shows up under whatever it is called
+        ///     whether anything coordinate shaped is per ITEM instead
+        /// And beside it, PART 5: the Workset values and the Element ID share per model.
+        /// </summary>
+        private void MeasureSurvey(string[] parameters, int from)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            for (int f = from; f < parameters.Length; f++)
+            {
+                string file = parameters[f];
+                Say(string.Empty);
+                Say("================ " + Path.GetFileName(file) + " ================");
+                document.Clear();
+
+                if (!document.TryOpenFile(file))
+                {
+                    Say("UNKNOWN: TryOpenFile returned false for " + file);
+                    continue;
+                }
+
+                Say(document.Models.Count + " model(s)");
+
+                for (int m = 0; m < document.Models.Count; m++)
+                {
+                    using (Model model = document.Models[m])
+                    {
+                        SurveyOneModel(model, m);
+                    }
+                }
+            }
+        }
+
+        private void SurveyOneModel(Model model, int index)
+        {
+            Say(string.Empty);
+            Say("---- model " + index + ": " + Path.GetFileName(Words(model.FileName)) + " ----");
+            Say("   SourceFileName " + Words(model.SourceFileName) + ", Creator " + Words(model.Creator));
+
+            try
+            {
+                Transform3D transform = model.Transform;
+
+                if (transform == null)
+                {
+                    Say("   Transform is null");
+                }
+                else
+                {
+                    Vector3D t = transform.Translation;
+                    Say("   Transform IsIdentity " + transform.IsIdentity()
+                        + ", IsTranslation " + transform.IsTranslation()
+                        + ", Translation (" + Round(t.X) + ", " + Round(t.Y) + ", " + Round(t.Z) + ")");
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   reading Transform threw " + error.GetType().Name + ": " + error.Message);
+            }
+
+            try
+            {
+                Say("   HasNorthVector " + model.HasNorthVector
+                    + ", HasUpVector " + model.HasUpVector
+                    + ", IsTransformReflected " + model.IsTransformReflected);
+
+                if (model.HasNorthVector)
+                {
+                    UnitVector3D north = model.NorthVector;
+                    Say("   NorthVector (" + Round(north.X) + ", " + Round(north.Y) + ", " + Round(north.Z) + ")");
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   reading the vectors threw " + error.GetType().Name);
+            }
+
+            using (ModelItem root = model.RootItem)
+            {
+                Say("   THE MODEL ROOT carries these properties:");
+                SayEveryProperty(root, "      ");
+
+                try
+                {
+                    BoundingBox3D box = root.BoundingBox();
+
+                    if (box != null)
+                    {
+                        Say("   root BoundingBox min (" + Round(box.Min.X) + ", " + Round(box.Min.Y) + ", " + Round(box.Min.Z)
+                            + ") max (" + Round(box.Max.X) + ", " + Round(box.Max.Y) + ", " + Round(box.Max.Z) + ")");
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("   reading the root BoundingBox threw " + error.GetType().Name);
+                }
+
+                SayFirstLeafAndItsParent(root);
+                WalkForWorksetsAndIds(root);
+            }
+        }
+
+        /// <summary>
+        /// The first item with geometry and the item above it, in full. A Revit element
+        /// reaches Navisworks as a COMPOSITE item with geometry leaves under it, and the
+        /// first survey counted worksets and ids over the leaves and read zero where a
+        /// real run reads 860 of 1,052. Where a property lives is measured here and not
+        /// assumed, because the count is only as honest as the node it is taken on.
+        /// </summary>
+        private void SayFirstLeafAndItsParent(ModelItem root)
+        {
+            try
+            {
+                foreach (ModelItem item in root.DescendantsAndSelf)
+                {
+                    using (item)
+                    {
+                        if (!item.HasGeometry)
+                        {
+                            continue;
+                        }
+
+                        Say("   THE FIRST ITEM WITH GEOMETRY, [" + Words(item.DisplayName) + "], IsComposite " + item.IsComposite + ":");
+                        SayEveryProperty(item, "      ");
+
+                        using (ModelItem parent = item.Parent)
+                        {
+                            if (parent == null)
+                            {
+                                Say("   it has no parent");
+                                return;
+                            }
+
+                            Say("   THE ITEM ABOVE IT, [" + Words(parent.DisplayName) + "], IsComposite " + parent.IsComposite + ", HasGeometry " + parent.HasGeometry + ":");
+                            SayEveryProperty(parent, "      ");
+                        }
+
+                        return;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   reading the first leaf threw " + error.GetType().Name);
+            }
+        }
+
+        /// <summary>Every tab, every property and every value on that one item, which is how a coordinate is found without guessing its name.</summary>
+        private void SayEveryProperty(ModelItem item, string indent)
+        {
+            try
+            {
+                using (PropertyCategoryCollection tabs = item.PropertyCategories)
+                {
+                    if (tabs == null)
+                    {
+                        Say(indent + "no property tabs at all");
+                        return;
+                    }
+
+                    foreach (PropertyCategory tab in tabs)
+                    {
+                        using (tab)
+                        {
+                            Say(indent + "[" + Words(tab.DisplayName) + "] internal " + Words(tab.Name));
+
+                            using (DataPropertyCollection properties = tab.Properties)
+                            {
+                                for (int i = 0; i < properties.Count; i++)
+                                {
+                                    using (DataProperty property = properties[i])
+                                    {
+                                        Say(indent + "   " + Words(property.DisplayName)
+                                            + "  internal " + Words(property.Name)
+                                            + "  =  " + AnyText(property));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say(indent + "reading the properties threw " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        /// <summary>
+        /// Walks every item under that root once and counts the two things a set and a
+        /// report column need: whether anything carries a Workset at all and under what
+        /// names, and what share of items carry an Element ID. Counted over items with
+        /// GEOMETRY, because that is what a clash test can find and what a report row is.
+        /// Anything whose name looks like a coordinate is named too, so a per item shared
+        /// coordinate cannot be missed by looking only at the root.
+        /// </summary>
+        private void WalkForWorksetsAndIds(ModelItem root)
+        {
+            int items = 0;
+            int geometry = 0;
+            int elements = 0;
+            int withWorkset = 0;
+            int withId = 0;
+            Dictionary<string, int> worksets = new Dictionary<string, int>(StringComparer.Ordinal);
+            Dictionary<string, int> coordinateish = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            try
+            {
+                foreach (ModelItem item in root.DescendantsAndSelf)
+                {
+                    using (item)
+                    {
+                        items++;
+
+                        if (item.HasGeometry)
+                        {
+                            geometry++;
+                        }
+
+                        if (items <= 400)
+                        {
+                            NoteCoordinateish(item, coordinateish);
+                        }
+
+                        // THE REVIT ELEMENT AND NOT THE GEOMETRY LEAF. Id and Workset sit
+                        // on the [Element] tab of the COMPOSITE item, and the geometry
+                        // solids under it carry neither. Counting them over the leaves
+                        // read zero where a real run reads 860 of 1,052 ids, so the node
+                        // is chosen by the tab it carries and not by having geometry.
+                        string workset;
+                        string id;
+
+                        if (!ReadElementTab(item, out id, out workset))
+                        {
+                            continue;
+                        }
+
+                        elements++;
+
+                        if (workset.Length > 0)
+                        {
+                            withWorkset++;
+                            Bump(worksets, workset);
+                        }
+
+                        if (id.Length > 0)
+                        {
+                            withId++;
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   the walk threw " + error.GetType().Name + ": " + error.Message);
+            }
+
+            Say("   " + items + " item(s), " + geometry + " with geometry, " + elements + " Revit element(s)");
+            Say("   WORKSET: " + withWorkset + " of " + elements + " carry one, "
+                + worksets.Count + " distinct name(s)");
+
+            foreach (KeyValuePair<string, int> pair in worksets)
+            {
+                Say("      " + pair.Key + "  " + pair.Value);
+            }
+
+            Say("   ELEMENT ID: " + withId + " of " + elements + " carry one, " + Share(withId, elements));
+
+            Say("   property names that look like a coordinate, off the first 200 of each:");
+
+            if (coordinateish.Count == 0)
+            {
+                Say("      none");
+            }
+
+            foreach (KeyValuePair<string, int> pair in coordinateish)
+            {
+                Say("      " + pair.Key + "  " + pair.Value);
+            }
+        }
+
+        /// <summary>
+        /// The Id and the Workset off that item's OWN [Element] tab, and whether it has
+        /// one at all. A Revit element reaches Navisworks carrying LcRevitData_Element,
+        /// and the geometry under it does not, so this is what tells an element from a
+        /// solid without guessing at the tree shape.
+        /// </summary>
+        private static bool ReadElementTab(ModelItem item, out string id, out string workset)
+        {
+            id = string.Empty;
+            workset = string.Empty;
+
+            try
+            {
+                using (PropertyCategoryCollection tabs = item.PropertyCategories)
+                {
+                    if (tabs == null)
+                    {
+                        return false;
+                    }
+
+                    foreach (PropertyCategory tab in tabs)
+                    {
+                        if (!string.Equals(Words(tab.Name), ElementTabInternalName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+
+                        using (DataPropertyCollection properties = tab.Properties)
+                        {
+                            for (int i = 0; i < properties.Count; i++)
+                            {
+                                using (DataProperty property = properties[i])
+                                {
+                                    string name = Words(property.DisplayName);
+
+                                    if (string.Equals(name, "Id", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        id = AnyText(property);
+                                    }
+                                    else if (string.Equals(name, "Workset", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        workset = AnyText(property);
+                                    }
+                                }
+                            }
+                        }
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return false;
+        }
+
+        /// <summary>What Navisworks calls the tab a Revit element carries, read off a real NWC on 2026-09-20.</summary>
+        private const string ElementTabInternalName = "LcRevitData_Element";
+
+        private static readonly string[] WorksetNames = { "Workset" };
+
+        private static readonly string[] ElementIdNames = { "Id", "Element Id", "ElementId", "Element ID" };
+
+        private static readonly string[] CoordinateWords =
+            { "coordinate", "base point", "survey", "origin", "north", "elevation", "location", "shared", "level" };
+
+        private static void NoteCoordinateish(ModelItem item, Dictionary<string, int> into)
+        {
+            try
+            {
+                using (PropertyCategoryCollection tabs = item.PropertyCategories)
+                {
+                    if (tabs == null)
+                    {
+                        return;
+                    }
+
+                    foreach (PropertyCategory tab in tabs)
+                    {
+                        using (tab)
+                        using (DataPropertyCollection properties = tab.Properties)
+                        {
+                            for (int i = 0; i < properties.Count; i++)
+                            {
+                                using (DataProperty property = properties[i])
+                                {
+                                    string name = Words(property.DisplayName);
+
+                                    for (int w = 0; w < CoordinateWords.Length; w++)
+                                    {
+                                        if (name.IndexOf(CoordinateWords[w], StringComparison.OrdinalIgnoreCase) >= 0)
+                                        {
+                                            Bump(into, "[" + Words(tab.DisplayName) + "] " + name + " = " + AnyText(property));
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // One unreadable item costs one item, never the walk.
+            }
+        }
+
+        private static void Bump(Dictionary<string, int> into, string key)
+        {
+            int already;
+            into.TryGetValue(key, out already);
+            into[key] = already + 1;
+        }
+
+        private static string Share(int part, int whole)
+        {
+            if (whole == 0)
+            {
+                return "UNKNOWN";
+            }
+
+            return Round(100.0 * part / whole) + "%";
+        }
+
+        /// <summary>The first of those property display names that answers on that item, or empty.</summary>
+        private static string FirstOf(ModelItem item, string[] wanted)
+        {
+            try
+            {
+                using (PropertyCategoryCollection tabs = item.PropertyCategories)
+                {
+                    if (tabs == null)
+                    {
+                        return string.Empty;
+                    }
+
+                    for (int w = 0; w < wanted.Length; w++)
+                    {
+                        foreach (PropertyCategory tab in tabs)
+                        {
+                            using (DataPropertyCollection properties = tab.Properties)
+                            {
+                                for (int i = 0; i < properties.Count; i++)
+                                {
+                                    using (DataProperty property = properties[i])
+                                    {
+                                        if (!string.Equals(property.DisplayName, wanted[w], StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            continue;
+                                        }
+
+                                        string text = AnyText(property);
+
+                                        if (text.Length > 0)
+                                        {
+                                            return text;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// A property's value as text WHATEVER its type. The probe's older Text reader
+        /// answers on three types and empty on the rest, which would read a double valued
+        /// coordinate as absent. Every type the API offers is handled here.
+        /// </summary>
+        private static string AnyText(DataProperty property)
+        {
+            try
+            {
+                using (VariantData value = property.Value)
+                {
+                    if (value == null)
+                    {
+                        return string.Empty;
+                    }
+
+                    switch (value.DataType)
+                    {
+                        case VariantDataType.DisplayString:
+                            return value.ToDisplayString();
+                        case VariantDataType.IdentifierString:
+                            return value.ToIdentifierString();
+                        case VariantDataType.Int32:
+                            return value.ToInt32().ToString(System.Globalization.CultureInfo.InvariantCulture);
+                        case VariantDataType.Boolean:
+                            return value.ToBoolean().ToString();
+                        case VariantDataType.DateTime:
+                            return value.ToDateTime().ToString("s", System.Globalization.CultureInfo.InvariantCulture);
+                        case VariantDataType.Double:
+                        case VariantDataType.DoubleAngle:
+                        case VariantDataType.DoubleArea:
+                        case VariantDataType.DoubleLength:
+                        case VariantDataType.DoubleVolume:
+                            return Round(value.ToAnyDouble());
+                        case VariantDataType.NamedConstant:
+                            using (NamedConstant named = value.ToNamedConstant())
+                            {
+                                return named == null ? string.Empty : Words(named.DisplayName);
+                            }
+                        case VariantDataType.Point3D:
+                            Point3D point = value.ToPoint3D();
+                            return "(" + Round(point.X) + ", " + Round(point.Y) + ", " + Round(point.Z) + ")";
+                        default:
+                            return Words(value.ToString());
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        private static string Words(string value)
+        {
+            return value ?? string.Empty;
+        }
+
+        // ---------- PART 2, what a viewpoint records of a COLOUR ----------
+
+        /// <summary>
+        /// Three colour pairs on the same two clashing items, each recorded into its own
+        /// viewpoint and read back before and after a save, because the first route pass
+        /// recorded a colour for item 1 and NOTHING for item 2, whose original colour
+        /// already was the green it was being given.
+        ///
+        /// The question this settles: does a viewpoint record a colour override for an
+        /// item whose original colour already IS that colour. If it does not, then a read
+        /// back that insists on both colours would fail a viewpoint that is perfectly
+        /// right, and the read back has to be written to know the difference.
+        /// </summary>
+        private void MeasureColour(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            document.Clear();
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            int[] firstPath;
+            int[] secondPath;
+            string clashName;
+
+            if (!FindClashPair(document, out firstPath, out secondPath, out clashName))
+            {
+                Say("UNKNOWN: no clash in this copy has two items with geometry");
+                return;
+            }
+
+            Say("the clash measured against: " + clashName);
+            Say("ORIGINAL colours, before anything is overridden:");
+            Say("   item 1 " + LiveColour(document, firstPath));
+            Say("   item 2 " + LiveColour(document, secondPath));
+
+            EnsureFolder(document, "C");
+
+            Color[][] pairs =
+            {
+                new[] { new Color(1.0, 0.0, 0.0), new Color(0.0, 1.0, 0.0) },
+                new[] { new Color(1.0, 0.0, 0.0), new Color(0.0, 0.0, 1.0) },
+                new[] { new Color(1.0, 1.0, 0.0), new Color(1.0, 0.0, 1.0) }
+            };
+
+            for (int p = 0; p < pairs.Length; p++)
+            {
+                string name = "C " + (p + 1);
+                Say(string.Empty);
+                Say("PAIR " + (p + 1) + ": item 1 " + Rgb(pairs[p][0]) + ", item 2 " + Rgb(pairs[p][1]));
+
+                document.Models.ResetAllTemporaryMaterials();
+                document.Models.ResetAllHidden();
+
+                using (ModelItemCollection one = new ModelItemCollection())
+                using (Model last = document.Models[document.Models.Count - 1])
+                using (ModelItem lastRoot = last.RootItem)
+                {
+                    one.Add(lastRoot);
+                    document.Models.SetHidden(one, true);
+                }
+
+                using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+                {
+                    document.Models.OverrideTemporaryTransparency(roots, 0.85);
+                }
+
+                ResetTwo(document, firstPath, secondPath, false);
+                PaintOne(document, firstPath, pairs[p][0]);
+                PaintOne(document, secondPath, pairs[p][1]);
+
+                Say("   live after painting: item 1 " + LiveColour(document, firstPath));
+                Say("   live after painting: item 2 " + LiveColour(document, secondPath));
+
+                using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+                {
+                    AddComView(name, camera, true);
+                    MoveRootViewIntoFolder(document, "C", name);
+                }
+
+                SayBothRecorded(document, name, firstPath, secondPath, "   before the save");
+            }
+
+            document.Models.ResetAllTemporaryMaterials();
+            document.Models.ResetAllHidden();
+
+            string saved = Path.Combine(Path.GetDirectoryName(nwfCopy), "probe-colour-saved.nwf");
+            Say(string.Empty);
+            Say("TrySaveFile to " + saved + " = " + document.TrySaveFile(saved));
+            document.Clear();
+
+            if (!document.TryOpenFile(saved))
+            {
+                Say("UNKNOWN: the saved copy would not reopen");
+                return;
+            }
+
+            Say("reopened off the disk, " + Bytes(saved) + " bytes");
+            FindClashPair(document, out firstPath, out secondPath, out clashName);
+
+            for (int p = 0; p < pairs.Length; p++)
+            {
+                string name = "C " + (p + 1);
+                Say(string.Empty);
+                SayBothRecorded(document, name, firstPath, secondPath, "AFTER THE REOPEN");
+
+                using (GroupItem folder = FindFolderItem(document, "C"))
+                {
+                    if (folder == null)
+                    {
+                        continue;
+                    }
+
+                    using (SavedViewpoint press = FindUnder(folder, name))
+                    {
+                        if (press == null)
+                        {
+                            continue;
+                        }
+
+                        document.SavedViewpoints.CurrentSavedViewpoint = press;
+                    }
+                }
+
+                Say("   pressed " + name + ": item 1 " + LiveColour(document, firstPath));
+                Say("   pressed " + name + ": item 2 " + LiveColour(document, secondPath));
+                document.Models.ResetAllTemporaryMaterials();
+                document.Models.ResetAllHidden();
+            }
+
+            Say(string.Empty);
+            Say("A colour is recorded only where the viewpoint's own MaterialOverrides name the item.");
+        }
+
+        private static void PaintOne(Document document, int[] path, Color colour)
+        {
+            using (ModelItem item = Resolve(document, path))
+            {
+                if (item == null)
+                {
+                    return;
+                }
+
+                using (ModelItemCollection one = new ModelItemCollection())
+                {
+                    one.Add(item);
+                    document.Models.OverrideTemporaryColor(one, colour);
+                }
+            }
+        }
+
+        /// <summary>Whether that viewpoint names each of the two items in its own overrides, said one item at a time.</summary>
+        private void SayBothRecorded(Document document, string name, int[] first, int[] second, string when)
+        {
+            using (GroupItem folder = FindFolderItem(document, "C"))
+            {
+                if (folder == null)
+                {
+                    Say(when + ": no folder C");
+                    return;
+                }
+
+                using (SavedViewpoint view = FindUnder(folder, name))
+                {
+                    if (view == null)
+                    {
+                        Say(when + ": " + name + " NOT FOUND");
+                        return;
+                    }
+
+                    Say(when + ", " + name + ": " + MaterialCount(view) + " material override(s) in all");
+                    Say("      item 1 " + OverrideFor(document, view, first));
+                    Say("      item 2 " + OverrideFor(document, view, second));
+                }
+            }
+        }
+
+        /// <summary>What that viewpoint recorded for that one item, or that it named it at all.</summary>
+        private static string OverrideFor(Document document, SavedViewpoint view, int[] path)
+        {
+            if (path == null)
+            {
+                return "no item";
+            }
+
+            try
+            {
+                AppearanceOverrides overrides = view.GetAppearanceOverrides();
+
+                if (overrides == null || overrides.MaterialOverrides == null)
+                {
+                    return "the viewpoint carries no appearance overrides at all";
+                }
+
+                foreach (MaterialOverride material in overrides.MaterialOverrides)
+                {
+                    using (ModelItem item = material.Item)
+                    {
+                        if (item == null)
+                        {
+                            continue;
+                        }
+
+                        if (!Same(PathOf(document, item), path))
+                        {
+                            continue;
+                        }
+
+                        return "NAMED, colour " + Rgb(material.Color) + ", transparency "
+                            + (material.Transparency.HasValue ? Round(material.Transparency.Value) : "none");
+                    }
+                }
+
+                return "NOT NAMED by any override";
+            }
+            catch (Exception error)
+            {
+                return "reading threw " + error.GetType().Name;
+            }
+        }
+
+        // ---------- why the penetration rule has never moved a clash ----------
+
+        /// <summary>
+        /// Opens an NWF this tool wrote and reads, for the first clashes in it, exactly
+        /// what the penetration rule reads: the item each side gives back, and the
+        /// Category property found on it and on each of the four ancestors above it, the
+        /// way ClashHarvest.FirstPropertyOn looks for one.
+        ///
+        /// WHY. Two real runs moved ZERO clashes to Reviewed and put every single clash
+        /// in the one bucket "not a service against a solid", with zero in all five other
+        /// buckets. A rule that never fires and never says why is worse than no rule, and
+        /// which of the two it is, no category at all or a category nobody expected, is
+        /// not guessable off the log.
+        /// </summary>
+        private void MeasurePenetration(string nwf)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            document.Clear();
+
+            if (!document.TryOpenFile(nwf))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            Say("document units " + document.Units + ", " + document.Models.Count + " model(s)");
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+            int shown = 0;
+
+            for (int t = 0; t < tests.Tests.Count && shown < 12; t++)
+            {
+                ClashTest test = tests.Tests[t] as ClashTest;
+
+                if (test == null || test.Children.Count == 0)
+                {
+                    continue;
+                }
+
+                for (int r = 0; r < test.Children.Count && shown < 12; r++)
+                {
+                    ClashResult result = test.Children[r] as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    shown++;
+                    Say(string.Empty);
+                    Say("CLASH " + shown + ": " + test.DisplayName + "  " + result.DisplayName);
+                    Say("   --- what Selection1 and Selection2 give, which is what the penetration rule reads ---");
+                    SaySide(document, result.Selection1, "side 1");
+                    SaySide(document, result.Selection2, "side 2");
+                    Say("   --- what Item1 and Item2 give, which is what the harvest reads ---");
+                    SayItem(document, result.Item1, "item 1");
+                    SayItem(document, result.Item2, "item 2");
+                }
+            }
+
+            Say(string.Empty);
+            Say("The rule asks: is one side a SERVICE category and the other a SOLID category.");
+            Say("services: Pipes, Pipe Fittings, Ducts, Duct Fittings, Cable Trays, Conduits and the rest.");
+            Say("solids: Walls, Floors, Roofs, Structural Foundations.");
+        }
+
+        /// <summary>
+        /// What one clash side gives back and what Category reads on it and above it. The
+        /// SAME four levels and the same property names Penetrations uses, so what this
+        /// prints is what that rule sees and not a near relative of it.
+        /// </summary>
+        private void SaySide(Document document, ModelItemCollection selection, string which)
+        {
+            using (selection)
+            {
+                if (selection == null || selection.Count == 0)
+                {
+                    Say("   " + which + ": nothing selected");
+                    return;
+                }
+
+                Say("   " + which + ": " + selection.Count + " item(s) selected, the rule reads the FIRST");
+
+                using (ModelItem item = selection[0])
+                {
+                    if (item == null)
+                    {
+                        Say("      the first item is null");
+                        return;
+                    }
+
+                    ModelItem walker = item;
+
+                    for (int level = 0; level <= 4 && walker != null; level++)
+                    {
+                        Say("      level " + level + " [" + Words(walker.DisplayName) + "]"
+                            + " geometry " + walker.HasGeometry
+                            + " composite " + walker.IsComposite
+                            + "   Category = [" + FirstOf(walker, PenetrationCategoryNames) + "]"
+                            + "   every Category on it: " + EveryCategoryOn(walker));
+
+                        ModelItem parent = walker.Parent;
+
+                        if (level > 0)
+                        {
+                            walker.Dispose();
+                        }
+
+                        walker = parent;
+                    }
+
+                    if (walker != null)
+                    {
+                        walker.Dispose();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The same walk on the item ClashResult.Item1 gives, which is the OTHER route to
+        /// the same clash side and the one the harvest reads its ids off. If one throws
+        /// and the other does not, that is the whole answer.
+        /// </summary>
+        private void SayItem(Document document, ModelItem item, string which)
+        {
+            if (item == null)
+            {
+                Say("   " + which + ": null");
+                return;
+            }
+
+            ModelItem walker = item;
+
+            for (int level = 0; level <= 4 && walker != null; level++)
+            {
+                Say("      " + which + " level " + level + " [" + Words(walker.DisplayName) + "]"
+                    + " geometry " + walker.HasGeometry
+                    + " composite " + walker.IsComposite
+                    + "   Category = [" + FirstOf(walker, PenetrationCategoryNames) + "]"
+                    + "   every Category on it: " + EveryCategoryOn(walker));
+
+                ModelItem parent = walker.Parent;
+                walker.Dispose();
+                walker = parent;
+            }
+
+            if (walker != null)
+            {
+                walker.Dispose();
+            }
+        }
+
+        /// <summary>The same three names PenetrationSettings.DefaultCategoryNames holds, in the same order.</summary>
+        private static readonly string[] PenetrationCategoryNames = { "Category", "Revit Category", "Element Category" };
+
+        /// <summary>
+        /// EVERY property called Category on that item, with the tab it came from, because
+        /// the rule takes the FIRST one and a tab order nobody looked at would decide
+        /// which. Measured rather than reasoned about.
+        /// </summary>
+        private static string EveryCategoryOn(ModelItem item)
+        {
+            List<string> found = new List<string>();
+
+            try
+            {
+                using (PropertyCategoryCollection tabs = item.PropertyCategories)
+                {
+                    if (tabs == null)
+                    {
+                        return "no tabs";
+                    }
+
+                    foreach (PropertyCategory tab in tabs)
+                    {
+                        using (DataPropertyCollection properties = tab.Properties)
+                        {
+                            for (int i = 0; i < properties.Count; i++)
+                            {
+                                using (DataProperty property = properties[i])
+                                {
+                                    if (string.Equals(Words(property.DisplayName), "Category", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        found.Add("[" + Words(tab.DisplayName) + "]=" + AnyText(property));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                return "reading threw " + error.GetType().Name;
+            }
+
+            return found.Count == 0 ? "none" : string.Join("  ", found.ToArray());
         }
     }
 }

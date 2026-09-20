@@ -19,7 +19,7 @@ Renumbered again on 2026-09-19 when the build round opened. Bader pulled main, r
 Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the tool for real, the first run since the add-in was proved to build, and briefed two fixes. F71 and F72 were both free and the two map onto the brief one for one and in order. The four answers the brief calls Q47 to Q50 go in as Q41 to Q44, because the questions file runs to 40 and Q41 to Q46 do not exist, and they map one for one and in order too.
 
 1. F71, DONE, say when an NWF is nearly matched
-2. F72, DONE, penetrations become Reviewed, which answers Q33
+2. F72, DONE and FIRING, penetrations become Reviewed, which answers Q33. It read a clash side through Selection1 and never moved one clash until the alignment round measured why, 5r
 3. F65, DONE, the missing import. `DocumentCensusReader` names a type and does not import its namespace, which is CS0246
 4. F66, DONE, the check that would have caught it
 5. F67, DONE, one doubled comment
@@ -63,7 +63,7 @@ THE EIGHT WITHOUT AN ADD-IN CALLER WERE WIRED IN THE WIRING ROUND ON 2026-09-19,
 28. F83, WIRED, the clash priority reaches the report
 29. F72b, WIRED, by design connections become Reviewed
 30. F72c, WIRED, the record in the NWF and the undo
-31. F85, WIRED, the saved viewpoints in three layers, written, dimmed and read back
+31. F85, WIRED, the saved viewpoints in three layers, written, dimmed, coloured and read back
 32. F84, DONE, the sets that cannot match anything
 33. F78, DONE, the log says or where the file says or
 34. F79, DONE, which missing item ids are this run's
@@ -169,7 +169,7 @@ Every one of these came off ONE log, `run-20260919-144319.log`, the first real r
 - CORE HALF DONE on 2026-09-19. The record is a marker no person would type, the rule, the status the clash was moved OFF, then the reason. The old status is on it because putting an Active clash back to New would destroy a real difference. A comment a person wrote is never read as one of ours. The undo touches a clash only where it carries our record AND is still at Reviewed. `AllowsAsUndo` is a separate answer from `Allows` and not a loosening of it, which is Q50. Whether a comment can be written at all is `scan.md` 5h, and if it cannot the tool says so in one line and fakes nothing
 - WIRED on 2026-09-19 in the wiring round, steps 372 and 373, commit 377d1f0. The record is a comment written through `TestsEditResultComments` before the status on the same handle, both rules hand over the status they moved from and why, and the Undo auto Reviewed button walks every test of the open document through the one editor with the undo half of the guard. See the wiring round's log entry for what the run showed about the comment surviving
 
-### F85 The saved viewpoints in three layers, written, dimmed and read back
+### F85 The saved viewpoints in three layers, written, dimmed, coloured and read back
 
 - AND DIMMED on 2026-09-20 in the dimming round, branch round-dimming, because Bader pressed two of the 975 the viewpoints round wrote and could not see the clash: the camera Clash Detective computes lands inside a beam and a solid beam fills the screen. Everything but the two clashing items now goes to 0.85 transparency through a temporary override on the roots of the models the viewpoint shows and a reset on those two, recorded by the COM view's `ApplyMaterialAttribs`, measured through a save and a reopen in docs\history\scan.md 5o. The read back is FOUR counts and not three flags, because both flags this API offers read true on a viewpoint that recorded nothing. The transparency is a setting and zero switches it off. It costs: the run went 5 minutes 3 seconds to 10 minutes 26 and the worst NWF 195 times bigger, which is question 59
 - WIRED on 2026-09-20 in the viewpoints round, branch round-viewpoints. `ViewpointBuilder` reads every clash, plans through `ClashViewpointPlan`, and writes one saved viewpoint per clash through the COM view with `ApplyHideAttribs`, the one route measured to record both the camera and the hidden state, docs\history\scan.md 5l to 5n. Every written viewpoint is read back three ways before it is counted. Six runs of ten groups: the first wrote 975 viewpoints that opened on sky because the capture records no camera, the second failed all 975 on the camera read back, the third and fourth wrote 975 that open on their clash with the other disciplines hidden, the fifth and sixth added the model each clash item lives in, the sixth for 975 of 975. 5 minutes 3 seconds against 5 minutes 9 seconds without viewpoints. The log entry carries every number
@@ -855,3 +855,5 @@ Not fixes. Runs on the local machine that no code change replaces. Bader runs th
 - P1 one building, Run, send the log. Proves criterion 1 and shows OPENED on the second press. Closes M1
 - P2 all buildings ticked, Run, send the log. The timing block per group answers criterion 2. Closes M2
 - P3 open one NWF, read the panel count for three tests, compare to the Excel. Closes M3
+
+The alignment round closed on 2026-09-20, branch `round-alignment`, proved by TWO RUNS AGAINST BADER'S OWN LIVE FOLDERS after a backup was taken and read back, Q60. Six items were briefed and all six are done: the cheap COM write route behind a setting with both routes in the one binary, the two colours read back on what a viewpoint will SHOW rather than what it recorded, Structural Foundations on the solid list with Framing and Columns deliberately out, the 55 pair by design file, the ALIGNMENT block by shared coordinate and the EXPORT CHECK block. The round's own PART 8 found a seventh, which is the one that mattered: `F72 HAD NEVER MOVED A SINGLE CLASH` because it read a clash side through `Selection1`, whose item throws `NotSupportedException` off `PropertyCategories`, scan.md 5r. It moved 4 on the run after the fix, the first four of its life. Q67 and Q68 are open and both are Bader's.

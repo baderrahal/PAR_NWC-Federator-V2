@@ -155,8 +155,8 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            PenetrationSide first = ReadSide(result.Selection1, unitEnumName, settings, sizes);
-            PenetrationSide second = ReadSide(result.Selection2, unitEnumName, settings, sizes);
+            PenetrationSide first = ReadSide(result.Item1, unitEnumName, settings, sizes);
+            PenetrationSide second = ReadSide(result.Item2, unitEnumName, settings, sizes);
             CoreClashStatus status = (CoreClashStatus)(int)result.Status;
 
             PenetrationDecision decision =
@@ -195,8 +195,8 @@ namespace Federator.Addin.Engine
                 return null;
             }
 
-            PenetrationSide first = ReadSide(result.Selection1, unitEnumName, settings, sizes);
-            PenetrationSide second = ReadSide(result.Selection2, unitEnumName, settings, sizes);
+            PenetrationSide first = ReadSide(result.Item1, unitEnumName, settings, sizes);
+            PenetrationSide second = ReadSide(result.Item2, unitEnumName, settings, sizes);
             bool firstIsService = settings.IsService(first.Category);
             bool secondIsService = settings.IsService(second.Category);
 
@@ -228,37 +228,35 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// One side of a clash, read off the first item it holds.
+        /// One side of a clash, read off the item the clash gives back for that side.
         ///
-        /// THE FIRST ITEM AND NOT EVERY ITEM. A clash side is one geometry item on a
-        /// Revit sourced NWC, and reading every item of a ModelItemCollection once per
-        /// clash over 1830 tests is the shape of walk that once built 1.7 million handles
-        /// in a group. Where a side somehow holds several, the first is the one the panel
-        /// shows, which is the one a person looking at this clash sees.
+        /// IT READS Item1 AND Item2 AND NEVER Selection1 AND Selection2, and that is the
+        /// whole reason this rule never moved a clash. MEASURED on 2026-09-20,
+        /// docs\history\scan.md 5r: the item a clash's SELECTION hands back throws
+        /// NotSupportedException off PropertyCategories, at every level of the walk up,
+        /// on both sides of every clash tried. The item ClashResult.Item1 hands back is
+        /// the same named item and reads its properties perfectly, which is why the
+        /// harvest beside it reads 860 element ids off the same clashes. Every category
+        /// read therefore came back EMPTY, the rule put all 526 clashes of one group in
+        /// "not a service against a solid", and two whole runs moved nothing while the
+        /// block said every clash was looked at.
         ///
-        /// EVERYTHING READ HERE IS RELEASED HERE. Selection1 and Selection2 are a fresh
-        /// collection on every read, the indexer hands out a fresh item, and every parent
-        /// on the walk up is a fresh wrapper, which is 4g's list, so the side collection
-        /// the caller read is disposed on the way out with the item and the chain above
-        /// it. The chain is read once and handed to both lookups rather than walked twice.
+        /// EVERYTHING READ HERE IS RELEASED HERE. Item1 hands out a fresh wrapper and
+        /// every parent on the walk up is another, which is 4g's list, so the item and
+        /// the chain above it are disposed on the way out. The chain is read once and
+        /// handed to both lookups rather than walked twice.
         /// </summary>
         private static PenetrationSide ReadSide(
-            ModelItemCollection selection, string unitEnumName, PenetrationSettings settings, SizeSettings sizes)
+            ModelItem item, string unitEnumName, PenetrationSettings settings, SizeSettings sizes)
         {
-            using (selection)
+            using (item)
             {
-                if (selection == null || selection.Count == 0)
+                if (item == null)
                 {
                     return new PenetrationSide(string.Empty, string.Empty, null);
                 }
 
-                using (ModelItem item = selection[0])
                 {
-                    if (item == null)
-                    {
-                        return new PenetrationSide(string.Empty, string.Empty, null);
-                    }
-
                     IList<ModelItem> lookIn = Upwards(item);
 
                     try

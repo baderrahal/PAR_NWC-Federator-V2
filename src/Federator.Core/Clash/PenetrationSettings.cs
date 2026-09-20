@@ -87,13 +87,26 @@ namespace Federator.Core.Clash
         /// <summary>
         /// The categories that are a solid to go through. Q41 answered: floors and roofs
         /// count as well as walls, because a service dropping through a slab is the same
-        /// kind of thing as one going through a wall.
+        /// kind of thing as one going through a wall. Q63 answered on 2026-09-20 added
+        /// Structural Foundations, which is the category name the client's own matrix
+        /// carries for the set it calls BLD-ST-Foundation.
+        ///
+        /// STRUCTURAL FRAMING AND STRUCTURAL COLUMNS ARE OUT, DELIBERATELY, AND THIS IS
+        /// WHY. A service through a slab, a wall, a roof or a foundation is a hole
+        /// somebody cuts and nobody needs to be told about. A service through a BEAM or a
+        /// COLUMN is a structural decision and an engineer has to make it, so it stays at
+        /// New for a person to look at. Bader proved he reads it the same way in the 422
+        /// clashes he marked by hand in 1A04PW on 2026-09-20: he moved 69 pipes through
+        /// slabs to Reviewed and LEFT 7 pipes through precast beams Active. Widening this
+        /// list to Framing or Columns would move those 7 automatically and take the
+        /// decision away from the engineer who is meant to make it.
         /// </summary>
         public static readonly string[] DefaultSolidCategories =
         {
             "Walls",
             "Floors",
-            "Roofs"
+            "Roofs",
+            "Structural Foundations"
         };
 
         /// <summary>
@@ -160,13 +173,21 @@ namespace Federator.Core.Clash
         /// have to be the same number, and the XAML is the one copy nothing can test.
         ///
         /// Twelve words is the limit a tick box help line has, and this one is twelve.
+        ///
+        /// IT NAMES EVERY SOLID THE RULE COVERS AND A TEST HOLDS IT TO THAT. When Q63
+        /// added Structural Foundations on 2026-09-20 this line still read walls, floors
+        /// and roofs, so the window understated the rule it describes and nothing caught
+        /// it until a round read the steps file against the code. The words cannot be
+        /// built from the list, because the list can grow and the limit cannot, so a test
+        /// asserts that every default solid category is named here and that the line is
+        /// still twelve words. A fifth solid means rewording this line, on purpose.
         /// </summary>
         public static string HelpLine(SizeSettings sizes)
         {
             SizeSettings how = sizes ?? new SizeSettings();
 
             return "Services " + Millimetres(how.ThresholdMillimetres)
-                + " and under through walls, floors, roofs. New and Active only";
+                + " and under through walls, floors, roofs, foundations. New and Active";
         }
 
         /// <summary>

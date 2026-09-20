@@ -404,14 +404,76 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheThreeSolidCategoriesAreWallsFloorsAndRoofs()
+        public void TheFourSolidCategoriesAreWallsFloorsRoofsAndFoundations()
         {
             IList<string> solids = new PenetrationSettings().SolidCategories;
 
-            Assert.That(solids.Count, Is.EqualTo(3));
+            Assert.That(solids.Count, Is.EqualTo(4));
             Assert.That(solids[0], Is.EqualTo("Walls"));
             Assert.That(solids[1], Is.EqualTo("Floors"));
             Assert.That(solids[2], Is.EqualTo("Roofs"));
+            Assert.That(solids[3], Is.EqualTo("Structural Foundations"));
+        }
+
+        // ---------- Q63, what a foundation is and what a beam and a column are not ----------
+
+        /// <summary>
+        /// The grey line under the tick box has to name every solid the rule covers, or
+        /// the window understates what ticking the box will do. That is exactly what
+        /// happened when Q63 added Structural Foundations and the line still read walls,
+        /// floors and roofs. Twelve words is the limit CLAUDE.md sets for a help line,
+        /// so a fifth solid means rewording it on purpose rather than by accident.
+        /// </summary>
+        [Test]
+        public void TheHelpLineNamesEverySolidTheRuleCoversAndStaysWithinTwelveWords()
+        {
+            string line = PenetrationSettings.HelpLine(new SizeSettings());
+
+            Assert.That(line.Split(' ').Length, Is.LessThanOrEqualTo(12), line);
+
+            foreach (string solid in PenetrationSettings.DefaultSolidCategories)
+            {
+                // The line says them in plain words, so "Structural Foundations" is named
+                // by "foundations", which is the word a person reads on the window.
+                string word = solid.Replace("Structural ", string.Empty).ToLowerInvariant();
+
+                Assert.That(line.ToLowerInvariant(), Does.Contain(word.TrimEnd('s')),
+                    solid + " is a solid this rule moves a service through and the help line does not name it");
+            }
+        }
+
+        [Test]
+        public void APipeThroughAFoundationMoves()
+        {
+            PenetrationDecision decision =
+                Decide(Side("Pipes", 100.0), Side("Structural Foundations", null), ClashStatus.New);
+
+            Assert.That(decision.Moves, Is.True);
+            Assert.That(decision.Verdict, Is.EqualTo(PenetrationVerdict.Reviewed));
+        }
+
+        /// <summary>
+        /// Q63, and the reason is in PenetrationSettings.DefaultSolidCategories. A service
+        /// through a beam is a structural decision and stays at New for an engineer. Bader
+        /// left 7 of them Active by hand in 1A04PW on the same day he moved 69 through
+        /// slabs, and this test is what stops the list being widened later.
+        /// </summary>
+        [Test]
+        public void APipeThroughAStructuralBeamDoesNotMove()
+        {
+            PenetrationDecision decision =
+                Decide(Side("Pipes", 100.0), Side("Structural Framing", null), ClashStatus.New);
+
+            Assert.That(decision.Moves, Is.False);
+        }
+
+        [Test]
+        public void APipeThroughAStructuralColumnDoesNotMove()
+        {
+            PenetrationDecision decision =
+                Decide(Side("Pipes", 100.0), Side("Structural Columns", null), ClashStatus.New);
+
+            Assert.That(decision.Moves, Is.False);
         }
 
         [Test]

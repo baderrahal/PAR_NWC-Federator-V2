@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.ComApi;
 using Autodesk.Navisworks.Api.Interop.ComApi;
+using Federator.Core.Views;
 
 namespace Federator.Addin.Engine
 {
@@ -179,6 +180,28 @@ namespace Federator.Addin.Engine
         /// </summary>
         public static void Record(Document document, IList<string> folders, string name, Viewpoint camera)
         {
+            Record(document, folders, name, camera, false);
+        }
+
+        /// <summary>
+        /// The same, by one of two routes, Q59 answered d.
+        ///
+        /// throughTheFolder FALSE is the route above: add at the COM root, copy into the
+        /// folder, remove the root one. Three tree operations per viewpoint.
+        /// throughTheFolder TRUE finds the folder's OWN InwOpFolderView and adds straight
+        /// into its SavedViews collection. One tree operation.
+        ///
+        /// BOTH ARE HERE ON PURPOSE AND THE CHEAP ONE IS NOT ASSUMED BETTER. MEASURED on
+        /// 2026-09-20, docs\history\scan.md 5p: over twenty viewpoints both record the
+        /// camera, the hidden state, the dimming and the two solid items, all four, and
+        /// the cheap one saved three per cent and not the two thirds the operation count
+        /// suggests, because what grows is the tree the write walks and not the number of
+        /// calls. Keeping both in the one binary is what makes the A against B on a real
+        /// group an honest comparison rather than two builds being compared.
+        /// </summary>
+        public static void Record(
+            Document document, IList<string> folders, string name, Viewpoint camera, bool throughTheFolder)
+        {
             if (document == null || folders == null || string.IsNullOrEmpty(name) || camera == null)
             {
                 throw new ArgumentException("A viewpoint needs a document, a folder path, a name and a camera.", "name");
@@ -197,6 +220,22 @@ namespace Federator.Addin.Engine
             // what F85 shipped and what Bader could not read.
             view.ApplyMaterialAttribs = true;
             view.anonview = ComApiBridge.ToInwOpAnonView(camera);
+
+            if (throughTheFolder)
+            {
+                InwOpFolderView folder = FindComFolder(state, folders);
+
+                if (folder == null)
+                {
+                    throw new InvalidOperationException(
+                        "The folder path " + string.Join("/", ToArray(folders))
+                        + " was made and the COM view of it is not there, so the viewpoint has nowhere to go.");
+                }
+
+                folder.SavedViews().Add(view);
+                return;
+            }
+
             state.SavedViews().Add(view);
 
             using (SavedViewpoint atRoot = FindLastAtRoot(document, name))
@@ -232,6 +271,24 @@ namespace Federator.Addin.Engine
         /// </summary>
         public static ViewpointReadBack ReadBack(Document document, IList<string> folders, string name, Viewpoint camera)
         {
+            return ReadBack(document, folders, name, camera, null, null, null, null);
+        }
+
+        /// <summary>
+        /// The same read back with the two clashing items and the colours they were meant
+        /// to be painted, which adds the fourth count Q58 asks for. Pass nulls for the
+        /// four and it is the three count read back the dimming round shipped.
+        /// </summary>
+        public static ViewpointReadBack ReadBack(
+            Document document,
+            IList<string> folders,
+            string name,
+            Viewpoint camera,
+            int[] firstPath,
+            ViewpointColour firstColour,
+            int[] secondPath,
+            ViewpointColour secondColour)
+        {
             ViewpointReadBack read = new ViewpointReadBack();
 
             if (document == null || folders == null || string.IsNullOrEmpty(name) || camera == null)
@@ -264,6 +321,14 @@ namespace Federator.Addin.Engine
                     // what this reads.
                     read.HiddenCount = CountOf(found.GetVisibilityOverrides());
                     read.MaterialOverrideCount = CountOf(found.GetAppearanceOverrides());
+
+                    if (firstColour != null && secondColour != null)
+                    {
+                        read.ColoursAsked = true;
+                        read.ColoursRight =
+                            (ShowsThatColour(document, found, firstPath, firstColour) ? 1 : 0)
+                            + (ShowsThatColour(document, found, secondPath, secondColour) ? 1 : 0);
+                    }
 
                     using (Viewpoint recorded = found.Viewpoint)
                     {
@@ -397,9 +462,169 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// Paints the two clashing items, Q58: the first red and the second green by
+        /// default, the order Clash Detective paints them, on top of the dimming that
+        /// has already left them solid. Returns how many of the two were painted.
+        ///
+        /// IT IS A TEMPORARY COLOUR AND NOT A PERMANENT ONE, for the same reason the
+        /// dimming is, 5o: the permanent one writes onto the item and its only undo
+        /// clears every appearance override the file already held.
+        ///
+        /// IT GOES ON AFTER THE DIMMING AND NEVER BEFORE IT. The transparency override
+        /// on the roots reaches every leaf, so painting first and dimming after would
+        /// dim the paint straight off again.
+        /// </summary>
+        public static int PaintTwo(
+            Document document, ModelItem first, ViewpointColour firstColour, ModelItem second, ViewpointColour secondColour)
+        {
+            if (document == null)
+            {
+                return 0;
+            }
+
+            int painted = 0;
+
+            if (PaintOne(document, first, firstColour))
+            {
+                painted++;
+            }
+
+            if (PaintOne(document, second, secondColour))
+            {
+                painted++;
+            }
+
+            return painted;
+        }
+
+        private static bool PaintOne(Document document, ModelItem item, ViewpointColour colour)
+        {
+            if (item == null || colour == null)
+            {
+                return false;
+            }
+
+            using (ModelItemCollection one = new ModelItemCollection())
+            {
+                one.Add(item);
+                document.Models.OverrideTemporaryColor(one, new Color(colour.Red, colour.Green, colour.Blue));
+            }
+
+            return true;
+        }
+
+        /// <summary>Whether what the viewpoint will show for that item is the colour it was meant to be painted.</summary>
+        private static bool ShowsThatColour(Document document, SavedViewpoint view, int[] path, ViewpointColour wanted)
+        {
+            ViewpointColour showing = WillShow(document, view, path);
+            return showing != null && wanted.Same(showing.Red, showing.Green, showing.Blue);
+        }
+
+        /// <summary>
+        /// What that viewpoint WILL SHOW for that item, as a colour, or null where it
+        /// cannot be read at all.
+        ///
+        /// WHY IT IS NOT "DOES THE VIEWPOINT NAME THE ITEM". MEASURED on 2026-09-20,
+        /// docs\history\scan.md 5p: a viewpoint records a colour override only where the
+        /// colour DIFFERS from the item's own. The second item of the clash measured was
+        /// already green, so painting it green recorded nothing at all, and pressing the
+        /// viewpoint still showed it green, because green is what it was. A read back
+        /// insisting the viewpoint names both items would have failed a viewpoint that
+        /// was perfectly right.
+        ///
+        /// So this asks the question a person answers by looking: the override's colour
+        /// where the viewpoint names the item, and the item's OWN colour where it does
+        /// not, because that is what will be on the screen either way.
+        /// </summary>
+        private static ViewpointColour WillShow(Document document, SavedViewpoint view, int[] path)
+        {
+            if (document == null || view == null || path == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                AppearanceOverrides overrides = view.GetAppearanceOverrides();
+
+                if (overrides != null && overrides.MaterialOverrides != null)
+                {
+                    foreach (MaterialOverride material in overrides.MaterialOverrides)
+                    {
+                        using (ModelItem named = material.Item)
+                        {
+                            if (named == null || !SamePath(PathOf(document, named), path))
+                            {
+                                continue;
+                            }
+
+                            Color painted = material.Color;
+                            return new ViewpointColour(Clamp(painted.R), Clamp(painted.G), Clamp(painted.B));
+                        }
+                    }
+                }
+
+                using (ModelItem item = ItemAt(document, path))
+                {
+                    if (item == null || !item.HasGeometry)
+                    {
+                        return null;
+                    }
+
+                    using (ModelGeometry geometry = item.Geometry)
+                    {
+                        Color own = geometry.OriginalColor;
+                        return new ViewpointColour(Clamp(own.R), Clamp(own.G), Clamp(own.B));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Swallowed and reported as not read. A read back is a diagnostic and a
+                // diagnostic never stops a run, and null is not the same as a wrong colour.
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// A colour part the API handed back, held inside 0 to 1 so it can be put in a
+        /// ViewpointColour, which refuses anything outside that. Nothing is expected to
+        /// be outside it and a value that is would otherwise throw inside a read back.
+        /// </summary>
+        private static double Clamp(double part)
+        {
+            if (double.IsNaN(part))
+            {
+                return 0.0;
+            }
+
+            return part < 0.0 ? 0.0 : (part > 1.0 ? 1.0 : part);
+        }
+
+        private static bool SamePath(int[] a, int[] b)
+        {
+            if (a == null || b == null || a.Length != b.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] != b[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Takes the dimming off again, scoped to the roots this tool overrode rather than
         /// ResetAllTemporaryMaterials, which would also clear a temporary override this
-        /// tool did not set. Measured at under a millisecond, 5o.
+        /// tool did not set. Measured at under a millisecond, 5o. It takes the PAINT off
+        /// too, because a colour override and a transparency override are both temporary
+        /// materials and this is the one reset for both.
         /// </summary>
         public static void Undim(Document document)
         {
@@ -599,6 +824,59 @@ namespace Federator.Addin.Engine
             return false;
         }
 
+        /// <summary>
+        /// The COM folder view at that path, walked name by name from the COM root
+        /// collection, or null where any level is not there. The collection is ONE BASED,
+        /// which is the COM convention and not the .NET one.
+        ///
+        /// The folders themselves are still made through the .NET API by EnsureFolders,
+        /// because that is the route already measured. This only finds one that is there.
+        /// </summary>
+        private static InwOpFolderView FindComFolder(InwOpState10 state, IList<string> folders)
+        {
+            if (folders == null || folders.Count == 0)
+            {
+                return null;
+            }
+
+            InwSavedViewsColl level = state.SavedViews();
+            InwOpFolderView found = null;
+
+            for (int depth = 0; depth < folders.Count; depth++)
+            {
+                found = FolderNamed(level, folders[depth]);
+
+                if (found == null)
+                {
+                    return null;
+                }
+
+                level = found.SavedViews();
+            }
+
+            return found;
+        }
+
+        private static InwOpFolderView FolderNamed(InwSavedViewsColl views, string name)
+        {
+            if (views == null)
+            {
+                return null;
+            }
+
+            for (int i = 1; i <= views.Count; i++)
+            {
+                InwOpFolderView folder = views[i] as InwOpFolderView;
+
+                if (folder != null && string.Equals(folder.name, name, StringComparison.Ordinal))
+                {
+                    return folder;
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>The LAST saved viewpoint of that name at the root, where the COM add appends, or null. The caller disposes it.</summary>
         private static SavedViewpoint FindLastAtRoot(Document document, string name)
         {
@@ -697,6 +975,17 @@ namespace Federator.Addin.Engine
 
         /// <summary>How many items it dims, which is what makes the clash readable when pressed.</summary>
         public int MaterialOverrideCount { get; set; }
+
+        /// <summary>Whether the colours were asked for at all, so a read back of zero can be told from a read back nobody asked for.</summary>
+        public bool ColoursAsked { get; set; }
+
+        /// <summary>
+        /// How many of the two clashing items the viewpoint will show in the colour they
+        /// were meant to be painted, 0, 1 or 2. It counts what will be SEEN and not what
+        /// was recorded, because an item already the colour it is being painted records
+        /// nothing and looks right, 5p.
+        /// </summary>
+        public int ColoursRight { get; set; }
     }
 
     /// <summary>

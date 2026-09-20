@@ -37,8 +37,58 @@ namespace Federator.Core.Tests
             ByDesignPairs pairs = TheFile();
 
             Assert.That(pairs.Picked, Is.True);
-            Assert.That(pairs.Count, Is.EqualTo(41), "forty one pairs, read off the file");
+            Assert.That(pairs.Count, Is.EqualTo(55), "fifty five pairs, read off the file");
             Assert.That(pairs.Problems, Is.Empty);
+        }
+
+        /// <summary>
+        /// Q62 answered b on 2026-09-20. Bader replaced the file with 55 pairs, up from
+        /// 41, and the 14 new ones are architecture meeting structure, read off the 422
+        /// clashes he marked by hand in 1A04PW. They are asserted BY NAME and not just by
+        /// count, because a later edit that drops them would leave the count right if it
+        /// added something else, and these are the pairs the round was for.
+        /// </summary>
+        [Test]
+        public void TheArchitectureAgainstStructurePairsBaderAddedAreAllThere()
+        {
+            ByDesignPairs pairs = TheFile();
+
+            string[][] wanted =
+            {
+                new[] { "BLD-ST-Walls", "BLD-AR-Floors" },
+                new[] { "BLD-ST-Walls", "BLD-AR-Walls" },
+                new[] { "BLD-ST-Walls", "BLD-AR-Doors" },
+                new[] { "BLD-ST-Walls", "BLD-AR-Ceilings" },
+                new[] { "BLD-ST-Framing", "BLD-AR-Walls" },
+                new[] { "BLD-ST-Framing", "BLD-AR-Floors" },
+                new[] { "BLD-ST-Framing", "BLD-AR-Ceilings" },
+                new[] { "BLD-ST-Floors", "BLD-AR-Floors" },
+                new[] { "BLD-ST-Floors", "BLD-AR-Walls" },
+                new[] { "BLD-ST-Columns", "BLD-AR-Floors" },
+                new[] { "BLD-ST-Columns", "BLD-AR-Walls" },
+                new[] { "BLD-ST-Foundation", "BLD-AR-Floors" }
+            };
+
+            foreach (string[] pair in wanted)
+            {
+                Assert.That(pairs.Holds(pair[0], pair[1]), Is.True, pair[0] + " against " + pair[1]);
+                Assert.That(pairs.Holds(pair[1], pair[0]), Is.True,
+                    pair[1] + " against " + pair[0] + ", which a clash may name either way round");
+            }
+        }
+
+        /// <summary>
+        /// The other two Bader added, which are not architecture against structure and
+        /// would go unnoticed in a count. A wall meeting a beam inside one discipline,
+        /// and an architectural wall standing on an architectural floor.
+        /// </summary>
+        [Test]
+        public void TheTwoOtherPairsBaderAddedAreThere()
+        {
+            ByDesignPairs pairs = TheFile();
+
+            Assert.That(pairs.Holds("BLD-ST-Walls", "BLD-ST-Framing"), Is.True);
+            Assert.That(pairs.Holds("BLD-AR-Walls", "BLD-AR-Floors"), Is.True);
         }
 
         [Test]

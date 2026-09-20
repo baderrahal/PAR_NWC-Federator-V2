@@ -76,7 +76,9 @@ namespace Federator.Addin.Engine
         private int cameraRead;
         private int dimmed;
         private int notDimmed;
+        private int painted;
         private bool dimmedAnything;
+        private bool paintedAnything;
         private Exception firstHomeError;
 
         // Where the VIEWS step's seconds go, per call, because the dimming took one
@@ -162,7 +164,9 @@ namespace Federator.Addin.Engine
             cameraRead = 0;
             dimmed = 0;
             notDimmed = 0;
+            painted = 0;
             dimmedAnything = false;
+            paintedAnything = false;
             firstHomeError = null;
             alreadyThereWatch.Reset();
             dimWatch.Reset();
@@ -217,6 +221,13 @@ namespace Federator.Addin.Engine
                             + views.DimTransparency.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
                             + " with the two clashing items left solid: " + dimmed + " viewpoint(s)"
                             + (notDimmed > 0 ? ", and " + notDimmed + " written undimmed because their two items could not both be pointed at" : string.Empty));
+                    }
+
+                    if (paintedAnything)
+                    {
+                        log.Line("VIEWS    the two clashing items painted " + views.FirstItemColour
+                            + " and " + views.SecondItemColour + ", read back on what each viewpoint will show: "
+                            + painted + " viewpoint(s)");
                     }
                 }
             }
@@ -652,6 +663,7 @@ namespace Federator.Addin.Engine
             // worse than what F85 shipped, and it is counted and said.
             int solid = 0;
             bool dimmedThisOne = false;
+            bool paintedThisOne = false;
 
             if (views.DimsAnything && place != null && place.BothPlaced)
             {
@@ -666,6 +678,20 @@ namespace Federator.Addin.Engine
                             document, views.DimTransparency, hidesNothingBecause == null ? keep : null, firstItem, secondItem);
                         dimmedThisOne = solid == 2;
                         dimmedAnything = true;
+
+                        // THE PAINT GOES ON AFTER THE DIMMING, Q58. The transparency
+                        // override on the roots reaches every leaf, so painting first
+                        // would put the colour on and dim it off again in the same call.
+                        if (dimmedThisOne && views.ColoursAnything)
+                        {
+                            paintedThisOne = SavedViewpoints.PaintTwo(
+                                document,
+                                firstItem,
+                                views.FirstItemColour,
+                                secondItem,
+                                views.SecondItemColour) == 2;
+                            paintedAnything = true;
+                        }
                     }
                 }
 
@@ -675,6 +701,7 @@ namespace Federator.Addin.Engine
                     // again and the viewpoint is written the way F85 wrote one.
                     SavedViewpoints.Undim(document);
                     solid = 0;
+                    paintedThisOne = false;
                 }
 
                 dimWatch.Stop();
@@ -682,7 +709,7 @@ namespace Federator.Addin.Engine
 
             recordWatch.Start();
             SavedViewpoints.EnsureFolders(document, planned.Folders);
-            SavedViewpoints.Record(document, planned.Folders, planned.Name, camera);
+            SavedViewpoints.Record(document, planned.Folders, planned.Name, camera, views.RecordsThroughTheFolder);
             recordWatch.Stop();
 
             // Read back rather than trusted, all three of it. The first run's tree looked
@@ -692,7 +719,17 @@ namespace Federator.Addin.Engine
             // while it was meant to hide something, is not a viewpoint of that clash and
             // is counted as failed with the reason a person can check.
             readBackWatch.Start();
-            ViewpointReadBack read = SavedViewpoints.ReadBack(document, planned.Folders, planned.Name, camera);
+            ViewpointReadBack read = paintedThisOne
+                ? SavedViewpoints.ReadBack(
+                    document,
+                    planned.Folders,
+                    planned.Name,
+                    camera,
+                    place.FirstPath,
+                    views.FirstItemColour,
+                    place.SecondPath,
+                    views.SecondItemColour)
+                : SavedViewpoints.ReadBack(document, planned.Folders, planned.Name, camera);
             readBackWatch.Stop();
 
             if (!read.Found)
@@ -726,6 +763,20 @@ namespace Federator.Addin.Engine
                 return;
             }
 
+            // THE FOURTH COUNT, Q58. What the viewpoint will SHOW for each of the two,
+            // which is the override's colour where it names the item and the item's own
+            // colour where it does not, 5p. A viewpoint that would open with the two
+            // items in the wrong colours is not the viewpoint that was asked for.
+            if (read.ColoursAsked && read.ColoursRight < 2)
+            {
+                outcome.AddFailed(
+                    planned.Path,
+                    planned.Pair.Folder,
+                    "it was added and only " + read.ColoursRight.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    + " of the two clashing items would open in the colour it was given");
+                return;
+            }
+
             cameraRead++;
 
             if (dimmedThisOne)
@@ -735,6 +786,11 @@ namespace Federator.Addin.Engine
             else
             {
                 notDimmed++;
+            }
+
+            if (read.ColoursAsked && read.ColoursRight == 2)
+            {
+                painted++;
             }
 
             outcome.AddCreated(planned.Path, planned.Pair.Folder, hidden.Count);
