@@ -404,14 +404,51 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheThreeSolidCategoriesAreWallsFloorsAndRoofs()
+        public void TheFourSolidCategoriesAreWallsFloorsRoofsAndFoundations()
         {
             IList<string> solids = new PenetrationSettings().SolidCategories;
 
-            Assert.That(solids.Count, Is.EqualTo(3));
+            Assert.That(solids.Count, Is.EqualTo(4));
             Assert.That(solids[0], Is.EqualTo("Walls"));
             Assert.That(solids[1], Is.EqualTo("Floors"));
             Assert.That(solids[2], Is.EqualTo("Roofs"));
+            Assert.That(solids[3], Is.EqualTo("Structural Foundations"));
+        }
+
+        // ---------- Q63, what a foundation is and what a beam and a column are not ----------
+
+        [Test]
+        public void APipeThroughAFoundationMoves()
+        {
+            PenetrationDecision decision =
+                Decide(Side("Pipes", 100.0), Side("Structural Foundations", null), ClashStatus.New);
+
+            Assert.That(decision.Moves, Is.True);
+            Assert.That(decision.Verdict, Is.EqualTo(PenetrationVerdict.Reviewed));
+        }
+
+        /// <summary>
+        /// Q63, and the reason is in PenetrationSettings.DefaultSolidCategories. A service
+        /// through a beam is a structural decision and stays at New for an engineer. Bader
+        /// left 7 of them Active by hand in 1A04PW on the same day he moved 69 through
+        /// slabs, and this test is what stops the list being widened later.
+        /// </summary>
+        [Test]
+        public void APipeThroughAStructuralBeamDoesNotMove()
+        {
+            PenetrationDecision decision =
+                Decide(Side("Pipes", 100.0), Side("Structural Framing", null), ClashStatus.New);
+
+            Assert.That(decision.Moves, Is.False);
+        }
+
+        [Test]
+        public void APipeThroughAStructuralColumnDoesNotMove()
+        {
+            PenetrationDecision decision =
+                Decide(Side("Pipes", 100.0), Side("Structural Columns", null), ClashStatus.New);
+
+            Assert.That(decision.Moves, Is.False);
         }
 
         [Test]
