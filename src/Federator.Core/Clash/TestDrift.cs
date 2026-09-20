@@ -298,11 +298,17 @@ namespace Federator.Core.Clash
             lines.Add(all.Count + (all.Count == 1 ? " difference across " : " differences across ")
                 + names.Count + (names.Count == 1 ? " test." : " tests."));
 
+            // IT RESETS NOTHING, measured 5y on 2026-09-20, and these two lines said it
+            // did. Setting a tolerance on a saved test keeps every result and every
+            // status, through a save and a reopen. What changing a test DOES cost is
+            // which clashes it finds the next time it runs, and a clash somebody marked
+            // may then not come back, which is a real cost and a different one.
             lines.Add(applying
-                ? "APPLYING these to the tests in the document, which RESETS their results. "
-                    + "Every Active and Resolved clash on the tests below goes back to New."
-                : "Nothing was changed. Changing a test resets its results, so the decision is "
-                    + "yours. Tick apply the file's settings on the Clash step to change them.");
+                ? "APPLYING these to the tests in the document. Their recorded results and the "
+                    + "statuses on them are KEPT. What changes is which clashes each test finds the "
+                    + "next time it runs, so a clash somebody marked may not come back."
+                : "Nothing was changed. Changing a test changes which clashes it finds next time, "
+                    + "so the decision is yours. Tick apply the file settings on the Clash step.");
 
             lines.Add(string.Empty);
             lines.AddRange(Grouped(all));

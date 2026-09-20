@@ -1177,6 +1177,18 @@ namespace Federator.Addin.Ui
                 MarkByDesignHelp.Text = ByDesignPairs.HelpLine;
             }
 
+            // Q72. Read off Core in the constructor the way every other label is, because
+            // a default typed into the XAML as well is a second copy that drifts.
+            if (RebuildDriftedSets != null)
+            {
+                RebuildDriftedSets.Content = SetRebuildSettings.TickLabel;
+            }
+
+            if (RebuildDriftedSetsHelp != null)
+            {
+                RebuildDriftedSetsHelp.Text = SetRebuildSettings.HelpLine;
+            }
+
             if (ByDesignHelp != null)
             {
                 ByDesignHelp.Text = "Read only with the box below on. Columns "
@@ -1496,6 +1508,7 @@ namespace Federator.Addin.Ui
             options.Tolerance = ChosenTolerance();
             options.PriorityPath = Trimmed(PriorityBox.Text);
             options.MarkByDesign = MarkByDesign.IsChecked == true;
+            options.RebuildDriftedSets = RebuildDriftedSets.IsChecked == true;
             options.ByDesignPath = Trimmed(ByDesignBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
@@ -1763,7 +1776,7 @@ namespace Federator.Addin.Ui
             log.Line("grouping         : " + GroupingModes.Describe(ChosenGrouping()));
             log.Line("apply file to old: "
                 + (ApplyFileSettings.IsChecked == true
-                    ? "YES, which RESETS the results of every test it changes"
+                    ? "YES, which changes WHICH CLASHES every test it changes will find next time it runs. It resets nothing by itself, measured 5y"
                     : "no, differences are reported and nothing is changed"));
             log.Line("compact resolved : "
                 + (CompactResolved.IsChecked == true
@@ -1908,6 +1921,18 @@ namespace Federator.Addin.Ui
             {
                 message += Environment.NewLine + Environment.NewLine
                     + string.Join(Environment.NewLine, new List<string>(toleranceLines).ToArray());
+            }
+
+            // Q72, and the same rule as the tolerance line above it: said only when the
+            // box is ON, because a sentence that appears on every run saying nothing will
+            // happen teaches people to skip the screen. The box changes the NWF and the
+            // NWF is the only record of what has been fixed, so the screen says so.
+            string rebuildLine = SetRebuildSettings.ConfirmLine(
+                RebuildDriftedSets.IsChecked == true);
+
+            if (rebuildLine != null)
+            {
+                message += Environment.NewLine + Environment.NewLine + rebuildLine;
             }
 
             if (discarded != null)

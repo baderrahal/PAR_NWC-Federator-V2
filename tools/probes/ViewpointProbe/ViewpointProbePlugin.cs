@@ -109,6 +109,14 @@ namespace ViewpointProbe
                     {
                         MeasurePenetration(parameters[2]);
                     }
+                    else if (mode == "tolerance")
+                    {
+                        MeasureTolerance(parameters[2]);
+                    }
+                    else if (mode == "drift")
+                    {
+                        MeasureDrift(parameters, 2);
+                    }
                     else if (mode == "census")
                     {
                         MeasureCensus(parameters, 2);
@@ -4663,6 +4671,1166 @@ namespace ViewpointProbe
             string[] array = new string[values.Count];
             values.CopyTo(array, 0);
             return string.Join(", ", array);
+        }
+
+        // ---------- 5v, 5w and 5x, the whole of the drift round's PART 1 ----------
+
+        /// <summary>
+        /// THREE MEASUREMENTS IN ONE PASS, because Navisworks is started once for all of
+        /// them. The fourth, 5y's count over his past logs, needs no Navisworks at all.
+        ///
+        ///   5v  can a set be REPLACED without losing the clash test pointing at it, its
+        ///       recorded results, or a status a person set. Five read backs, after a
+        ///       save and a reopen off the disk
+        ///   5w  what every set in the file is ACTUALLY asking, read off the set through
+        ///       SelectionSet.Search, which is a getter nothing in this tool has read
+        ///   5x  what taking ONE MODEL out of an open document costs the sets, the tests,
+        ///       the results, the statuses and the viewpoints that point into it
+        ///
+        /// NOTHING HERE DECIDES ANYTHING. It reads and writes what it read.
+        /// </summary>
+        private void MeasureDrift(string[] parameters, int from)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (parameters.Length <= from)
+            {
+                Say("UNKNOWN: no file handed to the drift probe");
+                return;
+            }
+
+            // 5v goes first and on the SMALLEST file, because it saves and reopens twice.
+            MeasureSetReplace(parameters[from]);
+
+            // 5w over every file handed, which is all ten of his groups.
+            for (int f = from; f < parameters.Length; f++)
+            {
+                SayWhatTheSetsAsk(parameters[f]);
+            }
+
+            // 5x on the LAST file handed, which is chosen as one with several models and
+            // real clash results.
+            MeasureModelRemove(parameters[parameters.Length - 1]);
+        }
+
+        // ---------- 5v ----------
+
+        /// <summary>
+        /// Replaces one set in place and reads back everything that pointed at it, after
+        /// a save and a reopen off the disk. `ReplaceWithCopy(GroupItem, int, SavedItem)`
+        /// is the route the scan named at 4d and is tried first.
+        ///
+        /// A STATUS IS SET BEFORE THE REPLACE so there is something to lose. A measurement
+        /// that replaces a set nothing points at proves nothing at all.
+        /// </summary>
+        private void MeasureSetReplace(string nwf)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+            Say(string.Empty);
+            Say("================ 5v, CAN A SET BE REPLACED ================");
+            document.Clear();
+
+            if (!document.TryOpenFile(nwf))
+            {
+                Say("UNKNOWN: TryOpenFile returned false for " + nwf);
+                return;
+            }
+
+            Say("opened " + Path.GetFileName(nwf) + ", " + document.Models.Count + " model(s)");
+
+            // The set the most clash tests point at, so the replace is measured on one
+            // that matters rather than on whichever came first.
+            string setName;
+            int setIndex;
+            string parentName;
+
+            // THE SET A TEST WITH RESULTS ACTUALLY POINTS AT, and not merely the first
+            // set in the tree. The first attempt replaced BLD-AR-Floors and measured a
+            // test pointing at BLD-EL-Lighting Fixtures, which proves the file survived
+            // and says nothing about the question being asked, which is whether the test
+            // POINTING AT THE REPLACED SET keeps its results and its statuses.
+            if (!FindASetATestPointsAt(document, out setName, out setIndex, out parentName))
+            {
+                Say("UNKNOWN: no clash test with results in this file points at a set that could be found");
+                return;
+            }
+
+            Say("the set measured: [" + setName + "] at index " + setIndex + " under [" + parentName + "]");
+            Say("what it asks now: " + AskedBy(document, setName));
+            Say("what it finds now: " + FoundBy(document, setName) + " item(s)");
+
+            // Something to lose: one clash moved to Reviewed, and the counts before.
+            string testName;
+            int resultsBefore;
+            int reviewedBefore;
+            SetOneReviewed(document, setName, out testName, out resultsBefore, out reviewedBefore);
+
+            Say("the test pointing at it: [" + Words(testName) + "]");
+            Say("BEFORE the replace: " + resultsBefore + " result(s), " + reviewedBefore + " at Reviewed");
+
+            bool replaced = ReplaceThatSet(document, setName, setIndex);
+            Say("ReplaceWithCopy returned without throwing: " + replaced);
+
+            string saved = Path.Combine(Path.GetDirectoryName(nwf), "probe-replace-saved.nwf");
+            Say("TrySaveFile = " + document.TrySaveFile(saved));
+            document.Clear();
+
+            if (!document.TryOpenFile(saved))
+            {
+                Say("UNKNOWN: the saved copy would not reopen");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("REOPENED OFF THE DISK. The five read backs:");
+            SayFiveReadBacks(document, setName, testName, setIndex, parentName, resultsBefore, reviewedBefore);
+        }
+
+        /// <summary>The five counts 5v turns on, read off a document that has been through the disk.</summary>
+        private void SayFiveReadBacks(
+            Document document, string setName, string testName, int setIndex, string parentName,
+            int resultsBefore, int reviewedBefore)
+        {
+            int resultsAfter;
+            int reviewedAfter;
+            bool pointsAtASet;
+            string pointsAt;
+
+            ReadTestBack(document, testName, out pointsAtASet, out pointsAt, out resultsAfter, out reviewedAfter);
+
+            Say("   1. the clash test still points at a set : " + pointsAtASet
+                + (pointsAtASet ? ", at [" + pointsAt + "]" : string.Empty)
+                + (string.Equals(pointsAt, setName, StringComparison.Ordinal) ? ", WHICH IS THE RIGHT ONE" : string.Empty));
+            Say("   2. the clash test still holds results   : " + resultsAfter + " against " + resultsBefore + " before"
+                + (resultsAfter == resultsBefore ? ", KEPT" : ", LOST " + (resultsBefore - resultsAfter)));
+            Say("   3. the Reviewed status survived         : " + reviewedAfter + " against " + reviewedBefore + " before"
+                + (reviewedAfter == reviewedBefore ? ", KEPT" : ", LOST " + (reviewedBefore - reviewedAfter)));
+            Say("   4. what the set finds now               : " + FoundBy(document, setName) + " item(s)");
+            Say("      what it asks now                     : " + AskedBy(document, setName));
+
+            int nowAt;
+            string nowUnder;
+            bool stillThere = WhereIsSet(document, setName, out nowAt, out nowUnder);
+
+            Say("   5. the set is still in the tree         : " + stillThere
+                + (stillThere
+                    ? ", at index " + nowAt + " under [" + nowUnder + "], which was " + setIndex + " under [" + parentName + "]"
+                    : string.Empty));
+
+            Say(string.Empty);
+            Say("A REPLACE IS ONLY USABLE WHERE 1, 2, 3 AND 5 ALL HOLD. Losing 2 or 3 means the");
+            Say("tick box would destroy a week of review, and then it must refuse rather than act.");
+        }
+
+        /// <summary>
+        /// A set that a clash test WITH RESULTS points at, with where it sits. That is
+        /// the only shape where the five read backs mean anything: replacing a set
+        /// nothing points at proves the file survived and answers no question.
+        /// </summary>
+        private bool FindASetATestPointsAt(Document document, out string name, out int index, out string parent)
+        {
+            name = null;
+            index = -1;
+            parent = null;
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+
+            for (int t = 0; t < tests.Tests.Count; t++)
+            {
+                ClashTest test = tests.Tests[t] as ClashTest;
+
+                if (test == null || test.Children.Count == 0)
+                {
+                    continue;
+                }
+
+                string pointed = SideOneSetOf(document, test);
+
+                if (pointed == null)
+                {
+                    continue;
+                }
+
+                if (WhereIsSet(document, pointed, out index, out parent))
+                {
+                    name = pointed;
+                    Say("chosen because the test [" + Words(test.DisplayName) + "] holds "
+                        + test.Children.Count + " result(s) and its first side points at it");
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>The name of the set the first side of that test points at, or null.</summary>
+        private static string SideOneSetOf(Document document, ClashTest test)
+        {
+            try
+            {
+                SelectionSourceCollection sources = test.SelectionA.Selection.SelectionSources;
+
+                if (sources == null || sources.Count == 0)
+                {
+                    return null;
+                }
+
+                using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[0]))
+                {
+                    return pointed == null ? null : Words(pointed.DisplayName);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>The set the most clash tests point at, with where it sits.</summary>
+        private static bool FindABusySet(Document document, out string name, out int index, out string parent)
+        {
+            name = null;
+            index = -1;
+            parent = null;
+
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                return FirstSetUnder(root, "root", ref name, ref index, ref parent);
+            }
+        }
+
+        private static bool FirstSetUnder(GroupItem folder, string folderName, ref string name, ref int index, ref string parent)
+        {
+            SavedItemCollection children = folder.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+                SelectionSet set = child as SelectionSet;
+
+                if (set != null && set.HasSearch)
+                {
+                    name = child.DisplayName;
+                    index = i;
+                    parent = folderName;
+                    child.Dispose();
+                    return true;
+                }
+
+                GroupItem group = child as GroupItem;
+
+                if (group != null)
+                {
+                    string under = child.DisplayName;
+
+                    if (FirstSetUnder(group, under, ref name, ref index, ref parent))
+                    {
+                        child.Dispose();
+                        return true;
+                    }
+                }
+
+                child.Dispose();
+            }
+
+            return false;
+        }
+
+        /// <summary>Moves one clash of the first test that has any to Reviewed, and counts what is there.</summary>
+        private void SetOneReviewed(
+            Document document, string setName, out string testName, out int results, out int reviewed)
+        {
+            testName = null;
+            results = 0;
+            reviewed = 0;
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+
+            for (int t = 0; t < tests.Tests.Count; t++)
+            {
+                ClashTest test = tests.Tests[t] as ClashTest;
+
+                if (test == null || test.Children.Count == 0)
+                {
+                    continue;
+                }
+
+                // THE TEST POINTING AT THAT SET, and not merely the first with results,
+                // or the read back measures a test the replace never touched. The first
+                // pass replaced BLD-AR-Floors and read back a test pointing at
+                // BLD-EL-Lighting Fixtures, which proves the file survived and answers
+                // no question at all.
+                if (!string.Equals(SideOneSetOf(document, test), setName, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                testName = test.DisplayName;
+                results = test.Children.Count;
+
+                ClashResult first = test.Children[0] as ClashResult;
+
+                if (first != null)
+                {
+                    try
+                    {
+                        tests.TestsEditResultStatus(first, ClashResultStatus.Reviewed);
+                        Say("set one clash of [" + testName + "] to Reviewed so there is something to lose");
+                    }
+                    catch (Exception error)
+                    {
+                        Say("could not set a status, " + error.GetType().Name + ": " + error.Message);
+                    }
+                }
+
+                reviewed = ReviewedIn(document, testName);
+                return;
+            }
+        }
+
+        private static int ReviewedIn(Document document, string testName)
+        {
+            int reviewed = 0;
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+
+            for (int t = 0; t < tests.Tests.Count; t++)
+            {
+                ClashTest test = tests.Tests[t] as ClashTest;
+
+                if (test == null || !string.Equals(test.DisplayName, testName, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                for (int r = 0; r < test.Children.Count; r++)
+                {
+                    ClashResult result = test.Children[r] as ClashResult;
+
+                    if (result != null && result.Status == ClashResultStatus.Reviewed)
+                    {
+                        reviewed++;
+                    }
+                }
+
+                return reviewed;
+            }
+
+            return reviewed;
+        }
+
+        /// <summary>What a named test points at and what it holds, after the reopen.</summary>
+        private static void ReadTestBack(
+            Document document, string testName, out bool pointsAtASet, out string pointsAt, out int results, out int reviewed)
+        {
+            pointsAtASet = false;
+            pointsAt = string.Empty;
+            results = 0;
+            reviewed = 0;
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+
+            for (int t = 0; t < tests.Tests.Count; t++)
+            {
+                ClashTest test = tests.Tests[t] as ClashTest;
+
+                if (test == null || !string.Equals(test.DisplayName, testName, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                results = test.Children.Count;
+
+                for (int r = 0; r < test.Children.Count; r++)
+                {
+                    ClashResult result = test.Children[r] as ClashResult;
+
+                    if (result != null && result.Status == ClashResultStatus.Reviewed)
+                    {
+                        reviewed++;
+                    }
+                }
+
+                try
+                {
+                    // A CLASH SIDE POINTS AT A SET THROUGH A SELECTION SOURCE, which is
+                    // what CreateSelectionSource made when the side was filled in. A side
+                    // holding none was filled with a copy of the items instead.
+                    SelectionSourceCollection sources = test.SelectionA.Selection.SelectionSources;
+
+                    if (sources == null || sources.Count == 0)
+                    {
+                        pointsAt = "no selection source at all, so it holds items and not a set";
+                    }
+                    else
+                    {
+                        using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[0]))
+                        {
+                            pointsAtASet = pointed != null;
+                            pointsAt = pointed == null ? "a source that resolves to nothing" : Words(pointed.DisplayName);
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    pointsAt = "resolving threw " + error.GetType().Name;
+                }
+
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Replaces that set's slot with a fresh set carrying a DIFFERENT question, so the
+        /// read back can tell a replace that happened from one that did nothing.
+        /// </summary>
+        private bool ReplaceThatSet(Document document, string setName, int index)
+        {
+            try
+            {
+                using (Search search = new Search())
+                {
+                    search.Selection.SelectAll();
+                    search.Locations = SearchLocations.DescendantsAndSelf;
+                    search.SearchConditions.Add(SearchCondition.HasPropertyByDisplayName("Item", "Name"));
+
+                    using (SelectionSet made = new SelectionSet(search))
+                    {
+                        made.DisplayName = setName;
+
+                        // THE PARENT IS RESOLVED FRESH FROM AN INDEX PATH, because the
+                        // first attempt walked the tree and handed back a folder that its
+                        // own walk had already disposed, and ReplaceWithCopy refused it by
+                        // name. Plain ints out, a fresh wrapper in, which is the shape the
+                        // viewpoint writer already uses for exactly this reason.
+                        int[] path = PathToParentOf(document, setName);
+
+                        if (path == null)
+                        {
+                            document.SelectionSets.ReplaceWithCopy(index, made);
+                        }
+                        else
+                        {
+                            using (GroupItem parent = (GroupItem)document.SelectionSets.ResolveIndexPath(path))
+                            {
+                                document.SelectionSets.ReplaceWithCopy(parent, index, made);
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception error)
+            {
+                Say("ReplaceWithCopy THREW " + error.GetType().Name + ": " + error.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// The index path of the FOLDER holding that set, as plain ints, or null where it
+        /// sits at the root. Ints and never a handle, so the caller resolves a fresh
+        /// wrapper at the moment it needs one and nothing is used after its walk released it.
+        /// </summary>
+        private static int[] PathToParentOf(Document document, string setName)
+        {
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                SelectionSet found = SetNamed(root, setName);
+
+                if (found == null)
+                {
+                    return null;
+                }
+
+                using (found)
+                {
+                    System.Collections.ObjectModel.Collection<int> path =
+                        document.SelectionSets.CreateIndexPath(found);
+
+                    if (path == null || path.Count < 2)
+                    {
+                        return null;
+                    }
+
+                    // The set own last step dropped, which leaves the folder above it.
+                    int[] parent = new int[path.Count - 1];
+
+                    for (int i = 0; i < parent.Length; i++)
+                    {
+                        parent[i] = path[i];
+                    }
+
+                    return parent;
+                }
+            }
+        }
+
+        private static GroupItem ParentOf(Document document, string setName)
+        {
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                return ParentUnder(root, setName);
+            }
+        }
+
+        private static GroupItem ParentUnder(GroupItem folder, string setName)
+        {
+            SavedItemCollection children = folder.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+
+                if (child is SelectionSet && string.Equals(child.DisplayName, setName, StringComparison.Ordinal))
+                {
+                    child.Dispose();
+                    return folder;
+                }
+
+                GroupItem group = child as GroupItem;
+
+                if (group != null)
+                {
+                    GroupItem found = ParentUnder(group, setName);
+
+                    if (found != null)
+                    {
+                        child.Dispose();
+                        return found;
+                    }
+                }
+
+                child.Dispose();
+            }
+
+            return null;
+        }
+
+        private static bool WhereIsSet(Document document, string setName, out int index, out string parent)
+        {
+            index = -1;
+            parent = null;
+            string name = null;
+            return FindNamedSet(document, setName, ref name, ref index, ref parent);
+        }
+
+        private static bool FindNamedSet(Document document, string setName, ref string name, ref int index, ref string parent)
+        {
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                return NamedSetUnder(root, "root", setName, ref index, ref parent);
+            }
+        }
+
+        private static bool NamedSetUnder(GroupItem folder, string folderName, string setName, ref int index, ref string parent)
+        {
+            SavedItemCollection children = folder.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+
+                if (child is SelectionSet && string.Equals(child.DisplayName, setName, StringComparison.Ordinal))
+                {
+                    index = i;
+                    parent = folderName;
+                    child.Dispose();
+                    return true;
+                }
+
+                GroupItem group = child as GroupItem;
+
+                if (group != null && NamedSetUnder(group, child.DisplayName, setName, ref index, ref parent))
+                {
+                    child.Dispose();
+                    return true;
+                }
+
+                child.Dispose();
+            }
+
+            return false;
+        }
+
+        // ---------- 5w ----------
+
+        /// <summary>
+        /// What EVERY set in that file is asking, read off `SelectionSet.Search`, which is
+        /// a getter nothing in this tool has ever read. The whole of PART 3 rests on this
+        /// working, and `BLD-DRPipe Accessories` is the check that it does, because that
+        /// set is known to have drifted from the corrected matrix.
+        /// </summary>
+        private void SayWhatTheSetsAsk(string nwf)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+            Say(string.Empty);
+            Say("================ 5w, " + Path.GetFileName(nwf) + " ================");
+            document.Clear();
+
+            if (!document.TryOpenFile(nwf))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            List<string> lines = new List<string>();
+            int sets = 0;
+            int withSearch = 0;
+            int unreadable = 0;
+
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                WalkSets(root, string.Empty, lines, ref sets, ref withSearch, ref unreadable);
+            }
+
+            Say(sets + " set(s), " + withSearch + " carry a search, " + unreadable + " could not be read");
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                Say("   " + lines[i]);
+            }
+        }
+
+        private void WalkSets(
+            GroupItem folder, string path, IList<string> lines, ref int sets, ref int withSearch, ref int unreadable)
+        {
+            SavedItemCollection children = folder.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+                SelectionSet set = child as SelectionSet;
+
+                if (set != null)
+                {
+                    sets++;
+                    string where = path + "/" + Words(child.DisplayName);
+
+                    if (!set.HasSearch)
+                    {
+                        lines.Add(where + "   carries NO SEARCH, explicit items only");
+                    }
+                    else
+                    {
+                        string asked = ConditionsOf(set);
+
+                        if (asked == null)
+                        {
+                            unreadable++;
+                            lines.Add(where + "   COULD NOT BE READ");
+                        }
+                        else
+                        {
+                            withSearch++;
+                            lines.Add(where + "   asks " + asked);
+                        }
+                    }
+                }
+
+                GroupItem group = child as GroupItem;
+
+                if (group != null)
+                {
+                    WalkSets(group, path + "/" + Words(child.DisplayName), lines, ref sets, ref withSearch, ref unreadable);
+                }
+
+                child.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// The conditions one set carries, in the shape `SetBuildPlan.Describe` writes, so
+        /// what the SET asks and what the FILE asks can be put beside each other and read
+        /// as one sentence. Null where the search will not read at all.
+        /// </summary>
+        private static string ConditionsOf(SelectionSet set)
+        {
+            try
+            {
+                Search search = set.Search;
+
+                if (search == null)
+                {
+                    return null;
+                }
+
+                List<string> parts = new List<string>();
+
+                foreach (SearchCondition condition in search.SearchConditions)
+                {
+                    parts.Add(OneCondition(condition));
+                }
+
+                return parts.Count == 0 ? "nothing at all" : string.Join(" and ", parts.ToArray());
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private static string OneCondition(SearchCondition condition)
+        {
+            string category = NameOf(condition.CategoryCombinedName);
+            string property = NameOf(condition.PropertyCombinedName);
+            string value = ValueOf(condition.Value);
+            string how = condition.Comparison.ToString();
+            string flags = condition.Options.ToString();
+
+            return (category.Length == 0 ? string.Empty : category + "/")
+                + property + " " + how + " \"" + value + "\" [" + flags + "]";
+        }
+
+        private static string NameOf(NamedConstant named)
+        {
+            if (named == null)
+            {
+                return string.Empty;
+            }
+
+            string internalName = Words(named.Name);
+            string display = Words(named.DisplayName);
+
+            return display.Length == 0 || string.Equals(display, internalName, StringComparison.Ordinal)
+                ? internalName
+                : internalName + " (" + display + ")";
+        }
+
+        private static string ValueOf(VariantData value)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                switch (value.DataType)
+                {
+                    case VariantDataType.DisplayString:
+                        return value.ToDisplayString();
+                    case VariantDataType.IdentifierString:
+                        return value.ToIdentifierString();
+                    default:
+                        return Words(value.ToString());
+                }
+            }
+            catch (Exception)
+            {
+                return "unreadable";
+            }
+        }
+
+        private static string AskedBy(Document document, string setName)
+        {
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                SelectionSet found = SetNamed(root, setName);
+
+                if (found == null)
+                {
+                    return "NOT FOUND";
+                }
+
+                using (found)
+                {
+                    string asked = ConditionsOf(found);
+                    return asked ?? "COULD NOT BE READ";
+                }
+            }
+        }
+
+        private static int FoundBy(Document document, string setName)
+        {
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                SelectionSet found = SetNamed(root, setName);
+
+                if (found == null)
+                {
+                    return -1;
+                }
+
+                using (found)
+                {
+                    try
+                    {
+                        using (ModelItemCollection items = found.GetSelectedItems(document))
+                        {
+                            return items == null ? -1 : items.Count;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        return -1;
+                    }
+                }
+            }
+        }
+
+        private static SelectionSet SetNamed(GroupItem folder, string setName)
+        {
+            SavedItemCollection children = folder.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+                SelectionSet set = child as SelectionSet;
+
+                if (set != null && string.Equals(child.DisplayName, setName, StringComparison.Ordinal))
+                {
+                    return set;
+                }
+
+                GroupItem group = child as GroupItem;
+
+                if (group != null)
+                {
+                    SelectionSet found = SetNamed(group, setName);
+
+                    if (found != null)
+                    {
+                        child.Dispose();
+                        return found;
+                    }
+                }
+
+                child.Dispose();
+            }
+
+            return null;
+        }
+
+        // ---------- 5x ----------
+
+        /// <summary>
+        /// What taking ONE MODEL out of an open document costs. 5c measured that
+        /// `Document.RemoveFile(int)` exists and scan.md says in as many words that what
+        /// it does to what points INTO that model is UNKNOWN. That is the only question
+        /// F50's rebuild turns on and it has been open since 2026-09-18.
+        /// </summary>
+        private void MeasureModelRemove(string nwf)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+            Say(string.Empty);
+            Say("================ 5x, WHAT REMOVING ONE MODEL COSTS ================");
+            document.Clear();
+
+            if (!document.TryOpenFile(nwf))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            if (document.Models.Count < 2)
+            {
+                Say("UNKNOWN: this file holds " + document.Models.Count + " model(s), so nothing can be removed and still leave a federation");
+                return;
+            }
+
+            SayCounts(document, "BEFORE the remove");
+
+            string going;
+
+            using (Model model = document.Models[document.Models.Count - 1])
+            {
+                going = Path.GetFileName(Words(model.FileName));
+            }
+
+            Say("removing the LAST model, [" + going + "], index " + (document.Models.Count - 1));
+
+            bool removed;
+
+            try
+            {
+                removed = document.TryRemoveFile(document.Models.Count - 1);
+                Say("TryRemoveFile returned " + removed);
+            }
+            catch (Exception error)
+            {
+                Say("TryRemoveFile THREW " + error.GetType().Name + ": " + error.Message);
+                return;
+            }
+
+            SayCounts(document, "AFTER the remove, before any save");
+
+            string saved = Path.Combine(Path.GetDirectoryName(nwf), "probe-remove-saved.nwf");
+            Say("TrySaveFile = " + document.TrySaveFile(saved));
+            document.Clear();
+
+            if (!document.TryOpenFile(saved))
+            {
+                Say("UNKNOWN: the saved copy would not reopen");
+                return;
+            }
+
+            SayCounts(document, "AFTER a save and a reopen off the disk");
+
+            Say(string.Empty);
+            Say("REMOVING A MODEL IS ONLY USABLE WHERE THE SETS, THE TESTS, THE RESULTS, THE");
+            Say("STATUSES AND THE VIEWPOINTS ALL COME BACK. Anything lost means F50 keeps its");
+            Say("clear and rebuild, which is a good answer and closes Q34 either way.");
+        }
+
+        /// <summary>The five things that can point into a model, plus the models, counted the way the census counts them.</summary>
+        private void SayCounts(Document document, string when)
+        {
+            int sets = 0;
+            int withSearch = 0;
+            int unreadable = 0;
+            List<string> ignored = new List<string>();
+
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                WalkSets(root, string.Empty, ignored, ref sets, ref withSearch, ref unreadable);
+            }
+
+            int tests = 0;
+            int results = 0;
+            int statuses = 0;
+
+            try
+            {
+                Autodesk.Navisworks.Api.Clash.DocumentClashTests data = document.GetClash().TestsData;
+                tests = data.Tests.Count;
+
+                for (int t = 0; t < data.Tests.Count; t++)
+                {
+                    ClashTest test = data.Tests[t] as ClashTest;
+
+                    if (test == null)
+                    {
+                        continue;
+                    }
+
+                    results += CountResultsUnder(test.Children, ref statuses);
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   counting the clash side threw " + error.GetType().Name);
+            }
+
+            Say("   " + when + ":");
+            Say("      models " + document.Models.Count
+                + "   sets " + sets
+                + "   tests " + tests
+                + "   results " + results
+                + "   statuses a person set " + statuses
+                + "   viewpoints " + CountViewpoints(document));
+        }
+
+        /// <summary>Results as LEAVES, descending result groups, which is how the census counts them.</summary>
+        private static int CountResultsUnder(SavedItemCollection items, ref int statuses)
+        {
+            int count = 0;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    ClashResultGroup group = item as ClashResultGroup;
+
+                    if (group != null)
+                    {
+                        count += CountResultsUnder(group.Children, ref statuses);
+                        continue;
+                    }
+
+                    ClashResult result = item as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    count++;
+
+                    // Everything except New is somebody's decision, which is the rule
+                    // StatusesAPersonSet already states.
+                    if (result.Status != ClashResultStatus.New)
+                    {
+                        statuses++;
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        private static int CountViewpoints(Document document)
+        {
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                {
+                    return ViewpointsUnder(root);
+                }
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        private static int ViewpointsUnder(GroupItem parent)
+        {
+            int count = 0;
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    GroupItem group = child as GroupItem;
+                    count += group != null ? ViewpointsUnder(group) : 1;
+                }
+            }
+
+            return count;
+        }
+
+        // ---------- 5y, does setting a tolerance on a saved test cost its results ----------
+
+        /// <summary>
+        /// What setting a tolerance on a SAVED clash test actually costs. ClashRunner
+        /// says in four places that it RESETS the results, and the window says so in
+        /// capitals, and 175,434 saved tests across his runs have had one set on them.
+        /// Nobody has ever measured whether the results actually go.
+        ///
+        /// TWO CASES, because they are not the same question:
+        ///   the SAME value the test already carries, which is what every one of his runs
+        ///     has done, because he picks 25 mm and the tests are already at 25 mm
+        ///   a DIFFERENT value, which is what the warning is about
+        /// </summary>
+        private void MeasureTolerance(string nwf)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+            Say(string.Empty);
+            Say("================ 5y, WHAT SETTING A TOLERANCE COSTS ================");
+            document.Clear();
+
+            if (!document.TryOpenFile(nwf))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+            int at = -1;
+
+            for (int t = 0; t < tests.Tests.Count && at < 0; t++)
+            {
+                ClashTest test = tests.Tests[t] as ClashTest;
+
+                if (test != null && test.Children.Count > 0)
+                {
+                    at = t;
+                }
+            }
+
+            if (at < 0)
+            {
+                Say("UNKNOWN: no saved test in this file holds any result");
+                return;
+            }
+
+            SayTolerance(document, at, "at the start");
+
+            // CASE ONE, the same value it already carries, which is his every run.
+            double same;
+
+            using (ClashTest test = (ClashTest)tests.Tests[at])
+            {
+                same = test.Tolerance;
+            }
+
+            Say(string.Empty);
+            Say("CASE ONE, setting the value it ALREADY carries, " + Round(same) + ":");
+            SetToleranceOn(document, at, same);
+            SayTolerance(document, at, "straight after");
+
+            string saved = Path.Combine(Path.GetDirectoryName(nwf), "probe-tolerance-same.nwf");
+            Say("TrySaveFile = " + document.TrySaveFile(saved));
+            document.Clear();
+            document.TryOpenFile(saved);
+            SayTolerance(document, at, "after a save and a reopen");
+
+            // CASE TWO, a different value, on a fresh copy of the original.
+            document.Clear();
+
+            if (!document.TryOpenFile(nwf))
+            {
+                Say("UNKNOWN: the original would not reopen for case two");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("CASE TWO, setting a DIFFERENT value, " + Round(same * 2.0) + ":");
+            SayTolerance(document, at, "before");
+            SetToleranceOn(document, at, same * 2.0);
+            SayTolerance(document, at, "straight after");
+
+            string other = Path.Combine(Path.GetDirectoryName(nwf), "probe-tolerance-other.nwf");
+            Say("TrySaveFile = " + document.TrySaveFile(other));
+            document.Clear();
+            document.TryOpenFile(other);
+            SayTolerance(document, at, "after a save and a reopen");
+
+            Say(string.Empty);
+            Say("THE WARNING IS ONLY HONEST IF CASE TWO LOSES SOMETHING. If case one loses");
+            Say("nothing, then his 12,531 tests a run have cost him nothing and the line");
+            Say("saying it reset their results has been frightening him over nothing.");
+        }
+
+        private void SetToleranceOn(Document document, int at, double value)
+        {
+            try
+            {
+                Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+
+                using (ClashTest copy = (ClashTest)((ClashTest)tests.Tests[at]).CreateCopy())
+                {
+                    copy.Tolerance = value;
+                    tests.TestsReplaceWithCopy(at, copy);
+                }
+
+                Say("   set, without throwing");
+            }
+            catch (Exception error)
+            {
+                Say("   setting it THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        private void SayTolerance(Document document, int at, string when)
+        {
+            try
+            {
+                Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
+
+                using (ClashTest test = (ClashTest)tests.Tests[at])
+                {
+                    int statuses = 0;
+                    int results = CountResultsUnder(test.Children, ref statuses);
+
+                    Say("   " + when + ": tolerance " + Round(test.Tolerance)
+                        + ", results " + results
+                        + ", statuses a person set " + statuses
+                        + ", test status " + test.Status);
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   " + when + ": reading threw " + error.GetType().Name);
+            }
         }
     }
 }

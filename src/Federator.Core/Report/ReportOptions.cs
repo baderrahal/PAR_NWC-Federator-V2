@@ -1,6 +1,7 @@
 using System;
 using Federator.Core.Clash;
 using Federator.Core.Naming;
+using Federator.Core.Sets;
 using Federator.Core.Views;
 
 namespace Federator.Core.Report
@@ -20,6 +21,7 @@ namespace Federator.Core.Report
             ApplyFileSettings = false;
             Tolerance = ToleranceChoice.FromTheFile();
             MarkByDesign = false;
+            RebuildDriftedSets = SetRebuildSettings.DefaultRebuildDriftedSets;
             PriorityPath = string.Empty;
             ByDesignPath = string.Empty;
             CompactResolved = false;
@@ -106,8 +108,9 @@ namespace Federator.Core.Report
         public string SourceFolder { get; set; }
 
         /// <summary>
-        /// Put the file's settings onto tests already in the document. Off by default,
-        /// because it RESETS their results.
+        /// Put the file settings onto tests already in the document. Off by default,
+        /// because it changes WHICH CLASHES a saved test finds the next time it runs. It
+        /// resets nothing by itself, measured 5y.
         ///
         /// IT KEEPS EXACTLY THE MEANING IT HAD, F76, which is whether the FILE'S settings
         /// reach a saved test. A tolerance chosen on the Clash step wins over it, because
@@ -167,6 +170,14 @@ namespace Federator.Core.Report
         /// and says so, rather than inventing a list.
         /// </summary>
         public bool MarkByDesign { get; set; }
+
+        /// <summary>
+        /// Whether a set already in the NWF whose question no longer matches the picked
+        /// file is rebuilt from it, Q72. Off by default, because it changes the NWF and
+        /// the NWF is the record. It destroys nothing: 5v measured that the clash tests
+        /// pointing at a replaced set keep their results and their statuses.
+        /// </summary>
+        public bool RebuildDriftedSets { get; set; }
 
         /// <summary>
         /// Which categories are a service and which are a solid. F72. The SIZE is not here

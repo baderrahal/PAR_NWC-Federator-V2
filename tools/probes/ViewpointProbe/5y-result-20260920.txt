@@ -1,0 +1,22 @@
+20:40:09.711  probe started, mode tolerance, 1 file(s)
+20:40:09.712  
+20:40:09.712  ================ 5y, WHAT SETTING A TOLERANCE COSTS ================
+20:40:10.756     at the start: tolerance 0.082, results 36, statuses a person set 36, test status Old
+20:40:10.756  
+20:40:10.756  CASE ONE, setting the value it ALREADY carries, 0.082:
+20:40:10.761     set, without throwing
+20:40:10.761     straight after: tolerance 0.082, results 36, statuses a person set 36, test status Old
+20:40:12.510  TrySaveFile = True
+20:40:13.727     after a save and a reopen: tolerance 0.082, results 36, statuses a person set 36, test status Old
+20:40:14.928  
+20:40:14.928  CASE TWO, setting a DIFFERENT value, 0.164:
+20:40:14.928     before: tolerance 0.082, results 36, statuses a person set 36, test status Old
+20:40:14.928     set, without throwing
+20:40:14.928     straight after: tolerance 0.164, results 36, statuses a person set 36, test status Old
+20:40:16.640  TrySaveFile = True
+20:40:17.755     after a save and a reopen: tolerance 0.164, results 36, statuses a person set 36, test status Old
+20:40:17.755  
+20:40:17.755  THE WARNING IS ONLY HONEST IF CASE TWO LOSES SOMETHING. If case one loses
+20:40:17.755  nothing, then his 12,531 tests a run have cost him nothing and the line
+20:40:17.755  saying it reset their results has been frightening him over nothing.
+20:40:17.755  probe finished

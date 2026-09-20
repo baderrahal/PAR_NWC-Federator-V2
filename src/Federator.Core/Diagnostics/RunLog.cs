@@ -110,6 +110,7 @@ namespace Federator.Core.Diagnostics
             Path = path;
             StartedAt = startedAt;
             DisabledReason = disabledReason;
+            ClashesFound = new ClashesAcrossTheRun();
             this.stream = stream;
 
             if (stream != null)
@@ -1706,6 +1707,13 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public PriorityTally PriorityAcrossTheRun { get; set; }
 
+        /// <summary>
+        /// How many clashes the whole run found, per group and added up. Never null and
+        /// never optional, unlike the priority and penetration lines beside it, because
+        /// this is the number the run exists to produce.
+        /// </summary>
+        public ClashesAcrossTheRun ClashesFound { get; private set; }
+
 
         /// <summary>
         /// Whether this run asked for by design connections to be marked, F72b. False by
@@ -1783,6 +1791,19 @@ namespace Federator.Core.Diagnostics
             {
                 Line(penetrations);
             }
+
+            // The number the run exists to produce, and the RESULT block carried no
+            // version of it until the drift round. ALWAYS WRITTEN, unlike the two lines
+            // around it: a run that found nothing is the most interesting run there is,
+            // and it is exactly the run whose number must not be missing.
+            Blank();
+
+            foreach (string line in ClashesFound.ResultLines())
+            {
+                Line(line);
+            }
+
+            Blank();
 
             // F83. Clashes by priority across the run, only where a file was picked, for
             // the same reason the penetration line is only there when the box was on.

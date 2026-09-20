@@ -24,12 +24,39 @@ namespace Federator.Core.Clash
         /// <summary>How many clashtest elements the picked file held.</summary>
         public int TestsInFile { get; set; }
 
+        /// <summary>
+        /// How many tests of this group were NOT created because a side finds nothing.
+        /// Counted apart from every other skip reason, because a side with no items and a
+        /// test nobody could read are different faults. THIS IS NOT 3b's COST, and it was
+        /// used as it for one run: it counts only what was ABSENT from the document, so on
+        /// a weekly run where every test is already there it reads near zero however many
+        /// sets are dead. TestsWithAnEmptySide is the cost.
+        /// </summary>
+        public int NotCreatedASideFindsNothing { get; set; }
+
+        /// <summary>
+        /// How many tests of this group have a side pointing at a set that finds nothing,
+        /// 3b, whether the test was created today or was already in the NWF. This is the
+        /// number his own 1A02MM report made urgent: 1,677 of 1,830 tests there touch a
+        /// set that never produces a clash. Minus one where no side was counted at all,
+        /// because not counted is not the same as none.
+        /// </summary>
+        public int TestsWithAnEmptySide { get; set; }
+
+        /// <summary>
+        /// Tests where a side's locator was in no count, so this run has no opinion about
+        /// them. Said rather than folded into the cost, because a cost with a silent hole
+        /// in it reads as a smaller cost.
+        /// </summary>
+        public int TestsNoSideCountFor { get; set; }
+
         /// <summary>The document the tests ran against, because a count means nothing without it.</summary>
         public string OpenDocument { get; set; }
 
         public ClashRunOutcome()
         {
             Compacted = -1;
+            TestsWithAnEmptySide = -1;
         }
 
         /// <summary>Seconds the whole clash step took, creating and running included.</summary>

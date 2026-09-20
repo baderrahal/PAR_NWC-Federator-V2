@@ -46,10 +46,14 @@ namespace Federator.Core.Clash
     /// done and is what it still does unless somebody chooses otherwise, so a run set up
     /// the old way behaves the old way.
     ///
-    /// THE COST IS SAID BEFORE THE RUN, NOT AFTER. Changing the tolerance on a test that
-    /// is already in the document RESETS that test's results, which is the same cost
-    /// Apply file settings carries, and it is said on the confirm screen with the counts
-    /// rather than discovered in a log afterwards.
+    /// THE COST IS SAID BEFORE THE RUN, NOT AFTER, and what the cost IS was measured on
+    /// 2026-09-20, 5y. Changing the tolerance on a test already in the document RESETS
+    /// NOTHING: its recorded results and every status a person set on them are kept,
+    /// through a save and a reopen. What it changes is WHICH CLASHES that test finds the
+    /// next time it runs, so a clash somebody marked may not come back. This comment,
+    /// and four others, said it reset the results, and 175,434 saved tests across his
+    /// runs had a chosen tolerance set on them while the confirm screen told him in
+    /// capitals that it had reset all of them.
     ///
     /// MILLIMETRES IN, DOCUMENT UNITS OUT. The choice is in millimetres because that is
     /// what a person says, and it is converted through UnitTable, the one unit table in
@@ -226,8 +230,15 @@ namespace Federator.Core.Clash
                 + Word(testsInTheFile, " test", " tests") + " from the XML, plus every test "
                 + "already saved in each NWF.");
             lines.Add("It beats the tolerance in the XML and the tolerance in the document.");
-            lines.Add("Changing the tolerance on a test already in the document resets that "
-                + "test's results, which is the same cost Apply file settings carries.");
+            // WHAT IT ACTUALLY COSTS, measured 5y on 2026-09-20. This line said it reset
+            // the results and it does not: every recorded result and every status a
+            // person set is kept, through a save and a reopen. The real cost is that the
+            // test finds DIFFERENT clashes next time, so a clash somebody marked may not
+            // come back, and saying the wrong one made a person hesitate over an action
+            // that is free.
+            lines.Add("Every recorded result and every status a person set is KEPT. What changes "
+                + "is which clashes each test finds when it runs, so a clash somebody marked may "
+                + "not come back at the new tolerance.");
 
             return lines;
         }
