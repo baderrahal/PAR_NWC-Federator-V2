@@ -54,8 +54,16 @@ namespace Federator.Core.Sets
                             : ". The nearest the models carry is \"" + Nearest + "\", which is a suggestion and not a correction");
 
                 case EmptyReason.TheValueIsThereAnyway:
-                    return Path + "   asks for \"" + Asked + "\", WHICH THE MODELS DO CARRY, and still found nothing."
-                        + " Something else is wrong and a person has to look";
+                    // WHAT THIS READER ACTUALLY KNOWS. The measured lists are the whole
+                    // PROJECT, 374 categories and 39 worksets across all ten groups, so
+                    // "the models carry it" means some model somewhere does, NOT that a
+                    // model of this group does. A group holding two disciplines out of
+                    // seven lands most of the client's 61 sets here, and on 1000BS that
+                    // was 33 of 54. Saying "something else is wrong" about those would be
+                    // this reader claiming to know a thing it cannot see.
+                    return Path + "   asks for \"" + Asked + "\", WHICH MODELS IN THIS PROJECT DO CARRY,"
+                        + " and still found nothing HERE. Either this group holds no model of that kind,"
+                        + " which is ordinary, or something else is wrong, and this reader cannot tell which";
 
                 default:
                     return Path + "   found nothing and THIS READER CANNOT TELL WHY";
@@ -160,7 +168,8 @@ namespace Federator.Core.Sets
 
             lines.Add(empty.Count + " set(s) found nothing in this group, and this is why:");
             lines.Add("   " + wrong + " ask for a value NO MODEL IN THIS PROJECT CARRIES, so the condition is wrong");
-            lines.Add("   " + there + " ask for a value the models DO carry, so something else is wrong");
+            lines.Add("   " + there + " ask for a value models in this project DO carry, so either this group"
+                + " holds no model of that kind or something else is wrong");
             lines.Add("   " + cannot + " this reader cannot tell about");
 
             for (int i = 0; i < empty.Count; i++)

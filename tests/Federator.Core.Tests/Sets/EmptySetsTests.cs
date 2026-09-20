@@ -55,8 +55,14 @@ namespace Federator.Core.Tests.Sets
                 "a/BLD-ME-Piping", new List<ReadCondition> { Workset("ME-Piping") });
 
             Assert.That(why.Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway));
-            Assert.That(why.Line(), Does.Contain("WHICH THE MODELS DO CARRY"));
-            Assert.That(why.Line(), Does.Contain("a person has to look"));
+            Assert.That(why.Line(), Does.Contain("WHICH MODELS IN THIS PROJECT DO CARRY"));
+            Assert.That(why.Line(), Does.Contain("this reader cannot tell which"));
+
+            // THE LIST IS THE WHOLE PROJECT AND NOT THIS GROUP, so the line must not
+            // claim something else is wrong. A group holding two disciplines out of seven
+            // lands most of the 61 sets here, 33 of 54 on 1000BS, and every one of those
+            // is ordinary.
+            Assert.That(why.Line(), Does.Contain("holds no model of that kind"));
         }
 
         /// <summary>
@@ -114,7 +120,7 @@ namespace Federator.Core.Tests.Sets
 
             Assert.That(block, Does.Contain("3 set(s) found nothing"));
             Assert.That(block, Does.Contain("1 ask for a value NO MODEL IN THIS PROJECT CARRIES"));
-            Assert.That(block, Does.Contain("1 ask for a value the models DO carry"));
+            Assert.That(block, Does.Contain("1 ask for a value models in this project DO carry"));
             Assert.That(block, Does.Contain("1 this reader cannot tell about"));
         }
 
