@@ -254,7 +254,9 @@ Both are named because a force stop is not a clean close.
     C02\C02-backup-2026-09-21-close\   19 files, 51,000,592 bytes, read back 0 mismatches
     C02\NWF, NWD, Clash Report         the full run's outputs
 
-**Left running**: nothing. Navisworks is closed and the check ran and said so.
+**Left running**: nothing. After the C02 run Navisworks was still open, it was closed
+normally, and the check was run afterwards and reported no Navisworks and no crash
+reporter process left. That last close is the eighth and it was clean.
 
 ### What comes next
 
