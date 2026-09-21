@@ -368,9 +368,25 @@ asserted: `launch-probe.txt` in the round-scale folder holds **9 `launcher start
 round dropped it and then said nothing was left running on the strength of a check that
 does not look for an automation host.
 
+**And two log watchers**, a `tail -f` over each run's live log so the round could follow a
+run without polling it. One started 14:40:44 for C04 and one 15:07:51 for C02.
+
 **Processes stopped**: Navisworks was closed normally twice, once between the two runs and
 once at the end. **Nothing was force stopped, so there was no crash reporter and no
 `senddmp` this time.**
+
+**THE TWO LOG WATCHERS OUTLIVED THE THING THAT STARTED THEM AND HAD TO BE STOPPED BY
+HAND**, and this is written down because it is the same fault this round corrected in the
+close round's entry. The watchers were set to expire on their own and their expiry killed
+the watcher and NOT the `tail` under it, so both were still running after the last
+Navisworks close and after the check that said nothing was left. The check looked for
+Navisworks and a crash reporter, which is exactly what the close round's check looked for
+and exactly why it missed its automation hosts. **A check only finds what it is told to
+look for.** Both were stopped, at pids 438 and 2982, and a second check read zero.
+
+The first report of this round said nothing was left running before those two were found.
+That sentence was true of Navisworks and not true of the machine, which is word for word
+the correction this round made to its predecessor.
 
 **Files written outside the repo**, all under
 `C:\Users\bader\AppData\Local\Temp\claude\round-scale`:
