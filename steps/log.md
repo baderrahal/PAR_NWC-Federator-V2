@@ -1,6 +1,433 @@
 # log
 
 Newest entry at the top.
+
+## 2026-09-21 The scale round, DONE, the record
+
+Core tests 1746 before the round and 1758 after, 0 failed. **1,759 tests exist and 1,758
+ran**, said that way rather than as a bare total because one carries `[Explicit]` and is
+filtered out, which the close round reported as "0 skipped". Build 0 errors and 0 warnings
+after every change. All THREE `tools\checks` scripts pass, which was two until this round
+added the third. Tree clean. Q79 and Q80 are new.
+
+### WHAT THE AUDIT OF THE CLOSE ROUND FOUND, ALL OF IT
+
+The round was asked to audit its predecessor and it found more than the six it was sent
+for. The close round's entry is corrected in place, above, each with what it said and what
+is true. The corrections are these:
+
+1. **It said TWO COMPLETE GROUPS ran in C04. One did.** `1A04EP` finished FAILED and a
+   third group had started when the run was stopped
+2. **It did not say that `1A04EP`'s document EMPTIED ITSELF.** Models 5 to 0, sets 61 to
+   0, tests 666 to 0, results 2,566 to 0, all four refused by `CensusRule`, the last 1,408
+   viewpoints written with no hidden state because there was no model left to hide, and
+   the NWF save refusing an empty document. The entry presented the step as slow. **This
+   is the most serious thing in the audit and the brief did not know to ask for it**
+3. **Three timings were presented beside measured numbers and are in no log.** "Over forty
+   minutes" against a measured 36 minutes 29 seconds, "0.54 seconds each" against a number
+   no denominator gives, and a working set of 1,047 to 1,477 MB when the tool logs no
+   memory figure anywhere, ever
+4. **The reason was wrong too.** It said the cost is clashes times models
+5. **"Two groups' outputs" is not what is on his disk.** Only `1A0415` left a full set
+6. **"Byte for byte" and "0 byte size mismatches" are two different checks in one
+   sentence**, and the counterexample sits two hundred lines below it in the same file
+7. **The row arithmetic was four rows out** and both halves are now found
+8. **The committed C04 log is a truncated copy** taken mid run, and **the C02 log was
+   never committed at all**, so the entry's central claim could not be checked from the
+   repository. Both whole files are in now
+9. **`c04-partial-run` is listed as written outside the repo and is tracked inside it**
+10. **The automation hosts appear in no stopped list** and the count of two is six, one of
+    which never logged an exit
+11. **"0 skipped" is a true reading of the summary line and a misleading reading of the
+    run**, and **the 54 bytes were answered into somebody else's entry**
+12. **It gave one bucket's reason for a whole total, which is the exact mistake the
+    sentence beside it warns against.** It explained C02's zero penetrations as "earlier
+    runs already moved them and they sit at Reviewed". Read the buckets, which is what
+    that bullet itself says to do: on `1A02MM` that reason is **20 of 542**. The zero is
+    mostly 387 clashes that are not a service against a solid and 80 services over the
+    size. The zero is real and healthy and the reason given for it was not
+
+A round that corrects its predecessor is the record working, and nine of these twelve were
+found by reading the close round's own evidence rather than by running anything.
+
+### THE ROUND'S MAIN QUESTION, AND THE ANSWER IS NONE OF THE THREE IT EXPECTED
+
+The brief asked where the viewpoint time goes and named three candidates: the read backs,
+the COM write, or something else to be raised as a question. **The step has carried its
+own breakdown since the dimming round and nobody had read it.** On `1A04EP`:
+
+```
+VIEWS  the step's seconds went: 0.487s looking whether each was already there,
+       3.143s dimming, 1953.136s recording, 110.519s reading back
+```
+
+The read backs are **five per cent** and they caught three separate failures, so they are
+not cut. The dimming is **0.14 per cent**. The COM folder route 5p measured is **already
+the default** and has been since the viewpoints round. So the answer had to be measured
+rather than picked from the list.
+
+**IT IS HOW MANY VIEWPOINTS THE DOCUMENT ALREADY HOLDS, AND A CONTROL PROVED IT.** Three
+new probe modes. `scalemany` first showed the cost tracking the CLASH RESULT count across
+nine copies, 59 ms at 29 results to 1,872 ms at 568, which is a clean correlation across
+nine files and **it is false**. `scaleclash` is the control, on ONE open copy of `1A02MM`,
+same models, same 2,606 items, same 1,830 tests, one thing changed at a time:
+
+| the document | 40 viewpoints written | each |
+| --- | --- | --- |
+| as loaded, 568 results and its viewpoints | 75,123 ms | 1,878 ms |
+| `TestsClearResults` on all 62 tests, 0 results left | 74,938 ms | 1,873 ms |
+| **`SavedViewpoints.Clear()`, 0 viewpoints left** | **259 ms** | **6.5 ms** |
+
+Clearing every clash result changed nothing. Clearing the viewpoints collapsed it **290
+fold**. Nine files agreeing with a wrong explanation is exactly what a control is for.
+
+**WITHIN A RUN THE CLIMB IS MILD**, 7.04 ms each at 25 written rising to 14.0 ms at 400.
+So it is the viewpoints read OFF THE NWF that cost, not the ones a run adds. The real fix
+is **Q80** and it is raised rather than guessed at, because the brief's three candidates
+were all wrong and a fourth guess is worth nothing.
+
+**WHAT THE PROBE CANNOT SHOW, and it understates the live cost.** It adds through the COM
+collection and never touches `document.SavedViewpoints`, so the .NET tree never
+materialises. The real writer reads every viewpoint back through that tree, which forces
+exactly that. The probe proves the DRIVER and not the SIZE.
+
+### THE TWENTY EIGHT WERE NEVER STABILITY
+
+The drift round rebuilt 147 then 28. The close round rebuilt 28 again and called it
+"nothing else moved, which is the point".
+
+**The 28 is 14 sets in 2 groups, and every one of them is a workset value differing only
+in CASE**: the set asking `ME-DUCTWORK`, `ME-PIPING`, `ME-EQUIPMENT` or
+`PL-Domestic Water` while the file asks `ME-Ductwork`, `ME-Piping`, `ME-Equipment` and
+`PL-Domestic water`.
+
+**The rebuild was always correct and was thrown away every run.**
+`BuildTheSetsFromTheFile` returned `PutAnythingIn`, which is `CreatedCount > 0`, and a set
+already at its path is rebuilt IN PLACE and creates nothing. So a group whose only change
+was a rebuild reported that it had changed nothing and its NWF was never saved.
+`RebuiltCount` existed the whole time and nothing read it.
+
+**The evidence is which two groups.** The drift appeared in exactly `1000BS` and `1A02MS`,
+which are the only two whose NWF came back the size it went in. The eight that wrote their
+NWF for some other reason never drifted twice.
+
+### PART 7a, C04, THE FIRST FULL TWELVE GROUP RUN THERE HAS EVER BEEN
+
+Backed up first, **46 files compared by SHA256 CONTENT and not by size**, 0 mismatches,
+which is the check the close round claimed and did not make. The ceiling was set to 300.
+
+**Eleven DONE, one FAILED, 4,202 clashes, 48 files written, 24 minutes 18 seconds.** That
+is inside the 45 minutes criterion 2 asks for, by 20 minutes 42 seconds.
+
+| group | outcome | sets found / none | tests | clashes | views written | checked | blocks | rows | seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1A0415 | DONE | 0 / 0 | 0 | 0 | 0 | none | 1830 | 0 | 8.966 |
+| 1A04EP | DONE | 37 / 24 | 666 | 2566 | **300 capped** | 300 of 300 | 1830 | 2566 | 785.328 |
+| 1A04KI | DONE | 21 / 40 | 210 | 86 | 64 | 64 of 64 | 1830 | 86 | 36.958 |
+| 1A04MS | DONE | 6 / 55 | 15 | 0 | 0 | none | 1830 | 0 | 8.264 |
+| 1A04PK | DONE | 7 / 54 | 21 | 0 | 0 | none | 1830 | 0 | 6.799 |
+| 1A04PW | DONE | 28 / 33 | 378 | 860 | **300 capped** | 300 of 300 | 1830 | 860 | 286.725 |
+| 1A04WE | DONE | 18 / 43 | 153 | 62 | 34 | 34 of 34 | 1830 | 62 | 26.691 |
+| 1A04WL | FAILED | 8 / 53 | 28 | 146 | 146 | 146 of 146 | 1830 | 146 | 63.667 |
+| 1A04WM | DONE | 21 / 40 | 210 | 245 | 196 | 196 of 196 | 1830 | 245 | 99.050 |
+| 1A04WN | DONE | 24 / 37 | 276 | 98 | 72 | 72 of 72 | 1830 | 98 | 49.120 |
+| 1A04WO | DONE | 25 / 36 | 300 | 138 | 121 | 121 of 121 | 1830 | 138 | 67.870 |
+| 1WAW15 | DONE | 2 / 59 | 1 | 1 | 1 | 1 of 1 | 1830 | 1 | 11.390 |
+
+**THE ONE FAILURE IS THE KNOWN ONE.** `1A04WL` has two ST models on Revit's internal
+origin, which the close round already recorded, and every output of that group was still
+written so the evidence is there to send.
+
+**EVERY ROW COUNT EQUALS ITS CLASH COUNT AND EVERY BLOCK COUNT IS 1,830.** That is
+criterion 3 answered across twelve groups on real files rather than on a fixture.
+
+**THE FOUR THINGS ABOUT C04 STILL HOLD.** `1A0415` and `1WAW15` are not buildings and
+their set figures read 0 of 0 and 2 of 59 for a reason worth saying: `IsZero` counts only
+a CREATED set, so a group whose 61 sets were already in its NWF reads 0 and 0 whatever it
+found. `1A04MS` and `1A04PK` hold one discipline each and found nothing, correctly.
+`1A04WL` is missing ST-000006 and carries the two internal origin models.
+
+**THE PRIORITY SPLIT ADDS TO THE SAME NUMBER**: A 1571, B 2111, C 520, No priority 0,
+4,202 in all. Penetrations moved 221 of 4,202 and by design moved 2,415.
+
+**AND 1A04EP'S NWF WAS REPAIRED.** It opened as the damaged 4,197 byte file the close
+round left, holding 5 models and 57 viewpoints and no sets and no tests, and it was
+written back at **11,677,475 bytes** with its 61 sets, 666 tests, 2,566 results and 357
+viewpoints in it.
+
+### THE CEILING, AND IT IS NOT ONLY ABOUT MINUTES
+
+`1A04EP` with the ceiling at 300, against the same group in the close round with none:
+
+| | close round | this round |
+| --- | --- | --- |
+| VIEWS step | 2,188.961s | **420.346s** |
+| created | 926 | 300 |
+| **failed** | **1,408** | **0** |
+| models after | **0** | 5 |
+| sets after | **0** | 61 |
+| tests after | **0** | 666 |
+| results after | **0** | 2,566 |
+| group | **FAILED** | **DONE** |
+
+**Nothing emptied, no `CENSUS CHANGED` line anywhere in the run.** The cost of that is
+2,034 clashes of that group and 448 of `1A04PW` with no viewpoint, and the block says so
+in those words rather than leaving a reader to subtract.
+
+### PART 7b, C02, AND NOTHING THIS ROUND BUILT MOVED ANYTHING
+
+Backed up first, **2,255 files compared by SHA256 CONTENT**, 0 mismatches. No ceiling,
+because the ceiling filters the PLANNED list and `1A02MM` plans 380 viewpoints, so capping
+it would have changed the very numbers this run exists to compare.
+
+| | the close round | this round |
+| --- | --- | --- |
+| clashes | 1,225 | **1,225** |
+| priority | A 842, B 190, C 193 | **A 842, B 190, C 193** |
+| groups | 8 done, 2 failed | **8 done, 2 failed** |
+| penetrations moved | 0 | **0** |
+| by design moved | 0 | **0** |
+| rebuilt | 0 | **0** |
+| run time | 1041.789s | **1043.778s** |
+
+The same two groups failed, `1A02MM` and `1A02WL`, for the same internal origin models.
+Two seconds apart over seventeen minutes. Forty files written.
+
+### AND THE TWENTY EIGHT ARE FIXED, PROVED OFF THE DISK AND NOT OFF A LOG LINE
+
+**The drifted count is 28 again, exactly as predicted**, 14 in `1000BS` and 14 in
+`1A02MS`, because the NWFs still held the old values when the run opened them. **What
+changed is what happened next:**
+
+```
+1000BS   reused 13,091 bytes   WRITTEN 13,673 bytes
+1A02MS   reused 81,957 bytes   WRITTEN 82,357 bytes
+```
+
+Both said `checked` with the same byte count last week. Both say `written` now.
+
+**Then both files were read back off the disk with the probe**, because a log line saying
+it saved is not evidence that the right thing was saved. `1000BS` as the backup holds it,
+against `1000BS` as this run wrote it:
+
+| the backup asks | the written file asks |
+| --- | --- |
+| 5 x `ME-DUCTWORK` | 5 x `ME-Ductwork` |
+| 1 x `ME-EQUIPMENT` | 1 x `ME-Equipment` |
+| 5 x `ME-PIPING` | 5 x `ME-Piping` |
+| 6 x `PL-Domestic Water` | 6 x `PL-Domestic water` |
+
+**Seventeen conditions corrected and surviving a save and a reopen.** Next week's run finds
+zero drifted where it has found 28 for three rounds.
+
+And the drift line now says why, in the log, in these words:
+`why      : they differ only in the CASE of a value, the set asks "ME-DUCTWORK" and the
+file asks "ME-Ductwork"`.
+
+### 6d, THE CONTROL THE CLOSE ROUND NEVER MADE
+
+Its case correction claim compared `1A04EP` in C04 against `1A02MM` in C02: different
+community, different building, different modellers. **The control is the same models
+twice**, the fixture's three `1A04WE` NWC copies, run once with the UNCORRECTED matrix in
+`samples` and once with the corrected one in `exchange`. The two files hold the same 1,830
+tests and the same 61 sets and differ in 17 workset values, every one of them case only.
+
+| | uncorrected | corrected |
+| --- | --- | --- |
+| sets finding items | 11 | **12** |
+| sets at zero | 50 | **49** |
+| `BLD-ME-Mechanical Equipment` | ZERO | **2 items** |
+| `BLD-ME-Ducts&Duct Fittings` | ZERO | ZERO |
+| `BLD-ME-Duct Accessory` | ZERO | ZERO |
+| `BLD-ME-Air Terminals` | ZERO | ZERO |
+| tests created | 55 | **66** |
+| clashes | 27 | 27 |
+
+**THE CONCLUSION SURVIVES AND ITS SIZE DOES NOT.** The correction does change real
+behaviour on identical models: one set goes from finding nothing to finding two items, and
+eleven more tests get created because a side that found nothing now finds something. But
+three of the four sets the close round named are still ZERO here, and **the clash count is
+unchanged at 27**, so on this fixture the correction changed what was ASKED and not what
+was FOUND. The close round's 277, 45, 13 and 12 are real numbers off a much larger
+mechanical model and they are NOT what a correction of this kind produces in general. The
+honest statement is that the correction works and that the close round's figures measure
+`1A04EP` rather than the correction.
+
+### A CHECK THAT CANNOT FAIL IS A BUG, AND THIS ONE COULD NOT
+
+On `1A0415` the close round logged `0 test blocks` against `1830 tests in the file` and
+said `THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST`, and the group reported DONE.
+
+**The workbook was right and the check was wrong.** `WorkbookCheck` found a block by the
+literal `Clash Name` in column 3, and since Q73 a test that found nothing is ONE ROW
+carrying its TOLERANCE in that same column 3 with no headings row, because
+`ColumnTestHeader` and `ColumnClashName` are both 3. Every empty block was invisible.
+
+**PROVED ON HIS OWN FILES BEFORE ANYTHING WAS RUN.** The fixed check, pointed at the two
+workbooks the stopped C04 run had left on disk:
+
+```
+1A0415   1830 blocks, 0 full, 0 clash rows
+1A04EP   1830 blocks, 109 full, 2566 clash rows
+```
+
+2,566 is exactly that group's clash count. Both files had carried all 1,830 blocks all
+along. Then the live run agreed on all twelve groups.
+
+**AND THE ZERO WAS SWITCHING OFF EVERY OTHER CHECK.** The cell, width, column order, title
+and priority comparisons were all gated on `Blocks == 1`, so on a sheet whose blocks all
+found nothing none of them ran, **and the block still printed that every column, fill,
+border, height and width matched the client's report**. Nothing compared and everything
+matching are opposite answers and it printed both at once. They run on the first FULL block
+now, and a sheet with no full block says in capitals that there was no clash table to
+compare and that those checks did not run.
+
+**THE MUST IS GONE.** The repo's rule that a report check never fails a group stands, and
+its reason is measured: judging a group on a check once reported a clean 22 group run as
+FAILED. **This round proved the same thing from the other side**, because the counter
+itself was wrong and a gate would have failed a group whose workbook was correct. The line
+says what it is, says how many blocks are missing rather than leaving a reader to
+subtract, and is counted into RESULT so it cannot be read past. Whether it should become a
+gate now that it counts correctly is **Q79**.
+
+### F96, THE RESTATED FACTS CHECK, WHICH CAUGHT ITSELF FIRST
+
+`tools\checks\check-facts.sh` with `tools\checks\facts.tsv`. The registry says where the
+code holds each fact and which prose may restate it. **The value is read off the CODE and
+never off the registry**, or the registry would be a fifth copy to go stale like the four
+that already had.
+
+**IT PASSED VACUOUSLY ON THREE OF ITS OWN FIVE FACTS AND THAT IS THE FAULT IT EXISTS TO
+CATCH.** The first registry's patterns matched no line at all for the threshold, the tick
+boxes and the .tsv, so those three reported a pass having read nothing. It counts what it
+examined now, says the count per fact, and a named fact that no prose line claims is a
+FAULT.
+
+**AND ONE OF THE FOUR NAMED FACTS CANNOT BE CHECKED AT ALL**, said here rather than
+quietly dropped. **The .tsv event kinds are not a fact the code holds.** They are string
+literals at their call sites, `"test passed"` in ClashRunner, `"step finished"` in RunLog,
+`"census after"` beside it, with no list anywhere. That is exactly why that one drifted and
+why nobody could keep it right, and no check can read a number that is not written down
+once. The .tsv fact checked instead is the COLUMN COUNT, which `EventRow.FieldCount` does
+hold in one place. Giving the kinds a home is a build and not a check.
+
+**AND THE TICK BOX READER ANSWERED THE WRONG QUESTION FIRST.** Counting `CheckBox` in the
+XAML gives 22. The fact the prose states is how many are visible WITHOUT OPENING ANYTHING,
+which is four, because the rest sit inside an expander that starts closed.
+
+Proved both ways: 13 lines across 5 facts pass over the real files, and a document that is
+wrong on purpose in five ways is refused by file and line. Both steps are in Actions.
+
+### WHAT IS UNTESTED, said rather than left to be discovered
+
+- **Q67's two paths have STILL never fired, and C04's twelve groups were the best chance
+  there has been.** All 46 models carry `revit_ProjectLocation` and all 46 are at 100 per
+  cent element id, so the NO SHARED COORDINATE path and the MISSING ELEMENT ID path met no
+  real file again. **The whole folder has now been run and did not show them**, which is
+  better evidence than the close round's two groups gave. The INTERNAL ORIGIN path does
+  fire, on `1A04WL`, and failed that group correctly
+- **THE CEILING'S OTHER BRANCH IS NOT PROVED ON A RUN.** The RUN SETTINGS line was added
+  after the C04 run started, so C04 ran with the ceiling at 300 and NO line saying so, and
+  C02 ran with the line reading `none, every clash in scope gets a viewpoint`. The
+  `300 per group at most` wording has been compiled and never printed by a run. Step 401
+- **THE TWO RUNS WERE NOT MADE WITH THE SAME BINARY.** C04 ran before that line existed
+  and C02 after. The difference is one log line and nothing else, and it is said here
+  because a round that quietly changed the tool between its two runs is a round whose
+  comparison cannot be trusted
+- **WHAT A CEILING COSTS IS REAL AND IT IS NOT MEASURED.** 2,034 clashes of `1A04EP` and
+  448 of `1A04PW` have no viewpoint, and whether a person needs them is not something this
+  tool can answer. The ceiling is a way to run at all while **Q80** is open, not a fix
+- **Q80'S THREE ROUTES ARE ALL UNMEASURED.** Writing into a document that does not hold
+  the old viewpoints, keeping the old ones out of the .NET tree, or writing to a separate
+  NWF. The round measured the DRIVER and built none of the three
+- **THE PROBE UNDERSTATES THE LIVE COST** and the size of the gap is unknown. It never
+  materialises the .NET viewpoint tree and the real writer does, and its 400 viewpoint
+  pass stayed flat at 411 ms where the live run climbed
+- **THE RESHAPE'S HAPPY PATH STILL HAS NOT RUN ON A REAL CHANGED GROUP.** Unchanged from
+  the close round: `rebuilt` is 0 on both of this round's runs as well
+- **`RebuildFromScan` still cannot carry viewpoints**, Q77, and every clashing group now
+  carries more of them than before
+- **THE WORKBOOK BLOCK COUNT IS NOW RIGHT AND HAS NEVER BEEN SEEN TO FAIL ON A REAL FILE.**
+  Every one of the twenty two groups across both runs reported 1,830 of 1,830. The failing
+  case is proved by a test and by a deliberately short fixture and not by a run
+
+### WHAT WAS STARTED AND WHAT WAS LEFT
+
+Rule 2, and the close round's own failure at it is corrected above, so this one is written
+the way the viewpoints round wrote it.
+
+**Programs started**: Navisworks Manage 2025 through `Roamer.exe` **twice**, once for the
+C04 run and once for the C02 run, both started normally and driven by UI Automation. The
+automation host `NavisworksApplication` **nine times**, for the probe passes: four `scale`
+passes over the two copies, two `scalemany` passes over eleven files each, and three
+`scaleclash` passes.
+
+**Every one of the nine exited on its own**, and that is counted off the file rather than
+asserted: `launch-probe.txt` in the round-scale folder holds **9 `launcher started`, 9
+`disposed` and 9 `launcher finished`**. None was left running and none had to be stopped. That clause is here because the close
+round dropped it and then said nothing was left running on the strength of a check that
+does not look for an automation host.
+
+**Processes stopped**: Navisworks was closed normally twice, once between the two runs and
+once at the end. **Nothing was force stopped, so there was no crash reporter and no
+`senddmp` this time.**
+
+**Files written outside the repo**, all under
+`C:\Users\bader\AppData\Local\Temp\claude\round-scale`:
+
+    \probe\               two NWF copies, the launcher, and the scale results
+    \probe\many\          eleven C02 NWF copies for the many file pass
+    \fixture-control\     three C04 NWC copies for the uncorrected matrix control
+    \*.ps1                the drivers, the transition script and the close helper
+    \entry-part*.md \scan-6.md \next.md \q.md \steps.md   this round's drafts
+    \1A04EP.xlsx \1A0415.xlsx \1A0415-new.xlsx            copies read for the block count
+
+**Inside his project folders**, which only PART 7 may write:
+
+    C04-backup-2026-09-21-scale\   2,621 files, 286,899,157 bytes, read back by SHA256
+                                   CONTENT, 0 mismatches
+    C02-backup-2026-09-21-scale\   2,255 files, 568,948,825 bytes, read back by SHA256
+                                   CONTENT, 0 mismatches
+    C04\NWF, NWD, Clash Report     all twelve groups' outputs, 48 files
+    C02\NWF, NWD, Clash Report     all ten groups' outputs
+
+Both backups sit BESIDE `C02` and `C04` and not inside them, which the close round's entry
+got wrong about its own.
+
+### What comes next
+
+- **Q80 is the round's own finding and the only real fix for the viewpoints.** The driver
+  is measured and the three routes are not. It is the first item of the next round
+- **Q79**, whether a workbook short of a block should now fail its group, which is only a
+  fair question because the counter is right at last
+- **Q76, Q77 and Q78 are carried unanswered**, with reasons. Q76 because the GAP block's
+  blind spot is now written up at `docs\history\scan.md` 6c and is the same shape as the
+  page check's, so the two should be answered together rather than one at a time. Q77
+  because the clear and rebuild path still has not run on a real CHANGED group, so
+  building viewpoint carrying for it would be building against an unmeasured path. Q78
+  because it is a rule about his project's site names and not about this tool
+- **THE .tsv EVENT KINDS NEED A HOME BEFORE THEY CAN BE CHECKED.** They are string
+  literals at their call sites with no list anywhere, which is why that one drifted and
+  why F96 cannot cover it. One place naming them, the way `RunSteps` names the fifteen
+  steps, and then a fact in `facts.tsv`
+- **Step 401 is the ceiling's other branch**, which has been compiled and never printed
+  by a run
+
+### THE TWO RUN LOGS, AND ONE THING ABOUT THE .tsv
+
+Both runs are committed with their `.tsv`, which the close round did not do:
+
+    steps\logs\c04-full-run-20260921-143913.log   the full twelve group C04 run
+    steps\logs\c02-run-20260921-150636.log        the ten group C02 run
+    steps\logs\c02-run-20260921-094740.log        the close round's C02 run, never committed
+
+**THE C02 .tsv CARRIES MORE THAN THE C02 .log DOES, said here rather than left to puzzle
+somebody.** The log is the copy the run wrote into his NWF folder at its RESULT block, so
+it stops where C02 stopped. The `.tsv` has no such snapshot and keeps the whole window
+session, so it also holds the two fixture control runs of 6d that followed in the same
+session. They are told apart by the group name, which is `1A04WE` and appears in no C02
+group.
+
 ## 2026-09-21 The close round, DONE, the record
 
 Core tests 1666 before the round and 1746 after, 0 failed and 0 skipped in both. Build 0
@@ -291,7 +718,23 @@ the same day, and nothing was built for it.
 - **The penetration and by design rules moved 0 on C02**, because earlier runs already
   moved them and they sit at Reviewed, which `StatusesThisToolMayMoveFrom` refuses to
   touch. Read the BUCKETS and never the total: a zero with reasons spread under it is a
-  measurement and a zero with everything in one bucket is 5r's signature
+  measurement and a zero with everything in one bucket is 5r's signature.
+
+  **CORRECTED ON 2026-09-21 BY THE SCALE ROUND, by doing what this bullet says and
+  reading the buckets.** The zero is a real measurement and the SPREAD is healthy, but
+  the REASON GIVEN FOR IT IS WRONG. On `1A02MM`, 542 clashes looked at:
+
+      80  the service is over the size, left alone
+       0  no size could be read off the service, left alone
+      20  a person had already set it, left alone
+       9  both sides a service, left alone
+      46  both sides a solid, left alone
+     387  not a service against a solid, left alone
+
+  "Earlier runs already moved them" is the third line and it accounts for **20 of 542**.
+  The zero is mostly 387 clashes that are not a service against a solid at all and 80
+  services over the size. The bullet gave one bucket's reason for the whole total, which
+  is the exact mistake the sentence after it warns against.
 
 ### THE WL FINDING, WHICH BADER CAN SEND AS IT STANDS
 
