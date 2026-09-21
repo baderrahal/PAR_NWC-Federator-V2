@@ -223,7 +223,11 @@ A clash becomes Reviewed when all four of these are true:
         Pipes, Pipe Fittings, Pipe Accessories, Ducts, Duct Fittings, Duct Accessories,
         Flex Pipes, Flex Ducts, Cable Trays, Cable Tray Fittings, Conduits, Conduit Fittings
     the OTHER side is a SOLID by item category
-        Walls, Floors, Roofs
+        Walls, Floors, Roofs, Structural Foundations
+        Structural Framing and Structural Columns are NOT on the list, deliberately. A
+        service through a slab, a wall, a roof or a foundation is a hole somebody cuts.
+        A service through a BEAM or a COLUMN is a structural decision an engineer makes,
+        so it stays at New for a person to look at. Q63
     the service measures 150 mm OR LESS
         every size property on the item is read and the LARGEST is taken, so a 600 by 150
         duct is a 600 and stays where it is

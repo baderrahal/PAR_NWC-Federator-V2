@@ -40,9 +40,18 @@ namespace Federator.Core.Health
         /// <summary>The line the export check writes, one per pair.</summary>
         public string Line()
         {
+            // 4e. WHERE THE DIFFERENCE IS INVISIBLE, NAME THE CHARACTER. "Two spellings"
+            // is useless when a person looks at both and sees no difference at all, which
+            // is what a non breaking space does.
+            string invisible = InvisibleDifference.Between(First, Second);
+
             return "\"" + First + "\" in " + Listed(FirstModels)
                 + "   against   \"" + Second + "\" in " + Listed(SecondModels)
-                + (CaseOnly ? "   the same word in a different case" : "   ONE OR TWO LETTERS APART, so this may be a typo");
+                + (invisible != null
+                    ? "   THEY LOOK IDENTICAL AND ARE NOT: " + invisible
+                    : CaseOnly
+                        ? "   the same word in a different case"
+                        : "   ONE OR TWO LETTERS APART, so this may be a typo");
         }
 
         private static string Listed(IList<string> models)
@@ -90,6 +99,14 @@ namespace Federator.Core.Health
         public const int Nearest = 2;
 
         /// <summary>
+        /// What separates a discipline prefix from the rest of a workset name on this
+        /// project, `ME-Ductwork` and `EL-Power`. A setting rather than a constant,
+        /// because a project spelling them another way is a project this rule should not
+        /// silently mis-read.
+        /// </summary>
+        public const char PrefixSeparator = '-';
+
+        /// <summary>
         /// How many pairs were found and NOT named because a person has already decided
         /// they are two different worksets. Counted rather than hidden, because a check
         /// that quietly stops looking at something is a check nobody can audit.
@@ -121,6 +138,26 @@ namespace Federator.Core.Health
                 {
                     bool caseOnly = string.Equals(names[i], names[j], StringComparison.OrdinalIgnoreCase);
 
+                    // THE DISCIPLINE PREFIX IS NOT PART OF THE COMPARISON, 4d. Two names
+                    // whose prefixes differ are NEVER a typo pair however close the rest
+                    // is, and two sharing a prefix and differing in the body still are.
+                    //
+                    // WHY. `FP-PIPING` against `ME-PIPING` is one edit apart in the body
+                    // and they are two different disciplines, Fire Protection and
+                    // Mechanical. Naming them is the crying wolf fault this rule already
+                    // had once for `AR-EXTERIOR` against `AR-INTERIOR`, and it costs the
+                    // real typo sitting beside it: C04's 1A04WM carries
+                    // `EL-Lightining Protection` against `EL-Lightning Protection`, which
+                    // shares its prefix and IS a typo.
+                    //
+                    // A prefix pair that really is one thing spelled two ways is a
+                    // different question from a typo, and `RevitWorksets` is where a
+                    // decision about one belongs.
+                    if (!caseOnly && !SamePrefix(names[i], names[j]))
+                    {
+                        continue;
+                    }
+
                     if (!caseOnly && Distance(names[i].ToLowerInvariant(), names[j].ToLowerInvariant()) > Nearest)
                     {
                         continue;
@@ -149,6 +186,29 @@ namespace Federator.Core.Health
             }
 
             return found;
+        }
+
+        /// <summary>
+        /// The discipline prefix, which is everything before the first separator, or the
+        /// whole name where it carries none. Compared case blind, because a prefix
+        /// differing only in case is the same discipline and the case rule handles it.
+        /// </summary>
+        public static string PrefixOf(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return string.Empty;
+            }
+
+            int at = name.IndexOf(PrefixSeparator);
+
+            return at <= 0 ? name : name.Substring(0, at);
+        }
+
+        /// <summary>Whether two names carry the same discipline prefix.</summary>
+        public static bool SamePrefix(string left, string right)
+        {
+            return string.Equals(PrefixOf(left), PrefixOf(right), StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>How many single letter edits turn one word into the other, given up on past Nearest.</summary>

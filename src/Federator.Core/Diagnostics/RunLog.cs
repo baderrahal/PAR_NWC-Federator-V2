@@ -111,6 +111,8 @@ namespace Federator.Core.Diagnostics
             StartedAt = startedAt;
             DisabledReason = disabledReason;
             ClashesFound = new ClashesAcrossTheRun();
+            PenetrationsAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "penetrations   ");
+            ByDesignAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "by design      ");
             this.stream = stream;
 
             if (stream != null)
@@ -1714,6 +1716,15 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public ClashesAcrossTheRun ClashesFound { get; private set; }
 
+        /// <summary>
+        /// How many clashes the penetration rule moved, per group and added up, with how
+        /// many it looked at beside each. Never null. Only written where the box was on.
+        /// </summary>
+        public MovedAcrossTheRun PenetrationsAcrossTheRun { get; private set; }
+
+        /// <summary>The same for the by design rule, which moved 21 of 27 on the fixture of 2026-09-21.</summary>
+        public MovedAcrossTheRun ByDesignAcrossTheRun { get; private set; }
+
 
         /// <summary>
         /// Whether this run asked for by design connections to be marked, F72b. False by
@@ -1792,6 +1803,15 @@ namespace Federator.Core.Diagnostics
                 Line(penetrations);
             }
 
+            // HOW MANY DECISIONS THIS RUN MADE FOR HIM, per group under the total, added
+            // on 2026-09-21. The single number above says how many moved and never how
+            // many were looked at, and 7 of 14 and 7 of 7000 are the same 7. A person
+            // signing a report off should see the rate before he sends it.
+            foreach (string line in PenetrationsAcrossTheRun.ResultLines(PenetrationsWanted))
+            {
+                Line(line);
+            }
+
             // The number the run exists to produce, and the RESULT block carried no
             // version of it until the drift round. ALWAYS WRITTEN, unlike the two lines
             // around it: a run that found nothing is the most interesting run there is,
@@ -1820,6 +1840,11 @@ namespace Federator.Core.Diagnostics
             if (byDesign != null)
             {
                 Line(byDesign);
+            }
+
+            foreach (string line in ByDesignAcrossTheRun.ResultLines(ByDesignWanted))
+            {
+                Line(line);
             }
 
             IList<WrittenFile> files = WrittenFiles;

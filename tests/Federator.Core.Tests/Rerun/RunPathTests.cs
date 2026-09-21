@@ -52,7 +52,14 @@ namespace Federator.Core.Tests
             string all = string.Join("\n", new List<string>(lines).ToArray());
 
             Assert.That(lines[0], Is.EqualTo("This run federates 3 groups."));
-            Assert.That(all, Does.Contain("Rebuilt: 2. The NWF there no longer matches the scan folder, so it is cleared and rebuilt from the scan folder, and the tests saved inside it are kept."));
+            // THE DIALOG TOLD HIM THE WRONG THING UNTIL 2026-09-21. It said the NWF is
+            // cleared and rebuilt, which stopped being what happens when PART 5 made the
+            // reshape the path a CHANGED group takes. The clear and rebuild is the
+            // fallback now, and this is the one screen he can still cancel from.
+            Assert.That(all, Does.Contain("Rebuilt: 2."));
+            Assert.That(all, Does.Contain("WITHOUT clearing it"));
+            Assert.That(all, Does.Contain("never leave it"));
+            Assert.That(all, Does.Contain("cleared and rebuilt instead"), "the fallback is still named");
             Assert.That(all, Does.Not.Contain("Skipped"), "nothing skips any more, so the line only shows with a count");
         }
 

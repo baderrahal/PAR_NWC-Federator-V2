@@ -149,7 +149,8 @@ namespace Federator.Core.Report
         public bool CompactResolved { get; set; }
 
         /// <summary>
-        /// Move a small service through a wall, a floor or a roof to Reviewed. F72, and
+        /// Move a small service through a wall, a floor, a roof or a structural foundation to
+        /// Reviewed. F72 and Q63, and
         /// the answer to Q33. OFF by default, because it writes into the NWF, which is the
         /// only record of what has been fixed, and a project has to say it wants this
         /// before a run starts changing statuses in it.

@@ -302,6 +302,27 @@ END {
         best = ""
         bestcount = 0
 
+        # A TYPE ALREADY COVERED BY A SHARED IMPORT IS NOT A FAULT, whatever else the
+        # other files happen to import as well. Added on 2026-09-21 after this check
+        # reported SavedViewpoints.cs for naming SavedItem, which lives in
+        # Autodesk.Navisworks.Api and which that file imports. What had changed was that
+        # another file gained a Clash import for an unrelated extension method, which made
+        # Clash common to every file naming SavedItem. The inference "they all import X so
+        # the type is in X" is only sound when the subject file shares NONE of the
+        # candidates, and the build agreed: 0 errors throughout.
+        covered = 0
+
+        for (ns in common) {
+            if ((file "\t" ns) in imports || ns == mine[file]) {
+                covered = 1
+                break
+            }
+        }
+
+        if (covered) {
+            continue
+        }
+
         for (ns in common) {
             if ((file "\t" ns) in imports || ns == mine[file]) {
                 continue

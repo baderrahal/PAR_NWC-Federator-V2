@@ -87,7 +87,14 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
    - the path of the file as Navisworks shows it
    - whether Navisworks opens that file on its own with the add-in closed
 
-   Answer:
+
+   Answer: Bader, 2026-09-21. "Fixed, no more warning." THE ACC WARNING IS GONE and does not appear any more.
+
+   NOTHING IS BUILT FOR IT. There is no reproducible fault to fix, and building a guard against a warning nobody can make appear would be a check that can never fire, which this repo deletes. B12 and F23 are CLOSED as NOT REPRODUCIBLE, on his word, dated 2026-09-21.
+
+   WHAT STAYS. F32's four refusals stay exactly as they are, because each one refuses a real shape a path can have: a document opened from an address rather than a folder, one that is not an NWF, one with no folder in front of its name, and one whose folder cannot be read. Those were never about the ACC warning, they were found while narrowing it.
+
+   IF IT RETURNS he reopens it with the four facts this question asks for, which are still the right four: the exact text, where in the window it appeared, the path as Navisworks shows it, and whether Navisworks opens that file on its own with the add-in closed.
 
 21. Not in the first list. Skipped groups. The run log from 2026-09-07 dropped 12 of 26 groups before the run started, every group without AR, EL, ME or ST, and the rule is not shown in the window. See B15
 
@@ -238,7 +245,17 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
 55. From the viewpoints round on 2026-09-20, docs\history\scan.md 5n. `ClashHarvest.SourceFileOf` reads `item.Model` off the clash leaf, and the probe measured that on a clash leaf `HasModel` reads false and `Model` reads null, the model sitting on the topmost ancestor six to nine levels up. On that evidence the source file column of the report, and the discipline read off it, come out empty on every row, and the wiring round's own note says the two came out empty on 426 items once before for a different reason. The viewpoint writer now climbs to the top and reads the file name there. Should the harvest climb the same way, which is one call in one place, or is the empty column what the client's report shows today and has always shown
 
+    Answer: Bader, 2026-09-21. **b. THE COLUMN STAYS EMPTY, because that is what the client's report shows.** The harvest is NOT changed and does not climb.
+
+    WHAT THAT SETTLES AND WHAT IT DOES NOT. It settles the REPORT. It does not settle the rest of the tool, and a code read on 2026-09-21 found exactly one consumer that is not the report: `Federator.Core.Report.GapRule` counts how many items carried a source file and a discipline, and a property carried by NOTHING is deliberately left out of the GAP block. Both are always zero, so NEITHER EVER APPEARS, and a reader concludes they are not being held back. They are not being held back because they were never read, which is the opposite reason, and the block cannot tell those two apart. That is Q76.
+
+    EVERYTHING ELSE IS SAFE, including the two that would have been serious. The viewpoint discipline folders come from the SET NAME through `DisciplinePairRule` and never from the source file, so no viewpoint folder on any run has been wrong. Which models a viewpoint hides comes from `document.Models[i].FileName`, its own read. The workbook writes four cells per item and none is the source file, and the clash XML writes two quick properties and says so in its own comment.
+
 56. From PART 6 of the viewpoints round on 2026-09-20, docs\history\scan.md 5i. The category list was measured off the ten C02 federations only, 374 values, and with it live the health block on the client's corrected matrix reads `Sets asking for a category no model carries: 14`, naming BLD-AR-Ramps, BLD-AR-Roofs, BLD-AR-Columns, BLD-AR-Casework, BLD-AR-Parking and nine more. Those are sets asking for a category no C02 building holds an item of, which is information about C02 and not a fault in the matrix. Should the walk be run over the other folders before the list is trusted project wide, and should the block say which folder the list was measured from so a reader does not take fourteen as a count of broken sets
+
+    Answer: Bader, 2026-09-21. **56a is b: the list stays the 374 values measured off C02 and is NOT walked wider.** **56b is a: the block SAYS WHICH FOLDER the list was measured from.**
+
+    THAT MATTERS MORE ON 2026-09-21 THAN IT DID WHEN IT WAS ASKED, because this round runs C04 against a list measured on C02. A C04 model holding a category no C02 building has would otherwise be counted as a category NOBODY carries, which is the loudest possible way of being wrong. The line names the folder, so a reader can see the list and the run are two different projects.
 
 57. From the viewpoints round on 2026-09-20, seen by hand on the sixth run's 1A02MM copy. A viewpoint carries the camera Clash Detective computes for its clash, `TestsViewpointForResult`, read back within 0.001 units, and the hidden state of every model outside its pair. Pressed, `AR vs EL` clash 15 opens on the cable tray meeting the wall, and `DR vs ST` clash 1 opens on the framing round the drainage pipe, both with the right models greyed. `DR vs ST` clash 2 opens on a uniform grey: the camera sits inside a structural member, which Clash Detective itself shows through because its own view dims or hides everything but the two items and reveals what is in the way. The viewpoint records no such dimming. The COM view carries `ApplyMaterialAttribs`, so a transparency put on everything but the two clashing items before the view is added would be recorded and applied when pressed, which is how Clash Detective looks and is another measurement and another run. Should a clash viewpoint dim everything but its two items, hide everything but its two items, or stay as it is with the pair's models shown in full
 
@@ -359,3 +376,49 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
     Four ways out, and all four are somebody's decision and not this tool's. Leave it exactly as it is, because completeness is what the client agreed to receive. Keep every block and make the empty ones CHEAP, one row saying the pair was checked and found nothing rather than eight, which keeps the evidence and takes 1A02MM from 15,182 rows to about 2,300. Write two files, the full matrix as now and a second holding only the blocks that found something. Or keep one file and put the empty blocks on a second sheet, which loses the single sheet shape the client accepted.
 
     WHAT IS MEASURED AND WHAT IS NOT. The counts above are read off the file this run wrote, as a zip, by counting the test name cells in column A and the rows between them. What is NOT measured is what the client actually does with the empty blocks, whether anybody reads them, and whether the eight row shape is theirs or ours. The block layout is measured off their export, so shortening it would be a departure from their format and that is exactly why it is a question.
+
+    Answer: Bader, 2026-09-21. **b. EVERY BLOCK STAYS AND THE EMPTY ONES BECOME ONE ROW.**
+
+    Every test still appears, because the client's report is the whole matrix and a test missing from it reads as a test nobody ran rather than one that could not clash, which is what `CreationPlan` says in as many words. A test that found something keeps its block exactly as it is. A test that found NOTHING becomes ONE ROW carrying the same five facts the header table carries, so the row is still evidence the pair was checked.
+
+    PREDICTED BEFORE THE CHANGE AND MEASURED AFTER IT, which is worth more than a saving claimed afterwards. The fixture's workbook was 1,830 blocks in 14,667 rows and the prediction was 1,916. It measured **1,917**, one row out, with the block count still exactly 1,830.
+
+    THIS IS A DEPARTURE FROM THE CLIENT'S OWN FORMAT and the only one in this tool. Their export writes the full eight row block whatever the test found. That one line is for Bader to send to NMDC.
+
+74. From PART 1 of the close round on 2026-09-21, and the answer was given before the measurement that inverted it. Seven of the ten C02 groups hold 62 sets where the matrix holds 61, because `BLD-DRPipe Accessories`, the spelling with the missing hyphen, and `BLD-DR-Pipe Accessories`, the corrected one, are both in the NWF. Should the tick box REMOVE a set the picked file no longer names
+
+    Answer: Bader, 2026-09-21. **REMOVE THE UNUSED TWIN, THEN RENAME THE WORKING ONE INTO ITS NAME. Both in memory, and nothing is saved unless both halves worked.**
+
+    THE ANSWER CHANGED BECAUSE THE MEASUREMENT DID. Q74 was first answered "remove what the file no longer names" before anybody had counted which set was which. 5z counted it on his own files: **60 clash test sides point at the BROKEN name in each of seven groups and NOTHING points at the corrected one.** So the broken set is the one doing all the work and finding nothing, and the corrected set, which this tool created from the corrected file, sits unused. Removing what the file does not name would have removed the WORKING one and orphaned 420 sides across seven groups. Removing the unused one costs nothing.
+
+    THE RENAME IS SAFE AND IT WAS MEASURED BEFORE IT WAS BUILT. 5z-b renamed a set 60 sides pointed at, saved, closed and reopened off the disk: all 60 followed the rename to the right set, none was left pointing at the old name, and the results, the statuses and the viewpoints all survived. A REMOVAL on the same file left 60 sides resolving to nothing.
+
+    ORDER IS LOAD BEARING. The corrected name already exists in the NWF, so renaming onto it would leave two sets at one path, which is F28's exact prohibition and a clash locator resolving to whichever came first. The twin goes first and the rename takes the freed name.
+
+    THE PAIRING IS MEASURED AND NOT GUESSED. The two sets ask the IDENTICAL question, same category, same property, same values, same flags. That is what makes them a pair rather than two sets with similar names, and it is the cleanest evidence there is that F28 kept the correction out of the document: the corrected set was built from the corrected file and never used.
+
+    AND THE REFUSAL IS WIDER THAN THE QUESTION ASKED FOR. It said refuse when a test would LOSE ITS RESULTS. 5z measured that the results SURVIVE a removal and it is the SIDE that stops resolving, which that wording would never have caught. The rule is: refuse when anything pointing at the set would stop resolving, whatever happens to the results.
+
+75. From PART 5 of the drift round on 2026-09-20. `ReshapeFromScan` was compiled, reviewed, tested in Core and NEVER EXECUTED, because all ten groups took the weekly path on all four runs. Should it be forced on a copy and proved
+
+    Answer: Bader, 2026-09-21. **YES, and forcing it found three defects, two of which fire.**
+
+    5-M1, THE ONE THAT SILENTLY DELETED A MODEL. `NwfRebuildPlan.From` splits the moves OUT of the comparison, so `plan.Removed` excludes a moved file and `comparison.Removed` still holds it. The engine read the COMPARISON and then added `move.From` on top, so the same path went in twice, `IndexesOf` does not de-duplicate, and 5z measured that indexes shift up by one behind a removal. The second removal took out the model that had shifted into that slot. And 5x measured that the four tallied counts do not move over a removal at all, so `EverythingKept` was TRUE and the run reported success. The MODEL COUNT is counted out and counted back now, which is the arithmetic that makes the check able to fail.
+
+    5-M2, A SUCCESSFUL RESHAPE JUDGED FAILED. The CHANGED branch never set `NwfOnDisk`, so `GroupJudgement` said "the NWF is not on disk" about a file that is on disk and that the run itself opened.
+
+    5-M3, THE CHARTERED DEFECT. Two of the three `return false` sites fire after the document is modified, and false sent the caller into the clear and rebuild, which read its before counts off the already damaged document, reported everything kept and SAVED THE NWF OVER. They return true now and nothing on that path saves.
+
+    IT HAS NEVER FIRED ON HIS FILES, and that is luck rather than design. One run ever rebuilt a group, `run-20260919-144319`, five groups, and `ReshapeFromScan` was added the next day. Every run since shows `rebuilt = 0`.
+
+76. From PART 1c of the close round on 2026-09-21, and Q55 settles the report while leaving this open. The source file column is empty on every row of every report by decision, and `Federator.Core.Report.GapRule` counts how many items carried a source file and a discipline in order to decide whether to name them as something the run measured and no output shows. A property carried by NOTHING is deliberately left out of that block, on the reasoning that reporting it would claim the run is holding back something it never read. Both counts are always zero, so neither line ever appears, and a reader of the GAP block concludes those two are not being held back. THE BLOCK CANNOT TELL "AN OUTPUT CARRIES IT" FROM "THE RUN READ NOTHING". Should the GAP block distinguish the two, and if so what does it say about a property the run reads on every item and always gets nothing from
+
+    Answer:
+
+77. From the fixture of 2026-09-21, found in nine seconds by forcing the clear and rebuild on a copy of 1A02WE. `RebuildFromScan` copies the SETS and the TESTS out before the clear and puts them back after, and it does NOT copy the VIEWPOINTS. The run reported `saved viewpoints LOST: before clear 52, after appends 22, after restore 22` and REFUSED TO SAVE, which is F50's count out and count back rule working exactly as built, so nothing was lost. But it means a group that carries viewpoints this tool made can never succeed on the fallback path, and since the drift round every clashing group carries one viewpoint per clash. Should the clear and rebuild copy the viewpoints out and back the way it copies the sets and the tests, and is `DocumentSavedViewpoints.CreateCopy` and `CopyFrom` measured to work for that
+
+    Answer:
+
+78. From 6a of the close round on 2026-09-21, read off all 46 C04 models. Two of them carry `DEFUALT` and one carries `BUL_0004_SharedCoordiante` as their shared coordinate name, both misspelled in the models themselves. The spelling is the smaller half. `DEFUALT` matters because a model sitting on a site named DEFAULT, however it is spelled, is probably not on an agreed project shared site, which is close to what `Internal` means and is what Q70 fails a group for. THE FAIL RULE IS NOT CHANGED BY THIS ROUND and both names are reported exactly as the models carry them. Should a shared site named DEFAULT, in any spelling, fail a group the way `Internal` does, or be reported only
+
+    Answer:

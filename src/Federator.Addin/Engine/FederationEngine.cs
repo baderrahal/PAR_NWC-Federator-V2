@@ -682,6 +682,27 @@ namespace Federator.Addin.Engine
                     {
                         return outcome;
                     }
+
+                    // A RESHAPE THAT FAILED AFTER A CHANGE RETURNS TRUE, which is what
+                    // stops the fallback running over the damage. But true also means
+                    // "carry on", so the group went into the clash step, the viewpoints
+                    // and `SaveTheNwfAgain`, which could still WRITE THE NWF while the
+                    // error on the outcome said it had not been saved. Stopping here is
+                    // what makes that sentence true.
+                    if (outcome.HasErrors)
+                    {
+                        return outcome;
+                    }
+
+                    // 5-M2. THE CHANGED BRANCH NEVER SET THIS AND THE GROUP WAS JUDGED
+                    // FAILED FOR IT, with the sentence "the NWF is not on disk", about a
+                    // file that IS on disk and that this run opened. Only the OPENED
+                    // branch and SaveTheNwf set it, and the reshape deliberately does not
+                    // save, so a reshaped group that found no clashes reached the
+                    // judgement with it still false. It is read off the file the run
+                    // opened, the same way the OPENED branch reads it.
+                    outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
+                    outcome.NwfOnDisk = outcome.NwfSize >= 0;
                 }
                 else if (comparison.Decision == RerunDecision.Build)
                 {
@@ -1377,13 +1398,34 @@ namespace Federator.Addin.Engine
             views.Before = SavedViewpoints.Count(document);
             statuses.Before = SavedStatuses.SetByAPerson(document);
 
+            // THE MODEL COUNT IS COUNTED OUT AND COUNTED BACK LIKE THE OTHER FOUR, and it
+            // was not before. The four tallied things do not move over a removal at all,
+            // 5x, so EverythingKept stayed true while a model was silently gone. A check
+            // that cannot fail is 5r's class of fault and this is the arithmetic that
+            // makes it able to.
+            int modelsBefore = document.Models.Count;
+
             // Everything a move or a removal takes out, by file name, so one pass covers
             // both. A move is a remove and an add, because the file is in a new folder.
-            List<string> going = new List<string>(comparison.Removed);
+            //
+            // IT READS plan.Removed AND NEVER comparison.Removed, and that one word was a
+            // defect that silently deleted a model. NwfRebuildPlan.From splits the moves
+            // OUT of the comparison: plan.Removed excludes a moved file and
+            // comparison.Removed still holds it. Reading the comparison and then adding
+            // move.From on top put the same path in here TWICE, IndexesOf does not
+            // de-duplicate, and 5z measured that the indexes behind a removal shift up by
+            // one, so the second TryRemoveFile took out the model that had shifted into
+            // that slot. A model that should have stayed, gone, with the run reporting
+            // success because 5x measured that the four tallied counts do not move over a
+            // removal at all.
+            List<string> going = OnlyOnce(plan.Removed);
 
             foreach (NwfMove move in plan.Moved)
             {
-                going.Add(move.From);
+                if (!going.Contains(move.From))
+                {
+                    going.Add(move.From);
+                }
             }
 
             // EVERY INDEX IS FOUND BEFORE ANYTHING IS REMOVED, so this path declines
@@ -1395,8 +1437,28 @@ namespace Federator.Addin.Engine
             {
                 // NOT A FAULT, this path saying it cannot do the job. No error goes on
                 // the outcome and the caller falls back to the clear and rebuild.
-                log.Line("RESHAPE  a model this group no longer holds is not in the open NWF, "
-                    + "so the clear and rebuild is used instead");
+                log.Line("RESHAPE  " + DamagedDocument.NothingWasTouched(
+                    "a model this group no longer holds is not in the open file")
+                    + ", so the clear and rebuild is used instead");
+
+                return false;
+            }
+
+            // A SHAPE THIS PATH CANNOT DO, DECLINED BEFORE ANYTHING IS TOUCHED. Taking
+            // EVERY model out is not a reshape, and measured on the fixture of 2026-09-21
+            // Navisworks refuses it: removing four of four got to the last one and
+            // `TryRemoveFile` returned false, leaving a document with one model in it and
+            // nothing saved. The case is real and ordinary, because moving a project
+            // folder makes every file in the group a MOVE at once.
+            //
+            // Declining here rather than failing there is the difference between the
+            // clear and rebuild doing the job and the group failing.
+            if (indexes.Count >= modelsBefore)
+            {
+                log.Line("RESHAPE  " + DamagedDocument.NothingWasTouched(
+                    "every model in this group would have to come out, which is not something"
+                        + " this path can do")
+                    + ", so the clear and rebuild is used instead");
 
                 return false;
             }
@@ -1404,20 +1466,26 @@ namespace Federator.Addin.Engine
             if (!RemoveThem(document, indexes))
             {
                 // PART WAY THROUGH AND IT STOPPED, which IS a fault. The document has
-                // already changed, so the clear and rebuild must not run on top of it.
-                outcome.AddError(
-                    "a model could not be taken out of the open NWF part way through, "
-                        + "so the file on disk is left exactly as it was");
+                // already changed, so the clear and rebuild must not run on top of it and
+                // nothing is saved. Returning TRUE is what stops the fallback.
+                outcome.AddError(DamagedDocument.TheDocumentIsDamaged(
+                    "a model could not be taken out of the open file part way through"));
 
                 return true;
             }
 
             // What to append: everything added, plus every moved file at its new path.
-            List<string> coming = new List<string>(comparison.Added);
+            // plan.Added and never comparison.Added, for the reason the going list gives:
+            // the comparison still holds the moved file and the plan does not, so reading
+            // the comparison appended the same NWC twice.
+            List<string> coming = OnlyOnce(plan.Added);
 
             foreach (NwfMove move in plan.Moved)
             {
-                coming.Add(move.To);
+                if (!coming.Contains(move.To))
+                {
+                    coming.Add(move.To);
+                }
             }
 
             int appended = 0;
@@ -1454,25 +1522,81 @@ namespace Federator.Addin.Engine
                 log.Line(line);
             }
 
+            // THESE TWO USED TO RETURN FALSE AND THAT WAS THE CHARTERED DEFECT. False
+            // sends the caller into the clear and rebuild, which then reads its BEFORE
+            // counts off this already modified document, finds everything present,
+            // reports everything kept and SAVES THE NWF OVER, while the message here said
+            // the file was left exactly as it was. They return TRUE now, which stops the
+            // fallback, and nothing on this path saves.
             if (!tally.EverythingKept)
             {
-                outcome.AddError(
-                    "the NWF was brought up to date and something it held did not come back, "
-                        + "so the file on disk is left exactly as it was");
+                outcome.AddError(DamagedDocument.TheDocumentIsDamaged(
+                    "the open file was brought up to date and something it held did not come back"));
 
-                return false;
+                return true;
             }
 
             if (appended < coming.Count)
             {
-                outcome.AddError(
-                    appended + " of " + coming.Count + " new files were appended, so the file on disk is left alone");
+                outcome.AddError(DamagedDocument.TheDocumentIsDamaged(
+                    appended + " of " + coming.Count + " new files were appended"));
 
-                return false;
+                return true;
+            }
+
+            // THE ARITHMETIC THAT CATCHES A REMOVAL TAKING THE WRONG MODEL. Every path
+            // above leaves the document holding exactly what it started with, less what
+            // went, plus what came. Anything else means a removal or an append did not do
+            // what it said, and the four tallied counts cannot see it.
+            int expected = modelsBefore - going.Count + appended;
+
+            if (document.Models.Count != expected)
+            {
+                outcome.AddError(DamagedDocument.TheDocumentIsDamaged(
+                    "the open file holds " + document.Models.Count + " model(s) where taking "
+                        + going.Count + " out of " + modelsBefore + " and putting " + appended
+                        + " back should leave " + expected));
+
+                return true;
             }
 
             outcome.AppendedCount = document.Models.Count;
+
+            // THE GROUP IS REBUILT, AND SAYING SO IS NOT COSMETIC. Without this line
+            // `outcome.Decision` keeps the value `Changed` it was given before the work,
+            // and `GroupJudgement` returns PARTIAL with the reason "the NWF points at a
+            // different set of files, so it was left alone" about a group that was just
+            // brought up to date, while `RunPath` labels it "Skipped (changed on disk)"
+            // and the RESULT block counts it under skipped rather than rebuilt. The
+            // reshape did the work the clear and rebuild does, so it reports the same
+            // outcome the clear and rebuild reports.
+            outcome.Decision = RerunDecision.Rebuilt;
             return true;
+        }
+
+        /// <summary>
+        /// The same list with every repeat dropped, order kept. A list that must not hold
+        /// a duplicate says so itself rather than depending on every caller to have built
+        /// it carefully, which is what let the same path in twice and cost a model.
+        /// </summary>
+        private static List<string> OnlyOnce(IEnumerable<string> files)
+        {
+            List<string> once = new List<string>();
+
+            if (files == null)
+            {
+                return once;
+            }
+
+            foreach (string file in files)
+            {
+                if (!once.Contains(file))
+                {
+                    once.Add(file);
+                }
+            }
+
+            return once;
         }
 
         /// <summary>
@@ -1523,10 +1647,16 @@ namespace Federator.Addin.Engine
                 }
                 catch (Exception error)
                 {
+                    // A THROW HERE CAN ONLY HAPPEN AFTER A MODIFICATION, because the
+                    // removals run one after another and the first one that throws has
+                    // others behind it. This said "the file on disk is left exactly as it
+                    // was", which is the sentence the whole damaged document rule exists
+                    // to stop, and the caller then added the correct sentence a moment
+                    // later, so the log carried both, contradicting each other.
                     log.Failure(
-                        "taking the model at " + at + " out of the open NWF",
+                        "taking a model out of the open file",
                         error,
-                        "the file on disk is left exactly as it was");
+                        DamagedDocument.TheDocumentIsDamaged(null));
 
                     return false;
                 }
@@ -2308,9 +2438,22 @@ namespace Federator.Addin.Engine
                 // was built in exactly that case.
                 log.Line("SETS     " + job.Building + " put into the document: "
                     + sets.CreatedCount + " created, "
-                    + sets.AlreadyPresentCount + " already there and left alone");
+                    + sets.AlreadyPresentCount + " already there and left alone"
+                    + (sets.Leftovers.Count > 0
+                        ? ", " + sets.ActedOnLeftovers + " of " + sets.Leftovers.Count
+                            + " set(s) the file no longer names brought up to date"
+                        : string.Empty));
 
-                return sets.PutAnythingIn;
+                // Q74. THE PAIR FAILED BETWEEN ITS TWO HALVES, so the unused twin is gone
+                // and the working set did not take its name. The document is worse than it
+                // started and nothing may be saved from it.
+                if (!string.IsNullOrEmpty(sets.TheDocumentIsDamaged))
+                {
+                    outcome.AddError(sets.TheDocumentIsDamaged);
+                    return false;
+                }
+
+                return sets.PutAnythingIn || sets.ActedOnLeftovers > 0;
             }
             catch (Exception error)
             {
@@ -2503,6 +2646,8 @@ namespace Federator.Addin.Engine
                         penetrationTally.Lines(reports.Penetrations, reports.Sizes));
 
                     log.PenetrationsMoved += penetrationTally.MovedCount;
+                    log.PenetrationsAcrossTheRun.Add(
+                        job.Building, penetrationTally.MovedCount, penetrationTally.Considered);
 
                     // Q71. One row per service this tool could not measure, because the
                     // block writes none and a count nobody can check is a count nobody
@@ -2520,6 +2665,8 @@ namespace Federator.Addin.Engine
                 {
                     log.Block("BY DESIGN " + job.Building, byDesignTally.Lines());
                     log.ByDesignMoved += byDesignTally.MovedCount;
+                    log.ByDesignAcrossTheRun.Add(
+                        job.Building, byDesignTally.MovedCount, byDesignTally.Considered);
                     byDesignAcrossTheRun.Add(byDesignTally);
                 }
 

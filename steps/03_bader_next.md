@@ -6,6 +6,37 @@ One action per step. Do them in order. One build, one install and one Navisworks
 
 F34 comes first, because it is the largest add-in change of the round, the window, the XAML, the engine and the job all changed, and it is proved by opening the window and looking, before any run. If the window does not open or the Clash step is wrong, nothing after it can be read, so it is checked before a single group runs. F33 is checked in the same look, because it is one combo on the same window. F27 is next, because it costs one Scan and no run at all: its block is read off the 1B06PH run further down. Then the C06 run, which proves F24, F29, F30 and F33 in one press, then F28 and F31 together, because both are one building run twice. F32 and F35 need a different file open or a folder made for them, so they come after the ordinary runs.
 
+## THIS FILE NOW COVERS TWO FOLDERS, AND THE OLD ONE NEVER EXISTED
+
+Everything below is done once on `C:\00-NM\Federation Task\C02 + 04\C02`, which holds TEN
+groups and already holds NWF files so its groups are Weekly runs, and once on
+`C:\00-NM\Federation Task\C02 + 04\C04`, which holds TWELVE groups and NO NWF at all so
+every group there is a FIRST RUN.
+
+THE `C06` FOLDER AND THE `1B06*` GROUP NAMES ARE GONE FROM THIS FILE. They were never on
+his machine, and every count in here derived from fourteen groups was wrong for that
+reason. The real groups are:
+
+    C02, ten:    1000BS  1A0215  1A02BS  1A02MM  1A02MS
+                 1A02WE  1A02WL  1A02WM  1A02WN  1A02WO
+    C04, twelve: 1A0415  1A04EP  1A04KI  1A04MS  1A04PK  1A04PW
+                 1A04WE  1A04WL  1A04WM  1A04WN  1A04WO  1WAW15
+
+FOUR THINGS ABOUT C04 BEFORE YOU READ ANY NUMBER OFF IT. `1A0415` and `1WAW15` are NOT
+buildings: they carry LS, LT and SW, and every set in the matrix is a `BLD-` set asking
+for one of nine codes that does not include any of those three, so both find NOTHING and
+that is correct rather than a fault. `1A04MS` and `1A04PK` hold ONE discipline each, both
+ST, so there is no pair to clash. `1A04WL`'s ST files are numbered 1, 2, 3, 4, 5 and 7,
+and SIX is missing, which is named and not guessed at. And `1A04WL`'s ST-000004 and
+ST-000005 are on Revit's internal origin, which fails that group on purpose.
+
+AND THE FIXTURES COME FIRST NOW. Before either live folder, run the two small copy groups
+under `C:\Users\bader\AppData\Local\Temp\claude\round-close`, which take about twenty
+seconds each and exercise sets, tests, clashes, viewpoints, by design, the workbook, the
+page and the penetration rule. `tools\probes\fixture.md` says what each one is, why the
+penetration one is AR and ME rather than ST, and what neither can show. A live run is the
+final proof and never the loop.
+
 ## Get the code
 
 1. Open GitHub Desktop
@@ -93,7 +124,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 25. Open Navisworks Manage 2025 with nothing open
 26. Open the add-in from the ribbon
 27. Look for: the window title carries today's commit and build time, not be0b9b37
-28. Look for: the window has four tabs, Source, Grouping, Outputs, Clash
+28. Look for: the window has four tabs, NUMBERED, reading `1. Source`, `2. Grouping`, `3. Outputs` and `4. Clash`
 29. Go to the Outputs step
 30. Look for: the Model units combo lists `Metres, which is what the models are set to`, then Millimetres, Centimetres, Feet, Inches, in that order, with the first chosen
 31. Look for: the grey line under it says the report is always in metres
@@ -101,7 +132,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 33. Look for: there is no Outstanding counts combo on the Clash step. It used to sit under the tick boxes
 34. Look for: the two buttons read `Sets into open model` and `Tests into open model`, BESIDE the line, on one row with the line to their LEFT, which the XAML settles: the TextBlock and the two Buttons are the three children of one horizontal StackPanel. The step said UNDER and the labels and the line are exactly right, which is F57. The line is `Not part of the run. Try the file above against the model open right now:`
 35. Pick the clash XML, 1104-PAR_CLASH_AllInOne
-36. Look for: the line at the BOTTOM of the Clash step, just above the sets pane and NOT under the file box, ends with `Every locator resolves against its sets.` The sentence goes into `SetsSummary`, which is docked Bottom, so it is below the pickers, the tick boxes and all four bordered panels
+36. Look for: the line at the very BOTTOM of the Clash step, just BELOW the sets pane and NOT under the file box, ends with `Every locator resolves against its sets.` The sentence goes into `SetsSummary`, which is docked Bottom, so it is below the pickers, the tick boxes and all four bordered panels
 37. Look for: the log pane holds a block headed `HEALTH 1104-PAR_CLASH_AllInOne.xml` with `Tests: 1830`, `Sets: 61`, a `Locators resolved` line whose two numbers are equal F84 added four more lines to that block since this step was written: `Sets asking exactly the same question:`, `Revit categories known: 374`, `Sets asking for a category no model carries:` and `Set names breaking their folder's pattern:`, so the three above are no longer the whole block.
 38. Clear the clash XML box
 
@@ -114,16 +145,16 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 43. Untick two groups, 1B06PH and 1B06G1, which is the only thing in this tool that drops a group from a run
 44. Do not press Run here. The GROUPS block is written when a run actually STARTS, so a Run followed by a Cancel leaves nothing to read, and the preview behind that Run opens each NWF and leaves the last one open, which would stop the next proof counting the rebuilt groups
 45. Tick 1B06PH and 1B06G1 again, so the next proof runs every group
-46. Look for, F27, later: the GROUPS block of the 1B06PH run at step 76 lists 1B06PH with `run`, the other thirteen with `unticked`, and the word `skipped` nowhere
-47. Look for, F27, in the same block: one line after the list reads `13 groups unticked in the Run column, nothing else drops a group`
+46. Look for, F27, later: the GROUPS block of the one building run at step 76 lists that building with `run`, the other NINE on C02 or ELEVEN on C04 with `unticked`, and the word `skipped` nowhere
+47. Look for, F27, in the same block: one line after the list reads `9 groups unticked in the Run column, nothing else drops a group` on C02, or `11 groups` on C04
 48. Go on to the next proof with every group ticked and nothing open in Navisworks
 
 ## Proof F24, the six CHANGED groups are rebuilt from the scan, with F29 and F30 in the same run
 
 49. Leave the clash XML box empty
 50. Tick every group and press Run
-51. Look for: the label at the bottom reads Checking NWF 1 of 14 and counts up, then the confirm dialog opens
-52. Look for: the dialog says `Rebuilt: 6` and that the NWF is cleared and rebuilt from the scan folder with its saved tests kept
+51. Look for: the label at the bottom reads `Checking NWF 1 of 10: 1000BS` on C02, or `1 of 12: 1A0415` on C04, and counts up with the BUILDING changing on each, then the confirm dialog opens. The count is the ticked group count and the name comes after a colon
+52. Look for: the dialog says `Rebuilt: 6` and that the NWF is BROUGHT UP TO DATE, what is gone taken out and what is new appended WITHOUT clearing it, so the sets, the tests, the results and the viewpoints never leave it, with the clear and rebuild named as the fallback. IT SAID "cleared and rebuilt" UNTIL 2026-09-21, which stopped being true when PART 5 made the reshape the path a CHANGED group takes, and this is the one screen you can still cancel from
 53. Press Cancel
 54. Look for: the log says `Run cancelled before anything was cleared.`
 55. Go to the Grouping step
@@ -134,14 +165,14 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 60. Look for, F29 and F50: the `SETS` line reads one of two shapes and BOTH are right. Where the clear kept the sets it carries TWO numbers, `kept: before clear N, after appends N, nothing to put back`, which is the ordinary case. Where the count dropped and the copy was put back it carries THREE, `kept: before clear N, after appends N, after restore N, put back from the copy`, and then the first and the third have to agree. The other three lines read the same way, because four things reading four ways is how a log stops being read. A line reading `LOST` or `NOT COUNTED` is the fault, and step 59 is where that is checked
 61. Look for, F33: per group a `UNITS` line. Where the document was NOT already in the wanted unit it says how many models were set and what the document shows, in the words `model set` or `models set`. Where it already was, the one line reads `the document is already in <unit>, so nothing was changed.` and that is not a fault, it is the branch a weekly run over NWFs this tool has already set takes, so expect that one. THE OLD SECOND HALF OF THIS STEP IS GONE. It said to check that no line anywhere reads DID NOT FOLLOW, and that string is in no source file, so it was a check that could never fire. The words went when it was measured that a MODEL can be set and a DOCUMENT cannot, and that what Document.Units reports is UNKNOWN
 62. Look for, F30 and F52: per group, after the models are in, the blocks come in this order: UNITS, then `ALIGNMENT` and `EXPORT CHECK`, which the alignment round added and which are read where every model is open and nothing has clashed, then CLASH, then `EMPTY SETS` where any set found nothing, which PART 3 added and which on his folders is every group with the XML picked, then `PENETRATION` and `BY DESIGN` where their boxes are on, then `ITEM IDS` where the report carries item ids, then `VIEWS` and `VIEWS BUILT`, which are TWO blocks and not one, then `NWF      attempt`, then XLSX and `WORKBOOK CHECK`, then the page and `REPORT CHECK`, then XML where its box is on, then NWD, then CONFIRM, the final NWF line saying intact and the size, and the `GAP` block. It is XML there and NOT a second XLSX, which this step named twice. The `VIEWS` line sits between the clash step and the NWF because F52 makes the viewpoints there, so a viewpoint this run made is inside the file the NWD is published from. No SETS block follows UNITS on this run, because sets come from the clash XML and the box is empty. The four SETS, TESTS, VIEWS and RESULTS lines the rebuilt groups carry are written during the rebuild, before UNITS
-63. Look for: the GROUP finished line of each of the six reads the building, then `DONE`, then the seconds, and ends with `Rebuilt`
-64. Look for: the RESULT block carries `rebuilt        : 6` and `weekly run     : 8`
+63. Look for: the GROUP finished line of each of the six reads the building, then `DONE`, then the seconds, and ends with `Rebuilt`. UNTIL 2026-09-21 IT READ `PARTIAL` AND `Skipped (changed on disk)`, because the reshape never said it had rebuilt the group and the outcome kept the value it was given BEFORE the work
+64. Look for: the RESULT block carries `rebuilt        : 6` and `weekly run     : 4` on C02, which is ten groups in all. Until 2026-09-21 it read `rebuilt        : 0` and counted them under `skipped`
 65. In Explorer open the NWF folder and open the NWF of 1B06BC in Navisworks
 66. Look for: the Selection Tree lists 5 models, EL among them, all from the Published folder
 67. Look for, F29: the Sets window holds the same sets as it did before the run, Mechanical with its four subfolders among them
 68. Open the NWD of 1B06BC from the NWD folder
 69. Look for: the same 5 models
-70. Look for: no group in this run reads PARTIAL
+70. Look for: no group in this run reads PARTIAL. Every RESHAPED group read PARTIAL until 2026-09-21 with the reason "the NWF points at a different set of files, so it was left alone", about a group that had just been brought up to date
 71. Close the NWD and the NWF so nothing is open
 
 ## Proof F28 and F31, one building twice with the XML
@@ -171,7 +202,7 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 91. In the add-in go to the Source step, pick the OneDiscipline folder and press Scan
 92. Look for: the findings say SINGLE DISCIPLINE for 1B06PH
 93. Go to the Grouping step
-94. Look for: the status of 1B06PH reads `Ready. One discipline, so every test is created and none is run.`
+94. Look for: the status of `1A04MS` reads `Ready. One discipline, so every test is created and none is run.` THAT STRING IS NOW FALSE AND IT IS THE CODE THAT IS WRONG, not this step. Since F77 a test whose side finds nothing is never created, and in a one discipline group that is nearly all of them, which is what step 98 measures. The CLASH line was corrected and this window label was not. Report it
 95. Go to the Outputs step and pick a new empty folder on the desktop for the NWF and the NWD, so nothing under C06 is touched
 96. Leave the clash XML picked and press Run, then OK, and wait for it to finish
 97. Look for: the log line `CLASH    1B06PH holds one discipline, so no test is run, and only the tests whose sides both find something are created. One discipline cannot clash with itself.` This step used to quote `so every test is created and none is run`, which the code has never written since F77, so it was a check that could never pass
@@ -440,7 +471,7 @@ viewpoint and the writer has been building them since the viewpoints round on 20
 245. Look for: the number in the folder name is the threshold in use. If you change the threshold and it still reads `Over 150mm`, that is a fault and the folder and the rule have drifted apart
 246. DONE since the viewpoints round on 2026-09-19. It said to wait for the writing half of F52. Run one Mechanical building
 247. GONE, and this is worth knowing rather than just deleting. It said to look for a `SIZE` block per group with three numbers. `Federator.Core.Views.SizeTally` still writes that block and NOTHING IN SRC CALLS IT, so no SIZE block is written on any run. What replaced it is one line inside the `VIEWS` block: `size could not be read : N, every one of them is in its pair folder and none was dropped`. The dead class is raised under the CLAUDE.md rule about a public member nothing in src calls
-248. Look for, and this was rewritten AGAIN by the worksets round because the number changed: `size could not be read : N`. It is EXPECTED TO BE ZERO now, on every group. It used to be large, 59 and 36 and 8 on the run before, because a fitting was thought to carry no size property. 5s found that every one of them did, written as words, `53 mmo` for a conduit and `600 mmx100 mm` per connector for a cable tray fitting, and `ItemSizes` was dropping every string. `Federator.Core.Views.SizeText` reads them now. A number ABOVE zero here is a size shape `SizeText` has not been taught and is worth sending.
+248. Look for, and this was rewritten AGAIN by the worksets round because the number changed: `size could not be read : N`. It is EXPECTED TO BE ZERO now, on every group. It used to be large, 59 and 36 and 8 on the run before, because a fitting was thought to carry no size property. 5s found that every one of them did, written as words, `53 mmø` for a conduit and `600 mmx100 mm` per connector for a cable tray fitting, and `ItemSizes` was dropping every string. `Federator.Core.Views.SizeText` reads them now. A number ABOVE zero here is a size shape `SizeText` has not been taught and is worth sending.
 249. GONE with the number it read. It said to read the names under that line and judge whether they were all fittings. No names are written under it, `ClashViewpointPlan.Lines` writes the count alone, and the count is zero on every group since 5s. Where one ever comes back non zero, the `.tsv` rows are where the names are.
 250. Open the NWF and press any viewpoint under a folder named `Over 150mm`, which sits under a PAIR folder such as `A/ME vs ST/Over 150mm`, and never a folder called `ME over 150mm`, which was the shape before F85 and which step 244 above already corrects.
 251. Look for: large pipes, ducts and trays showing, small ones hidden, and the fittings still there. A fitting missing means the include on unknown rule is not working and that `size could not be read` line is the evidence
@@ -471,12 +502,20 @@ change nothing at all. The second is the run with it on.
 266. Look for, F72: after the moved lines, `clashes looked at :` and `moved to Reviewed :`, then SIX INDENTED LINES, one per reason a clash was left alone, including the reasons at zero. The six are the service is over the size, no size could be read, a person had already set it, both sides a service, both sides a solid, and not a service against a solid. `moved to Reviewed` is NOT one of the six: the reason loop skips it on purpose, because it is the count line above them. This step said seven and named moved as one of them, so it could never pass SINCE Q71 TWO MORE LINES sit under the `no size could be read` reason WHEN IT IS ABOVE ZERO, naming what the services are by category and saying each is a row in the machine readable log. On his folders that reason is now zero, so neither line appears.
 267. Look for, F72: the line `the size in use   : 150mm or under is a penetration, over it stays as it was`
 268. Look for, F72: the number beside `no size could be read off the service, left alone` and READ IT. IT IS ZERO ON EVERY GROUP SINCE THE WORKSETS ROUND, where it read 29, 30, 5 and 1 the run before. That is the count of services this tool could not measure, and every one of them was LEFT AT NEW rather than moved. It goes the opposite way from F53, which INCLUDES an item it could not measure, and both are right: the safe mistake in a viewpoint is showing something unnecessary and the safe mistake here is leaving a clash for a person. If that number is large, the size is on a property this tool is not looking for, and the answer is the property name so it can be added to the setting
-269. Look for, F72: one line in the RESULT block reading `penetrations   : N clashes moved to Reviewed`, and N is the sum of every group's `moved to Reviewed`
+269. Look for, F72: TWO lines in the RESULT block beginning `penetrations   :`, not one. The first reads `penetrations   : N clashes moved to Reviewed` and N is the sum of every group's `moved to Reviewed`. The second, straight under it, reads `penetrations   : N clash(es) moved to Reviewed, of M looked at across K groups`, with one indented row under it per group that moved something. TWO LINES SHARING A PREFIX AND SAYING DIFFERENT THINGS is worth reporting on its own
+
+269a. Look for, F72b, where the by design box was on: the same pair again under the `by design      :` label, a total line and then a moved-of-looked-at line with per group rows
+
+269b. Look for, in the RESULT block on EVERY run whatever the boxes say: one line `clashes found  : N across K groups`, with `, J of which found none` on the end where any group found nothing, and then one indented row per group reading the building, the count, and `from N test(s) that found something`. UNLIKE THE PENETRATION AND PRIORITY LINES THIS ONE IS NEVER CONDITIONAL, so a run with no line here at all is a fault. Where no group reported a count it reads `clashes found  : UNKNOWN, no group reported a clash count`, which is not the same as zero
+
+269c. Look for, Q73: the `WORKBOOK CHECK` block's `N test blocks` DISAGREES with the run tail's `WORKBOOK N test blocks`. `WorkbookCheck` finds a block by its `Clash Name` heading row and a test that found nothing no longer has one, so the check can only see the tests that found something. THE WORKBOOK IS RIGHT AND THE CHECK COUNT IS WRONG. Send both numbers
+
+269d. Look for, Q74, where the rebuild box is on and the NWF holds a set the picked file no longer names: a block whose first line reads `N set(s) in this NWF are not named by the picked file:` then three indented counts, `N nothing points at, so they are removed`, `N are the working half of a pair, so the unused half goes and this one takes its name`, `N are pointed at with no twin, so nothing is done about them`, then one line per set. Then one `SET      REMOVED <path>, which nothing pointed at` per removal and one `SET      RENAMED "<old>" to "<new>" and removed the unused set that held that name. Its N test side(s) keep working and now ask what the file asks` per pair. The `SETS     <building> put into the document:` line ends with `, N of M set(s) the file no longer names brought up to date`. A set that IS pointed at and has no twin is NOT touched and says `NOTHING IS DONE, because removing it would leave those sides resolving to nothing`. THE LEFTOVER COUNTS ARE IN THE LOG ONLY and never in the window's sets pane
 270. Look for, F72: an `NWF      attempt` line AFTER the clash step, because writing a status is a write and the NWF is saved again on it. SINCE F85 THE VIEWS STEP CAUSES THAT SECOND SAVE TOO, so the line appears on a weekly run with the penetration box off, and its absence is still the fault to report but its presence no longer proves the penetration pass ran. Whether it is the first or the second such line depends on the path this group took, so count them rather than looking for a second: a First run or a Rebuilt group writes one before the clash step as well, and a Weekly run does not, because the opened branch logs `NWF      reused` instead. On a Weekly run the line after the clash step is the ONLY one, and its absence is the fault to report
 271. Open the workbook for that building
 272. Look for, F72: the Reviewed count on the test header rows has gone UP by the number the block said, and the New or Active count has gone down by the same. That is the count reaching the workbook, in the client's own column, because the status is applied before the harvest reads it. If the workbook shows the OLD status, the status is being applied after the harvest instead of before it, which is the one thing this feature must not do
 273. In Navisworks open Clash Detective on that building and pick one clash the block named
-274. Look for, F72: it reads Reviewed in the panel, and the two items are a small service and a wall, a floor or a roof
+274. Look for, F72: it reads Reviewed in the panel, and the two items are a small service and a wall, a floor, a roof or a structural foundation, which Q63 added to the solid list on 2026-09-20
 275. Run the SAME building again with the box still on
 276. Look for, F72: the second run moves FEWER, probably zero, because the ones it moved last time are now at Reviewed and Reviewed is not a status this tool moves off. They are counted under `a person had already set it, left alone`, which is the same line a clash somebody set by hand would appear on
 277. Find a clash you set to Approved by hand, if there is one, and run again
@@ -604,7 +643,7 @@ The list below was read on 2026-09-19 with the command in step 346, after the pe
 git ls-remote --heads origin
 ```
 
-347. Look for: one line per branch, the name after `refs/heads/`. Expect 76 of them on 2026-09-20, so 75 to delete, READ OFF THE LIVE REMOTE just now and not off this clone. It was 66 after the build round and 69 after the penetration round, and the seven added since are `audit-first-run`, `round-wiring`, `round-first-run`, `round-viewpoints`, `round-dimming`, `round-alignment` and `round-worksets`. The delete command below names 68 and does NOT name those SEVEN, nor `round-drift`, which is an eighth once it is pushed, so read the live list first, which is what step 346 is for. This step said six while listing seven names
+347. Look for: one line per branch, the name after `refs/heads/`. It was 77 on 2026-09-21, so 76 to delete, READ OFF THE LIVE REMOTE just now and not off this clone. It was 66 after the build round and 69 after the penetration round, and the seven added since are `audit-first-run`, `round-wiring`, `round-first-run`, `round-viewpoints`, `round-dimming`, `round-alignment` and `round-worksets`. The delete command below names 68 and does NOT name those SEVEN, nor `round-drift`, which is an eighth once it is pushed, so read the live list first, which is what step 346 is for. This step said six while listing seven names
 348. Delete every one of them except main:
 
 ```
@@ -945,3 +984,42 @@ Both folders are yours to delete once you are satisfied. Nothing else of yours w
      two pairs of real worksets and a person has decided so once, in the measured list.
      It still COUNTS them, so nothing went quiet. No rule can fix the three typos, and
      the tool deliberately does not absorb them, because then nobody would fix the models.
+
+## The fixtures, added 2026-09-21, and they come before either live folder
+
+393. Install the bundle, then run the general fixture. It is three copies of C04's
+     1A04WE models under `C:\Users\bader\AppData\Local\Temp\claude\round-close\fixture`,
+     308 KB, and it takes about twenty seconds:
+
+         build\install.ps1
+         <temp>\round-close\open-addin.ps1
+         <temp>\round-close\drive.ps1 -Source <temp>\round-close\fixture\NWC `
+             -Nwf <temp>\round-close\fixture\NWF -Nwd <temp>\round-close\fixture\NWD `
+             -Excel <temp>\round-close\fixture\Report
+
+394. Look for: `groups done    : 1`, `groups failed  : 0`, `clashes found  : 27 across
+     1 group`, 66 tests run and 1,764 skipped, and 27 viewpoints created and read back.
+     Anything else and do not go near a live folder until it is understood
+
+395. Look for, Q73: the workbook it wrote is about 1,917 rows holding 1,830 blocks, of
+     which 8 found something. Under the old shape the same workbook was 14,667 rows
+
+396. Run the penetration fixture, which is two copies of C04's 1A04WM models, 988 KB,
+     about eighteen seconds, at `<temp>\round-close\fixture-pen`
+
+397. Look for: `moved to Reviewed : 7` of `clashes looked at : 14`, and REAL SIZES in the
+     moved lines, `Pipes 21mm through` and `41.7mm` and `82mm`, all through
+     `BLD-AR-Floors`. IT IS AR AND ME AND NOT ST ON PURPOSE: the solid list is Walls,
+     Floors, Roofs and Structural Foundations, and three of those four are ARCHITECTURE
+     categories in these models. An ST fixture would fire only on foundations and would
+     probably move nothing, reading exactly like the rule being broken
+
+398. Look for, on either fixture: a penetration total of zero with all six buckets
+     spread is a MEASUREMENT. A zero with everything in `not a service against a solid`
+     and nothing in the other five is 5r's signature and IS a fault. Read the buckets,
+     never the total
+
+399. What the fixtures CANNOT show, so a green fixture is never read as a green run:
+     scale, the weekly path, a CHANGED group, alignment across many models, the two non
+     buildings, the single discipline groups, and anything needing the real matrix
+     against real content
