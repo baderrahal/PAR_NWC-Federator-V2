@@ -62,3 +62,24 @@ jobs:
             exit 1
           fi
           echo "check-imports refused the broken folder, which is what it is for"
+
+      # F96. Four facts had drifted between the code and the prose that repeats them, and
+      # every one was found by a person reading carefully rather than by anything that
+      # runs. The solid category list said THREE where it holds FOUR, in a document a
+      # reader would have built a fixture off.
+      - name: No document restates a fact the code holds and gets it wrong
+        shell: bash
+        run: sh tools/checks/check-facts.sh
+
+      # And it has to refuse one that is wrong on purpose, for the same reason the other
+      # two do. This one matters more than most: a check over prose that only ever passes
+      # is indistinguishable from a check that reads nothing at all, and three of its own
+      # first five facts did exactly that before it counted what it examined.
+      - name: The facts check refuses a document that is wrong on purpose
+        shell: bash
+        run: |
+          if sh tools/checks/check-facts.sh tools/checks/broken/facts-broken.tsv; then
+            echo "check-facts passed a document it is supposed to refuse"
+            exit 1
+          fi
+          echo "check-facts refused the wrong document, which is what it is for"

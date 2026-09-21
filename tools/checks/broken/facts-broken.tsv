@@ -1,0 +1,34 @@
+#	F96. THE FACTS THAT LIVE IN CODE AND ARE RESTATED IN PROSE.
+#
+#	Tab separated, one fact per line, comments start with a hash.
+#
+#	WHY THIS FILE EXISTS. A fact is written in the code once and then said again in
+#	docs, in rules and in the plan, and the copies go stale silently. Four had. The
+#	solid category list was written as holding three when it holds four and as not
+#	holding Structural Foundations when it does. That one was caught by hand, in a
+#	document a reader would have trusted, and the person who caught it said it was
+#	the same class as the `El` error: a confident statement nobody could check.
+#
+#	IT NAMES FACTS AND NEVER VALIDATES PROSE. A check that tried to read every
+#	sentence is one nobody could keep green, so this one reads the lines that make a
+#	QUANTITY CLAIM or a MEMBERSHIP CLAIM about a named fact, and nothing else. A fact
+#	nobody added is a fact nobody checks, and that is the trade.
+#
+#	THE VALUE IS READ OFF THE CODE AND NEVER OFF THIS FILE. This file says where the
+#	code holds it and where prose repeats it. If it carried the number too it would
+#	be a fifth copy and it would go stale like the other four.
+#
+#	COLUMNS
+#	  1  name        what the fact is called, used in the message
+#	  2  reader      which reader in check-facts.sh gets the value off the code
+#	  3  prose       the files that may restate it, space separated
+#	  4  subject     a line is about this fact when it matches this
+#	  5  must        that line must also match this, with {V} the value as a digit
+#	                 and {W} the value as a word, or a dash for no such rule
+#	  6  never       that line must NOT match this, or a dash
+name	reader	prose	subject	must	never
+solid-categories	solid	tools/checks/broken/facts-wrong.md	DefaultSolidCategories.*(holds|carries|lists)	({W}|{V})	-
+solid-foundations	solid	tools/checks/broken/facts-wrong.md	Structural Foundations	-	Structural Foundations (is|are) (not|never) (on|in)
+size-threshold	threshold	tools/checks/broken/facts-wrong.md	(over|OVER) [0-9]+ ?mm|[0-9]+ ?mm and under	({V}|{W})	-
+tick-boxes	tickboxes	tools/checks/broken/facts-wrong.md	how many tick boxes are visible.*must be	({V}|{W})	-
+tsv-columns	tsvcolumns	tools/checks/broken/facts-wrong.md	columns, tab separated	({W}|{V})	-

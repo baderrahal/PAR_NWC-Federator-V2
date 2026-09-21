@@ -35,3 +35,11 @@ samples/** -text
 # an unconverted one. Measured on 2026-09-19: expected 1472388 bytes and got 1443382,
 # which is 29006 lines of difference and is the line count of the file.
 exchange/** -text
+
+# Read by sh as tab separated data, the same as the scripts above are read as code. A
+# CRLF copy puts a carriage return into the LAST column, which is the one carrying a
+# regex, so every pattern built from it stops matching and check-facts reports a pass
+# having compared nothing. That is the worst way for a check to fail. The script strips
+# the carriage return itself as well, because a check whose correctness depends on a
+# checkout setting is one nobody can rely on.
+tools/checks/*.tsv text eol=lf
