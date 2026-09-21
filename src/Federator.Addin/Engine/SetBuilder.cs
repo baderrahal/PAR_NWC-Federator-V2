@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
+using Autodesk.Navisworks.Api.Clash;
 using Autodesk.Navisworks.Api.DocumentParts;
 using Federator.Core.Diagnostics;
 using Federator.Core.Sets;
@@ -170,6 +171,274 @@ namespace Federator.Addin.Engine
             }
         }
 
+        /// <summary>
+        /// Every set in the document, with its path, what it asks in the keys Core
+        /// compares on, and HOW MANY CLASH TEST SIDES RESOLVE TO IT. That last number is
+        /// what decides everything about a leftover, and it is read off the document
+        /// rather than off the picked file, because the tests that point at the broken
+        /// name were saved in the NWF by an earlier run and are in no file.
+        /// </summary>
+        private IList<DocumentSet> ReadEverySetInTheDocument(Document document)
+        {
+            List<DocumentSet> found = new List<DocumentSet>();
+            Dictionary<string, int> sides = SidesBySetName(document);
+
+            try
+            {
+                using (FolderItem root = document.SelectionSets.RootItem)
+                {
+                    WalkForLeftovers(root, "lcop_selection_set_tree", found, sides);
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the sets already in this NWF",
+                    error,
+                    "no set is removed or renamed and the run goes on");
+
+                return new List<DocumentSet>();
+            }
+
+            return found;
+        }
+
+        private static void WalkForLeftovers(
+            GroupItem parent, string path, List<DocumentSet> found, Dictionary<string, int> sides)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    string here = path + "/" + child.DisplayName;
+                    SelectionSet set = child as SelectionSet;
+
+                    if (set != null)
+                    {
+                        List<string> keys = new List<string>();
+
+                        try
+                        {
+                            if (set.HasSearch && set.Search != null)
+                            {
+                                foreach (SearchCondition condition in set.Search.SearchConditions)
+                                {
+                                    ReadCondition read = Read(condition);
+                                    keys.Add(read.Key());
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            keys.Clear();
+                        }
+
+                        int pointing;
+                        found.Add(new DocumentSet(
+                            here,
+                            child.DisplayName,
+                            keys,
+                            sides.TryGetValue(child.DisplayName, out pointing) ? pointing : 0));
+
+                        continue;
+                    }
+
+                    GroupItem folder = child as GroupItem;
+
+                    if (folder != null)
+                    {
+                        WalkForLeftovers(folder, here, found, sides);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// How many clash test SIDES resolve to each set, by set name. Read once and not
+        /// once per set, because walking 1830 tests per set is the O(n squared) shape that
+        /// once built 1.7 million native handles in one group.
+        /// </summary>
+        private Dictionary<string, int> SidesBySetName(Document document)
+        {
+            Dictionary<string, int> sides = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            try
+            {
+                DocumentClashTests tests = document.GetClash().TestsData;
+
+                for (int t = 0; t < tests.Tests.Count; t++)
+                {
+                    ClashTest test = tests.Tests[t] as ClashTest;
+
+                    if (test == null)
+                    {
+                        continue;
+                    }
+
+                    CountSide(document, test.SelectionA, sides);
+                    CountSide(document, test.SelectionB, sides);
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading what the clash tests point at",
+                    error,
+                    "no set is removed or renamed and the run goes on");
+
+                return new Dictionary<string, int>(StringComparer.Ordinal);
+            }
+
+            return sides;
+        }
+
+        private static void CountSide(Document document, ClashSelection side, Dictionary<string, int> sides)
+        {
+            try
+            {
+                SelectionSourceCollection sources = side.Selection.SelectionSources;
+
+                if (sources == null || sources.Count == 0)
+                {
+                    return;
+                }
+
+                using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[0]))
+                {
+                    if (pointed == null)
+                    {
+                        return;
+                    }
+
+                    string name = pointed.DisplayName ?? string.Empty;
+                    sides[name] = sides.ContainsKey(name) ? sides[name] + 1 : 1;
+                }
+            }
+            catch (Exception)
+            {
+                // A side this tool cannot read is a side it does not count, which is the
+                // safe direction: an uncounted side makes a set look SAFER to remove, so
+                // it is never counted and the refusal errs towards leaving things alone.
+            }
+        }
+
+        /// <summary>
+        /// Takes that set out through the PARENT SCOPED form and READS THE TREE BACK.
+        /// `Remove(SavedItem)` addresses the root collection and returns False without
+        /// throwing for a nested set, so the return value is never what decides.
+        /// </summary>
+        private bool RemoveSet(Document document, DocumentSelectionSets sets, string name)
+        {
+            int[] path = PathToSetNamed(document, name);
+
+            if (path == null)
+            {
+                return false;
+            }
+
+            int last = path[path.Length - 1];
+
+            if (path.Length == 1)
+            {
+                using (FolderItem root = document.SelectionSets.RootItem)
+                {
+                    sets.RemoveAt(root, last);
+                }
+            }
+            else
+            {
+                int[] parentPath = new int[path.Length - 1];
+                Array.Copy(path, parentPath, parentPath.Length);
+
+                using (SavedItem parentItem = sets.ResolveIndexPath(parentPath))
+                {
+                    GroupItem parent = parentItem as GroupItem;
+
+                    if (parent == null)
+                    {
+                        return false;
+                    }
+
+                    sets.RemoveAt(parent, last);
+                }
+            }
+
+            // READ THE TREE BACK. The return value of a remove is not evidence.
+            return PathToSetNamed(document, name) == null;
+        }
+
+        /// <summary>Renames that set and reads the tree back, for the same reason.</summary>
+        private bool RenameSet(Document document, DocumentSelectionSets sets, string from, string to)
+        {
+            int[] path = PathToSetNamed(document, from);
+
+            if (path == null)
+            {
+                return false;
+            }
+
+            using (SavedItem found = sets.ResolveIndexPath(path))
+            {
+                if (found == null)
+                {
+                    return false;
+                }
+
+                sets.EditDisplayName(found, to);
+            }
+
+            return PathToSetNamed(document, to) != null && PathToSetNamed(document, from) == null;
+        }
+
+        /// <summary>The index path to that set as plain ints, which survive across a mutator.</summary>
+        private static int[] PathToSetNamed(Document document, string name)
+        {
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                List<int> path = new List<int>();
+
+                return WalkToNamedSet(root, name, path) ? path.ToArray() : null;
+            }
+        }
+
+        private static bool WalkToNamedSet(GroupItem parent, string name, List<int> path)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+
+                if (child is SelectionSet && string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                {
+                    path.Add(i);
+                    child.Dispose();
+                    return true;
+                }
+
+                GroupItem folder = child as GroupItem;
+
+                if (folder != null)
+                {
+                    path.Add(i);
+
+                    if (WalkToNamedSet(folder, name, path))
+                    {
+                        child.Dispose();
+                        return true;
+                    }
+
+                    path.RemoveAt(path.Count - 1);
+                }
+
+                child.Dispose();
+            }
+
+            return false;
+        }
+
         /// <summary>Where that set sits under that folder right now, or minus one.</summary>
         private static int IndexOfSet(GroupItem parent, string name)
         {
@@ -227,7 +496,130 @@ namespace Federator.Addin.Engine
                 BuildOne(document, sets, planned, outcome);
             }
 
+            // Q74. EVERY SET IN THE NWF THE PICKED FILE NO LONGER NAMES, and what to do
+            // about it. Last, because it reads the tree as the build left it and because
+            // a leftover is only a leftover once everything the file DOES name is there.
+            //
+            // THE BOX HAS TO BE ON. It is off by default, it changes the NWF, and the NWF
+            // is the only record of what has been fixed.
+            if (rebuilds.RebuildDriftedSets)
+            {
+                HandleLeftovers(document, sets, plan, outcome);
+            }
+
             return outcome;
+        }
+
+        /// <summary>
+        /// The leftovers, decided by `SetLeftovers` in Core and carried out here. The
+        /// DECISION is a rule a test can prove and the Navisworks calls are this side of
+        /// the line, which is the split this whole project keeps.
+        ///
+        /// THE ORDER IS LOAD BEARING AND THE PAIR IS ATOMIC AGAINST THE SAVE. The twin
+        /// goes first and the rename takes its freed name, because renaming onto a name
+        /// that still exists leaves two sets at one path, which is F28's prohibition and a
+        /// clash locator resolving to whichever came first. Between the two there is a
+        /// window where NEITHER set carries the corrected name, so a failure there leaves
+        /// the NWF worse than it started and nothing may be saved from it.
+        /// </summary>
+        private void HandleLeftovers(
+            Document document, DocumentSelectionSets sets, SetBuildPlan plan, SetBuildOutcome outcome)
+        {
+            List<string> named = new List<string>();
+
+            foreach (PlannedSet planned in plan.Buildable)
+            {
+                named.Add(planned.Name);
+            }
+
+            IList<DocumentSet> inDocument = ReadEverySetInTheDocument(document);
+
+            if (inDocument.Count == 0)
+            {
+                return;
+            }
+
+            IList<LeftoverSet> leftovers = SetLeftovers.For(inDocument, named);
+
+            foreach (string line in SetLeftovers.Lines(leftovers))
+            {
+                log.Line("SET      " + line);
+            }
+
+            foreach (LeftoverSet leftover in leftovers)
+            {
+                CarryOut(document, sets, leftover, outcome);
+            }
+        }
+
+        /// <summary>
+        /// One leftover carried out, or refused. Every removal reads the tree back rather
+        /// than trusting a return value, because `Remove(SavedItem)` on a NESTED set
+        /// returns False and throws nothing, which a caller reads as "there was nothing to
+        /// remove" when the truth is "the removal did not happen". A silent failed remove
+        /// followed by a rename is two sets at one path.
+        /// </summary>
+        private void CarryOut(
+            Document document, DocumentSelectionSets sets, LeftoverSet leftover, SetBuildOutcome outcome)
+        {
+            if (leftover.Action == LeftoverAction.Refuse)
+            {
+                outcome.AddLeftover(leftover, false);
+                return;
+            }
+
+            try
+            {
+                if (leftover.Action == LeftoverAction.Remove)
+                {
+                    bool went = RemoveSet(document, sets, leftover.Name);
+                    outcome.AddLeftover(leftover, went);
+
+                    log.Line("SET      " + (went
+                        ? "REMOVED " + leftover.Path + ", which nothing pointed at"
+                        : "could not remove " + leftover.Path + ", so it is left exactly as it was"));
+
+                    return;
+                }
+
+                // THE PAIR. The twin first, then the rename into the freed name.
+                if (!RemoveSet(document, sets, leftover.TwinName))
+                {
+                    outcome.AddLeftover(leftover, false);
+                    log.Line("SET      the unused \"" + leftover.TwinName
+                        + "\" would not remove, so \"" + leftover.Name
+                        + "\" is left exactly as it was and its "
+                        + leftover.Sides + " test side(s) still work");
+                    return;
+                }
+
+                if (!RenameSet(document, sets, leftover.Name, leftover.TwinName))
+                {
+                    // THE WINDOW. The twin is gone and the rename did not happen, so
+                    // NEITHER set carries the corrected name and the document is worse
+                    // than it started. Nothing may be saved from here.
+                    outcome.AddLeftover(leftover, false);
+                    outcome.TheDocumentIsDamaged = Federator.Core.Rerun.DamagedDocument.TheDocumentIsDamaged(
+                        "the unused \"" + leftover.TwinName + "\" was removed and \""
+                            + leftover.Name + "\" would not take its name");
+
+                    log.Line("SET      " + outcome.TheDocumentIsDamaged);
+                    return;
+                }
+
+                outcome.AddLeftover(leftover, true);
+                log.Line("SET      RENAMED \"" + leftover.Name + "\" to \"" + leftover.TwinName
+                    + "\" and removed the unused set that held that name. Its "
+                    + leftover.Sides + " test side(s) keep working and now ask what the file asks");
+            }
+            catch (Exception error)
+            {
+                outcome.AddLeftover(leftover, false);
+                log.Failure(
+                    "bringing the set " + leftover.Path + " up to date",
+                    error,
+                    "the set is left exactly as it was and the run goes on");
+            }
         }
 
         private void BuildOne(

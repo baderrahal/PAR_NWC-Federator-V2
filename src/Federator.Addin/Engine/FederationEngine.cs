@@ -1433,6 +1433,25 @@ namespace Federator.Addin.Engine
                 return false;
             }
 
+            // A SHAPE THIS PATH CANNOT DO, DECLINED BEFORE ANYTHING IS TOUCHED. Taking
+            // EVERY model out is not a reshape, and measured on the fixture of 2026-09-21
+            // Navisworks refuses it: removing four of four got to the last one and
+            // `TryRemoveFile` returned false, leaving a document with one model in it and
+            // nothing saved. The case is real and ordinary, because moving a project
+            // folder makes every file in the group a MOVE at once.
+            //
+            // Declining here rather than failing there is the difference between the
+            // clear and rebuild doing the job and the group failing.
+            if (indexes.Count >= modelsBefore)
+            {
+                log.Line("RESHAPE  " + DamagedDocument.NothingWasTouched(
+                    "every model in this group would have to come out, which is not something"
+                        + " this path can do")
+                    + ", so the clear and rebuild is used instead");
+
+                return false;
+            }
+
             if (!RemoveThem(document, indexes))
             {
                 // PART WAY THROUGH AND IT STOPPED, which IS a fault. The document has
@@ -2392,9 +2411,22 @@ namespace Federator.Addin.Engine
                 // was built in exactly that case.
                 log.Line("SETS     " + job.Building + " put into the document: "
                     + sets.CreatedCount + " created, "
-                    + sets.AlreadyPresentCount + " already there and left alone");
+                    + sets.AlreadyPresentCount + " already there and left alone"
+                    + (sets.Leftovers.Count > 0
+                        ? ", " + sets.ActedOnLeftovers + " of " + sets.Leftovers.Count
+                            + " set(s) the file no longer names brought up to date"
+                        : string.Empty));
 
-                return sets.PutAnythingIn;
+                // Q74. THE PAIR FAILED BETWEEN ITS TWO HALVES, so the unused twin is gone
+                // and the working set did not take its name. The document is worse than it
+                // started and nothing may be saved from it.
+                if (!string.IsNullOrEmpty(sets.TheDocumentIsDamaged))
+                {
+                    outcome.AddError(sets.TheDocumentIsDamaged);
+                    return false;
+                }
+
+                return sets.PutAnythingIn || sets.ActedOnLeftovers > 0;
             }
             catch (Exception error)
             {

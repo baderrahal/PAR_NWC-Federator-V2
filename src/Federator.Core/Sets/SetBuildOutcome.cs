@@ -15,6 +15,8 @@ namespace Federator.Core.Sets
         private readonly List<SetDrift> drifted = new List<SetDrift>();
         private readonly List<EmptySet> empty = new List<EmptySet>();
         private int rebuiltCount;
+        private readonly List<LeftoverSet> leftovers = new List<LeftoverSet>();
+        private int actedOnLeftovers;
 
         public ReadOnlyCollection<SetResult> Results
         {
@@ -84,6 +86,46 @@ namespace Federator.Core.Sets
         public ReadOnlyCollection<EmptySet> Empty
         {
             get { return new ReadOnlyCollection<EmptySet>(empty); }
+        }
+
+        /// <summary>
+        /// Every set the picked file no longer names, and whether this run acted on it.
+        /// Q74. Kept apart from the results list because a leftover is not a set this run
+        /// built, and the log line for one says what pointed at it before anything moved.
+        /// </summary>
+        public void AddLeftover(LeftoverSet leftover, bool acted)
+        {
+            if (leftover == null)
+            {
+                return;
+            }
+
+            this.leftovers.Add(leftover);
+
+            if (acted)
+            {
+                actedOnLeftovers++;
+            }
+        }
+
+        /// <summary>
+        /// Set where the remove and the rename pair failed BETWEEN its two halves, so the
+        /// unused twin is gone and the working set did not take its name. Null on every
+        /// ordinary run. The document is worse than it started and nothing may be saved
+        /// from it, which is the rule `DamagedDocument` holds for both callers.
+        /// </summary>
+        public string TheDocumentIsDamaged { get; set; }
+
+        /// <summary>The sets the picked file no longer names.</summary>
+        public ReadOnlyCollection<LeftoverSet> Leftovers
+        {
+            get { return new ReadOnlyCollection<LeftoverSet>(leftovers); }
+        }
+
+        /// <summary>How many of them this run removed or renamed. Zero where the box is off.</summary>
+        public int ActedOnLeftovers
+        {
+            get { return actedOnLeftovers; }
         }
 
         /// <summary>Sets whose question no longer matches the picked file.</summary>
