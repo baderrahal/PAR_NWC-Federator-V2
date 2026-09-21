@@ -30,13 +30,30 @@ eight times the size.
 reading real sizes of 21 mm, 41.7 mm and 82 mm through `BLD-AR-Floors`. **17.8 seconds.**
 
 **IT IS AR AND ME, NOT ST, AND THAT IS THE WHOLE POINT OF THIS PARAGRAPH.** A services
-through structure clash SOUNDS like AR against ST and it is not.
-`PenetrationSettings.DefaultSolidCategories` holds **Walls, Floors and Roofs**, and in
-these models those are ARCHITECTURE categories. ST carries Structural Foundations,
-Structural Framing and Structural Columns, none of which is on the solid list, so a ME
-against ST fixture would exercise the rule's plumbing and move NOTHING, and would read
-exactly like the rule being broken. Whether the structural categories should join the
-list is Q63 and is not decided.
+through structure clash SOUNDS like AR against ST, and AR is the reliable pair.
+`PenetrationSettings.DefaultSolidCategories` holds **FOUR**: Walls, Floors, Roofs and
+Structural Foundations. THREE OF THE FOUR are architecture categories in these models,
+which is why AR against ME fires readily.
+
+An ST against ME fixture would fire ONLY on foundations, which most buildings have few of
+at service level, so it would probably move nothing and read exactly like the rule being
+broken. That is the reason to avoid it. It is NOT that ST can never fire: a service
+through a FOUNDATION does move, and a fixture built on the belief that it cannot would be
+built wrong.
+
+Structural Framing and Structural Columns ARE out, and Q63 SETTLED THAT on 2026-09-20
+rather than leaving it open. The reason is in the doc comment above that list, in Bader's
+own evidence: of the 422 clashes he marked by hand in 1A04PW he moved 69 pipes through
+slabs to Reviewed and LEFT 7 pipes through precast beams Active. A service through a slab,
+a wall, a roof or a foundation is a hole somebody cuts. A service through a beam or a
+column is a structural decision an engineer has to make, so it stays at New for a person
+to look at.
+
+AN EARLIER VERSION OF THIS NOTE SAID THE LIST HELD THREE, SAID STRUCTURAL FOUNDATIONS WAS
+NOT ON IT, AND SAID Q63 WAS UNDECIDED. All three were wrong, all three were written with
+confidence, and the second would have made the next person build the wrong fixture. They
+are corrected here rather than quietly rewritten, because a document a reader trusts is
+exactly where a wrong sentence does its damage.
 
 It exists because the penetration rule is the most fragile thing in this tool by history.
 It shipped on 2026-09-19 and moved nothing, then moved 4, then moved 56 once the worded
