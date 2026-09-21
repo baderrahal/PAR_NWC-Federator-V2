@@ -161,13 +161,107 @@ namespace Federator.Core.Sets
             return string.Join(" and ", array);
         }
 
-        /// <summary>The two lines the log writes for one drifted set, the old question and the new one.</summary>
+        /// <summary>
+        /// WHY the two differ, in the words a person would use, so a drift line says what
+        /// moved rather than only that something did.
+        ///
+        /// THE COMMON CASE IS A VALUE DIFFERING ONLY IN CASE and it is invisible at a
+        /// glance. All twenty eight drifts of the C02 run of 2026-09-21 were that: the
+        /// document asks "ME-DUCTWORK" and the file asks "ME-Ductwork", two sentences a
+        /// reader has to compare character by character to tell apart. The values are
+        /// compared in the order they are asked, because a set carries the same property
+        /// more than once and position is what pairs them.
+        ///
+        /// It reads the VALUES and not the whole sentence, because the file's half names
+        /// each property in words beside its internal name and the document's half cannot,
+        /// so the two sentences never match even where the question does.
+        /// </summary>
+        public string Why()
+        {
+            if (CouldNotRead)
+            {
+                return "its search would not read, so what it asks cannot be compared with the file";
+            }
+
+            IList<string> asked = ValuesIn(AskedNow());
+            IList<string> wanted = ValuesIn(WantedNow());
+
+            if (asked.Count != wanted.Count)
+            {
+                return "the set asks " + asked.Count + " value(s) and the file asks " + wanted.Count;
+            }
+
+            for (int i = 0; i < asked.Count; i++)
+            {
+                if (string.Equals(asked[i], wanted[i], StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (string.Equals(asked[i], wanted[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    return "they differ only in the CASE of a value, the set asks \"" + asked[i]
+                        + "\" and the file asks \"" + wanted[i] + "\"";
+                }
+
+                string invisible = Health.InvisibleDifference.Between(asked[i], wanted[i]);
+
+                if (invisible != null)
+                {
+                    return "they differ by a character that does not show, " + invisible;
+                }
+
+                return "the set asks \"" + asked[i] + "\" where the file asks \"" + wanted[i] + "\"";
+            }
+
+            return "every value matches, so what differs is which property or which test is asked";
+        }
+
+        /// <summary>
+        /// The quoted values of one describing sentence, in order. Both halves are written by
+        /// Describe, which always quotes the value and nothing else, so the quotes are a
+        /// reliable boundary rather than a guess about the wording.
+        /// </summary>
+        private static IList<string> ValuesIn(string sentence)
+        {
+            List<string> values = new List<string>();
+
+            if (string.IsNullOrEmpty(sentence))
+            {
+                return values;
+            }
+
+            int at = 0;
+
+            while (true)
+            {
+                int open = sentence.IndexOf('"', at);
+
+                if (open < 0)
+                {
+                    return values;
+                }
+
+                int close = sentence.IndexOf('"', open + 1);
+
+                if (close < 0)
+                {
+                    return values;
+                }
+
+                values.Add(sentence.Substring(open + 1, close - open - 1));
+                at = close + 1;
+            }
+        }
+
+        /// <summary>The three lines the log writes for one drifted set, the old question, the new one, and why they differ.</summary>
         public IList<string> Lines()
         {
             List<string> lines = new List<string>();
             lines.Add("SET DRIFT " + Path);
             lines.Add("   it asks  : " + AskedNow());
             lines.Add("   file asks: " + WantedNow());
+            lines.Add("   why      : " + Why());
             return lines;
         }
     }

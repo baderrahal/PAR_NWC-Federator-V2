@@ -1710,6 +1710,17 @@ namespace Federator.Core.Diagnostics
         public PriorityTally PriorityAcrossTheRun { get; set; }
 
         /// <summary>
+        /// How many groups had their workbook blocks counted against the tests in the
+        /// picked file, and how many of those came up short. The per group BLOCKS line
+        /// said MUST and nothing enforced it, so it could be read past. These two carry it
+        /// into RESULT where the run's other findings are counted.
+        /// </summary>
+        public int GroupsWhoseBlocksWereCounted { get; set; }
+
+        /// <summary>How many of those did not carry a block for every test.</summary>
+        public int GroupsWhoseBlocksAreShort { get; set; }
+
+        /// <summary>
         /// How many clashes the whole run found, per group and added up. Never null and
         /// never optional, unlike the priority and penetration lines beside it, because
         /// this is the number the run exists to produce.
@@ -1832,6 +1843,16 @@ namespace Federator.Core.Diagnostics
             if (priority != null)
             {
                 Line(priority);
+            }
+
+            // The workbook block count, carried up from the groups so a report short of
+            // blocks is counted once for the run rather than left in one group's block.
+            string blocks = Clash.CreationPlan.BlocksShortResultLine(
+                GroupsWhoseBlocksAreShort, GroupsWhoseBlocksWereCounted);
+
+            if (blocks != null)
+            {
+                Line(blocks);
             }
 
             // F72b. The second rule's count, only where its box was on.

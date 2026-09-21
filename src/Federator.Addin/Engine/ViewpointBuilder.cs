@@ -205,7 +205,14 @@ namespace Federator.Addin.Engine
 
                 if (cameraRead > 0)
                 {
-                    log.Line("VIEWS    read back on " + cameraRead + " created viewpoint(s): each sits within "
+                    // CHECKED OF WRITTEN AND NEVER A BARE COUNT. "read back on 926" says
+                    // nothing about whether that was all of them or a sample, and a
+                    // reader cannot tell a complete check from a partial one without the
+                    // second number. Every viewpoint is still read back, so the two are
+                    // equal today, and the line is written so it stays honest if they
+                    // ever stop being equal.
+                    log.Line("VIEWS    read back on " + cameraRead + " of " + outcome.CreatedCount
+                        + " created viewpoint(s): each sits within "
                         + views.CameraReadBackTolerance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
                         + " units of its clash camera, and the items each one hides and dims were counted off it and not trusted");
 

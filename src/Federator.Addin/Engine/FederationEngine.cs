@@ -2453,7 +2453,7 @@ namespace Federator.Addin.Engine
                     return false;
                 }
 
-                return sets.PutAnythingIn || sets.ActedOnLeftovers > 0;
+                return sets.AsksForTheNwfSave;
             }
             catch (Exception error)
             {
@@ -2779,6 +2779,12 @@ namespace Federator.Addin.Engine
             if (check.Ran && testsInTheFile >= 0)
             {
                 log.Line(CreationPlan.BlockCountLine(check.Blocks, testsInTheFile));
+                log.GroupsWhoseBlocksWereCounted++;
+
+                if (check.Blocks != testsInTheFile)
+                {
+                    log.GroupsWhoseBlocksAreShort++;
+                }
             }
 
             Say(job.Building + ". " + check.Summary());

@@ -199,6 +199,29 @@ namespace Federator.Core.Views
         public int MaxPerTest { get; set; }
 
         /// <summary>
+        /// HOW MANY VIEWPOINTS ONE GROUP MAY WRITE, or zero for no cap. OFF BY DEFAULT, so
+        /// a run that sets nothing behaves exactly as it did.
+        ///
+        /// WHY IT EXISTS. Writing a saved viewpoint costs time in proportion to how many
+        /// the document ALREADY holds, MEASURED on 2026-09-21 and written up at
+        /// docs\history\scan.md 6a: on one copy of 1A02MM, 40 viewpoints cost 1,878 ms each
+        /// against 568 already there and 6.5 ms each after SavedViewpoints.Clear(), the
+        /// same document with one thing changed. So a group writing one per clash pays a
+        /// cost that grows as it goes, and 1A04EP with 2,566 clashes spent 2,188.961s in
+        /// VIEWS, of which 1,953.136s was the recording alone.
+        ///
+        /// IT IS NOT ONLY ABOUT TIME. That same group ended with models 5 to 0, sets 61 to
+        /// 0, tests 666 to 0 and results 2,566 to 0, the last 1,408 viewpoints written
+        /// without a hidden state because there was no longer a model to hide, and the NWF
+        /// save threw Can't save an empty document. A ceiling is what stops a group
+        /// reaching that far while the real fix is found, and the real fix is Q80.
+        ///
+        /// A cap is never silent. The plan counts what it left out and the block says how
+        /// many were not written, the same as the per test cap beside it.
+        /// </summary>
+        public int MaxPerGroup { get; set; }
+
+        /// <summary>
         /// Whether that word is a discipline code this tool knows. Matched Ordinal and
         /// never trimmed or cased, the same way HasSubGroup matches, because a code is
         /// read off a name and every other comparison here treats it as it was read.

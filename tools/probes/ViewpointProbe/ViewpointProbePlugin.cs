@@ -101,6 +101,18 @@ namespace ViewpointProbe
                     {
                         MeasureRoute(parameters[2]);
                     }
+                    else if (mode == "scale")
+                    {
+                        MeasureScale(parameters[2]);
+                    }
+                    else if (mode == "scalemany")
+                    {
+                        MeasureScaleMany(parameters, 2);
+                    }
+                    else if (mode == "scaleclash")
+                    {
+                        MeasureScaleClash(parameters[2]);
+                    }
                     else if (mode == "colour")
                     {
                         MeasureColour(parameters[2]);
@@ -2297,6 +2309,385 @@ namespace ViewpointProbe
         /// nothing is how this feature failed twice, so the read back is the whole test
         /// and the milliseconds are a footnote.
         /// </summary>
+        /// <summary>
+        /// HOW THE PER VIEWPOINT COST MOVES AS THE FOLDER FILLS. 5p measured twenty and
+        /// read 7.9 ms each. A live run of 430 read 565 ms each. Nothing measured what
+        /// happens between the two, and the whole of PART 4 turns on whether the cost is
+        /// flat per viewpoint or grows with how many are already written.
+        ///
+        /// TWICE, once with the dimming on and once with it off, because there are two
+        /// candidates, the number already in the folder and the overrides each viewpoint
+        /// carries, and a single pass cannot tell them apart.
+        /// </summary>
+        private void MeasureScale(string nwfCopy)
+        {
+            Say(string.Empty);
+            Say("SCALE, " + ScaleViews + " viewpoints into one folder, reported every " + ScaleBucket);
+            WriteScale(nwfCopy, true);
+            WriteScale(nwfCopy, false);
+        }
+
+        /// <summary>
+        /// THE SAME WRITE ACROSS FILES THAT DIFFER ONLY IN WHAT THEY HOLD. Two copies of
+        /// ONE building read 10.6 ms and 411 ms per viewpoint through identical code, and
+        /// the only difference the census could name was 16 clash results against 135.
+        /// This writes ManyViews viewpoints into each file given and prints the cost
+        /// beside the count, so the driver is read off a line rather than argued.
+        /// </summary>
+        private void MeasureScaleMany(string[] parameters, int from)
+        {
+            Say(string.Empty);
+            Say("SCALE MANY, " + ManyViews + " viewpoints into each file, dimming on");
+
+            for (int f = from; f < parameters.Length; f++)
+            {
+                WriteScaleMany(parameters[f]);
+            }
+        }
+
+        /// <summary>Few enough that nine files finish, many enough to average.</summary>
+        private const int ManyViews = 40;
+
+        /// <summary>
+        /// THE CONTROL. Across files the cost per viewpoint tracked the clash results the
+        /// document held, but those files also differ in model count, size and history, so
+        /// that is a correlation and not a cause.
+        ///
+        /// This writes ManyViews viewpoints into ONE document, then calls TestsClearResults
+        /// on every test, which takes the results off and leaves the tests, the models, the
+        /// sets and the viewpoints exactly as they were, and writes ManyViews more into the
+        /// SAME open document. One thing changes. If the cost collapses, the results are
+        /// the cause and not a companion of it.
+        /// </summary>
+        private void MeasureScaleClash(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("SCALE CLASH, the same document before and after its results are cleared");
+            document.Clear();
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            int[] firstPath;
+            int[] secondPath;
+            string clashName;
+
+            if (!FindClashPair(document, out firstPath, out secondPath, out clashName))
+            {
+                Say("UNKNOWN: no clash here has two items with geometry");
+                return;
+            }
+
+            using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+            {
+                document.Models.OverrideTemporaryTransparency(roots, 0.85);
+            }
+
+            ResetTwo(document, firstPath, secondPath, false);
+            ColourTwo(document, firstPath, secondPath);
+
+            Say(string.Empty);
+            Say("BEFORE, results left alone");
+            SayWhatItHolds(document);
+            WriteABatch(document, "ClashBefore");
+
+            DocumentClashTests clash = document.GetClash().TestsData;
+            int cleared = 0;
+
+            for (int t = 0; t < clash.Tests.Count; t++)
+            {
+                ClashTest test = clash.Tests[t] as ClashTest;
+
+                if (test != null && test.Children.Count > 0)
+                {
+                    clash.TestsClearResults(test);
+                    cleared++;
+                }
+            }
+
+            Say(string.Empty);
+            Say("AFTER, TestsClearResults called on " + cleared + " test(s). Nothing else touched.");
+            SayWhatItHolds(document);
+            WriteABatch(document, "ClashAfter");
+
+            // AND THE VIEWPOINTS THEMSELVES. Clearing the results leaves every saved
+            // viewpoint a past run wrote, one per clash, each carrying a material override
+            // per item it dimmed. That is the other thing the result count stands proxy
+            // for, and it is the only one left once the results are gone.
+            document.SavedViewpoints.Clear();
+
+            Say(string.Empty);
+            Say("AND AFTER SavedViewpoints.Clear(), the same document again");
+            SayWhatItHolds(document);
+            WriteABatch(document, "ViewsCleared");
+
+            // DOES IT CLIMB AS THE RUN WRITES. The three stages above measure a document
+            // that ARRIVED holding viewpoints. A first run arrives holding none and writes
+            // thousands, and whether the cost climbs while it does decides whether a
+            // ceiling helps or only postpones. Written into the emptied document, so the
+            // only thing growing is what this loop itself adds.
+            Say(string.Empty);
+            Say("CLIMB, " + ScaleViews + " more into the emptied document, reported every " + ScaleBucket);
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                EnsureFolder(document, "Climb");
+                System.Diagnostics.Stopwatch bucket = System.Diagnostics.Stopwatch.StartNew();
+
+                for (int i = 1; i <= ScaleViews; i++)
+                {
+                    AddComViewIntoFolder("Climb", "Climb " + i, camera);
+
+                    if (i % ScaleBucket == 0)
+                    {
+                        bucket.Stop();
+                        Say("   " + i + " written, the last " + ScaleBucket + " took "
+                            + bucket.ElapsedMilliseconds + " ms, "
+                            + Per(bucket.ElapsedMilliseconds, ScaleBucket) + " ms each");
+                        bucket.Reset();
+                        bucket.Start();
+                    }
+                }
+            }
+
+            document.Models.ResetAllTemporaryMaterials();
+            document.Models.ResetAllHidden();
+        }
+
+        /// <summary>ManyViews viewpoints into a folder of that name, timed.</summary>
+        private void WriteABatch(Document document, string folderName)
+        {
+            EnsureFolder(document, folderName);
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                System.Diagnostics.Stopwatch whole = System.Diagnostics.Stopwatch.StartNew();
+
+                for (int i = 1; i <= ManyViews; i++)
+                {
+                    AddComViewIntoFolder(folderName, folderName + " " + i, camera);
+                }
+
+                whole.Stop();
+                Say("   " + ManyViews + " written in " + whole.ElapsedMilliseconds + " ms, "
+                    + Per(whole.ElapsedMilliseconds, ManyViews) + " ms each");
+            }
+        }
+
+        /// <summary>One file: say what it holds, write ManyViews, say the cost.</summary>
+        private void WriteScaleMany(string nwfCopy)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("FILE " + Path.GetFileName(nwfCopy));
+            document.Clear();
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            SayWhatItHolds(document);
+
+            int[] firstPath;
+            int[] secondPath;
+            string clashName;
+
+            if (!FindClashPair(document, out firstPath, out secondPath, out clashName))
+            {
+                Say("   no clash here has two items with geometry, so nothing is written");
+                return;
+            }
+
+            using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+            {
+                document.Models.OverrideTemporaryTransparency(roots, 0.85);
+            }
+
+            ResetTwo(document, firstPath, secondPath, false);
+            ColourTwo(document, firstPath, secondPath);
+            EnsureFolder(document, "ScaleMany");
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                System.Diagnostics.Stopwatch whole = System.Diagnostics.Stopwatch.StartNew();
+
+                for (int i = 1; i <= ManyViews; i++)
+                {
+                    AddComViewIntoFolder("ScaleMany", "ScaleMany " + i, camera);
+                }
+
+                whole.Stop();
+                Say("   " + ManyViews + " written in " + whole.ElapsedMilliseconds + " ms, "
+                    + Per(whole.ElapsedMilliseconds, ManyViews) + " ms each");
+            }
+
+            document.Models.ResetAllTemporaryMaterials();
+            document.Models.ResetAllHidden();
+        }
+
+        /// <summary>
+        /// What the document already holds before a single viewpoint is written, because
+        /// the same code on two copies of the SAME BUILDING read 7.5 ms and 412 ms each,
+        /// and the difference has to be named off the file rather than guessed at.
+        /// </summary>
+        private void SayWhatItHolds(Document document)
+        {
+            int tests = 0;
+            int results = 0;
+
+            try
+            {
+                DocumentClashTests clash = document.GetClash().TestsData;
+                tests = clash.Tests.Count;
+
+                for (int t = 0; t < clash.Tests.Count; t++)
+                {
+                    ClashTest test = clash.Tests[t] as ClashTest;
+
+                    if (test != null)
+                    {
+                        results += test.Children.Count;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   the clash tests would not be read: " + error.GetType().Name);
+            }
+
+            int items = 0;
+
+            try
+            {
+                using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+                {
+                    foreach (ModelItem root in roots)
+                    {
+                        foreach (ModelItem under in root.DescendantsAndSelf)
+                        {
+                            items++;
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   the items would not be counted: " + error.GetType().Name);
+            }
+
+            Say("   it holds " + document.Models.Count + " model(s) carrying " + items + " item(s), "
+                + document.SavedViewpoints.Value.Count + " saved viewpoint node(s) at the root, "
+                + document.SelectionSets.Value.Count + " set node(s) at the root, "
+                + tests + " clash test(s) carrying " + results + " result(s)");
+        }
+
+        /// <summary>Enough that a rising line and a flat one cannot be confused.</summary>
+        private const int ScaleViews = 400;
+
+        /// <summary>How often the running cost is said, so the shape is readable.</summary>
+        private const int ScaleBucket = 25;
+
+        /// <summary>
+        /// Opens the copy, builds the scene the writer builds, and writes ScaleViews
+        /// viewpoints into ONE folder through the route the add-in uses by default,
+        /// saying what each bucket cost.
+        /// </summary>
+        private void WriteScale(string nwfCopy, bool dimming)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("PASS " + (dimming ? "dimming ON" : "dimming OFF") + ", opening " + nwfCopy);
+            document.Clear();
+
+            if (!document.TryOpenFile(nwfCopy))
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            SayWhatItHolds(document);
+
+            int[] firstPath;
+            int[] secondPath;
+            string clashName;
+
+            if (!FindClashPair(document, out firstPath, out secondPath, out clashName))
+            {
+                Say("UNKNOWN: no clash in this copy has two items with geometry");
+                return;
+            }
+
+            if (dimming)
+            {
+                using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+                {
+                    document.Models.OverrideTemporaryTransparency(roots, 0.85);
+                }
+
+                ResetTwo(document, firstPath, secondPath, false);
+                ColourTwo(document, firstPath, secondPath);
+            }
+
+            string folderName = dimming ? "ScaleDim" : "ScalePlain";
+            EnsureFolder(document, folderName);
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                System.Diagnostics.Stopwatch bucket = System.Diagnostics.Stopwatch.StartNew();
+                System.Diagnostics.Stopwatch whole = System.Diagnostics.Stopwatch.StartNew();
+
+                for (int i = 1; i <= ScaleViews; i++)
+                {
+                    AddComViewIntoFolder(folderName, folderName + " " + i, camera);
+
+                    if (i % ScaleBucket == 0)
+                    {
+                        bucket.Stop();
+                        Say("   " + i + " written, the last " + ScaleBucket + " took "
+                            + bucket.ElapsedMilliseconds + " ms, "
+                            + Per(bucket.ElapsedMilliseconds, ScaleBucket) + " ms each");
+                        bucket.Reset();
+                        bucket.Start();
+                    }
+                }
+
+                whole.Stop();
+                Say("PASS " + (dimming ? "dimming ON" : "dimming OFF") + ": " + ScaleViews
+                    + " written in " + whole.ElapsedMilliseconds + " ms, "
+                    + Per(whole.ElapsedMilliseconds, ScaleViews) + " ms each across the whole pass");
+
+                document.Models.ResetAllTemporaryMaterials();
+                document.Models.ResetAllHidden();
+            }
+        }
+
         private void MeasureRoute(string nwfCopy)
         {
             string folder = Path.GetDirectoryName(nwfCopy);

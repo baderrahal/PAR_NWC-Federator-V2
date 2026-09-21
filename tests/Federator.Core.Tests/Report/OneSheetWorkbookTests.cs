@@ -651,5 +651,137 @@ namespace Federator.Core.Tests
                     "three title rows and one row each, where the old shape cost 400");
             }
         }
+
+        // ---------- the check can see what the writer wrote ----------
+
+        /// <summary>
+        /// A CHECK THAT CANNOT FAIL IS A BUG, and this one could not. It found a block by
+        /// the Clash Name headings row, and since Q73 a test that found nothing writes no
+        /// headings row, so on a group where nothing clashed it counted 0 blocks out of
+        /// 1830 and said the workbook was missing all of them. The workbook was carrying
+        /// every one.
+        ///
+        /// The number here is the client's own 1830 rather than a round one, because that
+        /// is the count the live run read against and the one that produced the wrong
+        /// answer.
+        /// </summary>
+        [Test]
+        public void AWorkbookOfNothingButEmptyTestsIsCountedInFull()
+        {
+            ClashReport report = Report();
+
+            for (int i = 0; i < 1830; i++)
+            {
+                AddTest(report, "empty " + i, 0);
+            }
+
+            WorkbookCheck check = WorkbookCheck.Of(Write(report), false);
+
+            Assert.That(check.Ran, Is.True);
+            Assert.That(check.Blocks, Is.EqualTo(1830), "every test carries a block and every one is counted");
+            Assert.That(check.Rows, Is.EqualTo(0), "none of them found a clash");
+            Assert.That(check.FullBlocks, Is.EqualTo(0), "and not one of them is the full five row shape");
+            Assert.That(CreationPlan.BlockCountLine(check.Blocks, 1830),
+                Does.Contain("one for every test in the file"));
+        }
+
+        /// <summary>
+        /// AND IT MUST STILL FAIL ON A WORKBOOK GENUINELY SHORT OF A BLOCK. A counter that
+        /// answers 1830 whatever it is handed is no better than the one that answered 0.
+        /// </summary>
+        [Test]
+        public void AWorkbookShortOfABlockIsStillCaught()
+        {
+            ClashReport report = Report();
+
+            for (int i = 0; i < 1829; i++)
+            {
+                AddTest(report, "empty " + i, 0);
+            }
+
+            WorkbookCheck check = WorkbookCheck.Of(Write(report), false);
+
+            Assert.That(check.Blocks, Is.EqualTo(1829));
+            Assert.That(CreationPlan.BlockCountLine(check.Blocks, 1830),
+                Does.Contain("1 test(s) have no block"));
+        }
+
+        /// <summary>
+        /// THE MIXED SHEET IS THE ONE A REAL RUN WRITES, and it is where counting by
+        /// headings went wrong quietly rather than loudly: it found the few that clashed
+        /// and silently missed the many that did not, so the count looked plausible.
+        ///
+        /// The empty tests are added FIRST so the first block on the sheet is an empty
+        /// one, which is what proves the cell by cell comparison now waits for a full
+        /// block instead of giving up on the first row it meets.
+        /// </summary>
+        [Test]
+        public void AMixedSheetCountsBothShapesAndStillComparesAFullBlock()
+        {
+            ClashReport report = Report();
+
+            for (int i = 0; i < 40; i++)
+            {
+                AddTest(report, "empty " + i, 0);
+            }
+
+            AddTest(report, "found two", 2);
+            AddTest(report, "found one", 1);
+
+            WorkbookCheck check = WorkbookCheck.Of(Write(report), false);
+
+            Assert.That(check.Blocks, Is.EqualTo(42), "forty that found nothing and two that did");
+            Assert.That(check.FullBlocks, Is.EqualTo(2));
+            Assert.That(check.Rows, Is.EqualTo(3), "two clashes and one");
+            Assert.That(check.Problems, Is.Empty,
+                "the full block is still compared cell by cell even though empty ones came first");
+        }
+
+        /// <summary>
+        /// AND THE CHECK SAYS WHEN IT COMPARED NOTHING. On an all empty sheet there is no
+        /// clash table, so the column order, the fills, the borders, the heights and the
+        /// widths are not checked at all. That used to pass in silence, which reads as a
+        /// clean file rather than as an unexamined one.
+        /// </summary>
+        [Test]
+        public void AnAllEmptySheetSaysWhatItCouldNotCompare()
+        {
+            ClashReport report = Report();
+
+            for (int i = 0; i < 5; i++)
+            {
+                AddTest(report, "empty " + i, 0);
+            }
+
+            IList<string> lines = WorkbookCheck.Of(Write(report), false).Lines();
+            string all = string.Join("\n", new List<string>(lines).ToArray());
+
+            Assert.That(all, Does.Contain("EVERY BLOCK ON THIS SHEET FOUND NOTHING"));
+            Assert.That(all, Does.Contain("were NOT checked"));
+            Assert.That(all, Does.Contain("5 test blocks of which 0 found something"));
+
+            // AND IT MUST NOT ALSO SAY THEY MATCHED. Nothing compared and everything
+            // matching are opposite answers and the block used to print both at once.
+            Assert.That(all, Does.Not.Contain("Every column, value shape, fill, border"),
+                "a sheet with no clash table cannot have had its columns compared");
+            Assert.That(all, Does.Contain("NOTHING ELSE ON THIS SHEET WAS COMPARED"));
+        }
+
+        /// <summary>
+        /// AND THE SHEET THAT DOES CARRY A CLASH TABLE STILL SAYS THE MATCHING SENTENCE,
+        /// or the guard above would have turned a real comparison into a silent one.
+        /// </summary>
+        [Test]
+        public void ASheetWithAClashTableStillSaysWhatItCompared()
+        {
+            ClashReport report = Report();
+            AddTest(report, "found two", 2);
+
+            IList<string> lines = WorkbookCheck.Of(Write(report), false).Lines();
+            string all = string.Join("\n", new List<string>(lines).ToArray());
+
+            Assert.That(all, Does.Contain("Every column, value shape, fill, border"));
+            Assert.That(all, Does.Not.Contain("NOTHING ELSE ON THIS SHEET WAS COMPARED"));
+        }
     }
 }

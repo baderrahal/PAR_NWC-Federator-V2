@@ -215,6 +215,17 @@ namespace Federator.Core.Views
         /// <summary>How many a per test cap kept out.</summary>
         public int OverTheCapCount { get; internal set; }
 
+        /// <summary>
+        /// How many the CEILING ON THE GROUP kept out, counted apart from the per test cap
+        /// because they answer different questions. The per test cap is about one test
+        /// flooding the tree. The ceiling is about the group as a whole costing more than
+        /// the run has, and about 1A04EP emptying its own document at 2,566.
+        /// </summary>
+        public int OverTheGroupCeilingCount { get; internal set; }
+
+        /// <summary>The ceiling this plan was built under, or zero where there was none.</summary>
+        public int GroupCeiling { get; internal set; }
+
         public ReadOnlyCollection<PlannedClashViewpoint> Planned
         {
             get { return new ReadOnlyCollection<PlannedClashViewpoint>(planned); }
@@ -262,6 +273,18 @@ namespace Federator.Core.Views
             {
                 lines.Add("    " + OverTheCapCount.ToString().PadLeft(5)
                     + "  over the cap on how many one test may write");
+            }
+
+            // THE CEILING SAYS SO WHENEVER IT IS SET, and not only when it bit. A run
+            // capped at 800 that planned 640 wrote everything it meant to, and a reader
+            // has to be able to tell that from a run where nothing was capped at all.
+            if (GroupCeiling > 0)
+            {
+                lines.Add("    " + OverTheGroupCeilingCount.ToString().PadLeft(5)
+                    + "  over the ceiling of " + GroupCeiling + " viewpoint(s) for this group"
+                    + (OverTheGroupCeilingCount > 0
+                        ? ". THE CEILING WAS REACHED and those clashes have no viewpoint"
+                        : ", which was not reached"));
             }
 
             lines.Add("size could not be read : " + SizeUnknownCount
@@ -353,6 +376,7 @@ namespace Federator.Core.Views
             }
 
             ClashViewpointPlanOutcome outcome = new ClashViewpointPlanOutcome(priorityPicked);
+            outcome.GroupCeiling = settings == null ? 0 : settings.MaxPerGroup;
             Dictionary<string, int> perTest = new Dictionary<string, int>(StringComparer.Ordinal);
 
             if (clashes == null)
@@ -392,6 +416,16 @@ namespace Federator.Core.Views
                     }
 
                     perTest[clash.TestName] = already + 1;
+                }
+
+                // THE CEILING ON THE GROUP, counted after the per test cap so a clash kept
+                // out by the cap is not counted twice. It is checked against what is
+                // PLANNED and not against what was considered, because the ceiling is
+                // about how many reach the document.
+                if (settings.MaxPerGroup > 0 && outcome.Planned.Count >= settings.MaxPerGroup)
+                {
+                    outcome.OverTheGroupCeilingCount = outcome.OverTheGroupCeilingCount + 1;
+                    continue;
                 }
 
                 DisciplinePair pair = DisciplinePairRule.For(clash.LeftSet, clash.RightSet, settings);

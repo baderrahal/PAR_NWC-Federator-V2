@@ -561,5 +561,131 @@ namespace Federator.Core.Tests
             return Clash(test, clash, "BLD-AR-Walls", "BLD-ST-Columns",
                 ClashStatus.New, ClashPriority.None, null);
         }
+
+        // ---------- the ceiling on the group ----------
+
+        /// <summary>
+        /// OFF BY DEFAULT, so a run that sets nothing plans exactly what it planned before.
+        /// The whole point of a ceiling is that it is there for the group that needs it and
+        /// invisible to every group that does not.
+        /// </summary>
+        [Test]
+        public void TheGroupCeilingIsOffByDefault()
+        {
+            Assert.That(Settings().MaxPerGroup, Is.EqualTo(0));
+
+            ClashToPlan[] many = new ClashToPlan[50];
+
+            for (int i = 0; i < many.Length; i++)
+            {
+                many[i] = Simple2("T", "Clash" + i);
+            }
+
+            ClashViewpointPlanOutcome outcome = ClashViewpointPlan.For(many, Settings(), false);
+
+            Assert.That(outcome.Planned.Count, Is.EqualTo(50), "nothing is capped by default");
+            Assert.That(outcome.OverTheGroupCeilingCount, Is.EqualTo(0));
+            Assert.That(outcome.GroupCeiling, Is.EqualTo(0));
+        }
+
+        /// <summary>
+        /// A ceiling plans up to it and counts every clash it kept out, so the number that
+        /// has no viewpoint is in the block rather than being worked out by subtraction.
+        /// </summary>
+        [Test]
+        public void ACeilingPlansUpToItAndCountsWhatItKeptOut()
+        {
+            ViewpointSettings settings = Settings();
+            settings.MaxPerGroup = 20;
+
+            ClashToPlan[] many = new ClashToPlan[50];
+
+            for (int i = 0; i < many.Length; i++)
+            {
+                many[i] = Simple2("T", "Clash" + i);
+            }
+
+            ClashViewpointPlanOutcome outcome = ClashViewpointPlan.For(many, settings, false);
+
+            Assert.That(outcome.Planned.Count, Is.EqualTo(20));
+            Assert.That(outcome.OverTheGroupCeilingCount, Is.EqualTo(30));
+            Assert.That(outcome.Considered, Is.EqualTo(50), "every one was still looked at");
+        }
+
+        /// <summary>
+        /// A CAPPED GROUP SAYS SO, in the block, in words. A run that quietly wrote 800 of
+        /// 2,566 viewpoints and reported a count reads exactly like a run that had 800
+        /// clashes.
+        /// </summary>
+        [Test]
+        public void ACappedGroupSaysSoAndSaysHowManyWereLeftOut()
+        {
+            ViewpointSettings settings = Settings();
+            settings.MaxPerGroup = 2;
+
+            ClashToPlan[] many = new ClashToPlan[5];
+
+            for (int i = 0; i < many.Length; i++)
+            {
+                many[i] = Simple2("T", "Clash" + i);
+            }
+
+            string block = string.Join(
+                "\n",
+                new List<string>(ClashViewpointPlan.For(many, settings, false).Lines()).ToArray());
+
+            Assert.That(block, Does.Contain("over the ceiling of 2 viewpoint(s) for this group"));
+            Assert.That(block, Does.Contain("THE CEILING WAS REACHED"));
+            Assert.That(block, Does.Contain("    3  over the ceiling"));
+        }
+
+        /// <summary>
+        /// AND A CEILING THAT WAS SET AND NOT REACHED STILL SAYS SO. A block silent about
+        /// the ceiling reads as a run with no ceiling at all, and those are different runs.
+        /// </summary>
+        [Test]
+        public void ACeilingThatWasNotReachedIsStillSaid()
+        {
+            ViewpointSettings settings = Settings();
+            settings.MaxPerGroup = 500;
+
+            string block = string.Join(
+                "\n",
+                new List<string>(
+                    ClashViewpointPlan.For(new[] { Simple2("T", "C1") }, settings, false).Lines()).ToArray());
+
+            Assert.That(block, Does.Contain("over the ceiling of 500 viewpoint(s) for this group, which was not reached"));
+            Assert.That(block, Does.Not.Contain("THE CEILING WAS REACHED"));
+        }
+
+        /// <summary>
+        /// The per test cap and the group ceiling are counted apart, and a clash the cap
+        /// already kept out is never counted against the ceiling as well, or the two
+        /// numbers would add to more than the clashes there were.
+        /// </summary>
+        [Test]
+        public void TheCapAndTheCeilingAreCountedApart()
+        {
+            ViewpointSettings settings = Settings();
+            settings.MaxPerTest = 1;
+            settings.MaxPerGroup = 2;
+
+            ClashViewpointPlanOutcome outcome = ClashViewpointPlan.For(
+                new[]
+                {
+                    Simple2("T1", "C1"), Simple2("T1", "C2"), Simple2("T1", "C3"),
+                    Simple2("T2", "C1"), Simple2("T3", "C1"), Simple2("T4", "C1")
+                },
+                settings,
+                false);
+
+            Assert.That(outcome.Planned.Count, Is.EqualTo(2), "one each from T1 and T2, then the ceiling");
+            Assert.That(outcome.OverTheCapCount, Is.EqualTo(2), "T1's second and third");
+            Assert.That(outcome.OverTheGroupCeilingCount, Is.EqualTo(2), "T3 and T4");
+            Assert.That(
+                outcome.Planned.Count + outcome.OverTheCapCount + outcome.OverTheGroupCeilingCount,
+                Is.EqualTo(6),
+                "every clash is accounted for exactly once");
+        }
     }
 }

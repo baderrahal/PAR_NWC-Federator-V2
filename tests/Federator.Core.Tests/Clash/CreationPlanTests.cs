@@ -176,6 +176,11 @@ namespace Federator.Core.Tests
         /// Not creating a test changes what goes in the DOCUMENT and never what goes in the
         /// report. The client's report is the whole matrix, so a test missing from it reads
         /// as a test nobody ran rather than as a test that could not clash.
+        ///
+        /// THE LINE NO LONGER SAYS MUST. It said MUST and nothing enforced it, so a group
+        /// reported DONE over it on 1A0415. The word is gone and the line says what it is,
+        /// a finding that does not fail the group, and it says how many blocks are missing
+        /// rather than leaving a reader to subtract.
         /// </summary>
         [Test]
         public void TheWorkbookStillCarriesABlockForEveryTestInTheFile()
@@ -186,7 +191,42 @@ namespace Federator.Core.Tests
             string short1 = CreationPlan.BlockCountLine(211, 1830);
 
             Assert.That(short1, Does.Contain("211 in the workbook against 1830 tests in the file"));
-            Assert.That(short1, Does.Contain("THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST IN THE FILE"));
+            Assert.That(short1, Does.Contain("1619 test(s) have no block"));
+            Assert.That(short1, Does.Contain("does not fail the group"));
+            Assert.That(short1, Does.Not.Contain("MUST"),
+                "a check that says MUST and is then ignored is worse than no check");
+        }
+
+        /// <summary>
+        /// The other way round is a real answer too and it is a different sentence. More
+        /// blocks than tests is not a missing block, and reporting it as one would send a
+        /// person looking for something that is not wrong.
+        /// </summary>
+        [Test]
+        public void MoreBlocksThanTestsIsSaidTheOtherWayRound()
+        {
+            Assert.That(CreationPlan.BlockCountLine(1831, 1830),
+                Does.Contain("1 block(s) are there that no test in the file accounts for"));
+        }
+
+        /// <summary>
+        /// The run line exists so a short workbook is counted once for the whole run. It is
+        /// null where nothing was short, because a line reading zero on every run teaches
+        /// people to skip it, and null where nothing was counted, because none counted and
+        /// none short read the same and mean opposite things.
+        /// </summary>
+        [Test]
+        public void TheRunLineIsOnlyWrittenWhenSomethingWasShort()
+        {
+            Assert.That(CreationPlan.BlocksShortResultLine(0, 10), Is.Null);
+            Assert.That(CreationPlan.BlocksShortResultLine(0, 0), Is.Null);
+            Assert.That(CreationPlan.BlocksShortResultLine(3, 0), Is.Null,
+                "nothing counted cannot have three short");
+
+            string line = CreationPlan.BlocksShortResultLine(2, 10);
+
+            Assert.That(line, Does.Contain("2 of 10"));
+            Assert.That(line, Does.Contain("failed no group"));
         }
 
         /// <summary>

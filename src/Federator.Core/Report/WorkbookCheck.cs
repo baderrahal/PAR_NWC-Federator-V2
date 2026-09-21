@@ -85,6 +85,15 @@ namespace Federator.Core.Report
         /// <summary>The clash count of each block, in the order they appear.</summary>
         public IList<int> BlockCounts { get; private set; }
 
+        /// <summary>
+        /// How many of the blocks are the FULL five row shape with column headings under
+        /// them. The rest are the one row Q73 writes for a test that found nothing, and
+        /// they carry no headings, no clash rows and nothing to compare cell by cell.
+        /// The deep comparison needs a full block, so a sheet with none is a sheet this
+        /// check could not compare, and that is SAID rather than passed over.
+        /// </summary>
+        public int FullBlocks { get; private set; }
+
         /// <summary>Everything wrong, each a plain sentence, worst first.</summary>
         internal IList<string> Problems
         {
@@ -197,34 +206,60 @@ namespace Federator.Core.Report
         {
             List<int> counts = new List<int>();
             int lastRow = sheet.LastRowUsed() == null ? 0 : sheet.LastRowUsed().RowNumber();
+            int full = 0;
 
-            for (int row = 1; row <= lastRow; row++)
+            // ROW 2, because row 1 is the title and it carries text in column A like a
+            // block does. The proven reader of this shape starts there for the same reason.
+            for (int row = 2; row <= lastRow; row++)
             {
-                // A block header is the row whose Clash Name column holds their heading.
-                if (sheet.Cell(row, WorkbookWriter.ColumnClashName).GetString() != "Clash Name")
+                // A BLOCK STARTS WHERE THE TEST NAME IS, IN COLUMN A, and that is the one
+                // thing BOTH shapes of block carry.
+                //
+                // IT USED TO LOOK FOR THE Clash Name HEADINGS ROW, which finds only the
+                // blocks that found something. Since Q73 a test with no clashes is ONE
+                // ROW carrying its tolerance in that same column 3 and writing no headings
+                // under it, so every empty block was uncountable. On 1A0415 the check read
+                // 0 blocks against 1830 tests and said the workbook MUST carry one for
+                // every test, while the workbook was carrying all 1830 of them. THE
+                // WORKBOOK WAS RIGHT AND THE COUNT WAS WRONG, and a check that cannot see
+                // what it is counting cannot fail for the right reason either.
+                string name = sheet.Cell(row, 1).GetString();
+
+                if (name.Length == 0 || name == "Image")
                 {
                     continue;
                 }
 
                 Blocks++;
-                CheckColumnOrder(sheet, row);
 
-                if (Blocks == 1)
+                // A FULL block carries its column headings four rows down. An empty one is
+                // the single row and has none, so there is nothing under it to walk and
+                // nothing on it to compare against the client's layout.
+                int headings = row + 4;
+                bool isFull = headings <= lastRow
+                    && sheet.Cell(headings, WorkbookWriter.ColumnClashName).GetString() == "Clash Name";
+
+                if (!isFull)
                 {
-                    CheckPriorityColumn(sheet, row);
+                    counts.Add(0);
+                    continue;
                 }
 
-                // Only the first block is walked cell by cell. Every block is painted by
-                // the same code, so a fault in one is a fault in all of them, and 1830
-                // blocks times nineteen columns is a check nobody reads.
-                if (Blocks == 1)
+                full++;
+                CheckColumnOrder(sheet, headings);
+
+                // Only the first FULL block is walked cell by cell. Every block is painted
+                // by the same code, so a fault in one is a fault in all of them, and 1830
+                // blocks times nineteen columns is a check nobody reads. It is the first
+                // FULL one and no longer simply the first, because on a sheet whose
+                // opening blocks found nothing there is nothing to walk on those.
+                if (full == 1)
                 {
-                    for (int at = row - 4; at <= row; at++)
+                    CheckPriorityColumn(sheet, headings);
+
+                    for (int at = row; at <= headings; at++)
                     {
-                        if (at >= 1)
-                        {
-                            CheckCells(sheet, at, ClientLayout.KindOf(at, row));
-                        }
+                        CheckCells(sheet, at, ClientLayout.KindOf(at, headings));
                     }
 
                     CheckWidths(sheet);
@@ -233,7 +268,7 @@ namespace Federator.Core.Report
 
                 int rows = 0;
 
-                for (int at = row + 1; at <= lastRow; at++)
+                for (int at = headings + 1; at <= lastRow; at++)
                 {
                     if (sheet.Cell(at, WorkbookWriter.ColumnClashName).GetString().Length == 0)
                     {
@@ -243,23 +278,24 @@ namespace Federator.Core.Report
                     rows++;
                     Rows++;
 
-                    if (Blocks == 1 && rows == 1)
+                    if (full == 1 && rows == 1)
                     {
                         CheckCells(sheet, at, ClientLayout.RowKind.Clash);
                     }
 
-                    CheckShape(sheet, at, rows == 1 && Blocks == 1);
+                    CheckShape(sheet, at, rows == 1 && full == 1);
                 }
 
                 counts.Add(rows);
             }
 
             BlockCounts = counts;
+            FullBlocks = full;
             CheckOrder(counts);
 
             if (Blocks == 0)
             {
-                problems.Add("The sheet has no clash table at all, so nothing on it could "
+                problems.Add("The sheet has no test block at all, so nothing on it could "
                     + "be compared with the client's report.");
             }
         }
@@ -678,8 +714,17 @@ namespace Federator.Core.Report
 
             lines.Add("CHECK    " + Sheets + (Sheets == 1 ? " sheet, " : " sheets, ")
                 + Quote(SheetName) + ", " + Blocks + " test "
-                + (Blocks == 1 ? "block" : "blocks") + ", " + Rows + " clash "
+                + (Blocks == 1 ? "block" : "blocks") + " of which " + FullBlocks
+                + " found something, " + Rows + " clash "
                 + (Rows == 1 ? "row" : "rows") + ".");
+
+            if (FullBlocks == 0 && Blocks > 0)
+            {
+                lines.Add("         EVERY BLOCK ON THIS SHEET FOUND NOTHING, so there is no "
+                    + "clash table to compare cell by cell and the column order, the fills, "
+                    + "the borders, the row heights and the widths were NOT checked. The "
+                    + "blocks were counted and nothing else about them was.");
+            }
 
             if (BlockCounts.Count > 0)
             {
@@ -701,9 +746,25 @@ namespace Federator.Core.Report
 
             if (problems.Count == 0)
             {
-                lines.Add("         Every column, value shape, fill, border, row height "
-                    + "and column width matches the client's report, and the blocks are "
-                    + "in their order.");
+                // NOTHING COMPARED IS NOT EVERYTHING MATCHING. The sentence below is a
+                // claim about columns, fills, borders, heights and widths, and every one
+                // of those is read off a clash table. A sheet with no full block has no
+                // clash table, so saying they match would be the check passing on work it
+                // never did, which is the fault this whole line exists to avoid.
+                if (FullBlocks == 0)
+                {
+                    lines.Add("         The blocks are in their order and every one of them is "
+                        + "there. NOTHING ELSE ON THIS SHEET WAS COMPARED, because comparing "
+                        + "columns, fills, borders, heights and widths needs a clash table and "
+                        + "this sheet has none.");
+                }
+                else
+                {
+                    lines.Add("         Every column, value shape, fill, border, row height "
+                        + "and column width matches the client's report, and the blocks are "
+                        + "in their order.");
+                }
+
                 lines.Add("         Not compared: the font, the sheet name, freeze panes, "
                     + "print setup, merged ranges, and whether a value is true. See "
                     + "docs\\history\\scan.md 4q.");

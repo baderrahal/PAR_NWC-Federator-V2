@@ -207,6 +207,30 @@ namespace Federator.Core.Sets
             get { return CreatedCount > 0; }
         }
 
+        /// <summary>
+        /// Whether this build CHANGED THE DOCUMENT, which is what asks for the NWF to be
+        /// saved again. Three things change it: a set created, a set rebuilt, and a
+        /// leftover removed or renamed.
+        ///
+        /// A REBUILT SET COUNTS AND IT DID NOT UNTIL 2026-09-21. A set already at its
+        /// path whose conditions no longer match the picked file is rebuilt IN PLACE,
+        /// which creates nothing, so a group whose only change was a rebuild read as
+        /// having changed nothing and its NWF was never written. The rebuild was correct
+        /// and was thrown away at the end of every run, so the same sets drifted again on
+        /// the next one, forever. MEASURED on the C02 run of 2026-09-21: the fourteen
+        /// drifted sets appeared in exactly the two groups whose NWF came back the same
+        /// size it went in, 1000BS at 13,091 bytes and 1A02MS at 81,957, while the eight
+        /// groups that wrote their NWF for some other reason never drifted twice.
+        /// docs\history\scan.md 6b.
+        ///
+        /// PutAnythingIn is left alone and still means what it says, because the SETS
+        /// totals and the window read it for a different question.
+        /// </summary>
+        public bool AsksForTheNwfSave
+        {
+            get { return CreatedCount > 0 || RebuiltCount > 0 || ActedOnLeftovers > 0; }
+        }
+
         /// <summary>Created sets that found at least one item.</summary>
         public int FindingItemsCount
         {

@@ -135,8 +135,19 @@ namespace Federator.Core.Clash
         /// <summary>
         /// Whether the workbook carries a block for every test in the file, F77. Not
         /// creating a test changes what goes in the DOCUMENT and never what goes in the
-        /// report, so a count that differs is a fault in the report and is said in capitals
-        /// the way the ROWS line says its own.
+        /// report, so a count that differs is a fault in the report.
+        ///
+        /// IT SAID MUST AND NOTHING ENFORCED IT, which is worse than saying nothing. The
+        /// word is gone and the line now says what it is: a finding for a person, on the
+        /// run's own list, which is what every other finding in this tool is. THE REASON
+        /// IT IS NOT A GATE is the rule this repo already keeps, that a report check never
+        /// fails a group, and the reason for THAT is measured: judging a group on a check
+        /// once reported a clean twenty two group run as FAILED. This round proved the
+        /// same thing again from the other side, because the counter itself was wrong on
+        /// 1A0415 and would have failed a group whose workbook was correct. A wrong check
+        /// that reports is a nuisance and a wrong check that fails groups is a stopped
+        /// project. Whether it should become a gate now that it counts correctly is Q79,
+        /// and Bader decides, the way he decides every finding.
         /// </summary>
         public static string BlockCountLine(int blocksInTheWorkbook, int testsInTheFile)
         {
@@ -146,9 +157,47 @@ namespace Federator.Core.Clash
             }
 
             return "BLOCKS   " + blocksInTheWorkbook + " in the workbook against "
-                + testsInTheFile + " tests in the file. THE WORKBOOK MUST CARRY A BLOCK FOR "
-                + "EVERY TEST IN THE FILE, whether or not the test was created, because the "
-                + "client's report is the whole matrix";
+                + testsInTheFile + " tests in the file, so "
+                + Missing(blocksInTheWorkbook, testsInTheFile)
+                + ". The client's report is the whole matrix, so a block is expected for "
+                + "every test in the file whether or not the test was created. This is a "
+                + "FINDING and it does not fail the group, the same as every other check "
+                + "on a written report. It is counted in the RESULT block so it cannot be "
+                + "passed over";
+        }
+
+        /// <summary>
+        /// The RESULT line, so a workbook short of blocks is counted across the run rather
+        /// than sitting in one group's block where nobody looks again. Null where every
+        /// counted group agreed, because a line reading zero on every run teaches people
+        /// to skip it, which is the same reason the priority and penetration lines are
+        /// only written when they apply.
+        ///
+        /// It says how many groups were COUNTED as well as how many were short, because
+        /// none counted and none short read identically and mean opposite things.
+        /// </summary>
+        public static string BlocksShortResultLine(int groupsShort, int groupsCounted)
+        {
+            if (groupsCounted <= 0 || groupsShort <= 0)
+            {
+                return null;
+            }
+
+            return "BLOCKS   " + groupsShort + " of " + groupsCounted
+                + " group(s) whose workbook was counted did not carry a block for every "
+                + "test in the file. That is a finding for a person and it failed no group";
+        }
+
+        /// <summary>Which way the two counts differ, in the words a person would use.</summary>
+        private static string Missing(int blocksInTheWorkbook, int testsInTheFile)
+        {
+            if (blocksInTheWorkbook < testsInTheFile)
+            {
+                return (testsInTheFile - blocksInTheWorkbook) + " test(s) have no block";
+            }
+
+            return (blocksInTheWorkbook - testsInTheFile)
+                + " block(s) are there that no test in the file accounts for";
         }
 
         private static bool Counted(
