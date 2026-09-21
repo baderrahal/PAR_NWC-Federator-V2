@@ -325,5 +325,52 @@ namespace Federator.Core.Tests
                     new SizeSettings()));
             }
         }
+
+        /// <summary>
+        /// THE SHOWN SIZE IS ROUNDED AND THE COMPARED SIZE IS NOT, decided on 2026-09-21
+        /// after the penetration fixture read real pipes as 20.997mm, 41.667mm and
+        /// 82.021mm. Those are 21, 41.67 and 82 arriving through a unit conversion at full
+        /// precision. Nobody models a 20.997 mm pipe and a client reading it concludes the
+        /// tool does not understand units.
+        /// </summary>
+        [Test]
+        public void TheShownSizeIsRoundedToOneDecimal()
+        {
+            PenetrationTally tally = new PenetrationTally();
+            tally.Add("a test", "Clash1", Decide("Pipes", 20.99712345, "Walls", ClashStatus.New));
+
+            string block = Joined(tally.Lines(Settings(), Sizes()));
+
+            Assert.That(block, Does.Contain("21mm"), "one decimal at most, and a whole number shows none");
+            Assert.That(block, Does.Not.Contain("20.997"));
+        }
+
+        [Test]
+        public void AFractionalShownSizeKeepsOneDecimalAndNoMore()
+        {
+            PenetrationTally tally = new PenetrationTally();
+            tally.Add("a test", "Clash1", Decide("Pipes", 41.66666, "Walls", ClashStatus.New));
+
+            Assert.That(Joined(tally.Lines(Settings(), Sizes())), Does.Contain("41.7mm"));
+        }
+
+        /// <summary>
+        /// ROUNDING CAN NEVER MOVE A CLASH. The rule reads the full value off the side and
+        /// never reads the shown string, so a service at 150.04 stays OUT even though it
+        /// would show as 150, and one at 149.96 stays IN even though it would show as 150.
+        /// Without this test the display change could quietly widen the rule by a
+        /// twentieth of a millimetre.
+        /// </summary>
+        [Test]
+        public void RoundingTheShownSizeNeverChangesWhatTheRuleDecides()
+        {
+            PenetrationDecision justOver = Decide("Pipes", 150.04, "Walls", ClashStatus.New);
+            PenetrationDecision justUnder = Decide("Pipes", 149.96, "Walls", ClashStatus.New);
+
+            Assert.That(justOver.Verdict, Is.EqualTo(PenetrationVerdict.ServiceTooLarge),
+                "150.04 shows as 150 and is still over the threshold");
+            Assert.That(justUnder.Verdict, Is.EqualTo(PenetrationVerdict.Reviewed),
+                "149.96 shows as 150 and is still under it");
+        }
     }
 }

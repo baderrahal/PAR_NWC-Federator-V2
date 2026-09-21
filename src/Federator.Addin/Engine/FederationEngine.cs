@@ -2503,6 +2503,8 @@ namespace Federator.Addin.Engine
                         penetrationTally.Lines(reports.Penetrations, reports.Sizes));
 
                     log.PenetrationsMoved += penetrationTally.MovedCount;
+                    log.PenetrationsAcrossTheRun.Add(
+                        job.Building, penetrationTally.MovedCount, penetrationTally.Considered);
 
                     // Q71. One row per service this tool could not measure, because the
                     // block writes none and a count nobody can check is a count nobody
@@ -2520,6 +2522,8 @@ namespace Federator.Addin.Engine
                 {
                     log.Block("BY DESIGN " + job.Building, byDesignTally.Lines());
                     log.ByDesignMoved += byDesignTally.MovedCount;
+                    log.ByDesignAcrossTheRun.Add(
+                        job.Building, byDesignTally.MovedCount, byDesignTally.Considered);
                     byDesignAcrossTheRun.Add(byDesignTally);
                 }
 

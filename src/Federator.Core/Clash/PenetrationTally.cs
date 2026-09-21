@@ -20,6 +20,14 @@ namespace Federator.Core.Clash
     /// </summary>
     public sealed class PenetrationTally
     {
+        /// <summary>
+        /// How a service size is SHOWN, which is one decimal at most. It is not how it is
+        /// COMPARED: `PenetrationRule` reads the full value off
+        /// `PenetrationSide.LargestMillimetres` and never reads this string, so rounding
+        /// here cannot move a clash. A test pins exactly that.
+        /// </summary>
+        public const string ShownSizeFormat = "0.#";
+
         private readonly List<string> moved = new List<string>();
 
         // Q71. Which services this tool could not measure, by category, and one row per
@@ -236,10 +244,18 @@ namespace Federator.Core.Clash
             string solid = decision.Solid == null
                 ? "UNKNOWN"
                 : Words(decision.Solid.Category);
+            // THE DISPLAYED NUMBER IS FOR A PERSON AND THE COMPARED NUMBER IS FOR THE RULE,
+            // AND THEY DO NOT HAVE TO BE THE SAME NUMBER. The fixture of 2026-09-21 read
+            // real pipes as 20.997mm, 41.667mm and 82.021mm, which is 21, 41.67 and 82
+            // arriving through a unit conversion and printed at full precision. Nobody
+            // models a 20.997 mm pipe, so a clash report handed to a client showing that
+            // reads as a tool that does not understand units. The rule is unaffected,
+            // because PenetrationRule compares Service.LargestMillimetres itself and never
+            // this string, and a test pins that so rounding can never change a decision.
             string size = decision.Service == null || !decision.Service.LargestMillimetres.HasValue
                 ? "UNKNOWN"
                 : decision.Service.LargestMillimetres.Value
-                    .ToString("0.###", CultureInfo.InvariantCulture) + "mm";
+                    .ToString(ShownSizeFormat, CultureInfo.InvariantCulture) + "mm";
 
             // The shape of the line is ReviewedLine's, because the by design rule writes
             // one too and one rule lives in one place. Only the WHY is this rule's.
