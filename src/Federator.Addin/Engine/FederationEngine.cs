@@ -3197,6 +3197,7 @@ namespace Federator.Addin.Engine
 
             ViewpointSettings views = new ViewpointSettings();
             views.Sizes = reports.Sizes;
+            views.MaxPerGroup = reports.ViewpointsPerGroup;
 
             ViewpointBuilder builder = new ViewpointBuilder(Tick, log, reports.Penetrations, reports.Sizes, views);
             ViewpointBuildOutcome built = null;

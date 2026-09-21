@@ -28,6 +28,7 @@ namespace Federator.Core.Report
             MarkPenetrations = false;
             Penetrations = new PenetrationSettings();
             Sizes = new SizeSettings();
+            ViewpointsPerGroup = 0;
             StopAfterFailures = RepeatedFailureGuard.DefaultThreshold;
 
             // Fixed on, and the window no longer sets them. A weekly run wants the page
@@ -192,6 +193,15 @@ namespace Federator.Core.Report
         /// SizeSettings.DefaultThresholdMillimetres says which way round each reads it.
         /// </summary>
         public SizeSettings Sizes { get; set; }
+
+        /// <summary>
+        /// The CEILING on how many saved viewpoints one group may write, or zero for no
+        /// ceiling, which is the default. It is carried here rather than being read off a
+        /// constant because it shapes a run, the same as every other number that does.
+        /// The rule and the whole of the reason are at
+        /// Federator.Core.Views.ViewpointSettings.MaxPerGroup.
+        /// </summary>
+        public int ViewpointsPerGroup { get; set; }
 
         /// <summary>
         /// How many clash tests failing in a row for the same reason stop the whole run.

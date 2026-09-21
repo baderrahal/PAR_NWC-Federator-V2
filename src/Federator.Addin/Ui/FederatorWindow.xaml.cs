@@ -1513,6 +1513,7 @@ namespace Federator.Addin.Ui
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
+            options.ViewpointsPerGroup = Number(ViewpointCeilingBox.Text, 0);
             options.Names = settings;
             return options;
         }
@@ -1586,6 +1587,8 @@ namespace Federator.Addin.Ui
             ImagePixelsBox.Text = defaults.Width.ToString(
                 System.Globalization.CultureInfo.InvariantCulture);
             ImageCapBox.Text = defaults.CapPerTest.ToString(
+                System.Globalization.CultureInfo.InvariantCulture);
+            ViewpointCeilingBox.Text = new ReportOptions().ViewpointsPerGroup.ToString(
                 System.Globalization.CultureInfo.InvariantCulture);
             EmbedThumbnails.IsChecked = defaults.EmbedThumbnail;
 

@@ -302,6 +302,7 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
                                 <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
@@ -353,7 +354,19 @@
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
                                 </StackPanel>
 
-                                <TextBlock Grid.Row="5" Grid.ColumnSpan="5" x:Name="ImageSummary"
+                                <!-- The ceiling on how many viewpoints one group may write.
+                                     Off by default. It is here rather than beside the run
+                                     because it is the setting a person reaches for once,
+                                     for the one group that needs it. -->
+                                <Label Grid.Row="5" Grid.Column="0" Content="Viewpoints"
+                                       VerticalAlignment="Center" />
+                                <Label Grid.Row="5" Grid.Column="2" Content="At most per group, 0 for no cap"
+                                       VerticalAlignment="Center" />
+                                <TextBox Grid.Row="5" Grid.Column="3" x:Name="ViewpointCeilingBox"
+                                         MinWidth="70" VerticalAlignment="Center" Margin="0,0,0,4"
+                                         TextChanged="OnImageSettingChanged" />
+
+                                <TextBlock Grid.Row="6" Grid.ColumnSpan="5" x:Name="ImageSummary"
                                            Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#606060"
                                            Text="Photos on." />
                             </Grid>
