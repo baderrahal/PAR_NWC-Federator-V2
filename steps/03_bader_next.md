@@ -476,7 +476,7 @@ change nothing at all. The second is the run with it on.
 271. Open the workbook for that building
 272. Look for, F72: the Reviewed count on the test header rows has gone UP by the number the block said, and the New or Active count has gone down by the same. That is the count reaching the workbook, in the client's own column, because the status is applied before the harvest reads it. If the workbook shows the OLD status, the status is being applied after the harvest instead of before it, which is the one thing this feature must not do
 273. In Navisworks open Clash Detective on that building and pick one clash the block named
-274. Look for, F72: it reads Reviewed in the panel, and the two items are a small service and a wall, a floor or a roof
+274. Look for, F72: it reads Reviewed in the panel, and the two items are a small service and a wall, a floor, a roof or a structural foundation, which Q63 added to the solid list on 2026-09-20
 275. Run the SAME building again with the box still on
 276. Look for, F72: the second run moves FEWER, probably zero, because the ones it moved last time are now at Reviewed and Reviewed is not a status this tool moves off. They are counted under `a person had already set it, left alone`, which is the same line a clash somebody set by hand would appear on
 277. Find a clash you set to Approved by hand, if there is one, and run again

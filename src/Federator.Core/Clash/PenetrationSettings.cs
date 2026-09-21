@@ -7,7 +7,8 @@ namespace Federator.Core.Clash
     /// <summary>
     /// Which item categories count as a SERVICE and which count as a SOLID, F72.
     ///
-    /// A penetration is a small service going through a wall, a floor or a roof. It is the
+    /// A penetration is a small service going through a wall, a floor, a roof or a structural
+    /// foundation, which Q63 added on 2026-09-20. It is the
     /// ordinary way a building goes together and not a coordination problem, so a person
     /// should not have to look at every one of them week after week. Marking it Reviewed
     /// says somebody looked and moved on, which is true when the rule that picked it is a

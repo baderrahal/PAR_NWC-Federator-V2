@@ -7,7 +7,7 @@ namespace Federator.Core.Clash
     /// <summary>Which rule moved a clash to Reviewed, F72c.</summary>
     public enum AutoReviewRule
     {
-        /// <summary>A small service through a wall, a floor or a roof. F72.</summary>
+        /// <summary>A small service through a wall, a floor, a roof or a structural foundation. F72, Q63.</summary>
         Penetration = 0,
 
         /// <summary>Two sets named as a by design connection. F72b.</summary>

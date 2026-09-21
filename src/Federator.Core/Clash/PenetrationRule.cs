@@ -13,7 +13,7 @@ namespace Federator.Core.Clash
         /// <summary>A pipe, a duct, a tray, a conduit or one of their fittings.</summary>
         Service = 1,
 
-        /// <summary>A wall, a floor or a roof.</summary>
+        /// <summary>A wall, a floor, a roof or a structural foundation. Q63.</summary>
         Solid = 2
     }
 
