@@ -310,12 +310,17 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// Three decimals with the trailing zeros dropped, the same way SizeRule writes a
-        /// size in a sentence, so the two blocks read alike.
+        /// ONE DECIMAL AT MOST, the same as the PENETRATION block, so the number in the
+        /// clash comment saved into the NWF and the number in the log are the same number.
+        ///
+        /// It was three decimals until 2026-09-21, which meant a pipe read `21mm` in the
+        /// block and `20.997mm` in the comment a person opens in Clash Detective, and the
+        /// comment is the half that travels with the file. The rule still compares the
+        /// FULL value off `PenetrationSide.LargestMillimetres` and never either string.
         /// </summary>
         private static string Round(double value)
         {
-            return value.ToString("0.###", CultureInfo.InvariantCulture);
+            return value.ToString(PenetrationTally.ShownSizeFormat, CultureInfo.InvariantCulture);
         }
     }
 }

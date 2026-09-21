@@ -683,6 +683,17 @@ namespace Federator.Addin.Engine
                         return outcome;
                     }
 
+                    // A RESHAPE THAT FAILED AFTER A CHANGE RETURNS TRUE, which is what
+                    // stops the fallback running over the damage. But true also means
+                    // "carry on", so the group went into the clash step, the viewpoints
+                    // and `SaveTheNwfAgain`, which could still WRITE THE NWF while the
+                    // error on the outcome said it had not been saved. Stopping here is
+                    // what makes that sentence true.
+                    if (outcome.HasErrors)
+                    {
+                        return outcome;
+                    }
+
                     // 5-M2. THE CHANGED BRANCH NEVER SET THIS AND THE GROUP WAS JUDGED
                     // FAILED FOR IT, with the sentence "the NWF is not on disk", about a
                     // file that IS on disk and that this run opened. Only the OPENED
@@ -1550,6 +1561,16 @@ namespace Federator.Addin.Engine
             }
 
             outcome.AppendedCount = document.Models.Count;
+
+            // THE GROUP IS REBUILT, AND SAYING SO IS NOT COSMETIC. Without this line
+            // `outcome.Decision` keeps the value `Changed` it was given before the work,
+            // and `GroupJudgement` returns PARTIAL with the reason "the NWF points at a
+            // different set of files, so it was left alone" about a group that was just
+            // brought up to date, while `RunPath` labels it "Skipped (changed on disk)"
+            // and the RESULT block counts it under skipped rather than rebuilt. The
+            // reshape did the work the clear and rebuild does, so it reports the same
+            // outcome the clear and rebuild reports.
+            outcome.Decision = RerunDecision.Rebuilt;
             return true;
         }
 
@@ -1626,10 +1647,16 @@ namespace Federator.Addin.Engine
                 }
                 catch (Exception error)
                 {
+                    // A THROW HERE CAN ONLY HAPPEN AFTER A MODIFICATION, because the
+                    // removals run one after another and the first one that throws has
+                    // others behind it. This said "the file on disk is left exactly as it
+                    // was", which is the sentence the whole damaged document rule exists
+                    // to stop, and the caller then added the correct sentence a moment
+                    // later, so the log carried both, contradicting each other.
                     log.Failure(
-                        "taking the model at " + at + " out of the open NWF",
+                        "taking a model out of the open file",
                         error,
-                        "the file on disk is left exactly as it was");
+                        DamagedDocument.TheDocumentIsDamaged(null));
 
                     return false;
                 }

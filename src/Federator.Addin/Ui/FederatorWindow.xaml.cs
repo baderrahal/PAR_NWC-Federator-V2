@@ -1784,7 +1784,7 @@ namespace Federator.Addin.Ui
                     : "no"));
             log.Line("penetrations     : "
                 + (MarkPenetrations.IsChecked == true
-                    ? "YES, a small service through a wall, floor or roof becomes Reviewed"
+                    ? "YES, a small service through a wall, floor, roof or structural foundation becomes Reviewed"
                     : "no, every clash keeps the status it has"));
             log.Line("clash tolerance  : " + tolerance.Label()
                 + (tolerance.ChosenInTheTool
