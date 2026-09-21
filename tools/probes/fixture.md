@@ -81,3 +81,30 @@ Install the bundle, then drive the window at the fixture's own four folders:
 
 The log lands in the fixture's own NWF folder and nothing outside the temp folder is
 touched.
+
+## the three scale modes, added 2026-09-21
+
+`tools\probes\ViewpointProbe` gained `scale`, `scalemany` and `scaleclash`, because the
+fixtures answer "does this work" in twenty seconds and could not answer "what does this
+cost at two thousand". A fixture has 27 clashes and the group that broke had 2,566.
+
+    scale       writes 400 viewpoints into ONE folder of one copy, reporting the cost
+                every 25, twice, once with the dimming on and once off
+    scalemany   writes 40 into each of several copies, printing what each document holds
+                beside the cost, so the driver can be read off a line
+    scaleclash  THE CONTROL. One open document, 40 written, then TestsClearResults on
+                every test and 40 more, then SavedViewpoints.Clear() and 40 more. One
+                thing changes at a time and the others do not move
+
+**THE CONTROL IS THE POINT OF THE THIRD ONE.** `scalemany` showed the cost tracking the
+clash result count across nine files, from 59 ms at 29 results to 1,872 ms at 568, and
+that correlation is FALSE. `scaleclash` cleared every clash result on the same open
+document and the cost did not move, 1,878 ms to 1,873 ms. Clearing the saved viewpoints
+took it to 6.5 ms. Nine files agreeing with a wrong explanation is what a control is for.
+
+**WHAT THESE CANNOT SHOW, and it is the same shape as everything else here.** They add
+through the COM collection and never touch `document.SavedViewpoints`, so the .NET tree is
+never made to materialise. The real writer reads every viewpoint back through that tree,
+which forces exactly that, and that is why the probe's 400 viewpoint pass stayed flat at
+411 ms while the live run climbed. **The probe proves the DRIVER and understates the
+SIZE.** A number off these modes is a lower bound and never a prediction of a run.

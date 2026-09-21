@@ -471,7 +471,7 @@ viewpoint and the writer has been building them since the viewpoints round on 20
 245. Look for: the number in the folder name is the threshold in use. If you change the threshold and it still reads `Over 150mm`, that is a fault and the folder and the rule have drifted apart
 246. DONE since the viewpoints round on 2026-09-19. It said to wait for the writing half of F52. Run one Mechanical building
 247. GONE, and this is worth knowing rather than just deleting. It said to look for a `SIZE` block per group with three numbers. `Federator.Core.Views.SizeTally` still writes that block and NOTHING IN SRC CALLS IT, so no SIZE block is written on any run. What replaced it is one line inside the `VIEWS` block: `size could not be read : N, every one of them is in its pair folder and none was dropped`. The dead class is raised under the CLAUDE.md rule about a public member nothing in src calls
-248. Look for, and this was rewritten AGAIN by the worksets round because the number changed: `size could not be read : N`. It is EXPECTED TO BE ZERO now, on every group. It used to be large, 59 and 36 and 8 on the run before, because a fitting was thought to carry no size property. 5s found that every one of them did, written as words, `53 mmø` for a conduit and `600 mmx100 mm` per connector for a cable tray fitting, and `ItemSizes` was dropping every string. `Federator.Core.Views.SizeText` reads them now. A number ABOVE zero here is a size shape `SizeText` has not been taught and is worth sending.
+248. Look for, and this was rewritten AGAIN by the worksets round because the number changed: `size could not be read : N`. It is EXPECTED TO BE ZERO now, on every group. It used to be large, 59 and 36 and 8 on the run before, because a fitting was thought to carry no size property. 5s found that every one of them did, written as words, `53 mmï¿½` for a conduit and `600 mmx100 mm` per connector for a cable tray fitting, and `ItemSizes` was dropping every string. `Federator.Core.Views.SizeText` reads them now. A number ABOVE zero here is a size shape `SizeText` has not been taught and is worth sending.
 249. GONE with the number it read. It said to read the names under that line and judge whether they were all fittings. No names are written under it, `ClashViewpointPlan.Lines` writes the count alone, and the count is zero on every group since 5s. Where one ever comes back non zero, the `.tsv` rows are where the names are.
 250. Open the NWF and press any viewpoint under a folder named `Over 150mm`, which sits under a PAIR folder such as `A/ME vs ST/Over 150mm`, and never a folder called `ME over 150mm`, which was the shape before F85 and which step 244 above already corrects.
 251. Look for: large pipes, ducts and trays showing, small ones hidden, and the fittings still there. A fitting missing means the include on unknown rule is not working and that `size could not be read` line is the evidence
@@ -508,7 +508,9 @@ change nothing at all. The second is the run with it on.
 
 269b. Look for, in the RESULT block on EVERY run whatever the boxes say: one line `clashes found  : N across K groups`, with `, J of which found none` on the end where any group found nothing, and then one indented row per group reading the building, the count, and `from N test(s) that found something`. UNLIKE THE PENETRATION AND PRIORITY LINES THIS ONE IS NEVER CONDITIONAL, so a run with no line here at all is a fault. Where no group reported a count it reads `clashes found  : UNKNOWN, no group reported a clash count`, which is not the same as zero
 
-269c. Look for, Q73: the `WORKBOOK CHECK` block's `N test blocks` DISAGREES with the run tail's `WORKBOOK N test blocks`. `WorkbookCheck` finds a block by its `Clash Name` heading row and a test that found nothing no longer has one, so the check can only see the tests that found something. THE WORKBOOK IS RIGHT AND THE CHECK COUNT IS WRONG. Send both numbers
+269c. Look for, Q73 and F98: the `WORKBOOK CHECK` block's block count now AGREES with the run tail's `WORKBOOK N test blocks`, and its CHECK line reads `1 sheet, "<name>", 1830 test blocks of which N found something, M clash rows.` It used to find a block by its `Clash Name` heading row, which an empty block has none of, so on 1A0415 it read 0 blocks against 1830 while the workbook carried all 1830 of them. It finds a block by the test name in column A now, which both shapes carry. If the two numbers still differ, send both. Where every block on a sheet found nothing, look for a line beginning `EVERY BLOCK ON THIS SHEET FOUND NOTHING` and look for the sentence about every column, fill, border, height and width matching to be ABSENT, because there was no clash table to compare and saying it matched would be the check passing on work it never did
+
+269c-b. Look for, F98: the `BLOCKS` line no longer says MUST. Where the counts agree it reads `BLOCKS   1830 in the workbook, one for every test in the file`. Where they do not it names how many tests have no block and says plainly that it does not fail the group, and a `BLOCKS` line in the RESULT block says how many groups of how many counted came up short. It is a finding for you and it fails nothing, which is Q79
 
 269d. Look for, Q74, where the rebuild box is on and the NWF holds a set the picked file no longer names: a block whose first line reads `N set(s) in this NWF are not named by the picked file:` then three indented counts, `N nothing points at, so they are removed`, `N are the working half of a pair, so the unused half goes and this one takes its name`, `N are pointed at with no twin, so nothing is done about them`, then one line per set. Then one `SET      REMOVED <path>, which nothing pointed at` per removal and one `SET      RENAMED "<old>" to "<new>" and removed the unused set that held that name. Its N test side(s) keep working and now ask what the file asks` per pair. The `SETS     <building> put into the document:` line ends with `, N of M set(s) the file no longer names brought up to date`. A set that IS pointed at and has no twin is NOT touched and says `NOTHING IS DONE, because removing it would leave those sides resolving to nothing`. THE LEFTOVER COUNTS ARE IN THE LOG ONLY and never in the window's sets pane
 270. Look for, F72: an `NWF      attempt` line AFTER the clash step, because writing a status is a write and the NWF is saved again on it. SINCE F85 THE VIEWS STEP CAUSES THAT SECOND SAVE TOO, so the line appears on a weekly run with the penetration box off, and its absence is still the fault to report but its presence no longer proves the penetration pass ran. Whether it is the first or the second such line depends on the path this group took, so count them rather than looking for a second: a First run or a Rebuilt group writes one before the clash step as well, and a Weekly run does not, because the opened branch logs `NWF      reused` instead. On a Weekly run the line after the clash step is the ONLY one, and its absence is the fault to report
@@ -865,7 +867,7 @@ Bader may touch.
      They are Bader's to delete
 387. When ready, run once on the real folders with the same boxes: 25 mm, by design on,
      penetrations on, the priority file. Look for, per group with clashes:
-     `VIEWS    read back on N created viewpoint(s)`, `VIEWS    the model each clash item
+     `VIEWS    read back on N of M created viewpoint(s)`, the two numbers being equal today because every one is read back, so a run where they differ is the thing to send, `VIEWS    the model each clash item
      lives in was read for N of N`, and `hidden state put back`, then a `VIEWS` step of a
      few seconds in the timing block.
 
@@ -1023,3 +1025,45 @@ Both folders are yours to delete once you are satisfied. Nothing else of yours w
      scale, the weekly path, a CHANGED group, alignment across many models, the two non
      buildings, the single discipline groups, and anything needing the real matrix
      against real content
+
+400. THE VIEWPOINT CEILING, F99. On the Outputs step, open `More, rarely changed`. Under
+     the photo settings look for a row reading `Viewpoints`, then
+     `At most per group, 0 for no cap`, then a box. IT MUST START AT 0, which is off, so a
+     run that touches nothing behaves exactly as it did. It is a box and NOT a tick box,
+     so step 212's count of four visible tick boxes is unchanged
+
+401. Type 300 into that box and run C04. Look for, in RUN SETTINGS,
+     `viewpoint ceiling: 300 per group at most, so a group with more clashes than that
+     leaves the rest without one`. With the box at 0 the same line reads
+     `none, every clash in scope gets a viewpoint`. A SETTING THAT SHAPES A RUN AND IS
+     MISSING FROM THIS BLOCK IS THE FAULT THIS BLOCK EXISTS TO STOP, and the ceiling was
+     missing from it on the first run that used it
+
+402. Look for, in the VIEWS plan block of every group while a ceiling is set, one line
+     reading `over the ceiling of 300 viewpoint(s) for this group`. It ends
+     `. THE CEILING WAS REACHED and those clashes have no viewpoint` where it bit and
+     `, which was not reached` where it did not. IT IS WRITTEN EITHER WAY ON PURPOSE,
+     because a block silent about a ceiling reads as a run that had none
+
+403. Look for, F97, in the SET DRIFT block of a group whose sets have drifted: FOUR lines
+     per set and not three. After `it asks` and `file asks` comes
+     `why      : they differ only in the CASE of a value, the set asks "ME-DUCTWORK" and
+     the file asks "ME-Ductwork"`. Two sentences differing in one letter's case are what
+     three people have already had to compare character by character
+
+404. Look for, F97, THE THING THAT PROVES THE REBUILD NOW STICKS. On a C02 run, `1000BS`
+     and `1A02MS` are the two groups that used to report `NWF      checked` with the same
+     byte count they opened with, 13,091 and 81,957. They must now report
+     `NWF      written` with a DIFFERENT count. If they still say `checked`, the rebuild
+     is still being thrown away and the same fourteen sets will drift again next week
+
+405. Run all three checks and not two. `sh tools/checks/check-locals.sh src`, then
+     `sh tools/checks/check-imports.sh src`, then `sh tools/checks/check-facts.sh`. The
+     third is F96 and it reads 13 lines across 5 facts. The pre-commit hook still runs
+     only the first two and the test set, which is unchanged and correct
+
+406. Prove the third one REFUSES, which is the half that matters:
+     `sh tools/checks/check-facts.sh tools/checks/broken/facts-broken.tsv`. It must name
+     five faults by file and line and exit 1. A check over prose that only ever passes
+     cannot be told apart from a check that reads nothing, and three of its own first
+     five facts did exactly that before it counted what it examined

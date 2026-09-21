@@ -4643,3 +4643,187 @@ refused the ignore case flag there: `AR-EXTERIOR` against `AR-INTERIOR` and `ST-
 against `ST-SUP` are two pairs of real worksets one and two letters apart. The two cases
 look alike and the answers are opposite, which is exactly why this is written down now
 rather than re-argued later.
+
+## 6a. WHERE THE VIEWPOINT TIME ACTUALLY GOES, MEASURED 2026-09-21
+
+The close round said the viewpoints step does not scale and named "over forty minutes"
+and "about 0.54 seconds each". Neither number is in any log, and 2,566 times 0.54 is 23
+minutes, so the two do not even agree with each other. The step has carried its own
+breakdown since the dimming round and nobody had read it.
+
+**THE STEP SAYS WHERE ITS SECONDS WENT AND IT ALWAYS HAS.** On `1A04EP`, off the live log
+of the run of 2026-09-21 08:51:05, which is the run the close round stopped:
+
+```
+VIEWS  the step's seconds went: 0.487s looking whether each was already there,
+       3.143s dimming, 1953.136s recording, 110.519s reading back
+STEP   VIEWS  finished 2188.961s  926 created, 0 already there, 1408 failed.
+```
+
+So the step took **2,188.961s, which is 36 minutes 29 seconds and not over forty**. The
+GROUP took 2,560.547s, which is over forty, and that is a different number. The read backs
+are **110.519s, five per cent**, and they are what caught three separate failures, so they
+are not cut. The dimming is 3.143s, which is **0.14 per cent**, so the dimming is not the
+cost either. **The recording is 1,953.136s, eighty nine per cent.**
+
+**WHAT THE PER VIEWPOINT NUMBER ACTUALLY IS.** 2188.961 over 2,566 clashes is 0.853s, over
+2,334 planned is 0.938s, over 926 created is 2.364s. **No denominator gives 0.54.**
+
+**THE SAME READING ACROSS C02, off the committed logs.** The same 430 viewpoints of
+`1A02MM`, run by run, against the commits that landed between them:
+
+```
+09-19 22:52    2.178s     0.005s each   camera only
+09-20 08:46    5.534s     0.013s each   COM write with ApplyHideAttribs and the read backs
+09-20 09:23    7.554s     0.018s each   same
+09-20 10:41  475.940s     1.107s each   the dimming landed at 10:39
+09-20 14:03  263.278s     0.612s each   dimming scoped, and the two colours
+09-20 16:20   75.963s     for 9 created, which is 5.5s each
+```
+
+The last line is the one that matters. Nine viewpoints cost more each than four hundred
+and thirty had.
+
+**WHAT IT IS, MEASURED WITH A CONTROL.** `tools\probes\ViewpointProbe` gained three modes,
+`scale`, `scalemany` and `scaleclash`. Against nine copies of the C02 NWFs, the cost per
+viewpoint tracked the clash results the document held, from 59 ms at 29 results to 1,872
+ms at 568. **That correlation is false and the control proved it.** On ONE open copy of
+`1A02MM`, same models, same 2,606 items, same 1,830 tests, one thing changed at a time:
+
+```
+as loaded, 568 results and its viewpoints     40 written in 75,123 ms   1,878 ms each
+TestsClearResults on all 62 tests, 0 results  40 written in 74,938 ms   1,873 ms each
+SavedViewpoints.Clear(), 0 viewpoints         40 written in    259 ms     6.5 ms each
+```
+
+**Clearing every clash result changed nothing. Clearing the saved viewpoints collapsed it
+290 fold.** The cost of writing one viewpoint is a function of HOW MANY THE DOCUMENT
+ALREADY HOLDS, and the result count was only standing proxy for it, because a past run
+wrote one viewpoint per clash.
+
+**WITHIN A RUN THE CLIMB IS MILD.** Into the emptied document, 400 more in buckets of 25:
+7.04 ms each at 25 written rising to 14.0 ms at 400. So a document that ARRIVES holding
+568 costs 1,878 ms a write while one that grows to 400 in this session costs 14, which is
+a hundred and thirty fold difference for a similar number. It is the viewpoints read off
+the NWF that cost, not the ones a run adds.
+
+**WHAT THE PROBE CANNOT SHOW, and it understates the live cost by a lot.** It adds through
+the COM collection and never touches `document.SavedViewpoints`, so the .NET tree is never
+made to materialise. The real writer reads every viewpoint back through that tree, which
+forces exactly that. The probe's own 400 viewpoint pass on a file holding 135 stayed flat
+at 411 ms a write while the live run climbed, and that gap is the read back path, not the
+write. So the probe proves the DRIVER and not the SIZE.
+
+**WHAT NONE OF IT IS.** Not the read backs, five per cent. Not the dimming, 0.14 per cent.
+Not the COM folder route, which `ViewpointSettings.DefaultRecordsThroughTheFolder` has had
+on by default since the viewpoints round, so 5p's cheap route is already the one in use.
+Not the clash results, refuted by the control above. The fix is **Q80** and it is raised
+rather than guessed at, because the brief's three candidates were all wrong and a fourth
+guess is worth nothing.
+
+**AND THE GROUP DID NOT ONLY RUN LONG.** `1A04EP` ended with models 5 to 0, sets 61 to 0,
+tests 666 to 0 and results 2,566 to 0 during VIEWS, all four refused by `CensusRule`. Its
+last 1,408 viewpoints failed with "it was added without its hidden state", which is the
+consequence and not the cause, because there was no longer a model to hide. The NWF save
+then threw `InvalidOperationException` saying an empty document cannot be saved. That is
+why `ViewpointSettings.MaxPerGroup` exists and why it is not only about minutes.
+
+## 6b. WHY TWENTY EIGHT SETS DRIFT EVERY RUN, MEASURED 2026-09-21
+
+The drift round rebuilt 147, then 28. The close round rebuilt 28 again on the same NWFs
+with the same picked file, and its entry put that under "nothing else moved, which is the
+point". Twenty eight drifting again after being rebuilt is equally consistent with
+rebuilds that do not stick, and nothing explained why it settles at 28 rather than zero.
+
+**THE 28 IS 14 SETS IN 2 GROUPS.** Off the C02 run of 2026-09-21 09:47:40, there are
+exactly 28 `SET DRIFT` lines and 14 distinct set names, each appearing twice. Nine under
+`Mechanical/Mechanical-HVAC` and five under `Mechanical/Mechanical-Water Supply`.
+
+**EVERY ONE OF THE 28 IS A CASE DIFFERENCE IN A WORKSET VALUE.** Four values, symmetric:
+
+```
+the set asks          the picked file asks
+ME-DUCTWORK           ME-Ductwork
+ME-PIPING             ME-Piping
+ME-EQUIPMENT          ME-Equipment
+PL-Domestic Water     PL-Domestic water
+```
+
+`ReadCondition.Key()` compares Ordinal on purpose, which 5w already says is right: a
+workset name differing only in case is a different question.
+
+**THE REBUILD IS CORRECT AND IS THROWN AWAY.** The two groups carrying the drift are
+`1000BS` and `1A02MS`, and they are exactly the two whose NWF is never written:
+
+```
+1000BS   reused 13,091 bytes      checked 13,091 bytes after publishing the NWD
+1A02MS   reused 81,957 bytes      checked 81,957 bytes after publishing the NWD
+1A02BS   reused 1,296,671 bytes   WRITTEN 1,296,688 bytes
+1A02WN   reused   913,393 bytes   WRITTEN   913,327 bytes
+```
+
+The eight groups that write their NWF for some other reason keep the rebuild and never
+drift twice. The two that do not, drift again on every run, forever.
+
+**THE CAUSE, in one line of code.** `FederationEngine.BuildTheSetsFromTheFile` ended
+`return sets.PutAnythingIn || sets.ActedOnLeftovers > 0`, and `PutAnythingIn` is
+`CreatedCount > 0`. A set already at its path is rebuilt IN PLACE, which creates nothing,
+so a group whose only change was a rebuild reported that it had changed nothing, the
+`if (clashPutSomethingIn || viewsPutSomethingIn)` guard did not fire, and
+`SaveTheNwfAgain` never ran. `SetBuildOutcome.RebuiltCount` existed the whole time and
+nothing read it.
+
+So 28 is not stability. It is the same fourteen fixes being made and discarded every week.
+The rule is now `SetBuildOutcome.AsksForTheNwfSave` and the drift line says WHY it drifted.
+
+## 6c. WHAT THE WORKBOOK CHECK ACTUALLY SEES, MEASURED 2026-09-21
+
+On `1A0415` the run logged, on this round's own headline change:
+
+```
+CHECK   1 sheet, 0 test blocks, 0 clash rows.
+BLOCKS  0 in the workbook against 1830 tests in the file.
+        THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST
+```
+
+and the group reported DONE.
+
+**WHAT IT COUNTED.** `WorkbookCheck.ReadSheet` found a block by one cell test, the literal
+string `Clash Name` in column 3, which is the per clash headings row. Since Q73 a test
+that found nothing is ONE ROW written by `WorkbookWriter.WriteEmptyTestRow`, which puts
+the TOLERANCE in that same column 3 and writes no headings row at all, because
+`ColumnTestHeader` and `ColumnClashName` are both 3. So every empty block was invisible.
+On a group where nothing clashed, every block is empty and the count is 0 of 1,830.
+
+**THE WORKBOOK WAS RIGHT AND THE COUNT WAS WRONG, PROVED ON HIS OWN FILES.** The fixed
+check, run against the two workbooks the stopped C04 run left on disk:
+
+```
+1A0415   Blocks 1830   full 0     clash rows 0
+1A04EP   Blocks 1830   full 109   clash rows 2566
+```
+
+2,566 is exactly that group's clash count. Both files carried all 1,830 blocks all along.
+
+**AND THE ZERO WAS SWITCHING OFF EVERY OTHER CHECK.** `CheckColumnOrder`,
+`CheckPriorityColumn`, `CheckCells`, `CheckWidths` and `CheckTitle` were all gated on
+`Blocks == 1`, so with zero blocks none of them ran, and the block still printed "Every
+column, value shape, fill, border, row height and column width matches the client's
+report". Nothing compared and everything matching are opposite answers and it printed both
+at once. They run on the first FULL block now, and a sheet with no full block says so.
+
+**WHERE THE 1830 CAME FROM: the tool, not the hand written counter.** It is
+`ClashTestPlan.TestsInFile`, which is `exchange.Tests.Count`, the `clashtest` element count
+of the picked XML, carried through `ClashRunOutcome.TestsInFile` into
+`FederationEngine.CheckTheWorkbook`. `count-blocks.ps1` in the round-close temp folder is
+an independent hand cross check and writes nothing into the log.
+
+**THE SAME BLIND SPOT IS IN THE PAGE CHECK.** `PageCheck.Judge()` returns at its first line
+when `Rows == 0`, so all ten of its checks are skipped and `Lines()` prints that there is
+nothing wrong with it. On `1A0415` that sentence meant only that nothing was examined, over
+a 2,683,307 byte page. The GAP block is the same shape and is correct by design, because a
+property nothing carried is not a gap, which is Q76's whole subject.
+
+**NEITHER CAN FAIL A GROUP AND THAT IS DELIBERATE.** `GroupFacts` carries no report check
+result of any kind, so `GroupJudgement` reached DONE correctly given its inputs. The fault
+was a line that said MUST while nothing enforced it. That is Q79.

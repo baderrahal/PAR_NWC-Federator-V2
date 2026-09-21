@@ -1490,6 +1490,18 @@ namespace Federator.Addin.Ui
         /// What the run will do about reports. The folder is worked out here so the window
         /// can say where the workbooks are going before Run is pressed.
         /// </summary>
+        /// <summary>
+        /// The ceiling on how many viewpoints one group may write, off the box, or zero
+        /// where the box is empty or holds something nobody can read. It is read in ONE
+        /// place because the run reads it and the RUN SETTINGS block says it, and a
+        /// settings block that reads the box separately is a settings block that can
+        /// disagree with the run it is describing.
+        /// </summary>
+        private int ViewpointsPerGroupWanted()
+        {
+            return Number(ViewpointCeilingBox.Text, 0);
+        }
+
         private ReportOptions ReportsWanted()
         {
             ReportOptions options = new ReportOptions();
@@ -1513,7 +1525,7 @@ namespace Federator.Addin.Ui
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
-            options.ViewpointsPerGroup = Number(ViewpointCeilingBox.Text, 0);
+            options.ViewpointsPerGroup = ViewpointsPerGroupWanted();
             options.Names = settings;
             return options;
         }
@@ -1804,6 +1816,17 @@ namespace Federator.Addin.Ui
                     ? "dated, so every week is kept"
                     : "overwrites, so only the latest week exists"));
             log.Line("republish NWD    : yes, fixed");
+
+            // THE CEILING BELONGS HERE AND IT WAS NOT HERE. The C04 run of 2026-09-21
+            // 14:39 was made with it at 300, which left 2,034 clashes of one group with
+            // no viewpoint, and this block listed eighteen settings and not that one. A
+            // number that shapes a run and is missing from the block saying what shaped
+            // the run is exactly what this block exists to stop.
+            log.Line("viewpoint ceiling: " + (ViewpointsPerGroupWanted() > 0
+                ? ViewpointsPerGroupWanted()
+                    + " per group at most, so a group with more clashes than that leaves the rest without one"
+                : "none, every clash in scope gets a viewpoint"));
+
             log.Line("model units      : " + ChosenUnits() + ", which is what the models are set to");
             log.Line("report units     : " + Federator.Core.Report.ReportUnits.Name
                 + ", always, converted before anything is written");
