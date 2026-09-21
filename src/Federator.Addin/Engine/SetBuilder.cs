@@ -266,11 +266,11 @@ namespace Federator.Addin.Engine
 
             try
             {
-                DocumentClashTests tests = document.GetClash().TestsData;
+                Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
 
                 for (int t = 0; t < tests.Tests.Count; t++)
                 {
-                    ClashTest test = tests.Tests[t] as ClashTest;
+                    Autodesk.Navisworks.Api.Clash.ClashTest test = tests.Tests[t] as Autodesk.Navisworks.Api.Clash.ClashTest;
 
                     if (test == null)
                     {
@@ -294,7 +294,8 @@ namespace Federator.Addin.Engine
             return sides;
         }
 
-        private static void CountSide(Document document, ClashSelection side, Dictionary<string, int> sides)
+        private static void CountSide(
+            Document document, Autodesk.Navisworks.Api.Clash.ClashSelection side, Dictionary<string, int> sides)
         {
             try
             {
