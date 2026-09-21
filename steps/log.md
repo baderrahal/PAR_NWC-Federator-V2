@@ -1,6 +1,267 @@
 # log
 
 Newest entry at the top.
+## 2026-09-21 The close round, DONE, the record
+
+Core tests 1666 before the round and 1746 after, 0 failed and 0 skipped in both. Build 0
+errors and 0 warnings after every change. Both `tools\checks` pass. Tree clean. Bader
+answers Q20, Q55, Q56, Q73, Q74 and Q75, and Q76, Q77 and Q78 are new.
+
+### THE NUMBER THE ROUND EXISTED FOR, AND IT SAYS THE CASE CORRECTION WORKS
+
+C02 could never answer this. Its sets were already in the NWF, built from the ORIGINAL
+matrix asking `ME-DUCTWORK`, and F28 leaves a set already at its path exactly as it is, so
+the corrected value never reached them. C04 holds no NWF at all, so every set there is
+built FRESH from the corrected file, and that is the only way the question could be put.
+
+On `1A04EP`, the mechanical sets built from the corrected matrix:
+
+| set | items it found |
+| --- | --- |
+| `BLD-ME-Ducts&Duct Fittings` | **277** |
+| `BLD-ME-Air Terminals` | **45** |
+| `BLD-ME-Mechanical Equipment` | **13** |
+| `BLD-ME-Duct Accessory` | **12** |
+
+Those same four find **ZERO** in every C02 group and have done since the first run.
+Across 1A04EP, **37 of its 61 sets found items and 24 found nothing**, against **38
+finding nothing** in C02's 1A02MM. THE CORRECTION WORKS, and the measurement is the
+difference between a set built from the corrected file and a set that predates it.
+
+### THE C04 RUN WAS STOPPED ON PURPOSE AFTER TWO GROUPS, AND WHY
+
+`1A04EP` found **2,566 clashes** and then spent over forty minutes writing one viewpoint
+per clash, about **0.54 seconds each against 0.03 on the fixture**, with the working set
+climbing from 1,047 MB to 1,477 MB the whole time. One group took longer than the entire
+drift round run over all ten C02 groups. Twelve groups at that rate is several hours.
+
+THE VIEWPOINTS STEP DOES NOT SCALE AND THAT IS THE FINDING. It is written per clash
+through the COM API with three read backs each, so its cost is clashes times models, and
+C04 clashes far harder than C02. Waiting hours to restate that would have cost the round
+its other deliverable, so C04 was stopped after two complete groups and C02 was run.
+
+WHAT C04 STILL PROVED IN TWO GROUPS: the case correction above, the non building case,
+PART 3 at full scale, the alignment block naming a real fault, and 4d suppressing a real
+false positive. WHAT IT DID NOT: a full twelve group run, the run minutes against 45, the
+total clash count, the penetration and by design totals, and the other ten groups' sets.
+Those carry forward.
+
+- **1A0415**, the first non building. 3 tests created of 1,830, 3 run, 1,827 skipped, 0
+  clashes, DONE in 8.198s. Its workbook is **1,830 blocks in 1,834 rows**, which is the
+  theoretical minimum and was 14,643 rows under the old shape
+- **1A04EP**. 666 tests created of 1,830, 666 run, 557 passed, 1,164 skipped, 2,566
+  clashes. Its ALIGNMENT block reads `EL ... DIFFERENT dx -0.03 mm dy -0.04 mm dz -60 mm`
+  and `ask the EL originator to re-export on the project shared coordinates`, which is a
+  real coordination fault found on a building that had never been on this machine
+- **the workset block**, on real data: `no two workset names in this group are close
+  enough to be one word typed twice. 2 more pair(s) are close...`. 4d works: `FP-PIPING`
+  against `ME-PIPING` is NOT named, and the decided pairs are counted rather than hidden
+
+### PART 7b, C02, AND THE RENAME WORKED ON ALL SEVEN GROUPS
+
+The freeze gate passed first: eleven NWFs, every one byte for byte where the drift round
+left them, and the backup read back 19 files with **0 byte size mismatches**.
+
+**SEVEN RENAMES ACROSS SEVEN GROUPS**, which is exactly the seven that held 62 sets:
+
+    SET  1 set(s) in this NWF are not named by the picked file:
+    SET     1 are the working half of a pair, so the unused half goes and this one takes its name
+    SET  RENAMED "BLD-DRPipe Accessories" to "BLD-DR-Pipe Accessories" and removed the
+         unused set that held that name. Its 60 test side(s) keep working and now ask
+         what the file asks
+
+ZERO refusals, zero failed removals, zero sets left with pointers and no twin.
+
+**AND NOTHING ELSE MOVED, WHICH IS THE POINT.** Against the run of 22:28 on 2026-09-20:
+
+| | drift round | this run |
+| --- | --- | --- |
+| total clashes | 1,225 | **1,225** |
+| by priority | A 842, B 190, C 193 | **identical** |
+| groups done, failed | 8, 2 | **8, 2** |
+| sets finding nothing per group | 54 59 46 38 55 43 47 40 42 37 | **identical** |
+| tests with an empty side | 1809 1829 1725 1577 1815 1677 1739 1620 1659 1554 | **identical** |
+| sets drifted and rebuilt | 28 | **28** |
+| run time | 1110.688s | **1041.789s**, inside 45 |
+
+Seven sets renamed, 420 test sides kept working, and not one clash count moved. A rename
+changes what a set is CALLED and not what it FINDS, so identical numbers are the proof
+that the change was surgical.
+
+**THE WORKBOOK, Q73 AT SCALE.** 1A02MM went from **15,182 rows to 2,775**, with the block
+count still exactly **1,830** and all 542 clash rows present. 1,773 empty tests now cost
+one row each where they cost 14,184.
+
+### PART 3's PREDICTION AGAINST ITS MEASUREMENT
+
+Predicted before the change and measured after it, which is worth more than a saving
+claimed afterwards. On the fixture: **1,916 predicted, 1,917 measured**, one row out, block
+count unchanged at 1,830.
+
+THIS IS A DEPARTURE FROM THE CLIENT'S OWN FORMAT and the only one in this tool. Their
+export writes the full eight row block whatever the test found. Ours writes one row for a
+test that found nothing, carrying the test name, the tolerance, the zero counts, the type
+and the status, so the row is still evidence the pair was checked. That sentence is for
+NMDC.
+
+### THE FIXTURES, WHICH ARE THE RUNG THIS TOOL HAD NOTHING ON
+
+A probe measures ONE API call. A live run writes into a project folder and takes 15 to 25
+minutes. Nothing sat between them, which is why the drift round needed four live runs in
+one night to land four fixes.
+
+Two fixtures now do, at **19.8 and 17.8 seconds**, under
+`C:\Users\bader\AppData\Local\Temp\claude\round-close`. `tools\probes\fixture.md` records
+both, why the penetration one is AR and ME rather than ST, and what neither can show.
+
+**WHAT THEY COST: about an hour to build and choose. WHAT THEY SAVED, in runs:**
+
+- they found that **Navisworks will not remove the last model from a document**, in nine
+  seconds, which would have been a live run
+- they found that **the clear and rebuild does not carry viewpoints**, 52 dropping to 22,
+  in nine seconds. The count out and count back rule caught it and refused to save, so
+  nothing was lost. That is Q77
+- they proved PART 2's rename on real data before it went near his folders
+- they measured PART 3's saving against its prediction
+
+Four live runs saved, at twenty minutes each, on their first day.
+
+### WHAT WAS FOUND BY READING RATHER THAN RUNNING
+
+**SIX CODE FAULTS, from reading `steps\03_bader_next.md` against the code.** The first
+would have made this round's own C02 report meaningless.
+
+1. **The reshape never recorded that it had rebuilt the group.** `outcome.Decision` kept
+   the value it was given BEFORE the work, so every reshaped group read PARTIAL with the
+   reason "the NWF points at a different set of files, so it was left alone", about a
+   group just brought up to date, and the RESULT block counted it under SKIPPED
+2. **"the file on disk is left exactly as it was" was still written after a
+   modification**, inside `RemoveThem`'s catch, where a throw can only happen after one.
+   The caller added the correct sentence a moment later, so the log carried both
+3. **The worst: a reshape that failed after a change returns true to stop the fallback,
+   and true also means carry on.** The group went into the clash step, the viewpoints and
+   `SaveTheNwfAgain`, which COULD STILL WRITE THE NWF while the error said it had not been
+   saved. It stops on `HasErrors` now
+4. **The confirm dialog told him a CHANGED group is "cleared and rebuilt"**, on the one
+   screen he can still cancel from
+5. The RUN SETTINGS penetration line omitted foundations, missed when Q63 widened the list
+6. **The clash comment saved INTO THE NWF carried the unrounded size**, so a pipe read
+   `21mm` in the log and `20.997mm` in the comment, and the comment is the half that
+   travels with the file
+
+**PART 5's THREE DEFECTS, two of which fire.** The double count silently deleted a model
+and reported success: the engine read `comparison.Removed` and added `move.From` on top,
+so a moved file went in twice, indexes shift up by one behind a removal, and the second
+call took out the model that had shifted into that slot. The model count is counted out
+and counted back now, which is the arithmetic that makes the check able to fail. The
+chartered defect HAS NEVER FIRED on his files, proved: one run ever rebuilt a group,
+`run-20260919-144319`, and the reshape was added the next day.
+
+**THE RESTATED FACTS FINDING.** One list, four copies, three drifts, and the tested copy
+is the only one that never went wrong. The solid list drifted into the tick box help line,
+`docs\workflow.md` and `tools\probes\fixture.md`, and a FOURTH hand typed copy sits in the
+probe that nobody had noticed. Five more stale restatements were corrected in `src`, one
+of them the doc comment on the class that OWNS the list, fourteen lines above it. THE
+CHECK IS NOT BUILT THIS ROUND. It is F96, the first item of the next, specced with all
+four drifted facts named so it is a build and not a rediscovery.
+
+### THE `El` ERROR, STATED AS PLAINLY AS ANY FINDING
+
+This round reported, with confidence and twice, that
+`1104-PAR-1A04WO-ZZZ-El-MOD-000001.nwc` carried a lowercase L and planned a case blind
+compare on it. **THE FILE IS `EL`.** `od -c` reads `E L`, a case sensitive count gives 7
+for `-EL-` and 0 for `-El-`, and the file's modification time had not moved.
+
+**THE VERIFY PASS CAUGHT IT BY LISTING THE LIVE FOLDER ITSELF** rather than trusting the
+survey. That is the one job it existed to do and it earned its cost on the first gate it
+was pointed at.
+
+THE LOWERCASE `El` IS REAL, one level away: the REVIT SOURCE name in Autodesk Docs, in
+`steps\logs\run-20260919-211323.log`, on the C02 twin of that building. It reaches nothing
+this tool compares, because the source rules compare BUILDING CODES only. **Bader fixed it
+at source on 2026-09-21**, so it is FOUND on 2026-09-19, REPORTED on 2026-09-21 and FIXED
+the same day, and nothing was built for it.
+
+### WHAT IS UNTESTED, said rather than left to be discovered
+
+- **Q67's two paths have STILL never fired and C04 was the chance.** All 46 C04 models
+  carry `revit_ProjectLocation` and all 46 are at 100 per cent element id, so the NO
+  SHARED COORDINATE path and the MISSING ELEMENT ID path met no real file again. C04 HAS
+  NOW BEEN TRIED and did not show them. The INTERNAL ORIGIN path does fire, on 1A04WL
+- **Ten of C04's twelve groups never ran.** Their sets, clashes, viewpoints and workbooks
+  are unmeasured, and so are the run minutes against 45 for a full C04 run
+- **The reshape's happy path still has not run on a real CHANGED group.** It was forced on
+  a copy and DECLINED, correctly, because every model would have had to come out. The
+  three failure paths are proved and the success path is not
+- **`RebuildFromScan` cannot carry viewpoints**, so any group with tool made viewpoints
+  fails on the fallback. Caught, refused, nothing lost, and open as Q77
+- **The penetration and by design rules moved 0 on C02**, because earlier runs already
+  moved them and they sit at Reviewed, which `StatusesThisToolMayMoveFrom` refuses to
+  touch. Read the BUCKETS and never the total: a zero with reasons spread under it is a
+  measurement and a zero with everything in one bucket is 5r's signature
+
+### THE WL FINDING, WHICH BADER CAN SEND AS IT STANDS
+
+**Two structural models are exported on Revit's internal origin, not on a shared site.**
+
+    C04, building 1A04WL:  1104-PAR-1A04WL-ZZZ-ST-MOD-000004.nwc
+                           1104-PAR-1A04WL-ZZZ-ST-MOD-000005.nwc
+    C02, building 1A02WL:  1104-PAR-1A02WL-ZZZ-ST-MOD-000004.nwc
+                           1104-PAR-1A02WL-ZZZ-ST-MOD-000005.nwc
+
+**THE SAME TWO FILE NUMBERS IN THE WL BUILDING OF BOTH COMMUNITIES.** C02's pair failed
+that group in the drift round on 2026-09-20 and C04's pair was read on 2026-09-21. One
+structural modeller, the same mistake twice. A model on the internal origin is in a
+different coordinate system from the rest of its group, so every clash reported against it
+is either a clash that is not there or a miss that is.
+
+### A THING TO WATCH ON THE NEXT RUN, not work for this one
+
+When the renamed Revit model is republished, check whether the publish ADDS an NWC beside
+the old one rather than replacing it. Two models of one discipline in one group read as a
+file added, which sends that group down the Rebuilt path, which is the path PART 5 has
+just been fixing.
+
+### WHAT WAS STARTED AND WHAT WAS LEFT
+
+Rule 2, which the drift round did not carry.
+
+**Programs started**: Navisworks Manage 2025, eight times, through `Roamer.exe` started
+normally and driven by UI Automation. The automation host `NavisworksApplication` twice
+for the probe passes.
+
+**Processes stopped**: Navisworks was closed normally seven times. **ONCE IT WAS FORCE
+STOPPED**, ending the C04 run, and that left a `Navisworks Manage 2025 Error Report`
+dialog which blocked the next launch until it and a `senddmp` process were also stopped.
+Both are named because a force stop is not a clean close.
+
+**Files written outside the repo**, all under
+`C:\Users\bader\AppData\Local\Temp\claude\round-close` except where said:
+
+    \fixture\             three C04 NWC copies, 308 KB, plus its NWF, NWD and Report output
+    \fixture-pen\         two C04 NWC copies, 988 KB, plus its output
+    \fixture-sets\        four C02 NWC copies and one NWF copy, plus its output
+    \probe\               eleven C02 NWF copies and the probe results
+    \c04-partial-run-20260921-085105.log   the stopped C04 run's log, 527,627 bytes
+    \*.ps1                the drivers, the block counter, the decode helper
+    \survey-*.txt \d-*.txt \j*.txt          the agent reports
+    \wsc-from-agent.txt   a scratch file an agent wrote into the repo root, moved out
+
+**Inside his project folders**, which only PART 7 may write:
+
+    C04\C04-backup-2026-09-21-close\   46 files, 150,272,153 bytes, read back 0 mismatches
+    C04\NWF, NWD, Clash Report         two groups' outputs from the stopped run
+    C02\C02-backup-2026-09-21-close\   19 files, 51,000,592 bytes, read back 0 mismatches
+    C02\NWF, NWD, Clash Report         the full run's outputs
+
+**Left running**: nothing. Navisworks is closed and the check ran and said so.
+
+### What comes next
+
+F96, the restated facts check, is the first item of the next round and is specced. Q76,
+Q77 and Q78 are open. F18 is still the only other open item and its blocker is a FILE and
+not a decision: `samples\client-report` holds the 1A02WN and 1A04WN exports, not 1A04WE.
+
 ## 2026-09-21 The close round, THE PLAN REVISED A THIRD TIME, written before the next edit
 
 Fourth brief, round still in flight, nothing already done is redone. This says what changes
