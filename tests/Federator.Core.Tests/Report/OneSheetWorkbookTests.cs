@@ -106,6 +106,30 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>The row each test block's column headings sit on, in order.</summary>
+        /// <summary>
+        /// THE ROW EACH BLOCK STARTS ON, whatever shape the block is. Since Q73 a test
+        /// that found nothing is ONE ROW with no column headings under it, so finding
+        /// blocks by their headings row finds only the ones that found something. The
+        /// test NAME in column A is what every block carries either way.
+        /// </summary>
+        private static IList<int> BlockRows(IXLWorksheet sheet)
+        {
+            List<int> rows = new List<int>();
+            int last = sheet.LastRowUsed() == null ? 0 : sheet.LastRowUsed().RowNumber();
+
+            for (int row = 2; row <= last; row++)
+            {
+                string inA = sheet.Cell(row, 1).GetString();
+
+                if (inA.Length > 0 && inA != "Image")
+                {
+                    rows.Add(row);
+                }
+            }
+
+            return rows;
+        }
+
         private static IList<int> HeaderRows(IXLWorksheet sheet)
         {
             List<int> rows = new List<int>();
@@ -165,8 +189,8 @@ namespace Federator.Core.Tests
             {
                 IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
 
-                Assert.That(HeaderRows(sheet).Count, Is.EqualTo(3),
-                    "one block per test, including the one that found nothing");
+                Assert.That(BlockRows(sheet).Count, Is.EqualTo(3),
+                    "one block per test, including the one that found nothing, which is one row since Q73");
             }
         }
 
@@ -318,9 +342,9 @@ namespace Federator.Core.Tests
                 IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
                 List<string> names = new List<string>();
 
-                foreach (int header in HeaderRows(sheet))
+                foreach (int block in BlockRows(sheet))
                 {
-                    names.Add(sheet.Cell(header - 4, 1).GetString());
+                    names.Add(sheet.Cell(block, 1).GetString());
                 }
 
                 Assert.That(names, Is.EqualTo(new[]
@@ -538,6 +562,93 @@ namespace Federator.Core.Tests
                 Assert.That(workbook.Worksheets.Count, Is.EqualTo(1));
                 Assert.That(workbook.Worksheets.Worksheet(1).Cell(1, 4).GetString(),
                     Is.EqualTo("Clash Report"));
+            }
+        }
+
+        // ---------- Q73, the empty block becomes one row ----------
+
+        /// <summary>
+        /// A TEST THAT FOUND NOTHING IS ONE ROW CARRYING THE SAME FIVE FACTS. Not a
+        /// deleted block, because the client's report is the whole matrix and a missing
+        /// test reads as a test nobody ran. Not eight rows either, because 93 per cent of
+        /// his 1A02MM workbook was headings for nothing.
+        /// </summary>
+        [Test]
+        public void AnEmptyTestIsOneRowCarryingTheFiveFacts()
+        {
+            ClashReport report = Report();
+            AddTest(report, "found nothing", 0);
+
+            using (XLWorkbook workbook = new XLWorkbook(Write(report)))
+            {
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
+                IList<int> blocks = BlockRows(sheet);
+
+                Assert.That(blocks.Count, Is.EqualTo(1));
+
+                int row = blocks[0];
+                int column = WorkbookWriter.ColumnTestHeader;
+
+                Assert.That(sheet.Cell(row, 1).GetString(), Is.EqualTo("found nothing"));
+                Assert.That(sheet.Cell(row, column).GetString(), Is.EqualTo("0.025m"), "the tolerance");
+                Assert.That(sheet.Cell(row, column + 1).GetString(), Is.EqualTo("0"), "the raw clash count");
+                Assert.That(sheet.Cell(row, column + 7).GetString(), Is.EqualTo("Hard (Conservative)"), "the type");
+                Assert.That(sheet.Cell(row, column + 8).GetString(), Is.EqualTo("OK"), "the status");
+
+                // AND NOTHING UNDER IT. The next row is the next block or the end.
+                Assert.That(sheet.Cell(row + 1, WorkbookWriter.ColumnClashName).GetString(),
+                    Is.Not.EqualTo("Clash Name"), "an empty test has no column headings under it");
+            }
+        }
+
+        /// <summary>
+        /// A TEST THAT FOUND SOMETHING IS UNTOUCHED. Its block is the client's measured
+        /// eight-plus-clashes shape and this change must not move a single row of it.
+        /// </summary>
+        [Test]
+        public void ATestWithClashesKeepsItsBlockExactlyAsItWas()
+        {
+            ClashReport report = Report();
+            AddTest(report, "found three", 3);
+
+            using (XLWorkbook workbook = new XLWorkbook(Write(report)))
+            {
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
+                int start = BlockRows(sheet)[0];
+
+                Assert.That(start, Is.EqualTo(4), "their first block starts on row 4");
+                Assert.That(sheet.Cell(start + 3, WorkbookWriter.ColumnItem1).GetString(),
+                    Is.Not.Empty, "the Item 1 label is still three rows down");
+                Assert.That(sheet.Cell(start + 4, WorkbookWriter.ColumnClashName).GetString(),
+                    Is.EqualTo("Clash Name"), "the headings are still four rows down");
+                Assert.That(sheet.LastRowUsed().RowNumber(), Is.EqualTo(start + 4 + 3),
+                    "five header rows then one row per clash, and the trailing blanks carry nothing");
+            }
+        }
+
+        /// <summary>
+        /// THE BLOCK COUNT IS UNCHANGED AND THE ROW COUNT COLLAPSES. This is the
+        /// arithmetic the round predicted before the change: the fixture's workbook holds
+        /// 1,830 blocks in 14,667 rows and should become 1,916, which is three title rows
+        /// plus one row per empty test plus the full blocks.
+        /// </summary>
+        [Test]
+        public void AWorkbookOfEmptyTestsHoldsOneRowEachAndKeepsItsBlockCount()
+        {
+            ClashReport report = Report();
+
+            for (int i = 0; i < 50; i++)
+            {
+                AddTest(report, "empty " + i, 0);
+            }
+
+            using (XLWorkbook workbook = new XLWorkbook(Write(report)))
+            {
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
+
+                Assert.That(BlockRows(sheet).Count, Is.EqualTo(50), "every test still appears");
+                Assert.That(sheet.LastRowUsed().RowNumber(), Is.EqualTo(3 + 50),
+                    "three title rows and one row each, where the old shape cost 400");
             }
         }
     }
