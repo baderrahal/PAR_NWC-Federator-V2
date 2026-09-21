@@ -35,7 +35,15 @@ Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the 
 15. F64, DONE, the machine readable log
 16. F57, DONE, six Look for lines older than the feature round
 17. F18, when Bader uploads the 1A04WE sample, Q9
-18. F23, when Q20 is answered
+18. F23, CLOSED on 2026-09-21, not reproducible on Bader's word, Q20
+19. F89, DONE, the drift round's tick box and its sets block, Q72
+20. F90, DONE, the reshape of a CHANGED group without clearing, Q34
+21. F91, DONE, the clash total and the decisions total in the run tail
+22. F92, DONE, the empty workbook block becomes one row, Q73
+23. F93, DONE, the twin removed and the working set renamed, Q74
+24. F94, DONE, the three reshape defects and the damaged document rule, Q75
+25. F95, DONE, the two fixtures, the iteration loop this tool had no rung for
+26. F96, the restated facts check, FIRST ITEM OF THE NEXT ROUND
 
 The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 281 to 293 are for.
 
@@ -260,12 +268,14 @@ Every one of them carries its DONE line in its own section below, and its entry 
 - Files `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`, maybe `src/Federator.Core/Report/ReportPaths.cs`
 - CONTAINER for a Core test on the folder rule, LOCAL MACHINE ONLY to prove the run
 - Size: small. Hand the engine the folder that already has the subfolder, or hand it the parent. Add one test in `OpenDocumentJobTests`
+- DONE on 2026-09-07 in one PR with F2 and F4. The folder rule went into `ReportPaths` where a test can read it, which is why it was settled without a run
 
 ## F7 Write the RESULT block for the open file run
 
 - Closes B11
 - Files `src/Federator.Addin/Ui/FederatorWindow.xaml.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`
 - LOCAL MACHINE ONLY to prove
+- DONE on 2026-09-07. The open file run writes a RESULT block like any other run
 - Size: small. Call `GroupFinished` in `RunOpenDocument` and `WriteTheResultAndCopyTheLog` in the finally, with the file's own folder
 
 ## F8 Run the existing tests when no XML is picked
@@ -858,3 +868,54 @@ Not fixes. Runs on the local machine that no code change replaces. Bader runs th
 - P3 open one NWF, read the panel count for three tests, compare to the Excel. Closes M3
 
 The alignment round closed on 2026-09-20, branch `round-alignment`, proved by TWO RUNS AGAINST BADER'S OWN LIVE FOLDERS after a backup was taken and read back, Q60. Six items were briefed and all six are done: the cheap COM write route behind a setting with both routes in the one binary, the two colours read back on what a viewpoint will SHOW rather than what it recorded, Structural Foundations on the solid list with Framing and Columns deliberately out, the 55 pair by design file, the ALIGNMENT block by shared coordinate and the EXPORT CHECK block. The round's own PART 8 found a seventh, which is the one that mattered: `F72 HAD NEVER MOVED A SINGLE CLASH` because it read a clash side through `Selection1`, whose item throws `NotSupportedException` off `PropertyCategories`, scan.md 5r. It moved 4 on the run after the fix, the first four of its life. Q67 and Q68 are open and both are Bader's.
+
+## F89 The tick box that rebuilds a drifted set, and the sets block that says why one finds nothing
+
+- Closes Q72, answered a on 2026-09-20
+- Files `src/Federator.Core/Sets/SetDrift.cs`, `SetRebuildSettings.cs`, `EmptySets.cs`, `src/Federator.Addin/Engine/SetBuilder.cs`, `src/Federator.Addin/Ui/FederatorWindow.xaml`
+- DONE on 2026-09-20 in the drift round. Proved by 5v before it was written, which measured that `ReplaceWithCopy` keeps the clash test pointing at the set, its 36 results, its Reviewed status and its place in the tree through a save and a reopen, so the box never has to refuse. The run of 21:06 rebuilt 147 sets across ten groups and took 1A02MM from 395 clashes to 542
+
+## F90 A CHANGED group is brought up to date without clearing it
+
+- Closes Q34, open since 2026-09-18
+- Files `src/Federator.Addin/Engine/FederationEngine.cs`
+- DONE on 2026-09-20 in the drift round, built only because 5x measured that removing a model costs nothing: the sets, tests, results, statuses and viewpoints all came back whole through a save and a reopen. The count out and count back stays exactly as it was, because a path that needs no copying still has to prove nothing was lost
+
+## F91 The run tail carries the clash total and how many decisions the run made
+
+- Closes nothing that was open. It closes a GAP: the RESULT block counted groups, run paths, penetrations and files written, and never once said how many clashes the run found
+- Files `src/Federator.Core/Clash/ClashesAcrossTheRun.cs`, `MovedAcrossTheRun.cs`, `src/Federator.Core/Diagnostics/RunLog.cs`
+- DONE on 2026-09-20 and widened on 2026-09-21. The clash total is ALWAYS written, unlike the priority and penetration lines beside it, because a run that found nothing is exactly the run whose number must not be missing. The decisions total carries LOOKED AT beside MOVED, because 7 of 14 and 7 of 7000 are the same 7 and mean the opposite
+
+## F92 A clash test that found nothing is one row and not eight
+
+- Closes Q73, answered b on 2026-09-21
+- Files `src/Federator.Core/Report/WorkbookWriter.cs`
+- DONE on 2026-09-21. Predicted before the change and measured after it: the fixture's workbook was 1,830 blocks in 14,667 rows, the prediction was 1,916 and it measured 1,917, with the block count still exactly 1,830. A DEPARTURE FROM THE CLIENT'S OWN FORMAT, the only one in this tool, and the round report carries the one line for NMDC
+
+## F93 The unused twin is removed and the working set takes its name
+
+- Closes Q74, answered on 2026-09-21
+- Files `src/Federator.Core/Sets/SetLeftovers.cs`, `src/Federator.Addin/Engine/SetBuilder.cs`
+- DONE on 2026-09-21. The answer changed because the measurement did: 5z counted 60 test sides on the BROKEN name and none on the corrected one, so removing what the file no longer names would have orphaned 420 sides across seven groups. 5z-b proved a rename keeps every side. Proved on a copy of 1A02WE, which renamed `BLD-DRPipe Accessories` and kept its 60 sides
+
+## F94 The reshape's three defects, and the one rule for a document that failed after it was changed
+
+- Closes Q75, answered on 2026-09-21
+- Files `src/Federator.Core/Rerun/DamagedDocument.cs`, `src/Federator.Addin/Engine/FederationEngine.cs`
+- DONE on 2026-09-21. Two of the three fire and the chartered one never has. The double count silently deleted a model and reported success, because 5x measured that the four tallied counts do not move over a removal, so the MODEL COUNT is counted out and counted back now. `DamagedDocument` is written once and called by both the reshape and the set pair, because a copy of a rule in a second file is a bug
+
+## F95 The two fixtures, which are the rung this tool had nothing on
+
+- Closes nothing. It is the reason every fix before it cost a live run to prove
+- Files `tools/probes/fixture.md`, and the fixtures themselves under the temp folder
+- DONE on 2026-09-21. A probe measures ONE API call and a live run writes into a project folder and takes 15 to 25 minutes, so four live runs were needed in one night to land four fixes. A fixture runs the tool END TO END in 18 to 20 seconds. It paid for itself twice on its first day: it found that Navisworks will not remove the last model from a document, and that the clear and rebuild does not carry viewpoints, both in nine seconds each
+
+## F96 The restated facts check
+
+- Closes the finding of 2026-09-21: one list, four copies, three drifts, and the tested copy is the only one that never went wrong
+- Files a new `tools/checks/check-restated-facts.sh` and one file naming each fact
+- THE FIRST ITEM OF THE NEXT ROUND. Not built in the close round, which was already full
+- THE FOUR FACTS THAT HAVE ACTUALLY DRIFTED, so this is a build from a spec and not a rediscovery: the SOLID CATEGORY LIST in `PenetrationSettings.DefaultSolidCategories`, which drifted into the tick box help line, `docs/workflow.md` and `tools/probes/fixture.md` and has a FOURTH hand typed copy in `tools/probes/ViewpointProbe/ViewpointProbePlugin.cs` that nobody had noticed; the SIZE THRESHOLD in `SizeSettings.ThresholdMillimetres`, which two rules read with OPPOSITE boundaries so a restatement can be wrong by being right way round for the other one; the TICK BOX COUNT, said 2 when it was 3 and 3 when it was 4; and the EVENT KINDS the .tsv writes, said fourteen then twenty two when they were twenty one then twenty three
+- IT TESTS ONLY NAMED FACTS AND NEVER ALL PROSE. A check that tries to validate every sentence in a markdown file is one nobody can keep green, and this repo deletes checks that cannot fail for a reason
+- THE SHAPE ALREADY EXISTS AND IS WORTH COPYING: `PenetrationRuleTests.TheHelpLineNamesEverySolidTheRuleCoversAndStaysWithinTwelveWords` ITERATES the code value and asserts the restatement names every entry. The test beside it that types the words out by hand passed all the way through the drift

@@ -583,11 +583,19 @@ read back off the disk.
 | 1A02WO | 986,967 | 1,259,238 |
 
 The folder held 15 files at backup time, 11 NWF and 4 logs, and holds 19 now, the same
-11 NWF and 8 logs, the four extra being tonight's runs. Three NWFs are byte for byte
-unchanged and those are the three groups that found no clashes, so nothing was saved over
-them. 1A02WL grew twelve times, from 249,786 to 3,189,245, which is the 135 clashes and
-their viewpoints going in. 1A02BS shrank by 54 bytes, which is not explained here and is
-too small to be a lost result, since its census is unchanged.
+11 NWF and 8 logs, the four extra being tonight's runs. THREE NWF FILES are byte for byte
+unchanged, 1000BS, 1A02MS and 1A0215's LS file, so nothing was saved over them. FOUR
+GROUPS found no clashes, 1000BS, 1A0215, 1A02MS and 1A02WE. THE TWO SETS ARE NOT THE SAME
+SET and this sentence originally said they were, corrected on 2026-09-21: 1A0215 found no
+clashes and its BM file still grew 62 bytes, because a group that finds nothing can still
+have its sets rebuilt, and 1A0215 holds TWO NWF files where every other group holds one.
+Counting files and counting groups gives different answers and the sentence had folded
+them together. 1A02WL grew twelve times, from 249,786 to 3,189,245, which is the 135
+clashes and their viewpoints going in. 1A02BS shrank by 54 bytes, ANSWERED on 2026-09-21
+and no longer unexplained: the inflated length never changed and 840 bytes differ across
+17 chunks, with the first difference sitting beside `BLD-ME-Ducts&Duct Fittings`, the
+first set the 21:06 run rebuilt, and the rest beside the clash test records. It is
+compression shifting under the set rebuilds and nothing was lost.
 
 ### PART 8 found four faults in this round's own work
 

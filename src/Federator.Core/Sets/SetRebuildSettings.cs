@@ -30,7 +30,9 @@ namespace Federator.Core.Sets
         public const string TickLabel = "Rebuild sets that drifted from the file";
 
         /// <summary>
-        /// The grey line under it. Twelve words, which is exactly the limit, so any
+        /// The grey line under it. ELEVEN words, counted on 2026-09-21, where this comment
+        /// said twelve. The limit is twelve and the test asserts at most twelve, so there is
+        /// exactly one word of headroom. Any
         /// rewording has to be counted again. It says what it costs, which is the rule
         /// every other help line keeps, and what it costs is NOTHING, measured.
         /// </summary>
