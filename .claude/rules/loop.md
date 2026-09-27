@@ -3,6 +3,8 @@ paths:
   - "tools/loop/**"
   - "steps/runs/**"
   - "steps/loop.md"
+  - ".claude/agents/**"
+  - ".claude/hooks/**"
 ---
 
 # Rules for the loop
@@ -25,21 +27,37 @@ and nothing is fixed until a real run on real files shows it fixed.
 - steps\runs\NN is one run set, 00 the baseline. Each run of the set has its own folder
   holding the text log, the tsv, a listing of every output file with its size, and a
   read-out of every workbook. A file over 20 MB is committed zipped and the turn says so
-- .claude\hooks\loop-gate.sh is the Stop hook. It lets a session stop when the state is
-  CLOSED, WAITING or RESTART, or when steps\loop.md is not there, and otherwise sends it
-  back to the next open item, once per change to the file
+- .claude\hooks\loop-gate.sh is the Stop hook. ONLY OPEN SENDS A SESSION BACK, and only
+  once per session per change to steps\loop.md. CLOSED, WAITING, RESTART, any other word,
+  no STATE line and no file all let the stop through, and so does a note it cannot write,
+  because a gate that cannot tell must never be what traps a session
+- While the loop runs, a finding lives in the register in steps\loop.md. A finding that
+  becomes a fix also gets its section and its DONE line in steps\01_next.md in the pull
+  request that merges it, so the two never disagree about what is done
 
 ## Guards that never bend
 
 - NM Fed on Bader's desktop, every live project folder and everything under an ACC
   Desktop Connector path is read only. The desktop is found with
   [Environment]::GetFolderPath('Desktop') because it sits under OneDrive. Only
-  tools\loop\prepare-copy.ps1 reads NM Fed, and the wall in
-  .claude\hooks\refuse-protected-paths.sh refuses any other file write or command that
-  names it or an ACC path
+  tools\loop\prepare-copy.ps1 reads NM Fed, and it finds the folder itself, so NO command
+  ever names NM Fed and the wall in .claude\hooks\refuse-protected-paths.sh refuses every
+  file write under it or an ACC folder and every command that names either
+- THAT WALL READS WORDS AND IS NOT A SANDBOX. It catches the name however a command
+  naturally spells it, the short name NMFED~1 included, and it cannot catch a script that
+  builds the path at run time. So no script but prepare-copy.ps1 builds that path, and
+  prepare-copy.ps1 writes only into the work folder and a listing inside the repo
+- A commit message and a pull request body go in a file, git commit -F and gh pr create
+  --body-file, never on the command line
+- Installing replaces Bader's installed add-in, which the loop exists to do. So the
+  installed bundle is copied into %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup before the
+  first install of a session, and nothing is installed while a Navisworks the loop did not
+  start is running, because it may hold the bundle's DLLs and install.ps1 deletes the
+  bundle before it copies the new one
 - Every run works on the copy under %LOCALAPPDATA%\NwcFederatorLoop\source and every
   output of every run goes under %LOCALAPPDATA%\NwcFederatorLoop
-- Nothing of Bader's is deleted or overwritten. The only folder the loop deletes from is
+- Nothing of Bader's is deleted or overwritten, bar the installed add-in, which is backed
+  up first as the install rule above says. The only folder the loop deletes from is
   %LOCALAPPDATA%\NwcFederatorLoop
 - Before the first run, %LOCALAPPDATA%\ParsonsNwcFederator\logs is copied into the work
   folder as a backup. Loop runs write their logs inside the work folder, so the thirty

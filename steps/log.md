@@ -1,12 +1,24 @@
 # log
 
 Newest entry at the top.
-## 2026-09-27 The loop, turn 1, F97 the house and F99 the git wall, DONE
+## 2026-09-27 The loop, turn 1, F97 the house and F99 the git wall, IN REVIEW, PAUSED
+
+PAUSED FOR A RESTART OF BADER'S COMPUTER, at STATE WAITING, with everything committed and
+pushed on fix-F97 and no pull request open. steps\loop.md says exactly where to resume.
+
+WHAT CHANGED AFTER THIS ENTRY WAS FIRST WRITTEN. One reviewer and two breakers read the
+house before it went out and found real faults in my own scripts and walls. read-workbook
+turned this tool's own one row tests into invented clash rows, prepare-copy kept a copy on
+size alone and could write its listing into NM Fed, and the walls could be walked round.
+Both scripts are rewritten and proved again, and the walls are rewritten and wait in
+tools\loop\hooks-next for their proof and a second review. So the numbers below that
+describe the walls and the scripts, 52 cases, five prepare-copy runs, are the FIRST
+version's and are replaced when the turn closes.
 
 Core tests 1746 passed, 0 failed, 0 skipped before and after. Nothing under src or tests
 changed. The add-in was built in turn 0 on main, 0 errors and 0 warnings, and this turn
-touches none of it. Ends at STATE RESTART, because the eight agents load only when a
-session starts.
+touches none of it. The turn ends at STATE RESTART once Phase 0 merges, because the eight
+agents load only when a session starts.
 
 ### What was done
 

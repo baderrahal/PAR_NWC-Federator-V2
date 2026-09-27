@@ -1,7 +1,8 @@
 # Line endings.
 #
-# WHY THIS FILE EXISTS. Three files here are read by sh: the two hooks under
-# .claude\hooks that Claude Code runs before a tool call, and .githooks\pre-commit.
+# WHY THIS FILE EXISTS. Four files here are read by sh: the three hooks under
+# .claude\hooks that Claude Code runs, the two walls before a tool call and the loop's
+# Stop gate since 2026-09-27, and .githooks\pre-commit.
 # sh treats a carriage return as part of the word, so a CRLF copy dies on its first
 # case statement before it reaches a single rule. Measured on 2026-09-18: the branch
 # hook gives "Syntax error: word unexpected (expecting in)" and the paths hook gives

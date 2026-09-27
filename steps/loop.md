@@ -1,32 +1,72 @@
 # The loop
 
-STATE RESTART
+STATE WAITING
 
-Turn 1, 2026-09-27. Phase 0 is pull request PRNUMBER on fix-F97, merged before this state
-was final. WHY RESTART: the eight agents under .claude\agents load only when a session
-starts, measured in turn 1, when log-reader was called in the session that wrote it and
-the answer listed only the built in agent types. Phase 1 hands work to them, so it starts
-in a new session.
+Turn 1, 2026-09-27, PAUSED IN THE MIDDLE OF PHASE 0 because Bader is restarting his
+computer. Nothing is lost: everything is committed and pushed on fix-F97, and the working
+files of the turn are in %LOCALAPPDATA%\NwcFederatorLoop\turn1. No pull request is open
+yet. Main is still at 42499bf.
 
-## What Bader does next
+## Resume here
 
-1. Close this Claude Code session
-2. Open a new Claude Code session in VS Code on this repo
-3. Paste the loop prompt again. It reads this file first and carries on at Phase 1
+When Bader says go, in this session or a new one with the loop prompt pasted:
+
+1. git checkout fix-F97, git pull, and check the tree is clean
+2. Re-prove the three rewritten hooks in tools\loop\hooks-next with
+   sh tools/loop/prove-hooks.sh tools/loop/hooks-next <repo>, 86 cases. The first run of
+   that proof gave 84 right and 2 wrong, and both wrong ones were fixed after it: a
+   relative steps\logs path written with doubled backslashes, and git -c user.name="A B"
+   commit hiding the verb. The fixed copies have not been proved yet
+3. Run the second review again, a breaker on the rewritten hooks, a breaker on the two
+   rewritten scripts and a reviewer on what the docs promise against the code. It was
+   stopped for the restart before it answered. Fix what it finds
+4. Only then move the three hooks from tools\loop\hooks-next into .claude\hooks, which
+   makes them live, and prove them live with one refused call each
+5. Rewrite the turn 1 entry of steps\log.md and this file with the final numbers, run the
+   claim-checker over both and the pull request body, commit, push, open the one Phase 0
+   pull request, watch it green with gh pr checks, merge, delete the branch
+6. F98 in its own pull request
+7. STATE RESTART, so the eight agents load in a fresh session
+
+## What turn 1 has done so far
+
+- gh logged in as baderrahal, fix-F97 pushed, so git and gh both work here
+- THE WHOLE REPO READ by nineteen read only agents. The findings are in steps\loop-read.md
+  and the register below is built from them, 269 rows
+- the eight agents in .claude\agents, .claude\rules\loop.md, the Stop gate, the settings
+- THE FIRST REVIEW of the house, one reviewer and two breakers, found real faults in my own
+  work and every one is fixed in the files now on fix-F97:
+  - read-workbook.ps1 turned this tool's own one row tests into invented clash rows of the
+    test before, silently. Rewritten to read a test by column A in both shapes, proved on a
+    workbook written by the tool's own WorkbookWriter, four tests with two of one row, and
+    on both client exports, 1830 tests each, 64 and 65 clash rows, no doubts
+  - prepare-copy.ps1 kept a copy on size alone, remade the copy when only a listing was
+    asked for, could write its listing anywhere, deleted the old copy before checking room.
+    Rewritten with sha256, one switch at a time, the listing only inside the repo, a
+    completion manifest, restore only of the same file by hash. Proved in every mode on
+    the real folder with eight refusals
+  - the walls: the prepare-copy exception let a second command through, a quoted path hid
+    git's verb, a push of HEAD:main skipped the pull request, Monitor ran unwalled, the
+    gate could block forever. Rewritten, waiting in tools\loop\hooks-next, see above
+  - the allow list was too wide. It now names the scripts and the git and gh commands the
+    loop runs, and deny rules stop force pushes, --no-verify, switching the hooks off,
+    reset --hard, clean and merging with --admin
+- the live walls in .claude\hooks are STILL THE FIRST VERSION until step 4 above. They
+  work and refused two live calls, but they carry the gaps the review found
 
 ## The phases
 
 | phase | state | where it is |
 | --- | --- | --- |
-| 0, the house | DONE in turn 1 | PR PRNUMBER |
-| 1, measure and a run with no click | NEXT | |
+| 0, the house | IN REVIEW, paused | fix-F97, no pull request yet |
+| 1, measure and a run with no click | NEXT after Phase 0 | |
 | 2, the register | DONE EARLY in turn 1, from a read of the whole repo | the register below, and steps\loop-read.md |
-| 3, the baseline | open. The copy of NM Fed is already made and matches | steps\runs\00 |
+| 3, the baseline | open. The copy of NM Fed is made and matches | steps\runs\00 |
 | 4, the loop | open | |
 | 5, Bader's rules R1 to R6 | open. D3 builds them in this loop | |
 | 6, the close | open | |
 
-## Next action, turn 2, Phase 1, in this order
+## Phase 1, in this order, once Phase 0 is merged and the session restarted
 
 1. Check that the eight agents are listed. If they are not, STATE RESTART again with what
    was listed
@@ -51,7 +91,15 @@ in a new session.
    document
 6. Before the first run: copy %LOCALAPPDATA%\ParsonsNwcFederator\logs into
    %LOCALAPPDATA%\NwcFederatorLoop as a backup, and keep folders.txt from that folder, the
-   one choice the tool remembers between runs, to put back after the loop
+   one choice the tool remembers between runs, to put back after the loop. It remembers
+   ACC paths under DC\ACCDocs, measured in the 16:37 log, so it is read and put back and
+   never followed
+7. Before the first install: copy the installed bundle into
+   %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup, and check no Navisworks the loop did not
+   start is running. If one is, STATE WAITING and ask Bader to close it. THE INSTALLED
+   ADD-IN IS NOT MAIN: Bader's 16:37 run logged plugin version be0b9b37, built at 10:47
+   from the clone before it was brought level, so nothing about main has run on this
+   machine yet
 
 ## Facts measured on this machine
 
@@ -65,10 +113,21 @@ in a new session.
   seconds and each extra program about two more, measured under load, which is why the
   walls use shell builtins
 - Navisworks Manage 2025 is 22.5.1433.58 with Autodesk.Navisworks.Automation.dll
-- one Navisworks, process 32472, was running before the loop and is never closed by it
+- one Navisworks, process 32472, was running before the loop and was never touched by it.
+  It had gone by 17:09
 - Desktop Connector keeps ACC projects under C:\Users\p003653k\DC\ACCDocs
 - the copy of NM Fed is at %LOCALAPPDATA%\NwcFederatorLoop\source, 141 files, 208.3 MB,
-  every size matching, with its listing in steps\runs\00\source-listing.txt
+  every file matching by sha256 and marked whole, with its listing in
+  steps\runs\00\source-listing.txt
+- NM FED CHANGES UNDER THE LOOP. Bader ran the tool on 1B06BC at 16:37 with NM Fed as its
+  output folder, and 639 files arrived in it, an NWF and 638 pictures, then went again.
+  The listing taken while they were there is steps\runs\00\source-listing-during-bader-
+  run-1B06BC.txt. prepare-copy.ps1 remakes the copy whenever NM Fed differs
+- BADER'S 16:37 RUN NEVER FINISHED. Its log, run-20260927-163731.log in his logs folder,
+  ends at 17:00:36 on the second NWF save into NM Fed, with no RESULT block, no workbook and
+  no NWD, and Navisworks was gone by 17:09. It ran the be0b9b37 build, not main. It found
+  638 clashes on 1B06BC, created all 1830 tests and skipped 1164 for an empty side. Whether
+  the save hung on the OneDrive folder is UNKNOWN. It is register row RUN-1637
 - the NM Fed clash XML is Bader's 25 mm matrix with BLD-DRPipe Accessories renamed
   BLD-DR-Pipe Accessories, and it still asks for upper case worksets such as ME-DUCTWORK
 - this machine ran the tool before, on 2026-09-07, over C06 through the ACC connector,
@@ -79,20 +138,21 @@ in a new session.
 
 Built in turn 1 from steps\01_next.md, steps\02_questions.md, steps\04_audit.md,
 steps\04_audit_first_run.md, steps\03_bader_next.md, the known bugs of steps\log.md, the
-chat audit of 19 Sep, the defaults, and the read of the whole repo in steps\loop-read.md.
-Existing F, Q and A numbers keep their IDs. A step number is a step of 03_bader_next. A T1
-tag is a fault the read reported and nobody has confirmed, and it takes an F number only
-when it becomes work. Most harmful first when the loop picks, and a silent wrong number
-ranks above a loud failure. Done in code but not proved by a run means the baseline run
-proves it or contradicts it.
+chat audit of 19 Sep, the defaults, Bader's run of 16:37 and the read of the whole repo in
+steps\loop-read.md. Existing F, Q and A numbers keep their IDs. A step number is a step of
+03_bader_next. A T1 tag is a fault the read reported and nobody has confirmed, and it takes
+an F number only when it becomes work. Most harmful first when the loop picks, and a silent
+wrong number ranks above a loud failure. Done in code but not proved by a run means the
+baseline run proves it or contradicts it.
 
-268 rows, by status:
+269 rows, by status:
 
 - 125 done in code, not proved by a run
 - 89 reported by the read, not verified
 - 30 needs Bader, in the form
 - 20 open fault
 - 2 this PR
+- 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
 - 1 closed, not there at 42499bf
 
@@ -102,6 +162,7 @@ proves it or contradicts it.
 | F98 | turn 0, a read of steps\log.md | PR 71 dropped the close round heading in steps\log.md | the heading back above Core tests 1666 before the round and 1746 after | open fault | none yet | none yet |
 | F99 | turn 0, the git wall fired on Bash only | The git wall missed commits sent through PowerShell | a PowerShell commit on main refused on standard input, and git.exe read as git | this PR | Phase 0 | none yet |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
+| RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
 | CHAT-19 | chat audit of 19 Sep | The doubled summary block above BuildViewpoints | NOT FOUND by the turn 1 read. Two other stacked summaries are T1-N items | closed, not there at 42499bf | none yet | none yet |
 | F50 | chat audit of 19 Sep, also 01_next steps/01_next.md line 605, DONE at line ..., also log.md steps/log.md line 3126 (What ... | Model remove without a clear, said to be behind a switch | the turn 1 read found NO switch, every CHANGED group reshapes first and the log names the path. Proved by run 3 and run 4 | done in code, not proved by a run | none yet | none yet |
 | F52 | chat audit of 19 Sep, also 01_next steps/01_next.md line 617, DONE at line ... | Viewpoints behind SavedViewpoints.CanBuild | the read found CanBuild true and READ BY NOTHING, T1-B2. Proved by the VIEWS block on run 1 | done in code, not proved by a run | none yet | none yet |
@@ -385,37 +446,38 @@ bytes, LICENSE at 1,089 and bin\gh.exe at 42,755,384. Whether dotnet wrote to it
 caches under the user profile is UNKNOWN. Inside the clone and not tracked: http.sslBackend
 schannel in .git\config, and the build output under bin and obj.
 
-## Turn 1, 2026-09-27
+## Turn 1, 2026-09-27, paused for a restart
 
-Runs: no Navisworks run. tools\loop\prepare-copy.ps1 was run five times, to make the copy,
-to keep it, to take 1104-PAR-1C07BC-ZZZ-EL-MOD-000001.nwc out, to copy it back from NM Fed
-and to keep it again, and every one did what it says.
+Runs: no Navisworks run by the loop. prepare-copy.ps1 was run many times on the real
+folder, first in its first version and then rewritten, and its every mode proved. Bader
+ran the tool himself at 16:37, see RUN-1637.
 
-Findings: the read in steps\loop-read.md, nineteen readers over every file under src,
-tests, tools and steps. 179 faults reported and none verified, 70 silent wrong outputs, 9
-broken features, 7 loud failures and 93 noise. 150 members nothing in src calls. 77 catches
-called swallowing. 46 files holding more than one top level type, which is D1. No
-Navisworks type in Federator.Core. The doubled summary block the chat audit named above
-BuildViewpoints is not there at 42499bf. Also the paths wall at 11.9 seconds a call on its
-first version, fixed before it merged.
+Findings: the read in steps\loop-read.md, 179 faults reported by nineteen readers and none
+confirmed, 70 of them silent wrong outputs, 150 members nothing in src calls, 77 catches
+called swallowing, 46 files with more than one top level type, no Navisworks type in Core,
+and the doubled summary block above BuildViewpoints not there. The first review of the
+house, which found faults in the loop's own scripts and walls, all fixed on fix-F97. The
+first paths wall took 11.9 seconds a call, fixed. RUN-1637.
 
-Fixed: F97, the house, and F99, the git wall through PowerShell, both in PR PRNUMBER. The
-walls answered every case fed on standard input, and both refused a live call in this
-session, a PowerShell listing of NM Fed and a Write under steps\logs.
+Fixed, on fix-F97 and not yet merged: F97 the house and F99 the git wall, with the review's
+findings.
 
-Still open: every register row that is not DONE.
+Still open: the re-proof and second review of the rewritten hooks, the Phase 0 pull
+request, F98, and every register row that is not DONE.
 
-Programs started: git and gh, including gh auth status and the push of fix-F97. Windows
-PowerShell 5.1 for the scripts. sh for the hooks and for the scratch harness that fed them
-their cases, which also cloned the repo into a temp folder and removed it. dotnet
-build-server shutdown. Twenty two agents inside Claude Code, nineteen readers and three
-reviewers, all read only. No Navisworks.
+Programs started: git and gh. Windows PowerShell 5.1 for the scripts, and once to write a
+test workbook through Federator.Core's WorkbookWriter. sh for the hooks and the proof
+harness, which cloned the repo into a temp folder each run. dotnet build-server shutdown.
+Twenty five agents inside Claude Code, nineteen readers and six reviewers, all read only,
+three of the six stopped for the restart. No Navisworks.
 
 Files written outside the repo:
 
     C:\Users\p003653k\bin\gh                                  a two line wrapper for Git Bash
-    %LOCALAPPDATA%\NwcFederatorLoop\source                    141 files, 208.3 MB, and ten folders
-    the session scratchpad under %LOCALAPPDATA%\Temp\claude  the harness, the reader results
+    %LOCALAPPDATA%\NwcFederatorLoop\source                    the copy of NM Fed, 141 files, 208.3 MB, 10 folders
+    %LOCALAPPDATA%\NwcFederatorLoop\source.manifest.txt       the copy's completion manifest
+    %LOCALAPPDATA%\NwcFederatorLoop\turn1                     the raw reader results, the generators and drafts of this turn
+    the session scratchpad under %LOCALAPPDATA%\Temp\claude  the same, copied from there
 
 Inside the clone and not tracked: .claude\hooks\.loop-gate-last once the Stop gate first
 blocks, which git ignores.

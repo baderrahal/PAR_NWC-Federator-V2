@@ -44,6 +44,11 @@ Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the 
 24. F94, DONE, the three reshape defects and the damaged document rule, Q75
 25. F95, DONE, the two fixtures, the iteration loop this tool had no rung for
 26. F96, the restated facts check, FIRST ITEM OF THE NEXT ROUND
+27. F97, DONE, the house of the loop
+28. F98, the close round heading back in steps\log.md
+29. F99, DONE, the git wall through PowerShell
+
+The loop opened on 2026-09-27 on Bader's own machine. Its fixes take the next free F number from F97, and the order it works in is its register in steps\loop.md, most harmful first.
 
 The log round closed on 2026-09-19. F58 to F64 are all done and merged and each carries its DONE line below. Nothing in it has been seen on a real run, which is what `03_bader_next.md` steps 281 to 293 are for.
 
@@ -919,3 +924,19 @@ The alignment round closed on 2026-09-20, branch `round-alignment`, proved by TW
 - THE FOUR FACTS THAT HAVE ACTUALLY DRIFTED, so this is a build from a spec and not a rediscovery: the SOLID CATEGORY LIST in `PenetrationSettings.DefaultSolidCategories`, which drifted into the tick box help line, `docs/workflow.md` and `tools/probes/fixture.md` and has a FOURTH hand typed copy in `tools/probes/ViewpointProbe/ViewpointProbePlugin.cs` that nobody had noticed; the SIZE THRESHOLD in `SizeSettings.ThresholdMillimetres`, which two rules read with OPPOSITE boundaries so a restatement can be wrong by being right way round for the other one; the TICK BOX COUNT, said 2 when it was 3 and 3 when it was 4; and the EVENT KINDS the .tsv writes, said fourteen then twenty two when they were twenty one then twenty three
 - IT TESTS ONLY NAMED FACTS AND NEVER ALL PROSE. A check that tries to validate every sentence in a markdown file is one nobody can keep green, and this repo deletes checks that cannot fail for a reason
 - THE SHAPE ALREADY EXISTS AND IS WORTH COPYING: `PenetrationRuleTests.TheHelpLineNamesEverySolidTheRuleCoversAndStaysWithinTwelveWords` ITERATES the code value and asserts the restatement names every entry. The test beside it that types the words out by hand passed all the way through the drift
+
+## F97 The house of the loop
+
+- From the loop prompt of 2026-09-27, Phase 0, the first session on Bader's own machine with Navisworks installed. While the loop runs its register is in `steps/loop.md`, and a fix that merges gets its section and DONE line here as well
+- The team in `.claude/agents`, the Stop gate `loop-gate.sh`, the paths wall widened to NM Fed and every ACC Desktop Connector folder, the allow and deny lists, `.claude/rules/loop.md`, `tools/loop` with `prepare-copy.ps1` and `read-workbook.ps1`, `steps/runs` kept as evidence
+- DONE on 2026-09-27, merged in the Phase 0 pull request. Every hook case fed on standard input and answered as it should, two live refusals in the session, `prepare-copy.ps1` proved in every mode on the real folder and `read-workbook.ps1` on both client exports and on a workbook of this tool's own shape. The reviewer and two breakers read it first and every finding they made was fixed before it merged. Core tests 1746 passed, 0 failed, 0 skipped, before and after. No Navisworks run, which is Phase 1 and after
+
+## F98 The close round heading back in steps\log.md
+
+- PR 71, the INSTALL.md round, replaced the heading `## 2026-09-21 The close round, DONE, the record` and never put it back, so that round's report reads as part of the INSTALL.md entry
+- The heading goes back above `Core tests 1666 before the round and 1746 after`, in its own pull request, and nothing else in the file moves
+
+## F99 The git wall through PowerShell
+
+- Found on 2026-09-27 in turn 0: `.claude/settings.json` matched the git wall on the Bash tool alone, so a commit on main sent through the PowerShell tool was never refused. It also missed `git.exe` and a quoted path to it
+- DONE on 2026-09-27, in the Phase 0 pull request, with it the forms the Phase 0 breaker found: a quoted word between git and the verb, a push naming main from a fix branch, switching to main and committing in one command, and merge, cherry-pick, revert, am, rebase and commit-tree on main. A fast forward only merge or pull and a push that only deletes a branch still pass. Proved on standard input against a throwaway clone with main checked out

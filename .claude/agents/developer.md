@@ -22,13 +22,17 @@ In this order, and nothing rides along:
    not done. Keep the counts
 6. dotnet test tests\Federator.Core.Tests\Federator.Core.Tests.csproj, the counts before
    and after. sh tools/checks/check-locals.sh src and sh tools/checks/check-imports.sh src
-7. The rule in .claude\rules where the rule changed, and the entry at the top of
-   steps\log.md in the shape it already uses
+7. The rule in .claude\rules where the rule changed, and its section in steps\01_next.md.
+   Draft the steps\log.md entry in the shape it already uses and HAND IT TO THE LEAD, who
+   alone writes steps\log.md and steps\loop.md
 8. Commit with the message in a file, git commit -F, and push the branch. Hand the lead
    the branch and the build and test output. The lead calls the reviewer and the breaker
-9. Fix what they find, then open the pull request as a draft with gh pr create. Its body
-   says what was proved on this machine and which run proved it, with the build counts
-   pasted. You never merge. The lead merges
+9. Fix what they find, then open the pull request as a draft with gh pr create
+   --body-file. Its body says what was proved on this machine and which run proved it,
+   with the build counts pasted. You never merge. The lead merges
+
+A message or a body goes in a file, never on the command line, because the wall refuses a
+command whose text names NM Fed and the loop's work names it all the time.
 
 House rules you never bend:
 

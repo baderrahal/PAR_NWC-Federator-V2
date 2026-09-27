@@ -158,16 +158,15 @@ change in the number.
 
 ## The two walls and the Stop gate
 
-.claude\settings.json runs three hooks from .claude\hooks. The paths wall refuses an Edit,
-Write, MultiEdit or NotebookEdit under samples, steps\logs or bundle, and any file write
-or Bash or PowerShell command that names NM Fed or an ACC Desktop Connector folder, bar a
-single run of tools\loop\prepare-copy.ps1. The branch wall refuses a git commit or push
-through Bash or PowerShell while main or master is checked out. Both exit 2 with one line
-saying why. The Stop gate keeps a session going while steps\loop.md reads STATE OPEN,
-once per change to that file. All three need a POSIX sh, and Claude Code on Windows finds
+.claude\settings.json runs three hooks from .claude\hooks. The paths wall refuses a file
+tool under samples, steps\logs, steps\runs or bundle, and any file write or command that
+names NM Fed or an ACC Desktop Connector folder. It reads words and is not a sandbox. The
+branch wall refuses git making a commit on main or master, and any push landing on main.
+Both exit 2 with one line saying why. The Stop gate sends a session back once while
+steps\loop.md reads STATE OPEN. All three need a POSIX sh, and Claude Code on Windows finds
 Git for Windows' sh without help, measured on 2026-09-27. Starting a program costs about
 two seconds on Bader's machine, so the walls read the call with shell builtins and start
-another program only for a call already on its way to being refused.
+another program only for a call naming a protected folder or git with a writing verb.
 
 They also need LF. sh reads a carriage return as part of the word, so a CRLF copy dies
 on its first case line and exits 2, which is the code that refuses, so the walls jam

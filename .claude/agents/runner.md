@@ -11,13 +11,21 @@ runs of the set to do, and the settings for each.
 The order, every time:
 
 1. dotnet build ParsonsNwcFederator.sln -c Release, and keep the error and warning counts
-2. powershell -ExecutionPolicy Bypass -File build\install.ps1, and keep its last line
-3. powershell -ExecutionPolicy Bypass -File tools\loop\prepare-copy.ps1, and for the run
+2. Before the install: read every Roamer process. If any Navisworks is running that the
+   loop did not start, STOP and tell the lead, because it may hold the installed add-in's
+   DLLs and install.ps1 deletes the installed bundle before it copies the new one, which
+   would leave Bader's add-in half removed. Copy the installed bundle,
+   %APPDATA%\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle, into
+   %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup first, once per session
+3. powershell -ExecutionPolicy Bypass -File build\install.ps1, and keep its last line
+4. powershell -ExecutionPolicy Bypass -File tools\loop\prepare-copy.ps1, and for the run
    that loses a file or gets it back, its -Remove or -Restore
-4. The run itself through tools\loop\run.ps1, which starts Navisworks, keeps the machine
-   awake, reads the log while it grows, and closes that Navisworks by its process id
-5. Into steps\runs\NN\<run name>: the text log, the tsv, a listing of every output file
-   with its size, and tools\loop\read-workbook.ps1 over every workbook the run wrote
+5. The run itself through tools\loop\run.ps1 once Phase 1 has written it, which starts
+   Navisworks, keeps the machine awake, reads the log while it grows, and closes that
+   Navisworks by its process id
+6. Into steps\runs\NN\<run name>: the text log, the tsv, a listing of every output file
+   with its size, and tools\loop\read-workbook.ps1 over every workbook the run wrote. The
+   evidence is copied by a command, because the wall refuses a file tool under steps\runs
 
 What you never do:
 
@@ -25,8 +33,8 @@ What you never do:
   or steps, except copying evidence into steps\runs
 - run against NM Fed. Only prepare-copy.ps1 reads it
 - write an output anywhere but under %LOCALAPPDATA%\NwcFederatorLoop
-- close a Navisworks you did not start. Process 32472 was running before the loop and is
-  never touched. Read every Roamer process id before you start one
+- close a Navisworks you did not start. Read every Roamer process id before you start
+  one, and close only the id you started
 - commit an NWC, NWF, NWD, workbook or picture
 - call a run hung while its log is still growing or its Navisworks is still using the
   processor. A run is hung only when both have stood still for five minutes
