@@ -1,6 +1,159 @@
 # log
 
 Newest entry at the top.
+## 2026-09-27 The loop, turn 0, the plan, written before the first edit
+
+This is the first session that runs on Bader's own machine, where Navisworks Manage 2025
+is installed. Every number below was measured in this session. It ends in STATE WAITING,
+because gh is not logged in and the prompt makes that login Bader's one action. The code
+read, the team, the walls and every run come after it.
+
+Core tests on main at 42499bf, on this machine: 1746 passed, 0 failed, 0 skipped. In the
+container the same set reads 1714 passed and 32 skipped, so all 32 tests that need
+Navisworks or Windows run here, and all 32 pass. Build of the whole solution in Release,
+add-in included: succeeded, 0 errors, 0 warnings, 11.4 seconds.
+
+### The machine
+
+| what | measured |
+| --- | --- |
+| clone | this folder is PAR_NWC-Federator and points at PAR_NWC-Federator-V2. It sat at be0b9b3, 308 commits behind, and was fast forwarded to 42499bf. The tree was clean |
+| git | 2.55.0.windows.5, a PortableGit under C:\Users\p003653k\Tools |
+| git fetch | failed every time with CRYPT_E_NO_REVOCATION_CHECK. The global config already turns the revocation check off, and git ignores that until http.sslBackend names schannel. Set http.sslBackend schannel in this clone's .git\config only, and fetch then passed every time |
+| git push | no GitHub login for the command line. The one GitHub credential on the machine belongs to GitHub Desktop and is not borrowed |
+| gh | was missing. 2.101.0 put under %LOCALAPPDATA%\Programs\gh from the official release zip, sha256 checked against the release before it was unpacked. NOT LOGGED IN |
+| GitHub connector | signed in as baderrahal |
+| dotnet | SDK 8.0.420, 8.0.423, 8.0.424 and 8.0.425. Builds net48, add-in included |
+| PowerShell | Windows PowerShell 5.1, no pwsh |
+| Git Bash | bash 5.3.15 |
+| Navisworks | Manage 2025, 22.5.1433.58. Roamer.exe and the Api, Clash, ComApi, Interop.ComApi and Automation DLLs are all in C:\Program Files\Autodesk\Navisworks Manage 2025 |
+| disk | C: 410.9 GB free |
+| already running | one Navisworks, process 32472, started at 10:55 before this session, Untitled. The loop did not start it and never closes it |
+| the two walls | went live mid session, the moment the fast forward put .claude on disk, and Claude Code found sh without help, which CLAUDE.md holds as UNKNOWN. The git wall is matched on the Bash tool only, so a git commit sent through the PowerShell tool passes it. That is a Phase 0 finding |
+
+### NM Fed
+
+The desktop is C:\Users\p003653k\OneDrive - Parsons Corp\Desktop, under OneDrive. Every
+file carries the reparse point OneDrive puts on a synced file and none is marked offline.
+
+141 files, 208.3 MB: 140 NWC at 207.0 MB and one clash XML. No NWF and no NWD anywhere.
+NWD\C06, NWD\C07, NWF\C06, NWF\C07 and Clash Report are empty folders. Every NWC name has
+seven parts, so part 3 and part 5 read on all 140.
+
+NWC\C06, 67 NWC in 22 groups:
+
+    100000 3 AR ME         1B06BC 5 AR EL ME ST   1B06BS 1 EL            1B06G1 4 AR ME ST
+    1B06K1 3 AR ME ST      1B06KI 1 EL            1B06M1 2 ME ST         1B06P1 4 AR ME ST
+    1B06PE 4 AR EL ME ST   1B06PG 1 EL            1B06PH 5 AR EL ME ST   1B06PK 2 ME ST
+    1B06PO 4 AR EL ME ST   1B06PP 8 AR EL ME ST   1B06PS 3 AR EL ST      1B06PT 1 ST
+    1B06PW 1 EL            1B06WL 4 EL ME ST      1B06WM 4 AR EL ME ST   1B06WO 4 AR EL ME ST
+    1C06M2 2 ME ST         1C06PK 1 ST
+
+NWC\C07, 73 NWC in 24 groups:
+
+    100000 3 AR ME         1A07PP 1 ME            1C07BC 5 AR EL ME ST   1C07BS 1 EL
+    1C07G1 3 AR ST         1C07K1 3 AR ME ST      1C07KI 1 EL            1C07P1 4 AR ME ST
+    1C07PG 2 EL ME         1C07PK 1 ST            1C07PS 3 AR EL ST      1C07PW 1 EL
+    1C07WE 4 AR EL ME ST   1C07WL 4 EL ME ST      1C07WM 4 AR EL ME ST   1C07WN 2 EL ST
+    1C07WO 4 AR EL ME ST   1D07MM 2 ME ST         1D07PE 4 AR EL ME ST   1D07PH 5 AR EL ME ST
+    1D07PN 4 AR EL ME ST   1D07PO 4 AR EL ME ST   1D07PP 7 AR EL ME ST   1D07PT 1 ST
+
+100000 is in both folders, three files each, and is not a building. Twelve groups hold one
+discipline and cannot clash with anything, six in each folder.
+
+The clash XML is 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml at the top of NM Fed, 1,443,383
+bytes, LF, sha256 starting 36AB27395BBABD9A. THE LOOP USES THIS ONE, because the prompt
+says the one in NM Fed wins. It matches no copy in the repo. Against
+samples\1104-PAR_CLASH_AllInOne_25mm.xml it differs on 121 lines, and every one of them
+renames the set BLD-DRPipe Accessories to BLD-DR-Pipe Accessories. It does NOT carry the
+workset case changes in exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, so it still asks
+for ME-DUCTWORK, ME-PIPING and ME-EQUIPMENT where the exchange copy asks for ME-Ductwork,
+ME-Piping and ME-Equipment. The close round measured that the upper case sets found nothing
+on C02. What they find on NM Fed is measured, not assumed, and it is R2. His file is never
+edited.
+
+### Found this turn
+
+- F98. PR #71, the INSTALL.md round, DROPPED THE HEADING of the close round entry in this
+  file. The edit replaced the heading line and never put it back, so the close round's
+  whole report now reads as part of the INSTALL.md entry, straight after its plan. The
+  heading goes back above "Core tests 1666 before the round and 1746 after", in its own
+  pull request
+- F99. The git wall covers the Bash tool and not the PowerShell tool, so a commit on main
+  sent through PowerShell is not refused. Phase 0 closes it
+
+### The defaults as pasted
+
+D1 one public type per file, written into core.md and addin.md, every file under src split,
+moves only. D2 a rectangular section is sized by its larger side, and a size that cannot be
+read counts as over 150 mm, so it stays in the viewpoints, its clash stays New and the log
+names it. D3 R1 to R6 are built in the same loop once it is clean.
+
+### The plan, in order
+
+Turn 0, this one. Machine check, NM Fed listing, this plan, steps\loop.md at STATE WAITING,
+gh auth login at the top of the form. Commit on fix-F97 locally. Nothing can be pushed.
+
+Turn 1, after the login.
+1. gh auth status, gh auth setup-git, and a push of fix-F97 to prove git can push
+2. Read everything the prompt names. The code under src, tests and tools goes through
+   reader agents that hand back a map: every type and the file it lives in, every public
+   member and its callers in src, every file holding more than one public type for D1, and
+   every member with no caller in src
+3. Phase 0 on fix-F97, one pull request: the eight agents, the Stop hook, rules\loop.md,
+   tools\loop with its README, steps\runs with its own gitignore negation, the protected
+   path wall widened to NM Fed and every ACC Desktop Connector path for every file and
+   command tool this Claude Code offers on Windows, PowerShell included, the git wall
+   widened to PowerShell, the allow list, every hook case fed on standard input with its
+   answer pasted in the PR. Merged when Actions is green. If the agents are not live,
+   STATE RESTART and stop
+4. F98, the heading back, its own pull request
+
+Phase 1. The prober measures a run with no click, Roamer switches and the Automation DLL,
+whether UI Automation reaches the window, and whether the API writes the native HTML
+tabular report, then runs probe-viewpoints.ps1 and probe-model-remove.ps1 and appends every
+answer to docs\history\scan.md. The no-click entry lands as its own pull request, its
+settings file parsed in Core with tests, calling the engine method the Run button calls.
+run.ps1 keeps the machine awake, watches the log and the processor time, and closes only a
+Navisworks it started. The workbook is checked by a separate read of the document.
+
+Phase 2. The register in steps\loop.md, every open fault from 01_next, the fault kind
+questions in 02_questions, 04_audit, 04_audit_first_run, the known bugs lines of this file,
+every proof step in 03_bader_next never proved, the doubled summary block above
+BuildViewpoints, F50 and F52 behind their switches, D1 and F98.
+
+Phase 3. The logs backup, the copy of NM Fed under %LOCALAPPDATA%\NwcFederatorLoop\source,
+build, install, the five run baseline into steps\runs\00. No fix lands before it.
+
+Phase 4. The loop. Most harmful first, a silent wrong number above a loud failure, one
+finding one branch one pull request, a failing test first, the reviewer and the breaker on
+every change, merged green, installed, proved by a run on the copy. D1 last, moves only.
+
+Phase 5. R1 to R6 written into docs\workflow.md and the rules first, then built one pull
+request at a time, each proved by a run.
+
+Phase 6. The close conditions on one final run set from a fresh copy, then one first run
+through the real window, then 03_bader_next cut down, the form, 05_audit, STATE CLOSED.
+
+### What was done
+
+The machine check, the NM Fed listing and the XML comparison above. gh 2.101.0 installed
+under %LOCALAPPDATA%\Programs\gh. http.sslBackend schannel set in this clone's .git\config.
+The build and the Core tests run once each on main.
+
+### What remains
+
+Everything from turn 1 on.
+
+### Known bugs
+
+F98 above.
+
+### What comes next
+
+Bader runs the one command at the top of the form in steps\loop.md and pastes the prompt
+again.
+
 ## 2026-09-27 INSTALL.md, DONE
 
 Core tests 1714 passed, 0 failed, 32 skipped, 1746 total, both before and after this
