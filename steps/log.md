@@ -1,7 +1,68 @@
 # log
 
 Newest entry at the top.
-## 2026-09-21 The close round, DONE, the record
+## 2026-09-27 INSTALL.md, DONE
+
+Core tests 1714 passed, 0 failed, 32 skipped, 1746 total, both before and after this
+round. Nothing in Core or the add-in changes this round.
+
+### What was done
+
+INSTALL.md is written at the repo root, 37 lines. It holds only what to paste into a VS
+Code terminal to build and install the add-in, with the build command, the
+NavisworksPath override, the install command, the success line, and what to do on a
+failure, all read off build\install.ps1 and Federator.Addin.csproj rather than guessed.
+README.md carries one new line pointing at it. steps\README.md does not list how to
+install, so it is unchanged.
+
+This session is a Linux container with no PowerShell and no Navisworks install, which is
+the state addin.md already names for a container session. Every command in INSTALL.md
+was still run here, in order, and what each one actually did is in the pull request body.
+The build command ran and failed exactly where a build on a machine with no Navisworks
+folder at the named path is expected to fail, both with the default NavisworksPath and
+with the override. The install command could not be run at all, there is no PowerShell
+here, and starting Navisworks could not be tried either. Neither is claimed to work.
+
+### What remains
+
+The install command and starting Navisworks, proved only on Bader's machine, where
+PowerShell and Navisworks Manage 2025 are both present. That is steps 5 and 6 of
+INSTALL.md, unrun here.
+
+### Known bugs
+
+None found this round. Nothing outside INSTALL.md and the one README.md line changed.
+
+### What comes next
+
+Bader runs INSTALL.md on his own machine and says whether the success line and the Tool
+Add-ins tab match what it promises. A mismatch there is a finding for the next round, not
+a guess this one makes now.
+
+### The plan, in order
+
+1. Read CLAUDE.md, the four files under .claude\rules, README.md, docs\workflow.md,
+   build\install.ps1, every .csproj and this entry's own section of steps\log.md. Done,
+   above this line
+2. Branch fix-install-md off main
+3. Write INSTALL.md at the repo root, under forty lines, holding only what to paste into
+   a VS Code terminal: what the file is for, what to close and pull first, the build
+   command read off build\install.ps1 and Federator.Addin.csproj, the NavisworksPath
+   override for a moved install, the install command, the success line read off
+   build\install.ps1's last Write-Host, and what to do on a failure
+4. Add one line to README.md pointing at INSTALL.md. steps\README.md does not list how
+   to install, so it is left alone
+5. Run every command INSTALL.md gives, in order, from a fresh terminal, and paste each
+   command's real output into the pull request body. This session is a Linux container
+   with no PowerShell and no Navisworks on it, which the addin.md rule already names as
+   the state a container session is in, so the build command is the one part of
+   INSTALL.md this session can run and the install command and starting Navisworks
+   cannot be run here. Both are said plainly rather than claimed
+6. Write this entry's ending, What was done, What remains, Known bugs, What comes next,
+   with the Core test counts before and after
+7. One draft pull request off fix-install-md, body carrying the pasted output and what
+   waits for Bader's machine. Watched with the GitHub tools until Actions is green, then
+   merged, then the local branch deleted
 
 Core tests 1666 before the round and 1746 after, 0 failed and 0 skipped in both. Build 0
 errors and 0 warnings after every change. Both `tools\checks` pass. Tree clean. Bader

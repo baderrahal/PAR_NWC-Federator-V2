@@ -8,6 +8,7 @@ The rules the code keeps are in `CLAUDE.md`. The worker's notes are in `steps`.
 
 ## Where things are
 
+- `INSTALL.md` is what to paste into a terminal to build and install the add-in
 - `docs/workflow.md` says what the tool does on a first run, a weekly run, a rebuild and
   the open file, and what the labels in the window mean
 - `CLAUDE.md` holds the rules every file keeps, and `.claude/rules` holds the rules for
