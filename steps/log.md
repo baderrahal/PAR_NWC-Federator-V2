@@ -1,6 +1,72 @@
 # log
 
 Newest entry at the top.
+## 2026-09-27 The loop, turn 1, F97 the house and F99 the git wall, DONE
+
+Core tests 1746 passed, 0 failed, 0 skipped before and after. Nothing under src or tests
+changed. The add-in was built in turn 0 on main, 0 errors and 0 warnings, and this turn
+touches none of it. Ends at STATE RESTART, because the eight agents load only when a
+session starts.
+
+### What was done
+
+- gh logged in as baderrahal by Bader, and fix-F97 pushed, so git and gh both work here
+- THE WHOLE REPO WAS READ, by nineteen read only agents over every file under src, tests,
+  tools and steps, 1,301 tool calls. What they found is in steps\loop-read.md, and every
+  fault in it is one reader's claim that nobody has confirmed yet: 179 faults, of which 70
+  are silent wrong outputs, 150 members nothing in src calls, 77 catches called
+  swallowing, 46 files with more than one top level type. No Navisworks type in Core. The
+  summary block the chat audit named as doubled above BuildViewpoints is not there
+- THE REGISTER, which the prompt puts in Phase 2, is built now from that read, 268 rows in
+  steps\loop.md, so the next session does not read the repo again
+- the team, eight agents under .claude\agents. The breaker and the claim-checker start
+  from the ai-max ones on this machine. Log-reader, reviewer, breaker, claim-checker and
+  writer have no shell
+- the walls. The paths wall now also covers NotebookEdit, Bash and PowerShell, and
+  refuses any file write under NM Fed or an ACC Desktop Connector folder and any command
+  naming either, bar one single run of tools\loop\prepare-copy.ps1. The git wall now
+  covers PowerShell and git.exe, which was F99. A Stop hook, loop-gate.sh, keeps a
+  session going while steps\loop.md reads OPEN, once per change to it, written to the
+  hooks reference read that day
+- THE FIRST VERSION OF THE PATHS WALL TOOK 11.9 SECONDS A CALL. Starting sh here costs 2.3
+  to 2.9 seconds and every pipe through grep, awk or sed about two more, measured under
+  load. It now reads the call with shell builtins and starts a program only on its way to
+  a refusal. It also refused the loop's own listing once, named nmfed-listing, so the wall
+  now matches NM Fed as written, with its space
+- the proof. 52 cases fed on standard input, 32 to the paths wall, 10 to the git wall
+  through a throwaway clone with main checked out, 10 to the Stop gate, each answering
+  what it should, pasted in the pull request. Two live refusals in this session, a
+  PowerShell listing of NM Fed and a Write under steps\logs
+- the allow list in .claude\settings.json for dotnet build and test, install.ps1, the
+  scripts under tools\loop and tools\probes, the checks, git, gh pr and gh run
+- tools\loop\prepare-copy.ps1, proved five ways on the real folder: made the copy of 141
+  files, kept it, took one NWC out, copied it back from NM Fed, kept it again
+- tools\loop\read-workbook.ps1, which shares no code with the writer, proved on both client
+  exports: 1830 blocks, 1830 names, 64 and 65 clash rows, each equal to its block totals
+- .claude\rules\loop.md, steps\runs with its own gitignore negation proved with git
+  check-ignore, steps\runs marked as untouched evidence in .gitattributes, CLAUDE.md at 199
+  lines
+- measured and written down: hooks load mid session, agents do not. Claude Code finds sh
+  on Windows without help, which CLAUDE.md held as UNKNOWN
+
+### What remains
+
+- Phase 1: the prober on a run with no click, the two probes, the no-click entry, run.ps1
+  and the separate read of the document. run.ps1 is not written, because how Navisworks
+  starts with no click is measured first
+- Phase 3 on: the baseline run set, then the loop, R1 to R6, the close
+- every register row not DONE
+
+### Known bugs
+
+- F98, the heading PR 71 dropped, fixed in its own pull request next
+- the 179 faults of the read, until confirmed or refuted
+
+### What comes next
+
+1. F98 in its own pull request
+2. Bader opens a new session and pastes the loop prompt, and turn 2 starts Phase 1
+
 ## 2026-09-27 The loop, turn 0, the plan, written before the first edit
 
 This is the first session that runs on Bader's own machine, where Navisworks Manage 2025

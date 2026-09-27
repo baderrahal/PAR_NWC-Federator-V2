@@ -41,18 +41,21 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
     build\install.ps1       the only way the bundle reaches the 27 machines
     tools\probes            PowerShell that measures the install or the window
     tools\checks            what can be checked without Navisworks, run by Actions
+    tools\loop              the loop's scripts. Its README says what each writes outside
     docs\workflow.md        the two workflows, the labels and the open file run
     docs\history            measurements and old rules, never current
     samples                 real files from the project, read by tests, never edited
     exchange                what this tool wrote from a sample, such as the corrected
                             matrix. Committed, and proved by a test to be exactly what
                             the rule produces from the sample, so it cannot drift
-    steps                   the plan, the questions, what Bader does next, the log
+    steps                   plan, questions, Bader's steps, log, and loop.md, read first
+    steps\runs              the loop's run evidence, one folder per run set
     bundle                  one hand written manifest, PackageContents.xml, copied by
                             install.ps1. Not build output and not edited in a fix
     artifacts               where install.ps1 assembles the bundle. Written by the build
     .claude\rules           the rules per folder, each with a paths line at the top
-    .claude\hooks           two walls, run by Claude Code before a tool call
+    .claude\agents          the loop's eight agents, loaded only when a session starts
+    .claude\hooks           two walls run before a tool call, and the loop's Stop gate
 
 ## Rules for every file
 
@@ -153,19 +156,23 @@ Windows file system rule rather than a rule of this tool. The passed, failed and
 counts are recorded in every log entry, before and after, so a new failure shows as a
 change in the number.
 
-## The two walls
+## The two walls and the Stop gate
 
-.claude\settings.json runs two PreToolUse hooks from .claude\hooks. One refuses an
-Edit, Write or MultiEdit under samples, steps\logs or bundle. The other refuses a git
-commit or a git push while main or master is checked out. Both read the tool call off
-standard input and exit 2 with one line saying why. They need a POSIX sh, which Git
-for Windows provides. Whether Claude Code on Windows finds it without help is UNKNOWN
-until tried.
+.claude\settings.json runs three hooks from .claude\hooks. The paths wall refuses an Edit,
+Write, MultiEdit or NotebookEdit under samples, steps\logs or bundle, and any file write
+or Bash or PowerShell command that names NM Fed or an ACC Desktop Connector folder, bar a
+single run of tools\loop\prepare-copy.ps1. The branch wall refuses a git commit or push
+through Bash or PowerShell while main or master is checked out. Both exit 2 with one line
+saying why. The Stop gate keeps a session going while steps\loop.md reads STATE OPEN,
+once per change to that file. All three need a POSIX sh, and Claude Code on Windows finds
+Git for Windows' sh without help, measured on 2026-09-27. Starting a program costs about
+two seconds on Bader's machine, so the walls read the call with shell builtins and start
+another program only for a call already on its way to being refused.
 
 They also need LF. sh reads a carriage return as part of the word, so a CRLF copy dies
-on its first case line and exits 2, which is the code that refuses, so the two walls jam
-shut and refuse every call. .gitattributes pins the two hooks and .githooks\pre-commit
-to LF on every checkout and carries the measurement. Never remove those three lines.
+on its first case line and exits 2, which is the code that refuses, so the walls jam
+shut and refuse every call. .gitattributes pins every hook and .githooks\pre-commit to
+LF on every checkout and carries the measurement. Never remove those lines.
 
 ## Confirm against the install, do not assume
 

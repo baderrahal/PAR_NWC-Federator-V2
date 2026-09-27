@@ -28,6 +28,10 @@
 steps/logs/** -text
 samples/** -text
 
+# The loop's run logs, tsv files and read-outs, collected off this Windows machine by the
+# runner. Evidence in the same way as steps/logs, so their bytes are kept as they came.
+steps/runs/** -text
+
 # Written by this tool from a sample and proved byte for byte against what the rule
 # produces, so its bytes are the artifact in exactly the way a sample's are. It had no
 # rule here, so "* text=auto" applied and the Windows runner checked it out with CRLF

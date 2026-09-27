@@ -60,3 +60,7 @@ coverage*.xml
 
 # Bader drops files here for a round to pick up. Not part of the repo.
 Claude outputs/
+
+# The Stop hook's note of when it last sent a session back, so it never sends one back
+# twice over an unchanged steps/loop.md. Local to one machine and never committed.
+.claude/hooks/.loop-gate-last

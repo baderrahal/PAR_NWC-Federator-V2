@@ -1,8 +1,32 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Bash(dotnet test *)",
+      "Bash(dotnet build-server shutdown)",
+      "PowerShell(dotnet build *)",
+      "PowerShell(dotnet test *)",
+      "PowerShell(dotnet build-server shutdown)",
+      "Bash(powershell -ExecutionPolicy Bypass -File build/install.ps1 *)",
+      "Bash(powershell -ExecutionPolicy Bypass -File build\\install.ps1 *)",
+      "PowerShell(powershell -ExecutionPolicy Bypass -File build\\install.ps1 *)",
+      "Bash(powershell -ExecutionPolicy Bypass -File tools/loop/*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File tools\\loop\\*)",
+      "PowerShell(powershell -ExecutionPolicy Bypass -File tools\\loop\\*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File tools/probes/*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File tools\\probes\\*)",
+      "PowerShell(powershell -ExecutionPolicy Bypass -File tools\\probes\\*)",
+      "Bash(sh tools/checks/*)",
+      "Bash(git *)",
+      "PowerShell(git *)",
+      "Bash(gh pr *)",
+      "Bash(gh run *)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|MultiEdit",
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash|PowerShell",
         "hooks": [
           {
             "type": "command",
@@ -11,11 +35,21 @@
         ]
       },
       {
-        "matcher": "Bash",
+        "matcher": "Bash|PowerShell",
         "hooks": [
           {
             "type": "command",
             "command": "sh \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/refuse-git-on-main.sh\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/loop-gate.sh\""
           }
         ]
       }
