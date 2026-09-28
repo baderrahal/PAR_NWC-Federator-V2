@@ -1,0 +1,329 @@
+MACHINE   91JCZB4   2026-09-28 12:27:18
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 22468
+
+==== STEP 1. Reflection over Autodesk.Navisworks.Automation.dll, nothing started ====
+file      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Automation.dll   184088 bytes
+assembly  Autodesk.Navisworks.Automation, Version=22.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484
+runtime   v4.0.30319
+pe kind   PE32Plus   machine AMD64
+references:
+  mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+  System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+
+types in the assembly: 534, public: 10
+Every public type follows. The ones named std. or _TP_ are C++ runtime structs the
+compiler made public, with no members.
+
+---- public struct _TP_CALLBACK_ENVIRON_V3+<unnamed-type-u> ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+
+---- public struct _TP_CALLBACK_ENVIRON_V3+<unnamed-type-u>+<unnamed-type-s> ----
+  base type: System.ValueType
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+
+---- public class Autodesk.Navisworks.Api.Automation.AutomationDocumentFileException ----
+  base type: System.Exception
+  implements: System.Runtime.Serialization.ISerializable, System.Runtime.InteropServices._Exception
+  attribute: [System.SerializableAttribute()]
+  public AutomationDocumentFileException(System.String message, System.Exception innerException)
+  public AutomationDocumentFileException(System.String message)
+  public AutomationDocumentFileException()
+
+---- public class Autodesk.Navisworks.Api.Automation.AutomationException ----
+  base type: System.Exception
+  implements: System.Runtime.Serialization.ISerializable, System.Runtime.InteropServices._Exception
+  attribute: [System.SerializableAttribute()]
+  public AutomationException(System.String message, System.Exception innerException)
+  public AutomationException(System.String message)
+  public AutomationException()
+
+---- public class Autodesk.Navisworks.Api.Automation.NavisworksApplication ----
+  base type: System.Object
+  implements: System.IDisposable
+  public NavisworksApplication()
+  public System.Boolean Visible { get; set }
+  public System.Void AddPluginAssembly(System.String fileName)
+  public System.Void AppendFile(System.String fileName)
+  public System.Void CreateCache(System.String fileNameToCache)
+  public System.Void DisableProgress()
+  public System.Void Dispose()
+  public System.Void EnableProgress()
+  public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters)
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication GetRunningInstance()
+  public System.Void OpenFile(System.String fileName, params System.String[] moreFiles)
+  public System.Void Print(System.String printer)
+  public System.Void Print(System.String printer, System.String driver, System.String port)
+  public System.Void Print(System.String printer, System.String driver)
+  public System.Void Print()
+  public System.Void SaveFile(System.String fileName)
+  public System.Void StayOpen()
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication TryGetRunningInstance()
+
+---- public struct std._String_val<std::_Simple_types<char> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+
+---- public struct std._String_val<std::_Simple_types<char16_t> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+
+---- public struct std._String_val<std::_Simple_types<char32_t> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+
+---- public struct std._String_val<std::_Simple_types<wchar_t> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+
+---- public struct std.ranges._Not_quite_object+_Construct_tag ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+
+---- NavisworksApplication, every member public or not, declared on it ----
+  private System.Void !NavisworksApplication()
+  private System.Void ~NavisworksApplication()
+  public System.Void AddPluginAssembly(System.String fileName)
+  public System.Void AppendFile(System.String fileName)
+  public System.Void CreateCache(System.String fileNameToCache)
+  public System.Void DisableProgress()
+  protected System.Void Dispose(System.Boolean A_0)
+  public System.Void Dispose()
+  public System.Void EnableProgress()
+  public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters)
+  protected System.Void Finalize()
+  public System.Boolean get_Visible()
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication GetRunningInstance()
+  private System.Void Init(System.Boolean runningInstance)
+  public System.Void OpenFile(System.String fileName, params System.String[] moreFiles)
+  public System.Void Print()
+  public System.Void Print(System.String printer)
+  public System.Void Print(System.String printer, System.String driver)
+  public System.Void Print(System.String printer, System.String driver, System.String port)
+  private System.Int32 RunAction(System.Char* action, params System.String[] parameters)
+  public System.Void SaveFile(System.String fileName)
+  public System.Void set_Visible(System.Boolean val)
+  public System.Void StayOpen()
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication TryGetRunningInstance()
+  private .ctor(System.Boolean runningInstance)
+  public .ctor()
+  field Bridge* m_bridge
+
+---- What the constructors, GetRunningInstance, Dispose and the finalizer call, off the IL, three levels inside this assembly ----
+  [0] private Autodesk.Navisworks.Api.Automation.NavisworksApplication::.ctor(System.Boolean runningInstance)
+        call     System.Object::.ctor()
+        call     Autodesk.Navisworks.Api.Automation.NavisworksApplication::Init(System.Boolean runningInstance)
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::.ctor()
+        call     System.Object::.ctor()
+        ldc.i4.0
+        call     Autodesk.Navisworks.Api.Automation.NavisworksApplication::Init(System.Boolean runningInstance)
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::GetRunningInstance()
+        ldc.i4.1
+        newobj   Autodesk.Navisworks.Api.Automation.NavisworksApplication::.ctor(System.Boolean runningInstance)
+  [0] protected Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose(System.Boolean A_0)
+        call     Autodesk.Navisworks.Api.Automation.NavisworksApplication::!NavisworksApplication()
+        call     Autodesk.Navisworks.Api.Automation.NavisworksApplication::!NavisworksApplication()
+        call     System.Object::Finalize()
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose()
+        ldc.i4.1
+        callvirt Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose(System.Boolean A_0)
+        call     System.GC::SuppressFinalize(System.Object obj)
+        call     System.GC::KeepAlive(System.Object obj)
+  [0] protected Autodesk.Navisworks.Api.Automation.NavisworksApplication::Finalize()
+        ldc.i4.0
+        callvirt Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose(System.Boolean A_0)
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::StayOpen()
+        ldstr  "NavisworksApplication"
+        newobj   System.ObjectDisposedException::.ctor(System.String objectName)
+        call     null::Bridge.StayOpen(Bridge* )
+        ldstr  "Error calling method: "
+        call     System.String::Concat(System.Object arg0, System.Object arg1)
+        newobj   System.InvalidOperationException::.ctor(System.String message)
+        call     System.GC::KeepAlive(System.Object obj)
+  [1] private Autodesk.Navisworks.Api.Automation.NavisworksApplication::Init(System.Boolean runningInstance)
+        ldc.i4.0
+        call     null::Bridge.Initialise()
+        ldc.i4.8
+        call     null::new(System.UInt64 )
+        call     null::Bridge.{ctor}(Bridge* )
+        ldc.i4.0
+        ldc.i4.8
+        call     null::delete(System.Void* , System.UInt64 )
+        ldstr  "Cannot get running instance of Application"
+        call     null::Bridge.GetRunningNaviswork(Bridge* )
+        ldstr  "Failed to startup Navisworks"
+        call     null::Bridge.StartupNavisworks(Bridge* )
+        ldc.i4.1
+        call     null::Bridge.__delDtor(Bridge* , System.UInt32 A_0)
+        ldc.i4.0
+        call     null::Bridge.Terminate()
+        ldstr  ": "
+        call     System.String::Concat(System.String str0, System.String str1)
+        call     System.String::Concat(System.Object arg0, System.Object arg1)
+        newobj   Autodesk.Navisworks.Api.Automation.AutomationException::.ctor(System.String message)
+        call     System.GC::KeepAlive(System.Object obj)
+  [1] private Autodesk.Navisworks.Api.Automation.NavisworksApplication::!NavisworksApplication()
+        call     null::Bridge.{dtor}(Bridge* )
+        ldc.i4.8
+        call     null::delete(System.Void* , System.UInt64 )
+        ldc.i4.0
+        call     null::Bridge.Terminate()
+        call     System.GC::KeepAlive(System.Object obj)
+  [1] internal null::Bridge.StayOpen(Bridge* )
+  [2] internal null::Bridge.Initialise()
+  [2] internal null::new(System.UInt64 )
+  [2] internal null::Bridge.{ctor}(Bridge* )
+  [2] internal null::delete(System.Void* , System.UInt64 )
+  [2] internal null::Bridge.GetRunningNaviswork(Bridge* )
+  [2] internal null::Bridge.StartupNavisworks(Bridge* )
+  [2] internal null::Bridge.__delDtor(Bridge* , System.UInt32 A_0)
+        call     null::Bridge.{dtor}(Bridge* )
+        ldc.i4.1
+        ldc.i4.8
+        call     null::delete(System.Void* , System.UInt64 )
+  [2] internal null::Bridge.Terminate()
+  [2] public Autodesk.Navisworks.Api.Automation.AutomationException::.ctor(System.String message)
+        call     System.Exception::.ctor(System.String message)
+  [2] internal null::Bridge.{dtor}(Bridge* )
+
+---- Which COM class the native half creates ----
+  Navisworks.Document CLSID {81920959-1e7e-5599-a1d1-e67aeced44df}, LocalServer32 C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe
+  that CLSID's 16 bytes appear in the DLL at offsets: 49920, 49952
+  import name CoCreateInstance   in the DLL: True
+  import name GetActiveObject    in the DLL: False
+  import name CoGetClassObject   in the DLL: False
+  import name CreateProcessW     in the DLL: False
+  import name ShellExecuteW      in the DLL: False
+
+---- Which command line makes a Roamer the COM automation server, reflection only ----
+  CommandLineParser::ParseOption sets CommandLineConfig.COMAutomationStartup after matching the option names: "Embedding", "Automation"
+  every option name the parser matches, 37: Embedding, Automation, regserver, Register, unregserver, Unregister, RegisterPerUser, UnregisterPerUser, user, noreg, pure, log, dump, dump_options, MemCheck, options, lang, nwd, nwc, bench, ShowGui, HideGui, NoGui, NoCache, OpenFile, GenerateThumbnail, GenerateThumbnailByRayTrace, CreateCache, Print, SaveFile, AppendFile, Exit, ExecuteAddInPlugin, AddPluginAssembly, EnableProgress, DisableProgress, Licensing
+  Roamer.exe NetRoamer.Program::MainImpl reads COMAutomationStartup off the parsed command line and hands it to the initialiser: True
+
+==== STEP 2. Every Roamer running before anything starts ====
+  Roamer pid 34668  started 2026-09-28 09:33:44  NOT MINE, never closed, attached to or sent anything
+  every process id on the machine taken as the before set: 479
+  HKCU Navisworks Manage 22.0 exported as a backup to C:\Users\p003653k\AppData\Local\NwcFederatorLoop\probes\automation-start\hkcu-navisworks-manage-22.0-before.reg, exit 0
+  snapshots: 303 registry keys, 205 files under %APPDATA%\Autodesk\Navisworks Manage 2025, 32 files in the tool's own logs folder
+
+==== STEP 3. Start one Navisworks through the API ====
+  12:27:23.873  t+5.1s  calling new NavisworksApplication()
+  12:29:13.910  t+115.2s  the constructor RETURNED after 110.02 s
+  Roamer processes not in the step 2 list: 1
+    pid 44888, started 12:27:38.055, parent 1328, path C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe
+    command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  MY PID IS 44888, started 2026-09-28 12:27:38.055, written to C:\Users\p003653k\AppData\Local\NwcFederatorLoop\probes\automation-start\mypid.txt
+  the process started 14.17 s after the call began and 95.85 s before the constructor returned
+  MainWindowHandle 0, MainWindowTitle ""
+  visible top level windows of 44888: 0, hidden: 64, dialogs of class #32770 visible: 0
+  12:29:20.258  t+121.5s  Visible read BEFORE setting it: False
+  12:29:25.478  t+126.8s  set Visible = True, read back: True, MainWindowHandle 0, title ""
+  visible top level windows of 44888: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  12:29:27.022  t+128.3s  set Visible = False, read back: False, MainWindowHandle 0
+  visible top level windows of 44888: 0, hidden: 71, dialogs of class #32770 visible: 0
+  ExecuteAddInPlugin exists: public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters). NOT called
+
+==== STEP 4. Copy one NWC from the loop's source copy and open the copy ====
+  source C:\Users\p003653k\AppData\Local\NwcFederatorLoop\source\NWC\C06\1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc, 27291 bytes, the smallest NWC in the copy
+  copy   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\probes\automation-start\1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc, 27291 bytes, sha256 matches
+  12:29:27.289  t+128.6s  calling OpenFile(copy, no more files)
+  12:29:30.059  t+131.3s  OpenFile RETURNED, it is void so there is no value after 2.77 s
+  visible top level windows of 44888: 0, hidden: 79, dialogs of class #32770 visible: 0
+  12:29:30.067  t+131.3s  check: SaveFile of what is open to C:\Users\p003653k\AppData\Local\NwcFederatorLoop\probes\automation-start\opened-copy-saved.nwd
+  12:29:32.907  t+134.2s  SaveFile RETURNED after 2.84 s
+  the NWD exists, 29763 bytes read back off the disk
+  the NWC copy after the open: sha256 unchanged
+
+==== STEP 5. AddPluginAssembly with the add-in built from this repo ====
+  C:\Users\p003653k\OneDrive - Parsons Corp\Documents\GitHub\PAR_NWC-Federator\src\Federator.Addin\bin\Release\net48\Federator.Addin.dll
+  241152 bytes, written 2026-09-28 12:14:33, Federator.Addin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null, stamp 1.0.0.0 2cc8045c+edits built 2026-09-28 12:14:32
+  12:29:32.954  t+134.2s  calling AddPluginAssembly
+  12:29:32.961  t+134.2s  AddPluginAssembly RETURNED, it is void so there is no value after 0.00 s
+  visible top level windows of 44888: 0, hidden: 77, dialogs of class #32770 visible: 0
+  ExecuteAddInPlugin is public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters). It was NOT called
+
+==== STEP 6. Quit through the API ====
+  12:29:32.971  t+134.2s  calling Dispose()
+  12:29:33.274  t+134.5s  Dispose RETURNED after 0.30 s
+  12:29:41.798  t+143.1s  pid 44888 GONE 8.5 s after Dispose returned, not forced
+
+==== FINALLY ====
+  pid 44888 is not running, nothing to close
+  watchdog forced anything: no
+
+---- the watchdog's record, every new process and every visible window of the new Roamer ----
+  12:27:23.977  t+5.3s  watchdog started
+  12:27:46.397  t+27.7s  new process Roamer pid 44888, parent 1328, started 12:27:38.055, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  12:27:46.423  t+27.7s  Roamer 44888 visible top level windows: none
+  12:28:16.375  t+57.6s  new process AdskLicensingInstHelper pid 43200, parent 26520, started 12:28:10.879, command line: 
+  12:28:44.467  t+85.7s  new process AdskLicensingAgent pid 6540, parent 44888, started 12:28:35.046, command line: "C:\Program Files (x86)\Common Files\Autodesk Shared\AdskLicensing\Current\AdskLicensingAgent/AdskLicensingAgent.exe" -i f6c9534c-bdb4-4936-948b-68753bb9a33b --no-gui -c 2
+  12:29:08.038  t+109.3s  new process AdskLicensingInstHelper pid 46808, parent 26520, started , command line: 
+  12:29:08.117  t+109.4s  Roamer 44888 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  12:29:11.140  t+112.4s  Roamer 44888 visible top level windows: none
+  12:29:20.487  t+121.8s  Roamer 44888 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  12:29:21.201  t+122.5s  Roamer 44888 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  12:29:21.779  t+123.1s  Roamer 44888 visible top level windows: none
+  12:29:23.566  t+124.8s  Roamer 44888 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  12:29:25.868  t+127.1s  Roamer 44888 visible top level windows: none
+  12:29:28.789  t+130.1s  Roamer 44888 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;5786487b-7a52-4294-9405-27b1b3b4b48b]] "Working..."
+  12:29:30.510  t+131.8s  Roamer 44888 visible top level windows: none
+  12:29:31.708  t+133.0s  Roamer 44888 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;c1185ea1-0096-4fde-be7c-dc253cb339c9]] "Working..."
+  12:29:33.438  t+134.7s  Roamer 44888 visible top level windows: none
+  12:29:42.080  t+143.4s  Roamer 44888 has exited
+  12:29:43.148  t+144.4s  watchdog stopped
+
+---- the Roamers from step 2, at the end ----
+  pid 34668 started 2026-09-28 09:33:44: STILL RUNNING, same start time
+
+---- what changed on the machine while the probe ran ----
+  HKCU Navisworks Manage 22.0 keys whose values changed, by name only: 13
+    changed 22.0\CER\22.5.1433.58
+    changed 22.0\MainWindow
+    changed 22.0\PluginOptions
+    changed 22.0\Recent File List\1
+    changed 22.0\Recent File List\10
+    changed 22.0\Recent File List\2
+    changed 22.0\Recent File List\3
+    changed 22.0\Recent File List\4
+    changed 22.0\Recent File List\5
+    changed 22.0\Recent File List\6
+    changed 22.0\Recent File List\7
+    changed 22.0\Recent File List\8
+    changed 22.0\Recent File List\9
+  files under %APPDATA%\Autodesk\Navisworks Manage 2025 added, changed or removed: 3
+    changed %APPDATA%\Autodesk\Navisworks Manage 2025\clash\rules
+    changed %APPDATA%\Autodesk\Navisworks Manage 2025\CommCenter\en-US\infocenter.xml
+    changed %APPDATA%\Autodesk\Navisworks Manage 2025\LastSession.xml
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+  files in the work folder:
+    1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc  27291 bytes
+    hkcu-navisworks-manage-22.0-before.reg  123148 bytes
+    mypid.txt  42 bytes
+    step1-reflection.txt  7558 bytes
+    watch.txt  2102 bytes
+    opened-copy-saved.nwd  29763 bytes
+
+---- outcome ----
+  step 1 passed, reflection read
+  step 2 passed, 1 Roamer running before
+  step 3 passed
+  step 4 passed
+  step 5 passed
+  step 6 passed
+  finished 2026-09-28 12:29:44, 146 s in all

@@ -4643,3 +4643,167 @@ refused the ignore case flag there: `AR-EXTERIOR` against `AR-INTERIOR` and `ST-
 against `ST-SUP` are two pairs of real worksets one and two letters apart. The two cases
 look alike and the answers are opposite, which is exactly why this is written down now
 rather than re-argued later.
+
+
+## 5z-d. CAN A SCRIPT START NAVISWORKS WITH NO CLICK AND CLOSE IT BY ITS OWN ID, MEASURED 2026-09-28
+
+F100, Phase 1 item 1 of the loop, on 91JCZB4. The first measurement of the automation API
+on this machine. 5j used the same API on DESKTOP-5VL7LTJ on 2026-09-19, and how it was
+started there was never recorded.
+
+THE QUESTION. Can a PowerShell script start Navisworks Manage 2025 with no click through
+`Autodesk.Navisworks.Api.Automation`, know the process id of the Navisworks it started,
+open a copy of one NWC, load a plugin assembly with `AddPluginAssembly`, and quit? If it
+can, `tools\loop\run.ps1` drives each run through this API with `ExecuteAddInPlugin`, and
+the no-click entry is an AddInPlugin. If it cannot, run.ps1 starts Roamer.exe itself and
+drives the window.
+
+HOW. `tools\probes\probe-automation-start.ps1`, six steps in order, stopping at the first
+that fails, with steps 3 to 6 in one try whose finally closes the started id. A watchdog on
+its own runspace records every new process and every visible window of the new Roamer each
+half second, so a dialog raised while a call blocks is still seen, and it reads no window
+of any other process. Windows PowerShell 5.1, 64 bit, STA:
+
+```
+dotnet build src\Federator.Addin\Federator.Addin.csproj -c Release
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\probes\probe-automation-start.ps1 -Out tools\probes\automation-start-result-20260928.txt
+```
+
+The build read 0 warnings and 0 errors and stamped the DLL
+`1.0.0.0 2cc8045c+edits built 2026-09-28 12:14:32`, the edits being this probe. The whole
+output is `tools\probes\automation-start-result-20260928.txt`.
+
+**THE ANSWER IS YES. ALL SIX STEPS PASSED.**
+
+```
+step 2  one Roamer running before, pid 34668, started 2026-09-28 09:33:44, not ours
+step 3  constructor RETURNED after 110.02 s, one new Roamer, pid 44888
+        command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+        parent 1328, svchost.exe
+        Visible read False, set True read True, set False read False
+step 4  OpenFile of the copy RETURNED after 2.77 s
+        SaveFile of what was open RETURNED after 2.84 s, NWD 29763 bytes read back off the disk
+step 5  AddPluginAssembly of the built Federator.Addin.dll RETURNED after 0.00 s, no exception
+step 6  Dispose RETURNED after 0.30 s, pid 44888 GONE 8.5 s later, not forced
+end     pid 34668 STILL RUNNING, same start time
+```
+
+1. STEP 1, THE DLL, 184,088 bytes, 22.0.0.0, PE32Plus AMD64. Two exception types,
+   `AutomationException` and `AutomationDocumentFileException`, and one class that does
+   anything, `NavisworksApplication`, IDisposable. Every public member, as the probe read it:
+
+   ```
+   public NavisworksApplication()
+   public System.Boolean Visible { get; set }
+   public System.Void AddPluginAssembly(System.String fileName)
+   public System.Void AppendFile(System.String fileName)
+   public System.Void CreateCache(System.String fileNameToCache)
+   public System.Void DisableProgress()
+   public System.Void Dispose()
+   public System.Void EnableProgress()
+   public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters)
+   public static NavisworksApplication GetRunningInstance()
+   public System.Void OpenFile(System.String fileName, params System.String[] moreFiles)
+   public System.Void Print(), and three more taking printer, driver and port
+   public System.Void SaveFile(System.String fileName)
+   public System.Void StayOpen()
+   public static NavisworksApplication TryGetRunningInstance()
+   ```
+
+   The other public types in the DLL are C++ runtime structs with no members.
+
+2. WHY STEP 3 COULD NOT REACH BADER'S NAVISWORKS, read before anything started. The public
+   constructor passes false to `Init`, `ldc.i4.0` in its IL, and that calls the native
+   `Bridge.StartupNavisworks`. `GetRunningInstance` passes true and calls
+   `Bridge.GetRunningNaviswork`. The native half imports `CoCreateInstance` and carries the
+   16 bytes of `{81920959-1e7e-5599-a1d1-e67aeced44df}`, which is `Navisworks.Document.22`,
+   whose LocalServer32 is Roamer.exe. Roamer.exe is a managed launcher, `NetRoamer.Program`,
+   and its command line parser sets `COMAutomationStartup` only on the option `Embedding` or
+   `Automation`, which `MainImpl` hands to the initialiser. So a Roamer started by hand never
+   serves that class, and the constructor always starts a new Roamer. Step 3 showed exactly
+   that, `-Embedding` on the command line and svchost as the parent
+
+3. STEP 3, THE START. 110 s from the call to the return. Roamer started 14.2 s after the call
+   began and the constructor returned 95.9 s after that. Meanwhile pid 44888 started
+   `AdskLicensingAgent ... --no-gui -c 2`, and Autodesk's GenuineService started
+   `AdskLicensingInstHelper` twice. No window of class #32770 appeared at any point. ONE
+   WINDOW DID SHOW BEFORE VISIBLE WAS TOUCHED: a WinForms top level window with no title was
+   visible for about 3 s at 12:29:08, then hidden. Visible then read False. Set to True, the
+   main window `Untitled - Autodesk Navisworks Manage 2025` appeared, and set back to False
+   it went. `Process.MainWindowHandle` read 0 the whole time, even while that window showed,
+   so a script cannot find this Navisworks through its main window handle
+
+   THE PROCESS ID IS FOUND BY COMPARING, NEVER BY PARENT. COM starts Roamer under svchost,
+   so the script is never its parent. The probe listed every Roamer with its start time
+   before the call and took the Roamer that was new after it, and there was exactly one
+
+4. STEP 4, THE OPEN. The smallest NWC in the source copy, `NWC\C06\1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc`,
+   27,291 bytes, copied into `%LOCALAPPDATA%\NwcFederatorLoop\probes\automation-start` with
+   its sha256 matching. `OpenFile` is void, so as the one outside sign that the model loaded,
+   what was open was saved with `SaveFile` to an NWD beside it, 29,763 bytes read back off
+   the disk. The copy's sha256 did not change. A progress window titled `Working...`, class
+   `HwndWrapper[Roamer.exe;ProgressDialog;...]`, SHOWED ON SCREEN during the open and during
+   the save although Visible was False
+
+5. STEP 5, THE PLUGIN. `AddPluginAssembly` with
+   `src\Federator.Addin\bin\Release\net48\Federator.Addin.dll` returned in under a
+   hundredth of a second and threw nothing. It is void. `ExecuteAddInPlugin` was NOT called,
+   because the tool's own plugin opens its window, so nothing here shows the assembly was
+   loaded or its plugins registered
+
+6. STEP 6, THE QUIT. `Dispose` returned in 0.30 s and pid 44888 was gone 8.5 s after it.
+   The watchdog, set to close only that id after 480 s, closed nothing. The licensing agent
+   44888 started, and both helpers, were gone afterwards too
+
+**WHAT THE STARTED NAVISWORKS WROTE INTO BADER'S OWN SETTINGS.** Every change below was made
+by pid 44888. The probe exported `HKCU\Software\Autodesk\Navisworks Manage\22.0` before
+step 3 and compared after:
+
+```
+Recent File List 1 to 10     the saved NWD and the NWC copy put at the top, his ten moved
+                             down two, his two oldest gone off the list
+MainWindow Placement         "2,0,0,1632,969" became "0,-1920,-55,1632,877"
+PluginOptions DefaultPlugin  "LcOpNwcPlugin" became "lcodpody"
+CER\22.5.1433.58             session start count and clean close count one higher
+```
+
+Three files under `%APPDATA%\Autodesk\Navisworks Manage 2025` were written at its exit too,
+`clash\rules`, `CommCenter\en-US\infocenter.xml` and `LastSession.xml`, which is the ribbon
+and panel layout. The Recent File List, MainWindow and PluginOptions keys were put back
+after the probe from the export with `reg import`, and a compare of the key against the
+export that ignores value order then read one key different, CER, left as it is because
+that session did happen. The three files had no content backup, so whether their content
+changed or was written back the same is UNKNOWN.
+
+**WHAT THIS DECIDES.**
+
+- run.ps1 can start and close each run through the automation API with no click. It finds
+  its own Navisworks by comparing Roamer ids and start times before and after the
+  constructor, because the parent is svchost and the main window handle reads 0
+- the no-click entry can be an AddInPlugin called through
+  `ExecuteAddInPlugin(string pluginId, params string[] parameters)`, which returns an int.
+  The call exists on this machine. Whether it runs a plugin added with AddPluginAssembly
+  here is the first thing the entry's own run shows
+- an automated Navisworks writes Bader's recent files, window placement and default plugin
+  at exit, so run.ps1 has those to back up and put back around every run, beside the
+  folders.txt the loop already keeps
+
+**STILL UNKNOWN.**
+
+- whether AddPluginAssembly loaded the assembly and registered its plugins. It is void and
+  took under a hundredth of a second
+- whether ExecuteAddInPlugin runs a plugin added that way on this machine, and what its int
+  means
+- whether the installed bundle, which Navisworks loads from ApplicationPlugins at start, was
+  loaded in the automation instance as well, and what happens when it and the added
+  assembly carry the same plugin id
+- whether 110 s is what a start usually costs here. It is one start
+- whether DisableProgress keeps the `Working...` window off the screen
+- whether the untitled window seen for 3 s at start shows every time, and what it is
+- whether the start works with the screen locked or nobody signed in. This ran in a signed
+  in session
+- what StayOpen does. It was not called
+- what the three `%APPDATA%` files held before
+- what Roamer.exe does with its own switches. Its parser matches 37 option names, among them
+  `NoGui`, `OpenFile`, `AddPluginAssembly`, `ExecuteAddInPlugin` and `Exit`, read off the IL
+  and NOT RUN. They are the route if this one ever fails

@@ -1,6 +1,6 @@
 # Probes
 
-Twelve PowerShell scripts that read facts off the machine they run on: the installed
+Thirteen PowerShell scripts that read facts off the machine they run on: the installed
 Navisworks DLLs, and the real window once the add-in is built and installed. They were
 how docs/history/scan.md was measured. Nothing here is part of the build or the install.
 
@@ -56,6 +56,14 @@ build\install.ps1, because they construct the real window:
   press a button, and its header says what was measured about the ribbon, the automation
   host and where the window sits in the automation tree. It needs the add-in window
   already open
+
+One probe starts a Navisworks of its own and closes it by its process id:
+
+- `probe-automation-start.ps1` answers F100: whether Autodesk.Navisworks.Api.Automation
+  starts Navisworks with no click, which process id it started, whether that Navisworks
+  opens a copy of one NWC from the loop's source copy, takes the add-in built from this
+  repo through AddPluginAssembly, and quits. Every other Roamer is listed first and never
+  touched. See docs/history/scan.md section 5z-d
 
 A probe that cannot find what it needs says UNKNOWN and the path it looked at, and
 stops. Never search the install folder for a DLL, the path is built and tested directly,
