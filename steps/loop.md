@@ -123,11 +123,15 @@ and close every loop run.
 What the attempts showed:
 
 - the first version ran once, run 1 at 12:27 on 2026-09-28: the Automation API starts a new
-  Navisworks here with no click in 110 s, as Roamer.exe -Embedding, and Dispose closes it in
-  8.5 s. Its reviewer and breaker found it could adopt and force close a Navisworks it did
-  not start, if one was opened by hand during the start and the start threw
-- fix attempt 1 ran twice, runs 2 and 3 at 13:11 and 13:17: the same answer, 82.75 s to
-  start, closed in 8.0 s. Its readers found it put Bader's settings back while his own
+  Navisworks here with no click, as Roamer.exe -Embedding, the constructor returning after
+  110.02 s, and Dispose closes it, gone 8.5 s after, lines 226 and 264 of the result as
+  committed in 464f79f. Its reviewer and breaker found it could adopt and force close a
+  Navisworks it did not start, if one was opened by hand during the start and the start
+  threw
+- fix attempt 1 ran twice, runs 2 and 3 at 13:11 and 13:17: the constructor returned after
+  85.36 s and 82.75 s, and the Navisworks was gone 9.3 s and 8.0 s after Dispose, lines 394
+  and 432 of run 2's kept result and 395 and 433 of run 3's. Its readers found it put
+  Bader's settings back while his own
   Navisworks ran, so it could revert a change of his, could empty a backup before a
   refusal, and still closed an unproved start at its deadline
 - fix attempts 2 and 3 are not run with a Navisworks, because Bader's was open all day and
@@ -140,7 +144,9 @@ What the attempts showed:
   printed as written down before the write is tried, and a recorded start with no start
   time can block the loop when a Navisworks opened by hand later takes its pid. And the
   rule that no start is made while ANY Navisworks runs is kept by a person, not by code,
-  so an unattended run.ps1 must enforce it
+  so an unattended run.ps1 must enforce it. Each fault with the probe lines it rests on is
+  in %LOCALAPPDATA%\NwcFederatorLoop\turn1\f100-fourth-reading.md, beside the three fix
+  lists
 
 THE RESULT FILE MUST NOT REACH MAIN AS IT IS. tools\probes\automation-start-result-20260928.txt
 on the branch carries the licensing agent's analytics id and a session id, from the run
