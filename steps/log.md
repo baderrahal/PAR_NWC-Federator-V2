@@ -311,6 +311,8 @@ a guess this one makes now.
    waits for Bader's machine. Watched with the GitHub tools until Actions is green, then
    merged, then the local branch deleted
 
+## 2026-09-21 The close round, DONE, the record
+
 Core tests 1666 before the round and 1746 after, 0 failed and 0 skipped in both. Build 0
 errors and 0 warnings after every change. Both `tools\checks` pass. Tree clean. Bader
 answers Q20, Q55, Q56, Q73, Q74 and Q75, and Q76, Q77 and Q78 are new.
