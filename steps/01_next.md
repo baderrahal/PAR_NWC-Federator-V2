@@ -47,7 +47,7 @@ Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the 
 27. F97, DONE, the house of the loop
 28. F98, DONE, the close round heading back in steps\log.md
 29. F99, DONE, the git wall through PowerShell
-30. F100, a start of Navisworks with no click, measured, WAITING for one run
+30. F100, a start of Navisworks with no click, measured, IN THE FORM after three fix attempts
 
 The loop opened on 2026-09-27 on Bader's own machine. Its fixes take the next free F number from F97, and the order it works in is its register in steps\loop.md, most harmful first.
 
@@ -949,4 +949,4 @@ The alignment round closed on 2026-09-20, branch `round-alignment`, proved by TW
 - `tools/probes/probe-automation-start.ps1` starts one Navisworks through Autodesk.Navisworks.Api.Automation, finds the process id it started as the one Roamer that was not running before, opens a copy of one NWC from the loop's source copy, calls AddPluginAssembly with the add-in built from this repo, and quits, closing only its own process id. docs\history\scan.md 5z-d
 - It found that while a Navisworks the loop started runs, Bader's own Navisworks settings change: the recent files, the window placement and the default plugin in the registry, and files under his roaming profile. So two guards go into `.claude/rules/loop.md`: what makes a Navisworks the loop's own, with nothing closed before it is proved, and the backup of those settings before every start, put back only when no Navisworks the loop did not start ran meanwhile
 - Two rounds of review. The first reviewer and breaker found the first version could adopt, and in its finally force close, a Navisworks it did not start, if Bader opened one during the start and the start threw. The second found the fixed version could revert a change Bader's own Navisworks made during the run, could empty a backup before a refusal, and still closed an unproved start at its deadline. The prober fixed both lists, the lead deciding what they left open
-- WAITING on 2026-09-28. The changed probe has passed the checks that start no Navisworks, which cannot reach the writes of the put back or the deadline with a real start, and its one full run waits until no Navisworks the loop did not start is running, because only then can the put back be proved safe. Bader's own was open all day
+- A third round of review, and a fourth reading of the third fix attempt, which still found faults inside what that attempt changed, each small. By the house rule a finding that survives three fix attempts stops, so on 2026-09-28 F100 went to the form in steps\loop.md with what each attempt showed and Bader's choice. The changed probe has passed the checks that start no Navisworks, which cannot reach the writes of the put back or the deadline with a real start. Its full run waits until no Navisworks the loop did not start is running, and Bader's own was open all day

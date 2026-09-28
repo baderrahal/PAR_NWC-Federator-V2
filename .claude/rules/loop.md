@@ -80,8 +80,10 @@ and nothing is fixed until a real run on real files shows it fixed.
   loop started and cannot prove is left running and recorded, as the rule below says. A
   Navisworks the loop did not start is never closed, attached to or sent anything
 - A Navisworks is the loop's own only when the Automation start returned without
-  throwing, it is the one Roamer that was not running before the call, it started after
-  the call began, and its command line holds -Embedding. Anything less and the loop closes
+  throwing, it is the one possible start, a new Roamer whose command line names embedding
+  or cannot be read, it started after the call began, and its command line holds
+  -Embedding. A new Roamer whose command line reads and names neither is one started by
+  hand, and is left alone. Anything less and the loop closes
   nothing, calls nothing on that start, and says why. NOTHING IS CLOSED BEFORE IT IS
   ADOPTED, not even at a deadline: a start that cannot be proved is written to
   %LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt and left running, and every
