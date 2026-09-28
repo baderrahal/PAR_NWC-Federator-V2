@@ -2,15 +2,13 @@
 
 STATE OPEN
 
-Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. The eight agents are
-loaded, because this session started after Bader's restart, so the loop carries on in it
-with no restart.
+Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 started the same day in
+the same session, because the eight agents are loaded since Bader's restart. Its first fix,
+F98, is merged in PR 73.
 
 ## Next action
 
-1. F98 in its own pull request: the heading `## 2026-09-21 The close round, DONE, the
-   record` back above `Core tests 1666 before the round and 1746 after` in steps\log.md
-2. Phase 1, below
+1. Phase 1, below, from its first item
 
 ## The phases
 
@@ -47,15 +45,18 @@ with no restart.
    document
 5. Before the first run: copy %LOCALAPPDATA%\ParsonsNwcFederator\logs into
    %LOCALAPPDATA%\NwcFederatorLoop as a backup, and keep folders.txt from that folder, the
-   one choice the tool remembers between runs, to put back after the loop. It remembers
-   ACC paths under DC\ACCDocs, measured in the 16:37 log, so it is read and put back and
-   never followed
+   one choice the tool remembers between runs, to put back after the loop. DONE in turn 2,
+   into NwcFederatorLoop\logs-backup, 32 files, every one matching by sha256. folders.txt
+   there names NM Fed for the NWC, NWF, NWD and workbook pickers since Bader's 16:37 run,
+   and the 16:37 log shows it named ACC folders under DC\ACCDocs for two of them before. It is put back
+   after the loop and never followed
 6. Before the first install: copy the installed bundle into
    %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup, and check no Navisworks the loop did not
-   start is running. If one is, STATE WAITING and ask Bader to close it. THE INSTALLED
-   ADD-IN IS NOT MAIN: Bader's 16:37 run logged plugin version be0b9b37, built at 10:47
-   from the clone before it was brought level, so nothing about main has run on this
-   machine yet
+   start is running. If one is, STATE WAITING and ask Bader to close it. The backup is DONE
+   in turn 2, 15 files, every one matching by sha256, and its Federator.Addin.dll reads
+   be0b9b37 built 2026-09-27 10:47. THE INSTALLED ADD-IN IS NOT MAIN, so nothing about main
+   has run on this machine yet. A Navisworks the loop did not start, process 34668, was
+   running from 09:33 on 2026-09-28, so the install waits for it to close
 
 ## Facts measured on this machine
 
@@ -110,8 +111,8 @@ baseline run proves it or contradicts it.
 - 125 done in code, not proved by a run
 - 89 reported by the read, not verified
 - 30 needs Bader, in the form
-- 20 open fault
-- 2 DONE
+- 19 open fault
+- 3 DONE
 - 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
 - 1 closed, not there at 42499bf
@@ -119,7 +120,7 @@ baseline run proves it or contradicts it.
 | ID | came from | what it is | what proves it fixed | status | PR | run that proved it |
 | --- | --- | --- | --- | --- | --- | --- |
 | F97 | loop prompt, Phase 0 | The house: agents, hooks, rules, tools\loop, steps\runs, allow list | on main, every hook case answered on standard input, both walls refusing live | DONE | 72 | no Navisworks run applies, proved on standard input and live |
-| F98 | turn 0, a read of steps\log.md | PR 71 dropped the close round heading in steps\log.md | the heading back above Core tests 1666 before the round and 1746 after | open fault | none yet | none yet |
+| F98 | turn 0, a read of steps\log.md | PR 71 dropped the close round heading in steps\log.md | the heading back above Core tests 1666 before the round and 1746 after | DONE | 73 | no run applies, the file from the heading down matches the one before PR 71 |
 | F99 | turn 0, the git wall fired on Bash only | The git wall missed commits sent through PowerShell | a PowerShell commit on main refused on standard input, and git.exe read as git | DONE | 72 | no Navisworks run applies, proved on standard input and live |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
 | RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
@@ -444,3 +445,33 @@ Files written outside the repo:
 
 Inside the clone and not tracked: .claude\hooks\.loop-gate-last once the Stop gate first
 blocks, which git ignores.
+
+## Turn 2, 2026-09-28, open
+
+Runs: none yet.
+
+Findings: none new yet. The Stop gate sent this session back once, live, and the paths
+wall refused one of the lead's own commands for naming NM Fed, both as designed.
+
+Fixed: F98, the close round heading back in steps\log.md, in PR 73. From the heading down,
+all 5747 lines match the file as it was before PR 71, line endings aside. Read by a
+reviewer, a breaker and the claim-checker, who found the fix right and flagged wording in
+the records, fixed before the merge.
+
+Phase 1 so far: Bader's logs folder and the installed bundle backed up, items 5 and 6.
+
+Still open: the rest of Phase 1, and every register row that is not DONE.
+
+Programs started so far: dotnet build-server shutdown, for the servers the turn 1 tests
+started. git and gh. dotnet test by hand on fix-F98 and through the pre-commit hook.
+Windows PowerShell for the backups and to list the running Navisworks. Three read only
+agents, a reviewer, a breaker and the claim-checker. No Navisworks.
+
+Files written outside the repo so far:
+
+    %LOCALAPPDATA%\NwcFederatorLoop\logs-backup     Bader's logs folder, 32 files, 11,764,326 bytes
+    %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup   the installed bundle, 15 files, 10,621,229 bytes
+    %LOCALAPPDATA%\NwcFederatorLoop\turn1           the F98 commit messages and pull request bodies,
+                                                    steps\log.md before PR 71 and the fixed file, each
+                                                    from the close round heading down, and the session
+                                                    evidence file, items 11 to 17

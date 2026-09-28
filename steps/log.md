@@ -1,6 +1,38 @@
 # log
 
 Newest entry at the top.
+## 2026-09-28 The loop, turn 2, F98 the close round heading back, DONE
+
+Core tests 1746 passed, 0 failed, 0 skipped, before, on fix-F97 with the same src, and
+after, run by hand on fix-F98. Nothing under src or tests changed. Merged in PR 73. Nothing
+waits for the local machine, because this is a record fix and no Navisworks run applies.
+
+### What was done
+
+- the diff of PR 71 read: it turned the line `## 2026-09-21 The close round, DONE, the
+  record` into the heading of its own INSTALL.md entry, so the close round's report read as
+  part of that entry
+- the heading is back above `Core tests 1666 before the round and 1746 after`, with the
+  blank line under it that it had. Commit b46bb04 is those two lines and nothing else, and
+  the rest of the pull request is this entry and the records in steps\01_next.md and
+  steps\loop.md
+- PROVED by comparing texts: from the heading down, all 5747 lines of steps\log.md match
+  the file as it was before PR 71, line endings aside
+- read before it went out by a reviewer, a breaker and the claim-checker. The fix held, and
+  the wording they flagged in the records is fixed
+
+### What remains
+
+- Phase 1 of the loop, from steps\loop.md
+
+### Known bugs
+
+- none from this fix
+
+### What comes next
+
+1. Phase 1: the prober measures how Navisworks Manage 2025 can start a run with no click
+
 ## 2026-09-28 The loop, turn 1, F97 the house and F99 the git wall, DONE
 
 Core tests 1746 passed, 0 failed, 0 skipped, before and after. Nothing under src or tests

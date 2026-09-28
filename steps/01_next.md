@@ -45,7 +45,7 @@ Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the 
 25. F95, DONE, the two fixtures, the iteration loop this tool had no rung for
 26. F96, the restated facts check, FIRST ITEM OF THE NEXT ROUND
 27. F97, DONE, the house of the loop
-28. F98, the close round heading back in steps\log.md
+28. F98, DONE, the close round heading back in steps\log.md
 29. F99, DONE, the git wall through PowerShell
 
 The loop opened on 2026-09-27 on Bader's own machine. Its fixes take the next free F number from F97, and the order it works in is its register in steps\loop.md, most harmful first.
@@ -935,6 +935,7 @@ The alignment round closed on 2026-09-20, branch `round-alignment`, proved by TW
 
 - PR 71, the INSTALL.md round, replaced the heading `## 2026-09-21 The close round, DONE, the record` and never put it back, so that round's report reads as part of the INSTALL.md entry
 - The heading goes back above `Core tests 1666 before the round and 1746 after`, in its own pull request, and nothing else in the file moves
+- DONE on 2026-09-28, merged in PR 73. The diff of PR 71 shows the heading line replaced by the INSTALL.md heading. With it back, the file from the heading down matches `steps/log.md` as it was before PR 71, all 5747 lines, line endings aside, and commit b46bb04 is those two lines and nothing else. Core tests 1746 passed, 0 failed, 0 skipped, before and after. Read by a reviewer, a breaker and the claim-checker before it merged
 
 ## F99 The git wall through PowerShell
 
