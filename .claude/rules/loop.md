@@ -66,15 +66,19 @@ and nothing is fixed until a real run on real files shows it fixed.
   bundle before it copies the new one
 - Every run works on the copy under %LOCALAPPDATA%\NwcFederatorLoop\source and every
   output of every run goes under %LOCALAPPDATA%\NwcFederatorLoop
-- Nothing of Bader's is deleted or overwritten, bar the installed add-in, which is backed
-  up first as the install rule above says. The only folder the loop deletes from is
+- Nothing of Bader's is deleted or overwritten, bar two things. The installed add-in, which
+  is backed up first as the install rule above says. And his Navisworks settings, put back
+  to what the backup holds under the settings rule below, which can remove a value or key
+  the loop's own Navisworks added. The only folder the loop deletes from is
   %LOCALAPPDATA%\NwcFederatorLoop
 - Before the first run, %LOCALAPPDATA%\ParsonsNwcFederator\logs is copied into the work
   folder as a backup. Loop runs write their logs inside the work folder, so the thirty
   logs the tool keeps never push one of his out. Any choice the tool remembers between
   runs is read before the loop and put back after it
-- Close what you open. Every Navisworks the loop starts is closed by its own process id.
-  A Navisworks the loop did not start is never closed, attached to or sent anything
+- Close what you open. Every Navisworks the loop proves its own, by the rule below, is
+  closed, and by its own process id when the Automation API does not close it. One the
+  loop started and cannot prove is left running and recorded, as the rule below says. A
+  Navisworks the loop did not start is never closed, attached to or sent anything
 - A Navisworks is the loop's own only when the Automation start returned without
   throwing, it is the one Roamer that was not running before the call, it started after
   the call began, and its command line holds -Embedding. Anything less and the loop closes

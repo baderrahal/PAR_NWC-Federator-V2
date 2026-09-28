@@ -1,6 +1,12 @@
 # The loop
 
-STATE OPEN
+STATE WAITING
+
+WAITING FOR BADER TO CLOSE HIS NAVISWORKS, pid 34668, open since 09:33 on 2026-09-28. The
+loop never closes it. Everything next needs a Navisworks the loop starts with none of his
+running: F100's one run, the measurements of the no-click entry, and the install of main.
+When he says go, check with Get-Process Roamer that none runs, set STATE OPEN, and carry on
+from Next action.
 
 Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 started the same day in
 the same session, because the eight agents are loaded since Bader's restart. Its first fix,
@@ -8,12 +14,16 @@ F98, is merged in PR 73.
 
 ## Next action
 
-1. F100, PR 74 open on fix-F100: the probe of a start with no click is changed twice by
-   review and read a third time. Its one full run waits until no Navisworks the loop did
-   not start is running, because only then can the put back of Bader's settings be proved
-   safe. Bader's own, pid 34668, was open from 09:33 on 2026-09-28. When it is gone: run
-   the probe once, have 5z-d written off that run, read it, merge PR 74
-2. Then Phase 1 from item 2, below
+1. F100, PR 74 open on fix-F100: the probe of a start with no click, changed three times
+   by review, the last attempt the house rule allows. A fourth reading of the code was
+   started on 2026-09-28, and its answer decides whether F100 holds or goes to the form.
+   Its one full run waits until no Navisworks the loop did not start is running. Then:
+   run it once, have the prober write 5z-d off that run, have it read, squash merge PR 74
+   so the licensing ids in its earlier commits stay off main
+2. Phase 1 item 3, the no-click entry. Its design is in
+   %LOCALAPPDATA%\NwcFederatorLoop\turn1\f101-design.md: measure first (PQ1 to PQ8 through
+   the same probe), then the moves out of the window one pull request each, then the entry
+3. Then Phase 1 items 2 and 4, below
 
 ## The phases
 
@@ -483,8 +493,13 @@ one import. dotnet build of the add-in, by the prober. THREE NAVISWORKS, each st
 the probe through the Automation API as Roamer.exe -Embedding and each closed by the API's
 Dispose, none forced: pid 44888 at 12:27, pid 12336 at 13:11 and pid 50204 at 13:17, with
 the licensing agents and helpers they started, all gone afterwards. Bader's pid 34668 was
-never closed, attached to or sent anything. Agents: the prober, the reviewer, breaker and
-claim-checker on F98, and two reviewers and two breakers on F100 so far.
+never closed, attached to or sent anything. The prober's checks that start no Navisworks
+also started three throwaway powershell windows of its own, each exiting by itself, and
+made and deleted the throwaway key HKCU\Software\NwcFederatorLoopTest several times, twice
+by hand after its deadline test ended its own process, and it is gone. Bader's 22.0 key
+exported byte identical before and after every such check. Agents: the prober, the
+reviewer, breaker and claim-checker on F98, three reviewers and three breakers on F100,
+and one planning agent for the no-click entry, whose design is in turn1\f101-design.md.
 
 Written into Bader's settings, outside the work folder, all while his Navisworks 34668
 ran, so which Navisworks wrote each change is UNKNOWN: after run 1 the prober put back by

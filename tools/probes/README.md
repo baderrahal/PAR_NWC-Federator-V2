@@ -59,25 +59,38 @@ inside a running Navisworks:
   already open
 
 One probe starts a Navisworks of its own. It is run only when no Navisworks the loop did
-not start is running. It quits its Navisworks through the API's Dispose. It closes it by
-its process id only when it is the adopted one and Dispose left it running, a step
-failed, or the adopted deadline passed. It never closes anything before adoption:
+not start is running. It refuses to run when either deadline is below 60 seconds, or when
+it is not the script its own powershell.exe was started to run with -File. It quits its
+Navisworks through the API's Dispose. It closes it by its process id only when it is the
+adopted one and Dispose left it running, a step failed, or the adopted deadline passed. It
+never closes anything before adoption, and sends no message to any window before it:
 
 - `probe-automation-start.ps1` answers F100: whether Autodesk.Navisworks.Api.Automation
   starts Navisworks with no click, which process id it started, whether that Navisworks
   opens a copy of one NWC from the loop's source copy, takes the add-in built from this
-  repo through AddPluginAssembly, and quits. It adopts a Navisworks as its own only when
-  the constructor returned, exactly one Roamer is new, it started after the call and its
-  command line holds -Embedding. A start it cannot prove is written to
+  repo through AddPluginAssembly, and quits. A new Roamer whose command line does not hold
+  the word embedding was started by hand and is left alone. It adopts a Navisworks as its
+  own only when the constructor returned, exactly one possible start is new, it started
+  after the call and its command line holds -Embedding. A start it cannot prove, and its
+  own if it will not die, is written to
   %LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt and left running, and every
   later run refuses to start while one named there is still running, because a person
   has to look. Every Roamer already running is listed first by id, start time and parent,
   read through Win32_Process, and never closed, attached to or sent anything. It backs up
   Bader's Navisworks settings first and prints every change with its old and new value.
-  It puts them back only when no other Navisworks ran from the backup to the put back and
-  its own is gone, and otherwise writes nothing and keeps the backup. It never empties its
-  work folder, it renames the last one. Its result is kept at the top of this folder,
-  `automation-start-result-20260928.txt`. See docs/history/scan.md section 5z-d
+  It puts them back only when its watchdog ran with passes, no error line, nothing in its
+  runspace's error stream and no pass that failed early, and that record shows no other
+  Navisworks from the backup on, none runs at the end, and its own reads gone. Then each
+  write lists the Roamers again first and stops at any, and writes only what still reads
+  as the compare read. Otherwise it writes nothing and keeps the backup. A Navisworks that
+  starts and exits inside one gap between watchdog passes is not seen, and the result
+  prints the longest gap. It never empties its work folder, it renames the last one
+- `automation-start-result-20260928.txt`, kept at the top of this folder, is the output of
+  run 3, made by the version of the probe BEFORE fix list 2. That version put back Bader's
+  settings while his Navisworks, pid 34668, was running, which the rules above now rule
+  out. The changed probe has not made a full run, and its next full run replaces the file
+- `automation-start-reflection-20260928.txt`, beside it, is the output of the changed
+  probe's `-ReflectionOnly` mode, which starts nothing. See docs/history/scan.md section 5z-d
 
 A probe that cannot find what it needs says UNKNOWN and the path it looked at, and
 stops. Never search the install folder for a DLL, the path is built and tested directly,

@@ -1,0 +1,391 @@
+MACHINE   91JCZB4   2026-09-28 14:36:22
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 4832
+SCRIPT    C:\Users\p003653k\OneDrive - Parsons Corp\Documents\GitHub\PAR_NWC-Federator\tools\probes\probe-automation-start.ps1, 117717 bytes, sha256 B122822429D8F97D60DD2BF9E8D152905AAE5FA2ECEEAFCFD63E41BA974573D8
+PROCESS   powershell.exe pid 4832, started to run -File C:\Users\p003653k\OneDrive - Parsons Corp\Documents\GitHub\PAR_NWC-Federator\tools\probes\probe-automation-start.ps1, which is this script: True
+
+==== STEP 1. Reflection only, nothing started ====
+file      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Automation.dll   184088 bytes
+assembly  Autodesk.Navisworks.Automation, Version=22.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484
+runtime   v4.0.30319
+pe kind   PE32Plus   machine AMD64
+references:
+  mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+  System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+
+types in the assembly: 534, public: 10
+Every public type follows. The ones named std. or _TP_ are C++ runtime structs the
+compiler made public, with no members.
+
+---- public struct _TP_CALLBACK_ENVIRON_V3+<unnamed-type-u> ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+
+---- public struct _TP_CALLBACK_ENVIRON_V3+<unnamed-type-u>+<unnamed-type-s> ----
+  base type: System.ValueType
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+
+---- public class Autodesk.Navisworks.Api.Automation.AutomationDocumentFileException ----
+  base type: System.Exception
+  implements: System.Runtime.Serialization.ISerializable, System.Runtime.InteropServices._Exception
+  attribute: [System.SerializableAttribute()]
+  public AutomationDocumentFileException(System.String message, System.Exception innerException)
+  public AutomationDocumentFileException(System.String message)
+  public AutomationDocumentFileException()
+
+---- public class Autodesk.Navisworks.Api.Automation.AutomationException ----
+  base type: System.Exception
+  implements: System.Runtime.Serialization.ISerializable, System.Runtime.InteropServices._Exception
+  attribute: [System.SerializableAttribute()]
+  public AutomationException(System.String message, System.Exception innerException)
+  public AutomationException(System.String message)
+  public AutomationException()
+
+---- public class Autodesk.Navisworks.Api.Automation.NavisworksApplication ----
+  base type: System.Object
+  implements: System.IDisposable
+  public NavisworksApplication()
+  public System.Boolean Visible { get, set }
+  public System.Void AddPluginAssembly(System.String fileName)
+  public System.Void AppendFile(System.String fileName)
+  public System.Void CreateCache(System.String fileNameToCache)
+  public System.Void DisableProgress()
+  public System.Void Dispose()
+  public System.Void EnableProgress()
+  public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters)
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication GetRunningInstance()
+  public System.Void OpenFile(System.String fileName, params System.String[] moreFiles)
+  public System.Void Print(System.String printer)
+  public System.Void Print(System.String printer, System.String driver, System.String port)
+  public System.Void Print(System.String printer, System.String driver)
+  public System.Void Print()
+  public System.Void SaveFile(System.String fileName)
+  public System.Void StayOpen()
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication TryGetRunningInstance()
+
+---- public struct std._String_val<std::_Simple_types<char> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+
+---- public struct std._String_val<std::_Simple_types<char16_t> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+
+---- public struct std._String_val<std::_Simple_types<char32_t> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+
+---- public struct std._String_val<std::_Simple_types<wchar_t> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+
+---- public struct std.ranges._Not_quite_object+_Construct_tag ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+
+---- NavisworksApplication, every member public or not, declared on it ----
+  private System.Void !NavisworksApplication()
+  private System.Void ~NavisworksApplication()
+  public System.Void AddPluginAssembly(System.String fileName)
+  public System.Void AppendFile(System.String fileName)
+  public System.Void CreateCache(System.String fileNameToCache)
+  public System.Void DisableProgress()
+  protected System.Void Dispose(System.Boolean A_0)
+  public System.Void Dispose()
+  public System.Void EnableProgress()
+  public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters)
+  protected System.Void Finalize()
+  public System.Boolean get_Visible()
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication GetRunningInstance()
+  private System.Void Init(System.Boolean runningInstance)
+  public System.Void OpenFile(System.String fileName, params System.String[] moreFiles)
+  public System.Void Print()
+  public System.Void Print(System.String printer)
+  public System.Void Print(System.String printer, System.String driver)
+  public System.Void Print(System.String printer, System.String driver, System.String port)
+  private System.Int32 RunAction(System.Char* action, params System.String[] parameters)
+  public System.Void SaveFile(System.String fileName)
+  public System.Void set_Visible(System.Boolean val)
+  public System.Void StayOpen()
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication TryGetRunningInstance()
+  private .ctor(System.Boolean runningInstance)
+  public .ctor()
+  field Bridge* m_bridge
+
+---- The IL of the constructors, GetRunningInstance, Dispose, Finalize and StayOpen, and what they call inside this assembly, three levels ----
+  [0] private Autodesk.Navisworks.Api.Automation.NavisworksApplication::.ctor(System.Boolean runningInstance)
+        IL_0000  ldarg.0    
+        IL_0001  call       System.Object::.ctor()
+        IL_0006  ldarg.0    
+        IL_0007  ldarg.1    
+        IL_0008  call       Autodesk.Navisworks.Api.Automation.NavisworksApplication::Init(System.Boolean runningInstance)
+        IL_000D  ret        
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::.ctor()
+        IL_0000  ldarg.0    
+        IL_0001  call       System.Object::.ctor()
+        IL_0006  ldarg.0    
+        IL_0007  ldc.i4.0   
+        IL_0008  call       Autodesk.Navisworks.Api.Automation.NavisworksApplication::Init(System.Boolean runningInstance)
+        IL_000D  ret        
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::GetRunningInstance()
+        IL_0000  ldc.i4.1   
+        IL_0001  newobj     Autodesk.Navisworks.Api.Automation.NavisworksApplication::.ctor(System.Boolean runningInstance)
+        IL_0006  ret        
+  [0] protected Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose(System.Boolean A_0)
+        IL_0000  ldarg.1    
+        IL_0001  brfalse.s  IL_000B
+        IL_0003  ldarg.0    
+        IL_0004  call       Autodesk.Navisworks.Api.Automation.NavisworksApplication::!NavisworksApplication()
+        IL_0009  br.s       IL_001B
+        IL_000B  nop        
+        IL_000C  ldarg.0    
+        IL_000D  call       Autodesk.Navisworks.Api.Automation.NavisworksApplication::!NavisworksApplication()
+        IL_0012  leave.s    IL_001B
+        IL_0014  ldarg.0    
+        IL_0015  call       System.Object::Finalize()
+        IL_001A  endfinally 
+        IL_001B  ret        
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose()
+        IL_0000  ldarg.0    
+        IL_0001  ldc.i4.1   
+        IL_0002  callvirt   Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose(System.Boolean A_0)
+        IL_0007  ldarg.0    
+        IL_0008  call       System.GC::SuppressFinalize(System.Object obj)
+        IL_000D  ldarg.0    
+        IL_000E  call       System.GC::KeepAlive(System.Object obj)
+        IL_0013  ret        
+  [0] protected Autodesk.Navisworks.Api.Automation.NavisworksApplication::Finalize()
+        IL_0000  ldarg.0    
+        IL_0001  ldc.i4.0   
+        IL_0002  callvirt   Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose(System.Boolean A_0)
+        IL_0007  ret        
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::StayOpen()
+        IL_0000  ldarg.0    
+        IL_0001  ldfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0006  stloc.1    
+        IL_0007  ldloc.1    
+        IL_0008  brtrue.s   IL_0015
+        IL_000A  ldstr      "NavisworksApplication"
+        IL_000F  newobj     System.ObjectDisposedException::.ctor(System.String objectName)
+        IL_0014  throw      
+        IL_0015  ldloc.1    
+        IL_0016  call       null::Bridge.StayOpen(Bridge* )
+        IL_001B  stloc.0    
+        IL_001C  ldloc.0    
+        IL_001D  brfalse.s  IL_0035
+        IL_001F  ldstr      "Error calling method: "
+        IL_0024  ldloc.0    
+        IL_0025  box        System.Int32
+        IL_002A  call       System.String::Concat(System.Object arg0, System.Object arg1)
+        IL_002F  newobj     System.InvalidOperationException::.ctor(System.String message)
+        IL_0034  throw      
+        IL_0035  ldarg.0    
+        IL_0036  call       System.GC::KeepAlive(System.Object obj)
+        IL_003B  ret        
+  [1] private Autodesk.Navisworks.Api.Automation.NavisworksApplication::Init(System.Boolean runningInstance)
+        IL_0000  ldarg.0    
+        IL_0001  ldc.i4.0   
+        IL_0002  conv.i8    
+        IL_0003  stfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0008  call       null::Bridge.Initialise()
+        IL_000D  ldc.i4.8   
+        IL_000E  conv.i8    
+        IL_000F  call       null::new(System.UInt64 )
+        IL_0014  stloc.3    
+        IL_0015  ldloc.3    
+        IL_0016  brfalse.s  IL_0021
+        IL_0018  ldloc.3    
+        IL_0019  call       null::Bridge.{ctor}(Bridge* )
+        IL_001E  stloc.1    
+        IL_001F  leave.s    IL_002F
+        IL_0021  ldc.i4.0   
+        IL_0022  conv.i8    
+        IL_0023  stloc.1    
+        IL_0024  leave.s    IL_002F
+        IL_0026  ldloc.3    
+        IL_0027  ldc.i4.8   
+        IL_0028  conv.i8    
+        IL_0029  call       null::delete(System.Void* , System.UInt64 )
+        IL_002E  endfinally 
+        IL_002F  ldarg.0    
+        IL_0030  ldloc.1    
+        IL_0031  stfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0036  ldarg.1    
+        IL_0037  brfalse.s  IL_0048
+        IL_0039  ldstr      "Cannot get running instance of Application"
+        IL_003E  stloc.0    
+        IL_003F  ldloc.1    
+        IL_0040  call       null::Bridge.GetRunningNaviswork(Bridge* )
+        IL_0045  stloc.2    
+        IL_0046  br.s       IL_0055
+        IL_0048  ldstr      "Failed to startup Navisworks"
+        IL_004D  stloc.0    
+        IL_004E  ldloc.1    
+        IL_004F  call       null::Bridge.StartupNavisworks(Bridge* )
+        IL_0054  stloc.2    
+        IL_0055  ldloc.2    
+        IL_0056  brfalse.s  IL_009C
+        IL_0058  ldarg.0    
+        IL_0059  ldfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_005E  stloc.s    4
+        IL_0060  ldloc.s    4
+        IL_0062  brfalse.s  IL_006D
+        IL_0064  ldloc.s    4
+        IL_0066  ldc.i4.1   
+        IL_0067  call       null::Bridge.__delDtor(Bridge* , System.UInt32 A_0)
+        IL_006C  pop        
+        IL_006D  ldarg.0    
+        IL_006E  ldc.i4.0   
+        IL_006F  conv.i8    
+        IL_0070  stfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0075  call       null::Bridge.Terminate()
+        IL_007A  ldloc.2    
+        IL_007B  box        System.Int32
+        IL_0080  stloc.s    5
+        IL_0082  ldloc.0    
+        IL_0083  ldstr      ": "
+        IL_0088  call       System.String::Concat(System.String str0, System.String str1)
+        IL_008D  ldloc.s    5
+        IL_008F  call       System.String::Concat(System.Object arg0, System.Object arg1)
+        IL_0094  stloc.0    
+        IL_0095  ldloc.0    
+        IL_0096  newobj     Autodesk.Navisworks.Api.Automation.AutomationException::.ctor(System.String message)
+        IL_009B  throw      
+        IL_009C  ldarg.0    
+        IL_009D  call       System.GC::KeepAlive(System.Object obj)
+        IL_00A2  ret        
+  [1] private Autodesk.Navisworks.Api.Automation.NavisworksApplication::!NavisworksApplication()
+        IL_0000  ldarg.0    
+        IL_0001  ldfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0006  stloc.0    
+        IL_0007  ldloc.0    
+        IL_0008  brfalse.s  IL_0018
+        IL_000A  ldloc.0    
+        IL_000B  call       null::Bridge.{dtor}(Bridge* )
+        IL_0010  ldloc.0    
+        IL_0011  ldc.i4.8   
+        IL_0012  conv.i8    
+        IL_0013  call       null::delete(System.Void* , System.UInt64 )
+        IL_0018  ldarg.0    
+        IL_0019  ldc.i4.0   
+        IL_001A  conv.i8    
+        IL_001B  stfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0020  call       null::Bridge.Terminate()
+        IL_0025  ldarg.0    
+        IL_0026  call       System.GC::KeepAlive(System.Object obj)
+        IL_002B  ret        
+  [1] internal null::Bridge.StayOpen(Bridge* )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::Bridge.Initialise()
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::new(System.UInt64 )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::Bridge.{ctor}(Bridge* )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::delete(System.Void* , System.UInt64 )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::Bridge.GetRunningNaviswork(Bridge* )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::Bridge.StartupNavisworks(Bridge* )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::Bridge.__delDtor(Bridge* , System.UInt32 A_0)
+        IL_0000  ldarg.0    
+        IL_0001  call       null::Bridge.{dtor}(Bridge* )
+        IL_0006  ldarg.1    
+        IL_0007  ldc.i4.1   
+        IL_0008  and        
+        IL_0009  brfalse.s  IL_0013
+        IL_000B  ldarg.0    
+        IL_000C  ldc.i4.8   
+        IL_000D  conv.i8    
+        IL_000E  call       null::delete(System.Void* , System.UInt64 )
+        IL_0013  ldarg.0    
+        IL_0014  ret        
+  [2] internal null::Bridge.Terminate()
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] public Autodesk.Navisworks.Api.Automation.AutomationException::.ctor(System.String message)
+        IL_0000  ldarg.0    
+        IL_0001  ldarg.1    
+        IL_0002  call       System.Exception::.ctor(System.String message)
+        IL_0007  ret        
+  [2] internal null::Bridge.{dtor}(Bridge* )
+        nobody: no IL body: native, abstract or runtime implemented
+
+---- Which COM class the native half creates ----
+  CLSID {81920959-1e7e-5599-a1d1-e67aeced44df} ProgID: Navisworks.Document.22
+  CLSID {81920959-1e7e-5599-a1d1-e67aeced44df} VersionIndependentProgID: absent
+  CLSID {81920959-1e7e-5599-a1d1-e67aeced44df} LocalServer32: C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe
+  CLSID {81920959-1e7e-5599-a1d1-e67aeced44df} InprocServer32: absent
+  that CLSID's 16 bytes appear in the DLL at offsets: 49920, 49952
+  the DLL's import table, every ordinal named off the exporting DLL's export table:
+    api-ms-win-crt-heap-l1-1-0.dll, 4: free, _callnewh, malloc, _recalloc
+    api-ms-win-crt-runtime-l1-1-0.dll, 16: _crt_atexit, _execute_onexit_table, _register_onexit_function, _crt_at_quick_exit, _initialize_narrow_environment, _configure_narrow_argv, _seh_filter_dll, _cexit, _initterm, _invalid_parameter_noinfo_noreturn, _initterm_e, _invalid_parameter_noinfo, _errno, _initialize_onexit_table, abort, terminate
+    KERNEL32.dll, 27: InitializeCriticalSectionEx, MultiByteToWideChar, GetLastError, DecodePointer, DeleteCriticalSection, RtlLookupFunctionEntry, RtlCaptureContext, UnhandledExceptionFilter, SetUnhandledExceptionFilter, GetCurrentProcess, TerminateProcess, IsProcessorFeaturePresent, IsDebuggerPresent, GetStartupInfoW, GetModuleHandleW, QueryPerformanceCounter, GetCurrentProcessId, GetCurrentThreadId, GetSystemTimeAsFileTime, DisableThreadLibraryCalls, InitializeSListHead, OutputDebugStringW, RaiseException, EnterCriticalSection, LeaveCriticalSection, Sleep, RtlVirtualUnwind
+    mscoree.dll, 1: _CorDllMain
+    MSVCP140.dll, 3: ?__ExceptionPtrCopy@@YAXPEAXPEBX@Z, ?_Xlength_error@std@@YAXPEBD@Z, ?__ExceptionPtrDestroy@@YAXPEAX@Z
+    ole32.dll, 3: CoInitialize, CoUninitialize, CoCreateInstance
+    OLEAUT32.dll, 13: #12 VariantChangeType, #35 GetActiveObject, #10 VariantCopy, #26 SafeArrayPutElement, #2 SysAllocString, #9 VariantClear, #15 SafeArrayCreate, #4 SysAllocStringLen, #77 SafeArrayGetVartype, #16 SafeArrayDestroy, #8 VariantInit, #6 SysFreeString, #27 SafeArrayCopy
+    USER32.dll, 1: UnregisterClassW
+    VCRUNTIME140.dll, 16: __std_type_info_destroy_list, memset, _CxxThrowException, __C_specific_handler, memmove, __std_exception_copy, __std_exception_destroy, __CxxUnregisterExceptionObject, __FrameUnwindFilter, __CxxExceptionFilter, memcpy, __current_exception, __CxxDetectRethrow, __CxxRegisterExceptionObject, __CxxQueryExceptionSize, __current_exception_context
+    VCRUNTIME140_1.dll, 1: __CxxFrameHandler4
+  CoCreateInstance   imported: True, from ole32.dll
+  GetActiveObject    imported: True, from OLEAUT32.dll
+  CoGetClassObject   imported: False
+  CreateProcessW     imported: False
+  ShellExecuteW      imported: False
+
+---- Which command line makes a Roamer the COM automation server, reflection only ----
+  CommandLineParser::ParseOption IL_00E0 stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup after the strings, since the store before it: "Embedding", "Automation"
+        IL_00B1  ldarg.0    
+        IL_00B2  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config
+        IL_00B7  ldc.i4.1   
+        IL_00B8  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+        IL_00BD  ldc.i4.1   
+        IL_00BE  ret        
+        IL_00BF  ldarg.0    
+        IL_00C0  ldstr      "Embedding"
+        IL_00C5  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::MatchOption(System.String s)
+        IL_00CA  brtrue.s   IL_00D9
+        IL_00CC  ldarg.0    
+        IL_00CD  ldstr      "Automation"
+        IL_00D2  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::MatchOption(System.String s)
+        IL_00D7  brfalse.s  IL_00F3
+        IL_00D9  ldarg.0    
+        IL_00DA  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config
+        IL_00DF  ldc.i4.1   
+        IL_00E0  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+  stores of COMAutomationStartup in CommandLineParser: 1
+  the strings before that store are exactly Embedding and Automation: True
+  every option name CommandLineParser matches, 37: Embedding, Automation, regserver, Register, unregserver, Unregister, RegisterPerUser, UnregisterPerUser, user, noreg, pure, log, dump, dump_options, MemCheck, options, lang, nwd, nwc, bench, ShowGui, HideGui, NoGui, NoCache, OpenFile, GenerateThumbnail, GenerateThumbnailByRayTrace, CreateCache, Print, SaveFile, AppendFile, Exit, ExecuteAddInPlugin, AddPluginAssembly, EnableProgress, DisableProgress, Licensing
+  Roamer.exe Program::MainImpl touches COMAutomationStartup, the instruction and the two after it:
+        IL_00A1  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+        IL_00A6  call       Autodesk.Navisworks.OdViewDll.InitDll::InitialiseErrorHandling(System.String dump_file, System.Boolean is_automated)
+        IL_00AB  ldloc.s    5
+  Roamer.exe Program::MainImpl touches COMAutomationStartup, the instruction and the two after it:
+        IL_00E2  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+        IL_00E7  stfld      Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::COMAutomationStartup
+        IL_00EC  ldloc.s    6
+  Roamer.exe Program::MainImpl touches COMAutomationStartup, the instruction and the two after it:
+        IL_00E7  stfld      Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::COMAutomationStartup
+        IL_00EC  ldloc.s    6
+        IL_00EE  ldloc.2    
+  instructions in NetRoamer.Program that touch COMAutomationStartup: 3
+
+---- STEP 1 VERDICT ----
+  every verdict read, none UNKNOWN
+
+ReflectionOnly: stopped after step 1, nothing was started
