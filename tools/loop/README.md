@@ -18,39 +18,51 @@ command that does.
   has been hashed and matched. The copy is kept while it matches NM Fed on every file by
   exact name, size and sha256 and on every folder, and made again when it does not, after
   the room is checked and never before
-- -Listing writes one .txt INSIDE THE REPO, one line per file with its size, its sha256
+- -Listing writes one .txt under steps\runs, one line per file with its size, its sha256
   and parts 3 and 5 of its name, and touches nothing else
 - -Remove takes one NWC out of a whole copy and writes its sha256 down in
   source.removed.txt. -Restore copies that same file back from NM Fed, refuses when NM Fed
   now holds a different file under that name, and moves it into place only once its hash
-  matches
+  matches. While a file is out, the plain command refuses rather than remaking the copy,
+  which would put the file straight back
+- it walks NM Fed one folder at a time and refuses a junction or a link inside it, because
+  Windows PowerShell 5.1 follows one when it recurses
 - deletes: only inside %LOCALAPPDATA%\NwcFederatorLoop
 - never writes into NM Fed, and refuses a work folder that overlaps it or is a junction
 
-Proved on 2026-09-27 on the real folder: made, kept, made again when NM Fed changed,
-listed without touching the copy, one NWC removed and a listing taken with it out,
-restored by hash, kept again, and eight calls refused with their reason and nothing
-changed.
+Proved on the real folder: on 2026-09-27 made, kept, and made again when NM Fed changed
+under it, and on 2026-09-28 in this form kept, listed without touching the copy, one NWC
+removed, restored by hash and kept again, with twelve calls refused with their reason and
+nothing changed, among them the plain command while a file is out, a file that is not an
+NWC, a wildcard, and a listing outside the repo, outside steps\runs, over steps\logs or
+not a .txt.
 
 ## read-workbook.ps1
 
 Reads one clash workbook back off the disk and writes a text read-out: one line per test
-with its shape, row, tolerance, seven counts, type, status and clash rows, one line per
-clash row with its status, distance, grid location, clash point and picture link, the
-totals, and every doubt it had. It shares no code with the tool that wrote the workbook.
-It opens the xlsx as a zip, reads the XML, and knows a test by column A in both shapes a
-workbook holds, the full block and the one row test this tool writes for a test that
-found nothing.
+with its shape, row, tolerance, clash count, five status counts, type, status and clash
+rows, one line per clash row with its status, distance, grid location, clash point and
+picture link, the totals, the pictures stored in the workbook and those in the sheet that
+point at a file outside it, and every doubt it had. It
+shares no code with the tool that wrote the workbook. It opens the xlsx as a zip, reads
+the XML, and knows a test by column A in both shapes a workbook holds, the full block and
+the one row test this tool writes for a test that found nothing, and by its numbers in C
+to K when A is empty. A test or a clash row with no name, a sheet with no test and a
+workbook with no sheet are each written down as a doubt, so an empty read-out never
+looks like a clean one.
 
 - reads: the workbook named by -Workbook
-- writes: the read-out named by -Out, a .txt inside the repo and never the workbook
-  itself, written beside and moved into place, or a READ-OUT FAILED line when it fails
+- writes: the read-out named by -Out, a .txt under steps\runs and never the workbook
+  itself, written beside and moved into place, or a READ-OUT FAILED line when it fails,
+  a missing workbook included
 - writes outside the repo: nothing
 
-Proved on 2026-09-27, read only, on both client exports in samples\client-report, 1830
-tests each with 64 and 65 clash rows equal to their own totals, and on a workbook written
-by this tool's own WorkbookWriter holding two full blocks and two one row tests, read as
-four tests and five clash rows with no doubt.
+Proved on 2026-09-27 and 2026-09-28, read only, on both client exports in
+samples\client-report, 1830 tests each with 64 and 65 clash rows equal to their own
+totals, on a workbook written by this tool's own WorkbookWriter holding two full blocks
+and two one row tests, read as four tests and five clash rows with no doubt, and on the
+same shape with one clash and one one row test left without a name, read as four tests
+and five clash rows with both named as doubts.
 
 ## prove-hooks.sh
 

@@ -5,22 +5,34 @@
 # through a merged pull request. Exit 2 refuses the call and the line on standard error
 # goes back to Claude.
 #
-# What counts as making a commit on main: commit, cherry-pick, revert, am, rebase and
-# commit-tree, and a merge or a pull that is not --ff-only. A fast forward only merge or
-# pull is allowed, because it is how main is brought level with origin and it makes no
-# commit. A push is refused when it names main or master as where it goes, whatever is
-# checked out, and otherwise refused while main is checked out, except a push that only
-# deletes a branch, which is how a merged fix branch goes. A command that switches to main
-# and then does any of it is refused too, because the branch is read before it runs.
+# THE COMMAND IS JUDGED ONE GIT CALL AT A TIME. It is split where the shell splits it, on
+# a newline, ;, &&, ||, | and &, outside quotes, and each git call is read on its own
+# words, quotes joined the way the shell joins them. Per call:
 #
-# PowerShell was added on 2026-09-27, F99, and git.exe and a quoted path to it with it.
-# Rewritten the same day after the Phase 0 breaker: a quoted word between git and the
-# verb, such as git -C "C:/Users/.../PAR_NWC-Federator" commit, hid the verb, and that is
-# the form an agent writes, because this repo's path holds spaces.
+#   commit, cherry-pick, revert, am, rebase, commit-tree   refused while on main
+#   merge and pull                                         refused while on main, unless --ff-only
+#   push                                                   refused when a refspec lands on main or
+#                                                          master, or --all or --mirror, from any
+#                                                          branch, and refused while on main,
+#                                                          unless it only deletes a branch
 #
-# The call is read with read and first matched with case, because on Bader's machine
-# starting a program costs about two seconds, measured on 2026-09-27. A command that does
-# not say git followed by a space, git.exe or a quote leaves before anything is started.
+# "On main" starts as the branch checked out and follows a checkout or switch to main, or
+# away from it, earlier in the same command, because the branch is read before it runs.
+#
+# F99 on 2026-09-27 added PowerShell and git.exe. The Phase 0 reviews then found the first
+# versions judging the whole command at once, so a -d or a --ff-only anywhere in it excused
+# a push or a merge anywhere in it, and a newline, a semicolon or a quote after main hid
+# the word. Per call reading is the answer to all of them.
+#
+# WHAT IT CANNOT SEE: git run from inside a script, and PowerShell building git's words at
+# run time, such as git @('commit'). And when this folder is not a git repository, or git
+# cannot say which branch is out, it lets the call through, because there is no main here
+# to protect. That is the one way it opens, and it is named here on purpose.
+#
+# Starting a program costs about two seconds on Bader's machine, measured on 2026-09-27, so
+# the call is read with read and matched with case first. A call that does not say git and
+# a verb that could write leaves before anything is started. git status, git log and git
+# diff start nothing.
 
 input=
 while IFS= read -r line || [ -n "$line" ]; do
@@ -28,65 +40,138 @@ while IFS= read -r line || [ -n "$line" ]; do
 "
 done
 
-# What runs is the command, sent before its description, so words in a description can
-# neither trip this wall nor hide from it.
-body=${input%%\"description\":*}
-case "$body" in *\"command\":*) ;; *) body=$input ;; esac
+body=${input#*\"tool_input\":}
 
 case "$body" in
-    *[Gg][Ii][Tt]" "*|*[Gg][Ii][Tt].[Ee][Xx][Ee]*|*[Gg][Ii][Tt]\\\"*|*[Gg][Ii][Tt]\'*) ;;
+    *[Gg][Ii][Tt]*) ;;
     *) exit 0 ;;
 esac
-
-refuse() {
-    printf '%s\n' "Refused. $1 Branch fix-FNN off main and open a pull request. See CLAUDE.md." >&2
-    exit 2
-}
-
-# git, then any words, then the verb, quoted or not, then a space, a quote or the end. A
-# word is any run of plain characters and quoted parts, so user.name="Bader Rahal" is one
-# word. A quoted part is "..." with its quotes escaped as JSON sends them, or '...'.
-GIT='git(\.exe)?(\\"|'"'"')?([[:space:]]+(\\"[^"]*"|'"'"'[^'"'"']*'"'"'|[^[:space:]";&|'"'"'])+)*[[:space:]]+(\\"|'"'"')?'
-END='(\\"|'"'"')?([[:space:]]|"|$)'
-
-has() {
-    printf '%s' "$body" | grep -Eqi "$GIT($1)$END"
-}
-
-# git stash push is a stash and not a push.
-body=$(printf '%s' "$body" | sed 's/[Ss][Tt][Aa][Ss][Hh][[:space:]]\{1,\}[Pp][Uu][Ss][Hh]/stash save/g')
-
-commits=0; has 'commit|cherry-pick|revert|am|rebase|commit-tree' && commits=1
-merges=0; has 'merge|pull' && merges=1
-pushes=0; has 'push' && pushes=1
-[ $commits = 0 ] && [ $merges = 0 ] && [ $pushes = 0 ] && exit 0
-
-fastforward=0
-printf '%s' "$body" | grep -Eqi -- '--ff-only' && fastforward=1
-deletes=0
-printf '%s' "$body" | grep -Eqi '[[:space:]](--delete|-d)[[:space:]]' && deletes=1
-namesmain=0
-printf '%s' "$body" | grep -Eqi '([[:space:]:]|refs/heads/)(main|master)([[:space:]]|\\"|"|$)' && namesmain=1
-
-if [ $pushes = 1 ] && [ $namesmain = 1 ] && [ $deletes = 0 ]; then
-    refuse "This push names main or master as where it goes, so it would land on main without a pull request."
-fi
-
-if printf '%s' "$body" | grep -Eqi '(checkout|switch)([[:space:]]+-[^[:space:]]+)*[[:space:]]+(main|master)([[:space:]]|;|&|"|$)'; then
-    if [ $commits = 1 ] || [ $pushes = 1 ] || { [ $merges = 1 ] && [ $fastforward = 0 ]; }; then
-        refuse "This command switches to main and then changes it."
-    fi
-fi
+case "$body" in
+    *[Cc][Oo][Mm][Mm][Ii][Tt]*|*[Pp][Uu][Ss][Hh]*|*[Mm][Ee][Rr][Gg][Ee]*|*[Pp][Uu][Ll][Ll]*) ;;
+    *[Cc][Hh][Ee][Rr][Rr][Yy]*|*[Rr][Ee][Vv][Ee][Rr][Tt]*|*[Rr][Ee][Bb][Aa][Ss][Ee]*|*" "[Aa][Mm]*) ;;
+    *) exit 0 ;;
+esac
 
 cd "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null || exit 0
 branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
-case "$branch" in
-    main|master)
-        [ $commits = 1 ] && refuse "$branch is checked out and nothing is committed on it."
-        [ $merges = 1 ] && [ $fastforward = 0 ] && refuse "$branch is checked out, and a merge or pull that is not --ff-only makes a commit on it."
-        [ $pushes = 1 ] && [ $deletes = 0 ] && refuse "$branch is checked out and nothing is pushed from it."
-        ;;
-esac
+why=$(printf '%s' "$body" | awk -v branch="$branch" '
+function decode(s,    out, i, n, c) {
+    out = ""; n = length(s)
+    for (i = 1; i <= n; i++) {
+        c = substr(s, i, 1)
+        if (c == "\\" && i < n) {
+            i++; c = substr(s, i, 1)
+            if (c == "n" || c == "r") out = out "\n"
+            else if (c == "t") out = out " "
+            else out = out c
+        } else out = out c
+    }
+    return out
+}
+function tokens(s, w,    n, i, c, q, cur, have) {
+    n = 0; q = ""; cur = ""; have = 0
+    for (i = 1; i <= length(s); i++) {
+        c = substr(s, i, 1)
+        if (q != "") { if (c == q) q = ""; else cur = cur c; continue }
+        if (c == "\"" || c == "\047") { q = c; have = 1; continue }
+        if (c == " " || c == "\t") { if (have) { w[++n] = cur; cur = ""; have = 0 } continue }
+        cur = cur c; have = 1
+    }
+    if (have) w[++n] = cur
+    return n
+}
+{ buf = buf $0 "\n" }
+END {
+    i = index(buf, "\"command\":"); if (!i) exit
+    rest = substr(buf, i + 10); sub(/^[ \t]*"/, "", rest)
+    raw = ""; esc = 0
+    for (k = 1; k <= length(rest); k++) {
+        c = substr(rest, k, 1)
+        if (esc) { raw = raw c; esc = 0; continue }
+        if (c == "\\") { raw = raw c; esc = 1; continue }
+        if (c == "\"") break
+        raw = raw c
+    }
+    cmd = decode(raw)
+
+    # Split into calls outside quotes.
+    nseg = 0; cur = ""; q = ""
+    for (k = 1; k <= length(cmd); k++) {
+        c = substr(cmd, k, 1)
+        if (q != "") { if (c == q) q = ""; cur = cur c; continue }
+        if (c == "\"" || c == "\047") { q = c; cur = cur c; continue }
+        if (c == "\n" || c == ";" || c == "&" || c == "|") { seg[++nseg] = cur; cur = ""; continue }
+        cur = cur c
+    }
+    seg[++nseg] = cur
+
+    onmain = (branch == "main" || branch == "master")
+    for (s = 1; s <= nseg; s++) {
+        split("", w); nt = tokens(seg[s], w)
+        g = 0
+        for (j = 1; j <= nt; j++) { x = tolower(w[j]); if (x ~ /(^|[\\\/])git(\.exe)?$/) { g = j; break } }
+        if (!g) continue
+        j = g + 1; verb = ""
+        while (j <= nt) {
+            x = w[j]
+            if (x == "-C" || x == "-c" || x == "--git-dir" || x == "--work-tree" || x == "--namespace") { j += 2; continue }
+            if (x ~ /^-/) { j++; continue }
+            verb = tolower(x); break
+        }
+        if (verb == "") continue
+
+        if (verb == "checkout" || verb == "switch") {
+            newbranch = 0; first = ""
+            for (k = j + 1; k <= nt; k++) {
+                x = w[k]
+                if (x == "-b" || x == "-B" || x == "-c" || x == "-C" || x == "--orphan") newbranch = 1
+                if (x ~ /^-/) continue
+                first = x; break
+            }
+            if (newbranch) onmain = 0
+            else if (first == "main" || first == "master") onmain = 1
+            else if (first != "" && first != "--") onmain = 0
+            continue
+        }
+
+        if (verb == "push") {
+            del = 0; all = 0; tomain = 0; pos = 0
+            for (k = j + 1; k <= nt; k++) {
+                x = w[k]
+                if (x == "--delete" || x == "-d") { del = 1; continue }
+                if (x == "--all" || x == "--mirror") { all = 1; continue }
+                if (x == "--repo" || x == "-o" || x == "--push-option" || x == "--receive-pack" || x == "--exec") { k++; continue }
+                if (x ~ /^-/) continue
+                pos++
+                if (pos == 1) continue
+                d = x; sub(/^\+/, "", d)
+                if (d ~ /:/) sub(/^[^:]*:/, "", d)
+                sub(/^refs\/heads\//, "", d)
+                if (d == "main" || d == "master") tomain = 1
+            }
+            if (!del && (tomain || all)) { print "This push names main or master as where it goes, so it would land on main without a pull request."; exit }
+            if (onmain && !del) { print "main is checked out and nothing is pushed from it."; exit }
+            continue
+        }
+
+        if (verb == "commit" || verb == "cherry-pick" || verb == "revert" || verb == "am" || verb == "rebase" || verb == "commit-tree") {
+            if (onmain) { print "main is checked out and nothing is committed on it."; exit }
+            continue
+        }
+
+        if (verb == "merge" || verb == "pull") {
+            ff = 0
+            for (k = j + 1; k <= nt; k++) if (w[k] == "--ff-only") ff = 1
+            if (onmain && !ff) { print "main is checked out, and a merge or pull that is not --ff-only makes a commit on it."; exit }
+            continue
+        }
+    }
+}')
+
+if [ -n "$why" ]; then
+    printf '%s\n' "Refused. $why Branch fix-FNN off main and open a pull request. See CLAUDE.md." >&2
+    exit 2
+fi
 
 exit 0

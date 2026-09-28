@@ -1,6 +1,6 @@
 #!/bin/sh
 # Feeds every case to each hook on standard input and prints what it answered.
-# Usage: sh prove-hooks-2.sh <hooks folder> <repo root>
+# Usage: sh tools/loop/prove-hooks.sh <hooks folder> <repo root>
 # Each verdict line is the proof. The totals are counted off the lines at the end.
 
 hooks="$1"
@@ -58,6 +58,11 @@ echo '{"tool_name":"Write","tool_input":{"file_path":"'"$repo"'/steps/loop.md","
 echo '{"tool_name":"Write","tool_input":{"file_path":"'"$repo"'/src/logs/x.cs","content":"a"}}' | run $P 0 "a folder named logs that is not steps/logs" "$repo"
 echo '{"tool_name":"NotebookEdit","tool_input":{"notebook_path":"'"$repo"'/tools/n.ipynb","new_source":"a"}}' | run $P 0 "NotebookEdit under tools" "$repo"
 echo '{"tool_name":"Write","tool_input":{"content":"a"}}' | run $P 0 "a file tool call with no path" "$repo"
+echo '{"tool_name":"Write","tool_input":{"file_path":"C:\\Temp\\Output\\","content":"x"}}' | run $P 0 "a path that really ends in a backslash is not a quote" "$repo"
+echo '{"tool_name":"Write","tool_input":{"file_path":"'"$repo"'/.claude/settings.json","content":"{}"}}' | run $P 2 "Write to .claude/settings.json, a wall" "$repo"
+echo '{"tool_name":"Edit","tool_input":{"file_path":"'"$W"'\\.claude\\hooks\\loop-gate.sh","old_string":"a","new_string":"b"}}' | run $P 2 "Edit a hook under .claude/hooks, Windows spelling" "$repo"
+echo '{"tool_name":"Write","tool_input":{"file_path":".claude/settings.local.json","content":"{}"}}' | run $P 2 "Write to .claude/settings.local.json, relative" "$repo"
+echo '{"tool_name":"Write","tool_input":{"file_path":"'"$repo"'/.claude/rules/loop.md","content":"a"}}' | run $P 0 "Write to .claude/rules/loop.md, not a wall" "$repo"
 
 echo "== the paths wall, command tools"
 echo '{"tool_name":"Bash","tool_input":{"command":"ls \"'"$NMU"'\"","description":"list a folder"}}' | run $P 2 "Bash lists NM Fed" "$repo"
@@ -82,6 +87,9 @@ echo '{"tool_name":"PowerShell","tool_input":{"command":"Get-Content steps\\runs
 echo '{"tool_name":"Bash","tool_input":{"command":"git status","description":"status"}}' | run $P 0 "Bash git status" "$repo"
 echo '{"tool_name":"PowerShell","tool_input":{"command":"dotnet build ParsonsNwcFederator.sln -c Release","description":"build"}}' | run $P 0 "PowerShell dotnet build" "$repo"
 echo '{"tool_name":"Bash","tool_input":{"command":"curl \"file:///C:/Users/p003653k/Desktop/NM%20Fed/x.nwc\"","description":"x"}}' | run $P 2 "NM Fed spelled as a URL" "$repo"
+echo '{"tool_name":"Bash","tool_input":{"command":"ls NM\" \"Fed","description":"peek"}}' | run $P 2 "NM Fed split by quotes, NM\" \"Fed" "$repo"
+echo '{"tool_name":"Bash","tool_input":{"command":"ls NM'"'"' '"'"'Fed","description":"peek"}}' | run $P 2 "NM Fed split by single quotes" "$repo"
+echo '{"tool_name":"Bash","tool_input":{"command":"grep -r \"NM Federation\" docs","description":"search docs"}}' | run $P 0 "NM Federation is not NM Fed" "$repo"
 echo '{"tool_name":"PowerShell","tool_input":{"command":"Remove-Item (Join-Path $d (\"NM\" + \" Fed\"))","description":"x"}}' | run $P 0 "a name built at run time is NOT caught, the stated limit" "$repo"
 
 echo "== the git wall, a throwaway clone with main checked out"
@@ -109,6 +117,9 @@ echo '{"tool_name":"Bash","tool_input":{"command":"git stash push -m x","descrip
 echo '{"tool_name":"Bash","tool_input":{"command":"git config push.default simple","description":"x"}}' | run $G 0 "git config push.default on main" "$clone"
 echo '{"tool_name":"Bash","tool_input":{"command":"git status","description":"Check git state before commit"}}' | run $G 0 "git status with a description naming commit, on main" "$clone"
 echo '{"tool_name":"PowerShell","tool_input":{"command":"Write-Output commitment"}}' | run $G 0 "a word with commit in it, on main" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git pull --ff-only && git merge --no-ff fix-F97","description":"x"}}' | run $G 2 "a fast forward pull then a real merge, on main" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git log --grep push","description":"x"}}' | run $G 0 "git log naming push, on main" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git commit -m \"a; git push origin main\"","description":"x"}}' | run $G 2 "a commit on main whose message names a push" "$clone"
 git -C "$clone" checkout -q -b fix-F999-hook-proof
 echo "clone on: $(git -C "$clone" rev-parse --abbrev-ref HEAD)"
 echo '{"tool_name":"Bash","tool_input":{"command":"git commit -F msg.txt"}}' | run $G 0 "git commit on a fix branch" "$clone"
@@ -117,6 +128,17 @@ echo '{"tool_name":"Bash","tool_input":{"command":"git push origin HEAD:main","d
 echo '{"tool_name":"Bash","tool_input":{"command":"git push origin main","description":"Push"}}' | run $G 2 "git push origin main from a fix branch" "$clone"
 echo '{"tool_name":"Bash","tool_input":{"command":"git checkout main && git commit -am x","description":"Commit"}}' | run $G 2 "switch to main and commit in one command" "$clone"
 echo '{"tool_name":"Bash","tool_input":{"command":"git checkout main && git merge --ff-only origin/main","description":"x"}}' | run $G 0 "switch to main and fast forward it" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git push origin main\n","description":"Push"}}' | run $G 2 "git push origin main ending in a newline" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git checkout main\ngit commit -F msg.txt","description":"tidy up"}}' | run $G 2 "switch to main and commit on two lines" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git checkout \"main\" && git commit -F msg.txt","description":"x"}}' | run $G 2 "switch to a quoted main and commit" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git push origin HEAD:main; git status","description":"x"}}' | run $G 2 "push HEAD:main followed by a semicolon" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git push origin '"'"'HEAD:main'"'"'","description":"x"}}' | run $G 2 "push a quoted HEAD:main" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git push -u origin fix-F97:main","description":"x"}}' | run $G 2 "push the fix branch onto main by refspec" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git push origin HEAD:main && git branch -d fix-F97","description":"x"}}' | run $G 2 "push HEAD:main with a -d later in the command" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git checkout main && git pull --ff-only && git merge --no-ff fix-F97","description":"x"}}' | run $G 2 "switch to main, fast forward, then a real merge" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git push -u origin fix-F100 && gh pr create --draft --base main --body-file body.md","description":"x"}}' | run $G 0 "push the fix branch then open a pull request onto main" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git push --all origin","description":"x"}}' | run $G 2 "push --all takes main with it" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git commit -m \"a; git push origin main\"","description":"x"}}' | run $G 0 "a commit on a fix branch whose message names a push to main" "$clone"
 
 echo "== the Stop gate, a throwaway project folder"
 proj="$scratch/proj"
@@ -146,6 +168,10 @@ printf '# The loop\n\nSTATE: Open\n' > "$proj/steps/loop.md"
 echo '{"session_id":"D","hook_event_name":"Stop"}' | gate block "STATE: Open, a colon and mixed case" "$proj"
 printf '# The loop\r\n\r\nSTATE OPEN\r\n' > "$proj/steps/loop.md"
 echo '{"session_id":"E","hook_event_name":"Stop"}' | gate block "STATE OPEN with Windows line endings" "$proj"
+printf '# The loop\n\nSTATE OPEN\n\nturn 2\n' > "$proj/steps/loop.md"
+echo '{"session_id":"G","hook_event_name":"Stop"}' | gate block "OPEN, session G first" "$proj"
+echo '{"session_id":"H","hook_event_name":"Stop"}' | gate block "OPEN, session H first, same file" "$proj"
+echo '{"session_id":"G","hook_event_name":"Stop","stop_hook_active":true}' | gate allow "OPEN, session G again after H, nothing changed" "$proj"
 rm -f "$proj/.claude/hooks/.loop-gate-last"; mkdir "$proj/.claude/hooks/.loop-gate-last"
 echo '{"session_id":"F","hook_event_name":"Stop","stop_hook_active":true}' | gate allow "OPEN, the note cannot be written, never blocks" "$proj"
 echo '{"session_id":"F","hook_event_name":"Stop","stop_hook_active":true}' | gate allow "OPEN, the note still cannot be written" "$proj"

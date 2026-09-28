@@ -76,20 +76,37 @@ foreach ($p in @($workFull, $copy)) {
 $online = 0x400000 -bor 0x40000 -bor 0x1000
 
 function Read-Folder([string] $root, [bool] $hash) {
+    # Walked one folder at a time rather than with -Recurse, because Windows PowerShell 5.1
+    # follows a junction when it recurses, and a junction inside NM Fed would pull a folder
+    # from somewhere else into the copy. A junction or a link is refused by name. A folder
+    # OneDrive syncs carries the reparse point attribute too, and has no LinkType, so it is
+    # not mistaken for one.
     $files = New-Object 'System.Collections.Generic.Dictionary[string,object]' ($ordinal)
     $dirs = New-Object 'System.Collections.Generic.HashSet[string]' ($ordinal)
-    foreach ($d in Get-ChildItem -LiteralPath $root -Recurse -Directory -Force) { [void]$dirs.Add($d.FullName.Substring($root.Length + 1)) }
-    foreach ($f in Get-ChildItem -LiteralPath $root -Recurse -File -Force) {
-        $rel = $f.FullName.Substring($root.Length + 1)
-        if (([int]$f.Attributes) -band $online) { throw "'$rel' is held online only by OneDrive, so reading it would download it into NM Fed. Make NM Fed available offline first. Nothing was done." }
-        $sha = if ($hash) { (Get-FileHash -LiteralPath $f.FullName -Algorithm SHA256).Hash } else { "" }
-        $files[$rel] = [pscustomobject]@{ Bytes = $f.Length; Sha = $sha }
+    $todo = New-Object System.Collections.Generic.Stack[string]
+    $todo.Push($root)
+    while ($todo.Count -gt 0) {
+        $here = $todo.Pop()
+        foreach ($item in Get-ChildItem -LiteralPath $here -Force) {
+            $rel = $item.FullName.Substring($root.Length + 1)
+            $link = [string]$item.LinkType
+            if ($link -eq "Junction" -or $link -eq "SymbolicLink") { throw "'$rel' is a $link, which would pull something from elsewhere into the copy. Nothing was done." }
+            if ($item.PSIsContainer) {
+                [void]$dirs.Add($rel)
+                $todo.Push($item.FullName)
+                continue
+            }
+            if (([int]$item.Attributes) -band $online) { throw "'$rel' is held online only by OneDrive, so reading it would download it into NM Fed. Make NM Fed available offline first. Nothing was done." }
+            $sha = if ($hash) { (Get-FileHash -LiteralPath $item.FullName -Algorithm SHA256).Hash } else { "" }
+            $files[$rel] = [pscustomobject]@{ Bytes = $item.Length; Sha = $sha }
+        }
     }
     return [pscustomobject]@{ Files = $files; Dirs = $dirs }
 }
 
 function Find-One([string] $root, [string] $name) {
     if ($name -match '[\\/*?\[\]]') { throw "'$name' is not a plain file name. Give the name of one NWC, exactly as it is spelled. Nothing was done." }
+    if ([IO.Path]::GetExtension($name) -ne ".nwc") { throw "'$name' is not an NWC. -Remove and -Restore move one NWC and nothing else. Nothing was done." }
     $hits = @(Get-ChildItem -LiteralPath $root -Recurse -File -Force | Where-Object { $_.Name -ceq $name })
     if ($hits.Count -eq 0) { throw "No file named exactly '$name' under '$root'. Nothing was done." }
     if ($hits.Count -gt 1) { throw "'$name' is under '$root' $($hits.Count) times. Nothing was done." }
@@ -101,8 +118,9 @@ Write-Host "copy          : $copy"
 
 if ($Listing) {
     $out = [IO.Path]::GetFullPath($(if ([IO.Path]::IsPathRooted($Listing)) { $Listing } else { Join-Path (Get-Location).Path $Listing }))
-    if (-not (Test-Under $out $repo) -or [IO.Path]::GetExtension($out) -ne ".txt") {
-        throw "The listing is a .txt inside the repo, under steps\runs. '$out' is not. Nothing was written."
+    $runs = Join-Path $repo "steps\runs"
+    if (-not $out.StartsWith($runs + '\', [StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetExtension($out) -ne ".txt") {
+        throw "The listing is a .txt under steps\runs. '$out' is not. Nothing was written."
     }
     $src = Read-Folder $sourceFull $true
     $bytes = 0; foreach ($v in $src.Files.Values) { $bytes += $v.Bytes }
@@ -147,6 +165,7 @@ if ($Restore) {
     $from = Find-One $sourceFull $Restore
     $rel = $from.FullName.Substring($sourceFull.Length + 1)
     if (-not $rel.Equals($note[0], [StringComparison]::Ordinal)) { throw "The file taken out was '$($note[0])', not '$rel'. Nothing was restored." }
+    if (([int]$from.Attributes) -band $online) { throw "'$rel' is held online only by OneDrive, so reading it would download it into NM Fed. Nothing was restored." }
     $sha = (Get-FileHash -LiteralPath $from.FullName -Algorithm SHA256).Hash
     if ($sha -ne $note[1]) { throw "NM Fed now holds a different '$rel' from the one taken out, sha256 $sha against $($note[1]). A changed file is not the same file back. Nothing was restored." }
     $to = Join-Path $copy $rel
@@ -160,14 +179,19 @@ if ($Restore) {
     exit 0
 }
 
-# The plain command.
+# The plain command. While a file is out of the copy for the run that loses one, it
+# refuses rather than remaking the copy, because remaking it puts the file straight back
+# and the run that loses a file would then lose nothing. -Restore ends that state.
+if (Test-Path -LiteralPath $removed) {
+    throw "'$(Get-Content -LiteralPath $removed -TotalCount 1)' is out of the copy for the run that loses a file. Restore it with -Restore first. The copy was left exactly as it is."
+}
 $src = Read-Folder $sourceFull $true
 $nwc = @($src.Files.Keys | Where-Object { [IO.Path]::GetExtension($_) -eq ".nwc" }).Count
 $bytes = 0; foreach ($v in $src.Files.Values) { $bytes += $v.Bytes }
 Write-Host ("NM Fed holds  : {0} files, {1} of them NWC, {2:N1} MB, {3} folders" -f $src.Files.Count, $nwc, ($bytes / 1MB), $src.Dirs.Count)
 if ($nwc -eq 0) { throw "NM Fed holds no NWC file, which is nothing to run on. The copy was left exactly as it was." }
 
-$whole = (Test-Path -LiteralPath $copy) -and (Test-Path -LiteralPath $manifest) -and -not (Test-Path -LiteralPath $removed)
+$whole = (Test-Path -LiteralPath $copy) -and (Test-Path -LiteralPath $manifest)
 if ($whole) {
     $cp = Read-Folder $copy $true
     $same = ($cp.Files.Count -eq $src.Files.Count) -and $cp.Dirs.SetEquals($src.Dirs)
@@ -182,7 +206,7 @@ if ($whole) {
     }
     Write-Host "the copy differs from NM Fed, so it is made again"
 } elseif (Test-Path -LiteralPath $copy) {
-    Write-Host "the copy is not whole, or has a file taken out, so it is made again"
+    Write-Host "the copy is not marked whole, so it is made again"
 }
 
 # Room first, and nothing deleted until there is room.
@@ -195,7 +219,6 @@ Write-Host ("room on {0}    : {1:N1} GB free, {2:N1} GB more once the old copy g
 if ($drive.AvailableFreeSpace + $freed -lt $needed) { throw "Not enough room on $($drive.Name) for the copy. The old copy was left as it was." }
 
 if (Test-Path -LiteralPath $manifest) { Remove-Item -LiteralPath $manifest }
-if (Test-Path -LiteralPath $removed) { Remove-Item -LiteralPath $removed }
 if (Test-Path -LiteralPath $copy) { Remove-Item -LiteralPath $copy -Recurse -Force }
 
 foreach ($d in $src.Dirs) { New-Item -ItemType Directory -Force -Path (Join-Path $copy $d) | Out-Null }

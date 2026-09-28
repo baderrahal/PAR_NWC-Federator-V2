@@ -7,7 +7,8 @@
 #
 # 1. A file tool never changes a file under samples, steps/logs, steps/runs or bundle, in
 #    any case of those names and whether the path is whole or relative. The first three
-#    are evidence and the last is the one manifest the install reads.
+#    are evidence and the last is the one manifest the install reads. Nor .claude/hooks
+#    or .claude/settings, which are these walls, so a file tool cannot switch them off.
 #
 # 2. NM Fed and every ACC Desktop Connector folder are read only for the loop, so a file
 #    tool never writes under either and a command tool never runs a command that names
@@ -51,9 +52,18 @@ refuse() {
 }
 
 names_live_folder() {
+    # NM, then one to six characters of anything, then Fed as a whole word. That is a
+    # space, %20, a glob, a backslash or a backtick before the space, and a name split by
+    # quotes such as NM" "Fed or NM' 'Fed, with the JSON escapes they arrive in. Fed must
+    # end there, so NM Federation is not NM Fed. NM and Fed with nothing between are left
+    # out on purpose, because the loop's own file names hold nmfed and it refused them.
     case "$1" in
-        *[Nn][Mm]" "[Ff][Ee][Dd]*|*[Nn][Mm]%20[Ff][Ee][Dd]*|*[Nn][Mm][?*][Ff][Ee][Dd]*) return 0 ;;
-        *[Nn][Mm]\\" "[Ff][Ee][Dd]*|*[Nn][Mm]\\\\" "[Ff][Ee][Dd]*|*[Nn][Mm]\`" "[Ff][Ee][Dd]*) return 0 ;;
+        *[Nn][Mm]?[Ff][Ee][Dd]|*[Nn][Mm]?[Ff][Ee][Dd][!A-Za-z]*) return 0 ;;
+        *[Nn][Mm]??[Ff][Ee][Dd]|*[Nn][Mm]??[Ff][Ee][Dd][!A-Za-z]*) return 0 ;;
+        *[Nn][Mm]???[Ff][Ee][Dd]|*[Nn][Mm]???[Ff][Ee][Dd][!A-Za-z]*) return 0 ;;
+        *[Nn][Mm]????[Ff][Ee][Dd]|*[Nn][Mm]????[Ff][Ee][Dd][!A-Za-z]*) return 0 ;;
+        *[Nn][Mm]?????[Ff][Ee][Dd]|*[Nn][Mm]?????[Ff][Ee][Dd][!A-Za-z]*) return 0 ;;
+        *[Nn][Mm]??????[Ff][Ee][Dd]|*[Nn][Mm]??????[Ff][Ee][Dd][!A-Za-z]*) return 0 ;;
         *[Nn][Mm][Ff][Ee][Dd]~*) return 0 ;;
         *[Aa][Cc][Cc][Dd][Oo][Cc][Ss]*|*[Aa][Cc][Cc][Dd][Oo]~*) return 0 ;;
         *[\\/][Dd][Cc][\\/][Aa][Uu][Tt][Oo][Dd][Ee][Ss][Kk]" "[Dd][Oo][Cc][Ss]*) return 0 ;;
@@ -98,11 +108,19 @@ p=${p#*\"}
 path=${p%%\"*}
 [ -z "$path" ] && exit 0
 
-# A path is cut at the first quote. A value that ends in a backslash there held an escaped
-# quote, and a path with a quote in it is not a Windows path, so it is refused rather than
-# half read.
-case "$path" in
-    *\\) refuse "The path in this call holds a quote, so it cannot be read whole. See .claude/rules/loop.md." ;;
+# A path is cut at the first quote. JSON writes a backslash as two, so a cut value ending
+# in an ODD number of backslashes ended on an escaped quote, and a path with a quote in it
+# is not a Windows path, so it is refused rather than half read. An even number is a path
+# that really ends in a backslash, and it is read as it is.
+tail=$path
+while :; do
+    case "$tail" in
+        *'\\') tail=${tail%??} ;;
+        *) break ;;
+    esac
+done
+case "$tail" in
+    *'\') refuse "The path in this call holds a quote, so it cannot be read whole. See .claude/rules/loop.md." ;;
 esac
 
 # A short name such as NMFED~1 or ONEDRI~1 is read in full before it is judged. cygpath
@@ -120,7 +138,9 @@ fi
 
 # JSON doubles a backslash, so a Windows path arrives with two between each folder, and a
 # path typed with doubled backslashes arrives with four. The slash put in front lets a
-# relative path such as samples/a.txt match too.
+# relative path such as samples/a.txt match too. The last branch is the walls themselves,
+# so a file tool can never switch them off: a change to a hook or to the settings is
+# written somewhere else, proved, and copied in by a command.
 case "/$path" in
     *[\\/][Ss][Aa][Mm][Pp][Ll][Ee][Ss][\\/]*|*[\\/][Bb][Uu][Nn][Dd][Ll][Ee][\\/]*)
         refuse "$path is under samples or bundle, which are never edited. See CLAUDE.md." ;;
@@ -130,6 +150,9 @@ case "/$path" in
     *[\\/][Ss][Tt][Ee][Pp][Ss][\\/][Rr][Uu][Nn][Ss][\\/]*|*[\\/][Ss][Tt][Ee][Pp][Ss][\\/][\\/][Rr][Uu][Nn][Ss][\\/]*|\
     *[\\/][Ss][Tt][Ee][Pp][Ss][\\/][\\/][\\/][Rr][Uu][Nn][Ss][\\/]*|*[\\/][Ss][Tt][Ee][Pp][Ss][\\/][\\/][\\/][\\/][Rr][Uu][Nn][Ss][\\/]*)
         refuse "$path is under steps/runs, the loop's run evidence, which the runner collects with a command and nothing edits. See .claude/rules/loop.md." ;;
+    *[\\/].[Cc][Ll][Aa][Uu][Dd][Ee][\\/][Hh][Oo][Oo][Kk][Ss][\\/]*|*[\\/].[Cc][Ll][Aa][Uu][Dd][Ee][\\/][\\/][Hh][Oo][Oo][Kk][Ss][\\/]*|\
+    *[\\/].[Cc][Ll][Aa][Uu][Dd][Ee][\\/][Ss][Ee][Tt][Tt][Ii][Nn][Gg][Ss]*|*[\\/].[Cc][Ll][Aa][Uu][Dd][Ee][\\/][\\/][Ss][Ee][Tt][Tt][Ii][Nn][Gg][Ss]*)
+        refuse "$path is one of the walls, .claude/hooks or .claude/settings, which no file tool changes. Write the change elsewhere, prove it, and copy it in with a command. See .claude/rules/loop.md." ;;
 esac
 
 exit 0

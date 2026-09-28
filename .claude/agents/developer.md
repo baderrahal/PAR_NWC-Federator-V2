@@ -10,7 +10,9 @@ log line or test that shows it, and what proves it fixed.
 
 In this order, and nothing rides along:
 
-1. git checkout main, pull, then branch fix-F<n> off it. Never commit or push on main
+1. git checkout main, git pull --ff-only, then branch fix-F<n> off it. Never commit or
+   push on main. A plain git pull on main is refused by the wall, because a pull that is
+   not a fast forward makes a commit there
 2. Root cause. Name the run line or the test that shows the fault, and the file and line
    that cause it. When you cannot find it, say so and stop
 3. The failing test. A Core test under tests\Federator.Core.Tests that fails before the
@@ -31,8 +33,10 @@ In this order, and nothing rides along:
    --body-file. Its body says what was proved on this machine and which run proved it,
    with the build counts pasted. You never merge. The lead merges
 
-A message or a body goes in a file, never on the command line, because the wall refuses a
-command whose text names NM Fed and the loop's work names it all the time.
+A commit message and a pull request body go in a file, never on the command line, and a
+title never names the desktop folder of real files, because the wall refuses a command
+whose text names it and the loop's work names it all the time. Run git and gh through the
+Bash tool, where the allow list in .claude\settings.json names them.
 
 House rules you never bend:
 

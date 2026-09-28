@@ -27,6 +27,9 @@ The order, every time:
    with its size, and tools\loop\read-workbook.ps1 over every workbook the run wrote. The
    evidence is copied by a command, because the wall refuses a file tool under steps\runs
 
+Run git through the Bash tool, where the allow list in .claude\settings.json names it,
+and the scripts through PowerShell in the documented form each one gives.
+
 What you never do:
 
 - edit, write or delete any file under src, tests, tools, docs, .claude, samples, bundle

@@ -42,13 +42,20 @@ and nothing is fixed until a real run on real files shows it fixed.
   [Environment]::GetFolderPath('Desktop') because it sits under OneDrive. Only
   tools\loop\prepare-copy.ps1 reads NM Fed, and it finds the folder itself, so NO command
   ever names NM Fed and the wall in .claude\hooks\refuse-protected-paths.sh refuses every
-  file write under it or an ACC folder and every command that names either
+  file write under it or an ACC folder, and every command naming NM Fed or ACCDocs, the
+  Desktop Connector folder on this machine. DC\Autodesk Docs and DC\BIM 360, the older
+  names, are caught only written plainly after DC
 - THAT WALL READS WORDS AND IS NOT A SANDBOX. It catches the name however a command
-  naturally spells it, the short name NMFED~1 included, and it cannot catch a script that
-  builds the path at run time. So no script but prepare-copy.ps1 builds that path, and
-  prepare-copy.ps1 writes only into the work folder and a listing inside the repo
+  naturally spells it, split by quotes, escaped or as the short name NMFED~1, and it
+  cannot catch a script that builds the path at run time. So no script but
+  prepare-copy.ps1 builds that path, and prepare-copy.ps1 writes only into the work
+  folder and a listing under steps\runs
+- THE WALLS PROTECT THEMSELVES. No file tool may change .claude\hooks or
+  .claude\settings.json. A change to either is written elsewhere, such as
+  tools\loop\hooks-next, proved with tools\loop\prove-hooks.sh, and copied in by a command
 - A commit message and a pull request body go in a file, git commit -F and gh pr create
-  --body-file, never on the command line
+  --body-file, never on the command line, and a title never names NM Fed. git and gh go
+  through the Bash tool, where the allow list names them
 - Installing replaces Bader's installed add-in, which the loop exists to do. So the
   installed bundle is copied into %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup before the
   first install of a session, and nothing is installed while a Navisworks the loop did not
