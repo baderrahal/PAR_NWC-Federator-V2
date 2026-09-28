@@ -1,6 +1,13 @@
 # The loop
 
-STATE OPEN
+STATE WAITING
+
+WAITING FOR BADER, for two things. His choice on F100 in The form below, A, B or C. And his
+Navisworks closed, pid 34668, open since 09:33 on 2026-09-28, which the loop never closes.
+Everything next needs a Navisworks the loop starts with none of his running: F100's run,
+the measurements of the no-click entry, and the install of main. When he answers and says
+go, check with Get-Process Roamer that none runs, set STATE OPEN, and carry on from Next
+action.
 
 Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 started the same day in
 the same session, because the eight agents are loaded since Bader's restart. Its first fix,
@@ -8,7 +15,13 @@ F98, is merged in PR 73.
 
 ## Next action
 
-1. Phase 1, below, from its first item
+1. F100 IS IN THE FORM, below, after three fix attempts, and waits on Bader's choice.
+   PR 74 stays open as a draft on fix-F100 and NOTHING OF IT MERGES until its result file
+   is replaced or taken out, because that file carries two licensing ids
+2. Phase 1 item 3, the no-click entry. Its design is in
+   %LOCALAPPDATA%\NwcFederatorLoop\turn1\f101-design.md: measure first (PQ1 to PQ8 through
+   the same probe), then the moves out of the window one pull request each, then the entry
+3. Then Phase 1 items 2 and 4, below
 
 ## The phases
 
@@ -95,7 +108,60 @@ F98, is merged in PR 73.
   logged in steps\log.md and the committed run-20260907-093440.log, although
   steps\03_bader_next.md says C06 never existed. It is the register row about steps 9 to 17
 
-## The register
+## The form
+
+What waits on Bader's answer. A finding moves here when it survives three fix attempts,
+with what was tried and what each attempt showed. The register rows marked needs Bader,
+in the form are the questions already in steps\02_questions.md and are not repeated here.
+
+### F100, the probe of a start with no click, after three fix attempts
+
+What it is: tools\probes\probe-automation-start.ps1, on branch fix-F100, whose attempt 3
+is commit b01ad71, PR 74 open as a draft. It is the pattern tools\loop\run.ps1 will copy to start
+and close every loop run.
+
+What the attempts showed:
+
+- the first version ran once, run 1 at 12:27 on 2026-09-28: the Automation API starts a new
+  Navisworks here with no click, as Roamer.exe -Embedding, the constructor returning after
+  110.02 s, and Dispose closes it, gone 8.5 s after, lines 226 and 264 of the result as
+  committed in 464f79f. Its reviewer and breaker found it could adopt and force close a
+  Navisworks it did not start, if one was opened by hand during the start and the start
+  threw
+- fix attempt 1 ran twice, runs 2 and 3 at 13:11 and 13:17: the constructor returned after
+  85.36 s and 82.75 s, and the Navisworks was gone 9.3 s and 8.0 s after Dispose, lines 394
+  and 432 of run 2's kept result and 395 and 433 of run 3's. Its readers found it put
+  Bader's settings back while his own
+  Navisworks ran, so it could revert a change of his, could empty a backup before a
+  refusal, and still closed an unproved start at its deadline
+- fix attempts 2 and 3 are not run with a Navisworks, because Bader's was open all day and
+  the design forbids a run then. Their harness proved every write of the put back on a
+  throwaway key and folder, and the refusals on the real probe
+- the fourth reading, of attempt 3, found faults inside what attempt 3 changed, each one to
+  five lines: settings could be put back after the probe fails to end itself at its
+  deadline, one result line prints fixed text as if read, one registry write does not
+  re-read its key, window reads after adoption go by pid alone, an unproved start is
+  printed as written down before the write is tried, and a recorded start with no start
+  time can block the loop when a Navisworks opened by hand later takes its pid. And the
+  rule that no start is made while ANY Navisworks runs is kept by a person, not by code,
+  so an unattended run.ps1 must enforce it. Each fault with the probe lines it rests on is
+  in %LOCALAPPDATA%\NwcFederatorLoop\turn1\f100-fourth-reading.md, beside the three fix
+  lists
+
+THE RESULT FILE MUST NOT REACH MAIN AS IT IS. tools\probes\automation-start-result-20260928.txt
+on the branch carries the licensing agent's analytics id and a session id, from the run
+of the version before attempt 2. A squash merge still brings the branch's final files, so
+the file must be replaced by a new run, or taken out, before anything of this branch merges.
+
+Bader's choice:
+
+- A. Allow a fourth fix attempt of exactly the faults above, then the one run once his
+  Navisworks is closed, then merge. THE LEAD'S RECOMMENDATION, with run.ps1 refusing to
+  start while any Roamer runs, which also closes the gap of an attach to his Navisworks
+- B. Stop F100 here: keep runs 1 to 3 as the measurement in docs\history\scan.md 5z-d, take
+  the result file out, merge that, and write run.ps1's start and close fresh from the
+  design, read from the start
+- C. Something else he names
 
 Built in turn 1 from steps\01_next.md, steps\02_questions.md, steps\04_audit.md,
 steps\04_audit_first_run.md, steps\03_bader_next.md, the known bugs of steps\log.md, the
@@ -106,11 +172,11 @@ an F number only when it becomes work. Most harmful first when the loop picks, a
 wrong number ranks above a loud failure. Done in code but not proved by a run means the
 baseline run proves it or contradicts it.
 
-269 rows, by status:
+270 rows, by status:
 
 - 125 done in code, not proved by a run
 - 89 reported by the read, not verified
-- 30 needs Bader, in the form
+- 31 needs Bader, in the form
 - 19 open fault
 - 3 DONE
 - 1 seen on an old build, the baseline answers it for main
@@ -122,6 +188,7 @@ baseline run proves it or contradicts it.
 | F97 | loop prompt, Phase 0 | The house: agents, hooks, rules, tools\loop, steps\runs, allow list | on main, every hook case answered on standard input, both walls refusing live | DONE | 72 | no Navisworks run applies, proved on standard input and live |
 | F98 | turn 0, a read of steps\log.md | PR 71 dropped the close round heading in steps\log.md | the heading back above Core tests 1666 before the round and 1746 after | DONE | 73 | no run applies, the file from the heading down matches the one before PR 71 |
 | F99 | turn 0, the git wall fired on Bash only | The git wall missed commits sent through PowerShell | a PowerShell commit on main refused on standard input, and git.exe read as git | DONE | 72 | no Navisworks run applies, proved on standard input and live |
+| F100 | loop prompt, Phase 1 item 1 | Nothing measured how Navisworks starts and closes with no click on this machine | tools\probes\probe-automation-start.ps1 run once as committed, with no Navisworks the loop did not start running, and docs\history\scan.md 5z-d written off that run | needs Bader, in the form | 74 | runs 1 to 3 of earlier versions, none of the committed one |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
 | RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
 | CHAT-19 | chat audit of 19 Sep | The doubled summary block above BuildViewpoints | NOT FOUND by the turn 1 read. Two other stacked summaries are T1-N items | closed, not there at 42499bf | none yet | none yet |
@@ -459,19 +526,51 @@ reviewer, a breaker and the claim-checker, who found the fix right and flagged w
 the records, fixed before the merge.
 
 Phase 1 so far: Bader's logs folder and the installed bundle backed up, items 5 and 6.
+Item 1, F100: the Automation API starts Navisworks with no click on this machine, measured
+three times by versions of the probe, and the committed version waits for its one run.
 
-Still open: the rest of Phase 1, and every register row that is not DONE.
+Findings: while a Navisworks the loop started runs, Bader's own Navisworks settings change,
+in the registry and under his roaming profile, and the two guards in .claude\rules\loop.md
+answer it. The first probe could have force closed a Navisworks it did not start, found by
+review before anything went wrong.
+
+Still open: F100's run, the rest of Phase 1, and every register row that is not DONE.
 
 Programs started so far: dotnet build-server shutdown, for the servers the turn 1 tests
 started. git and gh. dotnet test by hand on fix-F98 and through the pre-commit hook.
-Windows PowerShell for the backups and to list the running Navisworks. Three read only
-agents, a reviewer, a breaker and the claim-checker. No Navisworks.
+Windows PowerShell for the backups, the probe and its checks, and reg.exe for exports and
+one import. dotnet build of the add-in, by the prober. THREE NAVISWORKS, each started by
+the probe through the Automation API as Roamer.exe -Embedding and each closed by the API's
+Dispose, none forced: pid 44888 at 12:27, pid 12336 at 13:11 and pid 50204 at 13:17, with
+the licensing agents and helpers they started, all gone afterwards. Bader's pid 34668 was
+never closed, attached to or sent anything. The prober's checks that start no Navisworks
+also started three throwaway powershell windows of its own, each exiting by itself, and
+made and deleted the throwaway key HKCU\Software\NwcFederatorLoopTest several times, twice
+by hand after its deadline test ended its own process, and it is gone. Bader's 22.0 key
+exported byte identical before and after every such check. Agents: the prober, the
+reviewer, breaker and claim-checker on F98, four reviewers and four breakers on F100,
+and one planning agent for the no-click entry, whose design is in turn1\f101-design.md.
+
+Written into Bader's settings, outside the work folder, all while his Navisworks 34668
+ran, so which Navisworks wrote each change is UNKNOWN: after run 1 the prober put back by
+hand, with reg import, the Recent File List, MainWindow and PluginOptions keys from the
+export taken before it. Runs 2 and 3 put back 36 values each by themselves, the CER
+counters, MainWindow Placement, PluginOptions DefaultPlugin and the Recent File List 1 to
+10, every one read back equal. The rule now forbids a put back while another Navisworks
+runs. Three files under %APPDATA%\Autodesk\Navisworks Manage 2025, clash\rules,
+CommCenter\en-US\infocenter.xml and LastSession.xml, were rewritten at 12:29 during run 1
+with no copy taken before, so what they held is UNKNOWN.
 
 Files written outside the repo so far:
 
-    %LOCALAPPDATA%\NwcFederatorLoop\logs-backup     Bader's logs folder, 32 files, 11,764,326 bytes
-    %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup   the installed bundle, 15 files, 10,621,229 bytes
-    %LOCALAPPDATA%\NwcFederatorLoop\turn1           the F98 commit messages and pull request bodies,
-                                                    steps\log.md before PR 71 and the fixed file, each
-                                                    from the close round heading down, and the session
-                                                    evidence file, items 11 to 17
+    %LOCALAPPDATA%\NwcFederatorLoop\logs-backup                 Bader's logs folder, 32 files, 11,764,326 bytes
+    %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup               the installed bundle, 15 files, 10,621,229 bytes
+    %LOCALAPPDATA%\NwcFederatorLoop\navisworks-settings-backup  Bader's Navisworks settings folder, 205 files,
+                                                                and the 22.0 key, taken at 12:40, after run 1
+                                                                and its put back by hand, before run 2
+    %LOCALAPPDATA%\NwcFederatorLoop\probes                      the probe's work folders of runs 1 to 3, its
+                                                                checks, and copies of one NWC and the NWD saved
+                                                                from it
+    %LOCALAPPDATA%\NwcFederatorLoop\turn1                       the F98 and F100 messages, bodies and fix lists,
+                                                                steps\log.md before PR 71 and the fixed file,
+                                                                and the session evidence file, items 11 to 17
