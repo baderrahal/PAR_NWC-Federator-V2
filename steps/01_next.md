@@ -47,6 +47,7 @@ Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the 
 27. F97, DONE, the house of the loop
 28. F98, DONE, the close round heading back in steps\log.md
 29. F99, DONE, the git wall through PowerShell
+30. F100, a start of Navisworks with no click, measured, WAITING for one run
 
 The loop opened on 2026-09-27 on Bader's own machine. Its fixes take the next free F number from F97, and the order it works in is its register in steps\loop.md, most harmful first.
 
@@ -941,3 +942,11 @@ The alignment round closed on 2026-09-20, branch `round-alignment`, proved by TW
 
 - Found on 2026-09-27 in turn 0: `.claude/settings.json` matched the git wall on the Bash tool alone, so a commit on main sent through the PowerShell tool was never refused. It also missed `git.exe` and a quoted path to it
 - DONE on 2026-09-28, merged in PR 72, with it the forms the Phase 0 breakers found: a quoted word between git and the verb, a push naming main or deleting it from a fix branch, switching to main or to the branch before and committing in one command, a second git call after a newline or a semicolon, and merge, cherry-pick, revert, am, rebase and commit-tree on main. Each git call is judged on its own words. A fast forward only merge or pull and a push that only deletes another branch still pass. Proved on standard input against a throwaway clone with main checked out, and live by a push of HEAD to main refused in the session
+
+## F100 A start of Navisworks with no click, measured
+
+- Phase 1 item 1 of the loop. Every loop run has to start Navisworks, run the tool and close that Navisworks with nobody at the machine. docs\history\scan.md 5j says the ViewpointProbe was run through the Automation API on another machine, DESKTOP-5VL7LTJ, and how it was started there is not in the repo. Nothing was measured on this machine
+- `tools/probes/probe-automation-start.ps1` starts one Navisworks through Autodesk.Navisworks.Api.Automation, finds the process id it started as the one Roamer that was not running before, opens a copy of one NWC from the loop's source copy, calls AddPluginAssembly with the add-in built from this repo, and quits, closing only its own process id. docs\history\scan.md 5z-d
+- It found that while a Navisworks the loop started runs, Bader's own Navisworks settings change: the recent files, the window placement and the default plugin in the registry, and files under his roaming profile. So two guards go into `.claude/rules/loop.md`: what makes a Navisworks the loop's own, with nothing closed before it is proved, and the backup of those settings before every start, put back only when no Navisworks the loop did not start ran meanwhile
+- Two rounds of review. The first reviewer and breaker found the first version could adopt, and in its finally force close, a Navisworks it did not start, if Bader opened one during the start and the start threw. The second found the fixed version could revert a change Bader's own Navisworks made during the run, could empty a backup before a refusal, and still closed an unproved start at its deadline. The prober fixed both lists, the lead deciding what they left open
+- WAITING on 2026-09-28. The changed probe has passed every check that starts no Navisworks, and its one full run waits until no Navisworks the loop did not start is running, because only then can the put back be proved safe. Bader's own was open all day

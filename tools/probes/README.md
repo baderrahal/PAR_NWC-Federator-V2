@@ -40,8 +40,9 @@ The eight DLL probes need only the install:
   ClashTest, every Comment member on DocumentClashTests, and the Comment type whole. See
   section 5h
 
-The three window probes need the add-in built in Release and installed by
-build\install.ps1, because they construct the real window:
+The four window probes need the add-in built in Release and installed by
+build\install.ps1. The first three construct the real window, and the fourth drives it
+inside a running Navisworks:
 
 - `probe-window-defaults.ps1` prints every box's text and state, which is how blank
   naming boxes were caught
@@ -57,13 +58,26 @@ build\install.ps1, because they construct the real window:
   host and where the window sits in the automation tree. It needs the add-in window
   already open
 
-One probe starts a Navisworks of its own and closes it by its process id:
+One probe starts a Navisworks of its own. It is run only when no Navisworks the loop did
+not start is running. It quits its Navisworks through the API's Dispose. It closes it by
+its process id only when it is the adopted one and Dispose left it running, a step
+failed, or the adopted deadline passed. It never closes anything before adoption:
 
 - `probe-automation-start.ps1` answers F100: whether Autodesk.Navisworks.Api.Automation
   starts Navisworks with no click, which process id it started, whether that Navisworks
   opens a copy of one NWC from the loop's source copy, takes the add-in built from this
-  repo through AddPluginAssembly, and quits. Every other Roamer is listed first and never
-  touched. See docs/history/scan.md section 5z-d
+  repo through AddPluginAssembly, and quits. It adopts a Navisworks as its own only when
+  the constructor returned, exactly one Roamer is new, it started after the call and its
+  command line holds -Embedding. A start it cannot prove is written to
+  %LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt and left running, and every
+  later run refuses to start while one named there is still running, because a person
+  has to look. Every Roamer already running is listed first by id, start time and parent,
+  read through Win32_Process, and never closed, attached to or sent anything. It backs up
+  Bader's Navisworks settings first and prints every change with its old and new value.
+  It puts them back only when no other Navisworks ran from the backup to the put back and
+  its own is gone, and otherwise writes nothing and keeps the backup. It never empties its
+  work folder, it renames the last one. Its result is kept at the top of this folder,
+  `automation-start-result-20260928.txt`. See docs/history/scan.md section 5z-d
 
 A probe that cannot find what it needs says UNKNOWN and the path it looked at, and
 stops. Never search the install folder for a DLL, the path is built and tested directly,
