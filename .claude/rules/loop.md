@@ -66,15 +66,40 @@ and nothing is fixed until a real run on real files shows it fixed.
   bundle before it copies the new one
 - Every run works on the copy under %LOCALAPPDATA%\NwcFederatorLoop\source and every
   output of every run goes under %LOCALAPPDATA%\NwcFederatorLoop
-- Nothing of Bader's is deleted or overwritten, bar the installed add-in, which is backed
-  up first as the install rule above says. The only folder the loop deletes from is
+- Nothing of Bader's is deleted or overwritten, bar two things. The installed add-in, which
+  is backed up first as the install rule above says. And his Navisworks settings, put back
+  to what the backup holds under the settings rule below, which can remove a value or key
+  the loop's own Navisworks added. The only folder the loop deletes from is
   %LOCALAPPDATA%\NwcFederatorLoop
 - Before the first run, %LOCALAPPDATA%\ParsonsNwcFederator\logs is copied into the work
   folder as a backup. Loop runs write their logs inside the work folder, so the thirty
   logs the tool keeps never push one of his out. Any choice the tool remembers between
   runs is read before the loop and put back after it
-- Close what you open. Every Navisworks the loop starts is closed by its own process id.
-  A Navisworks the loop did not start is never closed
+- Close what you open. Every Navisworks the loop proves its own, by the rule below, is
+  closed, and by its own process id when the Automation API does not close it. One the
+  loop started and cannot prove is left running and recorded, as the rule below says. A
+  Navisworks the loop did not start is never closed, attached to or sent anything
+- A Navisworks is the loop's own only when the Automation start returned without
+  throwing, it is the one possible start, a new Roamer whose command line names embedding
+  or cannot be read, it started after the call began, and its command line holds
+  -Embedding. A new Roamer whose command line reads and names neither is one started by
+  hand, and is left alone. Anything less and the loop closes
+  nothing, calls nothing on that start, and says why. NOTHING IS CLOSED BEFORE IT IS
+  ADOPTED, not even at a deadline: a start that cannot be proved is written to
+  %LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt and left running, and every
+  later start refuses while one named there still runs, so a person looks. A start is
+  also refused while a Roamer already running names embedding or automation anywhere in
+  its command line, because the start could reach it. docs\history\scan.md 5z-d
+- While a Navisworks the loop started runs, the recent files, the window placement and the
+  default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
+  under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which
+  Navisworks wrote which change is UNKNOWN while another one runs. So before every start
+  that key is exported and every file of that folder but AutoSave that can be read is
+  copied into the work folder, and the work folder is moved aside, never emptied. Once the
+  loop's Navisworks is proved gone, what changed is put back ONLY when no Navisworks the
+  loop did not start ran at any point from the backup to then. Otherwise nothing is
+  written, every change is listed with its old and new value in the turn's record, and the
+  backup is kept for Bader
 - No NWC, NWF, NWD, workbook or picture is ever committed
 - samples and steps\logs are never touched
 
