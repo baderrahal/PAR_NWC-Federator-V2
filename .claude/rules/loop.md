@@ -50,9 +50,12 @@ and nothing is fixed until a real run on real files shows it fixed.
   cannot catch a script that builds the path at run time. So no script but
   prepare-copy.ps1 builds that path, and prepare-copy.ps1 writes only into the work
   folder and a listing under steps\runs
-- THE WALLS PROTECT THEMSELVES. No file tool may change .claude\hooks or
-  .claude\settings.json. A change to either is written elsewhere, such as
-  tools\loop\hooks-next, proved with tools\loop\prove-hooks.sh, and copied in by a command
+- THE WALLS PROTECT THEMSELVES FROM A FILE TOOL. No file tool may change .claude\hooks or
+  .claude\settings.json, nor samples, steps\logs, steps\runs or bundle. A command can,
+  which is how a proved change is copied in, so this stops a slip and not a command. A
+  change to a wall is written into a folder of its own, proved there with
+  tools\loop\prove-hooks.sh, read by a breaker, and only then copied in by a command,
+  and that folder is removed once the copy is in, so each hook lives in one place
 - A commit message and a pull request body go in a file, git commit -F and gh pr create
   --body-file, never on the command line, and a title never names NM Fed. git and gh go
   through the Bash tool, where the allow list names them

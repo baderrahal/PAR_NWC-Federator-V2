@@ -1,83 +1,99 @@
 # log
 
 Newest entry at the top.
-## 2026-09-27 The loop, turn 1, F97 the house and F99 the git wall, IN REVIEW, PAUSED
+## 2026-09-28 The loop, turn 1, F97 the house and F99 the git wall, DONE
 
-PAUSED FOR A RESTART OF BADER'S COMPUTER, at STATE WAITING, with everything committed and
-pushed on fix-F97 and no pull request open. steps\loop.md says exactly where to resume.
-
-WHAT CHANGED AFTER THIS ENTRY WAS FIRST WRITTEN. One reviewer and two breakers read the
-house before it went out and found real faults in my own scripts and walls. read-workbook
-turned this tool's own one row tests into invented clash rows, prepare-copy kept a copy on
-size alone and could write its listing into NM Fed, and the walls could be walked round.
-Both scripts are rewritten and proved again, and the walls are rewritten and wait in
-tools\loop\hooks-next for their proof and a second review. So the numbers below that
-describe the walls and the scripts, 52 cases, five prepare-copy runs, are the FIRST
-version's and are replaced when the turn closes.
-
-Core tests 1746 passed, 0 failed, 0 skipped before and after. Nothing under src or tests
-changed. The add-in was built in turn 0 on main, 0 errors and 0 warnings, and this turn
-touches none of it. The turn ends at STATE RESTART once Phase 0 merges, because the eight
-agents load only when a session starts.
+Core tests 1746 passed, 0 failed, 0 skipped, before and after. Nothing under src or tests
+changed, and the add-in, built on this machine in turn 0 with 0 errors and 0 warnings, is
+untouched. Merged in PR 72. The turn was paused on 2026-09-27 for a restart of
+Bader's computer and carried on on 2026-09-28 from steps\loop.md, which held.
 
 ### What was done
 
-- gh logged in as baderrahal by Bader, and fix-F97 pushed, so git and gh both work here
-- THE WHOLE REPO WAS READ, by nineteen read only agents over every file under src, tests,
-  tools and steps, 1,301 tool calls. What they found is in steps\loop-read.md, and every
-  fault in it is one reader's claim that nobody has confirmed yet: 179 faults, of which 70
-  are silent wrong outputs, 150 members nothing in src calls, 77 catches called
-  swallowing, 46 files with more than one top level type. No Navisworks type in Core. The
-  summary block the chat audit named as doubled above BuildViewpoints is not there
-- THE REGISTER, which the prompt puts in Phase 2, is built now from that read, 268 rows in
-  steps\loop.md, so the next session does not read the repo again
-- the team, eight agents under .claude\agents. The breaker and the claim-checker start
-  from the ai-max ones on this machine. Log-reader, reviewer, breaker, claim-checker and
-  writer have no shell
-- the walls. The paths wall now also covers NotebookEdit, Bash and PowerShell, and
-  refuses any file write under NM Fed or an ACC Desktop Connector folder and any command
-  naming either, bar one single run of tools\loop\prepare-copy.ps1. The git wall now
-  covers PowerShell and git.exe, which was F99. A Stop hook, loop-gate.sh, keeps a
-  session going while steps\loop.md reads OPEN, once per change to it, written to the
-  hooks reference read that day
-- THE FIRST VERSION OF THE PATHS WALL TOOK 11.9 SECONDS A CALL. Starting sh here costs 2.3
-  to 2.9 seconds and every pipe through grep, awk or sed about two more, measured under
-  load. It now reads the call with shell builtins and starts a program only on its way to
-  a refusal. It also refused the loop's own listing once, named nmfed-listing, so the wall
-  now matches NM Fed as written, with its space
-- the proof. 52 cases fed on standard input, 32 to the paths wall, 10 to the git wall
-  through a throwaway clone with main checked out, 10 to the Stop gate, each answering
-  what it should, pasted in the pull request. Two live refusals in this session, a
-  PowerShell listing of NM Fed and a Write under steps\logs
-- the allow list in .claude\settings.json for dotnet build and test, install.ps1, the
-  scripts under tools\loop and tools\probes, the checks, git, gh pr and gh run
-- tools\loop\prepare-copy.ps1, proved five ways on the real folder: made the copy of 141
-  files, kept it, took one NWC out, copied it back from NM Fed, kept it again
-- tools\loop\read-workbook.ps1, which shares no code with the writer, proved on both client
-  exports: 1830 blocks, 1830 names, 64 and 65 clash rows, each equal to its block totals
-- .claude\rules\loop.md, steps\runs with its own gitignore negation proved with git
-  check-ignore, steps\runs marked as untouched evidence in .gitattributes, CLAUDE.md at 199
-  lines
-- measured and written down: hooks load mid session, agents do not. Claude Code finds sh
-  on Windows without help, which CLAUDE.md held as UNKNOWN
+- gh logged in as baderrahal, so git and gh both work here
+- THE WHOLE REPO WAS READ by nineteen read only agents over every file under src, tests,
+  tools and steps. What they found is in steps\loop-read.md: 179 faults, none confirmed
+  yet, 70 of them silent wrong outputs, 150 members nothing in src calls, 77 catches
+  called swallowing, 46 files holding more than one top level type. No Navisworks type in
+  Core. The summary block the chat audit named as doubled above BuildViewpoints is not
+  there. The register built from it, which the prompt puts in Phase 2, is in steps\loop.md
+  with 269 rows
+- the team, eight agents under .claude\agents. They loaded when the session started after
+  the restart, and were used for the second and third reviews
+- THE HOUSE WAS READ THREE TIMES BEFORE IT WENT OUT and each read found real faults in my
+  own work. The first, by one reviewer and two breakers: read-workbook.ps1 turned this
+  tool's own one row tests into invented clash rows, prepare-copy.ps1 kept a copy on size
+  alone and could write its listing into NM Fed, and the walls could be walked round. The
+  second, by the loop's own reviewer and two breakers: a nameless test or clash row was
+  dropped, the plain copy command undid a removed file, the git wall judged a whole
+  command at once so a -d anywhere excused any push, a newline after main hid it, the gate
+  shared one note across sessions, and the walls could be edited by a file tool. The
+  third, a breaker on the rewritten walls: a push deleting main, and a switch to the branch
+  before and a commit. Every one of those is fixed. What cannot be fixed by reading words
+  is written into each hook, the rules and CLAUDE.md as a stated limit
+- THE WALLS. The paths wall refuses a file tool under samples, steps\logs, steps\runs,
+  bundle, .claude\hooks and .claude\settings, relative and any case, and a file write or a
+  Bash, PowerShell or Monitor command naming NM Fed, split by quotes, escaped or as its
+  short name, or ACCDocs. The git wall, F99, reads each git call on its own words through
+  Bash, PowerShell and Monitor and refuses a commit on main and any push landing on or
+  deleting main from any branch. The Stop gate sends a session back once per session per
+  change while steps\loop.md reads OPEN, and never blocks forever
+- THE WALLS' OWN COST, measured. The first paths wall took 11.9 seconds a call. The final
+  walls in .claude\hooks, timed three times each, take 2.4 to 3.6 seconds on an ordinary
+  call, which is starting sh here, and 6.9 to 8.0 on a git commit, which also asks git for
+  the branch
+- the proof. 114 cases fed on standard input by tools\loop\prove-hooks.sh, the git
+  wall against a throwaway clone with main checked out, every case answering as it should,
+  first in tools\loop\hooks-next where the walls were rewritten. Then they were copied into
+  .claude\hooks by a command, because no file tool may change that folder, and proved
+  again there, 114 cases right. Live, in this session, they refused four real calls:
+  a PowerShell command naming NM Fed, a Write under steps\runs, a Write under .claude\hooks
+  and a dry run push of HEAD to main. tools\loop\hooks-next was then removed, so each hook
+  lives in one place
+- tools\loop\prepare-copy.ps1, proved on the real folder: kept, listed without touching
+  the copy, one NWC removed, restored by hash, kept again, and twelve calls refused with
+  their reason and nothing changed. An earlier version made the copy again when NM Fed
+  changed under it on 2026-09-27, seen in the session and not kept on disk
+- tools\loop\read-workbook.ps1, shares no code with the writer, proved on both client
+  exports, on a workbook of this tool's own shape written by its WorkbookWriter, on the same
+  shape with a nameless test and a nameless clash, and on a workbook that is not there
+- both scripts were proved again on 2026-09-28 after the restart, with every answer they
+  printed kept in %LOCALAPPDATA%\NwcFederatorLoop\turn1\proof-scripts-2026-09-28.txt, out
+  of the repo because it carries lines of Bader's log with the client's project paths. The
+  same file holds the git check-ignore of steps\runs, the picture targets read off the
+  client workbooks and the second read of Bader's 16:37 log
+- the allow list names the scripts and the git and gh commands the loop runs, and deny
+  rules stop force pushes, --no-verify, switching the hooks off, reset --hard, clean and
+  merging with --admin, in Bash and PowerShell and in their git -C forms
+- MEASURED AND WRITTEN DOWN: hooks load mid session, agents only at session start. Claude
+  Code on Windows finds sh without help, which CLAUDE.md held as UNKNOWN. The client's
+  workbooks hold 65 and 66 pictures each, every one LINKED to an absolute file:/// path and
+  none stored, which is what core.md says, read off the zip on 2026-09-28
+- FOUND ON THE WAY: Bader ran the tool on 1B06BC at 16:37 on 2026-09-27 with NM Fed as its
+  NWF, NWD and workbook folder. The run logged plugin version be0b9b37, the build of the old
+  checkout, wrote the first NWF at 16:56:20, and its last line is the second NWF attempt at
+  17:00:36, with no line holding RESULT, no workbook and no NWD. It is register row
+  RUN-1637. NM Fed changes under the loop, and the copy follows it
 
 ### What remains
 
-- Phase 1: the prober on a run with no click, the two probes, the no-click entry, run.ps1
-  and the separate read of the document. run.ps1 is not written, because how Navisworks
-  starts with no click is measured first
-- Phase 3 on: the baseline run set, then the loop, R1 to R6, the close
+- F98 in its own pull request, next
+- Phase 1: how Navisworks starts a run with no click, the two probes, the no-click entry,
+  run.ps1 and the separate read of the document
+- Phase 3 on: the baseline run set, the loop, R1 to R6, the close
 - every register row not DONE
 
 ### Known bugs
 
-- F98, the heading PR 71 dropped, fixed in its own pull request next
+- the stated limits of the walls, which read words: a script that builds a path or a git
+  call at run time, a git alias, and a command reaching a protected folder, which only a
+  file tool is stopped from
 - the 179 faults of the read, until confirmed or refuted
 
 ### What comes next
 
-1. F98 in its own pull request
-2. Bader opens a new session and pastes the loop prompt, and turn 2 starts Phase 1
+1. F98, the close round heading back
+2. Phase 1, in this session, because the agents are loaded
 
 ## 2026-09-27 The loop, turn 0, the plan, written before the first edit
 

@@ -70,10 +70,7 @@ Feeds every case to the three hooks on standard input and prints each answer aga
 one it should give. sh tools/loop/prove-hooks.sh <hooks folder> <repo root>. It clones the
 repo into a temp folder to prove the git wall with main checked out, and removes it.
 
-## hooks-next
-
-The three hooks as rewritten after the Phase 0 review, WAITING to be proved and read a
-second time before they replace the ones in .claude\hooks. Nothing runs them from here.
+How a change to a wall is proved with it and copied in is in .claude\rules\loop.md.
 
 ## run.ps1
 

@@ -138,6 +138,9 @@ echo '{"tool_name":"Bash","tool_input":{"command":"git push origin HEAD:main && 
 echo '{"tool_name":"Bash","tool_input":{"command":"git checkout main && git pull --ff-only && git merge --no-ff fix-F97","description":"x"}}' | run $G 2 "switch to main, fast forward, then a real merge" "$clone"
 echo '{"tool_name":"Bash","tool_input":{"command":"git push -u origin fix-F100 && gh pr create --draft --base main --body-file body.md","description":"x"}}' | run $G 0 "push the fix branch then open a pull request onto main" "$clone"
 echo '{"tool_name":"Bash","tool_input":{"command":"git push --all origin","description":"x"}}' | run $G 2 "push --all takes main with it" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git push origin --delete main","description":"x"}}' | run $G 2 "push that deletes main, from a fix branch" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git checkout - && git commit -F msg.txt","description":"x"}}' | run $G 2 "switch to the branch before, which may be main, and commit" "$clone"
+echo '{"tool_name":"Bash","tool_input":{"command":"git branch -d fix-F97 && git fetch origin","description":"x"}}' | run $G 0 "delete a local branch and fetch" "$clone"
 echo '{"tool_name":"Bash","tool_input":{"command":"git commit -m \"a; git push origin main\"","description":"x"}}' | run $G 0 "a commit on a fix branch whose message names a push to main" "$clone"
 
 echo "== the Stop gate, a throwaway project folder"
