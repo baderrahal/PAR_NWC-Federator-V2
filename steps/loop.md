@@ -1,0 +1,446 @@
+# The loop
+
+STATE OPEN
+
+Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. The eight agents are
+loaded, because this session started after Bader's restart, so the loop carries on in it
+with no restart.
+
+## Next action
+
+1. F98 in its own pull request: the heading `## 2026-09-21 The close round, DONE, the
+   record` back above `Core tests 1666 before the round and 1746 after` in steps\log.md
+2. Phase 1, below
+
+## The phases
+
+| phase | state | where it is |
+| --- | --- | --- |
+| 0, the house | DONE in turn 1, read three times before it went out | PR 72 |
+| 1, measure and a run with no click | NEXT | |
+| 2, the register | DONE EARLY in turn 1, from a read of the whole repo | the register below, and steps\loop-read.md |
+| 3, the baseline | open. The copy of NM Fed is made and matches | steps\runs\00 |
+| 4, the loop | open | |
+| 5, Bader's rules R1 to R6 | open. D3 builds them in this loop | |
+| 6, the close | open | |
+
+## Phase 1, in this order
+
+1. The prober measures how Navisworks Manage 2025 can start a run with no click. The lead
+   in the repo: tools\probes\ViewpointProbe was loaded "into a Navisworks started through
+   the automation API with AddPluginAssembly and run with ExecuteAddInPlugin",
+   ViewpointProbe.csproj lines 4 to 6, and Autodesk.Navisworks.Automation.dll is installed.
+   No script in the repo starts Navisworks, and the launchers used then are UNKNOWN. It
+   also measures Roamer.exe switches, whether UI Automation reaches the window
+   (tools\probes\drive-window-run.ps1 already drives it once the window is open), and
+   whether the installed API writes the native Clash Detective HTML tabular report
+2. The prober runs tools\probes\probe-viewpoints.ps1 and tools\probes\probe-model-remove.ps1
+   and appends both answers to docs\history\scan.md
+3. The no-click entry, its own pull request. The jobs are built inline in the private OnRun
+   of the window, FederatorWindow.xaml.cs from line 1681, so the job building moves to one
+   place the window and the entry both call, and the run stays FederationEngine.Run. A
+   second AddInPlugin with no ribbon button, reading a plain text settings file, one choice
+   per line, parsed in Core with its tests, carrying every choice in steps\loop-read.md
+   section 7 plus the log folder. RunLog.StartOrDisabled already has an overload that takes
+   a folder. It refuses to run without a settings file
+4. tools\loop\run.ps1, then the check of the workbook against a separate read of the
+   document
+5. Before the first run: copy %LOCALAPPDATA%\ParsonsNwcFederator\logs into
+   %LOCALAPPDATA%\NwcFederatorLoop as a backup, and keep folders.txt from that folder, the
+   one choice the tool remembers between runs, to put back after the loop. It remembers
+   ACC paths under DC\ACCDocs, measured in the 16:37 log, so it is read and put back and
+   never followed
+6. Before the first install: copy the installed bundle into
+   %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup, and check no Navisworks the loop did not
+   start is running. If one is, STATE WAITING and ask Bader to close it. THE INSTALLED
+   ADD-IN IS NOT MAIN: Bader's 16:37 run logged plugin version be0b9b37, built at 10:47
+   from the clone before it was brought level, so nothing about main has run on this
+   machine yet
+
+## Facts measured on this machine
+
+- git fetch fails with CRYPT_E_NO_REVOCATION_CHECK unless http.sslBackend names schannel,
+  set in this clone's .git\config only. gh 2.101.0 is at %LOCALAPPDATA%\Programs\gh and
+  logged in as baderrahal, and C:\Users\p003653k\bin\gh lets Git Bash call it by name
+- the add-in builds here with 0 errors and 0 warnings, and the Core tests read 1746
+  passed, 0 failed, 0 skipped, so the 32 the container skips all run and pass here
+- hooks in .claude\settings.json load mid session. Agents in .claude\agents load only when
+  a session starts, measured both ways: not loaded in the session that wrote them, loaded
+  in the next
+- Claude Code finds Git for Windows' sh without help. Starting sh costs 2.3 to 2.9
+  seconds, and each wall in .claude\hooks takes 2.4 to 3.6 seconds on an ordinary call and
+  6.9 to 8.0 on a git commit, timed three times each on 2026-09-28
+- Navisworks Manage 2025 is 22.5.1433.58 with Autodesk.Navisworks.Automation.dll
+- one Navisworks, process 32472, was running before the loop and was never touched by it.
+  It had gone by 17:09 on 2026-09-27
+- Desktop Connector keeps ACC projects under C:\Users\p003653k\DC\ACCDocs
+- the copy of NM Fed is at %LOCALAPPDATA%\NwcFederatorLoop\source, 141 files, 208.3 MB,
+  every file matching by sha256 and marked whole, with its listing in
+  steps\runs\00\source-listing.txt
+- NM FED CHANGES UNDER THE LOOP. Bader ran the tool on 1B06BC at 16:37 on 2026-09-27 with
+  NM Fed as its output folder, and 639 files arrived in it, an NWF and 638 pictures, then
+  went again. The listing taken while they were there is steps\runs\00\source-listing-
+  during-bader-run-1B06BC.txt. prepare-copy.ps1 remakes the copy whenever NM Fed differs
+- BADER'S 16:37 RUN NEVER FINISHED. Its log, run-20260927-163731.log in his logs folder,
+  ends at 17:00:36 on the second NWF save into NM Fed, with no RESULT block, no workbook and
+  no NWD, and Navisworks was gone by 17:09. It ran the be0b9b37 build, not main. It found
+  638 clashes on 1B06BC, created all 1830 tests and skipped 1164 for an empty side. Whether
+  the save hung on the OneDrive folder is UNKNOWN. It is register row RUN-1637
+- the client's two workbooks hold 65 and 66 pictures each, every one linked to an absolute
+  file:/// path and none stored, read off the zip on 2026-09-28, which is what core.md says
+- the NM Fed clash XML is Bader's 25 mm matrix with BLD-DRPipe Accessories renamed
+  BLD-DR-Pipe Accessories, and it still asks for upper case worksets such as ME-DUCTWORK
+- this machine ran the tool before, on 2026-09-07, over C06 through the ACC connector,
+  logged in steps\log.md and the committed run-20260907-093440.log, although
+  steps\03_bader_next.md says C06 never existed. It is the register row about steps 9 to 17
+
+## The register
+
+Built in turn 1 from steps\01_next.md, steps\02_questions.md, steps\04_audit.md,
+steps\04_audit_first_run.md, steps\03_bader_next.md, the known bugs of steps\log.md, the
+chat audit of 19 Sep, the defaults, Bader's run of 16:37 and the read of the whole repo in
+steps\loop-read.md. Existing F, Q and A numbers keep their IDs. A step number is a step of
+03_bader_next. A T1 tag is a fault the read reported and nobody has confirmed, and it takes
+an F number only when it becomes work. Most harmful first when the loop picks, and a silent
+wrong number ranks above a loud failure. Done in code but not proved by a run means the
+baseline run proves it or contradicts it.
+
+269 rows, by status:
+
+- 125 done in code, not proved by a run
+- 89 reported by the read, not verified
+- 30 needs Bader, in the form
+- 20 open fault
+- 2 DONE
+- 1 seen on an old build, the baseline answers it for main
+- 1 open, after the faults
+- 1 closed, not there at 42499bf
+
+| ID | came from | what it is | what proves it fixed | status | PR | run that proved it |
+| --- | --- | --- | --- | --- | --- | --- |
+| F97 | loop prompt, Phase 0 | The house: agents, hooks, rules, tools\loop, steps\runs, allow list | on main, every hook case answered on standard input, both walls refusing live | DONE | 72 | no Navisworks run applies, proved on standard input and live |
+| F98 | turn 0, a read of steps\log.md | PR 71 dropped the close round heading in steps\log.md | the heading back above Core tests 1666 before the round and 1746 after | open fault | none yet | none yet |
+| F99 | turn 0, the git wall fired on Bash only | The git wall missed commits sent through PowerShell | a PowerShell commit on main refused on standard input, and git.exe read as git | DONE | 72 | no Navisworks run applies, proved on standard input and live |
+| D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
+| RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
+| CHAT-19 | chat audit of 19 Sep | The doubled summary block above BuildViewpoints | NOT FOUND by the turn 1 read. Two other stacked summaries are T1-N items | closed, not there at 42499bf | none yet | none yet |
+| F50 | chat audit of 19 Sep, also 01_next steps/01_next.md line 605, DONE at line ..., also log.md steps/log.md line 3126 (What ... | Model remove without a clear, said to be behind a switch | the turn 1 read found NO switch, every CHANGED group reshapes first and the log names the path. Proved by run 3 and run 4 | done in code, not proved by a run | none yet | none yet |
+| F52 | chat audit of 19 Sep, also 01_next steps/01_next.md line 617, DONE at line ... | Viewpoints behind SavedViewpoints.CanBuild | the read found CanBuild true and READ BY NOTHING, T1-B2. Proved by the VIEWS block on run 1 | done in code, not proved by a run | none yet | none yet |
+| F88 | 01_next steps/01_next.md line 88, DONE at line 9 ... | Restore the sample thirteen tests read | The thirteen Core tests that read the sample pass, and the DONE line records that. No Navisworks run applies to a restored sample. | done in code, not proved by a run | none yet | none yet |
+| F87 | 01_next steps/01_next.md line 95, DONE at line 1 ... | Correct the matrix, the hyphen and BLD-EL-Devices | A run with exchange/1104-PAR_CLASH_AllInOne_25mm_FIXED.xml where the renamed set and BLD-EL-Devices resolve. Whether a negated condition imports is still UNKNOW ... | done in code, not proved by a run | none yet | none yet |
+| F72a | 01_next steps/01_next.md line 103, DONE at line ... | Pipe Insulation is a service, and the matrix test | A penetration run where an insulated pipe and its insulation both move to Reviewed. The two arguable categories are Q47, Bader's. | done in code, not proved by a run | none yet | none yet |
+| F73 | 01_next steps/01_next.md line 110, DONE at line ... | Appending brings the viewpoints in, which is not a fault | A real run where APPEND brings in viewpoints and the group still ends DONE. steps/log.md lines 2569 to 2574 record ten groups DONE with no CENSUS CHANGED on the ... | done in code, not proved by a run | none yet | none yet |
+| F84 | 01_next steps/01_next.md line 188, DONE at line ... | The sets that cannot match anything | The Revit category list measured on the local machine, which steps/log.md line 2551 records as 5i and not measured. After that, a run where the category check n ... | done in code, not proved by a run | none yet | none yet |
+| F78 | 01_next steps/01_next.md line 194, DONE at line ... | The log says or where the file says or | A real run whose SETS lines show OR where the file groups conditions. The section cites none. | done in code, not proved by a run | none yet | none yet |
+| F79 | 01_next steps/01_next.md line 200, DONE at line ... | Which missing item ids are this run's | steps/log.md line 2634 says this split was first read off the 21:13 run, on 192 carried over ids in 1A02MM. This section does not cite that. | done in code, not proved by a run | none yet | none yet |
+| F80 | 01_next steps/01_next.md line 206, DONE at line ... | The run time is the run and not the session | A real run whose RESULT block carries both numbers. The section marks this LOCAL MACHINE and cites no run. | done in code, not proved by a run | none yet | none yet |
+| F81 | 01_next steps/01_next.md line 212, DONE at line ... | The .log is trimmed and the .tsv keeps everything | Both file sizes in a real run's RESULT block, with the .tsv holding every row. The section says LOCAL MACHINE to measure the file and cites no measurement. | done in code, not proved by a run | none yet | none yet |
+| F82 | 01_next steps/01_next.md line 218, DONE at line ... | Sets across the run | The sets across the run block on a real run. The section cites none. | done in code, not proved by a run | none yet | none yet |
+| F47a | 01_next steps/01_next.md line 228, DONE at line ... | The hooks do not run on a Windows checkout | On a Windows checkout, the hooks refuse only the protected calls, which is D7 in steps/03_bader_next.md. The line's own proof ran on the machine where the fix w ... | done in code, not proved by a run | none yet | none yet |
+| F47b | 01_next steps/01_next.md line 236, DONE at line ... | One doubled comment left | The stacked comment check reads 0, and that is the whole proof. No run applies to a comment. | done in code, not proved by a run | none yet | none yet |
+| F47c | 01_next steps/01_next.md line 244, DONE at line ... | Two names recorded wrongly in the F40 entry | Core tests 957 passed after the change, as recorded. No run applies, and the miscount is Q31. | done in code, not proved by a run | none yet | none yet |
+| F5 | 01_next steps/01_next.md line 258, line 263 | Fix the sets built test | A run on the local machine where the sets built count is right, which closes B1. The section names no Look for line. | done in code, not proved by a run | none yet | none yet |
+| F6 | 01_next steps/01_next.md line 265, DONE at line ... | Fix the open file report folder | An open file run that writes its report into the right folder. The section cites none. | done in code, not proved by a run | none yet | none yet |
+| F7 | 01_next steps/01_next.md line 273, DONE at line ... | Write the RESULT block for the open file run | An open file run whose log carries a RESULT block. The section says LOCAL MACHINE ONLY to prove and cites no run. | done in code, not proved by a run | none yet | none yet |
+| F8 | 01_next steps/01_next.md line 281, line 286 | Run the existing tests when no XML is picked | A weekly run with no XML picked that runs the tests saved in each NWF. | done in code, not proved by a run | none yet | none yet |
+| F22 | 01_next steps/01_next.md line 288, line 297 | Two clear workflows in the window | The five labels seen per group in the window, the confirm dialog and the log. steps/log.md line 2569 reports First run and Weekly run plus XML groups on the 21: ... | done in code, not proved by a run | none yet | none yet |
+| F1 | 01_next steps/01_next.md line 308, DONE at line ... | Fix the test name typo | The renamed test compiling and passing. No run applies. | done in code, not proved by a run | none yet | none yet |
+| F2 | 01_next steps/01_next.md line 314, DONE at line ... | Fix the hardcoded probe path | A local run of tools/probes/probe-window-defaults.ps1. | done in code, not proved by a run | none yet | none yet |
+| F4 | 01_next steps/01_next.md line 327, DONE at line ... | Fix the units docstring | This is a docstring, so there is nothing to run. | done in code, not proved by a run | none yet | none yet |
+| F9 | 01_next steps/01_next.md line 333, DONE at line ... | Skip the units change on a CHANGED group | A CHANGED group on the local machine that skips the units change. | done in code, not proved by a run | none yet | none yet |
+| F10 | 01_next steps/01_next.md line 339, DONE at line ... | Gate the page on its own flag | A run where the page is written or skipped on its own flag. | done in code, not proved by a run | none yet | none yet |
+| F11 | 01_next steps/01_next.md line 345, DONE at line ... | Remove the dead code | An add-in build. F69 at line 813 records the first one, with 0 errors and 0 warnings on 2026-09-19. | done in code, not proved by a run | none yet | none yet |
+| F17 | 01_next steps/01_next.md line 351, DONE at line ... | Picture numbering by block order | A run whose picture names follow the block order of the Navisworks export. | done in code, not proved by a run | none yet | none yet |
+| F16 | 01_next steps/01_next.md line 387, DONE at line ... | Make the tests path neutral | The section asks for the Core tests to be confirmed on Windows. Later DONE lines such as F65's at line 770 record 1238 passed, 0 failed, 0 skipped on Windows. | done in code, not proved by a run | none yet | none yet |
+| F18 | 01_next steps/01_next.md line 396, order line 37, also log.md steps/log.md lines 478-479, 935-936, 115 ... | Add the 1A04WE sample | The 1A04WE sample committed under samples/client-report. A Glob there found only 1104-PAR-1A04WN-XXX-BM-RPT-000001.html and .xlsx, and whether that is the file ... | needs Bader, in the form | none yet | none yet |
+| F20 | 01_next steps/01_next.md line 403, DONE at line ... | Run the Core tests on every push to main | A passing Actions push run on main. None is quoted here. | done in code, not proved by a run | none yet | none yet |
+| F24 | 01_next steps/01_next.md line 411, DONE at line ... | Rebuild a CHANGED NWF from the scan | A CHANGED group rebuilt on the local machine with its saved tests kept. F90 at line 878 later updates a CHANGED group without clearing it, and this file does no ... | done in code, not proved by a run | none yet | none yet |
+| F26 | 01_next steps/01_next.md line 418, DONE at line ... | Units always meters | A run whose report reads in meters on every group. | done in code, not proved by a run | none yet | none yet |
+| F27 | 01_next steps/01_next.md line 427, DONE at line ... | The GROUPS block tells the truth | The GROUPS block of a real run. | done in code, not proved by a run | none yet | none yet |
+| F28 | 01_next steps/01_next.md line 434, DONE at line ... | A set already there is not counted as created | A weekly run where the second NWF save does not fire. | done in code, not proved by a run | none yet | none yet |
+| F29 | 01_next steps/01_next.md line 441, DONE at line ... | The rebuild keeps the sets on their own count | A rebuild on the local machine that restores the sets on their own count. | done in code, not proved by a run | none yet | none yet |
+| F30 | 01_next steps/01_next.md line 448, DONE at line ... | One tail for both run paths | Both run paths on the local machine writing through the one tail. | done in code, not proved by a run | none yet | none yet |
+| F31 | 01_next steps/01_next.md line 455, DONE at line ... | The clash side lookup is built once per run | A run on the local machine. The section gives no specific Look for line. | done in code, not proved by a run | none yet | none yet |
+| F32 | 01_next steps/01_next.md line 462, DONE at line ... | The open file is guarded | Seeing the refusal on the local machine for each refused path. | done in code, not proved by a run | none yet | none yet |
+| F33 | 01_next steps/01_next.md line 469, DONE at line ... | One unit table | A run on the local machine that exercises the engine and the window. | done in code, not proved by a run | none yet | none yet |
+| F34 | 01_next steps/01_next.md line 476, DONE at line ... | Window wiring | The window and a run on the local machine. | done in code, not proved by a run | none yet | none yet |
+| F35 | 01_next steps/01_next.md line 483, DONE at line ... | Clash only where two disciplines meet | A single discipline group showing its row status and its CLASH line on a run. | done in code, not proved by a run | none yet | none yet |
+| F36 | 01_next steps/01_next.md line 490, DONE at line ... | Dead code and copies out | Grep and the build only. No run applies. | done in code, not proved by a run | none yet | none yet |
+| F37 | 01_next steps/01_next.md line 497, DONE at line ... | One type per file and one place per kind of file | Moves only, so tests and the build are enough. No run applies. | done in code, not proved by a run | none yet | none yet |
+| F38 | 01_next steps/01_next.md line 504, DONE at line ... | CLAUDE.md under 200 lines, rules in .claude, walls in hooks | The hooks were tried with piped tool calls, as recorded. No run applies. | done in code, not proved by a run | none yet | none yet |
+| F39 | 01_next steps/01_next.md line 511, DONE at line ... | The window compiles again | An add-in build. F69 at line 813 records one with 0 errors on 2026-09-19. | done in code, not proved by a run | none yet | none yet |
+| F46 | 01_next steps/01_next.md line 520, DONE at line ... | The four the chat audit found | Docs and one test. No run applies. | done in code, not proved by a run | none yet | none yet |
+| F40 | 01_next steps/01_next.md line 533, DONE at line ..., also steps/04_audit.md:63, also steps/04_audit.md:64 | Dead members out, second pass | Core tests and the add-in build. Q24, Q25, Q26 and Q27 stay with Bader. | done in code, not proved by a run | none yet | none yet |
+| F41 | 01_next steps/01_next.md line 543, DONE at line ... | Every handle disposed | Line 549 gives the proof: one building run twice with the XML, where the SETS and CLASH blocks read as before and the run is not slower. | done in code, not proved by a run | none yet | none yet |
+| F42 | 01_next steps/01_next.md line 553, DONE at line ... | No framework message in a label | The window on the local machine showing no framework message in any label. | done in code, not proved by a run | none yet | none yet |
+| F43 | 01_next steps/01_next.md line 563, DONE at line ... | Three settings that are constants | A run on the local machine. What sets the three settings is Q29. | done in code, not proved by a run | none yet | none yet |
+| F44 | 01_next steps/01_next.md line 572, DONE at line ..., also steps/04_audit.md:70, also steps/04_audit.md:98, also steps/04 ... | The docs and the comments agree with the code | Docs and comments only. The one path left over is Q30. | done in code, not proved by a run | none yet | none yet |
+| F45 | 01_next steps/01_next.md line 581, DONE at line ... | The clash step keeps its rules | Line 585 asks for a local machine run to prove the compact count. | done in code, not proved by a run | none yet | none yet |
+| F51 | 01_next steps/01_next.md line 596, DONE at line ... | The ACC warning | An NWD published by the tool reaching ACC with no processing error, which line 599 says is LOCAL MACHINE ONLY. | done in code, not proved by a run | none yet | none yet |
+| F53 | 01_next steps/01_next.md line 629, DONE at line ... | The 150 mm rule and the sub groups | A run showing the SIZE block, with the large pipes in their sub groups. | done in code, not proved by a run | none yet | none yet |
+| F54 | 01_next steps/01_next.md line 640, DONE at line ... | Clashes that cannot be solved become Reviewed | F72 at line 845 routes its status moves through this editor, and F72b at line 171 cites clashes moved on the 21:13 run. F54's own line cites no run. | done in code, not proved by a run | none yet | none yet |
+| F55 | 01_next steps/01_next.md line 652, DONE at line ... | The rules and the docs catch up | Docs only. No run applies. | done in code, not proved by a run | none yet | none yet |
+| F56 | 01_next steps/01_next.md line 660, DONE at line ... | What the real read of 03_bader_next.md found | Docs and one log label with its tests. No run applies. It is not listed in the order at the top. | done in code, not proved by a run | none yet | none yet |
+| F57 | 01_next steps/01_next.md line 668, DONE at line ... | Five Look for lines older than the feature round | Docs only. The heading says five lines, but the order and the body say six. | done in code, not proved by a run | none yet | none yet |
+| F58 | 01_next steps/01_next.md line 680, DONE at line ... | The add-in compiles again | The add-in build, which F69 at line 813 later records at 0 errors. | done in code, not proved by a run | none yet | none yet |
+| F59 | 01_next steps/01_next.md line 691, DONE at line ... | Every step is named and timed | A real run that writes the step lines. The section cites none. | done in code, not proved by a run | none yet | none yet |
+| F60 | 01_next steps/01_next.md line 701, DONE at line ... | The timing blocks, and F21 closes here | The TIMING blocks on a real run. steps/log.md line 2570 reports 4 minutes 54 seconds for the 21:13 run, but this section does not cite it. | done in code, not proved by a run | none yet | none yet |
+| F61 | 01_next steps/01_next.md line 713, DONE at line ... | The document census | CENSUS lines on a real run. F75's proof at line 131 shows census lines on the 21:13 run, but F61 does not cite it. | done in code, not proved by a run | none yet | none yet |
+| F62 | 01_next steps/01_next.md line 724, DONE at line ... | The live line in the window | Watching the live line move on the local machine. | done in code, not proved by a run | none yet | none yet |
+| F63 | 01_next steps/01_next.md line 737, DONE at line ... | The report gap block | The GAP block on a real run. Q35 to Q40 are Bader's. | done in code, not proved by a run | none yet | none yet |
+| F64 | 01_next steps/01_next.md line 749, DONE at line ... | The machine readable log | A .tsv beside a real run log. steps/log.md line 2565 says the 21:13 run has one, but this section does not cite it. | done in code, not proved by a run | none yet | none yet |
+| F65 | 01_next steps/01_next.md line 761, DONE at line ... | The missing import | The add-in build. F69 at line 807 says F65 fixed the error Bader sent, and line 813 records the build at 0 errors. | done in code, not proved by a run | none yet | none yet |
+| F66 | 01_next steps/01_next.md line 772, DONE at line ... | The check that would have caught it | The check refusing the broken folder, as recorded. No run applies. | done in code, not proved by a run | none yet | none yet |
+| F67 | 01_next steps/01_next.md line 784, DONE at line ... | One doubled comment | The stacked summary check reads 0. No run applies. | done in code, not proved by a run | none yet | none yet |
+| F68 | 01_next steps/01_next.md line 793, DONE at line ... | The build section learns what today cost | A real NuGet restore race recovered by following steps 11 to 21. The commands were run, but no race was recovered on record. | done in code, not proved by a run | none yet | none yet |
+| F71 | 01_next steps/01_next.md line 825, DONE at line ... | Say when an NWF is nearly matched | Line 828 asks for it on the local machine: a group beside a nearly matching NWF showing the sentence in the Run as column. | done in code, not proved by a run | none yet | none yet |
+| F90 | 01_next steps/01_next.md line 878, DONE at line ... | A CHANGED group is brought up to date without clearing it | A run that updates a CHANGED group, with the model count going out and coming back equal. F94 at line 906 says this path once deleted a model silently and repor ... | done in code, not proved by a run | none yet | none yet |
+| F91 | 01_next steps/01_next.md line 884, DONE at line ... | The run tail carries the clash total and how many decisions the run made | A real run's RESULT block showing the clash total, with LOOKED AT beside MOVED. The section cites none. | done in code, not proved by a run | none yet | none yet |
+| F94 | 01_next steps/01_next.md line 902, DONE at line ... | The reshape's three defects, and the one rule for a document that failed after it was changed | A run where a reshape or a set pair fails, showing the model count out and back and the damaged document rule. No run after the fix is cited. | done in code, not proved by a run | none yet | none yet |
+| F96 | 01_next steps/01_next.md line 914, line 918, ord ..., also log.md steps/log.md lines 374-380 and 477 (clos ... | The restated facts check | tools/checks/check-restated-facts.sh exists and refuses a broken restatement of each of the four named facts: the solid list, the 150 mm threshold, the tick box ... | open fault | none yet | none yet |
+| Q67 | 01_next steps/01_next.md line 870, also log.md steps/log.md lines 1799-1803 (Known bugs ... | Question 67, subject not stated in 01_next.md | Bader's answer recorded under it in steps/02_questions.md. The question itself is not quoted in 01_next.md. | needs Bader, in the form | none yet | none yet |
+| Q68 | 01_next steps/01_next.md line 870 | Question 68, subject not stated in 01_next.md | Bader's answer recorded under it in steps/02_questions.md. The question itself is not quoted in 01_next.md. | needs Bader, in the form | none yet | none yet |
+| Q9 | steps/02_questions.md:39 | Commit the 1A04WE client export (F18) | The 1A04WE export committed under samples/client-report and read by the tests that name it. | needs Bader, in the form | none yet | none yet |
+| Q15 | steps/02_questions.md:63 | The local proofs P1 to P3 | A recorded Clash Detective panel count for three tests equal to their workbook block and ROWS line. A run over every ticked group whose run TIMING block reads i ... | needs Bader, in the form | none yet | none yet |
+| Q24 | steps/02_questions.md:113, also log.md steps/log.md lines 4516 (What remains, t ... | Give a typed name cell back to the pattern, or drop the rule | Bader's answer, then a Grouping step control that calls ReleaseToPattern, or the core.md sentence and the member removed with its test. | needs Bader, in the form | none yet | none yet |
+| Q26 | steps/02_questions.md:123, also log.md steps/log.md line 4871 (What remains, F4 ... | Members made internal because only a test reads them | Bader's answer, then the internal members kept with the decision written in a rule, or each deleted with its test. | needs Bader, in the form | none yet | none yet |
+| Q27 | steps/02_questions.md:127, also log.md steps/log.md line 4871 (What remains, F4 ... | Keep or drop the two choice open count rule | Bader's answer, then core.md keeping the rule with its readers named, or the bullet and the unused choice removed. | needs Bader, in the form | none yet | none yet |
+| Q28 | steps/02_questions.md:131, also log.md steps/log.md line 4841 (What remains, F4 ... | Release the two handle reads F41 left | Bader's answer, and if release is chosen, both reads in using blocks and a run with no ObjectDisposedException. | needs Bader, in the form | none yet | none yet |
+| Q29 | steps/02_questions.md:135, also log.md steps/log.md line 4785 (What remains, F4 ... | A settings file for the stop after count, log count and report subfolder | Bader's answer, then a file read once when the log opens, with a refused value named in the log. | needs Bader, in the form | none yet | none yet |
+| Q30 | steps/02_questions.md:139, also log.md steps/log.md line 4756 (What remains, F4 ... | May the hand written bundle manifest be edited | Bader's answer, then line 9 naming docs\history\scan.md, or the never edited rule restated to keep it. | needs Bader, in the form | none yet | none yet |
+| Q31 | steps/02_questions.md:143, also log.md steps/log.md line 4516 (What remains, th ... | Restate the F40 counts of 45 and 64 | Bader's answer, and the F40 entry in steps/log.md restated by the chosen rule or left with its marks. | needs Bader, in the form | none yet | none yet |
+| Q35 | steps/02_questions.md:165 | Keep or delete the Family harvest | Bader's answer, then a column of ours that carries it, or the property and its harvest deleted. | needs Bader, in the form | none yet | none yet |
+| Q36 | steps/02_questions.md:169 | Keep or delete the Revit Type Name harvest | Bader's answer, then a column of ours that carries it, or the property and its harvest deleted. | needs Bader, in the form | none yet | none yet |
+| Q37 | steps/02_questions.md:173 | Keep or delete the Material harvest | Bader's answer, then a column of ours that carries it, or the property and its harvest deleted. | needs Bader, in the form | none yet | none yet |
+| Q38 | steps/02_questions.md:177 | Keep or delete the per item Source File harvest | Bader's answer. Deleting it, or keeping it as a stated always empty value, both need the GAP block question Q76 settled beside it. | needs Bader, in the form | none yet | none yet |
+| Q39 | steps/02_questions.md:181 | Keep or delete the per item Discipline harvest | Bader's answer, then the harvest deleted or a place it is written. | needs Bader, in the form | none yet | none yet |
+| Q40 | steps/02_questions.md:185 | Where the per item Id From belongs, if anywhere | Bader's answer, then either the block declared enough in core.md or a named place that carries the per item value. | needs Bader, in the form | none yet | none yet |
+| Q45 | steps/02_questions.md:206, also log.md steps/log.md lines 3035-3045 and 3126 (W ... | A cell of ours for how many clashes this run moved to Reviewed | Bader's answer, then either the rule stands as written or a named cell of ours added with a workbook check. | needs Bader, in the form | none yet | none yet |
+| Q46 | steps/02_questions.md:210 | Create the whole matrix once for a group run weekly with no XML (F77) | Bader's answer, then either the rule stated as it is or a first run that creates all 1830 once. | needs Bader, in the form | none yet | none yet |
+| Q47 | steps/02_questions.md:214 | Are Air Terminals and Sprinklers services | Bader's answer, then the two lists changed or kept, with PenetrationRuleTests asserting the decision. | needs Bader, in the form | none yet | none yet |
+| Q49 | steps/02_questions.md:222 | Priority order or the measured client order for the blocks | Bader's or the client's answer, then ReportOrder.Tests left or changed to match it. | needs Bader, in the form | none yet | none yet |
+| Q50 | steps/02_questions.md:226 | Undo that resets a status, or one that only removes the record | Bader's answer. If the second shape is chosen, the undo removes records and sets no status, proved by a run. | needs Bader, in the form | none yet | none yet |
+| Q51 | steps/02_questions.md:230 | Largest size for a viewpoint folder too, or report the difference | Bader's answer, then the reading kept or a reported difference, with a test. | needs Bader, in the form | none yet | none yet |
+| Q56 | steps/02_questions.md:254 | The category line should say which folder its list came from (56b) | The HEALTH line naming the folder the 374 values were measured on, pinned by a Core test and seen in a run log. | open fault | none yet | none yet |
+| Q76 | steps/02_questions.md:414, also log.md steps/log.md lines 910-918 (close round ... | GAP block cannot tell an output carries it from the run read nothing | Bader's answer, then GapRule saying which it is for a property read on every item that always came back empty, with a test. | needs Bader, in the form | none yet | none yet |
+| Q77 | steps/02_questions.md:418, also log.md steps/log.md lines 335-337 and 410-411 ( ... | The clear and rebuild drops the viewpoints | CreateCopy and CopyFrom on the saved viewpoints measured first, then a forced fallback on a copy whose VIEWS row reads the same before the clear and after the r ... | open fault | none yet | none yet |
+| Q78 | steps/02_questions.md:422, also log.md steps/log.md lines 550-554 (close round ... | Should a shared site named DEFAULT, in any spelling, fail a group | Bader's answer, then the ALIGNMENT rule changed or stated as report only, with a test. | needs Bader, in the form | none yet | none yet |
+| A10 | steps/04_audit_first_run.md:101 | ClashImages comment said ViewpointBuilder writes viewpoints | No run applies. | done in code, not proved by a run | none yet | none yet |
+| A11 | steps/04_audit_first_run.md:110 | A missing category resource read as an unmeasured list | Proved by the red test, no run applies. | done in code, not proved by a run | none yet | none yet |
+| A12 | steps/04_audit_first_run.md:119 | The set name separator written twice | No run applies. | done in code, not proved by a run | none yet | none yet |
+| A13 | steps/04_audit_first_run.md:128 | No priority written twice | No run applies. | done in code, not proved by a run | none yet | none yet |
+| A14 | steps/04_audit_first_run.md:137 | The five examples rule written in seven places | No run applies. | done in code, not proved by a run | none yet | none yet |
+| A15 | steps/04_audit_first_run.md:146 | MatrixCorrections has no caller in src and nothing at run time says which form a set carries | Either the tool applies the corrections at pick time and logs the outcome lines, or the class moves to tools as the audit said. | open fault | none yet | none yet |
+| A17 | steps/04_audit_first_run.md:164 | A test named for nothing being written checked only the plan | No run applies. | done in code, not proved by a run | none yet | none yet |
+| A18 | steps/04_audit_first_run.md:173 | A five examples test asserted only a count of eight | No run applies. | done in code, not proved by a run | none yet | none yet |
+| A19 | steps/04_audit_first_run.md:182 | Thresholds never tested at the number | No run applies. | done in code, not proved by a run | none yet | none yet |
+| A20 | steps/04_audit_first_run.md:191 | The undo said moved on about a clash moved back | No run applies. | done in code, not proved by a run | none yet | none yet |
+| A21 | steps/04_audit_first_run.md:200 | The open file run fed the sets tally and wrote no block | An open file run log carrying that line. | done in code, not proved by a run | none yet | none yet |
+| A22 | steps/04_audit_first_run.md:209 | One RESULT label a character short | A RESULT block with the by design line in the column. | done in code, not proved by a run | none yet | none yet |
+| A23 | steps/04_audit_first_run.md:218 | Thirteen new files hold more than one type | One public type per file, which the loop plans as D1 in steps/log.md:87. | open fault | none yet | none yet |
+| NEW-QA | src/Federator.Addin/Engine/SetBuilder.cs:284 | A failed side count reads as zero and lets a leftover set be removed | A failed side read refusing every removal and rename for that document, pinned by a Core test that hands SetLeftovers an uncounted side. | open fault | none yet | none yet |
+| NEW-QA | src/Federator.Addin/Engine/SetBuilder.cs:271 | SidesBySetName and WalkForLeftovers hold handles they never dispose | Each read in a using block, and a run with the rebuild box on that logs no ObjectDisposedException. | open fault | none yet | none yet |
+| step NEW, steps 9-17 and every step naming C0 ... | 03_bader_next | The file says C06 and the 1B06 groups never existed and are gone from it, yet about twenty steps still name th ... | 03_bader_next.md rewritten against the folders turn 0 measured on this machine (NM Fed C06 22 groups, C07 24 groups, no NWF), with no count derived from the 202 ... | open fault | none yet | none yet |
+| step steps 20-21 (F68) | 03_bader_next | What clearing the NuGet cache prints was never measured. | A pasted output of dotnet nuget locals all --clear | done in code, not proved by a run | none yet | none yet |
+| step steps 29-34 (F33, F34, D3, F57) | 03_bader_next | No run records the units combo list, its grey line, the missing Outstanding combo or the button row. Step 34 w ... | The window looked at, or probe-window-defaults.ps1 output | done in code, not proved by a run | none yet | none yet |
+| step steps 35-37 and the HEALTH half of step ... | 03_bader_next | No committed run log carries a HEALTH block, because every driven run typed the XML path and the block is writ ... | The XML picked through the Browse dialog and a HEALTH block with Tests: 1830, Sets: 61 in the log | done in code, not proved by a run | none yet | none yet |
+| step steps 39-48 (F27) | 03_bader_next | Only the zero form of the unticked line has appeared in a run. The 9 or 11 unticked case never ran, and steps ... | A run with one group ticked whose GROUPS block reads N groups unticked | done in code, not proved by a run | none yet | none yet |
+| step steps 49-53, 55-60, 63-71 (F24, F29, F50 ... | 03_bader_next | The Rebuilt and reshape path has never run on a real CHANGED group, and no committed log carries a REBUILT or ... | A scanned run over a folder whose NWF differs from the scan, logging REBUILT, RESHAPE, the four kept lines and GROUP finished DONE ... Rebuilt | done in code, not proved by a run | none yet | none yet |
+| step steps 62, 185 (F30, F52) | 03_bader_next | The block order is seen on the weekly scanned path, UNITS, ALIGNMENT, EXPORT CHECK, SETS, CLASH, PENETRATION, ... | A rebuild run and an open file run each showing this order | done in code, not proved by a run | none yet | none yet |
+| step NEW, EMPTY SETS never written on a first ... | 03_bader_next | The only run with fresh-built sets had 24 and 58 sets at zero and wrote no EMPTY SETS block. The code records ... | A first run where a created set finds nothing writes an EMPTY SETS block and its set finding nothing rows | open fault | none yet | none yet |
+| step 75 | 03_bader_next | The confirm dialog wording Weekly run plus XML: 1 and Nothing inside it is cleared. was never read on a run. | A screenshot or reading of the dialog text | done in code, not proved by a run | none yet | none yet |
+| step steps 81-82, 86-87 (F31) | 03_bader_next | One building has never been run twice to compare counts and time. The only back-to-back pair on record ran ten ... | Two runs of one building showing equal CLASH counts and the second no slower | done in code, not proved by a run | none yet | none yet |
+| step NEW, RESULT counts carry across Run pres ... | 03_bader_next | In one window session the second RESULT block counts both presses' groups. RunLog.RunStarted resets no group r ... | Two Run presses in one session, each RESULT block counting only its own groups | open fault | none yet | none yet |
+| step steps 88-96, 100-101 (F35) | 03_bader_next | The OneDiscipline folder was never made or run. The SINGLE DISCIPLINE finding was seen on 1000BS and 1A02MS in ... | The two-copy AR folder scanned and run | done in code, not proved by a run | none yet | none yet |
+| step 94, and the finding text at step 92 | 03_bader_next | The Grouping label and the SINGLE DISCIPLINE finding both say every test is created, which has been false sinc ... | Both strings say only the tests whose sides find something are created | open fault | none yet | none yet |
+| step steps 102-115 (F26) | 03_bader_next | Every committed run is in Meters, so the Feet model units line never appeared and the panel comparison was nev ... | A run with the combo on Feet and the panel checked in metres against the workbook | done in code, not proved by a run | none yet | none yet |
+| step steps 123-136 (F71) | 03_bader_next | No committed run log carries the similar name sentence, and the F71 entry proves it with Core tests only. | The window and GROUPS block with the level changed to L01 over an NWF folder that holds files | done in code, not proved by a run | none yet | none yet |
+| step steps 137-146 (F9) | 03_bader_next | A folder that lost a file has never gone through the Rebuilt path on a run. | The REBUILT block naming removed then added, with no UNITS line before it | done in code, not proved by a run | none yet | none yet |
+| step steps 147-155 (F10) | 03_bader_next | No run has had the XML on or the images off. | OUTPUTS reading XML on, images off, and the IMAGES skipped line | done in code, not proved by a run | none yet | none yet |
+| step steps 160-167 (F17) | 03_bader_next | No record exists of comparing sheet order against the panel, the cd numbering, the links or a .moving file. | The workbook and Clash Detective compared by hand | done in code, not proved by a run | none yet | none yet |
+| step NEW, the page test order warning | 03_bader_next | Seven groups of every committed C02 run have a REPORT CHECK saying the page's tests are out of order. log.md, ... | A REPORT CHECK with no wrong order line, or a recorded reason the check is wrong | open fault | none yet | none yet |
+| step steps 168-174 (F8) | 03_bader_next | No run has used the tests saved in the NWF with no XML picked. | CLASH    source   tests saved in the document, 1830 of them, no XML picked | done in code, not proved by a run | none yet | none yet |
+| step steps 175-178 (F32) | 03_bader_next | The refusal line for an open NWD was never seen. | The window with an NWD open | done in code, not proved by a run | none yet | none yet |
+| step steps 179-191 (F6, F30, F8 on the open f ... | 03_bader_next | Run the open file has never been pressed on a recorded run. | An open file run log with the block order, one Clash Reports folder and the no XML source line | done in code, not proved by a run | none yet | none yet |
+| step steps 192-198 (F7) | 03_bader_next | The log copy beside the NWF and the RESULT block are proved on scanned runs only. The OPEN FILE block and week ... | An open file run log carrying OPEN FILE and weekly run     : 1 | done in code, not proved by a run | none yet | none yet |
+| step steps 209-212 | 03_bader_next | Neither window probe has a recorded run. log.md never names probe-window-labels.ps1. | Both probe outputs pasted, with 4 visible tick boxes | done in code, not proved by a run | none yet | none yet |
+| step steps 213-214 (F41) | 03_bader_next | Nobody has read the Task Manager handle counts. | Handle counts at the end of two runs of one building | done in code, not proved by a run | none yet | none yet |
+| step 219 (F45) | 03_bader_next | Compacting has never been ticked on a run. | A run with compacting on showing both Resolved counts | done in code, not proved by a run | none yet | none yet |
+| step steps 228-233 (F51 in ACC) | 03_bader_next | The NWD's file properties and its ACC upload were never checked, and Bader has put ACC off until the tool is f ... | An NWD in ACC with no processing error and real properties | needs Bader, in the form | none yet | none yet |
+| step steps 244-245, 250-252 (F53) | 03_bader_next | No run log since F85 names an Over 150mm folder, and the viewpoints round wrote none. Whether one exists since ... | A VIEWS BUILT path such as A/ME vs ST/Over 150mm, and the viewpoint pressed | done in code, not proved by a run | none yet | none yet |
+| step 247 | 03_bader_next | SizeTally is still a public class in src, and only its tests call it. | SizeTally and its tests deleted, or a caller in src | open fault | none yet | none yet |
+| step steps 260-262 (F72 tick box) | 03_bader_next | No run records the tick box label, its help line or where it sits. | The window or probe-window-labels.ps1 | done in code, not proved by a run | none yet | none yet |
+| step steps 269, 269a | 03_bader_next | The second penetrations line and the second by design line are built in code, but no committed log carries eit ... | A RESULT block showing both lines | done in code, not proved by a run | none yet | none yet |
+| step 269c (Q73) | 03_bader_next | WorkbookCheck counted 0 test blocks and shouted a failure over a workbook that held 1,830. The step calls the ... | WORKBOOK CHECK counting one-row blocks, so it agrees with BLOCKS and the run tail | open fault | none yet | none yet |
+| step steps 271-274, 277-278 (F72) | 03_bader_next | No record exists of the workbook's Reviewed counts, the clash panel, or an Approved clash kept by hand. | The workbook and panel read after a box-on run | done in code, not proved by a run | none yet | none yet |
+| step steps 279-280 (F72 cost) | 03_bader_next | The same building has not been run with the box on and then off, so what the penetration pass costs is still u ... | Two clash step took lines, box on and box off, for one building | done in code, not proved by a run | none yet | none yet |
+| step 310 (criterion 3) | 03_bader_next | The three-way count of log, workbook and panel was never recorded. | One test's ROWS count, workbook rows and panel count read and written down | done in code, not proved by a run | none yet | none yet |
+| step steps 286-287, 318-324 (F62) | 03_bader_next | Nobody has recorded watching the live line in the window during a run. | The window watched through one group of a multi-group run | done in code, not proved by a run | none yet | none yet |
+| step steps 340-343 (D7 pre-commit) | 03_bader_next | No record shows the pre-commit wall switched on and printing its four lines on Bader's machine. | A terminal commit printing the four pre-commit lines | done in code, not proved by a run | none yet | none yet |
+| step steps 346-352 (D6) | 03_bader_next | The remote branches have not been deleted, and the step itself says to reread the live list first. | git ls-remote --heads origin returning only refs/heads/main | needs Bader, in the form | none yet | none yet |
+| step 364 | 03_bader_next | The mechanical CSV and its PROBE block have not been sent. |  | needs Bader, in the form | none yet | none yet |
+| step 377 (F81) | 03_bader_next | The .tsv half holds, but no committed run log is under the 300 KB the step asks for. Whether the bar or the tr ... | A ten-group .log under 300 KB, or the step corrected to a measured bar | open fault | none yet | none yet |
+| NEW-LOG | log.md steps/log.md lines 179-183 (What remains ... | INSTALL.md steps 5 and 6, the install command and starting Navisworks, never run | The install command from INSTALL.md prints the success line on a Windows machine and the add-in shows on the Tool Add-ins tab. Turn 0 records a build only, not ... | done in code, not proved by a run | none yet | none yet |
+| B13 | log.md steps/log.md line 4981 (Known bugs, roun ... | A CHANGED NWF is left alone when the scan folder holds the right files | The same proof as the F50 reshape item: a real CHANGED group ends with its NWF holding every scanned file and its history kept. The one rebuild ever run, run-20 ... | done in code, not proved by a run | none yet | none yet |
+| L2 | log.md steps/log.md line 4982 (Known bugs, roun ... | A CHANGED group still has its model units changed | A run log of a CHANGED group where no UNITS line comes before the REBUILT block. No later entry quotes one. | done in code, not proved by a run | none yet | none yet |
+| B14 | log.md steps/log.md line 4981 (Known bugs, roun ... | The report went out in feet because the document did not follow the model units | A run whose report reads Meters (m), with one distance matched against the panel in metres. No later entry quotes that check. | done in code, not proved by a run | none yet | none yet |
+| B2 | log.md steps/log.md line 4982 (Known bugs, roun ... | The open file run wrote its reports one folder too deep | One Run the open file press whose reports land in a single Clash Reports folder beside the NWF. No run of that button is recorded. | done in code, not proved by a run | none yet | none yet |
+| B11 | log.md steps/log.md line 4982 (Known bugs, roun ... | The open file run wrote no RESULT block and copied no log | One Run the open file press whose log ends with a RESULT block and whose copy sits beside the NWF. | done in code, not proved by a run | none yet | none yet |
+| L1 | log.md steps/log.md line 4982 (Known bugs, roun ... | With no clash XML the saved tests in the NWF must run, on the open file and on the scanned run | A run with no XML picked whose CLASH source line reads tests saved in the document and whose workbook is written. Every recorded run picked the matrix XML. | done in code, not proved by a run | none yet | none yet |
+| L3 | log.md steps/log.md line 4982 (Known bugs, roun ... | Each output gated on its own flag, the page and pictures no longer riding on the workbook flag | The two runs of step L3, XML on with every image status unticked, then XML off with the statuses on, with the log lines it names. | done in code, not proved by a run | none yet | none yet |
+| L4 | log.md steps/log.md line 4982 (Known bugs, roun ... | Pictures numbered in the export order, row N of a block linking to picture N | One group's workbook opened with row N of a block linking picture N in panel order, and one IMAGES numbered in report order line in the log. | done in code, not proved by a run | none yet | none yet |
+| B7 | log.md steps/log.md line 4983 (Known bugs, roun ... | probe-window-defaults.ps1 carried a path that exists on one machine only | One run of tools/probes/probe-window-defaults.ps1 on a machine with the add-in built, printing the window defaults. No run of it is recorded. | done in code, not proved by a run | none yet | none yet |
+| P2 | log.md steps/log.md line 5944 (What remains, an ... | Criterion 2, every ticked building unattended in under 45 minutes, holds on C02 and fails at C04 scale | A full run of every ticked group in C04, or in NM Fed at 46 groups, whose TIMING block says inside 45. C02 ran in 1041.789s (line 299), ten of C04's twelve grou ... | open fault | none yet | none yet |
+| NEW-LOG | log.md steps/log.md lines 245-255 (close round ... | The viewpoints step does not scale, its cost is clashes times models with three read backs each | A VIEWS step on a group the size of 1A04EP near the fixture's 0.03 seconds a viewpoint, with no steady climb in working set. | open fault | none yet | none yet |
+| P3 | log.md steps/log.md line 5944 (What remains, an ... | Criterion 3, clash counts in the Excel match the Clash Detective panel exactly | One NWF opened, the panel count read for three tests and matched to the workbook. The drift round compared 542 against Bader's own report (line 1021), not again ... | done in code, not proved by a run | none yet | none yet |
+| NEW-LOG | log.md steps/log.md lines 3120-3124 (What remai ... | What the penetration pass costs on a real model, box off against box on | Steps 279 and 280, one building run with the box off then on, with the step seconds compared. Every later run had the box on and none with it off is recorded. | done in code, not proved by a run | none yet | none yet |
+| Q35-Q40 | log.md steps/log.md line 3126 (What remains, pe ... | One question per GAP property, Family, Type Name, Material, Source File, Discipline and Id From | An answer line under each of Q35 to Q40. All six are blank in steps/02_questions.md, and the close round's 6h reconciliation result is not stated in log.md. | needs Bader, in the form | none yet | none yet |
+| NEW-LOG | log.md steps/log.md lines 5231 (F30 What was do ... | A comment F30 moved says the units go before the clash step so the report reads in its units, stale since F26 | The comment reads what F26 does, the report converted to metres whatever the document shows. log.md quotes the comment only in paraphrase, so a grep of src coul ... | open fault | none yet | none yet |
+| NEW-LOG | log.md steps/log.md line 4976 (What remains, ro ... | 180 findings of the 2026-09-12 audit carry no verifier | Each of the 180 findings in steps/04_audit.md re-checked by grep and marked verified or refuted. No later entry says that was done. | open fault | none yet | none yet |
+| NEW-LOG | log.md steps/log.md lines 4277, 4517, 4660, 346 ... | The proof steps of steps/03_bader_next.md, never worked as a whole | Each step's Look for line matched on a run, or the step cut. Turn 0 Phase 2 puts every never proved step in the register. | done in code, not proved by a run | none yet | none yet |
+| T1-S1 | turn 1 read, src/Federator.Addin/Engine/ByDesign.cs:148 | An unnamed clash judged Reviewed is counted as moved: ByDesignTally.Add adds its REVIEWED line and adds to Mov ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S2 | turn 1 read, src/Federator.Addin/Engine/ClashHarvest.cs:164 | A result group with no leaves is counted as one clash, and TestReport.Add feeds RawClashes into the report tal ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S3 | turn 1 read, src/Federator.Addin/Engine/ClashRunner.cs:465 | On a run with no XML and a chosen tolerance, ApplyChosenTolerance (line 617) changes the saved test's toleranc ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S4 | turn 1 read, src/Federator.Addin/Engine/ClashRunner.cs:1102 | Apply edits a saved test and never sets changedTheDocument. ApplyChosenTolerance does set it for the same kind ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S5 | turn 1 read, src/Federator.Addin/Engine/ClashRunner.cs:1106 | The APPLIED log line says the edit reset the test's results. The class's own comments (175-179, 1069-1070) and ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S6 | turn 1 read, src/Federator.Addin/Engine/DocumentCensusReader.cs:93 | The class rule (lines 24-27) says a count that cannot be taken is minus one and never zero, but this overload ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S7 | turn 1 read, src/Federator.Addin/Engine/DocumentGuard.cs:54 | SafeFileName returns null both for an unsaved document and when reading the name threw (lines 79-81). In the s ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S8 | turn 1 read, src/Federator.Addin/Engine/DocumentUnits.cs:118 | When re-reading Document.Units throws, the empty catch at 124 leaves 'after' equal to 'before'. Line 130 then ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S9 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:1573 | A successful ReshapeFromScan never saves the NWF ('nothing on this path saves', 1529-1530). FinishTheGroup sav ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S10 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:2042 | In SaveTheNwf a false return or a throw (caught at 2047-2053) only writes a log line and never adds an error t ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S11 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:3152 | When SaveTheNwfAgain's save returns false, nothing goes on the outcome (only a throw does, at 3159). WriteFini ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S12 | turn 1 read, src/Federator.Addin/Engine/Penetrations.cs:338 | This is outside the requested files but decides the viewpoint plan's unreadable size branch. An unknown docume ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S13 | turn 1 read, src/Federator.Addin/Engine/PropertyProbe.cs:124 | This runs even after File.WriteAllText has thrown. WriteFinished records whatever file sits at the path as wri ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S14 | turn 1 read, src/Federator.Addin/Engine/PropertyProbe.cs:208 | A value that throws is tallied as a real empty distinct value (line 211), so the CSV cannot tell an unreadable ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S15 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:88 | Read maps every comparison except DisplayStringContains to 'equals' and never reads the condition's options. T ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S16 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:112 | ValueOf reads every kind except IdentifierString with ToDisplayString, which the add-in rule says throws on an ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S17 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:273 | SidesBySetName walks only the root of tests.Tests, and a Clash Detective folder is skipped by 'if (test == nul ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S18 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:291 | When reading the clash test sides throws, SidesBySetName logs that no set is removed or renamed and returns an ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S19 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:323 | The comment contradicts itself and the code. A side that throws is not counted, which lowers the set's count, ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S20 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:646 | This is outside the requested files. When FindSelectionSet returns null after the rebuild (line 665), found st ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S21 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:665 | After Rebuild calls ReplaceWithCopy(parent, at, made), the set is re-read through the same parent handle that ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S22 | turn 1 read, src/Federator.Addin/Engine/ViewpointBuilder.cs:668 | Nothing takes one viewpoint's temporary transparency and paint off before the next viewpoint is set up. Undim ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S23 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:95 | FolderMemory records a failed read or save in DisabledReason (FolderMemory.cs:78, 120, 285), but nothing in sr ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S24 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:288 | Regroup runs on every FileRow Include change (OnFileRowChanged, line 237) and always builds a fresh name table ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S25 | turn 1 read, src/Federator.Core/Clash/ClashRunOutcome.cs:429 | SkipReasonsInOrder leaves out NoTolerance, which ClashTestPlan.cs:249 produces and ClashRunner.cs:364-366 feed ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S26 | turn 1 read, src/Federator.Core/Clash/PriorityMap.cs:136 | A test name that appears twice silently takes the last row's priority and no problem is recorded, unlike ByDes ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S27 | turn 1 read, src/Federator.Core/Clash/RepeatedFailureGuard.cs:61 | The guard counts consecutive failures and RecordSuccess (90-94) resets the count, and one guard covers the who ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S28 | turn 1 read, src/Federator.Core/Clash/ToleranceChoice.cs:78 | The help line shown under the drop down (FederatorWindow.xaml.cs:1040) says changing a saved test resets resul ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S29 | turn 1 read, src/Federator.Core/Clash/ToleranceChoice.cs:200 | ClashRunner.cs:396 writes this default line on every group, including the no-XML path where plan.Source is Doc ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S30 | turn 1 read, src/Federator.Core/Clash/ToleranceChoice.cs:207 | 'Set on N' counts toleranceOnExisting, which ClashRunner.cs:1152 increments before it resolves the test. The s ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S31 | turn 1 read, src/Federator.Core/Clash/UndoAutoReview.cs:65 | The judgement only asks whether one of our records is on the clash and the clash is at Reviewed. ClashStatusEd ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S32 | turn 1 read, src/Federator.Core/Diagnostics/EventRow.cs:199 | The comment on Number (line 74-77) says it is text so that precision is not lost, but Exact rounds to at most ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S33 | turn 1 read, src/Federator.Core/Diagnostics/FolderMemory.cs:242 | Remember discards Save's bool, and DisabledReason is never read anywhere in src. A folders.txt that cannot be ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S34 | turn 1 read, src/Federator.Core/Diagnostics/LiveLine.cs:236 | OnTheGroupBefore sums every visit of the step in the group before. TESTS CREATE, TESTS RUN and HARVEST start t ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S35 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:268 | On the temp fallback, Start writes into the bare system temp folder and PruneOldLogs(folder, keepLogs) (358) d ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S36 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:482 | RunStarted only moves the mark. groupRecords, stepRecords, written, failures, collapsedLines and ClashesFound ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S37 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:514 | A run that started but never finished is treated as never marked. The window calls RunFinished inside the try ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S38 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:687 | This claim, and the same one at 718 and 1922, is written whether or not a row file exists. Row() returns when ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S39 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:1348 | AppendFinished writes a size of 0 into the .tsv Number column for an NWC that is not on disk, while the text l ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S40 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:1939 | This line is written even when no run was marked. WaitingSeconds is then Never(0.0), so RESULT states 0.000s o ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S41 | turn 1 read, src/Federator.Core/Exchange/ExchangeReader.cs:378 | A missing or unparsable flags, primtypes, selfintersect or merge_composites silently becomes 0 or false (lines ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S42 | turn 1 read, src/Federator.Core/Exchange/MatrixCorrections.cs:643 | Under F78 (SetBuildPlan.cs:169-171 and Groups() at 212-229) a flags=64 condition starts a new OR group. Put st ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S43 | turn 1 read, src/Federator.Core/Exchange/MatrixCorrections.cs:898 | The CategoryRewrite replace runs over the whole set block, including the `<selectionset name="..."` attribute, ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S44 | turn 1 read, src/Federator.Core/Exchange/RevitWorksets.cs:131 | A missing resource gives the same empty list as an empty file and nothing records the difference. That is the ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S45 | turn 1 read, src/Federator.Core/Findings/ScanFindings.cs:243 | Every scan finding is worked out from BuildingGroup.Building, which is the grouping key (BuildingGrouping.cs:1 ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S46 | turn 1 read, src/Federator.Core/Findings/ScanFindings.cs:366 | This sentence reaches the window and the log, and it contradicts the code since F77: ClashRunner.cs:694 says ' ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S47 | turn 1 read, src/Federator.Core/Findings/SourceMismatchFindings.cs:240 | GroupBuilding is the group key (FederatorWindow.xaml.cs:1723 passes group.Building into FederationJob, and Fed ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S48 | turn 1 read, src/Federator.Core/Health/ExportCheck.cs:66 | IdShare is rounded before the `model.IdShare < 100` test (line 136, and again at FederationEngine.cs:2152), so ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S49 | turn 1 read, src/Federator.Core/Health/ExportCheck.cs:127 | When WithWorkset is NotCounted (-1) this prints NONE. That contradicts ModelExport.NotCounted's own rule at li ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S50 | turn 1 read, src/Federator.Core/Health/ExportCheck.cs:242 | The only workset test is CarriesAWorkset, `WithWorkset > 0` (line 53), so one element with a workset passes as ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S51 | turn 1 read, src/Federator.Core/Health/InvisibleDifference.cs:158 | WithoutInvisibles also removes ordinary spaces, so 'EL-Fire alarm' against 'EL-Firealarm', a space anyone can ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S52 | turn 1 read, src/Federator.Core/Health/SetWarnings.cs:47 | FindCategoriesNobodyHas (lines 221-238) never looks at condition.Flags. A negated condition (32) on an unknown ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S53 | turn 1 read, src/Federator.Core/Health/SetWarnings.cs:119 | The comment says the opposite of what the code does. SignatureOf (lines 172-189) joins RuleSignature values, w ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S54 | turn 1 read, src/Federator.Core/Naming/OutputNameTable.cs:209 | Refill counts a row as kept if any one of its three cells was typed over (lines 178-181), but it still refills ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S55 | turn 1 read, src/Federator.Core/Probe/ProbeVerdict.cs:134 | PropertyProbe accepts a category through settings.Asks, which trims and ignores case (PenetrationSettings.cs 2 ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S56 | turn 1 read, src/Federator.Core/Report/ClashReportModel.cs:726 | ClashHarvest.cs:334-335 fills ElementId with a real GUID and sets IdLabel = "Instance GUID", and IdFrom stays ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S57 | turn 1 read, src/Federator.Core/Report/ReportOrder.cs:274 | Pass one moves every changing picture to a .moving name before any final move, and nothing rolls back. If pass ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S58 | turn 1 read, src/Federator.Core/Report/ReportPaths.cs:130 | When the NWF folder is inside the scanned folder, Refuse throws on purpose (line 178) to say there is nowhere ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S59 | turn 1 read, src/Federator.Core/Report/WorkbookWriter.cs:279 | WriteEmptyTestRow is one row and returns start + 1, but ClientStyle.TestHeader fills and borders both top and ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S60 | turn 1 read, src/Federator.Core/Report/WorkbookWriter.cs:594 | WriteImageCell sets 72 pt for a pasted thumbnail, then WriteBlock line 260 'sheet.Row(row).Height = ClashRowHe ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S61 | turn 1 read, src/Federator.Core/Rerun/RebuildTally.cs:65 | A Before count that could not be taken (minus one) reads as 'nothing to keep'. SavedViewpoints.Count returns - ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S62 | turn 1 read, src/Federator.Core/Sets/EmptySets.cs:100 | Property internal names are written into the code (line 103 as well, "lcldrevit_parameter_-1002053"), which CL ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S63 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:74 | Only PRESENT sets are ever judged: SetBuilder.cs:701 `if (found == 0 && !drift.CouldNotRead)` sits inside the ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S64 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:207 | PutAnythingIn ignores RebuiltCount, and FederationEngine.cs:2456 `return sets.PutAnythingIn // sets.ActedOnLef ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S65 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:372 | This is printed whenever Drifted.Count == 0. A set whose search could not be read is never Drifted and never r ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S66 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:386 | FindingItemsCount, ZeroCount and TotalItems count CREATED sets only (Count(true, ...), IsZero, result.Created) ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S67 | turn 1 read, src/Federator.Core/Sets/SetDrift.cs:46 | The drift key carries no flags, so the StartGroup bit (the OR) is never compared. The comment at 97-99 says or ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S68 | turn 1 read, src/Federator.Core/Sets/SetDrift.cs:148 | AskedNow joins every condition with " and ", and so does WantedNow at line 161, with no StartGroup grouping. T ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S69 | turn 1 read, src/Federator.Core/Sets/SetRebuildSettings.cs:20 | With the box on, SetBuilder.Build (SetBuilder.cs:506-509) runs HandleLeftovers, which removes unused sets the ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S70 | turn 1 read, src/Federator.Core/Views/SizeText.cs:204 | Only the FIRST digit after a letter is skipped. The walk then advances one character (lines 50-53) and the nex ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-B1 | turn 1 read, src/Federator.Addin/Engine/ClashImages.cs:66 | The image guard belongs to one ClashImages, and FederationEngine.cs 2589 builds a new one per group ('runner.I ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-B2 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:3179 | BuildViewpoints never reads SavedViewpoints.CanBuild, and nothing in src/ does. A grep for CanBuild finds only ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-B3 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:2590 | Only the Close button is guarded. There is no Closing handler anywhere in the add-in (grep for Closing finds n ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-B4 | turn 1 read, src/Federator.Addin/Ui/GroupRow.cs:126 | CLAUDE.md says a typed-over cell can be given back to the pattern. OutputNameRow.ReleaseToPattern (Core Output ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-B5 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:34 | Retention lists only run-*.log (line 376). The .tsv that RowLog.PathFor (RowLog.cs:80) writes beside every log ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-B6 | turn 1 read, src/Federator.Core/Naming/NamePattern.cs:69 | The project rules call DateFormat a setting whose mistakes should be visible in the preview. A grep of every s ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-B7 | turn 1 read, src/Federator.Core/Naming/OutputNameTable.cs:84 | The project rules say a typed-over cell can be given back to the pattern, but nothing in src calls ReleaseToPa ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-B8 | turn 1 read, src/Federator.Core/Naming/OutputNameTable.cs:245 | When a pattern field is emptied, Refill stores this sentence as the name in every untouched cell, and the only ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-B9 | turn 1 read, src/Federator.Core/Views/SizeTally.cs:77 | Nothing in src constructs SizeTally, and no other code writes a SIZE line (Grep "SIZE over src finds only this ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-L1 | turn 1 read, src/Federator.Addin/Engine/Penetrations.cs:187 | ServiceSizeOf calls ReadSide, which calls Upwards(item) at line 260 outside its try. walker.Parent at line 371 ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-L2 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1508 | ReportsWanted calls ChosenTolerance, which throws ArgumentOutOfRangeException when Other is chosen with a blan ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-L3 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1701 | The only name check before a run is for collisions. An emptied pattern box makes every name 'CANNOT BE NAMED: ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-L4 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1725 | Clearing an NWF or NWD name cell stores an empty by hand name (GroupRow.cs:118 and 126). The collision check a ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-L5 | turn 1 read, src/Federator.Core/Clash/AutoReviewRecord.cs:150 | In() is documented to return null for a comment that is not ours, but a marker comment reading [was Reviewed/A ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-L6 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:565 | WriteRaw has no try. A write or flush that throws, such as a full disk, or a LineWritten handler that throws ( ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-L7 | turn 1 read, src/Federator.Core/Health/AlignmentCheck.cs:255 | ModelPlacement has NotRead for X, Y and Z but no not-read state for the site. ModelFactsReader.cs:152-155 sets ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-N1 to T1-N93 | turn 1 read | Ninety three noise findings, steps\loop-read.md section 1 | worked after every silent, broken and loud finding | reported by the read, not verified | none yet | none yet |
+| T1-UNCALLED | turn 1 read | 150 members nothing in src calls, steps\loop-read.md section 3 | each deleted with its tests, or kept by a decision in 02_questions | reported by the read, not verified | none yet | none yet |
+| T1-CATCH | turn 1 read | 77 catches called swallowing, steps\loop-read.md section 4 | each sorted into the logging rule or a fault | reported by the read, not verified | none yet | none yet |
+
+## Turn 0, 2026-09-27
+
+Runs: none.
+
+Findings: F98 and F99.
+
+Fixed: nothing.
+
+Programs started: git, the fetches and the fast forward. dotnet build of the solution and
+dotnet test of the Core tests, with the MSBuild and compiler servers they started, both
+shut down afterwards with dotnet build-server shutdown. gh.exe twice, for its version and
+its login state. No Navisworks.
+
+Files written outside the repo: %LOCALAPPDATA%\Programs\gh, the release zip at 15,473,232
+bytes, LICENSE at 1,089 and bin\gh.exe at 42,755,384. Whether dotnet wrote to its own
+caches under the user profile is UNKNOWN. Inside the clone and not tracked: http.sslBackend
+schannel in .git\config, and the build output under bin and obj.
+
+## Turn 1, 2026-09-27 to 2026-09-28, paused once for a restart
+
+Runs: no Navisworks run by the loop. prepare-copy.ps1 was run many times on the real
+folder, in three versions, and its every mode proved in the last, again on 2026-09-28 with
+every answer kept in turn1\proof-scripts-2026-09-28.txt. Bader ran the tool himself at
+16:37 on 2026-09-27, see RUN-1637.
+
+Findings: the read in steps\loop-read.md, 179 faults reported and none confirmed, 70 of
+them silent wrong outputs, 150 members nothing in src calls, 77 catches called swallowing,
+46 files with more than one top level type, no Navisworks type in Core, and the doubled
+summary block above BuildViewpoints not there. Three reviews of the house found faults in
+the loop's own scripts and walls, all fixed before it went out, and the limits a wall that
+reads words cannot close are written down. RUN-1637. The client's workbooks hold linked
+pictures and no stored ones, as core.md says.
+
+Fixed: F97 the house and F99 the git wall, in PR 72.
+
+Still open: F98, then Phase 1, and every register row that is not DONE.
+
+Programs started: git and gh. Windows PowerShell 5.1 for the scripts, and to write two test
+workbooks through Federator.Core's WorkbookWriter. sh for the hooks and the proof harness,
+which cloned the repo into a temp folder on each run and removed it. dotnet test by hand
+and through the pre-commit hook, and dotnet build-server shutdown. Thirty agents inside
+Claude Code, all read only: nineteen readers, ten reviewers and breakers over three rounds,
+three of them stopped for the restart before they answered, and one claim-checker over this
+entry, the log entry and the pull request body. No Navisworks.
+
+Files written outside the repo:
+
+    C:\Users\p003653k\bin\gh                                  a two line wrapper for Git Bash
+    %LOCALAPPDATA%\NwcFederatorLoop\source                    the copy of NM Fed, 141 files, 208.3 MB, 10 folders
+    %LOCALAPPDATA%\NwcFederatorLoop\source.manifest.txt       the copy's completion manifest
+    %LOCALAPPDATA%\NwcFederatorLoop\source.removed.txt        written by each proof's remove and deleted by its restore
+    %LOCALAPPDATA%\NwcFederatorLoop\turn1                     the raw reader results, the proof runs, the test workbooks and the drafts
+    the session scratchpad under %LOCALAPPDATA%\Temp\claude  the same, from before the restart
+
+Inside the clone and not tracked: .claude\hooks\.loop-gate-last once the Stop gate first
+blocks, which git ignores.

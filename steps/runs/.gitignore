@@ -1,0 +1,17 @@
+# The run logs of the loop are evidence and are committed, the same way steps/logs is.
+# The root .gitignore hides every *.log as local scratch, so without this line a run log
+# written here never reaches GitHub, and the one record of what a loop run did is lost.
+!*.log
+
+# What a run WRITES is never committed: the models, the workbooks, the pages and the
+# pictures. They stay under %LOCALAPPDATA%\NwcFederatorLoop. Only the read-outs of them,
+# which are text, come here.
+*.nwc
+*.nwf
+*.nwd
+*.xlsx
+*.html
+*.jpg
+*.jpeg
+*.png
+*.bmp
