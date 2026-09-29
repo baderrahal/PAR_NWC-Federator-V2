@@ -1,4 +1,4 @@
-MACHINE   [machine]   2026-09-29 12:18
+MACHINE   [machine]   2026-09-29 12:55
 WORDS     report, html, tabular, export, case blind, in a type's name or a member's name
 
 ==== Autodesk.Navisworks.Api.dll ====
@@ -109,8 +109,8 @@ WORDS     report, html, tabular, export, case blind, in a type's name or a membe
   not public types found: 3
 
   ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----
-  offset  3256980  ascii  ePLUGIN_CLASH_REPORT
-  strings found: 1
+  offset  3256980  ascii  ePLUGIN_CLASH_REPORT   [clash_report]
+  strings found: 1. Strings holding each word: tabular 0, .xsl 0, clash_report 1, reportformat 0
 
 ==== Autodesk.Navisworks.Clash.dll ====
   FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Clash.dll   508704 bytes, file version 22.5.1433.58
@@ -202,23 +202,23 @@ WORDS     report, html, tabular, export, case blind, in a type's name or a membe
   not public types found: 8
 
   ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----
-  offset   326610  ascii  LcClClashReport.GetReportFormatterInternalName
-  offset   326657  ascii  LcClClashReport.SetCurrentReportFormatter
-  offset   326699  ascii  LcClClashReport.GetCurrentReportFormatter
-  offset   326741  ascii  LcClClashReport.GetReportFormatterName
-  offset   326780  ascii  LcClClashReport.NumReportFormatters
-  offset   380914  ascii  NumReportFormatters
-  offset   380934  ascii  GetReportFormatterName
-  offset   380957  ascii  reportFormatter
-  offset   380973  ascii  GetCurrentReportFormatter
-  offset   380999  ascii  SetCurrentReportFormatter
-  offset   381025  ascii  GetReportFormatterInternalName
-  offset   467018  ascii  ?NumReportFormatters@LcClClashReport@@SAHXZ
-  offset   467064  ascii  ?GetReportFormatterName@LcClClashReport@@SAXHPEAVLcUWideStringBuffer@@@Z
-  offset   467140  ascii  ?GetCurrentReportFormatter@LcClClashReport@@SAHXZ
-  offset   467192  ascii  ?SetCurrentReportFormatter@LcClClashReport@@SAXH@Z
-  offset   467246  ascii  ?GetReportFormatterInternalName@LcClClashReport@@SAXHPEAVLcUWideStringBuffer@@@Z
-  strings found: 16
+  offset   326610  ascii  LcClClashReport.GetReportFormatterInternalName   [reportformat]
+  offset   326657  ascii  LcClClashReport.SetCurrentReportFormatter   [reportformat]
+  offset   326699  ascii  LcClClashReport.GetCurrentReportFormatter   [reportformat]
+  offset   326741  ascii  LcClClashReport.GetReportFormatterName   [reportformat]
+  offset   326780  ascii  LcClClashReport.NumReportFormatters   [reportformat]
+  offset   380914  ascii  NumReportFormatters   [reportformat]
+  offset   380934  ascii  GetReportFormatterName   [reportformat]
+  offset   380957  ascii  reportFormatter   [reportformat]
+  offset   380973  ascii  GetCurrentReportFormatter   [reportformat]
+  offset   380999  ascii  SetCurrentReportFormatter   [reportformat]
+  offset   381025  ascii  GetReportFormatterInternalName   [reportformat]
+  offset   467018  ascii  ?NumReportFormatters@LcClClashReport@@SAHXZ   [reportformat]
+  offset   467064  ascii  ?GetReportFormatterName@LcClClashReport@@SAXHPEAVLcUWideStringBuffer@@@Z   [reportformat]
+  offset   467140  ascii  ?GetCurrentReportFormatter@LcClClashReport@@SAHXZ   [reportformat]
+  offset   467192  ascii  ?SetCurrentReportFormatter@LcClClashReport@@SAXH@Z   [reportformat]
+  offset   467246  ascii  ?GetReportFormatterInternalName@LcClClashReport@@SAXHPEAVLcUWideStringBuffer@@@Z   [reportformat]
+  strings found: 16. Strings holding each word: tabular 0, .xsl 0, clash_report 0, reportformat 16
 
 ==== Autodesk.Navisworks.ComApi.dll ====
   FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.ComApi.dll   385824 bytes, file version 22.5.1433.58
@@ -240,7 +240,7 @@ WORDS     report, html, tabular, export, case blind, in a type's name or a membe
   not public types found: 0
 
   ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----
-  strings found: 0
+  strings found: 0. Strings holding each word: tabular 0, .xsl 0, clash_report 0, reportformat 0
 
 ==== Autodesk.Navisworks.Interop.ComApi.dll ====
   FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Interop.ComApi.dll   313624 bytes, file version 22.5.1433.58
@@ -545,7 +545,7 @@ WORDS     report, html, tabular, export, case blind, in a type's name or a membe
   not public types found: 0
 
   ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----
-  strings found: 0
+  strings found: 0. Strings holding each word: tabular 0, .xsl 0, clash_report 0, reportformat 0
 
 ==== Autodesk.Navisworks.Automation.dll ====
   FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Automation.dll   184088 bytes, file version 22.5.1433.58
@@ -562,7 +562,7 @@ WORDS     report, html, tabular, export, case blind, in a type's name or a membe
   not public types found: 0
 
   ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----
-  strings found: 0
+  strings found: 0. Strings holding each word: tabular 0, .xsl 0, clash_report 0, reportformat 0
 
 ==== WHERE THE ARGUMENTS OF EVERY PUBLIC WriteReport COME FROM ====
   public methods named WriteReport: 1
@@ -582,11 +582,11 @@ WORDS     report, html, tabular, export, case blind, in a type's name or a membe
     parameter name_annotation: System.String
 
 ==== SUMMARY ====
-  Autodesk.Navisworks.Api.dll: public types holding a word 7, other public members holding a word 33, not public types holding a word 3, strings naming a stylesheet or tabular report 1
-  Autodesk.Navisworks.Clash.dll: public types holding a word 6, other public members holding a word 1, not public types holding a word 8, strings naming a stylesheet or tabular report 16
-  Autodesk.Navisworks.ComApi.dll: public types holding a word 1, other public members holding a word 0, not public types holding a word 0, strings naming a stylesheet or tabular report 0
-  Autodesk.Navisworks.Interop.ComApi.dll: public types holding a word 3, other public members holding a word 7, not public types holding a word 0, strings naming a stylesheet or tabular report 0
-  Autodesk.Navisworks.Automation.dll: public types holding a word 0, other public members holding a word 0, not public types holding a word 0, strings naming a stylesheet or tabular report 0
+  Autodesk.Navisworks.Api.dll: public types holding a word 7, other public members holding a word 33, not public types holding a word 3, strings holding tabular 0, .xsl 0, clash_report 1, reportformat 0
+  Autodesk.Navisworks.Clash.dll: public types holding a word 6, other public members holding a word 1, not public types holding a word 8, strings holding tabular 0, .xsl 0, clash_report 0, reportformat 16
+  Autodesk.Navisworks.ComApi.dll: public types holding a word 1, other public members holding a word 0, not public types holding a word 0, strings holding tabular 0, .xsl 0, clash_report 0, reportformat 0
+  Autodesk.Navisworks.Interop.ComApi.dll: public types holding a word 3, other public members holding a word 7, not public types holding a word 0, strings holding tabular 0, .xsl 0, clash_report 0, reportformat 0
+  Autodesk.Navisworks.Automation.dll: public types holding a word 0, other public members holding a word 0, not public types holding a word 0, strings holding tabular 0, .xsl 0, clash_report 0, reportformat 0
   references that could not be loaded for reflection: none
 
 WHETHER ANY MEMBER LISTED RUNS, AND WHAT IT WRITES, IS UNKNOWN. Nothing here started Navisworks or called a member.

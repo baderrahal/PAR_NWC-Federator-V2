@@ -160,23 +160,33 @@ foreach ($dllName in $names) {
   Write-Output ("  not public types found: " + $np.Count)
   Write-Output ""
 
-  # The file as bytes: every ASCII or UTF-16 string that names a stylesheet, a tabular
-  # report or a clash report, because a native report writer reaches its format by name.
+  # The file as bytes: every ASCII or UTF-16 string holding one of four words, tabular,
+  # .xsl, clash_report or reportformat, case blind, because a native report writer reaches
+  # a stylesheet, a tabular report, a clash report or a report format by name. Each string
+  # is printed with the words it holds, and each word is counted on its own, so a count of
+  # strings is never read as a count of one of the four.
   Write-Output "  ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----"
   $latin1 = [System.Text.Encoding]::GetEncoding(28591)
   $text = $latin1.GetString([System.IO.File]::ReadAllBytes($p))
+  $sWords = @("tabular", ".xsl", "clash_report", "reportformat")
+  $perWord = [ordered]@{}; foreach ($w in $sWords) { $perWord[$w] = 0 }
   $sHits = 0
-  foreach ($m in [regex]::Matches($text, "[\x20-\x7E]{4,}")) {
-    if ($m.Value -match '(?i)tabular|\.xsl|clash_report|reportformat') { Write-Output ("  offset " + $m.Index.ToString().PadLeft(8) + "  ascii  " + $m.Value); $sHits++ }
+  $runs = @(
+    @("ascii", [regex]::Matches($text, "[\x20-\x7E]{4,}")),
+    @("utf16", [regex]::Matches($text, "(?:[\x20-\x7E]\x00){4,}"))
+  )
+  foreach ($run in $runs) {
+    foreach ($m in $run[1]) {
+      $v = $m.Value; if ($run[0] -eq "utf16") { $v = $v.Replace([string][char]0, "") }
+      $which = @(); foreach ($w in $sWords) { if ($v.IndexOf($w, [StringComparison]::OrdinalIgnoreCase) -ge 0) { $which += $w; $perWord[$w]++ } }
+      if ($which.Count -gt 0) { Write-Output ("  offset " + $m.Index.ToString().PadLeft(8) + "  " + $run[0] + "  " + $v + "   [" + ($which -join ", ") + "]"); $sHits++ }
+    }
   }
-  foreach ($m in [regex]::Matches($text, "(?:[\x20-\x7E]\x00){4,}")) {
-    $v = $m.Value.Replace([string][char]0, "")
-    if ($v -match '(?i)tabular|\.xsl|clash_report|reportformat') { Write-Output ("  offset " + $m.Index.ToString().PadLeft(8) + "  utf16  " + $v); $sHits++ }
-  }
-  Write-Output ("  strings found: " + $sHits)
+  $wordText = (($sWords | ForEach-Object { $_ + " " + $perWord[$_] }) -join ", ")
+  Write-Output ("  strings found: " + $sHits + ". Strings holding each word: " + $wordText)
   Write-Output ""
 
-  $summary += ($dllName + ": public types holding a word " + $tHits.Count + ", other public members holding a word " + $mHits + ", not public types holding a word " + $np.Count + ", strings naming a stylesheet or tabular report " + $sHits)
+  $summary += ($dllName + ": public types holding a word " + $tHits.Count + ", other public members holding a word " + $mHits + ", not public types holding a word " + $np.Count + ", strings holding " + $wordText)
   $script:loadedAsm[$dllName] = $a
 }
 

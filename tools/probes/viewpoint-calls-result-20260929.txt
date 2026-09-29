@@ -1,7 +1,8 @@
 ASSEMBLY  Autodesk.Navisworks.Api 22.0.0.0   file 22.5.1433.58, 4261152 bytes, loaded reflection only: True
 ASSEMBLY  Autodesk.Navisworks.ComApi 22.0.0.0   file 22.5.1433.58, 385824 bytes, loaded reflection only: True
 ASSEMBLY  Autodesk.Navisworks.Interop.ComApi 22.0.0.0   file 22.5.1433.58, 313624 bytes, loaded reflection only: True
-MACHINE   [machine]   2026-09-29 12:18
+MACHINE   [machine]   2026-09-29 12:55
+READER    il-reader.ps1, dot-sourced, sha256 76C56D7C9E0A9AB6B026BB96553757D5981E6F0E2947A621240957194BF69AB4
 
 ---- A. THE LIST TYPED BY HAND, from reading src\Federator.Addin\Engine\SavedViewpoints.cs ----
   [the method or use in SavedViewpoints.cs] type kind name, then what the DLL holds
@@ -73,7 +74,7 @@ MACHINE   [machine]   2026-09-29 12:18
   FOUND           [Exists, the null checks] Autodesk.Navisworks.Api.NativeHandle method op_Inequality(Autodesk.Navisworks.Api.NativeHandle, Autodesk.Navisworks.Api.NativeHandle)   public static System.Boolean op_Inequality(Autodesk.Navisworks.Api.NativeHandle objA, Autodesk.Navisworks.Api.NativeHandle objB)   declared on Autodesk.Navisworks.Api.NativeHandle
   FOUND           [Record] Autodesk.Navisworks.Api.ComApi.ComApiBridge property State (get)   public static Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10 State { get }   declared on Autodesk.Navisworks.Api.ComApi.ComApiBridge
   FOUND           [Record] Autodesk.Navisworks.Api.ComApi.ComApiBridge method ToInwOpAnonView(Autodesk.Navisworks.Api.Viewpoint)   public static Autodesk.Navisworks.Api.Interop.ComApi.InwOpAnonView ToInwOpAnonView(Autodesk.Navisworks.Api.Viewpoint viewpoint)   declared on Autodesk.Navisworks.Api.ComApi.ComApiBridge
-  FOUND           [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10 method ObjectFactory(3 arguments)   public System.Object ObjectFactory(Autodesk.Navisworks.Api.Interop.ComApi.nwEObjectType eType, optional System.Object ovReserved1, optional System.Object ovReserved2)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10
+  FOUND           [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10 method ObjectFactory(Autodesk.Navisworks.Api.Interop.ComApi.nwEObjectType, System.Object, System.Object)   public System.Object ObjectFactory(Autodesk.Navisworks.Api.Interop.ComApi.nwEObjectType eType, optional System.Object ovReserved1, optional System.Object ovReserved2)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10
   FOUND           [Record, FindComFolder] Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10 method SavedViews()   public Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl SavedViews()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10
   FOUND           [Record] Autodesk.Navisworks.Api.Interop.ComApi.nwEObjectType field eObjectType_nwOpView   Autodesk.Navisworks.Api.Interop.ComApi.nwEObjectType eObjectType_nwOpView = 11
   FOUND           [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwOpView property name (set)   public System.String name { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
@@ -82,7 +83,7 @@ MACHINE   [machine]   2026-09-29 12:18
   FOUND           [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwOpView property anonview (set)   public Autodesk.Navisworks.Api.Interop.ComApi.InwOpAnonView anonview { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
   FOUND           [Record, FindComFolder] Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView method SavedViews()   public Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl SavedViews()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
   FOUND           [FolderNamed] Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView property name (get)   public System.String name { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
-  FOUND           [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl method Add(1 arguments)   public System.Void Add(System.Object p_newVal)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+  FOUND           [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl method Add(System.Object)   public System.Void Add(System.Object p_newVal)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
   FOUND           [FolderNamed] Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl property Count (get)   public System.Int32 Count { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
   FOUND           [FolderNamed] Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl indexer this[][System.Object] (get)   public System.Object Item[System.Object vIndex] { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl | public System.Object Item[System.Object vIndex] { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwCollBase
 
@@ -199,11 +200,18 @@ MACHINE   [machine]   2026-09-29 12:18
   RESOLVED  type     Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView   at SavedViewpoints.FindComFolder return, SavedViewpoints.FindComFolder local, SavedViewpoints.FolderNamed return, SavedViewpoints.FolderNamed local, SavedViewpoints.FolderNamed IL_0015
   RESOLVED  type     Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl   at SavedViewpoints.FindComFolder local, SavedViewpoints.FolderNamed parameter
 
-  Every reference that did NOT resolve, with what the runtime said:
+  Everything section C could not read, kept by il-reader.ps1, each once, with what the runtime said:
+    IL bodies that could not be read: 0
+    opcode bytes the reader does not know, each ending the read of its body: 0
+    tokens that did not resolve: 0
+    types whose methods could not be listed: 0
+    signatures that could not be read: 0
+    local variable lists that could not be read: 0
+    field types that could not be read: 0
   count 0
 
   Navisworks members referenced 65, declared in an install assembly 62, of those on list A 62 and NOT on list A 0, declared on a framework generic 3
-  Navisworks types referenced 21, references that did not resolve 0
+  Navisworks types referenced 21, reads that failed 0
   Where each assembly the check touched was loaded from, reflection only:
     Autodesk.Navisworks.Api 22.0.0.0   the install folder
     Autodesk.Navisworks.ComApi 22.0.0.0   the install folder

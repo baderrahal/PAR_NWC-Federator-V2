@@ -1,5 +1,6 @@
 FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe   214296 bytes, file version 22.5.1433.58, sha256 2BBC4BE15D7F16BAB2D5AC733EEBF2659849F56F9516F5B5E95737843E4913A9
-MACHINE   [machine]   2026-09-29 12:18
+MACHINE   [machine]   2026-09-29 12:55
+READER    il-reader.ps1, dot-sourced, sha256 76C56D7C9E0A9AB6B026BB96553757D5981E6F0E2947A621240957194BF69AB4
 
 ==== 1. Roamer.exe as bytes ====
   strings of four or more printable characters in Roamer.exe: 759, ascii 685, utf16 74
@@ -1048,7 +1049,7 @@ FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer
 
 ==== 8. The branches around the two places actions are dispatched, and where an action goes, whole IL, reflection only ====
   enum Autodesk.Navisworks.Gui.Roamer.CommandLineConfig+Gui: DEFAULT = 0, NONE = 1, HIDE = 2, SHOW = 3
-  -- Roamer.exe NetRoamer.Program::MainImpl, from the parse to where the parsed GuiState is first read, IL_001E to IL_0103 --
+  -- Roamer.exe NetRoamer.Program::MainImpl, from the parse to the store into InitialiseResourcesConfig.HiddenGui, which comes after the first read of the parsed GuiState, IL_001E to IL_0103 --
       IL_001E  callvirt   Autodesk.Navisworks.Gui.Roamer.CommandLineParser::Parse
       IL_0023  stloc.s    4
       IL_0025  call       System.Windows.Forms.Application::EnableVisualStyles
@@ -1401,6 +1402,8 @@ FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer
       IL_0000  ldarg.0    
       IL_0001  stsfld     Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::<backing_store>AutomationActionCount
       IL_0006  ret        
+  A call printed as null::name is to a method with no declaring type, one defined at module
+  level outside any type. None of those methods' IL is read here, so what each does is UNKNOWN.
   Autodesk.Navisworks.Internal.ApiImplementation.ApplicationAutomationImpl, base System.Object
       method public static System.Int32 AddPluginAssembly(System.String[] args)
       method public static System.Int32 AppendFile(System.String[] args)
@@ -1473,6 +1476,14 @@ FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer
 
 ==== 9. What could not be read, over the whole run ====
   references that could not be loaded for reflection, over the whole run: none
-  tokens the IL reader could not resolve, each once: 0
+  what il-reader.ps1 kept, each once, over every body IlRead decoded in sections 5 to 8, and
+  every type section 6 listed the methods of and every body it read for bytes:
+    IL bodies that could not be read: 0
+    opcode bytes the reader does not know, each ending the read of its body: 0
+    tokens that did not resolve: 0
+    types whose methods could not be listed: 0
+    signatures that could not be read: 0
+    local variable lists that could not be read: 0
+    field types that could not be read: 0
 
 WHAT EACH SWITCH DOES ON A START IS UNKNOWN. Nothing here ran Roamer.exe. The lists above say what the files carry, what the parser stores and what the IL of the readers touches, in the order it is written, which is not the order a start runs it.

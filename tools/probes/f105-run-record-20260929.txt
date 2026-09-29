@@ -20,3 +20,23 @@ THE FINAL RUNS, each as powershell.exe -NoProfile -ExecutionPolicy Bypass -File 
 
 AFTER THE LAST OF THE FINAL RUNS   2026-09-29 12:18:42
   Get-Process Roamer: 0 process(es)
+
+
+THE SECOND FIX ROUND, after the re-read of b78e307
+
+BEFORE ANY RUN OF THE SECOND FIX ROUND   2026-09-29 12:49:23
+  Get-Process Roamer: 0 process(es)
+TEST RUN, output not kept   probe-viewpoint-calls.ps1   12:55:05 to 12:55:07, exit 0
+TEST RUN, output not kept   probe-roamer-switches.ps1   12:55:07 to 12:55:13, exit 0
+TEST RUN, output not kept   probe-clash-report-api.ps1   12:55:13 to 12:55:17, exit 0
+
+BEFORE THE FIRST OF THE SECOND ROUND'S FINAL RUNS   2026-09-29 12:55:39
+  Get-Process Roamer: 0 process(es)
+
+THE SECOND ROUND'S FINAL RUNS, the three probes this round changed, each as powershell.exe -NoProfile -ExecutionPolicy Bypass -File <probe>, its output kept as the result file. The reader both dot-source, il-reader.ps1, sha256 76C56D7C9E0A9AB6B026BB96553757D5981E6F0E2947A621240957194BF69AB4
+  probe-viewpoint-calls.ps1 -AddinPath <the main clone's Release build of the add-in>   12:55:40 to 12:55:42, exit 0, 291 lines to viewpoint-calls-result-20260929.txt, machine name replaced 1 time(s), probe sha256 8D62413D5C07B5E2EDF0676BC6A755C890D38C842F000515574E2596713A58B3
+  probe-roamer-switches.ps1   12:55:43 to 12:55:48, exit 0, 1489 lines to roamer-switches-result-20260929.txt, machine name replaced 1 time(s), probe sha256 53FA7985399434638D9D5530BD1FBA891ED753F3BB492559E8D21F7FF27CDF27
+  probe-clash-report-api.ps1   12:55:48 to 12:55:53, exit 0, 592 lines to clash-report-api-result-20260929.txt, machine name replaced 1 time(s), probe sha256 C27385F7D0838F9B1DAD3A0CE5B47904F740462CD097050D191F86759BB07BA3
+
+AFTER THE LAST OF THE SECOND ROUND'S FINAL RUNS   2026-09-29 12:55:53
+  Get-Process Roamer: 0 process(es)

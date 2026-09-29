@@ -4662,7 +4662,8 @@ HOW EACH FILE WAS READ, because not every probe read the same way:
   code in it, `probe-viewpoint-calls.ps1`, `probe-roamer-switches.ps1` and
   `probe-clash-report-api.ps1`. The second also reads Roamer.exe and
   navisworks.gui.roamer.dll as bytes, and the third reads all five DLLs as bytes for
-  strings
+  strings. The two that read IL decode it through `il-reader.ps1` beside them, the one IL
+  reader both dot-source, which keeps every read it could not make, by kind
 
 Each probe was run from Windows PowerShell 5.1.26100.9444, 64 bit, as
 
@@ -4674,34 +4675,41 @@ with its standard output kept as the result file, UTF-8 without a byte order mar
 the machine name in its MACHINE line replaced with `[machine]`.
 
 THE RUN RECORD, `f105-run-record-20260929.txt` beside the results. `Get-Process Roamer`
-read 0 processes before any run of the review round at 12:07:54, lines 4 and 5, before the
-first of the five final runs at 12:18:23, lines 11 and 12, and after the last of them at
-12:18:42, lines 21 and 22. Every result file below is the output of those final runs,
-lines 15 to 19. Four test runs came between the first two readings, lines 6 to 9, and
-their output was not kept. The first round's runs of the morning, from 10:24, are replaced
-by these, and the Roamer readings made that morning are in no file.
+read 0 processes at every reading: before any run of the first review round at 12:07:54,
+lines 4 and 5, before its five final runs at 12:18:23, lines 11 and 12, after them at
+12:18:42, lines 21 and 22, before any run of the second fix round at 12:49:23, lines 27
+and 28, before its three final runs at 12:55:39, lines 33 and 34, and after them at
+12:55:53, lines 41 and 42. viewpoints-result and model-remove-result are the output of
+the first round's final runs, lines 15 and 16. The other three are the output of the
+second round's, lines 37 to 39, run after the three probes that make them changed. Test
+runs came between readings, lines 6 to 9 and 29 to 31, and their output was not kept. The
+runs of the morning, from 10:24, are replaced, and the Roamer readings made that morning
+are in no file.
 
 ```
 probe                                  result file                             lines
 tools\probes\probe-viewpoints.ps1      viewpoints-result-20260929.txt            388
 tools\probes\probe-model-remove.ps1    model-remove-result-20260929.txt          134
-probe-viewpoint-calls.ps1, new         viewpoint-calls-result-20260929.txt       283
-probe-roamer-switches.ps1, new         roamer-switches-result-20260929.txt      1478
+probe-viewpoint-calls.ps1, new         viewpoint-calls-result-20260929.txt       291
+probe-roamer-switches.ps1, new         roamer-switches-result-20260929.txt      1489
 probe-clash-report-api.ps1, new        clash-report-api-result-20260929.txt      592
 
-probe                                  sha256 of the probe as it ran, run record lines 15 to 19
+file                                   sha256 as it ran, run record lines 15, 16 and 36 to 39
 tools\probes\probe-viewpoints.ps1      674527A738C91A41BDB9262182C78CD4715B0EB4765EF13EE80BC6F90DEE0F6F
 tools\probes\probe-model-remove.ps1    B1986875DD5EE238E061AF301E60FE4CA8C8A6AED64407611DCA41C94D50F916
-probe-viewpoint-calls.ps1              35BDF6EAE25F125FC359052A3AD4BAC99C556CC949F5E1C84723D014E06F9539
-probe-roamer-switches.ps1              CAE39B02FE1B069F6648F9A8FAFC06582C62315394920D5313A9BE353896EEBD
-probe-clash-report-api.ps1             6E6CE21FC547FC28E7DD43E2F1099A7D3BDCEBB24DF7D12D58314176CE456BCA
+probe-viewpoint-calls.ps1              8D62413D5C07B5E2EDF0676BC6A755C890D38C842F000515574E2596713A58B3
+probe-roamer-switches.ps1              53FA7985399434638D9D5530BD1FBA891ED753F3BB492559E8D21F7FF27CDF27
+probe-clash-report-api.ps1             C27385F7D0838F9B1DAD3A0CE5B47904F740462CD097050D191F86759BB07BA3
+il-reader.ps1, dot-sourced by two      76C56D7C9E0A9AB6B026BB96553757D5981E6F0E2947A621240957194BF69AB4
 ```
 
 Each hash is of the file as it lay when it ran, the two repo probes with CRLF line ends
-and the three new ones with LF, so a checkout that changes a file's line ends changes its
-hash. The three new probes, the five result files and the run record are in tools\probes,
-committed with this section in F105. The add-in source compared against is
-`src\Federator.Addin` at commit 30ae471.
+and the three new ones and the reader with LF, so a checkout that changes a file's line
+ends changes its hash. The two probes that dot-source the reader print its hash in their
+READER line, viewpoint-calls line 5 and roamer-switches line 3. The three new probes, the
+reader, the five result files and the run record are in tools\probes, committed with this
+section in F105. The add-in source compared against is `src\Federator.Addin` at commit
+30ae471.
 
 
 **1. THE SAVED VIEWPOINT MEMBERS ON THIS INSTALL**
@@ -4719,21 +4727,24 @@ its one full path, three ways. That file is where every hit of a search of
 InwOpView lands, apart from comments and calls into the add-in's own `SavedViewpoints`
 class. Lines of viewpoint-calls-result.
 
-- A, lines 6 to 90, is a LIST TYPED BY HAND from reading the file, 79 lines, each with one
+- A, lines 7 to 91, is a LIST TYPED BY HAND from reading the file, 79 lines, each with one
   of three outcomes. FOUND is a member of that name AND the shape the file uses: its
-  parameter types, its return or property type and the accessors it uses. DIFFERENT SHAPE
-  is the name without that shape. NO MATCH is neither. Beside the members it checks that
-  each of the nine types the file disposes implements IDisposable, and the five
-  conversions the file relies on. It checks only what is on it
-- B, lines 92 to 100, prints 5d's and 5c's generic members with their type arguments,
+  parameter types, its return or property type and the accessors it uses. Every method on
+  it is checked by its parameter types, the two COM ones included, `ObjectFactory` and
+  `InwSavedViewsColl.Add`, lines 77 and 86. DIFFERENT SHAPE is the name without that
+  shape. NO MATCH is neither. Beside the members it checks that each of the nine types the
+  file disposes implements IDisposable, and the five conversions the file relies on. It
+  checks only what is on it
+- B, lines 93 to 101, prints 5d's and 5c's generic members with their type arguments,
   which the two repo probes print by their bare names, `Collection`1`
-- C, lines 102 to 212, is NOT typed by hand. It reads the IL, the locals, the fields and
+- C, lines 103 to 220, is NOT typed by hand. It reads the IL, the locals, the fields and
   the signatures of the three classes compiled from `SavedViewpoints.cs`,
-  `SavedViewpoints`, `ViewpointReadBack` and `HiddenSnapshot`, and resolves every
-  reference to a Navisworks member or type against the install, which the runtime does by
-  exact name and signature. The build read is the Release build in the main clone's own
-  bin folder, 241,152 bytes, sha256 57325D2629A1AA9B48C322D52106626B5311440F3D2D0464CC23E0B139F3BE94,
-  stamped `1.0.0.0 30ae4715+edits built 2026-09-29 11:01:03`, lines 103 to 106
+  `SavedViewpoints`, `ViewpointReadBack` and `HiddenSnapshot`, decodes the IL through
+  `il-reader.ps1`, and resolves every reference to a Navisworks member or type against the
+  install, which the runtime does by exact name and signature. The build read is the
+  Release build in the main clone's own bin folder, 241,152 bytes, sha256
+  57325D2629A1AA9B48C322D52106626B5311440F3D2D0464CC23E0B139F3BE94, stamped
+  `1.0.0.0 30ae4715+edits built 2026-09-29 11:01:03`, lines 104 to 107
 
 **EVERY MEMBER ON LIST A IS THERE WITH THE SHAPE THE FILE USES, AND EVERY NAVISWORKS
 REFERENCE THE COMPILED FILE MAKES RESOLVES AGAINST THE INSTALL. NOTHING IS MISSING AND
@@ -4741,25 +4752,26 @@ NOTHING DIFFERS. EVERY MEMBER 5d RECORDS IS THERE WITH THE SAME SHAPE, ITS GENER
 ARGUMENTS INCLUDED.**
 
 ```
-list A      on the list 79, FOUND 79, DIFFERENT SHAPE 0, NO MATCH 0                    89
-the IL      50 method bodies, 328 member and type tokens read                          108
+list A      on the list 79, FOUND 79, DIFFERENT SHAPE 0, NO MATCH 0                    90
+the IL      50 method bodies, 328 member and type tokens read                          109
             Navisworks members 65: 62 declared in an install assembly, all 62 on
-            list A, and 3 declared on a framework generic over a Navisworks type       205
-            Navisworks types 21, references that did not resolve 0                     203, 206
-            every assembly from the install folder or the add-in's own folder         207 to 212
+            list A, and 3 declared on a framework generic over a Navisworks type       213
+            Navisworks types 21                                                        214
+            reads that failed 0, over the seven kinds il-reader.ps1 counts, a body,
+            an opcode, a token, a type's methods, a signature, locals and a field      203 to 211, 214
+            every assembly from the install folder or the add-in's own folder         215 to 220
 ```
 
 WHAT LIST A LEAVES OUT, named. The three framework members the compiled file reaches over
 a Navisworks type, `Collection<MaterialOverride>.Count` and `GetEnumerator` and
-`IEnumerator<MaterialOverride>.Current`, which section C resolves, lines 149, 154 and 155.
+`IEnumerator<MaterialOverride>.Current`, which section C resolves, lines 150, 155 and 156.
 The calls through `System.IDisposable.Dispose` that a `using` compiles to, which it checks
-instead as IDisposable on each of the nine types, lines 58 to 66. And anything outside
+instead as IDisposable on each of the nine types, lines 59 to 67. And anything outside
 `SavedViewpoints.cs`. Its first version, committed in 69cff64, had 53 lines and missed
 `Point3D.X`, `Y` and `Z`, `Color.R`, `G` and `B`, the `Dispose` on the wrappers and the
-`==` and `!=` operators on `NativeHandle` that the null checks compile to, lines 28 to 30,
-51 to 57, 72 and 73. The operators were added after the first test run, run record line
-6, whose output was not kept, showed section C naming them and the list not holding them.
-Section C now reports no member of an install assembly missing from the list, line 205.
+`==` and `!=` operators on `NativeHandle` that the null checks compile to, now lines 29 to
+31, 52 to 58, 73 and 74. Section C reports no member of an install assembly missing from
+the list, line 213.
 
 WHAT THE BUILD SAYS AND DOES NOT. `+edits` in its stamp says the main clone's working
 tree held a change when it was built, and not which. Its `SavedViewpoints.cs` is the same
@@ -4798,12 +4810,12 @@ FolderItem, public FolderItem()                                         yes   ye
 `probe-viewpoints.ps1` prints a generic type by its bare name, so its lines 21 to 24 show
 `Collection`1 CreateCopy()` and `CopyFrom(IEnumerable`1 value)` and no more. Section B of
 viewpoint-calls prints the arguments: `Collection<SavedItem> CreateCopy()` and
-`CopyFrom(IEnumerable<SavedItem> value)`, lines 93 and 95, exactly as 5d records them.
+`CopyFrom(IEnumerable<SavedItem> value)`, lines 94 and 96, exactly as 5d records them.
 
 5d's claim that the two collections have the same shape holds on this install:
 `RootItem`, `AddCopy`, `InsertCopy`, `Move`, `Remove`, `RemoveAt` and `ReplaceWithCopy`
 with the same signatures on both, viewpoints-result lines 15 to 39 and 166 to 189, and
-the same generic `CreateCopy` and `CopyFrom`, viewpoint-calls lines 93 to 98. Where they
+the same generic `CreateCopy` and `CopyFrom`, viewpoint-calls lines 94 to 99. Where they
 differ, the sets carry `CreateSelectionSource` and `ResolveSelectionSource`, lines 177
 and 193, and the viewpoints carry `CurrentSavedViewpoint`, `CaptureRuntimeOverrides` and
 `ReplaceFromCurrentView`. The hiding members 5d names are there too, `ModelItem.IsHidden`
@@ -4822,19 +4834,20 @@ the one the add-in calls to take the root copy out, and until this run it was me
 only on the runs of 5k and 5m and never printed off the DLL.
 
 THE COM HALF, which 5m measured on a run and no probe had printed. Lines of
-viewpoint-calls-result, list A and then the IL:
+viewpoint-calls-result, list A and then the IL, each row in the order it names:
 
 ```
-public static InwOpState10 ComApiBridge.State { get }                           74, 120
-public static InwOpAnonView ComApiBridge.ToInwOpAnonView(Viewpoint viewpoint)  75, 125
+public static InwOpState10 ComApiBridge.State { get }                            75, 121
+public static InwOpAnonView ComApiBridge.ToInwOpAnonView(Viewpoint viewpoint)   76, 126
 public Object InwOpState10.ObjectFactory(nwEObjectType eType,
-    optional Object ovReserved1, optional Object ovReserved2)                   76, 121
-public InwSavedViewsColl InwOpState10.SavedViews()                             77, 129
-nwEObjectType.eObjectType_nwOpView = 11                                        78
+    optional Object ovReserved1, optional Object ovReserved2)                    77, 122
+public InwSavedViewsColl InwOpState10.SavedViews()                              78, 130
+nwEObjectType.eObjectType_nwOpView = 11                                         79
 InwOpView.name, ApplyHideAttribs, ApplyMaterialAttribs, anonview, each
-    { get; set }, the four setters the file calls                              79 to 82, 122 to 124, 126
-InwOpFolderView.SavedViews(), InwOpFolderView.name                             83, 84, 127, 175
-InwSavedViewsColl.Add(Object), Count { get }, Item[Object] { get; set }        85 to 87, 128, 174, 176
+    { get; set }, the four setters the file calls                               80 to 83, then 123, 124, 125, 127
+InwOpFolderView.SavedViews(), then InwOpFolderView.name                         84, 85, then 128, 176
+InwSavedViewsColl.Add(Object), then Count { get }, then Item[Object] { get; set }
+                                                                                 86, 87, 88, then 129, 177, 175
 ```
 
 STILL UNKNOWN.
@@ -4870,7 +4883,7 @@ AppendFile, AppendFiles, Clear, IsClear, TryAppendFile, TryAppendFiles  yes   ye
 
 The probe prints `AppendFiles(IEnumerable`1 fileNames)` by its bare name. Section B of
 viewpoint-calls prints `AppendFiles(IEnumerable<String> fileNames)` and
-`TryAppendFiles(IEnumerable<String> fileNames)`, lines 99 and 100, as 5c records them.
+`TryAppendFiles(IEnumerable<String> fileNames)`, lines 100 and 101, as 5c records them.
 
 PRINTED BY THIS RUN AND NOT QUOTED IN 5c. Under the question, lines 85 to 95:
 `RemoveAt(Int32)` and `RemoveAt(GroupItem, Int32)` on `DocumentSavedViewpoints`,
@@ -4898,31 +4911,32 @@ ordinary start, because the tool's window could then open with no click.
 four or more characters, reads its PE headers, import table and CLI metadata as bytes,
 reads each assembly it references that sits in the install folder by the one full path
 built from the reference, and then reads the IL of the parser by reflection only, which
-runs no code. Everything it could not read is printed where it failed and again in its
-section 9. Lines of roamer-switches-result.
+runs no code, through `il-reader.ps1`. Everything it could not read is counted and printed
+in its section 9, lines 1477 to 1487, and where a section prints IL whole, at the place it
+failed as well. Lines of roamer-switches-result.
 
 **ROAMER.EXE HOLDS NO SWITCH TABLE. navisworks.gui.roamer.dll DOES, AND ITS PARSER
 MATCHES 39 SWITCHES.**
 
 1. Roamer.exe, 214,296 bytes, is a managed PE32+ AMD64 exe with an empty PE import table,
-   data directory 1 at rva 0, lines 63 to 69. None of its 759 strings is a switch or holds
-   one, lines 7 to 11. Counted exactly, case counting, it holds none of
-   ExecuteAddInPlugin, AddPluginAssembly, Embedding, regserver or OpenFile, lines 54 to
-   59, and the verdict, which counts the same way, reads False, line 60. Read case blind
-   it holds `RegServer` and `UnregServer`, lines 18, 39 and 40, which are the names of
-   two `CommandLineConfig` fields its `MainImpl` reads, lines 966 and 968, and not a
+   data directory 1 at rva 0, lines 64 to 70. None of its 759 strings is a switch or holds
+   one, lines 8 to 12. Counted exactly, case counting, it holds none of
+   ExecuteAddInPlugin, AddPluginAssembly, Embedding, regserver or OpenFile, lines 55 to
+   60, and the verdict, which counts the same way, reads False, line 61. Read case blind
+   it holds `RegServer` and `UnregServer`, lines 19, 40 and 41, which are the names of
+   two `CommandLineConfig` fields its `MainImpl` reads, lines 967 and 969, and not a
    literal the parser matches. It holds NoGui only inside two log lines,
-   `Program.Main - Before dispatch NoGui actions` and `After`, lines 47 and 48
-2. Its CLI metadata, read as bytes, references 16 assemblies, lines 75 to 91, and a
-   reflection only read of the same file lists the same 16, line 95. No reference failed
-   to load, line 96. `navisworks.gui.roamer.dll`, 648,984 bytes, is the only one holding
-   ExecuteAddInPlugin, NoGui, Embedding and regserver together, lines 102 and 115
-3. In that DLL the names are UTF-16 literals stored WITHOUT a hyphen or a slash, lines 292
-   to 301. The one string in it shaped like a switch, `-EsO`, line 123, is four bytes
+   `Program.Main - Before dispatch NoGui actions` and `After`, lines 48 and 49
+2. Its CLI metadata, read as bytes, references 16 assemblies, lines 76 to 92, and a
+   reflection only read of the same file lists the same 16, line 96. No reference failed
+   to load, line 97. `navisworks.gui.roamer.dll`, 648,984 bytes, is the only one holding
+   ExecuteAddInPlugin, NoGui, Embedding and regserver together, lines 103 and 116
+3. In that DLL the names are UTF-16 literals stored WITHOUT a hyphen or a slash, lines 293
+   to 302. The one string in it shaped like a switch, `-EsO`, line 124, is four bytes
    between binary data and no switch
 4. `CommandLineParser::ParseOption` matches 39 names after a literal, 37 through
-   `MatchOption` and 2 through `MatchShellOption`, line 409, the options at lines 410 to
-   448:
+   `MatchOption` and 2 through `MatchShellOption`, line 410, the options at lines 411 to
+   449:
 
    ```
    MatchOption       Embedding, Automation, regserver, Register, unregserver, Unregister,
@@ -4936,61 +4950,85 @@ MATCHES 39 SWITCHES.**
    ```
 
    The 37 are the names 5z-d read, in the same order. `p` and `pt` are new, and each adds
-   an OpenFile action and a Print action and sets ExitAfterActions, lines 410 and 411
-5. What counts as a switch, off the IL, lines 543 to 582. An argument is a switch when it
+   an OpenFile action and a Print action and sets ExitAfterActions, lines 411 and 412
+5. What counts as a switch, off the IL, lines 544 to 583. An argument is a switch when it
    starts with one hyphen or one slash and not two, `IsOption`. `MatchOption` compares
-   the option it holds with StringComparison 5, OrdinalIgnoreCase, lines 575 and 576, so
-   the match is case blind. `MatchShellOption` compares exactly, line 582. How the option
+   the option it holds with StringComparison 5, OrdinalIgnoreCase, lines 576 and 577, so
+   the match is case blind. `MatchShellOption` compares exactly, line 583. How the option
    it holds is cut from the argument is in `Parse`, which was not printed whole
 
-**-ExecuteAddInPlugin NEEDS NO -Embedding IN THE PARSER, AND THE IL HOLDS A PATH FROM IT
-TO THE PLUGIN ON AN ORDINARY START WITH THE WINDOW.** Read off the IL and NOT RUN:
+**-ExecuteAddInPlugin NEEDS NO -Embedding IN THE PARSER, AND THE IL READ HOLDS A PATH FROM
+IT, ON A START WITH THE WINDOW, AS FAR AS A MODULE LEVEL METHOD, s_std_dispatch, WHOSE IL
+WAS NOT READ. THAT STEP IS UNKNOWN, AND SO IS EVERYTHING AFTER
+ApplicationAutomation.ExecuteAddInPlugin.** Read off the IL and NOT RUN:
 
 ```
 parser      -ExecuteAddInPlugin takes one argument or more and adds
-            CommandLineAction("ExecuteAddInPlugin", args) to the action list          504 to 520
-            -Embedding and -Automation set COMAutomationStartup and GuiState 2          451 to 461
-            -NoGui sets GuiState 1                                                      462 to 468
-            GuiState values DEFAULT 0, NONE 1, HIDE 2, SHOW 3                           1050
-MainImpl    local 8 is GuiState equal to NONE                                           1201 to 1205
-            local 8 true: every action dispatched at once, and RunGui jumped over       1157 to 1186
-            local 8 false: the config and the actions handed to MainWindow, RunGui     1187 to 1191
-OnIdle      while MainWindow holds actions, CommandLineActionDispatcher.DispatchOneAction  1206 to 1220
-dispatcher  DispatchOneAction calls ApplicationImpl.DispatchAutomationAction            809
-Api.dll     DispatchAutomationAction looks the action's name up with LookupMethod,
-            a public static method of ApplicationAutomationImpl, BindingFlags 24        1323, 1453 to 1457
-            and answers "Unknown action" where there is none                            1339
-            ApplicationAutomationImpl.ExecuteAddInPlugin(String[] args) throws with
-            fewer than one argument, then calls
-            ApplicationAutomation.ExecuteAddInPlugin(first argument, the rest)          1433 to 1451
+            CommandLineAction("ExecuteAddInPlugin", args) to the action list          505 to 521
+            -Embedding and -Automation set COMAutomationStartup and GuiState 2          452 to 462
+            -NoGui sets GuiState 1                                                      463 to 469
+            GuiState values DEFAULT 0, NONE 1, HIDE 2, SHOW 3                           1051
+MainImpl    local 8 is GuiState equal to NONE                                           1202 to 1206
+            local 8 true: every action dispatched at once, and RunGui jumped over       1158 to 1187
+            local 8 false: the config and the actions handed to MainWindow, RunGui     1188 to 1192
+OnIdle      while MainWindow holds actions, CommandLineActionDispatcher.DispatchOneAction  1207 to 1221
+dispatcher  DispatchOneAction calls ApplicationImpl.DispatchAutomationAction            810
+Api.dll     DispatchAutomationAction looks the action's name up with LookupMethod, a
+            public static method of ApplicationAutomationImpl, BindingFlags 24, made
+            into a delegate                                                             1324, 1456 to 1460
+            and answers "Unknown action" where there is none                            1340
+            and otherwise hands the delegate, the result and the arguments to
+            s_std_dispatch, a module level method. ITS IL WAS NOT READ, so whether it
+            calls the delegate is UNKNOWN                                               1362, 1372
+            ApplicationAutomationImpl.ExecuteAddInPlugin(String[] args), the method
+            LookupMethod finds for that name, throws with fewer than one argument,
+            then calls ApplicationAutomation.ExecuteAddInPlugin(first argument, the
+            rest). THAT METHOD'S IL WAS NOT READ                                         1436 to 1454
 ```
 
-So `Roamer.exe -ExecuteAddInPlugin <plugin id>`, with no -Embedding and no -NoGui, is
-written to reach `ApplicationAutomation.ExecuteAddInPlugin` from the window's idle handler
-after the window starts. That is what the IL says the code is written to do, and it is the
-route 5z-d named for when the automation start fails. Whether a start does it is UNKNOWN.
+The probe prints a call as `null::` and a name where the method called has no declaring
+type, which is how reflection shows a method defined at module level, outside any type,
+lines 1405 and 1406. `s_std_dispatch` is one, and none of those methods' IL is read here.
+
+So, as far as the IL was read, `Roamer.exe -ExecuteAddInPlugin <plugin id>` on a command
+line with no other switch is written to hand the action from the window's idle handler to
+`s_std_dispatch`, with a delegate of `ApplicationAutomationImpl.ExecuteAddInPlugin`. The
+command line has to carry no other switch because the path turns on GuiState alone, and
+besides -NoGui, -Embedding and -Automation the options dump_options, nwd, nwc, bench,
+ShowGui, HideGui and Exit touch GuiState too, lines 426, 430 to 434 and 444. Whether
+`s_std_dispatch` calls the delegate, and whether a start does any of this, is UNKNOWN. It
+is the route 5z-d named for when the automation start fails.
 
 WHAT COULD NOT BE READ. In navisworks.gui.roamer.dll 32 of its 3,042 MemberRef rows did
-not resolve, each for lack of a generic context, and each token is listed, lines 740 and
-741. What they name is UNKNOWN, so a use of a followed member through one of them would
-be missed. The 12 members followed in section 6 are defined in that DLL, and its IL
-reaches all 12 through their own definition tokens, line 740. Roamer.exe's 235 rows all
-resolved, line 776. No type or method body failed to read, lines 775 and 788, no
-reference failed to load and no IL token failed to resolve over the run, lines 1474 to
-1476.
+not resolve, each for lack of a generic context, and each token is listed, lines 741 and
+742. What they name is UNKNOWN, so a use of a followed member through one of them would
+be missed. The 12 followed members, lines 728 to 740, are the tokens section 6 searches
+for, put on its list by construction, and the 12 at line 741 is the size of that list,
+which says nothing about use. The DLL's own IL uses 7 of them, lines 743 to 775:
+DispatchOneAction, ReportResult, AttachConsole, the action list and three config fields.
+Four more appear only in Roamer.exe, the CommandLineParser constructor, Configure,
+DispatchAllActions and ReportParseError, lines 778, 784, 786 and 788, and the
+dispatcher's own constructor is used in neither. Roamer.exe's 235 rows all resolved, line
+777. Section 9 counts what il-reader.ps1 kept, over every body it decoded in sections 5 to
+8 and every type and body section 6 read: 0 IL bodies that could not be read, 0 opcode
+bytes it did not know, 0 tokens that did not resolve, 0 types whose methods could not be
+listed, and 0 of the three other kinds, lines 1479 to 1487. No reference failed to load,
+line 1478.
 
 STILL UNKNOWN.
 
 - what any switch does on a start. Nothing ran Roamer.exe
-- whether `OnIdle` reaches its dispatch on an ordinary start, and when. Its instructions
-  before IL_0058 read other fields first, section 7 of the result from line 850, and were
-  not printed whole
+- what `s_std_dispatch` and `ApplicationAutomation.ExecuteAddInPlugin` do. Neither's IL
+  was read
+- whether `OnIdle` reaches its dispatch on a start, and when. Its instructions before
+  IL_0058 read other fields first, section 7 of the result from line 851, and were not
+  printed whole
 - whether a plugin started this way is found when it comes from the installed bundle,
   what form of plugin id it wants, and what its int return means
 - what a second Roamer started with this switch does while another Navisworks runs. No
   single instance logic was looked for
 - what the dispatcher's Status values mean, which decide when `OnIdle` calls
-  `ForceCleanExit`, line 1271. The enum was not printed
+  `ForceCleanExit`, line 1272. The enum was not printed
 - where -log, -dump, -options and -lang values go past `ApplicationConfig` and
   `InitialiseResourcesConfig`, section 7. Nothing further was read
 
@@ -5012,9 +5050,10 @@ rather than from this tool's XML through `clash_report_html_tabular.xsl`.
 `Autodesk.Navisworks.Automation.dll`. It lists every public type and member whose name
 holds report, html, tabular or export, case blind, every public COM type whose name holds
 Clash or starts InwOcl, and every string in each file holding tabular, .xsl, clash_report
-or reportformat, case blind. scan.md names no Clash Detective assembly beyond
-`Autodesk.Navisworks.Clash.dll`, so no other was read. No reference failed to load, line
-590. Lines of clash-report-api-result.
+or reportformat, case blind, each string with the words it holds and each word counted on
+its own. scan.md names no Clash Detective assembly beyond `Autodesk.Navisworks.Clash.dll`,
+so no other was read. No reference failed to load, line 590. Lines of
+clash-report-api-result.
 
 **NO PUBLIC TYPE OR MEMBER IN Autodesk.Navisworks.Api.Clash, THE NAMESPACE THE ADD-IN
 USES, AND NONE IN THE COM CLASH INTERFACES, HAS REPORT, HTML, TABULAR OR EXPORT IN ITS
@@ -5050,12 +5089,13 @@ class Autodesk.Navisworks.Api.Interop.LcClClashReport : NativeHandle            
   572, and public parameterless constructors on `LcClClashGUIProxy` and
   `LcClashReportResultSelector`, lines 575 and 579. Whether a call from outside Clash
   Detective's own window works is UNKNOWN
-- no string in any of the five files names tabular or an .xsl. The one string holding
-  clash_report, read case blind, is Api.dll's `ePLUGIN_CLASH_REPORT`, line 112, the name
-  of the value 6 of `LcOpPluginType`, line 88, so the plugin types include one named for a
-  clash report. Clash.dll's 16 hits are for reportformat, its formatter method names and
-  one parameter name, lines 205 to 220. Which plugin holds an HTML (Tabular) formatter, if
-  any does, and in which file, is UNKNOWN
+- no string in any of the five files holds tabular or .xsl, the per word counts at lines
+  113, 221, 243, 548 and 565. The one string holding clash_report, read case blind, is
+  Api.dll's `ePLUGIN_CLASH_REPORT`, line 112, the name of the value 6 of
+  `LcOpPluginType`, line 88, so the plugin types include one named for a clash report.
+  Clash.dll's 16 strings all hold reportformat and none holds another of the four words,
+  line 221: its formatter method names and one parameter name, lines 205 to 220. Which
+  plugin holds an HTML (Tabular) formatter, if any does, and in which file, is UNKNOWN
 - the thirteen COM clash types, lines 302 to 542, carry tests, results, pictures and
   viewpoints and no report member. `Autodesk.Navisworks.Automation.dll` holds nothing
   matching, lines 556 and 559, and `Autodesk.Navisworks.ComApi.dll` one native nested

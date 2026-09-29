@@ -15,16 +15,19 @@ $ErrorActionPreference = "Stop"
 #
 #   A. A LIST TYPED BY HAND from reading SavedViewpoints.cs, one line each, with three
 #      outcomes. FOUND means a member of that name AND that shape: the parameter types, the
-#      return or property type and the accessors the file uses. DIFFERENT SHAPE means the
-#      name is there and the shape is not. NO MATCH means nothing of that name. The list
-#      checks only what is on it, and a member a reading missed is not on it
+#      return or property type and the accessors the file uses, for every method on the
+#      list, the two COM ones included. DIFFERENT SHAPE means the name is there and the
+#      shape is not. NO MATCH means nothing of that name. The list checks only what is on
+#      it, and a member a reading missed is not on it
 #   B. 5d's and 5c's generic members with their type arguments, which probe-viewpoints.ps1
 #      and probe-model-remove.ps1 print by their bare names, Collection`1
 #   C. THE IL. Given the add-in built from this repo, every Navisworks member and type the
 #      compiled classes of SavedViewpoints.cs reference, read off their IL, their locals
 #      and their signatures, and resolved against the install. A reference resolves only
 #      where the install holds a member of that exact name and signature, which is the
-#      check the runtime makes when it binds the call. This list is not typed by hand
+#      check the runtime makes when it binds the call. This list is not typed by hand. The
+#      IL is decoded by il-reader.ps1, dot-sourced, and everything it could not read is
+#      counted and printed at the end of the section
 #
 # Each DLL is tested by its one full path. The install folder is never searched. A
 # reference to an Autodesk.Navisworks assembly is only ever resolved from the install folder.
@@ -39,6 +42,12 @@ $paths = [ordered]@{
 foreach ($k in $paths.Keys) {
   if (-not (Test-Path -LiteralPath $paths[$k])) { Write-Output ("UNKNOWN: no file at " + $paths[$k]); exit 1 }
 }
+
+# The IL reader, TypeName and the list of everything the reader could not read come from
+# il-reader.ps1 beside this probe, the one copy probe-roamer-switches.ps1 uses as well.
+$reader = Join-Path $PSScriptRoot "il-reader.ps1"
+if (-not (Test-Path -LiteralPath $reader)) { Write-Output ("UNKNOWN: no IL reader at " + $reader); exit 1 }
+. $reader
 
 $resolveFailures = New-Object System.Collections.Generic.List[string]
 $addinDir = ""
@@ -63,20 +72,8 @@ foreach ($k in $paths.Keys) {
   Write-Output ("ASSEMBLY  " + $asm[$k].GetName().Name + " " + $asm[$k].GetName().Version + "   file " + $fi.VersionInfo.FileVersion + ", " + $fi.Length + " bytes, loaded reflection only: " + $asm[$k].ReflectionOnly)
 }
 Write-Output ("MACHINE   " + $env:COMPUTERNAME + "   " + (Get-Date -Format "yyyy-MM-dd HH:mm"))
+Write-Output ("READER    il-reader.ps1, dot-sourced, sha256 " + (Get-FileHash -LiteralPath $reader -Algorithm SHA256).Hash)
 Write-Output ""
-
-function TypeName($t) {
-  if ($null -eq $t) { return "null" }
-  if ($t.IsByRef) { return (TypeName $t.GetElementType()) + "&" }
-  if ($t.IsArray) { return (TypeName $t.GetElementType()) + "[]" }
-  if ($t.IsGenericType) {
-    $ga = @(); foreach ($g in $t.GetGenericArguments()) { $ga += (TypeName $g) }
-    $tn = $t.Name; $tick = $tn.IndexOf('`'); if ($tick -ge 0) { $tn = $tn.Substring(0, $tick) }
-    return $t.Namespace + "." + $tn + "<" + ($ga -join ", ") + ">"
-  }
-  if ($t.IsGenericParameter) { return $t.Name }
-  return $t.FullName
-}
 function ParamText($m) {
   $ps = @(); foreach ($q in $m.GetParameters()) { $o = ""; if ($q.IsOptional) { $o = "optional " }; $ps += ($o + (TypeName $q.ParameterType) + " " + $q.Name) }
   return ($ps -join ", ")
@@ -131,13 +128,11 @@ function Check($e) {
     }
     "method" {
       $named = @(); foreach ($s in (Surface $t)) { $named += @($s.GetMethods($flags) | Where-Object { $_.Name -eq $e.Name }) }
-      $want = ""; if ($null -ne $e.Params) { $want = "(" + ($e.Params -join ", ") + ")" } else { $want = "(" + $e.Arity + " arguments)" }
+      $want = "(" + ($e.Params -join ", ") + ")"
       $hit = $null
       foreach ($m in $named) {
         $pn = @($m.GetParameters() | ForEach-Object { TypeName $_.ParameterType })
-        $shape = $false
-        if ($null -ne $e.Params) { $shape = (($pn -join ",") -eq ($e.Params -join ",")) }
-        else { $shape = ($pn.Count -ge $e.Arity -and (@($m.GetParameters() | Where-Object { -not $_.IsOptional }).Count -le $e.Arity)) }
+        $shape = (($pn -join ",") -eq ($e.Params -join ","))
         if ($shape -and $e.Returns -and (TypeName $m.ReturnType) -ne $e.Returns) { $shape = $false }
         if ($shape -and $null -eq $hit) { $hit = $m }
       }
@@ -257,8 +252,9 @@ $calls = @(
   @{ Asm="Api"; Where="ShowOnlyModels, SetHidden(hide, true)"; Type=($A+"ModelItemCollection"); Kind="assignable"; Name="interface"; To=$items },
   @{ Asm="Api"; Where="Exists, EnsureFolders, Record, ReadBack, the null checks"; Type=($A+"NativeHandle"); Kind="method"; Name="op_Equality"; Params=@(($A+"NativeHandle"), ($A+"NativeHandle")); Returns="System.Boolean" },
   @{ Asm="Api"; Where="Exists, the null checks"; Type=($A+"NativeHandle"); Kind="method"; Name="op_Inequality"; Params=@(($A+"NativeHandle"), ($A+"NativeHandle")); Returns="System.Boolean" },
-  @{ Asm="ComApi"; Where="Record"; Type="Autodesk.Navisworks.Api.ComApi.ComApiBridge"; Kind="property"; Name="State"; Need="get"; Returns=($I+"InwOpState10") },  @{ Asm="ComApi"; Where="Record"; Type="Autodesk.Navisworks.Api.ComApi.ComApiBridge"; Kind="method"; Name="ToInwOpAnonView"; Params=@(($A+"Viewpoint")); Returns=($I+"InwOpAnonView") },
-  @{ Asm="Interop"; Where="Record"; Type=($I+"InwOpState10"); Kind="method"; Name="ObjectFactory"; Params=$null; Arity=3; Returns="System.Object" },
+  @{ Asm="ComApi"; Where="Record"; Type="Autodesk.Navisworks.Api.ComApi.ComApiBridge"; Kind="property"; Name="State"; Need="get"; Returns=($I+"InwOpState10") },
+  @{ Asm="ComApi"; Where="Record"; Type="Autodesk.Navisworks.Api.ComApi.ComApiBridge"; Kind="method"; Name="ToInwOpAnonView"; Params=@(($A+"Viewpoint")); Returns=($I+"InwOpAnonView") },
+  @{ Asm="Interop"; Where="Record"; Type=($I+"InwOpState10"); Kind="method"; Name="ObjectFactory"; Params=@(($I+"nwEObjectType"), "System.Object", "System.Object"); Returns="System.Object" },
   @{ Asm="Interop"; Where="Record, FindComFolder"; Type=($I+"InwOpState10"); Kind="method"; Name="SavedViews"; Params=@(); Returns=($I+"InwSavedViewsColl") },
   @{ Asm="Interop"; Where="Record"; Type=($I+"nwEObjectType"); Kind="field"; Name="eObjectType_nwOpView" },
   @{ Asm="Interop"; Where="Record"; Type=($I+"InwOpView"); Kind="property"; Name="name"; Need="set"; Returns="System.String" },
@@ -267,7 +263,7 @@ $calls = @(
   @{ Asm="Interop"; Where="Record"; Type=($I+"InwOpView"); Kind="property"; Name="anonview"; Need="set"; Returns=($I+"InwOpAnonView") },
   @{ Asm="Interop"; Where="Record, FindComFolder"; Type=($I+"InwOpFolderView"); Kind="method"; Name="SavedViews"; Params=@(); Returns=($I+"InwSavedViewsColl") },
   @{ Asm="Interop"; Where="FolderNamed"; Type=($I+"InwOpFolderView"); Kind="property"; Name="name"; Need="get"; Returns="System.String" },
-  @{ Asm="Interop"; Where="Record"; Type=($I+"InwSavedViewsColl"); Kind="method"; Name="Add"; Params=$null; Arity=1; Returns="System.Void" },
+  @{ Asm="Interop"; Where="Record"; Type=($I+"InwSavedViewsColl"); Kind="method"; Name="Add"; Params=@("System.Object"); Returns="System.Void" },
   @{ Asm="Interop"; Where="FolderNamed"; Type=($I+"InwSavedViewsColl"); Kind="property"; Name="Count"; Need="get"; Returns="System.Int32" },
   @{ Asm="Interop"; Where="FolderNamed"; Type=($I+"InwSavedViewsColl"); Kind="indexer"; Name="this[]"; Params=@("System.Object"); Returns="System.Object" }
 )
@@ -302,11 +298,6 @@ Write-Output ""
 
 # ============================================================================== C
 Write-Output "---- C. THE IL: every Navisworks reference the compiled classes of SavedViewpoints.cs make ----"
-$script:op1 = @{}; $script:op2 = @{}
-foreach ($f in [System.Reflection.Emit.OpCodes].GetFields("Public,Static")) {
-  $oc = $f.GetValue($null); $v = [int]$oc.Value
-  if ($oc.Size -eq 1) { $script:op1[$v -band 0xFF] = $oc } else { $script:op2[$v -band 0xFF] = $oc }
-}
 function IsNw($t) {
   if ($null -eq $t) { return $false }
   if ($t.IsByRef -or $t.IsArray -or $t.IsPointer) { return (IsNw $t.GetElementType()) }
@@ -347,8 +338,8 @@ if (-not (Test-Path -LiteralPath $AddinPath)) {
   Write-Output ("  classes read: " + (($types | ForEach-Object { $_.FullName }) -join ", "))
   $flagsAll = [System.Reflection.BindingFlags]"Public,NonPublic,Instance,Static,DeclaredOnly"
   $refs = [ordered]@{}
-  $fails = New-Object System.Collections.Generic.List[string]
   $methodsRead = 0; $tokensRead = 0
+  $tokenKinds = @("InlineMethod", "InlineField", "InlineType", "InlineTok")
   function AddRef($x, $place) {
     $k = RefText $x
     if (-not $refs.Contains($k)) { $refs[$k] = [pscustomobject]@{ Member = $x; Places = New-Object System.Collections.Generic.List[string] } }
@@ -356,7 +347,7 @@ if (-not (Test-Path -LiteralPath $AddinPath)) {
   }
   foreach ($t in $types) {
     foreach ($f in $t.GetFields($flagsAll)) {
-      try { if (IsNw $f.FieldType) { AddRef $f.FieldType ($t.Name + "." + $f.Name + " field") } } catch { $fails.Add($t.Name + "." + $f.Name + " field type: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message) }
+      try { if (IsNw $f.FieldType) { AddRef $f.FieldType ($t.Name + "." + $f.Name + " field") } } catch { $null = IlFail "field" $t -1 ($f.Name + ", " + (IlReason $_.Exception)) }
     }
     $members = @($t.GetConstructors($flagsAll)) + @($t.GetMethods($flagsAll))
     foreach ($m in $members) {
@@ -364,39 +355,22 @@ if (-not (Test-Path -LiteralPath $AddinPath)) {
       try {
         if ($m -is [System.Reflection.MethodInfo] -and (IsNw $m.ReturnType)) { AddRef $m.ReturnType ($place + " return") }
         foreach ($q in $m.GetParameters()) { if (IsNw $q.ParameterType) { AddRef $q.ParameterType ($place + " parameter") } }
-      } catch { $fails.Add($place + " signature: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message) }
-      $body = $null
-      try { $body = $m.GetMethodBody() } catch { $fails.Add($place + " body: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); continue }
-      if ($null -eq $body) { continue }
+      } catch { $null = IlFail "signature" $m -1 (IlReason $_.Exception) }
+      # The body through il-reader.ps1. A body it cannot read, an opcode it does not know
+      # and a token that does not resolve are entries with Failed set, and each is kept in
+      # its list, which the end of this section prints.
+      $ins = IlRead $m
+      if ($ins.Count -gt 0 -and $ins[0].Offset -lt 0) { continue }
       $methodsRead++
-      try { foreach ($lv in $body.LocalVariables) { if (IsNw $lv.LocalType) { AddRef $lv.LocalType ($place + " local") } } } catch { $fails.Add($place + " locals: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message) }
-      $il = $body.GetILAsByteArray(); $mod = $m.Module; $pos = 0
-      while ($pos -lt $il.Length) {
-        $at = $pos; $b0 = $il[$pos]
-        if ($b0 -eq 0xFE) { $oc = $script:op2[[int]$il[$pos + 1]]; $pos += 2 } else { $oc = $script:op1[[int]$b0]; $pos += 1 }
-        if ($null -eq $oc) { $fails.Add($place + " IL_" + $at.ToString("X4") + ": unknown opcode byte " + $b0 + ", the rest of this body was not read"); break }
-        $ot = $oc.OperandType.ToString()
-        if ($ot -eq "InlineNone") { continue }
-        if ($ot -eq "ShortInlineBrTarget" -or $ot -eq "ShortInlineI" -or $ot -eq "ShortInlineVar") { $pos += 1; continue }
-        if ($ot -eq "InlineVar") { $pos += 2; continue }
-        if ($ot -eq "InlineI8" -or $ot -eq "InlineR") { $pos += 8; continue }
-        if ($ot -eq "InlineSwitch") { $sn = [BitConverter]::ToInt32($il, $pos); $pos += 4 + 4 * $sn; continue }
-        $tok = [BitConverter]::ToInt32($il, $pos); $pos += 4
-        if (-not ($ot -eq "InlineMethod" -or $ot -eq "InlineField" -or $ot -eq "InlineType" -or $ot -eq "InlineTok")) { continue }
+      try { foreach ($lv in $m.GetMethodBody().LocalVariables) { if (IsNw $lv.LocalType) { AddRef $lv.LocalType ($place + " local") } } } catch { $null = IlFail "locals" $m -1 (IlReason $_.Exception) }
+      foreach ($x in $ins) {
+        if ($tokenKinds -notcontains $x.OperandType) { continue }
         $tokensRead++
-        $x = $null
-        try {
-          if ($ot -eq "InlineMethod") { $x = $mod.ResolveMethod($tok) }
-          elseif ($ot -eq "InlineField") { $x = $mod.ResolveField($tok) }
-          elseif ($ot -eq "InlineType") { $x = $mod.ResolveType($tok) }
-          else { $x = $mod.ResolveMember($tok) }
-        } catch {
-          $fails.Add($place + " IL_" + $at.ToString("X4") + " " + $oc.Name + " token 0x" + $tok.ToString("X8") + ": " + $_.Exception.GetType().Name + ": " + $_.Exception.Message)
-          continue
-        }
+        if ($x.Failed) { continue }
+        $y = $x.Member
         $nwRef = $false
-        if ($x -is [System.Type]) { $nwRef = (IsNw $x) } else { $nwRef = (IsNw $x.DeclaringType) }
-        if ($nwRef) { AddRef $x ($place + " IL_" + $at.ToString("X4")) }
+        if ($y -is [System.Type]) { $nwRef = (IsNw $y) } else { $nwRef = (IsNw $y.DeclaringType) }
+        if ($nwRef) { AddRef $y ($place + " IL_" + $x.Offset.ToString("X4")) }
       }
     }
   }
@@ -419,12 +393,12 @@ if (-not (Test-Path -LiteralPath $AddinPath)) {
   Write-Output "  Every Navisworks TYPE referenced, in an instruction, a local, a field or a signature:"
   foreach ($k in $typeRefs) { Write-Output ("  RESOLVED  " + $k + "   at " + ($refs[$k].Places -join ", ")) }
   Write-Output ""
-  Write-Output "  Every reference that did NOT resolve, with what the runtime said:"
-  foreach ($x in $fails) { Write-Output ("  DID NOT RESOLVE  " + $x) }
-  Write-Output ("  count " + $fails.Count)
+  Write-Output "  Everything section C could not read, kept by il-reader.ps1, each once, with what the runtime said:"
+  IlFailureLines "    "
+  Write-Output ("  count " + $IlFailures.Count)
   Write-Output ""
   Write-Output ("  Navisworks members referenced " + $memberRefs.Count + ", declared in an install assembly " + ($memberRefs.Count - $nFw) + ", of those on list A " + $nOn + " and NOT on list A " + $nOff + ", declared on a framework generic " + $nFw)
-  Write-Output ("  Navisworks types referenced " + $typeRefs.Count + ", references that did not resolve " + $fails.Count)
+  Write-Output ("  Navisworks types referenced " + $typeRefs.Count + ", reads that failed " + $IlFailures.Count)
   Write-Output "  Where each assembly the check touched was loaded from, reflection only:"
   foreach ($x in ([AppDomain]::CurrentDomain.ReflectionOnlyGetAssemblies() | Sort-Object FullName)) {
     $where = "elsewhere"

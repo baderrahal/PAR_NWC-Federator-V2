@@ -1,8 +1,10 @@
 # Probes
 
-Fifteen PowerShell scripts that read facts off the machine they run on: the installed
-Navisworks DLLs, and the real window once the add-in is built and installed. They were
-how docs/history/scan.md was measured. Nothing here is part of the build or the install.
+Sixteen PowerShell files. Fifteen are scripts that read facts off the machine they run on:
+the installed Navisworks DLLs, and the real window once the add-in is built and installed.
+They were how docs/history/scan.md was measured. The sixteenth, `il-reader.ps1`, is the IL
+reader two of them dot-source, and reads nothing by itself. Nothing here is part of the
+build or the install.
 
 Every probe takes the Navisworks install folder as a parameter, defaulting to the same
 folder the add-in project defaults to:
@@ -78,11 +80,17 @@ needs, so their reads are not reflection only:
   matches and what the IL does with ExecuteAddInPlugin
 - `probe-clash-report-api.ps1` lists every public type and member of the five Navisworks
   assemblies the tool can reach whose name holds Report, Html, Tabular or Export, every
-  clash type of the COM interop, and every string in each file naming a stylesheet or a
-  tabular report. It found no such member in Autodesk.Navisworks.Api.Clash, the namespace
-  the add-in uses, and none in the COM clash interfaces. It found one public static
-  LcClClashReport.WriteReport in the Interop namespace of Autodesk.Navisworks.Clash.dll,
-  which the add-in references, whose report formats are named only at run time
+  clash type of the COM interop, and every string in each file holding tabular, .xsl,
+  clash_report or reportformat, each word counted on its own. It found no such member in
+  Autodesk.Navisworks.Api.Clash, the namespace the add-in uses, and none in the COM clash
+  interfaces. It found one public static LcClClashReport.WriteReport in the Interop
+  namespace of Autodesk.Navisworks.Clash.dll, which the add-in references, whose report
+  formats are named only at run time
+- `il-reader.ps1` is not a probe. It is the one IL reader probe-roamer-switches.ps1 and
+  probe-viewpoint-calls.ps1 dot-source, and it follows the approach of
+  probe-automation-start.ps1, the start probe F100 merged, which keeps its own copy because
+  that copy is the measurement F100 merged. Every read it cannot make, a body, an opcode
+  or a token, is kept and counted, and the probe that dot-sourced it prints them
 
 A probe that cannot find what it needs says UNKNOWN and the path it looked at, and
 stops. Never search the install folder for a DLL, the path is built and tested directly,

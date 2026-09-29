@@ -29,8 +29,10 @@ $ErrorActionPreference = "Stop"
 #   8. the branches around the two places actions are dispatched, and the API methods an
 #      action reaches, whole IL
 #   9. everything that could not be read over the run: references that would not load,
-#      rows and tokens that would not resolve, types and bodies that could not be listed.
-#      Nothing that fails is dropped without a line saying what failed
+#      and what il-reader.ps1 kept, each IL body that could not be read, each opcode byte
+#      it did not know, each token that did not resolve and each type whose methods could
+#      not be listed. A section that skips a failed read still has it counted here. The
+#      MemberRef rows that did not resolve are counted in section 6, where they are read
 #
 # Nothing here starts a process. Reflection only loads run no code in the assemblies.
 # Each file is tested by its one full path. The install folder is never searched.
@@ -38,6 +40,12 @@ $ErrorActionPreference = "Stop"
 $nw = $NavisworksPath
 $roamer = Join-Path $nw "Roamer.exe"
 if (-not (Test-Path -LiteralPath $roamer)) { Write-Output ("UNKNOWN: no Roamer.exe at " + $roamer); exit 1 }
+
+# The IL reader, TypeName and the list of everything the reader could not read come from
+# il-reader.ps1 beside this probe, the one copy probe-viewpoint-calls.ps1 uses as well.
+$reader = Join-Path $PSScriptRoot "il-reader.ps1"
+if (-not (Test-Path -LiteralPath $reader)) { Write-Output ("UNKNOWN: no IL reader at " + $reader); exit 1 }
+. $reader
 
 $latin1 = [System.Text.Encoding]::GetEncoding(28591)
 $keyWords = @("ExecuteAddInPlugin", "AddIn", "NoGui", "Embedding", "regserver", "OpenFile", "log", "lang", "options", "dump", "memory")
@@ -50,6 +58,7 @@ function FileLine($p) {
 }
 Write-Output (FileLine $roamer)
 Write-Output ("MACHINE   " + $env:COMPUTERNAME + "   " + (Get-Date -Format "yyyy-MM-dd HH:mm"))
+Write-Output ("READER    il-reader.ps1, dot-sourced, sha256 " + (Get-FileHash -LiteralPath $reader -Algorithm SHA256).Hash)
 Write-Output ""
 
 # Every run of printable characters, ASCII one byte each or UTF-16 LE two bytes each. The
@@ -116,7 +125,9 @@ Write-Output ("  Roamer.exe holds the switch table, ExecuteAddInPlugin, NoGui, E
 Write-Output ""
 
 # ---------------------------------------------------------------------------------------
-# The PE reader of probe-automation-start.ps1, the same functions.
+# The PE reader. It follows the approach of probe-automation-start.ps1, the start probe F100
+# merged, which keeps its own copy because that copy is the measurement F100 merged. Only
+# this probe reads PE headers, so it lives here and not in il-reader.ps1.
 function PeRead($file) {
   $b = [System.IO.File]::ReadAllBytes($file)
   $pe = [BitConverter]::ToInt32($b, 0x3C)
@@ -375,71 +386,7 @@ if ($holders.Count -eq 0) { Write-Output "  UNKNOWN: neither Roamer.exe nor any 
 Write-Output ""
 
 # ---------------------------------------------------------------------------------------
-# The IL reader of probe-automation-start.ps1, the same function, opcode by opcode.
-$script:op1 = @{}; $script:op2 = @{}
-foreach ($f in [System.Reflection.Emit.OpCodes].GetFields("Public,Static")) {
-  $oc = $f.GetValue($null); $v = [int]$oc.Value
-  if ($oc.Size -eq 1) { $script:op1[$v -band 0xFF] = $oc } else { $script:op2[$v -band 0xFF] = $oc }
-}
-function TypeName($t) {
-  if ($null -eq $t) { return "null" }
-  if ($t.IsByRef) { return (TypeName $t.GetElementType()) + "&" }
-  if ($t.IsArray) { return (TypeName $t.GetElementType()) + "[]" }
-  if ($t.IsGenericType) { $a = @(); foreach ($g in $t.GetGenericArguments()) { $a += (TypeName $g) }; $n = $t.Name; $k = $n.IndexOf('`'); if ($k -ge 0) { $n = $n.Substring(0, $k) }; return $t.Namespace + "." + $n + "<" + ($a -join ", ") + ">" }
-  if ($t.IsGenericParameter) { return $t.Name }
-  return $t.FullName
-}
-# Every token the IL reader could not resolve is kept here, each once, with the method, the
-# offset and what the runtime said, and printed at the end, so an option or a reader missed
-# because a token did not resolve shows up as a line and not as a shorter list.
-$script:ilUnresolved = New-Object System.Collections.Generic.List[string]
-function Unresolved($method, $at, $kind, $tok, $ex) {
-  if ($ex -is [System.Management.Automation.MethodInvocationException] -and $null -ne $ex.InnerException) { $ex = $ex.InnerException }
-  $line = (TypeName $method.DeclaringType) + "::" + $method.Name + " IL_" + $at.ToString("X4") + " " + $kind + " token 0x" + $tok.ToString("X8") + ": " + $ex.GetType().Name + ": " + $ex.Message
-  if (-not $script:ilUnresolved.Contains($line)) { $script:ilUnresolved.Add($line) }
-  return ($kind + " token 0x" + $tok.ToString("X8") + " unresolved, " + $ex.GetType().Name + ": " + $ex.Message)
-}
-function IlRead($method) {
-  $list = New-Object System.Collections.Generic.List[object]
-  $body = $null
-  try { $body = $method.GetMethodBody() } catch { $list.Add([pscustomobject]@{ Offset = -1; Name = "error"; Text = ("GetMethodBody threw, " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); Member = $null }); return ,$list }
-  if ($null -eq $body) { $list.Add([pscustomobject]@{ Offset = -1; Name = "nobody"; Text = "no IL body"; Member = $null }); return ,$list }
-  $il = $body.GetILAsByteArray(); $mod = $method.Module; $i = 0
-  while ($i -lt $il.Length) {
-    $at = $i; $b = $il[$i]
-    if ($b -eq 0xFE) { $oc = $script:op2[[int]$il[$i + 1]]; $i += 2 } else { $oc = $script:op1[[int]$b]; $i += 1 }
-    if ($null -eq $oc) { $list.Add([pscustomobject]@{ Offset = $at; Name = "error"; Text = ("unknown opcode byte " + $b); Member = $null }); break }
-    $text = ""; $member = $null
-    switch ($oc.OperandType.ToString()) {
-      "InlineNone" { }
-      "ShortInlineBrTarget" { $d = [int]$il[$i]; if ($d -gt 127) { $d -= 256 }; $i += 1; $text = "IL_" + ($i + $d).ToString("X4"); $member = ($i + $d) }
-      "InlineBrTarget" { $d = [BitConverter]::ToInt32($il, $i); $i += 4; $text = "IL_" + ($i + $d).ToString("X4"); $member = ($i + $d) }
-      "ShortInlineI" { $d = [int]$il[$i]; if ($d -gt 127) { $d -= 256 }; $text = [string]$d; $i += 1 }
-      "ShortInlineVar" { $text = [string]$il[$i]; $i += 1 }
-      "InlineVar" { $i += 2 }
-      "InlineI" { $text = [string][BitConverter]::ToInt32($il, $i); $i += 4 }
-      "InlineI8" { $i += 8 }
-      "InlineR" { $i += 8 }
-      "ShortInlineR" { $i += 4 }
-      "InlineSwitch" { $n = [BitConverter]::ToInt32($il, $i); $i += 4 + 4 * $n; $text = "switch of " + $n }
-      "InlineString" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveString($tok); $text = "`"" + $member + "`"" } catch { $text = Unresolved $method $at "string" $tok $_.Exception } }
-      "InlineMethod" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveMethod($tok); $text = (TypeName $member.DeclaringType) + "::" + $member.Name } catch { $text = Unresolved $method $at "method" $tok $_.Exception } }
-      "InlineField" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveField($tok); $text = (TypeName $member.DeclaringType) + "::" + $member.Name } catch { $text = Unresolved $method $at "field" $tok $_.Exception } }
-      "InlineType" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveType($tok); $text = TypeName $member } catch { $text = Unresolved $method $at "type" $tok $_.Exception } }
-      "InlineTok" {
-        $tok = [BitConverter]::ToInt32($il, $i); $i += 4
-        # A ldtoken names a type, a field or a method. The type is tried first, and only
-        # when both reads fail is it a failure, with the second one's reason.
-        try { $member = $mod.ResolveType($tok); $text = "type " + (TypeName $member) } catch {
-          try { $member = $mod.ResolveMember($tok); $text = [string]$member } catch { $text = Unresolved $method $at "member" $tok $_.Exception }
-        }
-      }
-      default { $i += 4; $text = "operand not decoded" }
-    }
-    $list.Add([pscustomobject]@{ Offset = $at; Name = $oc.Name; Text = $text; Member = $member })
-  }
-  return ,$list
-}
+# IlRead, TypeName, IlFail and IlFailureLines come from il-reader.ps1, dot-sourced at the top.
 
 function MemberKey($x) {
   if ($x -is [System.Reflection.FieldInfo]) { return ("field " + (TypeName $x.DeclaringType) + "::" + $x.Name) }
@@ -607,9 +554,9 @@ function Readers($asmObj, $label) {
   $n = 0; $hits = 0
   $skipped = New-Object System.Collections.Generic.List[string]
   foreach ($t in $types) {
-    $ms = @(); try { $ms = @($t.GetMethods($flagsAll)) + @($t.GetConstructors($flagsAll)) } catch { $skipped.Add((TypeName $t) + ", its methods could not be listed: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); continue }
+    $ms = @(); try { $ms = @($t.GetMethods($flagsAll)) + @($t.GetConstructors($flagsAll)) } catch { $why2 = IlReason $_.Exception; $skipped.Add((TypeName $t) + ", its methods could not be listed: " + $why2); $null = IlFail "methods" $t -1 $why2; continue }
     foreach ($m in $ms) {
-      $body = $null; try { $body = $m.GetMethodBody() } catch { $skipped.Add((TypeName $t) + "::" + $m.Name + ", its body could not be read: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); continue }
+      $body = $null; try { $body = $m.GetMethodBody() } catch { $why2 = IlReason $_.Exception; $skipped.Add((TypeName $t) + "::" + $m.Name + ", its body could not be read: " + $why2); $null = IlFail "body" $m -1 $why2; continue }
       if ($null -eq $body) { continue }
       $n++
       $s = $latin1.GetString($body.GetILAsByteArray())
@@ -678,7 +625,7 @@ $prog = $ra.GetType("NetRoamer.Program")
 if ($null -eq $prog) { Write-Output "  UNKNOWN: no NetRoamer.Program in Roamer.exe" } else {
   $mi = $prog.GetMethod("MainImpl", $flagsAll)
   if ($null -eq $mi) { Write-Output "  UNKNOWN: no NetRoamer.Program::MainImpl" } else {
-    IlAround $mi "Roamer.exe NetRoamer.Program::MainImpl, from the parse to where the parsed GuiState is first read" "*CommandLineParser::Parse*" "*InitialiseResourcesConfig::HiddenGui*"
+    IlAround $mi "Roamer.exe NetRoamer.Program::MainImpl, from the parse to the store into InitialiseResourcesConfig.HiddenGui, which comes after the first read of the parsed GuiState" "*CommandLineParser::Parse*" "*InitialiseResourcesConfig::HiddenGui*"
     IlAround $mi "Roamer.exe NetRoamer.Program::MainImpl, from LoadPlugins to RunGui" "*ApplicationImpl::LoadPlugins*" "*NetRoamer.Program::RunGui*"
     # Local 8 picks between dispatching every action now and handing them to the window.
     # Every store into it, with the instructions that compute what is stored.
@@ -714,6 +661,8 @@ if (-not (Test-Path -LiteralPath $apiPath)) { Write-Output ("  UNKNOWN: no Autod
       Write-Output ("  Autodesk.Navisworks.Api.dll ApplicationImpl::" + (Sig $m) + ", " + $ins.Count + " instructions, whole:")
       IlLines $ins 0 ([int]::MaxValue) "      "
     }
+    Write-Output "  A call printed as null::name is to a method with no declaring type, one defined at module"
+    Write-Output "  level outside any type. None of those methods' IL is read here, so what each does is UNKNOWN."
   }
   # DispatchAutomationAction finds what to run with ApplicationAutomationImpl.LookupMethod.
   # Every member of that type, and the whole IL of LookupMethod and of any method named for
@@ -733,7 +682,8 @@ if (-not (Test-Path -LiteralPath $apiPath)) { Write-Output ("  UNKNOWN: no Autod
 Write-Output ""
 Write-Output "==== 9. What could not be read, over the whole run ===="
 ResolveFailureLines "over the whole run"
-Write-Output ("  tokens the IL reader could not resolve, each once: " + $script:ilUnresolved.Count)
-foreach ($x in $script:ilUnresolved) { Write-Output ("    " + $x) }
+Write-Output "  what il-reader.ps1 kept, each once, over every body IlRead decoded in sections 5 to 8, and"
+Write-Output "  every type section 6 listed the methods of and every body it read for bytes:"
+IlFailureLines "    "
 Write-Output ""
 Write-Output "WHAT EACH SWITCH DOES ON A START IS UNKNOWN. Nothing here ran Roamer.exe. The lists above say what the files carry, what the parser stores and what the IL of the readers touches, in the order it is written, which is not the order a start runs it."
