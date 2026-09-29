@@ -1,4 +1,4 @@
-MACHINE   91JCZB4   2026-09-28 14:36:22
+MACHINE   [machine]   2026-09-28 14:36:22
 HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 4832
 SCRIPT    C:\Users\p003653k\OneDrive - Parsons Corp\Documents\GitHub\PAR_NWC-Federator\tools\probes\probe-automation-start.ps1, 117717 bytes, sha256 B122822429D8F97D60DD2BF9E8D152905AAE5FA2ECEEAFCFD63E41BA974573D8
 PROCESS   powershell.exe pid 4832, started to run -File C:\Users\p003653k\OneDrive - Parsons Corp\Documents\GitHub\PAR_NWC-Federator\tools\probes\probe-automation-start.ps1, which is this script: True

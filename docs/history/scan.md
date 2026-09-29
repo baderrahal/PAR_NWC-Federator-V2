@@ -4647,9 +4647,9 @@ rather than re-argued later.
 
 ## 5z-d. CAN A SCRIPT START NAVISWORKS WITH NO CLICK AND CLOSE ONLY WHAT IT STARTED, MEASURED 2026-09-28
 
-F100, Phase 1 item 1 of the loop, on 91JCZB4. The first measurement of the automation API
-on this machine. 5j used the same API on DESKTOP-5VL7LTJ on 2026-09-19, and how it was
-started there was never recorded.
+F100, Phase 1 item 1 of the loop, on Bader's Parsons machine. The first measurement of the
+automation API on this machine. 5j used the same API on the machine of 2026-09-19, and how
+it was started there was never recorded.
 
 THE QUESTION. Can a PowerShell script start Navisworks Manage 2025 with no click through
 `Autodesk.Navisworks.Api.Automation`, know the process id of the Navisworks it started,
@@ -4682,9 +4682,11 @@ THREE RUNS, ONE KEPT.
   that. A Roamer would be recorded again once its start time read, because its key held
   the start time. So up to two processes went unrecorded, and which is UNKNOWN. Both
   faults were fixed
-- RUN 3 at 13:17 is `tools\probes\automation-start-result-20260928.txt`, the untouched
-  output of one run of the probe as it was then. Its line 3 carries the sha256 of that
-  probe, 38C28E1C3C2756252523E4745FC5C79285E53CEBD6452AB85090117A4EC66EA5
+- RUN 3 at 13:17 is `tools\probes\automation-start-result-20260928.txt`, the output of one
+  run of the probe as it was then, untouched but for three lines masked on 2026-09-29 by
+  tools\loop\mask-evidence.ps1: the machine name on line 1 and the licensing agent's ids on
+  lines 446 and 447. Its line 3 carries the sha256 of that probe,
+  38C28E1C3C2756252523E4745FC5C79285E53CEBD6452AB85090117A4EC66EA5
 - FIX LIST 2, later on 2026-09-28, changed the probe again, with the lead's decisions D1 to
   D4. Nothing is closed before adoption, and a start the probe cannot prove is written to
   `%LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt` for later runs to refuse on.
@@ -4698,8 +4700,53 @@ THREE RUNS, ONE KEPT.
   probe's sha256, B122822429D8F97D60DD2BF9E8D152905AAE5FA2ECEEAFCFD63E41BA974573D8. Lines
   below marked REFLECTION are of that file. Its full run still waits for 34668, which was
   running at 14:36:37
+- F100 went to the form after three fix attempts. Bader answered A on 2026-09-29, Q79, and
+  closed 34668. FIX ATTEMPT 4, commit 0a89d73, fixed the seven faults of the fourth reading
+  and put the rule that no start is made while any Navisworks runs into code. A reviewer
+  and a breaker read it and both approved, finding no fault of the seven left and no new
+  fault inside attempt 4
+- RUN 4 at 11:35 on 2026-09-29 is `tools\probes\automation-start-result-20260929.txt`, the
+  output of one run of the attempt 4 probe, sha256 9CC1987B on its line 3, with the machine
+  name masked on line 1 and nothing else changed. It is set out under RUN 4 below. Run 3's
+  file is kept with the licensing agent's two ids and the machine name masked, every line
+  where it was
 
-Every claim below names the line of run 3's result behind it, or reads UNKNOWN.
+Every claim below names the line of run 3's result behind it, or reads UNKNOWN, except under
+RUN 4, whose lines are of run 4's result.
+
+**RUN 4, THE ATTEMPT 4 PROBE, ALL SIX STEPS PASSED**, lines 551 to 556, 125 s in all.
+
+```
+                                                                              result line
+step 2  no start recorded as unproved, no Roamer running                      396, 397
+        the settings backed up: the 22.0 key, 303 keys and 1243 values, and
+        9 files, 196 AutoSave files listed and not copied                     401 to 403
+        the last read before the constructor, no Roamer running               406, 407
+step 3  the constructor RETURNED after 83.16 s                                411
+        one new Roamer, pid 33752, parent 1804 svchost.exe, -Embedding        413, 414
+        adopted, all four conditions True                                     415, 416
+        it started 0.06 s after the call began                                417
+        Visible read False, set True read True, set False read False          420, 421, 424
+step 4  OpenFile of the copy RETURNED after 1.73 s                            431
+        SaveFile wrote 29765 bytes, after the call began                      434, 435
+step 5  AddPluginAssembly RETURNED after 0.006 s                              442
+        ExecuteAddInPlugin NOT called                                         444
+step 6  Dispose RETURNED after 0.40 s                                         448
+        pid 33752 gone 8.5 s after Dispose returned, not forced               449
+the watchdog forced nothing, 138 passes, longest gap 10960 ms, no errors      453, 454
+settings: no other Navisworks ran, 36 registry values put back, 0 keys
+        made again, 0 failed, and 2 files put back reading their backup's
+        sha256, each write after a last check                                 494, 531, 532, 536 to 538
+AutoSave files added, changed, gone or unreadable: 0                          539
+```
+
+Run 4 agrees with runs 1 to 3 on every number they share: a constructor of 82.75 to 110.02 s
+against 83.16 s, and a close by Dispose 8.0 to 9.3 s after it returned against 8.5 s. It is
+the first run whose put back was made with no other Navisworks running, so it is the first
+that measures D2 as written. It printed NO LICENSING ID: attempt 4 prints no command line of
+a process that is not a Roamer, and one licensing agent the Roamer started, pid 40156, is
+named by pid and parent only, line 462. Whether that agent had exited by the end is UNKNOWN,
+line 477, and Get-Process read it gone after the run.
 
 HOW. `tools\probes\probe-automation-start.ps1`, Windows PowerShell 5.1, 64 bit, STA:
 

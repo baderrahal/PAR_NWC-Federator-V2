@@ -87,12 +87,17 @@ never closes anything before adoption, and sends no message to any window before
   as the compare read. Otherwise it writes nothing and keeps the backup. A Navisworks that
   starts and exits inside one gap between watchdog passes is not seen, and the result
   prints the longest gap. It never empties its work folder, it renames the last one
-- `automation-start-result-20260928.txt`, kept at the top of this folder, is the output of
-  run 3, made by the version of the probe BEFORE fix list 2. That version put back Bader's
-  settings while his Navisworks, pid 34668, was running, which the rules above now rule
-  out. The changed probe has not made a full run, and its next full run replaces the file
-- `automation-start-reflection-20260928.txt`, beside it, is the output of the changed
-  probe's `-ReflectionOnly` mode, which starts nothing. See docs/history/scan.md section 5z-d
+- `automation-start-result-20260929.txt` is the output of run 4 on 2026-09-29, the one full
+  run of the probe as it stands, made with no other Navisworks running. All six steps
+  passed and Bader's settings were put back
+- `automation-start-result-20260928.txt` is the output of run 3, made by the version of the
+  probe BEFORE fix list 2. That version put back Bader's settings while his Navisworks, pid
+  34668, was running, which the rules above now rule out. It is kept for the lines
+  docs/history/scan.md cites, with the licensing agent's two ids and the machine name
+  masked by tools\loop\mask-evidence.ps1 and every line where it was
+- `automation-start-reflection-20260928.txt` is the output of the attempt 3 probe's
+  `-ReflectionOnly` mode, which starts nothing, the machine name masked. See
+  docs/history/scan.md section 5z-d for all three
 
 A probe that cannot find what it needs says UNKNOWN and the path it looked at, and
 stops. Never search the install folder for a DLL, the path is built and tested directly,

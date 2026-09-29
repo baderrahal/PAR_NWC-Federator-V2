@@ -1,6 +1,60 @@
 # log
 
 Newest entry at the top.
+## 2026-09-29 The loop, turn 3, F100 a start of Navisworks with no click, measured, DONE
+
+Core tests 1746 passed, 0 failed, 0 skipped, before on fix-F100 at 30ae471 and after on
+0a89d73 and every commit since, run by the pre-commit hook. Nothing under src or tests
+changed. The add-in built with 0 errors and 0 warnings before and after, by the developer.
+Squash merged in PR 74, so the branch's history, which holds the licensing ids, stays off
+main. Nothing waits for the local machine, because run 4 ran here.
+
+### What was done
+
+- Bader answered A on 2026-09-29, Q79, and closed his Navisworks. Get-Process Roamer read 0
+  at 09:52 and again just before run 4, and the probe itself read none at its step 2 and at
+  its last read before the constructor
+- FIX ATTEMPT 4, 0a89d73, by the developer: exactly the seven faults of
+  steps\notes\f100-fourth-reading.md. B3 is kept by code: step 2 refuses while any process
+  named Roamer runs, naming each by pid and start time, and the same read is made again
+  after the backups, just before the constructor. The probe went from 1834 lines, sha256
+  B1228224, to 1923 lines, sha256 9CC1987B. Proved first with no Navisworks, by a harness
+  that ran each fault on the b01ad71 probe and on the new one, failing before and passing
+  after, with stand in Roamer.exe copies of ping.exe refused at step 2, at the last read,
+  and by the real probe, in %LOCALAPPDATA%\NwcFederatorLoop\turn3\f100-harness
+- THE READING, a reviewer and a breaker, both APPROVE, all seven fixed completely, no fault
+  of the seven left and no new fault inside attempt 4. Their other findings are polish, or
+  old faults outside the seven, which go into the register for run.ps1, which takes this
+  code over
+- RUN 4 at 11:35, the one run: all six steps passed in 125 s. The constructor returned
+  after 83.16 s, pid 33752 was adopted on all four conditions 0.06 s after the call began,
+  OpenFile and SaveFile of one NWC copy worked, AddPluginAssembly returned, Dispose
+  returned in 0.40 s and the Navisworks was gone 8.5 s after, nothing forced. With no other
+  Navisworks running, 36 registry values and 2 files of Bader's settings were put back,
+  each after a last check, and read back, and nothing changed in his AutoSave or logs
+  folders. docs\history\scan.md 5z-d RUN 4
+- NO RESULT FILE ON MAIN CARRIES A LICENSING ID. Run 4 printed none. Run 3's file is kept
+  for the lines scan.md cites, masked on three lines by F102's mask-evidence.ps1, and the
+  reflection file and scan.md no longer name the machine. The check of F102 passes on all
+  three
+- the notes a later session needs are in steps\notes, and Bader's answers are Q79 to Q81
+
+### What remains
+
+- F100's code moves into run.ps1's guard file in F103, with the old faults the reading found
+- the commits 464f79f and c98c6f3 of the deleted branch still hold the licensing ids on
+  GitHub, through PR 74's own refs, which no one here can remove. Q88
+
+### Known bugs
+
+- the old faults outside the seven, register rows T3-G1 to T3-G5 in steps\loop.md. The one
+  that matters most: the last check before each settings write takes a process list it
+  could not read as no Roamer, so it fails open
+
+### What comes next
+
+1. F102 merged, then F105, then F103 run.ps1 from turn3\f103-design.md
+
 ## 2026-09-29 The loop, turn 3, the plan, written before the first edit
 
 Bader answered the form in steps\loop.md on 2026-09-29: F100 A, his Navisworks closed, and

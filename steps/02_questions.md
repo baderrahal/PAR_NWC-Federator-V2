@@ -458,3 +458,7 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 87. From the same design. YOUR REMEMBERED FOLDERS. At every window open the tool reads your folders.txt, checks each folder still exists, and writes the list into its log, the source folder on your desktop and the ACC folders among them. That is the tool on main reading whether those exist, reading only. The loop cannot stop it without writing your folders.txt or changing src. Is that acceptable. The loop masks that block before any loop log is committed
 
     Answer:
+
+88. From F102's developer, turn 3 of the loop, 2026-09-29. Two traces of your machines that the loop did not make and cannot remove by itself. First, main names the machine of 2026-09-19, the one docs\history\scan.md 5j ran on, in 9 places across 4 files, among them steps\01_next.md and docs\history\scan.md, and the new check reads only for this machine's name. Second, the commits 464f79f and c98c6f3, pushed to the branch fix-F100 on 2026-09-28, hold the Autodesk licensing agent's analytics id and a session id. PR 74 was squash merged so they are not in main's history, and the branch is deleted, but GitHub keeps every pull request's own refs, so the commits stay readable through PR 74. Should the loop mask the older machine name on main in its own pull request, and do you want the licensing ids on GitHub dealt with, which only the repository's owner can ask GitHub support to purge
+
+    Answer:
