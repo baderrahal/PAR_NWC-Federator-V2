@@ -16,9 +16,11 @@ $ErrorActionPreference = "Stop"
 # assembly with AddPluginAssembly, and quit. If it can, tools\loop\run.ps1 drives each run
 # through this API and ExecuteAddInPlugin. If it cannot, run.ps1 starts Roamer.exe itself.
 #
-# RUN IT ONLY WHEN NO NAVISWORKS THE LOOP DID NOT START IS RUNNING, the lead's decision D4
-# of 2026-09-28. The probe itself does not refuse a Navisworks started by hand, it records
-# it and puts nothing back, so the person running it lists the Roamers first.
+# NO START IS MADE WHILE ANY NAVISWORKS RUNS, the lead's decision D4 of 2026-09-28, and the
+# code keeps that rule, not a person. Step 2 refuses while any process named Roamer runs,
+# whatever its command line and whoever started it, names each by pid and start time, and
+# writes nothing and starts nothing. The same read is made again after the backups,
+# immediately before the constructor, and refuses the same way.
 #
 # IT REFUSES TO RUN when either deadline is below 60 seconds, and unless it is the script
 # its own powershell.exe was started to run with -File, read off
@@ -46,18 +48,21 @@ $ErrorActionPreference = "Stop"
 # running after every close path. One whose start time never read is written with its pid,
 # the word Roamer and the time it was first seen. Step 2 of every later run refuses while a
 # start named there runs with the same start ticks, or, on a line with no start time, while
-# that pid runs as a process named Roamer, because a person has to look.
+# that pid runs as a process named Roamer, because a person has to look. A Roamer holding
+# that pid whose start time reads LATER than the time the line says the start was first
+# seen is another process, since the start ran before it was seen, so it is not refused on
+# that line and the result says so. When its start time cannot be read, or the line's first
+# seen time cannot be read, it is refused.
 #
 # The steps, in order, stopping at the first that fails:
 #   1  reflection only, nothing started: the Automation DLL, its import table with every
 #      ordinal named off the exporting DLL, the COM class its native half creates, and the
 #      Roamer command line that makes a Roamer that class's server. Any verdict here that
 #      comes out UNKNOWN stops the probe before anything starts
-#   2  unproved-starts.txt first, then every Roamer already running, with its id, start
-#      time, parent, and whether its command line holds the word embedding or automation in
-#      any case anywhere, read through Win32_Process, which touches nothing in that
-#      Navisworks. Its command line itself is never printed. If any holds either word, or
-#      cannot be read, the probe stops
+#   2  unproved-starts.txt first, then every process named Roamer. If any runs, whatever
+#      its command line and whoever started it, each is named by pid and start time and the
+#      probe stops, and a process list that cannot be read stops it too. Nothing is sent to
+#      a Roamer, and its command line is not read
 #   3  one Navisworks started through the API, adopted by the rule above
 #   4  one NWC copied from %LOCALAPPDATA%\NwcFederatorLoop\source into the work folder and
 #      opened through the API, then what is open saved as an NWD whose write time is
@@ -94,7 +99,8 @@ $ErrorActionPreference = "Stop"
 # settings changes it can read, old and new, and nothing put back, writes the possible
 # starts still running to unproved-starts.txt, and ends this process through TerminateProcess
 # with exit code 3, so that no finalizer of the half built object runs, and closes nothing.
-# If TerminateProcess returns false it says so once and the watchdog stops.
+# If TerminateProcess returns false it says so once and the watchdog stops, and then nothing
+# is put back at the end, because no record covers what came after.
 # -AdoptedDeadlineSeconds runs from adoption. Past it, the watchdog closes the adopted id
 # after reading its start time again, so a blocked call returns.
 #
@@ -107,13 +113,19 @@ $ErrorActionPreference = "Stop"
 # new value. They are PUT BACK ONLY WHEN NO OTHER NAVISWORKS RAN, the lead's decision D2, and
 # that is proved only by a watchdog record: passes above zero, no watchdog error line, and
 # every failed read it writes counts as one, nothing in its runspace's error stream, no line it could not write and no pass that failed
-# before its process loop. Then no Roamer at step 2, none new at any pass but the adopted one,
-# none running at the end, and the adopted one reads gone. Otherwise nothing is written and
-# the backup is kept. IMMEDIATELY BEFORE EACH WRITE the Roamers are listed again, and any
-# Roamer at all stops every write that follows. Before each SetValue, DeleteValue,
-# CreateSubKey or DeleteSubKeyTree the value or key is read again and written only if it
-# still reads what the compare read, and a value delete is counted only when a value was
-# deleted. Nothing is written under a key or a folder that could not be read at both ends, a
+# before its process loop, the constructor deadline's path never ran, and the watchdog was
+# still running when the end stopped it. Then no Roamer at step 2, none new at any pass but
+# the adopted one, none running at the end, and the adopted one reads gone. Otherwise
+# nothing is written and the backup is kept. IMMEDIATELY BEFORE EACH WRITE the Roamers are
+# listed again, and any Roamer at all stops every write that follows. Before each SetValue,
+# DeleteValue, CreateSubKey or DeleteSubKeyTree the key is opened again and the value read
+# again, and the write happens only when both still read what the compare read. A value is
+# written only through its key as it stands, so a key that went since the compare is never
+# made again, a value of a key that went is written only into the key this put back made
+# again, and a key is made only under a parent that is there now, and when the compare read
+# that parent as gone, only under one this put back made. Each write skipped for this is
+# printed with why. A value delete is counted only when a value was deleted. Nothing is
+# written under a key or a folder that could not be read at both ends, a
 # key is removed only when the probe saw it appear while its parent read at both ends, a file
 # that went is copied back only if it is still gone just before the copy, and a changed file
 # only if it still holds what the compare read. A file whose content cannot be read at either
@@ -125,11 +137,13 @@ $ErrorActionPreference = "Stop"
 # NAMED LIMITS, said here and in the result rather than fixed. A Navisworks that starts and
 # exits inside one gap between watchdog passes is not seen by the D2 check, and the result
 # prints the longest gap. A Navisworks start is measured at over ten seconds, and the result
-# prints this run's. The Automation DLL imports GetActiveObject, by ordinal, and the IL of
-# the constructor takes StartupNavisworks when its argument is false, which is all that is
-# read of whether a running Navisworks can be reached. When Dispose throws and the probe then
-# closes the process by its id, the finalizer stays armed and at this process's exit calls
-# Bridge.Terminate against a process that is gone. What that does is UNKNOWN.
+# prints this run's. Of whether a running Navisworks can be reached, the result prints what
+# step 1 read on that run of GetActiveObject in the Automation DLL's import table, UNKNOWN
+# when step 1 did not read it, and says UNKNOWN for which call the constructor's IL takes
+# when its argument is false, because no code reads that branch. When Dispose throws and
+# the probe then closes the process by its id, the finalizer stays armed and at this
+# process's exit calls Bridge.Terminate against a process that is gone. What that does is
+# UNKNOWN.
 #
 # THE WORK FOLDER IS NEVER EMPTIED. A folder left by an earlier run is renamed
 # automation-start-yyyyMMdd-HHmmss beside it, and a rename that fails stops the probe
@@ -324,7 +338,7 @@ function Mask($s) {
 
 # The command line tests. HoldsEmbedding is the option COM passes, used to adopt.
 # EmbeddingWord is the word anywhere in any case, used to tell a possible start from a
-# Navisworks started by hand. NamesAutomation is either word, used to refuse at step 2.
+# Navisworks started by hand. NamesAutomation is either word, printed by the watchdog.
 function HoldsEmbedding($cmd) { return ($null -ne $cmd -and $cmd -match '(^|\s)[-/]Embedding(\s|$)') }
 function AutomationForm($cmd) { return ($null -ne $cmd -and $cmd -match '^\s*"?[^"]*\\Roamer\.exe"?\s+[-/]Embedding\s*$') }
 function EmbeddingWord($cmd) { return ($null -ne $cmd -and $cmd -match 'embedding') }
@@ -358,10 +372,29 @@ function UnprovedLine($id, $ticks, $firstSeenUtc, $why) {
   $f = "-"; if ($null -ne $firstSeenUtc) { $f = $firstSeenUtc.ToString("o") }
   return ([string]$id + "`t" + $t + "`t" + $f + "`t" + [DateTime]::UtcNow.ToString("o") + "`t" + $why)
 }
+# One append for every line, so a throw means none of them was written.
 function AppendUnproved($path, $lines) {
   $u = New-Object System.Text.UTF8Encoding($false)
-  if (-not (Test-Path -LiteralPath $path)) { [System.IO.File]::WriteAllText($path, "# pid`tstart ticks UTC, or Roamer when it never read`tfirst seen UTC`twritten UTC`twhy`r`n", $u) }
-  foreach ($l in $lines) { [System.IO.File]::AppendAllText($path, $l + "`r`n", $u) }
+  $text = ""
+  if (-not (Test-Path -LiteralPath $path)) { $text = "# pid`tstart ticks UTC, or Roamer when it never read`tfirst seen UTC`twritten UTC`twhy`r`n" }
+  foreach ($l in $lines) { $text += $l + "`r`n" }
+  [System.IO.File]::AppendAllText($path, $text, $u)
+}
+# The write is tried first, and each start is said written down only when it worked. When it
+# did not, each is said NOT written down, with the reason, and that the next run will not
+# refuse on it. Returns the lines for the caller to print.
+function UnprovedWrite($path, $lines, $said) {
+  $res = New-Object System.Collections.Generic.List[string]
+  $werr = $null
+  try { AppendUnproved $path $lines } catch { $werr = (Err $_.Exception) }
+  if ($null -eq $werr) {
+    foreach ($s in $said) { $res.Add($s + ", written down") }
+    $res.Add([string]@($lines).Count + " starts written to " + (Mask $path))
+  } else {
+    foreach ($s in $said) { $res.Add($s + ", NOT written down") }
+    $res.Add("could NOT write " + @($lines).Count + " starts to " + (Mask $path) + ", " + $werr.TrimEnd('.') + ". So the next run will not refuse on them, and a person has to look")
+  }
+  return ,$res
 }
 
 # Every Roamer in $running, new since step 2 and running now, bar the adopted one, with its
@@ -445,6 +478,11 @@ function RegSame($a, $b) {
 }
 function HkcuSub($name) { return $name.Substring("HKEY_CURRENT_USER\".Length) }
 function ValueLabel($n) { if ($null -eq $n) { return "" }; if ($n -eq "") { return "(default)" }; return $n }
+# One value of an open key, or null when the key has no value by that name.
+function ValueIn($k, $valueName) {
+  if ($null -eq $valueName -or -not (@($k.GetValueNames()) -contains $valueName)) { return $null }
+  return [pscustomobject]@{ Kind = $k.GetValueKind($valueName); Data = $k.GetValue($valueName, $null, [Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames) }
+}
 # One value read again just before a write. Ok says the read itself worked.
 function RegValueNow($keyName, $valueName) {
   $r = [pscustomobject]@{ Ok = $false; KeyExists = $false; Value = $null; Error = "" }
@@ -453,9 +491,7 @@ function RegValueNow($keyName, $valueName) {
     if ($null -eq $k) { $r.Ok = $true; return $r }
     try {
       $r.KeyExists = $true
-      if ($null -ne $valueName -and (@($k.GetValueNames()) -contains $valueName)) {
-        $r.Value = [pscustomobject]@{ Kind = $k.GetValueKind($valueName); Data = $k.GetValue($valueName, $null, [Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames) }
-      }
+      $r.Value = ValueIn $k $valueName
       $r.Ok = $true
     } finally { $k.Close() }
   } catch { $r.Error = (Err $_.Exception) }
@@ -499,10 +535,11 @@ function DiffRegistry($before, $after, $root) {
       $parent = ParentKey $k
       $ok = (-not (UnderFailed $parent $before.Failed) -and -not (UnderFailed $parent $after.Failed))
       $d.Lines.Add("key WENT " + $short + ", " + $before.Read[$k].Count + " values before" + $(if ($ok) { "" } else { ". Not writable, its parent was not read at both ends" }))
-      $d.Changes.Add([pscustomobject]@{ Op = "CreateKey"; Key = $k; Name = $null; Old = $null; New = $null; Tree = $null; Ok = $ok })
+      $parentWent = ($before.Read.ContainsKey($parent) -and -not $after.Read.ContainsKey($parent))
+      $d.Changes.Add([pscustomobject]@{ Op = "CreateKey"; Key = $k; Name = $null; Old = $null; New = $null; Tree = $null; Ok = $ok; ParentWent = $parentWent })
       foreach ($n in @($before.Read[$k].Keys | Sort-Object)) {
         $d.Lines.Add($short + "  " + (ValueLabel $n) + "  old " + (RegText $before.Read[$k][$n]) + "  new absent")
-        $d.Changes.Add([pscustomobject]@{ Op = "Set"; Key = $k; Name = $n; Old = $before.Read[$k][$n]; New = $null; Tree = $null; Ok = $ok })
+        $d.Changes.Add([pscustomobject]@{ Op = "Set"; Key = $k; Name = $n; Old = $before.Read[$k][$n]; New = $null; Tree = $null; Ok = $ok; KeyWent = $true })
       }
       continue
     }
@@ -511,8 +548,8 @@ function DiffRegistry($before, $after, $root) {
     foreach ($n in @(@($bv.Keys) + @($av.Keys) | Sort-Object -Unique)) {
       if (RegSame $bv[$n] $av[$n]) { continue }
       $d.Lines.Add($short + "  " + (ValueLabel $n) + "  old " + (RegText $bv[$n]) + "  new " + (RegText $av[$n]) + $(if ($ok) { "" } else { ". Not writable, the key was not read at both ends" }))
-      if ($null -eq $bv[$n]) { $d.Changes.Add([pscustomobject]@{ Op = "DeleteValue"; Key = $k; Name = $n; Old = $null; New = $av[$n]; Tree = $null; Ok = $ok }) }
-      else { $d.Changes.Add([pscustomobject]@{ Op = "Set"; Key = $k; Name = $n; Old = $bv[$n]; New = $av[$n]; Tree = $null; Ok = $ok }) }
+      if ($null -eq $bv[$n]) { $d.Changes.Add([pscustomobject]@{ Op = "DeleteValue"; Key = $k; Name = $n; Old = $null; New = $av[$n]; Tree = $null; Ok = $ok; KeyWent = $false }) }
+      else { $d.Changes.Add([pscustomobject]@{ Op = "Set"; Key = $k; Name = $n; Old = $bv[$n]; New = $av[$n]; Tree = $null; Ok = $ok; KeyWent = $false }) }
     }
   }
   return $d
@@ -785,6 +822,9 @@ function PeExports($file) {
   return $map
 }
 Say "  the DLL's import table, every ordinal named off the exporting DLL's export table:"
+# What this run read of each name below, kept for the named limits at the end. A name
+# missing here was not read on this run.
+$importRead = @{}
 try {
   $imports = @(PeImports $autoDll)
   $exportMaps = @{}
@@ -807,7 +847,8 @@ try {
   }
   foreach ($w in @("CoCreateInstance", "GetActiveObject", "CoGetClassObject", "CreateProcessW", "ShellExecuteW")) {
     $hit = @($importNames | Where-Object { $_ -like ("*!" + $w) })
-    Say ("  " + $w.PadRight(18) + " imported: " + ($hit.Count -gt 0) + $(if ($hit.Count -gt 0) { ", from " + (($hit | ForEach-Object { $_.Split('!')[0] }) -join ", ") } else { "" }))
+    $importRead[$w] = "imported: " + ($hit.Count -gt 0) + $(if ($hit.Count -gt 0) { ", from " + (($hit | ForEach-Object { $_.Split('!')[0] }) -join ", ") } else { "" })
+    Say ("  " + $w.PadRight(18) + " " + $importRead[$w])
   }
   if (@($importNames | Where-Object { $_ -like "*!CoCreateInstance" }).Count -eq 0) { $gate.Add("CoCreateInstance is not in the DLL's import table") }
 } catch {
@@ -985,8 +1026,12 @@ function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [b
 '@
 . ([scriptblock]::Create($winFuncs))
 
-function WindowsOf($id) {
-  # Only ever called for the adopted Roamer, so messages are allowed.
+function WindowsOf($id, $utcTicks) {
+  # Only ever called for the adopted Roamer, so messages are allowed, and only once its pid
+  # is read again with its start time, as the watchdog does, so a pid that went to another
+  # process is never read or sent anything.
+  $state = ProcState $id $utcTicks
+  if ($state -ne "same") { Say ("  the windows of " + $id + " are NOT read, the pid reads " + $state + " against the adopted start ticks UTC " + $utcTicks); return }
   $vis = @(WindowLines $winType $procType ([uint32]$id) $true $true)
   $all = @(WindowLines $winType $procType ([uint32]$id) $false $true)
   $dialogs = @($vis | Where-Object { $_.StartsWith("[#32770]") })
@@ -1022,10 +1067,34 @@ function RoamerRecord($p) {
   return $r
 }
 
-# Every write of the put back lists the Roamers first, reads the value or key again, and
-# writes only when it still reads what the compare read.
+# No start is made while any Navisworks runs, and the code keeps that rule, not a person.
+# Every process named Roamer, whatever its command line and whoever started it, is named by
+# pid and start time, and a process list that cannot be read is named too. True means
+# refuse. Step 2 calls it, and so does the last read before the constructor.
+function RoamerRefusal {
+  $lines = New-Object System.Collections.Generic.List[string]
+  $ps = $null
+  try { $ps = [System.Diagnostics.Process]::GetProcessesByName("Roamer") } catch { $lines.Add("the process list could not be read, " + (Err $_.Exception)) }
+  foreach ($p in @($ps | Where-Object { $null -ne $_ } | Sort-Object Id)) {
+    $st = ""
+    try { $s = $p.StartTime; $st = "started " + $s.ToString("yyyy-MM-dd HH:mm:ss") + ", start ticks UTC " + (UtcTicks $s) } catch { $st = "its start time could not be read, " + (Err $_.Exception) }
+    $lines.Add("Roamer pid " + $p.Id + ", " + $st + ". Not ours, never closed, attached to or sent anything")
+  }
+  foreach ($l in $lines) { Say ("  " + $l) }
+  if ($lines.Count -eq 0) { Say "  no Roamer is running" }
+  return ($lines.Count -gt 0)
+}
+
+# Every write of the put back lists the Roamers first. Then the key is opened again and the
+# value read again, and the write happens only when both still read what the compare read.
+# A value is written only through its key as it stands, never through CreateSubKey, so a key
+# that went is never made again. A value of a key that went is written only into the key
+# this put back made again. A key is made only under a parent that is there now, and when the
+# compare read that parent as gone, only under one this put back made, so CreateSubKey never
+# makes a parent with it.
 function PutBackRegistry($changes, $root, $ListRoamers) {
   $r = [pscustomobject]@{ Done = 0; Failed = 0; Skipped = 0; Stopped = $false; ValueDeletes = 0; KeysMade = 0; KeysRemoved = 0; Written = New-Object System.Collections.Generic.List[object] }
+  $made = @{}
   foreach ($c in $changes) {
     $label = (ShortKey $c.Key $root) + $(if ($null -ne $c.Name) { " " + (ValueLabel $c.Name) } else { "" })
     if ($r.Stopped -or -not $c.Ok) { $r.Skipped++; continue }
@@ -1033,29 +1102,36 @@ function PutBackRegistry($changes, $root, $ListRoamers) {
     if ($rs.Count -gt 0) { $r.Stopped = $true; $r.Skipped++; Say ("  a Roamer is running just before the write of " + $label + ", pid " + (($rs | ForEach-Object { [string]$_.Id }) -join ", ") + ". It and every write after it are stopped"); continue }
     try {
       if ($c.Op -eq "Set" -or $c.Op -eq "DeleteValue") {
-        $now = RegValueNow $c.Key $c.Name
-        if (-not $now.Ok) { Say ("  " + $label + " could not be read again, not written, " + $now.Error); $r.Skipped++; continue }
-        if (-not (RegSame $now.Value $c.New)) { Say ("  " + $label + " no longer reads what the compare read, not written"); $r.Skipped++; continue }
-        if ($c.Op -eq "Set") {
-          $rk = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey((HkcuSub $c.Key))
-          try { $rk.SetValue($c.Name, $c.Old.Data, $c.Old.Kind) } finally { $rk.Close() }
-          $r.Done++; $r.Written.Add($c)
-        } else {
-          $rk = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey((HkcuSub $c.Key), $true)
-          if ($null -eq $rk) { Say ("  " + $label + ", its key is gone, nothing deleted"); $r.Skipped++; continue }
-          $had = $false; $gone = $false
-          try {
-            $had = (@($rk.GetValueNames()) -contains $c.Name)
-            if ($had) { $rk.DeleteValue($c.Name, $false) }
-            $gone = -not (@($rk.GetValueNames()) -contains $c.Name)
-          } finally { $rk.Close() }
-          if ($had -and $gone) { $r.Done++; $r.ValueDeletes++; $r.Written.Add($c) } else { Say ("  " + $label + ", no value was deleted"); $r.Skipped++ }
-        }
+        if ($c.KeyWent -and -not $made.ContainsKey($c.Key)) { Say ("  " + $label + " not written, its key went and this put back did not make it again, so nothing is written into it"); $r.Skipped++; continue }
+        $rk = $null
+        try { $rk = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey((HkcuSub $c.Key), $true) } catch { Say ("  " + $label + " not written, its key could not be opened again, " + (Err $_.Exception)); $r.Skipped++; continue }
+        if ($null -eq $rk) { Say ("  " + $label + " not written, its key is gone since " + $(if ($c.KeyWent) { "this put back made it" } else { "the compare read it" }) + ", and a key that went is never made again"); $r.Skipped++; continue }
+        $skip = ""
+        try {
+          $now = $null
+          try { $now = ValueIn $rk $c.Name } catch { $skip = "could not be read again, " + (Err $_.Exception) }
+          if ($skip -eq "" -and -not (RegSame $now $c.New)) { $skip = "no longer reads what the compare read" }
+          if ($skip -eq "") {
+            if ($c.Op -eq "Set") { $rk.SetValue($c.Name, $c.Old.Data, $c.Old.Kind) }
+            else {
+              $rk.DeleteValue($c.Name, $false)
+              if (@($rk.GetValueNames()) -contains $c.Name) { $skip = "no value was deleted" }
+            }
+          }
+        } finally { $rk.Close() }
+        if ($skip -ne "") { Say ("  " + $label + " not written, " + $skip); $r.Skipped++; continue }
+        $r.Done++; $r.Written.Add($c)
+        if ($c.Op -eq "DeleteValue") { $r.ValueDeletes++ }
       } elseif ($c.Op -eq "CreateKey") {
         $now = RegValueNow $c.Key $null
         if (-not $now.Ok) { Say ("  " + $label + " could not be read again, not made, " + $now.Error); $r.Skipped++; continue }
-        if ($now.KeyExists) { Say ("  " + $label + " is there again, not made"); $r.Skipped++; continue }
+        if ($now.KeyExists) { Say ("  " + $label + " is there again, not made, and no value is written into it"); $r.Skipped++; continue }
+        $parent = ParentKey $c.Key
+        if ($c.ParentWent -and -not $made.ContainsKey($parent)) { Say ("  " + $label + " not made, its parent went and this put back did not make it again"); $r.Skipped++; continue }
+        $pn = RegValueNow $parent $null
+        if (-not $pn.Ok -or -not $pn.KeyExists) { Say ("  " + $label + " not made, its parent is gone or could not be read again, and a key is never made along with its parent"); $r.Skipped++; continue }
         $rk = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey((HkcuSub $c.Key)); $rk.Close()
+        $made[$c.Key] = $true
         $r.KeysMade++; $r.Written.Add($c)
       } elseif ($c.Op -eq "DeleteKey") {
         $tree = RegRead (HkcuSub $c.Key)
@@ -1141,7 +1217,18 @@ if (Test-Path -LiteralPath $unproved) {
     if ($parts.Count -lt 2 -or -not [int]::TryParse($parts[0], [ref]$upid)) { Say ("STOP before the constructor: a line of " + (Mask $unproved) + " cannot be read, `"" + $ul + "`". A person has to look"); exit 1 }
     $up = Get-Process -Id $upid -ErrorAction SilentlyContinue
     if ($parts[1] -eq "Roamer" -or $parts[1] -eq "0") {
-      if ($null -ne $up -and $up.ProcessName -eq "Roamer") { $still.Add("pid " + $upid + ", its start time never read, and a process named Roamer holds that id now") }
+      if ($null -ne $up -and $up.ProcessName -eq "Roamer") {
+        # A start runs before it is first seen, so a Roamer holding that pid that started
+        # after the line's first seen time is another process. What cannot be read refuses.
+        $first = [DateTime]::MinValue
+        $firstOk = ($parts.Count -ge 3 -and [DateTime]::TryParseExact($parts[2], "o", [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::RoundtripKind, [ref]$first))
+        $ust = $null; $ustErr = "its start time reads as nothing"
+        try { $ust = $up.StartTime } catch { $ustErr = "its start time could not be read, " + (Err $_.Exception) }
+        if (-not $firstOk) { $still.Add("pid " + $upid + ", its start time never read, a process named Roamer holds that id now, and the line's first seen time cannot be read") }
+        elseif ($null -eq $ust) { $still.Add("pid " + $upid + ", its start time never read, a process named Roamer holds that id now, and " + $ustErr) }
+        elseif ((UtcTicks $ust) -gt $first.ToUniversalTime().Ticks) { Say ("  pid " + $upid + " is written down with no start time, first seen " + $first.ToUniversalTime().ToString("o") + ". The Roamer holding that id now started " + $ust.ToUniversalTime().ToString("o") + ", later, so it is another process and is not refused on this line") }
+        else { $still.Add("pid " + $upid + ", its start time never read, and the process named Roamer holding that id now started " + $ust.ToUniversalTime().ToString("o") + ", not later than the line's first seen time " + $first.ToUniversalTime().ToString("o")) }
+      }
       continue
     }
     $uticks = [long]0
@@ -1159,26 +1246,16 @@ if (Test-Path -LiteralPath $unproved) {
     exit 1
   }
 } else { Say "  no start this probe could not prove is recorded" }
-$beforeRoamer = @(Get-Process -Name Roamer -ErrorAction SilentlyContinue | Sort-Object Id)
+# Any Roamer at all stops the probe here, so these stay empty. The watchdog and the end
+# still read them.
 $beforeStart = @{}
 $beforeTicks = @{}
-$refuse = New-Object System.Collections.Generic.List[string]
-foreach ($p in $beforeRoamer) {
-  $rec = RoamerRecord $p
-  $beforeStart[$p.Id] = $rec.Start
-  $flag = WordText $rec.Cmd
-  if (-not $rec.CmdOk) { $flag = "UNKNOWN, " + $rec.CmdNote }
-  Say ("  Roamer pid " + $p.Id + ", started " + $(if ($rec.Start) { $rec.Start.ToString("yyyy-MM-dd HH:mm:ss") } else { "UNKNOWN" }) + ", parent " + $rec.Parent + ", command line holds the word embedding or automation: " + $flag + ". Not ours, never closed, attached to or sent anything")
-  if ($flag -ne "no") { $refuse.Add([string]$p.Id + " " + $flag) }
-  if ($null -eq $rec.Ticks) { $refuse.Add([string]$p.Id + " start time unreadable") } else { $beforeTicks[[int]$p.Id] = $rec.Ticks }
-}
-if ($beforeRoamer.Count -eq 0) { Say "  none" }
-$beforeAll = @(Get-Process | ForEach-Object { $_.Id })
-Say ("  every process id on the machine taken as the before set: " + $beforeAll.Count)
-if ($refuse.Count -gt 0) {
-  Say ("STOP before the constructor: a Roamer already running names embedding or automation, or could not be read: " + ($refuse -join ", "))
+if (RoamerRefusal) {
+  Say "STOP before the watchdog, the backup and the constructor, so nothing is written down and nothing is started: a Navisworks is running, and no start is made while any Navisworks runs, whatever its command line and whoever started it"
   exit 1
 }
+$beforeAll = @(Get-Process | ForEach-Object { $_.Id })
+Say ("  every process id on the machine taken as the before set: " + $beforeAll.Count)
 function NewRoamers {
   $r = @()
   foreach ($p in @(Get-Process -Name Roamer -ErrorAction SilentlyContinue)) {
@@ -1189,7 +1266,7 @@ function NewRoamers {
   }
   return $r
 }
-$outcome["2"] = "passed, " + $beforeRoamer.Count + " Roamer running before, none names embedding or automation"
+$outcome["2"] = "passed, no Roamer running"
 Say ""
 
 # =======================================================================================
@@ -1359,14 +1436,14 @@ $watchScript = {
         $block.Add("")
         $block.Add("==== CONSTRUCTOR DEADLINE of " + $sync.CtorDeadline + " s passed with nothing adopted. Nothing is closed and nothing is put back ====")
         $ps = @(PossibleStarts $newRoamersNow $sync.RoamerSet $sync.ZeroSightings 0 0)
-        $lines = @()
+        $lines = @(); $said = @()
         foreach ($x in $ps) {
           if ($x.Kind -eq "hand") { $block.Add("  Roamer pid " + $x.Pid + " was started by hand, left alone, not written down"); continue }
           $lines += (UnprovedLine $x.Pid $x.Ticks $x.FirstSeen ("not adopted and still running at the constructor deadline, command line " + $x.Kind + " " + $x.Note).Trim())
-          $block.Add("  Roamer pid " + $x.Pid + ", command line " + $x.Kind + ", still running and not adopted, written down")
+          $said += ("Roamer pid " + $x.Pid + ", command line " + $x.Kind + ", still running and not adopted")
         }
         if ($ps.Count -eq 0) { $block.Add("  no Roamer new since step 2 is running") }
-        if ($lines.Count -gt 0) { try { AppendUnproved $sync.Unproved $lines; $block.Add("  " + $lines.Count + " starts written to " + (Mask $sync.Unproved)) } catch { $block.Add("  could NOT write " + (Mask $sync.Unproved) + ", " + $_.Exception.Message) } }
+        if ($lines.Count -gt 0) { foreach ($l in (UnprovedWrite $sync.Unproved $lines $said)) { $block.Add("  " + $l) } }
         if ($sync.SettingsReady) {
           try {
             $block.Add("---- BADER'S SETTINGS, compared, NOTHING PUT BACK, the backup is kept in the work folder ----")
@@ -1495,6 +1572,12 @@ $disposed = $false
 $suppressed = $false
 $ctorSeconds = $null
 $startAfterCall = $null
+# The same read as step 2, made again after the backups, as the last thing before the try
+# that calls the constructor. It is outside that try, so a refusal runs no close and no put
+# back, and writes nothing down.
+Say "==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ===="
+if (RoamerRefusal) { StopEarly "STOP before the constructor, so nothing is started and nothing of Bader's is written, the backup stays in the work folder: a Navisworks is running, and no start is made while any Navisworks runs, whatever its command line and whoever started it" }
+Say ""
 try {
   # =====================================================================================
   Say "==== STEP 3. Start one Navisworks through the API ===="
@@ -1549,7 +1632,7 @@ try {
   Say ("  the process started " + $startAfterCall.ToString("0.00") + " s after the call began and " + ($returnedAtUtc - $myStart.ToUniversalTime()).TotalSeconds.ToString("0.00") + " s before the constructor returned")
   $mp = Get-Process -Id $myPid
   Say ("  MainWindowHandle " + $mp.MainWindowHandle + ", MainWindowTitle `"" + $mp.MainWindowTitle + "`"")
-  WindowsOf $myPid
+  WindowsOf $myPid $myTicks
   $v0 = $app.Visible
   Say ("  " + (Stamp) + "  Visible read BEFORE setting it: " + $v0)
   $app.Visible = $true
@@ -1557,13 +1640,13 @@ try {
   $v1 = $app.Visible
   $mp.Refresh()
   Say ("  " + (Stamp) + "  set Visible = True, read back: " + $v1 + ", MainWindowHandle " + $mp.MainWindowHandle + ", title `"" + $mp.MainWindowTitle + "`"")
-  WindowsOf $myPid
+  WindowsOf $myPid $myTicks
   $app.Visible = $false
   Start-Sleep -Milliseconds 1500
   $v2 = $app.Visible
   $mp.Refresh()
   Say ("  " + (Stamp) + "  set Visible = False, read back: " + $v2 + ", MainWindowHandle " + $mp.MainWindowHandle)
-  WindowsOf $myPid
+  WindowsOf $myPid $myTicks
   $outcome["3"] = "passed"
   Say ""
 
@@ -1592,7 +1675,7 @@ try {
   $sw.Stop()
   Say ("  " + (Stamp) + "  OpenFile " + $(if ($null -eq $err) { "RETURNED, it is void so there is no value" } else { "THREW" }) + " after " + $sw.Elapsed.TotalSeconds.ToString("0.00") + " s")
   if ($null -ne $err) { Say ("    " + (Err $err)) }
-  WindowsOf $myPid
+  WindowsOf $myPid $myTicks
   if ($null -ne $err) { $outcome["4"] = "failed, OpenFile threw"; throw "step 4 stopped" }
   # OpenFile returns nothing, so the one outside sign that the model loaded is a save of
   # what is open, into the work folder created empty at the start, written after the call.
@@ -1634,7 +1717,7 @@ try {
   $sw.Stop()
   Say ("  " + (Stamp) + "  AddPluginAssembly " + $(if ($null -eq $err) { "RETURNED, it is void so there is no value" } else { "THREW" }) + " after " + $sw.Elapsed.TotalSeconds.ToString("0.000") + " s")
   if ($null -ne $err) { Say ("    " + (Err $err)) }
-  WindowsOf $myPid
+  WindowsOf $myPid $myTicks
   Say ("  ExecuteAddInPlugin, read off the reflection: " + $execSig + ". It was NOT called")
   if ($null -ne $err) { $outcome["5"] = "failed, AddPluginAssembly threw"; throw "step 5 stopped" }
   $outcome["5"] = "passed"
@@ -1692,6 +1775,8 @@ try {
       $closeNote = "pid " + $myPid + " state " + $sf + ", nothing to close"
     }
   } else { $closeNote = "no pid was adopted, so nothing is closed here" }
+  # Read before the end stops the watchdog: if it has ended already, it stopped early.
+  $watchEndedEarly = $whandle.IsCompleted
   $sync.Stop = $true
   Say "==== FINALLY ===="
   Say ("  " + (Stamp) + "  " + $closeNote)
@@ -1734,27 +1819,29 @@ try {
 
   Say "---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----"
   try {
-    $endLines = @()
+    $endLines = @(); $endSaid = @()
     if ($myPid -ne 0) {
       $ms = ProcState $myPid $myTicks
       if ($ms -eq "same" -or $ms -eq "unreadable") {
         $endLines += (UnprovedLine $myPid $myTicks $null ("the adopted Roamer is still running after every close path, state " + $ms))
-        Say ("  the adopted Roamer " + $myPid + " reads " + $ms + " after every close path, written down")
+        $endSaid += ("the adopted Roamer " + $myPid + " reads " + $ms + " after every close path")
       }
     }
     foreach ($x in @(PossibleStarts $lateNew $sync.RoamerSet $sync.ZeroSightings $myPid $myTicks)) {
       if ($x.Kind -eq "hand") { Say ("  Roamer pid " + $x.Pid + " was started by hand, left alone, not written down"); continue }
       $endLines += (UnprovedLine $x.Pid $x.Ticks $x.FirstSeen ("not adopted and still running at the end, command line " + $x.Kind + " " + $x.Note).Trim())
-      Say ("  Roamer pid " + $x.Pid + ", command line " + $x.Kind + ", still running and not adopted, written down")
+      $endSaid += ("Roamer pid " + $x.Pid + ", command line " + $x.Kind + ", still running and not adopted")
     }
-    if ($endLines.Count -gt 0) { AppendUnproved $unproved $endLines; Say ("  " + $endLines.Count + " starts written to " + (Mask $unproved)) } else { Say "  none" }
-  } catch { Say ("  could NOT write the starts down, " + (Err $_.Exception)) }
+    if ($endLines.Count -gt 0) { foreach ($l in (UnprovedWrite $unproved $endLines $endSaid)) { Say ("  " + $l) } } else { Say "  none" }
+  } catch { Say ("  the starts to write down could NOT be worked out, " + (Err $_.Exception).TrimEnd('.') + ". Nothing was written down here, so the next run will not refuse on a start this would have named, and a person has to look") }
   Say ""
 
   Say "---- NAMED LIMITS ----"
   Say ("  the longest gap between the starts of two watchdog passes was " + ([double]$sync.MaxGapMs).ToString("0") + " ms. A Navisworks that started and exited inside one gap was not seen by the settings check")
   if ($null -ne $ctorSeconds) { Say ("  this run's constructor took " + $ctorSeconds.ToString("0.00") + " s" + $(if ($null -ne $startAfterCall) { ", and its Navisworks process started " + $startAfterCall.ToString("0.00") + " s after the call" } else { "" })) }
-  Say "  the Automation DLL imports GetActiveObject, step 1 above, and the constructor's IL takes StartupNavisworks when its argument is false, which is all that is read of whether a running Navisworks can be reached"
+  $gao = "UNKNOWN, step 1 did not read it on this run"
+  if ($importRead.ContainsKey("GetActiveObject")) { $gao = $importRead["GetActiveObject"] }
+  Say ("  of whether a running Navisworks can be reached, step 1 read the Automation DLL's import table on this run for GetActiveObject, " + $gao + ". Which call the constructor's IL takes when its argument is false is UNKNOWN, because no code on this run reads that branch")
   if ($null -ne $app -and -not $disposed -and -not $suppressed) { Say "  Dispose did not complete and the finalizer was not suppressed, so at this process's exit it calls Bridge.Terminate, against a process that is gone if it was closed. What that does is UNKNOWN" }
   Say ""
 
@@ -1767,6 +1854,8 @@ try {
     if ($wpsErrors.Count -gt 0) { $why.Add("the watchdog's runspace holds " + $wpsErrors.Count + " errors") }
     if ($null -ne $wpsEndError) { $why.Add("the watchdog ended with an error") }
     if ($sync.WriteErrors.Count -gt 0) { $why.Add("the watchdog could not write " + $sync.WriteErrors.Count + " lines") }
+    if ($sync.DeadlineDone) { $why.Add("the constructor deadline passed and its path ran, which ends the watchdog, so no record covers what came after") }
+    if ($watchEndedEarly) { $why.Add("the watchdog had stopped before the end, so no record covers what came after it stopped") }
     foreach ($id in $beforeTicks.Keys) { $why.Add("Roamer " + $id + " was running at step 2") }
     if ($myPid -eq 0) { $why.Add("no Navisworks was adopted, so which change is the probe's is UNKNOWN") }
     else {

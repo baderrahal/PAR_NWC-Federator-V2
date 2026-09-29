@@ -58,8 +58,9 @@ inside a running Navisworks:
   host and where the window sits in the automation tree. It needs the add-in window
   already open
 
-One probe starts a Navisworks of its own. It is run only when no Navisworks the loop did
-not start is running. It refuses to run when either deadline is below 60 seconds, or when
+One probe starts a Navisworks of its own. It refuses to start one while any Navisworks
+runs, whatever its command line and whoever started it, so the code keeps that rule, not
+a person. It refuses to run when either deadline is below 60 seconds, or when
 it is not the script its own powershell.exe was started to run with -File. It quits its
 Navisworks through the API's Dispose. It closes it by its process id only when it is the
 adopted one and Dispose left it running, a step failed, or the adopted deadline passed. It
@@ -75,8 +76,9 @@ never closes anything before adoption, and sends no message to any window before
   own if it will not die, is written to
   %LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt and left running, and every
   later run refuses to start while one named there is still running, because a person
-  has to look. Every Roamer already running is listed first by id, start time and parent,
-  read through Win32_Process, and never closed, attached to or sent anything. It backs up
+  has to look. Any Roamer running at its step 2, and again just before the start, is
+  named by id and start time and the probe stops, starting nothing, and never closes,
+  attaches to or sends it anything. It backs up
   Bader's Navisworks settings first and prints every change with its old and new value.
   It puts them back only when its watchdog ran with passes, no error line, nothing in its
   runspace's error stream and no pass that failed early, and that record shows no other
