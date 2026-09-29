@@ -1,0 +1,59 @@
+# What counts as an id or as this machine's name in a file of a run or a probe. F102.
+#
+# THE ONE PLACE THIS RULE LIVES. tools\checks\check-evidence-ids.sh reads it and refuses a
+# line that carries any kind below. tools\loop\mask-evidence.ps1 reads it, masks every
+# kind, and reads its copy back with the same kinds the check uses. A kind added here is
+# masked and refused by both, and neither script names a kind of its own.
+#
+# One block per kind, in the order the mask applies them. The ids go before the machine
+# name, so a machine name that reads as hex never breaks a GUID in two before it is masked.
+#   kind:   what the refusal and the count call it
+#   lines:  the lines the kind reads, an expression, or every
+#   id:     what is masked and refused on such a line, an expression
+#   mask:   what the mask writes in place of the id
+#   whole:  yes when the mask masks the id only as a whole word. The check and the read
+#           back refuse it anywhere, so a name inside a longer word is refused and a person
+#           looks, rather than masked inside a word that may be another word
+#
+# Every expression is read without regard to case, by grep -E and by .NET. Only what both
+# read the same way is written here: bracket classes, [[:space:]], which the mask reads as
+# \s, counts in braces, groups and alternation. {guid} stands for the guid line and
+# {machine} for COMPUTERNAME, which must match the machine line whole or both refuse.
+
+guid: [0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}
+machine: [A-Za-z0-9_-]+
+
+# The id the licensing agent is started with, measured on 2026-09-28 in two forms, the
+# value of analyticsagentid and the word after -i. Anywhere, url encoded included.
+kind: an analytics agent id
+lines: every
+id: analytics-{guid}
+mask: [id]
+whole: no
+
+kind: a GUID on a line naming analyticsagentid
+lines: analyticsagentid
+id: {guid}
+mask: [id]
+whole: no
+
+# The id the licensing agent is started with in its other form, measured the same day.
+# Every GUID on a line with a GUID after -i, on any program's line.
+kind: an id after -i
+lines: (^|[[:space:]])-i[[:space:]]+[^[:space:]]*{guid}
+id: {guid}
+mask: [id]
+whole: no
+
+# The licensing, identity and genuine services' session and licence ids.
+kind: a GUID on a licensing line
+lines: AdskLicensing|AdskIdentity|GenuineService
+id: {guid}
+mask: [id]
+whole: no
+
+kind: the machine name
+lines: every
+id: {machine}
+mask: [machine]
+whole: yes

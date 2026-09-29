@@ -9,23 +9,18 @@
     refuses such a file in the pre-commit and in Actions, and this is what makes the copy
     that passes it.
 
-    WHAT IT MASKS, on each line, in this order:
-      an analytics agent id      the value after analyticsagentid=, up to the next space,
-                                 ampersand or quote, to [id]
-      an id after -i             the word after -i when it holds a GUID, to [id]
-      a GUID on a licensing line any GUID on a line naming AdskLicensing, AdskIdentity or
-                                 GenuineService, to [id]
-      the machine name           the value of COMPUTERNAME as a whole word in any case, to
-                                 [machine]
-    A GUID on any other line is left, a COM CLSID or a WPF window class name, because it
-    names no licence and no machine. The ids go first, so a machine name that reads as hex
-    can never break a GUID in two before it is masked.
+    WHAT IT MASKS is every kind in tools\checks\evidence-ids.txt, the one place that rule
+    lives, which the check reads too. On each line, kind by kind in the file's order, a
+    line the kind reads has every id of that kind replaced by the kind's mask, [id] or
+    [machine]. A kind marked whole is masked only as a whole word. A GUID on a line no kind
+    reads is left, a COM CLSID or a WPF window class name, because it names no licence and
+    no machine.
 
-    THE READ BACK IS WIDER THAN THE MASK. Once the copy is in place it is read again for the
-    machine name anywhere in any case, even inside a longer word, for analytics- followed by
-    a GUID anywhere, and for the other two as masked. What the mask did not recognise is
-    refused there: the copy is deleted, and the kind and the line number are printed,
-    never the text.
+    THE READ BACK IS THE CHECK'S OWN RULE. Once the copy is in place it is read again off
+    the disk with the same kinds the check refuses, the whole word ones anywhere, even
+    inside a longer word, and for a NUL byte. What is left there is refused: the copy is
+    deleted, and the kind and the line number are printed, never the text. So a copy this
+    writes is a copy the check passes, on the same machine.
 
     Bytes are kept. A file is read byte for byte as Latin-1, so every byte comes back out
     as it went in and only a masked span changes, line endings and any UTF-8 included. A
@@ -69,6 +64,7 @@ function Refuse([string] $why) {
 }
 
 $repo = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$rulesPath = Join-Path $repo "tools\checks\evidence-ids.txt"
 $inFull = Get-FullPath $In
 $outFull = Get-FullPath $Out
 
@@ -80,25 +76,48 @@ foreach ($kept in @("samples", "steps\logs", "bundle")) {
 }
 if ((Test-Path -LiteralPath $outFull) -and -not $Replace) { Refuse ("-Out " + (Hide $outFull) + " is already there. Give -Replace to write over it. Nothing was written.") }
 if (Test-Path -LiteralPath $outFull -PathType Container) { Refuse ("-Out " + (Hide $outFull) + " is a folder. Nothing was written.") }
+if (-not (Test-Path -LiteralPath $rulesPath -PathType Leaf)) { Refuse ("there is no rules file at " + $rulesPath + ". Nothing was written.") }
 
-$guid = '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}'
-$value = '[^\s&"'']'
-$names = '(?i)AdskLicensing|AdskIdentity|GenuineService'
+# The rules file, read the way check-evidence-ids.sh reads it: a line is a key, a colon and
+# a value, and a line that is blank or starts with # is skipped.
+$guid = ""
+$shape = ""
+$kinds = New-Object System.Collections.Generic.List[object]
+$current = $null
+foreach ($raw in [IO.File]::ReadAllLines($rulesPath)) {
+    $line = $raw.TrimEnd("`r")
+    if ($line -match '^[ \t]*(#|$)') { continue }
+    $at = $line.IndexOf(':')
+    $key = $(if ($at -ge 0) { $line.Substring(0, $at) } else { $line })
+    $value = $(if ($at -ge 0) { $line.Substring($at + 1).TrimStart(' ', "`t") } else { "" })
+    if ($key -eq "guid") { $guid = $value; continue }
+    if ($key -eq "machine") { $shape = $value; continue }
+    if ($key -eq "kind") {
+        $current = [pscustomobject]@{ Kind = $value; Lines = ""; Id = ""; Mask = ""; Whole = "no"; Count = 0; LinesRx = $null; IdRx = $null; MaskRx = $null }
+        $kinds.Add($current)
+        continue
+    }
+    if ($null -ne $current -and @("lines", "id", "mask", "whole") -contains $key) { $current.($key) = $value; continue }
+    Refuse ("the rules file holds a line that is no key it knows, " + $key + ". Nothing was written.")
+}
+if ($guid -eq "" -or $shape -eq "" -or $kinds.Count -eq 0) { Refuse "the rules file has no guid line, no machine line or no kind. Nothing was written." }
+if (-not [regex]::IsMatch($machine, '^(?:' + $shape + ')$')) { Refuse "COMPUTERNAME is not the shape the machine line of the rules file allows. Nothing was written." }
+
+# An expression of the file, as .NET reads it. [:space:] is what it is in the C locale
+# grep reads in, so both read the same bytes as space.
+function Convert-Expression([string] $e) {
+    return $e.Replace('{guid}', $guid).Replace('{machine}', $machine).Replace('[:space:]', ' \t\n\v\f\r')
+}
+
+$options = [Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [Text.RegularExpressions.RegexOptions]::CultureInvariant
+foreach ($k in $kinds) {
+    if ($k.Lines -eq "" -or $k.Id -eq "" -or $k.Mask -eq "" -or @("yes", "no") -notcontains $k.Whole) { Refuse ("the kind " + $k.Kind + " in the rules file lacks lines, id, mask or a whole of yes or no. Nothing was written.") }
+    if ($k.Lines -ne "every") { $k.LinesRx = New-Object Text.RegularExpressions.Regex((Convert-Expression $k.Lines), $options) }
+    $k.IdRx = New-Object Text.RegularExpressions.Regex((Convert-Expression $k.Id), $options)
+    $k.MaskRx = $(if ($k.Whole -eq "yes") { New-Object Text.RegularExpressions.Regex(('(?<![A-Za-z0-9_])(?:' + (Convert-Expression $k.Id) + ')(?![A-Za-z0-9_])'), $options) } else { $k.IdRx })
+}
+
 $latin = [Text.Encoding]::GetEncoding(28591)
-
-$masks = @(
-    [pscustomobject]@{ Kind = "an analytics agent id"; Pattern = '(?i)(?<=analyticsagentid=)(?!\[id\](?!' + $value + '))' + $value + '+'; With = "[id]"; OnLicensing = $false; Count = 0 },
-    [pscustomobject]@{ Kind = "an id after -i"; Pattern = '(?<=(?:^|\s)-i[ \t]+["'']?)[^\s"'']*' + $guid + '[^\s"'']*'; With = "[id]"; OnLicensing = $false; Count = 0 },
-    [pscustomobject]@{ Kind = "a GUID on a licensing line"; Pattern = $guid; With = "[id]"; OnLicensing = $true; Count = 0 },
-    [pscustomobject]@{ Kind = "the machine name"; Pattern = '(?i)(?<![A-Za-z0-9_])' + [regex]::Escape($machine) + '(?![A-Za-z0-9_])'; With = "[machine]"; OnLicensing = $false; Count = 0 }
-)
-
-$wider = @(
-    [pscustomobject]@{ Kind = "the machine name"; Pattern = '(?i)' + [regex]::Escape($machine); OnLicensing = $false },
-    [pscustomobject]@{ Kind = "an analytics agent id"; Pattern = '(?i)(?<=analyticsagentid=)(?!\[id\](?!' + $value + '))' + $value + '|(?i)analytics-' + $guid; OnLicensing = $false },
-    [pscustomobject]@{ Kind = "an id after -i"; Pattern = $masks[1].Pattern; OnLicensing = $false },
-    [pscustomobject]@{ Kind = "a GUID on a licensing line"; Pattern = $guid; OnLicensing = $true }
-)
 
 # One line per piece, each keeping its own line ending, so the pieces join back into the
 # same bytes.
@@ -133,16 +152,14 @@ try {
         $outEncoding = $latin
     }
 
-    $lines = Split-Lines $text
     $sb = New-Object Text.StringBuilder
-    foreach ($line in $lines) {
-        $licensing = [regex]::IsMatch($line, $names)
-        foreach ($m in $masks) {
-            if ($m.OnLicensing -and -not $licensing) { continue }
-            $found = [regex]::Matches($line, $m.Pattern).Count
+    foreach ($line in (Split-Lines $text)) {
+        foreach ($k in $kinds) {
+            if ($null -ne $k.LinesRx -and -not $k.LinesRx.IsMatch($line)) { continue }
+            $found = $k.MaskRx.Matches($line).Count
             if ($found -gt 0) {
-                $m.Count += $found
-                $line = [regex]::Replace($line, $m.Pattern, $m.With)
+                $k.Count += $found
+                $line = $k.MaskRx.Replace($line, $k.Mask.Replace('$', '$$'))
             }
         }
         [void]$sb.Append($line)
@@ -169,26 +186,26 @@ finally {
     if ($null -ne $partial -and (Test-Path -LiteralPath $partial)) { Remove-Item -LiteralPath $partial }
 }
 
-foreach ($m in $masks) { Write-Host ("mask-evidence: {0}, {1} masked" -f $m.Kind, $m.Count) }
+foreach ($k in $kinds) { Write-Host ("mask-evidence: {0}, {1} masked" -f $k.Kind, $k.Count) }
 if ($null -ne $note) { Write-Host ("mask-evidence: " + $note) }
 
-# Read back off the disk, wider than the mask, as the header says.
-$back = [IO.File]::ReadAllBytes($outFull)
+# Read back off the disk with the check's rule, as the header says.
+$back = $latin.GetString([IO.File]::ReadAllBytes($outFull))
 $left = New-Object System.Collections.Generic.List[string]
+if ($back.IndexOf([char]0) -ge 0) { $left.Add("a NUL byte is in the copy") }
 $number = 0
-foreach ($line in (Split-Lines ($latin.GetString($back)))) {
+foreach ($line in (Split-Lines $back)) {
     $number++
-    $licensing = [regex]::IsMatch($line, $names)
-    foreach ($w in $wider) {
-        if ($w.OnLicensing -and -not $licensing) { continue }
-        if ([regex]::IsMatch($line, $w.Pattern)) { $left.Add(("{0} is still on line {1}" -f $w.Kind, $number)) }
+    foreach ($k in $kinds) {
+        if ($null -ne $k.LinesRx -and -not $k.LinesRx.IsMatch($line)) { continue }
+        if ($k.IdRx.IsMatch($line)) { $left.Add(("{0} is still on line {1}" -f $k.Kind, $number)) }
     }
 }
 
 if ($left.Count -gt 0) {
     Remove-Item -LiteralPath $outFull
     foreach ($l in $left) { Write-Host ("mask-evidence: " + $l) }
-    Refuse ("the copy still carried " + $left.Count + " of them when it was read back, so it was deleted. Mask those lines by hand or widen the mask, and run it again.")
+    Refuse ("the copy still carried " + $left.Count + " of them when it was read back, so it was deleted. Mask those lines by hand or widen the rules file, and run it again.")
 }
 
 Write-Host ("mask-evidence: wrote {0}, {1} lines, {2} bytes, read back with nothing left" -f (Hide $outFull), $number, $back.Length)

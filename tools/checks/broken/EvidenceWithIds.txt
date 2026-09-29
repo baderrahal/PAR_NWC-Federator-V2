@@ -1,3 +1,7 @@
 MACHINE   MADEUPPC01   2026-09-29 10:00:00
   13:18:13.691  t+69.8s  new process AdskLicensingAgent pid 1, parent 2 Roamer.exe, started 13:18:05.140, command line: "C:\Program Files (x86)\Common Files\Autodesk Shared\AdskLicensing\Current\AdskLicensingAgent/AdskLicensingAgent.exe" -r 0 -n /analytics/v1/connect?analyticsagentid=analytics-00000000-0000-0000-0000-000000000000 --no-gui -c 2 -i analytics-00000000-0000-0000-0000-000000000000
   13:18:17.429  t+73.5s  new process AdskLicensingAgent pid 3, parent 2 Roamer.exe, started 13:18:05.932, command line: "C:\Program Files (x86)\Common Files\Autodesk Shared\AdskLicensing\Current\AdskLicensingAgent/AdskLicensingAgent.exe" -i 00000000-0000-0000-0000-000000000000 --no-gui -c 2
+  AdskIdentityManager session {00000000-0000-0000-0000-000000000000} opened
+  GenuineService.exe checked 00000000-0000-0000-0000-000000000000
+  GET /analytics/v1/connect?analyticsagentid%3Danalytics-00000000-0000-0000-0000-000000000000 HTTP/1.1
+  other.exe -i 00000000-0000-0000-0000-000000000000

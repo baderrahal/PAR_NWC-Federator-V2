@@ -68,37 +68,50 @@ and five clash rows with both named as doubts.
 
 Writes a masked copy of one result file of a run or a probe, so it can be committed without
 this machine's name or Bader's Autodesk licensing ids in it. Every such file goes through it
-before it is committed, and tools\checks\check-evidence-ids.sh refuses one that did not, in
-the pre-commit over what is staged and in Actions over the tree. F102.
+before it is committed, and tools\checks\check-evidence-ids.sh refuses one that did not.
+F102.
 powershell -ExecutionPolicy Bypass -File tools\loop\mask-evidence.ps1 -In <file> -Out <file>
 
-It masks the value after analyticsagentid= up to the next space, ampersand or quote, the word
-after -i when it holds a GUID, and any GUID on a line naming AdskLicensing, AdskIdentity or
-GenuineService, each to [id], and then COMPUTERNAME as a whole word in any case to
-[machine]. A GUID on any other line is left, a COM CLSID or a WPF window class name, because
-it names no licence and no machine. It prints one line per kind with how many it masked.
-Every byte but a masked span comes out as it went in, line endings and UTF-8 included, and a
-UTF-16 file is written back as UTF-8, because the check cannot read UTF-16.
+WHAT IT MASKS is every kind in tools\checks\evidence-ids.txt, the one place the rule lives,
+which the check reads too: an analytics agent id, a GUID on a line naming analyticsagentid,
+a GUID after -i on any line, a GUID on a line naming AdskLicensing, AdskIdentity or
+GenuineService, each to [id], and COMPUTERNAME to [machine], only as a whole word. A GUID on
+a line no kind reads is left, a COM CLSID or a WPF window class name, because it names no
+licence and no machine. It prints one line per kind with how many it masked. Every byte but
+a masked span comes out as it went in, line endings and UTF-8 included, and a UTF-16 file is
+written back as UTF-8, because the check cannot read UTF-16.
+
+WHERE EACH GUARD READS, which is narrower than it may look.
+- Actions reads the tree for the ids and for the RUNNER'S name, never for Bader's. Only the
+  pre-commit on his machine reads for his, over what is staged
+- a commit made in a git worktree runs the MAIN CLONE'S pre-commit, not the one of the
+  branch checked out in the worktree, measured on 2026-09-29. So a branch that changes the
+  pre-commit has its own run by hand, sh .githooks/pre-commit, before it is committed
+- a file is masked BEFORE it is zipped. The check cannot read a zip, so it refuses one, and
+  where a zip may sit is written at the top of the check when Bader decides it
+- the check reads words. An id spelled in a way no kind names is not seen by either
 
 - reads: the file named by -In, held open against every writer until the copy is in place,
   so no spelling of -Out that reaches the same file can change it
 - writes: the file named by -Out, written beside and moved into place, then read back off
-  the disk more widely than it masks: the name anywhere, even inside a longer word, and
-  analytics- followed by a GUID anywhere. Anything left there and the copy is deleted, the
-  kind and the line number are printed and never the text, and it exits 1
+  the disk with the check's own rule, the machine name anywhere, even inside a longer word,
+  and for a NUL byte. Anything left there and the copy is deleted, the kind and the line
+  number are printed and never the text, and it exits 1
 - refuses, writing nothing: -In equal to -Out, a missing -In, an -Out under samples,
-  steps\logs or bundle, an -Out already there without -Replace, no COMPUTERNAME, and a file
-  holding a NUL byte with no UTF-16 byte order mark
+  steps\logs or bundle, an -Out already there without -Replace, no COMPUTERNAME or one the
+  rules file does not allow, a rules file it cannot read, and a file holding a NUL byte with
+  no UTF-16 byte order mark
 - writes outside the repo: only the -Out it is given
 
 Proved on 2026-09-29, in %LOCALAPPDATA%\NwcFederatorLoop\turn3\f102, on copies of the probe
-result, the reflection file and scan.md of fix-F100, which the check refused on 8 lines
-before and passed after, with only the masked lines changed. On fabricated samples with all
-zero GUIDs and a made up machine name: every kind masked, the near misses left, CRLF and a
-UTF-8 letter kept, UTF-16 written as UTF-8, a second pass masking nothing, and each refusal
-above made once, among them an id written url encoded and a name inside a longer word left
-by the mask and refused on the read back, and an -Out reaching -In through a junction,
-refused by the hold with -In unchanged.
+result, the reflection file and scan.md of fix-F100, which the check refused on 12 lines
+before and passed after, with only lines 1, 446 and 447 of the result changed. On fabricated
+samples with all zero GUIDs and a made up machine name: every kind masked, the near misses
+left, CRLF and a UTF-8 letter kept, UTF-16 written as UTF-8, a second pass masking nothing,
+the name inside a longer word refused on the read back, and each refusal above made once,
+among them an -Out reaching -In through a junction, refused by the hold with -In unchanged.
+Actions masks tools\checks\broken\EvidenceWithIds.txt on every run and compares the copy with
+the one kept beside it.
 
 ## prove-hooks.sh
 

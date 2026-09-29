@@ -4,7 +4,8 @@ Not a project and not compiled by anything. The folder is wrong on purpose in th
 one per check, and each check has to come back refusing it.
 
 A check that only ever runs against a clean tree proves nothing, so every check here runs
-twice in Actions, once over `src` and once over this folder.
+twice in Actions, once over the real files and once over this folder. The two C# checks read
+`src`. `check-evidence-ids.sh` reads the whole tree with this folder left out.
 
 ## For `check-locals.sh`
 
@@ -37,19 +38,35 @@ namespace.
 
 ## For `check-evidence-ids.sh`
 
-`EvidenceWithIds.txt` holds the fault, in the shape F102 found on a pushed branch: a MACHINE
-line naming the machine, and the command lines of two AdskLicensingAgent processes carrying
-an analytics agent id and a licensing id after `-i`. Every id in it is FABRICATED, a GUID of
-all zeros, and the machine is a made up name, which Actions hands the check as COMPUTERNAME
-for this folder alone. The check has to come back with exactly four faults on lines 1 to 3,
-each naming the file, the line and the kind, and never the text. So this README never
-spells that name, or it would be a fifth.
+What counts as an id is in `tools/checks/evidence-ids.txt`, which the check and
+`tools/loop/mask-evidence.ps1` both read. Every id here is FABRICATED, a GUID of all zeros,
+and the machine is a made up name, which Actions hands the check and the mask as
+COMPUTERNAME for this folder alone. So this README never spells that name or a GUID, or it
+would be one more fault.
 
-`EvidenceNearMiss.txt` MUST PASS. Its first line and its licensing line are the same lines
-as `tools/loop/mask-evidence.ps1` writes them masked. The name sits inside a longer word,
-which is not the name as a whole word. And a GUID on a line that names no licensing program,
-a COM CLSID, a WPF window class name and one after `-i` on another program's line, names no
-licence and no machine and is left alone.
+`EvidenceWithIds.txt` holds the fault, one line per shape. Line 1 is a MACHINE line naming
+the machine. Lines 2 and 3 are the command lines of two AdskLicensingAgent processes in the
+shape F102 found on a pushed branch, with an analytics agent id and ids after `-i`. Line 4
+is an AdskIdentity session GUID, line 5 a GenuineService GUID, line 6 an analytics agent id
+with its key url encoded, and line 7 a GUID after `-i` on another program's line, which is
+masked and refused on any line. The check has to come back with exactly twelve faults on
+it, each naming the file, the line and the kind, and never the text.
+
+`EvidenceLeftByMask.txt` holds the name inside a longer word. The mask masks the name only
+as a whole word, because a name inside a longer word may be part of another word, and the
+check and the mask's read back refuse it anywhere, so a person looks. The check has to come
+back with one fault on its line 2, and the mask has to refuse it on its read back and write
+nothing.
+
+`EvidenceWithIds.masked.txt` MUST PASS. It is written by hand and is byte for byte what the
+mask writes from `EvidenceWithIds.txt`, which Actions proves on every run by masking that
+file and comparing the two.
+
+`EvidenceNearMiss.txt` MUST PASS. Its first two lines are masked lines. A GUID on a line no
+kind reads, a COM CLSID and a WPF window class name, names no licence and no machine and is
+left alone. So is a GUID after a word that only starts with `-i`, and `analytics-` with no
+GUID after it.
 
 Actions reads the whole tree with this folder left out, because the fault here is on
-purpose, and the pre-commit leaves it out of what is staged for the same reason.
+purpose, and the pre-commit leaves it out of what is staged for the same reason. Over this
+folder the check has to come back with exactly thirteen faults.

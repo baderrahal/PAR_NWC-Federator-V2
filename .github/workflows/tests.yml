@@ -64,15 +64,18 @@ jobs:
           echo "check-imports refused the broken folder, which is what it is for"
 
       # F102. A probe result committed from Bader's machine carried the machine's name and
-      # two Autodesk licensing ids. Every text file in the tree is read for them. It names
-      # the file, the line and the kind, never the text, because this log is public.
-      # COMPUTERNAME here is the runner's, so this reads for the runner's name.
+      # two Autodesk licensing ids. Every file in the tree is read as text for every kind in
+      # tools/checks/evidence-ids.txt, bar the client's workbooks and pictures under samples.
+      # It names the file, the line and the kind, never the text, because this log is
+      # public. COMPUTERNAME here is the runner's, so this reads for the runner's name and
+      # never for Bader's. Only the pre-commit on his machine reads for his.
       - name: No machine name or licensing id in a committed file
         shell: bash
         run: sh tools/checks/check-evidence-ids.sh . tools/checks/broken
 
       # The broken folder holds fabricated ids, all zeros, and a made up machine name. The
-      # check must refuse exactly the four lines that carry one and nothing in the near miss.
+      # check must refuse exactly these thirteen lines, nothing in the near miss or in the
+      # masked copy, and never print the name or an id.
       - name: The id check refuses the fault it was written for
         shell: bash
         run: |
@@ -83,21 +86,74 @@ jobs:
             echo "check-evidence-ids answered $status over the broken folder, and it has to refuse it with 1"
             exit 1
           fi
-          for want in \
-              "EvidenceWithIds.txt:1  the machine name" \
-              "EvidenceWithIds.txt:2  an analytics agent id" \
-              "EvidenceWithIds.txt:2  a licensing id after -i" \
-              "EvidenceWithIds.txt:3  a licensing id after -i" \
-              "check-evidence-ids: 4 line(s)"; do
-            case "$said" in
-              *"$want"*) ;;
-              *) echo "check-evidence-ids did not say: $want"; exit 1 ;;
-            esac
-          done
+          want="tools/checks/broken/EvidenceLeftByMask.txt:2  the machine name
+          tools/checks/broken/EvidenceWithIds.txt:1  the machine name
+          tools/checks/broken/EvidenceWithIds.txt:2  a GUID on a line naming analyticsagentid
+          tools/checks/broken/EvidenceWithIds.txt:2  a GUID on a licensing line
+          tools/checks/broken/EvidenceWithIds.txt:2  an analytics agent id
+          tools/checks/broken/EvidenceWithIds.txt:2  an id after -i
+          tools/checks/broken/EvidenceWithIds.txt:3  a GUID on a licensing line
+          tools/checks/broken/EvidenceWithIds.txt:3  an id after -i
+          tools/checks/broken/EvidenceWithIds.txt:4  a GUID on a licensing line
+          tools/checks/broken/EvidenceWithIds.txt:5  a GUID on a licensing line
+          tools/checks/broken/EvidenceWithIds.txt:6  a GUID on a line naming analyticsagentid
+          tools/checks/broken/EvidenceWithIds.txt:6  an analytics agent id
+          tools/checks/broken/EvidenceWithIds.txt:7  an id after -i"
+          got=$(printf '%s\n' "$said" | awk '!/^check-evidence-ids:/' | LC_ALL=C sort)
+          want=$(printf '%s\n' "$want" | LC_ALL=C sort)
+          if [ "$got" != "$want" ]; then
+            echo "check-evidence-ids did not refuse exactly the thirteen lines. It refused:"
+            echo "$got"
+            exit 1
+          fi
           case "$said" in
-            *EvidenceNearMiss.txt*)
-              echo "check-evidence-ids refused a line of the near miss, which it must pass"
+            *MADEUPPC01*|*00000000*)
+              echo "check-evidence-ids printed the made up name or a fabricated id, which it must never print"
               exit 1
               ;;
           esac
-          echo "check-evidence-ids refused the four lines with an id and passed the near miss, which is what it is for"
+          echo "check-evidence-ids refused exactly the thirteen lines, passed the near miss and the masked copy, and printed no name and no id"
+
+      # F102. The mask, on every run. windows-latest has Windows PowerShell 5.1. Its copy of
+      # the fabricated ids must be byte for byte the masked copy kept beside them, and pass
+      # the check. The made up name inside a longer word, which the mask leaves, must be
+      # refused on its read back with nothing written. Neither prints the name or an id.
+      - name: The mask writes a copy the check passes and refuses what it leaves
+        shell: bash
+        run: |
+          out="$RUNNER_TEMP/f102"
+          mkdir -p "$out"
+          status=0
+          said=$(COMPUTERNAME=MADEUPPC01 powershell -NoProfile -ExecutionPolicy Bypass -File tools/loop/mask-evidence.ps1 -In tools/checks/broken/EvidenceWithIds.txt -Out "$out/EvidenceWithIds.txt") || status=$?
+          echo "$said"
+          if [ "$status" -ne 0 ]; then
+            echo "mask-evidence answered $status on the fabricated ids, and it has to write the copy with 0"
+            exit 1
+          fi
+          if ! cmp tools/checks/broken/EvidenceWithIds.masked.txt "$out/EvidenceWithIds.txt"; then
+            echo "the mask's copy is not byte for byte EvidenceWithIds.masked.txt"
+            exit 1
+          fi
+          COMPUTERNAME=MADEUPPC01 sh tools/checks/check-evidence-ids.sh "$out"
+          status=0
+          left=$(COMPUTERNAME=MADEUPPC01 powershell -NoProfile -ExecutionPolicy Bypass -File tools/loop/mask-evidence.ps1 -In tools/checks/broken/EvidenceLeftByMask.txt -Out "$out/left.txt") || status=$?
+          echo "$left"
+          if [ "$status" -ne 1 ]; then
+            echo "mask-evidence answered $status on a name it leaves, and it has to refuse it with 1"
+            exit 1
+          fi
+          case "$left" in
+            *"the machine name is still on line 2"*) ;;
+            *) echo "mask-evidence did not name the kind and the line it refused"; exit 1 ;;
+          esac
+          if [ -e "$out/left.txt" ]; then
+            echo "mask-evidence left its refused copy behind"
+            exit 1
+          fi
+          case "$said$left" in
+            *MADEUPPC01*|*00000000*)
+              echo "mask-evidence printed the made up name or a fabricated id, which it must never print"
+              exit 1
+              ;;
+          esac
+          echo "the mask wrote the expected copy, the check passed it, and the read back refused what the mask leaves"

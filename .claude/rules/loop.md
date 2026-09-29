@@ -104,8 +104,13 @@ and nothing is fixed until a real run on real files shows it fixed.
 - No licensing id, session id or anything else that names Bader's Autodesk licence or his
   machine is ever committed. Every file of a run or a probe is read by
   tools\loop\mask-evidence.ps1 before it is committed, and the masked copy is what goes in.
-  tools\checks\check-evidence-ids.sh refuses a commit that still carries one, in the
-  pre-commit over what is staged and in Actions over the tree. F102
+  tools\checks\check-evidence-ids.sh refuses a commit that still carries one. What counts
+  is in tools\checks\evidence-ids.txt, the one place both read. F102. Where each reads:
+  Actions reads the tree for the ids and for the runner's name, NEVER FOR BADER'S, so only
+  the pre-commit on his machine reads for his. A commit made in a git worktree runs the MAIN
+  CLONE'S pre-commit, so a branch that changes the pre-commit runs its own by hand,
+  sh .githooks/pre-commit, before it commits. A file is masked BEFORE it is zipped, because
+  the check cannot read a zip and refuses one
 - samples and steps\logs are never touched
 
 ## How a finding is worked
