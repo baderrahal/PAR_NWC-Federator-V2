@@ -129,6 +129,26 @@ function StopStandins {
   foreach ($p in $script:Held) { if (-not $p.HasExited) { $p.Kill(); [void]$p.WaitForExit(10000) } }
 }
 function Alive($p, $ticks) { return (-not $p.HasExited -and (UtcTicks $p.StartTime) -eq $ticks) }
+# A child started with some environment variables pointed at the harness's own folders, read
+# to its end by EndChild.
+function StartChildEnv($file, $arguments, $workDir, $envs) {
+  $psi = New-Object System.Diagnostics.ProcessStartInfo
+  $psi.FileName = $file
+  $psi.Arguments = $arguments
+  $psi.UseShellExecute = $false
+  $psi.CreateNoWindow = $true
+  $psi.RedirectStandardOutput = $true
+  $psi.RedirectStandardError = $true
+  $psi.WorkingDirectory = $workDir
+  foreach ($k in $envs.Keys) { $psi.EnvironmentVariables[$k] = $envs[$k] }
+  $p = [System.Diagnostics.Process]::Start($psi)
+  return [pscustomobject]@{ P = $p; O = $p.StandardOutput.ReadToEndAsync(); E = $p.StandardError.ReadToEndAsync() }
+}
+function EndChild($c, $seconds) {
+  if (-not $c.P.WaitForExit($seconds * 1000)) { $c.P.Kill(); [void]$c.P.WaitForExit(10000); return [pscustomobject]@{ Exit = -1; Out = "the child did not end in " + $seconds + " s and was closed through its own handle"; Err = ""; Pid = $c.P.Id } }
+  $c.P.WaitForExit()
+  return [pscustomobject]@{ Exit = $c.P.ExitCode; Out = $c.O.Result; Err = $c.E.Result; Pid = $c.P.Id }
+}
 function RunReal($arguments) {
   return (RunChild $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $runPs + "`" " + $arguments) $repo)
 }
@@ -222,6 +242,12 @@ try {
     $f = StaticFaults @($copy)
     Check ("the static read names a copy of run.ps1 with one bad line added, " + $k) ($f.Count -ge 1) (($f) -join " | ")
   }
+  $rt = [System.IO.File]::ReadAllText($runPs)
+  Check "run.ps1 writes its four modes in one place" (([regex]::Matches($rt, [regex]::Escape('@("Check", "Install", "Run", "CloseOwn")'))).Count -eq 1) ""
+  Check "run.ps1 reads the loop's installed.txt in one place" (([regex]::Matches($rt, [regex]::Escape('-Filter "installed.txt"'))).Count -eq 1) ""
+  $iM5 = $rt.IndexOf('NewerFiles $roots $sync.CallStartUtc'); $iPut = $rt.IndexOf('$spb = SettingsPutBack')
+  Check "run.ps1 reads M5 before the put back, so the put back's own writes are never listed as the start's" ($iM5 -gt 0 -and $iPut -gt 0 -and $iM5 -lt $iPut) ("M5 at " + $iM5 + ", the put back at " + $iPut)
+  Check "the monitor reads watch.txt through ReadShared and never through ReadAllLines" ($rt.Contains('ReadShared $sync.WatchFile') -and -not $rt.Contains('ReadAllLines($sync.WatchFile)')) ""
 
   # =====================================================================================
   O ""
@@ -255,6 +281,19 @@ try {
   foreach ($f in @($runPs, $guardFile, (Join-Path $repo "tools\probes\probe-automation-start.ps1"))) { $t3 = $null; $e3 = $null; [void][System.Management.Automation.Language.Parser]::ParseFile($f, [ref]$t3, [ref]$e3); Check ((Split-Path $f -Leaf) + " parses with no error") ($e3.Count -eq 0) "" }
   $gAst = [System.Management.Automation.Language.Parser]::ParseFile($guardFile, [ref]$null, [ref]$null)
   Check "nw-guard.ps1 has no main body, every top level statement is a function" (@($gAst.EndBlock.Statements | Where-Object { $_ -isnot [System.Management.Automation.Language.FunctionDefinitionAst] }).Count -eq 0) ""
+  # The move read line by line, apart from the generator that made it: every line of
+  # nw-guard.ps1 at the move commit is a line of the probe at 0eb4ede, a comment, or one of the
+  # wrapper and changed lines printed here. The move proof in steps\notes maps each line.
+  $probeLines = @((RunChild "git" "show 0eb4ede:tools/probes/probe-automation-start.ps1" $repo).Out.Replace("`r`n", "`n").Split("`n"))
+  $guardAtMove = @((RunChild "git" "show 377cb1a:tools/loop/nw-guard.ps1" $repo).Out.Replace("`r`n", "`n").Split("`n"))
+  $probeSet = New-Object 'System.Collections.Generic.HashSet[string]'
+  foreach ($x in $probeLines) { [void]$probeSet.Add($x) }
+  $notProbe = New-Object System.Collections.Generic.List[string]
+  for ($i = 0; $i -lt $guardAtMove.Count; $i++) { $x = $guardAtMove[$i]; if ($x -eq "" -or $probeSet.Contains($x) -or $x.TrimStart().StartsWith("#")) { continue }; $notProbe.Add(("{0,5} {1}" -f ($i + 1), $x)) }
+  O ("  lines of nw-guard.ps1 at 377cb1a that are neither a line of the probe at 0eb4ede nor a comment, " + $notProbe.Count + ":")
+  foreach ($x in $notProbe) { O ("    " + $x) }
+  $shapes = @($notProbe | Where-Object { $_ -notmatch '^\s*\d+ \s*(function \w+|return |\$ur\.|\$bs\.|\$sync\.GuardText = \$guardText|\$suppressed = \$false|& reg\.exe export \("HKCU\\" \+ \$regSub\)|\$ownScript = .*\$scriptPath\)|try \{ \$ulines .*\$ur\.Stop|if \(.*\{ \$(ur|bs)\.|\} catch \{ \$bs\.Why)' })
+  Check "every such line is a function line, a return, a result or stop line of a wrapper, the exported key or the caller's script path, 36 lines as the move proof maps them" ($notProbe.Count -eq 36 -and $shapes.Count -eq 0) ($notProbe.Count.ToString() + " lines, " + $shapes.Count + " of another shape: " + (($shapes) -join " | "))
   BaderSame "H0 and H1"
 
   # =====================================================================================
@@ -564,6 +603,69 @@ try {
   Check "live 3: log growing with the processor flat never hangs, the fixed hold of 40 s ends it" ($r6.Adopted -and $r6.Sync.RunOver -eq "HOLD") $r6.Sync.RunOver
   $beats = @(Get-Content -LiteralPath $r6.Sync.RecordFile | Where-Object { $_ -match 'HEARTBEAT the log \d+ bytes' })
   Check "live 3: the heartbeat, every 10 s here and every 60 s in run.ps1, names the log's size, its last line, the processor and both clocks" ($beats.Count -ge 2 -and $beats[0] -match 'the log still for \d+ s and the processor for \d+ s, against 20') $(if ($beats.Count -gt 0) { $beats[0] } else { "no HEARTBEAT line" })
+
+  O "  live 4, THE CEILING: the watchdog running with its adopted deadline, run.ps1's ceiling, set to 5 s, and the monitor beside it"
+  StopStandins
+  $dirC = Join-Path $h6 "ceiling"
+  New-Item -ItemType Directory -Path $dirC, (Join-Path $dirC "logs") | Out-Null
+  $syC = NewTestSync $dirC
+  $syC.AdoptedDeadline = 5
+  $syC.CtorReturned = $true
+  $syC.CallStartUtc = [DateTime]::UtcNow
+  $pC = StartStandin "-Embedding" "sleep|120" $null
+  $wpsC = [PowerShell]::Create(); [void]$wpsC.AddScript((WatchdogScript)).AddArgument($syC); $whC = $wpsC.BeginInvoke()
+  $adC = AdoptStart $null $obj $syC (Join-Path $dirC "mypid.txt")
+  $syC.RecordLock = New-Object System.Object; $syC.RecordFile = Join-Path $dirC "record.txt"; $syC.RunDir = $dirC; $syC.RunText = $runText
+  $syC.MonitorStop = $false; $syC.RunOver = ""; $syC.MonitorFault = ""; $syC.MonitorWriteFails = 0; $syC.Dialogs = 0; $syC.ToolLog = $null; $syC.LogAmbiguous = $false; $syC.Closed = ""
+  $syC.LogsFolder = Join-Path $dirC "logs"; $syC.LogsBefore = @{}; $syC.HangLimit = 20; $syC.PassSeconds = 2; $syC.HoldSeconds = 60; $syC.BeatSeconds = 10
+  $mpsC = [PowerShell]::Create(); [void]$mpsC.AddScript((MonitorScript)).AddArgument($syC); $mhC = $mpsC.BeginInvoke()
+  $sw = [Diagnostics.Stopwatch]::StartNew(); while ($syC.RunOver -eq "" -and $sw.Elapsed.TotalSeconds -lt 60) { Start-Sleep -Milliseconds 250 }
+  $syC.MonitorStop = $true; [void]$mpsC.EndInvoke($mhC); $mpsC.Dispose()
+  $syC.Stop = $true; [void]$wpsC.EndInvoke($whC); $wpsC.Dispose()
+  foreach ($l in @(Get-Content -LiteralPath (Join-Path $dirC "watch.txt") | Where-Object { $_ -match 'deadline' })) { O ("    | watch.txt: " + $l) }
+  $vC = RunVerdict ([pscustomobject]@{ StopText = ""; Called = $true; Adopted = $adC.Adopted; NotPutBack = $false; RunOver = [string]$syC.RunOver; Forced = [string]$syC.Forced; Fault = ""; MonitorFault = [string]$syC.MonitorFault; FinallyFaults = @(); Dialogs = 0; ClosedHere = ""; HoldSeconds = 60 })
+  Check "live 4: at the 5 s ceiling the watchdog closes the stand-in through its held handle, and the monitor ends the run as CEILING, not as ended by itself" ($adC.Adopted -and $syC.RunOver -eq "CEILING" -and $pC.HasExited -and $syC.Forced -match 'closed through the held handle and gone') ($syC.RunOver + ", " + $syC.Forced)
+  Check "live 4: the verdict of that run is STOPPED, CEILING, exit 4" ($vC.Code -eq 4 -and $vC.Text.StartsWith("STOPPED, CEILING")) ($vC.Code.ToString() + ", " + $vC.Text)
+  function V($over, $forced, $adopted, $notPut, $dialogs) { return (RunVerdict ([pscustomobject]@{ StopText = ""; Called = $true; Adopted = $adopted; NotPutBack = $notPut; RunOver = $over; Forced = $forced; Fault = ""; MonitorFault = ""; FinallyFaults = @(); Dialogs = $dialogs; ClosedHere = ""; HoldSeconds = 360 })) }
+  $vt = @(
+    @("the process read gone after the watchdog forced the ceiling, the fault the breaker found", (V "GONE" "the adopted deadline passed" $true $false 0), 4, "STOPPED, CEILING"),
+    @("the process gone with nothing forced", (V "GONE" "" $true $false 0), 7, "STOPPED, the adopted Navisworks ended by itself"),
+    @("a hang", (V "HUNG" "" $true $false 0), 4, "STOPPED, HUNG"),
+    @("the hold, all put back", (V "HOLD" "" $true $false 0), 0, "RAN, item 0"),
+    @("the hold with a dialog", (V "HOLD" "" $true $false 1), 5, "RAN, with 1 DIALOG"),
+    @("the hold, something not put back", (V "HOLD" "" $true $true 0), 6, "STOPPED, something of Bader's"),
+    @("not adopted", (V "" "" $false $false 0), 3, "NOT ADOPTED"))
+  foreach ($row in $vt) { Check ("RunVerdict, " + $row[0] + ": exit " + $row[2]) ($row[1].Code -eq $row[2] -and $row[1].Text.StartsWith($row[3])) ($row[1].Code.ToString() + ", " + $row[1].Text) }
+
+  O "  THE WATCH FILE: a writer appends as the watchdog's W does, while a reader reads it for 3 s, first with File.ReadAllLines, then with ReadShared"
+  $wfile = Join-Path $h6 "watch-share.txt"
+  function ShareTrial([bool]$useShared) {
+    [System.IO.File]::WriteAllText($wfile, "", $utf8)
+    $st = [hashtable]::Synchronized(@{ Stop = $false; Fails = 0; Writes = 0; File = $wfile })
+    $w = [PowerShell]::Create()
+    [void]$w.AddScript('param($s) $u = New-Object System.Text.UTF8Encoding($false); while (-not $s.Stop) { try { [System.IO.File]::AppendAllText($s.File, "a watchdog line`r`n", $u); $s.Writes = $s.Writes + 1 } catch { $s.Fails = $s.Fails + 1 } }').AddArgument($st)
+    $wh = $w.BeginInvoke()
+    $reads = 0; $readFails = 0
+    $sw2 = [Diagnostics.Stopwatch]::StartNew()
+    while ($sw2.Elapsed.TotalSeconds -lt 3) { try { if ($useShared) { [void](ReadShared $wfile) } else { [void][System.IO.File]::ReadAllLines($wfile) }; $reads++ } catch { $readFails++ } }
+    $st.Stop = $true; [void]$w.EndInvoke($wh); $w.Dispose()
+    return [pscustomobject]@{ Writes = $st.Writes; Fails = $st.Fails; Reads = $reads; ReadFails = $readFails }
+  }
+  $before6 = ShareTrial $false
+  $after6 = ShareTrial $true
+  O ("    File.ReadAllLines: " + $before6.Writes + " appends, " + $before6.Fails + " appends that failed, " + $before6.Reads + " reads, " + $before6.ReadFails + " reads that failed")
+  O ("    ReadShared: " + $after6.Writes + " appends, " + $after6.Fails + " appends that failed, " + $after6.Reads + " reads, " + $after6.ReadFails + " reads that failed")
+  Check "the watch file, before: a read through File.ReadAllLines makes the watchdog's append fail, which the put back counts as a line it could not write" ($before6.Fails -gt 0) ([string]$before6.Fails + " appends failed")
+  Check "the watch file, after: a read through ReadShared makes no append fail and fails itself never" ($after6.Fails -eq 0 -and $after6.ReadFails -eq 0 -and $after6.Reads -gt 0 -and $after6.Writes -gt 0) ([string]$after6.Fails + " appends and " + $after6.ReadFails + " reads failed")
+
+  O "  THE HELD READ keeps its reason"
+  $pz = StartStandin "sleep 30" $null $null
+  $tz = UtcTicks $pz.StartTime
+  $pzCopy = [System.Diagnostics.Process]::GetProcessById($pz.Id)
+  [void]$pzCopy.Handle
+  $pzCopy.Dispose()
+  $hr = HeldRead $pzCopy $tz
+  Check "HeldRead of a Process object that cannot be read returns unreadable with the reason, which run.ps1's finally prints" ($hr.State -eq "unreadable" -and $hr.Why -match 'threw' -and (HeldState $pzCopy $tz) -eq "unreadable" -and $rt.Contains('so it is not closed here and is written down below')) ($hr.State + ", " + $hr.Why)
   StopStandins
   BaderSame "H6"
 
@@ -596,7 +698,54 @@ try {
   $dl7 = @(Get-Content -LiteralPath $decoy7 -ErrorAction SilentlyContinue)
   Check "the decoy's log shows no message sent to it from another thread or process" ($dl7.Count -eq 0) (($dl7) -join " | ")
   StopStandins
+
+  O "  AN OWNED WINDOW titled as the Navisworks main window: a WinForms window with no owner, and one owned by it with a label, both titled Untitled - Autodesk Navisworks Manage 2025"
+  $mainCap = "Untitled - Autodesk Navisworks Manage 2025"
+  $ownLab = "NwcFederatorLoop owned message 5521"
+  $po = StartStandin "" ("owned|" + $mainCap + "|" + $ownLab + "|40") $null
+  Start-Sleep -Seconds 2
+  $mains = 0; $dialogs7 = 0; $ownedText = ""; $mainRead = $false
+  foreach ($r in (WindowRecords $winType $procType ([uint32]$po.Id) $true $true)) {
+    $k = WindowKind $r.Class $r.Caption $r.OwnerHandle
+    O ("    | " + $k + ": class " + $r.Class + ", caption `"" + $r.Caption + "`", owner " + $r.Owner + ", text " + $(if ($null -ne $r.Texts) { $r.Texts -join " " } else { "not read" }))
+    if ($k -eq "MAIN") { $mains++; if ($null -ne $r.Texts) { $mainRead = $true } }
+    if ($k -eq "DIALOG") { $dialogs7++; $ownedText = ($r.Texts -join " ") }
+  }
+  Check "the window with no owner is MAIN and its children are not read, the owned one is a DIALOG with its label's text" ($mains -eq 1 -and -not $mainRead -and $dialogs7 -eq 1 -and $ownedText.Contains($ownLab)) ("MAIN " + $mains + ", DIALOG " + $dialogs7)
+  $wkt = @(
+    @("WindowsForms10.Window.8.app.0.x", $mainCap, [IntPtr]::Zero, "MAIN"),
+    @("WindowsForms10.Window.8.app.0.x", $mainCap, [IntPtr]123, "DIALOG"),
+    @("#32770", "Autodesk Navisworks Manage 2025", [IntPtr]::Zero, "DIALOG"),
+    @("HwndWrapper[Roamer.exe;ProgressDialog;1]", "Working...", [IntPtr]::Zero, "PROGRESS"),
+    @("HwndWrapper[Roamer.exe;;2]", "Parsons NWC Federator 1.0", [IntPtr]::Zero, "WINDOW"))
+  foreach ($row in $wkt) { $k = WindowKind $row[0] $row[1] $row[2]; Check ("WindowKind of class " + $row[0] + ", owner " + $row[2] + ": " + $row[3]) ($k -eq $row[3]) $k }
+  StopStandins
   BaderSame "H7"
+
+  # =====================================================================================
+  O ""
+  O "==== H16, A WINDOW WHOSE THREAD IS BLOCKED: GetWindowText, and the 2 s the child reads may spend ===="
+  $h16 = Join-Path $Work "h16"
+  New-Item -ItemType Directory -Path $h16 | Out-Null
+  $ready16 = Join-Path $h16 "ready.txt"
+  $pb16 = StartStandin "" ("hang|" + $ready16 + "|20|NwcFederatorLoop blocked window|10") $null
+  $sw = [Diagnostics.Stopwatch]::StartNew(); while (-not (Test-Path -LiteralPath $ready16) -and $sw.Elapsed.TotalSeconds -lt 30) { Start-Sleep -Milliseconds 50 }
+  $blocked = [Diagnostics.Stopwatch]::StartNew()
+  $m16 = New-Object System.Collections.Generic.List[object]
+  foreach ($round in @("just blocked", "blocked 7 s, when Windows counts it hung")) {
+    if ($round.StartsWith("blocked 7")) { while ($blocked.Elapsed.TotalSeconds -lt 7) { Start-Sleep -Milliseconds 100 } }
+    $a16 = [Diagnostics.Stopwatch]::StartNew(); $r1 = WindowRecords $winType $procType ([uint32]$pb16.Id) $true $false; $a16.Stop()
+    $b16 = [Diagnostics.Stopwatch]::StartNew(); $r2 = WindowRecords $winType $procType ([uint32]$pb16.Id) $true $true; $b16.Stop()
+    $cap = ""; if ($r1.Count -gt 0) { $cap = $r1[0].Caption }
+    $txt = ""; if ($r2.Count -gt 0 -and $null -ne $r2[0].Texts) { $txt = ($r2[0].Texts -join " ") }
+    O ("    " + $round + ": captions only, GetClassName and GetWindowText, " + $a16.ElapsedMilliseconds + " ms, caption `"" + $cap + "`". With the child reads " + $b16.ElapsedMilliseconds + " ms, text: " + $txt)
+    $m16.Add([pscustomobject]@{ Round = $round; Caption = $cap; CaptionMs = $a16.ElapsedMilliseconds; ChildMs = $b16.ElapsedMilliseconds; Text = $txt })
+  }
+  Check "GetWindowText reads the caption of a window whose thread is blocked, under 1 s each time, so it waits on no message" ($m16[0].Caption -eq "NwcFederatorLoop blocked window" -and $m16[1].Caption -eq "NwcFederatorLoop blocked window" -and $m16[0].CaptionMs -lt 1000 -and $m16[1].CaptionMs -lt 1000) ([string]$m16[0].CaptionMs + " ms and " + $m16[1].CaptionMs + " ms")
+  Check "just blocked, the child reads of one call stop within 2 s and write what they did not read" ($m16[0].ChildMs -le 2100 -and $m16[0].Text -match 'not read, because the 2 s one pass may spend reading children was spent') ([string]$m16[0].ChildMs + " ms")
+  Check "blocked 7 s, SMTO_ABORTIFHUNG returns each child read at once" ($m16[1].ChildMs -lt 1000) ([string]$m16[1].ChildMs + " ms")
+  StopStandins
+  BaderSame "H16"
 
   # =====================================================================================
   O ""
@@ -653,6 +802,17 @@ try {
   Check "BackupNew copies every file the first time, read back" ($n1.Ok -and $n1.Copied -eq 3 -and $n1.Listed -eq 3) ("copied " + $n1.Copied)
   Check "BackupNew copies nothing the second time" ($n2.Ok -and $n2.Copied -eq 0) ("copied " + $n2.Copied)
   Check "BackupNew copies only the changed file the third time" ($n3.Ok -and $n3.Copied -eq 1 -and (Test-Path -LiteralPath (Join-Path $bk10 "since-t3\two.log"))) ("copied " + $n3.Copied)
+  $asRoot = Join-Path $h10 "asroot"
+  New-Item -ItemType Directory -Path (Join-Path $asRoot "AutoSave") | Out-Null
+  foreach ($nm in @("a.nwf", "b.nwf")) { [System.IO.File]::WriteAllText((Join-Path $asRoot ("AutoSave\" + $nm)), "autosave " + $nm, $utf8) }
+  $asList = Join-Path $h10 "autosave-before.txt"
+  $nb = BackupNew (Join-Path $asRoot "AutoSave") (Join-Path $h10 "asbackup") $asList "t4"
+  $rl = ReadListing $asList "AutoSave\"
+  [System.IO.File]::WriteAllText((Join-Path $asRoot "AutoSave\b.nwf"), "changed by a run", $utf8)
+  [System.IO.File]::WriteAllText((Join-Path $asRoot "AutoSave\c.nwf"), "added by a run", $utf8)
+  $dAs = @(DiffAutoSave $rl (SettingsRead $asRoot))
+  foreach ($l in $dAs) { O ("    | " + $l) }
+  Check "the AutoSave compare reads autosave-before.txt back off the disk and names the changed file and the added one, and only those" ($nb.Ok -and $rl.Count -eq 2 -and $dAs.Count -eq 2 -and ($dAs -join "|") -match 'AutoSave\\b\.nwf' -and ($dAs -join "|") -match 'AutoSave\\c\.nwf' -and ($dAs -join "|") -notmatch 'a\.nwf') ([string]$dAs.Count + " lines")
   $CU.DeleteSubKeyTree($tkey, $false)
   Check "the test key is deleted" ($null -eq $CU.OpenSubKey($tkey)) ""
   BaderSame "H10"
@@ -736,7 +896,51 @@ try {
     $iv = (RunChild $ps ("-NoProfile -Command `"foreach (`$c in [System.Reflection.Assembly]::ReflectionOnlyLoadFrom('" + $copy + "').GetCustomAttributesData()) { if (`$c.AttributeType.Name -eq 'AssemblyInformationalVersionAttribute') { [Console]::Out.Write([string]`$c.ConstructorArguments[0].Value) } }`"") $h12).Out.Trim()
     Check ("M2 on " + $pair[0] + ": FileVersionInfo.ProductVersion equals AssemblyInformationalVersion") ($pv -ne "" -and $pv -eq $iv) ("ProductVersion `"" + $pv + "`", informational `"" + $iv + "`"")
   }
+  $iv1 = InstallVerdict "abcdef12" $false
+  $iv2 = InstallVerdict "abcdef12" $true
+  Check "InstallVerdict: a Navisworks running right after the install changes the verdict to a FINDING and the exit to 5" ($iv1.Code -eq 0 -and $iv1.Text -eq "INSTALLED abcdef12" -and $iv2.Code -eq 5 -and $iv2.Text -match 'FINDING: a Navisworks is running right after the install') ($iv2.Code.ToString() + ", " + $iv2.Text)
   BaderSame "H12"
+
+  # =====================================================================================
+  O ""
+  O "==== H12b, build\install.ps1 REFUSES WHILE NAVISWORKS RUNS, a copy of it run with -SkipBuild against a fake APPDATA ===="
+  $ir = Join-Path $h12 "irepo"
+  $fakeApp = Join-Path $h12 "appdata"
+  $fakeBundle = Join-Path $fakeApp "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle"
+  $buildOut = Join-Path $repo "src\Federator.Addin\bin\Release\net48"
+  New-Item -ItemType Directory -Path (Join-Path $ir "build"), (Join-Path $ir "bundle\ParsonsNwcFederator.bundle"), (Join-Path $ir "src\Federator.Addin\bin\Release\net48") | Out-Null
+  Copy-Item -LiteralPath (Join-Path $repo "bundle\ParsonsNwcFederator.bundle\PackageContents.xml") -Destination (Join-Path $ir "bundle\ParsonsNwcFederator.bundle")
+  foreach ($f in @(Get-ChildItem -LiteralPath $buildOut -File -Filter "*.dll")) { Copy-Item -LiteralPath $f.FullName -Destination (Join-Path $ir "src\Federator.Addin\bin\Release\net48") }
+  $newInstall = [System.IO.File]::ReadAllText((Join-Path $repo "build\install.ps1"))
+  $oldInstall = (RunChild "git" "show 0eb4ede:build/install.ps1" $repo).Out
+  $targetLine = '$target     = Join-Path $env:APPDATA "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle"'
+  Check "both copies of install.ps1 install into `$env:APPDATA, which the harness points at its own folder" ($newInstall.Contains($targetLine) -and $oldInstall.Contains($targetLine)) ""
+  $echo = EndChild (StartChildEnv $ps "-NoProfile -Command [Console]::Out.Write(`$env:APPDATA)" $h12 @{ APPDATA = $fakeApp }) 60
+  Check "a child started the same way reads APPDATA as the harness's folder" ($echo.Out.Trim() -eq $fakeApp) (Mask $echo.Out.Trim())
+  function InstallTrial($label, $text, [bool]$withRoamer) {
+    StopStandins
+    if (Test-Path -LiteralPath $fakeBundle) { Remove-Item -LiteralPath $fakeBundle -Recurse -Force }
+    New-Item -ItemType Directory -Path $fakeBundle | Out-Null
+    [System.IO.File]::WriteAllText((Join-Path $fakeBundle "marker.txt"), "the bundle installed before", $utf8)
+    [System.IO.File]::WriteAllText((Join-Path $ir "build\install.ps1"), $text, $utf8)
+    if ($withRoamer) { [void](StartStandin "sleep 120" $null $null) }
+    $roam = @(Get-Process -Name Roamer -ErrorAction SilentlyContinue).Count
+    if ($echo.Out.Trim() -ne $fakeApp) { throw "the APPDATA of a child is not the harness's folder, so no install.ps1 copy runs" }
+    $res = EndChild (StartChildEnv $ps ("-NoProfile -ExecutionPolicy Bypass -File `"" + (Join-Path $ir "build\install.ps1") + "`" -SkipBuild") $ir @{ APPDATA = $fakeApp }) 180
+    $marker = Test-Path -LiteralPath (Join-Path $fakeBundle "marker.txt")
+    $addin = Test-Path -LiteralPath (Join-Path $fakeBundle "Contents\v22\Federator.Addin.dll")
+    $nav = @($res.Out.Split("`n") | Where-Object { $_ -match 'Navisworks is running' } | ForEach-Object { $_.Trim() })
+    O ("    " + $label + ": Roamers running " + $roam + ", exit " + $res.Exit + ", the old bundle's marker still there " + $marker + ", the new add-in there " + $addin + $(if ($nav.Count -gt 0) { ", said: " + $nav[0] } else { "" }))
+    StopStandins
+    return [pscustomobject]@{ Exit = $res.Exit; Marker = $marker; Addin = $addin; Said = $nav; Lines = @($res.Out.Split("`n") | Where-Object { $_.Trim() -ne "" }).Count }
+  }
+  $t1 = InstallTrial "before, install.ps1 at 0eb4ede with a stand-in Roamer running" $oldInstall $true
+  Check "before: install.ps1 at 0eb4ede replaces the bundle while a Roamer runs, the fault the breaker found" ($t1.Exit -eq 0 -and -not $t1.Marker -and $t1.Addin) ("exit " + $t1.Exit)
+  $t2 = InstallTrial "after, install.ps1 now with a stand-in Roamer running" $newInstall $true
+  Check "after: install.ps1 refuses with one line saying Navisworks is running and must be closed first, exit 1, and the bundle is left as it was" ($t2.Exit -eq 1 -and $t2.Marker -and -not $t2.Addin -and $t2.Said.Count -eq 1 -and $t2.Said[0] -match 'must be closed first') ("exit " + $t2.Exit)
+  $t3 = InstallTrial "control, install.ps1 now with no Roamer running" $newInstall $false
+  Check "control: with no Roamer running install.ps1 installs as before" ($t3.Exit -eq 0 -and -not $t3.Marker -and $t3.Addin) ("exit " + $t3.Exit)
+  BaderSame "H12b"
 
   # =====================================================================================
   O ""

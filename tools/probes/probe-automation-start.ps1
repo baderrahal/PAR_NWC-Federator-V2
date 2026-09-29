@@ -91,7 +91,9 @@ $ErrorActionPreference = "Stop"
 # handles, class names and captions, through GetClassName and GetWindowText, of the Roamers
 # that meet the start time and -Embedding test, which sends no message into another
 # process. After adoption it reads the adopted Roamer's windows and sends WM_GETTEXT to the
-# children of its #32770 dialogs. It reads no window of any other process. It writes a line
+# visible children of each of its visible top level windows but the Navisworks main window,
+# at most 20 children of one window and 2 s in all per pass, since F103 in
+# tools\loop\nw-guard.ps1. It reads no window of any other process. It writes a line
 # only when something changes, and it counts its passes, the longest, the gaps between them,
 # its error lines and the passes that failed before their process loop.
 #

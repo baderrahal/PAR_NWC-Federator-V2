@@ -3,20 +3,31 @@
 # and handed as text to every runspace they start. It is a file of functions with no main
 # body, so dot-sourcing it runs nothing and writes nothing.
 #
-# Every function here was MOVED UNCHANGED out of the probe as it merged with F100 at
-# 0eb4ede. The probe wrote some of its guards inline, and each of those is wrapped here as a
-# function whose body is the probe's own lines: OwnProcessRefusal, UnprovedRefusal,
-# NewWinTypes, WatchSync, Watchdog, BackupSettings, AdoptStart, UnprovedAtEnd,
-# PutBackReasons and SettingsPutBack. What a wrapper changes is only what a function needs:
-# a value the probe read from its own variables comes in as a parameter of the same name, a
-# result the probe kept in a variable goes back in the object the function returns, and a
-# stop that ended the probe with exit 1 comes back to the caller, who stops. The rules these
-# functions keep are written at the top of the probe and in .claude\rules\loop.md, and are
-# not repeated here.
+# WHERE IT CAME FROM. Commit 377cb1a moved these functions out of the probe as it merged with
+# F100 at 0eb4ede, and changed nothing else. The probe wrote some of its guards inline, and
+# each of those was wrapped as a function whose body is the probe's own lines:
+# OwnProcessRefusal, UnprovedRefusal, NewWinTypes, WatchSync, Watchdog, BackupSettings,
+# AdoptStart, UnprovedAtEnd, PutBackReasons and SettingsPutBack. What a wrapper changed is
+# only what a function needs: a value the probe read from its own variables comes in as a
+# parameter of the same name, a result the probe kept in a variable goes back in the object
+# the function returns, and a stop that ended the probe with exit 1 comes back to the caller,
+# who stops. Every line of this file at 377cb1a is mapped to its line of the probe, or named
+# wrapper, comment or changed with both texts, in the move proof of F103.
 #
-# A variable a moved line reads and no parameter carries is read from the caller's scope,
-# as it was in the probe: $loopRoot and $nw in Mask, $winType and $procType in WindowsOf,
-# $beforeTicks in NewRoamers, and the caller's own Say.
+# WHAT F103 CHANGED OR ADDED AFTER THE MOVE, so these are not the probe's lines:
+# - moved unchanged since 377cb1a: every function not named below
+# - changed: AdoptStart, which holds the handle and writes adopted into mypid.txt, the
+#   watchdog's adopted deadline, which closes through CloseAdopted, WatchSync, which carries
+#   MyProc, BackupSettings, which prints the key it exported, WindowLines, which reads
+#   through WindowRecords, SettingsPutBack, which returns what it could not write, and
+#   NewWinTypes, which emits seven more calls
+# - added: HeldRead, HeldState, CloseAdopted, WindowRecords, WindowKind and ReadShared
+# The rules these functions keep are written at the top of the probe and in
+# .claude\rules\loop.md, and are not repeated here.
+#
+# A variable a function reads and no parameter carries is read from the caller's scope, as
+# it was in the probe: $loopRoot and $nw in Mask, $winType and $procType in WindowsOf,
+# $beforeTicks in NewRoamers, $utf8 in AdoptStart, and the caller's own Say.
 
 # The functions both the main thread and the watchdog use, written once and handed to the
 # watchdog through $sync. None of them writes to the result. They return lines, and each
@@ -381,16 +392,20 @@ function WinHandlesOf($winType, $procType, [uint32]$owner, [IntPtr]$parent) {
   [GC]::KeepAlive($del)
   return $found
 }
-# GetClassName and GetWindowText send no message into another process. SendMessageTimeout
-# with WM_GETTEXT does, and it is reached only when $allowMessages is true, which is only
-# ever for the adopted Roamer. Since F103, with messages allowed, the text of the visible
-# children of every visible top level window is read, not only of a #32770, so a WinForms
-# or WPF dialog of Navisworks is read too. The Navisworks main window is left out, because
-# its children are its panels and not a dialog's text, and at most 20 children of one
-# window are read, each with a 500 ms timeout that SMTO_ABORTIFHUNG cuts short when the
-# window's thread is hung.
+# GetClassName and GetWindowText send no message into another process: for a window of
+# another process GetWindowText reads the caption Windows keeps, measured by prove-run.ps1
+# on a stand-in whose window thread is blocked. SendMessageTimeout with WM_GETTEXT does send
+# one, and it is reached only when $allowMessages is true, which is only ever for the
+# adopted Roamer. Since F103, with messages allowed, the text of the visible children of
+# every visible top level window is read, not only of a #32770, so a WinForms or WPF dialog
+# of Navisworks is read too. The Navisworks main window is left out, because its children
+# are its panels and not a dialog's text. Each read has a 500 ms timeout that
+# SMTO_ABORTIFHUNG cuts short once Windows counts the thread hung, at most 20 children of
+# one window are read, and one call spends at most 2 s on them in all, so a pass of the
+# watchdog or the monitor always reaches its deadline checks. What was not read is written.
 function WindowRecords($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [bool]$allowMessages) {
   $recs = New-Object System.Collections.Generic.List[object]
+  $budget = [Diagnostics.Stopwatch]::StartNew()
   foreach ($h in (WinHandlesOf $winType $procType $owner ([IntPtr]::Zero))) {
     $vis = $winType::IsWindowVisible($h)
     if ($visibleOnly -and -not $vis) { continue }
@@ -401,15 +416,17 @@ function WindowRecords($winType, $procType, [uint32]$owner, [bool]$visibleOnly, 
     $ownerWin = $winType::GetWindow($h, [uint32]4)
     $ownerOn = "none"
     if ($ownerWin -ne [IntPtr]::Zero) { $ownerOn = [string]$winType::IsWindowEnabled($ownerWin) }
-    $rec = [pscustomobject]@{ Handle = $h; Class = $c.ToString(); Caption = $t.ToString(); Visible = $vis; Owner = [string]$ownerWin; OwnerEnabled = $ownerOn; Texts = $null; TextNote = "" }
+    $rec = [pscustomobject]@{ Handle = $h; Class = $c.ToString(); Caption = $t.ToString(); Visible = $vis; Owner = [string]$ownerWin; OwnerHandle = $ownerWin; OwnerEnabled = $ownerOn; Texts = $null; TextNote = "" }
     if ($vis -and -not $allowMessages -and $rec.Class -eq "#32770") { $rec.TextNote = "not read, nothing is sent before adoption" }
-    if ($vis -and $allowMessages -and (WindowKind $rec.Class $rec.Caption) -ne "MAIN") {
+    if ($vis -and $allowMessages -and (WindowKind $rec.Class $rec.Caption $ownerWin) -ne "MAIN") {
       $parts = @()
       $n = 0
+      $late = 0
       foreach ($ch in (WinHandlesOf $winType $procType $owner $h)) {
         if (-not $winType::IsWindowVisible($ch)) { continue }
         $n++
         if ($n -gt 20) { continue }
+        if ($budget.ElapsedMilliseconds + 500 -gt 2000) { $late++; continue }
         $sb = New-Object System.Text.StringBuilder 2048
         [IntPtr]$res = [IntPtr]::Zero
         [void]$winType::SendMessageTimeoutW($ch, [uint32]0x000D, [IntPtr]2048, $sb, [uint32]0x0002, [uint32]500, [ref]$res)
@@ -417,6 +434,7 @@ function WindowRecords($winType, $procType, [uint32]$owner, [bool]$visibleOnly, 
         if ($s.Length -gt 0) { $parts += ("`"" + $s + "`"") }
       }
       if ($n -gt 20) { $parts += ("and " + ($n - 20) + " more visible children not read") }
+      if ($late -gt 0) { $parts += ("and " + $late + " visible children not read, because the 2 s one pass may spend reading children was spent") }
       $rec.Texts = $parts
     }
     $recs.Add($rec)
@@ -437,12 +455,15 @@ function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [b
 # What a top level window of the adopted Navisworks is: the tool's window, the Navisworks
 # main window, its Working... progress dialog, or anything else, a DIALOG finding. The
 # Working... dialog was measured on 2026-09-28, docs\history\scan.md 5z-d, and the main
-# window on 2026-09-29, tools\probes\automation-start-result-20260929.txt line 423. The
-# tool's window is read off the design and is UNKNOWN until the first window start.
-function WindowKind($class, $caption) {
+# window's class and caption on 2026-09-29, tools\probes\automation-start-result-20260929.txt
+# line 423. The main window is one with no owner, so a message box of Navisworks titled the
+# same way, which has one, is a DIALOG. Whether the real main window has no owner is UNKNOWN
+# until the first start, which writes MAIN or DIALOG for it. The tool's window is read off
+# the design and is UNKNOWN until the first window start.
+function WindowKind($class, $caption, $ownerHandle) {
   if ($class.StartsWith("HwndWrapper[Roamer.exe;ProgressDialog;")) { return "PROGRESS" }
   if ($class.StartsWith("HwndWrapper") -and $caption.StartsWith("Parsons NWC Federator")) { return "WINDOW" }
-  if ($class.StartsWith("WindowsForms10") -and $caption.EndsWith("Autodesk Navisworks Manage 2025")) { return "MAIN" }
+  if ($class.StartsWith("WindowsForms10") -and $caption.EndsWith("Autodesk Navisworks Manage 2025") -and $ownerHandle -eq [IntPtr]::Zero) { return "MAIN" }
   return "DIALOG"
 }
 
@@ -474,14 +495,24 @@ function ProcState($id, $utcTicks) {
 
 # F103. The adopted process is held through the handle AdoptStart opened, so Windows gives
 # its pid to no other process while it is held, and every read below goes through that
-# handle: same, gone, other, or unreadable, or none when nothing was adopted.
-function HeldState($proc, $ticks) {
-  if ($null -eq $proc) { return "none" }
+# handle. State is same, gone, other, or unreadable with Why the reason, or none when
+# nothing was adopted. HeldState is its State alone.
+function HeldRead($proc, $ticks) {
+  $r = [pscustomobject]@{ State = "none"; Why = "nothing was adopted" }
+  if ($null -eq $proc) { return $r }
   try {
-    if ($proc.HasExited) { return "gone" }
-    if ((UtcTicks $proc.StartTime) -eq $ticks) { return "same" }
-    return "other"
-  } catch { return "unreadable" }
+    if ($proc.HasExited) { $r.State = "gone"; $r.Why = "it has exited"; return $r }
+    $now = UtcTicks $proc.StartTime
+    if ($now -eq $ticks) { $r.State = "same"; $r.Why = "" } else { $r.State = "other"; $r.Why = "its start ticks read " + $now + " through the held handle, not " + $ticks }
+  } catch { $r.State = "unreadable"; $r.Why = "the read through the held handle threw, " + (Err $_.Exception) }
+  return $r
+}
+function HeldState($proc, $ticks) { return (HeldRead $proc $ticks).State }
+# The text of a file another thread appends to, opened sharing read, write and delete, so a
+# read never makes that append fail. File.ReadAllLines shares read only.
+function ReadShared($path) {
+  $fs = New-Object System.IO.FileStream($path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, ([System.IO.FileShare]::ReadWrite -bor [System.IO.FileShare]::Delete))
+  try { $sr = New-Object System.IO.StreamReader($fs); return $sr.ReadToEnd() } finally { $fs.Dispose() }
 }
 # THE ONE CLOSE. Kill on the Process the adoption holds, after its start ticks read equal
 # through that same handle. .NET Framework's Process.Kill reuses the handle the object holds
@@ -920,6 +951,8 @@ function Watchdog($sync) {
       # The adopted deadline, for the adopted Roamer only, closed through the held handle
       # after its start time is read again through it. run.ps1 calls this deadline the ceiling.
       if ($sync.Forced -eq "" -and $sync.MyPid -ne 0 -and ($nowUtc - $sync.AdoptedAtUtc).TotalSeconds -gt $sync.AdoptedDeadline) {
+        # Written before the close, so a reader that finds the process gone already finds why.
+        $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, the close through the held handle has begun"
         $cr = CloseAdopted $sync.MyProc $sync.MyTicks 5
         $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, " + $cr.Text
         W ($sync.Forced)
@@ -949,7 +982,7 @@ $regFile = Join-Path $work "hkcu-navisworks-manage-22.0-before.reg"
 $regExit = $LASTEXITCODE
 $regLen = 0
 if (Test-Path -LiteralPath $regFile) { $regLen = (Get-Item -LiteralPath $regFile).Length }
-Say ("  HKCU Navisworks Manage 22.0 exported to " + (Mask $regFile) + ", reg.exe exit " + $regExit + ", " + $regLen + " bytes")
+Say ("  HKCU\" + $regSub + " exported to " + (Mask $regFile) + ", reg.exe exit " + $regExit + ", " + $regLen + " bytes")
 if ($regExit -ne 0 -or $regLen -le 0) { $bs.Why = "STOP before the constructor: the registry export did not exit 0 or left no file that is not empty"; return $bs }
 $regBefore = RegRead $regSub
 $valCount = 0; foreach ($k in $regBefore.Read.Keys) { $valCount += $regBefore.Read[$k].Count }
@@ -1047,7 +1080,7 @@ function AdoptStart($err, $app, $sync, $pidFile) {
   $sync.MyTicks = $myTicks
   $sync.AdoptedAtUtc = [DateTime]::UtcNow
   $sync.MyPid = $myPid
-  try { [System.IO.File]::WriteAllText($pidFile, [string]$myPid + "`r`n" + [string]$myTicks + "`r`nadopted`r`n", $utf8) } catch { Say ("  could not write " + $pidFile + ", " + (Err $_.Exception)) }
+  try { [System.IO.File]::WriteAllText($pidFile, [string]$myPid + "`r`n" + [string]$myTicks + "`r`nadopted`r`n", $utf8) } catch { Say ("  could not write " + (Mask $pidFile) + ", " + (Err $_.Exception)) }
   return [pscustomobject]@{ Adopted = $true; C1 = $c1; C2 = $c2; C3 = $c3; C4 = $c4; Suppressed = $suppressed; Pid = $myPid; Start = $myStart; Ticks = $myTicks }
 }
 

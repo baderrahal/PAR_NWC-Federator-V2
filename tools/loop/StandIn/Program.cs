@@ -71,6 +71,10 @@ namespace NwcFederatorLoop.StandIn
                     return Dialogs(words[1], words[2], Seconds(words, 3));
                 case "decoy":
                     return Decoy(words[1], words[2], Seconds(words, 3));
+                case "hang":
+                    return Hang(words[1], Seconds(words, 2), words[3], Seconds(words, 4));
+                case "owned":
+                    return Owned(words[1], words[2], Seconds(words, 3));
                 default:
                     return 64;
             }
@@ -179,6 +183,68 @@ namespace NwcFederatorLoop.StandIn
             label.Top = 12;
             form.Controls.Add(label);
             Application.Run(form);
+            return 0;
+        }
+
+        /// <summary>
+        /// A visible window with a number of labels whose thread, once the window is shown,
+        /// writes the ready file and then blocks for the seconds given, answering no message.
+        /// The process ends five seconds after the block ends.
+        /// </summary>
+        private static int Hang(string readyFile, int seconds, string caption, int children)
+        {
+            ExitAfter(seconds + 5);
+            Form form = new Form();
+            form.Text = caption;
+            form.Width = 420;
+            form.Height = 80 + (children * 20);
+            for (int i = 0; i < children; i++)
+            {
+                Label label = new Label();
+                label.Text = "a label of the blocked window, number " + i.ToString(CultureInfo.InvariantCulture);
+                label.AutoSize = true;
+                label.Left = 12;
+                label.Top = 8 + (i * 20);
+                form.Controls.Add(label);
+            }
+
+            form.Shown += (sender, e) =>
+            {
+                Application.DoEvents();
+                File.WriteAllText(readyFile, "blocked" + Environment.NewLine, new UTF8Encoding(false));
+                Thread.Sleep(seconds * 1000);
+            };
+            Application.Run(form);
+            return 0;
+        }
+
+        /// <summary>
+        /// Two WinForms windows with the same caption: one with no owner, and one owned by it
+        /// carrying a label, as a message box of Navisworks titled like its main window would be.
+        /// </summary>
+        private static int Owned(string caption, string labelText, int seconds)
+        {
+            ExitAfter(seconds);
+            Form main = new Form();
+            main.Text = caption;
+            main.Width = 420;
+            main.Height = 140;
+            Form owned = new Form();
+            owned.Text = caption;
+            owned.Width = 360;
+            owned.Height = 120;
+            Label label = new Label();
+            label.Text = labelText;
+            label.AutoSize = true;
+            label.Left = 12;
+            label.Top = 12;
+            owned.Controls.Add(label);
+            main.Shown += (sender, e) =>
+            {
+                owned.Owner = main;
+                owned.Show();
+            };
+            Application.Run(main);
             return 0;
         }
 

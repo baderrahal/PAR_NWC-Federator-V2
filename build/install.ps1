@@ -84,6 +84,15 @@ foreach ($name in ($carried + $library)) {
 $strays = Get-ChildItem $contents -Filter "*Navisworks*" -ErrorAction SilentlyContinue
 if ($strays) { throw "A Navisworks assembly ended up in the bundle: $($strays.Name -join ', ')" }
 
+# Nothing is removed while any Navisworks runs, whoever started it, because a running
+# Navisworks may hold the bundle's files, and one that loaded the old build keeps running
+# it. Read here, immediately before the remove and after the build, which takes long
+# enough for one to be started.
+$roamers = $null
+try { $roamers = @([System.Diagnostics.Process]::GetProcessesByName("Roamer")) }
+catch { Write-Host ("Navisworks may be running, the process list could not be read, " + $_.Exception.Message + ". Close Navisworks first and run this again. Nothing was installed."); exit 1 }
+if ($roamers.Count -gt 0) { Write-Host ("Navisworks is running, Roamer pid " + (($roamers | ForEach-Object { $_.Id }) -join ", ") + ", and must be closed first. Close it and run this again. Nothing was installed."); exit 1 }
+
 if (Test-Path $target) { Remove-Item $target -Recurse -Force }
 
 # The contents, never the folder. Copy-Item of a directory puts it INSIDE the destination
