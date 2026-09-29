@@ -5,6 +5,10 @@
     test and status by status, every clash row has its picture in the order of the
     Navisworks export, and the units say metres.
 
+    TWO RULES ARE RESTATED HERE ON PURPOSE: the picture naming of scan.md 4k and the block
+    order are a second copy by design, because a check that shares the writer's code proves
+    nothing, so neither is to be deleted as a copy of ImageNaming or ReportOrder.
+
     THREE PIECES THAT SHARE NO CODE. How a workbook is read stays in read-workbook.ps1, which
     opens the xlsx as a zip. How a document is read is tools\probes\DocumentReadProbe, which
     reads the NWF through the Navisworks API alone and converts through Navisworks' own
@@ -16,9 +20,15 @@
     Every count is exact and a difference of one is a line.
 
         1  the rows under the block against the document's top level results
-        2  Clashes against the clashes in the document, every clash under a group counted
+        2  Clashes against the clashes in the document, every clash under a group counted.
+           An empty group holds none and the harvest counts it as one, so the line names it
         3  each of New to Resolved against the clashes at that status, the top level count
-           shown in brackets. Each clash is counted at its own status, see GroupClashesAt
+           shown in brackets. -GroupClashesAt says how a group's clashes are counted: own,
+           each at its own status, group, all at the group's status, which is how the
+           harvest files them, or unknown, the default until PQ4 is measured. Under
+           unknown a status where the two readings give the same count is compared exactly,
+           and one where they part is NOT COMPARED when the workbook fits one reading and
+           DIFFERS when it fits neither
         4  row by row in sheet order against the top level results in document order,
            name then status
         5  the tolerance unit reads exactly m on every workbook test, and the number is
@@ -35,8 +45,8 @@
         8  the block order unless -PriorityPicked: among blocks with a clash, Clashes never
            rises down the sheet and equal Clashes keep the document's order. Blocks with no
            clash are not placed
-        9  the totals against the document's, and inside every workbook test New to
-           Resolved add up to Clashes
+        9  the totals against the document's, New to Resolved under the same rule as 3, and
+           inside every workbook test New to Resolved add up to Clashes
 
     A test in the workbook only whose every number is zero is one F77 did not create, and is
     counted, not judged. In the workbook only with a number above zero, or in the document
@@ -59,7 +69,7 @@
     Exits 0 when a comparison was written, whatever its verdict, and 1 when it refused.
 
     Usage:
-        powershell -ExecutionPolicy Bypass -File tools\loop\compare-document.ps1 -Workbook <read-out> -Document <read-out> -Out <.txt> [-PictureStatuses New,Active,Reviewed] [-PictureCap N] [-PriorityPicked]
+        powershell -ExecutionPolicy Bypass -File tools\loop\compare-document.ps1 -Workbook <read-out> -Document <read-out> -Out <.txt> [-PictureStatuses New,Active,Reviewed] [-PictureCap N] [-PriorityPicked] [-GroupClashesAt own|group|unknown]
 #>
 
 [CmdletBinding()]
@@ -69,16 +79,11 @@ param(
     [Parameter(Mandatory = $true)] [string] $Out,
     [string[]] $PictureStatuses,
     [int] $PictureCap = 0,
-    [switch] $PriorityPicked
+    [switch] $PriorityPicked,
+    [string] $GroupClashesAt = "unknown"
 )
 
 $ErrorActionPreference = "Stop"
-
-# THE ONE SWITCH that waits on PQ4 and PQ5. "own" counts every clash under a group at the
-# clash's own status, which is what the document holds. If the panel and Clash Detective's
-# own export file a group's clashes under the group's status, this becomes "group" and
-# nothing else moves, the probe included.
-$GroupClashesAt = "own"
 
 $Statuses = @("New", "Active", "Reviewed", "Approved", "Resolved")
 $Within = 0.0005
@@ -125,6 +130,10 @@ foreach ($p in @($PictureStatuses)) {
     }
 }
 if ($PictureCap -lt 0) { Write-Host "COMPARISON FAILED: -PictureCap is below zero. Nothing was written."; exit 1 }
+
+# How a group's clashes are counted. Which of own and group the Clash Detective panel shows
+# is PQ4 of F104 and UNMEASURED, so neither is assumed and the default is unknown.
+if (@("own", "group", "unknown") -cnotcontains $GroupClashesAt) { Write-Host "COMPARISON FAILED: -GroupClashesAt reads '$GroupClashesAt', which is not own, group or unknown. Nothing was written."; exit 1 }
 
 # The leading comma hands the dictionary back whole, where PowerShell would unroll it.
 function New-Ordinal { return ,(New-Object 'System.Collections.Generic.Dictionary[string,object]' -ArgumentList ([StringComparer]::Ordinal)) }
@@ -307,13 +316,12 @@ foreach ($p in $pass2) { if ($p.Key -eq "tests" -and (Read-Count $p.Value) -lt 0
 $lines.Add("picture statuses   " + $(if ($pictureWords.Count) { $pictureWords -join ", " } else { "not given, so which rows should carry a picture is not judged" }))
 $lines.Add("picture cap        " + $(if ($PictureCap -gt 0) { "$PictureCap per test" } else { "none" }))
 $lines.Add("priority picked    " + $(if ($PriorityPicked) { "yes, so the block order is chosen and not judged" } else { "no, so the block order is judged" }))
-$lines.Add("group clashes at   " + $(if ($GroupClashesAt -eq "own") { "each clash's own status" } else { "the status of the group they are in" }))
+$lines.Add("group clashes at   " + $GroupClashesAt + ", " + $(if ($GroupClashesAt -eq "own") { "each clash counted at its own status" } elseif ($GroupClashesAt -eq "group") { "a group's clashes all counted at the group's status" } else { "PQ4 unmeasured, so a status where the two readings part is judged only when the workbook fits neither" }))
 $lines.Add("workbook           " + $wb.Path)
 $lines.Add("document           " + $doc.Head["parameter"] + ", units " + $docUnits + ", metres per unit " + $doc.Head["metres per unit"])
 $shown = @($pass2 | Where-Object { @("models", "selection sets", "set folders", "saved viewpoints", "viewpoint folders") -contains $_.Key } | ForEach-Object { $_.Key + " " + $_.Value })
 $lines.Add("document holds     " + ($shown -join ", ") + ", shown and not judged")
 
-$findings = New-Object System.Collections.Generic.List[string]
 $doubtLines = New-Object System.Collections.Generic.List[string]
 $wholeLines = New-Object System.Collections.Generic.List[string]
 
@@ -363,12 +371,89 @@ foreach ($t in $doc.Tests) {
 function Get-Rows([string] $name) { if ($rowsByTest.ContainsKey($name)) { return ,$rowsByTest[$name] } return ,(New-Object System.Collections.Generic.List[object]) }
 function Get-Results($t) { if ($resultsByTest.ContainsKey($t.Position)) { return ,$resultsByTest[$t.Position] } return ,(New-Object System.Collections.Generic.List[object]) }
 
-# What the document's counts at one status are under the switch above.
-function Get-Target($t, [string] $s) {
-    if ($GroupClashesAt -eq "own") { return $t.By[$s] }
+# The document's count at one status under one reading. own takes each clash at its own
+# status, off the test line. group takes every clash of a group at the group's status, off
+# the result lines, which is how the harvest files a group's row.
+function Get-Target($t, [string] $s, [string] $rule) {
+    if ($rule -eq "own") { return $t.By[$s] }
     $n = 0
-    foreach ($r in (Get-Results $t)) { if ($r.Kind -eq "group") { if ($r.Status -ceq $s) { $n += $r.Leaves } } elseif ($r.Status -ceq $s) { $n += $r.By[$s] } }
+    foreach ($r in (Get-Results $t)) {
+        if ($r.Kind -eq "group") { if ($r.Status -ceq $s) { $n += $r.Leaves } }
+        elseif ($r.Kind -eq "clash") { $n += $r.By[$s] }
+    }
     return $n
+}
+
+function Join-Words([string[]] $words) {
+    if ($words.Count -le 1) { return ($words -join "") }
+    return (($words[0..($words.Count - 2)]) -join ", ") + " and " + $words[$words.Count - 1]
+}
+
+# The groups of one document test whose clashes do not all sit at the group's own status,
+# each in words for a line. These are the one place the two readings part.
+function Get-MixedGroups($t) {
+    $found = @()
+    if ($null -eq $t) { return ,$found }
+    foreach ($r in (Get-Results $t)) {
+        if ($r.Kind -ne "group" -or $r.Leaves -eq 0) { continue }
+        if (@($Statuses | Where-Object { $_ -cne $r.Status -and $r.By[$_] -gt 0 }).Count -eq 0) { continue }
+        $at = @($Statuses | Where-Object { $r.By[$_] -gt 0 } | ForEach-Object { "$_ $($r.By[$_])" })
+        $found += "group [$($r.Name)] is at $($r.Status) and holds clashes at " + ($at -join ", ")
+    }
+    return ,$found
+}
+
+# The top level groups of one document test that hold no clash at all. ClashHarvest.cs
+# floors a group's clash count at one, so each reads one clash in the workbook and none here.
+function Get-EmptyGroups($t) {
+    $found = @()
+    if ($null -eq $t) { return ,$found }
+    foreach ($r in (Get-Results $t)) { if ($r.Kind -eq "group" -and $r.Leaves -eq 0) { $found += $r } }
+    return ,$found
+}
+
+function Get-EmptyNote($empties) {
+    $list = @($empties)
+    if ($list.Count -eq 0) { return "" }
+    $names = Join-Words @($list | ForEach-Object { "[$($_.Name)]" })
+    if ($list.Count -eq 1) { return ", and the document's $names is an empty group, which holds no clash" }
+    return ", and the document's $names are empty groups, which hold no clash"
+}
+
+# Check 3 and the totals of check 9, one rule for both. $wbBy holds the workbook's five
+# counts, $own and $grp the document's under the two readings, $top the top level counts
+# for the brackets or null, $empties the empty groups or null, and $why says what makes
+# the two readings part. Under unknown a status where the readings agree is compared
+# exactly, so only what PQ4 leaves open goes unjudged.
+function Compare-Statuses([string] $label, $wbBy, $own, $grp, $top, $empties, [string] $why) {
+    $out = @()
+    $split = @()
+    foreach ($s in $Statuses) {
+        if ($null -eq $wbBy[$s]) { continue }
+        if ($GroupClashesAt -eq "unknown" -and $own[$s] -ne $grp[$s]) { $split += $s; continue }
+        $target = if ($GroupClashesAt -eq "group") { $grp[$s] } else { $own[$s] }
+        if ($wbBy[$s] -eq $target) { continue }
+        $how = if ($GroupClashesAt -eq "group") { "clashes filed at $s under their group's status" } else { "clashes at $s" }
+        $line = "DIFFERS $label${s}: workbook $($wbBy[$s]), document $target $how"
+        if ($null -ne $top) { $line += " (top level $($top[$s]))" }
+        if ($null -ne $empties) { $line += Get-EmptyNote @($empties | Where-Object { $_.Status -ceq $s }) }
+        $out += $line
+    }
+    if ($split.Count) {
+        $cols = Join-Words $split
+        $fitsOwn = @($split | Where-Object { $wbBy[$_] -ne $own[$_] }).Count -eq 0
+        $fitsGroup = @($split | Where-Object { $wbBy[$_] -ne $grp[$_] }).Count -eq 0
+        if ($fitsOwn -or $fitsGroup) {
+            $reading = if ($fitsGroup) { "a group's clashes counted at the group's status" } else { "each clash counted at its own status" }
+            $out += "NOT COMPARED $label$cols, which fit $reading, where $why, and PQ4 decides which count the panel shows"
+        } else {
+            $w = ($split | ForEach-Object { "$_ $($wbBy[$_])" }) -join ", "
+            $o = ($split | ForEach-Object { "$_ $($own[$_])" }) -join ", "
+            $g = ($split | ForEach-Object { "$_ $($grp[$_])" }) -join ", "
+            $out += "DIFFERS $label${cols}: workbook $w, document $o with each clash at its own status and $g with a group's clashes at the group's status, and the workbook fits neither"
+        }
+    }
+    return ,$out
 }
 
 function Get-Metres([string] $metres, [string] $inUnits) {
@@ -382,14 +467,8 @@ function Get-Metres([string] $metres, [string] $inUnits) {
 # group's status, and every empty group, because those are where the two sides can part.
 function Get-Information($t) {
     $info = @()
-    if ($null -eq $t) { return $info }
-    foreach ($r in (Get-Results $t)) {
-        if ($r.Kind -ne "group") { continue }
-        if ($r.Leaves -eq 0) { $info += "  information: group [$($r.Name)] holds no clash, an empty group"; continue }
-        $at = @($Statuses | Where-Object { $r.By[$_] -gt 0 } | ForEach-Object { "$_ $($r.By[$_])" })
-        $mixed = @($Statuses | Where-Object { $_ -cne $r.Status -and $r.By[$_] -gt 0 })
-        if ($mixed.Count) { $info += "  information: group [$($r.Name)] is at $($r.Status) and holds clashes at " + ($at -join ", ") }
-    }
+    foreach ($w in (Get-MixedGroups $t)) { $info += "  information: $w" }
+    foreach ($e in (Get-EmptyGroups $t)) { $info += "  information: group [$($e.Name)] holds no clash, an empty group" }
     return $info
 }
 
@@ -397,8 +476,13 @@ $zeroOnly = 0
 $wbBase = [IO.Path]::GetFileNameWithoutExtension($wb.Path)
 $wbFolder = $null
 if ([IO.Path]::IsPathRooted($wb.Path)) { $f = Split-Path -Parent $wb.Path; if (Test-Path -LiteralPath $f -PathType Container) { $wbFolder = $f } }
-$pictureIndex = 0
-$numbering = $true
+# The test number the next pictured block may carry, held as a range. It is one number
+# until a test name on more than one block makes it uncertain, and one again as soon as a
+# block after it carries a number inside the range.
+$pictureLo = 0
+$pictureHi = 0
+$picturePattern = '^' + [regex]::Escape($wbBase + "_files/cd") + '([0-9]{2,})([0-9]{4})\.jpg$'
+$dupCopiesSeen = New-Ordinal
 $anyLink = $false
 
 foreach ($t in $wb.Tests) {
@@ -452,16 +536,13 @@ foreach ($t in $wb.Tests) {
             $own.Add("NOT COMPARED [$name]  the document read-out counts this test as -1, UNKNOWN, so its rows, clashes, statuses and distances are not compared")
         } else {
             # 1 and 2.
+            $empties = Get-EmptyGroups $match
             if ($rows.Count -ne $match.TopLevel) { $own.Add("DIFFERS [$name]  rows: workbook $($rows.Count), document $($match.TopLevel) top level results") }
-            if ($null -ne $counts.Clashes -and $counts.Clashes -ne $match.Leaves) { $own.Add("DIFFERS [$name]  Clashes: workbook $($counts.Clashes), document $($match.Leaves) clashes") }
+            if ($null -ne $counts.Clashes -and $counts.Clashes -ne $match.Leaves) { $own.Add("DIFFERS [$name]  Clashes: workbook $($counts.Clashes), document $($match.Leaves) clashes" + (Get-EmptyNote $empties)) }
             # 3.
-            foreach ($s in $Statuses) {
-                $target = Get-Target $match $s
-                if ($null -ne $counts[$s] -and $counts[$s] -ne $target) {
-                    $how = if ($GroupClashesAt -eq "own") { "clashes at $s" } else { "clashes filed at $s under their group's status" }
-                    $own.Add("DIFFERS [$name]  ${s}: workbook $($counts[$s]), document $target $how (top level $($match.Top[$s]))")
-                }
-            }
+            $docOwn = @{}; $docGroup = @{}
+            foreach ($s in $Statuses) { $docOwn[$s] = Get-Target $match $s "own"; $docGroup[$s] = Get-Target $match $s "group" }
+            foreach ($l in (Compare-Statuses "[$name]  " $counts $docOwn $docGroup $match.Top $empties ((Get-MixedGroups $match) -join ", and "))) { $own.Add($l) }
             # 4 and 6.
             $most = [Math]::Max($rows.Count, $results.Count)
             for ($i = 0; $i -lt $most; $i++) {
@@ -484,19 +565,40 @@ foreach ($t in $wb.Tests) {
     # 7, from the workbook read-out alone.
     $linked = @($rows | Where-Object { $_.Link })
     if ($linked.Count) { $anyLink = $true }
-    if ($dup -and $linked.Count -and $numbering) {
-        $numbering = $false
-        $wholeLines.Add("NOT COMPARED picture numbering from [$name] on, the name is on more than one workbook block")
-    }
-    if (-not $dup) {
+    if ($dup) {
+        # The rows of a name on several blocks are pooled, so which of its copies carries the
+        # pictures is not known. Each copy may be a pictured block or not and at least one
+        # is, so the range for the next test number widens by each copy and its floor moves
+        # once the last copy is passed. Nothing after is guessed.
+        if ($linked.Count) {
+            if (-not $dupCopiesSeen.ContainsKey($name)) {
+                $dupCopiesSeen[$name] = 0
+                $copies = $wbByName[$name].Count
+                $wholeLines.Add("NOT COMPARED picture numbering of [$name], the name is on $copies workbook blocks and which of them its $($linked.Count) picture links belong to cannot be known, so those $copies tests are not checked")
+            }
+            $dupCopiesSeen[$name] = $dupCopiesSeen[$name] + 1
+            $pictureHi++
+            if ($dupCopiesSeen[$name] -eq $wbByName[$name].Count) { $pictureLo++ }
+        }
+    } else {
+        $testNumber = $pictureLo
+        if ($linked.Count -and $pictureLo -ne $pictureHi) {
+            $testNumber = $null
+            if ([Uri]::UnescapeDataString($linked[0].Link) -cmatch $picturePattern) {
+                $n = [int]$Matches[1]
+                if ($n -ge $pictureLo -and $n -le $pictureHi) { $testNumber = $n }
+            }
+            if ($null -ne $testNumber) { $own.Add("NOT COMPARED [$name]  the test number in its picture links, $testNumber, can only be held to $pictureLo to $pictureHi after a test name on more than one block, and its clash numbers are checked") }
+            else { $own.Add("DIFFERS [$name]  picture links: the first reads $($linked[0].Link), and after a test name on more than one block the export's numbering allows only test numbers $pictureLo to $pictureHi") }
+        }
         $clashIndex = 0; $atStatus = 0
         for ($i = 0; $i -lt $rows.Count; $i++) {
             $row = $rows[$i]; $at = $i + 1
             if ($row.Link) {
                 $clashIndex++
                 if ($row.Link.StartsWith("NOT A PICTURE LINK")) { $own.Add("DIFFERS [$name]  row $at [$($row.Name)] picture link opens no picture: $($row.Link)") }
-                elseif ($numbering) {
-                    $expected = $wbBase + "_files/cd" + $pictureIndex.ToString("00", $Invariant) + $clashIndex.ToString("0000", $Invariant) + ".jpg"
+                elseif ($null -ne $testNumber) {
+                    $expected = $wbBase + "_files/cd" + $testNumber.ToString("00", $Invariant) + $clashIndex.ToString("0000", $Invariant) + ".jpg"
                     if ([Uri]::UnescapeDataString($row.Link) -cne $expected) { $own.Add("DIFFERS [$name]  row $at [$($row.Name)] picture link: workbook $($row.Link), the export's numbering gives $expected") }
                 }
                 if ($wbFolder -and -not $row.Link.StartsWith("NOT A PICTURE LINK")) {
@@ -517,7 +619,10 @@ foreach ($t in $wb.Tests) {
                 $own.Add("DIFFERS [$name]  row $at [$($row.Name)] carries a picture link past the cap of $PictureCap")
             }
         }
-        if ($linked.Count) { $pictureIndex++ }
+        if ($linked.Count) {
+            if ($null -ne $testNumber) { $pictureLo = $testNumber + 1; $pictureHi = $pictureLo }
+            else { $pictureLo++; $pictureHi++ }
+        }
     }
 
     foreach ($o in $own) { $lines.Add($o) }
@@ -569,10 +674,17 @@ if (-not $docTestsWalked) {
     } else {
         $docTotal = 0; foreach ($t in $doc.Tests) { $docTotal += $t.Leaves }
         if ($wbTotal["Clashes"] -ne $docTotal) { $wholeLines.Add("DIFFERS totals  Clashes: workbook $($wbTotal['Clashes']), document $docTotal clashes") }
+        # The same rule as check 3 over the whole document. A test is never left out on one
+        # side only, because a mixed test whose name did not pair would then read as a
+        # difference that is not there.
+        $totalOwn = @{}; $totalGroup = @{}
         foreach ($s in $Statuses) {
-            $n = 0; foreach ($t in $doc.Tests) { $n += (Get-Target $t $s) }
-            if ($wbTotal[$s] -ne $n) { $wholeLines.Add("DIFFERS totals  ${s}: workbook $($wbTotal[$s]), document $n clashes at $s") }
+            $totalOwn[$s] = 0; $totalGroup[$s] = 0
+            foreach ($t in $doc.Tests) { $totalOwn[$s] += (Get-Target $t $s "own"); $totalGroup[$s] += (Get-Target $t $s "group") }
         }
+        $mixedTests = @($doc.Tests | Where-Object { (Get-MixedGroups $_).Count -gt 0 } | ForEach-Object { "[$($_.Name)]" })
+        $why = if ($mixedTests.Count -eq 1) { "$($mixedTests[0]) holds a group whose clashes sit at more than one status" } else { (Join-Words $mixedTests) + " hold groups whose clashes sit at more than one status" }
+        foreach ($l in (Compare-Statuses "totals  " $wbTotal $totalOwn $totalGroup $null $null $why)) { $wholeLines.Add($l) }
     }
 }
 

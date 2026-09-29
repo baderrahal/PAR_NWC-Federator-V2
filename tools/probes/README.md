@@ -87,7 +87,9 @@ The folder and every NWF must sit under %LOCALAPPDATA%\NwcFederatorLoop. Per NWF
 the file with TryOpenFile, the one call it makes that changes what Navisworks holds, reads
 the document twice with five seconds of the dispatcher between, and writes
 <NWF name>-document.txt: the NWF's size, time and sha256 read before the open, the units
-and metres per unit from UnitConversion.ScaleFactor, both passes' totals, one line per
+and metres per unit from UnitConversion.ScaleFactor, written UNKNOWN with a doubt unless
+ScaleFactor(Millimeters, Meters) reads below one, because a number times its inverse is
+one whichever way the factor runs, both passes' totals, one line per
 clash test and one per top level result, every doubt, and END OF READ-OUT. A group is one
 top level result at its own status with every clash under it counted at the clash's own
 status. A count it could not take is -1. tools\loop\compare-document.ps1 reads it. It

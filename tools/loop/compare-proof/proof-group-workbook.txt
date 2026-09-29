@@ -5,7 +5,7 @@ sheets 1: Clash Report
 == sheet Clash Report
 -- tests: shape, row, test, tolerance, clashes, new, active, reviewed, approved, resolved, type, status, clash rows under it
 full block	2	Architecture vs Structure	0.025m	3	1	1	0	0	1	Hard (Conservative)	OK	3
-full block	9	Mechanical vs Plumbing 	0.010m	3	1	0	1	1	0	Hard (Conservative)	OK	2
+full block	9	Mechanical vs Plumbing 	0.010m	3	0	0	2	1	0	Hard (Conservative)	OK	2
 one row	15	Electrical vs Fire	0.050m	0	0	0	0	0	0	Hard (Conservative)	OK	0
 
 -- clash rows: test, clash name, status, distance, grid location, clash point, picture link
@@ -15,9 +15,9 @@ Architecture vs Structure	Clash3	Resolved	-0.003	C-3 : L01	x:4.000, y:2.500, z:3
 Mechanical vs Plumbing 	Group1	Reviewed	-0.03	D-4 : L02	x:6.000, y:7.000, z:8.000	
 Mechanical vs Plumbing 	Clash5	Approved	-0.02	D-5 : L02	x:6.500, y:7.000, z:8.000	
 
-sheet totals: tests 3, clash rows 5, from the tests' own numbers clashes 6, new 2, active 1, reviewed 1, approved 1, resolved 1
+sheet totals: tests 3, clash rows 5, from the tests' own numbers clashes 6, new 1, active 1, reviewed 2, approved 1, resolved 1
 
 TOTALS: tests 3 (2 full blocks, 1 one row, 0 with no name), clash rows 5, picture links in cells 2, links that open no picture 0, pictures stored in the workbook 0, pictures in the sheet that point at a file outside it 0
-TOTALS from the tests' own numbers: clashes 6, new 2, active 1, reviewed 1, approved 1, resolved 1
+TOTALS from the tests' own numbers: clashes 6, new 1, active 1, reviewed 2, approved 1, resolved 1
 DOUBTS: 0
 END OF READ-OUT

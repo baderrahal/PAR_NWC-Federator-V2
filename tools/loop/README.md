@@ -88,9 +88,23 @@ never zero. The test type and status are shown and never judged.
 - -PictureStatuses and -PictureCap say which rows should carry a picture, as the run was
   told. Without -PictureStatuses which rows should carry one is NOT COMPARED. With
   -PriorityPicked the block order is chosen by the priority file and is not judged
-- one switch at its top, $GroupClashesAt, counts a group's clashes each at its own status.
-  How the panel and Clash Detective's own export count them is PQ4 and PQ5 of F104, and
-  only that one word changes when they are measured
+- -GroupClashesAt says how a group's clashes are counted in New to Resolved and in the
+  totals: own, each at its own status as the document holds them, group, all at the
+  group's status as the harvest files them, ClashHarvest.cs 166 and ClashReportModel.cs
+  396, or unknown, the default. Which the Clash Detective panel shows is PQ4 of F104 and
+  UNMEASURED. Under unknown a status where the two readings give the same count is
+  compared exactly, and one where a group's clashes sit at more than one status is NOT
+  COMPARED when the workbook fits one reading, in one line naming the test and PQ4, and
+  DIFFERS when it fits neither
+- an empty group holds no clash and the harvest counts it as one, ClashHarvest.cs 164, so
+  it reads DIFFERS, and the Clashes line and the line of its status name it as empty
+- a test name on two workbook blocks leaves its own pictures unchecked, in one NOT
+  COMPARED line saying how many tests, and holds the next pictured block's test number to
+  the range the copies allow, NOT COMPARED for that test when it falls inside and DIFFERS
+  when it falls outside. Its clash numbers are still checked, and every block after it
+  is exact again
+- the picture naming and the block order are restated in the script on purpose, a second
+  copy by design, because a check that shares the writer's code proves nothing
 
 Proved on 2026-09-29 by prove-compare.ps1 below, and on a read-out of the client export
 1104-PAR-1A02WN in samples\client-report, made by an unchanged copy of read-workbook.ps1
@@ -105,23 +119,30 @@ broken copies of it, in prove-hooks.sh's shape, and prints each answer against t
 should give. The pair is three tests in the shapes the two read-outs really have: plain
 clashes with two pictures, a group whose clashes sit at two statuses beside a plain clash
 under a name that ends in a space, and a test that found nothing, in a document in feet.
-No workbook, NWF or picture is behind it, so the good pair reads DISAGREEMENTS 0 and NOT
-PROVED, the pictures on disk being all it cannot compare. Each copy is one edit away from
-the good pair, and has to produce exactly its own lines, no other line the good pair does
-not have, and lose none it has. An edit that does not find exactly the line it edits is
-WRONG. Four more runs prove the three switches and the one class of test that is counted
-rather than judged. Actions runs it on every pull request.
+The workbook is what WorkbookWriter writes for that document, the group's clashes filed
+under the group's status. No workbook, NWF or picture is behind it, so under the default
+-GroupClashesAt unknown the good pair reads DISAGREEMENTS 0 and NOT PROVED, with the mixed
+test's New and Reviewed, the same two in the totals, and the pictures on disk NOT
+COMPARED. Each copy is one edit away from the good pair, and has to produce exactly its
+own lines, no other line the good pair does not have, and lose only the lines of the good
+pair written beside it. An edit that does not find exactly the line it edits is WRONG.
+Then one case for each of the three readings of a group's clashes, an empty group, a test
+name on two blocks with the picture numbering after it, and four runs that prove the
+switches and the one class of test that is counted rather than judged. Actions runs it on
+every pull request.
 
 - reads: tools\loop\compare-proof
 - writes outside the repo: one new folder under %LOCALAPPDATA%\NwcFederatorLoop, by
   default proof\compare-<stamp>, or the one -Work names, which must not be there yet. It
   holds every copy and every comparison and is never emptied or reused
-- exits 0 when all 21 cases are right and 1 otherwise
+- exits 0 when all 26 cases are right and 1 otherwise
 
-Proved on 2026-09-29 on this machine in Windows PowerShell 5.1, 21 right and 0 wrong, the
-sixteen copies under %LOCALAPPDATA%\NwcFederatorLoop\turn3\f104. Its first run was 18
-right and 3 wrong, all three the harness counting the line NOT COMPARED 1 as a finding,
-which is how the harness came to leave out a count line.
+Proved on 2026-09-29 on this machine in Windows PowerShell 5.1, 26 right and 0 wrong, the
+copies under %LOCALAPPDATA%\NwcFederatorLoop\turn3\f104. Its first run was 18 right and 3
+wrong, all three the harness counting the line NOT COMPARED 1 as a finding, which is how
+the harness came to leave out a count line. After the review of the same day the good
+workbook became what WorkbookWriter really writes, and the three readings, the empty group
+and the name on two blocks were added.
 
 ## prove-hooks.sh
 

@@ -6,16 +6,20 @@
     by hand in the shapes read-workbook.ps1 and DocumentReadProbe write: three tests, one of
     plain clashes with two pictures, one holding a group whose clashes sit at two statuses
     beside a plain clash and whose name ends in a space, and one that found nothing. The
+    workbook is what WorkbookWriter writes for that document, so the group's two clashes are
+    filed under the group's status, ClashHarvest.cs 166 and ClashReportModel.cs 396. The
     document is in feet at 0.3048 metres per foot, so every metre is converted. No workbook,
-    no NWF and no picture is behind it, so the good pair reads DISAGREEMENTS 0 and NOT PROVED,
-    the pictures on disk being the one thing it cannot compare, and that is what is asked of it.
+    no NWF and no picture is behind it. Under -GroupClashesAt unknown, the default, the good
+    pair reads DISAGREEMENTS 0 and NOT PROVED, with three NOT COMPARED lines: the mixed test's
+    New and Reviewed, the same two in the totals, which PQ4 decides, and the pictures on disk.
 
     THE CASES are sixteen broken copies, each one edit away from the good pair, and each
     has to produce exactly the lines written beside it here and no other line the good pair
-    does not have, and lose none the good pair has. A copy whose edit does not find exactly
-    the line it edits is WRONG, so an edit that stopped matching the pair can never pass
-    quietly. Four more runs prove the switches and the one class of test that is counted
-    rather than judged.
+    does not have, and lose only the lines of the good pair written beside it. A copy whose
+    edit does not find exactly the line it edits is WRONG, so an edit that stopped matching
+    the pair can never pass quietly. Then the three readings of a group's clashes, an empty
+    group, a test name on two blocks and the picture numbering after it, and four runs that
+    prove the switches and the one class of test that is counted rather than judged.
 
     The copies and the comparisons are written into a new folder under
     %LOCALAPPDATA%\NwcFederatorLoop, by default proof\compare-<stamp>, never emptied and
@@ -172,19 +176,22 @@ function Write-Case([bool] $right, [string] $title, [string[]] $show, [string[]]
 
 Write-Output "prove-compare, the copies and the comparisons are in $workFull"
 Write-Output ""
-Write-Output "== the good pair"
+Write-Output "== the good pair, -GroupClashesAt unknown by default"
 $good = Invoke-Compare "good" $goodWb $goodDoc $pictures
 $goodFound = $good.Found
-$expectGood = @("NOT COMPARED pictures on disk, the workbook read-out names proof-group.xlsx, which is not a folder on this machine")
+$pq4Test = "NOT COMPARED [$M]  New and Reviewed, which fit a group's clashes counted at the group's status, where group [Group1] is at Reviewed and holds clashes at New 1, Reviewed 1, and PQ4 decides which count the panel shows"
+$pq4Totals = "NOT COMPARED totals  New and Reviewed, which fit a group's clashes counted at the group's status, where [$M] holds a group whose clashes sit at more than one status, and PQ4 decides which count the panel shows"
+$expectGood = @($pq4Test, $pq4Totals, "NOT COMPARED pictures on disk, the workbook read-out names proof-group.xlsx, which is not a folder on this machine")
 $wrong = @()
 if ($good.Code -ne 0) { $wrong += "exit $($good.Code), where 0 is wanted" }
 if ($good.Verdict -cne "VERDICT NOT PROVED") { $wrong += "$($good.Verdict), where VERDICT NOT PROVED is wanted" }
 if (($goodFound -join "`n") -cne ($expectGood -join "`n")) { $wrong += "its findings are [" + ($goodFound -join " | ") + "]" }
-foreach ($c in @("DISAGREEMENTS 0", "NOT COMPARED 1", "DOUBTS 0")) { if ($good.All -cnotcontains $c) { $wrong += "no line reads $c" } }
-Write-Case ($wrong.Count -eq 0) "the good pair reads DISAGREEMENTS 0, NOT COMPARED 1, DOUBTS 0 and NOT PROVED" (@($goodFound) + @($good.Verdict)) $wrong
+foreach ($c in @("DISAGREEMENTS 0", "NOT COMPARED 3", "DOUBTS 0")) { if ($good.All -cnotcontains $c) { $wrong += "no line reads $c" } }
+Write-Case ($wrong.Count -eq 0) "the good pair reads DISAGREEMENTS 0, NOT COMPARED 3, DOUBTS 0 and NOT PROVED" (@($goodFound) + @($good.Verdict)) $wrong
 
-# One case: the copy, the lines it must add to the good pair's, the verdict and the exit.
-function Test-Case([string] $title, [scriptblock] $wb, [scriptblock] $doc, [string[]] $expect, [string] $verdict, [int] $exit = 0, [hashtable] $switches = $pictures, [string[]] $mustHave = @()) {
+# One case: the copy, the lines it must add to the good pair's and the ones it must lose,
+# the verdict and the exit.
+function Test-Case([string] $title, [scriptblock] $wb, [scriptblock] $doc, [string[]] $expect, [string] $verdict, [int] $exit = 0, [hashtable] $switches = $pictures, [string[]] $mustHave = @(), [string[]] $mustLose = @()) {
     $wrong = @()
     $r = $null
     try {
@@ -203,11 +210,14 @@ function Test-Case([string] $title, [scriptblock] $wb, [scriptblock] $doc, [stri
         if ($n -ne 1) { $wrong += "wanted once, found $n times: $e" }
     }
     foreach ($l in $new) { if ($expect -cnotcontains $l) { $wrong += "a line this case should not cause: $l" } }
-    if ($exit -eq 0 -and $gone.Count) { foreach ($l in $gone) { $wrong += "a line of the good pair went missing: $l" } }
+    if ($exit -eq 0) {
+        foreach ($l in $gone) { if ($mustLose -cnotcontains $l) { $wrong += "a line of the good pair went missing: $l" } }
+        foreach ($l in $mustLose) { if ($gone -cnotcontains $l) { $wrong += "a line of the good pair should have gone and did not: $l" } }
+    }
     if ($r.Code -ne $exit) { $wrong += "exit $($r.Code), where $exit is wanted" }
     if ($verdict -and $r.Verdict -cne "VERDICT $verdict") { $wrong += "$($r.Verdict), where VERDICT $verdict is wanted" }
     foreach ($h in $mustHave) { if ($r.All -cnotcontains $h) { $wrong += "no line reads: $h" } }
-    $show = @($new) + @($mustHave | Where-Object { $r.All -ccontains $_ })
+    $show = @($new) + @($mustHave | Where-Object { $r.All -ccontains $_ }) + @($mustLose | Where-Object { $gone -ccontains $_ } | ForEach-Object { "gone: $_" })
     if ($verdict) { $show += $r.Verdict }
     Write-Case ($wrong.Count -eq 0) $title $show $wrong
 }
@@ -218,7 +228,8 @@ Write-Output "== sixteen broken copies, each one edit away from the good pair"
 Test-Case "01 New raised by one" { Edit-Row $goodWb $wbTests "test" $A -Set @{ new = "2" } } $null @(
     "DIFFERS [$A]  New: workbook 2, document 1 clashes at New (top level 1)",
     "DIFFERS [$A]  New to Resolved add to 4 and Clashes reads 3",
-    "DIFFERS totals  New: workbook 3, document 2 clashes at New") "DISAGREE"
+    "DIFFERS totals  New and Reviewed: workbook New 2, Reviewed 2, document New 2, Reviewed 1 with each clash at its own status and New 1, Reviewed 2 with a group's clashes at the group's status, and the workbook fits neither") "DISAGREE" 0 $pictures @() @(
+    $pq4Totals)
 
 Test-Case "02 Clashes lowered by one" { Edit-Row $goodWb $wbTests "test" $M -Set @{ clashes = "2" } } $null @(
     "DIFFERS [$M]  Clashes: workbook 2, document 3 clashes",
@@ -252,8 +263,9 @@ Test-Case "10 a test line removed from the workbook" { Edit-Row $goodWb $wbTests
     "DIFFERS [$E]  in the document only, 0 clashes") "DISAGREE"
 
 Test-Case "11 a trailing space dropped from a test name, both sides named" { Rename-Everywhere $goodWb $M $M.TrimEnd() } $null @(
-    "DIFFERS [$($M.TrimEnd())]  in the workbook only, Clashes 3, New 1, Active 0, Reviewed 1, Approved 1, Resolved 0, 2 rows",
-    "DIFFERS [$M]  in the document only, 3 clashes") "DISAGREE"
+    "DIFFERS [$($M.TrimEnd())]  in the workbook only, Clashes 3, New 0, Active 0, Reviewed 2, Approved 1, Resolved 0, 2 rows",
+    "DIFFERS [$M]  in the document only, 3 clashes") "DISAGREE" 0 $pictures @() @(
+    $pq4Test)
 
 Test-Case "12 two equal blocks swapped" { Switch-Rows $goodWb $wbTests "test" $A $M } $null @(
     "DIFFERS block order: [$A] comes after [$M], both Clashes 3, and the document holds [$A] first") "DISAGREE"
@@ -265,13 +277,51 @@ $minusOne = @{}
 foreach ($w in @("top level", "top new", "top active", "top reviewed", "top approved", "top resolved", "leaves", "new", "active", "reviewed", "approved", "resolved", "groups", "empty groups", "nested groups", "other")) { $minusOne[$w] = "-1" }
 Test-Case "14 a test's counts -1 in the document read-out" $null { Edit-Row $goodDoc $docTests "test" $A -Set $minusOne } @(
     "NOT COMPARED [$A]  the document read-out counts this test as -1, UNKNOWN, so its rows, clashes, statuses and distances are not compared",
-    "NOT COMPARED totals, the document read-out holds a test it could not count") "NOT PROVED"
+    "NOT COMPARED totals, the document read-out holds a test it could not count") "NOT PROVED" 0 $pictures @() @(
+    $pq4Totals)
 
 Test-Case "15 pass 2 totals differing from pass 1" $null { Edit-Text $goodDoc "pass 2`t" "leaves 6," "leaves 7," } @(
     "DOUBT the document read-out's two passes differ, leaves 6 then 7") "NOT PROVED"
 
 Test-Case "16 END OF READ-OUT removed" $null { Remove-Last $goodDoc "END OF READ-OUT" } @(
     "COMPARISON FAILED: the document read-out does not end in END OF READ-OUT") "" 1
+
+Write-Output ""
+Write-Output "== the three readings of a group's clashes, which PQ4 decides"
+
+Test-Case "17 -GroupClashesAt unknown, given by name, reads as the good pair" $null $null @() "NOT PROVED" 0 @{ PictureStatuses = @("New", "Active"); GroupClashesAt = "unknown" } @(
+    $pq4Test, $pq4Totals)
+
+Test-Case "18 -GroupClashesAt own, each clash at its own status" $null $null @(
+    "DIFFERS [$M]  New: workbook 0, document 1 clashes at New (top level 0)",
+    "DIFFERS [$M]  Reviewed: workbook 2, document 1 clashes at Reviewed (top level 1)",
+    "DIFFERS totals  New: workbook 1, document 2 clashes at New",
+    "DIFFERS totals  Reviewed: workbook 2, document 1 clashes at Reviewed") "DISAGREE" 0 @{ PictureStatuses = @("New", "Active"); GroupClashesAt = "own" } @() @(
+    $pq4Test, $pq4Totals)
+
+Test-Case "19 -GroupClashesAt group, a group's clashes at the group's status" $null $null @() "NOT PROVED" 0 @{ PictureStatuses = @("New", "Active"); GroupClashesAt = "group" } @() @(
+    $pq4Test, $pq4Totals)
+
+Write-Output ""
+Write-Output "== an empty group, and a test name on two blocks"
+
+Test-Case "20 an empty group, which the harvest counts as one clash" $null {
+    $d = Edit-Row $goodDoc $docTests "test" $A -Set @{ leaves = "2"; resolved = "0"; groups = "1"; "empty groups" = "1" }
+    Edit-Row $d $docResults "name" "Clash3" -Set @{ kind = "group"; leaves = "0"; resolved = "0"; distance = "-"; "distance m" = "-" } } @(
+    "DIFFERS [$A]  Clashes: workbook 3, document 2 clashes, and the document's [Clash3] is an empty group, which holds no clash",
+    "DIFFERS [$A]  Resolved: workbook 1, document 0 clashes at Resolved (top level 1), and the document's [Clash3] is an empty group, which holds no clash",
+    "DIFFERS totals  Clashes: workbook 6, document 5 clashes",
+    "DIFFERS totals  Resolved: workbook 1, document 0 clashes at Resolved") "DISAGREE"
+
+Test-Case "21 a test name on two blocks, and the picture numbering after it" {
+    $w = Edit-Row $goodWb $wbTests "test" $E -Set @{ test = $A }
+    $w = Edit-Row $w $wbRows "clash name" "Group1" -Set @{ "picture link" = "proof-group_files/cd010001.jpg" }
+    Edit-Row $w $wbRows "clash name" "Clash5" -Set @{ "picture link" = "proof-group_files/cd010003.jpg" } } $null @(
+    "DOUBT [$A] is the name of 2 workbook tests, and no copy is compared",
+    "DIFFERS [$E]  in the document only, 0 clashes",
+    "NOT COMPARED picture numbering of [$A], the name is on 2 workbook blocks and which of them its 2 picture links belong to cannot be known, so those 2 tests are not checked",
+    "NOT COMPARED [$M]  the test number in its picture links, 1, can only be held to 0 to 1 after a test name on more than one block, and its clash numbers are checked",
+    "DIFFERS [$M]  row 2 [Clash5] picture link: workbook proof-group_files/cd010003.jpg, the export's numbering gives proof-group_files/cd010002.jpg") "DISAGREE" 0 @{ PictureStatuses = @("New", "Active", "Reviewed", "Approved") }
 
 Write-Output ""
 Write-Output "== the switches, and the one class of test that is counted rather than judged"
@@ -293,5 +343,5 @@ $right = @($results | Where-Object { $_ -eq "ok   " }).Count
 $wrongCount = @($results | Where-Object { $_ -eq "WRONG" }).Count
 Write-Output ""
 Write-Output "cases right: $right, cases wrong: $wrongCount"
-if ($wrongCount -gt 0 -or $right -ne 21) { exit 1 }
+if ($wrongCount -gt 0 -or $right -ne 26) { exit 1 }
 exit 0

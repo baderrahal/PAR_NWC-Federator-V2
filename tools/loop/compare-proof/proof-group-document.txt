@@ -9,6 +9,7 @@ nwf sha256	none, hand written
 opened	True in 0.000 s
 document file	proof-group.nwf
 units	Feet
+metres per millimetre	0.001
 metres per unit	0.3048
 units per metre	3.280839895013123
 pass 1	models 3, selection sets 12, set folders 2, saved viewpoints 5, viewpoint folders 1, other viewpoint items 0, tests 3, test folders 0, top level 5, leaves 6, leaves new 2, leaves active 1, leaves reviewed 1, leaves approved 1, leaves resolved 1, groups 1, empty groups 0, nested groups 0, other results 0

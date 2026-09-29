@@ -93,8 +93,7 @@ namespace DocumentReadProbe
             }
 
             string work = WorkFolder();
-            string why;
-            string output = FullPath(parameters[0], out why);
+            string output = FullPath(parameters[0], out _);
 
             if (output == null || !IsUnder(output, work) || !Directory.Exists(output))
             {
@@ -170,7 +169,10 @@ namespace DocumentReadProbe
         /// <summary>
         /// The full path, or null with the reason when the text is not a usable path. The
         /// four exceptions caught are the ones GetFullPath documents for a malformed path,
-        /// and each becomes a refusal that carries its message, never a silent pass.
+        /// and each becomes a refusal, never a silent pass. Inside a read-out the REFUSED
+        /// line carries the reason. Before any read-out, where Execute checks the output
+        /// folder and the names and writes nothing on a fault, the reason is dropped and
+        /// the code 3 or 4 is all that goes back.
         /// </summary>
         internal static string FullPath(string path, out string why)
         {
@@ -208,8 +210,7 @@ namespace DocumentReadProbe
 
         private static string ReadOutName(string raw)
         {
-            string why;
-            string full = FullPath(raw, out why);
+            string full = FullPath(raw, out _);
 
             if (full == null)
             {
@@ -340,15 +341,29 @@ namespace DocumentReadProbe
                 perMetre = Scale(Units.Meters, units, "units per metre");
             }
 
+            double perMillimetre = Scale(Units.Millimeters, Units.Meters, "metres per millimetre");
             Line("units", unitsName);
-            Line("metres per unit", DocumentReadProbePlugin.Real(perUnit));
-            Line("units per metre", DocumentReadProbePlugin.Real(perMetre));
+            Line("metres per millimetre", DocumentReadProbePlugin.Real(perMillimetre));
 
             if (!double.IsNaN(perUnit) && !double.IsNaN(perMetre) && Math.Abs((perUnit * perMetre) - 1.0) > 1e-9)
             {
                 doubts.Add("ScaleFactor gives " + DocumentReadProbePlugin.Real(perUnit) + " metres per unit and "
                     + DocumentReadProbePlugin.Real(perMetre) + " units per metre, which are not each other's inverse");
             }
+
+            // A number times its inverse is one whichever way ScaleFactor converts, so the
+            // check above cannot tell the unit converted from the unit converted into. A
+            // millimetre is less than a metre, so from millimetres into metres reads below
+            // one only when the first parameter is the unit converted from. NaN fails too.
+            if (!(perMillimetre < 1.0))
+            {
+                doubts.Add("ScaleFactor(Millimeters, Meters) reads " + DocumentReadProbePlugin.Real(perMillimetre)
+                    + ", which is not below 1, so which way ScaleFactor converts is UNKNOWN and every value in metres is written UNKNOWN");
+                perUnit = double.NaN;
+            }
+
+            Line("metres per unit", DocumentReadProbePlugin.Real(perUnit));
+            Line("units per metre", DocumentReadProbePlugin.Real(perMetre));
 
             Pass first = Pass.Read(document, perUnit);
             Pump();
