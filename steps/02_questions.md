@@ -434,3 +434,27 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 81. From Bader, 2026-09-29, not a question put to him but a fault he found. Local main tracked origin/master, an old remote branch, so GitHub Desktop's Pull read the wrong branch, which is the likely reason the add-in installed on 27 Sep reads be0b9b37
 
     Answer: Bader, 2026-09-29. Set main's upstream to origin/main and show git status -sb and git rev-parse main origin/main before and after. Leave the remote master branch alone, D6 stays his. Carried out on 2026-09-29 at the start of turn 3. Before: main...origin/master ahead 320, and origin/master's tip is be0b9b37, the very build the installed add-in reads, which confirms his reading. After: main...origin/main, main and origin/main both e555619. Recorded in the turn 3 entry of steps\log.md.
+
+82. From the design of tools\loop\run.ps1, F103, turn 3 of the loop, 2026-09-29. THE LOG FOLDER, before any window opens on main. On main the window logs only into %LOCALAPPDATA%\ParsonsNwcFederator\logs, which held exactly 30 of your run logs when read on 2026-09-29, and the tool keeps 30 and deletes the oldest at every start (RunLog.cs 222 to 226 and 368 to 434, FederatorPlugin.cs 46, and Execute ignores its parameters). So every window run on main would delete your oldest log, run-20260901-191711.log first, and leave its own log and tsv in your folder. No path keeps every written guard and D4 together. A, the lead's recommendation: from just before the start until the loop's Navisworks is gone, hold every run log of yours open for reading with no delete sharing, so the tool's pruning fails on it and writes could not delete. Nothing is written to your files and Windows lets go if the script dies. Then copy the loop's own log and tsv out and remove exactly those two, and read your folder back name, size, time and sha256 against the list taken before. It breaks the letter of two guards, for the loop's own two files only. B, the same hold with no removal, and your own next run pushes out one of yours per loop log, each with a copy in logs-backup. C, one change to src before the baseline so the window takes a log folder, which breaks D4 because the baseline is then not main. D, the no-click entry first, whose settings file names the log folder, which reverses D4. E, you move your logs aside yourself before the loop and back after
+
+    Answer:
+
+83. From the same design. THE HANG RULE as written is no processor time at all for five minutes while the log has not grown. An idle Navisworks, or one waiting at a dialog, may never read exactly zero, so the rule might never fire. run.ps1's first start with no window measures it. If it never reads zero, what counts as no processor time, for example under one second in five minutes
+
+    Answer:
+
+84. From the same design. A CEILING. Your rule names none. The design closes its own Navisworks 12 hours after it proved the start its own, and records CEILING and never HUNG, because the whole folder is 45 groups and 140 NWC and one group took 23 minutes on the old build. May a ceiling exist, and how long
+
+    Answer:
+
+85. From the same design. THE SCREEN. Keeping the machine awake with the display flag keeps your screen on through runs of hours, and the loop's Navisworks and the tool window sit on your screen, where a click changes the run. May runs go while you are away, may they go while you work at the machine, and does a locked screen matter for the pictures
+
+    Answer:
+
+86. From the same design, measured reading only on 2026-09-29. AUTOSAVE. %APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave holds 196 NWF autosaves, 286 MB, and your own run wrote one at 17:00:28 on 2026-09-27, so loop runs will write there too, under the same document names as yours. run.ps1 copies every file there not already backed up before each start and writes nothing there. May the loop remove the autosaves its own runs added, and put back from the backup any of yours a run changed. Until you say, each is listed and left
+
+    Answer:
+
+87. From the same design. YOUR REMEMBERED FOLDERS. At every window open the tool reads your folders.txt, checks each folder still exists, and writes the list into its log, the source folder on your desktop and the ACC folders among them. That is the tool on main reading whether those exist, reading only. The loop cannot stop it without writing your folders.txt or changing src. Is that acceptable. The loop masks that block before any loop log is committed
+
+    Answer:
