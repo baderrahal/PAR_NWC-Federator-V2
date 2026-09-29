@@ -22,8 +22,15 @@ $ErrorActionPreference = "Stop"
 #   3. every referenced assembly that sits in the install folder, each by its one full
 #      path built from the reference name, counted for the switch names
 #   4. the one that holds the switch table, listed the same way as Roamer.exe
-#   5. what its parser stores for each option, off the IL, reflection only, and which
-#      methods in it and in Roamer.exe read the fields the add-in plugin options store
+#   5. what its parser does with each option, off the IL, reflection only
+#   6. where the parsed actions go: every method in it and in Roamer.exe that reads the
+#      action list, the dispatcher or three config fields, found through their tokens
+#   7. the dispatcher and each of those methods, summarised off the IL
+#   8. the branches around the two places actions are dispatched, and the API methods an
+#      action reaches, whole IL
+#   9. everything that could not be read over the run: references that would not load,
+#      rows and tokens that would not resolve, types and bodies that could not be listed.
+#      Nothing that fails is dropped without a line saying what failed
 #
 # Nothing here starts a process. Reflection only loads run no code in the assemblies.
 # Each file is tested by its one full path. The install folder is never searched.
@@ -299,12 +306,31 @@ if ($null -eq $md) { if (-not $mdFailed) { Write-Output "    no CLI header, so R
   Write-Output ("    ImplMap, each native entry point it declares, " + $md.ImplMaps.Count + ": " + ($md.ImplMaps -join ", "))
 }
 
+# A reference that cannot be loaded for reflection is written down, never dropped, and
+# every list of them is printed at the end of section 2 and again at the end.
+$resolveFailures = New-Object System.Collections.Generic.List[string]
 $roResolve = [ResolveEventHandler]{
   param($s, $e)
   $n = New-Object System.Reflection.AssemblyName($e.Name)
   $cand = Join-Path $nw ($n.Name + ".dll")
   if (Test-Path -LiteralPath $cand) { return [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($cand) }
-  try { return [System.Reflection.Assembly]::ReflectionOnlyLoad($e.Name) } catch { return $null }
+  try { return [System.Reflection.Assembly]::ReflectionOnlyLoad($e.Name) } catch {
+    $line = $e.Name + ", asked for by " + $(if ($null -ne $e.RequestingAssembly) { $e.RequestingAssembly.GetName().Name } else { "an assembly the runtime did not name" }) + ": " + $_.Exception.GetType().Name + ": " + $_.Exception.Message
+    if (-not $resolveFailures.Contains($line)) { $resolveFailures.Add($line) }
+    return $null
+  }
+}
+function ResolveFailureLines($where) {
+  if ($resolveFailures.Count -eq 0) { Write-Output ("  references that could not be loaded for reflection, " + $where + ": none") }
+  else { Write-Output ("  references that could not be loaded for reflection, " + $where + ": " + $resolveFailures.Count); foreach ($x in $resolveFailures) { Write-Output ("    " + $x) } }
+}
+# What GetTypes could not load, said rather than dropped: how many, and each distinct reason.
+function LoaderLines($label, $ex) {
+  $all = @($ex.Types)
+  $bad = @($all | Where-Object { $null -eq $_ }).Count
+  Write-Output ("  UNKNOWN in part: " + $bad + " of the " + $all.Count + " types of " + $label + " could not be loaded for reflection, " + ($all.Count - $bad) + " were read. The reasons, each once:")
+  $seen = @{}
+  foreach ($le in @($ex.LoaderExceptions)) { if ($null -eq $le) { continue }; $t = $le.GetType().Name + ": " + $le.Message; if (-not $seen.ContainsKey($t)) { $seen[$t] = $true; Write-Output ("    " + $t) } }
 }
 [AppDomain]::CurrentDomain.add_ReflectionOnlyAssemblyResolve($roResolve)
 $ra = [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($roamer)
@@ -316,6 +342,7 @@ if ($null -ne $md) {
   Write-Output ("    the byte read and the reflection read list the same references: " + $same)
   if (-not $same) { Write-Output ("    reflection lists: " + (@($refl | Sort-Object) -join ", ")) }
 }
+ResolveFailureLines "so far"
 Write-Output ""
 
 # ---------------------------------------------------------------------------------------
@@ -362,10 +389,20 @@ function TypeName($t) {
   if ($t.IsGenericParameter) { return $t.Name }
   return $t.FullName
 }
+# Every token the IL reader could not resolve is kept here, each once, with the method, the
+# offset and what the runtime said, and printed at the end, so an option or a reader missed
+# because a token did not resolve shows up as a line and not as a shorter list.
+$script:ilUnresolved = New-Object System.Collections.Generic.List[string]
+function Unresolved($method, $at, $kind, $tok, $ex) {
+  if ($ex -is [System.Management.Automation.MethodInvocationException] -and $null -ne $ex.InnerException) { $ex = $ex.InnerException }
+  $line = (TypeName $method.DeclaringType) + "::" + $method.Name + " IL_" + $at.ToString("X4") + " " + $kind + " token 0x" + $tok.ToString("X8") + ": " + $ex.GetType().Name + ": " + $ex.Message
+  if (-not $script:ilUnresolved.Contains($line)) { $script:ilUnresolved.Add($line) }
+  return ($kind + " token 0x" + $tok.ToString("X8") + " unresolved, " + $ex.GetType().Name + ": " + $ex.Message)
+}
 function IlRead($method) {
   $list = New-Object System.Collections.Generic.List[object]
   $body = $null
-  try { $body = $method.GetMethodBody() } catch { $list.Add([pscustomobject]@{ Offset = -1; Name = "error"; Text = ("GetMethodBody threw, " + $_.Exception.Message); Member = $null }); return ,$list }
+  try { $body = $method.GetMethodBody() } catch { $list.Add([pscustomobject]@{ Offset = -1; Name = "error"; Text = ("GetMethodBody threw, " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); Member = $null }); return ,$list }
   if ($null -eq $body) { $list.Add([pscustomobject]@{ Offset = -1; Name = "nobody"; Text = "no IL body"; Member = $null }); return ,$list }
   $il = $body.GetILAsByteArray(); $mod = $method.Module; $i = 0
   while ($i -lt $il.Length) {
@@ -385,14 +422,17 @@ function IlRead($method) {
       "InlineR" { $i += 8 }
       "ShortInlineR" { $i += 4 }
       "InlineSwitch" { $n = [BitConverter]::ToInt32($il, $i); $i += 4 + 4 * $n; $text = "switch of " + $n }
-      "InlineString" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveString($tok); $text = "`"" + $member + "`"" } catch { $text = "string token unresolved" } }
-      "InlineMethod" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveMethod($tok); $text = (TypeName $member.DeclaringType) + "::" + $member.Name } catch { $text = "method token 0x" + $tok.ToString("X8") + " unresolved" } }
-      "InlineField" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveField($tok); $text = (TypeName $member.DeclaringType) + "::" + $member.Name } catch { $text = "field token 0x" + $tok.ToString("X8") + " unresolved" } }
-      "InlineType" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveType($tok); $text = TypeName $member } catch { $text = "type token unresolved" } }
+      "InlineString" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveString($tok); $text = "`"" + $member + "`"" } catch { $text = Unresolved $method $at "string" $tok $_.Exception } }
+      "InlineMethod" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveMethod($tok); $text = (TypeName $member.DeclaringType) + "::" + $member.Name } catch { $text = Unresolved $method $at "method" $tok $_.Exception } }
+      "InlineField" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveField($tok); $text = (TypeName $member.DeclaringType) + "::" + $member.Name } catch { $text = Unresolved $method $at "field" $tok $_.Exception } }
+      "InlineType" { $tok = [BitConverter]::ToInt32($il, $i); $i += 4; try { $member = $mod.ResolveType($tok); $text = TypeName $member } catch { $text = Unresolved $method $at "type" $tok $_.Exception } }
       "InlineTok" {
         $tok = [BitConverter]::ToInt32($il, $i); $i += 4
-        $text = "token 0x" + $tok.ToString("X8") + " unresolved"
-        try { $member = $mod.ResolveType($tok); $text = "type " + (TypeName $member) } catch { try { $member = $mod.ResolveMember($tok); $text = [string]$member } catch { } }
+        # A ldtoken names a type, a field or a method. The type is tried first, and only
+        # when both reads fail is it a failure, with the second one's reason.
+        try { $member = $mod.ResolveType($tok); $text = "type " + (TypeName $member) } catch {
+          try { $member = $mod.ResolveMember($tok); $text = [string]$member } catch { $text = Unresolved $method $at "member" $tok $_.Exception }
+        }
       }
       default { $i += 4; $text = "operand not decoded" }
     }
@@ -445,7 +485,7 @@ foreach ($h in $holders) {
   if ($h -eq $roamer) { $ga = $ra } else { $ga = [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($h) }
   $loaded[$h] = $ga
   $types = @()
-  try { $types = @($ga.GetTypes()) } catch [System.Reflection.ReflectionTypeLoadException] { $types = @($_.Exception.Types | Where-Object { $null -ne $_ }); Write-Output ("  some types of " + (Split-Path $h -Leaf) + " could not load, " + $types.Count + " read") }
+  try { $types = @($ga.GetTypes()) } catch [System.Reflection.ReflectionTypeLoadException] { $types = @($_.Exception.Types | Where-Object { $null -ne $_ }); LoaderLines (Split-Path $h -Leaf) $_.Exception }
   $cl = @($types | Where-Object { $_.Name -match "CommandLine" })
   $clTypes += $cl
   Write-Output ("  types in " + (Split-Path $h -Leaf) + " whose name holds CommandLine: " + (($cl | ForEach-Object { $_.FullName }) -join ", "))
@@ -538,12 +578,24 @@ function Readers($asmObj, $label) {
   # A member defined in another assembly is reached through a MemberRef token. Every
   # MemberRef row is resolved once and kept where it resolves to a followed member.
   $mr = 0; try { $mr = [int](MdRead (PeRead $asmObj.Location)).Rows[0x0A] } catch { Write-Output ("  UNKNOWN: the MemberRef count of " + $label + " could not be read, " + $_.Exception.Message) }
+  # A row that does not resolve is counted and its reason kept. Such a row cannot be told
+  # to be a followed member, so a use of one through it would be missed, and the count of
+  # rows that did not resolve says how much of the table that could be.
+  $okRows = 0; $badRows = 0; $why = [ordered]@{}
   for ($r = 1; $r -le $mr; $r++) {
     $tok = 0x0A000000 + $r
-    try { $x = $mod.ResolveMember($tok); $k = MemberKey $x; if ($null -ne $k -and $follow.ContainsKey($k)) { $toks[$tok] = $x } } catch { }
+    try { $x = $mod.ResolveMember($tok); $okRows++; $k = MemberKey $x; if ($null -ne $k -and $follow.ContainsKey($k)) { $toks[$tok] = $x } }
+    catch {
+      $badRows++
+      $ex = $_.Exception; if ($ex -is [System.Management.Automation.MethodInvocationException] -and $null -ne $ex.InnerException) { $ex = $ex.InnerException }
+      $reason = $ex.GetType().Name + ": " + $ex.Message
+      if (-not $why.Contains($reason)) { $why[$reason] = New-Object System.Collections.Generic.List[string] }
+      $why[$reason].Add("0x" + $tok.ToString("X8"))
+    }
   }
-  Write-Output ("  " + $label + ": " + $toks.Count + " tokens reach a followed member, " + $mr + " MemberRef rows resolved")
-  $types = @(); try { $types = @($asmObj.GetTypes()) } catch [System.Reflection.ReflectionTypeLoadException] { $types = @($_.Exception.Types | Where-Object { $null -ne $_ }) }
+  Write-Output ("  " + $label + ": MemberRef rows " + $mr + ", resolved " + $okRows + ", did not resolve " + $badRows + ". Tokens that reach a followed member: " + $toks.Count)
+  foreach ($reason in $why.Keys) { Write-Output ("    did not resolve, " + $why[$reason].Count + " rows: " + $reason + "   tokens " + ($why[$reason] -join ", ")) }
+  $types = @(); try { $types = @($asmObj.GetTypes()) } catch [System.Reflection.ReflectionTypeLoadException] { $types = @($_.Exception.Types | Where-Object { $null -ne $_ }); LoaderLines $label $_.Exception }
   # An ordinal list, not a hashtable, because a PowerShell hashtable compares its string
   # keys case blind and two byte patterns can differ only in a byte that is a letter.
   $pats = New-Object System.Collections.Generic.List[string]
@@ -553,10 +605,11 @@ function Readers($asmObj, $label) {
     foreach ($op in $ops) { $pats.Add($latin1.GetString([byte[]](@([byte]$op) + $tb))) }
   }
   $n = 0; $hits = 0
+  $skipped = New-Object System.Collections.Generic.List[string]
   foreach ($t in $types) {
-    $ms = @(); try { $ms = @($t.GetMethods($flagsAll)) + @($t.GetConstructors($flagsAll)) } catch { continue }
+    $ms = @(); try { $ms = @($t.GetMethods($flagsAll)) + @($t.GetConstructors($flagsAll)) } catch { $skipped.Add((TypeName $t) + ", its methods could not be listed: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); continue }
     foreach ($m in $ms) {
-      $body = $null; try { $body = $m.GetMethodBody() } catch { continue }
+      $body = $null; try { $body = $m.GetMethodBody() } catch { $skipped.Add((TypeName $t) + "::" + $m.Name + ", its body could not be read: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); continue }
       if ($null -eq $body) { continue }
       $n++
       $s = $latin1.GetString($body.GetILAsByteArray())
@@ -574,7 +627,8 @@ function Readers($asmObj, $label) {
       if ($mine -gt 0 -and -not ($t.Name -match "CommandLine")) { $readerMethods.Add([pscustomobject]@{ Label = $label; Type = $t; Method = $m }) }
     }
   }
-  Write-Output ("  " + $label + ": " + $n + " method bodies read, " + $hits + " uses of a followed member")
+  Write-Output ("  " + $label + ": " + $n + " method bodies read, " + $hits + " uses of a followed member, " + $skipped.Count + " types or methods that could not be read")
+  foreach ($x in $skipped) { Write-Output ("    not read: " + $x) }
 }
 foreach ($h in $holders) { if ($h -ne $roamer) { Readers $loaded[$h] (Split-Path $h -Leaf) } }
 Readers $ra "Roamer.exe"
@@ -644,7 +698,7 @@ foreach ($h in $holders) {
   if ($null -eq $mw) { Write-Output ("  UNKNOWN: no Autodesk.Navisworks.Gui.Roamer.MainWindow in " + (Split-Path $h -Leaf)); continue }
   $oi = $mw.GetMethod("OnIdle", $flagsAll)
   if ($null -eq $oi) { Write-Output "  UNKNOWN: no MainWindow::OnIdle"; continue }
-  IlAround $oi ((Split-Path $h -Leaf) + " MainWindow::OnIdle, from its first read of command_line_actions to its store of it") "*MainWindow::command_line_actions" "*CommandLineAction>::get_Count"
+  IlAround $oi ((Split-Path $h -Leaf) + " MainWindow::OnIdle, from its first read of command_line_actions to the first get_Count on the action list after the dispatch, which stops before the store into command_line_actions") "*MainWindow::command_line_actions" "*CommandLineAction>::get_Count"
 }
 # DispatchOneAction hands the action's type and arguments to ApplicationImpl.DispatchAutomationAction,
 # section 7. That method is in the API assembly, read by its one full path.
@@ -676,5 +730,10 @@ if (-not (Test-Path -LiteralPath $apiPath)) { Write-Output ("  UNKNOWN: no Autod
     }
   }
 }
+Write-Output ""
+Write-Output "==== 9. What could not be read, over the whole run ===="
+ResolveFailureLines "over the whole run"
+Write-Output ("  tokens the IL reader could not resolve, each once: " + $script:ilUnresolved.Count)
+foreach ($x in $script:ilUnresolved) { Write-Output ("    " + $x) }
 Write-Output ""
 Write-Output "WHAT EACH SWITCH DOES ON A START IS UNKNOWN. Nothing here ran Roamer.exe. The lists above say what the files carry, what the parser stores and what the IL of the readers touches, in the order it is written, which is not the order a start runs it."

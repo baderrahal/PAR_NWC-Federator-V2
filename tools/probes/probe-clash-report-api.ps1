@@ -17,8 +17,12 @@ $ErrorActionPreference = "Stop"
 # Listed: every public type whose name holds Report, Html, Tabular or Export, whole, and
 # every public member anywhere whose name holds one, with its full signature. In the COM
 # interop, every public type whose name holds Clash or starts InwOcl, whole, because that
-# is where a COM clash report would sit. scan.md names no other Clash Detective assembly,
-# so no other is read. Nothing here runs code in these assemblies. Whether a member found
+# is where a COM clash report would sit. Also listed: the types that are not public whose
+# name holds one, names only, every string in each file holding tabular, .xsl,
+# clash_report or reportformat, case blind, and where the arguments of each public
+# WriteReport come from. A read that fails prints what failed and is never dropped.
+# scan.md names no other Clash Detective assembly, so no other is read. Every assembly is
+# loaded with ReflectionOnlyLoadFrom, which runs no code in it. Whether a member found
 # runs, and what it writes, is UNKNOWN until a start measures it.
 
 $nw = $NavisworksPath
@@ -35,9 +39,17 @@ $roResolve = [ResolveEventHandler]{
   $n = New-Object System.Reflection.AssemblyName($e.Name)
   $cand = Join-Path $nw ($n.Name + ".dll")
   if (Test-Path -LiteralPath $cand) { return [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($cand) }
-  try { return [System.Reflection.Assembly]::ReflectionOnlyLoad($e.Name) } catch { $resolveFailures.Add($e.Name); return $null }
+  try { return [System.Reflection.Assembly]::ReflectionOnlyLoad($e.Name) } catch { $line = $e.Name + ": " + $_.Exception.GetType().Name + ": " + $_.Exception.Message; if (-not $resolveFailures.Contains($line)) { $resolveFailures.Add($line) }; return $null }
 }
 [AppDomain]::CurrentDomain.add_ReflectionOnlyAssemblyResolve($roResolve)
+# What GetTypes could not load, said rather than dropped: how many, and each distinct reason.
+function LoaderLines($label, $ex) {
+  $all = @($ex.Types)
+  $bad = @($all | Where-Object { $null -eq $_ }).Count
+  Write-Output ("  UNKNOWN in part: " + $bad + " of the " + $all.Count + " types of " + $label + " could not be loaded for reflection, " + ($all.Count - $bad) + " were read. The reasons, each once:")
+  $seen = @{}
+  foreach ($le in @($ex.LoaderExceptions)) { if ($null -eq $le) { continue }; $t = $le.GetType().Name + ": " + $le.Message; if (-not $seen.ContainsKey($t)) { $seen[$t] = $true; Write-Output ("    " + $t) } }
+}
 
 function TypeName($t) {
   if ($null -eq $t) { return "null" }
@@ -67,7 +79,7 @@ function MemberText($x) {
       return ("property public " + $st + (TypeName $x.PropertyType) + " " + $x.Name + $it + " { " + ($acc -join "; ") + " }")
     }
     "Field" {
-      if ($x.IsLiteral) { $v = ""; try { $v = " = " + [string]$x.GetRawConstantValue() } catch { }; return ("literal  " + (TypeName $x.FieldType) + " " + $x.Name + $v) }
+      if ($x.IsLiteral) { $v = ""; try { $v = " = " + [string]$x.GetRawConstantValue() } catch { $v = " = UNKNOWN, the value could not be read, " + $_.Exception.GetType().Name + ": " + $_.Exception.Message }; return ("literal  " + (TypeName $x.FieldType) + " " + $x.Name + $v) }
       $st = ""; if ($x.IsStatic) { $st = "static " }; return ("field    public " + $st + (TypeName $x.FieldType) + " " + $x.Name)
     }
     "Event" { return ("event    public " + (TypeName $x.EventHandlerType) + " " + $x.Name) }
@@ -85,7 +97,7 @@ function ShowType($t) {
   $ifs = @($t.GetInterfaces() | ForEach-Object { $_.Name }); if ($ifs.Count -gt 0) { Write-Output ("      implements " + ($ifs -join ", ")) }
   if ($t.IsEnum) {
     $fs = @($t.GetFields("Public,Static"))
-    foreach ($f in $fs) { $v = ""; try { $v = [string]$f.GetRawConstantValue() } catch { $v = "?" }; Write-Output ("      " + $f.Name + " = " + $v) }
+    foreach ($f in $fs) { $v = ""; try { $v = [string]$f.GetRawConstantValue() } catch { $v = "UNKNOWN, the value could not be read, " + $_.Exception.GetType().Name + ": " + $_.Exception.Message }; Write-Output ("      " + $f.Name + " = " + $v) }
     if ($fs.Count -eq 0) { Write-Output "      no values in the metadata" }
     return
   }
@@ -108,7 +120,7 @@ foreach ($dllName in $names) {
   $types = @()
   try { $types = @($a.GetTypes()) } catch [System.Reflection.ReflectionTypeLoadException] {
     $types = @($_.Exception.Types | Where-Object { $null -ne $_ })
-    Write-Output ("  some types could not be loaded for reflection, " + @($_.Exception.LoaderExceptions).Count + " loader exceptions, " + $types.Count + " types read. The first: " + @($_.Exception.LoaderExceptions)[0].Message)
+    LoaderLines $dllName $_.Exception
   }
   $public = @($types | Where-Object { $_.IsPublic -or $_.IsNestedPublic })
   Write-Output ("  types " + $types.Count + ", public " + $public.Count)
@@ -124,7 +136,7 @@ foreach ($dllName in $names) {
   $mHits = 0
   foreach ($t in ($public | Sort-Object FullName)) {
     if (Holds $t.Name) { continue }
-    $ms = @(); try { $ms = @($t.GetMembers("Public,Instance,Static,DeclaredOnly")) } catch { Write-Output ("  UNKNOWN: the members of " + $t.FullName + " could not be read, " + $_.Exception.Message); continue }
+    $ms = @(); try { $ms = @($t.GetMembers("Public,Instance,Static,DeclaredOnly")) } catch { Write-Output ("  UNKNOWN: the members of " + $t.FullName + " could not be read, " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); continue }
     foreach ($x in $ms) {
       if (-not (Holds $x.Name)) { continue }
       if ($x.MemberType.ToString() -eq "Method" -and $x.IsSpecialName) { continue }
@@ -173,7 +185,7 @@ foreach ($dllName in $names) {
 # the five assemblies that hands one out.
 Write-Output "==== WHERE THE ARGUMENTS OF EVERY PUBLIC WriteReport COME FROM ===="
 $allPublic = @()
-foreach ($k in $script:loadedAsm.Keys) { try { $allPublic += @($script:loadedAsm[$k].GetTypes() | Where-Object { $_.IsPublic -or $_.IsNestedPublic }) } catch [System.Reflection.ReflectionTypeLoadException] { $allPublic += @($_.Exception.Types | Where-Object { $null -ne $_ -and ($_.IsPublic -or $_.IsNestedPublic) }) } }
+foreach ($k in $script:loadedAsm.Keys) { try { $allPublic += @($script:loadedAsm[$k].GetTypes() | Where-Object { $_.IsPublic -or $_.IsNestedPublic }) } catch [System.Reflection.ReflectionTypeLoadException] { $allPublic += @($_.Exception.Types | Where-Object { $null -ne $_ -and ($_.IsPublic -or $_.IsNestedPublic) }); LoaderLines $k $_.Exception } }
 $writers = @()
 foreach ($t in $allPublic) { foreach ($m in $t.GetMethods("Public,Instance,Static,DeclaredOnly")) { if ($m.Name -eq "WriteReport") { $writers += $m } } }
 Write-Output ("  public methods named WriteReport: " + $writers.Count)
@@ -186,7 +198,7 @@ foreach ($w in $writers) {
     foreach ($c in $pt.GetConstructors()) { Write-Output ("      " + (MemberText $c)) }
     $givers = 0
     foreach ($t in $allPublic) {
-      $ms = @(); try { $ms = @($t.GetMembers("Public,Instance,Static,DeclaredOnly")) } catch { continue }
+      $ms = @(); try { $ms = @($t.GetMembers("Public,Instance,Static,DeclaredOnly")) } catch { Write-Output ("      UNKNOWN: the members of " + $t.FullName + " could not be read, so it is not known whether it hands one out, " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); continue }
       foreach ($x in $ms) {
         $gives = $false
         if ($x.MemberType.ToString() -eq "Method") { if ($x.ReturnType -eq $pt) { $gives = $true }; foreach ($pp in $x.GetParameters()) { if ($pp.IsOut -and $pp.ParameterType.GetElementType() -eq $pt) { $gives = $true } } }
@@ -202,6 +214,6 @@ Write-Output ""
 
 Write-Output "==== SUMMARY ===="
 foreach ($s in $summary) { Write-Output ("  " + $s) }
-if ($resolveFailures.Count -gt 0) { Write-Output ("  references that could not be loaded for reflection: " + (($resolveFailures | Sort-Object -Unique) -join ", ")) }
+if ($resolveFailures.Count -eq 0) { Write-Output "  references that could not be loaded for reflection: none" } else { Write-Output ("  references that could not be loaded for reflection: " + $resolveFailures.Count); foreach ($x in $resolveFailures) { Write-Output ("    " + $x) } }
 Write-Output ""
 Write-Output "WHETHER ANY MEMBER LISTED RUNS, AND WHAT IT WRITES, IS UNKNOWN. Nothing here started Navisworks or called a member."

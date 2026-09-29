@@ -1,6 +1,6 @@
 # Probes
 
-Twelve PowerShell scripts that read facts off the machine they run on: the installed
+Fifteen PowerShell scripts that read facts off the machine they run on: the installed
 Navisworks DLLs, and the real window once the add-in is built and installed. They were
 how docs/history/scan.md was measured. Nothing here is part of the build or the install.
 
@@ -58,18 +58,31 @@ build\install.ps1, because they construct the real window:
   already open
 
 Three more read the install with no Navisworks started, written for F105 on 2026-09-29,
-each with its result file beside it, and answer docs/history/scan.md section 5z-f:
+each with its result file beside it, and answer docs/history/scan.md section 5z-f. Their
+runs are in `f105-run-record-20260929.txt`, with Get-Process Roamer read before and after.
+All three load every assembly with ReflectionOnlyLoadFrom, which runs no code in it, and
+print every read that failed rather than dropping it. probe-viewpoints.ps1 and
+probe-model-remove.ps1, which 5z-f ran as well, load the Api DLL with Assembly.LoadFrom,
+which runs the load code of that mixed native and managed DLL and of the native DLLs it
+needs, so their reads are not reflection only:
 
-- `probe-viewpoint-calls.ps1` checks, one line each, every Navisworks member
-  src\Federator.Addin\Engine\SavedViewpoints.cs calls, in the Api DLL and the two COM DLLs,
-  because probe-viewpoints.ps1 never opens the COM half the add-in writes viewpoints through
+- `probe-viewpoint-calls.ps1` checks what src\Federator.Addin\Engine\SavedViewpoints.cs
+  calls in the Api DLL and the two COM DLLs, because probe-viewpoints.ps1 never opens the
+  COM half the add-in writes viewpoints through. Three ways: a list typed by hand, where
+  FOUND means that name and that shape and the list checks only what is on it, the type
+  arguments of 5d's and 5c's generic members, and, given -AddinPath or a Release build of
+  this repo, every Navisworks reference in the IL of the classes compiled from that file,
+  resolved against the install, which is the part not typed by hand
 - `probe-roamer-switches.ps1` reads Roamer.exe and the DLL whose parser holds its command
   line switches as bytes and IL, never by running it, and lists every switch the parser
   matches and what the IL does with ExecuteAddInPlugin
 - `probe-clash-report-api.ps1` lists every public type and member of the five Navisworks
-  assemblies the tool can reach whose name holds Report, Html, Tabular or Export, and every
-  clash report member of the COM interop, which is how the Clash Detective report was found
-  to have no public writer in the API the add-in uses
+  assemblies the tool can reach whose name holds Report, Html, Tabular or Export, every
+  clash type of the COM interop, and every string in each file naming a stylesheet or a
+  tabular report. It found no such member in Autodesk.Navisworks.Api.Clash, the namespace
+  the add-in uses, and none in the COM clash interfaces. It found one public static
+  LcClClashReport.WriteReport in the Interop namespace of Autodesk.Navisworks.Clash.dll,
+  which the add-in references, whose report formats are named only at run time
 
 A probe that cannot find what it needs says UNKNOWN and the path it looked at, and
 stops. Never search the install folder for a DLL, the path is built and tested directly,

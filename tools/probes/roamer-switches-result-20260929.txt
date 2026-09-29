@@ -1,5 +1,5 @@
 FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe   214296 bytes, file version 22.5.1433.58, sha256 2BBC4BE15D7F16BAB2D5AC733EEBF2659849F56F9516F5B5E95737843E4913A9
-MACHINE   [machine]   2026-09-29 10:46
+MACHINE   [machine]   2026-09-29 12:18
 
 ==== 1. Roamer.exe as bytes ====
   strings of four or more printable characters in Roamer.exe: 759, ascii 685, utf16 74
@@ -93,6 +93,7 @@ MACHINE   [machine]   2026-09-29 10:46
     ImplMap, each native entry point it declares, 0: 
     the same file read by reflection only, Roamer 22.0.0.0, entry point NetRoamer.Program::Main, references 16
     the byte read and the reflection read list the same references: True
+  references that could not be loaded for reflection, so far: none
 
 ==== 3. Every referenced assembly in the install folder, each by its one full path, counted for the switch names ====
   mscorlib                                     no file at C:\Program Files\Autodesk\Navisworks Manage 2025\mscorlib.dll, not read
@@ -736,7 +737,8 @@ FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer
     method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportParseError(Autodesk.Navisworks.Gui.Roamer.CommandLineParser)
     method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportResult(Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult, System.Boolean)
     method Autodesk.Navisworks.Gui.Roamer.CommandLineParser::.ctor()
-  navisworks.gui.roamer.dll: 12 tokens reach a followed member, 3042 MemberRef rows resolved
+  navisworks.gui.roamer.dll: MemberRef rows 3042, resolved 3010, did not resolve 32. Tokens that reach a followed member: 12
+    did not resolve, 32 rows: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.   tokens 0x0A00002A, 0x0A00002D, 0x0A0007C3, 0x0A0007C4, 0x0A0007C5, 0x0A0007C6, 0x0A0007C7, 0x0A0007C8, 0x0A0007C9, 0x0A0007CA, 0x0A0007CB, 0x0A000922, 0x0A000923, 0x0A000BB1, 0x0A000BB2, 0x0A000BB3, 0x0A000BB4, 0x0A000BB5, 0x0A000BB6, 0x0A000BBF, 0x0A000BC1, 0x0A000BC2, 0x0A000BC3, 0x0A000BC4, 0x0A000BC5, 0x0A000BC6, 0x0A000BC7, 0x0A000BC8, 0x0A000BC9, 0x0A000BCB, 0x0A000BCC, 0x0A000BCD
   navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchAllActions  IL_000A call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult&)
   navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction  IL_000C ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
   navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction  IL_006B ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
@@ -770,8 +772,8 @@ FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer
   navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.MainWindow::OnIdle  IL_0109 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
   navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.MainWindow::OnIdle  IL_0179 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
   navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.AutoRecover.AutoRecoverControlImpl::CanAutoRecover  IL_0005 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
-  navisworks.gui.roamer.dll: 2938 method bodies read, 33 uses of a followed member
-  Roamer.exe: 8 tokens reach a followed member, 235 MemberRef rows resolved
+  navisworks.gui.roamer.dll: 2938 method bodies read, 33 uses of a followed member, 0 types or methods that could not be read
+  Roamer.exe: MemberRef rows 235, resolved 235, did not resolve 0. Tokens that reach a followed member: 8
   Roamer.exe  NetRoamer.Program::MainImpl  IL_0008 newobj method Autodesk.Navisworks.Gui.Roamer.CommandLineParser::.ctor()
   Roamer.exe  NetRoamer.Program::MainImpl  IL_00A1 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
   Roamer.exe  NetRoamer.Program::MainImpl  IL_00E2 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
@@ -783,7 +785,7 @@ FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer
   Roamer.exe  NetRoamer.Program::MainImpl  IL_0243 call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchAllActions(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult&)
   Roamer.exe  NetRoamer.Program::MainImpl  IL_0263 call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportResult(Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult, System.Boolean)
   Roamer.exe  NetRoamer.Program::MainImpl  IL_02CA call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportParseError(Autodesk.Navisworks.Gui.Roamer.CommandLineParser)
-  Roamer.exe: 54 method bodies read, 11 uses of a followed member
+  Roamer.exe: 54 method bodies read, 11 uses of a followed member, 0 types or methods that could not be read
 
 ==== 7. The dispatcher, and every method outside the CommandLine types that uses a followed member, summarised off the IL ====
   CommandLineActionDispatcher::public .ctor()
@@ -1201,7 +1203,7 @@ FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer
       IL_01B1  ldc.i4.1   
       IL_01B2  ceq        
       IL_01B4  stloc.s    8
-  -- navisworks.gui.roamer.dll MainWindow::OnIdle, from its first read of command_line_actions to its store of it, IL_0058 to IL_00F7 --
+  -- navisworks.gui.roamer.dll MainWindow::OnIdle, from its first read of command_line_actions to the first get_Count on the action list after the dispatch, which stops before the store into command_line_actions, IL_0058 to IL_00F7 --
       IL_0058  ldsfld     Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
       IL_005D  brfalse    IL_0151
       IL_0062  ldarg.0    
@@ -1468,5 +1470,9 @@ FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer
       IL_002A  call       System.Delegate::CreateDelegate
       IL_002F  castclass  Autodesk.Navisworks.Internal.ApiImplementation.ApplicationAutomationImpl+Action
       IL_0034  ret        
+
+==== 9. What could not be read, over the whole run ====
+  references that could not be loaded for reflection, over the whole run: none
+  tokens the IL reader could not resolve, each once: 0
 
 WHAT EACH SWITCH DOES ON A START IS UNKNOWN. Nothing here ran Roamer.exe. The lists above say what the files carry, what the parser stores and what the IL of the readers touches, in the order it is written, which is not the order a start runs it.

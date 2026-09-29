@@ -1,18 +1,36 @@
-param([string]$NavisworksPath = "C:\Program Files\Autodesk\Navisworks Manage 2025")
+param(
+  [string]$NavisworksPath = "C:\Program Files\Autodesk\Navisworks Manage 2025",
+  [string]$AddinPath = ""
+)
 $ErrorActionPreference = "Stop"
 
 # F105, question 1, the half probe-viewpoints.ps1 does not read.
 #
 # probe-viewpoints.ps1 prints the .NET viewpoint types whole. It never opens the two COM
 # DLLs, and src\Federator.Addin\Engine\SavedViewpoints.cs writes every clash viewpoint
-# through them, InwOpView with ApplyHideAttribs, docs\history\scan.md 5m. So this reads,
-# one line each, every Navisworks member that file calls, in the three assemblies it uses,
-# and says FOUND with the signature read off the DLL, or NO MATCH with every member of that
-# name that is there. Reflection only. Nothing is started and no member is called.
+# through them, InwOpView with ApplyHideAttribs, docs\history\scan.md 5m. This probe reads
+# what that file calls in three ways, REFLECTION ONLY: every assembly is loaded with
+# ReflectionOnlyLoadFrom, which runs no code in it, not its load code and not the native
+# DLLs a mixed assembly needs.
 #
-# Each DLL is tested by its one full path. The install folder is never searched.
+#   A. A LIST TYPED BY HAND from reading SavedViewpoints.cs, one line each, with three
+#      outcomes. FOUND means a member of that name AND that shape: the parameter types, the
+#      return or property type and the accessors the file uses. DIFFERENT SHAPE means the
+#      name is there and the shape is not. NO MATCH means nothing of that name. The list
+#      checks only what is on it, and a member a reading missed is not on it
+#   B. 5d's and 5c's generic members with their type arguments, which probe-viewpoints.ps1
+#      and probe-model-remove.ps1 print by their bare names, Collection`1
+#   C. THE IL. Given the add-in built from this repo, every Navisworks member and type the
+#      compiled classes of SavedViewpoints.cs reference, read off their IL, their locals
+#      and their signatures, and resolved against the install. A reference resolves only
+#      where the install holds a member of that exact name and signature, which is the
+#      check the runtime makes when it binds the call. This list is not typed by hand
+#
+# Each DLL is tested by its one full path. The install folder is never searched. A
+# reference to an Autodesk.Navisworks assembly is only ever resolved from the install folder.
 
 $nw = $NavisworksPath
+if ($AddinPath -eq "") { $AddinPath = Join-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) "src\Federator.Addin\bin\Release\net48\Federator.Addin.dll" }
 $paths = [ordered]@{
   Api     = (Join-Path $nw "Autodesk.Navisworks.Api.dll")
   ComApi  = (Join-Path $nw "Autodesk.Navisworks.ComApi.dll")
@@ -22,11 +40,27 @@ foreach ($k in $paths.Keys) {
   if (-not (Test-Path -LiteralPath $paths[$k])) { Write-Output ("UNKNOWN: no file at " + $paths[$k]); exit 1 }
 }
 
+$resolveFailures = New-Object System.Collections.Generic.List[string]
+$addinDir = ""
+$roResolve = [ResolveEventHandler]{
+  param($s, $e)
+  $an = New-Object System.Reflection.AssemblyName($e.Name)
+  foreach ($x in [AppDomain]::CurrentDomain.ReflectionOnlyGetAssemblies()) { if ($x.GetName().Name -eq $an.Name) { return $x } }
+  $cand = Join-Path $nw ($an.Name + ".dll")
+  if (Test-Path -LiteralPath $cand) { return [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($cand) }
+  if ($addinDir -ne "" -and -not $an.Name.StartsWith("Autodesk.Navisworks")) {
+    $cand2 = Join-Path $addinDir ($an.Name + ".dll")
+    if (Test-Path -LiteralPath $cand2) { return [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($cand2) }
+  }
+  try { return [System.Reflection.Assembly]::ReflectionOnlyLoad($e.Name) } catch { $resolveFailures.Add($e.Name + ": " + $_.Exception.Message); return $null }
+}
+[AppDomain]::CurrentDomain.add_ReflectionOnlyAssemblyResolve($roResolve)
+
 $asm = @{}
 foreach ($k in $paths.Keys) {
-  $asm[$k] = [System.Reflection.Assembly]::LoadFrom($paths[$k])
+  $asm[$k] = [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($paths[$k])
   $fi = Get-Item -LiteralPath $paths[$k]
-  Write-Output ("ASSEMBLY  " + $asm[$k].GetName().Name + " " + $asm[$k].GetName().Version + "   file " + $fi.VersionInfo.FileVersion + ", " + $fi.Length + " bytes")
+  Write-Output ("ASSEMBLY  " + $asm[$k].GetName().Name + " " + $asm[$k].GetName().Version + "   file " + $fi.VersionInfo.FileVersion + ", " + $fi.Length + " bytes, loaded reflection only: " + $asm[$k].ReflectionOnly)
 }
 Write-Output ("MACHINE   " + $env:COMPUTERNAME + "   " + (Get-Date -Format "yyyy-MM-dd HH:mm"))
 Write-Output ""
@@ -36,9 +70,9 @@ function TypeName($t) {
   if ($t.IsByRef) { return (TypeName $t.GetElementType()) + "&" }
   if ($t.IsArray) { return (TypeName $t.GetElementType()) + "[]" }
   if ($t.IsGenericType) {
-    $a = @(); foreach ($g in $t.GetGenericArguments()) { $a += (TypeName $g) }
-    $n = $t.Name; $tick = $n.IndexOf('`'); if ($tick -ge 0) { $n = $n.Substring(0, $tick) }
-    return $t.Namespace + "." + $n + "<" + ($a -join ", ") + ">"
+    $ga = @(); foreach ($g in $t.GetGenericArguments()) { $ga += (TypeName $g) }
+    $tn = $t.Name; $tick = $tn.IndexOf('`'); if ($tick -ge 0) { $tn = $tn.Substring(0, $tick) }
+    return $t.Namespace + "." + $tn + "<" + ($ga -join ", ") + ">"
   }
   if ($t.IsGenericParameter) { return $t.Name }
   return $t.FullName
@@ -55,7 +89,7 @@ function MethodText($m) {
 function PropText($p) {
   $idx = @($p.GetIndexParameters())
   $ix = ""; if ($idx.Count -gt 0) { $a = @(); foreach ($q in $idx) { $a += ((TypeName $q.ParameterType) + " " + $q.Name) }; $ix = "[" + ($a -join ", ") + "]" }
-  $acc = @(); if ($p.CanRead -and $null -ne $p.GetGetMethod()) { $acc += "get" }; if ($p.CanWrite -and $null -ne $p.GetSetMethod()) { $acc += "set" }
+  $acc = @(); if ($null -ne $p.GetGetMethod()) { $acc += "get" }; if ($null -ne $p.GetSetMethod()) { $acc += "set" }
   $st = ""; $g = $p.GetGetMethod(); if ($null -ne $g -and $g.IsStatic) { $st = "static " }
   return ("public " + $st + (TypeName $p.PropertyType) + " " + $p.Name + $ix + " { " + ($acc -join "; ") + " }   declared on " + $p.DeclaringType.FullName)
 }
@@ -66,57 +100,90 @@ function Surface($t) {
   if ($t.IsInterface) { $all += @($t.GetInterfaces()) }
   return $all
 }
+function BaseNames($t) { $bn = @(); $b = $t.BaseType; while ($null -ne $b) { $bn += $b.FullName; $b = $b.BaseType }; return $bn }
+function Key($x) { return ($x.Module.Name + ":" + $x.MetadataToken) }
 
-$found = 0; $missing = 0
+# ============================================================================== A
+$found = 0; $differ = 0; $missing = 0
+$onHandList = @{}
+function Mark($x) {
+  if ($null -eq $x) { return }
+  $onHandList[(Key $x)] = $true
+  if ($x -is [System.Reflection.PropertyInfo]) { foreach ($acc in @($x.GetGetMethod(), $x.GetSetMethod())) { if ($null -ne $acc) { $onHandList[(Key $acc)] = $true } } }
+}
+function Say($outcome, $label, $text) {
+  Write-Output ("  " + $outcome.PadRight(15) + " " + $label + "   " + $text)
+  if ($outcome -eq "FOUND") { $script:found++ } elseif ($outcome -eq "DIFFERENT SHAPE") { $script:differ++ } else { $script:missing++ }
+}
 function Check($e) {
   $t = $asm[$e.Asm].GetType($e.Type)
   $label = ("[" + $e.Where + "] " + $e.Type + " " + $e.Kind + " " + $e.Name)
-  if ($null -eq $t) { Write-Output ("  NO MATCH  " + $label + "   the type is not in " + $e.Asm); $script:missing++; return }
+  if ($null -eq $t) { Say "NO MATCH" $label ("the type is not in " + $e.Asm); return }
   $flags = [System.Reflection.BindingFlags]"Public,Instance,Static,FlattenHierarchy"
   switch ($e.Kind) {
     "ctor" {
+      $all = @($t.GetConstructors())
       $hit = $null
-      foreach ($c in $t.GetConstructors()) { $pn = @($c.GetParameters() | ForEach-Object { TypeName $_.ParameterType }); if (($pn -join ",") -eq ($e.Params -join ",")) { $hit = $c } }
-      if ($null -ne $hit) { Write-Output ("  FOUND     " + $label + "   " + (MethodText $hit)); $script:found++ }
-      else { Write-Output ("  NO MATCH  " + $label + "(" + ($e.Params -join ", ") + ")"); foreach ($c in $t.GetConstructors()) { Write-Output ("              there: " + (MethodText $c)) }; $script:missing++ }
+      foreach ($c in $all) { $pn = @($c.GetParameters() | ForEach-Object { TypeName $_.ParameterType }); if (($pn -join ",") -eq ($e.Params -join ",")) { $hit = $c } }
+      if ($null -ne $hit) { Mark $hit; Say "FOUND" ($label + "(" + ($e.Params -join ", ") + ")") (MethodText $hit) }
+      elseif ($all.Count -gt 0) { Say "DIFFERENT SHAPE" ($label + "(" + ($e.Params -join ", ") + ")") ("constructors there: " + (($all | ForEach-Object { MethodText $_ }) -join " | ")) }
+      else { Say "NO MATCH" ($label + "(" + ($e.Params -join ", ") + ")") "no public constructor" }
     }
     "method" {
       $named = @(); foreach ($s in (Surface $t)) { $named += @($s.GetMethods($flags) | Where-Object { $_.Name -eq $e.Name }) }
+      $want = ""; if ($null -ne $e.Params) { $want = "(" + ($e.Params -join ", ") + ")" } else { $want = "(" + $e.Arity + " arguments)" }
       $hit = $null
       foreach ($m in $named) {
         $pn = @($m.GetParameters() | ForEach-Object { TypeName $_.ParameterType })
-        if ($null -ne $e.Params) { if (($pn -join ",") -eq ($e.Params -join ",")) { $hit = $m } }
-        elseif ($pn.Count -ge $e.Arity -and (@($m.GetParameters() | Where-Object { -not $_.IsOptional }).Count -le $e.Arity)) { $hit = $m }
+        $shape = $false
+        if ($null -ne $e.Params) { $shape = (($pn -join ",") -eq ($e.Params -join ",")) }
+        else { $shape = ($pn.Count -ge $e.Arity -and (@($m.GetParameters() | Where-Object { -not $_.IsOptional }).Count -le $e.Arity)) }
+        if ($shape -and $e.Returns -and (TypeName $m.ReturnType) -ne $e.Returns) { $shape = $false }
+        if ($shape -and $null -eq $hit) { $hit = $m }
       }
-      $want = ""; if ($null -ne $e.Params) { $want = "(" + ($e.Params -join ", ") + ")" } else { $want = "(" + $e.Arity + " arguments)" }
-      if ($null -ne $hit) {
-        $ret = ""; if ($e.Returns -and (TypeName $hit.ReturnType) -ne $e.Returns) { $ret = "   RETURN TYPE DIFFERS, the add-in expects " + $e.Returns }
-        Write-Output ("  FOUND     " + $label + $want + "   " + (MethodText $hit) + $ret); $script:found++
-      } else { Write-Output ("  NO MATCH  " + $label + $want); foreach ($m in $named) { Write-Output ("              there: " + (MethodText $m)) }; $script:missing++ }
+      if ($null -ne $hit) { Mark $hit; Say "FOUND" ($label + $want) (MethodText $hit) }
+      elseif ($named.Count -gt 0) {
+        $ret = ""; if ($e.Returns) { $ret = ", returning " + $e.Returns }
+        Say "DIFFERENT SHAPE" ($label + $want + $ret) ("members of that name there: " + (($named | ForEach-Object { MethodText $_ }) -join " | "))
+      }
+      else { Say "NO MATCH" ($label + $want) "no method of that name" }
     }
     "property" {
       $hit = $null
-      foreach ($s in (Surface $t)) { foreach ($p in $s.GetProperties($flags)) { if ($p.Name -eq $e.Name -and $null -eq $hit) { $hit = $p } } }
-      if ($null -eq $hit) { Write-Output ("  NO MATCH  " + $label + "   no property of that name"); $script:missing++; return }
-      $ok = $true; $why = @()
-      if ($e.Need -match "get" -and -not ($hit.CanRead -and $null -ne $hit.GetGetMethod())) { $ok = $false; $why += "no public getter" }
-      if ($e.Need -match "set" -and -not ($hit.CanWrite -and $null -ne $hit.GetSetMethod())) { $ok = $false; $why += "no public setter" }
-      if ($e.Returns -and (TypeName $hit.PropertyType) -ne $e.Returns) { $why += ("type differs, the add-in expects " + $e.Returns) }
-      if ($ok) { Write-Output ("  FOUND     " + $label + " (" + $e.Need + ")   " + (PropText $hit) + $(if ($why.Count -gt 0) { "   " + ($why -join ", ") } else { "" })); $script:found++ }
-      else { Write-Output ("  NO MATCH  " + $label + " (" + $e.Need + ")   " + (PropText $hit) + "   " + ($why -join ", ")); $script:missing++ }
+      foreach ($s in (Surface $t)) { foreach ($p in $s.GetProperties($flags)) { if ($p.Name -eq $e.Name -and @($p.GetIndexParameters()).Count -eq 0 -and $null -eq $hit) { $hit = $p } } }
+      if ($null -eq $hit) { Say "NO MATCH" ($label + " (" + $e.Need + ")") "no property of that name"; return }
+      $why = @()
+      if ($e.Need -match "get" -and $null -eq $hit.GetGetMethod()) { $why += "no public getter" }
+      if ($e.Need -match "set" -and $null -eq $hit.GetSetMethod()) { $why += "no public setter" }
+      if ($e.Returns -and (TypeName $hit.PropertyType) -ne $e.Returns) { $why += ("its type is not " + $e.Returns) }
+      if ($why.Count -eq 0) { Mark $hit; Say "FOUND" ($label + " (" + $e.Need + ")") (PropText $hit) }
+      else { Say "DIFFERENT SHAPE" ($label + " (" + $e.Need + ")") ((PropText $hit) + "   " + ($why -join ", ")) }
     }
     "indexer" {
       $hit = @(); foreach ($s in (Surface $t)) { $hit += @($s.GetProperties($flags) | Where-Object { @($_.GetIndexParameters()).Count -gt 0 }) }
-      if ($hit.Count -gt 0) { foreach ($p in $hit) { Write-Output ("  FOUND     " + $label + "   " + (PropText $p)) }; $script:found++ }
-      else {
-        $dm = @($t.GetCustomAttributesData() | Where-Object { $_.AttributeType.Name -eq "DefaultMemberAttribute" })
-        Write-Output ("  NO MATCH  " + $label + "   no property with an index parameter, DefaultMember attributes: " + $dm.Count); $script:missing++
-      }
+      $good = @($hit | Where-Object { (@($_.GetIndexParameters() | ForEach-Object { TypeName $_.ParameterType }) -join ",") -eq ($e.Params -join ",") -and $null -ne $_.GetGetMethod() -and (-not $e.Returns -or (TypeName $_.PropertyType) -eq $e.Returns) })
+      if ($good.Count -gt 0) { Mark $good[0]; Say "FOUND" ($label + "[" + ($e.Params -join ", ") + "] (get)") (($good | ForEach-Object { PropText $_ }) -join " | ") }
+      elseif ($hit.Count -gt 0) { Say "DIFFERENT SHAPE" ($label + "[" + ($e.Params -join ", ") + "] (get)") ("indexers there: " + (($hit | ForEach-Object { PropText $_ }) -join " | ")) }
+      else { Say "NO MATCH" ($label + "[" + ($e.Params -join ", ") + "]") "no property with an index parameter" }
     }
     "field" {
       $f = $t.GetField($e.Name)
-      if ($null -ne $f) { $v = ""; if ($t.IsEnum) { $v = " = " + [Convert]::ToInt64($f.GetRawConstantValue()) }; Write-Output ("  FOUND     " + $label + "   " + (TypeName $f.FieldType) + " " + $f.Name + $v); $script:found++ }
-      else { Write-Output ("  NO MATCH  " + $label); $script:missing++ }
+      if ($null -ne $f) {
+        Mark $f
+        $v = ""; if ($t.IsEnum) { try { $v = " = " + [Convert]::ToInt64($f.GetRawConstantValue()) } catch { $v = " = UNKNOWN, the value could not be read: " + $_.Exception.Message } }
+        Say "FOUND" $label ((TypeName $f.FieldType) + " " + $f.Name + $v)
+      }
+      else { Say "NO MATCH" $label "no public field of that name" }
+    }
+    "disposable" {
+      $ifs = @($t.GetInterfaces() | ForEach-Object { $_.FullName })
+      if ($ifs -contains "System.IDisposable") { Say "FOUND" ($label + " implements System.IDisposable") ("interfaces: " + ($ifs -join ", ")) }
+      else { Say "DIFFERENT SHAPE" ($label + " implements System.IDisposable") ("it does not, interfaces: " + ($ifs -join ", ")) }
+    }
+    "assignable" {
+      $bases = @(BaseNames $t) + @($t.GetInterfaces() | ForEach-Object { TypeName $_ })
+      if ($bases -contains $e.To) { Say "FOUND" ($label + " converts to " + $e.To) ("bases and interfaces: " + ($bases -join ", ")) }
+      else { Say "DIFFERENT SHAPE" ($label + " converts to " + $e.To) ("it does not, bases and interfaces: " + ($bases -join ", ")) }
     }
   }
 }
@@ -128,45 +195,70 @@ $calls = @(
   @{ Asm="Api"; Where="Count, ResolveFolders"; Type=($A+"Document"); Kind="property"; Name="SavedViewpoints"; Need="get"; Returns=($A+"DocumentParts.DocumentSavedViewpoints") },
   @{ Asm="Api"; Where="Count, ResolveFolders"; Type=($A+"DocumentParts.DocumentSavedViewpoints"); Kind="property"; Name="RootItem"; Need="get"; Returns=($A+"FolderItem") },
   @{ Asm="Api"; Where="FindLastAtRoot"; Type=($A+"DocumentParts.DocumentSavedViewpoints"); Kind="property"; Name="Value"; Need="get"; Returns=($A+"SavedItemCollection") },
-  @{ Asm="Api"; Where="EnsureFolders, Record"; Type=($A+"DocumentParts.DocumentSavedViewpoints"); Kind="method"; Name="AddCopy"; Params=@(($A+"GroupItem"), ($A+"SavedItem")) },
+  @{ Asm="Api"; Where="EnsureFolders, Record"; Type=($A+"DocumentParts.DocumentSavedViewpoints"); Kind="method"; Name="AddCopy"; Params=@(($A+"GroupItem"), ($A+"SavedItem")); Returns="System.Void" },
   @{ Asm="Api"; Where="Record"; Type=($A+"DocumentParts.DocumentSavedViewpoints"); Kind="method"; Name="Remove"; Params=@(($A+"SavedItem")); Returns="System.Boolean" },
   @{ Asm="Api"; Where="SnapshotHidden"; Type=($A+"DocumentParts.DocumentSavedViewpoints"); Kind="method"; Name="CaptureRuntimeOverrides"; Params=@(); Returns=($A+"SavedViewpoint") },
   @{ Asm="Api"; Where="EnsureFolders"; Type=($A+"FolderItem"); Kind="ctor"; Name=".ctor"; Params=@() },
   @{ Asm="Api"; Where="EnsureFolders, FindFolder"; Type=($A+"FolderItem"); Kind="property"; Name="DisplayName"; Need="get set"; Returns="System.String" },
   @{ Asm="Api"; Where="FindFolder, FindLeaf"; Type=($A+"GroupItem"); Kind="property"; Name="Children"; Need="get"; Returns=($A+"SavedItemCollection") },
   @{ Asm="Api"; Where="FindFolder"; Type=($A+"SavedItemCollection"); Kind="property"; Name="Count"; Need="get"; Returns="System.Int32" },
-  @{ Asm="Api"; Where="FindFolder"; Type=($A+"SavedItemCollection"); Kind="indexer"; Name="this[]" },
+  @{ Asm="Api"; Where="FindFolder"; Type=($A+"SavedItemCollection"); Kind="indexer"; Name="this[]"; Params=@("System.Int32"); Returns=($A+"SavedItem") },
   @{ Asm="Api"; Where="ReadBack"; Type=($A+"SavedViewpoint"); Kind="property"; Name="Viewpoint"; Need="get"; Returns=($A+"Viewpoint") },
   @{ Asm="Api"; Where="ReadBack, HiddenSnapshot"; Type=($A+"SavedViewpoint"); Kind="method"; Name="GetVisibilityOverrides"; Params=@(); Returns=($A+"VisibilityOverrides") },
   @{ Asm="Api"; Where="ReadBack, WillShow"; Type=($A+"SavedViewpoint"); Kind="method"; Name="GetAppearanceOverrides"; Params=@(); Returns=($A+"AppearanceOverrides") },
   @{ Asm="Api"; Where="CountOf, HiddenSnapshot"; Type=($A+"VisibilityOverrides"); Kind="property"; Name="Hidden"; Need="get"; Returns=($A+"ModelItemCollection") },
-  @{ Asm="Api"; Where="CountOf, WillShow"; Type=($A+"AppearanceOverrides"); Kind="property"; Name="MaterialOverrides"; Need="get" },
+  @{ Asm="Api"; Where="CountOf, WillShow"; Type=($A+"AppearanceOverrides"); Kind="property"; Name="MaterialOverrides"; Need="get"; Returns="System.Collections.ObjectModel.Collection<Autodesk.Navisworks.Api.MaterialOverride>" },
   @{ Asm="Api"; Where="WillShow"; Type=($A+"MaterialOverride"); Kind="property"; Name="Item"; Need="get"; Returns=($A+"ModelItem") },
   @{ Asm="Api"; Where="WillShow"; Type=($A+"MaterialOverride"); Kind="property"; Name="Color"; Need="get"; Returns=($A+"Color") },
   @{ Asm="Api"; Where="ReadBack"; Type=($A+"Viewpoint"); Kind="property"; Name="Position"; Need="get"; Returns=($A+"Point3D") },
+  @{ Asm="Api"; Where="ReadBack"; Type=($A+"Point3D"); Kind="property"; Name="X"; Need="get"; Returns="System.Double" },
+  @{ Asm="Api"; Where="ReadBack"; Type=($A+"Point3D"); Kind="property"; Name="Y"; Need="get"; Returns="System.Double" },
+  @{ Asm="Api"; Where="ReadBack"; Type=($A+"Point3D"); Kind="property"; Name="Z"; Need="get"; Returns="System.Double" },
   @{ Asm="Api"; Where="ShowOnlyModels, RootsOf"; Type=($A+"Document"); Kind="property"; Name="Models"; Need="get"; Returns=($A+"DocumentParts.DocumentModels") },
-  @{ Asm="Api"; Where="ShowOnlyModels, RestoreHiddenState"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="ResetAllHidden"; Params=@() },
-  @{ Asm="Api"; Where="ShowOnlyModels, RestoreHiddenState"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="SetHidden"; Params=@($items, "System.Boolean") },
+  @{ Asm="Api"; Where="ShowOnlyModels, RestoreHiddenState"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="ResetAllHidden"; Params=@(); Returns="System.Void" },
+  @{ Asm="Api"; Where="ShowOnlyModels, RestoreHiddenState"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="SetHidden"; Params=@($items, "System.Boolean"); Returns="System.Void" },
   @{ Asm="Api"; Where="RestoreHiddenState"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="IsHidden"; Params=@($items); Returns="System.Boolean" },
-  @{ Asm="Api"; Where="DimAllBut"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="OverrideTemporaryTransparency"; Params=@($items, "System.Double") },
-  @{ Asm="Api"; Where="DimAllBut, Undim"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="ResetTemporaryMaterials"; Params=@($items) },
-  @{ Asm="Api"; Where="PaintOne"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="OverrideTemporaryColor"; Params=@($items, ($A+"Color")) },
+  @{ Asm="Api"; Where="DimAllBut"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="OverrideTemporaryTransparency"; Params=@($items, "System.Double"); Returns="System.Void" },
+  @{ Asm="Api"; Where="DimAllBut, Undim"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="ResetTemporaryMaterials"; Params=@($items); Returns="System.Void" },
+  @{ Asm="Api"; Where="PaintOne"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="OverrideTemporaryColor"; Params=@($items, ($A+"Color")); Returns="System.Void" },
   @{ Asm="Api"; Where="Undim, RootsOf"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="CreateCollectionFromRootItems"; Params=@(); Returns=($A+"ModelItemCollection") },
   @{ Asm="Api"; Where="ItemAt"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="ResolveIndexPath"; Params=@("System.Collections.Generic.IEnumerable<System.Int32>"); Returns=($A+"ModelItem") },
   @{ Asm="Api"; Where="PathOf"; Type=($A+"DocumentParts.DocumentModels"); Kind="method"; Name="CreateIndexPath"; Params=@(($A+"ModelItem")); Returns="System.Collections.ObjectModel.Collection<System.Int32>" },
   @{ Asm="Api"; Where="ShowOnlyModels, RootsOf"; Type=($A+"DocumentParts.DocumentModels"); Kind="property"; Name="Count"; Need="get"; Returns="System.Int32" },
-  @{ Asm="Api"; Where="ShowOnlyModels, RootsOf"; Type=($A+"DocumentParts.DocumentModels"); Kind="indexer"; Name="this[]" },
+  @{ Asm="Api"; Where="ShowOnlyModels, RootsOf"; Type=($A+"DocumentParts.DocumentModels"); Kind="indexer"; Name="this[]"; Params=@("System.Int32"); Returns=($A+"Model") },
   @{ Asm="Api"; Where="ShowOnlyModels, RootsOf"; Type=($A+"Model"); Kind="property"; Name="RootItem"; Need="get"; Returns=($A+"ModelItem") },
   @{ Asm="Api"; Where="ShowOnlyModels, DimAllBut, PaintOne"; Type=($A+"ModelItemCollection"); Kind="ctor"; Name=".ctor"; Params=@() },
-  @{ Asm="Api"; Where="ShowOnlyModels, DimAllBut, PaintOne"; Type=($A+"ModelItemCollection"); Kind="method"; Name="Add"; Params=@(($A+"ModelItem")) },
+  @{ Asm="Api"; Where="ShowOnlyModels, DimAllBut, PaintOne"; Type=($A+"ModelItemCollection"); Kind="method"; Name="Add"; Params=@(($A+"ModelItem")); Returns="System.Void" },
   @{ Asm="Api"; Where="ShowOnlyModels, CountOf"; Type=($A+"ModelItemCollection"); Kind="property"; Name="Count"; Need="get"; Returns="System.Int32" },
   @{ Asm="Api"; Where="WillShow"; Type=($A+"ModelItem"); Kind="property"; Name="HasGeometry"; Need="get"; Returns="System.Boolean" },
   @{ Asm="Api"; Where="WillShow"; Type=($A+"ModelItem"); Kind="property"; Name="Geometry"; Need="get"; Returns=($A+"ModelGeometry") },
   @{ Asm="Api"; Where="WillShow"; Type=($A+"ModelGeometry"); Kind="property"; Name="OriginalColor"; Need="get"; Returns=($A+"Color") },
   @{ Asm="Api"; Where="PaintOne"; Type=($A+"Color"); Kind="ctor"; Name=".ctor"; Params=@("System.Double", "System.Double", "System.Double") },
-  @{ Asm="ComApi"; Where="Record"; Type="Autodesk.Navisworks.Api.ComApi.ComApiBridge"; Kind="property"; Name="State"; Need="get"; Returns=($I+"InwOpState10") },
-  @{ Asm="ComApi"; Where="Record"; Type="Autodesk.Navisworks.Api.ComApi.ComApiBridge"; Kind="method"; Name="ToInwOpAnonView"; Params=@(($A+"Viewpoint")); Returns=($I+"InwOpAnonView") },
-  @{ Asm="Interop"; Where="Record"; Type=($I+"InwOpState10"); Kind="method"; Name="ObjectFactory"; Params=$null; Arity=3 },
+  @{ Asm="Api"; Where="WillShow"; Type=($A+"Color"); Kind="property"; Name="R"; Need="get"; Returns="System.Double" },
+  @{ Asm="Api"; Where="WillShow"; Type=($A+"Color"); Kind="property"; Name="G"; Need="get"; Returns="System.Double" },
+  @{ Asm="Api"; Where="WillShow"; Type=($A+"Color"); Kind="property"; Name="B"; Need="get"; Returns="System.Double" },
+  @{ Asm="Api"; Where="ResolveFolders"; Type=($A+"GroupItem"); Kind="method"; Name="Dispose"; Params=@(); Returns="System.Void" },
+  @{ Asm="Api"; Where="FindFolder, FindLastAtRoot, FindLeafItem"; Type=($A+"SavedItem"); Kind="method"; Name="Dispose"; Params=@(); Returns="System.Void" },
+  @{ Asm="Api"; Where="HiddenSnapshot.Dispose"; Type=($A+"SavedViewpoint"); Kind="method"; Name="Dispose"; Params=@(); Returns="System.Void" },
+  @{ Asm="Api"; Where="HiddenSnapshot.Dispose"; Type=($A+"ModelItemCollection"); Kind="method"; Name="Dispose"; Params=@(); Returns="System.Void" },
+  @{ Asm="Api"; Where="using, Count, Exists, EnsureFolders, ReadBack"; Type=($A+"GroupItem"); Kind="disposable"; Name="IDisposable" },
+  @{ Asm="Api"; Where="using, EnsureFolders"; Type=($A+"FolderItem"); Kind="disposable"; Name="IDisposable" },
+  @{ Asm="Api"; Where="using, FindLeaf, CountUnder"; Type=($A+"SavedItem"); Kind="disposable"; Name="IDisposable" },
+  @{ Asm="Api"; Where="using, Record, ReadBack"; Type=($A+"SavedViewpoint"); Kind="disposable"; Name="IDisposable" },
+  @{ Asm="Api"; Where="using, ReadBack"; Type=($A+"Viewpoint"); Kind="disposable"; Name="IDisposable" },
+  @{ Asm="Api"; Where="using, ShowOnlyModels, CountOf, DimAllBut, PaintOne, Undim"; Type=($A+"ModelItemCollection"); Kind="disposable"; Name="IDisposable" },
+  @{ Asm="Api"; Where="using, ShowOnlyModels, RootsOf"; Type=($A+"Model"); Kind="disposable"; Name="IDisposable" },
+  @{ Asm="Api"; Where="using, ShowOnlyModels, RootsOf, WillShow"; Type=($A+"ModelItem"); Kind="disposable"; Name="IDisposable" },
+  @{ Asm="Api"; Where="using, WillShow"; Type=($A+"ModelGeometry"); Kind="disposable"; Name="IDisposable" },
+  @{ Asm="Api"; Where="Count, ResolveFolders, the RootItem held as a GroupItem"; Type=($A+"FolderItem"); Kind="assignable"; Name="base"; To=($A+"GroupItem") },
+  @{ Asm="Api"; Where="EnsureFolders, AddCopy(parent, folder)"; Type=($A+"FolderItem"); Kind="assignable"; Name="base"; To=($A+"SavedItem") },
+  @{ Asm="Api"; Where="FindFolder, child as GroupItem"; Type=($A+"GroupItem"); Kind="assignable"; Name="base"; To=($A+"SavedItem") },
+  @{ Asm="Api"; Where="Record, FindLeafItem, item as SavedViewpoint"; Type=($A+"SavedViewpoint"); Kind="assignable"; Name="base"; To=($A+"SavedItem") },
+  @{ Asm="Api"; Where="ShowOnlyModels, SetHidden(hide, true)"; Type=($A+"ModelItemCollection"); Kind="assignable"; Name="interface"; To=$items },
+  @{ Asm="Api"; Where="Exists, EnsureFolders, Record, ReadBack, the null checks"; Type=($A+"NativeHandle"); Kind="method"; Name="op_Equality"; Params=@(($A+"NativeHandle"), ($A+"NativeHandle")); Returns="System.Boolean" },
+  @{ Asm="Api"; Where="Exists, the null checks"; Type=($A+"NativeHandle"); Kind="method"; Name="op_Inequality"; Params=@(($A+"NativeHandle"), ($A+"NativeHandle")); Returns="System.Boolean" },
+  @{ Asm="ComApi"; Where="Record"; Type="Autodesk.Navisworks.Api.ComApi.ComApiBridge"; Kind="property"; Name="State"; Need="get"; Returns=($I+"InwOpState10") },  @{ Asm="ComApi"; Where="Record"; Type="Autodesk.Navisworks.Api.ComApi.ComApiBridge"; Kind="method"; Name="ToInwOpAnonView"; Params=@(($A+"Viewpoint")); Returns=($I+"InwOpAnonView") },
+  @{ Asm="Interop"; Where="Record"; Type=($I+"InwOpState10"); Kind="method"; Name="ObjectFactory"; Params=$null; Arity=3; Returns="System.Object" },
   @{ Asm="Interop"; Where="Record, FindComFolder"; Type=($I+"InwOpState10"); Kind="method"; Name="SavedViews"; Params=@(); Returns=($I+"InwSavedViewsColl") },
   @{ Asm="Interop"; Where="Record"; Type=($I+"nwEObjectType"); Kind="field"; Name="eObjectType_nwOpView" },
   @{ Asm="Interop"; Where="Record"; Type=($I+"InwOpView"); Kind="property"; Name="name"; Need="set"; Returns="System.String" },
@@ -175,16 +267,173 @@ $calls = @(
   @{ Asm="Interop"; Where="Record"; Type=($I+"InwOpView"); Kind="property"; Name="anonview"; Need="set"; Returns=($I+"InwOpAnonView") },
   @{ Asm="Interop"; Where="Record, FindComFolder"; Type=($I+"InwOpFolderView"); Kind="method"; Name="SavedViews"; Params=@(); Returns=($I+"InwSavedViewsColl") },
   @{ Asm="Interop"; Where="FolderNamed"; Type=($I+"InwOpFolderView"); Kind="property"; Name="name"; Need="get"; Returns="System.String" },
-  @{ Asm="Interop"; Where="Record"; Type=($I+"InwSavedViewsColl"); Kind="method"; Name="Add"; Params=$null; Arity=1 },
+  @{ Asm="Interop"; Where="Record"; Type=($I+"InwSavedViewsColl"); Kind="method"; Name="Add"; Params=$null; Arity=1; Returns="System.Void" },
   @{ Asm="Interop"; Where="FolderNamed"; Type=($I+"InwSavedViewsColl"); Kind="property"; Name="Count"; Need="get"; Returns="System.Int32" },
-  @{ Asm="Interop"; Where="FolderNamed"; Type=($I+"InwSavedViewsColl"); Kind="indexer"; Name="this[]" }
+  @{ Asm="Interop"; Where="FolderNamed"; Type=($I+"InwSavedViewsColl"); Kind="indexer"; Name="this[]"; Params=@("System.Object"); Returns="System.Object" }
 )
 
-Write-Output "---- Every Navisworks member src\Federator.Addin\Engine\SavedViewpoints.cs calls ----"
-Write-Output "  [the method in SavedViewpoints.cs that calls it] type kind name, then what the DLL holds"
+Write-Output "---- A. THE LIST TYPED BY HAND, from reading src\Federator.Addin\Engine\SavedViewpoints.cs ----"
+Write-Output "  [the method or use in SavedViewpoints.cs] type kind name, then what the DLL holds"
+Write-Output "  FOUND is that name AND that shape. DIFFERENT SHAPE is the name without the shape. NO MATCH is neither."
 foreach ($e in $calls) { Check $e }
 Write-Output ""
-Write-Output ("  checked " + $calls.Count + ", FOUND " + $found + ", NO MATCH " + $missing)
+Write-Output ("  on the list " + $calls.Count + ", FOUND " + $found + ", DIFFERENT SHAPE " + $differ + ", NO MATCH " + $missing)
+Write-Output "  This list checks only what is on it. Section C reads what the compiled file references."
+Write-Output ""
+
+# ============================================================================== B
+Write-Output "---- B. 5d's and 5c's generic members, with their type arguments ----"
+$gen = @(
+  @(($A+"DocumentParts.DocumentSavedViewpoints"), "CreateCopy"),
+  @(($A+"DocumentParts.DocumentSavedViewpoints"), "CopyFrom"),
+  @(($A+"DocumentParts.DocumentSelectionSets"), "CreateCopy"),
+  @(($A+"DocumentParts.DocumentSelectionSets"), "CopyFrom"),
+  @(($A+"Document"), "AppendFiles"),
+  @(($A+"Document"), "TryAppendFiles")
+)
+foreach ($g in $gen) {
+  $t = $asm["Api"].GetType($g[0])
+  if ($null -eq $t) { Write-Output ("  UNKNOWN: no type " + $g[0]); continue }
+  $ms = @($t.GetMethods("Public,Instance,Static,DeclaredOnly") | Where-Object { $_.Name -eq $g[1] })
+  if ($ms.Count -eq 0) { Write-Output ("  NO MATCH  " + $g[0] + "." + $g[1]) }
+  foreach ($m in $ms) { Write-Output ("  " + $g[0] + "   " + (MethodText $m)) }
+}
+Write-Output ""
+
+# ============================================================================== C
+Write-Output "---- C. THE IL: every Navisworks reference the compiled classes of SavedViewpoints.cs make ----"
+$script:op1 = @{}; $script:op2 = @{}
+foreach ($f in [System.Reflection.Emit.OpCodes].GetFields("Public,Static")) {
+  $oc = $f.GetValue($null); $v = [int]$oc.Value
+  if ($oc.Size -eq 1) { $script:op1[$v -band 0xFF] = $oc } else { $script:op2[$v -band 0xFF] = $oc }
+}
+function IsNw($t) {
+  if ($null -eq $t) { return $false }
+  if ($t.IsByRef -or $t.IsArray -or $t.IsPointer) { return (IsNw $t.GetElementType()) }
+  if ($t.IsGenericParameter) { return $false }
+  if ($t.Assembly.Location.StartsWith($nw, [StringComparison]::OrdinalIgnoreCase)) { return $true }
+  if ($t.IsGenericType) { foreach ($g in $t.GetGenericArguments()) { if (IsNw $g) { return $true } } }
+  return $false
+}
+function IsNwHome($t) { return ($null -ne $t -and -not $t.IsGenericParameter -and $t.Assembly.Location.StartsWith($nw, [StringComparison]::OrdinalIgnoreCase)) }
+function RefText($x) {
+  if ($x -is [System.Type]) { return ("type     " + (TypeName $x)) }
+  if ($x -is [System.Reflection.FieldInfo]) { return ("field    " + (TypeName $x.FieldType) + " " + (TypeName $x.DeclaringType) + "::" + $x.Name) }
+  if ($x -is [System.Reflection.ConstructorInfo]) { return ("ctor     " + (TypeName $x.DeclaringType) + "::.ctor(" + (ParamText $x) + ")") }
+  if ($x -is [System.Reflection.MethodInfo]) { $st = ""; if ($x.IsStatic) { $st = "static " }; return ("method   " + $st + (TypeName $x.ReturnType) + " " + (TypeName $x.DeclaringType) + "::" + $x.Name + "(" + (ParamText $x) + ")") }
+  return [string]$x
+}
+
+if (-not (Test-Path -LiteralPath $AddinPath)) {
+  Write-Output ("  UNKNOWN: no built add-in at " + $AddinPath + ", so section C did not run. Pass -AddinPath with a Release build of this repo")
+} else {
+  $addinDir = Split-Path $AddinPath -Parent
+  $ai = Get-Item -LiteralPath $AddinPath
+  $cut = $AddinPath.IndexOf("\src\")
+  $shown = (Split-Path $AddinPath -Leaf); if ($cut -ge 0) { $shown = "..." + $AddinPath.Substring($cut) }
+  Write-Output ("  the add-in read   " + $shown)
+  Write-Output ("                    " + $ai.Length + " bytes, written " + $ai.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss") + ", sha256 " + (Get-FileHash -LiteralPath $AddinPath -Algorithm SHA256).Hash)
+  Write-Output ("                    its stamp, the product version: " + $ai.VersionInfo.ProductVersion)
+  $aa = [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($AddinPath)
+  Write-Output ("                    " + $aa.FullName + ", loaded reflection only: " + $aa.ReflectionOnly)
+  $names = @("Federator.Addin.Engine.SavedViewpoints", "Federator.Addin.Engine.ViewpointReadBack", "Federator.Addin.Engine.HiddenSnapshot")
+  $types = @()
+  foreach ($n in $names) {
+    $t = $aa.GetType($n)
+    if ($null -eq $t) { Write-Output ("  UNKNOWN: no type " + $n + " in the add-in"); continue }
+    $types += $t
+    foreach ($nt in $t.GetNestedTypes("Public,NonPublic")) { $types += $nt }
+  }
+  Write-Output ("  classes read: " + (($types | ForEach-Object { $_.FullName }) -join ", "))
+  $flagsAll = [System.Reflection.BindingFlags]"Public,NonPublic,Instance,Static,DeclaredOnly"
+  $refs = [ordered]@{}
+  $fails = New-Object System.Collections.Generic.List[string]
+  $methodsRead = 0; $tokensRead = 0
+  function AddRef($x, $place) {
+    $k = RefText $x
+    if (-not $refs.Contains($k)) { $refs[$k] = [pscustomobject]@{ Member = $x; Places = New-Object System.Collections.Generic.List[string] } }
+    if (-not $refs[$k].Places.Contains($place)) { $refs[$k].Places.Add($place) }
+  }
+  foreach ($t in $types) {
+    foreach ($f in $t.GetFields($flagsAll)) {
+      try { if (IsNw $f.FieldType) { AddRef $f.FieldType ($t.Name + "." + $f.Name + " field") } } catch { $fails.Add($t.Name + "." + $f.Name + " field type: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message) }
+    }
+    $members = @($t.GetConstructors($flagsAll)) + @($t.GetMethods($flagsAll))
+    foreach ($m in $members) {
+      $place = $t.Name + "." + $m.Name
+      try {
+        if ($m -is [System.Reflection.MethodInfo] -and (IsNw $m.ReturnType)) { AddRef $m.ReturnType ($place + " return") }
+        foreach ($q in $m.GetParameters()) { if (IsNw $q.ParameterType) { AddRef $q.ParameterType ($place + " parameter") } }
+      } catch { $fails.Add($place + " signature: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message) }
+      $body = $null
+      try { $body = $m.GetMethodBody() } catch { $fails.Add($place + " body: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); continue }
+      if ($null -eq $body) { continue }
+      $methodsRead++
+      try { foreach ($lv in $body.LocalVariables) { if (IsNw $lv.LocalType) { AddRef $lv.LocalType ($place + " local") } } } catch { $fails.Add($place + " locals: " + $_.Exception.GetType().Name + ": " + $_.Exception.Message) }
+      $il = $body.GetILAsByteArray(); $mod = $m.Module; $pos = 0
+      while ($pos -lt $il.Length) {
+        $at = $pos; $b0 = $il[$pos]
+        if ($b0 -eq 0xFE) { $oc = $script:op2[[int]$il[$pos + 1]]; $pos += 2 } else { $oc = $script:op1[[int]$b0]; $pos += 1 }
+        if ($null -eq $oc) { $fails.Add($place + " IL_" + $at.ToString("X4") + ": unknown opcode byte " + $b0 + ", the rest of this body was not read"); break }
+        $ot = $oc.OperandType.ToString()
+        if ($ot -eq "InlineNone") { continue }
+        if ($ot -eq "ShortInlineBrTarget" -or $ot -eq "ShortInlineI" -or $ot -eq "ShortInlineVar") { $pos += 1; continue }
+        if ($ot -eq "InlineVar") { $pos += 2; continue }
+        if ($ot -eq "InlineI8" -or $ot -eq "InlineR") { $pos += 8; continue }
+        if ($ot -eq "InlineSwitch") { $sn = [BitConverter]::ToInt32($il, $pos); $pos += 4 + 4 * $sn; continue }
+        $tok = [BitConverter]::ToInt32($il, $pos); $pos += 4
+        if (-not ($ot -eq "InlineMethod" -or $ot -eq "InlineField" -or $ot -eq "InlineType" -or $ot -eq "InlineTok")) { continue }
+        $tokensRead++
+        $x = $null
+        try {
+          if ($ot -eq "InlineMethod") { $x = $mod.ResolveMethod($tok) }
+          elseif ($ot -eq "InlineField") { $x = $mod.ResolveField($tok) }
+          elseif ($ot -eq "InlineType") { $x = $mod.ResolveType($tok) }
+          else { $x = $mod.ResolveMember($tok) }
+        } catch {
+          $fails.Add($place + " IL_" + $at.ToString("X4") + " " + $oc.Name + " token 0x" + $tok.ToString("X8") + ": " + $_.Exception.GetType().Name + ": " + $_.Exception.Message)
+          continue
+        }
+        $nwRef = $false
+        if ($x -is [System.Type]) { $nwRef = (IsNw $x) } else { $nwRef = (IsNw $x.DeclaringType) }
+        if ($nwRef) { AddRef $x ($place + " IL_" + $at.ToString("X4")) }
+      }
+    }
+  }
+  $memberRefs = @($refs.Keys | Where-Object { -not ($refs[$_].Member -is [System.Type]) })
+  $typeRefs = @($refs.Keys | Where-Object { $refs[$_].Member -is [System.Type] })
+  Write-Output ("  method bodies read " + $methodsRead + ", member and type tokens read " + $tokensRead)
+  Write-Output ""
+  Write-Output "  Every Navisworks MEMBER referenced, resolved against the install. A member declared on a"
+  Write-Output "  framework generic over a Navisworks type is marked framework. The last field says whether"
+  Write-Output "  list A has the same member."
+  $nOn = 0; $nOff = 0; $nFw = 0
+  foreach ($k in $memberRefs) {
+    $r = $refs[$k]; $x = $r.Member
+    $origin = "install"; if (-not (IsNwHome $x.DeclaringType)) { $origin = "framework"; $nFw++ }
+    $on = "not asked"
+    if ($origin -eq "install") { if ($onHandList.ContainsKey((Key $x))) { $on = "yes"; $nOn++ } else { $on = "NO"; $nOff++ } }
+    Write-Output ("  RESOLVED  " + $origin.PadRight(9) + " " + $k + "   at " + ($r.Places -join ", ") + "   on list A: " + $on)
+  }
+  Write-Output ""
+  Write-Output "  Every Navisworks TYPE referenced, in an instruction, a local, a field or a signature:"
+  foreach ($k in $typeRefs) { Write-Output ("  RESOLVED  " + $k + "   at " + ($refs[$k].Places -join ", ")) }
+  Write-Output ""
+  Write-Output "  Every reference that did NOT resolve, with what the runtime said:"
+  foreach ($x in $fails) { Write-Output ("  DID NOT RESOLVE  " + $x) }
+  Write-Output ("  count " + $fails.Count)
+  Write-Output ""
+  Write-Output ("  Navisworks members referenced " + $memberRefs.Count + ", declared in an install assembly " + ($memberRefs.Count - $nFw) + ", of those on list A " + $nOn + " and NOT on list A " + $nOff + ", declared on a framework generic " + $nFw)
+  Write-Output ("  Navisworks types referenced " + $typeRefs.Count + ", references that did not resolve " + $fails.Count)
+  Write-Output "  Where each assembly the check touched was loaded from, reflection only:"
+  foreach ($x in ([AppDomain]::CurrentDomain.ReflectionOnlyGetAssemblies() | Sort-Object FullName)) {
+    $where = "elsewhere"
+    if ($x.Location.StartsWith($nw, [StringComparison]::OrdinalIgnoreCase)) { $where = "the install folder" }
+    elseif ($x.Location.StartsWith($addinDir, [StringComparison]::OrdinalIgnoreCase)) { $where = "the add-in's own folder" }
+    elseif ($x.GlobalAssemblyCache) { $where = "the global assembly cache" }
+    Write-Output ("    " + $x.GetName().Name + " " + $x.GetName().Version + "   " + $where)
+  }
+}
 Write-Output ""
 
 Write-Output "---- The COM view and its collection whole, since the add-in writes through them ----"
@@ -196,3 +445,4 @@ foreach ($n in @("InwOpView", "InwOpFolderView", "InwSavedViewsColl", "InwOpSave
   foreach ($m in ($t.GetMethods() | Where-Object { -not $_.IsSpecialName } | Sort-Object Name)) { Write-Output ("      " + (MethodText $m)) }
 }
 Write-Output ""
+Write-Output ("  references that could not be loaded for reflection: " + $(if ($resolveFailures.Count -eq 0) { "none" } else { ($resolveFailures | Sort-Object -Unique) -join " | " }))

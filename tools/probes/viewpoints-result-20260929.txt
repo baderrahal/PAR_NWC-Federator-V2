@@ -1,5 +1,5 @@
 ASSEMBLY  Autodesk.Navisworks.Api 22.0.0.0
-MACHINE   [machine]   2026-09-29 10:24
+MACHINE   [machine]   2026-09-29 12:18
 
 ---- THE QUESTION: how a document reaches its saved viewpoints ----
   Autodesk.Navisworks.Api.DocumentParts.DocumentCurrentViewpoint Document.CurrentViewpoint  canread=True canwrite=False
