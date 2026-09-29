@@ -40,9 +40,10 @@ namespace.
 `EvidenceWithIds.txt` holds the fault, in the shape F102 found on a pushed branch: a MACHINE
 line naming the machine, and the command lines of two AdskLicensingAgent processes carrying
 an analytics agent id and a licensing id after `-i`. Every id in it is FABRICATED, a GUID of
-all zeros, and the machine is the made up MADEUPPC01, which Actions hands the check as
-COMPUTERNAME for this folder alone. The check has to come back with exactly four faults on
-lines 1 to 3, each naming the file, the line and the kind, and never the text.
+all zeros, and the machine is a made up name, which Actions hands the check as COMPUTERNAME
+for this folder alone. The check has to come back with exactly four faults on lines 1 to 3,
+each naming the file, the line and the kind, and never the text. So this README never
+spells that name, or it would be a fifth.
 
 `EvidenceNearMiss.txt` MUST PASS. Its first line and its licensing line are the same lines
 as `tools/loop/mask-evidence.ps1` writes them masked. The name sits inside a longer word,
