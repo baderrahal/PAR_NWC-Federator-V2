@@ -67,7 +67,7 @@ jobs:
       # two Autodesk licensing ids. Every file in the tree is read as text for every kind in
       # tools/checks/evidence-ids.txt, or named and refused. Left out: tools/checks/broken,
       # whose faults are on purpose, .git, bin and obj, and a .jpg or .xlsx under samples
-      # whose first bytes are its format's own. It names the file, the line and the kind,
+      # whose first and last bytes are its format's own. It names the file, the line and the kind,
       # never the text, because this log is public. COMPUTERNAME here is the runner's, so
       # this reads for the runner's name and never for Bader's. Only the pre-commit on his
       # machine reads for his.
@@ -76,9 +76,10 @@ jobs:
         run: sh tools/checks/check-evidence-ids.sh . tools/checks/broken
 
       # The broken folder holds fabricated ids, all zeros, a made up machine name, a UTF-16
-      # file and two text files at samples shaped paths. The check must refuse exactly these
-      # eighteen lines, nothing in the near miss, the masked copy or the rules fixtures, and
-      # never print the name or an id.
+      # file, two text files at samples shaped paths, and a jpg and an xlsx there that open
+      # with their format's bytes and end wrong. The check must refuse exactly these twenty
+      # lines, nothing in the near miss, the masked copy or the rules fixtures, and never
+      # print the name or an id. A binary file is refused in words that say it is binary.
       - name: The id check refuses the fault it was written for
         shell: bash
         run: |
@@ -90,7 +91,7 @@ jobs:
             exit 1
           fi
           want="tools/checks/broken/EvidenceLeftByMask.txt:2  the machine name
-          tools/checks/broken/EvidenceUtf16.txt  holds a NUL byte, so it cannot be read as text. UTF-16 is one such
+          tools/checks/broken/EvidenceUtf16.txt  is binary, a NUL byte is in it, and no line of the binary rule at the top of the check names it
           tools/checks/broken/EvidenceWithIds.txt:1  the machine name
           tools/checks/broken/EvidenceWithIds.txt:2  a GUID on a line naming analyticsagentid
           tools/checks/broken/EvidenceWithIds.txt:2  a GUID on a licensing line
@@ -105,12 +106,14 @@ jobs:
           tools/checks/broken/EvidenceWithIds.txt:7  an id after -i
           tools/checks/broken/EvidenceWithIds.txt:8  an analytics agent id
           tools/checks/broken/EvidenceWithIds.txt:8  an id after -i
+          tools/checks/broken/samples/client-report/EndsWrong.jpg  is binary at a path the binary rule names, but its first or last bytes are not those of its format, so it is not left out
+          tools/checks/broken/samples/client-report/EndsWrong.xlsx  is binary at a path the binary rule names, but its first or last bytes are not those of its format, so it is not left out
           tools/checks/broken/samples/client-report/NotAPicture.jpg:2  the machine name
           tools/checks/broken/samples/client-report/NotAWorkbook.xlsx:2  the machine name"
           got=$(printf '%s\n' "$said" | awk '!/^check-evidence-ids:/' | LC_ALL=C sort)
           want=$(printf '%s\n' "$want" | LC_ALL=C sort)
           if [ "$got" != "$want" ]; then
-            echo "check-evidence-ids did not refuse exactly the eighteen lines. It refused:"
+            echo "check-evidence-ids did not refuse exactly the twenty lines. It refused:"
             echo "$got"
             exit 1
           fi
@@ -120,7 +123,7 @@ jobs:
               exit 1
               ;;
           esac
-          echo "check-evidence-ids refused exactly the eighteen lines, passed the near miss, the masked copy and the rules fixtures, and printed no name and no id"
+          echo "check-evidence-ids refused exactly the twenty lines, passed the near miss, the masked copy and the rules fixtures, and printed no name and no id"
 
       # F102. The check and the mask read the rules file by one set of rules, so a green
       # check means the mask can read the same file. Each fixture under

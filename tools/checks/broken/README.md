@@ -57,12 +57,18 @@ kind, and never the text.
 
 `EvidenceUtf16.txt` is a line of fabricated text written as UTF-16, as Windows PowerShell
 5.1 writes by default, so it holds a NUL byte after every letter. The check has to name it
-and refuse it as a file it cannot read as text.
+and refuse it as binary, in words that say no line of the binary rule names it.
 
 `samples/client-report/NotAPicture.jpg` and `NotAWorkbook.xlsx` beside it are TEXT files at
 paths the binary rule names, each with the made up name on its line 2. The rule leaves a
-file out only when its first bytes are its format's own too, so both are read as text and
-the check has to refuse each on line 2.
+file out only when its first and last bytes are its format's own too, so both are read as
+text and the check has to refuse each on line 2.
+
+`samples/client-report/EndsWrong.jpg` and `EndsWrong.xlsx` beside them start right and end
+wrong, with fabricated bytes. The jpg opens FF D8 FF and holds FF D9, then has a line with
+the made up name appended after it. The xlsx opens PK 03 04 and has no end of central
+directory. The check has to refuse each as binary at a path the rule names whose first or
+last bytes are not its format's.
 
 `rules/` holds rules files for the test that the check and the mask read a rules file the
 same way. `valid.txt` is whole and both have to read it. Every other file there is
@@ -86,4 +92,4 @@ GUID after it.
 
 Actions reads the whole tree with this folder left out, because the fault here is on
 purpose, and the pre-commit leaves it out of what is staged for the same reason. Over this
-folder the check has to come back with exactly eighteen faults.
+folder the check has to come back with exactly twenty faults.

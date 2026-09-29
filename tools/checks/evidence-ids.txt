@@ -15,10 +15,13 @@
 #           back refuse it anywhere, so a name inside a longer word is refused and a person
 #           looks, rather than masked inside a word that may be another word
 #
-# Every expression is read without regard to case, by grep -E and by .NET. Only what both
-# read the same way is written here: bracket classes, [[:space:]], which the mask reads as
-# the six characters it is in the C locale, space, tab, line feed, vertical tab, form feed
-# and carriage return, counts in braces, groups and alternation. {guid} stands for the guid
+# Every expression of a kind, its lines and its id, is read without regard to case, by
+# grep -E and by .NET, and the machine line is read with its case, by both. Only what both
+# read the same way is written here: ^ for the start of a line, bracket classes,
+# [[:space:]], which the mask reads as the six characters it is in the C locale, space,
+# tab, line feed, vertical tab, form feed and carriage return, counts in braces, groups and
+# alternation. $ is NOT read the same way, because the check matches a line with its file
+# and its number written after it, so no expression here uses $. {guid} stands for the guid
 # line and {machine} for COMPUTERNAME, which must match the machine line whole or both
 # refuse.
 #

@@ -46,17 +46,26 @@
 
 set -e
 
-# LEFT OUT AS BINARY, and never read, only when BOTH its path under the folder matches,
-# without regard to case, AND its first bytes are its format's own, FF D8 FF for a jpg and
-# PK 03 04 for an xlsx. A file at such a path whose first bytes are not is read as text, or
-# named and refused, like any other. One rule a line, the path and the first bytes in hex.
+# LEFT OUT AS BINARY, and never read, only when ALL THREE hold: its path under the folder
+# matches, without regard to case, it opens with its format's first bytes, and its last so
+# many bytes hold its format's closing bytes. A file at such a path that fails either byte
+# test is read as text, or named and refused, like any other. One rule a line: the path, the
+# first bytes in hex, how many of the last bytes are read, and the bytes in hex they hold.
+#   a jpg opens FF D8 FF and its last two bytes are FF D9, the marker that ends the picture,
+#     so text appended after the picture fails it
+#   an xlsx is a zip. It opens PK 03 04, and its last 65557 bytes hold 50 4B 05 06, the
+#     signature of the end of central directory, which is 22 bytes and a comment of at most
+#     65535, so a zip cut short or with text appended past its end fails it
 # Measured with git ls-files on 2026-09-29: the only files git reads as binary are 345 .jpg
 # and 3 .xlsx under samples, the client's workbooks and the pictures they link to, and one
-# probe result that is plain UTF-8 and is read. A zip is not here, so a zip is refused, and
-# a run's file over 20 MB is masked before it is zipped. Where a zip may sit is Bader's
-# call, Q90, and is written here when he makes it.
-binary='^samples/.*\.jpg$ ffd8ff
-^samples/.*\.xlsx$ 504b0304'
+# probe result that is plain UTF-8 and is read. Read in full the same day: all 345 .jpg open
+# FF D8 FF and end FF D9, and all 3 .xlsx open PK 03 04 and hold 50 4B 05 06 exactly 22
+# bytes before their end. A zip is not here, so a zip is refused, and a run's file over 20 MB
+# is masked before it is zipped. Where a zip may sit is Bader's call, Q90, and is written
+# here when he makes it. A binary file no line names is refused with words that say so, so a
+# person adds a line for its type rather than hunting for an id.
+binary='^samples/.*\.jpg$ ffd8ff 2 ffd9
+^samples/.*\.xlsx$ 504b0304 65557 504b0506'
 
 rules="$(dirname "$0")/evidence-ids.txt"
 
@@ -243,41 +252,104 @@ LC_ALL=C awk '
 touch "$work/read" "$work/maybe"
 : > "$work/binary"
 
-# The first bytes of every candidate, one awk over all of them. A candidate is left out only
-# when they are its rule's, and read like any other file when they are not.
+# The first and the last bytes of every candidate. One wc over all of them for their sizes,
+# then one awk over all of them. awk reads a file as lines, so the bytes of a file are its
+# lines with a line feed after each, and whether its very last byte was a line feed is
+# known from its size. A candidate is left out only when both byte tests pass, and is read
+# like any other file when either fails, or when its size and what was read disagree.
+#
+# BINMODE=1 makes gawk read the files as bytes. Without it the gawk of Git for Windows, GNU
+# Awk 5.4.1, drops a carriage return before a line feed, measured on 2026-09-29: a sample
+# jpg of 177893 bytes with 434 carriage returns read as 177892, so 238 of the 345 real jpgs
+# failed the size test. It is a plain variable to any other awk.
 if [ -s "$work/maybe" ]; then
     LC_ALL=C tr '\n' '\000' < "$work/maybe" > "$work/maybe0" || failed "the list of files could not be made"
     status=0
-    LC_ALL=C xargs -0 awk '
-        BEGIN {
-            for (i = 0; i < 256; i++) {
-                ord[sprintf("%c", i)] = i
-            }
-            r = split(ENVIRON["binary"], rule, "\n")
-        }
-        FNR == 1 {
-            path = tolower(substr(FILENAME, 3))
-            want = ""
-            for (i = 1; i <= r; i++) {
-                split(rule[i], part, " ")
-                if (path ~ part[1]) {
-                    want = part[2]
-                    break
-                }
-            }
-            have = ""
-            for (k = 1; k <= length(want) / 2 && k <= length($0); k++) {
-                have = have sprintf("%02x", ord[substr($0, k, 1)])
-            }
-            if (want != "" && have == want) {
-                print FILENAME
-            }
-            nextfile
-        }' < "$work/maybe0" > "$work/binary" 2> "$work/errors" || status=$?
+    LC_ALL=C xargs -0 wc -c < "$work/maybe0" > "$work/sizes" 2> "$work/errors" || status=$?
 
     if [ -s "$work/errors" ] || [ "$status" -ne 0 ]; then
         cat "$work/errors" >&2
-        failed "the first bytes of every file the binary rule names could not be read"
+        failed "the size of every file the binary rule names could not be read"
+    fi
+
+    status=0
+    LC_ALL=C xargs -0 awk -v BINMODE=1 '
+        function bytes(hex,    k, s) {
+            s = ""
+            for (k = 1; k < length(hex); k += 2) {
+                s = s sprintf("%c", (index(digits, substr(hex, k, 1)) - 1) * 16 + index(digits, substr(hex, k + 1, 1)) - 1)
+            }
+            return s
+        }
+        function finish() {
+            if (file == "") {
+                return
+            }
+            # pos counts a line feed after every line, so it is the size when the last byte
+            # was a line feed and one more when it was not. Anything else, and the file is read.
+            if (pos == size[file] + 1) {
+                tail = substr(tail, 1, length(tail) - 1)
+            } else if (pos != size[file]) {
+                ok = 0
+            }
+            if (length(tail) > window) {
+                tail = substr(tail, length(tail) - window + 1)
+            }
+            if (ok && first == opens && index(tail, closes) > 0) {
+                print file
+            }
+            file = ""
+        }
+        BEGIN {
+            digits = "0123456789abcdef"
+            r = split(ENVIRON["binary"], rule, "\n")
+            sizes = ENVIRON["work"] "/sizes"
+        }
+        FILENAME == sizes {
+            line = $0
+            sub(/^[ \t]*/, "", line)
+            at = index(line, " ")
+            size[substr(line, at + 1)] = substr(line, 1, at - 1) + 0
+            next
+        }
+        FNR == 1 {
+            finish()
+            file = FILENAME
+            pos = 0
+            tail = ""
+            ok = 0
+            path = tolower(substr(FILENAME, 3))
+            for (i = 1; i <= r; i++) {
+                split(rule[i], part, " ")
+                if (path ~ part[1]) {
+                    opens = bytes(part[2])
+                    window = part[3] + 0
+                    closes = bytes(part[4])
+                    ok = 1
+                    break
+                }
+            }
+            if (!(file in size)) {
+                ok = 0
+            }
+            first = substr($0, 1, length(opens))
+        }
+        {
+            pos = pos + length($0) + 1
+            if (pos > size[file] - window) {
+                tail = tail $0 "\n"
+                if (length(tail) > window + 1) {
+                    tail = substr(tail, length(tail) - window)
+                }
+            }
+        }
+        END {
+            finish()
+        }' "$work/sizes" < "$work/maybe0" > "$work/binary" 2> "$work/errors" || status=$?
+
+    if [ -s "$work/errors" ] || [ "$status" -ne 0 ]; then
+        cat "$work/errors" >&2
+        failed "the first and last bytes of every file the binary rule names could not be read"
     fi
 
     status=0
@@ -374,9 +446,23 @@ if [ -s "$work/texts" ]; then
     done
 fi
 
-while IFS= read -r file; do
-    printf '%s/%s  holds a NUL byte, so it cannot be read as text. UTF-16 is one such\n' "$root" "${file#./}" >> "$work/said"
-done < "$work/nul"
+# A file with a NUL byte is refused as binary, in words that say so and not as an id, so a
+# person adds a line for its type to the binary rule, or writes text as UTF-8, rather than
+# hunting for an id. One the rule names by its path failed its byte tests, and says that.
+: > "$work/binaries"
+LC_ALL=C awk '
+    FILENAME == ENVIRON["work"] "/maybe" {
+        named[$0] = 1
+        next
+    }
+    {
+        file = ENVIRON["root"] "/" substr($0, 3)
+        if ($0 in named) {
+            printf "%s  is binary at a path the binary rule names, but its first or last bytes are not those of its format, so it is not left out\n", file
+        } else {
+            printf "%s  is binary, a NUL byte is in it, and no line of the binary rule at the top of the check names it\n", file
+        }
+    }' "$work/maybe" "$work/nul" > "$work/binaries" || failed "the binary files could not be named"
 
 # Said last, whether it passed or not.
 about() {
@@ -387,7 +473,7 @@ about() {
     fi
 }
 
-if [ -s "$work/said" ]; then
+if [ -s "$work/said" ] || [ -s "$work/binaries" ]; then
     faults=0
 
     while IFS= read -r said; do
@@ -395,8 +481,21 @@ if [ -s "$work/said" ]; then
         faults=$((faults + 1))
     done < "$work/said"
 
+    while IFS= read -r said; do
+        echo "$said"
+        faults=$((faults + 1))
+    done < "$work/binaries"
+
     echo "check-evidence-ids: $faults line(s) under $root refused. $count files were to be read, and $left left out as binary by the rule at the top."
-    echo "check-evidence-ids: write a masked copy with tools/loop/mask-evidence.ps1 and commit that instead."
+
+    if [ -s "$work/said" ]; then
+        echo "check-evidence-ids: for a line with an id or the machine name, write a masked copy with tools/loop/mask-evidence.ps1 and commit that instead."
+    fi
+
+    if [ -s "$work/binaries" ]; then
+        echo "check-evidence-ids: a binary file is refused for being binary, not for an id. If it belongs in the repo, add a line for its type to the binary rule at the top of this check. Text written as UTF-16 is refused the same way and goes in as UTF-8."
+    fi
+
     about
     exit 1
 fi

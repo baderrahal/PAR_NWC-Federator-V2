@@ -85,7 +85,9 @@ WHERE EACH GUARD READS, which is narrower than it may look.
   measured on 2026-09-29, so a commit in any git worktree starts the main clone's copy of
   the hook. Since F102 a hook hands over to the committed tree's own copy when that is
   another file, so the tree is read by its own hook and its own check, once the copy that
-  starts carries the handover. A main clone on a branch older than F102 runs its own old
+  starts carries the handover. It hands over only to a copy holding the line that runs the
+  evidence check, and refuses the commit when the tree's own copy does not. A main clone on
+  a branch older than F102 runs its own old
   copy all through, and then a branch runs its own by hand, sh .githooks/pre-commit
 - Actions reads the tree for the ids and for the RUNNER'S name, never for Bader's. Only the
   pre-commit on his machine reads for his, over what is staged
