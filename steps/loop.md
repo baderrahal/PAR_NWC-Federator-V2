@@ -16,8 +16,8 @@ Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 closed WAITING 
 2. F100: attempt 4 READ AND APPROVED by both readers, RUN 4 PASSED at 11:35, the three
    result files masked by F102's script and checked. PR 74 waits only for F102 to merge,
    then main merged in, the body read by the claim-checker, Actions green, SQUASH merge
-3. F105, branch fix-F105 at 69cff64, a reviewer and the claim-checker reading it. Its pull
-   request after F100, with main merged in so 5z-d sits before 5z-f
+3. F105 IS IN THE FORM, Q89, after three fix attempts, branch fix-F105 at 94a839b with no
+   pull request. The loop goes on without it, nothing downstream waits on its merge
 4. F103, run.ps1, from turn3\f103-design.md, after F100 merges because its start and close
    move out of the probe that ran. Then its first start with no window
 5. F104 part 1, the document read probe and the comparison, on fix-F104 by a developer in a
@@ -192,6 +192,9 @@ steps\02_questions.md with its options.
 - Q88, from F102: main names the machine of 2026-09-19 in 9 places, and PR 74's refs on
   GitHub keep the licensing ids of fix-F100's first commits after the squash merge, which
   only the repository's owner can ask GitHub to purge
+- Q89, F105 after three fix attempts: its four answers are backed line by line in all four
+  readings, and the fourth reading still found faults of the same kind in the shared reader
+  the fixes added. The lead recommends A, merge with three sentences of 5z-f narrowed
 
 Built in turn 1 from steps\01_next.md, steps\02_questions.md, steps\04_audit.md,
 steps\04_audit_first_run.md, steps\03_bader_next.md, the known bugs of steps\log.md, the
@@ -206,11 +209,11 @@ baseline run proves it or contradicts it.
 
 - 125 done in code, not proved by a run
 - 89 reported by the read, not verified
-- 32 needs Bader, in the form, counting Q82 to Q87 as one row and Q88 as one, and F100 moved out
+- 33 needs Bader, in the form, counting Q82 to Q87 as one row, Q88 and F105 as one each, and F100 moved out
 - 19 open fault
 - 4 DONE
 - 8 open for F103, T3-G1 to T3-G5, T3-P, T3-B and F103 itself
-- 2 in review, F102 and F105
+- 1 in review, F102
 - 1 being built, F104
 - 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
@@ -223,7 +226,7 @@ baseline run proves it or contradicts it.
 | F99 | turn 0, the git wall fired on Bash only | The git wall missed commits sent through PowerShell | a PowerShell commit on main refused on standard input, and git.exe read as git | DONE | 72 | no Navisworks run applies, proved on standard input and live |
 | F100 | loop prompt, Phase 1 item 1 | Nothing measured how Navisworks starts and closes with no click on this machine | tools\probes\probe-automation-start.ps1 run once as committed, with no Navisworks the loop did not start running, and docs\history\scan.md 5z-d written off that run | DONE, fix attempt 4 on Bader's answer A, Q79, read by a reviewer and a breaker who both approved | 74 | run 4 at 11:35 on 2026-09-29, all six steps passed, tools\probes\automation-start-result-20260929.txt, scan.md 5z-d RUN 4 |
 | F102 | turn 3, the lead's read of fix-F100 | A result committed from this machine can carry the machine name and the licensing agent's ids, and nothing read a file for them before a commit | tools\loop\mask-evidence.ps1 masks both, tools\checks\check-evidence-ids.sh refuses both in the pre-commit and in Actions, proved on the four fix-F100 files, refused before and passed after | in review | 76 | no Navisworks run applies, proof in turn3\f102\proof.txt |
-| F105 | loop prompt, Phase 1 item 2 | Four facts off the install nobody had read on this machine: the saved viewpoint members, RemoveFile, Roamer's switches, the Clash Detective report | scan.md 5z-f off five result files, no Navisworks started | in review | none yet, branch fix-F105 | no Navisworks run applies, the prober's reads on 2026-09-29 |
+| F105 | loop prompt, Phase 1 item 2 | Four facts off the install nobody had read on this machine: the saved viewpoint members, RemoveFile, Roamer's switches, the Clash Detective report | scan.md 5z-f off five result files, no Navisworks started | needs Bader, in the form, Q89, after three fix attempts | none, branch fix-F105 at 94a839b | no Navisworks run applies, the prober's reads on 2026-09-29 |
 | F103 | loop prompt, Phase 1 item 3 | tools\loop\run.ps1 does not exist | the design in turn3\f103-design.md built, proved by its harness with no Navisworks, then one start with no window | open, after F100 merges | none yet | none yet |
 | F104 | loop prompt, Phase 1 item 4 | No check of the workbook against a read of the document that shares no code with the harvest | the design in turn3\f104-design.md, part 1 on fix-F104, check-documents after F103, proved by prove-compare and then by 5a at the baseline | part 1 being built | none yet | none yet |
 | T3-G1 | turn 3, the reviewer's reading of F100 attempt 4 | The probe's last check before each settings write, line 1885, also 1877 and NewRoamers at 1261, takes a process list it could not read as no Roamer, so the writes go on. Silent. Old, in b01ad71 | a list that cannot be read stops every write, in the guard code run.ps1 takes over, with a harness case | open, for F103 | none yet | none yet |
