@@ -1,27 +1,28 @@
 # The loop
 
-STATE WAITING
+STATE OPEN
 
-WAITING FOR BADER, for two things. His choice on F100 in The form below, A, B or C. And his
-Navisworks closed, pid 34668, open since 09:33 on 2026-09-28, which the loop never closes.
-Everything next needs a Navisworks the loop starts with none of his running: F100's run,
-the measurements of the no-click entry, and the install of main. When he answers and says
-go, check with Get-Process Roamer that none runs, set STATE OPEN, and carry on from Next
-action.
+Turn 3, opened on 2026-09-29 by Bader's answers to the form, recorded as Q79 to Q81 in
+steps\02_questions.md. Get-Process Roamer read 0 processes at 09:52, so his Navisworks,
+pid 34668, is closed. Main's upstream is origin/main since 09:55, it was origin/master.
+Main at the start of the turn: e555619. The plan is the top entry of steps\log.md.
 
-Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 started the same day in
-the same session, because the eight agents are loaded since Bader's restart. Its first fix,
-F98, is merged in PR 73.
+Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 closed WAITING on
+2026-09-28 with F98 merged in PR 73 and F100 in the form.
 
 ## Next action
 
-1. F100 IS IN THE FORM, below, after three fix attempts, and waits on Bader's choice.
-   PR 74 stays open as a draft on fix-F100 and NOTHING OF IT MERGES until its result file
-   is replaced or taken out, because that file carries two licensing ids
-2. Phase 1 item 3, the no-click entry. Its design is in
-   %LOCALAPPDATA%\NwcFederatorLoop\turn1\f101-design.md: measure first (PQ1 to PQ8 through
-   the same probe), then the moves out of the window one pull request each, then the entry
-3. Then Phase 1 items 2 and 4, below
+1. F102, the masking step for every result committed from this machine, its own pull
+   request, merged before F100's run
+2. F100 fix attempt 4, Bader's answer A, exactly F1 to F4 and B1 to B3 of
+   steps\notes\f100-fourth-reading.md. Then the reading by a reviewer and a breaker. A
+   fault of the seven left, or a new fault inside attempt 4, sends F100 to B with no
+   question. Then the one run, the result masked and read for ids, and a SQUASH merge of
+   PR 74, so the old result file with its licensing ids stays off main
+3. Phase 1 item 2, the prober's measurements, then F103 run.ps1, then F104 the separate
+   read of the document
+4. Install main and the baseline, Phase 3, run 1 through the real window as D4 says. Then
+   F101, the no-click entry, from steps\notes\f101-design.md
 
 ## The phases
 
@@ -162,6 +163,11 @@ Bader's choice:
   the result file out, merge that, and write run.ps1's start and close fresh from the
   design, read from the start
 - C. Something else he names
+
+ANSWERED A on 2026-09-29, Q79: one more fix attempt of exactly the faults in the fourth
+reading, with no start while any Navisworks runs enforced in code, then the one run, then
+merge. The last attempt. If the reading after it finds a new fault, F100 goes to B with no
+question. No result file reaches main with a licensing id or a session id in it.
 
 Built in turn 1 from steps\01_next.md, steps\02_questions.md, steps\04_audit.md,
 steps\04_audit_first_run.md, steps\03_bader_next.md, the known bugs of steps\log.md, the
@@ -513,7 +519,7 @@ Files written outside the repo:
 Inside the clone and not tracked: .claude\hooks\.loop-gate-last once the Stop gate first
 blocks, which git ignores.
 
-## Turn 2, 2026-09-28, open
+## Turn 2, 2026-09-28, closed WAITING for Bader's answer on F100 and his Navisworks
 
 Runs: none yet.
 
@@ -574,3 +580,20 @@ Files written outside the repo so far:
     %LOCALAPPDATA%\NwcFederatorLoop\turn1                       the F98 and F100 messages, bodies and fix lists,
                                                                 steps\log.md before PR 71 and the fixed file,
                                                                 and the session evidence file, items 11 to 17
+
+## Turn 3, 2026-09-29, open
+
+Opened by Bader's answers of 2026-09-29, Q79 to Q81. Main at e555619.
+
+Runs: none yet.
+
+Findings so far: the result files on fix-F100 name this machine and carry the licensing
+agent's ids, and nothing masks either before a commit, F102. origin/master's tip is
+be0b9b37, the build the installed add-in reads, which answers why the install is not main.
+
+Fixed: nothing yet.
+
+Programs started so far: git and gh, Windows PowerShell for Get-Process Roamer.
+
+Written outside the repo so far: nothing. In this clone's .git\config, main's upstream,
+branch.main.merge, is refs/heads/main where it was refs/heads/master.
