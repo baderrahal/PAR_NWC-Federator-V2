@@ -57,6 +57,20 @@ build\install.ps1, because they construct the real window:
   host and where the window sits in the automation tree. It needs the add-in window
   already open
 
+Three more read the install with no Navisworks started, written for F105 on 2026-09-29,
+each with its result file beside it, and answer docs/history/scan.md section 5z-f:
+
+- `probe-viewpoint-calls.ps1` checks, one line each, every Navisworks member
+  src\Federator.Addin\Engine\SavedViewpoints.cs calls, in the Api DLL and the two COM DLLs,
+  because probe-viewpoints.ps1 never opens the COM half the add-in writes viewpoints through
+- `probe-roamer-switches.ps1` reads Roamer.exe and the DLL whose parser holds its command
+  line switches as bytes and IL, never by running it, and lists every switch the parser
+  matches and what the IL does with ExecuteAddInPlugin
+- `probe-clash-report-api.ps1` lists every public type and member of the five Navisworks
+  assemblies the tool can reach whose name holds Report, Html, Tabular or Export, and every
+  clash report member of the COM interop, which is how the Clash Detective report was found
+  to have no public writer in the API the add-in uses
+
 A probe that cannot find what it needs says UNKNOWN and the path it looked at, and
 stops. Never search the install folder for a DLL, the path is built and tested directly,
 which is the same rule the build uses.

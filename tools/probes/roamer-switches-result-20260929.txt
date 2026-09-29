@@ -1,0 +1,1472 @@
+FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe   214296 bytes, file version 22.5.1433.58, sha256 2BBC4BE15D7F16BAB2D5AC733EEBF2659849F56F9516F5B5E95737843E4913A9
+MACHINE   [machine]   2026-09-29 10:46
+
+==== 1. Roamer.exe as bytes ====
+  strings of four or more printable characters in Roamer.exe: 759, ascii 685, utf16 74
+
+  -- Roamer.exe: every string that IS a switch, a hyphen or a slash and then a word of letters --
+    count 0
+
+  -- Roamer.exe: every other string holding a word of letters after a hyphen or a slash, at its start or after a space, quote or bracket --
+    count 0
+
+  -- Roamer.exe: every string holding a key word, case blind: ExecuteAddInPlugin, AddIn, NoGui, Embedding, regserver, OpenFile, log, lang, options, dump, memory --
+    strings holding ExecuteAddInPlugin : 0
+    strings holding AddIn              : 0
+    strings holding NoGui              : 2
+    strings holding Embedding          : 0
+    strings holding regserver          : 2
+    strings holding OpenFile           : 0
+    strings holding log                : 7
+    strings holding lang               : 7
+    strings holding options            : 6
+    strings holding dump               : 3
+    strings holding memory             : 0
+    offset    10897 0x002A91  ascii XmlLanguage   [lang]
+    offset    10909 0x002A9D  ascii GetLanguage   [lang]
+    offset    11020 0x002B0C  ascii LogFile   [log]
+    offset    11028 0x002B14  ascii DumpFile   [dump]
+    offset    11037 0x002B1D  ascii DumpOptionsFile   [options, dump]
+    offset    11053 0x002B2D  ascii log_file   [log]
+    offset    12026 0x002EFA  ascii get_IetfLanguageTag   [lang]
+    offset    12171 0x002F8B  ascii PrimaryLang   [lang]
+    offset    12183 0x002F97  ascii primary_lang   [lang]
+    offset    12307 0x003013  ascii LogWideString   [log]
+    offset    12394 0x00306A  ascii LcUScopedLog   [log]
+    offset    12407 0x003077  ascii SuppressCERDialog   [log]
+    offset    13496 0x0034B8  ascii LogException   [log]
+    offset    13736 0x0035A8  ascii AddExtraFileForDump   [dump]
+    offset    14457 0x003879  ascii RegServer   [regserver]
+    offset    14467 0x003883  ascii UnregServer   [regserver]
+    offset    14964 0x003A74  ascii OptionsFiles   [options]
+    offset    14977 0x003A81  ascii options_files   [options]
+    offset    15368 0x003C08  ascii LoadOptions   [options]
+    offset    15380 0x003C14  ascii SaveGlobalOptions   [options]
+    offset    15398 0x003C26  ascii StringSplitOptions   [options]
+    offset    16263 0x003F87  ascii LanguageProperty   [lang]
+    offset    16950 0x004236  utf16 Program.Main - Before dispatch NoGui actions   [NoGui]
+    offset    17042 0x004292  utf16 Program.Main - After dispatch NoGui actions   [NoGui]
+    offset    17340 0x0043BC  utf16 general.logging.winforms_throw   [log]
+    offset   203304 0x031A28  ascii              language="*"/>   [lang]
+    count 26
+
+  -- Roamer.exe: the switch names counted exactly, ascii and utf16 --
+    ExecuteAddInPlugin  ascii 0   utf16 0
+    AddPluginAssembly   ascii 0   utf16 0
+    NoGui               ascii 0   utf16 2
+    Embedding           ascii 0   utf16 0
+    regserver           ascii 0   utf16 0
+    OpenFile            ascii 0   utf16 0
+  Roamer.exe holds the switch table, ExecuteAddInPlugin, NoGui, Embedding and regserver all present: False
+
+==== 2. Roamer.exe's PE headers and import tables, by bytes ====
+  machine 0x8664, optional header magic 0x20B PE32+, subsystem 2
+  sections: .text, .rsrc
+  data directory 1, import: rva 0x0, size 0
+  data directory 13, delay import: rva 0x0, size 0
+  data directory 14, CLI header: rva 0x2000, size 72
+  -- the PE import table --
+    none
+  -- the delay import table --
+    none
+  -- the CLI metadata, by bytes --
+    metadata version v4.0.30319, streams #~, #Blob, #GUID, #Strings, #US, heap flags 0x00
+    rows: TypeRef 133, TypeDef 14, MethodDef 55, MemberRef 235, ModuleRef 0, ImplMap 0, AssemblyRef 16
+    AssemblyRef, 16:
+      mscorlib 4.0.0.0
+      odviewdll_clr 0.0.0.0
+      Autodesk.Navisworks.Api 22.0.0.0
+      navisworks.gui.roamer 22.0.0.0
+      navisworks.gui.common 22.0.0.0
+      Autodesk.Navisworks.Controls 22.0.0.0
+      System 4.0.0.0
+      System.Xml.Linq 4.0.0.0
+      System.Xml 4.0.0.0
+      navisworks.gui.generic 22.0.0.0
+      PresentationFramework 4.0.0.0
+      System.Windows.Forms 4.0.0.0
+      navisworks.roamer.clr 22.0.0.0
+      WindowsBase 4.0.0.0
+      PresentationCore 4.0.0.0
+      System.Core 4.0.0.0
+    ModuleRef, the native DLLs it calls into, 0: 
+    ImplMap, each native entry point it declares, 0: 
+    the same file read by reflection only, Roamer 22.0.0.0, entry point NetRoamer.Program::Main, references 16
+    the byte read and the reflection read list the same references: True
+
+==== 3. Every referenced assembly in the install folder, each by its one full path, counted for the switch names ====
+  mscorlib                                     no file at C:\Program Files\Autodesk\Navisworks Manage 2025\mscorlib.dll, not read
+  odviewdll_clr                                2440992 bytes, ascii/utf16: ExecuteAddInPlugin 0/0, AddPluginAssembly 0/0, NoGui 0/0, Embedding 0/0, regserver 0/0, OpenFile 9/1   holds the table: False
+  Autodesk.Navisworks.Api                      4261152 bytes, ascii/utf16: ExecuteAddInPlugin 1/0, AddPluginAssembly 1/0, NoGui 0/0, Embedding 0/0, regserver 0/0, OpenFile 10/0   holds the table: False
+  navisworks.gui.roamer                        648984 bytes, ascii/utf16: ExecuteAddInPlugin 0/1, AddPluginAssembly 0/1, NoGui 0/1, Embedding 0/1, regserver 0/2, OpenFile 3/1   holds the table: True
+  navisworks.gui.common                        559896 bytes, ascii/utf16: ExecuteAddInPlugin 0/0, AddPluginAssembly 0/0, NoGui 0/0, Embedding 0/0, regserver 0/0, OpenFile 1/0   holds the table: False
+  Autodesk.Navisworks.Controls                 147736 bytes, ascii/utf16: ExecuteAddInPlugin 0/0, AddPluginAssembly 0/0, NoGui 0/0, Embedding 0/0, regserver 0/0, OpenFile 0/0   holds the table: False
+  System                                       no file at C:\Program Files\Autodesk\Navisworks Manage 2025\System.dll, not read
+  System.Xml.Linq                              no file at C:\Program Files\Autodesk\Navisworks Manage 2025\System.Xml.Linq.dll, not read
+  System.Xml                                   no file at C:\Program Files\Autodesk\Navisworks Manage 2025\System.Xml.dll, not read
+  navisworks.gui.generic                       392984 bytes, ascii/utf16: ExecuteAddInPlugin 1/0, AddPluginAssembly 0/0, NoGui 0/0, Embedding 0/0, regserver 0/0, OpenFile 1/0   holds the table: False
+  PresentationFramework                        no file at C:\Program Files\Autodesk\Navisworks Manage 2025\PresentationFramework.dll, not read
+  System.Windows.Forms                         no file at C:\Program Files\Autodesk\Navisworks Manage 2025\System.Windows.Forms.dll, not read
+  navisworks.roamer.clr                        286496 bytes, ascii/utf16: ExecuteAddInPlugin 0/0, AddPluginAssembly 0/0, NoGui 0/0, Embedding 0/0, regserver 0/0, OpenFile 0/0   holds the table: False
+  WindowsBase                                  no file at C:\Program Files\Autodesk\Navisworks Manage 2025\WindowsBase.dll, not read
+  PresentationCore                             no file at C:\Program Files\Autodesk\Navisworks Manage 2025\PresentationCore.dll, not read
+  System.Core                                  no file at C:\Program Files\Autodesk\Navisworks Manage 2025\System.Core.dll, not read
+  files holding ExecuteAddInPlugin, NoGui, Embedding and regserver together: 1
+    C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer.dll
+
+==== 4. The file that holds the switch table, as bytes ====
+FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer.dll   648984 bytes, file version 22.5.1433.58, sha256 A45C7B81414C9ECC60B84E6BBBF911FA3CF4DCF5464F243AFF9E33D1BDB90E12
+  strings of four or more printable characters in navisworks.gui.roamer.dll: 10749, ascii 9721, utf16 1028
+
+  -- navisworks.gui.roamer.dll: every string that IS a switch, a hyphen or a slash and then a word of letters --
+    offset    24912 0x006150  ascii -EsO
+    count 1
+
+  -- navisworks.gui.roamer.dll: every other string holding a word of letters after a hyphen or a slash, at its start or after a space, quote or bracket --
+    offset    37679 0x00932F  ascii -fr"*
+    offset   416682 0x065BAA  utf16 /resreq elearn "{0}" "{1}" "{2}"
+    offset   416748 0x065BEC  utf16 /resreq createsupport "{0}" "{1}" "{2}"
+    offset   416828 0x065C3C  utf16 /resreq viewsupport "{0}" "{1}" "{2}"
+    offset   416904 0x065C88  utf16 /resreq editprofile "{0}" "{1}" "{2}"
+    offset   416980 0x065CD4  utf16 /resreq elearn "{0}" "{1}" "{2}" {3} {4}
+    offset   573703 0x08C107  ascii /pack://siteoforigin:,,,/Images/navmode-zoom.ico
+    count 7
+
+  -- navisworks.gui.roamer.dll: every string holding a key word, case blind: ExecuteAddInPlugin, AddIn, NoGui, Embedding, regserver, OpenFile, log, lang, options, dump, memory --
+    strings holding ExecuteAddInPlugin : 1
+    strings holding AddIn              : 42
+    strings holding NoGui              : 1
+    strings holding Embedding          : 1
+    strings holding regserver          : 4
+    strings holding OpenFile           : 4
+    strings holding log                : 61
+    strings holding lang               : 11
+    strings holding options            : 62
+    strings holding dump               : 4
+    strings holding memory             : 9
+    offset   309401 0x04B899  ascii Log10   [log]
+    offset   310683 0x04BD9B  ascii <LoadAddIns>b__48_0   [AddIn]
+    offset   311577 0x04C119  ascii <LoadAddIns>b__48_1   [AddIn]
+    offset   312628 0x04C534  ascii <LoadAddIns>b__48_2   [AddIn]
+    offset   312767 0x04C5BF  ascii LogControlPairT`2   [log]
+    offset   313050 0x04C6DA  ascii <LoadAddIns>b__3   [AddIn]
+    offset   313295 0x04C7CF  ascii <LoadAddIns>b__4   [AddIn]
+    offset   313805 0x04C9CD  ascii ADDINS_TAB_ID   [AddIn]
+    offset   314651 0x04CD1B  ascii LogicalToggleCommandVM   [log]
+    offset   316310 0x04D396  ascii get_FirstAddInsTab   [AddIn]
+    offset   316329 0x04D3A9  ascii set_FirstAddInsTab   [AddIn]
+    offset   316547 0x04D483  ascii Autodesk.Navisworks.Gui.Logic   [log]
+    offset   316736 0x04D540  ascii set_GlobalOptionsHookFunc   [options]
+    offset   317371 0x04D7BB  ascii GetLoginUserId   [log]
+    offset   317492 0x04D834  ascii CreatAddInTabPanelById   [AddIn]
+    offset   320096 0x04E260  ascii add_GlobalOptionsChanged   [options]
+    offset   320121 0x04E279  ascii remove_GlobalOptionsChanged   [options]
+    offset   320149 0x04E295  ascii OnGlobalOptionsChanged   [options]
+    offset   320172 0x04E2AC  ascii DoOptionsChanged   [options]
+    offset   322034 0x04E9F2  ascii WebServicesLoginButton_DropDownOpened   [log]
+    offset   323123 0x04EE33  ascii get_MemoryAllocated   [memory]
+    offset   325105 0x04F5F1  ascii m_units_options_change_id   [options]
+    offset   325200 0x04F650  ascii IsLoginValid   [log]
+    offset   325349 0x04F6E5  ascii <FirstAddInsTab>k__BackingField   [AddIn]
+    offset   326883 0x04FCE3  ascii <AllAddInsTabs>k__BackingField   [AddIn]
+    offset   329863 0x050887  ascii AddInPluginRecord   [AddIn]
+    offset   332056 0x051118  ascii eOptionsMode   [options]
+    offset   332276 0x0511F4  ascii RemoveAddInsTabXmlNode   [AddIn]
+    offset   332717 0x0513AD  ascii LogMissingImage   [log]
+    offset   332926 0x05147E  ascii get_MemoryUsage   [memory]
+    offset   333236 0x0515B4  ascii get_Language   [lang]
+    offset   333249 0x0515C1  ascii GetCurrentSupportedLanguage   [lang]
+    offset   333277 0x0515DD  ascii get_RuntimeLanguage   [lang]
+    offset   333297 0x0515F1  ascii GetAppStoreLanguage   [lang]
+    offset   334776 0x051BB8  ascii DialogHandle   [log]
+    offset   335011 0x051CA3  ascii LogMissingCommandFile   [log]
+    offset   335059 0x051CD3  ascii LogFile   [log]
+    offset   335076 0x051CE4  ascii OpenFile   [OpenFile]
+    offset   335186 0x051D52  ascii DumpFile   [dump]
+    offset   335202 0x051D62  ascii DumpOptionsFile   [options, dump]
+    offset   335238 0x051D86  ascii set_DialogLayoutFile   [log]
+    offset   335328 0x051DE0  ascii LcUOptionSetProfile   [options]
+    offset   336094 0x0520DE  ascii get_ThreeLetterWindowsLanguageName   [lang]
+    offset   336661 0x052315  ascii GetLoginUserName   [log]
+    offset   339850 0x052F8A  ascii s_options_base   [options]
+    offset   340002 0x053022  ascii LcOpProgressUserDialogResponse   [log]
+    offset   341521 0x053611  ascii LogComposite   [log]
+    offset   344137 0x054049  ascii RoamerGUI_OM_SECTION_PLANES_DIALOG_OnExecute   [log]
+    offset   345329 0x0544F1  ascii RoamerGUI_GRIDS_OPTIONS_OnExecute   [options]
+    offset   349625 0x0555B9  ascii RoamerGUI_AutoCAM_3DC_Options_OnExecute   [options]
+    offset   349665 0x0555E1  ascii RoamerGUI_Customized_NavBar_Options_OnExecute   [options]
+    offset   349711 0x05560F  ascii RoamerGUI_ViewCubeOptions_OnExecute   [options]
+    offset   349747 0x055633  ascii RoamerGUI_WheelOptions_OnExecute   [options]
+    offset   349780 0x055654  ascii RoamerGUI_EditOptions_OnExecute   [options]
+    offset   352655 0x05618F  ascii RoamerGUI_OM_SECTION_PLANES_DIALOG_CanExecute   [log]
+    offset   353811 0x056613  ascii RoamerGUI_GRIDS_OPTIONS_CanExecute   [options]
+    offset   358148 0x057704  ascii RoamerGUI_AutoCAM_3DC_Options_CanExecute   [options]
+    offset   358189 0x05772D  ascii RoamerGUI_SelectionResolution_Options_CanExecute   [options]
+    offset   358238 0x05775E  ascii RoamerGUI_Customized_NavBar_Options_CanExecute   [options]
+    offset   358285 0x05778D  ascii RoamerGUI_EditOptions_CanExecute   [options]
+    offset   360833 0x058181  ascii IsModalDialogActive   [log]
+    offset   361791 0x05853F  ascii LcUOptionSetFlag   [options]
+    offset   361808 0x058550  ascii LcUOptionSetMyFlag   [options]
+    offset   361928 0x0585C8  ascii OptionsEditorDlg   [options]
+    offset   361983 0x0585FF  ascii PrimaryLang   [lang]
+    offset   361995 0x05860B  ascii s_supported_lang   [lang]
+    offset   362143 0x05869F  ascii get_Padding   [AddIn]
+    offset   362155 0x0586AB  ascii m_browser_padding   [AddIn]
+    offset   363176 0x058AA8  ascii LogWideString   [log]
+    offset   364325 0x058F25  ascii LcUScopedLog   [log]
+    offset   364338 0x058F32  ascii DisplayDADialog   [log]
+    offset   364354 0x058F42  ascii SaveFileDialog   [log]
+    offset   364369 0x058F51  ascii OpenFileDialog   [OpenFile, log]
+    offset   364384 0x058F60  ascii CreateDialog   [log]
+    offset   364397 0x058F6D  ascii LogDialog   [log]
+    offset   364407 0x058F77  ascii CommonDialog   [log]
+    offset   364420 0x058F84  ascii ColorDialog   [log]
+    offset   364432 0x058F90  ascii EditTextDialog   [log]
+    offset   364447 0x058F9F  ascii ShowDialog   [log]
+    offset   364458 0x058FAA  ascii VecEntryDialog   [log]
+    offset   364473 0x058FB9  ascii m_mfc_dialog   [log]
+    offset   365072 0x059210  ascii get_LogicalPath   [log]
+    offset   366707 0x059873  ascii GlobalOptionsHook   [options]
+    offset   367328 0x059AE0  ascii LogLabel   [log]
+    offset   369049 0x05A199  ascii LogLabeledControl   [log]
+    offset   369253 0x05A265  ascii LogControl   [log]
+    offset   369285 0x05A285  ascii ILogicalControl   [log]
+    offset   369774 0x05A46E  ascii LogListControl   [log]
+    offset   370036 0x05A574  ascii OptionsEditorImpl   [options]
+    offset   370472 0x05A728  ascii MemoryStream   [memory]
+    offset   372847 0x05B06F  ascii OnDemandLogIn   [log]
+    offset   373847 0x05B457  ascii Login   [log]
+    offset   373908 0x05B494  ascii LoadAddInPlugin   [AddIn]
+    offset   374931 0x05B893  ascii AddInLocation   [AddIn]
+    offset   378504 0x05C688  ascii LogButton   [log]
+    offset   378514 0x05C692  ascii get_WebServicesLoginButton   [log]
+    offset   378556 0x05C6BC  ascii LogRadioButton   [log]
+    offset   378586 0x05C6DA  ascii LogColorButton   [log]
+    offset   378601 0x05C6E9  ascii get_OptionsButton   [options]
+    offset   379269 0x05C985  ascii LogCombo   [log]
+    offset   383823 0x05DB4F  ascii LogicalCommandVMManager   [log]
+    offset   385355 0x05E14B  ascii LogContainer   [log]
+    offset   385368 0x05E158  ascii ILogicalContainer   [log]
+    offset   385558 0x05E216  ascii LangHelper   [lang]
+    offset   386538 0x05E5EA  ascii RegServer   [regserver]
+    offset   386548 0x05E5F4  ascii UnregServer   [regserver]
+    offset   388056 0x05EBD8  ascii Autodesk.Navisworks.Gui.Common.OptionsEditor.CustomControlGenerator   [options]
+    offset   388632 0x05EE18  ascii Autodesk.Navisworks.Gui.Common.OptionsEditor   [options]
+    offset   388888 0x05EF18  ascii get_AllAddInsTabs   [AddIn]
+    offset   388906 0x05EF2A  ascii set_AllAddInsTabs   [AddIn]
+    offset   391791 0x05FA6F  ascii OpenFiles   [OpenFile]
+    offset   391814 0x05FA86  ascii OptionsFiles   [options]
+    offset   392820 0x05FE74  ascii s_supportedLangsToAppStoreLangs   [lang]
+    offset   395713 0x0609C1  ascii LoadAddIns   [AddIn]
+    offset   395724 0x0609CC  ascii GetHelpAddIns   [AddIn]
+    offset   396334 0x060C2E  ascii get_Options   [options]
+    offset   396346 0x060C3A  ascii FrameworkPropertyMetadataOptions   [options]
+    offset   396379 0x060C5B  ascii AppendMergeOptions   [options]
+    offset   396398 0x060C6E  ascii BitmapSizeOptions   [options]
+    offset   396416 0x060C80  ascii RefreshOptions   [options]
+    offset   396431 0x060C8F  ascii SaveGlobalOptions   [options]
+    offset   396449 0x060CA1  ascii NWAIRLookGlobalOptions   [options]
+    offset   396472 0x060CB8  ascii GetNumOptions   [options]
+    offset   396486 0x060CC6  ascii ApplicationOptions   [options]
+    offset   396505 0x060CD9  ascii AutoSaveFileLocationOptions   [options]
+    offset   396533 0x060CF5  ascii GridsOptions   [options]
+    offset   396546 0x060D02  ascii get_SpeedUnitOptions   [options]
+    offset   396567 0x060D17  ascii get_MoveIncrementOptions   [options]
+    offset   396711 0x060DA7  ascii s_move_inc_options   [options]
+    offset   396761 0x060DD9  ascii DialogButtons   [log]
+    offset   400747 0x061D6B  ascii LcUOptionSet   [options]
+    offset   400760 0x061D78  ascii LcOpOptionSet   [options]
+    offset   400774 0x061D86  ascii GetOptionSet   [options]
+    offset   400787 0x061D93  ascii LcUExOptionSet   [options]
+    offset   402281 0x062369  ascii NWDialogResult   [log]
+    offset   402336 0x0623A0  ascii LcGrInterfaceLogInResult   [log]
+    offset   403714 0x062902  ascii IDialogParent   [log]
+    offset   404825 0x062D59  ascii get_DialogFont   [log]
+    offset   406648 0x063478  ascii Logout   [log]
+    offset   408778 0x063CCA  ascii GetDialogWindow   [log]
+    offset   409198 0x063E6E  ascii dialog_window   [log]
+    offset   409748 0x064094  ascii LogNumericBox   [log]
+    offset   410013 0x06419D  ascii LogGroupBox   [log]
+    offset   412302 0x064A8E  ascii AddIntProperty   [AddIn]
+    offset   417308 0x065E1C  utf16 OpenFile   [OpenFile]
+    offset   417348 0x065E44  utf16 Embedding   [Embedding]
+    offset   417390 0x065E6E  utf16 regserver   [regserver]
+    offset   417428 0x065E94  utf16 unregserver   [regserver]
+    offset   417582 0x065F2E  utf16 dump   [dump]
+    offset   417592 0x065F38  utf16 dump_options   [options, dump]
+    offset   417636 0x065F64  utf16 options   [options]
+    offset   417652 0x065F74  utf16 lang   [lang]
+    offset   417784 0x065FF8  utf16 NoGui   [NoGui]
+    offset   417936 0x066090  utf16 ExecuteAddInPlugin   [ExecuteAddInPlugin, AddIn]
+    offset   418952 0x066488  utf16 GenericGUI_DialogFont_FontFamily   [log]
+    offset   419924 0x066854  utf16 RoamerGUI_AddInsHelp   [AddIn]
+    offset   422967 0x067437  utf16 eLOG: gui.roamer, Bypassing NWMessageBox   [log]
+    offset   426853 0x068365  utf16 auto_save_options   [options]
+    offset   426889 0x068389  utf16 append_merge_options   [options]
+    offset   427555 0x068623  utf16 RoamerGUI_SelectionResolution_Options_Display_Text   [options]
+    offset   429761 0x068EC1  utf16 Options\Measure   [options]
+    offset   430557 0x0691DD  utf16 OptionsEditor_OpSetFromSelection   [options]
+    offset   430623 0x06921F  utf16 OptionsEditor_OpSetSelection{0}   [options]
+    offset   431289 0x0694B9  utf16 ProgressDialog   [log]
+    offset   432221 0x06985D  utf16 MemoryAllocated   [memory]
+    offset   432253 0x06987D  utf16 MemoryUsage   [memory]
+    offset   432357 0x0698E5  utf16 model.performance.memory.alloc_status_pane   [memory]
+    offset   432443 0x06993B  utf16 model.performance.memory.usage_status_pane   [memory]
+    offset   443972 0x06C644  utf16 RoamerGui_Help_Language_Code   [lang]
+    offset   451907 0x06E543  utf16 RoamerGUI_SelectSame_Options   [options]
+    offset   452011 0x06E5AB  utf16 RoamerGUI_AddIns_Tools   [AddIn]
+    offset   452057 0x06E5D9  utf16 RoamerGUI_AddIns_Tools_KeyTip   [AddIn]
+    offset   452117 0x06E615  utf16 RoamerGUI_AddIns_Tools_Name_Format   [AddIn]
+    offset   452187 0x06E65B  utf16 RoamerGUI_AddIns_Import   [AddIn]
+    offset   452235 0x06E68B  utf16 RoamerGUI_AddIns_Import_KeyTip   [AddIn]
+    offset   452297 0x06E6C9  utf16 RoamerGUI_AddIns_Import_Name_Format   [AddIn]
+    offset   452369 0x06E711  utf16 RoamerGUI_AddIns_Export   [AddIn]
+    offset   452417 0x06E741  utf16 RoamerGUI_AddIns_Export_KeyTip   [AddIn]
+    offset   452479 0x06E77F  utf16 RoamerGUI_AddIns_Export_Name_Format   [AddIn]
+    offset   452567 0x06E7D7  utf16 Ribbon_AddIn_16.ico   [AddIn]
+    offset   452607 0x06E7FF  utf16 Ribbon_AddIn_32.ico   [AddIn]
+    offset   452723 0x06E873  utf16 ID_TabAddIns   [AddIn]
+    offset   453283 0x06EAA3  utf16 RoamerGUI_AddIns   [AddIn]
+    offset   454732 0x06F04C  utf16 RoamerGUI_EditOptions   [options]
+    offset   496045 0x0791AD  ascii MoveIncrementOptions+   [options]
+    offset   497304 0x079698  ascii Padding$   [AddIn]
+    offset   498830 0x079C8E  ascii SpeedUnitOptions+   [options]
+    offset   556151 0x087C77  ascii Padding   [AddIn]
+    offset   556576 0x087E20  ascii  System.Windows.Media.TextOptions   [options]
+    offset   558361 0x088519  ascii " GenericGUI_DialogFont_FontFamily+   [log]
+    offset   569279 0x08AFBF  ascii Padding   [AddIn]
+    offset   570769 0x08B591  ascii Padding$   [AddIn]
+    offset   603581 0x0935BD  ascii MemoryAllocated+$   [memory]
+    offset   603721 0x093649  ascii MemoryUsage+$   [memory]
+    offset   608148 0x094794  ascii Padding   [AddIn]
+    offset   613631 0x095CFF  ascii PresentationOptionsAhttp://schemas.microsoft.com/winfx/2006/xaml/presentation/options   [options]
+    count 196
+
+
+==== 5. What the parser does with each option, off the IL, reflection only. Not what a start does ====
+  types in navisworks.gui.roamer.dll whose name holds CommandLine: Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher, Autodesk.Navisworks.Gui.Roamer.CommandLineConfig, Autodesk.Navisworks.Gui.Roamer.CommandLineAction, Autodesk.Navisworks.Gui.Roamer.CommandLineParser
+  Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher, base System.Object
+      ctor   public .ctor()
+      method public static System.Void AttachConsole()
+      method public static System.Void Configure(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig config)
+      method public static Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher+Status DispatchAllActions(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig config, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction> actions, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult& result)
+      method public static Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher+Status DispatchOneAction(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig config, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction> actions, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult& result)
+      method public static System.Void ReportParseError(Autodesk.Navisworks.Gui.Roamer.CommandLineParser parser)
+      method public static System.Void ReportResult(Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult result, System.Boolean use_gui)
+  Autodesk.Navisworks.Gui.Roamer.CommandLineConfig, base System.Object
+      field  System.Boolean RegServer
+      field  System.Boolean UnregServer
+      field  System.Boolean RegPerUser
+      field  System.Boolean COMAutomationStartup
+      field  System.Boolean NoReg
+      field  System.Boolean PureReg
+      field  System.Boolean ExitAfterActions
+      field  System.String LogFile
+      field  System.String DumpFile
+      field  System.String DumpOptionsFile
+      field  System.Boolean MemCheck
+      field  System.String PrimaryLang
+      field  System.Boolean NoCache
+      field  System.Collections.Generic.List<System.String> OptionsFiles
+      field  System.Boolean ForceAdLMLicensing
+      field  System.Boolean ForceBIM360Licensing
+      field  Autodesk.Navisworks.Gui.Roamer.CommandLineConfig+Gui GuiState
+      ctor   public .ctor()
+  Autodesk.Navisworks.Gui.Roamer.CommandLineAction, base System.Object
+      field  System.String m_type
+      field  System.Collections.Generic.List<System.String> m_args
+      ctor   public .ctor(System.String type)
+      ctor   public .ctor(System.String type, System.String[] args)
+      ctor   public .ctor(System.String type, System.Collections.Generic.List<System.String> args)
+      method public System.Collections.Generic.List<System.String> get_Args()
+      method public System.String get_Type()
+  Autodesk.Navisworks.Gui.Roamer.CommandLineParser, base System.Object
+      field  System.String[] m_args
+      field  Autodesk.Navisworks.Gui.Roamer.CommandLineConfig m_config
+      field  System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction> m_actions
+      field  System.Int32 m_count
+      field  System.Int32 m_index
+      field  System.String m_option
+      field  System.String m_error_id
+      field  System.String m_error_arg1
+      field  System.String m_error_arg2
+      field  System.Boolean m_benchmark
+      ctor   public .ctor()
+      method public System.String get_ErrorArg1()
+      method public System.String get_ErrorArg2()
+      method public System.String get_ErrorId()
+      method private System.Boolean IsOption(System.String arg)
+      method private System.Boolean MatchOption(System.String s)
+      method private System.Boolean MatchShellOption(System.String s)
+      method private System.String NextArgForOption()
+      method private System.Collections.Generic.List<System.String> NextArgsForOption(System.Int32 min_args)
+      method private System.Collections.Generic.List<System.String> NextArgsForOption()
+      method public System.Boolean Parse(System.String[] args, Autodesk.Navisworks.Gui.Roamer.CommandLineConfig config, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction> actions)
+      method private System.Boolean ParseOption()
+      method private System.String StripArg(System.String arg)
+
+  CommandLineParser::ParseOption matches 39 options after a literal, 37 through MatchOption and 2 through MatchShellOption. For each, the IL its match runs, up to where a miss goes:
+    p (MatchShellOption)         falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "OpenFile"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "Print"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+    pt (MatchShellOption)        falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgsForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "OpenFile"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "Print"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+    Embedding                    jumps to IL_00D9, the body of Automation: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+    Automation                   falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+    regserver                    jumps to IL_010D, the body of Register: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::RegServer
+    Register                     falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::RegServer
+    unregserver                  jumps to IL_0135, the body of Unregister: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::UnregServer
+    Unregister                   falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::UnregServer
+    RegisterPerUser              falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::RegServer; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::RegPerUser
+    UnregisterPerUser            falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::UnregServer; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::RegPerUser
+    user                         falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::RegPerUser
+    noreg                        falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::NoReg
+    pure                         falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::PureReg
+    log                          falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::LogFile; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::LogFile
+    dump                         falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::DumpFile; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::DumpFile
+    dump_options                 falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::DumpOptionsFile; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::DumpOptionsFile
+    MemCheck                     falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::MemCheck
+    options                      falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::OptionsFiles; callvirt System.Collections.Generic.List<System.String>::Add
+    lang                         falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::PrimaryLang; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::PrimaryLang
+    nwd                          falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "SaveFile"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::NoCache
+    nwc                          falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState; call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "CreateCache"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+    bench                        falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "Benchmark"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add; stores Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_benchmark; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+    ShowGui                      falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+    HideGui                      falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+    NoGui                        falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+    NoCache                      falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::NoCache
+    OpenFile                     falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgsForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "OpenFile"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    GenerateThumbnail            falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgsForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "GenerateThumbnail"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    GenerateThumbnailByRayTrace  falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgsForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "GenerateThumbnailByRayTrace"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    CreateCache                  falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "CreateCache"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    Print                        falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgsForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "Print"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    SaveFile                     falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "SaveFile"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    AppendFile                   falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "AppendFile"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    Exit                         falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_benchmark; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+    ExecuteAddInPlugin           falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgsForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "ExecuteAddInPlugin"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    AddPluginAssembly            falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "AddPluginAssembly"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    EnableProgress               falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "EnableProgress"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    DisableProgress              falls through when matched: reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions; literal "DisableProgress"; newobj Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor; callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+    Licensing                    falls through when matched: call Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption; literal "AdLM"; callvirt System.String::Equals; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ForceAdLMLicensing; literal "BIM360"; callvirt System.String::Equals; reads Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config; stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ForceBIM360Licensing
+
+  The whole IL of the bodies of the options this question turns on:
+    -- Automation, IL_00D9 up to IL_00F3 --
+      IL_00D9  ldarg.0    
+      IL_00DA  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config
+      IL_00DF  ldc.i4.1   
+      IL_00E0  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+      IL_00E5  ldarg.0    
+      IL_00E6  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config
+      IL_00EB  ldc.i4.2   
+      IL_00EC  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      IL_00F1  ldc.i4.1   
+      IL_00F2  ret        
+    -- NoGui, IL_0466 up to IL_0474 --
+      IL_0466  ldarg.0    
+      IL_0467  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config
+      IL_046C  ldc.i4.1   
+      IL_046D  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      IL_0472  ldc.i4.1   
+      IL_0473  ret        
+    -- OpenFile, IL_049C up to IL_04C4 --
+      IL_049C  ldarg.0    
+      IL_049D  ldc.i4.1   
+      IL_049E  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgsForOption
+      IL_04A3  stloc.s    7
+      IL_04A5  ldloc.s    7
+      IL_04A7  brtrue.s   IL_04AB
+      IL_04A9  ldc.i4.0   
+      IL_04AA  ret        
+      IL_04AB  ldarg.0    
+      IL_04AC  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+      IL_04B1  ldstr      "OpenFile"
+      IL_04B6  ldloc.s    7
+      IL_04B8  newobj     Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor
+      IL_04BD  callvirt   System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+      IL_04C2  ldc.i4.1   
+      IL_04C3  ret        
+    -- Exit, IL_0626 up to IL_0655 --
+      IL_0626  ldarg.0    
+      IL_0627  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_benchmark
+      IL_062C  brtrue.s   IL_0647
+      IL_062E  ldarg.0    
+      IL_062F  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config
+      IL_0634  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      IL_0639  brtrue.s   IL_0647
+      IL_063B  ldarg.0    
+      IL_063C  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config
+      IL_0641  ldc.i4.2   
+      IL_0642  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      IL_0647  ldarg.0    
+      IL_0648  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config
+      IL_064D  ldc.i4.1   
+      IL_064E  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+      IL_0653  ldc.i4.1   
+      IL_0654  ret        
+    -- ExecuteAddInPlugin, IL_0662 up to IL_068A --
+      IL_0662  ldarg.0    
+      IL_0663  ldc.i4.1   
+      IL_0664  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgsForOption
+      IL_0669  stloc.s    14
+      IL_066B  ldloc.s    14
+      IL_066D  brtrue.s   IL_0671
+      IL_066F  ldc.i4.0   
+      IL_0670  ret        
+      IL_0671  ldarg.0    
+      IL_0672  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+      IL_0677  ldstr      "ExecuteAddInPlugin"
+      IL_067C  ldloc.s    14
+      IL_067E  newobj     Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor
+      IL_0683  callvirt   System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+      IL_0688  ldc.i4.1   
+      IL_0689  ret        
+    -- AddPluginAssembly, IL_0697 up to IL_06C7 --
+      IL_0697  ldarg.0    
+      IL_0698  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::NextArgForOption
+      IL_069D  stloc.s    15
+      IL_069F  ldloc.s    15
+      IL_06A1  brtrue.s   IL_06A5
+      IL_06A3  ldc.i4.0   
+      IL_06A4  ret        
+      IL_06A5  ldarg.0    
+      IL_06A6  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+      IL_06AB  ldstr      "AddPluginAssembly"
+      IL_06B0  ldc.i4.1   
+      IL_06B1  newarr     System.String
+      IL_06B6  dup        
+      IL_06B7  ldc.i4.0   
+      IL_06B8  ldloc.s    15
+      IL_06BA  stelem.ref 
+      IL_06BB  newobj     Autodesk.Navisworks.Gui.Roamer.CommandLineAction::.ctor
+      IL_06C0  callvirt   System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::Add
+      IL_06C5  ldc.i4.1   
+      IL_06C6  ret        
+
+  -- helper CommandLineParser::private System.Boolean IsOption(System.String arg), whole --
+      IL_0000  ldarg.1    
+      IL_0001  ldc.i4.0   
+      IL_0002  callvirt   System.String::get_Chars
+      IL_0007  ldc.i4.s   45
+      IL_0009  bne.un.s   IL_0016
+      IL_000B  ldarg.1    
+      IL_000C  ldc.i4.1   
+      IL_000D  callvirt   System.String::get_Chars
+      IL_0012  ldc.i4.s   45
+      IL_0014  bne.un.s   IL_0032
+      IL_0016  ldarg.1    
+      IL_0017  ldc.i4.0   
+      IL_0018  callvirt   System.String::get_Chars
+      IL_001D  ldc.i4.s   47
+      IL_001F  bne.un.s   IL_0030
+      IL_0021  ldarg.1    
+      IL_0022  ldc.i4.1   
+      IL_0023  callvirt   System.String::get_Chars
+      IL_0028  ldc.i4.s   47
+      IL_002A  ceq        
+      IL_002C  ldc.i4.0   
+      IL_002D  ceq        
+      IL_002F  ret        
+      IL_0030  ldc.i4.0   
+      IL_0031  ret        
+      IL_0032  ldc.i4.1   
+      IL_0033  ret        
+  -- helper CommandLineParser::private System.Boolean MatchOption(System.String s), whole --
+      IL_0000  ldarg.0    
+      IL_0001  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_option
+      IL_0006  ldarg.1    
+      IL_0007  ldc.i4.5   
+      IL_0008  callvirt   System.String::Equals
+      IL_000D  ret        
+  -- helper CommandLineParser::private System.Boolean MatchShellOption(System.String s), whole --
+      IL_0000  ldarg.0    
+      IL_0001  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_option
+      IL_0006  ldarg.1    
+      IL_0007  call       System.String::op_Equality
+      IL_000C  ret        
+  -- helper CommandLineParser::private System.String NextArgForOption(), whole --
+      IL_0000  ldarg.0    
+      IL_0001  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_index
+      IL_0006  ldarg.0    
+      IL_0007  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_count
+      IL_000C  blt.s      IL_0027
+      IL_000E  ldarg.0    
+      IL_000F  ldstr      "CommandLineParser.ExpectedArgument"
+      IL_0014  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_error_id
+      IL_0019  ldarg.0    
+      IL_001A  ldarg.0    
+      IL_001B  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_option
+      IL_0020  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_error_arg1
+      IL_0025  ldnull     
+      IL_0026  ret        
+      IL_0027  ldarg.0    
+      IL_0028  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_args
+      IL_002D  ldarg.0    
+      IL_002E  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_index
+      IL_0033  ldelem.ref 
+      IL_0034  stloc.0    
+      IL_0035  ldarg.0    
+      IL_0036  ldloc.0    
+      IL_0037  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::IsOption
+      IL_003C  brfalse.s  IL_0057
+      IL_003E  ldarg.0    
+      IL_003F  ldstr      "CommandLineParser.ExpectedArgument"
+      IL_0044  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_error_id
+      IL_0049  ldarg.0    
+      IL_004A  ldarg.0    
+      IL_004B  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_option
+      IL_0050  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_error_arg1
+      IL_0055  ldnull     
+      IL_0056  ret        
+      IL_0057  ldarg.0    
+      IL_0058  ldarg.0    
+      IL_0059  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_index
+      IL_005E  ldc.i4.1   
+      IL_005F  add        
+      IL_0060  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_index
+      IL_0065  ldarg.0    
+      IL_0066  ldloc.0    
+      IL_0067  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::StripArg
+      IL_006C  ret        
+  -- helper CommandLineParser::private System.Collections.Generic.List<System.String> NextArgsForOption(System.Int32 min_args), whole --
+      IL_0000  newobj     System.Collections.Generic.List<System.String>::.ctor
+      IL_0005  stloc.0    
+      IL_0006  br.s       IL_003A
+      IL_0008  ldarg.0    
+      IL_0009  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_args
+      IL_000E  ldarg.0    
+      IL_000F  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_index
+      IL_0014  ldelem.ref 
+      IL_0015  stloc.1    
+      IL_0016  ldarg.0    
+      IL_0017  ldloc.1    
+      IL_0018  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::IsOption
+      IL_001D  brtrue.s   IL_0048
+      IL_001F  ldloc.0    
+      IL_0020  ldarg.0    
+      IL_0021  ldloc.1    
+      IL_0022  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::StripArg
+      IL_0027  callvirt   System.Collections.Generic.List<System.String>::Add
+      IL_002C  ldarg.0    
+      IL_002D  ldarg.0    
+      IL_002E  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_index
+      IL_0033  ldc.i4.1   
+      IL_0034  add        
+      IL_0035  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_index
+      IL_003A  ldarg.0    
+      IL_003B  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_index
+      IL_0040  ldarg.0    
+      IL_0041  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_count
+      IL_0046  blt.s      IL_0008
+      IL_0048  ldloc.0    
+      IL_0049  callvirt   System.Collections.Generic.List<System.String>::get_Count
+      IL_004E  ldarg.1    
+      IL_004F  bge.s      IL_0077
+      IL_0051  ldarg.0    
+      IL_0052  ldstr      "CommandLineParser.ExpectedMinArgument"
+      IL_0057  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_error_id
+      IL_005C  ldarg.0    
+      IL_005D  ldarg.0    
+      IL_005E  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_option
+      IL_0063  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_error_arg1
+      IL_0068  ldarg.0    
+      IL_0069  ldarga.s   1
+      IL_006B  call       System.Int32::ToString
+      IL_0070  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_error_arg2
+      IL_0075  ldnull     
+      IL_0076  ret        
+      IL_0077  ldloc.0    
+      IL_0078  ret        
+  -- helper CommandLineParser::private System.String StripArg(System.String arg), whole --
+      IL_0000  ldc.i4.0   
+      IL_0001  stloc.0    
+      IL_0002  ldarg.1    
+      IL_0003  ldc.i4.0   
+      IL_0004  callvirt   System.String::get_Chars
+      IL_0009  ldc.i4.s   45
+      IL_000B  bne.un.s   IL_0022
+      IL_000D  ldloc.0    
+      IL_000E  ldc.i4.1   
+      IL_000F  add        
+      IL_0010  stloc.0    
+      IL_0011  ldarg.1    
+      IL_0012  ldc.i4.1   
+      IL_0013  callvirt   System.String::get_Chars
+      IL_0018  ldc.i4.s   45
+      IL_001A  bne.un.s   IL_0040
+      IL_001C  ldloc.0    
+      IL_001D  ldc.i4.1   
+      IL_001E  add        
+      IL_001F  stloc.0    
+      IL_0020  br.s       IL_0040
+      IL_0022  ldarg.1    
+      IL_0023  ldc.i4.0   
+      IL_0024  callvirt   System.String::get_Chars
+      IL_0029  ldc.i4.s   47
+      IL_002B  bne.un.s   IL_0040
+      IL_002D  ldloc.0    
+      IL_002E  ldc.i4.1   
+      IL_002F  add        
+      IL_0030  stloc.0    
+      IL_0031  ldarg.1    
+      IL_0032  ldc.i4.1   
+      IL_0033  callvirt   System.String::get_Chars
+      IL_0038  ldc.i4.s   47
+      IL_003A  bne.un.s   IL_0040
+      IL_003C  ldloc.0    
+      IL_003D  ldc.i4.1   
+      IL_003E  add        
+      IL_003F  stloc.0    
+      IL_0040  ldloc.0    
+      IL_0041  brtrue.s   IL_0045
+      IL_0043  ldarg.1    
+      IL_0044  ret        
+      IL_0045  ldarg.1    
+      IL_0046  ldloc.0    
+      IL_0047  callvirt   System.String::Substring
+      IL_004C  ret        
+
+==== 6. Where the parsed actions go and who reads them, reflection only ====
+  followed, 12:
+    field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+    field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+    field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+    field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+    method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::.ctor()
+    method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::AttachConsole()
+    method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::Configure(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig)
+    method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchAllActions(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult&)
+    method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult&)
+    method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportParseError(Autodesk.Navisworks.Gui.Roamer.CommandLineParser)
+    method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportResult(Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult, System.Boolean)
+    method Autodesk.Navisworks.Gui.Roamer.CommandLineParser::.ctor()
+  navisworks.gui.roamer.dll: 12 tokens reach a followed member, 3042 MemberRef rows resolved
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchAllActions  IL_000A call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult&)
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction  IL_000C ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction  IL_006B ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportResult  IL_006D call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::AttachConsole()
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportParseError  IL_0025 call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::AttachConsole()
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_001A ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_0039 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_007D ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_009C ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_0316 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_032A ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_0376 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_0398 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_03E1 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_040D ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_04AC ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_04E1 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_0516 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_054A ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_0587 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_05BB ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_05F8 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_0634 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_0672 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_06A6 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_06D5 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.CommandLineParser::ParseOption  IL_06F9 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_actions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.MainWindow::OnIdle  IL_0080 call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult&)
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.MainWindow::OnIdle  IL_00A1 call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportResult(Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult, System.Boolean)
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.MainWindow::OnIdle  IL_00AB ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.MainWindow::OnIdle  IL_0109 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.MainWindow::OnIdle  IL_0179 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.AutoRecover.AutoRecoverControlImpl::CanAutoRecover  IL_0005 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+  navisworks.gui.roamer.dll: 2938 method bodies read, 33 uses of a followed member
+  Roamer.exe: 8 tokens reach a followed member, 235 MemberRef rows resolved
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_0008 newobj method Autodesk.Navisworks.Gui.Roamer.CommandLineParser::.ctor()
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_00A1 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_00E2 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_00EF ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_00F8 ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_01AC ldfld field Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_0222 call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::Configure(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig)
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_022B call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::AttachConsole()
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_0243 call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchAllActions(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult&)
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_0263 call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportResult(Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult, System.Boolean)
+  Roamer.exe  NetRoamer.Program::MainImpl  IL_02CA call method Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportParseError(Autodesk.Navisworks.Gui.Roamer.CommandLineParser)
+  Roamer.exe: 54 method bodies read, 11 uses of a followed member
+
+==== 7. The dispatcher, and every method outside the CommandLine types that uses a followed member, summarised off the IL ====
+  CommandLineActionDispatcher::public .ctor()
+      call System.Object::.ctor
+  CommandLineActionDispatcher::public static System.Void Configure(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig config)
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::NoCache
+      call Autodesk.Navisworks.OdViewDll.InitDll::SetAutoCache
+  CommandLineActionDispatcher::public static Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher+Status DispatchAllActions(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig config, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction> actions, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult& result)
+      call Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction
+  CommandLineActionDispatcher::public static Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher+Status DispatchOneAction(Autodesk.Navisworks.Gui.Roamer.CommandLineConfig config, System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction> actions, Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult& result)
+      callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::get_Count
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+      callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::get_Item
+      callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::RemoveAt
+      literal "CmdLine."
+      callvirt Autodesk.Navisworks.Gui.Roamer.CommandLineAction::get_Type
+      call System.String::Concat
+      call Autodesk.Navisworks.Api.Interop.LcUCIP::BeginAction
+      callvirt Autodesk.Navisworks.Gui.Roamer.CommandLineAction::get_Type
+      callvirt Autodesk.Navisworks.Gui.Roamer.CommandLineAction::get_Args
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::DispatchAutomationAction
+      call Autodesk.Navisworks.Api.Interop.LcUCIP::EndAction
+      reads Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::exception_message
+      callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::get_Count
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+  CommandLineActionDispatcher::public static System.Void ReportResult(Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult result, System.Boolean use_gui)
+      reads Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::exception_message
+      literal "AutomationActionResult.exception_message: "
+      reads Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::exception_message
+      literal "
+"
+      call System.String::Concat
+      call Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      reads Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::exception_string
+      literal "
+"
+      call System.String::Concat
+      call Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      reads Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::exception_type
+      literal "DocumentFileException"
+      call System.String::op_Equality
+      call Autodesk.Navisworks.Api.Application::get_Resources
+      literal "RoamerGUI_CommandLineActionException"
+      callvirt Autodesk.Navisworks.Api.ApplicationParts.ApplicationResources::GetStringSafe
+      reads Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::exception_message
+      call Autodesk.Navisworks.Gui.NWMessageBox::Show
+      call Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::AttachConsole
+      reads Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::exception_message
+      call System.Console::WriteLine
+  CommandLineActionDispatcher::public static System.Void ReportParseError(Autodesk.Navisworks.Gui.Roamer.CommandLineParser parser)
+      callvirt Autodesk.Navisworks.Gui.Roamer.CommandLineParser::get_ErrorId
+      callvirt Autodesk.Navisworks.Gui.Roamer.CommandLineParser::get_ErrorId
+      call Autodesk.Navisworks.Api.Interop.LcUResource::FindString
+      callvirt Autodesk.Navisworks.Gui.Roamer.CommandLineParser::get_ErrorArg1
+      callvirt Autodesk.Navisworks.Gui.Roamer.CommandLineParser::get_ErrorArg2
+      call System.String::Format
+      call Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::AttachConsole
+      call System.Console::WriteLine
+  CommandLineActionDispatcher::public static System.Void AttachConsole()
+      call Autodesk.Navisworks.Gui.Interface.Native.Kernel32::AttachConsole
+
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.MainWindow::public System.Void OnIdle(System.Object sender, System.EventArgs e), 75 things touched, in order:
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_on_closed_fired_once
+      literal "Ignored call of MainWindow.OnIdle after MainWindow.OnClosed
+"
+      call Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_enabled
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::bridge_onidle_completed_once
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_auto_recover
+      call Autodesk.Navisworks.Api.NativeHandle::op_Inequality
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_auto_recover
+      callvirt Autodesk.Navisworks.Gui.Roamer.AutoRecover.AutoRecoverControlImplBase::OnIdle
+      call Autodesk.Navisworks.OdViewDll.Bridge::DoIdleUpdate
+      stores Autodesk.Navisworks.Gui.Roamer.MainWindow::bridge_onidle_completed_once
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::bridge_onidle_completed_once
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
+      call System.Windows.Forms.Control::get_Visible
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::BeginAutomationAction
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_config
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
+      call Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::EndAutomationAction
+      call Autodesk.Navisworks.OdViewDll.Bridge::ClearSecurityCheckState
+      call Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportResult
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_config
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+      reads Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::return_code
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_auto_recover
+      call Autodesk.Navisworks.Api.NativeHandle::op_Inequality
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_auto_recover
+      callvirt Autodesk.Navisworks.Gui.Roamer.AutoRecover.AutoRecoverControlImplBase::DoOnExit
+      call Autodesk.Navisworks.Api.Interop.LcUSysError::ForceCleanExit
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
+      callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::get_Count
+      stores Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_config
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+      call System.Windows.Forms.Control::get_Visible
+      call Autodesk.Navisworks.Gui.Roamer.MainWindow::get_InputEnabled
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_AIRLook_global_option
+      callvirt Autodesk.Navisworks.Gui.Roamer.AIRLook.NWAIRLookGlobalOptions::ShowAppHomeOnStartup
+      call Autodesk.Navisworks.Api.Application::get_MainDocument
+      call Autodesk.Navisworks.Api.Application::get_MainDocument
+      callvirt Autodesk.Navisworks.Api.Document::get_Models
+      callvirt Autodesk.Navisworks.Api.DocumentParts.DocumentModels::get_Count
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_home_screen
+      callvirt Autodesk.Navisworks.Gui.Roamer.HomeScreen::set_Visible
+      call Autodesk.Navisworks.Gui.ToolkitWrappers.NWForm::get_StartUpWarning
+      call Autodesk.Navisworks.OdViewDll.Bridge::IsSplashScreenDisplayed
+      call Autodesk.Navisworks.Gui.Layout.Workspace::ReportStartUpError
+      call Autodesk.Navisworks.Gui.ToolkitWrappers.NWForm::set_StartUpWarning
+      call Autodesk.Navisworks.Gui.ToolkitWrappers.NWForm::OnIdle
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_config
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+      call System.Windows.Forms.Control::get_Visible
+      call Autodesk.Navisworks.Gui.Roamer.MainWindow::get_InputEnabled
+      call Autodesk.Navisworks.Gui.Roamer.IdleMonitor::get_IsInitialized
+      call Autodesk.Navisworks.Gui.Roamer.IdleMonitor::Initialize
+      call Autodesk.Navisworks.Gui.ApplicationStateMonitor::get_IsInitialized
+      call Autodesk.Navisworks.Gui.ApplicationStateMonitor::Initialize
+      call Autodesk.Navisworks.Gui.Common.VM.LogicalCommandVMManager::RaiseCommandsChanged
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_airlook_loaded
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_ribbon_host
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_ribbon_host
+      callvirt System.Windows.Forms.Control::get_Visible
+      call Autodesk.Navisworks.Gui.Roamer.AIRLook.NWRibbonUtil::IdleUpdateRibbonItemsState
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_QAT_bar
+      call Autodesk.Navisworks.Gui.Roamer.AIRLook.NWRibbonUtil::IdleUpdateQATItemsState
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_app_menu
+      call Autodesk.Navisworks.Gui.Roamer.AIRLook.NWRibbonUtil::IdleUpdateMenuItemsState
+      call Autodesk.Windows.ComponentManager::get_HelpButton
+      call Autodesk.Navisworks.Gui.Roamer.AIRLook.NWRibbonUtil::IdleUpdateAppFrameHelpMenu
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::m_visible_changed
+      stores Autodesk.Navisworks.Gui.Roamer.MainWindow::m_visible_changed
+      call Autodesk.Navisworks.Gui.ToolkitWrappers.NWForm::get_ApplicationMainWnd
+      call Autodesk.Navisworks.Gui.ToolkitWrappers.NWForm::get_ApplicationMainWnd
+      reads System.EventArgs::Empty
+      callvirt Autodesk.Navisworks.Gui.ToolkitWrappers.NWForm::ApiRaiseIdle
+  navisworks.gui.roamer.dll  Autodesk.Navisworks.Gui.Roamer.AutoRecover.AutoRecoverControlImpl::protected System.Boolean CanAutoRecover(), 9 things touched, in order:
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_config
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      reads Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
+      callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::get_Count
+      callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::get_Count
+      callvirt System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::get_Item
+      callvirt Autodesk.Navisworks.Gui.Roamer.CommandLineAction::get_Type
+      literal "OpenFile"
+      call System.String::op_Equality
+  Roamer.exe  NetRoamer.Program::private static System.Int32 MainImpl(System.String[] args), 104 things touched, in order:
+      call Autodesk.Navisworks.Api.Interop.LcUError::RequireEnvironmentErrorMessageBoxes
+      newobj Autodesk.Navisworks.Gui.Roamer.CommandLineParser::.ctor
+      newobj Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::.ctor
+      newobj System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::.ctor
+      callvirt Autodesk.Navisworks.Gui.Roamer.CommandLineParser::Parse
+      call System.Windows.Forms.Application::EnableVisualStyles
+      call System.Windows.Forms.Application::SetCompatibleTextRenderingDefault
+      newobj Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::.ctor
+      stores Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::is_dotnet_control
+      stores Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::needs_idle_timer
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::OptionsFiles
+      stores Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::options_files
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::PrimaryLang
+      stores Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::primary_lang
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::LogFile
+      stores Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::log_file
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::MemCheck
+      stores Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::mem_check
+      stores Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::silent_security
+      stores Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::begin_security_session
+      stores Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::dynamic_load_plugins
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::InitialiseErrorHandling
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::DumpFile
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+      call Autodesk.Navisworks.OdViewDll.InitDll::InitialiseErrorHandling
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::InitialiseResources
+      call NetRoamer.Program::SetUICulture
+      newobj Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::.ctor
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::RegServer
+      stores Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::RegServer
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::UnregServer
+      stores Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::UnregServer
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+      stores Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::COMAutomationStartup
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      stores Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::HiddenGui
+      reads Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::HiddenGui
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::DumpFile
+      call System.String::IsNullOrEmpty
+      stores Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::SuppressCERDialog
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::NoReg
+      stores Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::NoReg
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::PureReg
+      stores Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::PureReg
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::RegPerUser
+      stores Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::RegPerUser
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ForceAdLMLicensing
+      stores Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::ForceAdLMLicensing
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ForceBIM360Licensing
+      stores Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::ForceBIM360Licensing
+      call Autodesk.Navisworks.OdViewDll.InitDll::InitialiseResources
+      reads Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::EarlyExit
+      newobj NetRoamer.Program+<>c__DisplayClass3_0::.ctor
+      newobj System.Collections.Generic.List<Autodesk.Navisworks.Api.UserMessageEventArgs>::.ctor
+      stores NetRoamer.Program::m_startup_messages
+      newobj System.EventHandler<Autodesk.Navisworks.Api.UserMessageEventArgs>::.ctor
+      call Autodesk.Navisworks.Api.Application::add_UserMessagePosted
+      call NetRoamer.Program::DeclareExchangeComponents
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::InitialiseApi
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      reads Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::DumpOptionsFile
+      call Autodesk.Navisworks.OdViewDll.InitDll::InitialiseApp
+      call NetRoamer.Program::SetWinFormsExceptionMode
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::LoadPlugins
+      stores NetRoamer.Program+<>c__DisplayClass3_0::authorized
+      newobj System.Action::.ctor
+      call System.Threading.Tasks.Task::Run
+      call System.Windows.Forms.Application::DoEvents
+      reads NetRoamer.Program+<>c__DisplayClass3_0::authorized
+      call Autodesk.Navisworks.OdViewDll.AppFrameBridge::InitializeWebServices
+      literal "Program.Main - Before create main document
+"
+      call Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      call Autodesk.Navisworks.Gui.Common.NWDocument::get_DocumentControl
+      literal "Program.Main - After create main document
+"
+      call Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      call Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::Configure
+      call Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::AttachConsole
+      literal "Program.Main - Before dispatch NoGui actions
+"
+      call Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::BeginAutomationAction
+      call Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchAllActions
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::EndAutomationAction
+      reads Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::return_code
+      call Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportResult
+      literal "Program.Main - After dispatch NoGui actions
+"
+      call Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      stores Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_config
+      stores Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
+      call NetRoamer.Program::RunGui
+      literal "Program.Main - Before dispose main document
+"
+      call Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      callvirt System.ComponentModel.MarshalByValueComponent::Dispose
+      literal "Program.Main - After dispose main document
+"
+      call Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      call Autodesk.Navisworks.OdViewDll.AppFrameBridge::AppFrameTerminate
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::UnloadPlugins
+      call Autodesk.Navisworks.OdViewDll.InitDll::TerminateApp
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::TerminateApi
+      call Autodesk.Navisworks.OdViewDll.InitDll::TerminateResources
+      call Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportParseError
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::TerminateResources
+      call Autodesk.Navisworks.OdViewDll.InitDll::TerminateErrorHandling
+      call Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::TerminateErrorHandling
+
+==== 8. The branches around the two places actions are dispatched, and where an action goes, whole IL, reflection only ====
+  enum Autodesk.Navisworks.Gui.Roamer.CommandLineConfig+Gui: DEFAULT = 0, NONE = 1, HIDE = 2, SHOW = 3
+  -- Roamer.exe NetRoamer.Program::MainImpl, from the parse to where the parsed GuiState is first read, IL_001E to IL_0103 --
+      IL_001E  callvirt   Autodesk.Navisworks.Gui.Roamer.CommandLineParser::Parse
+      IL_0023  stloc.s    4
+      IL_0025  call       System.Windows.Forms.Application::EnableVisualStyles
+      IL_002A  ldc.i4.0   
+      IL_002B  call       System.Windows.Forms.Application::SetCompatibleTextRenderingDefault
+      IL_0030  newobj     Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::.ctor
+      IL_0035  stloc.s    5
+      IL_0037  ldloc.s    5
+      IL_0039  ldc.i4.0   
+      IL_003A  stfld      Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::is_dotnet_control
+      IL_003F  ldloc.s    5
+      IL_0041  ldc.i4.0   
+      IL_0042  stfld      Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::needs_idle_timer
+      IL_0047  ldloc.s    5
+      IL_0049  ldloc.2    
+      IL_004A  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::OptionsFiles
+      IL_004F  stfld      Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::options_files
+      IL_0054  ldloc.s    5
+      IL_0056  ldloc.2    
+      IL_0057  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::PrimaryLang
+      IL_005C  stfld      Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::primary_lang
+      IL_0061  ldloc.s    5
+      IL_0063  ldloc.2    
+      IL_0064  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::LogFile
+      IL_0069  stfld      Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::log_file
+      IL_006E  ldloc.s    5
+      IL_0070  ldloc.2    
+      IL_0071  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::MemCheck
+      IL_0076  stfld      Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::mem_check
+      IL_007B  ldloc.s    5
+      IL_007D  ldc.i4.0   
+      IL_007E  stfld      Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::silent_security
+      IL_0083  ldloc.s    5
+      IL_0085  ldc.i4.0   
+      IL_0086  stfld      Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::begin_security_session
+      IL_008B  ldloc.s    5
+      IL_008D  ldc.i4.1   
+      IL_008E  stfld      Autodesk.Navisworks.Internal.ApiImplementation.ApplicationConfig::dynamic_load_plugins
+      IL_0093  ldloc.s    5
+      IL_0095  call       Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::InitialiseErrorHandling
+      IL_009A  ldloc.2    
+      IL_009B  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::DumpFile
+      IL_00A0  ldloc.2    
+      IL_00A1  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+      IL_00A6  call       Autodesk.Navisworks.OdViewDll.InitDll::InitialiseErrorHandling
+      IL_00AB  ldloc.s    5
+      IL_00AD  call       Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::InitialiseResources
+      IL_00B2  ldloc.s    4
+      IL_00B4  brfalse    IL_02C9
+      IL_00B9  call       NetRoamer.Program::SetUICulture
+      IL_00BE  newobj     Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::.ctor
+      IL_00C3  stloc.s    6
+      IL_00C5  ldloc.s    6
+      IL_00C7  ldloc.2    
+      IL_00C8  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::RegServer
+      IL_00CD  stfld      Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::RegServer
+      IL_00D2  ldloc.s    6
+      IL_00D4  ldloc.2    
+      IL_00D5  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::UnregServer
+      IL_00DA  stfld      Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::UnregServer
+      IL_00DF  ldloc.s    6
+      IL_00E1  ldloc.2    
+      IL_00E2  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+      IL_00E7  stfld      Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::COMAutomationStartup
+      IL_00EC  ldloc.s    6
+      IL_00EE  ldloc.2    
+      IL_00EF  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      IL_00F4  ldc.i4.2   
+      IL_00F5  beq.s      IL_0102
+      IL_00F7  ldloc.2    
+      IL_00F8  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      IL_00FD  ldc.i4.1   
+      IL_00FE  ceq        
+      IL_0100  br.s       IL_0103
+      IL_0102  ldc.i4.1   
+      IL_0103  stfld      Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::HiddenGui
+  -- Roamer.exe NetRoamer.Program::MainImpl, from LoadPlugins to RunGui, IL_01CC to IL_0282 --
+      IL_01CC  call       Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::LoadPlugins
+      IL_01D1  ldloc.s    7
+      IL_01D3  ldc.i4.0   
+      IL_01D4  stfld      NetRoamer.Program+<>c__DisplayClass3_0::authorized
+      IL_01D9  ldloc.s    7
+      IL_01DB  ldftn      NetRoamer.Program+<>c__DisplayClass3_0::<MainImpl>b__0
+      IL_01E1  newobj     System.Action::.ctor
+      IL_01E6  call       System.Threading.Tasks.Task::Run
+      IL_01EB  pop        
+      IL_01EC  br.s       IL_01F3
+      IL_01EE  call       System.Windows.Forms.Application::DoEvents
+      IL_01F3  ldloc.s    7
+      IL_01F5  ldfld      NetRoamer.Program+<>c__DisplayClass3_0::authorized
+      IL_01FA  brfalse.s  IL_01EE
+      IL_01FC  ldloc.s    8
+      IL_01FE  brfalse.s  IL_0206
+      IL_0200  ldc.i4.0   
+      IL_0201  call       Autodesk.Navisworks.OdViewDll.AppFrameBridge::InitializeWebServices
+      IL_0206  ldstr      "Program.Main - Before create main document
+"
+      IL_020B  call       Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      IL_0210  call       Autodesk.Navisworks.Gui.Common.NWDocument::get_DocumentControl
+      IL_0215  stloc.s    9
+      IL_0217  ldstr      "Program.Main - After create main document
+"
+      IL_021C  call       Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      IL_0221  ldloc.2    
+      IL_0222  call       Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::Configure
+      IL_0227  ldloc.s    8
+      IL_0229  brfalse.s  IL_0276
+      IL_022B  call       Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::AttachConsole
+      IL_0230  ldstr      "Program.Main - Before dispatch NoGui actions
+"
+      IL_0235  call       Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      IL_023A  call       Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::BeginAutomationAction
+      IL_023F  ldloc.2    
+      IL_0240  ldloc.3    
+      IL_0241  ldloca.s   11
+      IL_0243  call       Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchAllActions
+      IL_0248  stloc.s    12
+      IL_024A  call       Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::EndAutomationAction
+      IL_024F  ldloc.s    11
+      IL_0251  brfalse.s  IL_025B
+      IL_0253  ldloc.s    11
+      IL_0255  ldfld      Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::return_code
+      IL_025A  stloc.0    
+      IL_025B  ldloc.s    12
+      IL_025D  ldc.i4.3   
+      IL_025E  bne.un.s   IL_026A
+      IL_0260  ldloc.s    11
+      IL_0262  ldc.i4.0   
+      IL_0263  call       Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportResult
+      IL_0268  ldc.i4.1   
+      IL_0269  stloc.0    
+      IL_026A  ldstr      "Program.Main - After dispatch NoGui actions
+"
+      IL_026F  call       Autodesk.Navisworks.Api.Interop.LcUError::LogWideString
+      IL_0274  br.s       IL_0287
+      IL_0276  ldloc.2    
+      IL_0277  stsfld     Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_config
+      IL_027C  ldloc.3    
+      IL_027D  stsfld     Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
+      IL_0282  call       NetRoamer.Program::RunGui
+  -- Roamer.exe NetRoamer.Program::MainImpl, a store into local 8 at IL_01B4, with the twelve instructions before it --
+      IL_0189  stsfld     NetRoamer.Program::m_startup_messages
+      IL_018E  ldnull     
+      IL_018F  ldftn      NetRoamer.Program::Application_UserMessagePosted
+      IL_0195  newobj     System.EventHandler<Autodesk.Navisworks.Api.UserMessageEventArgs>::.ctor
+      IL_019A  call       Autodesk.Navisworks.Api.Application::add_UserMessagePosted
+      IL_019F  call       NetRoamer.Program::DeclareExchangeComponents
+      IL_01A4  ldloc.s    5
+      IL_01A6  call       Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::InitialiseApi
+      IL_01AB  ldloc.2    
+      IL_01AC  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::GuiState
+      IL_01B1  ldc.i4.1   
+      IL_01B2  ceq        
+      IL_01B4  stloc.s    8
+  -- navisworks.gui.roamer.dll MainWindow::OnIdle, from its first read of command_line_actions to its store of it, IL_0058 to IL_00F7 --
+      IL_0058  ldsfld     Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
+      IL_005D  brfalse    IL_0151
+      IL_0062  ldarg.0    
+      IL_0063  call       System.Windows.Forms.Control::get_Visible
+      IL_0068  ldc.i4.0   
+      IL_0069  ceq        
+      IL_006B  stloc.0    
+      IL_006C  ldloc.0    
+      IL_006D  brfalse.s  IL_0074
+      IL_006F  call       Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::BeginAutomationAction
+      IL_0074  ldsfld     Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_config
+      IL_0079  ldsfld     Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
+      IL_007E  ldloca.s   1
+      IL_0080  call       Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::DispatchOneAction
+      IL_0085  stloc.2    
+      IL_0086  ldloc.0    
+      IL_0087  brfalse.s  IL_008E
+      IL_0089  call       Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::EndAutomationAction
+      IL_008E  call       Autodesk.Navisworks.OdViewDll.Bridge::ClearSecurityCheckState
+      IL_0093  ldc.i4.0   
+      IL_0094  stloc.3    
+      IL_0095  ldc.i4.0   
+      IL_0096  stloc.s    4
+      IL_0098  ldloc.2    
+      IL_0099  ldc.i4.3   
+      IL_009A  bne.un.s   IL_00BB
+      IL_009C  ldloc.1    
+      IL_009D  ldloc.0    
+      IL_009E  ldc.i4.0   
+      IL_009F  ceq        
+      IL_00A1  call       Autodesk.Navisworks.Gui.Roamer.CommandLineActionDispatcher::ReportResult
+      IL_00A6  ldsfld     Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_config
+      IL_00AB  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+      IL_00B0  ldloc.0    
+      IL_00B1  or         
+      IL_00B2  brfalse.s  IL_00CF
+      IL_00B4  ldc.i4.1   
+      IL_00B5  stloc.3    
+      IL_00B6  ldc.i4.1   
+      IL_00B7  stloc.s    4
+      IL_00B9  br.s       IL_00CF
+      IL_00BB  ldloc.2    
+      IL_00BC  ldc.i4.1   
+      IL_00BD  bne.un.s   IL_00CF
+      IL_00BF  ldc.i4.1   
+      IL_00C0  stloc.3    
+      IL_00C1  ldloc.1    
+      IL_00C2  brtrue.s   IL_00C7
+      IL_00C4  ldc.i4.0   
+      IL_00C5  br.s       IL_00CD
+      IL_00C7  ldloc.1    
+      IL_00C8  ldfld      Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::return_code
+      IL_00CD  stloc.s    4
+      IL_00CF  ldloc.3    
+      IL_00D0  brfalse.s  IL_00F2
+      IL_00D2  ldarg.0    
+      IL_00D3  ldfld      Autodesk.Navisworks.Gui.Roamer.MainWindow::m_auto_recover
+      IL_00D8  ldnull     
+      IL_00D9  call       Autodesk.Navisworks.Api.NativeHandle::op_Inequality
+      IL_00DE  brfalse.s  IL_00EB
+      IL_00E0  ldarg.0    
+      IL_00E1  ldfld      Autodesk.Navisworks.Gui.Roamer.MainWindow::m_auto_recover
+      IL_00E6  callvirt   Autodesk.Navisworks.Gui.Roamer.AutoRecover.AutoRecoverControlImplBase::DoOnExit
+      IL_00EB  ldloc.s    4
+      IL_00ED  call       Autodesk.Navisworks.Api.Interop.LcUSysError::ForceCleanExit
+      IL_00F2  ldsfld     Autodesk.Navisworks.Gui.Roamer.MainWindow::command_line_actions
+      IL_00F7  callvirt   System.Collections.Generic.List<Autodesk.Navisworks.Gui.Roamer.CommandLineAction>::get_Count
+  Autodesk.Navisworks.Api.dll ApplicationImpl::public static System.Void BeginAutomationAction(), 9 instructions, whole:
+      IL_0000  ldsfld     Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::<backing_store>AutomationActionCount
+      IL_0005  stloc.0    
+      IL_0006  ldloc.0    
+      IL_0007  ldc.i4.1   
+      IL_0008  add        
+      IL_0009  stloc.0    
+      IL_000A  ldloc.0    
+      IL_000B  stsfld     Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::<backing_store>AutomationActionCount
+      IL_0010  ret        
+  Autodesk.Navisworks.Api.dll ApplicationImpl::public static Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult DispatchAutomationAction(System.String action, System.Collections.Generic.ICollection<System.String> args), 34 instructions, whole:
+      IL_0000  ldarg.1    
+      IL_0001  callvirt   System.Collections.Generic.ICollection<System.String>::get_Count
+      IL_0006  newarr     System.String
+      IL_000B  stloc.2    
+      IL_000C  ldc.i4.0   
+      IL_000D  stloc.1    
+      IL_000E  ldarg.1    
+      IL_000F  callvirt   System.Collections.Generic.IEnumerable<System.String>::GetEnumerator
+      IL_0014  stloc.0    
+      IL_0015  ldloc.0    
+      IL_0016  callvirt   System.Collections.IEnumerator::MoveNext
+      IL_001B  brfalse.s  IL_002E
+      IL_001D  ldloc.0    
+      IL_001E  callvirt   System.Collections.Generic.IEnumerator<System.String>::get_Current
+      IL_0023  stloc.3    
+      IL_0024  ldloc.2    
+      IL_0025  ldloc.1    
+      IL_0026  ldloc.3    
+      IL_0027  stelem.ref 
+      IL_0028  ldloc.1    
+      IL_0029  ldc.i4.1   
+      IL_002A  add        
+      IL_002B  stloc.1    
+      IL_002C  br.s       IL_0015
+      IL_002E  leave.s    IL_003A
+      IL_0030  ldloc.0    
+      IL_0031  brfalse.s  IL_0039
+      IL_0033  ldloc.0    
+      IL_0034  callvirt   System.IDisposable::Dispose
+      IL_0039  endfinally 
+      IL_003A  ldarg.0    
+      IL_003B  ldloc.2    
+      IL_003C  call       Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::DispatchAutomationAction
+      IL_0041  ret        
+  Autodesk.Navisworks.Api.dll ApplicationImpl::public static Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult DispatchAutomationAction(System.String action, System.String[] args), 57 instructions, whole:
+      IL_0000  newobj     Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::.ctor
+      IL_0005  stloc.0    
+      IL_0006  ldarg.0    
+      IL_0007  call       Autodesk.Navisworks.Internal.ApiImplementation.ApplicationAutomationImpl::LookupMethod
+      IL_000C  stloc.1    
+      IL_000D  ldloc.1    
+      IL_000E  ldnull     
+      IL_000F  call       System.MulticastDelegate::op_Equality
+      IL_0014  brfalse.s  IL_005C
+      IL_0016  ldloc.0    
+      IL_0017  ldc.i4.1   
+      IL_0018  stfld      Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::return_code
+      IL_001D  ldloc.0    
+      IL_001E  ldtoken    type System.InvalidOperationException
+      IL_0023  call       System.Type::GetTypeFromHandle
+      IL_0028  callvirt   System.Reflection.MemberInfo::get_Name
+      IL_002D  stfld      Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::exception_type
+      IL_0032  ldstr      """
+      IL_0037  stloc.s    5
+      IL_0039  ldstr      "Unknown action: ""
+      IL_003E  ldarg.0    
+      IL_003F  call       System.String::Concat
+      IL_0044  ldloc.s    5
+      IL_0046  call       System.String::Concat
+      IL_004B  stloc.3    
+      IL_004C  ldloc.0    
+      IL_004D  ldloc.3    
+      IL_004E  stfld      Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::exception_message
+      IL_0053  ldloc.0    
+      IL_0054  ldloc.3    
+      IL_0055  stfld      Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::exception_string
+      IL_005A  ldloc.0    
+      IL_005B  ret        
+      IL_005C  ldsflda    null::??_C@_0CK@LNDDBBFM@interface?4developer?4api?4runacti@
+      IL_0061  call       null::LcUOption.GetBoolean
+      IL_0066  stloc.2    
+      IL_0067  ldloc.2    
+      IL_0068  brfalse.s  IL_0080
+      IL_006A  ldloc.1    
+      IL_006B  ldloc.0    
+      IL_006C  ldarg.1    
+      IL_006D  call       null::Autodesk.Navisworks.Internal.ApiImplementation.?A0x17eac9a8.s_std_dispatch
+      IL_0072  leave.s    IL_0088
+      IL_0074  stloc.s    4
+      IL_0076  ldloc.0    
+      IL_0077  ldloc.s    4
+      IL_0079  call       null::Autodesk.Navisworks.Internal.ApiImplementation.?A0x17eac9a8.exception_result
+      IL_007E  leave.s    IL_0088
+      IL_0080  ldloc.1    
+      IL_0081  ldloc.0    
+      IL_0082  ldarg.1    
+      IL_0083  call       null::Autodesk.Navisworks.Internal.ApiImplementation.?A0x17eac9a8.s_std_dispatch
+      IL_0088  ldloc.0    
+      IL_0089  ldloc.2    
+      IL_008A  stfld      Autodesk.Navisworks.Internal.ApiImplementation.AutomationActionResult::verbose
+      IL_008F  ldloc.0    
+      IL_0090  ret        
+  Autodesk.Navisworks.Api.dll ApplicationImpl::public static System.Void EndAutomationAction(), 9 instructions, whole:
+      IL_0000  ldsfld     Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::<backing_store>AutomationActionCount
+      IL_0005  stloc.0    
+      IL_0006  ldloc.0    
+      IL_0007  ldc.i4.m1  
+      IL_0008  add        
+      IL_0009  stloc.0    
+      IL_000A  ldloc.0    
+      IL_000B  stsfld     Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::<backing_store>AutomationActionCount
+      IL_0010  ret        
+  Autodesk.Navisworks.Api.dll ApplicationImpl::private static System.Int32 get_AutomationActionCount(), 2 instructions, whole:
+      IL_0000  ldsfld     Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::<backing_store>AutomationActionCount
+      IL_0005  ret        
+  Autodesk.Navisworks.Api.dll ApplicationImpl::public static System.Boolean get_IsAutomationAction(), 9 instructions, whole:
+      IL_0000  ldsfld     Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::<backing_store>AutomationActionCount
+      IL_0005  ldc.i4.0   
+      IL_0006  bne.un.s   IL_000B
+      IL_0008  ldc.i4.0   
+      IL_0009  br.s       IL_000C
+      IL_000B  ldc.i4.1   
+      IL_000C  stloc.0    
+      IL_000D  ldloc.0    
+      IL_000E  ret        
+  Autodesk.Navisworks.Api.dll ApplicationImpl::private static System.Void set_AutomationActionCount(System.Int32 __set_formal), 3 instructions, whole:
+      IL_0000  ldarg.0    
+      IL_0001  stsfld     Autodesk.Navisworks.Internal.ApiImplementation.ApplicationImpl::<backing_store>AutomationActionCount
+      IL_0006  ret        
+  Autodesk.Navisworks.Internal.ApiImplementation.ApplicationAutomationImpl, base System.Object
+      method public static System.Int32 AddPluginAssembly(System.String[] args)
+      method public static System.Int32 AppendFile(System.String[] args)
+      method public static System.Int32 Benchmark(System.String[] args)
+      method public static System.Int32 CreateCache(System.String[] args)
+      method public static System.Int32 DisableProgress(System.String[] args)
+      method public static System.Int32 EnableProgress(System.String[] args)
+      method public static System.Int32 ExecuteAddInPlugin(System.String[] args)
+      method public static System.Int32 GenerateThumbnail(System.String[] args)
+      method public static System.Int32 GenerateThumbnailByRayTrace(System.String[] args)
+      method internal static Autodesk.Navisworks.Internal.ApiImplementation.ApplicationAutomationImpl+Action LookupMethod(System.String name)
+      method public static System.Int32 OpenFile(System.String[] args)
+      method public static System.Int32 Print(System.String[] args)
+      method public static System.Int32 SaveFile(System.String[] args)
+  Autodesk.Navisworks.Api.dll ApplicationAutomationImpl::public static System.Int32 AddPluginAssembly(System.String[] args), 14 instructions, whole:
+      IL_0000  ldarg.0    
+      IL_0001  ldlen      
+      IL_0002  ldc.i4.1   
+      IL_0003  beq.s      IL_0010
+      IL_0005  ldstr      "Must have exactly one argument (fileName)"
+      IL_000A  newobj     System.InvalidOperationException::.ctor
+      IL_000F  throw      
+      IL_0010  call       Autodesk.Navisworks.Api.Application::get_Automation
+      IL_0015  ldarg.0    
+      IL_0016  ldc.i4.0   
+      IL_0017  ldelem.ref 
+      IL_0018  call       Autodesk.Navisworks.Api.ApplicationParts.ApplicationAutomation::AddPluginAssembly
+      IL_001D  ldc.i4.0   
+      IL_001E  ret        
+  Autodesk.Navisworks.Api.dll ApplicationAutomationImpl::public static System.Int32 ExecuteAddInPlugin(System.String[] args), 19 instructions, whole:
+      IL_0000  ldarg.0    
+      IL_0001  ldlen      
+      IL_0002  ldc.i4.1   
+      IL_0003  bge.s      IL_0010
+      IL_0005  ldstr      "Must have at least one argument (pluginId)"
+      IL_000A  newobj     System.InvalidOperationException::.ctor
+      IL_000F  throw      
+      IL_0010  call       Autodesk.Navisworks.Api.Application::get_Automation
+      IL_0015  ldarg.0    
+      IL_0016  call       null::Autodesk.Navisworks.Internal.ApiImplementation.?A0xa1a68cfb.shift_array
+      IL_001B  stloc.1    
+      IL_001C  ldarg.0    
+      IL_001D  ldc.i4.0   
+      IL_001E  ldelem.ref 
+      IL_001F  stloc.0    
+      IL_0020  ldloc.0    
+      IL_0021  ldloc.1    
+      IL_0022  call       Autodesk.Navisworks.Api.ApplicationParts.ApplicationAutomation::ExecuteAddInPlugin
+      IL_0027  ret        
+  Autodesk.Navisworks.Api.dll ApplicationAutomationImpl::internal static Autodesk.Navisworks.Internal.ApiImplementation.ApplicationAutomationImpl+Action LookupMethod(System.String name), 19 instructions, whole:
+      IL_0000  ldtoken    type Autodesk.Navisworks.Internal.ApiImplementation.ApplicationAutomationImpl
+      IL_0005  call       System.Type::GetTypeFromHandle
+      IL_000A  ldarg.0    
+      IL_000B  ldc.i4.s   24
+      IL_000D  callvirt   System.Type::GetMethod
+      IL_0012  stloc.0    
+      IL_0013  ldloc.0    
+      IL_0014  ldnull     
+      IL_0015  call       System.Reflection.MethodInfo::op_Equality
+      IL_001A  brfalse.s  IL_001E
+      IL_001C  ldnull     
+      IL_001D  ret        
+      IL_001E  ldtoken    type Autodesk.Navisworks.Internal.ApiImplementation.ApplicationAutomationImpl+Action
+      IL_0023  call       System.Type::GetTypeFromHandle
+      IL_0028  ldnull     
+      IL_0029  ldloc.0    
+      IL_002A  call       System.Delegate::CreateDelegate
+      IL_002F  castclass  Autodesk.Navisworks.Internal.ApiImplementation.ApplicationAutomationImpl+Action
+      IL_0034  ret        
+
+WHAT EACH SWITCH DOES ON A START IS UNKNOWN. Nothing here ran Roamer.exe. The lists above say what the files carry, what the parser stores and what the IL of the readers touches, in the order it is written, which is not the order a start runs it.

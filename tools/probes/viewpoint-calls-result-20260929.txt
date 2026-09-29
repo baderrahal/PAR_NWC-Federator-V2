@@ -1,0 +1,133 @@
+ASSEMBLY  Autodesk.Navisworks.Api 22.0.0.0   file 22.5.1433.58, 4261152 bytes
+ASSEMBLY  Autodesk.Navisworks.ComApi 22.0.0.0   file 22.5.1433.58, 385824 bytes
+ASSEMBLY  Autodesk.Navisworks.Interop.ComApi 22.0.0.0   file 22.5.1433.58, 313624 bytes
+MACHINE   [machine]   2026-09-29 10:32
+
+---- Every Navisworks member src\Federator.Addin\Engine\SavedViewpoints.cs calls ----
+  [the method in SavedViewpoints.cs that calls it] type kind name, then what the DLL holds
+  FOUND     [Count, ResolveFolders] Autodesk.Navisworks.Api.Document property SavedViewpoints (get)   public Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints SavedViewpoints { get }   declared on Autodesk.Navisworks.Api.Document
+  FOUND     [Count, ResolveFolders] Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints property RootItem (get)   public Autodesk.Navisworks.Api.FolderItem RootItem { get }   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints
+  FOUND     [FindLastAtRoot] Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints property Value (get)   public Autodesk.Navisworks.Api.SavedItemCollection Value { get }   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints
+  FOUND     [EnsureFolders, Record] Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints method AddCopy(Autodesk.Navisworks.Api.GroupItem, Autodesk.Navisworks.Api.SavedItem)   public System.Void AddCopy(Autodesk.Navisworks.Api.GroupItem parent, Autodesk.Navisworks.Api.SavedItem item)   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints
+  FOUND     [Record] Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints method Remove(Autodesk.Navisworks.Api.SavedItem)   public System.Boolean Remove(Autodesk.Navisworks.Api.SavedItem item)   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints
+  FOUND     [SnapshotHidden] Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints method CaptureRuntimeOverrides()   public Autodesk.Navisworks.Api.SavedViewpoint CaptureRuntimeOverrides()   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints
+  FOUND     [EnsureFolders] Autodesk.Navisworks.Api.FolderItem ctor .ctor   public FolderItem()
+  FOUND     [EnsureFolders, FindFolder] Autodesk.Navisworks.Api.FolderItem property DisplayName (get set)   public System.String DisplayName { get; set }   declared on Autodesk.Navisworks.Api.SavedItem
+  FOUND     [FindFolder, FindLeaf] Autodesk.Navisworks.Api.GroupItem property Children (get)   public Autodesk.Navisworks.Api.SavedItemCollection Children { get }   declared on Autodesk.Navisworks.Api.GroupItem
+  FOUND     [FindFolder] Autodesk.Navisworks.Api.SavedItemCollection property Count (get)   public System.Int32 Count { get }   declared on Autodesk.Navisworks.Api.SavedItemCollection
+  FOUND     [FindFolder] Autodesk.Navisworks.Api.SavedItemCollection indexer this[]   public Autodesk.Navisworks.Api.SavedItem Item[System.Int32 index] { get; set }   declared on Autodesk.Navisworks.Api.SavedItemCollection
+  FOUND     [ReadBack] Autodesk.Navisworks.Api.SavedViewpoint property Viewpoint (get)   public Autodesk.Navisworks.Api.Viewpoint Viewpoint { get }   declared on Autodesk.Navisworks.Api.SavedViewpoint
+  FOUND     [ReadBack, HiddenSnapshot] Autodesk.Navisworks.Api.SavedViewpoint method GetVisibilityOverrides()   public Autodesk.Navisworks.Api.VisibilityOverrides GetVisibilityOverrides()   declared on Autodesk.Navisworks.Api.SavedViewpoint
+  FOUND     [ReadBack, WillShow] Autodesk.Navisworks.Api.SavedViewpoint method GetAppearanceOverrides()   public Autodesk.Navisworks.Api.AppearanceOverrides GetAppearanceOverrides()   declared on Autodesk.Navisworks.Api.SavedViewpoint
+  FOUND     [CountOf, HiddenSnapshot] Autodesk.Navisworks.Api.VisibilityOverrides property Hidden (get)   public Autodesk.Navisworks.Api.ModelItemCollection Hidden { get }   declared on Autodesk.Navisworks.Api.VisibilityOverrides
+  FOUND     [CountOf, WillShow] Autodesk.Navisworks.Api.AppearanceOverrides property MaterialOverrides (get)   public System.Collections.ObjectModel.Collection<Autodesk.Navisworks.Api.MaterialOverride> MaterialOverrides { get }   declared on Autodesk.Navisworks.Api.AppearanceOverrides
+  FOUND     [WillShow] Autodesk.Navisworks.Api.MaterialOverride property Item (get)   public Autodesk.Navisworks.Api.ModelItem Item { get; set }   declared on Autodesk.Navisworks.Api.MaterialOverride
+  FOUND     [WillShow] Autodesk.Navisworks.Api.MaterialOverride property Color (get)   public Autodesk.Navisworks.Api.Color Color { get; set }   declared on Autodesk.Navisworks.Api.MaterialOverride
+  FOUND     [ReadBack] Autodesk.Navisworks.Api.Viewpoint property Position (get)   public Autodesk.Navisworks.Api.Point3D Position { get; set }   declared on Autodesk.Navisworks.Api.Viewpoint
+  FOUND     [ShowOnlyModels, RootsOf] Autodesk.Navisworks.Api.Document property Models (get)   public Autodesk.Navisworks.Api.DocumentParts.DocumentModels Models { get }   declared on Autodesk.Navisworks.Api.Document
+  FOUND     [ShowOnlyModels, RestoreHiddenState] Autodesk.Navisworks.Api.DocumentParts.DocumentModels method ResetAllHidden()   public System.Void ResetAllHidden()   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [ShowOnlyModels, RestoreHiddenState] Autodesk.Navisworks.Api.DocumentParts.DocumentModels method SetHidden(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.ModelItem>, System.Boolean)   public System.Void SetHidden(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.ModelItem> items, System.Boolean value)   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [RestoreHiddenState] Autodesk.Navisworks.Api.DocumentParts.DocumentModels method IsHidden(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.ModelItem>)   public System.Boolean IsHidden(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.ModelItem> items)   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [DimAllBut] Autodesk.Navisworks.Api.DocumentParts.DocumentModels method OverrideTemporaryTransparency(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.ModelItem>, System.Double)   public System.Void OverrideTemporaryTransparency(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.ModelItem> items, System.Double transparency)   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [DimAllBut, Undim] Autodesk.Navisworks.Api.DocumentParts.DocumentModels method ResetTemporaryMaterials(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.ModelItem>)   public System.Void ResetTemporaryMaterials(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.ModelItem> items)   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [PaintOne] Autodesk.Navisworks.Api.DocumentParts.DocumentModels method OverrideTemporaryColor(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.ModelItem>, Autodesk.Navisworks.Api.Color)   public System.Void OverrideTemporaryColor(System.Collections.Generic.IEnumerable<Autodesk.Navisworks.Api.ModelItem> items, Autodesk.Navisworks.Api.Color color)   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [Undim, RootsOf] Autodesk.Navisworks.Api.DocumentParts.DocumentModels method CreateCollectionFromRootItems()   public Autodesk.Navisworks.Api.ModelItemCollection CreateCollectionFromRootItems()   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [ItemAt] Autodesk.Navisworks.Api.DocumentParts.DocumentModels method ResolveIndexPath(System.Collections.Generic.IEnumerable<System.Int32>)   public Autodesk.Navisworks.Api.ModelItem ResolveIndexPath(System.Collections.Generic.IEnumerable<System.Int32> path)   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [PathOf] Autodesk.Navisworks.Api.DocumentParts.DocumentModels method CreateIndexPath(Autodesk.Navisworks.Api.ModelItem)   public System.Collections.ObjectModel.Collection<System.Int32> CreateIndexPath(Autodesk.Navisworks.Api.ModelItem item)   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [ShowOnlyModels, RootsOf] Autodesk.Navisworks.Api.DocumentParts.DocumentModels property Count (get)   public System.Int32 Count { get }   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [ShowOnlyModels, RootsOf] Autodesk.Navisworks.Api.DocumentParts.DocumentModels indexer this[]   public Autodesk.Navisworks.Api.Model Item[System.Int32 index] { get; set }   declared on Autodesk.Navisworks.Api.DocumentParts.DocumentModels
+  FOUND     [ShowOnlyModels, RootsOf] Autodesk.Navisworks.Api.Model property RootItem (get)   public Autodesk.Navisworks.Api.ModelItem RootItem { get }   declared on Autodesk.Navisworks.Api.Model
+  FOUND     [ShowOnlyModels, DimAllBut, PaintOne] Autodesk.Navisworks.Api.ModelItemCollection ctor .ctor   public ModelItemCollection()
+  FOUND     [ShowOnlyModels, DimAllBut, PaintOne] Autodesk.Navisworks.Api.ModelItemCollection method Add(Autodesk.Navisworks.Api.ModelItem)   public System.Void Add(Autodesk.Navisworks.Api.ModelItem item)   declared on Autodesk.Navisworks.Api.ModelItemCollection
+  FOUND     [ShowOnlyModels, CountOf] Autodesk.Navisworks.Api.ModelItemCollection property Count (get)   public System.Int32 Count { get }   declared on Autodesk.Navisworks.Api.ModelItemCollection
+  FOUND     [WillShow] Autodesk.Navisworks.Api.ModelItem property HasGeometry (get)   public System.Boolean HasGeometry { get }   declared on Autodesk.Navisworks.Api.ModelItem
+  FOUND     [WillShow] Autodesk.Navisworks.Api.ModelItem property Geometry (get)   public Autodesk.Navisworks.Api.ModelGeometry Geometry { get }   declared on Autodesk.Navisworks.Api.ModelItem
+  FOUND     [WillShow] Autodesk.Navisworks.Api.ModelGeometry property OriginalColor (get)   public Autodesk.Navisworks.Api.Color OriginalColor { get }   declared on Autodesk.Navisworks.Api.ModelGeometry
+  FOUND     [PaintOne] Autodesk.Navisworks.Api.Color ctor .ctor   public Color(System.Double red, System.Double green, System.Double blue)
+  FOUND     [Record] Autodesk.Navisworks.Api.ComApi.ComApiBridge property State (get)   public static Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10 State { get }   declared on Autodesk.Navisworks.Api.ComApi.ComApiBridge
+  FOUND     [Record] Autodesk.Navisworks.Api.ComApi.ComApiBridge method ToInwOpAnonView(Autodesk.Navisworks.Api.Viewpoint)   public static Autodesk.Navisworks.Api.Interop.ComApi.InwOpAnonView ToInwOpAnonView(Autodesk.Navisworks.Api.Viewpoint viewpoint)   declared on Autodesk.Navisworks.Api.ComApi.ComApiBridge
+  FOUND     [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10 method ObjectFactory(3 arguments)   public System.Object ObjectFactory(Autodesk.Navisworks.Api.Interop.ComApi.nwEObjectType eType, optional System.Object ovReserved1, optional System.Object ovReserved2)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpState
+  FOUND     [Record, FindComFolder] Autodesk.Navisworks.Api.Interop.ComApi.InwOpState10 method SavedViews()   public Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl SavedViews()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpState
+  FOUND     [Record] Autodesk.Navisworks.Api.Interop.ComApi.nwEObjectType field eObjectType_nwOpView   Autodesk.Navisworks.Api.Interop.ComApi.nwEObjectType eObjectType_nwOpView = 11
+  FOUND     [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwOpView property name (set)   public System.String name { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+  FOUND     [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwOpView property ApplyHideAttribs (set)   public System.Boolean ApplyHideAttribs { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+  FOUND     [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwOpView property ApplyMaterialAttribs (set)   public System.Boolean ApplyMaterialAttribs { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+  FOUND     [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwOpView property anonview (set)   public Autodesk.Navisworks.Api.Interop.ComApi.InwOpAnonView anonview { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+  FOUND     [Record, FindComFolder] Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView method SavedViews()   public Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl SavedViews()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpGroupView
+  FOUND     [FolderNamed] Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView property name (get)   public System.String name { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+  FOUND     [Record] Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl method Add(1 arguments)   public System.Void Add(System.Object p_newVal)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwCollBase
+  FOUND     [FolderNamed] Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl property Count (get)   public System.Int32 Count { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+  FOUND     [FolderNamed] Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl indexer this[]   public System.Object Item[System.Object vIndex] { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+  FOUND     [FolderNamed] Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl indexer this[]   public System.Object Item[System.Object vIndex] { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwCollBase
+
+  checked 53, FOUND 53, NO MATCH 0
+
+---- The COM view and its collection whole, since the add-in writes through them ----
+  Autodesk.Navisworks.Api.Interop.ComApi.InwOpView   interface True, inherits InwOpSavedView, InwBase
+      public Autodesk.Navisworks.Api.Interop.ComApi.InwOpAnonView anonview { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Boolean ApplyHideAttribs { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Boolean ApplyMaterialAttribs { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.String name { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Int32 nwHandle { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Int32 nwID { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Boolean nwInvalidated { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Int32 nwLock { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Boolean nwOwn { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Int32 nwProcess { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Boolean nwReadOnly { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Int32 nwThread { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.String ObjectName { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public Autodesk.Navisworks.Api.Interop.ComApi.nwESavedViewType Type { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Object Copy()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Void nwInvalidate()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+      public System.Object Xtension(System.Object vIn)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+  Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView   interface True, inherits InwOpGroupView, InwOpSavedView, InwBase
+      public System.String name { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Int32 nwHandle { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Int32 nwID { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Boolean nwInvalidated { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Int32 nwLock { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Boolean nwOwn { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Int32 nwProcess { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Boolean nwReadOnly { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Int32 nwThread { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.String ObjectName { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public Autodesk.Navisworks.Api.Interop.ComApi.nwESavedViewType Type { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Object Copy()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Void nwInvalidate()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl SavedViews()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+      public System.Object Xtension(System.Object vIn)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView
+  Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl   interface True, inherits InwCollBase, IEnumerable
+      public System.Int32 Count { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+      public System.Object Item[System.Object vIndex] { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+      public System.Boolean ReadOnly { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+      public System.Void Add(System.Object p_newVal)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+      public System.Void Clear()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+      public System.Collections.IEnumerator GetEnumerator()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+      public System.Void Insert(System.Int32 ndx, System.Object p_newVal)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+      public System.Object Last()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+      public System.Void Remove(System.Int32 ndx)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+      public System.Void RemoveLast()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+      public System.Void Replace(System.Int32 ndx, System.Object p_newVal)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl
+  Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView   interface True, inherits InwBase
+      public System.String name { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Int32 nwHandle { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Int32 nwID { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Boolean nwInvalidated { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Int32 nwLock { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Boolean nwOwn { get; set }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Int32 nwProcess { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Boolean nwReadOnly { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Int32 nwThread { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.String ObjectName { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public Autodesk.Navisworks.Api.Interop.ComApi.nwESavedViewType Type { get }   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Object Copy()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Void nwInvalidate()   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+      public System.Object Xtension(System.Object vIn)   declared on Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+
