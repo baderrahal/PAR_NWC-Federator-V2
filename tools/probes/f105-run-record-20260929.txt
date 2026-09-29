@@ -40,3 +40,36 @@ THE SECOND ROUND'S FINAL RUNS, the three probes this round changed, each as powe
 
 AFTER THE LAST OF THE SECOND ROUND'S FINAL RUNS   2026-09-29 12:55:53
   Get-Process Roamer: 0 process(es)
+
+
+THE THIRD FIX ROUND, after the read of 0f9634d
+
+BEFORE ANY RUN OF THE THIRD FIX ROUND   2026-09-29 13:18:27
+  Get-Process Roamer: 0 process(es)
+TEST RUN, output not kept   probe-viewpoint-calls.ps1   13:23:43 to 13:23:46, exit 0
+TEST RUN, output not kept   probe-roamer-switches.ps1   13:23:46 to 13:23:50, exit 0
+TEST RUN, output not kept   probe-clash-report-api.ps1   13:23:51 to 13:23:56, exit 0
+
+BEFORE THE FIRST OF THE THIRD ROUND'S FINAL RUNS   2026-09-29 13:24:17
+  Get-Process Roamer: 0 process(es)
+
+THE THIRD ROUND'S FINAL RUNS, the three probes that dot-source il-reader.ps1, each as powershell.exe -NoProfile -ExecutionPolicy Bypass -File <probe>, its output kept as the result file. il-reader.ps1 sha256 DE3B5F10ED4E03D112C2A50FB3947EC1F9E9FCF02446611FEABC9810603FA925
+  probe-viewpoint-calls.ps1 -AddinPath <the main clone's Release build of the add-in>   13:24:18 to 13:24:21, exit 0, 297 lines to viewpoint-calls-result-20260929.txt, machine name replaced 1 time(s), probe sha256 50A2D812BEB668460D49644DA9FCB56B096B496F1EE653F27C69A3D8E264FDCC
+  probe-roamer-switches.ps1   13:24:21 to 13:24:26, exit 0, 1529 lines to roamer-switches-result-20260929.txt, machine name replaced 1 time(s), probe sha256 B9BB0211C9C8C96164799F985CA9D46FB86785659F5147D40B4E4E822DDF4ADA
+  probe-clash-report-api.ps1   13:24:26 to 13:24:32, exit 0, 607 lines to clash-report-api-result-20260929.txt, machine name replaced 1 time(s), probe sha256 706A74B6E92C20E95F55F5179168D165B05F0F788E00459F733F8706F18E661C
+
+AFTER THE LAST OF THE THIRD ROUND'S FINAL RUNS   2026-09-29 13:24:32
+  Get-Process Roamer: 0 process(es)
+
+THE RUNS AT LINES 57 TO 59 ARE REPLACED. They printed IL_FFFFFFFF on failures that have no offset, because IlFail compared an offset of -1 passed in argument mode, which arrives as the string -1, as text. il-reader.ps1 now casts it first, and the runs below replace them.
+
+BEFORE THE FIRST OF THE THIRD ROUND'S REPLACING RUNS   2026-09-29 13:26:12
+  Get-Process Roamer: 0 process(es)
+
+THE THIRD ROUND'S REPLACING RUNS, the three probes that dot-source il-reader.ps1, each as powershell.exe -NoProfile -ExecutionPolicy Bypass -File <probe>, its output kept as the result file. il-reader.ps1 sha256 A89DD3A328D52342D2087345E4CEA9554058566556BD690FAB5E705C8D982F89
+  probe-viewpoint-calls.ps1 -AddinPath <the main clone's Release build of the add-in>   13:26:12 to 13:26:15, exit 0, 297 lines to viewpoint-calls-result-20260929.txt, machine name replaced 1 time(s), probe sha256 50A2D812BEB668460D49644DA9FCB56B096B496F1EE653F27C69A3D8E264FDCC
+  probe-roamer-switches.ps1   13:26:15 to 13:26:21, exit 0, 1529 lines to roamer-switches-result-20260929.txt, machine name replaced 1 time(s), probe sha256 B9BB0211C9C8C96164799F985CA9D46FB86785659F5147D40B4E4E822DDF4ADA
+  probe-clash-report-api.ps1   13:26:21 to 13:26:27, exit 0, 607 lines to clash-report-api-result-20260929.txt, machine name replaced 1 time(s), probe sha256 706A74B6E92C20E95F55F5179168D165B05F0F788E00459F733F8706F18E661C
+
+AFTER THE LAST OF THE THIRD ROUND'S REPLACING RUNS   2026-09-29 13:26:27
+  Get-Process Roamer: 0 process(es)

@@ -1,4 +1,5 @@
-MACHINE   [machine]   2026-09-29 12:55
+MACHINE   [machine]   2026-09-29 13:26
+READER    il-reader.ps1, dot-sourced, sha256 A89DD3A328D52342D2087345E4CEA9554058566556BD690FAB5E705C8D982F89
 WORDS     report, html, tabular, export, case blind, in a type's name or a member's name
 
 ==== Autodesk.Navisworks.Api.dll ====
@@ -588,5 +589,19 @@ WORDS     report, html, tabular, export, case blind, in a type's name or a membe
   Autodesk.Navisworks.Interop.ComApi.dll: public types holding a word 3, other public members holding a word 7, not public types holding a word 0, strings holding tabular 0, .xsl 0, clash_report 0, reportformat 0
   Autodesk.Navisworks.Automation.dll: public types holding a word 0, other public members holding a word 0, not public types holding a word 0, strings holding tabular 0, .xsl 0, clash_report 0, reportformat 0
   references that could not be loaded for reflection: none
+  what il-reader.ps1 kept over the whole run, each once, by kind:
+    IL bodies that could not be read: 0
+    opcode bytes that are not an instruction, each ending the read of its body: 0
+    tokens that did not resolve: 0
+    MemberRef rows that did not resolve: 0
+    types whose methods could not be listed: 0
+    types whose members could not be listed: 0
+    assemblies where GetTypes could not load every type: 0
+    metadata that could not be read: 0
+    signatures that could not be read: 0
+    local variable lists that could not be read: 0
+    field types that could not be read: 0
+    constant values that could not be read: 0
+  reads that failed, all kinds together: 0
 
 WHETHER ANY MEMBER LISTED RUNS, AND WHAT IT WRITES, IS UNKNOWN. Nothing here started Navisworks or called a member.

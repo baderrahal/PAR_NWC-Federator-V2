@@ -29,7 +29,15 @@ $nw = $NavisworksPath
 $names = @("Autodesk.Navisworks.Api.dll", "Autodesk.Navisworks.Clash.dll", "Autodesk.Navisworks.ComApi.dll", "Autodesk.Navisworks.Interop.ComApi.dll", "Autodesk.Navisworks.Automation.dll")
 $words = @("report", "html", "tabular", "export")
 
+# TypeName, IlReason, LoaderLines, the list of reads that failed and StringRuns come from
+# il-reader.ps1 beside this probe, the one copy the other two F105 probes dot-source too.
+# This probe reads no IL, and uses the reader only for those shared helpers.
+$reader = Join-Path $PSScriptRoot "il-reader.ps1"
+if (-not (Test-Path -LiteralPath $reader)) { Write-Output ("UNKNOWN: no il-reader.ps1 at " + $reader); exit 1 }
+. $reader
+
 Write-Output ("MACHINE   " + $env:COMPUTERNAME + "   " + (Get-Date -Format "yyyy-MM-dd HH:mm"))
+Write-Output ("READER    il-reader.ps1, dot-sourced, sha256 " + (Get-FileHash -LiteralPath $reader -Algorithm SHA256).Hash)
 Write-Output ("WORDS     " + ($words -join ", ") + ", case blind, in a type's name or a member's name")
 Write-Output ""
 
@@ -39,26 +47,9 @@ $roResolve = [ResolveEventHandler]{
   $n = New-Object System.Reflection.AssemblyName($e.Name)
   $cand = Join-Path $nw ($n.Name + ".dll")
   if (Test-Path -LiteralPath $cand) { return [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($cand) }
-  try { return [System.Reflection.Assembly]::ReflectionOnlyLoad($e.Name) } catch { $line = $e.Name + ": " + $_.Exception.GetType().Name + ": " + $_.Exception.Message; if (-not $resolveFailures.Contains($line)) { $resolveFailures.Add($line) }; return $null }
+  try { return [System.Reflection.Assembly]::ReflectionOnlyLoad($e.Name) } catch { $line = $e.Name + ": " + (IlReason $_.Exception); if (-not $resolveFailures.Contains($line)) { $resolveFailures.Add($line) }; return $null }
 }
 [AppDomain]::CurrentDomain.add_ReflectionOnlyAssemblyResolve($roResolve)
-# What GetTypes could not load, said rather than dropped: how many, and each distinct reason.
-function LoaderLines($label, $ex) {
-  $all = @($ex.Types)
-  $bad = @($all | Where-Object { $null -eq $_ }).Count
-  Write-Output ("  UNKNOWN in part: " + $bad + " of the " + $all.Count + " types of " + $label + " could not be loaded for reflection, " + ($all.Count - $bad) + " were read. The reasons, each once:")
-  $seen = @{}
-  foreach ($le in @($ex.LoaderExceptions)) { if ($null -eq $le) { continue }; $t = $le.GetType().Name + ": " + $le.Message; if (-not $seen.ContainsKey($t)) { $seen[$t] = $true; Write-Output ("    " + $t) } }
-}
-
-function TypeName($t) {
-  if ($null -eq $t) { return "null" }
-  if ($t.IsByRef) { return (TypeName $t.GetElementType()) + "&" }
-  if ($t.IsArray) { return (TypeName $t.GetElementType()) + "[]" }
-  if ($t.IsGenericType) { $a = @(); foreach ($g in $t.GetGenericArguments()) { $a += (TypeName $g) }; $n = $t.Name; $k = $n.IndexOf('`'); if ($k -ge 0) { $n = $n.Substring(0, $k) }; return $t.Namespace + "." + $n + "<" + ($a -join ", ") + ">" }
-  if ($t.IsGenericParameter) { return $t.Name }
-  return $t.FullName
-}
 function ParamText($m) {
   $ps = @()
   foreach ($q in $m.GetParameters()) {
@@ -79,7 +70,7 @@ function MemberText($x) {
       return ("property public " + $st + (TypeName $x.PropertyType) + " " + $x.Name + $it + " { " + ($acc -join "; ") + " }")
     }
     "Field" {
-      if ($x.IsLiteral) { $v = ""; try { $v = " = " + [string]$x.GetRawConstantValue() } catch { $v = " = UNKNOWN, the value could not be read, " + $_.Exception.GetType().Name + ": " + $_.Exception.Message }; return ("literal  " + (TypeName $x.FieldType) + " " + $x.Name + $v) }
+      if ($x.IsLiteral) { $v = ""; try { $v = " = " + [string]$x.GetRawConstantValue() } catch { $why2 = IlReason $_.Exception; $null = IlFail "value" ((TypeName $x.DeclaringType) + "." + $x.Name) -1 $why2; $v = " = UNKNOWN, the value could not be read, " + $why2 }; return ("literal  " + (TypeName $x.FieldType) + " " + $x.Name + $v) }
       $st = ""; if ($x.IsStatic) { $st = "static " }; return ("field    public " + $st + (TypeName $x.FieldType) + " " + $x.Name)
     }
     "Event" { return ("event    public " + (TypeName $x.EventHandlerType) + " " + $x.Name) }
@@ -97,7 +88,7 @@ function ShowType($t) {
   $ifs = @($t.GetInterfaces() | ForEach-Object { $_.Name }); if ($ifs.Count -gt 0) { Write-Output ("      implements " + ($ifs -join ", ")) }
   if ($t.IsEnum) {
     $fs = @($t.GetFields("Public,Static"))
-    foreach ($f in $fs) { $v = ""; try { $v = [string]$f.GetRawConstantValue() } catch { $v = "UNKNOWN, the value could not be read, " + $_.Exception.GetType().Name + ": " + $_.Exception.Message }; Write-Output ("      " + $f.Name + " = " + $v) }
+    foreach ($f in $fs) { $v = ""; try { $v = [string]$f.GetRawConstantValue() } catch { $why2 = IlReason $_.Exception; $null = IlFail "value" ((TypeName $t) + "." + $f.Name) -1 $why2; $v = "UNKNOWN, the value could not be read, " + $why2 }; Write-Output ("      " + $f.Name + " = " + $v) }
     if ($fs.Count -eq 0) { Write-Output "      no values in the metadata" }
     return
   }
@@ -136,7 +127,7 @@ foreach ($dllName in $names) {
   $mHits = 0
   foreach ($t in ($public | Sort-Object FullName)) {
     if (Holds $t.Name) { continue }
-    $ms = @(); try { $ms = @($t.GetMembers("Public,Instance,Static,DeclaredOnly")) } catch { Write-Output ("  UNKNOWN: the members of " + $t.FullName + " could not be read, " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); continue }
+    $ms = @(); try { $ms = @($t.GetMembers("Public,Instance,Static,DeclaredOnly")) } catch { $why2 = IlReason $_.Exception; $null = IlFail "members" $t -1 $why2; Write-Output ("  UNKNOWN: the members of " + $t.FullName + " could not be read, " + $why2); continue }
     foreach ($x in $ms) {
       if (-not (Holds $x.Name)) { continue }
       if ($x.MemberType.ToString() -eq "Method" -and $x.IsSpecialName) { continue }
@@ -166,21 +157,13 @@ foreach ($dllName in $names) {
   # is printed with the words it holds, and each word is counted on its own, so a count of
   # strings is never read as a count of one of the four.
   Write-Output "  ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----"
-  $latin1 = [System.Text.Encoding]::GetEncoding(28591)
-  $text = $latin1.GetString([System.IO.File]::ReadAllBytes($p))
+  # The strings come from StringRuns in il-reader.ps1, the one copy of the two patterns.
   $sWords = @("tabular", ".xsl", "clash_report", "reportformat")
   $perWord = [ordered]@{}; foreach ($w in $sWords) { $perWord[$w] = 0 }
   $sHits = 0
-  $runs = @(
-    @("ascii", [regex]::Matches($text, "[\x20-\x7E]{4,}")),
-    @("utf16", [regex]::Matches($text, "(?:[\x20-\x7E]\x00){4,}"))
-  )
-  foreach ($run in $runs) {
-    foreach ($m in $run[1]) {
-      $v = $m.Value; if ($run[0] -eq "utf16") { $v = $v.Replace([string][char]0, "") }
-      $which = @(); foreach ($w in $sWords) { if ($v.IndexOf($w, [StringComparison]::OrdinalIgnoreCase) -ge 0) { $which += $w; $perWord[$w]++ } }
-      if ($which.Count -gt 0) { Write-Output ("  offset " + $m.Index.ToString().PadLeft(8) + "  " + $run[0] + "  " + $v + "   [" + ($which -join ", ") + "]"); $sHits++ }
-    }
+  foreach ($run in (StringRuns ([System.IO.File]::ReadAllBytes($p)))) {
+    $which = @(); foreach ($w in $sWords) { if ($run.Text.IndexOf($w, [StringComparison]::OrdinalIgnoreCase) -ge 0) { $which += $w; $perWord[$w]++ } }
+    if ($which.Count -gt 0) { Write-Output ("  offset " + $run.Offset.ToString().PadLeft(8) + "  " + $run.Enc + "  " + $run.Text + "   [" + ($which -join ", ") + "]"); $sHits++ }
   }
   $wordText = (($sWords | ForEach-Object { $_ + " " + $perWord[$_] }) -join ", ")
   Write-Output ("  strings found: " + $sHits + ". Strings holding each word: " + $wordText)
@@ -208,7 +191,7 @@ foreach ($w in $writers) {
     foreach ($c in $pt.GetConstructors()) { Write-Output ("      " + (MemberText $c)) }
     $givers = 0
     foreach ($t in $allPublic) {
-      $ms = @(); try { $ms = @($t.GetMembers("Public,Instance,Static,DeclaredOnly")) } catch { Write-Output ("      UNKNOWN: the members of " + $t.FullName + " could not be read, so it is not known whether it hands one out, " + $_.Exception.GetType().Name + ": " + $_.Exception.Message); continue }
+      $ms = @(); try { $ms = @($t.GetMembers("Public,Instance,Static,DeclaredOnly")) } catch { $why2 = IlReason $_.Exception; $null = IlFail "members" $t -1 $why2; Write-Output ("      UNKNOWN: the members of " + $t.FullName + " could not be read, so it is not known whether it hands one out, " + $why2); continue }
       foreach ($x in $ms) {
         $gives = $false
         if ($x.MemberType.ToString() -eq "Method") { if ($x.ReturnType -eq $pt) { $gives = $true }; foreach ($pp in $x.GetParameters()) { if ($pp.IsOut -and $pp.ParameterType.GetElementType() -eq $pt) { $gives = $true } } }
@@ -225,5 +208,8 @@ Write-Output ""
 Write-Output "==== SUMMARY ===="
 foreach ($s in $summary) { Write-Output ("  " + $s) }
 if ($resolveFailures.Count -eq 0) { Write-Output "  references that could not be loaded for reflection: none" } else { Write-Output ("  references that could not be loaded for reflection: " + $resolveFailures.Count); foreach ($x in $resolveFailures) { Write-Output ("    " + $x) } }
+Write-Output "  what il-reader.ps1 kept over the whole run, each once, by kind:"
+IlFailureLines "    "
+Write-Output ("  reads that failed, all kinds together: " + ($IlFailures.Count + $resolveFailures.Count))
 Write-Output ""
 Write-Output "WHETHER ANY MEMBER LISTED RUNS, AND WHAT IT WRITES, IS UNKNOWN. Nothing here started Navisworks or called a member."

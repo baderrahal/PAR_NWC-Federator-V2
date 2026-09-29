@@ -26,8 +26,8 @@ $ErrorActionPreference = "Stop"
 #      and their signatures, and resolved against the install. A reference resolves only
 #      where the install holds a member of that exact name and signature, which is the
 #      check the runtime makes when it binds the call. This list is not typed by hand. The
-#      IL is decoded by il-reader.ps1, dot-sourced, and everything it could not read is
-#      counted and printed at the end of the section
+#      IL is decoded by il-reader.ps1, dot-sourced, and everything the probe could not read
+#      in sections A to C is counted and printed at the end of the section
 #
 # Each DLL is tested by its one full path. The install folder is never searched. A
 # reference to an Autodesk.Navisworks assembly is only ever resolved from the install folder.
@@ -43,8 +43,8 @@ foreach ($k in $paths.Keys) {
   if (-not (Test-Path -LiteralPath $paths[$k])) { Write-Output ("UNKNOWN: no file at " + $paths[$k]); exit 1 }
 }
 
-# The IL reader, TypeName and the list of everything the reader could not read come from
-# il-reader.ps1 beside this probe, the one copy probe-roamer-switches.ps1 uses as well.
+# The IL reader, TypeName, IlReason and the list of everything that could not be read come
+# from il-reader.ps1 beside this probe, the one copy the other two F105 probes dot-source.
 $reader = Join-Path $PSScriptRoot "il-reader.ps1"
 if (-not (Test-Path -LiteralPath $reader)) { Write-Output ("UNKNOWN: no IL reader at " + $reader); exit 1 }
 . $reader
@@ -61,7 +61,7 @@ $roResolve = [ResolveEventHandler]{
     $cand2 = Join-Path $addinDir ($an.Name + ".dll")
     if (Test-Path -LiteralPath $cand2) { return [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($cand2) }
   }
-  try { return [System.Reflection.Assembly]::ReflectionOnlyLoad($e.Name) } catch { $resolveFailures.Add($e.Name + ": " + $_.Exception.Message); return $null }
+  try { return [System.Reflection.Assembly]::ReflectionOnlyLoad($e.Name) } catch { $resolveFailures.Add($e.Name + ": " + (IlReason $_.Exception)); return $null }
 }
 [AppDomain]::CurrentDomain.add_ReflectionOnlyAssemblyResolve($roResolve)
 
@@ -165,7 +165,7 @@ function Check($e) {
       $f = $t.GetField($e.Name)
       if ($null -ne $f) {
         Mark $f
-        $v = ""; if ($t.IsEnum) { try { $v = " = " + [Convert]::ToInt64($f.GetRawConstantValue()) } catch { $v = " = UNKNOWN, the value could not be read: " + $_.Exception.Message } }
+        $v = ""; if ($t.IsEnum) { try { $v = " = " + [Convert]::ToInt64($f.GetRawConstantValue()) } catch { $why2 = IlReason $_.Exception; $null = IlFail "value" ($e.Type + "." + $e.Name) -1 $why2; $v = " = UNKNOWN, the value could not be read: " + $why2 } }
         Say "FOUND" $label ((TypeName $f.FieldType) + " " + $f.Name + $v)
       }
       else { Say "NO MATCH" $label "no public field of that name" }
@@ -393,9 +393,10 @@ if (-not (Test-Path -LiteralPath $AddinPath)) {
   Write-Output "  Every Navisworks TYPE referenced, in an instruction, a local, a field or a signature:"
   foreach ($k in $typeRefs) { Write-Output ("  RESOLVED  " + $k + "   at " + ($refs[$k].Places -join ", ")) }
   Write-Output ""
-  Write-Output "  Everything section C could not read, kept by il-reader.ps1, each once, with what the runtime said:"
+  Write-Output "  Everything this probe could not read in sections A to C, kept by il-reader.ps1, each once, with what the runtime said:"
   IlFailureLines "    "
   Write-Output ("  count " + $IlFailures.Count)
+  Write-Output ("  " + (IlOpcodeLine))
   Write-Output ""
   Write-Output ("  Navisworks members referenced " + $memberRefs.Count + ", declared in an install assembly " + ($memberRefs.Count - $nFw) + ", of those on list A " + $nOn + " and NOT on list A " + $nOff + ", declared on a framework generic " + $nFw)
   Write-Output ("  Navisworks types referenced " + $typeRefs.Count + ", reads that failed " + $IlFailures.Count)

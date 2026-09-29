@@ -28,11 +28,13 @@ $ErrorActionPreference = "Stop"
 #   7. the dispatcher and each of those methods, summarised off the IL
 #   8. the branches around the two places actions are dispatched, and the API methods an
 #      action reaches, whole IL
-#   9. everything that could not be read over the run: references that would not load,
-#      and what il-reader.ps1 kept, each IL body that could not be read, each opcode byte
-#      it did not know, each token that did not resolve and each type whose methods could
-#      not be listed. A section that skips a failed read still has it counted here. The
-#      MemberRef rows that did not resolve are counted in section 6, where they are read
+#   9. everything that could not be read over the whole run, counted by kind: references
+#      that would not load, and what il-reader.ps1 kept from every section, each IL body
+#      that could not be read, each byte that is not an instruction, each token and each
+#      MemberRef row that did not resolve, each type whose methods could not be listed,
+#      each assembly GetTypes could not load every type of, and each metadata read that
+#      failed. A section that skips a failed read or prints it where it failed still has
+#      it counted here
 #
 # Nothing here starts a process. Reflection only loads run no code in the assemblies.
 # Each file is tested by its one full path. The install folder is never searched.
@@ -41,13 +43,13 @@ $nw = $NavisworksPath
 $roamer = Join-Path $nw "Roamer.exe"
 if (-not (Test-Path -LiteralPath $roamer)) { Write-Output ("UNKNOWN: no Roamer.exe at " + $roamer); exit 1 }
 
-# The IL reader, TypeName and the list of everything the reader could not read come from
-# il-reader.ps1 beside this probe, the one copy probe-viewpoint-calls.ps1 uses as well.
+# The IL reader, TypeName, IlReason, the list of everything that could not be read,
+# LoaderLines, the Latin-1 map and StringRuns come from il-reader.ps1 beside this probe,
+# the one copy the other two F105 probes dot-source as well.
 $reader = Join-Path $PSScriptRoot "il-reader.ps1"
 if (-not (Test-Path -LiteralPath $reader)) { Write-Output ("UNKNOWN: no IL reader at " + $reader); exit 1 }
 . $reader
 
-$latin1 = [System.Text.Encoding]::GetEncoding(28591)
 $keyWords = @("ExecuteAddInPlugin", "AddIn", "NoGui", "Embedding", "regserver", "OpenFile", "log", "lang", "options", "dump", "memory")
 $switchNames = @("ExecuteAddInPlugin", "AddPluginAssembly", "NoGui", "Embedding", "regserver", "OpenFile")
 
@@ -61,29 +63,21 @@ Write-Output ("MACHINE   " + $env:COMPUTERNAME + "   " + (Get-Date -Format "yyyy
 Write-Output ("READER    il-reader.ps1, dot-sourced, sha256 " + (Get-FileHash -LiteralPath $reader -Algorithm SHA256).Hash)
 Write-Output ""
 
-# Every run of printable characters, ASCII one byte each or UTF-16 LE two bytes each. The
-# file is mapped one byte to one char through Latin-1, so a regex index IS the byte offset.
-function StringsOf([byte[]]$bytes) {
-  $text = $latin1.GetString($bytes)
-  $list = New-Object System.Collections.Generic.List[object]
-  foreach ($m in [regex]::Matches($text, "[\x20-\x7E]{4,}")) { $list.Add([pscustomobject]@{ Offset = $m.Index; Enc = "ascii "; Text = $m.Value }) }
-  foreach ($m in [regex]::Matches($text, "(?:[\x20-\x7E]\x00){4,}")) { $list.Add([pscustomobject]@{ Offset = $m.Index; Enc = "utf16 "; Text = $m.Value.Replace([string][char]0, "") }) }
-  return ,$list
-}
 function OffText($o) { return ("offset " + $o.ToString().PadLeft(8) + " 0x" + $o.ToString("X6")) }
 
+# The strings come from StringRuns in il-reader.ps1, the one copy of the two patterns.
 function ListStrings($label, [byte[]]$bytes) {
-  $all = StringsOf $bytes
-  Write-Output ("  strings of four or more printable characters in " + $label + ": " + $all.Count + ", ascii " + @($all | Where-Object { $_.Enc -eq "ascii " }).Count + ", utf16 " + @($all | Where-Object { $_.Enc -eq "utf16 " }).Count)
+  $all = StringRuns $bytes
+  Write-Output ("  strings of four or more printable characters in " + $label + ": " + $all.Count + ", ascii " + @($all | Where-Object { $_.Enc -eq "ascii" }).Count + ", utf16 " + @($all | Where-Object { $_.Enc -eq "utf16" }).Count)
   Write-Output ""
   Write-Output ("  -- " + $label + ": every string that IS a switch, a hyphen or a slash and then a word of letters --")
   $whole = @($all | Where-Object { $_.Text -cmatch '^[-/][A-Za-z]+$' } | Sort-Object Offset)
-  foreach ($s in $whole) { Write-Output ("    " + (OffText $s.Offset) + "  " + $s.Enc + $s.Text) }
+  foreach ($s in $whole) { Write-Output ("    " + (OffText $s.Offset) + "  " + $s.Enc + " " + $s.Text) }
   Write-Output ("    count " + $whole.Count)
   Write-Output ""
   Write-Output ("  -- " + $label + ": every other string holding a word of letters after a hyphen or a slash, at its start or after a space, quote or bracket --")
   $inside = @($all | Where-Object { $_.Text -notmatch '^[-/][A-Za-z]+$' -and $_.Text -match '(^|[\s"''(\[])[-/][A-Za-z]{2,}($|[\s"''=:)\],])' } | Sort-Object Offset)
-  foreach ($s in $inside) { Write-Output ("    " + (OffText $s.Offset) + "  " + $s.Enc + $s.Text) }
+  foreach ($s in $inside) { Write-Output ("    " + (OffText $s.Offset) + "  " + $s.Enc + " " + $s.Text) }
   Write-Output ("    count " + $inside.Count)
   Write-Output ""
   Write-Output ("  -- " + $label + ": every string holding a key word, case blind: " + ($keyWords -join ", ") + " --")
@@ -91,7 +85,7 @@ function ListStrings($label, [byte[]]$bytes) {
   $hits = New-Object System.Collections.Generic.List[string]
   foreach ($s in ($all | Sort-Object Offset)) {
     $which = @(); foreach ($k in $keyWords) { if ($s.Text.IndexOf($k, [StringComparison]::OrdinalIgnoreCase) -ge 0) { $which += $k; $per[$k]++ } }
-    if ($which.Count -gt 0) { $hits.Add("    " + (OffText $s.Offset) + "  " + $s.Enc + $s.Text + "   [" + ($which -join ", ") + "]") }
+    if ($which.Count -gt 0) { $hits.Add("    " + (OffText $s.Offset) + "  " + $s.Enc + " " + $s.Text + "   [" + ($which -join ", ") + "]") }
   }
   foreach ($k in $keyWords) { Write-Output ("    strings holding " + $k.PadRight(19) + ": " + $per[$k]) }
   foreach ($h in $hits) { Write-Output $h }
@@ -307,7 +301,7 @@ function MdRead($pe) {
 Write-Output "  -- the CLI metadata, by bytes --"
 $md = $null
 $mdFailed = $false
-try { $md = MdRead $pe } catch { $mdFailed = $true; Write-Output ("    UNKNOWN: the metadata could not be read, " + $_.Exception.Message) }
+try { $md = MdRead $pe } catch { $mdFailed = $true; $why2 = IlReason $_.Exception; $null = IlFail "metadata" "Roamer.exe CLI metadata" -1 $why2; Write-Output ("    UNKNOWN: the metadata could not be read, " + $why2) }
 if ($null -eq $md) { if (-not $mdFailed) { Write-Output "    no CLI header, so Roamer.exe is not a managed assembly" } } else {
   Write-Output ("    metadata version " + $md.Version + ", streams " + (($md.Streams.Keys | Sort-Object) -join ", ") + ", heap flags 0x" + ([int]$md.HeapFlags).ToString("X2"))
   Write-Output ("    rows: TypeRef " + $md.Rows[0x01] + ", TypeDef " + $md.Rows[0x02] + ", MethodDef " + $md.Rows[0x06] + ", MemberRef " + $md.Rows[0x0A] + ", ModuleRef " + $md.Rows[0x1A] + ", ImplMap " + $md.Rows[0x1C] + ", AssemblyRef " + $md.Rows[0x23])
@@ -326,7 +320,7 @@ $roResolve = [ResolveEventHandler]{
   $cand = Join-Path $nw ($n.Name + ".dll")
   if (Test-Path -LiteralPath $cand) { return [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($cand) }
   try { return [System.Reflection.Assembly]::ReflectionOnlyLoad($e.Name) } catch {
-    $line = $e.Name + ", asked for by " + $(if ($null -ne $e.RequestingAssembly) { $e.RequestingAssembly.GetName().Name } else { "an assembly the runtime did not name" }) + ": " + $_.Exception.GetType().Name + ": " + $_.Exception.Message
+    $line = $e.Name + ", asked for by " + $(if ($null -ne $e.RequestingAssembly) { $e.RequestingAssembly.GetName().Name } else { "an assembly the runtime did not name" }) + ": " + (IlReason $_.Exception)
     if (-not $resolveFailures.Contains($line)) { $resolveFailures.Add($line) }
     return $null
   }
@@ -334,14 +328,6 @@ $roResolve = [ResolveEventHandler]{
 function ResolveFailureLines($where) {
   if ($resolveFailures.Count -eq 0) { Write-Output ("  references that could not be loaded for reflection, " + $where + ": none") }
   else { Write-Output ("  references that could not be loaded for reflection, " + $where + ": " + $resolveFailures.Count); foreach ($x in $resolveFailures) { Write-Output ("    " + $x) } }
-}
-# What GetTypes could not load, said rather than dropped: how many, and each distinct reason.
-function LoaderLines($label, $ex) {
-  $all = @($ex.Types)
-  $bad = @($all | Where-Object { $null -eq $_ }).Count
-  Write-Output ("  UNKNOWN in part: " + $bad + " of the " + $all.Count + " types of " + $label + " could not be loaded for reflection, " + ($all.Count - $bad) + " were read. The reasons, each once:")
-  $seen = @{}
-  foreach ($le in @($ex.LoaderExceptions)) { if ($null -eq $le) { continue }; $t = $le.GetType().Name + ": " + $le.Message; if (-not $seen.ContainsKey($t)) { $seen[$t] = $true; Write-Output ("    " + $t) } }
 }
 [AppDomain]::CurrentDomain.add_ReflectionOnlyAssemblyResolve($roResolve)
 $ra = [System.Reflection.Assembly]::ReflectionOnlyLoadFrom($roamer)
@@ -524,7 +510,7 @@ function Readers($asmObj, $label) {
   foreach ($k in $follow.Keys) { $x = $follow[$k]; if ($x.Module.Equals($mod)) { $toks[$x.MetadataToken] = $x } }
   # A member defined in another assembly is reached through a MemberRef token. Every
   # MemberRef row is resolved once and kept where it resolves to a followed member.
-  $mr = 0; try { $mr = [int](MdRead (PeRead $asmObj.Location)).Rows[0x0A] } catch { Write-Output ("  UNKNOWN: the MemberRef count of " + $label + " could not be read, " + $_.Exception.Message) }
+  $mr = 0; try { $mr = [int](MdRead (PeRead $asmObj.Location)).Rows[0x0A] } catch { $why2 = IlReason $_.Exception; $null = IlFail "metadata" ($label + " MemberRef count") -1 $why2; Write-Output ("  UNKNOWN: the MemberRef count of " + $label + " could not be read, " + $why2) }
   # A row that does not resolve is counted and its reason kept. Such a row cannot be told
   # to be a followed member, so a use of one through it would be missed, and the count of
   # rows that did not resolve says how much of the table that could be.
@@ -534,10 +520,10 @@ function Readers($asmObj, $label) {
     try { $x = $mod.ResolveMember($tok); $okRows++; $k = MemberKey $x; if ($null -ne $k -and $follow.ContainsKey($k)) { $toks[$tok] = $x } }
     catch {
       $badRows++
-      $ex = $_.Exception; if ($ex -is [System.Management.Automation.MethodInvocationException] -and $null -ne $ex.InnerException) { $ex = $ex.InnerException }
-      $reason = $ex.GetType().Name + ": " + $ex.Message
+      $reason = IlReason $_.Exception
       if (-not $why.Contains($reason)) { $why[$reason] = New-Object System.Collections.Generic.List[string] }
       $why[$reason].Add("0x" + $tok.ToString("X8"))
+      $null = IlFail "memberref" ($label + " MemberRef row 0x" + $tok.ToString("X8")) -1 $reason
     }
   }
   Write-Output ("  " + $label + ": MemberRef rows " + $mr + ", resolved " + $okRows + ", did not resolve " + $badRows + ". Tokens that reach a followed member: " + $toks.Count)
@@ -682,8 +668,11 @@ if (-not (Test-Path -LiteralPath $apiPath)) { Write-Output ("  UNKNOWN: no Autod
 Write-Output ""
 Write-Output "==== 9. What could not be read, over the whole run ===="
 ResolveFailureLines "over the whole run"
-Write-Output "  what il-reader.ps1 kept, each once, over every body IlRead decoded in sections 5 to 8, and"
-Write-Output "  every type section 6 listed the methods of and every body it read for bytes:"
+Write-Output "  what il-reader.ps1 kept from every section, each once: every body IlRead decoded in sections 5"
+Write-Output "  to 8, every MemberRef row, type and body section 6 read, every GetTypes of sections 5 and 6,"
+Write-Output "  and the metadata reads of sections 2 and 6:"
 IlFailureLines "    "
+Write-Output ("  reads that failed, all kinds together: " + ($IlFailures.Count + $resolveFailures.Count))
+Write-Output ("  " + (IlOpcodeLine))
 Write-Output ""
 Write-Output "WHAT EACH SWITCH DOES ON A START IS UNKNOWN. Nothing here ran Roamer.exe. The lists above say what the files carry, what the parser stores and what the IL of the readers touches, in the order it is written, which is not the order a start runs it."

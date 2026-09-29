@@ -1,6 +1,6 @@
 FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe   214296 bytes, file version 22.5.1433.58, sha256 2BBC4BE15D7F16BAB2D5AC733EEBF2659849F56F9516F5B5E95737843E4913A9
-MACHINE   [machine]   2026-09-29 12:55
-READER    il-reader.ps1, dot-sourced, sha256 76C56D7C9E0A9AB6B026BB96553757D5981E6F0E2947A621240957194BF69AB4
+MACHINE   [machine]   2026-09-29 13:26
+READER    il-reader.ps1, dot-sourced, sha256 A89DD3A328D52342D2087345E4CEA9554058566556BD690FAB5E705C8D982F89
 
 ==== 1. Roamer.exe as bytes ====
   strings of four or more printable characters in Roamer.exe: 759, ascii 685, utf16 74
@@ -1476,14 +1476,54 @@ FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\navisworks.gui.roamer
 
 ==== 9. What could not be read, over the whole run ====
   references that could not be loaded for reflection, over the whole run: none
-  what il-reader.ps1 kept, each once, over every body IlRead decoded in sections 5 to 8, and
-  every type section 6 listed the methods of and every body it read for bytes:
+  what il-reader.ps1 kept from every section, each once: every body IlRead decoded in sections 5
+  to 8, every MemberRef row, type and body section 6 read, every GetTypes of sections 5 and 6,
+  and the metadata reads of sections 2 and 6:
     IL bodies that could not be read: 0
-    opcode bytes the reader does not know, each ending the read of its body: 0
+    opcode bytes that are not an instruction, each ending the read of its body: 0
     tokens that did not resolve: 0
+    MemberRef rows that did not resolve: 32
+      navisworks.gui.roamer.dll MemberRef row 0x0A00002A: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A00002D: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A0007C3: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A0007C4: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A0007C5: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A0007C6: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A0007C7: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A0007C8: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A0007C9: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A0007CA: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A0007CB: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000922: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000923: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BB1: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BB2: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BB3: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BB4: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BB5: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BB6: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BBF: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BC1: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BC2: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BC3: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BC4: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BC5: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BC6: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BC7: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BC8: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BC9: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BCB: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BCC: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
+      navisworks.gui.roamer.dll MemberRef row 0x0A000BCD: ArgumentException: A BadImageFormatException has been thrown while parsing the signature. This is likely due to lack of a generic context. Ensure genericTypeArguments and genericMethodArguments are provided and contain enough context.
     types whose methods could not be listed: 0
+    types whose members could not be listed: 0
+    assemblies where GetTypes could not load every type: 0
+    metadata that could not be read: 0
     signatures that could not be read: 0
     local variable lists that could not be read: 0
     field types that could not be read: 0
+    constant values that could not be read: 0
+  reads that failed, all kinds together: 32
+  opcode table: 191 one byte and 27 two byte instructions. Reserved bytes 0xF8 to 0xFD and 0xFF among them: 0, so each reads as not an instruction
 
 WHAT EACH SWITCH DOES ON A START IS UNKNOWN. Nothing here ran Roamer.exe. The lists above say what the files carry, what the parser stores and what the IL of the readers touches, in the order it is written, which is not the order a start runs it.

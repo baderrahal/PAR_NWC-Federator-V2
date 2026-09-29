@@ -4662,8 +4662,9 @@ HOW EACH FILE WAS READ, because not every probe read the same way:
   code in it, `probe-viewpoint-calls.ps1`, `probe-roamer-switches.ps1` and
   `probe-clash-report-api.ps1`. The second also reads Roamer.exe and
   navisworks.gui.roamer.dll as bytes, and the third reads all five DLLs as bytes for
-  strings. The two that read IL decode it through `il-reader.ps1` beside them, the one IL
-  reader both dot-source, which keeps every read it could not make, by kind
+  strings. All three dot-source `il-reader.ps1` beside them, the one copy of the IL reader
+  the two that read IL use and of the helpers all three share, TypeName, IlReason,
+  LoaderLines and the string patterns. It keeps every read that could not be made, by kind
 
 Each probe was run from Windows PowerShell 5.1.26100.9444, 64 bit, as
 
@@ -4675,41 +4676,41 @@ with its standard output kept as the result file, UTF-8 without a byte order mar
 the machine name in its MACHINE line replaced with `[machine]`.
 
 THE RUN RECORD, `f105-run-record-20260929.txt` beside the results. `Get-Process Roamer`
-read 0 processes at every reading: before any run of the first review round at 12:07:54,
-lines 4 and 5, before its five final runs at 12:18:23, lines 11 and 12, after them at
-12:18:42, lines 21 and 22, before any run of the second fix round at 12:49:23, lines 27
-and 28, before its three final runs at 12:55:39, lines 33 and 34, and after them at
-12:55:53, lines 41 and 42. viewpoints-result and model-remove-result are the output of
-the first round's final runs, lines 15 and 16. The other three are the output of the
-second round's, lines 37 to 39, run after the three probes that make them changed. Test
-runs came between readings, lines 6 to 9 and 29 to 31, and their output was not kept. The
-runs of the morning, from 10:24, are replaced, and the Roamer readings made that morning
-are in no file.
+read 0 processes at every reading, from 12:07:54 to 13:26:27: in the first review round
+at lines 4 and 5, 11 and 12, and 21 and 22, in the second fix round at lines 27 and 28,
+33 and 34, and 41 and 42, and in the third at lines 47 and 48, 53 and 54, 61 and 62, 66
+and 67, and 74 and 75. viewpoints-result and model-remove-result are the output of the
+first round's final runs, lines 15 and 16. The other three are the output of the third
+round's replacing runs, lines 70 to 72, which replace the second round's at lines 37 to
+39 and the third round's first final runs at lines 57 to 59, whose failure lines printed
+a false offset for the reason line 64 gives. Test runs came between readings, lines 6 to
+9, 29 to 31 and 49 to 51, and their output was not kept. The runs of the morning, from
+10:24, are replaced, and the Roamer readings made that morning are in no file.
 
 ```
 probe                                  result file                             lines
 tools\probes\probe-viewpoints.ps1      viewpoints-result-20260929.txt            388
 tools\probes\probe-model-remove.ps1    model-remove-result-20260929.txt          134
-probe-viewpoint-calls.ps1, new         viewpoint-calls-result-20260929.txt       291
-probe-roamer-switches.ps1, new         roamer-switches-result-20260929.txt      1489
-probe-clash-report-api.ps1, new        clash-report-api-result-20260929.txt      592
+probe-viewpoint-calls.ps1, new         viewpoint-calls-result-20260929.txt       297
+probe-roamer-switches.ps1, new         roamer-switches-result-20260929.txt      1529
+probe-clash-report-api.ps1, new        clash-report-api-result-20260929.txt      607
 
-file                                   sha256 as it ran, run record lines 15, 16 and 36 to 39
+file                                   sha256 as it ran, run record lines 15, 16 and 69 to 72
 tools\probes\probe-viewpoints.ps1      674527A738C91A41BDB9262182C78CD4715B0EB4765EF13EE80BC6F90DEE0F6F
 tools\probes\probe-model-remove.ps1    B1986875DD5EE238E061AF301E60FE4CA8C8A6AED64407611DCA41C94D50F916
-probe-viewpoint-calls.ps1              8D62413D5C07B5E2EDF0676BC6A755C890D38C842F000515574E2596713A58B3
-probe-roamer-switches.ps1              53FA7985399434638D9D5530BD1FBA891ED753F3BB492559E8D21F7FF27CDF27
-probe-clash-report-api.ps1             C27385F7D0838F9B1DAD3A0CE5B47904F740462CD097050D191F86759BB07BA3
-il-reader.ps1, dot-sourced by two      76C56D7C9E0A9AB6B026BB96553757D5981E6F0E2947A621240957194BF69AB4
+probe-viewpoint-calls.ps1              50A2D812BEB668460D49644DA9FCB56B096B496F1EE653F27C69A3D8E264FDCC
+probe-roamer-switches.ps1              B9BB0211C9C8C96164799F985CA9D46FB86785659F5147D40B4E4E822DDF4ADA
+probe-clash-report-api.ps1             706A74B6E92C20E95F55F5179168D165B05F0F788E00459F733F8706F18E661C
+il-reader.ps1, dot-sourced by three    A89DD3A328D52342D2087345E4CEA9554058566556BD690FAB5E705C8D982F89
 ```
 
 Each hash is of the file as it lay when it ran, the two repo probes with CRLF line ends
 and the three new ones and the reader with LF, so a checkout that changes a file's line
-ends changes its hash. The two probes that dot-source the reader print its hash in their
-READER line, viewpoint-calls line 5 and roamer-switches line 3. The three new probes, the
-reader, the five result files and the run record are in tools\probes, committed with this
-section in F105. The add-in source compared against is `src\Federator.Addin` at commit
-30ae471.
+ends changes its hash. The three probes that dot-source the reader print its hash in their
+READER line, viewpoint-calls line 5, roamer-switches line 3 and clash-report-api line 2.
+The three new probes, the reader, the five result files and the run record are in
+tools\probes, committed with this section in F105. The add-in source compared against is
+`src\Federator.Addin` at commit 30ae471.
 
 
 **1. THE SAVED VIEWPOINT MEMBERS ON THIS INSTALL**
@@ -4737,7 +4738,7 @@ class. Lines of viewpoint-calls-result.
   checks only what is on it
 - B, lines 93 to 101, prints 5d's and 5c's generic members with their type arguments,
   which the two repo probes print by their bare names, `Collection`1`
-- C, lines 103 to 220, is NOT typed by hand. It reads the IL, the locals, the fields and
+- C, lines 103 to 226, is NOT typed by hand. It reads the IL, the locals, the fields and
   the signatures of the three classes compiled from `SavedViewpoints.cs`,
   `SavedViewpoints`, `ViewpointReadBack` and `HiddenSnapshot`, decodes the IL through
   `il-reader.ps1`, and resolves every reference to a Navisworks member or type against the
@@ -4755,11 +4756,13 @@ ARGUMENTS INCLUDED.**
 list A      on the list 79, FOUND 79, DIFFERENT SHAPE 0, NO MATCH 0                    90
 the IL      50 method bodies, 328 member and type tokens read                          109
             Navisworks members 65: 62 declared in an install assembly, all 62 on
-            list A, and 3 declared on a framework generic over a Navisworks type       213
-            Navisworks types 21                                                        214
-            reads that failed 0, over the seven kinds il-reader.ps1 counts, a body,
-            an opcode, a token, a type's methods, a signature, locals and a field      203 to 211, 214
-            every assembly from the install folder or the add-in's own folder         215 to 220
+            list A, and 3 declared on a framework generic over a Navisworks type       219
+            Navisworks types 21                                                        220
+            reads that failed 0, of every one of the twelve kinds il-reader.ps1
+            counts                                                                     203 to 216, 220
+            opcode table 191 one byte and 27 two byte instructions, the reserved
+            bytes 0xF8 to 0xFD and 0xFF not among them                                 217
+            every assembly from the install folder or the add-in's own folder         221 to 226
 ```
 
 WHAT LIST A LEAVES OUT, named. The three framework members the compiled file reaches over
@@ -4771,7 +4774,7 @@ instead as IDisposable on each of the nine types, lines 59 to 67. And anything o
 `Point3D.X`, `Y` and `Z`, `Color.R`, `G` and `B`, the `Dispose` on the wrappers and the
 `==` and `!=` operators on `NativeHandle` that the null checks compile to, now lines 29 to
 31, 52 to 58, 73 and 74. Section C reports no member of an install assembly missing from
-the list, line 213.
+the list, line 219.
 
 WHAT THE BUILD SAYS AND DOES NOT. `+edits` in its stamp says the main clone's working
 tree held a change when it was built, and not which. Its `SavedViewpoints.cs` is the same
@@ -4912,7 +4915,7 @@ four or more characters, reads its PE headers, import table and CLI metadata as 
 reads each assembly it references that sits in the install folder by the one full path
 built from the reference, and then reads the IL of the parser by reflection only, which
 runs no code, through `il-reader.ps1`. Everything it could not read is counted and printed
-in its section 9, lines 1477 to 1487, and where a section prints IL whole, at the place it
+in its section 9, lines 1477 to 1527, and where a section prints it, at the place it
 failed as well. Lines of roamer-switches-result.
 
 **ROAMER.EXE HOLDS NO SWITCH TABLE. navisworks.gui.roamer.dll DOES, AND ITS PARSER
@@ -5009,11 +5012,14 @@ DispatchOneAction, ReportResult, AttachConsole, the action list and three config
 Four more appear only in Roamer.exe, the CommandLineParser constructor, Configure,
 DispatchAllActions and ReportParseError, lines 778, 784, 786 and 788, and the
 dispatcher's own constructor is used in neither. Roamer.exe's 235 rows all resolved, line
-777. Section 9 counts what il-reader.ps1 kept, over every body it decoded in sections 5 to
-8 and every type and body section 6 read: 0 IL bodies that could not be read, 0 opcode
-bytes it did not know, 0 tokens that did not resolve, 0 types whose methods could not be
-listed, and 0 of the three other kinds, lines 1479 to 1487. No reference failed to load,
-line 1478.
+777. Section 9, lines 1477 to 1527, counts every read that failed over the whole run, by
+kind. The 32 MemberRef rows are there, each with its token and reason, lines 1485 to
+1517, and every other kind reads 0: IL bodies, bytes that are not an instruction, tokens,
+types whose methods or members could not be listed, assemblies GetTypes could not load
+every type of, metadata reads, signatures, locals, field types and constant values, lines
+1482 to 1484 and 1518 to 1525. 32 in all, line 1526. No reference failed to load, line
+1478. The IL reader counts the reserved bytes 0xF8 to 0xFD and 0xFF as not an
+instruction, line 1527.
 
 STILL UNKNOWN.
 
@@ -5052,8 +5058,8 @@ holds report, html, tabular or export, case blind, every public COM type whose n
 Clash or starts InwOcl, and every string in each file holding tabular, .xsl, clash_report
 or reportformat, case blind, each string with the words it holds and each word counted on
 its own. scan.md names no Clash Detective assembly beyond `Autodesk.Navisworks.Clash.dll`,
-so no other was read. No reference failed to load, line 590. Lines of
-clash-report-api-result.
+so no other was read. No reference failed to load, line 591, and no read of any kind
+failed, lines 592 to 605. Lines of clash-report-api-result.
 
 **NO PUBLIC TYPE OR MEMBER IN Autodesk.Navisworks.Api.Clash, THE NAMESPACE THE ADD-IN
 USES, AND NONE IN THE COM CLASH INTERFACES, HAS REPORT, HTML, TABULAR OR EXPORT IN ITS
@@ -5062,18 +5068,18 @@ WHICH THE ADD-IN REFERENCES, IS NAMED FOR WRITING A CLASH REPORT, AND WHICH FORM
 OFFERS IS NOT IN THE METADATA.**
 
 ```
-class Autodesk.Navisworks.Api.Interop.LcClClashReport : NativeHandle                     130
+class Autodesk.Navisworks.Api.Interop.LcClClashReport : NativeHandle                     131
   public static Boolean WriteReport(LcOpState state, LcClClashGUIProxy guiProxy,
                                     LcClashReportResultSelector selection,
-                                    String name_annotation)                               162
-  public static Boolean CanWriteReport(LcOpState state)                                    132
-  public static Boolean FormatterIsViewpoints(Int32 index)                                 133
-  public static Void GetReportDriverName(Int32 index, out String reportDriver)             140
-  public static Void GetReportFormatterName(Int32 index, out String reportFormatter)       143
-  public static Int32 NumReportDrivers()                                                   152
-  public static Int32 NumReportFormatters()                                                154
-  public static Void SetCurrentReportDriver(Int32 index)                                   158
-  public static Void SetCurrentReportFormatter(Int32 index)                                159
+                                    String name_annotation)                               163
+  public static Boolean CanWriteReport(LcOpState state)                                    133
+  public static Boolean FormatterIsViewpoints(Int32 index)                                 134
+  public static Void GetReportDriverName(Int32 index, out String reportDriver)             141
+  public static Void GetReportFormatterName(Int32 index, out String reportFormatter)       144
+  public static Int32 NumReportDrivers()                                                   153
+  public static Int32 NumReportFormatters()                                                155
+  public static Void SetCurrentReportDriver(Int32 index)                                   159
+  public static Void SetCurrentReportFormatter(Int32 index)                                160
 ```
 
 - that `WriteReport` writes a report at all is read off its name and nothing else. It
@@ -5084,23 +5090,23 @@ class Autodesk.Navisworks.Api.Interop.LcClClashReport : NativeHandle            
   (Tabular) is one of them is UNKNOWN until a start reads them. The three enums whose names
   suggest kinds, `LcClClashReport+ReportFields`, `LcOclClashReportConfig+ReportContentFlags`
   and `LcOpPlugin+ExportStatus`, are native C++ types with no values in the metadata, each
-  inside a type that is not public, lines 172 to 186
+  inside a type that is not public, lines 173 to 187
 - its arguments can be had from public members: `LcOpState.GetActiveInstance()`, line
-  572, and public parameterless constructors on `LcClClashGUIProxy` and
-  `LcClashReportResultSelector`, lines 575 and 579. Whether a call from outside Clash
+  573, and public parameterless constructors on `LcClClashGUIProxy` and
+  `LcClashReportResultSelector`, lines 576 and 580. Whether a call from outside Clash
   Detective's own window works is UNKNOWN
 - no string in any of the five files holds tabular or .xsl, the per word counts at lines
-  113, 221, 243, 548 and 565. The one string holding clash_report, read case blind, is
-  Api.dll's `ePLUGIN_CLASH_REPORT`, line 112, the name of the value 6 of
-  `LcOpPluginType`, line 88, so the plugin types include one named for a clash report.
+  114, 222, 244, 549 and 566. The one string holding clash_report, read case blind, is
+  Api.dll's `ePLUGIN_CLASH_REPORT`, line 113, the name of the value 6 of
+  `LcOpPluginType`, line 89, so the plugin types include one named for a clash report.
   Clash.dll's 16 strings all hold reportformat and none holds another of the four words,
-  line 221: its formatter method names and one parameter name, lines 205 to 220. Which
+  line 222: its formatter method names and one parameter name, lines 206 to 221. Which
   plugin holds an HTML (Tabular) formatter, if any does, and in which file, is UNKNOWN
-- the thirteen COM clash types, lines 302 to 542, carry tests, results, pictures and
+- the thirteen COM clash types, lines 303 to 543, carry tests, results, pictures and
   viewpoints and no report member. `Autodesk.Navisworks.Automation.dll` holds nothing
-  matching, lines 556 and 559, and `Autodesk.Navisworks.ComApi.dll` one native nested
-  enum and no member, lines 234 and 237
-- what `Document.ExportAsDwf(String)`, line 72, writes. It is the one member on `Document`
+  matching, lines 557 and 560, and `Autodesk.Navisworks.ComApi.dll` one native nested
+  enum and no member, lines 235 and 238
+- what `Document.ExportAsDwf(String)`, line 73, writes. It is the one member on `Document`
   whose name holds one of the four words, and nothing about clashes is in its name
 
 WHAT THIS DECIDES. Nothing in the code yet. The page stays rendered from this tool's XML

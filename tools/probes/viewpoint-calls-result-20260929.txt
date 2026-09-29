@@ -1,8 +1,8 @@
 ASSEMBLY  Autodesk.Navisworks.Api 22.0.0.0   file 22.5.1433.58, 4261152 bytes, loaded reflection only: True
 ASSEMBLY  Autodesk.Navisworks.ComApi 22.0.0.0   file 22.5.1433.58, 385824 bytes, loaded reflection only: True
 ASSEMBLY  Autodesk.Navisworks.Interop.ComApi 22.0.0.0   file 22.5.1433.58, 313624 bytes, loaded reflection only: True
-MACHINE   [machine]   2026-09-29 12:55
-READER    il-reader.ps1, dot-sourced, sha256 76C56D7C9E0A9AB6B026BB96553757D5981E6F0E2947A621240957194BF69AB4
+MACHINE   [machine]   2026-09-29 13:26
+READER    il-reader.ps1, dot-sourced, sha256 A89DD3A328D52342D2087345E4CEA9554058566556BD690FAB5E705C8D982F89
 
 ---- A. THE LIST TYPED BY HAND, from reading src\Federator.Addin\Engine\SavedViewpoints.cs ----
   [the method or use in SavedViewpoints.cs] type kind name, then what the DLL holds
@@ -200,15 +200,21 @@ READER    il-reader.ps1, dot-sourced, sha256 76C56D7C9E0A9AB6B026BB96553757D5981
   RESOLVED  type     Autodesk.Navisworks.Api.Interop.ComApi.InwOpFolderView   at SavedViewpoints.FindComFolder return, SavedViewpoints.FindComFolder local, SavedViewpoints.FolderNamed return, SavedViewpoints.FolderNamed local, SavedViewpoints.FolderNamed IL_0015
   RESOLVED  type     Autodesk.Navisworks.Api.Interop.ComApi.InwSavedViewsColl   at SavedViewpoints.FindComFolder local, SavedViewpoints.FolderNamed parameter
 
-  Everything section C could not read, kept by il-reader.ps1, each once, with what the runtime said:
+  Everything this probe could not read in sections A to C, kept by il-reader.ps1, each once, with what the runtime said:
     IL bodies that could not be read: 0
-    opcode bytes the reader does not know, each ending the read of its body: 0
+    opcode bytes that are not an instruction, each ending the read of its body: 0
     tokens that did not resolve: 0
+    MemberRef rows that did not resolve: 0
     types whose methods could not be listed: 0
+    types whose members could not be listed: 0
+    assemblies where GetTypes could not load every type: 0
+    metadata that could not be read: 0
     signatures that could not be read: 0
     local variable lists that could not be read: 0
     field types that could not be read: 0
+    constant values that could not be read: 0
   count 0
+  opcode table: 191 one byte and 27 two byte instructions. Reserved bytes 0xF8 to 0xFD and 0xFF among them: 0, so each reads as not an instruction
 
   Navisworks members referenced 65, declared in an install assembly 62, of those on list A 62 and NOT on list A 0, declared on a framework generic 3
   Navisworks types referenced 21, reads that failed 0
