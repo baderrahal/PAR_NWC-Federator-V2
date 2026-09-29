@@ -70,12 +70,13 @@ $ErrorActionPreference = "Stop"
 #   5  AddPluginAssembly with the add-in built from this repo. ExecuteAddInPlugin is NOT
 #      called, because the tool's own plugin opens its window
 #   6  quit through the API with Dispose. If the adopted id is still the same process
-#      -QuitWaitSeconds later, that id and no other is closed with Stop-Process
+#      -QuitWaitSeconds later, that process and no other is closed through the handle the
+#      adoption holds, CloseAdopted in tools\loop\nw-guard.ps1 since F103
 #
 # Steps 3 to 6 sit in one try whose finally closes the adopted id, if it is still the same
 # process, BEFORE it writes anything, so a failed write cannot leave it running. So the
-# adopted Roamer is quit by Dispose, and closed by its id only when Dispose leaves it
-# running, a step failed, or the adopted deadline passed.
+# adopted Roamer is quit by Dispose, and closed through its held handle only when Dispose
+# leaves it running, a step failed, or the adopted deadline passed.
 #
 # THE WATCHDOG runs on its own runspace, from just after step 2. About every half second
 # plus the time a pass takes, it records each process new since step 2 whose name starts
@@ -863,13 +864,10 @@ try {
   $st6 = ProcState $myPid $myTicks
   if ($st6 -eq "gone") { $goneAtUtc = [DateTime]::UtcNow }
   if ($st6 -eq "same") {
-    $forceErr = $null
-    try { Stop-Process -Id $myPid -Force -ErrorAction Stop } catch { $forceErr = $_.Exception }
-    $sw2 = [Diagnostics.Stopwatch]::StartNew()
-    while ((ProcState $myPid $myTicks) -eq "same" -and $sw2.Elapsed.TotalSeconds -lt 30) { Start-Sleep -Milliseconds 250 }
+    $cr6 = CloseAdopted $sync.MyProc $myTicks 30
     $stAfter = ProcState $myPid $myTicks
     if ($stAfter -eq "gone") { $goneAtUtc = [DateTime]::UtcNow }
-    Say ("  " + (Stamp) + "  pid " + $myPid + " was STILL RUNNING " + $QuitWaitSeconds + " s after Dispose. It HAD TO BE FORCED with Stop-Process -Id " + $myPid + $(if ($null -ne $forceErr) { ", which threw " + (Err $forceErr) } else { "" }) + ". State after: " + $stAfter)
+    Say ("  " + (Stamp) + "  pid " + $myPid + " was STILL RUNNING " + $QuitWaitSeconds + " s after Dispose. It HAD TO BE FORCED through the held handle: " + $cr6.Text + ". State after: " + $stAfter)
     $outcome["6"] = "failed, had to be forced"
   } else {
     Say ("  " + (Stamp) + "  pid " + $myPid + " state " + $st6 + ", " + $sw.Elapsed.TotalSeconds.ToString("0.0") + " s after Dispose returned, not forced")
@@ -886,14 +884,11 @@ try {
   if ($myPid -ne 0) {
     $sf = ProcState $myPid $myTicks
     if ($sf -eq "same") {
-      $fe = $null
-      try { Stop-Process -Id $myPid -Force -ErrorAction Stop } catch { $fe = $_.Exception }
-      $swf = [Diagnostics.Stopwatch]::StartNew()
-      while ((ProcState $myPid $myTicks) -eq "same" -and $swf.Elapsed.TotalSeconds -lt 30) { Start-Sleep -Milliseconds 250 }
+      $crf = CloseAdopted $sync.MyProc $myTicks 30
       if ($null -ne $app -and -not $disposed) { [GC]::SuppressFinalize($app); $suppressed = $true }
       $sfAfter = ProcState $myPid $myTicks
       if ($sfAfter -eq "gone" -and $null -eq $goneAtUtc) { $goneAtUtc = [DateTime]::UtcNow }
-      $closeNote = "pid " + $myPid + " was still the same process, CLOSED here with Stop-Process -Id " + $myPid + $(if ($null -ne $fe) { ", which threw " + (Err $fe) } else { "" }) + ", state after: " + $sfAfter
+      $closeNote = "pid " + $myPid + " was still the same process, CLOSED here through the held handle: " + $crf.Text + ", state after: " + $sfAfter
     } else {
       if ($sf -eq "gone" -and $null -eq $goneAtUtc) { $goneAtUtc = [DateTime]::UtcNow }
       $closeNote = "pid " + $myPid + " state " + $sf + ", nothing to close"

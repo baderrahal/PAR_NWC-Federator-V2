@@ -325,7 +325,7 @@ function DiffAutoSave($autoBefore, $sAfter) {
 
 # The window reader, in memory. EnumWindows needs a callback, so the delegate type is
 # emitted too. It is compared by process id FIRST, so no window of any other process is
-# read, and a message goes only to a child of a dialog of the process asked for.
+# read, and a message goes only to a child window of the process asked for.
 function NewWinTypes {
 $dynName = New-Object System.Reflection.AssemblyName("ProbeWinNative")
 $dynAsm = [AppDomain]::CurrentDomain.DefineDynamicAssembly($dynName, [System.Reflection.Emit.AssemblyBuilderAccess]::Run)
@@ -348,7 +348,18 @@ foreach ($def in @(
     @("user32.dll", "GetWindowTextW", [int], [Type[]]@([IntPtr], [System.Text.StringBuilder], [int])),
     @("user32.dll", "SendMessageTimeoutW", [IntPtr], [Type[]]@([IntPtr], [uint32], [IntPtr], [System.Text.StringBuilder], [uint32], [uint32], [IntPtr].MakeByRefType())),
     @("kernel32.dll", "GetCurrentProcess", [IntPtr], [Type[]]@()),
-    @("kernel32.dll", "TerminateProcess", [bool], [Type[]]@([IntPtr], [uint32])))) {
+    @("kernel32.dll", "TerminateProcess", [bool], [Type[]]@([IntPtr], [uint32])),
+    # F103 for run.ps1: the owner of a dialog and whether it is enabled, the keep awake
+    # request and the native thread it belongs to, the session lock, M6, and a key's write
+    # time, M5. Each is read only, bar the keep awake request, which Windows drops by itself
+    # when the thread that made it ends.
+    @("user32.dll", "GetWindow", [IntPtr], [Type[]]@([IntPtr], [uint32])),
+    @("user32.dll", "IsWindowEnabled", [bool], [Type[]]@([IntPtr])),
+    @("kernel32.dll", "SetThreadExecutionState", [uint32], [Type[]]@([uint32])),
+    @("kernel32.dll", "GetCurrentThreadId", [uint32], [Type[]]@()),
+    @("wtsapi32.dll", "WTSQuerySessionInformationW", [bool], [Type[]]@([IntPtr], [int], [int], [IntPtr].MakeByRefType(), [uint32].MakeByRefType())),
+    @("wtsapi32.dll", "WTSFreeMemory", [void], [Type[]]@([IntPtr])),
+    @("advapi32.dll", "RegQueryInfoKeyW", [int], [Type[]]@([IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [long].MakeByRefType())))) {
   $pm = $tb.DefinePInvokeMethod($def[1], $def[0], [System.Reflection.MethodAttributes]"Public,Static,PinvokeImpl,HideBySig", [System.Reflection.CallingConventions]::Standard, $def[2], $def[3], [System.Runtime.InteropServices.CallingConvention]::Winapi, [System.Runtime.InteropServices.CharSet]::Unicode)
   $pm.SetImplementationFlags($pm.GetMethodImplementationFlags() -bor [System.Reflection.MethodImplAttributes]::PreserveSig)
 }
@@ -372,9 +383,14 @@ function WinHandlesOf($winType, $procType, [uint32]$owner, [IntPtr]$parent) {
 }
 # GetClassName and GetWindowText send no message into another process. SendMessageTimeout
 # with WM_GETTEXT does, and it is reached only when $allowMessages is true, which is only
-# ever for the adopted Roamer.
-function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [bool]$allowMessages) {
-  $lines = New-Object System.Collections.Generic.List[string]
+# ever for the adopted Roamer. Since F103, with messages allowed, the text of the visible
+# children of every visible top level window is read, not only of a #32770, so a WinForms
+# or WPF dialog of Navisworks is read too. The Navisworks main window is left out, because
+# its children are its panels and not a dialog's text, and at most 20 children of one
+# window are read, each with a 500 ms timeout that SMTO_ABORTIFHUNG cuts short when the
+# window's thread is hung.
+function WindowRecords($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [bool]$allowMessages) {
+  $recs = New-Object System.Collections.Generic.List[object]
   foreach ($h in (WinHandlesOf $winType $procType $owner ([IntPtr]::Zero))) {
     $vis = $winType::IsWindowVisible($h)
     if ($visibleOnly -and -not $vis) { continue }
@@ -382,26 +398,52 @@ function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [b
     [void]$winType::GetClassNameW($h, $c, 256)
     $t = New-Object System.Text.StringBuilder 512
     [void]$winType::GetWindowTextW($h, $t, 512)
-    $line = "[" + $c.ToString() + "] `"" + $t.ToString() + "`""
-    if (-not $vis) { $line += " hidden" }
-    if ($vis -and $c.ToString() -eq "#32770") {
-      if (-not $allowMessages) { $line += " text: not read, nothing is sent before adoption" }
-      else {
-        $parts = @()
-        foreach ($ch in (WinHandlesOf $winType $procType $owner $h)) {
-          if (-not $winType::IsWindowVisible($ch)) { continue }
-          $sb = New-Object System.Text.StringBuilder 2048
-          [IntPtr]$res = [IntPtr]::Zero
-          [void]$winType::SendMessageTimeoutW($ch, [uint32]0x000D, [IntPtr]2048, $sb, [uint32]0x0002, [uint32]500, [ref]$res)
-          $s = $sb.ToString().Replace("`r", " ").Replace("`n", " ").Trim()
-          if ($s.Length -gt 0) { $parts += ("`"" + $s + "`"") }
-        }
-        $line += " text: " + ($parts -join " ")
+    $ownerWin = $winType::GetWindow($h, [uint32]4)
+    $ownerOn = "none"
+    if ($ownerWin -ne [IntPtr]::Zero) { $ownerOn = [string]$winType::IsWindowEnabled($ownerWin) }
+    $rec = [pscustomobject]@{ Handle = $h; Class = $c.ToString(); Caption = $t.ToString(); Visible = $vis; Owner = [string]$ownerWin; OwnerEnabled = $ownerOn; Texts = $null; TextNote = "" }
+    if ($vis -and -not $allowMessages -and $rec.Class -eq "#32770") { $rec.TextNote = "not read, nothing is sent before adoption" }
+    if ($vis -and $allowMessages -and (WindowKind $rec.Class $rec.Caption) -ne "MAIN") {
+      $parts = @()
+      $n = 0
+      foreach ($ch in (WinHandlesOf $winType $procType $owner $h)) {
+        if (-not $winType::IsWindowVisible($ch)) { continue }
+        $n++
+        if ($n -gt 20) { continue }
+        $sb = New-Object System.Text.StringBuilder 2048
+        [IntPtr]$res = [IntPtr]::Zero
+        [void]$winType::SendMessageTimeoutW($ch, [uint32]0x000D, [IntPtr]2048, $sb, [uint32]0x0002, [uint32]500, [ref]$res)
+        $s = $sb.ToString().Replace("`r", " ").Replace("`n", " ").Trim()
+        if ($s.Length -gt 0) { $parts += ("`"" + $s + "`"") }
       }
+      if ($n -gt 20) { $parts += ("and " + ($n - 20) + " more visible children not read") }
+      $rec.Texts = $parts
     }
+    $recs.Add($rec)
+  }
+  return ,$recs
+}
+function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [bool]$allowMessages) {
+  $lines = New-Object System.Collections.Generic.List[string]
+  foreach ($r in (WindowRecords $winType $procType $owner $visibleOnly $allowMessages)) {
+    $line = "[" + $r.Class + "] `"" + $r.Caption + "`""
+    if (-not $r.Visible) { $line += " hidden" }
+    if ($r.TextNote -ne "") { $line += " text: " + $r.TextNote }
+    elseif ($null -ne $r.Texts) { $line += " text: " + ($r.Texts -join " ") }
     $lines.Add($line)
   }
   return $lines
+}
+# What a top level window of the adopted Navisworks is: the tool's window, the Navisworks
+# main window, its Working... progress dialog, or anything else, a DIALOG finding. The
+# Working... dialog was measured on 2026-09-28, docs\history\scan.md 5z-d, and the main
+# window on 2026-09-29, tools\probes\automation-start-result-20260929.txt line 423. The
+# tool's window is read off the design and is UNKNOWN until the first window start.
+function WindowKind($class, $caption) {
+  if ($class.StartsWith("HwndWrapper[Roamer.exe;ProgressDialog;")) { return "PROGRESS" }
+  if ($class.StartsWith("HwndWrapper") -and $caption.StartsWith("Parsons NWC Federator")) { return "WINDOW" }
+  if ($class.StartsWith("WindowsForms10") -and $caption.EndsWith("Autodesk Navisworks Manage 2025")) { return "MAIN" }
+  return "DIALOG"
 }
 
 function WindowsOf($id, $utcTicks) {
@@ -428,6 +470,36 @@ function ProcState($id, $utcTicks) {
   if ($null -eq $st) { return "unreadable" }
   if ($null -ne $utcTicks -and (UtcTicks $st) -eq $utcTicks) { return "same" }
   return "other"
+}
+
+# F103. The adopted process is held through the handle AdoptStart opened, so Windows gives
+# its pid to no other process while it is held, and every read below goes through that
+# handle: same, gone, other, or unreadable, or none when nothing was adopted.
+function HeldState($proc, $ticks) {
+  if ($null -eq $proc) { return "none" }
+  try {
+    if ($proc.HasExited) { return "gone" }
+    if ((UtcTicks $proc.StartTime) -eq $ticks) { return "same" }
+    return "other"
+  } catch { return "unreadable" }
+}
+# THE ONE CLOSE. Kill on the Process the adoption holds, after its start ticks read equal
+# through that same handle. .NET Framework's Process.Kill reuses the handle the object holds
+# and throws when that process has exited, so it can never reach another process. Waits up
+# to $waitSeconds for the process to end. Nothing else in the loop closes a Navisworks, bar
+# CloseOwn after a run.ps1 died, which calls this too.
+function CloseAdopted($proc, $ticks, $waitSeconds) {
+  $r = [pscustomobject]@{ State = "none"; Text = "" }
+  if ($null -eq $proc) { $r.Text = "nothing was adopted, so nothing is closed"; return $r }
+  try {
+    if ($proc.HasExited) { $r.State = "gone"; $r.Text = "pid " + $proc.Id + " has exited already, nothing to close"; return $r }
+    $now = UtcTicks $proc.StartTime
+    if ($now -ne $ticks) { $r.State = "other"; $r.Text = "pid " + $proc.Id + " reads start ticks " + $now + " through the held handle, not " + $ticks + ", so it is not closed"; return $r }
+    $proc.Kill()
+    if ($proc.WaitForExit([int]($waitSeconds * 1000))) { $r.State = "gone"; $r.Text = "pid " + $proc.Id + " closed through the held handle and gone" }
+    else { $r.State = "same"; $r.Text = "pid " + $proc.Id + " was sent Kill through the held handle and still runs " + $waitSeconds + " s later" }
+  } catch { $r.State = "unreadable"; $r.Text = "the close of pid " + $proc.Id + " through the held handle threw, " + (Err $_.Exception) }
+  return $r
 }
 
 # What is known about one Roamer, read through the process list and Win32_Process only.
@@ -658,6 +730,7 @@ $sync.AdoptedDeadline = $AdoptedDeadlineSeconds
 $sync.AdoptedAtUtc = [DateTime]::MaxValue
 $sync.MyPid = 0
 $sync.MyTicks = [long]0
+$sync.MyProc = $null
 $sync.NoAdopt = $false
 $sync.Forced = ""
 $sync.DeadlineDone = $false
@@ -844,14 +917,11 @@ function Watchdog($sync) {
         $sync.Stop = $true
         break
       }
-      # The adopted deadline, for the adopted Roamer only, after its start time is read again.
+      # The adopted deadline, for the adopted Roamer only, closed through the held handle
+      # after its start time is read again through it. run.ps1 calls this deadline the ceiling.
       if ($sync.Forced -eq "" -and $sync.MyPid -ne 0 -and ($nowUtc - $sync.AdoptedAtUtc).TotalSeconds -gt $sync.AdoptedDeadline) {
-        $pp = Get-Process -Id $sync.MyPid -ErrorAction SilentlyContinue
-        $pst = $null
-        if ($null -ne $pp) { $pst = StartOf $pp }
-        if ($null -ne $pst -and (UtcTicks $pst) -eq $sync.MyTicks) {
-          try { Stop-Process -Id $sync.MyPid -Force -ErrorAction Stop; $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, closed the adopted pid " + $sync.MyPid } catch { $sync.Forced = "the adopted deadline passed, Stop-Process on pid " + $sync.MyPid + " threw: " + $_.Exception.Message }
-        } else { $sync.Forced = "the adopted deadline passed, pid " + $sync.MyPid + " is gone, is another process or cannot be read, nothing closed" }
+        $cr = CloseAdopted $sync.MyProc $sync.MyTicks 5
+        $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, " + $cr.Text
         W ($sync.Forced)
       }
     } catch {
@@ -954,10 +1024,30 @@ function AdoptStart($err, $app, $sync, $pidFile) {
   $myPid = $possible[0].Id
   $myStart = $possible[0].Start
   $myTicks = $possible[0].Ticks
+  # F103, the held handle. The Process object of the one start opens its handle, and the start
+  # ticks are read again through it. While it is open Windows gives the pid to no other
+  # process, and every close goes through it. A handle that cannot be opened, or ticks that
+  # differ, and the start counts as gone: nothing is closed and nothing is called on it.
+  $held = $null
+  $heldWhy = ""
+  try {
+    $held = Get-Process -Id $myPid -ErrorAction Stop
+    [void]$held.Handle
+    $again = UtcTicks $held.StartTime
+    if ($again -ne $myTicks) { $heldWhy = "its start ticks read " + $again + " through the handle, not " + $myTicks; $held = $null }
+  } catch { $heldWhy = "its handle could not be opened, " + (Err $_.Exception); $held = $null }
+  if ($null -eq $held) {
+    $sync.NoAdopt = $true
+    if ($null -ne $app) { [GC]::SuppressFinalize($app); $suppressed = $true }
+    Say ("  NOT ADOPTED, the one possible start counts as gone, " + $heldWhy + ". Nothing is closed and nothing is called on the object. A finding")
+    return [pscustomobject]@{ Adopted = $false; C1 = $c1; C2 = $c2; C3 = $c3; C4 = $c4; Suppressed = $suppressed; Pid = 0; Start = $null; Ticks = $null }
+  }
+  Say ("  the held handle is open on pid " + $myPid + ", and the start ticks read again through it are equal")
+  $sync.MyProc = $held
   $sync.MyTicks = $myTicks
   $sync.AdoptedAtUtc = [DateTime]::UtcNow
   $sync.MyPid = $myPid
-  try { [System.IO.File]::WriteAllText($pidFile, [string]$myPid + "`r`n" + [string]$myTicks + "`r`n", $utf8) } catch { Say ("  could not write " + $pidFile + ", " + (Err $_.Exception)) }
+  try { [System.IO.File]::WriteAllText($pidFile, [string]$myPid + "`r`n" + [string]$myTicks + "`r`nadopted`r`n", $utf8) } catch { Say ("  could not write " + $pidFile + ", " + (Err $_.Exception)) }
   return [pscustomobject]@{ Adopted = $true; C1 = $c1; C2 = $c2; C3 = $c3; C4 = $c4; Suppressed = $suppressed; Pid = $myPid; Start = $myStart; Ticks = $myTicks }
 }
 
@@ -1046,4 +1136,15 @@ function SettingsPutBack($putBack, $why, $work, $regSub, $regBefore, $regRoot, $
     $autoLines = DiffAutoSave $autoBefore $sAfter
     foreach ($l in $autoLines) { Say ("  " + $l) }
     Say ("  AutoSave files added, changed, gone or unreadable: " + $autoLines.Count)
+    # F103, what run.ps1 reads for its exit code. Differ counts every difference found, a file
+    # that appeared, one that could not be read at the end and one not backed up whose size or
+    # write time changed included. NotWritten counts those left as they are.
+    $appeared = @($df.Lines | Where-Object { $_.StartsWith("file APPEARED") }).Count
+    $inUse = @($df.Lines | Where-Object { $_.StartsWith("file IN USE") }).Count
+    $nbChanged = 0
+    foreach ($rel in @($notBacked.Keys)) { $na = $sAfter.Files[$rel]; $nb = $notBacked[$rel]; if ($null -eq $na -or $na.Length -ne $nb.Length -or $na.Write -ne $nb.Write) { $nbChanged++ } }
+    $differ = $dr.Changes.Count + $df.Changes.Count + $appeared + $inUse + $nbChanged
+    $notWritten = $differ
+    if ($putBack) { $notWritten = $pr.Failed + $pr.Skipped + $left + $pf.Failed + $pf.Skipped + $appeared + $inUse + $nbChanged }
+    return [pscustomobject]@{ PutBack = $putBack; Differ = $differ; NotWritten = $notWritten; AutoSave = $autoLines.Count }
 }

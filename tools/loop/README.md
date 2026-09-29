@@ -2,7 +2,9 @@
 
 The scripts the loop runs on Bader's machine. The rules they keep are in
 .claude\rules\loop.md. Each PowerShell script is run from the repo root with
-powershell -ExecutionPolicy Bypass -File tools\loop\<name>.ps1
+powershell -ExecutionPolicy Bypass -File tools\loop\<name>.ps1, bar run.ps1 and
+prove-run.ps1, which also take -NoProfile -STA, and nw-guard.ps1, which is only
+dot-sourced.
 
 ## prepare-copy.ps1
 
@@ -74,9 +76,129 @@ How a change to a wall is proved with it and copied in is in .claude\rules\loop.
 
 ## run.ps1
 
-NOT WRITTEN YET. It starts a run with no click, keeps the machine awake while it goes,
-reads the log while it grows, calls a run hung only when the log has not grown and that
-Navisworks has used no processor time for five minutes, records any dialog Navisworks
-raises, and closes only the Navisworks it started, by its process id. How the installed
-Navisworks can start a run with no click is Phase 1 of the loop and is measured by the
-prober first, so this script is written after that answer and not before it.
+F103 part 1, built from the design in steps\notes\f103-design.md. Always started as
+
+    powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\run.ps1 -Mode <mode> ...
+
+It refuses to run anywhere else: not Windows PowerShell 5.1, a 32 bit process, an MTA
+thread, or a script that is not the one its own powershell.exe was started to run. Its
+modes:
+
+- Check, the default. Reads only and writes nothing. Prints every Roamer, unproved-starts.txt,
+  every run folder whose record.txt has no VERDICT line, the installed add-in's stamp against
+  bundle-backup and the newest loop install, his logs folder and his AutoSave folder against
+  their backups by name and sha256, the source copy's marker files, and every refusal Run
+  would give for a -Set, -Item and -Stamp. Exit 0 when Run would go, 2 when it would refuse
+- Install -Stamp <8 hex>. Refuses while any Roamer runs, unless HEAD is that commit, and
+  unless git status prints nothing, untracked files included, because the build stamp
+  reads +edits for any of them. Copies an installed bundle that matches neither
+  bundle-backup nor the last loop install into bundle-backup-yyyyMMdd-HHmmss and reads it
+  back, runs build\install.ps1 as a child, shuts the build servers down, and reads the
+  installed stamp back
+- Run -Set NN -Item 0 -Stamp <8 hex>, the start with no window. Its refusals in order: the
+  host, the parameters, the loop's lock Local\NwcFederatorLoop.run, a record with no
+  VERDICT line, a start in unproved-starts.txt still running, any Roamer, the installed
+  stamp, and evidence already in steps\runs\NN\item0. Then the run folder, the watchdog, the
+  backups of his logs folder, his AutoSave folder and his Navisworks settings, the keep
+  awake request, the last read of the unproved starts and the Roamers, and the start through
+  the Automation API. The one start is adopted by the four conditions and held through its
+  handle, set Visible, and held 360 s while the monitor reads its processor time every 15 s.
+  Then Dispose, and the one close through the held handle if it still runs 60 s later.
+  ExecuteAddInPlugin is never called, so the tool's window never opens and nothing is
+  written into his logs folder
+- CloseOwn -RunFolder <runs\NN\item...>, after a run.ps1 died. Closes that folder's
+  Navisworks only when its record has no VERDICT line, its mypid.txt reads adopted, and the
+  pid is a process named Roamer with the install's Roamer.exe, the automation command line
+  and the same start ticks. Lists the settings compare, writes nothing back, and appends
+  VERDICT: CLOSED BY CLOSEOWN
+
+NOT IN PART 1, waiting for Bader's answer to Q82: the window, items 1 to 5, the log lock,
+the removal of the loop's own log and the driver. Each of their parameters is refused.
+
+Exit codes: 0 finished and everything put back, 1 a fault in run.ps1, 2 refused, 3 not
+adopted or the constructor deadline, 4 hung or the ceiling, 5 finished but a dialog
+appeared, 6 something of Bader's not put back, 7 the adopted Navisworks ended by itself.
+
+The numbers that shape a run are constants, not parameters, so no switch moves a path or
+shortens a limit: the hang rule's 300 s, the constructor deadline's 300 s, the ceiling of 12
+hours from adoption until Bader answers Q84, recorded as CEILING and never as HUNG, the
+hold of 360 s, the monitor's pass of 15 s and its heartbeat of 60 s. The keep awake
+request, ES_CONTINUOUS, ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED, is made on the main
+thread just before the last read before the start and let go in the run's finally, and in
+the outermost finally if that could not, and Windows drops it by itself when the process
+ends. Every part of the run's finally runs in its own try, so a fault in one never skips
+the close, the watchdog's end, the put back, the keep awake release or the verdict.
+
+- reads: the process list, unproved-starts.txt, the runs folder, the installed bundle, his
+  logs folder and AutoSave folder, HKCU\Software\Autodesk\Navisworks Manage\22.0 and every
+  file of %APPDATA%\Autodesk\Navisworks Manage 2025, and for M5 the write times of the keys
+  under HKCU\Software\Autodesk and the files under %TEMP%, %LOCALAPPDATA%\Autodesk,
+  %APPDATA%\Autodesk, %PROGRAMDATA%\Autodesk and %APPDATA%\Microsoft\Windows\Recent written
+  at or after the start
+- writes outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop: runs\NN\item0 with
+  record.txt, watch.txt, mypid.txt, logs-before.txt, logs-after.txt, autosave-before.txt,
+  settings\ with the export, the copies and before.clixml, settings.txt and m5.txt, a
+  folder there already moved aside and never emptied, logs-backup\since-yyyyMMdd-HHmmss
+  and autosave-backup\since-yyyyMMdd-HHmmss for files the backups did not hold,
+  probes\unproved-starts.txt for a start it could not prove, and for Install
+  installs\<stamp>-yyyyMMdd-HHmmss and bundle-backup-yyyyMMdd-HHmmss
+- writes of Bader's: his Navisworks settings, put back only by the D2 rule in
+  .claude\rules\loop.md, and for Install the installed bundle
+- writes in the repo: steps\runs\NN\item0 with record.txt, watch.txt and settings.txt, to
+  be masked before any commit
+- deletes: nothing
+
+## nw-guard.ps1
+
+The loop's guard code, in one copy, a file of functions with no main body. Every function
+of the probe tools\probes\probe-automation-start.ps1 that its watchdog also uses, and every
+guard it wrote inline, was moved into it unchanged at F103, the inline ones wrapped as
+functions whose bodies are the probe's lines. The probe, run.ps1 and prove-run.ps1
+dot-source it, and each runspace they start gets its text. What F103 added to it: the held
+handle in AdoptStart, HeldState, the one close CloseAdopted, which the probe's three
+Stop-Process calls became, WindowRecords under WindowLines with the text of every visible
+top level window's children, WindowKind, the summary SettingsPutBack returns, and seven
+calls in the emitted window type: GetWindow, IsWindowEnabled, GetCurrentThreadId,
+WTSQuerySessionInformationW and RegQueryInfoKeyW, which read, WTSFreeMemory, which frees what
+the session read returned, and SetThreadExecutionState, which asks Windows to stay awake.
+Nothing is compiled and nothing is written under %TEMP%.
+
+## prove-run.ps1 and StandIn
+
+The proof of run.ps1 and nw-guard.ps1 with no Navisworks, the design's cases H0 to H15 for
+the part 1 modes and M1 to M3:
+
+    powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <a new folder under %LOCALAPPDATA%\NwcFederatorLoop>
+
+It refuses while any Roamer runs and refuses a -Work folder that is there already. It loads
+run.ps1's functions through the parser, so run.ps1's main flow never runs in it, and calls
+the real run.ps1 only in Check, which reads only, and in calls made to be refused, each
+made only after it reads a stand-in Roamer running and an installed stamp that is not the
+one passed, so two other checks would refuse it too. After every case it reads his logs
+folder, his AutoSave folder, the installed bundle, an export of his 22.0 key and the loop
+folder outside the turn folders, and each must read as at the start.
+
+StandIn is a small net48 exe named Roamer.exe that is not Navisworks, outside the solution
+and the bundle, built by the harness with dotnet build into -Work. It takes its role from
+its arguments or from NWCLOOP_STANDIN: sleep, spin, write a RunLog with the repo's own
+Federator.Core, one RunLog.Start for M1, a message box and a WinForms dialog, or a decoy that
+logs every WM_GETTEXT and WM_CLOSE sent to it from another process. Every role ends by
+itself.
+
+- writes outside the repo: -Work, and the throwaway key HKCU\Software\NwcFederatorLoopTest
+- deletes: -Work and that key at the end, and nothing else
+- starts: dotnet build and dotnet build-server shutdown, the stand-ins, child powershell.exe
+  processes, reg.exe export, git for a scratch repository under -Work, and cmd.exe for one
+  junction under -Work
+
+Proved on 2026-09-29 with no Navisworks started: 142 checks passed and 0 failed, 28
+stand-ins each closed through its held handle, Bader's folders, bundle and key read the same
+after every case, and Get-Process Roamer read 0 before and after. Among them M1, M2 and M3:
+with 30 fabricated logs held open without delete sharing, the real RunLog.Start prune wrote
+RETAIN keeping 30 logs, deleted 0, could not delete 1, and lost nothing, where the same
+folder with no handles lost its oldest. FileVersionInfo.ProductVersion equals the
+informational version on this repo's build and the installed build. The keep awake request
+returned 0x80000000 and its release 0x80000003 on the same native thread. What waits for a
+real start: whether the handle opens on a Roamer that COM started, what an idle Navisworks's
+processor time does, what a start writes outside the loop folder, and the session lock, M4
+to M6, measured by the first Run.

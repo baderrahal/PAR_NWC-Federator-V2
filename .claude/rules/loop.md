@@ -76,21 +76,39 @@ and nothing is fixed until a real run on real files shows it fixed.
   logs the tool keeps never push one of his out. Any choice the tool remembers between
   runs is read before the loop and put back after it
 - Close what you open. Every Navisworks the loop proves its own, by the rule below, is
-  closed, and by its own process id when the Automation API does not close it. One the
+  closed, and when the Automation API does not close it, through the handle its adoption
+  holds, after its start ticks read equal through that handle. While the handle is open
+  Windows gives its process id to no other process, so no close can reach another. One the
   loop started and cannot prove is left running and recorded, as the rule below says. A
   Navisworks the loop did not start is never closed, attached to or sent anything
+- ONE COPY OF EVERY GUARD. The refusals, the adoption, the held handle, the watchdog, the
+  settings backup and put back, the unproved starts and the one close, CloseAdopted, live in
+  tools\loop\nw-guard.ps1, a file of functions with no main body. The probe, run.ps1 and
+  the proof harness dot-source it and never copy from it
 - A Navisworks is the loop's own only when the Automation start returned without
   throwing, it is the one possible start, a new Roamer whose command line names embedding
   or cannot be read, it started after the call began, and its command line holds
   -Embedding. A new Roamer whose command line reads and names neither is one started by
-  hand, and is left alone. Anything less and the loop closes
+  hand, and is left alone. The adoption then opens that process's handle and reads its start
+  ticks again through it, and a handle that cannot be opened or ticks that differ adopt
+  nothing. Anything less and the loop closes
   nothing, calls nothing on that start, and says why. NOTHING IS CLOSED BEFORE IT IS
   ADOPTED, not even at a deadline: a start that cannot be proved is written to
   %LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt and left running, and every
   later start refuses while one named there still runs, so a person looks. A start is
   also refused while any Roamer runs, whatever its command line and whoever started it,
   read before the backup and again just before the start, and the code keeps that rule,
-  not a person. docs\history\scan.md 5z-d
+  not a person, run.ps1 at its checks 6 and 18. docs\history\scan.md 5z-d
+- His AutoSave folder, %APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave, is where the
+  loop's Navisworks may autosave under his document names. Before every start each file of
+  it that %LOCALAPPDATA%\NwcFederatorLoop\autosave-backup does not already hold, by name and
+  sha256, is copied there and read back, and nothing is ever written into his folder. What a
+  run added, changed or removed there is listed, and what may be done with it is Bader's,
+  Q86
+- The loop installs the add-in only through tools\loop\run.ps1 -Mode Install, which runs
+  build\install.ps1 from a checkout whose HEAD is the commit asked for and whose git status
+  prints nothing, untracked files included, because the build stamp reads +edits for any
+  of them. The installed stamp is read back and must name that commit
 - While a Navisworks the loop started runs, the recent files, the window placement and the
   default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
   under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which
@@ -145,9 +163,11 @@ plus one first run of the whole folder.
    same way, and the run refuses with its reason
 
 A run is hung only when its log has not grown AND its Navisworks has used no processor
-time for five minutes. Then the last lines are saved, that Navisworks is closed by its
-process id, and the hang is a finding. Any dialog Navisworks raises during a run is a
-finding with its text.
+time for five minutes. Then the last lines are saved, that Navisworks is closed through the
+handle its adoption holds, and the hang is a finding. A sample that cannot be read restarts
+both clocks, so it never counts toward a hang. Until Bader answers Q84, run.ps1 also closes
+its own Navisworks 12 hours after adoption and records that as CEILING, never HUNG. Any
+dialog Navisworks raises during a run is a finding with its text.
 
 ## The team
 
