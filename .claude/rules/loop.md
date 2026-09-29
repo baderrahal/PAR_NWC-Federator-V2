@@ -90,8 +90,9 @@ and nothing is fixed until a real run on real files shows it fixed.
   ADOPTED, not even at a deadline: a start that cannot be proved is written to
   %LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt and left running, and every
   later start refuses while one named there still runs, so a person looks. A start is
-  also refused while a Roamer already running names embedding or automation anywhere in
-  its command line, because the start could reach it. docs\history\scan.md 5z-d
+  also refused while any Roamer runs, whatever its command line and whoever started it,
+  read before the backup and again just before the start, and the code keeps that rule,
+  not a person. docs\history\scan.md 5z-d
 - While a Navisworks the loop started runs, the recent files, the window placement and the
   default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
   under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which

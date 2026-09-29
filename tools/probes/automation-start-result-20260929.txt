@@ -1,0 +1,558 @@
+MACHINE   [machine]   2026-09-29 11:35:48
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 46428
+SCRIPT    C:\Users\p003653k\OneDrive - Parsons Corp\Documents\GitHub\PAR_NWC-Federator\tools\probes\probe-automation-start.ps1, 125081 bytes, sha256 9CC1987BBF6C0A850DE82D6DF14F823CEE0AEF97C8115FA9A36ACF6FA9563731
+PROCESS   powershell.exe pid 46428, started to run -File C:\Users\p003653k\OneDrive - Parsons Corp\Documents\GitHub\PAR_NWC-Federator\tools\probes\probe-automation-start.ps1, which is this script: True
+
+==== STEP 1. Reflection only, nothing started ====
+file      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Automation.dll   184088 bytes
+assembly  Autodesk.Navisworks.Automation, Version=22.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484
+runtime   v4.0.30319
+pe kind   PE32Plus   machine AMD64
+references:
+  mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
+  System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+
+types in the assembly: 534, public: 10
+Every public type follows. The ones named std. or _TP_ are C++ runtime structs the
+compiler made public, with no members.
+
+---- public struct _TP_CALLBACK_ENVIRON_V3+<unnamed-type-u> ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+
+---- public struct _TP_CALLBACK_ENVIRON_V3+<unnamed-type-u>+<unnamed-type-s> ----
+  base type: System.ValueType
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+
+---- public class Autodesk.Navisworks.Api.Automation.AutomationDocumentFileException ----
+  base type: System.Exception
+  implements: System.Runtime.Serialization.ISerializable, System.Runtime.InteropServices._Exception
+  attribute: [System.SerializableAttribute()]
+  public AutomationDocumentFileException(System.String message, System.Exception innerException)
+  public AutomationDocumentFileException(System.String message)
+  public AutomationDocumentFileException()
+
+---- public class Autodesk.Navisworks.Api.Automation.AutomationException ----
+  base type: System.Exception
+  implements: System.Runtime.Serialization.ISerializable, System.Runtime.InteropServices._Exception
+  attribute: [System.SerializableAttribute()]
+  public AutomationException(System.String message, System.Exception innerException)
+  public AutomationException(System.String message)
+  public AutomationException()
+
+---- public class Autodesk.Navisworks.Api.Automation.NavisworksApplication ----
+  base type: System.Object
+  implements: System.IDisposable
+  public NavisworksApplication()
+  public System.Boolean Visible { get, set }
+  public System.Void AddPluginAssembly(System.String fileName)
+  public System.Void AppendFile(System.String fileName)
+  public System.Void CreateCache(System.String fileNameToCache)
+  public System.Void DisableProgress()
+  public System.Void Dispose()
+  public System.Void EnableProgress()
+  public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters)
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication GetRunningInstance()
+  public System.Void OpenFile(System.String fileName, params System.String[] moreFiles)
+  public System.Void Print(System.String printer)
+  public System.Void Print(System.String printer, System.String driver, System.String port)
+  public System.Void Print(System.String printer, System.String driver)
+  public System.Void Print()
+  public System.Void SaveFile(System.String fileName)
+  public System.Void StayOpen()
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication TryGetRunningInstance()
+
+---- public struct std._String_val<std::_Simple_types<char> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+
+---- public struct std._String_val<std::_Simple_types<char16_t> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+
+---- public struct std._String_val<std::_Simple_types<char32_t> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+
+---- public struct std._String_val<std::_Simple_types<wchar_t> >+_Bxty ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.UnsafeValueTypeAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+
+---- public struct std.ranges._Not_quite_object+_Construct_tag ----
+  base type: System.ValueType
+  attribute: [System.Runtime.CompilerServices.NativeCppClassAttribute()]
+  attribute: [System.CLSCompliantAttribute((Boolean)False)]
+
+---- NavisworksApplication, every member public or not, declared on it ----
+  private System.Void !NavisworksApplication()
+  private System.Void ~NavisworksApplication()
+  public System.Void AddPluginAssembly(System.String fileName)
+  public System.Void AppendFile(System.String fileName)
+  public System.Void CreateCache(System.String fileNameToCache)
+  public System.Void DisableProgress()
+  protected System.Void Dispose(System.Boolean A_0)
+  public System.Void Dispose()
+  public System.Void EnableProgress()
+  public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters)
+  protected System.Void Finalize()
+  public System.Boolean get_Visible()
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication GetRunningInstance()
+  private System.Void Init(System.Boolean runningInstance)
+  public System.Void OpenFile(System.String fileName, params System.String[] moreFiles)
+  public System.Void Print()
+  public System.Void Print(System.String printer)
+  public System.Void Print(System.String printer, System.String driver)
+  public System.Void Print(System.String printer, System.String driver, System.String port)
+  private System.Int32 RunAction(System.Char* action, params System.String[] parameters)
+  public System.Void SaveFile(System.String fileName)
+  public System.Void set_Visible(System.Boolean val)
+  public System.Void StayOpen()
+  public static Autodesk.Navisworks.Api.Automation.NavisworksApplication TryGetRunningInstance()
+  private .ctor(System.Boolean runningInstance)
+  public .ctor()
+  field Bridge* m_bridge
+
+---- The IL of the constructors, GetRunningInstance, Dispose, Finalize and StayOpen, and what they call inside this assembly, three levels ----
+  [0] private Autodesk.Navisworks.Api.Automation.NavisworksApplication::.ctor(System.Boolean runningInstance)
+        IL_0000  ldarg.0    
+        IL_0001  call       System.Object::.ctor()
+        IL_0006  ldarg.0    
+        IL_0007  ldarg.1    
+        IL_0008  call       Autodesk.Navisworks.Api.Automation.NavisworksApplication::Init(System.Boolean runningInstance)
+        IL_000D  ret        
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::.ctor()
+        IL_0000  ldarg.0    
+        IL_0001  call       System.Object::.ctor()
+        IL_0006  ldarg.0    
+        IL_0007  ldc.i4.0   
+        IL_0008  call       Autodesk.Navisworks.Api.Automation.NavisworksApplication::Init(System.Boolean runningInstance)
+        IL_000D  ret        
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::GetRunningInstance()
+        IL_0000  ldc.i4.1   
+        IL_0001  newobj     Autodesk.Navisworks.Api.Automation.NavisworksApplication::.ctor(System.Boolean runningInstance)
+        IL_0006  ret        
+  [0] protected Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose(System.Boolean A_0)
+        IL_0000  ldarg.1    
+        IL_0001  brfalse.s  IL_000B
+        IL_0003  ldarg.0    
+        IL_0004  call       Autodesk.Navisworks.Api.Automation.NavisworksApplication::!NavisworksApplication()
+        IL_0009  br.s       IL_001B
+        IL_000B  nop        
+        IL_000C  ldarg.0    
+        IL_000D  call       Autodesk.Navisworks.Api.Automation.NavisworksApplication::!NavisworksApplication()
+        IL_0012  leave.s    IL_001B
+        IL_0014  ldarg.0    
+        IL_0015  call       System.Object::Finalize()
+        IL_001A  endfinally 
+        IL_001B  ret        
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose()
+        IL_0000  ldarg.0    
+        IL_0001  ldc.i4.1   
+        IL_0002  callvirt   Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose(System.Boolean A_0)
+        IL_0007  ldarg.0    
+        IL_0008  call       System.GC::SuppressFinalize(System.Object obj)
+        IL_000D  ldarg.0    
+        IL_000E  call       System.GC::KeepAlive(System.Object obj)
+        IL_0013  ret        
+  [0] protected Autodesk.Navisworks.Api.Automation.NavisworksApplication::Finalize()
+        IL_0000  ldarg.0    
+        IL_0001  ldc.i4.0   
+        IL_0002  callvirt   Autodesk.Navisworks.Api.Automation.NavisworksApplication::Dispose(System.Boolean A_0)
+        IL_0007  ret        
+  [0] public Autodesk.Navisworks.Api.Automation.NavisworksApplication::StayOpen()
+        IL_0000  ldarg.0    
+        IL_0001  ldfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0006  stloc.1    
+        IL_0007  ldloc.1    
+        IL_0008  brtrue.s   IL_0015
+        IL_000A  ldstr      "NavisworksApplication"
+        IL_000F  newobj     System.ObjectDisposedException::.ctor(System.String objectName)
+        IL_0014  throw      
+        IL_0015  ldloc.1    
+        IL_0016  call       null::Bridge.StayOpen(Bridge* )
+        IL_001B  stloc.0    
+        IL_001C  ldloc.0    
+        IL_001D  brfalse.s  IL_0035
+        IL_001F  ldstr      "Error calling method: "
+        IL_0024  ldloc.0    
+        IL_0025  box        System.Int32
+        IL_002A  call       System.String::Concat(System.Object arg0, System.Object arg1)
+        IL_002F  newobj     System.InvalidOperationException::.ctor(System.String message)
+        IL_0034  throw      
+        IL_0035  ldarg.0    
+        IL_0036  call       System.GC::KeepAlive(System.Object obj)
+        IL_003B  ret        
+  [1] private Autodesk.Navisworks.Api.Automation.NavisworksApplication::Init(System.Boolean runningInstance)
+        IL_0000  ldarg.0    
+        IL_0001  ldc.i4.0   
+        IL_0002  conv.i8    
+        IL_0003  stfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0008  call       null::Bridge.Initialise()
+        IL_000D  ldc.i4.8   
+        IL_000E  conv.i8    
+        IL_000F  call       null::new(System.UInt64 )
+        IL_0014  stloc.3    
+        IL_0015  ldloc.3    
+        IL_0016  brfalse.s  IL_0021
+        IL_0018  ldloc.3    
+        IL_0019  call       null::Bridge.{ctor}(Bridge* )
+        IL_001E  stloc.1    
+        IL_001F  leave.s    IL_002F
+        IL_0021  ldc.i4.0   
+        IL_0022  conv.i8    
+        IL_0023  stloc.1    
+        IL_0024  leave.s    IL_002F
+        IL_0026  ldloc.3    
+        IL_0027  ldc.i4.8   
+        IL_0028  conv.i8    
+        IL_0029  call       null::delete(System.Void* , System.UInt64 )
+        IL_002E  endfinally 
+        IL_002F  ldarg.0    
+        IL_0030  ldloc.1    
+        IL_0031  stfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0036  ldarg.1    
+        IL_0037  brfalse.s  IL_0048
+        IL_0039  ldstr      "Cannot get running instance of Application"
+        IL_003E  stloc.0    
+        IL_003F  ldloc.1    
+        IL_0040  call       null::Bridge.GetRunningNaviswork(Bridge* )
+        IL_0045  stloc.2    
+        IL_0046  br.s       IL_0055
+        IL_0048  ldstr      "Failed to startup Navisworks"
+        IL_004D  stloc.0    
+        IL_004E  ldloc.1    
+        IL_004F  call       null::Bridge.StartupNavisworks(Bridge* )
+        IL_0054  stloc.2    
+        IL_0055  ldloc.2    
+        IL_0056  brfalse.s  IL_009C
+        IL_0058  ldarg.0    
+        IL_0059  ldfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_005E  stloc.s    4
+        IL_0060  ldloc.s    4
+        IL_0062  brfalse.s  IL_006D
+        IL_0064  ldloc.s    4
+        IL_0066  ldc.i4.1   
+        IL_0067  call       null::Bridge.__delDtor(Bridge* , System.UInt32 A_0)
+        IL_006C  pop        
+        IL_006D  ldarg.0    
+        IL_006E  ldc.i4.0   
+        IL_006F  conv.i8    
+        IL_0070  stfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0075  call       null::Bridge.Terminate()
+        IL_007A  ldloc.2    
+        IL_007B  box        System.Int32
+        IL_0080  stloc.s    5
+        IL_0082  ldloc.0    
+        IL_0083  ldstr      ": "
+        IL_0088  call       System.String::Concat(System.String str0, System.String str1)
+        IL_008D  ldloc.s    5
+        IL_008F  call       System.String::Concat(System.Object arg0, System.Object arg1)
+        IL_0094  stloc.0    
+        IL_0095  ldloc.0    
+        IL_0096  newobj     Autodesk.Navisworks.Api.Automation.AutomationException::.ctor(System.String message)
+        IL_009B  throw      
+        IL_009C  ldarg.0    
+        IL_009D  call       System.GC::KeepAlive(System.Object obj)
+        IL_00A2  ret        
+  [1] private Autodesk.Navisworks.Api.Automation.NavisworksApplication::!NavisworksApplication()
+        IL_0000  ldarg.0    
+        IL_0001  ldfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0006  stloc.0    
+        IL_0007  ldloc.0    
+        IL_0008  brfalse.s  IL_0018
+        IL_000A  ldloc.0    
+        IL_000B  call       null::Bridge.{dtor}(Bridge* )
+        IL_0010  ldloc.0    
+        IL_0011  ldc.i4.8   
+        IL_0012  conv.i8    
+        IL_0013  call       null::delete(System.Void* , System.UInt64 )
+        IL_0018  ldarg.0    
+        IL_0019  ldc.i4.0   
+        IL_001A  conv.i8    
+        IL_001B  stfld      Autodesk.Navisworks.Api.Automation.NavisworksApplication::m_bridge
+        IL_0020  call       null::Bridge.Terminate()
+        IL_0025  ldarg.0    
+        IL_0026  call       System.GC::KeepAlive(System.Object obj)
+        IL_002B  ret        
+  [1] internal null::Bridge.StayOpen(Bridge* )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::Bridge.Initialise()
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::new(System.UInt64 )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::Bridge.{ctor}(Bridge* )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::delete(System.Void* , System.UInt64 )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::Bridge.GetRunningNaviswork(Bridge* )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::Bridge.StartupNavisworks(Bridge* )
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] internal null::Bridge.__delDtor(Bridge* , System.UInt32 A_0)
+        IL_0000  ldarg.0    
+        IL_0001  call       null::Bridge.{dtor}(Bridge* )
+        IL_0006  ldarg.1    
+        IL_0007  ldc.i4.1   
+        IL_0008  and        
+        IL_0009  brfalse.s  IL_0013
+        IL_000B  ldarg.0    
+        IL_000C  ldc.i4.8   
+        IL_000D  conv.i8    
+        IL_000E  call       null::delete(System.Void* , System.UInt64 )
+        IL_0013  ldarg.0    
+        IL_0014  ret        
+  [2] internal null::Bridge.Terminate()
+        nobody: no IL body: native, abstract or runtime implemented
+  [2] public Autodesk.Navisworks.Api.Automation.AutomationException::.ctor(System.String message)
+        IL_0000  ldarg.0    
+        IL_0001  ldarg.1    
+        IL_0002  call       System.Exception::.ctor(System.String message)
+        IL_0007  ret        
+  [2] internal null::Bridge.{dtor}(Bridge* )
+        nobody: no IL body: native, abstract or runtime implemented
+
+---- Which COM class the native half creates ----
+  CLSID {81920959-1e7e-5599-a1d1-e67aeced44df} ProgID: Navisworks.Document.22
+  CLSID {81920959-1e7e-5599-a1d1-e67aeced44df} VersionIndependentProgID: absent
+  CLSID {81920959-1e7e-5599-a1d1-e67aeced44df} LocalServer32: C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe
+  CLSID {81920959-1e7e-5599-a1d1-e67aeced44df} InprocServer32: absent
+  that CLSID's 16 bytes appear in the DLL at offsets: 49920, 49952
+  the DLL's import table, every ordinal named off the exporting DLL's export table:
+    api-ms-win-crt-heap-l1-1-0.dll, 4: free, _callnewh, malloc, _recalloc
+    api-ms-win-crt-runtime-l1-1-0.dll, 16: _crt_atexit, _execute_onexit_table, _register_onexit_function, _crt_at_quick_exit, _initialize_narrow_environment, _configure_narrow_argv, _seh_filter_dll, _cexit, _initterm, _invalid_parameter_noinfo_noreturn, _initterm_e, _invalid_parameter_noinfo, _errno, _initialize_onexit_table, abort, terminate
+    KERNEL32.dll, 27: InitializeCriticalSectionEx, MultiByteToWideChar, GetLastError, DecodePointer, DeleteCriticalSection, RtlLookupFunctionEntry, RtlCaptureContext, UnhandledExceptionFilter, SetUnhandledExceptionFilter, GetCurrentProcess, TerminateProcess, IsProcessorFeaturePresent, IsDebuggerPresent, GetStartupInfoW, GetModuleHandleW, QueryPerformanceCounter, GetCurrentProcessId, GetCurrentThreadId, GetSystemTimeAsFileTime, DisableThreadLibraryCalls, InitializeSListHead, OutputDebugStringW, RaiseException, EnterCriticalSection, LeaveCriticalSection, Sleep, RtlVirtualUnwind
+    mscoree.dll, 1: _CorDllMain
+    MSVCP140.dll, 3: ?__ExceptionPtrCopy@@YAXPEAXPEBX@Z, ?_Xlength_error@std@@YAXPEBD@Z, ?__ExceptionPtrDestroy@@YAXPEAX@Z
+    ole32.dll, 3: CoInitialize, CoUninitialize, CoCreateInstance
+    OLEAUT32.dll, 13: #12 VariantChangeType, #35 GetActiveObject, #10 VariantCopy, #26 SafeArrayPutElement, #2 SysAllocString, #9 VariantClear, #15 SafeArrayCreate, #4 SysAllocStringLen, #77 SafeArrayGetVartype, #16 SafeArrayDestroy, #8 VariantInit, #6 SysFreeString, #27 SafeArrayCopy
+    USER32.dll, 1: UnregisterClassW
+    VCRUNTIME140.dll, 16: __std_type_info_destroy_list, memset, _CxxThrowException, __C_specific_handler, memmove, __std_exception_copy, __std_exception_destroy, __CxxUnregisterExceptionObject, __FrameUnwindFilter, __CxxExceptionFilter, memcpy, __current_exception, __CxxDetectRethrow, __CxxRegisterExceptionObject, __CxxQueryExceptionSize, __current_exception_context
+    VCRUNTIME140_1.dll, 1: __CxxFrameHandler4
+  CoCreateInstance   imported: True, from ole32.dll
+  GetActiveObject    imported: True, from OLEAUT32.dll
+  CoGetClassObject   imported: False
+  CreateProcessW     imported: False
+  ShellExecuteW      imported: False
+
+---- Which command line makes a Roamer the COM automation server, reflection only ----
+  CommandLineParser::ParseOption IL_00E0 stores Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup after the strings, since the store before it: "Embedding", "Automation"
+        IL_00B1  ldarg.0    
+        IL_00B2  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config
+        IL_00B7  ldc.i4.1   
+        IL_00B8  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::ExitAfterActions
+        IL_00BD  ldc.i4.1   
+        IL_00BE  ret        
+        IL_00BF  ldarg.0    
+        IL_00C0  ldstr      "Embedding"
+        IL_00C5  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::MatchOption(System.String s)
+        IL_00CA  brtrue.s   IL_00D9
+        IL_00CC  ldarg.0    
+        IL_00CD  ldstr      "Automation"
+        IL_00D2  call       Autodesk.Navisworks.Gui.Roamer.CommandLineParser::MatchOption(System.String s)
+        IL_00D7  brfalse.s  IL_00F3
+        IL_00D9  ldarg.0    
+        IL_00DA  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineParser::m_config
+        IL_00DF  ldc.i4.1   
+        IL_00E0  stfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+  stores of COMAutomationStartup in CommandLineParser: 1
+  the strings before that store are exactly Embedding and Automation: True
+  every option name CommandLineParser matches, 37: Embedding, Automation, regserver, Register, unregserver, Unregister, RegisterPerUser, UnregisterPerUser, user, noreg, pure, log, dump, dump_options, MemCheck, options, lang, nwd, nwc, bench, ShowGui, HideGui, NoGui, NoCache, OpenFile, GenerateThumbnail, GenerateThumbnailByRayTrace, CreateCache, Print, SaveFile, AppendFile, Exit, ExecuteAddInPlugin, AddPluginAssembly, EnableProgress, DisableProgress, Licensing
+  Roamer.exe Program::MainImpl touches COMAutomationStartup, the instruction and the two after it:
+        IL_00A1  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+        IL_00A6  call       Autodesk.Navisworks.OdViewDll.InitDll::InitialiseErrorHandling(System.String dump_file, System.Boolean is_automated)
+        IL_00AB  ldloc.s    5
+  Roamer.exe Program::MainImpl touches COMAutomationStartup, the instruction and the two after it:
+        IL_00E2  ldfld      Autodesk.Navisworks.Gui.Roamer.CommandLineConfig::COMAutomationStartup
+        IL_00E7  stfld      Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::COMAutomationStartup
+        IL_00EC  ldloc.s    6
+  Roamer.exe Program::MainImpl touches COMAutomationStartup, the instruction and the two after it:
+        IL_00E7  stfld      Autodesk.Navisworks.OdViewDll.InitialiseResourcesConfig::COMAutomationStartup
+        IL_00EC  ldloc.s    6
+        IL_00EE  ldloc.2    
+  instructions in NetRoamer.Program that touch COMAutomationStartup: 3
+
+---- STEP 1 VERDICT ----
+  every verdict read, none UNKNOWN
+
+==== THE WORK FOLDER ====
+  a folder from an earlier run was there, kept by renaming it automation-start-20260929-113552
+  created empty
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 495
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU Navisworks Manage 22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\automation-start\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 196 AutoSave files listed and not copied
+  the tool's own logs folder listed: 32 files
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+
+==== STEP 3. Start one Navisworks through the API ====
+  11:35:57.161  t+8.7s  calling new NavisworksApplication()
+  11:37:20.328  t+91.9s  the constructor RETURNED after 83.16 s
+  Roamer processes new since step 2: 1
+    pid 33752, started 11:35:57.221, parent 1804 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  ADOPTED, MY PID IS 33752, started 2026-09-29 11:35:57.221, start ticks UTC 639262677572214299
+  the process started 0.06 s after the call began and 83.11 s before the constructor returned
+  MainWindowHandle 0, MainWindowTitle ""
+  visible top level windows of 33752: 0, hidden: 64, dialogs of class #32770 visible: 0
+  11:37:28.816  t+100.4s  Visible read BEFORE setting it: False
+  11:37:33.896  t+105.4s  set Visible = True, read back: True, MainWindowHandle 0, title ""
+  visible top level windows of 33752: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  11:37:35.477  t+107.0s  set Visible = False, read back: False, MainWindowHandle 0
+  visible top level windows of 33752: 0, hidden: 71, dialogs of class #32770 visible: 0
+
+==== STEP 4. Copy one NWC from the loop's source copy and open the copy ====
+  source "%LOCALAPPDATA%\NwcFederatorLoop\source\NWC\C06\1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc", 27291 bytes, the smallest NWC in the source copy
+  copy   "%LOCALAPPDATA%\NwcFederatorLoop\probes\automation-start\1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc", 27291 bytes, sha256 matches
+  11:37:35.633  t+107.2s  calling OpenFile(copy, no more files)
+  11:37:37.367  t+108.9s  OpenFile RETURNED, it is void so there is no value after 1.73 s
+  visible top level windows of 33752: 0, hidden: 77, dialogs of class #32770 visible: 0
+  11:37:37.442  t+109.0s  check: SaveFile of what is open to "%LOCALAPPDATA%\NwcFederatorLoop\probes\automation-start\opened-copy-saved.nwd"
+  11:37:39.219  t+110.8s  SaveFile RETURNED after 1.77 s
+  the NWD exists, 29765 bytes read back off the disk, written 11:37:37.466, the call began 11:37:37.445, written after the call began: True
+  the NWC copy after the open: sha256 unchanged
+
+==== STEP 5. AddPluginAssembly with the add-in built from this repo ====
+  C:\Users\p003653k\OneDrive - Parsons Corp\Documents\GitHub\PAR_NWC-Federator\src\Federator.Addin\bin\Release\net48\Federator.Addin.dll
+  241152 bytes, written 2026-09-29 11:01:05, Federator.Addin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null, stamp 1.0.0.0 30ae4715+edits built 2026-09-29 11:01:03
+  11:37:39.310  t+110.8s  calling AddPluginAssembly
+  11:37:39.320  t+110.9s  AddPluginAssembly RETURNED, it is void so there is no value after 0.006 s
+  visible top level windows of 33752: 0, hidden: 77, dialogs of class #32770 visible: 0
+  ExecuteAddInPlugin, read off the reflection: public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters). It was NOT called
+
+==== STEP 6. Quit through the API ====
+  11:37:39.409  t+110.9s  calling Dispose()
+  11:37:39.813  t+111.4s  Dispose RETURNED after 0.40 s
+  11:37:48.320  t+119.9s  pid 33752 state gone, 8.5 s after Dispose returned, not forced
+
+==== FINALLY ====
+  11:37:48.326  t+119.9s  pid 33752 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 138, longest pass 10454 ms, mean pass 333 ms, longest gap between the starts of two passes 10960 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+
+---- the watchdog's record ----
+  11:35:52.286  t+3.8s  watchdog started
+  11:35:57.559  t+9.1s  Roamer pid 33752 seen with no readable start time, looked at again at the next pass
+  11:36:04.723  t+16.3s  new process Roamer pid 33752, parent 1804 svchost.exe, started 11:35:57.221, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  11:36:04.800  t+16.3s  Roamer 33752 visible top level windows: none
+  11:36:21.434  t+33.0s  new process AdskLicensingInstHelper pid 36204, parent 2204 GenuineService.exe, started 11:36:14.028, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  11:36:53.149  t+64.7s  new process AdskLicensingAgent pid 40156, parent 33752 Roamer.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+  11:37:02.955  t+74.5s  new process AdskLicensingAgent pid 15536, parent 33752 Roamer.exe, started 11:36:43.447, command line holds the word embedding or automation: no
+  11:37:11.828  t+83.4s  Roamer 33752 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  11:37:17.926  t+89.5s  Roamer 33752 visible top level windows: none
+  11:37:28.921  t+100.5s  Roamer 33752 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  11:37:36.750  t+108.3s  new process AdskLicensingInstHelper pid 16872, parent 2204 GenuineService.exe, started 11:37:29.256, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  11:37:36.801  t+108.3s  Roamer 33752 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;8bb3c81b-9251-422a-aa6d-893a27faa031]] "Working..."
+  11:37:37.381  t+108.9s  Roamer 33752 visible top level windows: none
+  11:37:38.491  t+110.0s  Roamer 33752 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;3727771b-3fae-424e-aa99-cc60d4c90ab6]] "Working..."
+  11:37:39.630  t+111.2s  Roamer 33752 visible top level windows: none
+  11:37:48.345  t+119.9s  watchdog stopped
+
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 33752, parent 1804 svchost.exe: exited
+  AdskLicensingInstHelper pid 36204, parent 2204 GenuineService.exe: exited
+  AdskLicensingAgent pid 40156, parent 33752 Roamer.exe: UNKNOWN whether it exited, its start time could not be read when it was seen
+  AdskLicensingAgent pid 15536, parent 33752 Roamer.exe: exited
+  AdskLicensingInstHelper pid 16872, parent 2204 GenuineService.exe: exited
+
+---- the Roamers from step 2, at the end ----
+  there were none
+  Roamers running now that were not in step 2: 0
+
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- NAMED LIMITS ----
+  the longest gap between the starts of two watchdog passes was 10960 ms. A Navisworks that started and exited inside one gap was not seen by the settings check
+  this run's constructor took 83.16 s, and its Navisworks process started 0.06 s after the call
+  of whether a running Navisworks can be reached, step 1 read the Automation DLL's import table on this run for GetActiveObject, imported: True, from OLEAUT32.dll. Which call the constructor's IL takes when its argument is false is UNKNOWN, because no code on this run reads that branch
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40634344040295  new QWord 40635437635996
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 93  new DWord 94
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353739375000  new QWord 2354820781250
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,77,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "LcOpNwcPlugin"  new String "lcodpody"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "opened-copy-saved.nwd"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134351446575230291
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\automation-start\opened-copy-saved.nwd"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134290938046297945
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134351446557903818
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\automation-start\1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134290938074132508
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134290938070616743
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134290938066994697
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134290938062820552
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134290938058967255
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134290938054115696
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134290938049614120
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>
+  registry: 36 values or keys differ from the backup
+  registry: 36 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 61355 bytes, sha256 F60102DE615D, written 2026-09-29 09:41:37  new 62613 bytes, sha256 0E274B36EBDA, written 2026-09-29 11:37:39
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 203D761BFDE5, written 2026-09-29 09:41:37  new 40079 bytes, sha256 05005DEE5B1F, written 2026-09-29 11:37:39
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc  27291 bytes
+  hkcu-navisworks-manage-22.0-before.reg  123148 bytes
+  mypid.txt  27 bytes
+  opened-copy-saved.nwd  29765 bytes
+  watch.txt  2056 bytes
+  and 9 files under appdata-before
+
+---- outcome ----
+  step 1 passed, every verdict read
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-09-29 11:37:53, 125 s in all
