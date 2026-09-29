@@ -1,32 +1,48 @@
 # The loop
 
-STATE OPEN
+STATE WAITING
+
+PAUSED FOR A SHUTDOWN. Bader shut his laptop down on 2026-09-29 in turn 3 and asked that the
+loop be ready to carry on when he sends go. It stopped at a safe point: no Navisworks and no
+loop process running, the throwaway key gone, every branch pushed, and Bader's settings as
+run 4 of F100 put them back. WHEN HE SAYS GO: run Get-Process Roamer, and if any Navisworks
+runs that the loop did not start, stay WAITING and say so. Otherwise set STATE OPEN, keep the
+turn number 3, and carry on from Next action, in order. The form below still waits on him,
+Q82 to Q90, and the first of them, Q82, blocks every window run on main.
 
 Turn 3, opened on 2026-09-29 by Bader's answers to the form, recorded as Q79 to Q81 in
-steps\02_questions.md. Get-Process Roamer read 0 processes at 09:52, so his Navisworks,
-pid 34668, is closed. Main's upstream is origin/main since 09:55, it was origin/master.
-Main at the start of the turn: e555619. The plan is the top entry of steps\log.md.
+steps\02_questions.md. Main at the start of the turn: e555619. Main at the pause: e54ec7e.
+The plan is the turn 3 entry of steps\log.md. The main clone at the pause is on branch
+fix-T3-records-2, which carries this file, so a push from a worktree passes the git wall,
+T3-W1.
 
 Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 closed WAITING on
 2026-09-28 with F98 merged in PR 73 and F100 in the form.
 
 ## Next action
 
-1. F100 DONE, squash merged in PR 74 as 0eb4ede on Actions run 36561919908, branch deleted
-   here and on GitHub. Its first commits, which hold the licensing ids, are not in main
-2. F102, PR 76, its SECOND fix attempt with its developer after the re-read of 0b48415
-   found the mask could leave an id and the binary rule trusted the path. Then a read, merge.
-   A third fix attempt would be its last before the form
-3. F105 IS IN THE FORM, Q89, after three fix attempts, branch fix-F105 at 94a839b with no
-   pull request. The loop goes on without it, nothing downstream waits on its merge
-4. F103, run.ps1, from turn3\f103-design.md with the brief in turn3\f103-brief.md, off main
-   once F100 merges, because its start and close move out of the probe that ran. Then its
-   first start with no window
-5. F104, part 1 built and read, its fixes at ebd8bb7 on fix-F104, its pull request once
-   check-documents joins it after F103
-6. Install main from a clean checkout. The baseline through the real window WAITS ON Q82,
-   the log folder, in The form. If Q82 is still open when everything above is done, STATE
-   WAITING
+1. F102, PR 76, branch fix-F102 at 7d8d135, its THIRD AND LAST fix attempt, Actions run
+   36582955457 green. ITS FINAL READING was stopped by the shutdown before it answered, so
+   run it again: a reviewer and a breaker on 7d8d135, each finding classed as one of the four
+   not fixed, new fault inside attempt 3, old fault outside it, or polish. If a fault of the
+   first two classes is found, F102 goes to the form with what each attempt showed. If not,
+   write its log entry from steps\notes\f102-log-draft.md with the readings made, set its
+   register row DONE, mark PR 76 ready, watch Actions, merge, delete the branch. Worktree
+   .claude\worktrees\agent-aadf0be0a55966216
+2. F103, draft PR 78, branch fix-F103. FIX ATTEMPT 1 WAS STOPPED PART WAY by the shutdown,
+   saved unfinished as e0760ac, not run and not read. Resume it from e0760ac with the list in
+   steps\notes\f103-fix-list-1.md, 13 items, in the worktree
+   .claude\worktrees\agent-a587ed43dd2f1102d. Then the whole harness, harness4, the reading
+   by a reviewer and two breakers, and then the lead's FIRST REAL START with no window,
+   run.ps1 -Mode Run -Set 00 -Item 0, which measures M4 to M6 and Q83's zero
+3. F104, part 1 built and read, its fixes at ebd8bb7 on fix-F104, worktree
+   .claude\worktrees\agent-a20297b0647789a67. Its part 2, check-documents.ps1, after F103
+   merges, then one reading of the whole and its pull request. Design steps\notes\f104-design.md
+4. F105 IS IN THE FORM, Q89, branch fix-F105 at 94a839b, worktree
+   %LOCALAPPDATA%\NwcFederatorLoop\wt-f105, no pull request
+5. Install main through run.ps1 -Mode Install from a clean checkout once F103 merges. The
+   baseline through the real window WAITS ON Q82. If Q82 is still open when 1 to 5 are done,
+   STATE WAITING
 
 ## The phases
 
@@ -209,7 +225,7 @@ an F number only when it becomes work. Most harmful first when the loop picks, a
 wrong number ranks above a loud failure. Done in code but not proved by a run means the
 baseline run proves it or contradicts it.
 
-283 rows, by status, after turn 3's thirteen additions:
+284 rows, by status, after turn 3's fourteen additions:
 
 - 125 done in code, not proved by a run
 - 3 reported by the read, not verified, T1-N, T1-UNCALLED and T1-CATCH
@@ -219,12 +235,13 @@ baseline run proves it or contradicts it.
 - 33 needs Bader, in the form, counting Q82 to Q87 as one row, Q88 and F105 as one each, and F100 moved out
 - 19 open fault
 - 4 DONE
-- 8 open for F103, T3-G1 to T3-G5, T3-P, T3-B and F103 itself
-- 1 in review, F102
+- 7 open for F103, T3-G1 to T3-G5, T3-P and T3-B
+- 1 in its final reading, F102, and 1 in its first fix attempt, F103
 - 1 part 1 built and read, F104, check-documents after F103
 - 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
 - 1 closed, not there at 42499bf
+- 1 open, the git wall, T3-W1
 
 | ID | came from | what it is | what proves it fixed | status | PR | run that proved it |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -232,9 +249,9 @@ baseline run proves it or contradicts it.
 | F98 | turn 0, a read of steps\log.md | PR 71 dropped the close round heading in steps\log.md | the heading back above Core tests 1666 before the round and 1746 after | DONE | 73 | no run applies, the file from the heading down matches the one before PR 71 |
 | F99 | turn 0, the git wall fired on Bash only | The git wall missed commits sent through PowerShell | a PowerShell commit on main refused on standard input, and git.exe read as git | DONE | 72 | no Navisworks run applies, proved on standard input and live |
 | F100 | loop prompt, Phase 1 item 1 | Nothing measured how Navisworks starts and closes with no click on this machine | tools\probes\probe-automation-start.ps1 run once as committed, with no Navisworks the loop did not start running, and docs\history\scan.md 5z-d written off that run | DONE, fix attempt 4 on Bader's answer A, Q79, read by a reviewer and a breaker who both approved | 74 | run 4 at 11:35 on 2026-09-29, all six steps passed, tools\probes\automation-start-result-20260929.txt, scan.md 5z-d RUN 4 |
-| F102 | turn 3, the lead's read of fix-F100 | A result committed from this machine can carry the machine name and the licensing agent's ids, and nothing read a file for them before a commit | tools\loop\mask-evidence.ps1 masks both, tools\checks\check-evidence-ids.sh refuses both in the pre-commit and in Actions, proved on the four fix-F100 files, refused before and passed after | in review | 76 | no Navisworks run applies, proof in turn3\f102\proof.txt |
+| F102 | turn 3, the lead's read of fix-F100 | A result committed from this machine can carry the machine name and the licensing agent's ids, and nothing read a file for them before a commit | tools\loop\mask-evidence.ps1 masks both, tools\checks\check-evidence-ids.sh refuses both in the pre-commit and in Actions, proved on the four fix-F100 files, refused before and passed after | third and last fix attempt at 7d8d135, its final reading to run again after the pause | 76 | no Navisworks run applies, proof in turn3\f102\proof.txt |
 | F105 | loop prompt, Phase 1 item 2 | Four facts off the install nobody had read on this machine: the saved viewpoint members, RemoveFile, Roamer's switches, the Clash Detective report | scan.md 5z-f off five result files, no Navisworks started | needs Bader, in the form, Q89, after three fix attempts | none, branch fix-F105 at 94a839b | no Navisworks run applies, the prober's reads on 2026-09-29 |
-| F103 | loop prompt, Phase 1 item 3 | tools\loop\run.ps1 does not exist | the design in turn3\f103-design.md built, proved by its harness with no Navisworks, then one start with no window | open, after F100 merges | none yet | none yet |
+| F103 | loop prompt, Phase 1 item 3 | tools\loop\run.ps1 does not exist | the design in turn3\f103-design.md built, proved by its harness with no Navisworks, then one start with no window | built at 63ebd7b and read, fix attempt 1 part way at e0760ac, steps\notes\f103-fix-list-1.md | 78 | none yet |
 | F104 | loop prompt, Phase 1 item 4 | No check of the workbook against a read of the document that shares no code with the harvest | the design in turn3\f104-design.md, part 1 on fix-F104, check-documents after F103, proved by prove-compare and then by 5a at the baseline | part 1 built at ef1fbdd, read by a reviewer and a breaker, its fixes at ebd8bb7, check-documents after F103 | none yet | none yet |
 | T3-G1 | turn 3, the reviewer's reading of F100 attempt 4 | The probe's last check before each settings write, line 1885, also 1877 and NewRoamers at 1261, takes a process list it could not read as no Roamer, so the writes go on. Silent. Old, in b01ad71 | a list that cannot be read stops every write, in the guard code run.ps1 takes over, with a harness case | open, for F103 | none yet | none yet |
 | T3-G2 | the same reading | After the deadline path runs and TerminateProcess returns False, nothing reads the deadline flag before adoption, line 1468, so steps 4 to 6 can run with no watchdog. Old | adoption refused once the deadline path ran, in the guard code, with a harness case | open, for F103 | none yet | none yet |
@@ -243,6 +260,7 @@ baseline run proves it or contradicts it.
 | T3-G5 | turn 3, the breaker's reading of F100 attempt 4 | MainWindowHandle and MainWindowTitle after adoption, lines 1633 to 1648, read by pid alone. The breaker says MainWindowTitle sends WM_GETTEXT to whatever window holds that pid now, the reviewer that GetWindowText sends none to another process's window under the Win32 contract. Old | measured, then read after the same start ticks check WindowsOf makes | open, for F103 | none yet | none yet |
 | T3-P | turn 3, the reviewer's reading of F100 attempt 4 | Polish: a sentence at 395 and 1836 that went stale when B3 landed, the always empty before set still read, the work folder moved aside before step 2 refuses, the gap between the last read and the constructor call not named as a limit | each fixed or named where the code moves in F103 | open, for F103 | none yet | none yet |
 | T3-B | turn 3, the F103 design | The build stamp reads +edits whenever the tree holds any untracked file, Directory.Build.targets, so a build from a working clone cannot prove it is main | install from a clean checkout at the commit asked for, the installed stamp read back equal | open, for F103 | none yet | none yet |
+| T3-W1 | turn 3, F102's developer | The git wall refuses a push from a worktree while the main clone has main checked out, even git push origin fix-F102:fix-F102, because it reads the main clone's branch. A false refusal on the safe side | the wall reads the branch of the tree the command runs in, proved through tools\loop\prove-hooks.sh and a breaker as the rules say | open, the wall's own round | none yet | none yet |
 | Q82 to Q87 | turn 3, the F103 design | The log folder, the hang rule's zero, a ceiling, the screen, AutoSave, the remembered folders | Bader's answers under each in steps\02_questions.md | needs Bader, in the form | none yet | none yet |
 | Q88 | turn 3, F102's developer | Main names the machine of 2026-09-19 in 9 places across 4 files, and PR 74's refs on GitHub keep the licensing ids of its first commits | Bader's answer in steps\02_questions.md | needs Bader, in the form | none yet | none yet |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
@@ -697,3 +715,16 @@ messages, the pending findings, the form draft, the F103 and F104 designs, f105 
 prober's scripts and results, f100-harness with the harness and its output, and the
 harness's throwaway folders, removed by it. In this clone's .git\config, main's upstream,
 branch.main.merge, is refs/heads/main where it was refs/heads/master.
+
+PAUSED AT 17:48 ON 2026-09-29 FOR BADER'S SHUTDOWN. Stopped by the lead: the final reading of
+F102's third fix attempt, before it answered, and the F103 developer part way through fix
+attempt 1, whose work was saved unfinished as e0760ac on fix-F103 and pushed. Read at the
+pause: Get-Process Roamer 0, no loop powershell running, HKCU\Software\NwcFederatorLoopTest
+absent. Pushed at the pause: fix-F102 7d8d135, fix-F103 e0760ac, fix-F104 ebd8bb7, fix-F105
+94a839b, fix-T3-records-2 with this file. Found since the last record and in the register
+now: T3-W1, the git wall refuses a push from a worktree while the main clone has main checked
+out, even with a refspec to another branch, a false refusal on the safe side, fixed only
+through the prove-hooks flow. M1 measured by the F103 harness with no Navisworks: Bader's
+logs held open with no delete sharing survive the tool's real prune, RETAIN keeping 30
+logs, deleted 0, could not delete 1, which is what option A of Q82 rests on. M2 and M3
+answered, turn3\f103.
