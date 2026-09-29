@@ -12,16 +12,18 @@ Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 closed WAITING 
 
 ## Next action
 
-1. F102, PR 76, Actions green on c1d5efe, its reviewer and breaker reading it. Then merge
-2. F100: attempt 4 READ AND APPROVED by both readers, RUN 4 PASSED at 11:35, the three
-   result files masked by F102's script and checked. PR 74 waits only for F102 to merge,
-   then main merged in, the body read by the claim-checker, Actions green, SQUASH merge
+1. F100: attempt 4 READ AND APPROVED by both readers, RUN 4 PASSED at 11:35, the three
+   result files masked by F102's script and checked by F102's check over a git archive of
+   the branch. PR 74 merges FIRST, by SQUASH, once Actions is green, so F103 can start
+2. F102, PR 76, its SECOND fix attempt with its developer after the re-read of 0b48415
+   found the mask could leave an id and the binary rule trusted the path. Then a read, merge
 3. F105 IS IN THE FORM, Q89, after three fix attempts, branch fix-F105 at 94a839b with no
    pull request. The loop goes on without it, nothing downstream waits on its merge
-4. F103, run.ps1, from turn3\f103-design.md, after F100 merges because its start and close
-   move out of the probe that ran. Then its first start with no window
-5. F104 part 1, the document read probe and the comparison, on fix-F104 by a developer in a
-   worktree, no pull request until check-documents joins it after F103
+4. F103, run.ps1, from turn3\f103-design.md with the brief in turn3\f103-brief.md, off main
+   once F100 merges, because its start and close move out of the probe that ran. Then its
+   first start with no window
+5. F104, part 1 built and read, its fixes at ebd8bb7 on fix-F104, its pull request once
+   check-documents joins it after F103
 6. Install main from a clean checkout. The baseline through the real window WAITS ON Q82,
    the log folder, in The form. If Q82 is still open when everything above is done, STATE
    WAITING
@@ -195,6 +197,8 @@ steps\02_questions.md with its options.
 - Q89, F105 after three fix attempts: its four answers are backed line by line in all four
   readings, and the fourth reading still found faults of the same kind in the shared reader
   the fixes added. The lead recommends A, merge with three sentences of 5z-f narrowed
+- Q90, from F102: the new check refuses a zip, while the loop rule says a run file over
+  20 MB is committed zipped. Where may a zip of run evidence sit
 
 Built in turn 1 from steps\01_next.md, steps\02_questions.md, steps\04_audit.md,
 steps\04_audit_first_run.md, steps\03_bader_next.md, the known bugs of steps\log.md, the

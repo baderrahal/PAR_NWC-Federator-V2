@@ -94,7 +94,7 @@ never closes anything before adoption, and sends no message to any window before
   probe BEFORE fix list 2. That version put back Bader's settings while his Navisworks, pid
   34668, was running, which the rules above now rule out. It is kept for the lines
   docs/history/scan.md cites, with the licensing agent's two ids and the machine name
-  masked by tools\loop\mask-evidence.ps1 and every line where it was
+  masked by F102's tools\loop\mask-evidence.ps1, pull request 76, and every line where it was
 - `automation-start-reflection-20260928.txt` is the output of the attempt 3 probe's
   `-ReflectionOnly` mode, which starts nothing, the machine name masked. See
   docs/history/scan.md section 5z-d for all three

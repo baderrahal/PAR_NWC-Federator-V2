@@ -34,10 +34,11 @@ licensing ids, stays off main. Nothing waits for the local machine, because run 
   each after a last check, and read back, and nothing changed in his AutoSave or logs
   folders. docs\history\scan.md 5z-d RUN 4
 - NO RESULT FILE ON MAIN CARRIES A LICENSING ID. Run 4 printed none. Run 3's file is kept
-  for the lines scan.md cites, masked on three lines by F102's mask-evidence.ps1, and the
-  reflection file and scan.md no longer name the machine. F102's check, run by the lead from
-  F102's branch before it merged, passed on all three, and Actions runs it over the whole
-  tree on PR 74 once main with F102 is merged in
+  for the lines scan.md cites, masked on three lines by F102's mask-evidence.ps1, which is
+  on branch fix-F102, PR 76, and merges after this. The reflection file and scan.md no
+  longer name the machine. F102's check at 0b48415, run by the lead over a git archive of
+  this branch at 9085d13, read 447 files and found none carrying one, kept in
+  %LOCALAPPDATA%\NwcFederatorLoop\turn3\f100-evidence-check.txt
 - the notes a later session needs are in steps\notes, and Bader's answers are Q79 to Q81
 
 ### What remains
@@ -54,7 +55,8 @@ licensing ids, stays off main. Nothing waits for the local machine, because run 
 
 ### What comes next
 
-1. F102 merged, then F105, then F103 run.ps1 from turn3\f103-design.md
+1. F103 run.ps1 from turn3\f103-design.md, off main once this merges. F102 merges when its
+   second fix attempt is read, and F105 waits in the form, Q89
 
 ## 2026-09-29 The loop, turn 3, the plan, written before the first edit
 

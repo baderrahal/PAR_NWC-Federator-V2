@@ -4684,7 +4684,7 @@ THREE RUNS, ONE KEPT.
   faults were fixed
 - RUN 3 at 13:17 is `tools\probes\automation-start-result-20260928.txt`, the output of one
   run of the probe as it was then, untouched but for three lines masked on 2026-09-29 by
-  tools\loop\mask-evidence.ps1: the machine name on line 1 and the licensing agent's ids on
+  F102's tools\loop\mask-evidence.ps1, pull request 76: the machine name on line 1 and the licensing agent's ids on
   lines 446 and 447. Its line 3 carries the sha256 of that probe,
   38C28E1C3C2756252523E4745FC5C79285E53CEBD6452AB85090117A4EC66EA5
 - FIX LIST 2, later on 2026-09-28, changed the probe again, with the lead's decisions D1 to
