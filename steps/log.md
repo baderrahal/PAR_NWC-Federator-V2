@@ -6,8 +6,8 @@ Newest entry at the top.
 Core tests 1746 passed, 0 failed, 0 skipped, before on fix-F100 at 30ae471 and after on
 0a89d73 and every commit since, run by the pre-commit hook. Nothing under src or tests
 changed. The add-in built with 0 errors and 0 warnings before and after, by the developer.
-Squash merged in PR 74, so the branch's history, which holds the licensing ids, stays off
-main. Nothing waits for the local machine, because run 4 ran here.
+This entry rides in PR 74, which is merged by SQUASH so the branch's history, which holds the
+licensing ids, stays off main. Nothing waits for the local machine, because run 4 ran here.
 
 ### What was done
 
@@ -35,8 +35,9 @@ main. Nothing waits for the local machine, because run 4 ran here.
   folders. docs\history\scan.md 5z-d RUN 4
 - NO RESULT FILE ON MAIN CARRIES A LICENSING ID. Run 4 printed none. Run 3's file is kept
   for the lines scan.md cites, masked on three lines by F102's mask-evidence.ps1, and the
-  reflection file and scan.md no longer name the machine. The check of F102 passes on all
-  three
+  reflection file and scan.md no longer name the machine. F102's check, run by the lead from
+  F102's branch before it merged, passed on all three, and Actions runs it over the whole
+  tree on PR 74 once main with F102 is merged in
 - the notes a later session needs are in steps\notes, and Bader's answers are Q79 to Q81
 
 ### What remains

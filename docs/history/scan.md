@@ -4744,9 +4744,10 @@ Run 4 agrees with runs 1 to 3 on every number they share: a constructor of 82.75
 against 83.16 s, and a close by Dispose 8.0 to 9.3 s after it returned against 8.5 s. It is
 the first run whose put back was made with no other Navisworks running, so it is the first
 that measures D2 as written. It printed NO LICENSING ID: attempt 4 prints no command line of
-a process that is not a Roamer, and one licensing agent the Roamer started, pid 40156, is
-named by pid and parent only, line 462. Whether that agent had exited by the end is UNKNOWN,
-line 477, and Get-Process read it gone after the run.
+a process that is not a Roamer. The two licensing agents the Roamer started, pids 40156 and
+15536, are named by pid and parent only, lines 462 and 463. The result reads 15536 exited,
+line 478, and whether 40156 had exited by the end UNKNOWN, line 477. A Get-Process by the
+lead after the run did not list it, and that read is kept in no file.
 
 HOW. `tools\probes\probe-automation-start.ps1`, Windows PowerShell 5.1, 64 bit, STA:
 

@@ -226,12 +226,12 @@ baseline run proves it or contradicts it.
 | F105 | loop prompt, Phase 1 item 2 | Four facts off the install nobody had read on this machine: the saved viewpoint members, RemoveFile, Roamer's switches, the Clash Detective report | scan.md 5z-f off five result files, no Navisworks started | in review | none yet, branch fix-F105 | no Navisworks run applies, the prober's reads on 2026-09-29 |
 | F103 | loop prompt, Phase 1 item 3 | tools\loop\run.ps1 does not exist | the design in turn3\f103-design.md built, proved by its harness with no Navisworks, then one start with no window | open, after F100 merges | none yet | none yet |
 | F104 | loop prompt, Phase 1 item 4 | No check of the workbook against a read of the document that shares no code with the harvest | the design in turn3\f104-design.md, part 1 on fix-F104, check-documents after F103, proved by prove-compare and then by 5a at the baseline | part 1 being built | none yet | none yet |
-| T3-G1 | turn 3, the breaker's reading of F100 attempt 4 | The probe's last check before each settings write, line 1885, also 1877 and NewRoamers at 1261, takes a process list it could not read as no Roamer, so the writes go on. Silent. Old, in b01ad71 | a list that cannot be read stops every write, in the guard code run.ps1 takes over, with a harness case | open, for F103 | none yet | none yet |
+| T3-G1 | turn 3, the reviewer's reading of F100 attempt 4 | The probe's last check before each settings write, line 1885, also 1877 and NewRoamers at 1261, takes a process list it could not read as no Roamer, so the writes go on. Silent. Old, in b01ad71 | a list that cannot be read stops every write, in the guard code run.ps1 takes over, with a harness case | open, for F103 | none yet | none yet |
 | T3-G2 | the same reading | After the deadline path runs and TerminateProcess returns False, nothing reads the deadline flag before adoption, line 1468, so steps 4 to 6 can run with no watchdog. Old | adoption refused once the deadline path ran, in the guard code, with a harness case | open, for F103 | none yet | none yet |
 | T3-G3 | the same reading | A recorded start with start ticks refuses whenever any process holds that pid and its start time cannot be read, whatever its name, line 1239. Loud, refuses too much. Old | the name read as well, in the guard code | open, for F103 | none yet | none yet |
 | T3-G4 | the same reading | A named limits line prints what the finalizer's IL does as this run's fact, line 1845, read off run 3 and checked by no code on the run. The shape F2 fixed at the line beside it. Old | the line says it was read off run 3 or reads UNKNOWN | open, for F103 | none yet | none yet |
-| T3-G5 | the reviewer's reading of F100 attempt 4 | MainWindowHandle and MainWindowTitle after adoption, lines 1633 to 1648, read by pid alone. The breaker found they send no message into the process. Old | read after the same start ticks check WindowsOf makes | open, for F103 | none yet | none yet |
-| T3-P | the same reading | Polish: a sentence at 395 and 1836 that went stale when B3 landed, the always empty before set still read, the work folder moved aside before step 2 refuses, the gap between the last read and the constructor call not named as a limit | each fixed or named where the code moves in F103 | open, for F103 | none yet | none yet |
+| T3-G5 | turn 3, the breaker's reading of F100 attempt 4 | MainWindowHandle and MainWindowTitle after adoption, lines 1633 to 1648, read by pid alone. The breaker says MainWindowTitle sends WM_GETTEXT to whatever window holds that pid now, the reviewer that GetWindowText sends none to another process's window under the Win32 contract. Old | measured, then read after the same start ticks check WindowsOf makes | open, for F103 | none yet | none yet |
+| T3-P | turn 3, the reviewer's reading of F100 attempt 4 | Polish: a sentence at 395 and 1836 that went stale when B3 landed, the always empty before set still read, the work folder moved aside before step 2 refuses, the gap between the last read and the constructor call not named as a limit | each fixed or named where the code moves in F103 | open, for F103 | none yet | none yet |
 | T3-B | turn 3, the F103 design | The build stamp reads +edits whenever the tree holds any untracked file, Directory.Build.targets, so a build from a working clone cannot prove it is main | install from a clean checkout at the commit asked for, the installed stamp read back equal | open, for F103 | none yet | none yet |
 | Q82 to Q87 | turn 3, the F103 design | The log folder, the hang rule's zero, a ceiling, the screen, AutoSave, the remembered folders | Bader's answers under each in steps\02_questions.md | needs Bader, in the form | none yet | none yet |
 | Q88 | turn 3, F102's developer | Main names the machine of 2026-09-19 in 9 places across 4 files, and PR 74's refs on GitHub keep the licensing ids of its first commits | Bader's answer in steps\02_questions.md | needs Bader, in the form | none yet | none yet |
@@ -625,17 +625,20 @@ Files written outside the repo so far:
 
 Opened by Bader's answers of 2026-09-29, Q79 to Q81. Main at e555619.
 
-Runs: F100's run 4, the one run Bader's answer allowed, at 11:35:46 to 11:37:53, the
-attempt 4 probe, all six steps passed, result masked into
-tools\probes\automation-start-result-20260929.txt. ONE NAVISWORKS started, pid 33752, by
-the Automation API as Roamer.exe -Embedding, adopted, closed by Dispose and gone 8.5 s
-after, not forced. The licensing processes it brought, AdskLicensingAgent pid 40156 and
-AdskLicensingInstHelper pids 36204 and 16872 under GenuineService, were not running when
-read after the run. Bader's settings, 36 registry values and 2 files, were put back by the
-probe with no other Navisworks running, each read back. Four other AdskLicensingAgent
-processes ran at the end of the run, started 09:37:38, 09:37:42, 10:18:59 and 10:19:03,
-none by a Navisworks of the loop. What started the two at 10:18 and 10:19, when no
-Navisworks ran, is UNKNOWN.
+Runs: F100's run 4, the one run Bader's answer allowed, 11:35:48 to 11:37:53, 125 s by its
+result's first and last lines, the attempt 4 probe, all six steps passed, result masked
+into tools\probes\automation-start-result-20260929.txt. The lead launched it at 11:35:46.
+ONE NAVISWORKS started, pid 33752, by the Automation API as Roamer.exe -Embedding,
+adopted, closed by Dispose and gone 8.5 s after, not forced. What it brought, by the
+result's lines 459 to 479: AdskLicensingAgent pids 40156 and 15536 under the Roamer, and
+AdskLicensingInstHelper pids 36204 and 16872 under GenuineService. The result reads each
+exited but 40156, UNKNOWN whether it exited. Bader's settings, 36 registry values and 2
+files, were put back by the probe with no other Navisworks running, each read back.
+READ BY THE LEAD WITH Get-Process AFTER THE RUN AND KEPT IN NO FILE: no Roamer, no
+AdskLicensingInstHelper, no pid 40156, and four other AdskLicensingAgent processes started
+09:37:38, 09:37:42, 10:18:59 and 10:19:03. What started the two at 10:18 and 10:19, when no
+Navisworks ran, is UNKNOWN. From here, every such read is written to a file in the turn's
+work folder before it is cited.
 
 Findings so far:
 
