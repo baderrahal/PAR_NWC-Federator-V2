@@ -101,6 +101,11 @@ and nothing is fixed until a real run on real files shows it fixed.
   written, every change is listed with its old and new value in the turn's record, and the
   backup is kept for Bader
 - No NWC, NWF, NWD, workbook or picture is ever committed
+- No licensing id, session id or anything else that names Bader's Autodesk licence or his
+  machine is ever committed. Every file of a run or a probe is read by
+  tools\loop\mask-evidence.ps1 before it is committed, and the masked copy is what goes in.
+  tools\checks\check-evidence-ids.sh refuses a commit that still carries one, in the
+  pre-commit over what is staged and in Actions over the tree. F102
 - samples and steps\logs are never touched
 
 ## How a finding is worked

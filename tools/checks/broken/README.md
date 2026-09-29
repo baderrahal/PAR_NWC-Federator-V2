@@ -1,6 +1,6 @@
 # Files that are meant to be wrong
 
-Not a project and not compiled by anything. The folder is wrong on purpose in two ways,
+Not a project and not compiled by anything. The folder is wrong on purpose in three ways,
 one per check, and each check has to come back refusing it.
 
 A check that only ever runs against a clean tree proves nothing, so every check here runs
@@ -34,3 +34,21 @@ alone would add an import that file does not need.
 
 The check has to come back with exactly one fault, naming the file, the type and the
 namespace.
+
+## For `check-evidence-ids.sh`
+
+`EvidenceWithIds.txt` holds the fault, in the shape F102 found on a pushed branch: a MACHINE
+line naming the machine, and the command lines of two AdskLicensingAgent processes carrying
+an analytics agent id and a licensing id after `-i`. Every id in it is FABRICATED, a GUID of
+all zeros, and the machine is the made up MADEUPPC01, which Actions hands the check as
+COMPUTERNAME for this folder alone. The check has to come back with exactly four faults on
+lines 1 to 3, each naming the file, the line and the kind, and never the text.
+
+`EvidenceNearMiss.txt` MUST PASS. Its first line and its licensing line are the same lines
+as `tools/loop/mask-evidence.ps1` writes them masked. The name sits inside a longer word,
+which is not the name as a whole word. And a GUID on a line that names no licensing program,
+a COM CLSID, a WPF window class name and one after `-i` on another program's line, names no
+licence and no machine and is left alone.
+
+Actions reads the whole tree with this folder left out, because the fault here is on
+purpose, and the pre-commit leaves it out of what is staged for the same reason.

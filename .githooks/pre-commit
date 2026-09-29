@@ -30,6 +30,31 @@ if ! sh "$repo/tools/checks/check-imports.sh" src; then
     exit 1
 fi
 
+# Third, for a different reason. F102: a probe result committed from Bader's machine
+# carried the machine's name and two Autodesk licensing ids, and nothing read a file for
+# them before it was committed. What is read is what the commit will hold, the staged
+# content, written into a temp folder by checkout-index and never read off the working
+# copy. tools/checks/broken holds fabricated ids on purpose and is left out, as in Actions.
+echo "pre-commit: reading the files staged for this commit for a machine name or a licensing id"
+
+staged=$(mktemp -d)
+names=$(mktemp)
+trap 'rm -rf "$staged" "$names"' EXIT
+
+git diff --cached --name-only --diff-filter=ACMRT -z > "$names"
+
+if [ -s "$names" ]; then
+    git checkout-index --prefix="$staged/" -z --stdin < "$names"
+
+    if ! (cd "$staged" && sh "$repo/tools/checks/check-evidence-ids.sh" . tools/checks/broken); then
+        echo ""
+        echo "pre-commit: REFUSED. See the lines above."
+        exit 1
+    fi
+else
+    echo "pre-commit: no file is added or changed in this commit, so none was read"
+fi
+
 echo "pre-commit: running the full test set"
 
 if ! command -v dotnet >/dev/null 2>&1; then

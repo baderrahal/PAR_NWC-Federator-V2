@@ -62,3 +62,42 @@ jobs:
             exit 1
           fi
           echo "check-imports refused the broken folder, which is what it is for"
+
+      # F102. A probe result committed from Bader's machine carried the machine's name and
+      # two Autodesk licensing ids. Every text file in the tree is read for them. It names
+      # the file, the line and the kind, never the text, because this log is public.
+      # COMPUTERNAME here is the runner's, so this reads for the runner's name.
+      - name: No machine name or licensing id in a committed file
+        shell: bash
+        run: sh tools/checks/check-evidence-ids.sh . tools/checks/broken
+
+      # The broken folder holds fabricated ids, all zeros, and a made up machine name. The
+      # check must refuse exactly the four lines that carry one and nothing in the near miss.
+      - name: The id check refuses the fault it was written for
+        shell: bash
+        run: |
+          status=0
+          said=$(COMPUTERNAME=MADEUPPC01 sh tools/checks/check-evidence-ids.sh tools/checks/broken) || status=$?
+          echo "$said"
+          if [ "$status" -ne 1 ]; then
+            echo "check-evidence-ids answered $status over the broken folder, and it has to refuse it with 1"
+            exit 1
+          fi
+          for want in \
+              "EvidenceWithIds.txt:1  the machine name" \
+              "EvidenceWithIds.txt:2  an analytics agent id" \
+              "EvidenceWithIds.txt:2  a licensing id after -i" \
+              "EvidenceWithIds.txt:3  a licensing id after -i" \
+              "check-evidence-ids: 4 line(s)"; do
+            case "$said" in
+              *"$want"*) ;;
+              *) echo "check-evidence-ids did not say: $want"; exit 1 ;;
+            esac
+          done
+          case "$said" in
+            *EvidenceNearMiss.txt*)
+              echo "check-evidence-ids refused a line of the near miss, which it must pass"
+              exit 1
+              ;;
+          esac
+          echo "check-evidence-ids refused the four lines with an id and passed the near miss, which is what it is for"
