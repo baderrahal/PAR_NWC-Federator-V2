@@ -1,6 +1,145 @@
 # log
 
 Newest entry at the top.
+## 2026-09-29 The loop, turn 3, F100 a start of Navisworks with no click, measured, DONE
+
+Core tests 1746 passed, 0 failed, 0 skipped, before on fix-F100 at 30ae471 and after on
+0a89d73 and every commit since, run by the pre-commit hook. Nothing under src or tests
+changed. The add-in built with 0 errors and 0 warnings before and after, by the developer.
+This entry rides in PR 74, which is merged by SQUASH so the branch's history, which holds the
+licensing ids, stays off main. Nothing waits for the local machine, because run 4 ran here.
+
+### What was done
+
+- Bader answered A on 2026-09-29, Q79, and closed his Navisworks. Get-Process Roamer read 0
+  at 09:52 and again just before run 4, and the probe itself read none at its step 2 and at
+  its last read before the constructor
+- FIX ATTEMPT 4, 0a89d73, by the developer: exactly the seven faults of
+  steps\notes\f100-fourth-reading.md. B3 is kept by code: step 2 refuses while any process
+  named Roamer runs, naming each by pid and start time, and the same read is made again
+  after the backups, just before the constructor. The probe went from 1834 lines, sha256
+  B1228224, to 1923 lines, sha256 9CC1987B. Proved first with no Navisworks, by a harness
+  that ran each fault on the b01ad71 probe and on the new one, failing before and passing
+  after, with stand in Roamer.exe copies of ping.exe refused at step 2, at the last read,
+  and by the real probe, in %LOCALAPPDATA%\NwcFederatorLoop\turn3\f100-harness
+- THE READING, a reviewer and a breaker, both APPROVE, all seven fixed completely, no fault
+  of the seven left and no new fault inside attempt 4. Their other findings are polish, or
+  old faults outside the seven, which go into the register for run.ps1, which takes this
+  code over
+- RUN 4 at 11:35, the one run: all six steps passed in 125 s. The constructor returned
+  after 83.16 s, pid 33752 was adopted on all four conditions 0.06 s after the call began,
+  OpenFile and SaveFile of one NWC copy worked, AddPluginAssembly returned, Dispose
+  returned in 0.40 s and the Navisworks was gone 8.5 s after, nothing forced. With no other
+  Navisworks running, 36 registry values and 2 files of Bader's settings were put back,
+  each after a last check, and read back, and nothing changed in his AutoSave or logs
+  folders. docs\history\scan.md 5z-d RUN 4
+- NO RESULT FILE ON MAIN CARRIES A LICENSING ID. Run 4 printed none. Run 3's file is kept
+  for the lines scan.md cites, masked on three lines by F102's mask-evidence.ps1, which is
+  on branch fix-F102, PR 76, and merges after this. The reflection file and scan.md no
+  longer name the machine. F102's check at 0b48415, run by the lead over a git archive of
+  this branch at 9085d13, read 447 files and found none carrying one, kept in
+  %LOCALAPPDATA%\NwcFederatorLoop\turn3\f100-evidence-check.txt
+- the notes a later session needs are in steps\notes, and Bader's answers are Q79 to Q81
+
+### What remains
+
+- F100's code moves into run.ps1's guard file in F103, with the old faults the reading found
+- the commits 464f79f and c98c6f3 of the deleted branch still hold the licensing ids on
+  GitHub, through PR 74's own refs, which no one here can remove. Q88
+
+### Known bugs
+
+- the old faults outside the seven, register rows T3-G1 to T3-G5 in steps\loop.md. The one
+  that matters most: the last check before each settings write takes a process list it
+  could not read as no Roamer, so it fails open
+
+### What comes next
+
+1. F103 run.ps1 from turn3\f103-design.md, off main once this merges. F102 merges when its
+   second fix attempt is read, and F105 waits in the form, Q89
+
+## 2026-09-29 The loop, turn 3, the plan, written before the first edit
+
+Bader answered the form in steps\loop.md on 2026-09-29: F100 A, his Navisworks closed, and
+main's upstream put right. The defaults D1 to D4 stand as he wrote them, so D3 builds R1
+to R6 in this loop once the loop is clean on main. This entry is the plan, written before
+the first edit and not changed after it. What each step then did is in the entries above
+it and in steps\loop.md turn 3.
+
+### Bader's answers, applied first
+
+- Navisworks. Get-Process Roamer read 0 processes at 09:52 on 2026-09-29, so his pid 34668
+  is gone. It is read again before every start, install and put back, and once F100's
+  fourth attempt and run.ps1 are in, the code reads it and refuses
+- Git, before: `## main...origin/master [ahead 320]`, main and origin/main both e555619,
+  branch.main.merge refs/heads/master. origin/master is be0b9b37, THE BUILD THE INSTALLED
+  ADD-IN READS, so GitHub Desktop's Pull brought be0b9b37 every time and that is why the
+  add-in installed on 27 Sep is not main. Set with git branch --set-upstream-to=origin/main
+  main. After: `## main...origin/main`, main and origin/main both e555619, branch.main.merge
+  refs/heads/main. The remote master branch and every other remote branch are left alone,
+  D6 stays Bader's
+- F100, A: one more fix attempt of exactly the seven faults of the fourth reading, F1 to F4
+  and B1 to B3, with B3, no start while any Navisworks runs, kept by code. Then the reading,
+  then the one run, then the merge. A new fault in the reading sends F100 to B with no
+  question
+
+### Measured before the plan
+
+- the result files on fix-F100 name this machine on their first line, and
+  automation-start-result-20260928.txt carries the licensing agent's -i id at lines 446 and
+  447. docs\history\scan.md on the branch names the machine at line 4650. Main holds none of
+  them, read with git grep
+- the probe writes a new process's command line whole, so a fourth run would write the
+  licensing ids again. Nothing in tools\loop reads a result for them before a commit, and
+  every probe under tools\probes prints the machine name on its MACHINE line
+
+### The round, in order
+
+1. The records, on fix-F100: this entry, STATE OPEN and turn 3 in steps\loop.md, the
+   answers as Q79 to Q81 in steps\02_questions.md, and the notes a later session needs,
+   the fourth reading, the F101 design and the three fix lists, copied into steps\notes with
+   the machine name masked
+2. F102, its own branch and pull request: a masking step for every result committed from
+   this machine, the machine name and the licensing and session ids, which refuses when one
+   is left, and a check Actions runs for the licensing ids. Written beside step 3 in a
+   worktree of its own, read by a reviewer and a breaker, merged before F100's run
+3. F100 fix attempt 4 by the developer, exactly F1 to F4 and B1 to B3, B3 as code: the
+   probe refuses while any Roamer runs, read again just before the start. Proved by the
+   harness with no Navisworks
+4. The reading of attempt 4 by a reviewer and a breaker. A fault of the seven left, or a
+   new fault inside what attempt 4 changed, is B
+5. A: Roamer read 0 by the probe itself, the one run, the result masked by F102 and read for
+   ids, scan.md 5z-d given run 4, the pull request body read by the claim-checker, Actions
+   green, squash merge so the old result file stays off main. B: the result file out, the
+   records masked, merged, and run.ps1's start and close written fresh from the design
+6. The prober, Phase 1 item 2: probe-viewpoints.ps1 and probe-model-remove.ps1 on this
+   install, reflection only and no start, appended to scan.md. Roamer.exe's switches read
+   off the binary with no start. Whether the installed API writes the native Clash
+   Detective HTML tabular report, by reflection. Whether UI Automation reaches the tool's
+   window, with the first start of step 7
+7. F103, tools\loop\run.ps1, its own pull request: refuses in code while any Navisworks
+   runs, before every start, install and put back. Asks Windows to stay awake through
+   SetThreadExecutionState while a run goes and lets go after. The hang rule and the dialog
+   rule. Logs inside the work folder. The window run D4 needs
+8. F104, the separate read of the document, its own pull request: a probe plugin outside
+   the solution and the bundle, loaded with AddPluginAssembly, reading each NWF's tests and
+   status counts, compared with read-workbook.ps1's read-out and never with the harvest
+9. Install main, with Roamer read 0 and the installed bundle matched against bundle-backup,
+   then Phase 3, the baseline run set into steps\runs\00, run 1 through the real window as
+   D4 says. If the window cannot be driven, why is written and the no-click entry comes
+   first. The log-reader reads every run, and every register row marked done in code, not
+   proved by a run is marked proved or contradicted with its line
+10. F101, the no-click entry from the design, PQ1 to PQ8 measured first
+11. Phase 4, the findings one pull request each, a silent wrong number first. D1 after the
+    faults, as moves only
+12. Phase 5, R1 to R6 with D2, each rule written into docs\workflow.md and the rules files
+    first, then proved or built
+13. Phase 6, the close, when all seven conditions hold on one final run set from a fresh
+    copy
+
+At the end of every stretch steps\loop.md holds the state, so a new session carries on
+from it alone.
+
 ## 2026-09-28 The loop, turn 2, F98 the close round heading back, DONE
 
 Core tests 1746 passed, 0 failed, 0 skipped, before, on fix-F97 with the same src, and
