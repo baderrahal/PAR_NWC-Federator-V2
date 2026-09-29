@@ -64,6 +64,65 @@ and two one row tests, read as four tests and five clash rows with no doubt, and
 same shape with one clash and one one row test left without a name, read as four tests
 and five clash rows with both named as doubts.
 
+## compare-document.ps1
+
+Sets a workbook's read-out beside the read-out of the document it was written from, F104,
+Bader's criterion 3. The workbook side is read-workbook.ps1's read-out, the document side
+is what tools\probes\DocumentReadProbe writes, and only those two text files pass between
+the three, so none of them shares code with the harvest that wrote the workbook. Tests are
+paired by name, exactly and never trimmed. For every pair it checks the rows against the
+top level results, Clashes against every clash under them, each status count, every row's
+name and status in order, the tolerance unit and number in metres, every plain clash's
+distance in metres, the picture links and their numbering, the block order, and the
+totals. Every finding is a DIFFERS, NOT COMPARED or DOUBT line, and the verdict is AGREE
+only when there are none at all. A count of -1 in the document read-out is NOT COMPARED,
+never zero. The test type and status are shown and never judged.
+
+- reads: the two read-outs named by -Workbook and -Document, and whether each picture the
+  workbook links is on disk, when the workbook's folder is on this machine
+- writes: the comparison named by -Out, a new .txt under %LOCALAPPDATA%\NwcFederatorLoop,
+  written beside and moved into place and never written over. A read-out that is not
+  whole, a column word it reads that is missing, or an -Out it may not write gives one
+  COMPARISON FAILED line and exit 1
+- writes outside the repo: only that one comparison file
+- -PictureStatuses and -PictureCap say which rows should carry a picture, as the run was
+  told. Without -PictureStatuses which rows should carry one is NOT COMPARED. With
+  -PriorityPicked the block order is chosen by the priority file and is not judged
+- one switch at its top, $GroupClashesAt, counts a group's clashes each at its own status.
+  How the panel and Clash Detective's own export count them is PQ4 and PQ5 of F104, and
+  only that one word changes when they are measured
+
+Proved on 2026-09-29 by prove-compare.ps1 below, and on a read-out of the client export
+1104-PAR-1A02WN in samples\client-report, made by an unchanged copy of read-workbook.ps1
+run from a folder under the work folder, which read all 1830 tests with no doubt, counted
+the 1807 with every number zero and read the other 23 blocks as never rising. No document
+read-out of a real NWF exists yet, because the probe waits on F103.
+
+## prove-compare.ps1
+
+Feeds compare-document.ps1 the hand written pair in tools\loop\compare-proof and sixteen
+broken copies of it, in prove-hooks.sh's shape, and prints each answer against the one it
+should give. The pair is three tests in the shapes the two read-outs really have: plain
+clashes with two pictures, a group whose clashes sit at two statuses beside a plain clash
+under a name that ends in a space, and a test that found nothing, in a document in feet.
+No workbook, NWF or picture is behind it, so the good pair reads DISAGREEMENTS 0 and NOT
+PROVED, the pictures on disk being all it cannot compare. Each copy is one edit away from
+the good pair, and has to produce exactly its own lines, no other line the good pair does
+not have, and lose none it has. An edit that does not find exactly the line it edits is
+WRONG. Four more runs prove the three switches and the one class of test that is counted
+rather than judged. Actions runs it on every pull request.
+
+- reads: tools\loop\compare-proof
+- writes outside the repo: one new folder under %LOCALAPPDATA%\NwcFederatorLoop, by
+  default proof\compare-<stamp>, or the one -Work names, which must not be there yet. It
+  holds every copy and every comparison and is never emptied or reused
+- exits 0 when all 21 cases are right and 1 otherwise
+
+Proved on 2026-09-29 on this machine in Windows PowerShell 5.1, 21 right and 0 wrong, the
+sixteen copies under %LOCALAPPDATA%\NwcFederatorLoop\turn3\f104. Its first run was 18
+right and 3 wrong, all three the harness counting the line NOT COMPARED 1 as a finding,
+which is how the harness came to leave out a count line.
+
 ## prove-hooks.sh
 
 Feeds every case to the three hooks on standard input and prints each answer against the
@@ -80,3 +139,10 @@ Navisworks has used no processor time for five minutes, records any dialog Navis
 raises, and closes only the Navisworks it started, by its process id. How the installed
 Navisworks can start a run with no click is Phase 1 of the loop and is measured by the
 prober first, so this script is written after that answer and not before it.
+
+## check-documents.ps1
+
+NOT WRITTEN YET. It comes with F103, because it starts a Navisworks through the guarded
+start and close F103 writes as functions run.ps1 shares, loads DocumentReadProbe, has it
+read every NWF of a run, checks each NWF's sha256 did not move, and runs
+compare-document.ps1 on every NWF and workbook pair. F104's second part.
