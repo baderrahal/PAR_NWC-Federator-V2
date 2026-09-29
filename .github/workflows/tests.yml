@@ -65,17 +65,20 @@ jobs:
 
       # F102. A probe result committed from Bader's machine carried the machine's name and
       # two Autodesk licensing ids. Every file in the tree is read as text for every kind in
-      # tools/checks/evidence-ids.txt, bar the client's workbooks and pictures under samples.
-      # It names the file, the line and the kind, never the text, because this log is
-      # public. COMPUTERNAME here is the runner's, so this reads for the runner's name and
-      # never for Bader's. Only the pre-commit on his machine reads for his.
+      # tools/checks/evidence-ids.txt, or named and refused. Left out: tools/checks/broken,
+      # whose faults are on purpose, .git, bin and obj, and a .jpg or .xlsx under samples
+      # whose first bytes are its format's own. It names the file, the line and the kind,
+      # never the text, because this log is public. COMPUTERNAME here is the runner's, so
+      # this reads for the runner's name and never for Bader's. Only the pre-commit on his
+      # machine reads for his.
       - name: No machine name or licensing id in a committed file
         shell: bash
         run: sh tools/checks/check-evidence-ids.sh . tools/checks/broken
 
-      # The broken folder holds fabricated ids, all zeros, and a made up machine name. The
-      # check must refuse exactly these thirteen lines, nothing in the near miss or in the
-      # masked copy, and never print the name or an id.
+      # The broken folder holds fabricated ids, all zeros, a made up machine name, a UTF-16
+      # file and two text files at samples shaped paths. The check must refuse exactly these
+      # eighteen lines, nothing in the near miss, the masked copy or the rules fixtures, and
+      # never print the name or an id.
       - name: The id check refuses the fault it was written for
         shell: bash
         run: |
@@ -87,6 +90,7 @@ jobs:
             exit 1
           fi
           want="tools/checks/broken/EvidenceLeftByMask.txt:2  the machine name
+          tools/checks/broken/EvidenceUtf16.txt  holds a NUL byte, so it cannot be read as text. UTF-16 is one such
           tools/checks/broken/EvidenceWithIds.txt:1  the machine name
           tools/checks/broken/EvidenceWithIds.txt:2  a GUID on a line naming analyticsagentid
           tools/checks/broken/EvidenceWithIds.txt:2  a GUID on a licensing line
@@ -98,11 +102,15 @@ jobs:
           tools/checks/broken/EvidenceWithIds.txt:5  a GUID on a licensing line
           tools/checks/broken/EvidenceWithIds.txt:6  a GUID on a line naming analyticsagentid
           tools/checks/broken/EvidenceWithIds.txt:6  an analytics agent id
-          tools/checks/broken/EvidenceWithIds.txt:7  an id after -i"
+          tools/checks/broken/EvidenceWithIds.txt:7  an id after -i
+          tools/checks/broken/EvidenceWithIds.txt:8  an analytics agent id
+          tools/checks/broken/EvidenceWithIds.txt:8  an id after -i
+          tools/checks/broken/samples/client-report/NotAPicture.jpg:2  the machine name
+          tools/checks/broken/samples/client-report/NotAWorkbook.xlsx:2  the machine name"
           got=$(printf '%s\n' "$said" | awk '!/^check-evidence-ids:/' | LC_ALL=C sort)
           want=$(printf '%s\n' "$want" | LC_ALL=C sort)
           if [ "$got" != "$want" ]; then
-            echo "check-evidence-ids did not refuse exactly the thirteen lines. It refused:"
+            echo "check-evidence-ids did not refuse exactly the eighteen lines. It refused:"
             echo "$got"
             exit 1
           fi
@@ -112,7 +120,51 @@ jobs:
               exit 1
               ;;
           esac
-          echo "check-evidence-ids refused exactly the thirteen lines, passed the near miss and the masked copy, and printed no name and no id"
+          echo "check-evidence-ids refused exactly the eighteen lines, passed the near miss, the masked copy and the rules fixtures, and printed no name and no id"
+
+      # F102. The check and the mask read the rules file by one set of rules, so a green
+      # check means the mask can read the same file. Each fixture under
+      # tools/checks/broken/rules is put in place of the rules file in a copy of the two
+      # scripts: valid.txt both must read, and every other one, each valid.txt with one
+      # fault, both must refuse.
+      - name: The check and the mask read a rules file the same way
+        shell: bash
+        run: |
+          for fixture in tools/checks/broken/rules/*.txt; do
+            t="$RUNNER_TEMP/f102rules"
+            rm -rf "$t"
+            mkdir -p "$t/tools/checks" "$t/tools/loop" "$t/read"
+            cp tools/checks/check-evidence-ids.sh "$t/tools/checks/"
+            cp tools/loop/mask-evidence.ps1 "$t/tools/loop/"
+            cp "$fixture" "$t/tools/checks/evidence-ids.txt"
+            printf 'a fabricated line with nothing to find\n' > "$t/read/plain.txt"
+            check=0
+            said=$(COMPUTERNAME=MADEUPPC01 sh "$t/tools/checks/check-evidence-ids.sh" "$t/read" 2>&1) || check=$?
+            mask=0
+            masked=$(COMPUTERNAME=MADEUPPC01 powershell -NoProfile -ExecutionPolicy Bypass -File "$t/tools/loop/mask-evidence.ps1" -In "$t/read/plain.txt" -Out "$t/out/plain.txt") || mask=$?
+            echo "$fixture: the check answered $check, the mask answered $mask"
+            case "$fixture" in
+              */valid.txt)
+                if [ "$check" -ne 0 ] || [ "$mask" -ne 0 ]; then
+                  echo "$said"
+                  echo "$masked"
+                  echo "both must read $fixture"
+                  exit 1
+                fi
+                ;;
+              *)
+                case "$said" in *"the rules file cannot be read"*) ;; *) check=0 ;; esac
+                case "$masked" in *"the rules file cannot be read"*) ;; *) mask=0 ;; esac
+                if [ "$check" -ne 2 ] || [ "$mask" -ne 1 ]; then
+                  echo "$said"
+                  echo "$masked"
+                  echo "both must refuse $fixture as a rules file they cannot read"
+                  exit 1
+                fi
+                ;;
+            esac
+          done
+          echo "both read valid.txt and both refused every rules fixture with a fault"
 
       # F102. The mask, on every run. windows-latest has Windows PowerShell 5.1. Its copy of
       # the fabricated ids must be byte for byte the masked copy kept beside them, and pass

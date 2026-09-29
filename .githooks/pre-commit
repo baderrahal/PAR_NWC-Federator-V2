@@ -6,6 +6,24 @@
 set -e
 
 repo=$(git rev-parse --show-toplevel)
+
+# THE TREE BEING COMMITTED IS READ BY ITS OWN HOOK. F102, measured on 2026-09-29: on Bader's
+# machine core.hooksPath is the ABSOLUTE path of the main clone's .githooks, so a commit in a
+# git worktree runs the main clone's copy of this file, from whatever branch the main clone
+# has checked out, and a branch that changes this hook or its checks is never read by its
+# own. So when the tree being committed holds its own copy of this file and that copy is
+# not the file running, its own runs instead and its answer is the answer. It works from the
+# moment the file running carries these lines, so a main clone on a branch older than F102
+# still runs its own copy, all through.
+own="$repo/.githooks/pre-commit"
+
+if [ -z "${NWC_OWN_PRE_COMMIT:-}" ] && [ -f "$own" ] && ! [ "$0" -ef "$own" ]; then
+    echo "pre-commit: this is not the committed tree's own hook, so its own runs, $own"
+    NWC_OWN_PRE_COMMIT=1
+    export NWC_OWN_PRE_COMMIT
+    exec sh "$own" "$@"
+fi
+
 cd "$repo"
 
 # First, because it costs no compiler and it guards the half of this repo no compiler

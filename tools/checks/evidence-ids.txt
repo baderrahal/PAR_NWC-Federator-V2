@@ -17,8 +17,17 @@
 #
 # Every expression is read without regard to case, by grep -E and by .NET. Only what both
 # read the same way is written here: bracket classes, [[:space:]], which the mask reads as
-# \s, counts in braces, groups and alternation. {guid} stands for the guid line and
-# {machine} for COMPUTERNAME, which must match the machine line whole or both refuse.
+# the six characters it is in the C locale, space, tab, line feed, vertical tab, form feed
+# and carriage return, counts in braces, groups and alternation. {guid} stands for the guid
+# line and {machine} for COMPUTERNAME, which must match the machine line whole or both
+# refuse.
+#
+# Both read this file by one set of rules and refuse it whole on any fault: a line with no
+# colon, a key they do not know, a key in another case, a key of a kind before the first
+# kind, a kind with no name or without its lines, id, mask or whole, a whole that is not
+# yes or no, and no guid, no machine or no kind. tools\checks\broken\rules holds a whole
+# file and five with one fault each, an unknown key, a key in another case, no mask, no
+# whole and a whole of Yes, which Actions puts in the place of this file for both.
 
 guid: [0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}
 machine: [A-Za-z0-9_-]+

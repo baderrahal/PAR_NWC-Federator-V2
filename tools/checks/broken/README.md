@@ -49,8 +49,25 @@ the machine. Lines 2 and 3 are the command lines of two AdskLicensingAgent proce
 shape F102 found on a pushed branch, with an analytics agent id and ids after `-i`. Line 4
 is an AdskIdentity session GUID, line 5 a GenuineService GUID, line 6 an analytics agent id
 with its key url encoded, and line 7 a GUID after `-i` on another program's line, which is
-masked and refused on any line. The check has to come back with exactly twelve faults on
-it, each naming the file, the line and the kind, and never the text.
+masked and refused on any line. Line 8 has an analytics agent id after `-i` and a second
+GUID after `--session`, the line the second reading found the mask left half masked, because
+it asked which kinds read the line after an earlier kind had masked part of it. The check
+has to come back with exactly fourteen faults on it, each naming the file, the line and the
+kind, and never the text.
+
+`EvidenceUtf16.txt` is a line of fabricated text written as UTF-16, as Windows PowerShell
+5.1 writes by default, so it holds a NUL byte after every letter. The check has to name it
+and refuse it as a file it cannot read as text.
+
+`samples/client-report/NotAPicture.jpg` and `NotAWorkbook.xlsx` beside it are TEXT files at
+paths the binary rule names, each with the made up name on its line 2. The rule leaves a
+file out only when its first bytes are its format's own too, so both are read as text and
+the check has to refuse each on line 2.
+
+`rules/` holds rules files for the test that the check and the mask read a rules file the
+same way. `valid.txt` is whole and both have to read it. Every other file there is
+`valid.txt` with one fault, and both have to refuse it. Actions puts each in the place of
+`tools/checks/evidence-ids.txt` in a copy of the two scripts. None of them carries an id.
 
 `EvidenceLeftByMask.txt` holds the name inside a longer word. The mask masks the name only
 as a whole word, because a name inside a longer word may be part of another word, and the
@@ -69,4 +86,4 @@ GUID after it.
 
 Actions reads the whole tree with this folder left out, because the fault here is on
 purpose, and the pre-commit leaves it out of what is staged for the same reason. Over this
-folder the check has to come back with exactly thirteen faults.
+folder the check has to come back with exactly eighteen faults.

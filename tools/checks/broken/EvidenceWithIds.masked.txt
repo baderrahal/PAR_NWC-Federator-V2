@@ -5,3 +5,4 @@ MACHINE   [machine]   2026-09-29 10:00:00
   GenuineService.exe checked [id]
   GET /analytics/v1/connect?analyticsagentid%3D[id] HTTP/1.1
   other.exe -i [id]
+  other.exe -i [id] --session [id]

@@ -16,11 +16,16 @@
     reads is left, a COM CLSID or a WPF window class name, because it names no licence and
     no machine.
 
-    THE READ BACK IS THE CHECK'S OWN RULE. Once the copy is in place it is read again off
-    the disk with the same kinds the check refuses, the whole word ones anywhere, even
-    inside a longer word, and for a NUL byte. What is left there is refused: the copy is
-    deleted, and the kind and the line number are printed, never the text. So a copy this
-    writes is a copy the check passes, on the same machine.
+    Which kinds read a line is decided on the line as it came in, before any of it is
+    masked, the way the check reads it.
+
+    THE READ BACK IS THE CHECK'S OWN RULE FOR A LINE. Once the copy is in place it is read
+    again off the disk with the same kinds the check refuses, the whole word ones anywhere,
+    even inside a longer word, and for a NUL byte. What is left there is refused: the copy
+    is deleted, and the kind and the line number are printed, never the text. So on the
+    same machine the check passes every line of a copy this writes. The check also reads
+    the copy's path under the folder it reads, which this does not, so a copy is named
+    plainly and never after an id or the machine.
 
     Bytes are kept. A file is read byte for byte as Latin-1, so every byte comes back out
     as it went in and only a masked span changes, line endings and any UTF-8 included. A
@@ -76,48 +81,65 @@ foreach ($kept in @("samples", "steps\logs", "bundle")) {
 }
 if ((Test-Path -LiteralPath $outFull) -and -not $Replace) { Refuse ("-Out " + (Hide $outFull) + " is already there. Give -Replace to write over it. Nothing was written.") }
 if (Test-Path -LiteralPath $outFull -PathType Container) { Refuse ("-Out " + (Hide $outFull) + " is a folder. Nothing was written.") }
-if (-not (Test-Path -LiteralPath $rulesPath -PathType Leaf)) { Refuse ("there is no rules file at " + $rulesPath + ". Nothing was written.") }
+if (-not (Test-Path -LiteralPath $rulesPath -PathType Leaf)) { Refuse ("there is no rules file at " + (Hide $rulesPath) + ". Nothing was written.") }
 
-# The rules file, read the way check-evidence-ids.sh reads it: a line is a key, a colon and
-# a value, and a line that is blank or starts with # is skipped.
+$latin = [Text.Encoding]::GetEncoding(28591)
+
+# The rules file, read EXACTLY as check-evidence-ids.sh reads it, so a rules file one of
+# them refuses the other refuses too, and a green check means the mask can read it. Bytes,
+# split at each line feed, one carriage return taken off the end. A line that is blank or
+# starts with # is skipped. Any other line is a key, a colon and a value, and every key is
+# compared with its case. A key it does not know, a key of a kind before the first kind, a
+# kind that lacks lines, id, mask or whole, a whole that is not yes or no, and a file with
+# no guid, no machine or no kind are refused.
+function Close-Kind($k) {
+    if ($null -eq $k) { return }
+    if ($k.Lines -ceq "" -or $k.Id -ceq "" -or $k.Mask -ceq "" -or $k.Whole -ceq "") { Refuse ("the rules file cannot be read, the kind " + $k.Kind + " lacks a lines, id, mask or whole line. Nothing was written.") }
+    if (@("yes", "no") -cnotcontains $k.Whole) { Refuse ("the rules file cannot be read, the kind " + $k.Kind + " has a whole that is not yes or no. Nothing was written.") }
+}
+
 $guid = ""
 $shape = ""
 $kinds = New-Object System.Collections.Generic.List[object]
 $current = $null
-foreach ($raw in [IO.File]::ReadAllLines($rulesPath)) {
-    $line = $raw.TrimEnd("`r")
-    if ($line -match '^[ \t]*(#|$)') { continue }
+foreach ($raw in $latin.GetString([IO.File]::ReadAllBytes($rulesPath)).Split([char]10)) {
+    $line = $(if ($raw.EndsWith([string][char]13)) { $raw.Substring(0, $raw.Length - 1) } else { $raw })
+    if ($line -cmatch '^[ \t]*(#|$)') { continue }
     $at = $line.IndexOf(':')
-    $key = $(if ($at -ge 0) { $line.Substring(0, $at) } else { $line })
-    $value = $(if ($at -ge 0) { $line.Substring($at + 1).TrimStart(' ', "`t") } else { "" })
-    if ($key -eq "guid") { $guid = $value; continue }
-    if ($key -eq "machine") { $shape = $value; continue }
-    if ($key -eq "kind") {
-        $current = [pscustomobject]@{ Kind = $value; Lines = ""; Id = ""; Mask = ""; Whole = "no"; Count = 0; LinesRx = $null; IdRx = $null; MaskRx = $null }
+    if ($at -lt 0) { Refuse "the rules file cannot be read, a line has no key. Nothing was written." }
+    $key = $line.Substring(0, $at)
+    $value = $line.Substring($at + 1).TrimStart(' ', "`t")
+    if ($key -ceq "guid") { $guid = $value }
+    elseif ($key -ceq "machine") { $shape = $value }
+    elseif ($key -ceq "kind") {
+        Close-Kind $current
+        if ($value -ceq "") { Refuse "the rules file cannot be read, a kind has no name. Nothing was written." }
+        $current = [pscustomobject]@{ Kind = $value; Lines = ""; Id = ""; Mask = ""; Whole = ""; Count = 0; LinesRx = $null; IdRx = $null; MaskRx = $null }
         $kinds.Add($current)
-        continue
     }
-    if ($null -ne $current -and @("lines", "id", "mask", "whole") -contains $key) { $current.($key) = $value; continue }
-    Refuse ("the rules file holds a line that is no key it knows, " + $key + ". Nothing was written.")
+    elseif (@("lines", "id", "mask", "whole") -ccontains $key) {
+        if ($null -eq $current) { Refuse ("the rules file cannot be read, " + $key + " comes before any kind. Nothing was written.") }
+        $current.($key) = $value
+    }
+    else { Refuse ("the rules file cannot be read, a line that is no key it knows, " + $key + ". Nothing was written.") }
 }
-if ($guid -eq "" -or $shape -eq "" -or $kinds.Count -eq 0) { Refuse "the rules file has no guid line, no machine line or no kind. Nothing was written." }
+Close-Kind $current
+if ($guid -ceq "" -or $shape -ceq "" -or $kinds.Count -eq 0) { Refuse "the rules file cannot be read, it has no guid line, no machine line or no kind. Nothing was written." }
 if (-not [regex]::IsMatch($machine, '^(?:' + $shape + ')$')) { Refuse "COMPUTERNAME is not the shape the machine line of the rules file allows. Nothing was written." }
 
-# An expression of the file, as .NET reads it. [:space:] is what it is in the C locale
-# grep reads in, so both read the same bytes as space.
+# An expression of the file, as .NET reads it. [:space:] becomes the six characters it is
+# in the C locale grep reads in, space, tab, line feed, vertical tab, form feed and carriage
+# return, so both read the same bytes as space.
 function Convert-Expression([string] $e) {
     return $e.Replace('{guid}', $guid).Replace('{machine}', $machine).Replace('[:space:]', ' \t\n\v\f\r')
 }
 
 $options = [Text.RegularExpressions.RegexOptions]::IgnoreCase -bor [Text.RegularExpressions.RegexOptions]::CultureInvariant
 foreach ($k in $kinds) {
-    if ($k.Lines -eq "" -or $k.Id -eq "" -or $k.Mask -eq "" -or @("yes", "no") -notcontains $k.Whole) { Refuse ("the kind " + $k.Kind + " in the rules file lacks lines, id, mask or a whole of yes or no. Nothing was written.") }
-    if ($k.Lines -ne "every") { $k.LinesRx = New-Object Text.RegularExpressions.Regex((Convert-Expression $k.Lines), $options) }
+    if ($k.Lines -cne "every") { $k.LinesRx = New-Object Text.RegularExpressions.Regex((Convert-Expression $k.Lines), $options) }
     $k.IdRx = New-Object Text.RegularExpressions.Regex((Convert-Expression $k.Id), $options)
-    $k.MaskRx = $(if ($k.Whole -eq "yes") { New-Object Text.RegularExpressions.Regex(('(?<![A-Za-z0-9_])(?:' + (Convert-Expression $k.Id) + ')(?![A-Za-z0-9_])'), $options) } else { $k.IdRx })
+    $k.MaskRx = $(if ($k.Whole -ceq "yes") { New-Object Text.RegularExpressions.Regex(('(?<![A-Za-z0-9_])(?:' + (Convert-Expression $k.Id) + ')(?![A-Za-z0-9_])'), $options) } else { $k.IdRx })
 }
-
-$latin = [Text.Encoding]::GetEncoding(28591)
 
 # One line per piece, each keeping its own line ending, so the pieces join back into the
 # same bytes.
@@ -152,10 +174,16 @@ try {
         $outEncoding = $latin
     }
 
+    # Which kinds read a line is decided on the line AS IT CAME, the way the check reads it,
+    # and only then is it masked. Decided on a line an earlier kind had already masked, the
+    # line other.exe -i analytics-GUID --session GUID lost its GUID after -i to the first
+    # kind, so the kind for an id after -i no longer read it and its second GUID was left,
+    # in a copy that passed the check. Measured on 2026-09-29, proof S1 to S4.
     $sb = New-Object Text.StringBuilder
-    foreach ($line in (Split-Lines $text)) {
-        foreach ($k in $kinds) {
-            if ($null -ne $k.LinesRx -and -not $k.LinesRx.IsMatch($line)) { continue }
+    foreach ($original in (Split-Lines $text)) {
+        $reads = @($kinds | Where-Object { $null -eq $_.LinesRx -or $_.LinesRx.IsMatch($original) })
+        $line = $original
+        foreach ($k in $reads) {
             $found = $k.MaskRx.Matches($line).Count
             if ($found -gt 0) {
                 $k.Count += $found
