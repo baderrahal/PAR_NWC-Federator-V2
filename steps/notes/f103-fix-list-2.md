@@ -1,8 +1,9 @@
 # F103 part 1, fix list 2
 
 From the reading of fix attempt 1, fcd981b, on 2026-09-30 by a reviewer and two breakers,
-one on ownership and close, one on Bader's things. All thirteen items of fix list 1 read as
-fixed. Neither breaker found anything that starts, adopts, messages or closes a Navisworks or
+one on ownership and close, one on Bader's things. The reviewer read twelve of fix list 1's thirteen items fixed and
+item 8 UNKNOWN, and the breaker on Bader's things read item 13 not fixed, the install race this
+list takes up as item 10. Neither breaker found anything that starts, adopts, messages or closes a Navisworks or
 window of Bader's. What follows is fix attempt 2, the second of three. Line numbers are of
 fcd981b.
 
@@ -92,13 +93,14 @@ Bader's window of 2026-09-30, before this list was sent. Its record is
     with a false DIALOG finding. No guard was broken: the messages went to the adopted
     process's own window. Class the main window by what tells it apart from a dialog of the
     same process, and write the owner's class, caption, visibility and process for every
-    window the rule classes, so the next start measures what the rule rests on. A message box
-    of Navisworks is owned by the visible main window, so a candidate rule is that the main
-    window's owner is not visible. A harness case for each shape
+    window the rule classes, so the next start measures what the rule rests on. Whether a message box
+    of Navisworks is owned by the visible main window is NOT MEASURED, no run has shown one. A
+    candidate rule is that the main window's owner is not visible. A harness case for each shape
 - M4, the processor time of an idle Navisworks, read every 15 s over the 360 s hold: never
   zero, 0.094 to 0.578 s a sample, about 1.2 to 1.6 s a minute. So the hang rule as written,
   no processor time at all for five minutes, can never fire on an idle Navisworks. That is
   Q83, for Bader. Nothing in this list changes the rule
 - the constructor returned after 92.55 s. Dispose returned after 0.49 s and the process read
   gone 8.9 s after. The watchdog made 749 passes, the longest 9643 ms and the longest gap
-  10157 ms. M5 took under one monitor pass, so item 3's gap is short but real
+  10157 ms. No record times M5. Its m5.txt read files written at least 9.7 s after the watchdog stopped,
+  so item 3's gap is at least that long and real

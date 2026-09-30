@@ -2,8 +2,9 @@
 
 STATE OPEN
 
-A NAVISWORKS WINDOW, 2026-09-30. Bader closed his Navisworks at 10:52 and will not open it
-again before 14:45. Every Navisworks the loop starts is closed, and his settings put back and
+A NAVISWORKS WINDOW, 2026-09-30. Bader wrote at 10:52 that he had closed his Navisworks and
+would not open it again before 14:45. When it closed was not measured: turn3\f103\roamer-reads.txt
+line 20 read no Roamer at 10:35:30. Every Navisworks the loop starts is closed, and his settings put back and
 read back, by 14:30. No start begins after 14:10 and no install after 14:15. If a Navisworks
 the loop did not start appears before 14:45, the guards hold: no start, no install, no put
 back, and wait. The window's plan is the top entry of steps\log.md. Get-Process Roamer read
@@ -35,10 +36,10 @@ Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 closed WAITING 
    by both readers, the workbook half of the third fix not whole: an xlsx under samples with
    up to about 64 KB appended still passes unread. PR 76 stays open as a draft on 7d8d135, as
    PR 74 did while F100 waited on Bader. Nothing downstream waits on it, results are masked
-   by hand until it merges. Worktree .claude\worktrees\agent-aadf0be0a55966216
+   with F102's own tools, run from its branch, until it merges. Worktree .claude\worktrees\agent-aadf0be0a55966216
 2. F103, draft PR 78, branch fix-F103 at 912dedc. Two real starts with no window ran on
    2026-09-30, the second clean. FIX ATTEMPT 3, THE LAST, steps\notes\f103-fix-list-3.md,
-   16 items, is with its developer in .claude\worktrees\agent-a587ed43dd2f1102d since 13:55.
+   16 items, is with its developer in .claude\worktrees\agent-a587ed43dd2f1102d since 13:57.
    Then its reading by a reviewer and two breakers, each finding classed. A fault of the list
    left or a new one sends F103 to the form. If clean: a third real start, Set 02, in a
    Navisworks window, then PR 78 merged
@@ -281,7 +282,7 @@ baseline run proves it or contradicts it.
 | T3-G9 | the same reading | AdoptStart runs after the constructor returned and before the pid is held, where neither the constructor deadline nor the call bound applies, so a hung process list or CIM read there has no bound, nw-guard.ps1 1091 to 1145 | a bound on that stretch, with a harness case | open, for after F103 | none yet | none yet |
 | T3-G10 | the same reading | M5 walks %TEMP% and the Autodesk folders with no time limit, run.ps1 1062 to 1076, and the put back waits on it | a bound on the walk, written when it is reached | open, for after F103 | none yet | none yet |
 | T3-G11 | the same reading | build\install.ps1 deletes recursively at 130 and 137 with no check for a junction inside the bundle, and on a first install with nothing moved aside a failed copy leaves a partial bundle at the load path, 134 | both refused or put right, with harness cases | open, for after F103 | none yet | none yet |
-| T3-G12 | the same reading | Verdict wording: HUNG, CallForced and CEILING come before the end state, UNKNOWN wins when the end state later reads gone, one unreadable sample ends the hold, RAN with FORCED exits 0, and $sync.LogAmbiguous and $sync.ToolLog are set and never read, run.ps1 446 to 455, 541 to 546, 552, 555 and 1015 | each verdict naming the end state, and the two fields read or removed | open, for after F103 | none yet | none yet |
+| T3-G12 | the same reading | Verdict wording: HUNG, CallForced and CEILING come before the end state, UNKNOWN wins when the end state later reads gone, one unreadable sample ends the hold, RAN with FORCED exits 0, a foreign Roamer that ran and changed no setting shows only in the put back reasons and never in the verdict, and $sync.LogAmbiguous and $sync.ToolLog are set and never read, run.ps1 446 to 455, 541 to 546, 552, 555 and 1015 | each verdict naming the end state, and the two fields read or removed | open, for after F103 | none yet | none yet |
 | Q82 to Q87 | turn 3, the F103 design | The log folder, the hang rule's zero, a ceiling, the screen, AutoSave, the remembered folders | Bader's answers under each in steps\02_questions.md | needs Bader, in the form | none yet | none yet |
 | Q88 | turn 3, F102's developer | Main names the machine of 2026-09-19 in 9 places across 4 files, and PR 74's refs on GitHub keep the licensing ids of its first commits | Bader's answer in steps\02_questions.md | needs Bader, in the form | none yet | none yet |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
@@ -700,8 +701,8 @@ Findings so far:
 - loop runs will write autosaves into his AutoSave folder, 196 files, Q86
 - the build stamp reads +edits when the tree holds any untracked file, so main is installed
   from a clean checkout only, from the F103 design
-- F105, four reads off the install with no Navisworks started, by the prober: all 53
-  members SavedViewpoints.cs calls exist here, RemoveFile and TryRemoveFile exist as 5c
+- F105, four reads off the install with no Navisworks started, by the prober: all 79
+  members on its list of what SavedViewpoints.cs calls exist here, 53 in its first read, RemoveFile and TryRemoveFile exist as 5c
   says, navisworks.gui.roamer.dll parses 39 switches and off the IL
   Roamer.exe -ExecuteAddInPlugin <id> needs no -Embedding, so it may open the window with
   no click, UNKNOWN until a start, and no public member of the API the add-in uses writes
@@ -751,16 +752,18 @@ logs, deleted 0, could not delete 1, which is what option A of Q82 rests on. M2 
 answered, turn3\f103.
 
 RESUMED 2026-09-30. Bader opened Navisworks by hand twice in the morning, pid 38520 started
-09:21:35 and gone by 09:27:11, and pid 36172 started 09:32:45 and gone by 09:58:02, read by
-the F103 developer and kept in %LOCALAPPDATA%\NwcFederatorLoop\turn3\f103\roamer-reads.txt
-lines 10 to 13. Neither was touched. 36172 changed his own 22.0 key while prove-run.ps1 ran
+09:21:35 and gone by 09:27:11, and pid 36172 started 09:32:45 and gone at the read of 09:58:08,
+read by the F103 developer and kept in %LOCALAPPDATA%\NwcFederatorLoop\turn3\f103\roamer-reads.txt
+lines 10 to 14. Neither was touched. 36172 changed his own 22.0 key while prove-run.ps1 ran
 its sixth time, so that run was thrown away, and the harness now stops when it finds a
 Roamer it did not start. SO BADER USES NAVISWORKS WHILE THE LOOP RUNS, and every start the
 loop makes has to wait for none of his to be running, which run.ps1 refuses in code.
 
 THE WINDOW OF 2026-09-30, SO FAR. The reading of F103 fix attempt 1, fcd981b, finished at
-about 11:25: all thirteen items fixed, nothing found that starts, adopts, messages or closes
-a Navisworks or window of Bader's, and new faults of their own, fix list 2. Judged safe for a
+11:27. The reviewer read twelve of the thirteen items fixed and item 8 UNKNOWN, the breaker on
+Bader's things read item 13, the install race, not fixed, which fix list 2 takes up as item 10,
+nobody found anything that starts, adopts, messages or closes a Navisworks or window of
+Bader's, and they found new faults of their own, fix list 2. Judged safe for a
 start with no window today, because what it found either cannot happen inside item 0's hold
 while Bader keeps his Navisworks closed, or fails on the safe side. Measured first, with a
 ping.exe and no Navisworks: an exited process is not found by Get-Process -Id or
@@ -776,11 +779,14 @@ THE FIRST REAL START, run.ps1 -Mode Run -Set 00 -Item 0 -Stamp be0b9b37 on fcd98
   his AutoSave folder unchanged, 196 files copied into autosave-backup first. Keep awake
   requested and released on native thread 25304, 0x80000000 then 0x80000003
 - M4, the processor time of an idle Navisworks: never zero, 0.094 to 0.578 s a 15 s sample,
-  about 1.2 to 1.6 s a minute. The hang rule as written can never fire, which Q83 now says
-- M5, what a start writes outside the loop folder: 7 keys under HKCU\Software\Autodesk, and
-  files, 11 under %APPDATA%\Autodesk, 1 under Recent, 22 under %LOCALAPPDATA%\Autodesk, 7
-  under %PROGRAMDATA%\Autodesk and 19 under %TEMP%, listed in the run folder's m5.txt, which
-  stays out of the evidence until it is masked
+  about 1.2 to 1.6 s a minute. The hang rule as written can never fire on an idle Navisworks,
+  which Q83 now says
+- M5, what changed outside the loop folder while the start ran, written at or after the call:
+  7 keys under HKCU\Software\Autodesk, and files, 11 under %APPDATA%\Autodesk, 1 under
+  Recent, 22 under %LOCALAPPDATA%\Autodesk, 7 under %PROGRAMDATA%\Autodesk and 19 under
+  %TEMP%, listed in the run folder's m5.txt, which stays out of the evidence until it is masked.
+  NOT ALL OF IT IS THE START'S: 16 of the 19 under %TEMP% are Claude Code's own, and 10 are
+  Desktop Connector's, so at least 26 of the 60 files came from other programs
 - M6: the session read unlocked on every read
 - THE EXIT 5 IS A FALSE FINDING. Its one DIALOG was the Navisworks main window, which has an
   owner, window 855918, so fix list 1 item 11's rule of MAIN only with no owner is wrong for
@@ -791,12 +797,12 @@ THE FIRST REAL START, run.ps1 -Mode Run -Set 00 -Item 0 -Stamp be0b9b37 on fcd98
   in F103's pull request
 
 Written outside the repo by the first start: %LOCALAPPDATA%\NwcFederatorLoop\autosave-backup,
-196 files, 274 MB, and %LOCALAPPDATA%\NwcFederatorLoop\runs\00\item0, the run folder with the
-settings backup, the listings, m5.txt, mypid.txt and the record. What the loop's Navisworks
-itself wrote outside the loop folder is M5's list above.
+196 files, 285,849,138 bytes, about 286 MB, and %LOCALAPPDATA%\NwcFederatorLoop\runs\00\item0, the run folder with the
+settings backup, the listings, m5.txt, mypid.txt and the record. What changed outside the
+loop folder while the start ran is M5's list above, the start's and other programs'.
 
 F103 FIX ATTEMPT 2, the 21 items of steps\notes\f103-fix-list-2.md, sent to its developer at
-about 11:45, asked to report by 12:50.
+11:42, asked to report by 12:50.
 
 THE SECOND REAL START, run.ps1 -Mode Run -Set 01 -Item 0 -Stamp be0b9b37 on 867697a, F103
 fix attempt 2, after its reading by a reviewer and two breakers, all three answering SAFE FOR
@@ -811,14 +817,17 @@ harness run 10, which ran the same code.
   in the adopted process, record line 33
 - Bader's settings: 5 registry values and 2 files put back and read back equal, his logs
   folder the same after as before, his AutoSave unchanged. Keep awake released on its own
-  thread. M5: 7 keys and 35 files outside the loop folder, 0 under %TEMP% this time
+  thread. M5, what changed outside the loop folder while it ran: 7 keys and 35 files, 0 under
+  %TEMP% this time and 11 of them Desktop Connector's
+- M4 again: never zero, 0.016 to 0.391 s a 15 s sample and 0.406 to 0.875 s a minute, lower
+  than the first start's, about 2 to 4.4 s in five minutes
 - both starts' evidence, steps\runs\00\item0 and steps\runs\01\item0, read by F102's mask at
   7d8d135, which found nothing to mask, and by F102's check, 9 files, none carrying an id or
   the machine name, committed on fix-F103 as 912dedc
 
 THE WINDOW OF 2026-09-30, WHAT IT WAS USED FOR, written at 13:57. Every Navisworks the loop
 started was closed and Bader's settings put back and read back, the last at 13:48:08.
-Get-Process Roamer read 0 at 13:57:32.
+Get-Process Roamer read 0 at 13:57:32 and again at 14:38:32, before the window closed.
 1. the reading of F103 fix attempt 1, then THE FIRST REAL START on it, 11:29 to 11:40, which
    measured M4, M5 and M6 and found the main window has an owner
 2. F103 fix attempt 2 from what that start showed, its reading, and THE SECOND REAL START on
@@ -827,7 +836,7 @@ Get-Process Roamer read 0 at 13:57:32.
    attempt 2 found item 7 of fix list 2 still open and new faults, so fix attempt 3, the last,
    is needed before F103 can merge, and Install runs only from main with run.ps1 on it
 WHAT IS LEFT FOR TONIGHT'S WINDOW, after Bader closes Navisworks and leaves the PC on:
-1. F103 fix attempt 3, steps\notes\f103-fix-list-3.md, with its developer since 13:55, then
+1. F103 fix attempt 3, steps\notes\f103-fix-list-3.md, with its developer since 13:57, then
    its reading. A fault of the list left or a new one sends F103 to the form
 2. if clean: a third real start on it, Set 02, then PR 78 merged, then run.ps1 -Mode Install
    from the clean checkout %LOCALAPPDATA%\NwcFederatorLoop\wt-main at main's new commit, the

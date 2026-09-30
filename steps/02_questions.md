@@ -441,7 +441,7 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
 83. From the same design. THE HANG RULE as written is no processor time at all for five minutes while the log has not grown. An idle Navisworks, or one waiting at a dialog, may never read exactly zero, so the rule might never fire. run.ps1's first start with no window measures it. If it never reads zero, what counts as no processor time, for example under one second in five minutes
 
-    MEASURED 2026-09-30 by that first start, 11:29 to 11:40, record steps\runs\00\item0\record.txt: an idle Navisworks with nothing open, read every 15 s over the 360 s hold, NEVER read zero. It used 0.094 to 0.578 s of processor time a sample, about 1.2 to 1.6 s a minute, so about 6 to 8 s in five minutes. The rule as written can never fire on an idle Navisworks, and only the 12 hour ceiling would end one stuck at a dialog. What a Navisworks waiting at a dialog uses is still UNKNOWN.
+    MEASURED 2026-09-30 by the first two real starts with no window, 11:29 to 11:40 and 13:37 to 13:48, records %LOCALAPPDATA%\NwcFederatorLoop\runs\00\item0\record.txt and runs\01\item0\record.txt, committed as steps\runs\00\item0 and steps\runs\01\item0 on branch fix-F103, PR 78: an idle Navisworks with nothing open, read every 15 s over a 360 s hold, NEVER read zero in either. The first used 0.094 to 0.578 s of processor time a sample, about 1.2 to 1.6 s a minute, so about 6 to 8 s in five minutes. The second used 0.016 to 0.391 s a sample, about 0.4 to 0.9 s a minute, so about 2 to 4.4 s in five minutes. So the rule as written can never fire on an idle Navisworks, and only the 12 hour ceiling would end one stuck at a dialog. What a Navisworks waiting at a dialog uses is still UNKNOWN.
 
     Answer:
 

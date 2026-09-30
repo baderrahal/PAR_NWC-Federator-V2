@@ -2,8 +2,10 @@
 
 From the reading of fix attempt 2, 867697a, on 2026-09-30 by a reviewer and two breakers,
 one on ownership and close, one on Bader's things. All three answered SAFE FOR ITEM 0 first,
-and the lead made the second real start on 867697a on that answer. Of fix list 2's 21 items,
-18 read as fixed. By the house rule this is the third and last attempt: if the reading after
+and the lead made the second real start on 867697a on that answer. Of fix list 2's 21 items, at
+least one reader called three not fixed: item 7 all three, item 19 the breaker on Bader's
+things and item 21 the breaker on ownership. The reviewer called item 17 fixed in code but not
+proved and item 20 UNKNOWN. Item 19 is item 17 of this list, sent as an addendum. By the house rule this is the third and last attempt: if the reading after
 it finds one of these items not fixed, or a new fault inside it, F103 goes to Bader's form.
 So this list holds only what attempt 3 must close. The old faults the readers found outside
 attempt 2 are their own register rows, T3-G6 to T3-G12, and are NOT to be touched here.
@@ -79,4 +81,18 @@ WORDS THE READERS NAMED, EACH ONE LINE
     reads the owner's class, caption, visibility and process, which may be another
     process's, into the record. Say so, and mask an owner of another process in the record
 
+ADDENDUM, sent to the developer on 2026-09-30 after the claim check of the
+window's records, three word items in this same attempt
+
+17. ITEM 19 OF FIX LIST 2, THE WORDS. nw-guard.ps1 503 to 504 at 867697a say the first start
+    showed no window of the main class with an empty caption. Both starts' watch.txt show one,
+    steps\runs\00\item0\watch.txt line 8 at 11:31:06.117 and steps\runs\01\item0\watch.txt
+    line 8 at 13:39:05.791, each before the monitor began. Say exactly that, and that the rule
+    keeps such a window a DIALOG. Change no rule
+18. nw-guard.ps1 500 to 501 say a message box of Navisworks is owned by the visible main
+    window. No run showed a Navisworks message box. Say it is not measured
+19. M5's label in run.ps1 says what the start wrote outside the loop folder. The measure is
+    what was written at or after the call, and at least 26 of the first start's 60 files came
+    from other programs. Word it as what changed outside the loop folder while the start ran,
+    in run.ps1, the README and the rules
 Then the whole harness with every case passing, harness4, and the report as before.
