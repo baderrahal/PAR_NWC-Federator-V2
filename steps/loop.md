@@ -2,6 +2,31 @@
 
 STATE OPEN
 
+F103 IS IN THE FORM, Q92, from 2026-09-30. Its final reading, of fix attempt 3 at a63c284,
+found item 14 of fix list 3 not fixed: the harness header still says its copy of run.ps1 has
+the constructor line replaced by a line that throws, where that line only sets the error, a
+sentence named after attempts 1 and 2 as well. All three readers answered safe for item 0 and
+safe for install, one of them within its lens, and none classed a finding as a new fault
+inside the attempt. Held by the lead in steps\notes\f103-final-reading.md. PR 78 stays a
+draft.
+
+TONIGHT'S WINDOW. Bader's message headed 30 Sep 2026 at 10:52 says, in his words: What is
+left goes to the next window, which is tonight, after he closes Navisworks and leaves the PC
+on. The loop takes it as open when, after 18:00, no Roamer has run and no key or mouse input
+has come for 15 minutes, read once a minute by
+%LOCALAPPDATA%\NwcFederatorLoop\turn3\wait-window.ps1 into turn3\window-wait.txt, which
+starts no Navisworks. The waiter ends itself every 115 minutes and the lead starts it again,
+until the window opens or 06:00 on 2026-10-01 passes, and no start begins after 06:00. In the
+window the loop makes one start, the third real start on a63c284, from the F103 worktree:
+powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\run.ps1 -Mode Run -Set 02
+-Item 0 -Stamp be0b9b37. Its evidence, steps\runs\02\item0 in that worktree, is masked file
+by file with F102's tools\loop\mask-evidence.ps1 at 7d8d135 and checked with F102's
+tools\checks\check-evidence-ids.sh over steps\runs, as Sets 00 and 01 were. Nothing merges and
+nothing installs. The guards hold as written: while a Navisworks the loop did not start runs,
+no start, no put back, and wait. Read at 17:06:18 into turn3\reads-170618.txt: the power
+plan, Balanced, never sleeps or hibernates on idle on mains power, and the laptop read on
+mains at 100 percent. What closing the lid does could not be read, UNKNOWN.
+
 A NAVISWORKS WINDOW, 2026-09-30. Bader wrote at 10:52 that he had closed his Navisworks and
 would not open it again before 14:45. When it closed was not measured: turn3\f103\roamer-reads.txt
 line 20 read no Roamer at 10:35:30. Every Navisworks the loop starts is closed, and his settings put back and
@@ -37,23 +62,26 @@ Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 closed WAITING 
    up to about 64 KB appended still passes unread. PR 76 stays open as a draft on 7d8d135, as
    PR 74 did while F100 waited on Bader. Nothing downstream waits on it, results are masked
    with F102's own tools, run from its branch, until it merges. Worktree .claude\worktrees\agent-aadf0be0a55966216
-2. F103, draft PR 78, branch fix-F103 at 912dedc. Two real starts with no window ran on
-   2026-09-30, the second clean. FIX ATTEMPT 3, THE LAST, steps\notes\f103-fix-list-3.md,
-   16 items, is with its developer in .claude\worktrees\agent-a587ed43dd2f1102d since 13:57.
-   Then its reading by a reviewer and two breakers, each finding classed. A fault of the list
-   left or a new one sends F103 to the form. If clean: a third real start, Set 02, in a
-   Navisworks window, then PR 78 merged
+2. F103 IS IN THE FORM, Q92, after three fix attempts, draft PR 78, branch fix-F103 at
+   a63c284, worktree .claude\worktrees\agent-a587ed43dd2f1102d. Its final reading found item
+   14 of fix list 3 not fixed, steps\notes\f103-final-reading.md. IN TONIGHT'S WINDOW: the
+   third real start on a63c284, run.ps1 -Mode Run -Set 02 -Item 0 from that worktree, its
+   evidence masked with F102's tools, checked, and committed to fix-F103 as 912dedc was.
+   Nothing merges and nothing installs until Bader answers Q92
 3. F104, part 1 built and read, its fixes at ebd8bb7 on fix-F104, worktree
    .claude\worktrees\agent-a20297b0647789a67. Its part 2, check-documents.ps1, after F103
-   merges, then one reading of the whole and its pull request. Design steps\notes\f104-design.md
+   merges, so it waits on Q92, then one reading of the whole and its pull request. Design
+   steps\notes\f104-design.md
 4. F105 IS IN THE FORM, Q89, branch fix-F105 at 94a839b, worktree
    %LOCALAPPDATA%\NwcFederatorLoop\wt-f105, no pull request
 5. Install main through run.ps1 -Mode Install from the clean checkout
-   %LOCALAPPDATA%\NwcFederatorLoop\wt-main, moved to main's commit once F103 merges, in a
-   Navisworks window. The baseline through the real window WAITS ON Q82. If Q82 is still open
-   when 1 to 5 are done, STATE WAITING
+   %LOCALAPPDATA%\NwcFederatorLoop\wt-main, moved to main's commit once F103 merges, so it
+   waits on Q92, in a Navisworks window. The baseline through the real window WAITS ON Q82.
+   When tonight's start is done and recorded, STATE WAITING, because every step left waits on
+   Bader's answers
 6. Starts and installs happen only in a window Bader gives, with none of his Navisworks
-   running. Tonight's is after he closes Navisworks and leaves the PC on
+   running. Tonight's is after he closes Navisworks and leaves the PC on, read as the head of
+   this file says
 
 ## The phases
 
@@ -230,6 +258,12 @@ steps\02_questions.md with its options.
   text appended still passes, because the rule allows the zip end record anywhere in the
   last 65557 bytes, while every real one holds it 22 bytes from the end. The lead recommends
   A, one more change to make the window 22 bytes, then merge
+- Q92, F103 after three fix attempts: the final reading found one of the last attempt's items
+  not fixed, in the words. The harness header says a line throws that only sets the error,
+  named after attempts 1 and 2 as well. All three readers answered safe for item 0 and safe
+  for install, one within its lens. The lead recommends A, one change of words only, no
+  change of logic, at the nine entries of steps\notes\f103-final-reading.md, the harness run
+  again, then merge, tonight's start standing as its run
 
 Built in turn 1 from steps\01_next.md, steps\02_questions.md, steps\04_audit.md,
 steps\04_audit_first_run.md, steps\03_bader_next.md, the known bugs of steps\log.md, the
@@ -240,18 +274,17 @@ an F number only when it becomes work. Most harmful first when the loop picks, a
 wrong number ranks above a loud failure. Done in code but not proved by a run means the
 baseline run proves it or contradicts it.
 
-291 rows, by status, after turn 3's twenty one additions:
+296 rows, by status, after turn 3's twenty six additions:
 
 - 125 done in code, not proved by a run
 - 3 reported by the read, not verified, T1-N, T1-UNCALLED and T1-CATCH
 - 86 read again by two readers on 2026-09-29, 76 CONFIRMED and 10 PARTLY, none refuted:
   60 silent wrong outputs, 13 broken features, 6 loud failures, 7 noise. Every one
   waits for the baseline, because no fix lands before it, steps\notes\turn1-read-verified.md
-- 34 needs Bader, in the form, counting Q82 to Q87 as one row, Q88, F105 and F102 as one each, and F100 moved out
+- 35 needs Bader, in the form, counting Q82 to Q87 as one row, Q88, F105, F102 and F103 as one each, and F100 moved out
 - 19 open fault
 - 4 DONE
-- 14 open for F103 or after it, T3-G1 to T3-G12, T3-P and T3-B
-- 1 in its last fix attempt, F103
+- 19 open for F103 or after it, T3-G1 to T3-G16, T3-P, T3-P2 and T3-B
 - 1 part 1 built and read, F104, check-documents after F103
 - 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
@@ -266,7 +299,7 @@ baseline run proves it or contradicts it.
 | F100 | loop prompt, Phase 1 item 1 | Nothing measured how Navisworks starts and closes with no click on this machine | tools\probes\probe-automation-start.ps1 run once as committed, with no Navisworks the loop did not start running, and docs\history\scan.md 5z-d written off that run | DONE, fix attempt 4 on Bader's answer A, Q79, read by a reviewer and a breaker who both approved | 74 | run 4 at 11:35 on 2026-09-29, all six steps passed, tools\probes\automation-start-result-20260929.txt, scan.md 5z-d RUN 4 |
 | F102 | turn 3, the lead's read of fix-F100 | A result committed from this machine can carry the machine name and the licensing agent's ids, and nothing read a file for them before a commit | tools\loop\mask-evidence.ps1 masks both, tools\checks\check-evidence-ids.sh refuses both in the pre-commit and in Actions, proved on the four fix-F100 files, refused before and passed after | needs Bader, in the form, Q91, after three fix attempts | 76, a draft | no Navisworks run applies, proof in turn3\f102\proof.txt |
 | F105 | loop prompt, Phase 1 item 2 | Four facts off the install nobody had read on this machine: the saved viewpoint members, RemoveFile, Roamer's switches, the Clash Detective report | scan.md 5z-f off five result files, no Navisworks started | needs Bader, in the form, Q89, after three fix attempts | none, branch fix-F105 at 94a839b | no Navisworks run applies, the prober's reads on 2026-09-29 |
-| F103 | loop prompt, Phase 1 item 3 | tools\loop\run.ps1 does not exist | the design in turn3\f103-design.md built, proved by its harness with no Navisworks, then one start with no window | two real starts with no window ran on 2026-09-30, the second clean, fix attempt 3 of 3 with its developer, steps\notes\f103-fix-list-3.md | 78 | none yet |
+| F103 | loop prompt, Phase 1 item 3 | tools\loop\run.ps1 does not exist | the design in turn3\f103-design.md built, proved by its harness with no Navisworks, then one start with no window | needs Bader, in the form, Q92, after three fix attempts. Its final reading found item 14 of fix list 3 not fixed, steps\notes\f103-final-reading.md | 78, a draft | two real starts with no window on 2026-09-30, on fix attempts 1 and 2, steps\runs\00\item0 and 01\item0 on fix-F103, none yet on a63c284 |
 | F104 | loop prompt, Phase 1 item 4 | No check of the workbook against a read of the document that shares no code with the harvest | the design in turn3\f104-design.md, part 1 on fix-F104, check-documents after F103, proved by prove-compare and then by 5a at the baseline | part 1 built at ef1fbdd, read by a reviewer and a breaker, its fixes at ebd8bb7, check-documents after F103 | none yet | none yet |
 | T3-G1 | turn 3, the reviewer's reading of F100 attempt 4 | The probe's last check before each settings write, line 1885, also 1877 and NewRoamers at 1261, takes a process list it could not read as no Roamer, so the writes go on. Silent. Old, in b01ad71 | a list that cannot be read stops every write, in the guard code run.ps1 takes over, with a harness case | open, for F103 | none yet | none yet |
 | T3-G2 | the same reading | After the deadline path runs and TerminateProcess returns False, nothing reads the deadline flag before adoption, line 1468, so steps 4 to 6 can run with no watchdog. Old | adoption refused once the deadline path ran, in the guard code, with a harness case | open, for F103 | none yet | none yet |
@@ -283,6 +316,11 @@ baseline run proves it or contradicts it.
 | T3-G10 | the same reading | M5 walks %TEMP% and the Autodesk folders with no time limit, run.ps1 1062 to 1076, and the put back waits on it | a bound on the walk, written when it is reached | open, for after F103 | none yet | none yet |
 | T3-G11 | the same reading | build\install.ps1 deletes recursively at 130 and 137 with no check for a junction inside the bundle, and on a first install with nothing moved aside a failed copy leaves a partial bundle at the load path, 134 | both refused or put right, with harness cases | open, for after F103 | none yet | none yet |
 | T3-G12 | the same reading | Verdict wording: HUNG, CallForced and CEILING come before the end state, UNKNOWN wins when the end state later reads gone, one unreadable sample ends the hold, RAN with FORCED exits 0, a foreign Roamer that ran and changed no setting shows only in the put back reasons and never in the verdict, and $sync.LogAmbiguous and $sync.ToolLog are set and never read, run.ps1 446 to 455, 541 to 546, 552, 555 and 1015 | each verdict naming the end state, and the two fields read or removed | open, for after F103 | none yet | none yet |
+| T3-G13 | turn 3, the final reading of F103, steps\notes\f103-final-reading.md, classed old by the reviewer and a breaker | run.ps1 903, 1014 and 1020 at a63c284 write an exception's text, which holds the full path of a file of Bader's, into the record unmasked. Run's record, where 1014 and 1020 write, is copied into steps\runs, and Install's, where 903 writes, stays in the loop folder. The kind item 12 of fix list 3 fixed, at lines it did not name. Neither real start's record holds such a line | the text masked the way install.ps1's REFUSED lines are, with a harness case | open, for after F103 | none yet | none yet |
+| T3-G14 | the same reading, classed old by a breaker | A run.ps1 or install.ps1 killed or hung between the move aside and the removal leaves the load path empty or holding part of the new bundle, and the old bundle whole at .replaced-<time>, with no line saying so and nothing that puts it back, and run.ps1 923 waits on install.ps1 with no limit, install.ps1 119 to 260 at a63c284. Silent | that state named by Check and put right or refused by the next Install, and a bound on the wait, with harness cases | open, for after F103 | none yet | none yet |
+| T3-G15 | the same reading, classed polish by both breakers, BundleLeftovers is attempt 3's own code | Install's leftovers: a failed removal of the old bundle after every check prints one LEFT line and exits 0, which INSTALL.md reads as success in a direct install, BundleLeftovers names old .replaced- and .failed- folders as the add-in installed before, so one stale folder makes every later Install exit 5, a wrong stamp returns before a leftover is named, a removal that stops part way leaves part of the old bundle, and the checks that gate the removal read the staging copy, run.ps1 784 to 789 and 947 to 948, install.ps1 178 to 262 at a63c284 | each named or refused with a harness case, and INSTALL.md's success line reading the LEFT line | open, for after F103 | none yet | none yet |
+| T3-G16 | the same reading, classed polish and old by a breaker, CloseAtEnd's text is attempt 3's own code | A close that fails twice: CloseAtEnd writes CLOSED here when its own Kill also failed, run.ps1 493 at a63c284, and CloseOwn refuses any folder whose record holds a VERDICT line, run.ps1 687, so only a person can end that Navisworks. The verdict's side of it is T3-G12 | the text saying which close failed, and a closer for a process still running, with a harness case whose Kill fails | open, for after F103 | none yet | none yet |
+| T3-P2 | the same reading, classed polish or old by two breakers, the probe's close left unclassed, OwnerText is attempt 3's own code | Polish: CloseOwn reads autosave-before.txt with no count or name check, dotnet build-server shutdown stops every build server of the account, an owner window destroyed mid read is written as another process's, item 8's harness case sets Forced by hand, and the probe closes outside the lock, each with its lines in steps\notes\f103-final-reading.md | each fixed or named where the code next moves | open, for after F103 | none yet | none yet |
 | Q82 to Q87 | turn 3, the F103 design | The log folder, the hang rule's zero, a ceiling, the screen, AutoSave, the remembered folders | Bader's answers under each in steps\02_questions.md | needs Bader, in the form | none yet | none yet |
 | Q88 | turn 3, F102's developer | Main names the machine of 2026-09-19 in 9 places across 4 files, and PR 74's refs on GitHub keep the licensing ids of its first commits | Bader's answer in steps\02_questions.md | needs Bader, in the form | none yet | none yet |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
@@ -843,3 +881,52 @@ WHAT IS LEFT FOR TONIGHT'S WINDOW, after Bader closes Navisworks and leaves the 
    first install of main
 3. then F104 part 2, check-documents.ps1 on main's run.ps1
 4. anything that opens the tool's window still waits on Q82
+
+AFTER THE WINDOW, 2026-09-30. Fix attempt 3 of F103 came back as a63c284 at 15:10, with
+harness run 12, 242 passed and 0 failed on its files. Its final reading by a reviewer and two
+breakers answered safe for item 0 and safe for install, one of them within its lens, classed
+no finding as a new fault inside the attempt, and the reviewer read 18 of the 19 items fixed.
+THE LEAD HELD ITEM 14 against the words it names:
+the harness header's sentence that a line throws, where the line only sets the error, stands
+word for word at prove-run.ps1 24 to 25, named after attempts 1 and 2 as well. So F103 went to
+the form as Q92, steps\notes\f103-final-reading.md, and PR 78 stays a draft. Five register
+rows added from the readers' other findings, classed old or polish, T3-G13 to T3-G16 and
+T3-P2, three of them resting on code the attempt wrote. Actions on a63c284, run 36713756910,
+had not run a test: "The job was not started because it repeatedly failed to be acquired (5
+attempts)". Run again by the lead, green at 16:05:30, the Core tests 1720 passed, 0 failed,
+26 skipped of 1746.
+
+TONIGHT'S WINDOW CHANGES: the third real start on a63c284 is made as evidence for Q92, and
+nothing merges or installs. Item 2 of what was left for tonight, the merge and the install of
+main, waits on Q92, and so does item 3, F104 part 2.
+
+Read at 16:53:24, and again at 17:06:19 into turn3\reads-170618.txt: no .replaced- or
+.failed- folder sits beside the bundle in
+%APPDATA%\Autodesk\ApplicationPlugins, where only one folder's name starts with
+ParsonsNwcFederator, so T3-G15's stale folder would not stop the first Install.
+
+Programs started after the window closed at 14:45. By the F103 developer: harness run 12
+from 14:46:02 to 15:04:48, with a dotnet build of the stand-in and 43 stand-in Roamer.exe each
+closed through its held handle, and what tools\loop\README.md says the harness starts, among
+them git for scratch repositories and cmd.exe for one junction under its work folder, then
+the copy of the probe's harness 4 from 15:05:53 to 15:08:22, then git to commit and push
+a63c284, and gh to set PR 78's body, updated at 15:18:07. Anything else the developer ran
+after 14:45 is UNKNOWN here. It wrote turn3\f103\prove-run-out-12.txt, turn3\f103\h4\h4-fix3-out.txt
+with the five run files beside it written from 15:06:38 to 15:07:29, and in the session's
+scratchpad pr78-fix3-section.md, commit-fix3.txt, pr78-body-before-fix3.md and
+pr78-body-fix3.md, from 14:46:26 to 15:17:35. By the three readers and the claim-checker:
+reads only. By the lead: git and gh, among them gh run rerun of run 36713756910, Windows
+PowerShell for Get-Process Roamer, Get-Date, the hashes, powercfg, one Win32_Battery read and
+two listings of ApplicationPlugins, run.ps1 -Mode Check for Set 02 at 16:23:39, pid 43368,
+which reads only, dotnet test of the Core tests at 16:54:08 and again from 17:07:16 to
+17:07:59, with the MSBuild and compiler servers they started, shut down at 17:08:00 with
+dotnet build-server shutdown, and from 16:14:11 the waiter, turn3\wait-window.ps1, pid 51376,
+which reads the clock, the processes named Roamer and the time since the last key or mouse
+input once a minute, and starts no Navisworks. At each start the waiter compiles one small
+C# class with Add-Type, which in Windows PowerShell 5.1 runs the C# compiler with its files
+under %TEMP%. Those files were not read, UNKNOWN. Written outside the repo by the lead:
+turn3\wait-window.ps1, turn3\window-wait.txt, turn3\check-set02-162337.txt,
+turn3\reads-170618.txt, turn3\core-tests-170716.txt, turn3\pr-f103-form.md, and in the
+session's scratchpad final-reading.txt, reading-of-attempt-1-fcd981b.txt,
+reading-of-attempt-2-867697a.txt and claim-evidence.txt, the three readings copied from their
+journals and the lead's git and gh reads.
