@@ -17,11 +17,13 @@
 # WHAT F103 CHANGED OR ADDED AFTER THE MOVE, so these are not the probe's lines:
 # - moved unchanged since 377cb1a: every function not named below
 # - changed: AdoptStart, which holds the handle and writes adopted into mypid.txt, the
-#   watchdog's adopted deadline, which closes through CloseAdopted, WatchSync, which carries
-#   MyProc, BackupSettings, which prints the key it exported, WindowLines, which reads
+#   watchdog's adopted deadline, which closes through CloseAdopted and writes why first, and
+#   its deadline on a Visible or Dispose that does not return, WatchSync, which carries
+#   MyProc and the call deadline, BackupSettings, which prints the key it exported, WindowLines, which reads
 #   through WindowRecords, SettingsPutBack, which returns what it could not write, and
 #   NewWinTypes, which emits seven more calls
-# - added: HeldRead, HeldState, CloseAdopted, WindowRecords, WindowKind and ReadShared
+# - added: HeldRead, HeldState, CloseAdopted, WindowRecords, ChildHandlesOf, WindowKind and
+#   ReadShared
 # The rules these functions keep are written at the top of the probe and in
 # .claude\rules\loop.md, and are not repeated here.
 #
@@ -348,8 +350,9 @@ $dinv = $dt.DefineMethod("Invoke", [System.Reflection.MethodAttributes]"Public,H
 $dinv.SetImplementationFlags([System.Reflection.MethodImplAttributes]"Runtime,Managed")
 $procType = $dt.CreateType()
 $tb = $dynMod.DefineType("ProbeWin", [System.Reflection.TypeAttributes]"Public,Class,Abstract,Sealed")
-# Two kernel32 calls beside them, so the constructor deadline can end this process with
-# no managed shutdown, and so no finalizer runs against a Roamer nobody adopted.
+# Beside them GetCurrentProcess and TerminateProcess, so the constructor deadline can end
+# this process with no managed shutdown and no finalizer runs against a Roamer nobody
+# adopted, and since F103 the seven calls listed below.
 foreach ($def in @(
     @("user32.dll", "EnumWindows", [bool], [Type[]]@($procType, [IntPtr])),
     @("user32.dll", "EnumChildWindows", [bool], [Type[]]@([IntPtr], $procType, [IntPtr])),
@@ -401,8 +404,10 @@ function WinHandlesOf($winType, $procType, [uint32]$owner, [IntPtr]$parent) {
 # of Navisworks is read too. The Navisworks main window is left out, because its children
 # are its panels and not a dialog's text. Each read has a 500 ms timeout that
 # SMTO_ABORTIFHUNG cuts short once Windows counts the thread hung, at most 20 children of
-# one window are read, and one call spends at most 2 s on them in all, so a pass of the
-# watchdog or the monitor always reaches its deadline checks. What was not read is written.
+# one window are read, the walk of one window's children stops at 200 of them, and one call
+# spends at most 2 s on reads and walks in all, so a pass of the watchdog or the monitor
+# always reaches its deadline checks. What was not read is written. Each record also
+# carries its owner's class, caption, visibility and process, read without a message.
 function WindowRecords($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [bool]$allowMessages) {
   $recs = New-Object System.Collections.Generic.List[object]
   $budget = [Diagnostics.Stopwatch]::StartNew()
@@ -414,15 +419,22 @@ function WindowRecords($winType, $procType, [uint32]$owner, [bool]$visibleOnly, 
     $t = New-Object System.Text.StringBuilder 512
     [void]$winType::GetWindowTextW($h, $t, 512)
     $ownerWin = $winType::GetWindow($h, [uint32]4)
-    $ownerOn = "none"
-    if ($ownerWin -ne [IntPtr]::Zero) { $ownerOn = [string]$winType::IsWindowEnabled($ownerWin) }
-    $rec = [pscustomobject]@{ Handle = $h; Class = $c.ToString(); Caption = $t.ToString(); Visible = $vis; Owner = [string]$ownerWin; OwnerHandle = $ownerWin; OwnerEnabled = $ownerOn; Texts = $null; TextNote = "" }
+    $ownerOn = "none"; $ownerVis = $false; $ownerClass = ""; $ownerCaption = ""; [uint32]$ownerPid = 0
+    if ($ownerWin -ne [IntPtr]::Zero) {
+      $ownerOn = [string]$winType::IsWindowEnabled($ownerWin)
+      $ownerVis = $winType::IsWindowVisible($ownerWin)
+      $oc = New-Object System.Text.StringBuilder 256; [void]$winType::GetClassNameW($ownerWin, $oc, 256); $ownerClass = $oc.ToString()
+      $ot = New-Object System.Text.StringBuilder 512; [void]$winType::GetWindowTextW($ownerWin, $ot, 512); $ownerCaption = $ot.ToString()
+      [void]$winType::GetWindowThreadProcessId($ownerWin, [ref]$ownerPid)
+    }
+    $rec = [pscustomobject]@{ Handle = $h; Class = $c.ToString(); Caption = $t.ToString(); Visible = $vis; Owner = [string]$ownerWin; OwnerHandle = $ownerWin; OwnerEnabled = $ownerOn; OwnerVisible = $ownerVis; OwnerClass = $ownerClass; OwnerCaption = $ownerCaption; OwnerPid = $ownerPid; Texts = $null; TextNote = "" }
     if ($vis -and -not $allowMessages -and $rec.Class -eq "#32770") { $rec.TextNote = "not read, nothing is sent before adoption" }
-    if ($vis -and $allowMessages -and (WindowKind $rec.Class $rec.Caption $ownerWin) -ne "MAIN") {
+    if ($vis -and $allowMessages -and (WindowKind $rec.Class $rec.Caption $ownerWin $ownerVis) -ne "MAIN") {
       $parts = @()
       $n = 0
       $late = 0
-      foreach ($ch in (WinHandlesOf $winType $procType $owner $h)) {
+      $walk = ChildHandlesOf $winType $procType $owner $h 200 $budget 2000
+      foreach ($ch in $walk.Handles) {
         if (-not $winType::IsWindowVisible($ch)) { continue }
         $n++
         if ($n -gt 20) { continue }
@@ -435,11 +447,31 @@ function WindowRecords($winType, $procType, [uint32]$owner, [bool]$visibleOnly, 
       }
       if ($n -gt 20) { $parts += ("and " + ($n - 20) + " more visible children not read") }
       if ($late -gt 0) { $parts += ("and " + $late + " visible children not read, because the 2 s one pass may spend reading children was spent") }
+      if ($walk.Cut -ne "") { $parts += ("and the walk of its children stopped, " + $walk.Cut) }
       $rec.Texts = $parts
     }
     $recs.Add($rec)
   }
   return ,$recs
+}
+# The children of one window of the owner process, the walk stopped at $max of them or once
+# the stopwatch passes $limitMs. Cut says why it stopped, or is empty when it did not.
+function ChildHandlesOf($winType, $procType, [uint32]$owner, [IntPtr]$parent, [int]$max, $budget, [int]$limitMs) {
+  $found = New-Object System.Collections.Generic.List[IntPtr]
+  $state = @{ Cut = "" }
+  $cb = {
+    param([IntPtr]$h, [IntPtr]$l)
+    if ($found.Count -ge $max) { $state.Cut = "at " + $max + " children"; return $false }
+    if ($budget.ElapsedMilliseconds -gt $limitMs) { $state.Cut = "at " + $limitMs + " ms"; return $false }
+    [uint32]$wp = 0
+    [void]$winType::GetWindowThreadProcessId($h, [ref]$wp)
+    if ($wp -eq $owner) { $found.Add($h) }
+    return $true
+  }.GetNewClosure()
+  $del = [System.Management.Automation.LanguagePrimitives]::ConvertTo($cb, $procType)
+  [void]$winType::EnumChildWindows($parent, $del, [IntPtr]::Zero)
+  [GC]::KeepAlive($del)
+  return [pscustomobject]@{ Handles = $found; Cut = $state.Cut }
 }
 function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [bool]$allowMessages) {
   $lines = New-Object System.Collections.Generic.List[string]
@@ -454,19 +486,22 @@ function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [b
 }
 # What a top level window of the adopted Navisworks is: the tool's window, the Navisworks
 # main window, its Working... progress dialog, or anything else, a DIALOG finding. The
-# Working... dialog was measured on 2026-09-28, docs\history\scan.md 5z-d, and the main
-# window's class and caption on 2026-09-29, tools\probes\automation-start-result-20260929.txt
-# line 423. The main window is one with no owner, so a message box of Navisworks titled the
-# same way, which has one, is a DIALOG. Whether the real main window has no owner is UNKNOWN
-# until the first start, which writes MAIN or DIALOG for it. The tool's window is read off
-# the design and is UNKNOWN until the first window start.
-function WindowKind($class, $caption, $ownerHandle) {
+# Working... dialog was measured on 2026-09-28, docs\history\scan.md 5z-d. The main window's
+# class and caption on 2026-09-29, tools\probes\automation-start-result-20260929.txt line 423,
+# and on the first real start of run.ps1 on 2026-09-30 that it HAS AN OWNER, enabled, record
+# line 32, which the rule of fix attempt 1, no owner, called a DIALOG. So the main window is
+# one of that class and caption whose owner is absent or not visible. A message box of
+# Navisworks is owned by the visible main window, so it stays a DIALOG. Every window the
+# rule classes is written with its owner's class, caption, visibility and process, so the
+# next start measures what the rule rests on. A window of the main class with an empty
+# caption stays a DIALOG: the first real start showed none, so nothing tells how to class it.
+# The tool's window is read off the design and is UNKNOWN until the first window start.
+function WindowKind($class, $caption, $ownerHandle, [bool]$ownerVisible) {
   if ($class.StartsWith("HwndWrapper[Roamer.exe;ProgressDialog;")) { return "PROGRESS" }
   if ($class.StartsWith("HwndWrapper") -and $caption.StartsWith("Parsons NWC Federator")) { return "WINDOW" }
-  if ($class.StartsWith("WindowsForms10") -and $caption.EndsWith("Autodesk Navisworks Manage 2025") -and $ownerHandle -eq [IntPtr]::Zero) { return "MAIN" }
+  if ($class.StartsWith("WindowsForms10") -and $caption.EndsWith("Autodesk Navisworks Manage 2025") -and ($ownerHandle -eq [IntPtr]::Zero -or -not $ownerVisible)) { return "MAIN" }
   return "DIALOG"
 }
-
 function WindowsOf($id, $utcTicks) {
   # Only ever called for the adopted Roamer, so messages are allowed, and only once its pid
   # is read again with its start time, as the watchdog does, so a pid that went to another
@@ -762,6 +797,12 @@ $sync.AdoptedAtUtc = [DateTime]::MaxValue
 $sync.MyPid = 0
 $sync.MyTicks = [long]0
 $sync.MyProc = $null
+$sync.CallName = ""
+$sync.CallSinceUtc = [DateTime]::MaxValue
+$sync.CallLimit = 120
+$sync.CallForced = ""
+$sync.CloseLock = New-Object System.Object
+$sync.EndClose = $false
 $sync.NoAdopt = $false
 $sync.Forced = ""
 $sync.DeadlineDone = $false
@@ -882,7 +923,8 @@ function Watchdog($sync) {
       }
       $loopDone = $true
       # Windows. Before adoption only top level class names and captions, which send no
-      # message. After adoption the adopted Roamer's dialog text too.
+      # message. After adoption, of the adopted Roamer only, the text of the visible children
+      # of each visible top level window but the main window, within WindowRecords' bounds.
       $targets = @()
       $allow = $false
       if ($sync.MyPid -ne 0) { $targets += ,@($sync.MyPid, $sync.MyTicks); $allow = $true }
@@ -951,11 +993,29 @@ function Watchdog($sync) {
       # The adopted deadline, for the adopted Roamer only, closed through the held handle
       # after its start time is read again through it. run.ps1 calls this deadline the ceiling.
       if ($sync.Forced -eq "" -and $sync.MyPid -ne 0 -and ($nowUtc - $sync.AdoptedAtUtc).TotalSeconds -gt $sync.AdoptedDeadline) {
-        # Written before the close, so a reader that finds the process gone already finds why.
-        $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, the close through the held handle has begun"
-        $cr = CloseAdopted $sync.MyProc $sync.MyTicks 5
-        $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, " + $cr.Text
-        W ($sync.Forced)
+        # Written before the close, so a reader that finds the process gone already finds why,
+        # and under the lock run.ps1's end close takes, so the two never both close.
+        $go = $false
+        [System.Threading.Monitor]::Enter($sync.CloseLock)
+        try { if (-not $sync.EndClose -and $sync.Forced -eq "" -and $sync.CallForced -eq "") { $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, the close through the held handle has begun"; $go = $true } } finally { [System.Threading.Monitor]::Exit($sync.CloseLock) }
+        if ($go) {
+          $cr = CloseAdopted $sync.MyProc $sync.MyTicks 5
+          $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, " + $cr.Text
+          W ($sync.Forced)
+        }
+      }
+      # F103. A call into the adopted Navisworks that has not returned, Visible or Dispose,
+      # named by the main thread in CallName. Past CallLimit the adopted process is closed
+      # through the held handle, which ends the blocked call, and why is written first.
+      if ($sync.CallForced -eq "" -and $sync.Forced -eq "" -and $sync.MyPid -ne 0 -and $sync.CallName -ne "" -and ($nowUtc - $sync.CallSinceUtc).TotalSeconds -gt $sync.CallLimit) {
+        $go = $false
+        [System.Threading.Monitor]::Enter($sync.CloseLock)
+        try { if (-not $sync.EndClose -and $sync.Forced -eq "" -and $sync.CallForced -eq "") { $sync.CallForced = $sync.CallName + " did not return in " + $sync.CallLimit + " s, the close through the held handle has begun"; $go = $true } } finally { [System.Threading.Monitor]::Exit($sync.CloseLock) }
+        if ($go) {
+          $cr = CloseAdopted $sync.MyProc $sync.MyTicks 5
+          $sync.CallForced = $sync.CallName + " did not return in " + $sync.CallLimit + " s, " + $cr.Text
+          W ($sync.CallForced)
+        }
       }
     } catch {
       $sync.ErrorCount = $sync.ErrorCount + 1

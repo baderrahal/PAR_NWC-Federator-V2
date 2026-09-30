@@ -62,8 +62,9 @@ and nothing is fixed until a real run on real files shows it fixed.
 - Installing replaces Bader's installed add-in, which the loop exists to do. So the
   installed bundle is copied into %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup before the
   first install of a session, and nothing is installed while a Navisworks the loop did not
-  start is running, because it may hold the bundle's DLLs and install.ps1 deletes the
-  bundle before it copies the new one
+  start is running, because it may hold the bundle's DLLs. build\install.ps1 moves the
+  installed bundle aside by one rename, which fails whole while a file in it is held,
+  copies the new one in, and only then removes the one moved aside
 - Every run works on the copy under %LOCALAPPDATA%\NwcFederatorLoop\source and every
   output of every run goes under %LOCALAPPDATA%\NwcFederatorLoop
 - Nothing of Bader's is deleted or overwritten, bar two things. The installed add-in, which
@@ -81,18 +82,21 @@ and nothing is fixed until a real run on real files shows it fixed.
   Windows gives its process id to no other process, so no close can reach another. One the
   loop started and cannot prove is left running and recorded, as the rule below says. A
   Navisworks the loop did not start is never closed, attached to or sent anything
-- ONE COPY OF EVERY GUARD. The refusals, the adoption, the held handle, the watchdog, the
-  settings backup and put back, the unproved starts and the one close, CloseAdopted, live in
-  tools\loop\nw-guard.ps1, a file of functions with no main body. The probe, run.ps1 and
-  the proof harness dot-source it and never copy from it
+- ONE COPY OF EVERY GUARD. The guards the probe and run.ps1 share live in
+  tools\loop\nw-guard.ps1, a file of functions with no main body: the Roamer, own process
+  and unproved start refusals, the adoption, the held handle, the watchdog with its
+  deadlines, the settings backup and put back, the unproved starts and the one close,
+  CloseAdopted. The probe, run.ps1 and the proof harness dot-source it and never copy from
+  it. The refusals only run.ps1 makes, its host, parameter, path, evidence and tree checks,
+  live in run.ps1 alone
 - A Navisworks is the loop's own only when the Automation start returned without
   throwing, it is the one possible start, a new Roamer whose command line names embedding
   or cannot be read, it started after the call began, and its command line holds
   -Embedding. A new Roamer whose command line reads and names neither is one started by
   hand, and is left alone. The adoption then opens that process's handle and reads its start
   ticks again through it, and a handle that cannot be opened or ticks that differ adopt
-  nothing. Anything less and the loop closes
-  nothing, calls nothing on that start, and says why. NOTHING IS CLOSED BEFORE IT IS
+  nothing. Anything less and the loop closes nothing, calls nothing on that start, and says
+  why. NOTHING IS CLOSED BEFORE IT IS
   ADOPTED, not even at a deadline: a start that cannot be proved is written to
   %LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt and left running, and every
   later start refuses while one named there still runs, so a person looks. A start is
@@ -109,9 +113,11 @@ and nothing is fixed until a real run on real files shows it fixed.
   build\install.ps1 from a checkout whose HEAD is the commit asked for and whose git status
   prints nothing, untracked files included, because the build stamp reads +edits for any
   of them. The installed stamp is read back and must name that commit. build\install.ps1
-  refuses while any Roamer runs, read immediately before it removes the installed bundle,
-  for every one who installs, and a Roamer running right after a loop install is a finding
-  that changes its verdict
+  refuses with one REFUSED line and exit 2, for every one who installs, while any Roamer
+  runs, read immediately before it moves the installed bundle aside, when a folder from
+  %APPDATA% down to the bundle is a junction or a link, and when the move aside fails
+  because a file in the bundle is held. run.ps1 -Mode Install passes that refusal on as
+  exit 2. A Roamer running right after a loop install is a finding that changes its verdict
 - While a Navisworks the loop started runs, the recent files, the window placement and the
   default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
   under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which

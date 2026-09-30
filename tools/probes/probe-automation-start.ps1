@@ -144,7 +144,7 @@ $ErrorActionPreference = "Stop"
 # step 1 read on that run of GetActiveObject in the Automation DLL's import table, UNKNOWN
 # when step 1 did not read it, and says UNKNOWN for which call the constructor's IL takes
 # when its argument is false, because no code reads that branch. When Dispose throws and
-# the probe then closes the process by its id, the finalizer stays armed and at this
+# the probe then closes the process through its held handle, the finalizer stays armed and at this
 # process's exit calls Bridge.Terminate against a process that is gone. What that does is
 # UNKNOWN.
 #

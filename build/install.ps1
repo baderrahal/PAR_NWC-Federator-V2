@@ -84,24 +84,59 @@ foreach ($name in ($carried + $library)) {
 $strays = Get-ChildItem $contents -Filter "*Navisworks*" -ErrorAction SilentlyContinue
 if ($strays) { throw "A Navisworks assembly ended up in the bundle: $($strays.Name -join ', ')" }
 
-# Nothing is removed while any Navisworks runs, whoever started it, because a running
+# Nothing is replaced while any Navisworks runs, whoever started it, because a running
 # Navisworks may hold the bundle's files, and one that loaded the old build keeps running
-# it. Read here, immediately before the remove and after the build, which takes long
-# enough for one to be started.
+# it. Read here, after the build, which takes long enough for one to be started. Each
+# refusal is one line and exit 2, and nothing is installed.
 $roamers = $null
 try { $roamers = @([System.Diagnostics.Process]::GetProcessesByName("Roamer")) }
-catch { Write-Host ("Navisworks may be running, the process list could not be read, " + $_.Exception.Message + ". Close Navisworks first and run this again. Nothing was installed."); exit 1 }
-if ($roamers.Count -gt 0) { Write-Host ("Navisworks is running, Roamer pid " + (($roamers | ForEach-Object { $_.Id }) -join ", ") + ", and must be closed first. Close it and run this again. Nothing was installed."); exit 1 }
+catch { Write-Host ("REFUSED: Navisworks may be running, the process list could not be read, " + $_.Exception.Message + ". Close Navisworks first and run this again. Nothing was installed."); exit 2 }
+if ($roamers.Count -gt 0) { Write-Host ("REFUSED: Navisworks is running, Roamer pid " + (($roamers | ForEach-Object { $_.Id }) -join ", ") + ", and must be closed first. Close it and run this again. Nothing was installed."); exit 2 }
 
-if (Test-Path $target) { Remove-Item $target -Recurse -Force }
+# No folder on the way from %APPDATA% down to the bundle may be a junction or a link,
+# because removing a bundle through one would remove what it points at.
+$walkUp = $target
+while ($null -ne $walkUp -and $walkUp.Length -ge $env:APPDATA.TrimEnd('\').Length) {
+    if (Test-Path -LiteralPath $walkUp) {
+        $item = Get-Item -LiteralPath $walkUp -Force
+        if (($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) { Write-Host ("REFUSED: " + $walkUp + " is a junction or a link, so the add-in is not installed through it. Nothing was installed."); exit 2 }
+    }
+    if ($walkUp.TrimEnd('\') -ieq $env:APPDATA.TrimEnd('\')) { break }
+    $walkUp = Split-Path $walkUp -Parent
+}
+
+# The installed bundle is moved aside by one rename first. A rename fails whole when a file
+# in the bundle is held, so on any failure the old bundle stays whole where it was. Then the
+# new one is copied in, and only then is the one moved aside removed. The name moved aside
+# does not end in .bundle, so Navisworks never loads it.
+$aside = $null
+if (Test-Path -LiteralPath $target) {
+    $aside = $target + ".replaced-" + [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
+    try { Rename-Item -LiteralPath $target -NewName (Split-Path $aside -Leaf) -ErrorAction Stop }
+    catch { Write-Host ("REFUSED: the installed add-in could not be moved aside, a file in it is held, most likely by a Navisworks that is running, " + $_.Exception.Message + ". The installed add-in is left whole. Close Navisworks and run this again. Nothing was installed."); exit 2 }
+}
 
 # The contents, never the folder. Copy-Item of a directory puts it INSIDE the destination
 # when the destination already exists, and creates it when it does not, so the same line
-# does two different things depending on whether the remove above has finished. That
-# happened on 2026-08-31 and left ParsonsNwcFederator.bundle inside
-# ParsonsNwcFederator.bundle, which Navisworks does not read at all.
-New-Item -ItemType Directory -Force -Path $target | Out-Null
-Copy-Item (Join-Path $staging "*") $target -Recurse -Force
+# does two different things depending on whether the folder is there. That happened on
+# 2026-08-31 and left ParsonsNwcFederator.bundle inside ParsonsNwcFederator.bundle, which
+# Navisworks does not read at all.
+try {
+    New-Item -ItemType Directory -Force -Path $target | Out-Null
+    Copy-Item (Join-Path $staging "*") $target -Recurse -Force
+} catch {
+    $copyError = $_.Exception.Message
+    if ($null -ne $aside) {
+        if (Test-Path -LiteralPath $target) { Remove-Item -LiteralPath $target -Recurse -Force }
+        Rename-Item -LiteralPath $aside -NewName (Split-Path $target -Leaf)
+        throw ("The new add-in could not be copied in, " + $copyError + ". The add-in installed before was put back where it was.")
+    }
+    throw ("The new add-in could not be copied in, " + $copyError + ".")
+}
+if ($null -ne $aside) {
+    try { Remove-Item -LiteralPath $aside -Recurse -Force -ErrorAction Stop }
+    catch { Write-Host ("The add-in installed before is at " + $aside + " and could not be removed, " + $_.Exception.Message + ". Navisworks does not load it. Remove it once Navisworks is closed.") }
+}
 
 $nested = Join-Path $target (Split-Path -Leaf $target)
 if (Test-Path $nested) {

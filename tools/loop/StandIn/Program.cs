@@ -219,8 +219,11 @@ namespace NwcFederatorLoop.StandIn
         }
 
         /// <summary>
-        /// Two WinForms windows with the same caption: one with no owner, and one owned by it
-        /// carrying a label, as a message box of Navisworks titled like its main window would be.
+        /// Three WinForms windows with the same caption, the three shapes the main window rule
+        /// reads: one with no owner, one owned by a window that is never shown, as the real
+        /// Navisworks main window was measured on 2026-09-30, and one owned by the visible first
+        /// window and carrying a label, as a message box of Navisworks titled like its main
+        /// window would be.
         /// </summary>
         private static int Owned(string caption, string labelText, int seconds)
         {
@@ -229,6 +232,14 @@ namespace NwcFederatorLoop.StandIn
             main.Text = caption;
             main.Width = 420;
             main.Height = 140;
+            Form parked = new Form();
+            parked.Text = "NwcFederatorLoop parked owner";
+            IntPtr parkedHandle = parked.Handle;
+            GC.KeepAlive(parkedHandle);
+            Form hiddenOwned = new Form();
+            hiddenOwned.Text = caption;
+            hiddenOwned.Width = 380;
+            hiddenOwned.Height = 130;
             Form owned = new Form();
             owned.Text = caption;
             owned.Width = 360;
@@ -241,6 +252,8 @@ namespace NwcFederatorLoop.StandIn
             owned.Controls.Add(label);
             main.Shown += (sender, e) =>
             {
+                hiddenOwned.Owner = parked;
+                hiddenOwned.Show();
                 owned.Owner = main;
                 owned.Show();
             };
