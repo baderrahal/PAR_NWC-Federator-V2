@@ -1,8 +1,11 @@
 # The loop
 
-STATE WAITING
+STATE OPEN
 
-PAUSED FOR A SHUTDOWN. Bader shut his laptop down on 2026-09-29 in turn 3 and asked that the
+RESUMED on 2026-09-30 at 09:21 on Bader's go. Get-Process Roamer read 0 processes at 09:21:27.
+Nothing moved on GitHub while paused, and Q82 to Q90 have no answer yet.
+
+WAS PAUSED FOR A SHUTDOWN. Bader shut his laptop down on 2026-09-29 in turn 3 and asked that the
 loop be ready to carry on when he sends go. It stopped at a safe point: no Navisworks and no
 loop process running, the throwaway key gone, every branch pushed, and Bader's settings as
 run 4 of F100 put them back. WHEN HE SAYS GO: run Get-Process Roamer, and if any Navisworks
@@ -21,14 +24,11 @@ Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 closed WAITING 
 
 ## Next action
 
-1. F102, PR 76, branch fix-F102 at 7d8d135, its THIRD AND LAST fix attempt, Actions run
-   36582955457 green. ITS FINAL READING was stopped by the shutdown before it answered, so
-   run it again: a reviewer and a breaker on 7d8d135, each finding classed as one of the four
-   not fixed, new fault inside attempt 3, old fault outside it, or polish. If a fault of the
-   first two classes is found, F102 goes to the form with what each attempt showed. If not,
-   write its log entry from steps\notes\f102-log-draft.md with the readings made, set its
-   register row DONE, mark PR 76 ready, watch Actions, merge, delete the branch. Worktree
-   .claude\worktrees\agent-aadf0be0a55966216
+1. F102 IS IN THE FORM, Q91, after three fix attempts. Its final reading on 2026-09-30 found,
+   by both readers, the workbook half of the third fix not whole: an xlsx under samples with
+   up to about 64 KB appended still passes unread. PR 76 stays open as a draft on 7d8d135, as
+   PR 74 did while F100 waited on Bader. Nothing downstream waits on it, results are masked
+   by hand until it merges. Worktree .claude\worktrees\agent-aadf0be0a55966216
 2. F103, draft PR 78, branch fix-F103. FIX ATTEMPT 1 WAS STOPPED PART WAY by the shutdown,
    saved unfinished as e0760ac, not run and not read. Resume it from e0760ac with the list in
    steps\notes\f103-fix-list-1.md, 13 items, in the worktree
@@ -215,6 +215,10 @@ steps\02_questions.md with its options.
   the fixes added. The lead recommends A, merge with three sentences of 5z-f narrowed
 - Q90, from F102: the new check refuses a zip, while the loop rule says a run file over
   20 MB is committed zipped. Where may a zip of run evidence sit
+- Q91, F102 after three fix attempts: the final reading found a workbook under samples with
+  text appended still passes, because the rule allows the zip end record anywhere in the
+  last 65557 bytes, while every real one holds it 22 bytes from the end. The lead recommends
+  A, one more change to make the window 22 bytes, then merge
 
 Built in turn 1 from steps\01_next.md, steps\02_questions.md, steps\04_audit.md,
 steps\04_audit_first_run.md, steps\03_bader_next.md, the known bugs of steps\log.md, the
@@ -232,11 +236,11 @@ baseline run proves it or contradicts it.
 - 86 read again by two readers on 2026-09-29, 76 CONFIRMED and 10 PARTLY, none refuted:
   60 silent wrong outputs, 13 broken features, 6 loud failures, 7 noise. Every one
   waits for the baseline, because no fix lands before it, steps\notes\turn1-read-verified.md
-- 33 needs Bader, in the form, counting Q82 to Q87 as one row, Q88 and F105 as one each, and F100 moved out
+- 34 needs Bader, in the form, counting Q82 to Q87 as one row, Q88, F105 and F102 as one each, and F100 moved out
 - 19 open fault
 - 4 DONE
 - 7 open for F103, T3-G1 to T3-G5, T3-P and T3-B
-- 1 in its final reading, F102, and 1 in its first fix attempt, F103
+- 1 in its first fix attempt, F103
 - 1 part 1 built and read, F104, check-documents after F103
 - 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
@@ -249,7 +253,7 @@ baseline run proves it or contradicts it.
 | F98 | turn 0, a read of steps\log.md | PR 71 dropped the close round heading in steps\log.md | the heading back above Core tests 1666 before the round and 1746 after | DONE | 73 | no run applies, the file from the heading down matches the one before PR 71 |
 | F99 | turn 0, the git wall fired on Bash only | The git wall missed commits sent through PowerShell | a PowerShell commit on main refused on standard input, and git.exe read as git | DONE | 72 | no Navisworks run applies, proved on standard input and live |
 | F100 | loop prompt, Phase 1 item 1 | Nothing measured how Navisworks starts and closes with no click on this machine | tools\probes\probe-automation-start.ps1 run once as committed, with no Navisworks the loop did not start running, and docs\history\scan.md 5z-d written off that run | DONE, fix attempt 4 on Bader's answer A, Q79, read by a reviewer and a breaker who both approved | 74 | run 4 at 11:35 on 2026-09-29, all six steps passed, tools\probes\automation-start-result-20260929.txt, scan.md 5z-d RUN 4 |
-| F102 | turn 3, the lead's read of fix-F100 | A result committed from this machine can carry the machine name and the licensing agent's ids, and nothing read a file for them before a commit | tools\loop\mask-evidence.ps1 masks both, tools\checks\check-evidence-ids.sh refuses both in the pre-commit and in Actions, proved on the four fix-F100 files, refused before and passed after | third and last fix attempt at 7d8d135, its final reading to run again after the pause | 76 | no Navisworks run applies, proof in turn3\f102\proof.txt |
+| F102 | turn 3, the lead's read of fix-F100 | A result committed from this machine can carry the machine name and the licensing agent's ids, and nothing read a file for them before a commit | tools\loop\mask-evidence.ps1 masks both, tools\checks\check-evidence-ids.sh refuses both in the pre-commit and in Actions, proved on the four fix-F100 files, refused before and passed after | needs Bader, in the form, Q91, after three fix attempts | 76, a draft | no Navisworks run applies, proof in turn3\f102\proof.txt |
 | F105 | loop prompt, Phase 1 item 2 | Four facts off the install nobody had read on this machine: the saved viewpoint members, RemoveFile, Roamer's switches, the Clash Detective report | scan.md 5z-f off five result files, no Navisworks started | needs Bader, in the form, Q89, after three fix attempts | none, branch fix-F105 at 94a839b | no Navisworks run applies, the prober's reads on 2026-09-29 |
 | F103 | loop prompt, Phase 1 item 3 | tools\loop\run.ps1 does not exist | the design in turn3\f103-design.md built, proved by its harness with no Navisworks, then one start with no window | built at 63ebd7b and read, fix attempt 1 part way at e0760ac, steps\notes\f103-fix-list-1.md | 78 | none yet |
 | F104 | loop prompt, Phase 1 item 4 | No check of the workbook against a read of the document that shares no code with the harvest | the design in turn3\f104-design.md, part 1 on fix-F104, check-documents after F103, proved by prove-compare and then by 5a at the baseline | part 1 built at ef1fbdd, read by a reviewer and a breaker, its fixes at ebd8bb7, check-documents after F103 | none yet | none yet |
