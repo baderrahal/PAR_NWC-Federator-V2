@@ -3,7 +3,8 @@ $ErrorActionPreference = "Stop"
 
 # tools\loop\prove-run.ps1, F103 part 1. The proof of tools\loop\run.ps1 and
 # tools\loop\nw-guard.ps1 with NO Navisworks started, the harness of the design's section
-# proof without navisworks, H0 to H15 for the part 1 modes and M1 to M3. Run it as
+# proof without navisworks, H0 to H15 for the part 1 modes and M1 to M3, and since fix
+# attempt 1 H12b, H16 and H17. Run it as
 #
 #   powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <folder>
 #
@@ -16,7 +17,11 @@ $ErrorActionPreference = "Stop"
 # it. The only runs of the real run.ps1 are Check, which reads only, and Run, Install and
 # CloseOwn calls made to be refused: each is made only after the harness reads, just before
 # it, a stand-in Roamer running and an installed stamp that is not the -Stamp passed, so
-# check 6 and check 7 would each refuse it even if the check under test did not.
+# check 6 and check 7 would each refuse it even if the check under test did not. H17 runs a
+# COPY of run.ps1 under -Work whose constructor line is replaced by a line that throws, and
+# checks the copy holds no call of the constructor before it runs it. H12b runs copies of
+# build\install.ps1 with -SkipBuild, and only after a child started the same way reads
+# APPDATA as a folder under -Work, so what they install goes there.
 #
 # THE STAND-IN is tools\loop\StandIn, built here into -Work, a small net48 exe named
 # Roamer.exe that is not Navisworks. Every stand-in is started by this harness, held through
@@ -98,7 +103,23 @@ function BaderState {
 O "  reading Bader's state at the start"
 $baderAtStart = BaderState
 O ("    " + $baderAtStart.Split("`n").Count + " lines: his logs, his AutoSave, the installed bundle, the 22.0 export and the loop folder outside the turn folders")
+# The harness never runs beside a Navisworks it did not start. It refuses at its start, and
+# after every case it reads again for a Roamer that is not one of its own running stand-ins,
+# and stops there if it finds one, closing only its own stand-ins in its cleanup.
+function ForeignRoamer {
+  foreach ($p in @(Get-Process -Name Roamer -ErrorAction SilentlyContinue)) {
+    $id = $p.Id
+    if (@($script:Held | Where-Object { $_.Id -eq $id -and -not $_.HasExited }).Count -eq 0) {
+      $st = "its start time could not be read"
+      try { $st = "started " + $p.StartTime.ToString("yyyy-MM-dd HH:mm:ss") } catch { $st = "its start time could not be read, " + (Err $_.Exception) }
+      return ("Roamer pid " + $id + ", " + $st)
+    }
+  }
+  return $null
+}
 function BaderSame($case) {
+  $foreign = ForeignRoamer
+  if ($null -ne $foreign) { throw ("STOPPED after " + $case + ": a Navisworks the harness did not start is running, " + $foreign + ". The harness never runs beside one, so it stops here, never touches it, and closes only its own stand-ins") }
   $now = BaderState
   if ($now -eq $baderAtStart) { Check ("nothing of Bader's changed, after " + $case) $true "" }
   else {
@@ -292,7 +313,7 @@ try {
   for ($i = 0; $i -lt $guardAtMove.Count; $i++) { $x = $guardAtMove[$i]; if ($x -eq "" -or $probeSet.Contains($x) -or $x.TrimStart().StartsWith("#")) { continue }; $notProbe.Add(("{0,5} {1}" -f ($i + 1), $x)) }
   O ("  lines of nw-guard.ps1 at 377cb1a that are neither a line of the probe at 0eb4ede nor a comment, " + $notProbe.Count + ":")
   foreach ($x in $notProbe) { O ("    " + $x) }
-  $shapes = @($notProbe | Where-Object { $_ -notmatch '^\s*\d+ \s*(function \w+|return |\$ur\.|\$bs\.|\$sync\.GuardText = \$guardText|\$suppressed = \$false|& reg\.exe export \("HKCU\\" \+ \$regSub\)|\$ownScript = .*\$scriptPath\)|try \{ \$ulines .*\$ur\.Stop|if \(.*\{ \$(ur|bs)\.|\} catch \{ \$bs\.Why)' })
+  $shapes = @($notProbe | Where-Object { $_ -notmatch '^\s*\d+ \s*(function \w+|return |\$ur\.|\$bs\.|\$sync\.GuardText = \$guardText|\$suppressed = \$false|\$(ur|bs) = \[pscustomobject\]@\{|& reg\.exe export \("HKCU\\" \+ \$regSub\)|\$ownScript = .*\$scriptPath\)|try \{ \$ulines .*\$ur\.Stop|if \(.*\{ \$(ur|bs)\.|\} catch \{ \$bs\.Why)' })
   Check "every such line is a function line, a return, a result or stop line of a wrapper, the exported key or the caller's script path, 36 lines as the move proof maps them" ($notProbe.Count -eq 36 -and $shapes.Count -eq 0) ($notProbe.Count.ToString() + " lines, " + $shapes.Count + " of another shape: " + (($shapes) -join " | "))
   BaderSame "H0 and H1"
 
@@ -597,9 +618,9 @@ try {
   O ("    M-sleep: the processor growth between passes of the stand-in, in s, over the run: " + ($moves -join ", "))
   Check "live 1: the third stand-in is untouched, its start ticks the same" (Alive $r6.Third $r6.ThirdTicks) ""
   Check "live 1: the monitor's runspace holds no error" ($r6.Errors -eq 0) ""
-  $r6 = LiveMonitor "live 2, the log flat while the processor spins" (Join-Path $h6 "spin") "-Embedding" "spin|60" 40 $false $true
+  $r6 = LiveMonitor "live 2, the log flat while the processor spins" (Join-Path $h6 "spin") "-Embedding" "spin|150" 40 $false $true
   Check "live 2: log flat with the processor spinning never hangs, the fixed hold of 40 s ends it" ($r6.Adopted -and $r6.Sync.RunOver -eq "HOLD") $r6.Sync.RunOver
-  $r6 = LiveMonitor "live 3, the log growing while the processor is flat" (Join-Path $h6 "grow") "-Embedding" "sleep|90" 40 $true $true
+  $r6 = LiveMonitor "live 3, the log growing while the processor is flat" (Join-Path $h6 "grow") "-Embedding" "sleep|150" 40 $true $true
   Check "live 3: log growing with the processor flat never hangs, the fixed hold of 40 s ends it" ($r6.Adopted -and $r6.Sync.RunOver -eq "HOLD") $r6.Sync.RunOver
   $beats = @(Get-Content -LiteralPath $r6.Sync.RecordFile | Where-Object { $_ -match 'HEARTBEAT the log \d+ bytes' })
   Check "live 3: the heartbeat, every 10 s here and every 60 s in run.ps1, names the log's size, its last line, the processor and both clocks" ($beats.Count -ge 2 -and $beats[0] -match 'the log still for \d+ s and the processor for \d+ s, against 20') $(if ($beats.Count -gt 0) { $beats[0] } else { "no HEARTBEAT line" })
@@ -810,7 +831,7 @@ try {
   $rl = ReadListing $asList "AutoSave\"
   [System.IO.File]::WriteAllText((Join-Path $asRoot "AutoSave\b.nwf"), "changed by a run", $utf8)
   [System.IO.File]::WriteAllText((Join-Path $asRoot "AutoSave\c.nwf"), "added by a run", $utf8)
-  $dAs = @(DiffAutoSave $rl (SettingsRead $asRoot))
+  $dAs = DiffAutoSave $rl (SettingsRead $asRoot)
   foreach ($l in $dAs) { O ("    | " + $l) }
   Check "the AutoSave compare reads autosave-before.txt back off the disk and names the changed file and the added one, and only those" ($nb.Ok -and $rl.Count -eq 2 -and $dAs.Count -eq 2 -and ($dAs -join "|") -match 'AutoSave\\b\.nwf' -and ($dAs -join "|") -match 'AutoSave\\c\.nwf' -and ($dAs -join "|") -notmatch 'a\.nwf') ([string]$dAs.Count + " lines")
   $CU.DeleteSubKeyTree($tkey, $false)
@@ -1029,6 +1050,113 @@ try {
 
   # =====================================================================================
   O ""
+  O "==== H17, THE RUN FLOW of a copy of run.ps1 whose constructor line is removed, with LOCALAPPDATA and APPDATA pointed at the harness's folders: checks 13, 14, 15 and 18 stop, and a run that reaches the removed line ===="
+  $h17 = Join-Path $Work "h17"
+  $rcRepo = Join-Path $h17 "copy"
+  $fl = Join-Path $h17 "local"
+  $fa = Join-Path $h17 "appdata"
+  New-Item -ItemType Directory -Path (Join-Path $rcRepo "tools\loop") | Out-Null
+  Copy-Item -LiteralPath $guardFile -Destination (Join-Path $rcRepo "tools\loop\nw-guard.ps1")
+  $hookOn = Join-Path $h17 "hook-enabled.txt"; $hookWait = Join-Path $h17 "hook-waiting.txt"; $hookGo = Join-Path $h17 "hook-go.txt"
+  $check18 = 'Say "---- check 18, the last read before the constructor ----"'
+  $reps17 = @(
+    @('try { $app = [Activator]::CreateInstance($napp) } catch { $err = $_.Exception }', '$err = New-Object System.Exception("HARNESS COPY: the constructor line is removed from this copy, and this line was reached")'),
+    @('RegSub = "Software\Autodesk\Navisworks Manage\22.0"', 'RegSub = "Software\NwcFederatorLoopTest\22.0"'),
+    @($check18, ('if (Test-Path -LiteralPath "' + $hookOn + '") { [System.IO.File]::WriteAllText("' + $hookWait + '", "waiting"); $hw = [Diagnostics.Stopwatch]::StartNew(); while (-not (Test-Path -LiteralPath "' + $hookGo + '") -and $hw.Elapsed.TotalSeconds -lt 120) { Start-Sleep -Milliseconds 100 } }' + "`n        " + $check18)))
+  $c17 = [System.IO.File]::ReadAllText($runPs)
+  foreach ($rp in $reps17) { $n17 = ([regex]::Matches($c17, [regex]::Escape($rp[0]))).Count; if ($n17 -ne 1) { throw ("a replacement of the run.ps1 copy is found " + $n17 + " times: " + $rp[0]) }; $c17 = $c17.Replace($rp[0], $rp[1]) }
+  $runCopy = Join-Path $rcRepo "tools\loop\run.ps1"
+  [System.IO.File]::WriteAllText($runCopy, $c17, $utf8)
+  O "  every line of the copy that differs from run.ps1, < run.ps1, > the copy:"
+  foreach ($d in @(Compare-Object @([System.IO.File]::ReadAllLines($runPs)) @([System.IO.File]::ReadAllLines($runCopy)))) { O ("    " + $d.SideIndicator + " " + $d.InputObject.Trim().Replace($h17, "<h17>")) }
+  Check "the copy holds no call of the Automation constructor, so no run of it can start Navisworks" (-not $c17.Contains("CreateInstance") -and -not $c17.Contains("Activator")) ""
+  # The fake folders: his logs, his settings with AutoSave, and an installed add-in whose stamp
+  # is the installed build's, a copy of the installed DLL read off his bundle.
+  New-Item -ItemType Directory -Path (Join-Path $fl "ParsonsNwcFederator\logs"), (Join-Path $fa "Autodesk\Navisworks Manage 2025\AutoSave"), (Join-Path $fa "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22") | Out-Null
+  foreach ($i in 1..3) { [System.IO.File]::WriteAllText((Join-Path $fl ("ParsonsNwcFederator\logs\run-2026090" + $i + "-100000.log")), "a fake log " + $i, $utf8) }
+  [System.IO.File]::WriteAllText((Join-Path $fl "ParsonsNwcFederator\logs\folders.txt"), "fake", $utf8)
+  [System.IO.File]::WriteAllText((Join-Path $fa "Autodesk\Navisworks Manage 2025\a.xml"), "a fake setting", $utf8)
+  [System.IO.File]::WriteAllText((Join-Path $fa "Autodesk\Navisworks Manage 2025\AutoSave\x.nwf"), "a fake autosave", $utf8)
+  Copy-Item -LiteralPath (Join-Path $bundle "Contents\v22\Federator.Addin.dll") -Destination (Join-Path $fa "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22")
+  $stamp17 = @([string][System.Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $fa "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\Federator.Addin.dll")).ProductVersion -split '\s+')[1]
+  $k = $CU.CreateSubKey($tsub); $k.SetValue("A", "a1"); $k.Close()
+  $env17 = @{ LOCALAPPDATA = $fl; APPDATA = $fa }
+  $echo17 = EndChild (StartChildEnv $ps "-NoProfile -Command [Console]::Out.Write(`$env:LOCALAPPDATA + '|' + `$env:APPDATA)" $h17 $env17) 60
+  if ($echo17.Out.Trim() -ne ($fl + "|" + $fa)) { throw "a child does not read the harness's LOCALAPPDATA and APPDATA, so no copy of run.ps1 runs" }
+  O ("  a child reads LOCALAPPDATA and APPDATA as the harness's folders, and the stamp is " + $stamp17)
+  function RunCopy($set, $hookAction) {
+    foreach ($f in @($hookOn, $hookWait, $hookGo)) { if (Test-Path -LiteralPath $f) { Remove-Item -LiteralPath $f } }
+    if ($null -ne $hookAction) { [System.IO.File]::WriteAllText($hookOn, "on", $utf8) }
+    $c = StartChildEnv $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $runCopy + "`" -Mode Run -Set " + $set + " -Item 0 -Stamp " + $stamp17) $rcRepo $env17
+    if ($null -ne $hookAction) {
+      $sw3 = [Diagnostics.Stopwatch]::StartNew()
+      while (-not (Test-Path -LiteralPath $hookWait) -and -not $c.P.HasExited -and $sw3.Elapsed.TotalSeconds -lt 300) { Start-Sleep -Milliseconds 100 }
+      O ("    the copy reached the hook before check 18: " + (Test-Path -LiteralPath $hookWait) + " after " + $sw3.Elapsed.TotalSeconds.ToString("0.0") + " s")
+      & $hookAction
+      [System.IO.File]::WriteAllText($hookGo, "go", $utf8)
+    }
+    $res = EndChild $c 600
+    $recFile = Join-Path $fl ("NwcFederatorLoop\runs\" + $set + "\item0\record.txt")
+    $rec = @(); if (Test-Path -LiteralPath $recFile) { $rec = @([System.IO.File]::ReadAllLines($recFile)) }
+    foreach ($l in @($rec | Where-Object { $_ -match '^(STOP|VERDICT|NOT ADOPTED)|HARNESS COPY|keep awake|check 1[3-8]|logs-after|M5, what|BADER.S SETTINGS|AutoSave compare' })) { O ("    | " + $l.Replace($h17, "<h17>")) }
+    return [pscustomobject]@{ Exit = $res.Exit; Rec = $rec; Out = $res.Out }
+  }
+  function Has($rec, $pattern) { return (@($rec | Where-Object { $_ -match $pattern }).Count -gt 0) }
+  function At($rec, $pattern) { for ($i = 0; $i -lt $rec.Count; $i++) { if ($rec[$i] -match $pattern) { return $i } }; return -1 }
+
+  O "  RC1, no Roamer and nothing held: the copy runs every check, calls its removed constructor line, and ends"
+  $rc1 = RunCopy "91" $null
+  Check "RC1: every check passes, the removed constructor line is reached, the start is NOT ADOPTED, exit 3" ($rc1.Exit -eq 3 -and (Has $rc1.Rec 'HARNESS COPY: the constructor line is removed') -and (Has $rc1.Rec '^VERDICT: NOT ADOPTED')) ("exit " + $rc1.Exit)
+  Check "RC1: the keep awake request is made and let go with 0x80000003 on the same thread" ((Has $rc1.Rec 'SetThreadExecutionState\(ES_CONTINUOUS, ES_SYSTEM_REQUIRED, ES_DISPLAY_REQUIRED\) returned 0x8') -and (Has $rc1.Rec 'keep awake OFF returned 0x80000003 .*Same thread True, returned 0x80000003 True')) ""
+  Check "RC1: M5 is read before the settings compare, and the AutoSave compare reads autosave-before.txt back" ((At $rc1.Rec 'M5, what the start wrote') -ge 0 -and (At $rc1.Rec 'M5, what the start wrote') -lt (At $rc1.Rec "BADER'S SETTINGS, compared") -and (Has $rc1.Rec 'the AutoSave compare reads autosave-before.txt back, 1 files')) ""
+  Check "RC1: his fake logs folder reads the same after as before" (Has $rc1.Rec 'logs-after.txt equals logs-before.txt, name for name, size, write time, sha256 and attributes: True') ""
+  Check "RC1: the evidence is written into the copy's own steps\runs" (Test-Path -LiteralPath (Join-Path $rcRepo "steps\runs\91\item0\record.txt")) ""
+
+  O "  RC2, a file of his fake logs folder held open with no sharing: check 13 must stop"
+  $held2 = [System.IO.File]::Open((Join-Path $fl "ParsonsNwcFederator\logs\run-20260901-100000.log"), [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
+  try { $rc2 = RunCopy "92" $null } finally { $held2.Dispose() }
+  Check "RC2: STOP before the start at check 13, exit 2, no keep awake request, nothing started" ($rc2.Exit -eq 2 -and (Has $rc2.Rec "^STOP before the start: .*so the tool's logs folder could not be copied") -and -not (Has $rc2.Rec 'check 17') -and -not (Has $rc2.Rec 'HARNESS COPY') -and (Has $rc2.Rec '^VERDICT: NOT RUN')) ("exit " + $rc2.Exit)
+
+  O "  RC3, a file of his fake AutoSave folder held open with no sharing: check 14 must stop"
+  $held3 = [System.IO.File]::Open((Join-Path $fa "Autodesk\Navisworks Manage 2025\AutoSave\x.nwf"), [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
+  try { $rc3 = RunCopy "93" $null } finally { $held3.Dispose() }
+  Check "RC3: STOP before the start at check 14, exit 2, no keep awake request, nothing started" ($rc3.Exit -eq 2 -and (Has $rc3.Rec '^STOP before the start: .*so the AutoSave folder could not be copied') -and -not (Has $rc3.Rec 'check 17') -and -not (Has $rc3.Rec 'HARNESS COPY')) ("exit " + $rc3.Exit)
+
+  O "  RC4, a folder of his fake settings that cannot be listed: check 15 must stop"
+  $barrier = Join-Path $fa "Autodesk\Navisworks Manage 2025\locked"
+  New-Item -ItemType Directory -Path $barrier | Out-Null
+  [System.IO.File]::WriteAllText((Join-Path $barrier "inside.txt"), "inside", $utf8)
+  $acl = Get-Acl -LiteralPath $barrier
+  $acl.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule([System.Security.Principal.WindowsIdentity]::GetCurrent().User, [System.Security.AccessControl.FileSystemRights]::ListDirectory, [System.Security.AccessControl.AccessControlType]::Deny)))
+  Set-Acl -LiteralPath $barrier -AclObject $acl
+  try { $rc4 = RunCopy "94" $null } finally {
+    $acl = Get-Acl -LiteralPath $barrier
+    foreach ($rule in @($acl.Access | Where-Object { $_.AccessControlType -eq "Deny" -and -not $_.IsInherited })) { [void]$acl.RemoveAccessRule($rule) }
+    Set-Acl -LiteralPath $barrier -AclObject $acl
+    Remove-Item -LiteralPath $barrier -Recurse -Force
+  }
+  Check "RC4: STOP before the start at check 15, the settings backup is not whole, exit 2, no keep awake request" ($rc4.Exit -eq 2 -and (Has $rc4.Rec '^STOP before the start: the settings backup is not whole') -and -not (Has $rc4.Rec 'check 17') -and -not (Has $rc4.Rec 'HARNESS COPY')) ("exit " + $rc4.Exit)
+
+  O "  RC5, a stand-in Roamer started after the backups, while the copy waits at the hook before check 18"
+  $rc5 = RunCopy "95" { [void](StartStandin "sleep 120" $null $null); O ("    started a stand-in Roamer, Roamers now " + @(Get-Process -Name Roamer -ErrorAction SilentlyContinue).Count) }
+  StopStandins
+  Check "RC5: check 18 stops before the constructor on the Roamer, exit 2, and the keep awake request made at check 17 is let go" ($rc5.Exit -eq 2 -and (Has $rc5.Rec '^STOP before the constructor: Navisworks is running') -and (Has $rc5.Rec 'keep awake OFF returned 0x80000003') -and -not (Has $rc5.Rec 'HARNESS COPY')) ("exit " + $rc5.Exit)
+
+  O "  RC6, a start named in unproved-starts.txt that still runs, written while the copy waits at the hook, with no Roamer running"
+  $fakeUnproved = Join-Path $fl "NwcFederatorLoop\probes\unproved-starts.txt"
+  $rc6 = RunCopy "96" {
+    $dec6 = StartStandin "sleep 120" $null (Join-Path $standinBin "Decoy.exe")
+    New-Item -ItemType Directory -Force -Path (Split-Path $fakeUnproved -Parent) | Out-Null
+    [System.IO.File]::WriteAllText($fakeUnproved, "# header`r`n" + $dec6.Id + "`t" + (UtcTicks $dec6.StartTime) + "`t-`t" + [DateTime]::UtcNow.ToString("o") + "`ttest`r`n", $utf8)
+    O ("    wrote a line naming Decoy pid " + $dec6.Id + ", Roamers now " + @(Get-Process -Name Roamer -ErrorAction SilentlyContinue).Count)
+  }
+  StopStandins
+  Check "RC6: check 18 stops before the constructor on the unproved start, exit 2, with no Roamer running" ($rc6.Exit -eq 2 -and (Has $rc6.Rec '^STOP before the constructor: a start this probe could not prove is still running') -and -not (Has $rc6.Rec 'HARNESS COPY')) ("exit " + $rc6.Exit)
+  $CU.DeleteSubKeyTree($tkey, $false)
+  BaderSame "H17"
+
+  # =====================================================================================
+  O ""
   O "==== H15, CHECK MODE writes nothing ===="
   $r = RunReal "-Mode Check -Set 99 -Item 0 -Stamp be0b9b37"
   foreach ($l in @($r.Out.Split("`n") | Where-Object { $_ -match 'reads|matches|files,|there:|would refuse|none, for' } | Select-Object -First 20)) { O ("    | " + $l.TrimEnd()) }
@@ -1049,6 +1177,13 @@ try {
   O ("  HKCU\Software\NwcFederatorLoopTest there now: " + ($null -ne [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("Software\NwcFederatorLoopTest")))
   $j = Join-Path $Work "h2\junction"
   if (Test-Path -LiteralPath $j) { [System.IO.Directory]::Delete($j, $false) }
+  $lockedLeft = Join-Path $Work "h17\appdata\Autodesk\Navisworks Manage 2025\locked"
+  if (Test-Path -LiteralPath $lockedLeft) {
+    $acl = Get-Acl -LiteralPath $lockedLeft
+    foreach ($rule in @($acl.Access | Where-Object { $_.AccessControlType -eq "Deny" -and -not $_.IsInherited })) { [void]$acl.RemoveAccessRule($rule) }
+    Set-Acl -LiteralPath $lockedLeft -AclObject $acl
+    O "  the deny rule left on the H17 barrier folder removed"
+  }
   Start-Sleep -Seconds 1
   try { Remove-Item -LiteralPath $Work -Recurse -Force } catch { $script:Fail++; $script:Fails.Add("the cleanup could not remove the work folder"); O ("  the work folder could NOT be removed whole, " + (Err $_.Exception)) }
   O ("  " + $Work + " removed, there now: " + (Test-Path -LiteralPath $Work))

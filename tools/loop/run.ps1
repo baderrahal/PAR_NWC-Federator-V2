@@ -269,10 +269,10 @@ function ListFolder($dir) {
   if (-not (Test-Path -LiteralPath $dir)) { $r.Missing = $true; $r.Ok = $true; return $r }
   $ev = $null
   $files = @(Get-ChildItem -LiteralPath $dir -Recurse -File -Force -ErrorAction SilentlyContinue -ErrorVariable ev)
-  if (@($ev).Count -gt 0) { $r.Why = "could not be listed whole, " + @($ev)[0].Exception.Message; return $r }
+  if (@($ev).Count -gt 0) { $r.Why = "the folder could not be listed whole, " + @($ev)[0].Exception.Message; return $r }
   foreach ($f in @($files | Sort-Object FullName)) {
     $h = $null
-    try { $h = (Get-FileHash -LiteralPath $f.FullName -Algorithm SHA256 -ErrorAction Stop).Hash } catch { $r.Why = $f.FullName.Substring($dir.Length).TrimStart('\') + " could not be read, " + (Err $_.Exception); return $r }
+    try { $h = (Get-FileHash -LiteralPath $f.FullName -Algorithm SHA256 -ErrorAction Stop).Hash } catch { $r.Why = "its file " + $f.FullName.Substring($dir.Length).TrimStart('\') + " could not be read, " + (Err $_.Exception); return $r }
     $r.Entries.Add([pscustomobject]@{ Rel = $f.FullName.Substring($dir.Length).TrimStart('\'); Name = $f.Name; Full = $f.FullName; Length = $f.Length; WriteUtc = $f.LastWriteTimeUtc; Hash = $h; Attributes = [string]$f.Attributes })
   }
   $r.Ok = $true
@@ -283,7 +283,7 @@ function EntryLine($e) { return ($e.Rel + "`t" + $e.Length + "`t" + $e.WriteUtc.
 function BackupIndex($backupRoot) {
   $have = @{}
   $l = ListFolder $backupRoot
-  if (-not $l.Ok) { throw ("the backup folder " + (Mask $backupRoot) + " " + $l.Why) }
+  if (-not $l.Ok) { throw ("the backup folder " + (Mask $backupRoot) + ", " + $l.Why) }
   foreach ($e in $l.Entries) { $have[$e.Name.ToLowerInvariant() + "|" + $e.Hash] = $true }
   return $have
 }
@@ -294,7 +294,7 @@ function BackupNew($srcDir, $backupRoot, $listFile, $when) {
   $have = $null
   try { $have = BackupIndex $backupRoot } catch { $r.Why = (Err $_.Exception); return $r }
   $l = ListFolder $srcDir
-  if (-not $l.Ok) { $r.Why = "the folder " + $l.Why; return $r }
+  if (-not $l.Ok) { $r.Why = $l.Why; return $r }
   $lines = New-Object System.Collections.Generic.List[string]
   $lines.Add("# relative path`tbytes`twritten UTC`tsha256`tattributes")
   if ($l.Missing) { $lines.Add("# the folder is not there") }
@@ -726,7 +726,7 @@ function CheckMode($paths, $stamp) {
   foreach ($pair in @(@("his logs folder", $paths.HisLogs, $paths.LogsBackup), @("his AutoSave folder", $paths.AutoSave, $paths.AutoBackup))) {
     Say ("---- " + $pair[0] + " against " + (Split-Path $pair[2] -Leaf) + ", by name and sha256 ----")
     $l = ListFolder $pair[1]
-    if (-not $l.Ok) { Say ("  UNKNOWN, the folder " + $l.Why); continue }
+    if (-not $l.Ok) { Say ("  UNKNOWN, " + $l.Why); continue }
     if ($l.Missing) { Say "  the folder is not there"; continue }
     $have = @{}
     try { $have = BackupIndex $pair[2] } catch { Say ("  UNKNOWN, " + (Err $_.Exception)); continue }
@@ -790,7 +790,7 @@ try {
       $script:RecordFile = Join-Path $idir "record.txt"
       Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", -Mode Install -Stamp " + $Stamp)
       $inst = ListFolder $paths.Bundle
-      if (-not $inst.Ok) { Say ("STOP: the installed bundle " + $inst.Why + ". Nothing was installed."); $code = 2; break }
+      if (-not $inst.Ok) { Say ("STOP: the installed bundle cannot be read whole, " + $inst.Why + ". Nothing was installed."); $code = 2; break }
       $bk = ListFolder $paths.BundleBackup
       $matchBackup = ($bk.Ok -and (SameListing $inst.Entries $bk.Entries))
       $matchLast = (LastInstallMatch $paths.Installs $inst.Entries).Match
@@ -898,7 +898,7 @@ try {
         $sdir = Join-Path $paths.RunDir "settings"
         New-Item -ItemType Directory -Path $sdir -ErrorAction Stop | Out-Null
         $bs = BackupSettings $sdir $paths.RegSub $paths.NwAppData $paths.HisLogs
-        if (-not $bs.Ok) { $stopText = "STOP before the start: the settings backup is not whole, " + $bs.Why + ". Nothing of his was changed, and the backup stays in the run folder"; Say $stopText; $code = 2; break }
+        if (-not $bs.Ok) { $stopText = "STOP before the start: the settings backup is not whole, " + $bs.Why.Replace("STOP before the constructor: ", "") + ". Nothing of his was changed, and the backup stays in the run folder"; Say $stopText; $code = 2; break }
         [pscustomobject]@{ RegSub = $paths.RegSub; RegRoot = $bs.RegRoot; RegBefore = $bs.RegBefore; NwAppData = $paths.NwAppData; FilesBefore = $bs.FilesBefore; NotBacked = $bs.NotBacked; AutoBefore = $bs.AutoBefore } | Export-Clixml -LiteralPath (Join-Path $sdir "before.clixml")
         $sync.RegSub = $paths.RegSub; $sync.RegRoot = $bs.RegRoot; $sync.RegBefore = $bs.RegBefore; $sync.FilesBefore = $bs.FilesBefore
         $sync.NotBacked = $bs.NotBacked; $sync.AutoBefore = $bs.AutoBefore; $sync.NwAppData = $paths.NwAppData; $sync.SettingsReady = $true
@@ -1043,7 +1043,7 @@ try {
               $logsChanged = ((($beforeLines | Sort-Object) -join "`n") -ne (($afterLines | Sort-Object) -join "`n"))
               Say ("  logs-after.txt equals logs-before.txt, name for name, size, write time, sha256 and attributes: " + (-not $logsChanged))
               if ($logsChanged) { foreach ($d in @(Compare-Object $beforeLines $afterLines)) { Say ("    FINDING " + $d.SideIndicator + " " + $d.InputObject.Split("`t")[0]) } }
-            } else { $logsChanged = $true; Say ("  UNKNOWN, his logs folder " + $la.Why) }
+            } else { $logsChanged = $true; Say ("  UNKNOWN, his logs folder: " + $la.Why) }
           }
         } catch { $logsChanged = $true; $finallyFaults.Add("the logs compare, " + (Err $_.Exception)) }
         try {

@@ -108,7 +108,10 @@ and nothing is fixed until a real run on real files shows it fixed.
 - The loop installs the add-in only through tools\loop\run.ps1 -Mode Install, which runs
   build\install.ps1 from a checkout whose HEAD is the commit asked for and whose git status
   prints nothing, untracked files included, because the build stamp reads +edits for any
-  of them. The installed stamp is read back and must name that commit
+  of them. The installed stamp is read back and must name that commit. build\install.ps1
+  refuses while any Roamer runs, read immediately before it removes the installed bundle,
+  for every one who installs, and a Roamer running right after a loop install is a finding
+  that changes its verdict
 - While a Navisworks the loop started runs, the recent files, the window placement and the
   default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
   under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which
