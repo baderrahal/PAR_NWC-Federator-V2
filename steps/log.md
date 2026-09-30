@@ -1,6 +1,35 @@
 # log
 
 Newest entry at the top.
+## 2026-09-30 The loop, turn 3, the Navisworks window of 10:52 to 14:45, the plan
+
+Bader wrote at 10:52 on 2026-09-30 that he had closed his Navisworks and would not open it
+again before 14:45.
+Every Navisworks the loop starts is closed, and his settings put back and read back, by
+14:30. Get-Process Roamer read 0 at 10:57:10. This entry is the plan, written before the
+first edit of the window. What each step did goes into the entries written above this one and into steps\loop.md.
+
+### The order
+
+1. The reading of F103 fix attempt 1, fcd981b, by a reviewer and two breakers, resumed from
+   the run the restart cut, which reuses the one reader that had answered
+2. If it finds a fault of the thirteen left or a new one, fix attempt 2 by the developer and
+   a read again. If F103 is not clean by 13:45, its first start goes to tonight
+3. THE FIRST REAL START, run.ps1 -Mode Run -Set 00 -Item 0, made by the lead from the commit
+   that was read, with Get-Process Roamer read 0 just before. It measures M4, the processor
+   time of an idle Navisworks, M5, what changes outside the loop folder while a start runs, and M6,
+   whether the session locks. Its record read, the settings put back and read back, the
+   evidence masked with F102's own tools from its branch, because F102 is in the form, and kept under steps\runs\00\item0
+4. F103's pull request, PR 78, with that run in its body, merged once Actions is green
+5. INSTALL MAIN through run.ps1 -Mode Install from a clean checkout of main. It starts no
+   Navisworks but needs none running, which is this window, and it is the first step of the
+   baseline. Only if F103 merged by 14:00
+6. No start begins after 14:10 and no install after 14:15. At the close of the window,
+   steps\loop.md says what the window was used for and what is left for tonight
+
+Not in this window: any start that opens the tool's window, because the tool then logs into
+Bader's folder and deletes his oldest log, which waits on Q82.
+
 ## 2026-09-29 The loop, turn 3, F100 a start of Navisworks with no click, measured, DONE
 
 Core tests 1746 passed, 0 failed, 0 skipped, before on fix-F100 at 30ae471 and after on
