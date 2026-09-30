@@ -35,15 +35,19 @@ $ErrorActionPreference = "Stop"
 # NOT IN PART 1, waiting for Bader's answer to Q82: the window, items 1 to 5, -Xml, -OpenFile,
 # -LogChoice, -OpenWindow, the log lock and the driver. Any of them is refused as a parameter.
 #
-# EXIT CODES: 0 finished and everything put back, 1 a fault in run.ps1, 2 refused, 3 not
-# adopted or the constructor deadline, 4 hung or the ceiling, 5 finished but a dialog
-# appeared, or for Install, installed but a Navisworks ran right after it, 6 something of
-# Bader's not put back, 7 the adopted Navisworks ended by itself. When more than one
-# applies, the first in the order 3, 6, 4, 7, 1, 5, which RunVerdict keeps.
+# EXIT CODES: 0 finished and everything put back, 1 a fault in run.ps1, UNKNOWN whether the
+# adopted Navisworks still runs, or one still running after every close path, 2 refused, for
+# Install also a refusal of build\install.ps1, 3 not adopted or the constructor deadline, 4
+# hung, the ceiling, or a call into the adopted Navisworks that did not return in 120 s, 5
+# finished but a dialog appeared, or for Install, installed but a Navisworks ran right after
+# it or the add-in installed before was left beside it, 6 something of Bader's not put back,
+# 7 the adopted Navisworks ended by itself. When more than one applies, the first in the
+# order 3, 6, 4, 7, 1, 5, which RunVerdict keeps.
 #
 # NUMBERS THAT ARE NOT PARAMETERS, so no switch can move a path or shorten a limit: the hang
 # rule's 300 s, the constructor deadline's 300 s, the ceiling's 12 hours until Bader answers
-# Q84, item 0's hold of 360 s, the monitor's pass of 15 s and its heartbeat of 60 s.
+# Q84, the 120 s a call into the adopted Navisworks may take, item 0's hold of 360 s, the
+# monitor's pass of 15 s and its heartbeat of 60 s.
 
 $HangLimitSeconds = 300
 $CtorDeadlineSeconds = 300
@@ -289,6 +293,10 @@ function ListFolder($dir) {
   return $r
 }
 function EntryLine($e) { return ($e.Rel + "`t" + $e.Length + "`t" + $e.WriteUtc.ToString("o") + "`t" + $e.Hash + "`t" + $e.Attributes) }
+# The two lines of a listing that are not a file, its header and the line for a folder that
+# is not there. Any other line is a file, a file whose name starts with # too.
+function ListingHeader { return "# relative path`tbytes`twritten UTC`tsha256`tattributes" }
+function ListingNoFolder { return "# the folder is not there" }
 # What a backup folder holds, by file name and sha256, wherever it sits in the folder.
 function BackupIndex($backupRoot) {
   $have = @{}
@@ -306,8 +314,8 @@ function BackupNew($srcDir, $backupRoot, $listFile, $when) {
   $l = ListFolder $srcDir
   if (-not $l.Ok) { $r.Why = $l.Why; return $r }
   $lines = New-Object System.Collections.Generic.List[string]
-  $lines.Add("# relative path`tbytes`twritten UTC`tsha256`tattributes")
-  if ($l.Missing) { $lines.Add("# the folder is not there") }
+  $lines.Add((ListingHeader))
+  if ($l.Missing) { $lines.Add((ListingNoFolder)) }
   $into = Join-Path $backupRoot ("since-" + $when)
   foreach ($e in $l.Entries) {
     $lines.Add((EntryLine $e))
@@ -335,7 +343,7 @@ function BackupNew($srcDir, $backupRoot, $listFile, $when) {
 function ListingRows($listFile) {
   $rows = New-Object System.Collections.Generic.List[object]
   foreach ($l in [System.IO.File]::ReadAllLines($listFile)) {
-    if ($l.StartsWith("#") -or $l.Trim() -eq "") { continue }
+    if ($l -ceq (ListingHeader) -or $l -ceq (ListingNoFolder) -or $l -eq "") { continue }
     $x = $l.Split("`t")
     if ($x.Count -lt 4) { throw ("a line of " + (Mask $listFile) + " cannot be read, `"" + $l + "`"") }
     $w = [DateTime]::Parse($x[2], [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::RoundtripKind)
@@ -352,16 +360,24 @@ function ReadListing($listFile, $prefix) {
   return $map
 }
 # The AutoSave listing for the compare at the end, read in a try of its own, so no report
-# read can stop a write back. When it cannot be read the backup's own list stands in, and
-# Why says so.
+# read can stop a write back. What it reads back is held against the backup's own list,
+# made just after it, by count and by name, because a listing cut short reads as whole.
+# When it cannot be read or the two differ, the backup's list stands in, and Why says so
+# and names every file in one and not the other.
 function AutoSaveBefore($listFile, $fallback) {
   $r = [pscustomobject]@{ Map = $null; Why = "" }
-  try { $r.Map = ReadListing $listFile "AutoSave\" } catch { $r.Why = "autosave-before.txt could not be read back, " + (Err $_.Exception) + ", so the AutoSave compare reads the backup's list made at the same time instead"; $r.Map = $fallback }
+  try { $r.Map = ReadListing $listFile "AutoSave\" } catch { $r.Why = "autosave-before.txt could not be read back, " + (Err $_.Exception) + ", so the AutoSave compare reads the backup's list made at the same time instead"; $r.Map = $fallback; return $r }
+  $onlyList = @($r.Map.Keys | Where-Object { -not $fallback.ContainsKey($_) } | Sort-Object)
+  $onlyBackup = @($fallback.Keys | Where-Object { -not $r.Map.ContainsKey($_) } | Sort-Object)
+  if ($r.Map.Count -ne $fallback.Count -or $onlyList.Count -gt 0 -or $onlyBackup.Count -gt 0) {
+    $r.Why = "autosave-before.txt reads back " + $r.Map.Count + " files and the backup's list holds " + $fallback.Count + ", in the listing only: " + $(if ($onlyList.Count -gt 0) { $onlyList -join ", " } else { "none" }) + ", in the backup's list only: " + $(if ($onlyBackup.Count -gt 0) { $onlyBackup -join ", " } else { "none" }) + ". So the AutoSave compare reads the backup's list instead"
+    $r.Map = $fallback
+  }
   return $r
 }
 
 # =======================================================================================
-# Keep awake, the session lock and what a start writes outside the loop folder, M3, M6, M5.
+# Keep awake, the session lock and what changed outside the loop folder while a start ran,
 function KeepAwake($winType, [bool]$on) {
   $flags = [uint32]2147483648
   if ($on) { $flags = [uint32]2147483651 }
@@ -407,8 +423,9 @@ function KeyTimesWalk($winType, $k, $map) {
     try { KeyTimesWalk $winType $c $map } finally { $c.Close() }
   }
 }
-# Every file written at or after the call under the folders a start may write to. Named by
-# its folder's label and its path inside it, never its full path.
+# Every file written at or after the call under the folders a start may write to, by any
+# program, so not the start's alone. Named by its folder's label and its path inside it,
+# never its full path.
 function NewerFiles($roots, $sinceUtc) {
   $lines = New-Object System.Collections.Generic.List[string]
   foreach ($label in @($roots.Keys | Sort-Object)) {
@@ -455,28 +472,30 @@ function RunVerdict($v) {
   else { $r.Text = "RAN, item 0 with no window: started, adopted, held " + $v.HoldSeconds + " s, closed" + $(if ($v.ClosedHere -ne "") { ", FORCED" } else { " by Dispose" }) + ", put back"; $r.Code = 0 }
   return $r
 }
-# The close at the end of a run, never a second one. Under the lock the watchdog takes to
-# force a close, it marks the end as begun, so the watchdog forces nothing after it, and
-# reads whether the watchdog forced one before it. When it did, its Kill may be in flight,
-# so this only waits up to $waitSeconds for the process to go and says so. Otherwise a
-# process that still reads same is closed through the held handle here. Forced is the close
-# text when this closed it.
+# The close at the end of a run. It takes the lock the watchdog holds for the whole of any
+# close it forces, so a close the watchdog began has ended by the time this reads, and it
+# marks the end as begun, so the watchdog forces nothing after it. A process that still
+# reads same through the held handle is closed here, whether or not the watchdog forced a
+# close before, and one already gone is never closed a second time. Text says which close
+# ended it. Forced is the close text when this closed it.
 function CloseAtEnd($sync, $ticks, [int]$waitSeconds) {
   $r = [pscustomobject]@{ Text = ""; Forced = "" }
   if ($null -eq $sync.MyProc) { return $r }
-  $already = ""
   [System.Threading.Monitor]::Enter($sync.CloseLock)
-  try { $sync.EndClose = $true; if ($sync.Forced -ne "") { $already = $sync.Forced } elseif ($sync.CallForced -ne "") { $already = $sync.CallForced } } finally { [System.Threading.Monitor]::Exit($sync.CloseLock) }
-  if ($already -ne "") {
-    $sw = [Diagnostics.Stopwatch]::StartNew()
-    while ((HeldState $sync.MyProc $ticks) -eq "same" -and $sw.Elapsed.TotalSeconds -lt $waitSeconds) { Start-Sleep -Milliseconds 250 }
-    $h = HeldRead $sync.MyProc $ticks
-    $r.Text = "the watchdog forced the close, " + $already + ", so it is not closed a second time here, and the adopted process reads " + $h.State + $(if ($h.Why -ne "") { ", " + $h.Why } else { "" })
-    return $r
-  }
-  $held = HeldRead $sync.MyProc $ticks
-  if ($held.State -eq "same") { $cr = CloseAdopted $sync.MyProc $ticks $waitSeconds; $r.Forced = $cr.Text; $r.Text = "the adopted process was still running at the end and was CLOSED here through the held handle: " + $cr.Text }
-  elseif ($held.State -ne "gone") { $r.Text = "the adopted process reads " + $held.State + " through the held handle at the end, " + $held.Why + ", so it is not closed here and is written down below" }
+  try {
+    $sync.EndClose = $true
+    $already = ""
+    if ($sync.Forced -ne "") { $already = $sync.Forced } elseif ($sync.CallForced -ne "") { $already = $sync.CallForced }
+    $held = HeldRead $sync.MyProc $ticks
+    if ($held.State -eq "same") {
+      $cr = CloseAdopted $sync.MyProc $ticks $waitSeconds
+      $r.Forced = $cr.Text
+      if ($already -ne "") { $r.Text = "the watchdog forced a close, " + $already + ", and the adopted process still read same after it, so it was CLOSED here through the held handle: " + $cr.Text }
+      else { $r.Text = "the adopted process was still running at the end and was CLOSED here through the held handle: " + $cr.Text }
+    }
+    elseif ($held.State -eq "gone") { if ($already -ne "") { $r.Text = "the watchdog forced a close, " + $already + ", and the adopted process reads gone, so it is not closed a second time here" } }
+    else { $r.Text = "the adopted process reads " + $held.State + " through the held handle at the end, " + $held.Why + ", so it is not closed here and is written down below" + $(if ($already -ne "") { ". The watchdog forced a close before, " + $already } else { "" }) }
+  } finally { [System.Threading.Monitor]::Exit($sync.CloseLock) }
   return $r
 }
 function NewClocks($nowUtc) { return [pscustomobject]@{ L = $null; C = $null; LChange = $nowUtc; CChange = $nowUtc; Unknown = $false } }
@@ -610,10 +629,7 @@ function Monitor($sync) {
         $kind = WindowKind $r.Class $r.Caption $r.OwnerHandle $r.OwnerVisible
         $texts = "UNKNOWN, no child window answered"
         if ($null -ne $r.Texts -and @($r.Texts).Count -gt 0) { $texts = (@($r.Texts) -join " ") }
-        # What the rule rests on, for every window it classes: its owner's class, caption,
-        # visibility and process, read without a message.
-        $ownerText = "owner none"
-        if ($r.OwnerHandle -ne [IntPtr]::Zero) { $ownerText = "owner " + $r.Owner + ", class " + $r.OwnerClass + ", caption `"" + $r.OwnerCaption + "`", visible " + $r.OwnerVisible + ", enabled " + $r.OwnerEnabled + ", process " + $(if ($r.OwnerPid -eq [uint32]$sync.MyPid) { "the adopted one" } else { [string]$r.OwnerPid }) }
+        $ownerText = OwnerText $r ([uint32]$sync.MyPid)
         if ($kind -eq "DIALOG") {
           $sync.Dialogs = $sync.Dialogs + 1
           M ("DIALOG: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts)
@@ -642,6 +658,15 @@ function Monitor($sync) {
     if ($sync.RunOver -eq "") { $sync.RunOver = "FAULT" }
   } finally { if ($null -ne $stream) { $stream.Dispose() } }
   M "MONITOR stopped"
+}
+# What the window rule rests on, for every window it classes: its owner's class, caption,
+# visibility, state and process, read without a message. An owner of another process is
+# masked, its class, caption and process left out, so no other program's window reaches
+# the record.
+function OwnerText($r, [uint32]$myPid) {
+  if ($r.OwnerHandle -eq [IntPtr]::Zero) { return "owner none" }
+  if ($r.OwnerPid -ne $myPid) { return ("owner " + $r.Owner + ", a window of another process, its class, caption and process not written") }
+  return ("owner " + $r.Owner + ", class " + $r.OwnerClass + ", caption `"" + $r.OwnerCaption + "`", visible " + $r.OwnerVisible + ", enabled " + $r.OwnerEnabled + ", process the adopted one")
 }
 # The text a runspace runs to be the monitor: this file's functions and the guard's.
 function MonitorScript { return 'param($sync) . ([scriptblock]::Create($sync.GuardText)); . ([scriptblock]::Create($sync.RunText)); Monitor $sync' }
@@ -744,11 +769,33 @@ function SameListing($a, $b) {
   return $true
 }
 # The verdict of an install that read back the stamp asked for. A Navisworks running right
-# after it may have started during it and loaded either build, so that is a finding that
-# changes the verdict and the exit code.
-function InstallVerdict($stamp, [bool]$lateRoamer) {
-  if ($lateRoamer) { return [pscustomobject]@{ Text = "INSTALLED " + $stamp + ", with a FINDING: a Navisworks is running right after the install, so which build it loaded is UNKNOWN. Close it before any run"; Code = 5 } }
+# after it may have started during it and loaded either build, and a bundle left beside the
+# new one may be loaded too, so each is a finding that changes the verdict and the exit code.
+function InstallVerdict($stamp, [bool]$lateRoamer, $leftovers) {
+  $left = @($leftovers | Where-Object { $_ })
+  $findings = New-Object System.Collections.Generic.List[string]
+  if ($lateRoamer) { $findings.Add("a Navisworks is running right after the install, so which build it loaded is UNKNOWN. Close it before any run") }
+  if ($left.Count -gt 0) { $findings.Add("the add-in installed before is left beside the new one, " + ($left -join ", ") + ", and whether Navisworks loads a folder whose name does not end in .bundle is UNKNOWN. Remove it with Navisworks closed") }
+  if ($findings.Count -gt 0) { return [pscustomobject]@{ Text = "INSTALLED " + $stamp + ", with a FINDING: " + ($findings -join ", and a FINDING: "); Code = 5 } }
   return [pscustomobject]@{ Text = "INSTALLED " + $stamp; Code = 0 }
+}
+# The folders build\install.ps1 leaves beside the bundle when it cannot remove them, the one
+# it moved aside and a new one that failed, each named as MaskLine writes it.
+function BundleLeftovers($bundle) {
+  $parent = Split-Path $bundle -Parent
+  if (-not (Test-Path -LiteralPath $parent)) { return @() }
+  $leaf = Split-Path $bundle -Leaf
+  return @(Get-ChildItem -LiteralPath $parent -Directory -Force | Where-Object { $_.Name.StartsWith($leaf + ".replaced-") -or $_.Name.StartsWith($leaf + ".failed-") } | Sort-Object Name | ForEach-Object { MaskLine $_.FullName })
+}
+# A line another program printed, with the three profile folders written by their names, so
+# no user's folder reaches a record. A line that still holds a path is masked whole.
+function MaskLine($t) {
+  $s = [string]$t
+  foreach ($pair in @(@($env:LOCALAPPDATA, "%LOCALAPPDATA%"), @($env:APPDATA, "%APPDATA%"), @($env:USERPROFILE, "%USERPROFILE%"))) {
+    if ([string]$pair[0] -ne "") { $s = [regex]::Replace($s, [regex]::Escape(([string]$pair[0]).TrimEnd('\')), $pair[1], [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) }
+  }
+  if ($s -match '[A-Za-z]:\\|\\\\') { return (Mask $s) }
+  return $s
 }
 # The newest installed.txt a loop install wrote, and whether the bundle listed in $entries
 # matches it by relative path and sha256. File is null when no loop install wrote one.
@@ -883,7 +930,7 @@ try {
       if ($ie -eq 2) {
         # install.ps1's own refusals, a Navisworks running, a bundle that could not be moved
         # aside whole, or a folder on the way that is a junction or a link, exit 2, refused.
-        foreach ($l in @($ri.Out.Split("`n") | Where-Object { $_ -match '^REFUSED:' })) { Say ("  build\install.ps1 said: " + $l.Trim()) }
+        foreach ($l in @($ri.Out.Split("`n") | Where-Object { $_ -match '^REFUSED:' })) { Say ("  build\install.ps1 said: " + (MaskLine $l.Trim())) }
         Say ("REFUSED: build\install.ps1 refused, exit 2. Its output is in " + (Mask $itxt) + "."); $code = 2; break
       }
       if ($ie -ne 0) { Say ("STOP: build\install.ps1 exited " + $ie + ". Its output is in " + (Mask $itxt) + "."); $code = 1; break }
@@ -892,13 +939,15 @@ try {
       $lateRoamer = RoamerRefusal
       $after = ListFolder $paths.Bundle
       $lines = New-Object System.Collections.Generic.List[string]
-      $lines.Add("# relative path`tbytes`twritten UTC`tsha256`tattributes")
+      $lines.Add((ListingHeader))
       foreach ($e in $after.Entries) { $lines.Add((EntryLine $e)) }
       [System.IO.File]::WriteAllLines((Join-Path $idir "installed.txt"), $lines.ToArray(), $utf8)
       $pv = InstalledStamp $paths.InstalledDll
       Say ("  installed.txt written, " + $after.Entries.Count + " files, and the installed add-in reads " + $pv)
       if (-not (StampNames $pv $Stamp)) { Say ("STOP after the install: the installed add-in reads " + $pv + ", not " + $Stamp + "."); $code = 1; break }
-      $iv = InstallVerdict $Stamp $lateRoamer
+      $left = @(BundleLeftovers $paths.Bundle)
+      foreach ($lf in $left) { Say ("  left beside the new bundle: " + $lf) }
+      $iv = InstallVerdict $Stamp $lateRoamer $left
       Say ("VERDICT: " + $iv.Text)
       $code = $iv.Code
     } while ($false)
@@ -920,23 +969,26 @@ try {
       $napp = [System.Reflection.Assembly]::LoadFrom($autoDll).GetType("Autodesk.Navisworks.Api.Automation.NavisworksApplication")
       if ($null -eq $napp) { Say "REFUSED: the Automation DLL holds no NavisworksApplication. Nothing was started and nothing was written."; $code = 2; break }
 
-      # check 12, the run folder
+      # check 12, the run folder. What is moved aside is said once the new record has started,
+      # so the record and the evidence copied from it carry it.
+      $asideLines = New-Object System.Collections.Generic.List[string]
       if (Test-Path -LiteralPath $paths.RunDir) {
         $aside = (Split-Path $paths.RunDir -Leaf) + "-aside-" + [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
         try { Rename-Item -LiteralPath $paths.RunDir -NewName $aside -ErrorAction Stop } catch { Say ("REFUSED: the run folder from an earlier call could not be moved aside, " + (Err $_.Exception) + ". Nothing was touched."); $code = 2; break }
-        Say ("  the run folder from an earlier call was moved aside as " + $aside)
+        $asideLines.Add("  the run folder from an earlier call was moved aside as " + $aside)
       }
       # The evidence of an earlier call that was NOT RUN, which check 11 let through, moved
       # aside the same way and never emptied.
       if ((EvidenceFiles $paths.Evidence) -gt 0 -and (EvidenceNotRun $paths.Evidence)) {
         $evAside = (Split-Path $paths.Evidence -Leaf) + "-aside-" + [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
-        try { Rename-Item -LiteralPath $paths.Evidence -NewName $evAside -ErrorAction Stop } catch { Say ("REFUSED: the evidence of an earlier call that was NOT RUN could not be moved aside, " + (Err $_.Exception) + ". Nothing else was touched."); $code = 2; break }
-        Say ("  the evidence of an earlier call that was NOT RUN was moved aside as steps\runs\" + $Set + "\" + $evAside)
+        try { Rename-Item -LiteralPath $paths.Evidence -NewName $evAside -ErrorAction Stop } catch { foreach ($al in $asideLines) { Say $al }; Say ("REFUSED: the evidence of an earlier call that was NOT RUN could not be moved aside, " + (Err $_.Exception) + ". Nothing else was touched."); $code = 2; break }
+        $asideLines.Add("  the evidence of an earlier call that was NOT RUN was moved aside as steps\runs\" + $Set + "\" + $evAside)
       }
       New-Item -ItemType Directory -Path $paths.RunDir -ErrorAction Stop | Out-Null
       $script:RecordFile = Join-Path $paths.RunDir "record.txt"
       Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", -Mode Run -Set " + $Set + " -Item 0 -Stamp " + $Stamp + ", the start with no window")
       Say ("  the run folder " + (Mask $paths.RunDir) + ", every line from here is also in its record.txt")
+      foreach ($al in $asideLines) { Say $al }
 
       $wt = NewWinTypes
       $procType = $wt.ProcType
@@ -1041,8 +1093,9 @@ try {
         # skips the parts after it: whatever happened above, the watchdog stops, the put back
         # is judged, the keep awake request is let go and the verdict is written.
         $finallyFaults = New-Object System.Collections.Generic.List[string]
-        # The close, never a second one: when the watchdog forced a close its Kill may be in
-        # flight, so CloseAtEnd only waits for the process to go.
+        Say "==== FINALLY ===="
+        # The close. CloseAtEnd waits for any close the watchdog began, and closes here only
+        # a process that still reads same after it.
         try {
           $ce = CloseAtEnd $sync $myTicks 30
           if ($ce.Text -ne "") { Say ("  " + $ce.Text) }
@@ -1057,11 +1110,12 @@ try {
             $mon.Ps.Dispose()
           }
         } catch { $finallyFaults.Add("the monitor's end, " + (Err $_.Exception)) }
-        # M5 is read before the put back, so the writes of the put back are never listed as
-        # the start's, and while the watchdog still runs, so its record covers M5 too.
+        # M5, what changed outside the loop folder while the start ran, from any program, is
+        # read before the put back, so the put back's own writes are never among it, and while
+        # the watchdog still runs, so its record covers M5 too.
         try {
           if ($called -and $null -ne $keysBefore) {
-            Say "---- M5, what the start wrote outside the loop folder, read before the put back ----"
+            Say "---- M5, what changed outside the loop folder while the start ran, by any program, read before the put back ----"
             $m5 = New-Object System.Collections.Generic.List[string]
             $keysAfter = KeyTimes $winType "Software\Autodesk"
             foreach ($k in @(@($keysBefore.Keys) + @($keysAfter.Keys) | Sort-Object -Unique)) {
@@ -1086,7 +1140,7 @@ try {
           try { [void]$wps.EndInvoke($whandle) } catch { $wpsEndError = (Err $_.Exception); Say ("  the watchdog ended with " + $wpsEndError) }
           $wpsErrors = @($wps.Streams.Error)
           $wps.Dispose()
-          Say "==== FINALLY ===="
+          Say "---- the watchdog's end ----"
           Say ("  watchdog passes " + $sync.Passes + ", longest pass " + ([double]$sync.PassMaxMs).ToString("0") + " ms, longest gap " + ([double]$sync.MaxGapMs).ToString("0") + " ms, error lines " + $sync.ErrorCount + ", early fails " + $sync.EarlyFails + ", runspace errors " + $wpsErrors.Count + ", lines it could not write " + $sync.WriteErrors.Count + ", forced: " + $(if ($sync.Forced -eq "") { "no" } else { $sync.Forced }) + $(if ($sync.CallForced -ne "") { ", " + $sync.CallForced } else { "" }))
           foreach ($we in $wpsErrors) { Say ("    runspace error: " + $we.ToString()) }
         } catch { $finallyFaults.Add("the watchdog's end, " + (Err $_.Exception)) }
@@ -1118,7 +1172,7 @@ try {
             $la = ListFolder $paths.HisLogs
             if ($la.Ok) {
               $afterLines = @($la.Entries | ForEach-Object { EntryLine $_ })
-              [System.IO.File]::WriteAllLines((Join-Path $paths.RunDir "logs-after.txt"), (@("# relative path`tbytes`twritten UTC`tsha256`tattributes") + $afterLines), $utf8)
+              [System.IO.File]::WriteAllLines((Join-Path $paths.RunDir "logs-after.txt"), (@((ListingHeader)) + $afterLines), $utf8)
               $beforeRows = ListingRows (Join-Path $paths.RunDir "logs-before.txt")
               $afterRows = ListingRows (Join-Path $paths.RunDir "logs-after.txt")
               $beforeLines = @($beforeRows | ForEach-Object { $_.Line })

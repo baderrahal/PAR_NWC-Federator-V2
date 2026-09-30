@@ -106,14 +106,42 @@ while ($null -ne $walkUp -and $walkUp.Length -ge $env:APPDATA.TrimEnd('\').Lengt
 }
 
 # The installed bundle is moved aside by one rename first. A rename fails whole when a file
-# in the bundle is held, so on any failure the old bundle stays whole where it was. Then the
-# new one is copied in, and only then is the one moved aside removed. The name moved aside
-# does not end in .bundle, so Navisworks never loads it.
+# in the bundle is held, so the old bundle stays whole where it was. Measured on 2026-09-30
+# with no Navisworks: a DLL that .NET loaded with Assembly.LoadFrom in another process
+# blocks the rename of its folder. Whether Navisworks holds the add-in's DLLs that way is
+# UNKNOWN. Then the new one is copied in and checked, and only once the last check has
+# passed is the one moved aside removed. On a failure after the move the new one is taken
+# out and the old one put back, and where each is is printed. Whether Navisworks loads a
+# folder whose name does not end in .bundle is UNKNOWN.
 $aside = $null
 if (Test-Path -LiteralPath $target) {
     $aside = $target + ".replaced-" + [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
     try { Rename-Item -LiteralPath $target -NewName (Split-Path $aside -Leaf) -ErrorAction Stop }
     catch { Write-Host ("REFUSED: the installed add-in could not be moved aside, a file in it is held, most likely by a Navisworks that is running, " + $_.Exception.Message + ". The installed add-in is left whole. Close Navisworks and run this again. Nothing was installed."); exit 2 }
+}
+
+# After a failure once the old bundle was moved aside: the new one is removed, or moved aside
+# when it will not go, the old one is put back when its place is free, and where each ends
+# up is printed and returned for the failure's message.
+function PutOldBack($why) {
+    $newAt = $null
+    if (Test-Path -LiteralPath $target) {
+        try { Remove-Item -LiteralPath $target -Recurse -Force -ErrorAction Stop }
+        catch {
+            Write-Host ("The new add-in could not be removed, " + $_.Exception.Message)
+            $failedAt = $target + ".failed-" + [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
+            try { Rename-Item -LiteralPath $target -NewName (Split-Path $failedAt -Leaf) -ErrorAction Stop; $newAt = $failedAt }
+            catch { Write-Host ("The new add-in could not be moved aside either, " + $_.Exception.Message); $newAt = $target }
+        }
+    }
+    $oldAt = $aside
+    if (-not (Test-Path -LiteralPath $target)) {
+        try { Rename-Item -LiteralPath $aside -NewName (Split-Path $target -Leaf) -ErrorAction Stop; $oldAt = $target }
+        catch { Write-Host ("The add-in installed before could not be put back, " + $_.Exception.Message) }
+    }
+    $text = $why.TrimEnd('.') + ". The add-in installed before is at " + $oldAt + ", and the new one that failed " + $(if ($null -eq $newAt) { "was removed" } else { "is at " + $newAt }) + "."
+    Write-Host $text
+    return $text
 }
 
 # The contents, never the folder. Copy-Item of a directory puts it INSIDE the destination
@@ -126,18 +154,11 @@ try {
     Copy-Item (Join-Path $staging "*") $target -Recurse -Force
 } catch {
     $copyError = $_.Exception.Message
-    if ($null -ne $aside) {
-        if (Test-Path -LiteralPath $target) { Remove-Item -LiteralPath $target -Recurse -Force }
-        Rename-Item -LiteralPath $aside -NewName (Split-Path $target -Leaf)
-        throw ("The new add-in could not be copied in, " + $copyError + ". The add-in installed before was put back where it was.")
-    }
-    throw ("The new add-in could not be copied in, " + $copyError + ".")
-}
-if ($null -ne $aside) {
-    try { Remove-Item -LiteralPath $aside -Recurse -Force -ErrorAction Stop }
-    catch { Write-Host ("The add-in installed before is at " + $aside + " and could not be removed, " + $_.Exception.Message + ". Navisworks does not load it. Remove it once Navisworks is closed.") }
+    if ($null -ne $aside) { throw (PutOldBack ("The new add-in could not be copied in, " + $copyError)) }
+    throw ("The new add-in could not be copied in, " + $copyError + ". It is at " + $target + ", and no add-in was installed before.")
 }
 
+try {
 $nested = Join-Path $target (Split-Path -Leaf $target)
 if (Test-Path $nested) {
     throw "The bundle ended up inside itself at '$nested'. Nothing was installed that Navisworks can read."
@@ -225,8 +246,20 @@ if ($missing.Count -gt 0) {
     foreach ($line in $missing) { Write-Host $line }
     throw ("Install incomplete. {0} assembly reference(s) cannot be satisfied. Add the file(s) to the carried list in this script." -f $missing.Count)
 }
+} catch {
+    # A check of the new bundle failed. The old one, whole since the move, goes back.
+    if ($null -ne $aside) { throw (PutOldBack ("The new add-in failed its check, " + $_.Exception.Message)) }
+    throw
+}
 
 Write-Host ("  every reference is satisfied, {0} assemblies checked. Navisworks supplies its own." -f $inBundle.Count)
+
+# Every check has passed, so the add-in installed before is removed only now. When it cannot
+# be, the one LEFT line names it, and run.ps1 -Mode Install writes it into its verdict.
+if ($null -ne $aside) {
+    try { Remove-Item -LiteralPath $aside -Recurse -Force -ErrorAction Stop }
+    catch { Write-Host ("LEFT: the add-in installed before is at " + $aside + " and could not be removed, " + $_.Exception.Message + ". Whether Navisworks loads a folder whose name does not end in .bundle is UNKNOWN. Remove it once Navisworks is closed.") }
+}
 
 if ($mismatched.Count -gt 0) {
     Write-Host ""

@@ -337,8 +337,12 @@ function DiffAutoSave($autoBefore, $sAfter) {
 }
 
 # The window reader, in memory. EnumWindows needs a callback, so the delegate type is
-# emitted too. It is compared by process id FIRST, so no window of any other process is
-# read, and a message goes only to a child window of the process asked for.
+# emitted too. It is compared by process id FIRST, so no top level window of any other
+# process is read, and a message goes only to a child window of the process asked for. The
+# one read that can reach a window of another process is its owner's: WindowRecords reads
+# each window's owner's class, caption, visibility and process with no message, and an owner
+# may belong to another process. run.ps1 writes such an owner masked, as a window of another
+# process, with its class, caption and process left out.
 function NewWinTypes {
 $dynName = New-Object System.Reflection.AssemblyName("ProbeWinNative")
 $dynAsm = [AppDomain]::CurrentDomain.DefineDynamicAssembly($dynName, [System.Reflection.Emit.AssemblyBuilderAccess]::Run)
@@ -489,12 +493,18 @@ function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [b
 # Working... dialog was measured on 2026-09-28, docs\history\scan.md 5z-d. The main window's
 # class and caption on 2026-09-29, tools\probes\automation-start-result-20260929.txt line 423,
 # and on the first real start of run.ps1 on 2026-09-30 that it HAS AN OWNER, enabled, record
-# line 32, which the rule of fix attempt 1, no owner, called a DIALOG. So the main window is
-# one of that class and caption whose owner is absent or not visible. A message box of
-# Navisworks is owned by the visible main window, so it stays a DIALOG. Every window the
+# steps\runs\00\item0 line 32, which the rule of fix attempt 1, no owner, called a DIALOG.
+# The second real start measured that owner at 13:39:20 on 2026-09-30, record
+# steps\runs\01\item0 line 33: class WindowsForms10.Window.0.app.0.27a2811_r7_ad1, caption
+# "", visible False, enabled True, process the adopted one. So the main window is one of
+# that class and caption whose owner is absent or not visible. Whether a message box of
+# Navisworks is owned by the visible main window is not measured, no run has shown one. A
+# window of that class and caption whose owner is visible stays a DIALOG. Every window the
 # rule classes is written with its owner's class, caption, visibility and process, so the
 # next start measures what the rule rests on. A window of the main class with an empty
-# caption stays a DIALOG: the first real start showed none, so nothing tells how to class it.
+# caption was seen by the watchdog on both real starts, before the monitor began,
+# steps\runs\00\item0\watch.txt line 8 at 11:31:06.117 and steps\runs\01\item0\watch.txt
+# line 8 at 13:39:05.791, and the rule keeps such a window a DIALOG.
 # The tool's window is read off the design and is UNKNOWN until the first window start.
 function WindowKind($class, $caption, $ownerHandle, [bool]$ownerVisible) {
   if ($class.StartsWith("HwndWrapper[Roamer.exe;ProgressDialog;")) { return "PROGRESS" }
@@ -799,7 +809,8 @@ $sync.MyTicks = [long]0
 $sync.MyProc = $null
 $sync.CallName = ""
 $sync.CallSinceUtc = [DateTime]::MaxValue
-$sync.CallLimit = 120
+# 0 is no limit. run.ps1 sets its limit with the name of each call.
+$sync.CallLimit = 0
 $sync.CallForced = ""
 $sync.CloseLock = New-Object System.Object
 $sync.EndClose = $false
@@ -993,29 +1004,36 @@ function Watchdog($sync) {
       # The adopted deadline, for the adopted Roamer only, closed through the held handle
       # after its start time is read again through it. run.ps1 calls this deadline the ceiling.
       if ($sync.Forced -eq "" -and $sync.MyPid -ne 0 -and ($nowUtc - $sync.AdoptedAtUtc).TotalSeconds -gt $sync.AdoptedDeadline) {
-        # Written before the close, so a reader that finds the process gone already finds why,
-        # and under the lock run.ps1's end close takes, so the two never both close.
-        $go = $false
+        # Why is written before the close, so a reader that finds the process gone already
+        # finds why. The whole close runs under the lock run.ps1's end close takes, so the end
+        # close reads only a close that has ended, and the two never close at once.
         [System.Threading.Monitor]::Enter($sync.CloseLock)
-        try { if (-not $sync.EndClose -and $sync.Forced -eq "" -and $sync.CallForced -eq "") { $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, the close through the held handle has begun"; $go = $true } } finally { [System.Threading.Monitor]::Exit($sync.CloseLock) }
-        if ($go) {
-          $cr = CloseAdopted $sync.MyProc $sync.MyTicks 5
-          $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, " + $cr.Text
-          W ($sync.Forced)
-        }
+        try {
+          if (-not $sync.EndClose -and $sync.Forced -eq "" -and $sync.CallForced -eq "") {
+            $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, the close through the held handle has begun"
+            $cr = CloseAdopted $sync.MyProc $sync.MyTicks 5
+            $sync.Forced = "the adopted deadline of " + $sync.AdoptedDeadline + " s passed, " + $cr.Text
+            W ($sync.Forced)
+          }
+        } finally { [System.Threading.Monitor]::Exit($sync.CloseLock) }
       }
       # F103. A call into the adopted Navisworks that has not returned, Visible or Dispose,
-      # named by the main thread in CallName. Past CallLimit the adopted process is closed
-      # through the held handle, which ends the blocked call, and why is written first.
-      if ($sync.CallForced -eq "" -and $sync.Forced -eq "" -and $sync.MyPid -ne 0 -and $sync.CallName -ne "" -and ($nowUtc - $sync.CallSinceUtc).TotalSeconds -gt $sync.CallLimit) {
-        $go = $false
+      # named by the main thread in CallName with its limit in CallLimit. Past the limit the
+      # adopted process is closed through the held handle, which ends the blocked call, and
+      # why is written first. The name is taken once, before the close, because the main
+      # thread clears it as soon as the killed call returns.
+      $callName = [string]$sync.CallName
+      if ($sync.CallForced -eq "" -and $sync.Forced -eq "" -and $sync.MyPid -ne 0 -and $callName -ne "" -and $sync.CallLimit -gt 0 -and ($nowUtc - $sync.CallSinceUtc).TotalSeconds -gt $sync.CallLimit) {
+        $callLimit = $sync.CallLimit
         [System.Threading.Monitor]::Enter($sync.CloseLock)
-        try { if (-not $sync.EndClose -and $sync.Forced -eq "" -and $sync.CallForced -eq "") { $sync.CallForced = $sync.CallName + " did not return in " + $sync.CallLimit + " s, the close through the held handle has begun"; $go = $true } } finally { [System.Threading.Monitor]::Exit($sync.CloseLock) }
-        if ($go) {
-          $cr = CloseAdopted $sync.MyProc $sync.MyTicks 5
-          $sync.CallForced = $sync.CallName + " did not return in " + $sync.CallLimit + " s, " + $cr.Text
-          W ($sync.CallForced)
-        }
+        try {
+          if (-not $sync.EndClose -and $sync.Forced -eq "" -and $sync.CallForced -eq "" -and $sync.CallName -eq $callName) {
+            $sync.CallForced = $callName + " did not return in " + $callLimit + " s, the close through the held handle has begun"
+            $cr = CloseAdopted $sync.MyProc $sync.MyTicks 5
+            $sync.CallForced = $callName + " did not return in " + $callLimit + " s, " + $cr.Text
+            W ($sync.CallForced)
+          }
+        } finally { [System.Threading.Monitor]::Exit($sync.CloseLock) }
       }
     } catch {
       $sync.ErrorCount = $sync.ErrorCount + 1

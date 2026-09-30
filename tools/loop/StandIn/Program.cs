@@ -220,10 +220,12 @@ namespace NwcFederatorLoop.StandIn
 
         /// <summary>
         /// Three WinForms windows with the same caption, the three shapes the main window rule
-        /// reads: one with no owner, one owned by a window that is never shown, as the real
-        /// Navisworks main window was measured on 2026-09-30, and one owned by the visible first
-        /// window and carrying a label, as a message box of Navisworks titled like its main
-        /// window would be.
+        /// reads: one with no owner, one owned by a window that is not visible, the shape the
+        /// second real start measured at 13:39:20 on 2026-09-30, record steps\runs\01\item0
+        /// line 33, the main window's owner of class WindowsForms10.Window.0.app.0.27a2811_r7_ad1,
+        /// caption "", visible False, enabled True, in the adopted process, and one owned by the
+        /// visible first window and carrying a label, the shape a message box of Navisworks
+        /// owned by its main window would have, which no run has shown.
         /// </summary>
         private static int Owned(string caption, string labelText, int seconds)
         {

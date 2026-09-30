@@ -63,8 +63,11 @@ and nothing is fixed until a real run on real files shows it fixed.
   installed bundle is copied into %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup before the
   first install of a session, and nothing is installed while a Navisworks the loop did not
   start is running, because it may hold the bundle's DLLs. build\install.ps1 moves the
-  installed bundle aside by one rename, which fails whole while a file in it is held,
-  copies the new one in, and only then removes the one moved aside
+  installed bundle aside by one rename, which fails whole while a file in it is held, copies
+  the new one in and checks it, and removes the one moved aside only once every check has
+  passed. On a failure after the move the new one is taken out and the old one put back,
+  and where each is is printed. A folder it cannot remove is named in the verdict of
+  run.ps1 -Mode Install
 - Every run works on the copy under %LOCALAPPDATA%\NwcFederatorLoop\source and every
   output of every run goes under %LOCALAPPDATA%\NwcFederatorLoop
 - Nothing of Bader's is deleted or overwritten, bar two things. The installed add-in, which
@@ -92,12 +95,12 @@ and nothing is fixed until a real run on real files shows it fixed.
 - A Navisworks is the loop's own only when the Automation start returned without
   throwing, it is the one possible start, a new Roamer whose command line names embedding
   or cannot be read, it started after the call began, and its command line holds
-  -Embedding. A new Roamer whose command line reads and names neither is one started by
-  hand, and is left alone. The adoption then opens that process's handle and reads its start
-  ticks again through it, and a handle that cannot be opened or ticks that differ adopt
-  nothing. Anything less and the loop closes nothing, calls nothing on that start, and says
-  why. NOTHING IS CLOSED BEFORE IT IS
-  ADOPTED, not even at a deadline: a start that cannot be proved is written to
+  -Embedding. A new Roamer whose command line reads and does not name embedding, in any
+  case and anywhere, is one started by hand, and is left alone. The adoption then opens that
+  process's handle and reads its start ticks again through it, and a handle that cannot be
+  opened or ticks that differ adopt nothing. Anything less and the loop closes nothing,
+  calls nothing on that start, and says why. NOTHING IS CLOSED BEFORE IT IS ADOPTED, not
+  even at a deadline: a start that cannot be proved is written to
   %LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt and left running, and every
   later start refuses while one named there still runs, so a person looks. A start is
   also refused while any Roamer runs, whatever its command line and whoever started it,
@@ -117,7 +120,8 @@ and nothing is fixed until a real run on real files shows it fixed.
   runs, read immediately before it moves the installed bundle aside, when a folder from
   %APPDATA% down to the bundle is a junction or a link, and when the move aside fails
   because a file in the bundle is held. run.ps1 -Mode Install passes that refusal on as
-  exit 2. A Roamer running right after a loop install is a finding that changes its verdict
+  exit 2. A Roamer running right after a loop install, and a bundle left beside the new one,
+  are each a finding that changes its verdict
 - While a Navisworks the loop started runs, the recent files, the window placement and the
   default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
   under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which
