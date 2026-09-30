@@ -441,6 +441,8 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
 83. From the same design. THE HANG RULE as written is no processor time at all for five minutes while the log has not grown. An idle Navisworks, or one waiting at a dialog, may never read exactly zero, so the rule might never fire. run.ps1's first start with no window measures it. If it never reads zero, what counts as no processor time, for example under one second in five minutes
 
+    MEASURED 2026-09-30 by that first start, 11:29 to 11:40, record steps\runs\00\item0\record.txt: an idle Navisworks with nothing open, read every 15 s over the 360 s hold, NEVER read zero. It used 0.094 to 0.578 s of processor time a sample, about 1.2 to 1.6 s a minute, so about 6 to 8 s in five minutes. The rule as written can never fire on an idle Navisworks, and only the 12 hour ceiling would end one stuck at a dialog. What a Navisworks waiting at a dialog uses is still UNKNOWN.
+
     Answer:
 
 84. From the same design. A CEILING. Your rule names none. The design closes its own Navisworks 12 hours after it proved the start its own, and records CEILING and never HUNG, because the whole folder is 45 groups and 140 NWC and one group took 23 minutes on the old build. May a ceiling exist, and how long
