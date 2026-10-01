@@ -7,18 +7,20 @@ NM Fed itself, and the form is answered. It replaces the window message of 30 Se
 anything earlier that said Bader runs the tool by hand. The goal is real full runs of main on
 every NWC in NM Fed, driven by the loop, then the fixes those runs show. His answers are Q82
 to Q92 in steps\02_questions.md, his rule for the loop's own tools is Q93 and the goal is
-Q94. The plan is the turn 4 entry at the top of steps\log.md, written before the first edit.
-Main at the start of the turn: 821ed6e. The main clone is on fix-T4-records-1, never on main,
-so a push from a worktree passes the git wall, T3-W1.
+Q94. The plan is the turn 4 entry of steps\log.md, the plan the lead wrote to Bader before
+the first edit. Main at the start of the turn: 821ed6e. The main clone is on
+fix-T4-records-1, never on main, so a push from a worktree passes the git wall, T3-W1. From
+2026-10-01 10:25 every Get-Process Roamer read the lead cites is written first to
+%LOCALAPPDATA%\NwcFederatorLoop\turn4\roamer-reads.txt.
 
 THE RULE FOR THE LOOP'S OWN TOOLS, Q93. A reading of the loop's own scripts blocks a run only
 for a fault that could harm Bader's things or make a run's evidence wrong. Words, polish and
 edge cases that can do neither become register rows, not fix attempts. The product code
 keeps every house rule as written.
 
-WHILE A NAVISWORKS THE LOOP DID NOT START RUNS: no start, no install and no put back. A
-waiter reads Get-Process Roamer every 10 minutes and the loop carries on by itself once none
-runs. Runs may go while Bader is away and while he works at the machine, and he will not
+WHILE A NAVISWORKS THE LOOP DID NOT START RUNS: no start, no install and no put back. The
+waiter turn4\wait-no-roamer.ps1 reads the processes every 10 minutes and ends when none
+runs, and the lead then carries on with no word from Bader. Runs may go while Bader is away and while he works at the machine, and he will not
 click the loop's Navisworks. A locked screen that stops the window or the pictures is a
 finding, and the next start waits until the session reads unlocked, Q85.
 
@@ -27,23 +29,24 @@ THE RUN SETS OF TURN 4. Each run set gets a fresh copy at
 NWF\C06, NWD\C06 and Clash Report\C06, the same for C07, and the clash XML at the top. It is
 named NMFed and not NM Fed because the paths wall refuses every command naming NM Fed. Clash
 Report has C06 and C07 folders because group 100000 is in both communities. Every run goes
-through the real window with the XML from the copy, the tolerance left on Use the value in
-the XML, which puts 25 mm on all 1830 tests, and every group ticked. Nothing is written into
-NM Fed on the desktop.
+through the real window, every group ticked. A first run takes the XML from the copy, with
+the tolerance box left on Use the value in the XML, so each test the run creates from the
+XML carries the XML's 25 mm. The weekly run and the later runs of the set take no XML, and a
+test already saved in an NWF keeps its own tolerance. Nothing is written into NM Fed on the
+desktop.
 
 ## Next action
 
-1. The third real start on a63c284, Set 02, item 0 with no window, from the F103 worktree.
-   Then its evidence masked with F102's tools, checked, and committed to fix-F103 as 912dedc
-   was
+1. PR 78, F103, merged when Actions is green. PR 76, F102, merged on 2026-10-01 as 4fa1040.
+   The third real start is done and its evidence is on fix-F103, 19a3da7
 2. F105, Q89 A, and F107, Q88, with their developers in wt-f105 and wt-f107, each then read
-   by a reviewer and a breaker
-3. The merges in this order, each when Actions is green: PR 76, F102, as it is with both
-   gaps written as known limits. PR 78, F103, as it is with main merged in. F105. F107
-4. The install of main through run.ps1 -Mode Install from wt-main at main's new commit,
-   with no Roamer running, the installed stamp read back equal to that commit
-5. F106, the window run, built by the developer, read by the reviewer and one breaker under
-   Q93, merged
+   by a reviewer and a breaker, then merged
+3. The install of main through run.ps1 -Mode Install from wt-main at main's new commit,
+   with no Roamer running, the installed stamp read back equal to that commit, then
+   turn4\install-done.txt written for the F106 developer's harness
+4. F106, the window run, and F108, the run set copy, built by their developers in wt-f106
+   and wt-f108, each read by a reviewer and a breaker under Q93, merged
+5. The rule changes of Bader's answers in .claude\rules\loop.md, after F103 merges
 6. Set 03 in the order of the plan, a record merged after every run
 
 ## The phases
@@ -134,8 +137,10 @@ NM Fed on the desktop.
   never sleeps or hibernates on idle on mains power, and the laptop read on mains at 100
   percent. What closing the lid does could not be read, UNKNOWN
 - the clash XML in the copy, sha256 36AB2739, holds 1830 clash tests, each with tolerance
-  0.0820209974 in feet, 25 mm, read on 2026-10-01. The tool's tolerance box defaults to Use
-  the value in the XML, so a run that leaves the box alone clashes at 25 mm
+  0.0820209974 in feet, 25 mm, read on 2026-10-01 into turn4\xml-reads.txt. The tool's
+  tolerance box defaults to Use the value in the XML, ToleranceChoice.cs, under which each
+  test keeps what its source gave it. So a first run that leaves the box alone gives each
+  test it creates from this XML 25 mm. Not yet seen on a run of main
 
 ## The form
 
@@ -695,7 +700,7 @@ Files written outside the repo so far:
                                                                 steps\log.md before PR 71 and the fixed file,
                                                                 and the session evidence file, items 11 to 17
 
-## Turn 3, 2026-09-29, open
+## Turn 3, 2026-09-29 to 2026-09-30, ended when turn 4 opened
 
 Opened by Bader's answers of 2026-09-29, Q79 to Q81. Main at e555619.
 
@@ -929,32 +934,48 @@ Opened by Bader's message headed 30 Sep 2026, read on 2026-10-01, Q82 to Q94. Ma
 Runs:
 
 - THE THIRD REAL START, run.ps1 -Mode Run -Set 02 -Item 0 -Stamp be0b9b37 on a63c284, from
-  the F103 worktree, Bader's answer Q92 B. Get-Process Roamer read 0 at 09:05:54. Launched
-  09:06:16, run.ps1 began 09:06:18, ended 09:18:23, EXIT 0, VERDICT RAN, item 0 with no
-  window. ONE NAVISWORKS STARTED, pid 37988, adopted, held 360 s, Dispose returned after
-  0.48 s and the process read gone 6.2 s after, nothing forced. The main window read MAIN
-  with an owner that is not visible, as on the second start. M4 again, the processor time
-  of an idle Navisworks: 0.031 to 0.344 s a 15 s sample and 0.359 to 0.594 s a minute. Bader's
-  settings: 5 registry values and 2 files differed and were put back and read back equal, no
-  other Navisworks having run. The two files, CommCenter\en-US\InfoCenter.log and
-  LastSession.xml, read written at 08:45:40 on 2026-10-01 in the backup, before the start,
-  so a Navisworks of his ended about then, before the first read of 08:48:06. His logs folder
-  read the same after, his AutoSave unchanged. M5: 7 keys and 62 files written at or after
-  the call, 33 of them under %TEMP%, by any program. The session read unlocked at every
-  minute. Evidence steps\runs\02\item0, read by F102's mask at 7d8d135, which found nothing
-  to mask, and by F102's check over steps\runs, 12 files, none carrying one, committed to
-  fix-F103 as 19a3da7
+  the F103 worktree, Bader's answer Q92 B. Get-Process Roamer read 0 at 08:48:06 and at
+  09:05:54, read by the lead and kept in no file, and run.ps1's own checks read no Roamer at
+  09:06:18, record lines 18 and 19. Launched 09:06:16, run.ps1 began 09:06:18, ended
+  09:18:23, EXIT 0, VERDICT RAN, item 0 with no window. ONE NAVISWORKS STARTED, pid 37988,
+  adopted, held 360 s, Dispose returned after 0.48 s and the process read gone 6.2 s after,
+  nothing forced. The watchdog saw two AdskLicensingAgent processes start under it, pids
+  34260 and 22676, watch.txt lines 5 and 6. It reads only processes of the names it knows,
+  so whether anything else started is UNKNOWN. The main window read MAIN with an owner that
+  is not visible, as on the second start. M4 again, the processor time of an idle
+  Navisworks: 0.031 to 0.344 s a 15 s sample and 0.359 to 0.594 s a minute, about 1.8 to 3.0 s
+  in five minutes. Bader's settings: 5 registry values and 2 files differed and were put back
+  and read back equal, no other Navisworks having run. The two files,
+  CommCenter\en-US\InfoCenter.log and LastSession.xml, read written at 08:45:40 on
+  2026-10-01 in the backup, before the start, and what wrote them then is UNKNOWN. His logs
+  folder read the same after, his AutoSave unchanged. M5: 7 keys and 62 files written at or
+  after the call, 33 of them under %TEMP%, by any program. The session read unlocked at
+  every minute. Evidence steps\runs\02\item0, read by F102's mask at 7d8d135, which found
+  nothing to mask, and by F102's check over steps\runs, 12 files, none carrying one,
+  committed to fix-F103 as 19a3da7
+
+Merged: PR 76, F102, as 4fa1040, Bader's answer Q91 B. Its Actions run 36827848274 read the
+Core tests 1720 passed, 0 failed, 26 skipped of 1746, and its evidence check 457 files with
+none carrying an id. Its worktree under .claude\worktrees could not be removed whole, git
+answering Permission denied on its folder under .git\worktrees, so its files are left on
+disk and git no longer lists it.
 
 Programs started so far: git and gh. Windows PowerShell for Get-Process Roamer, the reads of
-the source copy's XML and the records, and run.ps1 -Mode Run for the third start, which
-started one Navisworks, pid 37988, through the Automation API. What helper processes that
-start brought is not in its record, UNKNOWN. F102's
-mask-evidence.ps1 three times and its check-evidence-ids.sh once, both from the F102
-worktree. The pre-commit's dotnet test at the evidence commit. Agents, through one
-workflow: a developer for F105 in wt-f105 and one for F107 in wt-f107, each then read by a
-reviewer and a breaker.
+the records, the merges' conflict resolution and one harmless Start-Process of a powershell
+that slept 90 s, pid 40796, which showed a process started that way outlives the tool call
+that started it. run.ps1 -Mode Run for the third start, which started one Navisworks, pid
+37988, through the Automation API, with the two licensing agents above. Git Bash's grep and
+sha256sum for the XML reads. F102's mask-evidence.ps1 three times and its
+check-evidence-ids.sh three times, from the F102 worktree and then from the F103 tree. The
+pre-commit's dotnet test at every commit. Agents: through two workflows, a developer for
+F105 in wt-f105 and one for F107 in wt-f107, and a developer for F106 in wt-f106 and one for
+F108 in wt-f108, each then read by a reviewer and a breaker. The claim-checker on these
+records.
 
-Written outside the repo so far: %LOCALAPPDATA%\NwcFederatorLoop\turn4 with the commit
-message of 19a3da7 and item0-set02-masked, the three masked copies. runs\02\item0, the run
-folder of the third start. wt-f107, a worktree of fix-F107 off main. In the session's
-scratchpad, loop-head-t4.md, the new head of this file before it was spliced in.
+Written outside the repo so far, all under %LOCALAPPDATA%\NwcFederatorLoop: turn4, holding
+the commit messages and pull request bodies, item0-set02-masked with the three masked
+copies, the briefs f106-brief.md and f108-brief.md, xml-reads.txt, detach-test-pid.txt, and
+the waiters wait-run.ps1 and wait-no-roamer.ps1, which read only, and what the developers
+write there. runs\02\item0, the run folder of the third start. wt-f106, wt-f107 and wt-f108,
+worktrees of their fix branches. In the session's scratchpad, the drafts of this file's head,
+of the F102 and F103 log entries and of the rule changes.

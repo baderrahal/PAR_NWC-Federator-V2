@@ -8,18 +8,24 @@ and the form is answered. It replaces the window message of 30 Sep and anything 
 said Bader runs the tool by hand. The goal is real full runs of main on every NWC in NM Fed,
 driven by the loop, then the fixes those runs show. His answers are Q82 to Q92 in
 steps\02_questions.md, his rule for the loop's own tools is Q93 and the goal is Q94. This
-entry is the plan, written before the first edit and not changed after it. What each step
-then did goes into the entries above it and into steps\loop.md, turn 4.
+entry is the plan the lead wrote to Bader in the session before the first edit, copied here
+after the answers were written into steps\02_questions.md. The third start of step 2 was
+launched before the records of step 1, because it edits nothing. Changed after it only where
+the claim-checker found a claim wrong: this paragraph, the Roamer reads, the XML reads and
+the 25 mm sentence. What each step then did goes into the entries above it and into
+steps\loop.md, turn 4.
 
 ### Measured before the plan
 
-- Get-Process Roamer read 0 at 08:48:06 and again at 09:05:54
+- Get-Process Roamer read 0 at 08:48:06 and again at 09:05:54, read by the lead and kept in
+  no file
 - the waiter, turn3\wait-window.ps1, wrote THE WINDOW IS OPEN at 18:00:14 on 2026-09-30 as
   its last line, and no start was made in that window. No folder runs\02 existed under the
   loop folder or in the F103 worktree at 09:05:54, and why no start was made is UNKNOWN
 - the clash XML in the copy, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, sha256 36AB2739,
   holds 1830 clash tests, every one with tolerance 0.0820209974 in feet, which is 25 mm. The
-  committed exchange copy of the corrected matrix is another file, sha256 792B01FB
+  committed exchange copy of the corrected matrix is another file, sha256 792B01FB, with the
+  same 1830 tolerances. Both read again at 10:25:30 into turn4\xml-reads.txt
 - the tool's tolerance box defaults to Use the value in the XML, ToleranceChoice.cs, and
   the Execute of FederatorPlugin.cs opens the window with ShowDialog
 - tools\probes\drive-window-run.ps1 finds the tool's window and its confirm dialog among
@@ -33,8 +39,9 @@ then did goes into the entries above it and into steps\loop.md, turn 4.
    every command naming NM Fed, and a path built at run time to get past it is what the
    wall's rule forbids. Below that name the copy keeps Bader's own folder shape: NWC\C06
    into NWF\C06, NWD\C06 and Clash Report\C06, the same for C07, and the XML at the top
-2. 25 MM COMES FROM THE XML. The tolerance box is left on Use the value in the XML, which
-   puts 25 mm on all 1830 tests, because choosing 25 mm in the box takes a real mouse click,
+2. 25 MM COMES FROM THE XML. The tolerance box is left on Use the value in the XML, under
+   which each test a first run creates from the XML carries the XML's 25 mm, and a test
+   already saved in an NWF keeps its own. Choosing 25 mm in the box takes a real mouse click,
    which would move his pointer while he works. The workbook read-out names the tolerance
    of every test, so each run proves it
 3. HIS LOGS ARE PUT BACK FROM THE BACKUPS. After the loop his logs folder is made to hold
@@ -95,7 +102,8 @@ then did goes into the entries above it and into steps\loop.md, turn 4.
 ### Held throughout
 
 - A Navisworks the loop did not start: no start, no install and no put back. A waiter
-  reads Get-Process Roamer every 10 minutes and the loop carries on by itself once none runs
+  reads the processes every 10 minutes and ends when none runs, and the lead carries on with
+  no word from Bader
 - A locked screen that stops the window or the pictures is a finding, and the next start
   waits until the session reads unlocked. The lock is never worked around
 - Nothing is written into NM Fed on the desktop, and every output goes under
