@@ -1,6 +1,85 @@
 # log
 
 Newest entry at the top.
+## 2026-09-30 The loop, turn 3, F103 into the form after three fix attempts, Q92
+
+Records only. Nothing under src, tests or tools changed here. Core tests before, on main at
+11e6220, by Actions run 36710730880 on its windows-latest runner: 1720 passed, 0 failed, 26
+skipped of 1746. After, on this branch with these records in it, run by the lead from
+17:07:16 to 17:07:59: 1746 passed, 0 failed, 0 skipped, output in
+%LOCALAPPDATA%\NwcFederatorLoop\turn3\core-tests-170716.txt, with the Actions line in
+turn3\reads-170618.txt. The pre-commit hook runs them again at the commit. What waits for the local machine: the third real start on a63c284, in tonight's
+window.
+
+### What was done
+
+- fix attempt 3 of F103, the 19 items of steps\notes\f103-fix-list-3.md, came back from its
+  developer as a63c284 at 15:10, pushed to fix-F103, with harness run 12, 242 passed and 0
+  failed on its files
+- its final reading by a reviewer and two breakers: all three answered safe for item 0 and
+  safe for install, the breaker on Bader's things within its lens, and none classed a
+  finding as a new fault inside the attempt. The reviewer read 18 of the 19 items fixed and
+  asked the lead to hold item 14 against the words it names
+- the lead held it: the harness header's sentence that the constructor line is replaced by a
+  line that throws, where the line only sets the error, stands word for word at prove-run.ps1
+  24 to 25, named after attempts 1 and 2 as well. So by the rule at the head of fix list 3,
+  F103 stops and goes to the form, Q92, with the lead's recommendation A, one change of words
+  only, no change of logic, at nine entries. steps\notes\f103-final-reading.md holds the
+  reading, the nine entries and the proof
+- five register rows from the readers' other findings, classed old or polish, T3-G13 to
+  T3-G16 and T3-P2, three of them resting on code the attempt wrote
+- Actions on a63c284 had never run a test, because GitHub could not acquire a runner in 5
+  attempts. Run again by the lead, green at 16:05:30, the Core tests 1720 passed, 0 failed,
+  26 skipped of 1746
+
+### What remains
+
+- Bader's answer to Q92. Until then PR 78 stays a draft, and the install of main and F104
+  part 2 wait on it
+- the third real start on a63c284 in tonight's window, Set 02, item 0 with no window, as
+  evidence for Q92
+
+### Known bugs
+
+- the nine entries in the words, listed in steps\notes\f103-final-reading.md, which wait on
+  Q92, and T3-G6 to T3-G16, T3-P and T3-P2, in the register
+
+### What comes next
+
+- turn3\wait-window.ps1 reads for tonight's window from 16:14, started again each time it
+  ends itself after 115 minutes. When the window opens: Get-Process
+  Roamer read 0 just before, the third start, its record read, its evidence masked, checked
+  and committed to fix-F103, and steps\loop.md set to WAITING
+
+## 2026-09-30 The loop, turn 3, the Navisworks window of 10:52 to 14:45, the plan
+
+Bader wrote at 10:52 on 2026-09-30 that he had closed his Navisworks and would not open it
+again before 14:45.
+Every Navisworks the loop starts is closed, and his settings put back and read back, by
+14:30. Get-Process Roamer read 0 at 10:57:10. This entry is the plan, written before the
+first edit of the window. What each step did goes into the entries written above this one and into steps\loop.md.
+
+### The order
+
+1. The reading of F103 fix attempt 1, fcd981b, by a reviewer and two breakers, resumed from
+   the run the restart cut, which reuses the one reader that had answered
+2. If it finds a fault of the thirteen left or a new one, fix attempt 2 by the developer and
+   a read again. If F103 is not clean by 13:45, its first start goes to tonight
+3. THE FIRST REAL START, run.ps1 -Mode Run -Set 00 -Item 0, made by the lead from the commit
+   that was read, with Get-Process Roamer read 0 just before. It measures M4, the processor
+   time of an idle Navisworks, M5, what changes outside the loop folder while a start runs, and M6,
+   whether the session locks. Its record read, the settings put back and read back, the
+   evidence masked with F102's own tools from its branch, because F102 is in the form, and kept under steps\runs\00\item0
+4. F103's pull request, PR 78, with that run in its body, merged once Actions is green
+5. INSTALL MAIN through run.ps1 -Mode Install from a clean checkout of main. It starts no
+   Navisworks but needs none running, which is this window, and it is the first step of the
+   baseline. Only if F103 merged by 14:00
+6. No start begins after 14:10 and no install after 14:15. At the close of the window,
+   steps\loop.md says what the window was used for and what is left for tonight
+
+Not in this window: any start that opens the tool's window, because the tool then logs into
+Bader's folder and deletes his oldest log, which waits on Q82.
+
 ## 2026-09-29 The loop, turn 3, F100 a start of Navisworks with no click, measured, DONE
 
 Core tests 1746 passed, 0 failed, 0 skipped, before on fix-F100 at 30ae471 and after on
