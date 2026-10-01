@@ -4758,8 +4758,13 @@ the IL      50 method bodies, 328 member and type tokens read                   
             Navisworks members 65: 62 declared in an install assembly, all 62 on
             list A, and 3 declared on a framework generic over a Navisworks type       219
             Navisworks types 21                                                        220
-            reads that failed 0, of every one of the twelve kinds il-reader.ps1
-            counts                                                                     203 to 216, 220
+            reads that failed 0, of the seven kinds this probe attempts: IL
+            bodies, opcode bytes, tokens, signatures, local variable lists,
+            field types and constant values                                            204 to 206, 212 to 216, 220
+            the other five print 0 and this probe never attempts them: no line
+            it can run, its own or il-reader.ps1's, counts one. They are
+            MemberRef rows, a type's methods, a type's members, GetTypes and
+            metadata, and their 0 is not a reading                                     207 to 211
             opcode table 191 one byte and 27 two byte instructions, the reserved
             bytes 0xF8 to 0xFD and 0xFF not among them                                 217
             every assembly from the install folder or the add-in's own folder         221 to 226
@@ -5014,12 +5019,14 @@ DispatchAllActions and ReportParseError, lines 778, 784, 786 and 788, and the
 dispatcher's own constructor is used in neither. Roamer.exe's 235 rows all resolved, line
 777. Section 9, lines 1477 to 1527, counts every read that failed over the whole run, by
 kind. The 32 MemberRef rows are there, each with its token and reason, lines 1485 to
-1517, and every other kind reads 0: IL bodies, bytes that are not an instruction, tokens,
-types whose methods or members could not be listed, assemblies GetTypes could not load
-every type of, metadata reads, signatures, locals, field types and constant values, lines
-1482 to 1484 and 1518 to 1525. 32 in all, line 1526. No reference failed to load, line
-1478. The IL reader counts the reserved bytes 0xF8 to 0xFD and 0xFF as not an
-instruction, line 1527.
+1517, and every other kind this probe attempts reads 0: IL bodies, bytes that are not an
+instruction, tokens, types whose methods could not be listed, assemblies GetTypes could
+not load every type of, and metadata reads, lines 1482 to 1484, 1518, 1520 and 1521. The
+other five kinds print 0, types whose members could not be listed, signatures, locals,
+field types and constant values, lines 1519 and 1522 to 1525, and this probe never
+attempts them: no line it can run, its own or il-reader.ps1's, counts one, so their 0 is
+not a reading. 32 in all, line 1526. No reference failed to load, line 1478. The IL
+reader counts the reserved bytes 0xF8 to 0xFD and 0xFF as not an instruction, line 1527.
 
 STILL UNKNOWN.
 
@@ -5058,8 +5065,14 @@ holds report, html, tabular or export, case blind, every public COM type whose n
 Clash or starts InwOcl, and every string in each file holding tabular, .xsl, clash_report
 or reportformat, case blind, each string with the words it holds and each word counted on
 its own. scan.md names no Clash Detective assembly beyond `Autodesk.Navisworks.Clash.dll`,
-so no other was read. No reference failed to load, line 591, and no read of any kind
-failed, lines 592 to 605. Lines of clash-report-api-result.
+so no other was read. No reference failed to load, line 591, and of the three kinds of
+read this probe attempts none failed: types whose members could not be listed,
+assemblies GetTypes could not load every type of, and constant values, lines 598, 599 and
+604, 0 in all at line 605. The other nine kinds print 0, IL bodies, bytes that are not an
+instruction, tokens, MemberRef rows, types whose methods could not be listed, metadata
+reads, signatures, locals and field types, lines 593 to 597 and 600 to 603, and this
+probe never attempts them: no line it can run, its own or il-reader.ps1's, counts one, so
+their 0 is not a reading. Lines of clash-report-api-result.
 
 **NO PUBLIC TYPE OR MEMBER IN Autodesk.Navisworks.Api.Clash, THE NAMESPACE THE ADD-IN
 USES, AND NONE IN THE COM CLASH INTERFACES, HAS REPORT, HTML, TABULAR OR EXPORT IN ITS
