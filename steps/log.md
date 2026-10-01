@@ -1,6 +1,41 @@
 # log
 
 Newest entry at the top.
+## 2026-10-01 The loop, turn 4, F103 run.ps1 part 1, DONE after the third real start
+
+Bader answered B on 2026-10-01, Q92: the third real start on a63c284 now, then F103 merges as
+it is, the nine entries a register row. Nothing under src or tests changed. Core tests
+before, at 821ed6e with no src change since, by the pre-commit of the turn 4 records commit
+7dbb869: 1746 passed, 0 failed, 0 skipped. After, by the pre-commit at this entry's commit,
+in the pull request body. Nothing of item 0 waits for the local machine, because the third
+start ran here.
+
+### What was done
+
+- THE THIRD REAL START, run.ps1 -Mode Run -Set 02 -Item 0 -Stamp be0b9b37 on a63c284 from
+  the F103 worktree. Get-Process Roamer read 0 at 09:05:54. Launched 09:06:16, ended 09:18:23,
+  exit 0, VERDICT RAN: one Navisworks, pid 37988, adopted, held 360 s, Dispose returned after
+  0.48 s and the process read gone 6.2 s after, nothing forced. 5 registry values and 2 files
+  of Bader's settings put back and read back equal, no other Navisworks having run, his logs
+  folder the same after and his AutoSave unchanged. The idle processor time read 0.031 to
+  0.344 s a 15 s sample and 0.359 to 0.594 s a minute
+- its evidence, steps\runs\02\item0, read by F102's mask, which found nothing to mask, and by
+  F102's check, committed as 19a3da7
+- main merged in, then F102's merge, and F103's DONE line in steps\01_next.md
+
+### What remains
+
+- part 2, the window, items 1 to 5, is F106, being built off this branch
+
+### Known bugs
+
+- F103-W, the nine entries in the words of steps\notes\f103-final-reading.md, and T3-G1 to
+  T3-G16, T3-P and T3-P2, in the register in steps\loop.md
+
+### What comes next
+
+- F105 and F107, then the install of main through run.ps1 -Mode Install from wt-main
+
 ## 2026-09-30 The loop, turn 3, F103 into the form after three fix attempts, Q92
 
 Records only. Nothing under src, tests or tools changed here. Core tests before, on main at
