@@ -1,0 +1,21 @@
+13:37:41.257  t+0.9s  watchdog started
+13:37:50.577  t+10.2s  Roamer pid 49604 seen with no readable start time, looked at again at the next pass
+13:38:01.678  t+21.3s  new process Roamer pid 49604, parent 8 svchost.exe, started 13:37:50.075, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+13:38:01.734  t+21.4s  Roamer 49604 visible top level windows: none
+13:38:38.434  t+58.1s  new process AdskLicensingInstHelper pid 49004, parent 26088 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+13:38:45.396  t+65.1s  new process AdskLicensingAgent pid 14784, parent 49604 Roamer.exe, started 13:38:36.036, command line holds the word embedding or automation: no
+13:38:50.752  t+70.4s  new process AdskLicensingAgent pid 43188, parent 49604 Roamer.exe, started 13:38:36.832, command line holds the word embedding or automation: no
+13:39:05.791  t+85.5s  Roamer 49604 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+13:39:11.146  t+90.8s  Roamer 49604 visible top level windows: none
+13:39:22.390  t+102.1s  new process AdskLicensingInstHelper pid 49756, parent 26088 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+13:39:22.416  t+102.1s  Roamer 49604 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+13:40:23.792  t+163.5s  new process AdskLicensingInstHelper pid 17752, parent 26088 GenuineService.exe, started 13:40:16.660, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+13:42:25.754  t+285.4s  new process AdskLicensingInstHelper pid 36272, parent 26088 GenuineService.exe, started 13:42:17.443, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+13:43:24.391  t+344.1s  new process AdskLicensingInstHelper pid 48848, parent 26088 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+13:44:38.025  t+417.7s  new process AdskLicensingInstHelper pid 46516, parent 26088 GenuineService.exe, started 13:44:32.099, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+13:45:24.729  t+464.4s  new process AdskLicensingInstHelper pid 15908, parent 26088 GenuineService.exe, started 13:45:17.361, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+13:45:24.745  t+464.4s  Roamer 49604 visible top level windows: none
+13:45:31.740  t+471.4s  Roamer 49604 has exited
+13:46:22.259  t+521.9s  new process AdskLicensingInstHelper pid 932, parent 26088 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+13:47:37.023  t+596.7s  new process AdskLicensingInstHelper pid 25024, parent 26088 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+13:48:04.880  t+624.5s  watchdog stopped
