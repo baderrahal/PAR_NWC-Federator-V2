@@ -6,6 +6,64 @@
 set -e
 
 repo=$(git rev-parse --show-toplevel)
+
+# THE TREE BEING COMMITTED IS READ BY ITS OWN HOOK. F102, measured on 2026-09-29: on Bader's
+# machine core.hooksPath is the ABSOLUTE path of the main clone's .githooks, so a commit in a
+# git worktree runs the main clone's copy of this file, from whatever branch the main clone
+# has checked out, and a branch that changes this hook or its checks is never read by its
+# own. So when the tree being committed holds its own copy of this file and that copy is
+# not the file running, its own runs instead and its answer is the answer. It works from the
+# moment the file running carries these lines, so a main clone on a branch older than F102
+# still runs its own copy, all through.
+#
+# IT HANDS OVER ONLY TO A COPY THAT RUNS THE EVIDENCE CHECK. An empty copy, a blank one or
+# one of comments alone would run nothing and answer 0, with every check and the tests
+# skipped. So the copy must hold, as a whole line with only spaces or tabs before it, the
+# line below that runs tools/checks/check-evidence-ids.sh, found by a fixed grep. A comment
+# naming it is not that line, and neither is the line here that holds it in run_line, so a
+# copy of these lines alone is refused too. A copy that does not hold it is refused and the
+# commit with it. It reads words, so a copy that holds the line and never reaches it is not
+# caught.
+#
+# WHO IS THE COPY HANDED TO. NWC_OWN_PRE_COMMIT carries the path of the copy handed to, and
+# a hook takes itself for that copy only when the variable is its own path, the path it was
+# started by, and that path is the committed tree's own copy. A value leaked from a shell or
+# a wrapper, naming any other file, is ignored and the handover still happens. -ef answers
+# first, and the variable is there for a file system where -ef cannot tell two paths apart.
+own="$repo/.githooks/pre-commit"
+run_line='if ! (cd "$staged" && sh "$repo/tools/checks/check-evidence-ids.sh" . tools/checks/broken); then'
+
+if [ -f "$own" ] && ! [ "$0" -ef "$own" ] \
+    && ! { [ "${NWC_OWN_PRE_COMMIT:-}" = "$own" ] && [ "$0" = "$own" ]; }; then
+    status=0
+    carried=$(grep -F -e "$run_line" "$own") || status=$?
+
+    if [ "$status" -gt 1 ]; then
+        echo "pre-commit: REFUSED. The committed tree's own hook could not be read, so nothing hands over to it."
+        exit 1
+    fi
+
+    runs_check=0
+
+    while IFS= read -r line; do
+        if [ "${line#"${line%%[! 	]*}"}" = "$run_line" ]; then
+            runs_check=1
+        fi
+    done <<EOF
+$carried
+EOF
+
+    if [ "$runs_check" -ne 1 ]; then
+        echo "pre-commit: REFUSED. The committed tree's own hook runs no evidence check, so nothing hands over to it."
+        exit 1
+    fi
+
+    echo "pre-commit: this is not the committed tree's own hook, so its own runs, $own"
+    NWC_OWN_PRE_COMMIT=$own
+    export NWC_OWN_PRE_COMMIT
+    exec sh "$own" "$@"
+fi
+
 cd "$repo"
 
 # First, because it costs no compiler and it guards the half of this repo no compiler
@@ -28,6 +86,31 @@ if ! sh "$repo/tools/checks/check-imports.sh" src; then
     echo ""
     echo "pre-commit: REFUSED. See the line above."
     exit 1
+fi
+
+# Third, for a different reason. F102: a probe result committed from Bader's machine
+# carried the machine's name and two Autodesk licensing ids, and nothing read a file for
+# them before it was committed. What is read is what the commit will hold, the staged
+# content, written into a temp folder by checkout-index and never read off the working
+# copy. tools/checks/broken holds fabricated ids on purpose and is left out, as in Actions.
+echo "pre-commit: reading the files staged for this commit for a machine name or a licensing id"
+
+staged=$(mktemp -d)
+names=$(mktemp)
+trap 'rm -rf "$staged" "$names"' EXIT
+
+git diff --cached --name-only --diff-filter=ACMRT -z > "$names"
+
+if [ -s "$names" ]; then
+    git checkout-index --prefix="$staged/" -z --stdin < "$names"
+
+    if ! (cd "$staged" && sh "$repo/tools/checks/check-evidence-ids.sh" . tools/checks/broken); then
+        echo ""
+        echo "pre-commit: REFUSED. See the lines above."
+        exit 1
+    fi
+else
+    echo "pre-commit: no file is added or changed in this commit, so none was read"
 fi
 
 echo "pre-commit: running the full test set"

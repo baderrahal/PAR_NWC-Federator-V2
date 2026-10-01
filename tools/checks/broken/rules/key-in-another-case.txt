@@ -1,0 +1,15 @@
+# valid.txt with one fault: Kind for kind, which neither reader takes for kind.
+guid: [0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}
+machine: [A-Za-z0-9_-]+
+
+kind: a GUID on a licensing line
+lines: AdskLicensing
+id: {guid}
+mask: [id]
+whole: no
+
+Kind: the machine name
+lines: every
+id: {machine}
+mask: [machine]
+whole: yes

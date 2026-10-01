@@ -1,0 +1,14 @@
+# valid.txt with one fault: the first kind has no mask line.
+guid: [0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}
+machine: [A-Za-z0-9_-]+
+
+kind: a GUID on a licensing line
+lines: AdskLicensing
+id: {guid}
+whole: no
+
+kind: the machine name
+lines: every
+id: {machine}
+mask: [machine]
+whole: yes
