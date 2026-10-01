@@ -27,10 +27,26 @@ command that does.
   now holds a different file under that name, and moves it into place only once its hash
   matches. While a file is out, the plain command refuses rather than remaking the copy,
   which would put the file straight back
+- -Set NN, two digits, makes the fresh copy one run set works on,
+  %LOCALAPPDATA%\NwcFederatorLoop\runs\NN\NMFed. It makes the plain command's check first,
+  so the source copy is kept or made again as above, and refuses while source.removed.txt
+  is there. Then it copies every file and folder of the source copy into runs\NN\NMFed,
+  reads every file back by sha256 and size against source.manifest.txt, makes one empty
+  folder under Clash Report for each folder under NWC, read off NWC and never named in the
+  script, and writes NMFed.manifest.txt beside it last, in the shape of
+  source.manifest.txt. A copy that fails its read back keeps no manifest and is left as it is
+- a run set's copy is made once and never emptied, so -Set NN refuses, writing nothing,
+  when runs\NN\NMFed, NMFed.manifest.txt or NMFed.removed.txt is there already, and when
+  NM Fed has no NWC folder, no Clash Report folder or no folder under NWC
+- -Set NN -Remove and -Set NN -Restore do on runs\NN\NMFed what -Remove and -Restore do on
+  the source copy, with the note in runs\NN\NMFed.removed.txt. The window run of F106 is
+  built to read runs\NN\NMFed, NMFed.manifest.txt and NMFed.removed.txt by those names. The
+  copy is named NMFed and never NM Fed, because the wall refuses every command naming NM Fed
 - it walks NM Fed one folder at a time and refuses a junction or a link inside it, because
   Windows PowerShell 5.1 follows one when it recurses
 - deletes: only inside %LOCALAPPDATA%\NwcFederatorLoop
-- never writes into NM Fed, and refuses a work folder that overlaps it or is a junction
+- never writes into NM Fed, and refuses a work folder that overlaps it or is a junction,
+  and with -Set a runs folder, a set folder or a set's copy that is a junction or a link
 
 Proved on the real folder: on 2026-09-27 made, kept, and made again when NM Fed changed
 under it, and on 2026-09-28 in this form kept, listed without touching the copy, one NWC
@@ -38,6 +54,20 @@ removed, restored by hash and kept again, with twelve calls refused with their r
 nothing changed, among them the plain command while a file is out, a file that is not an
 NWC, a wildcard, and a listing outside the repo, outside steps\runs, over steps\logs or
 not a .txt.
+
+-Set proved on 2026-10-01, F108. On the real folder with the throwaway set 99: made in 8 s,
+141 files and 12 folders, every file read back outside the script by sha256sum and size,
+NMFed.manifest.txt byte for byte source.manifest.txt, Clash Report\C06 and Clash
+Report\C07 made empty, one NWC removed and restored by hash, and 13 calls refused with
+their reason, among them a second -Set 99 and -Set 99 while the NWC was out. runs\99 was
+deleted after. In a work folder of its own inside the loop folder: the source copy made and
+set 97 made from it, and -Set refused while a file was out of that source copy, at the read
+back when one sha256 of its manifest was changed, before copying when a line of its
+manifest was not one, and at a junction in place of runs\95. On a copy of the script whose
+one changed line reads a fixture folder: Clash Report\K1 and Clash Report\K2 read off NWC,
+and -Set refused for no NWC folder, no Clash Report folder, no folder under NWC, a file
+marked offline, a changed file on -Restore and a work folder inside the folder it copies.
+Not proved: the two refusals for too little room.
 
 ## read-workbook.ps1
 
