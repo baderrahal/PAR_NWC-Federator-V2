@@ -39,8 +39,8 @@ What you never do:
 - close a Navisworks you did not start. Read every Roamer process id before you start
   one, and close only the id you started
 - commit an NWC, NWF, NWD, workbook or picture
-- call a run hung while its log is still growing or its Navisworks is still using the
-  processor. A run is hung only when both have stood still for five minutes
+- call a run hung by any rule but the hang rule in .claude\rules\loop.md, The run set,
+  which Bader set on 2026-10-01, Q83
 
 Report back: every command with its exit code, every Navisworks you started with its
 process id and when it was closed, every dialog Navisworks raised with its text, how long
