@@ -26,7 +26,9 @@ and nothing is fixed until a real run on real files shows it fixed.
 - The lead alone writes steps\loop.md and steps\log.md
 - steps\runs\NN is one run set, 00 the baseline. Each run of the set has its own folder
   holding the text log, the tsv, a listing of every output file with its size, and a
-  read-out of every workbook. A file over 20 MB is committed zipped and the turn says so
+  read-out of every workbook. A file over 20 MB is to be committed zipped and the turn says
+  so, but tools\checks\check-evidence-ids.sh refuses a zip until Bader decides where one may
+  sit, Q90
 - .claude\hooks\loop-gate.sh is the Stop hook. ONLY OPEN SENDS A SESSION BACK, and only
   once per session per change to steps\loop.md. CLOSED, WAITING, RESTART, any other word,
   no STATE line and no file all let the stop through, and so does a note it cannot write,
@@ -133,6 +135,24 @@ and nothing is fixed until a real run on real files shows it fixed.
   written, every change is listed with its old and new value in the turn's record, and the
   backup is kept for Bader
 - No NWC, NWF, NWD, workbook or picture is ever committed
+- No licensing id, session id or anything else that names Bader's Autodesk licence or his
+  machine is ever committed. Every file of a run or a probe is read by
+  tools\loop\mask-evidence.ps1 before it is committed, and the masked copy is what goes in.
+  tools\checks\check-evidence-ids.sh refuses a commit whose staged files carry one of the
+  KINDS NAMED IN tools\checks\evidence-ids.txt, the one place both read, and no other. F102.
+  Where each reads, which is narrower than the guard:
+  - the pre-commit reads only in a clone where it is switched on, git config
+    core.hooksPath. On Bader's machine core.hooksPath is the ABSOLUTE path of the main
+    clone's .githooks, measured on 2026-09-29, so a commit in any git worktree starts the
+    main clone's copy of the hook. Since F102 a hook hands over to the committed tree's own
+    copy when that is another file, so the tree is read by its own hook and its own check,
+    once the copy that starts carries the handover. It hands over only to a copy holding
+    the line that runs the evidence check, and refuses the commit when the tree's own copy
+    does not. A main clone on a branch older than F102 runs its own old copy all through
+  - Actions reads the tree for the ids and for the runner's name, NEVER FOR BADER'S, so only
+    the pre-commit on his machine reads for his
+  - a file is masked BEFORE it is zipped, because the check cannot read a zip and refuses
+    one until Bader decides where one may sit, Q90
 - samples and steps\logs are never touched
 
 ## How a finding is worked
