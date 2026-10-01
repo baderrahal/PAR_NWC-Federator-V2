@@ -1,6 +1,19 @@
 # The loop
 
-STATE OPEN
+STATE WAITING
+
+PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
+At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
+nothing of his needs putting back. THE FIRST RUN OF C07 NEVER STARTED: launched at 17:28:36,
+run.ps1 pid 39432 refused at its check 10 because the session read locked, Q85, "Nothing was
+written", turn4\run03-item1-C07-console.txt. The F110 and F111 workflow was stopped part way,
+so wt-f110 and wt-f111 may hold work not committed. The C07 waiter was stopped. Q98, whether a
+group with a model 2,000 km away stays DONE, and Q99, which clash XML the runs use, are still to
+be written for Bader, from findings 1 and 2 of steps\runs\03\findings.md.
+WHEN HE SAYS GO: Get-Process Roamer. If any Navisworks the loop did not start runs, stay
+WAITING. Otherwise STATE OPEN, start the keep awake again, start the first run of C07 the same
+way with the session unlocked, carry on with set 03, and start F110 and F111 again from their
+worktrees, nothing installed until C07 ends.
 
 THE FIRST RUN OF MAIN HAPPENS TODAY, Bader's message of 2026-10-01 12:10, Q96. Until the first
 run's RESULT block is written only what that run needs is worked on, and everything else
