@@ -51,12 +51,13 @@ inside a running Navisworks:
   -maxLabelWords and -maxHelpWords as well
 - `probe-window-scroll.ps1` measures each step against the height it gets, so which
   steps need a scrollbar is read rather than guessed. Takes -w and -h as well
-- `drive-window-run.ps1` drives the REAL window inside a running Navisworks through UI
-  Automation: sets every box, presses Scan and Run and confirms, then leaves the run to
-  the log. It is how PART 5 of the wiring round was done from a session that could not
-  press a button, and its header says what was measured about the ribbon, the automation
-  host and where the window sits in the automation tree. It needs the add-in window
-  already open
+- `drive-window-run.ps1`, since F106, is started by tools\loop\run.ps1 for a window run and
+  drives the tool's window of the one Navisworks run.ps1 adopted, by -OwnerPid and
+  -OwnerStartTicks, through UI Automation. It types every folder and the XML, presses Scan,
+  reads every box back, presses Run only when each reads what was typed and every path lies
+  under runs\NN, and answers the confirm OK, or Cancel when it names a path outside the loop
+  folder. It never clicks, never sends a key, never moves the pointer and never searches the
+  desktop. Its header says what was measured about the window
 
 One probe starts a Navisworks of its own. It refuses to start one while any Navisworks
 runs, whatever its command line and whoever started it, so the code keeps that rule, not

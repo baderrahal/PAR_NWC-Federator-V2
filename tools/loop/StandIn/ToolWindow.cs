@@ -266,7 +266,10 @@ namespace NwcFederatorLoop.StandIn
                 }
             };
 
+            // Navisworks stays up when the tool's window closes, so the stand-in does too, until the
+            // role's seconds end it, and the monitor reads the window closed and not the process gone.
             Application application = new Application();
+            application.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             application.Run(window);
             return 0;
         }

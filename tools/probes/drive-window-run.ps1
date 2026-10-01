@@ -40,8 +40,10 @@ param(
 # reads Use the value in the XML. MarkByDesign, MarkPenetrations and PriorityBox are read,
 # recorded and left as the window opened them. The confirm after Run is a #32770 of the pid
 # titled exactly Parsons NWC Federator whose text starts This run federates, IsConfirm in
-# nw-guard.ps1, and its texts are recorded. It presses OK only when every text was read whole
-# and none names a rooted path outside %LOCALAPPDATA%\NwcFederatorLoop, and Cancel otherwise.
+# nw-guard.ps1, and its texts are recorded. It answers OK only when every text was read whole
+# and none names a rooted path outside %LOCALAPPDATA%\NwcFederatorLoop, and Cancel otherwise,
+# with WM_COMMAND and the button's id posted to that dialog, Answer, because UI Automation shows
+# its Win32 buttons as panes with no Invoke, measured on 2026-10-01.
 # Any other dialog of the pid is recorded with its texts and left up, and nothing more is
 # pressed.
 #
@@ -223,6 +225,26 @@ function Press($el, $what, $runs) {
   $el.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
   Note ("pressed " + $what)
 }
+# The confirm's OK and Cancel are Win32 buttons, which UI Automation in Windows PowerShell 5.1
+# shows as panes with no Invoke, class Button, id 1 for OK and 2 for Cancel, measured on
+# 2026-10-01 on a WPF MessageBox titled as the tool's. So the confirm is answered the way its own
+# button answers it: WM_COMMAND with the button's id, posted to that dialog alone, only after the
+# dialog and the button read as windows of the owner pid and the button reads enabled and named
+# $what. No click, no key and no pointer. Measured the same day: 2 made MessageBox.Show return
+# Cancel and 1 made it return OK. $runs as in Press, set before the post.
+function Answer($dialog, [int]$id, $what, $runs) {
+  Gate ("answering the confirm with " + $what)
+  [uint32]$wp = 0
+  [void]$wt.WinType::GetWindowThreadProcessId($dialog.Handle, [ref]$wp)
+  if ($wp -ne [uint32]$OwnerPid) { Done "FAULT" ("the confirm now belongs to process " + $wp + ", not " + $OwnerPid + ", so nothing was sent") }
+  $c = New-Object System.Windows.Automation.AndCondition(@((New-Object System.Windows.Automation.PropertyCondition($AE::AutomationIdProperty, [string]$id)), (New-Object System.Windows.Automation.PropertyCondition($AE::ClassNameProperty, "Button"))))
+  $b = Mine ($AE::FromHandle($dialog.Handle).FindFirst($TS::Children, $c)) ($what + " on the confirm")
+  if ($b.Current.Name -cne $what) { Done "FAULT" ("the confirm's button " + $id + " reads " + $b.Current.Name + " and not " + $what + ", so nothing was sent") }
+  if (-not $b.Current.IsEnabled) { Done "BOX" ($what + " on the confirm reads disabled, so nothing was sent") }
+  if ($runs -ne "") { $script:Pressed = $runs }
+  $posted = $wt.WinType::PostMessageW($dialog.Handle, [uint32]0x0111, [IntPtr]$id, [IntPtr]([int]$b.Current.NativeWindowHandle))
+  Note ("answered the confirm with " + $what + ", WM_COMMAND " + $id + " posted to dialog " + $dialog.Handle + " of pid " + $OwnerPid + ", PostMessage returned " + $posted)
+}
 function Rows($id) {
   $el = ById $id
   try { return [string]$el.GetCurrentPattern([System.Windows.Automation.GridPattern]::Pattern).Current.RowCount } catch { return ("UNKNOWN, " + (Err $_.Exception)) }
@@ -247,8 +269,12 @@ function GroupTicks {
     return ([string]$n + " groups, " + $off + " unticked")
   } catch { return ("UNKNOWN, " + (Err $_.Exception)) }
 }
-# Every visible window of the owner whose kind is the one asked for.
-function OwnerWindows($kind, [bool]$allowMessages) { return @(WindowRecords $wt.WinType $wt.ProcType ([uint32]$OwnerPid) $true $allowMessages | Where-Object { (WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible) -eq $kind }) }
+# Every visible window of the owner whose kind is the one asked for. WindowRecords returns its
+# list as one object, so the call is put in brackets to pipe each record on its own, measured on
+# 2026-10-01 in Windows PowerShell 5.1: piped bare, the whole list reached WindowKind as one
+# object and threw. A caller wraps the result in @(), because one record returned bare has no
+# Count in 5.1, measured the same day.
+function OwnerWindows($kind, [bool]$allowMessages) { return @((WindowRecords $wt.WinType $wt.ProcType ([uint32]$OwnerPid) $true $allowMessages) | Where-Object { (WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible) -eq $kind }) }
 # Records every dialog of the owner but the confirm, with its texts, and stops with each left up.
 # A caller stops only on a dialog read on three passes running, a second apart, so a window
 # that is up for a moment, or whose texts were not read on one pass, never stops it alone.
@@ -263,7 +289,7 @@ try {
   $tw = @()
   while ($true) {
     Gate "finding the tool's window"
-    $tw = OwnerWindows "WINDOW" $false
+    $tw = @(OwnerWindows "WINDOW" $false)
     if ($tw.Count -eq 1) { break }
     if ($tw.Count -gt 1) { Done "NO WINDOW" ("the owner process shows " + $tw.Count + " windows of the tool, so which one to drive is UNKNOWN") }
     if ([DateTime]::UtcNow -gt $deadline) { Done "NO WINDOW" ("no window of the tool in pid " + $OwnerPid + " within " + $WindowWaitSeconds + " s") }
@@ -287,7 +313,7 @@ try {
     $sw = [Diagnostics.Stopwatch]::StartNew()
     $seen = 0
     while (-not (TabShown "2. Grouping")) {
-      $d = OwnerWindows "DIALOG" $true
+      $d = @(OwnerWindows "DIALOG" $true)
       if ($d.Count -gt 0) { $seen++; if ($seen -ge 3) { StopOnDialogs $d "after Scan" } } else { $seen = 0 }
       if ($sw.Elapsed.TotalSeconds -gt 300) { Done "FAULT" "the window did not move to 2. Grouping within 300 s of Scan, so the scan's end is UNKNOWN and nothing was pressed" }
       Start-Sleep -Seconds 1
@@ -329,8 +355,8 @@ try {
     $seen = 0
     while ($true) {
       Gate "waiting for the confirm"
-      if ((OwnerWindows "WINDOW" $false).Count -eq 0) { Done "WINDOW GONE" "the tool's window is gone after Run was pressed and before any confirm" }
-      $dlgs = OwnerWindows "DIALOG" $true
+      if (@(OwnerWindows "WINDOW" $false).Count -eq 0) { Done "WINDOW GONE" "the tool's window is gone after Run was pressed and before any confirm" }
+      $dlgs = @(OwnerWindows "DIALOG" $true)
       $other = @($dlgs | Where-Object { -not (IsConfirm $_.Class $_.Caption $_.Texts) })
       if ($other.Count -gt 0) {
         $seen++
@@ -339,19 +365,18 @@ try {
         $d = $dlgs[0]
         $texts = @($d.Texts)
         Note ("the confirm of pid " + $OwnerPid + ": class " + $d.Class + ", caption `"" + $d.Caption + "`", every text: " + (MaskLine ($texts -join " ")))
-        $dEl = $AE::FromHandle($d.Handle)
         # A text cut at the 2048 characters WindowRecords reads, or a child it did not read, is
         # a confirm not read whole, and that is answered the way an outside path is.
         $cut = @($texts | Where-Object { ([string]$_).Length -ge 2040 -or ([string]$_) -match '^and \d+ (more )?visible children not read|^and the walk of its children stopped' })
         $outside = PathsOutside ($texts -join "`n") $loopRoot
         if ($cut.Count -gt 0 -or $outside.Count -gt 0) {
           $why = $(if ($outside.Count -gt 0) { "names a rooted path outside %LOCALAPPDATA%\NwcFederatorLoop, " + (($outside | ForEach-Object { Mask $_ }) -join ", ") } else { "could not be read whole" })
-          Press (ByNameAndType $dEl "Cancel" ([System.Windows.Automation.ControlType]::Button)) "Cancel on the confirm" ""
-          Done "CANCELLED" ("the confirm " + $why + ", so Cancel was pressed and nothing runs")
+          Answer $d 2 "Cancel" ""
+          Done "CANCELLED" ("the confirm " + $why + ", so it was answered Cancel and nothing runs")
         }
-        Press (ByNameAndType $dEl "OK" ([System.Windows.Automation.ControlType]::Button)) "OK on the confirm" "OK on the confirm"
+        Answer $d 1 "OK" "OK on the confirm"
         $gone = $false
-        for ($i = 0; $i -lt 15 -and -not $gone; $i++) { Start-Sleep -Seconds 1; $gone = (@(WindowRecords $wt.WinType $wt.ProcType ([uint32]$OwnerPid) $true $false | Where-Object { $_.Handle -eq $d.Handle }).Count -eq 0) }
+        for ($i = 0; $i -lt 15 -and -not $gone; $i++) { Start-Sleep -Seconds 1; $gone = (@((WindowRecords $wt.WinType $wt.ProcType ([uint32]$OwnerPid) $true $false) | Where-Object { $_.Handle -eq $d.Handle }).Count -eq 0) }
         Done "PRESSED" ("Run, and OK on the confirm, whose texts name no path outside the loop folder. The confirm " + $(if ($gone) { "read gone after OK" } else { "still read up 15 s after OK, a finding" }))
       } else { $seen = 0 }
       Start-Sleep -Seconds 1

@@ -29,8 +29,9 @@
 # which dot-sources this file too:
 # - moved here from run.ps1 unchanged, because the driver reads them as well: SessionLockText,
 #   StampNames and MaskLine
-# - changed: NewWinTypes, which emits PostMessageW, the one call that writes to a window, made
-#   only by run.ps1's PostClose, and DiffAutoSave, whose line no longer ends saying a file is
+# - changed: NewWinTypes, which emits PostMessageW, the one call that writes a message to a
+#   window, made only by run.ps1's PostClose, WM_CLOSE to the tool's window, and the driver's
+#   Answer, WM_COMMAND to the tool's confirm, and DiffAutoSave, whose line no longer ends saying a file is
 #   never put back, because run.ps1 now puts his AutoSave folder back, Q86
 # - added: IsConfirm, PathsOutside, DriverCodes, DriverCode and DriverCodeName
 # The rules these functions keep are written at the top of the probe and in
@@ -400,7 +401,8 @@ foreach ($def in @(
     @("wtsapi32.dll", "WTSFreeMemory", [void], [Type[]]@([IntPtr])),
     @("advapi32.dll", "RegQueryInfoKeyW", [int], [Type[]]@([IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [long].MakeByRefType())),
     # F106: WM_CLOSE to the tool's window of the adopted Navisworks once its run has ended,
-    # posted only by run.ps1's PostClose after the window's process and start ticks read equal.
+    # posted only by run.ps1's PostClose after the window's process and start ticks read equal,
+    # and WM_COMMAND OK or Cancel to the tool's confirm, posted only by the driver's Answer.
     @("user32.dll", "PostMessageW", [bool], [Type[]]@([IntPtr], [uint32], [IntPtr], [IntPtr])))) {
   $pm = $tb.DefinePInvokeMethod($def[1], $def[0], [System.Reflection.MethodAttributes]"Public,Static,PinvokeImpl,HideBySig", [System.Reflection.CallingConventions]::Standard, $def[2], $def[3], [System.Runtime.InteropServices.CallingConvention]::Winapi, [System.Runtime.InteropServices.CharSet]::Unicode)
   $pm.SetImplementationFlags($pm.GetMethodImplementationFlags() -bor [System.Reflection.MethodImplAttributes]::PreserveSig)

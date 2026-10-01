@@ -673,10 +673,12 @@ function HangVerdict($lastLChangeUtc, $samples, $nowUtc, $limitSeconds, $cpuLimi
   return ($used -lt $cpuLimitSeconds)
 }
 # The processor seconds from the newest sample at or before $sinceUtc to the newest of all, or
-# null when no sample is that old.
+# null when no sample is that old. The samples are read with a plain foreach, because @() on a
+# List[object] throws Argument types do not match in Windows PowerShell 5.1, measured on
+# 2026-10-01, and a plain foreach reads a list that is empty or null as no sample.
 function CpuUsedSince($samples, $sinceUtc) {
   $base = $null; $last = $null
-  foreach ($s in @($samples)) { if ($s.At -le $sinceUtc) { $base = $s }; $last = $s }
+  foreach ($s in $samples) { if ($s.At -le $sinceUtc) { $base = $s }; $last = $s }
   if ($null -eq $base -or $null -eq $last) { return $null }
   return ([double]($last.C - $base.C) / 1e7)
 }
@@ -1039,7 +1041,10 @@ function Monitor($sync) {
       $lText = ""; if ($null -ne $logPath) { $lText = ", the log " + $L + " bytes" }
       M ("SAMPLE processor " + $cText + $grow + $lText)
       $lastC = $c
-      $visRecs = @(WindowRecords $sync.WinType $sync.ProcType ([uint32]$sync.MyPid) $true $true)
+      # WindowRecords returns its list as one object, so the call is put in brackets and piped,
+      # which hands on each record. Wrapped bare in @() the list stayed one record, measured on
+      # 2026-10-01 in Windows PowerShell 5.1, and the window rule threw on its arrays.
+      $visRecs = @((WindowRecords $sync.WinType $sync.ProcType ([uint32]$sync.MyPid) $true $true) | ForEach-Object { $_ })
       foreach ($r in $visRecs) {
         $key = [string]$r.Handle + "|" + $r.Class + "|" + $r.Caption
         if ($seenWins.ContainsKey($key)) { continue }
@@ -1077,7 +1082,7 @@ function Monitor($sync) {
           try { if ($sync.DriverProc.HasExited) { $dx = [int]$sync.DriverProc.ExitCode } } catch { M ("the driver's exit could not be read, UNKNOWN, " + (Err $_.Exception)) }
           if ($null -ne $dx) { $driverDone = $true; $sync.DriverExit = $dx; $sync.DriverLine = DriverLastLine $sync.DriverNotes; M ("DRIVER exited " + $dx + ", " + (DriverCodeName $dx) + ", its last line: " + $sync.DriverLine) }
         }
-        $toolNow = @(WindowRecords $sync.WinType $sync.ProcType ([uint32]$sync.MyPid) $false $false | Where-Object { (WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible) -eq "WINDOW" })
+        $toolNow = @((WindowRecords $sync.WinType $sync.ProcType ([uint32]$sync.MyPid) $false $false) | Where-Object { (WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible) -eq "WINDOW" })
         if (-not $toolSeen -and $toolNow.Count -gt 0) { $toolSeen = $true; M ("the tool's window is open, caption `"" + $toolNow[0].Caption + "`"") }
         if (($toolSeen -and $toolNow.Count -eq 0) -or $sawClosedLine) {
           $how = $(if ($sawClosedLine) { "Window closed. is in the tool's log" } else { "the tool's window is gone" })
@@ -1831,7 +1836,8 @@ try {
           }
           if ($win -and $null -ne $paths.RunDir -and (Test-Path -LiteralPath $paths.RunDir)) {
             foreach ($n in @("watch.txt", "settings.txt", "driver.txt", "toollog-name.txt", "outputs.txt")) { $src = Join-Path $paths.RunDir $n; if (Test-Path -LiteralPath $src) { $evPlan.Add([pscustomobject]@{ Name = $n; From = $src }) } }
-            foreach ($p in @($evPlan)) {
+            # A plain foreach, never @($evPlan): @() on a List[object] throws in 5.1, CpuUsedSince.
+            foreach ($p in $evPlan) {
               $len = (Get-Item -LiteralPath $p.From).Length
               if ($len -gt 20MB) { Say ("  EVIDENCE NOT COPIED, over 20 MB: " + $p.Name + ", " + $len + " bytes, sha256 " + (Get-FileHash -LiteralPath $p.From -Algorithm SHA256).Hash + ". It stays in " + (Mask (Split-Path $p.From -Parent)) + ", Q90"); $p.From = $null }
             }
@@ -1868,7 +1874,7 @@ try {
           if ($win) {
             Copy-Item -LiteralPath (Join-Path $paths.RunDir "record.txt") -Destination (Join-Path $ev "record.txt")
             Say ("  evidence record.txt, " + (Get-Item -LiteralPath (Join-Path $ev "record.txt")).Length + " bytes")
-            foreach ($p in @($evPlan)) {
+            foreach ($p in $evPlan) {
               if ($null -eq $p.From) { continue }
               $to = Join-Path $ev $p.Name
               Copy-Item -LiteralPath $p.From -Destination $to
