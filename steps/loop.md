@@ -2,6 +2,37 @@
 
 STATE OPEN
 
+THE FIRST RUN OF MAIN HAPPENS TODAY, Bader's message of 2026-10-01 12:10, Q96. Until the first
+run's RESULT block is written only what that run needs is worked on, and everything else
+waits: F109's workflow stopped by the lead at about 12:16, the F105 and F107 words round
+stopped at about 12:45 part way, wt-f107 committed at 2063c29 and wt-f105 holding staged
+changes not committed, and PR 83, the rules, and PR 84, F108, left open with the findings of
+their claim-checks, which were returned to the lead in the session, all read into
+turn4\reads-pr85.txt at 12:45:56.
+- MAIN IS INSTALLED, in place, apart from F109, as Bader asked. wt-main at e4484d1, clean. The
+  add-in built with the build command of build\install.ps1 line 39, 0 warnings and 0 errors,
+  stamp e4484d15, turn4\install-build.txt, the command line itself kept in no file.
+  build\install.ps1 -SkipBuild then staged and checked it against a throwaway APPDATA under the
+  loop folder, every reference satisfied, 14 assemblies, exit 0, turn4\install-fake-run.txt.
+  Get-Process Roamer read 0 at 12:20:07, turn4\roamer-reads.txt line 4, and again in the
+  script at 12:20:09. turn4\install-in-place.ps1 read the installed bundle equal to
+  bundle-backup, 15 files by name and sha256, copied the 15 checked files over the installed
+  ones and read each back equal, removed none, every installed file being in the new bundle,
+  and read the installed Federator.Addin.dll back as 1.0.0.0 e4484d15 built 2026-10-01
+  12:19:09 at 12:20:10, turn4\install-in-place.txt. bundle-backup still holds be0b9b37
+- THE COPY FOR SET 03 IS MADE, by F108's prepare-copy.ps1 -Set 03 from its branch, about
+  12:20:43 to 12:20:50 by the lead's console, kept in no file: the source copy matched the
+  desktop folder on all 141 files and 10 folders, and
+  runs\03\NMFed holds 141 files and 12 folders, Clash Report\C06 and C07 made, every file read
+  back by sha256, NMFed.manifest.txt written last, turn4\copy-set03.txt
+- THE WINDOW RUN, F106, is being finished for item 1 by one developer the lead started after
+  12:25, its brief turn4\f106-finish-brief.md. Before it, the F106 code was written in wt-f106
+  by developers of the stopped workflow whose transcripts end interrupted, and none of it was
+  committed. Its reading before the run is for harm to Bader's things only, Q96, which narrows
+  Q93 for this run
+- If the window cannot be driven today, one line says why here and Bader is told in the
+  Claude tab, so he can press Run himself
+
 TURN 4, opened on 2026-10-01 by Bader's message headed 30 Sep 2026: code runs the whole of
 NM Fed itself, and the form is answered. It replaces the window message of 30 Sep and
 anything earlier that said Bader runs the tool by hand. The goal is real full runs of main on
