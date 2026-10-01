@@ -6,14 +6,15 @@ Newest entry at the top.
 Bader answered B on 2026-10-01, Q92: the third real start on a63c284 now, then F103 merges as
 it is, the nine entries a register row. Nothing under src or tests changed. Core tests
 before, at 821ed6e with no src change since, by the pre-commit of the turn 4 records commit
-7dbb869: 1746 passed, 0 failed, 0 skipped. After, by the pre-commit at this entry's commit,
+7dbb869: 1746 passed, 0 failed, 0 skipped, read by the lead and kept in no file. After, by the pre-commit at this entry's commit,
 in the pull request body. Nothing of item 0 waits for the local machine, because the third
 start ran here.
 
 ### What was done
 
 - THE THIRD REAL START, run.ps1 -Mode Run -Set 02 -Item 0 -Stamp be0b9b37 on a63c284 from
-  the F103 worktree. Get-Process Roamer read 0 at 09:05:54. Launched 09:06:16, ended 09:18:23,
+  the F103 worktree. Get-Process Roamer read 0 at 09:05:54, read by the lead and kept in no
+  file. Launched 09:06:16, ended 09:18:23,
   exit 0, VERDICT RAN: one Navisworks, pid 37988, adopted, held 360 s, Dispose returned after
   0.48 s and the process read gone 6.2 s after, nothing forced. 5 registry values and 2 files
   of Bader's settings put back and read back equal, no other Navisworks having run, his logs
@@ -40,7 +41,8 @@ start ran here.
 
 Bader answered B on 2026-10-01, Q91: F102 merges as it is, both gaps written as known limits.
 Nothing under src or tests changed. Core tests before, at 821ed6e with no src change since,
-by the pre-commit of the turn 4 records commit 7dbb869: 1746 passed, 0 failed, 0 skipped.
+by the pre-commit of the turn 4 records commit 7dbb869: 1746 passed, 0 failed, 0 skipped,
+read by the lead and kept in no file.
 After, by the pre-commit at this entry's commit, in the pull request body. The proof of the
 change itself is in its 01_next section and in
 %LOCALAPPDATA%\NwcFederatorLoop\turn3\f102\proof.txt. Nothing waits for the local machine.
@@ -81,8 +83,8 @@ steps\02_questions.md, his rule for the loop's own tools is Q93 and the goal is 
 entry is the plan the lead wrote to Bader in the session before the first edit, copied here
 after the answers were written into steps\02_questions.md. The third start of step 2 was
 launched before the records of step 1, because it edits nothing. Changed after it only where
-the claim-checker found a claim wrong: this paragraph, the Roamer reads, the XML reads and
-the 25 mm sentence. What each step then did goes into the entries above it and into
+the claim-checker found a claim wrong: the heading, this paragraph, the Roamer reads, the XML
+reads, the 25 mm sentence and the waiter line. What each step then did goes into the entries above it and into
 steps\loop.md, turn 4.
 
 ### Measured before the plan
