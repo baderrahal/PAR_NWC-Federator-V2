@@ -1,0 +1,16 @@
+# valid.txt with one fault: a whole of Yes, which is not yes, because every value and key is
+# compared with its case.
+guid: [0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}
+machine: [A-Za-z0-9_-]+
+
+kind: a GUID on a licensing line
+lines: AdskLicensing
+id: {guid}
+mask: [id]
+whole: no
+
+kind: the machine name
+lines: every
+id: {machine}
+mask: [machine]
+whole: Yes

@@ -1,7 +1,77 @@
 # log
 
 Newest entry at the top.
-## 2026-10-01 The loop, turn 4, the plan, written before the first edit
+## 2026-10-01 The loop, turn 4, F103 run.ps1 part 1, DONE after the third real start
+
+Bader answered B on 2026-10-01, Q92: the third real start on a63c284 now, then F103 merges as
+it is, the nine entries a register row. Nothing under src or tests changed. Core tests
+before, at 821ed6e with no src change since, by the pre-commit of the turn 4 records commit
+7dbb869: 1746 passed, 0 failed, 0 skipped. After, by the pre-commit at this entry's commit,
+in the pull request body. Nothing of item 0 waits for the local machine, because the third
+start ran here.
+
+### What was done
+
+- THE THIRD REAL START, run.ps1 -Mode Run -Set 02 -Item 0 -Stamp be0b9b37 on a63c284 from
+  the F103 worktree. Get-Process Roamer read 0 at 09:05:54. Launched 09:06:16, ended 09:18:23,
+  exit 0, VERDICT RAN: one Navisworks, pid 37988, adopted, held 360 s, Dispose returned after
+  0.48 s and the process read gone 6.2 s after, nothing forced. 5 registry values and 2 files
+  of Bader's settings put back and read back equal, no other Navisworks having run, his logs
+  folder the same after and his AutoSave unchanged. The idle processor time read 0.031 to
+  0.344 s a 15 s sample and 0.359 to 0.594 s a minute
+- its evidence, steps\runs\02\item0, read by F102's mask, which found nothing to mask, and by
+  F102's check, committed as 19a3da7
+- main merged in, then F102's merge, and F103's DONE line in steps\01_next.md
+
+### What remains
+
+- part 2, the window, items 1 to 5, is F106, being built off this branch
+
+### Known bugs
+
+- F103-W, the nine entries in the words of steps\notes\f103-final-reading.md, and T3-G1 to
+  T3-G16, T3-P and T3-P2, in the register in steps\loop.md
+
+### What comes next
+
+- F105 and F107, then the install of main through run.ps1 -Mode Install from wt-main
+
+## 2026-10-01 The loop, turn 4, F102 every result file read for a machine name or a licensing id, DONE
+
+Bader answered B on 2026-10-01, Q91: F102 merges as it is, both gaps written as known limits.
+Nothing under src or tests changed. Core tests before, at 821ed6e with no src change since,
+by the pre-commit of the turn 4 records commit 7dbb869: 1746 passed, 0 failed, 0 skipped.
+After, by the pre-commit at this entry's commit, in the pull request body. The proof of the
+change itself is in its 01_next section and in
+%LOCALAPPDATA%\NwcFederatorLoop\turn3\f102\proof.txt. Nothing waits for the local machine.
+
+### What was done
+
+- main merged into fix-F102 as 8554e45 with no conflict, Bader's answer and the two known
+  limits written under F102's DONE line in steps\01_next.md, and this entry
+- used by the loop before the merge, from its branch at 7d8d135, on the third real start's
+  evidence of 2026-10-01: the mask found nothing to mask in record.txt, watch.txt and
+  settings.txt, each copy equal to its original by sha256, and the check read 12 files under
+  steps\runs of fix-F103 and found none carrying an id or the machine name
+
+### What remains
+
+- the zip rule's words: .claude\rules\loop.md and tools\loop\README.md still say the check
+  refuses a zip until Bader decides where one may sit. He decided A on 2026-10-01, Q90, and
+  the words change in the next records pull request
+
+### Known bugs
+
+- F102-L1: a workbook under samples with text appended inside its last 65557 bytes passes the
+  check unread. A limit, because the samples are never edited
+- F102-L2: a committed hook holding the check's line where it never runs still gets the
+  handover. A limit, because a hook of this repo is read before it merges
+
+### What comes next
+
+- F103 merges, then F105 and F107, then the install of main
+
+## 2026-10-01 The loop, turn 4, the plan, as written to Bader before the first edit
 
 Bader's message headed 30 Sep 2026, read on 2026-10-01: code runs the whole of NM Fed itself,
 and the form is answered. It replaces the window message of 30 Sep and anything earlier that

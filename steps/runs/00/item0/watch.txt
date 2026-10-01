@@ -1,0 +1,22 @@
+11:29:33.056  t+0.9s  watchdog started
+11:29:42.902  t+10.7s  Roamer pid 42064 seen with no readable start time, looked at again at the next pass
+11:29:49.378  t+17.2s  new process Roamer pid 42064, parent 8 svchost.exe, started 11:29:42.865, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+11:29:49.435  t+17.3s  Roamer 42064 visible top level windows: none
+11:30:26.998  t+54.8s  new process AdskLicensingInstHelper pid 18136, parent 26088 GenuineService.exe, started 11:30:17.231, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:30:44.993  t+72.8s  new process AdskLicensingAgent pid 21036, parent 42064 Roamer.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+11:30:54.087  t+81.9s  new process AdskLicensingAgent pid 28296, parent 42064 Roamer.exe, started 11:30:37.105, command line holds the word embedding or automation: no
+11:31:06.117  t+93.9s  Roamer 42064 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+11:31:10.938  t+98.8s  Roamer 42064 visible top level windows: none
+11:31:24.535  t+112.4s  new process AdskLicensingInstHelper pid 612, parent 26088 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:31:24.954  t+112.8s  Roamer 42064 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025" text: 
+11:31:25.498  t+113.3s  Roamer 42064 visible top level windows: none
+11:31:26.101  t+113.9s  Roamer 42064 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025" text: "View0" "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" and 29 more visible children not read
+11:32:37.918  t+185.7s  new process AdskLicensingInstHelper pid 36780, parent 26088 GenuineService.exe, started 11:32:32.517, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:33:23.726  t+231.5s  new process AdskLicensingInstHelper pid 30500, parent 26088 GenuineService.exe, started 11:33:16.962, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:34:37.418  t+305.2s  new process AdskLicensingInstHelper pid 42192, parent 26088 GenuineService.exe, started 11:34:32.089, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:35:22.959  t+350.8s  new process AdskLicensingInstHelper pid 45260, parent 26088 GenuineService.exe, started 11:35:17.531, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:36:27.408  t+415.2s  new process AdskLicensingInstHelper pid 45516, parent 26088 GenuineService.exe, started 11:36:17.299, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:37:21.876  t+469.7s  new process AdskLicensingInstHelper pid 45672, parent 26088 GenuineService.exe, started 11:37:16.771, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:37:29.234  t+477.0s  Roamer 42064 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025" text: 
+11:37:29.773  t+477.6s  Roamer 42064 visible top level windows: none
+11:37:38.306  t+486.1s  watchdog stopped
