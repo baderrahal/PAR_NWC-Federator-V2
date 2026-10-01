@@ -47,7 +47,7 @@ Renumbered again on 2026-09-19 when the penetration round opened. Bader ran the 
 27. F97, DONE, the house of the loop
 28. F98, DONE, the close round heading back in steps\log.md
 29. F99, DONE, the git wall through PowerShell
-30. F100, a start of Navisworks with no click, measured, IN THE FORM after three fix attempts
+30. F100, DONE, a start of Navisworks with no click, measured, on Bader's answer A after a fourth fix attempt
 
 The loop opened on 2026-09-27 on Bader's own machine. Its fixes take the next free F number from F97, and the order it works in is its register in steps\loop.md, most harmful first.
 
@@ -950,6 +950,8 @@ The alignment round closed on 2026-09-20, branch `round-alignment`, proved by TW
 - It found that while a Navisworks the loop started runs, Bader's own Navisworks settings change: the recent files, the window placement and the default plugin in the registry, and files under his roaming profile. So two guards go into `.claude/rules/loop.md`: what makes a Navisworks the loop's own, with nothing closed before it is proved, and the backup of those settings before every start, put back only when no Navisworks the loop did not start ran meanwhile
 - Two rounds of review. The first reviewer and breaker found the first version could adopt, and in its finally force close, a Navisworks it did not start, if Bader opened one during the start and the start threw. The second found the fixed version could revert a change Bader's own Navisworks made during the run, could empty a backup before a refusal, and still closed an unproved start at its deadline. The prober fixed both lists, the lead deciding what they left open
 - A third round of review, and a fourth reading of the third fix attempt, which still found faults inside what that attempt changed, each small. By the house rule a finding that survives three fix attempts stops, so on 2026-09-28 F100 went to the form in steps\loop.md with what each attempt showed and Bader's choice. The changed probe has passed the checks that start no Navisworks, which cannot reach the writes of the put back or the deadline with a real start. Its full run waits until no Navisworks the loop did not start is running, and Bader's own was open all day
+- Bader answered A on 2026-09-29, Q79. Fix attempt 4, commit 0a89d73, fixed exactly the seven faults of steps\notes\f100-fourth-reading.md and put the rule that no start is made while any Navisworks runs into code, read before the backup and again just before the constructor. A reviewer and a breaker read it and both approved, with no fault of the seven left and no new fault inside attempt 4. The old faults outside the seven they found are register rows in steps\loop.md, for the code run.ps1 takes over
+- DONE 2026-09-29. Run 4 of the attempt 4 probe at 11:35 passed all six steps in 125 s with no other Navisworks running: the constructor returned after 83.16 s, pid 33752 was adopted on all four conditions, Dispose closed it 8.5 s after it returned with nothing forced, and 36 registry values and 2 files of Bader's settings were put back, each after a last check, and read back. docs\history\scan.md 5z-d, RUN 4, and tools\probes\automation-start-result-20260929.txt. No result file on main carries a licensing id: run 4 printed none, and run 3's file is kept with its two ids and the machine name masked. Core tests 1746 passed, 0 failed, 0 skipped, before and after, nothing under src or tests changed
 
 ## F105 Four reads off the install with no Navisworks started
 
