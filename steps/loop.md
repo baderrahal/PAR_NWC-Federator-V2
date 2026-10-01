@@ -32,6 +32,46 @@ turn4\reads-pr85.txt at 12:45:56.
   Q93 for this run
 - If the window cannot be driven today, one line says why here and Bader is told in the
   Claude tab, so he can press Run himself
+- F106 FINISHED FOR ITEM 1 at 32dce24, the finishing developer's report in
+  turn4\f106-finish-report.md, and READ FOR HARM ONLY by a reviewer and a breaker, both SAFE FOR
+  THE FIRST RUN with no harm found, their other findings for the register, turn4 and the
+  workflow journal wf_8100973e-871. Check for set 03, item 1, C06 read exit 0 at 13:35,
+  turn4\check-set03-item1.txt
+- THE FIRST RUN OF MAIN STARTED. The lead's first launch at 13:58:20 passed the arguments as
+  one, and run.ps1 refused, "is not a parameter of run.ps1. Nothing was started and nothing
+  was written", turn4\run03-item1-C06-refused-console.txt. Launched again at 13:59:01,
+  run.ps1 pid 5152, turn4\run03-item1-C06-pid.txt. Navisworks pid 27500 from 13:59:17.
+  THE WINDOW WAS DRIVEN WITH NO CLICK, runs\03\item1-C06\driver.txt: the tool's window opened
+  at 14:00:39 and stayed open, the driver typed the C06 folder and pressed Scan, 67 NWC, 22
+  groups, 0 unticked, typed the NWF, NWD and Clash Report folders of C06 and the XML, read
+  every box back equal, found the tolerance box on Use the value in the XML, pressed Run, and
+  answered the confirm with OK at 14:00:55.585, its texts naming no path outside the loop
+  folder. The tool's log: RUN started, 22 groups, the Clash step picked the copy's XML, 61
+  sets and 1830 tests, and GROUP started 100000 at 14:00:55
+- THE FIRST RUN OF MAIN ENDED, VERDICT RAN, set 03 item 1, C06. RESULT, log line 8429 on, of
+  steps\runs\03\item1-C06\run-20261001-140037.log: 17 groups done, 0 partial, 5 failed, 5679
+  clashes across 22 groups, 6 of which found none, 88 files written. The tool's run took 1 h 44
+  min 52 s, 59 min 52 s over the 45 minutes, VIEWS 72 percent of it. The window closed on the
+  loop's WM_CLOSE after RESULT, Dispose at 15:46:30 and Navisworks gone 10.0 s after, nothing
+  forced. Put back with no other Navisworks having run: 37 registry values and 2 files, and
+  Q86 in his AutoSave, 78 files as they were, each read back. Q82: the tool pruned his oldest
+  log, run-20260901-191711.log, which logs-backup holds. All 22 workbooks read out. The
+  evidence masked by F102's tool, 30 files, none changed, into steps\runs\03\item1-C06
+- THE FIRST FINDINGS, steps\runs\03\findings.md, read by four readers: the five FAILED groups
+  each have a model on Revit's internal origin, four DONE groups each have a model about 2,000
+  to 2,800 km away and still read DONE, duct, pipe and equipment sets find nothing because the
+  copy's XML, which is not the corrected matrix in exchange, asks upper case worksets the models
+  spell in mixed case, the WORKBOOK CHECK and the RESULT file sizes print wrong numbers, and the
+  run is 2.3 times the 45 minutes, VIEWS alone 1.7 times. Bader's message of 15:30, Q97. For Bader
+  three tests with their workbook counts to check against the Clash Detective panel
+- ONEDRIVE, at Bader's word in the Claude tab: Roamer.exe, the loop's stand-in left in the
+  F103 worktree folder under .claude\worktrees, and testhost.exe, a build output of his
+  RCRC-Green repo, were blocked by OneDrive. The F102 and F103 worktree folders were removed at
+  about 16:46 and that one testhost.exe deleted. OneDrive put both folders back at 16:47 from
+  its cloud copy, without the .exe, which it never held. No .exe is left under his GitHub
+  folders. RCRC-Green's returns whenever its tests build inside OneDrive
+- NEXT: the first run of C07 the same way, then the rest of set 03 tonight. Fixes may start
+  while C07 runs, and nothing is installed until C07 ends
 
 TURN 4, opened on 2026-10-01 by Bader's message headed 30 Sep 2026: code runs the whole of
 NM Fed itself, and the form is answered. It replaces the window message of 30 Sep and
