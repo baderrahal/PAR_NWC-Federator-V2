@@ -24,6 +24,16 @@ runs, and the lead then carries on with no word from Bader. Runs may go while Ba
 click the loop's Navisworks. A locked screen that stops the window or the pictures is a
 finding, and the next start waits until the session reads unlocked, Q85.
 
+KEEP AWAKE FOR THE WHOLE LOOP, Bader's instruction of 2026-10-01, Q95. One background
+powershell.exe, PID 21164, STARTED 2026-10-01 10:48:37, runs
+%LOCALAPPDATA%\NwcFederatorLoop\turn4\keep-awake.ps1. On its main thread, native thread 27484,
+it called SetThreadExecutionState with ES_CONTINUOUS and ES_SYSTEM_REQUIRED, 0x80000001, which
+returned 0x80000000 at 10:48:38, so the request holds while that thread lives. No display
+flag, and none of Bader's power settings changed. It reads the STATE line of this file once
+a minute and stops itself when it reads STATE CLOSED or STATE WAITING, taking the request
+back first. Its lines go to turn4\keep-awake.txt. STOPPED: not yet. It was started from
+Claude Code, so whether it outlives Claude Code itself is UNKNOWN.
+
 THE RUN SETS OF TURN 4. Each run set gets a fresh copy at
 %LOCALAPPDATA%\NwcFederatorLoop\runs\NN\NMFed in Bader's own folder shape: NWC\C06 into
 NWF\C06, NWD\C06 and Clash Report\C06, the same for C07, and the clash XML at the top. It is
@@ -37,8 +47,8 @@ desktop.
 
 ## Next action
 
-1. PR 78, F103, merged when Actions is green. PR 76, F102, merged on 2026-10-01 as 4fa1040.
-   The third real start is done and its evidence is on fix-F103, 19a3da7
+1. PR 82, these records, merged when Actions is green. PR 76, F102, merged on 2026-10-01 as
+   4fa1040, and PR 78, F103, as 398b910, with the third real start's evidence, 19a3da7
 2. F105, Q89 A, and F107, Q88, with their developers in wt-f105 and wt-f107, each then read
    by a reviewer and a breaker, then merged
 3. The install of main through run.ps1 -Mode Install from wt-main at main's new commit,
@@ -956,9 +966,14 @@ Runs:
 
 Merged: PR 76, F102, as 4fa1040, Bader's answer Q91 B. Its Actions run 36827848274 read the
 Core tests 1720 passed, 0 failed, 26 skipped of 1746, and its evidence check 457 files with
-none carrying an id. Its worktree under .claude\worktrees could not be removed whole, git
-answering Permission denied on its folder under .git\worktrees, so its files are left on
-disk and git no longer lists it.
+none carrying an id. PR 78, F103, as 398b910, Bader's answer Q92 B, after main was merged
+into fix-F103 with two conflicts in steps\01_next.md and steps\log.md resolved by keeping
+both sides. Its Actions run 36830150530 read the Core tests 1720 passed, 0 failed, 26
+skipped of 1746, and its evidence check 473 files with none carrying an id. Both fix
+branches are deleted on GitHub and here. Neither worktree under .claude\worktrees could be
+removed whole, Windows answering Permission denied on their folders, so their files are left
+on disk and git no longer lists them. For the F103 one the lead's own shell had its working
+folder inside it, for the F102 one why is UNKNOWN.
 
 Programs started so far: git and gh. Windows PowerShell for Get-Process Roamer, the reads of
 the records, the merges' conflict resolution and one harmless Start-Process of a powershell
@@ -970,12 +985,13 @@ check-evidence-ids.sh three times, from the F102 worktree and then from the F103
 pre-commit's dotnet test at every commit. Agents: through two workflows, a developer for
 F105 in wt-f105 and one for F107 in wt-f107, and a developer for F106 in wt-f106 and one for
 F108 in wt-f108, each then read by a reviewer and a breaker. The claim-checker on these
-records.
+records. The keep-awake, powershell.exe pid 21164 from 10:48:37, named at the head of this
+file.
 
 Written outside the repo so far, all under %LOCALAPPDATA%\NwcFederatorLoop: turn4, holding
 the commit messages and pull request bodies, item0-set02-masked with the three masked
 copies, the briefs f106-brief.md and f108-brief.md, xml-reads.txt, detach-test-pid.txt, and
-the waiters wait-run.ps1 and wait-no-roamer.ps1, which read only, and what the developers
-write there. runs\02\item0, the run folder of the third start. wt-f106, wt-f107 and wt-f108,
+the waiters wait-run.ps1 and wait-no-roamer.ps1, which read only, keep-awake.ps1 and its
+lines in keep-awake.txt, and what the developers write there. runs\02\item0, the run folder of the third start. wt-f106, wt-f107 and wt-f108,
 worktrees of their fix branches. In the session's scratchpad, the drafts of this file's head,
 of the F102 and F103 log entries and of the rule changes.

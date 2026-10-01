@@ -488,3 +488,7 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 94. From Bader, 2026-10-01, his message headed 30 Sep 2026. Code runs the whole of NM Fed itself, and the form is answered. It replaces the window message of 30 Sep and anything earlier that said Bader runs the tool by hand. The goal is real full runs of main on every NWC in NM Fed, driven by the loop, then the fixes those runs show
 
     Answer: Bader, 2026-10-01, as written above, with the order of the runs and their folder shape in the turn 4 plan at the top of steps\log.md.
+
+95. From Bader, 2026-10-01, not a question put to him but an instruction. Keep the PC awake for the whole loop, not only during runs. One background PowerShell that calls SetThreadExecutionState with ES_CONTINUOUS and ES_SYSTEM_REQUIRED, stopped when steps\loop.md reaches CLOSED or WAITING for Bader. None of his power settings changed. The process and when it started and stopped named in steps\loop.md
+
+    Answer: Bader, 2026-10-01, as written above. Carried out at 10:48:37 by powershell.exe pid 21164 running %LOCALAPPDATA%\NwcFederatorLoop\turn4\keep-awake.ps1, recorded at the head of steps\loop.md.
