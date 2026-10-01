@@ -1,6 +1,41 @@
 # log
 
 Newest entry at the top.
+## 2026-10-01 The loop, turn 4, F102 every result file read for a machine name or a licensing id, DONE
+
+Bader answered B on 2026-10-01, Q91: F102 merges as it is, both gaps written as known limits.
+Nothing under src or tests changed. Core tests before, at 821ed6e with no src change since,
+by the pre-commit of the turn 4 records commit 7dbb869: 1746 passed, 0 failed, 0 skipped.
+After, by the pre-commit at this entry's commit, in the pull request body. The proof of the
+change itself is in its 01_next section and in
+%LOCALAPPDATA%\NwcFederatorLoop\turn3\f102\proof.txt. Nothing waits for the local machine.
+
+### What was done
+
+- main merged into fix-F102 as 8554e45 with no conflict, Bader's answer and the two known
+  limits written under F102's DONE line in steps\01_next.md, and this entry
+- used by the loop before the merge, from its branch at 7d8d135, on the third real start's
+  evidence of 2026-10-01: the mask found nothing to mask in record.txt, watch.txt and
+  settings.txt, each copy equal to its original by sha256, and the check read 12 files under
+  steps\runs of fix-F103 and found none carrying an id or the machine name
+
+### What remains
+
+- the zip rule's words: .claude\rules\loop.md and tools\loop\README.md still say the check
+  refuses a zip until Bader decides where one may sit. He decided A on 2026-10-01, Q90, and
+  the words change in the next records pull request
+
+### Known bugs
+
+- F102-L1: a workbook under samples with text appended inside its last 65557 bytes passes the
+  check unread. A limit, because the samples are never edited
+- F102-L2: a committed hook holding the check's line where it never runs still gets the
+  handover. A limit, because a hook of this repo is read before it merges
+
+### What comes next
+
+- F103 merges, then F105 and F107, then the install of main
+
 ## 2026-09-30 The loop, turn 3, F103 into the form after three fix attempts, Q92
 
 Records only. Nothing under src, tests or tools changed here. Core tests before, on main at
