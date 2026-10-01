@@ -62,9 +62,11 @@ One probe starts a Navisworks of its own. It refuses to start one while any Navi
 runs, whatever its command line and whoever started it, so the code keeps that rule, not
 a person. It refuses to run when either deadline is below 60 seconds, or when
 it is not the script its own powershell.exe was started to run with -File. It quits its
-Navisworks through the API's Dispose. It closes it by its process id only when it is the
-adopted one and Dispose left it running, a step failed, or the adopted deadline passed. It
-never closes anything before adoption, and sends no message to any window before it:
+Navisworks through the API's Dispose. It closes it through the handle its adoption holds
+only when it is the adopted one and Dispose left it running, a step failed, or the adopted
+deadline passed. It never closes anything before adoption, and sends no message to any
+window before it. Since F103 its guards are in tools\loop\nw-guard.ps1, one copy it
+dot-sources with tools\loop\run.ps1:
 
 - `probe-automation-start.ps1` answers F100: whether Autodesk.Navisworks.Api.Automation
   starts Navisworks with no click, which process id it started, whether that Navisworks
@@ -88,8 +90,10 @@ never closes anything before adoption, and sends no message to any window before
   starts and exits inside one gap between watchdog passes is not seen, and the result
   prints the longest gap. It never empties its work folder, it renames the last one
 - `automation-start-result-20260929.txt` is the output of run 4 on 2026-09-29, the one full
-  run of the probe as it stands, made with no other Navisworks running. All six steps
-  passed and Bader's settings were put back
+  run of the probe as it merged with F100 at 0eb4ede, made with no other Navisworks
+  running. All six steps passed and Bader's settings were put back. F103 moved its guards
+  into tools\loop\nw-guard.ps1 and made its close go through the held handle, proved with no
+  Navisworks by tools\loop\prove-run.ps1 and F100's own harness, and not yet by a run
 - `automation-start-result-20260928.txt` is the output of run 3, made by the version of the
   probe BEFORE fix list 2. That version put back Bader's settings while his Navisworks, pid
   34668, was running, which the rules above now rule out. It is kept for the lines

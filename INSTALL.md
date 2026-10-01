@@ -3,7 +3,7 @@
 What to paste into the VS Code terminal to build and install the add-in. Nothing else
 is here.
 
-Before you start: close Navisworks Manage 2025, and pull main in GitHub Desktop.
+Before you start: close Navisworks Manage 2025, and pull main in GitHub Desktop. The install refuses while Navisworks runs, and says so in one line.
 
 1. Open VS Code on `C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2`
 2. Open a terminal

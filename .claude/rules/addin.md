@@ -61,8 +61,9 @@ until a build says otherwise. Where a session CAN compile it, the build is run a
 costs nothing anyway.
 
 The pre-commit hook runs both before the tests and Actions runs each of them twice, once
-over src and once over tools/checks/broken, which is wrong on purpose in two ways so each
-check is proved to refuse as well as to pass.
+over src and once over tools/checks/broken, which is wrong on purpose in three ways, one for
+each of these two and one for check-evidence-ids.sh, so each check is proved to refuse as
+well as to pass.
 
 ## The live line, F62
 

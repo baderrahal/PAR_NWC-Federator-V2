@@ -1,0 +1,14 @@
+09:06:19.133  t+0.9s  watchdog started
+09:06:28.953  t+10.7s  Roamer pid 37988 seen with no readable start time, looked at again at the next pass
+09:06:34.637  t+16.4s  new process Roamer pid 37988, parent 1324 svchost.exe, started 09:06:28.926, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+09:06:34.691  t+16.5s  Roamer 37988 visible top level windows: none
+09:07:22.368  t+64.1s  new process AdskLicensingAgent pid 34260, parent 37988 Roamer.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+09:07:31.794  t+73.6s  new process AdskLicensingAgent pid 22676, parent 37988 Roamer.exe, started 09:07:17.549, command line holds the word embedding or automation: no
+09:07:49.979  t+91.8s  Roamer 37988 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+09:07:54.808  t+96.6s  Roamer 37988 visible top level windows: none
+09:08:05.498  t+107.3s  Roamer 37988 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+09:08:06.565  t+108.3s  Roamer 37988 visible top level windows: none
+09:08:07.688  t+109.5s  Roamer 37988 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+09:14:11.001  t+472.8s  Roamer 37988 visible top level windows: none
+09:14:17.443  t+479.2s  Roamer 37988 has exited
+09:18:20.130  t+721.9s  watchdog stopped
