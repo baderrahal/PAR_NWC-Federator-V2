@@ -49,19 +49,18 @@ desktop.
 
 ## Next action
 
-1. PR 82, these records, merged when Actions is green. PR 76, F102, merged on 2026-10-01 as
-   4fa1040, and PR 78, F103, as 398b910, with the third real start's evidence, 19a3da7.
-   THE INSTALL OF MAIN IS REFUSED, three times, see F109 in the register and the turn 4
-   section. F109, the in-place install, with its developer in wt-f109
-2. F105, Q89 A, and F107, Q88, with their developers in wt-f105 and wt-f107, each then read
-   by a reviewer and a breaker, then merged
-3. The install of main through run.ps1 -Mode Install from wt-main at main's new commit,
-   with no Roamer running, the installed stamp read back equal to that commit, then
-   turn4\install-done.txt written for the F106 developer's harness
-4. F106, the window run, and F108, the run set copy, built by their developers in wt-f106
+1. THE INSTALL OF MAIN IS REFUSED, three times, see F109 in the register and the turn 4
+   section. F109, the in-place install, with its developer in wt-f109, then its reading,
+   then the install of main through run.ps1 -Mode Install from wt-main at main's commit,
+   with no Roamer running, the installed stamp read back equal to that commit
+2. F105, Q89 A, and F107, Q88: their readings asked for words only, and both are in a fix
+   round with their developers, each then re-read, then merged
+3. F106, the window run, and F108, the run set copy, built by their developers in wt-f106
    and wt-f108, each read by a reviewer and a breaker under Q93, merged
-5. The rule changes of Bader's answers in .claude\rules\loop.md, after F103 merges
-6. Set 03 in the order of the plan, a record merged after every run
+4. Set 03 in the order of the plan, a record merged after every run
+Done in turn 4 so far: PR 76, F102, as 4fa1040, PR 78, F103, as 398b910 with the third real
+start's evidence, PR 82, the records, as e4484d1, and the rule changes of Bader's answers in
+.claude\rules\loop.md, in the records pull request after it
 
 ## The phases
 
@@ -318,7 +317,7 @@ baseline run proves it or contradicts it.
 | T3-G15 | the same reading, classed polish by both breakers, BundleLeftovers is attempt 3's own code | Install's leftovers: a failed removal of the old bundle after every check prints one LEFT line and exits 0, which INSTALL.md reads as success in a direct install, BundleLeftovers names old .replaced- and .failed- folders as the add-in installed before, so one stale folder makes every later Install exit 5, a wrong stamp returns before a leftover is named, a removal that stops part way leaves part of the old bundle, and the checks that gate the removal read the staging copy, run.ps1 784 to 789 and 947 to 948, install.ps1 178 to 262 at a63c284 | each named or refused with a harness case, and INSTALL.md's success line reading the LEFT line | open, for after F103 | none yet | none yet |
 | T3-G16 | the same reading, classed polish and old by a breaker, CloseAtEnd's text is attempt 3's own code | A close that fails twice: CloseAtEnd writes CLOSED here when its own Kill also failed, run.ps1 493 at a63c284, and CloseOwn refuses any folder whose record holds a VERDICT line, run.ps1 687, so only a person can end that Navisworks. The verdict's side of it is T3-G12 | the text saying which close failed, and a closer for a process still running, with a harness case whose Kill fails | open, for after F103 | none yet | none yet |
 | T3-P2 | the same reading, classed polish or old by two breakers, the probe's close left unclassed, OwnerText is attempt 3's own code | Polish: CloseOwn reads autosave-before.txt with no count or name check, dotnet build-server shutdown stops every build server of the account, an owner window destroyed mid read is written as another process's, item 8's harness case sets Forced by hand, and the probe closes outside the lock, each with its lines in steps\notes\f103-final-reading.md | each fixed or named where the code next moves | open, for after F103 | none yet | none yet |
-| Q82 to Q87 | turn 3, the F103 design | The log folder, the hang rule's zero, a ceiling, the screen, AutoSave, the remembered folders | Bader's answers under each in steps\02_questions.md | answered by Bader on 2026-10-01, carried out by F106 and the rules it writes | none yet | none yet |
+| Q82 to Q87 | turn 3, the F103 design | The log folder, the hang rule's zero, a ceiling, the screen, AutoSave, the remembered folders | Bader's answers under each in steps\02_questions.md | answered by Bader on 2026-10-01, written into .claude\rules\loop.md in turn 4, kept in code by F106, and his logs put back at the close | none yet | none yet |
 | Q88 | turn 3, F102's developer | Main names the machine of 2026-09-19 in 9 places across 4 files, and PR 74's refs on GitHub keep the licensing ids of its first commits | Bader's answer in steps\02_questions.md | answered by Bader on 2026-10-01: the older name masked on main by F107, the licensing ids register row Q88-IDS | none yet | none yet |
 | F106 | turn 4, Bader's message of 30 Sep, Q94 | No run of main goes through the tool's window, and tools\probes\drive-window-run.ps1 finds windows among every window on the desktop and picks a tolerance with a real mouse click | the smallest change to run.ps1 for items 1 to 5 around the driver, read by the reviewer and one breaker under Q93, then the first run of set 03 | open, turn 4 | none yet | none yet |
 | F107 | turn 4, Q88 | Main names the machine of 2026-09-19 on 9 lines in 4 files | git grep for the name over the whole tree finds nothing | open, turn 4 | none yet | no run applies |
