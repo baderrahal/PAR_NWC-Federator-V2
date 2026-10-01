@@ -1,6 +1,106 @@
 # log
 
 Newest entry at the top.
+## 2026-10-01 The loop, turn 4, the plan, written before the first edit
+
+Bader's message headed 30 Sep 2026, read on 2026-10-01: code runs the whole of NM Fed itself,
+and the form is answered. It replaces the window message of 30 Sep and anything earlier that
+said Bader runs the tool by hand. The goal is real full runs of main on every NWC in NM Fed,
+driven by the loop, then the fixes those runs show. His answers are Q82 to Q92 in
+steps\02_questions.md, his rule for the loop's own tools is Q93 and the goal is Q94. This
+entry is the plan, written before the first edit and not changed after it. What each step
+then did goes into the entries above it and into steps\loop.md, turn 4.
+
+### Measured before the plan
+
+- Get-Process Roamer read 0 at 08:48:06 and again at 09:05:54
+- the waiter, turn3\wait-window.ps1, wrote THE WINDOW IS OPEN at 18:00:14 on 2026-09-30 as
+  its last line, and no start was made in that window. No folder runs\02 existed under the
+  loop folder or in the F103 worktree at 09:05:54, and why no start was made is UNKNOWN
+- the clash XML in the copy, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, sha256 36AB2739,
+  holds 1830 clash tests, every one with tolerance 0.0820209974 in feet, which is 25 mm. The
+  committed exchange copy of the corrected matrix is another file, sha256 792B01FB
+- the tool's tolerance box defaults to Use the value in the XML, ToleranceChoice.cs, and
+  the Execute of FederatorPlugin.cs opens the window with ShowDialog
+- tools\probes\drive-window-run.ps1 finds the tool's window and its confirm dialog among
+  every window on the desktop, not by process, and picks a tolerance with a real mouse click
+- the paths wall refuses any command naming NM Fed, with one to six characters between the
+  two words, and leaves NMFed alone on purpose
+
+### Four choices the lead made, and why
+
+1. THE COPY OF EACH RUN SET IS NAMED NMFed, not NM Fed, because the paths wall refuses
+   every command naming NM Fed, and a path built at run time to get past it is what the
+   wall's rule forbids. Below that name the copy keeps Bader's own folder shape: NWC\C06
+   into NWF\C06, NWD\C06 and Clash Report\C06, the same for C07, and the XML at the top
+2. 25 MM COMES FROM THE XML. The tolerance box is left on Use the value in the XML, which
+   puts 25 mm on all 1830 tests, because choosing 25 mm in the box takes a real mouse click,
+   which would move his pointer while he works. The workbook read-out names the tolerance
+   of every test, so each run proves it
+3. HIS LOGS ARE PUT BACK FROM THE BACKUPS. After the loop his logs folder is made to hold
+   exactly what logs-backup and its since folders hold, the loop's own logs and tsv files
+   are taken out, and the folder is read back by name, size and sha256. A log of his that
+   no backup holds, written while the loop ran, is left as it is and named
+4. THIS IS TURN 4. Window runs go from a clean checkout of main at
+   %LOCALAPPDATA%\NwcFederatorLoop\wt-run, so their evidence never dirties wt-main, which
+   installs
+
+### The order
+
+1. The records: this entry, the answers, STATE OPEN and turn 4 in steps\loop.md, and the
+   register rows the answers make. Read by the claim-checker, merged when Actions is green
+2. Get-Process Roamer read 0, then the third real start on a63c284 from the F103 worktree,
+   Set 02, item 0 with no window. Its record read, its evidence masked with F102's tools and
+   checked, and committed to fix-F103 as 912dedc was. In parallel, by the developer in their
+   own worktrees: F105's three sentences narrowed, Q89 A, and F107, the machine of
+   2026-09-19 masked on main, Q88, each read by a reviewer and a breaker
+3. The merges, each when Actions is green and its branch deleted after: PR 76, F102, as it
+   is with both gaps written as known limits. PR 78, F103, as it is with main merged in.
+   F105. F107
+4. The install of main: Roamer read 0, wt-main moved to main's new commit with git status
+   printing nothing, run.ps1 -Mode Install -Stamp of that commit, and the installed stamp
+   read back equal to it
+5. F106, THE WINDOW RUN, by the developer: the smallest change to run.ps1 that runs items 1
+   to 5 through the real window around tools\probes\drive-window-run.ps1, keeping run.ps1's
+   refusals, backups, start, adoption, watchdog, close and put back. The driver acts only on
+   windows of the adopted process, clicks nothing, reads every box back and presses Run only
+   when each reads a path under the loop folder. The hang rule of Q83, the ceiling of Q84,
+   the screen of Q85, the AutoSave of Q86, the masked folder block of Q87, the run set copy
+   in Bader's folder shape, and a mode that puts his logs folder back after the loop, Q82.
+   The rule changes the answers make go into .claude\rules\loop.md in the same pull
+   request. One reading by the reviewer and one breaker under Q93, then the merge
+6. SET 03, every run through the real window, each followed by its evidence masked and
+   committed, the log-reader's findings each quoting its line, every register row reading
+   done in code, not proved by a run that the run reaches marked proved or contradicted,
+   steps\loop.md brought up to date and a record merged:
+   1. a fresh copy, runs\03\NMFed, made from the source copy after prepare-copy.ps1 has
+      checked it against NM Fed, every file read back by sha256
+   2. the first run of C06: the XML from the copy, every group ticked
+   3. the first run of C07, the same
+   4. the outputs of the first runs copied aside and read back by sha256
+   5. F104 part 2, check-documents.ps1, built while the runs go, read, merged, and run over
+      the first runs' NWFs before the weekly runs. Three tests with their workbook counts
+      written into steps\03_bader_next.md, for Bader to check against the Clash Detective
+      panel
+   6. the weekly runs of C06 and of C07, with no XML
+   7. a file gone, then the file back, then the open NWF and the open NWD, on one group with
+      two or more disciplines
+7. The fixes the runs show, most harmful first and a silent wrong number above a loud
+   failure. One finding, one fix-F number, one pull request, the failing test first, read by
+   a reviewer and a breaker, installed, and proved by the next run of that group in a new
+   run set with a fresh copy
+8. The close: his logs folder put back and read back, the loop's autosaves removed under
+   Q86, and STATE set by what is left
+
+### Held throughout
+
+- A Navisworks the loop did not start: no start, no install and no put back. A waiter
+  reads Get-Process Roamer every 10 minutes and the loop carries on by itself once none runs
+- A locked screen that stops the window or the pictures is a finding, and the next start
+  waits until the session reads unlocked. The lock is never worked around
+- Nothing is written into NM Fed on the desktop, and every output goes under
+  %LOCALAPPDATA%\NwcFederatorLoop
+
 ## 2026-09-30 The loop, turn 3, F103 into the form after three fix attempts, Q92
 
 Records only. Nothing under src, tests or tools changed here. Core tests before, on main at
