@@ -2743,7 +2743,7 @@ nothing is written into a live project folder, every program started and every f
 written outside the repo is listed in the round report, everything opened is closed and
 the check that it was closed is run, and nothing of Bader's is deleted or overwritten.
 
-THE BUILD GATE PASSED. On DESKTOP-5VL7LTJ the whole solution built in Release with 0
+THE BUILD GATE PASSED. On the machine of 2026-09-19 the whole solution built in Release with 0
 errors and 0 warnings before anything was written, with the add-in inside it. The Core
 suite on main reads 54 failed, 1568 passed, 1622 total. Every one of the 54 is a fixture
 that resolves a sample by name and finds it gone, which is PART 0.
@@ -3053,7 +3053,7 @@ This round wires the eight, following the instructions already written in
 steps\03_bader_next.md steps 353 to 380, and invents no design.
 
 THIS ROUND IS ON THE MACHINE WITH NAVISWORKS. The brief said to stop if the build failed
-on the Navisworks reference. It did not. On DESKTOP-5VL7LTJ, Windows 11, dotnet 10.0.400,
+on the Navisworks reference. It did not. On the machine of 2026-09-19, Windows 11, dotnet 10.0.400,
 the full solution build in Release finished with 0 errors and 0 warnings before anything
 was written, with the add-in project inside it. Every wiring below is compiled here after
 it lands.

@@ -18,7 +18,7 @@ param(
 # way, read back off the log. Doing that by hand is fine once and wrong every week, and
 # this is how the wiring round did it from a session that could not press a button.
 #
-# WHAT IT NEEDS, measured on 2026-09-19 on DESKTOP-5VL7LTJ:
+# WHAT IT NEEDS, measured on 2026-09-19 on the machine of 2026-09-19:
 #
 #   Navisworks Manage 2025 open the ordinary way, Roamer.exe, with the add-in window
 #   ALREADY OPEN. Starting Navisworks through Autodesk.Navisworks.Api.Automation and
