@@ -19,3 +19,14 @@ work folder, before any mask.
 
 Line numbers in the F100 notes are of the probe at the commit each note names, not of the
 probe as it stands.
+
+Written here and not copied:
+
+- turn1-read-verified.md, the 86 silent, broken and loud faults of steps\loop-read.md
+  section 1, each read again on main at 0eb4ede on 2026-09-29 by two readers and settled by
+  a third where they split, with its verdict, harm, cause and proof. Made by the lead from
+  the readers' returned verdicts with nothing added, line numbers of 0eb4ede
+- f103-final-reading.md, the reading of F103's last fix attempt, a63c284, by a reviewer and
+  two breakers, which sent F103 to the form as Q92. Made by the lead from their returned
+  answers and from the lead's own reads of the files at fcd981b, 867697a and a63c284, of the
+  harness outputs and of Actions, line numbers of a63c284 unless a commit is named
