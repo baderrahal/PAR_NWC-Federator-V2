@@ -58,16 +58,18 @@ turn4\reads-pr85.txt at 12:45:56.
   log, run-20260901-191711.log, which logs-backup holds. All 22 workbooks read out. The
   evidence masked by F102's tool, 30 files, none changed, into steps\runs\03\item1-C06
 - THE FIRST FINDINGS, steps\runs\03\findings.md, read by four readers: the five FAILED groups
-  each have a model on Revit's internal origin, three DONE groups each have a model hundreds of
-  kilometres away and still read DONE, duct, pipe and equipment sets find nothing because the
-  XML asks upper case worksets the models spell in mixed case, the WORKBOOK CHECK and the
-  RESULT file sizes print wrong numbers, and VIEWS makes the run 2.3 times too slow. For Bader
+  each have a model on Revit's internal origin, four DONE groups each have a model about 2,000
+  to 2,800 km away and still read DONE, duct, pipe and equipment sets find nothing because the
+  copy's XML, which is not the corrected matrix in exchange, asks upper case worksets the models
+  spell in mixed case, the WORKBOOK CHECK and the RESULT file sizes print wrong numbers, and the
+  run is 2.3 times the 45 minutes, VIEWS alone 1.7 times. Bader's message of 15:30, Q97. For Bader
   three tests with their workbook counts to check against the Clash Detective panel
 - ONEDRIVE, at Bader's word in the Claude tab: Roamer.exe, the loop's stand-in left in the
   F103 worktree folder under .claude\worktrees, and testhost.exe, a build output of his
-  RCRC-Green repo, were blocked by OneDrive. Both F102 and F103 worktree folders were removed,
-  and that one testhost.exe deleted. No .exe is left under his GitHub folders. RCRC-Green's
-  returns whenever its tests build inside OneDrive
+  RCRC-Green repo, were blocked by OneDrive. The F102 and F103 worktree folders were removed at
+  about 16:46 and that one testhost.exe deleted. OneDrive put both folders back at 16:47 from
+  its cloud copy, without the .exe, which it never held. No .exe is left under his GitHub
+  folders. RCRC-Green's returns whenever its tests build inside OneDrive
 - NEXT: the first run of C07 the same way, then the rest of set 03 tonight. Fixes may start
   while C07 runs, and nothing is installed until C07 ends
 
