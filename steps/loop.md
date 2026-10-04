@@ -85,6 +85,36 @@ the rerun's evidence folder starts empty. Nothing of Bader's was harmed: his set
 AutoSave put back clean, and his logs folder as Q82 has it, one of his oldest logs pruned by the
 tool and held in logs-backup and two loop logs added, both put back at the close of the loop,
 record.txt lines 102 to 116. F125 fixes the driver before the baseline runs again.
+THE BASELINE, ITEM 1 ON C02, RAN. Started at 18:55:13 by turn4\start-run.ps1 as run.ps1 pid 24436
+from wt-base, a worktree at F125's first pass, 5fa98a8, whose harm reading under Q93 found
+nothing blocking, Get-Process Roamer reading 0 just before, turn4\run04-item1-C02-b-pid.txt and
+turn4\roamer-reads.txt. So it ran with the three weak points of F125's record its readers named,
+whose second pass was then in progress. The tools came from that commit, and the add-in was the
+installed e4484d15. Its Navisworks was pid 49016, started at 18:55:27. The floating Clash
+Detective pane read enabled at 18:56:52, record.txt line 37, in the same monitor pass that
+noted the tool's window open, line 40, and disabled with its owner disabled at 18:56:54, once
+the tool's window was up, driver.txt line 3, so the tool's window most likely disables it. The
+driver left it alone, pressed Run and answered the confirm, driver.txt lines 20 to 23. VERDICT:
+RAN, item 1 through the window, the log's RESULT block read, closed by Dispose, put back,
+record.txt line 964, the record there at 21:15:40 and not at 21:14:40,
+turn5\wait-run04-item1-C02-b.txt. The group 1A02MM ended FAILED, its ST model on Revit's
+internal origin, Q70, the case Bader's answer to Q100 turns into a skipped clash and PARTIAL
+once F112 is built and merged. 2939 clashes from 59 tests that found something, 528 created. The
+run took 2 hours 12 minutes 6 seconds, over the 45 minutes by 1 hour 27 minutes 6 seconds, run
+log lines 575 and 605, VIEWS 7487 s of it, 94.5%, line 587. Four files written, each size read
+back. Put back and read back: 40 registry values, 2 settings files and his AutoSave folder, one
+old autosave of his that the run's Navisworks removed put back from autosave-backup and three it
+added removed, record.txt lines 892 to 950. M5, what changed outside the loop folder by any
+program while it ran, 24 keys and 232 files, listed and left as they are, lines 878 to 884. His
+logs folder holds one oldest log the tool pruned, kept in logs-backup, and two loop logs added,
+Q82, put back at the close of the loop, lines 951 to 955. The evidence is masked into
+steps\runs\04\item1-C02 with no copy differing, turn5\mask-run04-item1-C02.txt. Other work ran
+on this machine during it, the lead's pre-commit test runs at 20:15, 20:43 and 21:02,
+turn5\precommit-records-6b.txt, 7.txt and 7b.txt, and the F112 developer's builds and tests at
+times no file holds, turn5\f112b-roamer-reads.txt, while F125's harness waited for Roamer to read
+0 from 18:56 to 21:10, turn5\f125b-roamer-reads.txt. What that did to the times is UNKNOWN. Item 1
+on C04 started at 21:16:46 the same way, run.ps1 pid 45316, Roamer reading 0 at 21:16:45,
+turn4\run04-item1-C04-pid.txt and turn4\roamer-reads.txt.
 MERGED, 2026-10-04: PR 95, F113, the clash counts of wave 1, FR-031 to FR-034, as 7b6df88 at
 18:02:32, and PR 96, F104, the check of a workbook against its document, the wave test's
 instrument outside the product waves, as c4fd0d4 at 18:14:56, after main merged into it at
