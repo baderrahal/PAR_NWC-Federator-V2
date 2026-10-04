@@ -2,7 +2,7 @@
 
 Newest entry at the top.
 
-## 2026-10-05 The loop, turn 5, F116 the clash XML, DONE in Core and built, wave 1, with Bader's answer to Q113 and the readings of that pass
+## 2026-10-05 The loop, turn 5, F116 the clash XML, DONE in Core and built, wave 1, with Bader's answer to Q113, the readings of that pass and F112 taken in
 
 Core tests, all with 0 failed and 0 skipped:
 - 1746 passed before attempt 1, turn5\f116-core-before.txt, and 1776 after it with main c4fd0d4
@@ -13,14 +13,18 @@ Core tests, all with 0 failed and 0 skipped:
   5de2b21, turn5\f116c-core-after.txt
 - 1796 passed before the pass on its readings at 5de2b21, turn5\f116d-core-before.txt, and 1802
   after it at 0bf09b3, turn5\f116d-core-after.txt
+- 1912 passed once main ddb059b, F112 among it, was taken in with the FR-028 change, read on the
+  tree of 8a32795 before its commit, turn5\f116d-fr028-after.txt, and at its pre-commit,
+  turn5\f116d-precommit-merge.txt. Main's own count at ddb059b was not read here, UNKNOWN
 
 Each of those files but f116-core-after.txt, which kept its last line alone, also lists the one
 [Explicit] generator test, WriteTheCorrectedFile, as skipped, and the adapter does not count it.
 The solution builds with 0 warnings and 0 errors on 0bf09b3, built whole with --no-incremental,
 Federator.Core, Federator.Core.Tests and Federator.Addin each built, turn5\f116d-build-code.txt,
 the output kept with git rev-parse --short HEAD and a clean git status at its top. It built the
-same way on 5de2b21, turn5\f116c-build-after.txt. The records commit after 0bf09b3 changes no
-code, and its build is kept in turn5\f116d-build-after.txt, read after this entry was written.
+same way on 5de2b21, turn5\f116c-build-after.txt. The records commits 41c52a1, and the one after
+8a32795 that brings this entry to the merge, change no code. The build of the last commit is
+kept in turn5\f116d-build-after.txt, read after this entry was written.
 Every file named is under %LOCALAPPDATA%\NwcFederatorLoop\turn5 unless it is a path of the repo.
 
 Programs and Navisworks:
@@ -135,8 +139,8 @@ Programs and Navisworks:
   2's readings, turn5\f116b-read-review.txt and f116b-read-break.txt, both APPROVE with nothing
   blocking
 - Main 6cc0283 was taken in at aa7ec30 and main bd05bc5 at 5de2b21, both sides kept each time.
-  The F116 entry stays on top of steps\log.md, and in steps\01_next.md F116's order line, now 40,
-  and its section come after F125's
+  The F116 entry stays on top of steps\log.md, and in steps\01_next.md F116's order line, 40
+  then, and its section come after F125's
 - 7e40a8a, items 2 to 5 of the brief and the first half of item 1.
   src\Federator.Core\Exchange\matrix-corrections.txt and its embedding in Federator.Core.csproj
   are gone, with MatrixCorrectionList.Shipped. The list is a plain file beside the picked XML,
@@ -257,10 +261,35 @@ Programs and Navisworks:
   handed the spellings the plan carries, calls every workset value the corrected file asks one
   models in this project carry, where the names inside Core alone call ME-DUCTWORK, ME-EQUIPMENT,
   ME-PIPING, FF-Fire Fighting, FP-PIPING and PL-Domestic Water carried by no model
-- F112 is not on main at b2afb2d, so its FR-028 case lines are not touched. Main's changes since
-  bd05bc5 are 4 files under steps\, and a trial merge of origin/main into 0bf09b3 conflicts in
-  steps\log.md alone, turn5\f116d-main-trial-merge.txt
-- the records commit after 0bf09b3: this entry and the F116 section of steps\01_next.md, records
+- F112 was not on main at b2afb2d. Main's changes from bd05bc5 to b2afb2d are 4 files under
+  steps\, and a trial merge of b2afb2d into 0bf09b3 conflicts in steps\log.md alone,
+  turn5\f116d-main-trial-merge.txt
+- 41c52a1, records only: this entry and the F116 section of steps\01_next.md as written before
+  F112 merged
+- F112 merged on main as ddb059b, pull request 106, while this pass ran, and main ddb059b was
+  taken in at 8a32795, both sides kept. steps\log.md and steps\01_next.md conflicted: this entry
+  stays on top with main's entries after it in main's order, and F112 takes order line 40 and
+  F116 41, F112's section after F125's and F116's last
+- 8a32795, F112's FR-028 case lines. On the merged tree F112's own test
+  AGroupWhereNoAskedNameDiffersByCaseGetsNoWarning failed, because the corrected matrix asks
+  ME-DUCTWORK or ME-Ductwork in every set asking one and the case lines named those sets as
+  missing ME-Ductwork. ExportCheck.AddCaseDifferences now names a pair only with the sets that
+  ask the other spelling and do not also ask the carried one, not negated, as a whole name or
+  for contains a part of it, WorksetAsk.Finds and AlsoFinds, and a pair no set is left for is
+  not named. A set asking the carried spelling only negated is still named. The change rides in
+  the merge commit because the pre-commit refuses a commit that fails a test
+- the tests of it: F112's test, its comment made true, the new
+  ASetThatAlsoAsksTheCarriedSpellingIsNotNamedAsMissingIt, and F112's 1B06BC test, which read the
+  corrected matrix as main had it, asking the title case alone. That one is now
+  TheCapitalsOf1B06BCAgainstAFileAskingTitleCaseAreNamed, its three assertions kept against sets
+  asking the title case alone, and it also asserts the corrected matrix since F116 names nothing
+  for that group. The three fail on the merged tree before the change, 3 failed of 3, the git
+  status and the test diff kept, turn5\f116d-fr028-before-fail.txt, and pass after, 1912 in all,
+  turn5\f116d-fr028-after.txt
+- 8a32795, the rule in .claude\rules\core.md: a bullet on the case warning, and the bullet on what
+  the corrections code names no longer says ExportCheck.cs types the pair, a sentence F112's
+  FR-028 removed
+- the records commit after 8a32795: this entry and the F116 section brought to the merge, records
   only
 
 ### Choices the developers made, for the reader to check
@@ -308,7 +337,10 @@ Programs and Navisworks:
   turn5\f116c-condition-counts.txt. On an NWF from set 04 with the box off, those sets keep their
   old conditions and the SETS block names them DRIFTED. A set already in the NWF that finds
   nothing and asks a spelling of the list, such as ME-DUCTWORK, is counted in the EMPTY SETS block
-  among the values models in this project DO carry. The .tsv carries one model worksets row per
+  among the values models in this project DO carry. In the EXPORT CHECK block of 1A02MM a set
+  asking ME-DUCTWORK or ME-Ductwork is not named as missing either, as
+  AGroupWhereNoAskedNameDiffersByCaseGetsNoWarning shows on that group's worksets measured in 5q,
+  and for a workset 5q did not read it is UNKNOWN. The .tsv carries one model worksets row per
   model, UNKNOWN where a walk stopped. The weekly run picks no XML and writes no MATRIX line.
   Whether BLD-AR-Ramps finds fewer items in 1A04PK is UNKNOWN until the run
 - the open file run and both hand buttons read the list through the same ReadPicked and have no
@@ -319,9 +351,6 @@ Programs and Navisworks:
 
 ### Known bugs
 
-- F112's FR-028 names a pair for every ask that differs only in letter case, so once both merge a
-  set that now asks both spellings will be named as missing one. F112 merges first, then F116
-  takes main in and skips a set that also asks the carried spelling exactly
 - a value line says "measured so far in this project's models" of a spelling that comes from the
   39 names inside Core, the C02 census of project 1104. With another project's list naming
   ME-DUCTWORK the line would call ME-Ductwork that project's. Whether the 39 stay in Core is
@@ -332,8 +361,6 @@ Programs and Navisworks:
   ExchangeReader.ReadFile, FR-172 and Q26
 - on an NWF built from the raw XML, the rename also renames the 120 test names, so new tests are
   created beside the old ones, the attempt 2 breaker's finding
-- one log line still claims more than was measured, in F112's FR-028 area: the EXPORT CHECK line
-  saying ME-Ductwork does not match ME-DUCTWORK, ExportCheck.cs line 274
 - the two MATRIX warnings are log lines only, and the RESULT block does not repeat them
 - where a walk did not finish, the model export row writes -1 as its number and the EXPORT CHECK
   block writes worksets NONE, both older than F116
@@ -369,8 +396,8 @@ Programs and Navisworks:
 
 ### What comes next
 
-- the reviewer, the breaker and the claim-checker on this pass. Then F112 merges, F116 takes main
-  in, fixes the FR-028 case and merges, and Bader is told the list is on main
+- the reviewer, the breaker and the claim-checker on this pass and on the merge with F112. Then
+  F116 merges, and Bader is told the list is on main
 
 The add-in half waits for the local machine, in the test of wave 1.
 
@@ -381,8 +408,10 @@ The add-in half waits for the local machine, in the test of wave 1.
   f116d-cannot-use-before-fail.txt, f116d-msg-1.txt, f116d-precommit-1.txt, f116d-same-sets.ps1,
   f116d-same-sets.txt and the folder f116d-same-sets of copies, f116d-addin-range.txt,
   f116d-9d8e3b2-lines.txt, f116d-main-trial-merge.txt, f116d-names-in-src.txt,
-  f116d-cfb057e-tests.txt, f116d-build-code.txt, f116d-checks-after.txt and f116d-core-after.txt,
-  and the files of the records commit and the push named in turn5\pr-f116.md
+  f116d-cfb057e-tests.txt, f116d-build-code.txt, f116d-checks-after.txt, f116d-core-after.txt,
+  f116d-msg-2.txt, f116d-precommit-2.txt, f116d-fr028-before-fail.txt, f116d-fr028-after.txt,
+  f116d-msg-merge.txt and f116d-precommit-merge.txt, and the files of the last records commit
+  and the push named in turn5\pr-f116.md
 - the session's scratchpad under %TEMP%\claude, the edit scripts and a copy of
   MatrixCorrectionList.cs kept while it was stubbed, and the folders the tests make under %TEMP%
   and remove
