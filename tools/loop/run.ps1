@@ -6,22 +6,29 @@ param(
   [string]$RunFolder = "",
   [string]$Folder = "",
   [string]$Xml = "",
-  [string]$OpenFile = ""
+  [string]$OpenFile = "",
+  [string]$For = "",
+  [string]$PictureStatuses = "",
+  [string]$PictureCap = "",
+  [switch]$PriorityPicked
 )
 $ErrorActionPreference = "Stop"
 
-# tools\loop\run.ps1, F103 part 1 and F106. Starts, watches and closes one Navisworks for the
-# loop with every guard kept in code. The design is steps\notes\f103-design.md and the rules it
-# keeps are in .claude\rules\loop.md. The guard code it shares with the probe and the driver is
-# tools\loop\nw-guard.ps1, one copy, dot-sourced here.
+# tools\loop\run.ps1, F103 part 1, F106 and F104 part 2. Starts, watches and closes one
+# Navisworks for the loop with every guard kept in code. The design is
+# steps\notes\f103-design.md and, for the documents read, section 3 of steps\notes\f104-design.md,
+# and the rules it keeps are in .claude\rules\loop.md. The guard code it shares with the probe
+# and the driver is tools\loop\nw-guard.ps1, one copy, dot-sourced here.
 #
 # Always started as
 #
 #   powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\run.ps1 -Mode <mode> ...
 #
-# FOUR MODES:
+# FIVE MODES:
 #   Check                      the default. Reads only, writes nothing, prints to the console.
-#                              Exit 0 when Run would go, 2 when it would refuse
+#                              Exit 0 when Run would go, 2 when it would refuse. With
+#                              -For Documents and the parameters of a documents read, the same
+#                              for Documents, and the pairs it would read are printed
 #   Install -Stamp <8 hex>     installs this clean checkout at that commit with
 #                              build\install.ps1, after its refusals and the bundle backup
 #   Run -Set NN -Item 0 -Stamp <8 hex>
@@ -44,11 +51,26 @@ $ErrorActionPreference = "Stop"
 #                              closes the loop's own Navisworks after a run.ps1 died, only
 #                              when its mypid.txt, name, path, command line and start ticks all
 #                              match
+#   Documents -Set NN -Item 1 to 5 -Folder <a folder of NMFed\NWC>, F104 part 2
+#                              reads the documents a window run wrote: the pairs of NWF and
+#                              workbook read-out off that run's .tsv in steps\runs\NN\item<K>-<Folder>,
+#                              then the same refusals, backups, start, adoption, watchdog and put
+#                              back as item 0, with AddPluginAssembly of the probe
+#                              tools\probes\DocumentReadProbe and one ExecuteAddInPlugin that
+#                              reads every NWF in place of the driver, then each NWF's sha256
+#                              again, every read-out, tools\loop\compare-document.ps1 per pair and
+#                              summary.txt. Item 5 also takes -OpenFile, which names its run.
+#                              -PictureStatuses, -PictureCap and -PriorityPicked are handed to
+#                              compare-document.ps1 as the run was told them. It writes only a
+#                              new folder runs\NN\item<K>-<Folder>-document-yyyyMMdd-HHmmss and
+#                              nothing into steps\runs, which the lead fills through F102's mask
 #
 # EXIT CODES: 0 finished and everything put back, for item 5 on an NWD also the tool's own
 # refusal, TOOL REFUSED, 1 a fault in run.ps1, UNKNOWN whether the adopted Navisworks still
-# runs, one still running after every close path, or a window run whose log does not show it
-# RAN, 2 refused, for Install also a refusal of build\install.ps1, 3 not adopted or the
+# runs, one still running after every close path, a window run whose log does not show it
+# RAN, or a documents read that did not do every step: a probe call that threw, a read-out not
+# whole, a comparison that did not finish, or a file of the copy's NWF, NWD or Clash Report
+# folders that does not read after the close as before the start, 2 refused, for Install also a refusal of build\install.ps1, 3 not adopted or the
 # constructor deadline, 4 hung, the ceiling, a call into the adopted Navisworks that did not
 # return in 120 s, or the tool's window still open 120 s after WM_CLOSE, 5 finished but a
 # dialog appeared, or for Install, installed but a Navisworks ran right after it or the add-in
@@ -76,6 +98,9 @@ $OpenLimitSeconds = 600
 $QuietSeconds = 15
 # The plugin's id, PluginName and DeveloperCode of src\Federator.Addin\FederatorPlugin.cs.
 $PluginId = "ParsonsNwcFederator.PARS"
+# The probe's id, PluginName and DeveloperCode of
+# tools\probes\DocumentReadProbe\DocumentReadProbePlugin.cs, F104 part 2.
+$ProbeId = "DocumentReadProbe.PARS"
 
 $nw = "C:\Program Files\Autodesk\Navisworks Manage 2025"
 $loopRoot = Join-Path $env:LOCALAPPDATA "NwcFederatorLoop"
@@ -111,8 +136,12 @@ function Say($t) {
 # Every path run.ps1 reads or writes, built here and nowhere else. F106: a window run's paths
 # are all under runs\NN, the run set's copy NMFed in Bader's folder shape and the run folder
 # beside it, named so two communities never meet, item1-C06, and for item 5 by the kind of the
-# file opened, item5-C06-nwf.
-function RunPaths($loopRoot, $repo, $set, $item, $folder, $xml, $openFile) {
+# file opened, item5-C06-nwf. F104 part 2: with $docStamp, the documents read of that window
+# run, whose own folder is new at every call, runs\NN\item1-C06-document-yyyyMMdd-HHmmss, so a
+# record with no VERDICT line in it is found by check 4 and CloseOwn reads it as a run folder.
+# RunName and Evidence stay the window run's, which the documents read reads and never writes,
+# and SourceRunDir is that run's own folder, whose open folder item 5's outputs.txt names.
+function RunPaths($loopRoot, $repo, $set, $item, $folder, $xml, $openFile, $docStamp) {
   $p = [pscustomobject]@{
     LoopRoot = $loopRoot
     RunsRoot = Join-Path $loopRoot "runs"
@@ -134,6 +163,8 @@ function RunPaths($loopRoot, $repo, $set, $item, $folder, $xml, $openFile) {
     RegSub = "Software\Autodesk\Navisworks Manage\22.0"
     SetRoot = $null; Copy = $null; CopyManifest = $null; CopyRemoved = $null
     Nwc = $null; Nwf = $null; Nwd = $null; Report = $null; XmlFile = $null; OpenSource = $null; OpenDir = $null
+    SourceRunDir = $null; DocDir = $null; CompareDir = $null; ProbeCopy = $null
+    ProbeDll = Join-Path $repo "tools\probes\DocumentReadProbe\bin\Release\net48\DocumentReadProbe.dll"
   }
   if ($set -ne "" -and $item -ne "") {
     $p.RunName = "item" + $item
@@ -158,6 +189,13 @@ function RunPaths($loopRoot, $repo, $set, $item, $folder, $xml, $openFile) {
         if ($p.RunName.EndsWith("-nwd")) { $p.OpenSource = Join-Path $p.Nwd $openFile } else { $p.OpenSource = Join-Path $p.Nwf $openFile }
       }
     }
+    if ([string]$docStamp -ne "") {
+      $p.SourceRunDir = $p.RunDir
+      $p.RunDir = Join-Path $loopRoot ("runs\" + $set + "\" + $p.RunName + "-document-" + $docStamp)
+      $p.DocDir = Join-Path $p.RunDir "document"
+      $p.CompareDir = Join-Path $p.RunDir "compare"
+      $p.ProbeCopy = Join-Path $p.RunDir "probe\DocumentReadProbe.dll"
+    }
   }
   return $p
 }
@@ -175,8 +213,8 @@ function HostRefusal($scriptPath) {
   return ,$why
 }
 
-# The four modes, the one list of them. ModeOf returns the mode as it is written here, or null.
-function Modes { return @("Check", "Install", "Run", "CloseOwn") }
+# The five modes, the one list of them. ModeOf returns the mode as it is written here, or null.
+function Modes { return @("Check", "Install", "Run", "CloseOwn", "Documents") }
 function ModeOf($mode) {
   foreach ($m in (Modes)) { if ($m -eq $mode) { return $m } }
   return $null
@@ -185,23 +223,43 @@ function ModeOf($mode) {
 # Check 2, the parameters, as an allow list. Returns each refusal as the text after REFUSED:.
 # F106: items 1 to 5 take -Folder, a plain folder name, item 1 alone takes -Xml and item 5 alone
 # -OpenFile, and every path they name must lie under runs\NN, the run set's own folder.
-function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $openFile, $extra, $loopRoot, $repo) {
+# F104 part 2: Documents, and Check -For Documents, take -Set, -Item 1 to 5 and -Folder as the
+# window run they read, -OpenFile for item 5 alone, which names that run, no -Stamp and no
+# -Xml, and alone take the three switches handed to compare-document.ps1. Their words are
+# judged by compare-document.ps1, the one place that knows them, and only their shape here.
+function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $openFile, $extra, $loopRoot, $repo, $for, $pictureStatuses, $pictureCap, [bool]$priorityPicked, $docStamp) {
   $why = New-Object System.Collections.Generic.List[string]
   foreach ($a in @($extra)) { $why.Add("the argument " + $a + " is not a parameter of run.ps1") }
   $m = ModeOf $mode
   if ($null -eq $m) { $why.Add("-Mode is " + $mode + ", not one of " + ((Modes) -join ", ")); return ,$why }
   $mode = $m
-  $needSet = ($mode -eq "Run"); $needItem = ($mode -eq "Run"); $needStamp = ($mode -eq "Run" -or $mode -eq "Install"); $needFolder = ($mode -eq "CloseOwn")
+  if ([string]$for -ne "") {
+    if ($mode -ne "Check") { $why.Add("-For is " + $for + ", and only -Mode Check takes it, to read the refusals of another mode") }
+    elseif ($for -cne "Run" -and $for -cne "Documents") { $why.Add("-For is " + $for + ", not Run or Documents") }
+  }
+  $docs = ($mode -eq "Documents" -or ($mode -eq "Check" -and $for -ceq "Documents"))
+  $needSet = ($mode -eq "Run" -or $docs); $needItem = ($mode -eq "Run" -or $docs); $needStamp = ($mode -eq "Run" -or $mode -eq "Install"); $needFolder = ($mode -eq "CloseOwn")
+  $setWho = "-Mode Run"; if ($docs) { $setWho = "a documents read" }
   if ($set -ne "" -and $set -notmatch '^\d\d$') { $why.Add("-Set is " + $set + ", not two digits") }
-  elseif ($set -eq "" -and $needSet) { $why.Add("-Set is missing, and -Mode Run needs two digits") }
+  elseif ($set -eq "" -and $needSet) { $why.Add("-Set is missing, and " + $setWho + " needs two digits") }
   if ($item -ne "") {
     if ($item -notmatch '^[0-5]$') { $why.Add("-Item is " + $item + ", not 0 to 5") }
-  } elseif ($needItem) { $why.Add("-Item is missing, and -Mode Run needs 0 to 5") }
+    elseif ($docs -and $item -eq "0") { $why.Add("-Item is 0, and item 0 starts no tool, so it wrote no NWF and no workbook for a documents read to read") }
+  } elseif ($needItem) { $why.Add("-Item is missing, and " + $setWho + " needs " + $(if ($docs) { "1 to 5" } else { "0 to 5" })) }
   if ($stamp -ne "" -and $stamp -cnotmatch '^[0-9a-f]{8}$') { $why.Add("-Stamp is " + $stamp + ", not 8 lower case hex characters") }
   elseif ($stamp -eq "" -and $needStamp) { $why.Add("-Stamp is missing, and -Mode " + $mode + " needs the 8 hex characters of the commit") }
-  if ($mode -ne "Check" -and $mode -ne "Run") {
+  if ($docs -and $stamp -ne "") { $why.Add("-Stamp is " + $stamp + ", and a documents read takes none, it calls only the probe and never the installed add-in") }
+  if ($mode -ne "Check" -and $mode -ne "Run" -and $mode -ne "Documents") {
     if ($set -ne "") { $why.Add("-Set is " + $set + ", and -Mode " + $mode + " takes none") }
     if ($item -ne "") { $why.Add("-Item is " + $item + ", and -Mode " + $mode + " takes none") }
+  }
+  if ($docs) {
+    if ([string]$pictureStatuses -ne "" -and $pictureStatuses -notmatch '^[A-Za-z]+(,[A-Za-z]+)*$') { $why.Add("-PictureStatuses is " + $pictureStatuses + ", not status words joined by commas, such as New,Active,Reviewed") }
+    if ([string]$pictureCap -ne "" -and $pictureCap -notmatch '^\d{1,6}$') { $why.Add("-PictureCap is " + $pictureCap + ", not a whole number") }
+  } else {
+    if ([string]$pictureStatuses -ne "") { $why.Add("-PictureStatuses is " + $pictureStatuses + ", and only a documents read takes it") }
+    if ([string]$pictureCap -ne "") { $why.Add("-PictureCap is " + $pictureCap + ", and only a documents read takes it") }
+    if ($priorityPicked) { $why.Add("-PriorityPicked is given, and only a documents read takes it") }
   }
   if ($mode -eq "CloseOwn" -and $stamp -ne "") { $why.Add("-Stamp is " + $stamp + ", and -Mode CloseOwn takes none") }
   if ($runFolder -ne "" -and -not $needFolder) { $why.Add("-RunFolder is " + $runFolder + ", and -Mode " + $mode + " takes none") }
@@ -213,13 +271,14 @@ function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $op
       elseif (([System.IO.Path]::GetFullPath($runFolder)) -notmatch '\\runs\\\d\d\\item[^\\]+$') { $why.Add("-RunFolder is " + $runFolder + ", not a folder runs\NN\item... of the loop") }
     }
   }
-  $window = ($item -match '^[1-5]$' -and ($mode -eq "Run" -or $mode -eq "Check"))
+  $window = ($item -match '^[1-5]$' -and ($mode -eq "Run" -or $mode -eq "Check" -or $mode -eq "Documents"))
   if ($window) {
     if ($folder -eq "") { $why.Add("-Folder is missing, and item " + $item + " needs the name of one folder of NMFed\NWC, such as C06") }
     elseif ($folder -notmatch '^[A-Za-z0-9_-]+$') { $why.Add("-Folder is " + $folder + ", not the plain name of one folder of NMFed\NWC") }
-    if ($item -eq "1" -and $xml -eq "") { $why.Add("-Xml is missing, and item 1, the first run, needs the clash XML of the copy") }
+    if ($docs) { if ($xml -ne "") { $why.Add("-Xml is " + $xml + ", and a documents read takes none, it reads what the window run already wrote") } }
+    elseif ($item -eq "1" -and $xml -eq "") { $why.Add("-Xml is missing, and item 1, the first run, needs the clash XML of the copy") }
     elseif ($item -eq "1" -and -not $xml.EndsWith(".xml", [StringComparison]::OrdinalIgnoreCase)) { $why.Add("-Xml is " + $xml + ", not an .xml file") }
-    if ($item -ne "1" -and $xml -ne "") { $why.Add("-Xml is " + $xml + ", and only item 1 takes the XML, the runs after it run with none") }
+    if (-not $docs -and $item -ne "1" -and $xml -ne "") { $why.Add("-Xml is " + $xml + ", and only item 1 takes the XML, the runs after it run with none") }
     if ($item -eq "5" -and $openFile -eq "") { $why.Add("-OpenFile is missing, and item 5 needs the plain name of an .nwf in NMFed\NWF\<Folder> or an .nwd in NMFed\NWD\<Folder>") }
     elseif ($item -eq "5" -and $openFile -notmatch '^[^\\/:*?"<>|]+\.(nwf|nwd)$') { $why.Add("-OpenFile is " + $openFile + ", not the plain name of an .nwf or an .nwd file") }
     if ($item -ne "5" -and $openFile -ne "") { $why.Add("-OpenFile is " + $openFile + ", and only item 5 takes it") }
@@ -228,8 +287,9 @@ function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $op
       if ([string]$pair[1] -ne "") { $why.Add($pair[0] + " is " + $pair[1] + ", and " + $(if ($item -eq "0") { "item 0" } else { "-Mode " + $mode }) + " takes none") }
     }
   }
-  if (($mode -eq "Run" -or ($mode -eq "Check" -and $set -ne "" -and $item -ne "")) -and $why.Count -eq 0) {
-    $p = RunPaths $loopRoot $repo $set $item $folder $xml $openFile
+  if (($mode -eq "Run" -or $mode -eq "Documents" -or ($mode -eq "Check" -and $set -ne "" -and $item -ne "")) -and $why.Count -eq 0) {
+    $ds = ""; if ($docs) { $ds = $docStamp }
+    $p = RunPaths $loopRoot $repo $set $item $folder $xml $openFile $ds
     $pr = PathRefusal $p.RunDir $loopRoot
     if ($null -ne $pr) { $why.Add("-Set is " + $set + ", and the run folder it names " + $pr) }
     foreach ($pair in @(@("-Folder", $p.Nwc, $p.Copy), @("-Xml", $p.XmlFile, $p.Copy), @("-OpenFile", $p.OpenSource, $p.Copy))) {
@@ -374,8 +434,10 @@ function LockRefusal($lockText) {
 }
 
 # Checks 4 to 11, in Run's order. 8, 9 and 10 apply to the window runs, items 1 to 5. Returns
-# each refusal as the text after REFUSED:.
-function RunRefusals($paths, $stamp, [bool]$stopAtFirst, $item, $winType) {
+# each refusal as the text after REFUSED:. F104 part 2: for a documents read, $docs is what
+# ReadPairs read and $probe what ProbeRead read, 8, 9 and 10 do not apply, check 11 is the
+# window run's evidence and its pairs, and check 19 the probe.
+function RunRefusals($paths, $stamp, [bool]$stopAtFirst, $item, $winType, $docs, $probe) {
   $r = New-Object System.Collections.Generic.List[string]
   Say "  check 4, a run that died"
   $died = DiedRuns $paths.RunsRoot
@@ -406,6 +468,16 @@ function RunRefusals($paths, $stamp, [bool]$stopAtFirst, $item, $winType) {
     if (-not (StampNames $pv $stamp)) { $r.Add("the installed add-in reads " + $pv + ", and this run is for " + $stamp + ". Install it with -Mode Install first. Nothing was written") }
   }
   if ($stopAtFirst -and $r.Count -gt 0) { return ,$r }
+  if ($null -ne $docs) {
+    Say "  checks 8, 9 and 10, the copy, the outputs and the session, apply to the window runs and not to a documents read, which starts no tool and opens no window of it"
+    Say "  check 11, the window run's evidence and the pairs off its .tsv"
+    foreach ($x in $docs.Why) { $r.Add($x) }
+    if ($docs.Why.Count -eq 0) { Say ("    " + $docs.Pairs.Count + " pairs, every NWF reading as outputs.txt lists it and every workbook read-out whole") }
+    if ($stopAtFirst -and $r.Count -gt 0) { return ,$r }
+    Say "  check 19, the probe"
+    if ($null -ne $probe.Why) { $r.Add($probe.Why) } else { Say ("    " + (Mask $paths.ProbeDll) + ", " + $probe.Length + " bytes, sha256 " + $probe.Hash + ", stamp " + $probe.Stamp) }
+    return ,$r
+  }
   if ([string]$item -match '^[1-5]$') {
     Say "  check 8, the run set's copy"
     $c8 = CopyRefusal $paths $item
@@ -497,14 +569,21 @@ function BackupNew($srcDir, $backupRoot, $listFile, $when) {
   $r.Ok = $true
   return $r
 }
+# The fields of one tab separated line, the one place run.ps1 splits a line at its tabs: a
+# listing's columns in ListingRows, and since F104 part 2 a row of the tool's .tsv in ReadPairs.
+# The comma hands the array back whole, so a line with no tab is still one field in an array.
+function TabFields($line) { return ,([string]$line).Split("`t") }
 # THE ONE READER of a listing EntryLine wrote, logs-before.txt, logs-after.txt,
 # autosave-before.txt and installed.txt: relative path, bytes, written UTC, sha256 and
 # attributes, one line each. Returns an object per line, with the line itself as Line.
-function ListingRows($listFile) {
+# F104 part 2: $lines, when given, are read in place of the file's, which is how ReadPairs
+# reads the file lines of outputs.txt once the lines starting # that it writes are left out.
+function ListingRows($listFile, $lines) {
   $rows = New-Object System.Collections.Generic.List[object]
-  foreach ($l in [System.IO.File]::ReadAllLines($listFile)) {
+  if ($null -eq $lines) { $lines = [System.IO.File]::ReadAllLines($listFile) }
+  foreach ($l in $lines) {
     if ($l -ceq (ListingHeader) -or $l -ceq (ListingNoFolder) -or $l -eq "") { continue }
-    $x = $l.Split("`t")
+    $x = TabFields $l
     if ($x.Count -lt 4) { throw ("a line of " + (Mask $listFile) + " cannot be read, `"" + $l + "`"") }
     $w = [DateTime]::Parse($x[2], [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::RoundtripKind)
     $rows.Add([pscustomobject]@{ Rel = $x[0]; Name = (Split-Path $x[0] -Leaf); Length = [long]$x[1]; WriteUtc = $w; Hash = $x[3]; Line = $l })
@@ -609,6 +688,358 @@ function LogsAfterWindow($beforeRows, $afterRows, $toolNames, $backupHave) {
 }
 
 # =======================================================================================
+# F104 part 2, the documents read. Each function here reads, or writes only under the
+# documents read's own run folder, and says what it could not do rather than pass over it.
+
+# A path in the text column of the tool's .tsv. RunLog writes every field through
+# EventRow.Escape, src\Federator.Core\Diagnostics\EventRow.cs, which doubles a backslash and
+# writes a tab, a return and a line break as a backslash and a letter. No file path holds a
+# tab, a return or a line break, so a doubled backslash is read as one and any other backslash
+# makes the text no path at all, null. EventRow.Unescape is not copied here.
+function TsvPath($text) {
+  $t = [string]$text
+  $sb = New-Object System.Text.StringBuilder
+  for ($i = 0; $i -lt $t.Length; $i++) {
+    if ($t[$i] -ne [char]92) { [void]$sb.Append($t[$i]); continue }
+    if ($i + 1 -lt $t.Length -and $t[$i + 1] -eq [char]92) { [void]$sb.Append([char]92); $i++; continue }
+    return $null
+  }
+  return $sb.ToString()
+}
+# Whether $list holds $path, compared as Windows compares paths. A plain foreach, never @() on
+# a List, CpuUsedSince.
+function HasPath($list, $path) {
+  foreach ($x in $list) { if ([string]::Equals($x, $path, [StringComparison]::OrdinalIgnoreCase)) { return $true } }
+  return $false
+}
+# A path as a key, its letters compared as Windows compares a name. The paths keyed are the
+# full paths the tool, run.ps1 and read-workbook.ps1 wrote, so they are compared as written,
+# and one spelled another way is not found, which ends in a refusal and never in a wrong pair.
+function PathKey($path) { return ([string]$path).ToLowerInvariant() }
+# The last line of a file that is not empty, or empty when there is none.
+function LastLine($lines) {
+  for ($i = $lines.Count - 1; $i -ge 0; $i--) { if ($lines[$i] -ne "") { return $lines[$i] } }
+  return ""
+}
+
+# The pairs a documents read reads, off the evidence of one window run, steps\runs\NN\<run>,
+# reading only. The run's .tsv, named on the second line of its toollog-name.txt, gives every
+# NWF and workbook the run wrote, in the rows RunLog.WriteFinished writes, event written and
+# name NWF or XLSX, src\Federator.Core\Diagnostics\RunLog.cs, paired by the group column and
+# never by a file name. The columns are found by their header words. A workbook's read-out is
+# the file in workbooks whose first line names that workbook, as read-workbook.ps1 writes it,
+# and it must end whole. Each NWF must read now as the run's outputs.txt lists it, by size and
+# sha256, so what is read is the NWF the run wrote beside its workbook, and no later run and
+# no person has changed it since. Why holds every refusal. Pairs holds each pair in the order
+# the .tsv first names its group, with Workbook null for a group that wrote no workbook.
+# NoNwf names each group that wrote a workbook and no NWF, which has no document to read.
+function ReadPairs($paths) {
+  $r = [pscustomobject]@{ Why = New-Object System.Collections.Generic.List[string]; Pairs = New-Object System.Collections.Generic.List[object]; NoNwf = New-Object System.Collections.Generic.List[string]; Verdict = ""; Tsv = $null; TsvName = ""; TsvHash = ""; Rows = 0 }
+  $tail = ". Nothing was started and nothing was written"
+  $ev = $paths.Evidence
+  $evName = "steps\runs\" + (Split-Path (Split-Path $ev -Parent) -Leaf) + "\" + (Split-Path $ev -Leaf)
+  if (-not (Test-Path -LiteralPath $ev -PathType Container)) { $r.Why.Add($evName + " is not there, so there is no window run whose documents could be read" + $tail); return $r }
+  $rec = Join-Path $ev "record.txt"
+  if (-not (Test-Path -LiteralPath $rec -PathType Leaf)) { $r.Why.Add($evName + " holds no record.txt, so whether its run finished is UNKNOWN" + $tail); return $r }
+  $v = @([System.IO.File]::ReadAllLines($rec) | Where-Object { $_.StartsWith("VERDICT") })
+  if ($v.Count -ne 1) { $r.Why.Add($evName + "\record.txt holds " + $v.Count + " VERDICT lines and not one, so whether its run finished is UNKNOWN" + $tail); return $r }
+  $r.Verdict = $v[0]
+  $tn = Join-Path $ev "toollog-name.txt"
+  $tsvName = ""
+  if (Test-Path -LiteralPath $tn -PathType Leaf) { $tl = @([System.IO.File]::ReadAllLines($tn)); if ($tl.Count -ge 2) { $tsvName = $tl[1].Trim() } }
+  if ($tsvName -notmatch '^[^\\/:*?"<>|]+\.tsv$') { $r.Why.Add($evName + "\toollog-name.txt does not name the tool's .tsv on its second line, so the run's own record of what it wrote cannot be found" + $tail); return $r }
+  $tsv = Join-Path $ev $tsvName
+  if (-not (Test-Path -LiteralPath $tsv -PathType Leaf)) { $r.Why.Add($evName + " holds no " + $tsvName + ", the .tsv its toollog-name.txt names" + $tail); return $r }
+  $r.Tsv = $tsv; $r.TsvName = $tsvName
+  $r.TsvHash = (Get-FileHash -LiteralPath $tsv -Algorithm SHA256).Hash
+  $lines = [System.IO.File]::ReadAllLines($tsv)
+  if ($lines.Count -eq 0) { $r.Why.Add($tsvName + " is empty" + $tail); return $r }
+  $head = TabFields $lines[0]
+  $col = @{}
+  for ($i = 0; $i -lt $head.Count; $i++) { if (-not $col.ContainsKey($head[$i])) { $col[$head[$i]] = $i } }
+  foreach ($w in @("group", "event", "name", "text")) { if (-not $col.ContainsKey($w)) { $r.Why.Add($tsvName + " has no column " + $w + " on its first line, so its rows cannot be read" + $tail); return $r } }
+  $groups = New-Object 'System.Collections.Generic.Dictionary[string,object]' ([StringComparer]::Ordinal)
+  $order = New-Object System.Collections.Generic.List[string]
+  for ($n = 1; $n -lt $lines.Count; $n++) {
+    if ($lines[$n] -eq "") { continue }
+    $f = TabFields $lines[$n]
+    if ($f.Count -ne $head.Count) { $r.Why.Add($tsvName + " line " + ($n + 1) + " holds " + $f.Count + " fields and its first line " + $head.Count + ", so the file cannot be read whole" + $tail); return $r }
+    $r.Rows++
+    if ($f[$col["event"]] -cne "written") { continue }
+    $kind = $f[$col["name"]]
+    if ($kind -cne "NWF" -and $kind -cne "XLSX") { continue }
+    $g = $f[$col["group"]]
+    if ($g -eq "") { $r.Why.Add($tsvName + " line " + ($n + 1) + " names an " + $kind + " written outside any group, so it belongs to no pair" + $tail); continue }
+    $path = TsvPath $f[$col["text"]]
+    if ($null -eq $path -or -not [System.IO.Path]::IsPathRooted($path)) { $r.Why.Add($tsvName + " line " + ($n + 1) + " names an " + $kind + " written whose text is not a full path" + $tail); continue }
+    if (-not $groups.ContainsKey($g)) { $groups[$g] = [pscustomobject]@{ Nwf = New-Object System.Collections.Generic.List[string]; Xlsx = New-Object System.Collections.Generic.List[string] }; $order.Add($g) }
+    $list = $groups[$g].Xlsx; if ($kind -ceq "NWF") { $list = $groups[$g].Nwf }
+    if (-not (HasPath $list $path)) { $list.Add($path) }
+  }
+  # What the run left in its output folders, from outputs.txt, keyed by full path. Its lines
+  # that start with # are run.ps1's own and every other line is a file, under the copy or,
+  # for item 5, under the window run's open folder.
+  $outMap = $null
+  $outFile = Join-Path $ev "outputs.txt"
+  if (-not (Test-Path -LiteralPath $outFile -PathType Leaf)) { $r.Why.Add($evName + " holds no outputs.txt, so whether each NWF is still the one the run wrote cannot be read" + $tail) }
+  else {
+    $outMap = @{}
+    $fileLines = @([System.IO.File]::ReadAllLines($outFile) | Where-Object { -not $_.StartsWith("#") })
+    foreach ($row in (ListingRows $outFile $fileLines)) {
+      $base = $paths.Copy
+      if ($row.Rel.StartsWith("open\", [StringComparison]::OrdinalIgnoreCase) -and $null -ne $paths.SourceRunDir) { $base = $paths.SourceRunDir }
+      $outMap[(PathKey (Join-Path $base $row.Rel))] = $row
+    }
+  }
+  # Every read-out in workbooks, keyed by the workbook its first line names.
+  $wbMap = @{}; $wbTwice = @{}
+  $wbDir = Join-Path $ev "workbooks"
+  if (Test-Path -LiteralPath $wbDir -PathType Container) {
+    foreach ($wf in @(Get-ChildItem -LiteralPath $wbDir -File -Filter "*.txt" -Force | Sort-Object Name)) {
+      $all = [System.IO.File]::ReadAllLines($wf.FullName)
+      if ($all.Count -eq 0 -or -not $all[0].StartsWith("workbook ")) { continue }
+      $key = PathKey $all[0].Substring("workbook ".Length)
+      if ($wbMap.ContainsKey($key)) { $wbTwice[$key] = $true; continue }
+      $wbMap[$key] = [pscustomobject]@{ Path = $wf.FullName; Name = $wf.Name; Whole = ((LastLine $all) -ceq "END OF READ-OUT") }
+    }
+  }
+  $stems = @{}
+  foreach ($g in $order) {
+    $e = $groups[$g]
+    if ($e.Nwf.Count -eq 0) { $r.NoNwf.Add($g); continue }
+    if ($e.Nwf.Count -gt 1) { $r.Why.Add("group " + $g + " names " + $e.Nwf.Count + " NWFs written, " + (($e.Nwf | ForEach-Object { Mask $_ }) -join " and ") + ", so which one its workbook was written beside is UNKNOWN" + $tail); continue }
+    if ($e.Xlsx.Count -gt 1) { $r.Why.Add("group " + $g + " names " + $e.Xlsx.Count + " workbooks written, so which one was written beside its NWF is UNKNOWN" + $tail); continue }
+    $nwf = $e.Nwf[0]
+    $pair = [pscustomobject]@{ Group = $g; Nwf = $nwf; Name = [System.IO.Path]::GetFileName($nwf); Stem = [System.IO.Path]::GetFileNameWithoutExtension($nwf); Xlsx = $null; Workbook = $null; WorkbookName = ""; Length = $null; Hash = "" }
+    if ($e.Xlsx.Count -eq 1) { $pair.Xlsx = $e.Xlsx[0] }
+    $r.Pairs.Add($pair)
+    $at = "group " + $g + " names the NWF " + (Mask $nwf) + ", and "
+    $pr = PathRefusal $nwf $paths.LoopRoot
+    if ($null -eq $pr -and $null -ne (UnderRefusal $nwf $paths.Copy) -and ($null -eq $paths.SourceRunDir -or $null -ne (UnderRefusal $nwf $paths.SourceRunDir))) { $pr = "it does not resolve under the run set's copy or the window run's own folder" }
+    if ($null -ne $pr) { $r.Why.Add($at + $pr + $tail); continue }
+    if (-not $nwf.EndsWith(".nwf", [StringComparison]::OrdinalIgnoreCase)) { $r.Why.Add($at + "it is not an .nwf" + $tail); continue }
+    if (-not (Test-Path -LiteralPath $nwf -PathType Leaf)) { $r.Why.Add($at + "it is not there" + $tail); continue }
+    if ($stems.ContainsKey($pair.Stem)) { $r.Why.Add($at + "group " + $stems[$pair.Stem] + " names an NWF of the same file name, and the probe names each read-out after its NWF, so it would refuse both" + $tail); continue }
+    $stems[$pair.Stem] = $g
+    $pair.Length = (Get-Item -LiteralPath $nwf).Length
+    $pair.Hash = (Get-FileHash -LiteralPath $nwf -Algorithm SHA256).Hash
+    if ($null -ne $outMap) {
+      $o = $outMap[(PathKey $nwf)]
+      if ($null -eq $o) { $r.Why.Add($at + "outputs.txt of the run does not list it, so whether it is the NWF the run wrote is UNKNOWN" + $tail) }
+      elseif ($o.Length -ne $pair.Length -or $o.Hash -ne $pair.Hash) { $r.Why.Add($at + "it reads " + $pair.Length + " bytes, sha256 " + $pair.Hash + " now, where outputs.txt of the run lists " + $o.Length + " bytes, sha256 " + $o.Hash + ", so it is not the NWF the run wrote beside its workbook. A later run or a person changed it" + $tail) }
+    }
+    if ($null -ne $pair.Xlsx) {
+      $wk = PathKey $pair.Xlsx
+      $wbAt = "group " + $g + " wrote the workbook " + (Mask $pair.Xlsx) + ", and "
+      if ($wbTwice.ContainsKey($wk)) { $r.Why.Add($wbAt + "two read-outs in workbooks name it, so which is its read-out is UNKNOWN" + $tail) }
+      elseif (-not $wbMap.ContainsKey($wk)) { $r.Why.Add($wbAt + "no read-out in workbooks names it, so it has nothing to compare with" + $tail) }
+      elseif (-not $wbMap[$wk].Whole) { $r.Why.Add($wbAt + "its read-out workbooks\" + $wbMap[$wk].Name + " does not end in END OF READ-OUT, so read-workbook.ps1 could not read it whole" + $tail) }
+      else { $pair.Workbook = $wbMap[$wk].Path; $pair.WorkbookName = $wbMap[$wk].Name }
+    }
+  }
+  if ($r.Pairs.Count -eq 0 -and $r.Why.Count -eq 0) { $r.Why.Add($tsvName + " names no NWF written in any group, so there is nothing to read" + $tail) }
+  return $r
+}
+
+# The probe a documents read loads, read with FileVersionInfo, which loads and locks nothing.
+# Its stamp must name one commit, its second word eight hex characters with no +edits, which
+# Directory.Build.targets writes only for a tree whose git status prints nothing, so every
+# read-out it writes names a probe that can be read back at that commit. Why is the refusal,
+# or null.
+function ProbeRead($dll) {
+  $r = [pscustomobject]@{ Why = $null; Stamp = ""; Hash = ""; Length = 0 }
+  if (-not (Test-Path -LiteralPath $dll -PathType Leaf)) { $r.Why = "there is no probe at " + (Mask $dll) + ". Build it with dotnet build tools\probes\DocumentReadProbe\DocumentReadProbe.csproj -c Release from a tree whose git status prints nothing. Nothing was started and nothing was written"; return $r }
+  $r.Stamp = [string][System.Diagnostics.FileVersionInfo]::GetVersionInfo($dll).ProductVersion
+  $r.Hash = (Get-FileHash -LiteralPath $dll -Algorithm SHA256).Hash
+  $r.Length = (Get-Item -LiteralPath $dll).Length
+  $words = @($r.Stamp -split '\s+')
+  if ($words.Count -lt 2 -or $words[1] -cnotmatch '^[0-9a-f]{8}$') { $r.Why = "the probe reads the stamp " + $r.Stamp + ", which names no one commit with no edits, so its read-outs could not be read back at a commit. Build it from a tree whose git status prints nothing. Nothing was started and nothing was written" }
+  return $r
+}
+
+# What the probe has written so far into the document folder, read every pass for the hang
+# rule as a window run reads the tool's log: the bytes of every file in it. Each .partial is
+# read through a handle that shares read, write and delete, because a listing can show the
+# size a file had when its writer opened it, and the delete share lets the probe move a
+# finished read-out into place while it is read. Partial counts the read-outs still being
+# written, Whole those in place, and Lines names each file and its bytes. Why says what could
+# not be read, and then Bytes is null, which restarts both clocks.
+function ReadOutProgress($dir) {
+  $r = [pscustomobject]@{ Bytes = $null; Partial = 0; Whole = 0; Lines = New-Object System.Collections.Generic.List[string]; Why = $null }
+  try {
+    $bytes = [long]0
+    foreach ($f in @(Get-ChildItem -LiteralPath $dir -File -Force -ErrorAction Stop | Sort-Object Name)) {
+      $len = $f.Length
+      if ($f.Name.EndsWith(".partial", [StringComparison]::OrdinalIgnoreCase)) {
+        $r.Partial++
+        $fs = New-Object System.IO.FileStream($f.FullName, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, ([System.IO.FileShare]::ReadWrite -bor [System.IO.FileShare]::Delete))
+        try { $len = $fs.Length } finally { $fs.Dispose() }
+      } elseif ($f.Name.EndsWith("-document.txt", [StringComparison]::OrdinalIgnoreCase)) { $r.Whole++ }
+      $bytes += $len
+      $r.Lines.Add($f.Name + "`t" + $len + " bytes")
+    }
+    $r.Bytes = $bytes
+  } catch { $r.Why = (Err $_.Exception) }
+  return $r
+}
+
+# The probe's two calls into the adopted Navisworks, on the main thread, each named to the
+# watchdog. AddPluginAssembly with the probe's copy in the run folder has the 120 s any call
+# has. ExecuteAddInPlugin has no limit of its own, because it holds for as long as the probe
+# reads, and the hang rule on the read-outs and the processor time, and the ceiling, end it
+# instead. The parameters are the probe's: the document folder, then every NWF. Once neither
+# call is still running, CallReturned tells the monitor, which ends the run when no read-out
+# is still being written and the folder has been quiet. What came back is the probe's hint,
+# and the read-outs are the proof. Fault says which call threw.
+function ProbeCall($app, $sync, $dll, $docDir, $nwfs, [int]$limitSeconds, $probeId) {
+  $r = [pscustomobject]@{ Added = $false; Called = $false; Returned = $null; Seconds = 0.0; Fault = "" }
+  try {
+    Say ("  " + [DateTime]::Now.ToString("HH:mm:ss.fff") + "  calling AddPluginAssembly(" + (Mask $dll) + ") on the main thread")
+    $err = $null
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    $sync.CallLimit = $limitSeconds; $sync.CallSinceUtc = [DateTime]::UtcNow; $sync.CallName = "AddPluginAssembly"
+    try { $app.AddPluginAssembly($dll) } catch { $err = $_.Exception } finally { $sync.CallName = "" }
+    Say ("  AddPluginAssembly " + $(if ($null -eq $err) { "RETURNED" } else { "THREW" }) + " after " + $sw.Elapsed.TotalSeconds.ToString("0.000") + " s")
+    if ($null -ne $err) { $r.Fault = "AddPluginAssembly threw, " + (Err $err); Say ("    " + (Err $err)); return $r }
+    $r.Added = $true
+    $params = [string[]](@($docDir) + @($nwfs))
+    Say ("  " + [DateTime]::Now.ToString("HH:mm:ss.fff") + "  calling ExecuteAddInPlugin(" + $probeId + ", the document folder and " + @($nwfs).Count + " NWFs) on the main thread")
+    $perr = $null; $pret = $null
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    $sync.CallLimit = 0; $sync.CallSinceUtc = [DateTime]::UtcNow; $sync.CallName = "ExecuteAddInPlugin"
+    $sync.LogSinceUtc = [DateTime]::UtcNow
+    try { $pret = $app.ExecuteAddInPlugin($probeId, $params) } catch { $perr = $_.Exception } finally { $sync.CallName = ""; $sync.CallLimit = $limitSeconds }
+    $r.Called = $true
+    $r.Seconds = $sw.Elapsed.TotalSeconds
+    Say ("  ExecuteAddInPlugin " + $(if ($null -eq $perr) { "RETURNED " + $pret } else { "THREW" }) + " after " + $r.Seconds.ToString("0.00") + " s. What it returned is the probe's hint, 0 every read-out whole, and the read-outs are the proof")
+    if ($null -ne $perr) { $r.Fault = "ExecuteAddInPlugin threw, " + (Err $perr); Say ("    " + (Err $perr)) } else { $r.Returned = $pret }
+    return $r
+  } finally { $sync.CallReturned = $true }
+}
+
+# One listing with sha256 of every folder a documents read must leave as it is: the copy's NWF,
+# NWD and Clash Report folders of -Folder, and any other folder that holds an NWF it reads,
+# keyed by the folder. ListFolder makes each listing.
+function FoldersSnap($folders) {
+  $snap = [ordered]@{}
+  foreach ($d in $folders) { if (-not $snap.Contains($d)) { $snap[$d] = ListFolder $d } }
+  return $snap
+}
+# Every file of a snap, its sha256 by PathKey.
+function SnapFiles($snap) {
+  $m = @{}
+  foreach ($d in $snap.Keys) { foreach ($e in $snap[$d].Entries) { $m[(PathKey (Join-Path $d $e.Rel))] = $e.Hash } }
+  return $m
+}
+# What differs between two snaps of the same folders, by relative path and sha256: each file
+# CHANGED with both sha256, ADDED or GONE, and each folder that was not read whole at either
+# end. Files says each file's state by PathKey. Differ counts the files not as they were and
+# Unread the folders not read whole. Pure on its inputs.
+function FoldersDiff($before, $after) {
+  $r = [pscustomobject]@{ Lines = New-Object System.Collections.Generic.List[string]; Differ = 0; Unread = 0; Same = 0; Files = @{} }
+  foreach ($d in $before.Keys) {
+    $b = $before[$d]; $a = $null; if ($after.Contains($d)) { $a = $after[$d] }
+    if ($null -eq $a -or -not $b.Ok -or -not $a.Ok) { $r.Unread++; $r.Lines.Add((Mask $d) + " was not read whole at both ends, " + $(if (-not $b.Ok) { "before: " + $b.Why } elseif ($null -eq $a) { "after: it was not read" } else { "after: " + $a.Why })); continue }
+    $bm = @{}; foreach ($e in $b.Entries) { $bm[$e.Rel] = $e }
+    $am = @{}; foreach ($e in $a.Entries) { $am[$e.Rel] = $e }
+    foreach ($k in @(@($bm.Keys) + @($am.Keys) | Sort-Object -Unique)) {
+      $x = $bm[$k]; $y = $am[$k]; $key = PathKey (Join-Path $d $k)
+      if ($null -ne $x -and $null -ne $y -and $x.Hash -eq $y.Hash) { $r.Same++; $r.Files[$key] = "unchanged, sha256 " + $x.Hash; continue }
+      $r.Differ++
+      if ($null -eq $x) { $r.Files[$key] = "ADDED, sha256 " + $y.Hash; $r.Lines.Add("ADDED " + (Mask (Join-Path $d $k)) + ", " + $y.Length + " bytes, sha256 " + $y.Hash) }
+      elseif ($null -eq $y) { $r.Files[$key] = "GONE, it read sha256 " + $x.Hash; $r.Lines.Add("GONE " + (Mask (Join-Path $d $k)) + ", it read " + $x.Length + " bytes, sha256 " + $x.Hash) }
+      else { $r.Files[$key] = "CHANGED, sha256 " + $x.Hash + " before and " + $y.Hash + " after"; $r.Lines.Add("CHANGED " + (Mask (Join-Path $d $k)) + ", sha256 " + $x.Hash + " before the start and " + $y.Hash + " after the close") }
+    }
+  }
+  return $r
+}
+
+# The probe's read-out of one NWF in the document folder: whole when it ends in END OF
+# READ-OUT, which the probe writes last and only once every step of it ran, and otherwise why.
+function ReadOutState($docDir, $stem) {
+  $f = Join-Path $docDir ($stem + "-document.txt")
+  if (Test-Path -LiteralPath ($f + ".partial")) { return "NOT WHOLE, its .partial is still there, so the probe stopped while it wrote it" }
+  if (-not (Test-Path -LiteralPath $f -PathType Leaf)) { return "NOT THERE, the probe wrote no read-out of it" }
+  $all = [System.IO.File]::ReadAllLines($f)
+  if ((LastLine $all) -ceq "END OF READ-OUT") { return "whole" }
+  foreach ($l in $all) { if ($l.StartsWith("READ-OUT FAILED") -or $l.StartsWith("REFUSED")) { return ("NOT WHOLE, it says " + $l) } }
+  return "NOT WHOLE, it does not end in END OF READ-OUT"
+}
+
+# compare-document.ps1 on one pair, as a child, with the switches the run was told. Returns its
+# exit code and its own lines read off the comparison it wrote: the VERDICT with the three
+# counts, or its COMPARISON FAILED line, or what it printed when it wrote none. A verdict is
+# passed on and never judged here.
+function ComparePair($repo, $workbook, $document, $out, $pictureStatuses, $pictureCap, [bool]$priorityPicked) {
+  $psExe = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
+  $a = "-NoProfile -ExecutionPolicy Bypass -File `"" + (Join-Path $repo "tools\loop\compare-document.ps1") + "`" -Workbook `"" + $workbook + "`" -Document `"" + $document + "`" -Out `"" + $out + "`""
+  if ([string]$pictureStatuses -ne "") { $a += " -PictureStatuses " + $pictureStatuses }
+  if ([string]$pictureCap -ne "") { $a += " -PictureCap " + $pictureCap }
+  if ($priorityPicked) { $a += " -PriorityPicked" }
+  $c = RunChild $psExe $a $repo
+  $text = ""
+  if (Test-Path -LiteralPath $out -PathType Leaf) {
+    $lines = [System.IO.File]::ReadAllLines($out)
+    $failed = @($lines | Where-Object { $_.StartsWith("COMPARISON FAILED") })
+    if ($failed.Count -gt 0) { $text = $failed[0] }
+    else {
+      $verdict = @($lines | Where-Object { $_ -cmatch '^VERDICT [A-Z ]+$' })
+      $counts = @($lines | Where-Object { $_ -cmatch '^(DISAGREEMENTS|NOT COMPARED|DOUBTS) \d+$' })
+      if ($verdict.Count -eq 1) { $text = $verdict[0] + ", " + ($counts -join ", ") } else { $text = "UNKNOWN, the comparison holds " + $verdict.Count + " VERDICT lines" }
+    }
+  } else {
+    $said = @($c.Out.Split("`n") | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne "" })
+    if ($said.Count -gt 0) { $text = $said[0] } else { $text = "UNKNOWN, it wrote no comparison and printed nothing" }
+  }
+  return [pscustomobject]@{ Exit = $c.Exit; Text = $text; Pid = $c.Pid }
+}
+
+# summary.txt of a documents read: what was read and with what, one line per pair, the NWF after
+# the close, its read-out and the comparison's own VERDICT line as compare-document.ps1 wrote it,
+# a count of each verdict that judges none of them, the steps that did not run whole, and the
+# run's VERDICT. Pure on what it is given, it returns the lines.
+function SummaryLines($s) {
+  $l = New-Object System.Collections.Generic.List[string]
+  $l.Add("DOCUMENTS READ SUMMARY, run.ps1 -Mode Documents")
+  $l.Add("run folder        " + (Mask $s.RunDir))
+  $l.Add("window run read   steps\runs\" + $s.Set + "\" + $s.RunName + ", its record's " + $s.Read.Verdict)
+  $l.Add("its .tsv          " + $s.Read.TsvName + ", sha256 " + $s.Read.TsvHash + ", " + $s.Read.Rows + " rows")
+  $l.Add("probe             stamp " + $s.Probe.Stamp + ", sha256 " + $s.Probe.Hash)
+  $call = "not made"
+  if ($null -ne $s.Call) {
+    if ($s.Call.Fault -ne "") { $call = $s.Call.Fault }
+    elseif ($s.Call.Called) { $call = "ExecuteAddInPlugin returned " + $s.Call.Returned + " after " + $s.Call.Seconds.ToString("0.00") + " s, the probe's hint, 0 when every read-out is whole" }
+  }
+  $l.Add("plugin call       " + $call)
+  $l.Add("the run ended     " + $(if ([string]$s.RunOver -ne "") { $s.RunOver } else { "UNKNOWN" }))
+  $l.Add("switches          " + $(if ([string]$s.Switches -ne "") { $s.Switches } else { "none" }) + ", and -GroupClashesAt left at compare-document.ps1's own unknown, PQ4")
+  $l.Add("")
+  $l.Add("-- pairs: group, NWF, the NWF after the close, its read-out, the comparison")
+  $tally = [ordered]@{ "VERDICT AGREE" = 0; "VERDICT DISAGREE" = 0; "VERDICT NOT PROVED" = 0; "COMPARISON FAILED" = 0; "NOT COMPARED" = 0; "UNKNOWN" = 0 }
+  foreach ($p in $s.Read.Pairs) {
+    $after = "UNKNOWN, the folder was not listed after the close"
+    if ($null -ne $s.Diff) { $a = $s.Diff.Files[(PathKey $p.Nwf)]; if ($null -ne $a) { $after = $a } }
+    $state = [string]$s.States[$p.Stem]; if ($state -eq "") { $state = "UNKNOWN, not read" }
+    $c = [string]$s.Compared[$p.Stem]; if ($c -eq "") { $c = "UNKNOWN, not compared" }
+    $l.Add($p.Group + "`t" + $p.Name + "`t" + $after + "`t" + $state + "`t" + $c)
+    $k = "UNKNOWN"
+    foreach ($t in @($tally.Keys)) { if ($c.StartsWith($t + ",") -or $c -ceq $t -or ($t -eq "COMPARISON FAILED" -and $c.StartsWith($t))) { $k = $t } }
+    $tally[$k] = $tally[$k] + 1
+  }
+  foreach ($g in $s.Read.NoNwf) { $l.Add($g + "`t-`t-`t-`tNOT READ, the group wrote a workbook and no NWF") }
+  $l.Add("")
+  $l.Add("the comparisons' own verdicts, counted and none judged: " + ((@($tally.Keys) | ForEach-Object { $_ + " " + $tally[$_] }) -join ", "))
+  if ($null -ne $s.Diff) {
+    $l.Add("the copy's NWF, NWD and Clash Report folders after the close: " + $s.Diff.Same + " files read the same sha256, " + $s.Diff.Differ + " differ, " + $s.Diff.Unread + " folders not read whole")
+    foreach ($x in $s.Diff.Lines) { $l.Add("  " + $x) }
+  } else { $l.Add("the copy's NWF, NWD and Clash Report folders after the close: UNKNOWN, not listed") }
+  $l.Add("steps that did not run whole: " + $(if ($s.DocCheck.Count -gt 0) { $s.DocCheck -join ", and " } else { "none" }))
+  $l.Add("VERDICT: " + $s.Verdict)
+  $l.Add("END OF SUMMARY")
+  return ,$l
+}
+
+# =======================================================================================
 # Keep awake, the session lock and what changed outside the loop folder while a start ran,
 function KeepAwake($winType, [bool]$on) {
   $flags = [uint32]2147483648
@@ -693,12 +1124,17 @@ function CpuUsedSince($samples, $sinceUtc) {
 # ends are CLOSED, the monitor's WM_CLOSE after the run's RESULT block, and DRIVER, its WM_CLOSE
 # after the driver stopped, which is TOOL REFUSED, exit 0, only when the driver read the tool's
 # own refusal of an NWD item 5 opened, OpenKind .nwd. The same refusal of an NWF is a stop, 8.
-# LogCheck is empty only when the tool's log on disk shows the run RAN.
+# LogCheck is empty only when the tool's log on disk shows the run RAN. F104 part 2: Documents
+# is a documents read, whose clean end is READ, the monitor's end once the probe's calls have
+# returned and the read-outs are quiet. DocCheck names every step of it that could not run, or
+# that found the read wrote into the copy's folders, and is empty when none did, and DocText
+# is what the RAN line says it did. A documents read is never a window run.
 function RunVerdict($v) {
   $r = [pscustomobject]@{ Text = ""; Code = 1 }
   $end = [string]$v.EndState
-  $window = ([string]$v.Item -match '^[1-5]$')
-  $clean = @("HOLD"); if ($window) { $clean = @("CLOSED", "DRIVER") }
+  $docs = ($v.Documents -eq $true)
+  $window = (-not $docs -and [string]$v.Item -match '^[1-5]$')
+  $clean = @("HOLD"); if ($window) { $clean = @("CLOSED", "DRIVER") }; if ($docs) { $clean = @("READ") }
   if ($v.StopText -ne "") { $r.Text = "NOT RUN, " + $v.StopText; $r.Code = 2 }
   elseif (-not $v.Called) { $r.Text = "NOT RUN, a fault before the constructor, " + $v.Fault; $r.Code = 1 }
   elseif (-not $v.Adopted) { $r.Text = "NOT ADOPTED"; $r.Code = 3 }
@@ -707,19 +1143,21 @@ function RunVerdict($v) {
   elseif ($v.RunOver -eq "END FORCED") { $r.Text = "STOPPED, " + $v.EndForced; $r.Code = 4 }
   elseif ([string]$v.CallForced -ne "") { $r.Text = "STOPPED, " + $v.CallForced; $r.Code = 4 }
   elseif ($v.RunOver -eq "CEILING" -or $v.Forced -ne "") { $r.Text = "STOPPED, CEILING, " + $v.Forced; $r.Code = 4 }
-  elseif ($v.RunOver -eq "GONE") { $r.Text = "STOPPED, the adopted Navisworks ended by itself" + $(if ($window) { "" } else { " before the hold" }); $r.Code = 7 }
+  elseif ($v.RunOver -eq "GONE") { $r.Text = "STOPPED, the adopted Navisworks ended by itself" + $(if ($window) { "" } elseif ($docs) { " before the read was over" } else { " before the hold" }); $r.Code = 7 }
   elseif ($v.RunOver -eq "BY ITSELF") { $r.Text = "STOPPED, WINDOW CLOSED BY ITSELF, " + $(if ($v.DriverName -eq "PRESSED") { "after the driver pressed Run" } else { "before the driver pressed Run" }); $r.Code = 7 }
   elseif ($v.RunOver -eq "UNKNOWN") { $r.Text = "STOPPED, UNKNOWN whether the adopted Navisworks still runs, it could not be read through the held handle"; $r.Code = 1 }
   elseif ($end -ne "gone") { $r.Text = "STOPPED, the adopted Navisworks reads " + $end + " after every close path, and is written down"; $r.Code = 1 }
   elseif ($v.Fault -ne "" -or $clean -notcontains $v.RunOver -or @($v.FinallyFaults).Count -gt 0) { $r.Text = ("STOPPED, a fault in run.ps1, " + $v.Fault + " " + $v.MonitorFault + " " + (@($v.FinallyFaults) -join ", and ")).Trim(); $r.Code = 1 }
+  elseif ($docs -and [string]$v.DocCheck -ne "") { $r.Text = "STOPPED, the documents read did not do every step, " + $v.DocCheck; $r.Code = 1 }
   elseif ($window -and $v.RunOver -eq "CLOSED" -and [string]$v.LogCheck -ne "") { $r.Text = "STOPPED, the tool's log does not show the run RAN, " + $v.LogCheck; $r.Code = 1 }
   elseif ($window -and $v.RunOver -eq "DRIVER" -and -not ($v.DriverName -eq "TOOL REFUSED" -and [string]$v.OpenKind -eq ".nwd")) { $r.Text = "STOPPED, DRIVER " + $v.DriverName + " before anything that runs was pressed, " + $v.DriverText; $r.Code = 8 }
   else {
-    if (-not $window) { $r.Text = "RAN, item 0 with no window: started, adopted, held " + $v.HoldSeconds + " s, closed" + $(if ($v.ClosedHere -ne "") { ", FORCED" } else { " by Dispose" }) + ", put back" }
+    if ($docs) { $r.Text = "RAN, the documents read, " + $v.DocText + ", closed" + $(if ($v.ClosedHere -ne "") { ", FORCED" } else { " by Dispose" }) + ", put back" }
+    elseif (-not $window) { $r.Text = "RAN, item 0 with no window: started, adopted, held " + $v.HoldSeconds + " s, closed" + $(if ($v.ClosedHere -ne "") { ", FORCED" } else { " by Dispose" }) + ", put back" }
     elseif ($v.RunOver -eq "DRIVER") { $r.Text = "TOOL REFUSED, " + $v.DriverText }
     else { $r.Text = "RAN, item " + $v.Item + " through the window, the log's RESULT block read, closed" + $(if ($v.ClosedHere -ne "") { ", FORCED" } else { " by Dispose" }) + ", put back" }
     $r.Code = 0
-    if ($v.Dialogs -gt 0) { $r.Code = 5; if (-not $window) { $r.Text = "RAN, with " + $v.Dialogs + " DIALOG findings" } else { $r.Text = $r.Text + ", with " + $v.Dialogs + " DIALOG findings" } }
+    if ($v.Dialogs -gt 0) { $r.Code = 5; if (-not $window -and -not $docs) { $r.Text = "RAN, with " + $v.Dialogs + " DIALOG findings" } else { $r.Text = $r.Text + ", with " + $v.Dialogs + " DIALOG findings" } }
   }
   return $r
 }
@@ -906,7 +1344,11 @@ function PostClose($sync, $windows) {
 # run goes, FederatorWindow.xaml.cs Pump and OnClose, so a run that has started is only ever
 # closed after its RESULT block. A tool's window still open 120 s after WM_CLOSE is closed
 # through the held handle, why written first, END FORCED. The time a log must be made at or
-# after is read at every pass, since the main thread sets it at the plugin call.
+# after is read at every pass, since the main thread sets it at the plugin call. F104 part 2,
+# for a documents read, $sync.ReadFolder: the bytes of the read-outs in that folder stand for
+# the tool's log in the hang rule, Q83, both clocks starting at the plugin call, and the run
+# ends READ once the main thread says the probe's calls returned, no read-out is still being
+# written and the folder has been quiet for 15 s. No WM_CLOSE is ever posted for it.
 function Monitor($sync) {
   $landmark = '^\S+\s+\+\S+\s+(RETAIN|SESSION|RUN SETTINGS|GROUP|RESULT|COPY|RUN |plugin version|open document|FAILURE)|^(SESSION|RUN SETTINGS|GROUPS|RESULT|OPEN FILE)$|Window closed\.'
   function M($t) {
@@ -928,14 +1370,18 @@ function Monitor($sync) {
   $lockState = "unlocked"; $lastLen = $null; $lastGrowUtc = [DateTime]::UtcNow
   $prev = ""; $sawResult = $false; $sawCopy = $false; $sawClosedLine = $false; $runStarted = $false
   $candKey = ""; $toolSeen = $false; $posted = ""; $postedAt = [DateTime]::MinValue; $busyNoted = ""; $driverDone = $false; $startedNoted = $false
+  $docs = ([string]$sync.ReadFolder -ne ""); $prog = $null; $readNoted = ""
   # Mask, which MaskLine calls, reads these two from its caller, as it does in the watchdog.
   $loopRoot = $sync.LoopRoot
   $nw = $sync.Nw
-  M ("MONITOR started, a pass every " + $sync.PassSeconds + " s, hang limit " + $sync.HangLimit + " s" + $(if ($sync.ReadToolLog) { " with under " + $sync.HangCpuSeconds + " s of processor time in it" } else { "" }) + ", fixed hold " + $sync.HoldSeconds + " s")
+  M ("MONITOR started, a pass every " + $sync.PassSeconds + " s, hang limit " + $sync.HangLimit + " s" + $(if ($sync.ReadToolLog -or $docs) { " with under " + $sync.HangCpuSeconds + " s of processor time in it" } else { "" }) + ", fixed hold " + $sync.HoldSeconds + " s")
   # Item 0 calls no plugin, so any new log in the logs folder is Bader's by construction: no
   # tool's log is read and no hang clock starts on one. A window run reads as the tool's the
-  # one log made after its plugin call whose SESSION names the installed stamp.
-  if (-not $sync.ReadToolLog) { M "no tool's log is read and no hang clock starts, because this run calls no plugin, so any new log in the logs folder is Bader's" }
+  # one log made after its plugin call whose SESSION names the installed stamp. A documents
+  # read calls the probe alone, so any new log there is Bader's too, and its hang clocks run
+  # on the read-outs.
+  if ($docs) { M ("no tool's log is read, because this run calls the probe alone and never the tool, so any new log in the logs folder is Bader's. The read-outs the probe writes into " + (Mask $sync.ReadFolder) + " stand for the tool's log in the hang rule, Q83, and both clocks start at the plugin call") }
+  elseif (-not $sync.ReadToolLog) { M "no tool's log is read and no hang clock starts, because this run calls no plugin, so any new log in the logs folder is Bader's" }
   try {
     while (-not $sync.MonitorStop) {
       $now = [DateTime]::UtcNow
@@ -1016,6 +1462,17 @@ function Monitor($sync) {
         } catch { $L = $null; M ("the log's length UNKNOWN, " + (Err $_.Exception)) }
         if ($null -ne $L -and $L -ne $lastLen) { $lastLen = $L; $lastGrowUtc = $now }
       }
+      # F104 part 2. The read-outs stand for the tool's log. They are read once both clocks
+      # have started at the plugin call, or once the probe's calls have returned, so the end
+      # of the run is read even when the plugin call was never made.
+      if ($docs) {
+        if ($null -eq $clk -and $since -ne [DateTime]::MaxValue) { $clk = NewClocks $now; M "the plugin call is made, so both clocks of the hang rule start now, on the read-outs and the processor time" }
+        if ($null -ne $clk -or $sync.CallReturned) {
+          $prog = ReadOutProgress $sync.ReadFolder
+          if ($null -ne $prog.Why) { M ("the read-outs could not be read, UNKNOWN, " + $prog.Why) }
+          else { $L = $prog.Bytes; if ($L -ne $lastLen) { $lastLen = $L; $lastGrowUtc = $now } }
+        }
+      }
       if ($null -ne $clk) {
         if ($win -and $lockNow -ne "unlocked") { $clk = NewClocks $now }
         else {
@@ -1023,9 +1480,10 @@ function Monitor($sync) {
           if ($clk.Unknown) { M "a sample could not be read, UNKNOWN, so both clocks start again" }
           if (HangVerdict $clk.LChange $clk.Samples $now $sync.HangLimit $sync.HangCpuSeconds) {
             $used = CpuUsedSince $clk.Samples $now.AddSeconds(-$sync.HangLimit)
-            M ("HANG: the log stood at " + $clk.L + " bytes since " + $clk.LChange.ToLocalTime().ToString("HH:mm:ss") + ", " + ($now - $clk.LChange).TotalSeconds.ToString("0") + " s, and the adopted Navisworks used " + $used.ToString("0.000") + " s of processor time in the last " + $sync.HangLimit + " s, under " + $sync.HangCpuSeconds + " s, Q83")
+            M ("HANG: " + $(if ($docs) { "the read-outs" } else { "the log" }) + " stood at " + $clk.L + " bytes since " + $clk.LChange.ToLocalTime().ToString("HH:mm:ss") + ", " + ($now - $clk.LChange).TotalSeconds.ToString("0") + " s, and the adopted Navisworks used " + $used.ToString("0.000") + " s of processor time in the last " + $sync.HangLimit + " s, under " + $sync.HangCpuSeconds + " s, Q83")
             $hangLines = New-Object System.Collections.Generic.List[string]
             foreach ($t in $tail) { $hangLines.Add($t) }
+            if ($docs -and $null -ne $prog) { $hangLines.Add("---- the document folder at the hang ----"); foreach ($x in $prog.Lines) { $hangLines.Add($x) } }
             $hangLines.Add("---- the adopted process's visible windows at the hang ----")
             foreach ($w in (WindowLines $sync.WinType $sync.ProcType ([uint32]$sync.MyPid) $true $true)) { $hangLines.Add($w) }
             [System.IO.File]::WriteAllLines((Join-Path $sync.RunDir "hang-tail.txt"), $hangLines.ToArray(), (New-Object System.Text.UTF8Encoding($false)))
@@ -1039,6 +1497,7 @@ function Monitor($sync) {
       $cText = "UNKNOWN"; if ($null -ne $c) { $cText = ([double]$c / 1e7).ToString("0.000") + " s" }
       $grow = ""; if ($null -ne $c -and $null -ne $lastC) { $grow = ", " + ([double]($c - $lastC) / 1e7).ToString("0.000") + " s since the last pass" }
       $lText = ""; if ($null -ne $logPath) { $lText = ", the log " + $L + " bytes" }
+      elseif ($docs -and $null -ne $prog -and $null -eq $prog.Why) { $lText = ", the read-outs " + $prog.Bytes + " bytes, " + $prog.Partial + " being written, " + $prog.Whole + " in place" }
       M ("SAMPLE processor " + $cText + $grow + $lText)
       $lastC = $c
       # WindowRecords returns its list as one object, so the call is put in brackets and piped,
@@ -1065,16 +1524,28 @@ function Monitor($sync) {
         $lastBeat = $now
         $cg = ""; if ($null -ne $c -and $null -ne $beatC) { $cg = ", growth " + ([double]($c - $beatC) / 1e7).ToString("0.000") + " s" }
         $lg = ""; if ($null -ne $L -and $null -ne $beatL) { $lg = ", growth " + ($L - $beatL) + " bytes" }
+        $noun = "the log"; if ($docs) { $noun = "the read-outs" }
         $still = "the clocks have not started, there is no tool's log"
+        if ($docs) { $still = "the clocks have not started, the plugin call is not made yet" }
         if ($null -ne $clk) {
           $u = CpuUsedSince $clk.Samples $now.AddSeconds(-$sync.HangLimit)
-          $still = "the log still for " + ($now - $clk.LChange).TotalSeconds.ToString("0") + " s against " + $sync.HangLimit + ", and the processor used " + $(if ($null -eq $u) { "an amount not known yet, the samples do not reach back that far," } else { $u.ToString("0.000") + " s" }) + " in the last " + $sync.HangLimit + " s against " + $sync.HangCpuSeconds
+          $still = $noun + " still for " + ($now - $clk.LChange).TotalSeconds.ToString("0") + " s against " + $sync.HangLimit + ", and the processor used " + $(if ($null -eq $u) { "an amount not known yet, the samples do not reach back that far," } else { $u.ToString("0.000") + " s" }) + " in the last " + $sync.HangLimit + " s against " + $sync.HangCpuSeconds
         }
         $lw = ""
         try { $wl = @((ReadShared $sync.WatchFile).Split("`n") | ForEach-Object { $_.TrimEnd("`r") } | Where-Object { $_ -ne "" }); if ($wl.Count -gt 0) { $lw = $wl[$wl.Count - 1] } } catch { $lw = "UNKNOWN, " + (Err $_.Exception) }
         $ll = $lastLine; if ($ll.Length -gt 120) { $ll = $ll.Substring(0, 120) }
-        M ("HEARTBEAT the log " + $(if ($null -ne $L) { [string]$L + " bytes" + $lg } else { "none" }) + ", its last line `"" + (MaskLine $ll) + "`", processor " + $cText + $cg + ", " + $still + ", the watchdog's last line: " + $lw)
+        $lastText = ", its last line `"" + (MaskLine $ll) + "`""; if ($docs) { $lastText = "" }
+        M ("HEARTBEAT " + $noun + " " + $(if ($null -ne $L) { [string]$L + " bytes" + $lg } else { "none" }) + $lastText + ", processor " + $cText + $cg + ", " + $still + ", the watchdog's last line: " + $lw)
         $beatC = $c; $beatL = $L
+      }
+      # F104 part 2. The end of a documents read: the probe's calls have returned, no read-out
+      # is still being written, and the read-outs have been quiet for 15 s. A read-out still
+      # being written after the calls returned is waited for, and the hang rule or the ceiling
+      # decides when it never ends.
+      if ($docs -and $sync.CallReturned -and $null -ne $prog -and $null -eq $prog.Why) {
+        $quiet = ($now - $lastGrowUtc).TotalSeconds
+        if ($prog.Partial -eq 0 -and $quiet -ge $sync.QuietSeconds) { M ("READ: the probe's calls have returned, no read-out is still being written, and the read-outs have not grown for " + $quiet.ToString("0") + " s, " + $prog.Whole + " read-outs in place, so the run is over"); $sync.RunOver = "READ"; break }
+        if ($prog.Partial -gt 0 -and $readNoted -eq "") { $readNoted = "partial"; M ("the probe's calls have returned and " + $prog.Partial + " read-outs are still being written, so the run waits for them, and the hang rule or the ceiling decides if they never end") }
       }
       if ($win) {
         if (-not $driverDone -and $null -ne $sync.DriverProc) {
@@ -1293,7 +1764,17 @@ function LastInstallMatch($installsDir, $entries) {
 
 # =======================================================================================
 # Check mode. Reads only and writes nothing.
-function CheckMode($paths, $stamp, $item) {
+# F104 part 2. One pair as the record and Check print it: the group, the NWF with its bytes and
+# sha256 as read, and the read-out of its workbook in the window run's workbooks folder.
+function PairLine($pair) {
+  $nwf = $pair.Name + ", " + $(if ($null -ne $pair.Length) { [string]$pair.Length + " bytes, sha256 " + $pair.Hash } else { "not read" })
+  $wb = "- the group wrote no workbook"
+  if ($pair.WorkbookName -ne "") { $wb = "workbooks\" + $pair.WorkbookName } elseif ($null -ne $pair.Xlsx) { $wb = "the read-out of its workbook is not usable, see the refusals" }
+  return ($pair.Group + "`t" + $nwf + "`t" + $wb)
+}
+# With $docs, Check -For Documents: the same reads, then the refusals a documents read would
+# give in its order, and the pairs it would read.
+function CheckMode($paths, $stamp, $item, $docs, $probe) {
   Say "==== CHECK, reading only, writing nothing ===="
   Say "---- every Roamer ----"
   [void](RoamerRefusal)
@@ -1326,6 +1807,19 @@ function CheckMode($paths, $stamp, $item) {
   }
   Say "---- source.manifest.txt and source.removed.txt ----"
   Say ("  source.manifest.txt there: " + (Test-Path -LiteralPath $paths.Manifest) + ", source.removed.txt there: " + (Test-Path -LiteralPath $paths.Removed))
+  if ($null -ne $docs) {
+    Say "---- the refusals Documents would give, in its order ----"
+    $r = RunRefusals $paths "" $false $item $null $docs $probe
+    foreach ($x in $r) { Say ("  would refuse: " + $x) }
+    if ($r.Count -eq 0) { Say "  none, for what was given" }
+    Say ("---- the pairs it would read, off " + $(if ($docs.TsvName -ne "") { $docs.TsvName + ", " + $docs.Rows + " rows" } else { "no .tsv" }) + ": " + $docs.Pairs.Count + " pairs ----")
+    Say "  group`tNWF, as read now`tworkbook read-out"
+    foreach ($p in $docs.Pairs) { Say ("  " + (PairLine $p)) }
+    foreach ($g in $docs.NoNwf) { Say ("  " + $g + "`t- the group wrote a workbook and no NWF, so it has no document to read") }
+    Say ("  the window run's record: " + $(if ($docs.Verdict -ne "") { $docs.Verdict } else { "not read" }))
+    if ($r.Count -eq 0) { return 0 }
+    return 2
+  }
   Say "---- the refusals Run would give, in Run's order ----"
   $wtc = $null; if ([string]$item -match '^[1-5]$') { $wtc = (NewWinTypes).WinType }
   $r = RunRefusals $paths $stamp $false $item $wtc
@@ -1346,15 +1840,23 @@ if ($hostWhy.Count -gt 0) {
   Say "REFUSED: run.ps1 runs only in Windows PowerShell 5.1, 64 bit and STA, as the script its own powershell.exe was started to run: powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\run.ps1 followed by its parameters. Its deadline ends its own process, so it never runs inside another. Nothing was started and nothing was written."
   exit 2
 }
-$paramWhy = ParamRefusal $Mode $Set $Item $Stamp $RunFolder $Folder $Xml $OpenFile $args $loopRoot $repo
+# F104 part 2. A documents read's own folder is named by the moment it was called, so every
+# call has a new one and none is ever emptied or used again.
+$docStamp = $T0.ToString("yyyyMMdd-HHmmss")
+$paramWhy = ParamRefusal $Mode $Set $Item $Stamp $RunFolder $Folder $Xml $OpenFile $args $loopRoot $repo $For $PictureStatuses $PictureCap $PriorityPicked.IsPresent $docStamp
 if ($paramWhy.Count -gt 0) {
   foreach ($w in $paramWhy) { Say ("REFUSED: " + $w + ". Nothing was started and nothing was written.") }
   exit 2
 }
 $Mode = ModeOf $Mode
-$paths = RunPaths $loopRoot $repo $Set $Item $Folder $Xml $OpenFile
+$docsMode = ($Mode -eq "Documents" -or ($Mode -eq "Check" -and $For -ceq "Documents"))
+$paths = RunPaths $loopRoot $repo $Set $Item $Folder $Xml $OpenFile $(if ($docsMode) { $docStamp } else { "" })
+# What a documents read reads before anything else, once, so its refusals and its start read
+# the same pairs and the same probe.
+$docRead = $null; $probeRead = $null
+if ($docsMode) { $docRead = ReadPairs $paths; $probeRead = ProbeRead $paths.ProbeDll }
 
-if ($Mode -eq "Check") { exit (CheckMode $paths $Stamp $Item) }
+if ($Mode -eq "Check") { exit (CheckMode $paths $Stamp $Item $docRead $probeRead) }
 
 $mutex = New-Object System.Threading.Mutex($false, "Local\NwcFederatorLoop.run")
 $haveLock = $false
@@ -1435,21 +1937,25 @@ try {
   }
 
   # =====================================================================================
-  if ($Mode -eq "Run") {
+  # F104 part 2. A documents read runs through this same block as item 0 does, every guard of
+  # it kept, with the probe's two calls where item 0 holds and a window run starts its driver.
+  if ($Mode -eq "Run" -or $Mode -eq "Documents") {
     $sync = $null; $wps = $null; $whandle = $null; $mon = $null
     $app = $null; $myPid = 0; $myTicks = $null; $goneAtUtc = $null
     $disposed = $false; $suppressed = $false; $called = $false; $adopted = $false
     $ka = $null; $bs = $null; $logsBefore = $null; $keysBefore = $null
     $stopText = ""; $fault = ""; $forced = ""; $spb = $null; $asp = $null; $logsChanged = $false; $putBackFailed = $false; $kaOff = $false
-    # F106, the window run, items 1 to 5.
-    $win = ($Item -match '^[1-5]$')
+    # F106, the window run, items 1 to 5. A documents read reads what one wrote and is not one.
+    $win = (-not $docsMode -and $Item -match '^[1-5]$')
     $dproc = $null; $dTicks = $null; $dErr = $null; $evPlan = New-Object System.Collections.Generic.List[object]
+    # F104 part 2, what the documents read keeps for its steps after the close.
+    $snapBefore = $null; $probeCall = $null; $watched = @()
     do {
       $wt = NewWinTypes
       $procType = $wt.ProcType
       $winType = $wt.WinType
-      Say "---- checks 4 to 11 ----"
-      $rr = RunRefusals $paths $Stamp $true $Item $winType
+      Say $(if ($docsMode) { "---- checks 4 to 7, 11 and 19 ----" } else { "---- checks 4 to 11 ----" })
+      $rr = RunRefusals $paths $Stamp $true $Item $winType $docRead $probeRead
       if ($rr.Count -gt 0) { Say ("REFUSED: " + $rr[0] + "."); $code = 2; break }
       $autoDll = Join-Path $nw "Autodesk.Navisworks.Automation.dll"
       if (-not (Test-Path -LiteralPath $autoDll)) { Say ("REFUSED: there is no Autodesk.Navisworks.Automation.dll at " + $autoDll + ". Nothing was started and nothing was written."); $code = 2; break }
@@ -1459,24 +1965,44 @@ try {
       # check 12, the run folder. What is moved aside is said once the new record has started,
       # so the record and the evidence copied from it carry it.
       $asideLines = New-Object System.Collections.Generic.List[string]
+      # F104 part 2. A documents read's folder is named by the second it was called, so one
+      # already there is a second call in that second, and is refused, never moved or used.
+      if ($docsMode -and (Test-Path -LiteralPath $paths.RunDir)) { Say ("REFUSED: the documents read's own folder " + (Mask $paths.RunDir) + " is there already, and a folder is never used twice. Call again. Nothing was started and nothing was written."); $code = 2; break }
       if (Test-Path -LiteralPath $paths.RunDir) {
         $aside = (Split-Path $paths.RunDir -Leaf) + "-aside-" + [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
         try { Rename-Item -LiteralPath $paths.RunDir -NewName $aside -ErrorAction Stop } catch { Say ("REFUSED: the run folder from an earlier call could not be moved aside, " + (Err $_.Exception) + ". Nothing was touched."); $code = 2; break }
         $asideLines.Add("  the run folder from an earlier call was moved aside as " + $aside)
       }
       # The evidence of an earlier call that was NOT RUN, which check 11 let through, moved
-      # aside the same way and never emptied.
-      if ((EvidenceFiles $paths.Evidence) -gt 0 -and (EvidenceNotRun $paths.Evidence)) {
+      # aside the same way and never emptied. A documents read reads that evidence and never
+      # moves it.
+      if (-not $docsMode -and (EvidenceFiles $paths.Evidence) -gt 0 -and (EvidenceNotRun $paths.Evidence)) {
         $evAside = (Split-Path $paths.Evidence -Leaf) + "-aside-" + [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
         try { Rename-Item -LiteralPath $paths.Evidence -NewName $evAside -ErrorAction Stop } catch { foreach ($al in $asideLines) { Say $al }; Say ("REFUSED: the evidence of an earlier call that was NOT RUN could not be moved aside, " + (Err $_.Exception) + ". Nothing else was touched."); $code = 2; break }
         $asideLines.Add("  the evidence of an earlier call that was NOT RUN was moved aside as steps\runs\" + $Set + "\" + $evAside)
       }
       New-Item -ItemType Directory -Path $paths.RunDir -ErrorAction Stop | Out-Null
       $script:RecordFile = Join-Path $paths.RunDir "record.txt"
-      if ($win) { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", drive-window-run.ps1 sha256 " + (Get-FileHash -LiteralPath (Join-Path $repo "tools\probes\drive-window-run.ps1") -Algorithm SHA256).Hash + ", -Mode Run -Set " + $Set + " -Item " + $Item + " -Folder " + $Folder + $(if ($Xml -ne "") { " -Xml " + (MaskLine $Xml) } else { "" }) + $(if ($OpenFile -ne "") { " -OpenFile " + $OpenFile } else { "" }) + " -Stamp " + $Stamp + ", the window run") }
+      if ($docsMode) { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", compare-document.ps1 sha256 " + (Get-FileHash -LiteralPath (Join-Path $repo "tools\loop\compare-document.ps1") -Algorithm SHA256).Hash + ", -Mode Documents -Set " + $Set + " -Item " + $Item + " -Folder " + $Folder + $(if ($OpenFile -ne "") { " -OpenFile " + $OpenFile } else { "" }) + $(if ($PictureStatuses -ne "") { " -PictureStatuses " + $PictureStatuses } else { "" }) + $(if ($PictureCap -ne "") { " -PictureCap " + $PictureCap } else { "" }) + $(if ($PriorityPicked) { " -PriorityPicked" } else { "" }) + ", the documents read of steps\runs\" + $Set + "\" + $paths.RunName) }
+      elseif ($win) { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", drive-window-run.ps1 sha256 " + (Get-FileHash -LiteralPath (Join-Path $repo "tools\probes\drive-window-run.ps1") -Algorithm SHA256).Hash + ", -Mode Run -Set " + $Set + " -Item " + $Item + " -Folder " + $Folder + $(if ($Xml -ne "") { " -Xml " + (MaskLine $Xml) } else { "" }) + $(if ($OpenFile -ne "") { " -OpenFile " + $OpenFile } else { "" }) + " -Stamp " + $Stamp + ", the window run") }
       else { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", -Mode Run -Set " + $Set + " -Item 0 -Stamp " + $Stamp + ", the start with no window") }
       Say ("  the run folder " + (Mask $paths.RunDir) + ", every line from here is also in its record.txt")
       foreach ($al in $asideLines) { Say $al }
+      if ($docsMode) {
+        # The pairs as checks 11 and 19 read them, written into pairs.txt, one line per group,
+        # the NWF, a tab and the workbook read-out, a dash when the group wrote none.
+        Say ("  the window run's record: " + $docRead.Verdict)
+        Say ("  its .tsv " + $docRead.TsvName + ", sha256 " + $docRead.TsvHash + ", " + $docRead.Rows + " rows, " + $docRead.Pairs.Count + " pairs")
+        Say ("  the probe " + (Mask $paths.ProbeDll) + ", " + $probeRead.Length + " bytes, sha256 " + $probeRead.Hash + ", stamp " + $probeRead.Stamp)
+        $pairLines = New-Object System.Collections.Generic.List[string]
+        $pairLines.Add("# group`tNWF`tworkbook read-out, a dash when the group wrote none")
+        foreach ($p in $docRead.Pairs) {
+          Say ("  pair " + (PairLine $p))
+          $pairLines.Add($p.Group + "`t" + $p.Nwf + "`t" + $(if ($null -ne $p.Workbook) { $p.Workbook } else { "-" }))
+        }
+        foreach ($g in $docRead.NoNwf) { Say ("  group " + $g + " wrote a workbook and no NWF, so it has no document to read") }
+        [System.IO.File]::WriteAllLines((Join-Path $paths.RunDir "pairs.txt"), $pairLines.ToArray(), $utf8)
+      }
 
       $watchFile = Join-Path $paths.RunDir "watch.txt"
       [System.IO.File]::WriteAllText($watchFile, "", $utf8)
@@ -1493,6 +2019,30 @@ try {
       Say ("  the watchdog started, constructor deadline " + $CtorDeadlineSeconds + " s, ceiling " + $CeilingSeconds + " s from adoption")
 
       try {
+        if ($docsMode) {
+          # F104 part 2, before anything of his is touched: every folder the read must leave as
+          # it is, listed with sha256, the NWFs among them, then the probe copied into the run
+          # folder and read back, so the DLL Navisworks loads is the one recorded.
+          Say "---- check 20, the copy's NWF, NWD and Clash Report folders before the start ----"
+          $watched = New-Object System.Collections.Generic.List[string]
+          foreach ($d in @(@($paths.Nwf, $paths.Nwd, $paths.Report) + @($docRead.Pairs | ForEach-Object { Split-Path $_.Nwf -Parent }))) { if (-not (HasPath $watched $d)) { $watched.Add($d) } }
+          $snapBefore = FoldersSnap $watched
+          foreach ($d in $snapBefore.Keys) { $s = $snapBefore[$d]; Say ("  " + (Mask $d) + ": " + $(if (-not $s.Ok) { "NOT READ WHOLE, " + $s.Why } elseif ($s.Missing) { "not there" } else { [string]$s.Entries.Count + " files listed with sha256" })) }
+          if (@($snapBefore.Keys | Where-Object { -not $snapBefore[$_].Ok }).Count -gt 0) { $stopText = "STOP before the start: a folder of the copy could not be read whole, so whether the read leaves it as it was could not be shown. Nothing of his was changed"; Say $stopText; $code = 2; break }
+          $nowFiles = SnapFiles $snapBefore
+          $moved = @($docRead.Pairs | Where-Object { $nowFiles[(PathKey $_.Nwf)] -ne $_.Hash })
+          foreach ($p in $moved) { Say ("  the NWF of group " + $p.Group + " read sha256 " + $p.Hash + " at check 11 and " + $(if ($null -ne $nowFiles[(PathKey $p.Nwf)]) { $nowFiles[(PathKey $p.Nwf)] } else { "nothing" }) + " now") }
+          if ($moved.Count -gt 0) { $stopText = "STOP before the start: " + $moved.Count + " NWFs changed between check 11 and now, so what would be read is not what the checks read. Nothing of his was changed"; Say $stopText; $code = 2; break }
+          Say ("  every NWF of the " + $docRead.Pairs.Count + " pairs reads the sha256 check 11 read")
+          Say "---- check 21, the probe copied into the run folder ----"
+          New-Item -ItemType Directory -Path (Split-Path $paths.ProbeCopy -Parent) -ErrorAction Stop | Out-Null
+          Copy-Item -LiteralPath $paths.ProbeDll -Destination $paths.ProbeCopy -ErrorAction Stop
+          $ph = (Get-FileHash -LiteralPath $paths.ProbeCopy -Algorithm SHA256).Hash
+          Say ("  " + (Mask $paths.ProbeCopy) + ", read back sha256 " + $ph)
+          if ($ph -ne $probeRead.Hash) { $stopText = "STOP before the start: the probe's copy reads back with another sha256 than check 19 read off the probe, so it is not loaded. Nothing of his was changed"; Say $stopText; $code = 2; break }
+          New-Item -ItemType Directory -Path $paths.DocDir -ErrorAction Stop | Out-Null
+          New-Item -ItemType Directory -Path $paths.CompareDir -ErrorAction Stop | Out-Null
+        }
         $when = [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
         Say "---- check 13, his logs folder ----"
         $lb = BackupNew $paths.HisLogs $paths.LogsBackup (Join-Path $paths.RunDir "logs-before.txt") $when
@@ -1577,9 +2127,12 @@ try {
         $sync.MonitorStop = $false; $sync.RunOver = ""; $sync.MonitorFault = ""; $sync.MonitorWriteFails = 0
         $sync.Dialogs = 0; $sync.ToolLog = $null; $sync.LogAmbiguous = $false; $sync.ReadToolLog = $win
         $sync.LogsFolder = $paths.HisLogs; $sync.LogsBefore = $logsBefore
-        $sync.HangLimit = $HangLimitSeconds; $sync.HangCpuSeconds = $HangCpuSeconds; $sync.PassSeconds = $PassSeconds; $sync.HoldSeconds = $(if ($win) { 0 } else { $HoldSeconds }); $sync.BeatSeconds = $BeatSeconds
+        $sync.HangLimit = $HangLimitSeconds; $sync.HangCpuSeconds = $HangCpuSeconds; $sync.PassSeconds = $PassSeconds; $sync.HoldSeconds = $(if ($win -or $docsMode) { 0 } else { $HoldSeconds }); $sync.BeatSeconds = $BeatSeconds
         $sync.Window = $win; $sync.Stamp = $Stamp; $sync.QuietSeconds = $QuietSeconds; $sync.EndCloseSeconds = $CallLimitSeconds; $sync.EndForced = ""
         $sync.DriverProc = $null; $sync.DriverExit = $null; $sync.DriverLine = ""; $sync.DriverNotes = Join-Path $paths.RunDir "driver.txt"; $sync.DriverPressed = (DriverCode "PRESSED")
+        # F104 part 2. The folder the probe writes into, read by the monitor in place of the
+        # tool's log, and whether the probe's calls have returned, which ProbeCall sets.
+        $sync.ReadFolder = $(if ($docsMode) { $paths.DocDir } else { "" }); $sync.CallReturned = $false
         # No log is read as the tool's until the plugin call is made, so the time is set then.
         $sync.LogSinceUtc = [DateTime]::MaxValue
         $mps = [PowerShell]::Create()
@@ -1623,10 +2176,14 @@ try {
             Say ("  ExecuteAddInPlugin " + $(if ($null -eq $perr) { "RETURNED " + $pret } else { "THREW" }) + ", called " + $pt0.ToString("HH:mm:ss.fff") + ", returned " + [DateTime]::Now.ToString("HH:mm:ss.fff") + ", after " + $sw.Elapsed.TotalSeconds.ToString("0.00") + " s. Nothing is judged by what it returned")
             if ($null -ne $perr) { Say ("    " + (Err $perr)) }
           } else { $sync.CallName = ""; $sync.CallLimit = $CallLimitSeconds; Say ("  the run ended before the plugin call, " + $sync.RunOver + ", so ExecuteAddInPlugin is not called") }
+        } elseif ($docsMode) {
+          Say "---- the probe, AddPluginAssembly and the plugin call ----"
+          if ($sync.RunOver -eq "") { $probeCall = ProbeCall $app $sync $paths.ProbeCopy $paths.DocDir @($docRead.Pairs | ForEach-Object { $_.Nwf }) $CallLimitSeconds $ProbeId }
+          else { $sync.CallReturned = $true; Say ("  the run ended before the probe was loaded, " + $sync.RunOver + ", so neither call is made") }
         }
         while ($sync.RunOver -eq "" -and -not $mon.Handle.IsCompleted) { Start-Sleep -Milliseconds 500 }
         Say ("==== THE RUN ENDED: " + $sync.RunOver + " ====")
-        if (@("HOLD", "CLOSED", "DRIVER", "BY ITSELF") -contains $sync.RunOver) {
+        if (@("HOLD", "CLOSED", "DRIVER", "BY ITSELF", "READ") -contains $sync.RunOver) {
           Say ("  " + [DateTime]::Now.ToString("HH:mm:ss.fff") + "  calling Dispose()")
           $sw = [Diagnostics.Stopwatch]::StartNew()
           $sync.CallSinceUtc = [DateTime]::UtcNow; $sync.CallName = "Dispose"
@@ -1843,6 +2400,50 @@ try {
             }
           }
         } catch { $finallyFaults.Add("the tool's log, the outputs and the workbooks, " + (Err $_.Exception)) }
+        # F104 part 2. The documents read's own steps, once its Navisworks is closed and Bader's
+        # things are put back, each in its own try, so a fault in one never skips the next: the
+        # copy's folders listed again, each read-out read, and compare-document.ps1 on every
+        # pair. Each writes only under the run folder. DocCheck gathers every step that could not
+        # run, and the files of the copy's folders the read changed, which it must never do.
+        $docCheck = New-Object System.Collections.Generic.List[string]; $docText = ""
+        $folderDiff = $null; $states = @{}; $cmp = @{}
+        if ($docsMode -and $called) {
+          if ($null -ne $probeCall -and $probeCall.Fault -ne "") { $docCheck.Add($probeCall.Fault) }
+          try {
+            Say "---- check 20 again, the copy's NWF, NWD and Clash Report folders after the close ----"
+            $folderDiff = FoldersDiff $snapBefore (FoldersSnap $watched)
+            foreach ($l in $folderDiff.Lines) { Say ("  " + $l) }
+            Say ("  " + $folderDiff.Same + " files read the sha256 they read before the start, " + $folderDiff.Differ + " differ, " + $folderDiff.Unread + " folders were not read whole")
+            if ($folderDiff.Unread -gt 0) { $docCheck.Add([string]$folderDiff.Unread + " of the copy's folders could not be read whole after the close") }
+            if ($folderDiff.Differ -gt 0) { $docCheck.Add([string]$folderDiff.Differ + " files of the copy's NWF, NWD and Clash Report folders differ after the read, which writes nothing there") }
+          } catch { $docCheck.Add("the copy's folders could not be listed after the close, " + (Err $_.Exception)) }
+          try {
+            Say "---- the read-outs ----"
+            $notWhole = 0
+            foreach ($p in $docRead.Pairs) {
+              $states[$p.Stem] = ReadOutState $paths.DocDir $p.Stem
+              if ($states[$p.Stem] -cne "whole") { $notWhole++ }
+              Say ("  " + $p.Group + "`t" + $p.Stem + "-document.txt`t" + $states[$p.Stem])
+            }
+            if ($notWhole -gt 0) { $docCheck.Add([string]$notWhole + " of " + $docRead.Pairs.Count + " read-outs are not whole") }
+          } catch { $docCheck.Add("the read-outs could not be read, " + (Err $_.Exception)) }
+          try {
+            Say "---- compare-document.ps1 on every pair ----"
+            $notDone = 0
+            foreach ($p in $docRead.Pairs) {
+              if ($null -eq $p.Workbook) { $cmp[$p.Stem] = "NOT COMPARED, the group wrote no workbook"; Say ("  " + $p.Group + "`t" + $cmp[$p.Stem]); continue }
+              if ($states[$p.Stem] -cne "whole") { $cmp[$p.Stem] = "NOT COMPARED, its read-out is not whole"; Say ("  " + $p.Group + "`t" + $cmp[$p.Stem]); continue }
+              $c = ComparePair $repo $p.Workbook (Join-Path $paths.DocDir ($p.Stem + "-document.txt")) (Join-Path $paths.CompareDir ($p.Stem + "-compare.txt")) $PictureStatuses $PictureCap $PriorityPicked.IsPresent
+              $cmp[$p.Stem] = $c.Text
+              if ($c.Exit -ne 0) { $notDone++ }
+              Say ("  " + $p.Group + "`tcompare-document.ps1 ran as pid " + $c.Pid + " and exited " + $c.Exit + ", " + $c.Text)
+            }
+            if ($notDone -gt 0) { $docCheck.Add([string]$notDone + " comparisons did not finish, compare-document.ps1 exited other than 0") }
+          } catch { $docCheck.Add("compare-document.ps1 could not be run on every pair, " + (Err $_.Exception)) }
+          $whole = @($docRead.Pairs | Where-Object { $states[$_.Stem] -ceq "whole" }).Count
+          $compared = @($docRead.Pairs | Where-Object { ([string]$cmp[$_.Stem]).StartsWith("VERDICT ") }).Count
+          $docText = [string]$docRead.Pairs.Count + " pairs, " + $whole + " read-outs whole, " + $compared + " comparisons written, the copy's folders read the same after"
+        }
         try {
           if ($null -ne $ka) {
             $off = KeepAwake $winType $false
@@ -1863,31 +2464,47 @@ try {
           $dm = [regex]::Match([string]$sync.DriverLine, 'DRIVER EXIT -?\d+ [A-Z ]+: (.*)$')
           if ($dm.Success) { $dText = $dm.Groups[1].Value } else { $dText = [string]$sync.DriverLine }
         }
-        $vd = RunVerdict ([pscustomobject]@{ StopText = $stopText; Called = $called; Adopted = $adopted; NotPutBack = $notPutBack; RunOver = [string]$sync.RunOver; Forced = [string]$sync.Forced; CallForced = [string]$sync.CallForced; Fault = $fault; MonitorFault = [string]$sync.MonitorFault; FinallyFaults = @($finallyFaults); Dialogs = [int]$sync.Dialogs; ClosedHere = $forced; HoldSeconds = $HoldSeconds; EndState = $endState; Item = $Item; EndForced = [string]$sync.EndForced; DriverName = $dName; DriverText = $dText; LogCheck = $logCheck; OpenKind = $(if ($OpenFile -ne "") { [System.IO.Path]::GetExtension($OpenFile).ToLowerInvariant() } else { "" }) })
+        $vd = RunVerdict ([pscustomobject]@{ StopText = $stopText; Called = $called; Adopted = $adopted; NotPutBack = $notPutBack; RunOver = [string]$sync.RunOver; Forced = [string]$sync.Forced; CallForced = [string]$sync.CallForced; Fault = $fault; MonitorFault = [string]$sync.MonitorFault; FinallyFaults = @($finallyFaults); Dialogs = [int]$sync.Dialogs; ClosedHere = $forced; HoldSeconds = $HoldSeconds; EndState = $endState; Item = $Item; EndForced = [string]$sync.EndForced; DriverName = $dName; DriverText = $dText; LogCheck = $logCheck; OpenKind = $(if ($OpenFile -ne "") { [System.IO.Path]::GetExtension($OpenFile).ToLowerInvariant() } else { "" }); Documents = $docsMode; DocCheck = ($docCheck -join ", and "); DocText = $docText })
         $code = $vd.Code
         Say ("  lines that could not be written to record.txt: " + $script:SayFailures + ", by the monitor: " + $sync.MonitorWriteFails)
         Say ("VERDICT: " + $vd.Text)
         $script:RecordFile = $null
-        try {
-          $ev = $paths.Evidence
-          New-Item -ItemType Directory -Force -Path $ev | Out-Null
-          if ($win) {
-            Copy-Item -LiteralPath (Join-Path $paths.RunDir "record.txt") -Destination (Join-Path $ev "record.txt")
-            Say ("  evidence record.txt, " + (Get-Item -LiteralPath (Join-Path $ev "record.txt")).Length + " bytes")
-            foreach ($p in $evPlan) {
-              if ($null -eq $p.From) { continue }
-              $to = Join-Path $ev $p.Name
-              Copy-Item -LiteralPath $p.From -Destination $to
-              Say ("  evidence " + $p.Name + ", " + (Get-Item -LiteralPath $to).Length + " bytes")
+        # F104 part 2. A documents read writes summary.txt last, beside its read-outs and
+        # comparisons, and nothing into steps\runs, where the window run's evidence is only read.
+        # The lead copies what it wrote there through F102's mask.
+        if ($docsMode) {
+          try {
+            if ($called) {
+              $switches = (@($(if ($PictureStatuses -ne "") { "-PictureStatuses " + $PictureStatuses }), $(if ($PictureCap -ne "") { "-PictureCap " + $PictureCap }), $(if ($PriorityPicked) { "-PriorityPicked" })) | Where-Object { $_ }) -join " "
+              $sl = SummaryLines ([pscustomobject]@{ Set = $Set; RunName = $paths.RunName; RunDir = $paths.RunDir; Read = $docRead; Probe = $probeRead; Call = $probeCall; RunOver = [string]$sync.RunOver; Diff = $folderDiff; States = $states; Compared = $cmp; Switches = $switches; DocCheck = $docCheck; Verdict = $vd.Text })
+              $sf = Join-Path $paths.RunDir "summary.txt"
+              [System.IO.File]::WriteAllLines($sf, $sl.ToArray(), $utf8)
+              Say ("  summary.txt written, " + (Get-Item -LiteralPath $sf).Length + " bytes, " + $docRead.Pairs.Count + " pair lines")
+            } else { Say "  the constructor was never called, so no document was read and no summary.txt is written" }
+            Say ("  nothing was written into steps\runs. The read-outs, comparisons and summary are in " + (Mask $paths.RunDir) + ", for the lead to copy into steps\runs\" + $Set + "\" + $paths.RunName + "\document through F102's mask")
+          } catch { Say ("  FAULT: summary.txt could not be written, " + (Err $_.Exception) + ". The read-outs and comparisons are in the run folder"); if ($code -eq 0) { $code = 1 } }
+        } else {
+          try {
+            $ev = $paths.Evidence
+            New-Item -ItemType Directory -Force -Path $ev | Out-Null
+            if ($win) {
+              Copy-Item -LiteralPath (Join-Path $paths.RunDir "record.txt") -Destination (Join-Path $ev "record.txt")
+              Say ("  evidence record.txt, " + (Get-Item -LiteralPath (Join-Path $ev "record.txt")).Length + " bytes")
+              foreach ($p in $evPlan) {
+                if ($null -eq $p.From) { continue }
+                $to = Join-Path $ev $p.Name
+                Copy-Item -LiteralPath $p.From -Destination $to
+                Say ("  evidence " + $p.Name + ", " + (Get-Item -LiteralPath $to).Length + " bytes")
+              }
+            } else {
+              foreach ($n in @("record.txt", "watch.txt", "settings.txt")) {
+                $src = Join-Path $paths.RunDir $n
+                if (Test-Path -LiteralPath $src) { Copy-Item -LiteralPath $src -Destination (Join-Path $ev $n); Say ("  evidence " + $n + ", " + (Get-Item -LiteralPath (Join-Path $ev $n)).Length + " bytes") }
+              }
             }
-          } else {
-            foreach ($n in @("record.txt", "watch.txt", "settings.txt")) {
-              $src = Join-Path $paths.RunDir $n
-              if (Test-Path -LiteralPath $src) { Copy-Item -LiteralPath $src -Destination (Join-Path $ev $n); Say ("  evidence " + $n + ", " + (Get-Item -LiteralPath (Join-Path $ev $n)).Length + " bytes") }
-            }
-          }
-          Say ("  the evidence is in steps\runs\" + $Set + "\" + $paths.RunName + ". Mask it with F102's tool before it is committed")
-        } catch { Say ("  FAULT: the evidence could not be copied into steps\runs, " + (Err $_.Exception) + ". It is all in the run folder"); if ($code -eq 0) { $code = 1 } }
+            Say ("  the evidence is in steps\runs\" + $Set + "\" + $paths.RunName + ". Mask it with F102's tool before it is committed")
+          } catch { Say ("  FAULT: the evidence could not be copied into steps\runs, " + (Err $_.Exception) + ". It is all in the run folder"); if ($code -eq 0) { $code = 1 } }
+        }
       }
     } while ($false)
   }

@@ -188,6 +188,14 @@ and 6 does not read as broken.
   the total. Per test detail stays for tests that were created or run. One run wrote
   1830 near identical SKIPPED lines and a 1 MB log, which buries everything worth
   reading
+- THE RUNNING COUNT IS TAKEN AFTER THE TEST IT NUMBERS, F113. `ClashRunOutcome
+  .ProgressAfter` is the line the log carries at every twenty fifth test and at the last
+  one, so a group that runs to its end ends on a count, and it reads the counts as they stand.
+  A group with no test to run writes no count, and one the guard stops ends on RUN STOPPED. The
+  runner took it BEFORE the test it numbered until F113, so on the run of 2026-10-01 the
+  last count of all 22 groups was one test short of the block under it, and three were
+  short of the block's clashes by the last test's own, 1624 against 1629 in 1B06PK. The
+  last count of a group and the block read the same numbers
 - A test already in the document is left as it is, which means a tolerance changed in the
   XML never reaches it. That is right and it was silent, so now it is REPORTED. Every
   test in both is compared on the tolerance, the test type, merge composites, and per
@@ -411,7 +419,11 @@ and 6 does not read as broken.
   the most severe clash in it, which is the minimum: a hard clash reports a negative
   overlap so the worst is the most negative, and a clearance test reports a gap so the
   worst is the smallest. Every row carries the raw count behind it, so the grouping hides
-  nothing
+  nothing. A GROUP STANDS FOR THE CLASHES UNDER IT AND FOR NO MORE, F113, and one with none
+  under it stands for none. `ClashRow.ForGroup` is the rule. The harvest floored a group at
+  one, so an empty group made the Clashes cell and the cell of its status read one higher
+  than the clashes the document holds, which the runner counts under every group. Whether
+  a saved test can hold an empty group is UNKNOWN
 - The clash API has no open against closed notion. Nothing on IClashResult, ClashResult,
   ClashResultGroup, ClashTest or DocumentClashTests names one, ClashResultStatus is a flat
   five value enum, and Navisworks' own report does not mention open or closed either. So
@@ -917,7 +929,11 @@ and 6 does not read as broken.
   the only status set. THE PENETRATION RULE OWNS A CLASH THEY BOTH WANT, counted here
   under ThePenetrationRuleHasIt, so the two blocks add up to the number of clashes that
   moved rather than to twice it. A pair naming a set not in this run is a FINDING, named
-  once across the whole run and not once per group, and nothing acts on it
+  once across the whole run and not once per group, and nothing acts on it. A CLASH WITH
+  NO NAME IS NEVER REVIEWED BY IT, F113, because nothing can address it to move it.
+  `ByDesignRule.Judge` takes the name and asks about it last, and the block counts it under
+  a reason of its own. Judged Reviewed it was counted as moved in the block, the RESULT
+  line and the rule B line while the add-in left it off the list the editor applies
 - THE REVIEWED LINE IS ONE RULE IN ONE PLACE, `Federator.Core.Clash.ReviewedLine`. Two
   rules now write one and only the WHY differs. A second copy of that string in a second
   tally is how the two would start reading differently, and a person scanning a log for
@@ -942,7 +958,10 @@ and 6 does not read as broken.
   status one of this tool's own records names and nothing else, so Approved and Resolved
   are still never set, because a record can only be written for a status this tool was
   allowed to move from and the record's own constructor refuses the other three. Q50 asks
-  whether that is the right shape
+  whether that is the right shape. A COMMENT NAMING ONE OF THOSE THREE IS NOT ONE OF OURS,
+  F113, and `AutoReviewRecord.In` reads it as no record, because only a hand can have
+  written it. It used to read all five and hand the three to the constructor, which
+  threw, and the undo then left every clash of that test alone
 - NOTHING MOVES SILENTLY. A PENETRATION block per group names every clash moved with both
   categories and the service size, then the totals and ONE LINE PER REASON for every clash
   left alone, including the reasons at zero, because a reason missing from the block reads
