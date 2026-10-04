@@ -1,0 +1,21 @@
+15:57:57.738  driver started, pid 29288, owner pid 47208, start ticks UTC 639267153776051006, set 04, stamp e4484d15
+15:57:57.981  the tool's window, handle 8915550, class HwndWrapper[Roamer.exe;;b3e10665-a020-40e9-b510-9e967c3028af], caption "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]", a window of pid 47208
+15:58:01.689  typed into SourceFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C02, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C02
+15:58:01.720  IncludeSubfolders reads On, left as the window opened it
+15:58:01.771  pressed Scan
+15:58:01.876  the scan ended after 0.1 s, the window moved itself to 2. Grouping
+15:58:02.724  SourceSummary reads: 4 NWC found, 4 readable, 0 that cannot be read. FilesGrid rows 4
+15:58:03.679  GroupsGrid rows 1, every group ticked: 1 groups, 0 unticked. The tool's GROUPS block is the proof either way
+15:58:04.960  typed into NwfFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02
+15:58:05.456  typed into NwdFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWD\C02, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWD\C02
+15:58:05.992  typed into ExcelFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\Clash Report\C02, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\Clash Report\C02
+15:58:07.466  typed into ExchangeFileBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+15:58:12.015  read back SourceFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C02
+15:58:12.017  read back NwfFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02
+15:58:12.019  read back NwdFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWD\C02
+15:58:12.021  read back ExcelFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\Clash Report\C02
+15:58:12.023  read back ExchangeFileBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+15:58:12.195  ToleranceBox reads Use the value in the XML, MarkByDesign Off, MarkPenetrations Off, PriorityBox empty, each left as the window opened it
+15:58:12.220  pressed RunButton
+15:58:14.478  a dialog of pid 47208 after RunButton: class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Clash Detective", every text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard"
+15:58:14.486  DRIVER EXIT 8 DIALOG: 1 dialogs that are not the confirm are up after RunButton, the first captioned "Clash Detective", and each is left up, so nothing more was pressed
