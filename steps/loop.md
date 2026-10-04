@@ -27,8 +27,9 @@ B1 CHECKED: the plain prepare-copy.ps1 at 11:47:55 found the desktop folder chan
 the source copy again, 142 files, 140 of them NWC, turn5\prepare-copy-plain-1.txt. Its
 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml is byte for byte the repo's exchange matrix, sha256
 792b01fb, 1,446,076 bytes, asking ME-Ductwork 5 times and ME-DUCTWORK never, and Bader's old
-one sits beside it renamed with -OLD, turn5\b1-xml-check.txt. So set 05's copy asks
-ME-Ductwork, and its runs name that XML.
+one sits beside it renamed with -OLD, turn5\b1-xml-check.txt. So set 05's copy, once made
+from this source copy, will ask ME-Ductwork, and its first run is to be given that XML by
+name with -Xml, never the -OLD file beside it.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
