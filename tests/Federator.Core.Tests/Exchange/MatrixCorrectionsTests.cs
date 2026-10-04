@@ -81,7 +81,7 @@ namespace Federator.Core.Tests
         /// </summary>
         private static CorrectionOutcome Picked(string xml)
         {
-            return MatrixCorrections.ForPickedFile(xml, TheList(), RevitWorksets.All());
+            return MatrixCorrections.ForPickedFile(xml, TheList());
         }
 
         /// <summary>The internal name of the Revit Workset parameter, as the client file writes it.</summary>
@@ -307,7 +307,8 @@ namespace Federator.Core.Tests
         /// What the measured spellings do to the client's own matrix since Q102. The four
         /// values the buildings spell two ways are asked in both, every condition asking one
         /// now asking each, the one value a single building spells another way is corrected
-        /// to that, and the two the models spell exactly as the matrix does are left alone.
+        /// to that, FP-PIPING, which the models spell exactly as the matrix does, is left alone,
+        /// and so is PL-Drainage, which the list beside the file names no spelling of, F116.
         /// Until C06 was measured the four were corrected to the C02 spelling, and the sets
         /// then found nothing in the C06 buildings writing capitals, FR-008.
         /// </summary>
@@ -325,7 +326,8 @@ namespace Federator.Core.Tests
             Assert.That(said, Does.Contain("the value FF-FIRE FIGHTING becomes FF-Fire Fighting"));
 
             Assert.That(said, Does.Contain("the value FP-PIPING is left alone"));
-            Assert.That(said, Does.Contain("the value PL-Drainage is left alone"));
+            Assert.That(said, Does.Contain(
+                "the value PL-Drainage is left alone  0 occurrences. the list beside this file names no spelling of it"));
 
             // Every one of the 5 conditions asking it is now there in both spellings.
             Assert.That(Occurrences(outcome.Text, "<data type=\"wstring\">ME-DUCTWORK</data>"), Is.EqualTo(5));
@@ -512,7 +514,7 @@ namespace Federator.Core.Tests
 
             Assert.That(broken.Unread, Does.Contain("line 2"));
 
-            CorrectionOutcome outcome = MatrixCorrections.ForPickedFile(source, broken, RevitWorksets.All());
+            CorrectionOutcome outcome = MatrixCorrections.ForPickedFile(source, broken);
 
             Assert.That(outcome.Text, Is.EqualTo(source));
             Assert.That(outcome.Lines()[0], Does.StartWith("MATRIX   NO CORRECTION WAS MADE TO THIS FILE"));
@@ -1688,7 +1690,7 @@ namespace Federator.Core.Tests
                     MatrixCorrections.ReadPicked(PickedCopy(folder, Samples.Matrix(), true)).Corrections,
                     MatrixCorrections.ReadPicked(Samples.CorrectedMatrix()).Corrections,
                     MatrixCorrections.ReadPicked(Samples.Matrix()).Corrections,
-                    MatrixCorrections.ForPickedFile(Read(Samples.Matrix()), broken, RevitWorksets.All()).Lines()
+                    MatrixCorrections.ForPickedFile(Read(Samples.Matrix()), broken).Lines()
                 })
                 {
                     Assert.That(lines[lines.Count - 2], Is.EqualTo(expected));
@@ -1836,6 +1838,228 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// The two other ways a list beside the XML cannot be used, each said on the first line
+        /// and never a throw, the reviewer's test gap on the Q113 pass: a list another program
+        /// holds open, and a rename whose new name still holds the old one, which a second run
+        /// would rename again. Either corrects nothing.
+        /// </summary>
+        [Test]
+        public void AListHeldOpenOrARenameItCannotUseCorrectsNothingAndSaysWhy()
+        {
+            string folder = TempFolder.Make("f116-cannot-use");
+
+            try
+            {
+                List<string> asWritten = WhatItAsks(new ExchangeReader().ReadFile(Samples.Matrix()));
+
+                string held = Path.Combine(folder, "held-open.xml");
+                File.Copy(Samples.Matrix(), held);
+                File.WriteAllText(ListBeside(held), "rename: " + BrokenName + " | " + CorrectName + "\n", new UTF8Encoding(false));
+
+                string loop = Path.Combine(folder, "loop.xml");
+                File.Copy(Samples.Matrix(), loop);
+                File.WriteAllText(ListBeside(loop), "# a comment\nrename: BLD-X | BLD-X-2\n", new UTF8Encoding(false));
+
+                ExchangeDocument heldOpen = null;
+
+                using (new FileStream(ListBeside(held), FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    Assert.That(() => heldOpen = MatrixCorrections.ReadPicked(held), Throws.Nothing);
+                }
+
+                Assert.That(WhatItAsks(heldOpen), Is.EqualTo(asWritten));
+                Assert.That(heldOpen.Corrections[0], Does.StartWith(
+                    "MATRIX   NO CORRECTION WAS MADE TO THIS FILE, because the list of corrections beside it, "
+                        + ListBeside(held) + ", could not be read: it could not be opened, "));
+
+                ExchangeDocument looping = null;
+
+                Assert.That(() => looping = MatrixCorrections.ReadPicked(loop), Throws.Nothing);
+                Assert.That(WhatItAsks(looping), Is.EqualTo(asWritten));
+                Assert.That(looping.Corrections[0], Does.StartWith(
+                    "MATRIX   NO CORRECTION WAS MADE TO THIS FILE, because the list of corrections beside it, "
+                        + ListBeside(loop) + ", could not be read: line 2, \"rename: BLD-X | BLD-X-2\", is a rename that cannot be used: "));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// A list saved as UTF-16 with its byte order mark is read as UTF-16, because the reader
+        /// takes the mark, which is what the list's own header and core.md now say, the
+        /// reviewer's and the claim-checker's point on the Q113 pass. The no-break space of a
+        /// measured spelling comes through whole.
+        /// </summary>
+        [Test]
+        public void AListSavedAsUtf16WithItsMarkIsReadAsUtf16()
+        {
+            string folder = TempFolder.Make("f116-utf16");
+
+            try
+            {
+                string xml = Path.Combine(folder, "utf16.xml");
+                File.Copy(Samples.Matrix(), xml);
+                File.WriteAllText(ListBeside(xml), "workset: EL-Fire" + NoBreakSpace + "alarm\n", new UnicodeEncoding(false, true));
+
+                MatrixCorrectionList list = MatrixCorrectionList.Beside(xml, new CorrectionListSettings());
+
+                Assert.That(list.Unread, Is.Null);
+                Assert.That(list.Worksets, Is.EqualTo(new[] { "EL-Fire" + NoBreakSpace + "alarm" }));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// The breaker's finding on the Q113 pass. A list beside the XML that holds nothing, a
+        /// file of no bytes, one of comments alone or one of blank lines, corrects nothing and
+        /// says so as no list does, and never more than no list. It handed the names inside Core
+        /// to the value correction, so ME-DUCTWORK became ME-Ductwork off the C02 census when the
+        /// list said nothing at all.
+        /// </summary>
+        [Test]
+        public void AnEmptyListBesideItCorrectsNothingAndSaysSoAsNoListDoes()
+        {
+            string folder = TempFolder.Make("f116-empty-list");
+            string nwf = "MATRIX   a set already in an NWF keeps the conditions it was built with and is not given"
+                + " what this file asks unless the box \"" + SetRebuildSettings.TickLabel + "\" is ticked."
+                + " The SETS block of each group names every such set as DRIFTED";
+
+            try
+            {
+                List<string> asWritten = WhatItAsks(new ExchangeReader().ReadFile(Samples.Matrix()));
+
+                foreach (string[] one in new[]
+                {
+                    new[] { "no-bytes.xml", string.Empty },
+                    new[] { "comments.xml", "# a comment\n#\n# another\n" },
+                    new[] { "blank-lines.xml", "\n   \n\n" }
+                })
+                {
+                    string xml = Path.Combine(folder, one[0]);
+                    File.Copy(Samples.Matrix(), xml);
+                    File.WriteAllText(ListBeside(xml), one[1], new UTF8Encoding(false));
+
+                    ExchangeDocument document = MatrixCorrections.ReadPicked(xml);
+
+                    Assert.That(WhatItAsks(document), Is.EqualTo(asWritten), one[0]);
+                    Assert.That(document.Corrections, Is.EqualTo(new[]
+                    {
+                        "MATRIX   no correction was made to this file, because the list of corrections beside it, "
+                            + ListBeside(xml) + ", holds none. Every set is built exactly as the file asks",
+                        nwf,
+                        "MATRIX   no correction was applied to this file, for the reason the first line gives"
+                    }), one[0]);
+                }
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// A value is corrected only from what the list beside the picked XML says, the breaker's
+        /// finding on the Q113 pass. A list of a rename alone corrects no workset value, and each
+        /// value line says the list names no spelling of it. A list naming one spelling corrects
+        /// that value, asked in every spelling measured with the names inside Core, and leaves
+        /// every value it names no spelling of as the file asks.
+        /// </summary>
+        [Test]
+        public void AValueIsCorrectedOnlyWhereTheListBesideItNamesASpellingOfIt()
+        {
+            string folder = TempFolder.Make("f116-named-values");
+
+            try
+            {
+                IList<string> asWritten = MatrixCorrections.WorksetValuesIn(new ExchangeReader().ReadFile(Samples.Matrix()));
+
+                string renameOnly = Path.Combine(folder, "rename-only.xml");
+                File.Copy(Samples.Matrix(), renameOnly);
+                File.WriteAllText(ListBeside(renameOnly), "rename: " + BrokenName + " | " + CorrectName + "\n", new UTF8Encoding(false));
+
+                ExchangeDocument renamed = MatrixCorrections.ReadPicked(renameOnly);
+
+                Assert.That(renamed.Corrections, Has.Member("MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  121 occurrences"));
+                Assert.That(MatrixCorrections.WorksetValuesIn(renamed), Is.EqualTo(asWritten), "no workset value changed");
+
+                foreach (string value in asWritten)
+                {
+                    Assert.That(renamed.Corrections, Has.Member(
+                        "MATRIX   the value " + value + " is left alone  0 occurrences. the list beside this file names no spelling of it"));
+                }
+
+                string oneSpelling = Path.Combine(folder, "one-spelling.xml");
+                File.Copy(Samples.Matrix(), oneSpelling);
+                File.WriteAllText(ListBeside(oneSpelling), "workset: ME-DUCTWORK\n", new UTF8Encoding(false));
+
+                ExchangeDocument named = MatrixCorrections.ReadPicked(oneSpelling);
+
+                Assert.That(named.Corrections, Has.Member(
+                    "MATRIX   the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork, every spelling measured so far in this project's models  5 occurrences"));
+                Assert.That(named.Corrections, Has.Member(
+                    "MATRIX   the value ME-PIPING is left alone  0 occurrences. the list beside this file names no spelling of it"));
+                Assert.That(MatrixCorrections.WorksetValuesIn(named), Has.Member("ME-Ductwork"));
+                Assert.That(MatrixCorrections.WorksetValuesIn(named), Has.No.Member("ME-Piping"));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// One rule in one place, the reviewer's finding on the Q113 pass. The spellings the
+        /// corrections ask and the spellings the judge of a set that found nothing knows are the
+        /// same ones, the names inside Core and the workset lines of the list beside the picked
+        /// XML together. So every workset value the client's matrix asks once corrected is one the
+        /// judge says models in this project carry. The EMPTY SETS block called ME-DUCTWORK a value
+        /// no model in this project carries while the MATRIX line said it was measured.
+        /// </summary>
+        [Test]
+        public void EverySpellingTheCorrectionsAskIsOneTheEmptySetJudgeKnows()
+        {
+            string folder = TempFolder.Make("f116-judge");
+
+            try
+            {
+                ExchangeDocument document = MatrixCorrections.ReadPicked(PickedCopy(folder, Samples.Matrix(), true));
+                SetBuildPlan plan = SetBuildPlan.From(document);
+                IList<string> asked = MatrixCorrections.WorksetValuesIn(document);
+                List<string> calledWrong = new List<string>();
+
+                foreach (string value in asked)
+                {
+                    EmptySet why = EmptySets.Why(
+                        "a/" + value,
+                        new List<ReadCondition> { new ReadCondition(string.Empty, WorksetProperty, SetBuildPlan.EqualsTest, value) },
+                        plan.Worksets);
+
+                    if (why.Reason != EmptyReason.TheValueIsThereAnyway)
+                    {
+                        calledWrong.Add(why.Line());
+                    }
+                }
+
+                Assert.That(asked, Has.Member("ME-DUCTWORK").And.Member("FF-Fire Fighting"));
+                Assert.That(calledWrong, Is.Empty);
+
+                // A file read as it stands is judged against the names inside Core alone.
+                Assert.That(
+                    SetBuildPlan.From(new ExchangeReader().ReadFile(Samples.Matrix())).Worksets,
+                    Is.EqualTo(RevitWorksets.All()));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
         /// The list's name is the XML's name without its extension and the suffix, a setting
         /// whose default is .corrections.txt, so the list in the exchange folder is the one the
         /// tool finds beside the corrected XML. A suffix set another way finds the list named
@@ -1872,8 +2096,10 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Q113 B, nothing of this project's list is inside Core: no list is embedded in the
-        /// assembly, so a build of the tool carries no project's corrections.
+        /// Q113 B. No embedded resource of Core is named for corrections, so the list that was
+        /// embedded until Q113 is gone. A list typed into the code or embedded under another
+        /// name would pass this, and the grep of src for the project's names is what proves
+        /// those absent.
         /// </summary>
         [Test]
         public void NoListOfCorrectionsIsInsideCore()

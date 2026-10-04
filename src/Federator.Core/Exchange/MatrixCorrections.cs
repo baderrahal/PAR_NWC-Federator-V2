@@ -150,6 +150,11 @@ namespace Federator.Core.Exchange
     /// Core and the workset lines of the project's list beside the picked XML, Q113, never a
     /// list in the code, and a spelling not measured yet is UNKNOWN.
     ///
+    /// AND ONLY WHERE THE LIST BESIDE THE PICKED FILE NAMES A SPELLING OF IT, F116 on the
+    /// breaker's finding after Q113. A value is corrected only from what that list says, so a
+    /// value it names no spelling of is left as the file asks and its line says so, and a list
+    /// with no workset line corrects no value, as no list does.
+    ///
     /// AND WHERE TWO OR MORE WERE MEASURED IT ASKS FOR EVERY ONE OF THEM, Q102 answered
     /// on 2026-10-04. Until then a value with two case only spellings was refused and left
     /// as it was, because a rule that guesses between two real worksets is worse than a set
@@ -161,10 +166,24 @@ namespace Federator.Core.Exchange
     public sealed class ValueRewrite
     {
         public ValueRewrite(string from, IList<string> candidates)
+            : this(from, candidates, true)
+        {
+        }
+
+        /// <summary>The same, saying whether the list beside the picked file names a spelling of it, F116.</summary>
+        internal ValueRewrite(string from, IList<string> candidates, bool listed)
         {
             From = from ?? string.Empty;
             Candidates = candidates ?? new List<string>();
+            Listed = listed;
         }
+
+        /// <summary>
+        /// Whether the list beside the picked file names a spelling of it. Where it names none
+        /// the value is left as the file asks, F116. True for a rewrite handed in whole, whose
+        /// caller says what was measured.
+        /// </summary>
+        internal bool Listed { get; private set; }
 
         /// <summary>The value as the matrix writes it.</summary>
         public string From { get; private set; }
@@ -565,27 +584,32 @@ namespace Federator.Core.Exchange
             string xml = ExchangeReader.ReadFileText(path);
 
             MatrixCorrectionList list = MatrixCorrectionList.Beside(path, new CorrectionListSettings());
-            CorrectionOutcome outcome = ForPickedFile(xml, list, RevitWorksets.All());
+            CorrectionOutcome outcome = ForPickedFile(xml, list);
             ExchangeDocument document = new ExchangeReader().ReadText(outcome.Text, path);
-            document.Corrected(outcome.Lines());
+
+            // The spellings the corrections were chosen from, so the judge of a set that finds
+            // nothing reads the same ones, F116.
+            document.Corrected(outcome.Lines(), RevitWorksets.With(list.Worksets));
             return document;
         }
 
         /// <summary>
-        /// Every correction of that list, applied to that text with the workset spellings
-        /// measured inside Core and those of the list: the renames, the catch-all sets with the
-        /// categories other sets claim read off the file, every workset value the file asks
-        /// for, and the Source File rules. The one place the corrections are chosen, for the
-        /// tool and for the test proving the exchange file is exactly what they make from the
-        /// sample. The first line names the list and what it holds, Q113.
+        /// Every correction of that list, applied to that text: the renames, the catch-all sets
+        /// with the categories other sets claim read off the file, every workset value the file
+        /// asks for that the list names a spelling of, asked in the spellings RevitWorksets.With
+        /// gives, the names inside Core and the list's, and the Source File rules. The one place
+        /// the corrections are chosen, for the tool and for the test proving the exchange file is
+        /// exactly what they make from the sample. The first line names the list and what it
+        /// holds, Q113.
         ///
-        /// NO LIST, OR ONE THAT COULD NOT BE READ, CORRECTS NOTHING AND SAYS SO, and a set the
-        /// text walk could not read is counted and said, so a picked file is never passed on as
-        /// if it were corrected when it was not.
+        /// NO LIST, ONE THAT COULD NOT BE READ OR ONE HOLDING NONE CORRECTS NOTHING AND SAYS SO,
+        /// and a set the text walk could not read is counted and said, so a picked file is never
+        /// passed on as if it were corrected when it was not, and a list never corrects more
+        /// than it says, F116.
         /// </summary>
-        internal static CorrectionOutcome ForPickedFile(string xml, MatrixCorrectionList list, IList<string> measuredWorksets)
+        internal static CorrectionOutcome ForPickedFile(string xml, MatrixCorrectionList list)
         {
-            if (list.Missing || list.Unread != null)
+            if (list.Missing || list.Unread != null || list.HoldsNone)
             {
                 CorrectionOutcome nothing = new CorrectionOutcome(xml);
                 nothing.Warn(list.Said());
@@ -593,10 +617,14 @@ namespace Federator.Core.Exchange
                 return nothing;
             }
 
-            List<string> measured = new List<string>(measuredWorksets);
-            measured.AddRange(list.Worksets);
-
             ExchangeDocument read = new ExchangeReader().ReadText(xml);
+            List<ValueRewrite> values = new List<ValueRewrite>();
+
+            foreach (ValueRewrite value in ValueRewrite.For(WorksetValuesIn(read), RevitWorksets.With(list.Worksets)))
+            {
+                values.Add(new ValueRewrite(value.From, value.Candidates, list.NamesASpellingOf(value.From)));
+            }
+
             List<ConditionsRewrite> catchAlls = new List<ConditionsRewrite>();
 
             foreach (string[] catchAll in list.CatchAlls)
@@ -613,7 +641,7 @@ namespace Federator.Core.Exchange
                 list.Renames,
                 null,
                 catchAlls,
-                ValueRewrite.For(WorksetValuesIn(read), measured),
+                values,
                 null,
                 list.SourceFiles);
 
@@ -947,6 +975,12 @@ namespace Federator.Core.Exchange
                         continue;
                     }
 
+                    if (!value.Listed)
+                    {
+                        outcome.Add("the value " + value.From + " is left alone", 0, "the list beside this file names no spelling of it");
+                        continue;
+                    }
+
                     if (value.Candidates.Count > 1)
                     {
                         // Q102. Every spelling, and once for each workset whatever spelling
@@ -972,8 +1006,9 @@ namespace Federator.Core.Exchange
                             out widened);
 
                         // What was measured and no more, F116: the spellings are the census
-                        // inside Core and those of the list beside the picked file, each of them
-                        // measured and neither of them every workset, so these are the ones seen so far.
+                        // inside Core and those of the list beside the picked file, RevitWorksets.With,
+                        // each of them measured and neither of them every workset, so these are the
+                        // ones seen so far.
                         outcome.Add(
                             "the value " + value.From + " is asked as " + string.Join(" or ", spellings.ToArray())
                                 + ", every spelling measured so far in this project's models",

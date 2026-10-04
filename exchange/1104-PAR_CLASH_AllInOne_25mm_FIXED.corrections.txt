@@ -49,7 +49,10 @@ source-file: -AR- | Ramps | Railings | Furniture | Site
 # WORKSET, Q102 answered on 2026-10-04: a set asks every spelling of a workset measured in the
 # models, as Or groups, where there are two or more, and the one measured where there is one,
 # Q68. The tool reads the spellings below together with the 39 names its own list holds, the
-# C02 census of 2026-09-20, docs\history\scan.md 5t, which stays inside the tool.
+# C02 census of 2026-09-20, docs\history\scan.md 5t, which stays inside the tool, and judges a
+# set that found nothing against the same ones. It corrects a value the XML asks only where a
+# line below is a spelling of it but for its case, and leaves every other value as the XML
+# asks, F116.
 #
 # MEASURED on 2026-10-01 off the C06 run of set 03: the names its 22 EXPORT CHECK blocks list
 # on their "worksets seen" lines, steps\runs\03\item1-C06\run-20261001-140037.log, that the C02
@@ -58,13 +61,15 @@ source-file: -AR- | Ramps | Railings | Furniture | Site
 # workset C06 carries. The rest are UNKNOWN until a run writes the "model worksets" rows of its
 # tsv, which name every workset of every model in full, F116.
 #
-# THEY ARE WHY Q102 WAS ASKED. 1B06BC and 1B06G1 carry ME-DUCTWORK, ME-EQUIPMENT and ME-PIPING
-# in capitals where the C02 models write ME-Ductwork, ME-Equipment and ME-Piping, and 1B06G1,
-# 1B06K1, 1B06P1 and 1B06PK write PL-Domestic Water where C02 writes PL-Domestic water.
+# THEY ARE WHY Q102 WAS ASKED. 1B06G1 carries ME-DUCTWORK, ME-EQUIPMENT and ME-PIPING in
+# capitals and 1B06BC the first two among the ten names its line lists, where the C02 models
+# write ME-Ductwork, ME-Equipment and ME-Piping, and 1B06G1, 1B06K1, 1B06P1 and 1B06PK write
+# PL-Domestic Water where C02 writes PL-Domestic water.
 #
 # One of them is EL-Fire alarm written by 1B06PO and 1B06WO with a no-break space, U+00A0,
 # between its two words, which is a different name from the C02 one with a space. This file is
-# UTF-8, and a list that is not UTF-8 is not read.
+# UTF-8. A list whose bytes are not UTF-8 is not read, and one saved as UTF-16 with its byte
+# order mark is read as UTF-16.
 workset: +LINK-ST-Boundary Wall Layout
 workset: +Link-AR-***
 workset: 00-EL-LEVELS GRIDS

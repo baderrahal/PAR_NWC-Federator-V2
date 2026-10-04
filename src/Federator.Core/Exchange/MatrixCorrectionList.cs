@@ -21,6 +21,11 @@ namespace Federator.Core.Exchange
     /// looks like a file that needed nothing, so a list that cannot be opened, is not UTF-8 text
     /// or holds a line this does not know is Unread, carrying why, and the picked file is
     /// corrected not at all and never in part. Never a throw.
+    ///
+    /// A LIST HOLDING NONE CORRECTS NOTHING, AS NO LIST DOES, and its first line says so, F116 on
+    /// the breaker's finding: a file of no bytes, of comments or of blank lines. And a workset
+    /// value is corrected only where the list names a spelling of it, NamesASpellingOf, so a list
+    /// never corrects more than it says.
     /// </summary>
     internal sealed class MatrixCorrectionList
     {
@@ -74,10 +79,40 @@ namespace Federator.Core.Exchange
         internal ReadOnlyCollection<SourceFileRule> SourceFiles { get; private set; }
 
         /// <summary>
-        /// The workset spellings measured in the project's models, each once, read beside the
-        /// names RevitWorksets holds inside Core when a value is asked in every spelling.
+        /// The workset spellings measured in the project's models, each once, which
+        /// RevitWorksets.With puts beside the names inside Core for the corrections and for the
+        /// judge of a set that found nothing.
         /// </summary>
         internal ReadOnlyCollection<string> Worksets { get; private set; }
+
+        /// <summary>Whether the list is there, was read and holds no correction and no workset spelling, F116.</summary>
+        internal bool HoldsNone
+        {
+            get
+            {
+                return !Missing
+                    && Unread == null
+                    && Renames.Count + CatchAlls.Count + SourceFiles.Count + Worksets.Count == 0;
+            }
+        }
+
+        /// <summary>
+        /// Whether one of the list's workset lines is a spelling of that value, the same but for
+        /// its case. A workset value of the picked file is corrected only where it is, because a
+        /// value is corrected only from what the list beside the file says, F116.
+        /// </summary>
+        internal bool NamesASpellingOf(string value)
+        {
+            foreach (string spelling in Worksets)
+            {
+                if (string.Equals(spelling, value, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         /// <summary>Why the list could not be read, or null where it was read whole or is not there.</summary>
         internal string Unread { get; private set; }
@@ -201,7 +236,7 @@ namespace Federator.Core.Exchange
 
         /// <summary>
         /// What the first MATRIX line says about the list, with its full path: what it holds, or
-        /// that none is there, or why it could not be read, Q113.
+        /// that none is there, or why it could not be read, Q113, or that it holds none, F116.
         /// </summary>
         internal string Said()
         {
@@ -215,6 +250,12 @@ namespace Federator.Core.Exchange
             {
                 return "NO CORRECTION WAS MADE TO THIS FILE, because the list of corrections beside it, "
                     + ListPath + ", could not be read: " + Unread + ". Every set is built exactly as the file asks";
+            }
+
+            if (HoldsNone)
+            {
+                return "no correction was made to this file, because the list of corrections beside it, "
+                    + ListPath + ", holds none. Every set is built exactly as the file asks";
             }
 
             return "the corrections are read from " + ListPath + ", the list beside this file. It holds "

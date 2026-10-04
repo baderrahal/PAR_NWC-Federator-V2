@@ -167,7 +167,7 @@ and 6 does not read as broken.
   window writes as MATRIX lines after the line saying which file it read. The HEALTH block at
   the pick judges the corrected sets, because those are the sets the run builds
 - THE CORRECTIONS ARE ONE PROJECT'S DATA, KEPT BESIDE THE PICKED XML AND NEVER IN CORE, Q113
-  answered B: the tool serves many projects, and nothing in src names one project's file.
+  answered B: the tool serves many projects, and nothing in src may name one project's file.
   The list is a plain file named after the XML, its name without the extension and
   `CorrectionListSettings.Suffix`, default `.corrections.txt`, one full path tested with
   File.Exists and never a search or a wildcard, `MatrixCorrectionList.Beside`. It holds the
@@ -177,12 +177,30 @@ and 6 does not read as broken.
   so the two are copied together. The FIRST MATRIX line names the list in full and how many
   corrections and workset spellings it holds. No list there corrects nothing, the file is
   read as written, and the first MATRIX line names the path looked for. A list that cannot
-  be read, a line it does not know, bytes that are not UTF-8 or a file that will not open,
-  corrects NOTHING and the first MATRIX line says why, never a part of it and never a throw.
+  be read, a line it does not know, a rename it cannot use, bytes that are not UTF-8 or a
+  file that will not open, corrects NOTHING and the first MATRIX line says why, never a part
+  of it and never a throw. A list saved as UTF-16 or UTF-32 with its byte order mark is read
+  in that encoding. A list that is there and HOLDS NONE, no bytes, comments or blank lines,
+  corrects nothing and its first MATRIX line says so, as no list does, F116.
   `revit-worksets.txt` inside Core holds the C02 census alone, the 39 names measured before
-  F116, and a value is asked in every spelling the census and the list hold between them.
-  The code names no set, folder, category or spelling. Q113 D keeps all four categories of
-  Q103 in this project's list
+  F116. Q113 D keeps all four categories of Q103 in this project's list
+- THE CENSUS AND THE LIST ARE PUT TOGETHER IN ONE PLACE, `RevitWorksets.With`, F116 on the
+  readings of the Q113 pass. The corrections take their spellings from it and the EMPTY SETS
+  judge is handed the same ones, through `ExchangeDocument.Worksets` and
+  `SetBuildPlan.Worksets` to `EmptySets.Why`, so a spelling a MATRIX line says was measured is
+  never one that block calls carried by no model. A file read as it stands is judged against
+  the census alone
+- A WORKSET VALUE IS CORRECTED ONLY WHERE THE LIST NAMES A SPELLING OF IT, the same but for
+  its case, `MatrixCorrectionList.NamesASpellingOf`, F116 on the breaker's finding: a value is
+  corrected only from what the list beside the XML says. It is then asked in every spelling
+  the census and the list hold between them. A value the list names none of is left as the
+  file asks and its line says so, so a list with no workset line corrects no value, as no
+  list does
+- WHAT THE CORRECTIONS CODE NAMES. MatrixCorrections, MatrixCorrectionList,
+  CorrectionListSettings and the classes they read the file with name no set, folder,
+  category or spelling in a code line. Their comments, and comments elsewhere in Core, give
+  the C02 example ME-DUCTWORK against ME-Ductwork, and `ExportCheck.cs` writes that pair into
+  an EXPORT CHECK log line, the overclaim F112's FR-028 area holds
 - A SET OR CONDITION THE CORRECTIONS CANNOT READ IS COUNTED AND SAID, NEVER THROWN, F116.
   `WrittenCondition.Read` gives null for an element that will not parse as one condition or
   holds a value it could not rewrite, `SetConditionsText.Read` then gives null for the set,
@@ -212,7 +230,8 @@ and 6 does not read as broken.
   alone. A condition on another property whose value reads like a workset is not a workset.
   A file holding a negated workset condition gets a MATRIX line saying it is left as asked
 - THE MATRIX LINES CLAIM ONLY WHAT WAS MEASURED, F116. The spellings are the C02 census in
-  Core and, in this project's list, at most ten names a group of C06, so a line says every
+  Core and, in the list beside the picked file, at most ten names a group of C06 for this
+  project's, so a line says every
   spelling measured so far in this project's models, never every spelling the models carry,
   and no model measured so far, never no model in this run. Each correction that changes
   nothing says which kind of zero it is, already made, nothing in the file to change, or not

@@ -51,6 +51,34 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
+        /// Every workset spelling measured for a picked clash XML: the names this list holds, then
+        /// the workset lines of the project's list beside that XML, each once, Q113. THE ONE PLACE
+        /// the two are put together. The corrections take their spellings from it and the judge
+        /// of a set that found nothing is handed the same ones, so the log never says in a MATRIX
+        /// line that a spelling was measured and in the EMPTY SETS block that no model carries
+        /// it, F116. Null adds nothing, which is the names inside Core alone.
+        /// </summary>
+        internal static IList<string> With(IEnumerable<string> listed)
+        {
+            List<string> measured = new List<string>(Load());
+
+            if (listed == null)
+            {
+                return measured;
+            }
+
+            foreach (string spelling in listed)
+            {
+                if (!string.IsNullOrEmpty(spelling) && !measured.Contains(spelling))
+                {
+                    measured.Add(spelling);
+                }
+            }
+
+            return measured;
+        }
+
+        /// <summary>
         /// Whether a person has already decided that those two names are two DIFFERENT
         /// worksets. Either way round, because a pair is a pair, and Ordinal because a
         /// workset name is matched exactly everywhere else in this tool.
