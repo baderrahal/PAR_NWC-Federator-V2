@@ -269,7 +269,20 @@ was measured at 2 to 8 s. Then the last lines are saved, that Navisworks is clos
 the handle its adoption holds, and the hang is a finding. A sample that cannot be read
 restarts both clocks, so it never counts toward a hang. A run still going 12 hours after
 adoption is closed the same way and recorded as CEILING, never HUNG, Bader's answer Q84.
-Any dialog Navisworks raises during a run is a finding with its text.
+Any dialog Navisworks raises during a run is a finding with its text. A pane is not a dialog,
+F125, such as a floating Clash Detective pane of unknown origin, likely from his saved layout,
+UNKNOWN, up in both runs of set 04 item 1 on C02 on 2026-10-04: a window
+of that Navisworks of the WinForms class, whose caption is not the main window's, owned by a
+visible window, with its owner reading enabled or the window itself disabled. A message box, a
+WPF window and a window of the main window's caption are never one. A modal dialog blocked by
+the tool's window reads disabled with its owner disabled just as a pane does, so every line
+naming such a window says it is either, and which one is UNKNOWN, and never that it is not
+modal. The record writes a pane as PANE with its caption, its texts and both states, and writes
+any window again when the rule's kind for it or either state changes. The driver notes one up
+before Run and goes on, a window that comes up after Run and is not the confirm still stops the
+driver unless it is that same pane, its line naming the rule's kind and both states, and a pane
+never holds back the close at the end of a run. One rule in tools\loop\nw-guard.ps1 says what
+is a pane, for the driver and the record alike.
 
 ## The team
 

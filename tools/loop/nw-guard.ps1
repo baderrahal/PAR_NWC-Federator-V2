@@ -34,6 +34,13 @@
 #   Answer, WM_COMMAND to the tool's confirm, and DiffAutoSave, whose line no longer ends saying a file is
 #   never put back, because run.ps1 now puts his AutoSave folder back, Q86
 # - added: IsConfirm, PathsOutside, DriverCodes, DriverCode and DriverCodeName
+#
+# WHAT F125 CHANGED, after the baseline run of 2026-10-04 stopped on a floating Clash Detective
+# pane of Navisworks, steps\runs\04\item1-C02-hung record.txt line 36 and driver.txt line 21:
+# - changed: WindowRecords, whose every record also carries Enabled, whether the window itself
+#   is enabled, read with IsWindowEnabled and no message, and WindowKind, which takes that and
+#   its owner's state and calls PANE a WinForms window owned by a visible window that is not
+#   modal
 # The rules these functions keep are written at the top of the probe and in
 # .claude\rules\loop.md, and are not repeated here.
 #
@@ -437,7 +444,8 @@ function WinHandlesOf($winType, $procType, [uint32]$owner, [IntPtr]$parent) {
 # one window are read, the walk of one window's children stops at 200 of them, and one call
 # spends at most 2 s on reads and walks in all, so a pass of the watchdog or the monitor
 # always reaches its deadline checks. What was not read is written. Each record also
-# carries its owner's class, caption, visibility and process, read without a message.
+# carries whether the window itself is enabled, since F125, and its owner's class, caption,
+# visibility, state and process, all read without a message.
 function WindowRecords($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [bool]$allowMessages) {
   $recs = New-Object System.Collections.Generic.List[object]
   $budget = [Diagnostics.Stopwatch]::StartNew()
@@ -457,9 +465,9 @@ function WindowRecords($winType, $procType, [uint32]$owner, [bool]$visibleOnly, 
       $ot = New-Object System.Text.StringBuilder 512; [void]$winType::GetWindowTextW($ownerWin, $ot, 512); $ownerCaption = $ot.ToString()
       [void]$winType::GetWindowThreadProcessId($ownerWin, [ref]$ownerPid)
     }
-    $rec = [pscustomobject]@{ Handle = $h; Class = $c.ToString(); Caption = $t.ToString(); Visible = $vis; Owner = [string]$ownerWin; OwnerHandle = $ownerWin; OwnerEnabled = $ownerOn; OwnerVisible = $ownerVis; OwnerClass = $ownerClass; OwnerCaption = $ownerCaption; OwnerPid = $ownerPid; Texts = $null; TextNote = "" }
+    $rec = [pscustomobject]@{ Handle = $h; Class = $c.ToString(); Caption = $t.ToString(); Visible = $vis; Enabled = [string]$winType::IsWindowEnabled($h); Owner = [string]$ownerWin; OwnerHandle = $ownerWin; OwnerEnabled = $ownerOn; OwnerVisible = $ownerVis; OwnerClass = $ownerClass; OwnerCaption = $ownerCaption; OwnerPid = $ownerPid; Texts = $null; TextNote = "" }
     if ($vis -and -not $allowMessages -and $rec.Class -eq "#32770") { $rec.TextNote = "not read, nothing is sent before adoption" }
-    if ($vis -and $allowMessages -and (WindowKind $rec.Class $rec.Caption $ownerWin $ownerVis) -ne "MAIN") {
+    if ($vis -and $allowMessages -and (WindowKind $rec.Class $rec.Caption $ownerWin $ownerVis $ownerOn $rec.Enabled) -ne "MAIN") {
       $parts = @()
       $n = 0
       $late = 0
@@ -515,8 +523,8 @@ function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [b
   return $lines
 }
 # What a top level window of the adopted Navisworks is: the tool's window, the Navisworks
-# main window, its Working... progress dialog, or anything else, a DIALOG finding. The
-# Working... dialog was measured on 2026-09-28, docs\history\scan.md 5z-d. The main window's
+# main window, its Working... progress dialog, a pane since F125, or anything else, a DIALOG
+# finding. The Working... dialog was measured on 2026-09-28, docs\history\scan.md 5z-d. The main window's
 # class and caption on 2026-09-29, tools\probes\automation-start-result-20260929.txt line 423,
 # and on the first real start of run.ps1 on 2026-09-30 that it HAS AN OWNER, enabled, record
 # steps\runs\00\item0 line 32, which the rule of fix attempt 1, no owner, called a DIALOG.
@@ -532,11 +540,53 @@ function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [b
 # steps\runs\00\item0\watch.txt line 8 at 11:31:06.117 and steps\runs\01\item0\watch.txt
 # line 8 at 13:39:05.791, and the rule keeps such a window a DIALOG.
 # The tool's window is read off the design and is UNKNOWN until the first window start.
-function WindowKind($class, $caption, $ownerHandle, [bool]$ownerVisible) {
+#
+# F125. A PANE is a WinForms window, not of the main window's caption, owned by a visible window,
+# whose owner reads enabled or which reads disabled itself, such as a floating Clash Detective
+# pane of unknown origin, likely from his saved layout, UNKNOWN, which stopped the baseline run of
+# 2026-10-04, steps\runs\04\item1-C02-hung. A modal window disables its owner while it is up and
+# stays enabled itself: the tool's window, shown with ShowDialog, read its owner the main window
+# disabled, record line 46, and the tool's confirm read its owner the tool's window disabled, line
+# 48. So a window whose owner reads enabled is not modal over it, the way the pane read at
+# 15:57:56 before the tool's window opened, line 36. The rule also calls PANE a window that reads
+# disabled itself, because the tool's own window is modal over the main window, so while it is up
+# the owner of a pane never reads enabled, line 46, and WPF's ShowDialog disables the other
+# enabled windows of its thread as it opens. It disabled the stand-in's pane with its main window,
+# measured on 2026-10-04, and the run of 18:55 that day on 5fa98a8 read the pane of Navisworks
+# disabled with its owner disabled once the tool's window was up,
+# steps\runs\04\item1-C02\driver.txt line 3, and ended RAN, so the tool's window most likely
+# disables it. That read cannot tell a pane from a modal dialog: one up when the tool's window
+# opens, or one with a second modal window over it, reads disabled with its owner disabled just as
+# the pane does. So the rule lets such a window be, and every line naming it says it is either,
+# and which one is UNKNOWN, PaneWords below. A dialog that opens while the tool's window is up
+# reads enabled with its owner disabled, so it stays a DIALOG. The class narrows and never
+# decides: the pane's class, WindowsForms10.Window.8, is the main window's own, the hung run's
+# record lines 36 and 37, so it does not set a pane apart from a WinForms dialog, while a #32770
+# message box, the confirm among them, and a WPF window are never a pane, whatever their state
+# reads. A state not read, an owner not visible, no owner, and a window of the main window's class
+# and caption with a visible owner all stay a DIALOG, the last as decided above.
+function WindowKind($class, $caption, $ownerHandle, [bool]$ownerVisible, $ownerEnabled, $enabled) {
   if ($class.StartsWith("HwndWrapper[Roamer.exe;ProgressDialog;")) { return "PROGRESS" }
   if ($class.StartsWith("HwndWrapper") -and $caption.StartsWith("Parsons NWC Federator")) { return "WINDOW" }
-  if ($class.StartsWith("WindowsForms10") -and $caption.EndsWith("Autodesk Navisworks Manage 2025") -and ($ownerHandle -eq [IntPtr]::Zero -or -not $ownerVisible)) { return "MAIN" }
+  $forms = $class.StartsWith("WindowsForms10")
+  $mainCaption = $caption.EndsWith("Autodesk Navisworks Manage 2025")
+  if ($forms -and $mainCaption -and ($ownerHandle -eq [IntPtr]::Zero -or -not $ownerVisible)) { return "MAIN" }
+  if ($forms -and -not $mainCaption -and $ownerHandle -ne [IntPtr]::Zero -and $ownerVisible -and ([string]$ownerEnabled -eq "True" -or [string]$enabled -eq "False")) { return "PANE" }
   return "DIALOG"
+}
+# F125. The words for a window WindowKind reads PANE, for the driver's note and the record's PANE
+# line alike. One whose owner reads enabled is not modal over that owner. One whose owner reads
+# disabled reads disabled itself, or it would not be a PANE, and may be a pane or a modal dialog
+# with a modal window over it, so the words never say it is not modal.
+function PaneWords($ownerEnabled) {
+  if ([string]$ownerEnabled -eq "True") { return "a window that is not modal" }
+  return "either a pane or a modal dialog blocked by the tool's window or another modal window, and which one is UNKNOWN"
+}
+# F125. A window's own enabled state and its owner's, as WindowRecords read them, in the words the
+# driver's lines and the record's busy line write them in.
+function StateWords($r) {
+  if ($r.OwnerHandle -eq [IntPtr]::Zero) { return ("the window itself enabled " + $r.Enabled + ", with no owner") }
+  return ("the window itself enabled " + $r.Enabled + ", its owner " + $r.Owner + " enabled " + $r.OwnerEnabled)
 }
 # F106. The confirm the tool shows before a run: a #32770 titled exactly Parsons NWC Federator,
 # the caption of every MessageBox in FederatorWindow.xaml.cs, whose text starts with the first
