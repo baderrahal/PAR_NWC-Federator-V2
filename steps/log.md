@@ -10,7 +10,8 @@ request body. Item 1 was proved by a real run on this PC. Items 2 to 5 wait for 
 ### What was done
 
 - run.ps1 items 1 to 5 through the real window around tools\probes\drive-window-run.ps1, with
-  every guard of item 0 kept, written by developers whose transcripts ended interrupted, then
+  every guard of item 0 kept but its rule that nothing is written into his AutoSave folder,
+  which Q86 replaced, written by developers whose transcripts ended interrupted, then
   finished for item 1 by one developer, who found and fixed three faults that would have
   stopped the first run: a window list read as one object, @() throwing on a list, and the
   confirm's buttons with no Invoke, now answered by WM_COMMAND to that dialog only
@@ -25,11 +26,13 @@ request body. Item 1 was proved by a real run on this PC. Items 2 to 5 wait for 
 ### What remains
 
 - items 2 to 5 have never run. The proof run of set 05 is their first run
-- prove-run.ps1 brought up to F106, register row R1 of F106
+- prove-run.ps1 brought up to F106, R1 of turn4\f106-finish-report.md, line 119
 
 ### Known bugs
 
-- R1 to R4 of F106 and the harm reading's other findings, in the fix list, steps\fix-round.md
+- R1 to R4 of F106, turn4\f106-finish-report.md lines 119 to 122, and the harm reading's other
+  findings, the workflow journal wf_8100973e-871, go into the fix list, steps\fix-round.md, once
+  it is built
 
 ### What comes next
 
