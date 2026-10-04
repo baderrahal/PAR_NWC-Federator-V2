@@ -13,12 +13,13 @@ namespace Federator.Core.Exchange
     /// </summary>
     internal sealed class WrittenCondition
     {
-        private WrittenCondition(string lead, string element, string test, int flags, string value)
+        private WrittenCondition(string lead, string element, string test, int flags, string property, string value)
         {
             Lead = lead;
             Element = element;
             Test = test;
             Flags = flags;
+            Property = property;
             Value = value;
         }
 
@@ -31,30 +32,32 @@ namespace Federator.Core.Exchange
         /// <summary>The test attribute, equals or contains in the client's files, or null where it carries none.</summary>
         internal string Test { get; private set; }
 
-        /// <summary>The flags attribute, zero where the file wrote none or one that is not a number, the way ExchangeReader reads it.</summary>
+        /// <summary>The flags attribute, read by ExchangeReader.</summary>
         internal int Flags { get; private set; }
+
+        /// <summary>The internal name of the property it asks on, or null where it names none.</summary>
+        internal string Property { get; private set; }
 
         /// <summary>The value it asks for, with the file's escapes read, or null where it holds none.</summary>
         internal string Value { get; private set; }
 
         /// <summary>
-        /// One condition read off its text. An element that is not XML throws, because a
-        /// condition this cannot read is one it must not rewrite.
+        /// One condition read off its text by ExchangeReader's own reading of a condition, so
+        /// the condition a correction reads and the one the plan builds cannot disagree. An
+        /// element that is not XML throws, because a condition this cannot read is one it
+        /// must not rewrite.
         /// </summary>
         internal static WrittenCondition Read(string lead, string element)
         {
-            XElement parsed = XElement.Parse(element);
-            XAttribute test = parsed.Attribute("test");
-            XAttribute flags = parsed.Attribute("flags");
-            XElement data = Child(Child(parsed, "value"), "data");
-            int read;
+            SearchConditionDefinition read = ExchangeReader.ReadCondition(XElement.Parse(element));
 
             return new WrittenCondition(
                 lead,
                 element,
-                test == null ? null : test.Value,
-                flags != null && int.TryParse(flags.Value.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out read) ? read : 0,
-                data == null ? null : data.Value);
+                read.Test,
+                read.Flags,
+                read.Property == null ? null : read.Property.InternalName,
+                read.Value == null ? null : read.Value.Data);
         }
 
         /// <summary>The same condition asking for another value, written with the escapes an XML file needs.</summary>
@@ -72,7 +75,7 @@ namespace Federator.Core.Exchange
             }
 
             string element = Element.Substring(0, shut + 1) + Escaped(value) + Element.Substring(end);
-            return new WrittenCondition(Lead, element, Test, Flags, value);
+            return new WrittenCondition(Lead, element, Test, Flags, Property, value);
         }
 
         /// <summary>The same condition carrying other flags. The attribute is added where the file wrote none.</summary>
@@ -99,37 +102,19 @@ namespace Federator.Core.Exchange
                 element = Element.Substring(0, shut) + " flags=\"" + number + "\"" + Element.Substring(shut);
             }
 
-            return new WrittenCondition(Lead, element, Test, flags, Value);
+            return new WrittenCondition(Lead, element, Test, flags, Property, Value);
         }
 
         /// <summary>The same condition with other whitespace in front of it, so a copy sits where the set's own conditions do.</summary>
         internal WrittenCondition WithLead(string lead)
         {
-            return new WrittenCondition(lead, Element, Test, Flags, Value);
+            return new WrittenCondition(lead, Element, Test, Flags, Property, Value);
         }
 
         /// <summary>The text an XML file holds for that value, the three characters element content cannot carry as they are escaped.</summary>
         private static string Escaped(string value)
         {
             return (value ?? string.Empty).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
-        }
-
-        private static XElement Child(XElement parent, string localName)
-        {
-            if (parent == null)
-            {
-                return null;
-            }
-
-            foreach (XElement child in parent.Elements())
-            {
-                if (string.Equals(child.Name.LocalName, localName, StringComparison.Ordinal))
-                {
-                    return child;
-                }
-            }
-
-            return null;
         }
     }
 }

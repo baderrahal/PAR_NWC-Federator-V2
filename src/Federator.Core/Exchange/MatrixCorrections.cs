@@ -526,10 +526,21 @@ namespace Federator.Core.Exchange
                     + (asking - readable) + " are built exactly as the file asks");
             }
 
+            int negated = NegatedWorksetConditions(read);
+
+            if (negated > 0)
+            {
+                outcome.Warn(negated + (negated == 1 ? " workset condition carries the negate flag and is" : " workset conditions carry the negate flag and are")
+                    + " left exactly as the file asks, because a negation asked in a second spelling would take every element of its category");
+            }
+
             return outcome;
         }
 
-        /// <summary>Every value a workset condition of the file asks for, in the order first asked.</summary>
+        /// <summary>
+        /// Every value a workset condition of the file asks for, in the order first asked, and
+        /// never one asked only by a negation, which the corrections leave as the file asks, F116.
+        /// </summary>
         internal static IList<string> WorksetValuesIn(ExchangeDocument read)
         {
             List<string> values = new List<string>();
@@ -538,9 +549,9 @@ namespace Federator.Core.Exchange
             {
                 foreach (SearchConditionDefinition condition in set.Conditions)
                 {
-                    if (condition.Property != null
+                    if (IsAWorkset(condition)
+                        && (condition.Flags & NegateCondition) == 0
                         && condition.Value != null
-                        && string.Equals(condition.Property.InternalName, EmptySets.WorksetProperty, StringComparison.Ordinal)
                         && condition.Value.Data.Length > 0
                         && !values.Contains(condition.Value.Data))
                     {
@@ -550,6 +561,43 @@ namespace Federator.Core.Exchange
             }
 
             return values;
+        }
+
+        /// <summary>How many conditions of the file ask for a workset negated, which no correction touches.</summary>
+        private static int NegatedWorksetConditions(ExchangeDocument read)
+        {
+            int negated = 0;
+
+            foreach (SelectionSetDefinition set in read.Sets)
+            {
+                foreach (SearchConditionDefinition condition in set.Conditions)
+                {
+                    if (IsAWorkset(condition) && (condition.Flags & NegateCondition) != 0)
+                    {
+                        negated++;
+                    }
+                }
+            }
+
+            return negated;
+        }
+
+        private static bool IsAWorkset(SearchConditionDefinition condition)
+        {
+            return condition.Property != null
+                && string.Equals(condition.Property.InternalName, EmptySets.WorksetProperty, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Whether a condition of the file's text is one a workset value correction may touch: on
+        /// the workset property and not negated. A negation asked in a second spelling takes
+        /// every element of its category, and a value on another property is not a workset
+        /// whatever it reads, F116.
+        /// </summary>
+        private static bool AsksAWorkset(WrittenCondition condition)
+        {
+            return string.Equals(condition.Property, EmptySets.WorksetProperty, StringComparison.Ordinal)
+                && (condition.Flags & NegateCondition) == 0;
         }
 
         /// <summary>
@@ -790,7 +838,7 @@ namespace Federator.Core.Exchange
                         int widened;
                         text = AskEverySpelling(
                             text,
-                            one => string.Equals(one, value.From, StringComparison.OrdinalIgnoreCase),
+                            one => AsksAWorkset(one) && string.Equals(one.Value, value.From, StringComparison.OrdinalIgnoreCase),
                             spellings,
                             out asking,
                             out widened);
@@ -819,7 +867,7 @@ namespace Federator.Core.Exchange
                     }
 
                     int changed;
-                    text = RewriteValue(text, value.From, value.To, out changed);
+                    text = CorrectWorksetValue(text, value.From, value.To, out changed);
 
                     outcome.Add(
                         "the value " + value.From + " becomes " + value.To + ", which is how the models spell it",
@@ -853,8 +901,9 @@ namespace Federator.Core.Exchange
 
                     text = AskEverySpelling(
                         text,
-                        value => string.Equals(value, row.Value, StringComparison.Ordinal)
-                            || string.Equals(value, row.AlsoAccept, StringComparison.Ordinal),
+                        one => AsksAWorkset(one)
+                            && (string.Equals(one.Value, row.Value, StringComparison.Ordinal)
+                                || string.Equals(one.Value, row.AlsoAccept, StringComparison.Ordinal)),
                         both,
                         out asked,
                         out added);
@@ -1195,11 +1244,11 @@ namespace Federator.Core.Exchange
         /// spelling and a file asking the other come out the same, condition for condition,
         /// and a second run over its own output changes nothing and counts zero.
         /// </summary>
-        /// <param name="asks">Whether a condition's value is one of the spellings.</param>
+        /// <param name="asks">Whether a condition asks for one of the spellings, and is one this may widen.</param>
         /// <param name="asked">How many conditions in the file asked for one of them.</param>
         /// <param name="changed">How many of those were in a set this changed.</param>
         private static string AskEverySpelling(
-            string xml, Func<string, bool> asks, IList<string> spellings, out int asked, out int changed)
+            string xml, Func<WrittenCondition, bool> asks, IList<string> spellings, out int asked, out int changed)
         {
             int askedInAll = 0;
             int changedInAll = 0;
@@ -1240,7 +1289,7 @@ namespace Federator.Core.Exchange
                     {
                         for (int c = 0; c < group.Count; c++)
                         {
-                            WrittenCondition one = asks(group[c].Value) ? group[c].WithValue(spellings[i]) : group[c];
+                            WrittenCondition one = asks(group[c]) ? group[c].WithValue(spellings[i]) : group[c];
                             written.Add(c == 0 && i > 0 ? one.WithFlags(one.Flags | StartGroup) : one);
                         }
                     }
@@ -1269,13 +1318,13 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>How many conditions of that group ask for one of the spellings.</summary>
-        private static int Asking(IList<WrittenCondition> group, Func<string, bool> asks)
+        private static int Asking(IList<WrittenCondition> group, Func<WrittenCondition, bool> asks)
         {
             int count = 0;
 
             foreach (WrittenCondition condition in group)
             {
-                if (asks(condition.Value))
+                if (asks(condition))
                 {
                     count++;
                 }
@@ -1288,17 +1337,54 @@ namespace Federator.Core.Exchange
         /// The group with its spelling and its StartGroup bit taken out, which is what two
         /// copies of one group have in common and two different groups do not.
         /// </summary>
-        private static string Shape(IList<WrittenCondition> group, Func<string, bool> asks)
+        private static string Shape(IList<WrittenCondition> group, Func<WrittenCondition, bool> asks)
         {
             StringBuilder shape = new StringBuilder();
 
             for (int c = 0; c < group.Count; c++)
             {
-                WrittenCondition one = asks(group[c].Value) ? group[c].WithValue(string.Empty) : group[c];
+                WrittenCondition one = asks(group[c]) ? group[c].WithValue(string.Empty) : group[c];
                 shape.Append(c == 0 ? one.WithFlags(one.Flags & ~StartGroup).Element : one.Element).Append('\n');
             }
 
             return shape.ToString();
+        }
+
+        /// <summary>
+        /// Q68. Every workset condition of the file asking exactly that value, given the one
+        /// spelling measured instead, and no other condition: a whole value and never a name or
+        /// a text that merely holds it, FR-026, and never a negation or another property's value
+        /// that reads the same, F116.
+        /// </summary>
+        private static string CorrectWorksetValue(string xml, string from, string to, out int changed)
+        {
+            int changedInAll = 0;
+
+            string text = EachSet(xml, block =>
+            {
+                SetConditionsText set = SetConditionsText.Read(block);
+
+                if (set == null)
+                {
+                    return block;
+                }
+
+                int inSet = 0;
+                List<WrittenCondition> written = new List<WrittenCondition>();
+
+                foreach (WrittenCondition condition in set.Conditions)
+                {
+                    bool asks = AsksAWorkset(condition) && string.Equals(condition.Value, from, StringComparison.Ordinal);
+                    written.Add(asks ? condition.WithValue(to) : condition);
+                    inSet += asks ? 1 : 0;
+                }
+
+                changedInAll += inSet;
+                return inSet == 0 ? block : set.With(written).Write();
+            });
+
+            changed = changedInAll;
+            return text;
         }
 
         /// <summary>Every set block of the file in turn, handed to the change and written back as it comes out.</summary>

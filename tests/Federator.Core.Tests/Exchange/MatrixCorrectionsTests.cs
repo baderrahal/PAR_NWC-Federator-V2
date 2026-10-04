@@ -725,10 +725,12 @@ namespace Federator.Core.Tests
             Assert.That(rewrites[0].To, Is.EqualTo("ME-Ductwork"));
             Assert.That(rewrites[3].To, Is.EqualTo("PL-Domestic water"));
 
-            string xml = "<data type=\"wstring\">ME-DUCTWORK</data>";
+            // A workset condition of a set, since F116 the only thing a value correction reads.
+            string xml = WrittenExchange(WrittenSet("BLD-ME-Ducts", CategoryAndWorkset(0, "Ducts", "ME-DUCTWORK")));
             CorrectionOutcome outcome = MatrixCorrections.Apply(xml, null, null, null, rewrites);
 
-            Assert.That(outcome.Text, Is.EqualTo("<data type=\"wstring\">ME-Ductwork</data>"));
+            Assert.That(outcome.Text, Is.EqualTo(xml.Replace(
+                "<data type=\"wstring\">ME-DUCTWORK</data>", "<data type=\"wstring\">ME-Ductwork</data>")));
         }
 
         /// <summary>
@@ -826,13 +828,13 @@ namespace Federator.Core.Tests
             IList<ValueRewrite> rewrites = ValueRewrite.For(
                 new[] { "ME-PIPING" }, new[] { "ME-Piping" });
 
-            string xml = "<selectionset name=\"ME-PIPING MAINS\">"
-                + "<data type=\"wstring\">ME-PIPING MAINS</data>"
-                + "<data type=\"wstring\">ME-PIPING</data>";
+            string xml = WrittenExchange(
+                WrittenSet("ME-PIPING MAINS", CategoryAndWorkset(0, "Pipes", "ME-PIPING MAINS"))
+                + WrittenSet("BLD-ME-Pipes", CategoryAndWorkset(0, "Pipes", "ME-PIPING")));
 
             CorrectionOutcome outcome = MatrixCorrections.Apply(xml, null, null, null, rewrites);
 
-            Assert.That(outcome.Text, Does.Contain("<selectionset name=\"ME-PIPING MAINS\">"), "the set name is untouched");
+            Assert.That(outcome.Text, Does.Contain("<selectionset name=\"ME-PIPING MAINS\""), "the set name is untouched");
             Assert.That(outcome.Text, Does.Contain("<data type=\"wstring\">ME-PIPING MAINS</data>"), "the longer value is untouched");
             Assert.That(outcome.Text, Does.Contain("<data type=\"wstring\">ME-Piping</data>"), "the whole value is corrected");
         }
@@ -886,10 +888,19 @@ namespace Federator.Core.Tests
         /// that bit starts a new group, conditions inside a group are ANDed and groups
         /// are ORed. So the set finds both spellings while the models are still wrong.
         /// </summary>
+        /// <summary>
+        /// A set asking one workset, the condition on the workset property, which since F116 is
+        /// the only condition an Or row or a spelling correction reads.
+        /// </summary>
+        private static string WorksetSet(string name, string workset)
+        {
+            return WrittenExchange(WrittenSet(name, WrittenCondition(0, WorksetProperty, "Workset", workset)));
+        }
+
         [Test]
         public void AWorksetSpelledTwoWaysBuildsAnOrRowCarryingBoth()
         {
-            string xml = Set("BLD-ME-Ducts", "PL-Drainage equipment");
+            string xml = WorksetSet("BLD-ME-Ducts", "PL-Drainage equipment");
 
             CorrectionOutcome outcome = MatrixCorrections.Apply(
                 xml, null, null, null, null,
@@ -904,7 +915,7 @@ namespace Federator.Core.Tests
         [Test]
         public void AWorksetSpelledOneWayBuildsOneConditionAndNoOrRow()
         {
-            string xml = Set("BLD-ME-Ducts", "ME-Ductwork");
+            string xml = WorksetSet("BLD-ME-Ducts", "ME-Ductwork");
 
             CorrectionOutcome outcome = MatrixCorrections.Apply(
                 xml, null, null, null, null,
@@ -924,10 +935,11 @@ namespace Federator.Core.Tests
             };
 
             CorrectionOutcome once = MatrixCorrections.Apply(
-                Set("BLD-ME-Ducts", "PL-Drainage equipment"), null, null, null, null, rows);
+                WorksetSet("BLD-ME-Ducts", "PL-Drainage equipment"), null, null, null, null, rows);
 
             CorrectionOutcome twice = MatrixCorrections.Apply(once.Text, null, null, null, null, rows);
 
+            Assert.That(once.TotalChanged, Is.EqualTo(1), "the first run adds the row");
             Assert.That(twice.Text, Is.EqualTo(once.Text));
             Assert.That(twice.TotalChanged, Is.EqualTo(0));
         }
@@ -1283,6 +1295,89 @@ namespace Federator.Core.Tests
                     disagreeing + " is now a value the matrix filters on, so Q69's Or row has work to do and "
                         + "the round report saying it produced nothing is out of date");
             }
+        }
+
+        // ---------- a negation is never widened, and only a workset is, F116 ----------
+
+        /// <summary>Another property of the Element tab, sample data for a value that equals a workset spelling and is not a workset.</summary>
+        private const string CommentsProperty = "lcldrevit_parameter_-1010106";
+
+        private static IList<ValueRewrite> DuctworkBothWays()
+        {
+            return ValueRewrite.For(new[] { "ME-DUCTWORK" }, new[] { "ME-DUCTWORK", "ME-Ductwork" });
+        }
+
+        /// <summary>
+        /// A negated workset condition asked in a second spelling takes the whole category:
+        /// (Ducts and not ME-DUCTWORK) or (Ducts and not ME-Ductwork) is every duct, because no
+        /// element sits on both spellings. So a condition carrying the negate flag is never
+        /// asked in another spelling, the set comes out exactly as the file asks, and the log
+        /// says it was left.
+        /// </summary>
+        [Test]
+        public void ANegatedWorksetConditionIsNeverAskedInASecondSpelling()
+        {
+            string xml = WrittenExchange(WrittenSet(
+                "BLD-ME-Ducts off the ductwork",
+                Category("Ducts") + WrittenCondition(MatrixCorrections.NegateCondition, WorksetProperty, "Workset", "ME-DUCTWORK")));
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(xml, null, null, null, DuctworkBothWays());
+
+            Assert.That(outcome.Text, Is.EqualTo(xml), "the negation is left as the file asks");
+            Assert.That(outcome.TotalChanged, Is.EqualTo(0));
+            Assert.That(MatrixCorrections.WorksetValuesIn(new ExchangeReader().ReadText(xml)), Is.Empty,
+                "a value asked only negated is not one the corrections act on");
+
+            CorrectionOutcome picked = Picked(xml);
+
+            Assert.That(picked.Text, Is.EqualTo(xml));
+            Assert.That(Words(picked), Does.Contain(
+                "1 workset condition carries the negate flag and is left exactly as the file asks"));
+        }
+
+        /// <summary>
+        /// Widening reads the property as well as the value. A condition on another property
+        /// whose value happens to be a workset spelling is not a workset and is never asked in a
+        /// second spelling, where the workset condition of the set beside it is.
+        /// </summary>
+        [Test]
+        public void OnlyAConditionOnTheWorksetPropertyIsAskedInEverySpelling()
+        {
+            string xml = WrittenExchange(
+                WrittenSet("BLD-ME-Ducts", CategoryAndWorkset(0, "Ducts", "ME-DUCTWORK"))
+                + WrittenSet("BLD-ME-Noted", Category("Ducts") + WrittenCondition(0, CommentsProperty, "Comments", "ME-DUCTWORK")));
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(xml, null, null, null, DuctworkBothWays());
+            Dictionary<string, PlannedSet> sets = PlannedByName(outcome.Text);
+
+            Assert.That(sets["BLD-ME-Ducts"].GroupCount, Is.EqualTo(2), sets["BLD-ME-Ducts"].Describe());
+            Assert.That(sets["BLD-ME-Noted"].GroupCount, Is.EqualTo(1), sets["BLD-ME-Noted"].Describe());
+            Assert.That(sets["BLD-ME-Noted"].Describe(), Does.Not.Contain("ME-Ductwork"));
+            Assert.That(outcome.TotalChanged, Is.EqualTo(1), "the one workset condition");
+        }
+
+        /// <summary>
+        /// The one spelling correction of Q68 keeps the same two rules: it rewrites a workset
+        /// condition that is not negated, and leaves a negated one and a condition on another
+        /// property exactly as the file asks.
+        /// </summary>
+        [Test]
+        public void TheOneSpellingCorrectionTouchesOnlyAWorksetConditionThatIsNotNegated()
+        {
+            string xml = WrittenExchange(
+                WrittenSet("BLD-FF-Pipes", CategoryAndWorkset(0, "Pipes", "FF-FIRE FIGHTING"))
+                + WrittenSet("BLD-FF-Noted", Category("Pipes") + WrittenCondition(0, CommentsProperty, "Comments", "FF-FIRE FIGHTING"))
+                + WrittenSet("BLD-FF-Others", Category("Pipes")
+                    + WrittenCondition(MatrixCorrections.NegateCondition, WorksetProperty, "Workset", "FF-FIRE FIGHTING")));
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(
+                xml, null, null, null, ValueRewrite.For(new[] { "FF-FIRE FIGHTING" }, new[] { "FF-Fire Fighting" }));
+            Dictionary<string, PlannedSet> sets = PlannedByName(outcome.Text);
+
+            Assert.That(ValuesOn(sets["BLD-FF-Pipes"].Groups()[0], WorksetProperty), Is.EqualTo(new[] { "FF-Fire Fighting" }));
+            Assert.That(ValuesOn(sets["BLD-FF-Noted"].Groups()[0], CommentsProperty), Is.EqualTo(new[] { "FF-FIRE FIGHTING" }));
+            Assert.That(ValuesOn(sets["BLD-FF-Others"].Groups()[0], WorksetProperty), Is.EqualTo(new[] { "FF-FIRE FIGHTING" }));
+            Assert.That(outcome.TotalChanged, Is.EqualTo(1));
         }
     }
 }

@@ -261,7 +261,11 @@ namespace Federator.Core.Exchange
                 conditions);
         }
 
-        private static SearchConditionDefinition ReadCondition(XElement condition)
+        /// <summary>
+        /// One condition element read. Also how WrittenCondition reads the text MatrixCorrections
+        /// rewrites, so the condition corrected and the condition built are read one way, F116.
+        /// </summary>
+        internal static SearchConditionDefinition ReadCondition(XElement condition)
         {
             return new SearchConditionDefinition(
                 Attribute(condition, "test"),
