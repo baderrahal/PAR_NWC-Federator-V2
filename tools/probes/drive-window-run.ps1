@@ -47,6 +47,16 @@ param(
 # Any other dialog of the pid is recorded with its texts and left up, and nothing more is
 # pressed.
 #
+# F125. A window of the pid that WindowKind in nw-guard.ps1, the one copy of that rule, reads PANE
+# is a pane and not a dialog, such as the floating Clash Detective pane that stopped the baseline
+# run of 2026-10-04, steps\runs\04\item1-C02-hung driver.txt line 21. Each pane up before
+# RunButton is noted once with its caption, its own state and its owner's, in the words PaneWords
+# gives, which say UNKNOWN whether it is a pane or a modal dialog when both read disabled, and left
+# as it is, and the driver goes on. After RunButton any window of the pid that is not the tool's
+# window, the main window, the Working... dialog or the confirm stops the driver as a dialog did
+# before, unless it is a pane noted before Run, the same window by PaneKey, its handle and class.
+# The line for each window it stops on names the rule's kind for it, its own state and its owner's.
+#
 # WHAT IT DOES, item 5, -OpenRun. On 4. Clash it reads OpenDocumentLine and RunOpenButton. A
 # disabled button is the tool's own refusal, TOOL REFUSED, with the line's text. An enabled one
 # is pressed only when ExchangeFileBox reads empty, ToleranceBox reads Use the value in the
@@ -99,6 +109,8 @@ $nw = "C:\Program Files\Autodesk\Navisworks Manage 2025"
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 $script:NotesOk = $false
 $script:Pressed = ""
+# F125. The panes noted before Run, each by PaneKey, its handle and class.
+$script:Panes = @{}
 
 function Note($t) {
   $line = [DateTime]::Now.ToString("HH:mm:ss.fff") + "  " + $t
@@ -269,18 +281,34 @@ function GroupTicks {
     return ([string]$n + " groups, " + $off + " unticked")
   } catch { return ("UNKNOWN, " + (Err $_.Exception)) }
 }
-# Every visible window of the owner whose kind is the one asked for. WindowRecords returns its
-# list as one object, so the call is put in brackets to pipe each record on its own, measured on
-# 2026-10-01 in Windows PowerShell 5.1: piped bare, the whole list reached WindowKind as one
+# Every visible window of the owner whose kind is one of those asked for. WindowRecords returns
+# its list as one object, so the call is put in brackets to pipe each record on its own, measured
+# on 2026-10-01 in Windows PowerShell 5.1: piped bare, the whole list reached WindowKind as one
 # object and threw. A caller wraps the result in @(), because one record returned bare has no
 # Count in 5.1, measured the same day.
-function OwnerWindows($kind, [bool]$allowMessages) { return @((WindowRecords $wt.WinType $wt.ProcType ([uint32]$OwnerPid) $true $allowMessages) | Where-Object { (WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible) -eq $kind }) }
-# Records every dialog of the owner but the confirm, with its texts, and stops with each left up.
-# A caller stops only on a dialog read on three passes running, a second apart, so a window
-# that is up for a moment, or whose texts were not read on one pass, never stops it alone.
+function OwnerWindows($kinds, [bool]$allowMessages) { return @((WindowRecords $wt.WinType $wt.ProcType ([uint32]$OwnerPid) $true $allowMessages) | Where-Object { @($kinds) -contains (WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible $_.OwnerEnabled $_.Enabled) }) }
+# F125. The key a pane is noted by before Run and looked up by after it, its handle and class, in
+# one place for both.
+function PaneKey($r) { return ([string]$r.Handle + "|" + $r.Class) }
+# F125. Notes once each pane of the owner that is up, by PaneKey, with its caption, the two states
+# the rule read and the words PaneWords gives for them. It is called before RunButton only, so
+# after Run a pane noted here is the one window but the confirm that lets the driver go on.
+function NotePanes {
+  foreach ($p in @(OwnerWindows "PANE" $false)) {
+    $key = PaneKey $p
+    if ($script:Panes.ContainsKey($key)) { continue }
+    $script:Panes[$key] = $true
+    Note ("a PANE of pid " + $OwnerPid + " is up before Run and is left as it is: class " + $p.Class + ", caption `"" + $p.Caption + "`", " + (StateWords $p) + ", so it is " + (PaneWords $p.OwnerEnabled) + ", and the driver goes on")
+  }
+}
+# Records every window it is handed, with its texts, the rule's kind for it, its own state and
+# its owner's, and stops with each left up: after Scan the dialogs, and after RunButton every
+# window that is neither the confirm nor a pane noted before Run. A caller stops only on a window
+# read on three passes running, a second apart, so a window that is up for a moment, or whose
+# texts were not read on one pass, never stops it alone.
 function StopOnDialogs($dialogs, $when) {
-  foreach ($d in $dialogs) { Note ("a dialog of pid " + $OwnerPid + " " + $when + ": class " + $d.Class + ", caption `"" + $d.Caption + "`", every text: " + (MaskLine (@($d.Texts) -join " "))) }
-  Done "DIALOG" ([string]$dialogs.Count + " dialogs that are not the confirm are up " + $when + ", the first captioned `"" + $dialogs[0].Caption + "`", and each is left up, so nothing more was pressed")
+  foreach ($d in $dialogs) { Note ("a window of pid " + $OwnerPid + " " + $when + ": class " + $d.Class + ", caption `"" + $d.Caption + "`", every text: " + (MaskLine (@($d.Texts) -join " ")) + ", the window rule reads it " + (WindowKind $d.Class $d.Caption $d.OwnerHandle $d.OwnerVisible $d.OwnerEnabled $d.Enabled) + ", " + (StateWords $d)) }
+  Done "DIALOG" ([string]$dialogs.Count + " windows that are neither the confirm nor a pane noted before Run are up " + $when + ", the first captioned `"" + $dialogs[0].Caption + "`", and each is left up, so nothing more was pressed")
 }
 
 try {
@@ -300,6 +328,7 @@ try {
   if (-not $tm.Success -or -not (StampNames $tm.Groups[1].Value $Stamp)) { Done "STAMP" ("the window's title does not name the installed build " + $Stamp + ", so nothing was pressed") }
   $script:Win = $AE::FromHandle($tw[0].Handle)
   if ($script:Win.Current.ProcessId -ne $OwnerPid) { Done "NO WINDOW" ("the window's automation element belongs to process " + $script:Win.Current.ProcessId) }
+  NotePanes
   Start-Sleep -Seconds 2
 
   $tolDefault = "Use the value in the XML"
@@ -313,6 +342,7 @@ try {
     $sw = [Diagnostics.Stopwatch]::StartNew()
     $seen = 0
     while (-not (TabShown "2. Grouping")) {
+      NotePanes
       $d = @(OwnerWindows "DIALOG" $true)
       if ($d.Count -gt 0) { $seen++; if ($seen -ge 3) { StopOnDialogs $d "after Scan" } } else { $seen = 0 }
       if ($sw.Elapsed.TotalSeconds -gt 300) { Done "FAULT" "the window did not move to 2. Grouping within 300 s of Scan, so the scan's end is UNKNOWN and nothing was pressed" }
@@ -348,16 +378,20 @@ try {
     Note ("ToleranceBox reads " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it")
     if ($wrong.Count -gt 0) { Done "BOX" (($wrong -join ", and ") + ", so nothing was pressed") }
     if ($tol -cne $tolDefault) { Done "TOLERANCE" ("ToleranceBox reads " + $tol + " and not " + $tolDefault + ", so nothing was pressed") }
+    NotePanes
     Press (ById "RunButton") "RunButton" ""
     # The confirm: a #32770 of the owner process titled exactly Parsons NWC Federator. No time
     # limit, because the window may open every NWF before it asks. A tool that hangs is the
-    # monitor's to end, and then the owner reads gone here.
+    # monitor's to end, and then the owner reads gone here. Since F125 a pane noted before Run is
+    # let be, and any other window that is not the confirm, a pane that came after Run among
+    # them, stops the driver.
     $seen = 0
     while ($true) {
       Gate "waiting for the confirm"
       if (@(OwnerWindows "WINDOW" $false).Count -eq 0) { Done "WINDOW GONE" "the tool's window is gone after Run was pressed and before any confirm" }
-      $dlgs = @(OwnerWindows "DIALOG" $true)
-      $other = @($dlgs | Where-Object { -not (IsConfirm $_.Class $_.Caption $_.Texts) })
+      $up = @(OwnerWindows @("DIALOG", "PANE") $true)
+      $dlgs = @($up | Where-Object { IsConfirm $_.Class $_.Caption $_.Texts })
+      $other = @($up | Where-Object { -not (IsConfirm $_.Class $_.Caption $_.Texts) -and -not $script:Panes.ContainsKey((PaneKey $_)) })
       if ($other.Count -gt 0) {
         $seen++
         if ($seen -ge 3) { StopOnDialogs $other "after RunButton" }
