@@ -25,7 +25,9 @@ turn5\f126-proof\core-tests-before.txt and core-tests-after.txt. No Navisworks w
   TogglePattern, toggled once only when it reads On, read back, one line per box with its id,
   its tab, before and after, all before anything is pressed, and read again before Run. A box on
   no tab, with no TogglePattern, or not reading Off stops it with UNTICK, exit 13, a line naming
-  the box and nothing that runs pressed. run.ps1's -Untick for Run and Check with -Item 1 to 5,
+  the box and nothing that runs pressed. The lines that say a box was left as the window opened
+  it name the boxes -Untick names, so an unticked box is never said to be left, and read as
+  before with no -Untick. run.ps1's -Untick for Run and Check with -Item 1 to 5,
   refused for a documents read and for an id not the plain shape of an x:Name or named twice,
   UntickRefusal in nw-guard.ps1, the one rule both keep, handed on through DriverArguments and
   named on the RUN RECORD line, in a line of the record and in Check, UntickWords
@@ -37,7 +39,7 @@ turn5\f126-proof\core-tests-before.txt and core-tests-after.txt. No Navisworks w
 - built and checked: the solution with 0 warnings and 0 errors before and after, the stand-in
   with 0 warnings and 0 errors before and after, the three changed scripts parsing with 0 errors,
   check-locals and check-imports passing, each in turn5\f126-proof
-- the proof written, turn5\f126-proof\prove-f126.ps1, 50 checks, each way the untick can fail
+- the proof written, turn5\f126-proof\prove-f126.ps1, 52 checks on the branch's tools, each way the untick can fail
   broken on its own and its line asserted to name the box, to run once on main's tools at
   1ae6771, exported into before-tree, and once on the branch
 

@@ -250,6 +250,10 @@ function FindOnTabs($id) {
   }
   return $null
 }
+# F126. The words after left as the window opened it in a line that reads tick boxes, so a box
+# -Untick names is never said to be left as it opened. Empty with no -Untick, so those lines read
+# as before.
+function BarUntick { if ($untickIds.Count -gt 0) { return (", bar the boxes -Untick names, " + ($untickIds -join ", ")) }; return "" }
 # F126. The element's TogglePattern, or $null when it answers none.
 function ToggleOf($el) {
   $p = $null
@@ -414,7 +418,7 @@ try {
   if (-not $OpenRun) {
     SelectTab "1. Source"
     TypeBox "SourceFolderBox" $Source
-    Note ("IncludeSubfolders reads " + (Toggle "IncludeSubfolders") + ", left as the window opened it")
+    Note ("IncludeSubfolders reads " + (Toggle "IncludeSubfolders") + ", left as the window opened it" + (BarUntick))
     Press (ByNameAndType $script:Win "Scan" ([System.Windows.Automation.ControlType]::Button)) "Scan" ""
     # OnScan moves the window to 2. Grouping as its last step, so that is when the scan is over.
     # A dialog before it is the scan's own refusal, which stops this script.
@@ -454,7 +458,7 @@ try {
       if ($read[$k] -cne $want[$k]) { $wrong.Add($k + " reads " + $(if ($read[$k] -eq "") { "empty" } else { MaskLine $read[$k] }) + " and not " + $(if ($want[$k] -eq "") { "empty" } else { MaskLine $want[$k] })) }
     }
     $tol = ComboText "ToleranceBox"
-    Note ("ToleranceBox reads " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it")
+    Note ("ToleranceBox reads " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it" + (BarUntick))
     if ($wrong.Count -gt 0) { Done "BOX" (($wrong -join ", and ") + ", so nothing was pressed") }
     if ($tol -cne $tolDefault) { Done "TOLERANCE" ("ToleranceBox reads " + $tol + " and not " + $tolDefault + ", so nothing was pressed") }
     UntickedStill "RunButton"
@@ -508,7 +512,7 @@ try {
   if (-not $enabled) { Done "TOOL REFUSED" ("Run the open file reads disabled, and OpenDocumentLine reads: " + (MaskLine $line)) }
   $x = BoxText "ExchangeFileBox"
   $tol = ComboText "ToleranceBox"
-  Note ("ExchangeFileBox reads " + $(if ($x -eq "") { "empty" } else { MaskLine $x }) + ", ToleranceBox " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it")
+  Note ("ExchangeFileBox reads " + $(if ($x -eq "") { "empty" } else { MaskLine $x }) + ", ToleranceBox " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it" + (BarUntick))
   if ($x -ne "") { Done "BOX" ("ExchangeFileBox reads " + (MaskLine $x) + " and not empty, so nothing was pressed") }
   if ($tol -cne $tolDefault) { Done "TOLERANCE" ("ToleranceBox reads " + $tol + " and not " + $tolDefault + ", so nothing was pressed") }
   $outside = PathsOutside $line $loopRoot
