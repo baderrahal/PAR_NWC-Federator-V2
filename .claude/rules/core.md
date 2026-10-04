@@ -418,7 +418,11 @@ and 6 does not read as broken.
   the most severe clash in it, which is the minimum: a hard clash reports a negative
   overlap so the worst is the most negative, and a clearance test reports a gap so the
   worst is the smallest. Every row carries the raw count behind it, so the grouping hides
-  nothing
+  nothing. A GROUP STANDS FOR THE CLASHES UNDER IT AND FOR NO MORE, F113, and one with none
+  under it stands for none. `ClashRow.ForGroup` is the rule. The harvest floored a group at
+  one, so an empty group made the Clashes cell and the cell of its status read one higher
+  than the clashes the document holds, which the runner counts under every group. Whether
+  a saved test can hold an empty group is UNKNOWN
 - The clash API has no open against closed notion. Nothing on IClashResult, ClashResult,
   ClashResultGroup, ClashTest or DocumentClashTests names one, ClashResultStatus is a flat
   five value enum, and Navisworks' own report does not mention open or closed either. So
