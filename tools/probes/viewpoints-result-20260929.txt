@@ -1,0 +1,388 @@
+ASSEMBLY  Autodesk.Navisworks.Api 22.0.0.0
+MACHINE   [machine]   2026-09-29 12:18
+
+---- THE QUESTION: how a document reaches its saved viewpoints ----
+  Autodesk.Navisworks.Api.DocumentParts.DocumentCurrentViewpoint Document.CurrentViewpoint  canread=True canwrite=False
+  Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints Document.SavedViewpoints  canread=True canwrite=False
+
+---- The viewpoint collection, every member ----
+Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints
+    base type: System.Object
+    implements: nothing
+    IDisposable: False
+    public SavedItem CurrentSavedViewpoint  canread=True canwrite=True
+    public String Id  canread=True canwrite=False
+    public FolderItem RootItem  canread=True canwrite=False
+    public SavedItemCollection Value  canread=True canwrite=False
+    public Void AddComment(SavedItem item, Comment comment)
+    public Void AddCopy(SavedItem item)
+    public Void AddCopy(GroupItem parent, SavedItem item)
+    public SavedViewpoint CaptureRuntimeOverrides()
+    public Void Clear()
+    public Void CopyFrom(IEnumerable`1 value)
+    public Void CopyFrom(SavedItemCollection value)
+    public Collection`1 CreateCopy()
+    public Collection`1 CreateIndexPath(SavedItem item)
+    public SavedItemReference CreateReference(SavedItem item)
+    public Void EditComments(SavedItem item, CommentCollection newComments)
+    public Void EditDisplayName(SavedItem item, String newDisplayName)
+    public Void InsertCopy(Int32 index, SavedItem item)
+    public Void InsertCopy(GroupItem parent, Int32 index, SavedItem item)
+    public Void Move(Int32 oldIndex, Int32 newIndex)
+    public Void Move(GroupItem oldParent, Int32 oldIndex, GroupItem newParent, Int32 newIndex)
+    public Boolean Remove(SavedItem item)
+    public Boolean Remove(GroupItem parent, SavedItem item)
+    public Void RemoveAt(Int32 index)
+    public Void RemoveAt(GroupItem parent, Int32 index)
+    public Void ReplaceFromCurrentView(SavedViewpoint savedViewpoint)
+    public Void ReplaceWithCopy(GroupItem parent, Int32 index, SavedItem item)
+    public Void ReplaceWithCopy(Int32 index, SavedItem item)
+    public SavedItem ResolveGuid(Guid value)
+    public SavedItem ResolveIndexPath(IEnumerable`1 path)
+    public SavedItem ResolveReference(SavedItemReference reference)
+    public SavedItemCollection ToSavedItemCollection()
+
+---- The saved viewpoint itself ----
+Autodesk.Navisworks.Api.SavedViewpoint
+    base type: Autodesk.Navisworks.Api.SavedItem
+    implements: IDisposable
+    IDisposable: True
+    public SavedViewpoint(Viewpoint viewpoint)
+    public SavedViewpoint()
+    public Boolean ContainsAppearanceOverrides  canread=True canwrite=False
+    public Boolean ContainsVisibilityOverrides  canread=True canwrite=False
+    public Boolean IsReadOnly  canread=True canwrite=False
+    public LcOpRedlineList Redlines  canread=True canwrite=False
+    public Viewpoint Viewpoint  canread=True canwrite=False
+    public LcOpRedlineList EditRedlines()
+    public AppearanceOverrides GetAppearanceOverrides()
+    public VisibilityOverrides GetVisibilityOverrides()
+    public SavedViewpoint InternalCreator(IntPtr handleIn, NativeHandleOwnership ownership, NativeHandle parent)
+    public NativeHandle InternalFactory(NativeHandleInit& reserved)
+
+---- The viewpoint it holds ----
+Autodesk.Navisworks.Api.Viewpoint
+    base type: Autodesk.Navisworks.Api.NativeHandle
+    implements: IDisposable
+    IDisposable: True
+    public Viewpoint()
+    public Double AngularSpeed  canread=True canwrite=True
+    public Double ApertureDiameter  canread=True canwrite=True
+    public Double AspectRatio  canread=True canwrite=True
+    public ClipPlaneSet ClipPlanes  canread=True canwrite=True
+    public Double FarDistance  canread=True canwrite=True
+    public ViewpointDistanceType FarDistanceType  canread=True canwrite=True
+    public Double FarPlaneDistance  canread=True canwrite=True
+    public Double FocalDistance  canread=True canwrite=True
+    public Boolean HasAngularSpeed  canread=True canwrite=False
+    public Boolean HasFocalDistance  canread=True canwrite=False
+    public Boolean HasLighting  canread=True canwrite=False
+    public Boolean HasLinearSpeed  canread=True canwrite=False
+    public Boolean HasRenderStyle  canread=True canwrite=False
+    public Boolean HasTool  canread=True canwrite=False
+    public Boolean HasViewer  canread=True canwrite=False
+    public Boolean HasWorldUpVector  canread=True canwrite=False
+    public Double HeightField  canread=True canwrite=True
+    public Double HorizontalExtentAtFocalDistance  canread=True canwrite=False
+    public Double HorizontalScale  canread=True canwrite=True
+    public ViewpointImageFit ImageFit  canread=True canwrite=True
+    public LcNvViewPoint InternalViewpoint  canread=True canwrite=False
+    public Boolean IsReadOnly  canread=True canwrite=False
+    public ViewpointLighting Lighting  canread=True canwrite=True
+    public Double LinearSpeed  canread=True canwrite=True
+    public Double NearDistance  canread=True canwrite=True
+    public ViewpointDistanceType NearDistanceType  canread=True canwrite=True
+    public Double NearPlaneDistance  canread=True canwrite=True
+    public Point3D Position  canread=True canwrite=True
+    public ViewpointProjection Projection  canread=True canwrite=True
+    public ViewpointRenderStyle RenderStyle  canread=True canwrite=True
+    public Double RightOffsetAtFocalDistance  canread=True canwrite=True
+    public Double RightOffsetFactor  canread=True canwrite=True
+    public Rotation3D Rotation  canread=True canwrite=True
+    public Double ShutterSpeed  canread=True canwrite=True
+    public Tool Tool  canread=True canwrite=True
+    public Double UpOffsetAtFocalDistance  canread=True canwrite=True
+    public Double UpOffsetFactor  canread=True canwrite=True
+    public Double VerticalExtentAtFocalDistance  canread=True canwrite=False
+    public String ViewerAvatar  canread=True canwrite=True
+    public CameraMode ViewerCameraMode  canread=True canwrite=True
+    public UnitVector3D WorldUpVector  canread=True canwrite=True
+    public Void AlignDirection(Vector3D direction)
+    public Void AlignUp(Vector3D up)
+    public Viewpoint CreateCopy()
+    public String GetCamera()
+    public Viewpoint InternalCreator(IntPtr handleIn, NativeHandleOwnership ownership, NativeHandle parent)
+    public NativeHandle InternalFactory(NativeHandleInit& reserved)
+    public Void PointAt(Point3D to)
+    public Void SetCamera(String cameraJson)
+    public Void SetExtentsAtFocalDistance(Double horizontal, Double vertical)
+    public Boolean TrySetCamera(String cameraJson)
+    public Void ZoomBox(BoundingBox3D box)
+
+---- The folder and the item, shared with the sets tree ----
+Autodesk.Navisworks.Api.FolderItem
+    base type: Autodesk.Navisworks.Api.GroupItem
+    implements: IDisposable
+    IDisposable: True
+    public FolderItem()
+    public Boolean IsReadOnly  canread=True canwrite=False
+    public FolderItem InternalCreator(IntPtr handleIn, NativeHandleOwnership ownership, NativeHandle parent)
+    public NativeHandle InternalFactory(NativeHandleInit& reserved)
+
+Autodesk.Navisworks.Api.GroupItem
+    base type: Autodesk.Navisworks.Api.SavedItem
+    implements: IDisposable
+    IDisposable: True
+    public SavedItemCollection Children  canread=True canwrite=False
+    public Boolean IsReadOnly  canread=True canwrite=False
+    public GroupItem CreateCopyWithoutChildren()
+    public GroupItem InternalCreator(IntPtr handleIn, NativeHandleOwnership ownership, NativeHandle parent)
+    public NativeHandle InternalFactory(NativeHandleInit& reserved)
+
+Autodesk.Navisworks.Api.SavedItem
+    base type: Autodesk.Navisworks.Api.NativeHandle
+    implements: IDisposable
+    IDisposable: True
+    public CommentCollection Comments  canread=True canwrite=False
+    public String DisplayName  canread=True canwrite=True
+    public Guid Guid  canread=True canwrite=True
+    public Boolean IsGroup  canread=True canwrite=False
+    public Boolean IsReadOnly  canread=True canwrite=False
+    public GroupItem Parent  canread=True canwrite=False
+    public SavedItem CreateCopy()
+    public SavedItem CreateNewInstance()
+    public SavedItem CreateUniqueCopy()
+    public SavedItem InternalCreator(IntPtr handleIn, NativeHandleOwnership ownership, NativeHandle parent)
+    public NativeHandle InternalFactory(NativeHandleInit& reserved)
+    public Void MakeDisplayNameUnique(GroupItem group)
+    public Void MakeDisplayNameUnique(GroupItem group, String salt)
+
+---- The sets collection beside it, so the two shapes can be compared ----
+Autodesk.Navisworks.Api.DocumentParts.DocumentSelectionSets
+    base type: System.Object
+    implements: nothing
+    IDisposable: False
+    public String Id  canread=True canwrite=False
+    public FolderItem RootItem  canread=True canwrite=False
+    public SavedItemCollection Value  canread=True canwrite=False
+    public Void AddComment(SavedItem item, Comment comment)
+    public Void AddCopy(GroupItem parent, SavedItem item)
+    public Void AddCopy(SavedItem item)
+    public Void Clear()
+    public Void CopyFrom(IEnumerable`1 value)
+    public Void CopyFrom(SavedItemCollection value)
+    public Collection`1 CreateCopy()
+    public Collection`1 CreateIndexPath(SavedItem item)
+    public SavedItemReference CreateReference(SavedItem item)
+    public SelectionSource CreateSelectionSource(SavedItem item)
+    public Void EditComments(SavedItem item, CommentCollection newComments)
+    public Void EditDisplayName(SavedItem item, String newDisplayName)
+    public Void InsertCopy(Int32 index, SavedItem item)
+    public Void InsertCopy(GroupItem parent, Int32 index, SavedItem item)
+    public Void Move(GroupItem oldParent, Int32 oldIndex, GroupItem newParent, Int32 newIndex)
+    public Void Move(Int32 oldIndex, Int32 newIndex)
+    public Boolean Remove(GroupItem parent, SavedItem item)
+    public Boolean Remove(SavedItem item)
+    public Void RemoveAt(Int32 index)
+    public Void RemoveAt(GroupItem parent, Int32 index)
+    public Void ReplaceWithCopy(GroupItem parent, Int32 index, SavedItem item)
+    public Void ReplaceWithCopy(Int32 index, SavedItem item)
+    public SavedItem ResolveGuid(Guid value)
+    public SavedItem ResolveIndexPath(IEnumerable`1 path)
+    public SavedItem ResolveReference(SavedItemReference reference)
+    public SavedItem ResolveSelectionSource(SelectionSource source)
+    public SavedItemCollection ToSavedItemCollection()
+
+---- Anything anywhere whose name holds SavedViewpoint ----
+  type Autodesk.Navisworks.Api.SavedViewpoint
+  type Autodesk.Navisworks.Api.SavedViewpointAnimationCut
+  type Autodesk.Navisworks.Api.SavedViewpointAnimation
+  type Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints
+
+---- How a viewpoint could be made to show one discipline and hide the rest ----
+  Autodesk.Navisworks.Api.Interop.LcUResource.SetOverrideLanguage  (Method)
+  Autodesk.Navisworks.Api.Interop.LcUOptionSet.ReapplyNameOverrides  (Method)
+  Autodesk.Navisworks.Api.Interop.LcUOption.ReapplyNameOverrides  (Method)
+  Autodesk.Navisworks.Api.Interop.LcUSession.OverrideLoadingDir  (Method)
+  Autodesk.Navisworks.Api.ModelItem.get_IsHidden  (Method)
+  Autodesk.Navisworks.Api.ModelItem.IsHidden  (Property)
+  Autodesk.Navisworks.Api.ModelGeometry.get_PermanentOverrideTransform  (Method)
+  Autodesk.Navisworks.Api.ModelGeometry.PermanentOverrideTransform  (Property)
+  Autodesk.Navisworks.Api.Progress.Hide  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpSimpleProgress.SetVisible  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpDummyProgress.SetVisible  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpSwigProgress.SetVisible  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.GetOverrideHyperlinks  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideColor  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTransparency  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTempColor  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTempTransparency  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideMaterialReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideMaterialResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTempMaterialReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTempMaterialResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideProteinMaterial  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideColorReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideColorResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTransparencyReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTransparencyResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTempColorReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTempColorResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTempTransparencyReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTempTransparencyResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideProteinMaterialReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideProteinMaterialResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTempPolygonModeReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTempPolygonModeResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideAppearanceReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideAppearanceResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverridePermTempMaterialReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideColorWithTempColorReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTransparencyWithTempTransparencyReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTransform  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTransformReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.OverrideTransformResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.IsSelectionHidden  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.SetSelectionHidden  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.HiddenItemsResetAll  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.HiddenItemsResetToInitialState  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.HiddenItemsResetAllToInitialState  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.HiddenItemsResetAllToModelState  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.GetAllHiddenAtModelState  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.IsOverrideHideRender  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.IsOverrideForceRender  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.IsOverrideIgnoreClip  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.IsOverrideIgnorePick  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.SetOverrideHideRender  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.SetOverrideForceRender  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.SetOverrideIgnoreClip  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.SetOverrideIgnorePick  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.IsUnselectedHidden  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelEx.GetViewSavedAttibuteHidden  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpSwigKernelProgress.SetVisible  (Method)
+  Autodesk.Navisworks.Api.SavedViewpoint.get_ContainsAppearanceOverrides  (Method)
+  Autodesk.Navisworks.Api.SavedViewpoint.get_ContainsVisibilityOverrides  (Method)
+  Autodesk.Navisworks.Api.SavedViewpoint.GetVisibilityOverrides  (Method)
+  Autodesk.Navisworks.Api.SavedViewpoint.GetAppearanceOverrides  (Method)
+  Autodesk.Navisworks.Api.SavedViewpoint.ContainsAppearanceOverrides  (Property)
+  Autodesk.Navisworks.Api.SavedViewpoint.ContainsVisibilityOverrides  (Property)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionSetsElement.MakeVisible  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragMaterialElement.OverrideColor  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragMaterialElement.OverrideTransparency  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragMaterialElement.OverrideProteinMaterial  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragMaterialElement.OverrideTempColor  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragMaterialElement.OverrideTempTransparency  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragMaterialElement.ResetAllAppearancesThatCanHaveTempOverrides  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragMaterialElement.ResetTempOverrides  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragMaterialElement.ResetAllTempOverrides  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragMaterialElement.GetTempOverrideColor  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragMaterialElement.GetTempOverrideTransparency  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ApplyOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ApplyOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ApplyTempOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ApplyTempOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ResetOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ResetOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ResetTempOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ResetTempOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ResetAllOverrides  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ResetAllTempOverrides  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.ResetAllTempOverrides  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.GetOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOpShadFragTransformElement.GetTempOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcOwApplication.OverrideCursor  (Method)
+  Autodesk.Navisworks.Api.ProgressVisibilityEventArgs.get_WantVisible  (Method)
+  Autodesk.Navisworks.Api.ProgressVisibilityEventArgs.set_WantVisible  (Method)
+  Autodesk.Navisworks.Api.ProgressVisibilityEventArgs.WantVisible  (Property)
+  Autodesk.Navisworks.Api.Application.add_ProgressVisibility  (Method)
+  Autodesk.Navisworks.Api.Application.remove_ProgressVisibility  (Method)
+  Autodesk.Navisworks.Api.Application.ProgressVisibility  (Event)
+  Autodesk.Navisworks.Api.Interop.LcUNameStandardNameEnum.eSTANDARD_NODE_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcUOptionSetProfile.ePROFILE_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.ViewpointRenderStyle.HiddenLine  (Field)
+  LcOaNode.OverrideFlags  (NestedType)
+  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps.eCAP_UI_INVISIBLE  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_UNKNOWN_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_MODEL_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_LAYER_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_COLLECTION_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_GROUP_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_COMPOSITE_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_INSERT_GROUP_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_INSERT_GEOMETRY_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_GEOMETRY_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_SELECTION_SET_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_FIND_SET_HIDDEN  (Field)
+  Autodesk.Navisworks.Api.Interop.LcOpSelectionTreeInterfaceIcon.eICON_RESERVED_HIDDEN  (Field)
+  LcOpSceneRef.OverrideProp  (NestedType)
+  Autodesk.Navisworks.Api.Interop.LcOwNetApiInputHandlerHandlerType.eOVERRIDE  (Field)
+  Autodesk.Navisworks.Api.Plugins.CommandState.get_IsVisible  (Method)
+  Autodesk.Navisworks.Api.Plugins.CommandState.set_IsVisible  (Method)
+  Autodesk.Navisworks.Api.Plugins.CommandState.get_OverrideDisplayName  (Method)
+  Autodesk.Navisworks.Api.Plugins.CommandState.set_OverrideDisplayName  (Method)
+  Autodesk.Navisworks.Api.Plugins.CommandState.OverrideDisplayName  (Property)
+  Autodesk.Navisworks.Api.Plugins.CommandState.IsVisible  (Property)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentSavedViewpoints.CaptureRuntimeOverrides  (Method)
+  Autodesk.Navisworks.Api.Data.NavisworksCommand.get_DesignTimeVisible  (Method)
+  Autodesk.Navisworks.Api.Data.NavisworksCommand.set_DesignTimeVisible  (Method)
+  Autodesk.Navisworks.Api.Data.NavisworksCommand.DesignTimeVisible  (Property)
+  Autodesk.Navisworks.Api.VisibilityOverrides.get_Hidden  (Method)
+  Autodesk.Navisworks.Api.VisibilityOverrides.Hidden  (Property)
+  Autodesk.Navisworks.Api.AppearanceOverrides.get_MaterialOverrides  (Method)
+  Autodesk.Navisworks.Api.AppearanceOverrides.MaterialOverrides  (Property)
+  Autodesk.Navisworks.Api.Interop.LcRmAutoCAM.IsToolGroupHidden  (Method)
+  Autodesk.Navisworks.Api.Interop.LcRmAutoCAM.IsToolGroupHidden  (Method)
+  Autodesk.Navisworks.Api.Interop.LcRmAutoCAM.IsViewCubeVisible  (Method)
+  Autodesk.Navisworks.Api.Interop.LcRmAutoCAM.IsViewCubeVisible  (Method)
+  Autodesk.Navisworks.Api.Interop.LcRmAutoCAM.IsNavBarVisible  (Method)
+  Autodesk.Navisworks.Api.Interop.LcRmAutoCAM.SwitchNavBarVisibility  (Method)
+  Autodesk.Navisworks.Api.Interop.IGUICommand.get_Visible  (Method)
+  Autodesk.Navisworks.Api.Interop.IGUICommand.set_Visible  (Method)
+  Autodesk.Navisworks.Api.Interop.IGUICommand.Visible  (Property)
+  Autodesk.Navisworks.Api.ApplicationParts.IApplicationGui.SetDockPanePluginVisibility  (Method)
+  Autodesk.Navisworks.Api.ApplicationParts.IApplicationGui.GetDockPanePluginVisibility  (Method)
+  Autodesk.Navisworks.Api.DataPropertyNames.get_ItemHidden  (Method)
+  Autodesk.Navisworks.Api.DataPropertyNames.ItemHidden  (Property)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentModels.OverridePermanentColor  (Method)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentModels.OverridePermanentTransparency  (Method)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentModels.OverrideTemporaryColor  (Method)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentModels.OverrideTemporaryTransparency  (Method)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentModels.SetHidden  (Method)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentModels.IsHidden  (Method)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentModels.ResetAllHidden  (Method)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentModels.ResetAllHiddenToModelState  (Method)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentModels.GetAllHiddenAtModelState  (Method)
+  Autodesk.Navisworks.Api.DocumentParts.DocumentModels.OverridePermanentTransform  (Method)
+  Autodesk.Navisworks.Api.Plugins.DockPanePlugin.get_Visible  (Method)
+  Autodesk.Navisworks.Api.Plugins.DockPanePlugin.set_Visible  (Method)
+  Autodesk.Navisworks.Api.Plugins.DockPanePlugin.OnVisibleChanged  (Method)
+  Autodesk.Navisworks.Api.Plugins.DockPanePlugin.Visible  (Property)
+  Autodesk.Navisworks.Internal.ApiImplementation.ProgressImpl.SetVisible  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.GetAllHidden  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.GetAllHiddenImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.SimAddStartActionAppearanceOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.SimAddActionAppearanceOverride  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideSelectionColor  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideSelectionColorImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideSelectionTransparency  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideSelectionTransparencyImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideSelectionConsistentMaterial  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideSelectionConsistentMaterialImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideSelectionRenderStyle  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideSelectionRenderStyleImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideSelectionAppearance  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.HideSelection  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.HideSelectionImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.IsSelectionHidden  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.IsSelectionHiddenImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.ResetSelectionHidden  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.ResetSelectionHiddenImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.ResetAllHidden  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.ResetAllHiddenImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideTransform  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideTransformImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideTransformReset  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideTransformResetImpl  (Method)
+  Autodesk.Navisworks.Api.Interop.LcVwDocument.OverrideTransformResetAll  (Method)
+
+Paste all of the above into docs\history\scan.md under the F52 section, with today's date.
