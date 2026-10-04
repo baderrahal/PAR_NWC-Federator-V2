@@ -28,14 +28,21 @@ namespace Federator.Core.Health
             this.nwdPublished = nwdPublished;
         }
 
-        /// <summary>One sentence for the NWF and one for the NWD, naming the file that was not written where one was not.</summary>
+        /// <summary>
+        /// One sentence for the NWF and one for the NWD, naming the file that was not written
+        /// where one was not. The NWF sentence names a publish only where the NWD's own facts
+        /// show one, because it once said the NWD was published on the line above the one
+        /// saying it was not written, the reviewer's blocking finding on attempt 2.
+        /// </summary>
         internal IList<string> Lines()
         {
             List<string> lines = new List<string>();
+            bool publishShown = nwdOnDisk && nwdPublished;
 
-            lines.Add(nwfOnDisk
-                ? "The NWF is on disk at " + nwfPath + ", read after the NWD was published."
-                : "The NWF was NOT written. It is not on disk at " + nwfPath + ".");
+            lines.Add(!nwfOnDisk
+                ? "The NWF was NOT written. It is not on disk at " + nwfPath + "."
+                : "The NWF is on disk at " + nwfPath
+                    + (publishShown ? ", read after the NWD was published." : ", read at the end of the group."));
 
             if (!nwdOnDisk)
             {

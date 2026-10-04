@@ -166,6 +166,52 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
+        /// The reviewer's blocking finding on attempt 2. The NWF line ended "read after the NWD
+        /// was published" whatever the NWD facts were, so the note of a group whose NWD was not
+        /// written, or whose publish did not report success, said a publish happened on the
+        /// line above the one saying it did not. It names a publish only where the outcome
+        /// shows one: the publish reported success and the NWD is on the disk.
+        /// </summary>
+        [Test]
+        public void TheNwfLineSaysNothingOfAPublishTheOutcomeDidNotShow()
+        {
+            OffCoordinates off = The1B06K1();
+            NwfAndNwd[] noPublishShown =
+            {
+                new NwfAndNwd(@"C:\out\1B06K1.nwf", true, @"C:\out\1B06K1.nwd", false, false),
+                new NwfAndNwd(@"C:\out\1B06K1.nwf", true, @"C:\out\1B06K1.nwd", true, false),
+                new NwfAndNwd(@"C:\out\1B06K1.nwf", true, @"C:\out\1B06K1.nwd", false, true)
+            };
+            string[] cases = { "no NWD", "a stale NWD", "a publish reported with no NWD on the disk" };
+
+            for (int i = 0; i < noPublishShown.Length; i++)
+            {
+                string nwfLine = TheNwfLine(off.Note("1B06K1", noPublishShown[i], 0, new List<string>()));
+
+                Assert.That(nwfLine, Is.EqualTo(@"The NWF is on disk at C:\out\1B06K1.nwf, read at the end of the group."), cases[i]);
+                Assert.That(nwfLine, Does.Not.Contain("publish"), cases[i]);
+            }
+
+            Assert.That(
+                TheNwfLine(off.Note("1B06K1", BothOnDisk(), 0, new List<string>())),
+                Is.EqualTo(@"The NWF is on disk at C:\out\1B06K1.nwf, read after the NWD was published."));
+        }
+
+        private static string TheNwfLine(IList<string> note)
+        {
+            foreach (string line in note)
+            {
+                if (line.StartsWith("The NWF ", StringComparison.Ordinal))
+                {
+                    return line;
+                }
+            }
+
+            Assert.Fail("the note has no NWF line");
+            return null;
+        }
+
+        /// <summary>
         /// The tests already saved in the NWF keep their results, F72c, and a skipped group
         /// runs none of them, so the panel in the NWD shows an earlier run's clashes. The note
         /// says so whichever way the count went.

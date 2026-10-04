@@ -381,7 +381,9 @@ and 6 does not read as broken.
   site and its distance from the reference in X, Y and Z.
   WHAT IS SAID IS ONLY WHAT WAS CHECKED. The note beside the NWD and in the Clash Report
   folder, `OffCoordinates.Note`, is written after the NWF was looked at the last time and
-  names the NWF and the NWD off the disk, `NwfAndNwd`, saying which was not written. It
+  names the NWF and the NWD off the disk, `NwfAndNwd`, saying which was not written, and
+  names a publish, on either line, only where the publish reported success and the NWD is
+  on the disk. It
   says the tests already saved in the NWF keep an earlier run's results, and names every
   report an earlier run left at the names this run would have written, with its time and
   size, `EarlierReports`, read by exact path and never touched, and the log names them too.
