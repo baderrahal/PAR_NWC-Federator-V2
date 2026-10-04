@@ -91,6 +91,54 @@ steps\loop.md, turn 5.
 
 CLAUDE.md's rule of no co-authored-by and no generated-by line holds over the session's own
 attribution note.
+
+## 2026-10-01 The loop, turn 4, F108 a fresh copy of the source for each run set, DONE
+
+Bader's message headed 30 Sep 2026, read on 2026-10-01, Q94, asked for a fresh copy for each run
+set in his own folder shape.
+Nothing under src or tests changed. Core tests by the pre-commit at 225a86f, in
+%LOCALAPPDATA%\NwcFederatorLoop\turn4\f108-commit-output.txt: 1746 passed, 0 failed, 0
+skipped, and F102's evidence check over the 3 staged files, none carrying one. Nothing waits for
+the local machine: the proof ran here, and the first run of set 03 is its use.
+
+### What was done
+
+- tools\loop\prepare-copy.ps1 -Set NN, by the developer in wt-f108: the plain check first, then
+  runs\NN\NMFed copied from the source copy and every file read back by sha256 and size, one
+  empty folder under Clash Report for each folder under NWC, read off NWC, and
+  NMFed.manifest.txt written last. -Set NN -Remove and -Restore act on that copy, -Restore
+  copying the file back from the desktop folder by hash, as the plain modes do
+- named NMFed because the paths wall refuses every command naming the desktop folder
+- proved on this machine with the throwaway set 99 and others, made, read back, refused a
+  second time, and a file removed and restored, every answer in turn4\f108-proof.txt, the run
+  ending 10:52:59 with no Roamer. Of the refusals, 13 ran in the loop folder, 4 in a scratch
+  folder and 6 on a copy of the script changed by one line, and the two for too little room
+  were not proved, as the README says. The script the proof ran, sha256 6EDA217D, is the one
+  committed at b3958b5 once its line ends are CRLF, as the checkout writes them,
+  turn5\f108-hash.txt
+- read by a reviewer and a breaker under Q93: both SAFE TO USE, no finding blocks
+
+### What remains
+
+- the readers' findings, each a register row in steps\loop.md: -Remove and -Restore refuse a file
+  whose name sits in both communities, so group 100000 cannot be the file gone group. A short or
+  changed source.manifest.txt is kept until the desktop folder next changes. -Remove writes its
+  note before the delete. The README's write list names only the source copy. The rule and the
+  runner agent still describe the plain modes only. A comment says Windows PowerShell 5.1
+  follows a junction when it recurses, which the developer said a test of theirs on 5.1 did not
+  show, kept in no file, so which is right is UNKNOWN
+
+### Known bugs
+
+- two of the breaker's findings were of Q93's kinds and judged not to block: outputs that Bader's
+  own runs leave in the desktop folder land in the copy and its manifest as inputs, which can
+  make evidence wrong, and nothing reads for a running Navisworks while the desktop folder is
+  read, which reads only. Both are register row F108-R5, with the rest F108-R1 to R4
+
+### What comes next
+
+- the first run of set 03, after F106 and F109
+
 ## 2026-10-01 The loop, turn 4, F103 run.ps1 part 1, DONE after the third real start
 
 Bader answered B on 2026-10-01, Q92: the third real start on a63c284 now, then F103 merges as
