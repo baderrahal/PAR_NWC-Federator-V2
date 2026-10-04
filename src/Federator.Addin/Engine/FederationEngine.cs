@@ -2215,6 +2215,9 @@ namespace Federator.Addin.Engine
             catch (Exception error)
             {
                 log.Failure("reading what the models carry", error, "the run goes on and this group is not judged on it");
+
+                // So the run line never reads clean over a group whose models were not all read.
+                exportsAcrossTheRun.GroupNotRead();
             }
         }
 
@@ -2298,26 +2301,39 @@ namespace Federator.Addin.Engine
 
             if (skipped)
             {
-                // The reports an earlier run left, read by exact path, named in the log and
-                // in the note, and never touched.
-                IList<string> earlier = EarlierReports.Lines(OutputPlan.From(reports), reportFolder, job.WorkbookName);
-
-                foreach (string line in earlier)
+                // Inside a try, because a file an earlier run left can go between its Exists
+                // and its size, and a report check never fails a group.
+                try
                 {
-                    log.Line("EARLIER  " + line.Trim() + ", from an earlier run and not written by this run");
-                }
+                    // The reports an earlier run left, read by exact path, named in the log
+                    // and in the note, and never touched.
+                    IList<string> earlier = EarlierReports.Lines(OutputPlan.From(reports), reportFolder, job.WorkbookName);
 
-                if (earlier.Count == 0)
+                    foreach (string line in earlier)
+                    {
+                        log.Line("EARLIER  " + line.Trim() + ", from an earlier run and not written by this run");
+                    }
+
+                    if (earlier.Count == 0)
+                    {
+                        log.Line("EARLIER  no report file is at the names this run would have written for "
+                            + Words.Or(job.Building, "this group") + ", so no report of an earlier run stands beside its note");
+                    }
+
+                    note = outcome.ClashSkippedBecause.Note(
+                        job.Building,
+                        new NwfAndNwd(job.NwfPath, outcome.NwfOnDisk, job.NwdPath, outcome.NwdOnDisk, outcome.NwdPublishReportedSuccess),
+                        outcome.Clash == null ? -1 : outcome.Clash.AlreadyPresentCount,
+                        earlier);
+                }
+                catch (Exception error)
                 {
-                    log.Line("EARLIER  no report file is at the names this run would have written for "
-                        + Words.Or(job.Building, "this group") + ", so no report of an earlier run stands beside its note");
+                    log.Failure(
+                        "the note on the shared coordinates for " + Words.Or(job.Building, "this group"),
+                        error,
+                        "kept going with no note written, the ALIGNMENT block in the log carries the same lines");
+                    return;
                 }
-
-                note = outcome.ClashSkippedBecause.Note(
-                    job.Building,
-                    new NwfAndNwd(job.NwfPath, outcome.NwfOnDisk, job.NwdPath, outcome.NwdOnDisk, outcome.NwdPublishReportedSuccess),
-                    outcome.Clash == null ? -1 : outcome.Clash.AlreadyPresentCount,
-                    earlier);
             }
 
             foreach (string path in paths)
@@ -3641,9 +3657,7 @@ namespace Federator.Addin.Engine
 
             if (outcome.Clash != null)
             {
-                line.Append("  clash ").Append(outcome.Clash.RanCount).Append(" run, ")
-                    .Append(outcome.Clash.SkippedCount).Append(" skipped, ")
-                    .Append(outcome.Clash.TotalClashes).Append(" clashes");
+                line.Append("  clash ").Append(outcome.Clash.CountsForTheLabel());
             }
 
             // How many, never what they say. This line is a label, and the errors carry

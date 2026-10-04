@@ -419,8 +419,13 @@ and 6 does not read as broken.
 - The EXPORT CHECK run line is added up in Core, `ExportCheckAcrossTheRun`, by the rules
   each group's block judges by, `ModelExport.HoldsNoElement` among them, so the line and
   the blocks cannot disagree. The engine kept four counters of its own and none for a model
-  holding no Revit element. The row file's number for a model whose elements could not be
+  holding no Revit element. A group whose models were not all read is counted,
+  `ExportCheckAcrossTheRun.GroupNotRead`, and the line says so and is never clean while one
+  was not. The row file's number for a model whose elements could not be
   counted is empty, `ExportCheck.ElementsNumber`, as for any unknown in that file, never -1
+- The open file run's window label takes its clash counts from Core,
+  `ClashRunOutcome.CountsForTheLabel`, which says none ran and why for a group whose clash
+  was skipped, where the label printed nought run and nought clashes
 - The counts in the RESULT block and the errors under it come from one list. A
   failed count with an empty error list is what the log printed once, saying
   "groups failed: 22" and "Nothing failed." in the same block. A group recorded as

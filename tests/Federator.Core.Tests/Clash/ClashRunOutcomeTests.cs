@@ -340,6 +340,35 @@ namespace Federator.Core.Tests
             Assert.That(summary, Does.Not.Contain("0 clashes"));
         }
 
+        /// <summary>
+        /// The open file run's window label, FederationEngine.Describe, read RanCount and
+        /// TotalClashes itself and printed "0 run, 2 skipped, 0 clashes" for a skipped group,
+        /// the third rendering attempt 2 left after the block and the summary, both readings
+        /// of attempt 2. It says none ran and why, and a group that ran keeps its counts.
+        /// </summary>
+        [Test]
+        public void TheWindowLabelOfASkippedGroupSaysNoneRanAndWhy()
+        {
+            ClashRunOutcome skipped = new ClashRunOutcome();
+            skipped.AddCreated("new one");
+            skipped.AddAlreadyPresent("last week's one");
+            skipped.AddSkipped("new one", ClashSkipReason.NotOnTheSameCoordinates, "x");
+            skipped.AddSkipped("last week's one", ClashSkipReason.NotOnTheSameCoordinates, "x");
+            skipped.ClashSkipped = "clash skipped, models not on the same shared coordinates";
+
+            Assert.That(skipped.CountsForTheLabel(), Is.EqualTo(
+                "none run, clash skipped, models not on the same shared coordinates, 2 skipped"));
+            Assert.That(skipped.CountsForTheLabel(), Does.Not.Contain("0 clashes"));
+
+            ClashTally tally = new ClashTally();
+            tally.Add(ClashStatus.New, 7);
+            ClashRunOutcome ran = new ClashRunOutcome();
+            ran.AddRan("with clashes", 100, 50, tally, 3.2);
+            ran.AddSkipped("empty", ClashSkipReason.EmptySide, "the left side finds nothing");
+
+            Assert.That(ran.CountsForTheLabel(), Is.EqualTo("1 run, 1 skipped, 7 clashes"));
+        }
+
         /// <summary>The one discipline path is left as it was, so its block still counts in zeros, next wave.</summary>
         [Test]
         public void AOneDisciplineGroupIsLeftAsItWas()

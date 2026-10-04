@@ -529,5 +529,20 @@ namespace Federator.Core.Clash
                 + TotalClashes + " clashes in "
                 + Seconds.ToString("0.0", CultureInfo.InvariantCulture) + "s.";
         }
+
+        /// <summary>
+        /// The clash part of the open file run's window label. It read RanCount and
+        /// TotalClashes in the add-in and printed nought run and nought clashes for a group
+        /// whose clash was skipped, which reads as a clean group, so it says none ran and why.
+        /// </summary>
+        public string CountsForTheLabel()
+        {
+            if (!string.IsNullOrEmpty(ClashSkipped))
+            {
+                return "none run, " + ClashSkipped + ", " + SkippedCount + " skipped";
+            }
+
+            return RanCount + " run, " + SkippedCount + " skipped, " + TotalClashes + " clashes";
+        }
     }
 }

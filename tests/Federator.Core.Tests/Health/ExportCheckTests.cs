@@ -465,6 +465,26 @@ namespace Federator.Core.Tests.Health
                 + " counted. Nothing was changed in any model."));
         }
 
+        /// <summary>
+        /// The breaker's note on attempt 2, the export twin of its fourth finding at c5d8aa8. A
+        /// group whose models could not be read added nothing, so the run line read as a clean
+        /// run over a group nobody checked. The line says how many groups were not read whole
+        /// and is never clean while one was not.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseModelsWereNotReadNeverLeavesTheRunLineClean()
+        {
+            ExportCheckAcrossTheRun run = new ExportCheckAcrossTheRun();
+            run.Add(Model("AR", 86, 86, 86, "AR-EXTERIOR"));
+            run.GroupNotRead();
+
+            Assert.That(run.Line(), Is.EqualTo(
+                "EXPORT CHECK across the run: 0 model(s) carry no workset at all, 0 carry one on only some of their"
+                + " elements, 0 do not carry an element id on every element, 0 hold no Revit element, and 0 could not be"
+                + " counted. The models of 1 group(s) were not all read, so these counts may leave some out. Nothing was"
+                + " changed in any model."));
+        }
+
         [Test]
         public void ACleanRunLineHasNoTail()
         {

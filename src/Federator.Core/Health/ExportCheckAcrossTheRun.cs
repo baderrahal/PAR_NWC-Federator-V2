@@ -14,6 +14,17 @@ namespace Federator.Core.Health
         private int missAnId;
         private int holdNoElement;
         private int notCounted;
+        private int groupsNotRead;
+
+        /// <summary>
+        /// One group whose models could not all be read, so some of them are not in the
+        /// counts. Its catch added nothing until attempt 3 of F112, and the line then read as
+        /// a clean run over a group nobody checked, the breaker's note on attempt 2.
+        /// </summary>
+        public void GroupNotRead()
+        {
+            groupsNotRead++;
+        }
 
         /// <summary>One model, as its group's block is written.</summary>
         public void Add(ModelExport model)
@@ -55,13 +66,17 @@ namespace Federator.Core.Health
         /// </summary>
         public string Line()
         {
-            bool clean = carryNoWorkset == 0 && carryOneOnSome == 0 && missAnId == 0 && holdNoElement == 0 && notCounted == 0;
+            bool clean = carryNoWorkset == 0 && carryOneOnSome == 0 && missAnId == 0 && holdNoElement == 0 && notCounted == 0
+                && groupsNotRead == 0;
 
             return "EXPORT CHECK across the run: " + carryNoWorkset + " model(s) carry no workset at all, "
                 + carryOneOnSome + " carry one on only some of their elements, "
                 + missAnId + " do not carry an element id on every element, "
                 + holdNoElement + " hold no Revit element, and "
                 + notCounted + " could not be counted"
+                + (groupsNotRead == 0
+                    ? string.Empty
+                    : ". The models of " + groupsNotRead + " group(s) were not all read, so these counts may leave some out")
                 + (clean ? string.Empty : ". Nothing was changed in any model.");
         }
     }
