@@ -900,8 +900,9 @@ function PostClose($sync, $windows) {
 # its own WM_CLOSE, BY ITSELF with none. It posts WM_CLOSE through PostClose once the log holds
 # its RESULT block and a COPY line after it and has then been quiet for 15 s, or once the
 # driver has stopped with nothing that runs pressed while the log shows no run started, and
-# never while a window of the adopted process other than the tool's and the main window is up,
-# which is left up for the hang rule or the ceiling. The window takes WM_CLOSE between two
+# never while a window of the adopted process other than the tool's, the main window and a pane
+# is up, which is left up for the hang rule or the ceiling. A pane is a window that is not
+# modal, F125, written as PANE and never counted a finding. The window takes WM_CLOSE between two
 # groups of a run, because the run pumps the dispatcher and no Closing handler reads whether a
 # run goes, FederatorWindow.xaml.cs Pump and OnClose, so a run that has started is only ever
 # closed after its RESULT block. A tool's window still open 120 s after WM_CLOSE is closed
@@ -1049,15 +1050,18 @@ function Monitor($sync) {
         $key = [string]$r.Handle + "|" + $r.Class + "|" + $r.Caption
         if ($seenWins.ContainsKey($key)) { continue }
         $seenWins[$key] = $true
-        $kind = WindowKind $r.Class $r.Caption $r.OwnerHandle $r.OwnerVisible
+        $kind = WindowKind $r.Class $r.Caption $r.OwnerHandle $r.OwnerVisible $r.OwnerEnabled $r.Enabled
         if ($kind -eq "DIALOG" -and (IsConfirm $r.Class $r.Caption $r.Texts)) { $kind = "CONFIRM" }
         $texts = "UNKNOWN, no child window answered"
         if ($null -ne $r.Texts -and @($r.Texts).Count -gt 0) { $texts = (@($r.Texts) -join " ") }
         $ownerText = OwnerText $r ([uint32]$sync.MyPid)
+        # A DIALOG line and a PANE line end with the window's own state, which the window rule
+        # reads beside its owner's, so the record shows what decided between them.
         if ($kind -eq "DIALOG") {
           $sync.Dialogs = $sync.Dialogs + 1
-          M ("DIALOG: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts)
+          M ("DIALOG: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts + ", the window itself enabled " + $r.Enabled)
         } elseif ($kind -eq "CONFIRM") { M ("CONFIRM, the tool's confirm, which the driver answers and is not a finding: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts) }
+        elseif ($kind -eq "PANE") { M ("PANE, a window that is not modal, left as it is and not a finding: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts + ", the window itself enabled " + $r.Enabled) }
         else { M ($kind + ": class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText) }
       }
       if (($now - $lastLock).TotalSeconds -ge 60) { $lastLock = $now; M ("SESSION LOCK " + (SessionLockText $sync.WinType)) }
@@ -1082,7 +1086,7 @@ function Monitor($sync) {
           try { if ($sync.DriverProc.HasExited) { $dx = [int]$sync.DriverProc.ExitCode } } catch { M ("the driver's exit could not be read, UNKNOWN, " + (Err $_.Exception)) }
           if ($null -ne $dx) { $driverDone = $true; $sync.DriverExit = $dx; $sync.DriverLine = DriverLastLine $sync.DriverNotes; M ("DRIVER exited " + $dx + ", " + (DriverCodeName $dx) + ", its last line: " + $sync.DriverLine) }
         }
-        $toolNow = @((WindowRecords $sync.WinType $sync.ProcType ([uint32]$sync.MyPid) $false $false) | Where-Object { (WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible) -eq "WINDOW" })
+        $toolNow = @((WindowRecords $sync.WinType $sync.ProcType ([uint32]$sync.MyPid) $false $false) | Where-Object { (WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible $_.OwnerEnabled $_.Enabled) -eq "WINDOW" })
         if (-not $toolSeen -and $toolNow.Count -gt 0) { $toolSeen = $true; M ("the tool's window is open, caption `"" + $toolNow[0].Caption + "`"") }
         if (($toolSeen -and $toolNow.Count -eq 0) -or $sawClosedLine) {
           $how = $(if ($sawClosedLine) { "Window closed. is in the tool's log" } else { "the tool's window is gone" })
@@ -1101,14 +1105,14 @@ function Monitor($sync) {
           }
           if ($why -ne "") {
             $what = $(if ($why -eq "RESULT") { "the tool's log holds its RESULT block and a COPY line after it and has been quiet for " + ($now - $lastGrowUtc).TotalSeconds.ToString("0") + " s" } else { "the driver stopped, " + (DriverCodeName $sync.DriverExit) + ", with nothing that runs pressed" })
-            $busy = @($visRecs | Where-Object { $k = WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible; $k -ne "WINDOW" -and $k -ne "MAIN" })
+            $busy = @($visRecs | Where-Object { $k = WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible $_.OwnerEnabled $_.Enabled; $k -ne "WINDOW" -and $k -ne "MAIN" -and $k -ne "PANE" })
             if ($toolNow.Count -eq 0) {
               M ("the run is over, " + $what + ", and no window of the tool is open to close")
               EndArm $sync
               if ($why -eq "RESULT") { $sync.RunOver = "CLOSED" } else { $sync.RunOver = "DRIVER" }
               break
             } elseif ($busy.Count -gt 0) {
-              if ($busyNoted -ne $why) { $busyNoted = $why; M ("the run is over, " + $what + ", and " + $busy.Count + " other windows of the adopted Navisworks are up, so WM_CLOSE is not posted, they are left as they are, and the hang rule or the ceiling decides") }
+              if ($busyNoted -ne $why) { $busyNoted = $why; M ("the run is over, " + $what + ", and " + $busy.Count + " windows of the adopted Navisworks that are not the tool's, the main window or a pane are up, so WM_CLOSE is not posted, they are left as they are, and the hang rule or the ceiling decides") }
             } else {
               foreach ($pl in (PostClose $sync $toolNow)) { M $pl }
               $posted = $why; $postedAt = $now

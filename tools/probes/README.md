@@ -59,7 +59,10 @@ inside a running Navisworks:
   reads every box back, presses Run only when each reads what was typed and every path lies
   under runs\NN, and answers the confirm OK, or Cancel when it names a path outside the loop
   folder. It never clicks, never sends a key, never moves the pointer and never searches the
-  desktop. Its header says what was measured about the window
+  desktop. Since F125 a window of that Navisworks that is up before Run and is not modal, such
+  as a floating pane, is noted and left, and a window that comes up after Run and is not the
+  confirm still stops it unless it is that same pane. Its header says what was measured about
+  the window
 
 One probe starts a Navisworks of its own. It refuses to start one while any Navisworks
 runs, whatever its command line and whoever started it, so the code keeps that rule, not

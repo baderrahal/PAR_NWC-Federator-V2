@@ -33,6 +33,12 @@ namespace NwcFederatorLoop.StandIn
     ///   selfclose     the window closes itself six seconds after it is shown
     ///   autorun       a run starts by itself when the window is shown, and its RESULT block is
     ///                 written 25 seconds later
+    /// F125 added three modes, each the shape the baseline run of 2026-10-04 read, UnderPane below:
+    ///   pane          a main window, a floating pane owned by it, then this window over the main
+    ///                 window with ShowDialog, and after that as plain
+    ///   pane-dialog   as pane, and Run shows a warning that is not the confirm
+    ///   pane-new      as pane, and Run shows a new WinForms window owned by this one, not modal,
+    ///                 and no confirm
     /// </summary>
     internal static class ToolWindow
     {
@@ -48,6 +54,17 @@ namespace NwcFederatorLoop.StandIn
             public bool Include { get; set; }
 
             public string Building { get; set; }
+        }
+
+        /// <summary>F125. A WPF window's handle handed to WinForms as the owner of a form.</summary>
+        private sealed class OwnerHandle : System.Windows.Forms.IWin32Window
+        {
+            public OwnerHandle(IntPtr handle)
+            {
+                Handle = handle;
+            }
+
+            public IntPtr Handle { get; private set; }
         }
 
         public static int Run(string eventsFile, string stamp, string mode, string logsFolder)
@@ -180,9 +197,23 @@ namespace NwcFederatorLoop.StandIn
             {
                 Event(eventsFile, "Run pressed");
 
-                if (mode == "dialog")
+                if (mode == "dialog" || mode == "pane-dialog")
                 {
                     MessageBox.Show(window, "No group is ticked to run.", "Parsons NWC Federator", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // A WinForms window owned by this one and not modal, which the window rule alone
+                // reads as a pane, so only its coming up after Run can stop the driver.
+                if (mode == "pane-new")
+                {
+                    System.Windows.Forms.Form after = new System.Windows.Forms.Form();
+                    after.Text = "NwcFederatorLoop stand-in, a window after Run";
+                    after.Width = 380;
+                    after.Height = 160;
+                    after.Controls.Add(new System.Windows.Forms.Label { Text = "a window that came up after Run, not modal", AutoSize = true, Left = 12, Top = 12 });
+                    after.Show(new OwnerHandle(new WindowInteropHelper(window).Handle));
+                    Event(eventsFile, "a window after Run shown");
                     return;
                 }
 
@@ -266,11 +297,55 @@ namespace NwcFederatorLoop.StandIn
                 }
             };
 
+            if (mode.StartsWith("pane", StringComparison.Ordinal))
+            {
+                return UnderPane(window, eventsFile);
+            }
+
             // Navisworks stays up when the tool's window closes, so the stand-in does too, until the
             // role's seconds end it, and the monitor reads the window closed and not the process gone.
             Application application = new Application();
             application.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             application.Run(window);
+            return 0;
+        }
+
+        /// <summary>
+        /// F125. What the baseline run of 2026-10-04 read in Navisworks, steps\runs\04\item1-C02
+        /// record.txt lines 36, 37 and 46: a WinForms main window whose caption ends as the
+        /// Navisworks one, a WinForms pane captioned Clash Detective owned by it and not modal, and
+        /// the tool's window owned by the main window and shown with ShowDialog, the way
+        /// src\Federator.Addin\FederatorPlugin.cs shows it. The tool's window opens three seconds
+        /// after the pane, so a reader sees the pane both before and after it. All three are on
+        /// this one thread, and the role's seconds end the process, as Navisworks stays up when
+        /// the tool's window closes.
+        /// </summary>
+        private static int UnderPane(Window window, string eventsFile)
+        {
+            System.Windows.Forms.Form main = new System.Windows.Forms.Form();
+            main.Text = "NwcFederatorLoop stand-in - Autodesk Navisworks Manage 2025";
+            main.Width = 700;
+            main.Height = 480;
+            System.Windows.Forms.Form pane = new System.Windows.Forms.Form();
+            pane.Text = "Clash Detective";
+            pane.Width = 360;
+            pane.Height = 200;
+            pane.Controls.Add(new System.Windows.Forms.Label { Text = "the stand-in's floating pane", AutoSize = true, Left = 12, Top = 12 });
+            System.Windows.Forms.Timer later = new System.Windows.Forms.Timer { Interval = 3000 };
+            later.Tick += delegate
+            {
+                later.Stop();
+                Event(eventsFile, "the tool's window opens with ShowDialog over the main window");
+                new WindowInteropHelper(window).Owner = main.Handle;
+                window.ShowDialog();
+            };
+            main.Shown += delegate
+            {
+                pane.Show(main);
+                Event(eventsFile, "pane shown");
+                later.Start();
+            };
+            System.Windows.Forms.Application.Run(main);
             return 0;
         }
 
