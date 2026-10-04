@@ -202,6 +202,28 @@ and 6 does not read as broken.
   both files, so on them the rule leaves every test where it was. The rule holds no number
   that shapes a run. Its caller is the add-in half, which waits for probes P1 and P2, and
   until it lands nothing in src calls the rule
+- A MIRROR ALREADY IN THE NWF IS NOT RUN, AND IS REMOVED ONLY WHERE THIS TOOL IS PROVED TO
+  HAVE CREATED IT AND NO PERSON SET A STATUS ON IT, F132, Bader's Q114 point 7, the one
+  place this tool removes a test, by his word. `Federator.Core.Clash.MirrorInDocument`
+  is the rule, over facts the add-in hands it. WHICH SAVED TESTS ARE MIRRORS: with an XML
+  picked the XML decides what this run creates and runs, so a saved test is a mirror where
+  its name is a mirror of the XML's, a test the XML holds and keeps is never one whatever
+  order the NWF saved them in, and a saved test the XML does not hold is a mirror where its
+  two sets are a running test of the XML swapped, or another such saved test's swapped
+  with the rule keeping the other. With no XML the rule over the saved tests decides. WHAT
+  PROVES THIS TOOL CREATED IT: its name and both its locators equal a mirror of the picked
+  XML exactly, Ordinal, because that is how this tool creates a test and nothing else on a
+  test says who made it. So WITH NO XML NOTHING IS EVER REMOVED, and a swap the picked XML
+  does not hold, or one whose sides differ from the XML's, is left. WHOSE A STATUS IS,
+  Q122's default A: every status but New is a person's, `StatusesAPersonSet`, except a
+  Reviewed carrying this tool's own record still reading as ours, `AutoReviewRecord
+  .MayUndo`, the undo's own judge, so a mirror whose results a rerun moved to Active or
+  Resolved is left. A result that could not be read leaves it too, and a test with no
+  results carries no status. A mirror left is never run and is named on a MIRROR line with
+  the test it mirrors, every reason it was left and its statuses with their counts, for
+  the form. Its caller is the add-in half, which waits for probes P1 and P2, P2 being
+  whether a test can be removed at all, and until it lands nothing in src calls the rule.
+  Probe P3, a step for Bader, reads who set a status and is what Q122 would turn on
 - The Revit container inside an NWC is often a different building from the NWC.
   Where the building code parsed from the NWC name differs from the code in the
   Revit source name, report SOURCE MISMATCH naming both, and where one Revit

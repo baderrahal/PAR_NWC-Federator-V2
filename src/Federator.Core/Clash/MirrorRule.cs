@@ -36,13 +36,16 @@ namespace Federator.Core.Clash
         /// <summary>A character no locator carries, so two different pairs of sets never share a key.</summary>
         private const char Separator = '\u001F';
 
+        private readonly List<PlannedClashTest> tests;
         private readonly List<MirrorPair> pairs;
         private readonly List<KeyValuePair<PlannedClashTest, PlannedClashTest>> duplicates;
 
         private MirrorRule(
+            List<PlannedClashTest> tests,
             List<MirrorPair> pairs,
             List<KeyValuePair<PlannedClashTest, PlannedClashTest>> duplicates)
         {
+            this.tests = tests;
             this.pairs = pairs;
             this.duplicates = duplicates;
             Pairs = new ReadOnlyCollection<MirrorPair>(pairs);
@@ -63,6 +66,7 @@ namespace Federator.Core.Clash
                 throw new ArgumentNullException("priorities");
             }
 
+            List<PlannedClashTest> all = new List<PlannedClashTest>();
             List<string> keyOrder = new List<string>();
             Dictionary<string, List<PlannedClashTest>> bySets =
                 new Dictionary<string, List<PlannedClashTest>>(StringComparer.Ordinal);
@@ -76,6 +80,7 @@ namespace Federator.Core.Clash
                         continue;
                     }
 
+                    all.Add(test);
                     string key = SetsKey(test);
 
                     if (key == null)
@@ -123,7 +128,7 @@ namespace Federator.Core.Clash
                 }
             }
 
-            return new MirrorRule(pairs, duplicates);
+            return new MirrorRule(all, pairs, duplicates);
         }
 
         /// <summary>
@@ -146,7 +151,8 @@ namespace Federator.Core.Clash
             {
                 lines.Add(Prefix + "   " + pairs.Count + (pairs.Count == 1 ? " pair" : " pairs")
                     + " of tests with the same two sets swapped. Of each pair the higher priority is kept, "
-                    + "A before B before C, and where equal the one first in the XML, and the other is left out");
+                    + "A before B before C before no priority, and where equal the one first in the XML, "
+                    + "and the other is left out");
 
                 if (pairs[0].Mirror.IsFromDocument)
                 {
@@ -182,6 +188,72 @@ namespace Federator.Core.Clash
 
             AddFive(lines, repeated, " more duplicates, counted and not listed");
             return lines;
+        }
+
+        /// <summary>The pair whose mirror carries that name, Ordinal and never trimmed, or null.</summary>
+        internal MirrorPair PairWhoseMirrorIsNamed(string name)
+        {
+            foreach (MirrorPair pair in pairs)
+            {
+                if (string.Equals(pair.Mirror.Name, name, StringComparison.Ordinal))
+                {
+                    return pair;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>Whether a test this rule was handed carries that name, Ordinal and never trimmed.</summary>
+        internal bool Holds(string name)
+        {
+            foreach (PlannedClashTest test in tests)
+            {
+                if (string.Equals(test.Name, name, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// The first test this rule was handed and did not call a mirror, so one that is
+        /// created and run, whose two sets are that test's swapped. Null where there is none,
+        /// or where that test can be no test's mirror.
+        /// </summary>
+        internal PlannedClashTest RunTestSwappedFrom(PlannedClashTest other)
+        {
+            if (other == null || SetsKey(other) == null)
+            {
+                return null;
+            }
+
+            foreach (PlannedClashTest test in tests)
+            {
+                if (string.Equals(test.Left.Locator, other.Right.Locator, StringComparison.Ordinal)
+                    && string.Equals(test.Right.Locator, other.Left.Locator, StringComparison.Ordinal)
+                    && !IsAMirror(test))
+                {
+                    return test;
+                }
+            }
+
+            return null;
+        }
+
+        private bool IsAMirror(PlannedClashTest test)
+        {
+            foreach (MirrorPair pair in pairs)
+            {
+                if (ReferenceEquals(pair.Mirror, test))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static void AddFive(List<string> lines, List<string> from, string rest)
