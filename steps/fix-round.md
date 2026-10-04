@@ -26,8 +26,8 @@ What main holds now, read with git on 2026-10-04.
 - F108 merged into main as c9b223b (PR 84) and F106 as 3449521 (PR 88), both on 2026-10-04.
   F104, F105, F107 and F109 were not merged at 3449521. Since then PR 89, the records with the
   note for the modellers, merged as 51a0cb6, PR 83, the rules, as 086a348, and PR 90, F105, as
-  2c89788, all on 2026-10-04. FR-125 and FR-138 are closed by them and FR-137 and FR-139 in
-  part, each saying so.
+  2c89788, all on 2026-10-04. FR-125, FR-137 and FR-138 are closed by them and FR-139 in part,
+  each saying so.
 - src, tests, build, exchange, docs, CLAUDE.md, INSTALL.md, .claude and
   steps\03_bader_next.md read the same at 3449521 as at f38edd5, so every line cited in them
   still reads where it is cited.
@@ -286,10 +286,12 @@ space is named by neither the character nor where it sits.
 
 ### FR-008 matrix-workset-spelling-differs-between-c06-buildings
 
-No single case sensitive workset spelling in the matrix suits every C06 building. 1B06BC and
-1B06G1 carry ME-DUCTWORK, ME-EQUIPMENT and ME-PIPING in capitals and the other buildings carry
-ME-Ductwork, so the corrected matrix fixes the seven groups the findings name and can stop the
-sets that found items in 1B06G1, 1511 clashes, the most tests that found something.
+No single case sensitive workset spelling in the matrix suits every C06 building. 1B06BC
+carries ME-DUCTWORK and ME-EQUIPMENT in capitals (log:605) and 1B06G1 ME-DUCTWORK, ME-PIPING and
+ME-EQUIPMENT (log:1354), while 1B06M1, 1B06P1, 1B06PK and 1C06M2 carry ME-Ductwork (log:2502,
+2864, 4293 and 7627), and seven groups list only some of their worksets. So the corrected matrix
+fixes the groups the findings name and can stop the sets that found items in 1B06BC and 1B06G1,
+the second 1511 clashes, the most tests that found something.
 
 - Sources: S03-2, C06-J2, FIND-04, Q98 B1
 - Evidence: log:605, 1B06BC 'worksets seen: ... ME-DUCTWORK, ME-EQUIPMENT', and log:639
@@ -3164,14 +3166,13 @@ The shared IL reader prints a zero for every failure kind in every probe, kinds 
 attempts included, and 5z-f reads those zeros as clean.
 
 - Sources: F105-R1, F105-REV-6 (the F105 reviewer's finding of the same code fault)
-- Evidence: On fix-F105 in wt-f105: tools\probes\il-reader.ps1:71-84, the $IlFailureKinds table,
+- Evidence: On main since F105 merged as 2c89788: tools\probes\il-reader.ps1:71-84, the $IlFailureKinds table,
   and :104-112, IlFailureLines walks every key of it and prints 'label: count' even at zero.
-- Root cause: tools\probes\il-reader.ps1:104-112 on fix-F105. The file is not on main.
+- Root cause: tools\probes\il-reader.ps1:104-112, on main since F105 merged as 2c89788.
 - Class: noise
 - Proof: No Core test. Each probe run again on this machine prints only the kinds it attempts,
   and a reviewer reads the diff.
-- Branch: waits for F105's merge, fix-F105 cf40a56 plus staged work in wt-f105, not merged at
-  main 3449521.
+- Branch: F105 merged as 2c89788 on 2026-10-04, so this item can be worked.
 - Note: Plan step 2 merges F105 first. FR-146 corrects the register wording of this row.
 
 ### FR-123 f105-failure-list-only-printed-with-built-addin
@@ -3179,13 +3180,12 @@ attempts included, and 5z-f reads those zeros as clean.
 One of F105's probes prints its failure list only when a built add-in is there.
 
 - Sources: F105-R2
-- Evidence: On fix-F105 in wt-f105: tools\probes\probe-viewpoint-calls.ps1:318-320 test whether
+- Evidence: On main since F105 merged as 2c89788: tools\probes\probe-viewpoint-calls.ps1:318-320 test whether
   $AddinPath is there, and the list is printed inside the else at :396-402 'IlFailureLines'.
-- Root cause: tools\probes\probe-viewpoint-calls.ps1:318-411 on fix-F105. The file is not on
-  main.
+- Root cause: tools\probes\probe-viewpoint-calls.ps1:318-411, on main since F105 merged as 2c89788.
 - Class: noise
 - Proof: No Core test. The probe is run with no built add-in and still prints the list.
-- Branch: waits for F105's merge.
+- Branch: F105 merged as 2c89788 on 2026-10-04, so this item can be worked.
 
 ### FR-124 f105-probes-share-resolver-and-helpers-in-copies
 
@@ -3193,13 +3193,13 @@ A reflection resolver and two small helpers still sit in more than one of F105's
 of one copy.
 
 - Sources: F105-R3
-- Evidence: On fix-F105 in wt-f105: add_ReflectionOnlyAssemblyResolve at
+- Evidence: On main since F105 merged as 2c89788: add_ReflectionOnlyAssemblyResolve at
   probe-viewpoint-calls.ps1:66, probe-roamer-switches.ps1:332 and probe-clash-report-api.ps1:52,
   and function ParamText at probe-viewpoint-calls.ps1:77 and probe-clash-report-api.ps1:53.
-- Root cause: The lines in the evidence, on fix-F105. The files are not on main.
+- Root cause: The lines in the evidence, on main since F105 merged as 2c89788.
 - Class: noise
 - Proof: No Core test. A grep for each name finds one definition, in tools\probes\il-reader.ps1.
-- Branch: waits for F105's merge.
+- Branch: F105 merged as 2c89788 on 2026-10-04, so this item can be worked.
 - Note: Which second helper is meant is not written in the row. ParamText is one that is
   certainly doubled. FR-146 corrects the register wording of this row.
 
@@ -3497,7 +3497,7 @@ C06 with 67 NWC and 22 groups from 100000 to 1C06PK.
 ### FR-136 docs-step-377-log-bar-300-kb
 
 Step 377 asks for a .log under 300 KB and the 22 group log is 1,097,850 bytes, about 50 KB a
-group, so the step reads CONTRADICTED, and the bar was a number no run had measured.
+group, so the step reads CONTRADICTED, and on what the bar was set is UNKNOWN.
 
 - Sources: step 377 (F81, steps\loop.md:595)
 - Evidence: steps\03_bader_next.md:824-827 'check the .log is under 300 KB and the .tsv still
@@ -3505,9 +3505,9 @@ group, so the step reads CONTRADICTED, and the bar was a number no run had measu
   record.txt:809 'the log 1098049 bytes'. The tsv half holds, 3215 'test created' and 3024 'rows
   for the workbook' rows. steps\runs\03\findings.md:119-120 lists F81 and step 377 as
   CONTRADICTED.
-- Root cause: steps\03_bader_next.md:826, a bar set for a smaller run before any run measured
-  it, while CLAUDE.md says a number in a doc is measured, never estimated. What size it was set
-  on is UNKNOWN, and which blocks make most of the 1.1 MB is not measured. The trimming is
+- Root cause: steps\03_bader_next.md:826, a bar whose basis is UNKNOWN, while CLAUDE.md says a
+  number in a doc is measured, never estimated. Which blocks make most of the 1.1 MB is not
+  measured. The trimming is
   src\Federator.Core\Diagnostics\RunLog.cs:644-720 (collapsedLines).
 - Class: noise
 - Proof: No test. After the choice, steps\03_bader_next.md:826 states the bar, and the set 05
@@ -3522,7 +3522,7 @@ group, so the step reads CONTRADICTED, and the bar was a number no run had measu
 
 The loop rules say loop runs write their logs inside the work folder so the thirty logs the tool
 keeps never push one of his out, and the run wrote its log into his logs folder and pruned his
-oldest, which Q82 allows and asks to be written into the rules.
+oldest, which Q82 allows.
 
 - Sources: S03-19, C06-J29, FIND-23, Q82
 - Evidence: .claude\rules\loop.md:80-83 'Loop runs write their logs inside the work folder, so
@@ -3537,8 +3537,8 @@ oldest, which Q82 allows and asks to be written into the rules.
 - Proof: No test. A read of .claude\rules\loop.md:80-83 after the fix: it says what Q82 says,
   that the window runs may prune his oldest logs because logs-backup holds each by sha256 and his
   folder is put back at the close of the loop.
-- Closed in part: PR 83, merged as 086a348 on 2026-10-04, rewrote this rule to say what Q82
-  says. The README line in the note below stays open.
+- Closed: PR 83, merged as 086a348 on 2026-10-04, rewrote this rule to say what Q82 says, and
+  F106, merged as 3449521, rewrote the README line in the note below, so neither stands on main.
 - Note: Nothing was lost, record.txt:1040 reads 0 LOST. tools\loop\README.md:199 at f38edd5 still
   says part 1 waits for Q82, which was answered on 2026-10-01, and PR 83 does not change that
   line. The prune itself (S03-19, C06-J29, FIND-23) is not a fault.
@@ -3706,18 +3706,19 @@ the second helper being UNKNOWN.
 - Sources: F105-BRK-2, F105-BRK-5, F105-REV-5, F105-REV-1 (its part on main)
 - Evidence: steps\loop.md:433 'kinds a probe never attempts included' and :435 'A resolver and
   two small helpers', and steps\02_questions.md:468 and :470 'kinds never attempted', all read
-  the same on main 3449521. In wt-f105, probe-roamer-switches.ps1:595 reads constant values and
+  the same on main 3449521. On main since F105 merged as 2c89788, probe-roamer-switches.ps1:595 reads constant values and
   probe-clash-report-api.ps1:73 reads field types with no count, ParamText is in
   probe-clash-report-api.ps1:53 and probe-viewpoint-calls.ps1:77, and $roResolve is in all three
   and in probe-automation-start.ps1:558.
 - Root cause: steps\loop.md:433 and :435 and steps\02_questions.md:468 and :470. The same words
-  in docs\history\scan.md 5z-f are already narrowed in the working tree of wt-f105.
+  in docs\history\scan.md 5z-f were narrowed by F105, merged as 2c89788.
 - Class: noise
 - Proof: No Core test applies. A read of the two register rows after the change, and a
   correction line under Q89 that does not alter his answer.
-- Branch: read with F105's merge, fix-F105 not merged at main 3449521.
-- Note: steps\loop.md is the lead's to write. The branch part of F105-REV-1 and F105-BRK-2 is
-  fixed in wt-f105, and this is the part on main. F105-REV-1 also said the lead may want Bader
+- Closed in part: F105, merged as 2c89788 on 2026-10-04, changed rows F105-R1 and F105-R3 to
+  the narrowed words and added F105-R4. What stays is the correction line under Q89.
+- Note: steps\loop.md is the lead's to write. The branch part of F105-REV-1 and F105-BRK-2 was
+  fixed in F105, merged as 2c89788, and this is the part on main. F105-REV-1 also said the lead may want Bader
   told Q89 was partly wrong.
 
 ### FR-147 restated-facts-check-missing
@@ -4448,9 +4449,9 @@ Bader answered in Q80 is written in no rule file.
 Needs Bader: FR-006, FR-008, FR-009, FR-030, FR-070, FR-109, FR-110, FR-136, FR-149, FR-160,
 FR-161 and FR-172.
 
-Waiting for a merge not yet made: F105 for FR-122, FR-123, FR-124 and FR-146. F107 for FR-110
-and FR-149. F109 for FR-078 to FR-081. PR 83, merged as 086a348, closed FR-138 and the rule
-half of FR-137 and FR-139.
+Waiting for a merge not yet made: F107 for FR-110 and FR-149, and F109 for FR-078 to FR-081.
+F105 merged as 2c89788, so FR-122, FR-123, FR-124 and FR-146 no longer wait. PR 83, merged as
+086a348, closed FR-138, and with F106 FR-137, and the rule half of FR-139.
 
 Resting on code merged on 2026-10-04: F106 (3449521) under FR-082, FR-083, FR-085, FR-092,
 FR-094 to FR-098, FR-109, FR-111 to FR-116, FR-138, FR-139 and FR-143. F108 (c9b223b) under
@@ -4505,7 +4506,7 @@ What that leaves:
 - Lane one, the loop's tools. Loop tools and install touch no file under src or tests, so they
   run beside every product area. Inside the lane they share run.ps1 and prove-run.ps1, so their
   pull requests go one after another. FR-092, the harness, goes first because the others are
-  proved in it. Install goes with F109, and FR-122 to FR-124 wait for F105. The docs items that
+  proved in it. Install goes with F109, and FR-122 to FR-124 can go since F105 merged. The docs items that
   change only tool headers and the loop README, FR-140 to FR-145, ride in this lane.
 - Lane two, the product. Clash counts shares no file at all with alignment, sets or views, so
   those can run at once. Alignment, sets, views and harvest and pictures share only
@@ -4514,7 +4515,7 @@ What that leaves:
   ClashHarvest.cs, ClashReportModel.cs, ClashRunOutcome.cs, WorkbookCheck.cs, ToleranceChoice.cs
   and FederatorWindow.xaml.cs, so they go one after another by file.
 - Lane three, words in steps and rules. FR-125, FR-135 to FR-139 and FR-146 to FR-149 touch no
-  code, so they run beside both lanes, what is left of FR-137 and FR-139 among them. The docs
+  code, so they run beside both lanes, what is left of FR-139 among them. The docs
   items that
   change src, FR-126 to FR-134, go with the area whose file they change.
 
@@ -4640,20 +4641,20 @@ From the readings of the fixes in flight:
   The lead's steps\log.md entry for F108 carries the heading.
 - F108-REV-8: the reviewer's own NOT A FAULT row.
 - F108-BRK-9: a coverage note.
-- F105-REV-2 and F105-BRK-1: blocking findings of F105, fixed in the working tree of wt-f105
+- F105-REV-2 and F105-BRK-1: blocking findings of F105, fixed and merged with it as 2c89788
   (docs\history\scan.md:5025-5030 and tools\probes\README.md:136-152 say probe-viewpoint-calls.ps1
   uses neither LoaderLines nor the string patterns).
-- F105-REV-3 and F105-BRK-6: fixed in wt-f105 (steps\01_next.md:53 is order line 33 for F105),
-  and the steps\log.md entry is the lead's at the merge.
+- F105-REV-3 and F105-BRK-6: fixed and merged with F105 as 2c89788, its order line 35 and its
+  steps\log.md entry the lead's.
 - F105-REV-4: already on main, steps\loop.md:402 and 433-435 hold the F105 row and F105-R1 to
   F105-R3.
 - F105-REV-7 and F105-BRK-8: checks that found nothing. F105-BRK-8 notes that scan.md 5z-f cites
   branch commits such as 30ae471 that a squash merge drops, and that the blob id is the pointer
   that resolves.
 - F105-REV-8 and F105-BRK-7: what the readers could not check, not faults.
-- F105-BRK-3: its six places are fixed in wt-f105 (docs\history\scan.md:5035-5039, 5330-5333 and
+- F105-BRK-3: its six places fixed and merged with F105 as 2c89788 (docs\history\scan.md:5035-5039, 5330-5333 and
   5438-5439, tools\probes\README.md:111-113 and 144-152, steps\01_next.md:984).
-- F105-BRK-4: fixed in wt-f105 (docs\history\scan.md:5348-5359 names the nine assemblies not
+- F105-BRK-4: fixed and merged with F105 as 2c89788 (docs\history\scan.md:5348-5359 names the nine assemblies not
   read and says whether they hold the names is UNKNOWN).
 - F107-REV-1 and F107-BRK-1: blocking findings of F107, fixed on fix-F107 at 2063c29 (wt-f107
   steps\01_next.md:985 says every line number as read at 821ed6e and finds each line by its
@@ -4677,7 +4678,7 @@ Placed and not left out, for the record:
 - T1-S25 sits on FR-031 and FR-052, and T1-S38 on FR-046 and FR-061, both placements right.
 - T3-G6 to T3-G12 and T3-P, which steps\notes\f103-final-reading.md names as already registered,
   sit on FR-089, FR-090, FR-086, FR-088, FR-091, FR-078, FR-105 and FR-121.
-- F105-REV-1 sits on FR-146 for its part on main, its branch part being fixed in wt-f105, and
+- F105-REV-1 sits on FR-146 for its part on main, its branch part fixed in F105, merged as 2c89788, and
   F105-REV-6 on FR-122 as the same code fault as F105-R1.
 - F108-R1 to F108-R5 and F107-R1, the rows the register reader could not see, sit on FR-093,
   FR-102, FR-103, FR-104, FR-118, FR-139, FR-144, FR-145, FR-084, FR-101 and FR-110.

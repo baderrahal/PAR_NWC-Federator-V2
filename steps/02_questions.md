@@ -535,15 +535,15 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
     Answer:
 
-106. From the loop, turn 5, 2026-10-04, the fix list's FR-110. THE OLDER MACHINE'S NAME COMING BACK. Pull request 92, F107, masks the name of the machine of 2026-09-19 on main, your Q88. Once masked, nothing refuses it if it comes back, because the evidence check reads for this machine's name only, and the check's own rule file cannot hold the older name in clear. A, the check also refuses the older name, held as a hash, B, no check, the mask is enough, C, something else
+106. From the loop, turn 5, 2026-10-04, the fix list's FR-110. THE OLDER MACHINE'S NAME COMING BACK. Pull request 92, F107, opened on 2026-10-04, masks the name of the machine of 2026-09-19 on main once it merges, your Q88. Once masked, nothing refuses it if it comes back, because the evidence check reads for this machine's name only, and the check's own rule file cannot hold the older name in clear. A, the check also refuses the older name, held as a hash, B, no check, the mask is enough, C, something else
 
     Answer:
 
-107. From the loop, turn 5, 2026-10-04, the fix list's FR-149. THE OLDER MACHINE'S ACCOUNT NAME. Pull request 92, F107, masks the older machine's name and leaves the account name of that machine's user in C:\Users paths, in 37 files, 17 of them under steps\logs, which is never edited. A, mask it in the other 20 files, B, leave it, C, something else
+107. From the loop, turn 5, 2026-10-04, the fix list's FR-149. THE OLDER MACHINE'S ACCOUNT NAME. Pull request 92, F107, opened on 2026-10-04, masks the older machine's name once it merges and leaves the account name of that machine's user in C:\Users paths, in 37 files, 17 of them under steps\logs, which is never edited. A, mask it in the other 20 files, B, leave it, C, something else
 
     Answer:
 
-108. From the loop, turn 5, 2026-10-04, the fix list's FR-136. THE 300 KB LOG. Step 377 of steps\03_bader_next.md asks for a .log under 300 KB, a bar set before any run of 22 groups, on a basis that is UNKNOWN. The log of the 22 group C06 run is 1,097,850 bytes, about 50 KB a group, log line 8584. A Look for line never moves to match wrong output, so this is yours. A, the tool trims its log until a C06 run fits 300 KB, B, the bar becomes a size per group, about 50 KB as measured, C, something else
+108. From the loop, turn 5, 2026-10-04, the fix list's FR-136. THE 300 KB LOG. Step 377 of steps\03_bader_next.md asks for a .log under 300 KB, a bar whose basis is UNKNOWN. The log of the 22 group C06 run is 1,097,850 bytes, about 50 KB a group, log line 8584. A Look for line never moves to match wrong output, so this is yours. A, the tool trims its log until a C06 run fits 300 KB, B, the bar becomes a size per group, about 50 KB as measured, C, something else
 
     Answer:
 
