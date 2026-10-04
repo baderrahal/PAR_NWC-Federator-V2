@@ -4,8 +4,8 @@ Newest entry at the top.
 ## 2026-10-04 The loop, turn 5, F113 the clash counts area of the fix round, FR-031 to FR-034, DONE
 
 Core tests 1746 passed, 0 failed, 0 skipped before the first change, at 2c89788, and 1756
-passed, 0 failed, 0 skipped after the last, at 1f0a369, run by hand and by the pre-commit at
-every commit, the files f113-core-before-full.txt, f113-core-after-full.txt and
+passed, 0 failed, 0 skipped after the last item, at 1f0a369, and at every commit after it, run by
+hand and by the pre-commit at every commit, the files f113-core-before-full.txt, f113-core-after-full.txt and
 f113-precommit-*.txt under %LOCALAPPDATA%\NwcFederatorLoop\turn5. The solution built with 0
 errors and 0 warnings before the first change and after each change.
 
@@ -37,21 +37,27 @@ errors and 0 warnings before the first change and after each change.
 - each item's rule in .claude\rules\core.md, written in that item's commit, and the order line
   37 and the F113 section in steps\01_next.md at 1f0a369. Main merged in at 2bae58a, main then at
   dd55e4b, with no conflict. Pushed as fix-F113
+- the claim-checker's corrections at b629b5c, which also narrow the words a group always ends on
+  a count in core.md and one comment of ClashRunOutcome.cs, turn5\precommit-f113-claims.txt, 1756
+  passed, and main 6689bad merged in at 0339223 with F113's entry on top of the log,
+  turn5\precommit-f113-merge-2.txt, 1756 passed, the solution built at that tip with 0 warnings
+  and 0 errors, turn5\f113-build-merged.txt
 
 ### What remains
 
 - the add-in halves wait for wave 1, a first run with the XML and a weekly run on each of
-  1A02MM of C02 and 1A04PK of C04. FR-031 in all four logs: the last `CLASH N of N tests` line
-  of the group reads the tests run, tests skipped and clashes found of the block under it.
+  1A02MM of C02 and 1A04PK of C04. FR-031 in each group that runs to its end: the last `CLASH N
+  of N tests` line of the group reads the tests run, tests skipped and clashes found of the block under it.
   FR-032 only where a log holds an empty result group, which no log has shown: a group with
   clashes under it reads the same before and after. FR-033 only where the RUN SETTINGS line
   `by design` reads yes and the no name count is above 0, checked by the group's STATUS lines,
   since its moved count, its REVIEWED lines and RESULT hold with or without the fix and a count
   of 0 proves nothing. FR-034 is reached by no run, only by the Undo auto Reviewed button on a
   comment edited by hand
-- the commit messages of FR-031 and FR-032, and the message of 1f0a369, name set 05 on C06 as
-  the proof run, because they were written before the lead's message of 15:52 moved the proof
-  to wave 1. The DONE line names wave 1
+- the commit messages of FR-031 and FR-032 name set 05 on C06 as the proof run, because they
+  were written before the lead's message of 15:52 moved the proof to wave 1, and the message of
+  1f0a369 says the messages of FR-031 to FR-033 do, where FR-033's does not. A commit message is
+  changed only by a new commit, so these stay as written. The DONE line names wave 1
 
 ### Known bugs
 
