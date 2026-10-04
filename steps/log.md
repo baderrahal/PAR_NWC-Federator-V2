@@ -1,6 +1,42 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, F106 the window run, DONE for item 1
+
+Nothing under src or tests changed. Core tests by the pre-commit at 8c67ec6 and 32dce24 on
+2026-10-01, 1746 passed, 0 failed, 0 skipped, and again at this entry's commit, in the pull
+request body. Item 1 was proved by a real run on this PC. Items 2 to 5 wait for the proof run.
+
+### What was done
+
+- run.ps1 items 1 to 5 through the real window around tools\probes\drive-window-run.ps1, with
+  every guard of item 0 kept but its rule that nothing is written into his AutoSave folder,
+  which Q86 replaced, written by developers whose transcripts ended interrupted, then
+  finished for item 1 by one developer, who found and fixed three faults that would have
+  stopped the first run: a window list read as one object, @() throwing on a list, and the
+  confirm's buttons with no Invoke, now answered by WM_COMMAND to that dialog only
+- read for harm to Bader's things only before the first run, Q96, by a reviewer and a breaker,
+  both SAFE FOR THE FIRST RUN
+- THE FIRST RUN OF MAIN ON C06, set 03, 2026-10-01: the window driven with no click, VERDICT
+  RAN, RESULT 17 done, 0 partial, 5 failed, steps\runs\03\findings.md
+- main merged in, 0fd91c6, with no conflict, once the run's own copies of its evidence were
+  moved from wt-f106 into %LOCALAPPDATA%\NwcFederatorLoop\turn5\wt-f106-evidence-03, each the
+  same by sha256 as the copy main holds
+
+### What remains
+
+- items 2 to 5 have never run. The proof run of set 05 is their first run
+- prove-run.ps1 brought up to F106, R1 of turn4\f106-finish-report.md, line 119
+
+### Known bugs
+
+- R1 to R4 of F106, turn4\f106-finish-report.md lines 119 to 122, and the harm reading's other
+  findings, the workflow journal wf_8100973e-871, go into the fix list, steps\fix-round.md, once
+  it is built
+
+### What comes next
+
+- F104 part 2 on this run.ps1, then the fix round
 ## 2026-10-04 The loop, turn 5, the full fix round, the plan
 
 Bader's message headed 4 Oct 2026, Q98: no run of C07 now. Fix everything that is known, then

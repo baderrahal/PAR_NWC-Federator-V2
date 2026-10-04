@@ -1,219 +1,404 @@
 param(
-  [Parameter(Mandatory = $true)][string]$Source,
-  [Parameter(Mandatory = $true)][string]$Nwf,
-  [Parameter(Mandatory = $true)][string]$Nwd,
-  [Parameter(Mandatory = $true)][string]$Excel,
+  [Parameter(Mandatory = $true)][int]$OwnerPid,
+  [Parameter(Mandatory = $true)][long]$OwnerStartTicks,
+  [Parameter(Mandatory = $true)][string]$Set,
+  [Parameter(Mandatory = $true)][string]$Stamp,
+  [Parameter(Mandatory = $true)][string]$Notes,
+  [string]$Source = "",
+  [string]$Nwf = "",
+  [string]$Nwd = "",
+  [string]$Excel = "",
   [string]$Xml = "",
-  [string]$Pairs = "",
-  [string]$Priority = "",
-  [string]$Tolerance = "",
-  [switch]$Penetrations,
-  [string]$Notes = (Join-Path $env:TEMP "drive-window-run.txt"),
+  [switch]$OpenRun,
   [int]$WindowWaitSeconds = 600
 )
 
-# Drives the real window through UI Automation, F74 to F86 wiring round, 2026-09-19.
+# tools\probes\drive-window-run.ps1, F106. Drives the tool's window of ONE Navisworks, the one
+# tools\loop\run.ps1 adopted, through UI Automation, for one run of the run set. run.ps1 starts
+# it as a child, powershell -NoProfile -STA -ExecutionPolicy Bypass -File, with the adopted
+# process's pid and start ticks, holds its handle, and reads how it ended off its exit code and
+# the last line of -Notes. Its exit codes are DriverCodes in tools\loop\nw-guard.ps1, which it
+# dot-sources for the window reads, the session lock and the path rule, and never copies.
 #
-# WHAT IT IS FOR. PART 5 of a round is one run of one folder with the boxes set a known
-# way, read back off the log. Doing that by hand is fine once and wrong every week, and
-# this is how the wiring round did it from a session that could not press a button.
+# WHAT IT ACTS ON. Only windows of -OwnerPid, listed through EnumWindows and
+# GetWindowThreadProcessId, after that process's start ticks read equal to -OwnerStartTicks
+# through the handle it holds, read again before every action. The tool's window is the one
+# window of that pid whose class starts HwndWrapper and whose caption starts Parsons NWC
+# Federator, and its title must name -Stamp, the installed build. Every element it reads or
+# presses is found under that window, or under a dialog of that pid, and its ProcessId is read
+# equal to -OwnerPid first. It never searches the desktop, never moves or clicks the mouse,
+# compiles nothing and writes nothing under %TEMP%.
 #
-# WHAT IT NEEDS, measured on 2026-09-19 on the machine of 2026-09-19:
+# WHAT IT DOES, items 1 to 4. Selects the tab 1. Source, types -Source into SourceFolderBox and
+# presses Scan. The scan is over when the window moves itself to 2. Grouping, which OnScan does
+# last, and a dialog of the pid before that stops it. Back on 1. Source it records
+# SourceSummary and FilesGrid's rows, on 2. Grouping GroupsGrid's rows and, where UI Automation
+# answers, whether every group is ticked. It types -Nwf, -Nwd and -Excel into NwfFolderBox,
+# NwdFolderBox and ExcelFolderBox on 3. Outputs and -Xml into ExchangeFileBox on 4. Clash, then
+# reads every box back, each on its own tab. It presses RunButton only when each box reads
+# exactly what was typed, ExchangeFileBox reading empty for a run with no -Xml, and ToleranceBox
+# reads Use the value in the XML. MarkByDesign, MarkPenetrations and PriorityBox are read,
+# recorded and left as the window opened them. The confirm after Run is a #32770 of the pid
+# titled exactly Parsons NWC Federator whose text starts This run federates, IsConfirm in
+# nw-guard.ps1, and its texts are recorded. It answers OK only when every text was read whole
+# and none names a rooted path outside %LOCALAPPDATA%\NwcFederatorLoop, and Cancel otherwise,
+# with WM_COMMAND and the button's id posted to that dialog, Answer, because UI Automation shows
+# its Win32 buttons as panes with no Invoke, measured on 2026-10-01.
+# Any other dialog of the pid is recorded with its texts and left up, and nothing more is
+# pressed.
 #
-#   Navisworks Manage 2025 open the ordinary way, Roamer.exe, with the add-in window
-#   ALREADY OPEN. Starting Navisworks through Autodesk.Navisworks.Api.Automation and
-#   calling ExecuteAddInPlugin("ParsonsNwcFederator.PARS") ran the plugin, wrote a log,
-#   and the window closed on its own 8.5 seconds later with "Window closed." and nothing
-#   else in the log. Why is UNKNOWN. Started the ordinary way the window stays open.
+# WHAT IT DOES, item 5, -OpenRun. On 4. Clash it reads OpenDocumentLine and RunOpenButton. A
+# disabled button is the tool's own refusal, TOOL REFUSED, with the line's text. An enabled one
+# is pressed only when ExchangeFileBox reads empty, ToleranceBox reads Use the value in the
+# XML, and the line names no rooted path outside the loop folder.
 #
-#   The ribbon's Tool add-ins 1 tab is a Button with AutomationId RoamerGUI_AddIns_Tools_1
-#   and an InvokePattern that does nothing. A real mouse click on its rectangle switches
-#   the tab. The add-in's own button on that tab has NO element in the automation tree at
-#   all, so it is pressed by hand or by a mouse click on where it is drawn.
+# ONCE OK OR RUN THE OPEN FILE IS PRESSED, every way it ends is PRESSED, a fault after it
+# included, with what happened written after the word. run.ps1 posts WM_CLOSE for a driver
+# that stopped only when its exit says nothing that runs was pressed, so a run is never closed
+# under the tool because the driver failed after starting it.
 #
-#   The add-in window is NOT a child of the desktop root in the automation tree, because
-#   it is owned by the Navisworks main window. It is found by its title through user32
-#   and handed to AutomationElement.FromHandle. The confirm dialog is a #32770 titled
-#   exactly "Parsons NWC Federator" and is found the same way.
+# THE SCREEN. Before every action it reads whether the session is locked. While it reads
+# anything but unlocked it writes LOCKED, does nothing, and reads again every 30 s. The lock
+# is never worked around, Q85.
 #
-#   Every control is found by its x:Name, which WPF exposes as the AutomationId, and a
-#   control on a tab that is not selected has no visual tree, so each tab is selected
-#   before its boxes are set.
+# WHAT IT READS AND WRITES. Reads the windows of -OwnerPid and the session state. Writes
+# -Notes only, a file it refuses to write outside %LOCALAPPDATA%\NwcFederatorLoop, one line per
+# step and a last line DRIVER EXIT <code> <name>: <why>. Every path it types must lie under
+# %LOCALAPPDATA%\NwcFederatorLoop\runs\<Set>. Starts nothing.
 #
-# WHAT IT DOES. Selects each tab, sets the boxes, presses Scan, chooses the tolerance
-# where one is given, ticks the by design box where a pairs file is given, presses Run,
-# and presses OK on the confirm dialog. Then it leaves the run to the log and exits.
-# Every step is written to the notes file with what the box read back.
-#
-# Run it with Windows PowerShell 5.1 in STA:
-#
-#   powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\drive-window-run.ps1 `
-#     -Source "D:\NWC" -Nwf "D:\NWF" -Nwd "D:\NWD" -Excel "D:\Excel" `
-#     -Xml "exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml" `
-#     -Pairs "samples\by-design-pairs.csv" -Priority "samples\clash-priority-map.csv" -Tolerance "25 mm"
+# MEASURED ON 2026-09-19, on the machine of 2026-09-19, by this script's first form, and still
+# what it rests on:
+# - the tool's window is owned by the Navisworks main window, so it is not a child of the
+#   desktop root in the automation tree. It is found by its handle and handed to
+#   AutomationElement.FromHandle
+# - the confirm dialog is a #32770 titled exactly Parsons NWC Federator
+# - every control is found by its x:Name, which WPF exposes as the AutomationId, and a control
+#   on a tab that is not selected has no visual tree, so each tab is selected before its
+#   boxes are set or read
+# - SelectionItemPattern.Select on an item of the tolerance list does nothing and throws
+#   nothing, measured on 2026-09-20, so this script never chooses a tolerance. It reads the box
+#   and refuses unless it reads the window's own default
+# - a start through Autodesk.Navisworks.Api.Automation that called ExecuteAddInPlugin saw
+#   the window close by itself 8.5 s later with Window closed. and nothing else in the log, why
+#   UNKNOWN. run.ps1 holds its object and disposes nothing until the run ends, and its monitor
+#   records a window that closes by itself as WINDOW CLOSED BY ITSELF
+# The control ids are those of src\Federator.Addin\Ui\FederatorWindow.xaml, read on
+# 2026-10-01: SourceFolderBox, IncludeSubfolders, FilesGrid, GroupsGrid, NwfFolderBox,
+# NwdFolderBox, ExcelFolderBox, ExchangeFileBox, ToleranceBox, PriorityBox, MarkPenetrations,
+# MarkByDesign, RunButton, RunOpenButton, OpenDocumentLine, SourceSummary, the Scan button by
+# its words, and the tabs 1. Source, 2. Grouping, 3. Outputs and 4. Clash. Whether each answers
+# UI Automation as this script expects in the real window is UNKNOWN until the first window
+# run, and a miss stops this script before anything that runs is pressed. The same ids on a
+# small WPF window of the stand-in, tools\loop\StandIn, are what tools\loop\prove-run.ps1
+# drives it against with no Navisworks.
 
-$ErrorActionPreference = "Continue"
-function Say($t) { $line = (Get-Date -Format "HH:mm:ss") + "  " + $t; Add-Content -Path $Notes -Value $line; Write-Output $line }
+$ErrorActionPreference = "Stop"
+$loopRoot = Join-Path $env:LOCALAPPDATA "NwcFederatorLoop"
+$nw = "C:\Program Files\Autodesk\Navisworks Manage 2025"
+. (Join-Path (Split-Path $PSScriptRoot -Parent) "loop\nw-guard.ps1")
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+$script:NotesOk = $false
+$script:Pressed = ""
+
+function Note($t) {
+  $line = [DateTime]::Now.ToString("HH:mm:ss.fff") + "  " + $t
+  [Console]::Out.WriteLine($line)
+  if ($script:NotesOk) { [System.IO.File]::AppendAllText($Notes, $line + "`r`n", $utf8) }
+}
+# The one way out. Once something that runs was pressed, every end is PRESSED, with what
+# happened after it in the words.
+function Done($name, $text) {
+  if ($script:Pressed -ne "" -and $name -ne "PRESSED") { $text = $script:Pressed + " was pressed, then " + $name + ": " + $text; $name = "PRESSED" }
+  $code = DriverCode $name
+  Note ("DRIVER EXIT " + $code + " " + $name + ": " + $text)
+  exit $code
+}
+function UnderRoot($path, $root) {
+  $full = $null
+  try { $full = [System.IO.Path]::GetFullPath($path).TrimEnd('\') } catch { return $false }
+  return $full.StartsWith(([string]$root).TrimEnd('\') + "\", [StringComparison]::OrdinalIgnoreCase)
+}
+
+# The refusals, before anything is read or written.
+$notesFull = $null
+try { $notesFull = [System.IO.Path]::GetFullPath($Notes) } catch { $notesFull = $null }
+if ($null -eq $notesFull -or -not (UnderRoot $notesFull $loopRoot)) {
+  [Console]::Out.WriteLine("DRIVER EXIT " + (DriverCode "REFUSED") + " REFUSED: -Notes " + (Mask $Notes) + " is not a file under %LOCALAPPDATA%\NwcFederatorLoop, so nothing is written and nothing is done")
+  exit (DriverCode "REFUSED")
+}
+$Notes = $notesFull
+$script:NotesOk = $true
+Note ("driver started, pid " + $PID + ", owner pid " + $OwnerPid + ", start ticks UTC " + $OwnerStartTicks + ", set " + $Set + ", stamp " + $Stamp + $(if ($OpenRun) { ", the open file run" } else { "" }))
+if ($Set -notmatch '^\d\d$') { Done "REFUSED" ("-Set is " + $Set + ", not two digits") }
+$setRoot = Join-Path $loopRoot ("runs\" + $Set)
+$boxes = [ordered]@{ "SourceFolderBox" = $Source; "NwfFolderBox" = $Nwf; "NwdFolderBox" = $Nwd; "ExcelFolderBox" = $Excel }
+if ($OpenRun) {
+  foreach ($k in $boxes.Keys) { if ($boxes[$k] -ne "") { Done "REFUSED" ("the open file run types no folder, and the folder for " + $k + " was given") } }
+  if ($Xml -ne "") { Done "REFUSED" "the open file run types no XML, and -Xml was given" }
+} else {
+  foreach ($k in $boxes.Keys) {
+    if ($boxes[$k] -eq "") { Done "REFUSED" ("no folder was given for " + $k) }
+    if (-not (UnderRoot $boxes[$k] $setRoot)) { Done "REFUSED" ("the folder for " + $k + ", " + (Mask $boxes[$k]) + ", is not under %LOCALAPPDATA%\NwcFederatorLoop\runs\" + $Set) }
+  }
+  if ($Xml -ne "" -and -not (UnderRoot $Xml $setRoot)) { Done "REFUSED" ("-Xml " + (Mask $Xml) + " is not under %LOCALAPPDATA%\NwcFederatorLoop\runs\" + $Set) }
+}
+
 Add-Type -AssemblyName UIAutomationClient
 Add-Type -AssemblyName UIAutomationTypes
-Add-Type @"
-using System;
-using System.Runtime.InteropServices;
-public static class DriveWin32 {
-  [DllImport("user32.dll")] public static extern IntPtr GetWindow(IntPtr hWnd, uint cmd);
-  [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int max);
-  [DllImport("user32.dll")] public static extern IntPtr GetTopWindow(IntPtr hWnd);
-  [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern IntPtr FindWindow(string cls, string title);
-  [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
-  [DllImport("user32.dll")] public static extern void mouse_event(uint flags, uint dx, uint dy, uint data, UIntPtr extra);
-  // A REAL MOUSE CLICK, because the tolerance list item answers no pattern that takes.
-  public static void Click(int x, int y) {
-    SetCursorPos(x, y);
-    System.Threading.Thread.Sleep(150);
-    mouse_event(0x0002, 0, 0, 0, UIntPtr.Zero);
-    System.Threading.Thread.Sleep(80);
-    mouse_event(0x0004, 0, 0, 0, UIntPtr.Zero);
-  }
-  public static IntPtr FindByPrefix(string prefix) {
-    IntPtr h = GetTopWindow(IntPtr.Zero);
-    var sb = new System.Text.StringBuilder(512);
-    while (h != IntPtr.Zero) {
-      sb.Clear();
-      GetWindowText(h, sb, 512);
-      string t = sb.ToString();
-      if (t.StartsWith(prefix) && t.Length > prefix.Length) { return h; }
-      h = GetWindow(h, 2);
-    }
-    return IntPtr.Zero;
-  }
-}
-"@
 $AE = [System.Windows.Automation.AutomationElement]
 $TS = [System.Windows.Automation.TreeScope]
+$wt = NewWinTypes
 
-function ById($parent, $id) {
-  return $parent.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::AutomationIdProperty, $id)))
+# The owner, held through its handle, its start ticks read equal.
+$script:Owner = $null
+try { $script:Owner = Get-Process -Id $OwnerPid -ErrorAction Stop; [void]$script:Owner.Handle } catch { Done "OWNER" ("pid " + $OwnerPid + " cannot be opened, " + (Err $_.Exception)) }
+$h0 = HeldRead $script:Owner $OwnerStartTicks
+if ($h0.State -ne "same") { Done "OWNER" ("pid " + $OwnerPid + " reads " + $h0.State + " against the start ticks given, " + $h0.Why) }
+
+# Before every action: the owner is still the one given, and the session reads unlocked.
+function Gate($what) {
+  $h = HeldRead $script:Owner $OwnerStartTicks
+  if ($h.State -ne "same") { Done "WINDOW GONE" ("the owner process reads " + $h.State + " before " + $what + ", " + $h.Why) }
+  $lt = SessionLockText $wt.WinType
+  if ($lt -eq "unlocked") { return }
+  Note ("LOCKED: the session reads " + $lt + " before " + $what + ". Nothing is done, it is read again every 30 s, and the lock is never worked around, Q85")
+  $sw = [Diagnostics.Stopwatch]::StartNew()
+  while ($lt -ne "unlocked") {
+    Start-Sleep -Seconds 30
+    $h = HeldRead $script:Owner $OwnerStartTicks
+    if ($h.State -ne "same") { Done "WINDOW GONE" ("the owner process reads " + $h.State + " while the session was locked, " + $h.Why) }
+    $lt = SessionLockText $wt.WinType
+  }
+  Note ("UNLOCKED after " + $sw.Elapsed.TotalSeconds.ToString("0") + " s, so " + $what + " goes on")
 }
-# What a combo box actually reads, by whichever pattern answers, or UNKNOWN. Never a
-# guess: the caller refuses to run on UNKNOWN the same way it refuses on a wrong value.
-function ComboText($combo) {
-  try { return $combo.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value } catch { }
-  try {
-    $sel = $combo.GetCurrentPattern([System.Windows.Automation.SelectionPattern]::Pattern).Current.GetSelection()
-    if ($sel.Length -gt 0) { return $sel[0].Current.Name }
-  } catch { }
-  return "UNKNOWN"
+function Mine($el, $what) {
+  if ($null -eq $el) { Done "FAULT" ("no element for " + $what + " in the tool's window") }
+  if ($el.Current.ProcessId -ne $OwnerPid) { Done "FAULT" ("the element for " + $what + " belongs to process " + $el.Current.ProcessId + ", not " + $OwnerPid) }
+  return $el
 }
+function ById($id) { return (Mine ($script:Win.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::AutomationIdProperty, $id)))) $id) }
 function ByNameAndType($parent, $name, $type) {
   $c = New-Object System.Windows.Automation.AndCondition(@(
     (New-Object System.Windows.Automation.PropertyCondition($AE::NameProperty, $name)),
     (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $type))))
   return $parent.FindFirst($TS::Descendants, $c)
 }
-function SetText($el, $text, $what) {
-  if ($null -eq $el) { Say "UNKNOWN: no element for $what"; return $false }
-  $el.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue($text)
-  Start-Sleep -Milliseconds 400
-  Say ("set " + $what + " -> [" + $el.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value + "]")
-  return $true
-}
-function Click($el, $what) {
-  if ($null -eq $el) { Say "UNKNOWN: no element for $what"; return $false }
-  $el.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
-  Say ("clicked " + $what)
-  return $true
-}
-function SelectTab($win, $header) {
-  $tab = ByNameAndType $win $header ([System.Windows.Automation.ControlType]::TabItem)
-  if ($null -eq $tab) { Say "UNKNOWN: no tab $header"; return $false }
-  $tab.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select()
-  Start-Sleep -Milliseconds 600
-  Say ("selected tab " + $header)
-  return $true
-}
-
-Say "driver started"
-$win = $null
-$deadline = (Get-Date).AddSeconds($WindowWaitSeconds)
-while ((Get-Date) -lt $deadline) {
-  $h = [DriveWin32]::FindByPrefix("Parsons NWC Federator")
-  if ($h -ne [IntPtr]::Zero) { $win = [System.Windows.Automation.AutomationElement]::FromHandle($h); break }
-  Start-Sleep -Seconds 3
-}
-if ($null -eq $win) { Say "UNKNOWN: no window whose title starts with Parsons NWC Federator within $WindowWaitSeconds s"; exit 1 }
-Say ("window found: [" + $win.Current.Name + "]")
-
-if (-not (SelectTab $win "1. Source")) { exit 1 }
-SetText (ById $win "SourceFolderBox") $Source "SourceFolderBox" | Out-Null
-Click (ByNameAndType $win "Scan" ([System.Windows.Automation.ControlType]::Button)) "Scan" | Out-Null
-Start-Sleep -Seconds 8
-
-if (-not (SelectTab $win "3. Outputs")) { exit 1 }
-SetText (ById $win "NwfFolderBox") $Nwf "NwfFolderBox" | Out-Null
-SetText (ById $win "NwdFolderBox") $Nwd "NwdFolderBox" | Out-Null
-SetText (ById $win "ExcelFolderBox") $Excel "ExcelFolderBox" | Out-Null
-
-if (-not (SelectTab $win "4. Clash")) { exit 1 }
-if ($Xml.Length -gt 0) { SetText (ById $win "ExchangeFileBox") $Xml "ExchangeFileBox" | Out-Null; Start-Sleep -Seconds 6 }
-# THE TOLERANCE IS CLICKED AND THEN READ BACK, and the run does not start if it did not
-# take. SelectionItemPattern.Select on this list item does NOTHING and throws nothing,
-# measured on 2026-09-20, so the line under it said "tolerance selected" on a box that
-# still read the default. That is a check that could not fail, which is the one shape
-# this repo refuses everywhere else, and it would have run ten groups at the wrong
-# tolerance while the notes said otherwise. A real mouse click on the item's rectangle
-# takes, and the box is read back afterwards because the click is the action and the
-# read is the check.
-if ($Tolerance.Length -gt 0) {
-  $combo = ById $win "ToleranceBox"
-  if ($null -eq $combo) { Say "UNKNOWN: no ToleranceBox"; exit 1 }
-  $combo.GetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern).Expand()
-  Start-Sleep -Milliseconds 900
-  $item = ByNameAndType $win $Tolerance ([System.Windows.Automation.ControlType]::ListItem)
-  if ($null -eq $item) { Say "UNKNOWN: no list item [$Tolerance] in ToleranceBox"; exit 1 }
-  $r = $item.Current.BoundingRectangle
-  [DriveWin32]::Click([int]($r.X + $r.Width / 2), [int]($r.Y + $r.Height / 2))
+function TabOf($header) { return (Mine (ByNameAndType $script:Win $header ([System.Windows.Automation.ControlType]::TabItem)) ("the tab " + $header)) }
+function TabShown($header) { return [bool](TabOf $header).GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Current.IsSelected }
+function SelectTab($header) {
+  Gate ("the tab " + $header)
+  $sp = (TabOf $header).GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern)
+  $sp.Select()
   Start-Sleep -Milliseconds 700
-  try { $combo.GetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern).Collapse() } catch { }
-  Start-Sleep -Milliseconds 300
-  $reads = ComboText $combo
-  Say ("tolerance box READ BACK as [" + $reads + "]")
-  if ($reads -ne $Tolerance) { Say ("REFUSED: the box reads [" + $reads + "] and not [" + $Tolerance + "], so nothing was run"); exit 1 }
+  if (-not $sp.Current.IsSelected) { Done "BOX" ("the tab " + $header + " does not read selected after Select, so nothing was pressed") }
 }
-if ($Pairs.Length -gt 0) {
-  $tick = ById $win "MarkByDesign"
-  if ($null -eq $tick) { Say "UNKNOWN: no MarkByDesign" } else {
-    $tp = $tick.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern)
-    if ($tp.Current.ToggleState -ne [System.Windows.Automation.ToggleState]::On) { $tp.Toggle() }
-    Say ("MarkByDesign is " + $tick.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Current.ToggleState)
-  }
-  SetText (ById $win "ByDesignBox") $Pairs "ByDesignBox" | Out-Null
+function BoxText($id) { return [string]((ById $id).GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value) }
+function TypeBox($id, $text) {
+  Gate ("typing into " + $id)
+  (ById $id).GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue($text)
+  Start-Sleep -Milliseconds 400
+  Note ("typed into " + $id + ": " + (MaskLine $text) + ", it reads " + (MaskLine (BoxText $id)))
 }
-if ($Priority.Length -gt 0) { SetText (ById $win "PriorityBox") $Priority "PriorityBox" | Out-Null }
-if ($Penetrations) {
-  $pen = ById $win "MarkPenetrations"
-  if ($null -eq $pen) { Say "UNKNOWN: no MarkPenetrations" } else {
-    $pp = $pen.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern)
-    if ($pp.Current.ToggleState -ne [System.Windows.Automation.ToggleState]::On) { $pp.Toggle() }
-    Say ("MarkPenetrations is " + $pen.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Current.ToggleState)
+function Toggle($id) {
+  $el = ById $id
+  try { return [string]$el.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Current.ToggleState } catch { return ("UNKNOWN, " + (Err $_.Exception)) }
+}
+# What a combo box reads, by whichever pattern it answers, or UNKNOWN, never a guess.
+function ComboText($id) {
+  $combo = ById $id
+  $p = $null
+  if ($combo.TryGetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern, [ref]$p)) { return [string]$p.Current.Value }
+  if ($combo.TryGetCurrentPattern([System.Windows.Automation.SelectionPattern]::Pattern, [ref]$p)) {
+    $sel = $p.Current.GetSelection()
+    if ($sel.Length -gt 0) { return [string]$sel[0].Current.Name }
+    return "UNKNOWN, nothing is selected in " + $id
   }
+  return "UNKNOWN, " + $id + " answers neither the value nor the selection pattern"
+}
+# $runs names what the press starts, OK on the confirm or Run the open file, and is empty for a
+# press that starts nothing. It is set before the press, so a press that throws still counts.
+function Press($el, $what, $runs) {
+  Gate ("pressing " + $what)
+  $el = Mine $el $what
+  if (-not $el.Current.IsEnabled) { Done "BOX" ($what + " reads disabled, so nothing was pressed") }
+  if ($runs -ne "") { $script:Pressed = $runs }
+  $el.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+  Note ("pressed " + $what)
+}
+# The confirm's OK and Cancel are Win32 buttons, which UI Automation in Windows PowerShell 5.1
+# shows as panes with no Invoke, class Button, id 1 for OK and 2 for Cancel, measured on
+# 2026-10-01 on a WPF MessageBox titled as the tool's. So the confirm is answered the way its own
+# button answers it: WM_COMMAND with the button's id, posted to that dialog alone, only after the
+# dialog and the button read as windows of the owner pid and the button reads enabled and named
+# $what. No click, no key and no pointer. Measured the same day: 2 made MessageBox.Show return
+# Cancel and 1 made it return OK. $runs as in Press, set before the post.
+function Answer($dialog, [int]$id, $what, $runs) {
+  Gate ("answering the confirm with " + $what)
+  [uint32]$wp = 0
+  [void]$wt.WinType::GetWindowThreadProcessId($dialog.Handle, [ref]$wp)
+  if ($wp -ne [uint32]$OwnerPid) { Done "FAULT" ("the confirm now belongs to process " + $wp + ", not " + $OwnerPid + ", so nothing was sent") }
+  $c = New-Object System.Windows.Automation.AndCondition(@((New-Object System.Windows.Automation.PropertyCondition($AE::AutomationIdProperty, [string]$id)), (New-Object System.Windows.Automation.PropertyCondition($AE::ClassNameProperty, "Button"))))
+  $b = Mine ($AE::FromHandle($dialog.Handle).FindFirst($TS::Children, $c)) ($what + " on the confirm")
+  if ($b.Current.Name -cne $what) { Done "FAULT" ("the confirm's button " + $id + " reads " + $b.Current.Name + " and not " + $what + ", so nothing was sent") }
+  if (-not $b.Current.IsEnabled) { Done "BOX" ($what + " on the confirm reads disabled, so nothing was sent") }
+  if ($runs -ne "") { $script:Pressed = $runs }
+  $posted = $wt.WinType::PostMessageW($dialog.Handle, [uint32]0x0111, [IntPtr]$id, [IntPtr]([int]$b.Current.NativeWindowHandle))
+  Note ("answered the confirm with " + $what + ", WM_COMMAND " + $id + " posted to dialog " + $dialog.Handle + " of pid " + $OwnerPid + ", PostMessage returned " + $posted)
+}
+function Rows($id) {
+  $el = ById $id
+  try { return [string]$el.GetCurrentPattern([System.Windows.Automation.GridPattern]::Pattern).Current.RowCount } catch { return ("UNKNOWN, " + (Err $_.Exception)) }
+}
+# Whether every row of GroupsGrid is ticked in its Run column, the first column, where UI
+# Automation answers. UNKNOWN when a row does not, and the tool's GROUPS block is the proof
+# either way.
+function GroupTicks {
+  $g = ById "GroupsGrid"
+  try {
+    $gp = $g.GetCurrentPattern([System.Windows.Automation.GridPattern]::Pattern)
+    $n = $gp.Current.RowCount
+    $off = 0
+    for ($i = 0; $i -lt [Math]::Min($n, 200); $i++) {
+      $cell = $gp.GetItem($i, 0)
+      if ($null -eq $cell) { return ("UNKNOWN from row " + $i + " of " + $n + ", the cell did not answer") }
+      $cb = $cell.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, [System.Windows.Automation.ControlType]::CheckBox)))
+      if ($null -eq $cb) { return ("UNKNOWN from row " + $i + " of " + $n + ", the cell holds no tick box") }
+      if ([string]$cb.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Current.ToggleState -ne "On") { $off++ }
+    }
+    if ($n -gt 200) { return ("UNKNOWN past row 200 of " + $n + ", " + $off + " of the first 200 unticked") }
+    return ([string]$n + " groups, " + $off + " unticked")
+  } catch { return ("UNKNOWN, " + (Err $_.Exception)) }
+}
+# Every visible window of the owner whose kind is the one asked for. WindowRecords returns its
+# list as one object, so the call is put in brackets to pipe each record on its own, measured on
+# 2026-10-01 in Windows PowerShell 5.1: piped bare, the whole list reached WindowKind as one
+# object and threw. A caller wraps the result in @(), because one record returned bare has no
+# Count in 5.1, measured the same day.
+function OwnerWindows($kind, [bool]$allowMessages) { return @((WindowRecords $wt.WinType $wt.ProcType ([uint32]$OwnerPid) $true $allowMessages) | Where-Object { (WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible) -eq $kind }) }
+# Records every dialog of the owner but the confirm, with its texts, and stops with each left up.
+# A caller stops only on a dialog read on three passes running, a second apart, so a window
+# that is up for a moment, or whose texts were not read on one pass, never stops it alone.
+function StopOnDialogs($dialogs, $when) {
+  foreach ($d in $dialogs) { Note ("a dialog of pid " + $OwnerPid + " " + $when + ": class " + $d.Class + ", caption `"" + $d.Caption + "`", every text: " + (MaskLine (@($d.Texts) -join " "))) }
+  Done "DIALOG" ([string]$dialogs.Count + " dialogs that are not the confirm are up " + $when + ", the first captioned `"" + $dialogs[0].Caption + "`", and each is left up, so nothing more was pressed")
 }
 
-Click (ById $win "RunButton") "Run" | Out-Null
-
-$deadline = (Get-Date).AddSeconds(300)
-while ((Get-Date) -lt $deadline) {
-  $d = [DriveWin32]::FindWindow("#32770", "Parsons NWC Federator")
-  if ($d -ne [IntPtr]::Zero) {
-    $el = [System.Windows.Automation.AutomationElement]::FromHandle($d)
-    foreach ($t in $el.FindAll($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, [System.Windows.Automation.ControlType]::Text)))) { Say ("dialog: " + $t.Current.Name) }
-    $ok = ByNameAndType $el "OK" ([System.Windows.Automation.ControlType]::Button)
-    if ($null -eq $ok) { Start-Sleep -Seconds 2; $ok = ByNameAndType $el "OK" ([System.Windows.Automation.ControlType]::Button) }
-    if ($null -eq $ok) { Say "UNKNOWN: no OK button on the confirm dialog, press it by hand"; exit 1 }
-    $ok.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
-    Say "pressed OK, the run is going, read the log"
-    exit 0
+try {
+  # The tool's window, the one window of the owner process whose class and caption are the tool's.
+  $deadline = [DateTime]::UtcNow.AddSeconds($WindowWaitSeconds)
+  $tw = @()
+  while ($true) {
+    Gate "finding the tool's window"
+    $tw = @(OwnerWindows "WINDOW" $false)
+    if ($tw.Count -eq 1) { break }
+    if ($tw.Count -gt 1) { Done "NO WINDOW" ("the owner process shows " + $tw.Count + " windows of the tool, so which one to drive is UNKNOWN") }
+    if ([DateTime]::UtcNow -gt $deadline) { Done "NO WINDOW" ("no window of the tool in pid " + $OwnerPid + " within " + $WindowWaitSeconds + " s") }
+    Start-Sleep -Seconds 2
   }
+  Note ("the tool's window, handle " + $tw[0].Handle + ", class " + $tw[0].Class + ", caption `"" + $tw[0].Caption + "`", a window of pid " + $OwnerPid)
+  $tm = [regex]::Match($tw[0].Caption, '\[([^\]]*)\]\s*$')
+  if (-not $tm.Success -or -not (StampNames $tm.Groups[1].Value $Stamp)) { Done "STAMP" ("the window's title does not name the installed build " + $Stamp + ", so nothing was pressed") }
+  $script:Win = $AE::FromHandle($tw[0].Handle)
+  if ($script:Win.Current.ProcessId -ne $OwnerPid) { Done "NO WINDOW" ("the window's automation element belongs to process " + $script:Win.Current.ProcessId) }
   Start-Sleep -Seconds 2
+
+  $tolDefault = "Use the value in the XML"
+  if (-not $OpenRun) {
+    SelectTab "1. Source"
+    TypeBox "SourceFolderBox" $Source
+    Note ("IncludeSubfolders reads " + (Toggle "IncludeSubfolders") + ", left as the window opened it")
+    Press (ByNameAndType $script:Win "Scan" ([System.Windows.Automation.ControlType]::Button)) "Scan" ""
+    # OnScan moves the window to 2. Grouping as its last step, so that is when the scan is over.
+    # A dialog before it is the scan's own refusal, which stops this script.
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    $seen = 0
+    while (-not (TabShown "2. Grouping")) {
+      $d = @(OwnerWindows "DIALOG" $true)
+      if ($d.Count -gt 0) { $seen++; if ($seen -ge 3) { StopOnDialogs $d "after Scan" } } else { $seen = 0 }
+      if ($sw.Elapsed.TotalSeconds -gt 300) { Done "FAULT" "the window did not move to 2. Grouping within 300 s of Scan, so the scan's end is UNKNOWN and nothing was pressed" }
+      Start-Sleep -Seconds 1
+      Gate "waiting for the scan"
+    }
+    Note ("the scan ended after " + $sw.Elapsed.TotalSeconds.ToString("0.0") + " s, the window moved itself to 2. Grouping")
+    SelectTab "1. Source"
+    Note ("SourceSummary reads: " + (MaskLine ([string](ById "SourceSummary").Current.Name)) + " FilesGrid rows " + (Rows "FilesGrid"))
+    SelectTab "2. Grouping"
+    Note ("GroupsGrid rows " + (Rows "GroupsGrid") + ", every group ticked: " + (GroupTicks) + ". The tool's GROUPS block is the proof either way")
+    SelectTab "3. Outputs"
+    TypeBox "NwfFolderBox" $Nwf
+    TypeBox "NwdFolderBox" $Nwd
+    TypeBox "ExcelFolderBox" $Excel
+    SelectTab "4. Clash"
+    if ($Xml -ne "") { TypeBox "ExchangeFileBox" $Xml; Start-Sleep -Seconds 2 }
+    # Every box read back, each on its own tab, before anything that runs is pressed.
+    $read = [ordered]@{}
+    SelectTab "1. Source"
+    $read["SourceFolderBox"] = BoxText "SourceFolderBox"
+    SelectTab "3. Outputs"
+    foreach ($k in @("NwfFolderBox", "NwdFolderBox", "ExcelFolderBox")) { $read[$k] = BoxText $k }
+    SelectTab "4. Clash"
+    $read["ExchangeFileBox"] = BoxText "ExchangeFileBox"
+    $want = [ordered]@{ "SourceFolderBox" = $Source; "NwfFolderBox" = $Nwf; "NwdFolderBox" = $Nwd; "ExcelFolderBox" = $Excel; "ExchangeFileBox" = $Xml }
+    $wrong = New-Object System.Collections.Generic.List[string]
+    foreach ($k in $want.Keys) {
+      Note ("read back " + $k + ": " + $(if ($read[$k] -eq "") { "empty" } else { MaskLine $read[$k] }))
+      if ($read[$k] -cne $want[$k]) { $wrong.Add($k + " reads " + $(if ($read[$k] -eq "") { "empty" } else { MaskLine $read[$k] }) + " and not " + $(if ($want[$k] -eq "") { "empty" } else { MaskLine $want[$k] })) }
+    }
+    $tol = ComboText "ToleranceBox"
+    Note ("ToleranceBox reads " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it")
+    if ($wrong.Count -gt 0) { Done "BOX" (($wrong -join ", and ") + ", so nothing was pressed") }
+    if ($tol -cne $tolDefault) { Done "TOLERANCE" ("ToleranceBox reads " + $tol + " and not " + $tolDefault + ", so nothing was pressed") }
+    Press (ById "RunButton") "RunButton" ""
+    # The confirm: a #32770 of the owner process titled exactly Parsons NWC Federator. No time
+    # limit, because the window may open every NWF before it asks. A tool that hangs is the
+    # monitor's to end, and then the owner reads gone here.
+    $seen = 0
+    while ($true) {
+      Gate "waiting for the confirm"
+      if (@(OwnerWindows "WINDOW" $false).Count -eq 0) { Done "WINDOW GONE" "the tool's window is gone after Run was pressed and before any confirm" }
+      $dlgs = @(OwnerWindows "DIALOG" $true)
+      $other = @($dlgs | Where-Object { -not (IsConfirm $_.Class $_.Caption $_.Texts) })
+      if ($other.Count -gt 0) {
+        $seen++
+        if ($seen -ge 3) { StopOnDialogs $other "after RunButton" }
+      } elseif ($dlgs.Count -gt 0) {
+        $d = $dlgs[0]
+        $texts = @($d.Texts)
+        Note ("the confirm of pid " + $OwnerPid + ": class " + $d.Class + ", caption `"" + $d.Caption + "`", every text: " + (MaskLine ($texts -join " ")))
+        # A text cut at the 2048 characters WindowRecords reads, or a child it did not read, is
+        # a confirm not read whole, and that is answered the way an outside path is.
+        $cut = @($texts | Where-Object { ([string]$_).Length -ge 2040 -or ([string]$_) -match '^and \d+ (more )?visible children not read|^and the walk of its children stopped' })
+        $outside = PathsOutside ($texts -join "`n") $loopRoot
+        if ($cut.Count -gt 0 -or $outside.Count -gt 0) {
+          $why = $(if ($outside.Count -gt 0) { "names a rooted path outside %LOCALAPPDATA%\NwcFederatorLoop, " + (($outside | ForEach-Object { Mask $_ }) -join ", ") } else { "could not be read whole" })
+          Answer $d 2 "Cancel" ""
+          Done "CANCELLED" ("the confirm " + $why + ", so it was answered Cancel and nothing runs")
+        }
+        Answer $d 1 "OK" "OK on the confirm"
+        $gone = $false
+        for ($i = 0; $i -lt 15 -and -not $gone; $i++) { Start-Sleep -Seconds 1; $gone = (@((WindowRecords $wt.WinType $wt.ProcType ([uint32]$OwnerPid) $true $false) | Where-Object { $_.Handle -eq $d.Handle }).Count -eq 0) }
+        Done "PRESSED" ("Run, and OK on the confirm, whose texts name no path outside the loop folder. The confirm " + $(if ($gone) { "read gone after OK" } else { "still read up 15 s after OK, a finding" }))
+      } else { $seen = 0 }
+      Start-Sleep -Seconds 1
+    }
+  }
+
+  # Item 5, the open file run.
+  SelectTab "4. Clash"
+  $line = [string](ById "OpenDocumentLine").Current.Name
+  $btn = ById "RunOpenButton"
+  $enabled = $btn.Current.IsEnabled
+  Note ("OpenDocumentLine reads: " + (MaskLine $line) + ". RunOpenButton enabled: " + $enabled)
+  if (-not $enabled) { Done "TOOL REFUSED" ("Run the open file reads disabled, and OpenDocumentLine reads: " + (MaskLine $line)) }
+  $x = BoxText "ExchangeFileBox"
+  $tol = ComboText "ToleranceBox"
+  Note ("ExchangeFileBox reads " + $(if ($x -eq "") { "empty" } else { MaskLine $x }) + ", ToleranceBox " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it")
+  if ($x -ne "") { Done "BOX" ("ExchangeFileBox reads " + (MaskLine $x) + " and not empty, so nothing was pressed") }
+  if ($tol -cne $tolDefault) { Done "TOLERANCE" ("ToleranceBox reads " + $tol + " and not " + $tolDefault + ", so nothing was pressed") }
+  $outside = PathsOutside $line $loopRoot
+  if ($outside.Count -gt 0) { Done "OPEN LINE" ("OpenDocumentLine names a rooted path outside %LOCALAPPDATA%\NwcFederatorLoop, " + (($outside | ForEach-Object { Mask $_ }) -join ", ") + ", so nothing was pressed") }
+  Press $btn "RunOpenButton" "Run the open file"
+  Done "PRESSED" ("Run the open file, with OpenDocumentLine reading: " + (MaskLine $line))
+} catch {
+  Done "FAULT" ("the driver stopped on " + (Err $_.Exception) + " at line " + $_.InvocationInfo.ScriptLineNumber + ", so nothing more was pressed")
 }
-Say "UNKNOWN: no confirm dialog within 300 s"
-exit 1
