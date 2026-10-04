@@ -60,10 +60,10 @@ set -e
 # and 3 .xlsx under samples, the client's workbooks and the pictures they link to, and one
 # probe result that is plain UTF-8 and is read. Read in full the same day: all 345 .jpg open
 # FF D8 FF and end FF D9, and all 3 .xlsx open PK 03 04 and hold 50 4B 05 06 exactly 22
-# bytes before their end. A zip is not here, so a zip is refused, and a run's file over 20 MB
-# is masked before it is zipped. Where a zip may sit is Bader's call, Q90, and is written
-# here when he makes it. A binary file no line names is refused with words that say so, so a
-# person adds a line for its type rather than hunting for an id.
+# bytes before their end. A zip is not here, so a zip is refused. No zip of run evidence sits
+# anywhere in the repo, Bader's answer Q90 A: a run's file over 20 MB stays in the work folder
+# and the turn names it with its size and sha256. A binary file no line names is refused with
+# words that say so, so a person adds a line for its type rather than hunting for an id.
 binary='^samples/.*\.jpg$ ffd8ff 2 ffd9
 ^samples/.*\.xlsx$ 504b0304 65557 504b0506'
 
