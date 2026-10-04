@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Federator.Core.Exchange;
+using Federator.Core.Sets;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -623,6 +624,150 @@ namespace Federator.Core.Tests
                 Set("BLD-ME-Ducts", "PL-Drainage equipment"), null, null, null, null, rows);
 
             CorrectionOutcome twice = MatrixCorrections.Apply(once.Text, null, null, null, null, rows);
+
+            Assert.That(twice.Text, Is.EqualTo(once.Text));
+            Assert.That(twice.TotalChanged, Is.EqualTo(0));
+        }
+
+        // ---------- FR-025, the Or row copies its whole group ----------
+
+        /// <summary>The category property's internal name, as the client file writes it.</summary>
+        private const string CategoryProperty = "LcRevitPropertyElementCategory";
+
+        /// <summary>
+        /// One condition the way the client's matrix writes one, an element a line, so a
+        /// group copied out of it is read back the way the file itself would be read.
+        /// </summary>
+        private static string WrittenCondition(int flags, string property, string display, string value)
+        {
+            return "            <condition test=\"equals\" flags=\"" + flags + "\">\n"
+                + "              <category>\n"
+                + "                <name internal=\"LcRevitData_Element\">Element</name>\n"
+                + "              </category>\n"
+                + "              <property>\n"
+                + "                <name internal=\"" + property + "\">" + display + "</name>\n"
+                + "              </property>\n"
+                + "              <value>\n"
+                + "                <data type=\"wstring\">" + value + "</data>\n"
+                + "              </value>\n"
+                + "            </condition>\n";
+        }
+
+        /// <summary>A set holding those conditions, inside a folder, the shape of the client's matrix.</summary>
+        private static string WrittenSet(string name, string conditions)
+        {
+            return "        <selectionset name=\"" + name + "\" guid=\"x\">\n"
+                + "          <findspec mode=\"all\" disjoint=\"0\">\n"
+                + "            <conditions>\n"
+                + conditions
+                + "            </conditions>\n"
+                + "            <locator>/</locator>\n"
+                + "          </findspec>\n"
+                + "        </selectionset>\n";
+        }
+
+        private static string WrittenExchange(string sets)
+        {
+            return "<?xml version='1.0' encoding='UTF-8'?>\n<exchange units=\"ft\">\n  <selectionsets>\n"
+                + "    <viewfolder name=\"Mechanical\">\n" + sets + "    </viewfolder>\n"
+                + "  </selectionsets>\n</exchange>\n";
+        }
+
+        /// <summary>A category and a workset in one group, the shape of BLD-ME-Duct Accessory.</summary>
+        private static string CategoryAndWorkset(int flags, string category, string workset)
+        {
+            return WrittenCondition(flags, CategoryProperty, "Category", category)
+                + WrittenCondition(0, WorksetProperty, "Workset", workset);
+        }
+
+        private static PlannedSet PlannedOnly(string xml)
+        {
+            return SetBuildPlan.From(new ExchangeReader().ReadText(xml)).Buildable[0];
+        }
+
+        /// <summary>The values one group asks on one property, in order.</summary>
+        private static List<string> ValuesOn(IList<PlannedCondition> group, string property)
+        {
+            List<string> values = new List<string>();
+
+            foreach (PlannedCondition condition in group)
+            {
+                if (string.Equals(condition.PropertyInternalName, property, StringComparison.Ordinal))
+                {
+                    values.Add(condition.Value);
+                }
+            }
+
+            return values;
+        }
+
+        /// <summary>
+        /// FR-025. The Or row was one flags 64 condition put straight after the workset, which
+        /// starts a group holding only the workset, so a set of Duct Accessories on ME-Ductwork
+        /// became (Duct Accessories and ME-Ductwork) or (ME-DUCTWORK), and the second group takes
+        /// every element on that workset whatever its category. The Or row is the whole group
+        /// copied with the other spelling, so each group still asks for its category.
+        /// </summary>
+        [Test]
+        public void AnOrRowCopiesItsWholeGroupSoEveryGroupStillAsksForItsCategory()
+        {
+            string xml = WrittenExchange(WrittenSet("BLD-ME-Duct Accessory", CategoryAndWorkset(0, "Duct Accessories", "ME-Ductwork")));
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(
+                xml, null, null, null, null,
+                new List<ValueOrRow> { new ValueOrRow("ME-Ductwork", "ME-DUCTWORK") });
+
+            PlannedSet set = PlannedOnly(outcome.Text);
+            IList<IList<PlannedCondition>> groups = set.Groups();
+            List<string> spellings = new List<string>();
+
+            Assert.That(groups.Count, Is.EqualTo(2), set.Describe());
+
+            foreach (IList<PlannedCondition> group in groups)
+            {
+                Assert.That(ValuesOn(group, CategoryProperty), Is.EqualTo(new[] { "Duct Accessories" }),
+                    "every group asks for the category: " + set.Describe());
+                spellings.AddRange(ValuesOn(group, WorksetProperty));
+            }
+
+            Assert.That(spellings, Is.EquivalentTo(new[] { "ME-Ductwork", "ME-DUCTWORK" }), set.Describe());
+            Assert.That(outcome.TotalChanged, Is.EqualTo(1), "one condition asked for the value");
+        }
+
+        /// <summary>
+        /// FR-025 on a set that is already an Or, the shape of BLD-ME-Ducts&amp;Duct Fittings.
+        /// Each of its two groups is copied with the other spelling, so the set asks four
+        /// groups and every one of them still holds its own category, and applying the row
+        /// again changes nothing.
+        /// </summary>
+        [Test]
+        public void TheOrRowKeepsEveryGroupOfAnOrSetWithItsOwnCategory()
+        {
+            string xml = WrittenExchange(WrittenSet(
+                "BLD-ME-Ducts&amp;Duct Fittings",
+                CategoryAndWorkset(0, "Ducts", "ME-Ductwork") + CategoryAndWorkset(MatrixCorrections.StartGroup, "Duct Fittings", "ME-Ductwork")));
+
+            IList<ValueOrRow> row = new List<ValueOrRow> { new ValueOrRow("ME-Ductwork", "ME-DUCTWORK") };
+            CorrectionOutcome once = MatrixCorrections.Apply(xml, null, null, null, null, row);
+
+            PlannedSet set = PlannedOnly(once.Text);
+            IList<IList<PlannedCondition>> groups = set.Groups();
+            List<string> asked = new List<string>();
+
+            Assert.That(groups.Count, Is.EqualTo(4), set.Describe());
+
+            foreach (IList<PlannedCondition> group in groups)
+            {
+                Assert.That(group.Count, Is.EqualTo(2), "a category and a workset in every group: " + set.Describe());
+                asked.Add(ValuesOn(group, CategoryProperty)[0] + " on " + ValuesOn(group, WorksetProperty)[0]);
+            }
+
+            Assert.That(asked, Is.EquivalentTo(new[]
+            {
+                "Ducts on ME-Ductwork", "Ducts on ME-DUCTWORK", "Duct Fittings on ME-Ductwork", "Duct Fittings on ME-DUCTWORK"
+            }));
+
+            CorrectionOutcome twice = MatrixCorrections.Apply(once.Text, null, null, null, null, row);
 
             Assert.That(twice.Text, Is.EqualTo(once.Text));
             Assert.That(twice.TotalChanged, Is.EqualTo(0));

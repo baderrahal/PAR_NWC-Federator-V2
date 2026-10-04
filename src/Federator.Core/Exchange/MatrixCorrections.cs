@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using Federator.Core.Sets;
 
 namespace Federator.Core.Exchange
 {
@@ -249,10 +250,13 @@ namespace Federator.Core.Exchange
     /// asking for one spelling finds only the models that used it. Carrying both means
     /// the set finds everything it was meant to find while the models are still wrong.
     ///
-    /// THE OR ROW IS `flags="64"`, StartGroup, which this repo already measured, F78: a
-    /// condition with that bit starts a new group, the conditions inside a group are
-    /// ANDed and the groups are ORed. So a second condition on the same property with
-    /// that bit reads "or the workset equals the other spelling".
+    /// THE OR ROW IS THE WHOLE GROUP COPIED, FR-025. `flags="64"` is StartGroup, which this
+    /// repo already measured, F78: a condition with that bit starts a new group, the
+    /// conditions inside a group are ANDed and the groups are ORed. A set of Category X and
+    /// Workset V becomes (X and V) or (X and the other spelling), so every group still asks
+    /// for its category. One condition with that bit put straight after the workset, which
+    /// is what this wrote until F116, started a group holding the workset alone, and that
+    /// group took every element on the other spelling whatever its category.
     ///
     /// IT IS BUILT FROM WHAT WAS MEASURED IN THE MODELS AND NEVER FROM A LIST IN THE
     /// CODE, and it never runs on a spelling no model carries, because the whole reason
@@ -569,14 +573,28 @@ namespace Federator.Core.Exchange
                         continue;
                     }
 
+                    int asked;
                     int added;
-                    text = AddOrRow(text, row, out added);
+                    List<string> both = new List<string> { row.Value, row.AlsoAccept };
+                    both.Sort(StringComparer.Ordinal);
+
+                    text = AskEverySpelling(
+                        text,
+                        value => string.Equals(value, row.Value, StringComparison.Ordinal)
+                            || string.Equals(value, row.AlsoAccept, StringComparison.Ordinal),
+                        both,
+                        out asked,
+                        out added);
 
                     outcome.Add(
                         "the value " + row.Value + " also accepts " + row.AlsoAccept
                             + ", which a model in this run spells that way",
                         added,
-                        added == 0 ? "this file holds no condition asking for that value" : null);
+                        added > 0
+                            ? null
+                            : asked > 0
+                                ? "every set asking for it already asks for both"
+                                : "this file holds no condition asking for that value");
                 }
             }
 
@@ -585,89 +603,159 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// A second condition on the same property, carrying the other spelling and the
-        /// StartGroup bit, put straight after every condition asking for that value.
+        /// Every group of every set that asks for one of those spellings, written once per
+        /// spelling with the rest of the group copied into it, FR-025. A group of Ducts on
+        /// ME-Ductwork that is also to accept ME-DUCTWORK becomes (Ducts and ME-DUCTWORK) or
+        /// (Ducts and ME-Ductwork), so each group still asks for its own category. The
+        /// category and the property are copied off the file itself, so nothing here has to
+        /// know what either is called on this project.
         ///
-        /// IT COPIES THE CONDITION BESIDE IT, so the category and the property come off
-        /// the file itself and nothing here has to know what either is called on this
-        /// project, which is the same way the negation rewrite is built.
-        ///
-        /// Safe to run twice: a condition that already has the Or row after it is left
-        /// alone and counted as zero.
+        /// THE SPELLINGS ARE WRITTEN IN THE ORDER GIVEN, whichever one the file asked, and a
+        /// group already written once per spelling is left as it is. So a file asking one
+        /// spelling and a file asking the other come out the same, condition for condition,
+        /// and a second run over its own output changes nothing and counts zero.
         /// </summary>
-        private static string AddOrRow(string xml, ValueOrRow row, out int added)
+        /// <param name="asks">Whether a condition's value is one of the spellings.</param>
+        /// <param name="asked">How many conditions in the file asked for one of them.</param>
+        /// <param name="changed">How many of those were in a set this changed.</param>
+        private static string AskEverySpelling(
+            string xml, Func<string, bool> asks, IList<string> spellings, out int asked, out int changed)
         {
-            added = 0;
+            int askedInAll = 0;
+            int changedInAll = 0;
 
-            // THE WHOLE OPENING TAG AND NOT THE CLASS CONSTANT. DataOpens is "<data ",
-            // which is what the rewriters scan FOR, and gluing a value onto it gives
-            // "<data PL-Drainage equipment</data>", which matches nothing anywhere.
-            string wanted = ValueOpens + row.Value + ValueCloses;
-            string already = ValueOpens + row.AlsoAccept + ValueCloses;
-            string text = xml;
+            string text = EachSet(xml, block =>
+            {
+                SetConditionsText set = SetConditionsText.Read(block);
+
+                if (set == null)
+                {
+                    return block;
+                }
+
+                int inSet = 0;
+                List<WrittenCondition> written = new List<WrittenCondition>();
+                HashSet<string> done = new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (IList<WrittenCondition> group in set.Groups())
+                {
+                    int inGroup = Asking(group, asks);
+
+                    if (inGroup == 0)
+                    {
+                        written.AddRange(group);
+                        continue;
+                    }
+
+                    inSet += inGroup;
+
+                    // A group that differs from one already written only in its spelling is
+                    // one of that one's copies, so it is not written a second time.
+                    if (!done.Add(Shape(group, asks)))
+                    {
+                        continue;
+                    }
+
+                    for (int i = 0; i < spellings.Count; i++)
+                    {
+                        for (int c = 0; c < group.Count; c++)
+                        {
+                            WrittenCondition one = asks(group[c].Value) ? group[c].WithValue(spellings[i]) : group[c];
+                            written.Add(c == 0 && i > 0 ? one.WithFlags(one.Flags | StartGroup) : one);
+                        }
+                    }
+                }
+
+                askedInAll += inSet;
+
+                if (inSet == 0)
+                {
+                    return block;
+                }
+
+                string rewritten = set.With(written).Write();
+
+                if (!string.Equals(rewritten, block, StringComparison.Ordinal))
+                {
+                    changedInAll += inSet;
+                }
+
+                return rewritten;
+            });
+
+            asked = askedInAll;
+            changed = changedInAll;
+            return text;
+        }
+
+        /// <summary>How many conditions of that group ask for one of the spellings.</summary>
+        private static int Asking(IList<WrittenCondition> group, Func<string, bool> asks)
+        {
+            int count = 0;
+
+            foreach (WrittenCondition condition in group)
+            {
+                if (asks(condition.Value))
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// The group with its spelling and its StartGroup bit taken out, which is what two
+        /// copies of one group have in common and two different groups do not.
+        /// </summary>
+        private static string Shape(IList<WrittenCondition> group, Func<string, bool> asks)
+        {
+            StringBuilder shape = new StringBuilder();
+
+            for (int c = 0; c < group.Count; c++)
+            {
+                WrittenCondition one = asks(group[c].Value) ? group[c].WithValue(string.Empty) : group[c];
+                shape.Append(c == 0 ? one.WithFlags(one.Flags & ~StartGroup).Element : one.Element).Append('\n');
+            }
+
+            return shape.ToString();
+        }
+
+        /// <summary>Every set block of the file in turn, handed to the change and written back as it comes out.</summary>
+        private static string EachSet(string xml, Func<string, string> change)
+        {
+            StringBuilder written = new StringBuilder(xml.Length);
             int at = 0;
 
             while (true)
             {
-                int value = text.IndexOf(wanted, at, StringComparison.Ordinal);
+                int opens = xml.IndexOf(SetOpens, at, StringComparison.Ordinal);
+                int closes = opens < 0 ? -1 : xml.IndexOf(SetCloses, opens, StringComparison.Ordinal);
 
-                if (value < 0)
+                if (closes < 0)
                 {
-                    return text;
+                    break;
                 }
 
-                int closes = text.IndexOf(ConditionCloses, value, StringComparison.Ordinal);
-                int opens = text.LastIndexOf(ConditionOpens, value, StringComparison.Ordinal);
-
-                if (closes < 0 || opens < 0)
-                {
-                    return text;
-                }
-
-                closes += ConditionCloses.Length;
-                // The template is the condition element itself, plus the indentation in
-                // front of it where the file has any. Falling back to the START OF THE
-                // FILE when there is no newline would make the template the whole
-                // document, which is what it did on a one line file.
-                int line = text.LastIndexOf('\n', opens);
-                int from = line < 0 ? opens : line;
-                string template = text.Substring(from, closes - from);
-
-                // Already done, so nothing is added and the walk moves past it.
-                if (text.IndexOf(already, closes, StringComparison.Ordinal) == closes + Gap(text, closes))
-                {
-                    at = closes;
-                    continue;
-                }
-
-                string or = OneCondition(template, "equals", StartGroup, row.AlsoAccept);
-                text = text.Substring(0, closes) + or + text.Substring(closes);
-                added++;
-                at = closes + or.Length;
+                closes += SetCloses.Length;
+                written.Append(xml, at, opens - at).Append(change(xml.Substring(opens, closes - opens)));
+                at = closes;
             }
+
+            return written.Append(xml, at, xml.Length - at).ToString();
         }
 
-        /// <summary>
-        /// How far past that point the next data element opens, so an Or row already
-        /// there is recognised whatever whitespace sits between the two conditions.
-        /// Minus one where there is no next one, which never equals a real offset.
-        /// </summary>
-        private static int Gap(string text, int from)
-        {
-            int next = text.IndexOf(DataOpens, from, StringComparison.Ordinal);
-            return next < 0 ? -1 : next - from;
-        }
-
-        /// <summary>
-        /// The bit that starts a new condition group, which is what makes an Or, F78.
-        /// Measured over all 102 conditions of the reference file on 2026-09-19.
-        /// </summary>
         /// <summary>A whole wstring value element, which is what a workset value is written as.</summary>
         private const string ValueOpens = "<data type=\"wstring\">";
 
         private const string ValueCloses = "</data>";
 
-        public const int StartGroup = 64;
+        /// <summary>
+        /// The bit that starts a new condition group, which is what makes an Or, F78.
+        /// Measured over all 102 conditions of the reference file on 2026-09-19, and the
+        /// plan's own constant, so the two cannot disagree.
+        /// </summary>
+        public const int StartGroup = PlannedCondition.StartGroupFlag;
 
         /// <summary>
         /// One value rewritten wherever it is the whole text of a data element, and
@@ -858,10 +946,15 @@ namespace Federator.Core.Exchange
         /// <summary>NegateCondition in Navisworks' SearchConditionOptions, which the file's flags attribute is, F78 and 5g.</summary>
         public const int NegateCondition = 32;
 
-        private const string ConditionsOpen = "<conditions>";
-        private const string ConditionsClose = "</conditions>";
-        private const string ConditionOpens = "<condition ";
-        private const string ConditionCloses = "</condition>";
+        /// <summary>How a set's conditions open and close, and one condition, read by SetConditionsText as well.</summary>
+        internal const string ConditionsOpen = "<conditions>";
+
+        internal const string ConditionsClose = "</conditions>";
+
+        internal const string ConditionOpens = "<condition ";
+
+        internal const string ConditionCloses = "</condition>";
+
         private const string DataOpens = "<data ";
 
         /// <summary>
