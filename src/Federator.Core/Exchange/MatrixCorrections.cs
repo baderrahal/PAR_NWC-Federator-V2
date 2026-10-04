@@ -297,13 +297,27 @@ namespace Federator.Core.Exchange
         }
     }
 
+    /// <summary>Why a correction changed nothing, so the last line can say why none was applied, F116.</summary>
+    internal enum NoChange
+    {
+        /// <summary>The file holds nothing this correction acts on.</summary>
+        NothingToChange,
+
+        /// <summary>The file already carries what this correction makes.</summary>
+        AlreadyMade,
+
+        /// <summary>What it was to change could not be read in the file's text.</summary>
+        NotRead
+    }
+
     public sealed class CorrectionCount
     {
-        public CorrectionCount(string what, int count, string note)
+        internal CorrectionCount(string what, int count, string note, NoChange zero)
         {
             What = what;
             Count = count;
             Note = note;
+            Zero = zero;
         }
 
         public string What { get; private set; }
@@ -312,6 +326,9 @@ namespace Federator.Core.Exchange
 
         /// <summary>Why a count is zero, where zero needs explaining. Null otherwise.</summary>
         public string Note { get; private set; }
+
+        /// <summary>Which kind of zero it is, read where Count is zero.</summary>
+        internal NoChange Zero { get; private set; }
 
         public string Line()
         {
@@ -326,6 +343,7 @@ namespace Federator.Core.Exchange
     {
         private readonly List<CorrectionCount> counts = new List<CorrectionCount>();
         private readonly List<string> warnings = new List<string>();
+        private readonly List<string> notes = new List<string>();
 
         internal CorrectionOutcome(string text)
         {
@@ -339,9 +357,16 @@ namespace Federator.Core.Exchange
             get { return new List<CorrectionCount>(counts); }
         }
 
+        /// <summary>One correction and how many it changed. A zero is one that found nothing in the file to change.</summary>
         internal void Add(string what, int count, string note)
         {
-            counts.Add(new CorrectionCount(what, count, note));
+            Add(what, count, note, NoChange.NothingToChange);
+        }
+
+        /// <summary>The same, saying which kind of zero it is where it changed nothing.</summary>
+        internal void Add(string what, int count, string note, NoChange zero)
+        {
+            counts.Add(new CorrectionCount(what, count, note, zero));
         }
 
         /// <summary>
@@ -354,9 +379,16 @@ namespace Federator.Core.Exchange
             warnings.Add(line);
         }
 
+        /// <summary>Something a reader of the corrections needs to know, said after them and before the last line.</summary>
+        internal void Note(string line)
+        {
+            notes.Add(line);
+        }
+
         /// <summary>
-        /// Everything that changed, added up. ZERO is the answer that proves a correction
-        /// has already been applied, which is why it is worth reporting rather than hiding.
+        /// Everything that changed, added up. Zero means nothing changed, and the last line
+        /// says why: what the file already carried, what it held nothing for, and what could
+        /// not be read.
         /// </summary>
         public int TotalChanged
         {
@@ -387,14 +419,71 @@ namespace Federator.Core.Exchange
                 lines.Add(one.Line());
             }
 
-            // A file something could not be read in is never called one carrying every correction.
-            lines.Add(TotalChanged > 0
-                ? "MATRIX   " + TotalChanged + " changes in all"
-                : warnings.Count > 0
-                    ? "MATRIX   nothing changed"
-                    : "MATRIX   nothing changed, so this file already carries every correction");
+            foreach (string note in notes)
+            {
+                lines.Add("MATRIX   " + note);
+            }
 
+            lines.Add("MATRIX   " + Total());
             return lines;
+        }
+
+        /// <summary>
+        /// The last line: how many changes, or that none was applied and why, F116. Never that
+        /// the file carries every correction, which a count of zero cannot tell from a file
+        /// none of them acts on.
+        /// </summary>
+        private string Total()
+        {
+            if (TotalChanged > 0)
+            {
+                return TotalChanged + " changes in all";
+            }
+
+            if (counts.Count == 0)
+            {
+                return "no correction was applied to this file, "
+                    + (warnings.Count > 0 ? "for the reason the first line gives" : "because none was asked for");
+            }
+
+            int already = Zeros(NoChange.AlreadyMade);
+            int nothing = Zeros(NoChange.NothingToChange);
+            int notRead = Zeros(NoChange.NotRead);
+            List<string> why = new List<string>();
+
+            if (already > 0)
+            {
+                why.Add(already + (already == 1 ? " was" : " were") + " already made in it");
+            }
+
+            if (nothing > 0)
+            {
+                why.Add(nothing + " found nothing in it to change");
+            }
+
+            if (notRead > 0)
+            {
+                why.Add(notRead + " could not read what " + (notRead == 1 ? "it was" : "they were") + " to change");
+            }
+
+            return "no correction was applied to this file: " + (why.Count < 2
+                ? why[0]
+                : string.Join(", ", why.GetRange(0, why.Count - 1).ToArray()) + " and " + why[why.Count - 1]);
+        }
+
+        private int Zeros(NoChange kind)
+        {
+            int zeros = 0;
+
+            foreach (CorrectionCount one in counts)
+            {
+                if (one.Count == 0 && one.Zero == kind)
+                {
+                    zeros++;
+                }
+            }
+
+            return zeros;
         }
     }
 
@@ -479,6 +568,7 @@ namespace Federator.Core.Exchange
                 CorrectionOutcome nothing = new CorrectionOutcome(xml);
                 nothing.Warn("NO CORRECTION WAS MADE TO THIS FILE, because the list of corrections inside the tool could not be read: "
                     + list.Unread + ". Every set is built exactly as the file asks");
+                nothing.Note(SetsAlreadyInAnNwf);
                 return nothing;
             }
 
@@ -530,8 +620,19 @@ namespace Federator.Core.Exchange
                     + " left exactly as the file asks, because a negation asked in a second spelling would take every element of its category");
             }
 
+            outcome.Note(SetsAlreadyInAnNwf);
             return outcome;
         }
+
+        /// <summary>
+        /// Where the corrections reach, Q72 and F116. They reach the sets a run builds, and a set
+        /// already in an NWF keeps the conditions it was built with unless the rebuild box is
+        /// ticked, which the SETS block reports set by set. Said on every picked file, so a log
+        /// naming corrections over an NWF built before them is not read as corrected sets.
+        /// </summary>
+        private const string SetsAlreadyInAnNwf =
+            "a set already in an NWF keeps the conditions it was built with and is not given what this file asks unless the box \""
+                + SetRebuildSettings.TickLabel + "\" is ticked. The SETS block of each group names every such set as DRIFTED";
 
         /// <summary>
         /// Every value a workset condition of the file asks for, in the order first asked, and
@@ -775,12 +876,14 @@ namespace Federator.Core.Exchange
 
                     int changed;
                     string why;
-                    text = Rewrite(text, rewrite, out changed, out why);
+                    NoChange zero;
+                    text = Rewrite(text, rewrite, out changed, out why, out zero);
 
                     outcome.Add(
                         rewrite.SetName + " asks for " + rewrite.To + " and not " + rewrite.From,
                         changed,
-                        Both(why, rewrite.Note));
+                        Both(why, rewrite.Note),
+                        zero);
                 }
             }
 
@@ -795,13 +898,15 @@ namespace Federator.Core.Exchange
 
                     string why;
                     int changed;
-                    text = RewriteConditions(text, rewrite, out changed, out why);
+                    NoChange zero;
+                    text = RewriteConditions(text, rewrite, out changed, out why, out zero);
 
                     outcome.Add(
                         rewrite.SetName + " asks for a category holding " + rewrite.Contains
                             + " and none of the " + rewrite.Excluded.Count + " its siblings claim",
                         changed,
-                        Both(why, rewrite.Note));
+                        Both(why, rewrite.Note),
+                        zero);
                 }
             }
 
@@ -840,15 +945,18 @@ namespace Federator.Core.Exchange
                             out asking,
                             out widened);
 
+                        // What was measured and no more, F116: the list is the C02 census and at
+                        // most ten names a group of C06, so these are the spellings seen so far.
                         outcome.Add(
                             "the value " + value.From + " is asked as " + string.Join(" or ", spellings.ToArray())
-                                + ", every spelling the models in this project carry",
+                                + ", every spelling measured so far in this project's models",
                             widened,
                             widened > 0
                                 ? null
                                 : asking > 0
                                     ? "every set asking for it already asks every spelling"
-                                    : "this file does not ask for that value");
+                                    : "this file does not ask for that value",
+                            asking > 0 ? NoChange.AlreadyMade : NoChange.NothingToChange);
                         continue;
                     }
 
@@ -858,8 +966,8 @@ namespace Federator.Core.Exchange
                             "the value " + value.From + " is left alone",
                             0,
                             value.Candidates.Count == 0
-                                ? "no model in this run carries a workset spelled that way but for its case"
-                                : "the models spell it exactly as the matrix does");
+                                ? "no model measured so far in this project carries a workset spelled that way but for its case"
+                                : "the models measured so far in this project spell it exactly as the matrix does, and no other way");
                         continue;
                     }
 
@@ -867,7 +975,7 @@ namespace Federator.Core.Exchange
                     text = CorrectWorksetValue(text, value.From, value.To, out changed);
 
                     outcome.Add(
-                        "the value " + value.From + " becomes " + value.To + ", which is how the models spell it",
+                        "the value " + value.From + " becomes " + value.To + ", the one spelling of it measured so far in this project's models",
                         changed,
                         changed == 0 ? "this file does not ask for that value" : null);
                 }
@@ -907,13 +1015,14 @@ namespace Federator.Core.Exchange
 
                     outcome.Add(
                         "the value " + row.Value + " also accepts " + row.AlsoAccept
-                            + ", which a model in this run spells that way",
+                            + ", which a model was measured spelling that way",
                         added,
                         added > 0
                             ? null
                             : asked > 0
                                 ? "every set asking for it already asks for both"
-                                : "this file holds no condition asking for that value");
+                                : "this file holds no condition asking for that value",
+                        asked > 0 ? NoChange.AlreadyMade : NoChange.NothingToChange);
                 }
             }
 
@@ -1041,7 +1150,8 @@ namespace Federator.Core.Exchange
                 outcome.Add(
                     "no set beside those asking " + condition + " is given it",
                     0,
-                    template.Name + " could not be read in the file's text, so there is nothing to copy");
+                    template.Name + " could not be read in the file's text, so there is nothing to copy",
+                    NoChange.NotRead);
                 return xml;
             }
 
@@ -1083,6 +1193,7 @@ namespace Federator.Core.Exchange
             });
 
             int changedSets = 0;
+            int notRead = 0;
 
             foreach (SelectionSetDefinition set in given)
             {
@@ -1091,10 +1202,12 @@ namespace Federator.Core.Exchange
 
                 if (!groupsGiven.TryGetValue(name, out added))
                 {
+                    notRead++;
                     outcome.Add(
                         set.Name + " is to ask " + condition + " as well",
                         0,
-                        "because " + because[name] + ", and its conditions could not be read in the file's text, so it was NOT changed");
+                        "because " + because[name] + ", and its conditions could not be read in the file's text, so it was NOT changed",
+                        NoChange.NotRead);
                     continue;
                 }
 
@@ -1105,12 +1218,14 @@ namespace Federator.Core.Exchange
                 }
             }
 
-            if (changedSets == 0)
+            // Said only where it is true: every set that needed it read, and each asked it.
+            if (changedSets == 0 && notRead == 0)
             {
                 outcome.Add(
                     "every set beside those asking " + condition + " whose category another discipline also uses asks it already",
                     0,
-                    null);
+                    null,
+                    given.Count > 0 ? NoChange.AlreadyMade : NoChange.NothingToChange);
             }
 
             return text;
@@ -1575,10 +1690,11 @@ namespace Federator.Core.Exchange
         /// every condition is built by WrittenCondition, the one way a condition's text is
         /// edited, so a value is escaped the way every other correction escapes it, F116.
         /// </summary>
-        private static string RewriteConditions(string text, ConditionsRewrite rewrite, out int changed, out string why)
+        private static string RewriteConditions(string text, ConditionsRewrite rewrite, out int changed, out string why, out NoChange zero)
         {
             int built = 0;
             string said = "this file holds no set of that name";
+            NoChange kind = NoChange.NothingToChange;
             bool found = false;
 
             string written = EachSet(text, block =>
@@ -1601,6 +1717,7 @@ namespace Federator.Core.Exchange
                 if (set == null)
                 {
                     said = "that set's conditions could not be read in the file's text, so it was NOT changed";
+                    kind = NoChange.NotRead;
                     return block;
                 }
 
@@ -1626,6 +1743,7 @@ namespace Federator.Core.Exchange
                 if (string.Equals(rewritten, block, StringComparison.Ordinal))
                 {
                     said = "that set already asks exactly this, so it was left alone";
+                    kind = NoChange.AlreadyMade;
                     return block;
                 }
 
@@ -1636,6 +1754,7 @@ namespace Federator.Core.Exchange
 
             changed = built;
             why = said;
+            zero = kind;
             return written;
         }
 
@@ -1672,10 +1791,11 @@ namespace Federator.Core.Exchange
         /// again inside a new one that held it, so a second run grew it. A condition's whole
         /// value is neither, so the name is never touched and a second run counts zero.
         /// </summary>
-        private static string Rewrite(string text, CategoryRewrite rewrite, out int changed, out string why)
+        private static string Rewrite(string text, CategoryRewrite rewrite, out int changed, out string why, out NoChange zero)
         {
             int rewritten = 0;
             string said = "there is no set of that name in this file";
+            NoChange kind = NoChange.NothingToChange;
             bool found = false;
 
             string written = EachSet(text, block =>
@@ -1691,6 +1811,7 @@ namespace Federator.Core.Exchange
                 if (set == null)
                 {
                     said = "the set is there and its conditions could not be read in the file's text, so it was NOT changed";
+                    kind = NoChange.NotRead;
                     return block;
                 }
 
@@ -1703,6 +1824,7 @@ namespace Federator.Core.Exchange
 
             changed = rewritten;
             why = said;
+            zero = kind;
             return written;
         }
 

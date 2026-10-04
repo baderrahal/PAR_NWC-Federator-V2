@@ -242,7 +242,11 @@ namespace Federator.Core.Tests
 
             Assert.That(twice.TotalChanged, Is.EqualTo(0));
             Assert.That(twice.Text, Is.EqualTo(once.Text));
-            Assert.That(twice.Lines(), Has.Some.Contains("already carries every correction"));
+
+            // The rename finds no broken name and the set asks for something other than the
+            // old value, which is all the text can say, F116.
+            Assert.That(twice.Lines()[twice.Lines().Count - 1],
+                Is.EqualTo("MATRIX   no correction was applied to this file: 2 found nothing in it to change"));
         }
 
         // ---------- the real files ----------
@@ -362,7 +366,8 @@ namespace Federator.Core.Tests
             Assert.That(again.TotalChanged, Is.EqualTo(0),
                 "a second run reading zero is what proves the corrections are idempotent");
             Assert.That(again.Text, Is.EqualTo(committed));
-            Assert.That(again.Lines(), Has.Some.Contains("already carries every correction"));
+            Assert.That(again.Lines()[again.Lines().Count - 1], Is.EqualTo(
+                "MATRIX   no correction was applied to this file: 6 were already made in it and 4 found nothing in it to change"));
         }
 
         // ---------- Q104, the corrections applied to whichever file is picked ----------
@@ -453,13 +458,14 @@ namespace Federator.Core.Tests
             Assert.That(said, Does.Contain("BLD-AR-Ramps asks Source File contains -AR- as well"));
             Assert.That(said, Does.Contain("MATRIX   151 changes in all"));
 
-            // 1 rename, 1 catch-all, 7 workset values, 4 sets given Source File and the total.
-            Assert.That(picked.Corrections.Count, Is.EqualTo(14));
+            // 1 rename, 1 catch-all, 7 workset values, 4 sets given Source File, the line about
+            // sets already in an NWF and the total.
+            Assert.That(picked.Corrections.Count, Is.EqualTo(15));
 
             ExchangeDocument already = MatrixCorrections.ReadPicked(Samples.CorrectedMatrix());
 
-            Assert.That(already.Corrections[already.Corrections.Count - 1],
-                Is.EqualTo("MATRIX   nothing changed, so this file already carries every correction"));
+            Assert.That(already.Corrections[already.Corrections.Count - 1], Is.EqualTo(
+                "MATRIX   no correction was applied to this file: 6 were already made in it and 4 found nothing in it to change"));
             Assert.That(new ExchangeReader().ReadFile(Samples.Matrix()).Corrections, Is.Empty, "a file read as it stands carries none");
         }
 
@@ -480,6 +486,8 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Text, Is.EqualTo(source));
             Assert.That(outcome.Lines()[0], Does.StartWith("MATRIX   NO CORRECTION WAS MADE TO THIS FILE"));
             Assert.That(outcome.Lines(), Has.None.Contains("already carries every correction"));
+            Assert.That(outcome.Lines()[outcome.Lines().Count - 1],
+                Is.EqualTo("MATRIX   no correction was applied to this file, for the reason the first line gives"));
         }
 
         /// <summary>
@@ -813,8 +821,8 @@ namespace Federator.Core.Tests
             CorrectionOutcome outcome = MatrixCorrections.Apply(xml, null, null, null, rewrites);
 
             Assert.That(outcome.Text, Is.EqualTo(xml));
-            Assert.That(Words(outcome), Does.Contain("no model in this run carries a workset spelled that way"));
-            Assert.That(Words(outcome), Does.Contain("the models spell it exactly as the matrix does"));
+            Assert.That(Words(outcome), Does.Contain("no model measured so far in this project carries a workset spelled that way"));
+            Assert.That(Words(outcome), Does.Contain("the models measured so far in this project spell it exactly as the matrix does"));
         }
 
         /// <summary>
@@ -849,7 +857,7 @@ namespace Federator.Core.Tests
                 "<data type=\"wstring\">ME-DUCTWORK</data>", null, null, null, rewrites);
 
             Assert.That(Words(outcome),
-                Does.Contain("the value ME-DUCTWORK becomes ME-Ductwork, which is how the models spell it"));
+                Does.Contain("the value ME-DUCTWORK becomes ME-Ductwork, the one spelling of it measured so far in this project's models"));
         }
 
         private static string Words(CorrectionOutcome outcome)
@@ -1550,6 +1558,81 @@ namespace Federator.Core.Tests
             Assert.That(asked["lcop_selection_set_tree/Architecture/Ramps"], Is.EqualTo("Ramps and -AR-"));
             Assert.That(asked["lcop_selection_set_tree/Structure/Ramps"], Is.EqualTo("Ramps and -ST-"));
             Assert.That(outcome.TotalChanged, Is.EqualTo(1));
+        }
+
+        // ---------- the MATRIX lines claim only what was measured, F116 ----------
+
+        /// <summary>
+        /// The workset list is the C02 census and at most the first ten names of each C06 group,
+        /// so a line says every spelling measured so far in this project's models, and never
+        /// every spelling the models carry. A value no measured name matches is said to be in no
+        /// model measured so far, and never in no model of this run, which the shipped list
+        /// cannot know.
+        /// </summary>
+        [Test]
+        public void TheValueLinesClaimOnlyWhatWasMeasured()
+        {
+            string said = Words(Picked(Read(Samples.Matrix())));
+
+            Assert.That(said, Does.Contain(
+                "the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork, every spelling measured so far in this project's models"));
+            Assert.That(said, Does.Contain(
+                "the value FF-FIRE FIGHTING becomes FF-Fire Fighting, the one spelling of it measured so far in this project's models"));
+            Assert.That(said, Does.Contain(
+                "the value FP-PIPING is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way"));
+            Assert.That(said, Does.Not.Contain("the models in this project carry"));
+            Assert.That(said, Does.Not.Contain("which is how the models spell it"));
+
+            string none = Words(MatrixCorrections.Apply(
+                WorksetSet("BLD-XX-Nowhere", "XX-NOWHERE"), null, null, null,
+                ValueRewrite.For(new[] { "XX-NOWHERE" }, RevitWorksets.All())));
+
+            Assert.That(none, Does.Contain("no model measured so far in this project carries a workset spelled that way but for its case"));
+            Assert.That(none, Does.Not.Contain("in this run"));
+        }
+
+        /// <summary>
+        /// A file no correction acts on says that none was applied and why, never that it
+        /// already carries every correction. The Infra sets file holds none of the names, no
+        /// workset condition and no Source File condition, and its last line said the opposite
+        /// of every line above it.
+        /// </summary>
+        [Test]
+        public void AFileNoCorrectionActsOnSaysNoneWasAppliedAndWhy()
+        {
+            IList<string> lines = Picked(Read(Samples.Infra())).Lines();
+
+            Assert.That(lines[lines.Count - 1], Is.EqualTo(
+                "MATRIX   no correction was applied to this file: 3 found nothing in it to change"));
+            Assert.That(lines, Has.None.Contains("already carries every correction"));
+        }
+
+        /// <summary>
+        /// The corrections reach the sets a run builds and not a set already in an NWF, which
+        /// keeps the conditions it was built with unless the rebuild box is ticked, Q72. One line
+        /// after the corrections says so and names the box and the SETS block, so a log naming
+        /// corrections over an NWF built before them is not read as corrected sets. Written for
+        /// every picked file, the one corrected, the one needing nothing and the one whose list
+        /// could not be read, just before the last line.
+        /// </summary>
+        [Test]
+        public void ThePickedFileSaysASetAlreadyInAnNwfKeepsItsOldConditionsUnlessTheBoxIsTicked()
+        {
+            string expected = "MATRIX   a set already in an NWF keeps the conditions it was built with and is not given"
+                + " what this file asks unless the box \"" + SetRebuildSettings.TickLabel + "\" is ticked."
+                + " The SETS block of each group names every such set as DRIFTED";
+
+            MatrixCorrectionList broken = MatrixCorrectionList.Read(new StringReader("not a correction\n"));
+
+            foreach (IList<string> lines in new List<IList<string>>
+            {
+                MatrixCorrections.ReadPicked(Samples.Matrix()).Corrections,
+                MatrixCorrections.ReadPicked(Samples.CorrectedMatrix()).Corrections,
+                MatrixCorrections.ForPickedFile(Read(Samples.Matrix()), broken, RevitWorksets.All()).Lines()
+            })
+            {
+                Assert.That(lines[lines.Count - 2], Is.EqualTo(expected));
+            }
         }
     }
 }
