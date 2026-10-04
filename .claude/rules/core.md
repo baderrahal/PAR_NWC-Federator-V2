@@ -155,6 +155,46 @@ The set level number cannot be used for the damaged export check. On Infra it
 gives 6, because the sets differ in how many copies of the one rule they hold,
 and 6 does not read as broken.
 
+### The picked file is corrected before a set is built, F116
+
+- WHICHEVER CLASH XML IS PICKED IS CORRECTED, Q104 answered by Bader on 2026-10-04.
+  `MatrixCorrections.ReadPicked` is the only way the add-in reads the picked file, at the
+  pick, the run, the open file run and both hand buttons. It applies the code that writes
+  the exchange file, `ForPickedFile`, before any set is built, and the document carries one
+  line per correction, `ExchangeDocument.Corrections`, which the window writes as MATRIX
+  lines after the line saying which file it read. The HEALTH block at the pick judges the
+  corrected sets, because those are the sets the run builds
+- THE CORRECTIONS ARE DATA. `matrix-corrections.txt` holds the renames, the catch-all sets
+  and the Source File rules, and `revit-worksets.txt` the workset spellings measured off the
+  models, both embedded in Core. Nothing in the code names one project's set, folder or
+  category. A list that cannot be read corrects NOTHING and says so on the first MATRIX line,
+  never a part of it, and a set whose text the corrections cannot read is counted and said,
+  so a file is never passed on as corrected when it was not
+- A WORKSET VALUE ASKS EVERY SPELLING THE MODELS CARRY, Q102. One measured spelling that
+  differs by case alone is the correction, Q68. Two or more are all asked, as Or groups,
+  where until Q102 they were refused and the value left as it was. A spelling no model was
+  measured carrying is never asked. The spellings go in Ordinal order whichever one the file
+  asked, once per workset, so the client's matrix, the one corrected before and the exchange
+  file come out as the SAME sets, condition for condition, which a test proves on all three
+- THE OR ROW IS THE WHOLE GROUP COPIED, FR-025. A group asking one spelling is written once
+  per spelling with the rest of the group in it, so (Ducts and ME-DUCTWORK) or (Ducts and
+  ME-Ductwork). One flags 64 condition after the workset, what Q69's row was until F116,
+  started a group holding the workset alone, which takes every element on that workset
+  whatever its category. The text groups conditions by the plan's own rule,
+  `PlannedSet.GroupsOf` and `PlannedCondition.StartsAGroupWith`, so the two cannot disagree
+- A CATEGORY REWRITE CHANGES A WHOLE VALUE AND NEVER A NAME, FR-026, so a set whose name
+  holds the value is not renamed and a second run counts zero
+- A SET BESIDE THE ONES ASKING A SOURCE FILE CONDITION ASKS IT TOO where another discipline
+  also uses its category, Q103: every AR set whose category another discipline also uses
+  gets Source File contains -AR-. The condition, the folder and the category property are
+  read off the file, and so are the categories another folder's sets ask for. A category no
+  other folder's set asks for that another discipline's MODELS carry can only be measured,
+  an AR set finding items in a group holding no AR model, and those are the categories
+  after the bar in the list, proved by a test against the logs they came from
+- THE ROW FILE NAMES EVERY WORKSET OF EVERY MODEL, one model worksets row each, because
+  the EXPORT CHECK block lists ten a group and counts the rest, and the spellings a run
+  shows are what the workset list is measured from
+
 ## Rules the code holds
 
 - A locator that does not resolve to a set: report the test by name, skip it.
