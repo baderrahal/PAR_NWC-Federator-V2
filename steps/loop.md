@@ -53,7 +53,12 @@ his desktop, explorer.exe their parent, at 12:53:23 and 12:54:16, each with the 
 back while they run, and the developers were told at 13:21 to run no harness that starts a
 stand-in named Roamer. Code, pull requests and merges go on. The waiter
 turn4\wait-no-roamer.ps1 reads the processes every 10 minutes into turn5\wait-no-roamer.txt
-and ends when none runs.
+and ends when none runs. It read one at 15:14:00, pid 37356, and NO ROAMER RUNS at 15:24:00,
+so the loop's own starts may go again, each read again just before it starts.
+BADER ANSWERED THE FORM at about 15:20 on 2026-10-04, his message headed BADER'S ANSWERS, 4 OCT
+2026, TO THE FORM OF TURN 5: Q99 to Q109, Q24 and Q26, each answer under its question in
+steps\02_questions.md and on its item in steps\fix-round.md. The plan of the round that carries
+them out is the newest entry of steps\log.md.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -204,24 +209,31 @@ pause and turn 5's opening, as 53c37b6. PR 84, F108, as c9b223b. PR 88, F106, DO
 as 3449521. PR 89, the records with the note for the modellers, B4, as 51a0cb6. PR 83, Bader's
 answers in the loop rules, as 086a348. PR 90, F105, as 2c89788. PR 91, the fix list,
 steps\fix-round.md, 174 items, and the form, Q99 to Q109, as 0e76b16. PR 92, F107, as f58c083.
+PR 93, the records, as dd55e4b. Bader's answers to the form are in the pull request carrying
+this text, and the plan that carries them out is the newest entry of steps\log.md.
 
-1. In flight, each merged on its own: F109, the in-place install for the team, fix attempt 3
-   after attempt 2's reviewer and breaker found three blocking, its plan in
-   turn5\f109-a3-plan.md, then its harness, prove-run.ps1, once no Navisworks runs, and a third
-   reading. A finding that survives it goes to the form. F104
-   part 2, the documents read, built at 33732c9 and read safe under Q93, then its harness
-   parts B and C and the lead's read of set 03's NWFs once no Navisworks runs, the first
-   answer to Bader's test 3, then its pull request. Bader's own Navisworks has run since
-   12:53, see the paragraph at the top
+1. In flight, each merged on its own: F104 part 2, the documents read, built at 33732c9 and
+   read safe under Q93: its harness parts B and C and the lead's read of set 03's NWFs, now
+   that no Navisworks runs, the first answer to Bader's test 3, then its pull request. F109,
+   the in-place install for the team, fix attempt 3, planned in turn5\f109-a3-plan.md, the
+   last before the form, started when a developer slot frees, then its harness and a third
+   reading
 2. The area pull requests of steps\fix-round.md, up to three developers at once on different
    files, each read by a reviewer and a breaker and its body by the claim-checker, merged one at
-   a time, a record within the hour: F112 alignment with FR-001 built on the 1 m of Q98 B2, F113
-   clash counts and F114 the views area's first phase are with their developers. The items
-   that need Bader wait for his answers. D1, FR-174, last, moves only
-3. The proof run, set 05 on C06: main installed in place as on 2026-10-01, a fresh copy by
-   prepare-copy.ps1 -Set 05 from the source copy, whose XML asks ME-Ductwork, the first run
-   given that XML by name, items 1 to 5, steps\runs\05\findings.md with the before and after
-   table against set 03, and Bader's three tests
+   a time, a record within the hour. With developers: F112 alignment, now building Bader's
+   answer to Q99 and Q100, the clash skipped for a group whose models are not on the same shared
+   coordinates, with FR-006, F113 clash counts, and F114 the views area's first phase with the
+   per group times of Q101. Next as slots free: F109 attempt 3, F116 the clash XML of Q102 to
+   Q104, F115 sets, F117 the names of Q105 to Q107, and the four finds of Q108, Q109, Q24 and
+   Q26, each writing its test steps under its item and running them before anything changes.
+   D1, FR-174, last, moves only
+3. The proof run, set 05 on C06, run twice by Bader's answer to Q99: once with the rule of the
+   clash skipped as set and once with it switched off by its setting. Main installed in place
+   as on 2026-10-01, a fresh copy by prepare-copy.ps1 -Set 05 from the source copy, whose XML
+   asks ME-Ductwork, the first run given that XML by name, items 1 to 5,
+   steps\runs\05\findings.md with the before and after table against set 03, each group's time
+   beside its NWC sizes and item counts, and Bader's three tests, the 45 minutes not judged in
+   this round, Q101
 4. The summary at the top of steps\fix-round.md, merged and posted in the Claude tab
 
 ## The phases
@@ -338,6 +350,16 @@ steps\02_questions.md with its evidence and its choices:
 - Q109, the date format, separator and part positions with no control in the window, FR-161
 - and two asked on 2026-09-12 and still open: Q24, a name cell given back to the pattern,
   FR-160, and Q26, members read only by a test, FR-172
+
+ANSWERED ON 2026-10-04 at about 15:20, every one of them, each answer under its question in
+steps\02_questions.md and on its item in steps\fix-round.md. Q99 and Q100: a group whose models
+are not on the same shared coordinates has only its clash skipped and ends PARTIAL. Q101: VIEWS
+faster with the same viewpoints, each group's time reported beside its NWC sizes and item
+counts, the 45 minutes not judged in this round. Q102 to Q104: the corrections applied to the
+picked XML before any set is built, with OR rows for both spellings and Source File contains
+-AR- on the AR sets that need it. Q105 to Q107: the names masked and refused by the check, the
+older ones held as a hash. Q108, Q109, Q24 and Q26: find the mistake first, with test steps
+under each item, run before anything changes. Nothing waits in the form now.
 
 ANSWERED ON 2026-10-01: Q82 to Q92, every one, each answer under its question in
 steps\02_questions.md. Nothing from turn 3 waits in the form now. The two sections below are

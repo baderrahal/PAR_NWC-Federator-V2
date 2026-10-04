@@ -133,6 +133,7 @@ are never found.
   after it.
 - Asked: the 1 m itself, Q99 in steps\02_questions.md, with what each number does to the
   groups of set 03.
+- Answered by Bader on 2026-10-04, Q99 and Q100: a model named Internal, or more than 1 m from the reference model as the straight line, the 1 m a setting in Core, means ONLY THE CLASH IS SKIPPED. The NWF is built and the NWD published, no clash test, viewpoint or clash report is made, one log line per such model gives its file, its shared site and its distance in X, Y and Z, a note file with the same lines goes beside the NWD and into the group's Clash Report folder, the group ends PARTIAL with the reason clash skipped, models not on the same shared coordinates, the RESULT block lists these groups, and the run writes one list to forward to the modellers. Checked on every run, a setting switches it off, and it replaces Q65 and Q70 for this case. Worked by F112, which the PARTIAL only rule above gives way to.
 
 ### FR-002 model-site-read-failure-reads-as-no-site
 
@@ -258,6 +259,7 @@ so the group fails on the name alone while the measured placement agrees.
   modellers (FR-125) says it.
 - Needs Bader: yes, asked as Q100. Raised for the form beside the 1 m number of FR-001, since the two rules
   meet in the same block. Nothing is changed until he answers.
+- Answered by Bader on 2026-10-04, Q100, with Q99: a model named Internal skips the clash of its group the same way a far model does, and the group ends PARTIAL instead of FAILED, replacing Q70 for this case. Worked by F112 with FR-001.
 
 ### FR-007 invisible-difference-fallback-for-visible-space
 
@@ -320,6 +322,7 @@ the second 1511 clashes, the most tests that found something.
   and FP.
 - Note: The tool can only say which sets are affected, FR-027 and FR-028. The copy's XML is
   FR-082. An OR made through MatrixCorrections would meet FR-025.
+- Answered by Bader on 2026-10-04, Q102: look for both spellings of each workset the buildings spell differently, as an OR row built the way Q69's rows are, and the export check keeps naming which models carry which spelling. The OR group carries the set's other conditions, FR-025. Worked by F116, the clash XML.
 
 ### FR-009 matrix-ar-sets-match-items-of-other-disciplines
 
@@ -347,6 +350,7 @@ structure model's ramps. The AR Railings set does the same.
 - Needs Bader: yes, asked as Q103. The matrix is his (Q98 B1).
 - Note: A SET line could also say which discipline's model an AR coded set found its items in.
   The tool reports and never acts, so no behaviour change is asked.
+- Answered by Bader on 2026-10-04, Q103: every AR set whose category another discipline also uses gets Source File contains -AR-. Worked by F116, the clash XML.
 
 ### FR-010 empty-sets-contains-judged-as-equals
 
@@ -817,6 +821,7 @@ workset whatever its category.
   doc means needs the whole group copied with the other spelling, (X and V) or (X and V other).
   Not reachable by a run. It matters if FR-008 is answered with an OR of both spellings made
   through this class.
+- Answered through Q102 and Q104 on 2026-10-04: the class is applied at pick time and builds Q102's OR rows, so this fault is reachable now and is worked by F116, the clash XML.
 
 ### FR-026 matrix-category-rewrite-renames-the-set-itself
 
@@ -841,6 +846,7 @@ renamed inside its block and the value can grow every time it is applied.
 - Note: Latent. Nothing in src calls MatrixCorrections and the generator in the tests passes
   null for these rewrites. The class doc at :382 says safe to run twice is the whole point.
   Where From is also in the name, the second pass finds no set. Not reachable by a run.
+- Answered through Q104 on 2026-10-04: the class is applied at pick time, so this fault is reachable now and is worked by F116, the clash XML.
 
 ### FR-027 empty-sets-block-never-written-on-a-first-run
 
@@ -950,6 +956,7 @@ form of a set a picked file carries.
   faults inside this class, and it is among the 150 of FR-172.
 
 ## Clash counts, FR-031 to FR-034
+- Answered by Bader on 2026-10-04, Q104: MatrixCorrections is applied to whichever XML is picked, before any set is built, the log names every correction it made, the Q102 and Q103 rules live in it, and a test proves the old uncorrected XML and the exchange file give the same sets once corrected. Worked by F116, the clash XML.
 
 ### FR-031 clash-progress-line-one-test-short
 
@@ -2018,6 +2025,7 @@ folder, and what the viewpoints may hold, are Bader's to choose.
 - Needs Bader: yes, asked as Q101. The scope of the 45 minutes and what the viewpoints may hold are his, Q98 B3.
 - Note: The options are measured in set 05 or by a probe, not guessed. The speed fix itself is
   FR-069 and goes first.
+- Answered by Bader on 2026-10-04, Q101: do not judge the 45 minutes in this round. Make VIEWS faster with the same viewpoints, then report each group's time beside its NWC sizes and item counts, so the target can be set after the proof run. Worked by F114.
 
 ### FR-071 views-log-silent-up-to-21-minutes
 
@@ -2940,6 +2948,7 @@ read-out go in as written, and DIALOG and CONFIRM texts go into record.txt unmas
   the existing MaskLine needs no answer.
 - Branch: the run.ps1 part rests on F106, merged as 3449521, lines unchanged. read-workbook.ps1
   was on main before.
+- Answered by Bader on 2026-10-04, Q105: mask the profile folder name in paths and as the author, and the evidence check refuses this machine's name, the older machine's name and both account names, the older ones held as a hash. Worked by F117, the names.
 
 ### FR-110 evidence-check-blind-to-older-machine-name
 
@@ -2965,6 +2974,7 @@ for no other.
   name is new scope and a design choice, and the F107 section itself says the check would never
   refuse that name.
 - Branch: waits for F107's merge, fix-F107 not merged at main 3449521.
+- Answered by Bader on 2026-10-04, Q106: the check refuses the older machine's name, held as a hash. Worked by F117, the names.
 
 ### FR-111 f106-link-check-skips-output-folders
 
@@ -3517,6 +3527,7 @@ group, so the step reads CONTRADICTED, and on what the bar was set is UNKNOWN.
   wrong output (.claude\rules\loop.md, how a finding is worked, rule 6), so the bar moves only if
   he accepts the size.
 - Note: The RESULT sizes printing 0 and 678,363 bytes are a separate fault, FR-046.
+- Answered by Bader on 2026-10-04, Q108: find the mistake first. Measure which blocks and lines make the C06 log 1.1 MB, find repeated or wasted lines and fix those, the tsv keeping every line in full, R6, then set the size bar from the measured result. Detailed test steps go under this item, are run, and say where the mistake is before anything changes.
 
 ### FR-137 rules-loop-md-says-logs-never-pushed-out
 
@@ -3782,6 +3793,7 @@ and steps\logs.
 - Note: The account name is written <name> here, so the draft adds no copy of it.
 
 ## Rest, FR-150 to FR-174
+- Answered by Bader on 2026-10-04, Q107: mask the older account name in the 20 files outside steps\logs, the check refusing it, held as a hash, and steps\logs stays untouched. Worked by F117, the names.
 
 ### FR-150 apply-file-settings-does-not-save-nwf
 
@@ -4083,6 +4095,7 @@ hand edit gets the pattern back.
   per cell, or drop the sentence and the member with its test.
 - Note: T1-B7 is the same fault from the Core side. FR-165 is a separate guard that is still
   needed whichever he chooses.
+- Answered by Bader on 2026-10-04, Q24: find the mistake first. Test what happens to a typed-over name cell through a run, and whether a person can put it back to the pattern today. Detailed test steps go under this item, are run, and say what is broken before anything is wired or removed.
 
 ### FR-161 date-format-has-no-control
 
@@ -4106,6 +4119,7 @@ the format the person's setting whose mistakes should be visible in the preview.
   (steps\notes\f101-design.md:42 records that the window does not offer them). So the choice is a
   box on the Outputs step, or core.md reworded to say it is a code setting, and that is his
   because the window is meant to carry fewer decisions.
+- Answered by Bader on 2026-10-04, Q109: find the mistake first. Test that the date format, the separator and each part position change the NWD name the way they should, that a wrong value is refused with a clear line, and find where it breaks. Detailed test steps go under this item, are run, and say where the mistake is before anything changes.
 
 ### FR-162 folder-memory-save-failure-never-reported
 
@@ -4386,6 +4400,7 @@ since.
   here (FR-068 and FR-030). Other uncalled members are separate items too:
   SavedViewpoints.CanBuild (FR-133), FolderMemory.DisabledReason (FR-162) and
   OutputNameTable.ReleaseToPattern (FR-160).
+- Answered by Bader on 2026-10-04, Q26: find the mistake first. Break each of the 30 members only tests read on purpose and check its test fails. A test that still passes proves nothing, and that member goes in the form. Detailed test steps go under this item and are run before anything changes.
 
 ### FR-173 t1-catch-swallowing-77
 

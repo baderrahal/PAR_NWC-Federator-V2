@@ -1,6 +1,51 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, Bader's answers to the form, the plan
+
+Bader answered the form of turn 5 at about 15:20 on 2026-10-04, his message headed BADER'S
+ANSWERS, 4 OCT 2026, TO THE FORM OF TURN 5, which replaces any earlier block of answers to Q99
+to Q109, Q24 and Q26. Each answer is under its question in steps\02_questions.md and on its item
+in steps\fix-round.md. This entry is the plan the lead wrote to Bader in the session before the
+first edit. Nothing under src or tests changes in the pull request carrying it.
+
+### What was done
+
+- PR 93, the records, merged first as dd55e4b
+- the answers written under Q99 to Q109, Q24 and Q26, an answered line on each of the 15 items
+  they touch in steps\fix-round.md, the form marked answered and the next action made current in
+  steps\loop.md
+- the developers already at work told by message: F112 alignment builds the rule of Q99 and
+  Q100 in place of the PARTIAL only rule, the clash skipped for a group with a model named
+  Internal or more than 1 m away, with FR-006, and F114 views adds each group's time beside its
+  NWC sizes and item counts, Q101
+- Bader's own Navisworks read gone at 15:24:00, turn5\wait-no-roamer.txt, so the loop's own runs
+  may go again, each read again just before it starts
+
+### What remains, in order
+
+1. F104 part 2: its harness parts B and C on its committed code, then the first documents read,
+   set 03 item 1 C06, the first answer to Bader's test 3, then its pull request
+2. as developer slots free, three at once: F109 attempt 3, the last before the form, F116 the
+   clash XML of Q102 to Q104 with FR-008, FR-009, FR-025, FR-026 and FR-030, F115 sets, F117 the
+   names of Q105 to Q107 with FR-109, FR-110 and FR-149, then the four finds of Q108, Q109, Q24
+   and Q26, each writing detailed test steps under its item, running them and saying where the
+   mistake is before anything changes
+3. each area merged one at a time with its readers and its claim-checker, a record within the
+   hour
+4. the proof run on C06 twice, once with the rule of Q99 as set and once switched off, then
+   findings 05 with each group's time beside its NWC sizes and item counts
+
+### Known bugs
+
+- Q102 asks for OR rows built the way Q69's rows are. FR-025 found those rows put only the
+  workset in their group, which takes every element of the other spelling whatever its category.
+  The lead reads the answer as the OR row built that way with the set's other conditions carried
+  into its group, and says so under Q102, so Bader can correct the reading
+
+### What comes next
+
+- the F104 harness and the first documents read, now that no Navisworks runs
 ## 2026-10-04 The loop, turn 5, F107 the older machine's name masked on main, DONE on Q88
 
 Nothing under src or tests changed. Core tests by the pre-commit at 70effde, 8441dc9, 499f0a6
