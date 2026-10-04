@@ -27521,6 +27521,14 @@
                   <data type="wstring">Ramps</data>
                 </value>
               </condition>
+              <condition test="contains" flags="0">
+                <property>
+                  <name internal="LcOaNodeSourceFile">Source File</name>
+                </property>
+                <value>
+                  <data type="wstring">-AR-</data>
+                </value>
+              </condition>
             </conditions>
             <locator>/</locator>
           </findspec>
@@ -27709,6 +27717,14 @@
                   <data type="wstring">Furniture</data>
                 </value>
               </condition>
+              <condition test="contains" flags="0">
+                <property>
+                  <name internal="LcOaNodeSourceFile">Source File</name>
+                </property>
+                <value>
+                  <data type="wstring">-AR-</data>
+                </value>
+              </condition>
             </conditions>
             <locator>/</locator>
           </findspec>
@@ -27745,6 +27761,14 @@
                   <data type="wstring">Railings</data>
                 </value>
               </condition>
+              <condition test="contains" flags="0">
+                <property>
+                  <name internal="LcOaNodeSourceFile">Source File</name>
+                </property>
+                <value>
+                  <data type="wstring">-AR-</data>
+                </value>
+              </condition>
             </conditions>
             <locator>/</locator>
           </findspec>
@@ -27761,6 +27785,14 @@
                 </property>
                 <value>
                   <data type="wstring">Site</data>
+                </value>
+              </condition>
+              <condition test="contains" flags="0">
+                <property>
+                  <name internal="LcOaNodeSourceFile">Source File</name>
+                </property>
+                <value>
+                  <data type="wstring">-AR-</data>
                 </value>
               </condition>
             </conditions>

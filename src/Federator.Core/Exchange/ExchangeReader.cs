@@ -48,6 +48,12 @@ namespace Federator.Core.Exchange
 
         internal ExchangeDocument ReadText(string xml)
         {
+            return ReadText(xml, null);
+        }
+
+        /// <summary>The same, naming the file the text came from, which MatrixCorrections.ReadPicked corrected first.</summary>
+        internal ExchangeDocument ReadText(string xml, string sourcePath)
+        {
             if (xml == null)
             {
                 throw new ArgumentNullException("xml");
@@ -56,7 +62,7 @@ namespace Federator.Core.Exchange
             using (StringReader text = new StringReader(xml))
             using (XmlReader reader = XmlReader.Create(text, SafeSettings()))
             {
-                return Read(XDocument.Load(reader), null);
+                return Read(XDocument.Load(reader), sourcePath);
             }
         }
 

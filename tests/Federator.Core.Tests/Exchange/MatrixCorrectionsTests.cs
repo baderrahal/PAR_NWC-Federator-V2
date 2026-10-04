@@ -59,81 +59,20 @@ namespace Federator.Core.Tests
         };
 
         /// <summary>
-        /// WHAT THE CORRECTED FILE CARRIES SINCE THE DIMMING ROUND. BLD-EL-Devices asks
-        /// for a category holding Devices and none of the six its siblings claim, which
-        /// is what F87 wanted from the start. It shipped the one equals fallback because
-        /// whether a negated condition imports was not measured, and 5g measured it on
-        /// 2026-09-20: it does, exactly, and the fallback found ZERO items in 1A02MM.
-        /// ProjectRewrites above is kept as sample data for the generic rewrite tests and
-        /// is no longer what the committed file is made with.
+        /// WHAT THE CORRECTED FILE IS MADE WITH SINCE F116: the corrections the tool applies
+        /// to whichever XML is picked, Q104, the list shipped inside Core and the measured
+        /// workset list, and never a copy of them here. BLD-EL-Devices asks for a category
+        /// holding Devices and none of the six its siblings claim, read off the file, F87 in
+        /// full since 5g measured on 2026-09-20 that a negated condition imports. The
+        /// project's corrections above are kept as sample data for the generic tests.
         /// </summary>
-        private static IList<ConditionsRewrite> ProjectConditions()
+        private static CorrectionOutcome Picked(string xml)
         {
-            return new List<ConditionsRewrite>
-            {
-                new ConditionsRewrite(
-                    DevicesSet,
-                    "Devices",
-                    new List<string>(DeviceCategoriesOtherSetsClaim),
-                    "F87 in full since scan.md 5g: contains, then one negated equals per sibling category")
-            };
-        }
-
-        /// <summary>
-        /// Q68, the VALUE corrections, built from the worksets measured off the models
-        /// and never from a list typed here. Every value the matrix asks for is offered
-        /// its case-only candidates and the rule decides, so a value with none and a
-        /// value with two are both left exactly as they were.
-        /// </summary>
-        private static IList<ValueRewrite> ProjectValues()
-        {
-            return ValueRewrite.For(WorksetValuesIn(Read(Samples.Matrix())), RevitWorksets.All());
-        }
-
-        /// <summary>
-        /// Every value a WORKSET condition in that file asks for. Read off the file, so
-        /// a matrix that starts asking for a different workset is covered without a line
-        /// of this being changed.
-        /// </summary>
-        private static IList<string> WorksetValuesIn(string xml)
-        {
-            List<string> values = new List<string>();
-            int at = 0;
-
-            while (true)
-            {
-                int property = xml.IndexOf(WorksetProperty, at, StringComparison.Ordinal);
-
-                if (property < 0)
-                {
-                    return values;
-                }
-
-                int opens = xml.IndexOf(DataOpens, property, StringComparison.Ordinal);
-                int closes = opens < 0 ? -1 : xml.IndexOf(DataCloses, opens, StringComparison.Ordinal);
-
-                if (opens < 0 || closes < 0)
-                {
-                    return values;
-                }
-
-                string value = xml.Substring(opens + DataOpens.Length, closes - opens - DataOpens.Length);
-
-                if (value.Length > 0 && !values.Contains(value))
-                {
-                    values.Add(value);
-                }
-
-                at = closes;
-            }
+            return MatrixCorrections.ForPickedFile(xml, MatrixCorrectionList.Shipped, RevitWorksets.All());
         }
 
         /// <summary>The internal name of the Revit Workset parameter, as the client file writes it.</summary>
         private const string WorksetProperty = "lcldrevit_parameter_-1002053";
-
-        private const string DataOpens = "<data type=\"wstring\">";
-
-        private const string DataCloses = "</data>";
 
         private static string Read(string path)
         {
@@ -321,17 +260,15 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The corrections the committed file is actually made with: the hyphen 121 times
-        /// and the catch all set rewritten into seven conditions, one contains and six
-        /// negated equals.
+        /// The corrections the committed file is made with, which since F116 are the ones the
+        /// tool applies to a picked file: the hyphen 121 times, the catch all set rewritten
+        /// into seven conditions, one contains and six negated equals, the workset values,
+        /// and the four AR sets given Source File contains -AR-.
         /// </summary>
         [Test]
         public void TheCatchAllSetIsRewrittenIntoOneContainsAndSixNegations()
         {
-            string xml = Read(Samples.Matrix());
-
-            CorrectionOutcome outcome = MatrixCorrections.Apply(
-                xml, ProjectRenames(), null, ProjectConditions(), ProjectValues());
+            CorrectionOutcome outcome = Picked(Read(Samples.Matrix()));
 
             Assert.That(outcome.Counts[0].Count, Is.EqualTo(121), "the hyphen, measured");
             Assert.That(outcome.Counts[1].Count, Is.EqualTo(7), "one contains and six negated");
@@ -342,7 +279,8 @@ namespace Federator.Core.Tests
             // ME-EQUIPMENT 1. And FF-FIRE FIGHTING, 2 conditions, corrected to FF-Fire
             // Fighting, the one spelling a model was measured carrying, 1B06PK on C06.
             Assert.That(ValuesChangedIn(outcome), Is.EqualTo(19), "the worksets, measured off the models");
-            Assert.That(outcome.TotalChanged, Is.EqualTo(147), "121 hyphens, 7 conditions and 19 workset values");
+            Assert.That(outcome.TotalChanged, Is.EqualTo(151),
+                "121 hyphens, 7 conditions, 19 workset values and 4 Source File conditions");
 
             Assert.That(outcome.Text, Does.Contain("<condition test=\"contains\" flags=\"0\">"));
             Assert.That(outcome.Text, Does.Contain("<condition test=\"equals\" flags=\"32\">"));
@@ -359,8 +297,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheWorksetValuesTheBuildingsSpellTwoWaysAreAskedInBothAndTheRestAsBefore()
         {
-            CorrectionOutcome outcome = MatrixCorrections.Apply(
-                Read(Samples.Matrix()), ProjectRenames(), null, ProjectConditions(), ProjectValues());
+            CorrectionOutcome outcome = Picked(Read(Samples.Matrix()));
 
             string said = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
 
@@ -399,8 +336,9 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// THE ONE THAT KEEPS THE ARTIFACT HONEST. The file committed under exchange is
-        /// byte for byte what the rule produces from the file under samples. If anyone
-        /// edits either by hand, this fails.
+        /// byte for byte what the rule produces from the file under samples, and since F116
+        /// the rule is the one the tool applies to a picked file, Q104, so the file and the
+        /// tool cannot drift apart either. If anyone edits either by hand, this fails.
         /// </summary>
         [Test]
         public void TheCorrectedFileIsExactlyWhatTheRuleProduces()
@@ -408,10 +346,7 @@ namespace Federator.Core.Tests
             string source = Read(Samples.Matrix());
             string committed = Read(Samples.CorrectedMatrix());
 
-            CorrectionOutcome outcome = MatrixCorrections.Apply(
-                source, ProjectRenames(), null, ProjectConditions(), ProjectValues());
-
-            Assert.That(outcome.Text, Is.EqualTo(committed));
+            Assert.That(Picked(source).Text, Is.EqualTo(committed));
         }
 
         [Test]
@@ -422,11 +357,236 @@ namespace Federator.Core.Tests
             Assert.That(committed, Does.Not.Contain(BrokenName));
             Assert.That(committed, Does.Contain(CorrectName));
 
-            CorrectionOutcome again = MatrixCorrections.Apply(
-                committed, ProjectRenames(), null, ProjectConditions(), ProjectValues());
+            CorrectionOutcome again = Picked(committed);
 
             Assert.That(again.TotalChanged, Is.EqualTo(0),
                 "a second run reading zero is what proves the corrections are idempotent");
+            Assert.That(again.Text, Is.EqualTo(committed));
+            Assert.That(again.Lines(), Has.Some.Contains("already carries every correction"));
+        }
+
+        // ---------- Q104, the corrections applied to whichever file is picked ----------
+
+        /// <summary>
+        /// Every set the way the add-in reads it, the name, the folders and every condition
+        /// in order with its test, flags, category, property and value, and every test with
+        /// its sides, one line each, so two files can be compared set for set.
+        /// </summary>
+        private static List<string> WhatItAsks(ExchangeDocument document)
+        {
+            List<string> asks = new List<string>();
+
+            foreach (SelectionSetDefinition set in document.Sets)
+            {
+                StringBuilder one = new StringBuilder("SET " + set.Path);
+
+                foreach (SearchConditionDefinition condition in set.Conditions)
+                {
+                    one.Append(" | ").Append(condition.Test).Append(' ').Append(condition.Flags)
+                        .Append(' ').Append(condition.Category == null ? "-" : condition.Category.InternalName)
+                        .Append(' ').Append(condition.Property == null ? "-" : condition.Property.InternalName)
+                        .Append(' ').Append(condition.Value == null ? "-" : condition.Value.Data);
+                }
+
+                asks.Add(one.ToString());
+            }
+
+            foreach (ClashTestDefinition test in document.Tests)
+            {
+                asks.Add("TEST " + test.Name + " | " + test.Left.Locator + " | " + test.Right.Locator
+                    + " | " + test.ToleranceInFileUnits.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+            }
+
+            return asks;
+        }
+
+        /// <summary>
+        /// THE TEST BADER ASKED FOR, Q104 on 2026-10-04: the old uncorrected XML and the
+        /// exchange file give the same sets once corrected. Both are read the way the tool
+        /// reads a picked file, and every set, condition for condition, and every test come
+        /// out the same. The file picked before F116 is the third: Bader's old matrix was the
+        /// sample with the hyphen alone corrected, measured on 2026-10-04 by setting the two
+        /// side by side, and it comes out the same too.
+        /// </summary>
+        [Test]
+        public void TheOldUncorrectedMatrixAndTheExchangeFileGiveTheSameSetsOnceCorrected()
+        {
+            string folder = TempFolder.Make("f116-picked");
+
+            try
+            {
+                string hyphenOnly = Path.Combine(folder, "hyphen-only.xml");
+                File.WriteAllText(hyphenOnly, MatrixCorrections.Apply(Read(Samples.Matrix()), ProjectRenames(), null).Text, new UTF8Encoding(false));
+
+                List<string> fromTheSample = WhatItAsks(MatrixCorrections.ReadPicked(Samples.Matrix()));
+                List<string> fromTheExchange = WhatItAsks(MatrixCorrections.ReadPicked(Samples.CorrectedMatrix()));
+                List<string> fromTheHyphenOnly = WhatItAsks(MatrixCorrections.ReadPicked(hyphenOnly));
+
+                Assert.That(fromTheSample.Count, Is.EqualTo(61 + 1830));
+                Assert.That(fromTheExchange, Is.EqualTo(fromTheSample));
+                Assert.That(fromTheHyphenOnly, Is.EqualTo(fromTheSample));
+
+                // And they are not the sets the uncorrected file asks as it stands.
+                Assert.That(WhatItAsks(new ExchangeReader().ReadFile(Samples.Matrix())), Is.Not.EqualTo(fromTheSample));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// Q104, the log names every correction it made: the lines ride on the document the
+        /// tool reads, one per correction and one for the total, and the run writes them.
+        /// </summary>
+        [Test]
+        public void ThePickedFileCarriesALineForEveryCorrectionItMade()
+        {
+            ExchangeDocument picked = MatrixCorrections.ReadPicked(Samples.Matrix());
+            string said = string.Join("\n", new List<string>(picked.Corrections).ToArray());
+
+            Assert.That(picked.SourcePath, Is.EqualTo(Samples.Matrix()));
+            Assert.That(said, Does.Contain("MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  121 occurrences"));
+            Assert.That(said, Does.Contain("MATRIX   BLD-EL-Devices asks for a category holding Devices and none of the 6 its siblings claim  7 occurrences"));
+            Assert.That(said, Does.Contain("the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork"));
+            Assert.That(said, Does.Contain("the value FF-FIRE FIGHTING becomes FF-Fire Fighting"));
+            Assert.That(said, Does.Contain("BLD-AR-Ramps asks Source File contains -AR- as well"));
+            Assert.That(said, Does.Contain("MATRIX   151 changes in all"));
+
+            // 1 rename, 1 catch-all, 7 workset values, 4 sets given Source File and the total.
+            Assert.That(picked.Corrections.Count, Is.EqualTo(14));
+
+            ExchangeDocument already = MatrixCorrections.ReadPicked(Samples.CorrectedMatrix());
+
+            Assert.That(already.Corrections[already.Corrections.Count - 1],
+                Is.EqualTo("MATRIX   nothing changed, so this file already carries every correction"));
+            Assert.That(new ExchangeReader().ReadFile(Samples.Matrix()).Corrections, Is.Empty, "a file read as it stands carries none");
+        }
+
+        /// <summary>
+        /// A list that cannot be read corrects nothing and says so first, rather than passing
+        /// the file on as one that needed nothing. One line it does not know is enough.
+        /// </summary>
+        [Test]
+        public void AListThatCannotBeReadCorrectsNothingAndSaysSo()
+        {
+            MatrixCorrectionList broken = MatrixCorrectionList.Read(new StringReader("# a comment\nrename: " + BrokenName + "\n"));
+            string source = Read(Samples.Matrix());
+
+            Assert.That(broken.Unread, Does.Contain("line 2"));
+
+            CorrectionOutcome outcome = MatrixCorrections.ForPickedFile(source, broken, RevitWorksets.All());
+
+            Assert.That(outcome.Text, Is.EqualTo(source));
+            Assert.That(outcome.Lines()[0], Does.StartWith("MATRIX   NO CORRECTION WAS MADE TO THIS FILE"));
+            Assert.That(outcome.Lines(), Has.None.Contains("already carries every correction"));
+        }
+
+        /// <summary>
+        /// A set whose text the correction cannot find, here one whose name is not its first
+        /// attribute, is still read by the reader and so would be built uncorrected. That is
+        /// said loudly and counted, never passed on in silence.
+        /// </summary>
+        [Test]
+        public void ASetTheCorrectionCannotReadAsTextIsSaidLoudly()
+        {
+            string xml = WrittenExchange(
+                WrittenSet("BLD-ME-Duct Accessory", CategoryAndWorkset(0, "Duct Accessories", "ME-DUCTWORK"))
+                + WrittenSet("BLD-ME-Flex Ducts", CategoryAndWorkset(0, "Flex Ducts", "ME-DUCTWORK"))
+                    .Replace("<selectionset name=\"BLD-ME-Flex Ducts\" guid=\"x\">", "<selectionset guid=\"x\" name=\"BLD-ME-Flex Ducts\">"));
+
+            CorrectionOutcome outcome = Picked(xml);
+            Dictionary<string, PlannedSet> sets = PlannedByName(outcome.Text);
+
+            Assert.That(sets["BLD-ME-Duct Accessory"].GroupCount, Is.EqualTo(2), "the one it can read is corrected");
+            Assert.That(sets["BLD-ME-Flex Ducts"].GroupCount, Is.EqualTo(1), "the one it cannot is left as the file asks");
+            Assert.That(outcome.Lines()[0], Is.EqualTo(
+                "MATRIX   NOT EVERY SET COULD BE READ FOR CORRECTION. The file holds 2 sets with conditions"
+                    + " and 1 could be read as text, so 1 are built exactly as the file asks"));
+        }
+
+        /// <summary>
+        /// The list shipped inside Core holds F87's two decisions and Q103's measured
+        /// categories, and those categories are exactly what the logs show: a set of the
+        /// Architecture folder asking for its category alone found items in a group holding
+        /// no AR model. Read off the logs themselves, never a copy of them.
+        /// </summary>
+        [Test]
+        public void TheShippedListHoldsTheDecisionsAndExactlyTheCategoriesTheLogsMeasured()
+        {
+            MatrixCorrectionList shipped = MatrixCorrectionList.Shipped;
+
+            Assert.That(shipped.Unread, Is.Null);
+            Assert.That(shipped.Renames.Count, Is.EqualTo(1));
+            Assert.That(shipped.Renames[0].From, Is.EqualTo(BrokenName));
+            Assert.That(shipped.Renames[0].To, Is.EqualTo(CorrectName));
+            Assert.That(shipped.CatchAlls.Count, Is.EqualTo(1));
+            Assert.That(shipped.CatchAlls[0], Is.EqualTo(new[] { DevicesSet, "Devices" }));
+            Assert.That(shipped.SourceFiles.Count, Is.EqualTo(1));
+            Assert.That(shipped.SourceFiles[0].Asks, Is.EqualTo("-AR-"));
+
+            Dictionary<string, PlannedSet> matrix = PlannedByName(Read(Samples.Matrix()));
+            List<string> measured = new List<string>();
+
+            foreach (string log in new[]
+            {
+                Path.Combine(Samples.Repo(), "steps", "runs", "03", "item1-C06", "run-20261001-140037.log"),
+                Path.Combine(Samples.Repo(), "steps", "logs", "c04-partial-run-20260921-085105.log")
+            })
+            {
+                foreach (string category in FoundWithNoArModel(log, matrix))
+                {
+                    if (!measured.Contains(category))
+                    {
+                        measured.Add(category);
+                    }
+                }
+            }
+
+            Assert.That(shipped.SourceFiles[0].MeasuredElsewhere, Is.EquivalentTo(measured));
+            Assert.That(measured, Is.EquivalentTo(MeasuredInOtherDisciplines));
+        }
+
+        /// <summary>
+        /// The categories of the Architecture sets asking for one condition that found items
+        /// in a group the log says holds no AR model.
+        /// </summary>
+        private static IList<string> FoundWithNoArModel(string log, Dictionary<string, PlannedSet> matrix)
+        {
+            List<string> categories = new List<string>();
+            System.Text.RegularExpressions.Regex group = new System.Text.RegularExpressions.Regex(@"^ALIGNMENT (\S+)");
+            System.Text.RegularExpressions.Regex found = new System.Text.RegularExpressions.Regex(
+                @"SET\s+ok\s+lcop_selection_set_tree/Architecture/(.+?)  1 condition  (\d+) items?$");
+            bool noArModel = false;
+
+            foreach (string line in File.ReadAllLines(log))
+            {
+                if (group.IsMatch(line))
+                {
+                    noArModel = false;
+                    continue;
+                }
+
+                if (line.IndexOf("this group carries no AR model", StringComparison.Ordinal) >= 0)
+                {
+                    noArModel = true;
+                    continue;
+                }
+
+                System.Text.RegularExpressions.Match set = found.Match(line);
+
+                if (noArModel && set.Success && int.Parse(set.Groups[2].Value) > 0)
+                {
+                    string category = matrix[set.Groups[1].Value].Conditions[0].Value;
+
+                    if (!categories.Contains(category))
+                    {
+                        categories.Add(category);
+                    }
+                }
+            }
+
+            return categories;
         }
 
         /// <summary>
@@ -697,18 +857,16 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The generator, run by hand when the rule or the measured workset list changes.
-        /// It is a TEST and not a script so it reads the same samples the byte for byte
-        /// test reads and can never produce something that test would then reject.
+        /// The generator, run by hand when the rule, the list of corrections or the measured
+        /// workset list changes. It is a TEST and not a script so it reads the same samples
+        /// the byte for byte test reads and can never produce something that test would then
+        /// reject, and since F116 it writes what the tool makes of a picked file, Q104.
         /// </summary>
         [Test]
         [Explicit("Writes the corrected matrix into the exchange folder. Run by hand.")]
         public void WriteTheCorrectedFile()
         {
-            string source = Read(Samples.Matrix());
-
-            CorrectionOutcome outcome = MatrixCorrections.Apply(
-                source, ProjectRenames(), null, ProjectConditions(), ProjectValues());
+            CorrectionOutcome outcome = Picked(Read(Samples.Matrix()));
 
             using (StreamWriter writer = new StreamWriter(Samples.CorrectedMatrix(), false, new UTF8Encoding(false)))
             {
@@ -1111,7 +1269,7 @@ namespace Federator.Core.Tests
         [Test]
         public void NoneOfHisDisagreeingWorksetsIsAValueTheMatrixAsksFor()
         {
-            IList<string> asked = WorksetValuesIn(Read(Samples.CorrectedMatrix()));
+            IList<string> asked = MatrixCorrections.WorksetValuesIn(new ExchangeReader().ReadFile(Samples.CorrectedMatrix()));
 
             foreach (string disagreeing in new[]
             {

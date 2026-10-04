@@ -1,0 +1,39 @@
+# The corrections MatrixCorrections makes to every clash XML a person picks, before a set is
+# built, Bader's answer to Q104 on 2026-10-04: the tool uses the code that builds the corrected
+# XML, and the log names every correction it made. F116.
+#
+# WHY A FILE. Nothing in the code names one project's set, folder or category, CLAUDE.md, so
+# what this project needs is data the class reads, the same way the workset list and the
+# category list are. It ships inside the DLL so it cannot arrive on 26 machines and not on the
+# 27th. The workset spellings are not here: they are measured, in revit-worksets.txt.
+#
+# THE FORMAT. One correction a line, a word and a colon, then its parts split by a bar. A line
+# starting with # is a comment and a blank line is skipped. A line this does not know makes
+# the whole list unread, so the tool corrects nothing and says so in the log, and never half.
+#
+#   rename: <a name wrong everywhere it appears> | <the name it should be>
+#   catch-all: <a set> | <the value its category must hold>
+#   source-file: <what a Source File condition asks> | <a category> | <a category> ...
+#
+# RENAME, F87, decided on 2026-09-19. BLD-DRPipe Accessories is missing a hyphen in the set
+# name, its locator and all 120 test names, 121 occurrences in the client's matrix.
+rename: BLD-DRPipe Accessories | BLD-DR-Pipe Accessories
+#
+# CATCH-ALL, F87 in full since docs\history\scan.md 5g measured on 2026-09-20 that a negated
+# condition imports. The set asks for a category holding the value and, negated, none of the
+# categories holding it that another set of the file asks for, so it never counts what its
+# siblings hold. Those categories are read off the picked file and never listed here.
+catch-all: BLD-EL-Devices | Devices
+#
+# SOURCE-FILE, Q103 answered on 2026-10-04: every AR set whose category another discipline
+# also uses gets Source File contains -AR-. The sets beside the ones already asking -AR- are
+# given it where another folder's set asks for their category, read off the picked file, or
+# where another discipline's models were MEASURED carrying it, which are the categories named
+# after the bar: an AR set asking only for its category found items in a group holding no AR
+# model. Ramps 36 in 1B06PK and 17 in 1C06PK, and Railings 18 in 1B06PK, set 03 on C06,
+# steps\runs\03\item1-C06\run-20261001-140037.log lines 4304, 7979 and 4316. Furniture 29 and
+# Site 18 in 1A0415, the partial C04 run of 2026-09-21, steps\logs\c04-partial-run-20260921-085105.log
+# lines 200 and 203. A test proves these are exactly what those logs show. A category another
+# discipline carries only in a group that also holds an AR model cannot be told apart by a set
+# count and is UNKNOWN.
+source-file: -AR- | Ramps | Railings | Furniture | Site

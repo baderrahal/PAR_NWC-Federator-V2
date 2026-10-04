@@ -353,7 +353,14 @@ namespace Federator.Core.Exchange
             BatchTests = new ReadOnlyCollection<BatchTestDefinition>(batchTests);
             Tests = new ReadOnlyCollection<ClashTestDefinition>(tests);
             Sets = new ReadOnlyCollection<SelectionSetDefinition>(sets);
+            Corrections = new ReadOnlyCollection<string>(new List<string>());
         }
+
+        /// <summary>
+        /// What MatrixCorrections did to the file before it was read, one line per correction,
+        /// for the log, Q104. Empty for a document read as the file stands.
+        /// </summary>
+        public ReadOnlyCollection<string> Corrections { get; private set; }
 
         /// <summary>Null when the document was read from a string or a stream.</summary>
         public string SourcePath { get; private set; }
@@ -366,6 +373,11 @@ namespace Federator.Core.Exchange
         public ReadOnlyCollection<ClashTestDefinition> Tests { get; private set; }
 
         public ReadOnlyCollection<SelectionSetDefinition> Sets { get; private set; }
+
+        internal void Corrected(IList<string> lines)
+        {
+            Corrections = new ReadOnlyCollection<string>(new List<string>(lines));
+        }
 
         public bool HasTests
         {

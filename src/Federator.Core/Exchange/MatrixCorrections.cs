@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using Federator.Core.Sets;
 
@@ -325,6 +326,7 @@ namespace Federator.Core.Exchange
     public sealed class CorrectionOutcome
     {
         private readonly List<CorrectionCount> counts = new List<CorrectionCount>();
+        private readonly List<string> warnings = new List<string>();
 
         internal CorrectionOutcome(string text)
         {
@@ -341,6 +343,16 @@ namespace Federator.Core.Exchange
         internal void Add(string what, int count, string note)
         {
             counts.Add(new CorrectionCount(what, count, note));
+        }
+
+        /// <summary>
+        /// Something the corrections could not do, said first and in capitals where it
+        /// matters, because a picked file the class cannot read is a loud line and never a
+        /// silent pass, Q104.
+        /// </summary>
+        internal void Warn(string line)
+        {
+            warnings.Add(line);
         }
 
         /// <summary>
@@ -366,14 +378,22 @@ namespace Federator.Core.Exchange
         {
             List<string> lines = new List<string>();
 
+            foreach (string warning in warnings)
+            {
+                lines.Add("MATRIX   " + warning);
+            }
+
             foreach (CorrectionCount one in counts)
             {
                 lines.Add(one.Line());
             }
 
-            lines.Add(TotalChanged == 0
-                ? "MATRIX   nothing changed, so this file already carries every correction"
-                : "MATRIX   " + TotalChanged + " changes in all");
+            // A file something could not be read in is never called one carrying every correction.
+            lines.Add(TotalChanged > 0
+                ? "MATRIX   " + TotalChanged + " changes in all"
+                : warnings.Count > 0
+                    ? "MATRIX   nothing changed"
+                    : "MATRIX   nothing changed, so this file already carries every correction");
 
             return lines;
         }
@@ -396,6 +416,10 @@ namespace Federator.Core.Exchange
     /// A REWRITE IS SCOPED TO ITS SET. The same category value is asked for legitimately by
     /// other sets, so a rewrite that replaced it everywhere would break the sets that were
     /// right. It finds the named set and changes only what is inside it.
+    ///
+    /// AND THE TOOL APPLIES IT TO WHICHEVER CLASH XML IS PICKED, Q104 answered by Bader on
+    /// 2026-10-04, through ReadPicked, before any set is built, with every correction named
+    /// in the log. Until then nothing in src called it and it only wrote the exchange file.
     /// </summary>
     public static class MatrixCorrections
     {
@@ -403,6 +427,205 @@ namespace Federator.Core.Exchange
         private const string SetOpens = "<selectionset name=\"";
 
         private const string SetCloses = "</selectionset>";
+
+        /// <summary>
+        /// The clash XML a person picked, read with every correction this project needs
+        /// applied first, Q104: the tool uses the code that builds the corrected XML,
+        /// applied to whichever XML is picked before any set is built, and the log names
+        /// every correction it made. The document carries those lines in Corrections.
+        ///
+        /// IT IS THE CODE THAT WROTE THE EXCHANGE FILE, so the client's uncorrected matrix,
+        /// the one corrected before F116 and the one in the exchange folder come out as the
+        /// same sets. A file that will not read as XML throws, as ExchangeReader.ReadFile does.
+        /// </summary>
+        public static ExchangeDocument ReadPicked(string path)
+        {
+            if (path == null)
+            {
+                throw new ArgumentNullException("path");
+            }
+
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("Exchange file not found.", path);
+            }
+
+            string xml;
+
+            // UTF-8 unless the file opens with a byte order mark saying otherwise, which is
+            // what Navisworks writes and what the client's files declare.
+            using (StreamReader reader = new StreamReader(path, Encoding.UTF8, true))
+            {
+                xml = reader.ReadToEnd();
+            }
+
+            CorrectionOutcome outcome = ForPickedFile(xml, MatrixCorrectionList.Shipped, RevitWorksets.All());
+            ExchangeDocument document = new ExchangeReader().ReadText(outcome.Text, path);
+            document.Corrected(outcome.Lines());
+            return document;
+        }
+
+        /// <summary>
+        /// Every correction of that list and of that measured workset list, applied to that
+        /// text: the renames, the catch-all sets with the categories other sets claim read off
+        /// the file, every workset value the file asks for, and the Source File rules. The one
+        /// place the corrections are chosen, for the tool and for the test proving the exchange
+        /// file is exactly what they make from the sample.
+        ///
+        /// A LIST THAT COULD NOT BE READ CORRECTS NOTHING AND SAYS SO, and a set the text walk
+        /// could not read is counted and said, so a picked file is never passed on as if it
+        /// were corrected when it was not.
+        /// </summary>
+        internal static CorrectionOutcome ForPickedFile(string xml, MatrixCorrectionList list, IList<string> measuredWorksets)
+        {
+            if (list.Unread != null)
+            {
+                CorrectionOutcome nothing = new CorrectionOutcome(xml);
+                nothing.Warn("NO CORRECTION WAS MADE TO THIS FILE, because the list of corrections inside the tool could not be read: "
+                    + list.Unread + ". Every set is built exactly as the file asks");
+                return nothing;
+            }
+
+            ExchangeDocument read = new ExchangeReader().ReadText(xml);
+            List<ConditionsRewrite> catchAlls = new List<ConditionsRewrite>();
+
+            foreach (string[] catchAll in list.CatchAlls)
+            {
+                catchAlls.Add(new ConditionsRewrite(
+                    catchAll[0],
+                    catchAll[1],
+                    ClaimedElsewhere(read, catchAll[0], catchAll[1]),
+                    "contains, then one negated equals per category another set asks for, F87 since scan.md 5g"));
+            }
+
+            CorrectionOutcome outcome = Apply(
+                xml,
+                list.Renames,
+                null,
+                catchAlls,
+                ValueRewrite.For(WorksetValuesIn(read), measuredWorksets),
+                null,
+                list.SourceFiles);
+
+            int asking = 0;
+
+            foreach (SelectionSetDefinition set in read.Sets)
+            {
+                if (set.Conditions.Count > 0)
+                {
+                    asking++;
+                }
+            }
+
+            int readable = ReadableSets(xml);
+
+            if (readable < asking)
+            {
+                outcome.Warn("NOT EVERY SET COULD BE READ FOR CORRECTION. The file holds " + asking
+                    + " sets with conditions and " + readable + " could be read as text, so "
+                    + (asking - readable) + " are built exactly as the file asks");
+            }
+
+            return outcome;
+        }
+
+        /// <summary>Every value a workset condition of the file asks for, in the order first asked.</summary>
+        internal static IList<string> WorksetValuesIn(ExchangeDocument read)
+        {
+            List<string> values = new List<string>();
+
+            foreach (SelectionSetDefinition set in read.Sets)
+            {
+                foreach (SearchConditionDefinition condition in set.Conditions)
+                {
+                    if (condition.Property != null
+                        && condition.Value != null
+                        && string.Equals(condition.Property.InternalName, EmptySets.WorksetProperty, StringComparison.Ordinal)
+                        && condition.Value.Data.Length > 0
+                        && !values.Contains(condition.Value.Data))
+                    {
+                        values.Add(condition.Value.Data);
+                    }
+                }
+            }
+
+            return values;
+        }
+
+        /// <summary>
+        /// The categories holding that value which a set other than the catch-all asks for by
+        /// equals, not negated, on the property the catch-all's first condition asks on, read
+        /// off the file, each once and in Ordinal order so the file written is the same every
+        /// time. These are the ones its siblings claim, so it must not count them.
+        /// </summary>
+        private static IList<string> ClaimedElsewhere(ExchangeDocument read, string setName, string holding)
+        {
+            List<string> claimed = new List<string>();
+            SelectionSetDefinition catchAll = null;
+
+            foreach (SelectionSetDefinition set in read.Sets)
+            {
+                if (string.Equals(set.Name, setName, StringComparison.Ordinal))
+                {
+                    catchAll = set;
+                    break;
+                }
+            }
+
+            if (catchAll == null || catchAll.Conditions.Count == 0 || catchAll.Conditions[0].Property == null)
+            {
+                return claimed;
+            }
+
+            string property = catchAll.Conditions[0].Property.InternalName;
+
+            foreach (SelectionSetDefinition set in read.Sets)
+            {
+                if (ReferenceEquals(set, catchAll))
+                {
+                    continue;
+                }
+
+                foreach (SearchConditionDefinition condition in set.Conditions)
+                {
+                    string value = condition.Value == null ? string.Empty : condition.Value.Data;
+
+                    if (condition.Property != null
+                        && string.Equals(condition.Test, SetBuildPlan.EqualsTest, StringComparison.Ordinal)
+                        && (condition.Flags & NegateCondition) == 0
+                        && string.Equals(condition.Property.InternalName, property, StringComparison.Ordinal)
+                        && value.IndexOf(holding, StringComparison.Ordinal) >= 0
+                        && !string.Equals(value, holding, StringComparison.Ordinal)
+                        && !claimed.Contains(value))
+                    {
+                        claimed.Add(value);
+                    }
+                }
+            }
+
+            claimed.Sort(StringComparer.Ordinal);
+            return claimed;
+        }
+
+        /// <summary>How many set blocks of the text hold conditions this can read, which ReadPicked compares with what the file holds.</summary>
+        private static int ReadableSets(string xml)
+        {
+            int readable = 0;
+
+            EachSet(xml, block =>
+            {
+                SetConditionsText set = SetConditionsText.Read(block);
+
+                if (set != null && set.Conditions.Count > 0)
+                {
+                    readable++;
+                }
+
+                return block;
+            });
+
+            return readable;
+        }
 
         /// <summary>
         /// The corrected text, with one count per correction. Never throws over a
