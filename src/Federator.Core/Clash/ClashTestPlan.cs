@@ -454,6 +454,8 @@ namespace Federator.Core.Clash
                     return "a side finds nothing in this model";
                 case ClashSkipReason.SingleDiscipline:
                     return "the group holds one discipline, so nothing in it can clash";
+                case ClashSkipReason.NotOnTheSameCoordinates:
+                    return "the group's models are not on the same shared coordinates, so its clash is skipped";
                 case ClashSkipReason.Failed:
                     return "creating or running it threw";
                 default:

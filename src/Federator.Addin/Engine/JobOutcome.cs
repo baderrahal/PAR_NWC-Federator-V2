@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
+using Federator.Core.Health;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -55,6 +56,28 @@ namespace Federator.Addin.Engine
         {
             get { return errors.Count > 0; }
         }
+
+        /// <summary>
+        /// Why the group is FAILED on where its models sit, Q70, or null. Kept apart from
+        /// the errors, because nothing threw, so the judgement still reads the NWD after it.
+        /// </summary>
+        public string AlignmentFailure { get; set; }
+
+        /// <summary>
+        /// The models that made this group skip its clash, Bader's answer to Q99 and Q100,
+        /// or null where its clash was not skipped. Kept apart from the errors, because
+        /// nothing threw: the group is PARTIAL for it, or keeps whatever else it ended as.
+        /// Set only with the rule on and only where this run would have run a clash test in
+        /// the group, and read by the clash step, the viewpoints, the reports and the notes.
+        /// </summary>
+        public OffCoordinates ClashSkippedBecause { get; set; }
+
+        /// <summary>
+        /// What the shared coordinates rule judged of this group's models, whether or not
+        /// its clash was skipped, or null where the read threw or never ran. Read by the
+        /// notes, which take an earlier run's note away only where every model was judged.
+        /// </summary>
+        public OffCoordinates Coordinates { get; set; }
 
         /// <summary>
         /// Whether the publish call reported success. On a rerun last week's NWD sits at
@@ -131,6 +154,8 @@ namespace Federator.Addin.Engine
                 facts.AddError(error);
             }
 
+            facts.AlignmentFailure = AlignmentFailure;
+            facts.ClashSkippedOffCoordinates = ClashSkippedBecause != null;
             return facts;
         }
 

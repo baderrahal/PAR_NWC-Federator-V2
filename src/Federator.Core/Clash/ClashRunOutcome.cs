@@ -77,6 +77,17 @@ namespace Federator.Core.Clash
         public string StoppedReason { get; private set; }
 
         /// <summary>
+        /// Why no test of this group was run at all, or null where its tests ran. Set for a
+        /// group whose clash was skipped because its models are not on the same shared
+        /// coordinates, Bader's answer to Q99 and Q100, and for nothing else, so the one
+        /// discipline path is left as it was. Its block and its summary say the clash was
+        /// skipped where they printed tests run 0 and clashes found 0, zeros that came from
+        /// the skip alone and read as a clean group beside an NWF still holding an earlier
+        /// run's results.
+        /// </summary>
+        public string ClashSkipped { get; set; }
+
+        /// <summary>
         /// Set when this group failed so uniformly that the whole run was abandoned, not
         /// just this group. A run once spent 8 hours 52 minutes over 24 groups with every
         /// test failing the same way, and stopping the group would have saved none of it.
@@ -316,16 +327,27 @@ namespace Federator.Core.Clash
                     + ClashTestPlan.Describe(reason));
             }
 
-            lines.Add("tests run         : " + RanCount);
-            lines.Add("    passed        : " + PassedCount + ", ran and found nothing");
-            lines.Add("    with clashes  : " + WithClashesCount);
-            lines.Add("clashes found     : " + TotalClashes);
-
-            ClashTally totals = Totals;
-
-            foreach (ClashStatus status in ClashTally.AllStatuses)
+            if (!string.IsNullOrEmpty(ClashSkipped))
             {
-                lines.Add("    " + status.ToString().PadRight(10) + ": " + totals.Of(status));
+                lines.Add("tests run         : none, " + ClashSkipped);
+                lines.Add("clashes found     : not counted, no test was run"
+                    + (AlreadyPresentCount > 0
+                        ? ". The " + AlreadyPresentCount + " test(s) already there keep the results of an earlier run"
+                        : string.Empty));
+            }
+            else
+            {
+                lines.Add("tests run         : " + RanCount);
+                lines.Add("    passed        : " + PassedCount + ", ran and found nothing");
+                lines.Add("    with clashes  : " + WithClashesCount);
+                lines.Add("clashes found     : " + TotalClashes);
+
+                ClashTally totals = Totals;
+
+                foreach (ClashStatus status in ClashTally.AllStatuses)
+                {
+                    lines.Add("    " + status.ToString().PadRight(10) + ": " + totals.Of(status));
+                }
             }
 
             // The number nobody has. Kept on its own line and named plainly so it is easy
@@ -457,6 +479,7 @@ namespace Federator.Core.Clash
             foreach (ClashSkipReason reason in
                 new[]
                 {
+                    ClashSkipReason.NotOnTheSameCoordinates,
                     ClashSkipReason.SingleDiscipline,
                     ClashSkipReason.EmptySide,
                     ClashSkipReason.LocatorNotResolved,
@@ -489,6 +512,15 @@ namespace Federator.Core.Clash
                 return "Stopped before creating anything. " + StoppedReason;
             }
 
+            if (!string.IsNullOrEmpty(ClashSkipped))
+            {
+                return CreatedCount + " created, "
+                    + (AlreadyPresentCount > 0 ? AlreadyPresentCount + " already there, " : string.Empty)
+                    + "none run, " + ClashSkipped + ", "
+                    + SkippedCount + " skipped, in "
+                    + Seconds.ToString("0.0", CultureInfo.InvariantCulture) + "s.";
+            }
+
             return CreatedCount + " created, "
                 + (AlreadyPresentCount > 0 ? AlreadyPresentCount + " already there, " : string.Empty)
                 + RanCount + " run, "
@@ -496,6 +528,21 @@ namespace Federator.Core.Clash
                 + SkippedCount + " skipped, "
                 + TotalClashes + " clashes in "
                 + Seconds.ToString("0.0", CultureInfo.InvariantCulture) + "s.";
+        }
+
+        /// <summary>
+        /// The clash part of the open file run's window label. It read RanCount and
+        /// TotalClashes in the add-in and printed nought run and nought clashes for a group
+        /// whose clash was skipped, which reads as a clean group, so it says none ran and why.
+        /// </summary>
+        public string CountsForTheLabel()
+        {
+            if (!string.IsNullOrEmpty(ClashSkipped))
+            {
+                return "none run, " + ClashSkipped + ", " + SkippedCount + " skipped";
+            }
+
+            return RanCount + " run, " + SkippedCount + " skipped, " + TotalClashes + " clashes";
         }
     }
 }

@@ -102,10 +102,13 @@ and words and D1, bar three kept early and named below with why. The lead depart
 wished order in two places: F115 sets, 16 items his list did not name, in wave 2, and workbook
 and report one area because they share WorkbookCheck.cs. FR-136, Q108's fix, and F117, the names,
 moved from the waves 3 and 4 the lead first told him to wave 5, since both are noise by the class
-this list gives them and noise comes last in his order. Four pairs in one wave or half
-share a file and merge one after the other: in wave 1 F112 and F116 share ExportCheck.cs, F116
-after F112, in 2b F128 and F118 the workbook writer, in 3b F130 and F119
-FederatorWindow.xaml.cs, and in wave 5 F123 and F117 docs\history\scan.md. The four finds of Q108, Q109, Q24
+this list gives them and noise comes last in his order. Five pairs in one wave or part
+share a file or a rule and merge one after the other: in wave 1 F112 and F116 both
+change ExportCheck.cs, F112 for FR-003 to FR-005 and F116 for the model worksets rows of
+FR-008, F116 after F112, in 2a F127 and F132 which tests are created and run, F127 first,
+in 2b F131 before F114, which reads its team pairs, in 3b F130 and F119
+FederatorWindow.xaml.cs, and in wave 5 F123 and F117 docs\history\scan.md. F128 and F118 share the
+workbook writer, so F118 sits in 2c after F128. The four finds of Q108, Q109, Q24
 and Q26 write their test steps under their items and run them at the start of the wave that
 holds them. Each area takes the F number shown.
 
@@ -113,18 +116,20 @@ holds them. Each area takes the F number shown.
   - F112 alignment: FR-001, FR-002, FR-003, FR-004, FR-005, FR-006, FR-028. Noise kept here: FR-028, started by F112 before the waves
   - F113 clash counts: FR-031, FR-032, FR-033, FR-034
   - F116 the clash XML: FR-008, FR-009, FR-025, FR-026, FR-030. Noise kept here: FR-030, Bader put the XML corrections of Q102 to Q104 in wave 1
-- Wave 2, in two halves since Bader's five requests, Q112, each half at most three areas:
+- Wave 2, in three parts since Bader's views by team, Q114, each part at most three areas:
   - 2a, F127 coverage first, Bader's request 2: FR-176
+  - 2a, F132 mirrored tests, Q114: FR-182, FR-183. F127 and F132 both change which tests are created and run, so they merge one after the other, F127 first
   - 2a, F115 sets: FR-010, FR-011, FR-012, FR-013, FR-014, FR-015, FR-016, FR-017, FR-018, FR-019, FR-020, FR-021, FR-022, FR-023, FR-024, FR-027
-  - 2a, F114 views: FR-065, FR-066, FR-067, FR-068, FR-069, FR-070, FR-071, FR-072, FR-073. Noise kept here: FR-073, committed by F114 before it paused
+  - 2b, F131 teams, Q114: FR-180, FR-181. It merges before F114, which reads the team pairs
+  - 2b, F114 views: FR-065, FR-066, FR-067, FR-068, FR-069, FR-070, FR-071, FR-072, FR-073, and Q114's FR-184 to FR-188. Noise kept here: FR-073, committed by F114 before it paused
   - 2b, F128 generic models, Bader's request 3: FR-177
-  - 2b, F118 workbook and report: FR-035, FR-036, FR-037, FR-040, FR-041. F128 and F118 both add to the workbook writer, so they merge one after the other
+  - 2c, F118 workbook and report: FR-035, FR-036, FR-037, FR-040, FR-041. F128 and F118 both add to the workbook writer, so F118 comes after F128 has merged
 - Wave 3, in two halves the same way:
   - 3a, F129 start from an existing NWF, Bader's request 4: FR-178
   - 3a, F120 harvest and pictures: FR-075, FR-076, FR-077
   - 3a, F109 install: FR-078, FR-079, FR-080
   - 3b, F130 the Shift range in the group list, Bader's request 5: FR-179. In the half after F129 because both change the window's files
-  - 3b, F119 run log and RESULT: FR-043, FR-044, FR-045, FR-046, FR-047, FR-048, FR-049, FR-050, FR-051, FR-052, FR-053, FR-054, FR-055, FR-056, FR-057
+  - 3b, F119 run log and RESULT: FR-043, FR-044, FR-045, FR-046, FR-047, FR-048, FR-049, FR-050, FR-051, FR-052, FR-053, FR-054, FR-055, FR-056, FR-057, and FR-189 found by F112's closing pass
 - Wave 4:
   - F121 the rest: FR-150, FR-151, FR-152, FR-153, FR-154, FR-155, FR-156, FR-157, FR-158, FR-159, FR-160, FR-161, FR-162, FR-163, FR-164, FR-165, FR-166. The find of Q24 on FR-160 and Q109 on FR-161 first
   - F122 the loop tools: FR-082, FR-083, FR-084, FR-085, FR-086, FR-087, FR-088, FR-089, FR-090, FR-091, FR-092, FR-093, FR-094, FR-095, FR-096, FR-097, FR-098, FR-099, FR-100, FR-101, FR-102, FR-103, FR-104
@@ -2063,6 +2068,11 @@ the step for 20. log:8380-8382, the
   first. LOOK 387 reads CONFIRMED only for a step the size of the fixtures, so its wording is
   the lead's to check. FR-065 and FR-071 change the same loop.
 - Answered by Bader on 2026-10-04 at 15:23, Q101, in short, his words being under the question in steps\02_questions.md: make VIEWS faster with the same viewpoints. The lead's note: to be worked by F114, the views area, in wave 2, after wave 1's test run measures the split of FR-073.
+- Changed by Bader on 2026-10-04 in the evening, Q114: one view per clash test of its open
+  clashes, in folders by priority and team pair, replaces the viewpoint per clash, so what is made
+  faster is that design, FR-184 to FR-188. The 94.5 percent of 2 h 12 min on 1A02MM in the
+  baseline, steps\runs\04\item1-C02, is what it is measured against, and FR-187 replaces the Proof
+  above, which held the viewpoints the same
 
 ### FR-070 views-45-minute-basis-and-options
 
@@ -4636,6 +4646,159 @@ was done, what the test showed, and anything for Bader.
 - Answered by Bader on 2026-10-04 in the evening, the notes of Q112: if the driver cannot test the
   Shift click without real input, the Shift test is written as numbered steps for him in
   steps\03_bader_next.md
+
+### FR-189 nwd-listed-as-written-when-its-publish-failed
+
+- Sources: F112's closing pass, turn5\f112d-dev-return.json new_items, read off main 1ae6771.
+  Area F119, wave 3b
+- Evidence: FederationEngine.WriteNwd logs the publish returned false, or calls log.Failure on a
+  throw, then calls log.WriteFinished("NWD", job.NwdPath) whatever the publish gave, line 3357 on
+  main 1ae6771, since a6957a6 of 2026-08-27. RunLog.WriteFinished records any file found at the
+  path as written, with its size, so on a rerun last week's NWD is listed as written by this run
+- Root cause: the call to WriteFinished does not read the publish result
+- Class: silent wrong number, the files written list, against the rule that only a file this run
+  wrote goes in it. Once F112 merges, the group's RESULT reason names such an NWD as not from this
+  run, so only the list stays wrong. FR-044 and FR-045 are the same root for the NWF. Found after
+  the list was written, so outside the counts of the table below
+- Proof: a Core member of RunLog that takes the publish result, with a test that breaks it, then
+  a run where the publish is made to fail if one can be made safely
+
+## Bader's views by team, FR-180 to FR-188
+
+Added by Bader's message of the evening of 2026-10-04 headed ONE VIEWPOINT PER CLASH TEST, IN THE
+A, B, C FOLDERS, BY TEAM, NO TEAMS MIXED, NO MIRRORED TESTS, in his words under Q114 of
+steps\02_questions.md. Decisions, not faults found, so they sit outside the counts of the table
+below. His points 3 and 5 ask for a measurement first, and his proof, points 18 and 19, is on
+1A02MM. The lead's own rule adds that each item is measured before it is written and test first.
+
+### FR-180 team-map-beside-the-picked-xml
+
+- Sources: Q114, points 1 and 2. Area F131, wave 2b
+- What he decided: Mechanical is HV, PL, FP, ME, DR and FF, Electrical is EL and EV, Architecture
+  is AR, Structure is ST, and any other code is a team of its own named by its code. The map is a
+  plain list kept with the corrections file beside the picked XML, read when the XML is picked and
+  named in the log, so src names no project, and it applies wherever the tool reads a discipline,
+  from a set name or a file name
+- Measure first: where the tool reads a discipline today and how codes are mapped,
+  turn5\measure-views.md, not yet written. The discipline code is part 5 of the file name split
+  on the separator, read by ContainerName.Parse, turn5\measure-teams.md section 1
+- Proof: Core tests for the map, a missing map, a code on no team, and each place a discipline is
+  read
+- Class: Bader's decision
+- Designed on 2026-10-05 by three independent plans and a judge, %LOCALAPPDATA%\NwcFederatorLoop\turn5\q114-design.md sections 1.1 and 1.2. Questions for Bader: Q115, Q116 and Q123
+
+### FR-181 mechanical-sets-miss-hv-pl-fp-models
+
+- Sources: Q114, point 3. Area F131, wave 2b
+- What he asked: measure on 1A02MM and 1A04PK and on any model named with HV, PL or FP which sets of
+  the picked XML find their items. If a mechanical set asks for ME in the file name or an ME
+  workset, and so finds nothing in an HV, PL or FP model, that is a silent miss, said in the
+  COVERAGE block and in the form with a correction for Bader to approve, built the way the
+  both-spellings rows are
+- Measured on 2026-10-04, read only, turn5\measure-teams.md: of the 154 models of the copy only
+  1A04PK's FP and HV models carry HV, PL or FP, no model is coded PL, and 1A02MM has none, so it
+  cannot have such a miss. None of the 25 mechanical sets asks Source File, each asks one
+  workset value, so a set finds items in an HV or FP model only where that model carries the
+  exact value. Whether 1A04PK's HV and FP models do is UNKNOWN until a run or a probe reads their
+  worksets. Silent misses confirmed: none. A correction built the way the Q102 rows are is drafted
+  in its section 6 and not applied
+- Class: Bader's decision, a silent miss if the measurement finds one
+- Designed on 2026-10-05, turn5\q114-design.md section 1.3. Probe P4 reads the worksets of 1A04PK's HV and FP models
+
+### FR-182 mirrored-tests-kept-once
+
+- Sources: Q114, points 4 to 6 and 8. Area F132, wave 2a
+- What he decided: a test whose two sides are another test's two sets swapped is a mirror, a rule
+  of the code for any project. One test of each pair is kept, the higher priority, A before B
+  before C, and where equal the one first in the XML. The other is not created and not run, and
+  the coverage sheet names it as a mirror of the one kept. Different priorities or tolerances in a
+  pair are named in the log. The pairs are listed in the COVERAGE block. The workbook, the viewpoints
+  and every count then hold each clash once
+- Measured on 2026-10-04, read only, turn5\measure-mirrors.md: the picked XML, sha256 792b01fb,
+  holds no mirrored pair. Its 1830 tests are every unordered pair of its 61 sets exactly once, 61
+  times 60 over 2, read by locator, by set name and by test name. So on this matrix the rule drops
+  nothing. The nearest thing: BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices carry the same
+  rule list, both Category equals Telephone Devices, so 59 test pairs are alike by their rules
+  though not by name, and one test has two sides alike by their rules. His rule as written does
+  not catch them, and on 1A02MM none of them ran since both sets found 0 items
+- Proof: Core tests for the pairing, the choice of the one kept, the names in the log and the
+  pairs listed in the COVERAGE block
+- Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md section 1.4. Probe P1 measures that a test and its swap find the same clashes. Question for Bader: Q121
+
+### FR-183 mirrored-tests-in-an-existing-nwf
+
+- Sources: Q114, point 7. Area F132, wave 2a
+- What he decided: in an NWF that already holds both, the mirror is not run. A mirror this tool
+  created whose results carry no status a person set is removed from the NWF. One that carries a
+  person's status is left, not run, and named in the form for Bader
+- Measure first: how a test this tool created is told from one a person made, and how a status a
+  person set is told from one the tool set, turn5\measure-views.md and the code of the status rules
+- Class: Bader's decision, the one place the tool removes a test, by his word
+- Designed on 2026-10-05, turn5\q114-design.md section 1.5: a mirror in an NWF is removed only where it matches a test of the picked XML exactly, never with no XML. Probes P2 and P3, P3 a step for Bader. Question for Bader: Q122
+
+### FR-184 views-tree-by-priority-and-team-pair
+
+- Sources: Q114, points 9 to 12. Area F114, wave 2b
+- What he decided: priority folder A, B, C or No priority, then one folder per team pair, then the
+  views of that pair's clash tests, each named by its test. A pair folder holds only tests whose
+  two sides belong to those two teams, so the mechanical team never sees an electrical clash in
+  its folders nor the electrical team a mechanical one, and Mechanical vs Electrical is its own
+  folder because those clashes belong to both. Two codes of one team go in that team against
+  itself. Over
+  150mm is a folder inside each pair folder that has Mechanical or Electrical, never shared by two
+  pairs. A pair is always written the same way round, Architecture, Structure, Mechanical,
+  Electrical, then the rest
+- Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md sections 1.6 and 1.7. The pair's order is point 12's, so point 10's Mechanical vs Structure is written Structure vs Mechanical. With no priority file the views go under No priority, point 9. Question for Bader: Q117
+
+### FR-185 one-view-per-test-of-its-open-clashes
+
+- Sources: Q114, points 13 to 15. Area F114, wave 2b
+- What he decided: a view shows a test's clashes still New or Active all at once, the camera framed
+  around them, only the models of the test's two sides shown and every other model hidden, the
+  clashing items red and green as now, the rest of the shown models dimmed. Reviewed, Approved and
+  Resolved are left out. In a pair with Mechanical or Electrical the open clashes split by service
+  size, over 150 mm in its view under Over 150mm and the rest in its view in the pair folder, a
+  rectangular service sized by its larger side, the larger of two services deciding. No clash in
+  two views. A test with no open clashes gets no view
+- Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md sections 1.7 and 1.8. Probes P5, P16, P17 and P19. P5 measured on 2026-10-05 off the install: BoundingBox3D has a public constructor taking two Point3D, turn5\q114-probes\p5-p7.md. Questions for Bader: Q118 and Q119
+
+### FR-186 views-made-fresh-only-the-tools-own
+
+- Sources: Q114, points 16 and 17. Area F114, wave 2b
+- What he decided: the views are made fresh every run. Only viewpoints this tool made are removed
+  or replaced, the per-clash viewpoints of earlier runs included. A viewpoint a person made is
+  never touched, wherever it sits. Clash Detective keeps every clash with its own view and the
+  workbook every clash with its picture, each clash once
+- It changes three rules of .claude\rules\addin.md, ONE SAVED VIEWPOINT PER CLASH, SINCE F85 A
+  VIEWPOINT IS PER CLASH, and that a viewpoint already at its path is left exactly as it is, and
+  they change with the fix
+- Measure first: how the tool tells a viewpoint it made from one a person made, today and after,
+  turn5\measure-views.md, not yet written
+- Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md section 1.9: a mark on each view the tool makes, the new views written before the old are removed, the lead's choice since a run that stops part way then never leaves an NWF with neither. Probes P6, P7 and P8 to P15, P8 a read only dump of the baseline's 2847 viewpoints. P6 and P7 measured on 2026-10-05 off the install: the COM view has Comments() returning a comments collection with Add, and the redlines list has a Size() method, turn5\q114-probes\p5-p7.md. If P9 shows a comment does not survive a save, a question follows. Question for Bader: Q120
+
+### FR-187 views-proof-on-1a02mm-and-the-views-tree-block
+
+- Sources: Q114, points 18 and 19. Area F114, wave 2b
+- What he asked: measured on 1A02MM against the 2 h 12 min of the baseline, the VIEWS seconds and
+  the total before and after. A test on 1A02MM that no pair folder holds a test of another pair, no
+  Over 150mm folder sits outside its own pair, no view shows a model of a third team, no clash is
+  in two views and no mirrored test is run. The log lists the tree as a VIEWS TREE block
+- Before: VIEWS 7487 s of 7926 s, 94.5 percent, steps\runs\04\item1-C02 run log lines 575 and 587
+- Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md sections 5 and 6: the VIEWS TREE block and its seven checks, the five of point 19 and two more. The estimate on the three recording rates measured, not a bound, is VIEWS 89.701 to 811.516 s on 1A02MM, the run 528.567 to 1250.382 s, with what is UNKNOWN in it named there. Probe P18 times one view
+
+### FR-188 views-rules-in-docs-workflow
+
+- Sources: Q114, point 20. Area F114, wave 2b
+- What he asked: the rules in docs\workflow.md with examples of where a clash goes, so each team can
+  read how to use it, Saved Viewpoints for the A, B, C picture of their own team and Clash
+  Detective for one clash close up
+- Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md section 7
 
 ## The areas at a glance
 

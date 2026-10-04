@@ -62,6 +62,33 @@ namespace Federator.Core.Tests
             Assert.That(ClashWork.Any(testsOnly), Is.True);
         }
 
+        // ---------- whether this run runs a clash test in a group ----------
+
+        /// <summary>
+        /// The breaker's second finding at c5d8aa8. The skip for models off the shared
+        /// coordinates was decided before the clash step knew it had anything to run, so a
+        /// group with nothing to clash ended PARTIAL with an invented reason. A run runs a
+        /// test in a group only where the source holds tests and the group holds two
+        /// disciplines.
+        /// </summary>
+        [Test]
+        public void ARunRunsATestOnlyWhereThereAreTestsAndTwoDisciplines()
+        {
+            ExchangeDocument both = new ExchangeReader().ReadFile(Samples.AllInOne());
+            ExchangeDocument setsOnly = new ExchangeReader().ReadFile(Samples.Infra());
+
+            Assert.That(ClashWork.RunsATest(ClashSource.TestsFromXml, both, false), Is.True);
+            Assert.That(ClashWork.RunsATest(ClashSource.TestsSavedInDocument, null, false), Is.True);
+
+            Assert.That(ClashWork.RunsATest(ClashSource.Nothing, null, false), Is.False,
+                "no XML picked and no test saved in the document");
+            Assert.That(ClashWork.RunsATest(ClashWork.SourceFor(setsOnly, 0), setsOnly, false), Is.False,
+                "an XML that holds sets and no test");
+            Assert.That(ClashWork.RunsATest(ClashSource.TestsFromXml, both, true), Is.False,
+                "one discipline, or one model, cannot clash with itself");
+            Assert.That(ClashWork.RunsATest(ClashSource.TestsSavedInDocument, null, true), Is.False);
+        }
+
         // ---------- one picker, one file ----------
 
         // There used to be two boxes, one for a sets file and one for a clash test file,

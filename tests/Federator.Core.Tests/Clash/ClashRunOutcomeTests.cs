@@ -279,6 +279,111 @@ namespace Federator.Core.Tests
             Assert.That(outcome.SkipReasonCounts()[ClashSkipReason.EmptySide], Is.EqualTo(2));
         }
 
+        /// <summary>
+        /// Bader's answer to Q99 and Q100. A group whose models are not on the same shared
+        /// coordinates creates its tests and runs none, the path a one discipline group
+        /// takes, and its CLASH block counts them under their own reason, never as a side
+        /// finding nothing and never as one discipline.
+        /// </summary>
+        [Test]
+        public void TestsNotRunBecauseTheModelsAreOffTheirCoordinatesAreCountedUnderTheirOwnReason()
+        {
+            ClashRunOutcome outcome = new ClashRunOutcome();
+            outcome.AddSkipped("a", ClashSkipReason.NotOnTheSameCoordinates, "x");
+            outcome.AddSkipped("b", ClashSkipReason.NotOnTheSameCoordinates, "x");
+
+            string block = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
+
+            Assert.That(block, Does.Contain(
+                "SKIPPED 2 tests, " + ClashTestPlan.Describe(ClashSkipReason.NotOnTheSameCoordinates)));
+            Assert.That(block, Does.Contain(
+                "        2  " + ClashTestPlan.Describe(ClashSkipReason.NotOnTheSameCoordinates)));
+            Assert.That(ClashTestPlan.Describe(ClashSkipReason.NotOnTheSameCoordinates),
+                Is.EqualTo("the group's models are not on the same shared coordinates, so its clash is skipped"));
+        }
+
+        /// <summary>
+        /// The breaker's tenth finding at c5d8aa8, the lead's item 16. A group whose clash
+        /// was skipped for the coordinates printed tests run 0, passed 0, clashes found 0 and
+        /// every status at 0, and its summary 0 run and 0 clashes. Those zeros come from the
+        /// skip alone, and beside an NWF still holding an earlier run's results they read as
+        /// a clean group. The block says the clash was skipped instead.
+        /// </summary>
+        [Test]
+        public void ASkippedClashSaysSoAndPrintsNoZeroForWhatNeverRan()
+        {
+            ClashRunOutcome outcome = new ClashRunOutcome();
+            outcome.AddCreated("new one");
+            outcome.AddAlreadyPresent("last week's one");
+            outcome.AddAlreadyPresent("last week's two");
+            outcome.AddSkipped("new one", ClashSkipReason.NotOnTheSameCoordinates, "x");
+            outcome.AddSkipped("last week's one", ClashSkipReason.NotOnTheSameCoordinates, "x");
+            outcome.AddSkipped("last week's two", ClashSkipReason.NotOnTheSameCoordinates, "x");
+            outcome.ClashSkipped = "clash skipped, models not on the same shared coordinates";
+
+            string block = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
+
+            Assert.That(block, Does.Contain(
+                "tests run         : none, clash skipped, models not on the same shared coordinates"));
+            Assert.That(block, Does.Contain(
+                "clashes found     : not counted, no test was run. The 2 test(s) already there keep the results of an earlier run"));
+            Assert.That(block, Does.Not.Contain("tests run         : 0"));
+            Assert.That(block, Does.Not.Contain("passed        : 0"));
+            Assert.That(block, Does.Not.Contain("clashes found     : 0"));
+            Assert.That(block, Does.Not.Contain("New       : 0"));
+            Assert.That(block, Does.Contain("tests skipped     : 3, not run and not passed"));
+
+            string summary = outcome.Summary();
+            Assert.That(summary, Does.StartWith(
+                "1 created, 2 already there, none run, clash skipped, models not on the same shared coordinates, 3 skipped"));
+            Assert.That(summary, Does.Not.Contain("0 run"));
+            Assert.That(summary, Does.Not.Contain("0 clashes"));
+        }
+
+        /// <summary>
+        /// The open file run's window label, FederationEngine.Describe, read RanCount and
+        /// TotalClashes itself and printed "0 run, 2 skipped, 0 clashes" for a skipped group,
+        /// the third rendering attempt 2 left after the block and the summary, both readings
+        /// of attempt 2. It says none ran and why, and a group that ran keeps its counts.
+        /// </summary>
+        [Test]
+        public void TheWindowLabelOfASkippedGroupSaysNoneRanAndWhy()
+        {
+            ClashRunOutcome skipped = new ClashRunOutcome();
+            skipped.AddCreated("new one");
+            skipped.AddAlreadyPresent("last week's one");
+            skipped.AddSkipped("new one", ClashSkipReason.NotOnTheSameCoordinates, "x");
+            skipped.AddSkipped("last week's one", ClashSkipReason.NotOnTheSameCoordinates, "x");
+            skipped.ClashSkipped = "clash skipped, models not on the same shared coordinates";
+
+            Assert.That(skipped.CountsForTheLabel(), Is.EqualTo(
+                "none run, clash skipped, models not on the same shared coordinates, 2 skipped"));
+            Assert.That(skipped.CountsForTheLabel(), Does.Not.Contain("0 clashes"));
+
+            ClashTally tally = new ClashTally();
+            tally.Add(ClashStatus.New, 7);
+            ClashRunOutcome ran = new ClashRunOutcome();
+            ran.AddRan("with clashes", 100, 50, tally, 3.2);
+            ran.AddSkipped("empty", ClashSkipReason.EmptySide, "the left side finds nothing");
+
+            Assert.That(ran.CountsForTheLabel(), Is.EqualTo("1 run, 1 skipped, 7 clashes"));
+        }
+
+        /// <summary>The one discipline path is left as it was, so its block still counts in zeros, next wave.</summary>
+        [Test]
+        public void AOneDisciplineGroupIsLeftAsItWas()
+        {
+            ClashRunOutcome outcome = new ClashRunOutcome();
+            outcome.AddCreated("one");
+            outcome.AddSkipped("one", ClashSkipReason.SingleDiscipline, "x");
+
+            string block = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
+
+            Assert.That(block, Does.Contain("tests run         : 0"));
+            Assert.That(block, Does.Contain("clashes found     : 0"));
+            Assert.That(outcome.Summary(), Does.StartWith("1 created, 0 run, 0 passed, 1 skipped, 0 clashes"));
+        }
+
         [Test]
         public void ATestAlreadyThereIsNotCountedAsCreated()
         {
