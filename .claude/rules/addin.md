@@ -256,7 +256,9 @@ well as to pass.
   exactly as it is and counted as already there, never made again, because a second copy
   at one path leaves the tree holding both, which is F28's rule for sets. The VIEWS step is
   timed like every other step and it is the one step allowed to move the viewpoint count,
-  Federator.Core.Diagnostics.CensusRule. The VIEWS block names five and counts the rest,
+  Federator.Core.Diagnostics.CensusRule. Inside it every call the builder and Record make
+  is timed into its own part of Federator.Core.Views.ViewsSeconds, FR-073, so the folders,
+  the view, its COM folder and the add each carry their own seconds. The VIEWS block names five and counts the rest,
   because a group puts hundreds in. A group whose viewpoints failed is not DONE.
   SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and it is the
   one switch

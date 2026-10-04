@@ -1105,6 +1105,19 @@ it if the same work carries the same name every time it is timed.
   row per group without descending, which is also what the panel shows. So FEWER rows
   than clashes is the grouping and the line says so. MORE rows than clashes is a finding
   nothing in this tool explains, said in capitals, and nothing acts on it
+- THE VIEWS STEP SAYS WHERE ITS OWN SECONDS WENT, CALL BY CALL, FR-073 in F114.
+  `Federator.Core.Views.ViewsSeconds` holds one part per call the viewpoint work is made
+  of, on the log's own clock: reading the clashes and planning, saying how far it has
+  got, looking whether each was already there, showing and hiding the models, dimming,
+  finding or making the folders, making the view, finding its folder again in the COM
+  tree, adding the view, the root route's move, reading back and putting the document
+  back. Set 03 timed recording as ONE watch around the folders, the COM folder and the
+  add, 1602.798 s of 1B06G1's 1769.389 s, and left 67.5 s of that group and 131.9 s of
+  1B06PP in none of its four parts, so which call cost the time was UNKNOWN and the speed
+  work could not start. The rules above hold for it: what no part holds is named on the
+  line and never spread, and parts adding to more than the whole are said in words. A
+  part the work never entered is left off, so the default route never shows the root
+  route's move. The line is written once per group, whichever way the work ended
 
 ### The document census, F61
 
