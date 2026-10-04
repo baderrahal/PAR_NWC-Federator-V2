@@ -24,6 +24,16 @@
 #   NewWinTypes, which emits seven more calls
 # - added: HeldRead, HeldState, CloseAdopted, WindowRecords, ChildHandlesOf, WindowKind and
 #   ReadShared
+#
+# WHAT F106 CHANGED OR ADDED, for the window run and its driver, tools\probes\drive-window-run.ps1,
+# which dot-sources this file too:
+# - moved here from run.ps1 unchanged, because the driver reads them as well: SessionLockText,
+#   StampNames and MaskLine
+# - changed: NewWinTypes, which emits PostMessageW, the one call that writes a message to a
+#   window, made only by run.ps1's PostClose, WM_CLOSE to the tool's window, and the driver's
+#   Answer, WM_COMMAND to the tool's confirm, and DiffAutoSave, whose line no longer ends saying a file is
+#   never put back, because run.ps1 now puts his AutoSave folder back, Q86
+# - added: IsConfirm, PathsOutside, DriverCodes, DriverCode and DriverCodeName
 # The rules these functions keep are written at the top of the probe and in
 # .claude\rules\loop.md, and are not repeated here.
 #
@@ -58,6 +68,18 @@ function Mask($s) {
     if ($leaf -match '\.[A-Za-z0-9]{2,4}$') { $what = "a path outside the loop folder, file " + $leaf } else { $what = "a folder outside the loop folder" }
   }
   return ("<" + $what + ", sha1 " + $h + ">")
+}
+
+# A line another program printed, with the three profile folders written by their names, so
+# no user's folder reaches a record. A line that still holds a path is masked whole. Moved here
+# from run.ps1 by F106, unchanged, because the driver writes its notes through it too.
+function MaskLine($t) {
+  $s = [string]$t
+  foreach ($pair in @(@($env:LOCALAPPDATA, "%LOCALAPPDATA%"), @($env:APPDATA, "%APPDATA%"), @($env:USERPROFILE, "%USERPROFILE%"))) {
+    if ([string]$pair[0] -ne "") { $s = [regex]::Replace($s, [regex]::Escape(([string]$pair[0]).TrimEnd('\')), $pair[1], [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) }
+  }
+  if ($s -match '[A-Za-z]:\\|\\\\') { return (Mask $s) }
+  return $s
 }
 
 # The command line tests. HoldsEmbedding is the option COM passes, used to adopt.
@@ -331,7 +353,7 @@ function DiffAutoSave($autoBefore, $sAfter) {
   foreach ($rel in @(@($autoBefore.Keys) + @($sAfter.Files.Keys | Where-Object { $_ -like "AutoSave\*" }) | Sort-Object -Unique)) {
     $b = $autoBefore[$rel]; $a = $sAfter.Files[$rel]
     if ($null -ne $b -and $null -ne $a -and $null -ne $a.Hash -and $a.Hash -eq $b.Hash) { continue }
-    $lines.Add("AutoSave " + $rel + "  old " + (FileText $b) + "  new " + (FileText $a) + ". Not backed up, never put back")
+    $lines.Add("AutoSave " + $rel + "  old " + (FileText $b) + "  new " + (FileText $a))
   }
   return ,$lines
 }
@@ -377,7 +399,11 @@ foreach ($def in @(
     @("kernel32.dll", "GetCurrentThreadId", [uint32], [Type[]]@()),
     @("wtsapi32.dll", "WTSQuerySessionInformationW", [bool], [Type[]]@([IntPtr], [int], [int], [IntPtr].MakeByRefType(), [uint32].MakeByRefType())),
     @("wtsapi32.dll", "WTSFreeMemory", [void], [Type[]]@([IntPtr])),
-    @("advapi32.dll", "RegQueryInfoKeyW", [int], [Type[]]@([IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [long].MakeByRefType())))) {
+    @("advapi32.dll", "RegQueryInfoKeyW", [int], [Type[]]@([IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [long].MakeByRefType())),
+    # F106: WM_CLOSE to the tool's window of the adopted Navisworks once its run has ended,
+    # posted only by run.ps1's PostClose after the window's process and start ticks read equal,
+    # and WM_COMMAND OK or Cancel to the tool's confirm, posted only by the driver's Answer.
+    @("user32.dll", "PostMessageW", [bool], [Type[]]@([IntPtr], [uint32], [IntPtr], [IntPtr])))) {
   $pm = $tb.DefinePInvokeMethod($def[1], $def[0], [System.Reflection.MethodAttributes]"Public,Static,PinvokeImpl,HideBySig", [System.Reflection.CallingConventions]::Standard, $def[2], $def[3], [System.Runtime.InteropServices.CallingConvention]::Winapi, [System.Runtime.InteropServices.CharSet]::Unicode)
   $pm.SetImplementationFlags($pm.GetMethodImplementationFlags() -bor [System.Reflection.MethodImplAttributes]::PreserveSig)
 }
@@ -511,6 +537,72 @@ function WindowKind($class, $caption, $ownerHandle, [bool]$ownerVisible) {
   if ($class.StartsWith("HwndWrapper") -and $caption.StartsWith("Parsons NWC Federator")) { return "WINDOW" }
   if ($class.StartsWith("WindowsForms10") -and $caption.EndsWith("Autodesk Navisworks Manage 2025") -and ($ownerHandle -eq [IntPtr]::Zero -or -not $ownerVisible)) { return "MAIN" }
   return "DIALOG"
+}
+# F106. The confirm the tool shows before a run: a #32770 titled exactly Parsons NWC Federator,
+# the caption of every MessageBox in FederatorWindow.xaml.cs, whose text starts with the first
+# words of RunPath.ConfirmLines, src\Federator.Core\Rerun\RunPath.cs. $texts are the texts
+# WindowRecords read off its children, each in quotes. The driver answers it, and the monitor
+# writes it as the driver's step and not as a DIALOG. A Warn of the tool has the same class and
+# caption and other words, so it stays a DIALOG.
+function IsConfirm($class, $caption, $texts) {
+  if ($class -ne "#32770" -or $caption -cne "Parsons NWC Federator") { return $false }
+  foreach ($t in @($texts)) { if (([string]$t).TrimStart('"').StartsWith("This run federates ")) { return $true } }
+  return $false
+}
+# F106. Every rooted path in a text that does not start under $root, so a text naming a folder
+# of Bader's is never answered with OK or a button that runs. A rooted path starts at a drive
+# letter, a colon and a slash, or at two backslashes, and every such start is read on its own,
+# so a second path later on the same line is never hidden by the first. Where a path ends is
+# never guessed: what follows a start up to the end of its line or a character no path holds
+# is read, and it is inside only when it starts with the root and a backslash and holds no \..
+# anywhere, so a path that climbs out of the root counts as outside, and so do words after it
+# that hold one.
+function PathsOutside($text, $root) {
+  $out = New-Object System.Collections.Generic.List[string]
+  $r = ([string]$root).TrimEnd('\')
+  $s = [string]$text
+  foreach ($m in [regex]::Matches($s, '[A-Za-z]:[\\/]|\\\\')) {
+    $rest = [regex]::Match($s.Substring($m.Index), '^[^"<>|*?\r\n]*').Value.TrimEnd()
+    $inside = ($rest.StartsWith($r + "\", [StringComparison]::OrdinalIgnoreCase) -and $rest.Replace('/', '\').IndexOf('\..', [StringComparison]::Ordinal) -lt 0)
+    if (-not $inside) { $out.Add($rest) }
+  }
+  return ,$out
+}
+# F106. The driver's exit codes, one table: the driver ends with one of them and run.ps1 reads
+# them for its verdict. PRESSED is Run with OK on the confirm, or Run the open file. TOOL
+# REFUSED is Run the open file read disabled, the tool's own refusal. Every other code means
+# nothing that runs was pressed.
+function DriverCodes { return [ordered]@{ "PRESSED" = 0; "FAULT" = 1; "REFUSED" = 2; "OWNER" = 3; "NO WINDOW" = 4; "STAMP" = 5; "BOX" = 6; "TOLERANCE" = 7; "DIALOG" = 8; "CANCELLED" = 9; "TOOL REFUSED" = 10; "OPEN LINE" = 11; "WINDOW GONE" = 12 } }
+function DriverCode($name) {
+  $c = DriverCodes
+  if (-not $c.Contains($name)) { throw ("there is no driver code named " + $name) }
+  return [int]$c[$name]
+}
+function DriverCodeName($code) {
+  $c = DriverCodes
+  foreach ($k in $c.Keys) { if ($c[$k] -eq $code) { return $k } }
+  return ("UNKNOWN, exit " + $code)
+}
+# The stamp is one word of the version, so be0b9b37+edits never names be0b9b37. Moved here from
+# run.ps1 by F106, unchanged, because the driver reads the tool's window title with it too.
+function StampNames($productVersion, $stamp) { return (@([string]$productVersion -split '\s+') -ccontains $stamp) }
+# Whether the session is locked, read through WTSQuerySessionInformation with WTSSessionInfoEx,
+# reading only. Moved here from run.ps1 by F106, unchanged, because the driver reads it too.
+function SessionLockText($winType) {
+  $sid = [System.Diagnostics.Process]::GetCurrentProcess().SessionId
+  $buf = [IntPtr]::Zero
+  [uint32]$bytes = 0
+  $ok = $winType::WTSQuerySessionInformationW([IntPtr]::Zero, [int]$sid, 25, [ref]$buf, [ref]$bytes)
+  if (-not $ok) { return "UNKNOWN, WTSQuerySessionInformation with WTSSessionInfoEx returned false" }
+  try {
+    $level = [System.Runtime.InteropServices.Marshal]::ReadInt32($buf, 0)
+    $rsid = [System.Runtime.InteropServices.Marshal]::ReadInt32($buf, 8)
+    $flags = [System.Runtime.InteropServices.Marshal]::ReadInt32($buf, 16)
+    if ($level -ne 1 -or $rsid -ne $sid) { return ("UNKNOWN, the answer did not read as level 1 of this session, level " + $level + ", session " + $rsid) }
+    if ($flags -eq 0) { return "locked" }
+    if ($flags -eq 1) { return "unlocked" }
+    return ("UNKNOWN, the session flags read " + $flags)
+  } finally { $winType::WTSFreeMemory($buf) }
 }
 function WindowsOf($id, $utcTicks) {
   # Only ever called for the adopted Roamer, so messages are allowed, and only once its pid
