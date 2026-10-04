@@ -957,7 +957,10 @@ and 6 does not read as broken.
   status one of this tool's own records names and nothing else, so Approved and Resolved
   are still never set, because a record can only be written for a status this tool was
   allowed to move from and the record's own constructor refuses the other three. Q50 asks
-  whether that is the right shape
+  whether that is the right shape. A COMMENT NAMING ONE OF THOSE THREE IS NOT ONE OF OURS,
+  F113, and `AutoReviewRecord.In` reads it as no record, because only a hand can have
+  written it. It used to read all five and hand the three to the constructor, which
+  threw, and the undo then left every clash of that test alone
 - NOTHING MOVES SILENTLY. A PENETRATION block per group names every clash moved with both
   categories and the service size, then the totals and ONE LINE PER REASON for every clash
   left alone, including the reasons at zero, because a reason missing from the block reads

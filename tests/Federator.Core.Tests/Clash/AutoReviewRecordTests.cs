@@ -118,6 +118,31 @@ namespace Federator.Core.Tests
             Assert.That(AutoReviewRecord.In(AutoReviewRecord.Marker), Is.Null);
         }
 
+        /// <summary>
+        /// F113, FR-034. A record can only be written for a status this tool may move a
+        /// clash off, New or Active, so one naming Reviewed, Approved or Resolved is a
+        /// comment edited by hand and not one of ours. In read all five and handed the
+        /// other three to the record's constructor, which threw, and the undo's walk of a
+        /// test caught that and left every clash of the test where it was.
+        /// </summary>
+        [Test]
+        public void ARecordNamingAStatusThisToolNeverMovesFromIsNotOneOfOurs()
+        {
+            foreach (ClashStatus was in new[] { ClashStatus.Reviewed, ClashStatus.Approved, ClashStatus.Resolved })
+            {
+                string comment = AutoReviewRecord.Marker + " [penetration] [was " + was + "] why";
+                ClashStatus back;
+
+                Assert.That(AutoReviewRecord.In(comment), Is.Null, comment);
+                Assert.That(AutoReviewRecord.MayUndo(comment, ClashStatus.Reviewed), Is.False, comment);
+                Assert.That(AutoReviewRecord.WhyNotUndone(comment, ClashStatus.Reviewed),
+                    Does.Contain("nothing of ours to undo"), comment);
+                Assert.That(UndoAutoReview.Judge(comment, ClashStatus.Reviewed, out back),
+                    Is.EqualTo(UndoVerdict.NotOurs), comment);
+                Assert.That(back, Is.EqualTo(ClashStatus.Reviewed), "nothing is moved");
+            }
+        }
+
         // ---------- the undo ----------
 
         [Test]
