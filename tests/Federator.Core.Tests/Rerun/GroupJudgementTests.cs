@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Federator.Core.Diagnostics;
+using Federator.Core.Health;
 using Federator.Core.Rerun;
 using NUnit.Framework;
 
@@ -255,7 +257,8 @@ namespace Federator.Core.Tests
                 Failing(f => f.NwdOnDisk = false),
                 Failing(f => f.NwdPublishReportedSuccess = false),
                 Failing(f => f.Decision = RerunDecision.Changed),
-                Failing(f => { f.AppendedCount = 3; f.FailedFileCount = 1; })
+                Failing(f => { f.AppendedCount = 3; f.FailedFileCount = 1; }),
+                Failing(f => f.ClashSkippedOffCoordinates = true)
             };
 
             foreach (GroupFacts facts in all)
@@ -562,6 +565,197 @@ namespace Federator.Core.Tests
             facts.FailedViewpointCount = 0;
 
             Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
+        }
+
+        // ---------- Q98 B2 and Bader's answer to Q99 and Q100, the clash skipped ----------
+
+        /// <summary>
+        /// 1B06K1 ended DONE in the C06 run with its ST 2,823 km from the reference, log line
+        /// 2128, so its clash count read as whole. Under Bader's answer its clash is skipped
+        /// and nothing else, so a group that did everything else right is PARTIAL, never
+        /// DONE, with his reason.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseClashWasSkippedIsPartialWithBadersReason()
+        {
+            GroupFacts facts = Clean();
+            facts.ClashSkippedOffCoordinates = true;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Partial));
+            Assert.That(reason, Is.EqualTo("clash skipped, models not on the same shared coordinates"));
+            Assert.That(reason, Is.EqualTo(OffCoordinates.ClashSkippedReason));
+        }
+
+        /// <summary>
+        /// A group that also failed for another reason stays FAILED, the worse of the two, and
+        /// the skipped clash is said too, so the RESULT block does not name only half of it.
+        /// </summary>
+        [Test]
+        public void AGroupThatAlsoFailedStaysFailedAndItsReasonSaysTheClashWasSkippedToo()
+        {
+            GroupFacts facts = Clean();
+            facts.AddError("1 model(s) name no shared site at all");
+            facts.ClashSkippedOffCoordinates = true;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Does.StartWith("1 model(s) name no shared site at all"));
+            Assert.That(reason, Does.EndWith(", and clash skipped, models not on the same shared coordinates"));
+        }
+
+        [Test]
+        public void AGroupAlreadyPartialStaysPartialAndNamesBoth()
+        {
+            GroupFacts facts = Clean();
+            facts.AppendedCount = 3;
+            facts.FailedFileCount = 1;
+            facts.ClashSkippedOffCoordinates = true;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Partial));
+            Assert.That(reason, Is.EqualTo("1 of 4 files did not append, and clash skipped, models not on the same shared coordinates"));
+        }
+
+        /// <summary>
+        /// Viewpoints are not asked for in a group whose clash was skipped, so the group can
+        /// never fail at them, the rule F52 already keeps for a step that was not asked for.
+        /// </summary>
+        [Test]
+        public void ASkippedGroupThatAskedForNoViewpointIsNotJudgedOnThem()
+        {
+            GroupFacts facts = Clean();
+            facts.ClashSkippedOffCoordinates = true;
+            facts.ViewpointsRequested = false;
+            facts.FailedViewpointCount = 0;
+
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Partial));
+        }
+
+        // ---------- a group failed on where its models sit, Q70 ----------
+
+        /// <summary>
+        /// The reason the engine hands the judgement for a group whose ST was exported on
+        /// Internal, judged with the rule off, made at the ALIGNMENT step before any file is
+        /// written.
+        /// </summary>
+        private static string FailedOnInternal()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                new ModelPlacement("1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc", "AR", "SWLS-02-SharedCoordinate", 0.0, 0.0, 0.0),
+                new ModelPlacement("1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc", "ST", "Internal", 0.0, 0.0, 255.0)
+            };
+
+            return AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, false, true);
+        }
+
+        private const string StaleNwd = "the NWD publish did not report success, so the file at"
+            + @" C:\out\nwd\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd is not from this run";
+
+        private const string MissingNwd = "the NWD was requested and is not on disk at"
+            + @" C:\out\nwd\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd";
+
+        /// <summary>
+        /// The breaker's blocking finding on attempt 3. A group failed on Internal whose NWD
+        /// this run published is FAILED for its model alone, and its reason says nothing of
+        /// any file.
+        /// </summary>
+        [Test]
+        public void AGroupFailedOnItsModelsWithItsNwdFromThisRunNamesTheModelAlone()
+        {
+            GroupFacts facts = Clean();
+            facts.AlignmentFailure = FailedOnInternal();
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Is.EqualTo(FailedOnInternal()));
+            Assert.That(reason, Does.Contain("ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
+            Assert.That(reason, Does.Not.Contain("NWD"));
+            Assert.That(reason, Does.Not.Contain("written"));
+        }
+
+        /// <summary>
+        /// The same group where the publish returned false and last week's NWD sits at the
+        /// path. The reason names the model and then the NWD as not from this run, where it
+        /// stopped at the model and the NWD was never named.
+        /// </summary>
+        [Test]
+        public void AGroupFailedOnItsModelsStillNamesAnNwdNotFromThisRun()
+        {
+            GroupFacts facts = Clean();
+            facts.AlignmentFailure = FailedOnInternal();
+            facts.NwdOnDisk = true;
+            facts.NwdPublishReportedSuccess = false;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Is.EqualTo(FailedOnInternal() + ", and " + StaleNwd));
+        }
+
+        /// <summary>The same group with no NWD on the disk at all names it missing beside the model.</summary>
+        [Test]
+        public void AGroupFailedOnItsModelsStillNamesAMissingNwd()
+        {
+            GroupFacts facts = Clean();
+            facts.AlignmentFailure = FailedOnInternal();
+            facts.NwdOnDisk = false;
+            facts.NwdPublishReportedSuccess = false;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Is.EqualTo(FailedOnInternal() + ", and " + MissingNwd));
+        }
+
+        /// <summary>
+        /// A group failed on a model naming no site whose clash was also skipped for a model on
+        /// Internal, with a stale NWD, names all three, the model first and the skip last.
+        /// </summary>
+        [Test]
+        public void AGroupFailedOnItsModelsWhoseClashWasSkippedNamesTheStaleNwdAndTheSkip()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                new ModelPlacement("1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc", "AR", "A site", 0.0, 0.0, 0.0),
+                new ModelPlacement("1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc", "EL", "Internal", 0.0, 0.0, 0.0),
+                new ModelPlacement("1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc", "ST", string.Empty, 0.0, 0.0, 0.0)
+            };
+
+            GroupFacts facts = Clean();
+            facts.AlignmentFailure = AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, true, true);
+            facts.ClashSkippedOffCoordinates = true;
+            facts.NwdPublishReportedSuccess = false;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Is.EqualTo(
+                "1 model(s) name no shared site at all: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, and " + StaleNwd
+                + ", and " + OffCoordinates.ClashSkippedReason));
+        }
+
+        /// <summary>
+        /// A step that threw in the same group is named beside the model too, so neither hides
+        /// the other.
+        /// </summary>
+        [Test]
+        public void AGroupFailedOnItsModelsKeepsWhatThrewBesideIt()
+        {
+            GroupFacts facts = Clean();
+            facts.AlignmentFailure = FailedOnInternal();
+            facts.AddError("creating the clash tests threw NullReferenceException");
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Does.Contain(FailedOnInternal()));
+            Assert.That(reason, Does.Contain("creating the clash tests threw NullReferenceException"));
         }
     }
 }
