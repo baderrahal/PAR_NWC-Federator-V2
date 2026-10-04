@@ -1,6 +1,53 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, Bader's answer to Q113 and the notes on Q112, and the measurements
+
+Nothing under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before,
+at the pre-commit of PR 99's last commit, turn5\precommit-records-6b.txt, and after, at this
+record's, turn5\precommit-records-7.txt. The error: failed to delete .git/worktrees lines after
+the count in both are git's housekeeping of worktree folders OneDrive holds, and stopped
+nothing.
+
+### The plan, also given in the Claude tab before the first edit, a reply kept in no file
+
+- A, this record: his answers under Q113 and Q112, FR-009, FR-030, FR-176 and FR-179 carrying
+  them, the measurements of 2026-10-04 on FR-176, FR-177 and FR-179, Q113 out of the open form
+- B, F116 after its fix attempt 2: the correction list, the three matrix corrections, the Q103
+  rule and the 30 workset spellings, moved out of src into a plain file beside the picked XML,
+  read at the pick and named in the log, nothing corrected and said when no list is there, this
+  project's list in exchange\ beside the corrected XML, then its readings and its merge after
+  F112, and Bader told in the tab when the list is on main
+- C, the test of wave 1: the list copied from exchange\ beside the XML in the run set's own copy
+  and read back, never into NM Fed
+- D, everything else as planned
+
+### What was done
+
+- Q113 answered, B and D, and Q112's notes answered, right as read, each under its question in
+  his words, the lead's notes marked
+- FR-176, FR-177 and FR-179 carry the measurements of turn5\measure-coverage.md,
+  measure-generic.md and measure-shift.md. The driver's Shift measurement did not run, since
+  its stand-in waits for no Navisworks to run, turn5\measure-shift-driver.md
+- of the three things seen while measuring the coverage, two are on the list, FR-035 and
+  FR-126. The third, a single discipline group's CLASH block counting its 36 created tests among
+  its 1830 skipped, is the block's own word, skipped meaning not run and not passed, log:1167 to
+  1170 of set 03, so it is no fault, and FR-176 says the coverage counts keep the two apart
+
+### What remains
+
+- B to D of the plan
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- F116 with Q113's answer once its fix attempt 2 and its readings return
+
+Nothing in this record waits for the local machine.
+
 ## 2026-10-04 The loop, turn 5, Bader's five requests added to the round, the plan, and no sleep
 
 Bader's message of the evening, headed FIVE REQUESTS ADDED TO THE ROUND, is Q112 of

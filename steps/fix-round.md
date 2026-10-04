@@ -402,6 +402,9 @@ structure model's ramps. The AR Railings set does the same.
 - Note: A SET line could also say which discipline's model an AR coded set found its items in.
   The tool reports and never acts, so no behaviour change is asked.
 - Answered by Bader on 2026-10-04 at 15:23, Q103, in short, his words being under the question in steps\02_questions.md: every AR set whose category another discipline also uses gets Source File contains -AR-. The lead's note: to be worked by F116, the clash XML, in wave 1.
+- Answered by Bader on 2026-10-04 in the evening, Q113 D: all four categories, Ramps, Railings,
+  Furniture and Site. An AR set only takes items from an AR file, and a set this leaves empty in a
+  landscape group shows on the coverage sheet of wave 2
 
 ### FR-010 empty-sets-contains-judged-as-equals
 
@@ -1006,6 +1009,12 @@ form of a set a picked file carries.
   ME-DUCTWORK. Bader has since put the corrected file in place (Q98 B1). FR-025 and FR-026 are
   faults inside this class, and it is among the 150 of FR-172.
 - Answered by Bader on 2026-10-04 at 15:23, Q104, in short, his words being under the question in steps\02_questions.md: the tool uses the code that builds the corrected XML, MatrixCorrections is applied to whichever XML is picked before any set is built, the log names every correction it made, the Q102 and Q103 rules live in it, and a test is to prove the old uncorrected XML and the exchange file give the same sets once corrected. The lead's note: to be worked by F116, the clash XML, in wave 1.
+- Answered by Bader on 2026-10-04 in the evening, Q113 B: the correction list, the three matrix
+  corrections, the Q103 rule and the 30 workset spellings, is a plain file kept beside the picked
+  XML, read when the XML is picked and named in the log, and the code that applies it stays in
+  Core. A picked XML with no list beside it is corrected by nothing and the log says so. This
+  project's list goes in exchange\ beside the corrected XML, and Bader is told when it is there.
+  F116 carries it before it merges
 
 ## Clash counts, FR-031 to FR-034
 
@@ -4546,6 +4555,27 @@ was done, what the test showed, and anything for Bader.
   then the test of wave 2 on 1A02MM and 1A04PK with the sheet read back and set beside F104's
   documents read of the same NWFs
 - Class: Bader's request
+- Measured on 2026-10-04 off set 03 and the code, turn5\measure-coverage.md. Partly there today:
+  created per test, the test created rows of the .tsv, 3215 on C06, with no row for a test not
+  created. Run per test, the test passed and test found clashes rows. The count in Clash Detective,
+  the number column of those rows. The workbook rows, the rows for the workbook rows, which carry
+  the document's count as text, 3024 on C06, every one equal. A side's set that finds nothing, in
+  log lines with five examples per reason. The single discipline group. The sets empty across the
+  run, of which the log names 10 of 14. Not there: the categories each model carries with their
+  counts under the property the sets ask, a Coverage sheet, since the workbook check counts a
+  second sheet as a fault, a COVERAGE block, RESULT counts of the tests of the XML, and a FAILED
+  line. The add-in does not count top-level results, and the F104 comparison lives in PowerShell
+  and a probe. Its rule can be built in Core with the document side read by the add-in, while the
+  probe stays the independent witness, since compare-document.ps1 lines 12 to 17 say a check that
+  shares code with the harvest proves nothing
+- Seen while measuring: the BLOCKS false alarm on all 22 C06 groups is FR-035 and the SINGLE
+  DISCIPLINE sentence is FR-126, both already on this list. A single discipline group's CLASH
+  block counts its 36 created tests among its 1830 skipped, log:1167 to 1170 of set 03, and that
+  is the block's own word, skipped meaning not run and not passed, split there into 36 for the
+  one discipline and 1794 for a side that finds nothing. Not a fault, but the coverage counts
+  keep created and run apart
+- Answered by Bader on 2026-10-04 in the evening, the notes of Q112: right as read. A count that
+  differs is a FAILED line in COVERAGE and RESULT, and the group keeps its own result
 
 ### FR-177 generic-models-counted-and-a-set-per-model
 
@@ -4560,6 +4590,15 @@ was done, what the test showed, and anything for Bader.
 - Proof: Core tests for the counts, the sheet and the set plan, then the test of wave 2 on both
   buildings, the sets read back off the NWF
 - Class: Bader's request
+- Measured on 2026-10-04 off the repo, turn5\measure-generic.md: no log, read-out or sample names
+  Generic Models. One probe of 2026-09-20 counted 62 items with that category over all ten C02 NWFs,
+  40 models, tools\probes\ViewpointProbe\5i-result-20260920.txt line 64, with no count per
+  model or per building and items rather than elements. The tool reads a category from the
+  property shown as Category, then Revit Category, then Element Category, and on a 1A02MM element
+  that is the Element tab, LcRevitData_Element, LcRevitPropertyElementCategory. Whether Generic
+  Models items carry it there is UNKNOWN, and nothing has read 1A04PK. No line the installed
+  build writes can answer it, read off set 03's log and the code, so a probe on the baseline's NWFs of both buildings, through the guarded start,
+  measures it before F128 is written
 
 ### FR-178 start-from-an-existing-nwf
 
@@ -4580,11 +4619,23 @@ was done, what the test showed, and anything for Bader.
 - What he asked: a click on one Run box then a Shift click on another gives every row between
   them the first one's state. Why it fails today found first, then fixed, then tested through the
   window with the driver
-- Root cause: UNKNOWN until the window code is read
+- Root cause: in the measured line below
 - Measure first: whether the driver can make a Shift click on the tool's own window without real
   input, since it never clicks, sends no key and never moves the pointer, the loop's own choice.
   If it cannot, the way to test it goes to Bader
 - Class: Bader's request, a broken feature by his words
+- Measured on 2026-10-04 off the window code, turn5\measure-shift.md: a range tick is not
+  written. The Run column is a stock DataGridCheckBoxColumn bound to Include with no handler,
+  FederatorWindow.xaml lines 184 to 191, and nothing under src reads Shift or the row selection.
+  In a stock DataGrid Shift extends the row selection, read from PresentationFramework.dll's IL
+  by reflection with no click made, and whether Navisworks loads that same file is UNKNOWN. Also every untick in the group list goes back to
+  ticked when the groups are built again, after a scan, a grouping change or a change to a file's
+  Use box, FederatorWindow.xaml.cs lines 247 to 318 and GroupRow.cs line 39
+- Whether the driver can make a Shift click without real input is NOT MEASURED: the stand-in
+  measurement waits for no Navisworks to run, turn5\measure-shift-driver.md
+- Answered by Bader on 2026-10-04 in the evening, the notes of Q112: if the driver cannot test the
+  Shift click without real input, the Shift test is written as numbered steps for him in
+  steps\03_bader_next.md
 
 ## The areas at a glance
 

@@ -280,7 +280,7 @@ Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 a
 far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
 51a0cb6, PR 83 as 086a348, PR 90, F105, as 2c89788, PR 91, the fix list, as 0e76b16, PR 92, F107,
 as f58c083, PR 93 as dd55e4b, PR 94 as 6689bad, PR 95, F113, as 7b6df88, PR 96, F104, as
-c4fd0d4, and PR 97 as 68c870b. Bader's five requests of the evening, Q112, are added to the round
+c4fd0d4, PR 97 as 68c870b, and PR 99 as 6ddb5be. Bader's five requests of the evening, Q112, are added to the round
 and planned in the turn 5 entry of steps\log.md headed with them.
 
 1. The baseline, set 04: item 1 on C02 rerun from F125's commit 5fa98a8 at 18:55, then item 1 on
@@ -289,8 +289,9 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    first attempt is kept as steps\runs\04\item1-C02-hung
 2. Wave 1: F125's second pass and F126, the driver unticking a named box, each read under Q93
    and merged. F112 fix attempt 2 read and merged. F116 fix attempt 2, attempt 1 being aefb416
-   read in turn5\f116-read-review.txt, f116-read-break.txt and f116-read-claims.txt, and its
-   merge once Bader answers Q113. Each with a reviewer, a breaker and the claim-checker, Actions green, merged one
+   read in turn5\f116-read-review.txt, f116-read-break.txt and f116-read-claims.txt, then
+   Bader's answer to Q113, the list as a file beside the picked XML and this project's list in
+   exchange\, then its merge after F112, Bader told when the list is on main. Each with a reviewer, a breaker and the claim-checker, Actions green, merged one
    at a time
 3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
    buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
@@ -414,13 +415,13 @@ with what was tried and what each attempt showed. The register rows marked needs
 in the form are the questions already in steps\02_questions.md and are not repeated here.
 
 OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its choices:
-- Q113, F116's corrections of the clash XML shipped as data in Core against CLAUDE.md's rule
-  that no project's names sit in src, and Q103 read wider than the matrix, with what Furniture
-  and Site do to a landscape group. F116 does not merge until he answers
+- none of the turn 5 form. Q113 ANSWERED on 2026-10-04 in the evening: B, the correction list a plain file beside
+  the picked XML, this project's in exchange\, and D, all four categories. F116 carries it
 - Q110 and Q111 are held by F112's fix attempt 2 on its branch and reach the form when it merges.
-  Q112 is his own message of the five requests. Two readings in its lead's notes, whether a
-  group whose counts differ should itself end FAILED and how the driver can test a Shift click,
-  go to him as questions when F127 and F130 start
+  Q112 is his own message of the five requests. The two readings in its lead's notes he
+  answered on 2026-10-04 in the evening, right as read: a count that differs is a FAILED line in
+  COVERAGE and RESULT and the group keeps its own result, and a Shift click the driver cannot make
+  without real input becomes numbered steps for him in steps\03_bader_next.md
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:
