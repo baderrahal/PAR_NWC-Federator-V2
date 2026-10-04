@@ -1444,5 +1444,112 @@ namespace Federator.Core.Tests
             Assert.That(outcome.TotalChanged, Is.EqualTo(1), Words(outcome));
             Assert.That(new ExchangeReader().ReadText(outcome.Text).Sets[0].Conditions[0].Value.Data, Is.EqualTo("Doors & Windows"));
         }
+
+        // ---------- the picked file read as ReadFile read it, F116 ----------
+
+        /// <summary>
+        /// ReadPicked reads a file the way ExchangeReader.ReadFile did, in the encoding the file
+        /// declares. A file declared windows-1252 holding an accented set name, read as UTF-8,
+        /// came out with a replacement character, a name no NWF holds, so its set would be built
+        /// again beside the one already there.
+        /// </summary>
+        [Test]
+        public void ThePickedFileIsReadInTheEncodingItDeclares()
+        {
+            string folder = TempFolder.Make("f116-encoding");
+
+            try
+            {
+                string path = Path.Combine(folder, "declared-1252.xml");
+                string xml = WrittenExchange(WrittenSet("BLD-AR-Façade", Category("Walls")))
+                    .Replace("encoding='UTF-8'", "encoding='windows-1252'");
+
+                File.WriteAllBytes(path, Encoding.GetEncoding(1252).GetBytes(xml));
+
+                Assert.That(MatrixCorrections.ReadPicked(path).Sets[0].Name, Is.EqualTo("BLD-AR-Façade"));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// A set whose conditions the corrections cannot read as text is counted and said, and
+        /// the pick goes on, as ReadFile's did on the same file. Here a condition written as
+        /// one empty tag, which the text walk read as running into the next and threw.
+        /// </summary>
+        [Test]
+        public void ASetWithAnEmptyConditionTagIsCountedAndSaidAndNeverThrows()
+        {
+            SaidAndNotThrown(WrittenExchange(WrittenSet(
+                "BLD-ME-Ducts",
+                "            <condition test=\"equals\" flags=\"0\"/>\n" + CategoryAndWorkset(0, "Ducts", "ME-DUCTWORK"))));
+        }
+
+        /// <summary>
+        /// The same for a value element under a namespace prefix, which the reader reads and the
+        /// text walk cannot rewrite, so asking it in a second spelling threw.
+        /// </summary>
+        [Test]
+        public void ASetWithAValueTheTextCannotRewriteIsCountedAndSaidAndNeverThrows()
+        {
+            SaidAndNotThrown(WrittenExchange(WrittenSet(
+                "BLD-ME-Ducts",
+                Category("Ducts")
+                    + "            <condition test=\"equals\" flags=\"0\" xmlns:nw=\"urn:sample\">\n"
+                    + "              <property>\n"
+                    + "                <name internal=\"" + WorksetProperty + "\">Workset</name>\n"
+                    + "              </property>\n"
+                    + "              <value>\n"
+                    + "                <nw:data type=\"wstring\">ME-DUCTWORK</nw:data>\n"
+                    + "              </value>\n"
+                    + "            </condition>\n")));
+        }
+
+        private static void SaidAndNotThrown(string xml)
+        {
+            CorrectionOutcome outcome = null;
+
+            Assert.That(() => outcome = Picked(xml), Throws.Nothing);
+            Assert.That(outcome.Text, Is.EqualTo(xml), "built exactly as the file asks");
+            Assert.That(outcome.Lines()[0], Is.EqualTo(
+                "MATRIX   NOT EVERY SET COULD BE READ FOR CORRECTION. The file holds 1 sets with conditions"
+                    + " and 0 could be read as text, so 1 are built exactly as the file asks"));
+        }
+
+        /// <summary>
+        /// Two sets of one name in two folders. The Architecture one is given the Source File
+        /// condition and the Structure one is not. Keyed by its name alone the condition went to
+        /// the first block of that name in the file, the Structure one, and the line said the
+        /// Architecture one had changed.
+        /// </summary>
+        [Test]
+        public void ASetIsGivenTheSourceFileConditionByItsFolderAndItsNameNeverItsNameAlone()
+        {
+            string xml = "<?xml version='1.0' encoding='UTF-8'?>\n<exchange units=\"ft\">\n  <selectionsets>\n"
+                + "    <viewfolder name=\"Structure\">\n" + WrittenSet("Ramps", Category("Ramps") + SourceFileCondition("-ST-")) + "    </viewfolder>\n"
+                + "    <viewfolder name=\"Architecture\">\n" + FloorsAskingAr() + WrittenSet("Ramps", Category("Ramps")) + "    </viewfolder>\n"
+                + "  </selectionsets>\n</exchange>\n";
+
+            CorrectionOutcome outcome = WithSourceFile(xml, AskAr());
+            Dictionary<string, string> asked = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            foreach (SelectionSetDefinition set in new ExchangeReader().ReadText(outcome.Text).Sets)
+            {
+                List<string> values = new List<string>();
+
+                foreach (SearchConditionDefinition condition in set.Conditions)
+                {
+                    values.Add(condition.Value.Data);
+                }
+
+                asked[set.Path] = string.Join(" and ", values.ToArray());
+            }
+
+            Assert.That(asked["lcop_selection_set_tree/Architecture/Ramps"], Is.EqualTo("Ramps and -AR-"));
+            Assert.That(asked["lcop_selection_set_tree/Structure/Ramps"], Is.EqualTo("Ramps and -ST-"));
+            Assert.That(outcome.TotalChanged, Is.EqualTo(1));
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Federator.Core.Exchange
@@ -43,13 +44,34 @@ namespace Federator.Core.Exchange
 
         /// <summary>
         /// One condition read off its text by ExchangeReader's own reading of a condition, so
-        /// the condition a correction reads and the one the plan builds cannot disagree. An
-        /// element that is not XML throws, because a condition this cannot read is one it
-        /// must not rewrite.
+        /// the condition a correction reads and the one the plan builds cannot disagree. NULL
+        /// where the text is not one condition this can read, or holds a value this could not
+        /// rewrite, because a condition this cannot read is one it must not rewrite. The file
+        /// itself read as XML, so this is the text walk losing its place, an empty condition tag
+        /// or a value under a namespace prefix, and SetConditionsText then reads the whole set
+        /// as unreadable, which MatrixCorrections counts and says on a MATRIX line, F116.
         /// </summary>
         internal static WrittenCondition Read(string lead, string element)
         {
-            SearchConditionDefinition read = ExchangeReader.ReadCondition(XElement.Parse(element));
+            XElement parsed;
+
+            try
+            {
+                parsed = XElement.Parse(element);
+            }
+            catch (XmlException)
+            {
+                return null;
+            }
+
+            SearchConditionDefinition read = ExchangeReader.ReadCondition(parsed);
+            int shut;
+            int end;
+
+            if (read.Value != null && !ValueAt(element, out shut, out end))
+            {
+                return null;
+            }
 
             return new WrittenCondition(
                 lead,
@@ -60,15 +82,17 @@ namespace Federator.Core.Exchange
                 read.Value == null ? null : read.Value.Data);
         }
 
-        /// <summary>The same condition asking for another value, written with the escapes an XML file needs.</summary>
+        /// <summary>
+        /// The same condition asking for another value, written with the escapes an XML file
+        /// needs. Called only on a condition holding a value, which Read has checked it can
+        /// rewrite, so the throw is a condition built some other way.
+        /// </summary>
         internal WrittenCondition WithValue(string value)
         {
-            int holder = Element.IndexOf("<value", StringComparison.Ordinal);
-            int data = holder < 0 ? -1 : Element.IndexOf("<data", holder, StringComparison.Ordinal);
-            int shut = data < 0 ? -1 : Element.IndexOf('>', data);
-            int end = shut < 0 ? -1 : Element.IndexOf("</data>", shut, StringComparison.Ordinal);
+            int shut;
+            int end;
 
-            if (end < 0)
+            if (!ValueAt(Element, out shut, out end))
             {
                 throw new InvalidDataException("A condition asking for \"" + Value
                     + "\" holds no value element this can rewrite: " + Element);
@@ -76,6 +100,16 @@ namespace Federator.Core.Exchange
 
             string element = Element.Substring(0, shut + 1) + Escaped(value) + Element.Substring(end);
             return new WrittenCondition(Lead, element, Test, Flags, Property, value);
+        }
+
+        /// <summary>Where the value's text sits in that element, between the end of its data tag and the start of its closing tag.</summary>
+        private static bool ValueAt(string element, out int shut, out int end)
+        {
+            int holder = element.IndexOf("<value", StringComparison.Ordinal);
+            int data = holder < 0 ? -1 : element.IndexOf("<data", holder, StringComparison.Ordinal);
+            shut = data < 0 ? -1 : element.IndexOf('>', data);
+            end = shut < 0 ? -1 : element.IndexOf("</data>", shut, StringComparison.Ordinal);
+            return end >= 0;
         }
 
         /// <summary>The same condition carrying other flags. The attribute is added where the file wrote none.</summary>

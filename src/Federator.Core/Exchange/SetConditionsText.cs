@@ -31,8 +31,9 @@ namespace Federator.Core.Exchange
         internal IList<WrittenCondition> Conditions { get; private set; }
 
         /// <summary>
-        /// The conditions of that set block, or null where it holds no conditions element or
-        /// one whose conditions do not close, which is a block a correction cannot read.
+        /// The conditions of that set block, or null where it holds no conditions element, one
+        /// whose conditions do not close, or one condition WrittenCondition cannot read, which
+        /// is a block a correction cannot read and MatrixCorrections counts and says.
         /// </summary>
         internal static SetConditionsText Read(string block)
         {
@@ -71,7 +72,14 @@ namespace Federator.Core.Exchange
                 }
 
                 ends += MatrixCorrections.ConditionCloses.Length;
-                conditions.Add(WrittenCondition.Read(block.Substring(at, starts - at), block.Substring(starts, ends - starts)));
+                WrittenCondition condition = WrittenCondition.Read(block.Substring(at, starts - at), block.Substring(starts, ends - starts));
+
+                if (condition == null)
+                {
+                    return null;
+                }
+
+                conditions.Add(condition);
                 at = ends;
             }
 

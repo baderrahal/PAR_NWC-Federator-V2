@@ -435,7 +435,10 @@ namespace Federator.Core.Exchange
         ///
         /// IT IS THE CODE THAT WROTE THE EXCHANGE FILE, so the client's uncorrected matrix,
         /// the one corrected before F116 and the one in the exchange folder come out as the
-        /// same sets. A file that will not read as XML throws, as ExchangeReader.ReadFile does.
+        /// same sets. It reads the file as ExchangeReader.ReadFile does, in the encoding the
+        /// file declares, and a file that will not read as XML throws as ReadFile's does. A set
+        /// the corrections cannot read in a file that does read is counted and said, never
+        /// thrown.
         /// </summary>
         public static ExchangeDocument ReadPicked(string path)
         {
@@ -449,14 +452,8 @@ namespace Federator.Core.Exchange
                 throw new FileNotFoundException("Exchange file not found.", path);
             }
 
-            string xml;
-
-            // UTF-8 unless the file opens with a byte order mark saying otherwise, which is
-            // what Navisworks writes and what the client's files declare.
-            using (StreamReader reader = new StreamReader(path, Encoding.UTF8, true))
-            {
-                xml = reader.ReadToEnd();
-            }
+            // In the encoding the file declares, as ReadFile read it.
+            string xml = ExchangeReader.ReadFileText(path);
 
             CorrectionOutcome outcome = ForPickedFile(xml, MatrixCorrectionList.Shipped, RevitWorksets.All());
             ExchangeDocument document = new ExchangeReader().ReadText(outcome.Text, path);
@@ -1008,13 +1005,14 @@ namespace Federator.Core.Exchange
                 }
             }
 
-            // The sets to give it, keyed by the name as the file writes it, in file order.
+            // The sets to give it, keyed by their folders and their name as the file writes them,
+            // never by the name alone, so a set of one name in another folder is never given it.
             Dictionary<string, string> because = new Dictionary<string, string>(StringComparer.Ordinal);
             List<SelectionSetDefinition> given = new List<SelectionSetDefinition>();
 
             foreach (SelectionSetDefinition set in read.Sets)
             {
-                if (!SameFolder(set, template) || because.ContainsKey(WrittenCondition.Escaped(set.Name)))
+                if (!SameFolder(set, template) || because.ContainsKey(KeyOf(set)))
                 {
                     continue;
                 }
@@ -1029,14 +1027,14 @@ namespace Federator.Core.Exchange
 
                     if (reason != null)
                     {
-                        because[WrittenCondition.Escaped(set.Name)] = reason;
+                        because[KeyOf(set)] = reason;
                         given.Add(set);
                         break;
                     }
                 }
             }
 
-            WrittenCondition copy = WrittenAsking(xml, template.Name, rule.Asks);
+            WrittenCondition copy = WrittenAsking(xml, template, rule.Asks);
 
             if (copy == null)
             {
@@ -1050,11 +1048,11 @@ namespace Federator.Core.Exchange
             copy = copy.WithFlags(copy.Flags & ~StartGroup);
             Dictionary<string, int> groupsGiven = new Dictionary<string, int>(StringComparer.Ordinal);
 
-            string text = EachSet(xml, block =>
+            string text = EachSet(xml, (block, folders) =>
             {
-                string name = NameIn(block);
+                string name = Key(folders, NameAttribute(block));
 
-                if (name == null || !because.ContainsKey(name) || groupsGiven.ContainsKey(name))
+                if (!because.ContainsKey(name) || groupsGiven.ContainsKey(name))
                 {
                     return block;
                 }
@@ -1088,7 +1086,7 @@ namespace Federator.Core.Exchange
 
             foreach (SelectionSetDefinition set in given)
             {
-                string name = WrittenCondition.Escaped(set.Name);
+                string name = KeyOf(set);
                 int added;
 
                 if (!groupsGiven.TryGetValue(name, out added))
@@ -1190,14 +1188,15 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>That set's condition asking for that value, as the file's text writes it, or null where it will not read.</summary>
-        private static WrittenCondition WrittenAsking(string xml, string setName, string asks)
+        private static WrittenCondition WrittenAsking(string xml, SelectionSetDefinition template, string asks)
         {
             WrittenCondition asking = null;
             bool found = false;
+            string wanted = KeyOf(template);
 
-            EachSet(xml, block =>
+            EachSet(xml, (block, folders) =>
             {
-                if (found || !Named(block, setName))
+                if (found || !string.Equals(Key(folders, NameAttribute(block)), wanted, StringComparison.Ordinal))
                 {
                     return block;
                 }
@@ -1221,18 +1220,6 @@ namespace Federator.Core.Exchange
             return asking;
         }
 
-        /// <summary>The name attribute a set block opens with, as the file writes it, or null.</summary>
-        private static string NameIn(string block)
-        {
-            if (!block.StartsWith(SetOpens, StringComparison.Ordinal))
-            {
-                return null;
-            }
-
-            int ends = block.IndexOf('"', SetOpens.Length);
-            return ends < 0 ? null : block.Substring(SetOpens.Length, ends - SetOpens.Length);
-        }
-
         /// <summary>
         /// Whether that set block is the set of that name, matched on the name as the file's
         /// text writes it, escapes and all, by WrittenCondition.Escaped. Every lookup of a set
@@ -1240,8 +1227,40 @@ namespace Federator.Core.Exchange
         /// </summary>
         private static bool Named(string block, string name)
         {
-            return string.Equals(NameIn(block), WrittenCondition.Escaped(name), StringComparison.Ordinal);
+            return string.Equals(NameAttribute(block), WrittenCondition.Escaped(name), StringComparison.Ordinal);
         }
+
+        /// <summary>
+        /// A set block of the text by its folders and its name as the file writes them, so a set
+        /// is found by where it sits and not only by what it is called, F116. KeyOf gives the
+        /// same key for a set the reader read, through the one escape, WrittenCondition.Escaped.
+        /// </summary>
+        private static string Key(IList<string> folders, string name)
+        {
+            StringBuilder key = new StringBuilder();
+
+            foreach (string folder in folders)
+            {
+                key.Append(folder).Append(KeySeparator);
+            }
+
+            return key.Append(name).ToString();
+        }
+
+        private static string KeyOf(SelectionSetDefinition set)
+        {
+            List<string> folders = new List<string>();
+
+            foreach (string folder in set.Folders)
+            {
+                folders.Add(WrittenCondition.Escaped(folder));
+            }
+
+            return Key(folders, WrittenCondition.Escaped(set.Name));
+        }
+
+        /// <summary>A character no folder or set name holds, so two different places never make one key.</summary>
+        private const char KeySeparator = '\u001F';
 
         /// <summary>
         /// Every group of every set that asks for one of those spellings, written once per
@@ -1396,25 +1415,148 @@ namespace Federator.Core.Exchange
         /// <summary>Every set block of the file in turn, handed to the change and written back as it comes out.</summary>
         private static string EachSet(string xml, Func<string, string> change)
         {
+            return EachSet(xml, (block, folders) => change(block));
+        }
+
+        /// <summary>
+        /// The same, each block handed over with the folders it sits in as the file writes their
+        /// names, read the way ExchangeReader reads them: a viewfolder and a selectionsetgroup
+        /// are each a folder, F116. A set written as one empty tag is a block of that tag alone,
+        /// so it never swallows the set after it.
+        /// </summary>
+        private static string EachSet(string xml, Func<string, IList<string>, string> change)
+        {
             StringBuilder written = new StringBuilder(xml.Length);
+            List<string> folders = new List<string>();
             int at = 0;
 
             while (true)
             {
                 int opens = xml.IndexOf(SetOpens, at, StringComparison.Ordinal);
-                int closes = opens < 0 ? -1 : xml.IndexOf(SetCloses, opens, StringComparison.Ordinal);
+                int shut = opens < 0 ? -1 : TagEnds(xml, opens);
+                bool empty = shut >= 0 && xml[shut - 1] == '/';
+                int closes = shut < 0 ? -1 : empty ? shut + 1 : xml.IndexOf(SetCloses, shut, StringComparison.Ordinal);
 
                 if (closes < 0)
                 {
                     break;
                 }
 
-                closes += SetCloses.Length;
-                written.Append(xml, at, opens - at).Append(change(xml.Substring(opens, closes - opens)));
+                if (!empty)
+                {
+                    closes += SetCloses.Length;
+                }
+
+                FoldersBetween(xml, at, opens, folders);
+                written.Append(xml, at, opens - at).Append(change(xml.Substring(opens, closes - opens), folders));
                 at = closes;
             }
 
             return written.Append(xml, at, xml.Length - at).ToString();
+        }
+
+        /// <summary>The folders that open and close in that stretch of the text, applied to the ones open at its start.</summary>
+        private static void FoldersBetween(string xml, int from, int to, List<string> folders)
+        {
+            int at = xml.IndexOf('<', from);
+
+            while (at >= 0 && at < to)
+            {
+                if (OpensTag(xml, at, FolderTag) || OpensTag(xml, at, GroupTag))
+                {
+                    int shut = TagEnds(xml, at);
+
+                    if (shut < 0 || shut >= to)
+                    {
+                        return;
+                    }
+
+                    if (xml[shut - 1] != '/')
+                    {
+                        folders.Add(NameAttribute(xml.Substring(at, shut - at + 1)));
+                    }
+
+                    at = xml.IndexOf('<', shut);
+                    continue;
+                }
+
+                if ((ClosesTag(xml, at, FolderTag) || ClosesTag(xml, at, GroupTag)) && folders.Count > 0)
+                {
+                    folders.RemoveAt(folders.Count - 1);
+                }
+
+                at = xml.IndexOf('<', at + 1);
+            }
+        }
+
+        private const string FolderTag = "viewfolder";
+
+        private const string GroupTag = "selectionsetgroup";
+
+        /// <summary>Whether a start tag of that name begins there, and not one whose name merely begins with it.</summary>
+        private static bool OpensTag(string xml, int at, string name)
+        {
+            int after = at + 1 + name.Length;
+
+            return after < xml.Length
+                && string.CompareOrdinal(xml, at + 1, name, 0, name.Length) == 0
+                && (char.IsWhiteSpace(xml[after]) || xml[after] == '>' || xml[after] == '/');
+        }
+
+        private static bool ClosesTag(string xml, int at, string name)
+        {
+            int after = at + 2 + name.Length;
+
+            return after < xml.Length
+                && xml[at + 1] == '/'
+                && string.CompareOrdinal(xml, at + 2, name, 0, name.Length) == 0
+                && (char.IsWhiteSpace(xml[after]) || xml[after] == '>');
+        }
+
+        /// <summary>Where the tag starting there ends, its closing bracket, a bracket inside a quoted attribute not counted, or minus one.</summary>
+        private static int TagEnds(string xml, int at)
+        {
+            char quote = '\0';
+
+            for (int i = at + 1; i < xml.Length; i++)
+            {
+                char c = xml[i];
+
+                if (quote != '\0')
+                {
+                    quote = c == quote ? '\0' : quote;
+                }
+                else if (c == '"' || c == '\'')
+                {
+                    quote = c;
+                }
+                else if (c == '>')
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>The name attribute of a start tag as the file writes it, escapes and all, or null where it carries none in double quotes.</summary>
+        private static string NameAttribute(string tag)
+        {
+            int at = tag.IndexOf("name=\"", StringComparison.Ordinal);
+
+            while (at > 0 && !char.IsWhiteSpace(tag[at - 1]))
+            {
+                at = tag.IndexOf("name=\"", at + 1, StringComparison.Ordinal);
+            }
+
+            if (at <= 0)
+            {
+                return null;
+            }
+
+            at += "name=\"".Length;
+            int ends = tag.IndexOf('"', at);
+            return ends < 0 ? null : tag.Substring(at, ends - at);
         }
 
         /// <summary>

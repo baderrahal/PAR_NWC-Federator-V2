@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -44,6 +45,32 @@ namespace Federator.Core.Exchange
             }
 
             return Read(document, path);
+        }
+
+        /// <summary>
+        /// The whole text of a file, decoded the way ReadFile's XmlReader decodes it: a byte
+        /// order mark first, then the encoding the declaration names, then UTF-8. The text
+        /// MatrixCorrections rewrites before it is read, so a file declared windows-1252 keeps
+        /// its accented names, as it did when the add-in read it through ReadFile, F116.
+        /// </summary>
+        internal static string ReadFileText(string path)
+        {
+            byte[] bytes = File.ReadAllBytes(path);
+            Encoding declared = null;
+
+            using (XmlReader reader = XmlReader.Create(new MemoryStream(bytes), SafeSettings()))
+            {
+                if (reader.Read() && reader.NodeType == XmlNodeType.XmlDeclaration)
+                {
+                    string name = reader.GetAttribute("encoding");
+                    declared = string.IsNullOrEmpty(name) ? null : Encoding.GetEncoding(name);
+                }
+            }
+
+            using (StreamReader text = new StreamReader(new MemoryStream(bytes), declared ?? new UTF8Encoding(false), true))
+            {
+                return text.ReadToEnd();
+            }
         }
 
         internal ExchangeDocument ReadText(string xml)
