@@ -50,6 +50,13 @@ namespace Federator.Core.Clash
         NotOnTheSameCoordinates,
 
         /// <summary>Creating or running the test threw.</summary>
-        Failed
+        Failed,
+
+        /// <summary>
+        /// Its two sides are another test's two sets swapped, and the other test is the one
+        /// kept, so this one is not created and not run, F132, Bader's Q114 points 4 to 6.
+        /// The reason names the test kept. MirrorRule decides it.
+        /// </summary>
+        Mirror
     }
 }

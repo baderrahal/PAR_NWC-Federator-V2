@@ -240,7 +240,8 @@ namespace Federator.Core.Clash
             found.Add(new TestDifference(testName, field, inFile, inDocument));
         }
 
-        private static string Number(double value)
+        /// <summary>A tolerance as the DRIFT block and the MIRROR line both write it.</summary>
+        internal static string Number(double value)
         {
             return value.ToString("0.##########", CultureInfo.InvariantCulture);
         }

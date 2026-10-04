@@ -177,6 +177,31 @@ and 6 does not read as broken.
   TEST IN THE FILE. Not creating a test changes what goes in the DOCUMENT and never what
   goes in the report, because the client's report is the whole matrix and a test missing
   from it reads as a test nobody ran rather than as a test that could not clash
+- A MIRRORED TEST IS NOT CREATED AND NOT RUN, F132, Bader's Q114 points 4 to 6 and 8, a
+  rule of the code for any project. A mirror is a test whose two sides are the same two
+  sets as another test's, swapped, so the two find the same clashes and the workbook, the
+  viewpoints and every count would hold each of them twice. `Federator.Core.Clash
+  .MirrorRule` pairs the tests on their two locators either way round, Ordinal and never
+  trimmed. Of each pair THE HIGHER PRIORITY IS KEPT, off the priority file the run picked,
+  A before B before C before none, and where equal the one first in the XML, by its
+  FileIndex. With no XML the tests saved in the document are read in the order the
+  document holds them, and the log says that order stands for the XML's. Every test in the
+  other order is a mirror of the one kept, and `ClashTestPlan.WithoutMirrors` moves it to
+  the skipped list under `ClashSkipReason.Mirror`, its reason naming the test kept, so the
+  creation plan never sees it, it is never run, and the workbook still carries its block
+  with that reason. A test with one set on both sides, or with a side nobody could read, is
+  no test's mirror. A second test with the same two sets in the kept test's own order is a
+  DUPLICATE and not a mirror by his words, so it is named and created and run as before.
+  Two sets with different names are two sets even where their rules read alike, Q121's
+  default A, so BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices make no pair. The
+  MIRROR lines are one line counting the pairs, always, then every pair whose two tests
+  differ in priority, test type or tolerance, with both values, the tolerance compared
+  within `TestDrift.ToleranceEpsilon`, then the pairs alike in everything, five named and
+  the rest counted, then the duplicates the same way. The picked XML and the client's
+  matrix hold no pair and no duplicate, turn5\measure-mirrors.md, and a test holds that on
+  both files, so on them the rule leaves every test where it was. The rule holds no number
+  that shapes a run. Its caller is the add-in half, which waits for probes P1 and P2, and
+  until it lands nothing in src calls the rule
 - The Revit container inside an NWC is often a different building from the NWC.
   Where the building code parsed from the NWC name differs from the code in the
   Revit source name, report SOURCE MISMATCH naming both, and where one Revit

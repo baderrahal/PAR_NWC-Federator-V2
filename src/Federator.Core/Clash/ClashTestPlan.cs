@@ -384,6 +384,47 @@ namespace Federator.Core.Clash
                 Source, TestsInFile, DocumentUnits, stillBuildable, nowSkipped, unknownTestTypes);
         }
 
+        /// <summary>
+        /// Moves every mirror the rule found out of the buildable list and into the skipped
+        /// list, F132, each naming the test it is a mirror of, so it is not created and not
+        /// run and its row in the workbook says why. The rule is the one built over this
+        /// plan's own buildable tests, and a test is matched as the same object, so a rule
+        /// built over another list moves nothing.
+        /// </summary>
+        public ClashTestPlan WithoutMirrors(MirrorRule mirrors)
+        {
+            if (mirrors == null)
+            {
+                throw new ArgumentNullException("mirrors");
+            }
+
+            Dictionary<PlannedClashTest, MirrorPair> byMirror = new Dictionary<PlannedClashTest, MirrorPair>();
+
+            foreach (MirrorPair pair in mirrors.Pairs)
+            {
+                byMirror[pair.Mirror] = pair;
+            }
+
+            List<PlannedClashTest> stillBuildable = new List<PlannedClashTest>();
+            List<SkippedClashTest> nowSkipped = new List<SkippedClashTest>(skipped);
+
+            foreach (PlannedClashTest test in buildable)
+            {
+                MirrorPair pair;
+
+                if (byMirror.TryGetValue(test, out pair))
+                {
+                    nowSkipped.Add(new SkippedClashTest(test.Name, ClashSkipReason.Mirror, pair.Why(), test.FileIndex));
+                    continue;
+                }
+
+                stillBuildable.Add(test);
+            }
+
+            return new ClashTestPlan(
+                Source, TestsInFile, DocumentUnits, stillBuildable, nowSkipped, unknownTestTypes);
+        }
+
         private static string Unresolved(bool leftKnown, bool rightKnown, PlannedClashTest test)
         {
             if (!leftKnown && !rightKnown)
@@ -458,6 +499,8 @@ namespace Federator.Core.Clash
                     return "the group's models are not on the same shared coordinates, so its clash is skipped";
                 case ClashSkipReason.Failed:
                     return "creating or running it threw";
+                case ClashSkipReason.Mirror:
+                    return "a mirror of a test that is kept, the same two sets swapped";
                 default:
                     return "UNKNOWN";
             }
