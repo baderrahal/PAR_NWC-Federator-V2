@@ -1409,8 +1409,8 @@ try {
       [System.IO.File]::AppendAllText($itxt, "`r`n---- dotnet build-server shutdown ----`r`n" + $rd.Out + $rd.Err, $utf8)
       Say ("  dotnet build-server shutdown ran as pid " + $rd.Pid + " and exited " + $rd.Exit)
       if ($ie -eq 2) {
-        # install.ps1's own refusals, a Navisworks running, a bundle that could not be moved
-        # aside whole, or a folder on the way that is a junction or a link, exit 2, refused.
+        # install.ps1's own refusals, each one REFUSED line and exit 2, with nothing installed,
+        # the ones .claude\rules\loop.md lists, passed on masked as refused.
         foreach ($l in @($ri.Out.Split("`n") | Where-Object { $_ -match '^REFUSED:' })) { Say ("  build\install.ps1 said: " + (MaskLine $l.Trim())) }
         Say ("REFUSED: build\install.ps1 refused, exit 2. Its output is in " + (Mask $itxt) + "."); $code = 2; break
       }

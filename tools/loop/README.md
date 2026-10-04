@@ -44,6 +44,10 @@ command that does.
   copy is named NMFed and never NM Fed, because the wall refuses every command naming NM Fed
 - it walks NM Fed one folder at a time and refuses a junction or a link inside it, because
   Windows PowerShell 5.1 follows one when it recurses
+- what is a junction or a link, here and for the folders it guards, is the one rule in
+  build\links.ps1, which it dot-sources and build\install.ps1 reads too, since F109: the
+  link type PowerShell reads off a reparse point, so a file or folder OneDrive syncs, which
+  carries the reparse point attribute and no link type, is not taken for one
 - deletes: only inside %LOCALAPPDATA%\NwcFederatorLoop
 - never writes into NM Fed, and refuses a work folder that overlaps it or is a junction,
   and with -Set a runs folder, a set folder or a set's copy that is a junction or a link
@@ -192,16 +196,23 @@ modes:
   every check has passed. On a failure after the move the new one is taken out and the old
   one put back where it was, and where each ends up is printed. Since F109, when Windows
   refuses that rename, it reads the process list again and refuses, exit 2, while any Roamer
-  runs or the list cannot be read. With none it copies the installed bundle beside it under
-  the name the rename would have given it and reads the copy back by sha256, refusing with
-  exit 2 when the copy cannot be made whole, then writes each new file over the old one,
-  removes the files and folders the new one does not have, reads the bundle back against the
-  new one by sha256 and runs every check, one IN PLACE line saying so. On a failure it writes
-  the copy back over the bundle, reads it back by sha256 and names where each thing is. On
-  success it removes the copy, or names it in the LEFT line when it will not go. Install
-  passes a refusal of install.ps1 on as exit 2, its refusal lines masked, and any other
-  failure of it as exit 1. A Roamer found right after the install, and a folder install.ps1
-  could not remove left beside the bundle, each make the verdict a FINDING and the exit 5
+  runs or the list cannot be read. With none it refuses, exit 2 and nothing written, when the
+  name the copy would take is taken already, when a file of the bundle cannot be read or a
+  junction or a link is inside it, and when a file of it is marked ReadOnly, Hidden or System
+  or a folder ReadOnly, each marked one named. Otherwise it lists the installed bundle by
+  sha256, copies it beside it under the name the rename would have given it and reads the
+  copy back against that listing, refusing with exit 2 when the copy cannot be made whole,
+  then writes each new file over the old one, removes the files and folders the new one does
+  not have, reads the bundle back against the new one by sha256 and runs every check, one IN
+  PLACE line saying so and what a stop part way leaves. On a failure it writes the copy back
+  over the bundle against that listing, never against what the copy holds by then, reads it
+  back and names where each thing is, and when it cannot, says whether the copy still reads
+  whole. On success it removes the copy, or names it in the LEFT line when it will not go.
+  Install passes a refusal of install.ps1 on as exit 2, its refusal lines masked, and any
+  other failure of it as exit 1, naming install.txt and no folder left beside the bundle,
+  which it reads only after an exit 0, T3-G15. A Roamer found right after the install, and a
+  folder install.ps1 could not remove left beside the bundle, each make the verdict a FINDING
+  and the exit 5
 - Run -Set NN -Item 0 -Stamp <8 hex>, the start with no window. Its refusals in order: the
   host, the parameters, the loop's lock Local\NwcFederatorLoop.run, a record with no
   VERDICT line, a start in unproved-starts.txt still running, any Roamer, the installed
@@ -308,8 +319,8 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
   aside as ParsonsNwcFederator.bundle.replaced-yyyyMMdd-HHmmss beside it until every check
   of the new one has passed, and a new one that failed and will not go, moved aside as
   ParsonsNwcFederator.bundle.failed-yyyyMMdd-HHmmss. When that move is refused with no
-  Navisworks running, it copies the installed bundle beside it under the same .replaced- name
-  instead, and writes the new files over the old ones where they are
+  process named Roamer running, it copies the installed bundle beside it under the same
+  .replaced- name instead, and writes the new files over the old ones where they are
 - writes in the repo: steps\runs\NN\item0 with record.txt, watch.txt and settings.txt, to
   be masked before any commit, and the evidence of a NOT RUN moved aside as
   steps\runs\NN\item0-aside-yyyyMMdd-HHmmss, never emptied
@@ -360,7 +371,11 @@ through checks 13, 14, 15 and 18 and to the removed line, since fix attempt 2: H
 end of a run, the call deadline, the verdict, the one listing reader and the bounded walk,
 and since F109: H12c, more copies of build\install.ps1 against the fake APPDATA, each with one
 file of the fake bundle held open by a child powershell, which refuses the move aside, so
-the bundle is replaced in place:
+the bundle is replaced in place, the first of them main's install.ps1 at 398b910, the one
+Windows refused on 2026-10-01, and since F109 attempt 2 a junction inside the bundle, the
+copy's name taken, marked files and folders, a copy that loses a file before the put back,
+and the rule of build\links.ps1 read on a junction and on the clone's bundle folder under
+OneDrive:
 
     powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <a new folder under %LOCALAPPDATA%\NwcFederatorLoop>
 
@@ -373,7 +388,9 @@ Roamer running and an installed stamp that is not the one passed, so two other c
 refuse it too, and in CloseOwn calls, which close only a process whose path is the
 install's own Roamer.exe, which no stand-in has. After every case it reads his logs folder,
 his AutoSave folder, the installed bundle, an export of his 22.0 key and the loop folder
-outside the turn folders and -Work, and each must read as at the start.
+outside the turn folders and -Work, and each must read as at the start. H12c also reads the
+bundle folder of the clone the checkout belongs to, for attributes, link types and sha256
+alone, and reads no file OneDrive holds online only.
 
 StandIn is a small net48 exe named Roamer.exe that is not Navisworks, outside the solution
 and the bundle, built by the harness with dotnet build into -Work. It takes its role from
@@ -400,8 +417,10 @@ the new cases of H6, H7, H10, H12b, H16 and H17, and after fix attempt 3: 242 ch
 Proved again on 2026-10-04 for F109, on the files as committed before main was merged in:
 254 checks passed and 0 failed in 1356 s, 44 stand-ins, with H12b item 10 read by the new
 rule and the twelve checks of H12c. With main merged in, which brought F106's run.ps1 and
-nw-guard.ps1, every check of H12, H12b and H12c passed, and seven checks of H0 and H6 failed,
-F106's R1, as its DONE line in steps\01_next.md says.
+nw-guard.ps1: 244 passed and 10 failed in 1647 s. Every check of H12, H12b and H12c passed.
+Seven failures are checks of H0 and H6, F106's R1, as its DONE line in steps\01_next.md
+says. Three are the read of Bader's state after H17, H18 and H15, which found the loop
+folder's source copy made again at 11:48:01 by something outside the harness.
 Among them M1, M2 and M3: with 30 fabricated logs held open without delete sharing, the
 real RunLog.Start prune wrote RETAIN keeping 30 logs, deleted 0, could not delete 1, and
 lost nothing, where the same folder with no handles lost its oldest.

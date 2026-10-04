@@ -68,12 +68,21 @@ and nothing is fixed until a real run on real files shows it fixed.
   installed bundle aside by one rename, which fails whole while a file in it is held, copies
   the new one in and checks it, and removes the one moved aside only once every check has
   passed. On a failure after the move the new one is taken out and the old one put back,
-  and where each is is printed. When Windows refuses that rename and no Navisworks runs, it
-  copies the installed bundle beside it under the name the rename would have given it, reads
-  the copy back by sha256, and only then writes the new files over the old ones where they
-  are, F109. On a failure it writes the copy back over the bundle and reads it back, so a
-  whole copy of the add-in installed before is on the disk at every moment. A folder it
-  cannot remove is named in the verdict of run.ps1 -Mode Install
+  and where each is is printed. When Windows refuses that rename and no process named Roamer
+  runs, it lists the installed bundle by sha256, copies it beside it under the name the
+  rename would have given it, reads the copy back against that listing, and only then writes
+  the new files over the old ones where they are, F109. On a failure it writes the copy back
+  over the bundle against that same listing, never against what the copy holds by then, and
+  reads it back, so a whole copy of the add-in installed before is on the disk at every
+  moment. A folder it cannot remove is named in the verdict of run.ps1 -Mode Install after
+  an exit 0. A stop part way leaves the bundle with some new files and some old ones and the
+  copy whole beside it, which the IN PLACE line and INSTALL.md say, with how to finish or
+  undo it. Naming that state on the next run is T3-G14
+- ONE RULE OF WHAT IS A JUNCTION OR A LINK. build\links.ps1 holds it, the link type
+  PowerShell reads off a reparse point, and build\install.ps1 and tools\loop\prepare-copy.ps1
+  dot-source it and never copy it. Every file and folder OneDrive syncs carries the reparse
+  point attribute with no link type, measured on 2026-09-27 and 2026-10-04, so the attribute
+  alone is never the test
 - Every run works on the copy under %LOCALAPPDATA%\NwcFederatorLoop\source and every
   output of every run goes under %LOCALAPPDATA%\NwcFederatorLoop
 - Nothing of Bader's is deleted or overwritten, bar two things. The installed add-in, which
@@ -125,11 +134,14 @@ and nothing is fixed until a real run on real files shows it fixed.
   refuses with one REFUSED line and exit 2, for every one who installs, while any Roamer
   runs, read immediately before it moves the installed bundle aside, when a folder from
   %APPDATA% down to the bundle is a junction or a link, and when the move aside is refused
-  and then a Roamer runs or the process list cannot be read, read again, or the copy of the
-  installed bundle beside it cannot be made whole. A refusal names a Roamer only when one
-  runs. run.ps1 -Mode Install passes that refusal on as exit 2. A Roamer running right after
-  a loop install, and a bundle or its copy left beside the new one, are each a finding that
-  changes its verdict
+  and then a Roamer runs or the process list cannot be read, read again, the name of the
+  copy beside it is taken already, a file of the installed bundle cannot be read or a
+  junction or a link is inside it, a file of it is marked ReadOnly, Hidden or System or a
+  folder ReadOnly, each marked one named, or the copy of the installed bundle beside it
+  cannot be made whole. A refusal names a Roamer only when one runs, and the others say no
+  process named Roamer runs, which is what was read. run.ps1 -Mode Install passes that
+  refusal on as exit 2. A Roamer running right after a loop install, and a bundle or its
+  copy left beside the new one, are each a finding that changes its verdict
 - While a Navisworks the loop started runs, the recent files, the window placement and the
   default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
   under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which

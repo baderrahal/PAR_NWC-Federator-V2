@@ -27,7 +27,10 @@ $ErrorActionPreference = "Stop"
 # copies of build\install.ps1 with -SkipBuild, and only after a child started the same way
 # reads APPDATA as a folder under -Work, so what they install goes there. Since F109 H12c
 # runs more of them the same way, each with one file of the fake bundle held open by a child
-# powershell, which refuses the move aside, so the bundle is replaced in place.
+# powershell, which refuses the move aside, so the bundle is replaced in place. Since F109
+# attempt 2 it also reads the bundle folder of the clone this checkout belongs to, which on
+# this machine sits under OneDrive, for attributes, link types and sha256 alone, and writes
+# nothing there.
 #
 # THE STAND-IN is tools\loop\StandIn, built here into -Work, a small net48 exe named
 # Roamer.exe that is not Navisworks. Every stand-in is started by this harness, held through
@@ -974,6 +977,9 @@ try {
   $buildOut = Join-Path $repo "src\Federator.Addin\bin\Release\net48"
   New-Item -ItemType Directory -Path (Join-Path $ir "build"), (Join-Path $ir "bundle\ParsonsNwcFederator.bundle"), (Join-Path $ir "src\Federator.Addin\bin\Release\net48") | Out-Null
   Copy-Item -LiteralPath (Join-Path $repo "bundle\ParsonsNwcFederator.bundle\PackageContents.xml") -Destination (Join-Path $ir "bundle\ParsonsNwcFederator.bundle")
+  # Since F109 attempt 2 install.ps1 dot-sources the one rule of what is a junction or a link
+  # from beside it.
+  Copy-Item -LiteralPath (Join-Path $repo "build\links.ps1") -Destination (Join-Path $ir "build")
   foreach ($f in @(Get-ChildItem -LiteralPath $buildOut -File -Filter "*.dll")) { Copy-Item -LiteralPath $f.FullName -Destination (Join-Path $ir "src\Federator.Addin\bin\Release\net48") }
   $newInstall = [System.IO.File]::ReadAllText((Join-Path $repo "build\install.ps1"))
   $oldInstall = (RunChild "git" "show 0eb4ede:build/install.ps1" $repo).Out
@@ -1010,6 +1016,16 @@ try {
     if (-not (Test-Path -LiteralPath $ready)) { [void](EndChild $c 1); throw ("the child powershell did not hold " + $path) }
     return $c
   }
+  # Every file and folder below $dir with its attributes, one sorted line each joined by |.
+  function MarksOf($dir) {
+    if (-not (Test-Path -LiteralPath $dir)) { return "the folder is not there" }
+    $root = (Get-Item -LiteralPath $dir -Force).FullName.TrimEnd('\')
+    return ((@(Get-ChildItem -LiteralPath $root -Recurse -Force | ForEach-Object { $_.FullName.Substring($root.Length + 1) + " " + $_.Attributes }) | Sort-Object) -join "|")
+  }
+  # The folder a junction inside the fake bundle points at, and the folder made first at the
+  # name of the copy beside it, F109 attempt 2.
+  $linkTarget = Join-Path $h12 "linked-target"
+  $takenAside = $fakeBundle + ".replaced-20000101-000000"
   # $how is roamer, held, junction or nothing, or since F109 an in-place kind. held loads a DLL
   # of the old bundle with Assembly.LoadFrom in a child powershell while install.ps1 runs, the
   # shape measured on 2026-09-30 with no Navisworks to refuse the rename of its folder.
@@ -1017,8 +1033,17 @@ try {
   # folder. An in-place kind writes the bundle of OldBundle and holds its
   # Contents\v22\Federator.Core.dll open in a child powershell while install.ps1 runs, sharing
   # read, write and delete for inplace-all and inplace-all-roamer, which also runs a stand-in
-  # Roamer, read only for inplace-read, and nothing for inplace-none.
+  # Roamer, read only for inplace-read, and nothing for inplace-none. Since F109 attempt 2,
+  # sharing read, write and delete as well: inplace-junction puts a junction named Linked inside
+  # the bundle, to a folder of its own holding one file, inplace-taken makes a folder with one
+  # file at the name the copy beside the bundle would take, and inplace-marked marks a file
+  # ReadOnly, a folder ReadOnly, a file Hidden and a file System. A $text of null is a copy of
+  # install.ps1 that could not be made, and the trial does not run.
   function InstallTrial($label, $text, $how) {
+    if ($null -eq $text) {
+      O ("    " + $label + ": NOT RUN, its copy of install.ps1 could not be made")
+      return [pscustomobject]@{ Exit = -2; Marker = $false; Addin = $false; Pkg = $false; Said = @(); Aside = -1; AsideMarker = $false; Failed = -1; Out = ""; Before = "not run"; After = "not run, after"; Staged = "not run, staged"; AsideTrees = @(); Roam = -1; LinkBefore = "not run"; LinkAfter = "not run, after"; TakenBefore = "not run"; MarksBefore = "not run"; MarksAfter = "not run, after" }
+    }
     StopStandins
     if (Test-Path -LiteralPath $plugins) {
       if (((Get-Item -LiteralPath $plugins -Force).Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) { [System.IO.Directory]::Delete($plugins, $false) }
@@ -1034,14 +1059,30 @@ try {
     } else { New-Item -ItemType Directory -Path $fakeBundle | Out-Null }
     [System.IO.File]::WriteAllText((Join-Path $bundleNow "marker.txt"), "the bundle installed before", $utf8)
     [System.IO.File]::WriteAllText((Join-Path $ir "build\install.ps1"), $text, $utf8)
-    $share = @{ "inplace-all" = "ReadWrite, Delete"; "inplace-all-roamer" = "ReadWrite, Delete"; "inplace-read" = "Read"; "inplace-none" = "None" }[$how]
+    $share = @{ "inplace-all" = "ReadWrite, Delete"; "inplace-all-roamer" = "ReadWrite, Delete"; "inplace-read" = "Read"; "inplace-none" = "None"; "inplace-junction" = "ReadWrite, Delete"; "inplace-taken" = "ReadWrite, Delete"; "inplace-marked" = "ReadWrite, Delete" }[$how]
     if ($null -ne $share) { OldBundle $bundleNow }
     $oldDll = Join-Path $bundleNow "old\Federator.Core.dll"
     if ($how -eq "held") {
       New-Item -ItemType Directory -Path (Join-Path $bundleNow "old") | Out-Null
       Copy-Item -LiteralPath (Join-Path $buildOut "Federator.Core.dll") -Destination $oldDll
     }
+    if (Test-Path -LiteralPath $linkTarget) { Remove-Item -LiteralPath $linkTarget -Recurse -Force }
+    if ($how -eq "inplace-junction") {
+      New-Item -ItemType Directory -Path $linkTarget | Out-Null
+      [System.IO.File]::WriteAllText((Join-Path $linkTarget "elsewhere.txt"), "a file the junction inside the bundle points at", $utf8)
+      New-Item -ItemType Junction -Path (Join-Path $bundleNow "Linked") -Target $linkTarget | Out-Null
+    }
+    if ($how -eq "inplace-taken") {
+      New-Item -ItemType Directory -Path $takenAside | Out-Null
+      [System.IO.File]::WriteAllText((Join-Path $takenAside "taken.txt"), "a folder already at the name of the copy", $utf8)
+    }
+    if ($how -eq "inplace-marked") {
+      foreach ($pair in @(@("Contents\v22\Federator.Addin.dll", "ReadOnly"), @("OldOnly", "Directory, ReadOnly"), @("OldOnly\note.txt", "Hidden"), @("PackageContents.xml", "System"))) { [System.IO.File]::SetAttributes((Join-Path $bundleNow $pair[0]), [System.IO.FileAttributes]$pair[1]) }
+    }
     $before = TreeOf $bundleNow
+    $linkBefore = TreeOf $linkTarget
+    $takenBefore = TreeOf $takenAside
+    $marksBefore = MarksOf $bundleNow
     if ($how -eq "roamer" -or $how -eq "inplace-all-roamer") { [void](StartStandin "sleep 120" $null $null) }
     $loader = $null
     if ($how -eq "held") {
@@ -1066,6 +1107,12 @@ try {
     $addin = Test-Path -LiteralPath (Join-Path $bundleNow "Contents\v22\Federator.Addin.dll")
     $pkg = Test-Path -LiteralPath (Join-Path $bundleNow "PackageContents.xml")
     $after = TreeOf $bundleNow
+    $linkAfter = TreeOf $linkTarget
+    $marksAfter = MarksOf $bundleNow
+    # The junction itself is removed, never what it points at, before anything is removed
+    # recursively.
+    $linked = Join-Path $bundleNow "Linked"
+    if (Test-Path -LiteralPath $linked) { [System.IO.Directory]::Delete($linked, $false) }
     $staged = TreeOf (Join-Path $ir "artifacts\ParsonsNwcFederator.bundle")
     $aside = 0; $failed = 0; $asideMarker = $false; $asideTrees = @()
     if ($how -eq "junction") { $aside = @(Get-ChildItem -LiteralPath $elsewhere -Directory -Force | Where-Object { $_.Name -like "*.replaced-*" }).Count; [System.IO.Directory]::Delete($plugins, $false) }
@@ -1079,13 +1126,16 @@ try {
     O ("    " + $label + ": Roamers running " + $roam + ", exit " + $res.Exit + ", the old bundle's marker still there " + $marker + ", the new add-in there " + $addin + ", folders moved aside and left " + $aside + ", the old marker in one " + $asideMarker + ", new ones moved aside " + $failed + ", the bundle reads as before by sha256 " + ($after -eq $before) + ", as the new one " + ($after -eq $staged) + $(if ($said.Count -gt 0) { ", said: " + $said[0] } else { "" }))
     foreach ($l in @($res.Out.Split("`n") | Where-Object { $_ -match 'HARNESS COPY|installed before|failed|LEFT:|^IN PLACE:|^Replaced in place|^Files not written' })) { O ("      | " + $l.Trim().Replace($h12, "<h12>")) }
     StopStandins
-    return [pscustomobject]@{ Exit = $res.Exit; Marker = $marker; Addin = $addin; Pkg = $pkg; Said = $said; Aside = $aside; AsideMarker = $asideMarker; Failed = $failed; Out = $res.Out; Before = $before; After = $after; Staged = $staged; AsideTrees = $asideTrees }
+    return [pscustomobject]@{ Exit = $res.Exit; Marker = $marker; Addin = $addin; Pkg = $pkg; Said = $said; Aside = $aside; AsideMarker = $asideMarker; Failed = $failed; Out = $res.Out; Before = $before; After = $after; Staged = $staged; AsideTrees = $asideTrees; Roam = $roam; LinkBefore = $linkBefore; LinkAfter = $linkAfter; TakenBefore = $takenBefore; MarksBefore = $marksBefore; MarksAfter = $marksAfter }
   }
-  # A copy of install.ps1 with one line replaced, found exactly once.
-  function InstallWith($from, $to) {
-    $n = ([regex]::Matches($newInstall, [regex]::Escape($from))).Count
-    if ($n -ne 1) { throw ("a replacement of the install.ps1 copy is found " + $n + " times: " + $from) }
-    return $newInstall.Replace($from, $to)
+  # A copy of $text, by default install.ps1 as it is now, with one line replaced, found exactly
+  # once. When it is not, the line says so and null is returned, so that trial does not run
+  # and its checks fail, and the cases after it still run.
+  function InstallWith($from, $to, $text) {
+    if ($null -eq $text) { $text = $newInstall }
+    $n = ([regex]::Matches($text, [regex]::Escape($from))).Count
+    if ($n -ne 1) { O ("    a replacement of the install.ps1 copy is found " + $n + " times, so that copy is not made: " + $from); return $null }
+    return $text.Replace($from, $to)
   }
   # The lines of a trial's output that match $pattern, each without its line end, always as an
   # array, so one line is not handed back as a string.
@@ -1098,7 +1148,7 @@ try {
   # Since F109 a move aside refused with no Navisworks running goes in place. The loaded DLL
   # is one the new bundle does not have, and it cannot be removed, measured on 2026-10-01 and
   # 2026-10-04, so the install fails after its first writes and puts every file back.
-  Check "item 10, since F109: with a DLL of the bundle loaded in another process and no Navisworks, the move aside is refused and the bundle is replaced in place, the loaded DLL cannot be removed, so every file and folder is put back and reads as before by sha256, exit 1, with nothing moved aside or left beside it" ($t4.Exit -eq 1 -and $t4.Marker -and -not $t4.Addin -and $t4.Aside -eq 0 -and $t4.Failed -eq 0 -and $t4.Before -eq $t4.After -and (Lines $t4 '^IN PLACE: the installed add-in could not be moved aside, ').Count -eq 1 -and (Lines $t4 '^The new add-in could not be copied in, old\\Federator\.Core\.dll could not be removed, .+ put back in place with \d+ written back and \d+ removed and read back by sha256 against its copy, its copy beside it was removed').Count -eq 1) ("exit " + $t4.Exit)
+  Check "item 10, since F109: with a DLL of the bundle loaded in another process and no Navisworks, the move aside is refused and the bundle is replaced in place, the loaded DLL cannot be removed, so every file and folder is put back and reads as before by sha256, exit 1, with nothing moved aside or left beside it" ($t4.Exit -eq 1 -and $t4.Marker -and -not $t4.Addin -and $t4.Aside -eq 0 -and $t4.Failed -eq 0 -and $t4.Before -eq $t4.After -and (Lines $t4 '^IN PLACE: the installed add-in could not be moved aside, ').Count -eq 1 -and (Lines $t4 '^The new add-in could not be copied in, old\\Federator\.Core\.dll could not be removed, .+ put back in place with \d+ written back and \d+ removed, and read back by sha256 against the bundle as it read before anything was written over, its copy beside it was removed').Count -eq 1) ("exit " + $t4.Exit)
   $t5 = InstallTrial "fix list 2 item 11, Autodesk\ApplicationPlugins a junction to a folder elsewhere" $newInstall "junction"
   Check "item 11: through a junction nothing is installed and nothing is removed, exit 2, one REFUSED line naming the junction" ($t5.Exit -eq 2 -and $t5.Marker -and -not $t5.Addin -and $t5.Aside -eq 0 -and $t5.Said.Count -eq 1 -and $t5.Said[0] -match '^REFUSED: .*ApplicationPlugins is a junction or a link') ("exit " + $t5.Exit)
   $copyLine = '    Copy-Item (Join-Path $staging "*") $target -Recurse -Force'
@@ -1108,7 +1158,9 @@ try {
   Check "item 6a: when the new one can be neither removed nor moved aside, the old one stays whole where it was moved, and the message names where each is, exit 1" ($ta2.Exit -eq 1 -and -not $ta2.Marker -and $ta2.Pkg -and $ta2.Aside -eq 1 -and $ta2.AsideMarker -and $ta2.Out -match ('The add-in installed before is at ' + [regex]::Escape($fakeBundle) + '\.replaced-\d{8}-\d{6}, and the new one that failed is at ' + [regex]::Escape($fakeBundle) + '\.')) ("exit " + $ta2.Exit)
   $tb = InstallTrial "fix list 3 item 6b, a check of the new one fails after the copy" (InstallWith '$nested = Join-Path $target (Split-Path -Leaf $target)' '$nested = Join-Path $target "PackageContents.xml"') ""
   Check "item 6b: a check that fails after the copy leaves the old one whole, put back where it was, the failed new one removed, exit 1" ($tb.Exit -eq 1 -and $tb.Marker -and -not $tb.Addin -and $tb.Aside -eq 0 -and $tb.Failed -eq 0 -and $tb.Out.Contains("The new add-in failed its check, The bundle ended up inside itself") -and $tb.Out.Contains("The add-in installed before is at " + $fakeBundle + ", and the new one that failed was removed.")) ("exit " + $tb.Exit)
-  $tc = InstallTrial "fix list 3 item 6c, the add-in installed before cannot be removed after every check passed" (InstallWith '    try { Remove-Item -LiteralPath $aside -Recurse -Force -ErrorAction Stop }' '    try { throw "HARNESS COPY: the removal of the add-in installed before fails" }') ""
+  # Since F109 attempt 2 the last removal is the one RemoveCopy, so the copy replaces its call.
+  $lastRemoval = '    $leftWhy = RemoveCopy'
+  $tc = InstallTrial "fix list 3 item 6c, the add-in installed before cannot be removed after every check passed" (InstallWith $lastRemoval '    $leftWhy = "HARNESS COPY: the removal of the add-in installed before fails"') ""
   Check "item 6c: the install finishes, exit 0, with one LEFT line naming where the old one is" ($tc.Exit -eq 0 -and $tc.Addin -and $tc.Aside -eq 1 -and $tc.AsideMarker -and @($tc.Out.Split("`n") | Where-Object { $_ -match '^LEFT: the add-in installed before is at ' }).Count -eq 1) ("exit " + $tc.Exit)
   $leftC = @(BundleLeftovers $fakeBundle)
   $ivC = InstallVerdict "abcdef12" $false $leftC
@@ -1128,10 +1180,14 @@ try {
   # read, write and delete, the file can still be written over and removed, held sharing read
   # only it cannot be written over, and held sharing nothing it cannot be read. So each case
   # holds one file of the bundle installed before, and install.ps1 is the one committed, bar
-  # the three cases whose title names the line their copy replaces.
-  $ip1 = InstallTrial "F109 a, a file of the installed bundle held open by another process sharing read, write and delete, no Navisworks" $newInstall "inplace-all"
-  $ip1In = Lines $ip1 '^IN PLACE: the installed add-in could not be moved aside, Access to the path .+ is denied, and no Navisworks runs, so its files are replaced where they are\. A copy of it was made first at .+\.replaced-\d{8}-\d{6} and read back by sha256'
-  Check "F109 a: the move aside is refused, and one IN PLACE line says so with what Windows answered and that no Navisworks runs, and no line says Navisworks is running" ($ip1In.Count -eq 1 -and (Lines $ip1 'Navisworks is running|most likely by a Navisworks').Count -eq 0) $(if ($ip1In.Count -gt 0) { $ip1In[0].Replace($h12, "<h12>") } else { "no IN PLACE line" })
+  # the cases whose title names the line their copy replaces, and the first, which runs
+  # main's install.ps1 before F109.
+  $mainInstall = (RunChild "git" "show 398b910:build/install.ps1" $repo).Out
+  $ip0 = InstallTrial "F109 before, install.ps1 at 398b910, the one Windows refused three times on 2026-10-01, a file of the installed bundle held open sharing read, write and delete, no Roamer" $mainInstall "inplace-all"
+  Check "F109 before: install.ps1 at 398b910 refuses with no Roamer running, exit 2, saying a Navisworks most likely holds the bundle, and nothing is installed, the fault F109 fixes" ($ip0.Roam -eq 0 -and $ip0.Exit -eq 2 -and $ip0.Said.Count -eq 1 -and $ip0.Said[0] -match 'a file in it is held, most likely by a Navisworks that is running' -and $ip0.Before -eq $ip0.After -and $ip0.Aside -eq 0) ("exit " + $ip0.Exit + ", Roamers " + $ip0.Roam)
+  $ip1 = InstallTrial "F109 a, a file of the installed bundle held open by another process sharing read, write and delete, no Roamer" $newInstall "inplace-all"
+  $ip1In = Lines $ip1 '^IN PLACE: the installed add-in could not be moved aside, Access to the path .+ is denied, and no process named Roamer runs, so its files are replaced where they are\. A copy of it was made first at .+\.replaced-\d{8}-\d{6} and read back by sha256, and it is kept until every check of the new one has passed\. If this stops before its last line, the add-in may hold some new files and some old ones, so start no Navisworks, and run this again to finish, or make the add-in hold exactly the files of that copy to undo\.$'
+  Check "F109 a: the move aside is refused, and one IN PLACE line says so with what Windows answered, that no process named Roamer runs, and what a stop part way leaves and how to finish or undo it, and no line says Navisworks is running" ($ip1In.Count -eq 1 -and (Lines $ip1 'Navisworks is running|most likely by a Navisworks').Count -eq 0) $(if ($ip1In.Count -gt 0) { $ip1In[0].Replace($h12, "<h12>") } else { "no IN PLACE line" })
   Check "F109 a: the install finishes, exit 0, and the installed bundle reads as the new one by sha256, file for file and folder for folder, so the marker, the file and the folder the new one does not have are gone" ($ip1.Exit -eq 0 -and $ip1.After -eq $ip1.Staged -and $ip1.Staged.Contains("Contents\v22\Federator.Addin.dll ") -and -not $ip1.Marker) ("exit " + $ip1.Exit)
   $ip1Head = Lines $ip1 '^Files not written, because the installed one already held the same bytes by sha256:$'
   $ip1Kept = Lines $ip1 '^  Contents\\v22\\ClosedXML\.dll  \(\d+ bytes\)$'
@@ -1139,22 +1195,77 @@ try {
   Check "F109 a: the copy beside it is removed once every check passed, nothing is left beside the bundle, and run.ps1 finds nothing there" ($ip1.Aside -eq 0 -and $ip1.Failed -eq 0 -and @(BundleLeftovers $fakeBundle).Count -eq 0) ""
   $ip2 = InstallTrial "F109 b, a file the new one writes over held open sharing read only, so a write fails mid way" $newInstall "inplace-read"
   Check "F109 b: a write fails mid way, exit 1, and every file and folder of the bundle installed before reads as before by sha256, those the new one added are gone, and nothing is left beside it" ($ip2.Exit -eq 1 -and $ip2.Before -eq $ip2.After -and $ip2.Aside -eq 0 -and $ip2.Failed -eq 0 -and (Lines $ip2 '^IN PLACE: ').Count -eq 1 -and (Lines $ip2 'Navisworks is running|most likely by a Navisworks').Count -eq 0) ("exit " + $ip2.Exit)
-  $ip2Back = Lines $ip2 '^The new add-in could not be copied in, Contents\\v22\\Federator\.Core\.dll could not be written, .+\. The add-in installed before is at .+, put back in place with [1-9]\d* written back and [1-9]\d* removed and read back by sha256 against its copy, its copy beside it was removed, and the new one that failed is at .+\.$'
+  $ip2Back = Lines $ip2 '^The new add-in could not be copied in, Contents\\v22\\Federator\.Core\.dll could not be written, .+\. The add-in installed before is at .+, put back in place with [1-9]\d* written back and [1-9]\d* removed, and read back by sha256 against the bundle as it read before anything was written over, its copy beside it was removed, and the new one that failed is at .+\.$'
   Check "F109 b: one line names the file that could not be written, how many files were written back and removed, and where each thing is" ($ip2Back.Count -eq 1) $(if ($ip2Back.Count -gt 0) { $ip2Back[0].Replace($h12, "<h12>") } else { "no such line" })
   $firstRead = 'if ($null -ne $navisworks) { Write-Host ("REFUSED: " + $navisworks + ". Nothing was installed."); exit 2 }'
   $ip3 = InstallTrial "F109 c, its first read of the process list replaced by a line that only prints it, a stand-in Roamer running and a file held sharing read, write and delete" (InstallWith $firstRead 'if ($null -ne $navisworks) { Write-Host ("HARNESS COPY: the first read of the process list is skipped, it found " + $navisworks) }') "inplace-all-roamer"
   Check "F109 c: the second read, made once the move aside is refused, finds the Roamer and refuses, exit 2, one REFUSED line naming its pid and what Windows answered, no IN PLACE line, and the bundle reads as before by sha256 with nothing beside it" ($ip3.Exit -eq 2 -and $ip3.Said.Count -eq 1 -and $ip3.Said[0] -match '^REFUSED: the installed add-in could not be moved aside, Access to the path .+ is denied, and Navisworks is running, Roamer pid \d+, and must be closed first\. Close it and run this again\. The installed add-in is left whole\. Nothing was installed\.$' -and (Lines $ip3 '^HARNESS COPY: the first read of the process list is skipped, it found Navisworks is running, Roamer pid \d+').Count -eq 1 -and (Lines $ip3 '^IN PLACE: ').Count -eq 0 -and $ip3.Before -eq $ip3.After -and $ip3.Aside -eq 0) ("exit " + $ip3.Exit)
-  $ip4 = InstallTrial "F109 d, a file of the installed bundle held open sharing nothing, so the copy beside it cannot read it" $newInstall "inplace-none"
-  Check "F109 d: the copy beside it cannot be made whole, so the install refuses, exit 2, one REFUSED line saying no Navisworks runs and naming the file it could not read, no IN PLACE line, and the bundle reads as before by sha256 with nothing beside it" ($ip4.Exit -eq 2 -and $ip4.Said.Count -eq 1 -and $ip4.Said[0] -match '^REFUSED: the installed add-in could not be moved aside, Access to the path .+ is denied, no Navisworks runs, and its copy beside it could not be made whole, .+Federator\.Core\.dll.+, and nothing of it was made\. The installed add-in is left whole\. Nothing was installed\.$' -and (Lines $ip4 '^IN PLACE: ').Count -eq 0 -and (Lines $ip4 'Navisworks is running|most likely by a Navisworks').Count -eq 0 -and $ip4.Before -eq $ip4.After -and $ip4.Aside -eq 0) ("exit " + $ip4.Exit)
-  $ip5 = InstallTrial "F109 e, in place, and its copy beside it cannot be removed after every check passed" (InstallWith '    try { Remove-Item -LiteralPath $aside -Recurse -Force -ErrorAction Stop }' '    try { throw "HARNESS COPY: the removal of the add-in installed before fails" }') "inplace-all"
+  $ip4 = InstallTrial "F109 d, a file of the installed bundle held open sharing nothing, so the bundle cannot be read whole and no copy of it is made" $newInstall "inplace-none"
+  Check "F109 d: the installed bundle cannot be read whole, so the install refuses before any copy is made, exit 2, one REFUSED line saying no process named Roamer runs and naming the file it could not read, no IN PLACE line, and the bundle reads as before by sha256 with nothing beside it" ($ip4.Exit -eq 2 -and $ip4.Said.Count -eq 1 -and $ip4.Said[0] -match '^REFUSED: the installed add-in could not be moved aside, Access to the path .+ is denied, no process named Roamer runs, and it is not replaced in place, Contents\\v22\\Federator\.Core\.dll could not be read, .+\. The installed add-in is left whole\. Nothing was installed\.$' -and (Lines $ip4 '^IN PLACE: ').Count -eq 0 -and (Lines $ip4 'Navisworks is running|most likely by a Navisworks').Count -eq 0 -and $ip4.Before -eq $ip4.After -and $ip4.Aside -eq 0) ("exit " + $ip4.Exit)
+  $ip5 = InstallTrial "F109 e, in place, and its copy beside it cannot be removed after every check passed" (InstallWith $lastRemoval '    $leftWhy = "HARNESS COPY: the removal of the add-in installed before fails"') "inplace-all"
   $leftE = @(BundleLeftovers $fakeBundle)
   $ivE = InstallVerdict "abcdef12" $false $leftE
   O ("    | " + $ivE.Code + ", " + $ivE.Text)
   Check "F109 e: the install finishes, exit 0, with one LEFT line naming the copy beside it, which reads as the bundle installed before by sha256, and the bundle reads as the new one" ($ip5.Exit -eq 0 -and (Lines $ip5 '^LEFT: the add-in installed before is at .+\.replaced-\d{8}-\d{6} and could not be removed').Count -eq 1 -and $ip5.Aside -eq 1 -and $ip5.AsideTrees.Count -eq 1 -and $ip5.AsideTrees[0] -eq $ip5.Before -and $ip5.After -eq $ip5.Staged) ("exit " + $ip5.Exit)
   Check "F109 e: run.ps1 names the copy left beside the new bundle in its verdict, a FINDING with exit 5, as it names a bundle moved aside" ($leftE.Count -eq 1 -and $leftE[0] -match 'ParsonsNwcFederator\.bundle\.replaced-\d{8}-\d{6}$' -and $ivE.Code -eq 5 -and $ivE.Text.Contains("FINDING: the add-in installed before is left beside the new one, " + $leftE[0])) ([string]$leftE.Count + " left")
-  $ip6 = InstallTrial "F109 f, a write fails mid way and its put back is replaced by a line that fails" (InstallWith '        try { $back = WriteOver $aside $target }' '        try { throw "HARNESS COPY: the put back fails" }') "inplace-read"
+  $ip6 = InstallTrial "F109 f, a write fails mid way and its put back is replaced by a line that fails" (InstallWith '        try { $back = WriteOver $aside $old $target }' '        try { throw "HARNESS COPY: the put back fails" }') "inplace-read"
   $leftF = @(BundleLeftovers $fakeBundle)
-  Check "F109 f: exit 1, the copy beside it is kept and reads as the bundle installed before by sha256, one line names where it is, the bundle and the new one, and run.ps1 finds it" ($ip6.Exit -eq 1 -and $ip6.Aside -eq 1 -and $ip6.AsideTrees.Count -eq 1 -and $ip6.AsideTrees[0] -eq $ip6.Before -and (Lines $ip6 '^The new add-in could not be copied in, .+\. The add-in installed before could not be put back in place, HARNESS COPY: the put back fails\. It is whole at .+\.replaced-\d{8}-\d{6}, read back by sha256 before anything was written over, what is at .+ was not proved to be it, and the new one is at .+\.$').Count -eq 1 -and $leftF.Count -eq 1) ("exit " + $ip6.Exit)
+  Check "F109 f: exit 1, the copy beside it is kept and reads as the bundle installed before by sha256, one line says so, read again at that moment, and names where it is, the bundle and the new one, and BundleLeftovers, which run.ps1 -Mode Install calls only after an exit 0, finds it" ($ip6.Exit -eq 1 -and $ip6.Aside -eq 1 -and $ip6.AsideTrees.Count -eq 1 -and $ip6.AsideTrees[0] -eq $ip6.Before -and (Lines $ip6 '^The new add-in could not be copied in, .+\. The add-in installed before could not be put back in place, HARNESS COPY: the put back fails\. Its copy at .+\.replaced-\d{8}-\d{6} reads as the bundle did before anything was written over, by sha256, what is at .+ was not proved to be it, and the new one is at .+\.$').Count -eq 1 -and $leftF.Count -eq 1) ("exit " + $ip6.Exit)
+  # F109 attempt 2. The two guards fix attempt 1 added with no case, the rule of what is a
+  # junction or a link, the marks Windows refuses the in-place write for, and a copy that
+  # changes after it was read back.
+  $ip7 = InstallTrial "F109 g, a junction named Linked inside the installed bundle, to a folder of the harness's holding one file, and a file held sharing read, write and delete" $newInstall "inplace-junction"
+  Check "F109 g: the junction inside the bundle is refused by name before any copy is made, exit 2, one REFUSED line naming it and saying no process named Roamer runs, no IN PLACE line, and the bundle and the folder the junction points at read as before by sha256, with nothing beside the bundle" ($ip7.Exit -eq 2 -and $ip7.Said.Count -eq 1 -and $ip7.Said[0] -match '^REFUSED: the installed add-in could not be moved aside, Access to the path .+ is denied, no process named Roamer runs, and it is not replaced in place, Linked is a junction or a link, and nothing is written or removed through one\. The installed add-in is left whole\. Nothing was installed\.$' -and (Lines $ip7 '^IN PLACE: ').Count -eq 0 -and $ip7.Before -eq $ip7.After -and $ip7.Before.Contains("Linked\") -and $ip7.LinkBefore -eq $ip7.LinkAfter -and $ip7.LinkBefore.Contains("elsewhere.txt ") -and $ip7.Aside -eq 0) $(if ($ip7.Said.Count -gt 0) { $ip7.Said[0].Replace($h12, "<h12>") } else { "exit " + $ip7.Exit })
+  $asideLine = '    $aside = $target + ".replaced-" + [DateTime]::Now.ToString("yyyyMMdd-HHmmss")'
+  $ip8 = InstallTrial "F109 h, the name of the copy beside the bundle already taken by a folder holding one file, its copy of install.ps1 naming the copy .replaced-20000101-000000, and a file held sharing read, write and delete" (InstallWith $asideLine '    $aside = $target + ".replaced-20000101-000000"') "inplace-taken"
+  Check "F109 h: the name of the copy is taken, so the install refuses before any copy is made, exit 2, one REFUSED line naming that folder and saying no process named Roamer runs, no IN PLACE line, and the bundle and that folder read as before by sha256, with no other folder beside the bundle" ($ip8.Exit -eq 2 -and $ip8.Said.Count -eq 1 -and $ip8.Said[0] -match ('^REFUSED: the installed add-in could not be moved aside, .+, no process named Roamer runs, and ' + [regex]::Escape($takenAside) + ' is there already, so no copy of it is made there\. The installed add-in is left whole\. Nothing was installed\.$') -and (Lines $ip8 '^IN PLACE: ').Count -eq 0 -and $ip8.Before -eq $ip8.After -and $ip8.Aside -eq 1 -and $ip8.AsideTrees.Count -eq 1 -and $ip8.AsideTrees[0] -eq $ip8.TakenBefore -and $ip8.TakenBefore.Contains("taken.txt ")) $(if ($ip8.Said.Count -gt 0) { $ip8.Said[0].Replace($h12, "<h12>") } else { "exit " + $ip8.Exit })
+  # F109 i. The rule in build\links.ps1, read on a junction the harness makes, on a plain
+  # folder, and on every item of the bundle folder of the clone this checkout belongs to, which
+  # on this machine sits under OneDrive, where every item carried the reparse point attribute
+  # with no link type on 2026-10-04. Then install.ps1's Listing and prepare-copy.ps1's
+  # Read-Folder of that folder, each read through the parser into a scope of its own. Read
+  # only, and nothing held online only is read.
+  $linksFile = Join-Path $repo "build\links.ps1"
+  $gcd = (RunChild "git" "rev-parse --git-common-dir" $repo).Out.Trim()
+  if (-not [System.IO.Path]::IsPathRooted($gcd)) { $gcd = Join-Path $repo $gcd }
+  $clone = Split-Path ([System.IO.Path]::GetFullPath($gcd)) -Parent
+  $odDir = Join-Path $clone "bundle"
+  $odItems = @(Get-ChildItem -LiteralPath $odDir -Recurse -Force)
+  $odPlain = @($odItems | Where-Object { ($_.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -eq 0 }).Count
+  $odOnline = @($odItems | Where-Object { ([int]$_.Attributes -band (0x400000 -bor 0x40000 -bor 0x1000)) -ne 0 }).Count
+  O ("    the clone's bundle folder, <clone>\bundle: " + $odItems.Count + " items, " + $odPlain + " without the reparse point attribute, " + $odOnline + " held online only")
+  $ruleTarget = Join-Path $h12 "rule-target"
+  $ruleJunction = Join-Path $h12 "rule-junction"
+  New-Item -ItemType Directory -Path $ruleTarget | Out-Null
+  New-Item -ItemType Junction -Path $ruleJunction -Target $ruleTarget | Out-Null
+  $rule = & { . $linksFile; [pscustomobject]@{ Junction = (LinkKind (Get-Item -LiteralPath $ruleJunction -Force)); Plain = (LinkKind (Get-Item -LiteralPath $ruleTarget -Force)); OneDrive = @($odItems | Where-Object { $null -ne (LinkKind $_) }).Count } }
+  [System.IO.Directory]::Delete($ruleJunction, $false)
+  Check "F109 i: the rule in build\links.ps1 reads a junction as one, a plain folder as none, and none of the items of the clone's bundle folder under OneDrive as one, each of them carrying the reparse point attribute" ($rule.Junction -eq "Junction" -and $null -eq $rule.Plain -and $odItems.Count -ge 2 -and $odPlain -eq 0 -and $rule.OneDrive -eq 0) ("the junction reads " + $rule.Junction + ", the plain folder " + $(if ($null -eq $rule.Plain) { "none" } else { $rule.Plain }) + ", " + $rule.OneDrive + " of " + $odItems.Count + " OneDrive items as a link, " + $odPlain + " of them without the attribute")
+  # The function definitions of a script, read through the parser, never its main flow.
+  function FunctionsOf($text) {
+    $tk3 = $null; $pe3 = $null
+    $ast3 = [System.Management.Automation.Language.Parser]::ParseInput($text, [ref]$tk3, [ref]$pe3)
+    return ((@($ast3.EndBlock.Statements | Where-Object { $_ -is [System.Management.Automation.Language.FunctionDefinitionAst] }) | ForEach-Object { $_.Extent.Text }) -join "`r`n")
+  }
+  $odWant = "not read"; $odInstall = "not read, an item is held online only or carries no reparse point attribute"; $odPrepare = $odInstall
+  if ($odOnline -eq 0 -and $odPlain -eq 0 -and $odItems.Count -ge 2) {
+    $odWant = (@($odItems | ForEach-Object { $_.FullName.Substring($odDir.Length + 1) + $(if ($_.PSIsContainer) { "\" } else { " " + (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash }) }) | Sort-Object) -join "|"
+    $insFns = FunctionsOf $newInstall
+    $odInstall = & { . $linksFile; . ([scriptblock]::Create($insFns)); try { $l = Listing $odDir; ((@($l.Files.Keys | ForEach-Object { $_ + " " + $l.Files[$_] }) + @($l.Folders | ForEach-Object { $_ + "\" })) | Sort-Object) -join "|" } catch { "refused: " + $_.Exception.Message } }
+    $prepFns = FunctionsOf ([System.IO.File]::ReadAllText((Join-Path $PSScriptRoot "prepare-copy.ps1")))
+    $odPrepare = & { . $linksFile; $ordinal = [StringComparer]::Ordinal; $online = 0x400000 -bor 0x40000 -bor 0x1000; . ([scriptblock]::Create($prepFns)); try { $r = Read-Folder $odDir $true; ((@($r.Files.Keys | ForEach-Object { $_ + " " + $r.Files[$_].Sha }) + @($r.Dirs | ForEach-Object { $_ + "\" })) | Sort-Object) -join "|" } catch { "refused: " + $_.Exception.Message } }
+  }
+  Check "F109 i: install.ps1's Listing reads the clone's bundle folder under OneDrive whole, every file by sha256 and every folder, as the harness reads it" ($odWant -ne "not read" -and $odInstall -eq $odWant) $odInstall.Replace($clone, "<clone>")
+  Check "F109 i: prepare-copy.ps1's Read-Folder reads the same folder whole, through the same rule" ($odWant -ne "not read" -and $odPrepare -eq $odWant) $odPrepare.Replace($clone, "<clone>")
+  $prepText = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot "prepare-copy.ps1"))
+  $linksText = [System.IO.File]::ReadAllText($linksFile)
+  $ruleForms = @("FileAttributes]::ReparsePoint", ".LinkType")
+  Check "F109 i: the rule is in build\links.ps1 alone, which reads the reparse point attribute and the link type, and install.ps1 and prepare-copy.ps1 each dot-source it, call LinkKind and read neither themselves" (@($ruleForms | Where-Object { $linksText.Contains($_) }).Count -eq 2 -and @($ruleForms | Where-Object { $newInstall.Contains($_) -or $prepText.Contains($_) }).Count -eq 0 -and $newInstall.Contains('. (Join-Path $PSScriptRoot "links.ps1")') -and $prepText.Contains('. (Join-Path $repo "build\links.ps1")') -and $newInstall.Contains("LinkKind") -and $prepText.Contains("LinkKind")) ""
+  $ip9 = InstallTrial "F109 j, the installed bundle with a file marked ReadOnly, a folder marked ReadOnly, a file marked Hidden and a file marked System, and a file held sharing read, write and delete" $newInstall "inplace-marked"
+  $marked9 = @("Contents\v22\Federator.Addin.dll marked ReadOnly", "OldOnly marked ReadOnly", "OldOnly\note.txt marked Hidden", "PackageContents.xml marked System")
+  Check "F109 j: the marks are refused before any copy is made, exit 2, one REFUSED line naming each marked file and folder with its mark, why, and what to do, no IN PLACE line, and the bundle reads as before by sha256 with every mark still on, with nothing beside it" ($ip9.Exit -eq 2 -and $ip9.Said.Count -eq 1 -and $ip9.Said[0] -match '^REFUSED: the installed add-in could not be moved aside, Access to the path .+ is denied, no process named Roamer runs, and it is not replaced in place, because Windows refuses to write over a file marked ReadOnly, Hidden or System and to remove a file or folder marked ReadOnly, measured on 2026-10-04, and 4 of its files and folders carry such a mark, .+\. Take each mark off with attrib -r -h -s and run this again\. The installed add-in is left whole\. Nothing was installed\.$' -and @($marked9 | Where-Object { $ip9.Said[0].Contains($_) }).Count -eq 4 -and (Lines $ip9 '^IN PLACE: ').Count -eq 0 -and $ip9.Before -eq $ip9.After -and $ip9.MarksBefore -eq $ip9.MarksAfter -and $ip9.MarksBefore.Contains("PackageContents.xml System") -and $ip9.Aside -eq 0) $(if ($ip9.Said.Count -gt 0) { $ip9.Said[0].Replace($h12, "<h12>") } else { "exit " + $ip9.Exit })
+  $ip10 = InstallTrial "F109 k, a write fails mid way after Contents\v22\Federator.Addin.dll was taken out of the copy beside the bundle once the copy read back whole, the way a scanner may take a file, its copy of install.ps1 taking it" (InstallWith '        $inPlace = $true' '        $inPlace = $true; [System.IO.File]::Delete((Join-Path $aside "Contents\v22\Federator.Addin.dll")); Write-Host "HARNESS COPY: Contents\v22\Federator.Addin.dll taken out of the copy beside the bundle"') "inplace-read"
+  Check "F109 k: the put back reads the copy against the bundle as it read before anything was written over, finds the file the copy lost, writes nothing back and says so, exit 1, the copy kept, and no line says the add-in was put back" ($ip10.Exit -eq 1 -and (Lines $ip10 '^HARNESS COPY: ').Count -eq 1 -and (Lines $ip10 '^The new add-in could not be copied in, Contents\\v22\\Federator\.Core\.dll could not be written, .+\. The add-in installed before could not be put back in place, Contents\\v22\\Federator\.Addin\.dll could not be read at .+\.replaced-\d{8}-\d{6}, .+, so nothing was written\. Its copy at .+\.replaced-\d{8}-\d{6} no longer reads as the bundle did before anything was written over, 1 differ by sha256, the first Contents\\v22\\Federator\.Addin\.dll, what is at .+ was not proved to be it, and the new one is at .+\.$').Count -eq 1 -and (Lines $ip10 'put back in place with').Count -eq 0 -and $ip10.Aside -eq 1) ("exit " + $ip10.Exit)
   BaderSame "H12c"
 
   # =====================================================================================

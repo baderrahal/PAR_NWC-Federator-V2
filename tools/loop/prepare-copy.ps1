@@ -54,6 +54,8 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repo     = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+# The one rule of what is a junction or a link, which build\install.ps1 reads too, F109.
+. (Join-Path $repo "build\links.ps1")
 $source   = Join-Path ([Environment]::GetFolderPath('Desktop')) "NM Fed"
 $work     = Join-Path $env:LOCALAPPDATA "NwcFederatorLoop"
 $copy     = Join-Path $work "source"
@@ -108,7 +110,7 @@ $guarded = @($workFull, $copy)
 if ($Set) { $guarded += @((Join-Path $work "runs"), $setDir, $target) }
 foreach ($p in $guarded) {
     if (Test-Path -LiteralPath $p) {
-        if ((Get-Item -LiteralPath $p -Force).Attributes -band [IO.FileAttributes]::ReparsePoint) {
+        if ($null -ne (LinkKind (Get-Item -LiteralPath $p -Force))) {
             throw "'$p' is a junction or a link, and a delete through it could reach somewhere else. Nothing was done."
         }
     }
@@ -122,9 +124,9 @@ $online = 0x400000 -bor 0x40000 -bor 0x1000
 function Read-Folder([string] $root, [bool] $hash) {
     # Walked one folder at a time rather than with -Recurse, because Windows PowerShell 5.1
     # follows a junction when it recurses, and a junction inside NM Fed would pull a folder
-    # from somewhere else into the copy. A junction or a link is refused by name. A folder
-    # OneDrive syncs carries the reparse point attribute too, and has no LinkType, so it is
-    # not mistaken for one.
+    # from somewhere else into the copy. A junction or a link is refused by name, by the rule
+    # in build\links.ps1. A file or folder OneDrive syncs carries the reparse point attribute
+    # too, and no link type, so it is not mistaken for one.
     $files = New-Object 'System.Collections.Generic.Dictionary[string,object]' ($ordinal)
     $dirs = New-Object 'System.Collections.Generic.HashSet[string]' ($ordinal)
     $todo = New-Object System.Collections.Generic.Stack[string]
@@ -133,8 +135,8 @@ function Read-Folder([string] $root, [bool] $hash) {
         $here = $todo.Pop()
         foreach ($item in Get-ChildItem -LiteralPath $here -Force) {
             $rel = $item.FullName.Substring($root.Length + 1)
-            $link = [string]$item.LinkType
-            if ($link -eq "Junction" -or $link -eq "SymbolicLink") { throw "'$rel' is a $link, which would pull something from elsewhere into the copy. Nothing was done." }
+            $link = LinkKind $item
+            if ($null -ne $link) { throw "'$rel' is a $link, which would pull something from elsewhere into the copy. Nothing was done." }
             if ($item.PSIsContainer) {
                 [void]$dirs.Add($rel)
                 $todo.Push($item.FullName)
