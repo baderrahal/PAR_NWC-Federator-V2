@@ -6,7 +6,7 @@ Newest entry at the top.
 Nothing under src or tests changed. Core tests 1756 passed, 0 failed, 0 skipped before, on main
 1ae6771 with F125 merged, and 1756 passed, 0 failed, 0 skipped after the change, by hand,
 turn5\f126-proof\core-tests-before.txt and core-tests-after.txt, and by the pre-commit of each
-commit, precommit-1.txt to precommit-3.txt there. No Navisworks and no stand-in was started.
+commit, precommit-1.txt to precommit-4.txt there. No Navisworks and no stand-in was started.
 
 ### What was done
 
@@ -81,18 +81,18 @@ runs check-locals, check-imports, the evidence check and dotnet test. dotnet bui
 solution twice and the stand-in twice, dotnet test twice by hand, sh for check-locals,
 check-imports and the waiter, Windows PowerShell 5.1 for the parser, for array tests and the
 pure reads, for the driver twice, each time refused before any window is read, and for the
-21 reads of Get-Process Roamer, and tar to unpack main's tools. No Navisworks, no stand-in, no
-harness run and nothing installed.
+22 reads of Get-Process Roamer, the last at 01:31:32 after the records, reading 1, and tar to
+unpack main's tools. No Navisworks, no stand-in, no harness run and nothing installed.
 
 Written outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop\turn5\f126-proof:
 core-tests-before.txt, core-tests-after.txt, sln-build-before.txt, sln-build-after.txt,
 standin-build-before.txt, standin-build-after.txt, check-locals.txt, check-imports.txt,
 parse.ps1, roamer-reads.txt, prove-f126.ps1, wait-and-prove.sh, pure-reads.ps1,
 pure-reads.txt, dry-refusal.txt, dry-refusal-notes.txt and dry-refusal-notes-2.txt, the
-driver's notes of its two refusals, precommit-1.txt to precommit-3.txt and push-1.txt to
-push-3.txt, before-tree with main's tools at 1ae6771, and standin-bin-before and standin-bin,
-the stand-in built before and after, never started. Also turn5\f126-msg-1.txt,
-f126-msg-2.txt and f126-msg-3.txt, the commit messages, and turn5\pr-f126.md, the draft body.
+driver's notes of its two refusals, precommit-1.txt to precommit-4.txt and push-1.txt to
+push-4.txt, before-tree with main's tools at 1ae6771, and standin-bin-before and standin-bin,
+the stand-in built before and after, never started. Also turn5\f126-msg-1.txt to
+f126-msg-4.txt, the commit messages, and turn5\pr-f126.md, the draft body.
 In the session's scratch folder under %TEMP%\claude: arr.ps1, parse1.ps1, pure.ps1, added.txt,
 and fw112.cs and fw112.xaml, the window code of fix-F112 read with git show.
 
