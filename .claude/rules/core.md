@@ -157,24 +157,32 @@ and 6 does not read as broken.
 
 ### The picked file is corrected before a set is built, F116
 
-- WHICHEVER CLASH XML IS PICKED IS CORRECTED, Q104 answered by Bader on 2026-10-04.
-  `MatrixCorrections.ReadPicked` is the only way the add-in reads the picked file, at the
-  pick, the run, the open file run and both hand buttons. It reads the file as
-  `ExchangeReader.ReadFile` did, in the encoding the file declares, through
-  `ExchangeReader.ReadFileText`, applies the code that writes the exchange file,
-  `ForPickedFile`, before any set is built, and the document carries one line per
-  correction, `ExchangeDocument.Corrections`, which the window writes as MATRIX lines after
-  the line saying which file it read. The HEALTH block at the pick judges the corrected sets,
-  because those are the sets the run builds
-- THE CORRECTIONS ARE DATA. `matrix-corrections.txt` holds the renames, the catch-all sets
-  and the Source File rules, and `revit-worksets.txt` the workset spellings measured off the
-  models, both embedded in Core. The code names no set, folder or category, and the list
-  does: two set names and four categories of the client's matrix, which CLAUDE.md allows as
-  sample data in tests only, and a change to it is a rebuild. Bader answered Q113 on
-  2026-10-04: B, the list becomes a plain file kept beside the picked XML, read at the pick
-  and named in the log, which F116 carries out after its fix attempt 2 and before it merges,
-  and D, Q103 keeps all four categories. Until then the list ships in Core. A list that
-  cannot be read corrects NOTHING and says so on the first MATRIX line, never a part of it
+- WHICHEVER CLASH XML IS PICKED IS CORRECTED BY THE LIST BESIDE IT, Q104 and Q113 answered
+  by Bader on 2026-10-04. `MatrixCorrections.ReadPicked` is the only way the add-in reads the
+  picked file, at the pick, the run, the open file run and both hand buttons, so the list is
+  read wherever the XML is. It reads the file as `ExchangeReader.ReadFile` did, in the
+  encoding the file declares, through `ExchangeReader.ReadFileText`, reads the list beside it,
+  applies the code that writes the exchange file, `ForPickedFile`, before any set is built,
+  and the document carries one line per correction, `ExchangeDocument.Corrections`, which the
+  window writes as MATRIX lines after the line saying which file it read. The HEALTH block at
+  the pick judges the corrected sets, because those are the sets the run builds
+- THE CORRECTIONS ARE ONE PROJECT'S DATA, KEPT BESIDE THE PICKED XML AND NEVER IN CORE, Q113
+  answered B: the tool serves many projects, and nothing in src names one project's file.
+  The list is a plain file named after the XML, its name without the extension and
+  `CorrectionListSettings.Suffix`, default `.corrections.txt`, one full path tested with
+  File.Exists and never a search or a wildcard, `MatrixCorrectionList.Beside`. It holds the
+  renames, the catch-all sets, the Source File rules and the workset spellings measured in
+  the project's models, one a line, the format at the top of this project's list,
+  exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, kept beside the corrected XML
+  so the two are copied together. The FIRST MATRIX line names the list in full and how many
+  corrections and workset spellings it holds. No list there corrects nothing, the file is
+  read as written, and the first MATRIX line names the path looked for. A list that cannot
+  be read, a line it does not know, bytes that are not UTF-8 or a file that will not open,
+  corrects NOTHING and the first MATRIX line says why, never a part of it and never a throw.
+  `revit-worksets.txt` inside Core holds the C02 census alone, the 39 names measured before
+  F116, and a value is asked in every spelling the census and the list hold between them.
+  The code names no set, folder, category or spelling. Q113 D keeps all four categories of
+  Q103 in this project's list
 - A SET OR CONDITION THE CORRECTIONS CANNOT READ IS COUNTED AND SAID, NEVER THROWN, F116.
   `WrittenCondition.Read` gives null for an element that will not parse as one condition or
   holds a value it could not rewrite, `SetConditionsText.Read` then gives null for the set,
@@ -186,7 +194,8 @@ and 6 does not read as broken.
   corrected and a condition built are read one way. `WrittenCondition.Escaped` is the only
   escape, for every value written and every name looked for. `WithValue`, `WithFlags` and
   `WithTest` are the only edits of a condition's text, the catch-all builds its conditions
-  through them and `ValuesGiven` is the one place a condition is given another value. A set
+  through them and `ValuesGiven` is the one place the category rewrite and the one spelling
+  correction give a condition another value. A set
   is found by its name through `Named`, and by its folders and its name through `Key` and
   `KeyOf` where the folder matters, the Source File rule, so a set of one name in another
   folder is never given what this one asks
@@ -202,18 +211,20 @@ and 6 does not read as broken.
   rows and the one spelling correction read the condition's property and flags, not its value
   alone. A condition on another property whose value reads like a workset is not a workset.
   A file holding a negated workset condition gets a MATRIX line saying it is left as asked
-- THE MATRIX LINES CLAIM ONLY WHAT WAS MEASURED, F116. The workset list is the C02 census and
-  at most ten names a group of C06, so a line says every spelling measured so far in this
-  project's models, never every spelling the models carry, and no model measured so far,
-  never no model in this run. Each correction that changes nothing says which kind of zero it
-  is, already made, nothing in the file to change, or not readable, and where nothing changed
-  the last line says no correction was applied and counts each kind. It never says the file
-  carries every correction, which a count of zero cannot tell from a file none of them acts on
-- WHERE THE CORRECTIONS REACH IS SAID ON EVERY PICKED FILE, F116. One line before the last
-  says a set already in an NWF keeps the conditions it was built with and is not given what
-  the file asks unless the box `SetRebuildSettings.TickLabel` names is ticked, Q72, and that
-  the SETS block names each such set as DRIFTED, so a log naming corrections over an NWF
-  built before them is not read as corrected sets
+- THE MATRIX LINES CLAIM ONLY WHAT WAS MEASURED, F116. The spellings are the C02 census in
+  Core and, in this project's list, at most ten names a group of C06, so a line says every
+  spelling measured so far in this project's models, never every spelling the models carry,
+  and no model measured so far, never no model in this run. Each correction that changes
+  nothing says which kind of zero it is, already made, nothing in the file to change, or not
+  readable, and where nothing changed the last line says no correction was applied and counts
+  each kind. It never says the file carries every correction, which a count of zero cannot
+  tell from a file none of them acts on
+- WHERE THE CORRECTIONS REACH IS SAID ON EVERY PICKED FILE, F116, the one a list corrected,
+  the one with no list beside it and the one whose list could not be read. One line before
+  the last says a set already in an NWF keeps the conditions it was built with and is not
+  given what the file asks unless the box `SetRebuildSettings.TickLabel` names is ticked,
+  Q72, and that the SETS block names each such set as DRIFTED, so a log naming corrections
+  over an NWF built before them is not read as corrected sets
 - THE OR ROW IS THE WHOLE GROUP COPIED, FR-025. A group asking one spelling is written once
   per spelling with the rest of the group in it, so (Ducts and ME-DUCTWORK) or (Ducts and
   ME-Ductwork). One flags 64 condition after the workset, what Q69's row was until F116,
@@ -228,7 +239,7 @@ and 6 does not read as broken.
   read off the file, and so are the categories another folder's sets ask for. A category no
   other folder's set asks for that another discipline's MODELS carry can only be measured,
   an AR set finding items in a group holding no AR model, and those are the categories
-  after the bar in the list, proved by a test against the logs they came from
+  after the bar in the project's list, proved by a test against the logs they came from
 - THE ROW FILE NAMES EVERY WORKSET OF EVERY MODEL, one model worksets row each, because
   the EXPORT CHECK block lists ten a group and counts the rest, and the spellings a run
   shows are what the workset list is measured from. Where a model's element walk stopped
