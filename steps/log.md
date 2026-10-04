@@ -1,6 +1,34 @@
 # log
 
 Newest entry at the top.
+## 2026-10-05 The loop, turn 5, the design of F127 coverage, Q126 and Q127
+
+Nothing under src, tests or tools changed. Core tests 1865 passed, 0 failed, 0 skipped before, at
+the pre-commit of PR 107's last commit, turn5\precommit-records-12b.txt, and after, at this
+record's, turn5\precommit-records-13.txt.
+
+### What was done
+
+- the design of F127, the coverage of Bader's request 2, by three plans written apart and a
+  judge, turn5\f127-design.md, scored evidence 26.5, the rules in Core 26 and the cost 25.5 of 30,
+  evidence the base. FR-176 names its part, its eight probes and its added run time
+- Q126 and Q127, two of its eight questions, each with the choice the build goes on with. The
+  other six his words or the lead's reading settle, named on FR-176
+
+### What remains
+
+- its probes on Navisworks once no Navisworks of the loop runs, Q124, then F127 in wave 2a
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- the probes, then F127's Core part test first
+
+The probes on Navisworks wait for the local machine.
+
 ## 2026-10-04 The loop, turn 5, F112 the alignment area of the fix round, FR-001 to FR-006 and FR-028, DONE in Core and built, after a third attempt and a closing pass
 
 Attempt 1 built the rule on Bader's answer to Q99 and Q100 and stopped at c5d8aa8. A reviewer and

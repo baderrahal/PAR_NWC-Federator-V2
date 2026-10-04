@@ -4586,6 +4586,20 @@ was done, what the test showed, and anything for Bader.
   keep created and run apart
 - Answered by Bader on 2026-10-04 in the evening, the notes of Q112: right as read. A count that
   differs is a FAILED line in COVERAGE and RESULT, and the group keeps its own result
+- Designed on 2026-10-05 by three plans written apart, evidence first, the rules in Core and the
+  cost, and a judge, turn5\f127-design.md, evidence the base. Eight probes on Navisworks first,
+  section 5, on copies once no Navisworks runs, the first F104's documents read of set 04's 1A02MM
+  NWF as the independent witness. Its added run time is about 0.4 to 1.8 s a group on the measured
+  parts, with the parts still UNKNOWN named there. read-workbook.ps1 changes in the same pull
+  request, or every F104 verdict reads NOT PROVED. Questions for Bader: Q126, a group whose clash
+  is skipped has no workbook for the sheet, and Q127, how RESULT counts the XML's tests. Of the
+  design's other six, his words settle the sheet's place, the FAILED line and the per item reading
+  of caught, the lead reads the run's list of empty sets into the log and the .tsv and the
+  discipline by code until F131, and with no XML the lead reads the saved sets' conditions off the
+  document once a probe shows they can be read
+- Found while designing: set 03's C06 run did not pick the exchange file's bytes, since its SET
+  lines ask ME-PIPING, ME-DUCTWORK and ME-EQUIPMENT where the exchange file asks ME-Piping,
+  turn5\f127-design.md section 0
 
 ### FR-177 generic-models-counted-and-a-set-per-model
 
