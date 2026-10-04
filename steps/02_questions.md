@@ -506,3 +506,47 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
     Answer: Bader, 2026-10-04, as written above. Turn 5 of the loop carries it out, its plan the turn 5 entry of steps\log.md. The keep-awake started at 09:55:40 through WMI as pid 1312.
 
     His standing rules in the same message, two of them in his words. "Waiting: while a Navisworks the loop did not start runs, no start, no install, no put back. Check every 10 minutes, and carry on by yourself once none runs." "Keep awake: keep-awake.ps1 runs as its own hidden process, not a child of Claude Code, with ES_CONTINUOUS, ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED. It stops itself at STATE CLOSED or STATE WAITING, or when steps\loop.md has not changed for 12 hours, taking the request back first. It changes none of Bader's power, screen saver or lock settings. Check it is alive at the start of every turn." Both written into .claude\rules\loop.md in turn 5 of the loop.
+
+99. From the loop, turn 5, 2026-10-04, your B2 of Q98, the fix list's FR-001. THE 1 M. A group with a model more than 1 m from its reference ends PARTIAL, the 1 m a setting, and you asked for the 40 distances of the C06 run to confirm the number. The run of 2026-10-01 printed 40 models sitting somewhere their group's reference does not, log line 8358. Their distances, the straight line of the dx, dy and dz each ALIGNMENT block printed, are in %LOCALAPPDATA%\NwcFederatorLoop\turn5\align-c06.txt: 7 between 2,029 km and 2,824 km, 1 at 336 km, 6 between 104 m and 568 m, 11 between 14 m and 57 m, 10 between 1.2 m and 9 m, and 5 under 1 m, at 0.68 m, 0.2 m, 0.072 m twice and 0.021 m. The rule measures the straight line, so 1B06WM's ME at 1.2 m counts though it is under 1 m on each axis. WHAT EACH NUMBER DOES TO THE 17 DONE GROUPS of that run, the 5 FAILED staying FAILED: at 1 m, 11 become PARTIAL, every DONE group that found a clash, and the 6 that stay DONE are the 6 that found none, 1B06BS, 1B06KI, 1B06PG, 1B06PT, 1B06PW and 1C06PK. At 10 m, 9 become PARTIAL, and 1B06PE, its farthest model 7.2 m away, and 1B06WO, its farthest 1.8 m, stay DONE. At 100 m, 6 become PARTIAL: 1B06K1, 1B06P1, 1B06PH, 1B06PP, 100000 and 1B06PK. At 1 km, 4: 1B06K1, 1B06P1, 1B06PH and 1B06PP. The fix is built with 1 m, the number you gave, as a setting. A, keep 1 m. B, another number, say which. C, something else
+
+    Answer:
+
+100. From the loop, turn 5, 2026-10-04, the fix list's FR-006, beside Q99. A MODEL NAMED INTERNAL THAT SITS IN PLACE. Your answer to Q70 fails a group holding a model whose shared site is named Internal, and the tool goes by the name alone. In the C06 run two groups failed that way while that model sits 72.5 mm from its reference, all of it in height: 1B06M1 and 1C06M2, each an ST model against an ME reference, log lines 2489 and 7614. In 1B06BC and 1B06G1 the model named Internal is the AR reference itself and the ME sits in the same place, log lines 586 and 1336. In 1B06PS the AR and the ST both name Internal and sit 2,823 km apart, log lines 5511 and 5514. So the name alone does not say where a model is. A, keep Q70 as it is, a model named Internal fails its group wherever it sits. B, a group fails on a model named Internal only when that model also sits more than the Q99 distance from its reference, and otherwise the model gets a line and the group is judged like any other. C, something else
+
+    Answer:
+
+101. From the loop, turn 5, 2026-10-04, your B3 of Q98, the fix list's FR-070. THE 45 MINUTES. Your second test of done says every ticked building runs unattended in under 45 minutes. The C06 run of 2026-10-01, all 22 of its groups ticked, took 1 h 44 min 52 s, log line 8426, VIEWS 4,523.6 s of it, 71.9 percent, log line 8408. Each group on its own took under 45 minutes, the slowest 1B06G1 at 34 min 17 s, log line 1762. Without VIEWS at all, C06 alone would take 29 min 29 s, which would leave 15 min 31 s for C07 if the whole folder counts. C07 has never run. VIEWS is being made faster with the same viewpoints first, measured before and after. What does the 45 minutes count: A, each group, one building, on its own, B, each community folder on its own, C06 in 45 minutes and C07 in 45 minutes, C, the whole folder, both communities together, D, something else. If it is still out of reach after the VIEWS fix, two or three options for what the viewpoints hold follow in a question of their own, each with its measured time
+
+    Answer:
+
+102. From the loop, turn 5, 2026-10-04, after your B1 of Q98, the fix list's FR-008. ONE SPELLING DOES NOT FIT EVERY C06 BUILDING. The corrected matrix you put in your folder asks ME-Ductwork, which most C06 models carry, but the models of 1B06BC and 1B06G1 carry ME-DUCTWORK, ME-EQUIPMENT and ME-PIPING in capitals, log lines 605 and 1354, and the compare is case sensitive, as you chose on 2026-09-20. In the C06 run the old matrix, asking the capitals, found 13 duct items in 1B06BC and 134 in 1B06G1, the group with the most clashes, log lines 639 and 1388, and 0 in 1B06PK, log line 4327. With the corrected matrix those two groups lose their duct, equipment and pipe sets and the other groups gain them. The same split holds for a few other worksets the fix list names under FR-008, among them PL-Domestic water, which the corrected matrix asks and the C06 models spell PL-Domestic Water. A, the matrix asks both spellings of each such workset, as an OR, B, the models of 1B06BC and 1B06G1 are exported again with the project's spelling and the matrix keeps one, C, something else
+
+    Answer:
+
+103. From the loop, turn 5, 2026-10-04, the fix list's FR-009. AR SETS THAT FIND OTHER DISCIPLINES' ITEMS. In 1B06PK, a group with only ME and ST models, 414 of its 1629 clashes name the AR Ramps set, log lines 4417, 4418 and 4422, because that set asks Category equals Ramps with no Source File condition and so finds the ST model's ramps, 36 items, log line 4304. AR Railings does the same, log lines 4316 and 4425. AR Floors, Stairs and Walls do carry Source File contains -AR-, log lines 4302, 4303 and 4308. Whether those 414 clashes are wrong is yours to say. A, the matrix adds Source File contains -AR- to every AR set whose category another discipline also uses, B, they stand as they are, C, something else
+
+    Answer:
+
+104. From the loop, turn 5, 2026-10-04, the fix list's FR-030. THE CLASS THAT MADE THE CORRECTED MATRIX. MatrixCorrections in Core wrote the corrected matrix in the exchange folder, and nothing in src calls it, so the house rule deletes it unless you keep it. Your answer to Q68 was that the tool never fixes the matrix by itself, and the corrected file is what you put in your folder. A, move it out of Core into tools, where it stays the way the exchange file is made, with the test that proves the file is exactly what the rule makes, B, the tool applies it to the picked XML and says so in the log, C, delete it with its tests, the exchange file staying as it is and the proof of it going, D, something else
+
+    Answer:
+
+105. From the loop, turn 5, 2026-10-04, the fix list's FR-109. YOUR PROFILE FOLDER IN COMMITTED EVIDENCE. The evidence of set 03 under steps\runs carries the name of your Windows profile folder in full paths, 920 times in 24 files, because the evidence check masks only the machine name and the licensing ids. A, mask the profile folder name too, as a new kind in the check, B, leave it, the repo being private, C, something else
+
+    Answer:
+
+106. From the loop, turn 5, 2026-10-04, the fix list's FR-110. THE OLDER MACHINE'S NAME COMING BACK. F107 masks the name of the machine of 2026-09-19 on main, your Q88. Once masked, nothing refuses it if it comes back, because the evidence check reads for this machine's name only, and the check's own rule file cannot hold the older name in clear. A, the check also refuses the older name, held as a hash, B, no check, the mask is enough, C, something else
+
+    Answer:
+
+107. From the loop, turn 5, 2026-10-04, the fix list's FR-149. THE OLDER MACHINE'S ACCOUNT NAME. F107 masks the older machine's name and leaves the account name of that machine's user in C:\Users paths, in 37 files, 17 of them under steps\logs, which is never edited. A, mask it in every file that may be edited, B, leave it, C, something else
+
+    Answer:
+
+108. From the loop, turn 5, 2026-10-04, the fix list's FR-136. THE 300 KB LOG. Step 377 of steps\03_bader_next.md asks for a .log under 300 KB, a number no run had measured. The log of the 22 group C06 run is 1,097,850 bytes, about 50 KB a group, log line 8584. A Look for line never moves to match wrong output, so this is yours. A, the tool trims its log until a C06 run fits 300 KB, B, the bar becomes a size per group, about 50 KB as measured, C, something else
+
+    Answer:
+
+109. From the loop, turn 5, 2026-10-04, the fix list's FR-161. THE DATE FORMAT, THE SEPARATOR AND THE PART POSITIONS. Each is a setting, as CLAUDE.md asks, but nothing in the window sets them, so a dated NWD name is always yyyyMMdd. A, a box for each on the Outputs step, B, the rules say they are settings of the code and not of the window, C, something else
+
+    Answer:

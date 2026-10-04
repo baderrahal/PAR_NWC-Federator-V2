@@ -177,25 +177,24 @@ desktop.
 
 Turn 5, the full fix round, Q98. Merged so far on 2026-10-04: PR 87, the records of turn 4's
 pause and turn 5's opening, as 53c37b6. PR 84, F108, as c9b223b. PR 88, F106, DONE for item 1,
-as 3449521. PR 83, Bader's answers in the loop rules, is the pull request carrying this text.
+as 3449521. PR 89, the records with the note for the modellers, B4, as 51a0cb6. PR 83, Bader's
+answers in the loop rules, as 086a348. The fix list, steps\fix-round.md, 174 items, and the form,
+Q99 to Q109, are in the records pull request carrying this text.
 
-1. In flight, each merged on its own: F105 and F107, words only, and F109, the in-place
-   install for the team, each with its developer and then its readers. F104 part 2, the
-   driver that reads every NWF of a run and compares it with its workbook, with its developer
-   in wt-f104, then the lead's read of set 03's NWFs, the first answer to Bader's test 3
-2. The fix list, steps\fix-round.md, built from five readers' returns before the first fix,
-   in its records pull request with steps\runs\03\for-modellers.md, B4
-3. The form, Q99 on: the 40 distances of the C06 run for B2's 1 m, kept in
-   turn5\align-c06.txt until then, whether the 45 minutes counts per community or for the
-   whole folder, and the other items the fix list marks as needing Bader
-4. The area pull requests, alignment first with B2, up to three developers at once on
-   different files, each read by a reviewer and a breaker and its body by the claim-checker,
-   merged one at a time, a record within the hour. D1 last, moves only
-5. The proof run, set 05 on C06: main installed in place as on 2026-10-01, a fresh copy by
-   prepare-copy.ps1 -Set 05 whose XML asks ME-Ductwork, items 1 to 5,
-   steps\runs\05\findings.md with the before and after table against set 03, and Bader's
-   three tests
-6. The summary at the top of steps\fix-round.md, merged and posted in the Claude tab
+1. In flight, each merged on its own: PR 90, F105, words only, with its claim-checker. F107,
+   words only, after F105, its order line then 36. F109, the in-place install for the team, fix
+   attempt 2 with its developer after both its readers asked for changes. F104 part 2, the
+   driver that reads every NWF of a run and compares it with its workbook, with its developer in
+   wt-f104, then the lead's read of set 03's NWFs, the first answer to Bader's test 3
+2. The area pull requests of steps\fix-round.md, alignment first with FR-001 built on the 1 m of
+   Q98 B2, up to three developers at once on different files, each read by a reviewer and a
+   breaker and its body by the claim-checker, merged one at a time, a record within the hour.
+   The items that need Bader wait for his answers. D1, FR-174, last, moves only
+3. The proof run, set 05 on C06: main installed in place as on 2026-10-01, a fresh copy by
+   prepare-copy.ps1 -Set 05 from the source copy, whose XML asks ME-Ductwork, the first run
+   given that XML by name, items 1 to 5, steps\runs\05\findings.md with the before and after
+   table against set 03, and Bader's three tests
+4. The summary at the top of steps\fix-round.md, merged and posted in the Claude tab
 
 ## The phases
 
@@ -295,6 +294,22 @@ as 3449521. PR 83, Bader's answers in the loop rules, is the pull request carryi
 What waits on Bader's answer. A finding moves here when it survives three fix attempts,
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
+
+THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
+steps\02_questions.md with its evidence and its choices:
+- Q99, the 1 m of B2, with what 1 m, 10 m, 100 m and 1 km each do to the 17 DONE groups of set 03
+- Q100, a model named Internal that sits within 72.5 mm of its reference, FR-006
+- Q101, what the 45 minutes counts, each group, each community or the whole folder, FR-070
+- Q102, one workset spelling that does not fit every C06 building, FR-008
+- Q103, AR sets that find other disciplines' items, FR-009
+- Q104, the class that made the corrected matrix, FR-030
+- Q105, his profile folder in committed evidence, FR-109
+- Q106, a check that refuses the older machine's name, FR-110
+- Q107, the older machine's account name, FR-149
+- Q108, the 300 KB log bar, FR-136
+- Q109, the date format, separator and part positions with no control in the window, FR-161
+- and two asked on 2026-09-12 and still open: Q24, a name cell given back to the pattern,
+  FR-160, and Q26, members read only by a test, FR-172
 
 ANSWERED ON 2026-10-01: Q82 to Q92, every one, each answer under its question in
 steps\02_questions.md. Nothing from turn 3 waits in the form now. The two sections below are
