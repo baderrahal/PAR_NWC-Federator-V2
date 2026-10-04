@@ -337,11 +337,13 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test of the coverage,
    why the Shift range fails in the window code, and whether the driver can test a Shift click
    without real input
-6. Wave 2 in two halves, 2a F127 coverage first with F115 sets and F114 views, 2b F128 generic
-   models with F118 workbook and report. Wave 3 in two halves, 3a F129 start from an NWF with
-   F120 harvest and pictures and F109 install, 3b F130 the Shift range with F119 run log and
-   RESULT. Then waves 4 and 5, as steps\fix-round.md lists them. Every wave test from wave 2 on
-   shows the Coverage sheet
+6. Wave 2 in three parts since Bader's views by team, Q114: 2a F127 coverage first with F132
+   mirrored tests and F115 sets, 2b F131 teams, F114 views reshaped by Q114 and F128 generic
+   models, 2c F118 workbook and report. Q114's measurements first, turn5\measure-mirrors.md,
+   measure-teams.md and measure-views.md, then a design of the tree by a panel of plans. Wave 3 in
+   two halves, 3a F129 start from an NWF with F120 harvest and pictures and F109 install, 3b F130
+   the Shift range with F119 run log and RESULT. Then waves 4 and 5, as steps\fix-round.md lists
+   them. Every wave test from wave 2 on shows the Coverage sheet
 Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes. The
 keep-awake is checked every 30 minutes.
 
