@@ -3,8 +3,10 @@
 Newest entry at the top.
 ## 2026-10-04 The loop, turn 5, F105 four reads off the install, DONE on Bader's answer A to Q89
 
-Nothing under src or tests changed. Core tests by the pre-commit at 2ac77fc, 96a0f93, ee87b3c and
-5d883a7, 1746 passed, 0 failed, 0 skipped each time, the same as main before. No Navisworks was
+Nothing under src or tests changed. Core tests by the pre-commit at 2ac77fc, 96a0f93, ee87b3c,
+5d883a7 and 29c7e94, the last over the tree as it merges, and again at this entry's last commit,
+in the pull request body, 1746 passed, 0 failed, 0 skipped each time, the same as main before.
+The merges 88a18f0 and 98f2e66 were made by git merge, which runs no pre-commit. No Navisworks was
 started for F105: the four reads are off the install's files, with Get-Process Roamer reading
 none before and after the final runs, tools\probes\f105-run-record-20260929.txt.
 
@@ -20,15 +22,18 @@ none before and after the final runs, tools\probes\f105-run-record-20260929.txt.
 - the words round of 2026-10-04, finished by one developer and re-read by a reviewer, who asked
   for changes with one blocking: section C of probe-viewpoint-calls.ps1 holds a fifth silent
   read through a property, line 372, a member reference's DeclaringType, which no stand-in
-  called. 5z-f and the DONE line now name it and say whether it fails there is UNKNOWN, and 5z-f
-  says a failed property read stops probe-clash-report-api.ps1 where a method is then called on
-  the null, its lines 191 and 197
+  called. 5z-f and the DONE line now name it and say whether it fails there is UNKNOWN. Both say
+  a failed property read stops probe-clash-report-api.ps1 where a method is then called on the
+  null, its lines 191 and 197, and 5z-f says a failed Assembly or Location read inside IsNw of
+  probe-viewpoint-calls.ps1 is counted, all read off the code. A claim-checker read the entry
+  and the body and its six findings are made true in the commit after 29c7e94
 - main merged in four times on 2026-10-04, at 96a0f93, ee87b3c, 88a18f0 and 98f2e66, the last
   to 086a348, with no conflict left. F105 takes order line 35
 
 ### What remains
 
-- nothing of F105. Its probe faults stay as register rows F105-R1 to F105-R3, Q93
+- nothing in F105's own reads. Its probe faults stay as register rows F105-R1 to F105-R4, Q93,
+  R4 the comments named below
 
 ### Known bugs
 
@@ -39,7 +44,7 @@ none before and after the final runs, tools\probes\f105-run-record-20260929.txt.
 - comments in the probes still say nothing is dropped, il-reader.ps1 line 19,
   probe-clash-report-api.ps1 line 23 and probe-viewpoint-calls.ps1 lines 29, 30 and 396, and
   5z-f does not say they claim more than the code does. No probe or result file changes after
-  its run
+  its run. Register row F105-R4
 
 ### What comes next
 

@@ -5051,10 +5051,14 @@ WHAT A READ THAT FAILS DOES IN THE THREE NEW PROBES, read off their code and mea
   13,630 fields of the 1,896 types it could load. The 331 whose FieldType getter throws
   when called as a method each read as null through the property, none reached the catch
   when read inside a try the way viewpoint-calls line 350 reads one, and the script ran to
-  its end with exit 0. So a failed read through a property, a FieldType, ReturnType,
-  ParameterType or LocalType among them, is in no count in any of the three probes. It
-  shows only where a probe prints the null, or stops the probe where a method is then called
-  on the null outside a try, as probe-clash-report-api.ps1 does at lines 191 and 197
+  its end with exit 0. So a failed FieldType, ReturnType, ParameterType or LocalType read
+  is in no count in any of the three probes. It shows only where a probe prints the null, or
+  stops the probe where a method is then called on the null outside a try, as
+  probe-clash-report-api.ps1 does at lines 191 and 197, read off the code and not run by a
+  stand-in. A failed read of a type's Assembly or its Location inside IsNw,
+  probe-viewpoint-calls.ps1 line 305, is counted, because StartsWith is then called on the
+  null inside the tries at lines 350, 355 to 358 and 365, which count it as a field, signature
+  or locals failure
 - the stand-ins and what they printed are kept outside the repo, in
   %LOCALAPPDATA%\NwcFederatorLoop\turn4\f105-read-failure
 
