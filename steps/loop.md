@@ -64,12 +64,14 @@ touch different files, worst class first, every noise item, the docs and words a
 each wave is tested at once on two buildings, the first run with the XML and the weekly run,
 against a baseline of the installed add-in. It replaces the proof run of set 05 on C06, and C06
 and C07 are parked until he says. The waves are written in steps\fix-round.md, under The waves.
-WHAT NM FED HOLDS, read by prepare-copy.ps1 at 15:44: NWC\C02 holds one building, 1A02MM, four
+WHAT NM FED HOLDS, copied whole by prepare-copy.ps1 at 15:44 with every file read back equal, and
+the copy then listed by the lead: NWC\C02 holds one building, 1A02MM, four
 models, AR, EL, ME and ST, and NWC\C04 one, 1A04PK, ten models, AR, EL, FP, HV, ME 000001 to
 000004 and ST 000001 and 000002, with the corrected XML at the top. It also still holds C06, 67
-NWC, and C07, 73 NWC, and the -OLD XML, 154 NWC in all, turn5\prepare-copy-plain-2.txt, and no
-folder named for C06 and C07 was on the desktop at 15:46. The test runs point at C02 and C04
-only, turn5\nmfed-listing-1544.txt. Set 04's copy was made at 15:47, turn5\prepare-copy-set04.txt.
+NWC, and C07, 73 NWC, and the -OLD XML, 154 NWC in all, turn5\prepare-copy-plain-2.txt for the
+copy and turn5\nmfed-listing-1544.txt for the listing. No folder named for C06 and C07 was on the
+desktop when the lead listed it in the session at 15:46, a read kept in no file. The test runs
+point at C02 and C04 only. Set 04's copy was made at 15:47, turn5\prepare-copy-set04.txt.
 THE BASELINE, set 04, from main dd55e4b with the installed add-in reading 1.0.0.0 e4484d15, main's
 product code since nothing under src, tests, build, bundle or exchange changed after e4484d1. Its
 first run, item 1 on C02, started at 15:55:53 and stopped HUNG at 16:03:28: a floating Clash

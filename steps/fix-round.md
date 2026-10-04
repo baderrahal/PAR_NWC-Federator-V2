@@ -99,9 +99,10 @@ against the baseline of set 04 and the wave before. The waves follow his wished 
 adjusted by the file table at the end of this list, so the silent wrong numbers sit in waves 1
 to 4 with the areas that hold them. Inside that, every noise item goes to wave 5 with the docs
 and words and D1, bar three kept early and named below with why. The lead departed from his
-wished order in three places: F115 sets, 16 items his list did not name, in wave 2, workbook
-and report one area because they share WorkbookCheck.cs, and FR-136, Q108's fix, and F117, the
-names, in wave 5, both noise by the class this list gives them. Two pairs in one wave share a
+wished order in two places: F115 sets, 16 items his list did not name, in wave 2, and workbook
+and report one area because they share WorkbookCheck.cs. FR-136, Q108's fix, and F117, the names,
+moved from the waves 3 and 4 the lead first told him to wave 5, since both are noise by the class
+this list gives them and noise comes last in his order. Two pairs in one wave share a
 file and merge one after the other: in wave 1 F112 and F116 share ExportCheck.cs, F116 after
 F112, and in wave 5 F123 and F117 share docs\history\scan.md. The four finds of Q108, Q109, Q24
 and Q26 write their test steps under their items and run them at the start of the wave that
@@ -380,7 +381,7 @@ structure model's ramps. The AR Railings set does the same.
   and never says which model they live in: src\Federator.Addin\Engine\SetBuilder.cs:753
   (Resolve) and :756-758 (AddCreated). Whether it is wrong is UNKNOWN, FIND-24 says so.
 - Class: silent wrong number
-- Proof: No Core test until Bader decided, which he did on 2026-10-04, Q103, so the Source File condition is added and
+- Proof: No Core test until Bader decided, which he did on 2026-10-04, Q103, so F116 adds the Source File condition, and
   tests\Federator.Core.Tests\Exchange\AllInOneFileTests.cs can assert it for every AR set whose
   category another discipline also uses. Run line of set 05: the 1B06PK read-out has no clash
   block for BLD-AR-Ramps (set 03 lines 9, 11 and 12), and the SET line for BLD-AR-Ramps in
@@ -2036,7 +2037,8 @@ the step for 20. log:8380-8382, the
   for the seconds no part holds (FR-073). The register row said three read backs a viewpoint,
   and the run shows recording is about 94 percent of the accounted VIEWS seconds in 1B06G1 and
   reading back 6. VIEWS falls to about 930 s for the whole run to fit in 45 minutes. What the 45
-  minutes counts and what the viewpoints may hold are Bader's, FR-070, and this speed work goes
+  minutes counts and what the viewpoints may hold were Bader's, FR-070, answered on 2026-10-04,
+  Q101, and this speed work goes
   first. LOOK 387 reads CONFIRMED only for a step the size of the fixtures, so its wording is
   the lead's to check. FR-065 and FR-071 change the same loop.
 - Answered by Bader on 2026-10-04 at 15:23, Q101, in short, his words being under the question in steps\02_questions.md: make VIEWS faster with the same viewpoints. The lead's note: to be worked by F114, the views area, in wave 2, after wave 1's test run measures the split of FR-073.
