@@ -960,6 +960,11 @@ namespace Federator.Core.Exchange
         /// <summary>
         /// The value inside one named set, and inside no other. Where the set is not there
         /// at all, nothing changes and the count is zero.
+        ///
+        /// ONLY A WHOLE VALUE, FR-026. The block opens with the set's own name, and replacing
+        /// the text across it renamed a set whose name held the value, and found an old value
+        /// again inside a new one that held it, so a second run grew it. A whole value element
+        /// is neither, so the name is never touched and a second run counts zero.
         /// </summary>
         private static string Rewrite(string text, CategoryRewrite rewrite, out int changed)
         {
@@ -980,15 +985,9 @@ namespace Federator.Core.Exchange
             }
 
             ends += SetCloses.Length;
-            string block = text.Substring(at, ends - at);
-            changed = Occurrences(block, rewrite.From);
+            string block = RewriteValue(text.Substring(at, ends - at), rewrite.From, rewrite.To, out changed);
 
-            if (changed == 0)
-            {
-                return text;
-            }
-
-            return text.Substring(0, at) + block.Replace(rewrite.From, rewrite.To) + text.Substring(ends);
+            return changed == 0 ? text : text.Substring(0, at) + block + text.Substring(ends);
         }
 
         /// <summary>

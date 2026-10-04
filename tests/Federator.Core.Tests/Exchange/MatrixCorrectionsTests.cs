@@ -244,6 +244,45 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Counts[0].Note, Does.Contain("already asks for something else"));
         }
 
+        /// <summary>
+        /// FR-026. The rewrite replaced its value across the whole set block, and the block
+        /// starts with the set's own name, so a set whose name holds the value it asks for
+        /// was renamed inside its block, and every clash test pointing at the old name would
+        /// point at nothing. Only the value is rewritten.
+        /// </summary>
+        [Test]
+        public void ACategoryRewriteNeverRenamesTheSetItIsIn()
+        {
+            string xml = Set("BLD-EL-Electrical Fixtures", "Electrical Fixtures");
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(
+                xml, null,
+                new List<CategoryRewrite> { new CategoryRewrite("BLD-EL-Electrical Fixtures", "Electrical Fixtures", "Lighting Fixtures") });
+
+            Assert.That(outcome.Text, Does.Contain("<selectionset name=\"BLD-EL-Electrical Fixtures\""), "the name is not a value");
+            Assert.That(outcome.Text, Does.Contain("<data type=\"wstring\">Lighting Fixtures</data>"));
+            Assert.That(outcome.Counts[0].Count, Is.EqualTo(1), "one value, and the name is not counted");
+        }
+
+        /// <summary>
+        /// FR-026, the other half. A rewrite whose new value still holds the old one found the
+        /// old one again inside the new one on a second run and grew it, Electrical Electrical
+        /// Fixtures, which is the loop the class doc says safe to run twice is there to stop.
+        /// </summary>
+        [Test]
+        public void ACategoryRewriteWhoseNewValueHoldsTheOldOneChangesNothingTheSecondTime()
+        {
+            IList<CategoryRewrite> rewrite = new List<CategoryRewrite> { new CategoryRewrite("S", "Fixtures", "Electrical Fixtures") };
+
+            CorrectionOutcome once = MatrixCorrections.Apply(Set("S", "Fixtures"), null, rewrite);
+            CorrectionOutcome twice = MatrixCorrections.Apply(once.Text, null, rewrite);
+
+            Assert.That(once.TotalChanged, Is.EqualTo(1));
+            Assert.That(twice.TotalChanged, Is.EqualTo(0));
+            Assert.That(twice.Text, Is.EqualTo(once.Text));
+            Assert.That(twice.Text, Does.Contain("<data type=\"wstring\">Electrical Fixtures</data>"));
+        }
+
         // ---------- safe to run twice ----------
 
         /// <summary>
