@@ -342,12 +342,100 @@ and 6 does not read as broken.
     DONE     everything requested for this group succeeded
     PARTIAL  something requested did not complete, or the group was CHANGED and
              left alone, which since F24 means only a group whose rebuild never
-             started, because a rebuild that ran ends as Rebuilt
+             started, because a rebuild that ran ends as Rebuilt, or its clash was
+             skipped because a model is not on the same shared coordinates
     FAILED   something requested threw or produced nothing, a rebuild that appended
-             nothing or could not keep its saved tests included
+             nothing or could not keep its saved tests included, or a model names no
+             shared site, or names Internal in a group whose clash is not skipped, Q70
   The rule lives in Federator.Core.Rerun.GroupJudgement, with no Navisworks types
   in it, so it can be tested. The outcome and the reason for it come out of one
-  pass, so the two can never disagree
+  pass, so the two can never disagree. A failure on where the models sit is kept apart
+  from the errors, `GroupFacts.AlignmentFailure`, because nothing threw and the group goes
+  on to its NWD. The steps are judged as they would be without it and what they find is
+  named after it, so a missing NWD, or one not from this run, is never hidden behind the
+  models
+- A GROUP NOT ON THE SAME SHARED COORDINATES SKIPS ITS CLASH AND NOTHING ELSE, Q98 B2
+  and Bader's answer to Q99 and Q100 on 2026-10-04. A model is not on the same
+  coordinates when it names Internal as its shared site, or when it sits more than a
+  metre from its group's reference model, as the ALIGNMENT block measures it. That
+  replaces Q70 for a model on Internal ONLY WHERE THE GROUP'S CLASH IS SKIPPED. Wherever
+  no clash is skipped, the rule off or no clash test to run in the group, a model on
+  Internal fails its group as Q70 answered, `AlignmentCheck.WhyItFailsTheGroup` taking the
+  four inputs the block takes, because his words give such a group PARTIAL or nothing and
+  never DONE, and a group with nothing to clash would otherwise end DONE. A model naming no
+  site at all fails it either way, because his answer named Internal and the distance and
+  not that. The reason is made at the ALIGNMENT step, before any file of the group is
+  written, so it names the models and their sites and NOTHING OF A FILE. The steps that
+  write say what was written. The ALIGNMENT failed run line, `AlignmentCheck.FailedRunLine`,
+  names both causes whichever way the rule is set, and says nothing of which files were
+  written either, because the files written list can name an NWD whose publish returned
+  false. The distance is the STRAIGHT LINE of dx, dy and
+  dz and never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away
+  and under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
+  defaulting to `AlignmentCheck.DefaultFarModelMillimetres`.
+  ONLY A CLASH THAT WOULD HAVE RUN IS SKIPPED, `OffCoordinates.SkipsTheClash`: the rule on,
+  a model off, and `ClashWork.RunsATest`, a source holding tests and a group of two
+  disciplines. A group with nothing to clash, no XML and no test saved, an XML of sets
+  alone, one model or one discipline, is judged as before, Q70's failure for a model on
+  Internal included, and its ALIGNMENT block still names its models under a heading saying
+  no clash is skipped. In a skipped group the tests
+  whose sides both find something are created and none is run, on the one path a one
+  discipline group already took, F77, so not every test of the file is in the NWF, and no
+  viewpoint and no clash report is made. The group ends PARTIAL, never DONE, with the
+  reason `OffCoordinates.ClashSkippedReason`, and a group already FAILED or PARTIAL keeps
+  its outcome with that reason added. Its CLASH block and summary say the clash was
+  skipped instead of printing nought, `ClashRunOutcome.ClashSkipped`, and its GAP block
+  says no report was made. One line per such model, made by
+  `AlignmentCheck.NotOnTheSameCoordinates` and nowhere else, names its file, its shared
+  site and its distance from the reference in X, Y and Z.
+  WHAT IS SAID IS ONLY WHAT WAS CHECKED. The note beside the NWD and in the Clash Report
+  folder, `OffCoordinates.Note`, is written after the NWF was looked at the last time and
+  names the NWF and the NWD off the disk, `NwfAndNwd`, saying which was not written, and
+  names a publish, on either line, only where the publish reported success and the NWD is
+  on the disk. It
+  says the tests already saved in the NWF keep an earlier run's results and that any
+  viewpoint an earlier run saved there stays, since a skipped group makes none and removes
+  none, and names every
+  report an earlier run left at the names this run would have written, with its time and
+  size, `EarlierReports`, read by exact path and never touched, and the log names them too.
+  The ALIGNMENT block's all clear line is written only where every model was measured, and
+  otherwise says how many were not.
+  ONE TALLY PER RUN, `OffCoordinatesAcrossTheRun`, made by the engine when Run or
+  RunOpenDocument starts with that run's rule state, start and count of groups, and handed
+  by the window to that run's RESULT block, `RunLog.WriteResultBlock(thisRun)`. It is
+  never kept on the log, which lives as long as the window, because a second run of a
+  window once listed the first run's groups under the second run's rule state. RESULT and
+  the list say how many groups the rule judged, did not reach and could not read, and how
+  many models it could not judge, and never say no model was found off while any of those
+  is more than nought. Each run's list is its own file, `ListName`, named for the second
+  the run started, so a smaller run never writes over a fuller run's list.
+  The rule is read on every run, so the run after the models are fixed clashes the group
+  with the tests already saved in its NWF. A note an earlier run left is removed only where
+  this run judged every model of the group and either found none off or clashed the group,
+  through `RunLog.WriteRemoved`, which takes the file off the files written list once it is
+  gone from the disk, and is kept with a line saying why where a model was UNKNOWN, the read
+  threw, or a model is still off and no clash test ran in the group,
+  `OffCoordinates.EarlierNoteKeptBecause`. A group skipped is left out of the run's
+  clash total, because a clash that never ran is not a group that found none. A model whose
+  placement or site could not be read is never judged on it, and the block says so.
+  `ReportOptions.SkipClashOffCoordinates`, on by default, switches the rule off, and then
+  every group is clashed and judged as before the answer, Q70's failure for a model on
+  Internal included. The window sets it from a tick box on the Clash step whose label, grey
+  line and starting state are `AlignmentCheck.TickLabel`, `AlignmentCheck.HelpLine` and
+  `AlignmentCheck.DefaultSkipClashOffCoordinates`, set in the constructor and never typed
+  into the XAML, because a building is run once more with the rule off and a setting only a
+  build can change is no switch
+- The EXPORT CHECK run line is added up in Core, `ExportCheckAcrossTheRun`, by the rules
+  each group's block judges by, `ModelExport.HoldsNoElement` among them, so the line and
+  the blocks cannot disagree. The engine kept four counters of its own and none for a model
+  holding no Revit element. A group whose whole read threw is counted from the group's catch,
+  `ExportCheckAcrossTheRun.GroupNotRead`, and the line says so and is never clean while one
+  is. A model `ModelFactsReader.Exports` drops in its own catch is in no count, so the line
+  can read clean over it, a known bug of F112. The row file's number for a model whose
+  elements could not be counted is empty, `ExportCheck.ElementsNumber`, as for any unknown in that file, never -1
+- The open file run's window label takes its clash counts from Core,
+  `ClashRunOutcome.CountsForTheLabel`, which says none ran and why for a group whose clash
+  was skipped, where the label printed nought run and nought clashes
 - The counts in the RESULT block and the errors under it come from one list. A
   failed count with an empty error list is what the log printed once, saying
   "groups failed: 22" and "Nothing failed." in the same block. A group recorded as
@@ -364,7 +452,8 @@ and 6 does not read as broken.
   overwrite with no date suffix, so last week's NWF and NWD sit at exactly the
   paths this run uses. A group that threw before writing anything must not list
   them as its own, and a file that was checked rather than written is logged with
-  CheckOnDisk, which reports the size and records nothing
+  CheckOnDisk, which reports the size and records nothing. A file this run removed
+  leaves the list through WriteRemoved, and only once it is gone from the disk
 - The workbook is ONE SHEET, laid out exactly as the report the client receives: every
   test one after another, most clashes first. The Summary sheet, the Matrix sheet and the
   sheet per test are GONE. All three were asked for in an earlier session, before anyone

@@ -177,6 +177,24 @@ namespace Federator.Core.Tests
             Assert.That(lines[0], Does.Contain("nothing measured this group reaches no output"));
         }
 
+        /// <summary>
+        /// A group whose clash was skipped has no report, and its block said the report
+        /// carries everything the run read, about a report that was never made. Where the
+        /// engine says why there is no report, the block says that instead. A group with no
+        /// report for any other reason is left as it was.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseClashWasSkippedSaysNoReportWasMade()
+        {
+            IList<string> lines = GapRule.Lines(null, "clash skipped, models not on the same shared coordinates");
+
+            Assert.That(lines.Count, Is.EqualTo(1));
+            Assert.That(lines[0], Is.EqualTo(
+                "no clash report was made, clash skipped, models not on the same shared coordinates, so nothing was"
+                + " measured that an output could hold back"));
+            Assert.That(GapRule.Lines(null)[0], Is.EqualTo(GapRule.NothingHeldBack()));
+        }
+
         [Test]
         public void TheBlockCountsWhatItHoldsAndSaysItIsNotAFault()
         {

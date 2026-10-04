@@ -69,7 +69,7 @@ namespace Federator.Addin.Engine
                 {
                     using (Model model = document.Models[i])
                     {
-                        placements.Add(OnePlacement(model, toMillimetres, names));
+                        placements.Add(OnePlacement(model, toMillimetres, names, log));
                     }
                 }
                 catch (Exception error)
@@ -114,11 +114,11 @@ namespace Federator.Addin.Engine
             return exports;
         }
 
-        private static ModelPlacement OnePlacement(Model model, double toMillimetres, ContainerNameSettings names)
+        private static ModelPlacement OnePlacement(Model model, double toMillimetres, ContainerNameSettings names, RunLog log)
         {
             string file = NameOf(model);
             string discipline = DisciplineOf(file, names);
-            string site = string.Empty;
+            string site;
             double x = ModelPlacement.NotRead;
             double y = ModelPlacement.NotRead;
             double z = ModelPlacement.NotRead;
@@ -149,9 +149,15 @@ namespace Federator.Addin.Engine
                     site = SharedCoordinateOn(root);
                 }
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                site = string.Empty;
+                // A read that threw is not a model naming no site. That one fails its
+                // group, Q70, so it used to fail the group for a fault of this read. The
+                // site goes on as not read, which Core says UNKNOWN and judges nothing by.
+                site = ModelPlacement.SiteNotRead;
+                Say(log, "ALIGNMENT could not read the shared site of " + (file.Length == 0 ? "a model with no name" : file)
+                    + ", " + error.GetType().Name + ": " + error.Message
+                    + ". It is UNKNOWN and the model is not judged on it");
             }
 
             return new ModelPlacement(file, discipline, site, x, y, z);
@@ -302,7 +308,8 @@ namespace Federator.Addin.Engine
                             {
                                 if (string.Equals(Words(property.Name), SharedCoordinateProperty, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    return ClashHarvest.Text(property.Value);
+                                    // Never null, because null is a site that was not read.
+                                    return Words(ClashHarvest.Text(property.Value));
                                 }
                             }
                         }

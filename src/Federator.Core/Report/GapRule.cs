@@ -107,12 +107,22 @@ namespace Federator.Core.Report
         /// <summary>
         /// The whole block, written even when it is empty. An empty GAP block saying
         /// nothing was held back is worth more than no block at all, because a missing
-        /// block reads as a check that did not run.
+        /// block reads as a check that did not run. noReportBecause is why this group has
+        /// no report, where the engine knows a reason the empty block's words would hide, or
+        /// null: a group whose clash was skipped for the coordinates said the report
+        /// carries everything the run read, about a report that was never made.
         /// </summary>
-        public static IList<string> Lines(ClashReport report)
+        public static IList<string> Lines(ClashReport report, string noReportBecause = null)
         {
             IList<ReportGap> gaps = For(report);
             List<string> lines = new List<string>();
+
+            if (report == null && !string.IsNullOrEmpty(noReportBecause))
+            {
+                lines.Add("no clash report was made, " + noReportBecause
+                    + ", so nothing was measured that an output could hold back");
+                return lines;
+            }
 
             if (gaps.Count == 0)
             {

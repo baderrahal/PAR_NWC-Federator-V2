@@ -13,10 +13,20 @@ namespace Federator.Core.Health
         /// <summary>A placement whose numbers could not be read at all is still a model and still says so.</summary>
         public const double NotRead = double.NaN;
 
+        /// <summary>
+        /// A site whose read threw, which says nothing about the model. It is NOT an empty
+        /// site: an empty one is a model that names no shared site, which fails its group,
+        /// Q70, and a read that threw used to come back as that and fail the group with a
+        /// reason that read as a fact about the model. Null, because every site that was
+        /// read is a string.
+        /// </summary>
+        public const string SiteNotRead = null;
+
         public ModelPlacement(string file, string discipline, string sharedCoordinate, double x, double y, double z)
         {
             File = file ?? string.Empty;
             Discipline = discipline ?? string.Empty;
+            SiteRead = sharedCoordinate != SiteNotRead;
             SharedCoordinate = sharedCoordinate ?? string.Empty;
             X = x;
             Y = y;
@@ -32,9 +42,12 @@ namespace Federator.Core.Health
         /// <summary>
         /// The NAME of the Revit shared site the model was exported on, read off the model
         /// root's Location tab as revit_ProjectLocation, docs\history\scan.md 5q, or empty
-        /// where the model carries none.
+        /// where the model carries none or the read threw, which SiteRead tells apart.
         /// </summary>
         public string SharedCoordinate { get; private set; }
+
+        /// <summary>Whether the site was read at all. A site that was not read fails nothing and is said UNKNOWN.</summary>
+        public bool SiteRead { get; private set; }
 
         /// <summary>How far the model is moved in X, in millimetres, or NotRead.</summary>
         public double X { get; private set; }
@@ -51,7 +64,7 @@ namespace Federator.Core.Health
             get { return !double.IsNaN(X) && !double.IsNaN(Y) && !double.IsNaN(Z); }
         }
 
-        /// <summary>Whether the model names a shared site at all.</summary>
+        /// <summary>Whether the model names a shared site at all. False too where the site was not read.</summary>
         public bool NamesASharedCoordinate
         {
             get { return SharedCoordinate.Length > 0; }
@@ -79,8 +92,15 @@ namespace Federator.Core.Health
     /// including the ones whose translation is (0, 0, 0), because the export carries a
     /// scale too. What matters is whether the models in one group AGREE WITH EACH OTHER.
     ///
-    /// Nothing here fails a group, Q65 answered: report it and run anyway, never skip a
-    /// group and never stop a run for it.
+    /// Nothing here stops a run, Q65 answered: report it and run anyway. Two answers given
+    /// later decide how a group ENDS, and the group still writes its NWF and its NWD either
+    /// way. Q70: a model naming no site at all fails its group. Q98 B2 with Bader's answer
+    /// to Q99 and Q100, which replaces Q65 and Q70 for this case: a model naming Internal,
+    /// or sitting more than the far model setting from its group's reference, is not on the
+    /// same shared coordinates, and where the run would have run a clash test in the group
+    /// its clash is skipped and nothing else, OffCoordinates. A model on Internal failed its
+    /// group until then and still does wherever no clash is skipped, the rule switched off
+    /// or no clash test to run in the group.
     /// </summary>
     public static class AlignmentCheck
     {
@@ -115,14 +135,74 @@ namespace Federator.Core.Health
         /// </summary>
         public const string DefaultInternalName = "Internal";
 
-        /// <summary>The block. Written even when everything agrees, because a missing block reads as a check that did not run.</summary>
-        public static IList<string> Lines(IList<ModelPlacement> models)
+        /// <summary>
+        /// How far a model may sit from its group's reference model, in millimetres and in
+        /// a straight line, before it is not on the same shared coordinates. Bader's B2 of
+        /// Q98 on 2026-10-04, put to him again with the 40 distances of the C06 run as Q99
+        /// and answered the same day.
+        ///
+        /// ONE METRE IS HIS NUMBER AND NOT A MEASUREMENT. It is the default of the setting
+        /// a run reads, ReportOptions.FarModelMillimetres, and only that default reads it.
+        ///
+        /// THE STRAIGHT LINE OF DX, DY AND DZ, AND NOT EACH AXIS ON ITS OWN. The ME of
+        /// 1B06WM in that run sat 996.2 mm, 663.15 mm and 150 mm off its reference, under a
+        /// metre on every axis and 1.206 m away, and a rule reading each axis would have
+        /// called it in place.
+        /// </summary>
+        public const double DefaultFarModelMillimetres = 1000.0;
+
+        /// <summary>
+        /// Whether a group holding a model not on the same shared coordinates skips its
+        /// clash, Bader's answer to Q99 and Q100. ON, and a setting,
+        /// ReportOptions.SkipClashOffCoordinates, because a building is run once more with it
+        /// off so every other fix is proved on groups that clash.
+        /// </summary>
+        public const bool DefaultSkipClashOffCoordinates = true;
+
+        /// <summary>
+        /// The tick box on the Clash step that switches the rule, ticked by default, because
+        /// a building is run once more with it off and a setting only a build can change is
+        /// no switch. Eight words.
+        /// </summary>
+        public const string TickLabel = "Skip clash when models sit off shared coordinates";
+
+        /// <summary>
+        /// The grey line under it, twelve words, with the distance read off the setting so
+        /// the window never carries a second copy of the metre.
+        /// </summary>
+        public static string HelpLine(double farModelMillimetres)
         {
-            return Lines(models, DefaultReferenceDiscipline, DefaultToleranceMillimetres, DefaultInternalName);
+            return "Internal site or over " + Metres(farModelMillimetres) + " away. NWF and NWD still made";
+        }
+
+        /// <summary>
+        /// The block, with the models not on the same shared coordinates measured against
+        /// the given distance in millimetres, and said the way the rule that skips the
+        /// clash is set and whether this run runs a clash test in the group at all. Written
+        /// even when everything agrees, because a missing block reads as a check that did
+        /// not run.
+        /// </summary>
+        public static IList<string> Lines(
+            IList<ModelPlacement> models, double farModelMillimetres, bool skipClashOffCoordinates, bool runsATest)
+        {
+            return Lines(
+                models,
+                DefaultReferenceDiscipline,
+                DefaultToleranceMillimetres,
+                DefaultInternalName,
+                farModelMillimetres,
+                skipClashOffCoordinates,
+                runsATest);
         }
 
         public static IList<string> Lines(
-            IList<ModelPlacement> models, string referenceDiscipline, double toleranceMillimetres, string internalName)
+            IList<ModelPlacement> models,
+            string referenceDiscipline,
+            double toleranceMillimetres,
+            string internalName,
+            double farModelMillimetres,
+            bool skipClashOffCoordinates,
+            bool runsATest)
         {
             List<string> lines = new List<string>();
 
@@ -136,8 +216,19 @@ namespace Federator.Core.Health
 
             if (reference == null)
             {
-                lines.Add("no model in this group could be placed, so the models were not compared."
-                    + " Check by eye that they sit on the same coordinates.");
+                lines.Add("no model in this group could be placed, so the models were not compared"
+                    + " and none is called a far model. Check by eye that they sit on the same coordinates.");
+
+                // A model on Internal is known by its site alone, so it still skips the
+                // clash or fails the group here, and the block says so like any other.
+                OffCoordinates unplaced = NotOnTheSameCoordinates(models, null, internalName, farModelMillimetres);
+
+                if (unplaced.Any)
+                {
+                    AddOffCoordinates(lines, unplaced, skipClashOffCoordinates, runsATest);
+                }
+
+                AddFailure(lines, models, internalName, unplaced.SkipsTheClash(skipClashOffCoordinates, runsATest));
                 return lines;
             }
 
@@ -159,7 +250,7 @@ namespace Federator.Core.Health
                 {
                     sites.Add(model.SharedCoordinate);
 
-                    if (string.Equals(model.SharedCoordinate, internalName, StringComparison.Ordinal))
+                    if (NamesInternal(model, internalName))
                     {
                         onInternal++;
                     }
@@ -174,7 +265,8 @@ namespace Federator.Core.Health
                 if (!model.Placed)
                 {
                     notPlaced++;
-                    lines.Add("   " + Named(model) + "   NOT READ, its placement could not be read, " + Site(model));
+                    lines.Add("   " + Named(model) + "   NOT READ, its placement could not be read,"
+                        + " so it is not compared and is not called a far model, " + Site(model));
                     continue;
                 }
 
@@ -196,6 +288,33 @@ namespace Federator.Core.Health
 
             lines.Add(Sentence(models.Count, different, notPlaced, toleranceMillimetres));
 
+            // Bader's answer to Q99 and Q100. The same lines the note and the run's list
+            // carry, out of the same rule, so the log and the files cannot disagree.
+            OffCoordinates off = NotOnTheSameCoordinates(models, reference, internalName, farModelMillimetres);
+
+            // The all clear line speaks for every model, so it is written only where every
+            // model was measured, the breaker's eighth finding at c5d8aa8.
+            if (!off.Any && off.NotJudged == 0)
+            {
+                lines.Add("no model names \"" + internalName + "\" or sits more than " + Metres(farModelMillimetres)
+                    + " from the reference model in a straight line");
+            }
+            else if (!off.Any)
+            {
+                lines.Add("no model that could be measured names \"" + internalName + "\" or sits more than "
+                    + Metres(farModelMillimetres) + " from the reference model in a straight line, and "
+                    + NotMeasured(off.NotJudged));
+            }
+            else
+            {
+                AddOffCoordinates(lines, off, skipClashOffCoordinates, runsATest);
+
+                if (off.NotJudged > 0)
+                {
+                    lines.Add(NotMeasured(off.NotJudged));
+                }
+            }
+
             if (sites.Count > 1)
             {
                 lines.Add("this group names " + sites.Count + " different shared coordinates: " + Joined(sites));
@@ -207,40 +326,93 @@ namespace Federator.Core.Health
                     + "\", which is what Revit calls a model that was not exported on a shared site at all");
             }
 
-            // Q70. The block says the group is failed and why, and the group still
-            // writes its NWF, its NWD and its report, which is the evidence.
-            string fails = WhyItFailsTheGroup(models, internalName);
+            AddFailure(lines, models, internalName, off.SkipsTheClash(skipClashOffCoordinates, runsATest));
+            return lines;
+        }
+
+        /// <summary>
+        /// The models not on the same shared coordinates under a heading that says what the
+        /// rule did with them: skipped the clash, was off, or had no clash to skip because
+        /// this run runs no clash test in the group.
+        /// </summary>
+        private static void AddOffCoordinates(
+            IList<string> lines, OffCoordinates off, bool skipClashOffCoordinates, bool runsATest)
+        {
+            // Not "as the reference model", because the reference itself can be on Internal.
+            lines.Add(!runsATest
+                ? off.Models.Count + " model(s) are not on the same shared coordinates. This run runs no clash test"
+                    + " in this group, so no clash is skipped for them:"
+                : off.SkipsTheClash(skipClashOffCoordinates, runsATest)
+                    ? "CLASH SKIPPED. " + off.Models.Count + " model(s) are not on the same shared coordinates, so the"
+                        + " clash is skipped. " + OffCoordinates.TestsCreatedNoneRun
+                        + ", and no viewpoint and no clash report is made:"
+                    : off.Models.Count + " model(s) are not on the same shared coordinates. The rule that skips the"
+                        + " clash for them is off for this run, so the group is clashed as before:");
+
+            for (int i = 0; i < off.Models.Count; i++)
+            {
+                lines.Add("   " + off.Models[i]);
+            }
+        }
+
+        /// <summary>
+        /// Q70. The block says the group is failed and why, before any file of the group is
+        /// written, so it says nothing of them. Told whether the clash is skipped, which is
+        /// the one thing that keeps a model on Internal from failing the group.
+        /// </summary>
+        private static void AddFailure(
+            IList<string> lines, IList<ModelPlacement> models, string internalName, bool clashSkipped)
+        {
+            string fails = WhyItFailsTheGroup(models, internalName, clashSkipped);
 
             if (fails != null)
             {
-                lines.Add("THIS GROUP IS FAILED. " + fails);
+                lines.Add("THIS GROUP IS FAILED. " + fails + ".");
             }
-
-            return lines;
         }
 
         /// <summary>
         /// Why this group is FAILED, or null where it is not, Q70 answered b on
         /// 2026-09-20. A group fails when any of its models names the internal origin as
-        /// its shared site, or names no site at all.
+        /// its shared site, or names no site at all. A model whose site could not be read
+        /// does neither, because a read that threw is not a fact about the model.
         ///
-        /// FAILED DOES NOT MEAN THE GROUP PRODUCES NOTHING. The federation, the NWD and
-        /// the clash report are all still written, because Bader needs the evidence to
-        /// take to the people who own the models, and a group that produces nothing gives
-        /// him nothing to send. This says the group is not DONE and names the model, and
-        /// the engine carries on.
+        /// BADER'S ANSWER TO Q100 REPLACES THE FIRST HALF ONLY WHERE THE CLASH IS SKIPPED: a
+        /// model named Internal then skips the group's clash, OffCoordinates.SkipsTheClash,
+        /// and does not fail it. Wherever no clash is skipped, the rule off, or no clash test
+        /// to run in the group, it fails the group as Q70 answered, because his words give
+        /// such a group PARTIAL or nothing and never DONE, and a group with nothing to clash
+        /// would otherwise end DONE. A model naming no site at all fails it either way,
+        /// because his answer named Internal and the distance and not that. The four inputs
+        /// are the ones the ALIGNMENT block takes, so the block and the group cannot differ.
+        ///
+        /// FAILED DOES NOT STOP THE GROUP. The engine goes on to the NWD, and to the clash
+        /// report unless the clash was skipped, because Bader needs the evidence to take to
+        /// the people who own the models. This reason is made at the ALIGNMENT step, before
+        /// any of them is written, so it names the models and their sites and nothing of a
+        /// file. The steps that write say what was written, and GroupJudgement judges the
+        /// steps as it would without this reason, an NWD missing or not from this run
+        /// included, and names what it finds after it.
         ///
         /// WHY IT IS A FAILURE AND NOT A WARNING. A model on the internal origin is not
         /// slightly out of place, it is in a different coordinate system, so every clash
         /// the run reports against it is either a clash that is not there or a miss that
         /// is. The numbers are worse than useless because they read as real.
         /// </summary>
-        public static string WhyItFailsTheGroup(IList<ModelPlacement> models)
+        public static string WhyItFailsTheGroup(
+            IList<ModelPlacement> models, double farModelMillimetres, bool skipClashOffCoordinates, bool runsATest)
         {
-            return WhyItFailsTheGroup(models, DefaultInternalName);
+            if (models == null || models.Count == 0)
+            {
+                return null;
+            }
+
+            OffCoordinates off = NotOnTheSameCoordinates(
+                models, ReferenceIn(models, DefaultReferenceDiscipline), DefaultInternalName, farModelMillimetres);
+            return WhyItFailsTheGroup(models, DefaultInternalName, off.SkipsTheClash(skipClashOffCoordinates, runsATest));
         }
 
-        public static string WhyItFailsTheGroup(IList<ModelPlacement> models, string internalName)
+        private static string WhyItFailsTheGroup(IList<ModelPlacement> models, string internalName, bool clashSkipped)
         {
             if (models == null || models.Count == 0)
             {
@@ -252,11 +424,18 @@ namespace Federator.Core.Health
 
             for (int i = 0; i < models.Count; i++)
             {
+                // A site whose read threw says nothing about the model, so the model is
+                // judged on neither half of this rule and the block says UNKNOWN for it.
+                if (!models[i].SiteRead)
+                {
+                    continue;
+                }
+
                 if (!models[i].NamesASharedCoordinate)
                 {
                     withNoSite.Add(Named(models[i]));
                 }
-                else if (string.Equals(models[i].SharedCoordinate, internalName, StringComparison.Ordinal))
+                else if (!clashSkipped && NamesInternal(models[i], internalName))
                 {
                     onInternal.Add(Named(models[i]));
                 }
@@ -283,7 +462,22 @@ namespace Federator.Core.Health
                     + string.Join(", ", withNoSite.ToArray());
             }
 
-            return why + ". Every output of this group was still written, so the evidence is there to send.";
+            return why;
+        }
+
+        /// <summary>
+        /// The ALIGNMENT failed run line. Its words do not follow the rule's setting, because
+        /// a model on Internal fails its group wherever its clash is not skipped, the rule on
+        /// or off, and the line once said with the rule on that every such group failed on a
+        /// model naming no site. It says nothing of which files were written, since a failed
+        /// group's publish can fail too and the files written list can then name last week's
+        /// NWD.
+        /// </summary>
+        public static string FailedRunLine(int groups)
+        {
+            return "ALIGNMENT failed " + groups + " group(s), each because a model names no shared site, or was"
+                + " exported on the internal origin in a group whose clash was not skipped"
+                + (groups == 0 ? string.Empty : ". The failure does not stop the group.");
         }
 
         /// <summary>How many models sit somewhere the reference does not, for the run line. Never fails anything.</summary>
@@ -321,6 +515,100 @@ namespace Federator.Core.Health
             }
 
             return different;
+        }
+
+        /// <summary>
+        /// The models of this group not on the same shared coordinates as its reference
+        /// model, Bader's answer to Q99 and Q100: each one naming Internal as its shared
+        /// site, or sitting more than farModelMillimetres from the reference in a straight
+        /// line, with the line that names its file, its shared site and its distance in X,
+        /// Y and Z. The reference is the one the block measures against and is named too
+        /// when it is on Internal itself. A model whose placement could not be read is
+        /// never judged on its distance, the same way it is never called different, and
+        /// one on Internal is still named, with its distance UNKNOWN.
+        /// </summary>
+        public static OffCoordinates NotOnTheSameCoordinates(IList<ModelPlacement> models, double farModelMillimetres)
+        {
+            if (models == null || models.Count == 0)
+            {
+                return new OffCoordinates(null, new List<string>(), 0, 0);
+            }
+
+            return NotOnTheSameCoordinates(
+                models, ReferenceIn(models, DefaultReferenceDiscipline), DefaultInternalName, farModelMillimetres);
+        }
+
+        private static OffCoordinates NotOnTheSameCoordinates(
+            IList<ModelPlacement> models, ModelPlacement reference, string internalName, double farModelMillimetres)
+        {
+            List<string> off = new List<string>();
+            int notJudged = 0;
+
+            for (int i = 0; i < models.Count; i++)
+            {
+                ModelPlacement model = models[i];
+
+                // A site whose read threw is not Internal, FR-002, and SiteRead says so.
+                bool onInternal = NamesInternal(model, internalName);
+                bool measured = reference != null && model != reference && model.Placed;
+                double dx = measured ? model.X - reference.X : 0.0;
+                double dy = measured ? model.Y - reference.Y : 0.0;
+                double dz = measured ? model.Z - reference.Z : 0.0;
+                double distance = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+                bool far = measured && distance > farModelMillimetres;
+
+                if (!onInternal && !far)
+                {
+                    // Not named, and not a pass either where the site or the placement is
+                    // UNKNOWN. The reference is placed by the way it is chosen.
+                    if (!model.SiteRead || reference == null || !model.Placed)
+                    {
+                        notJudged++;
+                    }
+
+                    continue;
+                }
+
+                string where = model == reference
+                    ? "the reference model itself"
+                    : !measured
+                        ? "distance from the reference UNKNOWN, its placement could not be read"
+                        : "X " + Millimetres(dx) + "  Y " + Millimetres(dy) + "  Z " + Millimetres(dz)
+                            + " from the reference, " + Metres(distance) + " in a straight line"
+                            + (far ? ", more than " + Metres(farModelMillimetres) : string.Empty);
+
+                off.Add(Named(model) + "   shared site " + SiteSaid(model)
+                    + (onInternal ? ", Revit's own origin and not a shared site" : string.Empty)
+                    + "   " + where);
+            }
+
+            return new OffCoordinates(reference == null ? null : Named(reference), off, notJudged, models.Count);
+        }
+
+        /// <summary>
+        /// Whether a model names the internal origin as its site, the one test for it, so
+        /// the block, the failure and the rule cannot drift apart. A site whose read threw
+        /// names nothing, FR-002.
+        /// </summary>
+        private static bool NamesInternal(ModelPlacement model, string internalName)
+        {
+            return model.SiteRead && string.Equals(model.SharedCoordinate, internalName, StringComparison.Ordinal);
+        }
+
+        private static string NotMeasured(int models)
+        {
+            return models + " model(s) were not measured, a placement or a site UNKNOWN, so nothing is said about them";
+        }
+
+        /// <summary>The site in a line about coordinates: its name in quotes, or why there is none.</summary>
+        private static string SiteSaid(ModelPlacement model)
+        {
+            if (!model.SiteRead)
+            {
+                return "UNKNOWN, it could not be read";
+            }
+
+            return model.NamesASharedCoordinate ? "\"" + model.SharedCoordinate + "\"" : "none named";
         }
 
         /// <summary>
@@ -380,14 +668,40 @@ namespace Federator.Core.Health
 
         private static string Site(ModelPlacement model)
         {
+            if (!model.SiteRead)
+            {
+                return "shared coordinate UNKNOWN, it could not be read off the model, so the model is not judged on it";
+            }
+
             return model.NamesASharedCoordinate
                 ? "shared coordinate \"" + model.SharedCoordinate + "\""
                 : "NO shared coordinate on the model at all, so check this one by eye";
         }
 
+        /// <summary>
+        /// The site as the row file carries it: its name, or that the model names none, or
+        /// that it could not be read. Here and not in the add-in, because the row file said
+        /// no shared coordinate for a read that threw, the same false claim the block made.
+        /// </summary>
+        public static string SiteName(ModelPlacement model)
+        {
+            if (model == null || !model.SiteRead)
+            {
+                return "UNKNOWN, the site could not be read";
+            }
+
+            return model.NamesASharedCoordinate ? model.SharedCoordinate : "no shared coordinate on the model";
+        }
+
         private static string Millimetres(double value)
         {
             return value.ToString("0.##", CultureInfo.InvariantCulture) + " mm";
+        }
+
+        /// <summary>A length in millimetres said in metres to the millimetre, the unit Bader gave the far model rule in.</summary>
+        private static string Metres(double millimetres)
+        {
+            return (millimetres / 1000.0).ToString("0.###", CultureInfo.InvariantCulture) + " m";
         }
 
         private static string Words(string value, string instead)

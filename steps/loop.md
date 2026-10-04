@@ -141,6 +141,32 @@ wf_d55f67e0-13a, turn5\w2-workflow-start.txt, each told to merge main c4fd0d4 in
 first. F116, the clash XML, read at 18:39: FR-025,
 FR-026, FR-008, FR-009 and FR-030 committed, the branch at 0157966 with main c4fd0d4 merged in.
 F114 stays paused at f915396 for wave 2.
+F125 MERGED as PR 102, 1ae6771, at 23:06:17, green in Actions on its last commit 302f802, run
+37230696626, turn5\actions-reads-pr102.txt. Its second pass was read under Q93 by a reviewer and
+a breaker, both APPROVE with nothing blocking, turn5\f125b-read-review.txt and
+turn5\f125b-read-break.txt, and its harness passed 105 and failed 0 on the scripts of 03aa6c0,
+turn5\f125-proof\prove-f125-after2.txt line 641, their sha256 with Windows line ends equal to the
+harness's in the first eight hex digits, turn5\f125b-blob-hashes.txt, the merged scripts
+differing from those in comments only, turn5\f125b-comments-only.txt. Register rows F125-R1 to
+F125-R7 hold the first pass's readings' points and F125-R8 to F125-R14 the second pass's, all for
+F122 in wave 4, F125-R2 answered for C02. Two claim-checks made its records true,
+turn5\f125b-read-claims.txt and turn5\f125b-read-claims2.txt, the second written by the lead
+from its return. Its branch and its worktree folder are removed, while git's own entry for the
+worktree could not be deleted, Permission denied, turn5\precommit-records-9.txt. The baseline
+runs from wt-base at 5fa98a8 to the end of set 04, so they keep the first pass's record words,
+and the runs after this merge write the second pass's. F126, the driver unticking a named box
+for the rule-off run of wave 1, branched off 1ae6771 in wt-f126, its brief turn5\f126-brief.md,
+and its developer started at 23:07:26 in workflow wf_b3336354-ab1, turn5\f126-workflow-start.txt.
+F112: fix attempt 2 read CHANGES, 2 blocking and 1, its readings turn5\f112b-read-review.txt,
+f112b-read-break.txt and f112b-read-claims.txt, so fix attempt 3, the last before the form, ran:
+its reviewer APPROVE, its breaker CHANGES with one blocking finding, turn5\f112c-read-*.txt, an
+old clause of an Internal group's FAILED reason saying its files were written before any was,
+which keeps a missing or stale NWD out of RESULT. The words are older than F112 and the developer
+knew of them since attempt 1, attempt 3 made them reach every federation-only Internal group,
+and no reading named them as blocking before attempt 3's, so the closing pass now running is the
+first fix attempt of that finding, with the claim-checker's 12 points. F116: fix attempt 2 read
+APPROVE by both, nothing blocking, turn5\f116b-read-review.txt and f116b-read-break.txt, and the
+pass that carries Bader's answer to Q113 is with its developer.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -337,11 +363,13 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test of the coverage,
    why the Shift range fails in the window code, and whether the driver can test a Shift click
    without real input
-6. Wave 2 in two halves, 2a F127 coverage first with F115 sets and F114 views, 2b F128 generic
-   models with F118 workbook and report. Wave 3 in two halves, 3a F129 start from an NWF with
-   F120 harvest and pictures and F109 install, 3b F130 the Shift range with F119 run log and
-   RESULT. Then waves 4 and 5, as steps\fix-round.md lists them. Every wave test from wave 2 on
-   shows the Coverage sheet
+6. Wave 2 in three parts since Bader's views by team, Q114: 2a F127 coverage first with F132
+   mirrored tests and F115 sets, 2b F131 teams, F114 views reshaped by Q114 and F128 generic
+   models, 2c F118 workbook and report. Q114's measurements first, turn5\measure-mirrors.md,
+   measure-teams.md and measure-views.md, then a design of the tree by a panel of plans. Wave 3 in
+   two halves, 3a F129 start from an NWF with F120 harvest and pictures and F109 install, 3b F130
+   the Shift range with F119 run log and RESULT. Then waves 4 and 5, as steps\fix-round.md lists
+   them. Every wave test from wave 2 on shows the Coverage sheet
 Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes. The
 keep-awake is checked every 30 minutes.
 
@@ -452,6 +480,17 @@ OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its ch
   answered on 2026-10-04 in the evening, right as read: a count that differs is a FAILED line in
   COVERAGE and RESULT and the group keeps its own result, and a Shift click the driver cannot make
   without real input becomes numbered steps for him in steps\03_bader_next.md
+- Q115 to Q123, written on 2026-10-05 from the design of Q114, turn5\q114-design.md section 9,
+  each with the choice the build goes on with until he answers: Q115 where the team map lives,
+  Q116 where it applies, Q117 a set name with no discipline code, Q118 a clashing item in a model
+  of a third team, Q119 which models a view shows, Q120 a view of the tool a person changed, Q121
+  Telecom Fixtures and Telephone Devices, Q122 whose status a result carries, Q123 a run with no
+  XML. Four of the design's questions are not asked: two his words settle, no priority file means
+  No priority, point 9, and the pair's order is point 12's, one is the lead's choice for safety,
+  new views written before old ones are removed, whose cost is UNKNOWN until probe P18 and which is
+  asked if that cost is large, and one, a comment that does not survive a save, waits for P9
+- Q124, written on 2026-10-05: the baseline of 1A04PK takes a day or more, so whether to let it
+  run, the loop going on with A, let it run, until he answers
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:
