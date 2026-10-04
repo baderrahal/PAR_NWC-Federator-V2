@@ -90,7 +90,8 @@ turn4\reads-pr85.txt at 12:45:56.
   spell in mixed case, the WORKBOOK CHECK and the RESULT file sizes print wrong numbers, and the
   run is 2.3 times the 45 minutes, VIEWS alone 1.7 times. Bader's message of 15:30, Q97. For Bader
   three tests with their workbook counts to check against the Clash Detective panel
-- ONEDRIVE, at Bader's word in the Claude tab: Roamer.exe, the loop's stand-in left in the
+- ONEDRIVE, at Bader's request in the Claude tab to fix the error, what to remove chosen by
+  the lead: Roamer.exe, the loop's stand-in left in the
   F103 worktree folder under .claude\worktrees, and testhost.exe, a build output of his
   RCRC-Green repo, were blocked by OneDrive. The F102 and F103 worktree folders were removed at
   about 16:46 and that one testhost.exe deleted. OneDrive put both folders back at 16:47 from

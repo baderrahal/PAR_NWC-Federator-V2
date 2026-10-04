@@ -75,7 +75,9 @@ and nothing is fixed until a real run on real files shows it fixed.
   own folder shape, NWC\<community> into the NWF, NWD and Clash Report folders of the same
   name. The loop named it NMFed because the wall refuses any command naming NM Fed. Every
   output of a run goes under %LOCALAPPDATA%\NwcFederatorLoop, bar two kinds. The evidence
-  run.ps1 copies, masked, into steps\runs of the clone it runs from. And what the tool and its
+  run.ps1 copies into steps\runs of the clone it runs from, masking only the remembered
+  folders block of the tool's log, which the lead masks whole with mask-evidence.ps1 before
+  any commit, as the rule below says. And what the tool and its
   Navisworks write where the loop cannot point them: the tool's own log and tsv in his logs
   folder, autosaves in his AutoSave folder and Navisworks's own settings, each kept by a rule
   below, and whatever else changes outside the loop folder while the start runs, such as the
@@ -89,10 +91,11 @@ and nothing is fixed until a real run on real files shows it fixed.
   logs-backup by sha256 and put back after the loop, Bader's answer Q82. And his AutoSave
   folder, where the loop removes the autosaves its runs added and puts back from the backup
   any of his a run changed, Q86. Outside %LOCALAPPDATA%\NwcFederatorLoop the loop deletes or
-  overwrites nothing else on its own, bar its own logs and tsv files, which it takes out of
-  his logs folder after the loop. What Bader asks for in his own words is done as he asks
-  and recorded, as on 2026-10-01, when at his word a testhost.exe of his other repo and two
-  worktree folders of this one were removed for OneDrive, steps\loop.md
+  overwrites nothing else, bar its own logs and tsv files, which it takes out of his logs
+  folder after the loop. Once it went further: on 2026-10-01 Bader asked it to fix an error
+  OneDrive showed, and the lead chose to remove a testhost.exe of his other repo and two
+  worktree folders of this one, its own choice of fix, recorded in steps\loop.md. Since then
+  the loop names a removal like that to Bader before it makes it, its own rule
 - Before the first run his logs folder, %LOCALAPPDATA%\ParsonsNwcFederator\logs, is copied
   into logs-backup, and before every start each file of his the backup does not hold is
   copied into it and read back. The tool's window logs only into his folder and keeps 30
@@ -158,8 +161,8 @@ and nothing is fixed until a real run on real files shows it fixed.
   hours. It is the lead's own script outside the repo. Its path, its process id and when it
   started and stopped are named in steps\loop.md, and it is checked alive at the start of
   every turn
-- The loop installs the add-in only through tools\loop\run.ps1 -Mode Install, bar the
-  in-place install at the end of this rule, which runs
+- The loop installs the add-in only through tools\loop\run.ps1 -Mode Install, or by the
+  in-place install at the end of this rule. run.ps1 -Mode Install runs
   build\install.ps1 from a checkout whose HEAD is the commit asked for and whose git status
   prints nothing, untracked files included, because the build stamp reads +edits for any
   of them. The installed stamp is read back and must name that commit. build\install.ps1
@@ -172,11 +175,14 @@ and nothing is fixed until a real run on real files shows it fixed.
   F109, so Bader asked on 2026-10-01, Q96, and again on 2026-10-04, Q98, for main to be
   installed in place, apart from F109: built from a clean checkout of main, with no Roamer
   running, copied over the installed files, any installed file the new bundle lacks removed
-  and named, and the installed stamp read back as main's commit. The loop's own script for
-  it, %LOCALAPPDATA%\NwcFederatorLoop\turn4\install-in-place.ps1, adds three checks of its
-  own: the bundle staged and checked by build\install.ps1 -SkipBuild against a throwaway
-  APPDATA under the work folder, the installed bundle read equal to bundle-backup before
-  anything is copied, and each copied file read back
+  and named, and the installed stamp read back as main's commit. Before it, the loop stages
+  and checks the bundle with build\install.ps1 -SkipBuild against a throwaway APPDATA under
+  the work folder. The loop's own script for it,
+  %LOCALAPPDATA%\NwcFederatorLoop\turn4\install-in-place.ps1, adds checks of its own: the
+  installed bundle read equal to bundle-backup before anything is copied, the checked
+  bundle's stamp read as the one asked, each copied file read back, the whole installed
+  bundle read equal to the checked one after the copy, and on any failure every file put back
+  from bundle-backup and read back
 - While a Navisworks the loop started runs, the recent files, the window placement and the
   default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
   under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which
