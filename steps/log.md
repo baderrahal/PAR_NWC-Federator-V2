@@ -86,6 +86,131 @@ Each harness run also made runs\97 under the loop folder for the paths the drive
 removed it at its end. One file was written by mistake outside turn5, %TEMP%\f125b-added.txt, the
 lines this pass adds, read for em dashes and semicolons and removed at once.
 
+## 2026-10-04 The loop, turn 5, Bader's answer to Q113 and the notes on Q112, and the measurements
+
+Nothing under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before,
+at the pre-commit of PR 99's last commit, turn5\precommit-records-6b.txt, and after, at this
+record's, turn5\precommit-records-7.txt. The error: failed to delete .git/worktrees lines after
+the count in both are git's housekeeping of worktree folders OneDrive holds, and stopped
+nothing.
+
+### The plan, also given in the Claude tab before the first edit, a reply kept in no file
+
+- A, this record: his answers under Q113 and Q112, FR-009, FR-030, FR-176 and FR-179 carrying
+  them, the measurements of 2026-10-04 on FR-176, FR-177 and FR-179, Q113 out of the open form
+- B, F116 after its fix attempt 2: the correction list, the three matrix corrections, the Q103
+  rule and the 30 workset spellings, moved out of src into a plain file beside the picked XML,
+  read at the pick and named in the log, nothing corrected and said when no list is there, this
+  project's list in exchange\ beside the corrected XML, then its readings and its merge after
+  F112, and Bader told in the tab when the list is on main
+- C, the test of wave 1: the list copied from exchange\ beside the XML in the run set's own copy
+  and read back, never into NM Fed
+- D, everything else as planned
+
+### What was done
+
+- Q113 answered, B and D, and Q112's notes answered, right as read, each under its question in
+  his words, the lead's notes marked
+- FR-176, FR-177 and FR-179 carry the measurements of turn5\measure-coverage.md,
+  measure-generic.md and measure-shift.md. The driver's Shift measurement did not run, since
+  its stand-in waits for no Navisworks to run, turn5\measure-shift-driver.md
+- of the three things seen while measuring the coverage, two are on the list, FR-035 and
+  FR-126. The third, a single discipline group's CLASH block counting its 36 created tests among
+  its 1830 skipped, is the block's own word, skipped meaning not run and not passed, log:1167 to
+  1170 of set 03, so it is no fault, and FR-176 says the coverage counts keep the two apart
+
+### What remains
+
+- B to D of the plan
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- F116 with Q113's answer once its fix attempt 2 and its readings return
+
+Nothing in this record waits for the local machine.
+
+## 2026-10-04 The loop, turn 5, Bader's five requests added to the round, the plan, and no sleep
+
+Bader's message of the evening, headed FIVE REQUESTS ADDED TO THE ROUND, is Q112 of
+steps\02_questions.md in his words. Nothing under src, tests or tools changed. Core tests 1756
+passed, 0 failed, 0 skipped at the pre-commit of this record, turn5\precommit-records-6.txt, as
+at the pre-commit of PR 97's last commit, turn5\precommit-records-5c.txt. The lines after the
+test count in both, error: failed to delete .git/worktrees, are git's housekeeping of worktree
+folders OneDrive holds, and stopped nothing.
+
+### The plan, also given in the Claude tab before the first edit, a reply kept in no file
+
+- A, request 1 at once: measure the power settings, set sleep when plugged in to Never after
+  saving the old value, read the System log for every sleep and wake since 1 Oct, and keep the
+  keep-awake running while this session is open, checked every 30 minutes
+- B, this record: Q112, FR-175 to FR-179 in steps\fix-round.md with the waves split into
+  halves of at most three areas, the keep-awake rule in .claude\rules\loop.md, the head and the
+  next action of steps\loop.md, and Q113 from F116's reading
+- C, wave 1 as planned: the baseline of set 04, F125's second pass and F126, F112's and F116's
+  fix attempt 2, then the test of wave 1 through turn5\wave-compare.py and F104's documents read
+- D, to measure from the baseline before wave 2: the property and value of Generic Models on
+  1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test, why the Shift
+  range fails, and whether the driver can test a Shift click without real input
+- E, wave 2 in two halves, 2a F127 coverage first with F115 and F114, 2b F128 generic models
+  with F118. Coverage designed first by a panel of independent plans
+- F, wave 3 in two halves, 3a F129 start from an NWF with F120 and F109, 3b F130 the Shift range
+  with F119
+- G, waves 4 and 5 as listed
+
+### What was done
+
+- request 1, FR-175. Measured at 19:27, turn5\power-before.txt: the Balanced scheme, sleep after
+  0, Never, plugged in and on battery, hibernate after and turn off display after 0 plugged in,
+  no power policy key, Standby (S0 Low Power Idle) the only sleep state, hibernation not
+  enabled. Since sleep when plugged in already read Never, nothing was written to his power
+  settings and nothing is put back at the close. The lock screen's display timeout is hidden
+  from powercfg and UNKNOWN
+- the System log from 2026-10-01 00:00, turn5\sleep-wake-since-1oct.txt, nine events and no
+  sleep and no wake among them: started 2026-10-01 08:27:53, shutdown asked by shutdown.exe at
+  19:30:49 and the system down at 19:31:50, started 2026-10-04 08:56:35, a restart for an update
+  asked at 09:07:20, down at 09:09:07 and started at 09:10:19
+- keep-awake.ps1 changed to watch the session's claude.exe and stop only when no Claude Code
+  claude.exe runs or steps\loop.md reads STATE CLOSED, the old copy kept as keep-awake-v1.ps1.
+  The session's claude.exe is pid 19148, in the parent chain of this session's shell,
+  turn5\session-chain.txt. A wrong session, STATE WAITING, a second copy and STATE CLOSED proved on a copy with its own mutex, 8 passed and 0 failed, turn5\keep-awake-test\prove-result.txt, and the takeover of another claude.exe when the watched one ends, 5 passed and 0 failed, the watched one a stand-in copy of PING.EXE named claude.exe, turn5\keep-awake-test\prove-takeover-result.txt. The stop when no Claude Code claude.exe runs at all is read in the code only, UNKNOWN by a run, since a run of it would end the session. turn5\check-keep-awake.ps1 starts it again when it is
+  gone, proved by ending it at 19:36:35, turn5\keep-awake-checks.txt. A schedule of this
+  session, job 04b2bf94, runs the check at 13 and 43 minutes past each hour while the session
+  is idle, turn5\keep-awake-schedule.txt. It lives only as long as the session, and the schedule
+  tool says it ends after 7 days. No line of its own is written yet
+- Q113 written from F116's reading: its corrections shipped as data in Core against CLAUDE.md,
+  and Q103 read wider than the matrix. F116's readings are turn5\f116-read-review.txt,
+  f116-read-break.txt and f116-read-claims.txt
+
+### Programs started and files written outside the repo
+
+- powercfg, Get-WinEvent and Get-CimInstance, reading only
+- powershell.exe for the keep-awake proof, its copies under turn5\keep-awake-test, the keep-awake
+  through WMI as pid 10412 and, after the lead ended it to prove the check, as pid 29740.
+  Stop-Process on pid 1312 and pid 10412, both the loop's own keep-awake
+- written: turn5\power-before.txt, sleep-wake-since-1oct.txt, keep-awake.ps1, keep-awake-v1.ps1,
+  check-keep-awake.ps1, keep-awake-checks.txt, keep-awake.txt and the files under
+  turn5\keep-awake-test
+
+### What remains
+
+- everything from C of the plan on
+
+### Known bugs
+
+- the schedule fires only while the session is idle, so a long turn checks the keep-awake only
+  when the lead runs the check itself
+- the stop when no Claude Code claude.exe runs is UNKNOWN by a run
+
+### What comes next
+
+- C of the plan, the baseline runs and wave 1
+
+Nothing in this record waits for the local machine.
+
 ## 2026-10-04 The loop, turn 5, F104 part 2, the documents read, DONE for the build
 
 Nothing under src or tests changed. Core tests 1746 passed, 0 failed, 0 skipped after the merge

@@ -1,0 +1,123 @@
+RUN RECORD, run.ps1 sha256 93ADBE35A9566BD62CA54FF3C1A6E9C8AAB2E2B01D9F91AD6ACEBE18F296F911, nw-guard.ps1 sha256 63105BCB6F20E6E2FC668E80E998B6F3B989DDDEA4F29002325D2F12387A079D, drive-window-run.ps1 sha256 8E11803CD39A2DD60A4E05E65512605AEFE6E90C7509347FBDCDFBE527581F51, -Mode Run -Set 04 -Item 1 -Folder C02 -Xml 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml -Stamp e4484d15, the window run
+  the run folder "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\item1-C02", every line from here is also in its record.txt
+  the watchdog started, constructor deadline 300 s, ceiling 43200 s from adoption
+---- check 13, his logs folder ----
+  34 files listed into logs-before.txt, 0 copied into logs-backup and read back
+---- check 14, his AutoSave folder ----
+  199 files listed into autosave-before.txt, 0 copied into autosave-backup and read back. Nothing is written into his AutoSave folder before the put back at the end, Q86
+---- check 15, the settings backup ----
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\item1-C02\settings\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123320 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 34 files
+---- M5 before, the write times of the keys under HKCU\Software\Autodesk ----
+  6669 keys read
+---- check 17, keep awake ----
+  SetThreadExecutionState(ES_CONTINUOUS, ES_SYSTEM_REQUIRED, ES_DISPLAY_REQUIRED) returned 0x80000000 on native thread 51760
+---- check 18, the last read before the constructor ----
+  no start this probe could not prove is recorded
+  no Roamer is running
+  the session reads unlocked
+==== THE START ====
+  15:56:17.497  calling new NavisworksApplication() on the main thread
+  the constructor RETURNED after 81.94 s
+  Roamer processes new since step 2: 1
+    pid 47208, started 15:56:17.605, parent 1392 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 47208, and the start ticks read again through it are equal
+  ADOPTED, pid 47208, start ticks UTC 639267153776051006, held through its handle
+  Visible set True, read back True
+---- the driver and the plugin call ----
+  the driver started as pid 29288, held through its handle: powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File "%LOCALAPPDATA%\NwcFederatorLoop\wt-main\tools\probes\drive-window-run.ps1" -OwnerPid 47208 -OwnerStartTicks 639267153776051006 -Set 04 -Stamp e4484d15 -Notes "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\item1-C02\driver.txt" -Source "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C02" -Nwf "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02" -Nwd "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWD\C02" -Excel "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\Clash Report\C02" -Xml "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml"
+  15:57:56.024  calling ExecuteAddInPlugin(ParsonsNwcFederator.PARS, no parameters) on the main thread. AddPluginAssembly is never called, so the installed build runs
+15:57:56  t+99s  MONITOR started, a pass every 15 s, hang limit 300 s with under 20 s of processor time in it, fixed hold 0 s
+15:57:56  t+99s  SAMPLE processor 94.313 s
+15:57:56  t+99s  DIALOG: class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Clash Detective", owner 1247958, class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Untitled - Autodesk Navisworks Manage 2025", visible True, enabled True, process the adopted one, text "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard"
+15:57:56  t+99s  MAIN: class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Untitled - Autodesk Navisworks Manage 2025", owner 6294528, class WindowsForms10.Window.0.app.0.27a2811_r7_ad1, caption "", visible False, enabled True, process the adopted one
+15:57:56  t+99s  SESSION LOCK unlocked
+15:57:56  t+99s  the tool's window is open, caption "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]"
+15:58:11  t+114s  the tool's log is found, run-20261004-155756.log, with its .tsv run-20261004-155756.tsv, both named in toollog-name.txt. Its SESSION names e4484d15. Both clocks of the hang rule start now
+15:58:11  t+114s  LOG 15:57:56.130  +0000.015s  RETAIN   keeping 30 logs, deleted 1, could not delete 0
+15:58:11  t+114s  LOG SESSION
+15:58:11  t+114s  LOG 15:57:56.147  +0000.032s  plugin version : 1.0.0.0 e4484d15 built 2026-10-01 12:19:09
+15:58:11  t+114s  LOG 15:57:56.149  +0000.032s  open document  : none, the document is clear
+15:58:11  t+114s  SAMPLE processor 96.797 s, 2.484 s since the last pass, the log 2185 bytes
+15:58:11  t+114s  WINDOW: class HwndWrapper[Roamer.exe;;b3e10665-a020-40e9-b510-9e967c3028af], caption "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]", owner 1247958, class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Untitled - Autodesk Navisworks Manage 2025", visible True, enabled False, process the adopted one
+15:58:26  t+129s  SAMPLE processor 97.250 s, 0.453 s since the last pass, the log 2323 bytes
+15:58:26  t+129s  CONFIRM, the tool's confirm, which the driver answers and is not a finding: class #32770, caption "Parsons NWC Federator", owner 8915550, class HwndWrapper[Roamer.exe;;b3e10665-a020-40e9-b510-9e967c3028af], caption "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]", visible True, enabled False, process the adopted one, text "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is rebuilt from it with its saved tests kept. Only known once each NWF is opened.    Nothing is open at the moment, so nothing is lost.    Carry on?"
+15:58:26  t+129s  DRIVER exited 8, DIALOG, its last line: 15:58:14.486  DRIVER EXIT 8 DIALOG: 1 dialogs that are not the confirm are up after RunButton, the first captioned "Clash Detective", and each is left up, so nothing more was pressed
+15:58:26  t+129s  the run is over, the driver stopped, DIALOG, with nothing that runs pressed, and 2 other windows of the adopted Navisworks are up, so WM_CLOSE is not posted, they are left as they are, and the hang rule or the ceiling decides
+15:58:41  t+144s  SAMPLE processor 97.422 s, 0.172 s since the last pass, the log 2323 bytes
+15:58:56  t+159s  SAMPLE processor 97.547 s, 0.125 s since the last pass, the log 2323 bytes
+15:58:56  t+159s  SESSION LOCK unlocked
+15:58:56  t+159s  HEARTBEAT the log 2323 bytes, its last line "15:58:12.285  +0016.168s  PREVIEW  opened 0 NWFs before the confirm dialog in 0.0s", processor 97.547 s, the log still for 30 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 15:58:12.565  t+136.7s  Roamer 47208 visible top level windows: [#32770] "Parsons NWC Federator" text: "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is rebuilt from it with its saved tests kept. Only known once each NWF is opened.    Nothing is open at the moment, so nothing is lost.    Carry on?" | [HwndWrapper[Roamer.exe;;b3e10665-a020-40e9-b510-9e967c3028af]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+15:59:11  t+174s  SAMPLE processor 97.750 s, 0.203 s since the last pass, the log 2323 bytes
+15:59:26  t+189s  SAMPLE processor 97.813 s, 0.063 s since the last pass, the log 2323 bytes
+15:59:41  t+204s  SAMPLE processor 98.172 s, 0.359 s since the last pass, the log 2323 bytes
+15:59:57  t+220s  SAMPLE processor 98.203 s, 0.031 s since the last pass, the log 2323 bytes
+15:59:57  t+220s  SESSION LOCK unlocked
+15:59:57  t+220s  HEARTBEAT the log 2323 bytes, growth 0 bytes, its last line "15:58:12.285  +0016.168s  PREVIEW  opened 0 NWFs before the confirm dialog in 0.0s", processor 98.203 s, growth 0.656 s, the log still for 91 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 15:58:12.565  t+136.7s  Roamer 47208 visible top level windows: [#32770] "Parsons NWC Federator" text: "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is rebuilt from it with its saved tests kept. Only known once each NWF is opened.    Nothing is open at the moment, so nothing is lost.    Carry on?" | [HwndWrapper[Roamer.exe;;b3e10665-a020-40e9-b510-9e967c3028af]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+16:00:12  t+235s  SAMPLE processor 98.484 s, 0.281 s since the last pass, the log 2323 bytes
+16:00:27  t+250s  SAMPLE processor 98.609 s, 0.125 s since the last pass, the log 2323 bytes
+16:00:42  t+265s  SAMPLE processor 98.891 s, 0.281 s since the last pass, the log 2323 bytes
+16:00:57  t+280s  SAMPLE processor 98.953 s, 0.063 s since the last pass, the log 2323 bytes
+16:00:57  t+280s  SESSION LOCK unlocked
+16:00:57  t+280s  HEARTBEAT the log 2323 bytes, growth 0 bytes, its last line "15:58:12.285  +0016.168s  PREVIEW  opened 0 NWFs before the confirm dialog in 0.0s", processor 98.953 s, growth 0.750 s, the log still for 151 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 15:58:12.565  t+136.7s  Roamer 47208 visible top level windows: [#32770] "Parsons NWC Federator" text: "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is rebuilt from it with its saved tests kept. Only known once each NWF is opened.    Nothing is open at the moment, so nothing is lost.    Carry on?" | [HwndWrapper[Roamer.exe;;b3e10665-a020-40e9-b510-9e967c3028af]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+16:01:12  t+295s  SAMPLE processor 99.328 s, 0.375 s since the last pass, the log 2323 bytes
+16:01:27  t+310s  SAMPLE processor 99.391 s, 0.063 s since the last pass, the log 2323 bytes
+16:01:43  t+326s  SAMPLE processor 99.641 s, 0.250 s since the last pass, the log 2323 bytes
+16:01:58  t+341s  SAMPLE processor 99.703 s, 0.063 s since the last pass, the log 2323 bytes
+16:01:58  t+341s  SESSION LOCK unlocked
+16:01:58  t+341s  HEARTBEAT the log 2323 bytes, growth 0 bytes, its last line "15:58:12.285  +0016.168s  PREVIEW  opened 0 NWFs before the confirm dialog in 0.0s", processor 99.703 s, growth 0.750 s, the log still for 212 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 15:58:12.565  t+136.7s  Roamer 47208 visible top level windows: [#32770] "Parsons NWC Federator" text: "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is rebuilt from it with its saved tests kept. Only known once each NWF is opened.    Nothing is open at the moment, so nothing is lost.    Carry on?" | [HwndWrapper[Roamer.exe;;b3e10665-a020-40e9-b510-9e967c3028af]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+16:02:13  t+356s  SAMPLE processor 99.938 s, 0.234 s since the last pass, the log 2323 bytes
+16:02:28  t+371s  SAMPLE processor 99.984 s, 0.047 s since the last pass, the log 2323 bytes
+16:02:43  t+386s  SAMPLE processor 100.328 s, 0.344 s since the last pass, the log 2323 bytes
+16:02:58  t+401s  SAMPLE processor 100.453 s, 0.125 s since the last pass, the log 2323 bytes
+16:02:58  t+401s  SESSION LOCK unlocked
+16:02:58  t+401s  HEARTBEAT the log 2323 bytes, growth 0 bytes, its last line "15:58:12.285  +0016.168s  PREVIEW  opened 0 NWFs before the confirm dialog in 0.0s", processor 100.453 s, growth 0.750 s, the log still for 272 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 15:58:12.565  t+136.7s  Roamer 47208 visible top level windows: [#32770] "Parsons NWC Federator" text: "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is rebuilt from it with its saved tests kept. Only known once each NWF is opened.    Nothing is open at the moment, so nothing is lost.    Carry on?" | [HwndWrapper[Roamer.exe;;b3e10665-a020-40e9-b510-9e967c3028af]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+16:03:13  t+416s  SAMPLE processor 100.781 s, 0.328 s since the last pass, the log 2323 bytes
+16:03:28  t+431s  HANG: the log stood at 2323 bytes since 15:58:26, 302 s, and the adopted Navisworks used 3.703 s of processor time in the last 300 s, under 20 s, Q83
+  ExecuteAddInPlugin THREW, called 15:57:56.024, returned 16:03:28.796, after 332.76 s. Nothing is judged by what it returned
+    System.Management.Automation.MethodInvocationException: Exception calling "ExecuteAddInPlugin" with "2" argument(s): "Error calling method: -2147023170" <- System.InvalidOperationException: Error calling method: -2147023170
+16:03:29  t+432s  the adopted process, closed through the held handle for the hang: pid 47208 closed through the held handle and gone
+16:03:29  t+432s  MONITOR stopped
+==== THE RUN ENDED: HUNG ====
+==== FINALLY ====
+  the driver exited 8, DIALOG, its last line: 15:58:14.486  DRIVER EXIT 8 DIALOG: 1 dialogs that are not the confirm are up after RunButton, the first captioned "Clash Detective", and each is left up, so nothing more was pressed
+---- M5, what changed outside the loop folder while the start ran, by any program, read before the put back ----
+  keys under HKCU\Software\Autodesk whose write time changed, appeared or went: 2. Files listed in m5.txt of the run folder, which stays out of the evidence until it is masked
+  %APPDATA%\Autodesk: 5 files written at or after the call
+  %APPDATA%\Microsoft\Windows\Recent: 0 files written at or after the call
+  %LOCALAPPDATA%\Autodesk: 18 files written at or after the call
+  %PROGRAMDATA%\Autodesk: 6 files written at or after the call
+  %TEMP%: 153 files written at or after the call
+---- the watchdog's end ----
+  watchdog passes 1216, longest pass 12627 ms, longest gap 13135 ms, error lines 0, early fails 0, runspace errors 0, lines it could not write 0, forced: no
+---- starts the loop could not prove ----
+  none
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the AutoSave compare reads autosave-before.txt back, 199 files
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 154  new DWord 155
+  registry: 1 values or keys differ from the backup
+  registry: 1 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 67617 bytes, sha256 5AC073CD8DAF, written 2026-10-04 15:21:05  new 68868 bytes, sha256 15004AD65C84, written 2026-10-04 16:03:28
+  files: 1 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  files: 1 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+---- his AutoSave folder, Q86 ----
+  AutoSave: 0 put back as they were and read back, 0 not as they were before the run
+---- his logs folder, after ----
+    GONE run-20260901-200430.log, logs-backup holds it as it was before the run, the tool's own pruning of its oldest logs, Q82
+    ADDED run-20261004-155756.log, the loop's own, named in toollog-name.txt for the close of the loop, Q82
+    ADDED run-20261004-155756.tsv, the loop's own, named in toollog-name.txt for the close of the loop, Q82
+  his logs folder after the window run, Q82: 3 differences, LOST, a file of his gone or changed with no copy from before the run in logs-backup: 0
+---- the tool's log, the outputs and the workbooks ----
+  the tool's log, 26 lines, copied into the run folder's toollog with its FOLDERS REMEMBERED block masked, 5 lines, Q87
+  the tool's .tsv copied into the run folder's toollog, 51 bytes
+  outputs.txt lists 0 files, 0 of them workbooks
+  keep awake OFF returned 0x80000003 on native thread 51760. ON was thread 51760. Same thread True, returned 0x80000003 True
+  lines that could not be written to record.txt: 0, by the monitor: 0
+VERDICT: STOPPED, HUNG
