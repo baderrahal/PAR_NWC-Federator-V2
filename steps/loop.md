@@ -3,7 +3,8 @@
 STATE OPEN
 
 TURN 5, THE FULL FIX ROUND, opened on 2026-10-04 by Bader's message headed 4 Oct 2026, Q98. No
-run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05. The plan
+run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05, since
+replaced by Bader's waves of 15:42, each tested on two buildings of C02 and C04. The plan
 is the turn 5 entry at the top of steps\log.md. The fix list is steps\fix-round.md, built
 before the first fix. Main at the start of the turn: f38edd5, installed e4484d15 in place since
 2026-10-01 with be0b9b37 in bundle-backup. Why turn 4 stopped: Bader wrote "stop, i will close
@@ -53,7 +54,33 @@ his desktop, explorer.exe their parent, at 12:53:23 and 12:54:16, each with the 
 back while they run, and the developers were told at 13:21 to run no harness that starts a
 stand-in named Roamer. Code, pull requests and merges go on. The waiter
 turn4\wait-no-roamer.ps1 reads the processes every 10 minutes into turn5\wait-no-roamer.txt
-and ends when none runs.
+and ends when none runs. It read one at 15:14:00, pid 37356, and NO ROAMER RUNS at 15:24:00,
+so the loop's own starts may go again, each read again just before it starts.
+BADER ANSWERED THE FORM at 15:23 on 2026-10-04, his message headed BADER'S ANSWERS, 4 OCT 2026,
+TO THE FORM OF TURN 5: Q99 to Q109, Q24 and Q26, each answer under its question in
+steps\02_questions.md and on its item in steps\fix-round.md, the lead's notes marked as the lead's.
+THE WAVES, Bader's message of 15:42 the same day: the fixes go in waves of up to three areas that
+touch different files, worst class first, every noise item, the docs and words and D1 last, and
+each wave is tested at once on two buildings, the first run with the XML and the weekly run,
+against a baseline of the installed add-in. It replaces the proof run of set 05 on C06, and C06
+and C07 are parked until he says. The waves are written in steps\fix-round.md, under The waves.
+WHAT NM FED HOLDS, copied whole by prepare-copy.ps1 at 15:44 with every file read back equal, and
+the copy then listed by the lead: NWC\C02 holds one building, 1A02MM, four
+models, AR, EL, ME and ST, and NWC\C04 one, 1A04PK, ten models, AR, EL, FP, HV, ME 000001 to
+000004 and ST 000001 and 000002, with the corrected XML at the top. It also still holds C06, 67
+NWC, and C07, 73 NWC, and the -OLD XML, 154 NWC in all, turn5\prepare-copy-plain-2.txt for the
+copy and turn5\nmfed-listing-1544.txt for the listing. No folder named for C06 and C07 was on the
+desktop when the lead listed it in the session at 15:46, a read kept in no file. The test runs
+point at C02 and C04 only. Set 04's copy was made at 15:47, turn5\prepare-copy-set04.txt.
+THE BASELINE, set 04, from main dd55e4b with the installed add-in reading 1.0.0.0 e4484d15, main's
+product code since nothing under src, tests, build, bundle or exchange changed after e4484d1. Its
+first run, item 1 on C02, started at 15:55:53 and stopped HUNG at 16:03:28: a floating Clash
+Detective pane of the loop's Navisworks was up from its start, the window driver took it for a
+dialog after pressing Run and stopped, and nobody answered the tool's confirm, record.txt lines
+36, 48 to 50 and 80 of wt-main\steps\runs\04\item1-C02. Nothing of Bader's was harmed: his
+settings and AutoSave put back clean, and his logs folder as Q82 has it, one of his oldest logs
+pruned by the tool and held in logs-backup and two loop logs added, both put back at the close
+of the loop, record.txt lines 102 to 116. F125 fixes the driver before the baseline runs again.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -199,30 +226,32 @@ desktop.
 
 ## Next action
 
-Turn 5, the full fix round, Q98. Merged so far on 2026-10-04: PR 87, the records of turn 4's
-pause and turn 5's opening, as 53c37b6. PR 84, F108, as c9b223b. PR 88, F106, DONE for item 1,
-as 3449521. PR 89, the records with the note for the modellers, B4, as 51a0cb6. PR 83, Bader's
-answers in the loop rules, as 086a348. PR 90, F105, as 2c89788. PR 91, the fix list,
-steps\fix-round.md, 174 items, and the form, Q99 to Q109, as 0e76b16. PR 92, F107, as f58c083.
+Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 at 15:42. Merged so
+far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
+51a0cb6, PR 83 as 086a348, PR 90, F105, as 2c89788, PR 91, the fix list, as 0e76b16, PR 92, F107,
+as f58c083, and PR 93 as dd55e4b. Bader's answers and the waves are in the pull request carrying
+this text.
 
-1. In flight, each merged on its own: F109, the in-place install for the team, fix attempt 3
-   after attempt 2's reviewer and breaker found three blocking, its plan in
-   turn5\f109-a3-plan.md, then its harness, prove-run.ps1, once no Navisworks runs, and a third
-   reading. A finding that survives it goes to the form. F104
-   part 2, the documents read, built at 33732c9 and read safe under Q93, then its harness
-   parts B and C and the lead's read of set 03's NWFs once no Navisworks runs, the first
-   answer to Bader's test 3, then its pull request. Bader's own Navisworks has run since
-   12:53, see the paragraph at the top
-2. The area pull requests of steps\fix-round.md, up to three developers at once on different
-   files, each read by a reviewer and a breaker and its body by the claim-checker, merged one at
-   a time, a record within the hour: F112 alignment with FR-001 built on the 1 m of Q98 B2, F113
-   clash counts and F114 the views area's first phase are with their developers. The items
-   that need Bader wait for his answers. D1, FR-174, last, moves only
-3. The proof run, set 05 on C06: main installed in place as on 2026-10-01, a fresh copy by
-   prepare-copy.ps1 -Set 05 from the source copy, whose XML asks ME-Ductwork, the first run
-   given that XML by name, items 1 to 5, steps\runs\05\findings.md with the before and after
-   table against set 03, and Bader's three tests
-4. The summary at the top of steps\fix-round.md, merged and posted in the Claude tab
+1. The baseline, set 04: F125 first, the window driver taking a floating Clash Detective pane for
+   a dialog, then the four runs again through the real window, item 1 with the XML and item 2
+   with none, on C02 and on C04, each after a fresh Roamer read, then steps\runs\04\findings.md,
+   short, in the shape of set 03's, merged within the hour. The hung first attempt is kept as
+   evidence
+2. Wave 1: F112 alignment with Bader's rule of Q99 and Q100, F113 clash counts, built and with its
+   reviewer and breaker, and F116 the clash XML of Q102 to Q104. Each with a reviewer, a breaker
+   and the claim-checker, Actions green, merged one at a time
+3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
+   buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
+   run once more with the rule switched off by its setting. Compared with the baseline: each
+   group's result, the clash count per test, the time per step and the VIEWS share, the workbook
+   check, the RESULT numbers and the log size, each item of the wave marked proven or not with
+   its line. A fix that makes the test worse is taken back at once, with one line why
+4. Three short lines at the top of steps\fix-round.md and in the Claude tab, what the wave fixed,
+   what the test proved and what got worse, merged within the hour
+5. Waves 2 to 5 the same way, as steps\fix-round.md lists them. F104 part 2, the documents read,
+   merges as the test's own instrument once its pull request is read, and reads each test's NWFs
+   against their workbooks
+Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes.
 
 ## The phases
 
@@ -339,6 +368,19 @@ steps\02_questions.md with its evidence and its choices:
 - and two asked on 2026-09-12 and still open: Q24, a name cell given back to the pattern,
   FR-160, and Q26, members read only by a test, FR-172
 
+ANSWERED ON 2026-10-04 at 15:23, every question of the form of turn 5, each answer under its question in
+steps\02_questions.md and on its item in steps\fix-round.md. Q99 and Q100: a group whose models
+are not on the same shared coordinates has only its clash skipped and ends PARTIAL. Q101: VIEWS
+faster with the same viewpoints, each group's time reported beside its NWC sizes and item
+counts, the 45 minutes not judged in this round. Q102 to Q104: the corrections applied to the
+picked XML before any set is built, with OR rows for both spellings and Source File contains
+-AR- on the AR sets that need it. Q105 to Q107: the names masked and refused by the check, the
+older ones held as a hash. Q108, Q109, Q24 and Q26: find the mistake first, with test steps
+under each item, run before anything changes, which are orders to look and not decisions, and
+Q26's members whose tests still pass after the break come back to the form. Nothing of the form
+of turn 5 waits on him now. The older questions with no answer, Q25, Q27 to Q31, Q35 to Q40, Q45
+to Q47, Q49 to Q51 and Q76 to Q78, are not part of it and wait as before.
+
 ANSWERED ON 2026-10-01: Q82 to Q92, every one, each answer under its question in
 steps\02_questions.md. Nothing from turn 3 waits in the form now. The two sections below are
 kept as what Bader answered.
@@ -450,7 +492,8 @@ baseline run proves it or contradicts it.
 - 86 read again by two readers on 2026-09-29, 76 CONFIRMED and 10 PARTLY, none refuted:
   60 silent wrong outputs, 13 broken features, 6 loud failures, 7 noise. Every one
   waits for the baseline, because no fix lands before it, steps\notes\turn1-read-verified.md
-- 30 needs Bader, in the form
+- 28 needs Bader, in the form
+- 2 answered by Bader on 2026-10-04, Q24 and Q26, their finds in the waves
 - 2 DONE in turn 4, F102 and F103, merged on Bader's answers
 - 3 answered by Bader on 2026-10-01 and being carried out, F105, Q82 to Q87 as one row, and Q88
 - 1 open in turn 4, F109
@@ -600,8 +643,8 @@ baseline run proves it or contradicts it.
 | Q68 | 01_next steps/01_next.md line 870 | Question 68, subject not stated in 01_next.md | Bader's answer recorded under it in steps/02_questions.md. The question itself is not quoted in 01_next.md. | needs Bader, in the form | none yet | none yet |
 | Q9 | steps/02_questions.md:39 | Commit the 1A04WE client export (F18) | The 1A04WE export committed under samples/client-report and read by the tests that name it. | needs Bader, in the form | none yet | none yet |
 | Q15 | steps/02_questions.md:63 | The local proofs P1 to P3 | A recorded Clash Detective panel count for three tests equal to their workbook block and ROWS line. A run over every ticked group whose run TIMING block reads i ... | needs Bader, in the form | none yet | none yet |
-| Q24 | steps/02_questions.md:113, also log.md steps/log.md lines 4516 (What remains, t ... | Give a typed name cell back to the pattern, or drop the rule | Bader's answer, then a Grouping step control that calls ReleaseToPattern, or the core.md sentence and the member removed with its test. | needs Bader, in the form | none yet | none yet |
-| Q26 | steps/02_questions.md:123, also log.md steps/log.md line 4871 (What remains, F4 ... | Members made internal because only a test reads them | Bader's answer, then the internal members kept with the decision written in a rule, or each deleted with its test. | needs Bader, in the form | none yet | none yet |
+| Q24 | steps/02_questions.md:113, also log.md steps/log.md lines 4516 (What remains, t ... | Give a typed name cell back to the pattern, or drop the rule | Bader's answer, then a Grouping step control that calls ReleaseToPattern, or the core.md sentence and the member removed with its test. | answered by Bader on 2026-10-04, find the mistake first, FR-160 in wave 4 | none yet | none yet |
+| Q26 | steps/02_questions.md:123, also log.md steps/log.md line 4871 (What remains, F4 ... | Members made internal because only a test reads them | Bader's answer, then the internal members kept with the decision written in a rule, or each deleted with its test. | answered by Bader on 2026-10-04, find the mistake first, FR-172 in wave 5 | none yet | none yet |
 | Q27 | steps/02_questions.md:127, also log.md steps/log.md line 4871 (What remains, F4 ... | Keep or drop the two choice open count rule | Bader's answer, then core.md keeping the rule with its readers named, or the bullet and the unused choice removed. | needs Bader, in the form | none yet | none yet |
 | Q28 | steps/02_questions.md:131, also log.md steps/log.md line 4841 (What remains, F4 ... | Release the two handle reads F41 left | Bader's answer, and if release is chosen, both reads in using blocks and a run with no ObjectDisposedException. | needs Bader, in the form | none yet | none yet |
 | Q29 | steps/02_questions.md:135, also log.md steps/log.md line 4785 (What remains, F4 ... | A settings file for the stop after count, log count and report subfolder | Bader's answer, then a file read once when the log opens, with a refused value named in the log. | needs Bader, in the form | none yet | none yet |
