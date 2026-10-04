@@ -38,13 +38,89 @@ namespace Federator.Core.Tests.Health
             };
         }
 
+        /// <summary>
+        /// Each model's line carries how many of its elements hold a workset, beside how
+        /// many workset NAMES it carries, because the names count alone read as a count of
+        /// elements and the elements on a workset were never printed, T1-S50.
+        /// </summary>
         [Test]
         public void EveryModelIsNamedWithItsElementsItsWorksetsAndItsIdShare()
         {
             string block = Joined(ExportCheck.Lines(TheRealGroup()));
 
-            Assert.That(block, Does.Contain("AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   elements 86   worksets 2   element id 100%"));
-            Assert.That(block, Does.Contain("ME  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc   elements 236   worksets 3   element id 100%"));
+            Assert.That(block, Does.Contain(
+                "AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   elements 86   with a workset 86   worksets 2   element id 100%"));
+            Assert.That(block, Does.Contain(
+                "ME  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc   elements 236   with a workset 236   worksets 3   element id 100%"));
+        }
+
+        // ---------- T1-S50, every element is a claim that needs counting ----------
+
+        /// <summary>
+        /// The closing sentence said every element carries a workset when the only
+        /// workset test was whether ANY element did, so one element of a thousand passed.
+        /// The sets that filter on workset then find nothing for the other 999 and nothing
+        /// warned.
+        /// </summary>
+        [Test]
+        public void AModelWithAWorksetOnOneElementOfAThousandIsNotCalledWhole()
+        {
+            IList<ModelExport> models = new List<ModelExport> { Model("ME", 1000, 1, 1000, "ME-Piping") };
+
+            string block = Joined(ExportCheck.Lines(models));
+
+            Assert.That(block, Does.Not.Contain("carry a workset on every element"));
+            Assert.That(block, Does.Contain("elements 1000   with a workset 1   worksets 1"));
+            Assert.That(block, Does.Contain(
+                "only 1 of 1000 element(s) carry a workset. A set that filters on workset finds none of the other 999 here"));
+            Assert.That(block, Does.Contain("0 of 1 model(s) carry no workset at all, and 1 carry a workset on only some of their elements"));
+        }
+
+        [Test]
+        public void AModelWhoseWalkThrewIsNotCalledWhole()
+        {
+            IList<ModelExport> models = new List<ModelExport>
+            {
+                Model("AR", 86, 86, 86, "AR-EXTERIOR"),
+                Model("ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted)
+            };
+
+            string block = Joined(ExportCheck.Lines(models));
+
+            Assert.That(block, Does.Not.Contain("carry a workset on every element"));
+            Assert.That(block, Does.Contain("with a workset UNKNOWN"));
+            Assert.That(block, Does.Contain("0 of 2 model(s) carry no workset at all, and 1 could not be counted"));
+        }
+
+        /// <summary>Every element of none is not every element, and a model with no Revit element was called whole.</summary>
+        [Test]
+        public void AModelWithNoRevitElementIsNotCalledWhole()
+        {
+            IList<ModelExport> models = new List<ModelExport> { Model("EL", 0, 0, 0) };
+
+            string block = Joined(ExportCheck.Lines(models));
+
+            Assert.That(block, Does.Not.Contain("carry a workset on every element"));
+            Assert.That(block, Does.Contain("no item in this model is a Revit element, so it has no workset and no element id to check"));
+            Assert.That(block, Does.Contain("0 of 1 model(s) carry no workset at all, and 1 hold no Revit element"));
+        }
+
+        [Test]
+        public void TheRuleTheRunLineCountsIsTheRuleTheBlockUses()
+        {
+            ModelExport none = Model("EL", 494, 0, 494);
+            ModelExport some = Model("ME", 1000, 1, 1000, "ME-Piping");
+            ModelExport every = Model("AR", 86, 86, 86, "AR-EXTERIOR");
+            ModelExport threw = Model("ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted);
+
+            Assert.That(none.CarriesNoWorkset, Is.True);
+            Assert.That(some.CarriesNoWorkset, Is.False);
+            Assert.That(some.CarriesAWorksetOnSomeElements, Is.True);
+            Assert.That(every.CarriesAWorksetOnSomeElements, Is.False);
+            Assert.That(every.CarriesNoWorkset, Is.False);
+            Assert.That(threw.Counted, Is.False);
+            Assert.That(threw.CarriesNoWorkset, Is.False, "a count nobody took is never called none");
+            Assert.That(threw.CarriesAWorksetOnSomeElements, Is.False);
         }
 
         /// <summary>

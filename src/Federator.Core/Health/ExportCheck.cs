@@ -53,6 +53,32 @@ namespace Federator.Core.Health
             get { return WithWorkset > 0; }
         }
 
+        /// <summary>
+        /// Whether all three counts were taken. A walk that threw part way gives back none
+        /// of them, because part of a count is not a count, and a model nobody counted is
+        /// never called whole and never called empty.
+        /// </summary>
+        public bool Counted
+        {
+            get { return Elements != NotCounted && WithWorkset != NotCounted && WithElementId != NotCounted; }
+        }
+
+        /// <summary>Whether the model holds elements and not one of them carries a workset. False where nothing was counted.</summary>
+        public bool CarriesNoWorkset
+        {
+            get { return Counted && Elements > 0 && WithWorkset == 0; }
+        }
+
+        /// <summary>
+        /// Whether some of its elements carry a workset and some do not, T1-S50. One
+        /// element of a thousand on a workset passed as every element, and a set that
+        /// filters on workset finds none of the other 999.
+        /// </summary>
+        public bool CarriesAWorksetOnSomeElements
+        {
+            get { return Counted && WithWorkset > 0 && WithWorkset < Elements; }
+        }
+
         /// <summary>The share of elements carrying an id, as whole per cent, or minus one where it could not be worked out.</summary>
         public int IdShare
         {
@@ -74,7 +100,7 @@ namespace Federator.Core.Health
     ///
     /// THE WORKSET. Every mechanical set in the client's matrix filters on the Workset
     /// parameter, and 33 of the 61 sets found nothing in every group of the run of
-    /// 2026-09-20. So this says, per model, whether any element carries a workset at all
+    /// 2026-09-20. So this says, per model, how many of its elements carry a workset
     /// and WHAT THE NAMES ARE, because the names are what a person has to put beside the
     /// matrix. On 2026-09-20 that comparison was the answer: the models carry
     /// ME-Ductwork and the matrix asks for ME-DUCTWORK, the condition carries no
@@ -115,7 +141,10 @@ namespace Federator.Core.Health
             }
 
             int withoutAnyWorkset = 0;
+            int withSomeWorkset = 0;
             int withoutEveryId = 0;
+            int withNoElement = 0;
+            int notCounted = 0;
             List<string> everyWorkset = new List<string>();
 
             for (int i = 0; i < models.Count; i++)
@@ -124,13 +153,33 @@ namespace Federator.Core.Health
 
                 lines.Add("   " + Named(model)
                     + "   elements " + Count(model.Elements)
+                    + "   with a workset " + Count(model.WithWorkset)
                     + "   worksets " + (model.CarriesAWorkset ? model.Worksets.Count.ToString(CultureInfo.InvariantCulture) : "NONE")
                     + "   element id " + Share(model.IdShare));
 
-                if (!model.CarriesAWorkset && model.Elements > 0)
+                // EVERY ELEMENT IS A CLAIM THAT NEEDS COUNTING, T1-S50. A model nobody
+                // counted, one holding no Revit element and one with a workset on only
+                // some of its elements were all once called whole by the sentence below.
+                if (!model.Counted)
+                {
+                    notCounted++;
+                }
+                else if (model.Elements == 0)
+                {
+                    withNoElement++;
+                    lines.Add("      no item in this model is a Revit element, so it has no workset and no element id to check");
+                }
+                else if (model.CarriesNoWorkset)
                 {
                     withoutAnyWorkset++;
                     lines.Add("      no element carries a workset. Every set that filters on workset will find nothing here");
+                }
+                else if (model.CarriesAWorksetOnSomeElements)
+                {
+                    withSomeWorkset++;
+                    lines.Add("      only " + Count(model.WithWorkset) + " of " + Count(model.Elements)
+                        + " element(s) carry a workset. A set that filters on workset finds none of the other "
+                        + Count(model.Elements - model.WithWorkset) + " here");
                 }
 
                 if (model.IdShare != ModelExport.NotCounted && model.IdShare < 100)
@@ -143,7 +192,7 @@ namespace Federator.Core.Health
                 Gather(everyWorkset, model.Worksets);
             }
 
-            lines.Add(Sentence(models.Count, withoutAnyWorkset, withoutEveryId));
+            lines.Add(Sentence(models.Count, withoutAnyWorkset, withSomeWorkset, withoutEveryId, withNoElement, notCounted));
             AddWorksets(lines, everyWorkset, namesShown);
             AddDisagreements(lines, models);
             return lines;
@@ -235,21 +284,61 @@ namespace Federator.Core.Health
                 + " so ME-Ductwork does not match ME-DUCTWORK and that set finds nothing");
         }
 
-        private static string Sentence(int models, int withoutAnyWorkset, int withoutEveryId)
+        /// <summary>
+        /// The closing sentence. EVERY ELEMENT is said only when every model was counted,
+        /// holds elements, and carries both on each of them, and otherwise every shape that
+        /// kept it from being said is counted in the sentence.
+        /// </summary>
+        private static string Sentence(
+            int models, int withoutAnyWorkset, int withSomeWorkset, int withoutEveryId, int withNoElement, int notCounted)
         {
-            if (withoutAnyWorkset == 0 && withoutEveryId == 0)
+            if (withoutAnyWorkset == 0 && withSomeWorkset == 0 && withoutEveryId == 0 && withNoElement == 0 && notCounted == 0)
             {
                 return "all " + models + " model(s) carry a workset on every element and an element id on every element";
             }
 
-            string said = withoutAnyWorkset + " of " + models + " model(s) carry no workset at all";
+            List<string> said = new List<string>();
+            said.Add(withoutAnyWorkset + " of " + models + " model(s) carry no workset at all");
+
+            if (withSomeWorkset > 0)
+            {
+                said.Add(withSomeWorkset + " carry a workset on only some of their elements");
+            }
 
             if (withoutEveryId > 0)
             {
-                said += ", and " + withoutEveryId + " do not carry an element id on every element";
+                said.Add(withoutEveryId + " do not carry an element id on every element");
             }
 
-            return said + ". Nothing is changed and the run goes on.";
+            if (withNoElement > 0)
+            {
+                said.Add(withNoElement + " hold no Revit element");
+            }
+
+            if (notCounted > 0)
+            {
+                said.Add(notCounted + " could not be counted");
+            }
+
+            return Listed(said) + ". Nothing is changed and the run goes on.";
+        }
+
+        /// <summary>Parts read as a list: one alone, two joined by and, more with commas and an and before the last.</summary>
+        private static string Listed(IList<string> parts)
+        {
+            if (parts.Count == 1)
+            {
+                return parts[0];
+            }
+
+            string[] head = new string[parts.Count - 1];
+
+            for (int i = 0; i < head.Length; i++)
+            {
+                head[i] = parts[i];
+            }
+
+            return string.Join(", ", head) + ", and " + parts[parts.Count - 1];
         }
 
         private static void Gather(IList<string> into, IList<string> worksets)

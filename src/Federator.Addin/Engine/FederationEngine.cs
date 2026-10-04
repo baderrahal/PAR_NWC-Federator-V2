@@ -86,6 +86,8 @@ namespace Federator.Addin.Engine
         private int failedOnAlignment;
         private readonly List<string> alignmentFailures = new List<string>();
         private int modelsWithNoWorkset;
+        private int modelsWithAWorksetOnSome;
+        private int modelsNotCounted;
         private int modelsMissingAnId;
 
         /// <summary>What every set did across this run, for the block the window writes.</summary>
@@ -2151,9 +2153,21 @@ namespace Federator.Addin.Engine
                         model.Worksets.Count + " workset(s), element id "
                             + (model.IdShare == ModelExport.NotCounted ? "UNKNOWN" : model.IdShare + "%"));
 
-                    if (model.Elements > 0 && !model.CarriesAWorkset)
+                    // T1-S50. The same rules the block judges each model by, so the run
+                    // line and the blocks cannot disagree.
+                    if (model.CarriesNoWorkset)
                     {
                         modelsWithNoWorkset++;
+                    }
+
+                    if (model.CarriesAWorksetOnSomeElements)
+                    {
+                        modelsWithAWorksetOnSome++;
+                    }
+
+                    if (!model.Counted)
+                    {
+                        modelsNotCounted++;
                     }
 
                     if (model.IdShare != ModelExport.NotCounted && model.IdShare < 100)
@@ -2194,9 +2208,11 @@ namespace Federator.Addin.Engine
             }
 
             lines.Add("EXPORT CHECK across the run: " + modelsWithNoWorkset
-                + " model(s) carry no workset at all and " + modelsMissingAnId
-                + " do not carry an element id on every element"
-                + (modelsWithNoWorkset == 0 && modelsMissingAnId == 0
+                + " model(s) carry no workset at all, " + modelsWithAWorksetOnSome
+                + " carry one on only some of their elements, " + modelsMissingAnId
+                + " do not carry an element id on every element, and " + modelsNotCounted
+                + " could not be counted"
+                + (modelsWithNoWorkset == 0 && modelsWithAWorksetOnSome == 0 && modelsMissingAnId == 0 && modelsNotCounted == 0
                     ? string.Empty
                     : ". Nothing was changed and every group ran."));
 
