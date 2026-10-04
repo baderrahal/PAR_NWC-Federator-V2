@@ -2113,7 +2113,7 @@ namespace Federator.Addin.Engine
                         "model placement",
                         model.File,
                         model.Placed ? model.Z.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) : string.Empty,
-                        Words.Or(model.SharedCoordinate, "no shared coordinate on the model"));
+                        AlignmentCheck.SiteName(model));
                 }
 
                 alignmentDifferences += AlignmentCheck.DifferentCount(

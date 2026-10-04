@@ -404,5 +404,86 @@ namespace Federator.Core.Tests.Health
             Assert.That(block, Does.Contain(
                 "EL  1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc sits 2774335.03 m from the reference model"));
         }
+
+        // ---------- a site that could not be read is not a model naming no site ----------
+
+        /// <summary>
+        /// A read of the site that threw came back as an empty site, which the Q70 rule
+        /// reads as a model naming no site at all, so the group FAILED with a reason that
+        /// read as a fact about the model and nothing said the read threw. A site that was
+        /// not read is UNKNOWN, the way a placement that was not read is, and fails nothing.
+        /// </summary>
+        [Test]
+        public void ASiteThatCouldNotBeReadDoesNotFailTheGroupAsNamingNoSite()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "A site", 0.0, 0.0, 0.0),
+                At("ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0)
+            };
+
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models), Is.Null);
+        }
+
+        [Test]
+        public void TheBlockSaysUnknownForASiteThatCouldNotBeRead()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "A site", 0.0, 0.0, 0.0),
+                At("ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0)
+            };
+
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres));
+
+            Assert.That(block, Does.Contain("ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc   same placement, shared coordinate UNKNOWN"));
+            Assert.That(block, Does.Not.Contain("NO shared coordinate on the model at all"));
+            Assert.That(block, Does.Not.Contain("THIS GROUP IS FAILED"));
+        }
+
+        /// <summary>The two answers stay apart: a site read as empty still fails the group, Q70.</summary>
+        [Test]
+        public void ASiteNotReadAndASiteReadEmptyAreTwoDifferentThings()
+        {
+            ModelPlacement notRead = At("ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0);
+            ModelPlacement none = At("ST", string.Empty, 0.0, 0.0, 0.0);
+
+            Assert.That(notRead.SiteRead, Is.False);
+            Assert.That(none.SiteRead, Is.True);
+            Assert.That(notRead.NamesASharedCoordinate, Is.False);
+            Assert.That(none.NamesASharedCoordinate, Is.False);
+
+            Assert.That(
+                AlignmentCheck.WhyItFailsTheGroup(new List<ModelPlacement> { At("AR", "A site", 0.0, 0.0, 0.0), none }),
+                Does.Contain("1 model(s) name no shared site at all"));
+        }
+
+        [Test]
+        public void AModelOnInternalStillFailsTheGroupBesideASiteThatCouldNotBeRead()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "Internal", 0.0, 0.0, 0.0),
+                At("ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0)
+            };
+
+            string why = AlignmentCheck.WhyItFailsTheGroup(models);
+
+            Assert.That(why, Does.Contain("1 model(s) were exported on Revit's internal origin"));
+            Assert.That(why, Does.Contain("AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"));
+            Assert.That(why, Does.Not.Contain("name no shared site"));
+            Assert.That(why, Does.Not.Contain("ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
+        }
+
+        /// <summary>The row file carried the same false claim, so its words come from the same rule.</summary>
+        [Test]
+        public void TheRowFileNamesTheSiteOrSaysWhyThereIsNone()
+        {
+            Assert.That(AlignmentCheck.SiteName(At("ST", "PW3_Shared_Location", 0.0, 0.0, 0.0)), Is.EqualTo("PW3_Shared_Location"));
+            Assert.That(AlignmentCheck.SiteName(At("ST", string.Empty, 0.0, 0.0, 0.0)), Is.EqualTo("no shared coordinate on the model"));
+            Assert.That(
+                AlignmentCheck.SiteName(At("ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0)),
+                Is.EqualTo("UNKNOWN, the site could not be read"));
+        }
     }
 }

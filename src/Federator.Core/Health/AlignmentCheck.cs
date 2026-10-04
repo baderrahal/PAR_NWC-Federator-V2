@@ -13,10 +13,20 @@ namespace Federator.Core.Health
         /// <summary>A placement whose numbers could not be read at all is still a model and still says so.</summary>
         public const double NotRead = double.NaN;
 
+        /// <summary>
+        /// A site whose read threw, which says nothing about the model. It is NOT an empty
+        /// site: an empty one is a model that names no shared site, which fails its group,
+        /// Q70, and a read that threw used to come back as that and fail the group with a
+        /// reason that read as a fact about the model. Null, because every site that was
+        /// read is a string.
+        /// </summary>
+        public const string SiteNotRead = null;
+
         public ModelPlacement(string file, string discipline, string sharedCoordinate, double x, double y, double z)
         {
             File = file ?? string.Empty;
             Discipline = discipline ?? string.Empty;
+            SiteRead = sharedCoordinate != SiteNotRead;
             SharedCoordinate = sharedCoordinate ?? string.Empty;
             X = x;
             Y = y;
@@ -32,9 +42,12 @@ namespace Federator.Core.Health
         /// <summary>
         /// The NAME of the Revit shared site the model was exported on, read off the model
         /// root's Location tab as revit_ProjectLocation, docs\history\scan.md 5q, or empty
-        /// where the model carries none.
+        /// where the model carries none or the read threw, which SiteRead tells apart.
         /// </summary>
         public string SharedCoordinate { get; private set; }
+
+        /// <summary>Whether the site was read at all. A site that was not read fails nothing and is said UNKNOWN.</summary>
+        public bool SiteRead { get; private set; }
 
         /// <summary>How far the model is moved in X, in millimetres, or NotRead.</summary>
         public double X { get; private set; }
@@ -51,7 +64,7 @@ namespace Federator.Core.Health
             get { return !double.IsNaN(X) && !double.IsNaN(Y) && !double.IsNaN(Z); }
         }
 
-        /// <summary>Whether the model names a shared site at all.</summary>
+        /// <summary>Whether the model names a shared site at all. False too where the site was not read.</summary>
         public bool NamesASharedCoordinate
         {
             get { return SharedCoordinate.Length > 0; }
@@ -269,7 +282,8 @@ namespace Federator.Core.Health
         /// <summary>
         /// Why this group is FAILED, or null where it is not, Q70 answered b on
         /// 2026-09-20. A group fails when any of its models names the internal origin as
-        /// its shared site, or names no site at all.
+        /// its shared site, or names no site at all. A model whose site could not be read
+        /// does neither, because a read that threw is not a fact about the model.
         ///
         /// FAILED DOES NOT MEAN THE GROUP PRODUCES NOTHING. The federation, the NWD and
         /// the clash report are all still written, because Bader needs the evidence to
@@ -299,6 +313,13 @@ namespace Federator.Core.Health
 
             for (int i = 0; i < models.Count; i++)
             {
+                // A site whose read threw says nothing about the model, so the model is
+                // judged on neither half of this rule and the block says UNKNOWN for it.
+                if (!models[i].SiteRead)
+                {
+                    continue;
+                }
+
                 if (!models[i].NamesASharedCoordinate)
                 {
                     withNoSite.Add(Named(models[i]));
@@ -484,9 +505,29 @@ namespace Federator.Core.Health
 
         private static string Site(ModelPlacement model)
         {
+            if (!model.SiteRead)
+            {
+                return "shared coordinate UNKNOWN, it could not be read off the model, so the model is not judged on it";
+            }
+
             return model.NamesASharedCoordinate
                 ? "shared coordinate \"" + model.SharedCoordinate + "\""
                 : "NO shared coordinate on the model at all, so check this one by eye";
+        }
+
+        /// <summary>
+        /// The site as the row file carries it: its name, or that the model names none, or
+        /// that it could not be read. Here and not in the add-in, because the row file said
+        /// no shared coordinate for a read that threw, the same false claim the block made.
+        /// </summary>
+        public static string SiteName(ModelPlacement model)
+        {
+            if (model == null || !model.SiteRead)
+            {
+                return "UNKNOWN, the site could not be read";
+            }
+
+            return model.NamesASharedCoordinate ? model.SharedCoordinate : "no shared coordinate on the model";
         }
 
         private static string Millimetres(double value)
