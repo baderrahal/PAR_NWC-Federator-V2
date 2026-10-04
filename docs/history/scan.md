@@ -5052,8 +5052,9 @@ WHAT A READ THAT FAILS DOES IN THE THREE NEW PROBES, read off their code and mea
   when called as a method each read as null through the property, none reached the catch
   when read inside a try the way viewpoint-calls line 350 reads one, and the script ran to
   its end with exit 0. So a failed read through a property, a FieldType, ReturnType,
-  ParameterType or LocalType among them, is in no count in any of the three probes, and
-  shows only where a probe prints the null
+  ParameterType or LocalType among them, is in no count in any of the three probes. It
+  shows only where a probe prints the null, or stops the probe where a method is then called
+  on the null outside a try, as probe-clash-report-api.ps1 does at lines 191 and 197
 - the stand-ins and what they printed are kept outside the repo, in
   %LOCALAPPDATA%\NwcFederatorLoop\turn4\f105-read-failure
 
@@ -5174,7 +5175,10 @@ whose ErrorActionPreference is Stop at its line 5, and its final run ran to its 
 and prints nothing of it at four of its lines, a field's FieldType at 350, a return type
 at 356, a parameter type at 357, and a body's LocalVariables and each local's LocalType
 at 365. A failure there would reach no count and leave that reference out with nothing
-printed. A stand-in kept with the others called each of those getters as a method on
+printed. There is a fifth such line, 372, where a member reference's DeclaringType is read
+through a property, and a failed read there would drop that reference out of the RESOLVED
+list the same way. No stand-in called that getter, so whether it fails there is UNKNOWN. A
+stand-in kept with the others called each getter of the four lines as a method on
 2026-10-01, on the same build, its sha256 the one at result line 105, and the same three
 classes, with the probe's own loading and resolver. It found none that throws: 8
 FieldType, 48 ReturnType, 88 ParameterType, 50 LocalVariables and 83 LocalType, over the
