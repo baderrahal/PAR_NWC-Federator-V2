@@ -1,6 +1,49 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, Bader's views by team, Q114, the plan
+
+Bader's message of the evening headed ONE VIEWPOINT PER CLASH TEST, IN THE A, B, C FOLDERS, BY
+TEAM, NO TEAMS MIXED, NO MIRRORED TESTS is Q114 of steps\02_questions.md in his words. Nothing
+under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before, at the
+pre-commit of 6af4a2f, turn5\precommit-records-10.txt, and after, at the pre-commit of the commit
+that made the claim-checker's points true, turn5\precommit-records-10b.txt.
+
+### The plan
+
+- A, the baseline and wave 1 go on: item 1 on C04 read and recorded, a gap with no Navisworks for
+  F126's harness and the driver's Shift measurement, then item 2 on C02 and C04, while F112's
+  closing pass, F116's pass on Q113 and F126 work, then the test of wave 1
+- B, this record: Q114, FR-180 to FR-188 in three areas, F131 teams, F132 mirrored tests and F114
+  views, FR-069 changed by it, and wave 2 in three parts
+- C, measured first, read only, no Navisworks: the mirrored pairs of the picked XML and whether
+  each gave the same clashes on 1A02MM, the mechanical sets that miss HV, PL and FP models, and the
+  views code as it stands, turn5\measure-mirrors.md, measure-teams.md and measure-views.md
+- D, a design of the tree, the view and the team pairs by a panel of independent plans, written on
+  the items, then built in wave 2 and proved on 1A02MM against the 2 h 12 min of the baseline
+
+### What was done
+
+- Q114 written, FR-180 to FR-188 under their own heading of steps\fix-round.md, FR-069 noting that
+  one view per test replaces the viewpoint per clash, and wave 2 in three parts: 2a F127, F132 and
+  F115, 2b F131, F114 and F128, 2c F118
+- the three measurements of C started, read only. measure-mirrors.md and measure-teams.md are
+  written, their findings on FR-182 and FR-181, and measure-views.md is not yet
+
+### What remains
+
+- C and D, and everything of A
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- measure-views.md's findings on FR-180, FR-183 and FR-186, then the design
+
+Nothing in this record waits for the local machine.
+
 ## 2026-10-04 The loop, turn 5, F125 a pane of Navisworks is not a dialog, the first pass built and read safe, the second pass built and read by a reviewer and a breaker, nothing blocking under Q93
 
 Nothing under src or tests changed in either pass. Core tests 1756 passed, 0 failed, 0 skipped by
