@@ -240,6 +240,55 @@ namespace Federator.Core.Tests
             Assert.That(test.RawClashes, Is.EqualTo(1));
         }
 
+        /// <summary>
+        /// F113, FR-032. The harvest floored a group row at one clash, so a result group with
+        /// no clash under it was a row standing for one. The Clashes cell and the cell of the
+        /// group's status then read one higher than the clashes the document holds, which the
+        /// runner counts under every group and never as the group. A group stands for the
+        /// clashes under it and for no more.
+        /// </summary>
+        [Test]
+        public void AGroupWithNoClashUnderItStandsForNone()
+        {
+            ClashReport report = Report();
+            TestReport test = Ran(report, "AR v ME", Root + "/A/One", Root + "/B/Two");
+
+            ClashRow empty = ClashRow.ForGroup(0);
+            empty.Status = ClashStatus.Active;
+            test.Add(empty);
+
+            ClashRow full = ClashRow.ForGroup(14);
+            full.Status = ClashStatus.New;
+            test.Add(full);
+
+            Assert.That(empty.IsGroup, Is.True);
+            Assert.That(empty.RawClashes, Is.EqualTo(0), "a group with nothing under it stood for a clash");
+            Assert.That(test.RawClashes, Is.EqualTo(14),
+                "the Clashes cell counted a clash the document does not hold");
+            Assert.That(test.Tally.Of(ClashStatus.Active), Is.EqualTo(0),
+                "the cell of the group's status counted a clash the document does not hold");
+            Assert.That(test.Tally.Of(ClashStatus.New), Is.EqualTo(14));
+            Assert.That(test.Tally.Total, Is.EqualTo(14));
+        }
+
+        [Test]
+        public void AGroupStandsForEveryClashUnderIt()
+        {
+            ClashRow row = ClashRow.ForGroup(14);
+
+            Assert.That(row.IsGroup, Is.True);
+            Assert.That(row.RawClashes, Is.EqualTo(14));
+        }
+
+        [Test]
+        public void AGroupHoldingFewerThanNoClashesIsRefused()
+        {
+            ArgumentOutOfRangeException refused = Assert.Throws<ArgumentOutOfRangeException>(
+                delegate { ClashRow.ForGroup(-1); });
+
+            Assert.That(refused.ParamName, Is.EqualTo("clashesUnder"));
+        }
+
         // ---------- skipped, passed and found are three numbers ----------
 
         // The real run: 1164 skipped, 618 passed, 48 with clashes, and 1164+618+48 = 1830.
