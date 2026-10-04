@@ -36,7 +36,7 @@
 # - added: IsConfirm, PathsOutside, DriverCodes, DriverCode and DriverCodeName
 #
 # WHAT F125 CHANGED, after the baseline run of 2026-10-04 stopped on a floating Clash Detective
-# pane of Navisworks, steps\runs\04\item1-C02 record.txt line 36 and driver.txt line 21:
+# pane of Navisworks, steps\runs\04\item1-C02-hung record.txt line 36 and driver.txt line 21:
 # - changed: WindowRecords, whose every record also carries Enabled, whether the window itself
 #   is enabled, read with IsWindowEnabled and no message, and WindowKind, which takes that and
 #   its owner's state and calls PANE a WinForms window owned by a visible window that is not
@@ -542,28 +542,29 @@ function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [b
 # The tool's window is read off the design and is UNKNOWN until the first window start.
 #
 # F125. A PANE is a WinForms window, not of the main window's caption, owned by a visible window,
-# whose owner reads enabled or which reads disabled itself, such as the floating Clash Detective
-# pane his saved layout opens, which stopped the baseline run of 2026-10-04,
-# steps\runs\04\item1-C02. A modal window disables its owner while it is up and stays enabled
-# itself: the tool's window, shown with ShowDialog, read its owner the main window disabled, record
-# line 46, and the tool's confirm read its owner the tool's window disabled, line 48. So a window
-# whose owner reads enabled is not modal over it, the way the pane read at 15:57:56 before the
-# tool's window opened, line 36. The rule also calls PANE a window that reads disabled itself,
-# because the tool's own window is modal over the main window, so while it is up the owner of a
-# pane never reads enabled, line 46, and WPF's ShowDialog disables the other enabled windows of
-# its thread as it opens. It disabled the stand-in's pane with its main window, measured on
-# 2026-10-04, and whether it does the same to the pane of Navisworks is UNKNOWN until a run writes
-# the pane's own state, which the monitor now does. That read cannot tell a pane from a modal
-# dialog: one up when the tool's window opens, or one with a second modal window over it, reads
-# disabled with its owner disabled just as the pane does. So the rule lets such a window be, and
-# every line naming it says it is either, and which one is UNKNOWN, PaneWords below. A dialog that
-# opens while the tool's window is up reads enabled with its owner disabled, so it stays a DIALOG.
-# The class
-# narrows and never decides: the pane's class, WindowsForms10.Window.8, is the main window's own,
-# lines 36 and 37, so it does not set a pane apart from a WinForms dialog, while a #32770 message
-# box, the confirm among them, and a WPF window are never a pane, whatever their state reads. A
-# state not read, an owner not visible, no owner, and a window of the main window's class and
-# caption with a visible owner all stay a DIALOG, the last as decided above.
+# whose owner reads enabled or which reads disabled itself, such as a floating Clash Detective
+# pane of unknown origin, likely from his saved layout, UNKNOWN, which stopped the baseline run of
+# 2026-10-04, steps\runs\04\item1-C02-hung. A modal window disables its owner while it is up and
+# stays enabled itself: the tool's window, shown with ShowDialog, read its owner the main window
+# disabled, record line 46, and the tool's confirm read its owner the tool's window disabled, line
+# 48. So a window whose owner reads enabled is not modal over it, the way the pane read at
+# 15:57:56 before the tool's window opened, line 36. The rule also calls PANE a window that reads
+# disabled itself, because the tool's own window is modal over the main window, so while it is up
+# the owner of a pane never reads enabled, line 46, and WPF's ShowDialog disables the other
+# enabled windows of its thread as it opens. It disabled the stand-in's pane with its main window,
+# measured on 2026-10-04, and the run of 18:55 that day on 5fa98a8 read the pane of Navisworks
+# disabled with its owner disabled once the tool's window was up,
+# steps\runs\04\item1-C02\driver.txt line 3, and ended RAN, so the tool's window most likely
+# disables it. That read cannot tell a pane from a modal dialog: one up when the tool's window
+# opens, or one with a second modal window over it, reads disabled with its owner disabled just as
+# the pane does. So the rule lets such a window be, and every line naming it says it is either,
+# and which one is UNKNOWN, PaneWords below. A dialog that opens while the tool's window is up
+# reads enabled with its owner disabled, so it stays a DIALOG. The class narrows and never
+# decides: the pane's class, WindowsForms10.Window.8, is the main window's own, the hung run's
+# record lines 36 and 37, so it does not set a pane apart from a WinForms dialog, while a #32770
+# message box, the confirm among them, and a WPF window are never a pane, whatever their state
+# reads. A state not read, an owner not visible, no owner, and a window of the main window's class
+# and caption with a visible owner all stay a DIALOG, the last as decided above.
 function WindowKind($class, $caption, $ownerHandle, [bool]$ownerVisible, $ownerEnabled, $enabled) {
   if ($class.StartsWith("HwndWrapper[Roamer.exe;ProgressDialog;")) { return "PROGRESS" }
   if ($class.StartsWith("HwndWrapper") -and $caption.StartsWith("Parsons NWC Federator")) { return "WINDOW" }

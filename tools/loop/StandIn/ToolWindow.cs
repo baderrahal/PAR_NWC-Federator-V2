@@ -311,9 +311,10 @@ namespace NwcFederatorLoop.StandIn
         }
 
         /// <summary>
-        /// F125. What the baseline run of 2026-10-04 read in Navisworks, steps\runs\04\item1-C02
-        /// record.txt lines 36, 37 and 46: a WinForms main window whose caption ends as the
-        /// Navisworks one, a WinForms pane captioned Clash Detective owned by it and not modal, and
+        /// F125. What the baseline run of 2026-10-04 read in Navisworks,
+        /// steps\runs\04\item1-C02-hung record.txt lines 36, 37 and 46: a WinForms main window
+        /// whose caption ends as the Navisworks one, a WinForms pane captioned Clash Detective
+        /// owned by it and not modal, and
         /// the tool's window owned by the main window and shown with ShowDialog, the way
         /// src\Federator.Addin\FederatorPlugin.cs shows it. The tool's window opens three seconds
         /// after the pane, so a reader sees the pane both before and after it. All three are on

@@ -49,13 +49,13 @@ param(
 #
 # F125. A window of the pid that WindowKind in nw-guard.ps1, the one copy of that rule, reads PANE
 # is a pane and not a dialog, such as the floating Clash Detective pane that stopped the baseline
-# run of 2026-10-04, steps\runs\04\item1-C02 driver.txt line 21. Each pane up before RunButton is
-# noted once with its caption, its own state and its owner's, in the words PaneWords gives, which
-# say UNKNOWN whether it is a pane or a modal dialog when both read disabled, and left as it is,
-# and the driver goes on. After RunButton any window of the pid that is not the tool's window, the
-# main window, the Working... dialog or the confirm stops the driver as a dialog did before,
-# unless it is a pane noted before Run, the same window by PaneKey, its handle and class. The line
-# for each window it stops on names the rule's kind for it, its own state and its owner's.
+# run of 2026-10-04, steps\runs\04\item1-C02-hung driver.txt line 21. Each pane up before
+# RunButton is noted once with its caption, its own state and its owner's, in the words PaneWords
+# gives, which say UNKNOWN whether it is a pane or a modal dialog when both read disabled, and left
+# as it is, and the driver goes on. After RunButton any window of the pid that is not the tool's
+# window, the main window, the Working... dialog or the confirm stops the driver as a dialog did
+# before, unless it is a pane noted before Run, the same window by PaneKey, its handle and class.
+# The line for each window it stops on names the rule's kind for it, its own state and its owner's.
 #
 # WHAT IT DOES, item 5, -OpenRun. On 4. Clash it reads OpenDocumentLine and RunOpenButton. A
 # disabled button is the tool's own refusal, TOOL REFUSED, with the line's text. An enabled one

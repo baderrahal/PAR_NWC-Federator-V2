@@ -270,7 +270,8 @@ the handle its adoption holds, and the hang is a finding. A sample that cannot b
 restarts both clocks, so it never counts toward a hang. A run still going 12 hours after
 adoption is closed the same way and recorded as CEILING, never HUNG, Bader's answer Q84.
 Any dialog Navisworks raises during a run is a finding with its text. A pane is not a dialog,
-F125, such as the floating Clash Detective pane his saved layout opened on 2026-10-04: a window
+F125, such as a floating Clash Detective pane of unknown origin, likely from his saved layout,
+UNKNOWN, up in both runs of set 04 item 1 on C02 on 2026-10-04: a window
 of that Navisworks of the WinForms class, whose caption is not the main window's, owned by a
 visible window, with its owner reading enabled or the window itself disabled. A message box, a
 WPF window and a window of the main window's caption are never one. A modal dialog blocked by

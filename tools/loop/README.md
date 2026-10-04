@@ -478,9 +478,11 @@ enabled or the window itself disabled. A #32770 message box, a WPF window, a win
 window's caption, one owned by a window that is not visible and one with no owner are never a
 PANE, whatever their states read. The second state is there because the tool's own window is
 modal over the main window, so while it is up the main window reads disabled, record
-steps\runs\04\item1-C02 line 46, and WPF's ShowDialog disabled the stand-in's pane along with
-its main window, measured on 2026-10-04. Whether it does the same to the pane of Navisworks is
-UNKNOWN until a run writes the pane's own state, which the record now does. A modal dialog of
+steps\runs\04\item1-C02-hung line 46, and WPF's ShowDialog disabled the stand-in's pane along
+with its main window, measured on 2026-10-04. The run of 18:55 that day on 5fa98a8 read the pane
+of Navisworks disabled with its owner disabled once the tool's window was up,
+steps\runs\04\item1-C02\driver.txt line 3, and ended RAN, so the tool's window most likely
+disables it. A modal dialog of
 Navisworks up when the tool's window opens is disabled the same way and reads the same, so a
 window that reads disabled with its owner disabled is written, by the driver and the record
 alike, as either a pane or a modal dialog blocked by the tool's window or another modal window,
