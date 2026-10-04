@@ -20,6 +20,8 @@ written", turn4\run03-item1-C07-console.txt. The F110 and F111 workflow was stop
 so wt-f110 and wt-f111 may hold work not committed. The C07 waiter was stopped. Q98, whether a
 group with a model 2,000 km away stays DONE, and Q99, which clash XML the runs use, are still to
 be written for Bader, from findings 1 and 2 of steps\runs\03\findings.md.
+Q98 and Q99 above are numbers the pause meant to use. Q98 went instead to Bader's message of
+2026-10-04, which decided both: B2 for the far model and B1 for the XML.
 WHEN HE SAYS GO, as written at the pause and since replaced by turn 5, which runs no C07:
 Get-Process Roamer. If any Navisworks the loop did not start runs, stay WAITING. Otherwise
 STATE OPEN, start the keep awake again, start the first run of C07 the same way with the
@@ -153,18 +155,27 @@ desktop.
 
 ## Next action
 
-1. THE INSTALL OF MAIN IS REFUSED, three times, see F109 in the register and the turn 4
-   section. F109, the in-place install, with its developer in wt-f109, then its reading,
-   then the install of main through run.ps1 -Mode Install from wt-main at main's commit,
-   with no Roamer running, the installed stamp read back equal to that commit
-2. F105, Q89 A, and F107, Q88: their readings asked for words only, and both are in a fix
-   round with their developers, each then re-read, then merged
-3. F106, the window run, and F108, the run set copy, built by their developers in wt-f106
-   and wt-f108, each read by a reviewer and a breaker under Q93, merged
-4. Set 03 in the order of the plan, a record merged after every run
-Done in turn 4 so far: PR 76, F102, as 4fa1040, PR 78, F103, as 398b910 with the third real
-start's evidence, PR 82, the records, as e4484d1, and the rule changes of Bader's answers in
-.claude\rules\loop.md, in the records pull request after it
+Turn 5, the full fix round, Q98. Merged so far on 2026-10-04: PR 87, the records of turn 4's
+pause and turn 5's opening, as 53c37b6. PR 84, F108, as c9b223b. PR 88, F106, DONE for item 1,
+as 3449521. PR 83, Bader's answers in the loop rules, is the pull request carrying this text.
+
+1. In flight, each merged on its own: F105 and F107, words only, and F109, the in-place
+   install for the team, each with its developer and then its readers. F104 part 2, the
+   driver that reads every NWF of a run and compares it with its workbook, with its developer
+   in wt-f104, then the lead's read of set 03's NWFs, the first answer to Bader's test 3
+2. The fix list, steps\fix-round.md, built from five readers' returns before the first fix,
+   in its records pull request with steps\runs\03\for-modellers.md, B4
+3. The form, Q99 on: the 40 distances of the C06 run for B2's 1 m, kept in
+   turn5\align-c06.txt until then, whether the 45 minutes counts per community or for the
+   whole folder, and the other items the fix list marks as needing Bader
+4. The area pull requests, alignment first with B2, up to three developers at once on
+   different files, each read by a reviewer and a breaker and its body by the claim-checker,
+   merged one at a time, a record within the hour. D1 last, moves only
+5. The proof run, set 05 on C06: main installed in place as on 2026-10-01, a fresh copy by
+   prepare-copy.ps1 -Set 05 whose XML asks ME-Ductwork, items 1 to 5,
+   steps\runs\05\findings.md with the before and after table against set 03, and Bader's
+   three tests
+6. The summary at the top of steps\fix-round.md, merged and posted in the Claude tab
 
 ## The phases
 
@@ -379,10 +390,10 @@ baseline run proves it or contradicts it.
 - 30 needs Bader, in the form
 - 2 DONE in turn 4, F102 and F103, merged on Bader's answers
 - 3 answered by Bader on 2026-10-01 and being carried out, F105, Q82 to Q87 as one row, and Q88
-- 3 open in turn 4, F106, F107 and F109
+- 2 open in turn 4, F107 and F109
 - 3 known limits or items, F102-L1, F102-L2 and Q88-IDS
 - 4 open for later, F103-W and F105-R1 to F105-R3
-- 1 read safe to use and in its pull request, F108
+- 2 merged in turn 5, F108, and F106 for item 1
 - 7 register rows of turn 4's readings, F108-R1 to F108-R5, F107-R1 and F107-R2
 - 19 open fault
 - 4 DONE
@@ -425,10 +436,10 @@ baseline run proves it or contradicts it.
 | T3-P2 | the same reading, classed polish or old by two breakers, the probe's close left unclassed, OwnerText is attempt 3's own code | Polish: CloseOwn reads autosave-before.txt with no count or name check, dotnet build-server shutdown stops every build server of the account, an owner window destroyed mid read is written as another process's, item 8's harness case sets Forced by hand, and the probe closes outside the lock, each with its lines in steps\notes\f103-final-reading.md | each fixed or named where the code next moves | open, for after F103 | none yet | none yet |
 | Q82 to Q87 | turn 3, the F103 design | The log folder, the hang rule's zero, a ceiling, the screen, AutoSave, the remembered folders | Bader's answers under each in steps\02_questions.md | answered by Bader on 2026-10-01, written into .claude\rules\loop.md in turn 4, kept in code by F106, and his logs put back at the close | none yet | none yet |
 | Q88 | turn 3, F102's developer | Main names the machine of 2026-09-19 in 9 places across 4 files, and PR 74's refs on GitHub keep the licensing ids of its first commits | Bader's answer in steps\02_questions.md | answered by Bader on 2026-10-01: the older name masked on main by F107, the licensing ids register row Q88-IDS | none yet | none yet |
-| F106 | turn 4, Bader's message of 30 Sep, Q94 | No run of main goes through the tool's window, and tools\probes\drive-window-run.ps1 finds windows among every window on the desktop and picks a tolerance with a real mouse click | the smallest change to run.ps1 for items 1 to 5 around the driver, read by the reviewer and one breaker under Q93, then the first run of set 03 | open, turn 4 | none yet | none yet |
+| F106 | turn 4, Bader's message of 30 Sep, Q94 | No run of main goes through the tool's window, and tools\probes\drive-window-run.ps1 finds windows among every window on the desktop and picks a tolerance with a real mouse click | the smallest change to run.ps1 for items 1 to 5 around the driver, read by the reviewer and one breaker under Q93, then the first run of set 03 | DONE for item 1, merged as 3449521 on 2026-10-04. Items 2 to 5 have not run, set 05 is their first run | 88 | set 03 item 1 C06 on 2026-10-01, steps\runs\03\item1-C06 |
 | F107 | turn 4, Q88 | Main names the machine of 2026-09-19 on 9 lines in 4 files | git grep for the name over the whole tree finds nothing | open, turn 4 | none yet | no run applies |
 | F109 | turn 4, the install of main refused three times on 2026-10-01 | build\install.ps1 since F103 moves the installed bundle aside by one rename, and Windows denies that rename on this machine with no Navisworks running, while every file of the bundle opens for delete and for write, no process of this user holds or maps one, and the loop's own throwaway folders and copies of the bundle rename freely in the same folder. What holds it is UNKNOWN. The refusal says Navisworks is running, which it was not. Loud, and it blocks every install, here and on any of the 27 machines where the same happens | the in-place path of turn4\f109-brief.md built and read, then the real install of main here reading the installed stamp back | open, turn 4, with its developer | none yet | none yet |
-| F108 | turn 4, Bader's message of 30 Sep | No fresh copy of the source for each run set existed, in his folder shape | tools\loop\prepare-copy.ps1 -Set NN, proved on the real folder with throwaway set numbers, turn4\f108-proof.txt | read SAFE TO USE by a reviewer and a breaker under Q93, PR 84 | 84 | no run yet, set 03 makes its copy with it |
+| F108 | turn 4, Bader's message of 30 Sep | No fresh copy of the source for each run set existed, in his folder shape | tools\loop\prepare-copy.ps1 -Set NN, proved on the real folder with throwaway set numbers, turn4\f108-proof.txt | DONE, merged as c9b223b on 2026-10-04 | 84 | set 03's copy made with it from its branch on 2026-10-01, turn4\copy-set03.txt |
 | F108-R1 | the breaker of F108 | -Set NN -Remove and -Restore refuse a file whose name sits in both communities, which is all three files of group 100000, prepare-copy.ps1 lines 180 to 187 | the file named with its community, or the group for runs 3 and 4 chosen outside 100000 | open, register row under Q93 | none yet | none yet |
 | F108-R2 | both readers of F108 | A short or changed source.manifest.txt is kept until the desktop folder next changes, so every -Set copies 208 MB, fails its read back and advises the next set number, which fails the same way, lines 290 to 308 and 342 to 350 | the keep check reading the manifest too | open, register row under Q93 | none yet | none yet |
 | F108-R3 | both readers of F108 | -Remove writes its note before the delete, so a failed delete leaves a note for a file still there, lines 229 to 231, the order the source copy's -Remove has had since 2026-09-27 | the note written after the delete | open, register row under Q93 | none yet | none yet |

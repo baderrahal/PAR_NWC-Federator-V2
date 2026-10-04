@@ -227,23 +227,49 @@ modes:
   and the same start ticks. Lists the settings compare, writes nothing back, and appends
   VERDICT: CLOSED BY CLOSEOWN
 
-NOT IN PART 1, waiting for Bader's answer to Q82: the window, items 1 to 5, the log lock,
-the removal of the loop's own log and the driver. Each of their parameters is refused.
+- Run -Set NN -Item 1 to 5 -Folder <a folder of NMFed\NWC> -Stamp <8 hex>, F106, the window
+  run on the run set's copy runs\NN\NMFed, which tools\loop\prepare-copy.ps1 makes. Item 1
+  takes -Xml, a file of the copy, and item 5 -OpenFile, the plain name of an .nwf in
+  NMFed\NWF\<Folder> or an .nwd in NMFed\NWD\<Folder>. Every path must resolve under the
+  copy. Item 0's refusals, then the copy whole against NMFed.manifest.txt, the outputs as the
+  item needs them, item 1's three output folders empty, and the session unlocked, Q85. The
+  run folder is runs\NN\item<K>-<Folder>, item 5's ends -nwf or -nwd, and its evidence goes
+  to steps\runs\NN under the same name. Item 0's backups, start, adoption, watchdog and
+  Visible, then for item 5 the file copied into the run folder's open\ and opened there with
+  OpenFile, then tools\probes\drive-window-run.ps1 started as a child with the adopted pid
+  and start ticks, its handle held, then ExecuteAddInPlugin("ParsonsNwcFederator.PARS") on
+  the main thread, which holds while the window is open. The monitor reads as the tool's log
+  the one run-*.log made after that call whose SESSION names the installed stamp, and names it
+  and its .tsv in toollog-name.txt. HUNG is the log still for 300 s with under 20 s of
+  processor time in them, Q83, and the clocks start again while the session reads locked.
+  Once the log holds its RESULT block and a COPY line and has been quiet 15 s, or the driver
+  stopped with nothing that runs pressed and no run started, it posts WM_CLOSE to the tool's
+  window of the adopted pid, and only while no other window of that pid is up. Then
+  Dispose and item 0's put back, and his AutoSave folder by Q86: the autosaves the run added
+  removed and his it changed put back from autosave-backup, each read back, only when no
+  Navisworks the loop did not start ran, otherwise listed and left. The verdict is RAN only
+  when the log on disk holds a RESULT block and a SESSION naming the stamp, and for item 1 a
+  GROUPS block reading 0 groups unticked. Items 2 to 5 have run on no Navisworks yet
 
-Exit codes: 0 finished and everything put back, 1 a fault in run.ps1, UNKNOWN whether the
-adopted Navisworks still runs, or one still running after every close path, 2 refused, for
-Install also a refusal of build\install.ps1, 3 not adopted or the constructor deadline, 4
-hung, the ceiling, or a call into the adopted Navisworks that did not return in 120 s, 5
-finished but a dialog appeared, or for Install installed but a Navisworks ran right after
-it or the add-in installed before was left beside it, 6 something of Bader's not put back, 7
-the adopted Navisworks ended by itself.
+Exit codes: 0 finished and everything put back, for item 5 on an NWD also the tool's own
+refusal, TOOL REFUSED, 1 a fault in run.ps1, UNKNOWN whether the adopted Navisworks still
+runs, one still running after every close path, or a window run whose log does not show it
+RAN, 2 refused, for Install also a refusal of build\install.ps1, 3 not adopted or the
+constructor deadline, 4 hung, the ceiling, a call into the adopted Navisworks that did not
+return in 120 s, or the tool's window still open 120 s after WM_CLOSE, 5 finished but a
+dialog appeared, or for Install installed but a Navisworks ran right after it or the add-in
+installed before was left beside it, 6 something of Bader's not put back, 7 the adopted
+Navisworks or the tool's window ended by itself, 8 the driver stopped before it pressed
+anything that runs.
 RunVerdict and InstallVerdict decide them, each a function the harness calls.
 
 The numbers that shape a run are constants, not parameters, so no switch moves a path or
-shortens a limit: the hang rule's 300 s, the constructor deadline's 300 s, the ceiling of 12
-hours from adoption until Bader answers Q84, recorded as CEILING and never as HUNG, the
-120 s a call into the adopted Navisworks may take, the hold of 360 s, the monitor's pass
-of 15 s and its heartbeat of 60 s. The keep awake request, ES_CONTINUOUS,
+shortens a limit: the hang rule's 300 s and its 20 s of processor time, Q83, the constructor
+deadline's 300 s, the ceiling of 12 hours from adoption, Q84, recorded as CEILING and never
+as HUNG, the 120 s a call into the adopted Navisworks may take, which is also the time the
+tool's window has to close after WM_CLOSE, the 600 s OpenFile may take, the hold of 360 s,
+the 15 s the tool's log stays quiet after its RESULT block, the monitor's pass of 15 s and
+its heartbeat of 60 s. The keep awake request, ES_CONTINUOUS,
 ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED, is made on the main thread just before the last
 read before the start and let go in the run's finally, and in the outermost finally if that
 could not, and Windows drops it by itself when the process ends. Every part of the run's finally runs in its own try, so a fault in one never skips
@@ -263,8 +289,16 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
   autosave-backup\since-yyyyMMdd-HHmmss for files the backups did not hold,
   probes\unproved-starts.txt for a start it could not prove, and for Install
   installs\<stamp>-yyyyMMdd-HHmmss and bundle-backup-yyyyMMdd-HHmmss
+- writes of a window run, F106: runs\NN\item<K>-<Folder> with driver.txt, toollog-name.txt,
+  toollog\ with the tool's log, its FOLDERS REMEMBERED block masked, Q87, and its .tsv,
+  outputs.txt, item 5's open\, and what the tool writes into the copy's NWF, NWD and Clash
+  Report folders. A read-out of every workbook by tools\loop\read-workbook.ps1 goes into the
+  evidence, and a file over 20 MB is named with its size and sha256 and not copied, Q90.
+  It starts the driver, powershell.exe, and read-workbook.ps1 once per workbook
 - writes of Bader's: his Navisworks settings, put back only by the D2 rule in
-  .claude\rules\loop.md, and for Install the installed bundle, which build\install.ps1 moves
+  .claude\rules\loop.md, his AutoSave folder by Q86 under the same rule, for a window run his
+  logs folder, where the tool writes its own log and .tsv and may prune his oldest logs,
+  which logs-backup holds by sha256, Q82, and for Install the installed bundle, which build\install.ps1 moves
   aside as ParsonsNwcFederator.bundle.replaced-yyyyMMdd-HHmmss beside it until every check
   of the new one has passed, and a new one that failed and will not go, moved aside as
   ParsonsNwcFederator.bundle.failed-yyyyMMdd-HHmmss

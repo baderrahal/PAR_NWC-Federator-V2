@@ -16,7 +16,8 @@ namespace NwcFederatorLoop.StandIn
     /// arguments, or from NWCLOOP_STANDIN, its words split by a bar, when its only argument is
     /// -Embedding, so it can be started with the command line a COM start gives. Every role
     /// ends by itself, so a harness that dies leaves nothing running for longer than the role
-    /// said.
+    /// said. F106 added two roles: window, a WPF window carrying the tool window's ids, in
+    /// ToolWindow.cs, and toollog, a whole window run's log written by the tool's own RunLog.
     /// </summary>
     internal static class Program
     {
@@ -75,6 +76,11 @@ namespace NwcFederatorLoop.StandIn
                     return Hang(words[1], Seconds(words, 2), words[3], Seconds(words, 4));
                 case "owned":
                     return Owned(words[1], words[2], Seconds(words, 3));
+                case "window":
+                    ExitAfter(Seconds(words, 4));
+                    return ToolWindow.Run(words[1], words[2], words[3], words[5]);
+                case "toollog":
+                    return ToolLog(words[1], words[2], Seconds(words, 3), words[4] == "result", words[5]);
                 default:
                     return 64;
             }
@@ -132,6 +138,48 @@ namespace NwcFederatorLoop.StandIn
             using (RunLog log = RunLog.Start(folder, DateTime.Now, 30))
             {
                 path = log.Path;
+            }
+
+            File.WriteAllText(resultFile, path + Environment.NewLine, new UTF8Encoding(false));
+            return 0;
+        }
+
+        /// <summary>
+        /// F106. A whole log of a window run written by the tool's own RunLog, with its SESSION
+        /// naming the version given, a FOLDERS REMEMBERED block, the RUN SETTINGS and GROUPS
+        /// blocks with the number of groups unticked given, and the RESULT block and its COPY line
+        /// only when asked, then its path written to the result file, so run.ps1's readers of
+        /// the tool's log are proved on the format the tool writes. The copy goes to a folder
+        /// beside the log, never onto the log itself.
+        /// </summary>
+        private static int ToolLog(string folder, string version, int unticked, bool result, string resultFile)
+        {
+            string path;
+            using (RunLog log = RunLog.Start(folder, DateTime.Now, 30))
+            {
+                path = log.Path;
+                log.Session(version, "the stand-in, not Navisworks", "none");
+                log.Block("FOLDERS REMEMBERED", new[]
+                {
+                    "Source    C:\\NwcFederatorLoop stand-in remembered\\source",
+                    "Priority  D:\\NwcFederatorLoop stand-in remembered\\priority.csv   [gone, opening at nowhere]",
+                });
+                log.RunSettings(folder, true, folder, folder, 1, 1, 1);
+                List<string> groups = new List<string>();
+                groups.Add("run       STANDIN1    1 file   STANDIN");
+                groups.Add(RunLog.UntickedGroupsLine(unticked));
+                log.Block(RunLog.GroupsSectionTitle, groups);
+                log.RunStarted(1);
+                log.RunFinished();
+
+                if (result)
+                {
+                    log.WriteResultBlock();
+                    string copied;
+                    log.TryCopyTo(Path.Combine(folder, "copy"), out copied);
+                }
+
+                log.Line("Window closed.");
             }
 
             File.WriteAllText(resultFile, path + Environment.NewLine, new UTF8Encoding(false));
