@@ -159,23 +159,60 @@ and 6 does not read as broken.
 
 - WHICHEVER CLASH XML IS PICKED IS CORRECTED, Q104 answered by Bader on 2026-10-04.
   `MatrixCorrections.ReadPicked` is the only way the add-in reads the picked file, at the
-  pick, the run, the open file run and both hand buttons. It applies the code that writes
-  the exchange file, `ForPickedFile`, before any set is built, and the document carries one
-  line per correction, `ExchangeDocument.Corrections`, which the window writes as MATRIX
-  lines after the line saying which file it read. The HEALTH block at the pick judges the
-  corrected sets, because those are the sets the run builds
+  pick, the run, the open file run and both hand buttons. It reads the file as
+  `ExchangeReader.ReadFile` did, in the encoding the file declares, through
+  `ExchangeReader.ReadFileText`, applies the code that writes the exchange file,
+  `ForPickedFile`, before any set is built, and the document carries one line per
+  correction, `ExchangeDocument.Corrections`, which the window writes as MATRIX lines after
+  the line saying which file it read. The HEALTH block at the pick judges the corrected sets,
+  because those are the sets the run builds
 - THE CORRECTIONS ARE DATA. `matrix-corrections.txt` holds the renames, the catch-all sets
   and the Source File rules, and `revit-worksets.txt` the workset spellings measured off the
-  models, both embedded in Core. Nothing in the code names one project's set, folder or
-  category. A list that cannot be read corrects NOTHING and says so on the first MATRIX line,
-  never a part of it, and a set whose text the corrections cannot read is counted and said,
-  so a file is never passed on as corrected when it was not
-- A WORKSET VALUE ASKS EVERY SPELLING THE MODELS CARRY, Q102. One measured spelling that
-  differs by case alone is the correction, Q68. Two or more are all asked, as Or groups,
-  where until Q102 they were refused and the value left as it was. A spelling no model was
-  measured carrying is never asked. The spellings go in Ordinal order whichever one the file
-  asked, once per workset, so the client's matrix, the one corrected before and the exchange
-  file come out as the SAME sets, condition for condition, which a test proves on all three
+  models, both embedded in Core. The code names no set, folder or category, and the list
+  does: two set names and four categories of the client's matrix, which CLAUDE.md allows as
+  sample data in tests only, and a change to it is a rebuild. Whether it stays in Core or
+  moves to a file beside the picked XML, and whether Q103 keeps Furniture and Site, is Q113,
+  OPEN. A list that cannot be read corrects NOTHING and says so on the first MATRIX line,
+  never a part of it
+- A SET OR CONDITION THE CORRECTIONS CANNOT READ IS COUNTED AND SAID, NEVER THROWN, F116.
+  `WrittenCondition.Read` gives null for an element that will not parse as one condition or
+  holds a value it could not rewrite, `SetConditionsText.Read` then gives null for the set,
+  and `ForPickedFile` counts every such set on a NOT EVERY SET COULD BE READ line. The set is
+  built exactly as the file asks. A file that will not read as XML at all throws, as
+  ReadFile's did
+- ONE ESCAPE, ONE WAY TO EDIT A CONDITION, ONE WAY TO FIND A SET, F116.
+  `WrittenCondition.Read` reads through `ExchangeReader.ReadCondition`, so a condition
+  corrected and a condition built are read one way. `WrittenCondition.Escaped` is the only
+  escape, for every value written and every name looked for. `WithValue`, `WithFlags` and
+  `WithTest` are the only edits of a condition's text, the catch-all builds its conditions
+  through them and `ValuesGiven` is the one place a condition is given another value. A set
+  is found by its name through `Named`, and by its folders and its name through `Key` and
+  `KeyOf` where the folder matters, the Source File rule, so a set of one name in another
+  folder is never given what this one asks
+- A WORKSET VALUE ASKS EVERY SPELLING MEASURED, Q102. One measured spelling that differs by
+  case alone is the correction, Q68. Two or more are all asked, as Or groups, where until
+  Q102 they were refused and the value left as it was. A spelling no model was measured
+  carrying is never asked. The spellings go in Ordinal order whichever one the file asked,
+  once per workset, so the client's matrix, the one corrected before and the exchange file
+  come out as the SAME sets, condition for condition, which a test proves on all three
+- A VALUE CORRECTION TOUCHES ONLY A WORKSET CONDITION THAT IS NOT NEGATED, F116. A negation
+  asked in a second spelling is (X and not A) or (X and not B), every X, because no element
+  sits on both spellings, so `WorksetValuesIn` skips a negated condition and widening, the Or
+  rows and the one spelling correction read the condition's property and flags, not its value
+  alone. A condition on another property whose value reads like a workset is not a workset.
+  A file holding a negated workset condition gets a MATRIX line saying it is left as asked
+- THE MATRIX LINES CLAIM ONLY WHAT WAS MEASURED, F116. The workset list is the C02 census and
+  at most ten names a group of C06, so a line says every spelling measured so far in this
+  project's models, never every spelling the models carry, and no model measured so far,
+  never no model in this run. Each correction that changes nothing says which kind of zero it
+  is, already made, nothing in the file to change, or not readable, and where nothing changed
+  the last line says no correction was applied and counts each kind. It never says the file
+  carries every correction, which a count of zero cannot tell from a file none of them acts on
+- WHERE THE CORRECTIONS REACH IS SAID ON EVERY PICKED FILE, F116. One line before the last
+  says a set already in an NWF keeps the conditions it was built with and is not given what
+  the file asks unless the box `SetRebuildSettings.TickLabel` names is ticked, Q72, and that
+  the SETS block names each such set as DRIFTED, so a log naming corrections over an NWF
+  built before them is not read as corrected sets
 - THE OR ROW IS THE WHOLE GROUP COPIED, FR-025. A group asking one spelling is written once
   per spelling with the rest of the group in it, so (Ducts and ME-DUCTWORK) or (Ducts and
   ME-Ductwork). One flags 64 condition after the workset, what Q69's row was until F116,
@@ -193,7 +230,10 @@ and 6 does not read as broken.
   after the bar in the list, proved by a test against the logs they came from
 - THE ROW FILE NAMES EVERY WORKSET OF EVERY MODEL, one model worksets row each, because
   the EXPORT CHECK block lists ten a group and counts the rest, and the spellings a run
-  shows are what the workset list is measured from
+  shows are what the workset list is measured from. Where a model's element walk stopped
+  part way, `ModelExport.WalkFinished` false, the row's number is empty and its text
+  UNKNOWN, `ExportCheck.WorksetCount` and `EveryWorkset`, never the names seen before it
+  stopped as if they were all
 
 ## Rules the code holds
 
