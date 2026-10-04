@@ -1,6 +1,46 @@
 # log
 
 Newest entry at the top.
+## 2026-10-05 The loop, turn 5, the design of Q114, its probes and Q115 to Q123
+
+Nothing under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before, as
+in the entry below, and after, at the pre-commits of this record, turn5\precommit-records-11.txt
+and precommit-records-11b.txt.
+
+### What was done
+
+- the design of Bader's views by team, by three plans each its own agent, turn5\q114-design-run.txt, safety first, speed first
+  and the rules in Core, read only, and a judge who scored them 25, 19 and 22 of 30 and wrote one,
+  turn5\q114-design.md. Each of FR-180 to FR-188 names its part
+- its probes, P1 to P22, each a single fact, in the order each area needs them, section 3. Three
+  read the install with no Navisworks, P5 to P7. P3, P20 and P21 are steps for Bader, written into
+  steps\03_bader_next.md when their area starts. Most of the rest run on copies of the baseline's
+  NWF through the guarded start, once no Navisworks runs. P5 to P7 answered yes on 2026-10-05,
+  turn5\q114-probes\p5-p7.md
+- Q115 to Q123, nine of the design's thirteen questions, each with the choice the build goes on
+  with. Of the four not asked, two his words settle, one is the lead's choice for safety until P18
+  gives its cost, and one waits for P9, named in steps\loop.md
+- Q124, the baseline of 1A04PK taking a day or more, turn5\c04-rate.txt
+- FR-189 from F112's closing pass, an NWD listed as written when its publish failed, older than
+  F112, for F119 in wave 3b
+- the estimate, on the three recording rates measured and not a bound: VIEWS on 1A02MM 89.701 to 811.516 s against 7487.104 s
+  in the baseline, the run 528.567 to 1250.382 s against 7925.970 s, what is UNKNOWN in it named
+  in section 6
+
+### What remains
+
+- the probes, then F132, F131 and F114 in wave 2
+
+### Known bugs
+
+- FR-189, new in this record
+
+### What comes next
+
+- the probes on Navisworks once no Navisworks of the loop runs, Q124
+
+The probes on Navisworks wait for the local machine.
+
 ## 2026-10-04 The loop, turn 5, Bader's views by team, Q114, the plan
 
 Bader's message of the evening headed ONE VIEWPOINT PER CLASH TEST, IN THE A, B, C FOLDERS, BY

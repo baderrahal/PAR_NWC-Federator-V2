@@ -129,7 +129,7 @@ holds them. Each area takes the F number shown.
   - 3a, F120 harvest and pictures: FR-075, FR-076, FR-077
   - 3a, F109 install: FR-078, FR-079, FR-080
   - 3b, F130 the Shift range in the group list, Bader's request 5: FR-179. In the half after F129 because both change the window's files
-  - 3b, F119 run log and RESULT: FR-043, FR-044, FR-045, FR-046, FR-047, FR-048, FR-049, FR-050, FR-051, FR-052, FR-053, FR-054, FR-055, FR-056, FR-057
+  - 3b, F119 run log and RESULT: FR-043, FR-044, FR-045, FR-046, FR-047, FR-048, FR-049, FR-050, FR-051, FR-052, FR-053, FR-054, FR-055, FR-056, FR-057, and FR-189 found by F112's closing pass
 - Wave 4:
   - F121 the rest: FR-150, FR-151, FR-152, FR-153, FR-154, FR-155, FR-156, FR-157, FR-158, FR-159, FR-160, FR-161, FR-162, FR-163, FR-164, FR-165, FR-166. The find of Q24 on FR-160 and Q109 on FR-161 first
   - F122 the loop tools: FR-082, FR-083, FR-084, FR-085, FR-086, FR-087, FR-088, FR-089, FR-090, FR-091, FR-092, FR-093, FR-094, FR-095, FR-096, FR-097, FR-098, FR-099, FR-100, FR-101, FR-102, FR-103, FR-104
@@ -4647,6 +4647,22 @@ was done, what the test showed, and anything for Bader.
   Shift click without real input, the Shift test is written as numbered steps for him in
   steps\03_bader_next.md
 
+### FR-189 nwd-listed-as-written-when-its-publish-failed
+
+- Sources: F112's closing pass, turn5\f112d-dev-return.json new_items, read off main 1ae6771.
+  Area F119, wave 3b
+- Evidence: FederationEngine.WriteNwd logs the publish returned false, or calls log.Failure on a
+  throw, then calls log.WriteFinished("NWD", job.NwdPath) whatever the publish gave, line 3357 on
+  main 1ae6771, since a6957a6 of 2026-08-27. RunLog.WriteFinished records any file found at the
+  path as written, with its size, so on a rerun last week's NWD is listed as written by this run
+- Root cause: the call to WriteFinished does not read the publish result
+- Class: silent wrong number, the files written list, against the rule that only a file this run
+  wrote goes in it. Once F112 merges, the group's RESULT reason names such an NWD as not from this
+  run, so only the list stays wrong. FR-044 and FR-045 are the same root for the NWF. Found after
+  the list was written, so outside the counts of the table below
+- Proof: a Core member of RunLog that takes the publish result, with a test that breaks it, then
+  a run where the publish is made to fail if one can be made safely
+
 ## Bader's views by team, FR-180 to FR-188
 
 Added by Bader's message of the evening of 2026-10-04 headed ONE VIEWPOINT PER CLASH TEST, IN THE
@@ -4669,6 +4685,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
 - Proof: Core tests for the map, a missing map, a code on no team, and each place a discipline is
   read
 - Class: Bader's decision
+- Designed on 2026-10-05 by three independent plans and a judge, %LOCALAPPDATA%\NwcFederatorLoop\turn5\q114-design.md sections 1.1 and 1.2. Questions for Bader: Q115, Q116 and Q123
 
 ### FR-181 mechanical-sets-miss-hv-pl-fp-models
 
@@ -4686,6 +4703,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
   worksets. Silent misses confirmed: none. A correction built the way the Q102 rows are is drafted
   in its section 6 and not applied
 - Class: Bader's decision, a silent miss if the measurement finds one
+- Designed on 2026-10-05, turn5\q114-design.md section 1.3. Probe P4 reads the worksets of 1A04PK's HV and FP models
 
 ### FR-182 mirrored-tests-kept-once
 
@@ -4706,6 +4724,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
 - Proof: Core tests for the pairing, the choice of the one kept, the names in the log and the
   pairs listed in the COVERAGE block
 - Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md section 1.4. Probe P1 measures that a test and its swap find the same clashes. Question for Bader: Q121
 
 ### FR-183 mirrored-tests-in-an-existing-nwf
 
@@ -4716,6 +4735,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
 - Measure first: how a test this tool created is told from one a person made, and how a status a
   person set is told from one the tool set, turn5\measure-views.md and the code of the status rules
 - Class: Bader's decision, the one place the tool removes a test, by his word
+- Designed on 2026-10-05, turn5\q114-design.md section 1.5: a mirror in an NWF is removed only where it matches a test of the picked XML exactly, never with no XML. Probes P2 and P3, P3 a step for Bader. Question for Bader: Q122
 
 ### FR-184 views-tree-by-priority-and-team-pair
 
@@ -4730,6 +4750,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
   pairs. A pair is always written the same way round, Architecture, Structure, Mechanical,
   Electrical, then the rest
 - Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md sections 1.6 and 1.7. The pair's order is point 12's, so point 10's Mechanical vs Structure is written Structure vs Mechanical. With no priority file the views go under No priority, point 9. Question for Bader: Q117
 
 ### FR-185 one-view-per-test-of-its-open-clashes
 
@@ -4742,6 +4763,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
   rectangular service sized by its larger side, the larger of two services deciding. No clash in
   two views. A test with no open clashes gets no view
 - Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md sections 1.7 and 1.8. Probes P5, P16, P17 and P19. P5 measured on 2026-10-05 off the install: BoundingBox3D has a public constructor taking two Point3D, turn5\q114-probes\p5-p7.md. Questions for Bader: Q118 and Q119
 
 ### FR-186 views-made-fresh-only-the-tools-own
 
@@ -4756,6 +4778,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
 - Measure first: how the tool tells a viewpoint it made from one a person made, today and after,
   turn5\measure-views.md, not yet written
 - Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md section 1.9: a mark on each view the tool makes, the new views written before the old are removed, the lead's choice since a run that stops part way then never leaves an NWF with neither. Probes P6, P7 and P8 to P15, P8 a read only dump of the baseline's 2847 viewpoints. P6 and P7 measured on 2026-10-05 off the install: the COM view has Comments() returning a comments collection with Add, and the redlines list has a Size() method, turn5\q114-probes\p5-p7.md. If P9 shows a comment does not survive a save, a question follows. Question for Bader: Q120
 
 ### FR-187 views-proof-on-1a02mm-and-the-views-tree-block
 
@@ -4766,6 +4789,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
   in two views and no mirrored test is run. The log lists the tree as a VIEWS TREE block
 - Before: VIEWS 7487 s of 7926 s, 94.5 percent, steps\runs\04\item1-C02 run log lines 575 and 587
 - Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md sections 5 and 6: the VIEWS TREE block and its seven checks, the five of point 19 and two more. The estimate on the three recording rates measured, not a bound, is VIEWS 89.701 to 811.516 s on 1A02MM, the run 528.567 to 1250.382 s, with what is UNKNOWN in it named there. Probe P18 times one view
 
 ### FR-188 views-rules-in-docs-workflow
 
@@ -4774,6 +4798,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
   read how to use it, Saved Viewpoints for the A, B, C picture of their own team and Clash
   Detective for one clash close up
 - Class: Bader's decision
+- Designed on 2026-10-05, turn5\q114-design.md section 7
 
 ## The areas at a glance
 
