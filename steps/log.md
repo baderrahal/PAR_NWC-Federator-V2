@@ -1,6 +1,54 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, F107 the older machine's name masked on main, DONE on Q88
+
+Nothing under src or tests changed. Core tests by the pre-commit at 70effde, 8441dc9, 499f0a6
+and the merge of main after it, the files precommit-f107-*.txt under
+%LOCALAPPDATA%\NwcFederatorLoop\turn5, 1746 passed, 0 failed, 0 skipped each time, the same as
+main before.
+
+### What was done
+
+- Bader's answer to Q88: the name of the machine of 2026-09-19 masked on main in its own pull
+  request. At 821ed6e it stood on nine lines in four files. On main at 3449521 it stood on eight
+  lines in three files, five in docs\history\scan.md, one in steps\01_next.md and two in
+  steps\log.md, because F106's rewrite of the header of tools\probes\drive-window-run.ps1 had
+  already masked the ninth. Each now says the machine of 2026-09-19, and nothing else on those
+  lines changed. The two lines of steps\log.md are the lead's file, changed only by this mask
+- main merged in twice on 2026-10-04 and again after F105, the driver taken from main whole
+  where it conflicted, and the order line moved to 36 behind F105
+- read by a reviewer, who asked for changes with one blocking: the F107 section still described
+  the change as it was before the merges, nine lines with the driver among them. The section now
+  says eight lines in three files, names where the ninth went, and carries the searches made
+  after the merge
+- the searches after the merge at 8441dc9: git grep for the whole name and for the part after
+  its hyphen, in the working tree, at HEAD and over untracked files, found nothing, and the split
+  search read 874 tracked files, 1053 on the disk and 874 at HEAD with 0 hits, the one file it could
+  not read being a broken fixture that is not a zip by design, whose text it read apart with 0
+  hits. %LOCALAPPDATA%\NwcFederatorLoop\turn5\f107-grep-after-merge-2.txt,
+  f107-split-search-after-merge-2.txt and f107-split-search-endswrong-2.txt
+- the searches after main 2c89788, with F105, merged in, before the records were committed: git
+  grep for the whole name and for the part after its hyphen in the working tree, git grep over
+  untracked files for the whole name, and grep -r over the worktree for both, found nothing,
+  turn5\f107-grep-after-merge-3.txt, which names neither form
+- the searches on the final commit of this pull request, after every record was written: git
+  grep for both forms in the working tree, at HEAD and over untracked files, and the split
+  search, turn5\f107-grep-final.txt and turn5\f107-split-search-final.txt
+
+### What remains
+
+- the name stays in the history of main, which no pull request changes
+
+### Known bugs
+
+- F107-R1, now the fix list's FR-110 and a question for Bader, Q106: nothing refuses the name if
+  it comes back, because F102's check reads for this machine's name only
+- the account name of that machine's user in C:\Users paths, the fix list's FR-149, Q107
+
+### What comes next
+
+- the fix round's area pull requests, steps\fix-round.md
 ## 2026-10-04 The loop, turn 5, F105 four reads off the install, DONE on Bader's answer A to Q89
 
 Nothing under src or tests changed. Core tests by the pre-commit at 2ac77fc, 96a0f93, ee87b3c,
@@ -3109,7 +3157,7 @@ nothing is written into a live project folder, every program started and every f
 written outside the repo is listed in the round report, everything opened is closed and
 the check that it was closed is run, and nothing of Bader's is deleted or overwritten.
 
-THE BUILD GATE PASSED. On DESKTOP-5VL7LTJ the whole solution built in Release with 0
+THE BUILD GATE PASSED. On the machine of 2026-09-19 the whole solution built in Release with 0
 errors and 0 warnings before anything was written, with the add-in inside it. The Core
 suite on main reads 54 failed, 1568 passed, 1622 total. Every one of the 54 is a fixture
 that resolves a sample by name and finds it gone, which is PART 0.
@@ -3419,7 +3467,7 @@ This round wires the eight, following the instructions already written in
 steps\03_bader_next.md steps 353 to 380, and invents no design.
 
 THIS ROUND IS ON THE MACHINE WITH NAVISWORKS. The brief said to stop if the build failed
-on the Navisworks reference. It did not. On DESKTOP-5VL7LTJ, Windows 11, dotnet 10.0.400,
+on the Navisworks reference. It did not. On the machine of 2026-09-19, Windows 11, dotnet 10.0.400,
 the full solution build in Release finished with 0 errors and 0 warnings before anything
 was written, with the add-in project inside it. Every wiring below is compiled here after
 it lands.
