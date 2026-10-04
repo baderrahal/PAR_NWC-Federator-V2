@@ -1,6 +1,16 @@
 # The loop
 
-STATE WAITING
+STATE OPEN
+
+TURN 5, THE FULL FIX ROUND, opened on 2026-10-04 by Bader's message headed 4 Oct 2026, Q98. No
+run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05. The plan
+is the turn 5 entry at the top of steps\log.md. The fix list is steps\fix-round.md, built
+before the first fix. Main at the start of the turn: f38edd5, installed e4484d15 in place since
+2026-10-01 with be0b9b37 in bundle-backup. Why turn 4 stopped: Bader wrote "stop, i will close
+the pc" at about 17:35 on 2026-10-01, and the pause, STATE WAITING, was pushed as 87d693e on
+fix-T4-run-03c and never merged, so main kept reading STATE OPEN. The System log reads a
+shutdown at 19:30:49 on 2026-10-01 by shutdown.exe, and a restart for an update at 09:07:20 on
+2026-10-04, the PC up again at 09:10:18. Get-Process Roamer read 0 at 09:51:56 on 2026-10-04.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -10,10 +20,11 @@ written", turn4\run03-item1-C07-console.txt. The F110 and F111 workflow was stop
 so wt-f110 and wt-f111 may hold work not committed. The C07 waiter was stopped. Q98, whether a
 group with a model 2,000 km away stays DONE, and Q99, which clash XML the runs use, are still to
 be written for Bader, from findings 1 and 2 of steps\runs\03\findings.md.
-WHEN HE SAYS GO: Get-Process Roamer. If any Navisworks the loop did not start runs, stay
-WAITING. Otherwise STATE OPEN, start the keep awake again, start the first run of C07 the same
-way with the session unlocked, carry on with set 03, and start F110 and F111 again from their
-worktrees, nothing installed until C07 ends.
+WHEN HE SAYS GO, as written at the pause and since replaced by turn 5, which runs no C07:
+Get-Process Roamer. If any Navisworks the loop did not start runs, stay WAITING. Otherwise
+STATE OPEN, start the keep awake again, start the first run of C07 the same way with the
+session unlocked, carry on with set 03, and start F110 and F111 again from their worktrees,
+nothing installed until C07 ends.
 
 THE FIRST RUN OF MAIN HAPPENS TODAY, Bader's message of 2026-10-01 12:10, Q96. Until the first
 run's RESULT block is written only what that run needs is worked on, and everything else
@@ -115,8 +126,17 @@ it called SetThreadExecutionState with ES_CONTINUOUS and ES_SYSTEM_REQUIRED, 0x8
 returned 0x80000000 at 10:48:38, so the request holds while that thread lives. No display
 flag, and none of Bader's power settings changed. It reads the STATE line of this file once
 a minute and stops itself when it reads STATE CLOSED or STATE WAITING, taking the request
-back first. Its lines go to turn4\keep-awake.txt. STOPPED: not yet. It was started from
-Claude Code, so whether it outlives Claude Code itself is UNKNOWN.
+back first. Its lines go to turn4\keep-awake.txt. STOPPED 2026-10-01 17:35:43, on reading
+STATE WAITING, its release returning 0x80000001, turn4\keep-awake.txt.
+KEEP AWAKE OF TURN 5, Bader's rule of 2026-10-04. One hidden powershell.exe, PID 1312, STARTED
+2026-10-04 09:55:40 through WMI's Win32_Process Create, so its parent is pid 9844 WmiPrvSE.exe
+and not Claude Code, in session 1. It runs %LOCALAPPDATA%\NwcFederatorLoop\turn5\keep-awake.ps1
+and on its main thread, native thread 40512, called SetThreadExecutionState with ES_CONTINUOUS,
+ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED, 0x80000003, which returned 0x80000000 at 09:55:53.
+None of Bader's power, screen saver or lock settings changed. It stops itself, taking the
+request back first, when this file reads STATE CLOSED or STATE WAITING, or has not been written
+for 12 hours. Its lines go to turn5\keep-awake.txt. STOPPED: not yet. Checked alive at the start
+of every turn.
 
 THE RUN SETS OF TURN 4. Each run set gets a fresh copy at
 %LOCALAPPDATA%\NwcFederatorLoop\runs\NN\NMFed in Bader's own folder shape: NWC\C06 into
