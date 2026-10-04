@@ -485,10 +485,12 @@ OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its ch
   Q116 where it applies, Q117 a set name with no discipline code, Q118 a clashing item in a model
   of a third team, Q119 which models a view shows, Q120 a view of the tool a person changed, Q121
   Telecom Fixtures and Telephone Devices, Q122 whose status a result carries, Q123 a run with no
-  XML. Four of the design's questions are not asked, since his own words or the lead's rule of
-  safety settle them: no priority file means No priority, point 9, the pair's order is point 12's,
-  new views are written before old ones are removed, and the question on a comment that does not
-  survive a save waits for probe P9
+  XML. Four of the design's questions are not asked: two his words settle, no priority file means
+  No priority, point 9, and the pair's order is point 12's, one is the lead's choice for safety,
+  new views written before old ones are removed, whose cost is UNKNOWN until probe P18 and which is
+  asked if that cost is large, and one, a comment that does not survive a save, waits for P9
+- Q124, written on 2026-10-05: the baseline of 1A04PK takes a day or more, so whether to let it
+  run, the loop going on with A, let it run, until he answers
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:

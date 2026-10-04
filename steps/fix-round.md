@@ -4656,8 +4656,10 @@ was done, what the test showed, and anything for Bader.
   main 1ae6771, since a6957a6 of 2026-08-27. RunLog.WriteFinished records any file found at the
   path as written, with its size, so on a rerun last week's NWD is listed as written by this run
 - Root cause: the call to WriteFinished does not read the publish result
-- Class: silent wrong statement, against the rule that only a file this run wrote goes in the
-  files written list
+- Class: silent wrong number, the files written list, against the rule that only a file this run
+  wrote goes in it. Once F112 merges, the group's RESULT reason names such an NWD as not from this
+  run, so only the list stays wrong. FR-044 and FR-045 are the same root for the NWF. Found after
+  the list was written, so outside the counts of the table below
 - Proof: a Core member of RunLog that takes the publish result, with a test that breaks it, then
   a run where the publish is made to fail if one can be made safely
 
@@ -4761,7 +4763,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
   rectangular service sized by its larger side, the larger of two services deciding. No clash in
   two views. A test with no open clashes gets no view
 - Class: Bader's decision
-- Designed on 2026-10-05, turn5\q114-design.md sections 1.7 and 1.8. Probes P5, P16, P17 and P19. Questions for Bader: Q118 and Q119
+- Designed on 2026-10-05, turn5\q114-design.md sections 1.7 and 1.8. Probes P5, P16, P17 and P19. P5 measured on 2026-10-05 off the install: BoundingBox3D has a public constructor taking two Point3D, turn5\q114-probes\p5-p7.md. Questions for Bader: Q118 and Q119
 
 ### FR-186 views-made-fresh-only-the-tools-own
 
@@ -4776,7 +4778,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
 - Measure first: how the tool tells a viewpoint it made from one a person made, today and after,
   turn5\measure-views.md, not yet written
 - Class: Bader's decision
-- Designed on 2026-10-05, turn5\q114-design.md section 1.9: a mark on each view the tool makes, the new views written before the old are removed, the lead's choice since a run that stops part way then never leaves an NWF with neither. Probes P6, P7 and P8 to P15, P8 a read only dump of the baseline's 2847 viewpoints. If P9 shows a comment does not survive a save, a question follows. Question for Bader: Q120
+- Designed on 2026-10-05, turn5\q114-design.md section 1.9: a mark on each view the tool makes, the new views written before the old are removed, the lead's choice since a run that stops part way then never leaves an NWF with neither. Probes P6, P7 and P8 to P15, P8 a read only dump of the baseline's 2847 viewpoints. P6 and P7 measured on 2026-10-05 off the install: the COM view has Comments() returning a comments collection with Add, and the redlines list has a Size() method, turn5\q114-probes\p5-p7.md. If P9 shows a comment does not survive a save, a question follows. Question for Bader: Q120
 
 ### FR-187 views-proof-on-1a02mm-and-the-views-tree-block
 
@@ -4787,7 +4789,7 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
   in two views and no mirrored test is run. The log lists the tree as a VIEWS TREE block
 - Before: VIEWS 7487 s of 7926 s, 94.5 percent, steps\runs\04\item1-C02 run log lines 575 and 587
 - Class: Bader's decision
-- Designed on 2026-10-05, turn5\q114-design.md sections 5 and 6: the VIEWS TREE block and its five checks. The estimate from measured rates only is VIEWS 89.701 to 811.516 s on 1A02MM, the run 528.567 to 1250.382 s, with what is UNKNOWN in it named there. Probe P18 times one view
+- Designed on 2026-10-05, turn5\q114-design.md sections 5 and 6: the VIEWS TREE block and its seven checks, the five of point 19 and two more. The estimate on the three recording rates measured, not a bound, is VIEWS 89.701 to 811.516 s on 1A02MM, the run 528.567 to 1250.382 s, with what is UNKNOWN in it named there. Probe P18 times one view
 
 ### FR-188 views-rules-in-docs-workflow
 

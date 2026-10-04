@@ -3,24 +3,27 @@
 Newest entry at the top.
 ## 2026-10-05 The loop, turn 5, the design of Q114, its probes and Q115 to Q123
 
-Nothing under src, tests or tools changed. Core tests at the pre-commit of this record,
-turn5\precommit-records-11.txt.
+Nothing under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before, as
+in the entry below, and after, at the pre-commits of this record, turn5\precommit-records-11.txt
+and precommit-records-11b.txt.
 
 ### What was done
 
-- the design of Bader's views by team, by three plans written apart, safety first, speed first
+- the design of Bader's views by team, by three plans each its own agent, turn5\q114-design-run.txt, safety first, speed first
   and the rules in Core, read only, and a judge who scored them 25, 19 and 22 of 30 and wrote one,
-  turn5\q114-design.md, from workflow wf_d5aa47b4-8bc. Each of FR-180 to FR-188 names its part
+  turn5\q114-design.md. Each of FR-180 to FR-188 names its part
 - its probes, P1 to P22, each a single fact, in the order each area needs them, section 3. Three
   read the install with no Navisworks, P5 to P7. P3, P20 and P21 are steps for Bader, written into
-  steps\03_bader_next.md when their area starts. The rest run on copies of the baseline's NWF
-  through the guarded start, once no Navisworks runs
+  steps\03_bader_next.md when their area starts. Most of the rest run on copies of the baseline's
+  NWF through the guarded start, once no Navisworks runs. P5 to P7 answered yes on 2026-10-05,
+  turn5\q114-probes\p5-p7.md
 - Q115 to Q123, nine of the design's thirteen questions, each with the choice the build goes on
-  with. Four are not asked, since his words or the lead's rule of safety settle them, named in
-  steps\loop.md
+  with. Of the four not asked, two his words settle, one is the lead's choice for safety until P18
+  gives its cost, and one waits for P9, named in steps\loop.md
+- Q124, the baseline of 1A04PK taking a day or more, turn5\c04-rate.txt
 - FR-189 from F112's closing pass, an NWD listed as written when its publish failed, older than
   F112, for F119 in wave 3b
-- the estimate, from measured rates only: VIEWS on 1A02MM 89.701 to 811.516 s against 7487.104 s
+- the estimate, on the three recording rates measured and not a bound: VIEWS on 1A02MM 89.701 to 811.516 s against 7487.104 s
   in the baseline, the run 528.567 to 1250.382 s against 7925.970 s, what is UNKNOWN in it named
   in section 6
 
@@ -30,13 +33,13 @@ turn5\precommit-records-11.txt.
 
 ### Known bugs
 
-- none new in this record
+- FR-189, new in this record
 
 ### What comes next
 
-- P5 to P7 off the install, and the probes on Navisworks once the baseline ends
+- the probes on Navisworks once no Navisworks of the loop runs, Q124
 
-Nothing in this record waits for the local machine.
+The probes on Navisworks wait for the local machine.
 
 ## 2026-10-04 The loop, turn 5, Bader's views by team, Q114, the plan
 
