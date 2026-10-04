@@ -70,26 +70,32 @@ and nothing is fixed until a real run on real files shows it fixed.
   passed. On a failure after the move the new one is taken out and the old one put back,
   and where each is is printed. A folder it cannot remove is named in the verdict of
   run.ps1 -Mode Install
-- Every run works on a copy under %LOCALAPPDATA%\NwcFederatorLoop. Since turn 4 each run
-  set has a fresh one at runs\NN\NMFed, in Bader's own folder shape, NWC\<community> into
-  the NWF, NWD and Clash Report folders of the same name, and named NMFed because the wall
-  refuses any command naming NM Fed. Every output of every run goes under
-  %LOCALAPPDATA%\NwcFederatorLoop, and nothing is ever written into NM Fed
-- Nothing of Bader's is deleted or overwritten, bar four things. The installed add-in, which
-  is backed up first as the install rule above says. His Navisworks settings, put back to
-  what the backup holds under the settings rule below, which can remove a value or key the
-  loop's own Navisworks added. His oldest run logs, which the tool itself prunes when a loop
-  run opens its window, each held in logs-backup by sha256 and put back after the loop,
-  Bader's answer Q82. And the autosaves a loop run added to his AutoSave folder, which the
-  loop removes, Q86. Outside %LOCALAPPDATA%\NwcFederatorLoop the loop deletes only those
-  autosaves, and after the loop its own logs and tsv files in his logs folder
+- Every run works on a copy under %LOCALAPPDATA%\NwcFederatorLoop. Since F108 each run set
+  has a fresh one at runs\NN\NMFed, made by tools\loop\prepare-copy.ps1 -Set NN in Bader's
+  own folder shape, NWC\<community> into the NWF, NWD and Clash Report folders of the same
+  name. The loop named it NMFed because the wall refuses any command naming NM Fed. Every
+  output of a run goes under %LOCALAPPDATA%\NwcFederatorLoop, bar what the tool and its
+  Navisworks write where the loop cannot point them: the tool's own log and tsv in his logs
+  folder, autosaves in his AutoSave folder, and Navisworks's own settings, each kept by a
+  rule below. Nothing is ever written into NM Fed
+- Nothing of Bader's is deleted or overwritten, bar four things. The installed add-in,
+  backed up first as the install rule above says, whose files an install replaces or
+  removes. His Navisworks settings, put back to what the backup holds under the settings
+  rule below, which can remove a value or key the loop's own Navisworks added. His oldest
+  run logs, which the tool itself prunes when a loop run opens its window, each held in
+  logs-backup by sha256 and put back after the loop, Bader's answer Q82. And his AutoSave
+  folder, where the loop removes the autosaves its runs added and puts back from the backup
+  any of his a run changed, Q86. Outside %LOCALAPPDATA%\NwcFederatorLoop the loop deletes or
+  overwrites nothing else, bar its own logs and tsv files, which it takes out of his logs
+  folder after the loop
 - Before the first run his logs folder, %LOCALAPPDATA%\ParsonsNwcFederator\logs, is copied
   into logs-backup, and before every start each file of his the backup does not hold is
   copied into it and read back. The tool's window logs only into his folder and keeps 30
   logs, so a window run may prune his oldest, which Bader allowed on 2026-10-01, Q82. After
   the loop his folder is put back to exactly what the backups hold, the loop's own logs and
   tsv files are taken out, and it is read back by name, size and sha256. A log of his that
-  no backup holds is left as it is and named. At every window open the tool writes his
+  no backup holds is left as it is and named, the loop's own choice. At every window open the
+  tool writes his
   remembered folders into its log, reading only, which Bader allowed, Q87, and that block is
   masked in every copy of a loop log that is committed. Any choice the tool remembers
   between runs is read before the loop and put back after it
@@ -124,21 +130,27 @@ and nothing is fixed until a real run on real files shows it fixed.
   loop's Navisworks may autosave under his document names. Before every start each file of
   it that %LOCALAPPDATA%\NwcFederatorLoop\autosave-backup does not already hold, by name and
   sha256, is copied there and read back. What a run added, changed or removed there is
-  listed. Once the loop's Navisworks is proved gone, and only when no Navisworks the loop did
-  not start ran from the backup to then, the autosaves the run added are removed and any of
-  his it changed is put back from the backup, each read back, Bader's answer Q86. Otherwise
-  nothing is written there
-- Runs may go while Bader is away and while he works at the machine, Q85. He does not click
-  the loop's Navisworks, and the loop never clicks, types into or presses anything in a
-  window of a process it did not adopt, and never moves his pointer. The keep awake request
-  of a run carries the display flag. A locked screen that stops the window or the pictures is
-  a finding, and the next start waits until the session reads unlocked. The lock is never
-  worked around. While a Navisworks the loop did not start runs, the loop does not stop: it
-  waits, reads the processes every 10 minutes, and carries on by itself once none runs
-- The PC is kept awake for the whole loop, not only during runs, Q95: one background
-  powershell.exe holds ES_CONTINUOUS and ES_SYSTEM_REQUIRED on its main thread, changes
-  none of Bader's power settings, and stops itself when steps\loop.md reads STATE CLOSED or
-  STATE WAITING. Its process id and when it started and stopped are named in steps\loop.md
+  listed. Once the loop's Navisworks is proved gone, the autosaves the run added are removed
+  and any of his it changed is put back from the backup, each read back, Bader's answer Q86.
+  The loop adds one guard of its own: this is done only when no Navisworks the loop did not
+  start ran from the backup to then, because which Navisworks wrote a file is UNKNOWN while
+  another runs. Otherwise nothing is written there and every change is listed
+- Runs may go while Bader is away and while he works at the machine, he does not click the
+  loop's Navisworks, and the display flag is allowed, Q85. The loop's driver, F106, acts only
+  on windows of the Navisworks the loop adopted, never clicks, sends no key and never moves
+  the pointer, the loop's own choice so that a run cannot reach what he works on. A locked
+  screen that stops the window or the pictures is recorded as a finding and the loop waits,
+  and the lock is never worked around, Q85
+- While a Navisworks the loop did not start runs, there is no start, no install and no put
+  back. The loop reads the processes every 10 minutes and carries on by itself once none
+  runs, Bader's standing rule of 2026-10-04, Q98
+- The PC is kept awake for the whole loop, not only during runs, Q95, by the rule Bader set
+  on 2026-10-04, Q98. keep-awake.ps1 runs as its own hidden process, not a child of Claude
+  Code, and holds ES_CONTINUOUS, ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED. It changes none
+  of his power, screen saver or lock settings, and stops itself, taking the request back
+  first, when steps\loop.md reads STATE CLOSED or STATE WAITING or has not changed for 12
+  hours. Its process id and when it started and stopped are named in steps\loop.md, and it is
+  checked alive at the start of every turn
 - The loop installs the add-in only through tools\loop\run.ps1 -Mode Install, which runs
   build\install.ps1 from a checkout whose HEAD is the commit asked for and whose git status
   prints nothing, untracked files included, because the build stamp reads +edits for any
@@ -148,7 +160,13 @@ and nothing is fixed until a real run on real files shows it fixed.
   %APPDATA% down to the bundle is a junction or a link, and when the move aside fails
   because a file in the bundle is held. run.ps1 -Mode Install passes that refusal on as
   exit 2. A Roamer running right after a loop install, and a bundle left beside the new one,
-  are each a finding that changes its verdict
+  are each a finding that changes its verdict. While that move aside is refused on this
+  machine, F109, Bader asked on 2026-10-01, Q96, and again on 2026-10-04, Q98, for main to be
+  installed in place instead: built from a clean checkout of main, staged and checked by
+  build\install.ps1 -SkipBuild against a throwaway APPDATA under the work folder, and, with no
+  Roamer running and the installed bundle read equal to bundle-backup, each checked file
+  copied over the installed one and read back, an installed file the new bundle lacks removed
+  and named, and the installed stamp read back as main's commit
 - While a Navisworks the loop started runs, the recent files, the window placement and the
   default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
   under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which
@@ -199,9 +217,8 @@ and nothing is fixed until a real run on real files shows it fixed.
    and every turn entry before it is final
 8. A finding that survives three fix attempts stops, with what was tried and what each
    run showed, and moves to the form
-9. A reading of the loop's own scripts, under tools\loop, tools\probes and tools\checks,
-   blocks a run only for a fault that could harm Bader's things or make a run's evidence
-   wrong. Words, polish and edge cases that can do neither become register rows, not fix
+9. A reading of the loop's own scripts blocks a run only for a fault that could harm
+   Bader's things or make a run's evidence wrong. Words, polish and edge cases that can do neither become register rows, not fix
    attempts. The product code keeps every house rule as written. Bader, 2026-10-01, Q93
 10. Never report a check that did not run in this session
 11. The writing rule at the end of CLAUDE.md holds everywhere

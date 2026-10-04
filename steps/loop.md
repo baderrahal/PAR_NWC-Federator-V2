@@ -2,6 +2,101 @@
 
 STATE OPEN
 
+TURN 5, THE FULL FIX ROUND, opened on 2026-10-04 by Bader's message headed 4 Oct 2026, Q98. No
+run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05. The plan
+is the turn 5 entry at the top of steps\log.md. The fix list is steps\fix-round.md, built
+before the first fix. Main at the start of the turn: f38edd5, installed e4484d15 in place since
+2026-10-01 with be0b9b37 in bundle-backup. Why turn 4 stopped: Bader wrote "stop, i will close
+the pc" at about 17:35 on 2026-10-01, and the pause, STATE WAITING, was pushed as 87d693e on
+fix-T4-run-03c and never merged, so main kept reading STATE OPEN. The System log reads a
+shutdown at 19:30:49 on 2026-10-01 by shutdown.exe, and a restart for an update at 09:07:20 on
+2026-10-04, the PC up again at 09:10:18. Get-Process Roamer read 0 at 09:51:56 on 2026-10-04.
+
+PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
+At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
+nothing of his needs putting back. THE FIRST RUN OF C07 NEVER STARTED: launched at 17:28:36,
+run.ps1 pid 39432 refused at its check 10 because the session read locked, Q85, "Nothing was
+written", turn4\run03-item1-C07-console.txt. The F110 and F111 workflow was stopped part way,
+so wt-f110 and wt-f111 may hold work not committed. The C07 waiter was stopped. Q98, whether a
+group with a model 2,000 km away stays DONE, and Q99, which clash XML the runs use, are still to
+be written for Bader, from findings 1 and 2 of steps\runs\03\findings.md.
+WHEN HE SAYS GO, as written at the pause and since replaced by turn 5, which runs no C07:
+Get-Process Roamer. If any Navisworks the loop did not start runs, stay WAITING. Otherwise
+STATE OPEN, start the keep awake again, start the first run of C07 the same way with the
+session unlocked, carry on with set 03, and start F110 and F111 again from their worktrees,
+nothing installed until C07 ends.
+
+THE FIRST RUN OF MAIN HAPPENS TODAY, Bader's message of 2026-10-01 12:10, Q96. Until the first
+run's RESULT block is written only what that run needs is worked on, and everything else
+waits: F109's workflow stopped by the lead at about 12:16, the F105 and F107 words round
+stopped at about 12:45 part way, wt-f107 committed at 2063c29 and wt-f105 holding staged
+changes not committed, and PR 83, the rules, and PR 84, F108, left open with the findings of
+their claim-checks, which were returned to the lead in the session, all read into
+turn4\reads-pr85.txt at 12:45:56.
+- MAIN IS INSTALLED, in place, apart from F109, as Bader asked. wt-main at e4484d1, clean. The
+  add-in built with the build command of build\install.ps1 line 39, 0 warnings and 0 errors,
+  stamp e4484d15, turn4\install-build.txt, the command line itself kept in no file.
+  build\install.ps1 -SkipBuild then staged and checked it against a throwaway APPDATA under the
+  loop folder, every reference satisfied, 14 assemblies, exit 0, turn4\install-fake-run.txt.
+  Get-Process Roamer read 0 at 12:20:07, turn4\roamer-reads.txt line 4, and again in the
+  script at 12:20:09. turn4\install-in-place.ps1 read the installed bundle equal to
+  bundle-backup, 15 files by name and sha256, copied the 15 checked files over the installed
+  ones and read each back equal, removed none, every installed file being in the new bundle,
+  and read the installed Federator.Addin.dll back as 1.0.0.0 e4484d15 built 2026-10-01
+  12:19:09 at 12:20:10, turn4\install-in-place.txt. bundle-backup still holds be0b9b37
+- THE COPY FOR SET 03 IS MADE, by F108's prepare-copy.ps1 -Set 03 from its branch, about
+  12:20:43 to 12:20:50 by the lead's console, kept in no file: the source copy matched the
+  desktop folder on all 141 files and 10 folders, and
+  runs\03\NMFed holds 141 files and 12 folders, Clash Report\C06 and C07 made, every file read
+  back by sha256, NMFed.manifest.txt written last, turn4\copy-set03.txt
+- THE WINDOW RUN, F106, is being finished for item 1 by one developer the lead started after
+  12:25, its brief turn4\f106-finish-brief.md. Before it, the F106 code was written in wt-f106
+  by developers of the stopped workflow whose transcripts end interrupted, and none of it was
+  committed. Its reading before the run is for harm to Bader's things only, Q96, which narrows
+  Q93 for this run
+- If the window cannot be driven today, one line says why here and Bader is told in the
+  Claude tab, so he can press Run himself
+- F106 FINISHED FOR ITEM 1 at 32dce24, the finishing developer's report in
+  turn4\f106-finish-report.md, and READ FOR HARM ONLY by a reviewer and a breaker, both SAFE FOR
+  THE FIRST RUN with no harm found, their other findings for the register, turn4 and the
+  workflow journal wf_8100973e-871. Check for set 03, item 1, C06 read exit 0 at 13:35,
+  turn4\check-set03-item1.txt
+- THE FIRST RUN OF MAIN STARTED. The lead's first launch at 13:58:20 passed the arguments as
+  one, and run.ps1 refused, "is not a parameter of run.ps1. Nothing was started and nothing
+  was written", turn4\run03-item1-C06-refused-console.txt. Launched again at 13:59:01,
+  run.ps1 pid 5152, turn4\run03-item1-C06-pid.txt. Navisworks pid 27500 from 13:59:17.
+  THE WINDOW WAS DRIVEN WITH NO CLICK, runs\03\item1-C06\driver.txt: the tool's window opened
+  at 14:00:39 and stayed open, the driver typed the C06 folder and pressed Scan, 67 NWC, 22
+  groups, 0 unticked, typed the NWF, NWD and Clash Report folders of C06 and the XML, read
+  every box back equal, found the tolerance box on Use the value in the XML, pressed Run, and
+  answered the confirm with OK at 14:00:55.585, its texts naming no path outside the loop
+  folder. The tool's log: RUN started, 22 groups, the Clash step picked the copy's XML, 61
+  sets and 1830 tests, and GROUP started 100000 at 14:00:55
+- THE FIRST RUN OF MAIN ENDED, VERDICT RAN, set 03 item 1, C06. RESULT, log line 8429 on, of
+  steps\runs\03\item1-C06\run-20261001-140037.log: 17 groups done, 0 partial, 5 failed, 5679
+  clashes across 22 groups, 6 of which found none, 88 files written. The tool's run took 1 h 44
+  min 52 s, 59 min 52 s over the 45 minutes, VIEWS 72 percent of it. The window closed on the
+  loop's WM_CLOSE after RESULT, Dispose at 15:46:30 and Navisworks gone 10.0 s after, nothing
+  forced. Put back with no other Navisworks having run: 37 registry values and 2 files, and
+  Q86 in his AutoSave, 78 files as they were, each read back. Q82: the tool pruned his oldest
+  log, run-20260901-191711.log, which logs-backup holds. All 22 workbooks read out. The
+  evidence masked by F102's tool, 30 files, none changed, into steps\runs\03\item1-C06
+- THE FIRST FINDINGS, steps\runs\03\findings.md, read by four readers: the five FAILED groups
+  each have a model on Revit's internal origin, four DONE groups each have a model about 2,000
+  to 2,800 km away and still read DONE, duct, pipe and equipment sets find nothing because the
+  copy's XML, which is not the corrected matrix in exchange, asks upper case worksets the models
+  spell in mixed case, the WORKBOOK CHECK and the RESULT file sizes print wrong numbers, and the
+  run is 2.3 times the 45 minutes, VIEWS alone 1.7 times. Bader's message of 15:30, Q97. For Bader
+  three tests with their workbook counts to check against the Clash Detective panel
+- ONEDRIVE, at Bader's word in the Claude tab: Roamer.exe, the loop's stand-in left in the
+  F103 worktree folder under .claude\worktrees, and testhost.exe, a build output of his
+  RCRC-Green repo, were blocked by OneDrive. The F102 and F103 worktree folders were removed at
+  about 16:46 and that one testhost.exe deleted. OneDrive put both folders back at 16:47 from
+  its cloud copy, without the .exe, which it never held. No .exe is left under his GitHub
+  folders. RCRC-Green's returns whenever its tests build inside OneDrive
+- NEXT: the first run of C07 the same way, then the rest of set 03 tonight. Fixes may start
+  while C07 runs, and nothing is installed until C07 ends
+
 TURN 4, opened on 2026-10-01 by Bader's message headed 30 Sep 2026: code runs the whole of
 NM Fed itself, and the form is answered. It replaces the window message of 30 Sep and
 anything earlier that said Bader runs the tool by hand. The goal is real full runs of main on
@@ -31,8 +126,17 @@ it called SetThreadExecutionState with ES_CONTINUOUS and ES_SYSTEM_REQUIRED, 0x8
 returned 0x80000000 at 10:48:38, so the request holds while that thread lives. No display
 flag, and none of Bader's power settings changed. It reads the STATE line of this file once
 a minute and stops itself when it reads STATE CLOSED or STATE WAITING, taking the request
-back first. Its lines go to turn4\keep-awake.txt. STOPPED: not yet. It was started from
-Claude Code, so whether it outlives Claude Code itself is UNKNOWN.
+back first. Its lines go to turn4\keep-awake.txt. STOPPED 2026-10-01 17:35:43, on reading
+STATE WAITING, its release returning 0x80000001, turn4\keep-awake.txt.
+KEEP AWAKE OF TURN 5, Bader's rule of 2026-10-04. One hidden powershell.exe, PID 1312, STARTED
+2026-10-04 09:55:40 through WMI's Win32_Process Create, so its parent is pid 9844 WmiPrvSE.exe
+and not Claude Code, in session 1. It runs %LOCALAPPDATA%\NwcFederatorLoop\turn5\keep-awake.ps1
+and on its main thread, native thread 40512, called SetThreadExecutionState with ES_CONTINUOUS,
+ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED, 0x80000003, which returned 0x80000000 at 09:55:53.
+None of Bader's power, screen saver or lock settings changed. It stops itself, taking the
+request back first, when this file reads STATE CLOSED or STATE WAITING, or has not been written
+for 12 hours. Its lines go to turn5\keep-awake.txt. STOPPED: not yet. Checked alive at the start
+of every turn.
 
 THE RUN SETS OF TURN 4. Each run set gets a fresh copy at
 %LOCALAPPDATA%\NwcFederatorLoop\runs\NN\NMFed in Bader's own folder shape: NWC\C06 into
