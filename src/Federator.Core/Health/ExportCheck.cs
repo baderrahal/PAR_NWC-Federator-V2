@@ -92,6 +92,17 @@ namespace Federator.Core.Health
         public const string BlockTitle = "EXPORT CHECK";
 
         /// <summary>
+        /// Every workset name of one model, in the order the model gave them, for the row
+        /// file, F116. The block lists ten a group and counts the rest, and which spelling
+        /// each building's models carry is what the matrix corrections act on, Q102, so the
+        /// row file carries them all. A bar splits them, because a name can hold a comma.
+        /// </summary>
+        public static string EveryWorkset(ModelExport model)
+        {
+            return string.Join(" | ", new List<string>(model.Worksets).ToArray());
+        }
+
+        /// <summary>
         /// How many workset names are listed before the rest are counted. Ten, the same
         /// number SetsAcrossTheRun names, and the block SAYS it truncated rather than
         /// leaving a reader to wonder.

@@ -141,6 +141,29 @@ namespace Federator.Core.Tests.Health
             Assert.That(block, Does.Contain("and 4 more, counted and not listed"));
         }
 
+        /// <summary>
+        /// F116. The block names ten and counts the rest, so in seven groups of set 03 on C06
+        /// which spelling the models past the tenth name carry was UNKNOWN, and the matrix
+        /// corrections act on exactly that. The row file carries every name of a model in
+        /// full, in the order the model gave them, split by a bar so a name holding a comma
+        /// stays one name.
+        /// </summary>
+        [Test]
+        public void TheRowFileCarriesEveryWorksetOfAModelWhereTheBlockCountsTheRest()
+        {
+            List<string> many = new List<string>
+            {
+                "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf",
+                "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November, and more"
+            };
+
+            string every = ExportCheck.EveryWorkset(new ModelExport("a.nwc", "ME", 100, 100, 100, many));
+
+            Assert.That(every.Split(new[] { " | " }, System.StringSplitOptions.None), Is.EqualTo(many));
+            Assert.That(every, Does.Not.Contain("counted and not listed"));
+            Assert.That(ExportCheck.EveryWorkset(Model("EL", 494, 0, 494)), Is.Empty);
+        }
+
         [Test]
         public void WithNoModelAtAllItSaysSoRatherThanWritingAnEmptyBlock()
         {
