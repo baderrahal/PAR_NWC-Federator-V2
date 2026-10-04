@@ -397,6 +397,11 @@ stand-ins each closed through its held handle, Bader's folders, bundle and key r
 after every case, and Get-Process Roamer read 0 before and after. Proved again on
 2026-09-30 after fix attempt 1: 189 checks passed and 0 failed in 670 s, 36 stand-ins, with
 the new cases of H6, H7, H10, H12b, H16 and H17, and after fix attempt 3: 242 checks passed and 0 failed in 1126 s, 43 stand-ins, with the new cases of H7, H12, H12b, H17 and H18.
+Proved again on 2026-10-04 for F109, on the files as committed before main was merged in:
+254 checks passed and 0 failed in 1356 s, 44 stand-ins, with H12b item 10 read by the new
+rule and the twelve checks of H12c. With main merged in, which brought F106's run.ps1 and
+nw-guard.ps1, every check of H12, H12b and H12c passed, and seven checks of H0 and H6 failed,
+F106's R1, as its DONE line in steps\01_next.md says.
 Among them M1, M2 and M3: with 30 fabricated logs held open without delete sharing, the
 real RunLog.Start prune wrote RETAIN keeping 30 logs, deleted 0, could not delete 1, and
 lost nothing, where the same folder with no handles lost its oldest.
