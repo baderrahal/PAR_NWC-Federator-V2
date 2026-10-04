@@ -7,8 +7,10 @@ Bader answered the form of turn 5 at 15:23 on 2026-10-04, his message headed BAD
 4 OCT 2026, TO THE FORM OF TURN 5, and at 15:42 ordered the fixes in waves, each tested at once on
 two buildings, his message headed FIX IN WAVES, AND TEST EACH WAVE ON TWO BUILDINGS. Each message
 began by asking for the plan before the first edit. The two plans below are the ones the lead
-wrote to him in the session, shortened only where a list repeated itself. What each step then
-did goes into the entries above this one and into steps\loop.md. Nothing under src or tests
+wrote to him in the session, condensed, some of their sentences left out. Two placements moved
+after he was told: Q108's fix and F117, the names, said to come in waves 3 and 4, are in wave 5,
+because the fix list classes them noise, and the waves in steps\fix-round.md say so. What each
+step then did goes into the entries above this one and into steps\loop.md. Nothing under src or tests
 changes in the pull request carrying this entry.
 
 ### The plan for the answers, written at 15:27
@@ -29,7 +31,7 @@ changes in the pull request carrying this entry.
 
 ### The plan for the waves, written at 15:46
 
-- What NM Fed holds, measured at 15:44: C02 holds 1A02MM, four models, AR, EL, ME and ST, C04
+- What NM Fed holds, measured at 15:44, turn5\nmfed-listing-1544.txt: C02 holds 1A02MM, four models, AR, EL, ME and ST, C04
   holds 1A04PK, ten models, AR, EL, FP, HV, four ME and two ST, and it still holds C06 and C07,
   154 NWC in all, with the -OLD XML beside the corrected one. No folder named for C06 and C07 was
   on the desktop at 15:46. The runs point at C02 and C04 only. The installed add-in reads

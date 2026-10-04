@@ -3,7 +3,8 @@
 STATE OPEN
 
 TURN 5, THE FULL FIX ROUND, opened on 2026-10-04 by Bader's message headed 4 Oct 2026, Q98. No
-run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05. The plan
+run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05, since
+replaced by Bader's waves of 15:42, each tested on two buildings of C02 and C04. The plan
 is the turn 5 entry at the top of steps\log.md. The fix list is steps\fix-round.md, built
 before the first fix. Main at the start of the turn: f38edd5, installed e4484d15 in place since
 2026-10-01 with be0b9b37 in bundle-backup. Why turn 4 stopped: Bader wrote "stop, i will close
@@ -57,7 +58,7 @@ and ends when none runs. It read one at 15:14:00, pid 37356, and NO ROAMER RUNS 
 so the loop's own starts may go again, each read again just before it starts.
 BADER ANSWERED THE FORM at 15:23 on 2026-10-04, his message headed BADER'S ANSWERS, 4 OCT 2026,
 TO THE FORM OF TURN 5: Q99 to Q109, Q24 and Q26, each answer under its question in
-steps\02_questions.md and on its item in steps\fix-round.md, the lead's notes marked as his.
+steps\02_questions.md and on its item in steps\fix-round.md, the lead's notes marked as the lead's.
 THE WAVES, Bader's message of 15:42 the same day: the fixes go in waves of up to three areas that
 touch different files, worst class first, every noise item, the docs and words and D1 last, and
 each wave is tested at once on two buildings, the first run with the XML and the weekly run,
@@ -68,14 +69,16 @@ models, AR, EL, ME and ST, and NWC\C04 one, 1A04PK, ten models, AR, EL, FP, HV, 
 000004 and ST 000001 and 000002, with the corrected XML at the top. It also still holds C06, 67
 NWC, and C07, 73 NWC, and the -OLD XML, 154 NWC in all, turn5\prepare-copy-plain-2.txt, and no
 folder named for C06 and C07 was on the desktop at 15:46. The test runs point at C02 and C04
-only. Set 04's copy was made at 15:47, turn5\prepare-copy-set04.txt.
+only, turn5\nmfed-listing-1544.txt. Set 04's copy was made at 15:47, turn5\prepare-copy-set04.txt.
 THE BASELINE, set 04, from main dd55e4b with the installed add-in reading 1.0.0.0 e4484d15, main's
 product code since nothing under src, tests, build, bundle or exchange changed after e4484d1. Its
 first run, item 1 on C02, started at 15:55:53 and stopped HUNG at 16:03:28: a floating Clash
 Detective pane of the loop's Navisworks was up from its start, the window driver took it for a
 dialog after pressing Run and stopped, and nobody answered the tool's confirm, record.txt lines
-36, 48 to 50 and 80 of wt-main\steps\runs\04\item1-C02. Nothing of Bader's was harmed, his
-settings, AutoSave and logs put back clean. F125 fixes the driver before the baseline runs again.
+36, 48 to 50 and 80 of wt-main\steps\runs\04\item1-C02. Nothing of Bader's was harmed: his
+settings and AutoSave put back clean, and his logs folder as Q82 has it, one of his oldest logs
+pruned by the tool and held in logs-backup and two loop logs added, both put back at the close
+of the loop, record.txt lines 102 to 116. F125 fixes the driver before the baseline runs again.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
