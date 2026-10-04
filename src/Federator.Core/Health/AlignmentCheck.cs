@@ -356,9 +356,9 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// Q70. The block says the group is failed and why, and the group still writes its
-        /// NWF and its NWD, which are the evidence. Told whether the clash is skipped, which
-        /// is the one thing that keeps a model on Internal from failing the group.
+        /// Q70. The block says the group is failed and why, before any file of the group is
+        /// written, so it says nothing of them. Told whether the clash is skipped, which is
+        /// the one thing that keeps a model on Internal from failing the group.
         /// </summary>
         private static void AddFailure(
             IList<string> lines, IList<ModelPlacement> models, string internalName, bool clashSkipped)
@@ -367,7 +367,7 @@ namespace Federator.Core.Health
 
             if (fails != null)
             {
-                lines.Add("THIS GROUP IS FAILED. " + fails);
+                lines.Add("THIS GROUP IS FAILED. " + fails + ".");
             }
         }
 
@@ -381,16 +381,18 @@ namespace Federator.Core.Health
         /// model named Internal then skips the group's clash, OffCoordinates.SkipsTheClash,
         /// and does not fail it. Wherever no clash is skipped, the rule off, or no clash test
         /// to run in the group, it fails the group as Q70 answered, because his words give
-        /// such a group PARTIAL or nothing and never DONE, and attempt 2 let a group with
-        /// nothing to clash end DONE. A model naming no site at all fails it either way,
+        /// such a group PARTIAL or nothing and never DONE, and a group with nothing to clash
+        /// would otherwise end DONE. A model naming no site at all fails it either way,
         /// because his answer named Internal and the distance and not that. The four inputs
         /// are the ones the ALIGNMENT block takes, so the block and the group cannot differ.
         ///
-        /// FAILED DOES NOT MEAN THE GROUP PRODUCES NOTHING. The federation and the NWD are
-        /// still written, and the clash report too unless the clash was skipped, because
-        /// Bader needs the evidence to take to the people who own the models, and a group
-        /// that produces nothing gives him nothing to send. This says the group is not DONE
-        /// and names the model, and the engine carries on.
+        /// FAILED DOES NOT STOP THE GROUP. The engine goes on to the NWD, and to the clash
+        /// report unless the clash was skipped, because Bader needs the evidence to take to
+        /// the people who own the models. This reason is made at the ALIGNMENT step, before
+        /// any of them is written, so it names the models and their sites and nothing of a
+        /// file. The steps that write say what was written, and GroupJudgement judges the
+        /// steps as it would without this reason, an NWD missing or not from this run
+        /// included, and names what it finds after it.
         ///
         /// WHY IT IS A FAILURE AND NOT A WARNING. A model on the internal origin is not
         /// slightly out of place, it is in a different coordinate system, so every clash
@@ -460,28 +462,22 @@ namespace Federator.Core.Health
                     + string.Join(", ", withNoSite.ToArray());
             }
 
-            // A group whose clash is skipped writes no report, so only what is written
-            // either way is claimed.
-            return why + (clashSkipped
-                ? ". Its NWF and its NWD were still written, so the evidence is there to send."
-                : ". Every output of this group was still written, so the evidence is there to send.");
+            return why;
         }
 
         /// <summary>
         /// The ALIGNMENT failed run line. Its words do not follow the rule's setting, because
         /// a model on Internal fails its group wherever its clash is not skipped, the rule on
         /// or off, and the line once said with the rule on that every such group failed on a
-        /// model naming no site. It says what the files written list shows and not that every
-        /// NWD was written, since a failed group's publish can fail too.
+        /// model naming no site. It says nothing of which files were written, since a failed
+        /// group's publish can fail too and the files written list can then name last week's
+        /// NWD.
         /// </summary>
         public static string FailedRunLine(int groups)
         {
             return "ALIGNMENT failed " + groups + " group(s), each because a model names no shared site, or was"
                 + " exported on the internal origin in a group whose clash was not skipped"
-                + (groups == 0
-                    ? string.Empty
-                    : ". A failed group still goes on to its NWF and its NWD, and the files written list says which"
-                        + " were written.");
+                + (groups == 0 ? string.Empty : ". The failure does not stop the group.");
         }
 
         /// <summary>How many models sit somewhere the reference does not, for the run line. Never fails anything.</summary>

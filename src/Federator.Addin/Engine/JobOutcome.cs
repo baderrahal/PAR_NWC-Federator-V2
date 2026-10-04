@@ -58,6 +58,12 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// Why the group is FAILED on where its models sit, Q70, or null. Kept apart from
+        /// the errors, because nothing threw, so the judgement still reads the NWD after it.
+        /// </summary>
+        public string AlignmentFailure { get; set; }
+
+        /// <summary>
         /// The models that made this group skip its clash, Bader's answer to Q99 and Q100,
         /// or null where its clash was not skipped. Kept apart from the errors, because
         /// nothing threw: the group is PARTIAL for it, or keeps whatever else it ended as.
@@ -148,6 +154,7 @@ namespace Federator.Addin.Engine
                 facts.AddError(error);
             }
 
+            facts.AlignmentFailure = AlignmentFailure;
             facts.ClashSkippedOffCoordinates = ClashSkippedBecause != null;
             return facts;
         }

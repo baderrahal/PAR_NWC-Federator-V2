@@ -177,17 +177,68 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
-        /// The half that stops this being a blunt instrument. A failed group still writes
-        /// its federation, its NWD and its report, because Bader needs the evidence to
-        /// take to the people who own the models and a group that produces nothing gives
-        /// him nothing to send.
+        /// A failed group still goes on to its federation, its NWD and its report, because
+        /// Bader needs the evidence to take to the people who own the models. The reason is
+        /// made at the ALIGNMENT step, before any of them is written, so it names the model
+        /// and its site and nothing of the files, which the steps that write say.
         /// </summary>
         [Test]
-        public void AFailedGroupStillSaysEveryOutputWasWritten()
+        public void AFailedGroupsReasonNamesItsModelAndNoFile()
         {
+            string why = AlignmentCheck.WhyItFailsTheGroup(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, RuleOff, ATestRuns);
+
+            Assert.That(why, Is.EqualTo(
+                "1 model(s) were exported on Revit's internal origin and not on a shared site, which puts them in a"
+                + " different coordinate system from the rest of the group: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
+            Assert.That(why, Does.Not.Contain("written"));
             Assert.That(
-                AlignmentCheck.WhyItFailsTheGroup(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, RuleOff, ATestRuns),
-                Does.Contain("Every output of this group was still written"));
+                Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, RuleOff, ATestRuns)),
+                Does.Contain("THIS GROUP IS FAILED. " + why + "."));
+        }
+
+        /// <summary>
+        /// The breaker's blocking finding on attempt 3. The reason said every output, or the
+        /// NWF and the NWD, were still written, at the ALIGNMENT step before either was, and
+        /// as the group's one error it stood in RESULT where a publish that returned false
+        /// left last week's NWD. Every way a reason is made, the rule on or off and a test to
+        /// run or none, it says nothing of a file.
+        /// </summary>
+        [Test]
+        public void NoReasonMadeBeforeTheFilesAreWrittenSaysAnythingOfThem()
+        {
+            IList<ModelPlacement> both = new List<ModelPlacement>
+            {
+                At("AR", "A site", 0.0, 0.0, 0.0),
+                At("EL", "Internal", 0.0, 0.0, 0.0),
+                At("ST", string.Empty, 0.0, 0.0, 0.0)
+            };
+            int made = 0;
+
+            foreach (IList<ModelPlacement> models in new[] { TheRealGroup(), both })
+            {
+                foreach (bool rule in new[] { RuleOn, RuleOff })
+                {
+                    foreach (bool runsATest in new[] { true, false })
+                    {
+                        string why = AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, rule, runsATest);
+
+                        if (why == null)
+                        {
+                            continue;
+                        }
+
+                        made++;
+                        string which = "rule " + rule + ", a test to run " + runsATest + ": " + why;
+
+                        foreach (string word in new[] { "written", "NWF", "NWD", "output", "evidence", "report" })
+                        {
+                            Assert.That(why, Does.Not.Contain(word), which);
+                        }
+                    }
+                }
+            }
+
+            Assert.That(made, Is.EqualTo(7), "the real group with the rule on and a test to run is the one not failed");
         }
 
         /// <summary>
@@ -273,11 +324,11 @@ namespace Federator.Core.Tests.Health
 
         /// <summary>
         /// With the rule on, a group failed on a model naming no site may also have its clash
-        /// skipped, and then no report is written, so the reason claims only the NWF and the
-        /// NWD, which are written either way.
+        /// skipped. Its reason names that model alone, because the one on Internal skips the
+        /// clash and does not fail the group, and claims no file at all.
         /// </summary>
         [Test]
-        public void WithTheRuleOnAFailedGroupClaimsOnlyItsNwfAndItsNwd()
+        public void WithTheRuleOnAFailedGroupsReasonNamesOnlyTheModelWithNoSite()
         {
             IList<ModelPlacement> models = new List<ModelPlacement>
             {
@@ -288,7 +339,8 @@ namespace Federator.Core.Tests.Health
 
             string why = AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn, ATestRuns);
 
-            Assert.That(why, Does.EndWith("Its NWF and its NWD were still written, so the evidence is there to send."));
+            Assert.That(why, Is.EqualTo("1 model(s) name no shared site at all: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
+            Assert.That(why, Does.Not.Contain("NWD"));
             Assert.That(why, Does.Not.Contain("Every output"));
             Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Any, Is.True);
         }
@@ -829,7 +881,7 @@ namespace Federator.Core.Tests.Health
                 OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres);
                 GroupFacts facts = new GroupFacts();
                 facts.NwfOnDisk = true;
-                facts.AddError(why);
+                facts.AlignmentFailure = why;
                 facts.ClashSkippedOffCoordinates = off.SkipsTheClash(rule, runsATest);
 
                 string reason;
@@ -907,15 +959,16 @@ namespace Federator.Core.Tests.Health
         /// The ALIGNMENT failed run line said, with the rule on, that each group failed
         /// because a model names no site, which a group failed on Internal with nothing to
         /// clash makes false. It names both causes whichever way the rule is set, and says
-        /// what the files written list shows rather than that every NWD was written.
+        /// nothing of which files were written, not even through the files written list,
+        /// which can name an NWD whose publish returned false.
         /// </summary>
         [Test]
         public void TheFailedRunLineNamesBothCausesAndClaimsNoFile()
         {
             Assert.That(AlignmentCheck.FailedRunLine(2), Is.EqualTo(
                 "ALIGNMENT failed 2 group(s), each because a model names no shared site, or was exported on the internal"
-                + " origin in a group whose clash was not skipped. A failed group still goes on to its NWF and its NWD,"
-                + " and the files written list says which were written."));
+                + " origin in a group whose clash was not skipped. The failure does not stop the group."));
+            Assert.That(AlignmentCheck.FailedRunLine(2), Does.Not.Contain("written"));
             Assert.That(AlignmentCheck.FailedRunLine(0), Is.EqualTo(
                 "ALIGNMENT failed 0 group(s), each because a model names no shared site, or was exported on the internal"
                 + " origin in a group whose clash was not skipped"));

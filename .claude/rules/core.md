@@ -345,10 +345,15 @@ and 6 does not read as broken.
              started, because a rebuild that ran ends as Rebuilt, or its clash was
              skipped because a model is not on the same shared coordinates
     FAILED   something requested threw or produced nothing, a rebuild that appended
-             nothing or could not keep its saved tests included
+             nothing or could not keep its saved tests included, or a model names no
+             shared site, or names Internal in a group whose clash is not skipped, Q70
   The rule lives in Federator.Core.Rerun.GroupJudgement, with no Navisworks types
   in it, so it can be tested. The outcome and the reason for it come out of one
-  pass, so the two can never disagree
+  pass, so the two can never disagree. A failure on where the models sit is kept apart
+  from the errors, `GroupFacts.AlignmentFailure`, because nothing threw and the group goes
+  on to its NWD. The steps are judged as they would be without it and what they find is
+  named after it, so a missing NWD, or one not from this run, is never hidden behind the
+  models
 - A GROUP NOT ON THE SAME SHARED COORDINATES SKIPS ITS CLASH AND NOTHING ELSE, Q98 B2
   and Bader's answer to Q99 and Q100 on 2026-10-04. A model is not on the same
   coordinates when it names Internal as its shared site, or when it sits more than a
@@ -357,10 +362,14 @@ and 6 does not read as broken.
   no clash is skipped, the rule off or no clash test to run in the group, a model on
   Internal fails its group as Q70 answered, `AlignmentCheck.WhyItFailsTheGroup` taking the
   four inputs the block takes, because his words give such a group PARTIAL or nothing and
-  never DONE, and attempt 2 let a group with nothing to clash end DONE. A model naming no
+  never DONE, and a group with nothing to clash would otherwise end DONE. A model naming no
   site at all fails it either way, because his answer named Internal and the distance and
-  not that. The ALIGNMENT failed run line, `AlignmentCheck.FailedRunLine`, names both
-  causes whichever way the rule is set. The distance is the STRAIGHT LINE of dx, dy and
+  not that. The reason is made at the ALIGNMENT step, before any file of the group is
+  written, so it names the models and their sites and NOTHING OF A FILE. The steps that
+  write say what was written. The ALIGNMENT failed run line, `AlignmentCheck.FailedRunLine`,
+  names both causes whichever way the rule is set, and says nothing of which files were
+  written either, because the files written list can name an NWD whose publish returned
+  false. The distance is the STRAIGHT LINE of dx, dy and
   dz and never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away
   and under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
   defaulting to `AlignmentCheck.DefaultFarModelMillimetres`.

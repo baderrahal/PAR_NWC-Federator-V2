@@ -2133,14 +2133,15 @@ namespace Federator.Addin.Engine
                 // group, and so does a model on the internal origin wherever the group's
                 // clash is not skipped, the rule off or no clash test to run. Where it is
                 // skipped, Bader's answer to Q100, the model skips the clash below instead.
-                // A FAILED group still writes its NWF and its NWD, because the evidence is
-                // what Bader takes to the people who own the models.
+                // A FAILED group still goes on to its NWD, because the evidence is what
+                // Bader takes to the people who own the models. Kept apart from the errors,
+                // so the judgement still reads the NWD and names it beside this reason.
                 string fails = AlignmentCheck.WhyItFailsTheGroup(
                     placements, reports.FarModelMillimetres, reports.SkipClashOffCoordinates, runsATest);
 
                 if (fails != null)
                 {
-                    outcome.AddError(fails);
+                    outcome.AlignmentFailure = fails;
                     failedOnAlignment++;
                     alignmentFailures.Add(Words.Or(job.Building, "this group") + ": " + fails);
                 }
@@ -3661,8 +3662,10 @@ namespace Federator.Addin.Engine
             }
 
             // How many, never what they say. This line is a label, and the errors carry
-            // the type name and the message of whatever threw.
-            line.Append(RunLog.ErrorsAreInTheLog(outcome.Errors.Count));
+            // the type name and the message of whatever threw. A failure on where the
+            // models sit is counted with them, because nothing threw but the log says what
+            // it was.
+            line.Append(RunLog.ErrorsAreInTheLog(outcome.Errors.Count + (outcome.AlignmentFailure == null ? 0 : 1)));
 
             return line.ToString();
         }

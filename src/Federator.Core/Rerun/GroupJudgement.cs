@@ -94,6 +94,15 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
+        /// Why the group is FAILED on where its models sit, Q70, the words of
+        /// AlignmentCheck.WhyItFailsTheGroup, or null where it is not. Kept apart from the
+        /// errors, because nothing threw and the group goes on to its NWD, so the steps
+        /// after it are judged too and a missing NWD, or one not from this run, is named
+        /// beside it rather than hidden by it.
+        /// </summary>
+        public string AlignmentFailure { get; set; }
+
+        /// <summary>
         /// Whether this group's clash was skipped because a model is not on the same shared
         /// coordinates as its reference model, Bader's answer to Q99 and Q100, which happens
         /// only where the run would have run a clash test in it. Not an error: nothing
@@ -132,7 +141,8 @@ namespace Federator.Core.Rerun
     ///   PARTIAL  something requested did not complete, or the group was CHANGED and left
     ///            alone, or its clash was skipped because a model is not on the same shared
     ///            coordinates, Bader's answer to Q99 and Q100
-    ///   FAILED   something requested threw or produced nothing
+    ///   FAILED   something requested threw or produced nothing, or a model names no
+    ///            shared site, or names Internal in a group whose clash is not skipped, Q70
     ///
     /// A step deliberately switched off is not a failure. Judging a group by whether an
     /// NWD existed, when republishing was switched off, reported all 22 groups of a clean
@@ -151,6 +161,17 @@ namespace Federator.Core.Rerun
             }
 
             GroupOutcome outcome = JudgeTheSteps(facts, out reason);
+
+            // Q70. A group failed on where its models sit is FAILED whatever its steps did,
+            // and what its steps did is said after the models, so the reason RESULT prints
+            // never stops at the models while its NWD is missing or not from this run.
+            if (!string.IsNullOrEmpty(facts.AlignmentFailure))
+            {
+                reason = string.IsNullOrEmpty(reason)
+                    ? facts.AlignmentFailure
+                    : facts.AlignmentFailure + ", and " + reason;
+                outcome = GroupOutcome.Failed;
+            }
 
             if (!facts.ClashSkippedOffCoordinates)
             {
@@ -173,7 +194,7 @@ namespace Federator.Core.Rerun
             return outcome;
         }
 
-        /// <summary>How the steps of the group went, everything but a clash skipped for the coordinates.</summary>
+        /// <summary>How the steps of the group went, everything but where its models sit.</summary>
         private static GroupOutcome JudgeTheSteps(GroupFacts facts, out string reason)
         {
             // FAILED. Something requested threw, or produced nothing.
