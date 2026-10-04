@@ -1,6 +1,91 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, F125 a pane of Navisworks is not a dialog, first and second pass, built and read safe
+
+Nothing under src or tests changed in either pass. Core tests 1756 passed, 0 failed, 0 skipped by
+the pre-commit at the merge of main 3a148e3, before the second pass's first change,
+turn5\f125b-precommit-merge.txt, and 1756 passed, 0 failed, 0 skipped after its last change, by
+hand, turn5\f125b-core-after.txt, and by the pre-commit at 03aa6c0,
+turn5\f125b-precommit-change.txt. The first pass read 1746 passed, 0 failed, 0 skipped before and
+after on its branch off main dd55e4b, turn5\f125-proof\core-tests-before.txt and
+core-tests-after.txt. No Navisworks was started by either pass.
+
+### What was done
+
+- the first pass, 5fa98a8. The baseline run of 2026-10-04, set 04 item 1 on C02 from main
+  dd55e4b, hung: a floating Clash Detective pane of the adopted Navisworks, owned by the main
+  window and not modal, record.txt line 36, was a DIALOG to WindowKind, so the driver stopped on
+  it after RunButton and the tool's confirm was never answered. WindowRecords now reads whether
+  each window itself is enabled, with no message, WindowKind calls PANE a WinForms window, not of
+  the main window's caption, owned by a visible window, whose owner reads enabled or which reads
+  disabled itself, the driver notes each pane up before Run and goes on, and the monitor writes a
+  pane as PANE, never a finding, never holding back WM_CLOSE. Proved by
+  turn5\f125-proof\prove-f125.ps1, 76 passed and 17 failed on the scripts the hung run used,
+  every failure an F125 check, and 93 passed and 0 failed after, prove-f125-before.txt and
+  prove-f125-after.txt
+- read under Q93 by a reviewer and a breaker, who both approved with nothing blocking,
+  turn5\w1-read-review-F125.txt and turn5\w1-read-break-F125.txt
+- main c4fd0d4, F113 and F104, merged in at 3a148e3, the one conflict steps\01_next.md, both
+  sides kept, F125's order line 39 after F113's 37 and F104's 38 and its section after F104's
+- the second pass, read only changes before the baseline of set 04 that make the run's evidence
+  truer, with no new click, key, pointer move or posted message, and WindowKind's answer to every
+  read unchanged. 1, a window that reads disabled with its owner disabled is written by the
+  driver and the record as either a pane or a modal dialog blocked by the tool's window or another
+  modal window, which one UNKNOWN, never not modal, PaneWords in nw-guard.ps1. 2, the driver's
+  stop line names the rule's kind and both states, StateWords. 3, the monitor writes a window
+  again, an AGAIN line, when the rule's kind or either state changes, counts a window one DIALOG
+  finding the first time it reads DIALOG, and its line holding WM_CLOSE back names the windows
+  behind it with their kind and both states. 4, the README and .claude\rules\loop.md name the
+  rule's two limits, the WinForms class and a caption not the main window's. 5, PaneKey, the pane
+  key in one place for the driver's two callers
+- its proof: each changed script parses, turn5\f125b-parse.txt. prove-f125.ps1 gained 12 checks,
+  10 named F125b and 2 guards, in two new cases, pane watch and pane busy, with one check of the
+  first pass restated for item 3, its first pass copy kept as f125b-prove-f125-pass1.ps1. Before
+  the change 97 passed and 8 failed, every failure an F125b check, prove-f125-before2.txt. After
+  it, on the committed scripts of 03aa6c0, 105 passed and 0 failed, prove-f125-after2.txt.
+  Get-Process Roamer read 0 before and after each harness run, turn5\f125b-roamer-reads.txt,
+  which also records a Roamer this pass did not start, pid 49016 started at 18:55:27, the lead's
+  baseline run, that the after run waited for from 18:56 to 21:10. No .cs file changed. The solution
+  builds with 0 warnings and 0 errors, turn5\f125b-sln-build.txt, and check-locals and
+  check-imports pass, turn5\f125b-checks.txt
+- register rows F125-R1 to F125-R7 in steps\loop.md, the readings' findings this pass does not
+  fix, for F122 the loop tools in wave 4
+
+### What remains
+
+- the baseline runs of set 04 on C02 and C04 through the real window, whose record now shows the
+  pane's own state while the tool's window is up, which answers F125-R2
+
+### Known bugs
+
+- F125-R1 to F125-R7 under Q93. F125-R2 is the one that can hang the next baseline run the way
+  2026-10-04's hung, if the real pane is not disabled by the tool's ShowDialog
+
+### What comes next
+
+- the lead merges, then the baseline of set 04, F125 first in its item 1
+
+### Every program started, every file written outside the repo
+
+Started: git, to fetch, merge, commit and push, and the pre-commit hook it runs, which runs
+check-locals, check-imports, the evidence check and dotnet test. Windows PowerShell 5.1 for the
+parser and to run prove-f125.ps1 twice, each run starting the stand-in only as its copy Decoy.exe,
+22 times in each run, still running 0 at each end, and a Windows PowerShell for each driver case,
+all held and ended by the harness.
+dotnet build for the solution, and dotnet test by hand. No Navisworks, and nothing installed.
+
+Written outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop\turn5: f125b-msg-merge.txt,
+f125b-msg-change.txt and f125b-msg-records.txt, the commit messages, f125b-precommit-merge.txt,
+f125b-precommit-change.txt and f125b-precommit-records.txt, the pre-commit's output,
+f125b-roamer-reads.txt, f125b-parse.txt, f125b-sln-build.txt, f125b-core-after.txt,
+f125b-checks.txt, pr-f125.md, the draft body, and under f125-proof: prove-f125.ps1 extended,
+f125b-prove-f125-pass1.ps1, prove-f125-before2.txt, prove-f125-after2.txt, the harness's work
+folders work-184632 and work-211020, and Decoy.exe and Decoy.exe.config, copied again into standin-bin by each run.
+Each harness run also made runs\97 under the loop folder for the paths the driver types and
+removed it at its end. One file was written by mistake outside turn5, %TEMP%\f125b-added.txt, the
+lines this pass adds, read for em dashes and semicolons and removed at once.
+
 ## 2026-10-04 The loop, turn 5, F104 part 2, the documents read, DONE for the build
 
 Nothing under src or tests changed. Core tests 1746 passed, 0 failed, 0 skipped after the merge
