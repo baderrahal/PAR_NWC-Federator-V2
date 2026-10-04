@@ -145,20 +145,28 @@ F125 MERGED as PR 102, 1ae6771, at 23:06:17, green in Actions on its last commit
 37230696626, turn5\actions-reads-pr102.txt. Its second pass was read under Q93 by a reviewer and
 a breaker, both APPROVE with nothing blocking, turn5\f125b-read-review.txt and
 turn5\f125b-read-break.txt, and its harness passed 105 and failed 0 on the scripts of 03aa6c0,
-whose sha256 with Windows line ends equal the harness's, turn5\f125b-blob-hashes.txt. Their
-points that do not block are register rows F125-R1 to F125-R14 for F122 in wave 4, F125-R2
-answered for C02. Two claim-checks made its records true. Its branch and worktree are removed.
-The baseline runs from wt-base at 5fa98a8 to the end of set 04, so they keep the first pass's
-record words, and the runs after this merge write the second pass's. F126, the driver unticking
-a named box for the rule-off run of wave 1, branched off 1ae6771 in wt-f126 and is with its
-developer, turn5\f126-brief.md. F112: fix attempt 2 read CHANGES, 2 blocking and 1, its
-readings turn5\f112b-read-review.txt, f112b-read-break.txt and f112b-read-claims.txt, so fix
-attempt 3, the last before the form, ran: its reviewer APPROVE, its breaker CHANGES with one
-blocking finding new in attempt 3, an Internal group's FAILED reason saying its files were
-written before any was, which keeps a missing or stale NWD out of RESULT, turn5\f112c-read-*.txt.
-That finding has had no fix yet, so a closing pass carries it and the claim-checker's 13 points.
-F116: fix attempt 2 read APPROVE by both, nothing blocking, turn5\f116b-read-review.txt and
-f116b-read-break.txt, and the pass that carries Bader's answer to Q113 is with its developer.
+turn5\f125-proof\prove-f125-after2.txt line 641, their sha256 with Windows line ends equal to the
+harness's in the first eight hex digits, turn5\f125b-blob-hashes.txt, the merged scripts
+differing from those in comments only, turn5\f125b-comments-only.txt. Register rows F125-R1 to
+F125-R7 hold the first pass's readings' points and F125-R8 to F125-R14 the second pass's, all for
+F122 in wave 4, F125-R2 answered for C02. Two claim-checks made its records true,
+turn5\f125b-read-claims.txt and turn5\f125b-read-claims2.txt, the second written by the lead
+from its return. Its branch and its worktree folder are removed, while git's own entry for the
+worktree could not be deleted, Permission denied, turn5\precommit-records-9.txt. The baseline
+runs from wt-base at 5fa98a8 to the end of set 04, so they keep the first pass's record words,
+and the runs after this merge write the second pass's. F126, the driver unticking a named box
+for the rule-off run of wave 1, branched off 1ae6771 in wt-f126, its brief turn5\f126-brief.md,
+and its developer started at 23:07:26 in workflow wf_b3336354-ab1, turn5\f126-workflow-start.txt.
+F112: fix attempt 2 read CHANGES, 2 blocking and 1, its readings turn5\f112b-read-review.txt,
+f112b-read-break.txt and f112b-read-claims.txt, so fix attempt 3, the last before the form, ran:
+its reviewer APPROVE, its breaker CHANGES with one blocking finding, turn5\f112c-read-*.txt, an
+old clause of an Internal group's FAILED reason saying its files were written before any was,
+which keeps a missing or stale NWD out of RESULT. The words are older than F112 and the developer
+knew of them since attempt 1, attempt 3 made them reach every federation-only Internal group,
+and no reading named them as blocking before attempt 3's, so the closing pass now running is the
+first fix attempt of that finding, with the claim-checker's 12 points. F116: fix attempt 2 read
+APPROVE by both, nothing blocking, turn5\f116b-read-review.txt and f116b-read-break.txt, and the
+pass that carries Bader's answer to Q113 is with its developer.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
