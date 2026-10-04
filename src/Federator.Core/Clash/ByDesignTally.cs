@@ -27,7 +27,15 @@ namespace Federator.Core.Clash
         ThePenetrationRuleHasIt = 3,
 
         /// <summary>A side of the test named no set, so there was no pair to look for.</summary>
-        NoSetName = 4
+        NoSetName = 4,
+
+        /// <summary>
+        /// The clash has no name, so nothing could address it to move it, F113. It was
+        /// judged Reviewed and counted as moved while the add-in left it off the list it
+        /// applies, so the block, the RESULT line and the rule B line counted a move that
+        /// never happened.
+        /// </summary>
+        NoClashName = 5
     }
 
     /// <summary>
@@ -50,7 +58,7 @@ namespace Federator.Core.Clash
             new Dictionary<ByDesignVerdict, int>();
         private readonly HashSet<string> pairsSeen = new HashSet<string>(StringComparer.Ordinal);
 
-        /// <summary>The four in the order the block lists them.</summary>
+        /// <summary>The six in the order the block lists them.</summary>
         public static ByDesignVerdict[] InOrder()
         {
             return new[]
@@ -59,7 +67,8 @@ namespace Federator.Core.Clash
                 ByDesignVerdict.NotAPair,
                 ByDesignVerdict.SomebodyDecided,
                 ByDesignVerdict.ThePenetrationRuleHasIt,
-                ByDesignVerdict.NoSetName
+                ByDesignVerdict.NoSetName,
+                ByDesignVerdict.NoClashName
             };
         }
 
@@ -78,6 +87,8 @@ namespace Federator.Core.Clash
                     return "the penetration rule already asked for this one, so it moved there";
                 case ByDesignVerdict.NoSetName:
                     return "a side of the test named no set, so there was no pair to look for";
+                case ByDesignVerdict.NoClashName:
+                    return "the clash has no name, so nothing could move it and it was left as it was";
                 default:
                     return "UNKNOWN";
             }

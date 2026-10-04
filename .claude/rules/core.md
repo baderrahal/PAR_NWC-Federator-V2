@@ -928,7 +928,11 @@ and 6 does not read as broken.
   the only status set. THE PENETRATION RULE OWNS A CLASH THEY BOTH WANT, counted here
   under ThePenetrationRuleHasIt, so the two blocks add up to the number of clashes that
   moved rather than to twice it. A pair naming a set not in this run is a FINDING, named
-  once across the whole run and not once per group, and nothing acts on it
+  once across the whole run and not once per group, and nothing acts on it. A CLASH WITH
+  NO NAME IS NEVER REVIEWED BY IT, F113, because nothing can address it to move it.
+  `ByDesignRule.Judge` takes the name and asks about it last, and the block counts it under
+  a reason of its own. Judged Reviewed it was counted as moved in the block, the RESULT
+  line and the rule B line while the add-in left it off the list the editor applies
 - THE REVIEWED LINE IS ONE RULE IN ONE PLACE, `Federator.Core.Clash.ReviewedLine`. Two
   rules now write one and only the WHY differs. A second copy of that string in a second
   tally is how the two would start reading differently, and a person scanning a log for
