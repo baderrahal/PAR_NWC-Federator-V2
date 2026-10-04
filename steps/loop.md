@@ -400,7 +400,7 @@ an F number only when it becomes work. Most harmful first when the loop picks, a
 wrong number ranks above a loud failure. Done in code but not proved by a run means the
 baseline run proves it or contradicts it.
 
-314 rows, by status, after turn 4's eighteen additions:
+315 rows, by status, after turn 4's eighteen additions and turn 5's first:
 
 - 125 done in code, not proved by a run
 - 3 reported by the read, not verified, T1-N, T1-UNCALLED and T1-CATCH
@@ -412,7 +412,7 @@ baseline run proves it or contradicts it.
 - 3 answered by Bader on 2026-10-01 and being carried out, F105, Q82 to Q87 as one row, and Q88
 - 2 open in turn 4, F107 and F109
 - 3 known limits or items, F102-L1, F102-L2 and Q88-IDS
-- 4 open for later, F103-W and F105-R1 to F105-R3
+- 5 open for later, register rows under Q93, F103-W and F105-R1 to F105-R4
 - 2 merged in turn 5, F108, and F106 for item 1
 - 7 register rows of turn 4's readings, F108-R1 to F108-R5, F107-R1 and F107-R2
 - 19 open fault
@@ -470,9 +470,10 @@ baseline run proves it or contradicts it.
 | F102-L1 | Q91 B, the fourth reading of F102 | A workbook under samples with text appended inside its last 65557 bytes passes the evidence check unread, where every real one holds the zip's end record 22 bytes from its end | none, a known limit: the samples are never edited | known limit, Q91 B | 76 | no run applies |
 | F102-L2 | Q91 B, the same reading | A committed hook holding the evidence check's line where it never runs, after an exit or in a function nobody calls, still gets the handover | none, a known limit: a hook of this repo is read before it merges | known limit, Q91 B | 76 | no run applies |
 | F103-W | Q92 B, steps\notes\f103-final-reading.md | The nine entries in the words of F103, eleven places in six files, item 14 of fix list 3 among them | each entry's words made true where its file next changes | open, words only, Q93 | 78 | no run applies |
-| F105-R1 | Q89 A, the fourth reading of F105 | tools\probes\il-reader.ps1 prints a zero for every failure kind in every probe, kinds a probe never attempts included | each probe printing only the kinds it attempts | open, for later | none yet | no run applies |
-| F105-R2 | the same reading | One of F105's probes prints its failure list only when a built add-in is there | the list printed on every run | open, for later | none yet | no run applies |
-| F105-R3 | the same reading | A resolver and two small helpers still sit in more than one of F105's probes | one copy of each | open, for later | none yet | no run applies |
+| F105-R1 | Q89 A, the fourth reading of F105 | tools\probes\il-reader.ps1 prints a zero for every failure kind in every probe, kinds a probe never counts included | each probe printing only the kinds it counts | open, register row under Q93 | none yet | no run applies |
+| F105-R2 | the same reading | One of F105's probes prints its failure list only when a built add-in is there | the list printed on every run | open, register row under Q93 | none yet | no run applies |
+| F105-R3 | the same reading | A resolver, roResolve, and a small helper, ParamText, sit in more than one of F105's probes, and a second helper the reading named is UNKNOWN | one copy of each | open, register row under Q93 | none yet | no run applies |
+| F105-R4 | the reviewer of F105's words round, 2026-10-04 | Comments in the probes say nothing is dropped, il-reader.ps1 line 19, probe-clash-report-api.ps1 line 23 and probe-viewpoint-calls.ps1 lines 29, 30 and 396, printed at its result line 203, where a read handed to no IlFail is in no count | the comments made true where the probes next change, no probe or result file changing after its run | open, register row under Q93 | none yet | no run applies |
 | Q88-IDS | Q88 | GitHub keeps the commits 464f79f and c98c6f3 readable through PR 74's own refs, and they hold the licensing agent's analytics id and a session id | only the repository's owner can ask GitHub support to purge them | known item, Bader's, the repository is private | 74 | no run applies |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
 | RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
