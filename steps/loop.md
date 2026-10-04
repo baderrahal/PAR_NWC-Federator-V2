@@ -85,6 +85,24 @@ the rerun's evidence folder starts empty. Nothing of Bader's was harmed: his set
 AutoSave put back clean, and his logs folder as Q82 has it, one of his oldest logs pruned by the
 tool and held in logs-backup and two loop logs added, both put back at the close of the loop,
 record.txt lines 102 to 116. F125 fixes the driver before the baseline runs again.
+THE BASELINE, ITEM 1 ON C02, RAN. Started at 18:55:13 by turn4\start-run.ps1 as run.ps1 pid 24436
+from wt-base, a worktree at F125's commit 5fa98a8, whose harm reading under Q93 found nothing
+blocking, Get-Process Roamer reading 0 just before, turn4\roamer-reads.txt. The tools only came
+from that commit, and the add-in was the installed e4484d15. Its Navisworks was pid 49016,
+started at 18:55:27. The driver found the floating Clash Detective pane disabled with its owner
+disabled, left it alone, pressed Run and answered the confirm, driver.txt lines 3 and 20 to 23, so
+on the real Navisworks the tool's window does disable the pane. VERDICT: RAN, item 1 through the
+window, the log's RESULT block read, closed by Dispose, put back, record.txt line 964, at 21:15.
+The group 1A02MM ended FAILED, its ST model on Revit's internal origin, Q70, the case F112's rule
+turns into a skipped clash and PARTIAL. 2939 clashes from 59 tests that found something, 528
+created. The run took 2 hours 12 minutes 6 seconds, VIEWS 7487 s of it, 94.5%, run log lines 575
+and 587. Four files written, each size read back. Everything put back and read back: 40 registry
+values, 2 settings files, his AutoSave folder, one old autosave of his that the run's Navisworks
+removed put back from autosave-backup and three it added removed, and his logs folder as Q82 has
+it, record.txt lines 930 to 960. The evidence is masked into steps\runs\04\item1-C02 with no copy
+differing, turn5\mask-run04-item1-C02.txt. The developers' builds and Core tests ran on this
+machine during it, so its times are not those of a quiet machine. Item 1 on C04 started at
+21:16:46 the same way, Roamer reading 0 just before.
 MERGED, 2026-10-04: PR 95, F113, the clash counts of wave 1, FR-031 to FR-034, as 7b6df88 at
 18:02:32, and PR 96, F104, the check of a workbook against its document, the wave test's
 instrument outside the product waves, as c4fd0d4 at 18:14:56, after main merged into it at
