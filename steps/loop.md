@@ -30,6 +30,13 @@ the source copy again, 142 files, 140 of them NWC, turn5\prepare-copy-plain-1.tx
 one sits beside it renamed with -OLD, turn5\b1-xml-check.txt. So set 05's copy, once made
 from this source copy, will ask ME-Ductwork, and its first run is to be given that XML by
 name with -Xml, never the -OLD file beside it.
+BADER'S NAVISWORKS RUNS, read at 13:19:51 on 2026-10-04: two Roamer.exe started by hand from
+his desktop, explorer.exe their parent, at 12:53:23 and 12:54:16, each with the command line
+-licensing AdLM. By his standing rule of 2026-10-04 there is no start, no install and no put
+back while they run, and the developers were told at 13:21 to run no harness that starts a
+stand-in named Roamer. Code, pull requests and merges go on. The waiter
+turn4\wait-no-roamer.ps1 reads the processes every 10 minutes into turn5\wait-no-roamer.txt
+and ends when none runs.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
