@@ -188,6 +188,13 @@ and 6 does not read as broken.
   the total. Per test detail stays for tests that were created or run. One run wrote
   1830 near identical SKIPPED lines and a 1 MB log, which buries everything worth
   reading
+- THE RUNNING COUNT IS TAKEN AFTER THE TEST IT NUMBERS, F113. `ClashRunOutcome
+  .ProgressAfter` is the line the log carries at every twenty fifth test and at the last
+  one, so a group always ends on a count, and it reads the counts as they stand. The
+  runner took it BEFORE the test it numbered until F113, so on the run of 2026-10-01 the
+  last count of all 22 groups was one test short of the block under it, and three were
+  short of the block's clashes by the last test's own, 1624 against 1629 in 1B06PK. The
+  last count of a group and the block read the same numbers
 - A test already in the document is left as it is, which means a tolerance changed in the
   XML never reaches it. That is right and it was silent, so now it is REPORTED. Every
   test in both is compared on the tolerance, the test type, merge composites, and per
