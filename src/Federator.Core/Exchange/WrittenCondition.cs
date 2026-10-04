@@ -86,23 +86,19 @@ namespace Federator.Core.Exchange
                 return this;
             }
 
-            int shut = Element.IndexOf('>');
-            int at = Element.IndexOf("flags=\"", StringComparison.Ordinal);
-            string number = flags.ToString(CultureInfo.InvariantCulture);
-            string element;
+            return new WrittenCondition(
+                Lead, WithAttribute("flags", flags.ToString(CultureInfo.InvariantCulture)), Test, flags, Property, Value);
+        }
 
-            if (at >= 0 && at < shut)
+        /// <summary>The same condition asking with another test, equals or contains. The attribute is added where the file wrote none.</summary>
+        internal WrittenCondition WithTest(string test)
+        {
+            if (string.Equals(test, Test, StringComparison.Ordinal))
             {
-                at += "flags=\"".Length;
-                int ends = Element.IndexOf('"', at);
-                element = Element.Substring(0, at) + number + Element.Substring(ends);
-            }
-            else
-            {
-                element = Element.Substring(0, shut) + " flags=\"" + number + "\"" + Element.Substring(shut);
+                return this;
             }
 
-            return new WrittenCondition(Lead, element, Test, flags, Property, Value);
+            return new WrittenCondition(Lead, WithAttribute("test", test), test, Flags, Property, Value);
         }
 
         /// <summary>The same condition with other whitespace in front of it, so a copy sits where the set's own conditions do.</summary>
@@ -111,10 +107,39 @@ namespace Federator.Core.Exchange
             return new WrittenCondition(lead, Element, Test, Flags, Property, Value);
         }
 
-        /// <summary>The text an XML file holds for that value, the three characters element content cannot carry as they are escaped.</summary>
-        private static string Escaped(string value)
+        /// <summary>
+        /// The text an XML file holds for that name or value, the four characters an attribute
+        /// or element content cannot always carry as they are escaped. The one escape of the
+        /// corrections, for a value written into a condition and for a set name looked for in
+        /// the file's text, F116.
+        /// </summary>
+        internal static string Escaped(string text)
         {
-            return (value ?? string.Empty).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+            return (text ?? string.Empty).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
+        }
+
+        /// <summary>The element with that attribute of its opening tag set to that value, added at the end of the tag where it carries none.</summary>
+        private string WithAttribute(string name, string value)
+        {
+            int shut = Element.IndexOf('>');
+            string opens = name + "=\"";
+            string text = Escaped(value);
+            int at = Element.IndexOf(opens, StringComparison.Ordinal);
+
+            // An attribute of that name, and not one whose name merely ends with it.
+            while (at > 0 && at < shut && !char.IsWhiteSpace(Element[at - 1]))
+            {
+                at = Element.IndexOf(opens, at + 1, StringComparison.Ordinal);
+            }
+
+            if (at > 0 && at < shut)
+            {
+                at += opens.Length;
+                int ends = Element.IndexOf('"', at);
+                return Element.Substring(0, at) + text + Element.Substring(ends);
+            }
+
+            return Element.Substring(0, shut) + " " + opens + text + "\"" + Element.Substring(shut);
         }
     }
 }

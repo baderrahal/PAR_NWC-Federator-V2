@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using Federator.Core.Sets;
@@ -778,12 +777,13 @@ namespace Federator.Core.Exchange
                     }
 
                     int changed;
-                    text = Rewrite(text, rewrite, out changed);
+                    string why;
+                    text = Rewrite(text, rewrite, out changed, out why);
 
                     outcome.Add(
                         rewrite.SetName + " asks for " + rewrite.To + " and not " + rewrite.From,
                         changed,
-                        Noted(Why(changed, text, rewrite), rewrite));
+                        Both(why, rewrite.Note));
                 }
             }
 
@@ -1014,7 +1014,7 @@ namespace Federator.Core.Exchange
 
             foreach (SelectionSetDefinition set in read.Sets)
             {
-                if (!SameFolder(set, template) || because.ContainsKey(AttributeText(set.Name)))
+                if (!SameFolder(set, template) || because.ContainsKey(WrittenCondition.Escaped(set.Name)))
                 {
                     continue;
                 }
@@ -1029,7 +1029,7 @@ namespace Federator.Core.Exchange
 
                     if (reason != null)
                     {
-                        because[AttributeText(set.Name)] = reason;
+                        because[WrittenCondition.Escaped(set.Name)] = reason;
                         given.Add(set);
                         break;
                     }
@@ -1088,7 +1088,7 @@ namespace Federator.Core.Exchange
 
             foreach (SelectionSetDefinition set in given)
             {
-                string name = AttributeText(set.Name);
+                string name = WrittenCondition.Escaped(set.Name);
                 int added;
 
                 if (!groupsGiven.TryGetValue(name, out added))
@@ -1192,25 +1192,33 @@ namespace Federator.Core.Exchange
         /// <summary>That set's condition asking for that value, as the file's text writes it, or null where it will not read.</summary>
         private static WrittenCondition WrittenAsking(string xml, string setName, string asks)
         {
-            int at = xml.IndexOf(SetOpens + AttributeText(setName) + "\"", StringComparison.Ordinal);
-            int ends = at < 0 ? -1 : xml.IndexOf(SetCloses, at, StringComparison.Ordinal);
-            SetConditionsText set = ends < 0 ? null : SetConditionsText.Read(xml.Substring(at, ends - at + SetCloses.Length));
+            WrittenCondition asking = null;
+            bool found = false;
 
-            if (set == null)
+            EachSet(xml, block =>
             {
-                return null;
-            }
-
-            foreach (WrittenCondition condition in set.Conditions)
-            {
-                if (string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.Ordinal)
-                    && string.Equals(condition.Value, asks, StringComparison.Ordinal))
+                if (found || !Named(block, setName))
                 {
-                    return condition;
+                    return block;
                 }
-            }
 
-            return null;
+                found = true;
+                SetConditionsText set = SetConditionsText.Read(block);
+
+                foreach (WrittenCondition condition in set == null ? new List<WrittenCondition>() : set.Conditions)
+                {
+                    if (asking == null
+                        && string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.Ordinal)
+                        && string.Equals(condition.Value, asks, StringComparison.Ordinal))
+                    {
+                        asking = condition;
+                    }
+                }
+
+                return block;
+            });
+
+            return asking;
         }
 
         /// <summary>The name attribute a set block opens with, as the file writes it, or null.</summary>
@@ -1225,10 +1233,14 @@ namespace Federator.Core.Exchange
             return ends < 0 ? null : block.Substring(SetOpens.Length, ends - SetOpens.Length);
         }
 
-        /// <summary>A name the way an attribute in the file writes it, its four special characters escaped.</summary>
-        private static string AttributeText(string name)
+        /// <summary>
+        /// Whether that set block is the set of that name, matched on the name as the file's
+        /// text writes it, escapes and all, by WrittenCondition.Escaped. Every lookup of a set
+        /// by its name in the text goes through here, so the corrections find a set one way.
+        /// </summary>
+        private static bool Named(string block, string name)
         {
-            return (name ?? string.Empty).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
+            return string.Equals(NameIn(block), WrittenCondition.Escaped(name), StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -1369,18 +1381,12 @@ namespace Federator.Core.Exchange
                     return block;
                 }
 
-                int inSet = 0;
-                List<WrittenCondition> written = new List<WrittenCondition>();
-
-                foreach (WrittenCondition condition in set.Conditions)
-                {
-                    bool asks = AsksAWorkset(condition) && string.Equals(condition.Value, from, StringComparison.Ordinal);
-                    written.Add(asks ? condition.WithValue(to) : condition);
-                    inSet += asks ? 1 : 0;
-                }
+                int inSet;
+                string given = ValuesGiven(
+                    set, condition => AsksAWorkset(condition) && string.Equals(condition.Value, from, StringComparison.Ordinal), to, out inSet);
 
                 changedInAll += inSet;
-                return inSet == 0 ? block : set.With(written).Write();
+                return given ?? block;
             });
 
             changed = changedInAll;
@@ -1411,11 +1417,6 @@ namespace Federator.Core.Exchange
             return written.Append(xml, at, xml.Length - at).ToString();
         }
 
-        /// <summary>A whole wstring value element, which is what a workset value is written as.</summary>
-        private const string ValueOpens = "<data type=\"wstring\">";
-
-        private const string ValueCloses = "</data>";
-
         /// <summary>
         /// The bit that starts a new condition group, which is what makes an Or, F78.
         /// Measured over all 102 conditions of the reference file on 2026-09-19, and the
@@ -1424,171 +1425,76 @@ namespace Federator.Core.Exchange
         public const int StartGroup = PlannedCondition.StartGroupFlag;
 
         /// <summary>
-        /// One value rewritten wherever it is the whole text of a data element, and
-        /// NOWHERE ELSE. Scoped to `&lt;data type="wstring"&gt;VALUE&lt;/data&gt;` rather
-        /// than replaced across the file, because a workset name can be a substring of a
-        /// set name, of a category or of another workset, and a blind replace would
-        /// rewrite all of them. Matched Ordinal, because the whole point is that the
-        /// spelling differs.
-        /// </summary>
-        private static string RewriteValue(string xml, string from, string to, out int changed)
-        {
-            string was = ValueOpens + from + ValueCloses;
-            string now = ValueOpens + to + ValueCloses;
-
-            changed = Occurrences(xml, was);
-            return changed == 0 ? xml : xml.Replace(was, now);
-        }
-
-        /// <summary>
         /// Replaces one named set's conditions with a contains and one negated equals per
         /// excluded value, built from the set's OWN first condition as the template, so
         /// nothing here has to know what a category or a property is called on this
-        /// project. Safe to run twice: a set already carrying the built block is left
-        /// alone and counted as zero.
+        /// project. Safe to run twice: a set already carrying the built conditions is left
+        /// alone and counted as zero. The set is the first the file's text names so, and
+        /// every condition is built by WrittenCondition, the one way a condition's text is
+        /// edited, so a value is escaped the way every other correction escapes it, F116.
         /// </summary>
         private static string RewriteConditions(string text, ConditionsRewrite rewrite, out int changed, out string why)
         {
-            changed = 0;
-            why = null;
+            int built = 0;
+            string said = "this file holds no set of that name";
+            bool found = false;
 
-            int at = text.IndexOf(SetOpens + rewrite.SetName + "\"", StringComparison.Ordinal);
-
-            if (at < 0)
+            string written = EachSet(text, block =>
             {
-                why = "this file holds no set of that name";
-                return text;
-            }
+                if (found || !Named(block, rewrite.SetName))
+                {
+                    return block;
+                }
 
-            int ends = text.IndexOf(SetCloses, at, StringComparison.Ordinal);
+                found = true;
 
-            if (ends < 0)
-            {
-                why = "that set never closes, so it was left alone";
-                return text;
-            }
+                if (block.IndexOf(ConditionsOpen, StringComparison.Ordinal) < 0)
+                {
+                    said = "that set carries no conditions to replace";
+                    return block;
+                }
 
-            ends += SetCloses.Length;
-            string block = text.Substring(at, ends - at);
+                SetConditionsText set = SetConditionsText.Read(block);
 
-            int open = block.IndexOf(ConditionsOpen, StringComparison.Ordinal);
-            int close = block.IndexOf(ConditionsClose, StringComparison.Ordinal);
+                if (set == null)
+                {
+                    said = "that set's conditions could not be read in the file's text, so it was NOT changed";
+                    return block;
+                }
 
-            if (open < 0 || close < 0 || close < open)
-            {
-                why = "that set carries no conditions to replace";
-                return text;
-            }
+                if (set.Conditions.Count == 0 || set.Conditions[0].Value == null)
+                {
+                    said = "that set carries no condition to copy the category and property from";
+                    return block;
+                }
 
-            open += ConditionsOpen.Length;
-            string inner = block.Substring(open, close - open);
-            string template = FirstCondition(inner);
+                WrittenCondition template = set.Conditions[0];
+                List<WrittenCondition> conditions = new List<WrittenCondition>
+                {
+                    template.WithTest(SetBuildPlan.ContainsTest).WithFlags(0).WithValue(rewrite.Contains)
+                };
 
-            if (template == null)
-            {
-                why = "that set carries no condition to copy the category and property from";
-                return text;
-            }
+                foreach (string excluded in rewrite.Excluded)
+                {
+                    conditions.Add(template.WithTest(SetBuildPlan.EqualsTest).WithFlags(NegateCondition).WithValue(excluded));
+                }
 
-            System.Text.StringBuilder built = new System.Text.StringBuilder();
-            built.Append(OneCondition(template, "contains", 0, rewrite.Contains));
+                string rewritten = set.With(conditions).Write();
 
-            foreach (string excluded in rewrite.Excluded)
-            {
-                built.Append(OneCondition(template, "equals", NegateCondition, excluded));
-            }
+                if (string.Equals(rewritten, block, StringComparison.Ordinal))
+                {
+                    said = "that set already asks exactly this, so it was left alone";
+                    return block;
+                }
 
-            string want = built.ToString();
+                built = conditions.Count;
+                said = null;
+                return rewritten;
+            });
 
-            if (string.Equals(inner, want, StringComparison.Ordinal))
-            {
-                why = "that set already asks exactly this, so it was left alone";
-                return text;
-            }
-
-            changed = 1 + rewrite.Excluded.Count;
-            string fixedBlock = block.Substring(0, open) + want + block.Substring(close);
-            return text.Substring(0, at) + fixedBlock + text.Substring(ends);
-        }
-
-        /// <summary>The first whole condition element inside a conditions block, with the newline that precedes it.</summary>
-        private static string FirstCondition(string inner)
-        {
-            int opens = inner.IndexOf(ConditionOpens, StringComparison.Ordinal);
-
-            if (opens < 0)
-            {
-                return null;
-            }
-
-            int closes = inner.IndexOf(ConditionCloses, opens, StringComparison.Ordinal);
-
-            if (closes < 0)
-            {
-                return null;
-            }
-
-            closes += ConditionCloses.Length;
-
-            // Back to the start of the line the condition opens on, so the indentation
-            // this file uses is carried rather than invented, and the block it builds
-            // reads the way a person wrote the rest of the file.
-            int line = inner.LastIndexOf('\n', opens);
-            int from = line < 0 ? 0 : line;
-
-            return inner.Substring(from, closes - from);
-        }
-
-        /// <summary>One condition built off the template, differing in the test, the flags and the value.</summary>
-        private static string OneCondition(string template, string test, int flags, string value)
-        {
-            string one = ReplaceOpeningTag(
-                template,
-                ConditionOpens,
-                "<condition test=\"" + test + "\" flags=\"" + flags.ToString(CultureInfo.InvariantCulture) + "\">");
-
-            return ReplaceInnerText(one, DataOpens, "</data>", value);
-        }
-
-        /// <summary>The whole of the tag that starts with that opening, replaced.</summary>
-        private static string ReplaceOpeningTag(string text, string opens, string with)
-        {
-            int at = text.IndexOf(opens, StringComparison.Ordinal);
-
-            if (at < 0)
-            {
-                return text;
-            }
-
-            int shut = text.IndexOf('>', at);
-
-            if (shut < 0)
-            {
-                return text;
-            }
-
-            return text.Substring(0, at) + with + text.Substring(shut + 1);
-        }
-
-        /// <summary>What sits between that opening tag and its closing tag, replaced.</summary>
-        private static string ReplaceInnerText(string text, string opens, string closes, string with)
-        {
-            int at = text.IndexOf(opens, StringComparison.Ordinal);
-
-            if (at < 0)
-            {
-                return text;
-            }
-
-            int shut = text.IndexOf('>', at);
-            int end = text.IndexOf(closes, at, StringComparison.Ordinal);
-
-            if (shut < 0 || end < 0 || end < shut)
-            {
-                return text;
-            }
-
-            return text.Substring(0, shut + 1) + with + text.Substring(end);
+            changed = built;
+            why = said;
+            return written;
         }
 
         /// <summary>Two sentences where there are two, one where there is one, and null where there are none.</summary>
@@ -1614,75 +1520,69 @@ namespace Federator.Core.Exchange
 
         internal const string ConditionCloses = "</condition>";
 
-        private const string DataOpens = "<data ";
-
         /// <summary>
-        /// The value inside one named set, and inside no other. Where the set is not there
-        /// at all, nothing changes and the count is zero.
+        /// The value inside one named set, and inside no other, the first set the file's text
+        /// names so. Where the set is not there at all, nothing changes and the count is zero,
+        /// and the why says which, so a zero is never left to be guessed at.
         ///
         /// ONLY A WHOLE VALUE, FR-026. The block opens with the set's own name, and replacing
         /// the text across it renamed a set whose name held the value, and found an old value
-        /// again inside a new one that held it, so a second run grew it. A whole value element
-        /// is neither, so the name is never touched and a second run counts zero.
+        /// again inside a new one that held it, so a second run grew it. A condition's whole
+        /// value is neither, so the name is never touched and a second run counts zero.
         /// </summary>
-        private static string Rewrite(string text, CategoryRewrite rewrite, out int changed)
+        private static string Rewrite(string text, CategoryRewrite rewrite, out int changed, out string why)
         {
-            changed = 0;
+            int rewritten = 0;
+            string said = "there is no set of that name in this file";
+            bool found = false;
 
-            int at = text.IndexOf(SetOpens + rewrite.SetName + "\"", StringComparison.Ordinal);
-
-            if (at < 0)
+            string written = EachSet(text, block =>
             {
-                return text;
-            }
+                if (found || !Named(block, rewrite.SetName))
+                {
+                    return block;
+                }
 
-            int ends = text.IndexOf(SetCloses, at, StringComparison.Ordinal);
+                found = true;
+                SetConditionsText set = SetConditionsText.Read(block);
 
-            if (ends < 0)
-            {
-                return text;
-            }
+                if (set == null)
+                {
+                    said = "the set is there and its conditions could not be read in the file's text, so it was NOT changed";
+                    return block;
+                }
 
-            ends += SetCloses.Length;
-            string block = RewriteValue(text.Substring(at, ends - at), rewrite.From, rewrite.To, out changed);
+                string given = ValuesGiven(
+                    set, condition => string.Equals(condition.Value, rewrite.From, StringComparison.Ordinal), rewrite.To, out rewritten);
 
-            return changed == 0 ? text : text.Substring(0, at) + block + text.Substring(ends);
+                said = given == null ? "the set is there and already asks for something else" : null;
+                return given ?? block;
+            });
+
+            changed = rewritten;
+            why = said;
+            return written;
         }
 
         /// <summary>
-        /// The why and the rewrite's own note together, A15, either on its own where the
-        /// other is empty, so the outcome line says both what happened and which form the
-        /// set carries.
+        /// That set block with every condition the test picks given that value, and the rest
+        /// as they were, or null where the test picks none. The one place a correction gives a
+        /// condition another value, for the category rewrite and the workset spelling.
         /// </summary>
-        private static string Noted(string why, CategoryRewrite rewrite)
+        private static string ValuesGiven(SetConditionsText set, Func<WrittenCondition, bool> picks, string value, out int given)
         {
-            string note = rewrite == null ? string.Empty : rewrite.Note;
+            List<WrittenCondition> conditions = new List<WrittenCondition>();
+            int count = 0;
 
-            if (string.IsNullOrEmpty(note))
+            foreach (WrittenCondition condition in set.Conditions)
             {
-                return why;
+                bool gives = picks(condition);
+                conditions.Add(gives ? condition.WithValue(value) : condition);
+                count += gives ? 1 : 0;
             }
 
-            return string.IsNullOrEmpty(why) ? note : why + ". " + note;
-        }
-
-        /// <summary>
-        /// Why a rewrite changed nothing, in words, so a zero is never left to be guessed
-        /// at. Null where it changed something.
-        /// </summary>
-        private static string Why(int changed, string text, CategoryRewrite rewrite)
-        {
-            if (changed > 0)
-            {
-                return null;
-            }
-
-            if (text.IndexOf(SetOpens + rewrite.SetName + "\"", StringComparison.Ordinal) < 0)
-            {
-                return "there is no set of that name in this file";
-            }
-
-            return "the set is there and already asks for something else";
+            given = count;
+            return count == 0 ? null : set.With(conditions).Write();
         }
 
         private static int Occurrences(string text, string what)

@@ -29305,7 +29305,8 @@
                 <value>
                   <data type="wstring">Telephone Devices</data>
                 </value>
-              </condition></conditions>
+              </condition>
+            </conditions>
             <locator>/</locator>
           </findspec>
         </selectionset>

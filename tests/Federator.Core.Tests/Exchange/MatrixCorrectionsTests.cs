@@ -1379,5 +1379,70 @@ namespace Federator.Core.Tests
             Assert.That(ValuesOn(sets["BLD-FF-Others"].Groups()[0], WorksetProperty), Is.EqualTo(new[] { "FF-FIRE FIGHTING" }));
             Assert.That(outcome.TotalChanged, Is.EqualTo(1));
         }
+
+        // ---------- one escape, one way to edit a condition, one lookup, F116 ----------
+
+        /// <summary>
+        /// The catch-all finds its set by the name as the file writes it, escapes and all, the
+        /// way the Source File rule finds its sets, and every value it builds is written with
+        /// the escapes an XML file needs. Before, it looked for the raw name, so a set whose
+        /// name held an ampersand was never found, and it wrote a category holding one raw,
+        /// which no reader reads.
+        /// </summary>
+        [Test]
+        public void TheCatchAllFindsASetWhoseNameHoldsAnAmpersandAndEscapesWhatItWrites()
+        {
+            string xml = WrittenExchange(WrittenSet("BLD-EL-Data&amp;Comms", Category("Electrical Fixtures")));
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(xml, null, null, new List<ConditionsRewrite>
+            {
+                new ConditionsRewrite("BLD-EL-Data&Comms", "Devices", new[] { "Data & Comms Devices" })
+            });
+
+            Assert.That(outcome.TotalChanged, Is.EqualTo(2), Words(outcome));
+
+            IList<SearchConditionDefinition> asked = new ExchangeReader().ReadText(outcome.Text).Sets[0].Conditions;
+
+            Assert.That(asked.Count, Is.EqualTo(2));
+            Assert.That(asked[0].Test, Is.EqualTo("contains"));
+            Assert.That(asked[0].Value.Data, Is.EqualTo("Devices"));
+            Assert.That(asked[1].Flags, Is.EqualTo(MatrixCorrections.NegateCondition));
+            Assert.That(asked[1].Value.Data, Is.EqualTo("Data & Comms Devices"));
+        }
+
+        /// <summary>
+        /// The escape on its own, on a set the old lookup found: a category holding an
+        /// ampersand was written raw and the corrected file no longer read as XML.
+        /// </summary>
+        [Test]
+        public void TheCatchAllEscapesTheValuesItWrites()
+        {
+            string xml = WrittenExchange(WrittenSet("BLD-EL-Devices", Category("Electrical Fixtures")));
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(xml, null, null, new List<ConditionsRewrite>
+            {
+                new ConditionsRewrite("BLD-EL-Devices", "Devices", new[] { "Data & Comms Devices" })
+            });
+
+            Assert.That(
+                new ExchangeReader().ReadText(outcome.Text).Sets[0].Conditions[1].Value.Data,
+                Is.EqualTo("Data & Comms Devices"));
+        }
+
+        /// <summary>
+        /// A category rewrite finds its set the same way and edits its condition the same way,
+        /// so the new value is escaped and the name is matched as the file writes it.
+        /// </summary>
+        [Test]
+        public void ACategoryRewriteFindsASetWhoseNameHoldsAnAmpersandAndEscapesTheNewValue()
+        {
+            string xml = WrittenExchange(WrittenSet("BLD-AR-Doors&amp;Windows", Category("Doors")));
+
+            CorrectionOutcome outcome = MatrixCorrections.Apply(
+                xml, null, new List<CategoryRewrite> { new CategoryRewrite("BLD-AR-Doors&Windows", "Doors", "Doors & Windows") });
+
+            Assert.That(outcome.TotalChanged, Is.EqualTo(1), Words(outcome));
+            Assert.That(new ExchangeReader().ReadText(outcome.Text).Sets[0].Conditions[0].Value.Data, Is.EqualTo("Doors & Windows"));
+        }
     }
 }
