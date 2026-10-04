@@ -2157,10 +2157,11 @@ namespace Federator.Addin.Engine
 
                 // F116. Every workset of every model in full, one row each, because the
                 // block lists ten a group and counts the rest, and which spelling each
-                // building carries is what the matrix corrections act on, Q102.
+                // building carries is what the matrix corrections act on, Q102. UNKNOWN
+                // where a model's walk stopped part way, ExportCheck's rule.
                 foreach (ModelExport model in exports)
                 {
-                    log.Row("model worksets", model.File, EventRow.Count(model.Worksets.Count), ExportCheck.EveryWorkset(model));
+                    log.Row("model worksets", model.File, ExportCheck.WorksetCount(model), ExportCheck.EveryWorkset(model));
                 }
             }
             catch (Exception error)

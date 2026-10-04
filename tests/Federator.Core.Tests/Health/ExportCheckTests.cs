@@ -162,6 +162,25 @@ namespace Federator.Core.Tests.Health
             Assert.That(every.Split(new[] { " | " }, System.StringSplitOptions.None), Is.EqualTo(many));
             Assert.That(every, Does.Not.Contain("counted and not listed"));
             Assert.That(ExportCheck.EveryWorkset(Model("EL", 494, 0, 494)), Is.Empty);
+            Assert.That(ExportCheck.WorksetCount(new ModelExport("a.nwc", "ME", 100, 100, 100, many)), Is.EqualTo("14"));
+        }
+
+        /// <summary>
+        /// F116. A model whose element walk stopped part way hands back the worksets it saw
+        /// before it stopped, and those are not every workset of the model. So the row leaves
+        /// the count empty and says UNKNOWN, never a short list as every workset, because these
+        /// rows are what the next spelling decision is measured from.
+        /// </summary>
+        [Test]
+        public void TheRowFileSaysUnknownWhereAModelsWalkDidNotFinish()
+        {
+            ModelExport stopped = new ModelExport(
+                "a.nwc", "ME", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted,
+                new List<string> { "ME-Ductwork", "ME-Piping" });
+
+            Assert.That(ExportCheck.EveryWorkset(stopped), Does.StartWith("UNKNOWN"));
+            Assert.That(ExportCheck.EveryWorkset(stopped), Does.Not.Contain("ME-Ductwork"));
+            Assert.That(ExportCheck.WorksetCount(stopped), Is.Empty);
         }
 
         [Test]

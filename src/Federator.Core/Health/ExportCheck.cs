@@ -47,6 +47,16 @@ namespace Federator.Core.Health
         /// <summary>The distinct workset names, in the order they were first seen.</summary>
         public IList<string> Worksets { get; private set; }
 
+        /// <summary>
+        /// Whether the walk over the model's elements finished. A walk that threw part way
+        /// counts nothing, every count NotCounted, and the worksets it hands back are only
+        /// those seen before it stopped, F116.
+        /// </summary>
+        public bool WalkFinished
+        {
+            get { return Elements != NotCounted; }
+        }
+
         /// <summary>Whether any element in this model carries a workset at all.</summary>
         public bool CarriesAWorkset
         {
@@ -96,10 +106,28 @@ namespace Federator.Core.Health
         /// file, F116. The block lists ten a group and counts the rest, and which spelling
         /// each building's models carry is what the matrix corrections act on, Q102, so the
         /// row file carries them all. A bar splits them, because a name can hold a comma.
+        /// UNKNOWN where the walk over the model did not finish, never the names it saw before
+        /// it stopped as if they were all.
         /// </summary>
         public static string EveryWorkset(ModelExport model)
         {
+            if (!model.WalkFinished)
+            {
+                return "UNKNOWN, the walk over this model's elements stopped part way, so the "
+                    + model.Worksets.Count + " workset name(s) it saw before stopping are not every workset the model carries";
+            }
+
             return string.Join(" | ", new List<string>(model.Worksets).ToArray());
+        }
+
+        /// <summary>
+        /// The number column of the same row: how many worksets the model carries, or empty
+        /// where its element walk did not finish, because a count of the names seen before it
+        /// stopped is not a count of the model's worksets, F116.
+        /// </summary>
+        public static string WorksetCount(ModelExport model)
+        {
+            return model.WalkFinished ? model.Worksets.Count.ToString(CultureInfo.InvariantCulture) : string.Empty;
         }
 
         /// <summary>
