@@ -1,0 +1,1846 @@
+workbook C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\03\NMFed\Clash Report\C06\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.xlsx
+bytes 88719, written 2026-10-01 12:39:08 UTC, sha256 A2FC3563D1C97EF8C85F2A8B66874A96B529B9F44DA988D6B23FBD31DE1EFBB4
+sheets 1: 1104-PAR-1B06PW-ZZZ-BM-MOD-0000
+
+== sheet 1104-PAR-1B06PW-ZZZ-BM-MOD-0000
+-- tests: shape, row, test, tolerance, clashes, new, active, reviewed, approved, resolved, type, status, clash rows under it
+one row	4	BLD-AR-Stairs-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	5	BLD-AR-Ramps-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	6	BLD-AR-Ramps-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	7	BLD-AR-Roofs-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	8	BLD-AR-Roofs-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	9	BLD-AR-Roofs-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	10	BLD-AR-Ceilings-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	11	BLD-AR-Ceilings-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	12	BLD-AR-Ceilings-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	13	BLD-AR-Ceilings-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	14	BLD-AR-Columns-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	15	BLD-AR-Columns-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	16	BLD-AR-Columns-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	17	BLD-AR-Columns-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	18	BLD-AR-Columns-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	19	BLD-AR-Walls-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	20	BLD-AR-Walls-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	21	BLD-AR-Walls-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	22	BLD-AR-Walls-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	23	BLD-AR-Walls-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	24	BLD-AR-Walls-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	25	BLD-AR-Windows-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	26	BLD-AR-Windows-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	27	BLD-AR-Windows-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	28	BLD-AR-Windows-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	29	BLD-AR-Windows-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	30	BLD-AR-Windows-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	31	BLD-AR-Windows-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	32	BLD-AR-Curtain Panels-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	33	BLD-AR-Curtain Panels-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	34	BLD-AR-Curtain Panels-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	35	BLD-AR-Curtain Panels-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	36	BLD-AR-Curtain Panels-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	37	BLD-AR-Curtain Panels-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	38	BLD-AR-Curtain Panels-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	39	BLD-AR-Curtain Panels-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	40	BLD-AR-Curtain Mullions-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	41	BLD-AR-Curtain Mullions-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	42	BLD-AR-Curtain Mullions-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	43	BLD-AR-Curtain Mullions-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	44	BLD-AR-Curtain Mullions-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	45	BLD-AR-Curtain Mullions-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	46	BLD-AR-Curtain Mullions-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	47	BLD-AR-Curtain Mullions-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	48	BLD-AR-Curtain Mullions-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	49	BLD-AR-Doors-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	50	BLD-AR-Doors-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	51	BLD-AR-Doors-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	52	BLD-AR-Doors-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	53	BLD-AR-Doors-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	54	BLD-AR-Doors-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	55	BLD-AR-Doors-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	56	BLD-AR-Doors-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	57	BLD-AR-Doors-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	58	BLD-AR-Doors-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	59	BLD-AR-Casework-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	60	BLD-AR-Casework-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	61	BLD-AR-Casework-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	62	BLD-AR-Casework-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	63	BLD-AR-Casework-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	64	BLD-AR-Casework-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	65	BLD-AR-Casework-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	66	BLD-AR-Casework-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	67	BLD-AR-Casework-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	68	BLD-AR-Casework-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	69	BLD-AR-Casework-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	70	BLD-AR-Furniture-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	71	BLD-AR-Furniture-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	72	BLD-AR-Furniture-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	73	BLD-AR-Furniture-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	74	BLD-AR-Furniture-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	75	BLD-AR-Furniture-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	76	BLD-AR-Furniture-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	77	BLD-AR-Furniture-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	78	BLD-AR-Furniture-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	79	BLD-AR-Furniture-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	80	BLD-AR-Furniture-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	81	BLD-AR-Furniture-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	82	BLD-AR-Parking-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	83	BLD-AR-Parking-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	84	BLD-AR-Parking-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	85	BLD-AR-Parking-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	86	BLD-AR-Parking-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	87	BLD-AR-Parking-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	88	BLD-AR-Parking-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	89	BLD-AR-Parking-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	90	BLD-AR-Parking-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	91	BLD-AR-Parking-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	92	BLD-AR-Parking-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	93	BLD-AR-Parking-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	94	BLD-AR-Parking-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	95	BLD-AR-Railings-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	96	BLD-AR-Railings-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	97	BLD-AR-Railings-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	98	BLD-AR-Railings-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	99	BLD-AR-Railings-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	100	BLD-AR-Railings-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	101	BLD-AR-Railings-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	102	BLD-AR-Railings-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	103	BLD-AR-Railings-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	104	BLD-AR-Railings-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	105	BLD-AR-Railings-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	106	BLD-AR-Railings-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	107	BLD-AR-Railings-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	108	BLD-AR-Railings-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	109	BLD-AR-Site-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	110	BLD-AR-Site-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	111	BLD-AR-Site-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	112	BLD-AR-Site-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	113	BLD-AR-Site-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	114	BLD-AR-Site-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	115	BLD-AR-Site-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	116	BLD-AR-Site-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	117	BLD-AR-Site-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	118	BLD-AR-Site-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	119	BLD-AR-Site-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	120	BLD-AR-Site-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	121	BLD-AR-Site-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	122	BLD-AR-Site-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	123	BLD-AR-Site-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	124	BLD-ST-Foundation-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	125	BLD-ST-Foundation-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	126	BLD-ST-Foundation-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	127	BLD-ST-Foundation-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	128	BLD-ST-Foundation-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	129	BLD-ST-Foundation-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	130	BLD-ST-Foundation-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	131	BLD-ST-Foundation-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	132	BLD-ST-Foundation-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	133	BLD-ST-Foundation-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	134	BLD-ST-Foundation-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	135	BLD-ST-Foundation-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	136	BLD-ST-Foundation-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	137	BLD-ST-Foundation-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	138	BLD-ST-Foundation-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	139	BLD-ST-Foundation-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	140	BLD-ST-Columns-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	141	BLD-ST-Columns-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	142	BLD-ST-Columns-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	143	BLD-ST-Columns-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	144	BLD-ST-Columns-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	145	BLD-ST-Columns-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	146	BLD-ST-Columns-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	147	BLD-ST-Columns-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	148	BLD-ST-Columns-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	149	BLD-ST-Columns-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	150	BLD-ST-Columns-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	151	BLD-ST-Columns-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	152	BLD-ST-Columns-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	153	BLD-ST-Columns-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	154	BLD-ST-Columns-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	155	BLD-ST-Columns-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	156	BLD-ST-Columns-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	157	BLD-ST-Framing-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	158	BLD-ST-Framing-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	159	BLD-ST-Framing-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	160	BLD-ST-Framing-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	161	BLD-ST-Framing-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	162	BLD-ST-Framing-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	163	BLD-ST-Framing-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	164	BLD-ST-Framing-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	165	BLD-ST-Framing-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	166	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	167	BLD-ST-Framing-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	168	BLD-ST-Framing-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	169	BLD-ST-Framing-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	170	BLD-ST-Framing-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	171	BLD-ST-Framing-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	172	BLD-ST-Framing-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	173	BLD-ST-Framing-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	174	BLD-ST-Framing-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	175	BLD-ST-Walls-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	176	BLD-ST-Walls-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	177	BLD-ST-Walls-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	178	BLD-ST-Walls-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	179	BLD-ST-Walls-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	180	BLD-ST-Walls-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	181	BLD-ST-Walls-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	182	BLD-ST-Walls-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	183	BLD-ST-Walls-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	184	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	185	BLD-ST-Walls-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	186	BLD-ST-Walls-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	187	BLD-ST-Walls-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	188	BLD-ST-Walls-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	189	BLD-ST-Walls-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	190	BLD-ST-Walls-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	191	BLD-ST-Walls-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	192	BLD-ST-Walls-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	193	BLD-ST-Walls-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	194	BLD-ST-Floors-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	195	BLD-ST-Floors-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	196	BLD-ST-Floors-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	197	BLD-ST-Floors-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	198	BLD-ST-Floors-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	199	BLD-ST-Floors-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	200	BLD-ST-Floors-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	201	BLD-ST-Floors-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	202	BLD-ST-Floors-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	203	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	204	BLD-ST-Floors-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	205	BLD-ST-Floors-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	206	BLD-ST-Floors-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	207	BLD-ST-Floors-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	208	BLD-ST-Floors-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	209	BLD-ST-Floors-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	210	BLD-ST-Floors-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	211	BLD-ST-Floors-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	212	BLD-ST-Floors-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	213	BLD-ST-Floors-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	214	BLD-ST-Stair-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	215	BLD-ST-Stair-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	216	BLD-ST-Stair-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	217	BLD-ST-Stair-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	218	BLD-ST-Stair-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	219	BLD-ST-Stair-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	220	BLD-ST-Stair-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	221	BLD-ST-Stair-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	222	BLD-ST-Stair-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	223	BLD-ST-Stair-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	224	BLD-ST-Stair-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	225	BLD-ST-Stair-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	226	BLD-ST-Stair-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	227	BLD-ST-Stair-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	228	BLD-ST-Stair-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	229	BLD-ST-Stair-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	230	BLD-ST-Stair-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	231	BLD-ST-Stair-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	232	BLD-ST-Stair-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	233	BLD-ST-Stair-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	234	BLD-ST-Stair-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	235	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	236	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	237	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	238	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	239	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	240	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	241	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	242	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	243	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	244	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	245	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	246	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	247	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	248	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	249	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	250	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	251	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	252	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	253	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	254	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	255	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	256	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	257	BLD-ME-Duct Accessory-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	258	BLD-ME-Duct Accessory-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	259	BLD-ME-Duct Accessory-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	260	BLD-ME-Duct Accessory-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	261	BLD-ME-Duct Accessory-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	262	BLD-ME-Duct Accessory-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	263	BLD-ME-Duct Accessory-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	264	BLD-ME-Duct Accessory-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	265	BLD-ME-Duct Accessory-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	266	BLD-ME-Duct Accessory-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	267	BLD-ME-Duct Accessory-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	268	BLD-ME-Duct Accessory-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	269	BLD-ME-Duct Accessory-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	270	BLD-ME-Duct Accessory-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	271	BLD-ME-Duct Accessory-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	272	BLD-ME-Duct Accessory-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	273	BLD-ME-Duct Accessory-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	274	BLD-ME-Duct Accessory-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	275	BLD-ME-Duct Accessory-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	276	BLD-ME-Duct Accessory-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	277	BLD-ME-Duct Accessory-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	278	BLD-ME-Duct Accessory-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	279	BLD-ME-Duct Accessory-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	280	BLD-ME-Mechanical Equipment-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	281	BLD-ME-Mechanical Equipment-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	282	BLD-ME-Mechanical Equipment-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	283	BLD-ME-Mechanical Equipment-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	284	BLD-ME-Mechanical Equipment-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	285	BLD-ME-Mechanical Equipment-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	286	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	287	BLD-ME-Mechanical Equipment-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	288	BLD-ME-Mechanical Equipment-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	289	BLD-ME-Mechanical Equipment-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	290	BLD-ME-Mechanical Equipment-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	291	BLD-ME-Mechanical Equipment-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	292	BLD-ME-Mechanical Equipment-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	293	BLD-ME-Mechanical Equipment-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	294	BLD-ME-Mechanical Equipment-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	295	BLD-ME-Mechanical Equipment-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	296	BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	297	BLD-ME-Mechanical Equipment-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	298	BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	299	BLD-ME-Mechanical Equipment-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	300	BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	301	BLD-ME-Mechanical Equipment-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	302	BLD-ME-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	303	BLD-ME-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	304	BLD-ME-Flex Ducts-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	305	BLD-ME-Flex Ducts-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	306	BLD-ME-Flex Ducts-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	307	BLD-ME-Flex Ducts-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	308	BLD-ME-Flex Ducts-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	309	BLD-ME-Flex Ducts-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	310	BLD-ME-Flex Ducts-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	311	BLD-ME-Flex Ducts-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	312	BLD-ME-Flex Ducts-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	313	BLD-ME-Flex Ducts-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	314	BLD-ME-Flex Ducts-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	315	BLD-ME-Flex Ducts-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	316	BLD-ME-Flex Ducts-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	317	BLD-ME-Flex Ducts-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	318	BLD-ME-Flex Ducts-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	319	BLD-ME-Flex Ducts-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	320	BLD-ME-Flex Ducts-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	321	BLD-ME-Flex Ducts-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	322	BLD-ME-Flex Ducts-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	323	BLD-ME-Flex Ducts-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	324	BLD-ME-Flex Ducts-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	325	BLD-ME-Flex Ducts-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	326	BLD-ME-Flex Ducts-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	327	BLD-ME-Flex Ducts-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	328	BLD-ME-Flex Ducts-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	329	BLD-ME-Air Terminals-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	330	BLD-ME-Air Terminals-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	331	BLD-ME-Air Terminals-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	332	BLD-ME-Air Terminals-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	333	BLD-ME-Air Terminals-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	334	BLD-ME-Air Terminals-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	335	BLD-ME-Air Terminals-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	336	BLD-ME-Air Terminals-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	337	BLD-ME-Air Terminals-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	338	BLD-ME-Air Terminals-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	339	BLD-ME-Air Terminals-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	340	BLD-ME-Air Terminals-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	341	BLD-ME-Air Terminals-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	342	BLD-ME-Air Terminals-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	343	BLD-ME-Air Terminals-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	344	BLD-ME-Air Terminals-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	345	BLD-ME-Air Terminals-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	346	BLD-ME-Air Terminals-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	347	BLD-ME-Air Terminals-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	348	BLD-ME-Air Terminals-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	349	BLD-ME-Air Terminals-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	350	BLD-ME-Air Terminals-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	351	BLD-ME-Air Terminals-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	352	BLD-ME-Air Terminals-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	353	BLD-ME-Air Terminals-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	354	BLD-ME-Air Terminals-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	355	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	356	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	357	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	358	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	359	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	360	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	361	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	362	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	363	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	364	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	365	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	366	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	367	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	368	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	369	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	370	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	371	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	372	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	373	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	374	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	375	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	376	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	377	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	378	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	379	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	380	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	381	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	382	BLD-ME-Pipe Accessories-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	383	BLD-ME-Pipe Accessories-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	384	BLD-ME-Pipe Accessories-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	385	BLD-ME-Pipe Accessories-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	386	BLD-ME-Pipe Accessories-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	387	BLD-ME-Pipe Accessories-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	388	BLD-ME-Pipe Accessories-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	389	BLD-ME-Pipe Accessories-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	390	BLD-ME-Pipe Accessories-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	391	BLD-ME-Pipe Accessories-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	392	BLD-ME-Pipe Accessories-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	393	BLD-ME-Pipe Accessories-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	394	BLD-ME-Pipe Accessories-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	395	BLD-ME-Pipe Accessories-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	396	BLD-ME-Pipe Accessories-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	397	BLD-ME-Pipe Accessories-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	398	BLD-ME-Pipe Accessories-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	399	BLD-ME-Pipe Accessories-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	400	BLD-ME-Pipe Accessories-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	401	BLD-ME-Pipe Accessories-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	402	BLD-ME-Pipe Accessories-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	403	BLD-ME-Pipe Accessories-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	404	BLD-ME-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	405	BLD-ME-Pipe Accessories-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	406	BLD-ME-Pipe Accessories-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	407	BLD-ME-Pipe Accessories-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	408	BLD-ME-Pipe Accessories-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	409	BLD-ME-Pipe Accessories-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	410	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	411	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	412	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	413	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	414	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	415	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	416	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	417	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	418	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	419	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	420	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	421	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	422	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	423	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	424	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	425	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	426	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	427	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	428	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	429	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	430	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	431	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	432	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	433	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	434	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	435	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	436	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	437	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	438	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	439	BLD-ME-Flex Pipes-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	440	BLD-ME-Flex Pipes-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	441	BLD-ME-Flex Pipes-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	442	BLD-ME-Flex Pipes-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	443	BLD-ME-Flex Pipes-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	444	BLD-ME-Flex Pipes-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	445	BLD-ME-Flex Pipes-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	446	BLD-ME-Flex Pipes-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	447	BLD-ME-Flex Pipes-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	448	BLD-ME-Flex Pipes-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	449	BLD-ME-Flex Pipes-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	450	BLD-ME-Flex Pipes-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	451	BLD-ME-Flex Pipes-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	452	BLD-ME-Flex Pipes-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	453	BLD-ME-Flex Pipes-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	454	BLD-ME-Flex Pipes-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	455	BLD-ME-Flex Pipes-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	456	BLD-ME-Flex Pipes-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	457	BLD-ME-Flex Pipes-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	458	BLD-ME-Flex Pipes-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	459	BLD-ME-Flex Pipes-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	460	BLD-ME-Flex Pipes-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	461	BLD-ME-Flex Pipes-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	462	BLD-ME-Flex Pipes-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	463	BLD-ME-Flex Pipes-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	464	BLD-ME-Flex Pipes-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	465	BLD-ME-Flex Pipes-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	466	BLD-ME-Flex Pipes-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	467	BLD-ME-Flex Pipes-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	468	BLD-ME-Flex Pipes-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	469	BLD-FF-Mechanical Equipment-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	470	BLD-FF-Mechanical Equipment-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	471	BLD-FF-Mechanical Equipment-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	472	BLD-FF-Mechanical Equipment-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	473	BLD-FF-Mechanical Equipment-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	474	BLD-FF-Mechanical Equipment-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	475	BLD-FF-Mechanical Equipment-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	476	BLD-FF-Mechanical Equipment-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	477	BLD-FF-Mechanical Equipment-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	478	BLD-FF-Mechanical Equipment-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	479	BLD-FF-Mechanical Equipment-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	480	BLD-FF-Mechanical Equipment-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	481	BLD-FF-Mechanical Equipment-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	482	BLD-FF-Mechanical Equipment-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	483	BLD-FF-Mechanical Equipment-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	484	BLD-FF-Mechanical Equipment-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	485	BLD-FF-Mechanical Equipment-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	486	BLD-FF-Mechanical Equipment-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	487	BLD-FF-Mechanical Equipment-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	488	BLD-FF-Mechanical Equipment-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	489	BLD-FF-Mechanical Equipment-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	490	BLD-FF-Mechanical Equipment-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	491	BLD-FF-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	492	BLD-FF-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	493	BLD-FF-Mechanical Equipment-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	494	BLD-FF-Mechanical Equipment-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	495	BLD-FF-Mechanical Equipment-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	496	BLD-FF-Mechanical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	497	BLD-FF-Mechanical Equipment-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	498	BLD-FF-Mechanical Equipment-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	499	BLD-FF-Mechanical Equipment-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	500	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	501	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	502	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	503	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	504	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	505	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	506	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	507	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	508	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	509	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	510	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	511	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	512	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	513	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	514	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	515	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	516	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	517	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	518	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	519	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	520	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	521	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	522	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	523	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	524	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	525	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	526	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	527	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	528	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	529	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	530	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	531	BLD-FF-Pipes & Pipe Fittings-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	532	BLD-FF-Pipe Accessories-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	533	BLD-FF-Pipe Accessories-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	534	BLD-FF-Pipe Accessories-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	535	BLD-FF-Pipe Accessories-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	536	BLD-FF-Pipe Accessories-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	537	BLD-FF-Pipe Accessories-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	538	BLD-FF-Pipe Accessories-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	539	BLD-FF-Pipe Accessories-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	540	BLD-FF-Pipe Accessories-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	541	BLD-FF-Pipe Accessories-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	542	BLD-FF-Pipe Accessories-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	543	BLD-FF-Pipe Accessories-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	544	BLD-FF-Pipe Accessories-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	545	BLD-FF-Pipe Accessories-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	546	BLD-FF-Pipe Accessories-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	547	BLD-FF-Pipe Accessories-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	548	BLD-FF-Pipe Accessories-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	549	BLD-FF-Pipe Accessories-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	550	BLD-FF-Pipe Accessories-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	551	BLD-FF-Pipe Accessories-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	552	BLD-FF-Pipe Accessories-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	553	BLD-FF-Pipe Accessories-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	554	BLD-FF-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	555	BLD-FF-Pipe Accessories-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	556	BLD-FF-Pipe Accessories-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	557	BLD-FF-Pipe Accessories-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	558	BLD-FF-Pipe Accessories-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	559	BLD-FF-Pipe Accessories-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	560	BLD-FF-Pipe Accessories-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	561	BLD-FF-Pipe Accessories-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	562	BLD-FF-Pipe Accessories-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	563	BLD-FF-Pipe Accessories-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	564	BLD-FF-Pipe Accessories-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	565	BLD-FF-Pipe Insulations-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	566	BLD-FF-Pipe Insulations-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	567	BLD-FF-Pipe Insulations-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	568	BLD-FF-Pipe Insulations-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	569	BLD-FF-Pipe Insulations-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	570	BLD-FF-Pipe Insulations-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	571	BLD-FF-Pipe Insulations-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	572	BLD-FF-Pipe Insulations-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	573	BLD-FF-Pipe Insulations-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	574	BLD-FF-Pipe Insulations-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	575	BLD-FF-Pipe Insulations-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	576	BLD-FF-Pipe Insulations-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	577	BLD-FF-Pipe Insulations-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	578	BLD-FF-Pipe Insulations-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	579	BLD-FF-Pipe Insulations-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	580	BLD-FF-Pipe Insulations-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	581	BLD-FF-Pipe Insulations-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	582	BLD-FF-Pipe Insulations-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	583	BLD-FF-Pipe Insulations-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	584	BLD-FF-Pipe Insulations-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	585	BLD-FF-Pipe Insulations-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	586	BLD-FF-Pipe Insulations-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	587	BLD-FF-Pipe Insulations-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	588	BLD-FF-Pipe Insulations-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	589	BLD-FF-Pipe Insulations-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	590	BLD-FF-Pipe Insulations-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	591	BLD-FF-Pipe Insulations-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	592	BLD-FF-Pipe Insulations-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	593	BLD-FF-Pipe Insulations-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	594	BLD-FF-Pipe Insulations-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	595	BLD-FF-Pipe Insulations-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	596	BLD-FF-Pipe Insulations-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	597	BLD-FF-Pipe Insulations-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	598	BLD-FF-Pipe Insulations-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	599	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	600	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	601	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	602	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	603	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	604	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	605	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	606	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	607	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	608	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	609	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	610	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	611	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	612	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	613	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	614	BLD-FF-Plumbing Fixtures-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	615	BLD-FF-Plumbing Fixtures-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	616	BLD-FF-Plumbing Fixtures-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	617	BLD-FF-Plumbing Fixtures-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	618	BLD-FF-Plumbing Fixtures-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	619	BLD-FF-Plumbing Fixtures-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	620	BLD-FF-Plumbing Fixtures-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	621	BLD-FF-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	622	BLD-FF-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	623	BLD-FF-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	624	BLD-FF-Plumbing Fixtures-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	625	BLD-FF-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	626	BLD-FF-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	627	BLD-FF-Plumbing Fixtures-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	628	BLD-FF-Plumbing Fixtures-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	629	BLD-FF-Plumbing Fixtures-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	630	BLD-FF-Plumbing Fixtures-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	631	BLD-FF-Plumbing Fixtures-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	632	BLD-FF-Plumbing Fixtures-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	633	BLD-FF-Plumbing Fixtures-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	634	BLD-FF-Sprinklers-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	635	BLD-FF-Sprinklers-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	636	BLD-FF-Sprinklers-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	637	BLD-FF-Sprinklers-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	638	BLD-FF-Sprinklers-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	639	BLD-FF-Sprinklers-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	640	BLD-FF-Sprinklers-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	641	BLD-FF-Sprinklers-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	642	BLD-FF-Sprinklers-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	643	BLD-FF-Sprinklers-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	644	BLD-FF-Sprinklers-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	645	BLD-FF-Sprinklers-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	646	BLD-FF-Sprinklers-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	647	BLD-FF-Sprinklers-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	648	BLD-FF-Sprinklers-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	649	BLD-FF-Sprinklers-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	650	BLD-FF-Sprinklers-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	651	BLD-FF-Sprinklers-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	652	BLD-FF-Sprinklers-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	653	BLD-FF-Sprinklers-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	654	BLD-FF-Sprinklers-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	655	BLD-FF-Sprinklers-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	656	BLD-FF-Sprinklers-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	657	BLD-FF-Sprinklers-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	658	BLD-FF-Sprinklers-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	659	BLD-FF-Sprinklers-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	660	BLD-FF-Sprinklers-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	661	BLD-FF-Sprinklers-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	662	BLD-FF-Sprinklers-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	663	BLD-FF-Sprinklers-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	664	BLD-FF-Sprinklers-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	665	BLD-FF-Sprinklers-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	666	BLD-FF-Sprinklers-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	667	BLD-FF-Sprinklers-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	668	BLD-FF-Sprinklers-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	669	BLD-FF-Sprinklers-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	670	BLD-PL-Mechanical Equipment-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	671	BLD-PL-Mechanical Equipment-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	672	BLD-PL-Mechanical Equipment-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	673	BLD-PL-Mechanical Equipment-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	674	BLD-PL-Mechanical Equipment-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	675	BLD-PL-Mechanical Equipment-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	676	BLD-PL-Mechanical Equipment-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	677	BLD-PL-Mechanical Equipment-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	678	BLD-PL-Mechanical Equipment-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	679	BLD-PL-Mechanical Equipment-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	680	BLD-PL-Mechanical Equipment-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	681	BLD-PL-Mechanical Equipment-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	682	BLD-PL-Mechanical Equipment-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	683	BLD-PL-Mechanical Equipment-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	684	BLD-PL-Mechanical Equipment-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	685	BLD-PL-Mechanical Equipment-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	686	BLD-PL-Mechanical Equipment-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	687	BLD-PL-Mechanical Equipment-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	688	BLD-PL-Mechanical Equipment-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	689	BLD-PL-Mechanical Equipment-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	690	BLD-PL-Mechanical Equipment-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	691	BLD-PL-Mechanical Equipment-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	692	BLD-PL-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	693	BLD-PL-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	694	BLD-PL-Mechanical Equipment-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	695	BLD-PL-Mechanical Equipment-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	696	BLD-PL-Mechanical Equipment-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	697	BLD-PL-Mechanical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	698	BLD-PL-Mechanical Equipment-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	699	BLD-PL-Mechanical Equipment-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	700	BLD-PL-Mechanical Equipment-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	701	BLD-PL-Mechanical Equipment-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	702	BLD-PL-Mechanical Equipment-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	703	BLD-PL-Mechanical Equipment-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	704	BLD-PL-Mechanical Equipment-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	705	BLD-PL-Mechanical Equipment-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	706	BLD-PL-Mechanical Equipment-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	707	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	708	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	709	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	710	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	711	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	712	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	713	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	714	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	715	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	716	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	717	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	718	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	719	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	720	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	721	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	722	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	723	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	724	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	725	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	726	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	727	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	728	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	729	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	730	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	731	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	732	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	733	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	734	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	735	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	736	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	737	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	738	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	739	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	740	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	741	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	742	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	743	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	744	BLD-PL-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	745	BLD-PL-Pipe Accessories-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	746	BLD-PL-Pipe Accessories-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	747	BLD-PL-Pipe Accessories-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	748	BLD-PL-Pipe Accessories-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	749	BLD-PL-Pipe Accessories-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	750	BLD-PL-Pipe Accessories-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	751	BLD-PL-Pipe Accessories-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	752	BLD-PL-Pipe Accessories-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	753	BLD-PL-Pipe Accessories-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	754	BLD-PL-Pipe Accessories-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	755	BLD-PL-Pipe Accessories-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	756	BLD-PL-Pipe Accessories-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	757	BLD-PL-Pipe Accessories-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	758	BLD-PL-Pipe Accessories-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	759	BLD-PL-Pipe Accessories-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	760	BLD-PL-Pipe Accessories-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	761	BLD-PL-Pipe Accessories-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	762	BLD-PL-Pipe Accessories-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	763	BLD-PL-Pipe Accessories-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	764	BLD-PL-Pipe Accessories-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	765	BLD-PL-Pipe Accessories-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	766	BLD-PL-Pipe Accessories-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	767	BLD-PL-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	768	BLD-PL-Pipe Accessories-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	769	BLD-PL-Pipe Accessories-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	770	BLD-PL-Pipe Accessories-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	771	BLD-PL-Pipe Accessories-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	772	BLD-PL-Pipe Accessories-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	773	BLD-PL-Pipe Accessories-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	774	BLD-PL-Pipe Accessories-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	775	BLD-PL-Pipe Accessories-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	776	BLD-PL-Pipe Accessories-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	777	BLD-PL-Pipe Accessories-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	778	BLD-PL-Pipe Accessories-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	779	BLD-PL-Pipe Accessories-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	780	BLD-PL-Pipe Accessories-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	781	BLD-PL-Pipe Accessories-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	782	BLD-PL-Pipe Accessories-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	783	BLD-PL-Pipe Accessories-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	784	BLD-PL-Pipe Insulations-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	785	BLD-PL-Pipe Insulations-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	786	BLD-PL-Pipe Insulations-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	787	BLD-PL-Pipe Insulations-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	788	BLD-PL-Pipe Insulations-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	789	BLD-PL-Pipe Insulations-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	790	BLD-PL-Pipe Insulations-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	791	BLD-PL-Pipe Insulations-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	792	BLD-PL-Pipe Insulations-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	793	BLD-PL-Pipe Insulations-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	794	BLD-PL-Pipe Insulations-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	795	BLD-PL-Pipe Insulations-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	796	BLD-PL-Pipe Insulations-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	797	BLD-PL-Pipe Insulations-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	798	BLD-PL-Pipe Insulations-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	799	BLD-PL-Pipe Insulations-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	800	BLD-PL-Pipe Insulations-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	801	BLD-PL-Pipe Insulations-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	802	BLD-PL-Pipe Insulations-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	803	BLD-PL-Pipe Insulations-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	804	BLD-PL-Pipe Insulations-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	805	BLD-PL-Pipe Insulations-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	806	BLD-PL-Pipe Insulations-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	807	BLD-PL-Pipe Insulations-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	808	BLD-PL-Pipe Insulations-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	809	BLD-PL-Pipe Insulations-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	810	BLD-PL-Pipe Insulations-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	811	BLD-PL-Pipe Insulations-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	812	BLD-PL-Pipe Insulations-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	813	BLD-PL-Pipe Insulations-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	814	BLD-PL-Pipe Insulations-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	815	BLD-PL-Pipe Insulations-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	816	BLD-PL-Pipe Insulations-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	817	BLD-PL-Pipe Insulations-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	818	BLD-PL-Pipe Insulations-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	819	BLD-PL-Pipe Insulations-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	820	BLD-PL-Pipe Insulations-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	821	BLD-PL-Pipe Insulations-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	822	BLD-PL-Pipe Insulations-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	823	BLD-PL-Pipe Insulations-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	824	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	825	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	826	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	827	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	828	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	829	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	830	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	831	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	832	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	833	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	834	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	835	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	836	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	837	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	838	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	839	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	840	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	841	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	842	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	843	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	844	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	845	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	846	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	847	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	848	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	849	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	850	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	851	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	852	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	853	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	854	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	855	BLD-PL-Plumbing Fixtures-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	856	BLD-PL-Plumbing Fixtures-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	857	BLD-PL-Plumbing Fixtures-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	858	BLD-PL-Plumbing Fixtures-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	859	BLD-PL-Plumbing Fixtures-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	860	BLD-PL-Plumbing Fixtures-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	861	BLD-PL-Plumbing Fixtures-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	862	BLD-PL-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	863	BLD-PL-Plumbing Fixtures-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	864	BLD-PL-Plumbing Fixtures-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	865	BLD-DR-Mechanical Equipment-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	866	BLD-DR-Mechanical Equipment-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	867	BLD-DR-Mechanical Equipment-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	868	BLD-DR-Mechanical Equipment-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	869	BLD-DR-Mechanical Equipment-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	870	BLD-DR-Mechanical Equipment-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	871	BLD-DR-Mechanical Equipment-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	872	BLD-DR-Mechanical Equipment-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	873	BLD-DR-Mechanical Equipment-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	874	BLD-DR-Mechanical Equipment-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	875	BLD-DR-Mechanical Equipment-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	876	BLD-DR-Mechanical Equipment-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	877	BLD-DR-Mechanical Equipment-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	878	BLD-DR-Mechanical Equipment-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	879	BLD-DR-Mechanical Equipment-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	880	BLD-DR-Mechanical Equipment-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	881	BLD-DR-Mechanical Equipment-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	882	BLD-DR-Mechanical Equipment-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	883	BLD-DR-Mechanical Equipment-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	884	BLD-DR-Mechanical Equipment-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	885	BLD-DR-Mechanical Equipment-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	886	BLD-DR-Mechanical Equipment-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	887	BLD-DR-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	888	BLD-DR-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	889	BLD-DR-Mechanical Equipment-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	890	BLD-DR-Mechanical Equipment-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	891	BLD-DR-Mechanical Equipment-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	892	BLD-DR-Mechanical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	893	BLD-DR-Mechanical Equipment-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	894	BLD-DR-Mechanical Equipment-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	895	BLD-DR-Mechanical Equipment-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	896	BLD-DR-Mechanical Equipment-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	897	BLD-DR-Mechanical Equipment-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	898	BLD-DR-Mechanical Equipment-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	899	BLD-DR-Mechanical Equipment-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	900	BLD-DR-Mechanical Equipment-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	901	BLD-DR-Mechanical Equipment-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	902	BLD-DR-Mechanical Equipment-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	903	BLD-DR-Mechanical Equipment-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	904	BLD-DR-Mechanical Equipment-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	905	BLD-DR-Mechanical Equipment-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	906	BLD-DR-Mechanical Equipment-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	907	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	908	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	909	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	910	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	911	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	912	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	913	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	914	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	915	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	916	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	917	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	918	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	919	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	920	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	921	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	922	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	923	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	924	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	925	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	926	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	927	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	928	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	929	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	930	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	931	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	932	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	933	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	934	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	935	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	936	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	937	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	938	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	939	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	940	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	941	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	942	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	943	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	944	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	945	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	946	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	947	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	948	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	949	BLD-DR-Pipes & Pipe Fittings-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	950	BLD-DR-Pipe Accessories-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	951	BLD-DR-Pipe Accessories-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	952	BLD-DR-Pipe Accessories-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	953	BLD-DR-Pipe Accessories-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	954	BLD-DR-Pipe Accessories-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	955	BLD-DR-Pipe Accessories-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	956	BLD-DR-Pipe Accessories-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	957	BLD-DR-Pipe Accessories-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	958	BLD-DR-Pipe Accessories-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	959	BLD-DR-Pipe Accessories-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	960	BLD-DR-Pipe Accessories-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	961	BLD-DR-Pipe Accessories-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	962	BLD-DR-Pipe Accessories-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	963	BLD-DR-Pipe Accessories-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	964	BLD-DR-Pipe Accessories-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	965	BLD-DR-Pipe Accessories-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	966	BLD-DR-Pipe Accessories-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	967	BLD-DR-Pipe Accessories-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	968	BLD-DR-Pipe Accessories-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	969	BLD-DR-Pipe Accessories-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	970	BLD-DR-Pipe Accessories-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	971	BLD-DR-Pipe Accessories-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	972	BLD-DR-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	973	BLD-DR-Pipe Accessories-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	974	BLD-DR-Pipe Accessories-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	975	BLD-DR-Pipe Accessories-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	976	BLD-DR-Pipe Accessories-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	977	BLD-DR-Pipe Accessories-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	978	BLD-DR-Pipe Accessories-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	979	BLD-DR-Pipe Accessories-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	980	BLD-DR-Pipe Accessories-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	981	BLD-DR-Pipe Accessories-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	982	BLD-DR-Pipe Accessories-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	983	BLD-DR-Pipe Accessories-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	984	BLD-DR-Pipe Accessories-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	985	BLD-DR-Pipe Accessories-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	986	BLD-DR-Pipe Accessories-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	987	BLD-DR-Pipe Accessories-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	988	BLD-DR-Pipe Accessories-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	989	BLD-DR-Pipe Accessories-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	990	BLD-DR-Pipe Accessories-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	991	BLD-DR-Pipe Accessories-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	992	BLD-DR-Pipe Accessories-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	993	BLD-DR-Pipe Accessories-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	994	BLD-DR-Pipe Insulations-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	995	BLD-DR-Pipe Insulations-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	996	BLD-DR-Pipe Insulations-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	997	BLD-DR-Pipe Insulations-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	998	BLD-DR-Pipe Insulations-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	999	BLD-DR-Pipe Insulations-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1000	BLD-DR-Pipe Insulations-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1001	BLD-DR-Pipe Insulations-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1002	BLD-DR-Pipe Insulations-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1003	BLD-DR-Pipe Insulations-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1004	BLD-DR-Pipe Insulations-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1005	BLD-DR-Pipe Insulations-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1006	BLD-DR-Pipe Insulations-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1007	BLD-DR-Pipe Insulations-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1008	BLD-DR-Pipe Insulations-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1009	BLD-DR-Pipe Insulations-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1010	BLD-DR-Pipe Insulations-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1011	BLD-DR-Pipe Insulations-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1012	BLD-DR-Pipe Insulations-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1013	BLD-DR-Pipe Insulations-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1014	BLD-DR-Pipe Insulations-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1015	BLD-DR-Pipe Insulations-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1016	BLD-DR-Pipe Insulations-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1017	BLD-DR-Pipe Insulations-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1018	BLD-DR-Pipe Insulations-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1019	BLD-DR-Pipe Insulations-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1020	BLD-DR-Pipe Insulations-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1021	BLD-DR-Pipe Insulations-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1022	BLD-DR-Pipe Insulations-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1023	BLD-DR-Pipe Insulations-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1024	BLD-DR-Pipe Insulations-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1025	BLD-DR-Pipe Insulations-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1026	BLD-DR-Pipe Insulations-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1027	BLD-DR-Pipe Insulations-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1028	BLD-DR-Pipe Insulations-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1029	BLD-DR-Pipe Insulations-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1030	BLD-DR-Pipe Insulations-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1031	BLD-DR-Pipe Insulations-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1032	BLD-DR-Pipe Insulations-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1033	BLD-DR-Pipe Insulations-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1034	BLD-DR-Pipe Insulations-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1035	BLD-DR-Pipe Insulations-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1036	BLD-DR-Pipe Insulations-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1037	BLD-DR-Pipe Insulations-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1038	BLD-DR-Pipe Insulations-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1039	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1040	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1041	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1042	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1043	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1044	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1045	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1046	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1047	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1048	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1049	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1050	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1051	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1052	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1053	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1054	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1055	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1056	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1057	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1058	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1059	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1060	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1061	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1062	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1063	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1064	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1065	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1066	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1067	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1068	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1069	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1070	BLD-DR-Plumbing Fixtures-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1071	BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1072	BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1073	BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1074	BLD-DR-Plumbing Fixtures-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1075	BLD-DR-Plumbing Fixtures-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1076	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1077	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1078	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1079	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1080	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1081	BLD-DR-Plumbing Fixtures-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1082	BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1083	BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1084	BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1085	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1086	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1087	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1088	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1089	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1090	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1091	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1092	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1093	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1094	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1095	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1096	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1097	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1098	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1099	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1100	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1101	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1102	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1103	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1104	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1105	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1106	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1107	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1108	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1109	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1110	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1111	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1112	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1113	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1114	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1115	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1116	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1117	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1118	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1119	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1120	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1121	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1122	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1123	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1124	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1125	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1126	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1127	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1128	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1129	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1130	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1131	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1132	BLD-EL-Electrical Equipment-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1133	BLD-EL-Electrical Equipment-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1134	BLD-EL-Electrical Equipment-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1135	BLD-EL-Electrical Equipment-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1136	BLD-EL-Electrical Equipment-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1137	BLD-EL-Electrical Equipment-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1138	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1139	BLD-EL-Electrical Equipment-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1140	BLD-EL-Electrical Equipment-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1141	BLD-EL-Electrical Equipment-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1142	BLD-EL-Electrical Equipment-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1143	BLD-EL-Electrical Equipment-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1144	BLD-EL-Electrical Equipment-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1145	BLD-EL-Electrical Equipment-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1146	BLD-EL-Electrical Equipment-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1147	BLD-EL-Electrical Equipment-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1148	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1149	BLD-EL-Electrical Equipment-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1150	BLD-EL-Electrical Equipment-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1151	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1152	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1153	BLD-EL-Electrical Equipment-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1154	BLD-EL-Electrical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1155	BLD-EL-Electrical Equipment-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1156	BLD-EL-Electrical Equipment-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1157	BLD-EL-Electrical Equipment-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1158	BLD-EL-Electrical Equipment-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1159	BLD-EL-Electrical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1160	BLD-EL-Electrical Equipment-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1161	BLD-EL-Electrical Equipment-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1162	BLD-EL-Electrical Equipment-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1163	BLD-EL-Electrical Equipment-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1164	BLD-EL-Electrical Equipment-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1165	BLD-EL-Electrical Equipment-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1166	BLD-EL-Electrical Equipment-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1167	BLD-EL-Electrical Equipment-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1168	BLD-EL-Electrical Equipment-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1169	BLD-EL-Electrical Equipment-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1170	BLD-EL-Electrical Equipment-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1171	BLD-EL-Electrical Equipment-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1172	BLD-EL-Electrical Equipment-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1173	BLD-EL-Electrical Equipment-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1174	BLD-EL-Electrical Equipment-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1175	BLD-EL-Electrical Equipment-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1176	BLD-EL-Electrical Equipment-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1177	BLD-EL-Electrical Equipment-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1178	BLD-EL-Electrical Equipment-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1179	BLD-EL-Electrical Equipment-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1180	BLD-EL-Electrical Fixtures-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1181	BLD-EL-Electrical Fixtures-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1182	BLD-EL-Electrical Fixtures-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1183	BLD-EL-Electrical Fixtures-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1184	BLD-EL-Electrical Fixtures-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1185	BLD-EL-Electrical Fixtures-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1186	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1187	BLD-EL-Electrical Fixtures-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1188	BLD-EL-Electrical Fixtures-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1189	BLD-EL-Electrical Fixtures-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1190	BLD-EL-Electrical Fixtures-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1191	BLD-EL-Electrical Fixtures-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1192	BLD-EL-Electrical Fixtures-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1193	BLD-EL-Electrical Fixtures-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1194	BLD-EL-Electrical Fixtures-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1195	BLD-EL-Electrical Fixtures-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1196	BLD-EL-Electrical Fixtures-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1197	BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1198	BLD-EL-Electrical Fixtures-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1199	BLD-EL-Electrical Fixtures-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1200	BLD-EL-Electrical Fixtures-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1201	BLD-EL-Electrical Fixtures-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1202	BLD-EL-Electrical Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1203	BLD-EL-Electrical Fixtures-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1204	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1205	BLD-EL-Electrical Fixtures-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1206	BLD-EL-Electrical Fixtures-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1207	BLD-EL-Electrical Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1208	BLD-EL-Electrical Fixtures-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1209	BLD-EL-Electrical Fixtures-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1210	BLD-EL-Electrical Fixtures-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1211	BLD-EL-Electrical Fixtures-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1212	BLD-EL-Electrical Fixtures-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1213	BLD-EL-Electrical Fixtures-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1214	BLD-EL-Electrical Fixtures-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1215	BLD-EL-Electrical Fixtures-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1216	BLD-EL-Electrical Fixtures-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1217	BLD-EL-Electrical Fixtures-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1218	BLD-EL-Electrical Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1219	BLD-EL-Electrical Fixtures-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1220	BLD-EL-Electrical Fixtures-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1221	BLD-EL-Electrical Fixtures-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1222	BLD-EL-Electrical Fixtures-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1223	BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1224	BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1225	BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1226	BLD-EL-Electrical Fixtures-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1227	BLD-EL-Electrical Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1228	BLD-EL-Electrical Fixtures-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1229	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1230	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1231	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1232	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1233	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1234	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1235	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1236	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1237	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1238	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1239	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1240	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1241	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1242	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1243	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1244	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1245	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1246	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1247	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1248	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1249	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1250	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1251	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1252	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1253	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1254	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1255	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1256	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1257	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1258	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1259	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1260	BLD-EL-Conduits & Conduit Fittings-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1261	BLD-EL-Conduits & Conduit Fittings-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1262	BLD-EL-Conduits & Conduit Fittings-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1263	BLD-EL-Conduits & Conduit Fittings-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1264	BLD-EL-Conduits & Conduit Fittings-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1265	BLD-EL-Conduits & Conduit Fittings-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1266	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1267	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1268	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1269	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1270	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1271	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1272	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1273	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1274	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1275	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1276	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1277	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1278	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1279	BLD-EL-Devices-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1280	BLD-EL-Devices-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1281	BLD-EL-Devices-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1282	BLD-EL-Devices-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1283	BLD-EL-Devices-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1284	BLD-EL-Devices-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1285	BLD-EL-Devices-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1286	BLD-EL-Devices-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1287	BLD-EL-Devices-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1288	BLD-EL-Devices-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1289	BLD-EL-Devices-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1290	BLD-EL-Devices-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1291	BLD-EL-Devices-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1292	BLD-EL-Devices-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1293	BLD-EL-Devices-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1294	BLD-EL-Devices-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1295	BLD-EL-Devices-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1296	BLD-EL-Devices-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1297	BLD-EL-Devices-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1298	BLD-EL-Devices-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1299	BLD-EL-Devices-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1300	BLD-EL-Devices-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1301	BLD-EL-Devices-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1302	BLD-EL-Devices-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1303	BLD-EL-Devices-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1304	BLD-EL-Devices-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1305	BLD-EL-Devices-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1306	BLD-EL-Devices-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1307	BLD-EL-Devices-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1308	BLD-EL-Devices-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1309	BLD-EL-Devices-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1310	BLD-EL-Devices-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1311	BLD-EL-Devices-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1312	BLD-EL-Devices-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1313	BLD-EL-Devices-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1314	BLD-EL-Devices-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1315	BLD-EL-Devices-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1316	BLD-EL-Devices-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1317	BLD-EL-Devices-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1318	BLD-EL-Devices-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1319	BLD-EL-Devices-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1320	BLD-EL-Devices-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1321	BLD-EL-Devices-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1322	BLD-EL-Devices-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1323	BLD-EL-Devices-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1324	BLD-EL-Devices-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1325	BLD-EL-Devices-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1326	BLD-EL-Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1327	BLD-EL-Devices-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1328	BLD-EL-Devices-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1329	BLD-EL-Devices-vs-BLD-EL-Conduits & Conduit Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1330	BLD-EL-Lighting Fixtures-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1331	BLD-EL-Lighting Fixtures-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1332	BLD-EL-Lighting Fixtures-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1333	BLD-EL-Lighting Fixtures-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1334	BLD-EL-Lighting Fixtures-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1335	BLD-EL-Lighting Fixtures-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1336	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1337	BLD-EL-Lighting Fixtures-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1338	BLD-EL-Lighting Fixtures-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1339	BLD-EL-Lighting Fixtures-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1340	BLD-EL-Lighting Fixtures-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1341	BLD-EL-Lighting Fixtures-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1342	BLD-EL-Lighting Fixtures-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1343	BLD-EL-Lighting Fixtures-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1344	BLD-EL-Lighting Fixtures-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1345	BLD-EL-Lighting Fixtures-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1346	BLD-EL-Lighting Fixtures-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1347	BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1348	BLD-EL-Lighting Fixtures-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1349	BLD-EL-Lighting Fixtures-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1350	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1351	BLD-EL-Lighting Fixtures-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1352	BLD-EL-Lighting Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1353	BLD-EL-Lighting Fixtures-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1354	BLD-EL-Lighting Fixtures-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1355	BLD-EL-Lighting Fixtures-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1356	BLD-EL-Lighting Fixtures-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1357	BLD-EL-Lighting Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1358	BLD-EL-Lighting Fixtures-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1359	BLD-EL-Lighting Fixtures-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1360	BLD-EL-Lighting Fixtures-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1361	BLD-EL-Lighting Fixtures-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1362	BLD-EL-Lighting Fixtures-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1363	BLD-EL-Lighting Fixtures-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1364	BLD-EL-Lighting Fixtures-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1365	BLD-EL-Lighting Fixtures-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1366	BLD-EL-Lighting Fixtures-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1367	BLD-EL-Lighting Fixtures-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1368	BLD-EL-Lighting Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1369	BLD-EL-Lighting Fixtures-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1370	BLD-EL-Lighting Fixtures-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1371	BLD-EL-Lighting Fixtures-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1372	BLD-EL-Lighting Fixtures-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1373	BLD-EL-Lighting Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1374	BLD-EL-Lighting Fixtures-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1375	BLD-EL-Lighting Fixtures-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1376	BLD-EL-Lighting Fixtures-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1377	BLD-EL-Lighting Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1378	BLD-EL-Lighting Fixtures-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1379	BLD-EL-Lighting Fixtures-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1380	BLD-EL-Lighting Fixtures-vs-BLD-EL-Conduits & Conduit Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1381	BLD-EL-Lighting Fixtures-vs-BLD-EL-Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1382	BLD-EL-Lighting Devices-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1383	BLD-EL-Lighting Devices-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1384	BLD-EL-Lighting Devices-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1385	BLD-EL-Lighting Devices-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1386	BLD-EL-Lighting Devices-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1387	BLD-EL-Lighting Devices-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1388	BLD-EL-Lighting Devices-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1389	BLD-EL-Lighting Devices-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1390	BLD-EL-Lighting Devices-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1391	BLD-EL-Lighting Devices-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1392	BLD-EL-Lighting Devices-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1393	BLD-EL-Lighting Devices-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1394	BLD-EL-Lighting Devices-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1395	BLD-EL-Lighting Devices-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1396	BLD-EL-Lighting Devices-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1397	BLD-EL-Lighting Devices-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1398	BLD-EL-Lighting Devices-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1399	BLD-EL-Lighting Devices-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1400	BLD-EL-Lighting Devices-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1401	BLD-EL-Lighting Devices-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1402	BLD-EL-Lighting Devices-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1403	BLD-EL-Lighting Devices-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1404	BLD-EL-Lighting Devices-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1405	BLD-EL-Lighting Devices-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1406	BLD-EL-Lighting Devices-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1407	BLD-EL-Lighting Devices-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1408	BLD-EL-Lighting Devices-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1409	BLD-EL-Lighting Devices-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1410	BLD-EL-Lighting Devices-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1411	BLD-EL-Lighting Devices-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1412	BLD-EL-Lighting Devices-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1413	BLD-EL-Lighting Devices-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1414	BLD-EL-Lighting Devices-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1415	BLD-EL-Lighting Devices-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1416	BLD-EL-Lighting Devices-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1417	BLD-EL-Lighting Devices-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1418	BLD-EL-Lighting Devices-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1419	BLD-EL-Lighting Devices-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1420	BLD-EL-Lighting Devices-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1421	BLD-EL-Lighting Devices-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1422	BLD-EL-Lighting Devices-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1423	BLD-EL-Lighting Devices-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1424	BLD-EL-Lighting Devices-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1425	BLD-EL-Lighting Devices-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1426	BLD-EL-Lighting Devices-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1427	BLD-EL-Lighting Devices-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1428	BLD-EL-Lighting Devices-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1429	BLD-EL-Lighting Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1430	BLD-EL-Lighting Devices-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1431	BLD-EL-Lighting Devices-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1432	BLD-EL-Lighting Devices-vs-BLD-EL-Conduits & Conduit Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1433	BLD-EL-Lighting Devices-vs-BLD-EL-Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1434	BLD-EL-Lighting Devices-vs-BLD-EL-Lighting Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1435	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1436	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1437	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1438	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1439	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1440	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1441	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1442	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1443	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1444	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1445	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1446	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1447	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1448	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1449	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1450	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1451	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1452	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1453	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1454	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1455	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1456	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1457	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1458	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1459	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1460	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1461	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1462	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1463	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1464	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1465	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1466	BLD-EL-Fire Alarm Devices-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1467	BLD-EL-Fire Alarm Devices-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1468	BLD-EL-Fire Alarm Devices-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1469	BLD-EL-Fire Alarm Devices-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1470	BLD-EL-Fire Alarm Devices-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1471	BLD-EL-Fire Alarm Devices-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1472	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1473	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1474	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1475	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1476	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1477	BLD-EL-Fire Alarm Devices-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1478	BLD-EL-Fire Alarm Devices-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1479	BLD-EL-Fire Alarm Devices-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1480	BLD-EL-Fire Alarm Devices-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1481	BLD-EL-Fire Alarm Devices-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1482	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1483	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1484	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1485	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Conduits & Conduit Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1486	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1487	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1488	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1489	BLD-EL-Telecom Equipment-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1490	BLD-EL-Telecom Equipment-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1491	BLD-EL-Telecom Equipment-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1492	BLD-EL-Telecom Equipment-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1493	BLD-EL-Telecom Equipment-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1494	BLD-EL-Telecom Equipment-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1495	BLD-EL-Telecom Equipment-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1496	BLD-EL-Telecom Equipment-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1497	BLD-EL-Telecom Equipment-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1498	BLD-EL-Telecom Equipment-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1499	BLD-EL-Telecom Equipment-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1500	BLD-EL-Telecom Equipment-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1501	BLD-EL-Telecom Equipment-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1502	BLD-EL-Telecom Equipment-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1503	BLD-EL-Telecom Equipment-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1504	BLD-EL-Telecom Equipment-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1505	BLD-EL-Telecom Equipment-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1506	BLD-EL-Telecom Equipment-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1507	BLD-EL-Telecom Equipment-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1508	BLD-EL-Telecom Equipment-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1509	BLD-EL-Telecom Equipment-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1510	BLD-EL-Telecom Equipment-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1511	BLD-EL-Telecom Equipment-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1512	BLD-EL-Telecom Equipment-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1513	BLD-EL-Telecom Equipment-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1514	BLD-EL-Telecom Equipment-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1515	BLD-EL-Telecom Equipment-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1516	BLD-EL-Telecom Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1517	BLD-EL-Telecom Equipment-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1518	BLD-EL-Telecom Equipment-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1519	BLD-EL-Telecom Equipment-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1520	BLD-EL-Telecom Equipment-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1521	BLD-EL-Telecom Equipment-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1522	BLD-EL-Telecom Equipment-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1523	BLD-EL-Telecom Equipment-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1524	BLD-EL-Telecom Equipment-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1525	BLD-EL-Telecom Equipment-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1526	BLD-EL-Telecom Equipment-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1527	BLD-EL-Telecom Equipment-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1528	BLD-EL-Telecom Equipment-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1529	BLD-EL-Telecom Equipment-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1530	BLD-EL-Telecom Equipment-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1531	BLD-EL-Telecom Equipment-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1532	BLD-EL-Telecom Equipment-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1533	BLD-EL-Telecom Equipment-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1534	BLD-EL-Telecom Equipment-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1535	BLD-EL-Telecom Equipment-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1536	BLD-EL-Telecom Equipment-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1537	BLD-EL-Telecom Equipment-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1538	BLD-EL-Telecom Equipment-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1539	BLD-EL-Telecom Equipment-vs-BLD-EL-Conduits & Conduit Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1540	BLD-EL-Telecom Equipment-vs-BLD-EL-Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1541	BLD-EL-Telecom Equipment-vs-BLD-EL-Lighting Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1542	BLD-EL-Telecom Equipment-vs-BLD-EL-Lighting Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1543	BLD-EL-Telecom Equipment-vs-BLD-EL-Fire Alarm Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1544	BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1545	BLD-EL-Telecom Fixtures-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1546	BLD-EL-Telecom Fixtures-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1547	BLD-EL-Telecom Fixtures-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1548	BLD-EL-Telecom Fixtures-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1549	BLD-EL-Telecom Fixtures-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1550	BLD-EL-Telecom Fixtures-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1551	BLD-EL-Telecom Fixtures-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1552	BLD-EL-Telecom Fixtures-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1553	BLD-EL-Telecom Fixtures-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1554	BLD-EL-Telecom Fixtures-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1555	BLD-EL-Telecom Fixtures-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1556	BLD-EL-Telecom Fixtures-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1557	BLD-EL-Telecom Fixtures-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1558	BLD-EL-Telecom Fixtures-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1559	BLD-EL-Telecom Fixtures-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1560	BLD-EL-Telecom Fixtures-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1561	BLD-EL-Telecom Fixtures-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1562	BLD-EL-Telecom Fixtures-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1563	BLD-EL-Telecom Fixtures-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1564	BLD-EL-Telecom Fixtures-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1565	BLD-EL-Telecom Fixtures-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1566	BLD-EL-Telecom Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1567	BLD-EL-Telecom Fixtures-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1568	BLD-EL-Telecom Fixtures-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1569	BLD-EL-Telecom Fixtures-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1570	BLD-EL-Telecom Fixtures-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1571	BLD-EL-Telecom Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1572	BLD-EL-Telecom Fixtures-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1573	BLD-EL-Telecom Fixtures-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1574	BLD-EL-Telecom Fixtures-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1575	BLD-EL-Telecom Fixtures-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1576	BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1577	BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1578	BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1579	BLD-EL-Telecom Fixtures-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1580	BLD-EL-Telecom Fixtures-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1581	BLD-EL-Telecom Fixtures-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1582	BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1583	BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1584	BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1585	BLD-EL-Telecom Fixtures-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1586	BLD-EL-Telecom Fixtures-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1587	BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1588	BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1589	BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1590	BLD-EL-Telecom Fixtures-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1591	BLD-EL-Telecom Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1592	BLD-EL-Telecom Fixtures-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1593	BLD-EL-Telecom Fixtures-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1594	BLD-EL-Telecom Fixtures-vs-BLD-EL-Conduits & Conduit Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1595	BLD-EL-Telecom Fixtures-vs-BLD-EL-Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1596	BLD-EL-Telecom Fixtures-vs-BLD-EL-Lighting Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1597	BLD-EL-Telecom Fixtures-vs-BLD-EL-Lighting Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1598	BLD-EL-Telecom Fixtures-vs-BLD-EL-Fire Alarm Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1599	BLD-EL-Telecom Fixtures-vs-BLD-EL-Telecom Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1600	BLD-Security Devices-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1601	BLD-Security Devices-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1602	BLD-Security Devices-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1603	BLD-Security Devices-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1604	BLD-Security Devices-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1605	BLD-Security Devices-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1606	BLD-Security Devices-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1607	BLD-Security Devices-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1608	BLD-Security Devices-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1609	BLD-Security Devices-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1610	BLD-Security Devices-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1611	BLD-Security Devices-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1612	BLD-Security Devices-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1613	BLD-Security Devices-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1614	BLD-Security Devices-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1615	BLD-Security Devices-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1616	BLD-Security Devices-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1617	BLD-Security Devices-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1618	BLD-Security Devices-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1619	BLD-Security Devices-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1620	BLD-Security Devices-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1621	BLD-Security Devices-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1622	BLD-Security Devices-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1623	BLD-Security Devices-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1624	BLD-Security Devices-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1625	BLD-Security Devices-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1626	BLD-Security Devices-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1627	BLD-Security Devices-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1628	BLD-Security Devices-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1629	BLD-Security Devices-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1630	BLD-Security Devices-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1631	BLD-Security Devices-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1632	BLD-Security Devices-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1633	BLD-Security Devices-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1634	BLD-Security Devices-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1635	BLD-Security Devices-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1636	BLD-Security Devices-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1637	BLD-Security Devices-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1638	BLD-Security Devices-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1639	BLD-Security Devices-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1640	BLD-Security Devices-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1641	BLD-Security Devices-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1642	BLD-Security Devices-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1643	BLD-Security Devices-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1644	BLD-Security Devices-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1645	BLD-Security Devices-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1646	BLD-Security Devices-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1647	BLD-Security Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1648	BLD-Security Devices-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1649	BLD-Security Devices-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1650	BLD-Security Devices-vs-BLD-EL-Conduits & Conduit Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1651	BLD-Security Devices-vs-BLD-EL-Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1652	BLD-Security Devices-vs-BLD-EL-Lighting Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1653	BLD-Security Devices-vs-BLD-EL-Lighting Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1654	BLD-Security Devices-vs-BLD-EL-Fire Alarm Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1655	BLD-Security Devices-vs-BLD-EL-Telecom Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1656	BLD-Security Devices-vs-BLD-EL-Telecom Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1657	BLD-EL-Communication Devices-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1658	BLD-EL-Communication Devices-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1659	BLD-EL-Communication Devices-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1660	BLD-EL-Communication Devices-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1661	BLD-EL-Communication Devices-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1662	BLD-EL-Communication Devices-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1663	BLD-EL-Communication Devices-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1664	BLD-EL-Communication Devices-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1665	BLD-EL-Communication Devices-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1666	BLD-EL-Communication Devices-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1667	BLD-EL-Communication Devices-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1668	BLD-EL-Communication Devices-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1669	BLD-EL-Communication Devices-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1670	BLD-EL-Communication Devices-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1671	BLD-EL-Communication Devices-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1672	BLD-EL-Communication Devices-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1673	BLD-EL-Communication Devices-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1674	BLD-EL-Communication Devices-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1675	BLD-EL-Communication Devices-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1676	BLD-EL-Communication Devices-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1677	BLD-EL-Communication Devices-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1678	BLD-EL-Communication Devices-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1679	BLD-EL-Communication Devices-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1680	BLD-EL-Communication Devices-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1681	BLD-EL-Communication Devices-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1682	BLD-EL-Communication Devices-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1683	BLD-EL-Communication Devices-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1684	BLD-EL-Communication Devices-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1685	BLD-EL-Communication Devices-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1686	BLD-EL-Communication Devices-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1687	BLD-EL-Communication Devices-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1688	BLD-EL-Communication Devices-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1689	BLD-EL-Communication Devices-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1690	BLD-EL-Communication Devices-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1691	BLD-EL-Communication Devices-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1692	BLD-EL-Communication Devices-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1693	BLD-EL-Communication Devices-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1694	BLD-EL-Communication Devices-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1695	BLD-EL-Communication Devices-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1696	BLD-EL-Communication Devices-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1697	BLD-EL-Communication Devices-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1698	BLD-EL-Communication Devices-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1699	BLD-EL-Communication Devices-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1700	BLD-EL-Communication Devices-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1701	BLD-EL-Communication Devices-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1702	BLD-EL-Communication Devices-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1703	BLD-EL-Communication Devices-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1704	BLD-EL-Communication Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1705	BLD-EL-Communication Devices-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1706	BLD-EL-Communication Devices-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1707	BLD-EL-Communication Devices-vs-BLD-EL-Conduits & Conduit Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1708	BLD-EL-Communication Devices-vs-BLD-EL-Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1709	BLD-EL-Communication Devices-vs-BLD-EL-Lighting Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1710	BLD-EL-Communication Devices-vs-BLD-EL-Lighting Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1711	BLD-EL-Communication Devices-vs-BLD-EL-Fire Alarm Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1712	BLD-EL-Communication Devices-vs-BLD-EL-Telecom Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1713	BLD-EL-Communication Devices-vs-BLD-EL-Telecom Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1714	BLD-EL-Communication Devices-vs-BLD-Security Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1715	BLD-EL-Telephone Devices-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1716	BLD-EL-Telephone Devices-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1717	BLD-EL-Telephone Devices-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1718	BLD-EL-Telephone Devices-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1719	BLD-EL-Telephone Devices-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1720	BLD-EL-Telephone Devices-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1721	BLD-EL-Telephone Devices-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1722	BLD-EL-Telephone Devices-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1723	BLD-EL-Telephone Devices-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1724	BLD-EL-Telephone Devices-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1725	BLD-EL-Telephone Devices-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1726	BLD-EL-Telephone Devices-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1727	BLD-EL-Telephone Devices-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1728	BLD-EL-Telephone Devices-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1729	BLD-EL-Telephone Devices-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1730	BLD-EL-Telephone Devices-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1731	BLD-EL-Telephone Devices-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1732	BLD-EL-Telephone Devices-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1733	BLD-EL-Telephone Devices-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1734	BLD-EL-Telephone Devices-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1735	BLD-EL-Telephone Devices-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1736	BLD-EL-Telephone Devices-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1737	BLD-EL-Telephone Devices-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1738	BLD-EL-Telephone Devices-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1739	BLD-EL-Telephone Devices-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1740	BLD-EL-Telephone Devices-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1741	BLD-EL-Telephone Devices-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1742	BLD-EL-Telephone Devices-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1743	BLD-EL-Telephone Devices-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1744	BLD-EL-Telephone Devices-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1745	BLD-EL-Telephone Devices-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1746	BLD-EL-Telephone Devices-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1747	BLD-EL-Telephone Devices-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1748	BLD-EL-Telephone Devices-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1749	BLD-EL-Telephone Devices-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1750	BLD-EL-Telephone Devices-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1751	BLD-EL-Telephone Devices-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1752	BLD-EL-Telephone Devices-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1753	BLD-EL-Telephone Devices-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1754	BLD-EL-Telephone Devices-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1755	BLD-EL-Telephone Devices-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1756	BLD-EL-Telephone Devices-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1757	BLD-EL-Telephone Devices-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1758	BLD-EL-Telephone Devices-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1759	BLD-EL-Telephone Devices-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1760	BLD-EL-Telephone Devices-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1761	BLD-EL-Telephone Devices-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1762	BLD-EL-Telephone Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1763	BLD-EL-Telephone Devices-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1764	BLD-EL-Telephone Devices-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1765	BLD-EL-Telephone Devices-vs-BLD-EL-Conduits & Conduit Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1766	BLD-EL-Telephone Devices-vs-BLD-EL-Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1767	BLD-EL-Telephone Devices-vs-BLD-EL-Lighting Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1768	BLD-EL-Telephone Devices-vs-BLD-EL-Lighting Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1769	BLD-EL-Telephone Devices-vs-BLD-EL-Fire Alarm Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1770	BLD-EL-Telephone Devices-vs-BLD-EL-Telecom Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1771	BLD-EL-Telephone Devices-vs-BLD-EL-Telecom Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1772	BLD-EL-Telephone Devices-vs-BLD-Security Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1773	BLD-EL-Telephone Devices-vs-BLD-EL-Communication Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1774	BLD-EL-Data Devices-vs-BLD-AR-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1775	BLD-EL-Data Devices-vs-BLD-AR-Stairs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1776	BLD-EL-Data Devices-vs-BLD-AR-Ramps	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1777	BLD-EL-Data Devices-vs-BLD-AR-Roofs	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1778	BLD-EL-Data Devices-vs-BLD-AR-Ceilings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1779	BLD-EL-Data Devices-vs-BLD-AR-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1780	BLD-EL-Data Devices-vs-BLD-AR-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1781	BLD-EL-Data Devices-vs-BLD-AR-Windows	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1782	BLD-EL-Data Devices-vs-BLD-AR-Curtain Panels	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1783	BLD-EL-Data Devices-vs-BLD-AR-Curtain Mullions	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1784	BLD-EL-Data Devices-vs-BLD-AR-Doors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1785	BLD-EL-Data Devices-vs-BLD-AR-Casework	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1786	BLD-EL-Data Devices-vs-BLD-AR-Furniture	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1787	BLD-EL-Data Devices-vs-BLD-AR-Parking	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1788	BLD-EL-Data Devices-vs-BLD-AR-Railings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1789	BLD-EL-Data Devices-vs-BLD-AR-Site	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1790	BLD-EL-Data Devices-vs-BLD-ST-Foundation	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1791	BLD-EL-Data Devices-vs-BLD-ST-Columns	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1792	BLD-EL-Data Devices-vs-BLD-ST-Framing	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1793	BLD-EL-Data Devices-vs-BLD-ST-Walls	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1794	BLD-EL-Data Devices-vs-BLD-ST-Floors	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1795	BLD-EL-Data Devices-vs-BLD-ST-Stair	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1796	BLD-EL-Data Devices-vs-BLD-ME-Ducts&Duct Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1797	BLD-EL-Data Devices-vs-BLD-ME-Duct Accessory	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1798	BLD-EL-Data Devices-vs-BLD-ME-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1799	BLD-EL-Data Devices-vs-BLD-ME-Flex Ducts	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1800	BLD-EL-Data Devices-vs-BLD-ME-Air Terminals	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1801	BLD-EL-Data Devices-vs-BLD-ME-Pipes&Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1802	BLD-EL-Data Devices-vs-BLD-ME-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1803	BLD-EL-Data Devices-vs-BLD-ME-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1804	BLD-EL-Data Devices-vs-BLD-ME-Flex Pipes	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1805	BLD-EL-Data Devices-vs-BLD-FF-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1806	BLD-EL-Data Devices-vs-BLD-FF-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1807	BLD-EL-Data Devices-vs-BLD-FF-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1808	BLD-EL-Data Devices-vs-BLD-FF-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1809	BLD-EL-Data Devices-vs-BLD-FF-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1810	BLD-EL-Data Devices-vs-BLD-FF-Sprinklers	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1811	BLD-EL-Data Devices-vs-BLD-PL-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1812	BLD-EL-Data Devices-vs-BLD-PL-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1813	BLD-EL-Data Devices-vs-BLD-PL-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1814	BLD-EL-Data Devices-vs-BLD-PL-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1815	BLD-EL-Data Devices-vs-BLD-PL-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1816	BLD-EL-Data Devices-vs-BLD-DR-Mechanical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1817	BLD-EL-Data Devices-vs-BLD-DR-Pipes & Pipe Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1818	BLD-EL-Data Devices-vs-BLD-DR-Pipe Accessories	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1819	BLD-EL-Data Devices-vs-BLD-DR-Pipe Insulations	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1820	BLD-EL-Data Devices-vs-BLD-DR-Plumbing Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1821	BLD-EL-Data Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1822	BLD-EL-Data Devices-vs-BLD-EL-Electrical Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1823	BLD-EL-Data Devices-vs-BLD-EL-Electrical Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1824	BLD-EL-Data Devices-vs-BLD-EL-Conduits & Conduit Fittings	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1825	BLD-EL-Data Devices-vs-BLD-EL-Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1826	BLD-EL-Data Devices-vs-BLD-EL-Lighting Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1827	BLD-EL-Data Devices-vs-BLD-EL-Lighting Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1828	BLD-EL-Data Devices-vs-BLD-EL-Fire Alarm Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1829	BLD-EL-Data Devices-vs-BLD-EL-Telecom Equipment	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1830	BLD-EL-Data Devices-vs-BLD-EL-Telecom Fixtures	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1831	BLD-EL-Data Devices-vs-BLD-Security Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1832	BLD-EL-Data Devices-vs-BLD-EL-Communication Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+one row	1833	BLD-EL-Data Devices-vs-BLD-EL-Telephone Devices	0.025m	0	0	0	0	0	0	Hard (Conservative)		0
+
+-- clash rows: test, clash name, status, distance, grid location, clash point, picture link
+
+sheet totals: tests 1830, clash rows 0, from the tests' own numbers clashes 0, new 0, active 0, reviewed 0, approved 0, resolved 0
+no full block on this sheet, so the one row tests were read in columns C to K, which is where WorkbookWriter puts them
+
+TOTALS: tests 1830 (0 full blocks, 1830 one row, 0 with no name), clash rows 0, picture links in cells 0, links that open no picture 0, pictures stored in the workbook 0, pictures in the sheet that point at a file outside it 0
+TOTALS from the tests' own numbers: clashes 0, new 0, active 0, reviewed 0, approved 0, resolved 0
+DOUBTS: 0
+END OF READ-OUT
