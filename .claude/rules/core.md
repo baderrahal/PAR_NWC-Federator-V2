@@ -428,10 +428,11 @@ and 6 does not read as broken.
 - The EXPORT CHECK run line is added up in Core, `ExportCheckAcrossTheRun`, by the rules
   each group's block judges by, `ModelExport.HoldsNoElement` among them, so the line and
   the blocks cannot disagree. The engine kept four counters of its own and none for a model
-  holding no Revit element. A group whose models were not all read is counted,
+  holding no Revit element. A group whose whole read threw is counted from the group's catch,
   `ExportCheckAcrossTheRun.GroupNotRead`, and the line says so and is never clean while one
-  was not. The row file's number for a model whose elements could not be
-  counted is empty, `ExportCheck.ElementsNumber`, as for any unknown in that file, never -1
+  is. A model `ModelFactsReader.Exports` drops in its own catch is in no count, so the line
+  can read clean over it, a known bug of F112. The row file's number for a model whose
+  elements could not be counted is empty, `ExportCheck.ElementsNumber`, as for any unknown in that file, never -1
 - The open file run's window label takes its clash counts from Core,
   `ClashRunOutcome.CountsForTheLabel`, which says none ran and why for a group whose clash
   was skipped, where the label printed nought run and nought clashes

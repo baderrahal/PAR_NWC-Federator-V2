@@ -13,31 +13,83 @@ test ended DONE. Attempt 3, on the lead's brief turn5\f112c-brief.md, took main 
 8b4fcdd, keeping Q110 and Q111 before main's Q112 and Q113 in steps\02_questions.md and this entry
 above main's two, and stopped at e6d6f73. A reviewer, a breaker and a claim-checker read it,
 turn5\f112c-read-review.txt, turn5\f112c-read-break.txt and turn5\f112c-read-claims.txt. Which
-commit each set of readings read: the attempt 1 and attempt 2 reviews and breaks name none, and
-by their files' write times, 18:17:10 and 21:07:44, and the branch reflog the tip then was c5d8aa8
-and 86ea5d3. The attempt 3 review names e6d6f73, the tip at its write time, 23:07:46. The breaker
-of attempt 3 found one blocking fault, new in attempt 3: the FAILED reason of a group with a model
-on Internal said its outputs were still written, at the ALIGNMENT step before any was, and hid a
-missing or stale NWD in RESULT. Attempt 4, the closing pass on the lead's message of 2026-10-04,
-fixed it at 0000355 and made the claim-checker's 13 points true here, in the F112 section of
-steps\01_next.md and in the body turn5\pr-f112.md. Core tests 1859 passed, 0 failed, 0 skipped
-before it at e6d6f73, turn5\f112d-core-before.txt, and 1865 passed, 0 failed, 0 skipped after,
-by the pre-commit of 0000355, turn5\f112d-precommit-reason.txt. One Explicit test,
-WriteTheCorrectedFile, is not run and is in no count in this entry. `dotnet build
-ParsonsNwcFederator.sln -c Release` at 0000355, the last change under src, 0 warnings and 0
-errors, turn5\f112d-build-after.txt, which carries the commit. `check-locals.sh src` and
-`check-imports.sh src` exit 0 at 0000355 by the same pre-commit. No Navisworks was started by this
-developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop.
+commit each set of readings read: the attempt 1 and attempt 2 reviews and breaks name none. Their
+files were last written at 18:17:10 and 21:07:44 and the attempt 3 files at 23:07:46, one time per
+file in turn5\f112e-stat-readings.txt, and the journal of the attempt 1 readings at 18:01:24,
+turn5\w1-read-journal-time.txt. The branch reflog, turn5\f112e-reflog.txt, gives c5d8aa8 as the
+tip from 17:26:42 to 18:29:11, 86ea5d3 from 19:53:41 to 21:14:41 and e6d6f73 from 22:45:22 to
+23:34:45, so each of those times falls where the tip was the commit named. The attempt 3 review
+also names e6d6f73.
+
+The breaker of attempt 3 found one blocking fault: the FAILED reason of a group with a model on
+Internal said its outputs were still written, at the ALIGNMENT step before any was, and hid a
+missing or stale NWD in RESULT. Its clause is older than F112. "Every output of this group was
+still written" came in at 29bfef8 of 2026-09-20 for Q70 and stood at line 286 of AlignmentCheck.cs
+on main 086a348, from which fix-F112 was made, and attempt 1 added its twin for a skipped group,
+"Its NWF and its NWD were still written", at 41ec380. No reading before attempt 3 names either
+clause, and none of their blocking findings is about it, turn5\f112e-clause-older.txt. So attempt
+4, the closing pass on the lead's message of 2026-10-04, is the first fix of that finding and not a
+fourth fix of one finding. It fixed it at 0000355 and made the attempt 3 claim-checker's points
+true at 39c50f0. A reviewer and a breaker read the closing pass at 39c50f0,
+turn5\f112d-read-review.txt and turn5\f112d-read-break.txt, both VERDICT APPROVE with nothing
+blocking. The review names 39c50f0, and both files were written at 00:19:36 on 2026-10-05,
+turn5\f112e-stat-readings.txt, while 39c50f0 was the tip, from 23:56:56 to 00:28:27 by
+turn5\f112e-reflog.txt. A claim-checker read it too, turn5\f112d-read-claims.txt, and its nine
+points that needed a change are made true here, in the F112 section of steps\01_next.md, in the
+rule in .claude\rules\core.md and in the body turn5\pr-f112.md, after main f09ee92 was taken in at
+c5ba7e0. Its last point needed no change, and its one reading note is in the attempt 4 tests below.
+
+Core tests 1859 passed, 0 failed, 0 skipped before attempt 4 at e6d6f73,
+turn5\f112d-core-before.txt, and 1865 passed, 0 failed, 0 skipped after, by the pre-commit of
+0000355, turn5\f112d-precommit-reason.txt, and by the pre-commit of the merge c5ba7e0,
+turn5\f112e-precommit-merge.txt. One Explicit test, WriteTheCorrectedFile, is not run and is in no
+count in this entry. `dotnet build ParsonsNwcFederator.sln -c Release` 0 warnings and 0 errors at
+0000355, the last change under src, turn5\f112d-build-after.txt, and at c5ba7e0,
+turn5\f112e-build-merge.txt, each file carrying its commit. `check-locals.sh src` and
+`check-imports.sh src` exit 0 at 0000355 and at c5ba7e0 by the same pre-commits. No developer of
+F112 started a Navisworks by the record of each attempt, named under Programs started. Every
+turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop.
 
 ### What was done
 
-- attempt 4, the root cause, at e6d6f73. AlignmentCheck.cs lines 463 to 467 ended the FAILED
+- the closing pass records, main f09ee92 taken in at c5ba7e0 by turn5\f112e-reflog.txt, both sides
+  of each conflict kept: this entry stays on top of steps\log.md above main's two new entries,
+  F125's order line stays 39 and F112's moves from 39 to 40 with its section after F125's in
+  steps\01_next.md, and steps\02_questions.md merged with no conflict, Q110 and Q111 before Q112,
+  Q113 and Q114, turn5\f112e-merge.txt. Main changed nothing under src from 32b75fd to f09ee92, and
+  nothing under src or tests differs from 0000355 at c5ba7e0, turn5\f112e-nwd-written-lines.txt
+- the closing pass records, the claim-checker's nine points on 39c50f0, turn5\f112d-read-claims.txt,
+  made true. The EXPORT CHECK run line is said as the code does it, never clean while a group
+  whose whole read threw is counted, in the attempt 3 item 4 below and in .claude\rules\core.md,
+  and a model dropped in the reader's own catch stays a Known bug. The Known bugs gain the three
+  catches of ModelFactsReader.cs at lines 338, 352 and 373, the ordinal match of NamesInternal and
+  the model naming no site left off the list, so the body's list for the next wave names only what
+  is here. The waiter's reads in attempt 1's window are said in order in steps\01_next.md and the
+  body. The write times of the readings and the pushes are read with stat,
+  turn5\f112e-stat-readings.txt, and the tips with the reflog, turn5\f112e-reflog.txt. The attempt
+  3 claim-checker made 12 points that needed a change, the 13 entries of
+  turn5\f112c-read-claims.txt less the last. The lines named at 8b4fcdd, e6d6f73, 27df6b3 and
+  0000355 are read with git show, turn5\f112e-lines-8b4fcdd-e6d6f73.txt, and each holds what this
+  entry says. The NWD written line's commit, a6957a6 of 2026-08-27, is read with git blame and its
+  line 3357 on main at 1ae6771 and at f09ee92 with git show, turn5\f112e-nwd-written-lines.txt.
+  Attempt 1's record that it started no Navisworks is its developer's last message in the
+  session's transcript, turn5\f112e-attempt1-return.txt. The checker's reading note on attempt
+  4's tests is in their bullet below
+- the closing pass records, the attempt 3 breaker's clause read back to its commits and every
+  blocking finding of the readings of attempts 1 to 3 listed, turn5\f112e-clause-older.txt, as the
+  paragraph above says
+- the closing pass records, the readings' notes, none blocking, turn5\f112d-read-review.txt and
+  turn5\f112d-read-break.txt, each in the Known bugs or under What remains
+- attempt 4, the root cause, at e6d6f73, every line here read back from that commit with git show,
+  turn5\f112e-lines-8b4fcdd-e6d6f73.txt. AlignmentCheck.cs lines 463 to 467 ended the FAILED
   reason "Every output of this group was still written, so the evidence is there to send." or
   "Its NWF and its NWD were still written", made at the ALIGNMENT step before any file is
-  written. FederationEngine.cs line 2143 put it on the group's errors, `outcome.AddError(fails)`,
-  and GroupJudgement.cs lines 180 to 184 returned on HasErrors before the NWD checks at lines 244
-  to 258. So for a group failed on a model whose publish returned false, RESULT gave that
-  sentence as its one reason and never named the NWD missing or not from this run
+  written. The first clause is older than F112, from 29bfef8 of 2026-09-20, and the second came
+  with attempt 1 at 41ec380, turn5\f112e-clause-older.txt. FederationEngine.cs line 2143 put it on
+  the group's errors, `outcome.AddError(fails)`, and GroupJudgement.cs lines 180 to 184 returned on
+  HasErrors before the NWD checks at lines 244 to 258. So for a group failed on a model whose
+  publish returned false, RESULT gave that sentence as its one reason and never named the NWD
+  missing or not from this run
 - attempt 4, the fix, at 0000355. WhyItFailsTheGroup's reason names the models and their sites
   and nothing of a file, and the block line adds the full stop. The engine keeps it apart from the
   errors, JobOutcome.AlignmentFailure, handed to GroupFacts.AlignmentFailure, and
@@ -52,14 +104,19 @@ developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop
   failed and 1857 passed, and pass after, 1865 passed, turn5\f112d-reason-after.txt and the
   pre-commit of 0000355. The NWD from this run, stale and missing, each with the reason asserted
   whole, and the stale NWD with a skipped clash. By name, 8 new and 2 renamed away, which nets the
-  6, and 5 changed under the same name, turn5\f112d-tests-attempt4.txt. Every removed test line,
-  with where each assert went, in turn5\f112d-removed-test-lines.txt
-- attempt 4, the claim-checker's 13 points on attempt 3, turn5\f112c-read-claims.txt, made true in
-  this entry, the F112 section of steps\01_next.md and turn5\pr-f112.md. The lines at ddd5e0c this
-  entry names were read with git show from the commit, turn5\f112d-ddd5e0c-lines.txt, and each
+  6, and 5 changed under the same name, turn5\f112d-tests-attempt4.txt. Of the 8 new, 7 failed
+  before and AGroupFailedOnItsModelsKeepsWhatThrewBesideIt passed before too, as a guard that a
+  step that threw is still named, and the eighth failure is
+  TheFailedRunLineNamesBothCausesAndClaimsNoFile, changed under its name, line 15 of that file.
+  Every removed test line, with where each assert went, in turn5\f112d-removed-test-lines.txt
+- attempt 4, the claim-checker's 12 points on attempt 3, the 13 entries of
+  turn5\f112c-read-claims.txt less the last, which needed no change, made true in this entry,
+  the F112 section of steps\01_next.md and turn5\pr-f112.md. The lines at ddd5e0c this entry
+  names were read with git show from the commit, turn5\f112d-ddd5e0c-lines.txt, and each
   holds what the entry says. The rule in .claude\rules\core.md, under the judgement and under the
   rule of Q99 and Q100
-- attempt 3, the root cause, at 8b4fcdd. AlignmentCheck.cs line 423,
+- attempt 3, the root cause, at 8b4fcdd, each line read back from that commit with git show,
+  turn5\f112e-lines-8b4fcdd-e6d6f73.txt. AlignmentCheck.cs line 423,
   `else if (!skipClashOffCoordinates && NamesInternal(models[i], internalName))`, dropped Q70's
   Internal failure whenever the rule was on, and FederationEngine.cs line 2138 called it with the
   rule state alone, while OffCoordinates.SkipsTheClash at line 78 also needs a clash test to run.
@@ -79,26 +136,29 @@ developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop
   first pass, rule on, where WhyItFailsTheGroup returned null. The converted earlier note test
   fails only on its "this run skipped the clash" assert, because the stub, like the engine
   before, never looked at a skip
-- attempt 3, item 2, at 752f931, Core only. NwfAndNwd.cs lines 36 to 38 at 8b4fcdd ended the NWF
-  line "read after the NWD was published" whatever the NWD facts were. It says so only where the publish reported
-  success and the NWD is on the disk, and "read at the end of the group" otherwise.
+- attempt 3, item 2, at 752f931, Core only. NwfAndNwd.cs lines 36 to 38 at 8b4fcdd, read with git
+  show in turn5\f112e-lines-8b4fcdd-e6d6f73.txt, ended the NWF line "read after the NWD was
+  published" whatever the NWD facts were. It says so only where the publish reported success and
+  the NWD is on the disk, and "read at the end of the group" otherwise.
   TheNwfLineSaysNothingOfAPublishTheOutcomeDidNotShow asserts the NWF line of the no NWD note,
   the stale note and a publish reported with no NWD on the disk says nothing of a publish. It
   failed before, turn5\f112c-item2-before-fail.txt, and passes after,
   turn5\f112c-item2-after.txt
 - attempt 3, item 4, at da612e2 and 27df6b3, the readings' other notes in F112's own lines. The
   ALIGNMENT heading of a skipped group and the engine's CLASH line read
-  OffCoordinates.TestsCreatedNoneRun, now public, where the heading said every test was created.
-  The note says any viewpoint an earlier run saved in the NWF is still in it, since
-  BuildViewpoints returns before any viewpoint is touched, FederationEngine.cs lines 3425 to 3431
-  at 27df6b3, 3426 to 3432 at 0000355. The open file run's
-  window label takes its clash counts from ClashRunOutcome.CountsForTheLabel, where it printed
-  nought run and nought clashes for a skipped group. The EXPORT CHECK run line counts a group
-  whose models were not all read, ExportCheckAcrossTheRun.GroupNotRead, and is never clean while
-  one was not. The earlier reports read and the note of a skipped group sit in a try that logs
-  and writes no note, proved by the build only. Four tests failed before, the two of the words
-  against the old text, turn5\f112c-item4-words-before-fail.txt, and the two of the counts against
-  stubs whose source no file keeps, turn5\f112c-item4-counts-before-fail.txt, and pass after,
+  OffCoordinates.TestsCreatedNoneRun, now public, where the heading said every test was created. The
+  note says any viewpoint an earlier run saved in the NWF is still in it, since BuildViewpoints
+  returns before any viewpoint is touched, FederationEngine.cs lines 3425 to 3431 at 27df6b3, 3426
+  to 3432 at 0000355, both read with git show in turn5\f112e-lines-8b4fcdd-e6d6f73.txt. The open
+  file run's window label takes its clash counts from ClashRunOutcome.CountsForTheLabel, where it
+  printed nought run and nought clashes for a skipped group. The EXPORT CHECK run line counts a
+  group whose whole read threw, ExportCheckAcrossTheRun.GroupNotRead, called from the group's catch
+  alone, and is never clean while one is. A model ModelFactsReader.Exports drops in its own catch is
+  in no count, so the line can read clean over it, a Known bug below. The earlier reports read and
+  the note of a skipped group sit in a try that logs and writes no note, proved by the build only.
+  Four tests failed before, the two of the words against the old text,
+  turn5\f112c-item4-words-before-fail.txt, and the two of the counts against stubs whose source no
+  file keeps, turn5\f112c-item4-counts-before-fail.txt, and pass after,
   turn5\f112c-item4-words-after.txt and turn5\f112c-item4-counts-after.txt
 - attempt 3, its counts. Core tests 1848 passed, 0 failed, 0 skipped after the merge of 32b75fd,
   turn5\f112c-core-before.txt, a file with no commit line, the 1848 pinned to 8b4fcdd by
@@ -269,6 +329,25 @@ developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop
 
 ### Programs started and files written outside the repo
 
+- the closing pass records, programs: git (status, log, fetch, merge, add, commit, push, diff, show,
+  blame, reflog, grep, rev-parse, merge-base, cat-file, ls-files and config --get), dotnet build,
+  sh for the line reads and the pre-commits, python for the merge resolution, the edits and the
+  read of attempt 1's transcript, stat for the write times, and PowerShell for Get-Process Roamer.
+  No Navisworks and no stand-in. git fetch and each commit printed failed to delete lines for
+  folders under the main clone's .git\worktrees, Permission denied, git's own cleanup of worktree
+  records, which deleted nothing, turn5\f112e-precommit-merge.txt for one
+- the closing pass records, Get-Process Roamer read pid 32136, started at 21:17:06, at 00:26:45 on
+  2026-10-05, after the merge of main was resolved and before it was committed,
+  turn5\f112e-roamer-before.txt. The read after the last command is turn5\f112e-roamer-after.txt.
+  This developer started none and touched none
+- the closing pass records wrote under turn5 every f112e- file: the evidence named above, the
+  scripts f112e-resolve.py, f112e-edit-records.py and f112e-show-*.sh, the message files
+  f112e-msg-*.txt, the pre-commit outputs f112e-precommit-*.txt and the push output
+  f112e-push.txt. It changed turn5\pr-f112.md. It read the transcript of attempt 1's developer
+  under the session's folder in %USERPROFILE%\.claude and changed nothing there. git fetch wrote
+  the remote refs of the shared .git of the main clone, the build wrote bin and obj under the
+  worktree, and the pre-commit's tests made temporary folders under %TEMP%, removed by their
+  teardown
 - attempt 4, programs: git (status, log, fetch, diff, show, blame, merge-base, rev-parse, reflog,
   add, commit, push), dotnet test and dotnet build, sh for the two checks and the pre-commit, stat
   for the write times of the readings, and PowerShell for Get-Process Roamer and Get-CimInstance on
@@ -296,10 +375,11 @@ developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop
   command, turn5\f112c-roamer-before.txt. At 22:42:51 49016 was gone and pid 32136 ran, started
   at 21:17:06 at the same path, its parent pid 1392 svchost.exe at line 9 of
   turn5\f112c-roamer-after-push.txt. That read came after the push of 2d0e574, whose output
-  turn5\f112c-push.txt was written at 22:42:24, and not after the last command, as its own first
-  line says, because e6d6f73 was committed at 22:45:22 by the branch reflog. The read after the
-  last command is turn5\f112c-roamer-after.txt at 22:51:22, after the push of e6d6f73,
-  turn5\f112c-push-2.txt written at 22:50:30, 32136 still running. 32136 started 2 s after the
+  turn5\f112c-push.txt was written at 22:42:24 by turn5\f112e-stat-readings.txt, and not after the
+  last command, as its own first line says, because e6d6f73 was committed at 22:45:22 by the
+  branch reflog, turn5\f112e-reflog.txt. The read after the last command is
+  turn5\f112c-roamer-after.txt at 22:51:22, after the push of e6d6f73, turn5\f112c-push-2.txt
+  written at 22:50:30 by the same stat file, 32136 still running. 32136 started 2 s after the
   lead's waiter for the baseline run on C04 started at 21:17:04, which first lists it at 21:18:05,
   turn5\wait-run04-item1-C04.txt, and 38 s after the lead's check of set 04 item 1 C04 at
   21:16:28, turn5\base-check-set04-item1-C04.txt. No launch record names who started it, so that
@@ -324,12 +404,14 @@ developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop
   waiter for the baseline run on C02 started at 18:55:31 and listed it,
   turn5\wait-run04-item1-C02-b.txt. No launch record names who started it, so that it is the
   lead's baseline run is read off that waiter. This developer's record says it started none
-- attempt 1, from the branch's creation at 13:18:53 to c5d8aa8 at 17:26:42 by the branch reflog.
-  No Get-Process Roamer read was saved, and its record says it started none. The lead's waiter,
-  turn5\wait-no-roamer.txt, read pids 37356 and 47204, started at 12:53:23 and 12:54:16, every
-  ten minutes from 13:21:54, found 47204 gone at its 15:14:00 read and 37356 gone at its 15:24:00
-  read, and turn5\f104p2-roamer-reads.txt line 5 names the two Bader's own, started by hand. A
-  third, pid 47208, ran inside the same window, listed from 15:57:16 to 16:03:16 and gone at
+- attempt 1, from the branch's creation at 13:18:53 to c5d8aa8 at 17:26:42 by the branch reflog,
+  turn5\f112e-reflog.txt. No Get-Process Roamer read was saved and no record file of attempt 1 is
+  under turn5. Its record is its developer's last message in the session's transcript, which says
+  "Navisworks was never started", saved with its place in turn5\f112e-attempt1-return.txt. The
+  lead's waiter, turn5\wait-no-roamer.txt, read pids 37356 and 47204, started at 12:53:23 and
+  12:54:16, every ten minutes from 13:21:54, found 47204 gone at its 15:14:00 read and 37356 gone at
+  its 15:24:00 read, and turn5\f104p2-roamer-reads.txt line 5 names the two Bader's own, started by
+  hand. A third, pid 47208, ran inside the same window, listed from 15:57:16 to 16:03:16 and gone at
   16:04:16 by the waiter of the lead's run on C02, turn5\wait-run04-item1-C02.txt
 - attempt 2 wrote under turn5 every f112b- file, among them the edit scripts f112b-edit-*.py,
   f112b-resolve.py, the message files f112b-msg-*.txt and its entry's draft, f112b-log-entry.md.
@@ -352,8 +434,14 @@ developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop
   before under Q65, against his words "The group ends PARTIAL, never DONE", and a model on Internal
   there fails its group as Q70 answered, where his words say this replaces Q65 and Q70 for this
   case. None of his answers says what either does there
-- the branch is behind main, 1ae6771 when this entry was written, and main is not taken in by
-  this attempt. Whether steps\log.md and steps\01_next.md conflict is UNKNOWN until the merge runs
+- main f09ee92 is taken in at c5ba7e0, turn5\f112e-reflog.txt. Whether main moves on before the
+  pull request is UNKNOWN
+- the add-in's expected lines are in the F112 section of steps\01_next.md for the wave 1 run, and
+  not as numbered one-action steps in steps\03_bader_next.md, the process note of the attempt 3
+  and closing pass reviewers, turn5\f112c-read-review.txt and turn5\f112d-read-review.txt, for the
+  lead
+- the F119 item for the NWD and the NWF listed as written, in the Known bugs, for the lead to add
+  to steps\01_next.md, the closing pass reviewer's note
 
 ### Known bugs
 
@@ -361,7 +449,20 @@ developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop
 - the 1 m boundary is a strict greater than on a double with no case at real values, breaker 12
 - the Run tests button clashes the open document without reading the alignment
 - ModelFactsReader.cs lines 138 to 143 and 211 to 216 still catch and log nothing, and Placements
-  drops a model whose handle throws, so every model judged counts only the models handed back
+  drops a model whose handle throws, so every model judged counts only the models handed back.
+  Its catches at lines 338, 352 and 373 log nothing either: MillimetresPerUnit returns nought,
+  which leaves every model of the document unplaced with no line naming the read that threw, and
+  NameOf and DisciplineOf return an empty string. All five catches are older than F112, 485e79f of
+  2026-09-20 by git blame at 0000355, turn5\f112e-known-bug-lines.txt
+- NamesInternal matches the site with StringComparison.Ordinal, AlignmentCheck.cs line 595 at
+  0000355, as the two matches it replaced did before F112, lines 162 and 259 of 086a348,
+  turn5\f112e-known-bug-lines.txt. A site spelled INTERNAL, or Internal with a space after it, is
+  then read as a named shared site, so the rule neither skips the group's clash nor fails it by
+  Q70 unless the model is far, and such a group can end DONE, the attempt 3 breaker's leftover,
+  turn5\f112c-read-break.txt line 34
+- a model naming no site fails its group, yet it is neither on Internal nor far, so the list for
+  the modellers leaves it out and can say no model was found off, waiting on Q111, the attempt 3
+  breaker's leftover and the closing pass breaker's note, turn5\f112d-read-break.txt
 - the one discipline group's CLASH block and summary still print nought for tests never run
 - RESULT's other counts, groups, files written, the clash total and the moved totals, still add up
   over every run of one window, because they live on the log
@@ -369,19 +470,26 @@ developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop
 - a file whose every test is skipped before the model still reads as a clash skipped
 - the note, the list and RESULT say the tests whose sides both find something are created and none
   is run from the rule, not from the runner, so a runner that stopped or a creation that threw
-  reads the same, the breaker's note on attempt 2
+  reads the same, the breaker's note on attempt 2. With the rule off, RESULT and the list say a
+  group was clashed from the plan too and not from the runner, the closing pass breaker's note,
+  turn5\f112d-read-break.txt
 - in a skipped group a tolerance chosen in the tool still rewrites a saved test's tolerance with
   its results kept, ClashRunner, the breaker's note on attempt 2
 - the note's stale NWD line says the file is from an earlier run where the publish did not report
   success, which nobody read: on a first run, or where the publish left a partial file, it is
   this run's own, the breaker's note on attempt 3
-- older than F112, for the lead to add for F119 in wave 3: the files written list and the
-  `NWD      written` line name an NWD whose publish returned false or threw. WriteNwd calls
-  RunLog.WriteFinished whatever the publish said, FederationEngine.cs line 3609 at 0000355 and
-  line 3357 on main 1ae6771, since a6957a6 of 2026-08-27, and WriteFinished records any file on
-  the disk as written, RunLog.cs lines 1398 to 1445 at 0000355. Last week's NWD is then listed as
-  written by this run, against the rule that only a file this run wrote goes on the list. The
-  group's RESULT reason names it not from this run since attempt 4
+- older than F112, for the lead to add for F119 in wave 3: the files written list and the `NWD
+  written` line name an NWD whose publish returned false or threw. WriteNwd calls
+  RunLog.WriteFinished whatever the publish said, FederationEngine.cs line 3609 at 0000355 and at
+  c5ba7e0 and line 3357 on main at 1ae6771 and at f09ee92, each read with git show, the line as it
+  stands since a6957a6 of 2026-08-27 by git blame, and WriteFinished records any file on the disk as
+  written, RunLog.cs lines 1398 to 1445 at 0000355, all in turn5\f112e-nwd-written-lines.txt. Last
+  week's NWD is then listed as written by this run, against the rule that only a file this run wrote
+  goes on the list. The group's RESULT reason names it not from this run since attempt 4. The
+  closing pass breaker adds the NWF, turn5\f112d-read-break.txt: TrySaveFile's false is only logged,
+  FederationEngine.cs lines 2083 and 3395, NwfOnDisk then reads true off last week's file at lines
+  2099 and 3411, and GroupFacts holds no fact of the NWF save, so such a group can end DONE with
+  last week's NWF. The F119 item is to name both
 - the breaker's other notes on attempt 3, none blocking: with Compact resolved clashes ticked, a
   skipped group's earlier results are compacted, ClashRunner.cs lines 402 to 413 and 512 to 563.
   On the weekly run with no XML and tests saved in the NWF, the sentence that the tests are
@@ -392,14 +500,30 @@ developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop
   groups it covered. RESULT's counts add up over two runs of one window, as above
 - the reviewer's notes on attempt 3, none blocking: GroupNotRead is called only from the group
   catch, while ModelFactsReader.Exports drops a model in its own catch, lines 108 to 111, so such
-  a model is in no count. ClashRunOutcome.Summary writes the words of CountsForTheLabel a second
-  time. Comments in NwfAndNwd.cs, OffCoordinates.cs and ExportCheckAcrossTheRun.cs name loop
-  attempts that main never had
+  a model is in no count and the line can read clean. The comment over the call,
+  FederationEngine.cs line 2220, still says the line never reads clean over a group whose models
+  were not all read, turn5\f112e-known-bug-lines.txt. ClashRunOutcome.Summary writes the words
+  of CountsForTheLabel a second time. Comments in NwfAndNwd.cs, OffCoordinates.cs and
+  ExportCheckAcrossTheRun.cs name loop attempts that main never had
+- the closing pass reviewer's notes, none blocking, turn5\f112d-read-review.txt: the helper of the
+  four AModelOnInternalFails tests, AlignmentCheckTests.cs lines 882 to 884, builds facts with
+  nothing appended, so its FAILED would hold without the alignment failure, the reason assert and
+  GroupJudgementTests still holding the rule. The summary of WhereTheModelsSit,
+  FederationEngine.cs lines 2118 and 2119, still says Q70's failure is carried as an error. The
+  class summary of AlignmentCheck, lines 95 to 97, still says the group writes its NWF and its NWD
+  either way, which the closing pass breaker names too. The window label's count of the failure
+  with the errors, FederationEngine.cs line 3668, is a rule in the add-in proved by the build only
+- the closing pass breaker's notes, none blocking, turn5\f112d-read-break.txt: any step
+  GroupJudgement judges before the NWD, an error that threw, the NWF missing or failed viewpoints
+  among them, still hides a missing or stale NWD, because the judgement names the first failing
+  step alone, older than F112 for every group and said in the attempt 4 choices above. An earlier
+  note kept on a weekly run carries no date and still says no clash test was run, beside a fresh
+  workbook and NWD. The rule off reads as clashed from the plan, as above
 
 ### What comes next
 
-- the reviewer, the breaker and the claim-checker on 0000355 and the records commit after it, then
-  the pull request the lead opens
+- the pull request, which the lead opens with turn5\pr-f112.md, after any reading the lead calls on
+  this records commit
 
 ## 2026-10-04 The loop, turn 5, Bader's views by team, Q114, the plan
 
