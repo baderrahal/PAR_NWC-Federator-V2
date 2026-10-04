@@ -243,19 +243,22 @@ for 12 hours. Its lines go to turn5\keep-awake.txt. ENDED BY THE LEAD at 19:35:2
 requests, Q112: it keeps running while this Claude Code session is open, STATE WAITING
 included. The copy before the change is turn5\keep-awake-v1.ps1.
 KEEP AWAKE SINCE Q112. keep-awake.ps1 now takes the session's claude.exe, its pid and start
-time, and once a minute reads that it still runs. When it is gone it takes up any other
+time, pid 19148 started 17:03:32, the claude.exe in the parent chain of this session's shell,
+turn5\session-chain.txt, and once a minute reads that it still runs. When it is gone it takes up any other
 claude.exe of the Claude Code extension, and it stops, taking the request back first, only when
-none runs or this file reads STATE CLOSED. Proved on a copy with its own mutex, 8 passed and 0
-failed, turn5\keep-awake-test\prove-result.txt. Started through WMI as pid 10412 at 19:35:39,
-ended by the lead at 19:37 to prove the check, and started again by
+none runs or this file reads STATE CLOSED. A wrong session, STATE WAITING, a second copy and STATE CLOSED proved on a copy with its own mutex, 8 passed and 0 failed, turn5\keep-awake-test\prove-result.txt, and the takeover of another claude.exe when the watched one ends, 5 passed and 0 failed, the watched one a stand-in copy of PING.EXE named claude.exe, turn5\keep-awake-test\prove-takeover-result.txt. The stop when no Claude Code claude.exe runs at all is read in the code only, UNKNOWN by a run, since a run of it would end the session. Started through WMI as pid 10412 at 19:35:39,
+ended by the lead at 19:36:35 to prove the check, and started again by
 turn5\check-keep-awake.ps1 as pid 29740, STARTED at 19:36:56, parent pid 9844 WmiPrvSE.exe,
 watching claude.exe pid 19148 started 17:03:32, its call returning 0x80000000,
-turn5\keep-awake.txt and turn5\keep-awake-checks.txt. The check runs every 30 minutes from a
-schedule of this session, and the lead runs it too at the start of every turn. SLEEP WHEN
+turn5\keep-awake.txt and turn5\keep-awake-checks.txt. The check is scheduled in this session at 13 and 43
+minutes past each hour, job 04b2bf94, session-only, firing only while the session is idle,
+turn5\keep-awake-schedule.txt, and the lead runs it too at the start of every turn. No line of
+the schedule's own is in keep-awake-checks.txt yet. SLEEP WHEN
 PLUGGED IN: Bader allowed one change to his power settings, sleep when plugged in set to Never,
 the old value saved and put back at the close. It already read Never, 0, with hibernate after
-and turn off display after also 0 and no power policy key, so nothing was written and nothing
-is put back, turn5\power-before.txt. The System log since 2026-10-01 holds no sleep and no wake,
+and turn off display after also 0 when plugged in, and no key under
+HKLM\SOFTWARE\Policies\Microsoft\Power, so nothing was written and nothing is put back,
+turn5\power-before.txt, read again unchanged at 20:04, turn5\power-after.txt. The System log since 2026-10-01 holds no sleep and no wake,
 turn5\sleep-wake-since-1oct.txt.
 
 THE RUN SETS OF TURN 4. Each run set gets a fresh copy at
@@ -285,8 +288,9 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    steps\runs\04\findings.md, short, in the shape of set 03's, merged within the hour. The hung
    first attempt is kept as steps\runs\04\item1-C02-hung
 2. Wave 1: F125's second pass and F126, the driver unticking a named box, each read under Q93
-   and merged. F112 fix attempt 2 read and merged. F116 fix attempt 2, and its merge once Bader
-   answers Q113. Each with a reviewer, a breaker and the claim-checker, Actions green, merged one
+   and merged. F112 fix attempt 2 read and merged. F116 fix attempt 2, attempt 1 being aefb416
+   read in turn5\f116-read-review.txt, f116-read-break.txt and f116-read-claims.txt, and its
+   merge once Bader answers Q113. Each with a reviewer, a breaker and the claim-checker, Actions green, merged one
    at a time
 3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
    buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
@@ -298,14 +302,14 @@ and planned in the turn 5 entry of steps\log.md headed with them.
 4. Three short lines at the top of steps\fix-round.md and in the Claude tab, what the wave fixed,
    what the test proved and what got worse, merged within the hour. Three lines in the tab after
    each of Bader's five requests too
-5. Measured from the baseline before wave 2: which property and value name Generic Models on
+5. To measure from the baseline before wave 2: which property and value name Generic Models on
    1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test of the coverage,
    why the Shift range fails in the window code, and whether the driver can test a Shift click
    without real input
 6. Wave 2 in two halves, 2a F127 coverage first with F115 sets and F114 views, 2b F128 generic
    models with F118 workbook and report. Wave 3 in two halves, 3a F129 start from an NWF with
    F120 harvest and pictures and F109 install, 3b F130 the Shift range with F119 run log and
-   RESULT. Then waves 4 and 5, as steps\fix-round.md lists them. Every wave test after wave 2
+   RESULT. Then waves 4 and 5, as steps\fix-round.md lists them. Every wave test from wave 2 on
    shows the Coverage sheet
 Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes. The
 keep-awake is checked every 30 minutes.
@@ -414,7 +418,9 @@ OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its ch
   that no project's names sit in src, and Q103 read wider than the matrix, with what Furniture
   and Site do to a landscape group. F116 does not merge until he answers
 - Q110 and Q111 are held by F112's fix attempt 2 on its branch and reach the form when it merges.
-  Q112 is his own message of the five requests and asks him nothing
+  Q112 is his own message of the five requests. Two readings in its lead's notes, whether a
+  group whose counts differ should itself end FAILED and how the driver can test a Shift click,
+  go to him as questions when F127 and F130 start
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:

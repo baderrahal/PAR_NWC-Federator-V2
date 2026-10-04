@@ -160,12 +160,12 @@ and nothing is fixed until a real run on real files shows it fixed.
   it keeps running while the Claude Code session of the loop is open, STATE WAITING included,
   and stops itself, taking the request back first, only when steps\loop.md reads STATE CLOSED
   or no claude.exe of the Claude Code extension runs. It is the lead's own script outside the
-  repo, checked alive every 30 minutes and at the start of every turn, and started again when
-  it is gone. Its path, its process id and when it started and stopped are named in
+  repo, checked alive by a schedule of the session every 30 minutes while the session is idle
+  and by the lead at the start of every turn, and started again when it is gone. Its path, its process id and when it started and stopped are named in
   steps\loop.md
 - One change to his power settings is allowed, Q112: sleep when plugged in set to Never on the
   current scheme with powercfg, its old value saved in the turn's work folder first and put
-  back when the loop closes. On 2026-10-04 it already read Never, so nothing was written
+  back when the loop closes. On 2026-10-04 it already read Never when plugged in, so nothing was written
 - The loop installs the add-in only through tools\loop\run.ps1 -Mode Install, or by the
   in-place install at the end of this rule. run.ps1 -Mode Install runs
   build\install.ps1 from a checkout whose HEAD is the commit asked for and whose git status

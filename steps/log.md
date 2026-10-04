@@ -5,9 +5,12 @@ Newest entry at the top.
 
 Bader's message of the evening, headed FIVE REQUESTS ADDED TO THE ROUND, is Q112 of
 steps\02_questions.md in his words. Nothing under src, tests or tools changed. Core tests 1756
-passed, 0 failed, 0 skipped at the pre-commit of this record, as on main 68c870b.
+passed, 0 failed, 0 skipped at the pre-commit of this record, turn5\precommit-records-6.txt, as
+at the pre-commit of PR 97's last commit, turn5\precommit-records-5c.txt. The lines after the
+test count in both, error: failed to delete .git/worktrees, are git's housekeeping of worktree
+folders OneDrive holds, and stopped nothing.
 
-### The plan, written before the first edit
+### The plan, also given in the Claude tab before the first edit, a reply kept in no file
 
 - A, request 1 at once: measure the power settings, set sleep when plugged in to Never after
   saving the old value, read the System log for every sleep and wake since 1 Oct, and keep the
@@ -17,7 +20,7 @@ passed, 0 failed, 0 skipped at the pre-commit of this record, as on main 68c870b
   next action of steps\loop.md, and Q113 from F116's reading
 - C, wave 1 as planned: the baseline of set 04, F125's second pass and F126, F112's and F116's
   fix attempt 2, then the test of wave 1 through turn5\wave-compare.py and F104's documents read
-- D, measured from the baseline before wave 2: the property and value of Generic Models on
+- D, to measure from the baseline before wave 2: the property and value of Generic Models on
   1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test, why the Shift
   range fails, and whether the driver can test a Shift click without real input
 - E, wave 2 in two halves, 2a F127 coverage first with F115 and F114, 2b F128 generic models
@@ -40,11 +43,12 @@ passed, 0 failed, 0 skipped at the pre-commit of this record, as on main 68c870b
   asked at 09:07:20, down at 09:09:07 and started at 09:10:19
 - keep-awake.ps1 changed to watch the session's claude.exe and stop only when no Claude Code
   claude.exe runs or steps\loop.md reads STATE CLOSED, the old copy kept as keep-awake-v1.ps1.
-  Proved on a copy with its own mutex, 8 passed and 0 failed,
-  turn5\keep-awake-test\prove-result.txt. turn5\check-keep-awake.ps1 starts it again when it is
-  gone, proved by ending it at 19:37, turn5\keep-awake-checks.txt. A schedule of this session
-  runs the check at 13 and 43 minutes past each hour. It lives only as long as the session and
-  expires after 7 days
+  The session's claude.exe is pid 19148, in the parent chain of this session's shell,
+  turn5\session-chain.txt. A wrong session, STATE WAITING, a second copy and STATE CLOSED proved on a copy with its own mutex, 8 passed and 0 failed, turn5\keep-awake-test\prove-result.txt, and the takeover of another claude.exe when the watched one ends, 5 passed and 0 failed, the watched one a stand-in copy of PING.EXE named claude.exe, turn5\keep-awake-test\prove-takeover-result.txt. The stop when no Claude Code claude.exe runs at all is read in the code only, UNKNOWN by a run, since a run of it would end the session. turn5\check-keep-awake.ps1 starts it again when it is
+  gone, proved by ending it at 19:36:35, turn5\keep-awake-checks.txt. A schedule of this
+  session, job 04b2bf94, runs the check at 13 and 43 minutes past each hour while the session
+  is idle, turn5\keep-awake-schedule.txt. It lives only as long as the session, and the schedule
+  tool says it ends after 7 days. No line of its own is written yet
 - Q113 written from F116's reading: its corrections shipped as data in Core against CLAUDE.md,
   and Q103 read wider than the matrix. F116's readings are turn5\f116-read-review.txt,
   f116-read-break.txt and f116-read-claims.txt
@@ -62,6 +66,18 @@ passed, 0 failed, 0 skipped at the pre-commit of this record, as on main 68c870b
 ### What remains
 
 - everything from C of the plan on
+
+### Known bugs
+
+- the schedule fires only while the session is idle, so a long turn checks the keep-awake only
+  when the lead runs the check itself
+- the stop when no Claude Code claude.exe runs is UNKNOWN by a run
+
+### What comes next
+
+- C of the plan, the baseline runs and wave 1
+
+Nothing in this record waits for the local machine.
 
 ## 2026-10-04 The loop, turn 5, F104 part 2, the documents read, DONE for the build
 

@@ -102,9 +102,10 @@ and words and D1, bar three kept early and named below with why. The lead depart
 wished order in two places: F115 sets, 16 items his list did not name, in wave 2, and workbook
 and report one area because they share WorkbookCheck.cs. FR-136, Q108's fix, and F117, the names,
 moved from the waves 3 and 4 the lead first told him to wave 5, since both are noise by the class
-this list gives them and noise comes last in his order. Two pairs in one wave share a
-file and merge one after the other: in wave 1 F112 and F116 share ExportCheck.cs, F116 after
-F112, and in wave 5 F123 and F117 share docs\history\scan.md. The four finds of Q108, Q109, Q24
+this list gives them and noise comes last in his order. Four pairs in one wave or half
+share a file and merge one after the other: in wave 1 F112 and F116 share ExportCheck.cs, F116
+after F112, in 2b F128 and F118 the workbook writer, in 3b F130 and F119
+FederatorWindow.xaml.cs, and in wave 5 F123 and F117 docs\history\scan.md. The four finds of Q108, Q109, Q24
 and Q26 write their test steps under their items and run them at the start of the wave that
 holds them. Each area takes the F number shown.
 
@@ -4509,16 +4510,19 @@ was done, what the test showed, and anything for Bader.
   STATE WAITING included, checked every 30 minutes and started again if gone. Every sleep and
   wake in the System log since 1 Oct
 - Measured on 2026-10-04 at 19:27, turn5\power-before.txt: the Balanced scheme, sleep after,
-  hibernate after and turn off display after each read 0, Never, when plugged in, and no power
-  policy key exists. Only Standby (S0 Low Power Idle) is available, and hibernation is not
+  hibernate after and turn off display after each read 0, Never, when plugged in, and no key
+  exists under HKLM\SOFTWARE\Policies\Microsoft\Power. Only Standby (S0 Low Power Idle) is available, and hibernation is not
   enabled. The lock screen's display timeout is hidden from powercfg, so it is UNKNOWN
 - Done by the lead: nothing was written to the power settings, since the value asked for was
-  already there, so nothing is put back at the close. The System log since 2026-10-01 holds no
+  already there, so nothing is put back at the close, read again unchanged at 20:04,
+  turn5\power-after.txt. The System log since 2026-10-01 holds no
   sleep and no wake, only starts, a shutdown and an update restart,
-  turn5\sleep-wake-since-1oct.txt. keep-awake.ps1 now watches the session's claude.exe and stops
-  only when no Claude Code claude.exe runs or steps\loop.md reads STATE CLOSED, proved on a copy
-  8 passed and 0 failed, turn5\keep-awake-test\prove-result.txt. turn5\check-keep-awake.ps1
-  starts it again when it is gone, proved by ending it at 19:37, turn5\keep-awake-checks.txt
+  turn5\sleep-wake-since-1oct.txt. keep-awake.ps1 now watches the session's claude.exe, pid
+  19148 by turn5\session-chain.txt, and stops only when no Claude Code claude.exe runs or
+  steps\loop.md reads STATE CLOSED. A wrong session, STATE WAITING, a second copy and STATE CLOSED proved on a copy with its own mutex, 8 passed and 0 failed, turn5\keep-awake-test\prove-result.txt, and the takeover of another claude.exe when the watched one ends, 5 passed and 0 failed, the watched one a stand-in copy of PING.EXE named claude.exe, turn5\keep-awake-test\prove-takeover-result.txt. The stop when no Claude Code claude.exe runs at all is read in the code only, UNKNOWN by a run, since a run of it would end the session. turn5\check-keep-awake.ps1 starts it again
+  when it is gone, proved by ending it at 19:36:35, turn5\keep-awake-checks.txt, and is
+  scheduled at 13 and 43 minutes past each hour while the session is idle,
+  turn5\keep-awake-schedule.txt
 - Class: Bader's request
 - Closed: 2026-10-04, by the lead, as above
 
