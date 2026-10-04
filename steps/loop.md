@@ -167,6 +167,17 @@ and no reading named them as blocking before attempt 3's, so the closing pass no
 first fix attempt of that finding, with the claim-checker's 12 points. F116: fix attempt 2 read
 APPROVE by both, nothing blocking, turn5\f116b-read-review.txt and f116b-read-break.txt, and the
 pass that carries Bader's answer to Q113 is with its developer.
+F112 MERGED as PR 106, ddb059b, at 01:39:19 on 2026-10-05, green in Actions on its last commit
+61ea726, run 37240683150, turn5\actions-reads-pr106.txt. Its closing pass fixed the one blocking
+finding of attempt 3, read by a reviewer and a breaker with nothing blocking,
+turn5\f112d-read-review.txt and f112d-read-break.txt, and two claim-checks made its records true,
+the last turn5\f112e-read-claims.txt. Its family of findings, a sentence that says files were
+written before anything looked, took four passes, each instance fixed by the next, which the F112
+entry of steps\log.md says plainly for Bader to read. Main's last merge changed nothing under src
+or tests, turn5\f112f-diffs.txt, so the Release build of c5ba7e0, 0 warnings and 0 errors, holds.
+Core tests 1865 passed, 0 failed, 0 skipped at 61ea726, turn5\f112f-precommit.txt. Its branch and
+worktree folder are removed. Q110 and Q111 reach the form with it. The add-in half waits for the
+test of wave 1. Wave 1 now holds F113 and F112 on main, and F116 is in its fix pass.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -475,7 +486,9 @@ in the form are the questions already in steps\02_questions.md and are not repea
 OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its choices:
 - none of the turn 5 form. Q113 ANSWERED on 2026-10-04 in the evening: B, the correction list a plain file beside
   the picked XML, this project's in exchange\, and D, all four categories. F116 carries it
-- Q110 and Q111 are held by F112's fix attempt 2 on its branch and reach the form when it merges.
+- Q110, a skipped group creates only the tests whose sides both find something, where his answer
+  also says the NWF is built with all its tests, and Q111, a model that names no site at all still
+  fails its group with the rule on, both from F112's readings and on main since F112 merged.
   Q112 is his own message of the five requests. The two readings in its lead's notes he
   answered on 2026-10-04 in the evening, right as read: a count that differs is a FAILED line in
   COVERAGE and RESULT and the group keeps its own result, and a Shift click the driver cannot make
