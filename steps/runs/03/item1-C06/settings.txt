@@ -1,0 +1,206 @@
+  the AutoSave compare reads autosave-before.txt back, 196 files
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40632112088720  new QWord 40696523567949
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 93  new DWord 94
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353845156250  new QWord 2445695781250
+  22.0\GlobalOptions\tools\clash\teststab\testdetails  height  old String "1 353.6000000000000227374"  new String "1 354.0000000000000000000"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,77,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "LcOpNwcPlugin"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134353323421157136
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWF\C06\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "1104-PAR-1B06WL-ZZZ-EL-MOD-000001.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134353319506770984
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWC\C06\1104-PAR-1B06WL-ZZZ-EL-MOD-000001.nwc"
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134353323367518195
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWC\C06\1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134353323320897946
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWF\C06\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134353323182568605
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWC\C06\1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134353323133564582
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWF\C06\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134353322257375759
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWC\C06\1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134353322197640503
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWF\C06\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134353319985276821
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWC\C06\1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134353319930587963
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWF\C06\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf"
+  registry: 37 values or keys differ from the backup
+  registry: 37 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 65108 bytes, sha256 37A042CDE820, written 2026-10-01 09:18:23  new 66359 bytes, sha256 AFF3123F8629, written 2026-10-01 15:46:31
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 203D761BFDE5, written 2026-10-01 09:18:23  new 40079 bytes, sha256 05005DEE5B1F, written 2026-10-01 15:46:31
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave25.nwf  old 15062 bytes, sha256 A11120F0B872, written 2026-08-30 17:41:11  new absent
+  AutoSave AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave26.nwf  old 15091 bytes, sha256 A2E2B33237D9, written 2026-08-30 17:41:11  new absent
+  AutoSave AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave27.nwf  old 15151 bytes, sha256 AB2DEB14E962, written 2026-08-30 17:41:11  new absent
+  AutoSave AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave61.nwf  old absent  new 15263 bytes, sha256 2081B4CBCD7E, written 2026-10-01 14:01:04
+  AutoSave AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave62.nwf  old absent  new 15298 bytes, sha256 761D6020EA27, written 2026-10-01 14:01:04
+  AutoSave AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave63.nwf  old absent  new 15331 bytes, sha256 67E908EBC92B, written 2026-10-01 14:01:04
+  AutoSave AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave1329.nwf  old absent  new 173441 bytes, sha256 BE83BC46B6DF, written 2026-10-01 14:03:41
+  AutoSave AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave1330.nwf  old absent  new 173476 bytes, sha256 FB721E383451, written 2026-10-01 14:03:41
+  AutoSave AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave1331.nwf  old absent  new 173503 bytes, sha256 6F2FC2B136F2, written 2026-10-01 14:03:41
+  AutoSave AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave663.nwf  old 209685 bytes, sha256 C5884DB4E944, written 2026-09-27 17:00:27  new absent
+  AutoSave AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave664.nwf  old 209717 bytes, sha256 608815C73135, written 2026-09-27 17:00:28  new absent
+  AutoSave AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave665.nwf  old 209836 bytes, sha256 04591950740F, written 2026-09-27 17:00:28  new absent
+  AutoSave AutoSave\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.Autosave462.nwf  old absent  new 240538 bytes, sha256 9EAFBA2C78EF, written 2026-10-01 14:12:39
+  AutoSave AutoSave\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.Autosave463.nwf  old absent  new 240572 bytes, sha256 1F854D8DA141, written 2026-10-01 14:12:39
+  AutoSave AutoSave\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.Autosave464.nwf  old absent  new 240609 bytes, sha256 DFC165AE4936, written 2026-10-01 14:12:39
+  AutoSave AutoSave\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.Autosave117.nwf  old absent  new 28409 bytes, sha256 EAD46351FD9B, written 2026-10-01 14:43:13
+  AutoSave AutoSave\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.Autosave118.nwf  old absent  new 28436 bytes, sha256 2E19A1BF60CD, written 2026-10-01 14:43:14
+  AutoSave AutoSave\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.Autosave119.nwf  old absent  new 28619 bytes, sha256 5B72CA80DFD6, written 2026-10-01 14:43:14
+  AutoSave AutoSave\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.Autosave18.nwf  old absent  new 15302 bytes, sha256 075C623BBD27, written 2026-10-01 14:43:34
+  AutoSave AutoSave\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.Autosave19.nwf  old absent  new 15335 bytes, sha256 94971E347740, written 2026-10-01 14:43:35
+  AutoSave AutoSave\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.Autosave20.nwf  old absent  new 15371 bytes, sha256 EAD8807BDB42, written 2026-10-01 14:43:35
+  AutoSave AutoSave\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.Autosave168.nwf  old absent  new 147252 bytes, sha256 6222964D40B1, written 2026-10-01 14:44:44
+  AutoSave AutoSave\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.Autosave169.nwf  old absent  new 147284 bytes, sha256 BDAF475577D6, written 2026-10-01 14:44:44
+  AutoSave AutoSave\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.Autosave170.nwf  old absent  new 147322 bytes, sha256 088541D9D488, written 2026-10-01 14:44:45
+  AutoSave AutoSave\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.Autosave150.nwf  old absent  new 28989 bytes, sha256 CA3DB360142C, written 2026-10-01 14:49:46
+  AutoSave AutoSave\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.Autosave151.nwf  old absent  new 29023 bytes, sha256 4B0284D3DFBD, written 2026-10-01 14:49:46
+  AutoSave AutoSave\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.Autosave152.nwf  old absent  new 29062 bytes, sha256 FA38DCA2ACB3, written 2026-10-01 14:49:47
+  AutoSave AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave168.nwf  old 89151 bytes, sha256 F64C77597E05, written 2026-09-06 09:57:46  new absent
+  AutoSave AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave169.nwf  old 89192 bytes, sha256 9C0C53314F17, written 2026-09-06 09:57:46  new absent
+  AutoSave AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave170.nwf  old 89273 bytes, sha256 9CE2EFA7F1CF, written 2026-09-06 09:57:46  new absent
+  AutoSave AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave339.nwf  old absent  new 39252 bytes, sha256 EA7C497B9DDE, written 2026-10-01 14:50:56
+  AutoSave AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave340.nwf  old absent  new 39286 bytes, sha256 4D04B4B33E67, written 2026-10-01 14:50:57
+  AutoSave AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave341.nwf  old absent  new 39324 bytes, sha256 996D270B927A, written 2026-10-01 14:50:57
+  AutoSave AutoSave\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.Autosave88.nwf  old absent  new 295666 bytes, sha256 FC78974A3DAF, written 2026-10-01 14:55:13
+  AutoSave AutoSave\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.Autosave89.nwf  old absent  new 295704 bytes, sha256 4369399C7224, written 2026-10-01 14:55:13
+  AutoSave AutoSave\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.Autosave90.nwf  old absent  new 295738 bytes, sha256 2E7B1DA4EDD7, written 2026-10-01 14:55:13
+  AutoSave AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave207.nwf  old 80214 bytes, sha256 2B03265091C0, written 2026-09-06 09:58:47  new absent
+  AutoSave AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave208.nwf  old 80249 bytes, sha256 DED8677ECA46, written 2026-09-06 09:58:47  new absent
+  AutoSave AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave209.nwf  old 80331 bytes, sha256 842429195A84, written 2026-09-06 09:58:47  new absent
+  AutoSave AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave417.nwf  old absent  new 31542 bytes, sha256 606A8F96A80F, written 2026-10-01 15:20:44
+  AutoSave AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave418.nwf  old absent  new 31579 bytes, sha256 5E436CD8A279, written 2026-10-01 15:20:45
+  AutoSave AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave419.nwf  old absent  new 31615 bytes, sha256 EF86C8B11AAA, written 2026-10-01 15:20:45
+  AutoSave AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave273.nwf  old 241594 bytes, sha256 1BC766EF7C6F, written 2026-09-06 10:03:21  new absent
+  AutoSave AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave274.nwf  old 241676 bytes, sha256 94037DD496B4, written 2026-09-06 10:03:22  new absent
+  AutoSave AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave275.nwf  old 241722 bytes, sha256 BABC0B8FCDA9, written 2026-09-06 10:03:22  new absent
+  AutoSave AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave549.nwf  old absent  new 198738 bytes, sha256 F032A1B3AE11, written 2026-10-01 15:25:50
+  AutoSave AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave550.nwf  old absent  new 198768 bytes, sha256 FFCF04732BCE, written 2026-10-01 15:25:51
+  AutoSave AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave551.nwf  old absent  new 198806 bytes, sha256 D15D1D55D342, written 2026-10-01 15:25:51
+  AutoSave AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave179.nwf  old absent  new 39117 bytes, sha256 EBB63097CAD1, written 2026-10-01 15:38:37
+  AutoSave AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave180.nwf  old absent  new 39150 bytes, sha256 E9C1175D7EEB, written 2026-10-01 15:38:37
+  AutoSave AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave181.nwf  old absent  new 39185 bytes, sha256 713E00A153CB, written 2026-10-01 15:38:38
+  AutoSave AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave88.nwf  old 76450 bytes, sha256 350E4636316F, written 2026-09-06 10:04:40  new absent
+  AutoSave AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave89.nwf  old 76485 bytes, sha256 1CA1909E9BC4, written 2026-09-06 10:04:40  new absent
+  AutoSave AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave90.nwf  old 76517 bytes, sha256 3F521FF17F06, written 2026-09-06 10:04:40  new absent
+  AutoSave AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave179.nwf  old absent  new 28845 bytes, sha256 A41D5427BCD9, written 2026-10-01 15:39:48
+  AutoSave AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave180.nwf  old absent  new 28876 bytes, sha256 2C0579366003, written 2026-10-01 15:39:49
+  AutoSave AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave181.nwf  old absent  new 28913 bytes, sha256 81530702DFBF, written 2026-10-01 15:39:49
+  AutoSave AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave88.nwf  old 75668 bytes, sha256 D9919ECADFC0, written 2026-09-06 10:06:13  new absent
+  AutoSave AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave89.nwf  old 75696 bytes, sha256 A5CD92969C99, written 2026-09-06 10:06:14  new absent
+  AutoSave AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave90.nwf  old 75848 bytes, sha256 371A67E25063, written 2026-09-06 10:06:14  new absent
+  AutoSave AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave228.nwf  old 214234 bytes, sha256 8783DE2596AD, written 2026-09-06 10:09:42  new absent
+  AutoSave AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave229.nwf  old 214270 bytes, sha256 E15362E8D801, written 2026-09-06 10:09:43  new absent
+  AutoSave AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave230.nwf  old 214352 bytes, sha256 CD4C6EF84277, written 2026-09-06 10:09:43  new absent
+  AutoSave AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave459.nwf  old absent  new 165745 bytes, sha256 E4DDFAA28753, written 2026-10-01 15:41:56
+  AutoSave AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave460.nwf  old absent  new 165782 bytes, sha256 3212E844E72D, written 2026-10-01 15:41:57
+  AutoSave AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave461.nwf  old absent  new 165819 bytes, sha256 A29F3B02B10D, written 2026-10-01 15:41:57
+  AutoSave AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave207.nwf  old 85516 bytes, sha256 FAC612AE8BCB, written 2026-09-06 10:12:51  new absent
+  AutoSave AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave208.nwf  old 85552 bytes, sha256 84FED73E22D6, written 2026-09-06 10:12:52  new absent
+  AutoSave AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave209.nwf  old 85637 bytes, sha256 6B42D78CD851, written 2026-09-06 10:12:52  new absent
+  AutoSave AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave417.nwf  old absent  new 37329 bytes, sha256 87C4420F02A8, written 2026-10-01 15:45:03
+  AutoSave AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave418.nwf  old absent  new 37368 bytes, sha256 D2ABDBE04500, written 2026-10-01 15:45:03
+  AutoSave AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave419.nwf  old absent  new 37399 bytes, sha256 F66995B5D856, written 2026-10-01 15:45:04
+  AutoSave AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave18.nwf  old 47121 bytes, sha256 9280E3954AF3, written 2026-09-06 10:14:15  new absent
+  AutoSave AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave19.nwf  old 47155 bytes, sha256 37B78A4AFE1A, written 2026-09-06 10:14:15  new absent
+  AutoSave AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave20.nwf  old 47817 bytes, sha256 5E20F829E6B0, written 2026-09-06 10:14:17  new absent
+  AutoSave AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave39.nwf  old absent  new 15504 bytes, sha256 4169E06699C1, written 2026-10-01 15:45:29
+  AutoSave AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave40.nwf  old absent  new 15535 bytes, sha256 C06C6471E28F, written 2026-10-01 15:45:29
+  AutoSave AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave41.nwf  old absent  new 15569 bytes, sha256 968E5BB00DD8, written 2026-10-01 15:45:29
+  AutoSave files added, changed, gone or unreadable: 78
+---- his AutoSave folder, Q86 ----
+  AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave25.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave26.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave27.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave61.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave62.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-100000-ZZZ-BM-MOD-000001.Autosave63.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave1329.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave1330.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave1331.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave663.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave664.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.Autosave665.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.Autosave462.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.Autosave463.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.Autosave464.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.Autosave117.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.Autosave118.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.Autosave119.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.Autosave18.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.Autosave19.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.Autosave20.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.Autosave168.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.Autosave169.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.Autosave170.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.Autosave150.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.Autosave151.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.Autosave152.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave168.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave169.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave170.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave339.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave340.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.Autosave341.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.Autosave88.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.Autosave89.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.Autosave90.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave207.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave208.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave209.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave417.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave418.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.Autosave419.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave273.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave274.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave275.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave549.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave550.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.Autosave551.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave179.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave180.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave181.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave88.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave89.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.Autosave90.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave179.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave180.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave181.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave88.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave89.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.Autosave90.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave228.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave229.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave230.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave459.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave460.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.Autosave461.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave207.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave208.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave209.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave417.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave418.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.Autosave419.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave18.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave19.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave20.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave39.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave40.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.Autosave41.nwf ADDED by the run, removed, read back gone
+  AutoSave: 78 put back as they were and read back, 0 not as they were before the run

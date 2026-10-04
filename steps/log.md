@@ -1,6 +1,108 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, the full fix round, the plan
+
+Bader's message headed 4 Oct 2026, Q98: no run of C07 now. Fix everything that is known, then
+prove the fixes on C06 in set 05. This entry is the plan the lead wrote to Bader in the session
+before the first edit. What each step then did goes into the entries above it and into
+steps\loop.md, turn 5.
+
+### Read before the plan
+
+- why turn 4 stopped: Bader's "stop, i will close the pc" at about 17:35 on 2026-10-01. The
+  pause, STATE WAITING, was pushed as 87d693e on fix-T4-run-03c and never merged, so main kept
+  STATE OPEN. The System log reads a shutdown at 19:30:49 on 2026-10-01 and an update restart at
+  09:07:20 on 2026-10-04
+- Get-Process Roamer read 0 at 09:51:56. No keep-awake ran. Open pull requests: 83, the rules,
+  and 84, F108. Not merged: fix-F104 ebd8bb7, fix-F105 cf40a56 and staged work in wt-f105,
+  fix-F106 32dce24, fix-F107 438378d and 2063c29 not pushed, and fix-F109, F110 and F111 only in
+  their worktrees
+
+### The order
+
+1. Pick up: the keep-awake by its new rule, started through WMI so it is not a child of Claude
+   Code, with the display flag, stopping at CLOSED, WAITING or 12 hours of no change. STATE
+   OPEN, turn 5, this entry, merged within the hour
+2. Finish the work in flight, merged one at a time or parked with one line why: PR 84, F108,
+   and PR 83, the rules, with their claim-checks' words fixed and the new keep-awake rule. F105
+   and F107's words round. F106, main merged in, F107's masked line kept in the driver. F109,
+   the in-place install of build\install.ps1 for the team, by a developer, a reviewer and a
+   breaker, which is the install area of the round. F104 part 2, built during the round for the
+   proof run. F110 and F111 of 2026-10-01 fold into the workbook and run log areas
+3. The fix list, steps\fix-round.md, before the first fix: read-only readers per source, the
+   19 findings of steps\runs\03\findings.md with FIND-04 and FIND-24, the 86 bugs of
+   steps\notes\turn1-read-verified.md, every open fault row of the register with the T3 and T4
+   rows, and the readers' other findings of turns 3 and 4. Each item once with its ID, sources,
+   evidence line, root cause file and line, class and proof, and its area
+4. The form: the 40 distances of the C06 run for B2's 1 m, whether the 45 minutes counts per
+   community or for the whole folder, and each decision the list raises
+5. steps\runs\03\for-modellers.md for the five FAILED groups, B4
+6. The fix round, one pull request per area, up to three developers at once on different
+   files, alignment first with B2: a model more than 1 m from its reference ends its group
+   PARTIAL, the 1 m a setting in Core. Then the areas by their worst class. Each finding its own
+   commit and test, a reviewer and a breaker on each pull request, the claim-checker on its body,
+   Actions green, merged one at a time, a record within the hour. VIEWS faster with the same
+   viewpoints, before from set 03's TIMING and after from the proof run's first run on the same
+   files, with options in the form if 45 minutes is still out of reach, B3. D1, one public type
+   per file, the last pull request, moves only
+7. The proof run, set 05 on C06: main installed in place as on 2026-10-01 and its stamp read
+   back, a fresh copy whose XML must ask ME-Ductwork or gets the repo's corrected one, B1, the
+   first run, the weekly run, a file gone, the file back and the open NWF and NWD, F104's check
+   on the NWFs, steps\runs\05\findings.md with a before and after table against set 03, and
+   Bader's three tests. A finding it shows starts a second round
+8. The end: a summary at the top of steps\fix-round.md, merged, and posted in the Claude tab
+
+CLAUDE.md's rule of no co-authored-by and no generated-by line holds over the session's own
+attribution note.
+
+## 2026-10-01 The loop, turn 4, F108 a fresh copy of the source for each run set, DONE
+
+Bader's message headed 30 Sep 2026, read on 2026-10-01, Q94, asked for a fresh copy for each run
+set in his own folder shape.
+Nothing under src or tests changed. Core tests by the pre-commit at 225a86f, in
+%LOCALAPPDATA%\NwcFederatorLoop\turn4\f108-commit-output.txt: 1746 passed, 0 failed, 0
+skipped, and F102's evidence check over the 3 staged files, none carrying one. Nothing waits for
+the local machine: the proof ran here, and the first run of set 03 is its use.
+
+### What was done
+
+- tools\loop\prepare-copy.ps1 -Set NN, by the developer in wt-f108: the plain check first, then
+  runs\NN\NMFed copied from the source copy and every file read back by sha256 and size, one
+  empty folder under Clash Report for each folder under NWC, read off NWC, and
+  NMFed.manifest.txt written last. -Set NN -Remove and -Restore act on that copy, -Restore
+  copying the file back from the desktop folder by hash, as the plain modes do
+- named NMFed because the paths wall refuses every command naming the desktop folder
+- proved on this machine with the throwaway set 99 and others, made, read back, refused a
+  second time, and a file removed and restored, every answer in turn4\f108-proof.txt, the run
+  ending 10:52:59 with no Roamer. Of the refusals, 13 ran in the loop folder, 4 in a scratch
+  folder and 6 on a copy of the script changed by one line, and the two for too little room
+  were not proved, as the README says. The script the proof ran, sha256 6EDA217D, is the one
+  committed at b3958b5 once its line ends are CRLF, as the checkout writes them,
+  turn5\f108-hash.txt
+- read by a reviewer and a breaker under Q93: both SAFE TO USE, no finding blocks
+
+### What remains
+
+- the readers' findings, each a register row in steps\loop.md: -Remove and -Restore refuse a file
+  whose name sits in both communities, so group 100000 cannot be the file gone group. A short or
+  changed source.manifest.txt is kept until the desktop folder next changes. -Remove writes its
+  note before the delete. The README's write list names only the source copy. The rule and the
+  runner agent still describe the plain modes only. A comment says Windows PowerShell 5.1
+  follows a junction when it recurses, which the developer said a test of theirs on 5.1 did not
+  show, kept in no file, so which is right is UNKNOWN
+
+### Known bugs
+
+- two of the breaker's findings were of Q93's kinds and judged not to block: outputs that Bader's
+  own runs leave in the desktop folder land in the copy and its manifest as inputs, which can
+  make evidence wrong, and nothing reads for a running Navisworks while the desktop folder is
+  read, which reads only. Both are register row F108-R5, with the rest F108-R1 to R4
+
+### What comes next
+
+- the first run of set 03, after F106 and F109
+
 ## 2026-10-01 The loop, turn 4, F103 run.ps1 part 1, DONE after the third real start
 
 Bader answered B on 2026-10-01, Q92: the third real start on a63c284 now, then F103 merges as
