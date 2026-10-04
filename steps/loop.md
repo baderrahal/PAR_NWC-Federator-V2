@@ -410,7 +410,8 @@ baseline run proves it or contradicts it.
 - 30 needs Bader, in the form
 - 2 DONE in turn 4, F102 and F103, merged on Bader's answers
 - 3 answered by Bader on 2026-10-01 and being carried out, F105, Q82 to Q87 as one row, and Q88
-- 2 open in turn 4, F107 and F109
+- 1 open in turn 4, F109
+- 1 done in its pull request, F107
 - 3 known limits or items, F102-L1, F102-L2 and Q88-IDS
 - 5 open for later, register rows under Q93, F103-W and F105-R1 to F105-R4
 - 2 merged in turn 5, F108, and F106 for item 1
