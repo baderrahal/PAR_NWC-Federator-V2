@@ -74,10 +74,13 @@ and nothing is fixed until a real run on real files shows it fixed.
   has a fresh one at runs\NN\NMFed, made by tools\loop\prepare-copy.ps1 -Set NN in Bader's
   own folder shape, NWC\<community> into the NWF, NWD and Clash Report folders of the same
   name. The loop named it NMFed because the wall refuses any command naming NM Fed. Every
-  output of a run goes under %LOCALAPPDATA%\NwcFederatorLoop, bar what the tool and its
+  output of a run goes under %LOCALAPPDATA%\NwcFederatorLoop, bar two kinds. The evidence
+  run.ps1 copies, masked, into steps\runs of the clone it runs from. And what the tool and its
   Navisworks write where the loop cannot point them: the tool's own log and tsv in his logs
-  folder, autosaves in his AutoSave folder, and Navisworks's own settings, each kept by a
-  rule below. Nothing is ever written into NM Fed
+  folder, autosaves in his AutoSave folder and Navisworks's own settings, each kept by a rule
+  below, and whatever else changes outside the loop folder while the start runs, such as the
+  files of Autodesk's licensing and analytics, which run.ps1 lists as M5, by any program, and
+  leaves as they are. Nothing is ever written into NM Fed
 - Nothing of Bader's is deleted or overwritten, bar four things. The installed add-in,
   backed up first as the install rule above says, whose files an install replaces or
   removes. His Navisworks settings, put back to what the backup holds under the settings
@@ -86,8 +89,10 @@ and nothing is fixed until a real run on real files shows it fixed.
   logs-backup by sha256 and put back after the loop, Bader's answer Q82. And his AutoSave
   folder, where the loop removes the autosaves its runs added and puts back from the backup
   any of his a run changed, Q86. Outside %LOCALAPPDATA%\NwcFederatorLoop the loop deletes or
-  overwrites nothing else, bar its own logs and tsv files, which it takes out of his logs
-  folder after the loop
+  overwrites nothing else on its own, bar its own logs and tsv files, which it takes out of
+  his logs folder after the loop. What Bader asks for in his own words is done as he asks
+  and recorded, as on 2026-10-01, when at his word a testhost.exe of his other repo and two
+  worktree folders of this one were removed for OneDrive, steps\loop.md
 - Before the first run his logs folder, %LOCALAPPDATA%\ParsonsNwcFederator\logs, is copied
   into logs-backup, and before every start each file of his the backup does not hold is
   copied into it and read back. The tool's window logs only into his folder and keeps 30
@@ -143,15 +148,18 @@ and nothing is fixed until a real run on real files shows it fixed.
   and the lock is never worked around, Q85
 - While a Navisworks the loop did not start runs, there is no start, no install and no put
   back. The loop reads the processes every 10 minutes and carries on by itself once none
-  runs, Bader's standing rule of 2026-10-04, Q98
+  runs, Bader's standing rule of 2026-10-04, Q98. run.ps1 only refuses. The waiting is the
+  lead's, through its own waiter outside the repo, named in steps\loop.md
 - The PC is kept awake for the whole loop, not only during runs, Q95, by the rule Bader set
   on 2026-10-04, Q98. keep-awake.ps1 runs as its own hidden process, not a child of Claude
   Code, and holds ES_CONTINUOUS, ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED. It changes none
   of his power, screen saver or lock settings, and stops itself, taking the request back
   first, when steps\loop.md reads STATE CLOSED or STATE WAITING or has not changed for 12
-  hours. Its process id and when it started and stopped are named in steps\loop.md, and it is
-  checked alive at the start of every turn
-- The loop installs the add-in only through tools\loop\run.ps1 -Mode Install, which runs
+  hours. It is the lead's own script outside the repo. Its path, its process id and when it
+  started and stopped are named in steps\loop.md, and it is checked alive at the start of
+  every turn
+- The loop installs the add-in only through tools\loop\run.ps1 -Mode Install, bar the
+  in-place install at the end of this rule, which runs
   build\install.ps1 from a checkout whose HEAD is the commit asked for and whose git status
   prints nothing, untracked files included, because the build stamp reads +edits for any
   of them. The installed stamp is read back and must name that commit. build\install.ps1
@@ -160,13 +168,15 @@ and nothing is fixed until a real run on real files shows it fixed.
   %APPDATA% down to the bundle is a junction or a link, and when the move aside fails
   because a file in the bundle is held. run.ps1 -Mode Install passes that refusal on as
   exit 2. A Roamer running right after a loop install, and a bundle left beside the new one,
-  are each a finding that changes its verdict. While that move aside is refused on this
-  machine, F109, Bader asked on 2026-10-01, Q96, and again on 2026-10-04, Q98, for main to be
-  installed in place instead: built from a clean checkout of main, staged and checked by
-  build\install.ps1 -SkipBuild against a throwaway APPDATA under the work folder, and, with no
-  Roamer running and the installed bundle read equal to bundle-backup, each checked file
-  copied over the installed one and read back, an installed file the new bundle lacks removed
-  and named, and the installed stamp read back as main's commit
+  are each a finding that changes its verdict. That move aside is refused on this machine,
+  F109, so Bader asked on 2026-10-01, Q96, and again on 2026-10-04, Q98, for main to be
+  installed in place, apart from F109: built from a clean checkout of main, with no Roamer
+  running, copied over the installed files, any installed file the new bundle lacks removed
+  and named, and the installed stamp read back as main's commit. The loop's own script for
+  it, %LOCALAPPDATA%\NwcFederatorLoop\turn4\install-in-place.ps1, adds three checks of its
+  own: the bundle staged and checked by build\install.ps1 -SkipBuild against a throwaway
+  APPDATA under the work folder, the installed bundle read equal to bundle-backup before
+  anything is copied, and each copied file read back
 - While a Navisworks the loop started runs, the recent files, the window placement and the
   default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
   under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which
@@ -217,9 +227,10 @@ and nothing is fixed until a real run on real files shows it fixed.
    and every turn entry before it is final
 8. A finding that survives three fix attempts stops, with what was tried and what each
    run showed, and moves to the form
-9. A reading of the loop's own scripts blocks a run only for a fault that could harm
-   Bader's things or make a run's evidence wrong. Words, polish and edge cases that can do neither become register rows, not fix
-   attempts. The product code keeps every house rule as written. Bader, 2026-10-01, Q93
+9. From now on, a reading of the loop's own scripts blocks a run only for a fault that
+   could harm Bader's things or make a run's evidence wrong. Words, polish and edge cases
+   that cannot do either become register rows, not fix attempts. The product code keeps
+   every house rule as written. Bader's words of 2026-10-01, Q93
 10. Never report a check that did not run in this session
 11. The writing rule at the end of CLAUDE.md holds everywhere
 12. Every pull request is merged by the lead once Actions is green, watched with

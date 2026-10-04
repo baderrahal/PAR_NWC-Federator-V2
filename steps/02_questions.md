@@ -481,7 +481,7 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
     Answer: Bader, 2026-10-01. B. The third real start on a63c284 is made now, then PR 78 merges as it is, and the nine entries of steps\notes\f103-final-reading.md become one register row.
 
-93. From Bader, 2026-10-01, not a question put to him but a rule for the loop's own tools. A reading of the loop's own scripts blocks a run only for a fault that could harm Bader's things or make a run's evidence wrong. Words, polish and edge cases that can do neither become register rows, not fix attempts. The product code keeps every house rule as written
+93. From Bader, 2026-10-01, not a question put to him but a rule for the loop's own tools, in his words: "From now on, a reading of the loop's own scripts blocks a run only for a fault that could harm Bader's things or make a run's evidence wrong. Words, polish and edge cases that cannot do either become register rows, not fix attempts. The product code keeps every house rule as written."
 
     Answer: Bader, 2026-10-01, as written above. Written into .claude\rules\loop.md, How a finding is worked, item 9, in turn 4 of the loop.
 
