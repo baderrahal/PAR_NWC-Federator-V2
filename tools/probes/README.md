@@ -144,6 +144,11 @@ hands back 0 when every read-out is whole, 1 when one failed, was refused or was
 already, 2 for too few parameters, 3 for a bad output folder and 4 for a path with no
 usable name or two NWFs sharing one, and writes nothing on 2 to 4.
 
-Built on 2026-09-29, 0 warnings and 0 errors, and NOT RUN, because a start of Navisworks
-needs the guarded start and close F103 writes. What it cannot say until it runs is PQ1,
-PQ3 and PQ6 to PQ9 of F104.
+Built on 2026-09-29, 0 warnings and 0 errors, and NOT RUN. Since F104 part 2 the one thing
+that runs it is tools\loop\run.ps1 -Mode Documents, through the guarded start and close of
+nw-guard.ps1: it refuses a build whose stamp names no one commit with no edits, so build it
+from a tree whose git status prints nothing, copies the DLL into its run folder, loads that
+copy with AddPluginAssembly, and hands it the run folder's document\ and every NWF of the
+pairs, as tools\loop\README.md says. The probe's own refusals are unchanged. What it cannot
+say until it runs is PQ1, PQ3 and PQ6 to PQ9 of F104, and the lead's documents read of set 03
+is its first run.
