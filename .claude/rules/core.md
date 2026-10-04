@@ -170,10 +170,11 @@ and 6 does not read as broken.
   and the Source File rules, and `revit-worksets.txt` the workset spellings measured off the
   models, both embedded in Core. The code names no set, folder or category, and the list
   does: two set names and four categories of the client's matrix, which CLAUDE.md allows as
-  sample data in tests only, and a change to it is a rebuild. Whether it stays in Core or
-  moves to a file beside the picked XML, and whether Q103 keeps Furniture and Site, is Q113,
-  OPEN. A list that cannot be read corrects NOTHING and says so on the first MATRIX line,
-  never a part of it
+  sample data in tests only, and a change to it is a rebuild. Bader answered Q113 on
+  2026-10-04: B, the list becomes a plain file kept beside the picked XML, read at the pick
+  and named in the log, which F116 carries out after its fix attempt 2 and before it merges,
+  and D, Q103 keeps all four categories. Until then the list ships in Core. A list that
+  cannot be read corrects NOTHING and says so on the first MATRIX line, never a part of it
 - A SET OR CONDITION THE CORRECTIONS CANNOT READ IS COUNTED AND SAID, NEVER THROWN, F116.
   `WrittenCondition.Read` gives null for an element that will not parse as one condition or
   holds a value it could not rewrite, `SetConditionsText.Read` then gives null for the set,

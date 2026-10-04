@@ -7,8 +7,9 @@
 # the DLL so it cannot arrive on 26 machines and not on the 27th. The workset spellings are not
 # here: they are measured, in revit-worksets.txt. This file does hold two set names and four
 # categories of the client's matrix, which CLAUDE.md allows as sample data in tests only, and
-# a change to it is a rebuild and a reinstall. Whether it stays in Core or moves to a file
-# beside the picked XML is Q113, OPEN.
+# a change to it is a rebuild and a reinstall. Bader answered Q113 on 2026-10-04, B: the list
+# becomes a plain file kept beside the picked XML, read at the pick and named in the log,
+# which F116 carries out after its fix attempt 2 and before it merges.
 #
 # THE FORMAT. One correction a line, a word and a colon, then its parts split by a bar. A line
 # starting with # is a comment and a blank line is skipped. A line this does not know makes
@@ -38,6 +39,6 @@ catch-all: BLD-EL-Devices | Devices
 # Site 18 in 1A0415, the partial C04 run of 2026-09-21, steps\logs\c04-partial-run-20260921-085105.log
 # lines 200 and 203. A test proves these are exactly what those logs show. A category another
 # discipline carries only in a group that also holds an AR model cannot be told apart by a set
-# count and is UNKNOWN. Furniture and Site in 1A0415 are the landscape models' items, so whether
-# Q103 keeps those two is Q113, OPEN.
+# count and is UNKNOWN. Furniture and Site in 1A0415 are the landscape models' items, and Bader
+# kept all four, Q113 answered D on 2026-10-04: an AR set only takes items from an AR file.
 source-file: -AR- | Ramps | Railings | Furniture | Site

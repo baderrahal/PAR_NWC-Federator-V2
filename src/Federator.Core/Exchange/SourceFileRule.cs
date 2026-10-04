@@ -16,8 +16,9 @@ namespace Federator.Core.Exchange
     /// which are the sets in the folder of the ones already asking it, and the categories
     /// another folder's sets ask. WHAT IT CANNOT READ THERE is a category no other folder's
     /// set asks that another discipline's MODELS carry, Ramps among them, so those are
-    /// measured and handed in, through matrix-corrections.txt and never in the code. Whether
-    /// that list stays in Core, and whether it keeps Furniture and Site, is Q113, OPEN.
+    /// measured and handed in, through matrix-corrections.txt and never in the code. Bader
+    /// answered Q113 on 2026-10-04: B, that list becomes a file beside the picked XML, which
+    /// F116 carries out after its fix attempt 2, and D, all four categories stay.
     /// </summary>
     public sealed class SourceFileRule
     {

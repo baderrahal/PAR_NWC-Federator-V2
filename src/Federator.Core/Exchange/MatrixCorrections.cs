@@ -497,7 +497,9 @@ namespace Federator.Core.Exchange
     /// four categories of the client's matrix. CLAUDE.md says a name off the clash XML
     /// appears in tests as sample data only, so the list as it stands breaks that rule as
     /// written, and changing it means rebuilding Core and reinstalling it, not handing in a
-    /// file. Whether it stays in Core or moves to a file beside the picked XML is Q113, OPEN.
+    /// file. Bader answered Q113 on 2026-10-04, B: the list becomes a plain file kept beside
+    /// the picked XML, read at the pick and named in the log, which F116 carries out after
+    /// its fix attempt 2 and before it merges, so until then it ships in Core.
     ///
     /// SAFE TO RUN TWICE IS THE WHOLE POINT. A correction that is applied to its own
     /// output must change nothing the second time, and TotalChanged coming back zero is

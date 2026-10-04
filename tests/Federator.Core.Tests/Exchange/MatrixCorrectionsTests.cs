@@ -14,7 +14,8 @@ namespace Federator.Core.Tests
     /// The project's own set names below are SAMPLE DATA for the generic tests, which is
     /// CLAUDE.md's rule. Since F116 two of them, the broken name and the catch-all set, also
     /// sit in src, in matrix-corrections.txt embedded in Core, which that rule does not allow
-    /// as written. Whether the list stays there is Q113, OPEN.
+    /// as written. Bader answered Q113 on 2026-10-04, B: the list becomes a file beside the
+    /// picked XML, which F116 carries out after its fix attempt 2 and before it merges.
     ///
     /// The test that matters most is TheCorrectedFileIsExactlyWhatTheRuleProduces. It asserts
     /// that the file committed under exchange is exactly what the rule produces from the file
@@ -1107,8 +1108,9 @@ namespace Federator.Core.Tests
         /// items in 1B06PK and 17 in 1C06PK and BLD-AR-Railings 18 in 1B06PK, set 03 log lines
         /// 4304, 7979 and 4316, and BLD-AR-Furniture 29 and BLD-AR-Site 18 in 1A0415 of the
         /// partial C04 run of 2026-09-21, its log lines 200 and 203. Those two are the landscape
-        /// models' items in a group with no AR model, so whether Q103 keeps Furniture and Site
-        /// is Q113, OPEN.
+        /// models' items in a group with no AR model, and Bader kept all four, Q113 answered D on
+        /// 2026-10-04: an AR set only takes items from an AR file, and a set left empty in
+        /// a landscape group shows on the coverage sheet of wave 2.
         /// </summary>
         private static readonly string[] MeasuredInOtherDisciplines = { "Ramps", "Railings", "Furniture", "Site" };
 
