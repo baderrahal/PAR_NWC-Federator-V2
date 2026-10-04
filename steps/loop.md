@@ -78,7 +78,10 @@ product code since nothing under src, tests, build, bundle or exchange changed a
 first run, item 1 on C02, started at 15:55:53 and stopped HUNG at 16:03:28: a floating Clash
 Detective pane of the loop's Navisworks was up from its start, the window driver took it for a
 dialog after pressing Run and stopped, and nobody answered the tool's confirm, record.txt lines
-36, 48 to 50 and 80 of wt-main\steps\runs\04\item1-C02. Nothing of Bader's was harmed: his
+36, 48 to 50 and 80 of steps\runs\04\item1-C02-hung, the evidence masked at 18:32 by
+turn4\mask-run-evidence.ps1 with no copy differing, turn5\mask-run04-item1-C02-hung.txt, and the
+unmasked folder moved out of wt-main to runs\04\evidence-item1-C02-hung in the work folder so
+the rerun's evidence folder starts empty. Nothing of Bader's was harmed: his
 settings and AutoSave put back clean, and his logs folder as Q82 has it, one of his oldest logs
 pruned by the tool and held in logs-backup and two loop logs added, both put back at the close
 of the loop, record.txt lines 102 to 116. F125 fixes the driver before the baseline runs again.
