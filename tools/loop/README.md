@@ -365,8 +365,8 @@ modes:
   summary.txt, one line per pair with the comparison's own VERDICT line, counted and never
   judged. RAN only when every one of those steps ran and no file of the copy's folders changed.
   Proved on 2026-10-04 with no Navisworks by the harness in
-  %LOCALAPPDATA%\NwcFederatorLoop\turn5\f104p2-proof, 102 checks passed and 0 failed, steps\01_next.md
-  F104. It has not run on Navisworks yet
+  %LOCALAPPDATA%\NwcFederatorLoop\turn5\f104p2-proof, as steps\01_next.md F104 says, which
+  also says what of it has not yet run on the committed code. It has not run on Navisworks yet
 
 Exit codes: 0 finished and everything put back, for item 5 on an NWD also the tool's own
 refusal, TOOL REFUSED, 1 a fault in run.ps1, UNKNOWN whether the adopted Navisworks still
