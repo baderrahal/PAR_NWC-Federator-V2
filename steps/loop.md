@@ -82,6 +82,22 @@ dialog after pressing Run and stopped, and nobody answered the tool's confirm, r
 settings and AutoSave put back clean, and his logs folder as Q82 has it, one of his oldest logs
 pruned by the tool and held in logs-backup and two loop logs added, both put back at the close
 of the loop, record.txt lines 102 to 116. F125 fixes the driver before the baseline runs again.
+MERGED IN WAVE 1, 2026-10-04: PR 95, F113, the clash counts, FR-031 to FR-034, as 7b6df88 at
+18:02:32, and PR 96, F104, the check of a workbook against its document, the wave test's
+instrument, as c4fd0d4 at 18:14:56, after main merged into it at ac3854c with both sides kept.
+Each green in Actions on its last commit before it merged, run 37210895243 on 9123e27 and run
+37212128326 on ac3854c, turn5\actions-reads-pr95-96.txt. Their branches are deleted. Neither
+changes the installed add-in, so the baseline still runs e4484d15.
+THE READINGS OF WAVE 1, their journal last written at 18:01: F125 by a reviewer and a breaker under Q93, both APPROVE with nothing blocking,
+turn5\w1-read-review-F125.txt and turn5\w1-read-break-F125.txt. Their points that touch the
+baseline's evidence, words that call a window not modal when that is UNKNOWN, a stop line with
+no window state, and a monitor that writes a window only at first sight, go to a second pass,
+now with its developer, before the baseline runs again, and the rest become F125 register rows
+for F122. F112 by a
+reviewer and a breaker under the house rules, both CHANGES, 3 and 5 blocking,
+turn5\w1-read-review-F112.txt and turn5\w1-read-break-F112.txt, so F112 is in fix attempt 2,
+which also writes Q110 and Q111 for Bader. F116, the clash XML, is with its developer, FR-026,
+FR-008 and FR-009 committed at 06a89bb. F114 stays paused at f915396 for wave 2.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
