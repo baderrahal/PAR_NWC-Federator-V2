@@ -22,11 +22,24 @@ into turn5\actions-reads-pr84-88.txt. Then PR 89, the records with B4's note for
 modellers of the five FAILED groups of C06, steps\runs\03\for-modellers.md, as 51a0cb6 at
 12:38. PR 83, Bader's answers in the loop rules, as 086a348 at 12:56, after four claim-checks.
 PR 90, F105, as 2c89788 at 13:32. Each green in Actions on its last commit before it merged,
-turn5\actions-reads-pr89-83-90.txt. Open: PR 91, the fix list and the form, which carries
-this text, and PR 92, F107, each being made true to its claim-checker. With a developer: F112,
-the alignment area. F109, fix attempt 2, written at a0c3829, its harness waiting for no
-Navisworks to run. F104 part 2, the documents read, built at 33732c9 with its reviewer and
-breaker reading it, its first real read the lead's once no Navisworks runs.
+turn5\actions-reads-pr89-83-90.txt. PR 91, the fix list and the form, as 0e76b16 at 14:38,
+after two claim-checks. PR 92, F107, the older machine's name masked, as f58c083 at 14:56. Its
+final searches on 606283a: git grep for both forms, each exit 1, turn5\f107-grep-final.txt, and
+the split search 0 hits in the 886 tracked files it read, exit 2 for the one broken fixture it
+cannot open as a zip, turn5\f107-split-search-final.txt, whose text was read apart with 0 hits
+on 8441dc9, turn5\f107-split-search-endswrong-2.txt. Both green in Actions on their last commit,
+turn5\actions-reads-pr91-92.txt.
+WITH DEVELOPERS at 14:57: F112 the alignment area, F113 the clash counts, F114 the views area's
+first phase, each in its own worktree. F109, fix attempt 2, written at a0c3829: its reviewer
+asked for changes with two blocking, the rule of what a junction is still also in run.ps1, and
+one refusal with no case left, and its breaker found nothing that leaves a person without an
+add-in and one blocking on words, a measurement said wider than it was taken, so three blocking
+in all, turn5\f109-a2-reads.txt. Fix attempt 3 carries all three, the last before the form, its
+developer planning and holding its changes until one of the three at work finishes, Bader's rule
+allowing three developers at once. F104 part 2, the documents read, built at
+33732c9: its reviewer approved and its breaker found nothing blocking, both under Q93, their
+notes for its register rows, turn5\f104p2-reads.txt. Its harness parts B and C, F109's harness
+and the first real documents read wait for no Navisworks to run.
 B1 CHECKED: the plain prepare-copy.ps1 at 11:47:55 found the desktop folder changed and made
 the source copy again, 142 files, 140 of them NWC, turn5\prepare-copy-plain-1.txt. Its
 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml is byte for byte the repo's exchange matrix, sha256
@@ -189,21 +202,22 @@ desktop.
 Turn 5, the full fix round, Q98. Merged so far on 2026-10-04: PR 87, the records of turn 4's
 pause and turn 5's opening, as 53c37b6. PR 84, F108, as c9b223b. PR 88, F106, DONE for item 1,
 as 3449521. PR 89, the records with the note for the modellers, B4, as 51a0cb6. PR 83, Bader's
-answers in the loop rules, as 086a348. PR 90, F105, as 2c89788. The fix list,
-steps\fix-round.md, 174 items, and the form, Q99 to Q109, are in the records pull request
-carrying this text.
+answers in the loop rules, as 086a348. PR 90, F105, as 2c89788. PR 91, the fix list,
+steps\fix-round.md, 174 items, and the form, Q99 to Q109, as 0e76b16. PR 92, F107, as f58c083.
 
-1. In flight, each merged on its own: PR 92, F107, words only, order line 36, with its
-   claim-checker's findings being made true. F109, the in-place install for the team, fix
-   attempt 2 written at a0c3829, its harness, prove-run.ps1, to run once no Navisworks runs,
-   then a reviewer and a breaker. F104 part 2, the documents read, built at 33732c9, with a
-   reviewer and a breaker reading it for harm and wrong evidence, Q93, then its harness parts B
-   and C and the lead's read of set 03's NWFs once no Navisworks runs, the first answer to
-   Bader's test 3. Bader's own Navisworks has run since 12:53, see the paragraph at the top
-2. The area pull requests of steps\fix-round.md, alignment first with FR-001 built on the 1 m of
-   Q98 B2, up to three developers at once on different files, each read by a reviewer and a
-   breaker and its body by the claim-checker, merged one at a time, a record within the hour.
-   The items that need Bader wait for his answers. D1, FR-174, last, moves only
+1. In flight, each merged on its own: F109, the in-place install for the team, fix attempt 3
+   after attempt 2's reviewer and breaker found three blocking, its plan in
+   turn5\f109-a3-plan.md, then its harness, prove-run.ps1, once no Navisworks runs, and a third
+   reading. A finding that survives it goes to the form. F104
+   part 2, the documents read, built at 33732c9 and read safe under Q93, then its harness
+   parts B and C and the lead's read of set 03's NWFs once no Navisworks runs, the first
+   answer to Bader's test 3, then its pull request. Bader's own Navisworks has run since
+   12:53, see the paragraph at the top
+2. The area pull requests of steps\fix-round.md, up to three developers at once on different
+   files, each read by a reviewer and a breaker and its body by the claim-checker, merged one at
+   a time, a record within the hour: F112 alignment with FR-001 built on the 1 m of Q98 B2, F113
+   clash counts and F114 the views area's first phase are with their developers. The items
+   that need Bader wait for his answers. D1, FR-174, last, moves only
 3. The proof run, set 05 on C06: main installed in place as on 2026-10-01, a fresh copy by
    prepare-copy.ps1 -Set 05 from the source copy, whose XML asks ME-Ductwork, the first run
    given that XML by name, items 1 to 5, steps\runs\05\findings.md with the before and after
