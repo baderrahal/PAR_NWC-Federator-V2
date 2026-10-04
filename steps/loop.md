@@ -37,8 +37,8 @@ one refusal with no case left, and its breaker found nothing that leaves a perso
 add-in and one blocking on words, a measurement said wider than it was taken, so three blocking
 in all, turn5\f109-a2-reads.txt. Fix attempt 3 carries all three, the last before the form, its
 developer planning and holding its changes until one of the three at work finishes, Bader's rule
-allowing three developers at once. F104 part 2, the documents read, built at
-33732c9: its reviewer approved and its breaker found nothing blocking, both under Q93, their
+allowing three developers at once. F104 part 2, the documents read, committed at
+75e5dce with its records at 33732c9: its reviewer approved and its breaker found nothing blocking, both under Q93, their
 notes for its register rows, turn5\f104p2-reads.txt. Its harness ran whole on its committed code
 from 15:39 to 15:53, 102 passed, turn5\f104p2-prove-4.txt. F109's harness and the first real
 documents read wait for the baseline.

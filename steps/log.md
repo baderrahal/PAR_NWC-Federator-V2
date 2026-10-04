@@ -29,7 +29,8 @@ started for it.
 
 - the first real documents read, on set 04 item 1 once the baseline of the two buildings has
   run, the first answer of the documents to Bader's third test
-- PQ1 and PQ3 to PQ9 of F104, which only a real read answers
+- PQ1, PQ7, PQ8 and PQ9 of F104, which the real read answers, and PQ3 to PQ6, which also need a
+  person at the panel or an export
 
 ### Known bugs
 
