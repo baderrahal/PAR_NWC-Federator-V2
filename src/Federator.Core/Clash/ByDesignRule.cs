@@ -28,15 +28,20 @@ namespace Federator.Core.Clash
         ///
         /// THE ORDER OF THE ANSWERS IS THE ORDER OF THE QUESTIONS. Whether the two sides
         /// name sets at all, then whether those two are a pair, then whether somebody has
-        /// already decided, then whether the other rule has it. Asking about the status
-        /// first would report "somebody decided" against thousands of clashes this rule
-        /// was never going to touch, and the block would read as though the guard was
-        /// doing all the work.
+        /// already decided, then whether the other rule has it, then whether the clash has
+        /// a name to be moved by. Asking about the status first would report "somebody
+        /// decided" against thousands of clashes this rule was never going to touch, and
+        /// the block would read as though the guard was doing all the work.
+        ///
+        /// A CLASH WITH NO NAME IS NEVER REVIEWED HERE, F113. Nothing can address it, so
+        /// the editor could never move it, and judged Reviewed it was counted as moved in
+        /// the block, the RESULT line and the rule B line while it stayed where it was.
         /// </summary>
         public static ByDesignVerdict Judge(
             ByDesignPairs pairs,
             string leftSet,
             string rightSet,
+            string clashName,
             ClashStatus status,
             bool thePenetrationRuleWantsIt,
             out ByDesignPair pair)
@@ -68,6 +73,11 @@ namespace Federator.Core.Clash
             if (thePenetrationRuleWantsIt)
             {
                 return ByDesignVerdict.ThePenetrationRuleHasIt;
+            }
+
+            if (string.IsNullOrEmpty(clashName))
+            {
+                return ByDesignVerdict.NoClashName;
             }
 
             return ByDesignVerdict.Reviewed;

@@ -1,0 +1,31 @@
+ASSEMBLY  Autodesk.Navisworks.Api 22.0.0.0, read only, no code run
+FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Api.dll
+MACHINE   [machine]   2026-09-29 11:28
+
+==== Autodesk.Navisworks.Api.UnitConversion
+  public class, base Autodesk.Navisworks.Api.NativeHandle
+  protected System.Void InternalCleanup(System.Boolean queue)
+  public static Autodesk.Navisworks.Api.NativeHandle InternalFactory(Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit& reserved)
+  public static Autodesk.Navisworks.Api.UnitConversion InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)
+  internal LcOaUnitConversion* GetNativePtr()
+  public static System.Double ScaleFactor(Autodesk.Navisworks.Api.Units from, Autodesk.Navisworks.Api.Units to)
+  property System.Boolean IsReadOnly
+
+==== the answer
+  PQ2 YES   public static System.Double ScaleFactor(Autodesk.Navisworks.Api.Units from, Autodesk.Navisworks.Api.Units to)
+  first parameter from, second to
+  implementation Managed, 32 bytes of IL
+  metres per Feet: UNKNOWN here, the member is not invoked. The probe reads it inside Navisworks
+
+==== Autodesk.Navisworks.Api.Units, the enum the probe names
+  Meters         = 0
+  Centimeters    = 1
+  Millimeters    = 2
+  Feet           = 3
+  Inches         = 4
+  Yards          = 5
+  Kilometers     = 6
+  Miles          = 7
+  Micrometers    = 8
+  Mils           = 9
+  Microinches    = 10

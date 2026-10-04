@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    A probe that runs INSIDE Navisworks, F104. Not part of the bundle, not part of the
+    solution and not copied by install.ps1. It is loaded into a Navisworks started through
+    the automation API with AddPluginAssembly and run with ExecuteAddInPlugin, and it
+    writes what the open document holds, test by test and result by result, into a text
+    read-out that tools\loop\compare-document.ps1 sets beside the workbook's read-out.
+
+    IT REFERENCES NO PROJECT OF THIS REPO, on purpose. The workbook was written by
+    Federator.Addin's harvest through Federator.Core's rules, and a check that shares the
+    code it checks proves nothing about it. So this reads the document through the
+    Navisworks API alone, converts through Navisworks' own UnitConversion.ScaleFactor and
+    never through UnitTable, and copies no rule of the harvest's.
+
+    Built the same way the add-in is, against the DLLs in the install, copy local false:
+
+        dotnet build tools\probes\DocumentReadProbe\DocumentReadProbe.csproj -c Release
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>DocumentReadProbe</AssemblyName>
+    <RootNamespace>DocumentReadProbe</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2025</NavisworksPath>
+    <NavisworksPath>$(NavisworksPath.TrimEnd('\'))</NavisworksPath>
+    <NavisworksApiDll>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</NavisworksApiDll>
+    <NavisworksClashDll>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</NavisworksClashDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Navisworks.Api">
+      <HintPath>$(NavisworksApiDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.Clash">
+      <HintPath>$(NavisworksClashDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <!-- For the dispatcher pumped between the two passes. -->
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+
+  <Target Name="CheckNavisworks" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(NavisworksApiDll)')" Text="Autodesk.Navisworks.Api.dll was not found at $(NavisworksApiDll). Pass -p:NavisworksPath with the real install folder." />
+    <Error Condition="!Exists('$(NavisworksClashDll)')" Text="Autodesk.Navisworks.Clash.dll was not found at $(NavisworksClashDll). Pass -p:NavisworksPath with the real install folder." />
+  </Target>
+
+</Project>

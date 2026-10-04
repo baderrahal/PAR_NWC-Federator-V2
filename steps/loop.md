@@ -3,7 +3,8 @@
 STATE OPEN
 
 TURN 5, THE FULL FIX ROUND, opened on 2026-10-04 by Bader's message headed 4 Oct 2026, Q98. No
-run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05. The plan
+run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05, since
+replaced by Bader's waves of 15:42, each tested on two buildings of C02 and C04. The plan
 is the turn 5 entry at the top of steps\log.md. The fix list is steps\fix-round.md, built
 before the first fix. Main at the start of the turn: f38edd5, installed e4484d15 in place since
 2026-10-01 with be0b9b37 in bundle-backup. Why turn 4 stopped: Bader wrote "stop, i will close
@@ -36,10 +37,11 @@ one refusal with no case left, and its breaker found nothing that leaves a perso
 add-in and one blocking on words, a measurement said wider than it was taken, so three blocking
 in all, turn5\f109-a2-reads.txt. Fix attempt 3 carries all three, the last before the form, its
 developer planning and holding its changes until one of the three at work finishes, Bader's rule
-allowing three developers at once. F104 part 2, the documents read, built at
-33732c9: its reviewer approved and its breaker found nothing blocking, both under Q93, their
-notes for its register rows, turn5\f104p2-reads.txt. Its harness parts B and C, F109's harness
-and the first real documents read wait for no Navisworks to run.
+allowing three developers at once. F104 part 2, the documents read, committed at
+75e5dce with its records at 33732c9: its reviewer approved and its breaker found nothing blocking, both under Q93, their
+notes for its register rows, turn5\f104p2-reads.txt. Its harness ran whole on its committed code
+from 15:39 to 15:53, 102 passed, turn5\f104p2-prove-4.txt. F109's harness and the first real
+documents read wait for the baseline.
 B1 CHECKED: the plain prepare-copy.ps1 at 11:47:55 found the desktop folder changed and made
 the source copy again, 142 files, 140 of them NWC, turn5\prepare-copy-plain-1.txt. Its
 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml is byte for byte the repo's exchange matrix, sha256
@@ -53,7 +55,33 @@ his desktop, explorer.exe their parent, at 12:53:23 and 12:54:16, each with the 
 back while they run, and the developers were told at 13:21 to run no harness that starts a
 stand-in named Roamer. Code, pull requests and merges go on. The waiter
 turn4\wait-no-roamer.ps1 reads the processes every 10 minutes into turn5\wait-no-roamer.txt
-and ends when none runs.
+and ends when none runs. It read one at 15:14:00, pid 37356, and NO ROAMER RUNS at 15:24:00,
+so the loop's own starts may go again, each read again just before it starts.
+BADER ANSWERED THE FORM at 15:23 on 2026-10-04, his message headed BADER'S ANSWERS, 4 OCT 2026,
+TO THE FORM OF TURN 5: Q99 to Q109, Q24 and Q26, each answer under its question in
+steps\02_questions.md and on its item in steps\fix-round.md, the lead's notes marked as the lead's.
+THE WAVES, Bader's message of 15:42 the same day: the fixes go in waves of up to three areas that
+touch different files, worst class first, every noise item, the docs and words and D1 last, and
+each wave is tested at once on two buildings, the first run with the XML and the weekly run,
+against a baseline of the installed add-in. It replaces the proof run of set 05 on C06, and C06
+and C07 are parked until he says. The waves are written in steps\fix-round.md, under The waves.
+WHAT NM FED HOLDS, copied whole by prepare-copy.ps1 at 15:44 with every file read back equal, and
+the copy then listed by the lead: NWC\C02 holds one building, 1A02MM, four
+models, AR, EL, ME and ST, and NWC\C04 one, 1A04PK, ten models, AR, EL, FP, HV, ME 000001 to
+000004 and ST 000001 and 000002, with the corrected XML at the top. It also still holds C06, 67
+NWC, and C07, 73 NWC, and the -OLD XML, 154 NWC in all, turn5\prepare-copy-plain-2.txt for the
+copy and turn5\nmfed-listing-1544.txt for the listing. No folder named for C06 and C07 was on the
+desktop when the lead listed it in the session at 15:46, a read kept in no file. The test runs
+point at C02 and C04 only. Set 04's copy was made at 15:47, turn5\prepare-copy-set04.txt.
+THE BASELINE, set 04, from main dd55e4b with the installed add-in reading 1.0.0.0 e4484d15, main's
+product code since nothing under src, tests, build, bundle or exchange changed after e4484d1. Its
+first run, item 1 on C02, started at 15:55:53 and stopped HUNG at 16:03:28: a floating Clash
+Detective pane of the loop's Navisworks was up from its start, the window driver took it for a
+dialog after pressing Run and stopped, and nobody answered the tool's confirm, record.txt lines
+36, 48 to 50 and 80 of wt-main\steps\runs\04\item1-C02. Nothing of Bader's was harmed: his
+settings and AutoSave put back clean, and his logs folder as Q82 has it, one of his oldest logs
+pruned by the tool and held in logs-backup and two loop logs added, both put back at the close
+of the loop, record.txt lines 102 to 116. F125 fixes the driver before the baseline runs again.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -199,30 +227,32 @@ desktop.
 
 ## Next action
 
-Turn 5, the full fix round, Q98. Merged so far on 2026-10-04: PR 87, the records of turn 4's
-pause and turn 5's opening, as 53c37b6. PR 84, F108, as c9b223b. PR 88, F106, DONE for item 1,
-as 3449521. PR 89, the records with the note for the modellers, B4, as 51a0cb6. PR 83, Bader's
-answers in the loop rules, as 086a348. PR 90, F105, as 2c89788. PR 91, the fix list,
-steps\fix-round.md, 174 items, and the form, Q99 to Q109, as 0e76b16. PR 92, F107, as f58c083.
+Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 at 15:42. Merged so
+far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
+51a0cb6, PR 83 as 086a348, PR 90, F105, as 2c89788, PR 91, the fix list, as 0e76b16, PR 92, F107,
+as f58c083, and PR 93 as dd55e4b. Bader's answers and the waves are in the pull request carrying
+this text.
 
-1. In flight, each merged on its own: F109, the in-place install for the team, fix attempt 3
-   after attempt 2's reviewer and breaker found three blocking, its plan in
-   turn5\f109-a3-plan.md, then its harness, prove-run.ps1, once no Navisworks runs, and a third
-   reading. A finding that survives it goes to the form. F104
-   part 2, the documents read, built at 33732c9 and read safe under Q93, then its harness
-   parts B and C and the lead's read of set 03's NWFs once no Navisworks runs, the first
-   answer to Bader's test 3, then its pull request. Bader's own Navisworks has run since
-   12:53, see the paragraph at the top
-2. The area pull requests of steps\fix-round.md, up to three developers at once on different
-   files, each read by a reviewer and a breaker and its body by the claim-checker, merged one at
-   a time, a record within the hour: F112 alignment with FR-001 built on the 1 m of Q98 B2, F113
-   clash counts and F114 the views area's first phase are with their developers. The items
-   that need Bader wait for his answers. D1, FR-174, last, moves only
-3. The proof run, set 05 on C06: main installed in place as on 2026-10-01, a fresh copy by
-   prepare-copy.ps1 -Set 05 from the source copy, whose XML asks ME-Ductwork, the first run
-   given that XML by name, items 1 to 5, steps\runs\05\findings.md with the before and after
-   table against set 03, and Bader's three tests
-4. The summary at the top of steps\fix-round.md, merged and posted in the Claude tab
+1. The baseline, set 04: F125 first, the window driver taking a floating Clash Detective pane for
+   a dialog, then the four runs again through the real window, item 1 with the XML and item 2
+   with none, on C02 and on C04, each after a fresh Roamer read, then steps\runs\04\findings.md,
+   short, in the shape of set 03's, merged within the hour. The hung first attempt is kept as
+   evidence
+2. Wave 1: F112 alignment with Bader's rule of Q99 and Q100, F113 clash counts, built and with its
+   reviewer and breaker, and F116 the clash XML of Q102 to Q104. Each with a reviewer, a breaker
+   and the claim-checker, Actions green, merged one at a time
+3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
+   buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
+   run once more with the rule switched off by its setting. Compared with the baseline: each
+   group's result, the clash count per test, the time per step and the VIEWS share, the workbook
+   check, the RESULT numbers and the log size, each item of the wave marked proven or not with
+   its line. A fix that makes the test worse is taken back at once, with one line why
+4. Three short lines at the top of steps\fix-round.md and in the Claude tab, what the wave fixed,
+   what the test proved and what got worse, merged within the hour
+5. Waves 2 to 5 the same way, as steps\fix-round.md lists them. F104 part 2, the documents read,
+   merges as the test's own instrument once its pull request is read, and reads each test's NWFs
+   against their workbooks
+Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes.
 
 ## The phases
 
@@ -339,6 +369,19 @@ steps\02_questions.md with its evidence and its choices:
 - and two asked on 2026-09-12 and still open: Q24, a name cell given back to the pattern,
   FR-160, and Q26, members read only by a test, FR-172
 
+ANSWERED ON 2026-10-04 at 15:23, every question of the form of turn 5, each answer under its question in
+steps\02_questions.md and on its item in steps\fix-round.md. Q99 and Q100: a group whose models
+are not on the same shared coordinates has only its clash skipped and ends PARTIAL. Q101: VIEWS
+faster with the same viewpoints, each group's time reported beside its NWC sizes and item
+counts, the 45 minutes not judged in this round. Q102 to Q104: the corrections applied to the
+picked XML before any set is built, with OR rows for both spellings and Source File contains
+-AR- on the AR sets that need it. Q105 to Q107: the names masked and refused by the check, the
+older ones held as a hash. Q108, Q109, Q24 and Q26: find the mistake first, with test steps
+under each item, run before anything changes, which are orders to look and not decisions, and
+Q26's members whose tests still pass after the break come back to the form. Nothing of the form
+of turn 5 waits on him now. The older questions with no answer, Q25, Q27 to Q31, Q35 to Q40, Q45
+to Q47, Q49 to Q51 and Q76 to Q78, are not part of it and wait as before.
+
 ANSWERED ON 2026-10-01: Q82 to Q92, every one, each answer under its question in
 steps\02_questions.md. Nothing from turn 3 waits in the form now. The two sections below are
 kept as what Bader answered.
@@ -443,14 +486,15 @@ an F number only when it becomes work. Most harmful first when the loop picks, a
 wrong number ranks above a loud failure. Done in code but not proved by a run means the
 baseline run proves it or contradicts it.
 
-315 rows, by status, after turn 4's eighteen additions and turn 5's first:
+322 rows, by status, after turn 4's eighteen additions and turn 5's eight:
 
 - 125 done in code, not proved by a run
 - 3 reported by the read, not verified, T1-N, T1-UNCALLED and T1-CATCH
 - 86 read again by two readers on 2026-09-29, 76 CONFIRMED and 10 PARTLY, none refuted:
   60 silent wrong outputs, 13 broken features, 6 loud failures, 7 noise. Every one
   waits for the baseline, because no fix lands before it, steps\notes\turn1-read-verified.md
-- 30 needs Bader, in the form
+- 28 needs Bader, in the form
+- 2 answered by Bader on 2026-10-04, Q24 and Q26, their finds in the waves
 - 2 DONE in turn 4, F102 and F103, merged on Bader's answers
 - 3 answered by Bader on 2026-10-01 and being carried out, F105, Q82 to Q87 as one row, and Q88
 - 1 open in turn 4, F109
@@ -462,7 +506,8 @@ baseline run proves it or contradicts it.
 - 19 open fault
 - 4 DONE
 - 19 open for F103 or after it, T3-G1 to T3-G16, T3-P, T3-P2 and T3-B
-- 1 part 1 built and read, F104, check-documents after F103
+- 1 built and read safe, F104, its first real read waiting
+- 7 register rows of F104's readings, F104-R1 to F104-R7, under Q93
 - 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
 - 1 closed, not there at 42499bf
@@ -477,7 +522,7 @@ baseline run proves it or contradicts it.
 | F102 | turn 3, the lead's read of fix-F100 | A result committed from this machine can carry the machine name and the licensing agent's ids, and nothing read a file for them before a commit | tools\loop\mask-evidence.ps1 masks both, tools\checks\check-evidence-ids.sh refuses both in the pre-commit and in Actions, proved on the four fix-F100 files, refused before and passed after | DONE on 2026-10-01, merged as it is on Bader's answer Q91 B, its two gaps the known limits F102-L1 and F102-L2 | 76, merged as 4fa1040 | no Navisworks run applies, proof in turn3\f102\proof.txt |
 | F105 | loop prompt, Phase 1 item 2 | Four facts off the install nobody had read on this machine: the saved viewpoint members, RemoveFile, Roamer's switches, the Clash Detective report | scan.md 5z-f off five result files, no Navisworks started | answered A by Bader on 2026-10-01, Q89: the three sentences of 5z-f narrowed, the three probe faults F105-R1 to F105-R3 | none, branch fix-F105 at 94a839b | no Navisworks run applies, the prober's reads on 2026-09-29 |
 | F103 | loop prompt, Phase 1 item 3 | tools\loop\run.ps1 does not exist | the design in turn3\f103-design.md built, proved by its harness with no Navisworks, then one start with no window | DONE on 2026-10-01, part 1, merged as it is on Bader's answer Q92 B, the nine entries of steps\notes\f103-final-reading.md register row F103-W | 78, merged as 398b910 | two real starts with no window on 2026-09-30, on fix attempts 1 and 2, and the third on a63c284 on 2026-10-01 from 09:06 to 09:18, exit 0, VERDICT RAN, steps\runs\00\item0, 01\item0 and 02\item0 on fix-F103 |
-| F104 | loop prompt, Phase 1 item 4 | No check of the workbook against a read of the document that shares no code with the harvest | the design in turn3\f104-design.md, part 1 on fix-F104, check-documents after F103, proved by prove-compare and then by 5a at the baseline | part 1 built at ef1fbdd, read by a reviewer and a breaker, its fixes at ebd8bb7, check-documents after F103 | none yet | none yet |
+| F104 | loop prompt, Phase 1 item 4 | No check of the workbook against a read of the document that shares no code with the harvest | the design in turn3\f104-design.md, part 1 on fix-F104, check-documents after F103, proved by prove-compare and then by 5a at the baseline | part 1 built at ef1fbdd, read by a reviewer and a breaker, its fixes at ebd8bb7. Part 2, run.ps1 -Mode Documents, committed at 75e5dce with its records at 33732c9, read safe under Q93 by a reviewer and a breaker, turn5\f104p2-reads.txt, its harness 102 passed and 0 failed on the committed code, turn5\f104p2-prove-4.txt. Its first real read waits for the baseline of 2026-10-04 | this pull request | none yet |
 | T3-G1 | turn 3, the reviewer's reading of F100 attempt 4 | The probe's last check before each settings write, line 1885, also 1877 and NewRoamers at 1261, takes a process list it could not read as no Roamer, so the writes go on. Silent. Old, in b01ad71 | a list that cannot be read stops every write, in the guard code run.ps1 takes over, with a harness case | open, for F103 | none yet | none yet |
 | T3-G2 | the same reading | After the deadline path runs and TerminateProcess returns False, nothing reads the deadline flag before adoption, line 1468, so steps 4 to 6 can run with no watchdog. Old | adoption refused once the deadline path ran, in the guard code, with a harness case | open, for F103 | none yet | none yet |
 | T3-G3 | the same reading | A recorded start with start ticks refuses whenever any process holds that pid and its start time cannot be read, whatever its name, line 1239. Loud, refuses too much. Old | the name read as well, in the guard code | open, for F103 | none yet | none yet |
@@ -518,6 +563,13 @@ baseline run proves it or contradicts it.
 | F105-R2 | the same reading | One of F105's probes prints its failure list only when a built add-in is there | the list printed on every run | open, register row under Q93 | none yet | no run applies |
 | F105-R3 | the same reading | A resolver, roResolve, and a small helper, ParamText, sit in more than one of F105's probes, and a second helper the reading named is UNKNOWN | one copy of each | open, register row under Q93 | none yet | no run applies |
 | F105-R4 | the reviewer of F105's words round, 2026-10-04 | Comments in the probes say nothing is dropped, il-reader.ps1 line 19, probe-clash-report-api.ps1 line 23 and probe-viewpoint-calls.ps1 lines 29, 30 and 396, printed at its result line 203, where a read handed to no IlFail is in no count | the comments made true where the probes next change, no probe or result file changing after its run | open, register row under Q93 | none yet | no run applies |
+| F104-R1 | the reviewer of F104 part 2, 2026-10-04 | A documents read ends READ when nothing was read, run.ps1 line 1547, while its VERDICT, exit 1 and the steps that did not run say STOPPED | another word for that end, or the read-out count on summary line 1014 | open, register row under Q93 | none yet | no run applies |
+| F104-R2 | the same reviewer | The picture and priority switches of a documents read are typed by hand, so a wrong -PriorityPicked turns off the block order check and a wrong -PictureStatuses judges the wrong rule, while the window run's log names the priority file, its line 64 | run.ps1 reading them off the window run's log and refusing a mismatch | open, register row under Q93 | none yet | no run applies |
+| F104-R3 | the breaker of F104 part 2 | A group that wrote no NWF and no workbook is in no count, so a read can say RAN, exit 0, with fewer pairs than groups, and a read where every workbook is missing compares nothing and exits 0, run.ps1 763 to 778, 807 to 809, 1029, 2434 and 2443 to 2445 | the summary counting every group of the tsv and naming each not compared | open, register row under Q93 | none yet | no run applies |
+| F104-R4 | the same breaker | AGREE can stand while the panel's count differs when a test holds a result group, PQ4, compare-document.ps1 541, 680 to 687 and 704 to 711, the one place a green line can sit on Bader's third test | PQ4 measured, then the -GroupClashesAt switch set from it | open, register row under Q93, PQ4 | none yet | none yet |
+| F104-R5 | the same breaker | The probe's viewpoint walk is unmeasured and unbounded, 1165 viewpoints in 1B06G1 of C06, and on a busy processor only the 12 hour ceiling ends it | the walk timed on the first real read | open, register row under Q93 | none yet | none yet |
+| F104-R6 | the same breaker | A documents read opens every NWF, so Bader's Recent File List fills with the loop's NWFs, put back only when no Navisworks of his ran meanwhile, and each open adds a Windows Recent link that M5 lists and never puts back | the first real read listing what it changed there | open, register row under Q93 | none yet | none yet |
+| F104-R7 | both readers of F104 part 2 | The other notes: summary.txt written after the VERDICT, prove-run.ps1 line 281 failing on the new mode, pictures and read-outs not pinned to the window run, checks 7, 8 and 10 not run, the header claiming less than it writes, three lines of the finally outside a try, ReadPairs before the lock, four ties not made, the probe call unbounded if the monitor dies, a probe file throw read as a hang, compare-document.ps1's error text dropped, a picture status typo found late, a locked session not checked, and three loud nuisances, each with its line in turn5\f104p2-reads.txt | each made true where its file next changes | open, register rows under Q93 | none yet | no run applies |
 | Q88-IDS | Q88 | GitHub keeps the commits 464f79f and c98c6f3 readable through PR 74's own refs, and they hold the licensing agent's analytics id and a session id | only the repository's owner can ask GitHub support to purge them | known item, Bader's, the repository is private | 74 | no run applies |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
 | RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
@@ -600,8 +652,8 @@ baseline run proves it or contradicts it.
 | Q68 | 01_next steps/01_next.md line 870 | Question 68, subject not stated in 01_next.md | Bader's answer recorded under it in steps/02_questions.md. The question itself is not quoted in 01_next.md. | needs Bader, in the form | none yet | none yet |
 | Q9 | steps/02_questions.md:39 | Commit the 1A04WE client export (F18) | The 1A04WE export committed under samples/client-report and read by the tests that name it. | needs Bader, in the form | none yet | none yet |
 | Q15 | steps/02_questions.md:63 | The local proofs P1 to P3 | A recorded Clash Detective panel count for three tests equal to their workbook block and ROWS line. A run over every ticked group whose run TIMING block reads i ... | needs Bader, in the form | none yet | none yet |
-| Q24 | steps/02_questions.md:113, also log.md steps/log.md lines 4516 (What remains, t ... | Give a typed name cell back to the pattern, or drop the rule | Bader's answer, then a Grouping step control that calls ReleaseToPattern, or the core.md sentence and the member removed with its test. | needs Bader, in the form | none yet | none yet |
-| Q26 | steps/02_questions.md:123, also log.md steps/log.md line 4871 (What remains, F4 ... | Members made internal because only a test reads them | Bader's answer, then the internal members kept with the decision written in a rule, or each deleted with its test. | needs Bader, in the form | none yet | none yet |
+| Q24 | steps/02_questions.md:113, also log.md steps/log.md lines 4516 (What remains, t ... | Give a typed name cell back to the pattern, or drop the rule | Bader's answer, then a Grouping step control that calls ReleaseToPattern, or the core.md sentence and the member removed with its test. | answered by Bader on 2026-10-04, find the mistake first, FR-160 in wave 4 | none yet | none yet |
+| Q26 | steps/02_questions.md:123, also log.md steps/log.md line 4871 (What remains, F4 ... | Members made internal because only a test reads them | Bader's answer, then the internal members kept with the decision written in a rule, or each deleted with its test. | answered by Bader on 2026-10-04, find the mistake first, FR-172 in wave 5 | none yet | none yet |
 | Q27 | steps/02_questions.md:127, also log.md steps/log.md line 4871 (What remains, F4 ... | Keep or drop the two choice open count rule | Bader's answer, then core.md keeping the rule with its readers named, or the bullet and the unused choice removed. | needs Bader, in the form | none yet | none yet |
 | Q28 | steps/02_questions.md:131, also log.md steps/log.md line 4841 (What remains, F4 ... | Release the two handle reads F41 left | Bader's answer, and if release is chosen, both reads in using blocks and a run with no ObjectDisposedException. | needs Bader, in the form | none yet | none yet |
 | Q29 | steps/02_questions.md:135, also log.md steps/log.md line 4785 (What remains, F4 ... | A settings file for the stop after count, log count and report subfolder | Bader's answer, then a file read once when the log opens, with a refused value named in the log. | needs Bader, in the form | none yet | none yet |

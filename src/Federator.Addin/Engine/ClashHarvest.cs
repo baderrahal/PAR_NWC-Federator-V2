@@ -157,11 +157,10 @@ namespace Federator.Addin.Engine
         private ClashRow GroupRow(Document document, GridSystem grid, ClashResultGroup group)
         {
             List<double> distances = new List<double>();
-            int raw = CountLeaves(group.Children, distances);
 
-            ClashRow row = new ClashRow();
-            row.IsGroup = true;
-            row.RawClashes = raw < 1 ? 1 : raw;
+            // The clashes under it and no more, F113, so a group with none under it adds
+            // nothing to the Clashes cell or to its status's cell.
+            ClashRow row = ClashRow.ForGroup(CountLeaves(group.Children, distances));
             row.Name = Words.Or(group.DisplayName, "group");
             row.Status = (CoreClashStatus)(int)group.Status;
             row.Distance = ClashRow.MostSevere(distances, group.Distance);

@@ -1,6 +1,222 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, F104 part 2, the documents read, DONE for the build
+
+Nothing under src or tests changed. Core tests 1746 passed, 0 failed, 0 skipped after the merge
+of main at e76a2d3, after the change, by the pre-commit at 75e5dce and 33732c9, and at the merges
+202496b and 45dcd4f, turn5\precommit-f104-merge-2.txt and turn5\precommit-f104-merge-3.txt. No Navisworks was
+started for it.
+
+### What was done
+
+- tools\loop\run.ps1 -Mode Documents, a mode of run.ps1 so the one copy of every guard is kept:
+  the pairs read off the window run's .tsv by the group column, checks 11, 19, 20 and 21, the
+  probe's two calls in place of item 0's hold, the hang rule on the read-outs,
+  compare-document.ps1 per pair and summary.txt. -Mode Check -For Documents prints every refusal
+  and the pairs. Written by one developer, the brief turn5\f104-part2-brief.md
+- read for harm and wrong evidence under Q93 by a reviewer, who approved, and a breaker, who
+  found nothing blocking, turn5\f104p2-reads.txt, their notes register rows F104-R1 to F104-R7
+- its harness, turn5\f104p2-proof\prove-f104p2.ps1, all three parts on the committed code from
+  15:39:38 to 15:53:47 on 2026-10-04 once Bader's Navisworks had closed: 102 passed, 0 failed, Get-Process
+  Roamer 0 before and after, turn5\f104p2-prove-4.txt
+- main merged in four times, 3449521 by e76a2d3, dd55e4b by 202496b, 6689bad by 45dcd4f and
+  7b6df88, F113's merge, by the commit after 023a685, each conflict keeping both sides, F104's
+  order line now 38 after F105's 35, F107's 36 and F113's 37, its section after F113's, its
+  entry here above F113's, and its 5z-g after F105's 5z-f in docs\history\scan.md
+
+### What remains
+
+- the first real documents read, on set 04 item 1 once the baseline of the two buildings has
+  run, the first answer of the documents to Bader's third test
+- PQ1, PQ7, PQ8 and PQ9 of F104, which the real read answers, and PQ3 to PQ6, which also need a
+  person at the panel or an export
+
+### Known bugs
+
+- F104-R1 to F104-R7 under Q93, F104-R4 the one that can let a green line sit on Bader's third
+  test while PQ4 is unmeasured
+
+### What comes next
+
+- the baseline runs of 1A02MM and 1A04PK, then the documents read on them
+
+## 2026-10-04 The loop, turn 5, F113 the clash counts area of the fix round, FR-031 to FR-034, DONE
+
+Core tests 1746 passed, 0 failed, 0 skipped before the first change, at 2c89788, and 1756
+passed, 0 failed, 0 skipped after the last item, at 1f0a369, and at every commit after it, run by
+hand and by the pre-commit at every commit, the files f113-core-before-full.txt, f113-core-after-full.txt and
+f113-precommit-*.txt under %LOCALAPPDATA%\NwcFederatorLoop\turn5. The solution built with 0
+errors and 0 warnings before the first change and after each change.
+
+### What was done
+
+- FR-031, 95cf9ea. The last `CLASH N of N tests` line of a group was taken before the test it
+  numbers, so in set 03 it was one test short of the block under it in all 22 groups, and short
+  of the block's clashes in 1B06M1, 1B06PK and 1C06M2. ClashRunOutcome.ProgressAfter builds it
+  in Core at every twenty fifth test and at the last, and the runner calls it after the test. 4
+  tests. No number the workbook prints changes
+- FR-032, f2997ab. A result group with no clash under it stood for one clash, floored in the
+  harvest. ClashRow.ForGroup stands for the clashes under the group and no more. 3 tests. It
+  changes numbers the workbook prints for a test holding an empty group: its Clashes cell and
+  the cell of the group's status, and with no priority file its place on the sheet and the
+  picture numbers that follow that order. Outside the workbook it moves the page summary total,
+  with or without a priority file, and the PRIORITY block's totals when a priority file is
+  picked
+- FR-033, 9fc81ee. An unnamed clash between two sets the pairs file lists was counted as moved
+  by the by design rule though it was never moved. ByDesignRule.Judge takes the clash name and
+  answers NoClashName, a sixth reason the BY DESIGN block lists. 2 tests, and the helper the old
+  tests share now hands Judge a name. No number the workbook prints changes
+- FR-034, 3ed9575. AutoReviewRecord.In threw for a comment reading was Reviewed, was Approved or
+  was Resolved, and the undo then left every clash of that test alone. The status is read only
+  among New and Active. 1 test. No number the workbook prints changes
+- each item test first. The tests of FR-031 to FR-033 did not build against the code before,
+  and against a stub of the new members 4, 2 and 1 of them failed, the stub returning no line,
+  carrying the old floor and taking the name without reading it. The test of FR-034 failed
+  against the code before with ArgumentOutOfRangeException
+- each item's rule in .claude\rules\core.md, written in that item's commit, and the order line
+  37 and the F113 section in steps\01_next.md at 1f0a369. Main merged in at 2bae58a, main then at
+  dd55e4b, with no conflict. Pushed as fix-F113
+- the claim-checker's corrections at b629b5c, which also narrow the words a group always ends on
+  a count in core.md and one comment of ClashRunOutcome.cs, turn5\precommit-f113-claims.txt, 1756
+  passed, and main 6689bad merged in at 0339223 with F113's entry on top of the log,
+  turn5\precommit-f113-merge-2.txt, 1756 passed, the solution built at that tip with 0 warnings
+  and 0 errors, turn5\f113-build-merged.txt
+
+### What remains
+
+- the add-in halves wait for wave 1, a first run with the XML and a weekly run on each of
+  1A02MM of C02 and 1A04PK of C04. FR-031 in each group that runs to its end: the last `CLASH N
+  of N tests` line of the group reads the tests run, tests skipped and clashes found of the block under it.
+  FR-032 only where a log holds an empty result group, which no log has shown: a group with
+  clashes under it reads the same before and after. FR-033 only where the RUN SETTINGS line
+  `by design` reads yes and the no name count is above 0, checked by the group's STATUS lines,
+  since its moved count, its REVIEWED lines and RESULT hold with or without the fix and a count
+  of 0 proves nothing. FR-034 is reached by no run, only by the Undo auto Reviewed button on a
+  comment edited by hand
+- the commit messages of FR-031 and FR-032 name set 05 on C06 as the proof run, because they
+  were written before the lead's message of 15:52 moved the proof to wave 1, and the message of
+  1f0a369 says the messages of FR-031 to FR-033 do, where FR-033's does not. A commit message is
+  changed only by a new commit, so these stay as written. The DONE line names wave 1
+
+### Known bugs
+
+- for a test whose only result is an empty group the ROWS line still reads more rows than
+  clashes and ends that the workbook will not match the panel, which after FR-032 is no longer so
+  of its Clashes cell. Beside a group of three or more clashes it reads that the difference is
+  the result groups, and beside a group of two that they agree. src\Federator.Core\Clash\ReportedCount.cs is in no area's
+  list of files
+- WorkbookCheck.CheckOrder orders the blocks by the rows under each, where ReportOrder sorts
+  the tests by the clashes each stands for, so a workbook holding result groups could be called
+  out of order when it is not. Not seen, set 03 holding no result group. WorkbookCheck.cs is the
+  workbook area's
+- the running count is still written every 25 tests, ClashRunner.ProgressEvery, a constant, as
+  the note of FR-031 says
+- GroupRow still counts every clash of a group under the group's own status, where the runner
+  counts each by its own, the gap the note of FR-032 calls UNKNOWN. The breaker ranked it first:
+  a group whose clashes sit at mixed statuses prints its five status cells under the group's
+  one word, so where a person has grouped results the workbook can disagree with the panel on
+  status, which side the panel takes being UNKNOWN. Into the next wave as a new item
+- found by the breaker and outside F113's items: a clash name is the only address the status
+  editor uses, so two clashes of one test with the same name are both moved when the by design
+  rule judges one of them, and a person's Approved can become Reviewed,
+  ClashStatusEditor.cs lines 207 to 251. Into the next wave as a new item, its reach UNKNOWN
+- the moved counts of the BY DESIGN block and the RESULT line count judgements, and the editor's
+  own changed, not found and refused counts are read nowhere in src. Into the next wave
+
+### Read before the pull request
+
+- by a reviewer at 1f0a369, APPROVE, nothing blocking, nine notes, two of them made true in the F113
+  section of steps\01_next.md: what moves for a test holding an empty group, and that FR-033's
+  wave 1 check holds with or without the fix, the STATUS lines being the one pair that can
+  differ. Kept with the other notes in turn5\f113-reads.txt
+- by a breaker at 1f0a369, nothing that makes a count wrong because of this change, seven left standing,
+  the first three in Known bugs above, all in turn5\f113-reads.txt
+
+### What comes next
+
+- the pull request, merged in wave 1, then the test of wave 1 on 1A02MM and 1A04PK
+
+## 2026-10-04 The loop, turn 5, Bader's answers to the form and the waves, the plans
+
+Bader answered the form of turn 5 at 15:23 on 2026-10-04, his message headed BADER'S ANSWERS,
+4 OCT 2026, TO THE FORM OF TURN 5, and at 15:42 ordered the fixes in waves, each tested at once on
+two buildings, his message headed FIX IN WAVES, AND TEST EACH WAVE ON TWO BUILDINGS. Each message
+began by asking for the plan before the first edit. The two plans below are the ones the lead
+wrote to him in the session, condensed, some of their sentences left out. Two placements moved
+after he was told: Q108's fix and F117, the names, said to come in waves 3 and 4, are in wave 5,
+because the fix list classes them noise, and the waves in steps\fix-round.md say so. What each
+step then did goes into the entries above this one and into steps\loop.md. Nothing under src or tests
+changes in the pull request carrying this entry.
+
+### The plan for the answers, written at 15:27
+
+1. Record the answers first, in a records pull request: each under its question, an answered
+   line on each fix list item they touch, FR-025 and FR-026 out of hold since Q104 keeps the
+   class, the form marked answered, the next action, and this plan. PR 93 merges first
+2. Tell the developers at work: F112 builds Q99 and Q100, the clash skipped, in place of the
+   PARTIAL only rule, with FR-006, and F114 adds each group's time beside its NWC sizes and item
+   counts, with no change to the 45 minute judgement
+3. With Bader's Navisworks closed, Roamer read 0 at 15:24: F104's harness parts B and C on its
+   committed code, then the first documents read on set 03
+4. As developer slots free, three at once: F109 attempt 3, F116 the clash XML, F115 sets, F117 the
+   names
+5. The four finds of Q108, Q109, Q24 and Q26, each writing its test steps under its item and
+   running them before anything changes
+6. Each area merged one at a time, then the proof run on C06 twice, rule on and rule off
+
+### The plan for the waves, written at 15:46
+
+- What NM Fed holds, measured at 15:44, turn5\nmfed-listing-1544.txt: C02 holds 1A02MM, four models, AR, EL, ME and ST, C04
+  holds 1A04PK, ten models, AR, EL, FP, HV, four ME and two ST, and it still holds C06 and C07,
+  154 NWC in all, with the -OLD XML beside the corrected one. No folder named for C06 and C07 was
+  on the desktop at 15:46. The runs point at C02 and C04 only. The installed add-in reads
+  1.0.0.0 e4484d15, and nothing under src, tests, build, bundle or exchange changed from e4484d1
+  to main
+- Step 1, the baseline today, set 04: once F104's harness has ended, set 04's copy, the four
+  window runs, item 1 with the XML and item 2 with none on both buildings, each after a Roamer
+  read, the evidence masked, steps\runs\04\findings.md, and F104's documents read on set 04
+- Step 2, the waves by the file table, worst class first: wave 1 F112 alignment, F113 clash
+  counts and F116 the clash XML, F114 paused to wave 2. Wave 2 F115 sets, workbook and report, F114
+  views with its speed work. Wave 3 run log and RESULT, harvest and pictures, install with F109.
+  Wave 4 the rest with the finds of Q109 and Q24, and the loop tools under Q93. Wave 5 noise,
+  docs and words with Q26's find, then D1. F104 merges as the test's instrument. Q108 measured
+  already: the repeated asked for text of the SET lines, 59 texts printed 1,000 times, 145,182 of
+  1,097,933 bytes saved if each were printed once a run
+- Step 3, after each wave: install main in place as on 2026-10-01, read the stamp back, run both
+  buildings, a building off the shared coordinates once more with the rule off, compare with the
+  baseline and the wave before, mark each item proven or not, take back a fix that makes it worse
+- Step 4: three lines at the top of steps\fix-round.md and in the tab, merged within the hour
+
+### What was done
+
+- PR 93 merged as dd55e4b. The answers under Q24, Q26 and Q99 to Q109, in his words with the
+  lead's notes marked, and an answered line inside each of the 16 items they touch, FR-001,
+  FR-006, FR-008, FR-009, FR-025, FR-026, FR-030, FR-069, FR-070, FR-109, FR-110, FR-136, FR-149,
+  FR-160, FR-161 and FR-172
+- the waves written in steps\fix-round.md under The waves, from the classes the list gives each
+  item
+- the developers told by message: F112 the rule of Q99 and Q100, F114 the per group times and
+  then its pause for wave 2, F112 and F113 that the proof is the two building test. F114 paused at
+  f915396. F113 finished its four items. F116 started in wave 1
+- F104's harness, all three parts on 33732c9: 102 passed, 0 failed, turn5\f104p2-prove-4.txt
+- the baseline's first run, item 1 on C02, stopped HUNG at 16:03:28 on a floating Clash Detective
+  pane the driver took for a dialog, its evidence in wt-main, nothing of Bader's harmed. F125, a
+  fix of the driver, started
+
+### What remains
+
+- F125, then the baseline's four runs and findings 04, then wave 1's readings and merges and its
+  test
+
+### Known bugs
+
+- the lead reads Q102's OR row as carrying the set's other conditions, as written under Q102, for
+  Bader to correct if he meant otherwise
+
+### What comes next
+
+- F125's fix of the driver, then the baseline
 ## 2026-10-04 The loop, turn 5, F107 the older machine's name masked on main, DONE on Q88
 
 Nothing under src or tests changed. Core tests by the pre-commit at 70effde, 8441dc9, 499f0a6
