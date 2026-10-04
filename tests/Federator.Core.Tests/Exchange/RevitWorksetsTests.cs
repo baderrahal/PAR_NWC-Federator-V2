@@ -9,14 +9,15 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// The workset list inside Core is exactly what was measured off the models and nothing
-    /// typed beside it, so a spelling the matrix corrections act on is always one a model
-    /// was seen to carry. It is read off the two measurements themselves, never a copy.
+    /// The workset list inside Core, and the workset lines of this project's list of
+    /// corrections beside the picked XML, are exactly what was measured off the models and
+    /// nothing typed beside them, so a spelling the matrix corrections act on is always one a
+    /// model was seen to carry. Each is read off its measurement itself, never a copy.
     /// </summary>
     [TestFixture]
     public class RevitWorksetsTests
     {
-        /// <summary>The C06 run of set 03, whose EXPORT CHECK lines F116 added to the list.</summary>
+        /// <summary>The C06 run of set 03, whose EXPORT CHECK lines this project's list carries the names of, F116.</summary>
         private static string C06Log()
         {
             return Path.Combine(Samples.Repo(), "steps", "runs", "03", "item1-C06", "run-20261001-140037.log");
@@ -111,28 +112,20 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The list is the 39 names 5t measured on C02 and the 30 more the C06 run listed,
-        /// F116, each once. The header has said a test proves it since 5t and none did.
+        /// The list inside Core is the 39 names 5t measured on C02, each once, and nothing
+        /// more. The 30 the C06 run listed are this project's and sit in its list of
+        /// corrections beside the picked XML, Q113 answered B on 2026-10-04. The header has said
+        /// a test proves it since 5t and none did until F116.
         /// </summary>
         [Test]
-        public void TheListIsExactlyTheNamesMeasuredOnC02AndListedOnC06()
+        public void TheListInsideCoreIsExactlyTheNamesMeasuredOnC02()
         {
             IList<string> list = RevitWorksets.All();
-            List<string> measured = new List<string>(MeasuredOnC02());
+            IList<string> measured = MeasuredOnC02();
 
             Assert.That(measured.Count, Is.EqualTo(39), "5t's own count, scan.md");
-
-            foreach (string name in ListedOnC06())
-            {
-                if (!measured.Contains(name))
-                {
-                    measured.Add(name);
-                }
-            }
-
             Assert.That(list, Is.Unique);
             Assert.That(list, Is.EquivalentTo(measured));
-            Assert.That(list.Count, Is.EqualTo(69));
         }
 
         /// <summary>

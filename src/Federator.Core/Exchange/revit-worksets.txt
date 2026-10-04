@@ -1,6 +1,8 @@
-# Every workset name measured so far in this project's Revit models, Q68 and Q69: the C02
-# census below in full, and further down the names the C06 run lists, at most ten a group.
-# C04 and C07 are unmeasured, so a name not here is UNKNOWN, not absent.
+# Every workset name the C02 census measured in this project's Revit models, Q68 and Q69,
+# and no other. A name not here is UNKNOWN, not absent. Spellings measured since on other
+# run sets belong to the project and not to the tool, so they are kept in the project's list
+# of corrections beside the picked clash XML, as workset lines, Q113 answered B by Bader on
+# 2026-10-04, and read beside these when the XML is picked.
 #
 # MEASURED on 2026-09-20 in the worksets round, docs\history\scan.md 5t, by
 # tools\probes\ViewpointProbe in its census mode over the ten NWFs of the C02 folder,
@@ -9,13 +11,13 @@
 # result file is tools\probes\ViewpointProbe\5t-5u-result-20260920.txt and a test
 # proves this list is exactly its names, so it cannot drift.
 #
-# WHAT IT IS FOR. The client's matrix asks for a workset called ME-DUCTWORK, the C02
-# models write ME-Ductwork and two C06 buildings write ME-DUCTWORK, and a search condition
-# compares a value CASE SENSITIVELY unless IgnoreDisplayStringValueCase is set, which
-# nothing sets. So a set asking one spelling finds nothing in the buildings writing the
-# other. MatrixCorrections asks every spelling this file holds of a workset, as Or groups,
-# where it holds two or more, Q102, and the one it holds where it holds one, Q68, and this
-# file is where the spellings come from. THE TOOL NEVER INVENTS ONE.
+# WHAT IT IS FOR. The client's matrix asks for a workset called ME-DUCTWORK and the C02
+# models write ME-Ductwork, and a search condition compares a value CASE SENSITIVELY unless
+# IgnoreDisplayStringValueCase is set, which nothing sets. So a set asking one spelling
+# finds nothing in the models writing another. MatrixCorrections asks every spelling of a
+# workset that this file and the list beside the picked XML hold between them, as Or groups,
+# where there are two or more, Q102, and the one there is where there is one, Q68, and these
+# two are where the spellings come from. THE TOOL NEVER INVENTS ONE.
 #
 # WHY IT IS NOT AN IGNORE CASE FLAG. Bader refused that on 2026-09-20 and the reason
 # is in this list twice over: AR-EXTERIOR against AR-INTERIOR, and ST-SUB against
@@ -82,49 +84,3 @@ ST-SUB
 ST-SUP
 Shared Levels and Grids
 XX-St_placeholder
-
-# MEASURED on 2026-10-01 off the C06 run of set 03, F116: the names its 22 EXPORT CHECK
-# blocks list on their "worksets seen" lines, steps\runs\03\item1-C06\run-20261001-140037.log,
-# and are not above. A test proves this part is exactly those names. Each of those lines
-# names at most ten worksets and counts the rest, so this is every name they list and NOT
-# every workset C06 carries. The rest are UNKNOWN until a run writes the "model worksets"
-# rows of its tsv, which name every workset of every model in full, F116.
-#
-# THEY ARE WHY Q102 WAS ASKED. 1B06BC and 1B06G1 carry ME-DUCTWORK, ME-EQUIPMENT and
-# ME-PIPING in capitals where the C02 models write ME-Ductwork, ME-Equipment and ME-Piping,
-# and 1B06G1, 1B06K1, 1B06P1 and 1B06PK write PL-Domestic Water where C02 writes
-# PL-Domestic water. Bader's answer on 2026-10-04: a set asks every spelling the models
-# carry of a workset, as an Or row, which MatrixCorrections builds off this list.
-#
-# One of them is EL-Fire alarm written by 1B06PO and 1B06WO with a no-break space, U+00A0,
-# between its two words, which is a different name from the one with a space above.
-+LINK-ST-Boundary Wall Layout
-+Link-AR-***
-00-EL-LEVELS GRIDS
-ARC-INTERIOR ELEMENTS
-ARC-RVT LINKS
-ARC-SKIN COMPONANTS
-ARC-STAIR AND RAILING
-EL-Cable Tray
-EL-Emergency lighting
-EL-Fire alarm
-EL-Lighting Protection
-ELE-CCTV SYSTEM
-ELE-POWER SYSTEM 1
-ELE-POWER SYSTEM 3
-ELL-INDOOR LIGHTING SYSTEM
-ELP-EARTHING AND LIGHTNING SYSTEM
-EV-CCTV system
-EV-Cctv system
-EV-ICT Containment
-FAE-EMERGENCY LIGHTING SYSTEM
-FAE-FIRE ALARM SYSTEM
-FF-Fire Fighting
-FP-PIPING
-LTC-ACCESS CONTROL SYSTEM
-ME-DUCTWORK
-ME-EQUIPMENT
-ME-PIPING
-PL-Domestic Water
-PL-Drainage Equipment
-TEL-TELECOM SYSTEM
