@@ -1,51 +1,84 @@
 # log
 
 Newest entry at the top.
-## 2026-10-04 The loop, turn 5, Bader's answers to the form, the plan
+## 2026-10-04 The loop, turn 5, Bader's answers to the form and the waves, the plans
 
-Bader answered the form of turn 5 at about 15:20 on 2026-10-04, his message headed BADER'S
-ANSWERS, 4 OCT 2026, TO THE FORM OF TURN 5, which replaces any earlier block of answers to Q99
-to Q109, Q24 and Q26. Each answer is under its question in steps\02_questions.md and on its item
-in steps\fix-round.md. This entry is the plan the lead wrote to Bader in the session before the
-first edit. Nothing under src or tests changes in the pull request carrying it.
+Bader answered the form of turn 5 at 15:23 on 2026-10-04, his message headed BADER'S ANSWERS,
+4 OCT 2026, TO THE FORM OF TURN 5, and at 15:42 ordered the fixes in waves, each tested at once on
+two buildings, his message headed FIX IN WAVES, AND TEST EACH WAVE ON TWO BUILDINGS. Each message
+began by asking for the plan before the first edit. The two plans below are the ones the lead
+wrote to him in the session, shortened only where a list repeated itself. What each step then
+did goes into the entries above this one and into steps\loop.md. Nothing under src or tests
+changes in the pull request carrying this entry.
+
+### The plan for the answers, written at 15:27
+
+1. Record the answers first, in a records pull request: each under its question, an answered
+   line on each fix list item they touch, FR-025 and FR-026 out of hold since Q104 keeps the
+   class, the form marked answered, the next action, and this plan. PR 93 merges first
+2. Tell the developers at work: F112 builds Q99 and Q100, the clash skipped, in place of the
+   PARTIAL only rule, with FR-006, and F114 adds each group's time beside its NWC sizes and item
+   counts, with no change to the 45 minute judgement
+3. With Bader's Navisworks closed, Roamer read 0 at 15:24: F104's harness parts B and C on its
+   committed code, then the first documents read on set 03
+4. As developer slots free, three at once: F109 attempt 3, F116 the clash XML, F115 sets, F117 the
+   names
+5. The four finds of Q108, Q109, Q24 and Q26, each writing its test steps under its item and
+   running them before anything changes
+6. Each area merged one at a time, then the proof run on C06 twice, rule on and rule off
+
+### The plan for the waves, written at 15:46
+
+- What NM Fed holds, measured at 15:44: C02 holds 1A02MM, four models, AR, EL, ME and ST, C04
+  holds 1A04PK, ten models, AR, EL, FP, HV, four ME and two ST, and it still holds C06 and C07,
+  154 NWC in all, with the -OLD XML beside the corrected one. No folder named for C06 and C07 was
+  on the desktop at 15:46. The runs point at C02 and C04 only. The installed add-in reads
+  1.0.0.0 e4484d15, and nothing under src, tests, build, bundle or exchange changed from e4484d1
+  to main
+- Step 1, the baseline today, set 04: once F104's harness has ended, set 04's copy, the four
+  window runs, item 1 with the XML and item 2 with none on both buildings, each after a Roamer
+  read, the evidence masked, steps\runs\04\findings.md, and F104's documents read on set 04
+- Step 2, the waves by the file table, worst class first: wave 1 F112 alignment, F113 clash
+  counts and F116 the clash XML, F114 paused to wave 2. Wave 2 F115 sets, workbook and report, F114
+  views with its speed work. Wave 3 run log and RESULT, harvest and pictures, install with F109.
+  Wave 4 the rest with the finds of Q109 and Q24, and the loop tools under Q93. Wave 5 noise,
+  docs and words with Q26's find, then D1. F104 merges as the test's instrument. Q108 measured
+  already: the repeated asked for text of the SET lines, 59 texts printed 1,000 times, 145,182 of
+  1,097,933 bytes saved if each were printed once a run
+- Step 3, after each wave: install main in place as on 2026-10-01, read the stamp back, run both
+  buildings, a building off the shared coordinates once more with the rule off, compare with the
+  baseline and the wave before, mark each item proven or not, take back a fix that makes it worse
+- Step 4: three lines at the top of steps\fix-round.md and in the tab, merged within the hour
 
 ### What was done
 
-- PR 93, the records, merged first as dd55e4b
-- the answers written under Q99 to Q109, Q24 and Q26, an answered line on each of the 15 items
-  they touch in steps\fix-round.md, the form marked answered and the next action made current in
-  steps\loop.md
-- the developers already at work told by message: F112 alignment builds the rule of Q99 and
-  Q100 in place of the PARTIAL only rule, the clash skipped for a group with a model named
-  Internal or more than 1 m away, with FR-006, and F114 views adds each group's time beside its
-  NWC sizes and item counts, Q101
-- Bader's own Navisworks read gone at 15:24:00, turn5\wait-no-roamer.txt, so the loop's own runs
-  may go again, each read again just before it starts
+- PR 93 merged as dd55e4b. The answers under Q24, Q26 and Q99 to Q109, in his words with the
+  lead's notes marked, and an answered line inside each of the 16 items they touch, FR-001,
+  FR-006, FR-008, FR-009, FR-025, FR-026, FR-030, FR-069, FR-070, FR-109, FR-110, FR-136, FR-149,
+  FR-160, FR-161 and FR-172
+- the waves written in steps\fix-round.md under The waves, from the classes the list gives each
+  item
+- the developers told by message: F112 the rule of Q99 and Q100, F114 the per group times and
+  then its pause for wave 2, F112 and F113 that the proof is the two building test. F114 paused at
+  f915396. F113 finished its four items. F116 started in wave 1
+- F104's harness, all three parts on 33732c9: 102 passed, 0 failed, turn5\f104p2-prove-4.txt
+- the baseline's first run, item 1 on C02, stopped HUNG at 16:03:28 on a floating Clash Detective
+  pane the driver took for a dialog, its evidence in wt-main, nothing of Bader's harmed. F125, a
+  fix of the driver, started
 
-### What remains, in order
+### What remains
 
-1. F104 part 2: its harness parts B and C on its committed code, then the first documents read,
-   set 03 item 1 C06, the first answer to Bader's test 3, then its pull request
-2. as developer slots free, three at once: F109 attempt 3, the last before the form, F116 the
-   clash XML of Q102 to Q104 with FR-008, FR-009, FR-025, FR-026 and FR-030, F115 sets, F117 the
-   names of Q105 to Q107 with FR-109, FR-110 and FR-149, then the four finds of Q108, Q109, Q24
-   and Q26, each writing detailed test steps under its item, running them and saying where the
-   mistake is before anything changes
-3. each area merged one at a time with its readers and its claim-checker, a record within the
-   hour
-4. the proof run on C06 twice, once with the rule of Q99 as set and once switched off, then
-   findings 05 with each group's time beside its NWC sizes and item counts
+- F125, then the baseline's four runs and findings 04, then wave 1's readings and merges and its
+  test
 
 ### Known bugs
 
-- Q102 asks for OR rows built the way Q69's rows are. FR-025 found those rows put only the
-  workset in their group, which takes every element of the other spelling whatever its category.
-  The lead reads the answer as the OR row built that way with the set's other conditions carried
-  into its group, and says so under Q102, so Bader can correct the reading
+- the lead reads Q102's OR row as carrying the set's other conditions, as written under Q102, for
+  Bader to correct if he meant otherwise
 
 ### What comes next
 
-- the F104 harness and the first documents read, now that no Navisworks runs
+- F125's fix of the driver, then the baseline
 ## 2026-10-04 The loop, turn 5, F107 the older machine's name masked on main, DONE on Q88
 
 Nothing under src or tests changed. Core tests by the pre-commit at 70effde, 8441dc9, 499f0a6

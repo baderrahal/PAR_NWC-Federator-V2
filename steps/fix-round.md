@@ -17,7 +17,8 @@ the far model rule.
 
 What each item holds. The heading gives its number and the key the readers used. Then the
 line of what is wrong, its Sources, the Evidence, the Root cause, its Class and the Proof that
-shows it fixed. Needs Bader is written only where a choice of his comes first, 12 items.
+shows it fixed. Needs Bader was written only where a choice of his came first, 12 items, all
+answered on 2026-10-04, each answer on its item.
 Branch is written where the item rests on code merged from a branch, waits for a merge not yet
 made, or cites lines that moved when a branch merged. Note carries what the readers added and
 where the item meets others.
@@ -86,8 +87,40 @@ that could harm Bader's things or make a run's evidence wrong, and the rest of t
 are register rows, fixed where their file next changes. The product code keeps every house rule.
 
 The 12 items that need Bader wait for the form, Q99 to Q109 in steps\02_questions.md, with Q24
-and Q26, asked before and still open. FR-001 is built with the 1 m he gave and its number is
+and Q26, asked before. He answered them all on 2026-10-04 at 15:23, each answer on its item.
+FR-001 is built with the 1 m he gave and its number is
 Q99. Nothing of an item that needs him changes until he answers.
+
+## The waves, Bader's order of 2026-10-04 at 15:42
+
+Bader does not wait for all 174 items before a run. The fixes go in waves of up to three
+areas that touch different files, by the file table at the end of this list, and each wave
+is tested at once on two buildings, 1A02MM of C02 and 1A04PK of C04, a first run with the XML
+and a weekly run, against the baseline of set 04 and the wave before. Worst class first:
+silent wrong number, broken feature, slow and loud failure in waves 1 to 4, and every noise
+item, the docs and words and D1 in wave 5. An item already started in an area stays with it.
+The four finds of Q108, Q109, Q24 and Q26 write their test steps under their items and run
+them at the start of the wave that holds them. Each area takes the F number shown.
+
+- Wave 1:
+  - F112 alignment: FR-001, FR-002, FR-003, FR-004, FR-005, FR-006, FR-007, FR-028
+  - F113 clash counts: FR-031, FR-032, FR-033, FR-034
+  - F116 the clash XML: FR-008, FR-009, FR-025, FR-026, FR-030
+- Wave 2:
+  - F115 sets: FR-010, FR-011, FR-012, FR-013, FR-014, FR-015, FR-016, FR-017, FR-018, FR-019, FR-020, FR-021, FR-022, FR-023, FR-024, FR-027
+  - F118 workbook and report: FR-035, FR-036, FR-037, FR-040, FR-041
+  - F114 views: FR-065, FR-066, FR-067, FR-068, FR-069, FR-070, FR-071, FR-072, FR-073
+- Wave 3:
+  - F119 run log and RESULT: FR-043, FR-044, FR-045, FR-046, FR-047, FR-048, FR-049, FR-050, FR-051, FR-052, FR-053, FR-054, FR-055, FR-056, FR-057
+  - F120 harvest and pictures: FR-075, FR-076, FR-077
+  - F109 install: FR-078, FR-079, FR-080
+- Wave 4:
+  - F121 the rest: FR-150, FR-151, FR-152, FR-153, FR-154, FR-155, FR-156, FR-157, FR-158, FR-159, FR-160, FR-161, FR-162, FR-163, FR-164, FR-165, FR-166. The find of Q24 on FR-160 and Q109 on FR-161 first
+  - F122 the loop tools: FR-082, FR-083, FR-084, FR-085, FR-086, FR-087, FR-088, FR-089, FR-090, FR-091, FR-092, FR-093, FR-094, FR-095, FR-096, FR-097, FR-098, FR-099, FR-100, FR-101, FR-102, FR-103, FR-104
+- Wave 5:
+  - F123 docs and words, and the noise of every area: FR-029, FR-038, FR-039, FR-042, FR-058, FR-059, FR-060, FR-061, FR-062, FR-063, FR-064, FR-074, FR-081, FR-105, FR-106, FR-107, FR-108, FR-111, FR-112, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118, FR-119, FR-120, FR-121, FR-122, FR-123, FR-124, FR-126, FR-127, FR-128, FR-129, FR-130, FR-131, FR-132, FR-133, FR-134, FR-135, FR-136, FR-140, FR-141, FR-142, FR-143, FR-144, FR-145, FR-147, FR-148, FR-167, FR-168, FR-169, FR-170, FR-171, FR-172, FR-173, the find of Q26 on FR-172 first. Closed already: FR-125, FR-137, FR-138, FR-139, FR-146
+  - F117 the names, by Bader's answer to Q105 to Q107: FR-109, FR-110, FR-149
+  - then F124 D1, one public type per file: FR-174, moves only, last
 
 ## Alignment, FR-001 to FR-007
 
@@ -133,7 +166,7 @@ are never found.
   after it.
 - Asked: the 1 m itself, Q99 in steps\02_questions.md, with what each number does to the
   groups of set 03.
-- Answered by Bader on 2026-10-04, Q99 and Q100: a model named Internal, or more than 1 m from the reference model as the straight line, the 1 m a setting in Core, means ONLY THE CLASH IS SKIPPED. The NWF is built and the NWD published, no clash test, viewpoint or clash report is made, one log line per such model gives its file, its shared site and its distance in X, Y and Z, a note file with the same lines goes beside the NWD and into the group's Clash Report folder, the group ends PARTIAL with the reason clash skipped, models not on the same shared coordinates, the RESULT block lists these groups, and the run writes one list to forward to the modellers. Checked on every run, a setting switches it off, and it replaces Q65 and Q70 for this case. Worked by F112, which the PARTIAL only rule above gives way to.
+- Answered by Bader on 2026-10-04 at 15:23, Q99 and Q100, in his words: a model is not on the same coordinates when it names Internal as its shared site, or when it sits more than 1 m from the reference model, measured as the straight line, the 1 m a setting in Core, and in a group with such a model ONLY THE CLASH IS SKIPPED. The NWF is built with all its models, sets and tests and the NWD is published, no clash test is run and no viewpoint and no clash report is made, the log has one line per such model with its file name, its shared site name and its distance from the reference in X, Y and Z, a short note file with the same lines goes beside the NWD and into the group's Clash Report folder, the group ends PARTIAL, never DONE, with the reason clash skipped, models not on the same shared coordinates, the RESULT block lists these groups, the run writes one short list he can forward to the modellers, the rule is checked on every run, and it replaces Q65 and Q70 for this case. The lead's note: to be worked by F112 in wave 1, the PARTIAL only rule above giving way to it, and the rule switched off by its setting for a second test run of a building whose models are off the shared coordinates.
 
 ### FR-002 model-site-read-failure-reads-as-no-site
 
@@ -257,9 +290,9 @@ so the group fails on the name alone while the measured placement agrees.
   tests\Federator.Core.Tests\Health\AlignmentCheckTests.cs: an Internal model within the
   tolerance of the reference does not fail the group. Otherwise none, and the note for the
   modellers (FR-125) says it.
-- Needs Bader: yes, asked as Q100. Raised for the form beside the 1 m number of FR-001, since the two rules
-  meet in the same block. Nothing is changed until he answers.
-- Answered by Bader on 2026-10-04, Q100, with Q99: a model named Internal skips the clash of its group the same way a far model does, and the group ends PARTIAL instead of FAILED, replacing Q70 for this case. Worked by F112 with FR-001.
+- Needed Bader, asked as Q100, answered on 2026-10-04, see the answered line of this item. Raised for the form beside the 1 m number of FR-001, since the two rules
+  meet in the same block. Nothing was changed before he answered on 2026-10-04.
+- Answered by Bader on 2026-10-04 at 15:23, Q100 with Q99: a model naming Internal as its shared site is not on the same coordinates, so its group's clash is skipped and the group ends PARTIAL, replacing Q70 for this case. The lead's note: to be worked by F112 with FR-001, in wave 1.
 
 ### FR-007 invisible-difference-fallback-for-visible-space
 
@@ -316,13 +349,13 @@ the second 1511 clashes, the most tests that found something.
   group (FR-027), and the SET line for BLD-ME-Ducts&Duct Fittings reads more than 0 items in
   1B06BC (13 in set 03, log:639), in 1B06G1 (134, log:1388) and in 1B06PK (0 in set 03,
   log:4327).
-- Needs Bader: yes, asked as Q102. The way out is his: the matrix asking both spellings as an OR, the models
+- Needed Bader, asked as Q102, answered on 2026-10-04, see the answered line of this item. The way out is his: the matrix asking both spellings as an OR, the models
   exported again with one spelling, or something else. B1 as written only says the proof copy
   must ask ME-Ductwork, and that moves the loss from seven groups to two and from ME to PL, FF
   and FP.
 - Note: The tool can only say which sets are affected, FR-027 and FR-028. The copy's XML is
   FR-082. An OR made through MatrixCorrections would meet FR-025.
-- Answered by Bader on 2026-10-04, Q102: look for both spellings of each workset the buildings spell differently, as an OR row built the way Q69's rows are, and the export check keeps naming which models carry which spelling. The OR group carries the set's other conditions, FR-025. Worked by F116, the clash XML.
+- Answered by Bader on 2026-10-04 at 15:23, Q102, in his words: look for both spellings of each workset the buildings spell differently, as an OR row built the way Q69's rows are, and the export check keeps naming which models carry which spelling. The lead's note: built with the set's other conditions carried into the OR group, FR-025, as written under Q102, and to be worked by F116, the clash XML, in wave 1.
 
 ### FR-009 matrix-ar-sets-match-items-of-other-disciplines
 
@@ -347,10 +380,10 @@ structure model's ramps. The AR Railings set does the same.
   category another discipline also uses. Run line of set 05: the 1B06PK read-out has no clash
   block for BLD-AR-Ramps (set 03 lines 9, 11 and 12), and the SET line for BLD-AR-Ramps in
   1B06PK reads 0 items (36 at set 03 log:4304).
-- Needs Bader: yes, asked as Q103. The matrix is his (Q98 B1).
+- Needed Bader, asked as Q103, answered on 2026-10-04, see the answered line of this item. The matrix is his (Q98 B1).
 - Note: A SET line could also say which discipline's model an AR coded set found its items in.
   The tool reports and never acts, so no behaviour change is asked.
-- Answered by Bader on 2026-10-04, Q103: every AR set whose category another discipline also uses gets Source File contains -AR-. Worked by F116, the clash XML.
+- Answered by Bader on 2026-10-04 at 15:23, Q103, in his words: every AR set whose category another discipline also uses gets Source File contains -AR-. The lead's note: to be worked by F116, the clash XML, in wave 1.
 
 ### FR-010 empty-sets-contains-judged-as-equals
 
@@ -821,7 +854,7 @@ workset whatever its category.
   doc means needs the whole group copied with the other spelling, (X and V) or (X and V other).
   Not reachable by a run. It matters if FR-008 is answered with an OR of both spellings made
   through this class.
-- Answered through Q102 and Q104 on 2026-10-04: the class is applied at pick time and builds Q102's OR rows, so this fault is reachable now and is worked by F116, the clash XML.
+- Answered through Q102 and Q104 on 2026-10-04. The lead's note: this fault will be reachable once F116 applies the class at pick time and builds Q102's OR rows, so F116 works it in wave 1.
 
 ### FR-026 matrix-category-rewrite-renames-the-set-itself
 
@@ -846,7 +879,7 @@ renamed inside its block and the value can grow every time it is applied.
 - Note: Latent. Nothing in src calls MatrixCorrections and the generator in the tests passes
   null for these rewrites. The class doc at :382 says safe to run twice is the whole point.
   Where From is also in the name, the second pass finds no set. Not reachable by a run.
-- Answered through Q104 on 2026-10-04: the class is applied at pick time, so this fault is reachable now and is worked by F116, the clash XML.
+- Answered through Q104 on 2026-10-04. The lead's note: this fault will be reachable once F116 applies the class at pick time, so F116 works it in wave 1.
 
 ### FR-027 empty-sets-block-never-written-on-a-first-run
 
@@ -947,16 +980,16 @@ form of a set a picked file carries.
   proves exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml equals what the rule produces still
   passes. If it is applied at pick time: a Core test that the picked file's outcome lines reach
   the HEALTH block.
-- Needs Bader: yes, asked as Q104. Q68 (answered) says the tool must not silently fix the matrix, and the
+- Needed Bader, asked as Q104, answered on 2026-10-04, see the answered line of this item. Q68 (answered) says the tool must not silently fix the matrix, and the
   answer was to correct the file, which is what the exchange folder holds. Applying it at pick
   time, even with a log line, changes what the tool does to the client's XML, and moving it out
   of Core takes its 22 test references with it.
 - Note: The case in point is finding 2 of findings.md, where the desktop XML asked
   ME-DUCTWORK. Bader has since put the corrected file in place (Q98 B1). FR-025 and FR-026 are
   faults inside this class, and it is among the 150 of FR-172.
+- Answered by Bader on 2026-10-04 at 15:23, Q104, in his words: the tool uses the code that builds the corrected XML, MatrixCorrections is applied to whichever XML is picked before any set is built, the log names every correction it made, the Q102 and Q103 rules live in it, and a test proves the old uncorrected XML and the exchange file give the same sets once corrected. The lead's note: to be worked by F116, the clash XML, in wave 1.
 
 ## Clash counts, FR-031 to FR-034
-- Answered by Bader on 2026-10-04, Q104: MatrixCorrections is applied to whichever XML is picked, before any set is built, the log names every correction it made, the Q102 and Q103 rules live in it, and a test proves the old uncorrected XML and the exchange file give the same sets once corrected. Worked by F116, the clash XML.
 
 ### FR-031 clash-progress-line-one-test-short
 
@@ -2001,6 +2034,7 @@ the step for 20. log:8380-8382, the
   minutes counts and what the viewpoints may hold are Bader's, FR-070, and this speed work goes
   first. LOOK 387 reads CONFIRMED only for a step the size of the fixtures, so its wording is
   the lead's to check. FR-065 and FR-071 change the same loop.
+- Answered by Bader on 2026-10-04 at 15:23, Q101, in his words: make VIEWS faster with the same viewpoints. The lead's note: to be worked by F114, the views area, in wave 2, after wave 1's test run measures the split of FR-073.
 
 ### FR-070 views-45-minute-basis-and-options
 
@@ -2022,10 +2056,10 @@ folder, and what the viewpoints may hold, are Bader's to choose.
   options in the form. After it, tests\Federator.Core.Tests\Diagnostics\TimingBlockTests.cs pins
   the chosen scope, and the TIMING line of set 05 says INSIDE or OVER the same way (set 03
   log:8426).
-- Needs Bader: yes, asked as Q101. The scope of the 45 minutes and what the viewpoints may hold are his, Q98 B3.
+- Needed Bader, asked as Q101, answered on 2026-10-04, see the answered line of this item. The scope of the 45 minutes and what the viewpoints may hold are his, Q98 B3.
 - Note: The options are measured in set 05 or by a probe, not guessed. The speed fix itself is
   FR-069 and goes first.
-- Answered by Bader on 2026-10-04, Q101: do not judge the 45 minutes in this round. Make VIEWS faster with the same viewpoints, then report each group's time beside its NWC sizes and item counts, so the target can be set after the proof run. Worked by F114.
+- Answered by Bader on 2026-10-04 at 15:23, Q101, in his words: do not judge the 45 minutes in this round. Make VIEWS faster with the same viewpoints, then report each group's time beside its NWC sizes and item counts, so the target can be set after the proof run. The lead's note: the per group times to be worked by F114 in wave 2, committed on its branch at f915396 before it paused.
 
 ### FR-071 views-log-silent-up-to-21-minutes
 
@@ -2942,13 +2976,13 @@ read-out go in as written, and DIALOG and CONFIRM texts go into record.txt unmas
   the profile folder is masked and refused. A prove-run.ps1 case that the record's DIALOG and
   CONFIRM lines go through MaskLine. Set 05: the committed log, tsv and read-outs hold no profile
   folder.
-- Needs Bader: yes, asked as Q105. Whether his Windows profile name is a trace to keep out of committed evidence
+- Needed Bader, asked as Q105, answered on 2026-10-04, see the answered line of this item. Whether his Windows profile name is a trace to keep out of committed evidence
   is his call, because F102 masks only the machine name and the licensing ids and the tree
   already holds the name in many files. Masking the record's own DIALOG and CONFIRM texts with
   the existing MaskLine needs no answer.
 - Branch: the run.ps1 part rests on F106, merged as 3449521, lines unchanged. read-workbook.ps1
   was on main before.
-- Answered by Bader on 2026-10-04, Q105: mask the profile folder name in paths and as the author, and the evidence check refuses this machine's name, the older machine's name and both account names, the older ones held as a hash. Worked by F117, the names.
+- Answered by Bader on 2026-10-04 at 15:23, Q105, in his words: mask the profile folder name in paths and as the author, and the evidence check refuses this machine's name, the older machine's name and both account names, the older ones held as a hash. The lead's note: to be worked by F117, the names, in wave 5 with the noise.
 
 ### FR-110 evidence-check-blind-to-older-machine-name
 
@@ -2970,11 +3004,11 @@ for no other.
   refused, and a clean file that passes, run by Actions. The name itself must not go back into
   the rules file in clear, so a hash or another way is needed, UNKNOWN how, as the F107-R1 row
   says.
-- Needs Bader: yes, asked as Q106. Q88 asked only for the mask on main. Making the check refuse a second machine
+- Needed Bader, asked as Q106, answered on 2026-10-04, see the answered line of this item. Q88 asked only for the mask on main. Making the check refuse a second machine
   name is new scope and a design choice, and the F107 section itself says the check would never
   refuse that name.
 - Branch: waits for F107's merge, fix-F107 not merged at main 3449521.
-- Answered by Bader on 2026-10-04, Q106: the check refuses the older machine's name, held as a hash. Worked by F117, the names.
+- Answered by Bader on 2026-10-04 at 15:23, Q106, in his words: the evidence check refuses the older machine's name, held as a hash. The lead's note: to be worked by F117, the names, in wave 5 with the noise.
 
 ### FR-111 f106-link-check-skips-output-folders
 
@@ -3522,12 +3556,12 @@ group, so the step reads CONTRADICTED, and on what the bar was set is UNKNOWN.
 - Class: noise
 - Proof: No test. After the choice, steps\03_bader_next.md:826 states the bar, and the set 05
   RESULT line 'COPY written ... bytes' meets it.
-- Needs Bader: yes, asked as Q108. Two ways out and the choice is his: trim the log further, or move the bar to
+- Needed Bader, asked as Q108, answered on 2026-10-04, see the answered line of this item. Two ways out and the choice is his: trim the log further, or move the bar to
   a size per group, measured at 49.9 KB a group here. A Look for line is never changed to match
   wrong output (.claude\rules\loop.md, how a finding is worked, rule 6), so the bar moves only if
   he accepts the size.
 - Note: The RESULT sizes printing 0 and 678,363 bytes are a separate fault, FR-046.
-- Answered by Bader on 2026-10-04, Q108: find the mistake first. Measure which blocks and lines make the C06 log 1.1 MB, find repeated or wasted lines and fix those, the tsv keeping every line in full, R6, then set the size bar from the measured result. Detailed test steps go under this item, are run, and say where the mistake is before anything changes.
+- Answered by Bader on 2026-10-04 at 15:23, Q108, in his words: do not pick an answer. Write detailed test steps under this item, run them, and say where the mistake is, if there is one, before anything changes. Measure which blocks and lines make the C06 log 1.1 MB, find repeated or wasted lines, and fix those. The tsv keeps every line in full, R6. Then set the size bar from the measured result. The lead's note: a noise item, so the fix is in wave 5.
 
 ### FR-137 rules-loop-md-says-logs-never-pushed-out
 
@@ -3786,14 +3820,14 @@ and steps\logs.
 - Proof: No Core test applies. A grep of the tree for the account name over the files that may be
   edited, the 20 of the 37 outside steps\logs before and none after, if Bader says to mask
   it.
-- Needs Bader: yes, asked as Q107. Whether the account name of the older machine counts as a trace he wants
+- Needed Bader, asked as Q107, answered on 2026-10-04, see the answered line of this item. Whether the account name of the older machine counts as a trace he wants
   masked is his choice, Q88 named only the machine name. steps\logs cannot be edited.
 - Branch: works after F107's merge, which masks the machine name in the same files, fix-F107 not
   merged at main 3449521.
 - Note: The account name is written <name> here, so the draft adds no copy of it.
+- Answered by Bader on 2026-10-04 at 15:23, Q107, in his words: mask the older account name in the 20 files outside steps\logs, the check refuses it, held as a hash, and steps\logs stays untouched. The lead's note: to be worked by F117, the names, in wave 5 with the noise.
 
 ## Rest, FR-150 to FR-174
-- Answered by Bader on 2026-10-04, Q107: mask the older account name in the 20 files outside steps\logs, the check refusing it, held as a hash, and steps\logs stays untouched. Worked by F117, the names.
 
 ### FR-150 apply-file-settings-does-not-save-nwf
 
@@ -4084,18 +4118,18 @@ hand edit gets the pattern back.
   that cell for good. src\Federator.Addin\Ui\FederatorWindow.xaml.cs:288 'nameTable =
   OutputNameTable.From(result.Groups, naming, settings)' is the only reset. core.md says a cell
   can be given back to the pattern. steps\02_questions.md:113, Q24 asks to wire a way in or drop
-  the sentence and the member, and has no answer. Set 03 edited no cell (driver.txt:3-19).
+  the sentence and the member, and had no answer until 2026-10-04. Set 03 edited no cell (driver.txt:3-19).
 - Root cause: src\Federator.Addin\Ui\GroupRow.cs:111-129 with
   src\Federator.Core\Naming\OutputNameTable.cs:77-87.
 - Class: broken feature
 - Proof: If wired: a Core test in tests\Federator.Core.Tests\Naming\OutputNameTableTests.cs that a
   cell typed empty goes back to the pattern on the next Refill, failing today, then a run of the
   grid. If dropped: the build and a grep for ReleaseToPattern returning nothing.
-- Needs Bader: yes, asked as Q24, asked on 2026-09-12 and still open. Q24 is unanswered and is exactly this choice: wire a right click or a button
+- Needed Bader, asked as Q24 on 2026-09-12 and answered on 2026-10-04, see the answered line of this item. Q24 was exactly this choice: wire a right click or a button
   per cell, or drop the sentence and the member with its test.
 - Note: T1-B7 is the same fault from the Core side. FR-165 is a separate guard that is still
   needed whichever he chooses.
-- Answered by Bader on 2026-10-04, Q24: find the mistake first. Test what happens to a typed-over name cell through a run, and whether a person can put it back to the pattern today. Detailed test steps go under this item, are run, and say what is broken before anything is wired or removed.
+- Answered by Bader on 2026-10-04 at 15:23, Q24, in his words: do not pick an answer. Write detailed test steps under this item, run them, and say where the mistake is, if there is one, before anything changes. Test what happens to a typed-over name cell through a run, and whether a person can put it back to the pattern today. Find what is broken before deciding to wire or remove anything. The lead's note: in wave 4 with the rest.
 
 ### FR-161 date-format-has-no-control
 
@@ -4115,11 +4149,11 @@ the format the person's setting whose mistakes should be visible in the preview.
 - Proof: Run. A box on the Outputs step whose value reaches the preview and the NWD name with the
   dated NWD tick on. The Core half is already tested (OutputNameTableTests.TheDateFormatIsASetting
   at :264). Not in the five run plan, so a driver step is needed, UNKNOWN.
-- Needs Bader: yes, asked as Q109. The separator and the part positions are in the same state
+- Needed Bader, asked as Q109, answered on 2026-10-04, see the answered line of this item. The separator and the part positions are in the same state
   (steps\notes\f101-design.md:42 records that the window does not offer them). So the choice is a
   box on the Outputs step, or core.md reworded to say it is a code setting, and that is his
   because the window is meant to carry fewer decisions.
-- Answered by Bader on 2026-10-04, Q109: find the mistake first. Test that the date format, the separator and each part position change the NWD name the way they should, that a wrong value is refused with a clear line, and find where it breaks. Detailed test steps go under this item, are run, and say where the mistake is before anything changes.
+- Answered by Bader on 2026-10-04 at 15:23, Q109, in his words: do not pick an answer. Write detailed test steps under this item, run them, and say where the mistake is, if there is one, before anything changes. Test that each setting, the date format, the separator and the part positions, changes the NWD name the way it should, that a wrong value is refused with a clear line, and find where it breaks. The lead's note: in wave 4 with the rest.
 
 ### FR-162 folder-memory-save-failure-never-reported
 
@@ -4393,14 +4427,14 @@ since.
 - Class: noise
 - Proof: None as a group. For each member a grep over src reading 0 and the member deleted with
   its tests, or a decision in steps\02_questions.md that keeps it.
-- Needs Bader: yes, asked as Q26, asked on 2026-09-12 and still open. Q26, unanswered, asks whether the ones read only by a test go internal
+- Needed Bader, asked as Q26 on 2026-09-12 and answered on 2026-10-04, see the answered line of this item. Q26 asked whether the ones read only by a test go internal
   instead, which decides about 30 of them.
 - Note: A backlog kept as an item. CLAUDE.md deletes a member nothing in src calls unless a
   decision keeps it. SizeTally and MatrixCorrections, which are in this list, are separate items
   here (FR-068 and FR-030). Other uncalled members are separate items too:
   SavedViewpoints.CanBuild (FR-133), FolderMemory.DisabledReason (FR-162) and
   OutputNameTable.ReleaseToPattern (FR-160).
-- Answered by Bader on 2026-10-04, Q26: find the mistake first. Break each of the 30 members only tests read on purpose and check its test fails. A test that still passes proves nothing, and that member goes in the form. Detailed test steps go under this item and are run before anything changes.
+- Answered by Bader on 2026-10-04 at 15:23, Q26, in his words: do not pick an answer. Write detailed test steps under this item, run them, and say where the mistake is, if there is one, before anything changes. Break each member on purpose and check its test fails. A test that still passes proves nothing, and that member goes in the form. The lead's note: in wave 5.
 
 ### FR-173 t1-catch-swallowing-77
 
@@ -4461,7 +4495,7 @@ Bader answered in Q80 is written in no rule file.
 | Rest | FR-150 to FR-174 | 25 | 9 | 5 | 0 | 3 | 8 | 3 |
 | All | FR-001 to FR-174 | 174 | 57 | 25 | 7 | 16 | 69 | 12 |
 
-Needs Bader: FR-006, FR-008, FR-009, FR-030, FR-070, FR-109, FR-110, FR-136, FR-149, FR-160,
+Needed Bader, all answered on 2026-10-04: FR-006, FR-008, FR-009, FR-030, FR-070, FR-109, FR-110, FR-136, FR-149, FR-160,
 FR-161 and FR-172.
 
 Waiting for a merge not yet made: F107 for FR-110 and FR-149, and F109 for FR-078 to FR-081.
