@@ -1,12 +1,21 @@
 # log
 
 Newest entry at the top.
-## 2026-10-04 The loop, turn 5, F126 the window driver unticks a named tick box, built, its harness not run because no gap came in 90 minutes
+## 2026-10-04 The loop, turn 5, F126 the window driver unticks a named tick box, built and read by a reviewer and a breaker with nothing blocking under Q93, its harness not run because no gap came in 91 minutes
 
-Nothing under src or tests changed. Core tests 1756 passed, 0 failed, 0 skipped before, on main
-1ae6771 with F125 merged, and 1756 passed, 0 failed, 0 skipped after the change, by hand,
-turn5\f126-proof\core-tests-before.txt and core-tests-after.txt, and by the pre-commit of each
-commit, precommit-1.txt to precommit-4.txt there. No Navisworks and no stand-in was started.
+Nothing under src or tests changed: git diff --name-only 1ae6771 66dfdf5 -- src tests prints
+nothing, and so does the same from main ddb059b to the merge 1e06b7e,
+turn5\f126-proof\diff-names.txt. Core tests 1756 passed, 0 failed, 0 skipped before, on main
+1ae6771 with F125 merged, core-tests-before.txt there, whose line 1 is the commit, and 1756
+passed, 0 failed, 0 skipped after the change, by hand, core-tests-after.txt, a file with no
+commit and no time in it, and by the pre-commit of each of the four commits, precommit-1.txt to
+precommit-4.txt. After main ddb059b, F112 in it, was merged in at 1e06b7e, 1865 passed, 0
+failed, 0 skipped by the pre-commit of the merge, precommit-claims-merge.txt, and by hand at
+1e06b7e, core-tests-claims.txt, whose line 1 is the commit. core-tests-before.txt line 12,
+core-tests-after.txt line 2 and core-tests-claims.txt line 13 print one test,
+WriteTheCorrectedFile, as Skipped. It is the one [Explicit] test, MatrixCorrectionsTests.cs
+lines 559 and 560, run by hand only, and it is in none of the counts, whose summary lines read
+Skipped: 0. No Navisworks and no stand-in was started.
 
 ### What was done
 
@@ -17,11 +26,22 @@ commit, precommit-1.txt to precommit-4.txt there. No Navisworks and no stand-in 
   214 to 217, and lines 40 and 41, 338 and 378 left every box as the window opened it, as the
   baseline's item 1 on C02 shows, steps\runs\04\item1-C02\driver.txt lines 5 and 19.
   tools\loop\run.ps1 had no such parameter either, lines 1 to 14 and 2177 to 2183
+- the run that shows it used F125's first pass scripts and not those of 1ae6771: record.txt
+  line 1 of steps\runs\04\item1-C02 names the driver at sha256 7E9ABA1B and run.ps1 at
+  3FE28CB6, the blobs of 5fa98a8. The driver's cited lines stand word for word at 5fa98a8, at
+  lines 1 to 14, 40 and 41, 212 to 215, 332 and 372, and run.ps1's lines 2177 to 2183 stand at
+  1598 to 1604. run.ps1's param block is shorter there, lines 1 to 10. Neither script names
+  $Untick at 1ae6771 or at 5fa98a8, where 66dfdf5 names it on 8 and 16 lines,
+  turn5\f126-proof\first-pass-lines.txt
 - measured first, in the window code on the branch fix-F112 at e6d6f73: the box is not
   remembered. FederatorWindow.xaml.cs line 1198 sets it from
   AlignmentCheck.DefaultSkipClashOffCoordinates, a constant true at AlignmentCheck.cs line 160,
   every time the window opens, and the one state the window reads back at its next open is
-  FolderMemory's picker folders. So nothing of it is read before the loop or put back after
+  FolderMemory's picker folders. So nothing of it is read before the loop or put back after.
+  F112 is merged since, as main ddb059b, and the branch fix-F112 is gone from origin. e6d6f73
+  is an ancestor of ddb059b, and FederatorWindow.xaml line 559, FederatorWindow.xaml.cs lines
+  1198 and 1526 and AlignmentCheck.cs line 160 read the same at both, read with git show,
+  turn5\f126-proof\f112-lines-ddb059b.txt
 - the driver's -Untick: each box named by its AutomationId found on the four tabs, read through
   TogglePattern, toggled once only when it reads On, read back, one line per box with its id,
   its tab, before and after, all before anything is pressed, and read again before Run. A box on
@@ -36,43 +56,112 @@ commit, precommit-1.txt to precommit-4.txt there. No Navisworks and no stand-in 
   opens, every tick and untick and its state at Run written to its events file, and the modes
   skip-off, skip-sticky and skip-scan
 - the rule in .claude\rules\loop.md, the READMEs of tools\loop and tools\probes, the order line
-  40 and the section F126 in steps\01_next.md, and the register row F126 in steps\loop.md
-- built and checked: the solution with 0 warnings and 0 errors before and after, the stand-in
-  with 0 warnings and 0 errors before and after, the three changed scripts parsing with 0 errors,
-  check-locals and check-imports passing, each in turn5\f126-proof
+  and the section F126 in steps\01_next.md, and the register row F126 in steps\loop.md
+- built and checked on 2026-10-04: the solution with 0 warnings and 0 errors before and after,
+  sln-build-before.txt and sln-build-after.txt, and the stand-in the same, standin-build-before.txt
+  and standin-build-after.txt. These four outputs name no commit and no time. Their file times
+  are 23:25, 23:36, 23:24 and 23:32, before c3e224b at 23:44:03, turn5\f126-proof\reflog-claims.txt,
+  and nothing they compile changed from c3e224b to 66dfdf5, git diff --name-only c3e224b 66dfdf5
+  -- src tests tools/loop/StandIn printing nothing, diff-names.txt. check-locals and
+  check-imports passed, check-locals.txt and check-imports.txt, also with no commit in them, and
+  in the pre-commit of each commit, precommit-1.txt to precommit-4.txt lines 3, 5 and 6.
+  parse.ps1 is the parser, and no output of it was kept that day
+- built and checked again on 2026-10-05 at the merge 1e06b7e, each output with the commit on its
+  line 1 and the time on its line 2: the solution, dotnet build ParsonsNwcFederator.sln -c
+  Release --no-incremental, 0 warnings and 0 errors, sln-build-claims.txt, the stand-in, dotnet
+  build of tools\loop\StandIn\StandIn.csproj -c Release --no-incremental into
+  standin-bin-claims, built and never started, 0 warnings and 0 errors,
+  standin-build-claims.txt, check-locals and check-imports exit 0, checks-claims.txt, and the
+  three changed scripts through parse.ps1, each at parse errors 0 beside its sha256,
+  parse-after.txt. Nothing under tools changed from 66dfdf5 to 1e06b7e, diff-names.txt, so that
+  parse reads the scripts of 66dfdf5
 - the proof written, turn5\f126-proof\prove-f126.ps1, 52 checks on the branch's tools, each way
   the untick can fail broken on its own and its line asserted to name the box, to run once on
-  main's tools at 1ae6771, exported into before-tree, and once on the branch
+  main's tools at 1ae6771, exported into before-tree, and once on the branch. It has not run
 - the wait. Get-Process Roamer read 1 at 23:21:37 and 23:39:19, then the waiter
-  turn5\f126-proof\wait-and-prove.sh read it 19 times, 5 minutes apart, from 23:51:20 to 01:22:18
-  on 2026-10-05, every read 1, pid 32136 started at 21:17:06, and at 01:22:19 it wrote NO GAP and
-  started neither run of the harness, roamer-reads.txt. So the toggle on the stand-in's box, the
-  read back, each UNTICK stop and run.ps1's Check lines are UNPROVED by a run
-- what ran with no stand-in and no window, on e45ffbb: run.ps1's ParamRefusal for the seven
-  cases and Install, DriverArguments, UntickWords, UntickRefusal, DriverCodes and RunVerdict, each
-  answer the one the harness asserts, pure-reads.txt, and the driver refusing a bad and a
+  turn5\f126-proof\wait-and-prove.sh read it 19 times, about 5 minutes apart, 5 min 3 s or
+  5 min 4 s between reads, from 23:51:20 to 01:22:18 on 2026-10-05, 90 min 58 s, every read 1,
+  pid 32136 started at 21:17:06, and at 01:22:19 it wrote NO GAP and started neither run of the
+  harness, roamer-reads.txt lines 3 to 22. The 90 minutes in that line and in the message of
+  aa0594b is the waiter's budget of 18 sleeps of 300 s, not what was measured. The reads at
+  23:39:19 and 01:31:32, lines 2 and 23 there, gave a count and no pid, so the file does not
+  show they were the same Roamer. This records pass read it at 02:14:59 and again before its
+  commit, 1 each time, pid 32136 started at 21:17:06 on 2026-10-04, roamer-reads-claims.txt
+- so THE HARNESS HAS NOT RUN, because no gap with Get-Process Roamer at 0 came. The toggle on
+  the stand-in's box, the read back, each UNTICK stop, run.ps1's Check lines and the stand-in's
+  three modes are UNPROVED by a run. The lead runs both passes in the first gap, before the
+  pull request merges
+- what ran with no stand-in and no window, on e45ffbb, pure-reads.txt, whose lines 1 and 2 are
+  the commit and the time. pure-reads.ps1 prints and asserts nothing, so its answers were
+  compared by hand with what prove-f126.ps1 asserts: ParamRefusal's seven cases, lines 3 to 9,
+  with the harness's checks at lines 217 to 229, DriverArguments with no -Untick and for item 5,
+  lines 12 and 13, with its checks at 209 and 210, line 11 being the command line its case at
+  line 206 starts the driver with, UntickWords, lines 14 and 15, with its checks at 248 and 260,
+  DriverCode and DriverCodeName, line 17, with its DriverCodes check at 254, and RunVerdict,
+  line 18, with its check at 257. Two answers have no check in the harness to compare with, the
+  Install case, line 10, and UntickRefusal, line 16. The driver on e45ffbb refused a bad and a
   doubled -Untick before any window is read, exit 2, dry-refusal.txt
 - a second commit, e45ffbb, after the developer read the first again: three lines of the
   driver that read tick boxes ended each was left as the window opened it, lines 417, 457 and
   511 of c3e224b, which a box -Untick names would make false. BarUntick names those boxes after
   the words, and is empty with no -Untick
+- read on 2026-10-05 under Q93, the three files written at 01:51:53 while 66dfdf5 was the tip,
+  reflog-claims.txt: by a reviewer, VERDICT APPROVE with nothing blocking,
+  turn5\f126-read-review.txt, and by a breaker, VERDICT APPROVE with nothing blocking,
+  turn5\f126-read-break.txt. Their notes are under Known bugs. A claim-checker read the records
+  and the body, turn5\f126-read-claims.txt, ten entries, nine needing a change and the tenth
+  finding no fault
+- the records made true on 2026-10-05: main ddb059b merged in at 1e06b7e with both sides of
+  each conflict kept, this entry on top of steps\log.md, F112's order line 40 and section first
+  in steps\01_next.md and F126's order line, now 41, and section after, and steps\loop.md
+  merging with no conflict at 337 rows, turn5\f126-resolve-merge.py and turn5\f126-msg-merge.txt.
+  Then the claim-checker's nine points made true in this entry, the section F126 in
+  steps\01_next.md, the register row F126 and its count line in steps\loop.md and the body
+  turn5\pr-f126.md. Two of its points also name lines under tools and in .claude\rules, which
+  this pass did not change, What remains
 
 ### What remains
 
-- the harness, both runs, at the first read of Get-Process Roamer of 0
-- the reading by a reviewer and a breaker under Q93
-- the lead's run of 1A02MM with -Untick SkipClashOffCoordinates once F112 is merged and main
-  installed, whose driver.txt reads the box toggled Off on the real window
+- the harness, both passes, prove-f126.ps1 on main's tools in before-tree and on the branch, run
+  by the lead in the first gap with Get-Process Roamer at 0, before the pull request merges, its
+  output kept as prove-f126-before.txt and prove-f126-after.txt
+- tools\loop\README.md lines 555 and 556 say the stand-in's three modes are proved by
+  prove-f126.ps1, which is not so until the harness has run, the claim-checker's first point.
+  tools\loop\README.md line 345 and .claude\rules\loop.md line 112 cite FederatorWindow.xaml.cs
+  line 1198 on the branch fix-F112 at e6d6f73, a branch gone from origin since F112 merged,
+  though e6d6f73 is an ancestor of main ddb059b and the line reads the same there,
+  f112-lines-ddb059b.txt. This pass changed nothing under tools, by the lead's word, and left
+  the rule as it was, so the three lines wait for the lead
+- the lead's run of 1A02MM with -Untick SkipClashOffCoordinates once main, F112 in it since
+  ddb059b, is installed, whose driver.txt reads the box toggled Off on the real window
 
 ### Known bugs
 
-- none found. Until F112 is installed the real window has no such box, and a run given
-  -Untick SkipClashOffCoordinates stops UNTICK on none of the tabs with nothing pressed, which is
-  the rule working and not a fault
+- none found in the code. Until main with F112 in it is installed the real window has no such
+  box, and a run given -Untick SkipClashOffCoordinates stops UNTICK on none of the tabs with
+  nothing pressed, which is the rule working and not a fault
+- the readings' notes, none blocking, the breaker's in turn5\f126-read-break.txt and the
+  reviewer's in turn5\f126-read-review.txt. Check given -Untick passes a box the installed window
+  may not hold, so Run starts Navisworks and only then stops UNTICK on none of the tabs, nothing
+  pressed, f126-read-break.txt line 2. The RUN RECORD line and the UntickWords line are written
+  before the driver starts and say it unticks the box, so for a run the driver stopped before
+  the untick only driver.txt shows the box was never toggled, f126-read-break.txt line 5.
+  LogCheck reads no state of the rule, so a RAN verdict rests on the driver's read back of the
+  box and the tool's own ALIGNMENT lines, f126-read-break.txt line 8. UntickRefusal compares ids
+  without regard to case, so -Untick Box,box is refused as named twice though an AutomationId is
+  case sensitive, f126-read-break.txt line 11. The window sets the box from the default at every
+  open, so every run that must have the rule off needs -Untick again, and a forgotten one is
+  silent, f126-read-break.txt line 14. The driver's line about IncludeSubfolders,
+  drive-window-run.ps1 line 421, ends with the boxes -Untick names though IncludeSubfolders is
+  not one of them, f126-read-review.txt line 26. git printed failed to delete for 12 worktree
+  entries after each commit, outside this change, f126-read-review.txt line 32. No register row
+  was added for these notes
+- tools\loop\README.md lines 555 and 556 read proved where nothing has run, What remains
 
 ### What comes next
 
-- the harness, then the readings, then the merge, then the run of wave 1's test with the rule off
+- the harness in the first gap, by the lead, then the README's sentence, then the merge, then
+  the run of wave 1's test with the rule off
 
 ### Every program started, every file written outside the repo
 
@@ -83,6 +172,12 @@ check-imports and the waiter, Windows PowerShell 5.1 for the parser, for array t
 pure reads, for the driver twice, each time refused before any window is read, and for the
 22 reads of Get-Process Roamer, the last at 01:31:32 after the records, reading 1, and tar to
 unpack main's tools. No Navisworks, no stand-in, no harness run and nothing installed.
+The records pass on 2026-10-05 started git, to fetch, merge, show, diff, log, ls-remote, reflog,
+status, commit and push, and the pre-commit hook twice, python for the merge resolver and the line
+finder, Windows PowerShell 5.1 for parse.ps1 and the reads of Get-Process Roamer, dotnet build
+for the solution twice, the first output written over by the second with --no-incremental, and
+for the stand-in once, never started, dotnet test once by hand, and sh for check-locals and
+check-imports. No Navisworks, no stand-in, no harness run and nothing installed.
 
 Written outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop\turn5\f126-proof:
 core-tests-before.txt, core-tests-after.txt, sln-build-before.txt, sln-build-after.txt,
@@ -95,6 +190,16 @@ the stand-in built before and after, never started. Also turn5\f126-msg-1.txt to
 f126-msg-4.txt, the commit messages, and turn5\pr-f126.md, the draft body.
 In the session's scratch folder under %TEMP%\claude: arr.ps1, parse1.ps1, pure.ps1, added.txt,
 and fw112.cs and fw112.xaml, the window code of fix-F112 read with git show.
+The records pass wrote, under turn5\f126-proof, precommit-claims-merge.txt, precommit-claims.txt,
+push-claims.txt, diff-names.txt, first-pass-lines.txt, f112-lines-ddb059b.txt, reflog-claims.txt,
+parse-after.txt, written twice, the second keeping PowerShell's own exit code, and
+parse-raw.tmp, a copy deleted once read, sln-build-claims.txt, standin-build-claims.txt and
+standin-bin-claims, the stand-in built and never started, checks-claims.txt,
+core-tests-claims.txt and roamer-reads-claims.txt. Under turn5 it wrote f126-resolve-merge.py,
+f126-log-entry-claims.md and f126-next-section-claims.md, the texts of this entry and of the
+section F126, f126-records-claims.py, which wrote them and the register row in,
+f126-added-claims.tmp, the added lines read for a dash or a semicolon, deleted once read,
+f126-msg-merge.txt and f126-msg-5.txt, the two commit messages, and pr-f126.md, rewritten.
 
 ## 2026-10-04 The loop, turn 5, F112 the alignment area of the fix round, FR-001 to FR-006 and FR-028, DONE in Core and built, after a third attempt and a closing pass
 
