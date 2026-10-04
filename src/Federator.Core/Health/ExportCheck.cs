@@ -79,7 +79,22 @@ namespace Federator.Core.Health
             get { return Counted && WithWorkset > 0 && WithWorkset < Elements; }
         }
 
-        /// <summary>The share of elements carrying an id, as whole per cent, or minus one where it could not be worked out.</summary>
+        /// <summary>
+        /// Whether some of its elements reach the report with an empty id cell, T1-S48.
+        /// Judged on the COUNTS and never on IdShare, because 1051 of 1052 is 99.9 per cent
+        /// and once read as 100, which wrote no re-export line and called every id there.
+        /// </summary>
+        public bool MissesAnId
+        {
+            get { return Counted && Elements > 0 && WithElementId < Elements; }
+        }
+
+        /// <summary>
+        /// The share of elements carrying an id, as whole per cent for a person to read, or
+        /// minus one where it could not be worked out. It reads 100 only when every element
+        /// carries one and 0 only when none does, so it never sits at 100 beside a line
+        /// about missing ids. Nothing is judged on it, MissesAnId is.
+        /// </summary>
         public int IdShare
         {
             get
@@ -89,7 +104,19 @@ namespace Federator.Core.Health
                     return NotCounted;
                 }
 
-                return (int)Math.Round(100.0 * WithElementId / Elements, MidpointRounding.AwayFromZero);
+                int share = (int)Math.Round(100.0 * WithElementId / Elements, MidpointRounding.AwayFromZero);
+
+                if (WithElementId < Elements)
+                {
+                    share = Math.Min(share, 99);
+                }
+
+                if (WithElementId > 0)
+                {
+                    share = Math.Max(share, 1);
+                }
+
+                return share;
             }
         }
     }
@@ -182,7 +209,7 @@ namespace Federator.Core.Health
                         + Count(model.Elements - model.WithWorkset) + " here");
                 }
 
-                if (model.IdShare != ModelExport.NotCounted && model.IdShare < 100)
+                if (model.MissesAnId)
                 {
                     withoutEveryId++;
                     lines.Add("      re-export with Convert element Ids switched on, or "

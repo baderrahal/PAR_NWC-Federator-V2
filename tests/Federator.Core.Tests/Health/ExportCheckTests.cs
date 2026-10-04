@@ -166,6 +166,55 @@ namespace Federator.Core.Tests.Health
             Assert.That(block, Does.Contain("192 element(s) reach the report with an empty id cell"));
         }
 
+        // ---------- T1-S48, a share rounded to 100 hid the missing ids ----------
+
+        /// <summary>
+        /// 1051 ids on 1052 elements is 99.9 per cent and read as 100, so no re-export line
+        /// was written, the blank id cell was not counted, and the closing sentence said
+        /// every element carries an id. Up to 50 blank cells hid that way on a model of
+        /// 10,000 elements. The test is on the counts and never on the rounded share.
+        /// </summary>
+        [Test]
+        public void OneMissingIdInAThousandAndFiftyTwoIsSaidAndNotCalledWhole()
+        {
+            IList<ModelExport> models = new List<ModelExport> { Model("ME", 1052, 1052, 1051, "ME-Piping") };
+
+            string block = Joined(ExportCheck.Lines(models));
+
+            Assert.That(block, Does.Contain(
+                "re-export with Convert element Ids switched on, or 1 element(s) reach the report with an empty id cell"));
+            Assert.That(block, Does.Not.Contain("carry a workset on every element and an element id on every element"));
+            Assert.That(block, Does.Contain("1 do not carry an element id on every element"));
+        }
+
+        /// <summary>
+        /// The share is still a whole per cent to read, but it says 100 only when every
+        /// element carries an id and 0 only when none does, so it can never sit beside a
+        /// line about missing ids reading 100.
+        /// </summary>
+        [Test]
+        public void TheShareReadsAHundredOnlyWhenEveryIdIsThereAndNoughtOnlyWhenNoneIs()
+        {
+            Assert.That(Model("ME", 1052, 1052, 1051).IdShare, Is.EqualTo(99));
+            Assert.That(Model("ME", 1000, 1000, 1).IdShare, Is.EqualTo(1));
+            Assert.That(Model("ME", 1000, 1000, 1000).IdShare, Is.EqualTo(100));
+            Assert.That(Model("ME", 1000, 1000, 0).IdShare, Is.EqualTo(0));
+            Assert.That(Model("ME", 790, 790, 598).IdShare, Is.EqualTo(76));
+            Assert.That(Joined(ExportCheck.Lines(new List<ModelExport> { Model("ME", 1052, 1052, 1051) })),
+                Does.Contain("element id 99%"));
+        }
+
+        /// <summary>The run line counts a missing id by the rule the block uses, so the two cannot disagree.</summary>
+        [Test]
+        public void AMissingIdIsCountedByOneRule()
+        {
+            Assert.That(Model("ME", 1052, 1052, 1051).MissesAnId, Is.True);
+            Assert.That(Model("ME", 1052, 1052, 1052).MissesAnId, Is.False);
+            Assert.That(Model("ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted).MissesAnId, Is.False,
+                "a count nobody took is never reported as a fault");
+            Assert.That(Model("EL", 0, 0, 0).MissesAnId, Is.False);
+        }
+
         [Test]
         public void AGroupWithNothingWrongSaysSoRatherThanSayingNothing()
         {

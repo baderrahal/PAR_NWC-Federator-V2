@@ -2170,7 +2170,7 @@ namespace Federator.Addin.Engine
                         modelsNotCounted++;
                     }
 
-                    if (model.IdShare != ModelExport.NotCounted && model.IdShare < 100)
+                    if (model.MissesAnId)
                     {
                         modelsMissingAnId++;
                     }
