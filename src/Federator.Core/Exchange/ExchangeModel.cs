@@ -357,8 +357,9 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// What MatrixCorrections did to the file before it was read, one line per correction,
-        /// for the log, Q104. Empty for a document read as the file stands.
+        /// What MatrixCorrections did to the file before it was read, the list beside it first
+        /// and then one line per correction, for the log, Q104 and Q113. Empty for a document
+        /// read as the file stands.
         /// </summary>
         public ReadOnlyCollection<string> Corrections { get; private set; }
 

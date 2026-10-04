@@ -12,14 +12,14 @@ namespace Federator.Core.Tests
     /// The corrections applied to the client's matrix before it is used, F87.
     ///
     /// The project's own set names below are SAMPLE DATA for the generic tests, which is
-    /// CLAUDE.md's rule. Since F116 two of them, the broken name and the catch-all set, also
-    /// sit in src, in matrix-corrections.txt embedded in Core, which that rule does not allow
-    /// as written. Bader answered Q113 on 2026-10-04, B: the list becomes a file beside the
-    /// picked XML, which F116 carries out after its fix attempt 2 and before it merges.
+    /// CLAUDE.md's rule. The project's corrections themselves are not in src: they are its
+    /// list, kept beside the picked XML and read when it is picked, and this project's list
+    /// is in the exchange folder beside the corrected XML, Q113 answered B on 2026-10-04.
     ///
     /// The test that matters most is TheCorrectedFileIsExactlyWhatTheRuleProduces. It asserts
     /// that the file committed under exchange is exactly what the rule produces from the file
-    /// under samples, so the artifact can never drift away from the rule that made it.
+    /// under samples with that list, so the artifact can never drift away from the rule and
+    /// the list that made it.
     /// </summary>
     [TestFixture]
     public class MatrixCorrectionsTests
@@ -355,7 +355,9 @@ namespace Federator.Core.Tests
         /// THE ONE THAT KEEPS THE ARTIFACT HONEST. The file committed under exchange is
         /// byte for byte what the rule produces from the file under samples, and since F116
         /// the rule is the one the tool applies to a picked file, Q104, so the file and the
-        /// tool cannot drift apart either. If anyone edits either by hand, this fails.
+        /// tool cannot drift apart either. Since Q113 the sample is read with this project's
+        /// list, the one beside the corrected file in the exchange folder. If anyone edits the
+        /// file or the list by hand, this fails.
         /// </summary>
         [Test]
         public void TheCorrectedFileIsExactlyWhatTheRuleProduces()
@@ -909,10 +911,11 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The generator, run by hand when the rule, the list of corrections or the measured
-        /// workset list changes. It is a TEST and not a script so it reads the same samples
-        /// the byte for byte test reads and can never produce something that test would then
-        /// reject, and since F116 it writes what the tool makes of a picked file, Q104.
+        /// The generator, run by hand when the rule, this project's list of corrections in the
+        /// exchange folder or the measured workset list changes. It is a TEST and not a script
+        /// so it reads the same samples and the same list the byte for byte test reads and can
+        /// never produce something that test would then reject, and since F116 it writes what
+        /// the tool makes of a picked file, Q104.
         /// </summary>
         [Test]
         [Explicit("Writes the corrected matrix into the exchange folder. Run by hand.")]
@@ -1615,11 +1618,11 @@ namespace Federator.Core.Tests
         // ---------- the MATRIX lines claim only what was measured, F116 ----------
 
         /// <summary>
-        /// The workset list is the C02 census and at most the first ten names of each C06 group,
-        /// so a line says every spelling measured so far in this project's models, and never
-        /// every spelling the models carry. A value no measured name matches is said to be in no
-        /// model measured so far, and never in no model of this run, which the shipped list
-        /// cannot know.
+        /// The spellings are the C02 census inside Core and, in this project's list, at most the
+        /// first ten names of each C06 group, so a line says every spelling measured so far in
+        /// this project's models, and never every spelling the models carry. A value no measured
+        /// name matches is said to be in no model measured so far, and never in no model of this
+        /// run, which neither list can know.
         /// </summary>
         [Test]
         public void TheValueLinesClaimOnlyWhatWasMeasured()

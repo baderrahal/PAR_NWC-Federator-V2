@@ -146,14 +146,15 @@ namespace Federator.Core.Exchange
     /// very project that are one and two letters apart, 5t.
     ///
     /// SO IT CORRECTS ONE VALUE TO ONE SPELLING WHERE EXACTLY ONE WAS MEASURED. The
-    /// candidates are the workset names READ OFF THE MODELS so far, revit-worksets.txt,
-    /// never a list in the code, and a spelling not measured yet is UNKNOWN.
+    /// candidates are the workset names READ OFF THE MODELS so far, revit-worksets.txt inside
+    /// Core and the workset lines of the project's list beside the picked XML, Q113, never a
+    /// list in the code, and a spelling not measured yet is UNKNOWN.
     ///
     /// AND WHERE TWO OR MORE WERE MEASURED IT ASKS FOR EVERY ONE OF THEM, Q102 answered
     /// on 2026-10-04. Until then a value with two case only spellings was refused and left
     /// as it was, because a rule that guesses between two real worksets is worse than a set
-    /// that finds nothing. It no longer guesses: the C06 buildings write ME-DUCTWORK and
-    /// ME-Ductwork, so a set asks both as Or groups built the way Q69's are, each group
+    /// that finds nothing. It no longer guesses: where the buildings of one project write a
+    /// workset two ways, a set asks both as Or groups built the way Q69's are, each group
     /// copied whole, FR-025, and finds the items of every building whichever it carries.
     /// A spelling no model was measured carrying is never asked.
     /// </summary>
@@ -504,14 +505,11 @@ namespace Federator.Core.Exchange
     /// Corrections applied to an exchange file before it is used.
     ///
     /// THE CLASS NAMES NO SET, AND THE LIST IT IS HANDED DOES. What lives here is only the
-    /// rule for applying corrections safely, and the corrections are data. Since F116 the
-    /// tool hands in matrix-corrections.txt, embedded in Core, which holds two set names and
-    /// four categories of the client's matrix. CLAUDE.md says a name off the clash XML
-    /// appears in tests as sample data only, so the list as it stands breaks that rule as
-    /// written, and changing it means rebuilding Core and reinstalling it, not handing in a
-    /// file. Bader answered Q113 on 2026-10-04, B: the list becomes a plain file kept beside
-    /// the picked XML, read at the pick and named in the log, which F116 carries out after
-    /// its fix attempt 2 and before it merges, so until then it ships in Core.
+    /// rule for applying corrections safely, and the corrections are data. The tool serves
+    /// many projects, so the list of one project's corrections is a plain file kept beside
+    /// the picked XML and named after it, read when the XML is picked and named in the log,
+    /// Q113 answered B by Bader on 2026-10-04, MatrixCorrectionList. Nothing of any project's
+    /// list is inside Core, and a picked XML with no list beside it is corrected by nothing.
     ///
     /// SAFE TO RUN TWICE IS THE WHOLE POINT. A correction that is applied to its own
     /// output must change nothing the second time, and TotalChanged coming back zero is
@@ -973,8 +971,9 @@ namespace Federator.Core.Exchange
                             out asking,
                             out widened);
 
-                        // What was measured and no more, F116: the list is the C02 census and at
-                        // most ten names a group of C06, so these are the spellings seen so far.
+                        // What was measured and no more, F116: the spellings are the census
+                        // inside Core and those of the list beside the picked file, each of them
+                        // measured and neither of them every workset, so these are the ones seen so far.
                         outcome.Add(
                             "the value " + value.From + " is asked as " + string.Join(" or ", spellings.ToArray())
                                 + ", every spelling measured so far in this project's models",
@@ -1077,8 +1076,8 @@ namespace Federator.Core.Exchange
         /// first set asking it, and goes at the end of every group of the set that lacks
         /// it, so a set that is an Or keeps asking it in each group.
         ///
-        /// NOTHING HERE NAMES A DISCIPLINE, A FOLDER OR A CATEGORY. The value it asks, -AR-
-        /// on this project, is handed in, and the folder and the category property are those
+        /// NOTHING HERE NAMES A DISCIPLINE, A FOLDER OR A CATEGORY. The value it asks is handed
+        /// in by the project's list, and the folder and the category property are those
         /// of the set already asking it. One line per set it changes, and one saying so where
         /// none needed it, so the log names every correction.
         /// </summary>
@@ -1407,9 +1406,9 @@ namespace Federator.Core.Exchange
 
         /// <summary>
         /// Every group of every set that asks for one of those spellings, written once per
-        /// spelling with the rest of the group copied into it, FR-025. A group of Ducts on
-        /// ME-Ductwork that is also to accept ME-DUCTWORK becomes (Ducts and ME-DUCTWORK) or
-        /// (Ducts and ME-Ductwork), so each group still asks for its own category. The
+        /// spelling with the rest of the group copied into it, FR-025. A group of category X on
+        /// workset V that is also to accept the spelling W becomes (X and V) or (X and W), the
+        /// spellings in Ordinal order, so each group still asks for its own category. The
         /// category and the property are copied off the file itself, so nothing here has to
         /// know what either is called on this project.
         ///
