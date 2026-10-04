@@ -92,14 +92,14 @@ namespace Federator.Core.Health
     /// including the ones whose translation is (0, 0, 0), because the export carries a
     /// scale too. What matters is whether the models in one group AGREE WITH EACH OTHER.
     ///
-    /// Nothing here skips a group or stops a run, Q65 answered: report it and run anyway.
-    /// Two answers given later decide how a group ENDS, and the group still writes its NWF
-    /// and its NWD either way. Q70: a model naming no site at all fails its group. Q98 B2
-    /// with Bader's answer to Q99 and Q100: a model naming Internal, or sitting more than
-    /// the far model setting from its group's reference, is not on the same shared
-    /// coordinates, and the group's clash is skipped and nothing else, OffCoordinates.
-    /// That replaces Q70 for a model on Internal, which failed its group until then and
-    /// still does with the rule switched off.
+    /// Nothing here stops a run, Q65 answered: report it and run anyway. Two answers given
+    /// later decide how a group ENDS, and the group still writes its NWF and its NWD either
+    /// way. Q70: a model naming no site at all fails its group. Q98 B2 with Bader's answer
+    /// to Q99 and Q100, which replaces Q65 and Q70 for this case: a model naming Internal,
+    /// or sitting more than the far model setting from its group's reference, is not on the
+    /// same shared coordinates, and where the run would have run a clash test in the group
+    /// its clash is skipped and nothing else, OffCoordinates. A model on Internal failed its
+    /// group until then and still does with the rule switched off.
     /// </summary>
     public static class AlignmentCheck
     {
@@ -177,11 +177,12 @@ namespace Federator.Core.Health
         /// <summary>
         /// The block, with the models not on the same shared coordinates measured against
         /// the given distance in millimetres, and said the way the rule that skips the
-        /// clash is set. Written even when everything agrees, because a missing block reads
-        /// as a check that did not run.
+        /// clash is set and whether this run runs a clash test in the group at all. Written
+        /// even when everything agrees, because a missing block reads as a check that did
+        /// not run.
         /// </summary>
         public static IList<string> Lines(
-            IList<ModelPlacement> models, double farModelMillimetres, bool skipClashOffCoordinates)
+            IList<ModelPlacement> models, double farModelMillimetres, bool skipClashOffCoordinates, bool runsATest)
         {
             return Lines(
                 models,
@@ -189,7 +190,8 @@ namespace Federator.Core.Health
                 DefaultToleranceMillimetres,
                 DefaultInternalName,
                 farModelMillimetres,
-                skipClashOffCoordinates);
+                skipClashOffCoordinates,
+                runsATest);
         }
 
         public static IList<string> Lines(
@@ -198,7 +200,8 @@ namespace Federator.Core.Health
             double toleranceMillimetres,
             string internalName,
             double farModelMillimetres,
-            bool skipClashOffCoordinates)
+            bool skipClashOffCoordinates,
+            bool runsATest)
         {
             List<string> lines = new List<string>();
 
@@ -221,7 +224,7 @@ namespace Federator.Core.Health
 
                 if (unplaced.Any)
                 {
-                    AddOffCoordinates(lines, unplaced, skipClashOffCoordinates);
+                    AddOffCoordinates(lines, unplaced, skipClashOffCoordinates, runsATest);
                 }
 
                 AddFailure(lines, models, internalName, skipClashOffCoordinates);
@@ -246,7 +249,7 @@ namespace Federator.Core.Health
                 {
                     sites.Add(model.SharedCoordinate);
 
-                    if (string.Equals(model.SharedCoordinate, internalName, StringComparison.Ordinal))
+                    if (NamesInternal(model, internalName))
                     {
                         onInternal++;
                     }
@@ -288,14 +291,27 @@ namespace Federator.Core.Health
             // carry, out of the same rule, so the log and the files cannot disagree.
             OffCoordinates off = NotOnTheSameCoordinates(models, reference, internalName, farModelMillimetres);
 
-            if (!off.Any)
+            // The all clear line speaks for every model, so it is written only where every
+            // model was measured, the breaker's eighth finding at c5d8aa8.
+            if (!off.Any && off.NotJudged == 0)
             {
                 lines.Add("no model names \"" + internalName + "\" or sits more than " + Metres(farModelMillimetres)
                     + " from the reference model in a straight line");
             }
+            else if (!off.Any)
+            {
+                lines.Add("no model that could be measured names \"" + internalName + "\" or sits more than "
+                    + Metres(farModelMillimetres) + " from the reference model in a straight line, and "
+                    + NotMeasured(off.NotJudged));
+            }
             else
             {
-                AddOffCoordinates(lines, off, skipClashOffCoordinates);
+                AddOffCoordinates(lines, off, skipClashOffCoordinates, runsATest);
+
+                if (off.NotJudged > 0)
+                {
+                    lines.Add(NotMeasured(off.NotJudged));
+                }
             }
 
             if (sites.Count > 1)
@@ -313,15 +329,23 @@ namespace Federator.Core.Health
             return lines;
         }
 
-        /// <summary>The models not on the same shared coordinates under a heading that says what the rule did with them.</summary>
-        private static void AddOffCoordinates(IList<string> lines, OffCoordinates off, bool skipClashOffCoordinates)
+        /// <summary>
+        /// The models not on the same shared coordinates under a heading that says what the
+        /// rule did with them: skipped the clash, was off, or had no clash to skip because
+        /// this run runs no clash test in the group.
+        /// </summary>
+        private static void AddOffCoordinates(
+            IList<string> lines, OffCoordinates off, bool skipClashOffCoordinates, bool runsATest)
         {
             // Not "as the reference model", because the reference itself can be on Internal.
-            lines.Add(skipClashOffCoordinates
-                ? "CLASH SKIPPED. " + off.Models.Count + " model(s) are not on the same shared coordinates, so the"
-                    + " clash tests are created and none is run, and no viewpoint and no clash report is made:"
-                : off.Models.Count + " model(s) are not on the same shared coordinates. The rule that skips the"
-                    + " clash for them is off for this run, so the group is clashed as before:");
+            lines.Add(!runsATest
+                ? off.Models.Count + " model(s) are not on the same shared coordinates. This run runs no clash test"
+                    + " in this group, so no clash is skipped for them:"
+                : off.SkipsTheClash(skipClashOffCoordinates, runsATest)
+                    ? "CLASH SKIPPED. " + off.Models.Count + " model(s) are not on the same shared coordinates, so the"
+                        + " clash tests are created and none is run, and no viewpoint and no clash report is made:"
+                    : off.Models.Count + " model(s) are not on the same shared coordinates. The rule that skips the"
+                        + " clash for them is off for this run, so the group is clashed as before:");
 
             for (int i = 0; i < off.Models.Count; i++)
             {
@@ -396,8 +420,7 @@ namespace Federator.Core.Health
                 {
                     withNoSite.Add(Named(models[i]));
                 }
-                else if (!skipClashOffCoordinates
-                    && string.Equals(models[i].SharedCoordinate, internalName, StringComparison.Ordinal))
+                else if (!skipClashOffCoordinates && NamesInternal(models[i], internalName))
                 {
                     onInternal.Add(Named(models[i]));
                 }
@@ -482,7 +505,7 @@ namespace Federator.Core.Health
         {
             if (models == null || models.Count == 0)
             {
-                return new OffCoordinates(null, new List<string>());
+                return new OffCoordinates(null, new List<string>(), 0, 0);
             }
 
             return NotOnTheSameCoordinates(
@@ -493,14 +516,14 @@ namespace Federator.Core.Health
             IList<ModelPlacement> models, ModelPlacement reference, string internalName, double farModelMillimetres)
         {
             List<string> off = new List<string>();
+            int notJudged = 0;
 
             for (int i = 0; i < models.Count; i++)
             {
                 ModelPlacement model = models[i];
 
                 // A site whose read threw is not Internal, FR-002, and SiteRead says so.
-                bool onInternal = model.SiteRead
-                    && string.Equals(model.SharedCoordinate, internalName, StringComparison.Ordinal);
+                bool onInternal = NamesInternal(model, internalName);
                 bool measured = reference != null && model != reference && model.Placed;
                 double dx = measured ? model.X - reference.X : 0.0;
                 double dy = measured ? model.Y - reference.Y : 0.0;
@@ -510,6 +533,13 @@ namespace Federator.Core.Health
 
                 if (!onInternal && !far)
                 {
+                    // Not named, and not a pass either where the site or the placement is
+                    // UNKNOWN. The reference is placed by the way it is chosen.
+                    if (!model.SiteRead || reference == null || !model.Placed)
+                    {
+                        notJudged++;
+                    }
+
                     continue;
                 }
 
@@ -526,7 +556,22 @@ namespace Federator.Core.Health
                     + "   " + where);
             }
 
-            return new OffCoordinates(reference == null ? null : Named(reference), off);
+            return new OffCoordinates(reference == null ? null : Named(reference), off, notJudged, models.Count);
+        }
+
+        /// <summary>
+        /// Whether a model names the internal origin as its site, the one test for it, so
+        /// the block, the failure and the rule cannot drift apart. A site whose read threw
+        /// names nothing, FR-002.
+        /// </summary>
+        private static bool NamesInternal(ModelPlacement model, string internalName)
+        {
+            return model.SiteRead && string.Equals(model.SharedCoordinate, internalName, StringComparison.Ordinal);
+        }
+
+        private static string NotMeasured(int models)
+        {
+            return models + " model(s) were not measured, a placement or a site UNKNOWN, so nothing is said about them";
         }
 
         /// <summary>The site in a line about coordinates: its name in quotes, or why there is none.</summary>

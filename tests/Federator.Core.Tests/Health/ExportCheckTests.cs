@@ -411,6 +411,72 @@ namespace Federator.Core.Tests.Health
                 Does.Contain("AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   " + ExportCheck.Counts(real)));
         }
 
+        /// <summary>
+        /// The row file's number column carried -1 for a model whose walk threw, and a sum
+        /// over a run took -1 for each. It carries what the row file carries for an unknown
+        /// elsewhere, an empty field, the way a placement that was not read leaves its Z
+        /// empty on the model placement row.
+        /// </summary>
+        [Test]
+        public void TheRowFileNumberIsEmptyForAModelThatCouldNotBeCountedAndNeverMinusOne()
+        {
+            ModelExport threw = Model("ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted);
+
+            Assert.That(ExportCheck.ElementsNumber(threw), Is.EqualTo(string.Empty));
+            Assert.That(ExportCheck.ElementsNumber(Model("AR", 1052, 1052, 1051)), Is.EqualTo("1052"));
+            Assert.That(ExportCheck.ElementsNumber(Model("EL", 0, 0, 0)), Is.EqualTo("0"), "nought counted is a real count");
+        }
+
+        // ---------- the run line, the breaker's fifth finding at c5d8aa8 ----------
+
+        /// <summary>
+        /// A model holding no Revit element was counted by its group's block and by nothing
+        /// in the engine, so the run line read as a clean run beside a block naming it. The
+        /// run line is now added up in Core by the rule the block uses.
+        /// </summary>
+        [Test]
+        public void TheRunLineCountsAModelHoldingNoRevitElementAsTheBlockDoes()
+        {
+            ModelExport empty = Model("EL", 0, 0, 0);
+            ExportCheckAcrossTheRun run = new ExportCheckAcrossTheRun();
+            run.Add(empty);
+            run.Add(Model("AR", 86, 86, 86, "AR-EXTERIOR"));
+
+            Assert.That(empty.HoldsNoElement, Is.True);
+            Assert.That(Joined(ExportCheck.Lines(new List<ModelExport> { empty }, NoFile)), Does.Contain("1 hold no Revit element"));
+            Assert.That(run.Line(), Is.EqualTo(
+                "EXPORT CHECK across the run: 0 model(s) carry no workset at all, 0 carry one on only some of their"
+                + " elements, 0 do not carry an element id on every element, 1 hold no Revit element, and 0 could not be"
+                + " counted. Nothing was changed in any model."));
+        }
+
+        [Test]
+        public void TheRunLineAddsEveryKindByTheBlocksRules()
+        {
+            ExportCheckAcrossTheRun run = new ExportCheckAcrossTheRun();
+            run.Add(Model("EL", 494, 0, 494));
+            run.Add(Model("ME", 1000, 1, 1000, "ME-Piping"));
+            run.Add(Model("AR", 1052, 1052, 1051, "AR-EXTERIOR"));
+            run.Add(Model("ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted));
+
+            Assert.That(run.Line(), Is.EqualTo(
+                "EXPORT CHECK across the run: 1 model(s) carry no workset at all, 1 carry one on only some of their"
+                + " elements, 1 do not carry an element id on every element, 0 hold no Revit element, and 1 could not be"
+                + " counted. Nothing was changed in any model."));
+        }
+
+        [Test]
+        public void ACleanRunLineHasNoTail()
+        {
+            ExportCheckAcrossTheRun run = new ExportCheckAcrossTheRun();
+            run.Add(Model("AR", 86, 86, 86, "AR-EXTERIOR"));
+
+            Assert.That(run.Line(), Is.EqualTo(
+                "EXPORT CHECK across the run: 0 model(s) carry no workset at all, 0 carry one on only some of their"
+                + " elements, 0 do not carry an element id on every element, 0 hold no Revit element, and 0 could not be"
+                + " counted"));
+        }
+
         [Test]
         public void ItNamesTenWorksetsAndSaysHowManyItLeftOut()
         {

@@ -65,6 +65,33 @@ namespace Federator.Core.Clash
             }
         }
 
+        /// <summary>
+        /// Whether this run runs a clash test in a group at all: the source holds tests, the
+        /// picked XML or the ones saved in the document, and the group holds two disciplines,
+        /// because one discipline, or one model, cannot clash with itself. Read before the
+        /// ALIGNMENT block, so the rule that skips the clash for models off the shared
+        /// coordinates skips only a clash that would have run. It was decided from the models
+        /// alone until c5d8aa8, so a group with nothing to clash ended PARTIAL with a reason
+        /// nobody asked for, the breaker's second finding.
+        /// </summary>
+        public static bool RunsATest(ClashSource source, ExchangeDocument exchange, bool singleDiscipline)
+        {
+            if (singleDiscipline)
+            {
+                return false;
+            }
+
+            switch (source)
+            {
+                case ClashSource.TestsFromXml:
+                    return CreatesTests(exchange);
+                case ClashSource.TestsSavedInDocument:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         /// <summary>True when there is any clash work at all for this run.</summary>
         public static bool Any(ExchangeDocument exchange)
         {

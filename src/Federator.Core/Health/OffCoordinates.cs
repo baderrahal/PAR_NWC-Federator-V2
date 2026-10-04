@@ -13,11 +13,12 @@ namespace Federator.Core.Health
     /// which is Revit's own origin, or when it sits more than the far model setting from the
     /// reference model, measured as the straight line of its X, Y and Z offsets.
     ///
-    /// IN A GROUP HOLDING ONE, ONLY THE CLASH IS SKIPPED. The NWF is built with every model,
-    /// set and test and the NWD is published, no test is run, no viewpoint and no clash
-    /// report is made, and the group ends PARTIAL with ClashSkippedReason. The rule is read on
-    /// every run, so once the models are exported again the next run clashes the group with
-    /// the tests already saved in its NWF. A setting switches the rule off.
+    /// IN A GROUP HOLDING ONE, ONLY THE CLASH IS SKIPPED, and only where this run would have
+    /// run a clash test in it, SkipsTheClash. The tests whose sides both find something are
+    /// created and none is run, no viewpoint and no clash report is made, and the group ends
+    /// PARTIAL with ClashSkippedReason. The rule is read on every run, so once the models are
+    /// exported again the next run clashes the group with the tests already saved in its NWF.
+    /// A setting switches the rule off.
     /// </summary>
     public sealed class OffCoordinates
     {
@@ -30,13 +31,18 @@ namespace Federator.Core.Health
         /// </summary>
         public const string NoteEnding = " clash skipped.txt";
 
-        /// <summary>The run's one list for the modellers, in the Clash Report folder.</summary>
-        public const string ListName = "Models not on the same shared coordinates.txt";
+        /// <summary>
+        /// The words of the engine's CLASH line for a skipped group, F77: a test whose side
+        /// finds nothing is not created at all, so not every test of the file is in the NWF.
+        /// </summary>
+        internal const string TestsCreatedNoneRun = "The tests whose sides both find something are created and none is run";
 
-        internal OffCoordinates(string reference, IList<string> models)
+        internal OffCoordinates(string reference, IList<string> models, int notJudged, int modelsRead)
         {
             Reference = reference;
             Models = new ReadOnlyCollection<string>(models);
+            NotJudged = notJudged;
+            ModelsRead = modelsRead;
         }
 
         /// <summary>The reference model the distances are measured from, as the block names it, or null where no model could be placed.</summary>
@@ -45,6 +51,16 @@ namespace Federator.Core.Health
         /// <summary>One line per model not on the same shared coordinates, the line the log, the note and the run's list all carry.</summary>
         public IList<string> Models { get; private set; }
 
+        /// <summary>
+        /// How many models this rule could not judge: not named above, and either their
+        /// placement or their site UNKNOWN. A site that was not read could be Internal and a
+        /// placement that was not read could be anywhere, so neither is a pass.
+        /// </summary>
+        internal int NotJudged { get; private set; }
+
+        /// <summary>How many models were read at all. None read is a group nothing was judged in.</summary>
+        internal int ModelsRead { get; private set; }
+
         /// <summary>Whether the group holds any such model.</summary>
         public bool Any
         {
@@ -52,21 +68,71 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// The note that goes beside the NWD and into the Clash Report folder, so whoever
-        /// looks for the report finds the reason. The same lines as the log, with a heading
-        /// saying what was and was not done and a closing line saying what fixes it.
+        /// Whether this group's clash is skipped: the rule on, a model not on the same shared
+        /// coordinates, and a clash test this run would have run in it. A group with nothing
+        /// to clash, no XML and no test saved, an XML of sets alone, or one discipline, has no
+        /// clash to skip and is judged as before, the breaker's second finding at c5d8aa8.
         /// </summary>
-        public IList<string> Note(string building)
+        public bool SkipsTheClash(bool ruleOn, bool runsATest)
+        {
+            return ruleOn && runsATest && Any;
+        }
+
+        /// <summary>
+        /// Whether a note an earlier run left for this group is taken away: only when this run
+        /// judged every model of the group and did not skip its clash. A model whose placement
+        /// or site is UNKNOWN, or a group where no model was read, keeps it, because an
+        /// unknown is not a pass and the note may still be true.
+        /// </summary>
+        public bool RemovesAnEarlierNote(bool clashSkipped)
+        {
+            return !clashSkipped && ModelsRead > 0 && NotJudged == 0;
+        }
+
+        /// <summary>
+        /// The note that goes beside the NWD and into the Clash Report folder, so whoever
+        /// looks for the report finds the reason. The same lines as the log, then only what
+        /// was checked: the tests in the words of the CLASH line, the tests an earlier run
+        /// left in the NWF, the NWF and the NWD off the disk after the NWF was looked at the
+        /// last time, and every report an earlier run left at the names this run would have
+        /// written. testsAlreadyThere is minus one where it is UNKNOWN.
+        /// </summary>
+        public IList<string> Note(string building, NwfAndNwd files, int testsAlreadyThere, IList<string> earlierReports)
         {
             List<string> lines = new List<string>();
             lines.Add(Words.Or(building, "this group") + ": " + ClashSkippedReason);
-            lines.Add("The NWF and the NWD of this group hold every model, set and clash test. No clash test was run and no"
-                + " clash report or viewpoint was made, because these models are not on the same shared coordinates"
+            lines.Add("No clash test was run and no clash report or viewpoint was made, because these models are not on the"
+                + " same shared coordinates"
                 + (Reference == null ? string.Empty : ", measured from the reference model " + Reference) + ":");
 
             foreach (string model in Models)
             {
                 lines.Add("   " + model);
+            }
+
+            lines.Add(TestsCreatedNoneRun + ".");
+            lines.Add("Any clash test already saved in the NWF keeps the results of an earlier run, because this run ran none."
+                + (testsAlreadyThere < 0
+                    ? " How many of this run's tests were already there is UNKNOWN."
+                    : testsAlreadyThere == 0
+                        ? string.Empty
+                        : " " + testsAlreadyThere + " of this run's tests were already there."));
+
+            if (files != null)
+            {
+                lines.AddRange(files.Lines());
+            }
+
+            if (earlierReports == null || earlierReports.Count == 0)
+            {
+                lines.Add("No report file is at the names this run would have written, so no report of an earlier run"
+                    + " stands beside this note.");
+            }
+            else
+            {
+                lines.Add("These report files are at the names this run would have written. Each is from an earlier run"
+                    + " and was not written by this run:");
+                lines.AddRange(earlierReports);
             }
 
             lines.Add("Once these models are exported again on the project's shared coordinates, the next run clashes the"

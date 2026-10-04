@@ -85,10 +85,17 @@ namespace Federator.Addin.Engine
         private int alignmentDifferences;
         private int failedOnAlignment;
         private readonly List<string> alignmentFailures = new List<string>();
-        private int modelsWithNoWorkset;
-        private int modelsWithAWorksetOnSome;
-        private int modelsNotCounted;
-        private int modelsMissingAnId;
+
+        /// <summary>The EXPORT CHECK across this run, added up in Core by the rules each block judges by.</summary>
+        private readonly ExportCheckAcrossTheRun exportsAcrossTheRun = new ExportCheckAcrossTheRun();
+
+        /// <summary>
+        /// What the shared coordinates rule did across THIS run, Bader's answer to Q99 and
+        /// Q100, made when Run or RunOpenDocument starts and null before. The engine is made
+        /// for one press of a button and the log lives as long as the window, so the tally
+        /// lives here and the window hands it to the RESULT block of this run.
+        /// </summary>
+        public OffCoordinatesAcrossTheRun CoordinatesAcrossTheRun { get; private set; }
 
         /// <summary>What every set did across this run, for the block the window writes.</summary>
         public SetsAcrossTheRun SetsAcrossTheRun
@@ -400,9 +407,11 @@ namespace Federator.Addin.Engine
 
             List<JobOutcome> outcomes = new List<JobOutcome>();
 
-            // Bader's answer to Q99 and Q100. Said once per run, so the RESULT block and the
-            // list for the modellers say which way the rule was for every group.
-            log.CoordinatesAcrossTheRun.SkipsTheClash = reports.SkipClashOffCoordinates;
+            // Bader's answer to Q99 and Q100. One tally for this run, with this run's rule
+            // state, start and count of groups, so the RESULT block and the list for the
+            // modellers carry this run's groups alone and say how many the rule reached.
+            CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
+                reports.SkipClashOffCoordinates, DateTime.Now, jobs.Count);
 
             for (int i = 0; i < jobs.Count; i++)
             {
@@ -488,8 +497,10 @@ namespace Federator.Addin.Engine
 
             FederationJob job = OpenJob(open);
 
-            // Bader's answer to Q99 and Q100, said for this run as Run says it for a scan.
-            log.CoordinatesAcrossTheRun.SkipsTheClash = reports.SkipClashOffCoordinates;
+            // Bader's answer to Q99 and Q100. This run's own tally, one group, as Run makes
+            // one for a scan.
+            CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
+                reports.SkipClashOffCoordinates, DateTime.Now, 1);
 
             // One group of one. The open file run has no scan and no grouping, and the
             // live line says so rather than reading as the first of an unknown number.
@@ -953,17 +964,25 @@ namespace Federator.Addin.Engine
                     () => "the document was asked for " + wanted);
             }
 
+            // Where the clash step will take its tests from, read once here and handed to
+            // it, so the ALIGNMENT block knows whether this run runs a clash test in the
+            // group at all. The saved tests are only counted when there is no XML, because
+            // with one the XML decides everything exactly as before.
+            int savedTests = exchange == null ? SavedTests.Count(document) : 0;
+            ClashSource source = ClashWork.SourceFor(exchange, savedTests);
+            bool runsATest = ClashWork.RunsATest(source, exchange, job.IsSingleDiscipline);
+
             // PART 4 and PART 5, Q64 and Q65 answered on 2026-09-20. Both are read HERE,
             // where every model of the group is open and nothing has clashed yet, and
             // both are read for the scanned run and the open file run alike because this
-            // is the one place both paths pass through. Neither skips a group or stops a
-            // run. The ALIGNMENT block can fail a group, Q70, and since Bader's answer to
-            // Q99 and Q100 it can skip the group's clash and only its clash, which is why
-            // it is read before the clash step.
-            WhereTheModelsSit(document, job, outcome);
+            // is the one place both paths pass through. Neither stops a run. The ALIGNMENT
+            // block can fail a group, Q70, and since Bader's answer to Q99 and Q100 it can
+            // skip the group's clash and only its clash, where a clash test would have run,
+            // which is why it is read before the clash step.
+            WhereTheModelsSit(document, job, outcome, runsATest);
             WhatTheModelsCarry(document, job);
 
-            bool clashPutSomethingIn = ClashStep(document, job, outcome);
+            bool clashPutSomethingIn = ClashStep(document, job, outcome, source, savedTests);
 
             // F52. After the clash run and before the NWF is saved again, so a viewpoint
             // this run made is inside the file the NWD is published from.
@@ -987,10 +1006,6 @@ namespace Federator.Addin.Engine
                 () => WriteNwd(document, job, outcome),
                 () => outcome.NwdOnDisk ? "published " + outcome.NwdSize + " bytes" : "nothing published");
 
-            // Bader's answer to Q99 and Q100. After the NWD, so the note sits beside the
-            // file it explains, and before the NWF is looked at once more.
-            WriteTheCoordinatesNotes(job, outcome);
-
             // The NWD is published last, and the NWF is the only record of what has
             // been fixed, so the NWF is looked at once more AFTER it. Nothing was
             // checking this, and a RESULT block reporting the size of the first save
@@ -1000,14 +1015,23 @@ namespace Federator.Addin.Engine
                 () => ConfirmTheNwfSurvived(job, outcome),
                 () => outcome.NwfOnDisk ? "the NWF is " + outcome.NwfSize + " bytes" : "the NWF is NOT ON DISK");
 
+            // Bader's answer to Q99 and Q100. After the NWD, so the note sits beside the
+            // file it explains, and after the NWF was looked at the last time, so the note
+            // names the two files off what is on the disk and never off a call.
+            WriteTheCoordinatesNotes(job, outcome);
+
             // F63. Last thing the group does, after every output is written, because the
             // question it answers is what the outputs DO NOT carry. Written even when it
-            // is empty, because a missing block reads as a check that did not run.
+            // is empty, because a missing block reads as a check that did not run. A group
+            // whose clash was skipped says no report was made rather than that one carries
+            // everything.
             IList<ReportGap> found = GapRule.For(outcome.Report);
             gaps.Add(found);
             log.Block(
                 GapRule.BlockTitle + " " + Words.Or(job.Building, "this group"),
-                GapRule.Lines(outcome.Report));
+                GapRule.Lines(
+                    outcome.Report,
+                    outcome.ClashSkippedBecause == null ? null : OffCoordinates.ClashSkippedReason));
 
             // F64. The same gaps as numbers, so the row file carries what the block
             // carries and a script can add them up across a run without reading prose.
@@ -2092,10 +2116,15 @@ namespace Federator.Addin.Engine
         ///
         /// It writes and changes nothing in the document, and a read that throws costs one
         /// line and never the run. What it decides is carried on the outcome: Q70's failure
-        /// as an error, and since Bader's answer to Q99 and Q100 the skipped clash.
+        /// as an error, and since Bader's answer to Q99 and Q100 the skipped clash, only
+        /// where runsATest says this run would have run a clash test in the group. The
+        /// group goes into this run's tally either way, judged, or not judged where the
+        /// read threw.
         /// </summary>
-        private void WhereTheModelsSit(Document document, FederationJob job, JobOutcome outcome)
+        private void WhereTheModelsSit(Document document, FederationJob job, JobOutcome outcome, bool runsATest)
         {
+            OffCoordinates judged = null;
+
             try
             {
                 IList<ModelPlacement> placements = ModelFactsReader.Placements(document, reports.Names, log);
@@ -2118,18 +2147,20 @@ namespace Federator.Addin.Engine
                 // Bader's answer to Q99 and Q100. A model not on the same shared coordinates
                 // skips the group's clash and only its clash, checked on every run, so the
                 // run after the models are fixed clashes the group with the tests already
-                // saved in its NWF. The run's list names the group whichever way the rule is.
+                // saved in its NWF. A group with no clash test to run has no clash to skip
+                // and is judged as before. The run's list names the group either way.
                 OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(placements, reports.FarModelMillimetres);
-                log.CoordinatesAcrossTheRun.Add(job.Building, off);
+                judged = off;
+                outcome.Coordinates = off;
 
-                if (off.Any && reports.SkipClashOffCoordinates)
+                if (off.SkipsTheClash(reports.SkipClashOffCoordinates, runsATest))
                 {
                     outcome.ClashSkippedBecause = off;
                 }
 
                 log.Block(
                     AlignmentCheck.BlockTitle + " " + Words.Or(job.Building, "this group"),
-                    AlignmentCheck.Lines(placements, reports.FarModelMillimetres, reports.SkipClashOffCoordinates));
+                    AlignmentCheck.Lines(placements, reports.FarModelMillimetres, reports.SkipClashOffCoordinates, runsATest));
 
                 foreach (ModelPlacement model in placements)
                 {
@@ -2147,6 +2178,8 @@ namespace Federator.Addin.Engine
             {
                 log.Failure("reading where the models sit", error, "the run goes on and this group is not judged on it");
             }
+
+            CoordinatesAcrossTheRun.Add(job.Building, judged, runsATest);
         }
 
         /// <summary>
@@ -2170,29 +2203,11 @@ namespace Federator.Addin.Engine
 
                 foreach (ModelExport model in exports)
                 {
-                    log.Row("model export", model.File, EventRow.Count(model.Elements), ExportCheck.Counts(model));
+                    log.Row("model export", model.File, ExportCheck.ElementsNumber(model), ExportCheck.Counts(model));
 
-                    // T1-S50. The same rules the block judges each model by, so the run
-                    // line and the blocks cannot disagree.
-                    if (model.CarriesNoWorkset)
-                    {
-                        modelsWithNoWorkset++;
-                    }
-
-                    if (model.CarriesAWorksetOnSomeElements)
-                    {
-                        modelsWithAWorksetOnSome++;
-                    }
-
-                    if (!model.Counted)
-                    {
-                        modelsNotCounted++;
-                    }
-
-                    if (model.MissesAnId)
-                    {
-                        modelsMissingAnId++;
-                    }
+                    // T1-S50. The same rules the block judges each model by, added up in
+                    // Core, so the run line and the blocks cannot disagree.
+                    exportsAcrossTheRun.Add(model);
                 }
             }
             catch (Exception error)
@@ -2210,9 +2225,12 @@ namespace Federator.Addin.Engine
         {
             List<string> lines = new List<string>();
 
-            lines.Add("ALIGNMENT across the run: " + alignmentDifferences
-                + " model(s) sit somewhere their group's reference model does not"
-                + (alignmentDifferences == 0 ? string.Empty : ". Nothing was changed and every group ran."));
+            // Said by this run's tally, which knows which groups had their clash skipped. It
+            // ended "Nothing was changed and every group ran." while RESULT listed them.
+            lines.Add(CoordinatesAcrossTheRun == null
+                ? "ALIGNMENT across the run: " + alignmentDifferences
+                    + " model(s) sit somewhere their group's reference model does not"
+                : CoordinatesAcrossTheRun.AlignmentRunLine(alignmentDifferences));
 
             // Q70. Counted APART from the models that merely sit somewhere else, because
             // a model naming no site fails its group and a model 95 mm out does not, and
@@ -2230,14 +2248,7 @@ namespace Federator.Addin.Engine
                 lines.Add("   FAILED " + alignmentFailures[i]);
             }
 
-            lines.Add("EXPORT CHECK across the run: " + modelsWithNoWorkset
-                + " model(s) carry no workset at all, " + modelsWithAWorksetOnSome
-                + " carry one on only some of their elements, " + modelsMissingAnId
-                + " do not carry an element id on every element, and " + modelsNotCounted
-                + " could not be counted"
-                + (modelsWithNoWorkset == 0 && modelsWithAWorksetOnSome == 0 && modelsMissingAnId == 0 && modelsNotCounted == 0
-                    ? string.Empty
-                    : ". Nothing was changed and every group ran."));
+            lines.Add(exportsAcrossTheRun.Line());
 
             return lines;
         }
@@ -2246,10 +2257,16 @@ namespace Federator.Addin.Engine
         /// The note of a group whose clash was skipped, Bader's answer to Q99 and Q100: "A
         /// short note file with the same lines goes beside the NWD and into the group's
         /// Clash Report folder, so whoever looks for the report finds the reason". Named
-        /// after the NWD beside it and after the workbook it stands in for. A note an earlier
-        /// run left for a group this run clashed is taken away, because it no longer says
-        /// what is true, and the log says so. A note that cannot be written costs one line
-        /// and never the group, since the ALIGNMENT block carries the same lines.
+        /// after the NWD beside it and after the workbook it stands in for. It names the NWF
+        /// and the NWD off the disk, read after the NWF was looked at the last time, and
+        /// every report an earlier run left at the names this run would have written, which
+        /// the log names too, each read by its exact path and none touched.
+        ///
+        /// A note an earlier run left is taken away only where this run judged every model
+        /// of the group and did not skip its clash, and the log says so in those words. A
+        /// group whose read threw, or with a model whose placement or site is UNKNOWN, keeps
+        /// it, and the log says that too. A note that cannot be written costs one line and
+        /// never the group, since the ALIGNMENT block carries the same lines.
         /// </summary>
         private void WriteTheCoordinatesNotes(FederationJob job, JobOutcome outcome)
         {
@@ -2277,25 +2294,60 @@ namespace Federator.Addin.Engine
                     "kept going, the ALIGNMENT block in the log carries the same lines");
             }
 
+            bool skipped = outcome.ClashSkippedBecause != null;
+            IList<string> note = null;
+
+            if (skipped)
+            {
+                // The reports an earlier run left, read by exact path, named in the log and
+                // in the note, and never touched.
+                IList<string> earlier = EarlierReports.Lines(OutputPlan.From(reports), reportFolder, job.WorkbookName);
+
+                foreach (string line in earlier)
+                {
+                    log.Line("EARLIER  " + line.Trim() + ", from an earlier run and not written by this run");
+                }
+
+                if (earlier.Count == 0)
+                {
+                    log.Line("EARLIER  no report file is at the names this run would have written for "
+                        + Words.Or(job.Building, "this group") + ", so no report of an earlier run stands beside its note");
+                }
+
+                note = outcome.ClashSkippedBecause.Note(
+                    job.Building,
+                    new NwfAndNwd(job.NwfPath, outcome.NwfOnDisk, job.NwdPath, outcome.NwdOnDisk, outcome.NwdPublishReportedSuccess),
+                    outcome.Clash == null ? -1 : outcome.Clash.AlreadyPresentCount,
+                    earlier);
+            }
+
             foreach (string path in paths)
             {
                 try
                 {
-                    if (outcome.ClashSkippedBecause == null)
+                    if (!skipped)
                     {
-                        if (File.Exists(path))
+                        if (!File.Exists(path))
                         {
-                            File.Delete(path);
-                            log.Line("NOTE     removed " + path + ", left by an earlier run that skipped this group's"
-                                + " clash, because this run clashed it");
+                            continue;
                         }
 
+                        if (outcome.Coordinates == null || !outcome.Coordinates.RemovesAnEarlierNote(false))
+                        {
+                            log.Line("NOTE     kept     " + path + ", left by an earlier run, because this run did not"
+                                + " judge every model of the group, so the note may still be true");
+                            continue;
+                        }
+
+                        File.Delete(path);
+                        log.WriteRemoved("NOTE", path, "left by an earlier run, because this run judged every model of"
+                            + " the group and did not skip its clash");
                         continue;
                     }
 
                     log.WriteAttempted("NOTE", path);
                     EnsureFolder(path);
-                    File.WriteAllLines(path, outcome.ClashSkippedBecause.Note(job.Building));
+                    File.WriteAllLines(path, note);
                     log.WriteFinished("NOTE", path);
                 }
                 catch (Exception error)
@@ -2310,9 +2362,11 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// The run's one list for the modellers, Bader's answer to Q99 and Q100, in the Clash
-        /// Report folder. Written on every run, the rule on or off and the list empty or not,
-        /// so a list an earlier run wrote never stands as this run's. With no report folder
-        /// it is not written, and the note beside each skipped group's NWD carries its lines.
+        /// Report folder, its own file named for the second this run started, so a smaller
+        /// run never writes over a fuller run's list and every run's list is kept. Written on
+        /// every run, the rule on or off and the list empty or not, saying how many groups
+        /// the rule judged. With no report folder it is not written, and the note beside
+        /// each skipped group's NWD carries its lines.
         /// </summary>
         private void WriteTheListForTheModellers()
         {
@@ -2323,13 +2377,13 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            string path = Path.Combine(reportFolder, OffCoordinates.ListName);
+            string path = Path.Combine(reportFolder, CoordinatesAcrossTheRun.ListName);
 
             try
             {
                 log.WriteAttempted("LIST", path);
                 EnsureFolder(path);
-                File.WriteAllLines(path, log.CoordinatesAcrossTheRun.ForModellers(log.StartedAt));
+                File.WriteAllLines(path, CoordinatesAcrossTheRun.ForModellers());
                 log.WriteFinished("LIST", path);
             }
             catch (Exception error)
@@ -2349,15 +2403,13 @@ namespace Federator.Addin.Engine
             return settings;
         }
 
-        private bool ClashStep(Document document, FederationJob job, JobOutcome outcome)
+        private bool ClashStep(
+            Document document, FederationJob job, JobOutcome outcome, ClashSource source, int savedTests)
         {
             // Three things can happen and the log names which, in the same words on the
             // scanned run and on the open file run: tests from the picked XML, the tests
-            // already saved in the document when no XML was picked, or nothing. The
-            // saved tests are only counted when there is no XML, because with one the
-            // XML decides everything exactly as before.
-            int savedTests = exchange == null ? SavedTests.Count(document) : 0;
-            ClashSource source = ClashWork.SourceFor(exchange, savedTests);
+            // already saved in the document when no XML was picked, or nothing. The source
+            // was read once by FinishTheGroup, before the ALIGNMENT block.
             log.Line("CLASH    source   " + ClashWork.DescribeSource(source, exchange, savedTests));
 
             if (source == ClashSource.Nothing)
@@ -2759,6 +2811,13 @@ namespace Federator.Addin.Engine
                 }
 
                 ClashRunOutcome clash = runner.Run(plan);
+
+                // The skipped group's own CLASH block and summary say the clash was skipped
+                // rather than print nought for what never ran.
+                if (runner.ClashSkippedOffCoordinates)
+                {
+                    clash.ClashSkipped = OffCoordinates.ClashSkippedReason;
+                }
 
                 if (outcome.Report != null)
                 {

@@ -549,13 +549,14 @@
                             <TextBlock x:Name="RebuildDriftedSetsHelp" Style="{StaticResource TickHelp}" />
                         </StackPanel>
 
-                        <!-- Bader's answer to Q99 and Q100. ON by default: a group with a
-                             model not on the same shared coordinates writes its NWF and NWD
-                             and skips its clash. Off, every group is clashed as before, which
-                             is how a building is run once more to prove the other fixes. Its
-                             label and grey line are read off Core in the constructor. -->
+                        <!-- Bader's answer to Q99 and Q100. A group with a model not on the
+                             same shared coordinates writes its NWF and NWD and skips its
+                             clash. Off, every group is clashed as before, which is how a
+                             building is run once more to prove the other fixes. Its label,
+                             its grey line and whether it starts ticked are read off Core in
+                             the constructor and never typed here. -->
                         <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,8">
-                            <CheckBox x:Name="SkipClashOffCoordinates" IsChecked="True" />
+                            <CheckBox x:Name="SkipClashOffCoordinates" />
                             <TextBlock x:Name="SkipClashOffCoordinatesHelp" Style="{StaticResource TickHelp}" />
                         </StackPanel>
 

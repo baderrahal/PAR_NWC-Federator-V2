@@ -112,7 +112,6 @@ namespace Federator.Core.Diagnostics
             StartedAt = startedAt;
             DisabledReason = disabledReason;
             ClashesFound = new ClashesAcrossTheRun();
-            CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun();
             PenetrationsAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "penetrations   ");
             ByDesignAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "by design      ");
             this.stream = stream;
@@ -1351,6 +1350,31 @@ namespace Federator.Core.Diagnostics
                 file);
         }
 
+        /// <summary>
+        /// A file this run took away, with why. Read off the disk by its exact path first: a
+        /// file still there is never called removed and stays on the files written list, and
+        /// a file gone leaves that list, so the RESULT block never lists a file this run
+        /// removed under the line saying every size was read back off the disk. The list
+        /// kept a note the first run of a window wrote after the second run removed it, the
+        /// breaker's first finding at c5d8aa8.
+        /// </summary>
+        public void WriteRemoved(string kind, string path, string why)
+        {
+            if (SizeOnDisk(path) >= 0)
+            {
+                Line(kind.PadRight(8) + " NOT REMOVED  " + path + "  it is still on disk after the delete");
+                return;
+            }
+
+            lock (gate)
+            {
+                written.RemoveAll(seen => string.Equals(seen.Path, path, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(seen.Kind, kind, StringComparison.Ordinal));
+            }
+
+            Line(kind.PadRight(8) + " removed  " + path + (string.IsNullOrEmpty(why) ? string.Empty : ", " + why));
+        }
+
         public void WriteAttempted(string kind, string path)
         {
             Line(kind.PadRight(8) + " attempt  " + path);
@@ -1719,14 +1743,6 @@ namespace Federator.Core.Diagnostics
         public ClashesAcrossTheRun ClashesFound { get; private set; }
 
         /// <summary>
-        /// Every group holding a model not on the same shared coordinates, Bader's answer to
-        /// Q99 and Q100, for the RESULT lines that list them and the run's one list for the
-        /// modellers. Never null. A group whose clash was skipped is NOT in ClashesFound,
-        /// because a clash that never ran is not a clash count of zero.
-        /// </summary>
-        public OffCoordinatesAcrossTheRun CoordinatesAcrossTheRun { get; private set; }
-
-        /// <summary>
         /// How many clashes the penetration rule moved, per group and added up, with how
         /// many it looked at beside each. Never null. Only written where the box was on.
         /// </summary>
@@ -1748,7 +1764,16 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public int ByDesignMoved { get; set; }
 
-        public void WriteResultBlock()
+        /// <summary>
+        /// The RESULT block. thisRun is what the shared coordinates rule did in the run this
+        /// block closes, Bader's answer to Q99 and Q100, handed in by the window from that
+        /// run's engine, or null where no run made one, and then the block says nothing about
+        /// it rather than guess. It is never kept on the log, which lives as long as the
+        /// window, so a second run of a window can never carry the first run's groups. A group
+        /// whose clash was skipped is NOT in ClashesFound, because a clash that never ran is
+        /// not a clash count of zero.
+        /// </summary>
+        public void WriteResultBlock(OffCoordinatesAcrossTheRun thisRun = null)
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
             // to be scrolled for, and so where the time went is read on the way to it.
@@ -1835,9 +1860,12 @@ namespace Federator.Core.Diagnostics
 
             // Bader's answer to Q99 and Q100. Straight under the clash total, because a
             // group listed here was not clashed at all and is not in that total.
-            foreach (string line in CoordinatesAcrossTheRun.ResultLines())
+            if (thisRun != null)
             {
-                Line(line);
+                foreach (string line in thisRun.ResultLines())
+                {
+                    Line(line);
+                }
             }
 
             Blank();

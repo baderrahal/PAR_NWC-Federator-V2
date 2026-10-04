@@ -38,7 +38,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void TheArchitectureModelIsTheReference()
         {
-            string block = Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates));
+            string block = Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
 
             Assert.That(block, Does.Contain("AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc is the reference"));
             Assert.That(block, Does.Contain("reference, shared coordinate \"SWLS-02-SharedCoordinate\""));
@@ -47,7 +47,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void AModelAtADifferentHeightIsNamedWithTheDifferenceInXYAndZSeparately()
         {
-            string block = Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates));
+            string block = Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
 
             Assert.That(block, Does.Contain("EL  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc   DIFFERENT"));
             Assert.That(block, Does.Contain("dx 0 mm"));
@@ -60,7 +60,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void ItNamesTheDifferentSharedCoordinatesAndTheModelsOnRevitsInternalOrigin()
         {
-            string block = Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates));
+            string block = Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
 
             Assert.That(block, Does.Contain("this group names 4 different shared coordinates"));
             Assert.That(block, Does.Contain("1 model(s) name their site \"Internal\""));
@@ -76,7 +76,7 @@ namespace Federator.Core.Tests.Health
                 At("ST", "Site", 0.0, 0.0, 0.5)
             };
 
-            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates));
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
 
             Assert.That(block, Does.Contain("all 2 model(s) sit within 1 mm of the reference"),
                 "half a millimetre is the export rounding a number and not an offset somebody put there");
@@ -92,7 +92,7 @@ namespace Federator.Core.Tests.Health
                 At("ST", "Site", 1000.0, 0.0, 0.0)
             };
 
-            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates));
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
 
             Assert.That(block, Does.Contain("ME  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc is the reference"));
             Assert.That(block, Does.Contain("because this group carries no AR model"));
@@ -112,7 +112,7 @@ namespace Federator.Core.Tests.Health
                 At("ST", "Site", ModelPlacement.NotRead, ModelPlacement.NotRead, ModelPlacement.NotRead)
             };
 
-            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates));
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
 
             Assert.That(block, Does.Contain("NOT READ, its placement could not be read"));
             Assert.That(block, Does.Not.Contain("DIFFERENT"));
@@ -125,14 +125,14 @@ namespace Federator.Core.Tests.Health
         {
             IList<ModelPlacement> models = new List<ModelPlacement> { At("AR", string.Empty, 0.0, 0.0, 0.0) };
 
-            Assert.That(Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates)),
+            Assert.That(Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true)),
                 Does.Contain("NO shared coordinate on the model at all, so check this one by eye"));
         }
 
         [Test]
         public void WithNoModelAtAllItSaysSoRatherThanWritingAnEmptyBlock()
         {
-            Assert.That(Joined(AlignmentCheck.Lines(new List<ModelPlacement>(), AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates)),
+            Assert.That(Joined(AlignmentCheck.Lines(new List<ModelPlacement>(), AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true)),
                 Does.Contain("no model was read, so nothing could be compared"));
         }
 
@@ -164,7 +164,7 @@ namespace Federator.Core.Tests.Health
             Assert.That(why, Does.Contain("ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
 
             Assert.That(
-                Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, RuleOff)),
+                Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, RuleOff, true)),
                 Does.Contain("THIS GROUP IS FAILED"));
         }
 
@@ -191,7 +191,7 @@ namespace Federator.Core.Tests.Health
         public void WithTheRuleOnAModelOnTheInternalOriginSkipsTheClashAndDoesNotFailTheGroup()
         {
             OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres);
-            string block = Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, RuleOn));
+            string block = Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, RuleOn, true));
 
             Assert.That(AlignmentCheck.WhyItFailsTheGroup(TheRealGroup(), RuleOn), Is.Null);
             Assert.That(off.Models.Count, Is.EqualTo(1), "the EL at 312 mm and the ME at 17 mm name real sites and sit under a metre");
@@ -214,7 +214,7 @@ namespace Federator.Core.Tests.Health
             Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOn), Is.Null);
             Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOff), Is.Null);
             Assert.That(
-                Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn)),
+                Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn, true)),
                 Does.Not.Contain("THIS GROUP IS FAILED"));
         }
 
@@ -236,7 +236,7 @@ namespace Federator.Core.Tests.Health
 
             Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOn), Is.Null, "different real sites is not a failure");
 
-            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn));
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn, true));
 
             Assert.That(block, Does.Contain("this group names 3 different shared coordinates"));
             Assert.That(block, Does.Contain("DIFFERENT"));
@@ -368,8 +368,8 @@ namespace Federator.Core.Tests.Health
                 At("ST", "Internal", ModelPlacement.NotRead, ModelPlacement.NotRead, ModelPlacement.NotRead)
             };
 
-            string on = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn));
-            string off = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOff));
+            string on = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn, true));
+            string off = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOff, true));
 
             Assert.That(on, Does.Contain("no model in this group could be placed"));
             Assert.That(on, Does.Contain("CLASH SKIPPED. 1 model(s) are not on the same shared coordinates"));
@@ -439,7 +439,7 @@ namespace Federator.Core.Tests.Health
         public void WithTheRuleOnTheBlockSaysTheClashIsSkippedAndCarriesTheSameLines()
         {
             OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(TheReal1B06K1(), AlignmentCheck.DefaultFarModelMillimetres);
-            string block = Joined(AlignmentCheck.Lines(TheReal1B06K1(), AlignmentCheck.DefaultFarModelMillimetres, true));
+            string block = Joined(AlignmentCheck.Lines(TheReal1B06K1(), AlignmentCheck.DefaultFarModelMillimetres, true, true));
 
             Assert.That(block, Does.Contain(
                 "CLASH SKIPPED. 1 model(s) are not on the same shared coordinates, so the clash tests are created and"
@@ -455,7 +455,7 @@ namespace Federator.Core.Tests.Health
         public void WithTheRuleOffTheBlockStillNamesThemAndSaysTheGroupIsClashed()
         {
             OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(TheReal1B06K1(), AlignmentCheck.DefaultFarModelMillimetres);
-            string block = Joined(AlignmentCheck.Lines(TheReal1B06K1(), AlignmentCheck.DefaultFarModelMillimetres, false));
+            string block = Joined(AlignmentCheck.Lines(TheReal1B06K1(), AlignmentCheck.DefaultFarModelMillimetres, false, true));
 
             Assert.That(block, Does.Not.Contain("CLASH SKIPPED"));
             Assert.That(block, Does.Contain(
@@ -510,7 +510,7 @@ namespace Federator.Core.Tests.Health
 
             Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Any, Is.False);
             Assert.That(
-                Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true)),
+                Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true, true)),
                 Does.Contain("no model names \"Internal\" or sits more than 1 m from the reference model in a straight line"),
                 "a check that found nothing says so, because a missing line reads as a check that did not run");
         }
@@ -562,7 +562,7 @@ namespace Federator.Core.Tests.Health
             Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, 2000.0).Any, Is.False);
             Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, 1000.0).Models[0], Does.EndWith("more than 1 m"));
             Assert.That(
-                Joined(AlignmentCheck.Lines(models, 2000.0, true)),
+                Joined(AlignmentCheck.Lines(models, 2000.0, true, true)),
                 Does.Contain("no model names \"Internal\" or sits more than 2 m from the reference model"));
         }
 
@@ -581,7 +581,7 @@ namespace Federator.Core.Tests.Health
 
             Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Any, Is.False);
             Assert.That(
-                Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true)),
+                Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true, true)),
                 Does.Contain("NOT READ, its placement could not be read, so it is not compared and is not called a far model"));
         }
 
@@ -596,7 +596,7 @@ namespace Federator.Core.Tests.Health
 
             Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Any, Is.False);
             Assert.That(
-                Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true)),
+                Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true, true)),
                 Does.Contain("so the models were not compared and none is called a far model"));
         }
 
@@ -614,7 +614,7 @@ namespace Federator.Core.Tests.Health
                     323886396.13, 2755364306.53, 11033.3)
             };
 
-            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true));
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true, true));
 
             Assert.That(block, Does.Contain(
                 "   EL  1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc   shared site \"SITEWIDE PHASE 3\"   X 323886396.13 mm"
@@ -651,7 +651,7 @@ namespace Federator.Core.Tests.Health
                 At("ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0)
             };
 
-            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates));
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
 
             Assert.That(block, Does.Contain("ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc   same placement, shared coordinate UNKNOWN"));
             Assert.That(block, Does.Not.Contain("NO shared coordinate on the model at all"));
@@ -701,6 +701,87 @@ namespace Federator.Core.Tests.Health
             Assert.That(
                 AlignmentCheck.SiteName(At("ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0)),
                 Is.EqualTo("UNKNOWN, the site could not be read"));
+        }
+
+        // ---------- the all clear line, the breaker's eighth finding at c5d8aa8 ----------
+
+        /// <summary>
+        /// The all clear line spoke for every model while one was NOT READ two lines above
+        /// it. It is not written while a model was not measured, and the line that stands in
+        /// for it says how many were not.
+        /// </summary>
+        [Test]
+        public void AModelNotMeasuredMeansNoAllClearLineAndTheBlockSaysHowMany()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "Site", 0.0, 0.0, 0.0),
+                At("ST", "Site", ModelPlacement.NotRead, ModelPlacement.NotRead, ModelPlacement.NotRead)
+            };
+
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true, true));
+
+            Assert.That(block, Does.Not.Contain("no model names \"Internal\" or sits more than"));
+            Assert.That(block, Does.Contain(
+                "no model that could be measured names \"Internal\" or sits more than 1 m from the reference model in a"
+                + " straight line, and 1 model(s) were not measured, a placement or a site UNKNOWN, so nothing is said"
+                + " about them"));
+        }
+
+        /// <summary>A site that could not be read could be Internal, so its model is not measured either.</summary>
+        [Test]
+        public void AModelWhoseSiteWasNotReadIsNotMeasuredEither()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "A site", 0.0, 0.0, 0.0),
+                At("ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0)
+            };
+
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true, true));
+
+            Assert.That(block, Does.Not.Contain("no model names \"Internal\" or sits more than"));
+            Assert.That(block, Does.Contain("and 1 model(s) were not measured, a placement or a site UNKNOWN"));
+        }
+
+        /// <summary>A model named off beside one that was not measured: the off one is named and the count is said.</summary>
+        [Test]
+        public void AModelOffBesideOneNotMeasuredSaysBoth()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "Site", 0.0, 0.0, 0.0),
+                At("ST", "Site", 0.0, 0.0, 5000.0),
+                At("EL", "Site", ModelPlacement.NotRead, ModelPlacement.NotRead, ModelPlacement.NotRead)
+            };
+
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true, true));
+
+            Assert.That(block, Does.Contain("CLASH SKIPPED. 1 model(s) are not on the same shared coordinates"));
+            Assert.That(block, Does.Contain(
+                "1 model(s) were not measured, a placement or a site UNKNOWN, so nothing is said about them"));
+        }
+
+        // ---------- a group with nothing to clash, the breaker's second finding at c5d8aa8 ----------
+
+        /// <summary>
+        /// A group where this run runs no clash test is judged as before. Its block still
+        /// names the models not on the same shared coordinates, and never says CLASH SKIPPED.
+        /// </summary>
+        [Test]
+        public void AGroupWithNothingToClashNamesItsOffModelsAndSkipsNothing()
+        {
+            foreach (bool rule in new[] { true, false })
+            {
+                string block = Joined(AlignmentCheck.Lines(TheReal1B06K1(), AlignmentCheck.DefaultFarModelMillimetres, rule, false));
+
+                Assert.That(block, Does.Not.Contain("CLASH SKIPPED"));
+                Assert.That(block, Does.Not.Contain("so the group is clashed as before"));
+                Assert.That(block, Does.Contain(
+                    "1 model(s) are not on the same shared coordinates. This run runs no clash test in this group, so"
+                    + " no clash is skipped for them:"));
+                Assert.That(block, Does.Contain("ST  1104-PAR-1B06K1-ZZZ-ST-MOD-000001.nwc   shared site \"COMMUNITY 4A\""));
+            }
         }
     }
 }

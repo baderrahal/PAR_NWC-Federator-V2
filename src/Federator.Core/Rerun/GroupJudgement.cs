@@ -95,9 +95,9 @@ namespace Federator.Core.Rerun
 
         /// <summary>
         /// Whether this group's clash was skipped because a model is not on the same shared
-        /// coordinates as its reference model, Bader's answer to Q99 and Q100. Not an
-        /// error: nothing threw, and the NWF and the NWD were written with every test in
-        /// them.
+        /// coordinates as its reference model, Bader's answer to Q99 and Q100, which happens
+        /// only where the run would have run a clash test in it. Not an error: nothing
+        /// threw. Whether the NWF and the NWD are on the disk is judged on their own facts.
         /// </summary>
         public bool ClashSkippedOffCoordinates { get; set; }
 

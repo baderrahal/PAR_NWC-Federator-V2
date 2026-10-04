@@ -356,29 +356,60 @@ and 6 does not read as broken.
   replaces Q70 for a model on Internal, which no longer FAILS its group while the rule
   is on, and a model naming no site at all still fails it, because his answer named
   Internal and the distance and not that. The distance is the STRAIGHT LINE of dx, dy and
-  never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away and
-  under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
-  defaulting to `AlignmentCheck.DefaultFarModelMillimetres`. In such a group the NWF is
-  built with every model, set and test and the NWD is published, the tests are created
-  and none is run, on the one path a one discipline group already took, and no viewpoint
-  and no clash report is made. The group ends PARTIAL, never DONE, with the reason
-  `OffCoordinates.ClashSkippedReason`, and a group already FAILED or PARTIAL keeps its
-  outcome with that reason added. One line per such model, made by
+  dz and never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away
+  and under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
+  defaulting to `AlignmentCheck.DefaultFarModelMillimetres`.
+  ONLY A CLASH THAT WOULD HAVE RUN IS SKIPPED, `OffCoordinates.SkipsTheClash`: the rule on,
+  a model off, and `ClashWork.RunsATest`, a source holding tests and a group of two
+  disciplines. A group with nothing to clash, no XML and no test saved, an XML of sets
+  alone, one model or one discipline, is judged as before and its ALIGNMENT block still
+  names its models under a heading saying no clash is skipped. In a skipped group the tests
+  whose sides both find something are created and none is run, on the one path a one
+  discipline group already took, F77, so not every test of the file is in the NWF, and no
+  viewpoint and no clash report is made. The group ends PARTIAL, never DONE, with the
+  reason `OffCoordinates.ClashSkippedReason`, and a group already FAILED or PARTIAL keeps
+  its outcome with that reason added. Its CLASH block and summary say the clash was
+  skipped instead of printing nought, `ClashRunOutcome.ClashSkipped`, and its GAP block
+  says no report was made. One line per such model, made by
   `AlignmentCheck.NotOnTheSameCoordinates` and nowhere else, names its file, its shared
-  site and its distance from the reference in X, Y and Z. The ALIGNMENT block carries
-  those lines, a note with them goes beside the NWD and into the Clash Report folder, the
-  RESULT block lists the groups, and the run writes one list for the modellers into the
-  Clash Report folder. The rule is read on every run, so the run after the models are
-  fixed clashes the group with the tests already saved in its NWF, and a note an earlier
-  run left for a group this run clashed is removed. A group skipped is left out of the
-  run's clash total, because a clash that never ran is not a group that found none. A
-  model whose placement could not be read is never judged on its distance, and the block
-  says so. `ReportOptions.SkipClashOffCoordinates`, on by default, switches the rule off,
-  and then every group is clashed and judged as before the answer, Q70's failure for a
-  model on Internal included. The window sets it from a tick box on the Clash step, ticked
-  by default, whose label and grey line are `AlignmentCheck.TickLabel` and
-  `AlignmentCheck.HelpLine`, because a building is run once more with the rule off and a
-  setting only a build can change is no switch
+  site and its distance from the reference in X, Y and Z.
+  WHAT IS SAID IS ONLY WHAT WAS CHECKED. The note beside the NWD and in the Clash Report
+  folder, `OffCoordinates.Note`, is written after the NWF was looked at the last time and
+  names the NWF and the NWD off the disk, `NwfAndNwd`, saying which was not written. It
+  says the tests already saved in the NWF keep an earlier run's results, and names every
+  report an earlier run left at the names this run would have written, with its time and
+  size, `EarlierReports`, read by exact path and never touched, and the log names them too.
+  The ALIGNMENT block's all clear line is written only where every model was measured, and
+  otherwise says how many were not.
+  ONE TALLY PER RUN, `OffCoordinatesAcrossTheRun`, made by the engine when Run or
+  RunOpenDocument starts with that run's rule state, start and count of groups, and handed
+  by the window to that run's RESULT block, `RunLog.WriteResultBlock(thisRun)`. It is
+  never kept on the log, which lives as long as the window, because a second run of a
+  window once listed the first run's groups under the second run's rule state. RESULT and
+  the list say how many groups the rule judged, did not reach and could not read, and how
+  many models it could not judge, and never say no model was found off while any of those
+  is more than nought. Each run's list is its own file, `ListName`, named for the second
+  the run started, so a smaller run never writes over a fuller run's list.
+  The rule is read on every run, so the run after the models are fixed clashes the group
+  with the tests already saved in its NWF. A note an earlier run left is removed only where
+  this run judged every model of the group and did not skip its clash,
+  `OffCoordinates.RemovesAnEarlierNote`, through `RunLog.WriteRemoved`, which takes the file
+  off the files written list once it is gone from the disk, and is kept with a line saying
+  so where a model was UNKNOWN or the read threw. A group skipped is left out of the run's
+  clash total, because a clash that never ran is not a group that found none. A model whose
+  placement or site could not be read is never judged on it, and the block says so.
+  `ReportOptions.SkipClashOffCoordinates`, on by default, switches the rule off, and then
+  every group is clashed and judged as before the answer, Q70's failure for a model on
+  Internal included. The window sets it from a tick box on the Clash step whose label, grey
+  line and starting state are `AlignmentCheck.TickLabel`, `AlignmentCheck.HelpLine` and
+  `AlignmentCheck.DefaultSkipClashOffCoordinates`, set in the constructor and never typed
+  into the XAML, because a building is run once more with the rule off and a setting only a
+  build can change is no switch
+- The EXPORT CHECK run line is added up in Core, `ExportCheckAcrossTheRun`, by the rules
+  each group's block judges by, `ModelExport.HoldsNoElement` among them, so the line and
+  the blocks cannot disagree. The engine kept four counters of its own and none for a model
+  holding no Revit element. The row file's number for a model whose elements could not be
+  counted is empty, `ExportCheck.ElementsNumber`, as for any unknown in that file, never -1
 - The counts in the RESULT block and the errors under it come from one list. A
   failed count with an empty error list is what the log printed once, saying
   "groups failed: 22" and "Nothing failed." in the same block. A group recorded as
@@ -395,7 +426,8 @@ and 6 does not read as broken.
   overwrite with no date suffix, so last week's NWF and NWD sit at exactly the
   paths this run uses. A group that threw before writing anything must not list
   them as its own, and a file that was checked rather than written is logged with
-  CheckOnDisk, which reports the size and records nothing
+  CheckOnDisk, which reports the size and records nothing. A file this run removed
+  leaves the list through WriteRemoved, and only once it is gone from the disk
 - The workbook is ONE SHEET, laid out exactly as the report the client receives: every
   test one after another, most clashes first. The Summary sheet, the Matrix sheet and the
   sheet per test are GONE. All three were asked for in an earlier session, before anyone

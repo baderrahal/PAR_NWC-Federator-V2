@@ -229,17 +229,71 @@ namespace Federator.Core.Tests
                     },
                     Federator.Core.Health.AlignmentCheck.DefaultFarModelMillimetres);
 
-                log.CoordinatesAcrossTheRun.SkipsTheClash = true;
-                log.CoordinatesAcrossTheRun.Add("1B06K1", off);
+                Federator.Core.Health.OffCoordinatesAcrossTheRun run =
+                    new Federator.Core.Health.OffCoordinatesAcrossTheRun(true, new DateTime(2026, 9, 1, 9, 5, 0), 1);
+                run.Add("1B06K1", off, true);
                 log.GroupFinished(
                     "1B06K1", GroupOutcome.Partial, 1.0, Federator.Core.Health.OffCoordinates.ClashSkippedReason, null);
 
-                log.WriteResultBlock();
+                log.WriteResultBlock(run);
                 string text = ReadWhileOpen(log);
 
                 Assert.That(text, Does.Contain("groups partial : 1"));
                 Assert.That(text, Does.Contain("clash skipped  : 1 group, models not on the same shared coordinates"));
                 Assert.That(text, Does.Contain("      1B06K1     1 model(s) not on the same shared coordinates"));
+            }
+        }
+
+        /// <summary>
+        /// The breaker's first finding at c5d8aa8, in the shape the window gives it: one log
+        /// for the whole window, Run pressed with the box ticked and then again with it
+        /// unticked. The second RESULT block carries the second run's groups alone, with the
+        /// second run's rule state, and names 1A02MM once.
+        /// </summary>
+        [Test]
+        public void TwoRunsInOneWindowEachWriteOnlyTheirOwnCoordinates()
+        {
+            using (RunLog log = Start())
+            {
+                Federator.Core.Health.OffCoordinates off = Federator.Core.Health.AlignmentCheck.NotOnTheSameCoordinates(
+                    new List<Federator.Core.Health.ModelPlacement>
+                    {
+                        new Federator.Core.Health.ModelPlacement("a-AR.nwc", "AR", "Site", 0.0, 0.0, 0.0),
+                        new Federator.Core.Health.ModelPlacement("a-ST.nwc", "ST", "Internal", 0.0, 0.0, 250.0)
+                    },
+                    Federator.Core.Health.AlignmentCheck.DefaultFarModelMillimetres);
+
+                Federator.Core.Health.OffCoordinatesAcrossTheRun first =
+                    new Federator.Core.Health.OffCoordinatesAcrossTheRun(true, new DateTime(2026, 9, 1, 9, 5, 0), 1);
+                first.Add("1A02MM", off, true);
+                log.WriteResultBlock(first);
+
+                Federator.Core.Health.OffCoordinatesAcrossTheRun second =
+                    new Federator.Core.Health.OffCoordinatesAcrossTheRun(false, new DateTime(2026, 9, 1, 10, 5, 0), 1);
+                second.Add("1A02MM", off, true);
+                log.WriteResultBlock(second);
+
+                string text = ReadWhileOpen(log);
+                string secondBlock = text.Substring(text.LastIndexOf("RESULT", StringComparison.Ordinal));
+
+                Assert.That(secondBlock, Does.Contain(
+                    "clash skipped  : none, the rule that skips it was off for this run, so 1 group was clashed"));
+                Assert.That(secondBlock, Does.Not.Contain("clash skipped  : 1 group"));
+                Assert.That(secondBlock.Split(new[] { "1A02MM" }, StringSplitOptions.None).Length - 1, Is.EqualTo(1));
+            }
+        }
+
+        /// <summary>A RESULT block no run handed a tally to says nothing about the coordinates rather than guess.</summary>
+        [Test]
+        public void AResultNoRunHandedATallyToSaysNothingAboutTheCoordinates()
+        {
+            using (RunLog log = Start())
+            {
+                log.WriteResultBlock();
+                string text = ReadWhileOpen(log);
+
+                Assert.That(text, Does.Not.Contain("clash skipped"));
+                Assert.That(text, Does.Not.Contain("coordinates    :"));
             }
         }
 

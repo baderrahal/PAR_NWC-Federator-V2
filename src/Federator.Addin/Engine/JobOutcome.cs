@@ -61,10 +61,17 @@ namespace Federator.Addin.Engine
         /// The models that made this group skip its clash, Bader's answer to Q99 and Q100,
         /// or null where its clash was not skipped. Kept apart from the errors, because
         /// nothing threw: the group is PARTIAL for it, or keeps whatever else it ended as.
-        /// Set only with the rule on, and read by the clash step, the viewpoints, the
-        /// reports and the notes.
+        /// Set only with the rule on and only where this run would have run a clash test in
+        /// the group, and read by the clash step, the viewpoints, the reports and the notes.
         /// </summary>
         public OffCoordinates ClashSkippedBecause { get; set; }
+
+        /// <summary>
+        /// What the shared coordinates rule judged of this group's models, whether or not
+        /// its clash was skipped, or null where the read threw or never ran. Read by the
+        /// notes, which take an earlier run's note away only where every model was judged.
+        /// </summary>
+        public OffCoordinates Coordinates { get; set; }
 
         /// <summary>
         /// Whether the publish call reported success. On a rerun last week's NWD sits at

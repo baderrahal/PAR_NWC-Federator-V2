@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Sets;
 
@@ -68,6 +69,16 @@ namespace Federator.Core.Health
         public bool Counted
         {
             get { return Elements != NotCounted && WithWorkset != NotCounted && WithElementId != NotCounted; }
+        }
+
+        /// <summary>
+        /// Whether the model was counted and holds no Revit element at all, so it has no
+        /// workset and no element id to check. The one rule the block and the run line both
+        /// count by, the breaker's fifth finding at c5d8aa8.
+        /// </summary>
+        public bool HoldsNoElement
+        {
+            get { return Counted && Elements == 0; }
         }
 
         /// <summary>Whether the model holds elements and not one of them carries a workset. False where nothing was counted.</summary>
@@ -187,6 +198,18 @@ namespace Federator.Core.Health
                 + "   element id " + Share(model.IdShare);
         }
 
+        /// <summary>
+        /// The elements of one model for the Number column of the row file, or empty where
+        /// they could not be counted, which is what the row file carries for an unknown
+        /// elsewhere: the model placement row leaves its Z empty for a placement not read. It
+        /// carried -1, and a sum over a run took -1 for each model, the breaker's ninth
+        /// finding at c5d8aa8.
+        /// </summary>
+        public static string ElementsNumber(ModelExport model)
+        {
+            return model == null || !model.Counted ? string.Empty : EventRow.Count(model.Elements);
+        }
+
         public static IList<string> Lines(
             IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets, int namesShown)
         {
@@ -219,7 +242,7 @@ namespace Federator.Core.Health
                     notCounted++;
                     lines.Add("      its elements could not be counted, so it is not called whole and none of its workset names is listed");
                 }
-                else if (model.Elements == 0)
+                else if (model.HoldsNoElement)
                 {
                     withNoElement++;
                     lines.Add("      no item in this model is a Revit element, so it has no workset and no element id to check");
