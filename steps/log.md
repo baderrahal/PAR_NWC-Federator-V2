@@ -49,7 +49,7 @@ pass.
   pane, pane-new, pane-dialog and pane end cases. 10 of the 12 are named F125b and 2 are guards
   of pane busy. One check of the first pass was restated for item 3, its first pass copy kept as
   f125b-prove-f125-pass1.ps1. Before the change 97 passed and 8 failed, every failure an F125b
-  check, prove-f125-before2.txt. After it, on the committed scripts of 03aa6c0, 105 passed and 0
+  check, prove-f125-before2.txt. After it, on the committed scripts of 03aa6c0, the scripts' sha256 with Windows line ends equal to the blobs of 03aa6c0, turn5\f125b-blob-hashes.txt, 105 passed and 0
   failed, prove-f125-after2.txt. Get-Process Roamer read 0 before and after each harness run,
   turn5\f125b-roamer-reads.txt, which also records a Roamer this pass did not start, pid 49016
   started at 18:55:27, the lead's baseline run, that the after run waited for from 18:56 to 21:10.
@@ -85,7 +85,7 @@ pass.
 
 ### Known bugs
 
-- F125-R1 and F125-R3 to F125-R7 under Q93, open for F122 in wave 4. F125-R2 is answered for C02
+- F125-R1, F125-R3 to F125-R14 under Q93, open for F122 in wave 4. F125-R2 is answered for C02
   by steps\runs\04\item1-C02\driver.txt line 3
 - the two clauses of item 3 read in the code only are UNKNOWN by a run. No stand-in case was added
   for them, because one runs only while Get-Process Roamer reads 0, and it read 1 at 22:11:11, a
@@ -93,8 +93,7 @@ pass.
 
 ### What comes next
 
-- the lead adds the breaker's reading and merges, and the first run after the merge reads the
-  second pass's lines on the real window
+- the merge, and the first run after it reads the second pass's lines on the real window
 
 ### Every program started, every file written outside the repo
 
