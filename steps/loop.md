@@ -280,7 +280,7 @@ Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 a
 far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
 51a0cb6, PR 83 as 086a348, PR 90, F105, as 2c89788, PR 91, the fix list, as 0e76b16, PR 92, F107,
 as f58c083, PR 93 as dd55e4b, PR 94 as 6689bad, PR 95, F113, as 7b6df88, PR 96, F104, as
-c4fd0d4, and PR 97 as 68c870b. Bader's five requests of the evening, Q112, are added to the round
+c4fd0d4, PR 97 as 68c870b, and PR 99 as 6ddb5be. Bader's five requests of the evening, Q112, are added to the round
 and planned in the turn 5 entry of steps\log.md headed with them.
 
 1. The baseline, set 04: item 1 on C02 rerun from F125's commit 5fa98a8 at 18:55, then item 1 on
@@ -415,7 +415,7 @@ with what was tried and what each attempt showed. The register rows marked needs
 in the form are the questions already in steps\02_questions.md and are not repeated here.
 
 OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its choices:
-- none. Q113 ANSWERED on 2026-10-04 in the evening: B, the correction list a plain file beside
+- none of the turn 5 form. Q113 ANSWERED on 2026-10-04 in the evening: B, the correction list a plain file beside
   the picked XML, this project's in exchange\, and D, all four categories. F116 carries it
 - Q110 and Q111 are held by F112's fix attempt 2 on its branch and reach the form when it merges.
   Q112 is his own message of the five requests. The two readings in its lead's notes he

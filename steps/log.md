@@ -3,8 +3,11 @@
 Newest entry at the top.
 ## 2026-10-04 The loop, turn 5, Bader's answer to Q113 and the notes on Q112, and the measurements
 
-Nothing under src, tests or tools changed. Core tests at the pre-commit of this record, read in
-turn5\precommit-records-7.txt.
+Nothing under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before,
+at the pre-commit of PR 99's last commit, turn5\precommit-records-6b.txt, and after, at this
+record's, turn5\precommit-records-7.txt. The error: failed to delete .git/worktrees lines after
+the count in both are git's housekeeping of worktree folders OneDrive holds, and stopped
+nothing.
 
 ### The plan, also given in the Claude tab before the first edit, a reply kept in no file
 
@@ -26,8 +29,10 @@ turn5\precommit-records-7.txt.
 - FR-176, FR-177 and FR-179 carry the measurements of turn5\measure-coverage.md,
   measure-generic.md and measure-shift.md. The driver's Shift measurement did not run, since
   its stand-in waits for no Navisworks to run, turn5\measure-shift-driver.md
-- the three faults seen while measuring the coverage were already on the list: FR-035, FR-126
-  and the single discipline counts beside FR-031's evidence
+- of the three things seen while measuring the coverage, two are on the list, FR-035 and
+  FR-126. The third, a single discipline group's CLASH block counting its 36 created tests among
+  its 1830 skipped, is the block's own word, skipped meaning not run and not passed, log:1167 to
+  1170 of set 03, so it is no fault, and FR-176 says the coverage counts keep the two apart
 
 ### What remains
 
