@@ -79,6 +79,14 @@ namespace Federator.Addin.Engine
         private int painted;
         private bool dimmedAnything;
         private bool paintedAnything;
+
+        // FR-065. Whether this tool's dimming and paint are on the document right now,
+        // which the next viewpoint takes off before it is written, and what the written
+        // viewpoints read back of it, so a run can see that each carries its own.
+        private bool dimmedNow;
+        private int fewestOverrides;
+        private int mostOverrides;
+        private int undimmedCarrying;
         private Exception firstHomeError;
 
         // Where the VIEWS step's seconds go, per call, because the dimming took one
@@ -168,6 +176,10 @@ namespace Federator.Addin.Engine
             painted = 0;
             dimmedAnything = false;
             paintedAnything = false;
+            dimmedNow = false;
+            fewestOverrides = -1;
+            mostOverrides = 0;
+            undimmedCarrying = 0;
             firstHomeError = null;
 
             try
@@ -215,10 +227,19 @@ namespace Federator.Addin.Engine
 
                     if (views.DimsAnything)
                     {
+                        // FR-065. The material overrides each one read back, the fewest
+                        // and the most, so a run shows that a viewpoint carries the
+                        // dimming of its own shown models and not what an earlier one
+                        // left on models it hides, and that one written undimmed carries
+                        // none of an earlier one's dimming or paint.
                         log.Line("VIEWS    dimmed to "
                             + views.DimTransparency.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
                             + " with the two clashing items left solid: " + dimmed + " viewpoint(s)"
-                            + (notDimmed > 0 ? ", and " + notDimmed + " written undimmed because their two items could not both be pointed at" : string.Empty));
+                            + (dimmed > 0 ? ", each carrying from " + fewestOverrides + " to " + mostOverrides + " material overrides" : string.Empty)
+                            + (notDimmed > 0
+                                ? ", and " + notDimmed + " written undimmed because their two items could not both be pointed at, "
+                                    + undimmedCarrying + " of them carrying a material override"
+                                : string.Empty));
                     }
 
                     if (paintedAnything)
@@ -682,6 +703,23 @@ namespace Federator.Addin.Engine
             bool dimmedThisOne = false;
             bool paintedThisOne = false;
 
+            // WHAT THE VIEWPOINT BEFORE LEFT IS TAKEN OFF FIRST, FR-065. The dimming and
+            // the paint are temporary materials on the document, so without this a
+            // viewpoint whose two items could not both be pointed at was recorded with the
+            // last one's dimming and red and green and counted as undimmed, and a model
+            // dimmed for an earlier pair stayed dimmed while hidden for a later one, which
+            // costs a material override per item in every viewpoint after it, the shape
+            // that once put 33 MB into a 120 KB NWF. Undim is scoped to the model roots
+            // and measured at under a millisecond, 5o.
+            if (dimmedNow)
+            {
+                using (seconds.In(ViewsPart.Dimming))
+                {
+                    SavedViewpoints.Undim(document);
+                    dimmedNow = false;
+                }
+            }
+
             if (views.DimsAnything && place != null && place.BothPlaced)
             {
                 using (seconds.In(ViewsPart.Dimming))
@@ -691,6 +729,9 @@ namespace Federator.Addin.Engine
                     {
                         if (firstItem != null && secondItem != null)
                         {
+                            // Before the call, so a dim that throws part way is still
+                            // taken off before the next viewpoint is written.
+                            dimmedNow = true;
                             solid = SavedViewpoints.DimAllBut(
                                 document, views.DimTransparency, hidesNothingBecause == null ? keep : null, firstItem, secondItem);
                             dimmedThisOne = solid == 2;
@@ -717,6 +758,7 @@ namespace Federator.Addin.Engine
                         // Dimmed on a path that resolved nothing, so it is taken straight off
                         // again and the viewpoint is written the way F85 wrote one.
                         SavedViewpoints.Undim(document);
+                        dimmedNow = false;
                         solid = 0;
                         paintedThisOne = false;
                     }
@@ -806,10 +848,17 @@ namespace Federator.Addin.Engine
             if (dimmedThisOne)
             {
                 dimmed++;
+                fewestOverrides = fewestOverrides < 0 ? read.MaterialOverrideCount : Math.Min(fewestOverrides, read.MaterialOverrideCount);
+                mostOverrides = Math.Max(mostOverrides, read.MaterialOverrideCount);
             }
             else
             {
                 notDimmed++;
+
+                if (read.MaterialOverrideCount > 0)
+                {
+                    undimmedCarrying++;
+                }
             }
 
             if (read.ColoursAsked && read.ColoursRight == 2)

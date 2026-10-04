@@ -250,7 +250,12 @@ well as to pass.
   visibility overrides where it hides a discipline, and one that fails any of the three is
   FAILED with the reason. The hidden state the document held is read once off a capture
   that never enters the tree, 5k, and put back when the group's writing ends, whichever
-  way it ends, and read back as hidden. The window's view is never touched. Every folder
+  way it ends, and read back as hidden. The window's view is never touched. Each viewpoint
+  is written with its own dimming and paint and no other, FR-065: what the viewpoint before
+  left is taken off first, because both are temporary materials on the document, so one
+  whose two items could not both be pointed at carries none and a model hidden for this
+  pair carries no dimming from an earlier one, and the VIEWS lines say the fewest and the
+  most material overrides the dimmed viewpoints read back. Every folder
   is made outermost first and re-resolved from a fresh RootItem after every AddCopy, which
   is the shape SetBuilder measured for the sets. A viewpoint already at its path is left
   exactly as it is and counted as already there, never made again, because a second copy
