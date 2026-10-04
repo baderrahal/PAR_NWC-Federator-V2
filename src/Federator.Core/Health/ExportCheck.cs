@@ -20,7 +20,12 @@ namespace Federator.Core.Health
             Elements = elements;
             WithWorkset = withWorkset;
             WithElementId = withElementId;
-            Worksets = worksets ?? new List<string>();
+
+            // T1-S49. A walk that threw hands on the names it gathered before it threw,
+            // and they were listed as seen and compared for typos. Part of a list is not a
+            // list, the same as part of a count is not a count, so a model that was not
+            // counted carries no names.
+            Worksets = worksets == null || !Counted ? new List<string>() : worksets;
         }
 
         /// <summary>The NWC file name.</summary>
@@ -44,7 +49,7 @@ namespace Federator.Core.Health
         /// <summary>How many of them carry an Element ID, or NotCounted.</summary>
         public int WithElementId { get; private set; }
 
-        /// <summary>The distinct workset names, in the order they were first seen.</summary>
+        /// <summary>The distinct workset names, in the order they were first seen. None where the model was not counted.</summary>
         public IList<string> Worksets { get; private set; }
 
         /// <summary>Whether any element in this model carries a workset at all.</summary>
@@ -157,6 +162,24 @@ namespace Federator.Core.Health
             return Lines(models, NamesShown);
         }
 
+        /// <summary>
+        /// What one model carries, in the words of its line in the block, which the row
+        /// file carries too so the two cannot disagree. A count nobody took is UNKNOWN,
+        /// never zero and never NONE, T1-S49: a model whose walk threw read worksets NONE
+        /// in the block and 0 workset(s) in the row file.
+        /// </summary>
+        public static string Counts(ModelExport model)
+        {
+            string worksets = !model.Counted
+                ? "UNKNOWN"
+                : model.CarriesAWorkset ? model.Worksets.Count.ToString(CultureInfo.InvariantCulture) : "NONE";
+
+            return "elements " + Count(model.Elements)
+                + "   with a workset " + Count(model.WithWorkset)
+                + "   worksets " + worksets
+                + "   element id " + Share(model.IdShare);
+        }
+
         public static IList<string> Lines(IList<ModelExport> models, int namesShown)
         {
             List<string> lines = new List<string>();
@@ -178,11 +201,7 @@ namespace Federator.Core.Health
             {
                 ModelExport model = models[i];
 
-                lines.Add("   " + Named(model)
-                    + "   elements " + Count(model.Elements)
-                    + "   with a workset " + Count(model.WithWorkset)
-                    + "   worksets " + (model.CarriesAWorkset ? model.Worksets.Count.ToString(CultureInfo.InvariantCulture) : "NONE")
-                    + "   element id " + Share(model.IdShare));
+                lines.Add("   " + Named(model) + "   " + Counts(model));
 
                 // EVERY ELEMENT IS A CLAIM THAT NEEDS COUNTING, T1-S50. A model nobody
                 // counted, one holding no Revit element and one with a workset on only
@@ -190,6 +209,7 @@ namespace Federator.Core.Health
                 if (!model.Counted)
                 {
                     notCounted++;
+                    lines.Add("      its elements could not be counted, so it is not called whole and none of its workset names is listed");
                 }
                 else if (model.Elements == 0)
                 {

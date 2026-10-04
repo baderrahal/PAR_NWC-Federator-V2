@@ -240,6 +240,71 @@ namespace Federator.Core.Tests.Health
                 "a count nobody took is never reported as a fault");
         }
 
+        // ---------- T1-S49, a workset count nobody took ----------
+
+        /// <summary>
+        /// A model whose walk threw printed worksets NONE beside elements UNKNOWN, which
+        /// states a workset count nobody took, because the not counted value read as no
+        /// workset.
+        /// </summary>
+        [Test]
+        public void AModelThatCouldNotBeCountedSaysItsWorksetsAreUnknownAndNotNone()
+        {
+            IList<ModelExport> models = new List<ModelExport>
+            {
+                Model("ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, "ST-Framing")
+            };
+
+            string block = Joined(ExportCheck.Lines(models));
+
+            Assert.That(block, Does.Contain("worksets UNKNOWN"));
+            Assert.That(block, Does.Not.Contain("worksets NONE"));
+            Assert.That(block, Does.Contain("its elements could not be counted, so it is not called whole and none of its workset names is listed"));
+        }
+
+        /// <summary>
+        /// The walk that threw still handed on the names it had gathered so far, and they
+        /// were listed as seen and compared for typos. Part of a list is not a list, the
+        /// same as part of a count is not a count.
+        /// </summary>
+        [Test]
+        public void ThePartlyGatheredNamesOfAModelThatCouldNotBeCountedAreNotOfferedAsSeen()
+        {
+            ModelExport threw = Model(
+                "EL", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, "EL-Lightining Protection");
+
+            IList<ModelExport> models = new List<ModelExport>
+            {
+                Model("EL", 308, 308, 308, "EL-Lightning Protection"),
+                threw
+            };
+
+            string block = Joined(ExportCheck.Lines(models));
+
+            Assert.That(threw.Worksets.Count, Is.EqualTo(0));
+            Assert.That(block, Does.Contain("worksets seen: EL-Lightning Protection"));
+            Assert.That(block, Does.Not.Contain("EL-Lightining Protection"),
+                "a partly gathered name is neither listed as seen nor named as a typo");
+        }
+
+        /// <summary>The row file said 0 workset(s) for the same model, so its words come from the line's rule.</summary>
+        [Test]
+        public void TheRowFileCarriesTheWordsOfTheModelsLine()
+        {
+            ModelExport threw = Model("ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, "ST-Framing");
+            ModelExport real = Model("AR", 86, 86, 86, "AR-EXTERIOR", "AR-INTERIOR");
+
+            Assert.That(
+                ExportCheck.Counts(threw),
+                Is.EqualTo("elements UNKNOWN   with a workset UNKNOWN   worksets UNKNOWN   element id UNKNOWN"));
+            Assert.That(
+                ExportCheck.Counts(real),
+                Is.EqualTo("elements 86   with a workset 86   worksets 2   element id 100%"));
+            Assert.That(
+                Joined(ExportCheck.Lines(new List<ModelExport> { real })),
+                Does.Contain("AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   " + ExportCheck.Counts(real)));
+        }
+
         [Test]
         public void ItNamesTenWorksetsAndSaysHowManyItLeftOut()
         {

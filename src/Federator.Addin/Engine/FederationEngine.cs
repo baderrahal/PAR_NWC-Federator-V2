@@ -2146,12 +2146,7 @@ namespace Federator.Addin.Engine
 
                 foreach (ModelExport model in exports)
                 {
-                    log.Row(
-                        "model export",
-                        model.File,
-                        EventRow.Count(model.Elements),
-                        model.Worksets.Count + " workset(s), element id "
-                            + (model.IdShare == ModelExport.NotCounted ? "UNKNOWN" : model.IdShare + "%"));
+                    log.Row("model export", model.File, EventRow.Count(model.Elements), ExportCheck.Counts(model));
 
                     // T1-S50. The same rules the block judges each model by, so the run
                     // line and the blocks cannot disagree.
