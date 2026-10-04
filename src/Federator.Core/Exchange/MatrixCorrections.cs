@@ -130,14 +130,14 @@ namespace Federator.Core.Exchange
 
 
     /// <summary>
-    /// One property VALUE in the matrix corrected to the spelling the models actually
-    /// carry, Q68 answered a on 2026-09-20.
+    /// One workset VALUE in the matrix corrected to the spelling measured in the models,
+    /// Q68 answered a on 2026-09-20.
     ///
     /// WHY THIS EXISTS. The client's matrix asks for a workset called `ME-DUCTWORK` and
-    /// every model in the project carries `ME-Ductwork`. A search condition compares a
-    /// value CASE SENSITIVELY unless `IgnoreDisplayStringValueCase` is set, nothing sets
-    /// it, and so three mechanical sets found nothing in every group of every run since
-    /// the tool was first pointed at this project, 5q.
+    /// every C02 model carries `ME-Ductwork`. A search condition compares a value CASE
+    /// SENSITIVELY unless `IgnoreDisplayStringValueCase` is set, nothing sets it, and so
+    /// three mechanical sets found nothing in every C02 group of every run until the
+    /// correction, 5q.
     ///
     /// IT IS NOT AN IGNORE CASE FLAG AND IT NEVER SETS ONE. Bader refused that on
     /// 2026-09-20 and the reason stands: the flag would also make two genuinely different
@@ -145,10 +145,11 @@ namespace Federator.Core.Exchange
     /// `AR-INTERIOR` and `ST-SUB` against `ST-SUP` are two pairs of real worksets in this
     /// very project that are one and two letters apart, 5t.
     ///
-    /// SO IT CORRECTS ONE VALUE TO ONE SPELLING WHERE THE MODELS CARRY EXACTLY ONE. The
-    /// candidates are the workset names READ OFF THE MODELS, never a list in the code.
+    /// SO IT CORRECTS ONE VALUE TO ONE SPELLING WHERE EXACTLY ONE WAS MEASURED. The
+    /// candidates are the workset names READ OFF THE MODELS so far, revit-worksets.txt,
+    /// never a list in the code, and a spelling not measured yet is UNKNOWN.
     ///
-    /// AND WHERE THE MODELS CARRY TWO OR MORE IT ASKS FOR EVERY ONE OF THEM, Q102 answered
+    /// AND WHERE TWO OR MORE WERE MEASURED IT ASKS FOR EVERY ONE OF THEM, Q102 answered
     /// on 2026-10-04. Until then a value with two case only spellings was refused and left
     /// as it was, because a rule that guesses between two real worksets is worse than a set
     /// that finds nothing. It no longer guesses: the C06 buildings write ME-DUCTWORK and
@@ -168,8 +169,8 @@ namespace Federator.Core.Exchange
         public string From { get; private set; }
 
         /// <summary>
-        /// Every spelling the MODELS carry that differs from it by case alone. None means
-        /// nothing to correct, one is the correction, and two or more are all asked, Q102.
+        /// Every spelling measured in the MODELS that differs from it by case alone. None
+        /// means nothing to correct, one is the correction, and two or more are all asked, Q102.
         /// </summary>
         public IList<string> Candidates { get; private set; }
 
@@ -193,8 +194,8 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// Every value the matrix asks for, matched against every workset name the models
-        /// carry, case blind. The one place a candidate list is built, so the rule and
+        /// Every value the matrix asks for, matched against every workset name measured in
+        /// the models, case blind. The one place a candidate list is built, so the rule and
         /// the log cannot disagree about what was on offer.
         /// </summary>
         public static IList<ValueRewrite> For(IEnumerable<string> matrixValues, IEnumerable<string> modelWorksets)
@@ -490,11 +491,13 @@ namespace Federator.Core.Exchange
     /// <summary>
     /// Corrections applied to an exchange file before it is used.
     ///
-    /// WHY THIS IS GENERIC AND NAMES NO SET. CLAUDE.md says nothing in the code names any
-    /// one project's file, and that a name off the clash XML appears in tests as sample
-    /// data only. The corrections this project needs are therefore DATA handed in, and
-    /// what lives here is only the rule for applying them safely. A second project with a
-    /// different matrix hands in a different list and needs no code change.
+    /// THE CLASS NAMES NO SET, AND THE LIST IT IS HANDED DOES. What lives here is only the
+    /// rule for applying corrections safely, and the corrections are data. Since F116 the
+    /// tool hands in matrix-corrections.txt, embedded in Core, which holds two set names and
+    /// four categories of the client's matrix. CLAUDE.md says a name off the clash XML
+    /// appears in tests as sample data only, so the list as it stands breaks that rule as
+    /// written, and changing it means rebuilding Core and reinstalling it, not handing in a
+    /// file. Whether it stays in Core or moves to a file beside the picked XML is Q113, OPEN.
     ///
     /// SAFE TO RUN TWICE IS THE WHOLE POINT. A correction that is applied to its own
     /// output must change nothing the second time, and TotalChanged coming back zero is
@@ -794,9 +797,10 @@ namespace Federator.Core.Exchange
 
         /// <summary>
         /// The same, plus the VALUE corrections of Q68 and Q102: a workset the matrix spells
-        /// one way and every model spells another is corrected to theirs, and one the models
-        /// spell two or more ways is asked in every one of them. Pass null for the last and
-        /// it is the four argument form exactly.
+        /// one way and the models were measured spelling one other way is corrected to that,
+        /// and one measured in two or more spellings is asked in every one of them. Only a
+        /// condition on the workset property that is not negated is touched, F116. Pass null
+        /// for the last and it is the four argument form exactly.
         /// </summary>
         public static CorrectionOutcome Apply(
             string xml,

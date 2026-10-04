@@ -8,7 +8,9 @@ namespace Federator.Core.Exchange
     /// <summary>
     /// The corrections this project needs, read off the list shipped inside Core,
     /// matrix-corrections.txt, Q104. The renames, the catch-all sets and the Source File rules,
-    /// as data, so nothing in the code names one project's set.
+    /// as data, so the code names no set. The list itself holds two set names and four
+    /// categories of the client's matrix, and whether it stays in Core or moves to a file
+    /// beside the picked XML is Q113, OPEN.
     ///
     /// A LIST THAT CANNOT BE READ IS SAID, NEVER AN EMPTY ONE. An empty list corrects nothing
     /// and looks like a file that needed nothing, so a list that is missing or holds a line

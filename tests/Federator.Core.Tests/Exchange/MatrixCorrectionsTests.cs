@@ -11,12 +11,14 @@ namespace Federator.Core.Tests
     /// <summary>
     /// The corrections applied to the client's matrix before it is used, F87.
     ///
-    /// The project's own set names are SAMPLE DATA and live here, never in src, which is
-    /// CLAUDE.md's rule. What lives in src is only the rule for applying them safely.
+    /// The project's own set names below are SAMPLE DATA for the generic tests, which is
+    /// CLAUDE.md's rule. Since F116 two of them, the broken name and the catch-all set, also
+    /// sit in src, in matrix-corrections.txt embedded in Core, which that rule does not allow
+    /// as written. Whether the list stays there is Q113, OPEN.
     ///
-    /// The test that matters most is the last one. It asserts that the file committed
-    /// under exchange is exactly what the rule produces from the file under samples, so
-    /// the artifact can never drift away from the rule that made it.
+    /// The test that matters most is TheCorrectedFileIsExactlyWhatTheRuleProduces. It asserts
+    /// that the file committed under exchange is exactly what the rule produces from the file
+    /// under samples, so the artifact can never drift away from the rule that made it.
     /// </summary>
     [TestFixture]
     public class MatrixCorrectionsTests
@@ -409,9 +411,10 @@ namespace Federator.Core.Tests
         /// THE TEST BADER ASKED FOR, Q104 on 2026-10-04: the old uncorrected XML and the
         /// exchange file give the same sets once corrected. Both are read the way the tool
         /// reads a picked file, and every set, condition for condition, and every test come
-        /// out the same. The file picked before F116 is the third: Bader's old matrix was the
-        /// sample with the hyphen alone corrected, measured on 2026-10-04 by setting the two
-        /// side by side, and it comes out the same too.
+        /// out the same. The file picked before F116 is the third: Bader's old matrix is the
+        /// sample with the hyphen alone corrected, measured on 2026-10-04 by applying that one
+        /// rename to the sample and comparing the two files, 1,443,383 bytes each and sha256
+        /// 36ab2739 both, byte for byte, and it comes out the same too.
         /// </summary>
         [Test]
         public void TheOldUncorrectedMatrixAndTheExchangeFileGiveTheSameSetsOnceCorrected()
@@ -1103,7 +1106,9 @@ namespace Federator.Core.Tests
         /// asks for, as sample data: in groups holding no AR model, BLD-AR-Ramps found 36
         /// items in 1B06PK and 17 in 1C06PK and BLD-AR-Railings 18 in 1B06PK, set 03 log lines
         /// 4304, 7979 and 4316, and BLD-AR-Furniture 29 and BLD-AR-Site 18 in 1A0415 of the
-        /// partial C04 run of 2026-09-21, its log lines 200 and 203.
+        /// partial C04 run of 2026-09-21, its log lines 200 and 203. Those two are the landscape
+        /// models' items in a group with no AR model, so whether Q103 keeps Furniture and Site
+        /// is Q113, OPEN.
         /// </summary>
         private static readonly string[] MeasuredInOtherDisciplines = { "Ramps", "Railings", "Furniture", "Site" };
 
@@ -1247,8 +1252,13 @@ namespace Federator.Core.Tests
         /// FR-009 on the client's own matrix. The four AR sets asking a category another
         /// discipline's models were measured carrying ask Source File contains -AR- and no
         /// other set changes at all: Floors, Stairs and Walls asked it already, and every
-        /// other AR category is asked by no other folder's set and was measured in no other
-        /// discipline's model. A second run changes nothing.
+        /// other AR category is asked by no other folder's set and was not seen finding items
+        /// in a group with no AR model in the two logs read, set 03 on C06 and the partial C04
+        /// run. A category another discipline carries only in a group that also holds an AR
+        /// model cannot be told apart by a set count, so for the nine AR sets left without the
+        /// condition, Roofs, Ceilings, Columns, Windows, Curtain Panels, Curtain Mullions,
+        /// Doors, Casework and Parking, whether another discipline uses the category is
+        /// UNKNOWN. A second run changes nothing.
         /// </summary>
         [Test]
         public void OnTheClientsMatrixTheFourArSetsAnotherDisciplineUsesAskSourceFileAndNoOtherSetChanges()

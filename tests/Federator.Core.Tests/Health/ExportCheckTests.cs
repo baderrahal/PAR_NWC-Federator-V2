@@ -142,9 +142,11 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
-        /// F116. The block names ten and counts the rest, so in seven groups of set 03 on C06
-        /// which spelling the models past the tenth name carry was UNKNOWN, and the matrix
-        /// corrections act on exactly that. The row file carries every name of a model in
+        /// F116. The block names ten and counts the rest, so in nine groups of set 03 on C06,
+        /// whose worksets seen lines end "and N more, counted and not listed" at lines 605,
+        /// 1354, 3248, 3928, 4670, 5071, 6482, 6853 and 7254 of its log, which spelling the
+        /// models past the tenth name carry was UNKNOWN, and the matrix corrections act on
+        /// exactly that. The row file carries every name of a model in
         /// full, in the order the model gave them, split by a bar so a name holding a comma
         /// stays one name.
         /// </summary>

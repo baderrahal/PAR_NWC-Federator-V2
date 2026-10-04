@@ -1,4 +1,6 @@
-# Every workset name a Revit model in this project really carries, Q68 and Q69.
+# Every workset name measured so far in this project's Revit models, Q68 and Q69: the C02
+# census below in full, and further down the names the C06 run lists, at most ten a group.
+# C04 and C07 are unmeasured, so a name not here is UNKNOWN, not absent.
 #
 # MEASURED on 2026-09-20 in the worksets round, docs\history\scan.md 5t, by
 # tools\probes\ViewpointProbe in its census mode over the ten NWFs of the C02 folder,
@@ -7,12 +9,13 @@
 # result file is tools\probes\ViewpointProbe\5t-5u-result-20260920.txt and a test
 # proves this list is exactly its names, so it cannot drift.
 #
-# WHAT IT IS FOR. The client's matrix asks for a workset called ME-DUCTWORK and every
-# model writes ME-Ductwork, and a search condition compares a value CASE SENSITIVELY
-# unless IgnoreDisplayStringValueCase is set, which nothing sets. So three mechanical
-# sets found nothing in every group of every run. MatrixCorrections corrects the
-# matrix to the spelling the models use, and this file is where the spellings come
-# from. THE TOOL NEVER INVENTS ONE.
+# WHAT IT IS FOR. The client's matrix asks for a workset called ME-DUCTWORK, the C02
+# models write ME-Ductwork and two C06 buildings write ME-DUCTWORK, and a search condition
+# compares a value CASE SENSITIVELY unless IgnoreDisplayStringValueCase is set, which
+# nothing sets. So a set asking one spelling finds nothing in the buildings writing the
+# other. MatrixCorrections asks every spelling this file holds of a workset, as Or groups,
+# where it holds two or more, Q102, and the one it holds where it holds one, Q68, and this
+# file is where the spellings come from. THE TOOL NEVER INVENTS ONE.
 #
 # WHY IT IS NOT AN IGNORE CASE FLAG. Bader refused that on 2026-09-20 and the reason
 # is in this list twice over: AR-EXTERIOR against AR-INTERIOR, and ST-SUB against

@@ -6,15 +6,20 @@ using System.Reflection;
 namespace Federator.Core.Exchange
 {
     /// <summary>
-    /// Every workset name a Revit model in this project really carries, measured off the
-    /// models and never typed, Q68 and Q69.
+    /// Every workset name measured so far in this project's Revit models, read off the
+    /// models and never typed, Q68 and Q69: every name of every model of the C02 census,
+    /// and the names the C06 run's EXPORT CHECK lines list, at most ten a group, so NOT
+    /// every workset C06 carries. C04 and C07 are unmeasured. What the list does not hold
+    /// is UNKNOWN, not absent.
     ///
     /// IT IS THE SPELLINGS AND NOT A JUDGEMENT. The client's matrix asks for a workset
-    /// called `ME-DUCTWORK` and every model writes `ME-Ductwork`, and a search condition
-    /// compares a value CASE SENSITIVELY unless a flag nothing sets is set, so three
-    /// mechanical sets found nothing in every group of every run, 5q. `MatrixCorrections`
-    /// corrects the matrix to the spelling the models use and THIS is where the spellings
-    /// come from. Nothing in this tool ever invents one.
+    /// called `ME-DUCTWORK`, the C02 models write `ME-Ductwork` and two C06 buildings write
+    /// `ME-DUCTWORK` as the matrix does, and a search condition compares a value CASE
+    /// SENSITIVELY unless a flag nothing sets is set, so a set asking one spelling finds
+    /// nothing in the buildings writing the other, 5q and Q102. `MatrixCorrections` asks
+    /// every spelling measured here, as Or groups, where there are two or more, and the one
+    /// measured where there is one, and THIS is where the spellings come from. Nothing in
+    /// this tool ever invents one.
     ///
     /// IT IS NOT THE PENETRATION LISTS AND NOT THE CATEGORY LIST. Those two say what
     /// somebody has decided about a category. This says what is in the models, the same
