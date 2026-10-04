@@ -141,6 +141,24 @@ wf_d55f67e0-13a, turn5\w2-workflow-start.txt, each told to merge main c4fd0d4 in
 first. F116, the clash XML, read at 18:39: FR-025,
 FR-026, FR-008, FR-009 and FR-030 committed, the branch at 0157966 with main c4fd0d4 merged in.
 F114 stays paused at f915396 for wave 2.
+F125 MERGED as PR 102, 1ae6771, at 23:06:17, green in Actions on its last commit 302f802, run
+37230696626, turn5\actions-reads-pr102.txt. Its second pass was read under Q93 by a reviewer and
+a breaker, both APPROVE with nothing blocking, turn5\f125b-read-review.txt and
+turn5\f125b-read-break.txt, and its harness passed 105 and failed 0 on the scripts of 03aa6c0,
+whose sha256 with Windows line ends equal the harness's, turn5\f125b-blob-hashes.txt. Their
+points that do not block are register rows F125-R1 to F125-R14 for F122 in wave 4, F125-R2
+answered for C02. Two claim-checks made its records true. Its branch and worktree are removed.
+The baseline runs from wt-base at 5fa98a8 to the end of set 04, so they keep the first pass's
+record words, and the runs after this merge write the second pass's. F126, the driver unticking
+a named box for the rule-off run of wave 1, branched off 1ae6771 in wt-f126 and is with its
+developer, turn5\f126-brief.md. F112: fix attempt 2 read CHANGES, 2 blocking and 1, its
+readings turn5\f112b-read-review.txt, f112b-read-break.txt and f112b-read-claims.txt, so fix
+attempt 3, the last before the form, ran: its reviewer APPROVE, its breaker CHANGES with one
+blocking finding new in attempt 3, an Internal group's FAILED reason saying its files were
+written before any was, which keeps a missing or stale NWD out of RESULT, turn5\f112c-read-*.txt.
+That finding has had no fix yet, so a closing pass carries it and the claim-checker's 13 points.
+F116: fix attempt 2 read APPROVE by both, nothing blocking, turn5\f116b-read-review.txt and
+f116b-read-break.txt, and the pass that carries Bader's answer to Q113 is with its developer.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
