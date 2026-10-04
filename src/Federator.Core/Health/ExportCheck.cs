@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Federator.Core.Exchange;
+using Federator.Core.Sets;
 
 namespace Federator.Core.Health
 {
@@ -156,10 +158,15 @@ namespace Federator.Core.Health
         /// </summary>
         public const int NamesShown = 10;
 
-        /// <summary>The block, written even when everything is right, because a missing block reads as a check that did not run.</summary>
-        public static IList<string> Lines(IList<ModelExport> models)
+        /// <summary>
+        /// The block, written even when everything is right, because a missing block reads
+        /// as a check that did not run. The sets are those of the picked clash file, or
+        /// null where none was picked, and they are what the workset names are compared
+        /// with by letter case.
+        /// </summary>
+        public static IList<string> Lines(IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets)
         {
-            return Lines(models, NamesShown);
+            return Lines(models, sets, NamesShown);
         }
 
         /// <summary>
@@ -180,7 +187,8 @@ namespace Federator.Core.Health
                 + "   element id " + Share(model.IdShare);
         }
 
-        public static IList<string> Lines(IList<ModelExport> models, int namesShown)
+        public static IList<string> Lines(
+            IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets, int namesShown)
         {
             List<string> lines = new List<string>();
 
@@ -241,8 +249,159 @@ namespace Federator.Core.Health
 
             lines.Add(Sentence(models.Count, withoutAnyWorkset, withSomeWorkset, withoutEveryId, withNoElement, notCounted));
             AddWorksets(lines, everyWorkset, namesShown);
+            AddCaseDifferences(lines, everyWorkset, sets, namesShown);
             AddDisagreements(lines, models);
             return lines;
+        }
+
+        /// <summary>
+        /// Where a set of the picked file asks for a workset that a model here carries in
+        /// another letter case, S03-2. The match is case sensitive, and Bader refused an
+        /// ignore case flag on 2026-09-20, so a condition asking for one spelling finds
+        /// none of the items carrying the other. Each pair is named with the sets that ask,
+        /// and a group where no name differs says so in one line.
+        ///
+        /// IT REPLACES ONE FIXED SENTENCE. 'The match is CASE SENSITIVE, so ME-Ductwork does
+        /// not match ME-DUCTWORK' was written in all 22 groups of set 03, whether any name
+        /// differed or not, with one project's two spellings typed into it, log line 210.
+        /// </summary>
+        private static void AddCaseDifferences(
+            IList<string> lines, IList<string> carried, IEnumerable<SelectionSetDefinition> sets, int namesShown)
+        {
+            List<WorksetAsk> asks = new List<WorksetAsk>();
+            bool anySet = false;
+
+            if (sets != null)
+            {
+                foreach (SelectionSetDefinition set in sets)
+                {
+                    if (set == null)
+                    {
+                        continue;
+                    }
+
+                    anySet = true;
+
+                    foreach (SearchConditionDefinition condition in set.Conditions)
+                    {
+                        string value = condition.Value == null ? null : condition.Value.Data;
+
+                        if (condition.Property == null
+                            || !string.Equals(condition.Property.InternalName, EmptySets.WorksetProperty, StringComparison.Ordinal)
+                            || string.IsNullOrEmpty(value))
+                        {
+                            continue;
+                        }
+
+                        bool contains = string.Equals(condition.Test, SetWarnings.ContainsTest, StringComparison.OrdinalIgnoreCase);
+                        WorksetAsk ask = asks.Find(a => a.Contains == contains && string.Equals(a.Value, value, StringComparison.Ordinal));
+
+                        if (ask == null)
+                        {
+                            ask = new WorksetAsk(value, contains);
+                            asks.Add(ask);
+                        }
+
+                        string setName = string.IsNullOrEmpty(set.Name) ? "a set with no name" : set.Name;
+
+                        if (!ask.Sets.Contains(setName))
+                        {
+                            ask.Sets.Add(setName);
+                        }
+                    }
+                }
+            }
+
+            if (!anySet)
+            {
+                lines.Add("no set was read from a picked file, so no workset name was compared with what a set asks");
+                return;
+            }
+
+            if (asks.Count == 0)
+            {
+                lines.Add("no set of the picked file asks for a workset, so there was nothing to compare");
+                return;
+            }
+
+            List<string> pairs = new List<string>();
+
+            foreach (WorksetAsk ask in asks)
+            {
+                foreach (string name in carried)
+                {
+                    if (ask.MissesByCaseAlone(name))
+                    {
+                        pairs.Add("   the file asks for \"" + ask.Value + "\" in " + SetNames(ask.Sets, namesShown)
+                            + ", and a model here carries \"" + name + "\"");
+                    }
+                }
+            }
+
+            if (pairs.Count == 0)
+            {
+                lines.Add("no workset name a set of the picked file asks for differs by letter case alone from one a model here carries");
+                return;
+            }
+
+            lines.Add(pairs.Count + " pair(s) of workset names differ by letter case alone, one asked by a set of the"
+                + " picked file and one carried by a model here. The match is CASE SENSITIVE, so a condition asking"
+                + " for one spelling finds none of the items that carry the other:");
+
+            for (int i = 0; i < pairs.Count; i++)
+            {
+                lines.Add(pairs[i]);
+            }
+        }
+
+        /// <summary>The sets that ask, as a list, with the rest counted past namesShown the way the names are.</summary>
+        private static string SetNames(IList<string> names, int namesShown)
+        {
+            if (namesShown <= 0 || names.Count <= namesShown)
+            {
+                return Listed(names);
+            }
+
+            List<string> shown = new List<string>();
+
+            for (int i = 0; i < namesShown; i++)
+            {
+                shown.Add(names[i]);
+            }
+
+            shown.Add((names.Count - namesShown) + " more");
+            return Listed(shown);
+        }
+
+        /// <summary>One workset value the picked file asks for, the way it asks, and the sets asking it in file order.</summary>
+        private sealed class WorksetAsk
+        {
+            internal WorksetAsk(string value, bool contains)
+            {
+                Value = value;
+                Contains = contains;
+                Sets = new List<string>();
+            }
+
+            internal string Value { get; private set; }
+
+            /// <summary>Whether the file asks for part of a name, test contains, rather than the whole name.</summary>
+            internal bool Contains { get; private set; }
+
+            internal List<string> Sets { get; private set; }
+
+            /// <summary>Whether this ask misses that carried name by letter case alone, and finds it once case is set aside.</summary>
+            internal bool MissesByCaseAlone(string carried)
+            {
+                if (Contains)
+                {
+                    return carried.IndexOf(Value, StringComparison.Ordinal) < 0
+                        && carried.IndexOf(Value, StringComparison.OrdinalIgnoreCase) >= 0;
+                }
+
+                return !string.Equals(carried, Value, StringComparison.Ordinal)
+                    && string.Equals(carried, Value, StringComparison.OrdinalIgnoreCase);
+            }
         }
 
         /// <summary>
@@ -327,8 +486,6 @@ namespace Federator.Core.Health
                 + (shown < worksets.Count
                     ? ", and " + (worksets.Count - shown) + " more, counted and not listed"
                     : string.Empty));
-            lines.Add("   check these against the workset each set in the matrix asks for. The match is CASE SENSITIVE,"
-                + " so ME-Ductwork does not match ME-DUCTWORK and that set finds nothing");
         }
 
         /// <summary>
@@ -373,6 +530,11 @@ namespace Federator.Core.Health
         /// <summary>Parts read as a list: one alone, two joined by and, more with commas and an and before the last.</summary>
         private static string Listed(IList<string> parts)
         {
+            if (parts.Count == 0)
+            {
+                return string.Empty;
+            }
+
             if (parts.Count == 1)
             {
                 return parts[0];

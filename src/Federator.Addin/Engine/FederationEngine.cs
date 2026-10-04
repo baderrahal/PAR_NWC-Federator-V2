@@ -2140,9 +2140,11 @@ namespace Federator.Addin.Engine
             {
                 IList<ModelExport> exports = ModelFactsReader.Exports(document, reports.Names, log);
 
+                // S03-2. The names are compared by letter case with what the picked file's
+                // sets ask, and with no file picked the block says nothing was compared.
                 log.Block(
                     ExportCheck.BlockTitle + " " + Words.Or(job.Building, "this group"),
-                    ExportCheck.Lines(exports));
+                    ExportCheck.Lines(exports, exchange == null ? null : exchange.Sets));
 
                 foreach (ModelExport model in exports)
                 {
