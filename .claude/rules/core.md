@@ -190,7 +190,8 @@ and 6 does not read as broken.
   reading
 - THE RUNNING COUNT IS TAKEN AFTER THE TEST IT NUMBERS, F113. `ClashRunOutcome
   .ProgressAfter` is the line the log carries at every twenty fifth test and at the last
-  one, so a group always ends on a count, and it reads the counts as they stand. The
+  one, so a group that runs to its end ends on a count, and it reads the counts as they stand.
+  A group with no test to run writes no count, and one the guard stops ends on RUN STOPPED. The
   runner took it BEFORE the test it numbered until F113, so on the run of 2026-10-01 the
   last count of all 22 groups was one test short of the block under it, and three were
   short of the block's clashes by the last test's own, 1624 against 1629 in 1B06PK. The

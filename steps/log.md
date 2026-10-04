@@ -18,8 +18,11 @@ errors and 0 warnings before the first change and after each change.
   tests. No number the workbook prints changes
 - FR-032, f2997ab. A result group with no clash under it stood for one clash, floored in the
   harvest. ClashRow.ForGroup stands for the clashes under the group and no more. 3 tests. It
-  changes numbers the workbook prints for a test holding an empty group: its Clashes cell, the
-  cell of the group's status, and with no priority file its place on the sheet
+  changes numbers the workbook prints for a test holding an empty group: its Clashes cell and
+  the cell of the group's status, and with no priority file its place on the sheet and the
+  picture numbers that follow that order. Outside the workbook it moves the page summary total,
+  with or without a priority file, and the PRIORITY block's totals when a priority file is
+  picked
 - FR-033, 9fc81ee. An unnamed clash between two sets the pairs file lists was counted as moved
   by the by design rule though it was never moved. ByDesignRule.Judge takes the clash name and
   answers NoClashName, a sixth reason the BY DESIGN block lists. 2 tests, and the helper the old
@@ -31,28 +34,31 @@ errors and 0 warnings before the first change and after each change.
   and against a stub of the new members 4, 2 and 1 of them failed, the stub returning no line,
   carrying the old floor and taking the name without reading it. The test of FR-034 failed
   against the code before with ArgumentOutOfRangeException
-- the rules in .claude\rules\core.md, the order line 37 and the F113 section in
-  steps\01_next.md, 1f0a369. Main merged in at 2bae58a, main then at dd55e4b, with no conflict.
-  Pushed as fix-F113
+- each item's rule in .claude\rules\core.md, written in that item's commit, and the order line
+  37 and the F113 section in steps\01_next.md at 1f0a369. Main merged in at 2bae58a, main then at
+  dd55e4b, with no conflict. Pushed as fix-F113
 
 ### What remains
 
 - the add-in halves wait for wave 1, a first run with the XML and a weekly run on each of
   1A02MM of C02 and 1A04PK of C04. FR-031 in all four logs: the last `CLASH N of N tests` line
   of the group reads the tests run, tests skipped and clashes found of the block under it.
-  FR-032 only where a log carries a `holds N result group` line, and there the Clashes cell of
-  that test equals the in the document number of its `rows for the workbook` row in the .tsv.
-  None is expected. FR-033 only where the RUN SETTINGS line `by design` reads yes. FR-034 is
-  reached by no run, only by the Undo auto Reviewed button on a comment edited by hand
-- the commit messages of FR-031 to FR-033 name set 05 on C06 as their proof run, because they
-  were written before the lead's message of 15:52 moved the proof to wave 1. The DONE line
-  names wave 1
+  FR-032 only where a log holds an empty result group, which no log has shown: a group with
+  clashes under it reads the same before and after. FR-033 only where the RUN SETTINGS line
+  `by design` reads yes and the no name count is above 0, checked by the group's STATUS lines,
+  since its moved count, its REVIEWED lines and RESULT hold with or without the fix and a count
+  of 0 proves nothing. FR-034 is reached by no run, only by the Undo auto Reviewed button on a
+  comment edited by hand
+- the commit messages of FR-031 and FR-032, and the message of 1f0a369, name set 05 on C06 as
+  the proof run, because they were written before the lead's message of 15:52 moved the proof
+  to wave 1. The DONE line names wave 1
 
 ### Known bugs
 
-- for a test holding an empty result group the ROWS line still reads more rows than clashes,
-  as before, and still ends that the workbook will not match the panel, which after FR-032 is
-  no longer so of its Clashes cell. src\Federator.Core\Clash\ReportedCount.cs is in no area's
+- for a test whose only result is an empty group the ROWS line still reads more rows than
+  clashes and ends that the workbook will not match the panel, which after FR-032 is no longer so
+  of its Clashes cell. Beside a group of three or more clashes it reads that the difference is
+  the result groups, and beside a group of two that they agree. src\Federator.Core\Clash\ReportedCount.cs is in no area's
   list of files
 - WorkbookCheck.CheckOrder orders the blocks by the rows under each, where ReportOrder sorts
   the tests by the clashes each stands for, so a workbook holding result groups could be called
@@ -74,11 +80,11 @@ errors and 0 warnings before the first change and after each change.
 
 ### Read before the pull request
 
-- by a reviewer, APPROVE, nothing blocking, nine notes, two of them made true in the F113
+- by a reviewer at 1f0a369, APPROVE, nothing blocking, nine notes, two of them made true in the F113
   section of steps\01_next.md: what moves for a test holding an empty group, and that FR-033's
   wave 1 check holds with or without the fix, the STATUS lines being the one pair that can
   differ. Kept with the other notes in turn5\f113-reads.txt
-- by a breaker, nothing that makes a count wrong because of this change, seven left standing,
+- by a breaker at 1f0a369, nothing that makes a count wrong because of this change, seven left standing,
   the first three in Known bugs above, all in turn5\f113-reads.txt
 
 ### What comes next

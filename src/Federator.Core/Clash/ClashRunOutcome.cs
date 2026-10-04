@@ -230,7 +230,7 @@ namespace Federator.Core.Clash
         /// The running count the log carries while the tests of a group run, so a run of
         /// well over a thousand tests is watched rather than silent, or null at a test the
         /// log does not count at. It counts at every test that is a multiple of every, and
-        /// at the last one, so a group always ends on a count.
+        /// at the last one, so a group that runs to its end ends on a count.
         ///
         /// IT IS TAKEN AFTER THE TEST IT NUMBERS IS RECORDED, F113, and reads the counts as
         /// they stand. The runner took it before that test until F113, so on the run of
