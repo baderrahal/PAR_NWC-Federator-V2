@@ -1,0 +1,964 @@
+RUN RECORD, run.ps1 sha256 3FE28CB6775C9F2DF56CC00922B2FE40EB81E158D538C3A5B4EC419AF8C0BA2E, nw-guard.ps1 sha256 BA13F404342FEE9E7DD7075D50711C9901FE3A8F16440F2BC712E75E5D29313D, drive-window-run.ps1 sha256 7E9ABA1B8D5D6A538C27D8B2FEBF4AB873BFAF9D1F6C90234B215785DFCCBFCA, -Mode Run -Set 04 -Item 1 -Folder C02 -Xml 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml -Stamp e4484d15, the window run
+  the run folder "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\item1-C02", every line from here is also in its record.txt
+  the run folder from an earlier call was moved aside as item1-C02-aside-20261004-185515
+  the watchdog started, constructor deadline 300 s, ceiling 43200 s from adoption
+---- check 13, his logs folder ----
+  35 files listed into logs-before.txt, 2 copied into logs-backup and read back
+---- check 14, his AutoSave folder ----
+  199 files listed into autosave-before.txt, 0 copied into autosave-backup and read back. Nothing is written into his AutoSave folder before the put back at the end, Q86
+---- check 15, the settings backup ----
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\item1-C02\settings\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123320 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 35 files
+---- M5 before, the write times of the keys under HKCU\Software\Autodesk ----
+  6669 keys read
+---- check 17, keep awake ----
+  SetThreadExecutionState(ES_CONTINUOUS, ES_SYSTEM_REQUIRED, ES_DISPLAY_REQUIRED) returned 0x80000000 on native thread 42524
+---- check 18, the last read before the constructor ----
+  no start this probe could not prove is recorded
+  no Roamer is running
+  the session reads unlocked
+==== THE START ====
+  18:55:27.677  calling new NavisworksApplication() on the main thread
+  the constructor RETURNED after 71.96 s
+  Roamer processes new since step 2: 1
+    pid 49016, started 18:55:27.733, parent 1392 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 49016, and the start ticks read again through it are equal
+  ADOPTED, pid 49016, start ticks UTC 639267261277331770, held through its handle
+  Visible set True, read back True
+---- the driver and the plugin call ----
+18:56:52  t+84s  MONITOR started, a pass every 15 s, hang limit 300 s with under 20 s of processor time in it, fixed hold 0 s
+18:56:52  t+84s  SAMPLE processor 82.875 s
+  the driver started as pid 30052, held through its handle: powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File "%LOCALAPPDATA%\NwcFederatorLoop\wt-base\tools\probes\drive-window-run.ps1" -OwnerPid 49016 -OwnerStartTicks 639267261277331770 -Set 04 -Stamp e4484d15 -Notes "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\item1-C02\driver.txt" -Source "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C02" -Nwf "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02" -Nwd "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWD\C02" -Excel "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\Clash Report\C02" -Xml "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml"
+  18:56:52.213  calling ExecuteAddInPlugin(ParsonsNwcFederator.PARS, no parameters) on the main thread. AddPluginAssembly is never called, so the installed build runs
+18:56:52  t+85s  PANE, a window that is not modal, left as it is and not a finding: class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Clash Detective", owner 6426886, class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Untitled - Autodesk Navisworks Manage 2025", visible True, enabled True, process the adopted one, text "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard", the window itself enabled True
+18:56:52  t+85s  MAIN: class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Untitled - Autodesk Navisworks Manage 2025", owner 10097196, class WindowsForms10.Window.0.app.0.27a2811_r7_ad1, caption "", visible False, enabled True, process the adopted one
+18:56:52  t+85s  SESSION LOCK unlocked
+18:56:52  t+85s  the tool's window is open, caption "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]"
+18:57:07  t+100s  the tool's log is found, run-20261004-185652.log, with its .tsv run-20261004-185652.tsv, both named in toollog-name.txt. Its SESSION names e4484d15. Both clocks of the hang rule start now
+18:57:07  t+100s  LOG 18:56:52.263  +0000.011s  RETAIN   keeping 30 logs, deleted 1, could not delete 0
+18:57:07  t+100s  LOG SESSION
+18:57:07  t+100s  LOG 18:56:52.272  +0000.021s  plugin version : 1.0.0.0 e4484d15 built 2026-10-01 12:19:09
+18:57:07  t+100s  LOG 18:56:52.272  +0000.021s  open document  : none, the document is clear
+18:57:07  t+100s  SAMPLE processor 85.109 s, 2.234 s since the last pass, the log 2185 bytes
+18:57:07  t+100s  WINDOW: class HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724], caption "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]", owner 6426886, class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Untitled - Autodesk Navisworks Manage 2025", visible True, enabled False, process the adopted one
+18:57:22  t+115s  LOG RUN SETTINGS
+18:57:22  t+115s  the tool's log shows a run has started, so from here only its RESULT block ends the run through WM_CLOSE
+18:57:22  t+115s  LOG 18:57:09.555  +0017.303s  groups built      : 1
+18:57:22  t+115s  LOG 18:57:09.555  +0017.304s  grouping         : One file per building
+18:57:22  t+115s  LOG GROUPS
+18:57:22  t+115s  LOG 18:57:09.570  +0017.319s  run       1A02MM      4 files  1104-PAR-1A02MM-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]  First run
+18:57:22  t+115s  LOG 18:57:09.581  +0017.330s  RUN      started, 1 group
+18:57:22  t+115s  LOG 18:57:09.616  +0017.365s  RUN      the Clash step picked %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+18:57:22  t+115s  LOG 18:57:09.617  +0017.366s  RUN      it holds 61 sets and 1830 tests
+18:57:22  t+115s  LOG 18:57:09.619  +0017.368s  RUN      workbooks go in %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\Clash Report\C02
+18:57:22  t+115s  LOG 18:57:09.619  +0017.368s  RUN      the clash XML is off
+18:57:22  t+115s  LOG 18:57:09.674  +0017.422s  GROUP    started  1A02MM  4 files
+18:57:22  t+115s  SAMPLE processor 124.297 s, 39.188 s since the last pass, the log 35407 bytes
+18:57:24  t+116s  MAIN: class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025", owner 10097196, class WindowsForms10.Window.0.app.0.27a2811_r7_ad1, caption "", visible False, enabled True, process the adopted one
+18:57:24  t+116s  DRIVER exited 0, PRESSED, its last line: 18:57:10.571  DRIVER EXIT 0 PRESSED: Run, and OK on the confirm, whose texts name no path outside the loop folder. The confirm read gone after OK
+18:57:37  t+130s  SAMPLE processor 158.688 s, 34.391 s since the last pass, the log 35407 bytes
+18:57:52  t+145s  SAMPLE processor 197.844 s, 39.156 s since the last pass, the log 35407 bytes
+18:57:52  t+145s  SESSION LOCK unlocked
+18:57:52  t+145s  HEARTBEAT the log 35407 bytes, its last line "18:57:19.458  +0027.206s           every further line of this kind is counted and not written out. The machine readable ", processor 197.844 s, the log still for 30 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 18:57:33.015  t+137.9s  new process AdskLicensingInstHelper pid 46880, parent 27400 GenuineService.exe, started 18:57:24.418, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+18:58:07  t+160s  SAMPLE processor 245.547 s, 47.703 s since the last pass, the log 35407 bytes
+18:58:22  t+175s  SAMPLE processor 308.672 s, 63.125 s since the last pass, the log 35407 bytes
+18:58:37  t+190s  SAMPLE processor 373.406 s, 64.734 s since the last pass, the log 35407 bytes
+18:58:52  t+205s  SAMPLE processor 457.484 s, 84.078 s since the last pass, the log 35407 bytes
+18:58:52  t+205s  SESSION LOCK unlocked
+18:58:52  t+205s  HEARTBEAT the log 35407 bytes, growth 0 bytes, its last line "18:57:19.458  +0027.206s           every further line of this kind is counted and not written out. The machine readable ", processor 457.484 s, growth 259.641 s, the log still for 90 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 18:58:46.977  t+211.9s  new process AdskLicensingInstHelper pid 49380, parent 27400 GenuineService.exe, started 18:58:39.610, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+18:59:07  t+220s  SAMPLE processor 534.891 s, 77.406 s since the last pass, the log 35407 bytes
+18:59:22  t+235s  SAMPLE processor 621.500 s, 86.609 s since the last pass, the log 35407 bytes
+18:59:38  t+250s  SAMPLE processor 727.906 s, 106.406 s since the last pass, the log 35407 bytes
+18:59:53  t+265s  SAMPLE processor 822.016 s, 94.109 s since the last pass, the log 35407 bytes
+18:59:53  t+265s  SESSION LOCK unlocked
+18:59:53  t+265s  HEARTBEAT the log 35407 bytes, growth 0 bytes, its last line "18:57:19.458  +0027.206s           every further line of this kind is counted and not written out. The machine readable ", processor 822.016 s, growth 364.531 s, the log still for 151 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 18:58:46.977  t+211.9s  new process AdskLicensingInstHelper pid 49380, parent 27400 GenuineService.exe, started 18:58:39.610, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+19:00:08  t+280s  SAMPLE processor 884.234 s, 62.219 s since the last pass, the log 35407 bytes
+19:00:23  t+295s  SAMPLE processor 925.938 s, 41.703 s since the last pass, the log 36248 bytes
+19:00:38  t+310s  SAMPLE processor 979.641 s, 53.703 s since the last pass, the log 36589 bytes
+19:00:53  t+326s  SAMPLE processor 997.469 s, 17.828 s since the last pass, the log 36780 bytes
+19:00:53  t+326s  SESSION LOCK unlocked
+19:00:53  t+326s  HEARTBEAT the log 36780 bytes, growth 1373 bytes, its last line "19:00:49.766  +0237.514s  CLASH    100 of 528 tests, 99 run, 1302 skipped, 2669 clashes so far", processor 997.469 s, growth 175.453 s, the log still for 0 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 19:00:37.086  t+322.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:01:08  t+341s  SAMPLE processor 1026.500 s, 29.031 s since the last pass, the log 36974 bytes
+19:01:23  t+356s  SAMPLE processor 1039.734 s, 13.234 s since the last pass, the log 37168 bytes
+19:01:38  t+371s  SAMPLE processor 1060.703 s, 20.969 s since the last pass, the log 37265 bytes
+19:01:53  t+386s  SAMPLE processor 1093.859 s, 33.156 s since the last pass, the log 37459 bytes
+19:01:53  t+386s  SESSION LOCK unlocked
+19:01:53  t+386s  HEARTBEAT the log 37459 bytes, growth 679 bytes, its last line "19:01:49.285  +0297.033s  CLASH    275 of 528 tests, 274 run, 1302 skipped, 2782 clashes so far", processor 1093.859 s, growth 96.391 s, the log still for 0 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 19:01:21.582  t+366.5s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:02:08  t+401s  SAMPLE processor 1111.156 s, 17.297 s since the last pass, the log 37653 bytes
+19:02:23  t+416s  SAMPLE processor 1158.656 s, 47.500 s since the last pass, the log 37750 bytes
+19:02:38  t+431s  SAMPLE processor 1171.469 s, 12.813 s since the last pass, the log 37944 bytes
+19:02:53  t+446s  SAMPLE processor 1185.922 s, 14.453 s since the last pass, the log 38138 bytes
+19:02:53  t+446s  SESSION LOCK unlocked
+19:02:53  t+446s  HEARTBEAT the log 38138 bytes, growth 679 bytes, its last line "19:02:48.907  +0356.653s  CLASH    450 of 528 tests, 449 run, 1302 skipped, 2923 clashes so far", processor 1185.922 s, growth 92.063 s, the log still for 0 s against 300, and the processor used 988.078 s in the last 300 s against 20, the watchdog's last line: 19:02:24.152  t+429.0s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:03:08  t+461s  SAMPLE processor 1200.359 s, 14.438 s since the last pass, the log 38332 bytes
+19:03:23  t+476s  SAMPLE processor 1214.875 s, 14.516 s since the last pass, the log 48550 bytes
+19:03:38  t+491s  SAMPLE processor 1229.750 s, 14.875 s since the last pass, the log 48550 bytes
+19:03:53  t+506s  SAMPLE processor 1244.500 s, 14.750 s since the last pass, the log 48550 bytes
+19:03:54  t+506s  SESSION LOCK unlocked
+19:03:54  t+506s  HEARTBEAT the log 48550 bytes, growth 10412 bytes, its last line "19:03:13.134  +0380.880s  Id supplied 5878 item ids of 5878, written as "Element ID"", processor 1244.500 s, growth 58.578 s, the log still for 30 s against 300, and the processor used 787.016 s in the last 300 s against 20, the watchdog's last line: 19:03:18.513  t+483.4s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:04:08  t+521s  SAMPLE processor 1259.250 s, 14.750 s since the last pass, the log 49182 bytes
+19:04:24  t+536s  SAMPLE processor 1274.750 s, 15.500 s since the last pass, the log 49182 bytes
+19:04:39  t+552s  SAMPLE processor 1290.203 s, 15.453 s since the last pass, the log 49182 bytes
+19:04:54  t+567s  SAMPLE processor 1310.766 s, 20.563 s since the last pass, the log 49406 bytes
+19:04:54  t+567s  SESSION LOCK unlocked
+19:04:54  t+567s  HEARTBEAT the log 49406 bytes, growth 856 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1310.766 s, growth 66.266 s, the log still for 0 s against 300, and the processor used 488.750 s in the last 300 s against 20, the watchdog's last line: 19:04:47.871  t+572.7s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:05:09  t+582s  SAMPLE processor 1331.313 s, 20.547 s since the last pass, the log 49406 bytes
+19:05:24  t+597s  SAMPLE processor 1349.797 s, 18.484 s since the last pass, the log 49406 bytes
+19:05:39  t+612s  SAMPLE processor 1367.688 s, 17.891 s since the last pass, the log 49406 bytes
+19:05:54  t+627s  SAMPLE processor 1385.750 s, 18.063 s since the last pass, the log 49406 bytes
+19:05:56  t+628s  SESSION LOCK unlocked
+19:05:56  t+628s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1385.750 s, growth 74.984 s, the log still for 61 s against 300, and the processor used 388.281 s in the last 300 s against 20, the watchdog's last line: 19:05:56.140  t+641.0s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:06:09  t+642s  SAMPLE processor 1403.422 s, 17.672 s since the last pass, the log 49406 bytes
+19:06:25  t+657s  SAMPLE processor 1420.875 s, 17.453 s since the last pass, the log 49406 bytes
+19:06:40  t+672s  SAMPLE processor 1437.703 s, 16.828 s since the last pass, the log 49406 bytes
+19:06:55  t+688s  SAMPLE processor 1454.469 s, 16.766 s since the last pass, the log 49406 bytes
+19:06:56  t+688s  SESSION LOCK unlocked
+19:06:56  t+688s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1454.469 s, growth 68.719 s, the log still for 121 s against 300, and the processor used 360.609 s in the last 300 s against 20, the watchdog's last line: 19:06:54.658  t+699.5s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:07:10  t+703s  SAMPLE processor 1471.438 s, 16.969 s since the last pass, the log 49406 bytes
+19:07:25  t+718s  SAMPLE processor 1488.719 s, 17.281 s since the last pass, the log 49406 bytes
+19:07:40  t+733s  SAMPLE processor 1505.625 s, 16.906 s since the last pass, the log 49406 bytes
+19:07:55  t+748s  SAMPLE processor 1521.859 s, 16.234 s since the last pass, the log 49406 bytes
+19:07:55  t+748s  SESSION LOCK unlocked
+19:07:55  t+748s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1521.859 s, growth 67.391 s, the log still for 181 s against 300, and the processor used 335.938 s in the last 300 s against 20, the watchdog's last line: 19:07:47.617  t+752.5s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:08:10  t+763s  SAMPLE processor 1538.281 s, 16.422 s since the last pass, the log 49406 bytes
+19:08:25  t+778s  SAMPLE processor 1555.078 s, 16.797 s since the last pass, the log 49406 bytes
+19:08:41  t+793s  SAMPLE processor 1571.609 s, 16.531 s since the last pass, the log 49406 bytes
+19:08:56  t+808s  SAMPLE processor 1588.000 s, 16.391 s since the last pass, the log 49406 bytes
+19:08:56  t+809s  SESSION LOCK unlocked
+19:08:56  t+809s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1588.000 s, growth 66.141 s, the log still for 242 s against 300, and the processor used 343.500 s in the last 300 s against 20, the watchdog's last line: 19:08:56.617  t+821.5s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:09:11  t+824s  SAMPLE processor 1604.375 s, 16.375 s since the last pass, the log 49406 bytes
+19:09:26  t+839s  SAMPLE processor 1620.547 s, 16.172 s since the last pass, the log 49406 bytes
+19:09:41  t+854s  SAMPLE processor 1637.031 s, 16.484 s since the last pass, the log 49406 bytes
+19:09:56  t+869s  SAMPLE processor 1653.672 s, 16.641 s since the last pass, the log 49406 bytes
+19:09:58  t+871s  SESSION LOCK unlocked
+19:09:58  t+871s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1653.672 s, growth 65.672 s, the log still for 302 s against 300, and the processor used 342.906 s in the last 300 s against 20, the watchdog's last line: 19:09:57.242  t+882.1s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:10:11  t+884s  SAMPLE processor 1671.156 s, 17.484 s since the last pass, the log 49406 bytes
+19:10:26  t+899s  SAMPLE processor 1688.250 s, 17.094 s since the last pass, the log 49406 bytes
+19:10:41  t+914s  SAMPLE processor 1705.766 s, 17.516 s since the last pass, the log 49406 bytes
+19:10:56  t+929s  SAMPLE processor 1723.484 s, 17.719 s since the last pass, the log 49406 bytes
+19:10:58  t+931s  SESSION LOCK unlocked
+19:10:58  t+931s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1723.484 s, growth 69.813 s, the log still for 363 s against 300, and the processor used 337.734 s in the last 300 s against 20, the watchdog's last line: 19:10:55.197  t+940.1s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:11:11  t+944s  SAMPLE processor 1740.641 s, 17.156 s since the last pass, the log 49406 bytes
+19:11:26  t+959s  SAMPLE processor 1757.766 s, 17.125 s since the last pass, the log 49406 bytes
+19:11:41  t+974s  SAMPLE processor 1775.219 s, 17.453 s since the last pass, the log 49406 bytes
+19:11:56  t+989s  SAMPLE processor 1792.313 s, 17.094 s since the last pass, the log 49406 bytes
+19:11:58  t+991s  SESSION LOCK unlocked
+19:11:58  t+991s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1792.313 s, growth 68.828 s, the log still for 423 s against 300, and the processor used 337.844 s in the last 300 s against 20, the watchdog's last line: 19:11:58.065  t+1002.9s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:12:12  t+1004s  SAMPLE processor 1809.328 s, 17.016 s since the last pass, the log 49406 bytes
+19:12:27  t+1020s  SAMPLE processor 1826.781 s, 17.453 s since the last pass, the log 49406 bytes
+19:12:42  t+1035s  SAMPLE processor 1844.297 s, 17.516 s since the last pass, the log 49406 bytes
+19:12:57  t+1050s  SAMPLE processor 1861.703 s, 17.406 s since the last pass, the log 49406 bytes
+19:12:58  t+1051s  SESSION LOCK unlocked
+19:12:58  t+1051s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1861.703 s, growth 69.391 s, the log still for 483 s against 300, and the processor used 339.844 s in the last 300 s against 20, the watchdog's last line: 19:12:57.989  t+1062.9s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:13:12  t+1065s  SAMPLE processor 1878.406 s, 16.703 s since the last pass, the log 49406 bytes
+19:13:27  t+1080s  SAMPLE processor 1895.594 s, 17.188 s since the last pass, the log 49406 bytes
+19:13:42  t+1095s  SAMPLE processor 1912.547 s, 16.953 s since the last pass, the log 49406 bytes
+19:13:57  t+1110s  SAMPLE processor 1929.094 s, 16.547 s since the last pass, the log 49406 bytes
+19:13:59  t+1111s  SESSION LOCK unlocked
+19:13:59  t+1111s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1929.094 s, growth 67.391 s, the log still for 543 s against 300, and the processor used 341.094 s in the last 300 s against 20, the watchdog's last line: 19:13:59.104  t+1124.0s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:14:12  t+1125s  SAMPLE processor 1946.672 s, 17.578 s since the last pass, the log 49406 bytes
+19:14:27  t+1140s  SAMPLE processor 1963.875 s, 17.203 s since the last pass, the log 49406 bytes
+19:14:43  t+1155s  SAMPLE processor 1981.094 s, 17.219 s since the last pass, the log 49406 bytes
+19:14:58  t+1170s  SAMPLE processor 1998.156 s, 17.063 s since the last pass, the log 49406 bytes
+19:14:59  t+1172s  SESSION LOCK unlocked
+19:14:59  t+1172s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 1998.156 s, growth 69.063 s, the log still for 604 s against 300, and the processor used 344.484 s in the last 300 s against 20, the watchdog's last line: 19:14:59.765  t+1184.6s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:15:13  t+1186s  SAMPLE processor 2015.078 s, 16.922 s since the last pass, the log 49406 bytes
+19:15:28  t+1201s  SAMPLE processor 2031.984 s, 16.906 s since the last pass, the log 49406 bytes
+19:15:43  t+1216s  SAMPLE processor 2049.375 s, 17.391 s since the last pass, the log 49406 bytes
+19:15:58  t+1231s  SAMPLE processor 2065.953 s, 16.578 s since the last pass, the log 49406 bytes
+19:16:00  t+1232s  SESSION LOCK unlocked
+19:16:00  t+1233s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2065.953 s, growth 67.797 s, the log still for 664 s against 300, and the processor used 342.469 s in the last 300 s against 20, the watchdog's last line: 19:15:59.671  t+1244.5s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:16:13  t+1246s  SAMPLE processor 2083.031 s, 17.078 s since the last pass, the log 49406 bytes
+19:16:28  t+1261s  SAMPLE processor 2099.922 s, 16.891 s since the last pass, the log 49406 bytes
+19:16:43  t+1276s  SAMPLE processor 2116.828 s, 16.906 s since the last pass, the log 49406 bytes
+19:16:58  t+1291s  SAMPLE processor 2133.578 s, 16.750 s since the last pass, the log 49406 bytes
+19:17:00  t+1293s  SESSION LOCK unlocked
+19:17:00  t+1293s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2133.578 s, growth 67.625 s, the log still for 725 s against 300, and the processor used 341.266 s in the last 300 s against 20, the watchdog's last line: 19:17:00.794  t+1305.7s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:17:13  t+1306s  SAMPLE processor 2150.453 s, 16.875 s since the last pass, the log 49406 bytes
+19:17:29  t+1321s  SAMPLE processor 2167.500 s, 17.047 s since the last pass, the log 49406 bytes
+19:17:44  t+1336s  SAMPLE processor 2184.609 s, 17.109 s since the last pass, the log 49406 bytes
+19:17:59  t+1352s  SAMPLE processor 2200.969 s, 16.359 s since the last pass, the log 49406 bytes
+19:18:00  t+1353s  SESSION LOCK unlocked
+19:18:00  t+1353s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2200.969 s, growth 67.391 s, the log still for 785 s against 300, and the processor used 339.266 s in the last 300 s against 20, the watchdog's last line: 19:18:00.061  t+1364.9s  Roamer 49016 visible top level windows: [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+19:18:14  t+1367s  SAMPLE processor 2217.469 s, 16.500 s since the last pass, the log 49406 bytes
+19:18:29  t+1382s  SAMPLE processor 2234.484 s, 17.016 s since the last pass, the log 49406 bytes
+19:18:44  t+1397s  SAMPLE processor 2251.391 s, 16.906 s since the last pass, the log 49406 bytes
+19:18:59  t+1412s  SAMPLE processor 2268.219 s, 16.828 s since the last pass, the log 49406 bytes
+19:19:01  t+1414s  SESSION LOCK unlocked
+19:19:01  t+1414s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2268.219 s, growth 67.250 s, the log still for 845 s against 300, and the processor used 339.125 s in the last 300 s against 20, the watchdog's last line: 19:19:00.441  t+1425.3s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:19:14  t+1427s  SAMPLE processor 2284.813 s, 16.594 s since the last pass, the log 49406 bytes
+19:19:29  t+1442s  SAMPLE processor 2301.516 s, 16.703 s since the last pass, the log 49406 bytes
+19:19:45  t+1457s  SAMPLE processor 2318.250 s, 16.734 s since the last pass, the log 49406 bytes
+19:20:00  t+1473s  SAMPLE processor 2335.063 s, 16.813 s since the last pass, the log 49406 bytes
+19:20:01  t+1474s  SESSION LOCK unlocked
+19:20:01  t+1474s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2335.063 s, growth 66.844 s, the log still for 906 s against 300, and the processor used 336.906 s in the last 300 s against 20, the watchdog's last line: 19:19:51.602  t+1476.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:20:15  t+1488s  SAMPLE processor 2352.094 s, 17.031 s since the last pass, the log 49406 bytes
+19:20:30  t+1503s  SAMPLE processor 2368.313 s, 16.219 s since the last pass, the log 49406 bytes
+19:20:45  t+1518s  SAMPLE processor 2384.984 s, 16.672 s since the last pass, the log 49406 bytes
+19:21:00  t+1533s  SAMPLE processor 2401.328 s, 16.344 s since the last pass, the log 49406 bytes
+19:21:01  t+1534s  SESSION LOCK unlocked
+19:21:01  t+1534s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2401.328 s, growth 66.266 s, the log still for 966 s against 300, and the processor used 335.375 s in the last 300 s against 20, the watchdog's last line: 19:21:01.077  t+1546.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:21:15  t+1548s  SAMPLE processor 2417.781 s, 16.453 s since the last pass, the log 49406 bytes
+19:21:30  t+1563s  SAMPLE processor 2434.766 s, 16.984 s since the last pass, the log 49406 bytes
+19:21:45  t+1578s  SAMPLE processor 2451.375 s, 16.609 s since the last pass, the log 49406 bytes
+19:22:00  t+1593s  SAMPLE processor 2467.844 s, 16.469 s since the last pass, the log 49406 bytes
+19:22:02  t+1595s  SESSION LOCK unlocked
+19:22:02  t+1595s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2467.844 s, growth 66.516 s, the log still for 1027 s against 300, and the processor used 334.266 s in the last 300 s against 20, the watchdog's last line: 19:22:01.312  t+1606.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" and 2 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:22:16  t+1608s  SAMPLE processor 2484.469 s, 16.625 s since the last pass, the log 49406 bytes
+19:22:31  t+1624s  SAMPLE processor 2500.906 s, 16.438 s since the last pass, the log 49406 bytes
+19:22:46  t+1639s  SAMPLE processor 2517.219 s, 16.313 s since the last pass, the log 49406 bytes
+19:23:01  t+1654s  SAMPLE processor 2533.500 s, 16.281 s since the last pass, the log 49406 bytes
+19:23:02  t+1655s  SESSION LOCK unlocked
+19:23:02  t+1655s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2533.500 s, growth 65.656 s, the log still for 1087 s against 300, and the processor used 332.531 s in the last 300 s against 20, the watchdog's last line: 19:23:01.011  t+1665.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:23:16  t+1669s  SAMPLE processor 2550.016 s, 16.516 s since the last pass, the log 49406 bytes
+19:23:31  t+1684s  SAMPLE processor 2566.297 s, 16.281 s since the last pass, the log 49406 bytes
+19:23:46  t+1699s  SAMPLE processor 2582.609 s, 16.313 s since the last pass, the log 49406 bytes
+19:24:01  t+1714s  SAMPLE processor 2599.125 s, 16.516 s since the last pass, the log 49406 bytes
+19:24:03  t+1716s  SESSION LOCK unlocked
+19:24:03  t+1716s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2599.125 s, growth 65.625 s, the log still for 1147 s against 300, and the processor used 330.906 s in the last 300 s against 20, the watchdog's last line: 19:24:03.549  t+1728.4s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:24:16  t+1729s  SAMPLE processor 2615.969 s, 16.844 s since the last pass, the log 49406 bytes
+19:24:31  t+1744s  SAMPLE processor 2632.266 s, 16.297 s since the last pass, the log 49406 bytes
+19:24:46  t+1759s  SAMPLE processor 2648.813 s, 16.547 s since the last pass, the log 49406 bytes
+19:25:02  t+1774s  SAMPLE processor 2665.359 s, 16.547 s since the last pass, the log 49406 bytes
+19:25:03  t+1776s  SESSION LOCK unlocked
+19:25:03  t+1776s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2665.359 s, growth 66.234 s, the log still for 1208 s against 300, and the processor used 330.297 s in the last 300 s against 20, the watchdog's last line: 19:25:03.024  t+1787.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:25:17  t+1790s  SAMPLE processor 2681.625 s, 16.266 s since the last pass, the log 49406 bytes
+19:25:32  t+1805s  SAMPLE processor 2698.188 s, 16.563 s since the last pass, the log 49406 bytes
+19:25:47  t+1820s  SAMPLE processor 2714.750 s, 16.563 s since the last pass, the log 49406 bytes
+19:26:02  t+1835s  SAMPLE processor 2730.984 s, 16.234 s since the last pass, the log 49406 bytes
+19:26:04  t+1837s  SESSION LOCK unlocked
+19:26:04  t+1837s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2730.984 s, growth 65.625 s, the log still for 1268 s against 300, and the processor used 329.656 s in the last 300 s against 20, the watchdog's last line: 19:26:03.551  t+1848.4s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" and 6 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:26:17  t+1850s  SAMPLE processor 2747.375 s, 16.391 s since the last pass, the log 49406 bytes
+19:26:32  t+1865s  SAMPLE processor 2763.750 s, 16.375 s since the last pass, the log 49406 bytes
+19:26:47  t+1880s  SAMPLE processor 2780.344 s, 16.594 s since the last pass, the log 49406 bytes
+19:27:02  t+1895s  SAMPLE processor 2796.344 s, 16.000 s since the last pass, the log 49406 bytes
+19:27:04  t+1897s  SESSION LOCK unlocked
+19:27:04  t+1897s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2796.344 s, growth 65.359 s, the log still for 1329 s against 300, and the processor used 328.500 s in the last 300 s against 20, the watchdog's last line: 19:27:03.568  t+1908.4s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" and 11 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:27:18  t+1910s  SAMPLE processor 2813.047 s, 16.703 s since the last pass, the log 49406 bytes
+19:27:33  t+1926s  SAMPLE processor 2829.563 s, 16.516 s since the last pass, the log 49406 bytes
+19:27:48  t+1941s  SAMPLE processor 2845.734 s, 16.172 s since the last pass, the log 49406 bytes
+19:28:03  t+1956s  SAMPLE processor 2861.703 s, 15.969 s since the last pass, the log 49406 bytes
+19:28:05  t+1957s  SESSION LOCK unlocked
+19:28:05  t+1957s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2861.703 s, growth 65.359 s, the log still for 1389 s against 300, and the processor used 328.203 s in the last 300 s against 20, the watchdog's last line: 19:28:02.089  t+1967.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:28:18  t+1971s  SAMPLE processor 2878.031 s, 16.328 s since the last pass, the log 49406 bytes
+19:28:33  t+1986s  SAMPLE processor 2894.141 s, 16.109 s since the last pass, the log 49406 bytes
+19:28:48  t+2001s  SAMPLE processor 2910.859 s, 16.719 s since the last pass, the log 49406 bytes
+19:29:03  t+2016s  SAMPLE processor 2927.141 s, 16.281 s since the last pass, the log 49406 bytes
+19:29:04  t+2016s  SESSION LOCK unlocked
+19:29:04  t+2016s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2927.141 s, growth 65.438 s, the log still for 1449 s against 300, and the processor used 328.016 s in the last 300 s against 20, the watchdog's last line: 19:29:04.005  t+2028.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:29:18  t+2031s  SAMPLE processor 2943.453 s, 16.313 s since the last pass, the log 49406 bytes
+19:29:34  t+2046s  SAMPLE processor 2959.547 s, 16.094 s since the last pass, the log 49406 bytes
+19:29:49  t+2061s  SAMPLE processor 2975.938 s, 16.391 s since the last pass, the log 49406 bytes
+19:30:04  t+2076s  SAMPLE processor 2992.219 s, 16.281 s since the last pass, the log 49406 bytes
+19:30:05  t+2078s  SESSION LOCK unlocked
+19:30:05  t+2078s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 2992.219 s, growth 65.078 s, the log still for 1510 s against 300, and the processor used 326.859 s in the last 300 s against 20, the watchdog's last line: 19:30:02.756  t+2087.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:30:19  t+2092s  SAMPLE processor 3008.281 s, 16.063 s since the last pass, the log 49406 bytes
+19:30:34  t+2107s  SAMPLE processor 3024.906 s, 16.625 s since the last pass, the log 49406 bytes
+19:30:49  t+2122s  SAMPLE processor 3040.938 s, 16.031 s since the last pass, the log 49406 bytes
+19:31:04  t+2137s  SAMPLE processor 3057.219 s, 16.281 s since the last pass, the log 49406 bytes
+19:31:05  t+2138s  SESSION LOCK unlocked
+19:31:05  t+2138s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3057.219 s, growth 65.000 s, the log still for 1570 s against 300, and the processor used 326.234 s in the last 300 s against 20, the watchdog's last line: 19:31:05.514  t+2150.4s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:31:19  t+2152s  SAMPLE processor 3073.281 s, 16.063 s since the last pass, the log 49406 bytes
+19:31:34  t+2167s  SAMPLE processor 3089.422 s, 16.141 s since the last pass, the log 49406 bytes
+19:31:49  t+2182s  SAMPLE processor 3105.625 s, 16.203 s since the last pass, the log 49406 bytes
+19:32:04  t+2197s  SAMPLE processor 3121.781 s, 16.156 s since the last pass, the log 49406 bytes
+19:32:06  t+2199s  SESSION LOCK unlocked
+19:32:06  t+2199s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3121.781 s, growth 64.563 s, the log still for 1631 s against 300, and the processor used 325.438 s in the last 300 s against 20, the watchdog's last line: 19:32:04.793  t+2209.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:32:19  t+2212s  SAMPLE processor 3138.188 s, 16.406 s since the last pass, the log 49406 bytes
+19:32:34  t+2227s  SAMPLE processor 3154.422 s, 16.234 s since the last pass, the log 49406 bytes
+19:32:49  t+2242s  SAMPLE processor 3170.719 s, 16.297 s since the last pass, the log 49406 bytes
+19:33:05  t+2257s  SAMPLE processor 3186.797 s, 16.078 s since the last pass, the log 49406 bytes
+19:33:06  t+2259s  SESSION LOCK unlocked
+19:33:06  t+2259s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3186.797 s, growth 65.016 s, the log still for 1691 s against 300, and the processor used 325.094 s in the last 300 s against 20, the watchdog's last line: 19:33:05.691  t+2270.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:33:20  t+2272s  SAMPLE processor 3202.813 s, 16.016 s since the last pass, the log 49406 bytes
+19:33:35  t+2287s  SAMPLE processor 3218.797 s, 15.984 s since the last pass, the log 49406 bytes
+19:33:50  t+2303s  SAMPLE processor 3235.063 s, 16.266 s since the last pass, the log 49406 bytes
+19:34:05  t+2318s  SAMPLE processor 3251.281 s, 16.219 s since the last pass, the log 49406 bytes
+19:34:06  t+2319s  SESSION LOCK unlocked
+19:34:06  t+2319s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3251.281 s, growth 64.484 s, the log still for 1751 s against 300, and the processor used 324.141 s in the last 300 s against 20, the watchdog's last line: 19:34:06.010  t+2330.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:34:20  t+2333s  SAMPLE processor 3267.797 s, 16.516 s since the last pass, the log 49406 bytes
+19:34:35  t+2348s  SAMPLE processor 3283.672 s, 15.875 s since the last pass, the log 49406 bytes
+19:34:50  t+2363s  SAMPLE processor 3299.859 s, 16.188 s since the last pass, the log 49406 bytes
+19:35:05  t+2378s  SAMPLE processor 3315.984 s, 16.125 s since the last pass, the log 49406 bytes
+19:35:07  t+2380s  SESSION LOCK unlocked
+19:35:07  t+2380s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3315.984 s, growth 64.703 s, the log still for 1811 s against 300, and the processor used 323.766 s in the last 300 s against 20, the watchdog's last line: 19:35:06.086  t+2391.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:35:20  t+2393s  SAMPLE processor 3332.359 s, 16.375 s since the last pass, the log 49406 bytes
+19:35:35  t+2408s  SAMPLE processor 3348.375 s, 16.016 s since the last pass, the log 49406 bytes
+19:35:51  t+2423s  SAMPLE processor 3364.688 s, 16.313 s since the last pass, the log 49406 bytes
+19:36:06  t+2438s  SAMPLE processor 3381.000 s, 16.313 s since the last pass, the log 49406 bytes
+19:36:07  t+2440s  SESSION LOCK unlocked
+19:36:07  t+2440s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3381.000 s, growth 65.016 s, the log still for 1872 s against 300, and the processor used 323.781 s in the last 300 s against 20, the watchdog's last line: 19:36:07.678  t+2452.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:36:21  t+2454s  SAMPLE processor 3397.563 s, 16.563 s since the last pass, the log 49406 bytes
+19:36:36  t+2469s  SAMPLE processor 3413.453 s, 15.891 s since the last pass, the log 49406 bytes
+19:36:51  t+2484s  SAMPLE processor 3429.250 s, 15.797 s since the last pass, the log 49406 bytes
+19:37:06  t+2499s  SAMPLE processor 3445.281 s, 16.031 s since the last pass, the log 49406 bytes
+19:37:08  t+2500s  SESSION LOCK unlocked
+19:37:08  t+2500s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3445.281 s, growth 64.281 s, the log still for 1932 s against 300, and the processor used 323.500 s in the last 300 s against 20, the watchdog's last line: 19:37:01.693  t+2506.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:37:21  t+2514s  SAMPLE processor 3461.344 s, 16.063 s since the last pass, the log 49406 bytes
+19:37:36  t+2529s  SAMPLE processor 3477.438 s, 16.094 s since the last pass, the log 49406 bytes
+19:37:51  t+2544s  SAMPLE processor 3493.719 s, 16.281 s since the last pass, the log 49406 bytes
+19:38:06  t+2559s  SAMPLE processor 3509.828 s, 16.109 s since the last pass, the log 49406 bytes
+19:38:08  t+2561s  SESSION LOCK unlocked
+19:38:08  t+2561s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3509.828 s, growth 64.547 s, the log still for 1993 s against 300, and the processor used 323.031 s in the last 300 s against 20, the watchdog's last line: 19:38:07.516  t+2572.4s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" and 1 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:38:22  t+2574s  SAMPLE processor 3525.984 s, 16.156 s since the last pass, the log 49406 bytes
+19:38:37  t+2590s  SAMPLE processor 3542.234 s, 16.250 s since the last pass, the log 49406 bytes
+19:38:52  t+2605s  SAMPLE processor 3558.328 s, 16.094 s since the last pass, the log 49406 bytes
+19:39:07  t+2620s  SAMPLE processor 3574.453 s, 16.125 s since the last pass, the log 49406 bytes
+19:39:08  t+2621s  SESSION LOCK unlocked
+19:39:08  t+2621s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3574.453 s, growth 64.625 s, the log still for 2053 s against 300, and the processor used 323.172 s in the last 300 s against 20, the watchdog's last line: 19:39:07.475  t+2632.4s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:39:22  t+2635s  SAMPLE processor 3590.781 s, 16.328 s since the last pass, the log 49406 bytes
+19:39:37  t+2650s  SAMPLE processor 3606.891 s, 16.109 s since the last pass, the log 49406 bytes
+19:39:52  t+2665s  SAMPLE processor 3623.203 s, 16.313 s since the last pass, the log 49406 bytes
+19:40:07  t+2680s  SAMPLE processor 3639.297 s, 16.094 s since the last pass, the log 49406 bytes
+19:40:09  t+2682s  SESSION LOCK unlocked
+19:40:09  t+2682s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3639.297 s, growth 64.844 s, the log still for 2113 s against 300, and the processor used 323.313 s in the last 300 s against 20, the watchdog's last line: 19:40:09.630  t+2694.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:40:22  t+2695s  SAMPLE processor 3655.625 s, 16.328 s since the last pass, the log 49406 bytes
+19:40:37  t+2710s  SAMPLE processor 3671.672 s, 16.047 s since the last pass, the log 49406 bytes
+19:40:52  t+2725s  SAMPLE processor 3687.766 s, 16.094 s since the last pass, the log 49406 bytes
+19:41:07  t+2740s  SAMPLE processor 3703.828 s, 16.063 s since the last pass, the log 49406 bytes
+19:41:09  t+2742s  SESSION LOCK unlocked
+19:41:09  t+2742s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3703.828 s, growth 64.531 s, the log still for 2174 s against 300, and the processor used 322.828 s in the last 300 s against 20, the watchdog's last line: 19:41:09.292  t+2754.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:41:22  t+2755s  SAMPLE processor 3719.781 s, 15.953 s since the last pass, the log 49406 bytes
+19:41:37  t+2770s  SAMPLE processor 3735.828 s, 16.047 s since the last pass, the log 49406 bytes
+19:41:53  t+2786s  SAMPLE processor 3752.188 s, 16.359 s since the last pass, the log 49406 bytes
+19:42:08  t+2801s  SAMPLE processor 3768.094 s, 15.906 s since the last pass, the log 49406 bytes
+19:42:10  t+2803s  SESSION LOCK unlocked
+19:42:10  t+2803s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3768.094 s, growth 64.266 s, the log still for 2234 s against 300, and the processor used 322.813 s in the last 300 s against 20, the watchdog's last line: 19:42:08.281  t+2813.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:42:23  t+2816s  SAMPLE processor 3784.313 s, 16.219 s since the last pass, the log 49406 bytes
+19:42:38  t+2831s  SAMPLE processor 3800.453 s, 16.141 s since the last pass, the log 49406 bytes
+19:42:53  t+2846s  SAMPLE processor 3816.453 s, 16.000 s since the last pass, the log 49406 bytes
+19:43:08  t+2861s  SAMPLE processor 3832.703 s, 16.250 s since the last pass, the log 49406 bytes
+19:43:09  t+2862s  SESSION LOCK unlocked
+19:43:09  t+2862s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3832.703 s, growth 64.609 s, the log still for 2294 s against 300, and the processor used 322.875 s in the last 300 s against 20, the watchdog's last line: 19:43:08.831  t+2873.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" and 7 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:43:23  t+2876s  SAMPLE processor 3848.734 s, 16.031 s since the last pass, the log 49406 bytes
+19:43:38  t+2891s  SAMPLE processor 3864.797 s, 16.063 s since the last pass, the log 49406 bytes
+19:43:53  t+2906s  SAMPLE processor 3880.906 s, 16.109 s since the last pass, the log 49406 bytes
+19:44:08  t+2921s  SAMPLE processor 3896.766 s, 15.859 s since the last pass, the log 49406 bytes
+19:44:10  t+2923s  SESSION LOCK unlocked
+19:44:10  t+2923s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3896.766 s, growth 64.063 s, the log still for 2354 s against 300, and the processor used 322.313 s in the last 300 s against 20, the watchdog's last line: 19:44:09.280  t+2934.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:44:23  t+2936s  SAMPLE processor 3912.938 s, 16.172 s since the last pass, the log 49406 bytes
+19:44:38  t+2951s  SAMPLE processor 3928.859 s, 15.922 s since the last pass, the log 49406 bytes
+19:44:53  t+2966s  SAMPLE processor 3944.531 s, 15.672 s since the last pass, the log 49406 bytes
+19:45:08  t+2981s  SAMPLE processor 3960.359 s, 15.828 s since the last pass, the log 49406 bytes
+19:45:10  t+2983s  SESSION LOCK unlocked
+19:45:10  t+2983s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 3960.359 s, growth 63.594 s, the log still for 2415 s against 300, and the processor used 321.063 s in the last 300 s against 20, the watchdog's last line: 19:45:08.060  t+2992.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:45:23  t+2996s  SAMPLE processor 3976.500 s, 16.141 s since the last pass, the log 49406 bytes
+19:45:39  t+3011s  SAMPLE processor 3992.500 s, 16.000 s since the last pass, the log 49406 bytes
+19:45:54  t+3026s  SAMPLE processor 4008.281 s, 15.781 s since the last pass, the log 49406 bytes
+19:46:09  t+3042s  SAMPLE processor 4024.500 s, 16.219 s since the last pass, the log 49406 bytes
+19:46:10  t+3043s  SESSION LOCK unlocked
+19:46:10  t+3043s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4024.500 s, growth 64.141 s, the log still for 2475 s against 300, and the processor used 320.672 s in the last 300 s against 20, the watchdog's last line: 19:46:08.386  t+3053.3s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:46:24  t+3057s  SAMPLE processor 4040.500 s, 16.000 s since the last pass, the log 49406 bytes
+19:46:39  t+3072s  SAMPLE processor 4056.281 s, 15.781 s since the last pass, the log 49406 bytes
+19:46:54  t+3087s  SAMPLE processor 4072.625 s, 16.344 s since the last pass, the log 49406 bytes
+19:47:09  t+3102s  SAMPLE processor 4088.234 s, 15.609 s since the last pass, the log 49406 bytes
+19:47:11  t+3104s  SESSION LOCK unlocked
+19:47:11  t+3104s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4088.234 s, growth 63.734 s, the log still for 2535 s against 300, and the processor used 320.141 s in the last 300 s against 20, the watchdog's last line: 19:47:11.290  t+3116.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:47:24  t+3117s  SAMPLE processor 4104.313 s, 16.078 s since the last pass, the log 49406 bytes
+19:47:39  t+3132s  SAMPLE processor 4120.297 s, 15.984 s since the last pass, the log 49406 bytes
+19:47:54  t+3147s  SAMPLE processor 4136.531 s, 16.234 s since the last pass, the log 49406 bytes
+19:48:10  t+3162s  SAMPLE processor 4152.578 s, 16.047 s since the last pass, the log 49406 bytes
+19:48:11  t+3164s  SESSION LOCK unlocked
+19:48:11  t+3164s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4152.578 s, growth 64.344 s, the log still for 2596 s against 300, and the processor used 319.875 s in the last 300 s against 20, the watchdog's last line: 19:48:09.828  t+3174.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:48:25  t+3178s  SAMPLE processor 4168.875 s, 16.297 s since the last pass, the log 49406 bytes
+19:48:40  t+3193s  SAMPLE processor 4184.656 s, 15.781 s since the last pass, the log 49406 bytes
+19:48:55  t+3208s  SAMPLE processor 4200.813 s, 16.156 s since the last pass, the log 49406 bytes
+19:49:10  t+3223s  SAMPLE processor 4216.969 s, 16.156 s since the last pass, the log 49406 bytes
+19:49:11  t+3224s  SESSION LOCK unlocked
+19:49:11  t+3224s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4216.969 s, growth 64.391 s, the log still for 2656 s against 300, and the processor used 320.203 s in the last 300 s against 20, the watchdog's last line: 19:49:11.729  t+3236.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:49:25  t+3238s  SAMPLE processor 4232.828 s, 15.859 s since the last pass, the log 49406 bytes
+19:49:40  t+3253s  SAMPLE processor 4249.031 s, 16.203 s since the last pass, the log 49406 bytes
+19:49:56  t+3268s  SAMPLE processor 4264.859 s, 15.828 s since the last pass, the log 49406 bytes
+19:50:11  t+3283s  SAMPLE processor 4280.547 s, 15.688 s since the last pass, the log 49406 bytes
+19:50:13  t+3285s  SESSION LOCK unlocked
+19:50:13  t+3285s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4280.547 s, growth 63.578 s, the log still for 2717 s against 300, and the processor used 320.188 s in the last 300 s against 20, the watchdog's last line: 19:50:12.060  t+3296.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" and 6 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:50:26  t+3298s  SAMPLE processor 4296.578 s, 16.031 s since the last pass, the log 49406 bytes
+19:50:41  t+3314s  SAMPLE processor 4312.250 s, 15.672 s since the last pass, the log 49406 bytes
+19:50:56  t+3329s  SAMPLE processor 4328.219 s, 15.969 s since the last pass, the log 49406 bytes
+19:51:11  t+3344s  SAMPLE processor 4344.172 s, 15.953 s since the last pass, the log 49406 bytes
+19:51:12  t+3345s  SESSION LOCK unlocked
+19:51:12  t+3345s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4344.172 s, growth 63.625 s, the log still for 2777 s against 300, and the processor used 319.672 s in the last 300 s against 20, the watchdog's last line: 19:51:09.712  t+3354.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:51:26  t+3359s  SAMPLE processor 4359.953 s, 15.781 s since the last pass, the log 49406 bytes
+19:51:41  t+3374s  SAMPLE processor 4375.891 s, 15.938 s since the last pass, the log 49406 bytes
+19:51:56  t+3389s  SAMPLE processor 4391.594 s, 15.703 s since the last pass, the log 49406 bytes
+19:52:11  t+3404s  SAMPLE processor 4407.484 s, 15.891 s since the last pass, the log 49406 bytes
+19:52:13  t+3405s  SESSION LOCK unlocked
+19:52:13  t+3405s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4407.484 s, growth 63.313 s, the log still for 2837 s against 300, and the processor used 319.250 s in the last 300 s against 20, the watchdog's last line: 19:52:11.775  t+3416.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:52:26  t+3419s  SAMPLE processor 4423.594 s, 16.109 s since the last pass, the log 49406 bytes
+19:52:41  t+3434s  SAMPLE processor 4439.297 s, 15.703 s since the last pass, the log 49406 bytes
+19:52:56  t+3449s  SAMPLE processor 4455.422 s, 16.125 s since the last pass, the log 49406 bytes
+19:53:11  t+3464s  SAMPLE processor 4471.922 s, 16.500 s since the last pass, the log 49406 bytes
+19:53:13  t+3466s  SESSION LOCK unlocked
+19:53:13  t+3466s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4471.922 s, growth 64.438 s, the log still for 2898 s against 300, and the processor used 319.344 s in the last 300 s against 20, the watchdog's last line: 19:53:12.826  t+3477.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:53:27  t+3479s  SAMPLE processor 4488.047 s, 16.125 s since the last pass, the log 49406 bytes
+19:53:42  t+3494s  SAMPLE processor 4503.688 s, 15.641 s since the last pass, the log 49406 bytes
+19:53:57  t+3510s  SAMPLE processor 4520.016 s, 16.328 s since the last pass, the log 49406 bytes
+19:54:12  t+3525s  SAMPLE processor 4536.141 s, 16.125 s since the last pass, the log 49406 bytes
+19:54:12  t+3525s  SESSION LOCK unlocked
+19:54:12  t+3525s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4536.141 s, growth 64.219 s, the log still for 2958 s against 300, and the processor used 319.172 s in the last 300 s against 20, the watchdog's last line: 19:54:12.877  t+3537.8s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:54:27  t+3540s  SAMPLE processor 4552.125 s, 15.984 s since the last pass, the log 49406 bytes
+19:54:42  t+3555s  SAMPLE processor 4567.984 s, 15.859 s since the last pass, the log 49406 bytes
+19:54:57  t+3570s  SAMPLE processor 4583.906 s, 15.922 s since the last pass, the log 49406 bytes
+19:55:12  t+3585s  SAMPLE processor 4599.891 s, 15.984 s since the last pass, the log 49406 bytes
+19:55:14  t+3587s  SESSION LOCK unlocked
+19:55:14  t+3587s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4599.891 s, growth 63.750 s, the log still for 3018 s against 300, and the processor used 319.344 s in the last 300 s against 20, the watchdog's last line: 19:55:13.811  t+3598.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:55:27  t+3600s  SAMPLE processor 4615.797 s, 15.906 s since the last pass, the log 49406 bytes
+19:55:42  t+3615s  SAMPLE processor 4631.750 s, 15.953 s since the last pass, the log 49406 bytes
+19:55:57  t+3630s  SAMPLE processor 4648.078 s, 16.328 s since the last pass, the log 49406 bytes
+19:56:12  t+3645s  SAMPLE processor 4663.641 s, 15.563 s since the last pass, the log 49406 bytes
+19:56:14  t+3647s  SESSION LOCK unlocked
+19:56:14  t+3647s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4663.641 s, growth 63.750 s, the log still for 3079 s against 300, and the processor used 319.469 s in the last 300 s against 20, the watchdog's last line: 19:56:14.075  t+3659.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 2 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:56:28  t+3660s  SAMPLE processor 4679.922 s, 16.281 s since the last pass, the log 49406 bytes
+19:56:43  t+3676s  SAMPLE processor 4695.734 s, 15.813 s since the last pass, the log 49406 bytes
+19:56:58  t+3691s  SAMPLE processor 4711.609 s, 15.875 s since the last pass, the log 49406 bytes
+19:57:13  t+3706s  SAMPLE processor 4727.156 s, 15.547 s since the last pass, the log 49406 bytes
+19:57:14  t+3707s  SESSION LOCK unlocked
+19:57:14  t+3707s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4727.156 s, growth 63.516 s, the log still for 3139 s against 300, and the processor used 319.672 s in the last 300 s against 20, the watchdog's last line: 19:57:13.313  t+3718.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:57:28  t+3721s  SAMPLE processor 4743.000 s, 15.844 s since the last pass, the log 49406 bytes
+19:57:43  t+3736s  SAMPLE processor 4758.516 s, 15.516 s since the last pass, the log 49406 bytes
+19:57:58  t+3751s  SAMPLE processor 4774.500 s, 15.984 s since the last pass, the log 49406 bytes
+19:58:13  t+3766s  SAMPLE processor 4790.203 s, 15.703 s since the last pass, the log 49406 bytes
+19:58:14  t+3767s  SESSION LOCK unlocked
+19:58:14  t+3767s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4790.203 s, growth 63.047 s, the log still for 3199 s against 300, and the processor used 318.281 s in the last 300 s against 20, the watchdog's last line: 19:58:12.958  t+3777.8s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:58:28  t+3781s  SAMPLE processor 4806.281 s, 16.078 s since the last pass, the log 49406 bytes
+19:58:43  t+3796s  SAMPLE processor 4822.094 s, 15.813 s since the last pass, the log 49406 bytes
+19:58:58  t+3811s  SAMPLE processor 4838.281 s, 16.188 s since the last pass, the log 49406 bytes
+19:59:13  t+3826s  SAMPLE processor 4854.141 s, 15.859 s since the last pass, the log 49406 bytes
+19:59:14  t+3827s  SESSION LOCK unlocked
+19:59:15  t+3827s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4854.141 s, growth 63.938 s, the log still for 3259 s against 300, and the processor used 318.000 s in the last 300 s against 20, the watchdog's last line: 19:59:14.986  t+3839.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+19:59:28  t+3841s  SAMPLE processor 4869.969 s, 15.828 s since the last pass, the log 49406 bytes
+19:59:43  t+3856s  SAMPLE processor 4885.781 s, 15.813 s since the last pass, the log 49406 bytes
+19:59:58  t+3871s  SAMPLE processor 4901.688 s, 15.906 s since the last pass, the log 49406 bytes
+20:00:14  t+3886s  SAMPLE processor 4917.359 s, 15.672 s since the last pass, the log 49406 bytes
+20:00:15  t+3888s  SESSION LOCK unlocked
+20:00:15  t+3888s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4917.359 s, growth 63.219 s, the log still for 3320 s against 300, and the processor used 317.469 s in the last 300 s against 20, the watchdog's last line: 20:00:14.459  t+3899.3s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:00:29  t+3901s  SAMPLE processor 4933.375 s, 16.016 s since the last pass, the log 49406 bytes
+20:00:44  t+3916s  SAMPLE processor 4949.516 s, 16.141 s since the last pass, the log 49406 bytes
+20:00:59  t+3932s  SAMPLE processor 4965.094 s, 15.578 s since the last pass, the log 49406 bytes
+20:01:14  t+3947s  SAMPLE processor 4981.063 s, 15.969 s since the last pass, the log 49406 bytes
+20:01:16  t+3949s  SESSION LOCK unlocked
+20:01:16  t+3949s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 4981.063 s, growth 63.703 s, the log still for 3380 s against 300, and the processor used 317.422 s in the last 300 s against 20, the watchdog's last line: 20:01:10.060  t+3954.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:01:29  t+3962s  SAMPLE processor 4996.813 s, 15.750 s since the last pass, the log 49406 bytes
+20:01:44  t+3977s  SAMPLE processor 5013.047 s, 16.234 s since the last pass, the log 49406 bytes
+20:01:59  t+3992s  SAMPLE processor 5028.891 s, 15.844 s since the last pass, the log 49406 bytes
+20:02:14  t+4007s  SAMPLE processor 5044.563 s, 15.672 s since the last pass, the log 49406 bytes
+20:02:16  t+4008s  SESSION LOCK unlocked
+20:02:16  t+4009s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5044.563 s, growth 63.500 s, the log still for 3440 s against 300, and the processor used 317.406 s in the last 300 s against 20, the watchdog's last line: 20:02:15.194  t+4020.1s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:02:29  t+4022s  SAMPLE processor 5060.609 s, 16.047 s since the last pass, the log 49406 bytes
+20:02:44  t+4037s  SAMPLE processor 5076.250 s, 15.641 s since the last pass, the log 49406 bytes
+20:02:59  t+4052s  SAMPLE processor 5092.406 s, 16.156 s since the last pass, the log 49406 bytes
+20:03:14  t+4067s  SAMPLE processor 5108.141 s, 15.734 s since the last pass, the log 49406 bytes
+20:03:16  t+4069s  SESSION LOCK unlocked
+20:03:16  t+4069s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5108.141 s, growth 63.578 s, the log still for 3501 s against 300, and the processor used 317.938 s in the last 300 s against 20, the watchdog's last line: 20:03:16.190  t+4081.1s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:03:30  t+4082s  SAMPLE processor 5124.609 s, 16.469 s since the last pass, the log 49406 bytes
+20:03:45  t+4098s  SAMPLE processor 5140.359 s, 15.750 s since the last pass, the log 49406 bytes
+20:04:00  t+4113s  SAMPLE processor 5156.219 s, 15.859 s since the last pass, the log 49406 bytes
+20:04:15  t+4128s  SAMPLE processor 5171.938 s, 15.719 s since the last pass, the log 49406 bytes
+20:04:16  t+4129s  SESSION LOCK unlocked
+20:04:16  t+4129s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5171.938 s, growth 63.797 s, the log still for 3561 s against 300, and the processor used 317.797 s in the last 300 s against 20, the watchdog's last line: 20:04:15.839  t+4140.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:04:30  t+4143s  SAMPLE processor 5187.875 s, 15.938 s since the last pass, the log 49406 bytes
+20:04:45  t+4158s  SAMPLE processor 5203.688 s, 15.813 s since the last pass, the log 49406 bytes
+20:05:00  t+4173s  SAMPLE processor 5219.594 s, 15.906 s since the last pass, the log 49406 bytes
+20:05:15  t+4188s  SAMPLE processor 5235.250 s, 15.656 s since the last pass, the log 49406 bytes
+20:05:17  t+4189s  SESSION LOCK unlocked
+20:05:17  t+4190s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5235.250 s, growth 63.313 s, the log still for 3621 s against 300, and the processor used 317.891 s in the last 300 s against 20, the watchdog's last line: 20:05:16.650  t+4201.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:05:30  t+4203s  SAMPLE processor 5251.484 s, 16.234 s since the last pass, the log 49406 bytes
+20:05:45  t+4218s  SAMPLE processor 5267.250 s, 15.766 s since the last pass, the log 49406 bytes
+20:06:00  t+4233s  SAMPLE processor 5282.938 s, 15.688 s since the last pass, the log 49406 bytes
+20:06:15  t+4248s  SAMPLE processor 5298.859 s, 15.922 s since the last pass, the log 49406 bytes
+20:06:17  t+4250s  SESSION LOCK unlocked
+20:06:17  t+4250s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5298.859 s, growth 63.609 s, the log still for 3682 s against 300, and the processor used 317.797 s in the last 300 s against 20, the watchdog's last line: 20:06:17.177  t+4262.1s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:06:31  t+4263s  SAMPLE processor 5314.984 s, 16.125 s since the last pass, the log 49406 bytes
+20:06:46  t+4278s  SAMPLE processor 5330.703 s, 15.719 s since the last pass, the log 49406 bytes
+20:07:01  t+4293s  SAMPLE processor 5346.891 s, 16.188 s since the last pass, the log 49406 bytes
+20:07:16  t+4309s  SAMPLE processor 5362.484 s, 15.594 s since the last pass, the log 49406 bytes
+20:07:18  t+4310s  SESSION LOCK unlocked
+20:07:18  t+4311s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5362.484 s, growth 63.625 s, the log still for 3742 s against 300, and the processor used 317.922 s in the last 300 s against 20, the watchdog's last line: 20:07:16.589  t+4321.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 11 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:07:31  t+4324s  SAMPLE processor 5378.391 s, 15.906 s since the last pass, the log 49406 bytes
+20:07:46  t+4339s  SAMPLE processor 5394.266 s, 15.875 s since the last pass, the log 49406 bytes
+20:08:01  t+4354s  SAMPLE processor 5410.453 s, 16.188 s since the last pass, the log 49406 bytes
+20:08:16  t+4369s  SAMPLE processor 5425.859 s, 15.406 s since the last pass, the log 49406 bytes
+20:08:18  t+4371s  SESSION LOCK unlocked
+20:08:18  t+4371s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5425.859 s, growth 63.375 s, the log still for 3802 s against 300, and the processor used 317.719 s in the last 300 s against 20, the watchdog's last line: 20:08:16.439  t+4381.3s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:08:31  t+4384s  SAMPLE processor 5441.625 s, 15.766 s since the last pass, the log 49406 bytes
+20:08:46  t+4399s  SAMPLE processor 5457.781 s, 16.156 s since the last pass, the log 49406 bytes
+20:09:01  t+4414s  SAMPLE processor 5474.078 s, 16.297 s since the last pass, the log 49406 bytes
+20:09:16  t+4429s  SAMPLE processor 5489.891 s, 15.813 s since the last pass, the log 49406 bytes
+20:09:18  t+4431s  SESSION LOCK unlocked
+20:09:18  t+4431s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5489.891 s, growth 64.031 s, the log still for 3863 s against 300, and the processor used 317.953 s in the last 300 s against 20, the watchdog's last line: 20:09:17.002  t+4441.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:09:32  t+4444s  SAMPLE processor 5505.906 s, 16.016 s since the last pass, the log 49406 bytes
+20:09:47  t+4460s  SAMPLE processor 5521.641 s, 15.734 s since the last pass, the log 49406 bytes
+20:10:02  t+4475s  SAMPLE processor 5537.469 s, 15.828 s since the last pass, the log 49406 bytes
+20:10:17  t+4490s  SAMPLE processor 5553.406 s, 15.938 s since the last pass, the log 49406 bytes
+20:10:18  t+4491s  SESSION LOCK unlocked
+20:10:18  t+4491s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5553.406 s, growth 63.516 s, the log still for 3923 s against 300, and the processor used 318.156 s in the last 300 s against 20, the watchdog's last line: 20:10:16.962  t+4501.8s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:10:32  t+4505s  SAMPLE processor 5569.047 s, 15.641 s since the last pass, the log 49406 bytes
+20:10:47  t+4520s  SAMPLE processor 5585.125 s, 16.078 s since the last pass, the log 49406 bytes
+20:11:02  t+4535s  SAMPLE processor 5601.141 s, 16.016 s since the last pass, the log 49406 bytes
+20:11:17  t+4550s  SAMPLE processor 5617.016 s, 15.875 s since the last pass, the log 49406 bytes
+20:11:19  t+4552s  SESSION LOCK unlocked
+20:11:19  t+4552s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5617.016 s, growth 63.609 s, the log still for 3983 s against 300, and the processor used 318.156 s in the last 300 s against 20, the watchdog's last line: 20:11:19.054  t+4563.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" and 2 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:11:32  t+4565s  SAMPLE processor 5633.000 s, 15.984 s since the last pass, the log 49406 bytes
+20:11:47  t+4580s  SAMPLE processor 5648.906 s, 15.906 s since the last pass, the log 49406 bytes
+20:12:03  t+4595s  SAMPLE processor 5665.016 s, 16.109 s since the last pass, the log 49406 bytes
+20:12:18  t+4610s  SAMPLE processor 5680.703 s, 15.688 s since the last pass, the log 49406 bytes
+20:12:19  t+4612s  SESSION LOCK unlocked
+20:12:19  t+4612s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5680.703 s, growth 63.688 s, the log still for 4044 s against 300, and the processor used 318.219 s in the last 300 s against 20, the watchdog's last line: 20:12:18.070  t+4622.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:12:33  t+4626s  SAMPLE processor 5696.594 s, 15.891 s since the last pass, the log 49406 bytes
+20:12:48  t+4641s  SAMPLE processor 5712.188 s, 15.594 s since the last pass, the log 49406 bytes
+20:13:03  t+4656s  SAMPLE processor 5728.125 s, 15.938 s since the last pass, the log 49406 bytes
+20:13:18  t+4671s  SAMPLE processor 5743.781 s, 15.656 s since the last pass, the log 49406 bytes
+20:13:20  t+4673s  SESSION LOCK unlocked
+20:13:20  t+4673s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5743.781 s, growth 63.078 s, the log still for 4104 s against 300, and the processor used 317.922 s in the last 300 s against 20, the watchdog's last line: 20:13:19.785  t+4684.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" and 8 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:13:33  t+4686s  SAMPLE processor 5760.047 s, 16.266 s since the last pass, the log 49406 bytes
+20:13:48  t+4701s  SAMPLE processor 5775.922 s, 15.875 s since the last pass, the log 49406 bytes
+20:14:03  t+4716s  SAMPLE processor 5791.813 s, 15.891 s since the last pass, the log 49406 bytes
+20:14:18  t+4731s  SAMPLE processor 5807.609 s, 15.797 s since the last pass, the log 49406 bytes
+20:14:20  t+4733s  SESSION LOCK unlocked
+20:14:20  t+4733s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5807.609 s, growth 63.828 s, the log still for 4165 s against 300, and the processor used 317.719 s in the last 300 s against 20, the watchdog's last line: 20:14:19.529  t+4744.4s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" and 2 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:14:34  t+4746s  SAMPLE processor 5823.859 s, 16.250 s since the last pass, the log 49406 bytes
+20:14:49  t+4761s  SAMPLE processor 5839.625 s, 15.766 s since the last pass, the log 49406 bytes
+20:15:04  t+4777s  SAMPLE processor 5855.141 s, 15.516 s since the last pass, the log 49406 bytes
+20:15:19  t+4792s  SAMPLE processor 5871.016 s, 15.875 s since the last pass, the log 49406 bytes
+20:15:21  t+4794s  SESSION LOCK unlocked
+20:15:21  t+4794s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5871.016 s, growth 63.406 s, the log still for 4225 s against 300, and the processor used 317.609 s in the last 300 s against 20, the watchdog's last line: 20:15:15.666  t+4800.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:15:34  t+4807s  SAMPLE processor 5886.891 s, 15.875 s since the last pass, the log 49406 bytes
+20:15:49  t+4822s  SAMPLE processor 5902.656 s, 15.766 s since the last pass, the log 49406 bytes
+20:16:04  t+4837s  SAMPLE processor 5918.422 s, 15.766 s since the last pass, the log 49406 bytes
+20:16:19  t+4852s  SAMPLE processor 5934.125 s, 15.703 s since the last pass, the log 49406 bytes
+20:16:21  t+4854s  SESSION LOCK unlocked
+20:16:21  t+4854s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5934.125 s, growth 63.109 s, the log still for 4285 s against 300, and the processor used 317.109 s in the last 300 s against 20, the watchdog's last line: 20:16:21.568  t+4866.4s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" and 2 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:16:34  t+4867s  SAMPLE processor 5949.922 s, 15.797 s since the last pass, the log 49406 bytes
+20:16:50  t+4882s  SAMPLE processor 5965.906 s, 15.984 s since the last pass, the log 49406 bytes
+20:17:05  t+4897s  SAMPLE processor 5981.609 s, 15.703 s since the last pass, the log 49406 bytes
+20:17:20  t+4912s  SAMPLE processor 5997.375 s, 15.766 s since the last pass, the log 49406 bytes
+20:17:22  t+4914s  SESSION LOCK unlocked
+20:17:22  t+4914s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 5997.375 s, growth 63.250 s, the log still for 4346 s against 300, and the processor used 316.672 s in the last 300 s against 20, the watchdog's last line: 20:17:22.011  t+4926.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" and 2 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:17:35  t+4928s  SAMPLE processor 6013.359 s, 15.984 s since the last pass, the log 49406 bytes
+20:17:50  t+4943s  SAMPLE processor 6029.266 s, 15.906 s since the last pass, the log 49406 bytes
+20:18:05  t+4958s  SAMPLE processor 6045.313 s, 16.047 s since the last pass, the log 49406 bytes
+20:18:20  t+4973s  SAMPLE processor 6060.781 s, 15.469 s since the last pass, the log 49406 bytes
+20:18:22  t+4975s  SESSION LOCK unlocked
+20:18:22  t+4975s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6060.781 s, growth 63.406 s, the log still for 4406 s against 300, and the processor used 317.000 s in the last 300 s against 20, the watchdog's last line: 20:18:14.406  t+4979.3s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:18:35  t+4988s  SAMPLE processor 6076.656 s, 15.875 s since the last pass, the log 49406 bytes
+20:18:50  t+5003s  SAMPLE processor 6092.266 s, 15.609 s since the last pass, the log 49406 bytes
+20:19:05  t+5018s  SAMPLE processor 6108.156 s, 15.891 s since the last pass, the log 49406 bytes
+20:19:20  t+5033s  SAMPLE processor 6123.875 s, 15.719 s since the last pass, the log 49406 bytes
+20:19:22  t+5035s  SESSION LOCK unlocked
+20:19:22  t+5035s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6123.875 s, growth 63.094 s, the log still for 4466 s against 300, and the processor used 316.266 s in the last 300 s against 20, the watchdog's last line: 20:19:21.814  t+5046.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:19:35  t+5048s  SAMPLE processor 6139.750 s, 15.875 s since the last pass, the log 49406 bytes
+20:19:50  t+5063s  SAMPLE processor 6155.219 s, 15.469 s since the last pass, the log 49406 bytes
+20:20:05  t+5078s  SAMPLE processor 6171.188 s, 15.969 s since the last pass, the log 49406 bytes
+20:20:21  t+5093s  SAMPLE processor 6187.141 s, 15.953 s since the last pass, the log 49406 bytes
+20:20:22  t+5095s  SESSION LOCK unlocked
+20:20:22  t+5095s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6187.141 s, growth 63.266 s, the log still for 4527 s against 300, and the processor used 316.125 s in the last 300 s against 20, the watchdog's last line: 20:20:22.109  t+5107.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:20:36  t+5109s  SAMPLE processor 6203.172 s, 16.031 s since the last pass, the log 49406 bytes
+20:20:51  t+5124s  SAMPLE processor 6218.797 s, 15.625 s since the last pass, the log 49406 bytes
+20:21:06  t+5139s  SAMPLE processor 6234.625 s, 15.828 s since the last pass, the log 49406 bytes
+20:21:21  t+5154s  SAMPLE processor 6250.156 s, 15.531 s since the last pass, the log 49406 bytes
+20:21:23  t+5156s  SESSION LOCK unlocked
+20:21:23  t+5156s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6250.156 s, growth 63.016 s, the log still for 4587 s against 300, and the processor used 316.031 s in the last 300 s against 20, the watchdog's last line: 20:21:11.075  t+5156.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:21:36  t+5169s  SAMPLE processor 6266.063 s, 15.906 s since the last pass, the log 49406 bytes
+20:21:51  t+5184s  SAMPLE processor 6282.094 s, 16.031 s since the last pass, the log 49406 bytes
+20:22:06  t+5199s  SAMPLE processor 6298.109 s, 16.016 s since the last pass, the log 49406 bytes
+20:22:21  t+5214s  SAMPLE processor 6313.984 s, 15.875 s since the last pass, the log 49406 bytes
+20:22:23  t+5216s  SESSION LOCK unlocked
+20:22:23  t+5216s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6313.984 s, growth 63.828 s, the log still for 4647 s against 300, and the processor used 316.609 s in the last 300 s against 20, the watchdog's last line: 20:22:22.113  t+5227.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" and 10 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:22:36  t+5229s  SAMPLE processor 6329.984 s, 16.000 s since the last pass, the log 49406 bytes
+20:22:51  t+5244s  SAMPLE processor 6345.781 s, 15.797 s since the last pass, the log 49406 bytes
+20:23:06  t+5259s  SAMPLE processor 6362.078 s, 16.297 s since the last pass, the log 49406 bytes
+20:23:22  t+5274s  SAMPLE processor 6377.703 s, 15.625 s since the last pass, the log 49406 bytes
+20:23:23  t+5276s  SESSION LOCK unlocked
+20:23:23  t+5276s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6377.703 s, growth 63.719 s, the log still for 4708 s against 300, and the processor used 316.922 s in the last 300 s against 20, the watchdog's last line: 20:23:23.556  t+5288.4s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" and 12 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:23:37  t+5290s  SAMPLE processor 6393.578 s, 15.875 s since the last pass, the log 49406 bytes
+20:23:52  t+5305s  SAMPLE processor 6409.172 s, 15.594 s since the last pass, the log 49406 bytes
+20:24:07  t+5320s  SAMPLE processor 6425.063 s, 15.891 s since the last pass, the log 49406 bytes
+20:24:22  t+5335s  SAMPLE processor 6440.625 s, 15.563 s since the last pass, the log 49406 bytes
+20:24:23  t+5336s  SESSION LOCK unlocked
+20:24:23  t+5336s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6440.625 s, growth 62.922 s, the log still for 4768 s against 300, and the processor used 316.750 s in the last 300 s against 20, the watchdog's last line: 20:24:22.646  t+5347.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:24:37  t+5350s  SAMPLE processor 6456.656 s, 16.031 s since the last pass, the log 49406 bytes
+20:24:52  t+5365s  SAMPLE processor 6472.219 s, 15.563 s since the last pass, the log 49406 bytes
+20:25:07  t+5380s  SAMPLE processor 6488.438 s, 16.219 s since the last pass, the log 49406 bytes
+20:25:22  t+5395s  SAMPLE processor 6504.031 s, 15.594 s since the last pass, the log 49406 bytes
+20:25:24  t+5397s  SESSION LOCK unlocked
+20:25:24  t+5397s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6504.031 s, growth 63.406 s, the log still for 4828 s against 300, and the processor used 316.891 s in the last 300 s against 20, the watchdog's last line: 20:25:24.585  t+5409.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" and 6 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:25:37  t+5410s  SAMPLE processor 6520.109 s, 16.078 s since the last pass, the log 49406 bytes
+20:25:52  t+5425s  SAMPLE processor 6535.688 s, 15.578 s since the last pass, the log 49406 bytes
+20:26:07  t+5440s  SAMPLE processor 6551.547 s, 15.859 s since the last pass, the log 49406 bytes
+20:26:22  t+5455s  SAMPLE processor 6567.359 s, 15.813 s since the last pass, the log 49406 bytes
+20:26:24  t+5457s  SESSION LOCK unlocked
+20:26:24  t+5457s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6567.359 s, growth 63.328 s, the log still for 4889 s against 300, and the processor used 317.203 s in the last 300 s against 20, the watchdog's last line: 20:26:23.735  t+5468.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" and 2 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:26:37  t+5470s  SAMPLE processor 6583.063 s, 15.703 s since the last pass, the log 49406 bytes
+20:26:53  t+5485s  SAMPLE processor 6598.891 s, 15.828 s since the last pass, the log 49406 bytes
+20:27:08  t+5500s  SAMPLE processor 6614.641 s, 15.750 s since the last pass, the log 49406 bytes
+20:27:23  t+5515s  SAMPLE processor 6630.609 s, 15.969 s since the last pass, the log 49406 bytes
+20:27:24  t+5517s  SESSION LOCK unlocked
+20:27:24  t+5517s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6630.609 s, growth 63.250 s, the log still for 4949 s against 300, and the processor used 316.625 s in the last 300 s against 20, the watchdog's last line: 20:27:19.796  t+5524.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:27:38  t+5531s  SAMPLE processor 6646.688 s, 16.078 s since the last pass, the log 49406 bytes
+20:27:53  t+5546s  SAMPLE processor 6662.391 s, 15.703 s since the last pass, the log 49406 bytes
+20:28:08  t+5561s  SAMPLE processor 6677.922 s, 15.531 s since the last pass, the log 49406 bytes
+20:28:23  t+5576s  SAMPLE processor 6693.578 s, 15.656 s since the last pass, the log 49406 bytes
+20:28:25  t+5577s  SESSION LOCK unlocked
+20:28:25  t+5577s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6693.578 s, growth 62.969 s, the log still for 5009 s against 300, and the processor used 315.875 s in the last 300 s against 20, the watchdog's last line: 20:28:24.727  t+5589.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:28:38  t+5591s  SAMPLE processor 6709.172 s, 15.594 s since the last pass, the log 49406 bytes
+20:28:53  t+5606s  SAMPLE processor 6724.641 s, 15.469 s since the last pass, the log 49406 bytes
+20:29:08  t+5621s  SAMPLE processor 6740.313 s, 15.672 s since the last pass, the log 49406 bytes
+20:29:23  t+5636s  SAMPLE processor 6756.078 s, 15.766 s since the last pass, the log 49406 bytes
+20:29:25  t+5638s  SESSION LOCK unlocked
+20:29:25  t+5638s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6756.078 s, growth 62.500 s, the log still for 5070 s against 300, and the processor used 315.453 s in the last 300 s against 20, the watchdog's last line: 20:29:24.769  t+5649.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:29:39  t+5651s  SAMPLE processor 6771.891 s, 15.813 s since the last pass, the log 49406 bytes
+20:29:54  t+5666s  SAMPLE processor 6787.531 s, 15.641 s since the last pass, the log 49406 bytes
+20:30:09  t+5681s  SAMPLE processor 6803.172 s, 15.641 s since the last pass, the log 49406 bytes
+20:30:24  t+5696s  SAMPLE processor 6818.641 s, 15.469 s since the last pass, the log 49406 bytes
+20:30:25  t+5698s  SESSION LOCK unlocked
+20:30:26  t+5698s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6818.641 s, growth 62.563 s, the log still for 5130 s against 300, and the processor used 314.609 s in the last 300 s against 20, the watchdog's last line: 20:30:25.982  t+5710.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:30:39  t+5711s  SAMPLE processor 6834.391 s, 15.750 s since the last pass, the log 49406 bytes
+20:30:54  t+5727s  SAMPLE processor 6850.031 s, 15.641 s since the last pass, the log 49406 bytes
+20:31:09  t+5742s  SAMPLE processor 6865.750 s, 15.719 s since the last pass, the log 49406 bytes
+20:31:24  t+5757s  SAMPLE processor 6881.938 s, 16.188 s since the last pass, the log 49406 bytes
+20:31:25  t+5758s  SESSION LOCK unlocked
+20:31:26  t+5758s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6881.938 s, growth 63.297 s, the log still for 5190 s against 300, and the processor used 314.578 s in the last 300 s against 20, the watchdog's last line: 20:31:23.960  t+5768.8s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:31:39  t+5772s  SAMPLE processor 6897.953 s, 16.016 s since the last pass, the log 49406 bytes
+20:31:54  t+5787s  SAMPLE processor 6913.453 s, 15.500 s since the last pass, the log 49406 bytes
+20:32:09  t+5802s  SAMPLE processor 6929.703 s, 16.250 s since the last pass, the log 49406 bytes
+20:32:24  t+5817s  SAMPLE processor 6945.172 s, 15.469 s since the last pass, the log 49406 bytes
+20:32:26  t+5819s  SESSION LOCK unlocked
+20:32:26  t+5819s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 6945.172 s, growth 63.234 s, the log still for 5251 s against 300, and the processor used 314.563 s in the last 300 s against 20, the watchdog's last line: 20:32:24.519  t+5829.4s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:32:39  t+5832s  SAMPLE processor 6961.094 s, 15.922 s since the last pass, the log 49406 bytes
+20:32:54  t+5847s  SAMPLE processor 6976.719 s, 15.625 s since the last pass, the log 49406 bytes
+20:33:10  t+5862s  SAMPLE processor 6992.734 s, 16.016 s since the last pass, the log 49406 bytes
+20:33:25  t+5877s  SAMPLE processor 7008.828 s, 16.094 s since the last pass, the log 49406 bytes
+20:33:26  t+5879s  SESSION LOCK unlocked
+20:33:26  t+5879s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7008.828 s, growth 63.656 s, the log still for 5311 s against 300, and the processor used 315.250 s in the last 300 s against 20, the watchdog's last line: 20:33:23.823  t+5888.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:33:40  t+5892s  SAMPLE processor 7024.641 s, 15.813 s since the last pass, the log 49406 bytes
+20:33:55  t+5908s  SAMPLE processor 7040.563 s, 15.922 s since the last pass, the log 49406 bytes
+20:34:10  t+5923s  SAMPLE processor 7056.047 s, 15.484 s since the last pass, the log 49406 bytes
+20:34:25  t+5938s  SAMPLE processor 7071.641 s, 15.594 s since the last pass, the log 49406 bytes
+20:34:27  t+5939s  SESSION LOCK unlocked
+20:34:27  t+5940s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7071.641 s, growth 62.813 s, the log still for 5371 s against 300, and the processor used 315.563 s in the last 300 s against 20, the watchdog's last line: 20:34:25.861  t+5950.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:34:40  t+5953s  SAMPLE processor 7087.641 s, 16.000 s since the last pass, the log 49406 bytes
+20:34:55  t+5968s  SAMPLE processor 7103.188 s, 15.547 s since the last pass, the log 49406 bytes
+20:35:10  t+5983s  SAMPLE processor 7119.078 s, 15.891 s since the last pass, the log 49406 bytes
+20:35:25  t+5998s  SAMPLE processor 7134.578 s, 15.500 s since the last pass, the log 49406 bytes
+20:35:27  t+6000s  SESSION LOCK unlocked
+20:35:27  t+6000s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7134.578 s, growth 62.938 s, the log still for 5432 s against 300, and the processor used 315.938 s in the last 300 s against 20, the watchdog's last line: 20:35:26.941  t+6011.8s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 3 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:35:40  t+6013s  SAMPLE processor 7150.531 s, 15.953 s since the last pass, the log 49406 bytes
+20:35:55  t+6028s  SAMPLE processor 7166.125 s, 15.594 s since the last pass, the log 49406 bytes
+20:36:10  t+6043s  SAMPLE processor 7181.625 s, 15.500 s since the last pass, the log 49406 bytes
+20:36:26  t+6058s  SAMPLE processor 7197.531 s, 15.906 s since the last pass, the log 49406 bytes
+20:36:27  t+6060s  SESSION LOCK unlocked
+20:36:27  t+6060s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7197.531 s, growth 62.953 s, the log still for 5492 s against 300, and the processor used 315.594 s in the last 300 s against 20, the watchdog's last line: 20:36:12.833  t+6057.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:36:41  t+6073s  SAMPLE processor 7213.234 s, 15.703 s since the last pass, the log 49406 bytes
+20:36:56  t+6089s  SAMPLE processor 7229.250 s, 16.016 s since the last pass, the log 49406 bytes
+20:37:11  t+6104s  SAMPLE processor 7245.297 s, 16.047 s since the last pass, the log 49406 bytes
+20:37:26  t+6119s  SAMPLE processor 7260.891 s, 15.594 s since the last pass, the log 49406 bytes
+20:37:28  t+6120s  SESSION LOCK unlocked
+20:37:28  t+6120s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7260.891 s, growth 63.359 s, the log still for 5552 s against 300, and the processor used 315.719 s in the last 300 s against 20, the watchdog's last line: 20:37:23.648  t+6128.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:37:41  t+6134s  SAMPLE processor 7276.656 s, 15.766 s since the last pass, the log 49406 bytes
+20:37:56  t+6149s  SAMPLE processor 7292.172 s, 15.516 s since the last pass, the log 49406 bytes
+20:38:11  t+6164s  SAMPLE processor 7308.344 s, 16.172 s since the last pass, the log 49406 bytes
+20:38:26  t+6179s  SAMPLE processor 7323.969 s, 15.625 s since the last pass, the log 49406 bytes
+20:38:28  t+6181s  SESSION LOCK unlocked
+20:38:28  t+6181s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7323.969 s, growth 63.078 s, the log still for 5613 s against 300, and the processor used 315.141 s in the last 300 s against 20, the watchdog's last line: 20:38:22.382  t+6187.3s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:38:42  t+6194s  SAMPLE processor 7339.609 s, 15.641 s since the last pass, the log 49406 bytes
+20:38:57  t+6209s  SAMPLE processor 7355.500 s, 15.891 s since the last pass, the log 49406 bytes
+20:39:12  t+6224s  SAMPLE processor 7371.141 s, 15.641 s since the last pass, the log 49406 bytes
+20:39:27  t+6240s  SAMPLE processor 7386.875 s, 15.734 s since the last pass, the log 49406 bytes
+20:39:28  t+6241s  SESSION LOCK unlocked
+20:39:28  t+6241s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7386.875 s, growth 62.906 s, the log still for 5673 s against 300, and the processor used 315.234 s in the last 300 s against 20, the watchdog's last line: 20:39:17.008  t+6241.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:39:42  t+6255s  SAMPLE processor 7402.594 s, 15.719 s since the last pass, the log 49406 bytes
+20:39:57  t+6270s  SAMPLE processor 7418.141 s, 15.547 s since the last pass, the log 49406 bytes
+20:40:12  t+6285s  SAMPLE processor 7433.781 s, 15.641 s since the last pass, the log 49406 bytes
+20:40:27  t+6300s  SAMPLE processor 7449.563 s, 15.781 s since the last pass, the log 49406 bytes
+20:40:29  t+6301s  SESSION LOCK unlocked
+20:40:29  t+6301s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7449.563 s, growth 62.688 s, the log still for 5733 s against 300, and the processor used 314.984 s in the last 300 s against 20, the watchdog's last line: 20:40:24.340  t+6309.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:40:42  t+6315s  SAMPLE processor 7465.375 s, 15.813 s since the last pass, the log 49406 bytes
+20:40:57  t+6330s  SAMPLE processor 7480.984 s, 15.609 s since the last pass, the log 49406 bytes
+20:41:12  t+6345s  SAMPLE processor 7496.813 s, 15.828 s since the last pass, the log 49406 bytes
+20:41:27  t+6360s  SAMPLE processor 7512.859 s, 16.047 s since the last pass, the log 49406 bytes
+20:41:28  t+6361s  SESSION LOCK unlocked
+20:41:28  t+6361s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7512.859 s, growth 63.297 s, the log still for 5794 s against 300, and the processor used 315.328 s in the last 300 s against 20, the watchdog's last line: 20:41:28.649  t+6373.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:41:42  t+6375s  SAMPLE processor 7528.531 s, 15.672 s since the last pass, the log 49406 bytes
+20:41:57  t+6390s  SAMPLE processor 7543.844 s, 15.313 s since the last pass, the log 49406 bytes
+20:42:13  t+6405s  SAMPLE processor 7559.734 s, 15.891 s since the last pass, the log 49406 bytes
+20:42:28  t+6420s  SAMPLE processor 7575.328 s, 15.594 s since the last pass, the log 49406 bytes
+20:42:29  t+6422s  SESSION LOCK unlocked
+20:42:29  t+6422s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7575.328 s, growth 62.469 s, the log still for 5854 s against 300, and the processor used 314.438 s in the last 300 s against 20, the watchdog's last line: 20:42:27.824  t+6432.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:42:43  t+6436s  SAMPLE processor 7591.313 s, 15.984 s since the last pass, the log 49406 bytes
+20:42:58  t+6451s  SAMPLE processor 7606.734 s, 15.422 s since the last pass, the log 49406 bytes
+20:43:13  t+6466s  SAMPLE processor 7622.766 s, 16.031 s since the last pass, the log 49406 bytes
+20:43:28  t+6481s  SAMPLE processor 7638.594 s, 15.828 s since the last pass, the log 49406 bytes
+20:43:30  t+6483s  SESSION LOCK unlocked
+20:43:30  t+6483s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7638.594 s, growth 63.266 s, the log still for 5914 s against 300, and the processor used 314.625 s in the last 300 s against 20, the watchdog's last line: 20:43:11.462  t+6476.3s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:43:43  t+6496s  SAMPLE processor 7654.469 s, 15.875 s since the last pass, the log 49406 bytes
+20:43:58  t+6511s  SAMPLE processor 7669.984 s, 15.516 s since the last pass, the log 49406 bytes
+20:44:13  t+6526s  SAMPLE processor 7686.016 s, 16.031 s since the last pass, the log 49406 bytes
+20:44:28  t+6541s  SAMPLE processor 7701.828 s, 15.813 s since the last pass, the log 49406 bytes
+20:44:30  t+6543s  SESSION LOCK unlocked
+20:44:30  t+6543s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7701.828 s, growth 63.234 s, the log still for 5975 s against 300, and the processor used 314.953 s in the last 300 s against 20, the watchdog's last line: 20:44:20.968  t+6545.8s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:44:44  t+6556s  SAMPLE processor 7717.500 s, 15.672 s since the last pass, the log 49406 bytes
+20:44:59  t+6572s  SAMPLE processor 7733.297 s, 15.797 s since the last pass, the log 49406 bytes
+20:45:14  t+6587s  SAMPLE processor 7748.828 s, 15.531 s since the last pass, the log 49406 bytes
+20:45:29  t+6602s  SAMPLE processor 7764.781 s, 15.953 s since the last pass, the log 49406 bytes
+20:45:31  t+6603s  SESSION LOCK unlocked
+20:45:31  t+6604s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7764.781 s, growth 62.953 s, the log still for 6035 s against 300, and the processor used 315.219 s in the last 300 s against 20, the watchdog's last line: 20:45:29.899  t+6614.8s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" and 5 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:45:44  t+6617s  SAMPLE processor 7780.438 s, 15.656 s since the last pass, the log 49406 bytes
+20:45:59  t+6632s  SAMPLE processor 7796.297 s, 15.859 s since the last pass, the log 49406 bytes
+20:46:14  t+6647s  SAMPLE processor 7812.125 s, 15.828 s since the last pass, the log 49406 bytes
+20:46:29  t+6662s  SAMPLE processor 7827.469 s, 15.344 s since the last pass, the log 49406 bytes
+20:46:31  t+6664s  SESSION LOCK unlocked
+20:46:31  t+6664s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7827.469 s, growth 62.688 s, the log still for 6095 s against 300, and the processor used 314.609 s in the last 300 s against 20, the watchdog's last line: 20:46:30.004  t+6674.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:46:44  t+6677s  SAMPLE processor 7843.438 s, 15.969 s since the last pass, the log 49406 bytes
+20:46:59  t+6692s  SAMPLE processor 7859.203 s, 15.766 s since the last pass, the log 49406 bytes
+20:47:14  t+6707s  SAMPLE processor 7874.797 s, 15.594 s since the last pass, the log 49406 bytes
+20:47:30  t+6722s  SAMPLE processor 7890.656 s, 15.859 s since the last pass, the log 49406 bytes
+20:47:31  t+6724s  SESSION LOCK unlocked
+20:47:31  t+6724s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7890.656 s, growth 63.188 s, the log still for 6156 s against 300, and the processor used 315.328 s in the last 300 s against 20, the watchdog's last line: 20:47:30.060  t+6734.9s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" and 4 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:47:45  t+6738s  SAMPLE processor 7906.359 s, 15.703 s since the last pass, the log 49406 bytes
+20:48:00  t+6753s  SAMPLE processor 7921.797 s, 15.438 s since the last pass, the log 49406 bytes
+20:48:15  t+6768s  SAMPLE processor 7937.656 s, 15.859 s since the last pass, the log 49406 bytes
+20:48:30  t+6783s  SAMPLE processor 7953.375 s, 15.719 s since the last pass, the log 49406 bytes
+20:48:32  t+6784s  SESSION LOCK unlocked
+20:48:32  t+6785s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 7953.375 s, growth 62.719 s, the log still for 6216 s against 300, and the processor used 314.781 s in the last 300 s against 20, the watchdog's last line: 20:48:31.194  t+6796.1s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:48:45  t+6798s  SAMPLE processor 7969.031 s, 15.656 s since the last pass, the log 49406 bytes
+20:49:00  t+6813s  SAMPLE processor 7984.672 s, 15.641 s since the last pass, the log 49406 bytes
+20:49:15  t+6828s  SAMPLE processor 8000.672 s, 16.000 s since the last pass, the log 49406 bytes
+20:49:31  t+6843s  SAMPLE processor 8016.188 s, 15.516 s since the last pass, the log 49406 bytes
+20:49:32  t+6845s  SESSION LOCK unlocked
+20:49:32  t+6845s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 8016.188 s, growth 62.813 s, the log still for 6277 s against 300, and the processor used 314.359 s in the last 300 s against 20, the watchdog's last line: 20:49:21.292  t+6846.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:49:46  t+6859s  SAMPLE processor 8031.984 s, 15.797 s since the last pass, the log 49406 bytes
+20:50:01  t+6874s  SAMPLE processor 8047.672 s, 15.688 s since the last pass, the log 49406 bytes
+20:50:16  t+6889s  SAMPLE processor 8063.344 s, 15.672 s since the last pass, the log 49406 bytes
+20:50:31  t+6904s  SAMPLE processor 8079.125 s, 15.781 s since the last pass, the log 49406 bytes
+20:50:33  t+6905s  SESSION LOCK unlocked
+20:50:33  t+6905s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 8079.125 s, growth 62.938 s, the log still for 6337 s against 300, and the processor used 314.344 s in the last 300 s against 20, the watchdog's last line: 20:50:23.466  t+6908.3s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:50:46  t+6919s  SAMPLE processor 8094.672 s, 15.547 s since the last pass, the log 49406 bytes
+20:51:01  t+6934s  SAMPLE processor 8110.156 s, 15.484 s since the last pass, the log 49406 bytes
+20:51:16  t+6949s  SAMPLE processor 8125.922 s, 15.766 s since the last pass, the log 49406 bytes
+20:51:31  t+6964s  SAMPLE processor 8141.609 s, 15.688 s since the last pass, the log 49406 bytes
+20:51:33  t+6966s  SESSION LOCK unlocked
+20:51:33  t+6966s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 8141.609 s, growth 62.484 s, the log still for 6398 s against 300, and the processor used 314.141 s in the last 300 s against 20, the watchdog's last line: 20:51:27.699  t+6972.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:51:47  t+6979s  SAMPLE processor 8157.281 s, 15.672 s since the last pass, the log 49406 bytes
+20:52:02  t+6995s  SAMPLE processor 8173.422 s, 16.141 s since the last pass, the log 49406 bytes
+20:52:17  t+7010s  SAMPLE processor 8189.219 s, 15.797 s since the last pass, the log 49406 bytes
+20:52:32  t+7025s  SAMPLE processor 8204.828 s, 15.609 s since the last pass, the log 49406 bytes
+20:52:34  t+7027s  SESSION LOCK unlocked
+20:52:34  t+7027s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 8204.828 s, growth 63.219 s, the log still for 6458 s against 300, and the processor used 314.172 s in the last 300 s against 20, the watchdog's last line: 20:52:32.625  t+7037.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:52:47  t+7040s  SAMPLE processor 8220.203 s, 15.375 s since the last pass, the log 49406 bytes
+20:53:02  t+7055s  SAMPLE processor 8235.547 s, 15.344 s since the last pass, the log 49406 bytes
+20:53:17  t+7070s  SAMPLE processor 8250.766 s, 15.219 s since the last pass, the log 49406 bytes
+20:53:32  t+7085s  SAMPLE processor 8265.859 s, 15.094 s since the last pass, the log 49406 bytes
+20:53:34  t+7087s  SESSION LOCK unlocked
+20:53:34  t+7087s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 8265.859 s, growth 61.031 s, the log still for 6519 s against 300, and the processor used 312.484 s in the last 300 s against 20, the watchdog's last line: 20:53:32.643  t+7097.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:53:47  t+7100s  SAMPLE processor 8280.953 s, 15.094 s since the last pass, the log 49406 bytes
+20:54:03  t+7115s  SAMPLE processor 8296.219 s, 15.266 s since the last pass, the log 49406 bytes
+20:54:18  t+7130s  SAMPLE processor 8311.297 s, 15.078 s since the last pass, the log 49406 bytes
+20:54:33  t+7146s  SAMPLE processor 8326.531 s, 15.234 s since the last pass, the log 49406 bytes
+20:54:34  t+7147s  SESSION LOCK unlocked
+20:54:34  t+7147s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 8326.531 s, growth 60.672 s, the log still for 6579 s against 300, and the processor used 310.344 s in the last 300 s against 20, the watchdog's last line: 20:54:25.170  t+7150.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:54:48  t+7161s  SAMPLE processor 8341.781 s, 15.250 s since the last pass, the log 49406 bytes
+20:55:03  t+7176s  SAMPLE processor 8357.063 s, 15.281 s since the last pass, the log 49406 bytes
+20:55:18  t+7191s  SAMPLE processor 8372.922 s, 15.859 s since the last pass, the log 49406 bytes
+20:55:33  t+7206s  SAMPLE processor 8388.844 s, 15.922 s since the last pass, the log 49406 bytes
+20:55:35  t+7208s  SESSION LOCK unlocked
+20:55:35  t+7208s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 8388.844 s, growth 62.313 s, the log still for 6639 s against 300, and the processor used 309.719 s in the last 300 s against 20, the watchdog's last line: 20:55:34.787  t+7219.7s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" and 1 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:55:48  t+7221s  SAMPLE processor 8404.625 s, 15.781 s since the last pass, the log 49406 bytes
+20:56:03  t+7236s  SAMPLE processor 8420.031 s, 15.406 s since the last pass, the log 49406 bytes
+20:56:18  t+7251s  SAMPLE processor 8436.031 s, 16.000 s since the last pass, the log 49406 bytes
+20:56:33  t+7266s  SAMPLE processor 8451.828 s, 15.797 s since the last pass, the log 49406 bytes
+20:56:35  t+7268s  SESSION LOCK unlocked
+20:56:35  t+7268s  HEARTBEAT the log 49406 bytes, growth 0 bytes, its last line "19:04:43.016  +0470.761s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope", processor 8451.828 s, growth 62.984 s, the log still for 6700 s against 300, and the processor used 310.219 s in the last 300 s against 20, the watchdog's last line: 20:56:32.614  t+7277.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:56:48  t+7281s  SAMPLE processor 8467.531 s, 15.703 s since the last pass, the log 49684 bytes
+20:57:04  t+7296s  SAMPLE processor 8483.453 s, 15.922 s since the last pass, the log 49684 bytes
+20:57:19  t+7311s  SAMPLE processor 8499.594 s, 16.141 s since the last pass, the log 49684 bytes
+20:57:34  t+7326s  SAMPLE processor 8515.406 s, 15.813 s since the last pass, the log 49684 bytes
+20:57:35  t+7328s  SESSION LOCK unlocked
+20:57:35  t+7328s  HEARTBEAT the log 49684 bytes, growth 278 bytes, its last line "20:56:44.655  +7192.325s  VIEWS    no model in this group carries DR, so a viewpoint of its pair keeps the model each cl", processor 8515.406 s, growth 63.578 s, the log still for 45 s against 300, and the processor used 310.578 s in the last 300 s against 20, the watchdog's last line: 20:57:27.448  t+7332.3s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:57:49  t+7342s  SAMPLE processor 8531.266 s, 15.859 s since the last pass, the log 49684 bytes
+20:58:04  t+7357s  SAMPLE processor 8547.094 s, 15.828 s since the last pass, the log 49684 bytes
+20:58:19  t+7372s  SAMPLE processor 8562.844 s, 15.750 s since the last pass, the log 49684 bytes
+20:58:34  t+7387s  SAMPLE processor 8578.313 s, 15.469 s since the last pass, the log 49684 bytes
+20:58:35  t+7388s  SESSION LOCK unlocked
+20:58:35  t+7388s  HEARTBEAT the log 49684 bytes, growth 0 bytes, its last line "20:56:44.655  +7192.325s  VIEWS    no model in this group carries DR, so a viewpoint of its pair keeps the model each cl", processor 8578.313 s, growth 62.906 s, the log still for 106 s against 300, and the processor used 312.453 s in the last 300 s against 20, the watchdog's last line: 20:58:35.329  t+7400.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:58:49  t+7402s  SAMPLE processor 8593.328 s, 15.016 s since the last pass, the log 49684 bytes
+20:59:04  t+7417s  SAMPLE processor 8608.625 s, 15.297 s since the last pass, the log 49684 bytes
+20:59:19  t+7432s  SAMPLE processor 8623.688 s, 15.063 s since the last pass, the log 49684 bytes
+20:59:34  t+7447s  SAMPLE processor 8638.891 s, 15.203 s since the last pass, the log 49684 bytes
+20:59:36  t+7449s  SESSION LOCK unlocked
+20:59:36  t+7449s  HEARTBEAT the log 49684 bytes, growth 0 bytes, its last line "20:56:44.655  +7192.325s  VIEWS    no model in this group carries DR, so a viewpoint of its pair keeps the model each cl", processor 8638.891 s, growth 60.578 s, the log still for 166 s against 300, and the processor used 312.359 s in the last 300 s against 20, the watchdog's last line: 20:59:32.154  t+7457.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+20:59:49  t+7462s  SAMPLE processor 8654.016 s, 15.125 s since the last pass, the log 49684 bytes
+21:00:04  t+7477s  SAMPLE processor 8669.125 s, 15.109 s since the last pass, the log 49684 bytes
+21:00:20  t+7492s  SAMPLE processor 8684.469 s, 15.344 s since the last pass, the log 49684 bytes
+21:00:35  t+7508s  SAMPLE processor 8699.750 s, 15.281 s since the last pass, the log 49684 bytes
+21:00:36  t+7509s  SESSION LOCK unlocked
+21:00:36  t+7509s  HEARTBEAT the log 49684 bytes, growth 0 bytes, its last line "20:56:44.655  +7192.325s  VIEWS    no model in this group carries DR, so a viewpoint of its pair keeps the model each cl", processor 8699.750 s, growth 60.859 s, the log still for 226 s against 300, and the processor used 310.906 s in the last 300 s against 20, the watchdog's last line: 21:00:36.597  t+7521.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+21:00:50  t+7523s  SAMPLE processor 8714.844 s, 15.094 s since the last pass, the log 49684 bytes
+21:01:05  t+7538s  SAMPLE processor 8730.109 s, 15.266 s since the last pass, the log 49684 bytes
+21:01:20  t+7553s  SAMPLE processor 8745.406 s, 15.297 s since the last pass, the log 49684 bytes
+21:01:35  t+7568s  SAMPLE processor 8760.594 s, 15.188 s since the last pass, the log 49684 bytes
+21:01:36  t+7569s  SESSION LOCK unlocked
+21:01:36  t+7569s  HEARTBEAT the log 49684 bytes, growth 0 bytes, its last line "20:56:44.655  +7192.325s  VIEWS    no model in this group carries DR, so a viewpoint of its pair keeps the model each cl", processor 8760.594 s, growth 60.844 s, the log still for 287 s against 300, and the processor used 308.766 s in the last 300 s against 20, the watchdog's last line: 21:01:36.678  t+7581.6s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+21:01:50  t+7583s  SAMPLE processor 8775.609 s, 15.016 s since the last pass, the log 49684 bytes
+21:02:05  t+7598s  SAMPLE processor 8790.984 s, 15.375 s since the last pass, the log 49684 bytes
+21:02:20  t+7613s  SAMPLE processor 8806.016 s, 15.031 s since the last pass, the log 49684 bytes
+21:02:35  t+7628s  SAMPLE processor 8821.250 s, 15.234 s since the last pass, the log 49684 bytes
+21:02:37  t+7630s  SESSION LOCK unlocked
+21:02:37  t+7630s  HEARTBEAT the log 49684 bytes, growth 0 bytes, its last line "20:56:44.655  +7192.325s  VIEWS    no model in this group carries DR, so a viewpoint of its pair keeps the model each cl", processor 8821.250 s, growth 60.656 s, the log still for 347 s against 300, and the processor used 305.844 s in the last 300 s against 20, the watchdog's last line: 21:02:35.608  t+7640.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+21:02:51  t+7643s  SAMPLE processor 8836.328 s, 15.078 s since the last pass, the log 49684 bytes
+21:03:06  t+7658s  SAMPLE processor 8851.547 s, 15.219 s since the last pass, the log 49684 bytes
+21:03:21  t+7673s  SAMPLE processor 8866.594 s, 15.047 s since the last pass, the log 49684 bytes
+21:03:36  t+7689s  SAMPLE processor 8881.875 s, 15.281 s since the last pass, the log 49684 bytes
+21:03:37  t+7690s  SESSION LOCK unlocked
+21:03:37  t+7690s  HEARTBEAT the log 49684 bytes, growth 0 bytes, its last line "20:56:44.655  +7192.325s  VIEWS    no model in this group carries DR, so a viewpoint of its pair keeps the model each cl", processor 8881.875 s, growth 60.625 s, the log still for 407 s against 300, and the processor used 303.563 s in the last 300 s against 20, the watchdog's last line: 21:03:37.581  t+7702.5s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+21:03:51  t+7704s  SAMPLE processor 8896.969 s, 15.094 s since the last pass, the log 49684 bytes
+21:04:06  t+7719s  SAMPLE processor 8912.141 s, 15.172 s since the last pass, the log 49684 bytes
+21:04:21  t+7734s  SAMPLE processor 8927.203 s, 15.063 s since the last pass, the log 49684 bytes
+21:04:36  t+7749s  SAMPLE processor 8942.375 s, 15.172 s since the last pass, the log 49684 bytes
+21:04:38  t+7750s  SESSION LOCK unlocked
+21:04:38  t+7750s  HEARTBEAT the log 49684 bytes, growth 0 bytes, its last line "20:56:44.655  +7192.325s  VIEWS    no model in this group carries DR, so a viewpoint of its pair keeps the model each cl", processor 8942.375 s, growth 60.500 s, the log still for 468 s against 300, and the processor used 303.484 s in the last 300 s against 20, the watchdog's last line: 21:04:36.327  t+7761.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+21:04:51  t+7764s  SAMPLE processor 8957.469 s, 15.094 s since the last pass, the log 49684 bytes
+21:05:06  t+7779s  SAMPLE processor 8972.672 s, 15.203 s since the last pass, the log 49684 bytes
+21:05:21  t+7794s  SAMPLE processor 8987.797 s, 15.125 s since the last pass, the log 49684 bytes
+21:05:36  t+7809s  SAMPLE processor 9003.063 s, 15.266 s since the last pass, the log 49684 bytes
+21:05:38  t+7811s  SESSION LOCK unlocked
+21:05:38  t+7811s  HEARTBEAT the log 49684 bytes, growth 0 bytes, its last line "20:56:44.655  +7192.325s  VIEWS    no model in this group carries DR, so a viewpoint of its pair keeps the model each cl", processor 9003.063 s, growth 60.688 s, the log still for 528 s against 300, and the processor used 303.313 s in the last 300 s against 20, the watchdog's last line: 21:05:32.356  t+7817.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+21:05:51  t+7824s  SAMPLE processor 9018.234 s, 15.172 s since the last pass, the log 49684 bytes
+21:06:06  t+7839s  SAMPLE processor 9033.391 s, 15.156 s since the last pass, the log 49684 bytes
+21:06:22  t+7854s  SAMPLE processor 9048.609 s, 15.219 s since the last pass, the log 49684 bytes
+21:06:37  t+7869s  SAMPLE processor 9063.719 s, 15.109 s since the last pass, the log 49684 bytes
+21:06:38  t+7871s  SESSION LOCK unlocked
+21:06:38  t+7871s  HEARTBEAT the log 49684 bytes, growth 0 bytes, its last line "20:56:44.655  +7192.325s  VIEWS    no model in this group carries DR, so a viewpoint of its pair keeps the model each cl", processor 9063.719 s, growth 60.656 s, the log still for 588 s against 300, and the processor used 303.125 s in the last 300 s against 20, the watchdog's last line: 21:06:36.938  t+7881.8s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+21:06:52  t+7884s  SAMPLE processor 9078.844 s, 15.125 s since the last pass, the log 49684 bytes
+21:07:07  t+7899s  SAMPLE processor 9094.031 s, 15.188 s since the last pass, the log 49811 bytes
+21:07:22  t+7915s  SAMPLE processor 9109.859 s, 15.828 s since the last pass, the log 49811 bytes
+21:07:37  t+7930s  SAMPLE processor 9125.875 s, 16.016 s since the last pass, the log 49938 bytes
+21:07:38  t+7931s  SESSION LOCK unlocked
+21:07:38  t+7931s  HEARTBEAT the log 49938 bytes, growth 254 bytes, its last line "21:07:23.179  +7830.843s  VIEWS    EL vs UNKNOWN: its pair has a code this tool does not know, so its viewpoints hide no", processor 9125.875 s, growth 62.156 s, the log still for 0 s against 300, and the processor used 304.625 s in the last 300 s against 20, the watchdog's last line: 21:07:36.330  t+7941.2s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+21:07:52  t+7945s  SAMPLE processor 9141.891 s, 16.016 s since the last pass, the log 49938 bytes
+21:08:07  t+7960s  SAMPLE processor 9157.531 s, 15.641 s since the last pass, the log 49938 bytes
+21:08:22  t+7975s  SAMPLE processor 9172.609 s, 15.078 s since the last pass, the log 49938 bytes
+21:08:37  t+7990s  SAMPLE processor 9187.766 s, 15.156 s since the last pass, the log 49938 bytes
+21:08:39  t+7992s  SESSION LOCK unlocked
+21:08:39  t+7992s  HEARTBEAT the log 49938 bytes, growth 0 bytes, its last line "21:07:23.179  +7830.843s  VIEWS    EL vs UNKNOWN: its pair has a code this tool does not know, so its viewpoints hide no", processor 9187.766 s, growth 61.891 s, the log still for 60 s against 300, and the processor used 305.891 s in the last 300 s against 20, the watchdog's last line: 21:08:38.099  t+8003.0s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+21:08:52  t+8005s  SAMPLE processor 9202.859 s, 15.094 s since the last pass, the log 49938 bytes
+21:09:07  t+8020s  SAMPLE processor 9217.969 s, 15.109 s since the last pass, the log 56997 bytes
+21:09:22  t+8035s  LOG 21:09:15.537  +7943.200s  GROUP    finished 1A02MM  FAILED  7925.763s  First run  1 model(s) were exported on Revit's internal origin and not on a shared site, which puts them in a different coordinate system from the rest of the group: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc. Every output of this group was still written, so the evidence is there to send.
+21:09:22  t+8035s  LOG 21:09:15.563  +7943.225s  group total            7925.763s
+21:09:22  t+8035s  LOG 21:09:15.597  +7943.259s  groups in this run : 1
+21:09:22  t+8035s  LOG 21:09:15.638  +7943.300s  RUN      finished
+21:09:22  t+8035s  LOG 21:09:15.661  +7943.324s  session                 : 2 hours 12 minutes 23 seconds, 7943.3 seconds
+21:09:22  t+8035s  LOG 21:09:15.674  +7943.337s  run total              7925.970s
+21:09:22  t+8035s  LOG RESULT
+21:09:22  t+8035s  LOG 21:09:15.722  +7943.384s  groups done    : 0
+21:09:22  t+8035s  LOG 21:09:15.723  +7943.385s  groups partial : 0
+21:09:22  t+8035s  LOG 21:09:15.724  +7943.386s  groups failed  : 1
+21:09:22  t+8035s  LOG 21:09:15.764  +7943.427s  run time       : 7925.970s
+21:09:22  t+8035s  LOG 21:09:15.777  +7943.440s  COPY     written  %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\run-20261004-185652.log  72,672 bytes
+21:09:22  t+8035s  SAMPLE processor 9226.313 s, 8.344 s since the last pass, the log 72826 bytes
+21:09:37  t+8050s  SAMPLE processor 9226.484 s, 0.172 s since the last pass, the log 72826 bytes
+21:09:38  t+8050s  SESSION LOCK unlocked
+21:09:38  t+8050s  HEARTBEAT the log 72826 bytes, growth 22888 bytes, its last line "21:09:15.777  +7943.440s  COPY     written  %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\run-2", processor 9226.484 s, growth 38.719 s, the log still for 15 s against 300, and the processor used 284.109 s in the last 300 s against 20, the watchdog's last line: 21:09:15.457  t+8040.3s  Roamer 49016 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;;601eb93d-8d27-4523-8b5f-b147d6739724]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text: 
+21:09:38  t+8050s  WM_CLOSE posted to the tool's window 13440968, caption "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]", PostMessage returned True
+21:09:38  t+8050s  WM_CLOSE was posted because the tool's log holds its RESULT block and a COPY line after it and has been quiet for 15 s. The window has 120 s to close
+  ExecuteAddInPlugin RETURNED 0, called 18:56:52.213, returned 21:09:38.311, after 7966.01 s. Nothing is judged by what it returned
+21:09:53  t+8065s  LOG 21:09:38.305  +7965.968s  Window closed.
+21:09:53  t+8065s  SAMPLE processor 9227.422 s, 0.938 s since the last pass, the log 72868 bytes
+21:09:53  t+8066s  the tool's window is closed, Window closed. is in the tool's log, 15 s after WM_CLOSE
+21:09:53  t+8066s  MONITOR stopped
+==== THE RUN ENDED: CLOSED ====
+  21:09:53.500  calling Dispose()
+  Dispose returned after 0.93 s
+  the adopted process reads gone 7.0 s after Dispose returned
+==== FINALLY ====
+  the driver exited 0, PRESSED, its last line: 18:57:10.571  DRIVER EXIT 0 PRESSED: Run, and OK on the confirm, whose texts name no path outside the loop folder. The confirm read gone after OK
+---- M5, what changed outside the loop folder while the start ran, by any program, read before the put back ----
+  keys under HKCU\Software\Autodesk whose write time changed, appeared or went: 24. Files listed in m5.txt of the run folder, which stays out of the evidence until it is masked
+  %APPDATA%\Autodesk: 20 files written at or after the call
+  %APPDATA%\Microsoft\Windows\Recent: 2 files written at or after the call
+  %LOCALAPPDATA%\Autodesk: 50 files written at or after the call
+  %PROGRAMDATA%\Autodesk: 18 files written at or after the call
+  %TEMP%: 142 files written at or after the call
+---- the watchdog's end ----
+  watchdog passes 4964, longest pass 8434 ms, longest gap 8940 ms, error lines 0, early fails 0, runspace errors 0, lines it could not write 0, forced: no
+---- starts the loop could not prove ----
+  none
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the AutoSave compare reads autosave-before.txt back, 199 files
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\AutoRecover  FileWas  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String ""
+  22.0\AutoRecover  ID  old DWord 47204  new DWord 0
+  22.0\AutoRecover  LastSaved  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave115.nwf, sha1 799DBE31D042>  new String ""
+  22.0\AutoRecover  Time  old QWord 1791115744  new QWord 0
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40809772447973  new QWord 40890495566203
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 94  new DWord 95
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 154  new DWord 155
+  22.0\CER\22.5.1433.58  uptime  old QWord 2412445468750  new QWord 2504775937500
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,-1920,-55,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "lcodpody"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134355877224561124  new QWord 134356109392322332
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134355688021584428  new QWord 134355688037141969
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc, sha1 E0ADB5881390>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"  new String "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\2  LastOpened  old QWord 134355851862024337  new QWord 134356030301747122
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  LastOpened  old QWord 134355688077859683  new QWord 134355877224561124
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\4  LastOpened  old QWord 134355688069609653  new QWord 134355851862024337
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134355688061539629  new QWord 134355688077859683
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134355688053453579  new QWord 134355688069609653
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134355688045001624  new QWord 134355688061539629
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134355688037141969  new QWord 134355688053453579
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134355688029411525  new QWord 134355688045001624
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc, sha1 947D2594C4F9>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>
+  registry: 40 values or keys differ from the backup
+  registry: 40 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 67617 bytes, sha256 5AC073CD8DAF, written 2026-10-04 16:08:06  new 68868 bytes, sha256 D570480CE545, written 2026-10-04 21:09:54
+  file CHANGED LastSession.xml  old 39513 bytes, sha256 B94B4FFCF6AA, written 2026-10-04 15:21:04  new 39512 bytes, sha256 020F080E17DF, written 2026-10-04 21:09:54
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave0.nwf  old 65627 bytes, sha256 8120CE8E6FEE, written 2026-09-20 15:13:20  new absent
+  AutoSave AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave526.nwf  old absent  new 299077 bytes, sha256 C8922D921D69, written 2026-10-04 19:03:12
+  AutoSave AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave527.nwf  old absent  new 299103 bytes, sha256 FDEE90E78AA2, written 2026-10-04 19:03:12
+  AutoSave AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave528.nwf  old absent  new 299140 bytes, sha256 5C0EF642D589, written 2026-10-04 19:03:12
+  AutoSave files added, changed, gone or unreadable: 4
+---- his AutoSave folder, Q86 ----
+  AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave0.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave526.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave527.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave528.nwf ADDED by the run, removed, read back gone
+  AutoSave: 4 put back as they were and read back, 0 not as they were before the run
+---- his logs folder, after ----
+    GONE run-20260901-200434.log, logs-backup holds it as it was before the run, the tool's own pruning of its oldest logs, Q82
+    ADDED run-20261004-185652.log, the loop's own, named in toollog-name.txt for the close of the loop, Q82
+    ADDED run-20261004-185652.tsv, the loop's own, named in toollog-name.txt for the close of the loop, Q82
+  his logs folder after the window run, Q82: 3 differences, LOST, a file of his gone or changed with no copy from before the run in logs-backup: 0
+---- the tool's log, the outputs and the workbooks ----
+  the tool's log on disk shows the run RAN: its RESULT block, its SESSION naming e4484d15, and its GROUPS block reading no group unticked
+  the tool's log, 647 lines, copied into the run folder's toollog with its FOLDERS REMEMBERED block masked, 5 lines, Q87
+  the tool's .tsv copied into the run folder's toollog, 232672 bytes
+  outputs.txt lists 2945 files, 1 of them workbooks
+  read-workbook.ps1 on Clash Report\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.xlsx ran as pid 3488 and exited 0, its read-out is workbooks\Clash_Report_C02_1104-PAR-1A02MM-ZZZ-BM-MOD-000001.xlsx.txt
+  keep awake OFF returned 0x80000003 on native thread 42524. ON was thread 42524. Same thread True, returned 0x80000003 True
+  lines that could not be written to record.txt: 0, by the monitor: 0
+VERDICT: RAN, item 1 through the window, the log's RESULT block read, closed by Dispose, put back

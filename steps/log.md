@@ -401,6 +401,180 @@ developer. Every turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop
 - the reviewer, the breaker and the claim-checker on 0000355 and the records commit after it, then
   the pull request the lead opens
 
+## 2026-10-04 The loop, turn 5, Bader's views by team, Q114, the plan
+
+Bader's message of the evening headed ONE VIEWPOINT PER CLASH TEST, IN THE A, B, C FOLDERS, BY
+TEAM, NO TEAMS MIXED, NO MIRRORED TESTS is Q114 of steps\02_questions.md in his words. Nothing
+under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before, at the
+pre-commit of 6af4a2f, turn5\precommit-records-10.txt, and after, at the pre-commit of the commit
+that made the claim-checker's points true, turn5\precommit-records-10b.txt.
+
+### The plan
+
+- A, the baseline and wave 1 go on: item 1 on C04 read and recorded, a gap with no Navisworks for
+  F126's harness and the driver's Shift measurement, then item 2 on C02 and C04, while F112's
+  closing pass, F116's pass on Q113 and F126 work, then the test of wave 1
+- B, this record: Q114, FR-180 to FR-188 in three areas, F131 teams, F132 mirrored tests and F114
+  views, FR-069 changed by it, and wave 2 in three parts
+- C, measured first, read only, no Navisworks: the mirrored pairs of the picked XML and whether
+  each gave the same clashes on 1A02MM, the mechanical sets that miss HV, PL and FP models, and the
+  views code as it stands, turn5\measure-mirrors.md, measure-teams.md and measure-views.md
+- D, a design of the tree, the view and the team pairs by a panel of independent plans, written on
+  the items, then built in wave 2 and proved on 1A02MM against the 2 h 12 min of the baseline
+
+### What was done
+
+- Q114 written, FR-180 to FR-188 under their own heading of steps\fix-round.md, FR-069 noting that
+  one view per test replaces the viewpoint per clash, and wave 2 in three parts: 2a F127, F132 and
+  F115, 2b F131, F114 and F128, 2c F118
+- the three measurements of C started, read only. measure-mirrors.md and measure-teams.md are
+  written, their findings on FR-182 and FR-181, and measure-views.md is not yet
+
+### What remains
+
+- C and D, and everything of A
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- measure-views.md's findings on FR-180, FR-183 and FR-186, then the design
+
+Nothing in this record waits for the local machine.
+
+## 2026-10-04 The loop, turn 5, F125 a pane of Navisworks is not a dialog, the first pass built and read safe, the second pass built and read by a reviewer and a breaker, nothing blocking under Q93
+
+Nothing under src or tests changed in either pass. Core tests 1756 passed, 0 failed, 0 skipped by
+the pre-commit at the merge of main 3a148e3, before the second pass's first change,
+turn5\f125b-precommit-merge.txt, and 1756 passed, 0 failed, 0 skipped after its last change, by
+hand, turn5\f125b-core-after.txt, by the pre-commit at 03aa6c0, turn5\f125b-precommit-change.txt, by
+the pre-commit of the merge of main 6cc0283 at 42dfd66, turn5\f125b-precommit-claims-merge.txt, and
+by the pre-commit of the records made true after it, turn5\f125b-precommit-claims.txt. The first
+pass read 1746 passed, 0 failed, 0 skipped before and after on its branch off main dd55e4b,
+turn5\f125-proof\core-tests-before.txt and core-tests-after.txt. No Navisworks was started by either
+pass.
+
+### What was done
+
+- the first pass, 5fa98a8. The baseline run of 2026-10-04, set 04 item 1 on C02 from main
+  dd55e4b, hung: a floating Clash Detective pane of the adopted Navisworks, owned by the main
+  window and not modal, record.txt line 36 of steps\runs\04\item1-C02-hung, was a DIALOG to
+  WindowKind, so the driver stopped on it after RunButton and the tool's confirm was never
+  answered. WindowRecords now reads whether each window itself is enabled, with no message,
+  WindowKind calls PANE a WinForms window, not of the main window's caption, owned by a visible
+  window, whose owner reads enabled or which reads disabled itself, the driver notes each pane up
+  before Run and goes on, and the monitor writes a pane as PANE, never a finding, never holding
+  back WM_CLOSE. Proved by turn5\f125-proof\prove-f125.ps1, 76 passed and 17 failed on the scripts
+  the hung run used, every failure an F125 check, and 93 passed and 0 failed after,
+  prove-f125-before.txt and prove-f125-after.txt
+- the first pass read under Q93 by a reviewer and a breaker, who both approved with nothing
+  blocking, turn5\w1-read-review-F125.txt and turn5\w1-read-break-F125.txt
+- main c4fd0d4, F113 and F104, merged in at 3a148e3, the one conflict steps\01_next.md, both
+  sides kept, F125's order line 39 after F113's 37 and F104's 38 and its section after F104's
+- the second pass, 03aa6c0, read only changes that make the run's evidence truer, with no new
+  click, key, pointer move or posted message, and WindowKind's answer to every read unchanged. 1,
+  a window that reads disabled with its owner disabled is written by the driver and the record as
+  either a pane or a modal dialog blocked by the tool's window or another modal window, which one
+  UNKNOWN, never not modal, PaneWords in nw-guard.ps1. 2, the driver's stop line names the rule's
+  kind and both states, StateWords. 3, the monitor writes a window again, an AGAIN line, when the
+  rule's kind or either state changes, counts a window one DIALOG finding the first time it reads
+  DIALOG, and its line holding WM_CLOSE back names the windows behind it with their kind and both
+  states. Two clauses of item 3 are proved by reading the code only, never by a run or a harness
+  case: a window counted one DIALOG finding when it first reads DIALOG after reading another kind,
+  and the WM_CLOSE line written again only when the windows behind it or their reads change,
+  tools\loop\run.ps1 lines 1370, 1520 to 1534, 1604 and 1605 at 03aa6c0. 4, the README and
+  .claude\rules\loop.md name the rule's two limits, the WinForms class and a caption not the main
+  window's. 5, PaneKey, the pane key in one place for the driver's two callers
+- its proof: each changed script parses, turn5\f125b-parse.txt. prove-f125.ps1 has 12 checks
+  added, 8 of them in the two new cases pane watch and pane busy and 4 F125b checks added to the
+  pane, pane-new, pane-dialog and pane end cases. 10 of the 12 are named F125b and 2 are guards
+  of pane busy. One check of the first pass was restated for item 3, its first pass copy kept as
+  f125b-prove-f125-pass1.ps1. Before the change 97 passed and 8 failed, every failure an F125b
+  check, prove-f125-before2.txt. After it, on the committed scripts of 03aa6c0, the scripts' sha256 with Windows line ends equal to the blobs of 03aa6c0, turn5\f125b-blob-hashes.txt, 105 passed and 0
+  failed, prove-f125-after2.txt. Get-Process Roamer read 0 before and after each harness run,
+  turn5\f125b-roamer-reads.txt, which also records a Roamer this pass did not start, pid 49016
+  started at 18:55:27, the lead's baseline run, that the after run waited for from 18:56 to 21:10.
+  The solution builds with 0 warnings and 0 errors, turn5\f125b-sln-build.txt, an output that
+  carries no commit and no time. No .cs file of the solution changed after the merge 3a148e3, and
+  main 6cc0283 merged in after it changed none, so that build stands for 3a148e3. check-locals and
+  check-imports pass, turn5\f125b-checks.txt
+- the second pass read under Q93 by a reviewer, VERDICT APPROVE with nothing blocking,
+  turn5\f125b-read-review.txt, and by a breaker, VERDICT APPROVE with nothing blocking, turn5\f125b-read-break.txt, read from the files as they stand since it had no shell, its six notes on words and edge cases written as register rows F125-R8 to F125-R13, three checks that found nothing, and one note of what it could not run, and the reviewer's points left by the records pass written as F125-R14
+- register rows F125-R1 to F125-R7 in steps\loop.md, and F125-R8 to F125-R14 the lead wrote from
+  the second pass's readings, the readings' findings this pass does not fix, for F122 the loop
+  tools in wave 4
+- the records made true after the claim-checker read the second pass, turn5\f125b-read-claims.txt.
+  Main 6cc0283 merged in at 42dfd66, the one conflict steps\log.md, both sides kept, F125's entry on
+  top. F125-R2 marked answered for C02: the run of 18:55 on 5fa98a8 read the real pane disabled with
+  its owner disabled once the tool's window was up, steps\runs\04\item1-C02\driver.txt line 3, and
+  ended RAN, record.txt line 964 there, so the tool's window most likely disables it. Every cite of
+  the hung run moved to steps\runs\04\item1-C02-hung. The pane's origin written as UNKNOWN, likely
+  his saved layout, in .claude\rules\loop.md and nw-guard.ps1. The line ranges cited at dd55e4b and
+  5fa98a8 read again with git show, turn5\f125b-line-check.txt, F125-R3's driver line 288 corrected
+  to 293 and the root cause's run.ps1 line 1104 widened to 1104 and 1110 to 1111. The comments this
+  changed in nw-guard.ps1, drive-window-run.ps1 and the stand-in's ToolWindow.cs are comments only:
+  the two scripts with their comments dropped equal 03aa6c0 token for token, run.ps1 is unchanged,
+  and every changed line of ToolWindow.cs is a /// line, turn5\f125b-comments-only.txt, the same
+  check against 3a148e3 finding the second pass's code, turn5\f125b-comments-only-control.txt. So
+  nw-guard.ps1 and drive-window-run.ps1 now read sha256 5AF32EDF and 6A584A48, not the 7D4719E4 and
+  6A35C43F the harness ran
+
+### What remains
+
+- the second pass's own record lines on the real window, its words for the pane and its AGAIN
+  lines, at the first run after F125 merges
+
+### Known bugs
+
+- F125-R1, F125-R3 to F125-R14 under Q93, open for F122 in wave 4. F125-R2 is answered for C02
+  by steps\runs\04\item1-C02\driver.txt line 3
+- the two clauses of item 3 read in the code only are UNKNOWN by a run. No stand-in case was added
+  for them, because one runs only while Get-Process Roamer reads 0, and it read 1 at 22:11:11, a
+  Roamer started at 21:17:06, 20 s after the loop's item 1 on C04, turn5\f125b-roamer-claims.txt
+
+### What comes next
+
+- the merge, and the first run after it reads the second pass's lines on the real window
+
+### Every program started, every file written outside the repo
+
+Started: git, to fetch, merge, show, commit and push, and the pre-commit hook it runs, which runs
+check-locals, check-imports, the evidence check and dotnet test. Windows PowerShell 5.1 for the
+parser and to run prove-f125.ps1 twice, each run starting the stand-in only as its copy Decoy.exe,
+22 times in each run, still running 0 at each end, and a Windows PowerShell for each driver case,
+all held and ended by the harness. dotnet build for the solution, and dotnet test by hand. For the
+records made true, Windows PowerShell 5.1 six times more, reading only, the tokenizer check
+against 03aa6c0 and its control against 3a148e3 run three times each, the first time with a
+fault of the check, the last line end lost through git show, which made run.ps1 read different
+from itself, the second before a last comment of drive-window-run.ps1 was wrapped, and the files
+kept are of the third, the session's PowerShell for two Get-Process reads of Roamer, and python
+to edit steps\loop.md, steps\log.md, steps\01_next.md and the draft body. No harness ran for
+them. No Navisworks, and nothing installed.
+
+Written outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop\turn5: f125b-msg-merge.txt,
+f125b-msg-change.txt, f125b-msg-records.txt, f125b-msg-claims-merge.txt and f125b-msg-claims.txt,
+the commit messages, f125b-precommit-merge.txt, f125b-precommit-change.txt,
+f125b-precommit-records.txt, f125b-precommit-claims-merge.txt and f125b-precommit-claims.txt, the
+pre-commit's output, f125b-push-claims.txt, the push's output, f125b-roamer-reads.txt,
+f125b-parse.txt, f125b-sln-build.txt, f125b-core-after.txt, f125b-checks.txt, f125b-line-check.txt,
+f125b-comments-only.ps1, f125b-comments-only.txt, f125b-comments-only-control.txt,
+f125b-roamer-claims.txt, pr-f125.md, the draft body, and under f125-proof: prove-f125.ps1 extended,
+f125b-prove-f125-pass1.ps1, prove-f125-before2.txt, prove-f125-after2.txt, the harness's work
+folders work-184632 and work-211020, and Decoy.exe and Decoy.exe.config, copied again into
+standin-bin by each run. Each harness run also made runs\97 under the loop folder for the paths the
+driver types and removed it at its end. One file was written by mistake outside turn5,
+%TEMP%\f125b-added.txt, the lines this pass adds, read for em dashes and semicolons and removed at
+once. The records made true wrote comments-only.ps1, loop_rows.py, splice_log.py, merge_refs.py,
+reflow.py, fix_ctrl.py, f125-entry.md, progs.md and added.txt, the lines they add read for em
+dashes and semicolons, and a copy of the eight edited files in edited, kept while the merge was
+committed on its own, in the session's scratch folder under %TEMP%\claude. A python edit wrote a
+control character into this entry in place of the 01 of steps\01_next.md, found by a search for
+control characters and put right before the commit. The fetch and each commit printed error:
+failed to delete .git/worktrees lines, git's housekeeping of worktree folders OneDrive holds,
+which stopped nothing.
+
 ## 2026-10-04 The loop, turn 5, Bader's answer to Q113 and the notes on Q112, and the measurements
 
 Nothing under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before,

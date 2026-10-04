@@ -85,6 +85,36 @@ the rerun's evidence folder starts empty. Nothing of Bader's was harmed: his set
 AutoSave put back clean, and his logs folder as Q82 has it, one of his oldest logs pruned by the
 tool and held in logs-backup and two loop logs added, both put back at the close of the loop,
 record.txt lines 102 to 116. F125 fixes the driver before the baseline runs again.
+THE BASELINE, ITEM 1 ON C02, RAN. Started at 18:55:13 by turn4\start-run.ps1 as run.ps1 pid 24436
+from wt-base, a worktree at F125's first pass, 5fa98a8, whose harm reading under Q93 found
+nothing blocking, Get-Process Roamer reading 0 just before, turn4\run04-item1-C02-b-pid.txt and
+turn4\roamer-reads.txt. So it ran with the three weak points of F125's record its readers named,
+whose second pass was then in progress. The tools came from that commit, and the add-in was the
+installed e4484d15. Its Navisworks was pid 49016, started at 18:55:27. The floating Clash
+Detective pane read enabled at 18:56:52, record.txt line 37, in the same monitor pass that
+noted the tool's window open, line 40, and disabled with its owner disabled at 18:56:54, once
+the tool's window was up, driver.txt line 3, so the tool's window most likely disables it. The
+driver left it alone, pressed Run and answered the confirm, driver.txt lines 20 to 23. VERDICT:
+RAN, item 1 through the window, the log's RESULT block read, closed by Dispose, put back,
+record.txt line 964, the record there at 21:15:40 and not at 21:14:40,
+turn5\wait-run04-item1-C02-b.txt. The group 1A02MM ended FAILED, its ST model on Revit's
+internal origin, Q70, the case Bader's answer to Q100 turns into a skipped clash and PARTIAL
+once F112 is built and merged. 2939 clashes from 59 tests that found something, 528 created. The
+run took 2 hours 12 minutes 6 seconds, over the 45 minutes by 1 hour 27 minutes 6 seconds, run
+log lines 575 and 605, VIEWS 7487 s of it, 94.5%, line 587. Four files written, each size read
+back. Put back and read back: 40 registry values, 2 settings files and his AutoSave folder, one
+old autosave of his that the run's Navisworks removed put back from autosave-backup and three it
+added removed, record.txt lines 892 to 950. M5, what changed outside the loop folder by any
+program while it ran, 24 keys and 232 files, listed and left as they are, lines 878 to 884. His
+logs folder holds one oldest log the tool pruned, kept in logs-backup, and two loop logs added,
+Q82, put back at the close of the loop, lines 951 to 955. The evidence is masked into
+steps\runs\04\item1-C02 with no copy differing, turn5\mask-run04-item1-C02.txt. Other work ran
+on this machine during it, the lead's pre-commit test runs at 20:15, 20:43 and 21:02,
+turn5\precommit-records-6b.txt, 7.txt and 7b.txt, and the F112 developer's builds and tests at
+times no file holds, turn5\f112b-roamer-reads.txt, while F125's harness waited for Roamer to read
+0 from 18:56 to 21:10, turn5\f125b-roamer-reads.txt. What that did to the times is UNKNOWN. Item 1
+on C04 started at 21:16:46 the same way, run.ps1 pid 45316, Roamer reading 0 at 21:16:45,
+turn4\run04-item1-C04-pid.txt and turn4\roamer-reads.txt.
 MERGED, 2026-10-04: PR 95, F113, the clash counts of wave 1, FR-031 to FR-034, as 7b6df88 at
 18:02:32, and PR 96, F104, the check of a workbook against its document, the wave test's
 instrument outside the product waves, as c4fd0d4 at 18:14:56, after main merged into it at
@@ -111,6 +141,32 @@ wf_d55f67e0-13a, turn5\w2-workflow-start.txt, each told to merge main c4fd0d4 in
 first. F116, the clash XML, read at 18:39: FR-025,
 FR-026, FR-008, FR-009 and FR-030 committed, the branch at 0157966 with main c4fd0d4 merged in.
 F114 stays paused at f915396 for wave 2.
+F125 MERGED as PR 102, 1ae6771, at 23:06:17, green in Actions on its last commit 302f802, run
+37230696626, turn5\actions-reads-pr102.txt. Its second pass was read under Q93 by a reviewer and
+a breaker, both APPROVE with nothing blocking, turn5\f125b-read-review.txt and
+turn5\f125b-read-break.txt, and its harness passed 105 and failed 0 on the scripts of 03aa6c0,
+turn5\f125-proof\prove-f125-after2.txt line 641, their sha256 with Windows line ends equal to the
+harness's in the first eight hex digits, turn5\f125b-blob-hashes.txt, the merged scripts
+differing from those in comments only, turn5\f125b-comments-only.txt. Register rows F125-R1 to
+F125-R7 hold the first pass's readings' points and F125-R8 to F125-R14 the second pass's, all for
+F122 in wave 4, F125-R2 answered for C02. Two claim-checks made its records true,
+turn5\f125b-read-claims.txt and turn5\f125b-read-claims2.txt, the second written by the lead
+from its return. Its branch and its worktree folder are removed, while git's own entry for the
+worktree could not be deleted, Permission denied, turn5\precommit-records-9.txt. The baseline
+runs from wt-base at 5fa98a8 to the end of set 04, so they keep the first pass's record words,
+and the runs after this merge write the second pass's. F126, the driver unticking a named box
+for the rule-off run of wave 1, branched off 1ae6771 in wt-f126, its brief turn5\f126-brief.md,
+and its developer started at 23:07:26 in workflow wf_b3336354-ab1, turn5\f126-workflow-start.txt.
+F112: fix attempt 2 read CHANGES, 2 blocking and 1, its readings turn5\f112b-read-review.txt,
+f112b-read-break.txt and f112b-read-claims.txt, so fix attempt 3, the last before the form, ran:
+its reviewer APPROVE, its breaker CHANGES with one blocking finding, turn5\f112c-read-*.txt, an
+old clause of an Internal group's FAILED reason saying its files were written before any was,
+which keeps a missing or stale NWD out of RESULT. The words are older than F112 and the developer
+knew of them since attempt 1, attempt 3 made them reach every federation-only Internal group,
+and no reading named them as blocking before attempt 3's, so the closing pass now running is the
+first fix attempt of that finding, with the claim-checker's 12 points. F116: fix attempt 2 read
+APPROVE by both, nothing blocking, turn5\f116b-read-review.txt and f116b-read-break.txt, and the
+pass that carries Bader's answer to Q113 is with its developer.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -307,11 +363,13 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test of the coverage,
    why the Shift range fails in the window code, and whether the driver can test a Shift click
    without real input
-6. Wave 2 in two halves, 2a F127 coverage first with F115 sets and F114 views, 2b F128 generic
-   models with F118 workbook and report. Wave 3 in two halves, 3a F129 start from an NWF with
-   F120 harvest and pictures and F109 install, 3b F130 the Shift range with F119 run log and
-   RESULT. Then waves 4 and 5, as steps\fix-round.md lists them. Every wave test from wave 2 on
-   shows the Coverage sheet
+6. Wave 2 in three parts since Bader's views by team, Q114: 2a F127 coverage first with F132
+   mirrored tests and F115 sets, 2b F131 teams, F114 views reshaped by Q114 and F128 generic
+   models, 2c F118 workbook and report. Q114's measurements first, turn5\measure-mirrors.md,
+   measure-teams.md and measure-views.md, then a design of the tree by a panel of plans. Wave 3 in
+   two halves, 3a F129 start from an NWF with F120 harvest and pictures and F109 install, 3b F130
+   the Shift range with F119 run log and RESULT. Then waves 4 and 5, as steps\fix-round.md lists
+   them. Every wave test from wave 2 on shows the Coverage sheet
 Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes. The
 keep-awake is checked every 30 minutes.
 
@@ -556,7 +614,7 @@ an F number only when it becomes work. Most harmful first when the loop picks, a
 wrong number ranks above a loud failure. Done in code but not proved by a run means the
 baseline run proves it or contradicts it.
 
-322 rows, by status, after turn 4's eighteen additions and turn 5's eight:
+336 rows, by status, after turn 4's eighteen additions and turn 5's twenty two:
 
 - 125 done in code, not proved by a run
 - 3 reported by the read, not verified, T1-N, T1-UNCALLED and T1-CATCH
@@ -578,6 +636,7 @@ baseline run proves it or contradicts it.
 - 19 open for F103 or after it, T3-G1 to T3-G16, T3-P, T3-P2 and T3-B
 - 1 built and read safe, F104, its first real read waiting
 - 7 register rows of F104's readings, F104-R1 to F104-R7, under Q93
+- 14 register rows of F125's readings, F125-R1 to F125-R14, under Q93, for F122 the loop tools in wave 4, F125-R2 answered for C02
 - 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
 - 1 closed, not there at 42499bf
@@ -640,6 +699,20 @@ baseline run proves it or contradicts it.
 | F104-R5 | the same breaker | The probe's viewpoint walk is unmeasured and unbounded, 1165 viewpoints in 1B06G1 of C06, and on a busy processor only the 12 hour ceiling ends it | the walk timed on the first real read | open, register row under Q93 | none yet | none yet |
 | F104-R6 | the same breaker | A documents read opens every NWF, so Bader's Recent File List fills with the loop's NWFs, put back only when no Navisworks of his ran meanwhile, and each open adds a Windows Recent link that M5 lists and never puts back | the first real read listing what it changed there | open, register row under Q93 | none yet | none yet |
 | F104-R7 | both readers of F104 part 2 | The other notes: summary.txt written after the VERDICT, prove-run.ps1 line 281 failing on the new mode, pictures and read-outs not pinned to the window run, checks 7, 8 and 10 not run, the header claiming less than it writes, three lines of the finally outside a try, ReadPairs before the lock, four ties not made, the probe call unbounded if the monitor dies, a probe file throw read as a hang, compare-document.ps1's error text dropped, a picture status typo found late, a locked session not checked, and three loud nuisances, each with its line in turn5\f104p2-reads.txt | each made true where its file next changes | open, register rows under Q93 | none yet | no run applies |
+| F125-R1 | the breaker of F125, its second finding, turn5\w1-read-break-F125.txt, and the reviewer's policy note, turn5\w1-read-review-F125.txt | A modeless WinForms window that comes up after Run owned by the tool's window stops the driver, DIALOG exit 8, while the monitor reads it PANE, so it holds nothing back and posts WM_CLOSE to the tool's window in the middle of OnRun's preview, where before F125 any such window held WM_CLOSE back. The verdict stays STOPPED, DRIVER, 8. Since F125's second pass the driver's stop line names the rule's kind for it, so the two readings stand side by side in the evidence, and the close is unchanged. run.ps1 lines 1053, 1064 and 1108 and the driver's 386 to 391 as read at 5fa98a8 | the monitor holding WM_CLOSE back for a window the driver stopped on, or a decision under Q93 that a window up after Run is a finding, with a stand-in case run through the driver and the monitor together | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R2 | the breaker of F125, its third finding, turn5\w1-read-break-F125.txt | The fix rests on the tool's ShowDialog disabling the real pane as it disabled the stand-in's. A pane on another thread, or a window ShowDialog does not disable, reads enabled with its owner disabled, a DIALOG, so the driver stops on it after Run as on 2026-10-04, the confirm goes unanswered and the hang rule closes Navisworks after about 5 minutes. Loud, and it costs one baseline run | the next baseline run's record, whose pane line now carries the pane's own state while the tool's window is up, read, and a rule for that shape written only if it reads enabled | answered for C02: the run of 18:55 on 5fa98a8 read the real pane disabled with its owner disabled once the tool's window was up, steps\runs\04\item1-C02\driver.txt line 3, and ended RAN, record.txt line 964 there, so the tool's window most likely disables it. What still waits is the second pass's own record lines on the real window, at the first run after F125 merges. No run has shown a pane on another thread or one ShowDialog does not disable | none yet | set 04 item 1 on C02 at 18:55 on 5fa98a8, steps\runs\04\item1-C02\driver.txt line 3 |
+| F125-R3 | the breaker of F125, its fourth finding, turn5\w1-read-break-F125.txt | A pane destroyed and made again with a new handle after Run is a window not noted before Run, so the driver stops, and the monitor, reading it enabled with a disabled owner, counts a DIALOG finding and holds WM_CLOSE back, so a run that finished is judged STOPPED, HUNG, code 4. Loud. Both keys hold the handle, tools\probes\drive-window-run.ps1 lines 293 and 386 to 391 and tools\loop\run.ps1 lines 1050 to 1061 and 1108 as read at 5fa98a8, turn5\f125b-line-check.txt | a pane made again measured on a run, then a key that follows it, with a stand-in case | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R4 | the breaker of F125, its fifth finding, turn5\w1-read-break-F125.txt | A WPF pane, a WinForms pane owned by the hidden parking owner or by nothing, and a pane first read while the main window is hidden all stay a DIALOG, nw-guard.ps1 lines 565 and 568 as read at 5fa98a8, so the driver stops on them after Run as on 2026-10-04. Only the one shape measured on 2026-10-04 is handled, and another floating pane, whose origin is UNKNOWN as this one's is, may not have it. Loud | each shape measured on a run before a rule is written for it | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R5 | the breaker of F125, its sixth finding, turn5\w1-read-break-F125.txt | A message box owned by the pane and up before Run is a #32770 and never a pane, and the driver reads no dialog between finding the tool's window and pressing Run outside the scan's wait, so the pane under it is noted, Run is pressed, and the message box stops the driver after Run, left up. Loud and right after Run. The blind spot before Run was there before F125, driver lines 338 to 345 and 375 to 376 as read at 5fa98a8 | the driver reading dialogs before it presses Run, with a stand-in case | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R6 | the reviewer's third finding and the breaker's seventh, turn5\w1-read-review-F125.txt and turn5\w1-read-break-F125.txt | tools\loop\prove-run.ps1's WindowKind table passes four reads and has no PANE row, lines 773 to 781 as read at 5fa98a8, and prove-run.ps1 is out of date since F106 and was not run. The only proof of the PANE rule, the driver's exemption and F125's second pass is turn5\f125-proof\prove-f125.ps1, outside the repo, so after the merge nothing in the repo catches a change to them | a PANE row and the pane cases in prove-run.ps1, and prove-run.ps1 run whole | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R7 | the reviewer's first finding and the breaker's first, turn5\w1-read-review-F125.txt and turn5\w1-read-break-F125.txt | A modal dialog of Navisworks up when the tool's window opens reads disabled with its owner disabled once it is up, as a pane does, so the rule calls it PANE, the driver goes on past it, and when the monitor first reads it then it counts no DIALOG finding and the exit is 0 where it was 5. F125's second pass makes every line naming it say it is a pane or a modal dialog, which one UNKNOWN, writes it again when its states change, and counts it if the monitor read it as a DIALOG before the tool's window, but does not decide it. No stand-in case has a WinForms modal dialog up before the tool's window | a stand-in case with a modal WinForms dialog up before the tool's window, run through the driver and the monitor, then Bader's decision under Q93 whether such a window counts | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R8 | the breaker of F125's second pass, its first point, turn5\f125b-read-break.txt | A dialog first read DIALOG, and counted, then read PANE once the tool's window opens gets an AGAIN line saying left as it is and not a finding, while the count still holds it, so the record says both of one window. Words in the evidence, not a wrong count. run.ps1 lines 1533 to 1537 at 03aa6c0 | the AGAIN line of a counted window saying it was counted, with a stand-in case | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R9 | the breaker of F125's second pass, its second point, turn5\f125b-read-break.txt | A pane the driver noted that later reads DIALOG, enabled with its owner disabled, is passed by the driver after Run, which exempts by handle and class and never by kind, while the monitor counts it, puts it in its busy set and holds WM_CLOSE back, so a finished run ends STOPPED, HUNG about 300 s later. During the Scan wait the driver stops on it instead. Loud. Whether the real pane flips during a run is UNKNOWN until a run writes AGAIN lines. drive-window-run.ps1 lines 346 and 394, run.ps1 lines 1519, 1534 and 1593 at 03aa6c0 | one rule for a noted pane in the driver and the monitor, with a stand-in case where the pane flips after Run | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R10 | the breaker of F125's second pass, its third point, turn5\f125b-read-break.txt | The monitor keys a window by handle, class and caption, so a dialog whose caption changes counts once per caption, and the README's never twice is false for it. An over count, never a short one, and the keying is older than the second pass. run.ps1 lines 1518 and 1534, tools\loop\README.md lines 497 and 498 at 03aa6c0, now 499 and 500 | a key that holds through a caption change, or words that say a count is per caption | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R11 | the breaker of F125's second pass, its fourth point, turn5\f125b-read-break.txt | A window first written while its children could not be read, the 2 s read budget spent, never gets its text written later, since only first sight and a change of kind or state write a line, so a DIALOG may be counted without its text. In the run of 18:55 the watchdog could not read the pane's children, its last line quoted in the HEARTBEAT lines of runs\04\item1-C02\record.txt 102, 138 and 144, while the monitor's own first line of the pane, line 37, read its text whole, so whether the monitor ever writes a window this way is UNKNOWN by a run. run.ps1 lines 1523, 1528 and 1529 at 03aa6c0 | the text of a counted window written once it can be read, with a stand-in case | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R12 | the breaker of F125's second pass, its fifth point, turn5\f125b-read-break.txt | StateWords writes the handle and enabled state of an owner that belongs to another process, where OwnerText writes only that it is a window of another process, so one masking rule has two copies. A handle and True or False only, nothing naming the program. nw-guard.ps1 lines 586 to 589, now 587 to 590, run.ps1 line 1603 and 1650 to 1654, drive-window-run.ps1 lines 301 and 310 at 03aa6c0 | one copy of the words for an owner of another process | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R13 | the breaker of F125's second pass, its sixth point, turn5\f125b-read-break.txt | The driver's count of passes after Run counts passes that held any window, so three different passing windows on three passes stop it, DIALOG exit 8, while its comment says one window read on three passes running. Loud, and older than F125. drive-window-run.ps1 lines 306 to 308 and 389 to 397 at 03aa6c0 | a count per window, or the comment made true | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F125-R14 | the reviewer of F125's second pass, turn5\f125b-read-review.txt, points the records pass left | nw-guard.ps1's header still says that is not modal and lists neither PaneWords nor StateWords, KindStateWords and StateWords are two forms of one set of words, the order line, the section heading and THE TEST of F125 in steps\01_next.md still say not modal, and the new count rule has no test that breaks it. Also PaneWords still writes a window that is not modal for a window whose owner reads enabled, nw-guard.ps1 line 582, which a modal dialog owned by a window of another thread would read too, a shape no row names, and nw-guard.ps1 lines 566 and 567 and the F125 section of steps\01_next.md say a window whose state is not read stays a DIALOG, where prove-f125-after2.txt line 620 reads PANE for an owner read enabled and an own state not read | the words made true and one form of them, and a breaking stand-in case for the count rule | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
 | Q88-IDS | Q88 | GitHub keeps the commits 464f79f and c98c6f3 readable through PR 74's own refs, and they hold the licensing agent's analytics id and a session id | only the repository's owner can ask GitHub support to purge them | known item, Bader's, the repository is private | 74 | no run applies |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
 | RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
