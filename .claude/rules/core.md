@@ -366,7 +366,11 @@ and 6 does not read as broken.
   run's clash total, because a clash that never ran is not a group that found none. A
   model whose placement could not be read is never judged on its distance, and the block
   says so. `ReportOptions.SkipClashOffCoordinates`, on by default, switches the rule off,
-  and then every group is clashed and judged as before the answer
+  and then every group is clashed and judged as before the answer, Q70's failure for a
+  model on Internal included. The window sets it from a tick box on the Clash step, ticked
+  by default, whose label and grey line are `AlignmentCheck.TickLabel` and
+  `AlignmentCheck.HelpLine`, because a building is run once more with the rule off and a
+  setting only a build can change is no switch
 - The counts in the RESULT block and the errors under it come from one list. A
   failed count with an empty error list is what the log printed once, saying
   "groups failed: 22" and "Nothing failed." in the same block. A group recorded as

@@ -1189,6 +1189,18 @@ namespace Federator.Addin.Ui
                 RebuildDriftedSetsHelp.Text = SetRebuildSettings.HelpLine;
             }
 
+            // Bader's answer to Q99 and Q100. Read off Core the same way, the distance in
+            // the grey line read off the setting the run will use.
+            if (SkipClashOffCoordinates != null)
+            {
+                SkipClashOffCoordinates.Content = AlignmentCheck.TickLabel;
+            }
+
+            if (SkipClashOffCoordinatesHelp != null)
+            {
+                SkipClashOffCoordinatesHelp.Text = AlignmentCheck.HelpLine(new ReportOptions().FarModelMillimetres);
+            }
+
             if (ByDesignHelp != null)
             {
                 ByDesignHelp.Text = "Read only with the box below on. Columns "
@@ -1509,6 +1521,7 @@ namespace Federator.Addin.Ui
             options.PriorityPath = Trimmed(PriorityBox.Text);
             options.MarkByDesign = MarkByDesign.IsChecked == true;
             options.RebuildDriftedSets = RebuildDriftedSets.IsChecked == true;
+            options.SkipClashOffCoordinates = SkipClashOffCoordinates.IsChecked == true;
             options.ByDesignPath = Trimmed(ByDesignBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();

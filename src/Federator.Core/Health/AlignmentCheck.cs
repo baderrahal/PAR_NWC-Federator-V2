@@ -159,6 +159,22 @@ namespace Federator.Core.Health
         public const bool DefaultSkipClashOffCoordinates = true;
 
         /// <summary>
+        /// The tick box on the Clash step that switches the rule, ticked by default, because
+        /// a building is run once more with it off and a setting only a build can change is
+        /// no switch. Eight words.
+        /// </summary>
+        public const string TickLabel = "Skip clash when models sit off shared coordinates";
+
+        /// <summary>
+        /// The grey line under it, twelve words, with the distance read off the setting so
+        /// the window never carries a second copy of the metre.
+        /// </summary>
+        public static string HelpLine(double farModelMillimetres)
+        {
+            return "Internal site or over " + Metres(farModelMillimetres) + " away. NWF and NWD still made";
+        }
+
+        /// <summary>
         /// The block, with the models not on the same shared coordinates measured against
         /// the given distance in millimetres, and said the way the rule that skips the
         /// clash is set. Written even when everything agrees, because a missing block reads

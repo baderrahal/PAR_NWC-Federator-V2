@@ -512,6 +512,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <!-- F72. Visible rather than under an expander, because a weekly
@@ -548,9 +549,19 @@
                             <TextBlock x:Name="RebuildDriftedSetsHelp" Style="{StaticResource TickHelp}" />
                         </StackPanel>
 
+                        <!-- Bader's answer to Q99 and Q100. ON by default: a group with a
+                             model not on the same shared coordinates writes its NWF and NWD
+                             and skips its clash. Off, every group is clashed as before, which
+                             is how a building is run once more to prove the other fixes. Its
+                             label and grey line are read off Core in the constructor. -->
+                        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,8">
+                            <CheckBox x:Name="SkipClashOffCoordinates" IsChecked="True" />
+                            <TextBlock x:Name="SkipClashOffCoordinatesHelp" Style="{StaticResource TickHelp}" />
+                        </StackPanel>
+
                         <!-- The two that destroy data. Collapsed and on their own, because
                              they do not belong beside ordinary output options. -->
-                        <Expander Grid.Row="3" Grid.ColumnSpan="2" IsExpanded="False"
+                        <Expander Grid.Row="4" Grid.ColumnSpan="2" IsExpanded="False"
                                   Header="Things that destroy data" Margin="0,0,0,8">
                             <StackPanel Margin="20,4,0,0">
                                 <!-- One StackPanel each, never two boxes in one, because the

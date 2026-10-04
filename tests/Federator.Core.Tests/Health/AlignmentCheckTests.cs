@@ -471,6 +471,33 @@ namespace Federator.Core.Tests.Health
             Assert.That(AlignmentCheck.DefaultSkipClashOffCoordinates, Is.True);
         }
 
+        /// <summary>
+        /// A building is run once more with the rule off, so the switch is a tick box on the
+        /// Clash step a person or the driver can reach, and not a setting only a build can
+        /// change. Its label is at most eight plain words with no capitals for emphasis.
+        /// </summary>
+        [Test]
+        public void TheTickBoxLabelIsEightPlainWordsAtMost()
+        {
+            Assert.That(AlignmentCheck.TickLabel, Is.EqualTo("Skip clash when models sit off shared coordinates"));
+            Assert.That(AlignmentCheck.TickLabel.Split(' ').Length, Is.LessThanOrEqualTo(8));
+            Assert.That(AlignmentCheck.TickLabel, Does.Not.Contain("SkipClash"), "no code identifier in a label");
+        }
+
+        /// <summary>
+        /// The grey line is at most twelve words and carries the distance read off the
+        /// setting, never typed into the window as a second copy that would drift.
+        /// </summary>
+        [Test]
+        public void TheGreyLineIsTwelveWordsAtMostAndCarriesTheDistanceOffTheSetting()
+        {
+            Assert.That(
+                AlignmentCheck.HelpLine(AlignmentCheck.DefaultFarModelMillimetres),
+                Is.EqualTo("Internal site or over 1 m away. NWF and NWD still made"));
+            Assert.That(AlignmentCheck.HelpLine(AlignmentCheck.DefaultFarModelMillimetres).Split(' ').Length, Is.LessThanOrEqualTo(12));
+            Assert.That(AlignmentCheck.HelpLine(2500.0), Does.Contain("over 2.5 m away"));
+        }
+
         /// <summary>The proof the fix list asks for: a model at 0.9 m gives no line.</summary>
         [Test]
         public void AModelUnderTheSettingIsOnTheSameCoordinates()
