@@ -9,8 +9,9 @@ namespace Federator.Core.Health
     /// model, Bader's answer to Q99 and Q100 on 2026-10-04, each said in one line naming its
     /// file, its shared site and its distance from the reference in X, Y and Z.
     ///
-    /// A model is not on the same coordinates when it sits more than the far model setting
-    /// from the reference model, measured as the straight line of its X, Y and Z offsets.
+    /// A model is not on the same coordinates when it names Internal as its shared site,
+    /// which is Revit's own origin, or when it sits more than the far model setting from the
+    /// reference model, measured as the straight line of its X, Y and Z offsets.
     ///
     /// IN A GROUP HOLDING ONE, ONLY THE CLASH IS SKIPPED. The NWF is built with every model,
     /// set and test and the NWD is published, no test is run, no viewpoint and no clash
@@ -60,8 +61,8 @@ namespace Federator.Core.Health
             List<string> lines = new List<string>();
             lines.Add(Words.Or(building, "this group") + ": " + ClashSkippedReason);
             lines.Add("The NWF and the NWD of this group hold every model, set and clash test. No clash test was run and no"
-                + " clash report or viewpoint was made, because these models are not on the same shared coordinates as "
-                + (Reference == null ? "the rest of the group" : "the reference model " + Reference) + ":");
+                + " clash report or viewpoint was made, because these models are not on the same shared coordinates"
+                + (Reference == null ? string.Empty : ", measured from the reference model " + Reference) + ":");
 
             foreach (string model in Models)
             {

@@ -343,8 +343,11 @@ and 6 does not read as broken.
   pass, so the two can never disagree
 - A GROUP NOT ON THE SAME SHARED COORDINATES SKIPS ITS CLASH AND NOTHING ELSE, Q98 B2
   and Bader's answer to Q99 and Q100 on 2026-10-04. A model is not on the same
-  coordinates when it sits more than a metre from its group's reference model, as the
-  ALIGNMENT block measures it. The distance is the STRAIGHT LINE of dx, dy and dz and
+  coordinates when it names Internal as its shared site, or when it sits more than a
+  metre from its group's reference model, as the ALIGNMENT block measures it. That
+  replaces Q70 for a model on Internal, which no longer FAILS its group while the rule
+  is on, and a model naming no site at all still fails it, because his answer named
+  Internal and the distance and not that. The distance is the STRAIGHT LINE of dx, dy and
   never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away and
   under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
   defaulting to `AlignmentCheck.DefaultFarModelMillimetres`. In such a group the NWF is

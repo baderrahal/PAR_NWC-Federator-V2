@@ -144,22 +144,28 @@ namespace Federator.Core.Tests.Health
                 Is.EqualTo(3), "three of the four sit somewhere the architecture does not");
         }
 
-        // ---------- Q70, a model on the internal origin fails its group ----------
+        // ---------- Q70, and Bader's answer to Q100, a model on the internal origin ----------
+
+        private const bool RuleOn = true;
+        private const bool RuleOff = false;
 
         /// <summary>
-        /// 1A02MM's real shape on 2026-09-20: four models, one of them on Internal. The
-        /// group is FAILED and the block says which model and why.
+        /// 1A02MM's real shape on 2026-09-20: four models, one of them on Internal. With the
+        /// rule that skips the clash switched OFF the group is judged as before Bader's answer
+        /// to Q100, FAILED as Q70 answered, and the block says which model and why.
         /// </summary>
         [Test]
-        public void AGroupWithAModelOnTheInternalOriginIsFailedAndTheBlockSaysWhich()
+        public void WithTheRuleOffAGroupWithAModelOnTheInternalOriginIsFailedAndTheBlockSaysWhich()
         {
-            string why = AlignmentCheck.WhyItFailsTheGroup(TheRealGroup());
+            string why = AlignmentCheck.WhyItFailsTheGroup(TheRealGroup(), RuleOff);
 
             Assert.That(why, Is.Not.Null);
             Assert.That(why, Does.Contain("1 model(s) were exported on Revit's internal origin"));
             Assert.That(why, Does.Contain("ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
 
-            Assert.That(Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates)), Does.Contain("THIS GROUP IS FAILED"));
+            Assert.That(
+                Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, RuleOff)),
+                Does.Contain("THIS GROUP IS FAILED"));
         }
 
         /// <summary>
@@ -172,8 +178,28 @@ namespace Federator.Core.Tests.Health
         public void AFailedGroupStillSaysEveryOutputWasWritten()
         {
             Assert.That(
-                AlignmentCheck.WhyItFailsTheGroup(TheRealGroup()),
+                AlignmentCheck.WhyItFailsTheGroup(TheRealGroup(), RuleOff),
                 Does.Contain("Every output of this group was still written"));
+        }
+
+        /// <summary>
+        /// Bader's answer to Q100 on 2026-10-04: a model named Internal no longer FAILS its
+        /// group, it skips the clash the same way a model more than the setting away does.
+        /// The real 1A02MM, a building of the wave 1 test, held one when 5q measured it.
+        /// </summary>
+        [Test]
+        public void WithTheRuleOnAModelOnTheInternalOriginSkipsTheClashAndDoesNotFailTheGroup()
+        {
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres);
+            string block = Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, RuleOn));
+
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(TheRealGroup(), RuleOn), Is.Null);
+            Assert.That(off.Models.Count, Is.EqualTo(1), "the EL at 312 mm and the ME at 17 mm name real sites and sit under a metre");
+            Assert.That(off.Models[0], Is.EqualTo(
+                "ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc   shared site \"Internal\", Revit's own origin and not a"
+                + " shared site   X 0 mm  Y 0 mm  Z 255 mm from the reference, 0.255 m in a straight line"));
+            Assert.That(block, Does.Contain("CLASH SKIPPED. 1 model(s) are not on the same shared coordinates"));
+            Assert.That(block, Does.Not.Contain("THIS GROUP IS FAILED"));
         }
 
         [Test]
@@ -185,15 +211,18 @@ namespace Federator.Core.Tests.Health
                 At("ST", "SWLS-02-SharedCoordinate", 0.0, 0.0, 0.0)
             };
 
-            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models), Is.Null);
-            Assert.That(Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates)), Does.Not.Contain("THIS GROUP IS FAILED"));
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOn), Is.Null);
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOff), Is.Null);
+            Assert.That(
+                Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn)),
+                Does.Not.Contain("THIS GROUP IS FAILED"));
         }
 
         /// <summary>
         /// The case that must NOT fail, and it is the one most of C02 is in. Models on
         /// different REAL shared sites are reported, with the difference in X, Y and Z,
         /// and the group runs, because different named sites can still be the same
-        /// coordinates and only a person can say.
+        /// coordinates and only a person can say. Under a metre apart, so not skipped either.
         /// </summary>
         [Test]
         public void AGroupWhoseModelsNameDifferentRealSitesIsReportedAndNotFailed()
@@ -205,15 +234,21 @@ namespace Federator.Core.Tests.Health
                 At("ME", "PW3_Shared_Location", 0.0, 0.0, 5.0)
             };
 
-            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models), Is.Null, "different real sites is not a failure");
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOn), Is.Null, "different real sites is not a failure");
 
-            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates));
+            string block = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn));
 
             Assert.That(block, Does.Contain("this group names 3 different shared coordinates"));
             Assert.That(block, Does.Contain("DIFFERENT"));
             Assert.That(block, Does.Not.Contain("THIS GROUP IS FAILED"));
+            Assert.That(block, Does.Not.Contain("CLASH SKIPPED"));
         }
 
+        /// <summary>
+        /// Q70's other half stays as it was. Bader's answer named Internal and the distance,
+        /// and a model naming no site at all is neither, so it still fails its group with
+        /// the rule on or off.
+        /// </summary>
         [Test]
         public void AModelNamingNoSiteAtAllAlsoFailsTheGroup()
         {
@@ -223,10 +258,141 @@ namespace Federator.Core.Tests.Health
                 At("ST", string.Empty, 0.0, 0.0, 0.0)
             };
 
-            string why = AlignmentCheck.WhyItFailsTheGroup(models);
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOn), Does.Contain("1 model(s) name no shared site at all"));
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOff), Does.Contain("1 model(s) name no shared site at all"));
+            Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Any, Is.False);
+        }
 
-            Assert.That(why, Is.Not.Null);
-            Assert.That(why, Does.Contain("1 model(s) name no shared site at all"));
+        /// <summary>
+        /// With the rule on, a group failed on a model naming no site may also have its clash
+        /// skipped, and then no report is written, so the reason claims only the NWF and the
+        /// NWD, which are written either way.
+        /// </summary>
+        [Test]
+        public void WithTheRuleOnAFailedGroupClaimsOnlyItsNwfAndItsNwd()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "A site", 0.0, 0.0, 0.0),
+                At("EL", "Internal", 0.0, 0.0, 0.0),
+                At("ST", string.Empty, 0.0, 0.0, 0.0)
+            };
+
+            string why = AlignmentCheck.WhyItFailsTheGroup(models, RuleOn);
+
+            Assert.That(why, Does.EndWith("Its NWF and its NWD were still written, so the evidence is there to send."));
+            Assert.That(why, Does.Not.Contain("Every output"));
+            Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Any, Is.True);
+        }
+
+        /// <summary>
+        /// FR-006, the real 1B06M1 of the C06 run, log lines 2489 and 2774: its ST names
+        /// Internal and sits 72.5 mm above the ME reference, all of it in height, and the
+        /// group FAILED on the name alone while the placement agreed. Its clash is skipped
+        /// now and it is not failed.
+        /// </summary>
+        [Test]
+        public void TheInternalModelOf1B06M1SkipsTheClashAndNoLongerFailsTheGroup()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                Real("1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc", "ME", "a shared site", 0.0, 0.0, 0.0),
+                Real("1104-PAR-1B06M1-ZZZ-ST-MOD-000001.nwc", "ST", "Internal", 0.0, 0.0, 72.5)
+            };
+
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres);
+
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOn), Is.Null);
+            Assert.That(off.Models.Count, Is.EqualTo(1));
+            Assert.That(off.Models[0], Does.StartWith(
+                "ST  1104-PAR-1B06M1-ZZZ-ST-MOD-000001.nwc   shared site \"Internal\", Revit's own origin and not a"
+                + " shared site   X 0 mm  Y 0 mm  Z 72.5 mm from the reference, "));
+            Assert.That(off.Models[0], Does.Not.Contain("more than"), "it is listed for its site, not its distance");
+        }
+
+        /// <summary>
+        /// The real 1B06BC, log lines 583 and 584: its AR reference itself names Internal,
+        /// and its EL sits 2,774 km away. Both are named, the reference as itself.
+        /// </summary>
+        [Test]
+        public void AReferenceOnTheInternalOriginIsNamedAsTheReferenceItself()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                Real("1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc", "AR", "Internal", 0.0, 0.0, 0.0),
+                Real("1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc", "EL", "SITEWIDE PHASE 3",
+                    323886396.13, 2755364306.53, 11033.3)
+            };
+
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres);
+
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOn), Is.Null);
+            Assert.That(off.Models.Count, Is.EqualTo(2));
+            Assert.That(off.Models[0], Is.EqualTo(
+                "AR  1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc   shared site \"Internal\", Revit's own origin and not a"
+                + " shared site   the reference model itself"));
+            Assert.That(off.Models[1], Does.StartWith("EL  1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc   shared site \"SITEWIDE PHASE 3\""));
+        }
+
+        /// <summary>The real 1B06PS ST, log line 5514: named Internal AND 2,822 km away, said in one line.</summary>
+        [Test]
+        public void AModelOnInternalAndFarAwayIsOneLineSayingBoth()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                Real("1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc", "AR", "a shared site", 0.0, 0.0, 0.0),
+                Real("1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc", "ST", "Internal",
+                    -660063927.46, -2744376692.73, -675666.8)
+            };
+
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres);
+
+            Assert.That(off.Models.Count, Is.EqualTo(1));
+            Assert.That(off.Models[0], Is.EqualTo(
+                "ST  1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc   shared site \"Internal\", Revit's own origin and not a"
+                + " shared site   X -660063927.46 mm  Y -2744376692.73 mm  Z -675666.8 mm from the reference,"
+                + " 2822638.531 m in a straight line, more than 1 m"));
+        }
+
+        /// <summary>
+        /// Where no model could be placed the block stops before the distances, and a model
+        /// on Internal still skips the clash, so the block still says so, and says why the
+        /// group failed where it did, rather than leaving the reason to the engine alone.
+        /// </summary>
+        [Test]
+        public void AGroupWhereNoModelCouldBePlacedStillSaysTheClashIsSkippedForAModelOnInternal()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "A site", ModelPlacement.NotRead, ModelPlacement.NotRead, ModelPlacement.NotRead),
+                At("ST", "Internal", ModelPlacement.NotRead, ModelPlacement.NotRead, ModelPlacement.NotRead)
+            };
+
+            string on = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn));
+            string off = Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOff));
+
+            Assert.That(on, Does.Contain("no model in this group could be placed"));
+            Assert.That(on, Does.Contain("CLASH SKIPPED. 1 model(s) are not on the same shared coordinates"));
+            Assert.That(on, Does.Contain("distance from the reference UNKNOWN, its placement could not be read"));
+            Assert.That(off, Does.Contain("THIS GROUP IS FAILED. 1 model(s) were exported on Revit's internal origin"));
+        }
+
+        /// <summary>A model on Internal whose placement could not be read is still named, by its site, and its distance is UNKNOWN.</summary>
+        [Test]
+        public void AModelOnInternalWhosePlacementCouldNotBeReadIsNamedWithItsDistanceUnknown()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                At("AR", "A site", 0.0, 0.0, 0.0),
+                At("ST", "Internal", ModelPlacement.NotRead, ModelPlacement.NotRead, ModelPlacement.NotRead)
+            };
+
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres);
+
+            Assert.That(off.Models.Count, Is.EqualTo(1));
+            Assert.That(off.Models[0], Does.EndWith(
+                "shared site \"Internal\", Revit's own origin and not a shared site   distance from the reference"
+                + " UNKNOWN, its placement could not be read"));
         }
 
         // ---------- Q98 B2 and Bader's answer to Q99 and Q100, the clash is skipped ----------
@@ -276,8 +442,8 @@ namespace Federator.Core.Tests.Health
             string block = Joined(AlignmentCheck.Lines(TheReal1B06K1(), AlignmentCheck.DefaultFarModelMillimetres, true));
 
             Assert.That(block, Does.Contain(
-                "CLASH SKIPPED. 1 model(s) are not on the same shared coordinates as the reference model, so the clash"
-                + " tests are created and none is run, and no viewpoint and no clash report is made:"));
+                "CLASH SKIPPED. 1 model(s) are not on the same shared coordinates, so the clash tests are created and"
+                + " none is run, and no viewpoint and no clash report is made:"));
             Assert.That(block, Does.Contain("\n   " + off.Models[0]), "one rule writes the line, and the block, the note and the list carry it");
         }
 
@@ -293,8 +459,8 @@ namespace Federator.Core.Tests.Health
 
             Assert.That(block, Does.Not.Contain("CLASH SKIPPED"));
             Assert.That(block, Does.Contain(
-                "1 model(s) are not on the same shared coordinates as the reference model. The rule that skips the clash"
-                + " for them is off for this run, so the group is clashed as before:"));
+                "1 model(s) are not on the same shared coordinates. The rule that skips the clash for them is off for"
+                + " this run, so the group is clashed as before:"));
             Assert.That(block, Does.Contain("\n   " + off.Models[0]));
         }
 
@@ -318,7 +484,7 @@ namespace Federator.Core.Tests.Health
             Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Any, Is.False);
             Assert.That(
                 Joined(AlignmentCheck.Lines(models, AlignmentCheck.DefaultFarModelMillimetres, true)),
-                Does.Contain("no model sits more than 1 m from the reference model in a straight line"),
+                Does.Contain("no model names \"Internal\" or sits more than 1 m from the reference model in a straight line"),
                 "a check that found nothing says so, because a missing line reads as a check that did not run");
         }
 
@@ -370,7 +536,7 @@ namespace Federator.Core.Tests.Health
             Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, 1000.0).Models[0], Does.EndWith("more than 1 m"));
             Assert.That(
                 Joined(AlignmentCheck.Lines(models, 2000.0, true)),
-                Does.Contain("no model sits more than 2 m from the reference model"));
+                Does.Contain("no model names \"Internal\" or sits more than 2 m from the reference model"));
         }
 
         /// <summary>
@@ -445,7 +611,8 @@ namespace Federator.Core.Tests.Health
                 At("ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0)
             };
 
-            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models), Is.Null);
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOn), Is.Null);
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, RuleOff), Is.Null);
         }
 
         [Test]
@@ -477,12 +644,12 @@ namespace Federator.Core.Tests.Health
             Assert.That(none.NamesASharedCoordinate, Is.False);
 
             Assert.That(
-                AlignmentCheck.WhyItFailsTheGroup(new List<ModelPlacement> { At("AR", "A site", 0.0, 0.0, 0.0), none }),
+                AlignmentCheck.WhyItFailsTheGroup(new List<ModelPlacement> { At("AR", "A site", 0.0, 0.0, 0.0), none }, RuleOn),
                 Does.Contain("1 model(s) name no shared site at all"));
         }
 
         [Test]
-        public void AModelOnInternalStillFailsTheGroupBesideASiteThatCouldNotBeRead()
+        public void WithTheRuleOffAModelOnInternalStillFailsTheGroupBesideASiteThatCouldNotBeRead()
         {
             IList<ModelPlacement> models = new List<ModelPlacement>
             {
@@ -490,7 +657,7 @@ namespace Federator.Core.Tests.Health
                 At("ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0)
             };
 
-            string why = AlignmentCheck.WhyItFailsTheGroup(models);
+            string why = AlignmentCheck.WhyItFailsTheGroup(models, RuleOff);
 
             Assert.That(why, Does.Contain("1 model(s) were exported on Revit's internal origin"));
             Assert.That(why, Does.Contain("AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"));

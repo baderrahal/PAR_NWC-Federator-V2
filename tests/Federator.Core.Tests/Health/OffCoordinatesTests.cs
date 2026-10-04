@@ -65,8 +65,8 @@ namespace Federator.Core.Tests.Health
             Assert.That(note, Does.StartWith("1B06K1: clash skipped, models not on the same shared coordinates"));
             Assert.That(note, Does.Contain(
                 "The NWF and the NWD of this group hold every model, set and clash test. No clash test was run and no"
-                + " clash report or viewpoint was made, because these models are not on the same shared coordinates as"
-                + " the reference model AR  1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc:"));
+                + " clash report or viewpoint was made, because these models are not on the same shared coordinates,"
+                + " measured from the reference model AR  1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc:"));
             Assert.That(note, Does.Contain("\n   " + off.Models[0]));
             Assert.That(note, Does.Contain(
                 "Once these models are exported again on the project's shared coordinates, the next run clashes the"

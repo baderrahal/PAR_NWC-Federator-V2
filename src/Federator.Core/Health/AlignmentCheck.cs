@@ -94,10 +94,12 @@ namespace Federator.Core.Health
     ///
     /// Nothing here skips a group or stops a run, Q65 answered: report it and run anyway.
     /// Two answers given later decide how a group ENDS, and the group still writes its NWF
-    /// and its NWD either way. Q70: a model on Revit's internal origin, or naming no site at
-    /// all, fails its group. Q98 B2 with Bader's answer to Q99 and Q100: a model sitting
-    /// more than the far model setting from its group's reference is not on the same shared
+    /// and its NWD either way. Q70: a model naming no site at all fails its group. Q98 B2
+    /// with Bader's answer to Q99 and Q100: a model naming Internal, or sitting more than
+    /// the far model setting from its group's reference, is not on the same shared
     /// coordinates, and the group's clash is skipped and nothing else, OffCoordinates.
+    /// That replaces Q70 for a model on Internal, which failed its group until then and
+    /// still does with the rule switched off.
     /// </summary>
     public static class AlignmentCheck
     {
@@ -196,6 +198,17 @@ namespace Federator.Core.Health
             {
                 lines.Add("no model in this group could be placed, so the models were not compared"
                     + " and none is called a far model. Check by eye that they sit on the same coordinates.");
+
+                // A model on Internal is known by its site alone, so it still skips the
+                // clash or fails the group here, and the block says so like any other.
+                OffCoordinates unplaced = NotOnTheSameCoordinates(models, null, internalName, farModelMillimetres);
+
+                if (unplaced.Any)
+                {
+                    AddOffCoordinates(lines, unplaced, skipClashOffCoordinates);
+                }
+
+                AddFailure(lines, models, internalName, skipClashOffCoordinates);
                 return lines;
             }
 
@@ -257,26 +270,16 @@ namespace Federator.Core.Health
 
             // Bader's answer to Q99 and Q100. The same lines the note and the run's list
             // carry, out of the same rule, so the log and the files cannot disagree.
-            OffCoordinates off = NotOnTheSameCoordinates(models, reference, farModelMillimetres);
+            OffCoordinates off = NotOnTheSameCoordinates(models, reference, internalName, farModelMillimetres);
 
             if (!off.Any)
             {
-                lines.Add("no model sits more than " + Metres(farModelMillimetres)
+                lines.Add("no model names \"" + internalName + "\" or sits more than " + Metres(farModelMillimetres)
                     + " from the reference model in a straight line");
             }
             else
             {
-                lines.Add(skipClashOffCoordinates
-                    ? "CLASH SKIPPED. " + off.Models.Count + " model(s) are not on the same shared coordinates as the"
-                        + " reference model, so the clash tests are created and none is run, and no viewpoint and no"
-                        + " clash report is made:"
-                    : off.Models.Count + " model(s) are not on the same shared coordinates as the reference model."
-                        + " The rule that skips the clash for them is off for this run, so the group is clashed as before:");
-
-                for (int i = 0; i < off.Models.Count; i++)
-                {
-                    lines.Add("   " + off.Models[i]);
-                }
+                AddOffCoordinates(lines, off, skipClashOffCoordinates);
             }
 
             if (sites.Count > 1)
@@ -290,16 +293,39 @@ namespace Federator.Core.Health
                     + "\", which is what Revit calls a model that was not exported on a shared site at all");
             }
 
-            // Q70. The block says the group is failed and why, and the group still
-            // writes its NWF, its NWD and its report, which is the evidence.
-            string fails = WhyItFailsTheGroup(models, internalName);
+            AddFailure(lines, models, internalName, skipClashOffCoordinates);
+            return lines;
+        }
+
+        /// <summary>The models not on the same shared coordinates under a heading that says what the rule did with them.</summary>
+        private static void AddOffCoordinates(IList<string> lines, OffCoordinates off, bool skipClashOffCoordinates)
+        {
+            // Not "as the reference model", because the reference itself can be on Internal.
+            lines.Add(skipClashOffCoordinates
+                ? "CLASH SKIPPED. " + off.Models.Count + " model(s) are not on the same shared coordinates, so the"
+                    + " clash tests are created and none is run, and no viewpoint and no clash report is made:"
+                : off.Models.Count + " model(s) are not on the same shared coordinates. The rule that skips the"
+                    + " clash for them is off for this run, so the group is clashed as before:");
+
+            for (int i = 0; i < off.Models.Count; i++)
+            {
+                lines.Add("   " + off.Models[i]);
+            }
+        }
+
+        /// <summary>
+        /// Q70. The block says the group is failed and why, and the group still writes its
+        /// NWF and its NWD, which are the evidence.
+        /// </summary>
+        private static void AddFailure(
+            IList<string> lines, IList<ModelPlacement> models, string internalName, bool skipClashOffCoordinates)
+        {
+            string fails = WhyItFailsTheGroup(models, internalName, skipClashOffCoordinates);
 
             if (fails != null)
             {
                 lines.Add("THIS GROUP IS FAILED. " + fails);
             }
-
-            return lines;
         }
 
         /// <summary>
@@ -308,10 +334,16 @@ namespace Federator.Core.Health
         /// its shared site, or names no site at all. A model whose site could not be read
         /// does neither, because a read that threw is not a fact about the model.
         ///
-        /// FAILED DOES NOT MEAN THE GROUP PRODUCES NOTHING. The federation, the NWD and
-        /// the clash report are all still written, because Bader needs the evidence to
-        /// take to the people who own the models, and a group that produces nothing gives
-        /// him nothing to send. This says the group is not DONE and names the model, and
+        /// BADER'S ANSWER TO Q100 REPLACES THE FIRST HALF while the rule that skips the
+        /// clash is on: a model named Internal no longer fails its group, it skips the
+        /// clash, NotOnTheSameCoordinates. A model naming no site at all still fails it,
+        /// because his answer named Internal and the distance and not that. With the rule
+        /// off both halves fail the group as they did before his answer.
+        ///
+        /// FAILED DOES NOT MEAN THE GROUP PRODUCES NOTHING. The federation and the NWD are
+        /// still written, and the clash report too unless the clash was skipped, because
+        /// Bader needs the evidence to take to the people who own the models, and a group
+        /// that produces nothing gives him nothing to send. This says the group is not DONE and names the model, and
         /// the engine carries on.
         ///
         /// WHY IT IS A FAILURE AND NOT A WARNING. A model on the internal origin is not
@@ -319,12 +351,13 @@ namespace Federator.Core.Health
         /// the run reports against it is either a clash that is not there or a miss that
         /// is. The numbers are worse than useless because they read as real.
         /// </summary>
-        public static string WhyItFailsTheGroup(IList<ModelPlacement> models)
+        public static string WhyItFailsTheGroup(IList<ModelPlacement> models, bool skipClashOffCoordinates)
         {
-            return WhyItFailsTheGroup(models, DefaultInternalName);
+            return WhyItFailsTheGroup(models, DefaultInternalName, skipClashOffCoordinates);
         }
 
-        public static string WhyItFailsTheGroup(IList<ModelPlacement> models, string internalName)
+        public static string WhyItFailsTheGroup(
+            IList<ModelPlacement> models, string internalName, bool skipClashOffCoordinates)
         {
             if (models == null || models.Count == 0)
             {
@@ -347,7 +380,8 @@ namespace Federator.Core.Health
                 {
                     withNoSite.Add(Named(models[i]));
                 }
-                else if (string.Equals(models[i].SharedCoordinate, internalName, StringComparison.Ordinal))
+                else if (!skipClashOffCoordinates
+                    && string.Equals(models[i].SharedCoordinate, internalName, StringComparison.Ordinal))
                 {
                     onInternal.Add(Named(models[i]));
                 }
@@ -374,7 +408,11 @@ namespace Federator.Core.Health
                     + string.Join(", ", withNoSite.ToArray());
             }
 
-            return why + ". Every output of this group was still written, so the evidence is there to send.";
+            // With the rule on the same group may also have its clash skipped, and then no
+            // report is written, so only what is written either way is claimed.
+            return why + (skipClashOffCoordinates
+                ? ". Its NWF and its NWD were still written, so the evidence is there to send."
+                : ". Every output of this group was still written, so the evidence is there to send.");
         }
 
         /// <summary>How many models sit somewhere the reference does not, for the run line. Never fails anything.</summary>
@@ -416,11 +454,13 @@ namespace Federator.Core.Health
 
         /// <summary>
         /// The models of this group not on the same shared coordinates as its reference
-        /// model, Bader's answer to Q99 and Q100: each one sitting more than
-        /// farModelMillimetres from the reference in a straight line, with the line that
-        /// names its file, its shared site and its distance in X, Y and Z. The reference is
-        /// the one the block measures against, and a model whose placement could not be
-        /// read is never judged on its distance, the same way it is never called different.
+        /// model, Bader's answer to Q99 and Q100: each one naming Internal as its shared
+        /// site, or sitting more than farModelMillimetres from the reference in a straight
+        /// line, with the line that names its file, its shared site and its distance in X,
+        /// Y and Z. The reference is the one the block measures against and is named too
+        /// when it is on Internal itself. A model whose placement could not be read is
+        /// never judged on its distance, the same way it is never called different, and
+        /// one on Internal is still named, with its distance UNKNOWN.
         /// </summary>
         public static OffCoordinates NotOnTheSameCoordinates(IList<ModelPlacement> models, double farModelMillimetres)
         {
@@ -429,43 +469,48 @@ namespace Federator.Core.Health
                 return new OffCoordinates(null, new List<string>());
             }
 
-            return NotOnTheSameCoordinates(models, ReferenceIn(models, DefaultReferenceDiscipline), farModelMillimetres);
+            return NotOnTheSameCoordinates(
+                models, ReferenceIn(models, DefaultReferenceDiscipline), DefaultInternalName, farModelMillimetres);
         }
 
         private static OffCoordinates NotOnTheSameCoordinates(
-            IList<ModelPlacement> models, ModelPlacement reference, double farModelMillimetres)
+            IList<ModelPlacement> models, ModelPlacement reference, string internalName, double farModelMillimetres)
         {
             List<string> off = new List<string>();
-
-            if (reference == null)
-            {
-                return new OffCoordinates(null, off);
-            }
 
             for (int i = 0; i < models.Count; i++)
             {
                 ModelPlacement model = models[i];
 
-                if (model == reference || !model.Placed)
+                // A site whose read threw is not Internal, FR-002, and SiteRead says so.
+                bool onInternal = model.SiteRead
+                    && string.Equals(model.SharedCoordinate, internalName, StringComparison.Ordinal);
+                bool measured = reference != null && model != reference && model.Placed;
+                double dx = measured ? model.X - reference.X : 0.0;
+                double dy = measured ? model.Y - reference.Y : 0.0;
+                double dz = measured ? model.Z - reference.Z : 0.0;
+                double distance = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+                bool far = measured && distance > farModelMillimetres;
+
+                if (!onInternal && !far)
                 {
                     continue;
                 }
 
-                double dx = model.X - reference.X;
-                double dy = model.Y - reference.Y;
-                double dz = model.Z - reference.Z;
-                double distance = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+                string where = model == reference
+                    ? "the reference model itself"
+                    : !measured
+                        ? "distance from the reference UNKNOWN, its placement could not be read"
+                        : "X " + Millimetres(dx) + "  Y " + Millimetres(dy) + "  Z " + Millimetres(dz)
+                            + " from the reference, " + Metres(distance) + " in a straight line"
+                            + (far ? ", more than " + Metres(farModelMillimetres) : string.Empty);
 
-                if (distance > farModelMillimetres)
-                {
-                    off.Add(Named(model) + "   shared site " + SiteSaid(model)
-                        + "   X " + Millimetres(dx) + "  Y " + Millimetres(dy) + "  Z " + Millimetres(dz)
-                        + " from the reference, " + Metres(distance) + " in a straight line, more than "
-                        + Metres(farModelMillimetres));
-                }
+                off.Add(Named(model) + "   shared site " + SiteSaid(model)
+                    + (onInternal ? ", Revit's own origin and not a shared site" : string.Empty)
+                    + "   " + where);
             }
 
-            return new OffCoordinates(Named(reference), off);
+            return new OffCoordinates(reference == null ? null : Named(reference), off);
         }
 
         /// <summary>The site in a line about coordinates: its name in quotes, or why there is none.</summary>

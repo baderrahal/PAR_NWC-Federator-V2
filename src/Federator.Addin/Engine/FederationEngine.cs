@@ -2100,12 +2100,13 @@ namespace Federator.Addin.Engine
             {
                 IList<ModelPlacement> placements = ModelFactsReader.Placements(document, reports.Names, log);
 
-                // Q70 answered b on 2026-09-20. A model on the internal origin is in a
-                // different coordinate system from the rest of the group, so every clash
-                // against it is either one that is not there or a miss that is. The group
-                // is FAILED and it still writes every output, because the evidence is
-                // what Bader takes to the people who own the models.
-                string fails = AlignmentCheck.WhyItFailsTheGroup(placements);
+                // Q70 answered b on 2026-09-20. A model naming no shared site fails the
+                // group, and so does a model on the internal origin while the rule that
+                // skips the clash is off. With it on, Bader's answer to Q100, a model on
+                // Internal skips the group's clash below instead. A FAILED group still
+                // writes its NWF and its NWD, because the evidence is what Bader takes to
+                // the people who own the models.
+                string fails = AlignmentCheck.WhyItFailsTheGroup(placements, reports.SkipClashOffCoordinates);
 
                 if (fails != null)
                 {
@@ -2214,11 +2215,15 @@ namespace Federator.Addin.Engine
                 + (alignmentDifferences == 0 ? string.Empty : ". Nothing was changed and every group ran."));
 
             // Q70. Counted APART from the models that merely sit somewhere else, because
-            // a model on the internal origin fails its group and a model 95 mm out does
-            // not, and one line carrying both numbers would read as one fault.
+            // a model naming no site fails its group and a model 95 mm out does not, and
+            // one line carrying both numbers would read as one fault. A model on the
+            // internal origin fails it only with the rule that skips the clash off, Bader's
+            // answer to Q100, and the words say which rule this run kept.
             lines.Add("ALIGNMENT failed " + failedOnAlignment
-                + " group(s), each because a model was exported on the internal origin or names no shared site"
-                + (failedOnAlignment == 0 ? string.Empty : ". Every one of them still wrote its NWF, its NWD and its report."));
+                + (reports.SkipClashOffCoordinates
+                    ? " group(s), each because a model names no shared site"
+                    : " group(s), each because a model was exported on the internal origin or names no shared site")
+                + (failedOnAlignment == 0 ? string.Empty : ". Every one of them still wrote its NWF and its NWD."));
 
             for (int i = 0; i < alignmentFailures.Count; i++)
             {
