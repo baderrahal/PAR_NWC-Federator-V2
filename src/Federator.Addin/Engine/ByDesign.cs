@@ -142,12 +142,14 @@ namespace Federator.Addin.Engine
                     CoreClashStatus status = (CoreClashStatus)(int)result.Status;
                     ByDesignPair pair;
 
+                    // The name goes to the rule, F113, which never judges a clash with no
+                    // name Reviewed, so a clash nothing could move is never counted as moved.
                     ByDesignVerdict verdict = ByDesignRule.Judge(
-                        pairs, leftSet, rightSet, status, penetration.Contains(clashName), out pair);
+                        pairs, leftSet, rightSet, clashName, status, penetration.Contains(clashName), out pair);
 
-                    tally.Add(testName, clashName.Length == 0 ? "an unnamed clash" : clashName, verdict, pair);
+                    tally.Add(testName, clashName, verdict, pair);
 
-                    if (verdict == ByDesignVerdict.Reviewed && clashName.Length > 0)
+                    if (verdict == ByDesignVerdict.Reviewed)
                     {
                         // F72c. The record, the same shape the penetration rule leaves.
                         wanted.Add(new WantedStatus(

@@ -37,10 +37,11 @@ one refusal with no case left, and its breaker found nothing that leaves a perso
 add-in and one blocking on words, a measurement said wider than it was taken, so three blocking
 in all, turn5\f109-a2-reads.txt. Fix attempt 3 carries all three, the last before the form, its
 developer planning and holding its changes until one of the three at work finishes, Bader's rule
-allowing three developers at once. F104 part 2, the documents read, built at
-33732c9: its reviewer approved and its breaker found nothing blocking, both under Q93, their
-notes for its register rows, turn5\f104p2-reads.txt. Its harness parts B and C, F109's harness
-and the first real documents read wait for no Navisworks to run.
+allowing three developers at once. F104 part 2, the documents read, committed at
+75e5dce with its records at 33732c9: its reviewer approved and its breaker found nothing blocking, both under Q93, their
+notes for its register rows, turn5\f104p2-reads.txt. Its harness ran whole on its committed code
+from 15:39 to 15:53, 102 passed, turn5\f104p2-prove-4.txt. F109's harness and the first real
+documents read wait for the baseline.
 B1 CHECKED: the plain prepare-copy.ps1 at 11:47:55 found the desktop folder changed and made
 the source copy again, 142 files, 140 of them NWC, turn5\prepare-copy-plain-1.txt. Its
 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml is byte for byte the repo's exchange matrix, sha256
@@ -485,7 +486,7 @@ an F number only when it becomes work. Most harmful first when the loop picks, a
 wrong number ranks above a loud failure. Done in code but not proved by a run means the
 baseline run proves it or contradicts it.
 
-315 rows, by status, after turn 4's eighteen additions and turn 5's first:
+322 rows, by status, after turn 4's eighteen additions and turn 5's eight:
 
 - 125 done in code, not proved by a run
 - 3 reported by the read, not verified, T1-N, T1-UNCALLED and T1-CATCH
@@ -505,7 +506,8 @@ baseline run proves it or contradicts it.
 - 19 open fault
 - 4 DONE
 - 19 open for F103 or after it, T3-G1 to T3-G16, T3-P, T3-P2 and T3-B
-- 1 part 1 built and read, F104, check-documents after F103
+- 1 built and read safe, F104, its first real read waiting
+- 7 register rows of F104's readings, F104-R1 to F104-R7, under Q93
 - 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
 - 1 closed, not there at 42499bf
@@ -520,7 +522,7 @@ baseline run proves it or contradicts it.
 | F102 | turn 3, the lead's read of fix-F100 | A result committed from this machine can carry the machine name and the licensing agent's ids, and nothing read a file for them before a commit | tools\loop\mask-evidence.ps1 masks both, tools\checks\check-evidence-ids.sh refuses both in the pre-commit and in Actions, proved on the four fix-F100 files, refused before and passed after | DONE on 2026-10-01, merged as it is on Bader's answer Q91 B, its two gaps the known limits F102-L1 and F102-L2 | 76, merged as 4fa1040 | no Navisworks run applies, proof in turn3\f102\proof.txt |
 | F105 | loop prompt, Phase 1 item 2 | Four facts off the install nobody had read on this machine: the saved viewpoint members, RemoveFile, Roamer's switches, the Clash Detective report | scan.md 5z-f off five result files, no Navisworks started | answered A by Bader on 2026-10-01, Q89: the three sentences of 5z-f narrowed, the three probe faults F105-R1 to F105-R3 | none, branch fix-F105 at 94a839b | no Navisworks run applies, the prober's reads on 2026-09-29 |
 | F103 | loop prompt, Phase 1 item 3 | tools\loop\run.ps1 does not exist | the design in turn3\f103-design.md built, proved by its harness with no Navisworks, then one start with no window | DONE on 2026-10-01, part 1, merged as it is on Bader's answer Q92 B, the nine entries of steps\notes\f103-final-reading.md register row F103-W | 78, merged as 398b910 | two real starts with no window on 2026-09-30, on fix attempts 1 and 2, and the third on a63c284 on 2026-10-01 from 09:06 to 09:18, exit 0, VERDICT RAN, steps\runs\00\item0, 01\item0 and 02\item0 on fix-F103 |
-| F104 | loop prompt, Phase 1 item 4 | No check of the workbook against a read of the document that shares no code with the harvest | the design in turn3\f104-design.md, part 1 on fix-F104, check-documents after F103, proved by prove-compare and then by 5a at the baseline | part 1 built at ef1fbdd, read by a reviewer and a breaker, its fixes at ebd8bb7, check-documents after F103 | none yet | none yet |
+| F104 | loop prompt, Phase 1 item 4 | No check of the workbook against a read of the document that shares no code with the harvest | the design in turn3\f104-design.md, part 1 on fix-F104, check-documents after F103, proved by prove-compare and then by 5a at the baseline | part 1 built at ef1fbdd, read by a reviewer and a breaker, its fixes at ebd8bb7. Part 2, run.ps1 -Mode Documents, committed at 75e5dce with its records at 33732c9, read safe under Q93 by a reviewer and a breaker, turn5\f104p2-reads.txt, its harness 102 passed and 0 failed on the committed code, turn5\f104p2-prove-4.txt. Its first real read waits for the baseline of 2026-10-04 | this pull request | none yet |
 | T3-G1 | turn 3, the reviewer's reading of F100 attempt 4 | The probe's last check before each settings write, line 1885, also 1877 and NewRoamers at 1261, takes a process list it could not read as no Roamer, so the writes go on. Silent. Old, in b01ad71 | a list that cannot be read stops every write, in the guard code run.ps1 takes over, with a harness case | open, for F103 | none yet | none yet |
 | T3-G2 | the same reading | After the deadline path runs and TerminateProcess returns False, nothing reads the deadline flag before adoption, line 1468, so steps 4 to 6 can run with no watchdog. Old | adoption refused once the deadline path ran, in the guard code, with a harness case | open, for F103 | none yet | none yet |
 | T3-G3 | the same reading | A recorded start with start ticks refuses whenever any process holds that pid and its start time cannot be read, whatever its name, line 1239. Loud, refuses too much. Old | the name read as well, in the guard code | open, for F103 | none yet | none yet |
@@ -561,6 +563,13 @@ baseline run proves it or contradicts it.
 | F105-R2 | the same reading | One of F105's probes prints its failure list only when a built add-in is there | the list printed on every run | open, register row under Q93 | none yet | no run applies |
 | F105-R3 | the same reading | A resolver, roResolve, and a small helper, ParamText, sit in more than one of F105's probes, and a second helper the reading named is UNKNOWN | one copy of each | open, register row under Q93 | none yet | no run applies |
 | F105-R4 | the reviewer of F105's words round, 2026-10-04 | Comments in the probes say nothing is dropped, il-reader.ps1 line 19, probe-clash-report-api.ps1 line 23 and probe-viewpoint-calls.ps1 lines 29, 30 and 396, printed at its result line 203, where a read handed to no IlFail is in no count | the comments made true where the probes next change, no probe or result file changing after its run | open, register row under Q93 | none yet | no run applies |
+| F104-R1 | the reviewer of F104 part 2, 2026-10-04 | A documents read ends READ when nothing was read, run.ps1 line 1547, while its VERDICT, exit 1 and the steps that did not run say STOPPED | another word for that end, or the read-out count on summary line 1014 | open, register row under Q93 | none yet | no run applies |
+| F104-R2 | the same reviewer | The picture and priority switches of a documents read are typed by hand, so a wrong -PriorityPicked turns off the block order check and a wrong -PictureStatuses judges the wrong rule, while the window run's log names the priority file, its line 64 | run.ps1 reading them off the window run's log and refusing a mismatch | open, register row under Q93 | none yet | no run applies |
+| F104-R3 | the breaker of F104 part 2 | A group that wrote no NWF and no workbook is in no count, so a read can say RAN, exit 0, with fewer pairs than groups, and a read where every workbook is missing compares nothing and exits 0, run.ps1 763 to 778, 807 to 809, 1029, 2434 and 2443 to 2445 | the summary counting every group of the tsv and naming each not compared | open, register row under Q93 | none yet | no run applies |
+| F104-R4 | the same breaker | AGREE can stand while the panel's count differs when a test holds a result group, PQ4, compare-document.ps1 541, 680 to 687 and 704 to 711, the one place a green line can sit on Bader's third test | PQ4 measured, then the -GroupClashesAt switch set from it | open, register row under Q93, PQ4 | none yet | none yet |
+| F104-R5 | the same breaker | The probe's viewpoint walk is unmeasured and unbounded, 1165 viewpoints in 1B06G1 of C06, and on a busy processor only the 12 hour ceiling ends it | the walk timed on the first real read | open, register row under Q93 | none yet | none yet |
+| F104-R6 | the same breaker | A documents read opens every NWF, so Bader's Recent File List fills with the loop's NWFs, put back only when no Navisworks of his ran meanwhile, and each open adds a Windows Recent link that M5 lists and never puts back | the first real read listing what it changed there | open, register row under Q93 | none yet | none yet |
+| F104-R7 | both readers of F104 part 2 | The other notes: summary.txt written after the VERDICT, prove-run.ps1 line 281 failing on the new mode, pictures and read-outs not pinned to the window run, checks 7, 8 and 10 not run, the header claiming less than it writes, three lines of the finally outside a try, ReadPairs before the lock, four ties not made, the probe call unbounded if the monitor dies, a probe file throw read as a hang, compare-document.ps1's error text dropped, a picture status typo found late, a locked session not checked, and three loud nuisances, each with its line in turn5\f104p2-reads.txt | each made true where its file next changes | open, register rows under Q93 | none yet | no run applies |
 | Q88-IDS | Q88 | GitHub keeps the commits 464f79f and c98c6f3 readable through PR 74's own refs, and they hold the licensing agent's analytics id and a session id | only the repository's owner can ask GitHub support to purge them | known item, Bader's, the repository is private | 74 | no run applies |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
 | RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |

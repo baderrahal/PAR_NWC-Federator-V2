@@ -5575,3 +5575,43 @@ class Autodesk.Navisworks.Api.Interop.LcClClashReport : NativeHandle            
 WHAT THIS DECIDES. Nothing in the code yet. The page stays rendered from this tool's XML
 through Autodesk's stylesheet, 4m. A start that reads `NumReportFormatters` and each
 `GetReportFormatterName` would say whether `WriteReport` can write HTML (Tabular) at all.
+
+## 5z-g. DOES THE API CARRY ITS OWN UNIT FACTOR, MEASURED 2026-09-29
+
+PQ2 of F104. The check of a workbook against its document has to turn the document's
+tolerances and distances into metres WITHOUT UnitTable, because UnitTable is the table the
+harvest converted with, and a check that shares the code it checks proves nothing. The
+names UnitConversion and ScaleFactor had been found in `Autodesk.Navisworks.Api.dll` by a
+grep, and nothing said whether ScaleFactor is public, whether it is static, or what it
+takes and returns.
+
+Read off the metadata of the installed DLL by its one full path, with
+`ReflectionOnlyLoadFrom`, so no line of it ran and no Navisworks was started:
+
+    powershell -ExecutionPolicy Bypass -File tools\probes\probe-unit-scale.ps1
+
+The whole output is `tools\probes\unit-scale-result-20260929.txt`, the machine's name
+masked. The result line:
+
+```
+PQ2 YES   public static System.Double ScaleFactor(Autodesk.Navisworks.Api.Units from, Autodesk.Navisworks.Api.Units to)
+```
+
+**THE ANSWER IS YES.** `UnitConversion` is a public class based on NativeHandle, not a
+static class, and ScaleFactor is a static member of it, 32 bytes of managed IL that go
+through to the native LcOaUnitConversion. Its two parameters are named from and to, so
+DocumentReadProbe calls `ScaleFactor(document units, Meters)` for metres per unit.
+
+STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
+
+- what ScaleFactor returns for Feet to Meters. DocumentReadProbe reads it inside Navisworks
+  on its first run, beside Meters to the document's units and Millimeters to Meters
+- whether from and to mean what their names say. A number times its inverse is one
+  whichever way the factor runs, so the probe writes a doubt and every value in metres as
+  UNKNOWN unless `ScaleFactor(Millimeters, Meters)` reads below one
+- which units `ClashTest.Tolerance` and a clash's `Distance` are held in, PQ3 of F104
+
+**WHAT THIS DECIDES.** No unit table is written for the check. DocumentReadProbe converts
+through Navisworks' own factor, so the harvest's UnitTable and the check never share a
+number, and `tools\loop\compare-document.ps1` marks the tolerances and distances NOT
+COMPARED when the probe could not read the factor and the document is not in metres.

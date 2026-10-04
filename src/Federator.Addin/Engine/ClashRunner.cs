@@ -578,16 +578,17 @@ namespace Federator.Addin.Engine
                 PlannedClashTest planned = toRun[i];
                 progress("Test " + (i + 1) + " of " + total + ": " + planned.Name);
 
-                if ((i + 1) % ProgressEvery == 0 || i + 1 == total)
-                {
-                    // A running count, so a run of well over a thousand tests is watched
-                    // rather than silent.
-                    log.Line("CLASH    " + (i + 1) + " of " + total + " tests, "
-                        + outcome.RanCount + " run, " + outcome.SkippedCount + " skipped, "
-                        + outcome.TotalClashes + " clashes so far");
-                }
-
                 OneTest(document, sets, clashTests, byPath, present, planned, outcome);
+
+                // A running count, so a run of well over a thousand tests is watched rather
+                // than silent. Taken AFTER the test it numbers, F113, so the last one of a
+                // group reads the same numbers as the block under it.
+                string running = outcome.ProgressAfter(i + 1, total, ProgressEvery);
+
+                if (running != null)
+                {
+                    log.Line("CLASH    " + running);
+                }
 
                 // Nine hours produced nothing once because nothing watched for this. A run
                 // failing uniformly stops the run, not the group.

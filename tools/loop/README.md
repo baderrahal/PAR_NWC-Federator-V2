@@ -157,6 +157,87 @@ Actions masks tools\checks\broken\EvidenceWithIds.txt on every run and compares 
 the one kept beside it, and puts each file of tools\checks\broken\rules in the place of the
 rules file for both.
 
+## compare-document.ps1
+
+Sets a workbook's read-out beside the read-out of the document it was written from, F104,
+Bader's criterion 3. The workbook side is read-workbook.ps1's read-out, the document side
+is what tools\probes\DocumentReadProbe writes, and only those two text files pass between
+the three, so none of them shares code with the harvest that wrote the workbook. Tests are
+paired by name, exactly and never trimmed. For every pair it checks the rows against the
+top level results, Clashes against every clash under them, each status count, every row's
+name and status in order, the tolerance unit and number in metres, every plain clash's
+distance in metres, the picture links and their numbering, the block order, and the
+totals. Every finding is a DIFFERS, NOT COMPARED or DOUBT line, and the verdict is AGREE
+only when there are none at all. A count of -1 in the document read-out is NOT COMPARED,
+never zero. The test type and status are shown and never judged.
+
+- reads: the two read-outs named by -Workbook and -Document, and whether each picture the
+  workbook links is on disk, when the workbook's folder is on this machine
+- writes: the comparison named by -Out, a new .txt under %LOCALAPPDATA%\NwcFederatorLoop,
+  written beside and moved into place and never written over. A read-out that is not
+  whole, a column word it reads that is missing, or an -Out it may not write gives one
+  COMPARISON FAILED line and exit 1
+- writes outside the repo: only that one comparison file
+- -PictureStatuses and -PictureCap say which rows should carry a picture, as the run was
+  told. Without -PictureStatuses which rows should carry one is NOT COMPARED. With
+  -PriorityPicked the block order is chosen by the priority file and is not judged
+- -GroupClashesAt says how a group's clashes are counted in New to Resolved and in the
+  totals: own, each at its own status as the document holds them, group, all at the
+  group's status as the harvest files them, ClashHarvest.cs 166 and ClashReportModel.cs
+  396, or unknown, the default. Which the Clash Detective panel shows is PQ4 of F104 and
+  UNMEASURED. Under unknown a status where the two readings give the same count is
+  compared exactly, and one where a group's clashes sit at more than one status is NOT
+  COMPARED when the workbook fits one reading, in one line naming the test and PQ4, and
+  DIFFERS when it fits neither
+- an empty group holds no clash and the harvest counts it as one, ClashHarvest.cs 164, so
+  it reads DIFFERS, and the Clashes line and the line of its status name it as empty
+- a test name on two workbook blocks leaves its own pictures unchecked, in one NOT
+  COMPARED line saying how many tests, and holds the next pictured block's test number to
+  the range the copies allow, NOT COMPARED for that test when it falls inside and DIFFERS
+  when it falls outside. Its clash numbers are still checked, and every block after it
+  is exact again
+- the picture naming and the block order are restated in the script on purpose, a second
+  copy by design, because a check that shares the writer's code proves nothing
+
+Proved on 2026-09-29 by prove-compare.ps1 below, and on a read-out of the client export
+1104-PAR-1A02WN in samples\client-report, made by an unchanged copy of read-workbook.ps1
+run from a folder under the work folder, which read all 1830 tests with no doubt, counted
+the 1807 with every number zero and read the other 23 blocks as never rising. No document
+read-out of a real NWF exists yet. run.ps1 -Mode Documents, F104 part 2, runs the probe and
+this script on every pair of a window run, and has not run on Navisworks yet.
+
+## prove-compare.ps1
+
+Feeds compare-document.ps1 the hand written pair in tools\loop\compare-proof and sixteen
+broken copies of it, in prove-hooks.sh's shape, and prints each answer against the one it
+should give. The pair is three tests in the shapes the two read-outs really have: plain
+clashes with two pictures, a group whose clashes sit at two statuses beside a plain clash
+under a name that ends in a space, and a test that found nothing, in a document in feet.
+The workbook is what WorkbookWriter writes for that document, the group's clashes filed
+under the group's status. No workbook, NWF or picture is behind it, so under the default
+-GroupClashesAt unknown the good pair reads DISAGREEMENTS 0 and NOT PROVED, with the mixed
+test's New and Reviewed, the same two in the totals, and the pictures on disk NOT
+COMPARED. Each copy is one edit away from the good pair, and has to produce exactly its
+own lines, no other line the good pair does not have, and lose only the lines of the good
+pair written beside it. An edit that does not find exactly the line it edits is WRONG.
+Then one case for each of the three readings of a group's clashes, an empty group, a test
+name on two blocks with the picture numbering after it, and four runs that prove the
+switches and the one class of test that is counted rather than judged. Actions runs it on
+every pull request.
+
+- reads: tools\loop\compare-proof
+- writes outside the repo: one new folder under %LOCALAPPDATA%\NwcFederatorLoop, by
+  default proof\compare-<stamp>, or the one -Work names, which must not be there yet. It
+  holds every copy and every comparison and is never emptied or reused
+- exits 0 when all 26 cases are right and 1 otherwise
+
+Proved on 2026-09-29 on this machine in Windows PowerShell 5.1, 26 right and 0 wrong, the
+copies under %LOCALAPPDATA%\NwcFederatorLoop\turn3\f104. Its first run was 18 right and 3
+wrong, all three the harness counting the line NOT COMPARED 1 as a finding, which is how
+the harness came to leave out a count line. After the review of the same day the good
+workbook became what WorkbookWriter really writes, and the three readings, the empty group
+and the name on two blocks were added.
+
 ## prove-hooks.sh
 
 Feeds every case to the three hooks on standard input and prints each answer against the
@@ -179,7 +260,9 @@ modes:
   every run folder whose record.txt has no VERDICT line, the installed add-in's stamp against
   bundle-backup and the newest loop install, his logs folder and his AutoSave folder against
   their backups by name and sha256, the source copy's marker files, and every refusal Run
-  would give for a -Set, -Item and -Stamp. Exit 0 when Run would go, 2 when it would refuse
+  would give for a -Set, -Item and -Stamp. Exit 0 when Run would go, 2 when it would refuse.
+  With -For Documents and a documents read's parameters, every refusal Documents would give
+  and the pairs it would read, each NWF with its bytes and sha256 and its workbook read-out
 - Install -Stamp <8 hex>. Refuses while any Roamer runs, unless HEAD is that commit, and
   unless git status prints nothing, untracked files included, because the build stamp
   reads +edits for any of them. Copies an installed bundle that matches neither
@@ -251,11 +334,47 @@ modes:
   when the log on disk holds a RESULT block and a SESSION naming the stamp, and for item 1 a
   GROUPS block reading 0 groups unticked. Items 2 to 5 have run on no Navisworks yet
 
+- Documents -Set NN -Item 1 to 5 -Folder <a folder of NMFed\NWC>, F104 part 2, the documents
+  read of the window run whose evidence is steps\runs\NN\item<K>-<Folder>, item 5 also taking
+  -OpenFile, which names its run. A mode of run.ps1 and not a script of its own, so every
+  guard it keeps is the one copy in nw-guard.ps1 and every refusal the one in run.ps1. It reads
+  the pairs off that run's .tsv, named on the second line of its toollog-name.txt: the rows
+  whose event is written and whose name is NWF or XLSX, which RunLog.WriteFinished writes,
+  paired by the group column and never by a file name, and for each workbook the read-out in
+  workbooks whose first line names it. A path's doubled backslashes are read as one, and any
+  other escape refuses the row, because no path holds a tab or a line break. After item 0's
+  refusals, checks 4 to 6, check 11 refuses, starting nothing, when that evidence holds no
+  record with one VERDICT line, no .tsv or no outputs.txt, a row it cannot read, a group naming
+  two NWFs or two workbooks, an NWF outside the run set's copy and the run's own folder, not
+  an .nwf, not there, sharing its file name with another or reading now other than outputs.txt
+  lists it by size and sha256, a workbook with no whole read-out, or no NWF at all. Check 19
+  refuses when the probe built from tools\probes\DocumentReadProbe is not there or its stamp
+  names no one commit with no edits. Then a run folder new at every call,
+  runs\NN\item<K>-<Folder>-document-yyyyMMdd-HHmmss, so check 4 and CloseOwn read it as any
+  other, check 20, the copy's NWF, NWD and Clash Report folders of -Folder listed with sha256,
+  and check 21, the probe copied into the run folder's probe\ and read back. Item 0's backups,
+  start, adoption, watchdog and Visible follow, and in place of the hold AddPluginAssembly with
+  that copy, then ExecuteAddInPlugin("DocumentReadProbe.PARS", the run folder's document\, every
+  NWF), each on the main thread. The hang rule of Q83 reads the bytes of the read-outs in
+  document\ in place of the tool's log, each .partial through a handle that shares read,
+  write and delete, with the processor time, from the plugin call. The run ends READ once both
+  calls have returned, no read-out is still being written and the folder has been quiet for
+  15 s, then Dispose, the one close and item 0's put back. After the close: check 20 again,
+  each read-out whole or why not, tools\loop\compare-document.ps1 per pair with
+  -PictureStatuses, -PictureCap and -PriorityPicked as the window run was told them, read off
+  its log by the lead, and -GroupClashesAt left at compare-document.ps1's unknown, PQ4, and
+  summary.txt, one line per pair with the comparison's own VERDICT line, counted and never
+  judged. RAN only when every one of those steps ran and no file of the copy's folders changed.
+  Proved on 2026-10-04 with no Navisworks by the harness in
+  %LOCALAPPDATA%\NwcFederatorLoop\turn5\f104p2-proof, as steps\01_next.md F104 says, which
+  also says what of it has not yet run on the committed code. It has not run on Navisworks yet
+
 Exit codes: 0 finished and everything put back, for item 5 on an NWD also the tool's own
 refusal, TOOL REFUSED, 1 a fault in run.ps1, UNKNOWN whether the adopted Navisworks still
-runs, one still running after every close path, or a window run whose log does not show it
-RAN, 2 refused, for Install also a refusal of build\install.ps1, 3 not adopted or the
-constructor deadline, 4 hung, the ceiling, a call into the adopted Navisworks that did not
+runs, one still running after every close path, a window run whose log does not show it
+RAN, or a documents read with a probe call that threw, a read-out not whole, a comparison
+that did not finish or a file of the copy's folders changed, 2 refused, for Install also a
+refusal of build\install.ps1, 3 not adopted or the constructor deadline, 4 hung, the ceiling, a call into the adopted Navisworks that did not
 return in 120 s, or the tool's window still open 120 s after WM_CLOSE, 5 finished but a
 dialog appeared, or for Install installed but a Navisworks ran right after it or the add-in
 installed before was left beside it, 6 something of Bader's not put back, 7 the adopted
@@ -280,7 +399,9 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
   file of %APPDATA%\Autodesk\Navisworks Manage 2025, and for M5 the write times of the keys
   under HKCU\Software\Autodesk and the files under %TEMP%, %LOCALAPPDATA%\Autodesk,
   %APPDATA%\Autodesk, %PROGRAMDATA%\Autodesk and %APPDATA%\Microsoft\Windows\Recent written
-  at or after the start
+  at or after the start, and for a documents read the window run's evidence in steps\runs,
+  every NWF of its pairs, the copy's NWF, NWD and Clash Report folders of -Folder with sha256,
+  and the probe's build
 - writes outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop: runs\NN\item0 with
   record.txt, watch.txt, mypid.txt, logs-before.txt, logs-after.txt, autosave-before.txt,
   hang-tail.txt at a hang, settings\ with the export, the copies and before.clixml,
@@ -295,6 +416,14 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
   Report folders. A read-out of every workbook by tools\loop\read-workbook.ps1 goes into the
   evidence, and a file over 20 MB is named with its size and sha256 and not copied, Q90.
   It starts the driver, powershell.exe, and read-workbook.ps1 once per workbook
+- writes of a documents read, F104 part 2: runs\NN\item<K>-<Folder>-document-yyyyMMdd-HHmmss,
+  never emptied or used again, with item 0's files, pairs.txt, probe\ with the probe's copy,
+  document\ with the probe's read-outs, compare\ with one comparison per pair, and summary.txt.
+  Nothing into the copy's NWF, NWD or Clash Report folders, which check 20 lists before the
+  start and after the close, and nothing into steps\runs. The lead copies the read-outs, the
+  comparisons and summary.txt into steps\runs\NN\item<K>-<Folder>\document through F102's
+  mask. It starts compare-document.ps1 once per pair. It deletes nothing of its own, and its
+  put back of his AutoSave folder by Q86 removes an autosave the run added, as every run's does
 - writes of Bader's: his Navisworks settings, put back only by the D2 rule in
   .claude\rules\loop.md, his AutoSave folder by Q86 under the same rule, for a window run his
   logs folder, where the tool writes its own log and .tsv and may prune his oldest logs,
@@ -304,7 +433,8 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
   ParsonsNwcFederator.bundle.failed-yyyyMMdd-HHmmss
 - writes in the repo: steps\runs\NN\item0 with record.txt, watch.txt and settings.txt, to
   be masked before any commit, and the evidence of a NOT RUN moved aside as
-  steps\runs\NN\item0-aside-yyyyMMdd-HHmmss, never emptied
+  steps\runs\NN\item0-aside-yyyyMMdd-HHmmss, never emptied. A documents read writes nothing
+  in the repo
 - deletes: nothing itself. build\install.ps1, run by Install, removes the bundle it moved
   aside once every check of the new one has passed, and a new one that failed
 

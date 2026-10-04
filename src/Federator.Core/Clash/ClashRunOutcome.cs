@@ -227,6 +227,34 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// The running count the log carries while the tests of a group run, so a run of
+        /// well over a thousand tests is watched rather than silent, or null at a test the
+        /// log does not count at. It counts at every test that is a multiple of every, and
+        /// at the last one, so a group that runs to its end ends on a count.
+        ///
+        /// IT IS TAKEN AFTER THE TEST IT NUMBERS IS RECORDED, F113, and reads the counts as
+        /// they stand. The runner took it before that test until F113, so on the run of
+        /// 2026-10-01 the last count of all 22 groups was one test short, and three of them
+        /// were short of the block's clashes by the last test's own, 1624 against 1629 in one.
+        /// </summary>
+        public string ProgressAfter(int done, int total, int every)
+        {
+            if (every < 1)
+            {
+                throw new ArgumentOutOfRangeException(
+                    "every", every, "The count is taken every so many tests, and that is one or more.");
+            }
+
+            if (done % every != 0 && done != total)
+            {
+                return null;
+            }
+
+            return done + " of " + total + " tests, " + RanCount + " run, " + SkippedCount
+                + " skipped, " + TotalClashes + " clashes so far";
+        }
+
+        /// <summary>
         /// How many skipped tests are written out in full for each reason. One real run
         /// skipped 1830 tests for a single reason and wrote 1830 near identical lines into
         /// a 1 MB log, which buries everything worth reading. A count and a few examples

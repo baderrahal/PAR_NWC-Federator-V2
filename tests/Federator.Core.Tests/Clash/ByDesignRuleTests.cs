@@ -237,7 +237,7 @@ namespace Federator.Core.Tests
             ByDesignPairs pairs, string left, string right, ClashStatus status, bool penetration)
         {
             ByDesignPair pair;
-            return ByDesignRule.Judge(pairs, left, right, status, penetration, out pair);
+            return ByDesignRule.Judge(pairs, left, right, "clash 1", status, penetration, out pair);
         }
 
         [Test]
@@ -322,6 +322,72 @@ namespace Federator.Core.Tests
                 Is.EqualTo(ByDesignVerdict.NotAPair));
             Assert.That(Judge(null, "A", "B", ClashStatus.New, false),
                 Is.EqualTo(ByDesignVerdict.NotAPair));
+        }
+
+        /// <summary>
+        /// F113, FR-033. A clash with no name cannot be addressed, so the editor can never
+        /// move it and the add-in left it off the list it applies. The rule judged it
+        /// Reviewed all the same, so it was counted as moved in the BY DESIGN block, the
+        /// RESULT line and the rule B line, with a REVIEWED line for a clash that never
+        /// moved. The penetration rule counts the same clash as looked at and never moved.
+        /// </summary>
+        [Test]
+        public void AnUnnamedClashBetweenAPairIsNeverCountedAsMoved()
+        {
+            ByDesignPairs pairs = From("left_set,right_set,reason\nA,B,a sits on b\n");
+            ByDesignTally tally = new ByDesignTally();
+            List<ByDesignVerdict> verdicts = new List<ByDesignVerdict>();
+
+            foreach (string unnamed in new[] { string.Empty, null })
+            {
+                ByDesignPair pair;
+                ByDesignVerdict verdict = ByDesignRule.Judge(
+                    pairs, "A", "B", unnamed, ClashStatus.New, false, out pair);
+
+                verdicts.Add(verdict);
+                tally.Add("T", unnamed, verdict, pair);
+            }
+
+            Assert.That(tally.MovedCount, Is.EqualTo(0), "a clash nothing could move was counted as moved");
+            Assert.That(tally.MovedLines.Count, Is.EqualTo(0),
+                "a REVIEWED line was written for a clash that never moved");
+            Assert.That(ByDesignTally.ResultLine(true, tally.MovedCount),
+                Is.EqualTo("by design      : 0 clashes moved to Reviewed"));
+
+            Assert.That(verdicts.Count, Is.EqualTo(2));
+            Assert.That(verdicts[0], Is.EqualTo(ByDesignVerdict.NoClashName));
+            Assert.That(verdicts[1], Is.EqualTo(ByDesignVerdict.NoClashName));
+            Assert.That(tally.Considered, Is.EqualTo(2));
+            Assert.That(tally.Of(ByDesignVerdict.NoClashName), Is.EqualTo(2));
+
+            string all = string.Join("\n", new List<string>(tally.Lines()).ToArray());
+
+            Assert.That(all, Does.Contain("moved to Reviewed : 0"));
+            Assert.That(all, Does.Contain("    2  " + ByDesignTally.Describe(ByDesignVerdict.NoClashName)));
+            Assert.That(all, Does.Not.Contain(ReviewedLine.Prefix));
+        }
+
+        /// <summary>
+        /// The name is the last question, after the penetration rule's. An unnamed clash the
+        /// rule was never going to touch reads as why it was not, because a block saying no
+        /// name against it would read as though the name was what stopped it.
+        /// </summary>
+        [Test]
+        public void TheNameIsAskedAfterEveryOtherQuestion()
+        {
+            ByDesignPairs pairs = From("left_set,right_set,reason\nA,B,a sits on b\n");
+            ByDesignPair pair;
+
+            Assert.That(ByDesignRule.Judge(pairs, string.Empty, "B", string.Empty, ClashStatus.New, false, out pair),
+                Is.EqualTo(ByDesignVerdict.NoSetName));
+            Assert.That(ByDesignRule.Judge(pairs, "A", "C", string.Empty, ClashStatus.New, false, out pair),
+                Is.EqualTo(ByDesignVerdict.NotAPair));
+            Assert.That(ByDesignRule.Judge(pairs, "A", "B", string.Empty, ClashStatus.Approved, false, out pair),
+                Is.EqualTo(ByDesignVerdict.SomebodyDecided));
+            Assert.That(ByDesignRule.Judge(pairs, "A", "B", string.Empty, ClashStatus.New, true, out pair),
+                Is.EqualTo(ByDesignVerdict.ThePenetrationRuleHasIt));
+            Assert.That(ByDesignRule.Judge(pairs, "A", "B", "clash 1", ClashStatus.New, false, out pair),
+                Is.EqualTo(ByDesignVerdict.Reviewed));
         }
 
         // ---------- what the file refuses ----------
