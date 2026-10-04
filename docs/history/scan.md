@@ -3120,7 +3120,7 @@ opened with no error is never a rebuild. `NwfComparison.ReadEmpty` stops the gro
 a reason that names the file and says what to do. That is F74 and it holds whichever way
 this measurement goes.
 
-THE ANSWER, read by `tools\probes\probe-document-ready.ps1` on DESKTOP-5VL7LTJ on
+THE ANSWER, read by `tools\probes\probe-document-ready.ps1` on the machine of 2026-09-19 on
 2026-09-19 against `Autodesk.Navisworks.Api 22.0.0.0`. The question above is left standing
 because the reasoning in it is why the answer matters.
 
@@ -3226,7 +3226,7 @@ into the text a CSV cell holds, and one line saying whether the walk is per item
 whether a search can do it in one pass. The Core half, `Federator.Core.Probe`, already
 fixes the CSV columns, the cap and the sort, so only the reading is open.
 
-THE ANSWER, read by `tools\probes\probe-properties.ps1` on DESKTOP-5VL7LTJ on 2026-09-19
+THE ANSWER, read by `tools\probes\probe-properties.ps1` on the machine of 2026-09-19 on 2026-09-19
 against `Autodesk.Navisworks.Api 22.0.0.0`. The question above is left standing because
 it says what the answer is for.
 
@@ -3318,7 +3318,7 @@ is in `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` today. `equals` is prove
 import, because the whole file uses it and the real run imported all 61 sets. The negated
 form is the better set and is not written until this is measured.
 
-WHAT REFLECTION CAN SAY, read by `tools\probes\probe-properties.ps1` on DESKTOP-5VL7LTJ
+WHAT REFLECTION CAN SAY, read by `tools\probes\probe-properties.ps1` on the machine of 2026-09-19
 on 2026-09-19 against `Autodesk.Navisworks.Api 22.0.0.0`, which is not the measurement
 above and does not close it:
 
@@ -3364,7 +3364,7 @@ written, and one saying whether it comes back after a save and reopen. IF IT CAN
 DONE, the answer is one line in the log saying so and the status alone is set. Nothing is
 faked and no second file stands in for a comment the NWF does not hold.
 
-THE ANSWER, read by `tools\probes\probe-clash-comments.ps1` on DESKTOP-5VL7LTJ on
+THE ANSWER, read by `tools\probes\probe-clash-comments.ps1` on the machine of 2026-09-19 on
 2026-09-19 against `Autodesk.Navisworks.Api 22.0.0.0` and `Autodesk.Navisworks.Clash
 22.0.0.0`. The question above is left standing because it says what the answer is for.
 
@@ -3460,7 +3460,7 @@ name breaking its siblings' pattern, need no measurement and are built.
 The one thing 5d could not read off the DLL, measured on a run. `tools\probes\ViewpointProbe`
 is a plugin assembly with no Core reference, loaded into a Navisworks started through
 `Autodesk.Navisworks.Api.Automation` with `AddPluginAssembly` and run with
-`ExecuteAddInPlugin("ViewpointProbe.PARS", ...)`, on DESKTOP-5VL7LTJ against a COPY of
+`ExecuteAddInPlugin("ViewpointProbe.PARS", ...)`, on the machine of 2026-09-19 against a COPY of
 `1104-PAR-1A0215-ZZZ-BM-MOD-000001.nwf`, three models, under
 `C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\probe`. The whole result file is
 what follows, cut only where a line repeats.
