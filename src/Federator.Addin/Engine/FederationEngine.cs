@@ -73,6 +73,12 @@ namespace Federator.Addin.Engine
         private readonly GapTally gaps = new GapTally();
 
         /// <summary>
+        /// Every group's time beside what it held, Q101, added as each group finishes and
+        /// written once after the last, so the target can be set after the proof run.
+        /// </summary>
+        private readonly List<GroupSize> groupSizes = new List<GroupSize>();
+
+        /// <summary>
         /// Which sets found nothing, across the whole run, F82. A set at zero in ONE group
         /// says a discipline was not exported for that building. A set at zero in EVERY
         /// group says the set itself is wrong, and 38 of the client's 61 were in that
@@ -426,6 +432,10 @@ namespace Federator.Addin.Engine
                     outcome.Reason,
                     RunPath.Label(outcome.Decision, exchange != null));
 
+                // Q101. The clock stopped above, so this reads the same seconds the GROUP
+                // finished line carries.
+                Sized(job.Building, job.Files, outcome, groupClock.Elapsed.TotalSeconds);
+
                 // A run failing uniformly stops here rather than working through the rest.
                 // One real run spent 8 hours 52 minutes over 24 groups with every test
                 // failing the same way, and stopping the group would have saved none of it.
@@ -451,7 +461,52 @@ namespace Federator.Addin.Engine
             // F63. One line for the whole run, so the standing rule has a number on it.
             log.Line(gaps.Line());
 
+            // Q101. After the last group, every group's time beside what it held.
+            WriteTimingBesideSize();
+
             return outcomes;
+        }
+
+        /// <summary>
+        /// What one group held beside how long it took, Q101, off what the run already
+        /// read and with no Navisworks call: the files the group was handed, each sized on
+        /// the disk the way every size here is read, after File.Exists passes, the Revit
+        /// elements the EXPORT CHECK counted, the clash total and the viewpoints created.
+        /// </summary>
+        private void Sized(string building, IList<string> files, JobOutcome outcome, double seconds)
+        {
+            List<long> sizes = new List<long>();
+
+            if (files != null)
+            {
+                foreach (string file in files)
+                {
+                    sizes.Add(SizeOnDiskOrMinusOne(file));
+                }
+            }
+
+            groupSizes.Add(new GroupSize(
+                Words.Or(building, "this group"),
+                seconds,
+                sizes.Count,
+                GroupSize.BytesOf(sizes),
+                outcome.ElementCount,
+                outcome.Clash == null ? GroupSize.Unknown : outcome.Clash.TotalClashes,
+                outcome.ViewpointsCreated));
+        }
+
+        /// <summary>
+        /// The block of every group's time beside what it held, Q101, and a row per group
+        /// for the machine readable log, because Block writes none.
+        /// </summary>
+        private void WriteTimingBesideSize()
+        {
+            log.Block(TimingBlock.SizeTitle, TimingBlock.BesideSize(groupSizes));
+
+            foreach (GroupSize size in groupSizes)
+            {
+                log.Row("timing beside size", size.Building, EventRow.Exact(size.Seconds), size.RowText());
+            }
         }
 
         /// <summary>
@@ -494,7 +549,8 @@ namespace Federator.Addin.Engine
             // rule and the RESULT block counts it. It used to end with no GROUP line at
             // all, so the RESULT block that followed said no group had run.
             Stopwatch groupClock = Stopwatch.StartNew();
-            log.GroupStarted(job.Building, FilesInsideTheOpenDocument(job.Building));
+            IList<string> openFiles = FilesInsideTheOpenDocument(job.Building);
+            log.GroupStarted(job.Building, openFiles);
 
             try
             {
@@ -578,10 +634,15 @@ namespace Federator.Addin.Engine
                     outcome.Reason,
                     RunPath.Label(RerunDecision.Open, exchange != null));
 
+                // Q101, the same block as the scanned run, its files the models the open
+                // document holds.
+                Sized(job.Building, openFiles, outcome, groupClock.Elapsed.TotalSeconds);
+
                 // F63. One group, so the run line and the group block say the same thing,
                 // and it is still written, because a run that held nothing back saying so
                 // is a check that ran and silence is not.
                 log.Line(gaps.Line());
+                WriteTimingBesideSize();
 
                 // The same fields the scanned run's RUN SETTINGS and GROUPS blocks carry,
                 // where they apply, written just before the window writes RESULT.
@@ -948,7 +1009,7 @@ namespace Federator.Addin.Engine
             // is the one place both paths pass through. Neither can fail a group: report
             // it and run anyway, never skip a group and never stop a run for it.
             WhereTheModelsSit(document, job, outcome);
-            WhatTheModelsCarry(document, job);
+            WhatTheModelsCarry(document, job, outcome);
 
             bool clashPutSomethingIn = ClashStep(document, job, outcome);
 
@@ -2125,11 +2186,12 @@ namespace Federator.Addin.Engine
         /// the names are what a person holds beside the matrix, and on 2026-09-20 that
         /// comparison was the answer to why 33 sets found nothing, 5q.
         /// </summary>
-        private void WhatTheModelsCarry(Document document, FederationJob job)
+        private void WhatTheModelsCarry(Document document, FederationJob job, JobOutcome outcome)
         {
             try
             {
                 IList<ModelExport> exports = ModelFactsReader.Exports(document, reports.Names, log);
+                outcome.ElementCount = GroupSize.ElementsIn(exports);
 
                 log.Block(
                     ExportCheck.BlockTitle + " " + Words.Or(job.Building, "this group"),
@@ -3229,6 +3291,7 @@ namespace Federator.Addin.Engine
 
             log.Block("VIEWS BUILT " + job.Building, built.Lines());
             outcome.FailedViewpointCount = built.FailedCount;
+            outcome.ViewpointsCreated = built.CreatedCount;
             return built.PutAnythingIn;
         }
 

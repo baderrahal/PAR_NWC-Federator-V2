@@ -1118,6 +1118,18 @@ it if the same work carries the same name every time it is timed.
   line and never spread, and parts adding to more than the whole are said in words. A
   part the work never entered is left off, so the default route never shows the root
   route's move. The line is written once per group, whichever way the work ended
+- EACH GROUP'S TIME STANDS BESIDE WHAT IT HELD, Q101 in F114. Bader's answer on
+  2026-10-04: the 45 minutes is not judged in this round, and each group's time is
+  reported beside the sizes of its NWC files and its item counts so the target can be set
+  after the proof run. `TimingBlock.BesideSize` is the TIMING BESIDE SIZE block, written
+  once after the last group, slowest first, and `Federator.Core.Diagnostics.GroupSize` is
+  one row: the group clock, the files the group was handed and their bytes on the disk,
+  the Revit elements the EXPORT CHECK counted, the clash total and the viewpoints created,
+  every one a number the run already read and none a new Navisworks call. The block says
+  where each number comes from. A number that could not be read is UNKNOWN and never
+  zero, and a total over parts of which one could not be read is UNKNOWN too. It judges
+  nothing and sets no target, and the line about the 45 minutes stays the last line of
+  the run block, as it was
 
 ### The document census, F61
 
