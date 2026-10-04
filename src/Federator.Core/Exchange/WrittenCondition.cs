@@ -13,10 +13,11 @@ namespace Federator.Core.Exchange
     /// </summary>
     internal sealed class WrittenCondition
     {
-        private WrittenCondition(string lead, string element, int flags, string value)
+        private WrittenCondition(string lead, string element, string test, int flags, string value)
         {
             Lead = lead;
             Element = element;
+            Test = test;
             Flags = flags;
             Value = value;
         }
@@ -26,6 +27,9 @@ namespace Federator.Core.Exchange
 
         /// <summary>The condition element itself, from its opening tag to its closing tag.</summary>
         internal string Element { get; private set; }
+
+        /// <summary>The test attribute, equals or contains in the client's files, or null where it carries none.</summary>
+        internal string Test { get; private set; }
 
         /// <summary>The flags attribute, zero where the file wrote none or one that is not a number, the way ExchangeReader reads it.</summary>
         internal int Flags { get; private set; }
@@ -40,6 +44,7 @@ namespace Federator.Core.Exchange
         internal static WrittenCondition Read(string lead, string element)
         {
             XElement parsed = XElement.Parse(element);
+            XAttribute test = parsed.Attribute("test");
             XAttribute flags = parsed.Attribute("flags");
             XElement data = Child(Child(parsed, "value"), "data");
             int read;
@@ -47,6 +52,7 @@ namespace Federator.Core.Exchange
             return new WrittenCondition(
                 lead,
                 element,
+                test == null ? null : test.Value,
                 flags != null && int.TryParse(flags.Value.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out read) ? read : 0,
                 data == null ? null : data.Value);
         }
@@ -66,7 +72,7 @@ namespace Federator.Core.Exchange
             }
 
             string element = Element.Substring(0, shut + 1) + Escaped(value) + Element.Substring(end);
-            return new WrittenCondition(Lead, element, Flags, value);
+            return new WrittenCondition(Lead, element, Test, Flags, value);
         }
 
         /// <summary>The same condition carrying other flags. The attribute is added where the file wrote none.</summary>
@@ -93,7 +99,13 @@ namespace Federator.Core.Exchange
                 element = Element.Substring(0, shut) + " flags=\"" + number + "\"" + Element.Substring(shut);
             }
 
-            return new WrittenCondition(Lead, element, flags, Value);
+            return new WrittenCondition(Lead, element, Test, flags, Value);
+        }
+
+        /// <summary>The same condition with other whitespace in front of it, so a copy sits where the set's own conditions do.</summary>
+        internal WrittenCondition WithLead(string lead)
+        {
+            return new WrittenCondition(lead, Element, Test, Flags, Value);
         }
 
         /// <summary>The text an XML file holds for that value, the three characters element content cannot carry as they are escaped.</summary>

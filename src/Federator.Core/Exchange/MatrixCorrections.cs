@@ -452,6 +452,24 @@ namespace Federator.Core.Exchange
             IList<ValueRewrite> values,
             IList<ValueOrRow> orRows)
         {
+            return Apply(xml, renames, rewrites, conditions, values, orRows, null);
+        }
+
+        /// <summary>
+        /// The same, plus the Source File rule of Q103: a set beside the ones asking that
+        /// Source File condition asks it too where another discipline also uses its
+        /// category. Applied last, so it reads the sets as every other correction left them.
+        /// Pass null and it is the six argument form.
+        /// </summary>
+        public static CorrectionOutcome Apply(
+            string xml,
+            IList<SetRename> renames,
+            IList<CategoryRewrite> rewrites,
+            IList<ConditionsRewrite> conditions,
+            IList<ValueRewrite> values,
+            IList<ValueOrRow> orRows,
+            IList<SourceFileRule> sourceFiles)
+        {
             if (xml == null)
             {
                 throw new ArgumentNullException("xml");
@@ -630,8 +648,315 @@ namespace Federator.Core.Exchange
                 }
             }
 
+            if (sourceFiles != null)
+            {
+                foreach (SourceFileRule rule in sourceFiles)
+                {
+                    if (rule != null && rule.Asks.Length > 0)
+                    {
+                        text = AskSourceFile(text, rule, outcome);
+                    }
+                }
+            }
+
             outcome.Text = text;
             return outcome;
+        }
+
+        /// <summary>
+        /// Q103. A set in the folder of the sets already asking that Source File condition
+        /// asks it too, where its category is one another discipline also uses: one another
+        /// folder's set asks, read off this file, or one another discipline's models were
+        /// measured carrying, handed in. The condition is the file's own, copied off the
+        /// first set asking it, and goes at the end of every group of the set that lacks
+        /// it, so a set that is an Or keeps asking it in each group.
+        ///
+        /// NOTHING HERE NAMES A DISCIPLINE, A FOLDER OR A CATEGORY. The value it asks, -AR-
+        /// on this project, is handed in, and the folder and the category property are those
+        /// of the set already asking it. One line per set it changes, and one saying so where
+        /// none needed it, so the log names every correction.
+        /// </summary>
+        private static string AskSourceFile(string xml, SourceFileRule rule, CorrectionOutcome outcome)
+        {
+            ExchangeDocument read = new ExchangeReader().ReadText(xml);
+            SelectionSetDefinition template = null;
+            SearchConditionDefinition asking = null;
+
+            foreach (SelectionSetDefinition set in read.Sets)
+            {
+                asking = AskingCondition(set, rule.Asks);
+
+                if (asking != null)
+                {
+                    template = set;
+                    break;
+                }
+            }
+
+            if (template == null)
+            {
+                outcome.Add(
+                    "no set asks for " + rule.Asks + ", so no set beside one is given it",
+                    0,
+                    "there is no condition in this file to copy");
+                return xml;
+            }
+
+            string condition = (string.IsNullOrEmpty(asking.Property.DisplayName)
+                ? asking.Property.InternalName
+                : asking.Property.DisplayName) + " contains " + rule.Asks;
+
+            string categoryProperty = null;
+
+            foreach (SearchConditionDefinition other in template.Conditions)
+            {
+                if (!ReferenceEquals(other, asking) && other.Property != null)
+                {
+                    categoryProperty = other.Property.InternalName;
+                    break;
+                }
+            }
+
+            if (categoryProperty == null)
+            {
+                outcome.Add(
+                    "no set beside those asking " + condition + " is given it",
+                    0,
+                    template.Name + " asks for nothing else, so no category could be read");
+                return xml;
+            }
+
+            HashSet<string> askedElsewhere = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (SelectionSetDefinition set in read.Sets)
+            {
+                if (!SameFolder(set, template))
+                {
+                    askedElsewhere.UnionWith(CategoriesOf(set, categoryProperty));
+                }
+            }
+
+            // The sets to give it, keyed by the name as the file writes it, in file order.
+            Dictionary<string, string> because = new Dictionary<string, string>(StringComparer.Ordinal);
+            List<SelectionSetDefinition> given = new List<SelectionSetDefinition>();
+
+            foreach (SelectionSetDefinition set in read.Sets)
+            {
+                if (!SameFolder(set, template) || because.ContainsKey(AttributeText(set.Name)))
+                {
+                    continue;
+                }
+
+                foreach (string category in CategoriesOf(set, categoryProperty))
+                {
+                    string reason = askedElsewhere.Contains(category)
+                        ? "a set in another folder also asks for " + category
+                        : rule.MeasuredElsewhere.Contains(category)
+                            ? "another discipline's models were measured carrying " + category
+                            : null;
+
+                    if (reason != null)
+                    {
+                        because[AttributeText(set.Name)] = reason;
+                        given.Add(set);
+                        break;
+                    }
+                }
+            }
+
+            WrittenCondition copy = WrittenAsking(xml, template.Name, rule.Asks);
+
+            if (copy == null)
+            {
+                outcome.Add(
+                    "no set beside those asking " + condition + " is given it",
+                    0,
+                    template.Name + " could not be read in the file's text, so there is nothing to copy");
+                return xml;
+            }
+
+            copy = copy.WithFlags(copy.Flags & ~StartGroup);
+            Dictionary<string, int> groupsGiven = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            string text = EachSet(xml, block =>
+            {
+                string name = NameIn(block);
+
+                if (name == null || !because.ContainsKey(name) || groupsGiven.ContainsKey(name))
+                {
+                    return block;
+                }
+
+                SetConditionsText set = SetConditionsText.Read(block);
+
+                if (set == null)
+                {
+                    return block;
+                }
+
+                List<WrittenCondition> written = new List<WrittenCondition>();
+                int added = 0;
+
+                foreach (IList<WrittenCondition> group in set.Groups())
+                {
+                    written.AddRange(group);
+
+                    if (!Asks(group, rule.Asks))
+                    {
+                        written.Add(copy.WithLead(group[group.Count - 1].Lead));
+                        added++;
+                    }
+                }
+
+                groupsGiven[name] = added;
+                return added == 0 ? block : set.With(written).Write();
+            });
+
+            int changedSets = 0;
+
+            foreach (SelectionSetDefinition set in given)
+            {
+                string name = AttributeText(set.Name);
+                int added;
+
+                if (!groupsGiven.TryGetValue(name, out added))
+                {
+                    outcome.Add(
+                        set.Name + " is to ask " + condition + " as well",
+                        0,
+                        "because " + because[name] + ", and its conditions could not be read in the file's text, so it was NOT changed");
+                    continue;
+                }
+
+                if (added > 0)
+                {
+                    changedSets++;
+                    outcome.Add(set.Name + " asks " + condition + " as well, because " + because[name], added, null);
+                }
+            }
+
+            if (changedSets == 0)
+            {
+                outcome.Add(
+                    "every set beside those asking " + condition + " whose category another discipline also uses asks it already",
+                    0,
+                    null);
+            }
+
+            return text;
+        }
+
+        /// <summary>The condition of that set asking for that value with contains, and not negated, or null.</summary>
+        private static SearchConditionDefinition AskingCondition(SelectionSetDefinition set, string asks)
+        {
+            foreach (SearchConditionDefinition condition in set.Conditions)
+            {
+                if (condition.Property != null
+                    && condition.Value != null
+                    && string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.Ordinal)
+                    && (condition.Flags & NegateCondition) == 0
+                    && string.Equals(condition.Value.Data, asks, StringComparison.Ordinal))
+                {
+                    return condition;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>Whether a group of the file's text already asks for that value with contains.</summary>
+        private static bool Asks(IList<WrittenCondition> group, string asks)
+        {
+            foreach (WrittenCondition condition in group)
+            {
+                if (string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.Ordinal)
+                    && string.Equals(condition.Value, asks, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>The values a set asks on that property and not negated, in the order it asks them.</summary>
+        private static IList<string> CategoriesOf(SelectionSetDefinition set, string property)
+        {
+            List<string> categories = new List<string>();
+
+            foreach (SearchConditionDefinition condition in set.Conditions)
+            {
+                if (condition.Property != null
+                    && condition.Value != null
+                    && (condition.Flags & NegateCondition) == 0
+                    && string.Equals(condition.Property.InternalName, property, StringComparison.Ordinal)
+                    && !categories.Contains(condition.Value.Data))
+                {
+                    categories.Add(condition.Value.Data);
+                }
+            }
+
+            return categories;
+        }
+
+        private static bool SameFolder(SelectionSetDefinition one, SelectionSetDefinition other)
+        {
+            if (one.Folders.Count != other.Folders.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < one.Folders.Count; i++)
+            {
+                if (!string.Equals(one.Folders[i], other.Folders[i], StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>That set's condition asking for that value, as the file's text writes it, or null where it will not read.</summary>
+        private static WrittenCondition WrittenAsking(string xml, string setName, string asks)
+        {
+            int at = xml.IndexOf(SetOpens + AttributeText(setName) + "\"", StringComparison.Ordinal);
+            int ends = at < 0 ? -1 : xml.IndexOf(SetCloses, at, StringComparison.Ordinal);
+            SetConditionsText set = ends < 0 ? null : SetConditionsText.Read(xml.Substring(at, ends - at + SetCloses.Length));
+
+            if (set == null)
+            {
+                return null;
+            }
+
+            foreach (WrittenCondition condition in set.Conditions)
+            {
+                if (string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.Ordinal)
+                    && string.Equals(condition.Value, asks, StringComparison.Ordinal))
+                {
+                    return condition;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>The name attribute a set block opens with, as the file writes it, or null.</summary>
+        private static string NameIn(string block)
+        {
+            if (!block.StartsWith(SetOpens, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            int ends = block.IndexOf('"', SetOpens.Length);
+            return ends < 0 ? null : block.Substring(SetOpens.Length, ends - SetOpens.Length);
+        }
+
+        /// <summary>A name the way an attribute in the file writes it, its four special characters escaped.</summary>
+        private static string AttributeText(string name)
+        {
+            return (name ?? string.Empty).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
         }
 
         /// <summary>

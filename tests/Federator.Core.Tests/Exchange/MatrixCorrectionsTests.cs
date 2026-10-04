@@ -918,6 +918,190 @@ namespace Federator.Core.Tests
             Assert.That(twice.TotalChanged, Is.EqualTo(0));
         }
 
+        // ---------- Q103, the Source File condition of the AR sets ----------
+
+        /// <summary>
+        /// The categories measured in another discipline's models that no other folder's set
+        /// asks for, as sample data: in groups holding no AR model, BLD-AR-Ramps found 36
+        /// items in 1B06PK and 17 in 1C06PK and BLD-AR-Railings 18 in 1B06PK, set 03 log lines
+        /// 4304, 7979 and 4316, and BLD-AR-Furniture 29 and BLD-AR-Site 18 in 1A0415 of the
+        /// partial C04 run of 2026-09-21, its log lines 200 and 203.
+        /// </summary>
+        private static readonly string[] MeasuredInOtherDisciplines = { "Ramps", "Railings", "Furniture", "Site" };
+
+        private const string SourceFileProperty = "LcOaNodeSourceFile";
+
+        /// <summary>A Source File condition the way the client's matrix writes one, with no category element.</summary>
+        private static string SourceFileCondition(string asks)
+        {
+            return "            <condition test=\"contains\" flags=\"0\">\n"
+                + "              <property>\n"
+                + "                <name internal=\"" + SourceFileProperty + "\">Source File</name>\n"
+                + "              </property>\n"
+                + "              <value>\n"
+                + "                <data type=\"wstring\">" + asks + "</data>\n"
+                + "              </value>\n"
+                + "            </condition>\n";
+        }
+
+        private static string Category(string category)
+        {
+            return WrittenCondition(0, CategoryProperty, "Category", category);
+        }
+
+        private static string Folders(string architecture, string structure)
+        {
+            return "<?xml version='1.0' encoding='UTF-8'?>\n<exchange units=\"ft\">\n  <selectionsets>\n"
+                + "    <viewfolder name=\"Architecture\">\n" + architecture + "    </viewfolder>\n"
+                + "    <viewfolder name=\"Structure\">\n" + structure + "    </viewfolder>\n"
+                + "  </selectionsets>\n</exchange>\n";
+        }
+
+        private static IList<SourceFileRule> AskAr(params string[] measured)
+        {
+            return new List<SourceFileRule> { new SourceFileRule("-AR-", measured) };
+        }
+
+        private static CorrectionOutcome WithSourceFile(string xml, IList<SourceFileRule> rules)
+        {
+            return MatrixCorrections.Apply(xml, null, null, null, null, null, rules);
+        }
+
+        /// <summary>Every set of that file by name, read back the way the add-in plans it.</summary>
+        private static Dictionary<string, PlannedSet> PlannedByName(string xml)
+        {
+            Dictionary<string, PlannedSet> sets = new Dictionary<string, PlannedSet>(StringComparer.Ordinal);
+
+            foreach (PlannedSet set in SetBuildPlan.From(new ExchangeReader().ReadText(xml)).Buildable)
+            {
+                sets[set.Name] = set;
+            }
+
+            return sets;
+        }
+
+        private static string FloorsAskingAr()
+        {
+            return WrittenSet("BLD-AR-Floors", Category("Floors") + SourceFileCondition("-AR-"));
+        }
+
+        /// <summary>
+        /// Q103 read off the matrix. A set beside the ones asking Source File contains -AR-
+        /// asks it too where a set of another folder asks for its category, Walls here, and a
+        /// set whose category nobody else asks is left alone. The Structure set is never given
+        /// the AR condition, because it is not beside the sets asking it.
+        /// </summary>
+        [Test]
+        public void ASetBesideTheOnesAskingSourceFileAsksItWhereAnotherFolderAsksItsCategory()
+        {
+            string xml = Folders(
+                FloorsAskingAr() + WrittenSet("BLD-AR-Walls", Category("Walls")) + WrittenSet("BLD-AR-Doors", Category("Doors")),
+                WrittenSet("BLD-ST-Walls", Category("Walls") + SourceFileCondition("-ST-")));
+
+            CorrectionOutcome outcome = WithSourceFile(xml, AskAr());
+            Dictionary<string, PlannedSet> sets = PlannedByName(outcome.Text);
+
+            Assert.That(sets["BLD-AR-Walls"].Describe(), Is.EqualTo(
+                "LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals \"Walls\""
+                    + " and LcOaNodeSourceFile (Source File) contains \"-AR-\""));
+            Assert.That(sets["BLD-AR-Doors"].ConditionCount, Is.EqualTo(1), "nobody else asks for Doors");
+            Assert.That(sets["BLD-ST-Walls"].Describe(), Does.Not.Contain("-AR-"));
+            Assert.That(sets["BLD-AR-Floors"].ConditionCount, Is.EqualTo(2), "it asks it already");
+            Assert.That(Words(outcome), Does.Contain(
+                "BLD-AR-Walls asks Source File contains -AR- as well, because a set in another folder also asks for Walls"));
+            Assert.That(outcome.TotalChanged, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Q103 for a category no other folder's set asks for and another discipline's models
+        /// carry, which only a measurement can say, Ramps in 1B06PK of set 03.
+        /// </summary>
+        [Test]
+        public void ACategoryMeasuredInAnotherDisciplinesModelsGetsItToo()
+        {
+            string xml = Folders(
+                FloorsAskingAr() + WrittenSet("BLD-AR-Ramps", Category("Ramps")) + WrittenSet("BLD-AR-Doors", Category("Doors")),
+                WrittenSet("BLD-ST-Framing", Category("Structural Framing")));
+
+            CorrectionOutcome outcome = WithSourceFile(xml, AskAr("Ramps"));
+            Dictionary<string, PlannedSet> sets = PlannedByName(outcome.Text);
+
+            Assert.That(sets["BLD-AR-Ramps"].Describe(), Does.EndWith("LcOaNodeSourceFile (Source File) contains \"-AR-\""));
+            Assert.That(sets["BLD-AR-Doors"].ConditionCount, Is.EqualTo(1));
+            Assert.That(Words(outcome), Does.Contain("because another discipline's models were measured carrying Ramps"));
+        }
+
+        /// <summary>A set that is an Or asks it in every group, so no group of it finds another discipline's items.</summary>
+        [Test]
+        public void EveryGroupOfAnOrSetAsksIt()
+        {
+            string xml = Folders(
+                FloorsAskingAr() + WrittenSet(
+                    "BLD-AR-Stairs&amp;Ramps",
+                    Category("Stairs") + WrittenCondition(MatrixCorrections.StartGroup, CategoryProperty, "Category", "Ramps")),
+                WrittenSet("BLD-ST-Stair", Category("Stairs") + SourceFileCondition("-ST-")));
+
+            CorrectionOutcome once = WithSourceFile(xml, AskAr("Ramps"));
+            PlannedSet set = PlannedByName(once.Text)["BLD-AR-Stairs&Ramps"];
+
+            Assert.That(set.Groups().Count, Is.EqualTo(2), set.Describe());
+
+            foreach (IList<PlannedCondition> group in set.Groups())
+            {
+                Assert.That(ValuesOn(group, SourceFileProperty), Is.EqualTo(new[] { "-AR-" }), set.Describe());
+            }
+
+            Assert.That(once.TotalChanged, Is.EqualTo(2), "one condition in each of the two groups");
+            Assert.That(WithSourceFile(once.Text, AskAr("Ramps")).Text, Is.EqualTo(once.Text), "the second run changes nothing");
+        }
+
+        [Test]
+        public void AFileWhereNoSetAsksItSaysSoAndChangesNothing()
+        {
+            string xml = Folders(WrittenSet("BLD-AR-Ramps", Category("Ramps")), WrittenSet("BLD-ST-Walls", Category("Walls")));
+            CorrectionOutcome outcome = WithSourceFile(xml, AskAr("Ramps"));
+
+            Assert.That(outcome.Text, Is.EqualTo(xml));
+            Assert.That(Words(outcome), Does.Contain("no set asks for -AR-"));
+        }
+
+        /// <summary>
+        /// FR-009 on the client's own matrix. The four AR sets asking a category another
+        /// discipline's models were measured carrying ask Source File contains -AR- and no
+        /// other set changes at all: Floors, Stairs and Walls asked it already, and every
+        /// other AR category is asked by no other folder's set and was measured in no other
+        /// discipline's model. A second run changes nothing.
+        /// </summary>
+        [Test]
+        public void OnTheClientsMatrixTheFourArSetsAnotherDisciplineUsesAskSourceFileAndNoOtherSetChanges()
+        {
+            string source = Read(Samples.Matrix());
+            Dictionary<string, PlannedSet> before = PlannedByName(source);
+
+            CorrectionOutcome outcome = WithSourceFile(source, AskAr(MeasuredInOtherDisciplines));
+            Dictionary<string, PlannedSet> after = PlannedByName(outcome.Text);
+            List<string> changed = new List<string>();
+
+            foreach (KeyValuePair<string, PlannedSet> one in before)
+            {
+                if (!string.Equals(one.Value.Describe(), after[one.Key].Describe(), StringComparison.Ordinal))
+                {
+                    changed.Add(one.Key);
+                    Assert.That(after[one.Key].Describe(), Is.EqualTo(
+                        one.Value.Describe() + " and LcOaNodeSourceFile (Source File) contains \"-AR-\""), one.Key);
+                }
+            }
+
+            Assert.That(changed, Is.EquivalentTo(new[] { "BLD-AR-Ramps", "BLD-AR-Furniture", "BLD-AR-Railings", "BLD-AR-Site" }));
+            Assert.That(outcome.TotalChanged, Is.EqualTo(4));
+
+            CorrectionOutcome again = WithSourceFile(outcome.Text, AskAr(MeasuredInOtherDisciplines));
+
+            Assert.That(again.Text, Is.EqualTo(outcome.Text));
+            Assert.That(again.TotalChanged, Is.EqualTo(0));
+            Assert.That(Words(again), Does.Contain("asks it already"));
+        }
+
         /// <summary>
         /// 5t on the real matrix: NOT ONE of the five disagreeing pairs is a value any
         /// set filters on, so the Or row correctly produces nothing here. Saying that is
