@@ -4,8 +4,8 @@ Newest entry at the top.
 ## 2026-10-04 The loop, turn 5, F104 part 2, the documents read, DONE for the build
 
 Nothing under src or tests changed. Core tests 1746 passed, 0 failed, 0 skipped after the merge
-of main at e76a2d3, after the change, by the pre-commit at 75e5dce and 33732c9, and at the merge
-of main dd55e4b into this branch, its pre-commit in the pull request body. No Navisworks was
+of main at e76a2d3, after the change, by the pre-commit at 75e5dce and 33732c9, and at the merges
+202496b and 45dcd4f, turn5\precommit-f104-merge-2.txt and turn5\precommit-f104-merge-3.txt. No Navisworks was
 started for it.
 
 ### What was done
@@ -17,10 +17,11 @@ started for it.
   and the pairs. Written by one developer, the brief turn5\f104-part2-brief.md
 - read for harm and wrong evidence under Q93 by a reviewer, who approved, and a breaker, who
   found nothing blocking, turn5\f104p2-reads.txt, their notes register rows F104-R1 to F104-R7
-- its harness, turn5\f104p2-proof\prove-f104p2.ps1, all three parts on the committed code at
-  15:53 on 2026-10-04 once Bader's Navisworks had closed: 102 passed, 0 failed, Get-Process
+- its harness, turn5\f104p2-proof\prove-f104p2.ps1, all three parts on the committed code from
+  15:39:38 to 15:53:47 on 2026-10-04 once Bader's Navisworks had closed: 102 passed, 0 failed, Get-Process
   Roamer 0 before and after, turn5\f104p2-prove-4.txt
-- main merged in twice, at 3449521 and at dd55e4b, each conflict keeping both sides, F104's
+- main merged in three times, 3449521 by e76a2d3, dd55e4b by 202496b and 6689bad by 45dcd4f, each
+  conflict keeping both sides, F104's
   order line now 37 after F105's 35 and F107's 36, and its 5z-g after F105's 5z-f in
   docs\history\scan.md
 
