@@ -59,8 +59,9 @@ pass.
   check-imports pass, turn5\f125b-checks.txt
 - the second pass read under Q93 by a reviewer, VERDICT APPROVE with nothing blocking,
   turn5\f125b-read-review.txt, and by a breaker, VERDICT APPROVE with nothing blocking, turn5\f125b-read-break.txt, read from the files as they stand since it had no shell, its six notes on words and edge cases written as register rows F125-R8 to F125-R13, three checks that found nothing, and one note of what it could not run, and the reviewer's points left by the records pass written as F125-R14
-- register rows F125-R1 to F125-R7 in steps\loop.md, the readings' findings this pass does not
-  fix, for F122 the loop tools in wave 4
+- register rows F125-R1 to F125-R7 in steps\loop.md, and F125-R8 to F125-R14 the lead wrote from
+  the second pass's readings, the readings' findings this pass does not fix, for F122 the loop
+  tools in wave 4
 - the records made true after the claim-checker read the second pass, turn5\f125b-read-claims.txt.
   Main 6cc0283 merged in at 42dfd66, the one conflict steps\log.md, both sides kept, F125's entry on
   top. F125-R2 marked answered for C02: the run of 18:55 on 5fa98a8 read the real pane disabled with
