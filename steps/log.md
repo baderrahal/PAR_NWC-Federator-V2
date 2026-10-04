@@ -1,6 +1,46 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, F104 part 2, the documents read, DONE for the build
+
+Nothing under src or tests changed. Core tests 1746 passed, 0 failed, 0 skipped after the merge
+of main at e76a2d3, after the change, by the pre-commit at 75e5dce and 33732c9, and at the merges
+202496b and 45dcd4f, turn5\precommit-f104-merge-2.txt and turn5\precommit-f104-merge-3.txt. No Navisworks was
+started for it.
+
+### What was done
+
+- tools\loop\run.ps1 -Mode Documents, a mode of run.ps1 so the one copy of every guard is kept:
+  the pairs read off the window run's .tsv by the group column, checks 11, 19, 20 and 21, the
+  probe's two calls in place of item 0's hold, the hang rule on the read-outs,
+  compare-document.ps1 per pair and summary.txt. -Mode Check -For Documents prints every refusal
+  and the pairs. Written by one developer, the brief turn5\f104-part2-brief.md
+- read for harm and wrong evidence under Q93 by a reviewer, who approved, and a breaker, who
+  found nothing blocking, turn5\f104p2-reads.txt, their notes register rows F104-R1 to F104-R7
+- its harness, turn5\f104p2-proof\prove-f104p2.ps1, all three parts on the committed code from
+  15:39:38 to 15:53:47 on 2026-10-04 once Bader's Navisworks had closed: 102 passed, 0 failed, Get-Process
+  Roamer 0 before and after, turn5\f104p2-prove-4.txt
+- main merged in four times, 3449521 by e76a2d3, dd55e4b by 202496b, 6689bad by 45dcd4f and
+  7b6df88, F113's merge, by the commit after 023a685, each conflict keeping both sides, F104's
+  order line now 38 after F105's 35, F107's 36 and F113's 37, its section after F113's, its
+  entry here above F113's, and its 5z-g after F105's 5z-f in docs\history\scan.md
+
+### What remains
+
+- the first real documents read, on set 04 item 1 once the baseline of the two buildings has
+  run, the first answer of the documents to Bader's third test
+- PQ1, PQ7, PQ8 and PQ9 of F104, which the real read answers, and PQ3 to PQ6, which also need a
+  person at the panel or an export
+
+### Known bugs
+
+- F104-R1 to F104-R7 under Q93, F104-R4 the one that can let a green line sit on Bader's third
+  test while PQ4 is unmeasured
+
+### What comes next
+
+- the baseline runs of 1A02MM and 1A04PK, then the documents read on them
+
 ## 2026-10-04 The loop, turn 5, F113 the clash counts area of the fix round, FR-031 to FR-034, DONE
 
 Core tests 1746 passed, 0 failed, 0 skipped before the first change, at 2c89788, and 1756
@@ -96,6 +136,7 @@ errors and 0 warnings before the first change and after each change.
 ### What comes next
 
 - the pull request, merged in wave 1, then the test of wave 1 on 1A02MM and 1A04PK
+
 ## 2026-10-04 The loop, turn 5, Bader's answers to the form and the waves, the plans
 
 Bader answered the form of turn 5 at 15:23 on 2026-10-04, his message headed BADER'S ANSWERS,

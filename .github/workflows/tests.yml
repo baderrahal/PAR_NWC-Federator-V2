@@ -212,3 +212,11 @@ jobs:
               ;;
           esac
           echo "the mask wrote the expected copy, the check passed it, and the read back refused what the mask leaves"
+
+      # F104. The check of a workbook against its document, on the hand written pair in
+      # tools/loop/compare-proof. The good pair has to read DISAGREEMENTS 0 and NOT PROVED,
+      # and each of sixteen broken copies has to produce its own line and no other. Windows
+      # PowerShell 5.1, which this runner carries, because that is what the loop runs on.
+      - name: The workbook comparison names every fault it was written for
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File tools\loop\prove-compare.ps1
