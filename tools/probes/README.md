@@ -1,8 +1,10 @@
 # Probes
 
-Thirteen PowerShell scripts that read facts off the machine they run on: the installed
-Navisworks DLLs, and the real window once the add-in is built and installed. They were
-how docs/history/scan.md was measured. Nothing here is part of the build or the install.
+Seventeen PowerShell files. Sixteen are scripts that read facts off the machine they run
+on: the installed Navisworks DLLs, and the real window once the add-in is built and
+installed. They were how docs/history/scan.md was measured. The seventeenth,
+`il-reader.ps1`, holds the IL reader and the helpers three of them dot-source, and reads
+nothing by itself. Nothing here is part of the build or the install.
 
 Every probe takes the Navisworks install folder as a parameter, defaulting to the same
 folder the add-in project defaults to:
@@ -103,6 +105,54 @@ dot-sources with tools\loop\run.ps1:
 - `automation-start-reflection-20260928.txt` is the output of the attempt 3 probe's
   `-ReflectionOnly` mode, which starts nothing, the machine name masked. See
   docs/history/scan.md section 5z-d for all three
+
+Three more read the install with no Navisworks started, written for F105 on 2026-09-29,
+each with its result file beside it, and answer docs/history/scan.md section 5z-f. Their
+runs are in `f105-run-record-20260929.txt`, with Get-Process Roamer read before and after.
+All three load every assembly with ReflectionOnlyLoadFrom, which runs no code in it, and
+print by kind every failed read they hand to IlFail in il-reader.ps1,
+probe-viewpoint-calls.ps1 only when a built add-in is there. A read a probe hands to no
+IlFail is in no count, see il-reader.ps1 below. probe-viewpoints.ps1 and
+probe-model-remove.ps1, which 5z-f ran as well, load the Api DLL with Assembly.LoadFrom,
+which runs the load code of that mixed native and managed DLL and of the native DLLs it
+needs, so their reads are not reflection only:
+
+- `probe-viewpoint-calls.ps1` checks what src\Federator.Addin\Engine\SavedViewpoints.cs
+  calls in the Api DLL and the two COM DLLs, because probe-viewpoints.ps1 never opens the
+  COM half the add-in writes viewpoints through. Three ways: a list typed by hand, where
+  FOUND means that name and that shape and the list checks only what is on it, the type
+  arguments of 5d's and 5c's generic members, and, given -AddinPath or a Release build of
+  this repo, every Navisworks reference in the IL of the classes compiled from that file,
+  resolved against the install, which is the part not typed by hand
+- `probe-roamer-switches.ps1` reads Roamer.exe and the DLL whose parser holds its command
+  line switches as bytes and IL, never by running it, and lists every switch the parser
+  matches and what the IL does with ExecuteAddInPlugin
+- `probe-clash-report-api.ps1` lists every public type and member of the five Navisworks
+  assemblies the tool can reach whose name holds Report, Html, Tabular or Export, every
+  clash type of the COM interop, and every string in each file holding tabular, .xsl,
+  clash_report or reportformat, each word counted on its own. It found no such member in
+  Autodesk.Navisworks.Api.Clash, the namespace the add-in uses, and none in the COM clash
+  interfaces. It found one public static LcClClashReport.WriteReport in the Interop
+  namespace of Autodesk.Navisworks.Clash.dll, which the add-in references, whose report
+  formats are named only at run time
+- `il-reader.ps1` is not a probe. It is the one copy of what the three dot-source, and read
+  off their code they use different parts of it. TypeName, IlReason, IlFail and
+  IlFailureLines are used by all three. The IL reader IlRead, with IlOpcodeLine, is used by
+  probe-roamer-switches.ps1 and probe-viewpoint-calls.ps1, which decode IL with it.
+  LoaderLines, and StringRuns, which matches the two string patterns, are used by
+  probe-roamer-switches.ps1 and probe-clash-report-api.ps1. probe-viewpoint-calls.ps1 uses
+  neither. The IL reader in it follows the approach of probe-automation-start.ps1, the
+  start probe F100 merged, which keeps its own copy because that copy is the measurement
+  F100 merged. il-reader.ps1 keeps a read that could not be made only when IlFail is
+  handed it, by the probe or by IlRead and LoaderLines when the probe calls them: a body,
+  a byte that is not an instruction or a token IlRead could not read, a GetTypes load
+  LoaderLines is given, and whatever the probe hands it itself, a MemberRef row and the
+  rest, each by kind with where it failed and what the runtime said. The probe that
+  dot-sourced it counts and prints them with IlFailureLines, probe-viewpoint-calls.ps1
+  only when a built add-in is there. IlFailureLines prints every kind with its count, a
+  kind nothing was handed included, so a 0 is a reading only of the reads that probe
+  hands to IlFail. A read handed to no IlFail is not kept, and docs/history/scan.md 5z-f
+  says what such a read does when it fails
 
 A probe that cannot find what it needs says UNKNOWN and the path it looked at, and
 stops. Never search the install folder for a DLL, the path is built and tested directly,

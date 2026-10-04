@@ -1,6 +1,98 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, F107 the older machine's name masked on main, DONE on Q88
+
+Nothing under src or tests changed. Core tests by the pre-commit at 70effde, 8441dc9, 499f0a6
+and the merge of main after it, the files precommit-f107-*.txt under
+%LOCALAPPDATA%\NwcFederatorLoop\turn5, 1746 passed, 0 failed, 0 skipped each time, the same as
+main before.
+
+### What was done
+
+- Bader's answer to Q88: the name of the machine of 2026-09-19 masked on main in its own pull
+  request. At 821ed6e it stood on nine lines in four files. On main at 3449521 it stood on eight
+  lines in three files, five in docs\history\scan.md, one in steps\01_next.md and two in
+  steps\log.md, because F106's rewrite of the header of tools\probes\drive-window-run.ps1 had
+  already masked the ninth. Each now says the machine of 2026-09-19, and nothing else on those
+  lines changed. The two lines of steps\log.md are the lead's file, changed only by this mask
+- main merged in twice on 2026-10-04 and again after F105, the driver taken from main whole
+  where it conflicted, and the order line moved to 36 behind F105
+- read by a reviewer, who asked for changes with one blocking: the F107 section still described
+  the change as it was before the merges, nine lines with the driver among them. The section now
+  says eight lines in three files, names where the ninth went, and carries the searches made
+  after the merge
+- the searches after the merge at 8441dc9: git grep for the whole name and for the part after
+  its hyphen, in the working tree, at HEAD and over untracked files, found nothing, and the split
+  search found 0 hits in 874 tracked files, 1053 on the disk and 874 at HEAD, the one file it could
+  not read being a broken fixture that is not a zip by design, whose text it read apart with 0
+  hits. %LOCALAPPDATA%\NwcFederatorLoop\turn5\f107-grep-after-merge-2.txt,
+  f107-split-search-after-merge-2.txt and f107-split-search-endswrong-2.txt
+- the searches after main 2c89788, with F105, merged in: git grep for the whole name, for the
+  part after its hyphen and over untracked files, and grep -r over the worktree, found nothing,
+  turn5\f107-grep-after-merge-3.txt, which names neither form
+
+### What remains
+
+- the name stays in the history of main, which no pull request changes
+
+### Known bugs
+
+- F107-R1, now the fix list's FR-110 and a question for Bader, Q106: nothing refuses the name if
+  it comes back, because F102's check reads for this machine's name only
+- the account name of that machine's user in C:\Users paths, the fix list's FR-149, Q107
+
+### What comes next
+
+- the fix round's area pull requests, steps\fix-round.md
+## 2026-10-04 The loop, turn 5, F105 four reads off the install, DONE on Bader's answer A to Q89
+
+Nothing under src or tests changed. Core tests by the pre-commit at 2ac77fc, 96a0f93, ee87b3c,
+5d883a7 and 29c7e94, the last over the tree as it merges, and again at this entry's last commit,
+in the pull request body, 1746 passed, 0 failed, 0 skipped each time, the same as main before.
+The merges 88a18f0 and 98f2e66 were made by git merge, which runs no pre-commit. No Navisworks was
+started for F105: the four reads are off the install's files, with Get-Process Roamer reading
+none before and after the final runs, tools\probes\f105-run-record-20260929.txt.
+
+### What was done
+
+- the four reads of Phase 1 item 2, measured by the prober on 2026-09-29: the saved viewpoint
+  members, Document.RemoveFile and TryRemoveFile, Roamer.exe's switches, and the Clash Detective
+  report, written into docs\history\scan.md 5z-f with five result files, three new probes, the
+  shared il-reader.ps1 and a run record under tools\probes
+- Bader's answer A to Q89 after three fix attempts: the sentences of 5z-f that read a zero for
+  every failure kind il-reader.ps1 prints now claim a zero only for the kinds each probe counts,
+  and say no line a probe can run counts a failure as one of the other kinds
+- the words round of 2026-10-04, finished by one developer and re-read by a reviewer, who asked
+  for changes with one blocking: section C of probe-viewpoint-calls.ps1 holds a fifth silent
+  read through a property, line 372, a member reference's DeclaringType, which no stand-in
+  called. 5z-f and the DONE line now name it and say whether it fails there is UNKNOWN. Both say
+  a failed property read stops probe-clash-report-api.ps1 where a method is then called on the
+  null, its lines 191 and 197, and 5z-f says a failed Assembly or Location read inside IsNw of
+  probe-viewpoint-calls.ps1 is counted, all read off the code. A claim-checker read the entry
+  and the body and its six findings are made true in the commit after 29c7e94
+- main merged in four times on 2026-10-04, at 96a0f93, ee87b3c, 88a18f0 and 98f2e66, the last
+  to 086a348, with no conflict left. F105 takes order line 35
+
+### What remains
+
+- nothing in F105's own reads. Its probe faults stay as register rows F105-R1 to F105-R4, Q93,
+  R4 the comments named below
+
+### Known bugs
+
+- F105-R1 to F105-R3: il-reader.ps1 prints a zero for every failure kind in every probe, kinds a
+  probe never counts included, probe-viewpoint-calls.ps1 prints its failure list only when a
+  built add-in is there, and a resolver, roResolve, and a small helper, ParamText, sit in more
+  than one probe, while a second helper the reading named is UNKNOWN
+- comments in the probes still say nothing is dropped, il-reader.ps1 line 19,
+  probe-clash-report-api.ps1 line 23 and probe-viewpoint-calls.ps1 lines 29, 30 and 396, and
+  5z-f does not say they claim more than the code does. No probe or result file changes after
+  its run. Register row F105-R4
+
+### What comes next
+
+- F107, whose order line becomes 36 when it merges main after this
 ## 2026-10-04 The loop, turn 5, F106 the window run, DONE for item 1
 
 Nothing under src or tests changed. Core tests by the pre-commit at 8c67ec6 and 32dce24 on
