@@ -26,8 +26,6 @@
          models and changes when their models do, which is the opposite of UnitTable. -->
     <EmbeddedResource Include="Exchange\revit-categories.txt" />
     <EmbeddedResource Include="Exchange\revit-worksets.txt" />
-    <!-- F116, the corrections every picked clash XML is given before a set is built, Q104. -->
-    <EmbeddedResource Include="Exchange\matrix-corrections.txt" />
   </ItemGroup>
 
   <ItemGroup>

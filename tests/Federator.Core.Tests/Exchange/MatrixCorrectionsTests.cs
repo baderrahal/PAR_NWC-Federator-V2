@@ -62,16 +62,26 @@ namespace Federator.Core.Tests
         };
 
         /// <summary>
+        /// This project's list, read the way the tool reads it beside a picked file, off the one
+        /// kept in the exchange folder beside the corrected XML, Q113.
+        /// </summary>
+        private static MatrixCorrectionList TheList()
+        {
+            return MatrixCorrectionList.Beside(Samples.CorrectedMatrix(), new CorrectionListSettings());
+        }
+
+        /// <summary>
         /// WHAT THE CORRECTED FILE IS MADE WITH SINCE F116: the corrections the tool applies
-        /// to whichever XML is picked, Q104, the list shipped inside Core and the measured
-        /// workset list, and never a copy of them here. BLD-EL-Devices asks for a category
-        /// holding Devices and none of the six its siblings claim, read off the file, F87 in
-        /// full since 5g measured on 2026-09-20 that a negated condition imports. The
-        /// project's corrections above are kept as sample data for the generic tests.
+        /// to whichever XML is picked, Q104, this project's list out of the exchange folder,
+        /// Q113, and the measured workset list inside Core, and never a copy of them here.
+        /// BLD-EL-Devices asks for a category holding Devices and none of the six its siblings
+        /// claim, read off the file, F87 in full since 5g measured on 2026-09-20 that a negated
+        /// condition imports. The project's corrections above are kept as sample data for the
+        /// generic tests.
         /// </summary>
         private static CorrectionOutcome Picked(string xml)
         {
-            return MatrixCorrections.ForPickedFile(xml, MatrixCorrectionList.Shipped, RevitWorksets.All());
+            return MatrixCorrections.ForPickedFile(xml, TheList(), RevitWorksets.All());
         }
 
         /// <summary>The internal name of the Revit Workset parameter, as the client file writes it.</summary>
@@ -415,7 +425,9 @@ namespace Federator.Core.Tests
         /// out the same. The file picked before F116 is the third: Bader's old matrix is the
         /// sample with the hyphen alone corrected, measured on 2026-10-04 by applying that one
         /// rename to the sample and comparing the two files, 1,443,383 bytes each and sha256
-        /// 36ab2739 both, byte for byte, and it comes out the same too.
+        /// 36ab2739 both, byte for byte, and it comes out the same too. Since Q113 each is read
+        /// with this project's list beside it, out of the exchange folder, as Bader keeps them:
+        /// the exchange file has it beside it there, and the other two are copied with it.
         /// </summary>
         [Test]
         public void TheOldUncorrectedMatrixAndTheExchangeFileGiveTheSameSetsOnceCorrected()
@@ -424,10 +436,12 @@ namespace Federator.Core.Tests
 
             try
             {
+                string sample = PickedCopy(folder, Samples.Matrix(), true);
                 string hyphenOnly = Path.Combine(folder, "hyphen-only.xml");
                 File.WriteAllText(hyphenOnly, MatrixCorrections.Apply(Read(Samples.Matrix()), ProjectRenames(), null).Text, new UTF8Encoding(false));
+                File.Copy(Samples.CorrectionList(), ListBeside(hyphenOnly));
 
-                List<string> fromTheSample = WhatItAsks(MatrixCorrections.ReadPicked(Samples.Matrix()));
+                List<string> fromTheSample = WhatItAsks(MatrixCorrections.ReadPicked(sample));
                 List<string> fromTheExchange = WhatItAsks(MatrixCorrections.ReadPicked(Samples.CorrectedMatrix()));
                 List<string> fromTheHyphenOnly = WhatItAsks(MatrixCorrections.ReadPicked(hyphenOnly));
 
@@ -446,25 +460,36 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// Q104, the log names every correction it made: the lines ride on the document the
-        /// tool reads, one per correction and one for the total, and the run writes them.
+        /// tool reads, the list first, Q113, then one per correction and one for the total, and
+        /// the run writes them.
         /// </summary>
         [Test]
         public void ThePickedFileCarriesALineForEveryCorrectionItMade()
         {
-            ExchangeDocument picked = MatrixCorrections.ReadPicked(Samples.Matrix());
-            string said = string.Join("\n", new List<string>(picked.Corrections).ToArray());
+            string folder = TempFolder.Make("f116-lines");
 
-            Assert.That(picked.SourcePath, Is.EqualTo(Samples.Matrix()));
-            Assert.That(said, Does.Contain("MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  121 occurrences"));
-            Assert.That(said, Does.Contain("MATRIX   BLD-EL-Devices asks for a category holding Devices and none of the 6 its siblings claim  7 occurrences"));
-            Assert.That(said, Does.Contain("the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork"));
-            Assert.That(said, Does.Contain("the value FF-FIRE FIGHTING becomes FF-Fire Fighting"));
-            Assert.That(said, Does.Contain("BLD-AR-Ramps asks Source File contains -AR- as well"));
-            Assert.That(said, Does.Contain("MATRIX   151 changes in all"));
+            try
+            {
+                string sample = PickedCopy(folder, Samples.Matrix(), true);
+                ExchangeDocument picked = MatrixCorrections.ReadPicked(sample);
+                string said = string.Join("\n", new List<string>(picked.Corrections).ToArray());
 
-            // 1 rename, 1 catch-all, 7 workset values, 4 sets given Source File, the line about
-            // sets already in an NWF and the total.
-            Assert.That(picked.Corrections.Count, Is.EqualTo(15));
+                Assert.That(picked.SourcePath, Is.EqualTo(sample));
+                Assert.That(said, Does.Contain("MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  121 occurrences"));
+                Assert.That(said, Does.Contain("MATRIX   BLD-EL-Devices asks for a category holding Devices and none of the 6 its siblings claim  7 occurrences"));
+                Assert.That(said, Does.Contain("the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork"));
+                Assert.That(said, Does.Contain("the value FF-FIRE FIGHTING becomes FF-Fire Fighting"));
+                Assert.That(said, Does.Contain("BLD-AR-Ramps asks Source File contains -AR- as well"));
+                Assert.That(said, Does.Contain("MATRIX   151 changes in all"));
+
+                // The list, 1 rename, 1 catch-all, 7 workset values, 4 sets given Source File, the
+                // line about sets already in an NWF and the total.
+                Assert.That(picked.Corrections.Count, Is.EqualTo(16));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
 
             ExchangeDocument already = MatrixCorrections.ReadPicked(Samples.CorrectedMatrix());
 
@@ -480,7 +505,7 @@ namespace Federator.Core.Tests
         [Test]
         public void AListThatCannotBeReadCorrectsNothingAndSaysSo()
         {
-            MatrixCorrectionList broken = MatrixCorrectionList.Read(new StringReader("# a comment\nrename: " + BrokenName + "\n"));
+            MatrixCorrectionList broken = MatrixCorrectionList.Read(new StringReader("# a comment\nrename: " + BrokenName + "\n"), "a list in a test");
             string source = Read(Samples.Matrix());
 
             Assert.That(broken.Unread, Does.Contain("line 2"));
@@ -512,30 +537,34 @@ namespace Federator.Core.Tests
 
             Assert.That(sets["BLD-ME-Duct Accessory"].GroupCount, Is.EqualTo(2), "the one it can read is corrected");
             Assert.That(sets["BLD-ME-Flex Ducts"].GroupCount, Is.EqualTo(1), "the one it cannot is left as the file asks");
-            Assert.That(outcome.Lines()[0], Is.EqualTo(
+
+            // The first line names the list, Q113, and this is the first after it.
+            Assert.That(outcome.Lines()[1], Is.EqualTo(
                 "MATRIX   NOT EVERY SET COULD BE READ FOR CORRECTION. The file holds 2 sets with conditions"
                     + " and 1 could be read as text, so 1 are built exactly as the file asks"));
         }
 
         /// <summary>
-        /// The list shipped inside Core holds F87's two decisions and Q103's measured
-        /// categories, and those categories are exactly what the logs show: a set of the
-        /// Architecture folder asking for its category alone found items in a group holding
-        /// no AR model. Read off the logs themselves, never a copy of them.
+        /// This project's list, kept in the exchange folder beside the corrected XML and read
+        /// the way the tool reads it off a picked file, Q113, holds F87's two decisions and
+        /// Q103's measured categories, and those categories are exactly what the logs show: a
+        /// set of the Architecture folder asking for its category alone found items in a group
+        /// holding no AR model. Read off the logs themselves, never a copy of them.
         /// </summary>
         [Test]
-        public void TheShippedListHoldsTheDecisionsAndExactlyTheCategoriesTheLogsMeasured()
+        public void TheExchangeListHoldsTheDecisionsAndExactlyTheCategoriesTheLogsMeasured()
         {
-            MatrixCorrectionList shipped = MatrixCorrectionList.Shipped;
+            MatrixCorrectionList list = TheList();
 
-            Assert.That(shipped.Unread, Is.Null);
-            Assert.That(shipped.Renames.Count, Is.EqualTo(1));
-            Assert.That(shipped.Renames[0].From, Is.EqualTo(BrokenName));
-            Assert.That(shipped.Renames[0].To, Is.EqualTo(CorrectName));
-            Assert.That(shipped.CatchAlls.Count, Is.EqualTo(1));
-            Assert.That(shipped.CatchAlls[0], Is.EqualTo(new[] { DevicesSet, "Devices" }));
-            Assert.That(shipped.SourceFiles.Count, Is.EqualTo(1));
-            Assert.That(shipped.SourceFiles[0].Asks, Is.EqualTo("-AR-"));
+            Assert.That(list.ListPath, Is.EqualTo(Samples.CorrectionList()));
+            Assert.That(list.Unread, Is.Null);
+            Assert.That(list.Renames.Count, Is.EqualTo(1));
+            Assert.That(list.Renames[0].From, Is.EqualTo(BrokenName));
+            Assert.That(list.Renames[0].To, Is.EqualTo(CorrectName));
+            Assert.That(list.CatchAlls.Count, Is.EqualTo(1));
+            Assert.That(list.CatchAlls[0], Is.EqualTo(new[] { DevicesSet, "Devices" }));
+            Assert.That(list.SourceFiles.Count, Is.EqualTo(1));
+            Assert.That(list.SourceFiles[0].Asks, Is.EqualTo("-AR-"));
 
             Dictionary<string, PlannedSet> matrix = PlannedByName(Read(Samples.Matrix()));
             List<string> measured = new List<string>();
@@ -555,7 +584,7 @@ namespace Federator.Core.Tests
                 }
             }
 
-            Assert.That(shipped.SourceFiles[0].MeasuredElsewhere, Is.EquivalentTo(measured));
+            Assert.That(list.SourceFiles[0].MeasuredElsewhere, Is.EquivalentTo(measured));
             Assert.That(measured, Is.EquivalentTo(MeasuredInOtherDisciplines));
         }
 
@@ -639,6 +668,15 @@ namespace Federator.Core.Tests
         {
             SetBuildPlan plan = SetBuildPlan.From(new ExchangeReader().ReadFile(Samples.CorrectedMatrix()));
             List<string> measured = new List<string>(RevitWorksets.All());
+
+            foreach (string spelling in TheList().Worksets)
+            {
+                if (!measured.Contains(spelling))
+                {
+                    measured.Add(spelling);
+                }
+            }
+
             int askedInEverySpelling = 0;
 
             foreach (PlannedSet set in plan.Buildable)
@@ -1533,7 +1571,9 @@ namespace Federator.Core.Tests
 
             Assert.That(() => outcome = Picked(xml), Throws.Nothing);
             Assert.That(outcome.Text, Is.EqualTo(xml), "built exactly as the file asks");
-            Assert.That(outcome.Lines()[0], Is.EqualTo(
+
+            // The first line names the list, Q113, and this is the first after it.
+            Assert.That(outcome.Lines()[1], Is.EqualTo(
                 "MATRIX   NOT EVERY SET COULD BE READ FOR CORRECTION. The file holds 1 sets with conditions"
                     + " and 0 could be read as text, so 1 are built exactly as the file asks"));
         }
@@ -1624,8 +1664,9 @@ namespace Federator.Core.Tests
         /// keeps the conditions it was built with unless the rebuild box is ticked, Q72. One line
         /// after the corrections says so and names the box and the SETS block, so a log naming
         /// corrections over an NWF built before them is not read as corrected sets. Written for
-        /// every picked file, the one corrected, the one needing nothing and the one whose list
-        /// could not be read, just before the last line.
+        /// every picked file, the one corrected, the one needing nothing, the one with no list
+        /// beside it, here the sample where it sits, and the one whose list could not be read,
+        /// just before the last line.
         /// </summary>
         [Test]
         public void ThePickedFileSaysASetAlreadyInAnNwfKeepsItsOldConditionsUnlessTheBoxIsTicked()
@@ -1634,16 +1675,209 @@ namespace Federator.Core.Tests
                 + " what this file asks unless the box \"" + SetRebuildSettings.TickLabel + "\" is ticked."
                 + " The SETS block of each group names every such set as DRIFTED";
 
-            MatrixCorrectionList broken = MatrixCorrectionList.Read(new StringReader("not a correction\n"));
+            MatrixCorrectionList broken = MatrixCorrectionList.Read(new StringReader("not a correction\n"), "a list in a test");
+            string folder = TempFolder.Make("f116-nwf-line");
 
-            foreach (IList<string> lines in new List<IList<string>>
+            try
             {
-                MatrixCorrections.ReadPicked(Samples.Matrix()).Corrections,
-                MatrixCorrections.ReadPicked(Samples.CorrectedMatrix()).Corrections,
-                MatrixCorrections.ForPickedFile(Read(Samples.Matrix()), broken, RevitWorksets.All()).Lines()
-            })
+                foreach (IList<string> lines in new List<IList<string>>
+                {
+                    MatrixCorrections.ReadPicked(PickedCopy(folder, Samples.Matrix(), true)).Corrections,
+                    MatrixCorrections.ReadPicked(Samples.CorrectedMatrix()).Corrections,
+                    MatrixCorrections.ReadPicked(Samples.Matrix()).Corrections,
+                    MatrixCorrections.ForPickedFile(Read(Samples.Matrix()), broken, RevitWorksets.All()).Lines()
+                })
+                {
+                    Assert.That(lines[lines.Count - 2], Is.EqualTo(expected));
+                }
+            }
+            finally
             {
-                Assert.That(lines[lines.Count - 2], Is.EqualTo(expected));
+                TempFolder.Remove(folder);
+            }
+        }
+
+        // ---------- the list beside the picked XML, Q113 ----------
+
+        /// <summary>
+        /// A copy of that XML in that folder, with this project's list out of the exchange folder
+        /// copied beside it and named after it where asked, the way Bader keeps the two.
+        /// </summary>
+        private static string PickedCopy(string folder, string xml, bool withTheList)
+        {
+            string copy = Path.Combine(folder, Path.GetFileName(xml));
+            File.Copy(xml, copy);
+
+            if (withTheList)
+            {
+                File.Copy(Samples.CorrectionList(), ListBeside(copy));
+            }
+
+            return copy;
+        }
+
+        /// <summary>U+00A0, which one measured workset spelling carries between its words.</summary>
+        private const char NoBreakSpace = (char)0xA0;
+
+        /// <summary>The one path the list of that XML is looked for at, written out here as the rule says it.</summary>
+        private static string ListBeside(string xml)
+        {
+            return Path.Combine(Path.GetDirectoryName(xml), Path.GetFileNameWithoutExtension(xml) + ".corrections.txt");
+        }
+
+        /// <summary>
+        /// Q113 B. The list kept beside the picked XML and named after it is what corrects it,
+        /// and the first MATRIX line names that list in full and what it holds, before any
+        /// correction. The client's matrix with this project's list beside it gives the sets and
+        /// tests of the exchange file.
+        /// </summary>
+        [Test]
+        public void ThePickedFileIsCorrectedByTheListBesideItAndTheFirstLineNamesIt()
+        {
+            string folder = TempFolder.Make("f116-beside");
+
+            try
+            {
+                string picked = PickedCopy(folder, Samples.Matrix(), true);
+                ExchangeDocument document = MatrixCorrections.ReadPicked(picked);
+
+                Assert.That(document.Corrections[0], Is.EqualTo(
+                    "MATRIX   the corrections are read from " + ListBeside(picked) + ", the list beside this file."
+                        + " It holds 3 corrections, 1 rename, 1 catch-all and 1 Source File rule, and 30 workset spellings"));
+                Assert.That(document.Corrections[document.Corrections.Count - 1], Is.EqualTo("MATRIX   151 changes in all"));
+                Assert.That(WhatItAsks(document), Is.EqualTo(WhatItAsks(new ExchangeReader().ReadFile(Samples.CorrectedMatrix()))));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// Q113 B. A picked XML with no list beside it is corrected by nothing and goes on as
+        /// written, and the first MATRIX line names the one path looked for. A list named any
+        /// other way is never found, the name of another file or the XML's name with its
+        /// extension kept, because the list is one full path and never a search.
+        /// </summary>
+        [Test]
+        public void AnXmlWithNoListBesideItIsLeftAsWrittenAndTheLogSaysSo()
+        {
+            string folder = TempFolder.Make("f116-no-list");
+
+            try
+            {
+                string picked = PickedCopy(folder, Samples.Matrix(), false);
+                File.Copy(Samples.CorrectionList(), Path.Combine(folder, "another.corrections.txt"));
+                File.Copy(Samples.CorrectionList(), picked + ".corrections.txt");
+
+                ExchangeDocument document = MatrixCorrections.ReadPicked(picked);
+
+                Assert.That(WhatItAsks(document), Is.EqualTo(WhatItAsks(new ExchangeReader().ReadFile(Samples.Matrix()))));
+                Assert.That(document.Corrections[0], Is.EqualTo(
+                    "MATRIX   no correction was made to this file, because no list of corrections is beside it: "
+                        + ListBeside(picked) + " was looked for and is not there. Every set is built exactly as the file asks"));
+                Assert.That(document.Corrections[document.Corrections.Count - 1], Is.EqualTo(
+                    "MATRIX   no correction was applied to this file, for the reason the first line gives"));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// Q113 B. A list beside the XML that cannot be read corrects nothing, the first line says
+        /// so and why, and the pick goes on, never a throw. One line the list does not know is
+        /// enough, and so is a list that is not UTF-8 text, whose no-break space would otherwise
+        /// read as a replacement character and ask a spelling no model carries.
+        /// </summary>
+        [Test]
+        public void AListBesideItThatCannotBeReadCorrectsNothingAndSaysWhy()
+        {
+            string folder = TempFolder.Make("f116-unread-list");
+
+            try
+            {
+                string unknown = Path.Combine(folder, "unknown-line.xml");
+                File.Copy(Samples.Matrix(), unknown);
+                File.WriteAllText(
+                    ListBeside(unknown),
+                    "# a comment\nrename: " + BrokenName + " | " + CorrectName + "\nnot a correction\n",
+                    new UTF8Encoding(false));
+
+                string ansi = Path.Combine(folder, "not-utf8.xml");
+                File.Copy(Samples.Matrix(), ansi);
+                File.WriteAllBytes(ListBeside(ansi), Encoding.GetEncoding(1252).GetBytes("workset: EL-Fire" + NoBreakSpace + "alarm\n"));
+
+                List<string> asWritten = WhatItAsks(new ExchangeReader().ReadFile(Samples.Matrix()));
+
+                foreach (string[] one in new[]
+                {
+                    new[] { unknown, "line 3, \"not a correction\", is not a correction this tool knows" },
+                    new[] { ansi, "it is not UTF-8 text" }
+                })
+                {
+                    ExchangeDocument document = null;
+
+                    Assert.That(() => document = MatrixCorrections.ReadPicked(one[0]), Throws.Nothing, one[0]);
+                    Assert.That(WhatItAsks(document), Is.EqualTo(asWritten), one[0]);
+                    Assert.That(document.Corrections[0], Is.EqualTo(
+                        "MATRIX   NO CORRECTION WAS MADE TO THIS FILE, because the list of corrections beside it, "
+                            + ListBeside(one[0]) + ", could not be read: " + one[1] + ". Every set is built exactly as the file asks"));
+                }
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// The list's name is the XML's name without its extension and the suffix, a setting
+        /// whose default is .corrections.txt, so the list in the exchange folder is the one the
+        /// tool finds beside the corrected XML. A suffix set another way finds the list named
+        /// that way and no other.
+        /// </summary>
+        [Test]
+        public void TheListIsFoundByTheXmlsNameAndTheSuffixSetting()
+        {
+            Assert.That(CorrectionListSettings.DefaultSuffix, Is.EqualTo(".corrections.txt"));
+            Assert.That(new CorrectionListSettings().PathBeside(Samples.CorrectedMatrix()), Is.EqualTo(Samples.CorrectionList()));
+
+            string folder = TempFolder.Make("f116-suffix");
+
+            try
+            {
+                string xml = Path.Combine(folder, "a.xml");
+                File.WriteAllText(xml, "<exchange/>");
+                File.WriteAllText(Path.Combine(folder, "a.fixes.txt"), "rename: X-A | Y-B\n");
+                File.WriteAllText(Path.Combine(folder, "a.corrections.txt"), "not a correction\n");
+
+                CorrectionListSettings settings = new CorrectionListSettings { Suffix = ".fixes.txt" };
+                MatrixCorrectionList list = MatrixCorrectionList.Beside(xml, settings);
+
+                Assert.That(settings.PathBeside(xml), Is.EqualTo(Path.Combine(folder, "a.fixes.txt")));
+                Assert.That(list.ListPath, Is.EqualTo(Path.Combine(folder, "a.fixes.txt")));
+                Assert.That(list.Unread, Is.Null);
+                Assert.That(list.Renames.Count, Is.EqualTo(1));
+                Assert.That(list.Renames[0].To, Is.EqualTo("Y-B"));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// Q113 B, nothing of this project's list is inside Core: no list is embedded in the
+        /// assembly, so a build of the tool carries no project's corrections.
+        /// </summary>
+        [Test]
+        public void NoListOfCorrectionsIsInsideCore()
+        {
+            foreach (string resource in typeof(MatrixCorrections).Assembly.GetManifestResourceNames())
+            {
+                Assert.That(resource, Does.Not.Contain("correction"), resource);
             }
         }
     }

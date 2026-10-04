@@ -345,10 +345,17 @@ namespace Federator.Core.Exchange
         private readonly List<CorrectionCount> counts = new List<CorrectionCount>();
         private readonly List<string> warnings = new List<string>();
         private readonly List<string> notes = new List<string>();
+        private string heading;
 
         internal CorrectionOutcome(string text)
         {
             Text = text;
+        }
+
+        /// <summary>The line said before every other, the list the corrections were read from and what it holds, Q113.</summary>
+        internal void Heading(string line)
+        {
+            heading = line;
         }
 
         public string Text { get; internal set; }
@@ -409,6 +416,11 @@ namespace Federator.Core.Exchange
         public IList<string> Lines()
         {
             List<string> lines = new List<string>();
+
+            if (heading != null)
+            {
+                lines.Add("MATRIX   " + heading);
+            }
 
             foreach (string warning in warnings)
             {
@@ -522,17 +534,22 @@ namespace Federator.Core.Exchange
         private const string SetCloses = "</selectionset>";
 
         /// <summary>
-        /// The clash XML a person picked, read with every correction this project needs
-        /// applied first, Q104: the tool uses the code that builds the corrected XML,
-        /// applied to whichever XML is picked before any set is built, and the log names
-        /// every correction it made. The document carries those lines in Corrections.
+        /// The clash XML a person picked, read with the corrections of the list kept beside it
+        /// applied first, Q104 and Q113: the tool uses the code that builds the corrected XML,
+        /// applied to whichever XML is picked before any set is built, and the log names the
+        /// list and every correction it made. The document carries those lines in Corrections.
+        ///
+        /// THE LIST IS READ WHEN THE XML IS, beside it and named after it, CorrectionListSettings,
+        /// so every place that reads a picked file reads its list too. No list there, or one that
+        /// cannot be read, corrects nothing and the first line says so, and the file is read as
+        /// it is written.
         ///
         /// IT IS THE CODE THAT WROTE THE EXCHANGE FILE, so the client's uncorrected matrix,
-        /// the one corrected before F116 and the one in the exchange folder come out as the
-        /// same sets. It reads the file as ExchangeReader.ReadFile does, in the encoding the
-        /// file declares, and a file that will not read as XML throws as ReadFile's does. A set
-        /// the corrections cannot read in a file that does read is counted and said, never
-        /// thrown.
+        /// the one corrected before F116 and the one in the exchange folder, each with the
+        /// project's list beside it, come out as the same sets. It reads the file as
+        /// ExchangeReader.ReadFile does, in the encoding the file declares, and a file that will
+        /// not read as XML throws as ReadFile's does. A set the corrections cannot read in a file
+        /// that does read is counted and said, never thrown.
         /// </summary>
         public static ExchangeDocument ReadPicked(string path)
         {
@@ -549,33 +566,37 @@ namespace Federator.Core.Exchange
             // In the encoding the file declares, as ReadFile read it.
             string xml = ExchangeReader.ReadFileText(path);
 
-            CorrectionOutcome outcome = ForPickedFile(xml, MatrixCorrectionList.Shipped, RevitWorksets.All());
+            MatrixCorrectionList list = MatrixCorrectionList.Beside(path, new CorrectionListSettings());
+            CorrectionOutcome outcome = ForPickedFile(xml, list, RevitWorksets.All());
             ExchangeDocument document = new ExchangeReader().ReadText(outcome.Text, path);
             document.Corrected(outcome.Lines());
             return document;
         }
 
         /// <summary>
-        /// Every correction of that list and of that measured workset list, applied to that
-        /// text: the renames, the catch-all sets with the categories other sets claim read off
-        /// the file, every workset value the file asks for, and the Source File rules. The one
-        /// place the corrections are chosen, for the tool and for the test proving the exchange
-        /// file is exactly what they make from the sample.
+        /// Every correction of that list, applied to that text with the workset spellings
+        /// measured inside Core and those of the list: the renames, the catch-all sets with the
+        /// categories other sets claim read off the file, every workset value the file asks
+        /// for, and the Source File rules. The one place the corrections are chosen, for the
+        /// tool and for the test proving the exchange file is exactly what they make from the
+        /// sample. The first line names the list and what it holds, Q113.
         ///
-        /// A LIST THAT COULD NOT BE READ CORRECTS NOTHING AND SAYS SO, and a set the text walk
-        /// could not read is counted and said, so a picked file is never passed on as if it
-        /// were corrected when it was not.
+        /// NO LIST, OR ONE THAT COULD NOT BE READ, CORRECTS NOTHING AND SAYS SO, and a set the
+        /// text walk could not read is counted and said, so a picked file is never passed on as
+        /// if it were corrected when it was not.
         /// </summary>
         internal static CorrectionOutcome ForPickedFile(string xml, MatrixCorrectionList list, IList<string> measuredWorksets)
         {
-            if (list.Unread != null)
+            if (list.Missing || list.Unread != null)
             {
                 CorrectionOutcome nothing = new CorrectionOutcome(xml);
-                nothing.Warn("NO CORRECTION WAS MADE TO THIS FILE, because the list of corrections inside the tool could not be read: "
-                    + list.Unread + ". Every set is built exactly as the file asks");
+                nothing.Warn(list.Said());
                 nothing.Note(SetsAlreadyInAnNwf);
                 return nothing;
             }
+
+            List<string> measured = new List<string>(measuredWorksets);
+            measured.AddRange(list.Worksets);
 
             ExchangeDocument read = new ExchangeReader().ReadText(xml);
             List<ConditionsRewrite> catchAlls = new List<ConditionsRewrite>();
@@ -594,10 +615,11 @@ namespace Federator.Core.Exchange
                 list.Renames,
                 null,
                 catchAlls,
-                ValueRewrite.For(WorksetValuesIn(read), measuredWorksets),
+                ValueRewrite.For(WorksetValuesIn(read), measured),
                 null,
                 list.SourceFiles);
 
+            outcome.Heading(list.Said());
             int asking = 0;
 
             foreach (SelectionSetDefinition set in read.Sets)

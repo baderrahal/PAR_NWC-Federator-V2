@@ -104,6 +104,12 @@ namespace Federator.Core.Tests
             return names;
         }
 
+        /// <summary>This project's list of corrections, read the way the tool reads it beside a picked file, Q113.</summary>
+        private static MatrixCorrectionList TheProjectsList()
+        {
+            return MatrixCorrectionList.Beside(Samples.CorrectedMatrix(), new CorrectionListSettings());
+        }
+
         /// <summary>
         /// The list is the 39 names 5t measured on C02 and the 30 more the C06 run listed,
         /// F116, each once. The header has said a test proves it since 5t and none did.
@@ -130,13 +136,39 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The spellings Q102 was asked about, each measured in both forms, which is what
-        /// lets a set ask both.
+        /// The workset lines of this project's list are exactly the names the C06 run listed
+        /// that the C02 census does not hold, 30 of them, each once, read off the run log itself.
+        /// </summary>
+        [Test]
+        public void TheProjectsListHoldsExactlyTheNamesTheC06RunListedThatC02DidNot()
+        {
+            IList<string> c02 = MeasuredOnC02();
+            List<string> onlyOnC06 = new List<string>();
+
+            foreach (string name in ListedOnC06())
+            {
+                if (!c02.Contains(name))
+                {
+                    onlyOnC06.Add(name);
+                }
+            }
+
+            IList<string> worksets = TheProjectsList().Worksets;
+
+            Assert.That(worksets, Is.Unique);
+            Assert.That(worksets, Is.EquivalentTo(onlyOnC06));
+            Assert.That(worksets.Count, Is.EqualTo(30));
+        }
+
+        /// <summary>
+        /// The spellings Q102 was asked about, each measured in both forms between the list
+        /// inside Core and this project's list, which is what lets a set ask both.
         /// </summary>
         [Test]
         public void BothSpellingsOfTheFourWorksetsTheBuildingsSpellTwoWaysAreMeasured()
         {
-            IList<string> list = RevitWorksets.All();
+            List<string> list = new List<string>(RevitWorksets.All());
+            list.AddRange(TheProjectsList().Worksets);
 
             foreach (string name in new[]
             {
