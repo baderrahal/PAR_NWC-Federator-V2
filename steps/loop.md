@@ -78,10 +78,39 @@ product code since nothing under src, tests, build, bundle or exchange changed a
 first run, item 1 on C02, started at 15:55:53 and stopped HUNG at 16:03:28: a floating Clash
 Detective pane of the loop's Navisworks was up from its start, the window driver took it for a
 dialog after pressing Run and stopped, and nobody answered the tool's confirm, record.txt lines
-36, 48 to 50 and 80 of wt-main\steps\runs\04\item1-C02. Nothing of Bader's was harmed: his
-settings and AutoSave put back clean, and his logs folder as Q82 has it, one of his oldest logs
-pruned by the tool and held in logs-backup and two loop logs added, both put back at the close
-of the loop, record.txt lines 102 to 116. F125 fixes the driver before the baseline runs again.
+36, 48 to 50 and 80 of steps\runs\04\item1-C02-hung, the evidence masked at 18:32 by
+turn4\mask-run-evidence.ps1 with no copy differing, turn5\mask-run04-item1-C02-hung.txt, and the
+unmasked folder moved out of wt-main to runs\04\evidence-item1-C02-hung in the work folder so
+the rerun's evidence folder starts empty. Nothing of Bader's was harmed: his settings and
+AutoSave put back clean, and his logs folder as Q82 has it, one of his oldest logs pruned by the
+tool and held in logs-backup and two loop logs added, both put back at the close of the loop,
+record.txt lines 102 to 116. F125 fixes the driver before the baseline runs again.
+MERGED, 2026-10-04: PR 95, F113, the clash counts of wave 1, FR-031 to FR-034, as 7b6df88 at
+18:02:32, and PR 96, F104, the check of a workbook against its document, the wave test's
+instrument outside the product waves, as c4fd0d4 at 18:14:56, after main merged into it at
+ac3854c with both sides kept. Each green in Actions on its last commit before it merged, run
+37210895243 on 9123e27 and run 37212128326 on ac3854c, turn5\actions-reads-pr95-96.txt. Their
+branches are deleted. Nothing was installed since 2026-10-01, so the baseline still runs the
+add-in run.ps1 -Mode Check read as 1.0.0.0 e4484d15 at 17:38:23,
+turn5\f125-check-set04-item1-C02.txt.
+THE READINGS, the journal of their workflow last written at 18:01:24,
+turn5\w1-read-journal-time.txt. F125 by a reviewer and a breaker under Q93, both APPROVE with
+nothing blocking, turn5\w1-read-review-F125.txt and turn5\w1-read-break-F125.txt. Three of their
+points touch what the baseline will record, words that call a window not modal when that is
+UNKNOWN, a stop line with no window state, and a monitor that writes a window only at first
+sight, so they go to a second pass of F125 before the baseline runs again. Two more change a
+verdict only in shapes no run has shown: a window after Run that the driver and the monitor
+read differently, where the verdict is STOPPED, DRIVER either way, and a pane made again with a
+new handle, which would call a finished run HUNG. They and the rest of their points are to
+become F125 register rows for F122, the loop tools area of wave 4, and are read again if the
+baseline shows either. F112 by a reviewer and a breaker under the house rules, both CHANGES, 3
+and 5 blocking, turn5\w1-read-review-F112.txt and turn5\w1-read-break-F112.txt, so F112 goes to
+fix attempt 2, whose brief also asks for Q110 and Q111 for Bader. The two developers of
+F125's second pass and F112's attempt 2 started at 18:21:57 and 18:22:00 in workflow
+wf_d55f67e0-13a, turn5\w2-workflow-start.txt, each told to merge main c4fd0d4 into its branch
+first. F116, the clash XML, read at 18:39: FR-025,
+FR-026, FR-008, FR-009 and FR-030 committed, the branch at 0157966 with main c4fd0d4 merged in.
+F114 stays paused at f915396 for wave 2.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -209,8 +238,28 @@ and on its main thread, native thread 40512, called SetThreadExecutionState with
 ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED, 0x80000003, which returned 0x80000000 at 09:55:53.
 None of Bader's power, screen saver or lock settings changed. It stops itself, taking the
 request back first, when this file reads STATE CLOSED or STATE WAITING, or has not been written
-for 12 hours. Its lines go to turn5\keep-awake.txt. STOPPED: not yet. Checked alive at the start
-of every turn.
+for 12 hours. Its lines go to turn5\keep-awake.txt. ENDED BY THE LEAD at 19:35:23, its last line
+"still holding" at 19:26:01, to start the script as changed for Bader's message of the five
+requests, Q112: it keeps running while this Claude Code session is open, STATE WAITING
+included. The copy before the change is turn5\keep-awake-v1.ps1.
+KEEP AWAKE SINCE Q112. keep-awake.ps1 now takes the session's claude.exe, its pid and start
+time, pid 19148 started 17:03:32, the claude.exe in the parent chain of this session's shell,
+turn5\session-chain.txt, and once a minute reads that it still runs. When it is gone it takes up any other
+claude.exe of the Claude Code extension, and it stops, taking the request back first, only when
+none runs or this file reads STATE CLOSED. A wrong session, STATE WAITING, a second copy and STATE CLOSED proved on a copy with its own mutex, 8 passed and 0 failed, turn5\keep-awake-test\prove-result.txt, and the takeover of another claude.exe when the watched one ends, 5 passed and 0 failed, the watched one a stand-in copy of PING.EXE named claude.exe, turn5\keep-awake-test\prove-takeover-result.txt. The stop when no Claude Code claude.exe runs at all is read in the code only, UNKNOWN by a run, since a run of it would end the session. Started through WMI as pid 10412 at 19:35:39,
+ended by the lead at 19:36:35 to prove the check, and started again by
+turn5\check-keep-awake.ps1 as pid 29740, STARTED at 19:36:56, parent pid 9844 WmiPrvSE.exe,
+watching claude.exe pid 19148 started 17:03:32, its call returning 0x80000000,
+turn5\keep-awake.txt and turn5\keep-awake-checks.txt. The check is scheduled in this session at 13 and 43
+minutes past each hour, job 04b2bf94, session-only, firing only while the session is idle,
+turn5\keep-awake-schedule.txt, and the lead runs it too at the start of every turn. No line of
+the schedule's own is in keep-awake-checks.txt yet. SLEEP WHEN
+PLUGGED IN: Bader allowed one change to his power settings, sleep when plugged in set to Never,
+the old value saved and put back at the close. It already read Never, 0, with hibernate after
+and turn off display after also 0 when plugged in, and no key under
+HKLM\SOFTWARE\Policies\Microsoft\Power, so nothing was written and nothing is put back,
+turn5\power-before.txt, read again unchanged at 20:04, turn5\power-after.txt. The System log since 2026-10-01 holds no sleep and no wake,
+turn5\sleep-wake-since-1oct.txt.
 
 THE RUN SETS OF TURN 4. Each run set gets a fresh copy at
 %LOCALAPPDATA%\NwcFederatorLoop\runs\NN\NMFed in Bader's own folder shape: NWC\C06 into
@@ -230,29 +279,41 @@ desktop.
 Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 at 15:42. Merged so
 far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
 51a0cb6, PR 83 as 086a348, PR 90, F105, as 2c89788, PR 91, the fix list, as 0e76b16, PR 92, F107,
-as f58c083, and PR 93 as dd55e4b. Bader's answers and the waves are in the pull request carrying
-this text.
+as f58c083, PR 93 as dd55e4b, PR 94 as 6689bad, PR 95, F113, as 7b6df88, PR 96, F104, as
+c4fd0d4, PR 97 as 68c870b, and PR 99 as 6ddb5be. Bader's five requests of the evening, Q112, are added to the round
+and planned in the turn 5 entry of steps\log.md headed with them.
 
-1. The baseline, set 04: F125 first, the window driver taking a floating Clash Detective pane for
-   a dialog, then the four runs again through the real window, item 1 with the XML and item 2
-   with none, on C02 and on C04, each after a fresh Roamer read, then steps\runs\04\findings.md,
-   short, in the shape of set 03's, merged within the hour. The hung first attempt is kept as
-   evidence
-2. Wave 1: F112 alignment with Bader's rule of Q99 and Q100, F113 clash counts, built and with its
-   reviewer and breaker, and F116 the clash XML of Q102 to Q104. Each with a reviewer, a breaker
-   and the claim-checker, Actions green, merged one at a time
+1. The baseline, set 04: item 1 on C02 rerun from F125's commit 5fa98a8 at 18:55, then item 1 on
+   C04, item 2 on C02 and item 2 on C04, each after a fresh Roamer read, then
+   steps\runs\04\findings.md, short, in the shape of set 03's, merged within the hour. The hung
+   first attempt is kept as steps\runs\04\item1-C02-hung
+2. Wave 1: F125's second pass and F126, the driver unticking a named box, each read under Q93
+   and merged. F112 fix attempt 2 read and merged. F116 fix attempt 2, attempt 1 being aefb416
+   read in turn5\f116-read-review.txt, f116-read-break.txt and f116-read-claims.txt, then
+   Bader's answer to Q113, the list as a file beside the picked XML and this project's list in
+   exchange\, then its merge after F112, Bader told when the list is on main. Each with a reviewer, a breaker and the claim-checker, Actions green, merged one
+   at a time
 3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
    buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
-   run once more with the rule switched off by its setting. Compared with the baseline: each
-   group's result, the clash count per test, the time per step and the VIEWS share, the workbook
-   check, the RESULT numbers and the log size, each item of the wave marked proven or not with
-   its line. A fix that makes the test worse is taken back at once, with one line why
+   run once more with the rule switched off by its tick box. Compared with the baseline through
+   turn5\wave-compare.py and F104's documents read: each group's result, the clash count per
+   test, the time per step and the VIEWS share, the workbook check, the RESULT numbers and the
+   log size, each item of the wave marked proven or not with its line. A fix that makes the test
+   worse is taken back at once, with one line why
 4. Three short lines at the top of steps\fix-round.md and in the Claude tab, what the wave fixed,
-   what the test proved and what got worse, merged within the hour
-5. Waves 2 to 5 the same way, as steps\fix-round.md lists them. F104 part 2, the documents read,
-   merges as the test's own instrument once its pull request is read, and reads each test's NWFs
-   against their workbooks
-Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes.
+   what the test proved and what got worse, merged within the hour. Three lines in the tab after
+   each of Bader's five requests too
+5. To measure from the baseline before wave 2: which property and value name Generic Models on
+   1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test of the coverage,
+   why the Shift range fails in the window code, and whether the driver can test a Shift click
+   without real input
+6. Wave 2 in two halves, 2a F127 coverage first with F115 sets and F114 views, 2b F128 generic
+   models with F118 workbook and report. Wave 3 in two halves, 3a F129 start from an NWF with
+   F120 harvest and pictures and F109 install, 3b F130 the Shift range with F119 run log and
+   RESULT. Then waves 4 and 5, as steps\fix-round.md lists them. Every wave test from wave 2 on
+   shows the Coverage sheet
+Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes. The
+keep-awake is checked every 30 minutes.
 
 ## The phases
 
@@ -352,6 +413,15 @@ Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 
 What waits on Bader's answer. A finding moves here when it survives three fix attempts,
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
+
+OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its choices:
+- none of the turn 5 form. Q113 ANSWERED on 2026-10-04 in the evening: B, the correction list a plain file beside
+  the picked XML, this project's in exchange\, and D, all four categories. F116 carries it
+- Q110 and Q111 are held by F112's fix attempt 2 on its branch and reach the form when it merges.
+  Q112 is his own message of the five requests. The two readings in its lead's notes he
+  answered on 2026-10-04 in the evening, right as read: a count that differs is a FAILED line in
+  COVERAGE and RESULT and the group keeps its own result, and a Shift click the driver cannot make
+  without real input becomes numbered steps for him in steps\03_bader_next.md
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:

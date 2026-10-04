@@ -102,9 +102,10 @@ and words and D1, bar three kept early and named below with why. The lead depart
 wished order in two places: F115 sets, 16 items his list did not name, in wave 2, and workbook
 and report one area because they share WorkbookCheck.cs. FR-136, Q108's fix, and F117, the names,
 moved from the waves 3 and 4 the lead first told him to wave 5, since both are noise by the class
-this list gives them and noise comes last in his order. Two pairs in one wave share a
-file and merge one after the other: in wave 1 F112 and F116 share ExportCheck.cs, F116 after
-F112, and in wave 5 F123 and F117 share docs\history\scan.md. The four finds of Q108, Q109, Q24
+this list gives them and noise comes last in his order. Four pairs in one wave or half
+share a file and merge one after the other: in wave 1 F112 and F116 share ExportCheck.cs, F116
+after F112, in 2b F128 and F118 the workbook writer, in 3b F130 and F119
+FederatorWindow.xaml.cs, and in wave 5 F123 and F117 docs\history\scan.md. The four finds of Q108, Q109, Q24
 and Q26 write their test steps under their items and run them at the start of the wave that
 holds them. Each area takes the F number shown.
 
@@ -112,14 +113,18 @@ holds them. Each area takes the F number shown.
   - F112 alignment: FR-001, FR-002, FR-003, FR-004, FR-005, FR-006, FR-028. Noise kept here: FR-028, started by F112 before the waves
   - F113 clash counts: FR-031, FR-032, FR-033, FR-034
   - F116 the clash XML: FR-008, FR-009, FR-025, FR-026, FR-030. Noise kept here: FR-030, Bader put the XML corrections of Q102 to Q104 in wave 1
-- Wave 2:
-  - F115 sets: FR-010, FR-011, FR-012, FR-013, FR-014, FR-015, FR-016, FR-017, FR-018, FR-019, FR-020, FR-021, FR-022, FR-023, FR-024, FR-027
-  - F118 workbook and report: FR-035, FR-036, FR-037, FR-040, FR-041
-  - F114 views: FR-065, FR-066, FR-067, FR-068, FR-069, FR-070, FR-071, FR-072, FR-073. Noise kept here: FR-073, committed by F114 before it paused
-- Wave 3:
-  - F119 run log and RESULT: FR-043, FR-044, FR-045, FR-046, FR-047, FR-048, FR-049, FR-050, FR-051, FR-052, FR-053, FR-054, FR-055, FR-056, FR-057
-  - F120 harvest and pictures: FR-075, FR-076, FR-077
-  - F109 install: FR-078, FR-079, FR-080
+- Wave 2, in two halves since Bader's five requests, Q112, each half at most three areas:
+  - 2a, F127 coverage first, Bader's request 2: FR-176
+  - 2a, F115 sets: FR-010, FR-011, FR-012, FR-013, FR-014, FR-015, FR-016, FR-017, FR-018, FR-019, FR-020, FR-021, FR-022, FR-023, FR-024, FR-027
+  - 2a, F114 views: FR-065, FR-066, FR-067, FR-068, FR-069, FR-070, FR-071, FR-072, FR-073. Noise kept here: FR-073, committed by F114 before it paused
+  - 2b, F128 generic models, Bader's request 3: FR-177
+  - 2b, F118 workbook and report: FR-035, FR-036, FR-037, FR-040, FR-041. F128 and F118 both add to the workbook writer, so they merge one after the other
+- Wave 3, in two halves the same way:
+  - 3a, F129 start from an existing NWF, Bader's request 4: FR-178
+  - 3a, F120 harvest and pictures: FR-075, FR-076, FR-077
+  - 3a, F109 install: FR-078, FR-079, FR-080
+  - 3b, F130 the Shift range in the group list, Bader's request 5: FR-179. In the half after F129 because both change the window's files
+  - 3b, F119 run log and RESULT: FR-043, FR-044, FR-045, FR-046, FR-047, FR-048, FR-049, FR-050, FR-051, FR-052, FR-053, FR-054, FR-055, FR-056, FR-057
 - Wave 4:
   - F121 the rest: FR-150, FR-151, FR-152, FR-153, FR-154, FR-155, FR-156, FR-157, FR-158, FR-159, FR-160, FR-161, FR-162, FR-163, FR-164, FR-165, FR-166. The find of Q24 on FR-160 and Q109 on FR-161 first
   - F122 the loop tools: FR-082, FR-083, FR-084, FR-085, FR-086, FR-087, FR-088, FR-089, FR-090, FR-091, FR-092, FR-093, FR-094, FR-095, FR-096, FR-097, FR-098, FR-099, FR-100, FR-101, FR-102, FR-103, FR-104
@@ -127,6 +132,13 @@ holds them. Each area takes the F number shown.
   - F123 docs and words, and the noise of every area: FR-007, FR-029, FR-038, FR-039, FR-042, FR-058, FR-059, FR-060, FR-061, FR-062, FR-063, FR-064, FR-074, FR-081, FR-105, FR-106, FR-107, FR-108, FR-111, FR-112, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118, FR-119, FR-120, FR-121, FR-122, FR-123, FR-124, FR-126, FR-127, FR-128, FR-129, FR-130, FR-131, FR-132, FR-133, FR-134, FR-135, FR-136, FR-139, FR-140, FR-141, FR-142, FR-143, FR-144, FR-145, FR-146, FR-147, FR-148, FR-167, FR-168, FR-169, FR-170, FR-171, FR-172, FR-173. Closed in part, the part that stays: FR-139, FR-146. The finds of Q108 on FR-136 and Q26 on FR-172 first. Closed already: FR-125, FR-137, FR-138
   - F117 the names, by Bader's answer to Q105 to Q107: FR-109, FR-110, FR-149
   - then F124 D1, one public type per file: FR-174, moves only, last
+
+Bader's five requests of the evening of 2026-10-04, Q112, are added to the round as FR-175 to
+FR-179, under their own heading below, each measured before it is written, test first, and
+tested on 1A02MM and 1A04PK like the fixes. FR-175, no sleep, was done by the lead at once. Two
+tools of the loop sit outside the product waves: F125, the window driver leaving a floating pane
+alone, and F126, the driver unticking a named box, which the run of a building off its shared
+coordinates with the rule switched off needs in the test of wave 1.
 
 ## Alignment, FR-001 to FR-007
 
@@ -390,6 +402,9 @@ structure model's ramps. The AR Railings set does the same.
 - Note: A SET line could also say which discipline's model an AR coded set found its items in.
   The tool reports and never acts, so no behaviour change is asked.
 - Answered by Bader on 2026-10-04 at 15:23, Q103, in short, his words being under the question in steps\02_questions.md: every AR set whose category another discipline also uses gets Source File contains -AR-. The lead's note: to be worked by F116, the clash XML, in wave 1.
+- Answered by Bader on 2026-10-04 in the evening, Q113 D: all four categories, Ramps, Railings,
+  Furniture and Site. An AR set only takes items from an AR file, and a set this leaves empty in a
+  landscape group shows on the coverage sheet of wave 2
 
 ### FR-010 empty-sets-contains-judged-as-equals
 
@@ -994,6 +1009,12 @@ form of a set a picked file carries.
   ME-DUCTWORK. Bader has since put the corrected file in place (Q98 B1). FR-025 and FR-026 are
   faults inside this class, and it is among the 150 of FR-172.
 - Answered by Bader on 2026-10-04 at 15:23, Q104, in short, his words being under the question in steps\02_questions.md: the tool uses the code that builds the corrected XML, MatrixCorrections is applied to whichever XML is picked before any set is built, the log names every correction it made, the Q102 and Q103 rules live in it, and a test is to prove the old uncorrected XML and the exchange file give the same sets once corrected. The lead's note: to be worked by F116, the clash XML, in wave 1.
+- Answered by Bader on 2026-10-04 in the evening, Q113 B: the correction list, the three matrix
+  corrections, the Q103 rule and the 30 workset spellings, is a plain file kept beside the picked
+  XML, read when the XML is picked and named in the log, and the code that applies it stays in
+  Core. A picked XML with no list beside it is corrected by nothing and the log says so. This
+  project's list goes in exchange\ beside the corrected XML, and Bader is told when it is there.
+  F116 carries it before it merges
 
 ## Clash counts, FR-031 to FR-034
 
@@ -4482,6 +4503,139 @@ Bader answered in Q80 is written in no rule file.
   logic. Splitting changes no behaviour, so the Core tests and the add-in build read the same
   counts before and after. It touches the files of every product area, so nothing else is open
   when it runs.
+
+## Bader's five requests, FR-175 to FR-179
+
+Added by Bader's message of the evening of 2026-10-04 headed FIVE REQUESTS ADDED TO THE ROUND,
+in his words under Q112 of steps\02_questions.md. They are requests, not faults found, so they
+sit outside the counts of the table below. After each one, three lines in the Claude tab: what
+was done, what the test showed, and anything for Bader.
+
+### FR-175 no-sleep-and-keep-awake
+
+- Sources: Q112, request 1
+- What he asked: sleep when plugged in set to Never with powercfg after its old value is saved,
+  and put back at the close. The keep-awake running while this Claude Code session is open,
+  STATE WAITING included, checked every 30 minutes and started again if gone. Every sleep and
+  wake in the System log since 1 Oct
+- Measured on 2026-10-04 at 19:27, turn5\power-before.txt: the Balanced scheme, sleep after,
+  hibernate after and turn off display after each read 0, Never, when plugged in, and no key
+  exists under HKLM\SOFTWARE\Policies\Microsoft\Power. Only Standby (S0 Low Power Idle) is available, and hibernation is not
+  enabled. The lock screen's display timeout is hidden from powercfg, so it is UNKNOWN
+- Done by the lead: nothing was written to the power settings, since the value asked for was
+  already there, so nothing is put back at the close, read again unchanged at 20:04,
+  turn5\power-after.txt. The System log since 2026-10-01 holds no
+  sleep and no wake, only starts, a shutdown and an update restart,
+  turn5\sleep-wake-since-1oct.txt. keep-awake.ps1 now watches the session's claude.exe, pid
+  19148 by turn5\session-chain.txt, and stops only when no Claude Code claude.exe runs or
+  steps\loop.md reads STATE CLOSED. A wrong session, STATE WAITING, a second copy and STATE CLOSED proved on a copy with its own mutex, 8 passed and 0 failed, turn5\keep-awake-test\prove-result.txt, and the takeover of another claude.exe when the watched one ends, 5 passed and 0 failed, the watched one a stand-in copy of PING.EXE named claude.exe, turn5\keep-awake-test\prove-takeover-result.txt. The stop when no Claude Code claude.exe runs at all is read in the code only, UNKNOWN by a run, since a run of it would end the session. turn5\check-keep-awake.ps1 starts it again
+  when it is gone, proved by ending it at 19:36:35, turn5\keep-awake-checks.txt, and is
+  scheduled at 13 and 43 minutes past each hour while the session is idle,
+  turn5\keep-awake-schedule.txt
+- Class: Bader's request
+- Closed: 2026-10-04, by the lead, as above
+
+### FR-176 coverage-of-the-clash-xml
+
+- Sources: Q112, request 2. Area F127, the first item of wave 2
+- What he asked: after each group, every test of the picked XML, or the saved tests when there
+  is no XML, against what happened: created or not, run or not, its count in Clash Detective, its
+  rows in the workbook. A reason for each test with no results. The categories in the models
+  that no set catches, with each one's item count per model. Every set that found no items in
+  any group of the run. A Coverage sheet and a COVERAGE block. RESULT counting the tests of the
+  XML: created, run, with clashes and without. A count in Clash Detective that differs from the
+  workbook rows a FAILED line, using the F104 check. Every wave test after it shows the sheet
+- Measure first: what the log, the .tsv and the workbook already hold for each test, the test
+  created and rows for the workbook rows, the SET ZERO lines, the CENSUS lines, and whether the
+  categories each model carries with their counts are read today. UNKNOWN until read
+- The lead's reading, Q112: the FAILED line sits in the COVERAGE block and RESULT and the group's
+  own result is left as it is, since CLAUDE.md says a report check never fails a group, until
+  Bader says the group should fail
+- Proof: a Core test for each reason, each list and the FAILED line, each breaking one thing,
+  then the test of wave 2 on 1A02MM and 1A04PK with the sheet read back and set beside F104's
+  documents read of the same NWFs
+- Class: Bader's request
+- Measured on 2026-10-04 off set 03 and the code, turn5\measure-coverage.md. Partly there today:
+  created per test, the test created rows of the .tsv, 3215 on C06, with no row for a test not
+  created. Run per test, the test passed and test found clashes rows. The count in Clash Detective,
+  the number column of those rows. The workbook rows, the rows for the workbook rows, which carry
+  the document's count as text, 3024 on C06, every one equal. A side's set that finds nothing, in
+  log lines with five examples per reason. The single discipline group. The sets empty across the
+  run, of which the log names 10 of 14. Not there: the categories each model carries with their
+  counts under the property the sets ask, a Coverage sheet, since the workbook check counts a
+  second sheet as a fault, a COVERAGE block, RESULT counts of the tests of the XML, and a FAILED
+  line. The add-in does not count top-level results, and the F104 comparison lives in PowerShell
+  and a probe. Its rule can be built in Core with the document side read by the add-in, while the
+  probe stays the independent witness, since compare-document.ps1 lines 12 to 17 say a check that
+  shares code with the harvest proves nothing
+- Seen while measuring: the BLOCKS false alarm on all 22 C06 groups is FR-035 and the SINGLE
+  DISCIPLINE sentence is FR-126, both already on this list. A single discipline group's CLASH
+  block counts its 36 created tests among its 1830 skipped, log:1167 to 1170 of set 03, and that
+  is the block's own word, skipped meaning not run and not passed, split there into 36 for the
+  one discipline and 1794 for a side that finds nothing. Not a fault, but the coverage counts
+  keep created and run apart
+- Answered by Bader on 2026-10-04 in the evening, the notes of Q112: right as read. A count that
+  differs is a FAILED line in COVERAGE and RESULT, and the group keeps its own result
+
+### FR-177 generic-models-counted-and-a-set-per-model
+
+- Sources: Q112, request 3. Area F128, wave 2
+- What he asked: first measure on the two buildings which property and value name Generic
+  Models. Then a GENERIC block and a sheet per group, each model file with its count, models with
+  none left out, and in the NWF a search set folder named Generic Models with one search set per
+  model, its conditions on the category and the source file. No clash test for them
+- Measure first: the property and value, on 1A02MM and 1A04PK, off the baseline's logs where
+  they name categories, or by a probe on a baseline NWF through the guarded start. UNKNOWN until
+  measured
+- Proof: Core tests for the counts, the sheet and the set plan, then the test of wave 2 on both
+  buildings, the sets read back off the NWF
+- Class: Bader's request
+- Measured on 2026-10-04 off the repo, turn5\measure-generic.md: no log, read-out or sample names
+  Generic Models. One probe of 2026-09-20 counted 62 items with that category over all ten C02 NWFs,
+  40 models, tools\probes\ViewpointProbe\5i-result-20260920.txt line 64, with no count per
+  model or per building and items rather than elements. The tool reads a category from the
+  property shown as Category, then Revit Category, then Element Category, and on a 1A02MM element
+  that is the Element tab, LcRevitData_Element, LcRevitPropertyElementCategory. Whether Generic
+  Models items carry it there is UNKNOWN, and nothing has read 1A04PK. No line the installed
+  build writes can answer it, read off set 03's log and the code, so a probe on the baseline's NWFs of both buildings, through the guarded start,
+  measures it before F128 is written
+
+### FR-178 start-from-an-existing-nwf
+
+- Sources: Q112, request 4. Area F129, wave 3
+- What he asked: a choice beside the NWC folder to pick one NWF or a folder of NWFs, each run
+  the way the weekly run runs it, the tests of the XML if one is picked else the tests saved
+  inside, then the reports and the NWD, through the same engine route as the weekly run and the
+  open document, every rule applying
+- Measure first: the engine routes of the weekly run and the open document run today, so the
+  new choice reuses one and copies neither
+- Proof: Core tests for what the choice decides, then a run on copies of the NWFs set 04 makes
+  for 1A02MM and 1A04PK, never on the baseline's own files
+- Class: Bader's request
+
+### FR-179 shift-range-tick-in-the-group-list
+
+- Sources: Q112, request 5. Area F130, wave 3
+- What he asked: a click on one Run box then a Shift click on another gives every row between
+  them the first one's state. Why it fails today found first, then fixed, then tested through the
+  window with the driver
+- Root cause: in the measured line below
+- Measure first: whether the driver can make a Shift click on the tool's own window without real
+  input, since it never clicks, sends no key and never moves the pointer, the loop's own choice.
+  If it cannot, the way to test it goes to Bader
+- Class: Bader's request, a broken feature by his words
+- Measured on 2026-10-04 off the window code, turn5\measure-shift.md: a range tick is not
+  written. The Run column is a stock DataGridCheckBoxColumn bound to Include with no handler,
+  FederatorWindow.xaml lines 184 to 191, and nothing under src reads Shift or the row selection.
+  In a stock DataGrid Shift extends the row selection, read from PresentationFramework.dll's IL
+  by reflection with no click made, and whether Navisworks loads that same file is UNKNOWN. Also every untick in the group list goes back to
+  ticked when the groups are built again, after a scan, a grouping change or a change to a file's
+  Use box, FederatorWindow.xaml.cs lines 247 to 318 and GroupRow.cs line 39
+- Whether the driver can make a Shift click without real input is NOT MEASURED: the stand-in
+  measurement waits for no Navisworks to run, turn5\measure-shift-driver.md
+- Answered by Bader on 2026-10-04 in the evening, the notes of Q112: if the driver cannot test the
+  Shift click without real input, the Shift test is written as numbered steps for him in
+  steps\03_bader_next.md
 
 ## The areas at a glance
 

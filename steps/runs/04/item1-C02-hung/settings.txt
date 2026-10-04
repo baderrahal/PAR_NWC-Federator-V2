@@ -1,0 +1,12 @@
+  the AutoSave compare reads autosave-before.txt back, 199 files
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 154  new DWord 155
+  registry: 1 values or keys differ from the backup
+  registry: 1 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 67617 bytes, sha256 5AC073CD8DAF, written 2026-10-04 15:21:05  new 68868 bytes, sha256 15004AD65C84, written 2026-10-04 16:03:28
+  files: 1 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  files: 1 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+---- his AutoSave folder, Q86 ----
+  AutoSave: 0 put back as they were and read back, 0 not as they were before the run

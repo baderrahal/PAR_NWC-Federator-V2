@@ -1,0 +1,22 @@
+15:55:58.073  t+2.2s  watchdog started
+15:56:17.865  t+22.0s  Roamer pid 47208 seen with no readable start time, looked at again at the next pass
+15:56:25.834  t+30.0s  new process Roamer pid 47208, parent 1392 svchost.exe, started 15:56:17.605, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+15:56:25.972  t+30.1s  Roamer 47208 visible top level windows: none
+15:56:33.091  t+37.2s  new process AdskLicensingInstHelper pid 47240, parent 27400 GenuineService.exe, started 15:56:24.292, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+15:57:06.574  t+70.7s  new process AdskLicensingAgent pid 39600, parent 47208 Roamer.exe, started 15:57:01.602, command line holds the word embedding or automation: no
+15:57:16.438  t+80.6s  new process AdskLicensingAgent pid 21564, parent 47208 Roamer.exe, started 15:57:02.582, command line holds the word embedding or automation: no
+15:57:29.750  t+93.9s  Roamer 47208 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+15:57:36.443  t+100.6s  Roamer 47208 visible top level windows: none
+15:57:52.286  t+116.4s  new process AdskLicensingInstHelper pid 43204, parent 27400 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+15:57:52.889  t+117.0s  Roamer 47208 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+15:57:54.036  t+118.2s  Roamer 47208 visible top level windows: none
+15:57:54.886  t+119.0s  Roamer 47208 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective"
+15:57:55.631  t+119.8s  Roamer 47208 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+15:57:56.499  t+120.6s  Roamer 47208 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+15:57:57.096  t+121.2s  Roamer 47208 visible top level windows: [HwndWrapper[Roamer.exe;;b3e10665-a020-40e9-b510-9e967c3028af]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+15:58:12.565  t+136.7s  Roamer 47208 visible top level windows: [#32770] "Parsons NWC Federator" text: "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is rebuilt from it with its saved tests kept. Only known once each NWF is opened.    Nothing is open at the moment, so nothing is lost.    Carry on?" | [HwndWrapper[Roamer.exe;;b3e10665-a020-40e9-b510-9e967c3028af]] "Parsons NWC Federator   [1.0.0.0 e4484d15 built 2026-10-01 12:19:09]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+16:03:28.679  t+452.8s  Roamer 47208 visible top level windows: none
+16:03:29.214  t+453.4s  Roamer 47208 has exited
+16:04:34.723  t+518.9s  new process AdskLicensingInstHelper pid 35900, parent 27400 GenuineService.exe, started 16:04:24.547, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+16:05:30.201  t+574.3s  new process AdskLicensingInstHelper pid 51332, parent 27400 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+16:08:01.843  t+726.0s  watchdog stopped
