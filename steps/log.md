@@ -1,6 +1,68 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, Bader's five requests added to the round, the plan, and no sleep
+
+Bader's message of the evening, headed FIVE REQUESTS ADDED TO THE ROUND, is Q112 of
+steps\02_questions.md in his words. Nothing under src, tests or tools changed. Core tests 1756
+passed, 0 failed, 0 skipped at the pre-commit of this record, as on main 68c870b.
+
+### The plan, written before the first edit
+
+- A, request 1 at once: measure the power settings, set sleep when plugged in to Never after
+  saving the old value, read the System log for every sleep and wake since 1 Oct, and keep the
+  keep-awake running while this session is open, checked every 30 minutes
+- B, this record: Q112, FR-175 to FR-179 in steps\fix-round.md with the waves split into
+  halves of at most three areas, the keep-awake rule in .claude\rules\loop.md, the head and the
+  next action of steps\loop.md, and Q113 from F116's reading
+- C, wave 1 as planned: the baseline of set 04, F125's second pass and F126, F112's and F116's
+  fix attempt 2, then the test of wave 1 through turn5\wave-compare.py and F104's documents read
+- D, measured from the baseline before wave 2: the property and value of Generic Models on
+  1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test, why the Shift
+  range fails, and whether the driver can test a Shift click without real input
+- E, wave 2 in two halves, 2a F127 coverage first with F115 and F114, 2b F128 generic models
+  with F118. Coverage designed first by a panel of independent plans
+- F, wave 3 in two halves, 3a F129 start from an NWF with F120 and F109, 3b F130 the Shift range
+  with F119
+- G, waves 4 and 5 as listed
+
+### What was done
+
+- request 1, FR-175. Measured at 19:27, turn5\power-before.txt: the Balanced scheme, sleep after
+  0, Never, plugged in and on battery, hibernate after and turn off display after 0 plugged in,
+  no power policy key, Standby (S0 Low Power Idle) the only sleep state, hibernation not
+  enabled. Since sleep when plugged in already read Never, nothing was written to his power
+  settings and nothing is put back at the close. The lock screen's display timeout is hidden
+  from powercfg and UNKNOWN
+- the System log from 2026-10-01 00:00, turn5\sleep-wake-since-1oct.txt, nine events and no
+  sleep and no wake among them: started 2026-10-01 08:27:53, shutdown asked by shutdown.exe at
+  19:30:49 and the system down at 19:31:50, started 2026-10-04 08:56:35, a restart for an update
+  asked at 09:07:20, down at 09:09:07 and started at 09:10:19
+- keep-awake.ps1 changed to watch the session's claude.exe and stop only when no Claude Code
+  claude.exe runs or steps\loop.md reads STATE CLOSED, the old copy kept as keep-awake-v1.ps1.
+  Proved on a copy with its own mutex, 8 passed and 0 failed,
+  turn5\keep-awake-test\prove-result.txt. turn5\check-keep-awake.ps1 starts it again when it is
+  gone, proved by ending it at 19:37, turn5\keep-awake-checks.txt. A schedule of this session
+  runs the check at 13 and 43 minutes past each hour. It lives only as long as the session and
+  expires after 7 days
+- Q113 written from F116's reading: its corrections shipped as data in Core against CLAUDE.md,
+  and Q103 read wider than the matrix. F116's readings are turn5\f116-read-review.txt,
+  f116-read-break.txt and f116-read-claims.txt
+
+### Programs started and files written outside the repo
+
+- powercfg, Get-WinEvent and Get-CimInstance, reading only
+- powershell.exe for the keep-awake proof, its copies under turn5\keep-awake-test, the keep-awake
+  through WMI as pid 10412 and, after the lead ended it to prove the check, as pid 29740.
+  Stop-Process on pid 1312 and pid 10412, both the loop's own keep-awake
+- written: turn5\power-before.txt, sleep-wake-since-1oct.txt, keep-awake.ps1, keep-awake-v1.ps1,
+  check-keep-awake.ps1, keep-awake-checks.txt, keep-awake.txt and the files under
+  turn5\keep-awake-test
+
+### What remains
+
+- everything from C of the plan on
+
 ## 2026-10-04 The loop, turn 5, F104 part 2, the documents read, DONE for the build
 
 Nothing under src or tests changed. Core tests 1746 passed, 0 failed, 0 skipped after the merge
