@@ -1,6 +1,77 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, F116 the clash XML, DONE in Core and built, wave 1
+
+Core tests 1746 passed, 0 failed, 0 skipped before the first change, turn5\f116-core-before.txt,
+and 1776 passed, 0 failed, 0 skipped after the last, turn5\f116-core-after.txt, with main
+c4fd0d4 and 68c870b taken in, so F113's ten tests are among them. The solution builds with 0
+warnings and 0 errors, turn5\f116-build-after.txt. No Navisworks was started. Every file under
+`%LOCALAPPDATA%\NwcFederatorLoop\turn5`. Programs started: dotnet build and dotnet test only.
+
+### What was done
+
+- Bader's answer to Q104, FR-030, b68a785: the picked clash XML is corrected by
+  MatrixCorrections before any set is built, at every place the window reads it, the pick, the
+  run, the open file run and both hand buttons, which read it raw before. The log names every
+  correction in a MATRIX line after the line naming the file. A correction list it cannot read
+  corrects nothing and its first line says so. Bader's test passes: the old uncorrected sample,
+  the exchange file and the sample with the hyphen alone corrected give the same sets. By hand,
+  the sample, the exchange file as main had it, sha256 792b01fb, his older -OLD file and the
+  regenerated exchange file give the same 61 sets and 1830 tests line for line,
+  turn5\f116-same-sets.txt
+- Bader's answer to Q102, FR-008 and FR-025, 045b7df, 76af22d and 1f5cf21: a workset the models
+  carry in two or more spellings is asked in every one of them, each spelling an Or group copied
+  whole so that every group still asks its category, where before the one Or condition held the
+  workset alone. revit-worksets.txt gains the 30 names the C06 log's EXPORT CHECK lines list,
+  and the row file gains one model worksets row per model naming every workset in full, so the
+  next run measures every spelling
+- Bader's answer to Q103, FR-009, 06a89bb: an AR set whose category another discipline also
+  uses asks Source File contains -AR-. On the client's matrix BLD-AR-Ramps, Furniture, Railings
+  and Site gain it and no other set changes
+- FR-026, e959c7f: a category rewrite changes whole values and never the set's own name
+- the rule in .claude\rules\core.md, "The picked file is corrected before a set is built,
+  F116", order line 39 and the F116 section in steps\01_next.md, b6aa492
+
+### Two choices the developer made, for the reader to check
+
+- Q103 READ WIDER THAN THE MATRIX ALONE. Read off the matrix only, no other folder's set asks
+  Ramps, Railings, Furniture or Site, so the rule would change nothing and the 414 BLD-AR-Ramps
+  clashes of 1B06PK would stay. So the rule also takes categories measured in the logs, AR sets
+  that found items in groups with no AR model: Ramps and Railings from the C06 log lines 4304,
+  7979 and 4316, Furniture and Site from the C04 partial log lines 200 and 203, a test reading
+  them against those lines. Any other category another discipline carries only beside an AR
+  model is UNKNOWN. The literal reading is one line of src\Federator.Core\Exchange\
+  matrix-corrections.txt with the four names taken out
+- THE CORRECTIONS ARE DATA IN CORE. To give one set of sets from both files, the rename and the
+  catch-all are applied at pick time, so two set names of the client's matrix,
+  "BLD-DRPipe Accessories" and "BLD-EL-Devices", sit in matrix-corrections.txt under src, as the
+  workset and category lists already do. No code names a set
+
+### What remains
+
+- the add-in half, proved by the test of wave 1 on 1A02MM and 1A04PK. On the first run with the
+  XML: 13 MATRIX lines and `MATRIX   23 changes in all` after the line naming the file,
+  BLD-ME-Ducts&Duct Fittings built with 8 conditions where main builds 4, BLD-AR-Ramps with 2
+  where main builds 1, and one model worksets row per model in the .tsv. The weekly run picks no
+  XML and writes no MATRIX line. Whether BLD-AR-Ramps finds fewer items in 1A04PK is UNKNOWN
+  until the run
+
+### Known bugs
+
+- F112's FR-028 names a pair for every ask that differs only in letter case, so once both merge
+  a set that now asks both spellings will be named as missing one. F112 merges first, then
+  F116 takes main in and skips a set that also asks the carried spelling exactly
+- the workset spellings past the tenth name of a group are UNKNOWN until the wave 1 .tsv rows
+- FR-012 is still open: an unreadable workset list corrects nothing, silently
+- still without a caller in src: CategoryRewrite, ValueOrRow and the shorter Apply overloads,
+  FR-172 and Q26
+
+### What comes next
+
+- the reviewer and the breaker, then F112 merges, F116 takes main in, fixes the FR-028 case
+  above and merges
+
 ## 2026-10-04 The loop, turn 5, F104 part 2, the documents read, DONE for the build
 
 Nothing under src or tests changed. Core tests 1746 passed, 0 failed, 0 skipped after the merge
