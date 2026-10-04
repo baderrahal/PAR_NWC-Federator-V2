@@ -103,8 +103,9 @@ wished order in two places: F115 sets, 16 items his list did not name, in wave 2
 and report one area because they share WorkbookCheck.cs. FR-136, Q108's fix, and F117, the names,
 moved from the waves 3 and 4 the lead first told him to wave 5, since both are noise by the class
 this list gives them and noise comes last in his order. Five pairs in one wave or part
-share a file or a rule and merge one after the other: in wave 1 F112 and F116 share
-ExportCheck.cs, F116 after F112, in 2a F127 and F132 which tests are created and run, F127 first,
+share a file or a rule and merge one after the other: in wave 1 F112 and F116 both
+change ExportCheck.cs, F112 for FR-003 to FR-005 and F116 for the model worksets rows of
+FR-008, F116 after F112, in 2a F127 and F132 which tests are created and run, F127 first,
 in 2b F131 before F114, which reads its team pairs, in 3b F130 and F119
 FederatorWindow.xaml.cs, and in wave 5 F123 and F117 docs\history\scan.md. F128 and F118 share the
 workbook writer, so F118 sits in 2c after F128. The four finds of Q108, Q109, Q24
@@ -2070,7 +2071,8 @@ the step for 20. log:8380-8382, the
 - Changed by Bader on 2026-10-04 in the evening, Q114: one view per clash test of its open
   clashes, in folders by priority and team pair, replaces the viewpoint per clash, so what is made
   faster is that design, FR-184 to FR-188. The 94.5 percent of 2 h 12 min on 1A02MM in the
-  baseline, steps\runs\04\item1-C02, is what it is measured against
+  baseline, steps\runs\04\item1-C02, is what it is measured against, and FR-187 replaces the Proof
+  above, which held the viewpoints the same
 
 ### FR-070 views-45-minute-basis-and-options
 
@@ -4650,7 +4652,8 @@ was done, what the test showed, and anything for Bader.
 Added by Bader's message of the evening of 2026-10-04 headed ONE VIEWPOINT PER CLASH TEST, IN THE
 A, B, C FOLDERS, BY TEAM, NO TEAMS MIXED, NO MIRRORED TESTS, in his words under Q114 of
 steps\02_questions.md. Decisions, not faults found, so they sit outside the counts of the table
-below. Each is measured before it is written, test first, and proved on 1A02MM and 1A04PK.
+below. His points 3 and 5 ask for a measurement first, and his proof, points 18 and 19, is on
+1A02MM. The lead's own rule adds that each item is measured before it is written and test first.
 
 ### FR-180 team-map-beside-the-picked-xml
 
@@ -4661,7 +4664,8 @@ below. Each is measured before it is written, test first, and proved on 1A02MM a
   named in the log, so src names no project, and it applies wherever the tool reads a discipline,
   from a set name or a file name
 - Measure first: where the tool reads a discipline today and how codes are mapped,
-  turn5\measure-views.md
+  turn5\measure-views.md, not yet written. The discipline code is part 5 of the file name split
+  on the separator, read by ContainerName.Parse, turn5\measure-teams.md section 1
 - Proof: Core tests for the map, a missing map, a code on no team, and each place a discipline is
   read
 - Class: Bader's decision
@@ -4670,10 +4674,17 @@ below. Each is measured before it is written, test first, and proved on 1A02MM a
 
 - Sources: Q114, point 3. Area F131, wave 2b
 - What he asked: measure on 1A02MM and 1A04PK and on any model named with HV, PL or FP which sets of
-  the picked XML find their items. A mechanical set that asks for ME in the file name or an ME
-  workset finds nothing in an HV, PL or FP model, a silent miss, said in the COVERAGE block and in
-  the form with a correction for Bader to approve, built the way the both-spellings rows are
-- Measure first: turn5\measure-teams.md, under way
+  the picked XML find their items. If a mechanical set asks for ME in the file name or an ME
+  workset, and so finds nothing in an HV, PL or FP model, that is a silent miss, said in the
+  COVERAGE block and in the form with a correction for Bader to approve, built the way the
+  both-spellings rows are
+- Measured on 2026-10-04, read only, turn5\measure-teams.md: of the 154 models of the copy only
+  1A04PK's FP and HV models carry HV, PL or FP, no model is coded PL, and 1A02MM has none, so it
+  cannot have such a miss. None of the 25 mechanical sets asks Source File, each asks one
+  workset value, so a set finds items in an HV or FP model only where that model carries the
+  exact value. Whether 1A04PK's HV and FP models do is UNKNOWN until a run or a probe reads their
+  worksets. Silent misses confirmed: none. A correction built the way the Q102 rows are is drafted
+  in its section 6 and not applied
 - Class: Bader's decision, a silent miss if the measurement finds one
 
 ### FR-182 mirrored-tests-kept-once
@@ -4683,10 +4694,17 @@ below. Each is measured before it is written, test first, and proved on 1A02MM a
   of the code for any project. One test of each pair is kept, the higher priority, A before B
   before C, and where equal the one first in the XML. The other is not created and not run, and
   the coverage sheet names it as a mirror of the one kept. Different priorities or tolerances in a
-  pair are named in the log. The workbook, the viewpoints and every count then hold each clash once
-- Measure first: how many mirrored pairs the matrix holds and whether each pair gives the same
-  clashes on 1A02MM and 1A04PK, turn5\measure-mirrors.md, under way
-- Proof: Core tests for the pairing, the choice of the one kept and the names in the log
+  pair are named in the log. The pairs are listed in the COVERAGE block. The workbook, the viewpoints
+  and every count then hold each clash once
+- Measured on 2026-10-04, read only, turn5\measure-mirrors.md: the picked XML, sha256 792b01fb,
+  holds no mirrored pair. Its 1830 tests are every unordered pair of its 61 sets exactly once, 61
+  times 60 over 2, read by locator, by set name and by test name. So on this matrix the rule drops
+  nothing. The nearest thing: BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices carry the same
+  rule list, both Category equals Telephone Devices, so 59 test pairs are alike by their rules
+  though not by name, and one test has two sides alike by their rules. His rule as written does
+  not catch them, and on 1A02MM none of them ran since both sets found 0 items
+- Proof: Core tests for the pairing, the choice of the one kept, the names in the log and the
+  pairs listed in the COVERAGE block
 - Class: Bader's decision
 
 ### FR-183 mirrored-tests-in-an-existing-nwf
@@ -4704,7 +4722,10 @@ below. Each is measured before it is written, test first, and proved on 1A02MM a
 - Sources: Q114, points 9 to 12. Area F114, wave 2b
 - What he decided: priority folder A, B, C or No priority, then one folder per team pair, then the
   views of that pair's clash tests, each named by its test. A pair folder holds only tests whose
-  two sides belong to those two teams. Two codes of one team go in that team against itself. Over
+  two sides belong to those two teams, so the mechanical team never sees an electrical clash in
+  its folders nor the electrical team a mechanical one, and Mechanical vs Electrical is its own
+  folder because those clashes belong to both. Two codes of one team go in that team against
+  itself. Over
   150mm is a folder inside each pair folder that has Mechanical or Electrical, never shared by two
   pairs. A pair is always written the same way round, Architecture, Structure, Mechanical,
   Electrical, then the rest
@@ -4729,6 +4750,11 @@ below. Each is measured before it is written, test first, and proved on 1A02MM a
   or replaced, the per-clash viewpoints of earlier runs included. A viewpoint a person made is
   never touched, wherever it sits. Clash Detective keeps every clash with its own view and the
   workbook every clash with its picture, each clash once
+- It changes three rules of .claude\rules\addin.md, ONE SAVED VIEWPOINT PER CLASH, SINCE F85 A
+  VIEWPOINT IS PER CLASH, and that a viewpoint already at its path is left exactly as it is, and
+  they change with the fix
+- Measure first: how the tool tells a viewpoint it made from one a person made, today and after,
+  turn5\measure-views.md, not yet written
 - Class: Bader's decision
 
 ### FR-187 views-proof-on-1a02mm-and-the-views-tree-block
