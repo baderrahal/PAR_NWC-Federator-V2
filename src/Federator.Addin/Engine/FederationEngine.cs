@@ -2096,9 +2096,16 @@ namespace Federator.Addin.Engine
                     alignmentFailures.Add(Words.Or(job.Building, "this group") + ": " + fails);
                 }
 
+                // Q98 B2. A model more than the far model setting from the reference keeps
+                // the group from DONE, and its line is said whatever else the group ends as.
+                foreach (string far in AlignmentCheck.FarModels(placements, reports.FarModelMillimetres))
+                {
+                    outcome.AddFarModel(far);
+                }
+
                 log.Block(
                     AlignmentCheck.BlockTitle + " " + Words.Or(job.Building, "this group"),
-                    AlignmentCheck.Lines(placements));
+                    AlignmentCheck.Lines(placements, reports.FarModelMillimetres));
 
                 foreach (ModelPlacement model in placements)
                 {

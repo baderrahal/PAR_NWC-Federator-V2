@@ -1,5 +1,6 @@
 using System;
 using Federator.Core.Clash;
+using Federator.Core.Health;
 using Federator.Core.Naming;
 using Federator.Core.Sets;
 using Federator.Core.Views;
@@ -29,6 +30,7 @@ namespace Federator.Core.Report
             Penetrations = new PenetrationSettings();
             Sizes = new SizeSettings();
             StopAfterFailures = RepeatedFailureGuard.DefaultThreshold;
+            FarModelMillimetres = AlignmentCheck.DefaultFarModelMillimetres;
 
             // Fixed on, and the window no longer sets them. A weekly run wants the page
             // and the units every time, so neither is a decision any more. F34.
@@ -217,6 +219,34 @@ namespace Federator.Core.Report
         }
 
         private int stopAfterFailures;
+
+        /// <summary>
+        /// How far a model may sit from its group's reference model, in millimetres and in
+        /// a straight line, before the group cannot end DONE, Q98 B2. A metre by default,
+        /// the number Bader gave, put to him again as Q99. A setting and not a constant,
+        /// because it decides how every group ends.
+        ///
+        /// A value that is not a number is refused, because nothing is more than it and the
+        /// rule would go off without a word, and so is one below zero, which would call a
+        /// model sitting exactly on its reference far.
+        /// </summary>
+        public double FarModelMillimetres
+        {
+            get { return farModelMillimetres; }
+
+            set
+            {
+                if (double.IsNaN(value) || value < 0.0)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        "value", "A far model distance is a length of zero or more, in millimetres.");
+                }
+
+                farModelMillimetres = value;
+            }
+        }
+
+        private double farModelMillimetres;
 
         /// <summary>How a discipline is read off a source file name.</summary>
         public ContainerNameSettings Names { get; set; }

@@ -11,6 +11,7 @@ namespace Federator.Core.Rerun
     public sealed class GroupFacts
     {
         private readonly List<string> errors = new List<string>();
+        private readonly List<string> farModels = new List<string>();
 
         public GroupFacts()
         {
@@ -93,6 +94,25 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
+        /// One line per model of this group sitting more than the far model setting from
+        /// its reference model, Q98 B2, as AlignmentCheck.FarModels says them and never
+        /// typed anywhere else. Not an error: nothing threw, and the outputs are whole.
+        /// </summary>
+        internal IList<string> FarModels
+        {
+            get { return farModels; }
+        }
+
+        /// <summary>Records one far model line. An empty line is ignored, never stored blank.</summary>
+        public void AddFarModel(string line)
+        {
+            if (!string.IsNullOrEmpty(line))
+            {
+                farModels.Add(line);
+            }
+        }
+
+        /// <summary>
         /// Every error on one line. All of them, because the RESULT block is what Bader
         /// sends back and a truncated list is a second run to find the rest.
         /// </summary>
@@ -120,7 +140,8 @@ namespace Federator.Core.Rerun
     /// what happens to be on disk.
     ///
     ///   DONE     everything requested for this group succeeded, a rebuilt group included
-    ///   PARTIAL  something requested did not complete, or the group was CHANGED and left alone
+    ///   PARTIAL  something requested did not complete, or the group was CHANGED and left
+    ///            alone, or a model sits far from the group's reference model, Q98 B2
     ///   FAILED   something requested threw or produced nothing
     ///
     /// A step deliberately switched off is not a failure. Judging a group by whether an
@@ -139,6 +160,33 @@ namespace Federator.Core.Rerun
                 throw new ArgumentNullException("facts");
             }
 
+            GroupOutcome outcome = JudgeTheSteps(facts, out reason);
+
+            if (facts.FarModels.Count == 0)
+            {
+                return outcome;
+            }
+
+            // Q98 B2. A model far from its reference has clashes nobody can trust, so a
+            // group that did everything else right is PARTIAL, with the far lines as its
+            // reason. A group already FAILED or PARTIAL keeps its outcome, and the far
+            // lines ride on its reason, because the C06 run's FAILED reasons named only the
+            // Internal models and left the far ones unsaid.
+            string far = string.Join(", and ", new List<string>(facts.FarModels).ToArray());
+
+            if (outcome == GroupOutcome.Done)
+            {
+                reason = far;
+                return GroupOutcome.Partial;
+            }
+
+            reason = string.IsNullOrEmpty(reason) ? far : reason + ", and " + far;
+            return outcome;
+        }
+
+        /// <summary>How the steps of the group went, everything but the far models.</summary>
+        private static GroupOutcome JudgeTheSteps(GroupFacts facts, out string reason)
+        {
             // FAILED. Something requested threw, or produced nothing.
             if (facts.HasErrors)
             {

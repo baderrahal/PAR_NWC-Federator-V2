@@ -79,8 +79,11 @@ namespace Federator.Core.Health
     /// including the ones whose translation is (0, 0, 0), because the export carries a
     /// scale too. What matters is whether the models in one group AGREE WITH EACH OTHER.
     ///
-    /// Nothing here fails a group, Q65 answered: report it and run anyway, never skip a
-    /// group and never stop a run for it.
+    /// Nothing here skips a group or stops a run, Q65 answered: report it and run anyway.
+    /// Two answers given later decide how a group ENDS, and the group still writes every
+    /// output either way. Q70: a model on Revit's internal origin, or naming no site at
+    /// all, fails its group. Q98 B2: a model sitting more than the far model setting from
+    /// its group's reference keeps the group from DONE.
     /// </summary>
     public static class AlignmentCheck
     {
@@ -115,14 +118,38 @@ namespace Federator.Core.Health
         /// </summary>
         public const string DefaultInternalName = "Internal";
 
-        /// <summary>The block. Written even when everything agrees, because a missing block reads as a check that did not run.</summary>
-        public static IList<string> Lines(IList<ModelPlacement> models)
+        /// <summary>
+        /// How far a model may sit from its group's reference model, in millimetres and in
+        /// a straight line, before the group cannot end DONE. Bader's B2 of Q98 on
+        /// 2026-10-04, with the 40 distances of the C06 run put to him as Q99.
+        ///
+        /// ONE METRE IS HIS NUMBER AND NOT A MEASUREMENT. It is the default of the setting
+        /// a run reads, ReportOptions.FarModelMillimetres, and only that default reads it.
+        ///
+        /// THE STRAIGHT LINE OF DX, DY AND DZ, AND NOT EACH AXIS ON ITS OWN. The ME of
+        /// 1B06WM in that run sat 996.2 mm, 663.15 mm and 150 mm off its reference, under a
+        /// metre on every axis and 1.206 m away, and a rule reading each axis would have
+        /// called it in place.
+        /// </summary>
+        public const double DefaultFarModelMillimetres = 1000.0;
+
+        /// <summary>
+        /// The block, with the far model lines measured against the given distance in
+        /// millimetres. Written even when everything agrees, because a missing block reads
+        /// as a check that did not run.
+        /// </summary>
+        public static IList<string> Lines(IList<ModelPlacement> models, double farModelMillimetres)
         {
-            return Lines(models, DefaultReferenceDiscipline, DefaultToleranceMillimetres, DefaultInternalName);
+            return Lines(
+                models, DefaultReferenceDiscipline, DefaultToleranceMillimetres, DefaultInternalName, farModelMillimetres);
         }
 
         public static IList<string> Lines(
-            IList<ModelPlacement> models, string referenceDiscipline, double toleranceMillimetres, string internalName)
+            IList<ModelPlacement> models,
+            string referenceDiscipline,
+            double toleranceMillimetres,
+            string internalName,
+            double farModelMillimetres)
         {
             List<string> lines = new List<string>();
 
@@ -136,8 +163,8 @@ namespace Federator.Core.Health
 
             if (reference == null)
             {
-                lines.Add("no model in this group could be placed, so the models were not compared."
-                    + " Check by eye that they sit on the same coordinates.");
+                lines.Add("no model in this group could be placed, so the models were not compared"
+                    + " and none is called a far model. Check by eye that they sit on the same coordinates.");
                 return lines;
             }
 
@@ -174,7 +201,8 @@ namespace Federator.Core.Health
                 if (!model.Placed)
                 {
                     notPlaced++;
-                    lines.Add("   " + Named(model) + "   NOT READ, its placement could not be read, " + Site(model));
+                    lines.Add("   " + Named(model) + "   NOT READ, its placement could not be read,"
+                        + " so it is not compared and is not called a far model, " + Site(model));
                     continue;
                 }
 
@@ -195,6 +223,25 @@ namespace Federator.Core.Health
             }
 
             lines.Add(Sentence(models.Count, different, notPlaced, toleranceMillimetres));
+
+            // Q98 B2. The same lines the group's reason carries, out of the same rule.
+            IList<string> far = FarModels(models, reference, farModelMillimetres);
+
+            if (far.Count == 0)
+            {
+                lines.Add("no model sits more than " + Metres(farModelMillimetres)
+                    + " from the reference model in a straight line");
+            }
+            else
+            {
+                lines.Add(far.Count + " model(s) sit more than " + Metres(farModelMillimetres)
+                    + " from the reference model in a straight line, which keeps this group from DONE:");
+
+                for (int i = 0; i < far.Count; i++)
+                {
+                    lines.Add("   " + far[i]);
+                }
+            }
 
             if (sites.Count > 1)
             {
@@ -324,6 +371,63 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
+        /// One line per model sitting more than farModelMillimetres from its group's
+        /// reference model in a straight line, Q98 B2, naming the model, the distance and
+        /// that its clashes with the other disciplines cannot be trusted. Empty where none
+        /// does. The reference is the one the block measures against, and a model whose
+        /// placement could not be read is never far, the same way it is never different.
+        ///
+        /// These lines are the group's reason when they are all that kept it from DONE, and
+        /// they ride on its reason when something else made it FAILED or PARTIAL, because a
+        /// FAILED reason naming only an Internal model left a model 2,774 km away unnamed in
+        /// the C06 run.
+        /// </summary>
+        public static IList<string> FarModels(IList<ModelPlacement> models, double farModelMillimetres)
+        {
+            if (models == null || models.Count == 0)
+            {
+                return new List<string>();
+            }
+
+            return FarModels(models, ReferenceIn(models, DefaultReferenceDiscipline), farModelMillimetres);
+        }
+
+        private static IList<string> FarModels(
+            IList<ModelPlacement> models, ModelPlacement reference, double farModelMillimetres)
+        {
+            List<string> far = new List<string>();
+
+            if (reference == null)
+            {
+                return far;
+            }
+
+            for (int i = 0; i < models.Count; i++)
+            {
+                ModelPlacement model = models[i];
+
+                if (model == reference || !model.Placed)
+                {
+                    continue;
+                }
+
+                double dx = model.X - reference.X;
+                double dy = model.Y - reference.Y;
+                double dz = model.Z - reference.Z;
+                double distance = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+
+                if (distance > farModelMillimetres)
+                {
+                    far.Add(Named(model) + " sits " + Metres(distance)
+                        + " from the reference model in a straight line, more than " + Metres(farModelMillimetres)
+                        + ", so its clashes with the other disciplines cannot be trusted");
+                }
+            }
+
+            return far;
+        }
+
+        /// <summary>
         /// The model everything else is compared against: the first of the reference
         /// discipline that could be placed, then the first that could be placed at all,
         /// or null where none could.
@@ -388,6 +492,12 @@ namespace Federator.Core.Health
         private static string Millimetres(double value)
         {
             return value.ToString("0.##", CultureInfo.InvariantCulture) + " mm";
+        }
+
+        /// <summary>A length in millimetres said in metres to the millimetre, the unit Bader gave the far model rule in.</summary>
+        private static string Metres(double millimetres)
+        {
+            return (millimetres / 1000.0).ToString("0.###", CultureInfo.InvariantCulture) + " m";
         }
 
         private static string Words(string value, string instead)

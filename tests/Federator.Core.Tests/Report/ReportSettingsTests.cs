@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Federator.Core.Clash;
+using Federator.Core.Health;
 using Federator.Core.Report;
 using NUnit.Framework;
 
@@ -92,6 +94,51 @@ namespace Federator.Core.Tests
             Assert.Throws<ArgumentOutOfRangeException>(
                 delegate { options.StopAfterFailures = -1; });
             Assert.That(options.StopAfterFailures, Is.EqualTo(RepeatedFailureGuard.DefaultThreshold));
+        }
+
+        /// <summary>
+        /// Q98 B2. The far model distance is a setting the run reads, a metre by default,
+        /// Bader's number, and asked again with the 40 distances of the C06 run as Q99.
+        /// </summary>
+        [Test]
+        public void TheFarModelDistanceStartsAtOneMetre()
+        {
+            Assert.That(
+                new ReportOptions().FarModelMillimetres,
+                Is.EqualTo(AlignmentCheck.DefaultFarModelMillimetres));
+            Assert.That(new ReportOptions().FarModelMillimetres, Is.EqualTo(1000.0));
+        }
+
+        [Test]
+        public void TheFarModelDistanceCanBeChangedAndTheRuleReadsIt()
+        {
+            ReportOptions options = new ReportOptions();
+            options.FarModelMillimetres = 2000.0;
+
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                new ModelPlacement("a-AR.nwc", "AR", "Site", 0.0, 0.0, 0.0),
+                new ModelPlacement("a-EL.nwc", "EL", "Site", 1500.0, 0.0, 0.0)
+            };
+
+            Assert.That(options.FarModelMillimetres, Is.EqualTo(2000.0));
+            Assert.That(AlignmentCheck.FarModels(models, options.FarModelMillimetres), Is.Empty);
+            Assert.That(AlignmentCheck.FarModels(models, new ReportOptions().FarModelMillimetres).Count, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Not a number would switch the rule off without a word, because nothing is more
+        /// than it, and a distance below zero would call a model sitting exactly on its
+        /// reference far.
+        /// </summary>
+        [Test]
+        public void AFarModelDistanceThatIsNotALengthIsRefused()
+        {
+            ReportOptions options = new ReportOptions();
+
+            Assert.Throws<ArgumentOutOfRangeException>(delegate { options.FarModelMillimetres = -1.0; });
+            Assert.Throws<ArgumentOutOfRangeException>(delegate { options.FarModelMillimetres = double.NaN; });
+            Assert.That(options.FarModelMillimetres, Is.EqualTo(AlignmentCheck.DefaultFarModelMillimetres));
         }
 
         [Test]

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Federator.Core.Diagnostics;
+using Federator.Core.Health;
 using Federator.Core.Rerun;
 using NUnit.Framework;
 
@@ -255,7 +257,8 @@ namespace Federator.Core.Tests
                 Failing(f => f.NwdOnDisk = false),
                 Failing(f => f.NwdPublishReportedSuccess = false),
                 Failing(f => f.Decision = RerunDecision.Changed),
-                Failing(f => { f.AppendedCount = 3; f.FailedFileCount = 1; })
+                Failing(f => { f.AppendedCount = 3; f.FailedFileCount = 1; }),
+                Failing(f => f.AddFarModel("ST  far.nwc sits 2 m from the reference model"))
             };
 
             foreach (GroupFacts facts in all)
@@ -560,6 +563,100 @@ namespace Federator.Core.Tests
             GroupFacts facts = Clean();
             facts.ViewpointsRequested = true;
             facts.FailedViewpointCount = 0;
+
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
+        }
+
+        // ---------- Q98 B2, a model far from its reference ----------
+
+        /// <summary>
+        /// The far line of the real 1B06K1, made by the one rule that makes it, so this
+        /// judges the line the run writes and not a sentence typed here.
+        /// </summary>
+        private static string FarLineOf1B06K1()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                new ModelPlacement("1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc", "AR", "COMMUNITY 4A", 0.0, 0.0, 0.0),
+                new ModelPlacement("1104-PAR-1B06K1-ZZZ-ST-MOD-000001.nwc", "ST", "COMMUNITY 4A",
+                    -658144882.33, -2746014844.6, -683828.41)
+            };
+
+            return AlignmentCheck.FarModels(models, AlignmentCheck.DefaultFarModelMillimetres)[0];
+        }
+
+        /// <summary>
+        /// 1B06K1 ended DONE in the C06 run with its ST 2,823 km from the reference, log line
+        /// 2128, so its clash count read as whole. Everything else went right, so it is
+        /// PARTIAL and the reason is the far line.
+        /// </summary>
+        [Test]
+        public void AGroupWithAFarModelIsPartialAndTheReasonIsTheFarLine()
+        {
+            GroupFacts facts = Clean();
+            facts.AddFarModel(FarLineOf1B06K1());
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Partial));
+            Assert.That(reason, Is.EqualTo(FarLineOf1B06K1()));
+            Assert.That(reason, Does.Contain("its clashes with the other disciplines cannot be trusted"));
+        }
+
+        [Test]
+        public void TwoFarModelsAreBothInTheReason()
+        {
+            GroupFacts facts = Clean();
+            facts.AddFarModel("ME  one.nwc sits 328.335 m from the reference model");
+            facts.AddFarModel("ME  two.nwc sits 255.238 m from the reference model");
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Partial));
+            Assert.That(reason, Does.Contain("one.nwc sits 328.335 m"));
+            Assert.That(reason, Does.Contain("two.nwc sits 255.238 m"));
+        }
+
+        /// <summary>
+        /// 1B06BC: its reference names Internal, which FAILS the group, Q70, and its EL sits
+        /// 2,774 km away. It stays FAILED, and the far line is written for it too, because
+        /// the FAILED reason alone names only the Internal model.
+        /// </summary>
+        [Test]
+        public void AGroupWithAnInternalModelStaysFailedAndItsReasonCarriesTheFarLineToo()
+        {
+            GroupFacts facts = Clean();
+            facts.AddError("1 model(s) were exported on Revit's internal origin and not on a shared site");
+            facts.AddFarModel(FarLineOf1B06K1());
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Does.StartWith("1 model(s) were exported on Revit's internal origin"));
+            Assert.That(reason, Does.Contain(FarLineOf1B06K1()));
+        }
+
+        [Test]
+        public void AGroupAlreadyPartialStaysPartialAndNamesBoth()
+        {
+            GroupFacts facts = Clean();
+            facts.AppendedCount = 3;
+            facts.FailedFileCount = 1;
+            facts.AddFarModel(FarLineOf1B06K1());
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Partial));
+            Assert.That(reason, Does.StartWith("1 of 4 files did not append"));
+            Assert.That(reason, Does.Contain(FarLineOf1B06K1()));
+        }
+
+        [Test]
+        public void ABlankFarLineIsNotRecorded()
+        {
+            GroupFacts facts = Clean();
+            facts.AddFarModel(null);
+            facts.AddFarModel(string.Empty);
 
             Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
         }

@@ -12,6 +12,7 @@ namespace Federator.Addin.Engine
     public sealed class JobOutcome
     {
         private readonly List<string> errors = new List<string>();
+        private readonly List<string> farModels = new List<string>();
 
         public JobOutcome(FederationJob job)
         {
@@ -54,6 +55,19 @@ namespace Federator.Addin.Engine
         public bool HasErrors
         {
             get { return errors.Count > 0; }
+        }
+
+        /// <summary>
+        /// One line per model of this group sitting far from its reference model, Q98 B2,
+        /// as AlignmentCheck.FarModels says it. Kept apart from the errors, because nothing
+        /// threw: the group is PARTIAL for it, or keeps whatever else it ended as.
+        /// </summary>
+        public void AddFarModel(string line)
+        {
+            if (!string.IsNullOrEmpty(line))
+            {
+                farModels.Add(line);
+            }
         }
 
         /// <summary>
@@ -129,6 +143,11 @@ namespace Federator.Addin.Engine
             foreach (string error in errors)
             {
                 facts.AddError(error);
+            }
+
+            foreach (string line in farModels)
+            {
+                facts.AddFarModel(line);
             }
 
             return facts;
