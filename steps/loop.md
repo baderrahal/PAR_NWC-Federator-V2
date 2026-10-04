@@ -18,11 +18,15 @@ claim-checker's corrections to its entry and body. PR 88, F106, the window run, 
 1, as 3449521 at 11:11, after the claim-checker's five corrections to its records. PR 84 and
 PR 88 each green in Actions on their last commit before they merged, runs 37185873967 on
 2ec693e and 37187977027 on bd3b9a8, and the merge commits naming #87, #84 and #88, all read
-into turn5\actions-reads-pr84-88.txt. Still open: PR 83, Bader's answers in the loop rules, brought up
-to main and being read by its claim-checker again. With developers: F105 and F107, words only,
-F109, the in-place install for the team, and F104 part 2, the read of every NWF of a run
-against its workbook. The fix list is being written from five readers' returns. B4, the note
-for the modellers of the five FAILED groups of C06, is steps\runs\03\for-modellers.md.
+into turn5\actions-reads-pr84-88.txt. Then PR 89, the records with B4's note for the
+modellers of the five FAILED groups of C06, steps\runs\03\for-modellers.md, as 51a0cb6 at
+12:38. PR 83, Bader's answers in the loop rules, as 086a348 at 12:56, after four claim-checks.
+PR 90, F105, as 2c89788 at 13:32. Each green in Actions on its last commit before it merged,
+turn5\actions-reads-pr89-83-90.txt. Open: PR 91, the fix list and the form, which carries
+this text, and PR 92, F107, each being made true to its claim-checker. With a developer: F112,
+the alignment area. F109, fix attempt 2, written at a0c3829, its harness waiting for no
+Navisworks to run. F104 part 2, the documents read, built at 33732c9 with its reviewer and
+breaker reading it, its first real read the lead's once no Navisworks runs.
 B1 CHECKED: the plain prepare-copy.ps1 at 11:47:55 found the desktop folder changed and made
 the source copy again, 142 files, 140 of them NWC, turn5\prepare-copy-plain-1.txt. Its
 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml is byte for byte the repo's exchange matrix, sha256
@@ -30,6 +34,13 @@ the source copy again, 142 files, 140 of them NWC, turn5\prepare-copy-plain-1.tx
 one sits beside it renamed with -OLD, turn5\b1-xml-check.txt. So set 05's copy, once made
 from this source copy, will ask ME-Ductwork, and its first run is to be given that XML by
 name with -Xml, never the -OLD file beside it.
+BADER'S NAVISWORKS RUNS, read at 13:19:51 on 2026-10-04: two Roamer.exe started by hand from
+his desktop, explorer.exe their parent, at 12:53:23 and 12:54:16, each with the command line
+-licensing AdLM. By his standing rule of 2026-10-04 there is no start, no install and no put
+back while they run, and the developers were told at 13:21 to run no harness that starts a
+stand-in named Roamer. Code, pull requests and merges go on. The waiter
+turn4\wait-no-roamer.ps1 reads the processes every 10 minutes into turn5\wait-no-roamer.txt
+and ends when none runs.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -177,25 +188,27 @@ desktop.
 
 Turn 5, the full fix round, Q98. Merged so far on 2026-10-04: PR 87, the records of turn 4's
 pause and turn 5's opening, as 53c37b6. PR 84, F108, as c9b223b. PR 88, F106, DONE for item 1,
-as 3449521. PR 83, Bader's answers in the loop rules, is the pull request carrying this text.
+as 3449521. PR 89, the records with the note for the modellers, B4, as 51a0cb6. PR 83, Bader's
+answers in the loop rules, as 086a348. PR 90, F105, as 2c89788. The fix list,
+steps\fix-round.md, 174 items, and the form, Q99 to Q109, are in the records pull request
+carrying this text.
 
-1. In flight, each merged on its own: F105 and F107, words only, and F109, the in-place
-   install for the team, each with its developer and then its readers. F104 part 2, the
-   driver that reads every NWF of a run and compares it with its workbook, with its developer
-   in wt-f104, then the lead's read of set 03's NWFs, the first answer to Bader's test 3
-2. The fix list, steps\fix-round.md, built from five readers' returns before the first fix,
-   in its records pull request with steps\runs\03\for-modellers.md, B4
-3. The form, Q99 on: the 40 distances of the C06 run for B2's 1 m, kept in
-   turn5\align-c06.txt until then, whether the 45 minutes counts per community or for the
-   whole folder, and the other items the fix list marks as needing Bader
-4. The area pull requests, alignment first with B2, up to three developers at once on
-   different files, each read by a reviewer and a breaker and its body by the claim-checker,
-   merged one at a time, a record within the hour. D1 last, moves only
-5. The proof run, set 05 on C06: main installed in place as on 2026-10-01, a fresh copy by
-   prepare-copy.ps1 -Set 05 whose XML asks ME-Ductwork, items 1 to 5,
-   steps\runs\05\findings.md with the before and after table against set 03, and Bader's
-   three tests
-6. The summary at the top of steps\fix-round.md, merged and posted in the Claude tab
+1. In flight, each merged on its own: PR 92, F107, words only, order line 36, with its
+   claim-checker's findings being made true. F109, the in-place install for the team, fix
+   attempt 2 written at a0c3829, its harness, prove-run.ps1, to run once no Navisworks runs,
+   then a reviewer and a breaker. F104 part 2, the documents read, built at 33732c9, with a
+   reviewer and a breaker reading it for harm and wrong evidence, Q93, then its harness parts B
+   and C and the lead's read of set 03's NWFs once no Navisworks runs, the first answer to
+   Bader's test 3. Bader's own Navisworks has run since 12:53, see the paragraph at the top
+2. The area pull requests of steps\fix-round.md, alignment first with FR-001 built on the 1 m of
+   Q98 B2, up to three developers at once on different files, each read by a reviewer and a
+   breaker and its body by the claim-checker, merged one at a time, a record within the hour.
+   The items that need Bader wait for his answers. D1, FR-174, last, moves only
+3. The proof run, set 05 on C06: main installed in place as on 2026-10-01, a fresh copy by
+   prepare-copy.ps1 -Set 05 from the source copy, whose XML asks ME-Ductwork, the first run
+   given that XML by name, items 1 to 5, steps\runs\05\findings.md with the before and after
+   table against set 03, and Bader's three tests
+4. The summary at the top of steps\fix-round.md, merged and posted in the Claude tab
 
 ## The phases
 
@@ -295,6 +308,22 @@ as 3449521. PR 83, Bader's answers in the loop rules, is the pull request carryi
 What waits on Bader's answer. A finding moves here when it survives three fix attempts,
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
+
+THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
+steps\02_questions.md with its evidence and its choices:
+- Q99, the 1 m of B2, with what 1 m, 10 m, 100 m and 1 km each do to the 17 DONE groups of set 03
+- Q100, a model named Internal that sits within 72.5 mm of its reference, FR-006
+- Q101, what the 45 minutes counts, each group, each community or the whole folder, FR-070
+- Q102, one workset spelling that does not fit every C06 building, FR-008
+- Q103, AR sets that find other disciplines' items, FR-009
+- Q104, the class that made the corrected matrix, FR-030
+- Q105, his profile folder in committed evidence, FR-109
+- Q106, a check that refuses the older machine's name, FR-110
+- Q107, the older machine's account name, FR-149
+- Q108, the 300 KB log bar, FR-136
+- Q109, the date format, separator and part positions with no control in the window, FR-161
+- and two asked on 2026-09-12 and still open: Q24, a name cell given back to the pattern,
+  FR-160, and Q26, members read only by a test, FR-172
 
 ANSWERED ON 2026-10-01: Q82 to Q92, every one, each answer under its question in
 steps\02_questions.md. Nothing from turn 3 waits in the form now. The two sections below are
