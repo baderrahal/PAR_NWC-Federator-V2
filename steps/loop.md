@@ -11,6 +11,15 @@ the pc" at about 17:35 on 2026-10-01, and the pause, STATE WAITING, was pushed a
 fix-T4-run-03c and never merged, so main kept reading STATE OPEN. The System log reads a
 shutdown at 19:30:49 on 2026-10-01 by shutdown.exe, and a restart for an update at 09:07:20 on
 2026-10-04, the PC up again at 09:10:18. Get-Process Roamer read 0 at 09:51:56 on 2026-10-04.
+MERGED IN TURN 5 SO FAR, 2026-10-04: PR 87, the pause and this opening, as 53c37b6. PR 84,
+F108, the fresh copy for each run set, as c9b223b at 10:32, after main merged in and the
+claim-checker's corrections to its entry and body. PR 88, F106, the window run, DONE for item
+1, as 3449521 at 11:11, after the claim-checker's five corrections to its records. PR 84 and
+PR 88 each green in Actions on their last commit before they merged. Still open: PR 83, Bader's answers in the loop rules, brought up
+to main and being read by its claim-checker again. With developers: F105 and F107, words only,
+F109, the in-place install for the team, and F104 part 2, the read of every NWF of a run
+against its workbook. The fix list is being written from five readers' returns. B4, the note
+for the modellers of the five FAILED groups of C06, is steps\runs\03\for-modellers.md.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
