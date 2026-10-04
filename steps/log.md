@@ -1,6 +1,43 @@
 # log
 
 Newest entry at the top.
+## 2026-10-05 The loop, turn 5, the design of Q114, its probes and Q115 to Q123
+
+Nothing under src, tests or tools changed. Core tests at the pre-commit of this record,
+turn5\precommit-records-11.txt.
+
+### What was done
+
+- the design of Bader's views by team, by three plans written apart, safety first, speed first
+  and the rules in Core, read only, and a judge who scored them 25, 19 and 22 of 30 and wrote one,
+  turn5\q114-design.md, from workflow wf_d5aa47b4-8bc. Each of FR-180 to FR-188 names its part
+- its probes, P1 to P22, each a single fact, in the order each area needs them, section 3. Three
+  read the install with no Navisworks, P5 to P7. P3, P20 and P21 are steps for Bader, written into
+  steps\03_bader_next.md when their area starts. The rest run on copies of the baseline's NWF
+  through the guarded start, once no Navisworks runs
+- Q115 to Q123, nine of the design's thirteen questions, each with the choice the build goes on
+  with. Four are not asked, since his words or the lead's rule of safety settle them, named in
+  steps\loop.md
+- FR-189 from F112's closing pass, an NWD listed as written when its publish failed, older than
+  F112, for F119 in wave 3b
+- the estimate, from measured rates only: VIEWS on 1A02MM 89.701 to 811.516 s against 7487.104 s
+  in the baseline, the run 528.567 to 1250.382 s against 7925.970 s, what is UNKNOWN in it named
+  in section 6
+
+### What remains
+
+- the probes, then F132, F131 and F114 in wave 2
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- P5 to P7 off the install, and the probes on Navisworks once the baseline ends
+
+Nothing in this record waits for the local machine.
+
 ## 2026-10-04 The loop, turn 5, Bader's views by team, Q114, the plan
 
 Bader's message of the evening headed ONE VIEWPOINT PER CLASH TEST, IN THE A, B, C FOLDERS, BY

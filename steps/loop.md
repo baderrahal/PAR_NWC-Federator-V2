@@ -480,6 +480,15 @@ OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its ch
   answered on 2026-10-04 in the evening, right as read: a count that differs is a FAILED line in
   COVERAGE and RESULT and the group keeps its own result, and a Shift click the driver cannot make
   without real input becomes numbered steps for him in steps\03_bader_next.md
+- Q115 to Q123, written on 2026-10-05 from the design of Q114, turn5\q114-design.md section 9,
+  each with the choice the build goes on with until he answers: Q115 where the team map lives,
+  Q116 where it applies, Q117 a set name with no discipline code, Q118 a clashing item in a model
+  of a third team, Q119 which models a view shows, Q120 a view of the tool a person changed, Q121
+  Telecom Fixtures and Telephone Devices, Q122 whose status a result carries, Q123 a run with no
+  XML. Four of the design's questions are not asked, since his own words or the lead's rule of
+  safety settle them: no priority file means No priority, point 9, the pair's order is point 12's,
+  new views are written before old ones are removed, and the question on a comment that does not
+  survive a save waits for probe P9
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:
