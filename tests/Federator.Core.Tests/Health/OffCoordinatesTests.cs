@@ -85,6 +85,23 @@ namespace Federator.Core.Tests.Health
                 AlignmentCheck.DefaultFarModelMillimetres);
         }
 
+        private const bool RuleOn = true;
+        private const bool RuleOff = false;
+        private const bool ATestRuns = true;
+        private const bool NothingToRun = false;
+
+        /// <summary>The real 1A02MM's ST of 5q, on Internal and 255 mm above the AR, under a metre.</summary>
+        private static OffCoordinates OnInternal()
+        {
+            return AlignmentCheck.NotOnTheSameCoordinates(
+                new List<ModelPlacement>
+                {
+                    new ModelPlacement("1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc", "AR", "SWLS-02-SharedCoordinate", 0.0, -13419.0, -509.0),
+                    new ModelPlacement("1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc", "ST", "Internal", 0.0, -13419.0, -254.0)
+                },
+                AlignmentCheck.DefaultFarModelMillimetres);
+        }
+
         private static NwfAndNwd BothOnDisk()
         {
             return new NwfAndNwd(@"C:\out\1B06K1.nwf", true, @"C:\out\1B06K1.nwd", true, true);
@@ -219,21 +236,50 @@ namespace Federator.Core.Tests.Health
         /// <summary>
         /// An earlier run's note goes only when this run judged every model of the group and
         /// did not skip its clash. A model whose placement or site is UNKNOWN, or a group with
-        /// no model read, keeps it, because an unknown is not a pass.
+        /// no model read, keeps it, because an unknown is not a pass. Null is the note going,
+        /// and anything else is why it stays.
         /// </summary>
         [Test]
         public void AnEarlierNoteGoesOnlyWhenEveryModelWasJudgedAndTheClashWasNotSkipped()
         {
-            Assert.That(None().RemovesAnEarlierNote(false), Is.True);
-            Assert.That(The1B06K1().RemovesAnEarlierNote(true), Is.False, "this run skipped the clash");
-            Assert.That(The1B06K1().RemovesAnEarlierNote(false), Is.True, "the rule was off and every model was judged");
-            Assert.That(NotPlaced().RemovesAnEarlierNote(false), Is.False, "no placement read");
-            Assert.That(OneSiteNotRead().RemovesAnEarlierNote(false), Is.False, "a site not read could be Internal");
+            Assert.That(OffCoordinates.EarlierNoteKeptBecause(None(), RuleOn, ATestRuns), Is.Null);
+            Assert.That(OffCoordinates.EarlierNoteKeptBecause(The1B06K1(), RuleOn, ATestRuns), Is.Not.Null, "this run skipped the clash");
+            Assert.That(OffCoordinates.EarlierNoteKeptBecause(The1B06K1(), RuleOff, ATestRuns), Is.Null, "the rule was off and every model was judged");
+            Assert.That(OffCoordinates.EarlierNoteKeptBecause(NotPlaced(), RuleOn, ATestRuns), Is.Not.Null, "no placement read");
+            Assert.That(OffCoordinates.EarlierNoteKeptBecause(OneSiteNotRead(), RuleOn, ATestRuns), Is.Not.Null, "a site not read could be Internal");
             Assert.That(
-                AlignmentCheck.NotOnTheSameCoordinates(new List<ModelPlacement>(), AlignmentCheck.DefaultFarModelMillimetres)
-                    .RemovesAnEarlierNote(false),
-                Is.False,
+                OffCoordinates.EarlierNoteKeptBecause(
+                    AlignmentCheck.NotOnTheSameCoordinates(new List<ModelPlacement>(), AlignmentCheck.DefaultFarModelMillimetres),
+                    RuleOn,
+                    ATestRuns),
+                Is.Not.Null,
                 "no model read at all");
+            Assert.That(
+                OffCoordinates.EarlierNoteKeptBecause(null, RuleOn, ATestRuns),
+                Is.EqualTo("this run did not judge every model of the group, so the note may still be true"),
+                "the read threw");
+        }
+
+        /// <summary>
+        /// F112 attempt 3. A group whose model is still on Internal, or still far, and in which
+        /// this run ran no clash test, keeps the note an earlier run left, because what it says
+        /// is still so. Attempt 2 removed it whenever every model was judged and the clash was
+        /// not skipped, which deleted a true note in a group with nothing to clash.
+        /// </summary>
+        [Test]
+        public void AnEarlierNoteStaysWhileAModelIsStillOffAndNoClashTestRan()
+        {
+            const string StillOff = "a model of the group is still not on the same shared coordinates and this run ran"
+                + " no clash test in it, so the note may still be true";
+
+            foreach (bool rule in new[] { RuleOn, RuleOff })
+            {
+                Assert.That(OffCoordinates.EarlierNoteKeptBecause(OnInternal(), rule, NothingToRun), Is.EqualTo(StillOff), "rule " + rule);
+                Assert.That(OffCoordinates.EarlierNoteKeptBecause(The1B06K1(), rule, NothingToRun), Is.EqualTo(StillOff), "rule " + rule);
+                Assert.That(OffCoordinates.EarlierNoteKeptBecause(None(), rule, NothingToRun), Is.Null, "every model in place, rule " + rule);
+            }
+
+            Assert.That(OffCoordinates.EarlierNoteKeptBecause(OnInternal(), RuleOff, ATestRuns), Is.Null, "the rule was off and the group was clashed");
         }
 
         // ---------- the RESULT block ----------

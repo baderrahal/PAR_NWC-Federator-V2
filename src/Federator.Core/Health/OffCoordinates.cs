@@ -71,7 +71,8 @@ namespace Federator.Core.Health
         /// Whether this group's clash is skipped: the rule on, a model not on the same shared
         /// coordinates, and a clash test this run would have run in it. A group with nothing
         /// to clash, no XML and no test saved, an XML of sets alone, or one discipline, has no
-        /// clash to skip and is judged as before, the breaker's second finding at c5d8aa8.
+        /// clash to skip and is judged as before, the breaker's second finding at c5d8aa8, Q70's
+        /// failure for a model on Internal included, AlignmentCheck.WhyItFailsTheGroup.
         /// </summary>
         public bool SkipsTheClash(bool ruleOn, bool runsATest)
         {
@@ -79,14 +80,30 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// Whether a note an earlier run left for this group is taken away: only when this run
-        /// judged every model of the group and did not skip its clash. A model whose placement
-        /// or site is UNKNOWN, or a group where no model was read, keeps it, because an
-        /// unknown is not a pass and the note may still be true.
+        /// Why a note an earlier run left for a group whose clash this run did not skip stays,
+        /// or null where it goes. It goes only when this run judged every model of the group
+        /// and either found none of them off or clashed the group. A model whose placement or
+        /// site is UNKNOWN, a group where no model was read, or a read that threw, judged null,
+        /// keeps it, because an unknown is not a pass. A group whose model is still on Internal
+        /// or still far, with no clash test run in it, keeps it too, because what the note says
+        /// is still so, which attempt 2 deleted.
         /// </summary>
-        public bool RemovesAnEarlierNote(bool clashSkipped)
+        public static string EarlierNoteKeptBecause(OffCoordinates judged, bool ruleOn, bool runsATest)
         {
-            return !clashSkipped && ModelsRead > 0 && NotJudged == 0;
+            if (judged == null || judged.ModelsRead == 0 || judged.NotJudged > 0)
+            {
+                return "this run did not judge every model of the group, so the note may still be true";
+            }
+
+            bool clashed = runsATest && !judged.SkipsTheClash(ruleOn, runsATest);
+
+            if (judged.Any && !clashed)
+            {
+                return "a model of the group is still not on the same shared coordinates and this run ran no clash"
+                    + " test in it, so the note may still be true";
+            }
+
+            return null;
         }
 
         /// <summary>

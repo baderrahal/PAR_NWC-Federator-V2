@@ -99,7 +99,8 @@ namespace Federator.Core.Health
     /// or sitting more than the far model setting from its group's reference, is not on the
     /// same shared coordinates, and where the run would have run a clash test in the group
     /// its clash is skipped and nothing else, OffCoordinates. A model on Internal failed its
-    /// group until then and still does with the rule switched off.
+    /// group until then and still does wherever no clash is skipped, the rule switched off
+    /// or no clash test to run in the group.
     /// </summary>
     public static class AlignmentCheck
     {
@@ -227,7 +228,7 @@ namespace Federator.Core.Health
                     AddOffCoordinates(lines, unplaced, skipClashOffCoordinates, runsATest);
                 }
 
-                AddFailure(lines, models, internalName, skipClashOffCoordinates);
+                AddFailure(lines, models, internalName, unplaced.SkipsTheClash(skipClashOffCoordinates, runsATest));
                 return lines;
             }
 
@@ -325,7 +326,7 @@ namespace Federator.Core.Health
                     + "\", which is what Revit calls a model that was not exported on a shared site at all");
             }
 
-            AddFailure(lines, models, internalName, skipClashOffCoordinates);
+            AddFailure(lines, models, internalName, off.SkipsTheClash(skipClashOffCoordinates, runsATest));
             return lines;
         }
 
@@ -355,12 +356,13 @@ namespace Federator.Core.Health
 
         /// <summary>
         /// Q70. The block says the group is failed and why, and the group still writes its
-        /// NWF and its NWD, which are the evidence.
+        /// NWF and its NWD, which are the evidence. Told whether the clash is skipped, which
+        /// is the one thing that keeps a model on Internal from failing the group.
         /// </summary>
         private static void AddFailure(
-            IList<string> lines, IList<ModelPlacement> models, string internalName, bool skipClashOffCoordinates)
+            IList<string> lines, IList<ModelPlacement> models, string internalName, bool clashSkipped)
         {
-            string fails = WhyItFailsTheGroup(models, internalName, skipClashOffCoordinates);
+            string fails = WhyItFailsTheGroup(models, internalName, clashSkipped);
 
             if (fails != null)
             {
@@ -374,30 +376,40 @@ namespace Federator.Core.Health
         /// its shared site, or names no site at all. A model whose site could not be read
         /// does neither, because a read that threw is not a fact about the model.
         ///
-        /// BADER'S ANSWER TO Q100 REPLACES THE FIRST HALF while the rule that skips the
-        /// clash is on: a model named Internal no longer fails its group, it skips the
-        /// clash, NotOnTheSameCoordinates. A model naming no site at all still fails it,
-        /// because his answer named Internal and the distance and not that. With the rule
-        /// off both halves fail the group as they did before his answer.
+        /// BADER'S ANSWER TO Q100 REPLACES THE FIRST HALF ONLY WHERE THE CLASH IS SKIPPED: a
+        /// model named Internal then skips the group's clash, OffCoordinates.SkipsTheClash,
+        /// and does not fail it. Wherever no clash is skipped, the rule off, or no clash test
+        /// to run in the group, it fails the group as Q70 answered, because his words give
+        /// such a group PARTIAL or nothing and never DONE, and attempt 2 let a group with
+        /// nothing to clash end DONE. A model naming no site at all fails it either way,
+        /// because his answer named Internal and the distance and not that. The four inputs
+        /// are the ones the ALIGNMENT block takes, so the block and the group cannot differ.
         ///
         /// FAILED DOES NOT MEAN THE GROUP PRODUCES NOTHING. The federation and the NWD are
         /// still written, and the clash report too unless the clash was skipped, because
         /// Bader needs the evidence to take to the people who own the models, and a group
-        /// that produces nothing gives him nothing to send. This says the group is not DONE and names the model, and
-        /// the engine carries on.
+        /// that produces nothing gives him nothing to send. This says the group is not DONE
+        /// and names the model, and the engine carries on.
         ///
         /// WHY IT IS A FAILURE AND NOT A WARNING. A model on the internal origin is not
         /// slightly out of place, it is in a different coordinate system, so every clash
         /// the run reports against it is either a clash that is not there or a miss that
         /// is. The numbers are worse than useless because they read as real.
         /// </summary>
-        public static string WhyItFailsTheGroup(IList<ModelPlacement> models, bool skipClashOffCoordinates)
+        public static string WhyItFailsTheGroup(
+            IList<ModelPlacement> models, double farModelMillimetres, bool skipClashOffCoordinates, bool runsATest)
         {
-            return WhyItFailsTheGroup(models, DefaultInternalName, skipClashOffCoordinates);
+            if (models == null || models.Count == 0)
+            {
+                return null;
+            }
+
+            OffCoordinates off = NotOnTheSameCoordinates(
+                models, ReferenceIn(models, DefaultReferenceDiscipline), DefaultInternalName, farModelMillimetres);
+            return WhyItFailsTheGroup(models, DefaultInternalName, off.SkipsTheClash(skipClashOffCoordinates, runsATest));
         }
 
-        public static string WhyItFailsTheGroup(
-            IList<ModelPlacement> models, string internalName, bool skipClashOffCoordinates)
+        private static string WhyItFailsTheGroup(IList<ModelPlacement> models, string internalName, bool clashSkipped)
         {
             if (models == null || models.Count == 0)
             {
@@ -420,7 +432,7 @@ namespace Federator.Core.Health
                 {
                     withNoSite.Add(Named(models[i]));
                 }
-                else if (!skipClashOffCoordinates && NamesInternal(models[i], internalName))
+                else if (!clashSkipped && NamesInternal(models[i], internalName))
                 {
                     onInternal.Add(Named(models[i]));
                 }
@@ -447,11 +459,28 @@ namespace Federator.Core.Health
                     + string.Join(", ", withNoSite.ToArray());
             }
 
-            // With the rule on the same group may also have its clash skipped, and then no
-            // report is written, so only what is written either way is claimed.
-            return why + (skipClashOffCoordinates
+            // A group whose clash is skipped writes no report, so only what is written
+            // either way is claimed.
+            return why + (clashSkipped
                 ? ". Its NWF and its NWD were still written, so the evidence is there to send."
                 : ". Every output of this group was still written, so the evidence is there to send.");
+        }
+
+        /// <summary>
+        /// The ALIGNMENT failed run line. Its words do not follow the rule's setting, because
+        /// a model on Internal fails its group wherever its clash is not skipped, the rule on
+        /// or off, and the line once said with the rule on that every such group failed on a
+        /// model naming no site. It says what the files written list shows and not that every
+        /// NWD was written, since a failed group's publish can fail too.
+        /// </summary>
+        public static string FailedRunLine(int groups)
+        {
+            return "ALIGNMENT failed " + groups + " group(s), each because a model names no shared site, or was"
+                + " exported on the internal origin in a group whose clash was not skipped"
+                + (groups == 0
+                    ? string.Empty
+                    : ". A failed group still goes on to its NWF and its NWD, and the files written list says which"
+                        + " were written.");
         }
 
         /// <summary>How many models sit somewhere the reference does not, for the run line. Never fails anything.</summary>

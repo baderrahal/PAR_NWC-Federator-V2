@@ -1018,7 +1018,7 @@ namespace Federator.Addin.Engine
             // Bader's answer to Q99 and Q100. After the NWD, so the note sits beside the
             // file it explains, and after the NWF was looked at the last time, so the note
             // names the two files off what is on the disk and never off a call.
-            WriteTheCoordinatesNotes(job, outcome);
+            WriteTheCoordinatesNotes(job, outcome, runsATest);
 
             // F63. Last thing the group does, after every output is written, because the
             // question it answers is what the outputs DO NOT carry. Written even when it
@@ -2130,12 +2130,13 @@ namespace Federator.Addin.Engine
                 IList<ModelPlacement> placements = ModelFactsReader.Placements(document, reports.Names, log);
 
                 // Q70 answered b on 2026-09-20. A model naming no shared site fails the
-                // group, and so does a model on the internal origin while the rule that
-                // skips the clash is off. With it on, Bader's answer to Q100, a model on
-                // Internal skips the group's clash below instead. A FAILED group still
-                // writes its NWF and its NWD, because the evidence is what Bader takes to
-                // the people who own the models.
-                string fails = AlignmentCheck.WhyItFailsTheGroup(placements, reports.SkipClashOffCoordinates);
+                // group, and so does a model on the internal origin wherever the group's
+                // clash is not skipped, the rule off or no clash test to run. Where it is
+                // skipped, Bader's answer to Q100, the model skips the clash below instead.
+                // A FAILED group still writes its NWF and its NWD, because the evidence is
+                // what Bader takes to the people who own the models.
+                string fails = AlignmentCheck.WhyItFailsTheGroup(
+                    placements, reports.FarModelMillimetres, reports.SkipClashOffCoordinates, runsATest);
 
                 if (fails != null)
                 {
@@ -2148,7 +2149,8 @@ namespace Federator.Addin.Engine
                 // skips the group's clash and only its clash, checked on every run, so the
                 // run after the models are fixed clashes the group with the tests already
                 // saved in its NWF. A group with no clash test to run has no clash to skip
-                // and is judged as before. The run's list names the group either way.
+                // and is judged as before, Q70's failure above included. The run's list
+                // names the group either way.
                 OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(placements, reports.FarModelMillimetres);
                 judged = off;
                 outcome.Coordinates = off;
@@ -2235,13 +2237,9 @@ namespace Federator.Addin.Engine
             // Q70. Counted APART from the models that merely sit somewhere else, because
             // a model naming no site fails its group and a model 95 mm out does not, and
             // one line carrying both numbers would read as one fault. A model on the
-            // internal origin fails it only with the rule that skips the clash off, Bader's
-            // answer to Q100, and the words say which rule this run kept.
-            lines.Add("ALIGNMENT failed " + failedOnAlignment
-                + (reports.SkipClashOffCoordinates
-                    ? " group(s), each because a model names no shared site"
-                    : " group(s), each because a model was exported on the internal origin or names no shared site")
-                + (failedOnAlignment == 0 ? string.Empty : ". Every one of them still wrote its NWF and its NWD."));
+            // internal origin fails it wherever its clash is not skipped, Bader's answer to
+            // Q100, so the words are the same whichever way the rule is set.
+            lines.Add(AlignmentCheck.FailedRunLine(failedOnAlignment));
 
             for (int i = 0; i < alignmentFailures.Count; i++)
             {
@@ -2263,12 +2261,13 @@ namespace Federator.Addin.Engine
         /// the log names too, each read by its exact path and none touched.
         ///
         /// A note an earlier run left is taken away only where this run judged every model
-        /// of the group and did not skip its clash, and the log says so in those words. A
-        /// group whose read threw, or with a model whose placement or site is UNKNOWN, keeps
-        /// it, and the log says that too. A note that cannot be written costs one line and
-        /// never the group, since the ALIGNMENT block carries the same lines.
+        /// of the group and either found none off or clashed the group, and the log says so
+        /// in those words. A group whose read threw, with a model whose placement or site is
+        /// UNKNOWN, or with a model still off and no clash test run in it keeps it, and the
+        /// log says why, OffCoordinates.EarlierNoteKeptBecause. A note that cannot be written
+        /// costs one line and never the group, since the ALIGNMENT block carries the same lines.
         /// </summary>
-        private void WriteTheCoordinatesNotes(FederationJob job, JobOutcome outcome)
+        private void WriteTheCoordinatesNotes(FederationJob job, JobOutcome outcome, bool runsATest)
         {
             List<string> paths = new List<string>();
 
@@ -2332,10 +2331,12 @@ namespace Federator.Addin.Engine
                             continue;
                         }
 
-                        if (outcome.Coordinates == null || !outcome.Coordinates.RemovesAnEarlierNote(false))
+                        string keptBecause = OffCoordinates.EarlierNoteKeptBecause(
+                            outcome.Coordinates, reports.SkipClashOffCoordinates, runsATest);
+
+                        if (keptBecause != null)
                         {
-                            log.Line("NOTE     kept     " + path + ", left by an earlier run, because this run did not"
-                                + " judge every model of the group, so the note may still be true");
+                            log.Line("NOTE     kept     " + path + ", left by an earlier run, because " + keptBecause);
                             continue;
                         }
 

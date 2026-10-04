@@ -353,17 +353,23 @@ and 6 does not read as broken.
   and Bader's answer to Q99 and Q100 on 2026-10-04. A model is not on the same
   coordinates when it names Internal as its shared site, or when it sits more than a
   metre from its group's reference model, as the ALIGNMENT block measures it. That
-  replaces Q70 for a model on Internal, which no longer FAILS its group while the rule
-  is on, and a model naming no site at all still fails it, because his answer named
-  Internal and the distance and not that. The distance is the STRAIGHT LINE of dx, dy and
+  replaces Q70 for a model on Internal ONLY WHERE THE GROUP'S CLASH IS SKIPPED. Wherever
+  no clash is skipped, the rule off or no clash test to run in the group, a model on
+  Internal fails its group as Q70 answered, `AlignmentCheck.WhyItFailsTheGroup` taking the
+  four inputs the block takes, because his words give such a group PARTIAL or nothing and
+  never DONE, and attempt 2 let a group with nothing to clash end DONE. A model naming no
+  site at all fails it either way, because his answer named Internal and the distance and
+  not that. The ALIGNMENT failed run line, `AlignmentCheck.FailedRunLine`, names both
+  causes whichever way the rule is set. The distance is the STRAIGHT LINE of dx, dy and
   dz and never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away
   and under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
   defaulting to `AlignmentCheck.DefaultFarModelMillimetres`.
   ONLY A CLASH THAT WOULD HAVE RUN IS SKIPPED, `OffCoordinates.SkipsTheClash`: the rule on,
   a model off, and `ClashWork.RunsATest`, a source holding tests and a group of two
   disciplines. A group with nothing to clash, no XML and no test saved, an XML of sets
-  alone, one model or one discipline, is judged as before and its ALIGNMENT block still
-  names its models under a heading saying no clash is skipped. In a skipped group the tests
+  alone, one model or one discipline, is judged as before, Q70's failure for a model on
+  Internal included, and its ALIGNMENT block still names its models under a heading saying
+  no clash is skipped. In a skipped group the tests
   whose sides both find something are created and none is run, on the one path a one
   discipline group already took, F77, so not every test of the file is in the NWF, and no
   viewpoint and no clash report is made. The group ends PARTIAL, never DONE, with the
@@ -392,10 +398,11 @@ and 6 does not read as broken.
   the run started, so a smaller run never writes over a fuller run's list.
   The rule is read on every run, so the run after the models are fixed clashes the group
   with the tests already saved in its NWF. A note an earlier run left is removed only where
-  this run judged every model of the group and did not skip its clash,
-  `OffCoordinates.RemovesAnEarlierNote`, through `RunLog.WriteRemoved`, which takes the file
-  off the files written list once it is gone from the disk, and is kept with a line saying
-  so where a model was UNKNOWN or the read threw. A group skipped is left out of the run's
+  this run judged every model of the group and either found none off or clashed the group,
+  through `RunLog.WriteRemoved`, which takes the file off the files written list once it is
+  gone from the disk, and is kept with a line saying why where a model was UNKNOWN, the read
+  threw, or a model is still off and no clash test ran in the group,
+  `OffCoordinates.EarlierNoteKeptBecause`. A group skipped is left out of the run's
   clash total, because a clash that never ran is not a group that found none. A model whose
   placement or site could not be read is never judged on it, and the block says so.
   `ReportOptions.SkipClashOffCoordinates`, on by default, switches the rule off, and then
