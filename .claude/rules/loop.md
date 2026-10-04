@@ -91,11 +91,11 @@ and nothing is fixed until a real run on real files shows it fixed.
   logs-backup by sha256 and put back after the loop, Bader's answer Q82. And his AutoSave
   folder, where the loop removes the autosaves its runs added and puts back from the backup
   any of his a run changed, Q86. Outside %LOCALAPPDATA%\NwcFederatorLoop the loop deletes or
-  overwrites nothing else, bar its own logs and tsv files, which it takes out of his logs
-  folder after the loop. Once it went further: on 2026-10-01 Bader asked it to fix an error
-  OneDrive showed, and the lead chose to remove a testhost.exe of his other repo and two
-  worktree folders of this one, its own choice of fix, recorded in steps\loop.md. Since then
-  the loop names a removal like that to Bader before it makes it, its own rule
+  overwrites nothing else of his, bar its own logs and tsv files, which it takes out of his
+  logs folder after the loop. Once it went further with a file of his: on 2026-10-01 Bader
+  asked it to fix an error OneDrive showed, and the lead chose to delete a testhost.exe of his
+  other repo, its own choice of fix, recorded in steps\loop.md. From now on the loop names a
+  removal of anything of his to Bader before it makes it, its own rule
 - Before the first run his logs folder, %LOCALAPPDATA%\ParsonsNwcFederator\logs, is copied
   into logs-backup, and before every start each file of his the backup does not hold is
   copied into it and read back. The tool's window logs only into his folder and keeps 30
