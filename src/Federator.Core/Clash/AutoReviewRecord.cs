@@ -208,11 +208,17 @@ namespace Federator.Core.Clash
             return true;
         }
 
+        /// <summary>
+        /// The status a record names, read only among the ones a record can carry, F113.
+        /// The constructor refuses the other three, so a record naming one of them is a
+        /// comment edited by hand and not one of ours. Read among all five, it reached the
+        /// constructor and threw out of In, and the undo left every clash of its test alone.
+        /// </summary>
         private static bool StatusFrom(string word, out ClashStatus status)
         {
             status = ClashStatus.New;
 
-            foreach (ClashStatus one in ClashTally.AllStatuses)
+            foreach (ClashStatus one in StatusesThisToolMayMoveFrom.All())
             {
                 if (string.Equals(one.ToString(), word, StringComparison.Ordinal))
                 {

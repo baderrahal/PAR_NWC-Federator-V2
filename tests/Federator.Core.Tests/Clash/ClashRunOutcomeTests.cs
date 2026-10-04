@@ -341,5 +341,135 @@ namespace Federator.Core.Tests
             Assert.Throws<ArgumentNullException>(
                 delegate { new ClashRunOutcome().AddSkipped(null); });
         }
+
+        // ---------- the running count, F113 ----------
+
+        /// <summary>
+        /// Set 03, group 1B06PK: 1739 tests skipped before the run, then 91 run finding 1629
+        /// clashes. Its last running count read 91 of 91 tests, 90 run, 1739 skipped, 1624
+        /// clashes so far, against tests run 91 and clashes found 1629 in the block under
+        /// it, because the runner took the count before the last test was recorded. Taken
+        /// after each test, the last count of the group reads the numbers of the block.
+        /// </summary>
+        [Test]
+        public void TheLastRunningCountOfAGroupReadsTheSameNumbersAsTheBlock()
+        {
+            ClashRunOutcome outcome = new ClashRunOutcome();
+
+            for (int i = 0; i < 1739; i++)
+            {
+                outcome.AddSkipped("planned out " + i, ClashSkipReason.EmptySide, "a side finds nothing");
+            }
+
+            const int toRun = 91;
+            string last = null;
+
+            for (int i = 0; i < toRun; i++)
+            {
+                ClashTally tally = new ClashTally();
+
+                if (i == 0)
+                {
+                    tally.Add(ClashStatus.New, 1624);
+                }
+
+                if (i == toRun - 1)
+                {
+                    tally.Add(ClashStatus.New, 5);
+                }
+
+                outcome.AddRan("test " + i, 36, 12, tally, 1.0);
+
+                string line = outcome.ProgressAfter(i + 1, toRun, 25);
+
+                if (line != null)
+                {
+                    last = line;
+                }
+            }
+
+            Assert.That(last, Is.EqualTo("91 of 91 tests, 91 run, 1739 skipped, 1629 clashes so far"),
+                "the last running count of the group left out the last test");
+
+            string block = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
+
+            Assert.That(block, Does.Contain("tests skipped     : 1739,"));
+            Assert.That(block, Does.Contain("tests run         : 91"));
+            Assert.That(block, Does.Contain("clashes found     : 1629"));
+        }
+
+        /// <summary>
+        /// Set 03, group 1B06BS: 1794 tests skipped before the run and the other 36 skipped
+        /// as it went, because the group holds one discipline. Its last running count read
+        /// 1829 skipped against 1830 in the block. A test skipped is counted the moment it is
+        /// recorded, the same as a test run.
+        /// </summary>
+        [Test]
+        public void ARunThatSkippedEveryTestEndsOnTheSkippedCountOfTheBlock()
+        {
+            ClashRunOutcome outcome = new ClashRunOutcome();
+
+            for (int i = 0; i < 1794; i++)
+            {
+                outcome.AddSkipped("planned out " + i, ClashSkipReason.EmptySide, "a side finds nothing");
+            }
+
+            const int toRun = 36;
+            string last = null;
+
+            for (int i = 0; i < toRun; i++)
+            {
+                outcome.AddSkipped("test " + i, ClashSkipReason.SingleDiscipline, "one discipline");
+
+                string line = outcome.ProgressAfter(i + 1, toRun, 25);
+
+                if (line != null)
+                {
+                    last = line;
+                }
+            }
+
+            Assert.That(last, Is.EqualTo("36 of 36 tests, 0 run, 1830 skipped, 0 clashes so far"),
+                "the last running count of the group left out the last test");
+
+            string block = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
+
+            Assert.That(block, Does.Contain("tests skipped     : 1830,"));
+            Assert.That(block, Does.Contain("tests run         : 0"));
+        }
+
+        /// <summary>
+        /// The log counts at every twenty fifth test and at the last one, so a group ends on
+        /// a count whatever its number of tests, and at no other test.
+        /// </summary>
+        [Test]
+        public void TheLogCountsAtEveryTwentyFifthTestAndAtTheLastAndNowhereElse()
+        {
+            ClashRunOutcome outcome = new ClashRunOutcome();
+            List<int> countedAt = new List<int>();
+
+            for (int done = 1; done <= 91; done++)
+            {
+                if (outcome.ProgressAfter(done, 91, 25) != null)
+                {
+                    countedAt.Add(done);
+                }
+            }
+
+            Assert.That(countedAt.Count, Is.EqualTo(4));
+            Assert.That(countedAt[0], Is.EqualTo(25));
+            Assert.That(countedAt[1], Is.EqualTo(50));
+            Assert.That(countedAt[2], Is.EqualTo(75));
+            Assert.That(countedAt[3], Is.EqualTo(91));
+        }
+
+        [Test]
+        public void ACountAtFewerThanEveryOneTestIsRefused()
+        {
+            ArgumentOutOfRangeException refused = Assert.Throws<ArgumentOutOfRangeException>(
+                delegate { new ClashRunOutcome().ProgressAfter(1, 1, 0); });
+
+            Assert.That(refused.ParamName, Is.EqualTo("every"));
+        }
     }
 }
