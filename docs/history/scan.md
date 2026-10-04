@@ -5021,8 +5021,41 @@ HOW EACH FILE WAS READ, because not every probe read the same way:
   `probe-clash-report-api.ps1`. The second also reads Roamer.exe and
   navisworks.gui.roamer.dll as bytes, and the third reads all five DLLs as bytes for
   strings. All three dot-source `il-reader.ps1` beside them, the one copy of the IL reader
-  the two that read IL use and of the helpers all three share, TypeName, IlReason,
-  LoaderLines and the string patterns. It keeps every read that could not be made, by kind
+  and of the helpers they use, and read off their code they do not use the same parts of
+  it. All three use TypeName, IlReason, IlFail and IlFailureLines. viewpoint-calls and
+  roamer-switches, the two that read IL, use the IL reader IlRead and IlOpcodeLine,
+  viewpoint-calls lines 362 and 399 and roamer-switches lines 434 and 676 among others.
+  roamer-switches and clash-report-api use LoaderLines, lines 421 and 531 and lines 114
+  and 181, and StringRuns, which matches the two string patterns, line 70 and line 164.
+  viewpoint-calls uses neither LoaderLines nor the string patterns
+
+WHAT A READ THAT FAILS DOES IN THE THREE NEW PROBES, read off their code and measured on
+2026-10-01 with stand-in scripts, no Navisworks started:
+
+- `il-reader.ps1` keeps a read that could not be made only when IlFail is handed it, by
+  the probe or by IlRead and LoaderLines when the probe calls them, and keeps it by kind.
+  A read handed to no IlFail is not kept. IlFailureLines prints every kind with its count,
+  a kind nothing was handed included, so a 0 is a reading only of the reads that probe
+  hands to IlFail
+- each probe sets ErrorActionPreference to Stop, viewpoint-calls line 5 and the other two
+  line 2, so a .NET method call that fails where no catch takes it, GetMethods or
+  GetRawConstantValue for one, stops the probe. A stand-in that called GetRawConstantValue
+  on a field that is not a constant stopped there with exit 1, and without Stop the same
+  script went on to its last line. Each final run ran to its end, exit 0, run record lines
+  70 to 72, and each result file ends on the line its probe prints last, viewpoint-calls
+  line 297, roamer-switches line 1529 and clash-report-api line 607, so no such call
+  failed in them
+- a .NET property read that fails stops nothing and reaches no catch, even inside a try.
+  Windows PowerShell 5.1 reads a property whose getter throws as null and goes on. A
+  stand-in loaded System.Windows.Forms reflection only with no resolver and read the
+  13,630 fields of the 1,896 types it could load. The 331 whose FieldType getter throws
+  when called as a method each read as null through the property, none reached the catch
+  when read inside a try the way viewpoint-calls line 350 reads one, and the script ran to
+  its end with exit 0. So a failed read through a property, a FieldType, ReturnType,
+  ParameterType or LocalType among them, is in no count in any of the three probes, and
+  shows only where a probe prints the null
+- the stand-ins and what they printed are kept outside the repo, in
+  %LOCALAPPDATA%\NwcFederatorLoop\turn4\f105-read-failure
 
 Each probe was run from Windows PowerShell 5.1.26100.9444, 64 bit, as
 
@@ -5116,17 +5149,39 @@ the IL      50 method bodies, 328 member and type tokens read                   
             Navisworks members 65: 62 declared in an install assembly, all 62 on
             list A, and 3 declared on a framework generic over a Navisworks type       219
             Navisworks types 21                                                        220
-            reads that failed 0, of the seven kinds this probe attempts: IL
-            bodies, opcode bytes, tokens, signatures, local variable lists,
-            field types and constant values                                            204 to 206, 212 to 216, 220
-            the other five print 0 and this probe never attempts them: no line
-            it can run, its own or il-reader.ps1's, counts one. They are
-            MemberRef rows, a type's methods, a type's members, GetTypes and
-            metadata, and their 0 is not a reading                                     207 to 211
+            reads that failed 0, of the seven kinds this probe counts, each a
+            count of the reads it hands to IlFail: IL bodies, opcode bytes,
+            tokens, signatures, local variable lists, field types and constant
+            values                                                                     204 to 206, 212 to 216, 220
+            the other five print 0, and no line this probe can run, its own
+            or il-reader.ps1's, counts a failure as one of those kinds, so
+            their 0 is not a reading. They are MemberRef rows, a type's
+            methods, a type's members, GetTypes and metadata                           207 to 211
             opcode table 191 one byte and 27 two byte instructions, the reserved
             bytes 0xF8 to 0xFD and 0xFF not among them                                 217
             every assembly from the install folder or the add-in's own folder         221 to 226
 ```
+
+WHAT THE ZEROS OF THE IL SECTION LEAVE OUT, by what a read that fails does, above. Of the
+five kinds it does not count, the probe makes some of those reads with no count, among
+them a type's methods with GetMethods at its lines 130, 293, 352 and 420, and its
+constructors, properties and fields with GetConstructors at 122 and 352, GetProperties at
+148, 158 and 419 and GetFields at 349. It does not go through the MemberRef rows one by
+one as roamer-switches does, calls no GetTypes and reads no metadata as bytes. Each of
+those reads is a method call no catch takes, so a failure would have stopped the probe,
+whose ErrorActionPreference is Stop at its line 5, and its final run ran to its end, exit
+0, run record line 70. Of the kinds it counts, section C reads a type through a property
+and prints nothing of it at four of its lines, a field's FieldType at 350, a return type
+at 356, a parameter type at 357, and a body's LocalVariables and each local's LocalType
+at 365. A failure there would reach no count and leave that reference out with nothing
+printed. A stand-in kept with the others called each of those getters as a method on
+2026-10-01, on the same build, its sha256 the one at result line 105, and the same three
+classes, with the probe's own loading and resolver. It found none that throws: 8
+FieldType, 48 ReturnType, 88 ParameterType, 50 LocalVariables and 83 LocalType, over the
+same 50 method bodies. Where the probe prints a field, return, parameter or property
+type, a failed read would print as null, and none reads null in this result. The word
+stands in the result only in the label `the null checks`, result lines 73 and 74, and in
+the add-in's `PublicKeyToken=null`, result line 107.
 
 WHAT LIST A LEAVES OUT, named. The three framework members the compiled file reaches over
 a Navisworks type, `Collection<MaterialOverride>.Count` and `GetEnumerator` and
@@ -5277,9 +5332,11 @@ ordinary start, because the tool's window could then open with no click.
 four or more characters, reads its PE headers, import table and CLI metadata as bytes,
 reads each assembly it references that sits in the install folder by the one full path
 built from the reference, and then reads the IL of the parser by reflection only, which
-runs no code, through `il-reader.ps1`. Everything it could not read is counted and printed
-in its section 9, lines 1477 to 1527, and where a section prints it, at the place it
-failed as well. Lines of roamer-switches-result.
+runs no code, through `il-reader.ps1`. Every failed read it hands to IlFail, itself or
+through IlRead and LoaderLines, is counted and printed in its section 9, lines 1477 to
+1527, and where a section prints it, at the place it failed as well. A read it hands to
+no IlFail is in no count, as said at the top of this section. Lines of
+roamer-switches-result.
 
 **ROAMER.EXE HOLDS NO SWITCH TABLE. navisworks.gui.roamer.dll DOES, AND ITS PARSER
 MATCHES 39 SWITCHES.**
@@ -5295,8 +5352,17 @@ MATCHES 39 SWITCHES.**
    `Program.Main - Before dispatch NoGui actions` and `After`, lines 48 and 49
 2. Its CLI metadata, read as bytes, references 16 assemblies, lines 76 to 92, and a
    reflection only read of the same file lists the same 16, line 96. No reference failed
-   to load, line 97. `navisworks.gui.roamer.dll`, 648,984 bytes, is the only one holding
-   ExecuteAddInPlugin, NoGui, Embedding and regserver together, lines 103 and 116
+   to load, line 97. Seven of the 16 have a file of that name in the install folder and
+   were read as bytes, lines 101 to 105, 109 and 112, and of those seven
+   `navisworks.gui.roamer.dll`, 648,984 bytes, is the only one holding
+   ExecuteAddInPlugin, NoGui, Embedding and regserver together, lines 103 and 116. The
+   other nine were NOT READ as bytes, because the probe opens a reference only by its one
+   full path in the install folder and none of the nine has a file of that name there:
+   mscorlib, System, System.Xml.Linq, System.Xml, PresentationFramework,
+   System.Windows.Forms, WindowsBase, PresentationCore and System.Core, lines 100, 106 to
+   108, 110, 111 and 113 to 115. Whether any of the nine holds those four names, and so
+   whether `navisworks.gui.roamer.dll` is the only reference of Roamer.exe that does, is
+   UNKNOWN
 3. In that DLL the names are UTF-16 literals stored WITHOUT a hyphen or a slash, lines 293
    to 302. The one string in it shaped like a switch, `-EsO`, line 124, is four bytes
    between binary data and no switch
@@ -5375,16 +5441,24 @@ DispatchOneAction, ReportResult, AttachConsole, the action list and three config
 Four more appear only in Roamer.exe, the CommandLineParser constructor, Configure,
 DispatchAllActions and ReportParseError, lines 778, 784, 786 and 788, and the
 dispatcher's own constructor is used in neither. Roamer.exe's 235 rows all resolved, line
-777. Section 9, lines 1477 to 1527, counts every read that failed over the whole run, by
-kind. The 32 MemberRef rows are there, each with its token and reason, lines 1485 to
-1517, and every other kind this probe attempts reads 0: IL bodies, bytes that are not an
-instruction, tokens, types whose methods could not be listed, assemblies GetTypes could
-not load every type of, and metadata reads, lines 1482 to 1484, 1518, 1520 and 1521. The
-other five kinds print 0, types whose members could not be listed, signatures, locals,
-field types and constant values, lines 1519 and 1522 to 1525, and this probe never
-attempts them: no line it can run, its own or il-reader.ps1's, counts one, so their 0 is
-not a reading. 32 in all, line 1526. No reference failed to load, line 1478. The IL
-reader counts the reserved bytes 0xF8 to 0xFD and 0xFF as not an instruction, line 1527.
+777. Section 9, lines 1477 to 1527, counts by kind every failed read the probe handed to
+IlFail over the whole run. The 32 MemberRef rows are there, each with its token and
+reason, lines 1485 to 1517, and the other six kinds this probe counts read 0: IL bodies,
+bytes that are not an instruction, tokens, types whose methods could not be listed,
+assemblies GetTypes could not load every type of, and metadata reads, lines 1482 to 1484,
+1518, 1520 and 1521. The other five kinds print 0, types whose members could not be
+listed, signatures, locals, field types and constant values, lines 1519 and 1522 to 1525,
+and no line this probe can run, its own or il-reader.ps1's, counts a failure as one of
+those kinds, so their 0 is not a reading. It makes some of those reads with no count,
+among them constant values with GetRawConstantValue at its line 595, signatures with
+GetParameters at its line 404, and field types through the FieldType property at its
+lines 427 and 659. A failed method call among them would have stopped the probe, whose
+ErrorActionPreference is Stop at its line 2, and its final run ran to its end, exit 0,
+run record line 71. A failed FieldType at those two lines would not stop it and would
+print as null, by what a read that fails does, at the top of this section, and no field
+line of this result holds null. 32 in all, line 1526. No reference failed to load, line
+1478. The IL reader counts the reserved bytes 0xF8 to 0xFD and 0xFF as not an
+instruction, line 1527.
 
 STILL UNKNOWN.
 
@@ -5422,15 +5496,25 @@ rather than from this tool's XML through `clash_report_html_tabular.xsl`.
 holds report, html, tabular or export, case blind, every public COM type whose name holds
 Clash or starts InwOcl, and every string in each file holding tabular, .xsl, clash_report
 or reportformat, case blind, each string with the words it holds and each word counted on
-its own. scan.md names no Clash Detective assembly beyond `Autodesk.Navisworks.Clash.dll`,
-so no other was read. No reference failed to load, line 591, and of the three kinds of
-read this probe attempts none failed: types whose members could not be listed,
-assemblies GetTypes could not load every type of, and constant values, lines 598, 599 and
-604, 0 in all at line 605. The other nine kinds print 0, IL bodies, bytes that are not an
-instruction, tokens, MemberRef rows, types whose methods could not be listed, metadata
-reads, signatures, locals and field types, lines 593 to 597 and 600 to 603, and this
-probe never attempts them: no line it can run, its own or il-reader.ps1's, counts one, so
-their 0 is not a reading. Lines of clash-report-api-result.
+its own. scan.md names no Clash Detective assembly beyond
+`Autodesk.Navisworks.Clash.dll`, so no other was read. No reference failed to load, line
+591, and of the three kinds this probe counts none failed: types whose members could not
+be listed, assemblies GetTypes could not load every type of, and constant values, lines
+598, 599 and 604, 0 in all at line 605. The other nine kinds print 0, IL bodies, bytes
+that are not an instruction, tokens, MemberRef rows, types whose methods could not be
+listed, metadata reads, signatures, locals and field types, lines 593 to 597 and 600 to
+603, and no line this probe can run, its own or il-reader.ps1's, counts a failure as one
+of those kinds, so their 0 is not a reading. It makes some of those reads with no count,
+among them signatures with GetParameters at its lines 55, 187 and 197, a type's methods
+with GetMethods at its line 183, and field types through the FieldType property at its
+lines 73, 74 and 199. A failed method call among them would have stopped the probe, whose
+ErrorActionPreference is Stop at its line 2, and its final run ran to its end, exit 0,
+run record line 72. A failed FieldType would not stop it, by what a read that fails does,
+at the top of this section. At its lines 73 and 74 it would print as null, and no line of
+this result holds null. At its lines 197 to 199, where a return, property or field type
+is only compared, a failed read would leave that member out of the members handing one
+out with nothing printed, so whether one failed there is UNKNOWN. Such a failure could
+only leave a member out, never put one in. Lines of clash-report-api-result.
 
 **NO PUBLIC TYPE OR MEMBER IN Autodesk.Navisworks.Api.Clash, THE NAMESPACE THE ADD-IN
 USES, AND NONE IN THE COM CLASH INTERFACES, HAS REPORT, HTML, TABULAR OR EXPORT IN ITS
