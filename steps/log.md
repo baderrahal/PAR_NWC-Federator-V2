@@ -90,6 +90,86 @@ errors and 0 warnings before the first change and after each change.
 ### What comes next
 
 - the pull request, merged in wave 1, then the test of wave 1 on 1A02MM and 1A04PK
+## 2026-10-04 The loop, turn 5, Bader's answers to the form and the waves, the plans
+
+Bader answered the form of turn 5 at 15:23 on 2026-10-04, his message headed BADER'S ANSWERS,
+4 OCT 2026, TO THE FORM OF TURN 5, and at 15:42 ordered the fixes in waves, each tested at once on
+two buildings, his message headed FIX IN WAVES, AND TEST EACH WAVE ON TWO BUILDINGS. Each message
+began by asking for the plan before the first edit. The two plans below are the ones the lead
+wrote to him in the session, condensed, some of their sentences left out. Two placements moved
+after he was told: Q108's fix and F117, the names, said to come in waves 3 and 4, are in wave 5,
+because the fix list classes them noise, and the waves in steps\fix-round.md say so. What each
+step then did goes into the entries above this one and into steps\loop.md. Nothing under src or tests
+changes in the pull request carrying this entry.
+
+### The plan for the answers, written at 15:27
+
+1. Record the answers first, in a records pull request: each under its question, an answered
+   line on each fix list item they touch, FR-025 and FR-026 out of hold since Q104 keeps the
+   class, the form marked answered, the next action, and this plan. PR 93 merges first
+2. Tell the developers at work: F112 builds Q99 and Q100, the clash skipped, in place of the
+   PARTIAL only rule, with FR-006, and F114 adds each group's time beside its NWC sizes and item
+   counts, with no change to the 45 minute judgement
+3. With Bader's Navisworks closed, Roamer read 0 at 15:24: F104's harness parts B and C on its
+   committed code, then the first documents read on set 03
+4. As developer slots free, three at once: F109 attempt 3, F116 the clash XML, F115 sets, F117 the
+   names
+5. The four finds of Q108, Q109, Q24 and Q26, each writing its test steps under its item and
+   running them before anything changes
+6. Each area merged one at a time, then the proof run on C06 twice, rule on and rule off
+
+### The plan for the waves, written at 15:46
+
+- What NM Fed holds, measured at 15:44, turn5\nmfed-listing-1544.txt: C02 holds 1A02MM, four models, AR, EL, ME and ST, C04
+  holds 1A04PK, ten models, AR, EL, FP, HV, four ME and two ST, and it still holds C06 and C07,
+  154 NWC in all, with the -OLD XML beside the corrected one. No folder named for C06 and C07 was
+  on the desktop at 15:46. The runs point at C02 and C04 only. The installed add-in reads
+  1.0.0.0 e4484d15, and nothing under src, tests, build, bundle or exchange changed from e4484d1
+  to main
+- Step 1, the baseline today, set 04: once F104's harness has ended, set 04's copy, the four
+  window runs, item 1 with the XML and item 2 with none on both buildings, each after a Roamer
+  read, the evidence masked, steps\runs\04\findings.md, and F104's documents read on set 04
+- Step 2, the waves by the file table, worst class first: wave 1 F112 alignment, F113 clash
+  counts and F116 the clash XML, F114 paused to wave 2. Wave 2 F115 sets, workbook and report, F114
+  views with its speed work. Wave 3 run log and RESULT, harvest and pictures, install with F109.
+  Wave 4 the rest with the finds of Q109 and Q24, and the loop tools under Q93. Wave 5 noise,
+  docs and words with Q26's find, then D1. F104 merges as the test's instrument. Q108 measured
+  already: the repeated asked for text of the SET lines, 59 texts printed 1,000 times, 145,182 of
+  1,097,933 bytes saved if each were printed once a run
+- Step 3, after each wave: install main in place as on 2026-10-01, read the stamp back, run both
+  buildings, a building off the shared coordinates once more with the rule off, compare with the
+  baseline and the wave before, mark each item proven or not, take back a fix that makes it worse
+- Step 4: three lines at the top of steps\fix-round.md and in the tab, merged within the hour
+
+### What was done
+
+- PR 93 merged as dd55e4b. The answers under Q24, Q26 and Q99 to Q109, in his words with the
+  lead's notes marked, and an answered line inside each of the 16 items they touch, FR-001,
+  FR-006, FR-008, FR-009, FR-025, FR-026, FR-030, FR-069, FR-070, FR-109, FR-110, FR-136, FR-149,
+  FR-160, FR-161 and FR-172
+- the waves written in steps\fix-round.md under The waves, from the classes the list gives each
+  item
+- the developers told by message: F112 the rule of Q99 and Q100, F114 the per group times and
+  then its pause for wave 2, F112 and F113 that the proof is the two building test. F114 paused at
+  f915396. F113 finished its four items. F116 started in wave 1
+- F104's harness, all three parts on 33732c9: 102 passed, 0 failed, turn5\f104p2-prove-4.txt
+- the baseline's first run, item 1 on C02, stopped HUNG at 16:03:28 on a floating Clash Detective
+  pane the driver took for a dialog, its evidence in wt-main, nothing of Bader's harmed. F125, a
+  fix of the driver, started
+
+### What remains
+
+- F125, then the baseline's four runs and findings 04, then wave 1's readings and merges and its
+  test
+
+### Known bugs
+
+- the lead reads Q102's OR row as carrying the set's other conditions, as written under Q102, for
+  Bader to correct if he meant otherwise
+
+### What comes next
+
+- F125's fix of the driver, then the baseline
 ## 2026-10-04 The loop, turn 5, F107 the older machine's name masked on main, DONE on Q88
 
 Nothing under src or tests changed. Core tests by the pre-commit at 70effde, 8441dc9, 499f0a6
