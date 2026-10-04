@@ -24,7 +24,10 @@ where the item meets others.
 
 What main holds now, read with git on 2026-10-04.
 - F108 merged into main as c9b223b (PR 84) and F106 as 3449521 (PR 88), both on 2026-10-04.
-  F104, F105, F107 and F109 are not merged at 3449521. PR 83, the rules, is open.
+  F104, F105, F107 and F109 were not merged at 3449521. Since then PR 89, the records with the
+  note for the modellers, merged as 51a0cb6, PR 83, the rules, as 086a348, and PR 90, F105, as
+  2c89788, all on 2026-10-04. FR-125 and FR-138 are closed by them and FR-137 and FR-139 in
+  part, each saying so.
 - src, tests, build, exchange, docs, CLAUDE.md, INSTALL.md, .claude and
   steps\03_bader_next.md read the same at 3449521 as at f38edd5, so every line cited in them
   still reads where it is cited.
@@ -286,7 +289,7 @@ space is named by neither the character nor where it sits.
 No single case sensitive workset spelling in the matrix suits every C06 building. 1B06BC and
 1B06G1 carry ME-DUCTWORK, ME-EQUIPMENT and ME-PIPING in capitals and the other buildings carry
 ME-Ductwork, so the corrected matrix fixes the seven groups the findings name and can stop the
-sets that found items in the group with the most clashes.
+sets that found items in 1B06G1, 1511 clashes, the most tests that found something.
 
 - Sources: S03-2, C06-J2, FIND-04, Q98 B1
 - Evidence: log:605, 1B06BC 'worksets seen: ... ME-DUCTWORK, ME-EQUIPMENT', and log:639
@@ -1945,8 +1948,9 @@ ExamplesWhenNotNamingEvery change nothing, and the live VIEWS block only counts.
 ### FR-069 views-cost-per-viewpoint
 
 VIEWS is 71.9 percent of the run, 4523.564 s of 6292.198 s, and recording a viewpoint costs
-1.376 s in 1B06G1 against 0.0075 s in 1B06M1, so three groups take 4768 s, 75.8 percent of the
-run, and the run took 1 h 44 min 52 s against 45 minutes.
+1.376 s in 1B06G1 against 0.0075 s in 1B06M1, its 0.150 s of recording for 20 at log:2675, so
+three groups take 4768 s, 75.8 percent of the run, and the run took 1 h 44 min 52 s against 45
+minutes.
 
 - Sources: S03-7, S03-8, C06-J6, C06-J7, FIND-08, FIND-14, LOOK 387, C06-DONE-9, C06-DONE-11,
   P2 (steps\loop.md:606), NEW-LOG the viewpoints step does not scale (steps\loop.md:607), Q98 B3
@@ -1954,7 +1958,8 @@ run, and the run took 1 h 44 min 52 s against 45 minutes.
   0.201s looking whether each was already there, 1.986s dimming, 1602.798s recording, 96.899s
   reading back' with log:1669 'STEP VIEWS finished 1769.389s 1165 created' for 1B06G1. log:4480
   and log:4486, 1B06PK 1174.927 s recording, 1421.383 s for 1581. log:5343 and log:5349, 1B06PP
-  479.409 s recording, 693.614 s for 549. log:2681, 1B06M1 0.525 s for 20. log:8380-8382, the
+  479.409 s recording, 693.614 s for 549. log:2675, 1B06M1 0.150 s recording, and log:2681, 0.525 s
+the step for 20. log:8380-8382, the
   three groups are 75.8 percent. log:8426 'The run took 1 hour 44 minutes 52 seconds, 6292.198s.
   That is OVER the 45 minutes 0 seconds a run has to finish in, by 59 minutes 52 seconds.'
   findings.md:17-18 'Without it the run would have taken 29 min 29 s'. LOOK 387 expects a VIEWS
@@ -1964,9 +1969,11 @@ run, and the run took 1 h 44 min 52 s against 45 minutes.
   SavedViewpoints.Record together as recording, 91 percent of the step in 1B06G1. Inside,
   src\Federator.Addin\Engine\SavedViewpoints.cs:202-264 adds a COM view with ApplyHideAttribs
   (:213) and ApplyMaterialAttribs (:221) both on, so every viewpoint carries one material
-  override per dimmed item, then AddCopy (:256) and Remove (:259), and five or six folder
-  resolves per viewpoint (:109, :129, :248, :299) that read every child of a folder through a
-  new wrapper each time (:784-825, :902-920). docs\history\scan.md 5p measured 558 ms a
+  override per dimmed item. With RecordsThroughTheFolder true, its default at
+  src\Federator.Core\Views\ViewpointSettings.cs:107, which nothing in src changes, the view goes
+  into the folder found by FindComFolder and Record returns at :236, so AddCopy (:256) and Remove
+  (:259) do not run. The folder resolves per viewpoint (:109, :129, :299) read every child of a
+  folder through a new wrapper each time (:784-825, :902-920). docs\history\scan.md 5p measured 558 ms a
   viewpoint in a big group against 7.9 ms in a small one and said what grows is the tree the
   write walks.
 - Class: slow
@@ -1978,7 +1985,7 @@ run, and the run took 1 h 44 min 52 s against 45 minutes.
   viewpoints are planned. No Core test for the cost, which sits in Navisworks calls.
 - Note: Q98 B3 decides: VIEWS faster with the same viewpoints, measured before and after.
   Measure first: split the recording watch (ViewpointBuilder.cs:90, :710-713) into
-  EnsureFolders, the COM add, AddCopy and Remove, so the next run says which call, and account
+  EnsureFolders, FindComFolder and the COM add, so the next run says which call, and account
   for the seconds no part holds (FR-073). The register row said three read backs a viewpoint,
   and the run shows recording is about 94 percent of the accounted VIEWS seconds in 1B06G1 and
   reading back 6. VIEWS falls to about 930 s for the whole run to fit in 45 minutes. What the 45
@@ -2914,7 +2921,9 @@ read-out go in as written, and DIALOG and CONFIRM texts go into record.txt unmas
   C:\Users\<profile>\AppData\Local\ParsonsNwcFederator\logs\run-20261001-140037.log' and 720 more
   lines, the .tsv 177 lines, and line 1 of each of the 22 workbook read-outs 'workbook
   C:\Users\<profile>\AppData\Local\NwcFederatorLoop\runs\03\NMFed\Clash Report\C06\...xlsx', 920
-  occurrences in 24 files. Code: tools\loop\run.ps1:1792-1796 (MaskRemembered only), :1802 (the
+  lines in 24 files, 987 times on them, and 22 more lines of the log hold it as the author on
+  the NWD publish line, log:482 for one, 1009 times on 942 lines in all, read with grep on
+  2026-10-04 into turn5\profile-name-count.txt. Code: tools\loop\run.ps1:1792-1796 (MaskRemembered only), :1802 (the
   tsv copied as is), :1059-1060 (the texts), and tools\loop\read-workbook.ps1:102.
 - Root cause: tools\loop\run.ps1:1792-1802 and :1059-1060, and tools\loop\read-workbook.ps1:102.
   The kinds F102 masks are in tools\checks\evidence-ids.txt and name no profile folder.
@@ -3212,8 +3221,7 @@ again and Bader asked for a short note he can forward.
   log:8432.
 - Root cause: Not a code fault, the rule does what Q70 b says
   (src\Federator.Core\Health\AlignmentCheck.cs:243-287). The deliverable is
-  steps\runs\03\for-modellers.md (Q98 B4), which does not exist, steps\runs\03 holding
-  findings.md and item1-C06 only.
+  steps\runs\03\for-modellers.md (Q98 B4), which did not exist when the readers read.
 - Class: loud failure
 - Proof: No Core test. steps\runs\03\for-modellers.md exists, names each group, model file, the
   site it names and its log line, and is read by the claim-checker against log:583, 1335, 2489,
@@ -3228,6 +3236,8 @@ again and Bader asked for a short note he can forward.
   and goes when the models are exported again. steps\runs is behind the paths wall, so the note
   is written elsewhere and copied in by a command, the way the runner collects evidence. FR-006
   asks whether two of the five should fail at all.
+- Closed: steps\runs\03\for-modellers.md was written, read by a claim-checker against the log and
+  merged in PR 89 as 51a0cb6 on 2026-10-04.
 
 ### FR-126 single-discipline-sentence-says-every-test-is-created
 
@@ -3521,15 +3531,14 @@ oldest, which Q82 allows and asks to be written into the rules.
   'RETAIN keeping 30 logs, deleted 1, could not delete 0'. record.txt:1037 'GONE
   run-20260901-191711.log, logs-backup holds it'. steps\02_questions.md:440, the Q82 answer: the
   window runs may prune his oldest logs.
-- Root cause: .claude\rules\loop.md:80-83. Q82 says 'To be written into .claude/rules/loop.md in
-  turn 4 of the loop', and the sentence was not changed on main.
+- Root cause: .claude\rules\loop.md:80-83. Q82's answer ends 'To be carried out in turn 4 of the
+  loop, steps\loop.md', and the sentence was not changed on main at 3449521.
 - Class: noise
 - Proof: No test. A read of .claude\rules\loop.md:80-83 after the fix: it says what Q82 says,
   that the window runs may prune his oldest logs because logs-backup holds each by sha256 and his
   folder is put back at the close of the loop.
-- Branch: the open PR 83 rewrites this rule (turn5\pr83-diff-rules.txt, the line removed at :30
-  and the Q82 sentence added at :49), so the rule part closes when PR 83 merges, and its diff is
-  read before a second change.
+- Closed in part: PR 83, merged as 086a348 on 2026-10-04, rewrote this rule to say what Q82
+  says. The README line in the note below stays open.
 - Note: Nothing was lost, record.txt:1040 reads 0 LOST. tools\loop\README.md:199 at f38edd5 still
   says part 1 waits for Q82, which was answered on 2026-10-01, and PR 83 does not change that
   line. The prune itself (S03-19, C06-J29, FIND-23) is not a fault.
@@ -3548,9 +3557,8 @@ nothing is ever written into his AutoSave folder, which F106's put back does und
 - Class: noise
 - Proof: No Core test applies. A read of the two rules after the change: both name the Q86 put
   back.
-- Branch: rests on F106, merged as 3449521. The open PR 83 already rewrites both sentences
-  (turn5\pr83-diff-rules.txt, the lines removed at :27 and :63 and those added at :41-45 and
-  :68), so this closes when PR 83 merges, and its diff is checked before any second change.
+- Closed: PR 83, merged as 086a348 on 2026-10-04, rewrote both sentences to name the Q86 put
+  back.
 
 ### FR-139 rule-and-runner-still-say-source-copy
 
@@ -3569,10 +3577,9 @@ merged and runs work on runs\NN\NMFed.
 - Class: noise
 - Proof: No Core test applies. A read of the three, and a prove-run.ps1 Check case that lists
   NMFed.manifest.txt and NMFed.removed.txt.
-- Branch: rests on F108 (c9b223b) and F106 (3449521), both merged. The open PR 83 rewrites the
-  rule line (turn5\pr83-diff-rules.txt, removed at :22, the runs\NN\NMFed sentence added at
-  :34), and its change to runner.md touches only the hang rule line, so the runner part and the
-  Check part stay.
+- Closed in part: rests on F108 (c9b223b) and F106 (3449521). PR 83, merged as 086a348 on
+  2026-10-04, rewrote the rule line to name runs\NN\NMFed, and its change to runner.md touched
+  only the hang rule line, so the runner part and the Check part stay.
 - Note: A runner that follows the old words would take a file out of source with the plain
   -Remove, which makes -Set refuse. CLAUDE.md step 3 of how a fix is worked asks the rule to
   change with the code.
@@ -3765,7 +3772,8 @@ and steps\logs.
   and steps\logs\*.log on main.
 - Class: noise
 - Proof: No Core test applies. A grep of the tree for the account name over the files that may be
-  edited, nine to thirty seven before and none after, if Bader says to mask it.
+  edited, the 20 of the 37 outside steps\logs before and none after, if Bader says to mask
+  it.
 - Needs Bader: yes, asked as Q107. Whether the account name of the older machine counts as a trace he wants
   masked is his choice, Q88 named only the machine name. steps\logs cannot be edited.
 - Branch: works after F107's merge, which masks the machine name in the same files, fix-F107 not
@@ -4441,8 +4449,8 @@ Needs Bader: FR-006, FR-008, FR-009, FR-030, FR-070, FR-109, FR-110, FR-136, FR-
 FR-161 and FR-172.
 
 Waiting for a merge not yet made: F105 for FR-122, FR-123, FR-124 and FR-146. F107 for FR-110
-and FR-149. F109 for FR-078 to FR-081. PR 83 carries the rule half of FR-137, FR-138 and
-FR-139.
+and FR-149. F109 for FR-078 to FR-081. PR 83, merged as 086a348, closed FR-138 and the rule
+half of FR-137 and FR-139.
 
 Resting on code merged on 2026-10-04: F106 (3449521) under FR-082, FR-083, FR-085, FR-092,
 FR-094 to FR-098, FR-109, FR-111 to FR-116, FR-138, FR-139 and FR-143. F108 (c9b223b) under
@@ -4506,7 +4514,8 @@ What that leaves:
   ClashHarvest.cs, ClashReportModel.cs, ClashRunOutcome.cs, WorkbookCheck.cs, ToleranceChoice.cs
   and FederatorWindow.xaml.cs, so they go one after another by file.
 - Lane three, words in steps and rules. FR-125, FR-135 to FR-139 and FR-146 to FR-149 touch no
-  code, so they run beside both lanes, FR-137 to FR-139 after PR 83 merges. The docs items that
+  code, so they run beside both lanes, what is left of FR-137 and FR-139 among them. The docs
+  items that
   change src, FR-126 to FR-134, go with the area whose file they change.
 
 Order inside the round:
