@@ -26,10 +26,8 @@ Internal said its outputs were still written, at the ALIGNMENT step before any w
 missing or stale NWD in RESULT. Its clause is older than F112. "Every output of this group was
 still written" came in at 29bfef8 of 2026-09-20 for Q70 and stood at line 286 of AlignmentCheck.cs
 on main 086a348, from which fix-F112 was made, and attempt 1 added its twin for a skipped group,
-"Its NWF and its NWD were still written", at 41ec380. No reading before attempt 3 names either
-clause, and none of their blocking findings is about it, turn5\f112e-clause-older.txt. So attempt
-4, the closing pass on the lead's message of 2026-10-04, is the first fix of that finding and not a
-fourth fix of one finding. It fixed it at 0000355 and made the attempt 3 claim-checker's points
+"Its NWF and its NWD were still written", at 41ec380. The exact clause is named by no reading before attempt 3, turn5\f112e-clause-older.txt. Its family, a sentence that says files were written before anything looked, was not new: attempt 1's reviewer blocked on it in the note, the list and RESULT, w1-read-review-F112.txt line 8, attempt 2's on the note's NWF line, and attempt 3's breaker on this reason, each instance fixed by the next pass. So the family took four passes. The rule that a finding surviving three fix attempts goes to the form is for one still standing, and after the closing pass its reviewer and breaker find nothing blocking. Whether that counts as four attempts on one finding is for Bader to read. Attempt 4 is the closing pass on the lead's message of
+2026-10-04. It fixed it at 0000355 and made the attempt 3 claim-checker's points
 true at 39c50f0. A reviewer and a breaker read the closing pass at 39c50f0,
 turn5\f112d-read-review.txt and turn5\f112d-read-break.txt, both VERDICT APPROVE with nothing
 blocking. The review names 39c50f0, and both files were written at 00:19:36 on 2026-10-05,
@@ -56,8 +54,9 @@ turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop.
   of each conflict kept: this entry stays on top of steps\log.md above main's two new entries,
   F125's order line stays 39 and F112's moves from 39 to 40 with its section after F125's in
   steps\01_next.md, and steps\02_questions.md merged with no conflict, Q110 and Q111 before Q112,
-  Q113 and Q114, turn5\f112e-merge.txt. Main changed nothing under src from 32b75fd to f09ee92, and
-  nothing under src or tests differs from 0000355 at c5ba7e0, turn5\f112e-nwd-written-lines.txt
+  Q113 and Q114, turn5\f112e-merge.txt. Main changed nothing under src or tests from 32b75fd to f09ee92,
+  nor from f09ee92 to b2afb2d, and nothing under src or tests differs from 0000355 at c5ba7e0, each
+  git diff exit 0 with 0 files, turn5\f112f-diffs.txt
 - the closing pass records, the claim-checker's nine points on 39c50f0, turn5\f112d-read-claims.txt,
   made true. The EXPORT CHECK run line is said as the code does it, never clean while a group
   whose whole read threw is counted, in the attempt 3 item 4 below and in .claude\rules\core.md,
@@ -340,8 +339,10 @@ turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop.
   2026-10-05, after the merge of main was resolved and before it was committed,
   turn5\f112e-roamer-before.txt. The read after the last command is turn5\f112e-roamer-after.txt.
   This developer started none and touched none
-- the closing pass records wrote under turn5 every f112e- file: the evidence named above, the
-  scripts f112e-resolve.py, f112e-edit-records.py and f112e-show-*.sh, the message files
+- the closing pass records wrote under turn5 the f112e- files, among them the evidence named
+  above, the scripts f112e-resolve.py, f112e-edit-records.py to f112e-edit-records-6.py,
+  f112e-fix-formfeed.py, which mended a form feed a one line script had made in the body, and
+  f112e-show-*.sh, the message files
   f112e-msg-*.txt, the pre-commit outputs f112e-precommit-*.txt and the push output
   f112e-push.txt. It changed turn5\pr-f112.md. It read the transcript of attempt 1's developer
   under the session's folder in %USERPROFILE%\.claude and changed nothing there. git fetch wrote
@@ -373,8 +374,8 @@ turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop.
 - attempt 3, Get-Process Roamer read pid 49016, started at 18:55:27, at
   C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe, at 21:08:36 before the first
   command, turn5\f112c-roamer-before.txt. At 22:42:51 49016 was gone and pid 32136 ran, started
-  at 21:17:06 at the same path, its parent pid 1392 svchost.exe at line 9 of
-  turn5\f112c-roamer-after-push.txt. That read came after the push of 2d0e574, whose output
+  at 21:17:06 at the same path, its parent pid 1392 svchost.exe read at 22:43:25 at line 9
+  of turn5\f112c-roamer-after-push.txt. That read came after the push of 2d0e574, whose output
   turn5\f112c-push.txt was written at 22:42:24 by turn5\f112e-stat-readings.txt, and not after the
   last command, as its own first line says, because e6d6f73 was committed at 22:45:22 by the
   branch reflog, turn5\f112e-reflog.txt. The read after the last command is
@@ -405,14 +406,16 @@ turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop.
   turn5\wait-run04-item1-C02-b.txt. No launch record names who started it, so that it is the
   lead's baseline run is read off that waiter. This developer's record says it started none
 - attempt 1, from the branch's creation at 13:18:53 to c5d8aa8 at 17:26:42 by the branch reflog,
-  turn5\f112e-reflog.txt. No Get-Process Roamer read was saved and no record file of attempt 1 is
+  turn5\f112e-reflog.txt, its developer's transcript running 13:19:29 to 17:38:47 and its push at
+  17:37:11, turn5\f112e-attempt1-return.txt. No Get-Process Roamer read was saved and no record file of attempt 1 is
   under turn5. Its record is its developer's last message in the session's transcript, which says
   "Navisworks was never started", saved with its place in turn5\f112e-attempt1-return.txt. The
   lead's waiter, turn5\wait-no-roamer.txt, read pids 37356 and 47204, started at 12:53:23 and
   12:54:16, every ten minutes from 13:21:54, found 47204 gone at its 15:14:00 read and 37356 gone at
   its 15:24:00 read, and turn5\f104p2-roamer-reads.txt line 5 names the two Bader's own, started by
   hand. A third, pid 47208, ran inside the same window, listed from 15:57:16 to 16:03:16 and gone at
-  16:04:16 by the waiter of the lead's run on C02, turn5\wait-run04-item1-C02.txt
+  16:04:16 by the waiter of the lead's run on C02, turn5\wait-run04-item1-C02.txt. From 16:08:16 to
+  the end of attempt 1 no waiter read, so those minutes rest on its developer's message alone
 - attempt 2 wrote under turn5 every f112b- file, among them the edit scripts f112b-edit-*.py,
   f112b-resolve.py, the message files f112b-msg-*.txt and its entry's draft, f112b-log-entry.md.
   Two copies taken with git archive, turn5\f112b-before-src and turn5\f112b-before-sln, deleted
@@ -434,8 +437,8 @@ turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop.
   before under Q65, against his words "The group ends PARTIAL, never DONE", and a model on Internal
   there fails its group as Q70 answered, where his words say this replaces Q65 and Q70 for this
   case. None of his answers says what either does there
-- main f09ee92 is taken in at c5ba7e0, turn5\f112e-reflog.txt. Whether main moves on before the
-  pull request is UNKNOWN
+- main f09ee92 was taken in at c5ba7e0, turn5\f112e-reflog.txt, and main b2afb2d at the merge
+  after 47a95b4, which changed nothing under src or tests, turn5\f112f-diffs.txt
 - the add-in's expected lines are in the F112 section of steps\01_next.md for the wave 1 run, and
   not as numbered one-action steps in steps\03_bader_next.md, the process note of the attempt 3
   and closing pass reviewers, turn5\f112c-read-review.txt and turn5\f112d-read-review.txt, for the
@@ -524,6 +527,46 @@ turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop.
 
 - the pull request, which the lead opens with turn5\pr-f112.md, after any reading the lead calls on
   this records commit
+
+## 2026-10-05 The loop, turn 5, the design of Q114, its probes and Q115 to Q123
+
+Nothing under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before, as
+in the entry below, and after, at the pre-commits of this record, turn5\precommit-records-11.txt
+and precommit-records-11b.txt.
+
+### What was done
+
+- the design of Bader's views by team, by three plans each its own agent, turn5\q114-design-run.txt, safety first, speed first
+  and the rules in Core, read only, and a judge who scored them 25, 19 and 22 of 30 and wrote one,
+  turn5\q114-design.md. Each of FR-180 to FR-188 names its part
+- its probes, P1 to P22, each a single fact, in the order each area needs them, section 3. Three
+  read the install with no Navisworks, P5 to P7. P3, P20 and P21 are steps for Bader, written into
+  steps\03_bader_next.md when their area starts. Most of the rest run on copies of the baseline's
+  NWF through the guarded start, once no Navisworks runs. P5 to P7 answered yes on 2026-10-05,
+  turn5\q114-probes\p5-p7.md
+- Q115 to Q123, nine of the design's thirteen questions, each with the choice the build goes on
+  with. Of the four not asked, two his words settle, one is the lead's choice for safety until P18
+  gives its cost, and one waits for P9, named in steps\loop.md
+- Q124, the baseline of 1A04PK taking a day or more, turn5\c04-rate.txt
+- FR-189 from F112's closing pass, an NWD listed as written when its publish failed, older than
+  F112, for F119 in wave 3b
+- the estimate, on the three recording rates measured and not a bound: VIEWS on 1A02MM 89.701 to 811.516 s against 7487.104 s
+  in the baseline, the run 528.567 to 1250.382 s against 7925.970 s, what is UNKNOWN in it named
+  in section 6
+
+### What remains
+
+- the probes, then F132, F131 and F114 in wave 2
+
+### Known bugs
+
+- FR-189, new in this record
+
+### What comes next
+
+- the probes on Navisworks once no Navisworks of the loop runs, Q124
+
+The probes on Navisworks wait for the local machine.
 
 ## 2026-10-04 The loop, turn 5, Bader's views by team, Q114, the plan
 
