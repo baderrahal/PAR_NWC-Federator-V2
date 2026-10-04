@@ -344,7 +344,8 @@ namespace Federator.Core.Health
                     + " in this group, so no clash is skipped for them:"
                 : off.SkipsTheClash(skipClashOffCoordinates, runsATest)
                     ? "CLASH SKIPPED. " + off.Models.Count + " model(s) are not on the same shared coordinates, so the"
-                        + " clash tests are created and none is run, and no viewpoint and no clash report is made:"
+                        + " clash is skipped. " + OffCoordinates.TestsCreatedNoneRun
+                        + ", and no viewpoint and no clash report is made:"
                     : off.Models.Count + " model(s) are not on the same shared coordinates. The rule that skips the"
                         + " clash for them is off for this run, so the group is clashed as before:");
 

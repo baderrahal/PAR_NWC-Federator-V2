@@ -234,6 +234,20 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
+        /// Both readings of attempt 2: a skipped group makes no viewpoint and removes none,
+        /// so the viewpoints an earlier run saved stay in the NWF and in the NWD published
+        /// from it, and the note said only that this run made none, which reads as none.
+        /// </summary>
+        [Test]
+        public void TheNoteSaysTheViewpointsOfAnEarlierRunStayInTheNwf()
+        {
+            string note = Joined(The1B06K1().Note("1B06K1", BothOnDisk(), 0, new List<string>()));
+
+            Assert.That(note, Does.Contain(
+                "Any viewpoint an earlier run saved in the NWF is still in it, and in an NWD published from it."));
+        }
+
+        /// <summary>
         /// Words and never deletion. A workbook, a page or an XML an earlier run wrote under
         /// the name this run would have written stays where it is and reads as current, so
         /// the note names each one the engine found, and says when none was found.

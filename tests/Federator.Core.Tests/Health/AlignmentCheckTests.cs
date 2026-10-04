@@ -443,6 +443,12 @@ namespace Federator.Core.Tests.Health
             Assert.That(off.Reference, Is.EqualTo("AR  1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc"));
         }
 
+        /// <summary>
+        /// The heading said "so the clash tests are created and none is run", which F77 makes
+        /// false wherever a side finds nothing, while the note, the list and RESULT said it in
+        /// the CLASH line's words, the reviewer's and the breaker's note on attempt 2. All of
+        /// them read the one sentence now, OffCoordinates.TestsCreatedNoneRun.
+        /// </summary>
         [Test]
         public void WithTheRuleOnTheBlockSaysTheClashIsSkippedAndCarriesTheSameLines()
         {
@@ -450,8 +456,11 @@ namespace Federator.Core.Tests.Health
             string block = Joined(AlignmentCheck.Lines(TheReal1B06K1(), AlignmentCheck.DefaultFarModelMillimetres, true, true));
 
             Assert.That(block, Does.Contain(
-                "CLASH SKIPPED. 1 model(s) are not on the same shared coordinates, so the clash tests are created and"
-                + " none is run, and no viewpoint and no clash report is made:"));
+                "CLASH SKIPPED. 1 model(s) are not on the same shared coordinates, so the clash is skipped. The tests"
+                + " whose sides both find something are created and none is run, and no viewpoint and no clash report is"
+                + " made:"));
+            Assert.That(block, Does.Contain(OffCoordinates.TestsCreatedNoneRun));
+            Assert.That(block, Does.Not.Contain("so the clash tests are created"));
             Assert.That(block, Does.Contain("\n   " + off.Models[0]), "one rule writes the line, and the block, the note and the list carry it");
         }
 

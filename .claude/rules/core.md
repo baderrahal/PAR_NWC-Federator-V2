@@ -384,7 +384,9 @@ and 6 does not read as broken.
   names the NWF and the NWD off the disk, `NwfAndNwd`, saying which was not written, and
   names a publish, on either line, only where the publish reported success and the NWD is
   on the disk. It
-  says the tests already saved in the NWF keep an earlier run's results, and names every
+  says the tests already saved in the NWF keep an earlier run's results and that any
+  viewpoint an earlier run saved there stays, since a skipped group makes none and removes
+  none, and names every
   report an earlier run left at the names this run would have written, with its time and
   size, `EarlierReports`, read by exact path and never touched, and the log names them too.
   The ALIGNMENT block's all clear line is written only where every model was measured, and

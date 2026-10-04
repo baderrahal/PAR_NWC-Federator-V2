@@ -2761,8 +2761,8 @@ namespace Federator.Addin.Engine
                 if (runner.ClashSkippedOffCoordinates)
                 {
                     log.Line("CLASH    " + job.Building + " " + OffCoordinates.ClashSkippedReason
-                        + ". The tests whose sides both find something are created and none is run, and no"
-                        + " viewpoint and no clash report is made. The ALIGNMENT block names the models.");
+                        + ". " + OffCoordinates.TestsCreatedNoneRun + ", and no viewpoint and no clash report"
+                        + " is made. The ALIGNMENT block names the models.");
                 }
 
                 // Each output answers to its own flag. The report is built when the

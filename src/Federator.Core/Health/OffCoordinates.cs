@@ -32,10 +32,11 @@ namespace Federator.Core.Health
         public const string NoteEnding = " clash skipped.txt";
 
         /// <summary>
-        /// The words of the engine's CLASH line for a skipped group, F77: a test whose side
-        /// finds nothing is not created at all, so not every test of the file is in the NWF.
+        /// The words for the tests of a skipped group, F77: a test whose side finds nothing is
+        /// not created at all, so not every test of the file is in the NWF. The engine's CLASH
+        /// line, the ALIGNMENT heading, the note, the list and RESULT all read this one sentence.
         /// </summary>
-        internal const string TestsCreatedNoneRun = "The tests whose sides both find something are created and none is run";
+        public const string TestsCreatedNoneRun = "The tests whose sides both find something are created and none is run";
 
         internal OffCoordinates(string reference, IList<string> models, int notJudged, int modelsRead)
         {
@@ -134,6 +135,9 @@ namespace Federator.Core.Health
                     : testsAlreadyThere == 0
                         ? string.Empty
                         : " " + testsAlreadyThere + " of this run's tests were already there."));
+
+            // A skipped group makes no viewpoint and removes none, so an earlier run's stay.
+            lines.Add("Any viewpoint an earlier run saved in the NWF is still in it, and in an NWD published from it.");
 
             if (files != null)
             {
