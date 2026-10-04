@@ -123,8 +123,9 @@ WHERE EACH GUARD READS, which is narrower than it may look.
   copy all through, and then a branch runs its own by hand, sh .githooks/pre-commit
 - Actions reads the tree for the ids and for the RUNNER'S name, never for Bader's. Only the
   pre-commit on his machine reads for his, over what is staged
-- a file is masked BEFORE it is zipped. The check cannot read a zip, so it refuses one until
-  Bader decides where one may sit, Q90
+- the check cannot read a zip and refuses one, and no zip of run evidence is committed,
+  Bader's answer Q90 A: a run file over 20 MB stays in the work folder and the turn names it
+  with its size and sha256
 - the check reads words. An id spelled in a way no kind names is not seen by either
 - the check also reads a file's path under the folder it reads, which the mask does not, so
   a copy is named plainly and never after an id or the machine

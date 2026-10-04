@@ -1,0 +1,607 @@
+MACHINE   [machine]   2026-09-29 13:26
+READER    il-reader.ps1, dot-sourced, sha256 A89DD3A328D52342D2087345E4CEA9554058566556BD690FAB5E705C8D982F89
+WORDS     report, html, tabular, export, case blind, in a type's name or a member's name
+
+==== Autodesk.Navisworks.Api.dll ====
+  FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Api.dll   4261152 bytes, file version 22.5.1433.58
+  ASSEMBLY  Autodesk.Navisworks.Api, Version=22.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484
+  types 4027, public 1205
+
+  ---- every public type whose name holds a word, whole ----
+  class Autodesk.Navisworks.Api.Interop.LcOpExportPlugin : Autodesk.Navisworks.Api.Interop.LcOpPlugin
+      implements IDisposable
+      ctor     public LcOpExportPlugin()
+      method   public System.Void BeginContext(Autodesk.Navisworks.Api.Interop.LcOpState state)
+      method   public System.Boolean CanExport(Autodesk.Navisworks.Api.Interop.LcOpPluginCaps reason, Autodesk.Navisworks.Api.Interop.LcOpState state)
+      method   public System.Boolean Dialog(Autodesk.Navisworks.Api.Interop.LcOpPluginCaps reason, Autodesk.Navisworks.Api.Interop.LcOpState state)
+      method   public System.Void EndContext(Autodesk.Navisworks.Api.Interop.LcOpState state)
+      method   public Autodesk.Navisworks.Api.Interop.LcOpPluginExportStatus Export(Autodesk.Navisworks.Api.Interop.LcOpPluginCaps reason, Autodesk.Navisworks.Api.Interop.LcOpState state)
+      method   public Autodesk.Navisworks.Api.Interop.LcOpPluginExportStatus Export(Autodesk.Navisworks.Api.Interop.LcOpPluginCaps reason, Autodesk.Navisworks.Api.Interop.LcOpState state, Autodesk.Navisworks.Api.Progress cb, System.String filename)
+      method   public Autodesk.Navisworks.Api.Interop.LcOpPluginExportStatus Export(Autodesk.Navisworks.Api.Interop.LcOpPluginCaps reason, Autodesk.Navisworks.Api.Interop.LcOpState state, Autodesk.Navisworks.Api.Progress cb)
+      method   public Autodesk.Navisworks.Api.Interop.LcOpExportPluginContextState GetContextState(Autodesk.Navisworks.Api.Interop.LcOpState state)
+      method   public System.Void GetExportedFileName(out System.String& exported)
+      method   public System.Void GetFormatName(out System.String& format_name)
+      method   public System.Void GetFormatSuffix(out System.String& format_suffix)
+      method   public System.Void GetUserString(out System.String& user_string)
+      method   public System.Boolean HelpExport()
+      method   public static Autodesk.Navisworks.Api.Interop.LcOpExportPlugin InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)
+      method   public static Autodesk.Navisworks.Api.NativeHandle InternalFactory(ref Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit& reserved)
+      property public System.Boolean IsReadOnly { get }
+  enum Autodesk.Navisworks.Api.Interop.LcOpExportPluginContextState : System.Enum
+      implements IComparable, IFormattable, IConvertible
+      eCONTEXT_NORMAL = 0
+      eCONTEXT_CHECK = 1
+      eCONTEXT_RADIO = 2
+      eCONTEXT_ENABLE = 0
+      eCONTEXT_DISABLE = 16
+      eCONTEXT_GREY = 32
+  enum Autodesk.Navisworks.Api.Interop.LcOpPluginExportStatus : System.Enum
+      implements IComparable, IFormattable, IConvertible
+      eEXPORT_OK = 0
+      eEXPORT_CANT_OPEN = 1
+      eEXPORT_NO_ROOM = 2
+      eEXPORT_FAIL = 3
+      eEXPORT_UNIMPLEMENTED = 4
+      eEXPORT_CANCELED = 5
+      eEXPORT_NA = 6
+      eEXPORT_OUTPUT_TOO_LARGE = 7
+  class Autodesk.Navisworks.Api.ProgressErrorReportingEventArgs : Autodesk.Navisworks.Api.ProgressEventArgs
+      property public System.Boolean Canceled { get; set }
+      property public System.Int32 ErrorCode { get; set }
+      property public System.Boolean IsFileError { get; set }
+      property public System.String Message { get; set }
+      property public Autodesk.Navisworks.Api.Progress Progress { get; set }
+  class Autodesk.Navisworks.Api.ProgressMessageReportingEventArgs : Autodesk.Navisworks.Api.ProgressEventArgs
+      property public System.String Message { get; set }
+      property public Autodesk.Navisworks.Api.Progress Progress { get; set }
+  class Autodesk.Navisworks.Internal.ApiImplementation.NativeExportPluginAdaptor : Autodesk.Navisworks.Api.Plugins.AddInPlugin
+      ctor     public NativeExportPluginAdaptor(Autodesk.Navisworks.Api.Interop.LcOpExportPlugin nativePlugin, Autodesk.Navisworks.Api.Interop.LcOpPluginCaps exportType)
+      method   public Autodesk.Navisworks.Api.Plugins.CommandState CanExecute()
+      method   public System.Int32 Execute(System.String[] parameters)
+      method   public System.Boolean TryShowHelp()
+      property public Autodesk.Navisworks.Api.Interop.LcOpPluginCaps ExportType { get; set }
+  enum LcOpPlugin+ExportStatus : System.Enum
+      nested in LcOpPlugin, which is public: False
+      attributes NativeCppClassAttribute, CLSCompliantAttribute
+      implements IComparable, IFormattable, IConvertible
+      no values in the metadata
+  public types found: 7
+
+  ---- every public member of any other public type whose name holds a word ----
+  Autodesk.Navisworks.Api.Application   event    public System.EventHandler<Autodesk.Navisworks.Api.ProgressErrorReportingEventArgs> ProgressErrorReporting
+  Autodesk.Navisworks.Api.Application   event    public System.EventHandler<Autodesk.Navisworks.Api.ProgressMessageReportingEventArgs> ProgressMessageReporting
+  Autodesk.Navisworks.Api.Document   method   public System.Void ExportAsDwf(System.String fileName)
+  Autodesk.Navisworks.Api.Interop.LcOpBimViewerProgress   method   public System.Boolean vReportProgress(System.Double total_frac, System.Double sub_frac)
+  Autodesk.Navisworks.Api.Interop.LcOpClicUI   method   public System.Void RegisterModelessHtmlPopup(System.String id, System.IntPtr parent_window, System.IntPtr dialog_window, System.IntPtr html_render_window, System.IntPtr owner_window, System.Boolean stuck_to_owner, System.Int32 position)
+  Autodesk.Navisworks.Api.Interop.LcOpClicUI   method   public System.Void UnRegisterModelessHtmlPopup(System.IntPtr hwnd)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelProgressImpl   method   public System.Boolean ReportProgressImpl(System.Double total_frac, System.Double sub_frac)
+  Autodesk.Navisworks.Api.Interop.LcOpKernelProgressImpl   method   public System.Boolean ReportErrorImpl(System.Int32 error_code, System.String message, System.Boolean append_filename)
+  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps eCAP_EXPORT_PROGRESS = 1
+  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps eCAP_EXPORT_EXPLICIT = 2
+  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps eCAP_EXPORT_CONTEXT_ITEM = 4
+  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps eCAP_EXPORT_IMPORT = 8
+  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps eCAP_EXPORT_TO_FILE = 128
+  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps eCAP_EXPORT_TOOL = 256
+  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps eCAP_EXPORT_DIALOG = 512
+  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps eCAP_EXPORT_HELP = 1024
+  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps eCAP_EXPORT_ADD_IN = 2048
+  Autodesk.Navisworks.Api.Interop.LcOpPluginType   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginType ePLUGIN_EXPORT = 2
+  Autodesk.Navisworks.Api.Interop.LcOpPluginType   literal  Autodesk.Navisworks.Api.Interop.LcOpPluginType ePLUGIN_CLASH_REPORT = 6
+  Autodesk.Navisworks.Api.Interop.LcOpSwigKernelProgress   method   public System.Boolean ReportProgressImpl(System.Double total_frac, System.Double sub_frac)
+  Autodesk.Navisworks.Api.Interop.LcOpSwigKernelProgress   method   public System.Boolean ReportErrorImpl(System.Int32 error_code, System.String message, System.Boolean append_filename)
+  Autodesk.Navisworks.Api.Interop.LcUError   method   public static System.Void ReportEnvironmentErrorAndAbort(System.String string)
+  Autodesk.Navisworks.Api.Interop.ThumbnailGeneratorPurpose   literal  Autodesk.Navisworks.Api.Interop.ThumbnailGeneratorPurpose ExportViewport = 0
+  Autodesk.Navisworks.Api.ModelCreatorNames   property public static System.String ArchicadExporter { get }
+  Autodesk.Navisworks.Api.ModelCreatorNames   property public static System.String MicrostationExporter { get }
+  Autodesk.Navisworks.Api.ModelCreatorNames   property public static System.String MaxExporter { get }
+  Autodesk.Navisworks.Api.ModelCreatorNames   property public static System.String RevitExporter { get }
+  Autodesk.Navisworks.Api.Plugins.AddInLocation   literal  Autodesk.Navisworks.Api.Plugins.AddInLocation Export = 3
+  Autodesk.Navisworks.Api.Plugins.HomeScreenExtensionPlugin   method   public System.String GetErrorHtml(Autodesk.Navisworks.Api.Plugins.HomeScreenError error)
+  Autodesk.Navisworks.Api.Progress   method   public System.Boolean ReportError(System.Int32 errorCode)
+  Autodesk.Navisworks.Api.Progress   method   public System.Boolean ReportError(System.Int32 errorCode, System.String message)
+  Autodesk.Navisworks.Api.Progress   method   public System.Boolean ReportError(System.Int32 errorCode, System.String message, System.Boolean isFileError)
+  Autodesk.Navisworks.Api.PublishProperties   property public System.Boolean PreventObjectPropertyExport { get; set }
+  public members found: 33
+
+  ---- every type that is NOT public whose name holds a word, names only, for the record ----
+  struct Autodesk.Navisworks.cleaner.LcOpExportPlugin
+  class Autodesk.Navisworks.Internal.ApiImplementation.NativeExportImpl
+  struct LcOpExportPlugin
+  not public types found: 3
+
+  ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----
+  offset  3256980  ascii  ePLUGIN_CLASH_REPORT   [clash_report]
+  strings found: 1. Strings holding each word: tabular 0, .xsl 0, clash_report 1, reportformat 0
+
+==== Autodesk.Navisworks.Clash.dll ====
+  FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Clash.dll   508704 bytes, file version 22.5.1433.58
+  ASSEMBLY  Autodesk.Navisworks.Clash, Version=22.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484
+  types 2066, public 329
+
+  ---- every public type whose name holds a word, whole ----
+  class Autodesk.Navisworks.Api.Interop.LcClashReportResultSelector : Autodesk.Navisworks.Api.NativeHandle
+      implements IDisposable
+      ctor     public LcClashReportResultSelector()
+      method   public System.Void AddGuid(System.Guid guid)
+      method   public System.Void Clear()
+      method   public System.Boolean ContainsGuid(System.Guid guid)
+      method   public static Autodesk.Navisworks.Api.Interop.LcClashReportResultSelector InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)
+      method   public static Autodesk.Navisworks.Api.NativeHandle InternalFactory(ref Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit& reserved)
+      property public System.Boolean IsReadOnly { get }
+  class Autodesk.Navisworks.Api.Interop.LcClClashReport : Autodesk.Navisworks.Api.NativeHandle
+      implements IDisposable
+      method   public static System.Boolean CanWriteReport(Autodesk.Navisworks.Api.Interop.LcOpState state)
+      method   public static System.Boolean FormatterIsViewpoints(System.Int32 index)
+      method   public static System.Boolean GetCurrentFilterMode()
+      method   public static System.Int32 GetCurrentGroupMode()
+      method   public static System.Int32 GetCurrentReportDriver()
+      method   public static System.Int32 GetCurrentReportFormatter()
+      method   public static System.Void GetGroupModeName(System.Int32 index, out System.String& groupMode)
+      method   public static System.Void GetReportDriverInternalName(System.Int32 index, out System.String& reportDriver)
+      method   public static System.Void GetReportDriverName(System.Int32 index, out System.String& reportDriver)
+      method   public static Autodesk.Navisworks.Api.Interop.LcClReportField GetReportField(System.Int32 index)
+      method   public static System.Void GetReportFormatterInternalName(System.Int32 index, out System.String& internalName)
+      method   public static System.Void GetReportFormatterName(System.Int32 index, out System.String& reportFormatter)
+      method   public static Autodesk.Navisworks.Api.Interop.LcClStatusFlag GetStatusFlag(System.Int32 index)
+      method   public static System.Boolean GetViewpointsRespectHighlighting()
+      method   public static System.Boolean GroupModesEnabled(Autodesk.Navisworks.Api.Interop.LcOpState state)
+      method   public static System.Void Initialise()
+      method   public static Autodesk.Navisworks.Api.Interop.LcClClashReport InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)
+      method   public static Autodesk.Navisworks.Api.NativeHandle InternalFactory(ref Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit& reserved)
+      method   public static System.Boolean IsInitialised()
+      method   public static System.Int32 NumGroupModes()
+      method   public static System.Int32 NumReportDrivers()
+      method   public static System.Int32 NumReportFields()
+      method   public static System.Int32 NumReportFormatters()
+      method   public static System.Int32 NumStatusFlags()
+      method   public static System.Void SetCurrentFilterMode(System.Boolean filter)
+      method   public static System.Void SetCurrentGroupMode(System.Int32 index)
+      method   public static System.Void SetCurrentReportDriver(System.Int32 index)
+      method   public static System.Void SetCurrentReportFormatter(System.Int32 index)
+      method   public static System.Void SetViewpointsRespectHighlighting(System.Boolean highlight)
+      method   public static System.Void Terminate()
+      method   public static System.Boolean WriteReport(Autodesk.Navisworks.Api.Interop.LcOpState state, Autodesk.Navisworks.Api.Interop.LcClClashGUIProxy guiProxy, Autodesk.Navisworks.Api.Interop.LcClashReportResultSelector selection, System.String name_annotation)
+      property public System.Boolean IsReadOnly { get }
+  class Autodesk.Navisworks.Api.Interop.LcClReportField : Autodesk.Navisworks.Api.NativeHandle
+      implements IDisposable
+      method   public System.Boolean GetEnabled()
+      method   public System.Void GetUserNameW(out System.String& buff)
+      method   public static Autodesk.Navisworks.Api.Interop.LcClReportField InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)
+      method   public static Autodesk.Navisworks.Api.NativeHandle InternalFactory(ref Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit& reserved)
+      method   public System.Void SetEnabled(System.Boolean enabled)
+      property public System.Boolean IsReadOnly { get }
+  enum LcClClashReport+ReportFields : System.Enum
+      nested in LcClClashReport, which is public: False
+      attributes CLSCompliantAttribute, NativeCppClassAttribute
+      implements IComparable, IFormattable, IConvertible
+      no values in the metadata
+  enum LcOclClashReportConfig+ReportContentFlags : System.Enum
+      nested in LcOclClashReportConfig, which is public: False
+      attributes CLSCompliantAttribute, NativeCppClassAttribute
+      implements IComparable, IFormattable, IConvertible
+      no values in the metadata
+  enum LcOpPlugin+ExportStatus : System.Enum
+      nested in LcOpPlugin, which is public: False
+      attributes CLSCompliantAttribute, NativeCppClassAttribute
+      implements IComparable, IFormattable, IConvertible
+      no values in the metadata
+  public types found: 6
+
+  ---- every public member of any other public type whose name holds a word ----
+  Autodesk.Navisworks.Api.Interop.LcClClashGUIProxy   method   public System.Void ReportError(System.String error_msg)
+  public members found: 1
+
+  ---- every type that is NOT public whose name holds a word, names only, for the record ----
+  struct Autodesk.Navisworks.cleaner.LcClashReportResultSelector
+  struct Autodesk.Navisworks.cleaner.LcClClashReport
+  struct Autodesk.Navisworks.cleaner.LcClReportField
+  struct LcClashReportResultSelector
+  struct LcClClashReport
+  struct LcClClashReportGroupMode
+  struct LcClReportField
+  struct LcOclClashReportConfig
+  not public types found: 8
+
+  ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----
+  offset   326610  ascii  LcClClashReport.GetReportFormatterInternalName   [reportformat]
+  offset   326657  ascii  LcClClashReport.SetCurrentReportFormatter   [reportformat]
+  offset   326699  ascii  LcClClashReport.GetCurrentReportFormatter   [reportformat]
+  offset   326741  ascii  LcClClashReport.GetReportFormatterName   [reportformat]
+  offset   326780  ascii  LcClClashReport.NumReportFormatters   [reportformat]
+  offset   380914  ascii  NumReportFormatters   [reportformat]
+  offset   380934  ascii  GetReportFormatterName   [reportformat]
+  offset   380957  ascii  reportFormatter   [reportformat]
+  offset   380973  ascii  GetCurrentReportFormatter   [reportformat]
+  offset   380999  ascii  SetCurrentReportFormatter   [reportformat]
+  offset   381025  ascii  GetReportFormatterInternalName   [reportformat]
+  offset   467018  ascii  ?NumReportFormatters@LcClClashReport@@SAHXZ   [reportformat]
+  offset   467064  ascii  ?GetReportFormatterName@LcClClashReport@@SAXHPEAVLcUWideStringBuffer@@@Z   [reportformat]
+  offset   467140  ascii  ?GetCurrentReportFormatter@LcClClashReport@@SAHXZ   [reportformat]
+  offset   467192  ascii  ?SetCurrentReportFormatter@LcClClashReport@@SAXH@Z   [reportformat]
+  offset   467246  ascii  ?GetReportFormatterInternalName@LcClClashReport@@SAXHPEAVLcUWideStringBuffer@@@Z   [reportformat]
+  strings found: 16. Strings holding each word: tabular 0, .xsl 0, clash_report 0, reportformat 16
+
+==== Autodesk.Navisworks.ComApi.dll ====
+  FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.ComApi.dll   385824 bytes, file version 22.5.1433.58
+  ASSEMBLY  Autodesk.Navisworks.ComApi, Version=22.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484
+  types 1739, public 231
+
+  ---- every public type whose name holds a word, whole ----
+  enum LcOpPlugin+ExportStatus : System.Enum
+      nested in LcOpPlugin, which is public: False
+      attributes NativeCppClassAttribute, CLSCompliantAttribute
+      implements IComparable, IFormattable, IConvertible
+      no values in the metadata
+  public types found: 1
+
+  ---- every public member of any other public type whose name holds a word ----
+  public members found: 0
+
+  ---- every type that is NOT public whose name holds a word, names only, for the record ----
+  not public types found: 0
+
+  ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----
+  strings found: 0. Strings holding each word: tabular 0, .xsl 0, clash_report 0, reportformat 0
+
+==== Autodesk.Navisworks.Interop.ComApi.dll ====
+  FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Interop.ComApi.dll   313624 bytes, file version 22.5.1433.58
+  ASSEMBLY  Autodesk.Navisworks.Interop.ComApi, Version=22.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484
+  types 262, public 259
+
+  ---- every public type whose name holds a word, whole ----
+  interface Autodesk.Navisworks.Api.Interop.ComApi.InwExportPlugin
+      attributes ComImportAttribute, GuidAttribute, TypeLibTypeAttribute
+      method   public System.Void iBeginContext(Autodesk.Navisworks.Api.Interop.ComApi.InwOpState p_state)
+      method   public System.Boolean iCanExport(Autodesk.Navisworks.Api.Interop.ComApi.InwOpState p_state, System.Int32 reason)
+      method   public System.Boolean iDialog(Autodesk.Navisworks.Api.Interop.ComApi.InwOpState p_state, System.Int32 reason)
+      method   public System.Void iEndContext(Autodesk.Navisworks.Api.Interop.ComApi.InwOpState p_state)
+      method   public Autodesk.Navisworks.Api.Interop.ComApi.nwEExportStatus iExport(Autodesk.Navisworks.Api.Interop.ComApi.InwOpState p_state, System.Int32 reason, System.String filename, Autodesk.Navisworks.Api.Interop.ComApi.InwOpProgress Progress)
+      method   public System.String iGetFormatName()
+      method   public System.String iGetFormatSuffix()
+      method   public System.String iGetUserString()
+      method   public System.Boolean iHelpExport()
+      method   public System.Void InitialisePlugin(out System.Int32& capbits, out System.Int32& ver)
+      method   public System.Object iXtension(System.Object vIn)
+  interface Autodesk.Navisworks.Api.Interop.ComApi.InwExportPlugin_Site
+      attributes ComImportAttribute, TypeLibTypeAttribute, GuidAttribute
+      implements InwPlugin_Site, InwBase
+      method   public System.Object Copy()
+      method   public System.Object GetApplication()
+      method   public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)
+      method   public System.Void nwInvalidate()
+      method   public System.Object Xtension(System.Object vIn)
+      property public System.Int32 nwHandle { get }
+      property public System.Int32 nwID { get }
+      property public System.Boolean nwInvalidated { get }
+      property public System.Int32 nwLock { get; set }
+      property public System.Boolean nwOwn { get; set }
+      property public System.Int32 nwProcess { get }
+      property public System.Boolean nwReadOnly { get }
+      property public System.Int32 nwThread { get }
+      property public System.String ObjectName { get }
+  enum Autodesk.Navisworks.Api.Interop.ComApi.nwEExportStatus : System.Enum
+      implements IComparable, IFormattable, IConvertible
+      eExport_OK = 0
+      eExport_CANT_OPEN = 1
+      eExport_NO_ROOM = 2
+      eExport_FAIL = 3
+      eExport_UNIMPLEMENTED = 4
+      eExport_CANCELED = 5
+      eExport_NA = 6
+  public types found: 3
+
+  ---- every public member of any other public type whose name holds a word ----
+  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps   literal  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps eCap_EXPORT_PROGRESS = 1
+  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps   literal  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps eCap_EXPORT_EXPLICIT = 2
+  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps   literal  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps eCap_EXPORT_CONTEXT_ITEM = 4
+  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps   literal  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps eCap_EXPORT_TO_FILE = 128
+  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps   literal  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps eCap_EXPORT_TOOL = 256
+  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps   literal  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps eCap_EXPORT_DIALOG = 512
+  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps   literal  Autodesk.Navisworks.Api.Interop.ComApi.nwECaps eCap_EXPORT_HELP = 1024
+  public members found: 7
+
+  ---- every public COM type whose name holds Clash or starts InwOcl, whole ----
+  interface Autodesk.Navisworks.Api.Interop.ComApi.InwClashPlugin
+      attributes ComImportAttribute, TypeLibTypeAttribute, GuidAttribute
+      method   public System.Void iBeginTest(out System.Object& data)
+      method   public System.Void iEndTest(out System.Object& data)
+      method   public System.Boolean iGetIgnoreDescription(out System.String& description)
+      method   public System.Boolean iIgnore(Autodesk.Navisworks.Api.Interop.ComApi.InwOaFragment frag1, Autodesk.Navisworks.Api.Interop.ComApi.InwOaFragment frag2, Autodesk.Navisworks.Api.Interop.ComApi.InwOpState p_state)
+      method   public System.Void InitialisePlugin(out System.Int32& capbits, out System.Int32& ver)
+      method   public System.Object iXtension(System.Object vIn)
+  interface Autodesk.Navisworks.Api.Interop.ComApi.InwClashPlugin_Site
+      attributes ComImportAttribute, TypeLibTypeAttribute, GuidAttribute
+      implements InwPlugin_Site, InwBase
+      method   public System.Object Copy()
+      method   public System.Object GetApplication()
+      method   public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)
+      method   public System.Void nwInvalidate()
+      method   public System.Object Xtension(System.Object vIn)
+      property public System.Int32 nwHandle { get }
+      property public System.Int32 nwID { get }
+      property public System.Boolean nwInvalidated { get }
+      property public System.Int32 nwLock { get; set }
+      property public System.Boolean nwOwn { get; set }
+      property public System.Int32 nwProcess { get }
+      property public System.Boolean nwReadOnly { get }
+      property public System.Int32 nwThread { get }
+      property public System.String ObjectName { get }
+  interface Autodesk.Navisworks.Api.Interop.ComApi.InwClashTestsColl
+      attributes ComImportAttribute, DefaultMemberAttribute, TypeLibTypeAttribute, GuidAttribute
+      implements InwCollBase, IEnumerable
+      method   public System.Void Add(System.Object p_newVal)
+      method   public System.Void Clear()
+      method   public System.Collections.IEnumerator GetEnumerator()
+      method   public System.Void Insert(System.Int32 ndx, System.Object p_newVal)
+      method   public System.Object Last()
+      method   public System.Void Remove(System.Int32 ndx)
+      method   public System.Void RemoveLast()
+      method   public System.Void Replace(System.Int32 ndx, System.Object p_newVal)
+      property public System.Int32 Count { get }
+      property public System.Object Item[System.Object vIndex] { get; set }
+      property public System.Boolean ReadOnly { get }
+  interface Autodesk.Navisworks.Api.Interop.ComApi.InwOclClashTest
+      attributes ComImportAttribute, GuidAttribute, TypeLibTypeAttribute
+      implements InwBase
+      method   public System.Void ClearResults()
+      method   public System.Object Copy()
+      method   public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)
+      method   public System.Void nwInvalidate()
+      method   public System.Void RemoveResolved()
+      method   public Autodesk.Navisworks.Api.Interop.ComApi.InwTestResultsColl results()
+      method   public System.Void RunTest(System.Int32 test_ndx, optional System.Object ovProgress)
+      method   public System.Object Xtension(System.Object vIn)
+      property public System.Double AbsTouchTolerance { get; set }
+      property public System.Int32 ClashesIgnored { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwEClashIgnore IgnoreRuleFlags { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestIntersectionMethod IntersectionMethod { get; set }
+      property public System.Boolean IsRelTouchTolerance { get; set }
+      property public System.Boolean Modified { get }
+      property public System.String name { get; set }
+      property public System.Int32 NumNewResults { get }
+      property public System.Int32 nwHandle { get }
+      property public System.Int32 nwID { get }
+      property public System.Boolean nwInvalidated { get }
+      property public System.Int32 nwLock { get; set }
+      property public System.Boolean nwOwn { get; set }
+      property public System.Int32 nwProcess { get }
+      property public System.Boolean nwReadOnly { get }
+      property public System.Int32 nwThread { get }
+      property public System.String ObjectName { get }
+      property public System.Double RelTouchTolerance { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwOpSelection Selection1 { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwOpSelection Selection2 { get; set }
+      property public System.Boolean SelfIntersect1 { get; set }
+      property public System.Boolean SelfIntersect2 { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestStatus status { get; set }
+      property public System.Double Tolerance { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestToleranceType ToleranceType { get; set }
+  interface Autodesk.Navisworks.Api.Interop.ComApi.InwOclClashTest2
+      attributes ComImportAttribute, GuidAttribute, TypeLibTypeAttribute
+      implements InwOclClashTest, InwBase
+      method   public System.Void ClearResults()
+      method   public System.Object Copy()
+      method   public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)
+      method   public System.Void nwInvalidate()
+      method   public System.Void RemoveResolved()
+      method   public Autodesk.Navisworks.Api.Interop.ComApi.InwTestResultsColl results()
+      method   public System.Void RunTest(System.Int32 test_ndx, optional System.Object ovProgress)
+      method   public System.Object Xtension(System.Object vIn)
+      property public System.Double AbsTouchTolerance { get; set }
+      property public System.Int32 ClashesIgnored { get }
+      property public System.String CustomTestName { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwEClashIgnore IgnoreRuleFlags { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestIntersectionMethod IntersectionMethod { get; set }
+      property public System.Boolean IsRelTouchTolerance { get; set }
+      property public System.Boolean Modified { get }
+      property public System.String name { get; set }
+      property public System.Int32 NumNewResults { get }
+      property public System.Int32 nwHandle { get }
+      property public System.Int32 nwID { get }
+      property public System.Boolean nwInvalidated { get }
+      property public System.Int32 nwLock { get; set }
+      property public System.Boolean nwOwn { get; set }
+      property public System.Int32 nwProcess { get }
+      property public System.Boolean nwReadOnly { get }
+      property public System.Int32 nwThread { get }
+      property public System.String ObjectName { get }
+      property public System.Double RelTouchTolerance { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwOpSelection Selection1 { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwOpSelection Selection2 { get; set }
+      property public System.Boolean SelfIntersect1 { get; set }
+      property public System.Boolean SelfIntersect2 { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestStatus status { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestType TestType { get; set }
+      property public System.Double Tolerance { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestToleranceType ToleranceType { get; set }
+  interface Autodesk.Navisworks.Api.Interop.ComApi.InwOclTestResult
+      attributes ComImportAttribute, TypeLibTypeAttribute, GuidAttribute
+      implements InwBase
+      method   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()
+      method   public System.Object Copy()
+      method   public System.Object CreatePicture(Autodesk.Navisworks.Api.Interop.ComApi.InwOpAnonView anonview, optional System.Object ovNumPasses, optional System.Object ovWidth, optional System.Object ovHeight, optional System.Object ovFlags)
+      method   public Autodesk.Navisworks.Api.Interop.ComApi.InwLPos3f GetClashCenter()
+      method   public Autodesk.Navisworks.Api.Interop.ComApi.InwNvViewPoint GetSuitableViewPoint()
+      method   public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)
+      method   public System.Void nwInvalidate()
+      method   public System.Object Xtension(System.Object vIn)
+      property public System.String ApprovedBy { get; set }
+      property public System.Object ApprovedTime { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwLBox3f Bound { get }
+      property public System.Object CreatedTime { get; set }
+      property public System.Double distance { get }
+      property public System.String name { get; set }
+      property public System.Int32 nwHandle { get }
+      property public System.Int32 nwID { get }
+      property public System.Boolean nwInvalidated { get }
+      property public System.Int32 nwLock { get; set }
+      property public System.Boolean nwOwn { get; set }
+      property public System.Int32 nwProcess { get }
+      property public System.Boolean nwReadOnly { get }
+      property public System.Int32 nwThread { get }
+      property public System.String ObjectName { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwOaPath Path1 { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwOaPath Path2 { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwLPos3f Pt1 { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwLPos3f Pt2 { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwETestResultStatus status { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwNvViewPoint ViewPoint { get; set }
+  interface Autodesk.Navisworks.Api.Interop.ComApi.InwOclTestResult2
+      attributes ComImportAttribute, GuidAttribute, TypeLibTypeAttribute
+      implements InwOclTestResult, InwBase
+      method   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()
+      method   public System.Object Copy()
+      method   public System.Object CreatePicture(Autodesk.Navisworks.Api.Interop.ComApi.InwOpAnonView anonview, optional System.Object ovNumPasses, optional System.Object ovWidth, optional System.Object ovHeight, optional System.Object ovFlags)
+      method   public Autodesk.Navisworks.Api.Interop.ComApi.InwLPos3f GetClashCenter()
+      method   public Autodesk.Navisworks.Api.Interop.ComApi.InwNvViewPoint GetSuitableViewPoint()
+      method   public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)
+      method   public System.Void nwInvalidate()
+      method   public System.Object Xtension(System.Object vIn)
+      property public System.String ApprovedBy { get; set }
+      property public System.Object ApprovedTime { get; set }
+      property public System.String AssignedTo { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwLBox3f Bound { get }
+      property public System.Object CreatedTime { get; set }
+      property public System.Double distance { get }
+      property public System.String GroupPath { get }
+      property public System.String name { get; set }
+      property public System.Int32 nwHandle { get }
+      property public System.Int32 nwID { get }
+      property public System.Boolean nwInvalidated { get }
+      property public System.Int32 nwLock { get; set }
+      property public System.Boolean nwOwn { get; set }
+      property public System.Int32 nwProcess { get }
+      property public System.Boolean nwReadOnly { get }
+      property public System.Int32 nwThread { get }
+      property public System.String ObjectName { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwOaPath Path1 { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwOaPath Path2 { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwLPos3f Pt1 { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwLPos3f Pt2 { get }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.nwETestResultStatus status { get; set }
+      property public Autodesk.Navisworks.Api.Interop.ComApi.InwNvViewPoint ViewPoint { get; set }
+  interface Autodesk.Navisworks.Api.Interop.ComApi.InwOpClashElement
+      attributes ComImportAttribute, GuidAttribute, TypeLibTypeAttribute
+      implements InwBase
+      method   public System.Void ClearResults()
+      method   public System.Object Copy()
+      method   public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)
+      method   public System.Void nwInvalidate()
+      method   public System.Void RemoveResolved()
+      method   public System.Void RunAllTests(optional System.Object ovProgress)
+      method   public Autodesk.Navisworks.Api.Interop.ComApi.InwClashTestsColl Tests()
+      method   public System.Object Xtension(System.Object vIn)
+      property public System.Int32 nwHandle { get }
+      property public System.Int32 nwID { get }
+      property public System.Boolean nwInvalidated { get }
+      property public System.Int32 nwLock { get; set }
+      property public System.Boolean nwOwn { get; set }
+      property public System.Int32 nwProcess { get }
+      property public System.Boolean nwReadOnly { get }
+      property public System.Int32 nwThread { get }
+      property public System.String ObjectName { get }
+  enum Autodesk.Navisworks.Api.Interop.ComApi.nwEClashIgnore : System.Enum
+      implements IComparable, IFormattable, IConvertible
+      eIgnore_NONE = 0
+      eIgnore_LAYER = 2
+      eIgnore_PARTITION = 4
+      eIgnore_GROUP = 8
+      eIgnore_CUSTOM_01 = 16
+      eIgnore_CUSTOM_02 = 32
+      eIgnore_CUSTOM_03 = 64
+      eIgnore_CUSTOM_04 = 128
+      eIgnore_CUSTOM_05 = 256
+      eIgnore_CUSTOM_06 = 512
+      eIgnore_CUSTOM_07 = 1024
+      eIgnore_CUSTOM_08 = 2048
+      eIgnore_CUSTOM_09 = 4096
+      eIgnore_CUSTOM_10 = 8192
+  enum Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestIntersectionMethod : System.Enum
+      implements IComparable, IFormattable, IConvertible
+      eMETHOD_FACET = 0
+      eMETHOD_FACET_TOUCH = 1
+      eMETHOD_MESH = 2
+  enum Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestStatus : System.Enum
+      implements IComparable, IFormattable, IConvertible
+      eClashTestStatus_NEW = 0
+      eClashTestStatus_OLD = 1
+      eClashTestStatus_PARTIAL = 2
+      eClashTestStatus_OK = 3
+      eClashTestStatus_NUM = 4
+  enum Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestToleranceType : System.Enum
+      implements IComparable, IFormattable, IConvertible
+      eTOLERANCE_HARD = 0
+      eTOLERANCE_CLEARANCE = 1
+      eTOLERANCE_NUM = 2
+  enum Autodesk.Navisworks.Api.Interop.ComApi.nwEClashTestType : System.Enum
+      implements IComparable, IFormattable, IConvertible
+      eClashTestType_HARD = 0
+      eClashTestType_HARD_CONSERVATIVE = 1
+      eClashTestType_CLEARANCE = 2
+      eClashTestType_DUPLICATE = 3
+      eClashTestType_CUSTOM = 4
+  clash COM types found: 13
+
+  ---- every type that is NOT public whose name holds a word, names only, for the record ----
+  not public types found: 0
+
+  ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----
+  strings found: 0. Strings holding each word: tabular 0, .xsl 0, clash_report 0, reportformat 0
+
+==== Autodesk.Navisworks.Automation.dll ====
+  FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Automation.dll   184088 bytes, file version 22.5.1433.58
+  ASSEMBLY  Autodesk.Navisworks.Automation, Version=22.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484
+  types 534, public 10
+
+  ---- every public type whose name holds a word, whole ----
+  public types found: 0
+
+  ---- every public member of any other public type whose name holds a word ----
+  public members found: 0
+
+  ---- every type that is NOT public whose name holds a word, names only, for the record ----
+  not public types found: 0
+
+  ---- every string in the file holding tabular, .xsl, clash_report or reportformat, case blind ----
+  strings found: 0. Strings holding each word: tabular 0, .xsl 0, clash_report 0, reportformat 0
+
+==== WHERE THE ARGUMENTS OF EVERY PUBLIC WriteReport COME FROM ====
+  public methods named WriteReport: 1
+  Autodesk.Navisworks.Api.Interop.LcClClashReport   method   public static System.Boolean WriteReport(Autodesk.Navisworks.Api.Interop.LcOpState state, Autodesk.Navisworks.Api.Interop.LcClClashGUIProxy guiProxy, Autodesk.Navisworks.Api.Interop.LcClashReportResultSelector selection, System.String name_annotation)   in Autodesk.Navisworks.Clash.dll
+    parameter state: Autodesk.Navisworks.Api.Interop.LcOpState, in Autodesk.Navisworks.Api.dll
+      handed out by Autodesk.Navisworks.Api.Interop.LcOpState   method   public static Autodesk.Navisworks.Api.Interop.LcOpState InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)
+      handed out by Autodesk.Navisworks.Api.Interop.LcOpState   method   public static Autodesk.Navisworks.Api.Interop.LcOpState GetActiveInstance()
+      members handing one out: 2
+    parameter guiProxy: Autodesk.Navisworks.Api.Interop.LcClClashGUIProxy, in Autodesk.Navisworks.Clash.dll
+      ctor     public LcClClashGUIProxy()
+      handed out by Autodesk.Navisworks.Api.Interop.LcClClashGUIProxy   method   public static Autodesk.Navisworks.Api.Interop.LcClClashGUIProxy InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)
+      members handing one out: 1
+    parameter selection: Autodesk.Navisworks.Api.Interop.LcClashReportResultSelector, in Autodesk.Navisworks.Clash.dll
+      ctor     public LcClashReportResultSelector()
+      handed out by Autodesk.Navisworks.Api.Interop.LcClashReportResultSelector   method   public static Autodesk.Navisworks.Api.Interop.LcClashReportResultSelector InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)
+      members handing one out: 1
+    parameter name_annotation: System.String
+
+==== SUMMARY ====
+  Autodesk.Navisworks.Api.dll: public types holding a word 7, other public members holding a word 33, not public types holding a word 3, strings holding tabular 0, .xsl 0, clash_report 1, reportformat 0
+  Autodesk.Navisworks.Clash.dll: public types holding a word 6, other public members holding a word 1, not public types holding a word 8, strings holding tabular 0, .xsl 0, clash_report 0, reportformat 16
+  Autodesk.Navisworks.ComApi.dll: public types holding a word 1, other public members holding a word 0, not public types holding a word 0, strings holding tabular 0, .xsl 0, clash_report 0, reportformat 0
+  Autodesk.Navisworks.Interop.ComApi.dll: public types holding a word 3, other public members holding a word 7, not public types holding a word 0, strings holding tabular 0, .xsl 0, clash_report 0, reportformat 0
+  Autodesk.Navisworks.Automation.dll: public types holding a word 0, other public members holding a word 0, not public types holding a word 0, strings holding tabular 0, .xsl 0, clash_report 0, reportformat 0
+  references that could not be loaded for reflection: none
+  what il-reader.ps1 kept over the whole run, each once, by kind:
+    IL bodies that could not be read: 0
+    opcode bytes that are not an instruction, each ending the read of its body: 0
+    tokens that did not resolve: 0
+    MemberRef rows that did not resolve: 0
+    types whose methods could not be listed: 0
+    types whose members could not be listed: 0
+    assemblies where GetTypes could not load every type: 0
+    metadata that could not be read: 0
+    signatures that could not be read: 0
+    local variable lists that could not be read: 0
+    field types that could not be read: 0
+    constant values that could not be read: 0
+  reads that failed, all kinds together: 0
+
+WHETHER ANY MEMBER LISTED RUNS, AND WHAT IT WRITES, IS UNKNOWN. Nothing here started Navisworks or called a member.
