@@ -1,7 +1,7 @@
 # log
 
 Newest entry at the top.
-## 2026-10-04 The loop, turn 5, F125 a pane of Navisworks is not a dialog, the first pass built and read safe, the second pass built and read by a reviewer, [LEAD FILLS: the breaker's reading]
+## 2026-10-04 The loop, turn 5, F125 a pane of Navisworks is not a dialog, the first pass built and read safe, the second pass built and read by a reviewer and a breaker, nothing blocking under Q93
 
 Nothing under src or tests changed in either pass. Core tests 1756 passed, 0 failed, 0 skipped by
 the pre-commit at the merge of main 3a148e3, before the second pass's first change,
@@ -58,7 +58,7 @@ pass.
   main 6cc0283 merged in after it changed none, so that build stands for 3a148e3. check-locals and
   check-imports pass, turn5\f125b-checks.txt
 - the second pass read under Q93 by a reviewer, VERDICT APPROVE with nothing blocking,
-  turn5\f125b-read-review.txt, and by a breaker, [LEAD FILLS: the breaker's verdict and its file]
+  turn5\f125b-read-review.txt, and by a breaker, VERDICT APPROVE with nothing blocking, turn5\f125b-read-break.txt, read from the files as they stand since it had no shell, its six notes on words and edge cases written as register rows F125-R8 to F125-R13, three checks that found nothing, and one note of what it could not run, and the reviewer's points left by the records pass written as F125-R14
 - register rows F125-R1 to F125-R7 in steps\loop.md, the readings' findings this pass does not
   fix, for F122 the loop tools in wave 4
 - the records made true after the claim-checker read the second pass, turn5\f125b-read-claims.txt.
@@ -81,7 +81,6 @@ pass.
 
 - the second pass's own record lines on the real window, its words for the pane and its AGAIN
   lines, at the first run after F125 merges
-- the breaker's reading of the second pass, [LEAD FILLS]
 
 ### Known bugs
 
