@@ -145,11 +145,16 @@ namespace Federator.Core.Exchange
     /// `AR-INTERIOR` and `ST-SUB` against `ST-SUP` are two pairs of real worksets in this
     /// very project that are one and two letters apart, 5t.
     ///
-    /// SO IT CORRECTS ONE VALUE TO ONE SPELLING, AND ONLY WHERE THERE IS EXACTLY ONE.
-    /// The candidates are the workset names READ OFF THE MODELS, never a list in the
-    /// code. Where two model spellings differ from the matrix by case alone the rule
-    /// REFUSES, leaves the value exactly as it was, and names both, because a rule that
-    /// guesses between two real worksets is worse than a set that finds nothing.
+    /// SO IT CORRECTS ONE VALUE TO ONE SPELLING WHERE THE MODELS CARRY EXACTLY ONE. The
+    /// candidates are the workset names READ OFF THE MODELS, never a list in the code.
+    ///
+    /// AND WHERE THE MODELS CARRY TWO OR MORE IT ASKS FOR EVERY ONE OF THEM, Q102 answered
+    /// on 2026-10-04. Until then a value with two case only spellings was refused and left
+    /// as it was, because a rule that guesses between two real worksets is worse than a set
+    /// that finds nothing. It no longer guesses: the C06 buildings write ME-DUCTWORK and
+    /// ME-Ductwork, so a set asks both as Or groups built the way Q69's are, each group
+    /// copied whole, FR-025, and finds the items of every building whichever it carries.
+    /// A spelling no model was measured carrying is never asked.
     /// </summary>
     public sealed class ValueRewrite
     {
@@ -164,7 +169,7 @@ namespace Federator.Core.Exchange
 
         /// <summary>
         /// Every spelling the MODELS carry that differs from it by case alone. None means
-        /// nothing to correct, one is the correction, and two or more is a refusal.
+        /// nothing to correct, one is the correction, and two or more are all asked, Q102.
         /// </summary>
         public IList<string> Candidates { get; private set; }
 
@@ -175,8 +180,8 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// Whether this is a correction at all. A value the models spell exactly as the
-        /// matrix does needs none, and one with two candidates gets none.
+        /// Whether this is a correction to one spelling. A value the models spell exactly as
+        /// the matrix does needs none, and one with two candidates is asked in both instead.
         /// </summary>
         public bool Corrects
         {
@@ -420,9 +425,10 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// The same, plus the VALUE corrections of Q68: a workset the matrix spells one
-        /// way and every model spells another. Pass null for the last and it is the four
-        /// argument form exactly.
+        /// The same, plus the VALUE corrections of Q68 and Q102: a workset the matrix spells
+        /// one way and every model spells another is corrected to theirs, and one the models
+        /// spell two or more ways is asked in every one of them. Pass null for the last and
+        /// it is the four argument form exactly.
         /// </summary>
         public static CorrectionOutcome Apply(
             string xml,
@@ -515,6 +521,8 @@ namespace Federator.Core.Exchange
 
             if (values != null)
             {
+                List<string> askedInEverySpelling = new List<string>();
+
                 foreach (ValueRewrite value in values)
                 {
                     if (value == null)
@@ -524,13 +532,37 @@ namespace Federator.Core.Exchange
 
                     if (value.Candidates.Count > 1)
                     {
-                        // REFUSED, and both named. The value is left exactly as it was.
+                        // Q102. Every spelling, and once for each workset whatever spelling
+                        // the file asked first, because the first pass already asked them all.
+                        if (askedInEverySpelling.Exists(
+                            done => string.Equals(done, value.From, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            continue;
+                        }
+
+                        askedInEverySpelling.Add(value.From);
+
+                        List<string> spellings = new List<string>(value.Candidates);
+                        spellings.Sort(StringComparer.Ordinal);
+
+                        int asking;
+                        int widened;
+                        text = AskEverySpelling(
+                            text,
+                            one => string.Equals(one, value.From, StringComparison.OrdinalIgnoreCase),
+                            spellings,
+                            out asking,
+                            out widened);
+
                         outcome.Add(
-                            "the value " + value.From + " is left alone",
-                            0,
-                            "the models carry " + value.Candidates.Count + " spellings of it, "
-                                + Listed(value.Candidates)
-                                + ", and a rule that guesses between two real worksets is worse than a set that finds nothing");
+                            "the value " + value.From + " is asked as " + string.Join(" or ", spellings.ToArray())
+                                + ", every spelling the models in this project carry",
+                            widened,
+                            widened > 0
+                                ? null
+                                : asking > 0
+                                    ? "every set asking for it already asks every spelling"
+                                    : "this file does not ask for that value");
                         continue;
                     }
 
@@ -772,13 +804,6 @@ namespace Federator.Core.Exchange
 
             changed = Occurrences(xml, was);
             return changed == 0 ? xml : xml.Replace(was, now);
-        }
-
-        private static string Listed(IList<string> values)
-        {
-            string[] array = new string[values.Count];
-            values.CopyTo(array, 0);
-            return string.Join(" and ", array);
         }
 
         /// <summary>

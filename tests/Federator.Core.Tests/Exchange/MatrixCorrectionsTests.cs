@@ -336,40 +336,49 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Counts[0].Count, Is.EqualTo(121), "the hyphen, measured");
             Assert.That(outcome.Counts[1].Count, Is.EqualTo(7), "one contains and six negated");
 
-            // Q68 on 2026-09-20. Four workset values the matrix spells in capitals and
-            // every model spells in title case, 17 conditions between them, 5t:
-            // ME-DUCTWORK 5, ME-PIPING 5, PL-Domestic Water 6 and ME-EQUIPMENT 1.
-            Assert.That(ValuesChangedIn(outcome), Is.EqualTo(17), "the worksets, measured off the models");
-            Assert.That(outcome.TotalChanged, Is.EqualTo(145), "121 hyphens, 7 conditions and 17 workset values");
+            // Q68 on 2026-09-20 and Q102 on 2026-10-04. Four workset values the C02 models
+            // spell in title case and the C06 models also spell as the matrix does, asked in
+            // both spellings: ME-DUCTWORK 5 conditions, ME-PIPING 5, PL-Domestic Water 6 and
+            // ME-EQUIPMENT 1. And FF-FIRE FIGHTING, 2 conditions, corrected to FF-Fire
+            // Fighting, the one spelling a model was measured carrying, 1B06PK on C06.
+            Assert.That(ValuesChangedIn(outcome), Is.EqualTo(19), "the worksets, measured off the models");
+            Assert.That(outcome.TotalChanged, Is.EqualTo(147), "121 hyphens, 7 conditions and 19 workset values");
 
             Assert.That(outcome.Text, Does.Contain("<condition test=\"contains\" flags=\"0\">"));
             Assert.That(outcome.Text, Does.Contain("<condition test=\"equals\" flags=\"32\">"));
         }
 
         /// <summary>
-        /// The four values the models settle, and the three the rule leaves alone: two
-        /// no model carries a case variant of, and one the models already spell exactly
-        /// as the matrix does. A rule that corrected any of those three would be guessing.
+        /// What the measured spellings do to the client's own matrix since Q102. The four
+        /// values the buildings spell two ways are asked in both, every condition asking one
+        /// now asking each, the one value a single building spells another way is corrected
+        /// to that, and the two the models spell exactly as the matrix does are left alone.
+        /// Until C06 was measured the four were corrected to the C02 spelling, and the sets
+        /// then found nothing in the C06 buildings writing capitals, FR-008.
         /// </summary>
         [Test]
-        public void TheWorksetValuesTheModelsSettleAreCorrectedAndTheOthersAreLeftAlone()
+        public void TheWorksetValuesTheBuildingsSpellTwoWaysAreAskedInBothAndTheRestAsBefore()
         {
             CorrectionOutcome outcome = MatrixCorrections.Apply(
                 Read(Samples.Matrix()), ProjectRenames(), null, ProjectConditions(), ProjectValues());
 
             string said = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
 
-            Assert.That(said, Does.Contain("the value ME-DUCTWORK becomes ME-Ductwork"));
-            Assert.That(said, Does.Contain("the value ME-PIPING becomes ME-Piping"));
-            Assert.That(said, Does.Contain("the value ME-EQUIPMENT becomes ME-Equipment"));
-            Assert.That(said, Does.Contain("the value PL-Domestic Water becomes PL-Domestic water"));
+            Assert.That(said, Does.Contain("the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork"));
+            Assert.That(said, Does.Contain("the value ME-PIPING is asked as ME-PIPING or ME-Piping"));
+            Assert.That(said, Does.Contain("the value ME-EQUIPMENT is asked as ME-EQUIPMENT or ME-Equipment"));
+            Assert.That(said, Does.Contain("the value PL-Domestic Water is asked as PL-Domestic Water or PL-Domestic water"));
+            Assert.That(said, Does.Contain("the value FF-FIRE FIGHTING becomes FF-Fire Fighting"));
 
             Assert.That(said, Does.Contain("the value FP-PIPING is left alone"));
-            Assert.That(said, Does.Contain("the value FF-FIRE FIGHTING is left alone"));
             Assert.That(said, Does.Contain("the value PL-Drainage is left alone"));
 
-            Assert.That(outcome.Text, Does.Not.Contain("ME-DUCTWORK"), "no set still asks in capitals");
-            Assert.That(outcome.Text, Does.Contain("ME-Ductwork"));
+            // Every one of the 5 conditions asking it is now there in both spellings.
+            Assert.That(Occurrences(outcome.Text, "<data type=\"wstring\">ME-DUCTWORK</data>"), Is.EqualTo(5));
+            Assert.That(Occurrences(outcome.Text, "<data type=\"wstring\">ME-Ductwork</data>"), Is.EqualTo(5));
+            Assert.That(Occurrences(outcome.Text, "<data type=\"wstring\">PL-Domestic Water</data>"), Is.EqualTo(6));
+            Assert.That(Occurrences(outcome.Text, "<data type=\"wstring\">PL-Domestic water</data>"), Is.EqualTo(6));
+            Assert.That(outcome.Text, Does.Not.Contain("FF-FIRE FIGHTING"));
         }
 
         /// <summary>How many conditions the VALUE corrections changed, added across them.</summary>
@@ -446,6 +455,61 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// Q102 read off the committed file rather than off the rule that wrote it. Every
+        /// set asking a workset the models carry in two spellings asks both, and every group
+        /// of it still asks for exactly one category, FR-025. Seventeen set and category
+        /// pairs ask one of the four worksets the buildings spell two ways: ME-DUCTWORK 5,
+        /// ME-PIPING 5, ME-EQUIPMENT 1 and PL-Domestic Water 6.
+        /// </summary>
+        [Test]
+        public void TheCommittedFileAsksEveryMeasuredSpellingWithItsCategoryInEveryGroup()
+        {
+            SetBuildPlan plan = SetBuildPlan.From(new ExchangeReader().ReadFile(Samples.CorrectedMatrix()));
+            List<string> measured = new List<string>(RevitWorksets.All());
+            int askedInEverySpelling = 0;
+
+            foreach (PlannedSet set in plan.Buildable)
+            {
+                Dictionary<string, List<string>> spellingsByCategory = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+
+                foreach (IList<PlannedCondition> group in set.Groups())
+                {
+                    List<string> worksets = ValuesOn(group, WorksetProperty);
+
+                    if (worksets.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    List<string> categories = ValuesOn(group, CategoryProperty);
+                    Assert.That(categories.Count, Is.EqualTo(1), set.Name + ": " + set.Describe());
+
+                    string key = categories[0] + "|" + worksets[0].ToLowerInvariant();
+
+                    if (!spellingsByCategory.ContainsKey(key))
+                    {
+                        spellingsByCategory[key] = new List<string>();
+                    }
+
+                    spellingsByCategory[key].Add(worksets[0]);
+                }
+
+                foreach (List<string> asked in spellingsByCategory.Values)
+                {
+                    List<string> family = measured.FindAll(name => string.Equals(name, asked[0], StringComparison.OrdinalIgnoreCase));
+
+                    if (family.Count > 1)
+                    {
+                        askedInEverySpelling++;
+                        Assert.That(asked, Is.EquivalentTo(family), set.Name + ": " + set.Describe());
+                    }
+                }
+            }
+
+            Assert.That(askedInEverySpelling, Is.EqualTo(17));
+        }
+
         private static int Occurrences(string text, string what)
         {
             int count = 0;
@@ -508,27 +572,69 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The refusal, which is the half that keeps this safe. A rule that guesses
-        /// between two real worksets is worse than a set that finds nothing, so the value
-        /// is left EXACTLY as it was and both spellings are named.
+        /// Q102, answered by Bader on 2026-10-04, which replaced the refusal this test pinned
+        /// until then. A value the models spell two ways was left exactly as it was, so the
+        /// set found nothing in the buildings writing either of the others, which is what the
+        /// C06 run showed for ME-DUCTWORK and ME-Ductwork. It no longer guesses and no longer
+        /// refuses: the set asks every spelling a model was measured carrying, each group
+        /// copied whole with its category, FR-025, and both are named in the log. A spelling
+        /// no model carries, the matrix's own here, is not asked.
         /// </summary>
         [Test]
-        public void AValueTheModelsSpellTwoWaysIsRefusedAndBothAreNamed()
+        public void AValueTheModelsSpellTwoWaysIsAskedInBothEachGroupWithItsCategory()
         {
             IList<ValueRewrite> rewrites = ValueRewrite.For(
                 new[] { "EL-FIRE ALARM" },
                 new[] { "EL-Fire Alarm", "EL-Fire alarm" });
 
             Assert.That(rewrites[0].Candidates.Count, Is.EqualTo(2));
-            Assert.That(rewrites[0].To, Is.Null);
+            Assert.That(rewrites[0].To, Is.Null, "there is no one spelling to correct it to");
             Assert.That(rewrites[0].Corrects, Is.False);
 
-            string xml = "<data type=\"wstring\">EL-FIRE ALARM</data>";
+            string xml = WrittenExchange(WrittenSet(
+                "BLD-EL-Fire Alarm Devices", CategoryAndWorkset(0, "Fire Alarm Devices", "EL-FIRE ALARM")));
             CorrectionOutcome outcome = MatrixCorrections.Apply(xml, null, null, null, rewrites);
 
-            Assert.That(outcome.Text, Is.EqualTo(xml), "left exactly as it was");
-            Assert.That(Words(outcome), Does.Contain("EL-Fire Alarm and EL-Fire alarm"));
-            Assert.That(Words(outcome), Does.Contain("worse than a set that finds nothing"));
+            PlannedSet set = PlannedOnly(outcome.Text);
+            List<string> spellings = new List<string>();
+
+            Assert.That(set.Groups().Count, Is.EqualTo(2), set.Describe());
+
+            foreach (IList<PlannedCondition> group in set.Groups())
+            {
+                Assert.That(ValuesOn(group, CategoryProperty), Is.EqualTo(new[] { "Fire Alarm Devices" }), set.Describe());
+                spellings.AddRange(ValuesOn(group, WorksetProperty));
+            }
+
+            Assert.That(spellings, Is.EqualTo(new[] { "EL-Fire Alarm", "EL-Fire alarm" }), "every measured spelling, in Ordinal order");
+            Assert.That(Words(outcome), Does.Contain("the value EL-FIRE ALARM is asked as EL-Fire Alarm or EL-Fire alarm"));
+            Assert.That(outcome.TotalChanged, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Whichever spelling a file asks, the set comes out the same, condition for
+        /// condition, so the old matrix and the corrected one build the same sets, Q104.
+        /// </summary>
+        [Test]
+        public void EitherSpellingComesOutAsTheSameSet()
+        {
+            string[] measured = { "ME-Ductwork", "ME-DUCTWORK" };
+            string capitals = WrittenExchange(WrittenSet("S", CategoryAndWorkset(0, "Ducts", "ME-DUCTWORK")));
+            string titles = WrittenExchange(WrittenSet("S", CategoryAndWorkset(0, "Ducts", "ME-Ductwork")));
+
+            CorrectionOutcome fromCapitals = MatrixCorrections.Apply(
+                capitals, null, null, null, ValueRewrite.For(new[] { "ME-DUCTWORK" }, measured));
+            CorrectionOutcome fromTitles = MatrixCorrections.Apply(
+                titles, null, null, null, ValueRewrite.For(new[] { "ME-Ductwork" }, measured));
+
+            Assert.That(fromTitles.Text, Is.EqualTo(fromCapitals.Text));
+
+            CorrectionOutcome again = MatrixCorrections.Apply(
+                fromCapitals.Text, null, null, null, ValueRewrite.For(new[] { "ME-DUCTWORK", "ME-Ductwork" }, measured));
+
+            Assert.That(again.Text, Is.EqualTo(fromCapitals.Text), "the second run changes nothing");
+            Assert.That(again.TotalChanged, Is.EqualTo(0));
+            Assert.That(Words(again), Does.Contain("already asks every spelling"));
         }
 
         [Test]

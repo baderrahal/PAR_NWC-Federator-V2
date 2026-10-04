@@ -79,3 +79,49 @@ ST-SUB
 ST-SUP
 Shared Levels and Grids
 XX-St_placeholder
+
+# MEASURED on 2026-10-01 off the C06 run of set 03, F116: the names its 22 EXPORT CHECK
+# blocks list on their "worksets seen" lines, steps\runs\03\item1-C06\run-20261001-140037.log,
+# and are not above. A test proves this part is exactly those names. Each of those lines
+# names at most ten worksets and counts the rest, so this is every name they list and NOT
+# every workset C06 carries. The rest are UNKNOWN until a run writes the "model worksets"
+# rows of its tsv, which name every workset of every model in full, F116.
+#
+# THEY ARE WHY Q102 WAS ASKED. 1B06BC and 1B06G1 carry ME-DUCTWORK, ME-EQUIPMENT and
+# ME-PIPING in capitals where the C02 models write ME-Ductwork, ME-Equipment and ME-Piping,
+# and 1B06G1, 1B06K1, 1B06P1 and 1B06PK write PL-Domestic Water where C02 writes
+# PL-Domestic water. Bader's answer on 2026-10-04: a set asks every spelling the models
+# carry of a workset, as an Or row, which MatrixCorrections builds off this list.
+#
+# One of them is EL-Fire alarm written by 1B06PO and 1B06WO with a no-break space, U+00A0,
+# between its two words, which is a different name from the one with a space above.
++LINK-ST-Boundary Wall Layout
++Link-AR-***
+00-EL-LEVELS GRIDS
+ARC-INTERIOR ELEMENTS
+ARC-RVT LINKS
+ARC-SKIN COMPONANTS
+ARC-STAIR AND RAILING
+EL-Cable Tray
+EL-Emergency lighting
+EL-Fire alarm
+EL-Lighting Protection
+ELE-CCTV SYSTEM
+ELE-POWER SYSTEM 1
+ELE-POWER SYSTEM 3
+ELL-INDOOR LIGHTING SYSTEM
+ELP-EARTHING AND LIGHTNING SYSTEM
+EV-CCTV system
+EV-Cctv system
+EV-ICT Containment
+FAE-EMERGENCY LIGHTING SYSTEM
+FAE-FIRE ALARM SYSTEM
+FF-Fire Fighting
+FP-PIPING
+LTC-ACCESS CONTROL SYSTEM
+ME-DUCTWORK
+ME-EQUIPMENT
+ME-PIPING
+PL-Domestic Water
+PL-Drainage Equipment
+TEL-TELECOM SYSTEM

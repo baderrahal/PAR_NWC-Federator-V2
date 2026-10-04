@@ -30,19 +30,21 @@ namespace Federator.Core.Tests.Sets
         }
 
         /// <summary>
-        /// Bucket one. `ME-DUCTWORK` is what his saved sets ask and no model carries it,
-        /// and the nearest the models do carry is `ME-Ductwork`, which is a suggestion
-        /// and never a correction.
+        /// Bucket one. `FF-FIRE FIGHTING` is what the client's matrix asks and no model
+        /// was measured carrying it, and the nearest the models do carry is
+        /// `FF-Fire Fighting`, 1B06PK on C06, which is a suggestion and never a correction.
+        /// This was `ME-DUCTWORK` until F116 added the names the C06 run listed, and two C06
+        /// buildings carry that one.
         /// </summary>
         [Test]
         public void ASetAskingForAValueNoModelCarriesIsNamedWithTheNearestOneThatIs()
         {
             EmptySet why = EmptySets.Why(
-                "a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") });
+                "a/BLD-FF-Plumbing Fixtures", new List<ReadCondition> { Workset("FF-FIRE FIGHTING") });
 
             Assert.That(why.Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
-            Assert.That(why.Asked, Is.EqualTo("ME-DUCTWORK"));
-            Assert.That(why.Nearest, Is.EqualTo("ME-Ductwork"));
+            Assert.That(why.Asked, Is.EqualTo("FF-FIRE FIGHTING"));
+            Assert.That(why.Nearest, Is.EqualTo("FF-Fire Fighting"));
             Assert.That(why.Line(), Does.Contain("NO MODEL IN THIS PROJECT CARRIES IT"));
             Assert.That(why.Line(), Does.Contain("a suggestion and not a correction"));
         }
@@ -97,7 +99,7 @@ namespace Federator.Core.Tests.Sets
         {
             IList<EmptySet> empty = new List<EmptySet>
             {
-                EmptySets.Why("a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") })
+                EmptySets.Why("a/BLD-FF-Plumbing Fixtures", new List<ReadCondition> { Workset("FF-FIRE FIGHTING") })
             };
 
             string block = Joined(EmptySets.Lines(empty, 1677, 1830));
@@ -111,7 +113,7 @@ namespace Federator.Core.Tests.Sets
         {
             IList<EmptySet> empty = new List<EmptySet>
             {
-                EmptySets.Why("a", new List<ReadCondition> { Workset("ME-DUCTWORK") }),
+                EmptySets.Why("a", new List<ReadCondition> { Workset("FF-FIRE FIGHTING") }),
                 EmptySets.Why("b", new List<ReadCondition> { Workset("ME-Piping") }),
                 EmptySets.Why("c", new List<ReadCondition>())
             };
@@ -141,7 +143,7 @@ namespace Federator.Core.Tests.Sets
         {
             IList<EmptySet> empty = new List<EmptySet>
             {
-                EmptySets.Why("a", new List<ReadCondition> { Workset("ME-DUCTWORK") })
+                EmptySets.Why("a", new List<ReadCondition> { Workset("FF-FIRE FIGHTING") })
             };
 
             Assert.That(Joined(EmptySets.Lines(empty, 0, 0)), Does.Contain("UNKNOWN"));
