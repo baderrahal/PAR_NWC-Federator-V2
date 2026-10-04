@@ -106,7 +106,11 @@ and nothing is fixed until a real run on real files shows it fixed.
   tool writes his
   remembered folders into its log, reading only, which Bader allowed, Q87, and that block is
   masked in every copy of a loop log that is committed. Any choice the tool remembers
-  between runs is read before the loop and put back after it
+  between runs is read before the loop and put back after it. F112's tick box
+  SkipClashOffCoordinates, which a run may untick since F126, is not one: the window sets it
+  from AlignmentCheck.DefaultSkipClashOffCoordinates every time it opens,
+  src\Federator.Addin\Ui\FederatorWindow.xaml.cs line 1198 on the branch fix-F112 at e6d6f73,
+  and the one state it reads back at its next open is FolderMemory's picker folders
 - Close what you open. Every Navisworks the loop proves its own, by the rule below, is
   closed, and when the Automation API does not close it, through the handle its adoption
   holds, after its start ticks read equal through that handle. While the handle is open
@@ -146,9 +150,12 @@ and nothing is fixed until a real run on real files shows it fixed.
 - Runs may go while Bader is away and while he works at the machine, he does not click the
   loop's Navisworks, and the display flag is allowed, Q85. The loop's driver, F106, acts only
   on windows of the Navisworks the loop adopted, never clicks, sends no key and never moves
-  the pointer, the loop's own choice so that a run cannot reach what he works on. A locked
-  screen that stops the window or the pictures is recorded as a finding and the loop waits,
-  and the lock is never worked around, Q85
+  the pointer, the loop's own choice so that a run cannot reach what he works on. It leaves
+  every tick box as the window opened it, bar those run.ps1's -Untick names by AutomationId,
+  F126, each toggled through TogglePattern only when it reads On, read back Off before anything
+  is pressed and read Off again before Run, and any other reading stops it, UNTICK, with Run
+  unpressed. A locked screen that stops the window or the pictures is recorded as a finding and
+  the loop waits, and the lock is never worked around, Q85
 - While a Navisworks the loop did not start runs, there is no start, no install and no put
   back. The loop reads the processes every 10 minutes and carries on by itself once none
   runs, Bader's standing rule of 2026-10-04, Q98. run.ps1 only refuses. The waiting is the

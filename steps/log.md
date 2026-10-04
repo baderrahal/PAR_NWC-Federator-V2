@@ -1,6 +1,80 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, F126 the window driver unticks a named tick box, built, its harness waiting for Get-Process Roamer to read 0
+
+Nothing under src or tests changed. Core tests 1756 passed, 0 failed, 0 skipped before, on main
+1ae6771 with F125 merged, and 1756 passed, 0 failed, 0 skipped after the change, by hand,
+turn5\f126-proof\core-tests-before.txt and core-tests-after.txt. No Navisworks was started.
+
+### What was done
+
+- the root cause. Nothing in the loop could untick a tick box, so the test of wave 1 could not
+  run 1A02MM, its ST model on Revit's internal origin, once more with F112's rule switched off by
+  its tick box, Bader's message of 15:42 and Q99 and Q100. tools\probes\drive-window-run.ps1 at
+  1ae6771 took no parameter naming a box, lines 1 to 14, its Toggle only read the state, lines
+  214 to 217, and lines 40 and 41, 338 and 378 left every box as the window opened it, as the
+  baseline's item 1 on C02 shows, steps\runs\04\item1-C02\driver.txt lines 5 and 19.
+  tools\loop\run.ps1 had no such parameter either, lines 1 to 14 and 2177 to 2183
+- measured first, in the window code on the branch fix-F112 at e6d6f73: the box is not
+  remembered. FederatorWindow.xaml.cs line 1198 sets it from
+  AlignmentCheck.DefaultSkipClashOffCoordinates, a constant true at AlignmentCheck.cs line 160,
+  every time the window opens, and the one state the window reads back at its next open is
+  FolderMemory's picker folders. So nothing of it is read before the loop or put back after
+- the driver's -Untick: each box named by its AutomationId found on the four tabs, read through
+  TogglePattern, toggled once only when it reads On, read back, one line per box with its id,
+  its tab, before and after, all before anything is pressed, and read again before Run. A box on
+  no tab, with no TogglePattern, or not reading Off stops it with UNTICK, exit 13, a line naming
+  the box and nothing that runs pressed. run.ps1's -Untick for Run and Check with -Item 1 to 5,
+  refused for a documents read and for an id not the plain shape of an x:Name or named twice,
+  UntickRefusal in nw-guard.ps1, the one rule both keep, handed on through DriverArguments and
+  named on the RUN RECORD line, in a line of the record and in Check, UntickWords
+- the stand-in's window gains the box SkipClashOffCoordinates on 4. Clash, ticked when it
+  opens, every tick and untick and its state at Run written to its events file, and the modes
+  skip-off, skip-sticky and skip-scan
+- the rule in .claude\rules\loop.md, the READMEs of tools\loop and tools\probes, the order line
+  40 and the section F126 in steps\01_next.md, and the register row F126 in steps\loop.md
+- built and checked: the solution with 0 warnings and 0 errors before and after, the stand-in
+  with 0 warnings and 0 errors before and after, the three changed scripts parsing with 0 errors,
+  check-locals and check-imports passing, each in turn5\f126-proof
+- the proof written, turn5\f126-proof\prove-f126.ps1, 50 checks, each way the untick can fail
+  broken on its own and its line asserted to name the box, to run once on main's tools at
+  1ae6771, exported into before-tree, and once on the branch
+
+### What remains
+
+- the harness, both runs, in the first gap between baseline runs. Get-Process Roamer read 1 at
+  23:21:37 and 23:39:19, a Roamer started at 21:17:06, turn5\f126-proof\roamer-reads.txt
+- the reading by a reviewer and a breaker under Q93
+- the lead's run of 1A02MM with -Untick SkipClashOffCoordinates once F112 is merged and main
+  installed, whose driver.txt reads the box toggled Off on the real window
+
+### Known bugs
+
+- none found. Until F112 is installed the real window has no such box, and a run given
+  -Untick SkipClashOffCoordinates stops UNTICK on none of the tabs with nothing pressed, which is
+  the rule working and not a fault
+
+### What comes next
+
+- the harness, then the readings, then the merge, then the run of wave 1's test with the rule off
+
+### Every program started, every file written outside the repo
+
+Started: git, to show, archive, commit and push, and the pre-commit hook it runs, which runs
+check-locals, check-imports, the evidence check and dotnet test. dotnet build for the solution
+twice and the stand-in twice, dotnet test twice by hand, sh for check-locals and check-imports,
+Windows PowerShell 5.1 for the parser, for array tests in the session's scratch folder and for
+the reads of Get-Process Roamer, and tar to unpack main's tools. No Navisworks, no stand-in and
+nothing installed.
+
+Written outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop\turn5\f126-proof:
+core-tests-before.txt, core-tests-after.txt, sln-build-before.txt, sln-build-after.txt,
+standin-build-before.txt, standin-build-after.txt, check-locals.txt, check-imports.txt,
+parse.ps1, roamer-reads.txt, prove-f126.ps1, before-tree with main's tools at 1ae6771, and
+standin-bin-before and standin-bin, the stand-in built before and after. Also
+turn5\f126-msg-1.txt, the commit message, and turn5\pr-f126.md, the draft body.
+
 ## 2026-10-04 The loop, turn 5, F125 a pane of Navisworks is not a dialog, the first pass built and read safe, the second pass built and read by a reviewer and a breaker, nothing blocking under Q93
 
 Nothing under src or tests changed in either pass. Core tests 1756 passed, 0 failed, 0 skipped by
