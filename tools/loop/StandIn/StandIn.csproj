@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The stand-in for Navisworks that tools\loop\prove-run.ps1 starts, F103. It is NOT
+    Navisworks and loads nothing of it. It is named Roamer.exe so every guard that reads
+    the process list by the name Roamer sees it, and it is its own small program, because
+    a renamed copy of a system program is what security tools on a managed machine flag.
+    Not part of the solution and not part of the bundle, and nothing installs it. Built
+    the same way tools\probes\ViewpointProbe is:
+
+        dotnet build tools\loop\StandIn\StandIn.csproj -c Release
+
+    It references Federator.Core built from this repo, so the log it writes is written by
+    the tool's own RunLog, which is how M1 reads what the real prune does.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>Roamer</AssemblyName>
+    <RootNamespace>NwcFederatorLoop.StandIn</RootNamespace>
+    <OutputType>WinExe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- F106: the window role, ToolWindow.cs, is a WPF window built in code with no XAML,
+       so these four are all it adds. -->
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Federator.Core\Federator.Core.csproj" />
+  </ItemGroup>
+
+</Project>

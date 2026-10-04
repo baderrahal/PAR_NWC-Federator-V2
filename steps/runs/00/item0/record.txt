@@ -1,0 +1,108 @@
+RUN RECORD, run.ps1 sha256 C113E67BEB75C81885B960C02FBF8EB7965395CDF2455E5E48B2D4E27608E325, nw-guard.ps1 sha256 F2BAFEBBDA75F13FC2A8261717E47469F05E9332C190B10E848EB36763AC577A, -Mode Run -Set 00 -Item 0 -Stamp be0b9b37, the start with no window
+  the run folder "%LOCALAPPDATA%\NwcFederatorLoop\runs\00\item0", every line from here is also in its record.txt
+  the watchdog started, constructor deadline 300 s, ceiling 43200 s from adoption
+---- check 13, his logs folder ----
+  32 files listed into logs-before.txt, 0 copied into logs-backup and read back
+---- check 14, his AutoSave folder ----
+  196 files listed into autosave-before.txt, 196 copied into autosave-backup and read back. Nothing is ever written into his AutoSave folder
+---- check 15, the settings backup ----
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\runs\00\item0\settings\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 196 AutoSave files listed and not copied
+  the tool's own logs folder listed: 32 files
+---- M5 before, the write times of the keys under HKCU\Software\Autodesk ----
+  6670 keys read
+---- check 17, keep awake ----
+  SetThreadExecutionState(ES_CONTINUOUS, ES_SYSTEM_REQUIRED, ES_DISPLAY_REQUIRED) returned 0x80000000 on native thread 25304
+---- check 18, the last read before the constructor ----
+  no start this probe could not prove is recorded
+  no Roamer is running
+==== THE START ====
+  11:29:42.812  calling new NavisworksApplication() on the main thread
+  the constructor RETURNED after 92.55 s
+  Roamer processes new since step 2: 1
+    pid 42064, started 11:29:42.865, parent 8 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 42064, and the start ticks read again through it are equal
+  ADOPTED, pid 42064, start ticks UTC 639263537828655329, held through its handle
+  Visible set True, read back True
+11:31:26  t+103s  MONITOR started, a pass every 15 s, hang limit 300 s, fixed hold 360 s
+11:31:26  t+104s  SAMPLE processor 102.203 s
+11:31:26  t+104s  DIALOG: class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Untitled - Autodesk Navisworks Manage 2025", owner 855918, owner enabled True, text "View0" "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" and 29 more visible children not read
+11:31:26  t+104s  SESSION LOCK unlocked
+11:31:41  t+119s  SAMPLE processor 102.781 s, 0.578 s since the last pass
+11:31:56  t+134s  SAMPLE processor 103.141 s, 0.359 s since the last pass
+11:32:11  t+149s  SAMPLE processor 103.516 s, 0.375 s since the last pass
+11:32:26  t+164s  SAMPLE processor 103.938 s, 0.422 s since the last pass
+11:32:26  t+164s  SESSION LOCK unlocked
+11:32:26  t+164s  HEARTBEAT the log none, its last line "", processor 103.938 s, the clocks have not started, there is no tool's log, the watchdog's last line: 11:31:26.101  t+113.9s  Roamer 42064 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025" text: "View0" "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" and 29 more visible children not read
+11:32:41  t+179s  SAMPLE processor 104.188 s, 0.250 s since the last pass
+11:32:56  t+194s  SAMPLE processor 104.656 s, 0.469 s since the last pass
+11:33:11  t+209s  SAMPLE processor 105.047 s, 0.391 s since the last pass
+11:33:27  t+224s  SAMPLE processor 105.422 s, 0.375 s since the last pass
+11:33:27  t+224s  SESSION LOCK unlocked
+11:33:27  t+224s  HEARTBEAT the log none, its last line "", processor 105.422 s, growth 1.484 s, the clocks have not started, there is no tool's log, the watchdog's last line: 11:33:23.726  t+231.5s  new process AdskLicensingInstHelper pid 30500, parent 26088 GenuineService.exe, started 11:33:16.962, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:33:42  t+239s  SAMPLE processor 105.859 s, 0.438 s since the last pass
+11:33:57  t+254s  SAMPLE processor 106.281 s, 0.422 s since the last pass
+11:34:12  t+269s  SAMPLE processor 106.563 s, 0.281 s since the last pass
+11:34:27  t+285s  SAMPLE processor 106.969 s, 0.406 s since the last pass
+11:34:27  t+285s  SESSION LOCK unlocked
+11:34:27  t+285s  HEARTBEAT the log none, its last line "", processor 106.969 s, growth 1.547 s, the clocks have not started, there is no tool's log, the watchdog's last line: 11:33:23.726  t+231.5s  new process AdskLicensingInstHelper pid 30500, parent 26088 GenuineService.exe, started 11:33:16.962, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:34:42  t+300s  SAMPLE processor 107.250 s, 0.281 s since the last pass
+11:34:57  t+315s  SAMPLE processor 107.703 s, 0.453 s since the last pass
+11:35:12  t+330s  SAMPLE processor 108.172 s, 0.469 s since the last pass
+11:35:27  t+345s  SAMPLE processor 108.328 s, 0.156 s since the last pass
+11:35:27  t+345s  SESSION LOCK unlocked
+11:35:27  t+345s  HEARTBEAT the log none, its last line "", processor 108.328 s, growth 1.359 s, the clocks have not started, there is no tool's log, the watchdog's last line: 11:35:22.959  t+350.8s  new process AdskLicensingInstHelper pid 45260, parent 26088 GenuineService.exe, started 11:35:17.531, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:35:42  t+360s  SAMPLE processor 108.750 s, 0.422 s since the last pass
+11:35:57  t+375s  SAMPLE processor 108.969 s, 0.219 s since the last pass
+11:36:13  t+390s  SAMPLE processor 109.438 s, 0.469 s since the last pass
+11:36:28  t+405s  SAMPLE processor 109.531 s, 0.094 s since the last pass
+11:36:28  t+405s  SESSION LOCK unlocked
+11:36:28  t+405s  HEARTBEAT the log none, its last line "", processor 109.531 s, growth 1.203 s, the clocks have not started, there is no tool's log, the watchdog's last line: 11:36:27.408  t+415.2s  new process AdskLicensingInstHelper pid 45516, parent 26088 GenuineService.exe, started 11:36:17.299, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:36:43  t+420s  SAMPLE processor 109.922 s, 0.391 s since the last pass
+11:36:58  t+435s  SAMPLE processor 110.266 s, 0.344 s since the last pass
+11:37:13  t+451s  SAMPLE processor 110.766 s, 0.500 s since the last pass
+11:37:28  t+466s  SAMPLE processor 111.141 s, 0.375 s since the last pass
+11:37:28  t+466s  SESSION LOCK unlocked
+11:37:28  t+466s  HEARTBEAT the log none, its last line "", processor 111.141 s, growth 1.609 s, the clocks have not started, there is no tool's log, the watchdog's last line: 11:37:21.876  t+469.7s  new process AdskLicensingInstHelper pid 45672, parent 26088 GenuineService.exe, started 11:37:16.771, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+11:37:28  t+466s  the fixed hold of 360 s from adoption is reached
+11:37:28  t+466s  MONITOR stopped
+==== THE RUN ENDED: HOLD ====
+  11:37:28.759  calling Dispose()
+  Dispose returned after 0.49 s
+  the adopted process reads gone 8.9 s after Dispose returned
+==== FINALLY ====
+  watchdog passes 749, longest pass 9643 ms, longest gap 10157 ms, error lines 0, early fails 0, runspace errors 0, lines it could not write 0, forced: no
+---- M5, what the start wrote outside the loop folder, read before the put back ----
+  keys under HKCU\Software\Autodesk whose write time changed, appeared or went: 7. Files listed in m5.txt of the run folder, which stays out of the evidence until it is masked
+  %APPDATA%\Autodesk: 11 files written at or after the call
+  %APPDATA%\Microsoft\Windows\Recent: 1 files written at or after the call
+  %LOCALAPPDATA%\Autodesk: 22 files written at or after the call
+  %PROGRAMDATA%\Autodesk: 7 files written at or after the call
+  %TEMP%: 19 files written at or after the call
+---- starts the loop could not prove ----
+  none
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the AutoSave compare reads autosave-before.txt back, 196 files
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40647207684915  new QWord 40651946609586
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 94  new DWord 95
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 153  new DWord 154
+  22.0\CER\22.5.1433.58  uptime  old QWord 2357332187500  new QWord 2358512656250
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,2064,84,1632,877"
+  registry: 5 values or keys differ from the backup
+  registry: 5 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 63857 bytes, sha256 629F39EDC82E, written 2026-09-30 09:57:53  new 65115 bytes, sha256 9E8BA457135E, written 2026-09-30 11:37:29
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 203D761BFDE5, written 2026-09-30 09:57:52  new 40079 bytes, sha256 05005DEE5B1F, written 2026-09-30 11:37:29
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+---- his logs folder, after ----
+  logs-after.txt equals logs-before.txt, name for name, size, write time, sha256 and attributes: True
+  keep awake OFF returned 0x80000003 on native thread 25304. ON was thread 25304. Same thread True, returned 0x80000003 True
+  lines that could not be written to record.txt: 0, by the monitor: 0
+VERDICT: RAN, with 1 DIALOG findings

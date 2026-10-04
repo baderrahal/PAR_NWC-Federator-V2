@@ -4645,6 +4645,363 @@ look alike and the answers are opposite, which is exactly why this is written do
 rather than re-argued later.
 
 
+## 5z-d. CAN A SCRIPT START NAVISWORKS WITH NO CLICK AND CLOSE ONLY WHAT IT STARTED, MEASURED 2026-09-28
+
+F100, Phase 1 item 1 of the loop, on Bader's Parsons machine. The first measurement of the
+automation API on this machine. 5j used the same API on the machine of 2026-09-19, and how
+it was started there was never recorded.
+
+THE QUESTION. Can a PowerShell script start Navisworks Manage 2025 with no click through
+`Autodesk.Navisworks.Api.Automation`, know the process id of the Navisworks it started,
+open a copy of one NWC, load a plugin assembly with `AddPluginAssembly`, and quit? If it
+can, `tools\loop\run.ps1` drives each run through this API with `ExecuteAddInPlugin`, and
+the no-click entry is an AddInPlugin. If it cannot, run.ps1 starts Roamer.exe itself and
+drives the window.
+
+THREE RUNS, ONE KEPT.
+
+- RUN 1 at 12:27, with the probe committed in 464f79f. Its result file was replaced. Its
+  work folder is kept at `%LOCALAPPDATA%\NwcFederatorLoop\probes\automation-start-run1-20260928-1227`,
+  and it holds the only registry export taken before any run. After it, BY HAND AND NOT BY
+  THE PROBE, the Recent File List, MainWindow and PluginOptions keys were put back from
+  that export with `reg import`, a write outside the loop folder. That probe compiled its
+  window reader with Add-Type, and what the compiler wrote under %TEMP% was not recorded
+- The reviewer and the breaker read run 1, and the probe was rewritten from their list:
+  the ownership rule below, the settings backup and put back, and every claim read off
+  the result
+- RUN 2 at 13:11, with the rewrite, passed all six steps and showed two faults in the
+  probe. Its folder, its result and the probe as it ran are kept at
+  `%LOCALAPPDATA%\NwcFederatorLoop\probes\automation-start-run2-20260928-1311`, and the
+  lines below are of `automation-start-result-run2.txt` there. It tried to copy its backup
+  over `CommCenter\en-US\InfoCenter.log`, whose content it could not read at the end, and
+  Windows refused the write as a sharing violation, lines 549 to 551, so nothing was
+  written. And two watchdog passes threw "Cannot convert null to type System.DateTime",
+  lines 441 and 459. Read off the probe as it ran, kept beside that result, each throw was
+  one new process whose start time read as nothing, marked seen before the throw, so it
+  was not recorded at that pass. A process that is not a Roamer was never recorded after
+  that. A Roamer would be recorded again once its start time read, because its key held
+  the start time. So up to two processes went unrecorded, and which is UNKNOWN. Both
+  faults were fixed
+- RUN 3 at 13:17 is `tools\probes\automation-start-result-20260928.txt`, the output of one
+  run of the probe as it was then, untouched but for three lines masked on 2026-09-29 by
+  F102's tools\loop\mask-evidence.ps1, pull request 76: the machine name on line 1 and the licensing agent's ids on
+  lines 446 and 447. Its line 3 carries the sha256 of that probe,
+  38C28E1C3C2756252523E4745FC5C79285E53CEBD6452AB85090117A4EC66EA5
+- FIX LIST 2, later on 2026-09-28, changed the probe again, with the lead's decisions D1 to
+  D4. Nothing is closed before adoption, and a start the probe cannot prove is written to
+  `%LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt` for later runs to refuse on.
+  Settings are put back only when no other Navisworks ran. The work folder is renamed,
+  never emptied. THE CHANGED PROBE HAS NOT RUN. Under D4 it runs only when no Navisworks
+  the loop did not start is running, and Bader's pid 34668 was running, so its run waits.
+  Nothing below measures the changed probe
+- FIX LIST 3, the third and last fix attempt, changed the probe once more with the lead's
+  decisions E1 to E8. Its `-ReflectionOnly` output, which starts nothing, is
+  `tools\probes\automation-start-reflection-20260928.txt`, and its line 3 carries that
+  probe's sha256, B122822429D8F97D60DD2BF9E8D152905AAE5FA2ECEEAFCFD63E41BA974573D8. Lines
+  below marked REFLECTION are of that file. Its full run still waits for 34668, which was
+  running at 14:36:37
+- F100 went to the form after three fix attempts. Bader answered A on 2026-09-29, Q79, and
+  closed 34668. FIX ATTEMPT 4, commit 0a89d73, fixed the seven faults of the fourth reading
+  and put the rule that no start is made while any Navisworks runs into code. A reviewer
+  and a breaker read it and both approved, finding no fault of the seven left and no new
+  fault inside attempt 4
+- RUN 4 at 11:35 on 2026-09-29 is `tools\probes\automation-start-result-20260929.txt`, the
+  output of one run of the attempt 4 probe, sha256 9CC1987B on its line 3, with the machine
+  name masked on line 1 and nothing else changed. It is set out under RUN 4 below. Run 3's
+  file is kept with the licensing agent's two ids and the machine name masked, every line
+  where it was
+
+Every claim below names the line of run 3's result behind it, or reads UNKNOWN, except under
+RUN 4, whose lines are of run 4's result.
+
+**RUN 4, THE ATTEMPT 4 PROBE, ALL SIX STEPS PASSED**, lines 551 to 556, 125 s in all.
+
+```
+                                                                              result line
+step 2  no start recorded as unproved, no Roamer running                      396, 397
+        the settings backed up: the 22.0 key, 303 keys and 1243 values, and
+        9 files, 196 AutoSave files listed and not copied                     401 to 403
+        the last read before the constructor, no Roamer running               406, 407
+step 3  the constructor RETURNED after 83.16 s                                411
+        one new Roamer, pid 33752, parent 1804 svchost.exe, -Embedding        413, 414
+        adopted, all four conditions True                                     415, 416
+        it started 0.06 s after the call began                                417
+        Visible read False, set True read True, set False read False          420, 421, 424
+step 4  OpenFile of the copy RETURNED after 1.73 s                            431
+        SaveFile wrote 29765 bytes, after the call began                      434, 435
+step 5  AddPluginAssembly RETURNED after 0.006 s                              442
+        ExecuteAddInPlugin NOT called                                         444
+step 6  Dispose RETURNED after 0.40 s                                         448
+        pid 33752 gone 8.5 s after Dispose returned, not forced               449
+the watchdog forced nothing, 138 passes, longest gap 10960 ms, no errors      453, 454
+settings: no other Navisworks ran, 36 registry values put back, 0 keys
+        made again, 0 failed, and 2 files put back reading their backup's
+        sha256, each write after a last check                                 494, 531, 532, 536 to 538
+AutoSave files added, changed, gone or unreadable: 0                          539
+```
+
+Run 4 agrees with runs 1 to 3 on every number they share: a constructor of 82.75 to 110.02 s
+against 83.16 s, and a close by Dispose 8.0 to 9.3 s after it returned against 8.5 s. It is
+the first run whose put back was made with no other Navisworks running, so it is the first
+that measures D2 as written. It printed NO LICENSING ID: attempt 4 prints no command line of
+a process that is not a Roamer. The two licensing agents the Roamer started, pids 40156 and
+15536, are named by pid and parent only, lines 462 and 463. The result reads 15536 exited,
+line 478, and whether 40156 had exited by the end UNKNOWN, line 477. A Get-Process by the
+lead after the run did not list it, and that read is kept in no file.
+
+HOW. `tools\probes\probe-automation-start.ps1`, Windows PowerShell 5.1, 64 bit, STA:
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\probes\probe-automation-start.ps1 -Out tools\probes\automation-start-result-20260928.txt
+```
+
+How the add-in it loads was built is not in the result. The result carries only its stamp
+and its write time, line 424: `1.0.0.0 2cc8045c+edits built 2026-09-28 12:14:32`.
+`+edits` says the working tree held a change when it was built, and not which change.
+
+**THE ANSWER IS YES. ALL SIX STEPS PASSED**, lines 563 to 569.
+
+```
+                                                                              result line
+step 2  Roamer 34668, started 09:33:44, command line holds -Embedding
+        or -Automation: no                                                    382
+step 3  the constructor RETURNED after 82.75 s                                395
+        one new Roamer, pid 50204, parent id 1328 read as svchost.exe         397
+        command line "...\Roamer.exe" -Embedding                              398
+        adopted, all four conditions True                                     399, 400
+        Visible read False, set True read True, set False read False          404, 405, 408
+step 4  OpenFile of the copy RETURNED after 1.65 s                            415
+        SaveFile wrote 29762 bytes, after the call began                      419
+step 5  AddPluginAssembly RETURNED after 0.008 s, no exception                426
+step 6  Dispose RETURNED after 0.29 s                                         432
+        pid 50204 gone 8.0 s later, not forced                                433
+end     pid 34668 state same, never touched                                   471
+```
+
+1. STEP 1, THE DLL, 184,088 bytes, 22.0.0.0, PE32Plus AMD64, lines 6 to 9. Two exception
+   types, `AutomationException` and `AutomationDocumentFileException`, and one class that
+   does anything, `NavisworksApplication`, IDisposable, lines 32 to 68:
+
+   ```
+   public NavisworksApplication()
+   public System.Boolean Visible { get; set }
+   public System.Void AddPluginAssembly(System.String fileName)
+   public System.Void AppendFile(System.String fileName)
+   public System.Void CreateCache(System.String fileNameToCache)
+   public System.Void DisableProgress()
+   public System.Void Dispose()
+   public System.Void EnableProgress()
+   public System.Int32 ExecuteAddInPlugin(System.String pluginId, params System.String[] parameters)
+   public static NavisworksApplication GetRunningInstance()
+   public System.Void OpenFile(System.String fileName, params System.String[] moreFiles)
+   public System.Void Print(), and three more taking printer, driver and port
+   public System.Void SaveFile(System.String fileName)
+   public System.Void StayOpen()
+   public static NavisworksApplication TryGetRunningInstance()
+   ```
+
+   The other public types are C++ runtime structs with no members.
+
+2. WHICH BRANCH THE CONSTRUCTOR TAKES, off the IL. The public constructor pushes
+   `ldc.i4.0`, false, into `Init`, line 140, and `GetRunningInstance` pushes `ldc.i4.1`,
+   line 144. In `Init`, `ldarg.1` then `brfalse.s IL_0048`, lines 226 and 227, and
+   IL_0048 loads "Failed to startup Navisworks" and calls the native
+   `Bridge.StartupNavisworks`, lines 234 and 237. True falls through to
+   `Bridge.GetRunningNaviswork`, line 231. So the public constructor takes the
+   StartupNavisworks branch. What that native call does is not IL and is UNKNOWN beyond
+   what follows
+
+3. WHICH COM CLASS AND WHO SERVES IT. The DLL carries the 16 bytes of
+   `{81920959-1e7e-5599-a1d1-e67aeced44df}` at offsets 49920 and 49952, line 332. Run 3
+   searched the file for import NAMES, lines 333 to 337, and printed GetActiveObject as
+   absent. That search cannot see an import made by ordinal. The DLL's import table,
+   REFLECTION lines 340, 341, 345 and 346, shows `CoCreateInstance` imported by name from
+   ole32.dll, AND `GetActiveObject` imported from OLEAUT32.dll as ordinal 35, named off
+   OLEAUT32's own export table. That CLSID's ProgID is `Navisworks.Document.22`
+   and its LocalServer32 is Roamer.exe, lines 328 and 330. In `CommandLineParser`,
+   `ParseOption` stores `COMAutomationStartup` after matching `"Embedding"` or
+   `"Automation"`, line 340, and that is the one store in CommandLineParser, line 359.
+   In Roamer.exe, `NetRoamer.Program.MainImpl` hands it to
+   `InitDll.InitialiseErrorHandling` as `is_automated`, line 363, and copies it into
+   `InitialiseResourcesConfig.COMAutomationStartup`, line 367. THE READ COVERS
+   CommandLineParser's methods and NetRoamer.Program's methods and nothing wider. What
+   the native initialiser does with the field is UNKNOWN
+
+4. WHY STEP 3 DID NOT REACH BADER'S NAVISWORKS ON THIS RUN. Pid 34668's command line holds
+   neither option, read through Win32_Process, line 382, and the probe would have stopped
+   before the constructor if it had held either. The one new Roamer came with `-Embedding`,
+   and its parent id was held by svchost.exe when read, lines 397 and 398, which is the
+   shape of a COM local server start. Run 3's probe named a parent without checking that
+   it started before the child, so that svchost.exe was the parent is UNKNOWN.
+   ON THIS RUN the constructor started a new Roamer and left 34668 alone. That it ALWAYS
+   does is UNKNOWN. Runs 1 and 2 did the same. Run 1's result is in commit 464f79f and
+   run 2's is in its kept folder
+
+5. STEP 3, THE START. 82.75 s from the call to the return, line 395. Roamer started 0.04 s
+   after the call and 82.71 s before the return, line 401. Two `AdskLicensingAgent` with
+   `--no-gui` show pid 50204 as their parent, lines 446 and 447, and two
+   `AdskLicensingInstHelper` show 26520 as theirs, read as `GenuineService.exe`, lines 445
+   and 451. Run 3's probe named those parents off a read made before any check that the
+   parent started before the child, so the names are what held those ids when read, and
+   that they were the parents is UNKNOWN. All four had exited by the end, lines 465 to
+   468. An untitled WinForms window of 50204 was visible from 13:18:36 to
+   about 13:18:40, before Visible was touched, lines 448 and 449. Set to True, the main
+   window `Untitled - Autodesk Navisworks Manage 2025` showed, lines 406 and 407, hid once
+   and came back while the call setting Visible to True was running, lines 450 to 453, and
+   went when Visible was set to False, lines 408, 409 and 454. From the read before setting
+   Visible to the read back after setting it True took 20.8 s, lines 404 and 405, 1.5 s of
+   it a sleep the probe makes before reading back.
+   `Process.MainWindowHandle` read 0 every time it was read, even while the window showed,
+   lines 402, 405 and 408. NO WINDOW OF CLASS #32770 WAS SEEN at any watchdog pass or any
+   read of the main thread, lines 403 to 457. The watchdog made 170 passes, the longest
+   8311 ms and the mean 217 ms, each followed by 500 ms of sleep, line 438, so a window
+   shown for less than that can have been missed. The watchdog saw 50204 at 13:17:28.858
+   with no readable start time, and at 13:17:29.403 with 13:17:20.475, lines 442 and 443.
+   So a Roamer's start time can read as nothing at one pass and read at the next. Why is
+   UNKNOWN. Adoption needs one that reads
+
+6. THE PROCESS ID IS ADOPTED, NEVER GUESSED. Adopted only when all four hold: the
+   constructor returned without throwing, exactly one Roamer is new since step 2, it
+   started at or after the call, and its command line holds -Embedding. All four read True,
+   line 399. Its parent id was held by svchost.exe when read, not by the script, line 397,
+   and the main window handle reads 0, line 402, so neither can find it
+
+7. STEP 4, THE OPEN. The smallest NWC in the source copy,
+   `NWC\C06\1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc`, 27,291 bytes, copied into the work
+   folder with its sha256 matching, lines 412 and 413. `OpenFile` is void and returned
+   after 1.65 s, line 415. What was open was saved with `SaveFile` to an NWD in the work
+   folder, which was created at the start of that run, line 379, so it held nothing
+   older: 29,762 bytes, written 13:19:13.466 after the call began at 13:19:13.442, line
+   419. The copy's sha256 did not change, line 420. A
+   window titled `Working...`, class `HwndWrapper[Roamer.exe;ProgressDialog;...]`, was
+   visible during the open and during the save although Visible was False, lines 455 and
+   457
+
+8. STEP 5, THE PLUGIN. `AddPluginAssembly` with
+   `src\Federator.Addin\bin\Release\net48\Federator.Addin.dll` returned after 0.008 s and
+   threw nothing, line 426. It is void. `ExecuteAddInPlugin` was NOT called, line 428,
+   because the tool's own plugin opens its window, so nothing here shows the assembly was
+   loaded or its plugins registered
+
+9. STEP 6, THE QUIT. `Dispose` returned after 0.29 s, line 432, and pid 50204 was gone
+   8.0 s later without being forced, line 433. The finally found nothing to close, line
+   436, and the watchdog forced nothing, line 437
+
+**BADER'S SETTINGS, BACKED UP, COMPARED AND PUT BACK BY THE PROBE.** Before the start it
+exported `HKCU\Software\Autodesk\Navisworks Manage\22.0` and read 303 keys and 1243 values,
+lines 386 and 387, and copied 8 of the 9 files outside AutoSave under
+`%APPDATA%\Autodesk\Navisworks Manage 2025`, line 390. The ninth,
+`CommCenter\en-US\InfoCenter.log`, could not be read at the start, line 389, nor at the
+end, and was not written, line 550. Its size and write time were the same at both ends.
+After pid 50204 was gone, every value that differed was printed with its old and new
+value and put back, lines 476 to 547:
+
+```
+                                        old                     new                     line
+CER\22.5.1433.58  SessionStartCount     153                     154                     480
+CER\22.5.1433.58  SessionCleanCloseCount 93                     94                      478
+CER\22.5.1433.58  uptime, calUptime     both grew                                       476, 482
+MainWindow  Placement                   "2,0,0,1632,969"        "0,-1920,-55,1632,877"  484
+PluginOptions  DefaultPlugin            "LcOpNwcPlugin"         "lcodpody"              486
+Recent File List 1                      his entry B5824C527A99  the probe's saved NWD   488 to 492
+Recent File List 2                      his entry A0FAF7B3CDCD  the probe's NWC copy    500 to 504
+Recent File List 3 to 10                each took the entry two above it                494 to 498, 506 to 546
+```
+
+The Recent File List paths print as their file name and a sha1 of the path, so where
+each entry went can be followed without printing where it lives. His old entries 9 and
+10, sha1 4C0D86461D9C and B1CCD34DBC72, are in no new entry, so they had fallen off the
+list. 36 values or keys were put back, 0 failed, and 0 still differed when read again, line 548.
+None of the 8 files backed up had changed content, line 551. AutoSave had no file added,
+changed or gone, line 552. The tool's own logs folder had none, line 553.
+
+WHO WROTE THOSE VALUES, AND WHEN, IS UNKNOWN. The probe compares before and after only,
+and pid 34668 ran the whole time, lines 471 and 475. The Recent File List names the
+probe's own NWD and NWC copy, which points at 50204, and that is still not a measurement of
+the writer. Whether 34668 writes its own settings when it closes, over what was put back,
+is UNKNOWN. Line 475 says so, and it is the probe's printed assumption, not a measurement.
+
+RUN 3 PUT BACK WHILE 34668 WAS RUNNING, line 475, which the lead's D2 has since ruled out.
+The probe cannot tell a change its own Navisworks made from one 34668 made, so a put back
+with another Navisworks running can revert that one's change and log it as clean. Whether
+run 3's put back reverted any change of 34668's is UNKNOWN. The changed probe writes
+nothing unless no other Navisworks ran from the backup to the put back.
+
+**NAMED LIMITS**, the lead's E8, said rather than fixed.
+
+- A Navisworks that starts and exits inside one gap between two watchdog passes is not
+  seen by the settings check. Run 3 did not print the gap. Its longest pass was 8311 ms,
+  each followed by 500 ms of sleep, line 438, so its longest gap was at least 8811 ms. The
+  changed probe prints the longest gap. A Navisworks start is measured at over ten
+  seconds: run 3's constructor took 82.75 s, line 395, and its Navisworks process started
+  0.04 s after the call and 82.71 s before the return, line 401
+- The Automation DLL imports GetActiveObject, by ordinal, REFLECTION lines 341 and 346,
+  and the IL of the public constructor passes false to Init, whose false branch calls
+  StartupNavisworks, REFLECTION lines 141 and 227 to 238. That is all that is read of
+  whether a Navisworks already running can be reached. Which native call StartupNavisworks
+  makes is UNKNOWN
+- When Dispose throws and the probe then closes the process by its id, the finalizer
+  stays armed, and at the probe's exit it calls Bridge.Terminate, run 3 lines 272 to 286,
+  against a process that is gone. What that does is UNKNOWN
+
+**WHAT THIS DECIDES.**
+
+- run.ps1 can start and quit Navisworks through this API with no click
+- run.ps1 adopts its Navisworks by the four conditions of item 6 and by nothing weaker,
+  never by parent and never by main window handle, and closes nothing it has not adopted,
+  reading the start time again before any close. A start it cannot prove is never closed,
+  it is written down, and later runs refuse while it runs, the lead's D1 and E3. It counts
+  only new Roamers whose command line holds the word embedding, or cannot be read, and
+  leaves one started by hand alone, the lead's E2. It sends no message to any window
+  before adoption, the lead's E1
+- the no-click entry can be an AddInPlugin called through
+  `ExecuteAddInPlugin(string pluginId, params string[] parameters)`, which returns an int
+  and exists on this machine, line 428. Whether it runs a plugin added with
+  AddPluginAssembly here is the first thing the entry's own run shows
+- run.ps1 backs up the settings named above around every run, and stops before its start
+  when the backup is not whole, the lead's E5. It puts them back only when its watchdog's
+  record proves no other Navisworks ran from the backup to the put back and its own is
+  gone, the lead's D2 and E4, lists the Roamers again before each write and stops at any,
+  writes only what still reads as the compare read, and never writes a file whose content
+  it cannot read
+- run.ps1 runs only when no Navisworks the loop did not start is running, the lead's D4
+
+**STILL UNKNOWN.**
+
+- whether the constructor ALWAYS starts a new Roamer. Three runs did, one kept
+- whether a constructor reaches a Roamer already running with -Embedding or -Automation.
+  The probe refuses before the constructor when one is, so it has never been tried
+- whether any code outside CommandLineParser and NetRoamer.Program sets the automation
+  start, and what the native initialiser does with it
+- whether AddPluginAssembly loaded the assembly and registered its plugins
+- whether ExecuteAddInPlugin runs a plugin added that way on this machine, and what its int
+  means
+- whether the installed bundle was loaded in the automation instance as well, and what
+  happens when it and the added assembly carry the same plugin id
+- what a start usually costs. The kept run took 82.75 s
+- whether DisableProgress keeps the `Working...` window off the screen
+- what the untitled window seen before Visible was touched is, and why the main window hid
+  and came back once while Visible was being set to True
+- whether a window shown for less than a watchdog pass and its sleep was missed
+- whether the start works with the screen locked or nobody signed in
+- what StayOpen does. It was not called
+- who wrote each changed setting, and when, and whether run 3's put back reverted a change
+  of 34668's
+- everything about the changed probe of fix list 2. It has not run
+- whether TerminateProcess on the probe's own process can return false. The probe says so
+  once and stops its watchdog if it does, and that path has never run
+- whether the constructor deadline, which ends the probe with no managed shutdown, leaves
+  the Navisworks it could not prove running, and for how long
+- what InfoCenter.log holds and whether 50204 wrote it. It could not be read at either end
+- what `clash\rules`, `CommCenter\en-US\infocenter.xml` and `LastSession.xml` held before run
+  1, which found them rewritten by write time and size. Nothing backed them up before run 1
+- whether a constructor that throws leaves a finalizer that later reaches a Roamer. The
+  probe cannot suppress the finalizer of an object it never received
+- what Roamer.exe does with its own switches. Its parser matches 37 option names, line
+  360, among them `NoGui`, `OpenFile`, `AddPluginAssembly`, `ExecuteAddInPlugin` and
+  `Exit`, read off the IL and NOT RUN. They are the route if this one ever fails
+
+
 ## 5z-g. DOES THE API CARRY ITS OWN UNIT FACTOR, MEASURED 2026-09-29
 
 PQ2 of F104. The check of a workbook against its document has to turn the document's

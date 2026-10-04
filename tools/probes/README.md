@@ -50,8 +50,9 @@ The nine DLL probes need only the install:
   gives for Feet to Meters is not read here, because that runs Navisworks code, and the
   probe below reads it inside Navisworks
 
-The three window probes need the add-in built in Release and installed by
-build\install.ps1, because they construct the real window:
+The four window probes need the add-in built in Release and installed by
+build\install.ps1. The first three construct the real window, and the fourth drives it
+inside a running Navisworks:
 
 - `probe-window-defaults.ps1` prints every box's text and state, which is how blank
   naming boxes were caught
@@ -60,12 +61,58 @@ build\install.ps1, because they construct the real window:
   -maxLabelWords and -maxHelpWords as well
 - `probe-window-scroll.ps1` measures each step against the height it gets, so which
   steps need a scrollbar is read rather than guessed. Takes -w and -h as well
-- `drive-window-run.ps1` drives the REAL window inside a running Navisworks through UI
-  Automation: sets every box, presses Scan and Run and confirms, then leaves the run to
-  the log. It is how PART 5 of the wiring round was done from a session that could not
-  press a button, and its header says what was measured about the ribbon, the automation
-  host and where the window sits in the automation tree. It needs the add-in window
-  already open
+- `drive-window-run.ps1`, since F106, is started by tools\loop\run.ps1 for a window run and
+  drives the tool's window of the one Navisworks run.ps1 adopted, by -OwnerPid and
+  -OwnerStartTicks, through UI Automation. It types every folder and the XML, presses Scan,
+  reads every box back, presses Run only when each reads what was typed and every path lies
+  under runs\NN, and answers the confirm OK, or Cancel when it names a path outside the loop
+  folder. It never clicks, never sends a key, never moves the pointer and never searches the
+  desktop. Its header says what was measured about the window
+
+One probe starts a Navisworks of its own. It refuses to start one while any Navisworks
+runs, whatever its command line and whoever started it, so the code keeps that rule, not
+a person. It refuses to run when either deadline is below 60 seconds, or when
+it is not the script its own powershell.exe was started to run with -File. It quits its
+Navisworks through the API's Dispose. It closes it through the handle its adoption holds
+only when it is the adopted one and Dispose left it running, a step failed, or the adopted
+deadline passed. It never closes anything before adoption, and sends no message to any
+window before it. Since F103 its guards are in tools\loop\nw-guard.ps1, one copy it
+dot-sources with tools\loop\run.ps1:
+
+- `probe-automation-start.ps1` answers F100: whether Autodesk.Navisworks.Api.Automation
+  starts Navisworks with no click, which process id it started, whether that Navisworks
+  opens a copy of one NWC from the loop's source copy, takes the add-in built from this
+  repo through AddPluginAssembly, and quits. A new Roamer whose command line does not hold
+  the word embedding was started by hand and is left alone. It adopts a Navisworks as its
+  own only when the constructor returned, exactly one possible start is new, it started
+  after the call and its command line holds -Embedding. A start it cannot prove, and its
+  own if it will not die, is written to
+  %LOCALAPPDATA%\NwcFederatorLoop\probes\unproved-starts.txt and left running, and every
+  later run refuses to start while one named there is still running, because a person
+  has to look. Any Roamer running at its step 2, and again just before the start, is
+  named by id and start time and the probe stops, starting nothing, and never closes,
+  attaches to or sends it anything. It backs up
+  Bader's Navisworks settings first and prints every change with its old and new value.
+  It puts them back only when its watchdog ran with passes, no error line, nothing in its
+  runspace's error stream and no pass that failed early, and that record shows no other
+  Navisworks from the backup on, none runs at the end, and its own reads gone. Then each
+  write lists the Roamers again first and stops at any, and writes only what still reads
+  as the compare read. Otherwise it writes nothing and keeps the backup. A Navisworks that
+  starts and exits inside one gap between watchdog passes is not seen, and the result
+  prints the longest gap. It never empties its work folder, it renames the last one
+- `automation-start-result-20260929.txt` is the output of run 4 on 2026-09-29, the one full
+  run of the probe as it merged with F100 at 0eb4ede, made with no other Navisworks
+  running. All six steps passed and Bader's settings were put back. F103 moved its guards
+  into tools\loop\nw-guard.ps1 and made its close go through the held handle, proved with no
+  Navisworks by tools\loop\prove-run.ps1 and F100's own harness, and not yet by a run
+- `automation-start-result-20260928.txt` is the output of run 3, made by the version of the
+  probe BEFORE fix list 2. That version put back Bader's settings while his Navisworks, pid
+  34668, was running, which the rules above now rule out. It is kept for the lines
+  docs/history/scan.md cites, with the licensing agent's two ids and the machine name
+  masked by F102's tools\loop\mask-evidence.ps1, pull request 76, and every line where it was
+- `automation-start-reflection-20260928.txt` is the output of the attempt 3 probe's
+  `-ReflectionOnly` mode, which starts nothing, the machine name masked. See
+  docs/history/scan.md section 5z-d for all three
 
 A probe that cannot find what it needs says UNKNOWN and the path it looked at, and
 stops. Never search the install folder for a DLL, the path is built and tested directly,

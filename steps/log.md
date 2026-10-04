@@ -1,6 +1,542 @@
 # log
 
 Newest entry at the top.
+## 2026-10-04 The loop, turn 5, F106 the window run, DONE for item 1
+
+Nothing under src or tests changed. Core tests by the pre-commit at 8c67ec6 and 32dce24 on
+2026-10-01, 1746 passed, 0 failed, 0 skipped, and again at this entry's commit, in the pull
+request body. Item 1 was proved by a real run on this PC. Items 2 to 5 wait for the proof run.
+
+### What was done
+
+- run.ps1 items 1 to 5 through the real window around tools\probes\drive-window-run.ps1, with
+  every guard of item 0 kept but its rule that nothing is written into his AutoSave folder,
+  which Q86 replaced, written by developers whose transcripts ended interrupted, then
+  finished for item 1 by one developer, who found and fixed three faults that would have
+  stopped the first run: a window list read as one object, @() throwing on a list, and the
+  confirm's buttons with no Invoke, now answered by WM_COMMAND to that dialog only
+- read for harm to Bader's things only before the first run, Q96, by a reviewer and a breaker,
+  both SAFE FOR THE FIRST RUN
+- THE FIRST RUN OF MAIN ON C06, set 03, 2026-10-01: the window driven with no click, VERDICT
+  RAN, RESULT 17 done, 0 partial, 5 failed, steps\runs\03\findings.md
+- main merged in, 0fd91c6, with no conflict, once the run's own copies of its evidence were
+  moved from wt-f106 into %LOCALAPPDATA%\NwcFederatorLoop\turn5\wt-f106-evidence-03, each the
+  same by sha256 as the copy main holds
+
+### What remains
+
+- items 2 to 5 have never run. The proof run of set 05 is their first run
+- prove-run.ps1 brought up to F106, R1 of turn4\f106-finish-report.md, line 119
+
+### Known bugs
+
+- R1 to R4 of F106, turn4\f106-finish-report.md lines 119 to 122, and the harm reading's other
+  findings, the workflow journal wf_8100973e-871, go into the fix list, steps\fix-round.md, once
+  it is built
+
+### What comes next
+
+- F104 part 2 on this run.ps1, then the fix round
+## 2026-10-04 The loop, turn 5, the full fix round, the plan
+
+Bader's message headed 4 Oct 2026, Q98: no run of C07 now. Fix everything that is known, then
+prove the fixes on C06 in set 05. This entry is the plan the lead wrote to Bader in the session
+before the first edit. What each step then did goes into the entries above it and into
+steps\loop.md, turn 5.
+
+### Read before the plan
+
+- why turn 4 stopped: Bader's "stop, i will close the pc" at about 17:35 on 2026-10-01. The
+  pause, STATE WAITING, was pushed as 87d693e on fix-T4-run-03c and never merged, so main kept
+  STATE OPEN. The System log reads a shutdown at 19:30:49 on 2026-10-01 and an update restart at
+  09:07:20 on 2026-10-04
+- Get-Process Roamer read 0 at 09:51:56. No keep-awake ran. Open pull requests: 83, the rules,
+  and 84, F108. Not merged: fix-F104 ebd8bb7, fix-F105 cf40a56 and staged work in wt-f105,
+  fix-F106 32dce24, fix-F107 438378d and 2063c29 not pushed, and fix-F109, F110 and F111 only in
+  their worktrees
+
+### The order
+
+1. Pick up: the keep-awake by its new rule, started through WMI so it is not a child of Claude
+   Code, with the display flag, stopping at CLOSED, WAITING or 12 hours of no change. STATE
+   OPEN, turn 5, this entry, merged within the hour
+2. Finish the work in flight, merged one at a time or parked with one line why: PR 84, F108,
+   and PR 83, the rules, with their claim-checks' words fixed and the new keep-awake rule. F105
+   and F107's words round. F106, main merged in, F107's masked line kept in the driver. F109,
+   the in-place install of build\install.ps1 for the team, by a developer, a reviewer and a
+   breaker, which is the install area of the round. F104 part 2, built during the round for the
+   proof run. F110 and F111 of 2026-10-01 fold into the workbook and run log areas
+3. The fix list, steps\fix-round.md, before the first fix: read-only readers per source, the
+   19 findings of steps\runs\03\findings.md with FIND-04 and FIND-24, the 86 bugs of
+   steps\notes\turn1-read-verified.md, every open fault row of the register with the T3 and T4
+   rows, and the readers' other findings of turns 3 and 4. Each item once with its ID, sources,
+   evidence line, root cause file and line, class and proof, and its area
+4. The form: the 40 distances of the C06 run for B2's 1 m, whether the 45 minutes counts per
+   community or for the whole folder, and each decision the list raises
+5. steps\runs\03\for-modellers.md for the five FAILED groups, B4
+6. The fix round, one pull request per area, up to three developers at once on different
+   files, alignment first with B2: a model more than 1 m from its reference ends its group
+   PARTIAL, the 1 m a setting in Core. Then the areas by their worst class. Each finding its own
+   commit and test, a reviewer and a breaker on each pull request, the claim-checker on its body,
+   Actions green, merged one at a time, a record within the hour. VIEWS faster with the same
+   viewpoints, before from set 03's TIMING and after from the proof run's first run on the same
+   files, with options in the form if 45 minutes is still out of reach, B3. D1, one public type
+   per file, the last pull request, moves only
+7. The proof run, set 05 on C06: main installed in place as on 2026-10-01 and its stamp read
+   back, a fresh copy whose XML must ask ME-Ductwork or gets the repo's corrected one, B1, the
+   first run, the weekly run, a file gone, the file back and the open NWF and NWD, F104's check
+   on the NWFs, steps\runs\05\findings.md with a before and after table against set 03, and
+   Bader's three tests. A finding it shows starts a second round
+8. The end: a summary at the top of steps\fix-round.md, merged, and posted in the Claude tab
+
+CLAUDE.md's rule of no co-authored-by and no generated-by line holds over the session's own
+attribution note.
+
+## 2026-10-01 The loop, turn 4, F108 a fresh copy of the source for each run set, DONE
+
+Bader's message headed 30 Sep 2026, read on 2026-10-01, Q94, asked for a fresh copy for each run
+set in his own folder shape.
+Nothing under src or tests changed. Core tests by the pre-commit at 225a86f, in
+%LOCALAPPDATA%\NwcFederatorLoop\turn4\f108-commit-output.txt: 1746 passed, 0 failed, 0
+skipped, and F102's evidence check over the 3 staged files, none carrying one. Nothing waits for
+the local machine: the proof ran here, and the first run of set 03 is its use.
+
+### What was done
+
+- tools\loop\prepare-copy.ps1 -Set NN, by the developer in wt-f108: the plain check first, then
+  runs\NN\NMFed copied from the source copy and every file read back by sha256 and size, one
+  empty folder under Clash Report for each folder under NWC, read off NWC, and
+  NMFed.manifest.txt written last. -Set NN -Remove and -Restore act on that copy, -Restore
+  copying the file back from the desktop folder by hash, as the plain modes do
+- named NMFed because the paths wall refuses every command naming the desktop folder
+- proved on this machine with the throwaway set 99 and others, made, read back, refused a
+  second time, and a file removed and restored, every answer in turn4\f108-proof.txt, the run
+  ending 10:52:59 with no Roamer. Of the refusals, 13 ran in the loop folder, 4 in a scratch
+  folder and 6 on a copy of the script changed by one line, and the two for too little room
+  were not proved, as the README says. The script the proof ran, sha256 6EDA217D, is the one
+  committed at b3958b5 once its line ends are CRLF, as the checkout writes them,
+  turn5\f108-hash.txt
+- read by a reviewer and a breaker under Q93: both SAFE TO USE, no finding blocks
+
+### What remains
+
+- the readers' findings, each a register row in steps\loop.md: -Remove and -Restore refuse a file
+  whose name sits in both communities, so group 100000 cannot be the file gone group. A short or
+  changed source.manifest.txt is kept until the desktop folder next changes. -Remove writes its
+  note before the delete. The README's write list names only the source copy. The rule and the
+  runner agent still describe the plain modes only. A comment says Windows PowerShell 5.1
+  follows a junction when it recurses, which the developer said a test of theirs on 5.1 did not
+  show, kept in no file, so which is right is UNKNOWN
+
+### Known bugs
+
+- two of the breaker's findings were of Q93's kinds and judged not to block: outputs that Bader's
+  own runs leave in the desktop folder land in the copy and its manifest as inputs, which can
+  make evidence wrong, and nothing reads for a running Navisworks while the desktop folder is
+  read, which reads only. Both are register row F108-R5, with the rest F108-R1 to R4
+
+### What comes next
+
+- the first run of set 03, after F106 and F109
+
+## 2026-10-01 The loop, turn 4, F103 run.ps1 part 1, DONE after the third real start
+
+Bader answered B on 2026-10-01, Q92: the third real start on a63c284 now, then F103 merges as
+it is, the nine entries a register row. Nothing under src or tests changed. Core tests
+before, at 821ed6e with no src change since, by the pre-commit of the turn 4 records commit
+7dbb869: 1746 passed, 0 failed, 0 skipped, read by the lead and kept in no file. After, by the pre-commit at this entry's commit,
+in the pull request body. Nothing of item 0 waits for the local machine, because the third
+start ran here.
+
+### What was done
+
+- THE THIRD REAL START, run.ps1 -Mode Run -Set 02 -Item 0 -Stamp be0b9b37 on a63c284 from
+  the F103 worktree. Get-Process Roamer read 0 at 09:05:54, read by the lead and kept in no
+  file. Launched 09:06:16, ended 09:18:23,
+  exit 0, VERDICT RAN: one Navisworks, pid 37988, adopted, held 360 s, Dispose returned after
+  0.48 s and the process read gone 6.2 s after, nothing forced. 5 registry values and 2 files
+  of Bader's settings put back and read back equal, no other Navisworks having run, his logs
+  folder the same after and his AutoSave unchanged. The idle processor time read 0.031 to
+  0.344 s a 15 s sample and 0.359 to 0.594 s a minute
+- its evidence, steps\runs\02\item0, read by F102's mask, which found nothing to mask, and by
+  F102's check, committed as 19a3da7
+- main merged in, then F102's merge, and F103's DONE line in steps\01_next.md
+
+### What remains
+
+- part 2, the window, items 1 to 5, is F106, being built off this branch
+
+### Known bugs
+
+- F103-W, the nine entries in the words of steps\notes\f103-final-reading.md, and T3-G1 to
+  T3-G16, T3-P and T3-P2, in the register in steps\loop.md
+
+### What comes next
+
+- F105 and F107, then the install of main through run.ps1 -Mode Install from wt-main
+
+## 2026-10-01 The loop, turn 4, F102 every result file read for a machine name or a licensing id, DONE
+
+Bader answered B on 2026-10-01, Q91: F102 merges as it is, both gaps written as known limits.
+Nothing under src or tests changed. Core tests before, at 821ed6e with no src change since,
+by the pre-commit of the turn 4 records commit 7dbb869: 1746 passed, 0 failed, 0 skipped,
+read by the lead and kept in no file.
+After, by the pre-commit at this entry's commit, in the pull request body. The proof of the
+change itself is in its 01_next section and in
+%LOCALAPPDATA%\NwcFederatorLoop\turn3\f102\proof.txt. Nothing waits for the local machine.
+
+### What was done
+
+- main merged into fix-F102 as 8554e45 with no conflict, Bader's answer and the two known
+  limits written under F102's DONE line in steps\01_next.md, and this entry
+- used by the loop before the merge, from its branch at 7d8d135, on the third real start's
+  evidence of 2026-10-01: the mask found nothing to mask in record.txt, watch.txt and
+  settings.txt, each copy equal to its original by sha256, and the check read 12 files under
+  steps\runs of fix-F103 and found none carrying an id or the machine name
+
+### What remains
+
+- the zip rule's words: .claude\rules\loop.md and tools\loop\README.md still say the check
+  refuses a zip until Bader decides where one may sit. He decided A on 2026-10-01, Q90, and
+  the words change in the next records pull request
+
+### Known bugs
+
+- F102-L1: a workbook under samples with text appended inside its last 65557 bytes passes the
+  check unread. A limit, because the samples are never edited
+- F102-L2: a committed hook holding the check's line where it never runs still gets the
+  handover. A limit, because a hook of this repo is read before it merges
+
+### What comes next
+
+- F103 merges, then F105 and F107, then the install of main
+
+## 2026-10-01 The loop, turn 4, the plan, as written to Bader before the first edit
+
+Bader's message headed 30 Sep 2026, read on 2026-10-01: code runs the whole of NM Fed itself,
+and the form is answered. It replaces the window message of 30 Sep and anything earlier that
+said Bader runs the tool by hand. The goal is real full runs of main on every NWC in NM Fed,
+driven by the loop, then the fixes those runs show. His answers are Q82 to Q92 in
+steps\02_questions.md, his rule for the loop's own tools is Q93 and the goal is Q94. This
+entry is the plan the lead wrote to Bader in the session before the first edit, copied here
+after the answers were written into steps\02_questions.md. The third start of step 2 was
+launched before the records of step 1, because it edits nothing. Changed after it only where
+the claim-checker found a claim wrong: the heading, this paragraph, the Roamer reads, the XML
+reads, the 25 mm sentence and the waiter line. What each step then did goes into the entries above it and into
+steps\loop.md, turn 4.
+
+### Measured before the plan
+
+- Get-Process Roamer read 0 at 08:48:06 and again at 09:05:54, read by the lead and kept in
+  no file
+- the waiter, turn3\wait-window.ps1, wrote THE WINDOW IS OPEN at 18:00:14 on 2026-09-30 as
+  its last line, and no start was made in that window. No folder runs\02 existed under the
+  loop folder or in the F103 worktree at 09:05:54, and why no start was made is UNKNOWN
+- the clash XML in the copy, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, sha256 36AB2739,
+  holds 1830 clash tests, every one with tolerance 0.0820209974 in feet, which is 25 mm. The
+  committed exchange copy of the corrected matrix is another file, sha256 792B01FB, with the
+  same 1830 tolerances. Both read again at 10:25:30 into turn4\xml-reads.txt
+- the tool's tolerance box defaults to Use the value in the XML, ToleranceChoice.cs, and
+  the Execute of FederatorPlugin.cs opens the window with ShowDialog
+- tools\probes\drive-window-run.ps1 finds the tool's window and its confirm dialog among
+  every window on the desktop, not by process, and picks a tolerance with a real mouse click
+- the paths wall refuses any command naming NM Fed, with one to six characters between the
+  two words, and leaves NMFed alone on purpose
+
+### Four choices the lead made, and why
+
+1. THE COPY OF EACH RUN SET IS NAMED NMFed, not NM Fed, because the paths wall refuses
+   every command naming NM Fed, and a path built at run time to get past it is what the
+   wall's rule forbids. Below that name the copy keeps Bader's own folder shape: NWC\C06
+   into NWF\C06, NWD\C06 and Clash Report\C06, the same for C07, and the XML at the top
+2. 25 MM COMES FROM THE XML. The tolerance box is left on Use the value in the XML, under
+   which each test a first run creates from the XML carries the XML's 25 mm, and a test
+   already saved in an NWF keeps its own. Choosing 25 mm in the box takes a real mouse click,
+   which would move his pointer while he works. The workbook read-out names the tolerance
+   of every test, so each run proves it
+3. HIS LOGS ARE PUT BACK FROM THE BACKUPS. After the loop his logs folder is made to hold
+   exactly what logs-backup and its since folders hold, the loop's own logs and tsv files
+   are taken out, and the folder is read back by name, size and sha256. A log of his that
+   no backup holds, written while the loop ran, is left as it is and named
+4. THIS IS TURN 4. Window runs go from a clean checkout of main at
+   %LOCALAPPDATA%\NwcFederatorLoop\wt-run, so their evidence never dirties wt-main, which
+   installs
+
+### The order
+
+1. The records: this entry, the answers, STATE OPEN and turn 4 in steps\loop.md, and the
+   register rows the answers make. Read by the claim-checker, merged when Actions is green
+2. Get-Process Roamer read 0, then the third real start on a63c284 from the F103 worktree,
+   Set 02, item 0 with no window. Its record read, its evidence masked with F102's tools and
+   checked, and committed to fix-F103 as 912dedc was. In parallel, by the developer in their
+   own worktrees: F105's three sentences narrowed, Q89 A, and F107, the machine of
+   2026-09-19 masked on main, Q88, each read by a reviewer and a breaker
+3. The merges, each when Actions is green and its branch deleted after: PR 76, F102, as it
+   is with both gaps written as known limits. PR 78, F103, as it is with main merged in.
+   F105. F107
+4. The install of main: Roamer read 0, wt-main moved to main's new commit with git status
+   printing nothing, run.ps1 -Mode Install -Stamp of that commit, and the installed stamp
+   read back equal to it
+5. F106, THE WINDOW RUN, by the developer: the smallest change to run.ps1 that runs items 1
+   to 5 through the real window around tools\probes\drive-window-run.ps1, keeping run.ps1's
+   refusals, backups, start, adoption, watchdog, close and put back. The driver acts only on
+   windows of the adopted process, clicks nothing, reads every box back and presses Run only
+   when each reads a path under the loop folder. The hang rule of Q83, the ceiling of Q84,
+   the screen of Q85, the AutoSave of Q86, the masked folder block of Q87, the run set copy
+   in Bader's folder shape, and a mode that puts his logs folder back after the loop, Q82.
+   The rule changes the answers make go into .claude\rules\loop.md in the same pull
+   request. One reading by the reviewer and one breaker under Q93, then the merge
+6. SET 03, every run through the real window, each followed by its evidence masked and
+   committed, the log-reader's findings each quoting its line, every register row reading
+   done in code, not proved by a run that the run reaches marked proved or contradicted,
+   steps\loop.md brought up to date and a record merged:
+   1. a fresh copy, runs\03\NMFed, made from the source copy after prepare-copy.ps1 has
+      checked it against NM Fed, every file read back by sha256
+   2. the first run of C06: the XML from the copy, every group ticked
+   3. the first run of C07, the same
+   4. the outputs of the first runs copied aside and read back by sha256
+   5. F104 part 2, check-documents.ps1, built while the runs go, read, merged, and run over
+      the first runs' NWFs before the weekly runs. Three tests with their workbook counts
+      written into steps\03_bader_next.md, for Bader to check against the Clash Detective
+      panel
+   6. the weekly runs of C06 and of C07, with no XML
+   7. a file gone, then the file back, then the open NWF and the open NWD, on one group with
+      two or more disciplines
+7. The fixes the runs show, most harmful first and a silent wrong number above a loud
+   failure. One finding, one fix-F number, one pull request, the failing test first, read by
+   a reviewer and a breaker, installed, and proved by the next run of that group in a new
+   run set with a fresh copy
+8. The close: his logs folder put back and read back, the loop's autosaves removed under
+   Q86, and STATE set by what is left
+
+### Held throughout
+
+- A Navisworks the loop did not start: no start, no install and no put back. A waiter
+  reads the processes every 10 minutes and ends when none runs, and the lead carries on with
+  no word from Bader
+- A locked screen that stops the window or the pictures is a finding, and the next start
+  waits until the session reads unlocked. The lock is never worked around
+- Nothing is written into NM Fed on the desktop, and every output goes under
+  %LOCALAPPDATA%\NwcFederatorLoop
+
+## 2026-09-30 The loop, turn 3, F103 into the form after three fix attempts, Q92
+
+Records only. Nothing under src, tests or tools changed here. Core tests before, on main at
+11e6220, by Actions run 36710730880 on its windows-latest runner: 1720 passed, 0 failed, 26
+skipped of 1746. After, on this branch with these records in it, run by the lead from
+17:07:16 to 17:07:59: 1746 passed, 0 failed, 0 skipped, output in
+%LOCALAPPDATA%\NwcFederatorLoop\turn3\core-tests-170716.txt, with the Actions line in
+turn3\reads-170618.txt. The pre-commit hook runs them again at the commit. What waits for the local machine: the third real start on a63c284, in tonight's
+window.
+
+### What was done
+
+- fix attempt 3 of F103, the 19 items of steps\notes\f103-fix-list-3.md, came back from its
+  developer as a63c284 at 15:10, pushed to fix-F103, with harness run 12, 242 passed and 0
+  failed on its files
+- its final reading by a reviewer and two breakers: all three answered safe for item 0 and
+  safe for install, the breaker on Bader's things within its lens, and none classed a
+  finding as a new fault inside the attempt. The reviewer read 18 of the 19 items fixed and
+  asked the lead to hold item 14 against the words it names
+- the lead held it: the harness header's sentence that the constructor line is replaced by a
+  line that throws, where the line only sets the error, stands word for word at prove-run.ps1
+  24 to 25, named after attempts 1 and 2 as well. So by the rule at the head of fix list 3,
+  F103 stops and goes to the form, Q92, with the lead's recommendation A, one change of words
+  only, no change of logic, at nine entries. steps\notes\f103-final-reading.md holds the
+  reading, the nine entries and the proof
+- five register rows from the readers' other findings, classed old or polish, T3-G13 to
+  T3-G16 and T3-P2, three of them resting on code the attempt wrote
+- Actions on a63c284 had never run a test, because GitHub could not acquire a runner in 5
+  attempts. Run again by the lead, green at 16:05:30, the Core tests 1720 passed, 0 failed,
+  26 skipped of 1746
+
+### What remains
+
+- Bader's answer to Q92. Until then PR 78 stays a draft, and the install of main and F104
+  part 2 wait on it
+- the third real start on a63c284 in tonight's window, Set 02, item 0 with no window, as
+  evidence for Q92
+
+### Known bugs
+
+- the nine entries in the words, listed in steps\notes\f103-final-reading.md, which wait on
+  Q92, and T3-G6 to T3-G16, T3-P and T3-P2, in the register
+
+### What comes next
+
+- turn3\wait-window.ps1 reads for tonight's window from 16:14, started again each time it
+  ends itself after 115 minutes. When the window opens: Get-Process
+  Roamer read 0 just before, the third start, its record read, its evidence masked, checked
+  and committed to fix-F103, and steps\loop.md set to WAITING
+
+## 2026-09-30 The loop, turn 3, the Navisworks window of 10:52 to 14:45, the plan
+
+Bader wrote at 10:52 on 2026-09-30 that he had closed his Navisworks and would not open it
+again before 14:45.
+Every Navisworks the loop starts is closed, and his settings put back and read back, by
+14:30. Get-Process Roamer read 0 at 10:57:10. This entry is the plan, written before the
+first edit of the window. What each step did goes into the entries written above this one and into steps\loop.md.
+
+### The order
+
+1. The reading of F103 fix attempt 1, fcd981b, by a reviewer and two breakers, resumed from
+   the run the restart cut, which reuses the one reader that had answered
+2. If it finds a fault of the thirteen left or a new one, fix attempt 2 by the developer and
+   a read again. If F103 is not clean by 13:45, its first start goes to tonight
+3. THE FIRST REAL START, run.ps1 -Mode Run -Set 00 -Item 0, made by the lead from the commit
+   that was read, with Get-Process Roamer read 0 just before. It measures M4, the processor
+   time of an idle Navisworks, M5, what changes outside the loop folder while a start runs, and M6,
+   whether the session locks. Its record read, the settings put back and read back, the
+   evidence masked with F102's own tools from its branch, because F102 is in the form, and kept under steps\runs\00\item0
+4. F103's pull request, PR 78, with that run in its body, merged once Actions is green
+5. INSTALL MAIN through run.ps1 -Mode Install from a clean checkout of main. It starts no
+   Navisworks but needs none running, which is this window, and it is the first step of the
+   baseline. Only if F103 merged by 14:00
+6. No start begins after 14:10 and no install after 14:15. At the close of the window,
+   steps\loop.md says what the window was used for and what is left for tonight
+
+Not in this window: any start that opens the tool's window, because the tool then logs into
+Bader's folder and deletes his oldest log, which waits on Q82.
+
+## 2026-09-29 The loop, turn 3, F100 a start of Navisworks with no click, measured, DONE
+
+Core tests 1746 passed, 0 failed, 0 skipped, before on fix-F100 at 30ae471 and after on
+0a89d73 and every commit since, run by the pre-commit hook. Nothing under src or tests
+changed. The add-in built with 0 errors and 0 warnings before and after, by the developer.
+This entry rides in PR 74, which is merged by SQUASH so the branch's history, which holds the
+licensing ids, stays off main. Nothing waits for the local machine, because run 4 ran here.
+
+### What was done
+
+- Bader answered A on 2026-09-29, Q79, and closed his Navisworks. Get-Process Roamer read 0
+  at 09:52 and again just before run 4, and the probe itself read none at its step 2 and at
+  its last read before the constructor
+- FIX ATTEMPT 4, 0a89d73, by the developer: exactly the seven faults of
+  steps\notes\f100-fourth-reading.md. B3 is kept by code: step 2 refuses while any process
+  named Roamer runs, naming each by pid and start time, and the same read is made again
+  after the backups, just before the constructor. The probe went from 1834 lines, sha256
+  B1228224, to 1923 lines, sha256 9CC1987B. Proved first with no Navisworks, by a harness
+  that ran each fault on the b01ad71 probe and on the new one, failing before and passing
+  after, with stand in Roamer.exe copies of ping.exe refused at step 2, at the last read,
+  and by the real probe, in %LOCALAPPDATA%\NwcFederatorLoop\turn3\f100-harness
+- THE READING, a reviewer and a breaker, both APPROVE, all seven fixed completely, no fault
+  of the seven left and no new fault inside attempt 4. Their other findings are polish, or
+  old faults outside the seven, which go into the register for run.ps1, which takes this
+  code over
+- RUN 4 at 11:35, the one run: all six steps passed in 125 s. The constructor returned
+  after 83.16 s, pid 33752 was adopted on all four conditions 0.06 s after the call began,
+  OpenFile and SaveFile of one NWC copy worked, AddPluginAssembly returned, Dispose
+  returned in 0.40 s and the Navisworks was gone 8.5 s after, nothing forced. With no other
+  Navisworks running, 36 registry values and 2 files of Bader's settings were put back,
+  each after a last check, and read back, and nothing changed in his AutoSave or logs
+  folders. docs\history\scan.md 5z-d RUN 4
+- NO RESULT FILE ON MAIN CARRIES A LICENSING ID. Run 4 printed none. Run 3's file is kept
+  for the lines scan.md cites, masked on three lines by F102's mask-evidence.ps1, which is
+  on branch fix-F102, PR 76, and merges after this. The reflection file and scan.md no
+  longer name the machine. F102's check at 0b48415, run by the lead over a git archive of
+  this branch at 9085d13, read 447 files and found none carrying one, kept in
+  %LOCALAPPDATA%\NwcFederatorLoop\turn3\f100-evidence-check.txt
+- the notes a later session needs are in steps\notes, and Bader's answers are Q79 to Q81
+
+### What remains
+
+- F100's code moves into run.ps1's guard file in F103, with the old faults the reading found
+- the commits 464f79f and c98c6f3 of the deleted branch still hold the licensing ids on
+  GitHub, through PR 74's own refs, which no one here can remove. Q88
+
+### Known bugs
+
+- the old faults outside the seven, register rows T3-G1 to T3-G5 in steps\loop.md. The one
+  that matters most: the last check before each settings write takes a process list it
+  could not read as no Roamer, so it fails open
+
+### What comes next
+
+1. F103 run.ps1 from turn3\f103-design.md, off main once this merges. F102 merges when its
+   second fix attempt is read, and F105 waits in the form, Q89
+
+## 2026-09-29 The loop, turn 3, the plan, written before the first edit
+
+Bader answered the form in steps\loop.md on 2026-09-29: F100 A, his Navisworks closed, and
+main's upstream put right. The defaults D1 to D4 stand as he wrote them, so D3 builds R1
+to R6 in this loop once the loop is clean on main. This entry is the plan, written before
+the first edit and not changed after it. What each step then did is in the entries above
+it and in steps\loop.md turn 3.
+
+### Bader's answers, applied first
+
+- Navisworks. Get-Process Roamer read 0 processes at 09:52 on 2026-09-29, so his pid 34668
+  is gone. It is read again before every start, install and put back, and once F100's
+  fourth attempt and run.ps1 are in, the code reads it and refuses
+- Git, before: `## main...origin/master [ahead 320]`, main and origin/main both e555619,
+  branch.main.merge refs/heads/master. origin/master is be0b9b37, THE BUILD THE INSTALLED
+  ADD-IN READS, so GitHub Desktop's Pull brought be0b9b37 every time and that is why the
+  add-in installed on 27 Sep is not main. Set with git branch --set-upstream-to=origin/main
+  main. After: `## main...origin/main`, main and origin/main both e555619, branch.main.merge
+  refs/heads/main. The remote master branch and every other remote branch are left alone,
+  D6 stays Bader's
+- F100, A: one more fix attempt of exactly the seven faults of the fourth reading, F1 to F4
+  and B1 to B3, with B3, no start while any Navisworks runs, kept by code. Then the reading,
+  then the one run, then the merge. A new fault in the reading sends F100 to B with no
+  question
+
+### Measured before the plan
+
+- the result files on fix-F100 name this machine on their first line, and
+  automation-start-result-20260928.txt carries the licensing agent's -i id at lines 446 and
+  447. docs\history\scan.md on the branch names the machine at line 4650. Main holds none of
+  them, read with git grep
+- the probe writes a new process's command line whole, so a fourth run would write the
+  licensing ids again. Nothing in tools\loop reads a result for them before a commit, and
+  every probe under tools\probes prints the machine name on its MACHINE line
+
+### The round, in order
+
+1. The records, on fix-F100: this entry, STATE OPEN and turn 3 in steps\loop.md, the
+   answers as Q79 to Q81 in steps\02_questions.md, and the notes a later session needs,
+   the fourth reading, the F101 design and the three fix lists, copied into steps\notes with
+   the machine name masked
+2. F102, its own branch and pull request: a masking step for every result committed from
+   this machine, the machine name and the licensing and session ids, which refuses when one
+   is left, and a check Actions runs for the licensing ids. Written beside step 3 in a
+   worktree of its own, read by a reviewer and a breaker, merged before F100's run
+3. F100 fix attempt 4 by the developer, exactly F1 to F4 and B1 to B3, B3 as code: the
+   probe refuses while any Roamer runs, read again just before the start. Proved by the
+   harness with no Navisworks
+4. The reading of attempt 4 by a reviewer and a breaker. A fault of the seven left, or a
+   new fault inside what attempt 4 changed, is B
+5. A: Roamer read 0 by the probe itself, the one run, the result masked by F102 and read for
+   ids, scan.md 5z-d given run 4, the pull request body read by the claim-checker, Actions
+   green, squash merge so the old result file stays off main. B: the result file out, the
+   records masked, merged, and run.ps1's start and close written fresh from the design
+6. The prober, Phase 1 item 2: probe-viewpoints.ps1 and probe-model-remove.ps1 on this
+   install, reflection only and no start, appended to scan.md. Roamer.exe's switches read
+   off the binary with no start. Whether the installed API writes the native Clash
+   Detective HTML tabular report, by reflection. Whether UI Automation reaches the tool's
+   window, with the first start of step 7
+7. F103, tools\loop\run.ps1, its own pull request: refuses in code while any Navisworks
+   runs, before every start, install and put back. Asks Windows to stay awake through
+   SetThreadExecutionState while a run goes and lets go after. The hang rule and the dialog
+   rule. Logs inside the work folder. The window run D4 needs
+8. F104, the separate read of the document, its own pull request: a probe plugin outside
+   the solution and the bundle, loaded with AddPluginAssembly, reading each NWF's tests and
+   status counts, compared with read-workbook.ps1's read-out and never with the harvest
+9. Install main, with Roamer read 0 and the installed bundle matched against bundle-backup,
+   then Phase 3, the baseline run set into steps\runs\00, run 1 through the real window as
+   D4 says. If the window cannot be driven, why is written and the no-click entry comes
+   first. The log-reader reads every run, and every register row marked done in code, not
+   proved by a run is marked proved or contradicted with its line
+10. F101, the no-click entry from the design, PQ1 to PQ8 measured first
+11. Phase 4, the findings one pull request each, a silent wrong number first. D1 after the
+    faults, as moves only
+12. Phase 5, R1 to R6 with D2, each rule written into docs\workflow.md and the rules files
+    first, then proved or built
+13. Phase 6, the close, when all seven conditions hold on one final run set from a fresh
+    copy
+
+At the end of every stretch steps\loop.md holds the state, so a new session carries on
+from it alone.
+
 ## 2026-09-28 The loop, turn 2, F98 the close round heading back, DONE
 
 Core tests 1746 passed, 0 failed, 0 skipped, before, on fix-F97 with the same src, and

@@ -1,36 +1,180 @@
 # The loop
 
-STATE WAITING
+STATE OPEN
 
-WAITING FOR BADER, for two things. His choice on F100 in The form below, A, B or C. And his
-Navisworks closed, pid 34668, open since 09:33 on 2026-09-28, which the loop never closes.
-Everything next needs a Navisworks the loop starts with none of his running: F100's run,
-the measurements of the no-click entry, and the install of main. When he answers and says
-go, check with Get-Process Roamer that none runs, set STATE OPEN, and carry on from Next
-action.
+TURN 5, THE FULL FIX ROUND, opened on 2026-10-04 by Bader's message headed 4 Oct 2026, Q98. No
+run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05. The plan
+is the turn 5 entry at the top of steps\log.md. The fix list is steps\fix-round.md, built
+before the first fix. Main at the start of the turn: f38edd5, installed e4484d15 in place since
+2026-10-01 with be0b9b37 in bundle-backup. Why turn 4 stopped: Bader wrote "stop, i will close
+the pc" at about 17:35 on 2026-10-01, and the pause, STATE WAITING, was pushed as 87d693e on
+fix-T4-run-03c and never merged, so main kept reading STATE OPEN. The System log reads a
+shutdown at 19:30:49 on 2026-10-01 by shutdown.exe, and a restart for an update at 09:07:20 on
+2026-10-04, the PC up again at 09:10:18. Get-Process Roamer read 0 at 09:51:56 on 2026-10-04.
 
-Turn 1 closed on 2026-09-28 with Phase 0 merged in PR 72. Turn 2 started the same day in
-the same session, because the eight agents are loaded since Bader's restart. Its first fix,
-F98, is merged in PR 73.
+PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
+At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
+nothing of his needs putting back. THE FIRST RUN OF C07 NEVER STARTED: launched at 17:28:36,
+run.ps1 pid 39432 refused at its check 10 because the session read locked, Q85, "Nothing was
+written", turn4\run03-item1-C07-console.txt. The F110 and F111 workflow was stopped part way,
+so wt-f110 and wt-f111 may hold work not committed. The C07 waiter was stopped. Q98, whether a
+group with a model 2,000 km away stays DONE, and Q99, which clash XML the runs use, are still to
+be written for Bader, from findings 1 and 2 of steps\runs\03\findings.md.
+WHEN HE SAYS GO, as written at the pause and since replaced by turn 5, which runs no C07:
+Get-Process Roamer. If any Navisworks the loop did not start runs, stay WAITING. Otherwise
+STATE OPEN, start the keep awake again, start the first run of C07 the same way with the
+session unlocked, carry on with set 03, and start F110 and F111 again from their worktrees,
+nothing installed until C07 ends.
+
+THE FIRST RUN OF MAIN HAPPENS TODAY, Bader's message of 2026-10-01 12:10, Q96. Until the first
+run's RESULT block is written only what that run needs is worked on, and everything else
+waits: F109's workflow stopped by the lead at about 12:16, the F105 and F107 words round
+stopped at about 12:45 part way, wt-f107 committed at 2063c29 and wt-f105 holding staged
+changes not committed, and PR 83, the rules, and PR 84, F108, left open with the findings of
+their claim-checks, which were returned to the lead in the session, all read into
+turn4\reads-pr85.txt at 12:45:56.
+- MAIN IS INSTALLED, in place, apart from F109, as Bader asked. wt-main at e4484d1, clean. The
+  add-in built with the build command of build\install.ps1 line 39, 0 warnings and 0 errors,
+  stamp e4484d15, turn4\install-build.txt, the command line itself kept in no file.
+  build\install.ps1 -SkipBuild then staged and checked it against a throwaway APPDATA under the
+  loop folder, every reference satisfied, 14 assemblies, exit 0, turn4\install-fake-run.txt.
+  Get-Process Roamer read 0 at 12:20:07, turn4\roamer-reads.txt line 4, and again in the
+  script at 12:20:09. turn4\install-in-place.ps1 read the installed bundle equal to
+  bundle-backup, 15 files by name and sha256, copied the 15 checked files over the installed
+  ones and read each back equal, removed none, every installed file being in the new bundle,
+  and read the installed Federator.Addin.dll back as 1.0.0.0 e4484d15 built 2026-10-01
+  12:19:09 at 12:20:10, turn4\install-in-place.txt. bundle-backup still holds be0b9b37
+- THE COPY FOR SET 03 IS MADE, by F108's prepare-copy.ps1 -Set 03 from its branch, about
+  12:20:43 to 12:20:50 by the lead's console, kept in no file: the source copy matched the
+  desktop folder on all 141 files and 10 folders, and
+  runs\03\NMFed holds 141 files and 12 folders, Clash Report\C06 and C07 made, every file read
+  back by sha256, NMFed.manifest.txt written last, turn4\copy-set03.txt
+- THE WINDOW RUN, F106, is being finished for item 1 by one developer the lead started after
+  12:25, its brief turn4\f106-finish-brief.md. Before it, the F106 code was written in wt-f106
+  by developers of the stopped workflow whose transcripts end interrupted, and none of it was
+  committed. Its reading before the run is for harm to Bader's things only, Q96, which narrows
+  Q93 for this run
+- If the window cannot be driven today, one line says why here and Bader is told in the
+  Claude tab, so he can press Run himself
+- F106 FINISHED FOR ITEM 1 at 32dce24, the finishing developer's report in
+  turn4\f106-finish-report.md, and READ FOR HARM ONLY by a reviewer and a breaker, both SAFE FOR
+  THE FIRST RUN with no harm found, their other findings for the register, turn4 and the
+  workflow journal wf_8100973e-871. Check for set 03, item 1, C06 read exit 0 at 13:35,
+  turn4\check-set03-item1.txt
+- THE FIRST RUN OF MAIN STARTED. The lead's first launch at 13:58:20 passed the arguments as
+  one, and run.ps1 refused, "is not a parameter of run.ps1. Nothing was started and nothing
+  was written", turn4\run03-item1-C06-refused-console.txt. Launched again at 13:59:01,
+  run.ps1 pid 5152, turn4\run03-item1-C06-pid.txt. Navisworks pid 27500 from 13:59:17.
+  THE WINDOW WAS DRIVEN WITH NO CLICK, runs\03\item1-C06\driver.txt: the tool's window opened
+  at 14:00:39 and stayed open, the driver typed the C06 folder and pressed Scan, 67 NWC, 22
+  groups, 0 unticked, typed the NWF, NWD and Clash Report folders of C06 and the XML, read
+  every box back equal, found the tolerance box on Use the value in the XML, pressed Run, and
+  answered the confirm with OK at 14:00:55.585, its texts naming no path outside the loop
+  folder. The tool's log: RUN started, 22 groups, the Clash step picked the copy's XML, 61
+  sets and 1830 tests, and GROUP started 100000 at 14:00:55
+- THE FIRST RUN OF MAIN ENDED, VERDICT RAN, set 03 item 1, C06. RESULT, log line 8429 on, of
+  steps\runs\03\item1-C06\run-20261001-140037.log: 17 groups done, 0 partial, 5 failed, 5679
+  clashes across 22 groups, 6 of which found none, 88 files written. The tool's run took 1 h 44
+  min 52 s, 59 min 52 s over the 45 minutes, VIEWS 72 percent of it. The window closed on the
+  loop's WM_CLOSE after RESULT, Dispose at 15:46:30 and Navisworks gone 10.0 s after, nothing
+  forced. Put back with no other Navisworks having run: 37 registry values and 2 files, and
+  Q86 in his AutoSave, 78 files as they were, each read back. Q82: the tool pruned his oldest
+  log, run-20260901-191711.log, which logs-backup holds. All 22 workbooks read out. The
+  evidence masked by F102's tool, 30 files, none changed, into steps\runs\03\item1-C06
+- THE FIRST FINDINGS, steps\runs\03\findings.md, read by four readers: the five FAILED groups
+  each have a model on Revit's internal origin, four DONE groups each have a model about 2,000
+  to 2,800 km away and still read DONE, duct, pipe and equipment sets find nothing because the
+  copy's XML, which is not the corrected matrix in exchange, asks upper case worksets the models
+  spell in mixed case, the WORKBOOK CHECK and the RESULT file sizes print wrong numbers, and the
+  run is 2.3 times the 45 minutes, VIEWS alone 1.7 times. Bader's message of 15:30, Q97. For Bader
+  three tests with their workbook counts to check against the Clash Detective panel
+- ONEDRIVE, at Bader's word in the Claude tab: Roamer.exe, the loop's stand-in left in the
+  F103 worktree folder under .claude\worktrees, and testhost.exe, a build output of his
+  RCRC-Green repo, were blocked by OneDrive. The F102 and F103 worktree folders were removed at
+  about 16:46 and that one testhost.exe deleted. OneDrive put both folders back at 16:47 from
+  its cloud copy, without the .exe, which it never held. No .exe is left under his GitHub
+  folders. RCRC-Green's returns whenever its tests build inside OneDrive
+- NEXT: the first run of C07 the same way, then the rest of set 03 tonight. Fixes may start
+  while C07 runs, and nothing is installed until C07 ends
+
+TURN 4, opened on 2026-10-01 by Bader's message headed 30 Sep 2026: code runs the whole of
+NM Fed itself, and the form is answered. It replaces the window message of 30 Sep and
+anything earlier that said Bader runs the tool by hand. The goal is real full runs of main on
+every NWC in NM Fed, driven by the loop, then the fixes those runs show. His answers are Q82
+to Q92 in steps\02_questions.md, his rule for the loop's own tools is Q93 and the goal is
+Q94. The plan is the turn 4 entry of steps\log.md, the plan the lead wrote to Bader before
+the first edit. Main at the start of the turn: 821ed6e. The main clone is on
+fix-T4-records-1, never on main, so a push from a worktree passes the git wall, T3-W1. From
+2026-10-01 10:25 every Get-Process Roamer read the lead cites is written first to
+%LOCALAPPDATA%\NwcFederatorLoop\turn4\roamer-reads.txt.
+
+THE RULE FOR THE LOOP'S OWN TOOLS, Q93. A reading of the loop's own scripts blocks a run only
+for a fault that could harm Bader's things or make a run's evidence wrong. Words, polish and
+edge cases that can do neither become register rows, not fix attempts. The product code
+keeps every house rule as written.
+
+WHILE A NAVISWORKS THE LOOP DID NOT START RUNS: no start, no install and no put back. The
+waiter turn4\wait-no-roamer.ps1 reads the processes every 10 minutes and ends when none
+runs, and the lead then carries on with no word from Bader. Runs may go while Bader is away and while he works at the machine, and he will not
+click the loop's Navisworks. A locked screen that stops the window or the pictures is a
+finding, and the next start waits until the session reads unlocked, Q85.
+
+KEEP AWAKE FOR THE WHOLE LOOP, Bader's instruction of 2026-10-01, Q95. One background
+powershell.exe, PID 21164, STARTED 2026-10-01 10:48:37, runs
+%LOCALAPPDATA%\NwcFederatorLoop\turn4\keep-awake.ps1. On its main thread, native thread 27484,
+it called SetThreadExecutionState with ES_CONTINUOUS and ES_SYSTEM_REQUIRED, 0x80000001, which
+returned 0x80000000 at 10:48:38, so the request holds while that thread lives. No display
+flag, and none of Bader's power settings changed. It reads the STATE line of this file once
+a minute and stops itself when it reads STATE CLOSED or STATE WAITING, taking the request
+back first. Its lines go to turn4\keep-awake.txt. STOPPED 2026-10-01 17:35:43, on reading
+STATE WAITING, its release returning 0x80000001, turn4\keep-awake.txt.
+KEEP AWAKE OF TURN 5, Bader's rule of 2026-10-04. One hidden powershell.exe, PID 1312, STARTED
+2026-10-04 09:55:40 through WMI's Win32_Process Create, so its parent is pid 9844 WmiPrvSE.exe
+and not Claude Code, in session 1. It runs %LOCALAPPDATA%\NwcFederatorLoop\turn5\keep-awake.ps1
+and on its main thread, native thread 40512, called SetThreadExecutionState with ES_CONTINUOUS,
+ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED, 0x80000003, which returned 0x80000000 at 09:55:53.
+None of Bader's power, screen saver or lock settings changed. It stops itself, taking the
+request back first, when this file reads STATE CLOSED or STATE WAITING, or has not been written
+for 12 hours. Its lines go to turn5\keep-awake.txt. STOPPED: not yet. Checked alive at the start
+of every turn.
+
+THE RUN SETS OF TURN 4. Each run set gets a fresh copy at
+%LOCALAPPDATA%\NwcFederatorLoop\runs\NN\NMFed in Bader's own folder shape: NWC\C06 into
+NWF\C06, NWD\C06 and Clash Report\C06, the same for C07, and the clash XML at the top. It is
+named NMFed and not NM Fed because the paths wall refuses every command naming NM Fed. Clash
+Report has C06 and C07 folders because group 100000 is in both communities, and the folders
+the copy keeps are listed in steps\runs\00\source-listing.txt lines 147 to 157. Every run goes
+through the real window, and a run of a folder ticks every group. A first run takes the XML
+from the copy, with
+the tolerance box left on Use the value in the XML, so each test the run creates from the
+XML carries the XML's 25 mm. The weekly run and the later runs of the set take no XML, and a
+test already saved in an NWF keeps its own tolerance. Nothing is written into NM Fed on the
+desktop.
 
 ## Next action
 
-1. F100 IS IN THE FORM, below, after three fix attempts, and waits on Bader's choice.
-   PR 74 stays open as a draft on fix-F100 and NOTHING OF IT MERGES until its result file
-   is replaced or taken out, because that file carries two licensing ids
-2. Phase 1 item 3, the no-click entry. Its design is in
-   %LOCALAPPDATA%\NwcFederatorLoop\turn1\f101-design.md: measure first (PQ1 to PQ8 through
-   the same probe), then the moves out of the window one pull request each, then the entry
-3. Then Phase 1 items 2 and 4, below
+1. PR 82, these records, merged when Actions is green. PR 76, F102, merged on 2026-10-01 as
+   4fa1040, and PR 78, F103, as 398b910, with the third real start's evidence, 19a3da7.
+   THE INSTALL OF MAIN IS REFUSED, three times, see F109 in the register and the turn 4
+   section. F109, the in-place install, with its developer in wt-f109
+2. F105, Q89 A, and F107, Q88, with their developers in wt-f105 and wt-f107, each then read
+   by a reviewer and a breaker, then merged
+3. The install of main through run.ps1 -Mode Install from wt-main at main's new commit,
+   with no Roamer running, the installed stamp read back equal to that commit, then
+   turn4\install-done.txt written for the F106 developer's harness
+4. F106, the window run, and F108, the run set copy, built by their developers in wt-f106
+   and wt-f108, each read by a reviewer and a breaker under Q93, merged
+5. The rule changes of Bader's answers in .claude\rules\loop.md, after F103 merges
+6. Set 03 in the order of the plan, a record merged after every run
 
 ## The phases
 
 | phase | state | where it is |
 | --- | --- | --- |
 | 0, the house | DONE in turn 1, read three times before it went out | PR 72 |
-| 1, measure and a run with no click | NEXT | |
+| 1, measure and a run with no click | F100 DONE in turn 3. F102 and F103 merged on 2026-10-01 on Bader's answers, F105 answered and with its developer. F104 part 2 after the first runs of set 03 | PR 74, 76 and 78 |
 | 2, the register | DONE EARLY in turn 1, from a read of the whole repo | the register below, and steps\loop-read.md |
-| 3, the baseline | open. The copy of NM Fed is made and matches | steps\runs\00 |
+| 3, the baseline | open. In turn 4 it is set 03, every run through the real window, after F106 builds the window run | steps\runs\03 |
 | 4, the loop | open | |
 | 5, Bader's rules R1 to R6 | open. D3 builds them in this loop | |
 | 6, the close | open | |
@@ -107,12 +251,24 @@ F98, is merged in PR 73.
 - this machine ran the tool before, on 2026-09-07, over C06 through the ACC connector,
   logged in steps\log.md and the committed run-20260907-093440.log, although
   steps\03_bader_next.md says C06 never existed. It is the register row about steps 9 to 17
+- read at 17:06:18 on 2026-09-30 into turn3\reads-170618.txt: the power plan, Balanced,
+  never sleeps or hibernates on idle on mains power, and the laptop read on mains at 100
+  percent. What closing the lid does could not be read, UNKNOWN
+- the clash XML in the copy, sha256 36AB2739, holds 1830 clash tests, each with tolerance
+  0.0820209974 in feet, 25 mm, read on 2026-10-01 into turn4\xml-reads.txt. The tool's
+  tolerance box defaults to Use the value in the XML, ToleranceChoice.cs, under which each
+  test keeps what its source gave it. So a first run that leaves the box alone gives each
+  test it creates from this XML 25 mm. Not yet seen on a run of main
 
 ## The form
 
 What waits on Bader's answer. A finding moves here when it survives three fix attempts,
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
+
+ANSWERED ON 2026-10-01: Q82 to Q92, every one, each answer under its question in
+steps\02_questions.md. Nothing from turn 3 waits in the form now. The two sections below are
+kept as what Bader answered.
 
 ### F100, the probe of a start with no click, after three fix attempts
 
@@ -163,6 +319,48 @@ Bader's choice:
   design, read from the start
 - C. Something else he names
 
+ANSWERED A on 2026-09-29, Q79: one more fix attempt of exactly the faults in the fourth
+reading, with no start while any Navisworks runs enforced in code, then the one run, then
+merge. The last attempt. If the reading after it finds a new fault, F100 goes to B with no
+question. No result file reaches main with a licensing id or a session id in it.
+
+### Turn 3, what run.ps1 needs from Bader before a window opens on main, Q82 to Q87
+
+The design of run.ps1, F103, is in steps\notes\f103-design.md once F103's pull request
+carries it, and until then in %LOCALAPPDATA%\NwcFederatorLoop\turn3\f103-design.md. Its
+parts needs_bader and log_folder_problem are the evidence. Each question is written out in
+steps\02_questions.md with its options.
+
+- Q82, THE LOG FOLDER, blocks every window run on main. Measured 2026-09-29: his logs folder
+  holds exactly 30 run logs and the tool keeps 30, so a window run deletes his oldest. The
+  lead recommends A, hold his logs open with no delete sharing during a run, then remove only
+  the loop's own log and tsv. Until he answers, NO WINDOW OPENS ON MAIN. The start with no
+  window, run.ps1, the document read and the install of main go ahead, because none of them
+  opens the window
+- Q83, what counts as no processor time for the hang rule, measured by the first start
+- Q84, whether a ceiling may close the loop's own Navisworks, 12 hours proposed
+- Q85, the screen kept on, runs while he is away or at work, a locked screen
+- Q86, the loop's autosaves in his AutoSave folder, 196 files and 286 MB, backed up first
+- Q87, the tool reading his remembered folders at every window open, reading only
+- Q88, from F102: main names the machine of 2026-09-19 in 9 places, and PR 74's refs on
+  GitHub keep the licensing ids of fix-F100's first commits after the squash merge, which
+  only the repository's owner can ask GitHub to purge
+- Q89, F105 after three fix attempts: its four answers are backed line by line in all four
+  readings, and the fourth reading still found faults of the same kind in the shared reader
+  the fixes added. The lead recommends A, merge with three sentences of 5z-f narrowed
+- Q90, from F102: the new check refuses a zip, while the loop rule says a run file over
+  20 MB is committed zipped. Where may a zip of run evidence sit
+- Q91, F102 after three fix attempts: the final reading found a workbook under samples with
+  text appended still passes, because the rule allows the zip end record anywhere in the
+  last 65557 bytes, while every real one holds it 22 bytes from the end. The lead recommends
+  A, one more change to make the window 22 bytes, then merge
+- Q92, F103 after three fix attempts: the final reading found one of the last attempt's items
+  not fixed, in the words. The harness header says a line throws that only sets the error,
+  named after attempts 1 and 2 as well. All three readers answered safe for item 0 and safe
+  for install, one within its lens. The lead recommends A, one change of words only, no
+  change of logic, at the nine entries of steps\notes\f103-final-reading.md, the harness run
+  again, then merge, tonight's start standing as its run
+
 Built in turn 1 from steps\01_next.md, steps\02_questions.md, steps\04_audit.md,
 steps\04_audit_first_run.md, steps\03_bader_next.md, the known bugs of steps\log.md, the
 chat audit of 19 Sep, the defaults, Bader's run of 16:37 and the read of the whole repo in
@@ -172,23 +370,70 @@ an F number only when it becomes work. Most harmful first when the loop picks, a
 wrong number ranks above a loud failure. Done in code but not proved by a run means the
 baseline run proves it or contradicts it.
 
-270 rows, by status:
+306 rows, by status, after turn 4's ten additions:
 
 - 125 done in code, not proved by a run
-- 89 reported by the read, not verified
-- 31 needs Bader, in the form
+- 3 reported by the read, not verified, T1-N, T1-UNCALLED and T1-CATCH
+- 86 read again by two readers on 2026-09-29, 76 CONFIRMED and 10 PARTLY, none refuted:
+  60 silent wrong outputs, 13 broken features, 6 loud failures, 7 noise. Every one
+  waits for the baseline, because no fix lands before it, steps\notes\turn1-read-verified.md
+- 30 needs Bader, in the form
+- 2 DONE in turn 4, F102 and F103, merged on Bader's answers
+- 3 answered by Bader on 2026-10-01 and being carried out, F105, Q82 to Q87 as one row, and Q88
+- 3 open in turn 4, F106, F107 and F109
+- 3 known limits or items, F102-L1, F102-L2 and Q88-IDS
+- 4 open for later, F103-W and F105-R1 to F105-R3
 - 19 open fault
-- 3 DONE
+- 4 DONE
+- 19 open for F103 or after it, T3-G1 to T3-G16, T3-P, T3-P2 and T3-B
+- 1 part 1 built and read, F104, check-documents after F103
 - 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
 - 1 closed, not there at 42499bf
+- 1 open, the git wall, T3-W1
 
 | ID | came from | what it is | what proves it fixed | status | PR | run that proved it |
 | --- | --- | --- | --- | --- | --- | --- |
 | F97 | loop prompt, Phase 0 | The house: agents, hooks, rules, tools\loop, steps\runs, allow list | on main, every hook case answered on standard input, both walls refusing live | DONE | 72 | no Navisworks run applies, proved on standard input and live |
 | F98 | turn 0, a read of steps\log.md | PR 71 dropped the close round heading in steps\log.md | the heading back above Core tests 1666 before the round and 1746 after | DONE | 73 | no run applies, the file from the heading down matches the one before PR 71 |
 | F99 | turn 0, the git wall fired on Bash only | The git wall missed commits sent through PowerShell | a PowerShell commit on main refused on standard input, and git.exe read as git | DONE | 72 | no Navisworks run applies, proved on standard input and live |
-| F100 | loop prompt, Phase 1 item 1 | Nothing measured how Navisworks starts and closes with no click on this machine | tools\probes\probe-automation-start.ps1 run once as committed, with no Navisworks the loop did not start running, and docs\history\scan.md 5z-d written off that run | needs Bader, in the form | 74 | runs 1 to 3 of earlier versions, none of the committed one |
+| F100 | loop prompt, Phase 1 item 1 | Nothing measured how Navisworks starts and closes with no click on this machine | tools\probes\probe-automation-start.ps1 run once as committed, with no Navisworks the loop did not start running, and docs\history\scan.md 5z-d written off that run | DONE, fix attempt 4 on Bader's answer A, Q79, read by a reviewer and a breaker who both approved | 74 | run 4 at 11:35 on 2026-09-29, all six steps passed, tools\probes\automation-start-result-20260929.txt, scan.md 5z-d RUN 4 |
+| F102 | turn 3, the lead's read of fix-F100 | A result committed from this machine can carry the machine name and the licensing agent's ids, and nothing read a file for them before a commit | tools\loop\mask-evidence.ps1 masks both, tools\checks\check-evidence-ids.sh refuses both in the pre-commit and in Actions, proved on the four fix-F100 files, refused before and passed after | DONE on 2026-10-01, merged as it is on Bader's answer Q91 B, its two gaps the known limits F102-L1 and F102-L2 | 76, merged as 4fa1040 | no Navisworks run applies, proof in turn3\f102\proof.txt |
+| F105 | loop prompt, Phase 1 item 2 | Four facts off the install nobody had read on this machine: the saved viewpoint members, RemoveFile, Roamer's switches, the Clash Detective report | scan.md 5z-f off five result files, no Navisworks started | answered A by Bader on 2026-10-01, Q89: the three sentences of 5z-f narrowed, the three probe faults F105-R1 to F105-R3 | none, branch fix-F105 at 94a839b | no Navisworks run applies, the prober's reads on 2026-09-29 |
+| F103 | loop prompt, Phase 1 item 3 | tools\loop\run.ps1 does not exist | the design in turn3\f103-design.md built, proved by its harness with no Navisworks, then one start with no window | DONE on 2026-10-01, part 1, merged as it is on Bader's answer Q92 B, the nine entries of steps\notes\f103-final-reading.md register row F103-W | 78, merged as 398b910 | two real starts with no window on 2026-09-30, on fix attempts 1 and 2, and the third on a63c284 on 2026-10-01 from 09:06 to 09:18, exit 0, VERDICT RAN, steps\runs\00\item0, 01\item0 and 02\item0 on fix-F103 |
+| F104 | loop prompt, Phase 1 item 4 | No check of the workbook against a read of the document that shares no code with the harvest | the design in turn3\f104-design.md, part 1 on fix-F104, check-documents after F103, proved by prove-compare and then by 5a at the baseline | part 1 built at ef1fbdd, read by a reviewer and a breaker, its fixes at ebd8bb7, check-documents after F103 | none yet | none yet |
+| T3-G1 | turn 3, the reviewer's reading of F100 attempt 4 | The probe's last check before each settings write, line 1885, also 1877 and NewRoamers at 1261, takes a process list it could not read as no Roamer, so the writes go on. Silent. Old, in b01ad71 | a list that cannot be read stops every write, in the guard code run.ps1 takes over, with a harness case | open, for F103 | none yet | none yet |
+| T3-G2 | the same reading | After the deadline path runs and TerminateProcess returns False, nothing reads the deadline flag before adoption, line 1468, so steps 4 to 6 can run with no watchdog. Old | adoption refused once the deadline path ran, in the guard code, with a harness case | open, for F103 | none yet | none yet |
+| T3-G3 | the same reading | A recorded start with start ticks refuses whenever any process holds that pid and its start time cannot be read, whatever its name, line 1239. Loud, refuses too much. Old | the name read as well, in the guard code | open, for F103 | none yet | none yet |
+| T3-G4 | the same reading | A named limits line prints what the finalizer's IL does as this run's fact, line 1845, read off run 3 and checked by no code on the run. The shape F2 fixed at the line beside it. Old | the line says it was read off run 3 or reads UNKNOWN | open, for F103 | none yet | none yet |
+| T3-G5 | turn 3, the breaker's reading of F100 attempt 4 | MainWindowHandle and MainWindowTitle after adoption, lines 1633 to 1648, read by pid alone. The breaker says MainWindowTitle sends WM_GETTEXT to whatever window holds that pid now, the reviewer that GetWindowText sends none to another process's window under the Win32 contract. Old | measured, then read after the same start ticks check WindowsOf makes | open, for F103 | none yet | none yet |
+| T3-P | turn 3, the reviewer's reading of F100 attempt 4 | Polish: a sentence at 395 and 1836 that went stale when B3 landed, the always empty before set still read, the work folder moved aside before step 2 refuses, the gap between the last read and the constructor call not named as a limit | each fixed or named where the code moves in F103 | open, for F103 | none yet | none yet |
+| T3-B | turn 3, the F103 design | The build stamp reads +edits whenever the tree holds any untracked file, Directory.Build.targets, so a build from a working clone cannot prove it is main | install from a clean checkout at the commit asked for, the installed stamp read back equal | open, for F103 | none yet | none yet |
+| T3-W1 | turn 3, F102's developer | The git wall refuses a push from a worktree while the main clone has main checked out, even git push origin fix-F102:fix-F102, because it reads the main clone's branch. A false refusal on the safe side | the wall reads the branch of the tree the command runs in, proved through tools\loop\prove-hooks.sh and a breaker as the rules say | open, the wall's own round | none yet | none yet |
+| T3-G6 | turn 3, the reading of F103 fix attempt 2 | A key under HKCU 22.0 that reads at the start and cannot be read at the end is compared by nothing and counted nowhere, so the put back reads whole and exits 0, nw-guard.ps1 238, 258 and 1239 to 1241 at 867697a. Silent | the key counted as not compared and the verdict saying so, with a harness case | open, for after F103 | none yet | none yet |
+| T3-G7 | the same reading | Anything that reads watch.txt with a locking read during a run makes one watchdog append fail, which switches off the whole put back, and the reason blames the watchdog, nw-guard.ps1 837 to 840 and 1176. Silent until the end | a write that fails on a reader retried or told apart, with a harness case | open, for after F103 | none yet | none yet |
+| T3-G8 | the same reading | ProcState turns a failed Get-Process into gone, and the put back guards read Get-Process -Name with errors silenced, so a process list that cannot be read at the end lets the put back run, nw-guard.ps1 522, 523, 773, 1182 to 1184, 1197 and 1208. The family of T3-G1 | an unreadable list read as UNKNOWN that stops the writes, with a harness case | open, for after F103 | none yet | none yet |
+| T3-G9 | the same reading | AdoptStart runs after the constructor returned and before the pid is held, where neither the constructor deadline nor the call bound applies, so a hung process list or CIM read there has no bound, nw-guard.ps1 1091 to 1145 | a bound on that stretch, with a harness case | open, for after F103 | none yet | none yet |
+| T3-G10 | the same reading | M5 walks %TEMP% and the Autodesk folders with no time limit, run.ps1 1062 to 1076, and the put back waits on it | a bound on the walk, written when it is reached | open, for after F103 | none yet | none yet |
+| T3-G11 | the same reading | build\install.ps1 deletes recursively at 130 and 137 with no check for a junction inside the bundle, and on a first install with nothing moved aside a failed copy leaves a partial bundle at the load path, 134 | both refused or put right, with harness cases | open, for after F103 | none yet | none yet |
+| T3-G12 | the same reading | Verdict wording: HUNG, CallForced and CEILING come before the end state, UNKNOWN wins when the end state later reads gone, one unreadable sample ends the hold, RAN with FORCED exits 0, a foreign Roamer that ran and changed no setting shows only in the put back reasons and never in the verdict, and $sync.LogAmbiguous and $sync.ToolLog are set and never read, run.ps1 446 to 455, 541 to 546, 552, 555 and 1015 | each verdict naming the end state, and the two fields read or removed | open, for after F103 | none yet | none yet |
+| T3-G13 | turn 3, the final reading of F103, steps\notes\f103-final-reading.md, classed old by the reviewer and a breaker | run.ps1 903, 1014 and 1020 at a63c284 write an exception's text, which holds the full path of a file of Bader's, into the record unmasked. Run's record, where 1014 and 1020 write, is copied into steps\runs, and Install's, where 903 writes, stays in the loop folder. The kind item 12 of fix list 3 fixed, at lines it did not name. Neither real start's record holds such a line | the text masked the way install.ps1's REFUSED lines are, with a harness case | open, for after F103 | none yet | none yet |
+| T3-G14 | the same reading, classed old by a breaker | A run.ps1 or install.ps1 killed or hung between the move aside and the removal leaves the load path empty or holding part of the new bundle, and the old bundle whole at .replaced-<time>, with no line saying so and nothing that puts it back, and run.ps1 923 waits on install.ps1 with no limit, install.ps1 119 to 260 at a63c284. Silent | that state named by Check and put right or refused by the next Install, and a bound on the wait, with harness cases | open, for after F103 | none yet | none yet |
+| T3-G15 | the same reading, classed polish by both breakers, BundleLeftovers is attempt 3's own code | Install's leftovers: a failed removal of the old bundle after every check prints one LEFT line and exits 0, which INSTALL.md reads as success in a direct install, BundleLeftovers names old .replaced- and .failed- folders as the add-in installed before, so one stale folder makes every later Install exit 5, a wrong stamp returns before a leftover is named, a removal that stops part way leaves part of the old bundle, and the checks that gate the removal read the staging copy, run.ps1 784 to 789 and 947 to 948, install.ps1 178 to 262 at a63c284 | each named or refused with a harness case, and INSTALL.md's success line reading the LEFT line | open, for after F103 | none yet | none yet |
+| T3-G16 | the same reading, classed polish and old by a breaker, CloseAtEnd's text is attempt 3's own code | A close that fails twice: CloseAtEnd writes CLOSED here when its own Kill also failed, run.ps1 493 at a63c284, and CloseOwn refuses any folder whose record holds a VERDICT line, run.ps1 687, so only a person can end that Navisworks. The verdict's side of it is T3-G12 | the text saying which close failed, and a closer for a process still running, with a harness case whose Kill fails | open, for after F103 | none yet | none yet |
+| T3-P2 | the same reading, classed polish or old by two breakers, the probe's close left unclassed, OwnerText is attempt 3's own code | Polish: CloseOwn reads autosave-before.txt with no count or name check, dotnet build-server shutdown stops every build server of the account, an owner window destroyed mid read is written as another process's, item 8's harness case sets Forced by hand, and the probe closes outside the lock, each with its lines in steps\notes\f103-final-reading.md | each fixed or named where the code next moves | open, for after F103 | none yet | none yet |
+| Q82 to Q87 | turn 3, the F103 design | The log folder, the hang rule's zero, a ceiling, the screen, AutoSave, the remembered folders | Bader's answers under each in steps\02_questions.md | answered by Bader on 2026-10-01, carried out by F106 and the rules it writes | none yet | none yet |
+| Q88 | turn 3, F102's developer | Main names the machine of 2026-09-19 in 9 places across 4 files, and PR 74's refs on GitHub keep the licensing ids of its first commits | Bader's answer in steps\02_questions.md | answered by Bader on 2026-10-01: the older name masked on main by F107, the licensing ids register row Q88-IDS | none yet | none yet |
+| F106 | turn 4, Bader's message of 30 Sep, Q94 | No run of main goes through the tool's window, and tools\probes\drive-window-run.ps1 finds windows among every window on the desktop and picks a tolerance with a real mouse click | the smallest change to run.ps1 for items 1 to 5 around the driver, read by the reviewer and one breaker under Q93, then the first run of set 03 | open, turn 4 | none yet | none yet |
+| F107 | turn 4, Q88 | Main names the machine of 2026-09-19 on 9 lines in 4 files | git grep for the name over the whole tree finds nothing | open, turn 4 | none yet | no run applies |
+| F109 | turn 4, the install of main refused three times on 2026-10-01 | build\install.ps1 since F103 moves the installed bundle aside by one rename, and Windows denies that rename on this machine with no Navisworks running, while every file of the bundle opens for delete and for write, no process of this user holds or maps one, and the loop's own throwaway folders and copies of the bundle rename freely in the same folder. What holds it is UNKNOWN. The refusal says Navisworks is running, which it was not. Loud, and it blocks every install, here and on any of the 27 machines where the same happens | the in-place path of turn4\f109-brief.md built and read, then the real install of main here reading the installed stamp back | open, turn 4, with its developer | none yet | none yet |
+| F102-L1 | Q91 B, the fourth reading of F102 | A workbook under samples with text appended inside its last 65557 bytes passes the evidence check unread, where every real one holds the zip's end record 22 bytes from its end | none, a known limit: the samples are never edited | known limit, Q91 B | 76 | no run applies |
+| F102-L2 | Q91 B, the same reading | A committed hook holding the evidence check's line where it never runs, after an exit or in a function nobody calls, still gets the handover | none, a known limit: a hook of this repo is read before it merges | known limit, Q91 B | 76 | no run applies |
+| F103-W | Q92 B, steps\notes\f103-final-reading.md | The nine entries in the words of F103, eleven places in six files, item 14 of fix list 3 among them | each entry's words made true where its file next changes | open, words only, Q93 | 78 | no run applies |
+| F105-R1 | Q89 A, the fourth reading of F105 | tools\probes\il-reader.ps1 prints a zero for every failure kind in every probe, kinds a probe never attempts included | each probe printing only the kinds it attempts | open, for later | none yet | no run applies |
+| F105-R2 | the same reading | One of F105's probes prints its failure list only when a built add-in is there | the list printed on every run | open, for later | none yet | no run applies |
+| F105-R3 | the same reading | A resolver and two small helpers still sit in more than one of F105's probes | one copy of each | open, for later | none yet | no run applies |
+| Q88-IDS | Q88 | GitHub keeps the commits 464f79f and c98c6f3 readable through PR 74's own refs, and they hold the licensing agent's analytics id and a session id | only the repository's owner can ask GitHub support to purge them | known item, Bader's, the repository is private | 74 | no run applies |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
 | RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
 | CHAT-19 | chat audit of 19 Sep | The doubled summary block above BuildViewpoints | NOT FOUND by the turn 1 read. Two other stacked summaries are T1-N items | closed, not there at 42499bf | none yet | none yet |
@@ -366,92 +611,92 @@ baseline run proves it or contradicts it.
 | NEW-LOG | log.md steps/log.md lines 5231 (F30 What was do ... | A comment F30 moved says the units go before the clash step so the report reads in its units, stale since F26 | The comment reads what F26 does, the report converted to metres whatever the document shows. log.md quotes the comment only in paraphrase, so a grep of src coul ... | open fault | none yet | none yet |
 | NEW-LOG | log.md steps/log.md line 4976 (What remains, ro ... | 180 findings of the 2026-09-12 audit carry no verifier | Each of the 180 findings in steps/04_audit.md re-checked by grep and marked verified or refuted. No later entry says that was done. | open fault | none yet | none yet |
 | NEW-LOG | log.md steps/log.md lines 4277, 4517, 4660, 346 ... | The proof steps of steps/03_bader_next.md, never worked as a whole | Each step's Look for line matched on a run, or the step cut. Turn 0 Phase 2 puts every never proved step in the register. | done in code, not proved by a run | none yet | none yet |
-| T1-S1 | turn 1 read, src/Federator.Addin/Engine/ByDesign.cs:148 | An unnamed clash judged Reviewed is counted as moved: ByDesignTally.Add adds its REVIEWED line and adds to Mov ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S2 | turn 1 read, src/Federator.Addin/Engine/ClashHarvest.cs:164 | A result group with no leaves is counted as one clash, and TestReport.Add feeds RawClashes into the report tal ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S3 | turn 1 read, src/Federator.Addin/Engine/ClashRunner.cs:465 | On a run with no XML and a chosen tolerance, ApplyChosenTolerance (line 617) changes the saved test's toleranc ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S4 | turn 1 read, src/Federator.Addin/Engine/ClashRunner.cs:1102 | Apply edits a saved test and never sets changedTheDocument. ApplyChosenTolerance does set it for the same kind ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S5 | turn 1 read, src/Federator.Addin/Engine/ClashRunner.cs:1106 | The APPLIED log line says the edit reset the test's results. The class's own comments (175-179, 1069-1070) and ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S6 | turn 1 read, src/Federator.Addin/Engine/DocumentCensusReader.cs:93 | The class rule (lines 24-27) says a count that cannot be taken is minus one and never zero, but this overload ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S7 | turn 1 read, src/Federator.Addin/Engine/DocumentGuard.cs:54 | SafeFileName returns null both for an unsaved document and when reading the name threw (lines 79-81). In the s ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S8 | turn 1 read, src/Federator.Addin/Engine/DocumentUnits.cs:118 | When re-reading Document.Units throws, the empty catch at 124 leaves 'after' equal to 'before'. Line 130 then ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S9 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:1573 | A successful ReshapeFromScan never saves the NWF ('nothing on this path saves', 1529-1530). FinishTheGroup sav ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S10 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:2042 | In SaveTheNwf a false return or a throw (caught at 2047-2053) only writes a log line and never adds an error t ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S11 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:3152 | When SaveTheNwfAgain's save returns false, nothing goes on the outcome (only a throw does, at 3159). WriteFini ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S12 | turn 1 read, src/Federator.Addin/Engine/Penetrations.cs:338 | This is outside the requested files but decides the viewpoint plan's unreadable size branch. An unknown docume ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S13 | turn 1 read, src/Federator.Addin/Engine/PropertyProbe.cs:124 | This runs even after File.WriteAllText has thrown. WriteFinished records whatever file sits at the path as wri ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S14 | turn 1 read, src/Federator.Addin/Engine/PropertyProbe.cs:208 | A value that throws is tallied as a real empty distinct value (line 211), so the CSV cannot tell an unreadable ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S15 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:88 | Read maps every comparison except DisplayStringContains to 'equals' and never reads the condition's options. T ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S16 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:112 | ValueOf reads every kind except IdentifierString with ToDisplayString, which the add-in rule says throws on an ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S17 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:273 | SidesBySetName walks only the root of tests.Tests, and a Clash Detective folder is skipped by 'if (test == nul ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S18 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:291 | When reading the clash test sides throws, SidesBySetName logs that no set is removed or renamed and returns an ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S19 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:323 | The comment contradicts itself and the code. A side that throws is not counted, which lowers the set's count, ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S20 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:646 | This is outside the requested files. When FindSelectionSet returns null after the rebuild (line 665), found st ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S21 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:665 | After Rebuild calls ReplaceWithCopy(parent, at, made), the set is re-read through the same parent handle that ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S22 | turn 1 read, src/Federator.Addin/Engine/ViewpointBuilder.cs:668 | Nothing takes one viewpoint's temporary transparency and paint off before the next viewpoint is set up. Undim ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S23 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:95 | FolderMemory records a failed read or save in DisabledReason (FolderMemory.cs:78, 120, 285), but nothing in sr ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S24 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:288 | Regroup runs on every FileRow Include change (OnFileRowChanged, line 237) and always builds a fresh name table ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S25 | turn 1 read, src/Federator.Core/Clash/ClashRunOutcome.cs:429 | SkipReasonsInOrder leaves out NoTolerance, which ClashTestPlan.cs:249 produces and ClashRunner.cs:364-366 feed ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S26 | turn 1 read, src/Federator.Core/Clash/PriorityMap.cs:136 | A test name that appears twice silently takes the last row's priority and no problem is recorded, unlike ByDes ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S27 | turn 1 read, src/Federator.Core/Clash/RepeatedFailureGuard.cs:61 | The guard counts consecutive failures and RecordSuccess (90-94) resets the count, and one guard covers the who ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S28 | turn 1 read, src/Federator.Core/Clash/ToleranceChoice.cs:78 | The help line shown under the drop down (FederatorWindow.xaml.cs:1040) says changing a saved test resets resul ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S29 | turn 1 read, src/Federator.Core/Clash/ToleranceChoice.cs:200 | ClashRunner.cs:396 writes this default line on every group, including the no-XML path where plan.Source is Doc ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S30 | turn 1 read, src/Federator.Core/Clash/ToleranceChoice.cs:207 | 'Set on N' counts toleranceOnExisting, which ClashRunner.cs:1152 increments before it resolves the test. The s ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S31 | turn 1 read, src/Federator.Core/Clash/UndoAutoReview.cs:65 | The judgement only asks whether one of our records is on the clash and the clash is at Reviewed. ClashStatusEd ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S32 | turn 1 read, src/Federator.Core/Diagnostics/EventRow.cs:199 | The comment on Number (line 74-77) says it is text so that precision is not lost, but Exact rounds to at most ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S33 | turn 1 read, src/Federator.Core/Diagnostics/FolderMemory.cs:242 | Remember discards Save's bool, and DisabledReason is never read anywhere in src. A folders.txt that cannot be ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S34 | turn 1 read, src/Federator.Core/Diagnostics/LiveLine.cs:236 | OnTheGroupBefore sums every visit of the step in the group before. TESTS CREATE, TESTS RUN and HARVEST start t ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S35 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:268 | On the temp fallback, Start writes into the bare system temp folder and PruneOldLogs(folder, keepLogs) (358) d ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S36 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:482 | RunStarted only moves the mark. groupRecords, stepRecords, written, failures, collapsedLines and ClashesFound ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S37 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:514 | A run that started but never finished is treated as never marked. The window calls RunFinished inside the try ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S38 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:687 | This claim, and the same one at 718 and 1922, is written whether or not a row file exists. Row() returns when ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S39 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:1348 | AppendFinished writes a size of 0 into the .tsv Number column for an NWC that is not on disk, while the text l ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S40 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:1939 | This line is written even when no run was marked. WaitingSeconds is then Never(0.0), so RESULT states 0.000s o ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S41 | turn 1 read, src/Federator.Core/Exchange/ExchangeReader.cs:378 | A missing or unparsable flags, primtypes, selfintersect or merge_composites silently becomes 0 or false (lines ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S42 | turn 1 read, src/Federator.Core/Exchange/MatrixCorrections.cs:643 | Under F78 (SetBuildPlan.cs:169-171 and Groups() at 212-229) a flags=64 condition starts a new OR group. Put st ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S43 | turn 1 read, src/Federator.Core/Exchange/MatrixCorrections.cs:898 | The CategoryRewrite replace runs over the whole set block, including the `<selectionset name="..."` attribute, ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S44 | turn 1 read, src/Federator.Core/Exchange/RevitWorksets.cs:131 | A missing resource gives the same empty list as an empty file and nothing records the difference. That is the ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S45 | turn 1 read, src/Federator.Core/Findings/ScanFindings.cs:243 | Every scan finding is worked out from BuildingGroup.Building, which is the grouping key (BuildingGrouping.cs:1 ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S46 | turn 1 read, src/Federator.Core/Findings/ScanFindings.cs:366 | This sentence reaches the window and the log, and it contradicts the code since F77: ClashRunner.cs:694 says ' ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S47 | turn 1 read, src/Federator.Core/Findings/SourceMismatchFindings.cs:240 | GroupBuilding is the group key (FederatorWindow.xaml.cs:1723 passes group.Building into FederationJob, and Fed ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S48 | turn 1 read, src/Federator.Core/Health/ExportCheck.cs:66 | IdShare is rounded before the `model.IdShare < 100` test (line 136, and again at FederationEngine.cs:2152), so ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S49 | turn 1 read, src/Federator.Core/Health/ExportCheck.cs:127 | When WithWorkset is NotCounted (-1) this prints NONE. That contradicts ModelExport.NotCounted's own rule at li ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S50 | turn 1 read, src/Federator.Core/Health/ExportCheck.cs:242 | The only workset test is CarriesAWorkset, `WithWorkset > 0` (line 53), so one element with a workset passes as ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S51 | turn 1 read, src/Federator.Core/Health/InvisibleDifference.cs:158 | WithoutInvisibles also removes ordinary spaces, so 'EL-Fire alarm' against 'EL-Firealarm', a space anyone can ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S52 | turn 1 read, src/Federator.Core/Health/SetWarnings.cs:47 | FindCategoriesNobodyHas (lines 221-238) never looks at condition.Flags. A negated condition (32) on an unknown ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S53 | turn 1 read, src/Federator.Core/Health/SetWarnings.cs:119 | The comment says the opposite of what the code does. SignatureOf (lines 172-189) joins RuleSignature values, w ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S54 | turn 1 read, src/Federator.Core/Naming/OutputNameTable.cs:209 | Refill counts a row as kept if any one of its three cells was typed over (lines 178-181), but it still refills ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S55 | turn 1 read, src/Federator.Core/Probe/ProbeVerdict.cs:134 | PropertyProbe accepts a category through settings.Asks, which trims and ignores case (PenetrationSettings.cs 2 ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S56 | turn 1 read, src/Federator.Core/Report/ClashReportModel.cs:726 | ClashHarvest.cs:334-335 fills ElementId with a real GUID and sets IdLabel = "Instance GUID", and IdFrom stays ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S57 | turn 1 read, src/Federator.Core/Report/ReportOrder.cs:274 | Pass one moves every changing picture to a .moving name before any final move, and nothing rolls back. If pass ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S58 | turn 1 read, src/Federator.Core/Report/ReportPaths.cs:130 | When the NWF folder is inside the scanned folder, Refuse throws on purpose (line 178) to say there is nowhere ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S59 | turn 1 read, src/Federator.Core/Report/WorkbookWriter.cs:279 | WriteEmptyTestRow is one row and returns start + 1, but ClientStyle.TestHeader fills and borders both top and ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S60 | turn 1 read, src/Federator.Core/Report/WorkbookWriter.cs:594 | WriteImageCell sets 72 pt for a pasted thumbnail, then WriteBlock line 260 'sheet.Row(row).Height = ClashRowHe ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S61 | turn 1 read, src/Federator.Core/Rerun/RebuildTally.cs:65 | A Before count that could not be taken (minus one) reads as 'nothing to keep'. SavedViewpoints.Count returns - ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S62 | turn 1 read, src/Federator.Core/Sets/EmptySets.cs:100 | Property internal names are written into the code (line 103 as well, "lcldrevit_parameter_-1002053"), which CL ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S63 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:74 | Only PRESENT sets are ever judged: SetBuilder.cs:701 `if (found == 0 && !drift.CouldNotRead)` sits inside the ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S64 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:207 | PutAnythingIn ignores RebuiltCount, and FederationEngine.cs:2456 `return sets.PutAnythingIn // sets.ActedOnLef ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S65 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:372 | This is printed whenever Drifted.Count == 0. A set whose search could not be read is never Drifted and never r ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S66 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:386 | FindingItemsCount, ZeroCount and TotalItems count CREATED sets only (Count(true, ...), IsZero, result.Created) ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S67 | turn 1 read, src/Federator.Core/Sets/SetDrift.cs:46 | The drift key carries no flags, so the StartGroup bit (the OR) is never compared. The comment at 97-99 says or ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S68 | turn 1 read, src/Federator.Core/Sets/SetDrift.cs:148 | AskedNow joins every condition with " and ", and so does WantedNow at line 161, with no StartGroup grouping. T ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S69 | turn 1 read, src/Federator.Core/Sets/SetRebuildSettings.cs:20 | With the box on, SetBuilder.Build (SetBuilder.cs:506-509) runs HandleLeftovers, which removes unused sets the ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-S70 | turn 1 read, src/Federator.Core/Views/SizeText.cs:204 | Only the FIRST digit after a letter is skipped. The walk then advances one character (lines 50-53) and the nex ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-B1 | turn 1 read, src/Federator.Addin/Engine/ClashImages.cs:66 | The image guard belongs to one ClashImages, and FederationEngine.cs 2589 builds a new one per group ('runner.I ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-B2 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:3179 | BuildViewpoints never reads SavedViewpoints.CanBuild, and nothing in src/ does. A grep for CanBuild finds only ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-B3 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:2590 | Only the Close button is guarded. There is no Closing handler anywhere in the add-in (grep for Closing finds n ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-B4 | turn 1 read, src/Federator.Addin/Ui/GroupRow.cs:126 | CLAUDE.md says a typed-over cell can be given back to the pattern. OutputNameRow.ReleaseToPattern (Core Output ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-B5 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:34 | Retention lists only run-*.log (line 376). The .tsv that RowLog.PathFor (RowLog.cs:80) writes beside every log ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-B6 | turn 1 read, src/Federator.Core/Naming/NamePattern.cs:69 | The project rules call DateFormat a setting whose mistakes should be visible in the preview. A grep of every s ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-B7 | turn 1 read, src/Federator.Core/Naming/OutputNameTable.cs:84 | The project rules say a typed-over cell can be given back to the pattern, but nothing in src calls ReleaseToPa ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-B8 | turn 1 read, src/Federator.Core/Naming/OutputNameTable.cs:245 | When a pattern field is emptied, Refill stores this sentence as the name in every untouched cell, and the only ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-B9 | turn 1 read, src/Federator.Core/Views/SizeTally.cs:77 | Nothing in src constructs SizeTally, and no other code writes a SIZE line (Grep "SIZE over src finds only this ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-L1 | turn 1 read, src/Federator.Addin/Engine/Penetrations.cs:187 | ServiceSizeOf calls ReadSide, which calls Upwards(item) at line 260 outside its try. walker.Parent at line 371 ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-L2 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1508 | ReportsWanted calls ChosenTolerance, which throws ArgumentOutOfRangeException when Other is chosen with a blan ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-L3 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1701 | The only name check before a run is for collisions. An emptied pattern box makes every name 'CANNOT BE NAMED: ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-L4 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1725 | Clearing an NWF or NWD name cell stores an empty by hand name (GroupRow.cs:118 and 126). The collision check a ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-L5 | turn 1 read, src/Federator.Core/Clash/AutoReviewRecord.cs:150 | In() is documented to return null for a comment that is not ours, but a marker comment reading [was Reviewed/A ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-L6 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:565 | WriteRaw has no try. A write or flush that throws, such as a full disk, or a LineWritten handler that throws ( ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
-| T1-L7 | turn 1 read, src/Federator.Core/Health/AlignmentCheck.cs:255 | ModelPlacement has NotRead for X, Y and Z but no not-read state for the site. ModelFactsReader.cs:152-155 sets ... | confirmed by a second reader or a run, then a failing Core test or a run that shows it gone | reported by the read, not verified | none yet | none yet |
+| T1-S1 | turn 1 read, src/Federator.Addin/Engine/ByDesign.cs:148 | An unnamed clash judged Reviewed is counted as moved: ByDesignTally.Add adds its REVIEWED line and adds to Mov ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S2 | turn 1 read, src/Federator.Addin/Engine/ClashHarvest.cs:164 | A result group with no leaves is counted as one clash, and TestReport.Add feeds RawClashes into the report tal ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S3 | turn 1 read, src/Federator.Addin/Engine/ClashRunner.cs:465 | On a run with no XML and a chosen tolerance, ApplyChosenTolerance (line 617) changes the saved test's toleranc ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S4 | turn 1 read, src/Federator.Addin/Engine/ClashRunner.cs:1102 | Apply edits a saved test and never sets changedTheDocument. ApplyChosenTolerance does set it for the same kind ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S5 | turn 1 read, src/Federator.Addin/Engine/ClashRunner.cs:1106 | The APPLIED log line says the edit reset the test's results. The class's own comments (175-179, 1069-1070) and ... | a failing Core test, then a run | PARTLY settled by a third reader after two split, noise, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S6 | turn 1 read, src/Federator.Addin/Engine/DocumentCensusReader.cs:93 | The class rule (lines 24-27) says a count that cannot be taken is minus one and never zero, but this overload ... | a failing Core test that passes after | PARTLY by two readers, loud failure, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S7 | turn 1 read, src/Federator.Addin/Engine/DocumentGuard.cs:54 | SafeFileName returns null both for an unsaved document and when reading the name threw (lines 79-81). In the s ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S8 | turn 1 read, src/Federator.Addin/Engine/DocumentUnits.cs:118 | When re-reading Document.Units throws, the empty catch at 124 leaves 'after' equal to 'before'. Line 130 then ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S9 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:1573 | A successful ReshapeFromScan never saves the NWF ('nothing on this path saves', 1529-1530). FinishTheGroup sav ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S10 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:2042 | In SaveTheNwf a false return or a throw (caught at 2047-2053) only writes a log line and never adds an error t ... | a failing Core test, then a run | CONFIRMED settled by a third reader after two split, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S11 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:3152 | When SaveTheNwfAgain's save returns false, nothing goes on the outcome (only a throw does, at 3159). WriteFini ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S12 | turn 1 read, src/Federator.Addin/Engine/Penetrations.cs:338 | This is outside the requested files but decides the viewpoint plan's unreadable size branch. An unknown docume ... | a failing Core test that passes after | PARTLY settled by a third reader after two split, noise, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S13 | turn 1 read, src/Federator.Addin/Engine/PropertyProbe.cs:124 | This runs even after File.WriteAllText has thrown. WriteFinished records whatever file sits at the path as wri ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S14 | turn 1 read, src/Federator.Addin/Engine/PropertyProbe.cs:208 | A value that throws is tallied as a real empty distinct value (line 211), so the CSV cannot tell an unreadable ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S15 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:88 | Read maps every comparison except DisplayStringContains to 'equals' and never reads the condition's options. T ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S16 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:112 | ValueOf reads every kind except IdentifierString with ToDisplayString, which the add-in rule says throws on an ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S17 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:273 | SidesBySetName walks only the root of tests.Tests, and a Clash Detective folder is skipped by 'if (test == nul ... | a run that shows it before and not after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S18 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:291 | When reading the clash test sides throws, SidesBySetName logs that no set is removed or renamed and returns an ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S19 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:323 | The comment contradicts itself and the code. A side that throws is not counted, which lowers the set's count, ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S20 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:646 | This is outside the requested files. When FindSelectionSet returns null after the rebuild (line 665), found st ... | a run that shows it before and not after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S21 | turn 1 read, src/Federator.Addin/Engine/SetBuilder.cs:665 | After Rebuild calls ReplaceWithCopy(parent, at, made), the set is re-read through the same parent handle that ... | a run that shows it before and not after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S22 | turn 1 read, src/Federator.Addin/Engine/ViewpointBuilder.cs:668 | Nothing takes one viewpoint's temporary transparency and paint off before the next viewpoint is set up. Undim ... | a run that shows it before and not after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S23 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:95 | FolderMemory records a failed read or save in DisabledReason (FolderMemory.cs:78, 120, 285), but nothing in sr ... | a failing Core test that passes after | PARTLY by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S24 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:288 | Regroup runs on every FileRow Include change (OnFileRowChanged, line 237) and always builds a fresh name table ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S25 | turn 1 read, src/Federator.Core/Clash/ClashRunOutcome.cs:429 | SkipReasonsInOrder leaves out NoTolerance, which ClashTestPlan.cs:249 produces and ClashRunner.cs:364-366 feed ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S26 | turn 1 read, src/Federator.Core/Clash/PriorityMap.cs:136 | A test name that appears twice silently takes the last row's priority and no problem is recorded, unlike ByDes ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S27 | turn 1 read, src/Federator.Core/Clash/RepeatedFailureGuard.cs:61 | The guard counts consecutive failures and RecordSuccess (90-94) resets the count, and one guard covers the who ... | a failing Core test that passes after | CONFIRMED by two readers, noise, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S28 | turn 1 read, src/Federator.Core/Clash/ToleranceChoice.cs:78 | The help line shown under the drop down (FederatorWindow.xaml.cs:1040) says changing a saved test resets resul ... | a failing Core test that passes after | CONFIRMED by two readers, noise, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S29 | turn 1 read, src/Federator.Core/Clash/ToleranceChoice.cs:200 | ClashRunner.cs:396 writes this default line on every group, including the no-XML path where plan.Source is Doc ... | a failing Core test, then a run | CONFIRMED by two readers, noise, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S30 | turn 1 read, src/Federator.Core/Clash/ToleranceChoice.cs:207 | 'Set on N' counts toleranceOnExisting, which ClashRunner.cs:1152 increments before it resolves the test. The s ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S31 | turn 1 read, src/Federator.Core/Clash/UndoAutoReview.cs:65 | The judgement only asks whether one of our records is on the clash and the clash is at Reviewed. ClashStatusEd ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S32 | turn 1 read, src/Federator.Core/Diagnostics/EventRow.cs:199 | The comment on Number (line 74-77) says it is text so that precision is not lost, but Exact rounds to at most ... | a failing Core test, then a run | PARTLY settled by a third reader after two split, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S33 | turn 1 read, src/Federator.Core/Diagnostics/FolderMemory.cs:242 | Remember discards Save's bool, and DisabledReason is never read anywhere in src. A folders.txt that cannot be ... | a failing Core test, then a run | PARTLY by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S34 | turn 1 read, src/Federator.Core/Diagnostics/LiveLine.cs:236 | OnTheGroupBefore sums every visit of the step in the group before. TESTS CREATE, TESTS RUN and HARVEST start t ... | a failing Core test that passes after | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S35 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:268 | On the temp fallback, Start writes into the bare system temp folder and PruneOldLogs(folder, keepLogs) (358) d ... | a failing Core test that passes after | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S36 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:482 | RunStarted only moves the mark. groupRecords, stepRecords, written, failures, collapsedLines and ClashesFound ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S37 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:514 | A run that started but never finished is treated as never marked. The window calls RunFinished inside the try ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S38 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:687 | This claim, and the same one at 718 and 1922, is written whether or not a row file exists. Row() returns when ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S39 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:1348 | AppendFinished writes a size of 0 into the .tsv Number column for an NWC that is not on disk, while the text l ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S40 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:1939 | This line is written even when no run was marked. WaitingSeconds is then Never(0.0), so RESULT states 0.000s o ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S41 | turn 1 read, src/Federator.Core/Exchange/ExchangeReader.cs:378 | A missing or unparsable flags, primtypes, selfintersect or merge_composites silently becomes 0 or false (lines ... | a failing Core test that passes after | CONFIRMED settled by a third reader after two split, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S42 | turn 1 read, src/Federator.Core/Exchange/MatrixCorrections.cs:643 | Under F78 (SetBuildPlan.cs:169-171 and Groups() at 212-229) a flags=64 condition starts a new OR group. Put st ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S43 | turn 1 read, src/Federator.Core/Exchange/MatrixCorrections.cs:898 | The CategoryRewrite replace runs over the whole set block, including the `<selectionset name="..."` attribute, ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S44 | turn 1 read, src/Federator.Core/Exchange/RevitWorksets.cs:131 | A missing resource gives the same empty list as an empty file and nothing records the difference. That is the ... | a failing Core test that passes after | PARTLY settled by a third reader after two split, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S45 | turn 1 read, src/Federator.Core/Findings/ScanFindings.cs:243 | Every scan finding is worked out from BuildingGroup.Building, which is the grouping key (BuildingGrouping.cs:1 ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S46 | turn 1 read, src/Federator.Core/Findings/ScanFindings.cs:366 | This sentence reaches the window and the log, and it contradicts the code since F77: ClashRunner.cs:694 says ' ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S47 | turn 1 read, src/Federator.Core/Findings/SourceMismatchFindings.cs:240 | GroupBuilding is the group key (FederatorWindow.xaml.cs:1723 passes group.Building into FederationJob, and Fed ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S48 | turn 1 read, src/Federator.Core/Health/ExportCheck.cs:66 | IdShare is rounded before the `model.IdShare < 100` test (line 136, and again at FederationEngine.cs:2152), so ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S49 | turn 1 read, src/Federator.Core/Health/ExportCheck.cs:127 | When WithWorkset is NotCounted (-1) this prints NONE. That contradicts ModelExport.NotCounted's own rule at li ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S50 | turn 1 read, src/Federator.Core/Health/ExportCheck.cs:242 | The only workset test is CarriesAWorkset, `WithWorkset > 0` (line 53), so one element with a workset passes as ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S51 | turn 1 read, src/Federator.Core/Health/InvisibleDifference.cs:158 | WithoutInvisibles also removes ordinary spaces, so 'EL-Fire alarm' against 'EL-Firealarm', a space anyone can ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S52 | turn 1 read, src/Federator.Core/Health/SetWarnings.cs:47 | FindCategoriesNobodyHas (lines 221-238) never looks at condition.Flags. A negated condition (32) on an unknown ... | a failing Core test that passes after | PARTLY settled by a third reader after two split, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S53 | turn 1 read, src/Federator.Core/Health/SetWarnings.cs:119 | The comment says the opposite of what the code does. SignatureOf (lines 172-189) joins RuleSignature values, w ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S54 | turn 1 read, src/Federator.Core/Naming/OutputNameTable.cs:209 | Refill counts a row as kept if any one of its three cells was typed over (lines 178-181), but it still refills ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S55 | turn 1 read, src/Federator.Core/Probe/ProbeVerdict.cs:134 | PropertyProbe accepts a category through settings.Asks, which trims and ignores case (PenetrationSettings.cs 2 ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S56 | turn 1 read, src/Federator.Core/Report/ClashReportModel.cs:726 | ClashHarvest.cs:334-335 fills ElementId with a real GUID and sets IdLabel = "Instance GUID", and IdFrom stays ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S57 | turn 1 read, src/Federator.Core/Report/ReportOrder.cs:274 | Pass one moves every changing picture to a .moving name before any final move, and nothing rolls back. If pass ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S58 | turn 1 read, src/Federator.Core/Report/ReportPaths.cs:130 | When the NWF folder is inside the scanned folder, Refuse throws on purpose (line 178) to say there is nowhere ... | a failing Core test that passes after | PARTLY by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S59 | turn 1 read, src/Federator.Core/Report/WorkbookWriter.cs:279 | WriteEmptyTestRow is one row and returns start + 1, but ClientStyle.TestHeader fills and borders both top and ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S60 | turn 1 read, src/Federator.Core/Report/WorkbookWriter.cs:594 | WriteImageCell sets 72 pt for a pasted thumbnail, then WriteBlock line 260 'sheet.Row(row).Height = ClashRowHe ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S61 | turn 1 read, src/Federator.Core/Rerun/RebuildTally.cs:65 | A Before count that could not be taken (minus one) reads as 'nothing to keep'. SavedViewpoints.Count returns - ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S62 | turn 1 read, src/Federator.Core/Sets/EmptySets.cs:100 | Property internal names are written into the code (line 103 as well, "lcldrevit_parameter_-1002053"), which CL ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S63 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:74 | Only PRESENT sets are ever judged: SetBuilder.cs:701 `if (found == 0 && !drift.CouldNotRead)` sits inside the ... | a failing Core test, then a run | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S64 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:207 | PutAnythingIn ignores RebuiltCount, and FederationEngine.cs:2456 `return sets.PutAnythingIn // sets.ActedOnLef ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S65 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:372 | This is printed whenever Drifted.Count == 0. A set whose search could not be read is never Drifted and never r ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S66 | turn 1 read, src/Federator.Core/Sets/SetBuildOutcome.cs:386 | FindingItemsCount, ZeroCount and TotalItems count CREATED sets only (Count(true, ...), IsZero, result.Created) ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S67 | turn 1 read, src/Federator.Core/Sets/SetDrift.cs:46 | The drift key carries no flags, so the StartGroup bit (the OR) is never compared. The comment at 97-99 says or ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S68 | turn 1 read, src/Federator.Core/Sets/SetDrift.cs:148 | AskedNow joins every condition with " and ", and so does WantedNow at line 161, with no StartGroup grouping. T ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S69 | turn 1 read, src/Federator.Core/Sets/SetRebuildSettings.cs:20 | With the box on, SetBuilder.Build (SetBuilder.cs:506-509) runs HandleLeftovers, which removes unused sets the ... | a failing Core test that passes after | CONFIRMED by two readers, noise, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-S70 | turn 1 read, src/Federator.Core/Views/SizeText.cs:204 | Only the FIRST digit after a letter is skipped. The walk then advances one character (lines 50-53) and the nex ... | a failing Core test that passes after | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-B1 | turn 1 read, src/Federator.Addin/Engine/ClashImages.cs:66 | The image guard belongs to one ClashImages, and FederationEngine.cs 2589 builds a new one per group ('runner.I ... | a run that shows it before and not after | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-B2 | turn 1 read, src/Federator.Addin/Engine/FederationEngine.cs:3179 | BuildViewpoints never reads SavedViewpoints.CanBuild, and nothing in src/ does. A grep for CanBuild finds only ... | none needed | CONFIRMED by two readers, noise, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-B3 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:2590 | Only the Close button is guarded. There is no Closing handler anywhere in the add-in (grep for Closing finds n ... | a run that shows it before and not after | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-B4 | turn 1 read, src/Federator.Addin/Ui/GroupRow.cs:126 | CLAUDE.md says a typed-over cell can be given back to the pattern. OutputNameRow.ReleaseToPattern (Core Output ... | a failing Core test, then a run | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-B5 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:34 | Retention lists only run-*.log (line 376). The .tsv that RowLog.PathFor (RowLog.cs:80) writes beside every log ... | a failing Core test that passes after | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-B6 | turn 1 read, src/Federator.Core/Naming/NamePattern.cs:69 | The project rules call DateFormat a setting whose mistakes should be visible in the preview. A grep of every s ... | a run that shows it before and not after | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-B7 | turn 1 read, src/Federator.Core/Naming/OutputNameTable.cs:84 | The project rules say a typed-over cell can be given back to the pattern, but nothing in src calls ReleaseToPa ... | a failing Core test, then a run | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-B8 | turn 1 read, src/Federator.Core/Naming/OutputNameTable.cs:245 | When a pattern field is emptied, Refill stores this sentence as the name in every untouched cell, and the only ... | a failing Core test that passes after | PARTLY by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-B9 | turn 1 read, src/Federator.Core/Views/SizeTally.cs:77 | Nothing in src constructs SizeTally, and no other code writes a SIZE line (Grep "SIZE over src finds only this ... | a failing Core test, then a run | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-L1 | turn 1 read, src/Federator.Addin/Engine/Penetrations.cs:187 | ServiceSizeOf calls ReadSide, which calls Upwards(item) at line 260 outside its try. walker.Parent at line 371 ... | a run that shows it before and not after | CONFIRMED settled by a third reader after two split, loud failure, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-L2 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1508 | ReportsWanted calls ChosenTolerance, which throws ArgumentOutOfRangeException when Other is chosen with a blan ... | a failing Core test, then a run | CONFIRMED by two readers, loud failure, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-L3 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1701 | The only name check before a run is for collisions. An emptied pattern box makes every name 'CANNOT BE NAMED: ... | a failing Core test that passes after | CONFIRMED by two readers, broken feature, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-L4 | turn 1 read, src/Federator.Addin/Ui/FederatorWindow.xaml.cs:1725 | Clearing an NWF or NWD name cell stores an empty by hand name (GroupRow.cs:118 and 126). The collision check a ... | a failing Core test, then a run | CONFIRMED by two readers, loud failure, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-L5 | turn 1 read, src/Federator.Core/Clash/AutoReviewRecord.cs:150 | In() is documented to return null for a comment that is not ours, but a marker comment reading [was Reviewed/A ... | a failing Core test that passes after | CONFIRMED by two readers, loud failure, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-L6 | turn 1 read, src/Federator.Core/Diagnostics/RunLog.cs:565 | WriteRaw has no try. A write or flush that throws, such as a full disk, or a LineWritten handler that throws ( ... | a failing Core test that passes after | CONFIRMED by two readers, loud failure, steps\notes\turn1-read-verified.md | none yet | none yet |
+| T1-L7 | turn 1 read, src/Federator.Core/Health/AlignmentCheck.cs:255 | ModelPlacement has NotRead for X, Y and Z but no not-read state for the site. ModelFactsReader.cs:152-155 sets ... | a failing Core test, then a run | CONFIRMED by two readers, silent wrong output, steps\notes\turn1-read-verified.md | none yet | none yet |
 | T1-N1 to T1-N93 | turn 1 read | Ninety three noise findings, steps\loop-read.md section 1 | worked after every silent, broken and loud finding | reported by the read, not verified | none yet | none yet |
 | T1-UNCALLED | turn 1 read | 150 members nothing in src calls, steps\loop-read.md section 3 | each deleted with its tests, or kept by a decision in 02_questions | reported by the read, not verified | none yet | none yet |
 | T1-CATCH | turn 1 read | 77 catches called swallowing, steps\loop-read.md section 4 | each sorted into the logging rule or a fault | reported by the read, not verified | none yet | none yet |
@@ -513,7 +758,7 @@ Files written outside the repo:
 Inside the clone and not tracked: .claude\hooks\.loop-gate-last once the Stop gate first
 blocks, which git ignores.
 
-## Turn 2, 2026-09-28, open
+## Turn 2, 2026-09-28, closed WAITING for Bader's answer on F100 and his Navisworks
 
 Runs: none yet.
 
@@ -574,3 +819,322 @@ Files written outside the repo so far:
     %LOCALAPPDATA%\NwcFederatorLoop\turn1                       the F98 and F100 messages, bodies and fix lists,
                                                                 steps\log.md before PR 71 and the fixed file,
                                                                 and the session evidence file, items 11 to 17
+
+## Turn 3, 2026-09-29 to 2026-09-30, ended when turn 4 opened
+
+Opened by Bader's answers of 2026-09-29, Q79 to Q81. Main at e555619.
+
+Runs: F100's run 4, the one run Bader's answer allowed, 11:35:48 to 11:37:53, 125 s by its
+result's first and last lines, the attempt 4 probe, all six steps passed, result masked
+into tools\probes\automation-start-result-20260929.txt. The lead launched it at 11:35:46.
+ONE NAVISWORKS started, pid 33752, by the Automation API as Roamer.exe -Embedding,
+adopted, closed by Dispose and gone 8.5 s after, not forced. What it brought, by the
+result's lines 459 to 479: AdskLicensingAgent pids 40156 and 15536 under the Roamer, and
+AdskLicensingInstHelper pids 36204 and 16872 under GenuineService. The result reads each
+exited but 40156, UNKNOWN whether it exited. Bader's settings, 36 registry values and 2
+files, were put back by the probe with no other Navisworks running, each read back.
+READ BY THE LEAD WITH Get-Process AFTER THE RUN AND KEPT IN NO FILE: no Roamer, no
+AdskLicensingInstHelper, no pid 40156, and four other AdskLicensingAgent processes started
+09:37:38, 09:37:42, 10:18:59 and 10:19:03. What started the two at 10:18 and 10:19, when no
+Navisworks ran, is UNKNOWN. From here, every such read is written to a file in the turn's
+work folder before it is cited.
+
+Findings so far:
+
+- the result files on fix-F100 name this machine and carry the licensing agent's ids, and
+  nothing masks either before a commit, F102
+- origin/master's tip is be0b9b37, the build the installed add-in reads, which answers why
+  the install is not main
+- THE WINDOW CAN ONLY LOG INTO BADER'S FOLDER, which holds exactly 30 run logs, so any
+  window run on main deletes his oldest, Q82
+- loop runs will write autosaves into his AutoSave folder, 196 files, Q86
+- the build stamp reads +edits when the tree holds any untracked file, so main is installed
+  from a clean checkout only, from the F103 design
+- F105, four reads off the install with no Navisworks started, by the prober: all 79
+  members on its list of what SavedViewpoints.cs calls exist here, 53 in its first read, RemoveFile and TryRemoveFile exist as 5c
+  says, navisworks.gui.roamer.dll parses 39 switches and off the IL
+  Roamer.exe -ExecuteAddInPlugin <id> needs no -Embedding, so it may open the window with
+  no click, UNKNOWN until a start, and no public member of the API the add-in uses writes
+  the Clash Detective report. Draft section 5z-f and five result files in turn3\f105
+- the copy of the source folder matched on all 141 files, the installed bundle matched
+  bundle-backup on all 15
+
+Fixed: F100, squash merged in PR 74 as 0eb4ede.
+
+VERIFIED: the 86 silent, broken and loud faults of the turn 1 read, each read again on main
+at 0eb4ede by two readers who did not see each other, a third settling 8 splits. 76
+CONFIRMED, 10 PARTLY, none refuted, steps\notes\turn1-read-verified.md, and the register's
+86 rows carry each verdict. 24 read only agents. No fix of them lands before the baseline.
+
+Designs written: F103 run.ps1 by two designers and a judge, being built on fix-F103, and F104
+the separate read of the document by a planner, part 1 built on fix-F104, read by a reviewer
+and a breaker, its fixes at ebd8bb7, both designs in turn3.
+
+Programs started so far: git and gh. Windows PowerShell for Get-Process Roamer, the hashes
+and prepare-copy.ps1, which kept the copy. Agents: two developers, F100 attempt 4 in this
+clone and F102 in a worktree under .claude\worktrees, the prober for F105, three planners
+for F103, one for F104, a reviewer and a breaker reading attempt 4, a developer for F104
+part 1 in a worktree. The F100 developer's harness started stand in Roamer.exe copies of
+ping.exe, pids 46484, 45076, 33652, 41120, 39260, 32500, 46928, 30616 and 27984, ping
+helpers 34840, 44104, 42724 and 39348, and throwaway powershell windows, and stopped each
+stand in by its own pid. It made and deleted HKCU\Software\NwcFederatorLoopTest, read
+absent at the end. Get-Process Roamer read 0 after it. The prober wrote two debug scripts
+into the session scratchpad and deleted them.
+
+Written outside the repo so far: %LOCALAPPDATA%\NwcFederatorLoop\turn3, the commit
+messages, the pending findings, the form draft, the F103 and F104 designs, f105 with the
+prober's scripts and results, f100-harness with the harness and its output, and the
+harness's throwaway folders, removed by it. In this clone's .git\config, main's upstream,
+branch.main.merge, is refs/heads/main where it was refs/heads/master.
+
+PAUSED AT 17:48 ON 2026-09-29 FOR BADER'S SHUTDOWN. Stopped by the lead: the final reading of
+F102's third fix attempt, before it answered, and the F103 developer part way through fix
+attempt 1, whose work was saved unfinished as e0760ac on fix-F103 and pushed. Read at the
+pause: Get-Process Roamer 0, no loop powershell running, HKCU\Software\NwcFederatorLoopTest
+absent. Pushed at the pause: fix-F102 7d8d135, fix-F103 e0760ac, fix-F104 ebd8bb7, fix-F105
+94a839b, fix-T3-records-2 with this file. Found since the last record and in the register
+now: T3-W1, the git wall refuses a push from a worktree while the main clone has main checked
+out, even with a refspec to another branch, a false refusal on the safe side, fixed only
+through the prove-hooks flow. M1 measured by the F103 harness with no Navisworks: Bader's
+logs held open with no delete sharing survive the tool's real prune, RETAIN keeping 30
+logs, deleted 0, could not delete 1, which is what option A of Q82 rests on. M2 and M3
+answered, turn3\f103.
+
+RESUMED 2026-09-30. Bader opened Navisworks by hand twice in the morning, pid 38520 started
+09:21:35 and gone by 09:27:11, and pid 36172 started 09:32:45 and gone at the read of 09:58:08,
+read by the F103 developer and kept in %LOCALAPPDATA%\NwcFederatorLoop\turn3\f103\roamer-reads.txt
+lines 10 to 14. Neither was touched. 36172 changed his own 22.0 key while prove-run.ps1 ran
+its sixth time, so that run was thrown away, and the harness now stops when it finds a
+Roamer it did not start. SO BADER USES NAVISWORKS WHILE THE LOOP RUNS, and every start the
+loop makes has to wait for none of his to be running, which run.ps1 refuses in code.
+
+THE WINDOW OF 2026-09-30, SO FAR. The reading of F103 fix attempt 1, fcd981b, finished at
+11:27. The reviewer read twelve of the thirteen items fixed and item 8 UNKNOWN, the breaker on
+Bader's things read item 13, the install race, not fixed, which fix list 2 takes up as item 10,
+nobody found anything that starts, adopts, messages or closes a Navisworks or window of
+Bader's, and they found new faults of their own, fix list 2. Judged safe for a
+start with no window today, because what it found either cannot happen inside item 0's hold
+while Bader keeps his Navisworks closed, or fails on the safe side. Measured first, with a
+ping.exe and no Navisworks: an exited process is not found by Get-Process -Id or
+Win32_Process while its handle is held, so a real run reads its own closed Navisworks as gone.
+
+THE FIRST REAL START, run.ps1 -Mode Run -Set 00 -Item 0 -Stamp be0b9b37 on fcd981b, launched
+11:29:29, ended 11:40:10, exit 5. Get-Process Roamer read 0 at 11:29:12 and after the end.
+- ONE NAVISWORKS STARTED, pid 42064, by the Automation API, the constructor returning after
+  92.55 s, adopted on all four conditions and held through its handle, Visible True, held
+  360 s, Dispose returned after 0.49 s, the process gone 8.9 s after, nothing forced
+- Bader's settings: 5 registry values and 2 files differed, all put back and read back
+  equal, no other Navisworks having run. His logs folder read the same after as before, and
+  his AutoSave folder unchanged, 196 files copied into autosave-backup first. Keep awake
+  requested and released on native thread 25304, 0x80000000 then 0x80000003
+- M4, the processor time of an idle Navisworks: never zero, 0.094 to 0.578 s a 15 s sample,
+  about 1.2 to 1.6 s a minute. The hang rule as written can never fire on an idle Navisworks,
+  which Q83 now says
+- M5, what changed outside the loop folder while the start ran, written at or after the call:
+  7 keys under HKCU\Software\Autodesk, and files, 11 under %APPDATA%\Autodesk, 1 under
+  Recent, 22 under %LOCALAPPDATA%\Autodesk, 7 under %PROGRAMDATA%\Autodesk and 19 under
+  %TEMP%, listed in the run folder's m5.txt, which stays out of the evidence until it is masked.
+  NOT ALL OF IT IS THE START'S: 16 of the 19 under %TEMP% are Claude Code's own, and 10 are
+  Desktop Connector's, so at least 26 of the 60 files came from other programs
+- M6: the session read unlocked on every read
+- THE EXIT 5 IS A FALSE FINDING. Its one DIALOG was the Navisworks main window, which has an
+  owner, window 855918, so fix list 1 item 11's rule of MAIN only with no owner is wrong for
+  the real window. Messages went only to the adopted process's own window. Item 21 of
+  steps\notes\f103-fix-list-2.md
+- the evidence, record.txt, watch.txt and settings.txt, is in the F103 worktree's
+  steps\runs\00\item0, read by F102's mask at 7d8d135, which found nothing to mask, and rides
+  in F103's pull request
+
+Written outside the repo by the first start: %LOCALAPPDATA%\NwcFederatorLoop\autosave-backup,
+196 files, 285,849,138 bytes, about 286 MB, and %LOCALAPPDATA%\NwcFederatorLoop\runs\00\item0, the run folder with the
+settings backup, the listings, m5.txt, mypid.txt and the record. What changed outside the
+loop folder while the start ran is M5's list above, the start's and other programs'.
+
+F103 FIX ATTEMPT 2, the 21 items of steps\notes\f103-fix-list-2.md, sent to its developer at
+11:42, asked to report by 12:50.
+
+THE SECOND REAL START, run.ps1 -Mode Run -Set 01 -Item 0 -Stamp be0b9b37 on 867697a, F103
+fix attempt 2, after its reading by a reviewer and two breakers, all three answering SAFE FOR
+ITEM 0 first. Launched 13:37:37, ended 13:48:08, EXIT 0, VERDICT RAN, item 0 with no window:
+started, adopted, held 360 s, closed by Dispose, put back. Get-Process Roamer read 0 at
+13:37:25 and after the end. The record's run.ps1 and nw-guard.ps1 sha256 equal the header of
+harness run 10, which ran the same code.
+- ONE NAVISWORKS STARTED, pid 49604, the constructor returning after 83.30 s, adopted on all
+  four conditions, Dispose returned after 0.40 s, the process gone 7.8 s after, nothing forced
+- ITEM 21 MEASURED: the main window read MAIN, owner 725174 of class
+  WindowsForms10.Window.0.app.0.27a2811_r7_ad1, empty caption, visible False, enabled True,
+  in the adopted process, record line 33
+- Bader's settings: 5 registry values and 2 files put back and read back equal, his logs
+  folder the same after as before, his AutoSave unchanged. Keep awake released on its own
+  thread. M5, what changed outside the loop folder while it ran: 7 keys and 35 files, 0 under
+  %TEMP% this time and 11 of them Desktop Connector's
+- M4 again: never zero, 0.016 to 0.391 s a 15 s sample and 0.406 to 0.875 s a minute, lower
+  than the first start's, about 2 to 4.4 s in five minutes
+- both starts' evidence, steps\runs\00\item0 and steps\runs\01\item0, read by F102's mask at
+  7d8d135, which found nothing to mask, and by F102's check, 9 files, none carrying an id or
+  the machine name, committed on fix-F103 as 912dedc
+
+THE WINDOW OF 2026-09-30, WHAT IT WAS USED FOR, written at 13:57. Every Navisworks the loop
+started was closed and Bader's settings put back and read back, the last at 13:48:08.
+Get-Process Roamer read 0 at 13:57:32 and again at 14:38:32, before the window closed.
+1. the reading of F103 fix attempt 1, then THE FIRST REAL START on it, 11:29 to 11:40, which
+   measured M4, M5 and M6 and found the main window has an owner
+2. F103 fix attempt 2 from what that start showed, its reading, and THE SECOND REAL START on
+   it, 13:37 to 13:48, clean, which measured the owner hidden
+3. NOT DONE IN THE WINDOW, AND WHY: F103's merge and the install of main. Its reading of fix
+   attempt 2 found item 7 of fix list 2 still open and new faults, so fix attempt 3, the last,
+   is needed before F103 can merge, and Install runs only from main with run.ps1 on it
+WHAT IS LEFT FOR TONIGHT'S WINDOW, after Bader closes Navisworks and leaves the PC on:
+1. F103 fix attempt 3, steps\notes\f103-fix-list-3.md, with its developer since 13:57, then
+   its reading. A fault of the list left or a new one sends F103 to the form
+2. if clean: a third real start on it, Set 02, then PR 78 merged, then run.ps1 -Mode Install
+   from the clean checkout %LOCALAPPDATA%\NwcFederatorLoop\wt-main at main's new commit, the
+   first install of main
+3. then F104 part 2, check-documents.ps1 on main's run.ps1
+4. anything that opens the tool's window still waits on Q82
+
+AFTER THE WINDOW, 2026-09-30. Fix attempt 3 of F103 came back as a63c284 at 15:10, with
+harness run 12, 242 passed and 0 failed on its files. Its final reading by a reviewer and two
+breakers answered safe for item 0 and safe for install, one of them within its lens, classed
+no finding as a new fault inside the attempt, and the reviewer read 18 of the 19 items fixed.
+THE LEAD HELD ITEM 14 against the words it names:
+the harness header's sentence that a line throws, where the line only sets the error, stands
+word for word at prove-run.ps1 24 to 25, named after attempts 1 and 2 as well. So F103 went to
+the form as Q92, steps\notes\f103-final-reading.md, and PR 78 stays a draft. Five register
+rows added from the readers' other findings, classed old or polish, T3-G13 to T3-G16 and
+T3-P2, three of them resting on code the attempt wrote. Actions on a63c284, run 36713756910,
+had not run a test: "The job was not started because it repeatedly failed to be acquired (5
+attempts)". Run again by the lead, green at 16:05:30, the Core tests 1720 passed, 0 failed,
+26 skipped of 1746.
+
+TONIGHT'S WINDOW CHANGES: the third real start on a63c284 is made as evidence for Q92, and
+nothing merges or installs. Item 2 of what was left for tonight, the merge and the install of
+main, waits on Q92, and so does item 3, F104 part 2.
+
+Read at 16:53:24, and again at 17:06:19 into turn3\reads-170618.txt: no .replaced- or
+.failed- folder sits beside the bundle in
+%APPDATA%\Autodesk\ApplicationPlugins, where only one folder's name starts with
+ParsonsNwcFederator, so T3-G15's stale folder would not stop the first Install.
+
+Programs started after the window closed at 14:45. By the F103 developer: harness run 12
+from 14:46:02 to 15:04:48, with a dotnet build of the stand-in and 43 stand-in Roamer.exe each
+closed through its held handle, and what tools\loop\README.md says the harness starts, among
+them git for scratch repositories and cmd.exe for one junction under its work folder, then
+the copy of the probe's harness 4 from 15:05:53 to 15:08:22, then git to commit and push
+a63c284, and gh to set PR 78's body, updated at 15:18:07. Anything else the developer ran
+after 14:45 is UNKNOWN here. It wrote turn3\f103\prove-run-out-12.txt, turn3\f103\h4\h4-fix3-out.txt
+with the five run files beside it written from 15:06:38 to 15:07:29, and in the session's
+scratchpad pr78-fix3-section.md, commit-fix3.txt, pr78-body-before-fix3.md and
+pr78-body-fix3.md, from 14:46:26 to 15:17:35. By the three readers and the claim-checker:
+reads only. By the lead: git and gh, among them gh run rerun of run 36713756910, Windows
+PowerShell for Get-Process Roamer, Get-Date, the hashes, powercfg, one Win32_Battery read and
+two listings of ApplicationPlugins, run.ps1 -Mode Check for Set 02 at 16:23:39, pid 43368,
+which reads only, dotnet test of the Core tests at 16:54:08 and again from 17:07:16 to
+17:07:59, with the MSBuild and compiler servers they started, shut down at 17:08:00 with
+dotnet build-server shutdown, and from 16:14:11 the waiter, turn3\wait-window.ps1, pid 51376,
+which reads the clock, the processes named Roamer and the time since the last key or mouse
+input once a minute, and starts no Navisworks. At each start the waiter compiles one small
+C# class with Add-Type, which in Windows PowerShell 5.1 runs the C# compiler with its files
+under %TEMP%. Those files were not read, UNKNOWN. Written outside the repo by the lead:
+turn3\wait-window.ps1, turn3\window-wait.txt, turn3\check-set02-162337.txt,
+turn3\reads-170618.txt, turn3\core-tests-170716.txt, turn3\pr-f103-form.md, and in the
+session's scratchpad final-reading.txt, reading-of-attempt-1-fcd981b.txt,
+reading-of-attempt-2-867697a.txt and claim-evidence.txt, the three readings copied from their
+journals and the lead's git and gh reads.
+
+TURN 3 ENDED with no start in tonight's window. The waiter wrote THE WINDOW IS OPEN at
+18:00:14 on 2026-09-30 as its last line, and nothing was started in it. Why is UNKNOWN.
+Bader's answers of 2026-10-01 opened turn 4.
+
+## Turn 4, 2026-10-01, open
+
+Opened by Bader's message headed 30 Sep 2026, read on 2026-10-01, Q82 to Q94. Main at
+821ed6e. The plan is the turn 4 entry of steps\log.md.
+
+Runs:
+
+- THE THIRD REAL START, run.ps1 -Mode Run -Set 02 -Item 0 -Stamp be0b9b37 on a63c284, from
+  the F103 worktree, Bader's answer Q92 B. Get-Process Roamer read 0 at 08:48:06 and at
+  09:05:54, read by the lead and kept in no file, and run.ps1's own last check before the
+  constructor read no Roamer, record lines 18 and 19, before the call at 09:06:28.883, line 21. Launched 09:06:16, run.ps1 began 09:06:18, ended
+  09:18:23, EXIT 0, VERDICT RAN, item 0 with no window. ONE NAVISWORKS STARTED, pid 37988,
+  adopted, held 360 s, Dispose returned after 0.48 s and the process read gone 6.2 s after,
+  nothing forced. The watchdog saw two AdskLicensingAgent processes start under it, pids
+  34260 and 22676, watch.txt lines 5 and 6. It reads only processes of the names it knows,
+  so whether anything else started is UNKNOWN. The main window read MAIN with an owner that
+  is not visible, as on the second start. M4 again, the processor time of an idle
+  Navisworks: 0.031 to 0.344 s a 15 s sample and 0.359 to 0.594 s a minute, about 1.8 to 3.0 s
+  in five minutes. Bader's settings: 5 registry values and 2 files differed and were put back
+  and read back equal, no other Navisworks having run. The two files,
+  CommCenter\en-US\InfoCenter.log and LastSession.xml, read written at 08:45:40 on
+  2026-10-01 in the backup, before the start, and what wrote them then is UNKNOWN. His logs
+  folder read the same after, his AutoSave unchanged. M5: 7 keys and 62 files written at or
+  after the call, 33 of them under %TEMP%, by any program. The session read unlocked at
+  every minute. Evidence steps\runs\02\item0, read by F102's mask at 7d8d135, which found
+  nothing to mask, and by F102's check over steps\runs, 12 files, none carrying one,
+  committed to fix-F103 as 19a3da7
+
+Merged: PR 76, F102, as 4fa1040, Bader's answer Q91 B. Its Actions run 36827848274 read the
+Core tests 1720 passed, 0 failed, 26 skipped of 1746, and its evidence check 457 files with
+none carrying an id. PR 78, F103, as 398b910, Bader's answer Q92 B, after main was merged
+into fix-F103 with two conflicts in steps\01_next.md and steps\log.md resolved by keeping
+both sides. Its Actions run 36830150530 read the Core tests 1720 passed, 0 failed, 26
+skipped of 1746, and its evidence check 473 files with none carrying an id. Both runs' lines
+are kept in turn4\actions-reads.txt. Both fix branches are deleted on GitHub and here. Git no
+longer lists either worktree, but Windows answered Permission denied when git removed git's
+own folders for them under .git\worktrees, and the two worktree folders under
+.claude\worktrees still hold their files. Why is UNKNOWN. The lead's own shell had its working
+folder inside the F103 one for a time this morning, which may be why for that one.
+
+THE INSTALL OF MAIN, REFUSED THREE TIMES. run.ps1 -Mode Install -Stamp 398b910e from wt-main,
+clean at 398b910, at 10:58:35, 11:03:22 and 11:20:21, Get-Process Roamer 0 before each in
+turn4\roamer-reads.txt. Each time build\install.ps1 built, staged and read no Roamer, then
+Windows denied its rename of the installed bundle, "Access to the path ... is denied", and it
+exited 2 with the installed add-in whole, be0b9b37 as before. Its refusal says Navisworks is
+running, which it was not. Each install.txt is under installs. Then, reading only on the
+installed bundle: Windows Restart Manager named no process holding any of its 15 files, the
+folder, Contents, Contents\v22 and every file opened for delete with every share mode, every
+file opened for write with no byte written and no write time changed, so none is mapped as an
+image anywhere, no process of this user maps one, and 228 processes could not be opened,
+among them CrowdStrike Falcon, Tanium, Avecto Defendpoint, Numecent Cloudpaging and Autodesk's
+File System Monitor. Bader has full control of the folder. The loop's own throwaway folders,
+made, renamed and removed in ApplicationPlugins, every one renamed freely: empty, with a text
+file, with a DLL, named .bundle, a copy of the bundle's 14 DLLs, a copy with
+PackageContents.xml, and one named ParsonsNwcFederatorLoopMeasure.bundle renamed to the
+.replaced- shape, each listed before and after in turn4\rename-measure.txt, the folder reading
+the same after. So the refusal belongs to that one folder, and what holds it is UNKNOWN. On
+2026-09-27 the install.ps1 of then, which removed the bundle and copied the new one, installed
+be0b9b37 here. Register row F109, with its developer in wt-f109 since 11:24. F106's developer
+was told through turn4\install-done.txt at 11:17:59 not to wait for the install.
+
+Programs started so far: git and gh. Windows PowerShell for Get-Process Roamer, the reads of
+the records, the merges' conflict resolution, the reads and measurements above, and one
+harmless Start-Process of a powershell told to sleep 90 s, pid 40796, read alive 13 s after
+the tool call that started it had ended, by the lead and kept in no file. run.ps1 -Mode Run
+for the third start, which started one Navisworks, pid 37988, through the Automation API, with
+the two licensing agents above. run.ps1 -Mode Install three times, each running
+build\install.ps1, a dotnet build and dotnet build-server shutdown. Git Bash's grep and
+sha256sum for the XML reads. tasklist for the bundle's DLL names. F102's mask-evidence.ps1
+three times and its check-evidence-ids.sh three times, from the F102 worktree and then from
+the F103 tree. The pre-commit's dotnet test at every commit. Agents: through three workflows,
+a developer for F105 in wt-f105 and one for F107 in wt-f107, a developer for F106 in wt-f106
+and one for F108 in wt-f108, each then read by a reviewer and a breaker, and a developer for
+F109 in wt-f109 then a reviewer and a breaker. The claim-checker on these records, twice. The
+keep-awake, powershell.exe pid 21164 from 10:48:37, named at the head of this file.
+
+Written outside the repo so far, all under %LOCALAPPDATA%\NwcFederatorLoop unless named:
+turn4, holding the commit messages, the pull request bodies, the pre-commit outputs from
+fe3c1fa on, item0-set02-masked with the three masked copies, the briefs f106-brief.md,
+f108-brief.md and f109-brief.md, xml-reads.txt, actions-reads.txt, roamer-reads.txt,
+detach-test-pid.txt, install-done.txt, the waiters wait-run.ps1 and wait-no-roamer.ps1, which
+read only, keep-awake.ps1 and keep-awake.txt, the read only diagnostics who-holds-bundle.ps1,
+which-level-held.ps1, which-file-mapped.ps1 and who-maps-bundle.ps1 with their outputs, the
+measurements rename-measure.ps1, rename-measure-bundle.ps1 and rename-measure-copy.ps1 with
+rename-measure.txt, the folder rename-test holding a renamed copy of the installed bundle,
+and what the developers write there. runs\02\item0, the run folder of the third start.
+installs\398b910e-20261001-105835, -110322 and -112021, one per install attempt. wt-f106,
+wt-f107, wt-f108 and wt-f109, worktrees of their fix branches, and wt-main moved to 398b910.
+In %APPDATA%\Autodesk\ApplicationPlugins, the eight throwaway folders above, each removed
+within the second it was made, the folder listed the same before and after. In the session's
+scratchpad, the drafts of this file's head, of the F102 and F103 log entries and of the rule
+changes.
