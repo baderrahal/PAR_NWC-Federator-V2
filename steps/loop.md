@@ -8,18 +8,27 @@ is the turn 5 entry at the top of steps\log.md. The fix list is steps\fix-round.
 before the first fix. Main at the start of the turn: f38edd5, installed e4484d15 in place since
 2026-10-01 with be0b9b37 in bundle-backup. Why turn 4 stopped: Bader wrote "stop, i will close
 the pc" at about 17:35 on 2026-10-01, and the pause, STATE WAITING, was pushed as 87d693e on
-fix-T4-run-03c and never merged, so main kept reading STATE OPEN. The System log reads a
+fix-T4-run-03c and not merged until PR 87 at the start of turn 5, so main read STATE OPEN all
+through the pause. The System log reads a
 shutdown at 19:30:49 on 2026-10-01 by shutdown.exe, and a restart for an update at 09:07:20 on
 2026-10-04, the PC up again at 09:10:18. Get-Process Roamer read 0 at 09:51:56 on 2026-10-04.
 MERGED IN TURN 5 SO FAR, 2026-10-04: PR 87, the pause and this opening, as 53c37b6. PR 84,
 F108, the fresh copy for each run set, as c9b223b at 10:32, after main merged in and the
 claim-checker's corrections to its entry and body. PR 88, F106, the window run, DONE for item
 1, as 3449521 at 11:11, after the claim-checker's five corrections to its records. PR 84 and
-PR 88 each green in Actions on their last commit before they merged. Still open: PR 83, Bader's answers in the loop rules, brought up
+PR 88 each green in Actions on their last commit before they merged, runs 37185873967 on
+2ec693e and 37187977027 on bd3b9a8, and the merge commits naming #87, #84 and #88, all read
+into turn5\actions-reads-pr84-88.txt. Still open: PR 83, Bader's answers in the loop rules, brought up
 to main and being read by its claim-checker again. With developers: F105 and F107, words only,
 F109, the in-place install for the team, and F104 part 2, the read of every NWF of a run
 against its workbook. The fix list is being written from five readers' returns. B4, the note
 for the modellers of the five FAILED groups of C06, is steps\runs\03\for-modellers.md.
+B1 CHECKED: the plain prepare-copy.ps1 at 11:47:55 found the desktop folder changed and made
+the source copy again, 142 files, 140 of them NWC, turn5\prepare-copy-plain-1.txt. Its
+1104-PAR_CLASH_AllInOne_25mm_FIXED.xml is byte for byte the repo's exchange matrix, sha256
+792b01fb, 1,446,076 bytes, asking ME-Ductwork 5 times and ME-DUCTWORK never, and Bader's old
+one sits beside it renamed with -OLD, turn5\b1-xml-check.txt. So set 05's copy asks
+ME-Ductwork, and its runs name that XML.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and

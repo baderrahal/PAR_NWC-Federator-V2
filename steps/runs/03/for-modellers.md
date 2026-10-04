@@ -1,9 +1,11 @@
-# Five C06 groups with a model on Revit's internal origin
+# Five C06 groups with a model whose site is named Internal
 
 From the clash run of the C06 folder on 2026-10-01. In each group below, at least one NWC
-names its site "Internal". That is the name Revit gives a model that was not exported on a
-shared site, so the model sits in its own coordinate system and not in the project's. Its
-clashes with the other disciplines of its group cannot be trusted until it is exported again.
+names its site "Internal". The clash tool reads that as a model not exported on a shared
+site, and it marks any group holding one as FAILED, because it cannot confirm where that
+model sits against the project's shared coordinates. The name alone does not show a model in
+the wrong place. In two groups below the model sits only 72.5 mm from the others, and in
+1B06PS two models both named "Internal" sit 2,823 km apart.
 
 What to do: export the NWC again from Revit on the project's shared coordinates and drop it
 into the folder with the same file name. Which shared site is the right one for each building
@@ -11,7 +13,7 @@ is for the project to say. The tool cannot tell, and the models of one group bel
 name several.
 
 The distances are how far each model sits from the group's reference model, read off the
-NWC files by the clash tool. The tool changed nothing in any model.
+NWC files by the clash tool. The tool did not edit or move any of your NWC files.
 
 ## 1B06BC
 
