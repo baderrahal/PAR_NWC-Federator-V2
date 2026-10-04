@@ -206,19 +206,24 @@ by this developer. Every file named here is under %LOCALAPPDATA%\NwcFederatorLoo
 
 - attempt 3, programs: git (fetch, merge, add, commit, diff, show, ls-tree, blame, rev-parse,
   status, push), dotnet build and dotnet test, python for the edit scripts and the count of tests
-  by name, sh for the two checks and the pre-commit, and PowerShell for Get-Process Roamer. No
-  Navisworks and no stand-in. git fetch and every git commit printed failed to delete lines for
-  eleven folders under the main clone's .git\worktrees, Permission denied, which is git's own
-  cleanup of worktree records, and deleted nothing, turn5\f112c-precommit-merge.txt for one
+  by name, sh for the two checks and the pre-commit, and PowerShell for Get-Process Roamer, for
+  Get-CimInstance on a Navisworks process and its parent, and for Copy-Item. No Navisworks and no
+  stand-in. git fetch and every git commit printed failed to delete lines for eleven folders under
+  the main clone's .git\worktrees, Permission denied, which is git's own cleanup of worktree
+  records, and deleted nothing, turn5\f112c-precommit-merge.txt for one
 - attempt 3, Get-Process Roamer read pid 49016, started at 18:55:27, at
   C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe, at 21:08:36 before the first
-  command, turn5\f112c-roamer-before.txt, and again after the last, turn5\f112c-roamer-after.txt.
-  This developer started none and touched none
+  command, turn5\f112c-roamer-before.txt. At 22:42:51, after the push of 2d0e574, 49016 was gone
+  and pid 32136 ran, started at 21:17:06 at the same path, its parent pid 1392 svchost.exe,
+  turn5\f112c-roamer-after-push.txt. It first shows at 21:18:05 in the waiter of the lead's
+  baseline run on C04, turn5\wait-run04-item1-C04.txt. This developer started none and touched
+  none. The read after the last command is turn5\f112c-roamer-after.txt
 - attempt 3 wrote under turn5 every f112c- file, among them the evidence named above, the brief
   f112c-brief.md, the message files f112c-msg-*.txt, the pre-commit outputs
   f112c-precommit-*.txt, the push output f112c-push.txt and this entry's draft f112c-log-entry.md.
   In the session's scratchpad the scripts f112c_item1_alignment.py and f112c_testnames.py and
-  three name lists. Temporary folders the tests make under %TEMP%, removed by their teardown. git
+  three name lists, and one more copy of a name list at %TEMP%\f43.txt, removed by this developer
+  once seen. Temporary folders the tests make under %TEMP%, removed by their teardown. git
   fetch wrote the remote refs of the shared .git of the main clone, and the builds wrote bin and
   obj under the worktree
 - attempt 2, programs: dotnet build and dotnet test, git (fetch, merge, commit, archive, push, and a
