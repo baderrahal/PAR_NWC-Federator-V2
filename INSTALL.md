@@ -5,6 +5,8 @@ is here.
 
 Before you start: close Navisworks Manage 2025, and pull main in GitHub Desktop. The install refuses while Navisworks runs, and says so in one line.
 
+Sometimes Windows will not let the install move the add-in installed before out of the way, even with Navisworks closed. Then it copies that add-in beside it, writes the new files over the old ones, and says so in one line starting IN PLACE. If anything fails it puts every old file back. Step 6 still tells you whether it worked.
+
 1. Open VS Code on `C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2`
 2. Open a terminal
 3. Build

@@ -156,15 +156,22 @@ modes:
   back, runs build\install.ps1 as a child, shuts the build servers down, and reads the
   installed stamp back. build\install.ps1 itself refuses with one REFUSED line and exit 2
   while any Roamer runs, read immediately before it moves the installed bundle aside, so a
-  Navisworks started during the build stops the install, when a folder from %APPDATA% down
-  to the bundle is a junction or a link, and when the move aside fails because a file in
-  the bundle is held. It moves the installed bundle aside by one rename, copies the new one
-  in and checks it, and removes the one moved aside only once every check has passed. On a
-  failure after the move the new one is taken out and the old one put back where it was, and
-  where each ends up is printed. Install passes a refusal of install.ps1 on as exit 2, its
-  refusal lines masked, and any other failure of it as exit 1. A Roamer found right after
-  the install, and a folder install.ps1 could not remove left beside the bundle, each make
-  the verdict a FINDING and the exit 5
+  Navisworks started during the build stops the install, and when a folder from %APPDATA%
+  down to the bundle is a junction or a link. It moves the installed bundle aside by one
+  rename, copies the new one in and checks it, and removes the one moved aside only once
+  every check has passed. On a failure after the move the new one is taken out and the old
+  one put back where it was, and where each ends up is printed. Since F109, when Windows
+  refuses that rename, it reads the process list again and refuses, exit 2, while any Roamer
+  runs or the list cannot be read. With none it copies the installed bundle beside it under
+  the name the rename would have given it and reads the copy back by sha256, refusing with
+  exit 2 when the copy cannot be made whole, then writes each new file over the old one,
+  removes the files and folders the new one does not have, reads the bundle back against the
+  new one by sha256 and runs every check, one IN PLACE line saying so. On a failure it writes
+  the copy back over the bundle, reads it back by sha256 and names where each thing is. On
+  success it removes the copy, or names it in the LEFT line when it will not go. Install
+  passes a refusal of install.ps1 on as exit 2, its refusal lines masked, and any other
+  failure of it as exit 1. A Roamer found right after the install, and a folder install.ps1
+  could not remove left beside the bundle, each make the verdict a FINDING and the exit 5
 - Run -Set NN -Item 0 -Stamp <8 hex>, the start with no window. Its refusals in order: the
   host, the parameters, the loop's lock Local\NwcFederatorLoop.run, a record with no
   VERDICT line, a start in unproved-starts.txt still running, any Roamer, the installed
@@ -236,12 +243,17 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
   .claude\rules\loop.md, and for Install the installed bundle, which build\install.ps1 moves
   aside as ParsonsNwcFederator.bundle.replaced-yyyyMMdd-HHmmss beside it until every check
   of the new one has passed, and a new one that failed and will not go, moved aside as
-  ParsonsNwcFederator.bundle.failed-yyyyMMdd-HHmmss
+  ParsonsNwcFederator.bundle.failed-yyyyMMdd-HHmmss. When that move is refused with no
+  Navisworks running, it copies the installed bundle beside it under the same .replaced- name
+  instead, and writes the new files over the old ones where they are
 - writes in the repo: steps\runs\NN\item0 with record.txt, watch.txt and settings.txt, to
   be masked before any commit, and the evidence of a NOT RUN moved aside as
   steps\runs\NN\item0-aside-yyyyMMdd-HHmmss, never emptied
 - deletes: nothing itself. build\install.ps1, run by Install, removes the bundle it moved
-  aside once every check of the new one has passed, and a new one that failed
+  aside once every check of the new one has passed, and a new one that failed. In place it
+  removes the files and folders of the installed bundle the new one does not have, and its
+  copy beside it once every check has passed or once the copy is written back after a
+  failure
 
 ## nw-guard.ps1
 
@@ -280,8 +292,11 @@ The proof of run.ps1 and nw-guard.ps1 with no Navisworks, the design's cases H0 
 the part 1 modes and M1 to M3, and since fix attempt 1: H12b, copies of build\install.ps1
 run against a fake APPDATA, H16, a window whose thread is blocked, and H17, a copy of
 run.ps1 whose constructor line is removed, run against fake LOCALAPPDATA and APPDATA folders
-through checks 13, 14, 15 and 18 and to the removed line, and since fix attempt 2: H18, the
-end of a run, the call deadline, the verdict, the one listing reader and the bounded walk:
+through checks 13, 14, 15 and 18 and to the removed line, since fix attempt 2: H18, the
+end of a run, the call deadline, the verdict, the one listing reader and the bounded walk,
+and since F109: H12c, more copies of build\install.ps1 against the fake APPDATA, each with one
+file of the fake bundle held open by a child powershell, which refuses the move aside, so
+the bundle is replaced in place:
 
     powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <a new folder under %LOCALAPPDATA%\NwcFederatorLoop>
 
@@ -308,9 +323,10 @@ ends by itself.
 - writes outside the repo: -Work, and the throwaway key HKCU\Software\NwcFederatorLoopTest
 - deletes: -Work and that key at the end, and nothing else
 - starts: dotnet build and dotnet build-server shutdown, the stand-ins, child powershell.exe
-  processes, among them the copies of build\install.ps1 and of run.ps1 under -Work and one
-  that loads a copy of Federator.Core.dll, reg.exe export, git for scratch repositories
-  under -Work, and cmd.exe for one junction under -Work
+  processes, among them the copies of build\install.ps1 and of run.ps1 under -Work, one
+  that loads a copy of Federator.Core.dll and one that holds a file of the fake bundle open,
+  reg.exe export, git for scratch repositories under -Work, and cmd.exe for one junction
+  under -Work
 
 Proved on 2026-09-29 with no Navisworks started: 142 checks passed and 0 failed, 28
 stand-ins each closed through its held handle, Bader's folders, bundle and key read the same

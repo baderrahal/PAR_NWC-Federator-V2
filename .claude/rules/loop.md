@@ -68,8 +68,12 @@ and nothing is fixed until a real run on real files shows it fixed.
   installed bundle aside by one rename, which fails whole while a file in it is held, copies
   the new one in and checks it, and removes the one moved aside only once every check has
   passed. On a failure after the move the new one is taken out and the old one put back,
-  and where each is is printed. A folder it cannot remove is named in the verdict of
-  run.ps1 -Mode Install
+  and where each is is printed. When Windows refuses that rename and no Navisworks runs, it
+  copies the installed bundle beside it under the name the rename would have given it, reads
+  the copy back by sha256, and only then writes the new files over the old ones where they
+  are, F109. On a failure it writes the copy back over the bundle and reads it back, so a
+  whole copy of the add-in installed before is on the disk at every moment. A folder it
+  cannot remove is named in the verdict of run.ps1 -Mode Install
 - Every run works on the copy under %LOCALAPPDATA%\NwcFederatorLoop\source and every
   output of every run goes under %LOCALAPPDATA%\NwcFederatorLoop
 - Nothing of Bader's is deleted or overwritten, bar two things. The installed add-in, which
@@ -120,10 +124,12 @@ and nothing is fixed until a real run on real files shows it fixed.
   of them. The installed stamp is read back and must name that commit. build\install.ps1
   refuses with one REFUSED line and exit 2, for every one who installs, while any Roamer
   runs, read immediately before it moves the installed bundle aside, when a folder from
-  %APPDATA% down to the bundle is a junction or a link, and when the move aside fails
-  because a file in the bundle is held. run.ps1 -Mode Install passes that refusal on as
-  exit 2. A Roamer running right after a loop install, and a bundle left beside the new one,
-  are each a finding that changes its verdict
+  %APPDATA% down to the bundle is a junction or a link, and when the move aside is refused
+  and then a Roamer runs or the process list cannot be read, read again, or the copy of the
+  installed bundle beside it cannot be made whole. A refusal names a Roamer only when one
+  runs. run.ps1 -Mode Install passes that refusal on as exit 2. A Roamer running right after
+  a loop install, and a bundle or its copy left beside the new one, are each a finding that
+  changes its verdict
 - While a Navisworks the loop started runs, the recent files, the window placement and the
   default plugin under HKCU\Software\Autodesk\Navisworks Manage\22.0 change, and files
   under %APPDATA%\Autodesk\Navisworks Manage 2025 can, measured on 2026-09-28. Which

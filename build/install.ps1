@@ -84,14 +84,26 @@ foreach ($name in ($carried + $library)) {
 $strays = Get-ChildItem $contents -Filter "*Navisworks*" -ErrorAction SilentlyContinue
 if ($strays) { throw "A Navisworks assembly ended up in the bundle: $($strays.Name -join ', ')" }
 
+# The words of the innermost exception, without the wrapping PowerShell puts round a .NET call.
+function Why($e) {
+    while ($null -ne $e.InnerException) { $e = $e.InnerException }
+    return $e.Message.TrimEnd('.')
+}
+
 # Nothing is replaced while any Navisworks runs, whoever started it, because a running
 # Navisworks may hold the bundle's files, and one that loaded the old build keeps running
-# it. Read here, after the build, which takes long enough for one to be started. Each
+# it. Read here, after the build, which takes long enough for one to be started, and again
+# when the move aside below is refused. Returns why the install stops, or null. Each
 # refusal is one line and exit 2, and nothing is installed.
-$roamers = $null
-try { $roamers = @([System.Diagnostics.Process]::GetProcessesByName("Roamer")) }
-catch { Write-Host ("REFUSED: Navisworks may be running, the process list could not be read, " + $_.Exception.Message + ". Close Navisworks first and run this again. Nothing was installed."); exit 2 }
-if ($roamers.Count -gt 0) { Write-Host ("REFUSED: Navisworks is running, Roamer pid " + (($roamers | ForEach-Object { $_.Id }) -join ", ") + ", and must be closed first. Close it and run this again. Nothing was installed."); exit 2 }
+function NavisworksRefusal {
+    $roamers = $null
+    try { $roamers = @([System.Diagnostics.Process]::GetProcessesByName("Roamer")) }
+    catch { return ("Navisworks may be running, the process list could not be read, " + (Why $_.Exception) + ". Close Navisworks first and run this again") }
+    if ($roamers.Count -gt 0) { return ("Navisworks is running, Roamer pid " + (($roamers | ForEach-Object { $_.Id }) -join ", ") + ", and must be closed first. Close it and run this again") }
+    return $null
+}
+$navisworks = NavisworksRefusal
+if ($null -ne $navisworks) { Write-Host ("REFUSED: " + $navisworks + ". Nothing was installed."); exit 2 }
 
 # No folder on the way from %APPDATA% down to the bundle may be a junction or a link,
 # because removing a bundle through one would remove what it points at.
@@ -105,6 +117,67 @@ while ($null -ne $walkUp -and $walkUp.Length -ge $env:APPDATA.TrimEnd('\').Lengt
     $walkUp = Split-Path $walkUp -Parent
 }
 
+# Every file under $dir by its path below $dir, with its sha256, and every folder below it.
+# Each file is read sharing read, write and delete. A junction or a link inside is refused,
+# because what is removed through one is what it points at.
+function Listing($dir) {
+    $root = (Get-Item -LiteralPath $dir -Force).FullName.TrimEnd('\')
+    $files = @{}
+    $folders = @()
+    foreach ($item in @(Get-ChildItem -LiteralPath $root -Recurse -Force)) {
+        $rel = $item.FullName.Substring($root.Length + 1)
+        if (($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) { throw ($rel + " is a junction or a link, so nothing is written or removed through it") }
+        if ($item.PSIsContainer) { $folders += $rel; continue }
+        $stream = New-Object System.IO.FileStream($item.FullName, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]"ReadWrite, Delete")
+        $sha = [System.Security.Cryptography.SHA256]::Create()
+        try { $files[$rel] = [BitConverter]::ToString($sha.ComputeHash($stream)).Replace("-", "") }
+        finally { $sha.Dispose(); $stream.Dispose() }
+    }
+    return [pscustomobject]@{ Files = $files; Folders = $folders }
+}
+
+# Makes the folder $to hold exactly what the folder $from holds, and returns the files it
+# wrote and the files it removed. Every folder of $from is made, each file of $from is
+# written over the one at the same place in $to unless that one already reads the same by
+# sha256, and then every file and every folder $from does not have is removed, the deepest
+# first. Last, $to is read back against $from by sha256. Each file is opened sharing read,
+# write and delete, so a reader holding it open with every share mode stops neither the
+# write nor the removal, measured on 2026-10-01 and 2026-10-04. The first failure throws,
+# naming the file.
+function WriteOver($from, $to) {
+    $want = Listing $from
+    $have = [pscustomobject]@{ Files = @{}; Folders = @() }
+    if (Test-Path -LiteralPath $to) { $have = Listing $to }
+    $wrote = @()
+    $removed = @()
+    New-Item -ItemType Directory -Force -Path $to | Out-Null
+    foreach ($rel in $want.Folders) { New-Item -ItemType Directory -Force -Path (Join-Path $to $rel) | Out-Null }
+    foreach ($rel in @($want.Files.Keys | Sort-Object)) {
+        if ($have.Files.ContainsKey($rel) -and $have.Files[$rel] -eq $want.Files[$rel]) { continue }
+        try {
+            $src = New-Object System.IO.FileStream((Join-Path $from $rel), [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]"ReadWrite, Delete")
+            try {
+                $dst = New-Object System.IO.FileStream((Join-Path $to $rel), [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write, [System.IO.FileShare]"ReadWrite, Delete")
+                try { $src.CopyTo($dst) } finally { $dst.Dispose() }
+            } finally { $src.Dispose() }
+        } catch { throw ($rel + " could not be written, " + (Why $_.Exception)) }
+        $wrote += $rel
+    }
+    foreach ($rel in @($have.Files.Keys | Sort-Object)) {
+        if ($want.Files.ContainsKey($rel)) { continue }
+        try { [System.IO.File]::Delete((Join-Path $to $rel)) } catch { throw ($rel + " could not be removed, " + (Why $_.Exception)) }
+        $removed += $rel
+    }
+    foreach ($rel in @($have.Folders | Sort-Object -Descending)) {
+        if ($want.Folders -contains $rel) { continue }
+        try { [System.IO.Directory]::Delete((Join-Path $to $rel), $false) } catch { throw ("the folder " + $rel + " could not be removed, " + (Why $_.Exception)) }
+    }
+    $now = Listing $to
+    $differ = @($want.Files.Keys | Where-Object { -not $now.Files.ContainsKey($_) -or $now.Files[$_] -ne $want.Files[$_] }) + @($now.Files.Keys | Where-Object { -not $want.Files.ContainsKey($_) }) + @($want.Folders | Where-Object { $now.Folders -notcontains $_ }) + @($now.Folders | Where-Object { $want.Folders -notcontains $_ })
+    if ($differ.Count -gt 0) { throw ($to + " does not read back the same by sha256, " + $differ.Count + " differ, the first " + $differ[0]) }
+    return [pscustomobject]@{ Wrote = $wrote; Removed = $removed }
+}
+
 # The installed bundle is moved aside by one rename first. A rename fails whole when a file
 # in the bundle is held, so the old bundle stays whole where it was. Measured on 2026-09-30
 # with no Navisworks: a DLL that .NET loaded with Assembly.LoadFrom in another process
@@ -113,17 +186,74 @@ while ($null -ne $walkUp -and $walkUp.Length -ge $env:APPDATA.TrimEnd('\').Lengt
 # passed is the one moved aside removed. On a failure after the move the new one is taken
 # out and the old one put back, and where each is is printed. Whether Navisworks loads a
 # folder whose name does not end in .bundle is UNKNOWN.
+#
+# When the rename is refused, the process list is read again. A Navisworks running, or a list
+# that cannot be read, refuses as before. With none the bundle is replaced in place. On
+# 2026-10-01 Windows refused that rename on Bader's machine three times with no Navisworks
+# running, while every file of the bundle opened for delete and for write with every share
+# mode, and what holds it is UNKNOWN. Measured on 2026-10-01 and again on 2026-10-04 in a
+# throwaway folder: one file beneath a folder held open by another process refuses the
+# rename of the folder with the same words, access to the path is denied, whatever the share
+# mode, and a file held that way sharing read, write and delete can still be written over and
+# removed. So the installed bundle is first copied beside it, under the name the rename would
+# have given it, and read back by sha256, and only then is each new file written over the old
+# one. On any failure after that the copy is written back over the bundle the same way and
+# read back, so a whole copy of the add-in installed before is on the disk at every moment.
 $aside = $null
+$inPlace = $false
+
+# Removes the copy of the installed bundle made beside it, and returns null once it is gone,
+# or the words of why it could not be removed.
+function RemoveCopy {
+    try { Remove-Item -LiteralPath $aside -Recurse -Force -ErrorAction Stop; return $null } catch { return (Why $_.Exception) }
+}
+
 if (Test-Path -LiteralPath $target) {
     $aside = $target + ".replaced-" + [DateTime]::Now.ToString("yyyyMMdd-HHmmss")
     try { Rename-Item -LiteralPath $target -NewName (Split-Path $aside -Leaf) -ErrorAction Stop }
-    catch { Write-Host ("REFUSED: the installed add-in could not be moved aside, a file in it is held, most likely by a Navisworks that is running, " + $_.Exception.Message + ". The installed add-in is left whole. Close Navisworks and run this again. Nothing was installed."); exit 2 }
+    catch {
+        $moveError = Why $_.Exception
+        $navisworks = NavisworksRefusal
+        if ($null -ne $navisworks) { Write-Host ("REFUSED: the installed add-in could not be moved aside, " + $moveError + ", and " + $navisworks + ". The installed add-in is left whole. Nothing was installed."); exit 2 }
+        if (Test-Path -LiteralPath $aside) { Write-Host ("REFUSED: the installed add-in could not be moved aside, " + $moveError + ", no Navisworks runs, and " + $aside + " is there already, so no copy of it is made there. The installed add-in is left whole. Nothing was installed."); exit 2 }
+        try { [void](WriteOver $target $aside) }
+        catch {
+            $copyError = Why $_.Exception
+            $made = "nothing of it was made"
+            if (Test-Path -LiteralPath $aside) {
+                $notGone = RemoveCopy
+                if ($null -eq $notGone) { $made = "what was made of it was removed" }
+                else { $made = "what was made of it is at " + $aside + " and could not be removed, " + $notGone }
+            }
+            Write-Host ("REFUSED: the installed add-in could not be moved aside, " + $moveError + ", no Navisworks runs, and its copy beside it could not be made whole, " + $copyError + ", and " + $made + ". The installed add-in is left whole. Nothing was installed.")
+            exit 2
+        }
+        Write-Host ("IN PLACE: the installed add-in could not be moved aside, " + $moveError + ", and no Navisworks runs, so its files are replaced where they are. A copy of it was made first at " + $aside + " and read back by sha256, and it is kept until every check of the new one has passed.")
+        $inPlace = $true
+    }
 }
 
-# After a failure once the old bundle was moved aside: the new one is removed, or moved aside
-# when it will not go, the old one is put back when its place is free, and where each ends
-# up is printed and returned for the failure's message.
+# After a failure once the old bundle was moved aside or copied beside it, the old one is put
+# back and where each thing ends up is printed and returned for the failure's message. Moved
+# aside: the new one is removed, or moved aside when it will not go, and the old one is put
+# back when its place is free. Replaced in place: the copy is written back over the bundle the
+# way the new one was written, read back by sha256, and removed once it reads back whole.
 function PutOldBack($why) {
+    if ($inPlace) {
+        $back = $null
+        try { $back = WriteOver $aside $target }
+        catch {
+            $text = $why.TrimEnd('.') + ". The add-in installed before could not be put back in place, " + (Why $_.Exception) + ". It is whole at " + $aside + ", read back by sha256 before anything was written over, what is at " + $target + " was not proved to be it, and the new one is at " + $staging + "."
+            Write-Host $text
+            return $text
+        }
+        $copyNow = "its copy beside it was removed"
+        $notGone = RemoveCopy
+        if ($null -ne $notGone) { $copyNow = "its copy is still at " + $aside + " and could not be removed, " + $notGone }
+        $text = $why.TrimEnd('.') + ". The add-in installed before is at " + $target + ", put back in place with " + @($back.Wrote).Count + " written back and " + @($back.Removed).Count + " removed and read back by sha256 against its copy, " + $copyNow + ", and the new one that failed is at " + $staging + "."
+        Write-Host $text
+        return $text
+    }
     $newAt = $null
     if (Test-Path -LiteralPath $target) {
         try { Remove-Item -LiteralPath $target -Recurse -Force -ErrorAction Stop }
@@ -148,10 +278,14 @@ function PutOldBack($why) {
 # when the destination already exists, and creates it when it does not, so the same line
 # does two different things depending on whether the folder is there. That happened on
 # 2026-08-31 and left ParsonsNwcFederator.bundle inside ParsonsNwcFederator.bundle, which
-# Navisworks does not read at all.
+# Navisworks does not read at all. In place, each file is written over on its own.
+$writes = $null
 try {
-    New-Item -ItemType Directory -Force -Path $target | Out-Null
-    Copy-Item (Join-Path $staging "*") $target -Recurse -Force
+    if ($inPlace) { $writes = WriteOver $staging $target }
+    else {
+        New-Item -ItemType Directory -Force -Path $target | Out-Null
+        Copy-Item (Join-Path $staging "*") $target -Recurse -Force
+    }
 } catch {
     $copyError = $_.Exception.Message
     if ($null -ne $aside) { throw (PutOldBack ("The new add-in could not be copied in, " + $copyError)) }
@@ -169,9 +303,23 @@ $written = Get-ChildItem $target -Recurse -File | Sort-Object FullName
 Write-Host "Installed to:"
 Write-Host "  $target"
 Write-Host ""
+if ($inPlace) {
+    Write-Host ("Replaced in place, {0} written over or added, and {1} removed that the new add-in does not have:" -f @($writes.Wrote).Count, @($writes.Removed).Count)
+    foreach ($rel in $writes.Removed) { Write-Host ("  removed  " + $rel) }
+    Write-Host ""
+}
+# In place, a file that already held the new bytes by sha256 is not written, so it is listed
+# apart and never as written.
+$kept = @()
 Write-Host "Files written:"
 foreach ($f in $written) {
-    Write-Host ("  {0}  ({1} bytes)" -f $f.FullName.Substring($target.Length + 1), $f.Length)
+    $rel = $f.FullName.Substring($target.Length + 1)
+    if ($inPlace -and @($writes.Wrote) -notcontains $rel) { $kept += $f; continue }
+    Write-Host ("  {0}  ({1} bytes)" -f $rel, $f.Length)
+}
+if ($kept.Count -gt 0) {
+    Write-Host "Files not written, because the installed one already held the same bytes by sha256:"
+    foreach ($f in $kept) { Write-Host ("  {0}  ({1} bytes)" -f $f.FullName.Substring($target.Length + 1), $f.Length) }
 }
 Write-Host ""
 
