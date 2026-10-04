@@ -31,6 +31,7 @@ namespace Federator.Core.Report
             Sizes = new SizeSettings();
             StopAfterFailures = RepeatedFailureGuard.DefaultThreshold;
             FarModelMillimetres = AlignmentCheck.DefaultFarModelMillimetres;
+            SkipClashOffCoordinates = AlignmentCheck.DefaultSkipClashOffCoordinates;
 
             // Fixed on, and the window no longer sets them. A weekly run wants the page
             // and the units every time, so neither is a decision any more. F34.
@@ -222,9 +223,9 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// How far a model may sit from its group's reference model, in millimetres and in
-        /// a straight line, before the group cannot end DONE, Q98 B2. A metre by default,
-        /// the number Bader gave, put to him again as Q99. A setting and not a constant,
-        /// because it decides how every group ends.
+        /// a straight line, before it is not on the same shared coordinates, Q98 B2 and Q99.
+        /// A metre by default, the number Bader gave. A setting and not a constant, because
+        /// it decides which groups clash.
         ///
         /// A value that is not a number is refused, because nothing is more than it and the
         /// rule would go off without a word, and so is one below zero, which would call a
@@ -247,6 +248,14 @@ namespace Federator.Core.Report
         }
 
         private double farModelMillimetres;
+
+        /// <summary>
+        /// Whether a group holding a model not on the same shared coordinates skips its clash
+        /// and only its clash, Bader's answer to Q99 and Q100. ON by default. Off, every group
+        /// is clashed and judged as it was before his answer, because a building is run once
+        /// more with it off so every other fix is proved on groups that clash.
+        /// </summary>
+        public bool SkipClashOffCoordinates { get; set; }
 
         /// <summary>How a discipline is read off a source file name.</summary>
         public ContainerNameSettings Names { get; set; }

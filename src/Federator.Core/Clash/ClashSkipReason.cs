@@ -41,6 +41,14 @@ namespace Federator.Core.Clash
         /// </summary>
         SingleDiscipline,
 
+        /// <summary>
+        /// A model of the group is not on the same shared coordinates as its reference
+        /// model, so the group's clash is skipped and only its clash, Bader's answer to Q99
+        /// and Q100. The tests are created and none is run, the path SingleDiscipline takes,
+        /// and counted apart from it because it is a different fact about a different problem.
+        /// </summary>
+        NotOnTheSameCoordinates,
+
         /// <summary>Creating or running the test threw.</summary>
         Failed
     }

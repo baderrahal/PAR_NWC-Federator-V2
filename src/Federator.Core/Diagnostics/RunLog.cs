@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using Federator.Core.Clash;
+using Federator.Core.Health;
 using Federator.Core.Rerun;
 
 namespace Federator.Core.Diagnostics
@@ -111,6 +112,7 @@ namespace Federator.Core.Diagnostics
             StartedAt = startedAt;
             DisabledReason = disabledReason;
             ClashesFound = new ClashesAcrossTheRun();
+            CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun();
             PenetrationsAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "penetrations   ");
             ByDesignAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "by design      ");
             this.stream = stream;
@@ -1717,6 +1719,14 @@ namespace Federator.Core.Diagnostics
         public ClashesAcrossTheRun ClashesFound { get; private set; }
 
         /// <summary>
+        /// Every group holding a model not on the same shared coordinates, Bader's answer to
+        /// Q99 and Q100, for the RESULT lines that list them and the run's one list for the
+        /// modellers. Never null. A group whose clash was skipped is NOT in ClashesFound,
+        /// because a clash that never ran is not a clash count of zero.
+        /// </summary>
+        public OffCoordinatesAcrossTheRun CoordinatesAcrossTheRun { get; private set; }
+
+        /// <summary>
         /// How many clashes the penetration rule moved, per group and added up, with how
         /// many it looked at beside each. Never null. Only written where the box was on.
         /// </summary>
@@ -1819,6 +1829,13 @@ namespace Federator.Core.Diagnostics
             Blank();
 
             foreach (string line in ClashesFound.ResultLines())
+            {
+                Line(line);
+            }
+
+            // Bader's answer to Q99 and Q100. Straight under the clash total, because a
+            // group listed here was not clashed at all and is not in that total.
+            foreach (string line in CoordinatesAcrossTheRun.ResultLines())
             {
                 Line(line);
             }

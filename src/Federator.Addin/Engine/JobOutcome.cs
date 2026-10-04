@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
+using Federator.Core.Health;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -12,7 +13,6 @@ namespace Federator.Addin.Engine
     public sealed class JobOutcome
     {
         private readonly List<string> errors = new List<string>();
-        private readonly List<string> farModels = new List<string>();
 
         public JobOutcome(FederationJob job)
         {
@@ -58,17 +58,13 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// One line per model of this group sitting far from its reference model, Q98 B2,
-        /// as AlignmentCheck.FarModels says it. Kept apart from the errors, because nothing
-        /// threw: the group is PARTIAL for it, or keeps whatever else it ended as.
+        /// The models that made this group skip its clash, Bader's answer to Q99 and Q100,
+        /// or null where its clash was not skipped. Kept apart from the errors, because
+        /// nothing threw: the group is PARTIAL for it, or keeps whatever else it ended as.
+        /// Set only with the rule on, and read by the clash step, the viewpoints, the
+        /// reports and the notes.
         /// </summary>
-        public void AddFarModel(string line)
-        {
-            if (!string.IsNullOrEmpty(line))
-            {
-                farModels.Add(line);
-            }
-        }
+        public OffCoordinates ClashSkippedBecause { get; set; }
 
         /// <summary>
         /// Whether the publish call reported success. On a rerun last week's NWD sits at
@@ -145,11 +141,7 @@ namespace Federator.Addin.Engine
                 facts.AddError(error);
             }
 
-            foreach (string line in farModels)
-            {
-                facts.AddFarModel(line);
-            }
-
+            facts.ClashSkippedOffCoordinates = ClashSkippedBecause != null;
             return facts;
         }
 

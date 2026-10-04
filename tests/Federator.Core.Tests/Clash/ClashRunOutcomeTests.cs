@@ -279,6 +279,29 @@ namespace Federator.Core.Tests
             Assert.That(outcome.SkipReasonCounts()[ClashSkipReason.EmptySide], Is.EqualTo(2));
         }
 
+        /// <summary>
+        /// Bader's answer to Q99 and Q100. A group whose models are not on the same shared
+        /// coordinates creates its tests and runs none, the path a one discipline group
+        /// takes, and its CLASH block counts them under their own reason, never as a side
+        /// finding nothing and never as one discipline.
+        /// </summary>
+        [Test]
+        public void TestsNotRunBecauseTheModelsAreOffTheirCoordinatesAreCountedUnderTheirOwnReason()
+        {
+            ClashRunOutcome outcome = new ClashRunOutcome();
+            outcome.AddSkipped("a", ClashSkipReason.NotOnTheSameCoordinates, "x");
+            outcome.AddSkipped("b", ClashSkipReason.NotOnTheSameCoordinates, "x");
+
+            string block = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
+
+            Assert.That(block, Does.Contain(
+                "SKIPPED 2 tests, " + ClashTestPlan.Describe(ClashSkipReason.NotOnTheSameCoordinates)));
+            Assert.That(block, Does.Contain(
+                "        2  " + ClashTestPlan.Describe(ClashSkipReason.NotOnTheSameCoordinates)));
+            Assert.That(ClashTestPlan.Describe(ClashSkipReason.NotOnTheSameCoordinates),
+                Is.EqualTo("the group's models are not on the same shared coordinates, so its clash is skipped"));
+        }
+
         [Test]
         public void ATestAlreadyThereIsNotCountedAsCreated()
         {

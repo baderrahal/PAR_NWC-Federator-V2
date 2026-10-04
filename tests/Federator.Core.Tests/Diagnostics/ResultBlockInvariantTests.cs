@@ -211,6 +211,38 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// Bader's answer to Q99 and Q100: the RESULT block lists the groups whose clash was
+        /// skipped because a model is not on the same shared coordinates, beside the count of
+        /// PARTIAL groups they are in.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseClashWasSkippedIsListedInTheResult()
+        {
+            using (RunLog log = Start())
+            {
+                Federator.Core.Health.OffCoordinates off = Federator.Core.Health.AlignmentCheck.NotOnTheSameCoordinates(
+                    new List<Federator.Core.Health.ModelPlacement>
+                    {
+                        new Federator.Core.Health.ModelPlacement("a-AR.nwc", "AR", "Site", 0.0, 0.0, 0.0),
+                        new Federator.Core.Health.ModelPlacement("a-ST.nwc", "ST", "Site", 0.0, 0.0, 5000.0)
+                    },
+                    Federator.Core.Health.AlignmentCheck.DefaultFarModelMillimetres);
+
+                log.CoordinatesAcrossTheRun.SkipsTheClash = true;
+                log.CoordinatesAcrossTheRun.Add("1B06K1", off);
+                log.GroupFinished(
+                    "1B06K1", GroupOutcome.Partial, 1.0, Federator.Core.Health.OffCoordinates.ClashSkippedReason, null);
+
+                log.WriteResultBlock();
+                string text = ReadWhileOpen(log);
+
+                Assert.That(text, Does.Contain("groups partial : 1"));
+                Assert.That(text, Does.Contain("clash skipped  : 1 group, models not on the same shared coordinates"));
+                Assert.That(text, Does.Contain("      1B06K1     1 model(s) not on the same shared coordinates"));
+            }
+        }
+
         [Test]
         public void ARunWithNoGroupsAtAllReportsZerosAndNothingFailed()
         {

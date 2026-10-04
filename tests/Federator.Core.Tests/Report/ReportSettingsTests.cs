@@ -122,8 +122,29 @@ namespace Federator.Core.Tests
             };
 
             Assert.That(options.FarModelMillimetres, Is.EqualTo(2000.0));
-            Assert.That(AlignmentCheck.FarModels(models, options.FarModelMillimetres), Is.Empty);
-            Assert.That(AlignmentCheck.FarModels(models, new ReportOptions().FarModelMillimetres).Count, Is.EqualTo(1));
+            Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, options.FarModelMillimetres).Any, Is.False);
+            Assert.That(
+                AlignmentCheck.NotOnTheSameCoordinates(models, new ReportOptions().FarModelMillimetres).Models.Count,
+                Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Bader's answer to Q99 and Q100: the rule that skips the clash of a group not on
+        /// the same shared coordinates is ON by default, and a setting switches it off,
+        /// because a building is run once more with it off so every other fix is proved on
+        /// groups that clash.
+        /// </summary>
+        [Test]
+        public void TheRuleThatSkipsTheClashIsOnByDefaultAndCanBeSwitchedOff()
+        {
+            ReportOptions options = new ReportOptions();
+
+            Assert.That(options.SkipClashOffCoordinates, Is.True);
+            Assert.That(options.SkipClashOffCoordinates, Is.EqualTo(AlignmentCheck.DefaultSkipClashOffCoordinates));
+
+            options.SkipClashOffCoordinates = false;
+
+            Assert.That(options.SkipClashOffCoordinates, Is.False);
         }
 
         /// <summary>

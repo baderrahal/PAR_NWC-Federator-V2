@@ -334,26 +334,36 @@ and 6 does not read as broken.
     DONE     everything requested for this group succeeded
     PARTIAL  something requested did not complete, or the group was CHANGED and
              left alone, which since F24 means only a group whose rebuild never
-             started, because a rebuild that ran ends as Rebuilt, or a model sits
-             far from the group's reference model
+             started, because a rebuild that ran ends as Rebuilt, or its clash was
+             skipped because a model is not on the same shared coordinates
     FAILED   something requested threw or produced nothing, a rebuild that appended
              nothing or could not keep its saved tests included
   The rule lives in Federator.Core.Rerun.GroupJudgement, with no Navisworks types
   in it, so it can be tested. The outcome and the reason for it come out of one
   pass, so the two can never disagree
-- A FAR MODEL KEEPS ITS GROUP FROM DONE, Q98 B2. A model more than a metre from its
-  group's reference model, as the ALIGNMENT block measures it, has clashes with the
-  other disciplines nobody can trust. The distance is the STRAIGHT LINE of dx, dy and
-  dz and never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m
-  away and under a metre on every axis. The metre is a setting,
-  `ReportOptions.FarModelMillimetres`, defaulting to `AlignmentCheck.DefaultFarModelMillimetres`,
-  and Q99 asks Bader to confirm it. One line per far model, made by
-  `AlignmentCheck.FarModels` and nowhere else, names the model, the distance and that
-  its clashes cannot be trusted, and the block and the group's reason are that line.
-  A group that did everything else right is PARTIAL with it as the reason. A group
-  already FAILED or PARTIAL keeps its outcome and the line rides on its reason, because
-  the C06 run's FAILED reasons named only the Internal models. A model whose placement
-  could not be read is never far, and the block says so
+- A GROUP NOT ON THE SAME SHARED COORDINATES SKIPS ITS CLASH AND NOTHING ELSE, Q98 B2
+  and Bader's answer to Q99 and Q100 on 2026-10-04. A model is not on the same
+  coordinates when it sits more than a metre from its group's reference model, as the
+  ALIGNMENT block measures it. The distance is the STRAIGHT LINE of dx, dy and dz and
+  never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away and
+  under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
+  defaulting to `AlignmentCheck.DefaultFarModelMillimetres`. In such a group the NWF is
+  built with every model, set and test and the NWD is published, the tests are created
+  and none is run, on the one path a one discipline group already took, and no viewpoint
+  and no clash report is made. The group ends PARTIAL, never DONE, with the reason
+  `OffCoordinates.ClashSkippedReason`, and a group already FAILED or PARTIAL keeps its
+  outcome with that reason added. One line per such model, made by
+  `AlignmentCheck.NotOnTheSameCoordinates` and nowhere else, names its file, its shared
+  site and its distance from the reference in X, Y and Z. The ALIGNMENT block carries
+  those lines, a note with them goes beside the NWD and into the Clash Report folder, the
+  RESULT block lists the groups, and the run writes one list for the modellers into the
+  Clash Report folder. The rule is read on every run, so the run after the models are
+  fixed clashes the group with the tests already saved in its NWF, and a note an earlier
+  run left for a group this run clashed is removed. A group skipped is left out of the
+  run's clash total, because a clash that never ran is not a group that found none. A
+  model whose placement could not be read is never judged on its distance, and the block
+  says so. `ReportOptions.SkipClashOffCoordinates`, on by default, switches the rule off,
+  and then every group is clashed and judged as before the answer
 - The counts in the RESULT block and the errors under it come from one list. A
   failed count with an empty error list is what the log printed once, saying
   "groups failed: 22" and "Nothing failed." in the same block. A group recorded as

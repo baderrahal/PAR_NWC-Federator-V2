@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Diagnostics;
+using Federator.Core.Health;
 
 namespace Federator.Core.Rerun
 {
@@ -11,7 +12,6 @@ namespace Federator.Core.Rerun
     public sealed class GroupFacts
     {
         private readonly List<string> errors = new List<string>();
-        private readonly List<string> farModels = new List<string>();
 
         public GroupFacts()
         {
@@ -94,23 +94,12 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// One line per model of this group sitting more than the far model setting from
-        /// its reference model, Q98 B2, as AlignmentCheck.FarModels says them and never
-        /// typed anywhere else. Not an error: nothing threw, and the outputs are whole.
+        /// Whether this group's clash was skipped because a model is not on the same shared
+        /// coordinates as its reference model, Bader's answer to Q99 and Q100. Not an
+        /// error: nothing threw, and the NWF and the NWD were written with every test in
+        /// them.
         /// </summary>
-        internal IList<string> FarModels
-        {
-            get { return farModels; }
-        }
-
-        /// <summary>Records one far model line. An empty line is ignored, never stored blank.</summary>
-        public void AddFarModel(string line)
-        {
-            if (!string.IsNullOrEmpty(line))
-            {
-                farModels.Add(line);
-            }
-        }
+        public bool ClashSkippedOffCoordinates { get; set; }
 
         /// <summary>
         /// Every error on one line. All of them, because the RESULT block is what Bader
@@ -141,7 +130,8 @@ namespace Federator.Core.Rerun
     ///
     ///   DONE     everything requested for this group succeeded, a rebuilt group included
     ///   PARTIAL  something requested did not complete, or the group was CHANGED and left
-    ///            alone, or a model sits far from the group's reference model, Q98 B2
+    ///            alone, or its clash was skipped because a model is not on the same shared
+    ///            coordinates, Bader's answer to Q99 and Q100
     ///   FAILED   something requested threw or produced nothing
     ///
     /// A step deliberately switched off is not a failure. Judging a group by whether an
@@ -162,29 +152,28 @@ namespace Federator.Core.Rerun
 
             GroupOutcome outcome = JudgeTheSteps(facts, out reason);
 
-            if (facts.FarModels.Count == 0)
+            if (!facts.ClashSkippedOffCoordinates)
             {
                 return outcome;
             }
 
-            // Q98 B2. A model far from its reference has clashes nobody can trust, so a
-            // group that did everything else right is PARTIAL, with the far lines as its
-            // reason. A group already FAILED or PARTIAL keeps its outcome, and the far
-            // lines ride on its reason, because the C06 run's FAILED reasons named only the
-            // Internal models and left the far ones unsaid.
-            string far = string.Join(", and ", new List<string>(facts.FarModels).ToArray());
-
+            // Bader's answer to Q99 and Q100. Only the clash was skipped, so a group that
+            // did everything else right is PARTIAL, never DONE, with his reason. A group
+            // already FAILED or PARTIAL keeps its outcome, the worse one, and the skipped
+            // clash is said on its reason too, so the RESULT block never names half of it.
             if (outcome == GroupOutcome.Done)
             {
-                reason = far;
+                reason = OffCoordinates.ClashSkippedReason;
                 return GroupOutcome.Partial;
             }
 
-            reason = string.IsNullOrEmpty(reason) ? far : reason + ", and " + far;
+            reason = string.IsNullOrEmpty(reason)
+                ? OffCoordinates.ClashSkippedReason
+                : reason + ", and " + OffCoordinates.ClashSkippedReason;
             return outcome;
         }
 
-        /// <summary>How the steps of the group went, everything but the far models.</summary>
+        /// <summary>How the steps of the group went, everything but a clash skipped for the coordinates.</summary>
         private static GroupOutcome JudgeTheSteps(GroupFacts facts, out string reason)
         {
             // FAILED. Something requested threw, or produced nothing.

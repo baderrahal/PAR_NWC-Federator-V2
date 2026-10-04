@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Federator.Core.Diagnostics;
 using Federator.Core.Health;
 using Federator.Core.Rerun;
@@ -258,7 +257,7 @@ namespace Federator.Core.Tests
                 Failing(f => f.NwdPublishReportedSuccess = false),
                 Failing(f => f.Decision = RerunDecision.Changed),
                 Failing(f => { f.AppendedCount = 3; f.FailedFileCount = 1; }),
-                Failing(f => f.AddFarModel("ST  far.nwc sits 2 m from the reference model"))
+                Failing(f => f.ClashSkippedOffCoordinates = true)
             };
 
             foreach (GroupFacts facts in all)
@@ -567,73 +566,43 @@ namespace Federator.Core.Tests
             Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
         }
 
-        // ---------- Q98 B2, a model far from its reference ----------
-
-        /// <summary>
-        /// The far line of the real 1B06K1, made by the one rule that makes it, so this
-        /// judges the line the run writes and not a sentence typed here.
-        /// </summary>
-        private static string FarLineOf1B06K1()
-        {
-            IList<ModelPlacement> models = new List<ModelPlacement>
-            {
-                new ModelPlacement("1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc", "AR", "COMMUNITY 4A", 0.0, 0.0, 0.0),
-                new ModelPlacement("1104-PAR-1B06K1-ZZZ-ST-MOD-000001.nwc", "ST", "COMMUNITY 4A",
-                    -658144882.33, -2746014844.6, -683828.41)
-            };
-
-            return AlignmentCheck.FarModels(models, AlignmentCheck.DefaultFarModelMillimetres)[0];
-        }
+        // ---------- Q98 B2 and Bader's answer to Q99 and Q100, the clash skipped ----------
 
         /// <summary>
         /// 1B06K1 ended DONE in the C06 run with its ST 2,823 km from the reference, log line
-        /// 2128, so its clash count read as whole. Everything else went right, so it is
-        /// PARTIAL and the reason is the far line.
+        /// 2128, so its clash count read as whole. Under Bader's answer its clash is skipped
+        /// and nothing else, so a group that did everything else right is PARTIAL, never
+        /// DONE, with his reason.
         /// </summary>
         [Test]
-        public void AGroupWithAFarModelIsPartialAndTheReasonIsTheFarLine()
+        public void AGroupWhoseClashWasSkippedIsPartialWithBadersReason()
         {
             GroupFacts facts = Clean();
-            facts.AddFarModel(FarLineOf1B06K1());
+            facts.ClashSkippedOffCoordinates = true;
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Partial));
-            Assert.That(reason, Is.EqualTo(FarLineOf1B06K1()));
-            Assert.That(reason, Does.Contain("its clashes with the other disciplines cannot be trusted"));
-        }
-
-        [Test]
-        public void TwoFarModelsAreBothInTheReason()
-        {
-            GroupFacts facts = Clean();
-            facts.AddFarModel("ME  one.nwc sits 328.335 m from the reference model");
-            facts.AddFarModel("ME  two.nwc sits 255.238 m from the reference model");
-
-            string reason;
-
-            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Partial));
-            Assert.That(reason, Does.Contain("one.nwc sits 328.335 m"));
-            Assert.That(reason, Does.Contain("two.nwc sits 255.238 m"));
+            Assert.That(reason, Is.EqualTo("clash skipped, models not on the same shared coordinates"));
+            Assert.That(reason, Is.EqualTo(OffCoordinates.ClashSkippedReason));
         }
 
         /// <summary>
-        /// 1B06BC: its reference names Internal, which FAILS the group, Q70, and its EL sits
-        /// 2,774 km away. It stays FAILED, and the far line is written for it too, because
-        /// the FAILED reason alone names only the Internal model.
+        /// A group that also failed for another reason stays FAILED, the worse of the two, and
+        /// the skipped clash is said too, so the RESULT block does not name only half of it.
         /// </summary>
         [Test]
-        public void AGroupWithAnInternalModelStaysFailedAndItsReasonCarriesTheFarLineToo()
+        public void AGroupThatAlsoFailedStaysFailedAndItsReasonSaysTheClashWasSkippedToo()
         {
             GroupFacts facts = Clean();
-            facts.AddError("1 model(s) were exported on Revit's internal origin and not on a shared site");
-            facts.AddFarModel(FarLineOf1B06K1());
+            facts.AddError("1 model(s) name no shared site at all");
+            facts.ClashSkippedOffCoordinates = true;
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Does.StartWith("1 model(s) were exported on Revit's internal origin"));
-            Assert.That(reason, Does.Contain(FarLineOf1B06K1()));
+            Assert.That(reason, Does.StartWith("1 model(s) name no shared site at all"));
+            Assert.That(reason, Does.EndWith(", and clash skipped, models not on the same shared coordinates"));
         }
 
         [Test]
@@ -642,23 +611,27 @@ namespace Federator.Core.Tests
             GroupFacts facts = Clean();
             facts.AppendedCount = 3;
             facts.FailedFileCount = 1;
-            facts.AddFarModel(FarLineOf1B06K1());
+            facts.ClashSkippedOffCoordinates = true;
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Partial));
-            Assert.That(reason, Does.StartWith("1 of 4 files did not append"));
-            Assert.That(reason, Does.Contain(FarLineOf1B06K1()));
+            Assert.That(reason, Is.EqualTo("1 of 4 files did not append, and clash skipped, models not on the same shared coordinates"));
         }
 
+        /// <summary>
+        /// Viewpoints are not asked for in a group whose clash was skipped, so the group can
+        /// never fail at them, the rule F52 already keeps for a step that was not asked for.
+        /// </summary>
         [Test]
-        public void ABlankFarLineIsNotRecorded()
+        public void ASkippedGroupThatAskedForNoViewpointIsNotJudgedOnThem()
         {
             GroupFacts facts = Clean();
-            facts.AddFarModel(null);
-            facts.AddFarModel(string.Empty);
+            facts.ClashSkippedOffCoordinates = true;
+            facts.ViewpointsRequested = false;
+            facts.FailedViewpointCount = 0;
 
-            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Partial));
         }
     }
 }

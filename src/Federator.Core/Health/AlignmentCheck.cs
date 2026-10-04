@@ -93,10 +93,11 @@ namespace Federator.Core.Health
     /// scale too. What matters is whether the models in one group AGREE WITH EACH OTHER.
     ///
     /// Nothing here skips a group or stops a run, Q65 answered: report it and run anyway.
-    /// Two answers given later decide how a group ENDS, and the group still writes every
-    /// output either way. Q70: a model on Revit's internal origin, or naming no site at
-    /// all, fails its group. Q98 B2: a model sitting more than the far model setting from
-    /// its group's reference keeps the group from DONE.
+    /// Two answers given later decide how a group ENDS, and the group still writes its NWF
+    /// and its NWD either way. Q70: a model on Revit's internal origin, or naming no site at
+    /// all, fails its group. Q98 B2 with Bader's answer to Q99 and Q100: a model sitting
+    /// more than the far model setting from its group's reference is not on the same shared
+    /// coordinates, and the group's clash is skipped and nothing else, OffCoordinates.
     /// </summary>
     public static class AlignmentCheck
     {
@@ -133,8 +134,9 @@ namespace Federator.Core.Health
 
         /// <summary>
         /// How far a model may sit from its group's reference model, in millimetres and in
-        /// a straight line, before the group cannot end DONE. Bader's B2 of Q98 on
-        /// 2026-10-04, with the 40 distances of the C06 run put to him as Q99.
+        /// a straight line, before it is not on the same shared coordinates. Bader's B2 of
+        /// Q98 on 2026-10-04, put to him again with the 40 distances of the C06 run as Q99
+        /// and answered the same day.
         ///
         /// ONE METRE IS HIS NUMBER AND NOT A MEASUREMENT. It is the default of the setting
         /// a run reads, ReportOptions.FarModelMillimetres, and only that default reads it.
@@ -147,14 +149,29 @@ namespace Federator.Core.Health
         public const double DefaultFarModelMillimetres = 1000.0;
 
         /// <summary>
-        /// The block, with the far model lines measured against the given distance in
-        /// millimetres. Written even when everything agrees, because a missing block reads
+        /// Whether a group holding a model not on the same shared coordinates skips its
+        /// clash, Bader's answer to Q99 and Q100. ON, and a setting,
+        /// ReportOptions.SkipClashOffCoordinates, because a building is run once more with it
+        /// off so every other fix is proved on groups that clash.
+        /// </summary>
+        public const bool DefaultSkipClashOffCoordinates = true;
+
+        /// <summary>
+        /// The block, with the models not on the same shared coordinates measured against
+        /// the given distance in millimetres, and said the way the rule that skips the
+        /// clash is set. Written even when everything agrees, because a missing block reads
         /// as a check that did not run.
         /// </summary>
-        public static IList<string> Lines(IList<ModelPlacement> models, double farModelMillimetres)
+        public static IList<string> Lines(
+            IList<ModelPlacement> models, double farModelMillimetres, bool skipClashOffCoordinates)
         {
             return Lines(
-                models, DefaultReferenceDiscipline, DefaultToleranceMillimetres, DefaultInternalName, farModelMillimetres);
+                models,
+                DefaultReferenceDiscipline,
+                DefaultToleranceMillimetres,
+                DefaultInternalName,
+                farModelMillimetres,
+                skipClashOffCoordinates);
         }
 
         public static IList<string> Lines(
@@ -162,7 +179,8 @@ namespace Federator.Core.Health
             string referenceDiscipline,
             double toleranceMillimetres,
             string internalName,
-            double farModelMillimetres)
+            double farModelMillimetres,
+            bool skipClashOffCoordinates)
         {
             List<string> lines = new List<string>();
 
@@ -237,22 +255,27 @@ namespace Federator.Core.Health
 
             lines.Add(Sentence(models.Count, different, notPlaced, toleranceMillimetres));
 
-            // Q98 B2. The same lines the group's reason carries, out of the same rule.
-            IList<string> far = FarModels(models, reference, farModelMillimetres);
+            // Bader's answer to Q99 and Q100. The same lines the note and the run's list
+            // carry, out of the same rule, so the log and the files cannot disagree.
+            OffCoordinates off = NotOnTheSameCoordinates(models, reference, farModelMillimetres);
 
-            if (far.Count == 0)
+            if (!off.Any)
             {
                 lines.Add("no model sits more than " + Metres(farModelMillimetres)
                     + " from the reference model in a straight line");
             }
             else
             {
-                lines.Add(far.Count + " model(s) sit more than " + Metres(farModelMillimetres)
-                    + " from the reference model in a straight line, which keeps this group from DONE:");
+                lines.Add(skipClashOffCoordinates
+                    ? "CLASH SKIPPED. " + off.Models.Count + " model(s) are not on the same shared coordinates as the"
+                        + " reference model, so the clash tests are created and none is run, and no viewpoint and no"
+                        + " clash report is made:"
+                    : off.Models.Count + " model(s) are not on the same shared coordinates as the reference model."
+                        + " The rule that skips the clash for them is off for this run, so the group is clashed as before:");
 
-                for (int i = 0; i < far.Count; i++)
+                for (int i = 0; i < off.Models.Count; i++)
                 {
-                    lines.Add("   " + far[i]);
+                    lines.Add("   " + off.Models[i]);
                 }
             }
 
@@ -392,35 +415,31 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// One line per model sitting more than farModelMillimetres from its group's
-        /// reference model in a straight line, Q98 B2, naming the model, the distance and
-        /// that its clashes with the other disciplines cannot be trusted. Empty where none
-        /// does. The reference is the one the block measures against, and a model whose
-        /// placement could not be read is never far, the same way it is never different.
-        ///
-        /// These lines are the group's reason when they are all that kept it from DONE, and
-        /// they ride on its reason when something else made it FAILED or PARTIAL, because a
-        /// FAILED reason naming only an Internal model left a model 2,774 km away unnamed in
-        /// the C06 run.
+        /// The models of this group not on the same shared coordinates as its reference
+        /// model, Bader's answer to Q99 and Q100: each one sitting more than
+        /// farModelMillimetres from the reference in a straight line, with the line that
+        /// names its file, its shared site and its distance in X, Y and Z. The reference is
+        /// the one the block measures against, and a model whose placement could not be
+        /// read is never judged on its distance, the same way it is never called different.
         /// </summary>
-        public static IList<string> FarModels(IList<ModelPlacement> models, double farModelMillimetres)
+        public static OffCoordinates NotOnTheSameCoordinates(IList<ModelPlacement> models, double farModelMillimetres)
         {
             if (models == null || models.Count == 0)
             {
-                return new List<string>();
+                return new OffCoordinates(null, new List<string>());
             }
 
-            return FarModels(models, ReferenceIn(models, DefaultReferenceDiscipline), farModelMillimetres);
+            return NotOnTheSameCoordinates(models, ReferenceIn(models, DefaultReferenceDiscipline), farModelMillimetres);
         }
 
-        private static IList<string> FarModels(
+        private static OffCoordinates NotOnTheSameCoordinates(
             IList<ModelPlacement> models, ModelPlacement reference, double farModelMillimetres)
         {
-            List<string> far = new List<string>();
+            List<string> off = new List<string>();
 
             if (reference == null)
             {
-                return far;
+                return new OffCoordinates(null, off);
             }
 
             for (int i = 0; i < models.Count; i++)
@@ -439,13 +458,25 @@ namespace Federator.Core.Health
 
                 if (distance > farModelMillimetres)
                 {
-                    far.Add(Named(model) + " sits " + Metres(distance)
-                        + " from the reference model in a straight line, more than " + Metres(farModelMillimetres)
-                        + ", so its clashes with the other disciplines cannot be trusted");
+                    off.Add(Named(model) + "   shared site " + SiteSaid(model)
+                        + "   X " + Millimetres(dx) + "  Y " + Millimetres(dy) + "  Z " + Millimetres(dz)
+                        + " from the reference, " + Metres(distance) + " in a straight line, more than "
+                        + Metres(farModelMillimetres));
                 }
             }
 
-            return far;
+            return new OffCoordinates(Named(reference), off);
+        }
+
+        /// <summary>The site in a line about coordinates: its name in quotes, or why there is none.</summary>
+        private static string SiteSaid(ModelPlacement model)
+        {
+            if (!model.SiteRead)
+            {
+                return "UNKNOWN, it could not be read";
+            }
+
+            return model.NamesASharedCoordinate ? "\"" + model.SharedCoordinate + "\"" : "none named";
         }
 
         /// <summary>

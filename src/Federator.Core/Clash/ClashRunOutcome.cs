@@ -429,6 +429,7 @@ namespace Federator.Core.Clash
             foreach (ClashSkipReason reason in
                 new[]
                 {
+                    ClashSkipReason.NotOnTheSameCoordinates,
                     ClashSkipReason.SingleDiscipline,
                     ClashSkipReason.EmptySide,
                     ClashSkipReason.LocatorNotResolved,
