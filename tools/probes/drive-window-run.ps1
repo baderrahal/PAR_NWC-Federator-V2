@@ -47,13 +47,15 @@ param(
 # Any other dialog of the pid is recorded with its texts and left up, and nothing more is
 # pressed.
 #
-# F125. A window of the pid that is not modal is a pane and not a dialog, PANE by WindowKind in
-# nw-guard.ps1, the one copy of that rule, such as the floating Clash Detective pane that stopped
-# the baseline run of 2026-10-04, steps\runs\04\item1-C02 driver.txt line 21. Each pane up before
-# RunButton is noted once with its caption and left as it is, and the driver goes on. After
-# RunButton any window of the pid that is not the tool's window, the main window, the Working...
-# dialog or the confirm stops the driver as a dialog did before, unless it is a pane noted before
-# Run, the same window by handle and class.
+# F125. A window of the pid that WindowKind in nw-guard.ps1, the one copy of that rule, reads PANE
+# is a pane and not a dialog, such as the floating Clash Detective pane that stopped the baseline
+# run of 2026-10-04, steps\runs\04\item1-C02 driver.txt line 21. Each pane up before RunButton is
+# noted once with its caption, its own state and its owner's, in the words PaneWords gives, which
+# say UNKNOWN whether it is a pane or a modal dialog when both read disabled, and left as it is,
+# and the driver goes on. After RunButton any window of the pid that is not the tool's window, the
+# main window, the Working... dialog or the confirm stops the driver as a dialog did before,
+# unless it is a pane noted before Run, the same window by PaneKey, its handle and class. The line
+# for each window it stops on names the rule's kind for it, its own state and its owner's.
 #
 # WHAT IT DOES, item 5, -OpenRun. On 4. Clash it reads OpenDocumentLine and RunOpenButton. A
 # disabled button is the tool's own refusal, TOOL REFUSED, with the line's text. An enabled one
@@ -107,7 +109,7 @@ $nw = "C:\Program Files\Autodesk\Navisworks Manage 2025"
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 $script:NotesOk = $false
 $script:Pressed = ""
-# F125. The panes noted before Run, each by handle and class.
+# F125. The panes noted before Run, each by PaneKey, its handle and class.
 $script:Panes = @{}
 
 function Note($t) {
@@ -285,23 +287,27 @@ function GroupTicks {
 # object and threw. A caller wraps the result in @(), because one record returned bare has no
 # Count in 5.1, measured the same day.
 function OwnerWindows($kinds, [bool]$allowMessages) { return @((WindowRecords $wt.WinType $wt.ProcType ([uint32]$OwnerPid) $true $allowMessages) | Where-Object { @($kinds) -contains (WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible $_.OwnerEnabled $_.Enabled) }) }
-# F125. Notes once each pane of the owner that is up, by handle and class, with its caption and
-# the two states the rule read. It is called before RunButton only, so after Run a pane noted
-# here is the one window but the confirm that lets the driver go on.
+# F125. The key a pane is noted by before Run and looked up by after it, its handle and class, in
+# one place for both.
+function PaneKey($r) { return ([string]$r.Handle + "|" + $r.Class) }
+# F125. Notes once each pane of the owner that is up, by PaneKey, with its caption, the two states
+# the rule read and the words PaneWords gives for them. It is called before RunButton only, so
+# after Run a pane noted here is the one window but the confirm that lets the driver go on.
 function NotePanes {
   foreach ($p in @(OwnerWindows "PANE" $false)) {
-    $key = [string]$p.Handle + "|" + $p.Class
+    $key = PaneKey $p
     if ($script:Panes.ContainsKey($key)) { continue }
     $script:Panes[$key] = $true
-    Note ("a pane of pid " + $OwnerPid + " is up before Run and is left as it is: class " + $p.Class + ", caption `"" + $p.Caption + "`", the window itself enabled " + $p.Enabled + ", its owner " + $p.Owner + " enabled " + $p.OwnerEnabled + ", so it is not modal and not a dialog, and the driver goes on")
+    Note ("a PANE of pid " + $OwnerPid + " is up before Run and is left as it is: class " + $p.Class + ", caption `"" + $p.Caption + "`", " + (StateWords $p) + ", so it is " + (PaneWords $p.OwnerEnabled) + ", and the driver goes on")
   }
 }
-# Records every window it is handed, with its texts, and stops with each left up: after Scan the
-# dialogs, and after RunButton every window that is neither the confirm nor a pane noted before
-# Run. A caller stops only on a window read on three passes running, a second apart, so a window
-# that is up for a moment, or whose texts were not read on one pass, never stops it alone.
+# Records every window it is handed, with its texts, the rule's kind for it, its own state and
+# its owner's, and stops with each left up: after Scan the dialogs, and after RunButton every
+# window that is neither the confirm nor a pane noted before Run. A caller stops only on a window
+# read on three passes running, a second apart, so a window that is up for a moment, or whose
+# texts were not read on one pass, never stops it alone.
 function StopOnDialogs($dialogs, $when) {
-  foreach ($d in $dialogs) { Note ("a window of pid " + $OwnerPid + " " + $when + ": class " + $d.Class + ", caption `"" + $d.Caption + "`", every text: " + (MaskLine (@($d.Texts) -join " "))) }
+  foreach ($d in $dialogs) { Note ("a window of pid " + $OwnerPid + " " + $when + ": class " + $d.Class + ", caption `"" + $d.Caption + "`", every text: " + (MaskLine (@($d.Texts) -join " ")) + ", the window rule reads it " + (WindowKind $d.Class $d.Caption $d.OwnerHandle $d.OwnerVisible $d.OwnerEnabled $d.Enabled) + ", " + (StateWords $d)) }
   Done "DIALOG" ([string]$dialogs.Count + " windows that are neither the confirm nor a pane noted before Run are up " + $when + ", the first captioned `"" + $dialogs[0].Caption + "`", and each is left up, so nothing more was pressed")
 }
 
@@ -385,7 +391,7 @@ try {
       if (@(OwnerWindows "WINDOW" $false).Count -eq 0) { Done "WINDOW GONE" "the tool's window is gone after Run was pressed and before any confirm" }
       $up = @(OwnerWindows @("DIALOG", "PANE") $true)
       $dlgs = @($up | Where-Object { IsConfirm $_.Class $_.Caption $_.Texts })
-      $other = @($up | Where-Object { -not (IsConfirm $_.Class $_.Caption $_.Texts) -and -not $script:Panes.ContainsKey([string]$_.Handle + "|" + $_.Class) })
+      $other = @($up | Where-Object { -not (IsConfirm $_.Class $_.Caption $_.Texts) -and -not $script:Panes.ContainsKey((PaneKey $_)) })
       if ($other.Count -gt 0) {
         $seen++
         if ($seen -ge 3) { StopOnDialogs $other "after RunButton" }

@@ -541,19 +541,24 @@ function WindowLines($winType, $procType, [uint32]$owner, [bool]$visibleOnly, [b
 # line 8 at 13:39:05.791, and the rule keeps such a window a DIALOG.
 # The tool's window is read off the design and is UNKNOWN until the first window start.
 #
-# F125. A PANE is a WinForms window owned by a visible window that is not modal, such as the
-# floating Clash Detective pane his saved layout opens, which stopped the baseline run of
-# 2026-10-04, steps\runs\04\item1-C02. A modal window disables its owner while it is up and stays
-# enabled itself: the tool's window, shown with ShowDialog, read its owner the main window
-# disabled, record line 46, and the tool's confirm read its owner the tool's window disabled,
-# line 48. So a window is not modal when its owner reads enabled, the way the pane read at
-# 15:57:56 before the tool's window opened, line 36, or when it reads disabled itself. The second
-# is needed because the tool's own window is modal over the main window, so while it is up the
-# owner of a pane never reads enabled, line 46, and WPF's ShowDialog disables the other enabled
-# windows of its thread as it opens. It disabled the stand-in's pane with its main window,
-# measured on 2026-10-04, and whether it does the same to the pane of Navisworks is UNKNOWN until
-# a run writes the pane's own state, which the monitor now does. A dialog that opens while the
-# tool's window is up reads enabled with its owner disabled, so it stays a DIALOG. The class
+# F125. A PANE is a WinForms window, not of the main window's caption, owned by a visible window,
+# whose owner reads enabled or which reads disabled itself, such as the floating Clash Detective
+# pane his saved layout opens, which stopped the baseline run of 2026-10-04,
+# steps\runs\04\item1-C02. A modal window disables its owner while it is up and stays enabled
+# itself: the tool's window, shown with ShowDialog, read its owner the main window disabled, record
+# line 46, and the tool's confirm read its owner the tool's window disabled, line 48. So a window
+# whose owner reads enabled is not modal over it, the way the pane read at 15:57:56 before the
+# tool's window opened, line 36. The rule also calls PANE a window that reads disabled itself,
+# because the tool's own window is modal over the main window, so while it is up the owner of a
+# pane never reads enabled, line 46, and WPF's ShowDialog disables the other enabled windows of
+# its thread as it opens. It disabled the stand-in's pane with its main window, measured on
+# 2026-10-04, and whether it does the same to the pane of Navisworks is UNKNOWN until a run writes
+# the pane's own state, which the monitor now does. That read cannot tell a pane from a modal
+# dialog: one up when the tool's window opens, or one with a second modal window over it, reads
+# disabled with its owner disabled just as the pane does. So the rule lets such a window be, and
+# every line naming it says it is either, and which one is UNKNOWN, PaneWords below. A dialog that
+# opens while the tool's window is up reads enabled with its owner disabled, so it stays a DIALOG.
+# The class
 # narrows and never decides: the pane's class, WindowsForms10.Window.8, is the main window's own,
 # lines 36 and 37, so it does not set a pane apart from a WinForms dialog, while a #32770 message
 # box, the confirm among them, and a WPF window are never a pane, whatever their state reads. A
@@ -567,6 +572,20 @@ function WindowKind($class, $caption, $ownerHandle, [bool]$ownerVisible, $ownerE
   if ($forms -and $mainCaption -and ($ownerHandle -eq [IntPtr]::Zero -or -not $ownerVisible)) { return "MAIN" }
   if ($forms -and -not $mainCaption -and $ownerHandle -ne [IntPtr]::Zero -and $ownerVisible -and ([string]$ownerEnabled -eq "True" -or [string]$enabled -eq "False")) { return "PANE" }
   return "DIALOG"
+}
+# F125. The words for a window WindowKind reads PANE, for the driver's note and the record's PANE
+# line alike. One whose owner reads enabled is not modal over that owner. One whose owner reads
+# disabled reads disabled itself, or it would not be a PANE, and may be a pane or a modal dialog
+# with a modal window over it, so the words never say it is not modal.
+function PaneWords($ownerEnabled) {
+  if ([string]$ownerEnabled -eq "True") { return "a window that is not modal" }
+  return "either a pane or a modal dialog blocked by the tool's window or another modal window, and which one is UNKNOWN"
+}
+# F125. A window's own enabled state and its owner's, as WindowRecords read them, in the words the
+# driver's lines and the record's busy line write them in.
+function StateWords($r) {
+  if ($r.OwnerHandle -eq [IntPtr]::Zero) { return ("the window itself enabled " + $r.Enabled + ", with no owner") }
+  return ("the window itself enabled " + $r.Enabled + ", its owner " + $r.Owner + " enabled " + $r.OwnerEnabled)
 }
 # F106. The confirm the tool shows before a run: a #32770 titled exactly Parsons NWC Federator,
 # the caption of every MessageBox in FederatorWindow.xaml.cs, whose text starts with the first

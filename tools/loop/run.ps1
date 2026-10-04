@@ -1338,9 +1338,12 @@ function PostClose($sync, $windows) {
 # its own WM_CLOSE, BY ITSELF with none. It posts WM_CLOSE through PostClose once the log holds
 # its RESULT block and a COPY line after it and has then been quiet for 15 s, or once the
 # driver has stopped with nothing that runs pressed while the log shows no run started, and
-# never while a window of the adopted process other than the tool's, the main window and a pane
-# is up, which is left up for the hang rule or the ceiling. A pane is a window that is not
-# modal, F125, written as PANE and never counted a finding. The window takes WM_CLOSE between two
+# never while a window of the adopted process other than the tool's, the main window and a PANE
+# is up, which is left up for the hang rule or the ceiling, and its line saying so names each
+# window behind it with the rule's kind and both states. A PANE, F125, is written in the words
+# PaneWords gives and never counted a finding. Each window is written at first sight and again,
+# an AGAIN line, only when the rule's kind for it, its own enabled state or its owner's changes,
+# and it counts one DIALOG finding the first time it reads DIALOG. The window takes WM_CLOSE between two
 # groups of a run, because the run pumps the dispatcher and no Closing handler reads whether a
 # run goes, FederatorWindow.xaml.cs Pump and OnClose, so a run that has started is only ever
 # closed after its RESULT block. A tool's window still open 120 s after WM_CLOSE is closed
@@ -1364,6 +1367,7 @@ function Monitor($sync) {
   $pending = ""
   $tail = New-Object System.Collections.Generic.List[string]
   $seenWins = @{}
+  $dialogWins = @{}
   $lastBeat = [DateTime]::UtcNow
   $lastLock = [DateTime]::MinValue
   $beatC = $null; $beatL = $null; $lastC = $null; $lastLine = ""
@@ -1505,11 +1509,21 @@ function Monitor($sync) {
       # which hands on each record. Wrapped bare in @() the list stayed one record, measured on
       # 2026-10-01 in Windows PowerShell 5.1, and the window rule threw on its arrays.
       $visRecs = @((WindowRecords $sync.WinType $sync.ProcType ([uint32]$sync.MyPid) $true $true) | ForEach-Object { $_ })
+      # F125. A window is written at first sight and again only when the rule's kind for it, its
+      # own enabled state or its owner's changes, so the record holds the pane's state while the
+      # tool's window is up and stays bounded: a window whose reads hold still adds no line, and
+      # one that changes adds at most one a pass. A window counts one DIALOG finding the first time
+      # it reads DIALOG, at first sight or later, and never twice.
       foreach ($r in $visRecs) {
         $key = [string]$r.Handle + "|" + $r.Class + "|" + $r.Caption
-        if ($seenWins.ContainsKey($key)) { continue }
-        $seenWins[$key] = $true
         $kind = WindowKind $r.Class $r.Caption $r.OwnerHandle $r.OwnerVisible $r.OwnerEnabled $r.Enabled
+        $state = $kind + "|" + [string]$r.Enabled + "|" + [string]$r.OwnerEnabled
+        $again = ""
+        if ($seenWins.ContainsKey($key)) {
+          if ($seenWins[$key] -eq $state) { continue }
+          $again = "AGAIN, its kind or state changed. It read " + (KindStateWords $seenWins[$key]) + " when last written, and reads " + (KindStateWords $state) + " now. "
+        }
+        $seenWins[$key] = $state
         if ($kind -eq "DIALOG" -and (IsConfirm $r.Class $r.Caption $r.Texts)) { $kind = "CONFIRM" }
         $texts = "UNKNOWN, no child window answered"
         if ($null -ne $r.Texts -and @($r.Texts).Count -gt 0) { $texts = (@($r.Texts) -join " ") }
@@ -1517,11 +1531,11 @@ function Monitor($sync) {
         # A DIALOG line and a PANE line end with the window's own state, which the window rule
         # reads beside its owner's, so the record shows what decided between them.
         if ($kind -eq "DIALOG") {
-          $sync.Dialogs = $sync.Dialogs + 1
-          M ("DIALOG: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts + ", the window itself enabled " + $r.Enabled)
-        } elseif ($kind -eq "CONFIRM") { M ("CONFIRM, the tool's confirm, which the driver answers and is not a finding: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts) }
-        elseif ($kind -eq "PANE") { M ("PANE, a window that is not modal, left as it is and not a finding: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts + ", the window itself enabled " + $r.Enabled) }
-        else { M ($kind + ": class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText) }
+          if (-not $dialogWins.ContainsKey($key)) { $dialogWins[$key] = $true; $sync.Dialogs = $sync.Dialogs + 1 }
+          M ($again + "DIALOG: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts + ", the window itself enabled " + $r.Enabled)
+        } elseif ($kind -eq "CONFIRM") { M ($again + "CONFIRM, the tool's confirm, which the driver answers and is not a finding: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts) }
+        elseif ($kind -eq "PANE") { M ($again + "PANE, " + (PaneWords $r.OwnerEnabled) + ", left as it is and not a finding: class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText + ", text " + $texts + ", the window itself enabled " + $r.Enabled) }
+        else { M ($again + $kind + ": class " + $r.Class + ", caption `"" + $r.Caption + "`", " + $ownerText) }
       }
       if (($now - $lastLock).TotalSeconds -ge 60) { $lastLock = $now; M ("SESSION LOCK " + (SessionLockText $sync.WinType)) }
       if (($now - $lastBeat).TotalSeconds -ge $sync.BeatSeconds) {
@@ -1583,7 +1597,12 @@ function Monitor($sync) {
               if ($why -eq "RESULT") { $sync.RunOver = "CLOSED" } else { $sync.RunOver = "DRIVER" }
               break
             } elseif ($busy.Count -gt 0) {
-              if ($busyNoted -ne $why) { $busyNoted = $why; M ("the run is over, " + $what + ", and " + $busy.Count + " windows of the adopted Navisworks that are not the tool's, the main window or a pane are up, so WM_CLOSE is not posted, they are left as they are, and the hang rule or the ceiling decides") }
+              # F125. The windows behind it, each with the rule's kind and both states, and the
+              # line written again only when those windows or their reads change.
+              $behind = New-Object System.Collections.Generic.List[string]
+              foreach ($b in $busy) { $behind.Add("window " + ($behind.Count + 1) + ", class " + $b.Class + ", caption `"" + $b.Caption + "`", the window rule reads it " + (WindowKind $b.Class $b.Caption $b.OwnerHandle $b.OwnerVisible $b.OwnerEnabled $b.Enabled) + ", " + (StateWords $b)) }
+              $busyNow = $why + "|" + ($behind -join ". ")
+              if ($busyNoted -ne $busyNow) { $busyNoted = $busyNow; M ("the run is over, " + $what + ", and " + $busy.Count + " windows of the adopted Navisworks that are not the tool's, the main window or a PANE are up, so WM_CLOSE is not posted, they are left as they are, and the hang rule or the ceiling decides. The windows behind it: " + ($behind -join ". ")) }
             } else {
               foreach ($pl in (PostClose $sync $toolNow)) { M $pl }
               $posted = $why; $postedAt = $now
@@ -1632,6 +1651,13 @@ function OwnerText($r, [uint32]$myPid) {
   if ($r.OwnerHandle -eq [IntPtr]::Zero) { return "owner none" }
   if ($r.OwnerPid -ne $myPid) { return ("owner " + $r.Owner + ", a window of another process, its class, caption and process not written") }
   return ("owner " + $r.Owner + ", class " + $r.OwnerClass + ", caption `"" + $r.OwnerCaption + "`", visible " + $r.OwnerVisible + ", enabled " + $r.OwnerEnabled + ", process the adopted one")
+}
+# F125. A window's reads as the monitor keeps them, the rule's kind, its own enabled state and its
+# owner's, joined by a bar, in the words of an AGAIN line.
+function KindStateWords($state) {
+  $p = ([string]$state).Split("|")
+  if ($p[2] -eq "none") { return ($p[0] + " with the window itself enabled " + $p[1] + " and no owner") }
+  return ($p[0] + " with the window itself enabled " + $p[1] + " and its owner enabled " + $p[2])
 }
 # The text a runspace runs to be the monitor: this file's functions and the guard's.
 function MonitorScript { return 'param($sync) . ([scriptblock]::Create($sync.GuardText)); . ([scriptblock]::Create($sync.RunText)); Monitor $sync' }

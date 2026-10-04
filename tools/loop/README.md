@@ -327,8 +327,8 @@ modes:
   processor time in them, Q83, and the clocks start again while the session reads locked.
   Once the log holds its RESULT block and a COPY line and has been quiet 15 s, or the driver
   stopped with nothing that runs pressed and no run started, it posts WM_CLOSE to the tool's
-  window of the adopted pid, and only while no other window of that pid is up but a pane, a
-  window that is not modal, which since F125 the record writes as PANE and leaves as it is. Then
+  window of the adopted pid, and only while no other window of that pid is up but one the window
+  rule reads as a pane, which since F125 the record writes as PANE and leaves as it is. Then
   Dispose and item 0's put back, and his AutoSave folder by Q86: the autosaves the run added
   removed and his it changed put back from autosave-backup, each read back, only when no
   Navisworks the loop did not start ran, otherwise listed and left. The verdict is RAN only
@@ -472,14 +472,32 @@ Nothing is compiled and nothing is written under %TEMP%.
 
 What F125 changed, which its header lists too, after the baseline run of 2026-10-04 stopped on
 a floating Clash Detective pane: each record of WindowRecords also carries whether the window
-itself is enabled, read with no message, and WindowKind calls PANE a window owned by a visible
-window that is not modal, its owner reading enabled or the window itself disabled. The second
-is there because the tool's own window is modal over the main window, so while it is up the
-main window reads disabled, record steps\runs\04\item1-C02 line 46, and WPF's ShowDialog
-disabled the stand-in's pane along with its main window, measured on 2026-10-04. Whether it does
-the same to the pane of Navisworks is UNKNOWN until a run writes the pane's own state, which the
-record now does. The driver notes a pane up before Run and goes on, the monitor writes it as
-PANE and not as a DIALOG finding, and a pane never holds back WM_CLOSE.
+itself is enabled, read with no message, and WindowKind calls PANE a window of the WinForms
+class, whose caption is not the main window's, owned by a visible window, with its owner reading
+enabled or the window itself disabled. A #32770 message box, a WPF window, a window of the main
+window's caption, one owned by a window that is not visible and one with no owner are never a
+PANE, whatever their states read. The second state is there because the tool's own window is
+modal over the main window, so while it is up the main window reads disabled, record
+steps\runs\04\item1-C02 line 46, and WPF's ShowDialog disabled the stand-in's pane along with
+its main window, measured on 2026-10-04. Whether it does the same to the pane of Navisworks is
+UNKNOWN until a run writes the pane's own state, which the record now does. A modal dialog of
+Navisworks up when the tool's window opens is disabled the same way and reads the same, so a
+window that reads disabled with its owner disabled is written, by the driver and the record
+alike, as either a pane or a modal dialog blocked by the tool's window or another modal window,
+which one UNKNOWN, PaneWords in nw-guard.ps1, and never as not modal. The driver notes a PANE up
+before Run with both states and goes on, and its line for any window it stops on names the rule's
+kind and both states. The monitor writes a PANE without counting it a DIALOG finding, and a PANE
+never holds back WM_CLOSE.
+
+How the record stays bounded since F125's second pass: the monitor writes each window at first
+sight, keyed by its handle, class and caption, and writes it again, an AGAIN line naming its reads
+before and now, only when the rule's kind for it, its own enabled state or its owner's changes. A
+window whose reads hold still adds no line after its first, and one that changes adds at most one
+line a pass, a pass every 15 s in a run, so at most 2880 lines a window in the 12 hours of the
+ceiling. A window counts one DIALOG finding the first time it reads DIALOG, at first sight or
+later, and never twice, where before F125's second pass only a first sight counted. The line
+saying WM_CLOSE is held back names each window behind it with the rule's kind and both states, and
+is written again only when those windows or their reads change.
 
 ## prove-run.ps1 and StandIn
 
@@ -514,7 +532,9 @@ ends by itself. Since F125 the window role has three pane modes, the shape the b
 2026-10-04 read: a main window of the Navisworks caption, a pane owned by it and not modal, and
 the tool's window owned by the main window and shown with ShowDialog, with Run then showing the
 confirm, a warning, or a new window that is not modal. They are proved by
-%LOCALAPPDATA%\NwcFederatorLoop\turn5\f125-proof\prove-f125.ps1, outside the repo.
+%LOCALAPPDATA%\NwcFederatorLoop\turn5\f125-proof\prove-f125.ps1, outside the repo, whose
+F125b checks of the second pass add the monitor watching the pane from before the tool's window
+and the line holding WM_CLOSE back, on the same modes.
 
 - writes outside the repo: -Work, and the throwaway key HKCU\Software\NwcFederatorLoopTest
 - deletes: -Work and that key at the end, and nothing else
