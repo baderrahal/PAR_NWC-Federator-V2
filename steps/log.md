@@ -1,7 +1,171 @@
 # log
 
 Newest entry at the top.
-## 2026-10-05 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 2 on the readers' findings, written by the lead's delegate
+## 2026-10-05 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 3 on the readers' findings of attempt 2 and Bader's answer B to Q119, written by the lead's delegate
+
+### Attempt 3, on the readings of attempt 2
+
+The readers' findings are in %LOCALAPPDATA%\NwcFederatorLoop\turn5\f114-a2-result.json under
+reads, the reviewer's in reads[0], APPROVE, and the breaker's in reads[1], CHANGES. Below, R and a
+number is the reviewer's finding of that index and B and a number the breaker's, both of attempt
+2. One blocked: B0. Bader answered Q119 on 2026-10-05, in his words "B. A view shows only the
+models its clashing items live in.", turn5\q132-words.txt, and Q118 A and Q120 A stand.
+
+F114 STILL MERGES AFTER F131. main at fdd05c2 is taken in at 7555327, with no conflict, and
+fix-F131's attempt 3 at 0c0a7c7 at de32bc6, two conflicts with both sides kept: order line 43 is
+F131's of attempt 3 and 44 stays F114's, and in this file the F114 entry stays on top, then F131's
+attempt 3 entry and everything below it as fix-F131 holds them, compared line for line with the
+line endings set aside. Each merge has its message in a file. Bader also answered Q117 C and
+Q123 B. Neither is carried into this branch here: this pass was asked for Q119 alone, so the
+views still read a set with no code as UNKNOWN, and the window's team map is F131's.
+
+Core tests, all with 0 skipped:
+- 2090 passed, 0 failed before, at de32bc6 after both merges, by its pre-commit,
+  turn5\f114-a3-precommit-merge-f131.txt, and again by hand, turn5\f114-a3-core-before.txt. 2088
+  at the merge of main, turn5\f114-a3-precommit-merge-main.txt, and F131's attempt 3 brings 2
+- the new tests did not compile against de32bc6, 3 errors, each a use of the new `NotRead`,
+  turn5\f114-a3-before-compile.txt
+- with `NotRead` added and empty and nothing else changed, 22 failed and 26 passed of the 48
+  tests in ViewsTreeCheckTests and WhatAViewShowsTests, turn5\f114-a3-before-fail.txt
+- 2099 passed, 0 failed after, at 4d8ee7f by its pre-commit, turn5\f114-a3-precommit-code.txt,
+  at 6b3701a by its pre-commit, turn5\f114-a3-precommit-comments.txt, and by hand at 6b3701a
+  after the build, turn5\f114-a3-core-after.txt. 9 new tests, none deleted, 2090 and 9 is 2099.
+  Five were renamed and rewritten, named below. The records commit changes no code
+
+The solution builds whole at 6b3701a, the last code commit, with --no-incremental,
+Federator.Core, Federator.Core.Tests and Federator.Addin each built, 0 warnings and 0 errors, with
+git rev-parse --short HEAD and an empty git status at its top, turn5\f114-a3-build-code.txt.
+check-locals and check-imports pass on src at 6b3701a, turn5\f114-a3-checks.txt, and in the
+pre-commits of 4d8ee7f and 6b3701a.
+
+THE MESSAGE OF 4d8ee7f NUMBERS THREE OF THE BREAKER'S FINDINGS ONE TOO HIGH, 4, 5 and 6 where the
+readers' file has 3, 4 and 5, and three test comments did the same. 6b3701a corrects the comments
+and its message says so. The numbers in this entry are the file's.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
+  text files in the worktree, and powershell for the process reads. None of them starts a
+  Navisworks
+- Get-Process Roamer read none running at 13:31:38, before any work, turn5\f114-a3-roamer-before.txt,
+  and none running at 14:54:22 after the code, the build and the tests, turn5\f114-a3-roamer-after.txt.
+  This pass started no Navisworks and touched none
+
+What was done, in 4d8ee7f, with three test comments corrected in 6b3701a:
+- B0, blocking. With `HiddenReadBack` or `PaintedReadBack` null, or kept under a key the lookup
+  missed, check 3 read what a view shows off `ShownModels.For`, the plan's own rule, and tested it
+  against the same pair, so it could not fail, and both checks were counted as holding. A view
+  whose read back is missing is now one the check did not run for, by attempt 2's rule for the
+  others: it is named in `ViewsTreeCheck.NotRead`, `Holds` is false while any is named, the block
+  reads RAN IN PART where nothing broke the check and names each under it as not read, and the
+  last line counts such checks apart. Where no view of several was read back the one line says
+  so. Check 3 with no view read back did not run at all, since only the plan's list is left. The
+  test that asserted the fault, Check3SaysWhereNothingWasReadBack, is now
+  Check3DidNotRunWhereNothingWasReadBack, and Check3SaysAClashingItemWhoseModelIsUnknown, which set
+  the read back to null and asserted holding, keeps the read back and asserts the check ran.
+  Failing first: Check3DidNotRunWhereNothingWasReadBack,
+  Check3RanInPartWhereOneViewWasNotReadBackAndIsNotCountedAsHolding,
+  Check4RanInPartWhereNoPaintWasReadBack and Check4NamesTheViewWhosePaintWasNotReadBack
+- B0's key with B5. The read backs were looked up by `PlannedTestView.ToString`, the written place,
+  which a test named Over 150mm/Pipes in a pair folder and a test Pipes in that pair's size folder
+  share. The add-in keeps them under `PlannedTestView.Key`, `ViewPlace.Key` of the view, one shape
+  read from one place, and `ViewsTreeFacts`, check 3, check 4 and the block's tree line read it
+  there. Read backs handed in under a key no planned view gives are counted in a note on checks 3
+  and 4. Failing first: ReadBacksKeptUnderTheWrittenPlaceAreNotReadAndAreCounted.
+  TwoViewsOfOneWrittenPlaceKeepTheirReadBacksUnderTwoKeys was written once `Key` existed and was
+  not seen failing.
+  `PlannedTestView.FolderPath` had no caller in src, R3 of the reviewer's known state, and is gone,
+  its two asserts reading `ViewPlace.FolderPath` and the new key
+- Q119 B, Bader's answer. `ShownModels` showed the pair's two teams' models, every home and every
+  model whose code will not read. It now shows the homes alone and hides every other model, a model
+  of the pair's own teams and one whose code will not read among them. Q118 A stands: a home in a
+  third team's model is shown and in `Exceptions`. A home whose code will not read is shown, and
+  check 3 names that view as one it did not run for, since whether the model is a third team is
+  UNKNOWN. `ShownModels.NoCode`, which only the old rule needed and nothing in src read, is gone
+  with its asserts. The judgement of a model against its pair, written in `ShownModels` and again
+  in check 3, is `ShownModels.IsOfThePair`. Failing first: AModelOfThePairsTeamNoItemLivesInIsHidden,
+  AnItemInAModelOfItsOwnTeamIsNoException, AnItemInAThirdTeamsModelShowsThatModelAndNamesIt,
+  AHomeNotReadOrOfNoModelOfTheGroupIsCountedAndNamed,
+  AModelWhoseCodeWillNotReadIsShownOnlyWhereAnItemLivesInIt,
+  TenModelsOfOneBuildingShowOnlyTheTwoItsItemsLiveIn and
+  Check3DidNotRunForAViewShowingAModelWhoseCodeWillNotRead.
+  StructureVsElectricalShowsTheModelsItsItemsLiveInAndHidesTheRest passed at once, both of its
+  homes being of the pair
+
+The non-blocking findings of attempt 2 that break a house rule, fixed the same way:
+- R2 with B1, never report a check that did not run. Checks 1 and 2 ran and held once one planned
+  view of many was found marked by this run. Each planned view not found is named as one they did
+  not run for, and the gate of none found now reads the planned views, not any marked one. Failing
+  first: ChecksOneAndTwoRanInPartWhereAPlannedViewIsNotFoundMarked
+- B4, one rule in one place. The mirror list went to `TestViewPlan.For` and again to
+  `ViewsTreeFacts.Mirrors`, and check 5 read the second. `ViewsTreeFacts.Mirrors` is gone. The plan
+  keeps the list it was handed, `TestViewPlanOutcome.MirrorRule`, and check 5 reads it there, so
+  with no rule handed to the plan check 5 did not run. Failing first: every test that read check 5
+  off the fixture, which no longer hands a second list, among them
+  AWholeGoodTreePassesEverySevenChecks and Check5DidNotRunWithNoMirrorRuleAndIsNotCountedAsHolding
+- B3, a check that says the opposite of the fact. Check 5 read the plan's views, which the plan
+  built from the same list, so that half could not fail. It reads the walk after instead and fails
+  on this tool's view of a mirror, such as one kept from an earlier run as KeepTestNotRead. With a
+  mirror to look for and no tests run or no walk handed in, it names what it ran without.
+  Check5NamesAMirrorThatHasAViewThoughItWasNotRun, whose input the one list makes impossible, is
+  now Check5NamesAMirrorWhoseViewOfAnEarlierRunIsStillInTheTree, failing first.
+  Check5RanInPartWithAMirrorAndNoTestsRunOrNoWalk was written after the fix and not seen failing
+- R1, a line that would stop being true. Check 5's reason said F132 is not in this build, untrue
+  once F132 merges and a run has no XML. It says no mirror rule was handed to the plan, asserted
+  whole in Check5DidNotRunWithNoMirrorRuleAndIsNotCountedAsHolding, failing first
+- R0, records not true. core.md said the mark, the plan, the walk, the block, the inventory and
+  the checks all compare a place by the key. It now says which compare by the key, that the read
+  backs are kept under `PlannedTestView.Key`, and that the mark compares the written place, row
+  F114-K14
+
+The rules: .claude\rules\core.md, the per test views bullet with Q119 B and the one mirror list,
+the mark bullet with the key and the read backs, and the VIEWS TREE bullet with check 5 and the
+checks that ran in part. The F114 section of steps\01_next.md and its order line 44.
+
+### Known bugs, attempt 3
+
+Rows F114-K1 to F114-K14 below stand as attempt 2 wrote them, each read again against 6b3701a.
+K13 now reads under Q119 B, and the new rows are attempt 2's findings not fixed here and two this
+pass found. None breaks a house rule of CLAUDE.md as read by this developer.
+
+- F114-K13 again, for Bader, under Q119 B. Check 3 holds to its words, no third team's model shown.
+  A read back that shows a model of the pair's own team no clashing item lives in, or hides a home,
+  breaks Q119 B and not check 3. Whether check 3 should test the read back against the homes
+  exactly is his to say
+- F114-K15, B2 of attempt 2, F72a's rule before this branch. `SizeRule.LargestMillimetres` reads a
+  Diameter or Width of 0 as 0 mm, and a NaN read first stays the largest, and `VerdictFor` calls
+  both Small, so the clash goes in the pair view and is never SizeUnknown. Whether Revit writes 0
+  for a size left blank is UNKNOWN. The add-in's Penetrations reads the same rule, so a change
+  waits for the add-in pass
+- F114-K16, B6 of attempt 2. No check reads the priority folder or the order of the tree. Check 1
+  reads the pair folder alone, and the tree lines come from the plan, so a test of priority A
+  written under B holds every check
+- F114-K17, B7 of attempt 2, scale. The notes of checks 3 and 7 are never cut, nor now the views a
+  check ran without, so a group of thousands of views kept or not read back writes a line for each
+  in the .log, which TreeLinesInLog and Q108 exist to stop. Where every view of several missed its
+  read back, one line says so
+- F114-K18, found here, wording. A view line of the tree reads shows and hides off the read back
+  where there is one and off the plan where not, and ends read back when the view was read back as
+  a whole, so a view whose hidden models alone were not read back reads as read back. Check 3 names
+  it, the tree line does not
+- F114-K19, found here, for Bader and the add-in pass. Under Q119 B a view none of whose homes
+  could be read shows no model at all. Check 3 notes the homes not read, and what such a view
+  should show is UNKNOWN
+- B8 of attempt 2 is K10, unchanged. B1's link to K1 stands: a folder handed null redlines reads as
+  a person's, so check 2's folder branch looks at none, though each planned view under it not found
+  is now named
+
+### Every file written outside the repo, attempt 3
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a3-roamer-before.txt, f114-a3-msg-merge-main.txt, f114-a3-precommit-merge-main.txt,
+  f114-a3-msg-merge-f131.txt, f114-a3-precommit-merge-f131.txt, f114-a3-core-before.txt,
+  f114-a3-before-compile.txt, f114-a3-before-fail.txt, f114-a3-msg-code.txt,
+  f114-a3-precommit-code.txt, f114-a3-msg-comments.txt, f114-a3-precommit-comments.txt,
+  f114-a3-build-code.txt, f114-a3-core-after.txt, f114-a3-checks.txt,
+  f114-a3-roamer-after.txt, f114-a3-msg-records.txt, f114-a3-precommit-records.txt and
+  f114-a3-push.txt
+- the edit scripts, in the session's scratch folder under the user's temp folder, which nothing
+  reads after the commit
 
 ### Attempt 2, on the readings of attempt 1
 
