@@ -5892,3 +5892,105 @@ there read Active, not New, because it was run again.
 F132's add-in commit that on BLD-ST-Framing-vs-BLD-ST-Columns the swap found 27 where the original
 found 25, every one of the 25 among them. A test and its swap cannot be taken to find the same
 clashes, so removing either one can lose clashes.
+
+## 5z-l. DOES TESTSREMOVEAT TAKE ONE TEST AND NOTHING ELSE, MEASURED 2026-10-05
+
+P2 of Q114, the views by team design, part 3. F132's MirrorRemover would remove a mirror test
+with DocumentClashTests.TestsRemoveAt(GroupItem parent, int index). The member was printed off
+the install and what it does was UNKNOWN. The question: does TestsRemoveAt(parent, index), with
+the parent resolved fresh, remove exactly P1's swapped test with its results, while the models,
+sets, other tests, results, statuses and viewpoints count the same after a save, a close and a
+reopen, and how many seconds does the call take? A yes means MirrorRemover is built. A no means
+no test is ever removed, and a mirror is left not run and named in the form.
+
+HOW. `tools\probes\ViewpointProbe\probe-test-remove.ps1` is P1's `probe-mirror-swap.ps1` with the
+new mode `testremove` of `ViewpointProbe.dll` in place of `mirror`, and `-Nwf` allowed under
+`probes` as well as `runs`, because the file P2 works on is P1's saved copy. The guard is the
+loop's, tools\loop\nw-guard.ps1 dot-sourced, with the Roamer refusal, the settings backup, the
+adoption by AdoptStart's four conditions, Dispose, the close through the held handle only when
+needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0 after it. The probe
+copied P1's `%LOCALAPPDATA%\NwcFederatorLoop\probes\mirror-swap-20261005-125658\p1-copy-with-swap.nwf`,
+41,319,419 bytes, sha256 34831A9E, into the new folder `probes\test-remove-20261005-133231`, and
+the mode, on that copy:
+
+1. prints TestsRemoveAt and TestsRemove by reflection
+2. opens the copy, finds the test by name over the whole test tree, and reads its census line
+3. takes a snapshot of the document: every model by index and file name, every item of the set
+   tree and of the viewpoint tree by path, name and folder or type, in order, and every test by
+   path, name, type, tolerance, test status, result count, results by status, and a sha256 of
+   every result's name and status in order
+4. reads the parent fresh as `TestsData.Value.TestsRoot`, walked down the test's address when it
+   sits in a folder, reads the child at the index and checks its name, then times
+   `TestsRemoveAt(parent, index)` alone
+5. takes the snapshot again and compares it line by line with the first less the removed test's
+   line, and the result total with the first less the removed test's results
+6. SaveFile into a new file in the work folder, Document.Clear, TryOpenFile of the saved file,
+   and the same snapshot and compare, against the first and against step 5
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-test-remove.ps1 -Out tools\probes\ViewpointProbe\p2-test-remove-result-20261005.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\probes\mirror-swap-20261005-125658\p1-copy-with-swap.nwf -TestName "BLD-ST-Framing-vs-BLD-ST-Columns P1 swap"
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+One run at 13:32, `p2-test-remove-result-20261005.txt`, the machine name on line 1 masked by hand
+as `[machine]` and nothing else changed. Navisworks pid 38964, adopted on all four conditions,
+line 37. ExecuteAddInPlugin returned 0 after 25.41 s, line 48. Dispose returned and pid 38964 was
+gone 10.4 s later, not forced, line 98.
+
+The member, line 55: `Void TestsRemoveAt(GroupItem parent, Int32 index)`.
+
+**THE ANSWER IS YES.** Lines 61 to 93 of the result:
+
+```
+the test removed      "BLD-ST-Framing-vs-BLD-ST-Columns P1 swap" at the root, index 528,
+                      results 27, New 27
+the parent            "TestRoot", a ClashTestFolder, 529 children, the child at 528 read
+                      by name, resolve and check 0.001 s
+TestsRemoveAt(parent, 528)                0.022 s
+                      models  sets  tests  results  not New  viewpoints
+before the call          4     61    529     2966       25        2847
+after the call           4     61    528     2939       25        2847
+after save and reopen    4     61    528     2939       25        2847
+tests by that name    after the call 0, after the reopen 0
+lines that differ     0 for models, sets, viewpoints and tests, after the call, after the
+                      reopen, and the reopen against the call
+```
+
+1. The call took the one test and its 27 results, 2966 less 27 being 2939, and nothing else
+   moved. Every one of the other 528 tests reads the same name, type, tolerance, status, result
+   count, results by status and the same sha256 over its results' names and statuses in order
+2. 25 results read not New before the call, after it and after the reopen, each in the same test
+   with the same status by the sha256 of point 1. That they are the original's 25 Active from
+   P1's run again is what 5z-k says. This run did not print the not New results by test
+3. The set tree, 69 items of which 61 sets, and the viewpoint tree, 2869 items of which 2847
+   viewpoints, read the same item by item in order
+4. SaveFile took 10.613 s, 41,317,293 bytes read back, line 78. Document.Clear took 0.801 s and
+   left 0 models and 0 tests, line 79. TryOpenFile of the saved file took 6.388 s, line 80
+
+**BADER'S THINGS.** The NWF the copy was made from read sha256 34831A9E at the start and at the
+end, lines 22 and 192. 40 registry values were put back, each read again with 0 still differing,
+lines 180 and 181. InfoCenter.log and LastSession.xml were put back reading their backup's
+sha256, lines 185 to 187. No AutoSave file was added, changed or gone, line 188, and the folder
+listed 202 files before the run, line 18, and 202 when the prober read it after. The tool's own
+logs folder had nothing added or changed, line 189. One AdskLicensingAgent, pid 45468, child of
+pid 38964, read STILL RUNNING at the end, line 133. Read again by the prober after the run, no
+process held pid 45468 and no AdskLicensingAgent ran.
+
+**STILL UNKNOWN.**
+
+- a removal from the middle. The swap was the last test at the root, so whether the tests after a
+  removed one keep their results and statuses when they shift is not measured
+- a removal inside a folder of tests. The parent here was the root
+- whether removing a test takes the saved viewpoints made for its results. The swap had none in
+  the tree, so the 2847 viewpoints say nothing about that case
+- whether a test made by the XML import is removed the same way. The swap was a new ClashTest
+- the close was Document.Clear inside the same Navisworks. A reopen in a new Navisworks was not
+  read
+- the Clash Detective panel was not read, and neither the Guids nor the comments of the other
+  tests' results were compared
+- the seconds in a tree of another size. One call in a tree of 529 tests was timed
+
+**WHAT THIS DECIDES.** By the row of P2, MirrorRemover is built on TestsRemoveAt(parent, index)
+with the parent read fresh and the index checked by name just before. The census out and back of
+the design is still what stops a save on any difference, since a removal from the middle or from
+a folder was not measured here.

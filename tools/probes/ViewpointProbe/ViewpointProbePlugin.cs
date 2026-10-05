@@ -144,6 +144,13 @@ namespace ViewpointProbe
                             parameters.Length > 3 ? parameters[3] : null,
                             parameters.Length > 4 ? parameters[4] : null);
                     }
+                    else if (mode == "testremove")
+                    {
+                        MeasureTestRemove(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -7001,6 +7008,414 @@ namespace ViewpointProbe
                 Say("SaveFile of the copy with the swap into " + Path.GetFileName(saveAs) + " took " + Seconds(clock)
                     + ", " + Bytes(saveAs) + " bytes read back off the disk");
             }
+        }
+
+        // ---------- P2 of Q114, scan.md 5z-l, does TestsRemoveAt take one test and nothing else ----------
+
+        /// <summary>
+        /// P2 of Q114. Opens a copy of P1's NWF, which holds the swap P1 added, removes that one
+        /// test by DocumentClashTests.TestsRemoveAt(GroupItem parent, int index) with the parent
+        /// read fresh just before the call and the index checked by name, times the call, and
+        /// compares every model, set, test, result, status and viewpoint before the call, after
+        /// it, and after a save, a Document.Clear and a reopen of the saved file.
+        /// </summary>
+        private void MeasureTestRemove(string nwf, string testName, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(testName) || string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no test name or no save path was handed in");
+                return;
+            }
+
+            Say("TestsRemoveAt and TestsRemove on this install, read by reflection:");
+
+            foreach (System.Reflection.MethodInfo method in typeof(DocumentClashTests).GetMethods())
+            {
+                if (method.Name == "TestsRemoveAt" || method.Name == "TestsRemove")
+                {
+                    List<string> args = new List<string>();
+
+                    foreach (System.Reflection.ParameterInfo parameter in method.GetParameters())
+                    {
+                        args.Add(parameter.ParameterType.Name + " " + parameter.Name);
+                    }
+
+                    Say("   " + method.ReturnType.Name + " " + method.Name + "(" + string.Join(", ", args.ToArray()) + ")");
+                }
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            DocumentClashTests clashTests = document.GetClash().TestsData;
+            int matches;
+            List<int> address = FindTest(clashTests.Tests, testName, new List<int>(), out matches);
+            Say("tests named \"" + testName + "\": " + matches);
+
+            if (address == null || matches != 1)
+            {
+                Say("UNKNOWN: the test is not there exactly once, so nothing is removed");
+                return;
+            }
+
+            Say("its address " + string.Join(".", Strings(address.ToArray())));
+            string removedLine;
+            int removedResults;
+
+            using (ClashTest target = ResolveTest(clashTests, address))
+            {
+                SayTest(document, target, "THE TEST TO BE REMOVED");
+                removedLine = TestLine(target, out removedResults);
+                Say("   its census line: " + removedLine);
+            }
+
+            Snapshot before = TakeSnapshot(document);
+            SaySnapshot(before, "BEFORE the remove");
+
+            int index = address[address.Count - 1];
+            List<int> parentAddress = address.GetRange(0, address.Count - 1);
+            double removeSeconds;
+
+            // The parent read fresh, and the child at the index checked by name, just before the call.
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            GroupItem parent = ParentFolderOf(clashTests, parentAddress);
+
+            if (parent == null)
+            {
+                Say("UNKNOWN: the parent folder did not resolve, so nothing is removed");
+                return;
+            }
+
+            using (parent)
+            {
+                string atIndex;
+
+                using (SavedItem child = parent.Children[index])
+                {
+                    atIndex = child == null ? null : child.DisplayName;
+                }
+
+                double resolveSeconds = clock.Elapsed.TotalSeconds;
+                Say("the parent resolved fresh: \"" + Words(parent.DisplayName) + "\", a " + parent.GetType().Name
+                    + ", " + parent.Children.Count + " children, the child at " + index + " reads \"" + Words(atIndex) + "\""
+                    + ", resolve and check took " + resolveSeconds.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s");
+
+                if (!string.Equals(atIndex, testName, StringComparison.Ordinal))
+                {
+                    Say("UNKNOWN: the child at the index is not the test, so nothing is removed");
+                    return;
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                clashTests.TestsRemoveAt(parent, index);
+                removeSeconds = clock.Elapsed.TotalSeconds;
+            }
+
+            Say("TestsRemoveAt(parent, " + index + ") RETURNED after "
+                + removeSeconds.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s");
+
+            int left;
+            FindTest(clashTests.Tests, testName, new List<int>(), out left);
+            Say("tests named \"" + testName + "\" after the call: " + left);
+
+            Snapshot afterRemove = TakeSnapshot(document);
+            SaySnapshot(afterRemove, "AFTER the remove, before any save");
+            bool sameAfterRemove = CompareSnapshots(before, afterRemove, removedLine, removedResults, "after the remove");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count
+                + ", tests now " + document.GetClash().TestsData.Tests.Count);
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P2 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            int afterReopen;
+            FindTest(document.GetClash().TestsData.Tests, testName, new List<int>(), out afterReopen);
+            Say("tests named \"" + testName + "\" after the reopen: " + afterReopen);
+
+            Snapshot reopenedSnap = TakeSnapshot(document);
+            SaySnapshot(reopenedSnap, "AFTER a save, a clear and a reopen");
+            bool sameAfterReopen = CompareSnapshots(before, reopenedSnap, removedLine, removedResults, "after the reopen");
+            bool removeVsReopen = CompareSnapshots(afterRemove, reopenedSnap, null, 0, "the reopen against the state after the remove");
+
+            if (left == 0 && afterReopen == 0 && sameAfterRemove && sameAfterReopen && removeVsReopen)
+            {
+                Say("P2 YES   TestsRemoveAt(parent, index) took the one test with its " + removedResults
+                    + " results in " + removeSeconds.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)
+                    + " s, and every model, set, other test, result, status and viewpoint read the same after the call and after a save, a clear and a reopen");
+            }
+            else
+            {
+                Say("P2 NO   see the differences above: the test left " + left + " after the call and " + afterReopen
+                    + " after the reopen, the rest the same after the call " + sameAfterRemove + ", after the reopen " + sameAfterReopen
+                    + ", the reopen against the call " + removeVsReopen);
+            }
+        }
+
+        private sealed class Snapshot
+        {
+            public readonly List<string> Models = new List<string>();
+            public readonly List<string> Sets = new List<string>();
+            public readonly List<string> Tests = new List<string>();
+            public readonly List<string> Viewpoints = new List<string>();
+            public int Results;
+            public int NotNew;
+            public int ViewpointLeaves;
+            public int SetLeaves;
+            public int TestLeaves;
+        }
+
+        private static GroupItem ParentFolderOf(DocumentClashTests clashTests, List<int> parentAddress)
+        {
+            GroupItem folder = clashTests.Value.TestsRoot;
+
+            for (int level = 0; level < parentAddress.Count; level++)
+            {
+                if (folder == null || parentAddress[level] >= folder.Children.Count)
+                {
+                    return null;
+                }
+
+                folder = folder.Children[parentAddress[level]] as GroupItem;
+            }
+
+            return folder;
+        }
+
+        private Snapshot TakeSnapshot(Document document)
+        {
+            Snapshot snap = new Snapshot();
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                Model model = document.Models[m];
+                snap.Models.Add(m + "  " + Path.GetFileName(model.FileName ?? string.Empty));
+            }
+
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                SnapTree(root, string.Empty, snap.Sets, ref snap.SetLeaves);
+            }
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SnapTree(root, string.Empty, snap.Viewpoints, ref snap.ViewpointLeaves);
+            }
+
+            SnapTests(document.GetClash().TestsData.Tests, string.Empty, snap);
+            return snap;
+        }
+
+        /// <summary>Every item of a tree as its path, its name and whether it is a folder, in order.</summary>
+        private static void SnapTree(GroupItem folder, string path, List<string> into, ref int leaves)
+        {
+            SavedItemCollection children = folder.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    string where = path + "/" + Words(child.DisplayName);
+                    GroupItem group = child as GroupItem;
+
+                    if (group != null)
+                    {
+                        into.Add(where + "   folder of " + group.Children.Count);
+                        SnapTree(group, where, into, ref leaves);
+                    }
+                    else
+                    {
+                        leaves++;
+                        into.Add(where + "   " + child.GetType().Name);
+                    }
+                }
+            }
+        }
+
+        private void SnapTests(SavedItemCollection items, string path, Snapshot snap)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    ClashTest test = item as ClashTest;
+
+                    if (test != null)
+                    {
+                        int results;
+                        string line = TestLine(test, out results);
+                        int notNew = 0;
+                        CountResultsUnder(test.Children, ref notNew);
+                        snap.Tests.Add(path + "/" + line);
+                        snap.TestLeaves++;
+                        snap.Results += results;
+                        snap.NotNew += notNew;
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        snap.Tests.Add(path + "/" + Words(folder.DisplayName) + "   folder of " + folder.Children.Count);
+                        SnapTests(folder.Children, path + "/" + Words(folder.DisplayName), snap);
+                    }
+                }
+            }
+        }
+
+        /// <summary>A test's name, its settings, its result count, its statuses and a hash of every result's name and status in order.</summary>
+        private static string TestLine(ClashTest test, out int results)
+        {
+            List<string> each = new List<string>();
+            Dictionary<string, int> byStatus = new Dictionary<string, int>(StringComparer.Ordinal);
+            ResultsOf(test.Children, string.Empty, each, byStatus);
+            results = each.Count;
+
+            List<string> statuses = new List<string>();
+
+            foreach (KeyValuePair<string, int> pair in byStatus)
+            {
+                statuses.Add(pair.Key + " " + pair.Value);
+            }
+
+            statuses.Sort(StringComparer.Ordinal);
+            string hash;
+
+            using (System.Security.Cryptography.SHA256 sha = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", each.ToArray())));
+                hash = BitConverter.ToString(bytes, 0, 6).Replace("-", string.Empty);
+            }
+
+            return Words(test.DisplayName) + "   type " + test.TestType
+                + ", tolerance " + test.Tolerance.ToString("R", System.Globalization.CultureInfo.InvariantCulture)
+                + ", status " + test.Status + ", results " + results
+                + ", " + (statuses.Count == 0 ? "none" : string.Join(", ", statuses.ToArray()))
+                + ", names and statuses sha256 " + hash;
+        }
+
+        private static void ResultsOf(SavedItemCollection children, string path, List<string> each, Dictionary<string, int> byStatus)
+        {
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem item = children[i])
+                {
+                    ClashResultGroup group = item as ClashResultGroup;
+
+                    if (group != null)
+                    {
+                        ResultsOf(group.Children, path + "/" + Words(group.DisplayName), each, byStatus);
+                        continue;
+                    }
+
+                    ClashResult result = item as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    string status = result.Status.ToString();
+                    int had;
+                    byStatus.TryGetValue(status, out had);
+                    byStatus[status] = had + 1;
+                    each.Add(path + "/" + Words(result.DisplayName) + " " + status);
+                }
+            }
+        }
+
+        private void SaySnapshot(Snapshot snap, string when)
+        {
+            Say(when + ": models " + snap.Models.Count
+                + ", set tree items " + snap.Sets.Count + " of which sets " + snap.SetLeaves
+                + ", test tree items " + snap.Tests.Count + " of which tests " + snap.TestLeaves
+                + ", results " + snap.Results + ", results not New " + snap.NotNew
+                + ", viewpoint tree items " + snap.Viewpoints.Count + " of which viewpoints " + snap.ViewpointLeaves);
+        }
+
+        /// <summary>
+        /// True when the later snapshot is the earlier one with exactly the removed test's line
+        /// gone, or the same when no line was removed. Every other difference is said.
+        /// </summary>
+        private bool CompareSnapshots(Snapshot earlier, Snapshot later, string removedLine, int removedResults, string label)
+        {
+            bool same = true;
+            same &= CompareList(earlier.Models, later.Models, null, "models", label);
+            same &= CompareList(earlier.Sets, later.Sets, null, "sets", label);
+            same &= CompareList(earlier.Viewpoints, later.Viewpoints, null, "viewpoints", label);
+            same &= CompareList(earlier.Tests, later.Tests, removedLine == null ? null : "/" + removedLine, "tests", label);
+
+            int wantResults = earlier.Results - removedResults;
+            Say("   " + label + ": results " + later.Results + " against " + wantResults + " wanted"
+                + (later.Results == wantResults ? ", the same" : ", DIFFERENT"));
+            same &= later.Results == wantResults;
+            return same;
+        }
+
+        private bool CompareList(List<string> earlier, List<string> later, string removed, string what, string label)
+        {
+            List<string> want = new List<string>(earlier);
+            bool removedFound = true;
+
+            if (removed != null)
+            {
+                removedFound = want.Remove(removed);
+            }
+
+            int differ = 0;
+            int shown = 0;
+
+            for (int i = 0; i < Math.Max(want.Count, later.Count); i++)
+            {
+                string a = i < want.Count ? want[i] : "(none)";
+                string b = i < later.Count ? later[i] : "(none)";
+
+                if (!string.Equals(a, b, StringComparison.Ordinal))
+                {
+                    differ++;
+
+                    if (shown < 20)
+                    {
+                        shown++;
+                        Say("      " + what + " " + i + " wanted: " + a);
+                        Say("      " + what + " " + i + " read  : " + b);
+                    }
+                }
+            }
+
+            Say("   " + label + ": " + what + " " + later.Count + " against " + want.Count + " wanted"
+                + (removed == null ? string.Empty : ", the removed test's line found in the earlier list " + removedFound)
+                + ", lines that differ " + differ);
+            return differ == 0 && removedFound;
         }
 
         private sealed class PairsFound
