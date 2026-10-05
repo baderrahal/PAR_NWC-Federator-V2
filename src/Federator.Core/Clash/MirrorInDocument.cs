@@ -18,7 +18,9 @@ namespace Federator.Core.Clash
     /// made by a person or by an older XML and is left. A saved side that was not read,
     /// MirrorRule.BothSidesRead, proves nothing either, so a name the XML calls a mirror
     /// whose sides were not read is left and its line says UNKNOWN. By its sides alone such
-    /// a test is never a mirror.
+    /// a test is never a mirror. The proof needs the XML's own rule, so Find refuses a rule
+    /// holding a test read off the document as the picked XML's, and a test not read off
+    /// the document as a saved one, since either would match itself.
     ///
     /// WHOSE A STATUS IS, Q122's default A. Every status but New counts as a person's,
     /// `StatusesAPersonSet`, with one exception its record proves: a Reviewed carrying this
@@ -67,7 +69,16 @@ namespace Federator.Core.Clash
         /// Every saved test that is a mirror, each to be judged once its results are added.
         /// The saved tests are the document's, ClashTestPlan.FromDocument's buildable ones,
         /// in the order the document holds them. The picked XML's rule is the one its own
-        /// plan was built with, or null where no XML was picked.
+        /// plan was built with, over ClashTestPlan.From's buildable tests, or null where no
+        /// XML was picked.
+        ///
+        /// REFUSED, so the add-in cannot get it wrong. A rule holding a test read off the
+        /// document is refused as the picked XML's, because each saved test in it would be
+        /// found by its own name and match itself, and a person's test would be removed as
+        /// one this tool created from an XML nobody picked. A test handed as a saved one that
+        /// was not read off the document is refused the same way, because an XML test would
+        /// match itself whatever the document holds under its name. A rule over no test at
+        /// all cannot say where it came from, and it holds no pair, so it removes nothing.
         /// </summary>
         public static IList<MirrorInDocument> Find(
             IList<PlannedClashTest> saved, MirrorRule ofThePickedXml, PriorityMap priorities)
@@ -77,6 +88,20 @@ namespace Federator.Core.Clash
                 throw new ArgumentNullException("priorities");
             }
 
+            if (ofThePickedXml != null)
+            {
+                PlannedClashTest readOffTheDocument = ofThePickedXml.FirstReadOffTheDocument();
+
+                if (readOffTheDocument != null)
+                {
+                    throw new ArgumentException(
+                        "The rule handed as the picked XML's holds " + readOffTheDocument.Name
+                            + ", a test read off the document, so it is no XML's rule and each saved test in it "
+                            + "would match itself. With no XML picked the rule is null.",
+                        "ofThePickedXml");
+                }
+            }
+
             List<MirrorInDocument> found = new List<MirrorInDocument>();
             List<PlannedClashTest> all = new List<PlannedClashTest>();
 
@@ -84,10 +109,20 @@ namespace Federator.Core.Clash
             {
                 foreach (PlannedClashTest test in saved)
                 {
-                    if (test != null)
+                    if (test == null)
                     {
-                        all.Add(test);
+                        continue;
                     }
+
+                    if (!test.IsFromDocument)
+                    {
+                        throw new ArgumentException(
+                            test.Name + " was handed as a saved test and was not read off the document, so it "
+                                + "would match itself whatever the document holds under its name.",
+                            "saved");
+                    }
+
+                    all.Add(test);
                 }
             }
 

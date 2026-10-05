@@ -253,6 +253,24 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// The first test this rule was handed that was read off the document, or null. Only
+        /// ClashTestPlan builds a test, and FromDocument alone gives one an address, so this
+        /// is a fact the add-in cannot forge. A rule holding such a test is no XML's rule.
+        /// </summary>
+        internal PlannedClashTest FirstReadOffTheDocument()
+        {
+            foreach (PlannedClashTest test in tests)
+            {
+                if (test.IsFromDocument)
+                {
+                    return test;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// The first test this rule was handed and did not call a mirror, so one that is
         /// created and run, whose two sets are that test's swapped. Null where there is none,
         /// or where that test can be no test's mirror.

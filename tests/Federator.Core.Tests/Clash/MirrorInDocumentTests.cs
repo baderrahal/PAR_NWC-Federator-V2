@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Federator.Core.Clash;
 using NUnit.Framework;
@@ -404,6 +405,95 @@ namespace Federator.Core.Tests
                 PriorityMap.NothingPicked());
 
             Assert.That(found.Count, Is.EqualTo(0));
+        }
+
+        // ---------- what is refused, so a saved test is never taken for one this tool created ----------
+
+        // No XML was picked and the rule handed as the picked XML's was built over the saved
+        // tests themselves. Taken as the XML's, each saved swap would be found by its own
+        // name and match itself, and a person's test would be removed with a line claiming
+        // it was created from an XML nobody picked. With no XML the rule is null.
+        [Test]
+        public void ARuleBuiltOverTheSavedTestsIsRefusedAsThePickedXmls()
+        {
+            IList<PlannedClashTest> saved = BothSaved();
+            MirrorRule overTheSaved = MirrorRule.Of(saved, PriorityMap.NothingPicked());
+
+            ArgumentException refused = Assert.Throws<ArgumentException>(
+                () => MirrorInDocument.Find(saved, overTheSaved, PriorityMap.NothingPicked()));
+
+            Assert.That(refused.ParamName, Is.EqualTo("ofThePickedXml"));
+            Assert.That(refused.Message, Does.Contain(DuctsVsColumns));
+            Assert.That(refused.Message, Does.Contain("read off the document"));
+        }
+
+        // One saved test among the XML's is enough, because that one would match itself.
+        [Test]
+        public void ARuleHoldingOneSavedTestAmongTheXmlsIsRefused()
+        {
+            ClashTestPlan xml = MirrorRuleTests.Plan(MirrorRuleTests.Test(DuctsVsColumns, Ducts, Columns));
+            IList<PlannedClashTest> saved = SavedInTheDocument(
+                MirrorRuleTests.Saved("Columns against Ducts by hand", Columns, Ducts, 0));
+            List<PlannedClashTest> mixed = new List<PlannedClashTest>(xml.Buildable);
+            mixed.AddRange(saved);
+
+            ArgumentException refused = Assert.Throws<ArgumentException>(
+                () => MirrorInDocument.Find(saved, MirrorRule.Of(mixed, PriorityMap.NothingPicked()),
+                    PriorityMap.NothingPicked()));
+
+            Assert.That(refused.ParamName, Is.EqualTo("ofThePickedXml"));
+            Assert.That(refused.Message, Does.Contain("Columns against Ducts by hand"));
+        }
+
+        // The other way round: the XML's own tests handed as the saved ones. Each XML mirror
+        // would match itself and be judged removable whatever the document holds under its
+        // name, so a test that was not read off the document is refused as a saved one.
+        [Test]
+        public void TheXmlsTestsHandedAsTheSavedOnesAreRefused()
+        {
+            ClashTestPlan xml = MirrorRuleTests.Plan(
+                MirrorRuleTests.Test(DuctsVsColumns, Ducts, Columns),
+                MirrorRuleTests.Test(ColumnsVsDucts, Columns, Ducts));
+
+            ArgumentException refused = Assert.Throws<ArgumentException>(
+                () => MirrorInDocument.Find(xml.Buildable, TheXmlHoldingBoth(), PriorityMap.NothingPicked()));
+
+            Assert.That(refused.ParamName, Is.EqualTo("saved"));
+            Assert.That(refused.Message, Does.Contain(DuctsVsColumns));
+            Assert.That(refused.Message, Does.Contain("not read off the document"));
+        }
+
+        // With no XML as well, since the rule Find builds over them would hold them.
+        [Test]
+        public void TheXmlsTestsHandedAsTheSavedOnesAreRefusedWithNoXml()
+        {
+            ClashTestPlan xml = MirrorRuleTests.Plan(
+                MirrorRuleTests.Test(DuctsVsColumns, Ducts, Columns),
+                MirrorRuleTests.Test(ColumnsVsDucts, Columns, Ducts));
+
+            ArgumentException refused = Assert.Throws<ArgumentException>(
+                () => MirrorInDocument.Find(xml.Buildable, null, PriorityMap.NothingPicked()));
+
+            Assert.That(refused.ParamName, Is.EqualTo("saved"));
+        }
+
+        // The edge the refusal must not reach: a picked XML whose every test was skipped
+        // gives a rule over no test at all. It is the XML's, it holds no pair, so it proves
+        // no saved test is this tool's and none is removed.
+        [Test]
+        public void TheRuleOfAnXmlWithNoBuildableTestIsTakenAndRemovesNothing()
+        {
+            ClashTestPlan xml = MirrorRuleTests.Plan(
+                MirrorRuleTests.Test(DuctsVsColumns, Ducts, Columns, type: "not_a_test_type"));
+
+            Assert.That(xml.Buildable.Count, Is.EqualTo(0));
+
+            MirrorInDocument mirror = TheOneFound(BothSaved(), MirrorRule.Of(xml.Buildable, PriorityMap.NothingPicked()));
+            mirror.AllResultsAdded();
+
+            Assert.That(mirror.Saved.Name, Is.EqualTo(ColumnsVsDucts));
+            Assert.That(mirror.Removes, Is.False);
+            Assert.That(mirror.Line(), Does.Contain("does not hold"));
         }
     }
 }
