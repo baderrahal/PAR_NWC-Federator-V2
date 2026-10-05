@@ -40,6 +40,44 @@ namespace Federator.Core.Sets
         public int Flags { get; private set; }
 
         /// <summary>
+        /// The condition's value would not read, so what it asks is UNKNOWN, FR-017. Never an
+        /// empty value, which is a real question with an answer.
+        /// </summary>
+        public bool ValueUnread { get; private set; }
+
+        /// <summary>
+        /// A condition whose value would not read, FR-017. It was read as an empty string, so its
+        /// set was called drifted, asking for "", and replaced with the box on.
+        /// </summary>
+        public static ReadCondition Unread(string categoryInternalName, string propertyInternalName, string test, int flags)
+        {
+            ReadCondition unread = new ReadCondition(categoryInternalName, propertyInternalName, test, null, flags);
+            unread.ValueUnread = true;
+            return unread;
+        }
+
+        /// <summary>
+        /// The keys of a set's conditions in order, or NONE where a value of one would not read,
+        /// FR-017, so a set read in part pairs with nothing, as a set asking nothing never does.
+        /// </summary>
+        public static IList<string> KeysOf(IEnumerable<ReadCondition> conditions)
+        {
+            List<string> keys = new List<string>();
+
+            foreach (ReadCondition condition in conditions)
+            {
+                if (condition.ValueUnread)
+                {
+                    return new List<string>();
+                }
+
+                keys.Add(condition.Key());
+            }
+
+            return keys;
+        }
+
+        /// <summary>
         /// What this condition asks, written the way SetBuildPlan.Describe writes one, so the two
         /// read as one sentence: its own test, never equals for a test that is not, and not before
         /// it where it is negated, FR-016.
@@ -116,7 +154,10 @@ namespace Federator.Core.Sets
 
         public string Path { get; private set; }
 
-        /// <summary>The set's search would not read. Never called drifted, the way a census count that could not be taken is never called a move.</summary>
+        /// <summary>
+        /// The set's search would not read, or a value in it would not, FR-017. Never called
+        /// drifted, the way a census count that could not be taken is never called a move.
+        /// </summary>
         public bool CouldNotRead { get; private set; }
 
         /// <summary>What the set in the document asks.</summary>
@@ -146,9 +187,9 @@ namespace Federator.Core.Sets
                 wantedKeys.Add(condition.Key());
             }
 
-            SetDrift drift = new SetDrift(asked == null, asked, planned);
+            SetDrift drift = new SetDrift(asked == null || AnyUnread(asked), asked, planned);
 
-            if (asked == null)
+            if (drift.CouldNotRead)
             {
                 return drift;
             }
@@ -171,6 +212,20 @@ namespace Federator.Core.Sets
             return drift;
         }
 
+        /// <summary>Whether a value of one of those conditions would not read, FR-017.</summary>
+        private static bool AnyUnread(IList<ReadCondition> asked)
+        {
+            foreach (ReadCondition condition in asked)
+            {
+                if (condition != null && condition.ValueUnread)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// What the set asks now, as one sentence, its groups bracketed and joined by or by the
         /// bit it carries, the way a planned set is said, FR-016.
@@ -179,7 +234,9 @@ namespace Federator.Core.Sets
         {
             if (CouldNotRead)
             {
-                return "UNKNOWN, its search would not read";
+                return AnyUnread(Asked)
+                    ? "UNKNOWN, the value of a condition in its search would not read"
+                    : "UNKNOWN, its search would not read";
             }
 
             if (Asked.Count == 0)

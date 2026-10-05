@@ -79,12 +79,16 @@ namespace Federator.Addin.Engine
         /// </summary>
         private static ReadCondition Read(SearchCondition condition)
         {
-            return new ReadCondition(
-                condition.CategoryCombinedName == null ? string.Empty : Words.Or(condition.CategoryCombinedName.Name, string.Empty),
-                condition.PropertyCombinedName == null ? string.Empty : Words.Or(condition.PropertyCombinedName.Name, string.Empty),
-                TestOf(condition.Comparison),
-                ValueOf(condition.Value),
-                (int)condition.Options);
+            string category = condition.CategoryCombinedName == null ? string.Empty : Words.Or(condition.CategoryCombinedName.Name, string.Empty);
+            string property = condition.PropertyCombinedName == null ? string.Empty : Words.Or(condition.PropertyCombinedName.Name, string.Empty);
+            string test = TestOf(condition.Comparison);
+            int flags = (int)condition.Options;
+            string value;
+
+            // FR-017. A value that would not read is UNKNOWN in Core, never an empty value.
+            return ValueOf(condition.Value, out value)
+                ? new ReadCondition(category, property, test, value, flags)
+                : ReadCondition.Unread(category, property, test, flags);
         }
 
         /// <summary>
@@ -102,22 +106,32 @@ namespace Federator.Addin.Engine
             return comparison == SearchConditionComparison.Equal ? SetBuildPlan.EqualsTest : comparison.ToString();
         }
 
-        private static string ValueOf(VariantData value)
+        /// <summary>
+        /// A condition's value as text, read BY ITS KIND through ClashHarvest.Text, addin.md, so a
+        /// value that is not a string reads rather than throwing, FR-017. False where it still
+        /// would not read, and the caller marks it unread in Core, which says UNKNOWN. It used to
+        /// read every kind but an identifier as a display string and give an empty string for the
+        /// throw, so the set was called drifted asking for "".
+        /// </summary>
+        private static bool ValueOf(VariantData value, out string text)
         {
+            text = string.Empty;
+
             if (value == null)
             {
-                return string.Empty;
+                return true;
             }
 
             try
             {
-                return value.DataType == VariantDataType.IdentifierString
-                    ? value.ToIdentifierString()
-                    : value.ToDisplayString();
+                text = ClashHarvest.Text(value);
+                return true;
             }
             catch (Exception)
             {
-                return string.Empty;
+                // Said, not swallowed: the condition is marked unread and its set reads UNKNOWN
+                // in the SET DRIFT lines and is never called drifted or rebuilt.
+                return false;
             }
         }
 
@@ -221,17 +235,21 @@ namespace Federator.Addin.Engine
 
                     if (set != null)
                     {
-                        List<string> keys = new List<string>();
+                        IList<string> keys = new List<string>();
 
                         try
                         {
                             if (set.HasSearch && set.Search != null)
                             {
+                                List<ReadCondition> read = new List<ReadCondition>();
+
                                 foreach (SearchCondition condition in set.Search.SearchConditions)
                                 {
-                                    ReadCondition read = Read(condition);
-                                    keys.Add(read.Key());
+                                    read.Add(Read(condition));
                                 }
+
+                                // FR-017. None where a value would not read, so it pairs with nothing.
+                                keys = ReadCondition.KeysOf(read);
                             }
                         }
                         catch (Exception)

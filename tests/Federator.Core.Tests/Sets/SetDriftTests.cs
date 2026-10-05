@@ -215,6 +215,31 @@ namespace Federator.Core.Tests.Sets
                 "the same condition without the group bit is another question");
         }
 
+        /// <summary>
+        /// A VALUE THAT WOULD NOT READ IS NOT AN EMPTY VALUE, FR-017. A condition value of a kind
+        /// the add-in could not turn into text was read as an empty string, so the set was called
+        /// drifted, asking for "", and replaced with the box on. It is a set whose search could
+        /// not be read, never called drifted, the way a search that will not read is not.
+        /// </summary>
+        [Test]
+        public void ASetWithAValueThatWouldNotReadIsNotReadAndNeverDrifted()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "equals", "Floors"),
+                    ReadCondition.Unread(Element, Workset, "equals", 0)
+                },
+                Planned(
+                    "a/path/BLD-AR-Floors",
+                    Wants(Category, ConditionTest.Equals, "Floors"),
+                    Wants(Workset, ConditionTest.Equals, "AR-EXTERIOR")));
+
+            Assert.That(drift.CouldNotRead, Is.True);
+            Assert.That(drift.Drifted, Is.False);
+            Assert.That(drift.AskedNow(), Does.StartWith("UNKNOWN"));
+        }
+
         // ---------- what the lines say, FR-016 ----------
 
         /// <summary>

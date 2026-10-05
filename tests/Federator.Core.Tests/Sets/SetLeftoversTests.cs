@@ -169,6 +169,38 @@ namespace Federator.Core.Tests.Sets
             }
         }
 
+        /// <summary>
+        /// A set holding a value that would not read has no keys and pairs with nothing, FR-017.
+        /// Its value read as an empty string, so it could pair with a twin asking for "".
+        /// </summary>
+        [Test]
+        public void ASetWithAValueThatWouldNotReadNeverPairs()
+        {
+            IList<string> unread = ReadCondition.KeysOf(new List<ReadCondition>
+            {
+                new ReadCondition("LcRevitData_Element", "LcRevitPropertyElementCategory", "equals", "Pipe Accessories"),
+                ReadCondition.Unread("LcRevitData_Element", "lcldrevit_parameter_-1002053", "equals", 0)
+            });
+
+            IList<string> twin = ReadCondition.KeysOf(new List<ReadCondition>
+            {
+                new ReadCondition("LcRevitData_Element", "LcRevitPropertyElementCategory", "equals", "Pipe Accessories"),
+                new ReadCondition("LcRevitData_Element", "lcldrevit_parameter_-1002053", "equals", string.Empty)
+            });
+
+            Assert.That(unread, Is.Empty);
+
+            IList<LeftoverSet> leftovers = SetLeftovers.For(
+                new List<DocumentSet>
+                {
+                    new DocumentSet("a/folder/BLD-Broken", "BLD-Broken", unread, 60),
+                    new DocumentSet("a/folder/BLD-Corrected", "BLD-Corrected", twin, 0)
+                },
+                new List<string> { "BLD-Corrected" });
+
+            Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse));
+        }
+
         /// <summary>A set asking nothing at all pairs with nothing, or every unreadable set would pair.</summary>
         [Test]
         public void ASetAskingNothingNeverPairs()
