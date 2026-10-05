@@ -193,6 +193,42 @@ namespace Federator.Core.Tests
             Assert.That(mirror.Line(), Does.Contain("side"));
         }
 
+        // The add-in hands every saved test the same two placeholders for its sides. A name
+        // the picked XML calls a mirror is still that mirror, since the XML decides what
+        // runs, but its sides are UNKNOWN, so nothing proves this tool created it and its
+        // line says UNKNOWN and never quotes a placeholder as a set.
+        [Test]
+        public void ANameOfTheXmlWhoseSidesWereNotReadIsLeftAsUnknown()
+        {
+            MirrorInDocument mirror = TheOneFound(
+                SavedInTheDocument(
+                    MirrorRuleTests.Saved(DuctsVsColumns, SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved, 0),
+                    MirrorRuleTests.Saved(ColumnsVsDucts, SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved, 1)),
+                TheXmlHoldingBoth());
+
+            mirror.AddResult(ClashStatus.New, null);
+
+            Assert.That(mirror.Saved.Name, Is.EqualTo(ColumnsVsDucts));
+            Assert.That(mirror.Removes, Is.False);
+            Assert.That(mirror.Line(), Does.Contain("its sides were not read, UNKNOWN"));
+            Assert.That(mirror.Line(), Does.Not.Contain(SavedClashTest.LeftAsSaved));
+            Assert.That(mirror.Line(), Does.Not.Contain(SavedClashTest.RightAsSaved));
+        }
+
+        // With no XML the placeholders are no sets, so no saved test is a mirror.
+        [Test]
+        public void SavedTestsWhoseSidesWereNotReadHaveNothingToJudge()
+        {
+            IList<MirrorInDocument> found = MirrorInDocument.Find(
+                SavedInTheDocument(
+                    MirrorRuleTests.Saved(DuctsVsColumns, SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved, 0),
+                    MirrorRuleTests.Saved(ColumnsVsDucts, SavedClashTest.RightAsSaved, SavedClashTest.LeftAsSaved, 1)),
+                null,
+                PriorityMap.NothingPicked());
+
+            Assert.That(found.Count, Is.EqualTo(0));
+        }
+
         // The picked XML holds the test and not its swap. A swap in the NWF was made by a
         // person or by an older XML, so nothing proves this tool created it.
         [Test]

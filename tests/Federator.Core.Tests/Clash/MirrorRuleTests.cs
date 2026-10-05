@@ -161,7 +161,8 @@ namespace Federator.Core.Tests
         [Test]
         public void ASavedSideThatCouldNotBeReadIsNeverPaired()
         {
-            foreach (string unread in new[] { TestSettings.UnknownLocator, string.Empty })
+            foreach (string unread in new[]
+                { TestSettings.UnknownLocator, string.Empty, SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved })
             {
                 ClashTestPlan plan = ClashTestPlan.FromDocument(
                     new List<SavedClashTest>
@@ -472,6 +473,68 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain("no XML was picked"));
             Assert.That(pair, Does.Contain("not run"));
             Assert.That(pair, Does.Not.Contain("created"));
+        }
+
+        // The add-in reads a saved test off the document and not which sets its sides point
+        // at, so it hands every saved test the same two placeholders. Read as sets, every
+        // test would be a duplicate of the first. A placeholder is UNKNOWN, so no test is
+        // paired, left out or named a duplicate, and that is said once with the count.
+        [Test]
+        public void ThePlaceholderSidesOfSavedTestsAreUnknownAndSaidOnce()
+        {
+            ClashTestPlan plan = ClashTestPlan.FromDocument(
+                new List<SavedClashTest>
+                {
+                    Saved(DuctsVsColumns, SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved, 0),
+                    Saved(ColumnsVsDucts, SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved, 1),
+                    Saved("BLD-ME-Ducts-vs-BLD-AR-Walls", SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved, 2)
+                },
+                "m");
+
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked());
+            IList<string> lines = rule.Lines();
+
+            Assert.That(rule.Pairs.Count, Is.EqualTo(0));
+            Assert.That(lines.Count, Is.EqualTo(2), "the count and the one line saying UNKNOWN, no duplicate");
+            Assert.That(lines[0], Is.EqualTo(MirrorRule.Prefix
+                + "   0 pairs among the 0 tests whose two sets were read, so no test is left out"));
+            Assert.That(lines[1], Is.EqualTo(MirrorRule.Prefix
+                + "   3 of the 3 tests have a side whose set was not read, so whether each is a mirror "
+                + "or a duplicate is UNKNOWN and none of them is left out"));
+        }
+
+        // One test whose side was not read among tests whose sides were. The pair is still
+        // found, and the one not read is said once and counted apart.
+        [Test]
+        public void OneTestNotReadAmongTestsReadIsSaidOnce()
+        {
+            ClashTestPlan plan = ClashTestPlan.FromDocument(
+                new List<SavedClashTest>
+                {
+                    Saved(DuctsVsColumns, Ducts, Columns, 0),
+                    Saved(ColumnsVsDucts, Columns, Ducts, 1),
+                    Saved("BLD-ME-Ducts-vs-BLD-AR-Walls", Ducts, TestSettings.UnknownLocator, 2)
+                },
+                "m");
+
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked());
+            IList<string> lines = rule.Lines();
+            int sayingNotRead = 0;
+
+            foreach (string line in lines)
+            {
+                if (line.Contains("not read"))
+                {
+                    sayingNotRead++;
+                }
+            }
+
+            Assert.That(rule.Pairs.Count, Is.EqualTo(1));
+            Assert.That(lines[0], Does.Contain("1 pair of tests with the same two sets swapped among the 2 tests whose two sets were read"));
+            Assert.That(sayingNotRead, Is.EqualTo(1));
+            Assert.That(Text(lines), Does.Contain(
+                "1 of the 3 tests has a side whose set was not read, so whether it is a mirror "
+                + "or a duplicate is UNKNOWN and it is not left out"));
         }
 
         // ---------- the plan: the mirror is not created and not run ----------

@@ -15,7 +15,10 @@ namespace Federator.Core.Clash
     /// only where its name and both its locators equal a mirror of the picked XML exactly,
     /// Ordinal. Nothing else on a test says who made it, so with no XML picked nothing
     /// proves it and nothing is ever removed, and a swap the picked XML does not hold was
-    /// made by a person or by an older XML and is left.
+    /// made by a person or by an older XML and is left. A saved side that was not read,
+    /// MirrorRule.BothSidesRead, proves nothing either, so a name the XML calls a mirror
+    /// whose sides were not read is left and its line says UNKNOWN. By its sides alone such
+    /// a test is never a mirror.
     ///
     /// WHOSE A STATUS IS, Q122's default A. Every status but New counts as a person's,
     /// `StatusesAPersonSet`, with one exception its record proves: a Reviewed carrying this
@@ -187,6 +190,11 @@ namespace Federator.Core.Clash
             else if (ofThePickedXml == null)
             {
                 reasons.Add("the picked XML does not hold it, so nothing proves this tool created it");
+            }
+            else if (!MirrorRule.BothSidesRead(Saved))
+            {
+                reasons.Add("its name is a mirror of the picked XML and its sides were not read, UNKNOWN, "
+                    + "so nothing proves this tool created it");
             }
             else if (!SameSides(Saved, ofThePickedXml.Mirror))
             {

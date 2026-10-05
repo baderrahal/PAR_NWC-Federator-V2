@@ -22,11 +22,17 @@ namespace Federator.Core.Clash
     /// stands for the XML's. Every test in the other order is a mirror of the one kept, and
     /// it is not created and not run.
     ///
-    /// WHAT IS NOT A MIRROR. A test with one set on both sides is its own swap. A test with
-    /// a side nobody could read names no set. A second test with the same two sets in the
-    /// kept test's own order is a duplicate, not a mirror by his words, so it is named and
-    /// created and run as before. The picked XML holds no pair and no duplicate,
-    /// turn5\measure-mirrors.md, so on it this rule leaves every test where it was.
+    /// WHAT IS NOT A MIRROR. A test with one set on both sides is its own swap. A second
+    /// test with the same two sets in the kept test's own order is a duplicate, not a mirror
+    /// by his words, so it is named and created and run as before. The picked XML holds no
+    /// pair and no duplicate, so on it this rule leaves every test where it was, which
+    /// MirrorRuleTests.TheClientsMatrixHoldsNoPair and TheCorrectedMatrixHoldsNoPair prove.
+    ///
+    /// A SIDE NOT READ IS UNKNOWN. A side whose locator is empty, UNKNOWN, or one of the
+    /// placeholders the add-in hands for a saved test's sides, SavedClashTest.LeftAsSaved
+    /// and RightAsSaved, names no set. Read as sets, the placeholders would make every
+    /// saved test a duplicate of the first. So a test with such a side is never paired,
+    /// never a mirror and never a duplicate, and the lines say once how many there are.
     /// </summary>
     public sealed class MirrorRule
     {
@@ -34,15 +40,18 @@ namespace Federator.Core.Clash
         public const string Prefix = "MIRROR";
 
         private readonly List<PlannedClashTest> tests;
+        private readonly int notRead;
         private readonly List<MirrorPair> pairs;
         private readonly List<KeyValuePair<PlannedClashTest, PlannedClashTest>> duplicates;
 
         private MirrorRule(
             List<PlannedClashTest> tests,
+            int notRead,
             List<MirrorPair> pairs,
             List<KeyValuePair<PlannedClashTest, PlannedClashTest>> duplicates)
         {
             this.tests = tests;
+            this.notRead = notRead;
             this.pairs = pairs;
             this.duplicates = duplicates;
             Pairs = new ReadOnlyCollection<MirrorPair>(pairs);
@@ -64,6 +73,7 @@ namespace Federator.Core.Clash
             }
 
             List<PlannedClashTest> all = new List<PlannedClashTest>();
+            int notRead = 0;
             List<string> keyOrder = new List<string>();
             Dictionary<string, List<PlannedClashTest>> bySets =
                 new Dictionary<string, List<PlannedClashTest>>(StringComparer.Ordinal);
@@ -78,6 +88,13 @@ namespace Federator.Core.Clash
                     }
 
                     all.Add(test);
+
+                    if (!BothSidesRead(test))
+                    {
+                        notRead++;
+                        continue;
+                    }
+
                     string key = SetsKey(test);
 
                     if (key == null)
@@ -125,32 +142,50 @@ namespace Federator.Core.Clash
                 }
             }
 
-            return new MirrorRule(all, pairs, duplicates);
+            return new MirrorRule(all, notRead, pairs, duplicates);
         }
 
         /// <summary>
-        /// The MIRROR lines for the log. One line counting the pairs, always, because a
-        /// missing line reads as a check that did not run. Then every pair whose two tests
-        /// differ in priority, type or tolerance, each with both values, because Bader asked
-        /// for both in the log. Then the pairs alike in everything, five named and the rest
-        /// counted, the rule every repeated line here follows, since the skip block already
-        /// names each mirror with the test it mirrors. Then the duplicates the same way.
+        /// The MIRROR lines for the log. One line counting the pairs among the tests whose
+        /// two sets were read, always, because a missing line reads as a check that did not
+        /// run and a count of pairs alone reads as a check of every test. Then once, where
+        /// any test has a side not read, how many, said UNKNOWN. Then every pair whose two
+        /// tests differ in priority, type or tolerance, each with both values, because Bader
+        /// asked for both in the log. Then the pairs alike in everything, five named and the
+        /// rest counted, the rule every repeated line here follows, since the skip block
+        /// already names each mirror with the test it mirrors. Then the duplicates the same way.
         /// </summary>
         public IList<string> Lines()
         {
             List<string> lines = new List<string>();
+            int read = tests.Count - notRead;
+            string among = " among the " + read + (read == 1 ? " test" : " tests") + " whose two sets were read";
 
             if (pairs.Count == 0)
             {
-                lines.Add(Prefix + "   0 pairs, no test has another test's two sets swapped, so no test is left out");
+                lines.Add(Prefix + "   0 pairs" + among + ", so no test is left out");
             }
             else
             {
                 lines.Add(Prefix + "   " + pairs.Count + (pairs.Count == 1 ? " pair" : " pairs")
-                    + " of tests with the same two sets swapped. Of each pair the higher priority is kept, "
+                    + " of tests with the same two sets swapped" + among
+                    + ". Of each pair the higher priority is kept, "
                     + "A before B before C before no priority, and where equal the one first in the XML, "
                     + "and the other is left out");
+            }
 
+            if (notRead > 0)
+            {
+                lines.Add(Prefix + "   " + notRead + " of the " + tests.Count
+                    + (notRead == 1
+                        ? " tests has a side whose set was not read, so whether it is a mirror or a duplicate "
+                            + "is UNKNOWN and it is not left out"
+                        : " tests have a side whose set was not read, so whether each is a mirror or a duplicate "
+                            + "is UNKNOWN and none of them is left out"));
+            }
+
+            if (pairs.Count > 0)
+            {
                 if (pairs[0].Mirror.IsFromDocument)
                 {
                     lines.Add(Prefix + "   no XML was picked, so the order the tests are saved in the document "
@@ -272,20 +307,29 @@ namespace Federator.Core.Clash
         /// </summary>
         internal static string SetsKey(PlannedClashTest test)
         {
-            string left = test.Left == null ? null : test.Left.Locator;
-            string right = test.Right == null ? null : test.Right.Locator;
-
-            if (!WasRead(left) || !WasRead(right) || string.Equals(left, right, StringComparison.Ordinal))
+            if (!BothSidesRead(test) || string.Equals(test.Left.Locator, test.Right.Locator, StringComparison.Ordinal))
             {
                 return null;
             }
 
-            return ByDesignPairs.KeyFor(left, right);
+            return ByDesignPairs.KeyFor(test.Left.Locator, test.Right.Locator);
+        }
+
+        /// <summary>
+        /// Whether both sides name a set that was read: neither empty, nor UNKNOWN, nor one
+        /// of the placeholders the add-in hands for a saved test's sides.
+        /// </summary>
+        internal static bool BothSidesRead(PlannedClashTest test)
+        {
+            return test.Left != null && test.Right != null
+                && WasRead(test.Left.Locator) && WasRead(test.Right.Locator);
         }
 
         private static bool WasRead(string locator)
         {
-            return !string.IsNullOrEmpty(locator) && TestDrift.WasRead(locator);
+            return !string.IsNullOrEmpty(locator)
+                && TestDrift.WasRead(locator)
+                && !SavedClashTest.IsPlaceholder(locator);
         }
 
         /// <summary>The higher priority, A first and none last, and where equal the first in the XML.</summary>

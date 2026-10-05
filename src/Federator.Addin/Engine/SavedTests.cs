@@ -20,11 +20,6 @@ namespace Federator.Addin.Engine
     /// </summary>
     public static class SavedTests
     {
-        /// <summary>What a side reads as when it came out of the document rather than a file.</summary>
-        public const string SideA = "side A as saved";
-
-        public const string SideB = "side B as saved";
-
         public static IList<SavedClashTest> Read(Document document)
         {
             List<SavedClashTest> saved = new List<SavedClashTest>();
@@ -74,10 +69,10 @@ namespace Federator.Addin.Engine
                                 test.MergeComposites,
                                 left.SelfIntersect,
                                 (int)left.PrimitiveTypes,
-                                SideA,
+                                SavedClashTest.LeftAsSaved,
                                 right.SelfIntersect,
                                 (int)right.PrimitiveTypes,
-                                SideB,
+                                SavedClashTest.RightAsSaved,
                                 path));
                         }
                     }
