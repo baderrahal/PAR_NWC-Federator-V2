@@ -8,39 +8,48 @@ paths:
 # Rules for the work tracker
 
 Bader's message of 5 Oct 2026, Q129, built by F133. The scripts and the fixtures are described
-in tools\tracker\README.md.
+in tools\tracker\README.md. The rule that every pull request changing an item's status
+updates its row in the same pull request lives in .claude\rules\steps.md, beside the DONE line
+rule, since steps.md loads for every file under steps, the DONE lines and the csv among them.
 
 - Status lives in steps\tracker.csv only. steps\loop.md and steps\fix-round.md keep their
   narrative and point at the tracker for status
-- Every pull request that changes an item's status updates its row in the same pull request:
-  the status, the PR, the run that proved it and the date of the last change. A pull request
-  writes the rows it finishes as merged with its own number, since a row reaches main only
-  when its pull request merges. A pull request that adds an FR item to steps\fix-round.md
-  adds its row
 - One row per item: every FR item of steps\fix-round.md, every F area, each of Bader's
   requests and every question in steps\02_questions.md with no answer of his under it. The
   columns are id, short title, area, wave, class, status, PR, run that proved it and date of
   last change, in that order
 - A status is one of open, in progress, in review, merged, proven by a run, waiting for
   Bader and dropped, and nothing else. In progress means work on it has begun, on a branch or
-  in a measurement steps\loop.md records, in review that its pull request is open, merged that
-  its fix is on main and no run since has proved it, proven by a run that a named run folder
-  under steps\runs shows it, which goes in the run column
+  in a measurement steps\loop.md records, in review that its branch is finished and waits for
+  its pull request to merge, merged that its fix is on main and no run since has proved it,
+  proven by a run that a named run folder under steps\runs shows the code that merged, which
+  goes in the run column. A run of an earlier pass of the same fix does not prove what merged,
+  and the run column says which pass it showed
 - Every value is read off the repo, never from memory: a DONE line in steps\01_next.md, a
   merge in git log of origin/main, a branch in git branch -r, a closing line in
   steps\fix-round.md, an answer in steps\02_questions.md. A value that cannot be read is
   UNKNOWN, which the check accepts in every column but the id and the status. No cell is
-  empty
+  empty or blank, and none holds a line break
+- An FR row's class, area and wave are what steps\fix-round.md gives: the class the first
+  words of the item's Class line up to a comma, and the area and the wave those of the line of
+  its waves section that names the item, or none for both when no line names it. The check
+  compares them, so a pull request that moves an item between areas or waves changes its row
+  too
 - No cell names the desktop folder of real files, since the paths wall refuses a file write
   and a command naming it, and the csv has to stay writable by the file tools. F108's title
   says the real files instead
 - steps\tracker.md is made by tools\tracker\make-tracker.ps1 from the csv and never edited by
   hand. Run it after every change to the csv and commit both
 - tools\tracker\check-tracker.ps1 runs in Actions on every pull request and refuses a csv
-  that does not parse, an id twice, an UNKNOWN id, an empty cell, a status off the list, an
-  FR item with no row and a tracker.md that is not what the maker makes, each naming its
-  line. Every fault kind has a fixture under tools\tracker\fixtures that
-  tools\tracker\prove-tracker.ps1 runs, and a new kind gets its fixture in the same pull
-  request
+  that does not parse, an id twice in any case, an UNKNOWN id, an empty or blank cell, a cell
+  with a line break, a status off the list, an FR item with no row written with its exact id,
+  an FR heading in another shape, a fix-round.md with no item or no waves section, an item two
+  areas name, an FR row whose class, area or wave is not what fix-round.md gives, and a
+  tracker.md that is not what the maker makes, each naming its line. It exits 2 when the csv or
+  fix-round.md is not there. Every fault kind and both exits of 2 have a fixture under
+  tools\tracker\fixtures that tools\tracker\prove-tracker.ps1 runs, and a new kind gets its
+  fixture in the same pull request
 - The rules live in tools\tracker\tracker-rules.ps1 alone, and the maker and the check read
-  it with a dot. A second copy of the status list or the columns in code is a bug
+  it with a dot. A second copy of the status list or the columns in the maker or the check is
+  a bug. prove-tracker.ps1 writes its expected lines out in full, the list and the header
+  among them, since a proof asserts the text a person reads

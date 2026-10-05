@@ -41,3 +41,7 @@ steps/runs/** -text
 # an unconverted one. Measured on 2026-09-19: expected 1472388 bytes and got 1443382,
 # which is 29006 lines of difference and is the line count of the file.
 exchange/** -text
+
+# A fixture of the tracker check whose one fault is a carriage return with no line feed after
+# it. Its bytes are the fixture, so no checkout may change its line ends. F133.
+tools/tracker/fixtures/csv-lone-cr/** -text

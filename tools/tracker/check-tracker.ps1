@@ -3,11 +3,15 @@
     pull request, and by prove-tracker.ps1 over every fixture under tools\tracker\fixtures.
 
     It refuses, each fault on its own line naming the line and the id:
-    - a tracker.csv that does not parse: a header that is not the nine columns, a quote out
-      of place, or a row whose cell count is not the header's
-    - an id written twice, an id that reads UNKNOWN, an empty cell, and a status that is not
-      one of the seven, UNKNOWN included
-    - an FR item of steps\fix-round.md, by its heading, with no row
+    - a tracker.csv that does not parse: an empty file, a carriage return with no line feed,
+      a header that is not the nine columns, a quote out of place, or a row whose cell count
+      is not the header's
+    - an id written twice in any case, an id that reads UNKNOWN, an empty or blank cell, a
+      cell holding a line break, and a status that is not one of the seven, UNKNOWN included
+    - an FR item of steps\fix-round.md, by its heading, with no row written with its exact id,
+      a heading naming an FR number in another shape, a fix-round.md with no item heading or
+      no waves section, an item two areas name, and an FR row whose class, area or wave is
+      not what fix-round.md gives
     - a steps\tracker.md that is not what make-tracker.ps1 makes from the csv, naming the
       first line that differs. It is compared only when the csv has no fault, since nothing
       is made from a csv with one
@@ -31,9 +35,9 @@ $csv = Join-Path $Root "steps\tracker.csv"
 $md = Join-Path $Root "steps\tracker.md"
 $round = Join-Path $Root "steps\fix-round.md"
 
-foreach ($file in @($csv, $round)) {
-    if (-not (Test-Path -LiteralPath $file -PathType Leaf)) {
-        Write-Output "check-tracker: $file is not there, so nothing was checked."
+foreach ($name in @("steps\tracker.csv", "steps\fix-round.md")) {
+    if (-not (Test-Path -LiteralPath (Join-Path $Root $name) -PathType Leaf)) {
+        Write-Output "check-tracker: $name is not there under $Root, so nothing was checked."
         exit 2
     }
 }
@@ -42,14 +46,12 @@ $read = Read-TrackerCsv $csv
 $faults = New-Object System.Collections.Generic.List[string]
 foreach ($f in $read.Faults) { $faults.Add($f) }
 $parsed = $faults.Count -eq 0
+$items = 0
 if ($parsed) {
     foreach ($f in (Test-TrackerRows $read.Rows)) { $faults.Add($f) }
-
-    $ids = @{}
-    foreach ($row in $read.Rows) { $ids[$row["id"]] = $true }
-    foreach ($item in (Get-FixRoundItems $round)) {
-        if (-not $ids.ContainsKey($item.Id)) { $faults.Add("fix-round.md line " + $item.Line + " names " + $item.Id + " and tracker.csv has no row for it") }
-    }
+    $against = Test-TrackerFixRound $read.Rows $round
+    foreach ($f in $against.Faults) { $faults.Add($f) }
+    $items = $against.Count
 }
 
 $csvClean = $faults.Count -eq 0
@@ -58,7 +60,7 @@ if ($csvClean) {
         $faults.Add("tracker.md is not there, make it with tools\tracker\make-tracker.ps1")
     } else {
         $want = (Format-TrackerMarkdown $read.Rows).Split("`n")
-        $have = [IO.File]::ReadAllText($md, [Text.Encoding]::UTF8).Replace("`r`n", "`n").Split("`n")
+        $have = (Read-TrackerText $md).Split("`n")
         $last = [Math]::Max($want.Length, $have.Length)
         for ($k = 0; $k -lt $last; $k++) {
             $w = if ($k -lt $want.Length) { $want[$k] } else { $null }
@@ -80,5 +82,5 @@ if ($faults.Count -gt 0) {
     Write-Output ("check-tracker: REFUSED, " + $faults.Count + " fault(s) above")
     exit 1
 }
-Write-Output ("check-tracker: the tracker reads clean, " + $read.Rows.Count + " rows, every FR item of fix-round.md has one, and tracker.md is what make-tracker.ps1 makes")
+Write-Output ("check-tracker: the tracker reads clean, " + $read.Rows.Count + " rows, each of the $items FR items of fix-round.md has one with its class, area and wave, and tracker.md is what make-tracker.ps1 makes")
 exit 0

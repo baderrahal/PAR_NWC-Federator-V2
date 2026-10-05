@@ -4,6 +4,9 @@ Written when the round ends.
 
 # Fix round, turn 5
 
+Status lives in steps\tracker.csv, one row per FR item, and reads in steps\tracker.md. This file
+keeps each item's narrative.
+
 The fix list of Bader's full fix round, Q98, written on 2026-10-04 before the first fix, from
 the returns of five readers: the findings of set 03, the confirmed bugs of turn 1 in two halves,
 the register in steps\loop.md, and the readings of the fixes in flight. Their 196 raw items

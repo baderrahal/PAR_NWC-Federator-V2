@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 373 rows: open 152, in progress 48, in review 0, merged 111, proven by a run 22, waiting for Bader 38, dropped 2
+- By status, of 373 rows: open 152, in progress 46, in review 2, merged 112, proven by a run 21, waiting for Bader 38, dropped 2
 - By wave: 1 22, 2a 27, 2a and 2b 1, 2b 31, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before the waves 111, beside the waves 7, none 24, outside the waves 2
-- In progress now: F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F133 the work tracker, F134 the code health gate, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), and 37 FR items
+- In progress now: F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), and 36 FR items
 - Waits for Bader, 38 rows: F18, Q25, Q27, Q28, Q29, Q30, Q31, Q35, Q36, Q37, Q38, Q39, Q40, Q45, Q46, Q47, Q49, Q50, Q51, Q76, Q77, Q78, Q110, Q111, Q115, Q116, Q117, Q118, Q119, Q120, Q121, Q122, Q123, Q124, Q125, Q126, Q127, Q128
 
 ## Wave 1
@@ -406,10 +406,10 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | run that proved it | date of last change |
 |---|---|---|---|---|---|---|---|
-| FR-191 | work tracker one place for status | F133 | Bader's decision | in progress | none, branch fix-F133 | none | 2026-10-05 |
+| FR-191 | work tracker one place for status | F133 | Bader's decision | in review | UNKNOWN | none | 2026-10-05 |
 | FR-192 | code health gate lists only shrink | F134 | Bader's decision | in progress | none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health | none | 2026-10-05 |
 | FR-193 | analyser settings merged alone | F135 | Bader's decision | open | none | none | 2026-10-05 |
-| F133 | the work tracker | F133 | fix | in progress | none, branch fix-F133 | none | 2026-10-05 |
+| F133 | the work tracker | F133 | fix | in review | UNKNOWN | none | 2026-10-05 |
 | F134 | the code health gate | F134 | fix | in progress | none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health | none | 2026-10-05 |
 | F135 | the analyser settings that touch every project | F135 | fix | open | none | none | 2026-10-05 |
 | Q129 | a clean tracker and a code health gate (FR-191 to FR-193) | F133, F134, F135 | Bader's request | in progress | none, branch fix-F133 | none | 2026-10-05 |
@@ -447,5 +447,5 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | run that proved it | date of last change |
 |---|---|---|---|---|---|---|---|
-| F125 | a window that is not modal is a pane and not a dialog | F125 | fix | proven by a run | 102 | steps\runs\04\item1-C02 | 2026-10-04 |
+| F125 | a window that is not modal is a pane and not a dialog | F125 | fix | merged | 102 | steps\runs\04\item1-C02 shows the first pass only | 2026-10-04 |
 | F126 | the window driver unticks a tick box by its AutomationId | F126 | fix | merged | 112 | none | 2026-10-05 |
