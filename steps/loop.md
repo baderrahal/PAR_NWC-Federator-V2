@@ -472,8 +472,10 @@ at 13:22:20, turn5\workflow-starts.txt.
 The new chain answered P2 yes, TestsRemoveAt removes exactly one test with its results, P4 the worksets of
 1A04PK's HV and FP models, P8 yes, the 2813 legacy viewpoints found by the design's rule, P9 yes, the
 tool's mark written as a comment by AddComment, and P10 no, a view the tool makes carries no Guid,
-each in docs\history\scan.md on the branch fix-F114-probes. It was paused at 15:40 after P11 for the
-removal of the three autosaves and the measurement of Q133.
+each in docs\history\scan.md on the branch fix-F114-probes. It was paused at 15:40, P11 reading the
+pause and running nothing, turn5\probes-2-result.json, for the removal of the three autosaves, done at
+15:49 and each named under Q128, and for the measurement of Q133, which runs with P11 to P19 after it
+from 15:50.
 
 Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 at 15:42. Merged so
 far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
@@ -628,7 +630,7 @@ in the form are the questions already in steps\02_questions.md and are not repea
 
 OPEN IN THE FORM NOW: none. Q133 was ANSWERED D on 2026-10-05, both tests of a mirrored pair run and
 their clashes merged by the pair of items, and he allowed the removal of the run's three autosaves of
-Q128. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
+Q128, removed at 15:49, turn5\remove-run-autosaves.txt. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
 each answer under its question in steps\02_questions.md with what it changes, and his order of the
 work, Q132, gives in his words the order of the message headed THE VIEWPOINTS COME FIRST, whose own
 words never reached this session. Q113 was ANSWERED on 2026-10-04 in the evening.
