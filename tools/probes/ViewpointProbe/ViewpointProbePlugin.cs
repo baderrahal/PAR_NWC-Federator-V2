@@ -151,6 +151,13 @@ namespace ViewpointProbe
                             parameters.Length > 3 ? parameters[3] : null,
                             parameters.Length > 4 ? parameters[4] : null);
                     }
+                    else if (mode == "mirrorcount")
+                    {
+                        MeasureMirrorCount(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
                     else if (mode == "worksets")
                     {
                         MeasureModelWorksets(
@@ -7763,6 +7770,630 @@ namespace ViewpointProbe
             }
 
             return onlyLeft.Count == 0 && onlyRight.Count == 0;
+        }
+
+        // ---------- Q133, how often a mirror finds more, and what running both costs ----------
+
+        private sealed class Q133Test
+        {
+            public List<int> Address;
+            public string Name;
+        }
+
+        private sealed class Q133Diff
+        {
+            public int Both;
+            public readonly List<string> OnlyLeft = new List<string>();
+            public readonly List<string> OnlyRight = new List<string>();
+        }
+
+        private sealed class Q133Totals
+        {
+            public int Tests;
+            public int Same;
+            public int More;
+            public int Fewer;
+            public int Other;
+            public int Unknown;
+            public int Stored;
+            public int Original;
+            public int Swap;
+            public int OnlySwap;
+            public int OnlyOriginal;
+            public double OriginalSeconds;
+            public double SwapSeconds;
+            public double CreateSeconds;
+        }
+
+        /// <summary>
+        /// Q133 on one building. Part 1 reads the pairs F132's rule finds in the picked XML, written
+        /// by q133-rule-pairs.py, and for each pair whose two tests are both in the NWF runs both
+        /// and compares their clashes by the unordered pair of item index paths, as P1 did. Part 2
+        /// does, for every test whose stored results hold at least one clash not Resolved, what P1
+        /// did for one test: a new ClashTest with the sides swapped is added at the root, the
+        /// original is run, then the swap, each TestsRunTest timed alone, and the two compared.
+        /// Part 3 does the same for every other test of the NWF. The copy is saved to saveAs.
+        /// </summary>
+        private void MeasureMirrorCount(string nwf, string pairsFile, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count + ", document units " + document.Units);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                Model model = document.Models[m];
+                Say("   model " + m + "  " + Path.GetFileName(model.FileName)
+                    + "  under the loop folder " + (model.FileName ?? string.Empty).StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            DocumentClashTests clashTests = document.GetClash().TestsData;
+            List<Q133Test> tests = new List<Q133Test>();
+            Q133Walk(clashTests.Tests, new List<int>(), tests);
+            Dictionary<string, List<Q133Test>> byName = new Dictionary<string, List<Q133Test>>(StringComparer.Ordinal);
+            int inFolders = 0;
+
+            foreach (Q133Test t in tests)
+            {
+                List<Q133Test> same;
+
+                if (!byName.TryGetValue(t.Name, out same))
+                {
+                    same = new List<Q133Test>();
+                    byName[t.Name] = same;
+                }
+
+                same.Add(t);
+
+                if (t.Address.Count > 1)
+                {
+                    inFolders++;
+                }
+            }
+
+            int rootCount = clashTests.Tests.Count;
+            Say("tests " + tests.Count + ", at the root " + rootCount + ", in a folder " + inFolders + ", names used more than once "
+                + Q133Repeated(byName, 2));
+
+            // The stored results of every test, read before anything runs.
+            Dictionary<string, PairsFound> stored = new Dictionary<string, PairsFound>(StringComparer.Ordinal);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            int storedTotal = 0;
+            int storedTests = 0;
+
+            foreach (Q133Test t in tests)
+            {
+                using (ClashTest test = ResolveTest(clashTests, t.Address))
+                {
+                    PairsFound found = ReadPairs(document, test.Children);
+                    stored[t.Name] = found;
+                    storedTotal += found.Open.Count;
+
+                    if (found.Open.Count > 0)
+                    {
+                        storedTests++;
+                    }
+                }
+            }
+
+            Say("stored results read in " + Seconds(clock) + ": tests with at least one clash not Resolved " + storedTests
+                + ", clashes not Resolved " + storedTotal);
+            Say(string.Empty);
+
+            // ---- Part 1, the rule's pairs ----
+            Say("==== PART 1. The pairs F132's rule finds in the picked XML ====");
+            List<string[]> pairs = new List<string[]>();
+            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+
+            if (string.IsNullOrEmpty(pairsFile) || !File.Exists(pairsFile))
+            {
+                Say("UNKNOWN: no pairs file was handed in, or it is not there");
+            }
+            else
+            {
+                foreach (string line in File.ReadAllLines(pairsFile, new UTF8Encoding(false)))
+                {
+                    if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal))
+                    {
+                        if (line.Length > 0)
+                        {
+                            Say("   " + line);
+                        }
+
+                        continue;
+                    }
+
+                    string[] f = line.Split('\t');
+
+                    if (f.Length < 4)
+                    {
+                        Say("   a line of the pairs file with " + f.Length + " fields, skipped: " + line);
+                        continue;
+                    }
+
+                    if (seen.Add(f[1] + "\n" + f[2] + "\n" + f[3]))
+                    {
+                        pairs.Add(new[] { f[1], f[2], f[3] });
+                    }
+                }
+            }
+
+            Say("distinct pairs and self tests over the XMLs read: " + pairs.Count);
+            int pairsBoth = 0;
+            int pairsRun = 0;
+
+            foreach (string[] p in pairs)
+            {
+                int first = byName.ContainsKey(p[1]) ? byName[p[1]].Count : 0;
+                int second = p[2].Length == 0 ? -1 : (byName.ContainsKey(p[2]) ? byName[p[2]].Count : 0);
+                string head = "P1 PAIR  " + p[0] + "  \"" + p[1] + "\" in the NWF " + first
+                    + (second < 0 ? string.Empty : ", \"" + p[2] + "\" in the NWF " + second);
+
+                if (second < 0)
+                {
+                    if (first != 1)
+                    {
+                        Say(head + "  NOT CREATED on this building, so not run");
+                        continue;
+                    }
+
+                    pairsBoth++;
+                    double s;
+                    PairsFound self = Q133Run(document, clashTests, byName[p[1]][0], out s);
+                    pairsRun++;
+                    Say(head + "  ran in " + s.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s, clashes "
+                        + (self == null ? "UNKNOWN" : self.Open.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+                    continue;
+                }
+
+                if (first != 1 || second != 1)
+                {
+                    Say(head + "  NOT BOTH CREATED on this building, so not run");
+                    continue;
+                }
+
+                pairsBoth++;
+                double s1;
+                double s2;
+                PairsFound one = Q133Run(document, clashTests, byName[p[1]][0], out s1);
+                PairsFound two = Q133Run(document, clashTests, byName[p[2]][0], out s2);
+                pairsRun++;
+
+                if (one == null || two == null)
+                {
+                    Say(head + "  UNKNOWN, a test was not at its address when run");
+                    continue;
+                }
+
+                Q133Diff d = Q133Compare(one, two);
+                Say(head + "  first " + one.Open.Count + " in " + s1.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)
+                    + " s, second " + two.Open.Count + " in " + s2.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)
+                    + " s, in both " + d.Both + ", first only " + d.OnlyLeft.Count + ", second only " + d.OnlyRight.Count
+                    + ", items that did not read " + one.NullItems + " and " + two.NullItems);
+
+                foreach (string k in d.OnlyLeft)
+                {
+                    Say("      only in the first: " + k);
+                }
+
+                foreach (string k in d.OnlyRight)
+                {
+                    Say("      only in the second: " + k);
+                }
+            }
+
+            Say("PART 1 TOTAL  pairs and self tests " + pairs.Count + ", with every test in the NWF " + pairsBoth + ", run " + pairsRun);
+            Say(string.Empty);
+
+            // ---- Part 2 and part 3, every test against its swap ----
+            List<Q133Test> withClashes = new List<Q133Test>();
+            List<Q133Test> without = new List<Q133Test>();
+
+            foreach (Q133Test t in tests)
+            {
+                if (byName[t.Name].Count != 1)
+                {
+                    Say("SKIPPED, the name is used more than once: \"" + t.Name + "\"");
+                    continue;
+                }
+
+                if (stored[t.Name].Open.Count > 0)
+                {
+                    withClashes.Add(t);
+                }
+                else
+                {
+                    without.Add(t);
+                }
+            }
+
+            Say("==== PART 2. Every test whose stored results hold a clash, " + withClashes.Count + " tests, against its swap ====");
+            Q133Totals two2 = Q133Swaps(document, clashTests, withClashes, stored, "P2", true);
+            Q133Say("PART 2 TOTAL", two2);
+            Say(string.Empty);
+
+            Say("==== PART 3. Every other test, " + without.Count + " tests, against its swap ====");
+            Q133Totals three = Q133Swaps(document, clashTests, without, stored, "P3", false);
+            Q133Say("PART 3 TOTAL", three);
+            Say(string.Empty);
+
+            Q133Totals all = new Q133Totals();
+            Q133Add(all, two2);
+            Q133Add(all, three);
+            Q133Say("PARTS 2 AND 3 TOTAL", all);
+            Say("tests at the root at the end " + clashTests.Tests.Count + ", against " + rootCount + " at the start");
+
+            if (!string.IsNullOrEmpty(saveAs))
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.SaveFile(saveAs);
+                Say("SaveFile of the copy with the swaps into " + Path.GetFileName(saveAs) + " took " + Seconds(clock)
+                    + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            }
+        }
+
+        private static int Q133Repeated(Dictionary<string, List<Q133Test>> byName, int atLeast)
+        {
+            int n = 0;
+
+            foreach (KeyValuePair<string, List<Q133Test>> pair in byName)
+            {
+                if (pair.Value.Count >= atLeast)
+                {
+                    n++;
+                }
+            }
+
+            return n;
+        }
+
+        private static void Q133Walk(SavedItemCollection items, List<int> at, List<Q133Test> into)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    List<int> here = new List<int>(at) { i };
+
+                    if (item is ClashTest)
+                    {
+                        into.Add(new Q133Test { Address = here, Name = item.DisplayName });
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        Q133Walk(folder.Children, here, into);
+                    }
+                }
+            }
+        }
+
+        /// <summary>Runs the test at the address, its TestsRunTest timed alone, and reads its results. Null when the name does not match.</summary>
+        private static PairsFound Q133Run(Document document, DocumentClashTests clashTests, Q133Test t, out double seconds)
+        {
+            seconds = -1;
+
+            using (ClashTest test = ResolveTest(clashTests, t.Address))
+            {
+                if (test == null || test.DisplayName != t.Name)
+                {
+                    return null;
+                }
+
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                clashTests.TestsRunTest(test);
+                clock.Stop();
+                seconds = clock.Elapsed.TotalSeconds;
+            }
+
+            using (ClashTest test = ResolveTest(clashTests, t.Address))
+            {
+                return test == null ? null : ReadPairs(document, test.Children);
+            }
+        }
+
+        private static Q133Diff Q133Compare(PairsFound left, PairsFound right)
+        {
+            Q133Diff d = new Q133Diff();
+
+            foreach (string key in left.Open.Keys)
+            {
+                if (right.Open.ContainsKey(key))
+                {
+                    d.Both++;
+                }
+                else
+                {
+                    d.OnlyLeft.Add(key + "   distance " + left.Distance[key].ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+                }
+            }
+
+            foreach (string key in right.Open.Keys)
+            {
+                if (!left.Open.ContainsKey(key))
+                {
+                    d.OnlyRight.Add(key + "   distance " + right.Distance[key].ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+                }
+            }
+
+            d.OnlyLeft.Sort(StringComparer.Ordinal);
+            d.OnlyRight.Sort(StringComparer.Ordinal);
+            return d;
+        }
+
+        private static string SideSets(Document document, ClashSelection side)
+        {
+            List<string> names = new List<string>();
+
+            using (Selection selection = side.Selection)
+            {
+                SelectionSourceCollection sources = selection.SelectionSources;
+
+                for (int i = 0; i < sources.Count; i++)
+                {
+                    try
+                    {
+                        using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[i]))
+                        {
+                            names.Add(pointed == null ? "(a source that resolves to nothing)" : pointed.DisplayName);
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        names.Add("(a source that threw " + error.GetType().Name + ")");
+                    }
+                }
+
+                if (selection.HasExplicitSelection)
+                {
+                    names.Add("(explicit items)");
+                }
+            }
+
+            return string.Join(" + ", names.ToArray());
+        }
+
+        /// <summary>
+        /// Adds a new ClashTest with the original's sides swapped at the end of the root, the way P1
+        /// made its swap, and clears its results. Returns null and the swap's address, or why not.
+        /// </summary>
+        private static string Q133AddSwap(Document document, DocumentClashTests clashTests, Q133Test t, string swapName, out Q133Test swapTest, out bool sidesSwapped)
+        {
+            swapTest = null;
+            sidesSwapped = false;
+            int before = clashTests.Tests.Count;
+            string originalA;
+            string originalB;
+
+            using (ClashTest original = ResolveTest(clashTests, t.Address))
+            {
+                if (original == null || original.DisplayName != t.Name)
+                {
+                    return "the original is not at its address";
+                }
+
+                if (original.IgnoreRules.Count != 0)
+                {
+                    return "the original carries " + original.IgnoreRules.Count + " ignore rules, which a new test does not";
+                }
+
+                using (ClashTest swap = new ClashTest())
+                {
+                    swap.DisplayName = swapName;
+                    swap.TestType = original.TestType;
+                    swap.Tolerance = original.Tolerance;
+                    swap.MergeComposites = original.MergeComposites;
+                    swap.SimulationType = original.SimulationType;
+
+                    using (ClashSelection a = original.SelectionA)
+                    using (ClashSelection b = original.SelectionB)
+                    using (ClashSelection swapA = swap.SelectionA)
+                    using (ClashSelection swapB = swap.SelectionB)
+                    {
+                        originalA = SideSets(document, a);
+                        originalB = SideSets(document, b);
+                        swapA.CopyFrom(b);
+                        swapB.CopyFrom(a);
+                        swapA.SelfIntersect = b.SelfIntersect;
+                        swapB.SelfIntersect = a.SelfIntersect;
+                        swapA.PrimitiveTypes = b.PrimitiveTypes;
+                        swapB.PrimitiveTypes = a.PrimitiveTypes;
+                    }
+
+                    clashTests.TestsAddCopy(swap);
+                }
+            }
+
+            int after = clashTests.Tests.Count;
+
+            if (after != before + 1)
+            {
+                return "the root went from " + before + " to " + after + " tests, not one more";
+            }
+
+            Q133Test added = new Q133Test { Address = new List<int> { before }, Name = swapName };
+
+            using (ClashTest swap = ResolveTest(clashTests, added.Address))
+            {
+                if (swap == null || swap.DisplayName != swapName)
+                {
+                    return "the last test at the root is not the swap";
+                }
+
+                using (ClashSelection a = swap.SelectionA)
+                using (ClashSelection b = swap.SelectionB)
+                {
+                    sidesSwapped = SideSets(document, a) == originalB && SideSets(document, b) == originalA;
+                }
+
+                clashTests.TestsClearResults(swap);
+            }
+
+            swapTest = added;
+            return null;
+        }
+
+        private Q133Totals Q133Swaps(Document document, DocumentClashTests clashTests, List<Q133Test> list, Dictionary<string, PairsFound> stored, string tag, bool listPairs)
+        {
+            Q133Totals totals = new Q133Totals();
+            System.Globalization.CultureInfo inv = System.Globalization.CultureInfo.InvariantCulture;
+
+            foreach (Q133Test t in list)
+            {
+                string swapName = t.Name + " Q133 swap";
+                Q133Test swap;
+                bool sidesSwapped;
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                string why;
+
+                try
+                {
+                    why = Q133AddSwap(document, clashTests, t, swapName, out swap, out sidesSwapped);
+                }
+                catch (Exception error)
+                {
+                    why = "the swap threw " + error.GetType().Name + ": " + error.Message;
+                    swap = null;
+                    sidesSwapped = false;
+                }
+
+                double create = clock.Elapsed.TotalSeconds;
+                totals.Tests++;
+
+                if (why != null)
+                {
+                    totals.Unknown++;
+                    Say(tag + " LINE  \"" + t.Name + "\"  UNKNOWN, no swap: " + why);
+                    continue;
+                }
+
+                double s1;
+                double s2;
+                PairsFound original = Q133Run(document, clashTests, t, out s1);
+                PairsFound swapped = Q133Run(document, clashTests, swap, out s2);
+
+                if (original == null || swapped == null)
+                {
+                    totals.Unknown++;
+                    Say(tag + " LINE  \"" + t.Name + "\"  UNKNOWN, the original or the swap was not at its address when run");
+                    continue;
+                }
+
+                Q133Diff d = Q133Compare(original, swapped);
+                Q133Diff rerun = Q133Compare(stored[t.Name], original);
+                string verdict;
+
+                if (original.NullItems > 0 || swapped.NullItems > 0 || !sidesSwapped)
+                {
+                    verdict = "UNKNOWN";
+                    totals.Unknown++;
+                }
+                else if (d.OnlyLeft.Count == 0 && d.OnlyRight.Count == 0)
+                {
+                    verdict = "same";
+                    totals.Same++;
+                }
+                else if (d.OnlyLeft.Count == 0)
+                {
+                    verdict = "swap finds more";
+                    totals.More++;
+                }
+                else if (d.OnlyRight.Count == 0)
+                {
+                    verdict = "swap finds fewer";
+                    totals.Fewer++;
+                }
+                else
+                {
+                    verdict = "other clashes";
+                    totals.Other++;
+                }
+
+                totals.Stored += stored[t.Name].Open.Count;
+                totals.Original += original.Open.Count;
+                totals.Swap += swapped.Open.Count;
+                totals.OnlySwap += d.OnlyRight.Count;
+                totals.OnlyOriginal += d.OnlyLeft.Count;
+                totals.OriginalSeconds += s1;
+                totals.SwapSeconds += s2;
+                totals.CreateSeconds += create;
+
+                Say(tag + " LINE  \"" + t.Name + "\"  stored " + stored[t.Name].Open.Count
+                    + ", original run " + original.Open.Count + " in " + s1.ToString("0.000", inv) + " s"
+                    + ", swap " + swapped.Open.Count + " in " + s2.ToString("0.000", inv) + " s"
+                    + ", swap made in " + create.ToString("0.000", inv) + " s"
+                    + ", in both " + d.Both + ", original only " + d.OnlyLeft.Count + ", swap only " + d.OnlyRight.Count
+                    + ", run against stored differ " + (rerun.OnlyLeft.Count + rerun.OnlyRight.Count)
+                    + ", items that did not read " + original.NullItems + " and " + swapped.NullItems
+                    + ", sides read swapped " + sidesSwapped + ", " + verdict);
+
+                if (listPairs || d.OnlyLeft.Count > 0 || d.OnlyRight.Count > 0)
+                {
+                    foreach (string k in d.OnlyLeft)
+                    {
+                        Say("      only in the original: " + k);
+                    }
+
+                    foreach (string k in d.OnlyRight)
+                    {
+                        Say("      only in the swap: " + k);
+                    }
+                }
+            }
+
+            return totals;
+        }
+
+        private static void Q133Add(Q133Totals into, Q133Totals from)
+        {
+            into.Tests += from.Tests;
+            into.Same += from.Same;
+            into.More += from.More;
+            into.Fewer += from.Fewer;
+            into.Other += from.Other;
+            into.Unknown += from.Unknown;
+            into.Stored += from.Stored;
+            into.Original += from.Original;
+            into.Swap += from.Swap;
+            into.OnlySwap += from.OnlySwap;
+            into.OnlyOriginal += from.OnlyOriginal;
+            into.OriginalSeconds += from.OriginalSeconds;
+            into.SwapSeconds += from.SwapSeconds;
+            into.CreateSeconds += from.CreateSeconds;
+        }
+
+        private void Q133Say(string label, Q133Totals t)
+        {
+            System.Globalization.CultureInfo inv = System.Globalization.CultureInfo.InvariantCulture;
+            Say(label + "  tests " + t.Tests + ": swap finds the same " + t.Same + ", more " + t.More + ", fewer " + t.Fewer
+                + ", other clashes " + t.Other + ", UNKNOWN " + t.Unknown);
+            Say(label + "  clashes stored " + t.Stored + ", original run " + t.Original + ", swap " + t.Swap
+                + ", only the swap finds " + t.OnlySwap + ", only the original finds " + t.OnlyOriginal);
+            Say(label + "  seconds of TestsRunTest, the originals " + t.OriginalSeconds.ToString("0.000", inv)
+                + ", the swaps " + t.SwapSeconds.ToString("0.000", inv)
+                + ", both " + (t.OriginalSeconds + t.SwapSeconds).ToString("0.000", inv)
+                + ", and making the swaps " + t.CreateSeconds.ToString("0.000", inv));
         }
 
         // ---------- P4 of Q114, scan.md 5z-m ----------

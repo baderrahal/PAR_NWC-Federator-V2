@@ -6533,3 +6533,202 @@ stays out of the mark and removal re-finds by path, name and mark. The new fact 
 that a Guid the tool sets on a .NET item before AddCopy holds through the comment, the save and
 the reopen, stays unique and resolves. It could carry a folder's identity, since folders are
 written by AddCopy. It cannot carry a view's while views are written through COM.
+
+## 5z-r. HOW OFTEN A MIRROR FINDS MORE ON 1A02MM, AND WHAT RUNNING BOTH COSTS, MEASURED 2026-10-05
+
+Q133, probe Q133-1A02MM. Bader's answer D to Q133 keeps both tests of a mirrored pair, runs both
+and merges their clashes by the pair of items, and asks: "Measure on 1A02MM and 1A04PK how often a
+mirror finds more, and the extra time running both costs, and give both in the next record." This
+section is 1A02MM. The question: on 1A02MM, how many of the pairs F132's rule finds would both be
+created and what does each find, and over every test that finds a clash, how often does its swap
+find more, fewer or other clashes and what do the two runs cost against the original's alone? A
+swap that often finds more makes answer D worth its seconds. A swap that never finds more makes it
+time for nothing on this building. The letter 5z-q is left to P11, whose unrun probe in this
+worktree already names it.
+
+HOW. Three parts.
+
+1. THE RULE'S PAIRS, read off the XMLs with no Navisworks. `tools\probes\ViewpointProbe\q133-rule-pairs.py`
+   reads each set's locator and its findspec, its rule list, with every text trimmed, and pairs two
+   tests whose sides are the same two sets swapped, or the same two sets in one order, or, by
+   Bader's answer B to Q121, the same two rule lists over other sets. It also names a test with one
+   set or one rule list on both sides. It read the picked XML,
+   `%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`, sha256
+   792B01FB, and the corrected one the rule writes, `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`,
+   sha256 94897667, whose list `.corrections.txt` sits beside it:
+
+       python tools\probes\ViewpointProbe\q133-rule-pairs.py %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A02MM-rule-pairs.txt %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+
+   Its output is kept as `q133-1a02mm-rule-pairs-result-20261005.txt`.
+2. EVERY TEST THAT FINDS A CLASH, inside Navisworks. `tools\probes\ViewpointProbe\probe-mirror-count.ps1`
+   is P1's `probe-mirror-swap.ps1` with the new mode `mirrorcount` of `ViewpointProbe.dll` and the
+   pairs file in place of a test name, under the same guard, tools\loop\nw-guard.ps1 dot-sourced:
+   the Roamer refusal before anything and again before the constructor, the settings backup, the
+   adoption by AdoptStart's four conditions, Dispose, the close through the held handle only when
+   needed, and SettingsPutBack. Get-Process Roamer read 0 before the run. It copied the C02 NWF of
+   run set 04, `runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`, 41,317,271 bytes,
+   sha256 0944C100, which holds the 528 tests of set 04 with their results, into the new folder
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\mirror-count-20261005-160417`. The mode opens the copy,
+   reads every test's stored results, and runs part 1's pairs whose two tests are both in the NWF.
+   Then, for every test whose stored results hold at least one clash that is not Resolved, it adds
+   a new ClashTest with the sides swapped the way P1 made its swap, the original's type, tolerance,
+   merge composites and simulation type, side A CopyFrom the original's side B and side B from its
+   side A, with each side's self intersect and primitive types, appended at the root and checked
+   by name, and reads its two sides' set names back to check they are the original's swapped. It
+   clears the swap's results, runs the original with TestsRunTest, then the swap, each call timed
+   alone with a Stopwatch, and compares the clashes not Resolved of the two by the unordered pair of
+   the index paths of Item1 and Item2, as P1 did. A test's verdict is same, swap finds more (pairs
+   only in the swap and none only in the original), swap finds fewer, or other clashes (pairs only
+   in each)
+3. EVERY OTHER TEST, the same, beyond the brief, since a swap of a test that finds nothing could
+   find something
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-mirror-count.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A02MM-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf -PairsFile %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A02MM-rule-pairs.txt -PluginAssembly %LOCALAPPDATA%\NwcFederatorLoop\turn5\q133-1A02MM-build\out\ViewpointProbe.dll
+
+with the probe built by `dotnet build ViewpointProbe.csproj -c Release -o out` in a copy of the
+project at `%LOCALAPPDATA%\NwcFederatorLoop\turn5\q133-1A02MM-build`, because this worktree's
+ViewpointProbePlugin.cs held P11's uncommitted lines. The source committed here is that copy's,
+line for line, and the DLL's sha256 is 5D3481EF, line 24. One run at 16:04, kept as
+`q133-1a02mm-mirror-count-result-20261005.txt`, the machine name on line 1 masked by hand as
+`[machine]` and nothing else changed. Navisworks pid 52324, adopted on all four conditions, lines
+36 and 38. TryOpenFile of the copy returned True after 7.651 s with 4 models, every one read from under
+the loop folder, lines 55 to 60.
+
+THE RUN WAS STOPPED BY THE GUARD AT ITS DEADLINE. Every TestsRunTest took about 9 to 11 s, so part
+3 could not finish inside the adopted deadline of 3600 s. At 17:05:53 the watchdog closed pid 52324
+through the held handle, lines 336 and 1087, ExecuteAddInPlugin threw, line 49, and step 6, Dispose,
+was not reached. Parts 1 and 2 had finished and written their totals. Part 3 had run 123 of its 469
+tests, lines 209 to 331, and wrote no total. The copy with the swaps was not saved.
+
+**PART 1, THE RULE'S PAIRS: NONE CREATED ON 1A02MM.** Lines 1 to 8 of the pairs file, and lines 64
+to 134 of the result:
+
+```
+                                        picked XML 792B01FB   corrected XML 94897667
+tests, sets                             1830, 61              1830, 61
+pairs by swapped or repeated sets       0                     0
+pairs by the same rule lists            59                    59
+tests with one rule list on both sides  1                     1
+sets sharing one rule list              BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices, both
+on 1A02MM                               every one of the 119 tests named is in the NWF 0 times,
+                                        so not one pair has both tests created and none was run
+```
+
+So F132's rule, with Bader's answer B to Q121, finds 59 pairs and one self test in this XML, all
+of them over the Telecom and Telephone sets, and on 1A02MM none of them is created. They cost 0 s
+and find nothing here. That matches turn5\measure-mirrors.md, read only on 2026-10-04.
+
+**PART 2, EVERY TEST THAT FINDS A CLASH: A SWAP FINDS MORE ON 4 OF 59 AND OTHER CLASHES ON 1.**
+Lines 204 to 206 of the result:
+
+```
+tests whose stored results hold a clash   59, holding 2939 clashes
+the swap finds the same                   54
+the swap finds more                       4
+the swap finds fewer                      0
+the swap finds other clashes              1
+UNKNOWN                                   0
+clashes, the originals run again          2939, every test the same pairs as stored
+clashes, the swaps                        2945
+only the swap finds                       7
+only the original finds                   1
+TestsRunTest, the 59 originals            574.530 s
+TestsRunTest, the 59 swaps                570.918 s
+both                                      1145.449 s, 1.994 times the originals alone
+making the 59 swaps                       1.049 s
+```
+
+The five tests where the two differ, lines 142 to 197:
+
+```
+test                                                    original  swap  only swap  only original
+BLD-ST-Framing-vs-BLD-ST-Columns                              25    27          2              0
+BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing          40    41          1              0
+BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls             6     8          2              0
+BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors           17    18          1              0
+BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Fixtures          1     1          1              1
+```
+
+1. BLD-ST-Framing-vs-BLD-ST-Columns finds 25 and its swap 27, the same two extra pairs at the same
+   distances P1 read in 5z-k, lines 143 and 144. So P1's finding repeats in a second run
+2. Every clash only a swap finds has a distance between -0.287 ft and -1.804 ft, lines 143, 144,
+   180, 182 to 185 and 197, past the tolerance of 0.082 ft, so none sits on the tolerance's edge
+3. THE OTHER CLASHES CASE. The original finds `1.2.7.3.0.0.0.0.2 | 1.2.9.0.0.2.0.0.0` at -1.247 ft
+   and the swap `1.2.7.3.0.0.0.0.1 | 1.2.9.0.0.2.0.0.0` at -0.287 ft, lines 196 and 197. The second
+   item is the same and the first items are two children of one parent, by their index paths. Which
+   objects those are, and whether a person would read the two as one clash, is UNKNOWN, no name was
+   read
+4. On all 59 the original run again found exactly its stored pairs, run against stored differ 0, every
+   item read, and the swap's sides read back as the original's swapped
+5. Every test of the XML carries the same settings, turn5\measure-mirrors.md, so the swaps here differ
+   from their originals in nothing but the order of the sides
+
+**PART 3, 123 OF THE 469 TESTS THAT FIND NOTHING: EVERY SWAP FOUND NOTHING TOO.** Summed by the
+prober over lines 209 to 331, since the deadline stopped the run before the mode wrote a total:
+123 tests, original 0 and swap 0 clashes on every one, verdict same on every one, TestsRunTest
+1211.341 s on the originals and 1212.978 s on the swaps. The other 346 tests were not reached and
+are UNKNOWN.
+
+**THE SECONDS, AND WHY THEY DO NOT CARRY OVER.** Over all 182 tests run, parts 2 and 3, the originals
+took 1785.872 s and both 3569.769 s. A TestsRunTest here took 9.738 s on average over part 2's
+originals and 9.848 s over part 3's, whether the test found 2568 clashes or none. In the tool's own
+run of set 04 on the same building the TESTS RUN step took 118.480 s over 528 visits,
+steps\runs\04\item1-C02\run-20261004-185652.log line 508, about 0.22 s a test. So a run in this probe
+cost about 40 times what it cost in the tool's run. The document here held the 2847 saved
+viewpoints and 2939 results run 04 left in it, where the tool's run built them as it went, and four
+AutoSave files, below, were written while the last tests ran. Which of these, if any, makes the
+difference is UNKNOWN. What carries over is the ratio, both runs costing 1.99 times the original
+alone. What the extra is in the tool's run, about the TESTS RUN step's 118 s again if the ratio
+holds there, is UNKNOWN until a run of the tool with answer D measures it.
+
+**BADER'S THINGS. ONE OF HIS AUTOSAVE FILES IS GONE.** The NWF the copy was made from read sha256
+0944C100 at the start and at the end, line 1163. 35 registry values were put back, each read again
+with 0 still differing, line 1149. InfoCenter.log was put back reading its backup's sha256, line
+1152. The tool's own logs folder had nothing added or changed, line 1160. The AutoSave folder was
+listed by the prober by name, size and sha256 before the run, 199 files, and after it, 202, in
+`turn5\probe-q133-1A02MM-autosave-before.txt` and `-after.txt`, and by the guard, lines 1154 to 1159:
+
+- ADDED, by the probe's Navisworks, and LISTED, NOT DELETED, for the lead to remove:
+  `1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave363.nwf` 41,464,359 bytes sha256 30564B2B,
+  `.Autosave364.nwf` 41,464,363 bytes sha256 E7FAEEFA, `.Autosave365.nwf` 41,464,394 bytes sha256
+  73471527, and `.Autosave366.nwf` 12,464,128 bytes sha256 834F7810, written 17:05:30 to 17:05:53,
+  the last cut short when the guard closed pid 52324
+- GONE: `1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave0.nwf`, 65,627 bytes, written 2026-09-20 15:13:20,
+  sha256 8120CE8E6FEE08123648E9B689CE0652D7B3BD0DE415BC7689F7DA49001654B3. The guard lists the
+  AutoSave folder and does not copy it, so no backup of it exists, and the prober found it in no
+  Recycle Bin. It went while the probe's Navisworks ran, and the only Navisworks running then was
+  pid 52324. That this Navisworks removed it, as autosaves of the same name were added, is the
+  prober's reading, and what removed it is UNKNOWN from the record. It cannot be put back from
+  anything this probe kept
+
+THE PROGRAMS. One Navisworks, pid 52324, started by the probe at 16:04:25 and closed by the guard
+through the held handle at the deadline, and gone, lines 335 and 336. AdskLicensingAgent pid 34240,
+its child, read UNKNOWN at the end, line 1093, and no process held pid 34240 when the prober read it
+after. No Roamer that was not there in step 2 ran at the end, line 1107. At 17:10 the prober read one
+process named Roamer.exe, pid 31672, started 17:10:20 from
+`%LOCALAPPDATA%\NwcFederatorLoop\test-f131-before\standin-bin\Roamer.exe` with the arguments
+`sleep 300`, another session's stand-in and not Navisworks. The probe did not start it and touched
+nothing of it.
+
+**STILL UNKNOWN.**
+
+- 1A04PK. This section is 1A02MM only
+- the 346 tests of part 3 not reached
+- why a TestsRunTest took about 10 s here against about 0.22 s in the tool's run, and so the extra
+  seconds answer D costs in the tool's run
+- why a swap finds more on these five. Whether Hard Conservative is not symmetric by design, or what
+  in these items makes the difference, is not read here. Four of the five have a ST set on the
+  original's side B, and the fifth is EL against EL
+- whether the Clash Detective panel shows the same counts. The panel was not read
+- whether the other clashes case is one clash seen on two children of one object
+- what removed Bader's Autosave0.nwf of 1A02MM, and whether any copy of it exists anywhere
+
+**WHAT THIS DECIDES.** For the record Bader asked for, 1A02MM: of the 59 tests that find a clash, a
+swap finds more on 4 and other clashes on 1, so 5 of 59 find something the original does not, 7
+clashes in all against the originals' 2939, and none of the 123 tests of part 3 reached found
+anything either way. Running both cost 1145.449 s of TestsRunTest against 574.530 s for the
+originals alone, here, 1.99 times. F132's rule, by swapped sets or by the same rule list, finds no
+pair whose two tests are created on 1A02MM, so the merge by the pair of items has nothing to merge
+here, and every clash only a swap finds comes from a swap no rule pair names.
