@@ -6381,3 +6381,155 @@ DocumentSavedViewpoints.AddComment after the add with a comment from
 Document.CreateCommentWithUniqueId. The COM route before the add, which P6 made the first try, is
 not used, because the body written never read back. The counts held, so the mark need not be
 written before the read back. B7 is not put to Bader.
+
+## 5z-p. DOES A SAVED VIEWPOINT'S GUID HOLD THROUGH A COMMENT, A SAVE AND A REOPEN, MEASURED 2026-10-05
+
+P10 of Q114, the views by team design, part 3. P8 read the empty Guid on every item of the
+baseline's tree, 5z-n, and asked whether a Guid is empty before a save and whether one set by the
+tool survives a save. The question: does a viewpoint's SavedItem.Guid read the same after the
+comment edit and after a save and a reopen, is it unique in the tree, and does
+DocumentSavedViewpoints.ResolveGuid return the item? Yes: the Guid goes in the mark and removal
+re-finds by it. No: the Guid stays out, and removal re-finds by path, name and mark.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-guids.ps1` is P9's `probe-view-comments.ps1` with the
+new mode `vpguid` of `ViewpointProbe.dll` in place of `vpcomment`, and `-Nwf` taken from under
+`%LOCALAPPDATA%\NwcFederatorLoop\probes` in place of `runs`, because the row works on P9's saved
+copy. The guard is the loop's, tools\loop\nw-guard.ps1 dot-sourced, with the Roamer refusal, the
+settings backup, the adoption by AdoptStart's four conditions, Dispose, the close through the held
+handle only when needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0 after
+it. The probe copied P9's
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf`,
+41,319,461 bytes, sha256 869DD965, into the new folder `probes\view-guids-20261005-152023`, and the
+mode, on that copy:
+
+1. opens it, walks the whole saved viewpoint tree and counts every item's Guid, the empty ones and
+   the ones more than one item carries, and reads the Guid, the index path by CreateIndexPath and
+   ResolveGuid of the Guid on six items P9 left: E1 and E2 the COM views `P9 view addcomment after
+   add` and `P9 view plain` two folders deep, E3 the .NET folder `P9 probe / P9 sub`, E4 the COM
+   folder `P9 probe / P9 com folder`, E5 the .NET folder `P9 probe` at the root, E6 F85's view
+   `AR vs ME / Over 150mm / BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1`. Then
+   ResolveGuid of the empty Guid
+2. makes five new items, each read back right after its add, re-found by its names from a fresh
+   RootItem: N1 the folder `P10 probe` at the root by FolderItem and AddCopy, the Guid untouched,
+   the tool's folder route. N2 a FolderItem whose Guid the probe set to Guid.NewGuid() before
+   AddCopy. N3 a COM view by InwSavedViewsColl.Add into `P10 probe`, ApplyHideAttribs and
+   ApplyMaterialAttribs true, the tool's view route of 5m. N4 a .NET `new SavedViewpoint(Viewpoint)`
+   by AddCopy, the Guid untouched. N5 the same with its Guid set to Guid.NewGuid() before AddCopy
+3. writes one comment on each of the eleven by DocumentSavedViewpoints.AddComment, the comment
+   from Document.CreateCommentWithUniqueId as P9 made it, and reads each Guid again
+4. walks the tree again and reads every item with ResolveGuid, saves into `p10-copy-saved.nwf` in
+   the work folder, calls Document.Clear and TryOpenFile of the saved file, and walks and reads
+   every item with ResolveGuid once more. ResolveGuid counts as giving the item only when what it
+   returns has the same name, Ordinal, and the same index path, and the Guid is not empty
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-guids.ps1 -Out tools\probes\ViewpointProbe\p10-view-guids-result-20261005.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+One run at 15:20, `p10-view-guids-result-20261005.txt`, the machine name on line 1 masked by hand
+as `[machine]` and nothing else changed. Navisworks pid 37232, adopted on all four conditions,
+line 37. TryOpenFile of the copy returned True after 9.866 s with 4 models, every one read from
+under the loop folder, lines 55 to 60. ExecuteAddInPlugin returned 0 after 51.11 s, line 48.
+Dispose returned and pid 37232 was gone 7.2 s later, not forced, line 164.
+
+**THE ANSWER IS NO ON THE TOOL'S ROUTES. A GUID HOLDS ONLY WHERE THE TOOL SETS IT BEFORE AN
+ADDCOPY.** Lines 146 to 158 of the result, each Guid cut to its first 8 characters, each route shortened and\nthe six rows of E1 to E6 joined into one, since they read alike:
+
+```
+EACH TARGET:  label | the Guid at each stage | the same at every stage | not empty | unique before the save, after the reopen | ResolveGuid gave the item before the save, after the reopen | the set Guid kept | all
+   E1 to E6, P9's items and F85's view | open, edit, save, reopen all 00000000 | YES | NO | NO, NO | NO, NO | not set | NO
+   N1 .NET folder by AddCopy, the tool's folder route | add, edit, save, reopen all 00000000 | YES | NO | NO, NO | NO, NO | not set | NO
+   N2 .NET folder, its Guid set before AddCopy | add, edit, save, reopen all b672e45a | YES | YES | YES, YES | YES, YES | YES | YES
+   N3 COM view by InwSavedViewsColl.Add, the tool's view route | add, edit, save, reopen all 00000000 | YES | NO | NO, NO | NO, NO | not set | NO
+   N4 .NET SavedViewpoint by AddCopy, the Guid untouched | add, edit, save, reopen all 00000000 | YES | NO | NO, NO | NO, NO | not set | NO
+   N5 .NET SavedViewpoint, its Guid set before AddCopy | add, edit, save, reopen all 8e38aecf | YES | YES | YES, YES | YES, YES | YES | YES
+P10 by route: the tool's view route, a COM view, NO. The tool's folder route, a .NET folder by AddCopy, NO. Any item of any route YES
+P10 NO
+```
+
+1. THE TREE. At the open: 2875 items, 2875 empty Guids, 0 reads threw, line 63. That is P9's 2850
+   viewpoints and 25 folders. Before the save: 2880 items, 2878 empty, 2 distinct Guids that are
+   not empty and none carried by two items, line 115. After the reopen the same, line 132. The
+   two that are not empty are N2's and N5's
+2. AN ITEM NOBODY GAVE A GUID HAS NONE, BEFORE A SAVE TOO. N1, N3 and N4 read the empty Guid right
+   after their add, before any save, lines 75, 81 and 84. A new FolderItem and a new
+   SavedViewpoint read the empty Guid before their AddCopy too, lines 73, 82 and 85. So the empty
+   Guid P8 read is not a loss in the NWF. No item is given one by AddCopy, by the COM add, by
+   AddComment, by SaveFile or by the reopen
+3. A GUID SET BEFORE ADDCOPY HOLDS. N2 and N5 read back the Guid the probe set, off the item
+   before the add, lines 76 and 86, and off the document item after the add, lines 78 and 88,
+   after AddComment, lines 106 and 112, before the save, lines 123 and 126, and after the save, the
+   clear and the reopen, lines 140 and 143. Each was carried by exactly 1 item of the tree, and
+   ResolveGuid returned that item, same name and same index path, 17.0 and 17.3, before the save
+   and after the reopen, each call under 0.001 s
+4. RESOLVEGUID OF THE EMPTY GUID RETURNS NULL, line 70, and returned null for every item whose Guid
+   is empty, at every stage, lines 64 to 69, 116 to 122, 124, 125, 133 to 139, 141 and 142. It never threw
+5. THE COMMENT EDIT MOVES NO GUID. On all eleven items the Guid read just before AddComment and
+   just after it are equal, lines 91 to 112. Each AddComment took at most 0.008 s
+6. A READ THE ROW DID NOT ASK. `CreateReference(item).SavedItemId` reads the item's folder names
+   and its own name joined by line feeds, such as `P9 probe\u000AP9 sub\u000AP9 view plain`, on
+   every item at every stage, lines 64 to 143. It is a path of names, not an id
+7. A READ THE ROW DID NOT ASK. N3's InwSavedViewsColl.Add into a folder holding one folder took
+   12.744 s, line 80, in a document of 2875 items. P9's took about 9 s each. Why is UNKNOWN
+
+THE REFLECTION. Read in this session off
+`C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Api.dll`: SavedItem has a
+public `Guid` with a getter and a setter, and `CreateCopy()` and `CreateUniqueCopy()`.
+DocumentSavedViewpoints has `ResolveGuid(Guid)`, `CreateReference(SavedItem)`,
+`ResolveReference(SavedItemReference)`, `CreateIndexPath(SavedItem)`, `ResolveIndexPath`,
+`EditDisplayName` and `EditComments`, and no member that sets the Guid of an item already in the
+document. That is the member list, not a run.
+
+SaveFile took 16.653 s, 41,319,767 bytes read back, line 127. Document.Clear took 1.412 s, line
+128. TryOpenFile of the saved file took 10.149 s, line 129. The saved copy is
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\view-guids-20261005-152023\p10-copy-saved.nwf`, sha256
+3CC51A5A3B4F8F027090FCF3EA1313D0D74C67747EB679D94D0FF9826D3DA75E, line 160.
+
+**BADER'S THINGS. HIS SETTINGS WERE NOT PUT BACK.** The NWF the copy was made from read sha256
+869DD965 at the start and at the end, lines 22 and 265. No AutoSave file was added, changed or
+gone, line 261. The prober also listed the AutoSave folder with each file's sha256 before the run
+and again after it: 202 files both times, 0 differing. The tool's own logs folder had nothing
+added or changed, line 262. But the guard's PutBackReasons gave one reason, line 213: `Roamer 37232
+was seen at a watchdog pass with no readable start time, and cannot be shown to be the adopted
+one`. So by the guard's rule nothing was put back and nothing was written, lines 212 to 260, and
+the backup is kept in `probes\view-guids-20261005-152023`, the registry export
+`hkcu-navisworks-manage-22.0-before.reg` and the folder `appdata-before`. 40 registry values differ
+from the backup, lines 215 to 255: the four AutoRecover values, four CER counters, MainWindow
+Placement, PluginOptions DefaultPlugin and the 30 values of the ten Recent File List entries.
+InfoCenter.log and LastSession.xml differ, lines 257 and 258. The watchdog's record holds one
+Roamer only, pid 37232: seen with no readable start time on a pass whose line was written at
+15:20:33.643, line 172, and at the next pass as new, started 15:20:33.620 with -Embedding, line
+173, the process adopted. The guard skips such a sighting only when the time of the pass that saw
+it is at or after the adopted start. Read off the guard's code, that time is taken at the start of
+the pass, before its process list, so a pass that began before 15:20:33.620 and listed the process
+after would fail the check. That this is what happened is the prober's reading of the code, and it
+is UNKNOWN from the record, which writes the line's time and not the pass's. Two AdskLicensingAgent
+processes were children of pid 37232, lines 176 and 177. Pid 52792 read exited, line 205. Pid
+53748's start time could not be read, so the probe said UNKNOWN whether it exited, line 204. Read
+again by the prober after the run, no process held pid 53748. The two AdskLicensingAgent processes
+still running, pids 9444 and 41324, are the ones 5z-n names, and the probe touched neither.
+
+**STILL UNKNOWN.**
+
+- whether the tool's COM view can carry a Guid at all. N3 read empty, nothing on the COM view was
+  tried to set one, and the DLL has no member that sets the Guid of an item already in the document.
+  Whether a COM view copied by the .NET API, given a Guid and put back by ReplaceWithCopy, keeps
+  its camera, its hidden state and its colours was not measured
+- whether a Guid set before AddCopy survives a reopen in a new Navisworks. The close was
+  Document.Clear inside the same Navisworks
+- whether a copy of an item with a Guid, by AddCopy of SavedItem.CreateCopy, carries the same
+  Guid. P11 asks that, and it bears on uniqueness, because two items with one Guid are then
+  possible
+- what ResolveGuid returns when two items carry one Guid. No such tree was read
+- the Saved Viewpoints window was not read
+- why Bader's settings could not be put back beyond the reading of the code above, and whether
+  they are put back. That is the lead's, from the backup kept in the work folder
+- why each COM add into a folder takes 9 to 13 s here
+
+**WHAT THIS DECIDES.** By the row of P10, NO: on the tool's own routes, a COM view and a .NET
+folder by AddCopy, the Guid reads empty at every stage and ResolveGuid returns null, so the Guid
+stays out of the mark and removal re-finds by path, name and mark. The new fact for the design is
+that a Guid the tool sets on a .NET item before AddCopy holds through the comment, the save and
+the reopen, stays unique and resolves. It could carry a folder's identity, since folders are
+written by AddCopy. It cannot carry a view's while views are written through COM.

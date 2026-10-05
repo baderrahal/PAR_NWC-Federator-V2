@@ -163,6 +163,12 @@ namespace ViewpointProbe
                             parameters[2],
                             parameters.Length > 3 ? parameters[3] : null);
                     }
+                    else if (mode == "vpguid")
+                    {
+                        MeasureViewGuids(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
                     else if (mode == "vpcomment")
                     {
                         MeasureViewComments(
@@ -9253,6 +9259,538 @@ namespace ViewpointProbe
             }
 
             return views;
+        }
+
+        // ---------- P10 of Q114, scan.md 5z-p, does a saved item's Guid hold and resolve ----------
+
+        private const string P10Top = "P10 probe";
+        private const string P10Body = "P10 probe comment, the edit whose effect on the Guid is read";
+
+        private sealed class P10Target
+        {
+            public string Label;
+            public string Route;
+            public bool IsFolder;
+            public bool New;
+            public List<string> Path = new List<string>();
+            public Guid Set = Guid.Empty;
+            public readonly List<string> Stages = new List<string>();
+            public readonly Dictionary<string, string> GuidAt = new Dictionary<string, string>(StringComparer.Ordinal);
+            public readonly Dictionary<string, bool> UniqueAt = new Dictionary<string, bool>(StringComparer.Ordinal);
+            public readonly Dictionary<string, bool> ResolvedAt = new Dictionary<string, bool>(StringComparer.Ordinal);
+        }
+
+        private sealed class GuidTally
+        {
+            public int Items;
+            public int Empty;
+            public int Threw;
+            public readonly Dictionary<Guid, int> Count = new Dictionary<Guid, int>();
+        }
+
+        /// <summary>
+        /// P10: does a viewpoint's Guid read the same after the comment edit and after a save and a
+        /// reopen, is it unique in the tree, and does ResolveGuid return the item? Read on the items
+        /// P9 left in its saved copy and on new items made here by the routes the tool uses, a COM
+        /// view by InwSavedViewsColl.Add and a .NET folder by FolderItem and AddCopy, and by the
+        /// .NET routes with the Guid set before AddCopy and without.
+        /// </summary>
+        private void MeasureViewGuids(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            List<P10Target> targets = new List<P10Target>();
+            P10NewTarget(targets, "E1", "P9's COM view with P9's AddComment comment", false, false, P9Top, P9Sub, "P9 view addcomment after add");
+            P10NewTarget(targets, "E2", "P9's COM view with no comment", false, false, P9Top, P9Sub, "P9 view plain");
+            P10NewTarget(targets, "E3", "P9's .NET folder by FolderItem and AddCopy, one below a root folder", true, false, P9Top, P9Sub);
+            P10NewTarget(targets, "E4", "P9's COM folder view", true, false, P9Top, P9ComFolder);
+            P10NewTarget(targets, "E5", "P9's .NET folder at the root", true, false, P9Top);
+            List<string> legacyPath = FirstViewTwoDeep(document);
+
+            if (legacyPath != null)
+            {
+                P10NewTarget(targets, "E6", "an F85 viewpoint two folders deep, P9's L1", false, false, legacyPath.ToArray());
+            }
+            else
+            {
+                Say("UNKNOWN: no viewpoint two folders deep, so E6 is not read");
+            }
+
+            P10Target n1 = P10NewTarget(targets, "N1", "a .NET folder at the root by FolderItem and AddCopy, the Guid untouched, the tool's folder route", true, true, P10Top);
+            P10Target n2 = P10NewTarget(targets, "N2", "a .NET folder by FolderItem and AddCopy, its Guid set before the AddCopy", true, true, P10Top, "P10 folder guid set");
+            P10Target n3 = P10NewTarget(targets, "N3", "a COM view by InwSavedViewsColl.Add into a folder, the tool's view route", false, true, P10Top, "P10 com view");
+            P10Target n4 = P10NewTarget(targets, "N4", "a .NET SavedViewpoint(Viewpoint) by AddCopy, the Guid untouched", false, true, P10Top, "P10 net view");
+            P10Target n5 = P10NewTarget(targets, "N5", "a .NET SavedViewpoint(Viewpoint) by AddCopy, its Guid set before the AddCopy", false, true, P10Top, "P10 net view guid set");
+
+            Say(string.Empty);
+            Say("STAGE open, P9's items as the saved copy gives them:");
+            GuidTally atOpen = P10Tree(document, "at the open");
+
+            foreach (P10Target t in targets)
+            {
+                if (!t.New)
+                {
+                    P10Read(document, t, "open", atOpen, true);
+                }
+            }
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                using (SavedItem empty = document.SavedViewpoints.ResolveGuid(Guid.Empty))
+                {
+                    Say("ResolveGuid(the empty Guid) returned after " + Seconds(clock) + ": "
+                        + (empty == null ? "null" : "a " + empty.GetType().Name + " [" + Shown(empty.DisplayName) + "] at " + P10IndexPath(document, empty)));
+                }
+            }
+            catch (Exception error)
+            {
+                Say("ResolveGuid(the empty Guid) THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            Say(string.Empty);
+            Say("THE NEW ITEMS, each read back right after its add, re-found by its names from a fresh RootItem:");
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P10Top;
+                    Say("N1 the FolderItem's Guid before the AddCopy " + folder.Guid);
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                Say("N1 AddCopy at the root RETURNED after " + Seconds(clock));
+            }
+            catch (Exception error)
+            {
+                Say("N1 THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            P10Read(document, n1, "add", null, false);
+
+            try
+            {
+                using (GroupItem top = (GroupItem)ResolveNames(document, new List<string> { P10Top }))
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = n2.Path[1];
+                    n2.Set = Guid.NewGuid();
+                    folder.Guid = n2.Set;
+                    Say("N2 the FolderItem's Guid set to " + n2.Set + ", read back off it before the AddCopy " + folder.Guid);
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.SavedViewpoints.AddCopy(top, folder);
+                    Say("N2 AddCopy RETURNED after " + Seconds(clock));
+                }
+            }
+            catch (Exception error)
+            {
+                Say("N2 THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            P10Read(document, n2, "add", null, false);
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                try
+                {
+                    InwOpState10 state = ComApiBridge.State;
+                    InwOpFolderView comTop = FindComFolderAt(state, P10Top);
+                    Say("N3 the COM folder \"" + P10Top + "\" found " + (comTop != null));
+                    InwOpView view = NewComView(state, n3.Path[1], camera);
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    comTop.SavedViews().Add(view);
+                    Say("N3 InwSavedViewsColl.Add RETURNED after " + Seconds(clock));
+                }
+                catch (Exception error)
+                {
+                    Say("N3 THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P10Read(document, n3, "add", null, false);
+
+                foreach (P10Target net in new[] { n4, n5 })
+                {
+                    try
+                    {
+                        using (GroupItem top = (GroupItem)ResolveNames(document, new List<string> { P10Top }))
+                        using (SavedViewpoint view = new SavedViewpoint(camera))
+                        {
+                            view.DisplayName = net.Path[1];
+                            Say(net.Label + " the SavedViewpoint's Guid before anything is set " + view.Guid);
+
+                            if (net == n5)
+                            {
+                                n5.Set = Guid.NewGuid();
+                                view.Guid = n5.Set;
+                                Say("N5 its Guid set to " + n5.Set + ", read back off it before the AddCopy " + view.Guid);
+                            }
+
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddCopy(top, view);
+                            Say(net.Label + " AddCopy RETURNED after " + Seconds(clock));
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Say(net.Label + " THREW " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    P10Read(document, net, "add", null, false);
+                }
+            }
+
+            Say(string.Empty);
+            Say("THE COMMENT EDIT, AddComment with a comment from CreateCommentWithUniqueId on every item, the Guid read just before and just after:");
+
+            foreach (P10Target t in targets)
+            {
+                try
+                {
+                    using (SavedItem item = ResolveNames(document, t.Path))
+                    {
+                        if (item == null)
+                        {
+                            Say("   " + t.Label + " NOT FOUND by its names, so no comment is written");
+                            continue;
+                        }
+
+                        Guid before = item.Guid;
+
+                        using (Comment comment = document.CreateCommentWithUniqueId(P10Body, CommentStatus.New, P9Author))
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddComment(item, comment);
+                            Say("   " + t.Label + " AddComment RETURNED after " + Seconds(clock) + ", the Guid just before " + before);
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("   " + t.Label + " AddComment THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P10Read(document, t, "edit", null, false);
+            }
+
+            Say(string.Empty);
+            Say("STAGE before the save, the whole tree and every item, with ResolveGuid:");
+            GuidTally beforeSave = P10Tree(document, "before the save");
+
+            foreach (P10Target t in targets)
+            {
+                P10Read(document, t, "save", beforeSave, true);
+            }
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P10 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("STAGE after a save, a clear and a reopen, the whole tree and every item, with ResolveGuid:");
+            GuidTally reopenTally = P10Tree(document, "after the reopen");
+
+            foreach (P10Target t in targets)
+            {
+                P10Read(document, t, "reopen", reopenTally, true);
+            }
+
+            Say(string.Empty);
+            Say("EACH TARGET:  label | route | the Guid at each stage | the same at every stage | not empty | unique in the tree before the save, after the reopen | ResolveGuid gave the item before the save, after the reopen | the set Guid kept | all of these");
+            bool toolView = false;
+            bool toolFolder = false;
+            bool anyKept = false;
+
+            foreach (P10Target t in targets)
+            {
+                List<string> shown = new List<string>();
+                HashSet<string> distinct = new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (string stage in t.Stages)
+                {
+                    string g;
+                    t.GuidAt.TryGetValue(stage, out g);
+                    shown.Add(stage + " " + (g ?? "UNKNOWN"));
+                    distinct.Add(g ?? "UNKNOWN");
+                }
+
+                bool same = t.Stages.Count > 0 && distinct.Count == 1 && !distinct.Contains("UNKNOWN") && !distinct.Contains("NOT FOUND") && !distinct.Contains("THREW");
+                bool notEmpty = same && !distinct.Contains(Guid.Empty.ToString());
+                bool uniqueSave = P10Flag(t.UniqueAt, "save");
+                bool uniqueReopen = P10Flag(t.UniqueAt, "reopen");
+                bool resolvedSave = P10Flag(t.ResolvedAt, "save");
+                bool resolvedReopen = P10Flag(t.ResolvedAt, "reopen");
+                string setKept = t.Set == Guid.Empty ? "not set" : Yes(same && distinct.Contains(t.Set.ToString()));
+                bool all = same && notEmpty && uniqueSave && uniqueReopen && resolvedSave && resolvedReopen;
+
+                Say("   " + t.Label + " | " + t.Route + " | " + string.Join(", ", shown.ToArray()) + " | " + Yes(same) + " | " + Yes(notEmpty)
+                    + " | " + Yes(uniqueSave) + ", " + Yes(uniqueReopen) + " | " + Yes(resolvedSave) + ", " + Yes(resolvedReopen) + " | " + setKept
+                    + " | " + Yes(all));
+
+                if (t == n3)
+                {
+                    toolView = all;
+                }
+
+                if (t == n1)
+                {
+                    toolFolder = all;
+                }
+
+                if (all)
+                {
+                    anyKept = true;
+                }
+            }
+
+            Say("P10 by route: the tool's view route, a COM view, " + Yes(toolView) + ". The tool's folder route, a .NET folder by AddCopy, " + Yes(toolFolder)
+                + ". Any item of any route " + Yes(anyKept));
+            Say("P10 " + (toolView && toolFolder ? "YES" : "NO")
+                + "   a Guid that is not empty, the same after the comment edit and after a save, a clear and a reopen, unique in the tree, and resolved by ResolveGuid to the item, on the tool's view and folder routes");
+        }
+
+        private static bool P10Flag(Dictionary<string, bool> flags, string stage)
+        {
+            bool value;
+            return flags.TryGetValue(stage, out value) && value;
+        }
+
+        private static P10Target P10NewTarget(List<P10Target> into, string label, string route, bool isFolder, bool isNew, params string[] path)
+        {
+            P10Target target = new P10Target();
+            target.Label = label;
+            target.Route = route;
+            target.IsFolder = isFolder;
+            target.New = isNew;
+            target.Path.AddRange(path);
+            into.Add(target);
+            return target;
+        }
+
+        private static string P10IndexPath(Document document, SavedItem item)
+        {
+            try
+            {
+                System.Collections.ObjectModel.Collection<int> path = document.SavedViewpoints.CreateIndexPath(item);
+
+                if (path == null)
+                {
+                    return "null";
+                }
+
+                List<string> parts = new List<string>();
+
+                foreach (int i in path)
+                {
+                    parts.Add(i.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                }
+
+                return string.Join(".", parts.ToArray());
+            }
+            catch (Exception error)
+            {
+                return "THREW " + error.GetType().Name;
+            }
+        }
+
+        /// <summary>Reads one target's Guid and index path at a stage, and where a tally is given, its uniqueness, and where asked, ResolveGuid.</summary>
+        private void P10Read(Document document, P10Target t, string stage, GuidTally tally, bool resolve)
+        {
+            t.Stages.Add(stage);
+
+            try
+            {
+                using (SavedItem item = ResolveNames(document, t.Path))
+                {
+                    if (item == null)
+                    {
+                        t.GuidAt[stage] = "NOT FOUND";
+                        Say("   " + t.Label + " at " + stage + ": NOT FOUND by its names [" + Shown(string.Join(" / ", t.Path.ToArray())) + "]");
+                        return;
+                    }
+
+                    Guid guid = item.Guid;
+                    string at = P10IndexPath(document, item);
+                    string reference;
+
+                    try
+                    {
+                        using (SavedItemReference r = document.SavedViewpoints.CreateReference(item))
+                        {
+                            reference = r == null ? "null" : "SavedItemId [" + Shown(r.SavedItemId) + "]";
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        reference = "THREW " + error.GetType().Name;
+                    }
+
+                    t.GuidAt[stage] = guid.ToString();
+                    string line = "   " + t.Label + " at " + stage + ": a " + item.GetType().Name + ", Guid " + guid + ", index path " + at
+                        + ", comments " + (item.Comments == null ? 0 : item.Comments.Count) + ", CreateReference " + reference;
+
+                    if (tally != null)
+                    {
+                        int count;
+                        tally.Count.TryGetValue(guid, out count);
+                        t.UniqueAt[stage] = guid != Guid.Empty && count == 1;
+                        line += ", items in the tree with this Guid " + count;
+                    }
+
+                    if (resolve)
+                    {
+                        System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+                        try
+                        {
+                            using (SavedItem found = document.SavedViewpoints.ResolveGuid(guid))
+                            {
+                                string seconds = Seconds(clock);
+
+                                if (found == null)
+                                {
+                                    t.ResolvedAt[stage] = false;
+                                    line += ", ResolveGuid null after " + seconds;
+                                }
+                                else
+                                {
+                                    string foundAt = P10IndexPath(document, found);
+                                    bool same = string.Equals(found.DisplayName, item.DisplayName, StringComparison.Ordinal) && string.Equals(foundAt, at, StringComparison.Ordinal);
+                                    t.ResolvedAt[stage] = same && guid != Guid.Empty;
+                                    line += ", ResolveGuid after " + seconds + " gave a " + found.GetType().Name + " [" + Shown(found.DisplayName) + "] at " + foundAt
+                                        + (same ? ", THE SAME ITEM" : ", ANOTHER ITEM");
+                                }
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            t.ResolvedAt[stage] = false;
+                            line += ", ResolveGuid THREW " + error.GetType().Name + ": " + error.Message;
+                        }
+                    }
+
+                    Say(line);
+                }
+            }
+            catch (Exception error)
+            {
+                t.GuidAt[stage] = "THREW";
+                Say("   " + t.Label + " at " + stage + ": the read THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        /// <summary>Every item's Guid in the saved viewpoint tree, counted.</summary>
+        private GuidTally P10Tree(Document document, string when)
+        {
+            GuidTally tally = new GuidTally();
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                P10TreeUnder(root, tally);
+            }
+
+            int shared = 0;
+            int itemsShared = 0;
+
+            foreach (KeyValuePair<Guid, int> pair in tally.Count)
+            {
+                if (pair.Key != Guid.Empty && pair.Value > 1)
+                {
+                    shared++;
+                    itemsShared += pair.Value;
+                }
+            }
+
+            int distinct = tally.Count.Count - (tally.Count.ContainsKey(Guid.Empty) ? 1 : 0);
+            Say("the tree " + when + ": items " + tally.Items + ", Guid reads that threw " + tally.Threw + ", empty Guids " + tally.Empty
+                + ", distinct Guids that are not empty " + distinct + ", Guids that are not empty carried by more than one item " + shared
+                + " over " + itemsShared + " items, the walk " + Seconds(clock));
+            return tally;
+        }
+
+        private static void P10TreeUnder(GroupItem parent, GuidTally tally)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    tally.Items++;
+
+                    try
+                    {
+                        Guid guid = child.Guid;
+                        int count;
+                        tally.Count.TryGetValue(guid, out count);
+                        tally.Count[guid] = count + 1;
+
+                        if (guid == Guid.Empty)
+                        {
+                            tally.Empty++;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        tally.Threw++;
+                    }
+
+                    GroupItem group = child as GroupItem;
+
+                    if (group != null)
+                    {
+                        P10TreeUnder(group, tally);
+                    }
+                }
+            }
         }
     }
 }
