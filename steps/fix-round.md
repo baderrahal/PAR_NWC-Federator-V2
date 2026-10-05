@@ -4765,6 +4765,10 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
   pairs listed in the COVERAGE block
 - Class: Bader's decision
 - Designed on 2026-10-05, turn5\q114-design.md section 1.4. Probe P1 measures that a test and its swap find the same clashes. Question for Bader: Q121
+- Measured on 2026-10-05 by probe P1, scan.md 5z-k on the branch fix-F114-probes: the swap of
+  BLD-ST-Framing-vs-BLD-ST-Columns, run beside it on a copy of the C02 NWF, found 27 clashes where the
+  original found 25, all 25 among the 27. So a mirror can find what the kept test does not. Q133 asks
+  Bader, the build going on with A, his rule as written with the risk said in the log
 
 ### FR-183 mirrored-tests-in-an-existing-nwf
 
