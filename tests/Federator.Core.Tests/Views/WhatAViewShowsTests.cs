@@ -131,6 +131,47 @@ namespace Federator.Core.Tests
             Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "ME" }), "only the home that was read and is of the group");
         }
 
+        /// <summary>
+        /// F114 attempt 4, the breaker's blocking finding of attempt 3. A home was matched to a
+        /// model by its exact text, so a home written as a path, or in another case, missed every
+        /// model and the view showed nothing. A home and a model are matched by the one rule of
+        /// what a name is, ContainerName.Stem compared without case, as SimilarNames compares a
+        /// name in the NWF folder.
+        /// </summary>
+        [Test]
+        public void AHomeWrittenAsAPathOrInAnotherCaseIsTheModelOfThatFileName()
+        {
+            ModelTeam[] models = { Model("AR"), Model("EL"), Model("ME"), Model("ST") };
+
+            ShownModels shown = ShownModels.For(PairOf("ST", "EL"), models, new[]
+            {
+                @"C:\Projects\1A02MM\" + Model("EL").FileName,
+                "D:/federated/" + Model("ST").FileName.ToUpperInvariant()
+            });
+
+            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "EL", "ST" }));
+            Assert.That(CodesOf(shown.Hidden), Is.EqualTo(new[] { "AR", "ME" }));
+            Assert.That(shown.HomesNotInGroup, Is.Empty);
+        }
+
+        /// <summary>
+        /// F114 attempt 4: the rule runs both ways. A model handed in by its path is matched by a
+        /// home that gives only its file name, or its name with no extension, as a display name
+        /// can, and a home of another file of a like name is still no model of the group.
+        /// </summary>
+        [Test]
+        public void AModelHandedInByItsPathIsMatchedByItsFileName()
+        {
+            ModelTeam el = new ModelTeam(@"C:\Projects\1A02MM\" + Model("EL").FileName, "EL", "Electrical");
+            ModelTeam st = new ModelTeam("D:/federated/" + Model("ST").FileName, "ST", "Structure");
+            string stStem = Model("ST").FileName.Substring(0, Model("ST").FileName.Length - ".nwc".Length);
+
+            ShownModels shown = ShownModels.For(PairOf("ST", "EL"), new[] { el, st }, new[] { Model("EL").FileName, stStem, Model("ST", "000002").FileName });
+
+            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "EL", "ST" }));
+            Assert.That(shown.HomesNotInGroup, Is.EqualTo(new[] { Model("ST", "000002").FileName }));
+        }
+
         /// <summary>Q119 B: a model whose code will not read is hidden where no item lives in it, and shown where one does.</summary>
         [Test]
         public void AModelWhoseCodeWillNotReadIsShownOnlyWhereAnItemLivesInIt()

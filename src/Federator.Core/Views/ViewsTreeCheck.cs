@@ -270,7 +270,7 @@ namespace Federator.Core.Views
 
             foreach (PlannedTestView view in read.Plan.Views)
             {
-                ShownModels planned = read.ShownFor(view);
+                ShownModels planned = ShownModels.For(view.Pair, read.Models, view.Homes);
 
                 foreach (ModelTeam exception in planned.Exceptions)
                 {
@@ -280,17 +280,17 @@ namespace Federator.Core.Views
 
                 if (planned.HomesNotRead > 0)
                 {
-                    check.Note(view + " has " + planned.HomesNotRead
-                        + " clashing items whose model could not be read, so whether that model is shown is UNKNOWN");
+                    check.CouldNotRead(view + ", the model of " + planned.HomesNotRead
+                        + " of its clashing items could not be read, so whether that model is shown is UNKNOWN");
                 }
 
                 foreach (string home in planned.HomesNotInGroup)
                 {
-                    check.Note(view + " has a clashing item in " + home
-                        + ", which is no model of this group, so whether it is shown is UNKNOWN");
+                    check.CouldNotRead(view + ", a clashing item lives in " + home
+                        + ", whose file name is no model of this group, so whether that model is shown is UNKNOWN");
                 }
 
-                IList<string> hidden = read.HiddenReadBack(view);
+                IList<string> hidden = read.Facts.HiddenOf(view);
 
                 if (hidden == null)
                 {
@@ -300,7 +300,7 @@ namespace Federator.Core.Views
 
                 offTheDocument++;
 
-                foreach (ModelTeam model in read.Models.FindAll(one => !hidden.Contains(one.FileName)))
+                foreach (ModelTeam model in read.Models.FindAll(one => !one.IsAmong(hidden)))
                 {
                     if (model.Code.Length == 0)
                     {
@@ -579,7 +579,7 @@ namespace Federator.Core.Views
                 Settings = facts.Settings ?? new ViewpointSettings();
                 Plan = facts.Plan;
                 After = new List<ViewNode>(facts.After ?? new ViewNode[0]);
-                Models = new List<ModelTeam>(facts.Models ?? new ModelTeam[0]);
+                Models = facts.ModelsHandedIn();
                 Inventory = facts.Inventory == null ? new List<InventoryItem>() : new List<InventoryItem>(facts.Inventory.Items);
                 Mine = string.IsNullOrEmpty(facts.RunStamp) ? new List<ViewNode>() : After.FindAll(node =>
                 {
@@ -736,25 +736,6 @@ namespace Federator.Core.Views
                 }
 
                 return false;
-            }
-
-            internal ShownModels ShownFor(PlannedTestView view)
-            {
-                List<string> homes = new List<string>();
-
-                foreach (ViewClash clash in view.Clashes)
-                {
-                    homes.Add(clash.FirstHome);
-                    homes.Add(clash.SecondHome);
-                }
-
-                return ShownModels.For(view.Pair, Models, homes);
-            }
-
-            internal IList<string> HiddenReadBack(PlannedTestView view)
-            {
-                IList<string> hidden;
-                return Facts.HiddenReadBack != null && Facts.HiddenReadBack.TryGetValue(view.Key, out hidden) ? hidden : null;
             }
 
             internal IList<ItemPath> PaintedReadBack(PlannedTestView view)

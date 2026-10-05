@@ -50,6 +50,27 @@ namespace Federator.Core.Views
             get { return new ReadOnlyCollection<ViewClash>(clashes); }
         }
 
+        /// <summary>
+        /// The models its clashing items live in, each clash's first home then its second, in the
+        /// order the clashes were read, empty where one could not be read. The one place a view's
+        /// homes are gathered, F114 attempt 4, read by the tree line and check 3 through ShownModels.
+        /// </summary>
+        public ReadOnlyCollection<string> Homes
+        {
+            get
+            {
+                List<string> homes = new List<string>();
+
+                foreach (ViewClash clash in clashes)
+                {
+                    homes.Add(clash.FirstHome);
+                    homes.Add(clash.SecondHome);
+                }
+
+                return new ReadOnlyCollection<string>(homes);
+            }
+        }
+
         /// <summary>The clash whose Clash Detective camera the view starts from, its first open clash.</summary>
         public ViewClash CameraClash
         {

@@ -38,7 +38,7 @@ namespace Federator.Core.Views
             }
 
             List<string> lines = new List<string>();
-            List<ModelTeam> models = new List<ModelTeam>(facts.Models ?? new ModelTeam[0]);
+            List<ModelTeam> models = facts.ModelsHandedIn();
 
             lines.Add(Title + " " + facts.Group);
             lines.Add("team map   : " + MapWords(facts));
@@ -278,30 +278,23 @@ namespace Federator.Core.Views
 
         private static string ShowsAndHides(ViewsTreeFacts facts, List<ModelTeam> models, PlannedTestView view)
         {
-            IList<string> hiddenNames;
-            List<ModelTeam> hidden;
+            IList<string> hiddenNames = facts.HiddenOf(view);
 
-            if (facts.HiddenReadBack != null && facts.HiddenReadBack.TryGetValue(view.Key, out hiddenNames))
+            if (hiddenNames == null)
             {
-                hidden = models.FindAll(model => hiddenNames.Contains(model.FileName));
-            }
-            else
-            {
-                List<string> homes = new List<string>();
-
-                foreach (ViewClash clash in view.Clashes)
-                {
-                    homes.Add(clash.FirstHome);
-                    homes.Add(clash.SecondHome);
-                }
-
-                hidden = new List<ModelTeam>(ShownModels.For(view.Pair, models, homes).Hidden);
+                ShownModels planned = ShownModels.For(view.Pair, models, view.Homes);
+                return ShowsAndHides(planned.Shown, planned.Hidden);
             }
 
-            List<ModelTeam> shown = models.FindAll(model => !hidden.Contains(model));
+            return ShowsAndHides(models.FindAll(model => !model.IsAmong(hiddenNames)), models.FindAll(model => model.IsAmong(hiddenNames)));
+        }
+
+        private static string ShowsAndHides(IEnumerable<ModelTeam> shown, IEnumerable<ModelTeam> hidden)
+        {
+            string shows = Codes(shown);
             string hides = Codes(hidden);
 
-            return "shows " + Codes(shown) + ", " + (hides.Length == 0 ? "hides nothing" : "hides " + hides);
+            return (shows.Length == 0 ? "shows nothing" : "shows " + shows) + ", " + (hides.Length == 0 ? "hides nothing" : "hides " + hides);
         }
 
         private static string Codes(IEnumerable<ModelTeam> models)

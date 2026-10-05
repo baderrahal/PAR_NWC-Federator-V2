@@ -107,7 +107,7 @@ namespace Federator.Core.Tests
                 int index = Next(next, ViewPlace.FolderPath(view.Folders));
                 tree.After.Add(new ViewNode(view.Folders, view.Name, false, index, MarkOf(view.Folders, view.Name, Camera), 0, Camera, null, false));
                 tree.Written.Add(new WrittenView(view.Folders, view.Name, index, true, true));
-                tree.Hidden[ReadBackKey(view)] = FileNames(ShownModels.For(view.Pair, Models(), HomesOf(view)).Hidden);
+                tree.Hidden[ReadBackKey(view)] = FileNames(ShownModels.For(view.Pair, Models(), view.Homes).Hidden);
                 tree.Painted[ReadBackKey(view)] = new List<ItemPath>(PaintPlan.For(view.Clashes).Solid);
             }
 
@@ -139,19 +139,6 @@ namespace Federator.Core.Tests
             int index = next.ContainsKey(parent) ? next[parent] : 0;
             next[parent] = index + 1;
             return index;
-        }
-
-        private static List<string> HomesOf(PlannedTestView view)
-        {
-            List<string> homes = new List<string>();
-
-            foreach (ViewClash clash in view.Clashes)
-            {
-                homes.Add(clash.FirstHome);
-                homes.Add(clash.SecondHome);
-            }
-
-            return homes;
         }
 
         private static IList<string> FileNames(IEnumerable<ModelTeam> models)
@@ -495,11 +482,13 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The breaker's finding 2: a clashing item whose model could not be read, or whose model
-        /// is no model of the group, is said, since whether its model is shown is UNKNOWN.
+        /// The breaker's finding 2 of attempt 2, and its blocking finding of attempt 3. A clashing
+        /// item whose model could not be read, or whose home names no model of the group, leaves
+        /// what the view shows UNKNOWN, so check 3 did not run for that view. This test asserted
+        /// that such a view holds, which counted UNKNOWN as holding.
         /// </summary>
         [Test]
-        public void Check3SaysAClashingItemWhoseModelIsUnknown()
+        public void Check3RanInPartForAClashingItemWhoseModelIsUnknown()
         {
             ViewClash[] clashes =
             {
@@ -509,13 +498,122 @@ namespace Federator.Core.Tests
             ViewsTreeFacts facts = FactsOf(Good());
             facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), new string[0], Settings);
 
-            ViewsTreeCheck check = Check(facts, 3);
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+            ViewsTreeCheck check = checks[2];
+            string place = "B/Architecture vs Structure/" + Walls;
 
             Assert.That(check.Ran, Is.True);
-            Assert.That(check.Holds, Is.True, Joined(check.Failures));
+            Assert.That(check.Holds, Is.False);
+            Assert.That(check.Failures, Is.Empty);
             Assert.That(check.Basis, Does.Contain("1 views, their hidden models read back off the document"));
-            Assert.That(Joined(check.Notes), Does.Contain(Walls + " has 1 clashing items whose model could not be read"));
-            Assert.That(Joined(check.Notes), Does.Contain("1A02MM-XX.nwc, which is no model of this group"));
+            Assert.That(check.NotRead, Is.EqualTo(new[]
+            {
+                place + ", the model of 1 of its clashing items could not be read, so whether that model is shown is UNKNOWN",
+                place + ", a clashing item lives in 1A02MM-XX.nwc, whose file name is no model of this group, so whether that model is shown is UNKNOWN"
+            }));
+            Assert.That(Joined(ViewsTree.Lines(facts, checks, 0)),
+                Does.Contain("\nCHECK 3  no view shows a model of a third team  RAN IN PART, 0 broke it"));
+        }
+
+        /// <summary>
+        /// The breaker's blocking finding of attempt 3, the input it named: every home naming no
+        /// model of the group, so every view hides every model. The read back agrees with the plan
+        /// and nothing is a third team, and check 3 held over a tree of blank views. Each home that
+        /// matches no model is one check 3 did not run for.
+        /// </summary>
+        [Test]
+        public void Check3DoesNotHoldOverBlankViewsWhoseHomesMatchNoModel()
+        {
+            Tree tree = Good();
+            ViewsTreeFacts facts = FactsOf(tree);
+            List<ModelTeam> renamed = new List<ModelTeam>();
+
+            foreach (ModelTeam model in Models())
+            {
+                renamed.Add(new ModelTeam("Federated " + model.FileName, model.Code, model.Team));
+            }
+
+            facts.Models = renamed;
+
+            foreach (PlannedTestView view in tree.Plan.Views)
+            {
+                tree.Hidden[ReadBackKey(view)] = FileNames(renamed);
+            }
+
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+            string block = Joined(ViewsTree.Lines(facts, checks, 0));
+
+            Assert.That(checks[2].Holds, Is.False);
+            Assert.That(checks[2].NotRead.Count, Is.EqualTo(8), "two homes in each of the four views: " + Joined(checks[2].NotRead));
+            Assert.That(block, Does.Not.Contain("7 of 7 hold"));
+            Assert.That(block, Does.Contain("\n6 of 7 hold, 1 ran in part and is not counted as holding"));
+        }
+
+        /// <summary>
+        /// The reviewer's blocking finding of attempt 3: the homes of a view were gathered in the
+        /// tree line and again in check 3. They are the view's own, PlannedTestView.Homes, each
+        /// clash's first home then its second, in the order the clashes were read.
+        /// </summary>
+        [Test]
+        public void TheHomesOfAViewAreEachClashsFirstThenSecondHome()
+        {
+            PlannedTestView ducts = Planned(Good(), "A/Structure vs Mechanical/" + Ducts);
+
+            Assert.That(ducts.Homes, Is.EqualTo(new[] { Model("ME").FileName, Model("ST").FileName }));
+        }
+
+        /// <summary>
+        /// The breaker's blocking finding of attempt 3, one rule for how a name is matched to a
+        /// model: homes and hidden read backs written as paths match their models by file name, in
+        /// the tree line and in check 3 alike, so a view of ME and ST shows ME and ST in both.
+        /// </summary>
+        [Test]
+        public void HomesAndReadBacksWrittenAsPathsAreMatchedByFileNameInTheTreeAndCheck3()
+        {
+            string folder = @"C:\Projects\1A02MM\";
+            ViewClash[] clashes =
+            {
+                new ViewClash(Ducts, "Clash2", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New, ClashPriority.A, SizeVerdict.Small,
+                    new ItemPath(new[] { 0, 2 }), new ItemPath(new[] { 1, 2 }), Camera, folder + Model("ME").FileName, folder + Model("ST").FileName)
+            };
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), new string[0], Settings);
+            string key = ReadBackKey(facts.Plan.Views[0]);
+
+            facts.HiddenReadBack = new Dictionary<string, IList<string>>();
+            string plannedLine = Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0));
+
+            facts.HiddenReadBack[key] = new List<string> { folder + Model("AR").FileName, folder + Model("EL").FileName };
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+            string readLine = Joined(ViewsTree.Lines(facts, checks, 0));
+
+            Assert.That(plannedLine, Does.Contain(Ducts + "  1 open clashes, shows ME ST, hides AR EL"));
+            Assert.That(readLine, Does.Contain(Ducts + "  1 open clashes, shows ME ST, hides AR EL"));
+            Assert.That(checks[2].Holds, Is.True, Joined(checks[2].Failures) + Joined(checks[2].NotRead));
+            Assert.That(checks[2].Notes, Is.Empty);
+        }
+
+        /// <summary>
+        /// The breaker's finding 2 of attempt 3, a crash on a documented input. ViewsTreeFacts says
+        /// a read back is null where not read, and the tree line read a null one as read and threw,
+        /// and a null model threw in the models line. A null read back is one not read, in the tree
+        /// line and the checks alike, and a null model is left out as ShownModels leaves it out.
+        /// </summary>
+        [Test]
+        public void ANullReadBackIsNotReadAndANullModelIsLeftOutAndNeitherStopsTheBlock()
+        {
+            Tree tree = Good();
+            string walls = "B/Architecture vs Structure/" + Walls;
+            tree.Hidden[ReadBackKey(Planned(tree, walls))] = null;
+            ViewsTreeFacts facts = FactsOf(tree);
+            facts.Models = new List<ModelTeam>(Models()) { null };
+
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+            string block = Joined(ViewsTree.Lines(facts, checks, 0));
+
+            Assert.That(Joined(checks[2].NotRead), Is.EqualTo(walls + ", its hidden models were not read back"));
+            Assert.That(block, Does.Contain("models     : AR Architecture, EL Electrical, ME Mechanical, ST Structure\n"));
+            Assert.That(block, Does.Contain("\n    " + Walls + "  1 open clashes, shows AR ST, hides EL ME"));
         }
 
         [Test]
@@ -599,7 +697,7 @@ namespace Federator.Core.Tests
 
             foreach (PlannedTestView view in tree.Plan.Views)
             {
-                byWrittenPlace[view.ToString()] = FileNames(ShownModels.For(view.Pair, Models(), HomesOf(view)).Hidden);
+                byWrittenPlace[view.ToString()] = FileNames(ShownModels.For(view.Pair, Models(), view.Homes).Hidden);
             }
 
             facts.HiddenReadBack = byWrittenPlace;
@@ -688,7 +786,7 @@ namespace Federator.Core.Tests
 
             foreach (PlannedTestView view in tree.Plan.Views)
             {
-                tree.Hidden[ReadBackKey(view)] = FileNames(ShownModels.For(view.Pair, models, HomesOf(view)).Hidden);
+                tree.Hidden[ReadBackKey(view)] = FileNames(ShownModels.For(view.Pair, models, view.Homes).Hidden);
             }
 
             ViewsTreeFacts facts = FactsOf(tree);

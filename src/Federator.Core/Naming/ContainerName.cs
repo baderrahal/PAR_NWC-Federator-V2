@@ -110,6 +110,16 @@ namespace Federator.Core.Naming
         }
 
         /// <summary>
+        /// Whether two names are one file's: their stems equal without case, as Windows reads a
+        /// file name. The one place two names are judged the same, read by SimilarNames for the
+        /// NWF folder and by ModelTeam for the model a clashing item lives in, F114 attempt 4.
+        /// </summary>
+        internal static bool SameName(string first, string second)
+        {
+            return string.Equals(Stem(first), Stem(second), StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
         /// The file name with any folder and extension taken off.
         ///
         /// INTERNAL AND NOT PRIVATE SINCE F71, because SimilarNames compares a name in the

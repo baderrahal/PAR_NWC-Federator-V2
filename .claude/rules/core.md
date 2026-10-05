@@ -1207,7 +1207,13 @@ and 6 does not read as broken.
   home in a third team's model is shown and named as an exception, Q118 A, and a home whose
   model's code will not read is shown with its team UNKNOWN. A home that could not be read
   is counted and one naming no model of the group is named, since whether that model is
-  shown is UNKNOWN. `PaintPlan` paints
+  shown is UNKNOWN. A VIEW'S HOMES ARE GATHERED ONCE, `PlannedTestView.Homes`, each clash's
+  first home then its second, read by the tree line and check 3 through `ShownModels`, F114
+  attempt 4. A NAME IS MATCHED TO A MODEL BY ONE RULE, `ModelTeam.IsAmong`, for a home and
+  for a hidden model read back alike: `ContainerName.SameName`, the stem of the file name
+  compared without case, the rule SimilarNames reads for the NWF folder, so a path, a bare
+  file name and a display name with no extension all reach the model, F114 attempt 4 on the
+  breaker's finding that a home written as a path missed every model. `PaintPlan` paints
   every first item red and every second green unless already red. `FramingBox` frames the
   open clash centres padded by `FramingMarginMillimetres`, chosen and not measured, through
   UnitTable, and gives a view of one clash no box so it keeps Clash Detective's own camera
@@ -1247,10 +1253,12 @@ and 6 does not read as broken.
   inventory, and 7 with no codes or test names say DID NOT RUN and why, and the last line
   counts them apart, CLAUDE.md, never report a check that did not run. A CHECK THAT RAN
   WITHOUT SOMETHING IT NAMES DID NOT RUN FOR THAT THING and is never counted as holding
-  either, F114 attempt 3: a view whose read back is missing for check 3 or 4, a planned view
-  not found marked by this run for checks 1 and 2, a view showing a model whose team is
-  UNKNOWN for check 3, and the tests run or the walk after for check 5 where there are
-  mirrors. Each is named under the check, which reads RAN IN PART where nothing broke it, and
+  either, F114 attempt 3: a view whose read back is missing or null for check 3 or 4, a
+  planned view not found marked by this run for checks 1 and 2, a view showing a model whose
+  team is UNKNOWN for check 3, a view with a clashing item whose model could not be read or
+  whose home matches no model of the group for check 3, F114 attempt 4, since a view whose
+  homes all miss hides every model and would otherwise hold over a blank view, and the tests
+  run or the walk after for check 5 where there are mirrors. Each is named under the check, which reads RAN IN PART where nothing broke it, and
   read backs handed in under a key no planned view gives are counted in a note. The tests that
   ran with no open clash are counted off the tests the clash step ran, UNKNOWN where those
   were not handed in, since a test with no clash at all never reaches the plan. `ViewsTree.Lines` cuts the tree at `TreeLinesInLog` for the

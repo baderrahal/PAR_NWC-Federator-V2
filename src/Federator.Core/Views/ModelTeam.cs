@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Federator.Core.Naming;
+
 namespace Federator.Core.Views
 {
     /// <summary>
@@ -14,7 +17,7 @@ namespace Federator.Core.Views
             Team = team ?? string.Empty;
         }
 
-        /// <summary>The model's file name as the document holds it.</summary>
+        /// <summary>The model's file name as the document holds it, a path or a bare name.</summary>
         public string FileName { get; private set; }
 
         /// <summary>Its discipline code, or empty where its name would not read.</summary>
@@ -22,5 +25,30 @@ namespace Federator.Core.Views
 
         /// <summary>The team map's team of that code.</summary>
         public string Team { get; private set; }
+
+        /// <summary>
+        /// Whether any of those names is this model's, F114 attempt 4, the one place a name handed
+        /// in, a clashing item's home or a hidden model read back, is matched to a model. Matched
+        /// by ContainerName.SameName, the stem of the file name without case, so a path, a bare
+        /// file name and a display name with no extension all reach the model, and a name whose
+        /// stem is empty reaches none.
+        /// </summary>
+        internal bool IsAmong(IEnumerable<string> names)
+        {
+            if (names == null || ContainerName.Stem(FileName).Length == 0)
+            {
+                return false;
+            }
+
+            foreach (string name in names)
+            {
+                if (name != null && ContainerName.SameName(FileName, name))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Federator.Core.Naming;
 using Federator.Core.Teams;
 
 namespace Federator.Core.Views
@@ -14,12 +15,13 @@ namespace Federator.Core.Views
     /// hidden, a model of the pair's own two teams and a model whose code will not read among
     /// them. A home in a model of a third team is shown and named as an exception, Q118 A, and
     /// the VIEWS TREE check 3 reports it. A home whose model's code will not read is shown, and
-    /// whether it is of a third team is UNKNOWN, which check 3 says for its view. File names
-    /// compare Ordinal, as the document holds them.
+    /// whether it is of a third team is UNKNOWN, which check 3 says for its view. A home is
+    /// matched to a model by ModelTeam.IsAmong, the one rule, so a home written as a path or as
+    /// a display name reaches its model, F114 attempt 4.
     ///
     /// A HOME NOT KNOWN IS SAID, F114 attempt 2. A home that could not be read is counted, and one
     /// that names no model of the group is named, because whether the model of that clashing item
-    /// is shown is UNKNOWN, and check 3 says so for its view.
+    /// is shown is UNKNOWN. Check 3 does not run for that view, F114 attempt 4.
     /// </summary>
     public sealed class ShownModels
     {
@@ -50,7 +52,7 @@ namespace Federator.Core.Views
             get { return new ReadOnlyCollection<ModelTeam>(exceptions); }
         }
 
-        /// <summary>How many of the homes handed in could not be read, null or empty.</summary>
+        /// <summary>How many of the homes handed in could not be read, null, empty or blank.</summary>
         public int HomesNotRead { get; private set; }
 
         /// <summary>Each home handed in that names no model of the group, once, in the order handed in.</summary>
@@ -74,29 +76,22 @@ namespace Federator.Core.Views
             {
                 foreach (string home in homes)
                 {
-                    if (string.IsNullOrEmpty(home))
+                    if (string.IsNullOrWhiteSpace(home))
                     {
                         outcome.HomesNotRead = outcome.HomesNotRead + 1;
                     }
-                    else if (!homeNames.Contains(home))
+                    else if (!homeNames.Exists(named => ContainerName.SameName(named, home)))
                     {
                         homeNames.Add(home);
                     }
                 }
             }
 
-            HashSet<string> fileNames = new HashSet<string>(StringComparer.Ordinal);
+            List<ModelTeam> group = GroupOf(models);
 
-            foreach (ModelTeam model in models ?? new ModelTeam[0])
+            foreach (ModelTeam model in group)
             {
-                if (model == null)
-                {
-                    continue;
-                }
-
-                fileNames.Add(model.FileName);
-
-                if (!homeNames.Contains(model.FileName))
+                if (!model.IsAmong(homeNames))
                 {
                     outcome.hidden.Add(model);
                     continue;
@@ -110,8 +105,14 @@ namespace Federator.Core.Views
                 }
             }
 
-            outcome.homesNotInGroup.AddRange(homeNames.FindAll(home => !fileNames.Contains(home)));
+            outcome.homesNotInGroup.AddRange(homeNames.FindAll(home => !group.Exists(model => model.IsAmong(new[] { home }))));
             return outcome;
+        }
+
+        /// <summary>The group's models as handed in, a null among them left out, the one place that is decided, read here and by ViewsTreeFacts.</summary>
+        internal static List<ModelTeam> GroupOf(IEnumerable<ModelTeam> models)
+        {
+            return new List<ModelTeam>(models ?? new ModelTeam[0]).FindAll(model => model != null);
         }
 
         /// <summary>Whether the model's team is one of the pair's two, Ordinal, the one place a view's model is judged against its pair.</summary>

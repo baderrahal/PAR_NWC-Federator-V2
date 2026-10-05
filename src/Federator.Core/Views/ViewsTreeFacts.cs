@@ -8,9 +8,9 @@ namespace Federator.Core.Views
     /// the add-in after the VIEWS step: the plan, the inventory, a fresh walk of the tree after
     /// the removals, and what was read back off each view. A read back is kept under one key,
     /// PlannedTestView.Key, and under no other shape. A view whose read back is missing, because
-    /// the dictionary is null, holds no entry for it, or is kept under another key, is a view the
-    /// check did not run for, F114 attempt 3, and a check with such a view is never counted as
-    /// holding. A part the checks need that is null makes those checks say they did not run.
+    /// the dictionary is null, holds no entry for it or a null one, or is kept under another key,
+    /// is a view the check did not run for, F114 attempt 3, and a check with such a view is never
+    /// counted as holding. A part the checks need that is null makes those checks say they did not run.
     /// </summary>
     public sealed class ViewsTreeFacts
     {
@@ -54,5 +54,25 @@ namespace Federator.Core.Views
         public ICollection<string> TestNames { get; set; }
 
         public ViewpointSettings Settings { get; set; }
+
+        /// <summary>
+        /// The models handed in, a null among them left out as ShownModels leaves it out, the one
+        /// list the block's lines and its checks read, F114 attempt 4.
+        /// </summary>
+        internal List<ModelTeam> ModelsHandedIn()
+        {
+            return ShownModels.GroupOf(Models);
+        }
+
+        /// <summary>
+        /// The names of the models the view reads back as hiding, or null where not read: the
+        /// dictionary null, no entry under the view's key, or a null entry. The one lookup the
+        /// tree line and check 3 read, F114 attempt 4.
+        /// </summary>
+        internal IList<string> HiddenOf(PlannedTestView view)
+        {
+            IList<string> hidden;
+            return HiddenReadBack != null && HiddenReadBack.TryGetValue(view.Key, out hidden) ? hidden : null;
+        }
     }
 }
