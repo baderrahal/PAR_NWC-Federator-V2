@@ -4841,16 +4841,17 @@ never holds back the viewpoints.
 ### FR-191 work-tracker-one-place-for-status
 
 - Sources: Q129, part 1. Area F133, beside the waves
-- What he decided: steps\tracker.csv, one row per FR item, F area, request of his and question
-  waiting for him, with the columns id, short title, area, wave, class, status, PR, the run that
+- What he decided: steps\tracker.csv, one row per item, covering every FR item, every F area, his
+  requests and every question waiting for him, with the columns id, short title, area, wave, class, status, PR, the run that
   proved it and the date of the last change. Status is one of open, in progress, in review, merged,
   proven by a run, waiting for Bader and dropped. steps\tracker.md is made from it by a script under
-  tools\tracker, its counts and what is in progress and waiting at the top in under 15 lines. Every
+  tools\tracker, never by hand, at its top in under 15 lines the counts by status and by wave, what is
+  in progress now and what waits for him, then the list by wave. Every
   pull request that changes an item's status updates its row. steps\loop.md and this file keep their
   narrative and point at the tracker for status
 - Proof: a check in Actions that fails when the tracker does not parse, an id appears twice, a status
-  is not one of the list or an FR item of this file has no row, each failure shown by a fixture that
-  breaks one thing
+  is not one of the list or an FR item of this file has no row, his words. The lead adds, by the test
+  rule of CLAUDE.md, a fixture for each failure that breaks one thing
 - Class: Bader's decision
 
 ### FR-192 code-health-gate-lists-only-shrink
@@ -4858,16 +4859,19 @@ never holds back the viewpoints.
 - Sources: Q129, part 2. Area F134, beside the waves
 - What he decided: nine counts measured first and written as the starting line of
   steps\code-health.md: members with no caller in src, private members, locals, parameters and
-  usings nothing uses by the compiler's own analysers, catches that swallow an error, files holding
+  usings nothing uses from the compiler's own analysers turned on in the build, catches that swallow an error, files holding
   more than one public type, files over 1,000 lines, doubled or orphan summary blocks, window
   controls with no handler and handlers with no control, settings nothing reads, and test files with
   no source file and source files with no test file. Each gets a check in Actions on every pull
-  request with today's offenders in a baseline list that only shrinks, and steps\code-health.md one
-  row per merge
-- Measure first: on main 6fff40a, %LOCALAPPDATA%\NwcFederatorLoop\health, each count proved by a
-  second reader that plants a known offender, before its check is trusted. Actions has no Navisworks,
-  so what each check misses for the add-in is said
-- Proof: each check refuses a fixture holding one new offender, and passes when one is taken off
+  request with today's offenders in a baseline list per check. A pull request that adds a new offender
+  fails, one that removes one takes it off its list, and the lists only shrink. steps\code-health.md
+  gets one row per merge with every count. Only what this machine and nuget.org give is used
+- Measure first: his words, that each check finds a known offender before it is trusted. The lead adds
+  that each count is measured on main 6fff40a in %LOCALAPPDATA%\NwcFederatorLoop\health and checked by
+  a second reader that plants a known offender, before its check is written. Actions has no
+  Navisworks, so what each check misses for the add-in is said
+- Proof: each check refuses a fixture holding one new offender, and a pull request that removes one
+  takes it off its list
 - Class: Bader's decision
 
 ### FR-193 analyser-settings-merged-alone
@@ -4875,8 +4879,8 @@ never holds back the viewpoints.
 - Sources: Q129, parts 2 and 3. Area F135, beside the waves
 - What he decided: the compiler's analysers turned on in the build of every project, merged alone at
   a quiet moment so no fix branch is left on red
-- Proof: the full solution built on main and on every open fix branch merged with it, each with its
-  warning and error counts
+- Proof, the lead's: the full solution built on main and on each open fix branch merged with it, each
+  with its warning and error counts
 - Class: Bader's decision
 
 ## The areas at a glance
