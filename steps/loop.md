@@ -494,6 +494,9 @@ OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its ch
   also says the NWF is built with all its tests, and Q111, a model that names no site at all still
   fails its group with the rule on, both from F112's readings and on main since F112 merged, and
   Q125, a group that runs no clash test with a model off the shared coordinates.
+- Q126 and Q127, written on 2026-10-05 from the design of F127, turn5\f127-design.md: a group
+  whose clash is skipped has no workbook for the Coverage sheet, and how RESULT counts the XML's
+  tests, each with the choice the build goes on with until he answers.
   Q112 is his own message of the five requests. The two readings in its lead's notes he
   answered on 2026-10-04 in the evening, right as read: a count that differs is a FAILED line in
   COVERAGE and RESULT and the group keeps its own result, and a Shift click the driver cannot make
