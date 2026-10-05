@@ -31,8 +31,10 @@ Programs and Navisworks:
   Bash's own tools such as grep, sed, diff, cp, file and tail. None of them starts a Navisworks
 - Get-Process Roamer read one process, 32136, started 2026-10-04 21:17:06, before the first
   command of the session, the time of that read not kept, and at 04:37:16 before the first edit,
-  turn5\f115-roamer-before.txt. The read after the push is turn5\f115-roamer-after.txt. Two reads
-  of one process cannot exclude a Navisworks started and closed between them
+  turn5\f115-roamer-before.txt. The read after the push, at 08:10:37, turn5\f115-roamer-after.txt,
+  found one process, 29372, started 2026-10-05 07:26:26, and 32136 gone. So the Navisworks of
+  21:17:06 closed and another started inside this session's window. None of the developer's
+  programs starts or closes one, and who did is UNKNOWN to these reads
 
 ### What was done
 
