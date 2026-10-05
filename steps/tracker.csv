@@ -188,7 +188,7 @@ FR-185,one view per test of its open clashes,F114,2b,Bader's decision,in progres
 FR-186,views made fresh only the tools own,F114,2b,Bader's decision,in progress,"none, branch fix-F114",none,2026-10-04
 FR-187,views proof on 1a02mm and the views tree block,F114,2b,Bader's decision,in progress,"none, branch fix-F114",none,2026-10-04
 FR-188,views rules in docs workflow,F114,2b,Bader's decision,in progress,"none, branch fix-F114",none,2026-10-04
-FR-191,work tracker one place for status,F133,beside the waves,Bader's decision,in review,UNKNOWN,none,2026-10-05
+FR-191,work tracker one place for status,F133,beside the waves,Bader's decision,merged,122,none,2026-10-05
 FR-192,code health gate lists only shrink,F134,beside the waves,Bader's decision,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 FR-193,analyser settings merged alone,F135,beside the waves,Bader's decision,open,none,none,2026-10-05
 FR-194,viewpoints switched off for test runs,F136,before any test run,Bader's decision,merged,117,none,2026-10-05
@@ -326,7 +326,7 @@ F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
 F131,teams,F131,2b,fix,in progress,"none, branch fix-F131",none,2026-10-05
 F132,mirrored tests,F132,2a,fix,in progress,"none, branch fix-F132",none,2026-10-05
-F133,the work tracker,F133,beside the waves,fix,in review,UNKNOWN,none,2026-10-05
+F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-05
 F134,the code health gate,F134,beside the waves,fix,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 F135,the analyser settings that touch every project,F135,beside the waves,fix,open,none,none,2026-10-05
 F136,the viewpoints switch,F136,before any test run,fix,merged,117,none,2026-10-05
