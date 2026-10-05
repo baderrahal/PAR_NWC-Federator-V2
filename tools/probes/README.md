@@ -12,7 +12,7 @@ folder the add-in project defaults to:
     powershell -ExecutionPolicy Bypass -File tools\probes\probe-units.ps1
     powershell -ExecutionPolicy Bypass -File tools\probes\probe-units.ps1 -NavisworksPath "D:\Autodesk\Navisworks Manage 2025"
 
-The eight DLL probes need only the install:
+The nine DLL probes need only the install:
 
 - `probe-clash-api.ps1` reads every type and member of Autodesk.Navisworks.Clash.dll,
   which is how the copy forms, the eEXTERNAL ownership and the absence of any stale
@@ -41,6 +41,16 @@ The eight DLL probes need only the install:
   clash result. Every text member on ClashResult, IClashResult, ClashResultGroup and
   ClashTest, every Comment member on DocumentClashTests, and the Comment type whole. See
   section 5h
+- `probe-unit-scale.ps1` answers PQ2 of F104: whether
+  Autodesk.Navisworks.Api.UnitConversion has a public static ScaleFactor taking two Units
+  and returning a double, which is what DocumentReadProbe converts through so that the
+  check of a workbook never converts through UnitTable, the harvest's own table. It reads
+  the metadata with ReflectionOnlyLoadFrom, so no line of the DLL runs. Measured on
+  2026-09-29, the answer is yes,
+  `public static System.Double ScaleFactor(Autodesk.Navisworks.Api.Units from, Autodesk.Navisworks.Api.Units to)`,
+  kept whole in `unit-scale-result-20260929.txt` with the machine's name masked. What it
+  gives for Feet to Meters is not read here, because that runs Navisworks code, and the
+  probe below reads it inside Navisworks
 
 The four window probes need the add-in built in Release and installed by
 build\install.ps1. The first three construct the real window, and the fourth drives it
@@ -59,7 +69,17 @@ inside a running Navisworks:
   reads every box back, presses Run only when each reads what was typed and every path lies
   under runs\NN, and answers the confirm OK, or Cancel when it names a path outside the loop
   folder. It never clicks, never sends a key, never moves the pointer and never searches the
-  desktop. Its header says what was measured about the window
+  desktop. Since F125 a window of that Navisworks that the one rule in tools\loop\nw-guard.ps1
+  reads as a pane and is up before Run, such as a floating pane, is noted with both its states
+  and left, and a window that comes up after Run and is not the confirm still stops it unless it
+  is that same pane, the line for it naming the rule's kind and both states. Since F126 it
+  takes -Untick, tick boxes named by their AutomationId and joined by commas, such as
+  SkipClashOffCoordinates, the box of F112's rule. Before it presses anything it finds each on
+  the four tabs, toggles it through TogglePattern only when it reads On, reads it back Off and
+  writes one line per box with its id, its tab, before and after, then reads each again before
+  Run. A box on no tab, one with no TogglePattern, or one that does not read Off stops it with
+  UNTICK, exit 13, and a line naming the box, with Run unpressed. Every other tick box is left as
+  the window opened it. Its header says what was measured about the window
 
 One probe starts a Navisworks of its own. It refuses to start one while any Navisworks
 runs, whatever its command line and whoever started it, so the code keeps that rule, not
@@ -157,3 +177,38 @@ needs, so their reads are not reflection only:
 A probe that cannot find what it needs says UNKNOWN and the path it looked at, and
 stops. Never search the install folder for a DLL, the path is built and tested directly,
 which is the same rule the build uses.
+
+## DocumentReadProbe
+
+A plugin that runs INSIDE Navisworks, F104, in ViewpointProbe's shape: its own csproj,
+net48 and C# 7.3, against the Api and Clash DLLs in the install, copy local false. It is
+not in the solution, the bundle or install.ps1, and it references no project of this repo,
+because it is the document side of the check of a workbook and a check that shares the
+code it checks proves nothing. Built with
+
+    dotnet build tools\probes\DocumentReadProbe\DocumentReadProbe.csproj -c Release
+
+It is loaded with AddPluginAssembly into a Navisworks started through the Automation API
+and run with ExecuteAddInPlugin("DocumentReadProbe.PARS", <output folder>, <NWF>, ...).
+The folder and every NWF must sit under %LOCALAPPDATA%\NwcFederatorLoop. Per NWF it opens
+the file with TryOpenFile, the one call it makes that changes what Navisworks holds, reads
+the document twice with five seconds of the dispatcher between, and writes
+<NWF name>-document.txt: the NWF's size, time and sha256 read before the open, the units
+and metres per unit from UnitConversion.ScaleFactor, written UNKNOWN with a doubt unless
+ScaleFactor(Millimeters, Meters) reads below one, because a number times its inverse is
+one whichever way the factor runs, both passes' totals, one line per
+clash test and one per top level result, every doubt, and END OF READ-OUT. A group is one
+top level result at its own status with every clash under it counted at the clash's own
+status. A count it could not take is -1. tools\loop\compare-document.ps1 reads it. It
+hands back 0 when every read-out is whole, 1 when one failed, was refused or was there
+already, 2 for too few parameters, 3 for a bad output folder and 4 for a path with no
+usable name or two NWFs sharing one, and writes nothing on 2 to 4.
+
+Built on 2026-09-29, 0 warnings and 0 errors, and NOT RUN. Since F104 part 2 the one thing
+that runs it is tools\loop\run.ps1 -Mode Documents, through the guarded start and close of
+nw-guard.ps1: it refuses a build whose stamp names no one commit with no edits, so build it
+from a tree whose git status prints nothing, copies the DLL into its run folder, loads that
+copy with AddPluginAssembly, and hands it the run folder's document\ and every NWF of the
+pairs, as tools\loop\README.md says. The probe's own refusals are unchanged. What it cannot
+say until it runs is PQ1, PQ3 and PQ6 to PQ9 of F104, and the lead's documents read of set 03
+is its first run.

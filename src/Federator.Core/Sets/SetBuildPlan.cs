@@ -83,7 +83,17 @@ namespace Federator.Core.Sets
         /// </summary>
         public bool StartsAGroup
         {
-            get { return (Flags & StartGroupFlag) == StartGroupFlag; }
+            get { return StartsAGroupWith(Flags); }
+        }
+
+        /// <summary>
+        /// Whether a condition carrying those flags starts a group. The one place the bit is
+        /// read, for the plan and for MatrixCorrections, which reads the same bit off the
+        /// file's text, F116.
+        /// </summary>
+        internal static bool StartsAGroupWith(int flags)
+        {
+            return (flags & StartGroupFlag) == StartGroupFlag;
         }
 
         /// <summary>
@@ -211,14 +221,24 @@ namespace Federator.Core.Sets
         /// </summary>
         public IList<IList<PlannedCondition>> Groups()
         {
-            List<IList<PlannedCondition>> groups = new List<IList<PlannedCondition>>();
-            List<PlannedCondition> current = null;
+            return GroupsOf(Conditions, condition => condition.StartsAGroup);
+        }
 
-            foreach (PlannedCondition condition in Conditions)
+        /// <summary>
+        /// Any conditions split into their groups by that rule, so MatrixCorrections groups
+        /// the conditions it reads off the file's text exactly the way the plan groups the
+        /// ones it builds, F116.
+        /// </summary>
+        internal static IList<IList<T>> GroupsOf<T>(IEnumerable<T> conditions, Func<T, bool> startsAGroup)
+        {
+            List<IList<T>> groups = new List<IList<T>>();
+            List<T> current = null;
+
+            foreach (T condition in conditions)
             {
-                if (current == null || condition.StartsAGroup)
+                if (current == null || startsAGroup(condition))
                 {
-                    current = new List<PlannedCondition>();
+                    current = new List<T>();
                     groups.Add(current);
                 }
 

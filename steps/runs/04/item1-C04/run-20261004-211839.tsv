@@ -1,0 +1,1353 @@
+﻿time	seconds	group	step	event	name	number	text
+21:18:57.171	17.711	1A04PK	DECIDE	step started	DECIDE	0	
+21:18:57.175	17.715	1A04PK	DECIDE	census before	models	0	
+21:18:57.175	17.716	1A04PK	DECIDE	census before	sets	0	
+21:18:57.176	17.716	1A04PK	DECIDE	census before	tests	0	
+21:18:57.176	17.716	1A04PK	DECIDE	census before	results	0	
+21:18:57.176	17.716	1A04PK	DECIDE	census before	views	0	
+21:18:57.193	17.733	1A04PK		census after	models	0	
+21:18:57.193	17.733	1A04PK		census after	sets	0	
+21:18:57.193	17.734	1A04PK		census after	tests	0	
+21:18:57.194	17.734	1A04PK		census after	results	0	
+21:18:57.194	17.734	1A04PK		census after	views	0	
+21:18:57.199	17.739	1A04PK		step finished	DECIDE	0.021	First run
+21:18:57.231	17.771	1A04PK	APPEND	step started	APPEND	0	
+21:18:57.232	17.773	1A04PK	APPEND	census before	models	0	
+21:18:57.232	17.773	1A04PK	APPEND	census before	sets	0	
+21:18:57.233	17.773	1A04PK	APPEND	census before	tests	0	
+21:18:57.233	17.773	1A04PK	APPEND	census before	results	0	
+21:18:57.233	17.774	1A04PK	APPEND	census before	views	0	
+21:18:59.022	19.562	1A04PK	APPEND	appended	APPEND	20475803	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc
+21:19:00.031	20.571	1A04PK	APPEND	appended	APPEND	107281275	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc
+21:19:00.594	21.135	1A04PK	APPEND	appended	APPEND	24705684	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc
+21:19:00.852	21.392	1A04PK	APPEND	appended	APPEND	2177136	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc
+21:19:01.060	21.600	1A04PK	APPEND	appended	APPEND	489050	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc
+21:19:01.309	21.849	1A04PK	APPEND	appended	APPEND	2993520	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc
+21:19:01.558	22.098	1A04PK	APPEND	appended	APPEND	5617535	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc
+21:19:01.959	22.499	1A04PK	APPEND	appended	APPEND	13793539	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc
+21:19:02.172	22.713	1A04PK	APPEND	appended	APPEND	1152845	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc
+21:19:02.366	22.907	1A04PK	APPEND	appended	APPEND	136241	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc
+21:19:02.386	22.926	1A04PK		census after	models	10	
+21:19:02.386	22.927	1A04PK		census after	sets	0	
+21:19:02.386	22.927	1A04PK		census after	tests	0	
+21:19:02.386	22.927	1A04PK		census after	results	0	
+21:19:02.387	22.927	1A04PK		census after	views	102	
+21:19:02.389	22.930	1A04PK		step finished	APPEND	5.155	10 of 10 appended
+21:19:02.391	22.931	1A04PK	NWF SAVE	step started	NWF SAVE	0	
+21:19:02.392	22.932	1A04PK	NWF SAVE	census before	models	10	
+21:19:02.392	22.933	1A04PK	NWF SAVE	census before	sets	0	
+21:19:02.392	22.933	1A04PK	NWF SAVE	census before	tests	0	
+21:19:02.393	22.933	1A04PK	NWF SAVE	census before	results	0	
+21:19:02.393	22.933	1A04PK	NWF SAVE	census before	views	102	
+21:19:03.938	24.478	1A04PK	NWF SAVE	written	NWF	4699	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\04\\NMFed\\NWF\\C04\\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf
+21:19:03.943	24.483	1A04PK		census after	models	10	
+21:19:03.943	24.483	1A04PK		census after	sets	0	
+21:19:03.944	24.484	1A04PK		census after	tests	0	
+21:19:03.944	24.484	1A04PK		census after	results	0	
+21:19:03.944	24.484	1A04PK		census after	views	102	
+21:19:03.947	24.487	1A04PK		step finished	NWF SAVE	1.549	saved 4699 bytes
+21:19:03.951	24.491	1A04PK	UNITS	step started	UNITS	0	
+21:19:03.953	24.493	1A04PK	UNITS	census before	models	10	
+21:19:03.953	24.493	1A04PK	UNITS	census before	sets	0	
+21:19:03.954	24.494	1A04PK	UNITS	census before	tests	0	
+21:19:03.954	24.494	1A04PK	UNITS	census before	results	0	
+21:19:03.955	24.495	1A04PK	UNITS	census before	views	102	
+21:19:04.637	25.177	1A04PK		census after	models	10	
+21:19:04.638	25.178	1A04PK		census after	sets	0	
+21:19:04.638	25.178	1A04PK		census after	tests	0	
+21:19:04.638	25.178	1A04PK		census after	results	0	
+21:19:04.638	25.178	1A04PK		census after	views	102	
+21:19:04.640	25.180	1A04PK		step finished	UNITS	0.686	the document was asked for Meters
+21:19:04.683	25.223	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	685385.01	IRPS-SharedCoordinate
+21:19:04.683	25.224	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	687385.01	IP3_Shared_Location
+21:19:04.684	25.224	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	686285.01	16-S01
+21:19:04.684	25.224	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	686285.01	16-S01
+21:19:04.684	25.224	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	683354.01	IRR INFRA-05
+21:19:04.684	25.225	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	685435.01	MECH_IRPS1_CHLORINATION
+21:19:04.684	25.225	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	678205.01	IRR SITE -03
+21:19:04.685	25.225	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	686285.01	16-S01
+21:19:04.685	25.225	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	685435.01	IPS-A(1)
+21:19:04.685	25.226	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	682485.01	Internal
+21:19:06.612	27.152	1A04PK		model export	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	6053	1 workset(s), element id 100%
+21:19:06.612	27.153	1A04PK		model export	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	6515	11 workset(s), element id 100%
+21:19:06.613	27.153	1A04PK		model export	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	12127	1 workset(s), element id 100%
+21:19:06.613	27.153	1A04PK		model export	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	2409	3 workset(s), element id 100%
+21:19:06.613	27.153	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	87	2 workset(s), element id 100%
+21:19:06.613	27.154	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	277	2 workset(s), element id 100%
+21:19:06.613	27.154	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	898	3 workset(s), element id 100%
+21:19:06.613	27.154	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	5372	3 workset(s), element id 100%
+21:19:06.615	27.155	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	1381	2 workset(s), element id 100%
+21:19:06.615	27.155	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	11	2 workset(s), element id 100%
+21:19:06.618	27.158	1A04PK	SETS	step started	SETS	0	
+21:19:06.619	27.160	1A04PK	SETS	census before	models	10	
+21:19:06.619	27.160	1A04PK	SETS	census before	sets	0	
+21:19:06.620	27.160	1A04PK	SETS	census before	tests	0	
+21:19:06.620	27.160	1A04PK	SETS	census before	results	0	
+21:19:06.620	27.161	1A04PK	SETS	census before	views	102	
+21:19:16.118	36.658	1A04PK		census after	models	10	
+21:19:16.118	36.659	1A04PK		census after	sets	61	
+21:19:16.118	36.659	1A04PK		census after	tests	0	
+21:19:16.119	36.659	1A04PK		census after	results	0	
+21:19:16.119	36.660	1A04PK		census after	views	102	
+21:19:16.121	36.661	1A04PK		step finished	SETS	9.499	61 created, 0 already there, 34 finding items, 27 at zero.
+21:19:16.206	36.747	1A04PK	TESTS CREATE	step started	TESTS CREATE	0	
+21:19:16.208	36.748	1A04PK	TESTS CREATE	census before	models	10	
+21:19:16.209	36.749	1A04PK	TESTS CREATE	census before	sets	61	
+21:19:16.209	36.749	1A04PK	TESTS CREATE	census before	tests	0	
+21:19:16.209	36.749	1A04PK	TESTS CREATE	census before	results	0	
+21:19:16.210	36.750	1A04PK	TESTS CREATE	census before	views	102	
+21:19:16.282	36.822	1A04PK	TESTS CREATE	test created	BLD-AR-Stairs-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+21:19:16.316	36.856	1A04PK		census after	models	10	
+21:19:16.316	36.856	1A04PK		census after	sets	61	
+21:19:16.317	36.857	1A04PK		census after	tests	1	
+21:19:16.317	36.857	1A04PK		census after	results	0	
+21:19:16.317	36.857	1A04PK		census after	views	102	
+21:19:16.319	36.859	1A04PK		step finished	TESTS CREATE	0.111	BLD-AR-Stairs-vs-BLD-AR-Floors
+21:19:16.322	36.863	1A04PK	TESTS RUN	step started	TESTS RUN	0	
+21:19:16.324	36.865	1A04PK	TESTS RUN	census before	models	10	
+21:19:16.324	36.865	1A04PK	TESTS RUN	census before	sets	61	
+21:19:16.326	36.866	1A04PK	TESTS RUN	census before	tests	1	
+21:19:16.326	36.866	1A04PK	TESTS RUN	census before	results	0	
+21:19:16.326	36.866	1A04PK	TESTS RUN	census before	views	102	
+21:19:16.567	37.107	1A04PK		census after	models	10	
+21:19:16.568	37.107	1A04PK		census after	sets	61	
+21:19:16.568	37.108	1A04PK		census after	tests	1	
+21:19:16.568	37.108	1A04PK		census after	results	0	
+21:19:16.568	37.108	1A04PK		census after	views	102	
+21:19:16.570	37.110	1A04PK		step finished	TESTS RUN	0.24	BLD-AR-Stairs-vs-BLD-AR-Floors
+21:19:16.576	37.116	1A04PK	HARVEST	step started	HARVEST	0	
+21:19:16.578	37.119	1A04PK	HARVEST	census before	models	10	
+21:19:16.578	37.119	1A04PK	HARVEST	census before	sets	61	
+21:19:16.579	37.119	1A04PK	HARVEST	census before	tests	1	
+21:19:16.579	37.120	1A04PK	HARVEST	census before	results	0	
+21:19:16.579	37.120	1A04PK	HARVEST	census before	views	102	
+21:19:16.598	37.139	1A04PK		census after	models	10	
+21:19:16.599	37.139	1A04PK		census after	sets	61	
+21:19:16.599	37.139	1A04PK		census after	tests	1	
+21:19:16.599	37.140	1A04PK		census after	results	0	
+21:19:16.600	37.140	1A04PK		census after	views	102	
+21:19:16.601	37.142	1A04PK		step finished	HARVEST	0.026	BLD-AR-Stairs-vs-BLD-AR-Floors
+21:19:16.603	37.143	1A04PK		rows for the workbook	BLD-AR-Stairs-vs-BLD-AR-Floors	0	0 in the document
+21:19:16.606	37.146	1A04PK		test passed	BLD-AR-Stairs-vs-BLD-AR-Floors	0	ran and found nothing
+21:19:16.641	37.181	1A04PK	TESTS CREATE	test created	BLD-AR-Ramps-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+21:19:16.928	37.468	1A04PK	IMAGES	step started	IMAGES	0	
+21:19:16.929	37.470	1A04PK	IMAGES	census before	models	10	
+21:19:16.930	37.470	1A04PK	IMAGES	census before	sets	61	
+21:19:16.930	37.471	1A04PK	IMAGES	census before	tests	2	
+21:19:16.930	37.471	1A04PK	IMAGES	census before	results	88	
+21:19:16.930	37.471	1A04PK	IMAGES	census before	views	102	
+21:19:18.981	39.521	1A04PK	HARVEST	census after	models	10	
+21:19:18.981	39.522	1A04PK	HARVEST	census after	sets	61	
+21:19:18.982	39.522	1A04PK	HARVEST	census after	tests	2	
+21:19:18.982	39.522	1A04PK	HARVEST	census after	results	88	
+21:19:18.982	39.522	1A04PK	HARVEST	census after	views	102	
+21:19:18.984	39.524	1A04PK	HARVEST	step finished	IMAGES	2.053	BLD-AR-Ramps-vs-BLD-AR-Floors
+21:29:32.575	653.106	1A04PK		rows for the workbook	BLD-AR-Ramps-vs-BLD-AR-Floors	88	88 in the document
+21:29:32.577	653.108	1A04PK		test found clashes	BLD-AR-Ramps-vs-BLD-AR-Floors	88	ran and found clashes
+21:29:32.650	653.182	1A04PK	TESTS CREATE	test created	BLD-AR-Ramps-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+21:29:32.869	653.400	1A04PK		rows for the workbook	BLD-AR-Ramps-vs-BLD-AR-Stairs	0	0 in the document
+21:29:32.870	653.402	1A04PK		test passed	BLD-AR-Ramps-vs-BLD-AR-Stairs	0	ran and found nothing
+21:29:32.900	653.431	1A04PK	TESTS CREATE	test created	BLD-AR-Walls-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:39:56.956	4877.445	1A04PK		rows for the workbook	BLD-AR-Walls-vs-BLD-AR-Floors	1186	1186 in the document
+22:39:56.961	4877.449	1A04PK		test found clashes	BLD-AR-Walls-vs-BLD-AR-Floors	1186	ran and found clashes
+22:39:57.102	4877.590	1A04PK	TESTS CREATE	test created	BLD-AR-Walls-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:42:38.859	5039.345	1A04PK		rows for the workbook	BLD-AR-Walls-vs-BLD-AR-Stairs	71	71 in the document
+22:42:38.860	5039.346	1A04PK		test found clashes	BLD-AR-Walls-vs-BLD-AR-Stairs	71	ran and found clashes
+22:42:38.950	5039.436	1A04PK	TESTS CREATE	test created	BLD-AR-Walls-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:45:18.348	5198.833	1A04PK		rows for the workbook	BLD-AR-Walls-vs-BLD-AR-Ramps	24	24 in the document
+22:45:18.349	5198.835	1A04PK		test found clashes	BLD-AR-Walls-vs-BLD-AR-Ramps	24	ran and found clashes
+22:45:18.418	5198.903	1A04PK	TESTS CREATE	test created	BLD-AR-Windows-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:45:18.684	5199.169	1A04PK		rows for the workbook	BLD-AR-Windows-vs-BLD-AR-Floors	0	0 in the document
+22:45:18.684	5199.169	1A04PK		test passed	BLD-AR-Windows-vs-BLD-AR-Floors	0	ran and found nothing
+22:45:18.714	5199.200	1A04PK	TESTS CREATE	test created	BLD-AR-Windows-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:45:18.980	5199.465	1A04PK		rows for the workbook	BLD-AR-Windows-vs-BLD-AR-Stairs	0	0 in the document
+22:45:18.980	5199.466	1A04PK		test passed	BLD-AR-Windows-vs-BLD-AR-Stairs	0	ran and found nothing
+22:45:19.013	5199.498	1A04PK	TESTS CREATE	test created	BLD-AR-Windows-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:45:19.276	5199.762	1A04PK		rows for the workbook	BLD-AR-Windows-vs-BLD-AR-Ramps	0	0 in the document
+22:45:19.277	5199.762	1A04PK		test passed	BLD-AR-Windows-vs-BLD-AR-Ramps	0	ran and found nothing
+22:45:19.307	5199.792	1A04PK	TESTS CREATE	test created	BLD-AR-Windows-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:45:21.812	5202.297	1A04PK		rows for the workbook	BLD-AR-Windows-vs-BLD-AR-Walls	7	7 in the document
+22:45:21.812	5202.297	1A04PK		test found clashes	BLD-AR-Windows-vs-BLD-AR-Walls	7	ran and found clashes
+22:45:21.864	5202.350	1A04PK	TESTS CREATE	test created	BLD-AR-Doors-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:45:22.176	5202.662	1A04PK		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Floors	0	0 in the document
+22:45:22.177	5202.662	1A04PK		test passed	BLD-AR-Doors-vs-BLD-AR-Floors	0	ran and found nothing
+22:45:22.211	5202.696	1A04PK	TESTS CREATE	test created	BLD-AR-Doors-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:45:22.443	5202.928	1A04PK		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Stairs	0	0 in the document
+22:45:22.443	5202.929	1A04PK		test passed	BLD-AR-Doors-vs-BLD-AR-Stairs	0	ran and found nothing
+22:45:22.476	5202.961	1A04PK	TESTS CREATE	test created	BLD-AR-Doors-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:45:22.707	5203.193	1A04PK		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Ramps	0	0 in the document
+22:45:22.709	5203.194	1A04PK		test passed	BLD-AR-Doors-vs-BLD-AR-Ramps	0	ran and found nothing
+22:45:22.740	5203.225	1A04PK	TESTS CREATE	test created	BLD-AR-Doors-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:53:16.972	5677.449	1A04PK		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Walls	295	295 in the document
+22:53:16.972	5677.449	1A04PK		test found clashes	BLD-AR-Doors-vs-BLD-AR-Walls	295	ran and found clashes
+22:53:17.043	5677.521	1A04PK	TESTS CREATE	test created	BLD-AR-Doors-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:53:17.290	5677.767	1A04PK		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Windows	0	0 in the document
+22:53:17.290	5677.768	1A04PK		test passed	BLD-AR-Doors-vs-BLD-AR-Windows	0	ran and found nothing
+22:53:17.323	5677.801	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:53:17.712	5678.189	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Floors	0	0 in the document
+22:53:17.713	5678.190	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Floors	0	ran and found nothing
+22:53:17.776	5678.254	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:53:18.082	5678.560	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Stairs	0	0 in the document
+22:53:18.083	5678.560	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Stairs	0	ran and found nothing
+22:53:18.107	5678.585	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:09.030	5729.507	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Ramps	16	16 in the document
+22:54:09.030	5729.507	1A04PK		test found clashes	BLD-AR-Parking-vs-BLD-AR-Ramps	16	ran and found clashes
+22:54:09.109	5729.586	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:09.419	5729.895	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Walls	0	0 in the document
+22:54:09.419	5729.896	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Walls	0	ran and found nothing
+22:54:09.451	5729.928	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:09.762	5730.239	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Windows	0	0 in the document
+22:54:09.763	5730.239	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Windows	0	ran and found nothing
+22:54:09.795	5730.272	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:10.075	5730.551	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Doors	0	0 in the document
+22:54:10.075	5730.552	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Doors	0	ran and found nothing
+22:54:10.109	5730.585	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:11.117	5731.593	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Floors	1	1 in the document
+22:54:11.117	5731.594	1A04PK		test found clashes	BLD-AR-Railings-vs-BLD-AR-Floors	1	ran and found clashes
+22:54:11.158	5731.635	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:39.532	5760.009	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Stairs	20	20 in the document
+22:54:39.532	5760.009	1A04PK		test found clashes	BLD-AR-Railings-vs-BLD-AR-Stairs	20	ran and found clashes
+22:54:39.596	5760.072	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:39.841	5760.318	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Ramps	0	0 in the document
+22:54:39.841	5760.318	1A04PK		test passed	BLD-AR-Railings-vs-BLD-AR-Ramps	0	ran and found nothing
+22:54:39.878	5760.354	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:46.981	5767.457	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Walls	25	25 in the document
+22:54:46.981	5767.457	1A04PK		test found clashes	BLD-AR-Railings-vs-BLD-AR-Walls	25	ran and found clashes
+22:54:47.025	5767.502	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:47.272	5767.748	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Windows	0	0 in the document
+22:54:47.272	5767.749	1A04PK		test passed	BLD-AR-Railings-vs-BLD-AR-Windows	0	ran and found nothing
+22:54:47.305	5767.782	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:47.552	5768.028	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Doors	0	0 in the document
+22:54:47.552	5768.029	1A04PK		test passed	BLD-AR-Railings-vs-BLD-AR-Doors	0	ran and found nothing
+22:54:47.587	5768.064	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:47.835	5768.312	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Parking	0	0 in the document
+22:54:47.836	5768.312	1A04PK		test passed	BLD-AR-Railings-vs-BLD-AR-Parking	0	ran and found nothing
+22:54:47.868	5768.344	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:48.132	5768.608	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Floors	0	0 in the document
+22:54:48.133	5768.609	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Floors	0	ran and found nothing
+22:54:48.165	5768.641	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:48.413	5768.889	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Stairs	0	0 in the document
+22:54:48.413	5768.890	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Stairs	0	ran and found nothing
+22:54:48.446	5768.923	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:54:48.695	5769.172	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Ramps	0	0 in the document
+22:54:48.699	5769.175	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Ramps	0	ran and found nothing
+22:54:48.745	5769.221	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:01.975	5842.451	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Walls	23	23 in the document
+22:56:01.975	5842.451	1A04PK		test found clashes	BLD-AR-Site-vs-BLD-AR-Walls	23	ran and found clashes
+22:56:02.038	5842.514	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:02.343	5842.819	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Windows	0	0 in the document
+22:56:02.343	5842.819	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Windows	0	ran and found nothing
+22:56:02.376	5842.853	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:02.690	5843.166	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Doors	0	0 in the document
+22:56:02.691	5843.167	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Doors	0	ran and found nothing
+22:56:02.723	5843.199	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:03.051	5843.527	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Parking	0	0 in the document
+22:56:03.052	5843.527	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Parking	0	ran and found nothing
+22:56:03.076	5843.552	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:03.364	5843.840	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Railings	0	0 in the document
+22:56:03.364	5843.841	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Railings	0	ran and found nothing
+22:56:03.398	5843.874	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:03.676	5844.152	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Floors	0	0 in the document
+22:56:03.677	5844.152	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Floors	0	ran and found nothing
+22:56:03.700	5844.176	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:04.090	5844.566	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Stairs	1	1 in the document
+22:56:04.091	5844.566	1A04PK		test found clashes	BLD-ST-Foundation-vs-BLD-AR-Stairs	1	ran and found clashes
+22:56:04.132	5844.609	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:04.409	5844.885	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Ramps	0	0 in the document
+22:56:04.410	5844.885	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Ramps	0	ran and found nothing
+22:56:04.437	5844.913	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:23.773	5864.248	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Walls	16	16 in the document
+22:56:23.774	5864.249	1A04PK		test found clashes	BLD-ST-Foundation-vs-BLD-AR-Walls	16	ran and found clashes
+22:56:23.842	5864.318	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:24.076	5864.551	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Windows	0	0 in the document
+22:56:24.077	5864.552	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Windows	0	ran and found nothing
+22:56:24.110	5864.586	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:24.358	5864.834	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Doors	0	0 in the document
+22:56:24.359	5864.834	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Doors	0	ran and found nothing
+22:56:24.391	5864.867	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:24.641	5865.117	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Parking	0	0 in the document
+22:56:24.642	5865.117	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Parking	0	ran and found nothing
+22:56:24.676	5865.151	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:24.923	5865.399	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Railings	0	0 in the document
+22:56:24.924	5865.399	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Railings	0	ran and found nothing
+22:56:24.955	5865.431	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+22:56:25.189	5865.665	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Site	0	0 in the document
+22:56:25.189	5865.665	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Site	0	ran and found nothing
+22:56:25.223	5865.698	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:02:10.950	9811.385	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Floors	345	345 in the document
+00:02:10.950	9811.386	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-AR-Floors	345	ran and found clashes
+00:02:11.016	9811.452	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:02:11.296	9811.732	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Stairs	0	0 in the document
+00:02:11.296	9811.732	1A04PK		test passed	BLD-ST-Columns-vs-BLD-AR-Stairs	0	ran and found nothing
+00:02:11.330	9811.765	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:16:49.508	10689.933	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Ramps	105	105 in the document
+00:16:49.508	10689.934	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-AR-Ramps	105	ran and found clashes
+00:16:49.566	10689.992	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:17:20.931	10721.356	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Walls	23	23 in the document
+00:17:20.931	10721.356	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-AR-Walls	23	ran and found clashes
+00:17:20.987	10721.412	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:17:21.236	10721.662	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Windows	0	0 in the document
+00:17:21.236	10721.662	1A04PK		test passed	BLD-ST-Columns-vs-BLD-AR-Windows	0	ran and found nothing
+00:17:21.271	10721.696	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:17:21.519	10721.944	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Doors	0	0 in the document
+00:17:21.519	10721.944	1A04PK		test passed	BLD-ST-Columns-vs-BLD-AR-Doors	0	ran and found nothing
+00:17:21.552	10721.977	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:24:21.981	11142.402	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Parking	128	128 in the document
+00:24:21.981	11142.402	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-AR-Parking	128	ran and found clashes
+00:24:22.084	11142.505	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:24:22.424	11142.845	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Railings	0	0 in the document
+00:24:22.425	11142.845	1A04PK		test passed	BLD-ST-Columns-vs-BLD-AR-Railings	0	ran and found nothing
+00:24:22.474	11142.895	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:24:49.892	11170.313	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Site	3	3 in the document
+00:24:49.893	11170.314	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-AR-Site	3	ran and found clashes
+00:24:49.978	11170.399	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:27:02.666	11303.086	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-ST-Foundation	21	21 in the document
+00:27:02.666	11303.086	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-ST-Foundation	21	ran and found clashes
+00:27:02.745	11303.165	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:30:25.158	11505.576	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Floors	28	28 in the document
+00:30:25.158	11505.576	1A04PK		test found clashes	BLD-ST-Framing-vs-BLD-AR-Floors	28	ran and found clashes
+00:30:25.218	11505.636	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:30:25.496	11505.914	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Stairs	0	0 in the document
+00:30:25.497	11505.915	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Stairs	0	ran and found nothing
+00:30:25.531	11505.949	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:34:46.225	11766.639	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Ramps	78	78 in the document
+00:34:46.225	11766.639	1A04PK		test found clashes	BLD-ST-Framing-vs-BLD-AR-Ramps	78	ran and found clashes
+00:34:46.300	11766.715	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:34:46.610	11767.025	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Walls	0	0 in the document
+00:34:46.611	11767.025	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Walls	0	ran and found nothing
+00:34:46.645	11767.060	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:34:46.954	11767.368	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Windows	0	0 in the document
+00:34:46.954	11767.368	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Windows	0	ran and found nothing
+00:34:46.983	11767.397	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:34:47.281	11767.695	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Doors	0	0 in the document
+00:34:47.281	11767.696	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Doors	0	ran and found nothing
+00:34:47.314	11767.729	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:36:35.255	11875.669	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Parking	26	26 in the document
+00:36:35.255	11875.670	1A04PK		test found clashes	BLD-ST-Framing-vs-BLD-AR-Parking	26	ran and found clashes
+00:36:35.323	11875.736	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:36:35.618	11876.032	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Railings	0	0 in the document
+00:36:35.618	11876.032	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Railings	0	ran and found nothing
+00:36:35.652	11876.065	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:37:06.325	11906.738	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Site	9	9 in the document
+00:37:06.326	11906.739	1A04PK		test found clashes	BLD-ST-Framing-vs-BLD-AR-Site	9	ran and found clashes
+00:37:06.402	11906.816	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:37:06.714	11907.127	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-ST-Foundation	0	0 in the document
+00:37:06.714	11907.128	1A04PK		test passed	BLD-ST-Framing-vs-BLD-ST-Foundation	0	ran and found nothing
+00:37:06.777	11907.190	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:57:50.540	13150.941	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-ST-Columns	545	545 in the document
+00:57:50.540	13150.942	1A04PK		test found clashes	BLD-ST-Framing-vs-BLD-ST-Columns	545	ran and found clashes
+00:57:50.611	13151.012	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:59:20.523	13240.923	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Floors	14	14 in the document
+00:59:20.523	13240.923	1A04PK		test found clashes	BLD-ST-Walls-vs-BLD-AR-Floors	14	ran and found clashes
+00:59:20.609	13241.010	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:59:20.951	13241.351	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Stairs	0	0 in the document
+00:59:20.951	13241.352	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Stairs	0	ran and found nothing
+00:59:20.986	13241.387	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:59:21.357	13241.759	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Ramps	0	0 in the document
+00:59:21.358	13241.759	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Ramps	0	ran and found nothing
+00:59:21.391	13241.792	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:59:26.130	13246.532	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Walls	10	10 in the document
+00:59:26.131	13246.532	1A04PK		test found clashes	BLD-ST-Walls-vs-BLD-AR-Walls	10	ran and found clashes
+00:59:26.180	13246.580	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:59:26.535	13246.936	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Windows	0	0 in the document
+00:59:26.536	13246.937	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Windows	0	ran and found nothing
+00:59:26.568	13246.969	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:59:26.878	13247.279	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Doors	0	0 in the document
+00:59:26.878	13247.280	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Doors	0	ran and found nothing
+00:59:26.911	13247.311	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:59:27.230	13247.631	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Parking	0	0 in the document
+00:59:27.230	13247.631	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Parking	0	ran and found nothing
+00:59:27.266	13247.667	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:59:27.573	13247.974	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Railings	0	0 in the document
+00:59:27.573	13247.975	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Railings	0	ran and found nothing
+00:59:27.608	13248.008	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+00:59:27.933	13248.334	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Site	0	0 in the document
+00:59:27.934	13248.335	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Site	0	ran and found nothing
+00:59:27.967	13248.368	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:00:12.459	13292.859	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-ST-Foundation	25	25 in the document
+01:00:12.459	13292.860	1A04PK		test found clashes	BLD-ST-Walls-vs-BLD-ST-Foundation	25	ran and found clashes
+01:00:12.536	13292.937	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:06:52.604	13693.000	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-ST-Columns	88	88 in the document
+01:06:52.604	13693.000	1A04PK		test found clashes	BLD-ST-Walls-vs-BLD-ST-Columns	88	ran and found clashes
+01:06:52.691	13693.086	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:07:38.488	13738.883	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-ST-Framing	29	29 in the document
+01:07:38.488	13738.883	1A04PK		test found clashes	BLD-ST-Walls-vs-BLD-ST-Framing	29	ran and found clashes
+01:07:38.555	13738.950	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:08:19.252	13779.645	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Floors	3	3 in the document
+01:08:19.252	13779.646	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-AR-Floors	3	ran and found clashes
+01:08:19.319	13779.713	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:08:33.801	13794.195	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Stairs	9	9 in the document
+01:08:33.801	13794.195	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-AR-Stairs	9	ran and found clashes
+01:08:33.846	13794.240	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:11:47.835	13988.227	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Ramps	46	46 in the document
+01:11:47.836	13988.228	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-AR-Ramps	46	ran and found clashes
+01:11:47.909	13988.301	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:25:51.605	14831.987	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Walls	799	799 in the document
+01:25:51.605	14831.987	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-AR-Walls	799	ran and found clashes
+01:25:51.679	14832.062	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:25:52.052	14832.435	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Windows	0	0 in the document
+01:25:52.053	14832.435	1A04PK		test passed	BLD-ST-Floors-vs-BLD-AR-Windows	0	ran and found nothing
+01:25:52.086	14832.469	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:25:52.457	14832.839	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Doors	0	0 in the document
+01:25:52.457	14832.840	1A04PK		test passed	BLD-ST-Floors-vs-BLD-AR-Doors	0	ran and found nothing
+01:25:52.487	14832.869	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:25:52.850	14833.233	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Parking	0	0 in the document
+01:25:52.850	14833.233	1A04PK		test passed	BLD-ST-Floors-vs-BLD-AR-Parking	0	ran and found nothing
+01:25:52.884	14833.266	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:25:53.790	14834.172	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Railings	1	1 in the document
+01:25:53.790	14834.172	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-AR-Railings	1	ran and found clashes
+01:25:53.835	14834.217	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:25:54.180	14834.562	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Site	0	0 in the document
+01:25:54.180	14834.562	1A04PK		test passed	BLD-ST-Floors-vs-BLD-AR-Site	0	ran and found nothing
+01:25:54.213	14834.595	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+01:25:54.618	14835.000	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-ST-Foundation	0	0 in the document
+01:25:54.618	14835.000	1A04PK		test passed	BLD-ST-Floors-vs-BLD-ST-Foundation	0	ran and found nothing
+01:25:54.666	14835.049	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:19:19.346	21639.660	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-ST-Columns	958	958 in the document
+03:19:19.347	21639.660	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-ST-Columns	958	ran and found clashes
+03:19:19.414	21639.727	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:21:51.592	21791.903	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-ST-Framing	139	139 in the document
+03:21:51.593	21791.903	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-ST-Framing	139	ran and found clashes
+03:21:51.674	21791.984	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:25:49.063	22029.371	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-ST-Walls	53	53 in the document
+03:25:49.063	22029.371	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-ST-Walls	53	ran and found clashes
+03:25:49.125	22029.433	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:31.393	22071.700	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Floors	27	27 in the document
+03:26:31.393	22071.700	1A04PK		test found clashes	BLD-ST-Stair-vs-BLD-AR-Floors	27	ran and found clashes
+03:26:31.448	22071.755	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:31.806	22072.113	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Stairs	0	0 in the document
+03:26:31.807	22072.114	1A04PK		test passed	BLD-ST-Stair-vs-BLD-AR-Stairs	0	ran and found nothing
+03:26:31.841	22072.148	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:32.228	22072.536	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Ramps	0	0 in the document
+03:26:32.229	22072.536	1A04PK		test passed	BLD-ST-Stair-vs-BLD-AR-Ramps	0	ran and found nothing
+03:26:32.262	22072.569	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:52.202	22092.509	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Walls	18	18 in the document
+03:26:52.202	22092.509	1A04PK		test found clashes	BLD-ST-Stair-vs-BLD-AR-Walls	18	ran and found clashes
+03:26:52.266	22092.573	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:52.688	22092.994	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Windows	0	0 in the document
+03:26:52.689	22092.995	1A04PK		test passed	BLD-ST-Stair-vs-BLD-AR-Windows	0	ran and found nothing
+03:26:52.722	22093.028	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:53.122	22093.429	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Doors	0	0 in the document
+03:26:53.123	22093.429	1A04PK		test passed	BLD-ST-Stair-vs-BLD-AR-Doors	0	ran and found nothing
+03:26:53.161	22093.467	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:53.548	22093.856	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Parking	0	0 in the document
+03:26:53.550	22093.856	1A04PK		test passed	BLD-ST-Stair-vs-BLD-AR-Parking	0	ran and found nothing
+03:26:53.584	22093.890	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:53.974	22094.282	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Railings	0	0 in the document
+03:26:53.975	22094.282	1A04PK		test passed	BLD-ST-Stair-vs-BLD-AR-Railings	0	ran and found nothing
+03:26:54.039	22094.346	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:54.489	22094.796	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Site	0	0 in the document
+03:26:54.490	22094.797	1A04PK		test passed	BLD-ST-Stair-vs-BLD-AR-Site	0	ran and found nothing
+03:26:54.525	22094.832	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:54.948	22095.255	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-ST-Foundation	0	0 in the document
+03:26:54.948	22095.255	1A04PK		test passed	BLD-ST-Stair-vs-BLD-ST-Foundation	0	ran and found nothing
+03:26:54.981	22095.288	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:55.462	22095.769	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-ST-Columns	1	1 in the document
+03:26:55.463	22095.770	1A04PK		test found clashes	BLD-ST-Stair-vs-BLD-ST-Columns	1	ran and found clashes
+03:26:55.516	22095.823	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:56.880	22097.187	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-ST-Framing	9	9 in the document
+03:26:56.881	22097.187	1A04PK		test found clashes	BLD-ST-Stair-vs-BLD-ST-Framing	9	ran and found clashes
+03:26:56.944	22097.250	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:26:57.379	22097.686	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-ST-Walls	0	0 in the document
+03:26:57.380	22097.686	1A04PK		test passed	BLD-ST-Stair-vs-BLD-ST-Walls	0	ran and found nothing
+03:26:57.412	22097.719	1A04PK	TESTS CREATE	test created	BLD-ST-Stair-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:27:17.949	22118.256	1A04PK		rows for the workbook	BLD-ST-Stair-vs-BLD-ST-Floors	19	19 in the document
+03:27:17.950	22118.256	1A04PK		test found clashes	BLD-ST-Stair-vs-BLD-ST-Floors	19	ran and found clashes
+03:27:18.024	22118.331	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:28:18.462	22178.768	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	14	14 in the document
+03:28:18.462	22178.768	1A04PK		test found clashes	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	14	ran and found clashes
+03:28:18.536	22178.842	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:28:18.961	22179.267	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Stairs	0	0 in the document
+03:28:18.962	22179.267	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Stairs	0	ran and found nothing
+03:28:19.010	22179.316	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:28:19.462	22179.768	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Ramps	0	0 in the document
+03:28:19.463	22179.768	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Ramps	0	ran and found nothing
+03:28:19.499	22179.804	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:32:32.603	22432.907	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	163	163 in the document
+03:32:32.603	22432.907	1A04PK		test found clashes	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	163	ran and found clashes
+03:32:32.665	22432.968	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:32:33.066	22433.370	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Windows	0	0 in the document
+03:32:33.067	22433.370	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Windows	0	ran and found nothing
+03:32:33.100	22433.404	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:32:33.489	22433.792	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Doors	0	0 in the document
+03:32:33.489	22433.793	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Doors	0	ran and found nothing
+03:32:33.521	22433.825	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:32:33.924	22434.229	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Parking	0	0 in the document
+03:32:33.925	22434.229	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Parking	0	ran and found nothing
+03:32:33.959	22434.263	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:32:34.361	22434.665	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Railings	0	0 in the document
+03:32:34.361	22434.665	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+03:32:34.394	22434.698	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:32:34.783	22435.087	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Site	0	0 in the document
+03:32:34.783	22435.087	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Site	0	ran and found nothing
+03:32:34.816	22435.120	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:32:35.221	22435.525	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation	0	0 in the document
+03:32:35.221	22435.525	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation	0	ran and found nothing
+03:32:35.253	22435.557	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:32:48.196	22448.500	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns	8	8 in the document
+03:32:48.197	22448.501	1A04PK		test found clashes	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns	8	ran and found clashes
+03:32:48.249	22448.553	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:32:48.621	22448.925	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	0	0 in the document
+03:32:48.622	22448.925	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	0	ran and found nothing
+03:32:48.655	22448.959	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:32:49.041	22449.344	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls	0	0 in the document
+03:32:49.041	22449.345	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls	0	ran and found nothing
+03:32:49.108	22449.411	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:12.732	22473.035	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	14	14 in the document
+03:33:12.732	22473.035	1A04PK		test found clashes	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	14	ran and found clashes
+03:33:12.802	22473.105	1A04PK	TESTS CREATE	test created	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:13.203	22473.506	1A04PK		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Stair	0	0 in the document
+03:33:13.203	22473.507	1A04PK		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Stair	0	ran and found nothing
+03:33:13.238	22473.541	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:13.642	22473.946	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Floors	0	0 in the document
+03:33:13.643	22473.947	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Floors	0	ran and found nothing
+03:33:13.676	22473.980	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:14.077	22474.380	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Stairs	0	0 in the document
+03:33:14.077	22474.380	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Stairs	0	ran and found nothing
+03:33:14.110	22474.414	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:14.530	22474.834	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Ramps	0	0 in the document
+03:33:14.531	22474.834	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Ramps	0	ran and found nothing
+03:33:14.565	22474.868	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:18.896	22479.200	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Walls	15	15 in the document
+03:33:18.897	22479.200	1A04PK		test found clashes	BLD-ME-Duct Accessory-vs-BLD-AR-Walls	15	ran and found clashes
+03:33:18.949	22479.253	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:19.340	22479.643	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Windows	0	0 in the document
+03:33:19.341	22479.644	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Windows	0	ran and found nothing
+03:33:19.374	22479.677	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:19.765	22480.068	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Doors	0	0 in the document
+03:33:19.765	22480.069	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Doors	0	ran and found nothing
+03:33:19.798	22480.102	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:20.201	22480.504	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Parking	0	0 in the document
+03:33:20.202	22480.505	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Parking	0	ran and found nothing
+03:33:20.234	22480.537	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:20.671	22480.975	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Railings	0	0 in the document
+03:33:20.672	22480.975	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Railings	0	ran and found nothing
+03:33:20.708	22481.012	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:21.137	22481.441	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Site	0	0 in the document
+03:33:21.137	22481.441	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Site	0	ran and found nothing
+03:33:21.179	22481.482	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:21.602	22481.905	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Foundation	0	0 in the document
+03:33:21.603	22481.906	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Foundation	0	ran and found nothing
+03:33:21.636	22481.940	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:22.012	22482.315	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Columns	0	0 in the document
+03:33:22.013	22482.316	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Columns	0	ran and found nothing
+03:33:22.076	22482.379	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:22.468	22482.771	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Framing	0	0 in the document
+03:33:22.469	22482.772	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Framing	0	ran and found nothing
+03:33:22.502	22482.805	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:22.876	22483.179	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Walls	0	0 in the document
+03:33:22.876	22483.180	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Walls	0	ran and found nothing
+03:33:22.910	22483.213	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:23.298	22483.602	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Floors	0	0 in the document
+03:33:23.299	22483.603	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Floors	0	ran and found nothing
+03:33:23.333	22483.637	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:23.708	22484.012	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Stair	0	0 in the document
+03:33:23.708	22484.012	1A04PK		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Stair	0	ran and found nothing
+03:33:23.740	22484.045	1A04PK	TESTS CREATE	test created	BLD-ME-Duct Accessory-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:45.205	22505.509	1A04PK		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ME-Ducts&Duct Fittings	25	25 in the document
+03:33:45.205	22505.509	1A04PK		test found clashes	BLD-ME-Duct Accessory-vs-BLD-ME-Ducts&Duct Fittings	25	ran and found clashes
+03:33:45.267	22505.570	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:45.623	22505.927	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Floors	0	0 in the document
+03:33:45.624	22505.927	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Floors	0	ran and found nothing
+03:33:45.658	22505.962	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:46.031	22506.334	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Stairs	0	0 in the document
+03:33:46.032	22506.335	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Stairs	0	ran and found nothing
+03:33:46.064	22506.367	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:46.436	22506.739	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Ramps	0	0 in the document
+03:33:46.436	22506.739	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Ramps	0	ran and found nothing
+03:33:46.470	22506.774	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:46.842	22507.146	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	0	0 in the document
+03:33:46.842	22507.146	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	0	ran and found nothing
+03:33:46.877	22507.181	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:47.262	22507.566	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Windows	0	0 in the document
+03:33:47.263	22507.566	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Windows	0	ran and found nothing
+03:33:47.297	22507.600	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:47.670	22507.973	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Doors	0	0 in the document
+03:33:47.670	22507.974	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Doors	0	ran and found nothing
+03:33:47.703	22508.006	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:48.107	22508.411	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Parking	0	0 in the document
+03:33:48.108	22508.411	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Parking	0	ran and found nothing
+03:33:48.141	22508.445	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:48.573	22508.877	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Railings	0	0 in the document
+03:33:48.573	22508.877	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Railings	0	ran and found nothing
+03:33:48.640	22508.943	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:49.042	22509.346	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Site	0	0 in the document
+03:33:49.043	22509.346	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Site	0	ran and found nothing
+03:33:49.108	22509.411	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:49.529	22509.833	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation	0	0 in the document
+03:33:49.529	22509.833	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation	0	ran and found nothing
+03:33:49.565	22509.868	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:49.969	22510.272	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Columns	0	0 in the document
+03:33:49.970	22510.272	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Columns	0	ran and found nothing
+03:33:50.002	22510.306	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:50.455	22510.758	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing	0	0 in the document
+03:33:50.455	22510.759	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing	0	ran and found nothing
+03:33:50.489	22510.792	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:50.942	22511.245	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Walls	0	0 in the document
+03:33:50.943	22511.246	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Walls	0	ran and found nothing
+03:33:50.973	22511.276	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:51.424	22511.727	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors	0	0 in the document
+03:33:51.424	22511.727	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors	0	ran and found nothing
+03:33:51.462	22511.765	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:51.943	22512.246	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Stair	0	0 in the document
+03:33:51.943	22512.246	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Stair	0	ran and found nothing
+03:33:51.978	22512.281	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:52.430	22512.733	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+03:33:52.431	22512.734	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+03:33:52.464	22512.767	1A04PK	TESTS CREATE	test created	BLD-ME-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:52.903	22513.206	1A04PK		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0	0 in the document
+03:33:52.903	22513.207	1A04PK		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+03:33:52.938	22513.240	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:53.363	22513.666	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-AR-Floors	0	0 in the document
+03:33:53.364	22513.667	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-AR-Floors	0	ran and found nothing
+03:33:53.420	22513.723	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:53.859	22514.162	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-AR-Stairs	0	0 in the document
+03:33:53.859	22514.163	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-AR-Stairs	0	ran and found nothing
+03:33:53.893	22514.196	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:54.313	22514.616	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-AR-Ramps	0	0 in the document
+03:33:54.314	22514.617	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-AR-Ramps	0	ran and found nothing
+03:33:54.348	22514.651	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:54.816	22515.119	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-AR-Walls	0	0 in the document
+03:33:54.816	22515.119	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-AR-Walls	0	ran and found nothing
+03:33:54.852	22515.155	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:55.301	22515.604	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-AR-Windows	0	0 in the document
+03:33:55.301	22515.604	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-AR-Windows	0	ran and found nothing
+03:33:55.328	22515.631	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:55.771	22516.074	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-AR-Doors	0	0 in the document
+03:33:55.771	22516.075	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-AR-Doors	0	ran and found nothing
+03:33:55.803	22516.106	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:56.206	22516.509	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-AR-Parking	0	0 in the document
+03:33:56.207	22516.509	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-AR-Parking	0	ran and found nothing
+03:33:56.240	22516.543	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:56.646	22516.949	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-AR-Railings	0	0 in the document
+03:33:56.646	22516.949	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-AR-Railings	0	ran and found nothing
+03:33:56.680	22516.983	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:57.085	22517.389	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-AR-Site	0	0 in the document
+03:33:57.086	22517.389	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-AR-Site	0	ran and found nothing
+03:33:57.121	22517.424	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:57.590	22517.893	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-ST-Foundation	0	0 in the document
+03:33:57.590	22517.894	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-ST-Foundation	0	ran and found nothing
+03:33:57.625	22517.928	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:58.030	22518.333	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-ST-Columns	0	0 in the document
+03:33:58.030	22518.334	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-ST-Columns	0	ran and found nothing
+03:33:58.065	22518.367	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:58.456	22518.759	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-ST-Framing	0	0 in the document
+03:33:58.456	22518.760	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-ST-Framing	0	ran and found nothing
+03:33:58.490	22518.793	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:58.859	22519.161	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-ST-Walls	0	0 in the document
+03:33:58.859	22519.162	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-ST-Walls	0	ran and found nothing
+03:33:58.896	22519.199	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:59.282	22519.586	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-ST-Floors	0	0 in the document
+03:33:59.283	22519.587	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-ST-Floors	0	ran and found nothing
+03:33:59.317	22519.621	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:33:59.674	22519.977	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-ST-Stair	0	0 in the document
+03:33:59.674	22519.978	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-ST-Stair	0	ran and found nothing
+03:33:59.707	22520.011	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:00.096	22520.400	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+03:34:00.097	22520.400	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+03:34:00.130	22520.433	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:00.503	22520.806	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-ME-Duct Accessory	0	0 in the document
+03:34:00.503	22520.806	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+03:34:00.536	22520.839	1A04PK	TESTS CREATE	test created	BLD-ME-Flex Ducts-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:00.909	22521.212	1A04PK		rows for the workbook	BLD-ME-Flex Ducts-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+03:34:00.910	22521.212	1A04PK		test passed	BLD-ME-Flex Ducts-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+03:34:00.942	22521.245	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:08.879	22529.182	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Floors	13	13 in the document
+03:34:08.880	22529.182	1A04PK		test found clashes	BLD-ME-Air Terminals-vs-BLD-AR-Floors	13	ran and found clashes
+03:34:08.938	22529.241	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:09.309	22529.612	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Stairs	0	0 in the document
+03:34:09.310	22529.613	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-AR-Stairs	0	ran and found nothing
+03:34:09.344	22529.646	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:09.715	22530.018	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Ramps	0	0 in the document
+03:34:09.715	22530.019	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-AR-Ramps	0	ran and found nothing
+03:34:09.750	22530.053	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:46.493	22566.795	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Walls	40	40 in the document
+03:34:46.493	22566.795	1A04PK		test found clashes	BLD-ME-Air Terminals-vs-BLD-AR-Walls	40	ran and found clashes
+03:34:46.553	22566.855	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:46.928	22567.230	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Windows	0	0 in the document
+03:34:46.928	22567.231	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-AR-Windows	0	ran and found nothing
+03:34:46.967	22567.270	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:47.715	22568.018	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Doors	2	2 in the document
+03:34:47.716	22568.018	1A04PK		test found clashes	BLD-ME-Air Terminals-vs-BLD-AR-Doors	2	ran and found clashes
+03:34:47.757	22568.060	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:48.149	22568.452	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Parking	0	0 in the document
+03:34:48.150	22568.452	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-AR-Parking	0	ran and found nothing
+03:34:48.185	22568.487	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:48.587	22568.890	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Railings	0	0 in the document
+03:34:48.587	22568.891	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-AR-Railings	0	ran and found nothing
+03:34:48.622	22568.924	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:49.025	22569.328	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Site	0	0 in the document
+03:34:49.025	22569.328	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-AR-Site	0	ran and found nothing
+03:34:49.058	22569.361	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:49.495	22569.797	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Foundation	0	0 in the document
+03:34:49.495	22569.798	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-ST-Foundation	0	ran and found nothing
+03:34:49.544	22569.847	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:51.106	22571.409	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Columns	2	2 in the document
+03:34:51.107	22571.410	1A04PK		test found clashes	BLD-ME-Air Terminals-vs-BLD-ST-Columns	2	ran and found clashes
+03:34:51.193	22571.495	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:51.654	22571.957	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Framing	0	0 in the document
+03:34:51.654	22571.957	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-ST-Framing	0	ran and found nothing
+03:34:51.690	22571.992	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:52.124	22572.427	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Walls	0	0 in the document
+03:34:52.125	22572.428	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-ST-Walls	0	ran and found nothing
+03:34:52.159	22572.462	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:56.474	22576.776	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Floors	3	3 in the document
+03:34:56.474	22576.777	1A04PK		test found clashes	BLD-ME-Air Terminals-vs-BLD-ST-Floors	3	ran and found clashes
+03:34:56.521	22576.824	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:56.910	22577.212	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Stair	0	0 in the document
+03:34:56.910	22577.213	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-ST-Stair	0	ran and found nothing
+03:34:56.944	22577.246	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:34:59.474	22579.776	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ME-Ducts&Duct Fittings	3	3 in the document
+03:34:59.474	22579.776	1A04PK		test found clashes	BLD-ME-Air Terminals-vs-BLD-ME-Ducts&Duct Fittings	3	ran and found clashes
+03:34:59.521	22579.824	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:00.785	22581.088	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ME-Duct Accessory	2	2 in the document
+03:35:00.785	22581.089	1A04PK		test found clashes	BLD-ME-Air Terminals-vs-BLD-ME-Duct Accessory	2	ran and found clashes
+03:35:00.838	22581.141	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:01.226	22581.529	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+03:35:01.226	22581.529	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+03:35:01.259	22581.561	1A04PK	TESTS CREATE	test created	BLD-ME-Air Terminals-vs-BLD-ME-Flex Ducts	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:01.680	22581.982	1A04PK		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ME-Flex Ducts	0	0 in the document
+03:35:01.680	22581.982	1A04PK		test passed	BLD-ME-Air Terminals-vs-BLD-ME-Flex Ducts	0	ran and found nothing
+03:35:01.712	22582.014	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:05.380	22585.683	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Floors	17	17 in the document
+03:35:05.381	22585.683	1A04PK		test found clashes	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Floors	17	ran and found clashes
+03:35:05.428	22585.730	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:05.830	22586.133	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Stairs	0	0 in the document
+03:35:05.831	22586.134	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Stairs	0	ran and found nothing
+03:35:05.862	22586.165	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:06.364	22586.667	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Ramps	0	0 in the document
+03:35:06.365	22586.667	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Ramps	0	ran and found nothing
+03:35:06.400	22586.702	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:06.868	22587.171	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	0	0 in the document
+03:35:06.869	22587.172	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	0	ran and found nothing
+03:35:06.903	22587.205	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:07.330	22587.632	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Windows	0	0 in the document
+03:35:07.330	22587.632	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Windows	0	ran and found nothing
+03:35:07.361	22587.663	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:07.804	22588.106	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Doors	0	0 in the document
+03:35:07.804	22588.107	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Doors	0	ran and found nothing
+03:35:07.830	22588.132	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:10.066	22590.368	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Parking	11	11 in the document
+03:35:10.066	22590.369	1A04PK		test found clashes	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Parking	11	ran and found clashes
+03:35:10.097	22590.399	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:10.467	22590.770	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Railings	0	0 in the document
+03:35:10.467	22590.770	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+03:35:10.503	22590.805	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:10.888	22591.191	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Site	0	0 in the document
+03:35:10.889	22591.191	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Site	0	ran and found nothing
+03:35:10.922	22591.224	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:11.515	22591.817	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Foundation	2	2 in the document
+03:35:11.515	22591.818	1A04PK		test found clashes	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Foundation	2	ran and found clashes
+03:35:11.546	22591.849	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:12.325	22592.628	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Columns	3	3 in the document
+03:35:12.325	22592.628	1A04PK		test found clashes	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Columns	3	ran and found clashes
+03:35:12.359	22592.661	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:16.883	22597.186	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	2	2 in the document
+03:35:16.883	22597.186	1A04PK		test found clashes	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	2	ran and found clashes
+03:35:16.936	22597.238	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:17.354	22597.656	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	0	0 in the document
+03:35:17.354	22597.656	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	0	ran and found nothing
+03:35:17.403	22597.705	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:19.520	22599.823	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	6	6 in the document
+03:35:19.521	22599.824	1A04PK		test found clashes	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	6	ran and found clashes
+03:35:19.565	22599.868	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:19.959	22600.262	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Stair	0	0 in the document
+03:35:19.960	22600.262	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Stair	0	ran and found nothing
+03:35:19.993	22600.296	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:20.405	22600.707	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+03:35:20.405	22600.707	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+03:35:20.450	22600.752	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:20.901	22601.203	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Duct Accessory	0	0 in the document
+03:35:20.902	22601.204	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+03:35:20.951	22601.253	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:22.189	22602.492	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Mechanical Equipment	3	3 in the document
+03:35:22.190	22602.492	1A04PK		test found clashes	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Mechanical Equipment	3	ran and found clashes
+03:35:22.237	22602.539	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Flex Ducts	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:22.592	22602.895	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Flex Ducts	0	0 in the document
+03:35:22.592	22602.895	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Flex Ducts	0	ran and found nothing
+03:35:22.626	22602.928	1A04PK	TESTS CREATE	test created	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Air Terminals	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:22.998	22603.301	1A04PK		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Air Terminals	0	0 in the document
+03:35:22.998	22603.301	1A04PK		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Air Terminals	0	ran and found nothing
+03:35:23.032	22603.335	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:23.498	22603.801	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-AR-Floors	1	1 in the document
+03:35:23.499	22603.801	1A04PK		test found clashes	BLD-ME-Pipe Accessories-vs-BLD-AR-Floors	1	ran and found clashes
+03:35:23.531	22603.834	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:23.906	22604.209	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-AR-Stairs	0	0 in the document
+03:35:23.907	22604.209	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-AR-Stairs	0	ran and found nothing
+03:35:23.940	22604.242	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:24.309	22604.612	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-AR-Ramps	0	0 in the document
+03:35:24.310	22604.612	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-AR-Ramps	0	ran and found nothing
+03:35:24.343	22604.646	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:24.730	22605.033	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-AR-Walls	0	0 in the document
+03:35:24.732	22605.034	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-AR-Walls	0	ran and found nothing
+03:35:24.781	22605.083	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:25.166	22605.469	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-AR-Windows	0	0 in the document
+03:35:25.167	22605.469	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-AR-Windows	0	ran and found nothing
+03:35:25.215	22605.517	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:25.618	22605.920	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-AR-Doors	0	0 in the document
+03:35:25.618	22605.921	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-AR-Doors	0	ran and found nothing
+03:35:25.651	22605.954	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:26.042	22606.344	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-AR-Parking	0	0 in the document
+03:35:26.042	22606.344	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-AR-Parking	0	ran and found nothing
+03:35:26.091	22606.393	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:26.494	22606.796	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-AR-Railings	0	0 in the document
+03:35:26.495	22606.797	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-AR-Railings	0	ran and found nothing
+03:35:26.543	22606.845	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:26.946	22607.249	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-AR-Site	0	0 in the document
+03:35:26.947	22607.249	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-AR-Site	0	ran and found nothing
+03:35:26.981	22607.283	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:27.385	22607.687	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ST-Foundation	0	0 in the document
+03:35:27.385	22607.688	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-ST-Foundation	0	ran and found nothing
+03:35:27.419	22607.721	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:27.823	22608.125	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ST-Columns	0	0 in the document
+03:35:27.823	22608.126	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-ST-Columns	0	ran and found nothing
+03:35:27.858	22608.160	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:28.259	22608.561	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ST-Framing	0	0 in the document
+03:35:28.259	22608.562	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-ST-Framing	0	ran and found nothing
+03:35:28.293	22608.595	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:28.698	22609.001	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ST-Walls	0	0 in the document
+03:35:28.698	22609.001	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-ST-Walls	0	ran and found nothing
+03:35:28.747	22609.050	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:29.235	22609.538	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ST-Floors	1	1 in the document
+03:35:29.236	22609.538	1A04PK		test found clashes	BLD-ME-Pipe Accessories-vs-BLD-ST-Floors	1	ran and found clashes
+03:35:29.277	22609.580	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:29.682	22609.985	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ST-Stair	0	0 in the document
+03:35:29.683	22609.985	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-ST-Stair	0	ran and found nothing
+03:35:29.717	22610.019	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:30.103	22610.405	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+03:35:30.103	22610.406	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+03:35:30.138	22610.440	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:30.540	22610.842	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ME-Duct Accessory	0	0 in the document
+03:35:30.540	22610.843	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+03:35:30.574	22610.877	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:31.602	22611.904	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ME-Mechanical Equipment	6	6 in the document
+03:35:31.602	22611.905	1A04PK		test found clashes	BLD-ME-Pipe Accessories-vs-BLD-ME-Mechanical Equipment	6	ran and found clashes
+03:35:31.652	22611.954	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ME-Flex Ducts	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:32.054	22612.356	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ME-Flex Ducts	0	0 in the document
+03:35:32.055	22612.357	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-ME-Flex Ducts	0	ran and found nothing
+03:35:32.088	22612.391	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ME-Air Terminals	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:35:32.473	22612.775	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ME-Air Terminals	0	0 in the document
+03:35:32.474	22612.776	1A04PK		test passed	BLD-ME-Pipe Accessories-vs-BLD-ME-Air Terminals	0	ran and found nothing
+03:35:32.506	22612.809	1A04PK	TESTS CREATE	test created	BLD-ME-Pipe Accessories-vs-BLD-ME-Pipes&Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:01.304	22641.605	1A04PK		rows for the workbook	BLD-ME-Pipe Accessories-vs-BLD-ME-Pipes&Pipe Fittings	242	242 in the document
+03:36:01.304	22641.606	1A04PK		test found clashes	BLD-ME-Pipe Accessories-vs-BLD-ME-Pipes&Pipe Fittings	242	ran and found clashes
+03:36:01.371	22641.673	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:02.341	22642.644	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Floors	1	1 in the document
+03:36:02.342	22642.644	1A04PK		test found clashes	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Floors	1	ran and found clashes
+03:36:02.384	22642.686	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:02.787	22643.089	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Stairs	0	0 in the document
+03:36:02.788	22643.089	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Stairs	0	ran and found nothing
+03:36:02.822	22643.124	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:03.212	22643.514	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Ramps	0	0 in the document
+03:36:03.213	22643.515	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Ramps	0	ran and found nothing
+03:36:03.246	22643.548	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:03.668	22643.970	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Walls	0	0 in the document
+03:36:03.668	22643.970	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Walls	0	ran and found nothing
+03:36:03.733	22644.036	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:04.138	22644.440	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Windows	0	0 in the document
+03:36:04.138	22644.440	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Windows	0	ran and found nothing
+03:36:04.172	22644.474	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:04.562	22644.864	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Doors	0	0 in the document
+03:36:04.563	22644.865	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Doors	0	ran and found nothing
+03:36:04.597	22644.899	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:05.002	22645.305	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Parking	0	0 in the document
+03:36:05.002	22645.305	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Parking	0	ran and found nothing
+03:36:05.037	22645.340	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:05.456	22645.758	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Railings	0	0 in the document
+03:36:05.456	22645.758	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Railings	0	ran and found nothing
+03:36:05.490	22645.793	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:05.894	22646.196	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Site	0	0 in the document
+03:36:05.894	22646.196	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-AR-Site	0	ran and found nothing
+03:36:05.928	22646.230	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:06.349	22646.651	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Foundation	0	0 in the document
+03:36:06.349	22646.651	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Foundation	0	ran and found nothing
+03:36:06.383	22646.685	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:06.805	22647.106	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Columns	0	0 in the document
+03:36:06.805	22647.107	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Columns	0	ran and found nothing
+03:36:06.839	22647.141	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:07.287	22647.589	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Framing	0	0 in the document
+03:36:07.287	22647.590	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Framing	0	ran and found nothing
+03:36:07.321	22647.623	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:07.772	22648.074	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Walls	0	0 in the document
+03:36:07.773	22648.075	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Walls	0	ran and found nothing
+03:36:07.808	22648.109	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:09.252	22649.554	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Floors	2	2 in the document
+03:36:09.252	22649.554	1A04PK		test found clashes	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Floors	2	ran and found clashes
+03:36:09.289	22649.591	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:09.723	22650.026	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Stair	0	0 in the document
+03:36:09.724	22650.026	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ST-Stair	0	ran and found nothing
+03:36:09.758	22650.060	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:10.244	22650.546	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+03:36:10.244	22650.546	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+03:36:10.279	22650.581	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:10.764	22651.066	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0	0 in the document
+03:36:10.765	22651.067	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+03:36:10.798	22651.100	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:11.265	22651.567	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+03:36:11.265	22651.568	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+03:36:11.299	22651.602	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Flex Ducts	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:11.721	22652.024	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Flex Ducts	0	0 in the document
+03:36:11.722	22652.024	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Flex Ducts	0	ran and found nothing
+03:36:11.755	22652.057	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:12.144	22652.446	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0	0 in the document
+03:36:12.145	22652.447	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0	ran and found nothing
+03:36:12.179	22652.481	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:12.711	22653.012	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	1	1 in the document
+03:36:12.711	22653.012	1A04PK		test found clashes	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	1	ran and found clashes
+03:36:12.760	22653.061	1A04PK	TESTS CREATE	test created	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Pipe Accessories	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+03:36:13.193	22653.495	1A04PK		rows for the workbook	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Pipe Accessories	0	0 in the document
+03:36:13.193	22653.496	1A04PK		test passed	BLD-ME-Plumbing Fixtures-vs-BLD-ME-Pipe Accessories	0	ran and found nothing
+03:36:13.226	22653.528	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:02:35.098	24235.383	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	219	219 in the document
+04:02:35.099	24235.384	1A04PK		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	219	ran and found clashes
+04:02:35.205	24235.490	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:02:35.673	24235.958	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Stairs	0	0 in the document
+04:02:35.673	24235.958	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Stairs	0	ran and found nothing
+04:02:35.709	24235.993	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:02:46.489	24246.774	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Ramps	3	3 in the document
+04:02:46.490	24246.775	1A04PK		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Ramps	3	ran and found clashes
+04:02:46.526	24246.811	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:09:18.865	24639.146	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	423	423 in the document
+04:09:18.865	24639.147	1A04PK		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	423	ran and found clashes
+04:09:18.940	24639.222	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:09:19.406	24639.688	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Windows	0	0 in the document
+04:09:19.407	24639.688	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Windows	0	ran and found nothing
+04:09:19.440	24639.721	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:09:19.889	24640.171	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Doors	0	0 in the document
+04:09:19.890	24640.171	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Doors	0	ran and found nothing
+04:09:19.925	24640.206	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:09:20.435	24640.717	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Parking	0	0 in the document
+04:09:20.436	24640.717	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Parking	0	ran and found nothing
+04:09:20.470	24640.752	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:09:20.985	24641.267	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Railings	0	0 in the document
+04:09:20.985	24641.267	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+04:09:21.034	24641.317	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:09:21.529	24641.811	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Site	0	0 in the document
+04:09:21.529	24641.811	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Site	0	ran and found nothing
+04:09:21.563	24641.845	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:09:22.044	24642.326	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	0	0 in the document
+04:09:22.045	24642.326	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	0	ran and found nothing
+04:09:22.079	24642.360	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:09:31.844	24652.126	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	9	9 in the document
+04:09:31.844	24652.126	1A04PK		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	9	ran and found clashes
+04:09:31.905	24652.186	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:09:44.561	24664.842	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	5	5 in the document
+04:09:44.561	24664.842	1A04PK		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	5	ran and found clashes
+04:09:44.609	24664.890	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:10:18.033	24698.314	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	43	43 in the document
+04:10:18.033	24698.315	1A04PK		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	43	ran and found clashes
+04:10:18.104	24698.386	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:41.377	25021.654	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	133	133 in the document
+04:15:41.377	25021.654	1A04PK		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	133	ran and found clashes
+04:15:41.437	25021.714	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:41.860	25022.137	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Stair	0	0 in the document
+04:15:41.860	25022.137	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Stair	0	ran and found nothing
+04:15:41.894	25022.170	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:42.314	25022.591	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+04:15:42.315	25022.592	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+04:15:42.366	25022.642	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:42.800	25023.077	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Duct Accessory	0	0 in the document
+04:15:42.801	25023.078	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+04:15:42.834	25023.111	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:43.269	25023.546	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+04:15:43.269	25023.546	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+04:15:43.304	25023.580	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Flex Ducts	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:43.751	25024.028	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Flex Ducts	0	0 in the document
+04:15:43.752	25024.028	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Flex Ducts	0	ran and found nothing
+04:15:43.785	25024.062	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:44.203	25024.480	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals	0	0 in the document
+04:15:44.204	25024.480	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals	0	ran and found nothing
+04:15:44.237	25024.515	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:44.656	25024.933	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+04:15:44.657	25024.933	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+04:15:44.690	25024.967	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipe Accessories	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:45.124	25025.401	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipe Accessories	0	0 in the document
+04:15:45.124	25025.401	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipe Accessories	0	ran and found nothing
+04:15:45.159	25025.436	1A04PK	TESTS CREATE	test created	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Plumbing Fixtures	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:45.593	25025.870	1A04PK		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Plumbing Fixtures	0	0 in the document
+04:15:45.594	25025.871	1A04PK		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Plumbing Fixtures	0	ran and found nothing
+04:15:45.629	25025.906	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:46.060	25026.337	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	0	0 in the document
+04:15:46.060	25026.337	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	0	ran and found nothing
+04:15:46.095	25026.372	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:46.532	25026.809	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Stairs	0	0 in the document
+04:15:46.533	25026.809	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Stairs	0	ran and found nothing
+04:15:46.566	25026.843	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:47.013	25027.290	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Ramps	0	0 in the document
+04:15:47.013	25027.291	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Ramps	0	ran and found nothing
+04:15:47.049	25027.326	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:52.640	25032.917	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	3	3 in the document
+04:15:52.640	25032.918	1A04PK		test found clashes	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	3	ran and found clashes
+04:15:52.674	25032.951	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:53.109	25033.386	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Windows	0	0 in the document
+04:15:53.110	25033.386	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Windows	0	ran and found nothing
+04:15:53.143	25033.420	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:53.562	25033.839	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Doors	0	0 in the document
+04:15:53.563	25033.840	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Doors	0	ran and found nothing
+04:15:53.596	25033.873	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:54.031	25034.308	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Parking	0	0 in the document
+04:15:54.031	25034.308	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Parking	0	ran and found nothing
+04:15:54.065	25034.342	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:54.499	25034.776	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Railings	0	0 in the document
+04:15:54.499	25034.777	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Railings	0	ran and found nothing
+04:15:54.532	25034.809	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:54.983	25035.259	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Site	0	0 in the document
+04:15:54.983	25035.260	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Site	0	ran and found nothing
+04:15:55.016	25035.293	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:55.435	25035.712	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	0	0 in the document
+04:15:55.437	25035.713	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	0	ran and found nothing
+04:15:55.470	25035.747	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:56.118	25036.395	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Columns	1	1 in the document
+04:15:56.119	25036.395	1A04PK		test found clashes	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Columns	1	ran and found clashes
+04:15:56.164	25036.441	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:56.644	25036.921	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Framing	0	0 in the document
+04:15:56.645	25036.922	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Framing	0	ran and found nothing
+04:15:56.677	25036.954	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:57.635	25037.912	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Walls	5	5 in the document
+04:15:57.635	25037.912	1A04PK		test found clashes	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Walls	5	ran and found clashes
+04:15:57.676	25037.952	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:59.461	25039.738	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors	9	9 in the document
+04:15:59.462	25039.738	1A04PK		test found clashes	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors	9	ran and found clashes
+04:15:59.504	25039.781	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:15:59.942	25040.219	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Stair	0	0 in the document
+04:15:59.942	25040.220	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Stair	0	ran and found nothing
+04:15:59.978	25040.255	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:16:00.440	25040.717	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+04:16:00.440	25040.718	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+04:16:00.475	25040.752	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:16:00.925	25041.202	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0	0 in the document
+04:16:00.925	25041.202	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+04:16:00.959	25041.236	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:16:01.440	25041.717	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+04:16:01.440	25041.717	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+04:16:01.474	25041.751	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Flex Ducts	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:16:01.927	25042.203	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Flex Ducts	0	0 in the document
+04:16:01.927	25042.203	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Flex Ducts	0	ran and found nothing
+04:16:01.961	25042.238	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:16:02.414	25042.690	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0	0 in the document
+04:16:02.414	25042.691	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0	ran and found nothing
+04:16:02.447	25042.724	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:16:02.869	25043.146	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+04:16:02.869	25043.146	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+04:16:02.904	25043.181	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Pipe Accessories	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:16:03.339	25043.616	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Pipe Accessories	0	0 in the document
+04:16:03.339	25043.616	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Pipe Accessories	0	ran and found nothing
+04:16:03.373	25043.651	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Plumbing Fixtures	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:16:03.809	25044.086	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Plumbing Fixtures	0	0 in the document
+04:16:03.810	25044.086	1A04PK		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Plumbing Fixtures	0	ran and found nothing
+04:16:03.846	25044.122	1A04PK	TESTS CREATE	test created	BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:16:05.123	25045.399	1A04PK		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	8	8 in the document
+04:16:05.123	25045.400	1A04PK		test found clashes	BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	8	ran and found clashes
+04:16:05.173	25045.450	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:19:17.134	25237.409	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Floors	39	39 in the document
+04:19:17.134	25237.409	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Floors	39	ran and found clashes
+04:19:17.209	25237.484	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:19:17.628	25237.902	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Stairs	0	0 in the document
+04:19:17.628	25237.903	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Stairs	0	ran and found nothing
+04:19:17.660	25237.936	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:19:25.217	25245.492	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Ramps	1	1 in the document
+04:19:25.217	25245.492	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Ramps	1	ran and found clashes
+04:19:25.273	25245.548	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:24:21.591	25541.864	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls	222	222 in the document
+04:24:21.592	25541.864	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls	222	ran and found clashes
+04:24:21.669	25541.942	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:24:22.326	25542.598	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Windows	1	1 in the document
+04:24:22.326	25542.598	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Windows	1	ran and found clashes
+04:24:22.371	25542.643	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:24:42.897	25563.169	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Doors	11	11 in the document
+04:24:42.897	25563.169	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Doors	11	ran and found clashes
+04:24:42.977	25563.249	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:24:43.487	25563.760	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Parking	0	0 in the document
+04:24:43.488	25563.760	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Parking	0	ran and found nothing
+04:24:43.523	25563.795	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:24:44.005	25564.277	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Railings	0	0 in the document
+04:24:44.005	25564.277	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+04:24:44.041	25564.313	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:25:32.185	25612.458	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Site	12	12 in the document
+04:25:32.187	25612.458	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Site	12	ran and found clashes
+04:25:32.258	25612.529	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:25:36.721	25616.993	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Foundation	4	4 in the document
+04:25:36.721	25616.993	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Foundation	4	ran and found clashes
+04:25:36.794	25617.065	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:27:24.312	25724.582	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Columns	16	16 in the document
+04:27:24.312	25724.583	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Columns	16	ran and found clashes
+04:27:24.390	25724.662	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:27:24.891	25725.161	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing	0	0 in the document
+04:27:24.891	25725.162	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing	0	ran and found nothing
+04:27:24.925	25725.196	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:27:48.038	25748.308	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls	5	5 in the document
+04:27:48.038	25748.309	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls	5	ran and found clashes
+04:27:48.104	25748.375	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:27:56.289	25756.560	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors	8	8 in the document
+04:27:56.290	25756.560	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors	8	ran and found clashes
+04:27:56.329	25756.599	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:27:57.496	25757.766	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Stair	1	1 in the document
+04:27:57.496	25757.767	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Stair	1	ran and found clashes
+04:27:57.532	25757.803	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:27:59.708	25759.979	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Ducts&Duct Fittings	2	2 in the document
+04:27:59.708	25759.979	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Ducts&Duct Fittings	2	ran and found clashes
+04:27:59.768	25760.038	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:28:00.279	25760.550	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Duct Accessory	0	0 in the document
+04:28:00.280	25760.551	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+04:28:00.316	25760.586	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:28:00.827	25761.097	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+04:28:00.828	25761.098	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+04:28:00.861	25761.131	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Flex Ducts	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:28:01.346	25761.616	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Flex Ducts	0	0 in the document
+04:28:01.346	25761.616	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Flex Ducts	0	ran and found nothing
+04:28:01.379	25761.650	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Air Terminals	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:28:01.859	25762.130	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Air Terminals	0	0 in the document
+04:28:01.860	25762.131	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Air Terminals	0	ran and found nothing
+04:28:01.895	25762.165	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:28:02.359	25762.630	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+04:28:02.360	25762.630	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+04:28:02.393	25762.664	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Pipe Accessories	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:28:02.862	25763.133	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Pipe Accessories	0	0 in the document
+04:28:02.863	25763.133	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Pipe Accessories	0	ran and found nothing
+04:28:02.897	25763.167	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Plumbing Fixtures	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:28:03.383	25763.653	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Plumbing Fixtures	0	0 in the document
+04:28:03.383	25763.653	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Plumbing Fixtures	0	ran and found nothing
+04:28:03.409	25763.679	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Pipes & Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:28:05.534	25765.804	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Pipes & Pipe Fittings	4	4 in the document
+04:28:05.535	25765.805	1A04PK		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Pipes & Pipe Fittings	4	ran and found clashes
+04:28:05.595	25765.865	1A04PK	TESTS CREATE	test created	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Plumbing Fixtures	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:28:06.061	25766.332	1A04PK		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+04:28:06.062	25766.332	1A04PK		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+04:28:06.095	25766.366	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:29:31.008	25851.277	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Floors	65	65 in the document
+04:29:31.009	25851.278	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-AR-Floors	65	ran and found clashes
+04:29:31.088	25851.356	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:29:31.551	25851.820	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Stairs	0	0 in the document
+04:29:31.551	25851.820	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-AR-Stairs	0	ran and found nothing
+04:29:31.586	25851.854	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:29:32.037	25852.306	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Ramps	0	0 in the document
+04:29:32.037	25852.307	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-AR-Ramps	0	ran and found nothing
+04:29:32.071	25852.340	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:37:01.369	26301.633	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	219	219 in the document
+04:37:01.369	26301.633	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	219	ran and found clashes
+04:37:01.435	26301.699	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:37:01.946	26302.210	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Windows	0	0 in the document
+04:37:01.947	26302.210	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-AR-Windows	0	ran and found nothing
+04:37:01.981	26302.244	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:37:05.230	26305.494	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Doors	3	3 in the document
+04:37:05.230	26305.494	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-AR-Doors	3	ran and found clashes
+04:37:05.263	26305.526	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:37:09.232	26309.496	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Parking	2	2 in the document
+04:37:09.233	26309.497	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-AR-Parking	2	ran and found clashes
+04:37:09.303	26309.567	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:37:09.772	26310.036	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Railings	0	0 in the document
+04:37:09.773	26310.036	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-AR-Railings	0	ran and found nothing
+04:37:09.805	26310.068	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:49:30.714	27050.970	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Site	172	172 in the document
+04:49:30.715	27050.971	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-AR-Site	172	ran and found clashes
+04:49:30.785	27051.041	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:49:31.282	27051.538	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	0	0 in the document
+04:49:31.283	27051.539	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	0	ran and found nothing
+04:49:31.317	27051.574	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:49:44.485	27064.741	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Columns	3	3 in the document
+04:49:44.485	27064.741	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-ST-Columns	3	ran and found clashes
+04:49:44.553	27064.810	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:49:45.427	27065.684	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Framing	2	2 in the document
+04:49:45.427	27065.684	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-ST-Framing	2	ran and found clashes
+04:49:45.475	27065.731	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:49:48.383	27068.638	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	6	6 in the document
+04:49:48.383	27068.639	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	6	ran and found clashes
+04:49:48.428	27068.684	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:05.734	27085.990	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	36	36 in the document
+04:50:05.735	27085.990	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	36	ran and found clashes
+04:50:05.803	27086.058	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:06.319	27086.575	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Stair	0	0 in the document
+04:50:06.320	27086.575	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-ST-Stair	0	ran and found nothing
+04:50:06.354	27086.610	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:09.075	27089.331	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Ducts&Duct Fittings	3	3 in the document
+04:50:09.075	27089.331	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-ME-Ducts&Duct Fittings	3	ran and found clashes
+04:50:09.111	27089.367	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:09.609	27089.865	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Duct Accessory	0	0 in the document
+04:50:09.610	27089.866	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+04:50:09.644	27089.900	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:10.158	27090.414	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+04:50:10.158	27090.415	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+04:50:10.193	27090.449	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ME-Flex Ducts	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:10.740	27090.996	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Flex Ducts	0	0 in the document
+04:50:10.740	27090.996	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Flex Ducts	0	ran and found nothing
+04:50:10.777	27091.033	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ME-Air Terminals	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:11.433	27091.689	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Air Terminals	0	0 in the document
+04:50:11.434	27091.689	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Air Terminals	0	ran and found nothing
+04:50:11.500	27091.755	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:12.092	27092.348	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+04:50:12.093	27092.348	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+04:50:12.126	27092.383	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ME-Pipe Accessories	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:12.638	27092.894	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Pipe Accessories	0	0 in the document
+04:50:12.639	27092.895	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Pipe Accessories	0	ran and found nothing
+04:50:12.673	27092.929	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-ME-Plumbing Fixtures	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:13.141	27093.397	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Plumbing Fixtures	0	0 in the document
+04:50:13.142	27093.397	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Plumbing Fixtures	0	ran and found nothing
+04:50:13.176	27093.432	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-DR-Pipes & Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:15.038	27095.294	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-DR-Pipes & Pipe Fittings	5	5 in the document
+04:50:15.038	27095.294	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-DR-Pipes & Pipe Fittings	5	ran and found clashes
+04:50:15.086	27095.342	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-DR-Plumbing Fixtures	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:15.588	27095.843	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+04:50:15.588	27095.844	1A04PK		test passed	BLD-EL-Electrical Equipment-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+04:50:15.623	27095.879	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Equipment-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:16.447	27096.703	1A04PK		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-EL-Cable Tray&Cable Tray Fittings	2	2 in the document
+04:50:16.448	27096.703	1A04PK		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-EL-Cable Tray&Cable Tray Fittings	2	ran and found clashes
+04:50:16.497	27096.752	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:26.115	27106.370	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Floors	7	7 in the document
+04:50:26.115	27106.371	1A04PK		test found clashes	BLD-EL-Electrical Fixtures-vs-BLD-AR-Floors	7	ran and found clashes
+04:50:26.162	27106.418	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:26.783	27107.038	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Stairs	0	0 in the document
+04:50:26.783	27107.038	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Stairs	0	ran and found nothing
+04:50:26.817	27107.073	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:27.328	27107.584	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Ramps	0	0 in the document
+04:50:27.329	27107.584	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Ramps	0	ran and found nothing
+04:50:27.362	27107.618	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:52.635	27132.891	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	22	22 in the document
+04:50:52.636	27132.891	1A04PK		test found clashes	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	22	ran and found clashes
+04:50:52.702	27132.958	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:53.216	27133.472	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Windows	0	0 in the document
+04:50:53.217	27133.472	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Windows	0	ran and found nothing
+04:50:53.252	27133.507	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:55.264	27135.519	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Doors	4	4 in the document
+04:50:55.264	27135.519	1A04PK		test found clashes	BLD-EL-Electrical Fixtures-vs-BLD-AR-Doors	4	ran and found clashes
+04:50:55.327	27135.582	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:55.855	27136.110	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Parking	0	0 in the document
+04:50:55.856	27136.111	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Parking	0	ran and found nothing
+04:50:55.904	27136.160	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:56.463	27136.718	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Railings	0	0 in the document
+04:50:56.464	27136.719	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Railings	0	ran and found nothing
+04:50:56.498	27136.753	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:57.052	27137.308	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Site	0	0 in the document
+04:50:57.053	27137.308	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Site	0	ran and found nothing
+04:50:57.088	27137.343	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:57.581	27137.836	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Foundation	0	0 in the document
+04:50:57.581	27137.836	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ST-Foundation	0	ran and found nothing
+04:50:57.622	27137.877	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:58.116	27138.372	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns	0	0 in the document
+04:50:58.118	27138.372	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns	0	ran and found nothing
+04:50:58.152	27138.407	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:58.634	27138.890	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Framing	0	0 in the document
+04:50:58.635	27138.890	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ST-Framing	0	ran and found nothing
+04:50:58.669	27138.924	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:50:59.258	27139.513	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Walls	1	1 in the document
+04:50:59.258	27139.513	1A04PK		test found clashes	BLD-EL-Electrical Fixtures-vs-BLD-ST-Walls	1	ran and found clashes
+04:50:59.310	27139.566	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:05.461	27145.717	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Floors	37	37 in the document
+04:51:05.462	27145.717	1A04PK		test found clashes	BLD-EL-Electrical Fixtures-vs-BLD-ST-Floors	37	ran and found clashes
+04:51:05.515	27145.770	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:05.997	27146.252	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Stair	0	0 in the document
+04:51:05.997	27146.252	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ST-Stair	0	ran and found nothing
+04:51:06.062	27146.317	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:07.699	27147.954	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Ducts&Duct Fittings	3	3 in the document
+04:51:07.700	27147.955	1A04PK		test found clashes	BLD-EL-Electrical Fixtures-vs-BLD-ME-Ducts&Duct Fittings	3	ran and found clashes
+04:51:07.758	27148.013	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:08.300	27148.555	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Duct Accessory	0	0 in the document
+04:51:08.300	27148.556	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+04:51:08.340	27148.595	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:08.897	27149.153	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+04:51:08.898	27149.153	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+04:51:08.923	27149.178	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ME-Flex Ducts	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:09.475	27149.731	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Flex Ducts	0	0 in the document
+04:51:09.476	27149.731	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Flex Ducts	0	ran and found nothing
+04:51:09.509	27149.764	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ME-Air Terminals	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:09.993	27150.248	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Air Terminals	0	0 in the document
+04:51:09.994	27150.249	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Air Terminals	0	ran and found nothing
+04:51:10.030	27150.285	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:10.542	27150.797	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+04:51:10.542	27150.797	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+04:51:10.576	27150.832	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ME-Pipe Accessories	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:11.072	27151.326	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Pipe Accessories	0	0 in the document
+04:51:11.072	27151.327	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Pipe Accessories	0	ran and found nothing
+04:51:11.106	27151.362	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-ME-Plumbing Fixtures	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:11.635	27151.890	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Plumbing Fixtures	0	0 in the document
+04:51:11.636	27151.890	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Plumbing Fixtures	0	ran and found nothing
+04:51:11.684	27151.939	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:17.341	27157.596	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	1	1 in the document
+04:51:17.341	27157.596	1A04PK		test found clashes	BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	1	ran and found clashes
+04:51:17.384	27157.639	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-DR-Plumbing Fixtures	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:17.945	27158.199	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+04:51:17.945	27158.200	1A04PK		test passed	BLD-EL-Electrical Fixtures-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+04:51:17.979	27158.234	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:28.993	27169.248	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings	22	22 in the document
+04:51:28.993	27169.249	1A04PK		test found clashes	BLD-EL-Electrical Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings	22	ran and found clashes
+04:51:29.073	27169.328	1A04PK	TESTS CREATE	test created	BLD-EL-Electrical Fixtures-vs-BLD-EL-Electrical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+04:51:45.217	27185.472	1A04PK		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-EL-Electrical Equipment	14	14 in the document
+04:51:45.217	27185.472	1A04PK		test found clashes	BLD-EL-Electrical Fixtures-vs-BLD-EL-Electrical Equipment	14	ran and found clashes
+04:51:45.319	27185.573	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:26:43.683	29283.917	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	262	262 in the document
+05:26:43.683	29283.917	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	262	ran and found clashes
+05:26:43.760	29283.992	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:26:44.320	29284.553	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Stairs	0	0 in the document
+05:26:44.321	29284.553	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Stairs	0	ran and found nothing
+05:26:44.354	29284.587	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:26:50.674	29290.906	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Ramps	1	1 in the document
+05:26:50.674	29290.906	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Ramps	1	ran and found clashes
+05:26:50.723	29290.956	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:40:31.460	30111.687	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	233	233 in the document
+05:40:31.460	30111.687	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	233	ran and found clashes
+05:40:31.559	30111.786	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:40:32.092	30112.319	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Windows	0	0 in the document
+05:40:32.093	30112.319	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Windows	0	ran and found nothing
+05:40:32.126	30112.353	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:40:32.642	30112.869	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Doors	0	0 in the document
+05:40:32.642	30112.869	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Doors	0	ran and found nothing
+05:40:32.677	30112.904	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:44:02.314	30322.540	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Parking	46	46 in the document
+05:44:02.314	30322.540	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Parking	46	ran and found clashes
+05:44:02.377	30322.602	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:44:02.926	30323.151	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Railings	0	0 in the document
+05:44:02.926	30323.152	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+05:44:02.959	30323.184	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:45:00.039	30380.264	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Site	20	20 in the document
+05:45:00.039	30380.264	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Site	20	ran and found clashes
+05:45:00.124	30380.350	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:45:00.700	30380.926	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	0	0 in the document
+05:45:00.700	30380.926	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	0	ran and found nothing
+05:45:00.737	30380.962	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:45:38.685	30418.910	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	9	9 in the document
+05:45:38.685	30418.911	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	9	ran and found clashes
+05:45:38.744	30418.969	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:45:55.116	30435.341	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	2	2 in the document
+05:45:55.117	30435.341	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	2	ran and found clashes
+05:45:55.174	30435.400	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:46:15.171	30455.395	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	10	10 in the document
+05:46:15.171	30455.395	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	10	ran and found clashes
+05:46:15.243	30455.468	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:00.234	31220.449	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	134	134 in the document
+05:59:00.235	31220.449	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	134	ran and found clashes
+05:59:00.300	31220.515	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Stair	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:00.845	31221.059	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Stair	0	0 in the document
+05:59:00.845	31221.059	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Stair	0	ran and found nothing
+05:59:00.879	31221.094	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Ducts&Duct Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:19.442	31239.657	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Ducts&Duct Fittings	3	3 in the document
+05:59:19.443	31239.657	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Ducts&Duct Fittings	3	ran and found clashes
+05:59:19.504	31239.718	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Duct Accessory	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:20.099	31240.313	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Duct Accessory	0	0 in the document
+05:59:20.099	31240.314	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+05:59:20.153	31240.367	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Mechanical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:20.726	31240.940	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+05:59:20.726	31240.941	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+05:59:20.761	31240.976	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Flex Ducts	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:21.323	31241.538	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Flex Ducts	0	0 in the document
+05:59:21.323	31241.538	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Flex Ducts	0	ran and found nothing
+05:59:21.357	31241.571	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Air Terminals	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:21.935	31242.150	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Air Terminals	0	0 in the document
+05:59:21.935	31242.150	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Air Terminals	0	ran and found nothing
+05:59:21.971	31242.185	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:22.544	31242.758	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+05:59:22.545	31242.759	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+05:59:22.580	31242.794	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Pipe Accessories	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:23.121	31243.336	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Pipe Accessories	0	0 in the document
+05:59:23.121	31243.336	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Pipe Accessories	0	ran and found nothing
+05:59:23.155	31243.370	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Plumbing Fixtures	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:23.712	31243.927	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Plumbing Fixtures	0	0 in the document
+05:59:23.713	31243.927	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Plumbing Fixtures	0	ran and found nothing
+05:59:23.745	31243.960	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:24.659	31244.873	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings	3	3 in the document
+05:59:24.660	31244.874	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings	3	ran and found clashes
+05:59:24.699	31244.914	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Plumbing Fixtures	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:25.258	31245.472	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+05:59:25.258	31245.473	1A04PK		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+05:59:25.322	31245.537	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+05:59:29.081	31249.296	1A04PK		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Cable Tray&Cable Tray Fittings	4	4 in the document
+05:59:29.082	31249.296	1A04PK		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Cable Tray&Cable Tray Fittings	4	ran and found clashes
+05:59:29.121	31249.336	1A04PK	TESTS CREATE	test created	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft

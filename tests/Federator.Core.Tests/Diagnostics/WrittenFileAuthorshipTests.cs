@@ -108,6 +108,54 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// The breaker's first finding at c5d8aa8. The files written list kept a note the
+        /// first run of a window wrote after the second run removed it, under the line that
+        /// says every size was read back off the disk. A file this run removed leaves the
+        /// list, and only once it is gone from the disk.
+        /// </summary>
+        [Test]
+        public void AFileThisRunRemovedIsNotListedAsWritten()
+        {
+            using (RunLog log = Start())
+            {
+                string note = Path.Combine(folder, "1A02MM clash skipped.txt");
+                File.WriteAllText(note, "a note");
+                log.WriteFinished("NOTE", note);
+
+                File.Delete(note);
+                log.WriteRemoved("NOTE", note, "left by an earlier run");
+
+                Assert.That(log.WrittenFiles.Count, Is.EqualTo(0));
+
+                log.WriteResultBlock();
+                string text = ReadWhileOpen(log);
+
+                Assert.That(text, Does.Contain("NOTE     removed  " + note + ", left by an earlier run"));
+                Assert.That(text, Does.Contain("files written  : none"));
+            }
+        }
+
+        /// <summary>A file still on the disk after the delete is never called removed, and stays on the list.</summary>
+        [Test]
+        public void AFileStillOnTheDiskIsNotCalledRemoved()
+        {
+            using (RunLog log = Start())
+            {
+                string note = Path.Combine(folder, "1A02MM clash skipped.txt");
+                File.WriteAllText(note, "a note");
+                log.WriteFinished("NOTE", note);
+
+                log.WriteRemoved("NOTE", note, "left by an earlier run");
+
+                Assert.That(log.WrittenFiles.Count, Is.EqualTo(1));
+
+                string text = ReadWhileOpen(log);
+                Assert.That(text, Does.Contain("NOTE     NOT REMOVED  " + note + "  it is still on disk after the delete"));
+                Assert.That(text, Does.Not.Contain("NOTE     removed"));
+            }
+        }
+
         [Test]
         public void AFileReallyWrittenIsStillRecorded()
         {

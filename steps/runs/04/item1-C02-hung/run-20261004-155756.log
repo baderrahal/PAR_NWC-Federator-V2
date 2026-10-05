@@ -1,0 +1,26 @@
+15:57:56.116  +0000.000s  Log opened at C:\Users\p003653k\AppData\Local\ParsonsNwcFederator\logs\run-20261004-155756.log
+15:57:56.125  +0000.009s  ROWS     the machine readable log is C:\Users\p003653k\AppData\Local\ParsonsNwcFederator\logs\run-20261004-155756.tsv
+15:57:56.130  +0000.015s  RETAIN   keeping 30 logs, deleted 1, could not delete 0
+
+================================================================
+SESSION
+================================================================
+15:57:56.147  +0000.031s  started        : 2026-10-04 15:57:56
+15:57:56.147  +0000.032s  plugin version : 1.0.0.0 e4484d15 built 2026-10-01 12:19:09
+15:57:56.148  +0000.032s  navisworks     : Autodesk Navisworks Manage 2025  runtime 22.5  build 0  api 22.0 (stable)  language en-US  runtime string Navisworks Manage
+15:57:56.149  +0000.032s  open document  : none, the document is clear
+15:57:56.149  +0000.033s  log file       : C:\Users\p003653k\AppData\Local\ParsonsNwcFederator\logs\run-20261004-155756.log
+15:57:56.276  +0000.160s  LOGO     the report will carry C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg
+
+================================================================
+FOLDERS REMEMBERED
+================================================================
+15:57:56.323  +0000.207s  <a remembered folder, masked by run.ps1, Q87>
+15:57:56.323  +0000.207s  <a remembered folder, masked by run.ps1, Q87>
+15:57:56.323  +0000.208s  <a remembered folder, masked by run.ps1, Q87>
+15:57:56.323  +0000.208s  <a remembered folder, masked by run.ps1, Q87>
+15:57:56.324  +0000.208s  <a remembered folder, masked by run.ps1, Q87>
+15:58:01.781  +0005.666s  SCAN     started  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02  including subfolders
+15:58:01.791  +0005.674s  SCAN     finished 4 found, 4 readable, 0 that cannot be read
+15:58:12.283  +0016.167s  PREVIEW  1A02MM  First run
+15:58:12.285  +0016.168s  PREVIEW  opened 0 NWFs before the confirm dialog in 0.0s

@@ -364,7 +364,16 @@ well as to pass.
   constructor, and is never typed into the XAML as well. The photo size, the cap, the paste
   into cells tick and the five status ticks are read from ImageOptions, which is where the
   1024 measured off the accepted report lives. Two copies of a default drift, and the XAML
-  copy is the one nothing can test
+  copy is the one nothing can test. The tick box that skips the clash for models off the
+  shared coordinates starts from AlignmentCheck.DefaultSkipClashOffCoordinates beside its
+  label, because the XAML once carried IsChecked True and that copy was the real default
+- A tally of what one run did is the engine's, and the window hands it to that run's
+  RESULT block, because the engine is made for one press of a button and the log lives as
+  long as the window. The tally of models off the shared coordinates lived on the log until
+  F112's second attempt, and the second run of a window listed the first run's groups again
+  under the second run's rule state. RunJobs and OnRunOpenDocument hold the engine outside
+  their try, so the finally passes engine.CoordinatesAcrossTheRun, or null where no engine
+  was made, to WriteTheResultAndCopyTheLog
 - A step whose content is taller than the window scrolls. Only the Outputs step is,
   measured at 1024x680, 1280x800 and 1600x1000 with tools\probes\probe-window-scroll.ps1 and
   cut off at all three, which is why the naming table could not be reached. The other three

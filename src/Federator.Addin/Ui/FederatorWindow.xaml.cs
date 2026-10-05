@@ -1189,6 +1189,20 @@ namespace Federator.Addin.Ui
                 RebuildDriftedSetsHelp.Text = SetRebuildSettings.HelpLine;
             }
 
+            // Bader's answer to Q99 and Q100. Read off Core the same way, its default
+            // beside its label and never typed into the XAML as well, and the distance in
+            // the grey line read off the setting the run will use.
+            if (SkipClashOffCoordinates != null)
+            {
+                SkipClashOffCoordinates.Content = AlignmentCheck.TickLabel;
+                SkipClashOffCoordinates.IsChecked = AlignmentCheck.DefaultSkipClashOffCoordinates;
+            }
+
+            if (SkipClashOffCoordinatesHelp != null)
+            {
+                SkipClashOffCoordinatesHelp.Text = AlignmentCheck.HelpLine(new ReportOptions().FarModelMillimetres);
+            }
+
             if (ByDesignHelp != null)
             {
                 ByDesignHelp.Text = "Read only with the box below on. Columns "
@@ -1509,6 +1523,7 @@ namespace Federator.Addin.Ui
             options.PriorityPath = Trimmed(PriorityBox.Text);
             options.MarkByDesign = MarkByDesign.IsChecked == true;
             options.RebuildDriftedSets = RebuildDriftedSets.IsChecked == true;
+            options.SkipClashOffCoordinates = SkipClashOffCoordinates.IsChecked == true;
             options.ByDesignPath = Trimmed(ByDesignBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
@@ -1965,6 +1980,10 @@ namespace Federator.Addin.Ui
             running = true;
             RunButton.IsEnabled = false;
 
+            // Outside the try, so the RESULT block written in the finally carries what the
+            // shared coordinates rule did in THIS run, or nothing where no engine was made.
+            FederationEngine engine = null;
+
             try
             {
                 // F80. The mark and the line together, off the log's own monotonic clock,
@@ -1987,6 +2006,7 @@ namespace Federator.Addin.Ui
                     log.Line("RUN      it holds " + exchange.Sets.Count
                         + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
                         + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test" : " tests"));
+                    SayCorrections(exchange);
                 }
 
                 ReportOptions options = ReportsWanted();
@@ -2001,7 +2021,7 @@ namespace Federator.Addin.Ui
                 log.Line("RUN      the clash XML is "
                     + (options.WriteXml ? "written beside each workbook" : "off"));
 
-                FederationEngine engine = new FederationEngine(
+                engine = new FederationEngine(
                     SetProgress, log, exchange, options, nwfFolder);
                 IList<JobOutcome> outcomes = engine.Run(jobs);
 
@@ -2033,7 +2053,8 @@ namespace Federator.Addin.Ui
 
                 // PART 4 and PART 5 across the run, one line each. The blocks themselves
                 // are per group, because a model sits in a group and a workset belongs
-                // to one. Nothing acts on either: report it and run anyway, Q65.
+                // to one. Nothing stops the run for either, Q65, and since Bader's answer to
+                // Q99 and Q100 the ALIGNMENT line says which groups had their clash skipped.
                 foreach (string line in engine.ModelCheckRunLines())
                 {
                     log.Line(line);
@@ -2068,17 +2089,21 @@ namespace Federator.Addin.Ui
             {
                 // The result block and the second copy are written whatever happened, so a
                 // run that stopped still leaves a readable log with its summary at the end.
-                WriteTheResultAndCopyTheLog(nwfFolder);
+                WriteTheResultAndCopyTheLog(nwfFolder, engine == null ? null : engine.CoordinatesAcrossTheRun);
                 running = false;
                 RunButton.IsEnabled = true;
             }
         }
 
-        private void WriteTheResultAndCopyTheLog(string nwfFolder)
+        /// <summary>
+        /// The RESULT block of one run and the second copy of the log. thisRun is what the
+        /// shared coordinates rule did in that run, from that run's engine, or null.
+        /// </summary>
+        private void WriteTheResultAndCopyTheLog(string nwfFolder, OffCoordinatesAcrossTheRun thisRun)
         {
             try
             {
-                log.WriteResultBlock();
+                log.WriteResultBlock(thisRun);
             }
             catch (Exception error)
             {
@@ -2144,7 +2169,7 @@ namespace Federator.Addin.Ui
 
             try
             {
-                exchange = new ExchangeReader().ReadFile(path);
+                exchange = MatrixCorrections.ReadPicked(path);
             }
             catch (Exception error)
             {
@@ -2158,6 +2183,9 @@ namespace Federator.Addin.Ui
                 + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test." : " tests.");
 
             log.Line("PICK     " + path + " holds " + held);
+
+            // Q104. The health check judges the sets as the run will build them, corrected.
+            SayCorrections(exchange);
 
             HealthCheckResult health = HealthCheck.Run(exchange);
             log.Block("HEALTH " + Path.GetFileName(path), health.Summary());
@@ -2182,9 +2210,10 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The one file picked in the Clash step, read once. Null when nothing was
-        /// picked, and then the run builds no set and creates no test, which is a step
-        /// switched off rather than a failure.
+        /// The one file picked in the Clash step, read once, with MatrixCorrections applied
+        /// before any set is built, Q104. Null when nothing was picked, and then the run
+        /// builds no set and creates no test, which is a step switched off rather than a
+        /// failure.
         /// </summary>
         private ExchangeDocument PickedExchange()
         {
@@ -2192,7 +2221,19 @@ namespace Federator.Addin.Ui
 
             return path.Length == 0 || !File.Exists(path)
                 ? null
-                : new ExchangeReader().ReadFile(path);
+                : MatrixCorrections.ReadPicked(path);
+        }
+
+        /// <summary>
+        /// Every correction MatrixCorrections made to the picked file, one log line each,
+        /// Q104, written wherever a run or a pick says which file it read.
+        /// </summary>
+        private void SayCorrections(ExchangeDocument exchange)
+        {
+            foreach (string line in exchange.Corrections)
+            {
+                log.Line(line);
+            }
         }
 
         /// <summary>
@@ -2227,12 +2268,16 @@ namespace Federator.Addin.Ui
             running = true;
             RunOpenButton.IsEnabled = false;
 
+            // Outside the try, for the same reason as the scanned run.
+            FederationEngine engine = null;
+
             try
             {
                 if (path.Length > 0 && File.Exists(path))
                 {
-                    exchange = new ExchangeReader().ReadFile(path);
+                    exchange = MatrixCorrections.ReadPicked(path);
                     log.Line("OPEN     clash file " + path);
+                    SayCorrections(exchange);
                 }
                 else
                 {
@@ -2246,7 +2291,7 @@ namespace Federator.Addin.Ui
                 // file through OpenDocumentJob.ReportFolder, the same rule ShowOpenDocument
                 // uses for the line above the button. Handing the report folder in as the
                 // NWF folder is what once wrote to Clash Reports\Clash Reports.
-                FederationEngine engine = new FederationEngine(
+                engine = new FederationEngine(
                     SetProgress, log, exchange, options);
 
                 // The engine writes the GROUP lines and the OPEN FILE block itself, so
@@ -2255,7 +2300,8 @@ namespace Federator.Addin.Ui
 
                 // PART 4 and PART 5 across the run, one line each. The blocks themselves
                 // are per group, because a model sits in a group and a workset belongs
-                // to one. Nothing acts on either: report it and run anyway, Q65.
+                // to one. Nothing stops the run for either, Q65, and since Bader's answer to
+                // Q99 and Q100 the ALIGNMENT line says whether the clash was skipped.
                 foreach (string line in engine.ModelCheckRunLines())
                 {
                     log.Line(line);
@@ -2304,7 +2350,8 @@ namespace Federator.Addin.Ui
                 // happened, the same as the scanned run. The copy goes beside the open
                 // file, where the scanned run puts it beside the NWF folder. This used to
                 // be missing, so an open file run ended with no RESULT block and no copy.
-                WriteTheResultAndCopyTheLog(OpenDocumentJob.FolderOf(open));
+                WriteTheResultAndCopyTheLog(
+                    OpenDocumentJob.FolderOf(open), engine == null ? null : engine.CoordinatesAcrossTheRun);
                 running = false;
                 RunOpenButton.IsEnabled = true;
                 ShowOpenDocument();
@@ -2400,7 +2447,8 @@ namespace Federator.Addin.Ui
             try
             {
                 log.Line("SETS     started by hand, reading " + path);
-                ExchangeDocument exchange = new ExchangeReader().ReadFile(path);
+                ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
+                SayCorrections(exchange);
 
                 FederationEngine engine = new FederationEngine(SetProgress, log, exchange, ReportsWanted());
                 SetBuildOutcome outcome = engine.BuildSetsByHand();
@@ -2450,7 +2498,8 @@ namespace Federator.Addin.Ui
             try
             {
                 log.Line("CLASH    started by hand, reading " + path);
-                ExchangeDocument exchange = new ExchangeReader().ReadFile(path);
+                ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
+                SayCorrections(exchange);
 
                 FederationEngine engine = new FederationEngine(SetProgress, log, exchange, ReportsWanted());
                 ClashRunOutcome outcome = engine.RunTestsByHand();

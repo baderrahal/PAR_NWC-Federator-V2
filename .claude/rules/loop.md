@@ -106,7 +106,12 @@ and nothing is fixed until a real run on real files shows it fixed.
   tool writes his
   remembered folders into its log, reading only, which Bader allowed, Q87, and that block is
   masked in every copy of a loop log that is committed. Any choice the tool remembers
-  between runs is read before the loop and put back after it
+  between runs is read before the loop and put back after it. F112's tick box
+  SkipClashOffCoordinates, which a run may untick since F126, is not one: the window sets it
+  from AlignmentCheck.DefaultSkipClashOffCoordinates every time it opens,
+  src\Federator.Addin\Ui\FederatorWindow.xaml.cs line 1198 on the branch fix-F112 at e6d6f73,
+  the same line on main since F112 merged as ddb059b,
+  and the one state it reads back at its next open is FolderMemory's picker folders
 - Close what you open. Every Navisworks the loop proves its own, by the rule below, is
   closed, and when the Automation API does not close it, through the handle its adoption
   holds, after its start ticks read equal through that handle. While the handle is open
@@ -146,9 +151,12 @@ and nothing is fixed until a real run on real files shows it fixed.
 - Runs may go while Bader is away and while he works at the machine, he does not click the
   loop's Navisworks, and the display flag is allowed, Q85. The loop's driver, F106, acts only
   on windows of the Navisworks the loop adopted, never clicks, sends no key and never moves
-  the pointer, the loop's own choice so that a run cannot reach what he works on. A locked
-  screen that stops the window or the pictures is recorded as a finding and the loop waits,
-  and the lock is never worked around, Q85
+  the pointer, the loop's own choice so that a run cannot reach what he works on. It leaves
+  every tick box as the window opened it, bar those run.ps1's -Untick names by AutomationId,
+  F126, each toggled through TogglePattern only when it reads On, read back Off before anything
+  is pressed and read Off again before Run, and any other reading stops it, UNTICK, with Run
+  unpressed. A locked screen that stops the window or the pictures is recorded as a finding and
+  the loop waits, and the lock is never worked around, Q85
 - While a Navisworks the loop did not start runs, there is no start, no install and no put
   back. The loop reads the processes every 10 minutes and carries on by itself once none
   runs, Bader's standing rule of 2026-10-04, Q98. run.ps1 only refuses. The waiting is the
@@ -156,11 +164,16 @@ and nothing is fixed until a real run on real files shows it fixed.
 - The PC is kept awake for the whole loop, not only during runs, Q95, by the rule Bader set
   on 2026-10-04, Q98. keep-awake.ps1 runs as its own hidden process, not a child of Claude
   Code, and holds ES_CONTINUOUS, ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED. It changes none
-  of his power, screen saver or lock settings, and stops itself, taking the request back
-  first, when steps\loop.md reads STATE CLOSED or STATE WAITING or has not changed for 12
-  hours. It is the lead's own script outside the repo. Its path, its process id and when it
-  started and stopped are named in steps\loop.md, and it is checked alive at the start of
-  every turn
+  of his power, screen saver or lock settings. Since his message of the five requests, Q112,
+  it keeps running while the Claude Code session of the loop is open, STATE WAITING included,
+  and stops itself, taking the request back first, only when steps\loop.md reads STATE CLOSED
+  or no claude.exe of the Claude Code extension runs. It is the lead's own script outside the
+  repo, checked alive by a schedule of the session every 30 minutes while the session is idle
+  and by the lead at the start of every turn, and started again when it is gone. Its path, its process id and when it started and stopped are named in
+  steps\loop.md
+- One change to his power settings is allowed, Q112: sleep when plugged in set to Never on the
+  current scheme with powercfg, its old value saved in the turn's work folder first and put
+  back when the loop closes. On 2026-10-04 it already read Never when plugged in, so nothing was written
 - The loop installs the add-in only through tools\loop\run.ps1 -Mode Install, or by the
   in-place install at the end of this rule. run.ps1 -Mode Install runs
   build\install.ps1 from a checkout whose HEAD is the commit asked for and whose git status
@@ -264,7 +277,20 @@ was measured at 2 to 8 s. Then the last lines are saved, that Navisworks is clos
 the handle its adoption holds, and the hang is a finding. A sample that cannot be read
 restarts both clocks, so it never counts toward a hang. A run still going 12 hours after
 adoption is closed the same way and recorded as CEILING, never HUNG, Bader's answer Q84.
-Any dialog Navisworks raises during a run is a finding with its text.
+Any dialog Navisworks raises during a run is a finding with its text. A pane is not a dialog,
+F125, such as a floating Clash Detective pane of unknown origin, likely from his saved layout,
+UNKNOWN, up in both runs of set 04 item 1 on C02 on 2026-10-04: a window
+of that Navisworks of the WinForms class, whose caption is not the main window's, owned by a
+visible window, with its owner reading enabled or the window itself disabled. A message box, a
+WPF window and a window of the main window's caption are never one. A modal dialog blocked by
+the tool's window reads disabled with its owner disabled just as a pane does, so every line
+naming such a window says it is either, and which one is UNKNOWN, and never that it is not
+modal. The record writes a pane as PANE with its caption, its texts and both states, and writes
+any window again when the rule's kind for it or either state changes. The driver notes one up
+before Run and goes on, a window that comes up after Run and is not the confirm still stops the
+driver unless it is that same pane, its line naming the rule's kind and both states, and a pane
+never holds back the close at the end of a run. One rule in tools\loop\nw-guard.ps1 says what
+is a pane, for the driver and the record alike.
 
 ## The team
 

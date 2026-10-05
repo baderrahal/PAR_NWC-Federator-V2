@@ -1,6 +1,2027 @@
 # log
 
 Newest entry at the top.
+## 2026-10-05 The loop, turn 5, F126 the window driver unticks a named tick box, built on 2026-10-04 and read by a reviewer and a breaker with nothing blocking under Q93, its harness run in the first gap on 2026-10-05, 52 passed and 0 failed
+
+F126's own commits changed nothing under src or tests: git diff --name-only 1ae6771 66dfdf5
+-- src tests prints nothing, and so does the same from main ddb059b to the merge 1e06b7e,
+turn5\f126-proof\diff-names.txt. Against main the branch changes six files under tools and none
+under src or tests: git diff --name-only 3ee01ab 16b5eb7 -- src tests tools lists
+tools\loop\README.md, tools\loop\StandIn\ToolWindow.cs, tools\loop\nw-guard.ps1,
+tools\loop\run.ps1, tools\probes\README.md and tools\probes\drive-window-run.ps1, exit 0, and
+git diff --name-only c101f6c 37ee68e -- src tests tools lists the same six. The 18 files under
+src and 7 under tests that git diff --name-only 1e06b7e 16b5eb7 -- src tests tools lists, exit
+0, came in with main 3ee01ab, F116 in it, at the merge 16b5eb7, since 16b5eb7 differs from
+3ee01ab under tools alone, turn5\f126-proof\diff-since-1e06b7e.txt. Core tests 1756 passed, 0
+failed, 0 skipped before, on main 1ae6771 with F125 merged, core-tests-before.txt there, whose
+line 1 is the commit, and 1756 passed, 0 failed, 0 skipped after the change, by hand,
+core-tests-after.txt, a file with no commit and no time in it, and by the pre-commit of each of
+the four commits, precommit-1.txt to precommit-4.txt. After main ddb059b, F112 in it, was merged
+in at 1e06b7e, 1865 passed, 0 failed, 0 skipped by the pre-commit of the merge,
+precommit-claims-merge.txt, and by hand at 1e06b7e, core-tests-claims.txt, whose line 1 is the
+commit. The pre-commit of the lead's records commit e712a11 read 1865 passed, 0 failed, 0
+skipped, precommit-ran.txt, and those of the merges of main 3ee01ab at 16b5eb7 and of main
+c101f6c at 37ee68e 1912 passed, 0 failed, 0 skipped each, F116's tests now in,
+precommit-merge-main2.txt and precommit-merge-main3.txt. core-tests-before.txt line 12,
+core-tests-after.txt line 2 and core-tests-claims.txt line 13 print one test,
+WriteTheCorrectedFile, as Skipped. It is the one [Explicit] test, MatrixCorrectionsTests.cs
+lines 559 and 560, run by hand only, and it is in none of the counts, whose summary lines read
+Skipped: 0. No Navisworks was started. The stand-in was started by the lead's harness alone, on
+2026-10-05, 11 times in the pass on main's tools and 12 on the branch, still running 0 after
+each, prove-f126-before.txt line 175 and prove-f126-after.txt line 310.
+
+### What was done
+
+- the root cause. Nothing in the loop could untick a tick box, so the test of wave 1 could not
+  run 1A02MM, its ST model on Revit's internal origin, once more with F112's rule switched off by
+  its tick box, Bader's message of 15:42 and Q99 and Q100. tools\probes\drive-window-run.ps1 at
+  1ae6771 took no parameter naming a box, lines 1 to 14, its Toggle only read the state, lines
+  214 to 217, and lines 40 and 41, 338 and 378 left every box as the window opened it, as the
+  baseline's item 1 on C02 shows, steps\runs\04\item1-C02\driver.txt lines 5 and 19.
+  tools\loop\run.ps1 had no such parameter either, lines 1 to 14 and 2177 to 2183
+- the run that shows it used F125's first pass scripts and not those of 1ae6771: record.txt
+  line 1 of steps\runs\04\item1-C02 names the driver at sha256 7E9ABA1B and run.ps1 at
+  3FE28CB6, the blobs of 5fa98a8. The driver's cited lines stand word for word at 5fa98a8, at
+  lines 1 to 14, 40 and 41, 212 to 215, 332 and 372, and run.ps1's lines 2177 to 2183 stand at
+  1598 to 1604. run.ps1's param block is shorter there, lines 1 to 10. Neither script names
+  $Untick at 1ae6771 or at 5fa98a8, where 66dfdf5 names it on 8 and 16 lines,
+  turn5\f126-proof\first-pass-lines.txt
+- measured first, in the window code on the branch fix-F112 at e6d6f73: the box is not
+  remembered. FederatorWindow.xaml.cs line 1198 sets it from
+  AlignmentCheck.DefaultSkipClashOffCoordinates, a constant true at AlignmentCheck.cs line 160,
+  every time the window opens, and the one state the window reads back at its next open is
+  FolderMemory's picker folders. So nothing of it is read before the loop or put back after.
+  F112 is merged since, as main ddb059b, and the branch fix-F112 is gone from origin. e6d6f73
+  is an ancestor of ddb059b, and FederatorWindow.xaml line 559, FederatorWindow.xaml.cs lines
+  1198 and 1526 and AlignmentCheck.cs line 160 read the same at both, read with git show,
+  turn5\f126-proof\f112-lines-ddb059b.txt
+- the driver's -Untick: each box named by its AutomationId found on the four tabs, read through
+  TogglePattern, toggled once only when it reads On, read back, one line per box with its id,
+  its tab, before and after, all before anything is pressed, and read again before Run. A box on
+  no tab, with no TogglePattern, or not reading Off stops it with UNTICK, exit 13, a line naming
+  the box and nothing that runs pressed. The lines that say a box was left as the window opened
+  it name the boxes -Untick names, so an unticked box is never said to be left, and read as
+  before with no -Untick. run.ps1's -Untick for Run and Check with -Item 1 to 5,
+  refused for a documents read and for an id not the plain shape of an x:Name or named twice,
+  UntickRefusal in nw-guard.ps1, the one rule both keep, handed on through DriverArguments and
+  named on the RUN RECORD line, in a line of the record and in Check, UntickWords
+- the stand-in's window gains the box SkipClashOffCoordinates on 4. Clash, ticked when it
+  opens, every tick and untick and its state at Run written to its events file, and the modes
+  skip-off, skip-sticky and skip-scan
+- the rule in .claude\rules\loop.md, the READMEs of tools\loop and tools\probes, the order line
+  and the section F126 in steps\01_next.md, and the register row F126 in steps\loop.md
+- built and checked on 2026-10-04: the solution with 0 warnings and 0 errors before and after,
+  sln-build-before.txt and sln-build-after.txt, and the stand-in the same, standin-build-before.txt
+  and standin-build-after.txt. These four outputs name no commit and no time. Their file times
+  are 23:25, 23:36, 23:24 and 23:32, before c3e224b at 23:44:03, turn5\f126-proof\reflog-claims.txt,
+  and nothing they compile changed from c3e224b to 66dfdf5, git diff --name-only c3e224b 66dfdf5
+  -- src tests tools/loop/StandIn printing nothing, diff-names.txt. check-locals and
+  check-imports passed, check-locals.txt and check-imports.txt, also with no commit in them, and
+  in the pre-commit of each commit, precommit-1.txt to precommit-4.txt lines 3, 5 and 6.
+  parse.ps1 is the parser, and no output of it was kept that day
+- built and checked again on 2026-10-05 at the merge 1e06b7e, each output with the commit on its
+  line 1 and the time on its line 2: the solution, dotnet build ParsonsNwcFederator.sln -c
+  Release --no-incremental, 0 warnings and 0 errors, sln-build-claims.txt, the stand-in, dotnet
+  build of tools\loop\StandIn\StandIn.csproj -c Release --no-incremental into
+  standin-bin-claims, built and never started, 0 warnings and 0 errors,
+  standin-build-claims.txt, check-locals and check-imports exit 0, checks-claims.txt, and the
+  three changed scripts through parse.ps1, each at parse errors 0 beside its sha256,
+  parse-after.txt. Nothing under tools changed from 66dfdf5 to 1e06b7e, diff-names.txt, so that
+  parse reads the scripts of 66dfdf5
+- the proof written, turn5\f126-proof\prove-f126.ps1, 52 checks on the branch's tools, each way
+  the untick can fail broken on its own and its line asserted to name the box, to run once on
+  main's tools at 1ae6771, exported into before-tree, and once on the branch. The lead ran both
+  on 2026-10-05, below
+- the wait. Get-Process Roamer read 1 at 23:21:37 and 23:39:19, then the waiter
+  turn5\f126-proof\wait-and-prove.sh read it 19 times, about 5 minutes apart, 5 min 3 s or
+  5 min 4 s between reads, from 23:51:20 to 01:22:18 on 2026-10-05, 90 min 58 s, every read 1,
+  pid 32136 started at 21:17:06, and at 01:22:19 it wrote NO GAP and started neither run of the
+  harness, roamer-reads.txt lines 3 to 22. The 90 minutes in that line and in the message of
+  aa0594b is the waiter's budget of 18 sleeps of 300 s, not what was measured. The reads at
+  23:39:19 and 01:31:32, lines 2 and 23 there, gave a count and no pid, so the file does not
+  show they were the same Roamer. This records pass read it at 02:14:59 and again before its
+  commit, 1 each time, pid 32136 started at 21:17:06 on 2026-10-04, roamer-reads-claims.txt
+- so the harness did not run on 2026-10-04, no gap with Get-Process Roamer at 0 having come. THE
+  LEAD RAN IT on 2026-10-05 in the first gap, after the C04 baseline ended at 06:36. Get-Process
+  Roamer read 0 at 06:53:29, turn5\f126-proof\roamer-reads-harness.txt line 1. The pass on
+  main's tools at 1ae6771 in before-tree ran from 06:53:51 to 06:55:06 and gave 8 passed and 41
+  failed of 49 checks, prove-f126-before.txt line 177, the stand-in started 11 times and still
+  running 0, line 175. Main's tools take 49 checks where the branch takes 52 because their
+  run.ps1 has no DriverArguments, so the case driving the stand-in through it is one check
+  there, line 147, and four on the branch, prove-f126-after.txt lines 278 to 281. Four of the 8
+  passes, lines 16, 26, 114 and 124, are checks that nothing was pressed, which pass only
+  because main's driver fell over at parameter binding, exit 1, A parameter cannot be found that
+  matches parameter name 'Untick'. The other four are untick-none, which hands no -Untick, lines
+  70 to 72, and ParamRefusal's case that a run of item 1 with -Untick is not refused, line 150.
+  The pass on the branch ran from 06:55:12 to 06:58:40 and gave 52 passed and 0 failed,
+  prove-f126-after.txt line 312, the stand-in started 12 times and still running 0, line 310,
+  the one more being the DriverArguments case at line 246. Roamer read 0 at the start and end of
+  each pass, prove-f126-before.txt lines 4 and 175 and prove-f126-after.txt lines 4 and 310, and
+  again at 06:58:45, roamer-reads-harness.txt line 2. The three scripts each pass read are by
+  sha256 those of 1ae6771 and of f9834e4, the branch's tip from 02:30:00 until e712a11 at
+  07:01:49, after the harness ended, by the reflog, turn5\f126-proof\reflog-harness.txt. So the
+  stand-in's box, the toggle, the read back, each UNTICK stop, run.ps1's Check lines and the
+  three stand-in modes are proved on the stand-in, skip-off at prove-f126-after.txt lines 94 to
+  127, skip-sticky at 202 to 213 and skip-scan at 214 to 243, and tools\loop\README.md lines 555
+  and 556, which say prove-f126.ps1 proves the three modes, are true. The work folders of the
+  two passes are turn5\f126-proof\work-before-065350 and work-after-065511
+- what ran with no stand-in and no window, on e45ffbb, pure-reads.txt, whose lines 1 and 2 are
+  the commit and the time. pure-reads.ps1 prints and asserts nothing, so its answers were
+  compared by hand with what prove-f126.ps1 asserts: ParamRefusal's seven cases, lines 3 to 9,
+  with the harness's checks at lines 217 to 229, DriverArguments with no -Untick and for item 5,
+  lines 12 and 13, with its checks at 209 and 210, line 11 being the command line its case at
+  line 206 starts the driver with, UntickWords, lines 14 and 15, with its checks at 248 and 260,
+  DriverCode and DriverCodeName, line 17, with its DriverCodes check at 254, and RunVerdict,
+  line 18, with its check at 257. Two answers have no check in the harness to compare with, the
+  Install case, line 10, and UntickRefusal, line 16. The driver on e45ffbb refused a bad and a
+  doubled -Untick before any window is read, exit 2, dry-refusal.txt
+- a second commit, e45ffbb, after the developer read the first again: three lines of the
+  driver that read tick boxes ended each was left as the window opened it, lines 417, 457 and
+  511 of c3e224b, which a box -Untick names would make false. BarUntick names those boxes after
+  the words, and is empty with no -Untick
+- read on 2026-10-05 under Q93, the three files written at 01:51:53 while 66dfdf5 was the tip,
+  reflog-claims.txt: by a reviewer, VERDICT APPROVE with nothing blocking,
+  turn5\f126-read-review.txt, and by a breaker, VERDICT APPROVE with nothing blocking,
+  turn5\f126-read-break.txt. Their notes are under Known bugs. A claim-checker read the records
+  and the body, turn5\f126-read-claims.txt, ten entries, nine needing a change and the tenth
+  finding no fault
+- the records made true on 2026-10-05: main ddb059b merged in at 1e06b7e with both sides of
+  each conflict kept, this entry on top of steps\log.md, F112's order line 40 and section first
+  in steps\01_next.md and F126's order line, now 41, and section after, and steps\loop.md
+  merging with no conflict at 337 rows, turn5\f126-resolve-merge.py and turn5\f126-msg-merge.txt.
+  Then the claim-checker's nine points made true in this entry, the section F126 in
+  steps\01_next.md, the register row F126 and its count line in steps\loop.md and the body
+  turn5\pr-f126.md. Two of its points also name lines under tools and in .claude\rules, which
+  that pass did not change. The lead corrected tools\loop\README.md lines 345 and 346 and
+  .claude\rules\loop.md lines 112 and 113 in e712a11, after the harness, to name ddb059b beside
+  e6d6f73, and README lines 555 and 556 came true when the harness ran
+- the records made true again on 2026-10-05 after the harness. The lead's records commit e712a11
+  at 07:01:49, its pre-commit 1865 passed, 0 failed, 0 skipped,
+  turn5\f126-proof\precommit-ran.txt line 14, then main 3ee01ab merged in at 16b5eb7 with both
+  sides kept, F116 order line 41 and F126 42, its pre-commit 1912 passed, 0 failed, 0 skipped,
+  F116's tests now in, precommit-merge-main2.txt line 14, each file naming its commit at line
+  30, read off git log. Then main c101f6c, the record of the C04 baseline and Q128, merged in at
+  37ee68e with no conflict, 1912 passed, 0 failed, 0 skipped, precommit-merge-main3.txt line 14,
+  and the claim-checker's reading of 16b5eb7, its points handed to this pass by the lead, made
+  true in this entry, the section F126 in steps\01_next.md, steps\loop.md and the body
+  turn5\pr-f126.md
+
+### What remains
+
+- the run with F112's rule switched off in the test of wave 1, the lead's run of 1A02MM with
+  -Untick SkipClashOffCoordinates once main, F112 in it since ddb059b, is installed, whose
+  driver.txt reads the box toggled Off on the real window
+- pull request 112, open as a draft, merged once Actions is green
+
+### Known bugs
+
+- none found in the code. Until main with F112 in it is installed the real window has no such
+  box, and a run given -Untick SkipClashOffCoordinates stops UNTICK on none of the tabs with
+  nothing pressed, which is the rule working and not a fault
+- the readings' notes, none blocking, the breaker's in turn5\f126-read-break.txt and the
+  reviewer's in turn5\f126-read-review.txt. Check given -Untick passes a box the installed window
+  may not hold, so Run starts Navisworks and only then stops UNTICK on none of the tabs, nothing
+  pressed, f126-read-break.txt line 2. The RUN RECORD line and the UntickWords line are written
+  before the driver starts and say it unticks the box, so for a run the driver stopped before
+  the untick only driver.txt shows the box was never toggled, f126-read-break.txt line 5.
+  LogCheck reads no state of the rule, so a RAN verdict rests on the driver's read back of the
+  box and the tool's own ALIGNMENT lines, f126-read-break.txt line 8. UntickRefusal compares ids
+  without regard to case, so -Untick Box,box is refused as named twice though an AutomationId is
+  case sensitive, f126-read-break.txt line 11. The window sets the box from the default at every
+  open, so every run that must have the rule off needs -Untick again, and a forgotten one is
+  silent, f126-read-break.txt line 14. The driver's line about IncludeSubfolders,
+  drive-window-run.ps1 line 421, ends with the boxes -Untick names though IncludeSubfolders is
+  not one of them, f126-read-review.txt line 26. git printed failed to delete for 12 worktree
+  entries after each commit, outside this change, f126-read-review.txt line 32. No register row
+  was added for these notes
+
+### What comes next
+
+- the merge of pull request 112 once Actions is green, then the run of wave 1's test with the
+  rule off
+
+### Every program started, every file written outside the repo
+
+Started: git, to fetch, show, archive, commit and push, and the pre-commit hook it runs, which
+runs check-locals, check-imports, the evidence check and dotnet test. dotnet build for the
+solution twice and the stand-in twice, dotnet test twice by hand, sh for check-locals,
+check-imports and the waiter, Windows PowerShell 5.1 for the parser, for array tests and the
+pure reads, for the driver twice, each time refused before any window is read, and for the
+22 reads of Get-Process Roamer, the last at 01:31:32 after the records, reading 1, and tar to
+unpack main's tools. That day no Navisworks, no stand-in, no harness run and nothing
+installed.
+The records pass on 2026-10-05 started git, to fetch, merge, show, diff, log, ls-remote, reflog,
+status, commit and push, and the pre-commit hook twice, python for the merge resolver and the line
+finder, Windows PowerShell 5.1 for parse.ps1 and the reads of Get-Process Roamer, dotnet build
+for the solution twice, the first output written over by the second with --no-incremental, and
+for the stand-in once, never started, dotnet test once by hand, and sh for check-locals and
+check-imports. In that pass no Navisworks, no stand-in, no harness run and nothing
+installed.
+The lead on 2026-10-05 read Get-Process Roamer at 06:53:29 and 06:58:45, 0 each time,
+roamer-reads-harness.txt, and ran prove-f126.ps1 twice, pid 47424 on main's tools in before-tree
+and pid 46684 on the branch, line 1 of each output, which read Roamer at its start and end,
+started the stand-in as its copy Decoy.exe 11 times and 12 times, still running 0 after each,
+prove-f126-before.txt line 175 and prove-f126-after.txt line 310, and started child
+powershell.exe for the driver and for run.ps1 -Mode Check. No Navisworks and nothing installed.
+The lead's records commit e712a11 and the merge 16b5eb7 started git and the pre-commit hook
+twice. This records pass started git, to fetch, merge-tree, merge, status, diff, log, show,
+reflog, rev-parse, checkout, to put its own first edit of the three files back before running
+the edits again, commit and push, the pre-commit hook at each of its commits, which runs
+check-locals, check-imports, the evidence check and dotnet test, bash from Git for Windows with
+its text tools for the reads and the evidence, gh to read pull request 112, and python for the
+record edits and the line ends of the body. No Navisworks, no stand-in, no harness run and
+nothing installed.
+
+Written outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop\turn5\f126-proof:
+core-tests-before.txt, core-tests-after.txt, sln-build-before.txt, sln-build-after.txt,
+standin-build-before.txt, standin-build-after.txt, check-locals.txt, check-imports.txt,
+parse.ps1, roamer-reads.txt, prove-f126.ps1, wait-and-prove.sh, pure-reads.ps1,
+pure-reads.txt, dry-refusal.txt, dry-refusal-notes.txt and dry-refusal-notes-2.txt, the
+driver's notes of its two refusals, precommit-1.txt to precommit-4.txt and push-1.txt to
+push-4.txt, before-tree with main's tools at 1ae6771, and standin-bin-before and standin-bin,
+the stand-in built before and after, never started. Also turn5\f126-msg-1.txt to
+f126-msg-4.txt, the commit messages, and turn5\pr-f126.md, the draft body.
+In the session's scratch folder under %TEMP%\claude: arr.ps1, parse1.ps1, pure.ps1, added.txt,
+and fw112.cs and fw112.xaml, the window code of fix-F112 read with git show.
+The records pass wrote, under turn5\f126-proof, precommit-claims-merge.txt, precommit-claims.txt,
+push-claims.txt, diff-names.txt, first-pass-lines.txt, f112-lines-ddb059b.txt, reflog-claims.txt,
+parse-after.txt, written twice, the second keeping PowerShell's own exit code, and
+parse-raw.tmp, a copy deleted once read, sln-build-claims.txt, standin-build-claims.txt and
+standin-bin-claims, the stand-in built and never started, checks-claims.txt,
+core-tests-claims.txt and roamer-reads-claims.txt. Under turn5 it wrote f126-resolve-merge.py,
+f126-log-entry-claims.md and f126-next-section-claims.md, the texts of this entry and of the
+section F126, f126-records-claims.py, which wrote them and the register row in,
+f126-added-claims.tmp, the added lines read for a dash or a semicolon, deleted once read,
+f126-msg-merge.txt and f126-msg-5.txt, the two commit messages, and pr-f126.md, rewritten.
+The lead's harness wrote, under turn5\f126-proof, prove-f126-before.txt, prove-f126-after.txt,
+roamer-reads-harness.txt and the work folders of the two passes, work-before-065350 and
+work-after-065511, copied Decoy.exe and Decoy.exe.config into standin-bin, and wrote runs\97
+under %LOCALAPPDATA%\NwcFederatorLoop, removed by each pass at its end, prove-f126-before.txt
+line 176 and prove-f126-after.txt line 311. The lead's records commit e712a11 and the merge
+16b5eb7 wrote precommit-ran.txt and precommit-merge-main2.txt there, and under turn5, by their
+file times from 07:00:59 to 07:07:40, f126-ran.py, f126-merge-main.txt and f126-resolve.py, and
+pr-f126.md, rewritten. This records pass wrote, under turn5\f126-proof, reflog-harness.txt,
+diff-since-1e06b7e.txt, msg-merge-main3.txt, precommit-merge-main3.txt, msg-records-harness.txt,
+precommit-records-harness.txt and push-records-harness.txt, for its second commit, which
+corrected the list of programs above and this list, msg-records-harness2.txt,
+precommit-records-harness2.txt and push-records-harness2.txt, and added at the end of
+precommit-ran.txt, precommit-merge-main2.txt, precommit-merge-main3.txt and
+precommit-records-harness.txt the line naming the commit each belongs to, and under turn5
+pr-f126.md, rewritten. In the session's scratch folder under %TEMP%\claude:
+f126-records-harness.py, which made the edits. Also /tmp/added.txt of Git for Windows, the added
+lines read for a semicolon, deleted once read.
+
+
+## 2026-10-05 The loop, turn 5, F116 the clash XML, DONE in Core and built, wave 1, with Bader's answer to Q113, the readings of that pass, F112 taken in and a closing pass
+
+Core tests, all with 0 failed and 0 skipped:
+- 1746 passed before attempt 1, turn5\f116-core-before.txt, and 1776 at aefb416 after it with
+  main c4fd0d4 taken in, turn5\f116b-core-before.txt. turn5\f116-core-after.txt holds the 1776
+  on one line with no commit and no time. Main's own tests number 1746 at dd55e4b, where attempt
+  1 branched off, and 1756 at c4fd0d4, the totals of turn5\f116e-main-counts.txt, so 10 of the
+  30 are main's and F116's own are 20. In that file 51 tests of each tree fail, those of c4fd0d4
+  each a workbook test that cannot load an assembly in a tree extracted with no .git, so only
+  its totals are read
+- 1776 passed before attempt 2 at aefb416, turn5\f116b-core-before.txt, and 1790 after it at
+  9d8e3b2, turn5\f116b-core-after.txt
+- 1790 passed before the Q113 pass at aa7ec30, turn5\f116c-core-before.txt, and 1796 after it at
+  5de2b21, turn5\f116c-core-after.txt
+- 1796 passed before the pass on its readings at 5de2b21, turn5\f116d-core-before.txt, and 1802
+  after it at 0bf09b3, turn5\f116d-core-after.txt
+- 1912 passed once main ddb059b, F112 among it, was taken in with the FR-028 change, read on the
+  tree of 8a32795 before its commit, turn5\f116d-fr028-after.txt, and at its pre-commit,
+  turn5\f116d-precommit-merge.txt. Main's own count is 1865 at the pre-commits of its records of
+  pull requests 107 and 108, turn5\precommit-records-12b.txt and precommit-records-13.txt, as
+  main's own entry of the design of F127 says, and 1865 again at f38a369's records, main's entry
+  of FR-052. Main's changes from ddb059b to f38a369 are under steps\ alone,
+  turn5\f116e-main-since.txt. So F116's own tests are 47 of the 1912, the 20, 14, 6, 6 and 1 of
+  its passes
+- 1912 passed before the closing pass at 1ee0d93, turn5\f116e-core-before.txt, and 1912 after it
+  with RevitWorksets.All deleted, read on the tree of a40ff59 before its commit,
+  turn5\f116e-core-after.txt. No test was added or deleted. The pre-commits of the closing pass
+  read 1912 each, turn5\f116e-precommit-merge.txt, f116e-precommit-1.txt,
+  f116e-precommit-merge-2.txt, f116e-precommit-2.txt and f116e-precommit-merge-3.txt, and that of
+  its last records commit is turn5\f116e-precommit-3.txt, read after this entry was written
+
+Every test run named above but f116-core-after.txt and the pre-commit files, which run the tests
+quietly, also lists the one [Explicit] generator test, WriteTheCorrectedFile, as skipped, and the
+adapter does not count it.
+The solution builds with 0 warnings and 0 errors on 0bf09b3, built whole with --no-incremental,
+Federator.Core, Federator.Core.Tests and Federator.Addin each built, turn5\f116d-build-code.txt,
+the output kept with git rev-parse --short HEAD and a clean git status at its top. On 5de2b21 it
+was a plain Release build, not built whole, with 0 warnings and 0 errors,
+turn5\f116c-build-after.txt line 4. On 1ee0d93 it was built whole, turn5\f116d-build-after.txt,
+and on a40ff59, the closing pass's code commit, built whole with git rev-parse --short HEAD and a
+clean git status at its top, 0 warnings and 0 errors, turn5\f116e-build-code.txt. The records
+commits 41c52a1, 1ee0d93 and the closing pass's two, and its three merges of main, change no
+code. The build of the last commit is kept in turn5\f116e-build-after.txt, read after this entry
+was written.
+Every file named is under %LOCALAPPDATA%\NwcFederatorLoop\turn5 unless it is a path of the repo.
+
+Programs and Navisworks:
+- attempt 1's entry named dotnet build and dotnet test as the programs it started, and its
+  commits were made with git. Its line "No Navisworks was started" rested on no process read
+- attempt 2 started dotnet build, dotnet test, git, python, powershell for the evidence scripts,
+  which load only Federator.Core.dll, and the repo's check scripts through the pre-commit.
+  Get-Process Roamer read process 49016, started 18:55:27, before the first command at 19:52:28,
+  turn5\f116b-roamer-before.txt, and process 32136, started 21:17:06, after the last at 22:04:53,
+  f116b-roamer-after.txt. So a Navisworks started inside that window. None of the developer's
+  programs starts one, and who started it is UNKNOWN to those reads
+- the Q113 pass started dotnet build, dotnet test, git, sh for the two checks and the pre-commit,
+  and powershell for the Roamer reads and turn5\f116c-same-sets.ps1, which loads only
+  Federator.Core.dll. Get-Process Roamer read process 32136, started 21:17:06, at 22:26:01 before
+  the first command and at 00:18:33 on 2026-10-05 after the last, turn5\f116c-roamer-before.txt
+  and f116c-roamer-after.txt
+- the pass on its readings started dotnet build, dotnet test, git, sh for the two checks and the
+  pre-commit, python to edit files and to write the stubs, powershell for the Roamer reads and
+  turn5\f116d-same-sets.ps1, which loads only Federator.Core.dll, and Git Bash's own tools such as
+  grep, sed, awk, diff, od and sha256sum. Get-Process Roamer read process 32136, started 21:17:06,
+  at 00:56:17, after the readings were read and before the first build, test or edit,
+  turn5\f116d-roamer-before.txt, and at 01:35:18 after the code commit and its reads,
+  turn5\f116d-roamer-mid.txt. The read after the push is turn5\f116d-roamer-after.txt
+- the closing pass started dotnet build, dotnet test, git, sh for the two checks and the
+  pre-commit, tar to unpack two trees of main, powershell for the Roamer reads, the reader
+  measure and turn5\f116e-same-sets.ps1, which loads only Federator.Core.dll, and Git Bash's own
+  tools such as grep, sed, awk, diff and date. Get-Process Roamer read process 32136, started
+  21:17:06, at 02:46:30, before the first build, test or edit, the first of which,
+  turn5\f116e-core-before.txt, reads 02:47:52, turn5\f116e-roamer-before.txt. The read after the
+  push is turn5\f116e-roamer-after.txt
+- none of these programs starts a Navisworks. Two reads of one process cannot exclude a
+  Navisworks started and closed between them
+
+### What attempt 1 did
+
+- Bader's answer to Q104, FR-030, b68a785: the picked clash XML is corrected by MatrixCorrections
+  before any set is built, at every place the window reads it. That is the pick, the run, the
+  open file run and both hand buttons, which read it raw before. The log names every correction
+  in a MATRIX line after the line naming the file. Bader's test passes: the old uncorrected
+  sample, the exchange file and the sample with the hyphen alone corrected give the same sets. By
+  hand, the sample, the exchange file as main had it, sha256 792b01fb, his older -OLD file and the
+  regenerated exchange file give the same 61 sets and 1830 tests line for line,
+  turn5\f116-same-sets.txt
+- Bader's answer to Q102, FR-008 and FR-025, 045b7df, 76af22d and 1f5cf21: a workset the models
+  carry in two or more spellings is asked in every one of them. Each spelling is an Or group
+  copied whole, so every group still asks its category. Before, the one Or condition held the
+  workset alone. revit-worksets.txt gained the 30 names the C06 log's EXPORT CHECK lines list,
+  and the Q113 pass later moved them into this project's list. The row file gains one model
+  worksets row per model naming every workset in full, so the next run measures every spelling
+- Bader's answer to Q103, FR-009, 06a89bb: an AR set whose category another discipline also uses
+  asks Source File contains -AR-. On the client's matrix BLD-AR-Ramps, Furniture, Railings and
+  Site gain it and no other set changes
+- FR-026, e959c7f: a category rewrite changes whole values and never the set's own name
+- the six code commits, 1f5cf21, e959c7f, 045b7df, 06a89bb, b68a785 and 76af22d, each carry new
+  tests seen failing first, turn5\f116-fr025-before-fail.txt, f116-fr026-before-fail.txt,
+  f116-fr008-before-fail.txt, f116-fr009-before-fail.txt, f116-fr030-before-fail.txt and
+  f116-worksets-row-before-fail.txt. 19 of the 20 new tests failed there, and the 20th, the
+  shipped list test, failed in attempt 2 against an emptied list,
+  turn5\f116b-shipped-list-before-fail.txt
+- b6aa492, records only: the rule in .claude\rules\core.md, "The picked file is corrected before
+  a set is built, F116", the order line and the F116 section in steps\01_next.md. aefb416, records
+  only: this entry as attempt 1 wrote it
+
+### What attempt 2 did
+
+- On the reviewer's, the breaker's and the claim-checker's readings of aefb416,
+  turn5\f116-read-review.txt, f116-read-break.txt and f116-read-claims.txt. Items 1 to 6 are five
+  commits, each with new tests seen failing first. Item 7 is two commits of comments, d0db33d is
+  the rule and the section, records only, and item 8 is a read with no commit
+- 1, cfb057e: a value correction touches only a condition on the workset property that is not
+  negated. Before, a negated workset condition asked in a second spelling took the whole
+  category, and a condition on another property whose value read like a workset was widened too.
+  A file with a negated workset condition gets a MATRIX line saying it is left as the file asks.
+  Three new tests fail before, turn5\f116b-negated-before-fail.txt. Five older tests fed the rule
+  a bare data element or a condition with no property, which it no longer reads as a workset, and
+  their inputs became a set in the client's shape, every assertion kept, the tests' diff of that
+  commit in turn5\f116d-cfb057e-tests.txt. AddingTheOrRowTwiceAddsItOnce had passed with nothing
+  to add and gained an assertion that the first run adds the row. The commit message counts three
+  of them and the Or row test, and no run shows the five failing before the change
+- 2, 3e66536: one rule in one place. WrittenCondition reads through ExchangeReader.ReadCondition.
+  WrittenCondition.Escaped is the one escape. WithValue, WithFlags and WithTest are the one way to
+  edit a condition. OneCondition, ReplaceOpeningTag, ReplaceInnerText, FirstCondition,
+  RewriteValue, AttributeText and Noted are folded in, and every lookup of a set by its name uses
+  the same escaped name. Three new tests fail before, turn5\f116b-one-place-before-fail.txt. The
+  catch-all now keeps the line break before its closing conditions tag, so the exchange file was
+  regenerated by its generator, sha256 94897667, turn5\f116b-same-sets.txt line 53, where it was
+  ee1d2f3e, turn5\f116-same-sets.txt line 48. The one line diff and its 151 changes in all are in
+  turn5\f116b-regenerate.txt
+- 3, c36490f: ReadPicked reads the file in the encoding it declares, through
+  ExchangeReader.ReadFileText. A set or condition the corrections cannot read is counted on the
+  NOT EVERY SET COULD BE READ line and never thrown. The Source File rule finds a set by its
+  folders and its name. Four new tests fail before, turn5\f116b-read-before-fail.txt
+- 4 and 5, af2c758: the MATRIX lines say "every spelling measured so far in this project's
+  models" and "no model measured so far". Where nothing changed, the last line says no correction
+  was applied and counts what was already made, what found nothing to change and what could not
+  be read. One line before the last, on every picked file, says a set already in an NWF keeps the
+  conditions it was built with unless the box Rebuild sets that drifted from the file is ticked,
+  and that the SETS block names each such set as DRIFTED. Three new tests, and six older tests
+  moved onto the new wording, fail before, turn5\f116b-lines-before-fail.txt. The empty
+  selectionset line has no test seen failing, turn5\f116b-read-review.txt lines 47 to 49
+- 6, e4a645d: the model worksets row writes an empty number and UNKNOWN where a model's element
+  walk stopped part way, through ExportCheck.WorksetCount and EveryWorkset, with one call changed
+  in FederationEngine. The new test fails against a stub, turn5\f116b-worksets-row-before-fail.txt
+- 7, cc04402 and 9d8e3b2, no code line, turn5\f116e-comment-commits.txt: cc04402 changes
+  comments under src and tests, and 9d8e3b2 code comments, the rule in .claude\rules\core.md and
+  the F116 section of steps\01_next.md. The comments made true. The C06 log has nine groups whose
+  worksets line counts the rest, at its lines 605, 1354, 3248, 3928, 4670, 5071, 6482, 6853 and
+  7254. The nine AR sets left without -AR- are named, turn5\f116b-ar-sets.txt
+- 8, a read: the rename alone, applied to samples\1104-PAR_CLASH_AllInOne_25mm.xml read only, is
+  byte for byte Bader's older file, 1,443,383 bytes and sha256 36ab2739 both,
+  turn5\f116b-hyphen-only.txt
+- By hand on the Core of cc04402, the four files give the same 61 sets and 1830 tests line for
+  line, turn5\f116b-same-sets.txt. Builds of 0 warnings and 0 errors are in
+  turn5\f116b-build-negated.txt, f116b-build-one-place.txt, f116b-build-read.txt,
+  f116b-build-lines.txt, f116b-build-worksets-row.txt and f116b-build-after.txt. The pre-commits
+  are in turn5\f116b-precommit-1.txt to -8.txt
+
+### What the Q113 pass did
+
+- On Bader's answer to Q113 of 2026-10-04, B and D, the brief turn5\f116c-brief.md, after attempt
+  2's readings, turn5\f116b-read-review.txt and f116b-read-break.txt, both APPROVE with nothing
+  blocking
+- Main 6cc0283 was taken in at aa7ec30 and main bd05bc5 at 5de2b21, both sides kept each time.
+  The F116 entry stays on top of steps\log.md, and in steps\01_next.md F116's order line, 40
+  then, and its section come after F125's
+- 7e40a8a, items 2 to 5 of the brief and the first half of item 1.
+  src\Federator.Core\Exchange\matrix-corrections.txt and its embedding in Federator.Core.csproj
+  are gone, with MatrixCorrectionList.Shipped. The list is a plain file beside the picked XML,
+  named after it: the XML's name without its extension and CorrectionListSettings.Suffix, default
+  .corrections.txt. It is one full path tested with File.Exists, never a search.
+  MatrixCorrections.ReadPicked reads it through MatrixCorrectionList.Beside, so the pick, the run,
+  the open file run and both hand buttons read it. The first MATRIX line names the list in full
+  and what it holds. With no list there, the first MATRIX line names the path looked for and says
+  nothing is corrected, and the file is read as written. A list it cannot read corrects nothing
+  and the first line says why, never a throw. A line it does not know and bytes that are not
+  UTF-8 were tested in that pass, and a file that will not open and a rename it cannot use only in
+  the pass after. The format is the old one plus workset lines, one spelling a line. This
+  project's list is exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, sha256 3f40d5cc
+  then, turn5\f116c-same-sets.txt. Its 30 spellings were copied byte for byte off
+  revit-worksets.txt, the no-break space kept. On 9d8e3b2 they were the C06 block of that file,
+  lines 86 to 130, the names at lines 101 to 130, and ReadPicked handed the shipped list to
+  ForPickedFile at MatrixCorrections.cs line 552, turn5\f116d-9d8e3b2-lines.txt
+- in turn5\f116c-beside-before-fail.txt 1788 passed and 8 failed. Seven are tests of 7e40a8a, run
+  against stubs that keep the list in Core. The eighth is 039192a's test of the 39 names, failing
+  because revit-worksets.txt still held 69, and it is seen failing again in
+  turn5\f116c-worksets-before-fail.txt. The stub was not kept, so that run is described and
+  cannot be repeated from what is kept. After, 1796 pass, turn5\f116c-beside-after.txt. The new
+  first line moved some tests, and every assertion was kept. Two read the NOT EVERY SET line at
+  index 1. One counts 16 lines where it counted 15. The tests that picked the sample where it sits
+  now pick a copy with the list beside it, and the sample where it sits stands for a file with no
+  list
+- 039192a, item 1: the 30 spellings F116 added left revit-worksets.txt, which holds the 39 names
+  of the C02 census again. EmptySetsTests was main's again, because F116 had changed it only
+  because the 30 names were in Core. In turn5\f116c-worksets-before-fail.txt 1793 passed and 3
+  failed, in a run whose own git status shows revit-worksets.txt modified, so the list it read was
+  not HEAD's byte for byte. The 30 extra names in the failure show the 30 were in it. That run too
+  is described and cannot be repeated. After, 1796 pass, turn5\f116c-worksets-after.txt
+- 83fda52, item 7, comments only: no set, Source File value or category of the list is left in a
+  line F116 added under src, and of its workset spellings only main's own ME-DUCTWORK and
+  ME-Ductwork example, in 4 comment lines reworded to say C02, read in the pass after at 0bf09b3,
+  before the merge with F112, turn5\f116d-names-in-src.txt. At a40ff59 the same search finds 6
+  comment lines and no other line, the 2 more being F116's own comment in ExportCheck.cs that came
+  with the merge 8a32795, turn5\f116e-names-in-src.txt. SourceFileRule.cs names the C06 run of
+  set 03, a run and not a name of the matrix. 1796 passed, turn5\f116c-comments-after.txt
+- 50169d8, records only: the rule in .claude\rules\core.md, the corrections as one project's data
+  beside the picked XML, and the F116 section of steps\01_next.md. The ValuesGiven sentence of
+  core.md now says what the code's own doc says, the attempt 2 reviewer's point
+- item 6, Q113 D: no change. The four categories stay in the list's source-file line
+- No add-in file changed from 9d8e3b2 to 5de2b21, turn5\f116d-addin-range.txt, read in the pass
+  after
+- By hand on the Release Core of 83fda52, turn5\f116c-same-sets.txt. The sample, set 04's copy of
+  sha256 792b01fb, Bader's older file of sha256 36ab2739 and the exchange file of sha256 94897667,
+  each with the list beside it, give the same 61 sets and 1830 tests line for line. Set 04's copy
+  with no list beside it gives the sets ExchangeReader.ReadFile gives it as written. The sample
+  and the exchange file read the same sha256 after the read as before
+- Builds of 0 warnings and 0 errors on the trees of 7e40a8a and 039192a and on 83fda52:
+  turn5\f116c-build-beside.txt, f116c-build-worksets.txt and f116c-build-comments.txt.
+  check-locals and check-imports pass on 5de2b21, turn5\f116c-checks-after.txt. The pre-commits
+  of the pass's four commits and of the second merge each read 1796 passed,
+  turn5\f116c-precommit-1.txt to -4.txt and f116c-precommit-merge-2.txt, and the first merge's
+  read 1790, f116c-precommit-merge.txt. The full git diff --stat origin/main...HEAD, 26 files, is
+  turn5\f116c-diffstat.txt. Pushed, origin/fix-F116 at 5de2b21, turn5\f116c-push.txt. Before the
+  push, the second merge's title was amended twice, because printf had turned the \01 of
+  steps\01_next.md into a control character and the first amend read the same file
+
+### What the pass on the readings of the Q113 pass did
+
+- On turn5\f116c-read-review.txt and f116c-read-break.txt, each CHANGES with one blocking
+  finding, and the claim-checker's 18 points, turn5\f116c-read-claims.txt, read with Bader's answer
+  under Q113 in steps\02_questions.md: a picked XML with no list beside it is corrected by
+  nothing, and the log says so. The lead's task for this pass was given in the session and is
+  kept in no file
+- 0bf09b3, the reviewer's blocking finding. The EMPTY SETS judge read RevitWorksets.All(), the 39
+  names inside Core, at EmptySets.cs line 257, while the corrections read those and the list's
+  workset lines, at MatrixCorrections.cs lines 568 and 596 to 597. So a set the corrections made to
+  ask ME-DUCTWORK was called a value no model in this project carries, while the MATRIX line said
+  it was measured. RevitWorksets.With is now the one place the two are put together. ReadPicked
+  hands what it gives to ExchangeDocument.Worksets, SetBuildPlan.From carries it to
+  SetBuildPlan.Worksets, and SetBuilder hands that to EmptySets.Why, which judges against the
+  spellings it is handed and reads no list of its own. That is one file of the add-in,
+  SetBuilder.cs, three edits: the call of BuildOne passes plan.Worksets, BuildOne takes them as
+  a parameter, and its EmptySets.Why call hands them on, with a comment, the diff kept in
+  turn5\f116e-addin-diff.txt. The two argument Why is gone, so EmptySetsTests judges through a
+  helper handing in the names inside Core alone
+- 0bf09b3, the breaker's blocking finding. A list that was there and read went on to the value
+  correction with the 39 names, so a list of no bytes, of comments or with no workset line
+  rewrote ME-DUCTWORK to ME-Ductwork, more than no list does. A list holding none now corrects
+  nothing and its first MATRIX line says so, as no list does, MatrixCorrectionList.HoldsNone. A
+  workset value is corrected only where the list names a spelling of it, NamesASpellingOf. A
+  value it names none of is left as the file asks, on a line saying the list beside this file
+  names no spelling of it
+- the four new tests of the two findings fail against stubs that add the new members with the old
+  behaviour, 4 failed of 4, the stub diff and git status kept in
+  turn5\f116d-judge-and-list-before-fail.txt, and pass after, turn5\f116d-judge-and-list-after.txt.
+  One older test, the one reading the client's matrix values, pins PL-Drainage's whole line now,
+  where it read its first words
+- 0bf09b3, the reviewer's test gap and the claim-checker's seventh point. One test holds the list
+  open with FileShare.None, then writes a rename whose new name holds the old one, and asserts for
+  each that the first MATRIX line names why and nothing throws. Another pins that a UTF-16 list
+  with its byte order mark is read, so the list's header and core.md say so where they said a list
+  that is not UTF-8 is not read. In turn5\f116d-cannot-use-before-fail.txt the first run, its two
+  catches rethrowing and its reader ignoring the mark, fails the held-open half and the UTF-16
+  test, and the second, the rename catch alone rethrowing, fails the rename half, each run with
+  its stub diff. The summary of NoListOfCorrectionsIsInsideCore says what it checks and no more,
+  the reviewer's point
+- the six new tests take Core from 1796 to 1802. The commit message of 0bf09b3 counts two tests for
+  the two branches and one more, where they are one test holding both and the UTF-16 test, and it
+  says two bullets are new in core.md, where there are three
+- 0bf09b3, the list's header says 1B06G1 carries ME-DUCTWORK, ME-EQUIPMENT and ME-PIPING in
+  capitals and 1B06BC the first two among the ten names its line lists, C06 log lines 1354 and
+  605, the claim-checker's sixteenth point. Its workset lines are now lines 73 to 102, sha256
+  afc463be, turn5\f116d-same-sets.txt
+- 0bf09b3, the rule in .claude\rules\core.md: three bullets new, the one place, a value corrected
+  only where the list names it, and what the corrections code names, with the ExportCheck.cs log
+  line named, the claim-checker's fifth point, and the list bullet made exact
+- the claim-checker's 18 points made true in this entry, the F116 section of steps\01_next.md and
+  turn5\pr-f116.md, with the files read for them: turn5\f116d-addin-range.txt,
+  f116d-names-in-src.txt, f116d-main-trial-merge.txt, f116d-9d8e3b2-lines.txt and
+  f116d-cfb057e-tests.txt
+- the pre-commit of 0bf09b3 read 1802 passed, turn5\f116d-precommit-1.txt. check-locals and
+  check-imports pass on 0bf09b3, turn5\f116d-checks-after.txt
+- By hand on the Release Core of 0bf09b3, turn5\f116d-same-sets.txt. The sample, set 04's copy of
+  sha256 792b01fb, Bader's older file and the exchange file, each with the list beside it, give
+  the same 61 sets and 1830 tests line for line, and the exchange XML is unchanged at sha256
+  94897667. Set 04's copy with no list, with a list of no bytes or with a list of the rename
+  alone keeps every workset value it asks, the first two on 3 MATRIX lines. The EMPTY SETS judge,
+  handed the spellings the plan carries, calls every workset value the corrected file asks one
+  models in this project carry, where the names inside Core alone call ME-DUCTWORK, ME-EQUIPMENT,
+  ME-PIPING, FF-Fire Fighting, FP-PIPING and PL-Domestic Water carried by no model
+- F112 was not on main at b2afb2d. Main's changes from bd05bc5 to b2afb2d are 4 files under
+  steps\, and a trial merge of b2afb2d into 0bf09b3 conflicts in steps\log.md alone,
+  turn5\f116d-main-trial-merge.txt
+- 41c52a1, records only: this entry and the F116 section of steps\01_next.md as written before
+  F112 merged
+- F112 merged on main as ddb059b, pull request 106, while this pass ran, and main ddb059b was
+  taken in at 8a32795, both sides kept. steps\log.md and steps\01_next.md conflicted: this entry
+  stays on top with main's entries after it in main's order, and F112 takes order line 40 and
+  F116 41, F112's section after F125's and F116's last. origin/main had already moved on to
+  ce6eedb at the fetch of 02:04:12, line 45 of its reflog in f116e-main-order.txt, before the merge at 02:07:11 and the push of 1ee0d93 at
+  02:25:46, the reflogs in turn5\f116e-main-order.txt, so 8a32795 took in ddb059b and not the
+  head of main. ce6eedb's changes were under steps\ alone, and a trial merge of it into 1ee0d93
+  read after the push was clean, turn5\f116d-main-after-push.txt
+- 8a32795, F112's FR-028 case lines. On the merged tree F112's own test
+  AGroupWhereNoAskedNameDiffersByCaseGetsNoWarning failed, because the corrected matrix asks
+  ME-DUCTWORK or ME-Ductwork in every set asking one and the case lines named those sets as
+  missing ME-Ductwork. ExportCheck.AddCaseDifferences now names a pair only with the sets that
+  ask the other spelling and do not also ask the carried one, not negated, as a whole name or
+  for contains a part of it, WorksetAsk.Finds and AlsoFinds, and a pair no set is left for is
+  not named. A set asking the carried spelling only negated is still named. The change rides in
+  the merge commit because the pre-commit refuses a commit that fails a test
+- the tests of it: F112's test, its comment made true, the new
+  ASetThatAlsoAsksTheCarriedSpellingIsNotNamedAsMissingIt, and F112's 1B06BC test, which read the
+  corrected matrix as main had it, asking the title case alone. That one is now
+  TheCapitalsOf1B06BCAgainstAFileAskingTitleCaseAreNamed, its three assertions kept against sets
+  asking the title case alone, and it also asserts the corrected matrix since F116 names nothing
+  for that group. The three fail on the merged tree before the change, 3 failed of 3, the git
+  status and the test diff kept, turn5\f116d-fr028-before-fail.txt, and pass after, 1912 in all,
+  turn5\f116d-fr028-after.txt
+- 8a32795, the rule in .claude\rules\core.md: a bullet on the case warning, and the bullet on what
+  the corrections code names no longer says ExportCheck.cs types the pair, a sentence F112's
+  FR-028 removed
+- 1ee0d93, records only: this entry and the F116 section brought to the merge. Pushed,
+  origin/fix-F116 at 1ee0d93, turn5\f116d-push.txt
+
+### What the closing pass did
+
+- On the readings of 1ee0d93, turn5\f116d-read-review.txt, CHANGES with one blocking finding,
+  turn5\f116d-read-break.txt, APPROVE, and the claim-checker's 12 points,
+  turn5\f116d-read-claims.txt. The lead's task for this pass was given in the session and is kept
+  in no file
+- main ce6eedb was taken in at fa66a26 with no conflict, its changes steps\02_questions.md and
+  steps\loop.md. Main 0c64018 and then main f38a369 came while this pass ran and were taken in at
+  d418c56 and fae143f. In each steps\log.md conflicted and both sides are kept: this entry on top,
+  main's entries of FR-052 and of the design of F127 after it, then main's in main's order. No
+  merge changes a file under src or tests, turn5\f116e-main-since.txt
+- a40ff59, the reviewer's blocking finding. RevitWorksets.All() at RevitWorksets.cs line 48 had
+  no caller in src once 0bf09b3 moved EmptySets and MatrixCorrections onto RevitWorksets.With,
+  and it was a second way to get what With(null) gives, new List(Load()) in both. No decision in
+  steps\02_questions.md keeps it, so it is deleted. No test is deleted, because each of the five
+  test calls proved something With(null) does, so each now reads With(null) and every assert is
+  kept: TheListInsideCoreIsExactlyTheNamesMeasuredOnC02 and
+  BothSpellingsOfTheFourWorksetsTheBuildingsSpellTwoWaysAreMeasured in RevitWorksetsTests, and
+  TheCommittedFileAsksEveryMeasuredSpellingWithItsCategoryInEveryGroup,
+  TheValueLinesClaimOnlyWhatWasMeasured and EverySpellingTheCorrectionsAskIsOneTheEmptySetJudgeKnows
+  in MatrixCorrectionsTests. git grep finds no RevitWorksets.All under src or tests, and
+  check-locals and check-imports pass, turn5\f116e-checks.txt. A deleted member has no test to
+  see failing first. The build is the proof that nothing called it
+- the claim-checker's 12 points made true in this entry, the F116 section of steps\01_next.md and
+  turn5\pr-f116.md, with the files read for them: turn5\f116e-main-order.txt,
+  f116e-names-in-src.txt, f116e-addin-diff.txt, f116e-comment-commits.txt and
+  f116e-main-counts.txt. The rule in .claude\rules\core.md said a list saved as UTF-16 or UTF-32
+  is read, and no Core test reads UTF-32, so it says UTF-16 alone. The same reader built outside
+  the tool does read UTF-32 with its mark, turn5\f116e-reader-measure.txt, which is not a test
+- the breaker's point on a UTF-8 list with its byte order mark, read here, not fixed. A
+  StreamReader built as MatrixCorrectionList.cs line 136 builds it, under this machine's .NET
+  Framework 4.8.1, mscorlib 4.8.9345.0, through powershell, throws on a 0xA0 byte with no mark and reads it as U+FFFD
+  with the UTF-8 mark, turn5\f116e-reader-measure.txt. So core.md now says bytes that are not
+  UTF-8 are refused in a list with no byte order mark, and the case is under Known bugs
+- the same-sets read of the pass before, run again on the Release Core of a40ff59 by
+  turn5\f116e-same-sets.ps1, whose one change is that the names inside Core alone are read off the
+  plan of the file read as written, since All is gone. Past its first line it is the same as
+  turn5\f116d-same-sets.txt line for line, turn5\f116e-same-sets-compare.txt: 61 sets and 1830
+  tests for each file with the list beside it, 16 MATRIX lines under main\, 13 outcome lines, 9
+  of them changing something, and 23 changes in all
+- f51de84, records only: this entry, the F116 section of steps\01_next.md and the rule in
+  core.md. The records commit after fae143f brings this entry and the section to that merge,
+  records only
+
+### Choices the developers made, for the reader to check
+
+- Q103 READ WIDER THAN THE MATRIX ALONE. Read off the matrix only, no other folder's set asks
+  Ramps, Railings, Furniture or Site. So the rule would change nothing, and the 414 BLD-AR-Ramps
+  clashes of 1B06PK would stay. So the rule also takes categories measured in the logs: AR sets
+  that found items in groups with no AR model. Ramps and Railings come from the C06 log lines
+  4304, 7979 and 4316, Furniture and Site from the C04 partial log lines 200 and 203, and a test
+  reads them against those lines. Any other category another discipline carries only beside an AR
+  model is UNKNOWN. Bader kept all four, Q113 answered D on 2026-10-04
+- THE CORRECTIONS WERE DATA IN CORE until Bader answered Q113 B on 2026-10-04. They are now this
+  project's list, a plain file beside the picked XML. The copy in exchange\ sits beside the
+  corrected XML, so Bader can copy both into his folder
+- THE LIST'S LINE IS THE FIRST MATRIX LINE. With no list, one that cannot be read or one holding
+  none, the line saying so is first, and the two lines every picked file carries follow it, 3
+  MATRIX lines, turn5\f116d-same-sets.txt
+- A LIST WHOSE BYTES ARE NOT UTF-8 IS NOT READ when it carries no byte order mark, because a
+  default reader would put a replacement character for the no-break space of EL-Fire alarm and
+  ask a spelling no model carries. One saved as UTF-16 with its byte order mark is read as
+  UTF-16, which a test pins. One with the UTF-8 mark is read with a replacement character for a
+  bad byte, measured in the closing pass and under Known bugs
+- THE SUFFIX IS A SETTING WITH ITS DEFAULT ONLY, the shape ProbeSettings has. Nothing in the window
+  sets it
+- A VALUE THE LIST NAMES NO SPELLING OF IS LEFT ALONE, every such value, and not only one the
+  names inside Core would change. So with this project's list PL-Drainage is left alone because
+  the list names no spelling of it, where before it was left alone because the models spell it as
+  the matrix does, the same set either way. A value the list does name is asked in every spelling
+  of the names inside Core and the list together, as the lead's task put it
+- THE SPELLINGS REACH THE JUDGE ON THE PLAN, SetBuildPlan.Worksets, and not through SetBuilder's
+  constructor, so a Core test proves the plan carries what the corrections used and the add-in
+  change is one parameter passed through, three edits in SetBuilder.cs
+
+### What remains
+
+- the add-in half, the test of wave 1 on 1A02MM and 1A04PK, with the list copied out of exchange\
+  beside set 04's copy of the FIXED XML of sha256 792b01fb, %LOCALAPPDATA%\NwcFederatorLoop\runs\04
+  manifest line 1, and named 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt. Every line of
+  this bullet is EXPECTED, read off Core or off the XML text, and none was seen in Navisworks.
+  The wave 1 run is its proof. Expected on the first run with the XML: 16 MATRIX lines after the
+  line naming the file, as turn5\f116e-same-sets.txt has them under main\ on the Release Core of
+  a40ff59. The first names the list and says it holds 3 corrections, 1 rename, 1 catch-all and 1
+  Source File rule, and 30 workset spellings. Then come 13 outcome lines, 9 of them changing
+  something, the PL-Drainage line saying the list beside this file names no spelling of it. Then
+  the line saying a set already in an NWF keeps its conditions unless the box Rebuild sets that
+  drifted from the file is ticked, and `MATRIX   23 changes in all`. Expected with no list beside
+  it, or a list holding none: 3 MATRIX lines, the first saying so, and the sets built as the file
+  asks. Expected built fresh, or with the box ticked: BLD-ME-Ducts&Duct Fittings asking 8
+  conditions where main's exchange file asks 4, and BLD-AR-Ramps 2 where it asks 1, counted as
+  condition elements in the XML text and not in a built set, turn5\f116c-condition-counts.txt.
+  Expected on an NWF from set 04 with the box off: those sets keep their old conditions and the
+  SETS block names them DRIFTED. Expected for a set already in the NWF that finds nothing and asks
+  a spelling of the list, such as ME-DUCTWORK: the EMPTY SETS block counts it among the values
+  models in this project DO carry. Expected in the EXPORT CHECK block of 1A02MM: a set asking
+  ME-DUCTWORK or ME-Ductwork is not named as missing either, as
+  AGroupWhereNoAskedNameDiffersByCaseGetsNoWarning shows on that group's worksets measured in 5q,
+  and for a workset 5q did not read it is UNKNOWN. Expected in the .tsv: one model worksets row
+  per model, UNKNOWN where a walk stopped. Expected on the weekly run: no XML picked and no MATRIX
+  line. Whether BLD-AR-Ramps finds fewer items in 1A04PK is UNKNOWN until the run
+- the open file run and both hand buttons read the list through the same ReadPicked and have no
+  run proof yet. No F116 proof steps are written in steps\03_bader_next.md, and the wave 1 run
+  stands for the Run path alone
+- Bader is told once F116 merges that the list is on main at
+  exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, beside the corrected XML
+
+### Known bugs
+
+- a value line says "measured so far in this project's models" of a spelling that comes from the
+  39 names inside Core, the C02 census of project 1104, MatrixCorrections.cs lines 1014 and 1040.
+  With another project's list naming ME-DUCTWORK the line would call ME-Ductwork that project's,
+  because RevitWorksets.With, RevitWorksets.cs lines 55 to 73, puts the 39 beside any list, and
+  the EMPTY SETS judge would call a workset in neither list carried by no model and name a 1104
+  name as nearest. Whether the 39 stay in Core is Bader's to say, the Q113 pass reviewer's
+  question and both readings of 1ee0d93, turn5\f116d-read-review.txt and f116d-read-break.txt.
+  It is not in steps\02_questions.md, whose last on main is now 127, and is for the lead to put
+- the readings of 1ee0d93 that did not block, left as they were:
+  - the EMPTY SETS judge compares the value of a contains condition to the measured categories by
+    Ordinal equality and never reads the test or the negate flag, src\Federator.Core\Sets\EmptySets.cs
+    lines 114 to 146 and 267 to 278. So BLD-EL-Devices, which asks Category contains Devices, is
+    said in that block to ask a value NO MODEL IN THIS PROJECT CARRIES when it finds nothing, while
+    the HEALTH block reads contains as a part of a name, SetWarnings.cs lines 264 to 280, and the
+    one log disagrees with itself. Older than F116, the breaker's
+  - a rename is a text replace over the whole XML text, MatrixCorrections.cs lines 912 to 913, so
+    a From that is a part of other names rewrites those too, and the log gives one count and not
+    where. SetRename, MatrixCorrections.cs lines 10 to 42, refuses an empty name and a To holding
+    its From, and nothing else, the breaker's
+  - a list that is there and holds none, MatrixCorrectionList.cs lines 89 to 97 and 255 to 259, is
+    said in lower case as a project needing none is, where an unreadable list gets capitals, and a
+    failed save looks the same. Whether it takes the capital form is the lead's call, the breaker's
+  - in this project's list 24 of the 30 workset lines match no value of the client's matrix but for
+    case, the breaker's count, and feed only the EMPTY SETS judge, RevitWorksets.cs lines 55 to 73,
+    MatrixCorrectionList.cs lines 219 to 229 and 261 to 266, MatrixCorrections.cs lines 623 to 626,
+    and the list's lines 73 to 102. The first MATRIX line says 30 workset spellings and nothing
+    says how many were used. A mistyped line makes the judge say carried, and a line differing from
+    a value by a no-break space is not a spelling of it, the breaker's
+  - a UTF-8 list WITH its byte order mark is read with U+FFFD for a byte that is not UTF-8 and is
+    never refused, MatrixCorrectionList.cs lines 46 and 136, measured with the same reader in
+    turn5\f116e-reader-measure.txt. The summary at MatrixCorrectionList.cs lines 20 to 23 and the
+    list's header lines 70 to 72 say a list that is not UTF-8 is not read, which holds only with
+    no mark. The breaker's, UNKNOWN there and measured in the closing pass
+  - the case warning keys a set by its name alone, ExportCheck.cs lines 336 to 389, 417 and 442 to
+    448. AlsoFinds counts a set as asking the carried spelling when any condition of it does, not
+    negated, whatever Or group it sits in, so a set asking it in one group and not the other, or a
+    namesake in another folder that asks it, keeps a set from being named. The client's 61 sets
+    have unique names and copy every Or group whole, so nothing is hit today. No test covers it,
+    the reviewer's and the breaker's
+  - the class comment of RevitWorksets, RevitWorksets.cs lines 20 to 22, still says MatrixCorrections
+    asks every spelling measured in Core and the list, where since 0bf09b3 a value is corrected
+    only where the list names a spelling of it, the reviewer's. ValueRewrite's summary and core.md
+    say it right
+  - the add-in changed in SetBuilder.cs lines 497, 626 and 704, and steps\03_bader_next.md has no
+    F116 proof steps, the reviewer's, disclosed under What remains
+- the workset spellings past the tenth name of a group are UNKNOWN until the wave 1 .tsv rows
+- FR-012 is still open: an unreadable workset list inside Core corrects nothing, silently
+- still without a caller in src: CategoryRewrite, ValueOrRow, the shorter Apply overloads and
+  ExchangeReader.ReadFile, FR-172 and Q26
+- on an NWF built from the raw XML, the rename also renames the 120 test names, so new tests are
+  created beside the old ones, the attempt 2 breaker's finding
+- the two MATRIX warnings are log lines only, and the RESULT block does not repeat them
+- where a walk did not finish, the model export row writes -1 as its number and the EXPORT CHECK
+  block writes worksets NONE, both older than F116
+- FR-030's proof asked for a Core test that the picked file's outcome lines reach the HEALTH
+  block. No pass did it: the MATRIX lines go to the log before the HEALTH block, and the tests
+  prove only that they ride on the document
+- the Q113 pass breaker's points that did not block, left as they were, turn5\f116c-read-break.txt:
+  - the list is found by the XML's name alone, and when none is found only the first MATRIX line
+    says so, not the label after the pick nor the RESULT block
+  - the same folder run with and without the list renames sets and tests both ways
+  - a value with one measured spelling drops the matrix's own, FF-FIRE FIGHTING
+  - a rename is a raw text replace, so a name holding an ampersand is not found
+  - a catch-all on a set the same list renames
+  - a trailing space in a line of the list
+  - File.Exists is false for a path too long, so the list is said to be not there
+  - the Suffix setting is not checked
+- the Q113 pass reviewer's points that did not block, left: CLAUDE.md's line on the exchange
+  folder no longer describes the list kept there, Bader's to change
+- the other non-blocking points of attempt 2's readings are left as they were,
+  turn5\f116b-read-review.txt and f116b-read-break.txt:
+  - a value correction never counts a set it cannot read as not readable
+  - ReadFileText puts a replacement character for a bad byte
+  - a single quoted flags attribute gets written twice
+  - the empty selectionset tag has no test seen failing
+  - the Source File rule's Asks and WrittenAsking read a negated condition
+  - the catch in WrittenCondition.Read names no set
+  - the negated workset warning gives the widening reason in the one spelling case
+  - one test feeds a bare data element
+  - two summary blocks sit on the WorksetSet helper
+  - the DRIFTED line overclaims for a set whose search will not read
+  - two sets of one name in one folder
+  - the workset property constant
+
+### What comes next
+
+- the reviewer, the breaker and the claim-checker on the closing pass and on the two merges of
+  main. Then F116 merges, and Bader is told the list is on main
+
+The add-in half waits for the local machine, in the test of wave 1.
+
+### Every file written outside the repo, the closing pass
+
+- under %LOCALAPPDATA%\NwcFederatorLoop\turn5: f116e-roamer-before.txt, f116e-core-before.txt,
+  f116e-msg-merge.txt, f116e-precommit-merge.txt, f116e-core-after.txt, f116e-checks.txt,
+  f116e-reader-measure.txt, f116e-msg-1.txt, f116e-precommit-1.txt, f116e-build-code.txt,
+  f116e-same-sets.ps1, f116e-same-sets.txt and the folder f116e-same-sets of copies,
+  f116e-same-sets-compare.txt, f116e-names-in-src.txt, f116e-addin-diff.txt,
+  f116e-comment-commits.txt, f116e-main-counts.txt, f116e-main-order.txt,
+  f116e-msg-merge-2.txt, f116e-precommit-merge-2.txt, f116e-main-since.txt, f116e-msg-2.txt,
+  f116e-precommit-2.txt, f116e-msg-merge-3.txt, f116e-precommit-merge-3.txt, and the files of
+  the last records commit and the push named in turn5\pr-f116.md, which this pass rewrote
+- the session's scratchpad under %TEMP%\claude: the files of the reader measure, the trees of
+  main dd55e4b and c4fd0d4 unpacked by git archive with their builds, a list of the names looked
+  for, the output of a test run, and the folders the tests make under %TEMP% and remove
+
+### Every file written outside the repo, the pass on the readings
+
+- under %LOCALAPPDATA%\NwcFederatorLoop\turn5: f116d-roamer-before.txt, f116d-roamer-mid.txt,
+  f116d-core-before.txt, f116d-judge-and-list-before-fail.txt, f116d-judge-and-list-after.txt,
+  f116d-cannot-use-before-fail.txt, f116d-msg-1.txt, f116d-precommit-1.txt, f116d-same-sets.ps1,
+  f116d-same-sets.txt and the folder f116d-same-sets of copies, f116d-addin-range.txt,
+  f116d-9d8e3b2-lines.txt, f116d-main-trial-merge.txt, f116d-names-in-src.txt,
+  f116d-cfb057e-tests.txt, f116d-build-code.txt, f116d-checks-after.txt, f116d-core-after.txt,
+  f116d-msg-2.txt, f116d-precommit-2.txt, f116d-fr028-before-fail.txt, f116d-fr028-after.txt,
+  f116d-msg-merge.txt and f116d-precommit-merge.txt, and the files of the last records commit
+  and the push named in turn5\pr-f116.md
+- the session's scratchpad under %TEMP%\claude, the edit scripts and a copy of
+  MatrixCorrectionList.cs kept while it was stubbed, and the folders the tests make under %TEMP%
+  and remove
+
+## 2026-10-05 The loop, turn 5, FR-052 confirmed again and the ceiling under Q124
+
+Nothing under src, tests or tools changed. Core tests 1865 passed, 0 failed, 0 skipped before, at
+turn5\precommit-records-13b.txt, and after, at turn5\precommit-records-14.txt.
+
+### What was done
+
+- FR-052 confirmed again by F132's Core half, a test the XML gives no tolerance counted as
+  skipped and named on no SKIPPED line, turn5\f132-finding-notolerance.txt. A claim-checker found
+  the first commit had written it as a new FR-190, which is taken out, FR-052 staying F119's in
+  wave 3b. F132 took its test over every skip reason out of its tree rather than fix it there
+- the lead's note on Q124: no progress line of the C04 run after test 75 at 00:59, and under its
+  default A the ceiling of Q84, 43200 s from adoption at about 21:18:25, closes the run at about
+  09:18 if it has not ended
+- F132's Core half built on its branch, 1908 tests passed, unmerged until its add-in half, and
+  read now by a reviewer and a breaker, while F127's Core steps 1 to 3 are with a developer
+
+### What remains
+
+- the readings of F132's Core half, F127's Core steps, F116's closing pass, and the gap for the
+  harness of F126 and the probes
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- F116's merge once its closing pass reads clean
+
+Nothing in this record waits for the local machine.
+
+## 2026-10-05 The loop, turn 5, the design of F127 coverage, Q126 and Q127
+
+Nothing under src, tests or tools changed. Core tests 1865 passed, 0 failed, 0 skipped before, at
+the pre-commit of PR 107's last commit, turn5\precommit-records-12b.txt, and after, at this
+record's, turn5\precommit-records-13.txt.
+
+### What was done
+
+- the design of F127, the coverage of Bader's request 2, by three plans each its own agent,
+  turn5\f127-plans.txt, and a judge, turn5\f127-design.md, scored evidence 26.5, the rules in Core 26 and the cost 25.5 of 30,
+  evidence the base. FR-176 names its part, its eight probes and its added run time
+- Q126 and Q127, two of its eight questions, each with the choice the build goes on with. The
+  other six his words or the lead's reading settle, named on FR-176
+
+### What remains
+
+- its seven probes on Navisworks once no Navisworks of the loop runs, Q124, and an eighth only if
+  P2 fails
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- F127's Core steps 1 to 3 test first now, step 4 after F116 merges and P2 to P5 are read, the
+  add-in after P1 to P7
+
+The probes on Navisworks wait for the local machine.
+
+## 2026-10-04 The loop, turn 5, F112 the alignment area of the fix round, FR-001 to FR-006 and FR-028, DONE in Core and built, after a third attempt and a closing pass
+
+Attempt 1 built the rule on Bader's answer to Q99 and Q100 and stopped at c5d8aa8. A reviewer and
+a breaker read it there, turn5\w1-read-review-F112.txt and turn5\w1-read-break-F112.txt, and
+attempt 2 answered them at c867348, its records at 86ea5d3, whose src and tests are those of
+c867348. A reviewer, a breaker and a claim-checker read attempt 2, turn5\f112b-read-review.txt,
+turn5\f112b-read-break.txt and turn5\f112b-read-claims.txt, and the reviewer and the breaker found
+the same blocking fault: with the rule on, a group holding a model on Internal that runs no clash
+test ended DONE. Attempt 3, on the lead's brief turn5\f112c-brief.md, took main 32b75fd in at
+8b4fcdd, keeping Q110 and Q111 before main's Q112 and Q113 in steps\02_questions.md and this entry
+above main's two, and stopped at e6d6f73. A reviewer, a breaker and a claim-checker read it,
+turn5\f112c-read-review.txt, turn5\f112c-read-break.txt and turn5\f112c-read-claims.txt. Which
+commit each set of readings read: the attempt 1 and attempt 2 reviews and breaks name none. Their
+files were last written at 18:17:10 and 21:07:44 and the attempt 3 files at 23:07:46, one time per
+file in turn5\f112e-stat-readings.txt, and the journal of the attempt 1 readings at 18:01:24,
+turn5\w1-read-journal-time.txt. The branch reflog, turn5\f112e-reflog.txt, gives c5d8aa8 as the
+tip from 17:26:42 to 18:29:11, 86ea5d3 from 19:53:41 to 21:14:41 and e6d6f73 from 22:45:22 to
+23:34:45, so each of those times falls where the tip was the commit named. The attempt 3 review
+also names e6d6f73.
+
+The breaker of attempt 3 found one blocking fault: the FAILED reason of a group with a model on
+Internal said its outputs were still written, at the ALIGNMENT step before any was, and hid a
+missing or stale NWD in RESULT. Its clause is older than F112. "Every output of this group was
+still written" came in at 29bfef8 of 2026-09-20 for Q70 and stood at line 286 of AlignmentCheck.cs
+on main 086a348, from which fix-F112 was made, and attempt 1 added its twin for a skipped group,
+"Its NWF and its NWD were still written", at 41ec380. The exact clause is named by no reading before attempt 3, turn5\f112e-clause-older.txt. Its family, a sentence that says files were written before anything looked, was not new: attempt 1's reviewer blocked on it in the note, the list and RESULT, w1-read-review-F112.txt line 8, attempt 2's on the note's NWF line, and attempt 3's breaker on this reason, each instance fixed by the next pass. So the family took four passes. The rule that a finding surviving three fix attempts goes to the form is for one still standing, and after the closing pass its reviewer and breaker find nothing blocking. Whether that counts as four attempts on one finding is for Bader to read. Attempt 4 is the closing pass on the lead's message of
+2026-10-04. It fixed it at 0000355 and made the attempt 3 claim-checker's points
+true at 39c50f0. A reviewer and a breaker read the closing pass at 39c50f0,
+turn5\f112d-read-review.txt and turn5\f112d-read-break.txt, both VERDICT APPROVE with nothing
+blocking. The review names 39c50f0, and both files were written at 00:19:36 on 2026-10-05,
+turn5\f112e-stat-readings.txt, while 39c50f0 was the tip, from 23:56:56 to 00:28:27 by
+turn5\f112e-reflog.txt. A claim-checker read it too, turn5\f112d-read-claims.txt, and its nine
+points that needed a change are made true here, in the F112 section of steps\01_next.md, in the
+rule in .claude\rules\core.md and in the body turn5\pr-f112.md, after main f09ee92 was taken in at
+c5ba7e0. Its last point needed no change, and its one reading note is in the attempt 4 tests below.
+
+Core tests 1859 passed, 0 failed, 0 skipped before attempt 4 at e6d6f73,
+turn5\f112d-core-before.txt, and 1865 passed, 0 failed, 0 skipped after, by the pre-commit of
+0000355, turn5\f112d-precommit-reason.txt, and by the pre-commit of the merge c5ba7e0,
+turn5\f112e-precommit-merge.txt. One Explicit test, WriteTheCorrectedFile, is not run and is in no
+count in this entry. `dotnet build ParsonsNwcFederator.sln -c Release` 0 warnings and 0 errors at
+0000355, the last change under src, turn5\f112d-build-after.txt, and at c5ba7e0,
+turn5\f112e-build-merge.txt, each file carrying its commit. `check-locals.sh src` and
+`check-imports.sh src` exit 0 at 0000355 and at c5ba7e0 by the same pre-commits. No developer of
+F112 started a Navisworks by the record of each attempt, named under Programs started. Every
+turn5\ file named here is under %LOCALAPPDATA%\NwcFederatorLoop.
+
+### What was done
+
+- the closing pass records, main f09ee92 taken in at c5ba7e0 by turn5\f112e-reflog.txt, both sides
+  of each conflict kept: this entry stays on top of steps\log.md above main's two new entries,
+  F125's order line stays 39 and F112's moves from 39 to 40 with its section after F125's in
+  steps\01_next.md, and steps\02_questions.md merged with no conflict, Q110 and Q111 before Q112,
+  Q113 and Q114, turn5\f112e-merge.txt. Main changed nothing under src or tests from 32b75fd to f09ee92,
+  nor from f09ee92 to b2afb2d, and nothing under src or tests differs from 0000355 at c5ba7e0, each
+  git diff exit 0 with 0 files, turn5\f112f-diffs.txt
+- the closing pass records, the claim-checker's nine points on 39c50f0, turn5\f112d-read-claims.txt,
+  made true. The EXPORT CHECK run line is said as the code does it, never clean while a group
+  whose whole read threw is counted, in the attempt 3 item 4 below and in .claude\rules\core.md,
+  and a model dropped in the reader's own catch stays a Known bug. The Known bugs gain the three
+  catches of ModelFactsReader.cs at lines 338, 352 and 373, the ordinal match of NamesInternal and
+  the model naming no site left off the list, so the body's list for the next wave names only what
+  is here. The waiter's reads in attempt 1's window are said in order in steps\01_next.md and the
+  body. The write times of the readings and the pushes are read with stat,
+  turn5\f112e-stat-readings.txt, and the tips with the reflog, turn5\f112e-reflog.txt. The attempt
+  3 claim-checker made 12 points that needed a change, the 13 entries of
+  turn5\f112c-read-claims.txt less the last. The lines named at 8b4fcdd, e6d6f73, 27df6b3 and
+  0000355 are read with git show, turn5\f112e-lines-8b4fcdd-e6d6f73.txt, and each holds what this
+  entry says. The NWD written line's commit, a6957a6 of 2026-08-27, is read with git blame and its
+  line 3357 on main at 1ae6771 and at f09ee92 with git show, turn5\f112e-nwd-written-lines.txt.
+  Attempt 1's record that it started no Navisworks is its developer's last message in the
+  session's transcript, turn5\f112e-attempt1-return.txt. The checker's reading note on attempt
+  4's tests is in their bullet below
+- the closing pass records, the attempt 3 breaker's clause read back to its commits and every
+  blocking finding of the readings of attempts 1 to 3 listed, turn5\f112e-clause-older.txt, as the
+  paragraph above says
+- the closing pass records, the readings' notes, none blocking, turn5\f112d-read-review.txt and
+  turn5\f112d-read-break.txt, each in the Known bugs or under What remains
+- attempt 4, the root cause, at e6d6f73, every line here read back from that commit with git show,
+  turn5\f112e-lines-8b4fcdd-e6d6f73.txt. AlignmentCheck.cs lines 463 to 467 ended the FAILED
+  reason "Every output of this group was still written, so the evidence is there to send." or
+  "Its NWF and its NWD were still written", made at the ALIGNMENT step before any file is
+  written. The first clause is older than F112, from 29bfef8 of 2026-09-20, and the second came
+  with attempt 1 at 41ec380, turn5\f112e-clause-older.txt. FederationEngine.cs line 2143 put it on
+  the group's errors, `outcome.AddError(fails)`, and GroupJudgement.cs lines 180 to 184 returned on
+  HasErrors before the NWD checks at lines 244 to 258. So for a group failed on a model whose
+  publish returned false, RESULT gave that sentence as its one reason and never named the NWD
+  missing or not from this run
+- attempt 4, the fix, at 0000355. WhyItFailsTheGroup's reason names the models and their sites
+  and nothing of a file, and the block line adds the full stop. The engine keeps it apart from the
+  errors, JobOutcome.AlignmentFailure, handed to GroupFacts.AlignmentFailure, and
+  GroupJudgement.Judge judges the steps as it would without it and names what they find after
+  it, so a missing or stale NWD is named beside the models, and the skipped clash after both. The
+  ALIGNMENT failed run line says "The failure does not stop the group." where it said the files
+  written list says which files were written, a list that can name last week's NWD. The window
+  label counts the failure with the errors, as when it was one, proved by the build only
+- attempt 4, the tests. Eight failed against e6d6f73's code with a stub of
+  GroupFacts.AlignmentFailure whose setter calls AddError, the engine's call before the fix, the
+  stub in turn5\f112d-stub-before.diff.txt and the run in turn5\f112d-reason-before-fail.txt, 8
+  failed and 1857 passed, and pass after, 1865 passed, turn5\f112d-reason-after.txt and the
+  pre-commit of 0000355. The NWD from this run, stale and missing, each with the reason asserted
+  whole, and the stale NWD with a skipped clash. By name, 8 new and 2 renamed away, which nets the
+  6, and 5 changed under the same name, turn5\f112d-tests-attempt4.txt. Of the 8 new, 7 failed
+  before and AGroupFailedOnItsModelsKeepsWhatThrewBesideIt passed before too, as a guard that a
+  step that threw is still named, and the eighth failure is
+  TheFailedRunLineNamesBothCausesAndClaimsNoFile, changed under its name, line 15 of that file.
+  Every removed test line, with where each assert went, in turn5\f112d-removed-test-lines.txt
+- attempt 4, the claim-checker's 12 points on attempt 3, the 13 entries of
+  turn5\f112c-read-claims.txt less the last, which needed no change, made true in this entry,
+  the F112 section of steps\01_next.md and turn5\pr-f112.md. The lines at ddd5e0c this entry
+  names were read with git show from the commit, turn5\f112d-ddd5e0c-lines.txt, and each
+  holds what the entry says. The rule in .claude\rules\core.md, under the judgement and under the
+  rule of Q99 and Q100
+- attempt 3, the root cause, at 8b4fcdd, each line read back from that commit with git show,
+  turn5\f112e-lines-8b4fcdd-e6d6f73.txt. AlignmentCheck.cs line 423,
+  `else if (!skipClashOffCoordinates && NamesInternal(models[i], internalName))`, dropped Q70's
+  Internal failure whenever the rule was on, and FederationEngine.cs line 2138 called it with the
+  rule state alone, while OffCoordinates.SkipsTheClash at line 78 also needs a clash test to run.
+  So a group with nothing to clash got neither Q70's FAILED nor Bader's PARTIAL
+- attempt 3, item 1, at 7da5c0d. WhyItFailsTheGroup takes the four inputs the ALIGNMENT block
+  takes and drops the Internal failure only where the group's own skip decision says its clash is
+  skipped. With no XML and no saved test, an XML of sets alone, one discipline or one NWC on
+  Internal, the group ends FAILED, the rule on or off, each case reading whether a test runs from
+  ClashWork.RunsATest and the group's end from GroupJudgement. AlignmentCheck.FailedRunLine gives
+  the ALIGNMENT failed run line, which with the rule on named only a model with no site and said
+  every failed group wrote its NWF and its NWD. OffCoordinates.EarlierNoteKeptBecause keeps an
+  earlier note while a model is still off and no clash test ran in the group, and replaces
+  RemovesAnEarlierNote, whose one caller passed the literal false. Seven tests failed against
+  stubs that reproduce the engine's calls before the fix, a stub whose source no file keeps,
+  turn5\f112c-item1-before-fail.txt, and
+  pass after, 1855 passed, turn5\f112c-item1-after.txt. The four Internal cases fail on their
+  first pass, rule on, where WhyItFailsTheGroup returned null. The converted earlier note test
+  fails only on its "this run skipped the clash" assert, because the stub, like the engine
+  before, never looked at a skip
+- attempt 3, item 2, at 752f931, Core only. NwfAndNwd.cs lines 36 to 38 at 8b4fcdd, read with git
+  show in turn5\f112e-lines-8b4fcdd-e6d6f73.txt, ended the NWF line "read after the NWD was
+  published" whatever the NWD facts were. It says so only where the publish reported success and
+  the NWD is on the disk, and "read at the end of the group" otherwise.
+  TheNwfLineSaysNothingOfAPublishTheOutcomeDidNotShow asserts the NWF line of the no NWD note,
+  the stale note and a publish reported with no NWD on the disk says nothing of a publish. It
+  failed before, turn5\f112c-item2-before-fail.txt, and passes after,
+  turn5\f112c-item2-after.txt
+- attempt 3, item 4, at da612e2 and 27df6b3, the readings' other notes in F112's own lines. The
+  ALIGNMENT heading of a skipped group and the engine's CLASH line read
+  OffCoordinates.TestsCreatedNoneRun, now public, where the heading said every test was created. The
+  note says any viewpoint an earlier run saved in the NWF is still in it, since BuildViewpoints
+  returns before any viewpoint is touched, FederationEngine.cs lines 3425 to 3431 at 27df6b3, 3426
+  to 3432 at 0000355, both read with git show in turn5\f112e-lines-8b4fcdd-e6d6f73.txt. The open
+  file run's window label takes its clash counts from ClashRunOutcome.CountsForTheLabel, where it
+  printed nought run and nought clashes for a skipped group. The EXPORT CHECK run line counts a
+  group whose whole read threw, ExportCheckAcrossTheRun.GroupNotRead, called from the group's catch
+  alone, and is never clean while one is. A model ModelFactsReader.Exports drops in its own catch is
+  in no count, so the line can read clean over it, a Known bug below. The earlier reports read and
+  the note of a skipped group sit in a try that logs and writes no note, proved by the build only.
+  Four tests failed before, the two of the words against the old text,
+  turn5\f112c-item4-words-before-fail.txt, and the two of the counts against stubs whose source no
+  file keeps, turn5\f112c-item4-counts-before-fail.txt, and pass after,
+  turn5\f112c-item4-words-after.txt and turn5\f112c-item4-counts-after.txt
+- attempt 3, its counts. Core tests 1848 passed, 0 failed, 0 skipped after the merge of 32b75fd,
+  turn5\f112c-core-before.txt, a file with no commit line, the 1848 pinned to 8b4fcdd by
+  turn5\f112c-precommit-merge.txt, and 1859 passed at 27df6b3, turn5\f112c-core-after.txt. Each of
+  attempt 3's seven commits passed its pre-commit with 0 failed: 8b4fcdd 1848, 7da5c0d 1855,
+  752f931 1856, da612e2 1857, 27df6b3 1859, 2d0e574 1859 and e6d6f73 1859, turn5\f112c-precommit-merge.txt,
+  -item1, -item2, -item4-words, -item4-counts, -records and -records-2. `dotnet build
+  ParsonsNwcFederator.sln -c Release` at 27df6b3 0 warnings and 0 errors with the commit at the
+  top, turn5\f112c-build-after.txt. The builds run after the add-in changes of items 1 and 4,
+  turn5\f112c-build-item1.txt, turn5\f112c-build-item4-words.txt and
+  turn5\f112c-build-item4-counts.txt, read 0 warnings and 0 errors and carry no commit or time, so
+  which tree each built is the developer's statement. Item 2 changed Core only, and no build file
+  was saved for it.
+  `check-locals.sh src` and `check-imports.sh src` exit 0 at 27df6b3,
+  turn5\f112c-check-locals.txt and turn5\f112c-check-imports.txt
+- attempt 3, item 3. The claim-checker's points on attempt 2 made true in this entry, in the F112
+  section of steps\01_next.md and in the body turn5\pr-f112.md, each on a file named beside it.
+  The fifteen proof cases of attempt 2 are mapped to the committed tests that cover them,
+  turn5\f112c-proof-map-attempt2.txt, and those 27 tests pass by name at 27df6b3,
+  turn5\f112c-proof-map-after.txt. The tests of attempts 2 and 3 are counted by name from the
+  source, turn5\f112c-tests-attempt2.txt and turn5\f112c-tests-attempt3.txt, a count that gives
+  dotnet's own totals at all four commits, 1816, 1848, 1848 and 1859. Every removed test line of
+  each attempt is in turn5\f112c-removed-test-lines-attempt2.txt and
+  turn5\f112c-removed-test-lines-attempt3.txt
+- the tests attempt 3 changed, every removed line in turn5\f112c-removed-test-lines-attempt3.txt.
+  The fifteen WhyItFailsTheGroup calls of AlignmentCheckTests take the far setting and true for a
+  test to run beside the rule, with their asserts unchanged. AnEarlierNoteGoesOnlyWhenEveryModel...
+  calls EarlierNoteKeptBecause, each Is.True becoming Is.Null and each Is.False Is.Not.Null, with a
+  case for a read that threw added. WithTheRuleOnTheBlockSaysTheClashIsSkippedAndCarriesTheSameLines
+  asserts the corrected heading and that the old words are gone. 11 tests are new and 14 changed
+  under the same name, turn5\f112c-tests-attempt3.txt
+- attempt 3, the rule in .claude\rules\core.md for all of it, and order line 39 and the F112
+  section of steps\01_next.md
+- attempt 2, the root causes, at ddd5e0c, every line below read back from that commit with git
+  show by attempt 4, turn5\f112d-ddd5e0c-lines.txt. ONE TALLY PER WINDOW: FederatorPlugin.cs line 46 makes
+  one RunLog per window, RunLog.cs line 115 made one OffCoordinatesAcrossTheRun in it, the engine
+  overwrote its one rule flag at FederationEngine.cs lines 405 and 492 and only ever added groups,
+  the list took log.StartedAt, the window's start, at line 2332, and OffCoordinates.ListName was
+  one fixed name. A SKIP FROM THE MODELS ALONE: FederationEngine.cs lines 2125 to 2128 set the
+  skip before ClashStep knew at lines 2363 to 2366 whether it had a test to run. THE NOTE said what
+  nothing checked, OffCoordinates.cs line 63, and was written at FederationEngine.cs line 992
+  before the NWF was looked at the last time at lines 998 to 1001. A ZERO AS CLEAN:
+  OffCoordinatesAcrossTheRun.cs lines 35 to 45 kept no trace of a group judged clean, so lines 92
+  to 95 called a run that judged three groups of 46 clean. THE RUN LINE kept four counters of its
+  own at FederationEngine.cs lines 2177 to 2195 and none for a model holding no Revit element,
+  which ExportCheck.cs lines 222 to 226 counts
+- attempt 2, fifteen proof cases, the cases in turn5\f112b-proof-before-tests.cs.txt, never
+  committed. They failed in one run, turn5\f112b-proof-before.txt, a file with no path, commit or
+  time line, in the git archive copy of ddd5e0c at turn5\f112b-before-src, now deleted, into which
+  turn5\f112b-proof-extra.py wrote four of them beside the other eleven, so that the copy was of
+  ddd5e0c is the developer's statement. Whether the eleven also
+  ran in the worktree first is shown by no saved file, and the worktree's test project as changed
+  did not build against the code before, turn5\f112b-before-compile-full.txt. Twelve call
+  ddd5e0c's Core API. Three, for items 2, 5 and 11, build a bool from a copy of the engine's own
+  expression inside the test, so they say nothing about the add-in, whose half of those three is
+  proved by the build only. None compiles against the API the fix made, so no run of them after
+  the fix exists, and each is mapped to the committed test that covers it, as above
+- attempt 2's tests by name, turn5\f112c-tests-attempt2.txt: 36 new and 4 renamed away, which nets
+  the 32 from 1816 to 1848, and 27 changed under the same name. The 43 names of
+  turn5\f112b-new-tests-after.txt are the 36 new, 6 of the 27 changed and TheReasonIsBadersWords,
+  which did not change, so that file counts neither new nor changed tests
+- breaker 1. OffCoordinatesAcrossTheRun is made by the engine when Run or RunOpenDocument starts,
+  with that run's rule state, start and count of groups, and the window hands it to that run's
+  RESULT block through RunLog.WriteResultBlock(thisRun). Each run's list is its own file,
+  `Models not on the same shared coordinates, run yyyy-MM-dd HHmmss.txt`. RunLog.WriteRemoved
+  reads the file off the disk first and takes it off the files written list only once it is gone
+- breaker 2. ClashWork.RunsATest, the source holding tests and the group two disciplines, read
+  once in FinishTheGroup before the ALIGNMENT block and handed to ClashStep, and
+  OffCoordinates.SkipsTheClash. A group with nothing to clash is judged as before and its block
+  names its models under a heading saying no clash is skipped. Attempt 2 dropped Q70's Internal
+  failure for such a group, which attempt 3 put back
+- breaker 3. EarlierReports names each report at the names this run would have written, with its
+  last written time and size read by exact path, on EARLIER lines in the log and in the note, and
+  touches none. The note says any test already in the NWF keeps an earlier run's results
+- breaker 4. RESULT carries `coordinates    : J of T group(s) judged` with the groups not reached,
+  not read and the models not judged, and the list the same in a sentence. Neither says no model
+  was found off while any of those is more than nought
+- breaker 5. ExportCheckAcrossTheRun adds the run line up in Core by the block's rules, with
+  ModelExport.HoldsNoElement, the one rule both count by
+- reviewer 1 to 3. OffCoordinatesAcrossTheRun.Groups is gone with its assert. The tick box starts
+  from AlignmentCheck.DefaultSkipClashOffCoordinates in ShowByDesignWording beside its label and
+  the XAML carries no IsChecked for it, turn5\f112b-addin-before.txt for the state before. The
+  note, the list and RESULT say the tests in the words of the CLASH line, and the note, written
+  after ConfirmTheNwfSurvived, names the NWF and the NWD through NwfAndNwd and says which was not
+  written
+- items 9 to 16. The ALIGNMENT run line comes from the tally and names the groups whose clash was
+  skipped, and the EXPORT CHECK line ends `Nothing was changed in any model.`, where both said
+  every group ran. The two Q65 comments in the window say what is true. core.md reads dx, dy and
+  dz. An earlier note went only through OffCoordinates.RemovesAnEarlierNote, every model judged
+  and the clash not skipped, replaced in attempt 3. The all clear line is written only where
+  every model was measured and otherwise says how many were not. The row file's number is empty
+  for a model not counted, ExportCheck.ElementsNumber. One private predicate, NamesInternal. The
+  rule state is a constructor argument, so the list cannot be left to guess it.
+  ClashRunOutcome.ClashSkipped makes the skipped group's CLASH block and summary say the clash
+  was skipped, and GapRule.Lines takes why there is no report
+- Q110 and Q111 in steps\02_questions.md, at lines 554 and 556 before Q112 and Q113, each saying
+  what the code does now and what each answer changes. The rule in .claude\rules\core.md and a rule in .claude\rules\addin.md, the
+  order line 39 and the F112 section of steps\01_next.md
+- the tests attempt 2 changed with the rule, every removed line in
+  turn5\f112c-removed-test-lines-attempt2.txt: TheNoteSaysWhatWasDoneWhatWasNot... became
+  TheNoteSaysOnlyWhatWasChecked and asserts the false sentence absent, ARunTheEngineNeverTold...
+  became RunLog's AResultNoRunHandedATallyToSaysNothingAboutTheCoordinates because the state can
+  no longer be unset, WithNothingOffTheListSaysSo became EveryGroupAndModelJudgedAndNothingOff...
+  because the list now carries the judged line, the ListName assert moved to
+  EachRunsListIsItsOwnFileNamedForItsStart, and the AlignmentCheck.Lines calls take runsATest
+  true. Attempt 2 attested 1816 and 1848 by hand and by the pre-commit on the final tree at
+  c867348, turn5\f112b-precommit-code.txt, whose run also shows check-locals and check-imports
+  clean. turn5\f112b-core-after-code.txt, turn5\f112b-check-locals.txt and
+  turn5\f112b-check-imports.txt were written before the last add-in edit,
+  turn5\f112b-edit-engine2.py
+
+### The developer's choices
+
+- attempt 4. The failure on where the models sit is a fact of its own on GroupFacts, rather than
+  every error going on to the NWD checks, because a group that threw before its NWD step holds
+  NwdOnDisk false whatever is on the disk, so the checks would then call last week's NWD missing
+- attempt 4. The reason reads the models first, then what the steps found, then the skipped
+  clash, so a group failed on its models and with a stale NWD names both in that order
+- attempt 4. The window label still counts the failure with the errors, so its label points at
+  the log as it did when the failure was one of them
+- attempt 4. The failed run line says only that the failure does not stop the group. Naming the
+  group's RESULT reason instead was not chosen, because that reason names the NWD only where no
+  earlier step failed first, GroupJudgement judging the steps in order
+- attempt 3. The Internal failure follows the group's own skip decision, computed in Core from the
+  four inputs the block takes, rather than the engine handing the skip in, so the tests call
+  exactly what the engine calls and the block and the group cannot differ
+- attempt 3. An earlier note stays for a far model too, and not only for a model on Internal, when
+  no clash test ran, because what the note says of a far model is still so. The brief named
+  Internal
+- attempt 3. The NWF line keeps "read after the NWD was published" where the publish is shown, so
+  TheNoteSaysOnlyWhatWasChecked keeps its assert unchanged
+- attempt 3. The failed run line's tail said the files written list names what was written, where
+  it said every failed group wrote its NWF and its NWD, a tail attempt 4 took out
+- attempt 3. No note is written when the earlier reports read or the note throws, the ALIGNMENT
+  block carrying the same lines, rather than a note with half its lines
+- attempt 2. The tally lives on the engine, made per press, and is handed to WriteResultBlock,
+  whose parameter is optional and null where no engine was made, so RESULT then says nothing
+  about it. Resetting a tally kept on the log at the start of a run was not chosen, because a run
+  that throws before its engine is made would then carry the last run's groups
+- attempt 2. Every run's list is kept as its own file named for the second its run started, the
+  developer's choice. It matches his one file for the run, forwarded whole, and leaves one more
+  file in the Clash Report folder per run. Appending runs to one file was not chosen, because the
+  file he forwards would then carry every run
+- attempt 2. A group with nothing to clash, with the rule on, gets no skip, no PARTIAL, no note, no
+  VIEWS line and no skipped entry, and is named in RESULT and the list with `no clash test to
+  run, so nothing was skipped`, so neither reads as clean. Attempt 2 also let a model on Internal
+  in it pass, which ended such a group DONE, and attempt 3 fails it as Q70 answered
+- attempt 2. RunsATest counts the open file run as two disciplines, because its count is UNKNOWN
+  and F35 never judges it, and does not look at the plan, so a file whose every test is skipped
+  before the model still counts as a group that runs a test
+- attempt 2. The note says the NWF is on disk, never written, because an NWF reused and not saved
+  again is on the disk too, and says the NWD was published by this run only where the publish
+  reported success and the file is there
+- attempt 2. A model is not judged where it is not named off and its site or its placement was
+  not read, or no model of the group was placed. A group where no model was read counts as could
+  not be read
+- attempt 2. An earlier note was removed whenever every model was judged and the clash was not
+  skipped, even in a group whose models were off and which ran no clash test, which attempt 3
+  changed
+- attempt 2. SavedTests.Count moved from ClashStep to FinishTheGroup before the ALIGNMENT block
+  and is read once. A throw there now comes before the ALIGNMENT and EXPORT CHECK blocks of that
+  group
+- attempt 2. The pictures folder of an earlier run is named as a folder with its time, its files
+  not listed, because listing them takes a wildcard
+- attempt 2. The one discipline path's CLASH block keeps its noughts,
+  AOneDisciplineGroupIsLeftAsItWas, and the GAP block of a group with no report for another reason
+  keeps its words
+
+### Programs started and files written outside the repo
+
+- the closing pass records, programs: git (status, log, fetch, merge, add, commit, push, diff, show,
+  blame, reflog, grep, rev-parse, merge-base, cat-file, ls-files and config --get), dotnet build,
+  sh for the line reads and the pre-commits, python for the merge resolution, the edits and the
+  read of attempt 1's transcript, stat for the write times, and PowerShell for Get-Process Roamer.
+  No Navisworks and no stand-in. git fetch and each commit printed failed to delete lines for
+  folders under the main clone's .git\worktrees, Permission denied, git's own cleanup of worktree
+  records, which deleted nothing, turn5\f112e-precommit-merge.txt for one
+- the closing pass records, Get-Process Roamer read pid 32136, started at 21:17:06, at 00:26:45 on
+  2026-10-05, after the merge of main was resolved and before it was committed,
+  turn5\f112e-roamer-before.txt. The read after the last command is turn5\f112e-roamer-after.txt.
+  This developer started none and touched none
+- the closing pass records wrote under turn5 the f112e- files, among them the evidence named
+  above, the scripts f112e-resolve.py, f112e-edit-records.py to f112e-edit-records-6.py,
+  f112e-fix-formfeed.py, which mended a form feed a one line script had made in the body, and
+  f112e-show-*.sh, the message files
+  f112e-msg-*.txt, the pre-commit outputs f112e-precommit-*.txt and the push output
+  f112e-push.txt. It changed turn5\pr-f112.md. It read the transcript of attempt 1's developer
+  under the session's folder in %USERPROFILE%\.claude and changed nothing there. git fetch wrote
+  the remote refs of the shared .git of the main clone, the build wrote bin and obj under the
+  worktree, and the pre-commit's tests made temporary folders under %TEMP%, removed by their
+  teardown
+- attempt 4, programs: git (status, log, fetch, diff, show, blame, merge-base, rev-parse, reflog,
+  add, commit, push), dotnet test and dotnet build, sh for the two checks and the pre-commit, stat
+  for the write times of the readings, and PowerShell for Get-Process Roamer and Get-CimInstance on
+  its parent. No Navisworks and no stand-in. git fetch and the commits printed failed to delete
+  lines for folders under the main clone's .git\worktrees, Permission denied, git's own cleanup of
+  worktree records, which deleted nothing, turn5\f112d-precommit-reason.txt for one
+- attempt 4, Get-Process Roamer read pid 32136, started at 21:17:06 at C:\Program
+  Files\Autodesk\Navisworks Manage 2025\Roamer.exe, parent pid 1392, at 23:10:20, after one git
+  status and git log and before any change, turn5\f112d-roamer-before.txt. The read after the
+  last command is turn5\f112d-roamer-after.txt. This developer started none and touched none
+- attempt 4 wrote under turn5 every f112d- file: the evidence named above, the message files
+  f112d-msg-*.txt, the pre-commit outputs f112d-precommit-*.txt, the push output f112d-push.txt
+  and this entry's draft f112d-log-entry.md. It changed turn5\pr-f112.md. git fetch wrote the
+  remote refs of the shared .git of the main clone, the builds and tests wrote bin and obj under
+  the worktree, and the tests made temporary folders under %TEMP%, removed by their teardown
+- attempt 3, programs: git (fetch, merge, add, commit, diff, show, ls-tree, blame, rev-parse,
+  status, push), dotnet build and dotnet test, python for the edit scripts and the count of tests
+  by name, sh for the two checks and the pre-commit, and PowerShell for Get-Process Roamer, for
+  Get-CimInstance on a Navisworks process and its parent, and for Copy-Item. No Navisworks and no
+  stand-in. git fetch and every git commit printed failed to delete lines for eleven folders under
+  the main clone's .git\worktrees, Permission denied, which is git's own cleanup of worktree
+  records, and deleted nothing, turn5\f112c-precommit-merge.txt for one
+- attempt 3, Get-Process Roamer read pid 49016, started at 18:55:27, at
+  C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe, at 21:08:36 before the first
+  command, turn5\f112c-roamer-before.txt. At 22:42:51 49016 was gone and pid 32136 ran, started
+  at 21:17:06 at the same path, its parent pid 1392 svchost.exe read at 22:43:25 at line 9
+  of turn5\f112c-roamer-after-push.txt. That read came after the push of 2d0e574, whose output
+  turn5\f112c-push.txt was written at 22:42:24 by turn5\f112e-stat-readings.txt, and not after the
+  last command, as its own first line says, because e6d6f73 was committed at 22:45:22 by the
+  branch reflog, turn5\f112e-reflog.txt. The read after the last command is
+  turn5\f112c-roamer-after.txt at 22:51:22, after the push of e6d6f73, turn5\f112c-push-2.txt
+  written at 22:50:30 by the same stat file, 32136 still running. 32136 started 2 s after the
+  lead's waiter for the baseline run on C04 started at 21:17:04, which first lists it at 21:18:05,
+  turn5\wait-run04-item1-C04.txt, and 38 s after the lead's check of set 04 item 1 C04 at
+  21:16:28, turn5\base-check-set04-item1-C04.txt. No launch record names who started it, so that
+  it is the lead's baseline run is read off those two files. This developer's record says it
+  started none and touched none
+- attempt 3 wrote under turn5 every f112c- file, among them the evidence named above, the brief
+  f112c-brief.md, the message files f112c-msg-*.txt, the pre-commit outputs
+  f112c-precommit-*.txt, the push output f112c-push.txt and this entry's draft f112c-log-entry.md.
+  In the session's scratchpad the scripts f112c_item1_alignment.py and f112c_testnames.py and
+  three name lists, and one more copy of a name list at %TEMP%\f43.txt, removed by this developer
+  once seen. Temporary folders the tests make under %TEMP%, removed by their teardown. git
+  fetch wrote the remote refs of the shared .git of the main clone, and the builds wrote bin and
+  obj under the worktree
+- attempt 2, programs: dotnet build and dotnet test, git (fetch, merge, commit, archive, push, and a
+  worktree add whose output was not saved), python for the edit scripts, sh for the two checks and
+  the pre-commit, tar to unpack the archives, and PowerShell for Get-Process Roamer and
+  Get-CimInstance. No Navisworks and no stand-in
+- attempt 2, Get-Process Roamer read 0 at 18:24:54 and 1 at 19:48:36, and the pid was first
+  recorded at 19:49:08, 49016, started at 18:55:27, its parent pid 1392 svchost.exe at line 3 of
+  turn5\f112b-roamer-reads.txt, a Navisworks at C:\Program Files\Autodesk\Navisworks Manage
+  2025\Roamer.exe by turn5\measure-shift-driver.md line 13. It started 4 s before the lead's
+  waiter for the baseline run on C02 started at 18:55:31 and listed it,
+  turn5\wait-run04-item1-C02-b.txt. No launch record names who started it, so that it is the
+  lead's baseline run is read off that waiter. This developer's record says it started none
+- attempt 1, from the branch's creation at 13:18:53 to c5d8aa8 at 17:26:42 by the branch reflog,
+  turn5\f112e-reflog.txt, its developer's transcript running 13:19:29 to 17:38:47 and its push at
+  17:37:11, turn5\f112e-attempt1-return.txt. No Get-Process Roamer read was saved and no record file of attempt 1 is
+  under turn5. Its record is its developer's last message in the session's transcript, which says
+  "Navisworks was never started", saved with its place in turn5\f112e-attempt1-return.txt. The
+  lead's waiter, turn5\wait-no-roamer.txt, read pids 37356 and 47204, started at 12:53:23 and
+  12:54:16, every ten minutes from 13:21:54, found 47204 gone at its 15:14:00 read and 37356 gone at
+  its 15:24:00 read, and turn5\f104p2-roamer-reads.txt line 5 names the two Bader's own, started by
+  hand. A third, pid 47208, ran inside the same window, listed from 15:57:16 to 16:03:16 and gone at
+  16:04:16 by the waiter of the lead's run on C02, turn5\wait-run04-item1-C02.txt. From 16:08:16 to
+  the end of attempt 1 no waiter read, so those minutes rest on its developer's message alone
+- attempt 2 wrote under turn5 every f112b- file, among them the edit scripts f112b-edit-*.py,
+  f112b-resolve.py, the message files f112b-msg-*.txt and its entry's draft, f112b-log-entry.md.
+  Two copies taken with git archive, turn5\f112b-before-src and turn5\f112b-before-sln, deleted
+  once their output was saved. A copy of the new tests in the session's scratchpad,
+  f112b-newtests. Temporary folders the tests make under %TEMP%, removed by their teardown
+
+### What remains
+
+- everything in the add-in, proved only by the build: the per run tally reaching RESULT, the skip
+  decided from the source, the Internal failure where no clash is skipped, the notes after the NWF
+  check with their EARLIER lines, the note removed or kept with its reason, the run lines, the
+  window label, the try around the note, the tick box starting ticked from Core, the CLASH and
+  GAP blocks of a skipped group, and the failure on where the models sit handed to the judgement
+  apart from the errors. The wave 1 test run on 1A02MM and 1A04PK, its expected lines in the F112
+  section of steps\01_next.md
+- Q110 and Q111, Bader's
+- for the lead to put to Bader, the reviewer's note on attempt 2 and again on attempt 3, and the
+  breaker's on attempt 3: a far model in a group that runs no clash test ends DONE, judged as
+  before under Q65, against his words "The group ends PARTIAL, never DONE", and a model on Internal
+  there fails its group as Q70 answered, where his words say this replaces Q65 and Q70 for this
+  case. None of his answers says what either does there
+- main f09ee92 was taken in at c5ba7e0, turn5\f112e-reflog.txt, and main b2afb2d at the merge
+  after 47a95b4, which changed nothing under src or tests, turn5\f112f-diffs.txt
+- the add-in's expected lines are in the F112 section of steps\01_next.md for the wave 1 run, and
+  not as numbered one-action steps in steps\03_bader_next.md, the process note of the attempt 3
+  and closing pass reviewers, turn5\f112c-read-review.txt and turn5\f112d-read-review.txt, for the
+  lead
+- the F119 item for the NWD and the NWF listed as written, in the Known bugs, for the lead to add
+  to steps\01_next.md, the closing pass reviewer's note
+
+### Known bugs
+
+- the reference that is itself the outlier names every other model far, breaker 11 at c5d8aa8
+- the 1 m boundary is a strict greater than on a double with no case at real values, breaker 12
+- the Run tests button clashes the open document without reading the alignment
+- ModelFactsReader.cs lines 138 to 143 and 211 to 216 still catch and log nothing, and Placements
+  drops a model whose handle throws, so every model judged counts only the models handed back.
+  Its catches at lines 338, 352 and 373 log nothing either: MillimetresPerUnit returns nought,
+  which leaves every model of the document unplaced with no line naming the read that threw, and
+  NameOf and DisciplineOf return an empty string. All five catches are older than F112, 485e79f of
+  2026-09-20 by git blame at 0000355, turn5\f112e-known-bug-lines.txt
+- NamesInternal matches the site with StringComparison.Ordinal, AlignmentCheck.cs line 595 at
+  0000355, as the two matches it replaced did before F112, lines 162 and 259 of 086a348,
+  turn5\f112e-known-bug-lines.txt. A site spelled INTERNAL, or Internal with a space after it, is
+  then read as a named shared site, so the rule neither skips the group's clash nor fails it by
+  Q70 unless the model is far, and such a group can end DONE, the attempt 3 breaker's leftover,
+  turn5\f112c-read-break.txt line 34
+- a model naming no site fails its group, yet it is neither on Internal nor far, so the list for
+  the modellers leaves it out and can say no model was found off, waiting on Q111, the attempt 3
+  breaker's leftover and the closing pass breaker's note, turn5\f112d-read-break.txt
+- the one discipline group's CLASH block and summary still print nought for tests never run
+- RESULT's other counts, groups, files written, the clash total and the moved totals, still add up
+  over every run of one window, because they live on the log
+- Placed needs all three of X, Y and Z, so a model with only Z unread is called unplaced
+- a file whose every test is skipped before the model still reads as a clash skipped
+- the note, the list and RESULT say the tests whose sides both find something are created and none
+  is run from the rule, not from the runner, so a runner that stopped or a creation that threw
+  reads the same, the breaker's note on attempt 2. With the rule off, RESULT and the list say a
+  group was clashed from the plan too and not from the runner, the closing pass breaker's note,
+  turn5\f112d-read-break.txt
+- in a skipped group a tolerance chosen in the tool still rewrites a saved test's tolerance with
+  its results kept, ClashRunner, the breaker's note on attempt 2
+- the note's stale NWD line says the file is from an earlier run where the publish did not report
+  success, which nobody read: on a first run, or where the publish left a partial file, it is
+  this run's own, the breaker's note on attempt 3
+- older than F112, for the lead to add for F119 in wave 3: the files written list and the `NWD
+  written` line name an NWD whose publish returned false or threw. WriteNwd calls
+  RunLog.WriteFinished whatever the publish said, FederationEngine.cs line 3609 at 0000355 and at
+  c5ba7e0 and line 3357 on main at 1ae6771 and at f09ee92, each read with git show, the line as it
+  stands since a6957a6 of 2026-08-27 by git blame, and WriteFinished records any file on the disk as
+  written, RunLog.cs lines 1398 to 1445 at 0000355, all in turn5\f112e-nwd-written-lines.txt. Last
+  week's NWD is then listed as written by this run, against the rule that only a file this run wrote
+  goes on the list. The group's RESULT reason names it not from this run since attempt 4. The
+  closing pass breaker adds the NWF, turn5\f112d-read-break.txt: TrySaveFile's false is only logged,
+  FederationEngine.cs lines 2083 and 3395, NwfOnDisk then reads true off last week's file at lines
+  2099 and 3411, and GroupFacts holds no fact of the NWF save, so such a group can end DONE with
+  last week's NWF. The F119 item is to name both
+- the breaker's other notes on attempt 3, none blocking: with Compact resolved clashes ticked, a
+  skipped group's earlier results are compacted, ClashRunner.cs lines 402 to 413 and 512 to 563.
+  On the weekly run with no XML and tests saved in the NWF, the sentence that the tests are
+  created is false, since none is. A report at an unticked kind or an old workbook name is not
+  read, so the note can say none stands beside it. The try around the note returns before
+  either note is written, so last week's note stays. CountsForTheLabel handles a skipped clash and
+  not a stopped runner, which prints nought. The EXPORT CHECK run line carries no count of the
+  groups it covered. RESULT's counts add up over two runs of one window, as above
+- the reviewer's notes on attempt 3, none blocking: GroupNotRead is called only from the group
+  catch, while ModelFactsReader.Exports drops a model in its own catch, lines 108 to 111, so such
+  a model is in no count and the line can read clean. The comment over the call,
+  FederationEngine.cs line 2220, still says the line never reads clean over a group whose models
+  were not all read, turn5\f112e-known-bug-lines.txt. ClashRunOutcome.Summary writes the words
+  of CountsForTheLabel a second time. Comments in NwfAndNwd.cs, OffCoordinates.cs and
+  ExportCheckAcrossTheRun.cs name loop attempts that main never had
+- the closing pass reviewer's notes, none blocking, turn5\f112d-read-review.txt: the helper of the
+  four AModelOnInternalFails tests, AlignmentCheckTests.cs lines 882 to 884, builds facts with
+  nothing appended, so its FAILED would hold without the alignment failure, the reason assert and
+  GroupJudgementTests still holding the rule. The summary of WhereTheModelsSit,
+  FederationEngine.cs lines 2118 and 2119, still says Q70's failure is carried as an error. The
+  class summary of AlignmentCheck, lines 95 to 97, still says the group writes its NWF and its NWD
+  either way, which the closing pass breaker names too. The window label's count of the failure
+  with the errors, FederationEngine.cs line 3668, is a rule in the add-in proved by the build only
+- the closing pass breaker's notes, none blocking, turn5\f112d-read-break.txt: any step
+  GroupJudgement judges before the NWD, an error that threw, the NWF missing or failed viewpoints
+  among them, still hides a missing or stale NWD, because the judgement names the first failing
+  step alone, older than F112 for every group and said in the attempt 4 choices above. An earlier
+  note kept on a weekly run carries no date and still says no clash test was run, beside a fresh
+  workbook and NWD. The rule off reads as clashed from the plan, as above
+
+### What comes next
+
+- the pull request, which the lead opens with turn5\pr-f112.md, after any reading the lead calls on
+  this records commit
+
+## 2026-10-05 The loop, turn 5, the design of Q114, its probes and Q115 to Q123
+
+Nothing under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before, as
+in the entry below, and after, at the pre-commits of this record, turn5\precommit-records-11.txt
+and precommit-records-11b.txt.
+
+### What was done
+
+- the design of Bader's views by team, by three plans each its own agent, turn5\q114-design-run.txt, safety first, speed first
+  and the rules in Core, read only, and a judge who scored them 25, 19 and 22 of 30 and wrote one,
+  turn5\q114-design.md. Each of FR-180 to FR-188 names its part
+- its probes, P1 to P22, each a single fact, in the order each area needs them, section 3. Three
+  read the install with no Navisworks, P5 to P7. P3, P20 and P21 are steps for Bader, written into
+  steps\03_bader_next.md when their area starts. Most of the rest run on copies of the baseline's
+  NWF through the guarded start, once no Navisworks runs. P5 to P7 answered yes on 2026-10-05,
+  turn5\q114-probes\p5-p7.md
+- Q115 to Q123, nine of the design's thirteen questions, each with the choice the build goes on
+  with. Of the four not asked, two his words settle, one is the lead's choice for safety until P18
+  gives its cost, and one waits for P9, named in steps\loop.md
+- Q124, the baseline of 1A04PK taking a day or more, turn5\c04-rate.txt
+- FR-189 from F112's closing pass, an NWD listed as written when its publish failed, older than
+  F112, for F119 in wave 3b
+- the estimate, on the three recording rates measured and not a bound: VIEWS on 1A02MM 89.701 to 811.516 s against 7487.104 s
+  in the baseline, the run 528.567 to 1250.382 s against 7925.970 s, what is UNKNOWN in it named
+  in section 6
+
+### What remains
+
+- the probes, then F132, F131 and F114 in wave 2
+
+### Known bugs
+
+- FR-189, new in this record
+
+### What comes next
+
+- the probes on Navisworks once no Navisworks of the loop runs, Q124
+
+The probes on Navisworks wait for the local machine.
+
+## 2026-10-04 The loop, turn 5, Bader's views by team, Q114, the plan
+
+Bader's message of the evening headed ONE VIEWPOINT PER CLASH TEST, IN THE A, B, C FOLDERS, BY
+TEAM, NO TEAMS MIXED, NO MIRRORED TESTS is Q114 of steps\02_questions.md in his words. Nothing
+under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before, at the
+pre-commit of 6af4a2f, turn5\precommit-records-10.txt, and after, at the pre-commit of the commit
+that made the claim-checker's points true, turn5\precommit-records-10b.txt.
+
+### The plan
+
+- A, the baseline and wave 1 go on: item 1 on C04 read and recorded, a gap with no Navisworks for
+  F126's harness and the driver's Shift measurement, then item 2 on C02 and C04, while F112's
+  closing pass, F116's pass on Q113 and F126 work, then the test of wave 1
+- B, this record: Q114, FR-180 to FR-188 in three areas, F131 teams, F132 mirrored tests and F114
+  views, FR-069 changed by it, and wave 2 in three parts
+- C, measured first, read only, no Navisworks: the mirrored pairs of the picked XML and whether
+  each gave the same clashes on 1A02MM, the mechanical sets that miss HV, PL and FP models, and the
+  views code as it stands, turn5\measure-mirrors.md, measure-teams.md and measure-views.md
+- D, a design of the tree, the view and the team pairs by a panel of independent plans, written on
+  the items, then built in wave 2 and proved on 1A02MM against the 2 h 12 min of the baseline
+
+### What was done
+
+- Q114 written, FR-180 to FR-188 under their own heading of steps\fix-round.md, FR-069 noting that
+  one view per test replaces the viewpoint per clash, and wave 2 in three parts: 2a F127, F132 and
+  F115, 2b F131, F114 and F128, 2c F118
+- the three measurements of C started, read only. measure-mirrors.md and measure-teams.md are
+  written, their findings on FR-182 and FR-181, and measure-views.md is not yet
+
+### What remains
+
+- C and D, and everything of A
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- measure-views.md's findings on FR-180, FR-183 and FR-186, then the design
+
+Nothing in this record waits for the local machine.
+
+## 2026-10-04 The loop, turn 5, F125 a pane of Navisworks is not a dialog, the first pass built and read safe, the second pass built and read by a reviewer and a breaker, nothing blocking under Q93
+
+Nothing under src or tests changed in either pass. Core tests 1756 passed, 0 failed, 0 skipped by
+the pre-commit at the merge of main 3a148e3, before the second pass's first change,
+turn5\f125b-precommit-merge.txt, and 1756 passed, 0 failed, 0 skipped after its last change, by
+hand, turn5\f125b-core-after.txt, by the pre-commit at 03aa6c0, turn5\f125b-precommit-change.txt, by
+the pre-commit of the merge of main 6cc0283 at 42dfd66, turn5\f125b-precommit-claims-merge.txt, and
+by the pre-commit of the records made true after it, turn5\f125b-precommit-claims.txt. The first
+pass read 1746 passed, 0 failed, 0 skipped before and after on its branch off main dd55e4b,
+turn5\f125-proof\core-tests-before.txt and core-tests-after.txt. No Navisworks was started by either
+pass.
+
+### What was done
+
+- the first pass, 5fa98a8. The baseline run of 2026-10-04, set 04 item 1 on C02 from main
+  dd55e4b, hung: a floating Clash Detective pane of the adopted Navisworks, owned by the main
+  window and not modal, record.txt line 36 of steps\runs\04\item1-C02-hung, was a DIALOG to
+  WindowKind, so the driver stopped on it after RunButton and the tool's confirm was never
+  answered. WindowRecords now reads whether each window itself is enabled, with no message,
+  WindowKind calls PANE a WinForms window, not of the main window's caption, owned by a visible
+  window, whose owner reads enabled or which reads disabled itself, the driver notes each pane up
+  before Run and goes on, and the monitor writes a pane as PANE, never a finding, never holding
+  back WM_CLOSE. Proved by turn5\f125-proof\prove-f125.ps1, 76 passed and 17 failed on the scripts
+  the hung run used, every failure an F125 check, and 93 passed and 0 failed after,
+  prove-f125-before.txt and prove-f125-after.txt
+- the first pass read under Q93 by a reviewer and a breaker, who both approved with nothing
+  blocking, turn5\w1-read-review-F125.txt and turn5\w1-read-break-F125.txt
+- main c4fd0d4, F113 and F104, merged in at 3a148e3, the one conflict steps\01_next.md, both
+  sides kept, F125's order line 39 after F113's 37 and F104's 38 and its section after F104's
+- the second pass, 03aa6c0, read only changes that make the run's evidence truer, with no new
+  click, key, pointer move or posted message, and WindowKind's answer to every read unchanged. 1,
+  a window that reads disabled with its owner disabled is written by the driver and the record as
+  either a pane or a modal dialog blocked by the tool's window or another modal window, which one
+  UNKNOWN, never not modal, PaneWords in nw-guard.ps1. 2, the driver's stop line names the rule's
+  kind and both states, StateWords. 3, the monitor writes a window again, an AGAIN line, when the
+  rule's kind or either state changes, counts a window one DIALOG finding the first time it reads
+  DIALOG, and its line holding WM_CLOSE back names the windows behind it with their kind and both
+  states. Two clauses of item 3 are proved by reading the code only, never by a run or a harness
+  case: a window counted one DIALOG finding when it first reads DIALOG after reading another kind,
+  and the WM_CLOSE line written again only when the windows behind it or their reads change,
+  tools\loop\run.ps1 lines 1370, 1520 to 1534, 1604 and 1605 at 03aa6c0. 4, the README and
+  .claude\rules\loop.md name the rule's two limits, the WinForms class and a caption not the main
+  window's. 5, PaneKey, the pane key in one place for the driver's two callers
+- its proof: each changed script parses, turn5\f125b-parse.txt. prove-f125.ps1 has 12 checks
+  added, 8 of them in the two new cases pane watch and pane busy and 4 F125b checks added to the
+  pane, pane-new, pane-dialog and pane end cases. 10 of the 12 are named F125b and 2 are guards
+  of pane busy. One check of the first pass was restated for item 3, its first pass copy kept as
+  f125b-prove-f125-pass1.ps1. Before the change 97 passed and 8 failed, every failure an F125b
+  check, prove-f125-before2.txt. After it, on the committed scripts of 03aa6c0, the scripts' sha256 with Windows line ends equal to the blobs of 03aa6c0, turn5\f125b-blob-hashes.txt, 105 passed and 0
+  failed, prove-f125-after2.txt. Get-Process Roamer read 0 before and after each harness run,
+  turn5\f125b-roamer-reads.txt, which also records a Roamer this pass did not start, pid 49016
+  started at 18:55:27, the lead's baseline run, that the after run waited for from 18:56 to 21:10.
+  The solution builds with 0 warnings and 0 errors, turn5\f125b-sln-build.txt, an output that
+  carries no commit and no time. No .cs file of the solution changed after the merge 3a148e3, and
+  main 6cc0283 merged in after it changed none, so that build stands for 3a148e3. check-locals and
+  check-imports pass, turn5\f125b-checks.txt
+- the second pass read under Q93 by a reviewer, VERDICT APPROVE with nothing blocking,
+  turn5\f125b-read-review.txt, and by a breaker, VERDICT APPROVE with nothing blocking, turn5\f125b-read-break.txt, read from the files as they stand since it had no shell, its six notes on words and edge cases written as register rows F125-R8 to F125-R13, three checks that found nothing, and one note of what it could not run, and the reviewer's points left by the records pass written as F125-R14
+- register rows F125-R1 to F125-R7 in steps\loop.md, and F125-R8 to F125-R14 the lead wrote from
+  the second pass's readings, the readings' findings this pass does not fix, for F122 the loop
+  tools in wave 4
+- the records made true after the claim-checker read the second pass, turn5\f125b-read-claims.txt.
+  Main 6cc0283 merged in at 42dfd66, the one conflict steps\log.md, both sides kept, F125's entry on
+  top. F125-R2 marked answered for C02: the run of 18:55 on 5fa98a8 read the real pane disabled with
+  its owner disabled once the tool's window was up, steps\runs\04\item1-C02\driver.txt line 3, and
+  ended RAN, record.txt line 964 there, so the tool's window most likely disables it. Every cite of
+  the hung run moved to steps\runs\04\item1-C02-hung. The pane's origin written as UNKNOWN, likely
+  his saved layout, in .claude\rules\loop.md and nw-guard.ps1. The line ranges cited at dd55e4b and
+  5fa98a8 read again with git show, turn5\f125b-line-check.txt, F125-R3's driver line 288 corrected
+  to 293 and the root cause's run.ps1 line 1104 widened to 1104 and 1110 to 1111. The comments this
+  changed in nw-guard.ps1, drive-window-run.ps1 and the stand-in's ToolWindow.cs are comments only:
+  the two scripts with their comments dropped equal 03aa6c0 token for token, run.ps1 is unchanged,
+  and every changed line of ToolWindow.cs is a /// line, turn5\f125b-comments-only.txt, the same
+  check against 3a148e3 finding the second pass's code, turn5\f125b-comments-only-control.txt. So
+  nw-guard.ps1 and drive-window-run.ps1 now read sha256 5AF32EDF and 6A584A48, not the 7D4719E4 and
+  6A35C43F the harness ran
+
+### What remains
+
+- the second pass's own record lines on the real window, its words for the pane and its AGAIN
+  lines, at the first run after F125 merges
+
+### Known bugs
+
+- F125-R1, F125-R3 to F125-R14 under Q93, open for F122 in wave 4. F125-R2 is answered for C02
+  by steps\runs\04\item1-C02\driver.txt line 3
+- the two clauses of item 3 read in the code only are UNKNOWN by a run. No stand-in case was added
+  for them, because one runs only while Get-Process Roamer reads 0, and it read 1 at 22:11:11, a
+  Roamer started at 21:17:06, 20 s after the loop's item 1 on C04, turn5\f125b-roamer-claims.txt
+
+### What comes next
+
+- the merge, and the first run after it reads the second pass's lines on the real window
+
+### Every program started, every file written outside the repo
+
+Started: git, to fetch, merge, show, commit and push, and the pre-commit hook it runs, which runs
+check-locals, check-imports, the evidence check and dotnet test. Windows PowerShell 5.1 for the
+parser and to run prove-f125.ps1 twice, each run starting the stand-in only as its copy Decoy.exe,
+22 times in each run, still running 0 at each end, and a Windows PowerShell for each driver case,
+all held and ended by the harness. dotnet build for the solution, and dotnet test by hand. For the
+records made true, Windows PowerShell 5.1 six times more, reading only, the tokenizer check
+against 03aa6c0 and its control against 3a148e3 run three times each, the first time with a
+fault of the check, the last line end lost through git show, which made run.ps1 read different
+from itself, the second before a last comment of drive-window-run.ps1 was wrapped, and the files
+kept are of the third, the session's PowerShell for two Get-Process reads of Roamer, and python
+to edit steps\loop.md, steps\log.md, steps\01_next.md and the draft body. No harness ran for
+them. No Navisworks, and nothing installed.
+
+Written outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop\turn5: f125b-msg-merge.txt,
+f125b-msg-change.txt, f125b-msg-records.txt, f125b-msg-claims-merge.txt and f125b-msg-claims.txt,
+the commit messages, f125b-precommit-merge.txt, f125b-precommit-change.txt,
+f125b-precommit-records.txt, f125b-precommit-claims-merge.txt and f125b-precommit-claims.txt, the
+pre-commit's output, f125b-push-claims.txt, the push's output, f125b-roamer-reads.txt,
+f125b-parse.txt, f125b-sln-build.txt, f125b-core-after.txt, f125b-checks.txt, f125b-line-check.txt,
+f125b-comments-only.ps1, f125b-comments-only.txt, f125b-comments-only-control.txt,
+f125b-roamer-claims.txt, pr-f125.md, the draft body, and under f125-proof: prove-f125.ps1 extended,
+f125b-prove-f125-pass1.ps1, prove-f125-before2.txt, prove-f125-after2.txt, the harness's work
+folders work-184632 and work-211020, and Decoy.exe and Decoy.exe.config, copied again into
+standin-bin by each run. Each harness run also made runs\97 under the loop folder for the paths the
+driver types and removed it at its end. One file was written by mistake outside turn5,
+%TEMP%\f125b-added.txt, the lines this pass adds, read for em dashes and semicolons and removed at
+once. The records made true wrote comments-only.ps1, loop_rows.py, splice_log.py, merge_refs.py,
+reflow.py, fix_ctrl.py, f125-entry.md, progs.md and added.txt, the lines they add read for em
+dashes and semicolons, and a copy of the eight edited files in edited, kept while the merge was
+committed on its own, in the session's scratch folder under %TEMP%\claude. A python edit wrote a
+control character into this entry in place of the 01 of steps\01_next.md, found by a search for
+control characters and put right before the commit. The fetch and each commit printed error:
+failed to delete .git/worktrees lines, git's housekeeping of worktree folders OneDrive holds,
+which stopped nothing.
+
+## 2026-10-04 The loop, turn 5, Bader's answer to Q113 and the notes on Q112, and the measurements
+
+Nothing under src, tests or tools changed. Core tests 1756 passed, 0 failed, 0 skipped before,
+at the pre-commit of PR 99's last commit, turn5\precommit-records-6b.txt, and after, at this
+record's, turn5\precommit-records-7.txt. The error: failed to delete .git/worktrees lines after
+the count in both are git's housekeeping of worktree folders OneDrive holds, and stopped
+nothing.
+
+### The plan, also given in the Claude tab before the first edit, a reply kept in no file
+
+- A, this record: his answers under Q113 and Q112, FR-009, FR-030, FR-176 and FR-179 carrying
+  them, the measurements of 2026-10-04 on FR-176, FR-177 and FR-179, Q113 out of the open form
+- B, F116 after its fix attempt 2: the correction list, the three matrix corrections, the Q103
+  rule and the 30 workset spellings, moved out of src into a plain file beside the picked XML,
+  read at the pick and named in the log, nothing corrected and said when no list is there, this
+  project's list in exchange\ beside the corrected XML, then its readings and its merge after
+  F112, and Bader told in the tab when the list is on main
+- C, the test of wave 1: the list copied from exchange\ beside the XML in the run set's own copy
+  and read back, never into NM Fed
+- D, everything else as planned
+
+### What was done
+
+- Q113 answered, B and D, and Q112's notes answered, right as read, each under its question in
+  his words, the lead's notes marked
+- FR-176, FR-177 and FR-179 carry the measurements of turn5\measure-coverage.md,
+  measure-generic.md and measure-shift.md. The driver's Shift measurement did not run, since
+  its stand-in waits for no Navisworks to run, turn5\measure-shift-driver.md
+- of the three things seen while measuring the coverage, two are on the list, FR-035 and
+  FR-126. The third, a single discipline group's CLASH block counting its 36 created tests among
+  its 1830 skipped, is the block's own word, skipped meaning not run and not passed, log:1167 to
+  1170 of set 03, so it is no fault, and FR-176 says the coverage counts keep the two apart
+
+### What remains
+
+- B to D of the plan
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- F116 with Q113's answer once its fix attempt 2 and its readings return
+
+Nothing in this record waits for the local machine.
+
+## 2026-10-04 The loop, turn 5, Bader's five requests added to the round, the plan, and no sleep
+
+Bader's message of the evening, headed FIVE REQUESTS ADDED TO THE ROUND, is Q112 of
+steps\02_questions.md in his words. Nothing under src, tests or tools changed. Core tests 1756
+passed, 0 failed, 0 skipped at the pre-commit of this record, turn5\precommit-records-6.txt, as
+at the pre-commit of PR 97's last commit, turn5\precommit-records-5c.txt. The lines after the
+test count in both, error: failed to delete .git/worktrees, are git's housekeeping of worktree
+folders OneDrive holds, and stopped nothing.
+
+### The plan, also given in the Claude tab before the first edit, a reply kept in no file
+
+- A, request 1 at once: measure the power settings, set sleep when plugged in to Never after
+  saving the old value, read the System log for every sleep and wake since 1 Oct, and keep the
+  keep-awake running while this session is open, checked every 30 minutes
+- B, this record: Q112, FR-175 to FR-179 in steps\fix-round.md with the waves split into
+  halves of at most three areas, the keep-awake rule in .claude\rules\loop.md, the head and the
+  next action of steps\loop.md, and Q113 from F116's reading
+- C, wave 1 as planned: the baseline of set 04, F125's second pass and F126, F112's and F116's
+  fix attempt 2, then the test of wave 1 through turn5\wave-compare.py and F104's documents read
+- D, to measure from the baseline before wave 2: the property and value of Generic Models on
+  1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test, why the Shift
+  range fails, and whether the driver can test a Shift click without real input
+- E, wave 2 in two halves, 2a F127 coverage first with F115 and F114, 2b F128 generic models
+  with F118. Coverage designed first by a panel of independent plans
+- F, wave 3 in two halves, 3a F129 start from an NWF with F120 and F109, 3b F130 the Shift range
+  with F119
+- G, waves 4 and 5 as listed
+
+### What was done
+
+- request 1, FR-175. Measured at 19:27, turn5\power-before.txt: the Balanced scheme, sleep after
+  0, Never, plugged in and on battery, hibernate after and turn off display after 0 plugged in,
+  no power policy key, Standby (S0 Low Power Idle) the only sleep state, hibernation not
+  enabled. Since sleep when plugged in already read Never, nothing was written to his power
+  settings and nothing is put back at the close. The lock screen's display timeout is hidden
+  from powercfg and UNKNOWN
+- the System log from 2026-10-01 00:00, turn5\sleep-wake-since-1oct.txt, nine events and no
+  sleep and no wake among them: started 2026-10-01 08:27:53, shutdown asked by shutdown.exe at
+  19:30:49 and the system down at 19:31:50, started 2026-10-04 08:56:35, a restart for an update
+  asked at 09:07:20, down at 09:09:07 and started at 09:10:19
+- keep-awake.ps1 changed to watch the session's claude.exe and stop only when no Claude Code
+  claude.exe runs or steps\loop.md reads STATE CLOSED, the old copy kept as keep-awake-v1.ps1.
+  The session's claude.exe is pid 19148, in the parent chain of this session's shell,
+  turn5\session-chain.txt. A wrong session, STATE WAITING, a second copy and STATE CLOSED proved on a copy with its own mutex, 8 passed and 0 failed, turn5\keep-awake-test\prove-result.txt, and the takeover of another claude.exe when the watched one ends, 5 passed and 0 failed, the watched one a stand-in copy of PING.EXE named claude.exe, turn5\keep-awake-test\prove-takeover-result.txt. The stop when no Claude Code claude.exe runs at all is read in the code only, UNKNOWN by a run, since a run of it would end the session. turn5\check-keep-awake.ps1 starts it again when it is
+  gone, proved by ending it at 19:36:35, turn5\keep-awake-checks.txt. A schedule of this
+  session, job 04b2bf94, runs the check at 13 and 43 minutes past each hour while the session
+  is idle, turn5\keep-awake-schedule.txt. It lives only as long as the session, and the schedule
+  tool says it ends after 7 days. No line of its own is written yet
+- Q113 written from F116's reading: its corrections shipped as data in Core against CLAUDE.md,
+  and Q103 read wider than the matrix. F116's readings are turn5\f116-read-review.txt,
+  f116-read-break.txt and f116-read-claims.txt
+
+### Programs started and files written outside the repo
+
+- powercfg, Get-WinEvent and Get-CimInstance, reading only
+- powershell.exe for the keep-awake proof, its copies under turn5\keep-awake-test, the keep-awake
+  through WMI as pid 10412 and, after the lead ended it to prove the check, as pid 29740.
+  Stop-Process on pid 1312 and pid 10412, both the loop's own keep-awake
+- written: turn5\power-before.txt, sleep-wake-since-1oct.txt, keep-awake.ps1, keep-awake-v1.ps1,
+  check-keep-awake.ps1, keep-awake-checks.txt, keep-awake.txt and the files under
+  turn5\keep-awake-test
+
+### What remains
+
+- everything from C of the plan on
+
+### Known bugs
+
+- the schedule fires only while the session is idle, so a long turn checks the keep-awake only
+  when the lead runs the check itself
+- the stop when no Claude Code claude.exe runs is UNKNOWN by a run
+
+### What comes next
+
+- C of the plan, the baseline runs and wave 1
+
+Nothing in this record waits for the local machine.
+
+## 2026-10-04 The loop, turn 5, F104 part 2, the documents read, DONE for the build
+
+Nothing under src or tests changed. Core tests 1746 passed, 0 failed, 0 skipped after the merge
+of main at e76a2d3, after the change, by the pre-commit at 75e5dce and 33732c9, and at the merges
+202496b and 45dcd4f, turn5\precommit-f104-merge-2.txt and turn5\precommit-f104-merge-3.txt. No Navisworks was
+started for it.
+
+### What was done
+
+- tools\loop\run.ps1 -Mode Documents, a mode of run.ps1 so the one copy of every guard is kept:
+  the pairs read off the window run's .tsv by the group column, checks 11, 19, 20 and 21, the
+  probe's two calls in place of item 0's hold, the hang rule on the read-outs,
+  compare-document.ps1 per pair and summary.txt. -Mode Check -For Documents prints every refusal
+  and the pairs. Written by one developer, the brief turn5\f104-part2-brief.md
+- read for harm and wrong evidence under Q93 by a reviewer, who approved, and a breaker, who
+  found nothing blocking, turn5\f104p2-reads.txt, their notes register rows F104-R1 to F104-R7
+- its harness, turn5\f104p2-proof\prove-f104p2.ps1, all three parts on the committed code from
+  15:39:38 to 15:53:47 on 2026-10-04 once Bader's Navisworks had closed: 102 passed, 0 failed, Get-Process
+  Roamer 0 before and after, turn5\f104p2-prove-4.txt
+- main merged in four times, 3449521 by e76a2d3, dd55e4b by 202496b, 6689bad by 45dcd4f and
+  7b6df88, F113's merge, by the commit after 023a685, each conflict keeping both sides, F104's
+  order line now 38 after F105's 35, F107's 36 and F113's 37, its section after F113's, its
+  entry here above F113's, and its 5z-g after F105's 5z-f in docs\history\scan.md
+
+### What remains
+
+- the first real documents read, on set 04 item 1 once the baseline of the two buildings has
+  run, the first answer of the documents to Bader's third test
+- PQ1, PQ7, PQ8 and PQ9 of F104, which the real read answers, and PQ3 to PQ6, which also need a
+  person at the panel or an export
+
+### Known bugs
+
+- F104-R1 to F104-R7 under Q93, F104-R4 the one that can let a green line sit on Bader's third
+  test while PQ4 is unmeasured
+
+### What comes next
+
+- the baseline runs of 1A02MM and 1A04PK, then the documents read on them
+
+## 2026-10-04 The loop, turn 5, F113 the clash counts area of the fix round, FR-031 to FR-034, DONE
+
+Core tests 1746 passed, 0 failed, 0 skipped before the first change, at 2c89788, and 1756
+passed, 0 failed, 0 skipped after the last item, at 1f0a369, and at every commit after it, run by
+hand and by the pre-commit at every commit, the files f113-core-before-full.txt, f113-core-after-full.txt and
+f113-precommit-*.txt under %LOCALAPPDATA%\NwcFederatorLoop\turn5. The solution built with 0
+errors and 0 warnings before the first change and after each change.
+
+### What was done
+
+- FR-031, 95cf9ea. The last `CLASH N of N tests` line of a group was taken before the test it
+  numbers, so in set 03 it was one test short of the block under it in all 22 groups, and short
+  of the block's clashes in 1B06M1, 1B06PK and 1C06M2. ClashRunOutcome.ProgressAfter builds it
+  in Core at every twenty fifth test and at the last, and the runner calls it after the test. 4
+  tests. No number the workbook prints changes
+- FR-032, f2997ab. A result group with no clash under it stood for one clash, floored in the
+  harvest. ClashRow.ForGroup stands for the clashes under the group and no more. 3 tests. It
+  changes numbers the workbook prints for a test holding an empty group: its Clashes cell and
+  the cell of the group's status, and with no priority file its place on the sheet and the
+  picture numbers that follow that order. Outside the workbook it moves the page summary total,
+  with or without a priority file, and the PRIORITY block's totals when a priority file is
+  picked
+- FR-033, 9fc81ee. An unnamed clash between two sets the pairs file lists was counted as moved
+  by the by design rule though it was never moved. ByDesignRule.Judge takes the clash name and
+  answers NoClashName, a sixth reason the BY DESIGN block lists. 2 tests, and the helper the old
+  tests share now hands Judge a name. No number the workbook prints changes
+- FR-034, 3ed9575. AutoReviewRecord.In threw for a comment reading was Reviewed, was Approved or
+  was Resolved, and the undo then left every clash of that test alone. The status is read only
+  among New and Active. 1 test. No number the workbook prints changes
+- each item test first. The tests of FR-031 to FR-033 did not build against the code before,
+  and against a stub of the new members 4, 2 and 1 of them failed, the stub returning no line,
+  carrying the old floor and taking the name without reading it. The test of FR-034 failed
+  against the code before with ArgumentOutOfRangeException
+- each item's rule in .claude\rules\core.md, written in that item's commit, and the order line
+  37 and the F113 section in steps\01_next.md at 1f0a369. Main merged in at 2bae58a, main then at
+  dd55e4b, with no conflict. Pushed as fix-F113
+- the claim-checker's corrections at b629b5c, which also narrow the words a group always ends on
+  a count in core.md and one comment of ClashRunOutcome.cs, turn5\precommit-f113-claims.txt, 1756
+  passed, and main 6689bad merged in at 0339223 with F113's entry on top of the log,
+  turn5\precommit-f113-merge-2.txt, 1756 passed, the solution built at that tip with 0 warnings
+  and 0 errors, turn5\f113-build-merged.txt
+
+### What remains
+
+- the add-in halves wait for wave 1, a first run with the XML and a weekly run on each of
+  1A02MM of C02 and 1A04PK of C04. FR-031 in each group that runs to its end: the last `CLASH N
+  of N tests` line of the group reads the tests run, tests skipped and clashes found of the block under it.
+  FR-032 only where a log holds an empty result group, which no log has shown: a group with
+  clashes under it reads the same before and after. FR-033 only where the RUN SETTINGS line
+  `by design` reads yes and the no name count is above 0, checked by the group's STATUS lines,
+  since its moved count, its REVIEWED lines and RESULT hold with or without the fix and a count
+  of 0 proves nothing. FR-034 is reached by no run, only by the Undo auto Reviewed button on a
+  comment edited by hand
+- the commit messages of FR-031 and FR-032 name set 05 on C06 as the proof run, because they
+  were written before the lead's message of 15:52 moved the proof to wave 1, and the message of
+  1f0a369 says the messages of FR-031 to FR-033 do, where FR-033's does not. A commit message is
+  changed only by a new commit, so these stay as written. The DONE line names wave 1
+
+### Known bugs
+
+- for a test whose only result is an empty group the ROWS line still reads more rows than
+  clashes and ends that the workbook will not match the panel, which after FR-032 is no longer so
+  of its Clashes cell. Beside a group of three or more clashes it reads that the difference is
+  the result groups, and beside a group of two that they agree. src\Federator.Core\Clash\ReportedCount.cs is in no area's
+  list of files
+- WorkbookCheck.CheckOrder orders the blocks by the rows under each, where ReportOrder sorts
+  the tests by the clashes each stands for, so a workbook holding result groups could be called
+  out of order when it is not. Not seen, set 03 holding no result group. WorkbookCheck.cs is the
+  workbook area's
+- the running count is still written every 25 tests, ClashRunner.ProgressEvery, a constant, as
+  the note of FR-031 says
+- GroupRow still counts every clash of a group under the group's own status, where the runner
+  counts each by its own, the gap the note of FR-032 calls UNKNOWN. The breaker ranked it first:
+  a group whose clashes sit at mixed statuses prints its five status cells under the group's
+  one word, so where a person has grouped results the workbook can disagree with the panel on
+  status, which side the panel takes being UNKNOWN. Into the next wave as a new item
+- found by the breaker and outside F113's items: a clash name is the only address the status
+  editor uses, so two clashes of one test with the same name are both moved when the by design
+  rule judges one of them, and a person's Approved can become Reviewed,
+  ClashStatusEditor.cs lines 207 to 251. Into the next wave as a new item, its reach UNKNOWN
+- the moved counts of the BY DESIGN block and the RESULT line count judgements, and the editor's
+  own changed, not found and refused counts are read nowhere in src. Into the next wave
+
+### Read before the pull request
+
+- by a reviewer at 1f0a369, APPROVE, nothing blocking, nine notes, two of them made true in the F113
+  section of steps\01_next.md: what moves for a test holding an empty group, and that FR-033's
+  wave 1 check holds with or without the fix, the STATUS lines being the one pair that can
+  differ. Kept with the other notes in turn5\f113-reads.txt
+- by a breaker at 1f0a369, nothing that makes a count wrong because of this change, seven left standing,
+  the first three in Known bugs above, all in turn5\f113-reads.txt
+
+### What comes next
+
+- the pull request, merged in wave 1, then the test of wave 1 on 1A02MM and 1A04PK
+
+## 2026-10-04 The loop, turn 5, Bader's answers to the form and the waves, the plans
+
+Bader answered the form of turn 5 at 15:23 on 2026-10-04, his message headed BADER'S ANSWERS,
+4 OCT 2026, TO THE FORM OF TURN 5, and at 15:42 ordered the fixes in waves, each tested at once on
+two buildings, his message headed FIX IN WAVES, AND TEST EACH WAVE ON TWO BUILDINGS. Each message
+began by asking for the plan before the first edit. The two plans below are the ones the lead
+wrote to him in the session, condensed, some of their sentences left out. Two placements moved
+after he was told: Q108's fix and F117, the names, said to come in waves 3 and 4, are in wave 5,
+because the fix list classes them noise, and the waves in steps\fix-round.md say so. What each
+step then did goes into the entries above this one and into steps\loop.md. Nothing under src or tests
+changes in the pull request carrying this entry.
+
+### The plan for the answers, written at 15:27
+
+1. Record the answers first, in a records pull request: each under its question, an answered
+   line on each fix list item they touch, FR-025 and FR-026 out of hold since Q104 keeps the
+   class, the form marked answered, the next action, and this plan. PR 93 merges first
+2. Tell the developers at work: F112 builds Q99 and Q100, the clash skipped, in place of the
+   PARTIAL only rule, with FR-006, and F114 adds each group's time beside its NWC sizes and item
+   counts, with no change to the 45 minute judgement
+3. With Bader's Navisworks closed, Roamer read 0 at 15:24: F104's harness parts B and C on its
+   committed code, then the first documents read on set 03
+4. As developer slots free, three at once: F109 attempt 3, F116 the clash XML, F115 sets, F117 the
+   names
+5. The four finds of Q108, Q109, Q24 and Q26, each writing its test steps under its item and
+   running them before anything changes
+6. Each area merged one at a time, then the proof run on C06 twice, rule on and rule off
+
+### The plan for the waves, written at 15:46
+
+- What NM Fed holds, measured at 15:44, turn5\nmfed-listing-1544.txt: C02 holds 1A02MM, four models, AR, EL, ME and ST, C04
+  holds 1A04PK, ten models, AR, EL, FP, HV, four ME and two ST, and it still holds C06 and C07,
+  154 NWC in all, with the -OLD XML beside the corrected one. No folder named for C06 and C07 was
+  on the desktop at 15:46. The runs point at C02 and C04 only. The installed add-in reads
+  1.0.0.0 e4484d15, and nothing under src, tests, build, bundle or exchange changed from e4484d1
+  to main
+- Step 1, the baseline today, set 04: once F104's harness has ended, set 04's copy, the four
+  window runs, item 1 with the XML and item 2 with none on both buildings, each after a Roamer
+  read, the evidence masked, steps\runs\04\findings.md, and F104's documents read on set 04
+- Step 2, the waves by the file table, worst class first: wave 1 F112 alignment, F113 clash
+  counts and F116 the clash XML, F114 paused to wave 2. Wave 2 F115 sets, workbook and report, F114
+  views with its speed work. Wave 3 run log and RESULT, harvest and pictures, install with F109.
+  Wave 4 the rest with the finds of Q109 and Q24, and the loop tools under Q93. Wave 5 noise,
+  docs and words with Q26's find, then D1. F104 merges as the test's instrument. Q108 measured
+  already: the repeated asked for text of the SET lines, 59 texts printed 1,000 times, 145,182 of
+  1,097,933 bytes saved if each were printed once a run
+- Step 3, after each wave: install main in place as on 2026-10-01, read the stamp back, run both
+  buildings, a building off the shared coordinates once more with the rule off, compare with the
+  baseline and the wave before, mark each item proven or not, take back a fix that makes it worse
+- Step 4: three lines at the top of steps\fix-round.md and in the tab, merged within the hour
+
+### What was done
+
+- PR 93 merged as dd55e4b. The answers under Q24, Q26 and Q99 to Q109, in his words with the
+  lead's notes marked, and an answered line inside each of the 16 items they touch, FR-001,
+  FR-006, FR-008, FR-009, FR-025, FR-026, FR-030, FR-069, FR-070, FR-109, FR-110, FR-136, FR-149,
+  FR-160, FR-161 and FR-172
+- the waves written in steps\fix-round.md under The waves, from the classes the list gives each
+  item
+- the developers told by message: F112 the rule of Q99 and Q100, F114 the per group times and
+  then its pause for wave 2, F112 and F113 that the proof is the two building test. F114 paused at
+  f915396. F113 finished its four items. F116 started in wave 1
+- F104's harness, all three parts on 33732c9: 102 passed, 0 failed, turn5\f104p2-prove-4.txt
+- the baseline's first run, item 1 on C02, stopped HUNG at 16:03:28 on a floating Clash Detective
+  pane the driver took for a dialog, its evidence in wt-main, nothing of Bader's harmed. F125, a
+  fix of the driver, started
+
+### What remains
+
+- F125, then the baseline's four runs and findings 04, then wave 1's readings and merges and its
+  test
+
+### Known bugs
+
+- the lead reads Q102's OR row as carrying the set's other conditions, as written under Q102, for
+  Bader to correct if he meant otherwise
+
+### What comes next
+
+- F125's fix of the driver, then the baseline
+## 2026-10-04 The loop, turn 5, F107 the older machine's name masked on main, DONE on Q88
+
+Nothing under src or tests changed. Core tests by the pre-commit at 70effde, 8441dc9, 499f0a6
+and the merge of main after it, the files precommit-f107-*.txt under
+%LOCALAPPDATA%\NwcFederatorLoop\turn5, 1746 passed, 0 failed, 0 skipped each time, the same as
+main before.
+
+### What was done
+
+- Bader's answer to Q88: the name of the machine of 2026-09-19 masked on main in its own pull
+  request. At 821ed6e it stood on nine lines in four files. On main at 3449521 it stood on eight
+  lines in three files, five in docs\history\scan.md, one in steps\01_next.md and two in
+  steps\log.md, because F106's rewrite of the header of tools\probes\drive-window-run.ps1 had
+  already masked the ninth. Each now says the machine of 2026-09-19, and nothing else on those
+  lines changed. The two lines of steps\log.md are the lead's file, changed only by this mask
+- main merged in twice on 2026-10-04 and again after F105, the driver taken from main whole
+  where it conflicted, and the order line moved to 36 behind F105
+- read by a reviewer, who asked for changes with one blocking: the F107 section still described
+  the change as it was before the merges, nine lines with the driver among them. The section now
+  says eight lines in three files, names where the ninth went, and carries the searches made
+  after the merge
+- the searches after the merge at 8441dc9: git grep for the whole name and for the part after
+  its hyphen, in the working tree, at HEAD and over untracked files, found nothing, and the split
+  search read 874 tracked files, 1053 on the disk and 874 at HEAD with 0 hits, the one file it could
+  not read being a broken fixture that is not a zip by design, whose text it read apart with 0
+  hits. %LOCALAPPDATA%\NwcFederatorLoop\turn5\f107-grep-after-merge-2.txt,
+  f107-split-search-after-merge-2.txt and f107-split-search-endswrong-2.txt
+- the searches after main 2c89788, with F105, merged in, before the records were committed: git
+  grep for the whole name and for the part after its hyphen in the working tree, git grep over
+  untracked files for the whole name, and grep -r over the worktree for both, found nothing,
+  turn5\f107-grep-after-merge-3.txt, which names neither form
+- the searches on the final commit of this pull request, after every record was written: git
+  grep for both forms in the working tree, at HEAD and over untracked files, and the split
+  search, turn5\f107-grep-final.txt and turn5\f107-split-search-final.txt
+
+### What remains
+
+- the name stays in the history of main, which no pull request changes
+
+### Known bugs
+
+- F107-R1, now the fix list's FR-110 and a question for Bader, Q106: nothing refuses the name if
+  it comes back, because F102's check reads for this machine's name only
+- the account name of that machine's user in C:\Users paths, the fix list's FR-149, Q107
+
+### What comes next
+
+- the fix round's area pull requests, steps\fix-round.md
 ## 2026-10-04 The loop, turn 5, F105 four reads off the install, DONE on Bader's answer A to Q89
 
 Nothing under src or tests changed. Core tests by the pre-commit at 2ac77fc, 96a0f93, ee87b3c,
@@ -3109,7 +5130,7 @@ nothing is written into a live project folder, every program started and every f
 written outside the repo is listed in the round report, everything opened is closed and
 the check that it was closed is run, and nothing of Bader's is deleted or overwritten.
 
-THE BUILD GATE PASSED. On DESKTOP-5VL7LTJ the whole solution built in Release with 0
+THE BUILD GATE PASSED. On the machine of 2026-09-19 the whole solution built in Release with 0
 errors and 0 warnings before anything was written, with the add-in inside it. The Core
 suite on main reads 54 failed, 1568 passed, 1622 total. Every one of the 54 is a fixture
 that resolves a sample by name and finds it gone, which is PART 0.
@@ -3419,7 +5440,7 @@ This round wires the eight, following the instructions already written in
 steps\03_bader_next.md steps 353 to 380, and invents no design.
 
 THIS ROUND IS ON THE MACHINE WITH NAVISWORKS. The brief said to stop if the build failed
-on the Navisworks reference. It did not. On DESKTOP-5VL7LTJ, Windows 11, dotnet 10.0.400,
+on the Navisworks reference. It did not. On the machine of 2026-09-19, Windows 11, dotnet 10.0.400,
 the full solution build in Release finished with 0 errors and 0 warnings before anything
 was written, with the add-in project inside it. Every wiring below is compiled here after
 it lands.

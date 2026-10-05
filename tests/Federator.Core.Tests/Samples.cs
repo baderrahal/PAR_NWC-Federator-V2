@@ -199,6 +199,18 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// This project's list of corrections, kept beside the corrected matrix and named after
+        /// it, Q113 answered B on 2026-10-04, so Bader can copy the two into his folder together.
+        /// The tool reads it off whichever XML is picked, never out of Core.
+        /// </summary>
+        public const string CorrectionListName = "1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt";
+
+        public static string CorrectionList()
+        {
+            return Path.Combine(ExchangeFolder(), CorrectionListName);
+        }
+
+        /// <summary>
         /// A result file the viewpoint probe wrote, kept beside the probe under tools, found
         /// off the checkout the same way the exchange folder is. The category list in
         /// Federator.Core is proved to be exactly one of these, 5i.

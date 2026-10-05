@@ -207,6 +207,28 @@ namespace Federator.Core.Report
         public int RawClashes { get; set; }
 
         /// <summary>
+        /// The row for one result group, standing for the clashes counted under it and for
+        /// no more, F113. A group with no clash under it stands for none. The harvest
+        /// floored it at one, so the Clashes cell and the cell of the group's status read
+        /// one higher than the clashes the document holds, which the runner counts under
+        /// every group and never as the group itself. Whether a saved test can hold an empty
+        /// group is UNKNOWN, and no log has shown one.
+        /// </summary>
+        public static ClashRow ForGroup(int clashesUnder)
+        {
+            if (clashesUnder < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    "clashesUnder", clashesUnder, "A group cannot hold fewer than no clashes.");
+            }
+
+            ClashRow row = new ClashRow();
+            row.IsGroup = true;
+            row.RawClashes = clashesUnder;
+            return row;
+        }
+
+        /// <summary>
         /// The most severe distance among a group's clashes.
         ///
         /// A hard clash reports a negative distance, which is how far the two things

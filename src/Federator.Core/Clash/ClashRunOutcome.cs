@@ -77,6 +77,17 @@ namespace Federator.Core.Clash
         public string StoppedReason { get; private set; }
 
         /// <summary>
+        /// Why no test of this group was run at all, or null where its tests ran. Set for a
+        /// group whose clash was skipped because its models are not on the same shared
+        /// coordinates, Bader's answer to Q99 and Q100, and for nothing else, so the one
+        /// discipline path is left as it was. Its block and its summary say the clash was
+        /// skipped where they printed tests run 0 and clashes found 0, zeros that came from
+        /// the skip alone and read as a clean group beside an NWF still holding an earlier
+        /// run's results.
+        /// </summary>
+        public string ClashSkipped { get; set; }
+
+        /// <summary>
         /// Set when this group failed so uniformly that the whole run was abandoned, not
         /// just this group. A run once spent 8 hours 52 minutes over 24 groups with every
         /// test failing the same way, and stopping the group would have saved none of it.
@@ -227,6 +238,34 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// The running count the log carries while the tests of a group run, so a run of
+        /// well over a thousand tests is watched rather than silent, or null at a test the
+        /// log does not count at. It counts at every test that is a multiple of every, and
+        /// at the last one, so a group that runs to its end ends on a count.
+        ///
+        /// IT IS TAKEN AFTER THE TEST IT NUMBERS IS RECORDED, F113, and reads the counts as
+        /// they stand. The runner took it before that test until F113, so on the run of
+        /// 2026-10-01 the last count of all 22 groups was one test short, and three of them
+        /// were short of the block's clashes by the last test's own, 1624 against 1629 in one.
+        /// </summary>
+        public string ProgressAfter(int done, int total, int every)
+        {
+            if (every < 1)
+            {
+                throw new ArgumentOutOfRangeException(
+                    "every", every, "The count is taken every so many tests, and that is one or more.");
+            }
+
+            if (done % every != 0 && done != total)
+            {
+                return null;
+            }
+
+            return done + " of " + total + " tests, " + RanCount + " run, " + SkippedCount
+                + " skipped, " + TotalClashes + " clashes so far";
+        }
+
+        /// <summary>
         /// How many skipped tests are written out in full for each reason. One real run
         /// skipped 1830 tests for a single reason and wrote 1830 near identical lines into
         /// a 1 MB log, which buries everything worth reading. A count and a few examples
@@ -288,16 +327,27 @@ namespace Federator.Core.Clash
                     + ClashTestPlan.Describe(reason));
             }
 
-            lines.Add("tests run         : " + RanCount);
-            lines.Add("    passed        : " + PassedCount + ", ran and found nothing");
-            lines.Add("    with clashes  : " + WithClashesCount);
-            lines.Add("clashes found     : " + TotalClashes);
-
-            ClashTally totals = Totals;
-
-            foreach (ClashStatus status in ClashTally.AllStatuses)
+            if (!string.IsNullOrEmpty(ClashSkipped))
             {
-                lines.Add("    " + status.ToString().PadRight(10) + ": " + totals.Of(status));
+                lines.Add("tests run         : none, " + ClashSkipped);
+                lines.Add("clashes found     : not counted, no test was run"
+                    + (AlreadyPresentCount > 0
+                        ? ". The " + AlreadyPresentCount + " test(s) already there keep the results of an earlier run"
+                        : string.Empty));
+            }
+            else
+            {
+                lines.Add("tests run         : " + RanCount);
+                lines.Add("    passed        : " + PassedCount + ", ran and found nothing");
+                lines.Add("    with clashes  : " + WithClashesCount);
+                lines.Add("clashes found     : " + TotalClashes);
+
+                ClashTally totals = Totals;
+
+                foreach (ClashStatus status in ClashTally.AllStatuses)
+                {
+                    lines.Add("    " + status.ToString().PadRight(10) + ": " + totals.Of(status));
+                }
             }
 
             // The number nobody has. Kept on its own line and named plainly so it is easy
@@ -429,6 +479,7 @@ namespace Federator.Core.Clash
             foreach (ClashSkipReason reason in
                 new[]
                 {
+                    ClashSkipReason.NotOnTheSameCoordinates,
                     ClashSkipReason.SingleDiscipline,
                     ClashSkipReason.EmptySide,
                     ClashSkipReason.LocatorNotResolved,
@@ -461,6 +512,15 @@ namespace Federator.Core.Clash
                 return "Stopped before creating anything. " + StoppedReason;
             }
 
+            if (!string.IsNullOrEmpty(ClashSkipped))
+            {
+                return CreatedCount + " created, "
+                    + (AlreadyPresentCount > 0 ? AlreadyPresentCount + " already there, " : string.Empty)
+                    + "none run, " + ClashSkipped + ", "
+                    + SkippedCount + " skipped, in "
+                    + Seconds.ToString("0.0", CultureInfo.InvariantCulture) + "s.";
+            }
+
             return CreatedCount + " created, "
                 + (AlreadyPresentCount > 0 ? AlreadyPresentCount + " already there, " : string.Empty)
                 + RanCount + " run, "
@@ -468,6 +528,21 @@ namespace Federator.Core.Clash
                 + SkippedCount + " skipped, "
                 + TotalClashes + " clashes in "
                 + Seconds.ToString("0.0", CultureInfo.InvariantCulture) + "s.";
+        }
+
+        /// <summary>
+        /// The clash part of the open file run's window label. It read RanCount and
+        /// TotalClashes in the add-in and printed nought run and nought clashes for a group
+        /// whose clash was skipped, which reads as a clean group, so it says none ran and why.
+        /// </summary>
+        public string CountsForTheLabel()
+        {
+            if (!string.IsNullOrEmpty(ClashSkipped))
+            {
+                return "none run, " + ClashSkipped + ", " + SkippedCount + " skipped";
+            }
+
+            return RanCount + " run, " + SkippedCount + " skipped, " + TotalClashes + " clashes";
         }
     }
 }

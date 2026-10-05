@@ -230,7 +230,10 @@ namespace Federator.Core.Health
 
                     string asked = condition.Value == null ? string.Empty : condition.Value.Data;
 
-                    if (asked.Length == 0 || Known(condition.Test, asked))
+                    // ONE SET ASKING ONE CATEGORY IS ONE FINDING, however many of its groups
+                    // ask it, because the block counts sets. Since F116 a set asks each
+                    // spelling of its workset in a group of its own, each carrying the category.
+                    if (asked.Length == 0 || Known(condition.Test, asked) || AlreadyFound(found, set, asked))
                     {
                         continue;
                     }
@@ -240,6 +243,19 @@ namespace Federator.Core.Health
             }
 
             return found;
+        }
+
+        private static bool AlreadyFound(IList<CategoryNobodyHas> found, SelectionSetDefinition set, string asked)
+        {
+            foreach (CategoryNobodyHas one in found)
+            {
+                if (ReferenceEquals(one.Set, set) && string.Equals(one.Category, asked, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>The test attribute a condition carries when its value is a stem.</summary>

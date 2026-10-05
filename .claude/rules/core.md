@@ -155,6 +155,124 @@ The set level number cannot be used for the damaged export check. On Infra it
 gives 6, because the sets differ in how many copies of the one rule they hold,
 and 6 does not read as broken.
 
+### The picked file is corrected before a set is built, F116
+
+- WHICHEVER CLASH XML IS PICKED IS CORRECTED BY THE LIST BESIDE IT, Q104 and Q113 answered
+  by Bader on 2026-10-04. `MatrixCorrections.ReadPicked` is the only way the add-in reads the
+  picked file, at the pick, the run, the open file run and both hand buttons, so the list is
+  read wherever the XML is. It reads the file as `ExchangeReader.ReadFile` did, in the
+  encoding the file declares, through `ExchangeReader.ReadFileText`, reads the list beside it,
+  applies the code that writes the exchange file, `ForPickedFile`, before any set is built,
+  and the document carries one line per correction, `ExchangeDocument.Corrections`, which the
+  window writes as MATRIX lines after the line saying which file it read. The HEALTH block at
+  the pick judges the corrected sets, because those are the sets the run builds
+- THE CORRECTIONS ARE ONE PROJECT'S DATA, KEPT BESIDE THE PICKED XML AND NEVER IN CORE, Q113
+  answered B: the tool serves many projects, and nothing in src may name one project's file.
+  The list is a plain file named after the XML, its name without the extension and
+  `CorrectionListSettings.Suffix`, default `.corrections.txt`, one full path tested with
+  File.Exists and never a search or a wildcard, `MatrixCorrectionList.Beside`. It holds the
+  renames, the catch-all sets, the Source File rules and the workset spellings measured in
+  the project's models, one a line, the format at the top of this project's list,
+  exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, kept beside the corrected XML
+  so the two are copied together. The FIRST MATRIX line names the list in full and how many
+  corrections and workset spellings it holds. No list there corrects nothing, the file is
+  read as written, and the first MATRIX line names the path looked for. A list that cannot
+  be read, a line it does not know, a rename it cannot use, bytes that are not UTF-8 in a
+  list with no byte order mark or a file that will not open, corrects NOTHING and the first
+  MATRIX line says why, never a part of it and never a throw. A list saved as UTF-16 with its
+  byte order mark is read as UTF-16. A list that is there and HOLDS NONE, no bytes, comments
+  or blank lines, corrects nothing and its first MATRIX line says so, as no list does, F116.
+  `revit-worksets.txt` inside Core holds the C02 census alone, the 39 names measured before
+  F116. Q113 D keeps all four categories of Q103 in this project's list
+- THE CENSUS AND THE LIST ARE PUT TOGETHER IN ONE PLACE, `RevitWorksets.With`, F116 on the
+  readings of the Q113 pass. The corrections take their spellings from it and the EMPTY SETS
+  judge is handed the same ones, through `ExchangeDocument.Worksets` and
+  `SetBuildPlan.Worksets` to `EmptySets.Why`, so a spelling a MATRIX line says was measured is
+  never one that block calls carried by no model. A file read as it stands is judged against
+  the census alone
+- A WORKSET VALUE IS CORRECTED ONLY WHERE THE LIST NAMES A SPELLING OF IT, the same but for
+  its case, `MatrixCorrectionList.NamesASpellingOf`, F116 on the breaker's finding: a value is
+  corrected only from what the list beside the XML says. It is then asked in every spelling
+  the census and the list hold between them. A value the list names none of is left as the
+  file asks and its line says so, so a list with no workset line corrects no value, as no
+  list does
+- WHAT THE CORRECTIONS CODE NAMES. MatrixCorrections, MatrixCorrectionList,
+  CorrectionListSettings and the classes they read the file with name no set, folder,
+  category or spelling in a code line. Their comments, and comments elsewhere in Core, give
+  the C02 example ME-DUCTWORK against ME-Ductwork. The EXPORT CHECK line that typed that
+  pair into every group is gone since F112's FR-028, which names the pairs a group has
+- THE CASE WARNING OF THE EXPORT CHECK LEAVES OUT A SET THAT ALSO ASKS THE CARRIED SPELLING
+  EXACTLY, F116 once F112's FR-028 merged. Since Q102 the corrections ask a workset in every
+  spelling measured, so a set asks ME-DUCTWORK or ME-Ductwork and finds the items carrying
+  either. `ExportCheck` names a pair only with the sets that ask the other spelling and do
+  not also ask the carried one, not negated, as a whole name or, for contains, a part of it,
+  and a pair no set is left for is not named. A set asking the carried spelling only negated
+  finds none of those items and is still named
+- A SET OR CONDITION THE CORRECTIONS CANNOT READ IS COUNTED AND SAID, NEVER THROWN, F116.
+  `WrittenCondition.Read` gives null for an element that will not parse as one condition or
+  holds a value it could not rewrite, `SetConditionsText.Read` then gives null for the set,
+  and `ForPickedFile` counts every such set on a NOT EVERY SET COULD BE READ line. The set is
+  built exactly as the file asks. A file that will not read as XML at all throws, as
+  ReadFile's did
+- ONE ESCAPE, ONE WAY TO EDIT A CONDITION, ONE WAY TO FIND A SET, F116.
+  `WrittenCondition.Read` reads through `ExchangeReader.ReadCondition`, so a condition
+  corrected and a condition built are read one way. `WrittenCondition.Escaped` is the only
+  escape, for every value written and every name looked for. `WithValue`, `WithFlags` and
+  `WithTest` are the only edits of a condition's text, the catch-all builds its conditions
+  through them and `ValuesGiven` is the one place the category rewrite and the one spelling
+  correction give a condition another value. A set
+  is found by its name through `Named`, and by its folders and its name through `Key` and
+  `KeyOf` where the folder matters, the Source File rule, so a set of one name in another
+  folder is never given what this one asks
+- A WORKSET VALUE ASKS EVERY SPELLING MEASURED, Q102. One measured spelling that differs by
+  case alone is the correction, Q68. Two or more are all asked, as Or groups, where until
+  Q102 they were refused and the value left as it was. A spelling no model was measured
+  carrying is never asked. The spellings go in Ordinal order whichever one the file asked,
+  once per workset, so the client's matrix, the one corrected before and the exchange file
+  come out as the SAME sets, condition for condition, which a test proves on all three
+- A VALUE CORRECTION TOUCHES ONLY A WORKSET CONDITION THAT IS NOT NEGATED, F116. A negation
+  asked in a second spelling is (X and not A) or (X and not B), every X, because no element
+  sits on both spellings, so `WorksetValuesIn` skips a negated condition and widening, the Or
+  rows and the one spelling correction read the condition's property and flags, not its value
+  alone. A condition on another property whose value reads like a workset is not a workset.
+  A file holding a negated workset condition gets a MATRIX line saying it is left as asked
+- THE MATRIX LINES CLAIM ONLY WHAT WAS MEASURED, F116. The spellings are the C02 census in
+  Core and, in the list beside the picked file, at most ten names a group of C06 for this
+  project's, so a line says every
+  spelling measured so far in this project's models, never every spelling the models carry,
+  and no model measured so far, never no model in this run. Each correction that changes
+  nothing says which kind of zero it is, already made, nothing in the file to change, or not
+  readable, and where nothing changed the last line says no correction was applied and counts
+  each kind. It never says the file carries every correction, which a count of zero cannot
+  tell from a file none of them acts on
+- WHERE THE CORRECTIONS REACH IS SAID ON EVERY PICKED FILE, F116, the one a list corrected,
+  the one with no list beside it and the one whose list could not be read. One line before
+  the last says a set already in an NWF keeps the conditions it was built with and is not
+  given what the file asks unless the box `SetRebuildSettings.TickLabel` names is ticked,
+  Q72, and that the SETS block names each such set as DRIFTED, so a log naming corrections
+  over an NWF built before them is not read as corrected sets
+- THE OR ROW IS THE WHOLE GROUP COPIED, FR-025. A group asking one spelling is written once
+  per spelling with the rest of the group in it, so (Ducts and ME-DUCTWORK) or (Ducts and
+  ME-Ductwork). One flags 64 condition after the workset, what Q69's row was until F116,
+  started a group holding the workset alone, which takes every element on that workset
+  whatever its category. The text groups conditions by the plan's own rule,
+  `PlannedSet.GroupsOf` and `PlannedCondition.StartsAGroupWith`, so the two cannot disagree
+- A CATEGORY REWRITE CHANGES A WHOLE VALUE AND NEVER A NAME, FR-026, so a set whose name
+  holds the value is not renamed and a second run counts zero
+- A SET BESIDE THE ONES ASKING A SOURCE FILE CONDITION ASKS IT TOO where another discipline
+  also uses its category, Q103: every AR set whose category another discipline also uses
+  gets Source File contains -AR-. The condition, the folder and the category property are
+  read off the file, and so are the categories another folder's sets ask for. A category no
+  other folder's set asks for that another discipline's MODELS carry can only be measured,
+  an AR set finding items in a group holding no AR model, and those are the categories
+  after the bar in the project's list, proved by a test against the logs they came from
+- THE ROW FILE NAMES EVERY WORKSET OF EVERY MODEL, one model worksets row each, because
+  the EXPORT CHECK block lists ten a group and counts the rest, and the spellings a run
+  shows are what the workset list is measured from. Where a model's element walk stopped
+  part way, `ModelExport.WalkFinished` false, the row's number is empty and its text
+  UNKNOWN, `ExportCheck.WorksetCount` and `EveryWorkset`, never the names seen before it
+  stopped as if they were all
+
 ## Rules the code holds
 
 - A locator that does not resolve to a set: report the test by name, skip it.
@@ -188,6 +306,14 @@ and 6 does not read as broken.
   the total. Per test detail stays for tests that were created or run. One run wrote
   1830 near identical SKIPPED lines and a 1 MB log, which buries everything worth
   reading
+- THE RUNNING COUNT IS TAKEN AFTER THE TEST IT NUMBERS, F113. `ClashRunOutcome
+  .ProgressAfter` is the line the log carries at every twenty fifth test and at the last
+  one, so a group that runs to its end ends on a count, and it reads the counts as they stand.
+  A group with no test to run writes no count, and one the guard stops ends on RUN STOPPED. The
+  runner took it BEFORE the test it numbered until F113, so on the run of 2026-10-01 the
+  last count of all 22 groups was one test short of the block under it, and three were
+  short of the block's clashes by the last test's own, 1624 against 1629 in 1B06PK. The
+  last count of a group and the block read the same numbers
 - A test already in the document is left as it is, which means a tolerance changed in the
   XML never reaches it. That is right and it was silent, so now it is REPORTED. Every
   test in both is compared on the tolerance, the test type, merge composites, and per
@@ -334,12 +460,100 @@ and 6 does not read as broken.
     DONE     everything requested for this group succeeded
     PARTIAL  something requested did not complete, or the group was CHANGED and
              left alone, which since F24 means only a group whose rebuild never
-             started, because a rebuild that ran ends as Rebuilt
+             started, because a rebuild that ran ends as Rebuilt, or its clash was
+             skipped because a model is not on the same shared coordinates
     FAILED   something requested threw or produced nothing, a rebuild that appended
-             nothing or could not keep its saved tests included
+             nothing or could not keep its saved tests included, or a model names no
+             shared site, or names Internal in a group whose clash is not skipped, Q70
   The rule lives in Federator.Core.Rerun.GroupJudgement, with no Navisworks types
   in it, so it can be tested. The outcome and the reason for it come out of one
-  pass, so the two can never disagree
+  pass, so the two can never disagree. A failure on where the models sit is kept apart
+  from the errors, `GroupFacts.AlignmentFailure`, because nothing threw and the group goes
+  on to its NWD. The steps are judged as they would be without it and what they find is
+  named after it, so a missing NWD, or one not from this run, is never hidden behind the
+  models
+- A GROUP NOT ON THE SAME SHARED COORDINATES SKIPS ITS CLASH AND NOTHING ELSE, Q98 B2
+  and Bader's answer to Q99 and Q100 on 2026-10-04. A model is not on the same
+  coordinates when it names Internal as its shared site, or when it sits more than a
+  metre from its group's reference model, as the ALIGNMENT block measures it. That
+  replaces Q70 for a model on Internal ONLY WHERE THE GROUP'S CLASH IS SKIPPED. Wherever
+  no clash is skipped, the rule off or no clash test to run in the group, a model on
+  Internal fails its group as Q70 answered, `AlignmentCheck.WhyItFailsTheGroup` taking the
+  four inputs the block takes, because his words give such a group PARTIAL or nothing and
+  never DONE, and a group with nothing to clash would otherwise end DONE. A model naming no
+  site at all fails it either way, because his answer named Internal and the distance and
+  not that. The reason is made at the ALIGNMENT step, before any file of the group is
+  written, so it names the models and their sites and NOTHING OF A FILE. The steps that
+  write say what was written. The ALIGNMENT failed run line, `AlignmentCheck.FailedRunLine`,
+  names both causes whichever way the rule is set, and says nothing of which files were
+  written either, because the files written list can name an NWD whose publish returned
+  false. The distance is the STRAIGHT LINE of dx, dy and
+  dz and never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away
+  and under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
+  defaulting to `AlignmentCheck.DefaultFarModelMillimetres`.
+  ONLY A CLASH THAT WOULD HAVE RUN IS SKIPPED, `OffCoordinates.SkipsTheClash`: the rule on,
+  a model off, and `ClashWork.RunsATest`, a source holding tests and a group of two
+  disciplines. A group with nothing to clash, no XML and no test saved, an XML of sets
+  alone, one model or one discipline, is judged as before, Q70's failure for a model on
+  Internal included, and its ALIGNMENT block still names its models under a heading saying
+  no clash is skipped. In a skipped group the tests
+  whose sides both find something are created and none is run, on the one path a one
+  discipline group already took, F77, so not every test of the file is in the NWF, and no
+  viewpoint and no clash report is made. The group ends PARTIAL, never DONE, with the
+  reason `OffCoordinates.ClashSkippedReason`, and a group already FAILED or PARTIAL keeps
+  its outcome with that reason added. Its CLASH block and summary say the clash was
+  skipped instead of printing nought, `ClashRunOutcome.ClashSkipped`, and its GAP block
+  says no report was made. One line per such model, made by
+  `AlignmentCheck.NotOnTheSameCoordinates` and nowhere else, names its file, its shared
+  site and its distance from the reference in X, Y and Z.
+  WHAT IS SAID IS ONLY WHAT WAS CHECKED. The note beside the NWD and in the Clash Report
+  folder, `OffCoordinates.Note`, is written after the NWF was looked at the last time and
+  names the NWF and the NWD off the disk, `NwfAndNwd`, saying which was not written, and
+  names a publish, on either line, only where the publish reported success and the NWD is
+  on the disk. It
+  says the tests already saved in the NWF keep an earlier run's results and that any
+  viewpoint an earlier run saved there stays, since a skipped group makes none and removes
+  none, and names every
+  report an earlier run left at the names this run would have written, with its time and
+  size, `EarlierReports`, read by exact path and never touched, and the log names them too.
+  The ALIGNMENT block's all clear line is written only where every model was measured, and
+  otherwise says how many were not.
+  ONE TALLY PER RUN, `OffCoordinatesAcrossTheRun`, made by the engine when Run or
+  RunOpenDocument starts with that run's rule state, start and count of groups, and handed
+  by the window to that run's RESULT block, `RunLog.WriteResultBlock(thisRun)`. It is
+  never kept on the log, which lives as long as the window, because a second run of a
+  window once listed the first run's groups under the second run's rule state. RESULT and
+  the list say how many groups the rule judged, did not reach and could not read, and how
+  many models it could not judge, and never say no model was found off while any of those
+  is more than nought. Each run's list is its own file, `ListName`, named for the second
+  the run started, so a smaller run never writes over a fuller run's list.
+  The rule is read on every run, so the run after the models are fixed clashes the group
+  with the tests already saved in its NWF. A note an earlier run left is removed only where
+  this run judged every model of the group and either found none off or clashed the group,
+  through `RunLog.WriteRemoved`, which takes the file off the files written list once it is
+  gone from the disk, and is kept with a line saying why where a model was UNKNOWN, the read
+  threw, or a model is still off and no clash test ran in the group,
+  `OffCoordinates.EarlierNoteKeptBecause`. A group skipped is left out of the run's
+  clash total, because a clash that never ran is not a group that found none. A model whose
+  placement or site could not be read is never judged on it, and the block says so.
+  `ReportOptions.SkipClashOffCoordinates`, on by default, switches the rule off, and then
+  every group is clashed and judged as before the answer, Q70's failure for a model on
+  Internal included. The window sets it from a tick box on the Clash step whose label, grey
+  line and starting state are `AlignmentCheck.TickLabel`, `AlignmentCheck.HelpLine` and
+  `AlignmentCheck.DefaultSkipClashOffCoordinates`, set in the constructor and never typed
+  into the XAML, because a building is run once more with the rule off and a setting only a
+  build can change is no switch
+- The EXPORT CHECK run line is added up in Core, `ExportCheckAcrossTheRun`, by the rules
+  each group's block judges by, `ModelExport.HoldsNoElement` among them, so the line and
+  the blocks cannot disagree. The engine kept four counters of its own and none for a model
+  holding no Revit element. A group whose whole read threw is counted from the group's catch,
+  `ExportCheckAcrossTheRun.GroupNotRead`, and the line says so and is never clean while one
+  is. A model `ModelFactsReader.Exports` drops in its own catch is in no count, so the line
+  can read clean over it, a known bug of F112. The row file's number for a model whose
+  elements could not be counted is empty, `ExportCheck.ElementsNumber`, as for any unknown in that file, never -1
+- The open file run's window label takes its clash counts from Core,
+  `ClashRunOutcome.CountsForTheLabel`, which says none ran and why for a group whose clash
+  was skipped, where the label printed nought run and nought clashes
 - The counts in the RESULT block and the errors under it come from one list. A
   failed count with an empty error list is what the log printed once, saying
   "groups failed: 22" and "Nothing failed." in the same block. A group recorded as
@@ -356,7 +570,8 @@ and 6 does not read as broken.
   overwrite with no date suffix, so last week's NWF and NWD sit at exactly the
   paths this run uses. A group that threw before writing anything must not list
   them as its own, and a file that was checked rather than written is logged with
-  CheckOnDisk, which reports the size and records nothing
+  CheckOnDisk, which reports the size and records nothing. A file this run removed
+  leaves the list through WriteRemoved, and only once it is gone from the disk
 - The workbook is ONE SHEET, laid out exactly as the report the client receives: every
   test one after another, most clashes first. The Summary sheet, the Matrix sheet and the
   sheet per test are GONE. All three were asked for in an earlier session, before anyone
@@ -411,7 +626,11 @@ and 6 does not read as broken.
   the most severe clash in it, which is the minimum: a hard clash reports a negative
   overlap so the worst is the most negative, and a clearance test reports a gap so the
   worst is the smallest. Every row carries the raw count behind it, so the grouping hides
-  nothing
+  nothing. A GROUP STANDS FOR THE CLASHES UNDER IT AND FOR NO MORE, F113, and one with none
+  under it stands for none. `ClashRow.ForGroup` is the rule. The harvest floored a group at
+  one, so an empty group made the Clashes cell and the cell of its status read one higher
+  than the clashes the document holds, which the runner counts under every group. Whether
+  a saved test can hold an empty group is UNKNOWN
 - The clash API has no open against closed notion. Nothing on IClashResult, ClashResult,
   ClashResultGroup, ClashTest or DocumentClashTests names one, ClashResultStatus is a flat
   five value enum, and Navisworks' own report does not mention open or closed either. So
@@ -917,7 +1136,11 @@ and 6 does not read as broken.
   the only status set. THE PENETRATION RULE OWNS A CLASH THEY BOTH WANT, counted here
   under ThePenetrationRuleHasIt, so the two blocks add up to the number of clashes that
   moved rather than to twice it. A pair naming a set not in this run is a FINDING, named
-  once across the whole run and not once per group, and nothing acts on it
+  once across the whole run and not once per group, and nothing acts on it. A CLASH WITH
+  NO NAME IS NEVER REVIEWED BY IT, F113, because nothing can address it to move it.
+  `ByDesignRule.Judge` takes the name and asks about it last, and the block counts it under
+  a reason of its own. Judged Reviewed it was counted as moved in the block, the RESULT
+  line and the rule B line while the add-in left it off the list the editor applies
 - THE REVIEWED LINE IS ONE RULE IN ONE PLACE, `Federator.Core.Clash.ReviewedLine`. Two
   rules now write one and only the WHY differs. A second copy of that string in a second
   tally is how the two would start reading differently, and a person scanning a log for
@@ -942,7 +1165,10 @@ and 6 does not read as broken.
   status one of this tool's own records names and nothing else, so Approved and Resolved
   are still never set, because a record can only be written for a status this tool was
   allowed to move from and the record's own constructor refuses the other three. Q50 asks
-  whether that is the right shape
+  whether that is the right shape. A COMMENT NAMING ONE OF THOSE THREE IS NOT ONE OF OURS,
+  F113, and `AutoReviewRecord.In` reads it as no record, because only a hand can have
+  written it. It used to read all five and hand the three to the constructor, which
+  threw, and the undo then left every clash of that test alone
 - NOTHING MOVES SILENTLY. A PENETRATION block per group names every clash moved with both
   categories and the service size, then the totals and ONE LINE PER REASON for every clash
   left alone, including the reasons at zero, because a reason missing from the block reads

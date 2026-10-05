@@ -167,6 +167,15 @@ namespace Federator.Addin.Engine
         public bool SingleDisciplineGroup { get; set; }
 
         /// <summary>
+        /// True when a model of this group is not on the same shared coordinates as its
+        /// reference model and the rule that skips the clash is on, Bader's answer to Q99 and
+        /// Q100. The same path as SingleDisciplineGroup and not a second one: every test
+        /// whose sides both find something is created, F77, so the next run finds it already
+        /// there once the models are fixed, and none is run. Recorded under its own reason.
+        /// </summary>
+        public bool ClashSkippedOffCoordinates { get; set; }
+
+        /// <summary>
         /// Apply the file settings to tests already in the document. Off by default,
         /// because it changes WHICH CLASHES the test finds when it next runs, and a clash
         /// somebody marked Reviewed may then not come back, which is the only record of
@@ -569,16 +578,17 @@ namespace Federator.Addin.Engine
                 PlannedClashTest planned = toRun[i];
                 progress("Test " + (i + 1) + " of " + total + ": " + planned.Name);
 
-                if ((i + 1) % ProgressEvery == 0 || i + 1 == total)
-                {
-                    // A running count, so a run of well over a thousand tests is watched
-                    // rather than silent.
-                    log.Line("CLASH    " + (i + 1) + " of " + total + " tests, "
-                        + outcome.RanCount + " run, " + outcome.SkippedCount + " skipped, "
-                        + outcome.TotalClashes + " clashes so far");
-                }
-
                 OneTest(document, sets, clashTests, byPath, present, planned, outcome);
+
+                // A running count, so a run of well over a thousand tests is watched rather
+                // than silent. Taken AFTER the test it numbers, F113, so the last one of a
+                // group reads the same numbers as the block under it.
+                string running = outcome.ProgressAfter(i + 1, total, ProgressEvery);
+
+                if (running != null)
+                {
+                    log.Line("CLASH    " + running);
+                }
 
                 // Nine hours produced nothing once because nothing watched for this. A run
                 // failing uniformly stops the run, not the group.
@@ -689,15 +699,21 @@ namespace Federator.Addin.Engine
                     summary.RightItems = rightItems;
                 }
 
-                if (SingleDisciplineGroup)
+                if (ClashSkippedOffCoordinates || SingleDisciplineGroup)
                 {
                     // Created because both its sides find something, F77, so a later run
-                    // against a fuller model finds it already there. Not run, because there
-                    // is nothing here for them to run against.
-                    LogSkip(outcome.AddSkipped(
-                        planned.Name,
-                        ClashSkipReason.SingleDiscipline,
-                        "the group holds one discipline, so there is nothing for this test to clash against"));
+                    // against a fuller model, or against models exported again on the shared
+                    // coordinates, finds it already there. Not run, because there is nothing
+                    // here for them to run against, or nothing a clash could be trusted on.
+                    LogSkip(ClashSkippedOffCoordinates
+                        ? outcome.AddSkipped(
+                            planned.Name,
+                            ClashSkipReason.NotOnTheSameCoordinates,
+                            "the group's models are not on the same shared coordinates, so this test is not run")
+                        : outcome.AddSkipped(
+                            planned.Name,
+                            ClashSkipReason.SingleDiscipline,
+                            "the group holds one discipline, so there is nothing for this test to clash against"));
                     guard.RecordNotAttempted();
                     return;
                 }
