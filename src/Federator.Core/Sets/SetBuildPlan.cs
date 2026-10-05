@@ -97,7 +97,11 @@ namespace Federator.Core.Sets
             return flags & (StartGroupFlag | NegateFlag);
         }
 
-        /// <summary>Whether a condition carrying those flags is negated, by the bit QuestionFlagsOf counts.</summary>
+        /// <summary>
+        /// Whether a condition carrying those flags is negated, by the bit QuestionFlagsOf counts. THE
+        /// ONE TEST of the negation, read by the plan, the judge, the HEALTH block, the matrix
+        /// corrections and the EXPORT CHECK, which wrote the same bit test inline seven times.
+        /// </summary>
         internal static bool NegatedWith(int flags)
         {
             return (flags & NegateFlag) == NegateFlag;

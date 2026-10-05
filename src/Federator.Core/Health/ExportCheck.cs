@@ -386,7 +386,7 @@ namespace Federator.Core.Health
                             ask.Sets.Add(setName);
                         }
 
-                        if ((condition.Flags & MatrixCorrections.NegateCondition) == 0)
+                        if (!PlannedCondition.NegatedWith(condition.Flags))
                         {
                             if (!askedBy.ContainsKey(setName))
                             {

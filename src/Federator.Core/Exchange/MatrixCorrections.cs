@@ -700,7 +700,7 @@ namespace Federator.Core.Exchange
                 foreach (SearchConditionDefinition condition in set.Conditions)
                 {
                     if (IsAWorkset(condition)
-                        && (condition.Flags & NegateCondition) == 0
+                        && !PlannedCondition.NegatedWith(condition.Flags)
                         && condition.Value != null
                         && condition.Value.Data.Length > 0
                         && !values.Contains(condition.Value.Data))
@@ -722,7 +722,7 @@ namespace Federator.Core.Exchange
             {
                 foreach (SearchConditionDefinition condition in set.Conditions)
                 {
-                    if (IsAWorkset(condition) && (condition.Flags & NegateCondition) != 0)
+                    if (IsAWorkset(condition) && PlannedCondition.NegatedWith(condition.Flags))
                     {
                         negated++;
                     }
@@ -747,7 +747,7 @@ namespace Federator.Core.Exchange
         private static bool AsksAWorkset(WrittenCondition condition)
         {
             return string.Equals(condition.Property, EmptySets.WorksetProperty, StringComparison.Ordinal)
-                && (condition.Flags & NegateCondition) == 0;
+                && !PlannedCondition.NegatedWith(condition.Flags);
         }
 
         /// <summary>
@@ -790,7 +790,7 @@ namespace Federator.Core.Exchange
 
                     if (condition.Property != null
                         && string.Equals(condition.Test, SetBuildPlan.EqualsTest, StringComparison.Ordinal)
-                        && (condition.Flags & NegateCondition) == 0
+                        && !PlannedCondition.NegatedWith(condition.Flags)
                         && string.Equals(condition.Property.InternalName, property, StringComparison.Ordinal)
                         && value.IndexOf(holding, StringComparison.Ordinal) >= 0
                         && !string.Equals(value, holding, StringComparison.Ordinal)
@@ -1301,7 +1301,7 @@ namespace Federator.Core.Exchange
                 if (condition.Property != null
                     && condition.Value != null
                     && string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.Ordinal)
-                    && (condition.Flags & NegateCondition) == 0
+                    && !PlannedCondition.NegatedWith(condition.Flags)
                     && string.Equals(condition.Value.Data, asks, StringComparison.Ordinal))
                 {
                     return condition;
@@ -1335,7 +1335,7 @@ namespace Federator.Core.Exchange
             {
                 if (condition.Property != null
                     && condition.Value != null
-                    && (condition.Flags & NegateCondition) == 0
+                    && !PlannedCondition.NegatedWith(condition.Flags)
                     && string.Equals(condition.Property.InternalName, property, StringComparison.Ordinal)
                     && !categories.Contains(condition.Value.Data))
                 {
