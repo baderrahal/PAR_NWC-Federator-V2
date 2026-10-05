@@ -34,7 +34,7 @@ namespace Federator.Core.Views
 
         /// <summary>
         /// The grey line under it, what the box costs. The hours are measured: the C02 weekly
-        /// run of 2026-10-05 sat in VIEWS for 3 h 15 min and never left it, Q130,
+        /// run of 2026-10-05 wrote no log line in VIEWS for 3 h 15 min before it was closed, Q130,
         /// steps\runs\04\item2-C02.
         /// </summary>
         public const string HelpLine = "Each viewpoint adds time, so a big run can take hours";

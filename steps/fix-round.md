@@ -4795,6 +4795,8 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
   Electrical, then the rest
 - Class: Bader's decision
 - Designed on 2026-10-05, turn5\q114-design.md sections 1.6 and 1.7. The pair's order is point 12's, so point 10's Mechanical vs Structure is written Structure vs Mechanical. With no priority file the views go under No priority, point 9. Question for Bader: Q117
+- Since Bader's answer B to Q131: F114's pull request sets ViewpointRequest.DefaultMakeViewpoints back to
+  true, so the viewpoints box opens ticked once the new views are in, F136
 
 ### FR-185 one-view-per-test-of-its-open-clashes
 
