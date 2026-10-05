@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Federator.Core.Sets;
+using Federator.Core.Teams;
 
 namespace Federator.Core.Exchange
 {
@@ -559,7 +560,8 @@ namespace Federator.Core.Exchange
         /// THE LIST IS READ WHEN THE XML IS, beside it and named after it, CorrectionListSettings,
         /// so every place that reads a picked file reads its list too. No list there, or one that
         /// cannot be read, corrects nothing and the first line says so, and the file is read as
-        /// it is written.
+        /// it is written. THE TEAM MAP beside it is read here too, its own file, TeamMap.Beside,
+        /// and the document carries it in Teams, F131.
         ///
         /// IT IS THE CODE THAT WROTE THE EXCHANGE FILE, so the client's uncorrected matrix,
         /// the one corrected before F116 and the one in the exchange folder, each with the
@@ -590,6 +592,9 @@ namespace Federator.Core.Exchange
             // The spellings the corrections were chosen from, so the judge of a set that finds
             // nothing reads the same ones, F116.
             document.Corrected(outcome.Lines(), RevitWorksets.With(list.Worksets));
+
+            // The team map beside the same file, its own file, F131, Q115 by its default A.
+            document.TeamsBeside(TeamMap.Beside(path, new TeamMapSettings()));
             return document;
         }
 
