@@ -2,6 +2,152 @@
 
 Newest entry at the top.
 
+## 2026-10-05 The loop, turn 5, F131 the teams, FR-180 and FR-181, CORE HALF DONE and built, wave 2b, written by the lead's delegate
+
+Core tests, all with 0 failed and 0 skipped:
+- 1912 passed before at 7793b9e, main where the branch was made, turn5\f131-core-before.txt
+- 1925 at the pre-commit of 23b94ef, 1928 at 6c80243, 1940 at 69a0c1c and 1956 at 19a95b8,
+  turn5\f131-precommit-1.txt to f131-precommit-4.txt
+- 1956 passed after at 19a95b8, turn5\f131-core-after.txt. The records commit adds and changes no
+  test, and its pre-commit is turn5\f131-precommit-5.txt, read after this entry was written
+
+The before and after runs also list the one [Explicit] generator test, WriteTheCorrectedFile, as
+skipped, and the adapter does not count it.
+The solution builds whole with --no-incremental at 19a95b8, Federator.Core, Federator.Core.Tests
+and Federator.Addin each built, 0 warnings and 0 errors, with git rev-parse --short HEAD and a
+clean git status at its top, turn5\f131-build-code.txt. check-locals and check-imports pass on src,
+turn5\f131-checks.txt. The records commit changes no code.
+Every file named is under %LOCALAPPDATA%\NwcFederatorLoop\turn5 unless it is a path of the repo.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
+  text files in the worktree, and powershell for the process reads. None of them starts a
+  Navisworks
+- Get-Process Roamer read process 32136, started 21:17:06 on 2026-10-04, the loop's baseline,
+  before the worktree was made, shown on screen and not saved to a file, and the same process
+  after the code, the build and the tests, at 05:53:04, turn5\f131-roamer-after.txt. This pass
+  started no Navisworks and touched none
+
+### What was done
+
+- 23b94ef, FR-180, Q114 points 1, 2, 11 and 12 and Q115 by its default A. `TeamMapSettings` and
+  `TeamMap`: the map is a plain file of its own beside the picked XML, its name without the
+  extension and `.teams.txt`, a setting, one full path tested with File.Exists. One team a line in
+  the order a pair is written, and a size-folder line naming the teams whose pairs carry the size
+  folder. Any other code is a team of its own, a name with no code is UNKNOWN, a setting, and
+  `ViewpointSettings` takes its UNKNOWN from it. A fault unreads the whole map with its line and
+  why, never a throw. Missing, unread, holding no team or with no XML picked, Q123 by its default
+  A, the map maps nothing, and the TEAMS lines and the window line say which. `ListFile` is the
+  one way a list beside the XML is read, moved out of `MatrixCorrectionList` with no change to
+  what the list of corrections reads, and the path beside the XML is joined in one place for both
+  lists. 13 new tests, all 13 seen failing against a stub of the shape,
+  turn5\f131-teammap-before-fail.txt
+- 6c80243, FR-180. This project's map, exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt,
+  beside the corrected XML and its list of corrections, named by the rule, holds Bader's map of
+  point 1 in his order of point 12 with Mechanical and Electrical carrying the size folder, and a
+  test holds it to his map, seen failing with the file moved away,
+  turn5\f131-exchange-map-before-fail.txt. `MatrixCorrections.ReadPicked` reads the map beside the
+  file on its own, into `ExchangeDocument.Teams`, so a map that cannot be read leaves the
+  corrections made and a list that cannot be read leaves the map read, seen failing with Teams
+  never set, turn5\f131-pick-before-fail.txt. 3 new tests, 2 seen failing, the third a path test
+- 69a0c1c, FR-180, Q116 and Q117 by their defaults A and points 10 to 12. `CodeOf.Set` reads a
+  side's code, the first part of its set name that is a known code, the map's and the group's own
+  models', and `DisciplinePairRule.CodeIn` now reads through it, so the rule is in one place.
+  `ViewpointSettings.IsADisciplineCode`, left with no caller, is deleted. A model's code stays part
+  5 of its file name through `ContainerName.Parse`. `TeamMap.CodeWithTeam` writes HV in
+  Mechanical. `TeamPair` puts two teams in the map's order, then other teams by name, then
+  UNKNOWN, two codes of one team pairing as that team against itself, and carries the size folder
+  where the map names one of its teams. On the corrected XML with this project's map, 16
+  Architecture, 6 Structure, 25 Mechanical, 13 Electrical and 1 UNKNOWN set, BLD-Security Devices.
+  12 new tests, 10 seen failing against stubs, turn5\f131-codeof-pair-before-fail.txt, the other
+  2 pinning a name with no code and a model's code through the parser
+- 19a95b8, FR-181, point 3. `SilentMisses` and `SilentMiss`: a set of team T and code C and a model
+  of team T with another code, where every group of the set asks, not negated, a workset the
+  model's whole list does not carry or a Source File its file name does not hold. A list not whole
+  is counted as not judged. A candidate is named on a SILENT MISS line only where the coverage
+  count of Q112 request 2 shows the model holding items of the set's categories that no set
+  catches, and is otherwise counted on one line, UNKNOWN without the count. The correction is
+  drafted and never applied, one also-ask line of the list of corrections, which
+  `MatrixCorrectionList` now reads and `ForPickedFile` applies the way Q102's rows are built. On
+  the client's matrix the draft for BLD-ME-Ducts&Duct Fittings builds the four groups of
+  measure-teams.md section 6, and with this project's list a second run changes nothing. 16 new
+  tests, 15 seen failing against a stub of `SilentMisses` and a list that knew no also-ask line,
+  turn5\f131-silentmiss-alsoask-before-fail.txt, the other pinning that a model of another team is
+  never named
+- the records: this entry, the F131 order line 42 and its section in steps\01_next.md, and the
+  section The teams of the picked file, F131, in .claude\rules\core.md, with one line in its F85
+  views rule saying the set name's code is read by `CodeOf.Set`
+
+### Choices the developer made, for the reader to check
+
+- THE PICK READS THE MAP IN CORE. The design has the add-in read it at every place ReadPicked
+  serves. `ReadPicked` reads it itself, one place, and the add-in half reads `ExchangeDocument.Teams`
+- NO SECOND READER OF A FILE NAME. The design's `CodeOf.File` is not written, because part 5
+  through `ContainerName.Parse` is the rule and the add-in already reads it in ModelFactsReader, so
+  a model's team is `TeamMap.TeamOf` of the code it already has
+- THE PAIR IS IN THIS PASS, as the brief asks, in `src\Federator.Core\Teams\TeamPair.cs`, where the
+  design put it in F114 as Views\TeamPairRule.cs
+- AN ALSO-ASK LINE NAMES A VALUE AND EVERY SPELLING IT ACCEPTS, and is applied through
+  `AskEverySpelling`, not through `ValueOrRow`, whose row carries one other spelling. Measured
+  while the tests were written: the corrected XML already asks every mechanical workset in two
+  spellings since Q102, ME-DUCTWORK or ME-Ductwork. Two rows sharing a spelling ask each value
+  where the other is, or move the file on every run so a second run counts changes, so a spelling
+  on two lines unreads the list, a line written twice is kept once, and one line is drafted for
+  values spelled alike but for their case, the first. `ValueOrRow` is left as it was, called by
+  tests only. The also-ask lines run after every other correction, the Source File rule of Q103
+  among them
+- THE DESIGN'S 1A02MM TEST IS NOT WRITTEN. It said 1A02MM's four models give no candidate. Its own
+  rule gives the six FF sets against the ME model wherever that model carries neither FF nor FP
+  workset, which the baseline's zero items for those sets suggests and which is UNKNOWN until its 7
+  worksets are read. The test written in its place pins those six, none named without a count
+- THREE REFUSALS BEYOND THE DESIGN'S LIST: a code twice on one line, a code holding a space and a
+  team name with a space at either end, each of which would map nothing and say nothing
+- WITH NO MAP the code is written alone, not as a team of its own, the TEAMS line saying every code
+  is one
+- THE SOURCE FILE IS JUDGED AGAINST THE NWC'S FILE NAME, Bader's words. What Navisworks gives an
+  item's Source File where the Revit container is named otherwise is UNKNOWN here. Its internal
+  name, LcOaNodeSourceFile, is in src as Navisworks' own name for the property, read off the
+  client's matrix, beside the workset parameter EmptySets already holds. CLAUDE.md says the
+  internal names of the clash XML appear in tests as sample data only, and whether a name that is
+  Navisworks' and not the project's falls under it is for the reader
+
+### What remains
+
+- the add-in half, a later pass of this branch once F114 merges: the window's grey line at the
+  pick and the TEAMS lines before the MATRIX lines, `TeamMap.NoXml` for a run with no XML picked,
+  the group's model line, COVERAGE rows and the form writing the team beside the code, and
+  `SilentMisses` in F127's COVERAGE block with its per-model count. UNTIL THEN NOTHING IN SRC CALLS
+  `TeamMap`, `TeamPair`, `SilentMisses` OR `ExchangeDocument.Teams`, by the exception for a later
+  pass of the same branch. `CodeOf.Set` is called by `DisciplinePairRule.CodeIn`
+- probe P4, the worksets of 1A04PK's HV and FP models, so whether 1A04PK holds a silent miss is
+  UNKNOWN, and the 7 worksets of 1A02MM's ME model
+- the proof steps in steps\03_bader_next.md, written with the add-in half
+
+### Known bugs
+
+- two drafts of one value for two models, such as ME-Piping with HV-Piping and with FP-Piping,
+  copied into the list as two lines, unread it, and the line says to put them on one. The drafts
+  are never merged across models
+- a silent miss on a Source File gets no drafted line, because the list of corrections has none for
+  a Source File
+
+### What comes next
+
+- the reviewer and the breaker on 19a95b8 and the records commit, then the add-in half after F114
+
+The Core half was proved here. The add-in half and every line it writes wait for the local machine.
+
+### Every file written outside the repo, this pass
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f131, on branch fix-F131
+- turn5\f131-core-before.txt, f131-teammap-before-fail.txt, f131-exchange-map-before-fail.txt,
+  f131-pick-before-fail.txt, f131-codeof-pair-before-fail.txt,
+  f131-silentmiss-alsoask-before-fail.txt, f131-precommit-1.txt to f131-precommit-5.txt,
+  f131-build-code.txt, f131-checks.txt, f131-core-after.txt, f131-roamer-after.txt and
+  f131-push.txt
+- the commit messages and the edit scripts, in the session's scratch folder under the user's temp
+  folder, which nothing reads after the commit
+
 ## 2026-10-05 The loop, turn 5, F116 the clash XML, DONE in Core and built, wave 1, with Bader's answer to Q113, the readings of that pass, F112 taken in and a closing pass
 
 Core tests, all with 0 failed and 0 skipped:
