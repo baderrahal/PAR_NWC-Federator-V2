@@ -40,7 +40,9 @@ namespace Federator.Core.Clash
     ///
     /// FAIL CLOSED. Core cannot tell a test with no results from a walk of its results that
     /// never ran or stopped part way, so nothing is removed until the add-in says the walk
-    /// reached its end, AllResultsAdded, after the last result.
+    /// reached its end, AllResultsAdded, after the last result, with how many results the
+    /// test holds counted off the document and not off the walk's own calls, and every one
+    /// of them was handed. A walk that skipped a child or swallowed a read leaves the test.
     ///
     /// WHICH SAVED TESTS ARE MIRRORS. With an XML picked, the XML decides what this run
     /// creates and runs, so a saved test is a mirror where its name is a mirror of the
@@ -65,6 +67,7 @@ namespace Federator.Core.Clash
         private int reviewedByThisTool;
         private int reviewedOffActive;
         private bool walkComplete;
+        private int holds = -1;
 
         private MirrorInDocument(
             PlannedClashTest saved, string keptName, bool xmlPicked, MirrorPair ofThePickedXml, bool nameShared)
@@ -251,15 +254,30 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// Says the walk of the saved test's results reached its end, every result handed to
-        /// AddResult or ResultNotRead, called once after the last of them. FAIL CLOSED: Core
-        /// cannot tell a test with no results from a walk that never ran, threw or stopped
-        /// part way, so until this is said Removes is false. A result handed after it means
-        /// the walk went on, and it must be said again.
+        /// Says the walk of the saved test's results reached its end, called once after the
+        /// last of them, with how many results the test holds. That number is counted off the
+        /// document's own count of the children at each level of the walk, never off the
+        /// calls the walk made, so a child it skipped, or a result whose read failed and was
+        /// never handed, shows as a gap. Removes needs every one of them handed, to AddResult
+        /// or to ResultNotRead. FAIL CLOSED: Core cannot tell a test with no results from a
+        /// walk that never ran, threw or stopped part way, so until this is said Removes is
+        /// false. A result handed after it means the walk went on, and it must be said again.
         /// </summary>
-        public void AllResultsAdded()
+        public void AllResultsAdded(int resultsTheTestHolds)
         {
             walkComplete = true;
+            holds = resultsTheTestHolds;
+        }
+
+        private int Handed
+        {
+            get { return statuses.Total + notRead; }
+        }
+
+        /// <summary>Whether the walk said it reached its end and handed every result the test holds.</summary>
+        private bool WalkProven
+        {
+            get { return walkComplete && holds >= 0 && Handed == holds; }
         }
 
         /// <summary>Whether it is removed from the NWF. Only when nothing at all says leave it.</summary>
@@ -332,6 +350,15 @@ namespace Federator.Core.Clash
                 reasons.Add("the walk of its results was not said to be complete, so whether a person "
                     + "set a status on one is UNKNOWN");
             }
+            else if (holds < 0)
+            {
+                reasons.Add("the walk gave no count, so how many results the test holds is UNKNOWN");
+            }
+            else if (Handed != holds)
+            {
+                reasons.Add("the walk handed " + Handed + (Handed == 1 ? " result" : " results")
+                    + " where the test holds " + holds + ", so whether a person set a status on one is UNKNOWN");
+            }
 
             if (notRead > 0)
             {
@@ -378,12 +405,13 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// The statuses with their counts. Where the walk was not said complete, what it read
-        /// is never given as all of them, and with nothing read the results are UNKNOWN.
+        /// The statuses with their counts. Where the walk is not proved to have handed every
+        /// result, what it handed is never given as all of them, and with nothing handed the
+        /// results are UNKNOWN.
         /// </summary>
         private string Results()
         {
-            if (!walkComplete && statuses.Total == 0 && notRead == 0)
+            if (!WalkProven && Handed == 0)
             {
                 return "UNKNOWN";
             }
@@ -401,7 +429,7 @@ namespace Federator.Core.Clash
                 read += ", " + notRead + " not read";
             }
 
-            return walkComplete ? read : read + ", and whether that is all of them is UNKNOWN";
+            return WalkProven ? read : read + ", and whether that is all of them is UNKNOWN";
         }
     }
 }

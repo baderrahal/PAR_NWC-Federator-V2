@@ -74,7 +74,7 @@ namespace Federator.Core.Tests
             MirrorInDocument mirror = TheXmlsMirror();
             mirror.AddResult(ClashStatus.New, string.Empty);
             mirror.AddResult(ClashStatus.New, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(2);
 
             Assert.That(mirror.Removes, Is.True);
             Assert.That(mirror.Line(), Does.StartWith(MirrorRule.Prefix + " "));
@@ -86,7 +86,7 @@ namespace Federator.Core.Tests
         public void NoResultsIsRemoved()
         {
             MirrorInDocument mirror = TheXmlsMirror();
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(0);
 
             Assert.That(mirror.Removes, Is.True);
         }
@@ -97,7 +97,7 @@ namespace Federator.Core.Tests
             MirrorInDocument mirror = TheXmlsMirror();
             mirror.AddResult(ClashStatus.New, null);
             mirror.AddResult(ClashStatus.Reviewed, OurRecord(ClashStatus.New));
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(2);
 
             Assert.That(mirror.Removes, Is.True);
         }
@@ -136,14 +136,53 @@ namespace Federator.Core.Tests
         {
             MirrorInDocument mirror = TheXmlsMirror();
             mirror.AddResult(ClashStatus.New, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
             mirror.AddResult(ClashStatus.New, null);
 
             Assert.That(mirror.Removes, Is.False);
 
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(2);
 
             Assert.That(mirror.Removes, Is.True);
+        }
+
+        // A walk that skipped a child it did not know, or caught a status that threw and never
+        // handed it, still says it reached the end. The test holds 2 and 1 was handed, so the
+        // one not handed may carry a status a person set.
+        [Test]
+        public void AWalkThatHandedFewerResultsThanTheTestHoldsIsLeft()
+        {
+            MirrorInDocument mirror = TheXmlsMirror();
+            mirror.AddResult(ClashStatus.New, null);
+            mirror.AllResultsAdded(2);
+
+            Assert.That(mirror.Removes, Is.False);
+            Assert.That(mirror.Line(), Does.Contain("the walk handed 1 result where the test holds 2"));
+            Assert.That(mirror.Line(), Does.EndWith("Its results: New 1, and whether that is all of them is UNKNOWN"));
+        }
+
+        // More handed than the test holds is a walk that counted wrong, so nothing it says is proof.
+        [Test]
+        public void AWalkThatHandedMoreResultsThanTheTestHoldsIsLeft()
+        {
+            MirrorInDocument mirror = TheXmlsMirror();
+            mirror.AddResult(ClashStatus.New, null);
+            mirror.AddResult(ClashStatus.New, null);
+            mirror.AllResultsAdded(1);
+
+            Assert.That(mirror.Removes, Is.False);
+            Assert.That(mirror.Line(), Does.Contain("the walk handed 2 results where the test holds 1"));
+        }
+
+        // A count below zero is no count, so how many the test holds is UNKNOWN.
+        [Test]
+        public void AWalkThatCouldNotCountTheResultsIsLeft()
+        {
+            MirrorInDocument mirror = TheXmlsMirror();
+            mirror.AllResultsAdded(-1);
+
+            Assert.That(mirror.Removes, Is.False);
+            Assert.That(mirror.Line(), Does.Contain("how many results the test holds is UNKNOWN"));
         }
 
         // ---------- left, not run, and named ----------
@@ -153,7 +192,7 @@ namespace Federator.Core.Tests
         {
             MirrorInDocument mirror = TheOneFound(BothSaved(), null);
             mirror.AddResult(ClashStatus.New, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Saved.Name, Is.EqualTo(ColumnsVsDucts));
             Assert.That(mirror.Removes, Is.False);
@@ -167,7 +206,7 @@ namespace Federator.Core.Tests
             MirrorInDocument mirror = TheXmlsMirror();
             mirror.AddResult(ClashStatus.New, null);
             mirror.AddResult(ClashStatus.Active, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(2);
 
             Assert.That(mirror.Removes, Is.False);
             Assert.That(mirror.Line(), Does.Contain("not run"));
@@ -181,7 +220,7 @@ namespace Federator.Core.Tests
         {
             MirrorInDocument mirror = TheXmlsMirror();
             mirror.AddResult(ClashStatus.Reviewed, "checked on site");
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Removes, Is.False);
             Assert.That(mirror.Line(), Does.Contain("Reviewed 1"));
@@ -194,7 +233,7 @@ namespace Federator.Core.Tests
         {
             MirrorInDocument mirror = TheXmlsMirror();
             mirror.AddResult(ClashStatus.Approved, OurRecord(ClashStatus.New));
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Removes, Is.False);
         }
@@ -204,7 +243,7 @@ namespace Federator.Core.Tests
         {
             MirrorInDocument mirror = TheXmlsMirror();
             mirror.AddResult(ClashStatus.Approved, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Removes, Is.False);
             Assert.That(mirror.Line(), Does.Contain("Approved 1"));
@@ -215,7 +254,7 @@ namespace Federator.Core.Tests
         {
             MirrorInDocument mirror = TheXmlsMirror();
             mirror.AddResult(ClashStatus.Resolved, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Removes, Is.False);
             Assert.That(mirror.Line(), Does.Contain("Resolved 1"));
@@ -227,7 +266,7 @@ namespace Federator.Core.Tests
             MirrorInDocument mirror = TheXmlsMirror();
             mirror.AddResult(ClashStatus.New, null);
             mirror.ResultNotRead("the status threw");
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(2);
 
             Assert.That(mirror.Removes, Is.False);
             Assert.That(mirror.Line(), Does.Contain("could not be read"));
@@ -244,7 +283,7 @@ namespace Federator.Core.Tests
                 TheXmlHoldingBoth());
 
             mirror.AddResult(ClashStatus.New, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Saved.Name, Is.EqualTo(ColumnsVsDucts));
             Assert.That(mirror.Removes, Is.False);
@@ -264,7 +303,7 @@ namespace Federator.Core.Tests
                 TheXmlHoldingBoth());
 
             mirror.AddResult(ClashStatus.New, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Removes, Is.False);
             Assert.That(mirror.Line(), Does.Contain("not the test the picked XML would create"));
@@ -282,7 +321,7 @@ namespace Federator.Core.Tests
                 TheXmlHoldingBoth());
 
             mirror.AddResult(ClashStatus.New, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Removes, Is.False);
             Assert.That(mirror.Line(), Does.Contain("the left side self intersect off in the XML and on saved"));
@@ -306,7 +345,7 @@ namespace Federator.Core.Tests
             foreach (MirrorInDocument mirror in found)
             {
                 mirror.AddResult(ClashStatus.New, null);
-                mirror.AllResultsAdded();
+                mirror.AllResultsAdded(1);
 
                 Assert.That(mirror.Removes, Is.False);
                 Assert.That(mirror.Line(), Does.Contain("another saved test carries the same name"));
@@ -325,7 +364,7 @@ namespace Federator.Core.Tests
                 mirror.ResultNotRead("the status threw");
             }
 
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(7);
             string line = mirror.Line();
 
             Assert.That(mirror.Removes, Is.False);
@@ -344,7 +383,7 @@ namespace Federator.Core.Tests
                 mirror.ResultNotRead("reason " + i);
             }
 
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(7);
             string line = mirror.Line();
 
             Assert.That(line, Does.Contain("7 results could not be read: reason 1, reason 2"));
@@ -361,7 +400,7 @@ namespace Federator.Core.Tests
             mirror.AddResult(ClashStatus.Reviewed, OurRecord(ClashStatus.Active));
             mirror.AddResult(ClashStatus.Reviewed, OurRecord(ClashStatus.Active));
             mirror.AddResult(ClashStatus.Reviewed, OurRecord(ClashStatus.New));
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(3);
 
             Assert.That(mirror.Removes, Is.True);
             Assert.That(mirror.Line(), Does.Contain("3 of the Reviewed set by this tool, 2 of them Active before it moved them"));
@@ -391,7 +430,7 @@ namespace Federator.Core.Tests
         public void AWalkSaidCompleteOverNoResultSaysNone()
         {
             MirrorInDocument mirror = TheXmlsMirror();
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(0);
 
             Assert.That(mirror.Line(), Does.EndWith("Its results: none"));
         }
@@ -410,7 +449,7 @@ namespace Federator.Core.Tests
                 TheXmlHoldingBoth());
 
             mirror.AddResult(ClashStatus.New, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Saved.Name, Is.EqualTo(ColumnsVsDucts));
             Assert.That(mirror.Removes, Is.False);
@@ -446,7 +485,7 @@ namespace Federator.Core.Tests
                 MirrorRule.Of(xml.Buildable, PriorityMap.NothingPicked()));
 
             mirror.AddResult(ClashStatus.New, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Saved.Name, Is.EqualTo("Columns against Ducts by hand"));
             Assert.That(mirror.Removes, Is.False);
@@ -464,7 +503,7 @@ namespace Federator.Core.Tests
                 SavedInTheDocument(MirrorRuleTests.Saved("Columns against Ducts by hand", Columns, Ducts, 0)),
                 MirrorRule.Of(xml.Buildable, PriorityMap.NothingPicked()));
 
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(0);
 
             Assert.That(mirror.Saved.Name, Is.EqualTo("Columns against Ducts by hand"));
             Assert.That(mirror.Removes, Is.False);
@@ -485,7 +524,7 @@ namespace Federator.Core.Tests
                 MirrorRule.Of(xml.Buildable, PriorityMap.NothingPicked()));
 
             mirror.AddResult(ClashStatus.New, null);
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(1);
 
             Assert.That(mirror.Saved.Name, Is.EqualTo("Ducts against Walls by hand"));
             Assert.That(mirror.Removes, Is.False);
@@ -634,7 +673,7 @@ namespace Federator.Core.Tests
             Assert.That(xml.Buildable.Count, Is.EqualTo(0));
 
             MirrorInDocument mirror = TheOneFound(BothSaved(), MirrorRule.Of(xml.Buildable, PriorityMap.NothingPicked()));
-            mirror.AllResultsAdded();
+            mirror.AllResultsAdded(0);
 
             Assert.That(mirror.Saved.Name, Is.EqualTo(ColumnsVsDucts));
             Assert.That(mirror.Removes, Is.False);
