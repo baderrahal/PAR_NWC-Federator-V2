@@ -4586,6 +4586,28 @@ was done, what the test showed, and anything for Bader.
   keep created and run apart
 - Answered by Bader on 2026-10-04 in the evening, the notes of Q112: right as read. A count that
   differs is a FAILED line in COVERAGE and RESULT, and the group keeps its own result
+- Designed on 2026-10-05 by three plans, evidence first, the rules in Core and the cost, each its
+  own agent, turn5\f127-plans.txt, and a judge, turn5\f127-design.md, evidence the base. Seven
+  probes on Navisworks before any add-in code, and an eighth only if P2 fails, section 5, on copies
+  once no Navisworks runs, the first F104's documents read of set 04's 1A02MM NWF as the
+  independent witness. The Core steps 1 to 3 of section 6 touch no file F116 changes and start now,
+  step 4 after F116 merges and P2 to P5 are read, the add-in after P1 to P7. The measured parts add
+  about 0.4 to 1.1 s on a three-model group and 0.5 to 1.8 s on a ten-model group, with no FAILED
+  line, and the rest is UNKNOWN until P6 and the first run. read-workbook.ps1 changes in the same pull
+  request, or every F104 verdict reads NOT PROVED. Questions for Bader: Q126, a group whose clash
+  is skipped has no workbook for the sheet, and Q127, how RESULT counts the XML's tests. Of the
+  design's other six, his words settle the sheet's place, a sheet named Coverage in the workbook,
+  the second and last sheet being the lead's reading of them. The rest are the lead's readings,
+  each built as the design's default A: a test whose NWF holds earlier results reads FAILED,
+  extending his words that a count that differs is a FAILED line, caught is read per item,
+  extending his words on categories no set catches, the run's list of empty sets goes into the
+  log and the .tsv, the discipline is read by code until F131, and with no XML each model's
+  categories are listed with their counts and whether a set catches them is UNKNOWN and said.
+  Reading the saved sets' conditions off the document instead waits for a probe not yet on the
+  list
+- Found while designing: set 03's C06 run did not pick the exchange file's bytes, since its SET
+  lines ask ME-PIPING, ME-DUCTWORK and ME-EQUIPMENT where the exchange file asks ME-Piping,
+  turn5\f127-design.md section 0
 
 ### FR-177 generic-models-counted-and-a-set-per-model
 
