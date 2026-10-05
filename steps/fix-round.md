@@ -4667,10 +4667,11 @@ was done, what the test showed, and anything for Bader.
   input, since it never clicks, sends no key and never moves the pointer, the loop's own choice.
   If it cannot, the way to test it goes to Bader
 - Class: Bader's request, a broken feature by his words
-- Measured on 2026-10-05 at 11:45 on a stand-in window, turn5\measure-shift-driver-result.md: the
-  driver cannot make a Shift click without real input. UI Automation toggles a box with no Shift,
-  posted mouse messages toggle nothing, and a posted Shift key does not reach the keyboard state WPF
-  reads. So by Bader's note on Q112 its test is numbered steps in steps\03_bader_next.md when F130 is
+- Measured on 2026-10-05 at 11:45 on a stand-in window of the lead's own, not the tool's window and
+  not the driver, turn5\measure-shift-driver-result.md: none of the three ways open to the driver,
+  which never sends real input, carried Shift. UI Automation toggled a box with no Shift, posted
+  mouse messages raised no click, and a posted Shift key did not reach the keyboard state WPF
+  reads. Whether Navisworks hosts WPF the same way is not measured. So by Bader's note on Q112 its test is numbered steps in steps\03_bader_next.md when F130 is
   built
 - Measured on 2026-10-04 off the window code, turn5\measure-shift.md: a range tick is not
   written. The Run column is a stock DataGridCheckBoxColumn bound to Include with no handler,
@@ -4679,8 +4680,6 @@ was done, what the test showed, and anything for Bader.
   by reflection with no click made, and whether Navisworks loads that same file is UNKNOWN. Also every untick in the group list goes back to
   ticked when the groups are built again, after a scan, a grouping change or a change to a file's
   Use box, FederatorWindow.xaml.cs lines 247 to 318 and GroupRow.cs line 39
-- Whether the driver can make a Shift click without real input is NOT MEASURED: the stand-in
-  measurement waits for no Navisworks to run, turn5\measure-shift-driver.md
 - Answered by Bader on 2026-10-04 in the evening, the notes of Q112: if the driver cannot test the
   Shift click without real input, the Shift test is written as numbered steps for him in
   steps\03_bader_next.md
@@ -4903,7 +4902,7 @@ steps\02_questions.md. A decision, outside the counts of the table below.
 - Measured on 2026-10-05: the tool has no such switch. FederationEngine.BuildViewpoints makes them for
   every group whose clash was not skipped and that has a report, src\Federator.Addin\Engine\
   FederationEngine.cs on main 35bd7fd. The window has no viewpoints option
-- What is built: a tick box in the window with its own AutomationId, read by the engine, and when
+- What will be built: a tick box in the window with its own AutomationId, read by the engine, and when
   unticked no viewpoint is made and none is asked for, so a group cannot fail at them, the rule F52 set
   for a step not asked for. The loop's driver unticks it through F126's -Untick in every test run
   until F114 merges. Its default is Q131, A until Bader answers

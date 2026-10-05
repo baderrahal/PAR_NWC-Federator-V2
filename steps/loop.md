@@ -264,17 +264,21 @@ reader. F132 attempt 3 was read with nothing blocking by its reviewer and its
 breaker, 1986 Core tests passed at 190e7f1 and the build 0 warnings and 0 errors,
 turn5\f132c-result.json, and its add-in half waits for the probes P1 and P2. F114's Core half took
 the slot it freed, its developer from 09:46:44, the viewpoints first by Bader's word.
-THE WEEKLY BASELINE ON C02 STOPPED BY BADER, Q130. The C02 weekly ran its 528 saved tests to 2939 clashes by 08:21:31, its census before VIEWS reading 2939 results and 2847 views at 08:22:25, then sat in VIEWS from 08:23:01 with no further log line for 3 h 15 min until its Navisworks was closed at 11:38:13, and wrote no workbook, NWF or NWD of its own, steps\runs\04\item2-C02, run log lines 185, 284 and 287, outputs.txt. On his word the lead closed it the
-guards' way at 11:38:13 by its own script, turn5\close-c02-weekly.ps1 and close-c02-weekly.txt: the
-proofs CloseOwn makes, then nw-guard.ps1's one close, Kill on the adopted pid 29372, Dispose not
-first because run.ps1 was blocked in its call into the add-in. run.ps1 then put back 35 registry
+THE WEEKLY BASELINE ON C02 STOPPED BY BADER, Q130. What it reached, in one line, as he asked: the C02 weekly ran its 528 saved tests to 2939 clashes by 08:21:31, its census before VIEWS reading 2939 results and 2847 views at 08:22:25, then sat in VIEWS with no log line after 08:23:01 for 3 h 15 min until its Navisworks was read gone at 11:38:13, and wrote its 2939 clash pictures but no workbook, NWF or NWD of its own, steps\runs\04\item2-C02, run log lines 185, 284, 279 and 287, outputs.txt. On his word the lead closed it by its own
+script, turn5\close-c02-weekly.ps1 and close-c02-weekly.txt: the proofs CloseOwn makes, then a copy
+of the Kill of nw-guard.ps1's CloseAdopted, not a call of it, sent to the adopted pid 29372 just after
+11:38:11.699 and read gone at 11:38:13.084. That copy stands against the rule of one copy of every
+guard, register row T5-R-CLOSE. Dispose did not come first, the lead's reading being that run.ps1
+was blocked in its call into the add-in and that nothing outside it reached what it would dispose. run.ps1 then put back 35 registry
 values, InfoCenter.log and the AutoSave folder, each read back, with no other Navisworks in its
 record, record.txt lines 1702 to 1775, VERDICT: STOPPED, the adopted Navisworks ended by itself, line
 1788, its own words for a close it did not make. Evidence masked into steps\runs\04\item2-C02 with no
-copy differing, turn5\mask-run04-item2-C02.txt. Its workbook read-out is item 1's workbook, every
-output in the folder written at 21:09 on 2026-10-04. No test run is made until F136, the viewpoints
-switch, FR-194, is merged and installed, and the C04 weekly is not run. The Shift measurement ran at
-11:45 on its stand-in once Roamer read 0: the driver cannot make a Shift click without real input,
+copy differing, turn5\mask-run04-item2-C02.txt. Its workbook read-out is item 1's workbook: the
+workbook, NWF, NWD and html in the folder were written at 21:09 on 2026-10-04, and its 2939 pictures
+by this run from 07:29. By the lead's reading of his word, no test run is made until F136, the
+viewpoints switch, FR-194, is merged and installed, and the C04 weekly is not run. The Shift
+measurement ran at 11:45 on a stand-in window of the lead's own once Roamer read 0: none of the
+three ways open to the driver, which never sends real input, carried Shift,
 turn5\measure-shift-driver-result.md, so F130's test goes to Bader as numbered steps.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
@@ -472,7 +476,8 @@ and planned in the turn 5 entry of steps\log.md headed with them.
 5. To measure from the baseline before wave 2: which property and value name Generic Models on
    1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test of the coverage,
    why the Shift range fails in the window code, and whether the driver can test a Shift click
-   without real input
+   without real input, measured on 2026-10-04 and 2026-10-05, turn5\measure-shift.md and
+   measure-shift-driver-result.md
 6. Wave 2 in three parts since Bader's views by team, Q114: 2a F127 coverage first with F132
    mirrored tests and F115 sets, 2b F131 teams, F114 views reshaped by Q114 and F128 generic
    models, 2c F118 workbook and report. Q114's measurements first, turn5\measure-mirrors.md,
