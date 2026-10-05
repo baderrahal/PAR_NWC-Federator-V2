@@ -8,7 +8,8 @@ namespace Federator.Core.Views
     /// The VIEWS TREE block, F114, Q114 point 19: the tree the VIEWS step left, priority, team
     /// pair, size folder and each view with its open clashes, the models it shows and hides and
     /// whether it read back, then what the step found before and did after, then the seven
-    /// checks, each FAILED line naming what broke it, then how many hold.
+    /// checks, each FAILED line naming what broke it and each check that could not run saying
+    /// DID NOT RUN and why, then how many hold with those that did not run counted apart.
     ///
     /// The tree lines are cut at the TreeLinesInLog setting for the .log, which says it cut them,
     /// and the .tsv takes them whole, so a group of thousands of views cannot drown the log, Q108.
@@ -51,13 +52,21 @@ namespace Federator.Core.Views
             }
 
             lines.AddRange(tree);
-            lines.Add("left out   : " + LeftOutWords(facts.Plan));
+            lines.Add("left out   : " + LeftOutWords(facts));
             lines.Add("after      : " + AfterWords(facts));
 
             int holding = 0;
+            int notRun = 0;
 
             foreach (ViewsTreeCheck check in checks ?? new ViewsTreeCheck[0])
             {
+                if (!check.Ran)
+                {
+                    notRun++;
+                    lines.Add("CHECK " + check.Number + "  " + check.Words + "  DID NOT RUN, " + check.NotRunWhy);
+                    continue;
+                }
+
                 if (check.Holds)
                 {
                     holding++;
@@ -88,14 +97,23 @@ namespace Federator.Core.Views
                 }
             }
 
-            lines.Add("open clashes " + (facts.Plan.Considered - facts.Plan.LeftOut) + ", in views " + facts.Plan.InViews
-                + ", tests with open clashes " + testsWithViews + ", views written "
-                + (facts.Written == null ? 0 : facts.Written.Count));
+            lines.Add("open clashes in views " + facts.Plan.InViews + ", tests with open clashes " + testsWithViews
+                + ", views planned " + facts.Plan.Views.Count + ", views written " + (facts.Written == null ? 0 : facts.Written.Count));
 
             int all = checks == null ? 0 : checks.Count;
-            lines.Add(holding + " of " + all + " hold" + (holding < all
-                ? ", each failure named above, and the group keeps its own result"
-                : string.Empty));
+            string last = holding + " of " + all + " hold";
+
+            if (notRun > 0)
+            {
+                last += ", " + notRun + " did not run and " + (notRun == 1 ? "is" : "are") + " not counted as holding";
+            }
+
+            if (holding + notRun < all)
+            {
+                last += ", each failure named above, and the group keeps its own result";
+            }
+
+            lines.Add(last);
 
             return lines;
         }
@@ -159,7 +177,7 @@ namespace Federator.Core.Views
                 }
 
                 ViewOwner owner = ToolViewMark.Judge(
-                    node.FolderPath, node.Name, node.Camera, node.Comments, node.Redlines, node.Guid, settings).Owner;
+                    node.Folders, node.Name, node.Camera, node.Comments, node.Redlines, node.Guid, settings).Owner;
 
                 if (owner == ViewOwner.Ours)
                 {
@@ -270,9 +288,11 @@ namespace Federator.Core.Views
         {
             WrittenView written = null;
 
+            string place = ViewPlace.Key(view.Folders, view.Name, false);
+
             foreach (WrittenView one in facts.Written ?? new WrittenView[0])
             {
-                if (string.Equals(string.Join("/", new List<string>(one.Folders).ToArray()) + "/" + one.Name, view.ToString(), StringComparison.Ordinal))
+                if (string.Equals(ViewPlace.Key(one.Folders, one.Name, false), place, StringComparison.Ordinal))
                 {
                     written = one;
                 }
@@ -291,8 +311,9 @@ namespace Federator.Core.Views
             return written.ReadBack ? "read back" : "NOT READ BACK";
         }
 
-        private static string LeftOutWords(TestViewPlanOutcome plan)
+        private static string LeftOutWords(ViewsTreeFacts facts)
         {
+            TestViewPlanOutcome plan = facts.Plan;
             List<string> words = new List<string>();
 
             foreach (ClashStatus status in Enum.GetValues(typeof(ClashStatus)))
@@ -303,8 +324,53 @@ namespace Federator.Core.Views
                 }
             }
 
-            words.Add(plan.TestsWithNoOpenClash + " tests ran with no open clash");
+            words.Add(plan.MirrorRuleHandedIn
+                ? plan.LeftOutAsMirrors + " clashes of " + plan.Mirrored.Count + " mirrored tests"
+                : "mirrored tests UNKNOWN, no mirror rule was handed to the plan");
+            words.Add(TestsRunWords(facts));
             return string.Join(", ", words.ToArray());
+        }
+
+        /// <summary>
+        /// The tests that ran with no open clash, off the tests the clash step ran, since a test
+        /// with no clash at all is never handed to the plan. UNKNOWN where those were not handed in.
+        /// </summary>
+        private static string TestsRunWords(ViewsTreeFacts facts)
+        {
+            if (facts.TestsRun == null)
+            {
+                return "how many tests ran with no open clash is UNKNOWN, the tests the clash step ran were not handed in";
+            }
+
+            HashSet<string> viewed = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (PlannedTestView view in facts.Plan.Views)
+            {
+                viewed.Add(view.Name);
+            }
+
+            HashSet<string> ran = new HashSet<string>(StringComparer.Ordinal);
+            int withAView = 0, mirrored = 0;
+
+            foreach (string test in facts.TestsRun)
+            {
+                if (test == null || !ran.Add(test))
+                {
+                    continue;
+                }
+
+                if (viewed.Contains(test))
+                {
+                    withAView++;
+                }
+                else if (facts.Plan.Mirrored.Contains(test))
+                {
+                    mirrored++;
+                }
+            }
+
+            return ran.Count + " tests ran, " + withAView + " with a view and " + (ran.Count - withAView - mirrored)
+                + " with no open clash" + (mirrored > 0 ? ", and " + mirrored + " mirrored with no view" : string.Empty);
         }
 
         private static string AfterWords(ViewsTreeFacts facts)

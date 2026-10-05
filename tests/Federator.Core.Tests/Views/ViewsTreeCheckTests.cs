@@ -51,7 +51,7 @@ namespace Federator.Core.Tests
                 Model(firstHome).FileName, Model(secondHome).FileName);
         }
 
-        private static TestViewPlanOutcome PlanOf(string lightsHome = "EL")
+        private static TestViewPlanOutcome PlanOf(string lightsHome = "EL", ICollection<string> mirrors = null)
         {
             ViewClash[] clashes =
             {
@@ -61,18 +61,18 @@ namespace Federator.Core.Tests
                 Clash(Walls, "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashPriority.B, null, 4, 4, "AR", "ST")
             };
 
-            return TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), Settings);
+            return TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), mirrors, Settings);
         }
 
         private static string[] MarkOf(IList<string> folders, string name, Point3 camera)
         {
-            return new[] { ToolViewMark.Body(Run, string.Join("/", new List<string>(folders).ToArray()), name, camera, null, Settings) };
+            return new[] { ToolViewMark.Body(Run, folders, name, camera, null, Settings) };
         }
 
         /// <summary>The tree as this run left it: a person's view at the root, then this run's marked folders and views.</summary>
-        private static Tree Good(string lightsHome = "EL")
+        private static Tree Good(string lightsHome = "EL", ICollection<string> mirrors = null)
         {
-            Tree tree = new Tree { Plan = PlanOf(lightsHome) };
+            Tree tree = new Tree { Plan = PlanOf(lightsHome, mirrors) };
             Dictionary<string, int> next = new Dictionary<string, int>();
             HashSet<string> made = new HashSet<string>();
 
@@ -313,15 +313,169 @@ namespace Federator.Core.Tests
             Assert.That(Joined(check.Failures), Does.Contain(Walls));
         }
 
+        /// <summary>A mirror rule that ran and found no mirror ran the check, and says it proves nothing here.</summary>
         [Test]
-        public void Check5SaysItProvesNothingWithNoMirrorRuleOrNoMirror()
+        public void Check5SaysItProvesNothingWithNoMirror()
         {
             ViewsTreeFacts facts = FactsOf(Good());
+            ViewsTreeCheck check = Check(facts, 5);
 
-            Assert.That(Joined(Check(facts, 5).Notes), Does.Contain("proves nothing"));
+            Assert.That(check.Ran, Is.True);
+            Assert.That(check.Holds, Is.True);
+            Assert.That(Joined(check.Notes), Does.Contain("proves nothing"));
+        }
 
+        /// <summary>
+        /// F114 attempt 2, the breaker's finding 0. With no mirror rule handed in check 5 did not
+        /// run. It is never counted as holding: its line says it did not run and why, and the last
+        /// line counts it apart, CLAUDE.md, never report a check that did not run.
+        /// </summary>
+        [Test]
+        public void Check5DidNotRunWithNoMirrorRuleAndIsNotCountedAsHolding()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
             facts.Mirrors = null;
-            Assert.That(Joined(Check(facts, 5).Notes), Does.Contain("UNKNOWN"));
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+            ViewsTreeCheck check = checks[4];
+            string block = Joined(ViewsTree.Lines(facts, checks, 0));
+
+            Assert.That(check.Ran, Is.False);
+            Assert.That(check.Holds, Is.False);
+            Assert.That(check.NotRunWhy, Does.Contain("no mirror rule"));
+            Assert.That(block, Does.Contain("\nCHECK 5  no mirrored test is run or has a view  DID NOT RUN, no mirror rule"));
+            Assert.That(block, Does.Contain("\n6 of 7 hold, 1 did not run"));
+            Assert.That(block, Does.Not.Contain("7 of 7 hold"));
+            Assert.That(block, Does.Not.Contain("FAILED"));
+        }
+
+        /// <summary>
+        /// F114 attempt 2, the breaker's finding 1. A mirror not run this week whose old results
+        /// the add-in read still got a view, and check 5 read only the tests run. It reads the tests
+        /// the plan made views for.
+        /// </summary>
+        [Test]
+        public void Check5NamesAMirrorThatHasAViewThoughItWasNotRun()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.Mirrors = new List<string> { Walls };
+            facts.TestsRun = new List<string> { Ducts, Lights };
+
+            ViewsTreeCheck check = Check(facts, 5);
+
+            Assert.That(check.Holds, Is.False);
+            Assert.That(Joined(check.Failures), Does.Contain(Walls + " is a mirror and has a view"));
+        }
+
+        /// <summary>The plan takes the mirrors, so no mirrored test gets a view, Bader's point that there are no mirrored tests.</summary>
+        [Test]
+        public void Check5HoldsWhenThePlanTookTheMirrors()
+        {
+            ViewsTreeFacts facts = FactsOf(Good("EL", new[] { Walls }));
+            facts.Mirrors = new List<string> { Walls };
+            facts.TestsRun = new List<string> { Ducts, Lights };
+
+            ViewsTreeCheck check = Check(facts, 5);
+
+            Assert.That(check.Ran, Is.True);
+            Assert.That(check.Holds, Is.True, Joined(check.Failures));
+            Assert.That(check.Basis, Does.Contain("1 mirrors against the 2 tests the plan made views for and the 2 tests the clash step ran"));
+        }
+
+        /// <summary>The breaker's finding 5. The checks that read the walk after did not run with no walk.</summary>
+        [Test]
+        public void TheChecksOfTheWalkDidNotRunWithNoWalk()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.After = null;
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+
+            foreach (int number in new[] { 1, 2, 6, 7 })
+            {
+                Assert.That(checks[number - 1].Ran, Is.False, "check " + number);
+                Assert.That(checks[number - 1].Holds, Is.False, "check " + number);
+                Assert.That(checks[number - 1].NotRunWhy, Does.Contain("no walk of the tree"), "check " + number);
+            }
+
+            Assert.That(checks[2].Ran && checks[3].Ran && checks[4].Ran, Is.True, "3, 4 and 5 read the plan");
+            Assert.That(Joined(ViewsTree.Lines(facts, checks, 0)), Does.Contain("\n3 of 7 hold, 4 did not run"));
+        }
+
+        [Test]
+        public void ChecksOneAndTwoDidNotRunWithNoRunStamp()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.RunStamp = null;
+
+            Assert.That(Check(facts, 1).Ran, Is.False);
+            Assert.That(Check(facts, 1).NotRunWhy, Does.Contain("no run stamp"));
+            Assert.That(Check(facts, 2).Ran, Is.False);
+        }
+
+        /// <summary>The breaker's finding 5: a plan of four views and not one found marked by this run is not a check that held.</summary>
+        [Test]
+        public void ChecksOneAndTwoDidNotRunWhenNoPlannedViewIsFoundMarked()
+        {
+            Tree tree = Good();
+            ViewsTreeFacts facts = FactsOf(tree);
+            facts.After = tree.After.FindAll(node => node.Name == "Level 1");
+
+            Assert.That(Check(facts, 1).Ran, Is.False);
+            Assert.That(Check(facts, 1).NotRunWhy, Does.Contain("none of the 4 planned views"));
+            Assert.That(Check(facts, 2).Ran, Is.False);
+        }
+
+        [Test]
+        public void ChecksSixAndSevenDidNotRunWithNoInventory()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.Inventory = null;
+
+            Assert.That(Check(facts, 6).Ran, Is.False);
+            Assert.That(Check(facts, 6).NotRunWhy, Does.Contain("no inventory"));
+            Assert.That(Check(facts, 7).Ran, Is.False);
+        }
+
+        [Test]
+        public void CheckSevenDidNotRunWithNoCodesOrTestNames()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.KnownCodes = null;
+
+            Assert.That(Check(facts, 7).Ran, Is.False);
+            Assert.That(Check(facts, 7).NotRunWhy, Does.Contain("per clash viewpoint"));
+        }
+
+        [Test]
+        public void CheckThreeDidNotRunWithNoModels()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.Models = null;
+
+            Assert.That(Check(facts, 3).Ran, Is.False);
+            Assert.That(Check(facts, 3).NotRunWhy, Does.Contain("no models"));
+        }
+
+        /// <summary>
+        /// The breaker's finding 2: a clashing item whose model could not be read, or whose model
+        /// is no model of the group, is said, since whether its model is shown is UNKNOWN.
+        /// </summary>
+        [Test]
+        public void Check3SaysAClashingItemWhoseModelIsUnknown()
+        {
+            ViewClash[] clashes =
+            {
+                new ViewClash(Walls, "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.B, null,
+                    new ItemPath(new[] { 0, 4 }), new ItemPath(new[] { 1, 4 }), Camera, null, "1A02MM-XX.nwc")
+            };
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), new string[0], Settings);
+            facts.HiddenReadBack = null;
+
+            ViewsTreeCheck check = Check(facts, 3);
+
+            Assert.That(check.Holds, Is.True, Joined(check.Failures));
+            Assert.That(Joined(check.Notes), Does.Contain(Walls + " has 1 clashing items whose model could not be read"));
+            Assert.That(Joined(check.Notes), Does.Contain("1A02MM-XX.nwc, which is no model of this group"));
         }
 
         [Test]
@@ -335,6 +489,26 @@ namespace Federator.Core.Tests
 
             Assert.That(check.Holds, Is.False);
             Assert.That(Joined(check.Failures), Does.Contain("Level 1"));
+        }
+
+        /// <summary>
+        /// The reviewer's finding 7 and the breaker's 6: a person's view under two folders of one
+        /// name is kept, and check 6 follows every item the inventory keeps, not two kinds of them.
+        /// </summary>
+        [Test]
+        public void Check6NamesAPersonsViewUnderTwinFoldersMissingAfter()
+        {
+            Tree tree = Good();
+            tree.After.Add(new ViewNode(new string[0], "Mine", true, 20, null, 0, null, null, false));
+            tree.After.Add(new ViewNode(new string[0], "Mine", true, 21, null, 0, null, null, false));
+            tree.After.Add(new ViewNode(new[] { "Mine" }, "Rami's view", false, 0, null, 0, Camera, null, false));
+            ViewsTreeFacts facts = FactsOf(tree);
+            facts.After = tree.After.FindAll(node => node.Name != "Rami's view");
+
+            ViewsTreeCheck check = Check(facts, 6);
+
+            Assert.That(check.Holds, Is.False);
+            Assert.That(Joined(check.Failures), Does.Contain("Mine/Rami's view was there before and is not there after"));
         }
 
         [Test]
@@ -397,6 +571,26 @@ namespace Federator.Core.Tests
             Assert.That(cut.Count, Is.LessThan(whole.Count));
             Assert.That(block, Does.Contain("tree lines not written here"));
             Assert.That(block, Does.Contain("CHECK 7"));
+        }
+
+        /// <summary>
+        /// The breaker's finding 3: a test with no clash at all never reaches the plan, so the
+        /// tests that ran with no open clash are counted off the tests the clash step ran, and are
+        /// UNKNOWN where those were not handed in.
+        /// </summary>
+        [Test]
+        public void TheBlockCountsTheTestsThatRanWithNoOpenClashOffTheTestsRun()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.TestsRun = new List<string> { Ducts, Lights, Walls, "BLD-AR-Doors-vs-BLD-ST-Columns" };
+
+            Assert.That(Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0)),
+                Does.Contain("4 tests ran, 3 with a view and 1 with no open clash"));
+
+            facts.TestsRun = null;
+
+            Assert.That(Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0)),
+                Does.Contain("how many tests ran with no open clash is UNKNOWN, the tests the clash step ran were not handed in"));
         }
 
         private sealed class Tree

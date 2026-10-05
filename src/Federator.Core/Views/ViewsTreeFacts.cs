@@ -6,9 +6,10 @@ namespace Federator.Core.Views
     /// <summary>
     /// Everything the VIEWS TREE block and its seven checks read, F114, Q114 point 19, gathered by
     /// the add-in after the VIEWS step: the plan, the inventory, a fresh walk of the tree after
-    /// the removals, and what was read back off each view. A view is keyed by its folders and
-    /// name joined by a slash, PlannedTestView.ToString. A read back that is null was not read,
-    /// and the check then rests on the plan and says so.
+    /// the removals, and what was read back off each view. A view is keyed by its written place,
+    /// ViewPlace.Of, which PlannedTestView.ToString gives. A read back that is null was not read,
+    /// and the check then rests on the plan and says so. A part the checks need that is null makes
+    /// those checks say they did not run, and they are never counted as holding.
     /// </summary>
     public sealed class ViewsTreeFacts
     {
@@ -42,10 +43,14 @@ namespace Federator.Core.Views
         /// <summary>Per view, the items it reads back as painted, or null where not read.</summary>
         public IDictionary<string, IList<ItemPath>> PaintedReadBack { get; set; }
 
-        /// <summary>The tests the clash step ran.</summary>
+        /// <summary>The tests the clash step ran, or null where not handed in, which makes the tests with no open clash UNKNOWN.</summary>
         public ICollection<string> TestsRun { get; set; }
 
-        /// <summary>The tests the mirror rule says are mirrors and not run, or null where no mirror rule ran, F132.</summary>
+        /// <summary>
+        /// The tests the mirror rule says are mirrors and not run, F132, the same list the plan was
+        /// handed. A plain list of test names until fix-F132 is merged, and null where no mirror
+        /// rule ran, so check 5 did not run.
+        /// </summary>
         public ICollection<string> Mirrors { get; set; }
 
         /// <summary>The codes a per clash viewpoint's pair folder is read against.</summary>

@@ -40,12 +40,12 @@ namespace Federator.Core.Tests
             }
 
             ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), Codes, Settings);
-            return TestViewPlan.For(clashes, teams, Settings);
+            return TestViewPlan.For(clashes, teams, null, Settings);
         }
 
         private static string[] Mark(string stamp, string[] folders, string name, Point3 camera)
         {
-            return new[] { ToolViewMark.Body(stamp, string.Join("/", folders), name, camera, null, Settings) };
+            return new[] { ToolViewMark.Body(stamp, folders, name, camera, null, Settings) };
         }
 
         private static ViewNode View(string[] folders, string name, int index, string[] comments = null, Point3 camera = null)

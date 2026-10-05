@@ -67,8 +67,8 @@ namespace Federator.Core.Views
             return utc.ToString(StampFormat, CultureInfo.InvariantCulture);
         }
 
-        /// <summary>The whole comment body the tool writes on a view or a folder.</summary>
-        public static string Body(string stamp, string folderPath, string name, Point3 camera, string guid, ViewpointSettings settings)
+        /// <summary>The whole comment body the tool writes on a view or a folder, in those folders, outermost first.</summary>
+        public static string Body(string stamp, IList<string> folders, string name, Point3 camera, string guid, ViewpointSettings settings)
         {
             if (settings == null)
             {
@@ -81,7 +81,7 @@ namespace Federator.Core.Views
 
             return settings.MarkSentence + "\n" + settings.MarkTag
                 + StampField + Counted(stamp)
-                + PathField + Counted(folderPath)
+                + PathField + Counted(ViewPlace.FolderPath(folders))
                 + NameField + Counted(name)
                 + CameraField + cameraText
                 + GuidField + Counted(guid);
@@ -143,9 +143,9 @@ namespace Federator.Core.Views
             return new ToolViewMark(stamp, path, name, camera, guid.Length == 0 ? null : guid);
         }
 
-        /// <summary>Whose a view or folder is, from where it sits now and what it carries.</summary>
+        /// <summary>Whose a view or folder is, from the folders it sits in now, outermost first, and what it carries.</summary>
         public static MarkJudgement Judge(
-            string folderPath,
+            IList<string> folders,
             string name,
             Point3 camera,
             IList<string> comments,
@@ -188,7 +188,7 @@ namespace Federator.Core.Views
                     null);
             }
 
-            string why = Changed(mark, folderPath, name, camera, comments.Count, redlines, guid, settings);
+            string why = Changed(mark, ViewPlace.FolderPath(folders), name, camera, comments.Count, redlines, guid, settings);
 
             return why == null
                 ? new MarkJudgement(ViewOwner.Ours, "made by this tool and unchanged", mark)

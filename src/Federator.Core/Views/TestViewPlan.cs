@@ -24,12 +24,21 @@ namespace Federator.Core.Views
     ///
     /// THE SIZE IS F72a'S READING, SizeRule.LargestMillimetres: a rectangular service by its
     /// larger side and the larger of two services deciding, read by the add-in.
+    ///
+    /// NO MIRRORED TEST GETS A VIEW, Bader's point that there are no mirrored tests, F114 attempt
+    /// 2. The plan takes the tests F132's mirror rule names, since a mirror not run this week can
+    /// still hold the results of an earlier run in the document. A mirrored test's clashes are
+    /// left out and counted, and the test is named. Until fix-F132 is merged the add-in hands in
+    /// a plain list of test names, and null where no mirror rule ran, which the lines say.
     /// </summary>
     public static class TestViewPlan
     {
-        /// <summary>The plan for one group, the clashes in the order they were read.</summary>
+        /// <summary>
+        /// The plan for one group, the clashes in the order they were read, the mirror rule's
+        /// tests left out, or null where no mirror rule ran.
+        /// </summary>
         public static TestViewPlanOutcome For(
-            IEnumerable<ViewClash> clashes, ViewTeams teams, ViewpointSettings settings)
+            IEnumerable<ViewClash> clashes, ViewTeams teams, ICollection<string> mirrors, ViewpointSettings settings)
         {
             if (teams == null)
             {
@@ -42,7 +51,17 @@ namespace Federator.Core.Views
             }
 
             IList<ClashStatus> inScope = OpenClashes.StatusesFor(settings.ViewStatuses);
-            TestViewPlanOutcome outcome = new TestViewPlanOutcome(inScope);
+            TestViewPlanOutcome outcome = new TestViewPlanOutcome(inScope, mirrors != null);
+            HashSet<string> mirrored = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (string mirror in mirrors ?? new string[0])
+            {
+                if (mirror != null)
+                {
+                    mirrored.Add(mirror);
+                }
+            }
+
             List<string> order = new List<string>();
             Dictionary<string, List<ViewClash>> byTest = new Dictionary<string, List<ViewClash>>(StringComparer.Ordinal);
 
@@ -72,6 +91,13 @@ namespace Federator.Core.Views
             foreach (string test in order)
             {
                 List<ViewClash> all = byTest[test];
+
+                if (mirrored.Contains(test))
+                {
+                    outcome.LeaveOutMirror(test, all.Count);
+                    continue;
+                }
+
                 ViewClash first = all[0];
                 TeamPair pair = teams.PairOf(first.LeftSet, first.RightSet);
 

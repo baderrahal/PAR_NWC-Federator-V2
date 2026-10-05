@@ -37,7 +37,7 @@ namespace Federator.Core.Tests
 
         private static TestViewPlanOutcome Plan(params ViewClash[] clashes)
         {
-            return TestViewPlan.For(clashes, Teams(), new ViewpointSettings());
+            return TestViewPlan.For(clashes, Teams(), null, new ViewpointSettings());
         }
 
         private static List<string> NamesOf(PlannedTestView view)
@@ -76,7 +76,7 @@ namespace Federator.Core.Tests
             Assert.That(plan.LeftOutAt(ClashStatus.New), Is.EqualTo(0));
             Assert.That(plan.Considered, Is.EqualTo(5));
             Assert.That(plan.InViews, Is.EqualTo(2));
-            Assert.That(plan.AddsUp, Is.True);
+            Assert.That(plan.InViews + plan.LeftOut, Is.EqualTo(plan.Considered));
         }
 
         /// <summary>The view's camera is its first open clash in read order, one camera per view.</summary>
@@ -171,6 +171,7 @@ namespace Federator.Core.Tests
             TestViewPlanOutcome plan = TestViewPlan.For(
                 new[] { Clash("T", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", size: SizeVerdict.Large) },
                 Teams(),
+                null,
                 settings);
 
             Assert.That(plan.Views[0].SizeFolder, Is.EqualTo("Over 250mm"));
@@ -217,7 +218,7 @@ namespace Federator.Core.Tests
             Assert.That(plan.Views.Count, Is.EqualTo(1));
             Assert.That(plan.Views[0].Name, Is.EqualTo("Open"));
             Assert.That(plan.TestsWithNoOpenClash, Is.EqualTo(1));
-            Assert.That(plan.AddsUp, Is.True);
+            Assert.That(plan.InViews + plan.LeftOut, Is.EqualTo(plan.Considered));
         }
 
         [Test]
@@ -227,7 +228,7 @@ namespace Federator.Core.Tests
 
             Assert.That(plan.Views, Is.Empty);
             Assert.That(plan.Considered, Is.EqualTo(0));
-            Assert.That(plan.AddsUp, Is.True);
+            Assert.That(plan.InViews + plan.LeftOut, Is.EqualTo(plan.Considered));
         }
 
         // ---------- points 9, 10 and 12, the tree ----------
@@ -251,7 +252,7 @@ namespace Federator.Core.Tests
                 TeamMapTests.MapOf(TeamMapTests.BadersMap), new[] { "HV", "PL" }, new ViewpointSettings());
 
             TestViewPlanOutcome plan = TestViewPlan.For(
-                new[] { Clash("T", "Clash1", "BLD-HV-Ducts", "BLD-PL-Pipes") }, teams, new ViewpointSettings());
+                new[] { Clash("T", "Clash1", "BLD-HV-Ducts", "BLD-PL-Pipes") }, teams, null, new ViewpointSettings());
 
             Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "A", "Mechanical vs Mechanical" }));
         }
@@ -326,6 +327,85 @@ namespace Federator.Core.Tests
             Assert.That(plan.UnknownSets, Is.EqualTo(new[] { "BLD-Security Devices" }));
         }
 
+        /// <summary>
+        /// The reviewer's finding 6: the set half of the plan's lines names the set with no code
+        /// under its count, as the size half does.
+        /// </summary>
+        [Test]
+        public void ASetNameWithNoCodeIsNamedInTheLines()
+        {
+            IList<string> lines = Plan(
+                Clash("T", "Clash1", "BLD-EL-Lighting Fixtures", "BLD-Security Devices"),
+                Clash("U", "Clash1", "BLD-Security Devices", "BLD-ST-Floors")).Lines(new SizeSettings());
+
+            int at = lines.IndexOf("a set name with no code this group knows : 1, its side read as a team of UNKNOWN and none guessed at");
+
+            Assert.That(at, Is.GreaterThanOrEqualTo(0), string.Join("\n", new List<string>(lines).ToArray()));
+            Assert.That(lines[at + 1], Is.EqualTo("    BLD-Security Devices"));
+        }
+
+        // ---------- the mirrors, F132, Bader's point that there are no mirrored tests ----------
+
+        /// <summary>
+        /// F114 attempt 2, the breaker's finding 1. The plan takes the mirror rule's tests, so a
+        /// mirrored test gets no view even where its old results are in the document, and it is
+        /// named with its clashes counted apart.
+        /// </summary>
+        [Test]
+        public void AMirroredTestGetsNoViewAndIsNamed()
+        {
+            const string Kept = "BLD-ME-Ducts-vs-BLD-ST-Columns";
+            const string Mirror = "BLD-ST-Columns-vs-BLD-ME-Ducts";
+
+            TestViewPlanOutcome plan = TestViewPlan.For(
+                new[]
+                {
+                    Clash(Kept, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns"),
+                    Clash(Mirror, "Clash1", "BLD-ST-Columns", "BLD-ME-Ducts"),
+                    Clash(Mirror, "Clash2", "BLD-ST-Columns", "BLD-ME-Ducts", ClashStatus.Resolved)
+                },
+                Teams(),
+                new[] { Mirror },
+                new ViewpointSettings());
+
+            Assert.That(plan.Views.Count, Is.EqualTo(1));
+            Assert.That(plan.Views[0].Name, Is.EqualTo(Kept));
+            Assert.That(plan.PairOfTest(Mirror), Is.Null, "a mirror is no test of this plan");
+            Assert.That(plan.Mirrored, Is.EqualTo(new[] { Mirror }));
+            Assert.That(plan.LeftOutAsMirrors, Is.EqualTo(2));
+            Assert.That(plan.LeftOutAt(ClashStatus.Resolved), Is.EqualTo(0), "a mirror's clashes are counted once, as a mirror's");
+            Assert.That(plan.InViews + plan.LeftOut + plan.LeftOutAsMirrors, Is.EqualTo(plan.Considered));
+
+            IList<string> lines = plan.Lines(new SizeSettings());
+
+            Assert.That(lines, Has.Member("mirrored tests, so no view : 1, their 2 clashes left out"));
+            Assert.That(lines, Has.Member("    " + Mirror));
+            Assert.That(lines, Has.Member("clashes looked at : 3, open in views 1, left out by status 0, of mirrored tests 2"));
+        }
+
+        /// <summary>With no mirror rule handed in the plan cannot know a mirror, and its lines say so.</summary>
+        [Test]
+        public void APlanHandedNoMirrorRuleSaysSo()
+        {
+            IList<string> lines = Plan(Clash("T", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns")).Lines(new SizeSettings());
+
+            Assert.That(lines, Has.Member("mirrored tests : UNKNOWN, no mirror rule was handed to the plan, so a mirrored test gets a view as any test does"));
+        }
+
+        /// <summary>
+        /// The breaker's finding 3: a test with no clash at all is never handed to the plan, so the
+        /// plan's count is of the tests whose every clash is at a status no view shows, and says so.
+        /// </summary>
+        [Test]
+        public void ThePlanSaysWhichTestsWithNoOpenClashItCounts()
+        {
+            IList<string> lines = Plan(
+                Clash("Shut", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.Resolved),
+                Clash("Open", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New)).Lines(new SizeSettings());
+
+            Assert.That(lines, Has.Member("tests whose every clash is at a status no view shows, so no view : 1, a test with no clash at all is not handed to the plan and not counted here"));
+        }
+
         /// <summary>Q123 by its default A: with no team map every code is a team of its own and no pair carries the size folder.</summary>
         [Test]
         public void WithNoTeamMapThePairsAreCodesAndNoSizeFolderIsMade()
@@ -335,6 +415,7 @@ namespace Federator.Core.Tests
             TestViewPlanOutcome plan = TestViewPlan.For(
                 new[] { Clash("T", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", size: SizeVerdict.Large) },
                 teams,
+                null,
                 new ViewpointSettings());
 
             Assert.That(plan.Views.Count, Is.EqualTo(1));
@@ -354,14 +435,14 @@ namespace Federator.Core.Tests
                 clashes.Add(Clash("T", "Clash" + i, "BLD-ME-Ducts", "BLD-ST-Columns", size: SizeVerdict.SizeUnknown));
             }
 
-            IList<string> every = TestViewPlan.For(clashes, Teams(), settings).Lines(settings.Sizes);
+            IList<string> every = TestViewPlan.For(clashes, Teams(), null, settings).Lines(settings.Sizes);
 
             Assert.That(every, Has.Member("size could not be read, in a pair with a size folder : 7, every one in its pair view and none dropped"));
             Assert.That(every, Has.Member("    T / Clash7"));
 
             settings.Sizes.NameEveryUnknown = false;
             settings.Sizes.ExamplesWhenNotNamingEvery = 5;
-            IList<string> some = TestViewPlan.For(clashes, Teams(), settings).Lines(settings.Sizes);
+            IList<string> some = TestViewPlan.For(clashes, Teams(), null, settings).Lines(settings.Sizes);
 
             Assert.That(some, Has.Member("    T / Clash5"));
             Assert.That(some, Has.No.Member("    T / Clash6"));
@@ -409,7 +490,7 @@ namespace Federator.Core.Tests
                         null, null, null, null, null));
                 }
 
-                TestViewPlanOutcome plan = TestViewPlan.For(clashes, Teams(), new ViewpointSettings());
+                TestViewPlanOutcome plan = TestViewPlan.For(clashes, Teams(), null, new ViewpointSettings());
                 Dictionary<string, int> seen = new Dictionary<string, int>();
 
                 foreach (PlannedTestView view in plan.Views)
@@ -425,7 +506,7 @@ namespace Federator.Core.Tests
 
                 Assert.That(seen.Count, Is.EqualTo(open), "round " + round);
                 Assert.That(new List<int>(seen.Values).TrueForAll(n => n == 1), Is.True, "round " + round);
-                Assert.That(plan.AddsUp, Is.True, "round " + round);
+                Assert.That(plan.InViews + plan.LeftOut, Is.EqualTo(plan.Considered), "round " + round);
             }
         }
     }

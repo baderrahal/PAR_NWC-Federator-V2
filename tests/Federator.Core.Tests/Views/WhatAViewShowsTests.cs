@@ -98,6 +98,24 @@ namespace Federator.Core.Tests
             Assert.That(CodesOf(shown.Hidden), Is.EqualTo(new[] { "ST" }));
         }
 
+        /// <summary>
+        /// F114 attempt 2, the breaker's finding 2. A home that could not be read, or that names
+        /// no model of the group, was dropped without a word. Each is counted or named, since
+        /// whether the model of that clashing item is shown is UNKNOWN.
+        /// </summary>
+        [Test]
+        public void AHomeNotReadOrOfNoModelOfTheGroupIsCountedAndNamed()
+        {
+            ModelTeam[] models = { Model("AR"), Model("EL"), Model("ME"), Model("ST") };
+
+            ShownModels shown = ShownModels.For(
+                PairOf("ME", "EL"), models, new[] { string.Empty, null, "elsewhere.nwc", Model("ME").FileName, "elsewhere.nwc" });
+
+            Assert.That(shown.HomesNotRead, Is.EqualTo(2));
+            Assert.That(shown.HomesNotInGroup, Is.EqualTo(new[] { "elsewhere.nwc" }));
+            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "EL", "ME" }), "what is shown is unchanged");
+        }
+
         [Test]
         public void AModelWhoseCodeWillNotReadIsShownAndCounted()
         {

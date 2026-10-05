@@ -15,6 +15,10 @@ namespace Federator.Core.Views
     /// never hidden on a guess and is counted. A home in a model of a third team is shown and
     /// named as an exception, the VIEWS TREE check 3 reports it. Every other model is hidden.
     /// File names compare Ordinal, as the document holds them.
+    ///
+    /// A HOME NOT KNOWN IS SAID, F114 attempt 2. A home that could not be read is counted, and one
+    /// that names no model of the group is named, because whether the model of that clashing item
+    /// is shown is UNKNOWN, and check 3 says so for its view.
     /// </summary>
     public sealed class ShownModels
     {
@@ -22,6 +26,7 @@ namespace Federator.Core.Views
         private readonly List<ModelTeam> hidden = new List<ModelTeam>();
         private readonly List<ModelTeam> exceptions = new List<ModelTeam>();
         private readonly List<ModelTeam> noCode = new List<ModelTeam>();
+        private readonly List<string> homesNotInGroup = new List<string>();
 
         private ShownModels()
         {
@@ -51,6 +56,15 @@ namespace Federator.Core.Views
             get { return new ReadOnlyCollection<ModelTeam>(noCode); }
         }
 
+        /// <summary>How many of the homes handed in could not be read, null or empty.</summary>
+        public int HomesNotRead { get; private set; }
+
+        /// <summary>Each home handed in that names no model of the group, once, in the order handed in.</summary>
+        public ReadOnlyCollection<string> HomesNotInGroup
+        {
+            get { return new ReadOnlyCollection<string>(homesNotInGroup); }
+        }
+
         /// <summary>What a view of that pair shows, given the group's models and the models its clashing items live in.</summary>
         public static ShownModels For(TeamPair pair, IEnumerable<ModelTeam> models, IEnumerable<string> homes)
         {
@@ -59,32 +73,34 @@ namespace Federator.Core.Views
                 throw new ArgumentNullException("pair");
             }
 
-            HashSet<string> homeNames = new HashSet<string>(StringComparer.Ordinal);
+            ShownModels outcome = new ShownModels();
+            List<string> homeNames = new List<string>();
 
             if (homes != null)
             {
                 foreach (string home in homes)
                 {
-                    if (!string.IsNullOrEmpty(home))
+                    if (string.IsNullOrEmpty(home))
+                    {
+                        outcome.HomesNotRead = outcome.HomesNotRead + 1;
+                    }
+                    else if (!homeNames.Contains(home))
                     {
                         homeNames.Add(home);
                     }
                 }
             }
 
-            ShownModels outcome = new ShownModels();
+            HashSet<string> fileNames = new HashSet<string>(StringComparer.Ordinal);
 
-            if (models == null)
-            {
-                return outcome;
-            }
-
-            foreach (ModelTeam model in models)
+            foreach (ModelTeam model in models ?? new ModelTeam[0])
             {
                 if (model == null)
                 {
                     continue;
                 }
+
+                fileNames.Add(model.FileName);
 
                 bool ofThePair = string.Equals(model.Team, pair.First, StringComparison.Ordinal)
                     || string.Equals(model.Team, pair.Second, StringComparison.Ordinal);
@@ -109,6 +125,7 @@ namespace Federator.Core.Views
                 }
             }
 
+            outcome.homesNotInGroup.AddRange(homeNames.FindAll(home => !fileNames.Contains(home)));
             return outcome;
         }
     }

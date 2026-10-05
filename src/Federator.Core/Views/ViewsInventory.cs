@@ -33,8 +33,6 @@ namespace Federator.Core.Views
     /// </summary>
     public sealed class ViewsInventory
     {
-        private const string KeySeparator = "\u001f";
-
         private readonly List<InventoryItem> items = new List<InventoryItem>();
         private readonly List<InventoryItem> removals = new List<InventoryItem>();
 
@@ -139,7 +137,7 @@ namespace Federator.Core.Views
 
             foreach (ViewNode folder in folders)
             {
-                decided[folder] = OnATwinPath(folder, twinPaths) || twinPaths.Contains(Key(folder.Folders, folder.Name))
+                decided[folder] = OnATwinPath(folder, twinPaths) || twinPaths.Contains(ViewPlace.Key(folder.Folders, folder.Name, true))
                     ? Twin(folder)
                     : Folder(folder, nodes, decided, legacy, toolFolders, settings);
             }
@@ -216,7 +214,7 @@ namespace Federator.Core.Views
             }
 
             MarkJudgement judged = ToolViewMark.Judge(
-                node.FolderPath, node.Name, node.Camera, node.Comments, node.Redlines, node.Guid, facts.Settings);
+                node.Folders, node.Name, node.Camera, node.Comments, node.Redlines, node.Guid, facts.Settings);
 
             if (judged.Owner == ViewOwner.ChangedByAPerson)
             {
@@ -284,7 +282,7 @@ namespace Federator.Core.Views
             ViewpointSettings settings)
         {
             MarkJudgement judged = ToolViewMark.Judge(
-                folder.FolderPath, folder.Name, null, folder.Comments, folder.Redlines, folder.Guid, settings);
+                folder.Folders, folder.Name, null, folder.Comments, folder.Redlines, folder.Guid, settings);
 
             if (judged.Owner == ViewOwner.ChangedByAPerson)
             {
@@ -359,7 +357,7 @@ namespace Federator.Core.Views
                     return byDepth;
                 }
 
-                int byParent = string.CompareOrdinal(Key(a.Node.Folders, null), Key(b.Node.Folders, null));
+                int byParent = string.CompareOrdinal(ViewPlace.ParentKey(a.Node.Folders), ViewPlace.ParentKey(b.Node.Folders));
 
                 return byParent != 0 ? byParent : b.Node.IndexInParent.CompareTo(a.Node.IndexInParent);
             });
@@ -395,9 +393,9 @@ namespace Federator.Core.Views
 
             foreach (ViewNode node in nodes)
             {
-                if (node.IsFolder && !seen.Add(Key(node.Folders, node.Name)))
+                if (node.IsFolder && !seen.Add(ViewPlace.Key(node.Folders, node.Name, true)))
                 {
-                    twins.Add(Key(node.Folders, node.Name));
+                    twins.Add(ViewPlace.Key(node.Folders, node.Name, true));
                 }
             }
 
@@ -410,7 +408,7 @@ namespace Federator.Core.Views
             {
                 List<string> above = new List<string>(node.Folders).GetRange(0, depth - 1);
 
-                if (twinPaths.Contains(Key(above, node.Folders[depth - 1])))
+                if (twinPaths.Contains(ViewPlace.Key(above, node.Folders[depth - 1], true)))
                 {
                     return true;
                 }
@@ -419,21 +417,10 @@ namespace Federator.Core.Views
             return false;
         }
 
-        private static string Key(IList<string> folders, string name)
-        {
-            List<string> parts = new List<string>(folders);
-
-            if (name != null)
-            {
-                parts.Add(name);
-            }
-
-            return string.Join(KeySeparator, parts.ToArray());
-        }
-
+        /// <summary>Whether two views sit at one place, by ViewPlace's one key.</summary>
         private static bool SamePlace(IList<string> foldersA, string nameA, IList<string> foldersB, string nameB)
         {
-            return string.Equals(Key(foldersA, nameA), Key(foldersB, nameB), StringComparison.Ordinal);
+            return string.Equals(ViewPlace.Key(foldersA, nameA, false), ViewPlace.Key(foldersB, nameB, false), StringComparison.Ordinal);
         }
 
         /// <summary>What every decision of one inventory reads, gathered once.</summary>

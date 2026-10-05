@@ -1144,9 +1144,13 @@ and 6 does not read as broken.
   changed. A unit the table does not know FAILS rather than falling back, which is F33's
   rule. ANYTHING WHOSE SIZE CANNOT BE READ IS INCLUDED, because a fitting usually carries
   no size property at all and dropping it would leave real geometry out of a viewpoint with
-  nothing in the output to say so. Every one of them in a pair carrying the size folder is
-  named with its test and clash in the VIEWS block, `TestViewPlanOutcome.Lines`, under a
-  line saying how many and that none was dropped. That is a
+  nothing in the output to say so. In the per test views of F114 such a clash is in its
+  test's view in the pair folder and never under Over 150mm, so the Over 150mm view holds
+  only the services whose size was read over the threshold. Every one of them in a pair
+  carrying the size folder is named with its test and clash in the VIEWS block,
+  `TestViewPlanOutcome.Lines`, under a line saying how many and that none was dropped, once
+  the add-in pass of F114 wires it. Until then the block that runs is F85's, which counts
+  them and names none, `ClashViewpointPlan`, FR-068. That is a
   deliberate departure from the rule about logging a count and five examples, which is
   about many lines saying ONE thing: these lines each name a different item that may be
   wrongly in or out, and reading five tells you nothing about the sixth. Naming every one
@@ -1165,15 +1169,25 @@ and 6 does not read as broken.
   and never copied. In a pair carrying the size folder a clash whose larger service is over
   the threshold goes in the test's view under Over 150mm and every other clash in its view
   in the pair folder, so no clash is in two views, and a test with no open clash gets no
-  view. The views come in the order a person reads them, priority, pair in the map's order,
+  view. NO MIRRORED TEST GETS A VIEW, Bader's point that there are no mirrored tests: the
+  plan takes the tests F132's mirror rule names, a plain list of test names until fix-F132
+  is merged, because a mirror not run this week can still hold an earlier run's results in
+  the document. A mirror's clashes are left out and counted and the test named, and with no
+  mirror rule handed in the plan's lines say so. The views come in the order a person reads them, priority, pair in the map's order,
   the pair's views, its size folder, test name Ordinal. `ShownModels` shows the pair's two
   teams' models, the model each clashing item lives in, a third team's named as an
-  exception, and every model whose code will not read, and hides the rest. `PaintPlan` paints
+  exception, and every model whose code will not read, and hides the rest. A home that could
+  not be read is counted and one naming no model of the group is named, since whether that
+  model is shown is UNKNOWN. `PaintPlan` paints
   every first item red and every second green unless already red. `FramingBox` frames the
   open clash centres padded by `FramingMarginMillimetres`, chosen and not measured, through
   UnitTable, and gives a view of one clash no box so it keeps Clash Detective's own camera
 - ONLY WHAT THIS TOOL MADE IS EVER REMOVED, Q114 point 16, F114, by the design's four safety
-  rules. `ToolViewMark` writes one comment on every view and folder the tool makes, a
+  rules. THE PLACE OF A VIEW IS WRITTEN ONCE, `ViewPlace`: its folders and name joined by a
+  slash for a person to read, and a key telling a folder from a view and a folder named A/B
+  from two folders, by which the mark, the plan, the walk, the block, the inventory and the
+  checks all compare a place. A second way of writing it would make every tool view read as
+  a person's. `ToolViewMark` writes one comment on every view and folder the tool makes, a
   sentence a person reads and a fingerprint of its place, name, camera and, once P10 holds,
   its Guid, each text written with its length so any name reads back exactly. It is the
   tool's only while that one comment is there and everything reads as written, and
@@ -1191,9 +1205,16 @@ and 6 does not read as broken.
   a fresh walk after the removals where the document can say and the plan where it cannot,
   and says which: no pair folder holds another pair's test, no Over 150mm outside its own
   pair, no view shows a third team's model beyond the named exceptions, no clash in two
-  views, no mirrored test run, every view not the tool's still there, and no per clash
+  views, no mirrored test run or given a view, read off the tests the plan made views for
+  and the tests run, every view and folder the inventory kept still there, and no per clash
   viewpoint left without a reason. A failed check is a FAILED line naming what broke it and
-  the group keeps its own result. `ViewsTree.Lines` cuts the tree at `TreeLinesInLog` for the
+  the group keeps its own result. A CHECK THAT COULD NOT RUN IS NEVER COUNTED AS HOLDING:
+  check 5 with no mirror rule handed in, checks 1 and 2 with no walk, no run stamp or not one
+  planned view found marked by this run, check 3 with no models, checks 6 and 7 with no walk
+  or no inventory, and 7 with no codes or test names say DID NOT RUN and why, and the last
+  line counts them apart, CLAUDE.md, never report a check that did not run. The tests that
+  ran with no open clash are counted off the tests the clash step ran, UNKNOWN where those
+  were not handed in, since a test with no clash at all never reaches the plan. `ViewsTree.Lines` cuts the tree at `TreeLinesInLog` for the
   .log and says so, the .tsv whole, and never cuts a check. `ViewsProgress` writes a VIEWS
   line at least every `ProgressEverySeconds`, FR-071
 - A group about to BUILD an NWF beside a file whose name is nearly the one it would write

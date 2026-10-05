@@ -17,7 +17,7 @@ namespace Federator.Core.Tests
     [TestFixture]
     public class ToolViewMarkTests
     {
-        private const string Path = "A/Structure vs Mechanical";
+        private static readonly string[] Path = { "A", "Structure vs Mechanical" };
         private const string Name = "BLD-ME-Ducts-vs-BLD-ST-Columns";
 
         private static readonly ViewpointSettings Settings = new ViewpointSettings();
@@ -29,12 +29,12 @@ namespace Federator.Core.Tests
             return ToolViewMark.StampOf(new DateTime(2026, 10, 5, 9, 52, 53, DateTimeKind.Utc));
         }
 
-        private static string BodyOf(string path, string name, Point3 camera, string guid = null)
+        private static string BodyOf(string[] path, string name, Point3 camera, string guid = null)
         {
             return ToolViewMark.Body(Stamp(), path, name, camera, guid, Settings);
         }
 
-        private static MarkJudgement Judge(string path, string name, Point3 camera, IList<string> comments, int? redlines = 0, string guid = null)
+        private static MarkJudgement Judge(string[] path, string name, Point3 camera, IList<string> comments, int? redlines = 0, string guid = null)
         {
             return ToolViewMark.Judge(path, name, camera, comments, redlines, guid, Settings);
         }
@@ -48,7 +48,7 @@ namespace Federator.Core.Tests
             Assert.That(body, Does.StartWith(ViewpointSettings.DefaultMarkSentence), "a person reads the sentence first");
             Assert.That(mark, Is.Not.Null);
             Assert.That(mark.Stamp, Is.EqualTo("2026-10-05T09:52:53Z"));
-            Assert.That(mark.FolderPath, Is.EqualTo(Path));
+            Assert.That(mark.FolderPath, Is.EqualTo("A/Structure vs Mechanical"));
             Assert.That(mark.Name, Is.EqualTo(Name));
             Assert.That(mark.Camera.DistanceTo(Camera), Is.LessThan(0.001));
             Assert.That(mark.Guid, Is.EqualTo("a1b2"));
@@ -60,7 +60,7 @@ namespace Federator.Core.Tests
         {
             foreach (string name in new[] { "Walls-vs-Columns ", " guid=7:x name=3:abc", "12:34", string.Empty, "Over 150mm" })
             {
-                ToolViewMark mark = ToolViewMark.Read(BodyOf(Path + "/Over 150mm", name, null), Settings);
+                ToolViewMark mark = ToolViewMark.Read(BodyOf(new[] { "A", "Structure vs Mechanical", "Over 150mm" }, name, null), Settings);
 
                 Assert.That(mark, Is.Not.Null, name);
                 Assert.That(mark.Name, Is.EqualTo(name));
@@ -110,7 +110,7 @@ namespace Federator.Core.Tests
         [Test]
         public void AFolderAsTheToolWroteItIsOurs()
         {
-            MarkJudgement judged = Judge("A", "Structure vs Mechanical", null, new[] { BodyOf("A", "Structure vs Mechanical", null) });
+            MarkJudgement judged = Judge(new[] { "A" }, "Structure vs Mechanical", null, new[] { BodyOf(new[] { "A" }, "Structure vs Mechanical", null) });
 
             Assert.That(judged.Owner, Is.EqualTo(ViewOwner.Ours), judged.Why);
         }
@@ -121,7 +121,7 @@ namespace Federator.Core.Tests
             string[] body = { BodyOf(Path, Name, Camera) };
 
             Assert.That(Judge(Path, Name + " mine", Camera, body).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "renamed");
-            Assert.That(Judge("B/Structure vs Mechanical", Name, Camera, body).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "moved");
+            Assert.That(Judge(new[] { "B", "Structure vs Mechanical" }, Name, Camera, body).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "moved");
             Assert.That(Judge(Path, Name, new Point3(12.3456, -7.0, 1001.0), body).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "turned");
             Assert.That(Judge(Path, Name, Camera, new[] { body[0], "check this one, Rami" }).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "commented on");
             Assert.That(Judge(Path, Name, Camera, body, 1).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "drawn on");
@@ -132,7 +132,7 @@ namespace Federator.Core.Tests
         [Test]
         public void ACopyInAnotherFolderIsAPersons()
         {
-            MarkJudgement judged = Judge("My views", Name, Camera, new[] { BodyOf(Path, Name, Camera) });
+            MarkJudgement judged = Judge(new[] { "My views" }, Name, Camera, new[] { BodyOf(Path, Name, Camera) });
 
             Assert.That(judged.Owner, Is.EqualTo(ViewOwner.ChangedByAPerson));
             Assert.That(judged.Why, Does.Contain("My views"));

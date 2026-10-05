@@ -56,15 +56,15 @@ namespace Federator.Core.Views
         /// <summary>For a folder, whether it held nothing before this run wrote anything.</summary>
         public bool EmptyBeforeTheRun { get; private set; }
 
-        /// <summary>The folders joined by a slash, the way the mark names a place.</summary>
+        /// <summary>The folders joined by a slash, ViewPlace's written place.</summary>
         public string FolderPath
         {
-            get { return string.Join("/", new List<string>(Folders).ToArray()); }
+            get { return ViewPlace.FolderPath(Folders); }
         }
 
         public override string ToString()
         {
-            return Folders.Count == 0 ? Name : FolderPath + "/" + Name;
+            return ViewPlace.Of(Folders, Name);
         }
     }
 }

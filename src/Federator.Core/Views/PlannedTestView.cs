@@ -72,15 +72,16 @@ namespace Federator.Core.Views
             }
         }
 
-        /// <summary>The folders joined by a slash, the way the mark and the log name a place.</summary>
+        /// <summary>The folders joined by a slash, ViewPlace's written place.</summary>
         public string FolderPath
         {
-            get { return string.Join("/", new List<string>(Folders).ToArray()); }
+            get { return ViewPlace.FolderPath(Folders); }
         }
 
+        /// <summary>Its place, the key the read backs of ViewsTreeFacts are kept under.</summary>
         public override string ToString()
         {
-            return FolderPath + "/" + Name;
+            return ViewPlace.Of(Folders, Name);
         }
     }
 }

@@ -14,11 +14,25 @@ namespace Federator.Core.Views
         private readonly Dictionary<string, TeamPair> pairOfTest = new Dictionary<string, TeamPair>(StringComparer.Ordinal);
         private readonly List<string> sizeUnknown = new List<string>();
         private readonly List<string> unknownSets = new List<string>();
+        private readonly List<string> mirrored = new List<string>();
 
-        internal TestViewPlanOutcome(IList<ClashStatus> inScope)
+        internal TestViewPlanOutcome(IList<ClashStatus> inScope, bool mirrorRuleHandedIn)
         {
             InScope = new ReadOnlyCollection<ClashStatus>(new List<ClashStatus>(inScope));
+            MirrorRuleHandedIn = mirrorRuleHandedIn;
         }
+
+        /// <summary>Whether the mirror rule's tests were handed to the plan, so a mirror can be known.</summary>
+        public bool MirrorRuleHandedIn { get; private set; }
+
+        /// <summary>Each test the mirror rule names that the plan was handed clashes of, once, so it got no view.</summary>
+        public ReadOnlyCollection<string> Mirrored
+        {
+            get { return new ReadOnlyCollection<string>(mirrored); }
+        }
+
+        /// <summary>The clashes of those mirrored tests, left out whatever their status.</summary>
+        public int LeftOutAsMirrors { get; private set; }
 
         /// <summary>The statuses a view shows.</summary>
         public ReadOnlyCollection<ClashStatus> InScope { get; private set; }
@@ -35,7 +49,10 @@ namespace Federator.Core.Views
         /// <summary>The open clashes the views hold, each once.</summary>
         public int InViews { get; internal set; }
 
-        /// <summary>The tests whose every clash is at a status no view shows, so no view is made, point 15.</summary>
+        /// <summary>
+        /// The tests whose every clash is at a status no view shows, so no view is made, point 15.
+        /// A test with no clash at all is never handed to the plan and is not counted here.
+        /// </summary>
         public int TestsWithNoOpenClash { get; internal set; }
 
         /// <summary>Every clash in a pair carrying the size folder whose service size could not be read, by test and clash, FR-068.</summary>
@@ -57,7 +74,7 @@ namespace Federator.Core.Views
             return leftOut.TryGetValue(status, out count) ? count : 0;
         }
 
-        /// <summary>Every clash at a status no view shows.</summary>
+        /// <summary>Every clash at a status no view shows, a mirrored test's not among them.</summary>
         public int LeftOut
         {
             get
@@ -71,12 +88,6 @@ namespace Federator.Core.Views
 
                 return all;
             }
-        }
-
-        /// <summary>Whether the open clashes in views and the clashes left out make every clash looked at.</summary>
-        public bool AddsUp
-        {
-            get { return InViews + LeftOut == Considered; }
         }
 
         /// <summary>The team pair of a test the plan was handed, or null where it never saw that test.</summary>
@@ -102,6 +113,12 @@ namespace Federator.Core.Views
             leftOut[status] = LeftOutAt(status) + 1;
         }
 
+        internal void LeaveOutMirror(string testName, int clashes)
+        {
+            mirrored.Add(testName);
+            LeftOutAsMirrors = LeftOutAsMirrors + clashes;
+        }
+
         internal void Pair(string testName, TeamPair pair)
         {
             if (!pairOfTest.ContainsKey(testName))
@@ -124,15 +141,17 @@ namespace Federator.Core.Views
         }
 
         /// <summary>
-        /// The VIEWS block's plan lines: the counts, the clashes left out by status, every size
-        /// that could not be read named, or as many as the settings say with the rest counted,
-        /// and every set name with no code named. Nothing is guessed and nothing is silent.
+        /// The VIEWS block's plan lines: the counts, the clashes left out by status, the mirrored
+        /// tests named or said UNKNOWN, every size that could not be read named, or as many as the
+        /// settings say with the rest counted, and every set name with no code named. Nothing is
+        /// guessed and nothing is silent.
         /// </summary>
         public IList<string> Lines(SizeSettings sizes)
         {
             List<string> lines = new List<string>();
 
-            lines.Add("clashes looked at : " + Considered);
+            lines.Add("clashes looked at : " + Considered + ", open in views " + InViews + ", left out by status " + LeftOut
+                + ", of mirrored tests " + LeftOutAsMirrors);
             lines.Add("open clashes in views : " + InViews + ", in " + views.Count + " views");
 
             foreach (ClashStatus status in Enum.GetValues(typeof(ClashStatus)))
@@ -144,11 +163,18 @@ namespace Federator.Core.Views
                 }
             }
 
-            lines.Add("tests with no open clash, so no view : " + TestsWithNoOpenClash);
-            lines.Add(AddsUp
-                ? "open clashes in views " + InViews + " and clashes left out " + LeftOut + " make the " + Considered + " looked at"
-                : "DOES NOT ADD UP: open clashes in views " + InViews + " and clashes left out " + LeftOut
-                    + " against " + Considered + " looked at");
+            lines.Add("tests whose every clash is at a status no view shows, so no view : " + TestsWithNoOpenClash
+                + ", a test with no clash at all is not handed to the plan and not counted here");
+
+            if (MirrorRuleHandedIn)
+            {
+                lines.Add("mirrored tests, so no view : " + mirrored.Count + ", their " + LeftOutAsMirrors + " clashes left out");
+                Named(lines, mirrored, null);
+            }
+            else
+            {
+                lines.Add("mirrored tests : UNKNOWN, no mirror rule was handed to the plan, so a mirrored test gets a view as any test does");
+            }
 
             lines.Add("size could not be read, in a pair with a size folder : " + sizeUnknown.Count
                 + ", every one in its pair view and none dropped");
