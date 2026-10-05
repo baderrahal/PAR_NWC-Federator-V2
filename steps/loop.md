@@ -219,6 +219,17 @@ which stays out of the evidence, and left.
 The evidence is masked into steps\runs\04\item1-C04 with no copy differing,
 turn5\mask-run04-item1-C04.txt. The loop's Navisworks was gone at 06:36:58 and no Roamer has run since 06:38:02, the waiter's lines
 556 to 561 and the lead's read of 0 at 06:53:29, turn5\f126-proof\roamer-reads-harness.txt.
+F126 MERGED as PR 112, 15bdbec, at 08:23:04 on 2026-10-05, green in Actions on its last commit
+5ede455, run 37267277611, turn5\actions-reads-pr112.txt. The lead ran its harness in that first
+gap: 52 passed and 0 failed on the branch at f9834e4, 8 passed and 41 failed of 49 on main's tools,
+Get-Process Roamer 0 before and after, turn5\f126-proof\prove-f126-after.txt, prove-f126-before.txt
+and roamer-reads-harness.txt. Its reviewer and breaker approved under Q93 with nothing blocking,
+turn5\f126-read-review.txt and f126-read-break.txt, and two claim-checks made its records true, the
+last turn5\f126-proof\read-claims-16b5eb7.txt. The driver can now untick a box named by its
+AutomationId before Run, for the run with F112's rule off in the test of wave 1. Its branch and
+worktree folder are removed. THE WEEKLY BASELINE ON C02, item 2, started at 07:26:06 from wt-base,
+Roamer reading 0 at 07:26:05, turn4\roamer-reads.txt, and at 08:23 had run its 528 saved tests with
+2939 clashes, the same count as item 1, and was in its VIEWS step.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
