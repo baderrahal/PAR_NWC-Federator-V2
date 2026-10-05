@@ -365,6 +365,43 @@ namespace Federator.Core.Tests
             Assert.That(outcome.PutAnythingIn, Is.True);
         }
 
+        /// <summary>
+        /// A SET THIS RUN REBUILT IS NEVER CALLED LEFT ALONE, the reviewer's finding on attempt 1.
+        /// The engine's line said every set already there was left alone, and since FR-020 a set
+        /// rebuilt from the picked file is one that changed the document, so with the box ticked
+        /// the line called a set it had just replaced left alone. The line is Core's and carries
+        /// the rebuilt count apart from the ones left alone.
+        /// </summary>
+        [Test]
+        public void TheLineOfWhatWasPutInSaysTheRebuiltSetsApartFromTheOnesLeftAlone()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
+            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), true);
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Pipes", "Pipes", 1, 3);
+
+            Assert.That(outcome.PutInLine(), Is.EqualTo(
+                "put into the document: 0 created, 2 already there, 1 of them rebuilt from the picked file and 1 left alone"));
+        }
+
+        /// <summary>With nothing rebuilt every set already there was left alone, and a leftover acted on is said after.</summary>
+        [Test]
+        public void WithNothingRebuiltTheSetsAlreadyThereAreLeftAlone()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddCreated("lcop_selection_set_tree/A/One", "One", 1, 12);
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
+            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), false);
+            outcome.AddLeftover(
+                SetLeftovers.For(
+                    new List<DocumentSet> { new DocumentSet("a/Old", "Old", new List<string> { "k" }, 0) },
+                    new List<string> { "New" })[0],
+                true);
+
+            Assert.That(outcome.PutInLine(), Is.EqualTo(
+                "put into the document: 1 created, 1 already there and left alone, 1 of 1 set(s) the file no longer names brought up to date"));
+        }
+
         private static SetDrift OneDrift(string path)
         {
             return SetDrift.Compare(

@@ -407,6 +407,28 @@ namespace Federator.Core.Sets
             return count;
         }
 
+        /// <summary>
+        /// The line the run log writes after a group's sets: what this build put into the
+        /// document, the sets created, the sets already there with those this run REBUILT said
+        /// apart from those left alone, and the leftovers brought up to date. Written in the engine
+        /// as every set already there left alone, which since FR-020 called a set this run had
+        /// just replaced left alone, the reviewer's finding on attempt 1.
+        /// </summary>
+        public string PutInLine()
+        {
+            return "put into the document: "
+                + CreatedCount + " created, "
+                + AlreadyPresentCount + " already there"
+                + (RebuiltCount > 0
+                    ? ", " + RebuiltCount + " of them rebuilt from the picked file and "
+                        + (AlreadyPresentCount - RebuiltCount) + " left alone"
+                    : " and left alone")
+                + (Leftovers.Count > 0
+                    ? ", " + ActedOnLeftovers + " of " + Leftovers.Count
+                        + " set(s) the file no longer names brought up to date"
+                    : string.Empty);
+        }
+
         private static string WhetherTheyAsk(int notRead)
         {
             return (notRead == 1 ? "whether it asks" : "whether they ask") + " what the file asks is UNKNOWN";

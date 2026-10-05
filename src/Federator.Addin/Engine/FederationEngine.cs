@@ -2674,17 +2674,12 @@ namespace Federator.Addin.Engine
                 // said, in the one line below and in the SETS step's own finish phrase.
 
                 // What decides the second NWF save is whether this build put anything
-                // into the document. A set already there was left alone and put nothing
-                // in, so on a rerun that finds sixty present and creates one, the one
-                // still counts. Comparing created against already there said nothing
-                // was built in exactly that case.
-                log.Line("SETS     " + job.Building + " put into the document: "
-                    + sets.CreatedCount + " created, "
-                    + sets.AlreadyPresentCount + " already there and left alone"
-                    + (sets.Leftovers.Count > 0
-                        ? ", " + sets.ActedOnLeftovers + " of " + sets.Leftovers.Count
-                            + " set(s) the file no longer names brought up to date"
-                        : string.Empty));
+                // into the document, PutAnythingIn below. A set already there and left alone
+                // put nothing in, and one this run rebuilt did, FR-020, so on a rerun that
+                // finds sixty present and creates one, the one still counts. Comparing created
+                // against already there said nothing was built in exactly that case. The line
+                // is Core's and says a rebuilt set apart from one left alone.
+                log.Line("SETS     " + job.Building + " " + sets.PutInLine());
 
                 // Q74. THE PAIR FAILED BETWEEN ITS TWO HALVES, so the unused twin is gone
                 // and the working set did not take its name. The document is worse than it
