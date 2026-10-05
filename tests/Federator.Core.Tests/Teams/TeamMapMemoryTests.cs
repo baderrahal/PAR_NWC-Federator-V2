@@ -174,10 +174,13 @@ namespace Federator.Core.Tests
                     TeamMap map = memory.ForNoXml(new TeamMapSettings());
 
                     Assert.That(map.Teams.Count, Is.EqualTo(0), fault[0]);
+                    // The reviewer's finding on F131's add-in half, K26: the file that could not be
+                    // read is the memory, so the line names it as the memory and never as the map.
                     TeamMapTests.Same(
                         map.Lines(),
-                        "TEAMS    no clash XML was picked, and THE TEAM MAP KEPT FROM THE LAST RUN WITH ONE, " + memoryPath
+                        "TEAMS    no clash XML was picked, and THE MEMORY OF THE TEAM MAP KEPT FROM THE LAST RUN WITH ONE, " + memoryPath
                             + ", COULD NOT BE READ: " + fault[1] + NothingApplies);
+                    Assert.That(map.WindowLine(), Is.EqualTo("Teams: no XML picked, the kept map's memory could not be read"), fault[0]);
                 }
 
                 File.WriteAllBytes(memoryPath, new byte[] { 0x6B, 0x65, 0x70, 0x74, 0x3A, 0x20, 0xC3, 0x28, 0x0A });
@@ -234,6 +237,52 @@ namespace Federator.Core.Tests
                 ExchangeDocument asItStands = new ExchangeReader().ReadText("<?xml version='1.0' encoding='UTF-8'?>\n<exchange units=\"ft\"/>\n");
 
                 Assert.That(() => memory.ForRun(asItStands, new TeamMapSettings()), Throws.ArgumentException);
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
+
+        /// <summary>
+        /// The reviewer's finding on F131's add-in half: the window's grey line picked its map by
+        /// a rule of its own. ForPick is the one rule for a path in the XML box, the map beside it
+        /// or the kept one where the box names no file, and it gives the map a run of the same
+        /// path uses, ForRun on the document ReadPicked reads.
+        /// </summary>
+        [Test]
+        public void TheGreyLineReadsTheMapARunOfTheSamePathUses()
+        {
+            string folder = TempFolder.Make("f131-memory-pick");
+
+            try
+            {
+                string xml = Path.Combine(folder, "a.xml");
+                string mapPath = Path.Combine(folder, "a.teams.txt");
+
+                File.WriteAllText(xml, "<exchange/>");
+                File.WriteAllText(mapPath, TeamMapTests.BadersMap);
+
+                TeamMapMemory memory = TeamMapMemory.Load(Path.Combine(folder, TeamMapMemory.FileName));
+                memory.Remember(TeamMap.Beside(xml, new TeamMapSettings()));
+                TeamMapSettings settings = new TeamMapSettings();
+
+                string picked = Samples.CorrectedMatrix();
+                TeamMap forPick = memory.ForPick(picked, settings);
+                TeamMap forRun = memory.ForRun(MatrixCorrections.ReadPicked(picked), settings);
+
+                Assert.That(forPick.NoXmlPicked, Is.False);
+                TeamMapTests.Same(forPick.Lines(), new System.Collections.Generic.List<string>(forRun.Lines()).ToArray());
+                Assert.That(forPick.WindowLine(), Is.EqualTo(forRun.WindowLine()));
+
+                foreach (string none in new[] { string.Empty, null })
+                {
+                    TeamMap kept = memory.ForPick(none, settings);
+
+                    Assert.That(kept.NoXmlPicked, Is.True);
+                    Assert.That(kept.ListPath, Is.EqualTo(mapPath));
+                    TeamMapTests.Same(kept.Lines(), new System.Collections.Generic.List<string>(memory.ForRun(null, settings).Lines()).ToArray());
+                }
             }
             finally
             {

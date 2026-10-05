@@ -57,6 +57,9 @@ namespace Federator.Core.Teams
 
         private readonly List<List<string>> codesOf;
 
+        /// <summary>Whether what could not be read is the memory of the kept map and not a map, TeamMapMemory, K26.</summary>
+        private bool memoryUnread;
+
         private TeamMap(
             string listPath,
             bool missing,
@@ -161,7 +164,9 @@ namespace Federator.Core.Teams
         /// </summary>
         internal static TeamMap MemoryUnread(string memoryPath, string unread, TeamMapSettings settings)
         {
-            return Nothing(memoryPath, false, true, unread, settings.UnknownTeam);
+            TeamMap map = Nothing(memoryPath, false, true, unread, settings.UnknownTeam);
+            map.memoryUnread = true;
+            return map;
         }
 
         /// <summary>The map at that one full path, tested with File.Exists, never a search.</summary>
@@ -609,7 +614,7 @@ namespace Federator.Core.Teams
             if (Unread != null)
             {
                 lines.Add(Prefix + (NoXmlPicked
-                    ? "no clash XML was picked, and " + Kept.ToUpperInvariant() + ", " + ListPath + ", COULD NOT BE READ: "
+                    ? "no clash XML was picked, and " + (memoryUnread ? "the memory of " + Kept : Kept).ToUpperInvariant() + ", " + ListPath + ", COULD NOT BE READ: "
                     : "THE TEAM MAP BESIDE THIS FILE, " + ListPath + ", COULD NOT BE READ: ") + Unread + NothingApplies);
                 return lines;
             }
@@ -649,7 +654,7 @@ namespace Federator.Core.Teams
             {
                 return ListPath == null ? "Teams: no XML picked, no map kept yet"
                     : Missing ? "Teams: no XML picked, the kept map is gone"
-                    : Unread != null ? "Teams: no XML picked, the kept map could not be read"
+                    : Unread != null ? (memoryUnread ? "Teams: no XML picked, the kept map's memory could not be read" : "Teams: no XML picked, the kept map could not be read")
                     : HoldsNone ? "Teams: no XML picked, the kept map holds no team"
                     : "Teams: no XML picked, " + Teams.Count.ToString(CultureInfo.InvariantCulture) + " read from the kept map";
             }

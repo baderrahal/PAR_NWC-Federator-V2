@@ -815,8 +815,9 @@ namespace Federator.Addin.Ui
 
         /// <summary>
         /// The grey line under the XML box, F131: which team map a run would read, the one
-        /// beside the XML in the box or, with none there, the one kept for a run with no XML.
-        /// The words are Core's, TeamMap.WindowLine, read off the map where a test reads them.
+        /// beside the XML in the box or, with none there, the one kept for a run with no XML,
+        /// chosen by Core's one rule, TeamMapMemory.ForPick. The words are Core's,
+        /// TeamMap.WindowLine, read off the map where a test reads them.
         /// </summary>
         private void ShowTeamsLine()
         {
@@ -826,9 +827,7 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            string path = PickedPath();
-
-            TeamsLine.Text = (path.Length == 0 ? keptTeams.ForNoXml(teamSettings) : TeamMap.Beside(path, teamSettings)).WindowLine();
+            TeamsLine.Text = keptTeams.ForPick(PickedPath(), teamSettings).WindowLine();
         }
 
         /// <summary>The expected label of every group that will run, in list order.</summary>

@@ -176,6 +176,17 @@ namespace Federator.Core.Teams
         }
 
         /// <summary>
+        /// The map a run of that path in the XML box reads, the one rule for the window's grey
+        /// line: the map beside it, or the kept one where the box names no file, which the window
+        /// hands in as an empty path. The same map ForRun gives for the document ReadPicked reads
+        /// at that path, the reviewer's finding on F131's add-in half.
+        /// </summary>
+        public TeamMap ForPick(string pickedPath, TeamMapSettings settings)
+        {
+            return string.IsNullOrEmpty(pickedPath) ? ForNoXml(settings) : TeamMap.Beside(pickedPath, settings);
+        }
+
+        /// <summary>
         /// Keeps the map a run with a clash XML used, where it was read whole with a team, and
         /// gives the one line the log says, whichever way it went.
         /// </summary>

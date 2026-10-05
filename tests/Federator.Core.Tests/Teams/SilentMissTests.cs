@@ -477,6 +477,14 @@ namespace Federator.Core.Tests
             ModelExport[] noModel = new ModelExport[0];
 
             TeamMapTests.Same(SilentMisses.Find(noSet, me, Map(), Hyphen, null).Lines(), NothingJudged + "no set was handed in");
+
+            // The breaker's finding on F131's add-in half, K27: a run with no XML hands in no set,
+            // so each model's line says its sets are UNKNOWN, never the line of a model no set of
+            // its team with another code was judged against, which reads as a result.
+            TeamMapTests.Same(
+                SilentMisses.Find(null, me, Map(), Hyphen, null).GroupLines(1),
+                "   ME  " + MeFile + "   ME in Mechanical, whether a set of its team with another code cannot reach it is UNKNOWN, because no set was handed in",
+                NothingJudged + "no set was handed in");
             TeamMapTests.Same(SilentMisses.Find(TheSets(), noModel, Map(), Hyphen, null).Lines(), NothingJudged + "no model was handed in");
             TeamMapTests.Same(SilentMisses.Find(noSet, noModel, Map(), Hyphen, null).Lines(), NothingJudged + "no set and no model were handed in");
             TeamMapTests.Same(SilentMisses.Find(null, null, Map(), Hyphen, null).Lines(), NothingJudged + "no set and no model were handed in");
@@ -686,9 +694,9 @@ namespace Federator.Core.Tests
             TeamMapTests.Same(
                 misses.GroupLines(6),
                 "   HV  " + HvFile + "   HV in Mechanical, 25 of the 25 set(s) of its team with another code cannot reach it",
-                "   ME  " + MeFile + "   ME in Mechanical, all 16 set(s) of its team with another code can reach it",
+                "   ME  " + MeFile + "   ME in Mechanical, none of the 16 set(s) of its team with another code is kept out of it by a workset or a file name it asks",
                 "   AR  " + ArFile + "   AR in Architecture, no set of its team with another code was judged against it",
-                "   EL  " + ElFile + "   EL in Electrical, all 1 set(s) of its team with another code can reach it",
+                "   EL  " + ElFile + "   EL in Electrical, none of the 1 set(s) of its team with another code is kept out of it by a workset or a file name it asks",
                 "   ??  " + NoCodeFile + "   UNKNOWN, its code is not read, so no set was judged against it",
                 "1 of the 6 model(s) of the group could not be read for their worksets, so no set was judged against them."
                     + " The EXPORT CHECK lines name each",

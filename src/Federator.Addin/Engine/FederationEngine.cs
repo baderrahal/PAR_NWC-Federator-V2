@@ -151,7 +151,8 @@ namespace Federator.Addin.Engine
         /// uses for its line, and the hand buttons write no file at all. Handing a folder
         /// in here is what once wrote to Clash Reports\Clash Reports: the window passed the
         /// report folder as the NWF folder and the constructor built Clash Reports beside
-        /// it again. The team map is null for a hand press that federates no group.
+        /// it again. The team map is the run's, TeamMapMemory.ForRun, for the open file and the
+        /// two hand buttons, and null for Undo and Probe, which federate no group.
         /// </summary>
         public FederationEngine(
             Action<string> progress,
@@ -2215,9 +2216,11 @@ namespace Federator.Addin.Engine
         /// </summary>
         private void WhatTheModelsCarry(Document document, FederationJob job)
         {
+            IList<ModelExport> exports;
+
             try
             {
-                IList<ModelExport> exports = ModelFactsReader.Exports(document, reports.Names, log);
+                exports = ModelFactsReader.Exports(document, reports.Names, log);
 
                 // S03-2. The names are compared by letter case with what the picked file's
                 // sets ask, and with no file picked the block says nothing was compared.
@@ -2242,12 +2245,25 @@ namespace Federator.Addin.Engine
                 {
                     log.Row("model worksets", model.File, ExportCheck.WorksetCount(model), ExportCheck.EveryWorkset(model));
                 }
+            }
+            catch (Exception error)
+            {
+                log.Failure("reading what the models carry", error, "the run goes on and this group is not judged on it");
 
-                // F131. Each model's team beside its code, Q116 answered A, and how many sets of
-                // its team with another code cannot reach it, FR-181, counted against the
-                // group's models so one dropped by Exports is said. No coverage count is handed
-                // in, because the count of items no set catches is F127's COVERAGE block, so no
-                // miss is named and each is counted as UNKNOWN until the coverage counts them.
+                // So the run line never reads clean over a group whose models were not all read.
+                exportsAcrossTheRun.GroupNotRead();
+                return;
+            }
+
+            // F131. Each model's team beside its code, Q116 answered A, and how many sets of its
+            // team with another code cannot reach it, FR-181, counted against the group's models
+            // so one dropped by Exports is said. No coverage count is handed in, because the count
+            // of items no set catches is F127's COVERAGE block, so no miss is named and each is
+            // counted as UNKNOWN until the coverage counts them. In a try of its own, the
+            // reviewer's and the breaker's finding on F131's add-in half, so a fault here names its
+            // own step and never counts a group whose export check finished as not read.
+            try
+            {
                 log.Block(
                     SilentMisses.BlockTitle + " " + Words.Or(job.Building, "this group"),
                     teams == null
@@ -2261,10 +2277,7 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
-                log.Failure("reading what the models carry", error, "the run goes on and this group is not judged on it");
-
-                // So the run line never reads clean over a group whose models were not all read.
-                exportsAcrossTheRun.GroupNotRead();
+                log.Failure("judging which sets of a team can reach its models", error, "the run goes on and this group's TEAMS block is not written");
             }
         }
 

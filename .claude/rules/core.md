@@ -325,9 +325,14 @@ and 6 does not read as broken.
   the line says which map stays. `TeamMap.Kept` reads the kept map at its path, said as the
   kept map on every TEAMS line and on the grey line. None kept, it maps nothing and says so.
   A memory that cannot be read, a line it does not know, a second map or a path that is not a
-  full one, is said and maps nothing, never a throw. `TeamMapMemory.ForRun` is the one rule for
-  the map of a run: the picked XML's, carried in `ExchangeDocument.Teams` by `ReadPicked`, or the
-  kept one where no XML is picked, and a document not read by `ReadPicked` is refused
+  full one, is said and maps nothing, never a throw, and its TEAMS line and grey line name the
+  memory as what could not be read and never call it the kept map, the reviewer's K26.
+  `TeamMapMemory.ForRun` is the one rule for the map of a run: the picked XML's, carried in
+  `ExchangeDocument.Teams` by `ReadPicked`, or the kept one where no XML is picked, and a
+  document not read by `ReadPicked` is refused. `TeamMapMemory.ForPick` is the same rule for a
+  path in the XML box, the map beside it or the kept one where the box names no file, which the
+  window's grey line reads, so the window holds no rule of its own and a test proves the two
+  give the same map
 - WHERE THE TEAM APPLIES, Q116 answered A by Bader on 2026-10-05. The views read the team, and the log,
   COVERAGE and the form write it beside the code, `TeamMap.CodeWithTeam`, HV in Mechanical.
   The grouping, the one-discipline judgement, the alignment and export checks and the
@@ -371,7 +376,11 @@ and 6 does not read as broken.
 - EACH MODEL'S LINE CARRIES ITS TEAM AND HOW MANY SETS CANNOT REACH IT, the group's TEAMS block,
   `SilentMisses.GroupLines`: one line a model, its code with its team beside it, Q116 answered
   A, and how many of the sets of its team with another code cannot reach it, could not be
-  judged, or that all can reach it, so a model missed by many sets is one line. A model of the
+  judged, or that none of them is kept out of it by a workset or a file name it asks, so a
+  model missed by many sets is one line. That last line never says a set can reach the model,
+  because the judge reads only a workset and a Source File and a set closed by any other test
+  is not judged, the breaker's finding. Where no set was handed in, a run with no XML, each
+  model's line says whether a set cannot reach it is UNKNOWN, K27. A model of the
   group not handed in, dropped where its worksets could not be read, is counted against the
   group's model count. No model line where no map maps a team. Until F127's coverage count is
   handed in, no miss is named and each is counted as UNKNOWN until the coverage counts them

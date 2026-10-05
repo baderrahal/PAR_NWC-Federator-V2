@@ -78,6 +78,9 @@ namespace Federator.Core.Teams
         /// <summary>Why no pair was judged, or null where one was.</summary>
         private readonly string notJudged;
 
+        /// <summary>Whether no set was handed in, a run with no clash XML, so whether any set misses a model is UNKNOWN, K27.</summary>
+        private readonly bool noSet;
+
         /// <summary>The models handed in, in their order, and for each how many sets of its team with another code were judged against it, missed it and could not be judged.</summary>
         private readonly IList<ModelExport> models;
 
@@ -93,6 +96,7 @@ namespace Federator.Core.Teams
             int setsWithNoCode,
             int modelsWithNoCode,
             string notJudged,
+            bool noSet,
             TeamMap map,
             IList<ModelExport> models,
             int[] pairsOf,
@@ -104,6 +108,7 @@ namespace Federator.Core.Teams
             SetsWithNoCode = setsWithNoCode;
             ModelsWithNoCode = modelsWithNoCode;
             this.notJudged = notJudged;
+            this.noSet = noSet;
             this.map = map;
             this.models = models ?? new List<ModelExport>();
             this.pairsOf = pairsOf ?? new int[this.models.Count];
@@ -149,12 +154,12 @@ namespace Federator.Core.Teams
             {
                 string none = noSet && noModel ? "no set and no model were handed in" : noSet ? "no set was handed in" : "no model was handed in";
 
-                return new SilentMisses(found, 0, 0, 0, none, map, models, null, null, null);
+                return new SilentMisses(found, 0, 0, 0, none, noSet, map, models, null, null, null);
             }
 
             if (map.Teams.Count == 0)
             {
-                return new SilentMisses(found, 0, 0, 0, null, map, models, null, null, null);
+                return new SilentMisses(found, 0, 0, 0, null, false, map, models, null, null, null);
             }
 
             int pairs = 0;
@@ -241,7 +246,7 @@ namespace Federator.Core.Teams
 
             string noPair = pairs == 0 ? "no model of the group is of a set's team with a code other than the set's" : null;
             return new SilentMisses(
-                found, unjudged, setsWithNoCode, modelsWithNoCode, noPair, map, models, pairsOf, missedOf, unjudgedOf);
+                found, unjudged, setsWithNoCode, modelsWithNoCode, noPair, false, map, models, pairsOf, missedOf, unjudgedOf);
         }
 
         /// <summary>
@@ -286,6 +291,13 @@ namespace Federator.Core.Teams
                 return "its code is not read, so no set was judged against it";
             }
 
+            // A run with no clash XML hands in no set, so nothing is known of the sets that would
+            // have been judged, and the line says UNKNOWN where none judged would read as a result.
+            if (noSet)
+            {
+                return "whether a set of its team with another code cannot reach it is UNKNOWN, because no set was handed in";
+            }
+
             int pairs = pairsOf[m];
             string of = " of the " + pairs.ToString(CultureInfo.InvariantCulture) + OfItsTeam;
 
@@ -302,7 +314,7 @@ namespace Federator.Core.Teams
 
             return unjudgedOf[m] > 0
                 ? unjudgedOf[m].ToString(CultureInfo.InvariantCulture) + of + NotAllRead.TrimStart()
-                : "all " + pairs.ToString(CultureInfo.InvariantCulture) + OfItsTeam + "can reach it";
+                : "none" + of + "is kept out of it by a workset or a file name it asks";
         }
 
         /// <summary>

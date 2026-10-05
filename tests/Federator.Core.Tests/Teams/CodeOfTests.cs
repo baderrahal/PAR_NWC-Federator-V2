@@ -99,12 +99,14 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Every set of the corrected XML read with this project's map: 16 Architecture, 6
-        /// Structure, 25 Mechanical, 13 Electrical and one UNKNOWN, BLD-Security Devices, which is
-        /// the 61, measure-teams.md section 2.
+        /// Every set of the corrected XML read BY ITS CODE ALONE with this project's map: 16
+        /// Architecture, 6 Structure, 25 Mechanical, 13 Electrical and one that carries no code,
+        /// BLD-Security Devices, which is the 61, measure-teams.md section 2. That set is UNKNOWN by
+        /// its code only. Its folder makes it Electrical under Q117 answered C, which
+        /// ProjectTeamMapTests reads through TeamMap.TeamOfSet.
         /// </summary>
         [Test]
-        public void EverySetOfTheCorrectedXmlHasATeamButSecurityDevices()
+        public void EverySetOfTheCorrectedXmlHasATeamByItsCodeButSecurityDevices()
         {
             ExchangeDocument document = MatrixCorrections.ReadPicked(Samples.CorrectedMatrix());
             TeamMap map = document.Teams;

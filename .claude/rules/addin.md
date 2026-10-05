@@ -285,9 +285,11 @@ well as to pass.
   engine is `TeamMapMemory.ForRun`, the one rule for it. THE KEPT MAP IS NAMED WHEN THE WINDOW
   OPENS, a TEAMS KEPT block beside FOLDERS REMEMBERED, the memory read once by the field
   initializer as FolderMemory is. THE GREY LINE under the Clash XML box, x:Name TeamsLine, is
-  `TeamMap.WindowLine` of the map beside the XML in the box, or of the kept map where none is
-  there, set at the open and on every change of the box. EACH GROUP writes a TEAMS block
-  after the EXPORT CHECK block, in WhatTheModelsCarry, the one place both runs pass through:
+  `TeamMap.WindowLine` of `TeamMapMemory.ForPick`, the map beside the XML in the box, or the
+  kept map where none is there, set at the open and on every change of the box. EACH GROUP
+  writes a TEAMS block after the EXPORT CHECK block, in WhatTheModelsCarry, the one place both
+  runs pass through, in a try of its own after the export check's, so a fault in it names its
+  own step and never counts the group's finished export check as not read:
   `SilentMisses.Find` over the picked XML's sets and the models `ModelFactsReader.Exports`
   read, its `GroupLines` given the document's model count so a model Exports dropped is
   counted. No coverage count is handed in until F127's COVERAGE block is on main, so no

@@ -181,14 +181,14 @@ is F127's COVERAGE count.
 431. Press Run and answer the dialog with OK
 432. Look for, after `RUN      it holds`: the same TEAMS lines as steps 426 to 428, then `TEAMS    this map is now the one kept for a run with no clash XML, remembered in` with the full path of `team-map.txt` in the add-in's logs folder, and only then the `MATRIX` lines
 433. Look for, in the group, straight after the `EXPORT CHECK 1A04WE` block, a block headed `TEAMS 1A04WE` with one line for each of the three models, the code first, then the file, then the code with its team: `AR in Architecture`, `ME in Mechanical` and `ST in Structure`
-434. Look for: the AR line and the ST line end `no set of its team with another code was judged against it`, and the ME line ends with a count of the sets of its team with another code, either `all 16 set(s) of its team with another code can reach it` or `N of the 16 set(s) of its team with another code cannot reach it`. The 16 are the sets of the picked XML of Mechanical whose code is not ME, FF 6, PL 5 and DR 5, counted off the XML
+434. Look for: the AR line and the ST line end `no set of its team with another code was judged against it`, and the ME line ends with a count of the sets of its team with another code, either `none of the 16 set(s) of its team with another code is kept out of it by a workset or a file name it asks` or `N of the 16 set(s) of its team with another code cannot reach it`. The 16 are the sets of the picked XML of Mechanical whose code is not ME, FF 6, PL 5 and DR 5, counted off the XML
 435. Look for: no line in that block starts `SILENT MISS`. Where the ME line counts sets that cannot reach it, the block holds a line ending `is UNKNOWN until the coverage counts them`
 436. Look for, in the same group: `VIEWS    the box Make saved viewpoints for the clashes was unticked, so no viewpoint is made`
 437. Clear the Clash XML box
 438. Look for: the grey line under the box now reads `Teams: no XML picked, 4 read from the kept map`
 439. Press Run and answer the dialog with OK
 440. Look for, after `RUN      nothing picked in the Clash step`: `TEAMS    no clash XML was picked, so the teams are read from` with the full path of the same teams file, then `, the team map kept from the last run with one. It holds 4 teams and 10 codes`, then the four team lines, and no `MATRIX` line
-441. Look for, in the group's `TEAMS 1A04WE` block: the three model lines with their teams again, and the line `no set was judged against the models of its team, because no set was handed in`, because a run with no XML reads no set of an XML
+441. Look for, in the group's `TEAMS 1A04WE` block: the three model lines with their teams again, each ending `whether a set of its team with another code cannot reach it is UNKNOWN, because no set was handed in`, and the line `no set was judged against the models of its team, because no set was handed in`, because a run with no XML reads no set of an XML
 442. Close the add-in window
 443. Open the add-in from the ribbon again
 444. Look for: the `TEAMS KEPT` block now reads `TEAMS    no clash XML was picked, so the teams are read from` the same teams file, `the team map kept from the last run with one`, and the grey line under the empty Clash XML box reads `Teams: no XML picked, 4 read from the kept map`
