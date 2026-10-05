@@ -87,9 +87,10 @@ namespace Federator.Core.Sets
                     + Word(ConditionCount, " condition", " conditions") + "  " + Error;
             }
 
+            // A created set whose count could not be taken says UNKNOWN, never -1, as a present one does.
             string line = (IsZero ? "ZERO    " : "ok      ") + Path + "  "
                 + ConditionCount + Word(ConditionCount, " condition", " conditions") + "  "
-                + ItemCount + Word(ItemCount, " item", " items");
+                + (ItemCount < 0 ? "UNKNOWN items" : ItemCount + Word(ItemCount, " item", " items"));
 
             // A zero is not an error, but it is useless without knowing what was asked.
             return IsZero && !string.IsNullOrEmpty(Asked) ? line + "  asked for " + Asked : line;

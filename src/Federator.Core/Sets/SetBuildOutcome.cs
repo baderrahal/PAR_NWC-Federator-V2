@@ -323,13 +323,36 @@ namespace Federator.Core.Sets
 
                 foreach (SetResult result in results)
                 {
-                    if (result.Created)
+                    // A count not taken is UNKNOWN and left out, never summed as minus one.
+                    if (result.Created && result.ItemCount > 0)
                     {
                         total += result.ItemCount;
                     }
                 }
 
                 return total;
+            }
+        }
+
+        /// <summary>
+        /// Created sets whose count could not be taken, so what they find is UNKNOWN, the breaker's
+        /// finding on attempt 1. A null read of what a set finds was turned into zero in the add-in.
+        /// </summary>
+        public int CreatedNotCountedCount
+        {
+            get
+            {
+                int notCounted = 0;
+
+                foreach (SetResult result in results)
+                {
+                    if (result.Created && result.ItemCount < 0)
+                    {
+                        notCounted++;
+                    }
+                }
+
+                return notCounted;
             }
         }
 
@@ -454,7 +477,9 @@ namespace Federator.Core.Sets
             // sets were all already there read 0 finding items and 0 at zero.
             return CreatedCount + " created"
                 + (CreatedCount > 0
-                    ? " (" + FindingItemsCount + " finding items, " + ZeroCount + " at zero)"
+                    ? " (" + FindingItemsCount + " finding items, " + ZeroCount + " at zero"
+                        + (CreatedNotCountedCount > 0 ? ", " + CreatedNotCountedCount + " not counted" : string.Empty)
+                        + ")"
                     : string.Empty)
                 + ", " + AlreadyPresentCount + " already there"
                 + (AlreadyPresentCount > 0
@@ -493,6 +518,12 @@ namespace Federator.Core.Sets
             lines.Add("sets created      : " + CreatedCount);
             lines.Add("   finding items  : " + FindingItemsCount);
             lines.Add("   at zero        : " + ZeroCount);
+
+            if (CreatedNotCountedCount > 0)
+            {
+                lines.Add("   not counted    : " + CreatedNotCountedCount + ", could not be counted, so what they find is UNKNOWN");
+            }
+
             lines.Add("   items found    : " + TotalItems);
 
             if (AlreadyPresentCount > 0)

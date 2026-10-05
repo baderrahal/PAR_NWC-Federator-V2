@@ -516,6 +516,29 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Empty[0].Asked, Is.EqualTo("Nurse Call Devices"));
         }
 
+        /// <summary>
+        /// A CREATED SET WHOSE COUNT COULD NOT BE TAKEN IS UNKNOWN AND NEVER ZERO, the breaker's
+        /// finding on attempt 1. The add-in turned a null read of what a set finds into 0 items, the
+        /// shape FR-018 was written against, so such a set would be judged empty and counted at
+        /// zero. NotCounted is said UNKNOWN, is in no zero count and no item total, and is never
+        /// judged. It was summed into the items found as minus one.
+        /// </summary>
+        [Test]
+        public void ACreatedSetWhoseCountCouldNotBeTakenIsUnknownAndNeverZero()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddCreated(PlannedAsking("BLD-EL-Phones", "Telephone Equipment"), SetResult.NotCounted, OnThisProject());
+
+            Assert.That(outcome.ZeroCount, Is.EqualTo(0));
+            Assert.That(outcome.FindingItemsCount, Is.EqualTo(0));
+            Assert.That(outcome.TotalItems, Is.EqualTo(0));
+            Assert.That(outcome.Empty, Is.Empty);
+            Assert.That(outcome.Results[0].Line(), Is.EqualTo(
+                "ok      lcop_selection_set_tree/Electrical/BLD-EL-Phones  1 condition  UNKNOWN items"));
+            Assert.That(outcome.Summary(), Is.EqualTo("1 created (0 finding items, 0 at zero, 1 not counted), 0 already there."));
+            Assert.That(outcome.Lines(), Does.Contain("   not counted    : 1, could not be counted, so what they find is UNKNOWN"));
+        }
+
         /// <summary>The planned conditions read into Core's condition shape, flags and test kept, FR-027.</summary>
         [Test]
         public void APlannedSetReadsIntoTheConditionsTheJudgeReads()

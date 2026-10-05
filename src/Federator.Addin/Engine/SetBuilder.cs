@@ -1118,19 +1118,23 @@ namespace Federator.Addin.Engine
             return FindSelectionSet(parent, name);
         }
 
-        /// <summary>How many items a set that is already in the tree finds as it stands.</summary>
+        /// <summary>
+        /// How many items a set that is already in the tree finds as it stands, or NotCounted where
+        /// the read gave nothing back, which is UNKNOWN and never zero items, FR-018.
+        /// </summary>
         private static int CountOf(Document document, SelectionSet set)
         {
             using (ModelItemCollection found = set.GetSelectedItems(document))
             {
-                return found == null ? 0 : found.Count;
+                return found == null ? SetResult.NotCounted : found.Count;
             }
         }
 
         /// <summary>
         /// How many items the set finds in the model as it stands. Resolved through the set
         /// that is in the tree where possible, because that is the thing that has to work.
-        /// Falls back to the search itself if the set cannot be found again.
+        /// Falls back to the search itself if the set cannot be found again. A read that gives
+        /// nothing back is NotCounted, UNKNOWN and never zero items, FR-018.
         /// </summary>
         private int Resolve(Document document, SelectionSet created, Search search)
         {
@@ -1138,7 +1142,7 @@ namespace Federator.Addin.Engine
             {
                 using (ModelItemCollection found = created.GetSelectedItems(document))
                 {
-                    return found == null ? 0 : found.Count;
+                    return found == null ? SetResult.NotCounted : found.Count;
                 }
             }
 
@@ -1146,7 +1150,7 @@ namespace Federator.Addin.Engine
 
             using (ModelItemCollection direct = search.FindAll(document, false))
             {
-                return direct == null ? 0 : direct.Count;
+                return direct == null ? SetResult.NotCounted : direct.Count;
             }
         }
 
