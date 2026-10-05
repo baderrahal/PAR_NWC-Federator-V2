@@ -224,11 +224,13 @@ started the stand-in as its copy Decoy.exe 11 times and 12 times, still running 
 prove-f126-before.txt line 175 and prove-f126-after.txt line 310, and started child
 powershell.exe for the driver and for run.ps1 -Mode Check. No Navisworks and nothing installed.
 The lead's records commit e712a11 and the merge 16b5eb7 started git and the pre-commit hook
-twice. This records pass started git, to fetch, merge-tree, merge, diff, log, show, reflog,
-rev-parse, commit and push, the pre-commit hook twice, which runs check-locals, check-imports,
-the evidence check and dotnet test, bash from Git for Windows with cat, sed, grep, awk, stat,
-sha256sum and date for the reads and the evidence, gh to read pull request 112, and python for
-the record edits. No Navisworks, no stand-in, no harness run and nothing installed.
+twice. This records pass started git, to fetch, merge-tree, merge, status, diff, log, show,
+reflog, rev-parse, checkout, to put its own first edit of the three files back before running
+the edits again, commit and push, the pre-commit hook at each of its commits, which runs
+check-locals, check-imports, the evidence check and dotnet test, bash from Git for Windows with
+its text tools for the reads and the evidence, gh to read pull request 112, and python for the
+record edits and the line ends of the body. No Navisworks, no stand-in, no harness run and
+nothing installed.
 
 Written outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop\turn5\f126-proof:
 core-tests-before.txt, core-tests-after.txt, sln-build-before.txt, sln-build-after.txt,
@@ -260,10 +262,14 @@ line 176 and prove-f126-after.txt line 311. The lead's records commit e712a11 an
 file times from 07:00:59 to 07:07:40, f126-ran.py, f126-merge-main.txt and f126-resolve.py, and
 pr-f126.md, rewritten. This records pass wrote, under turn5\f126-proof, reflog-harness.txt,
 diff-since-1e06b7e.txt, msg-merge-main3.txt, precommit-merge-main3.txt, msg-records-harness.txt,
-precommit-records-harness.txt and push-records-harness.txt, and added the line naming its commit
-at the end of precommit-ran.txt, precommit-merge-main2.txt and precommit-merge-main3.txt, and
-under turn5 pr-f126.md, rewritten. In the session's scratch folder under %TEMP%\claude:
-f126-records-harness.py, which made the edits.
+precommit-records-harness.txt and push-records-harness.txt, for its second commit, which
+corrected the list of programs above and this list, msg-records-harness2.txt,
+precommit-records-harness2.txt and push-records-harness2.txt, and added at the end of
+precommit-ran.txt, precommit-merge-main2.txt, precommit-merge-main3.txt and
+precommit-records-harness.txt the line naming the commit each belongs to, and under turn5
+pr-f126.md, rewritten. In the session's scratch folder under %TEMP%\claude:
+f126-records-harness.py, which made the edits. Also /tmp/added.txt of Git for Windows, the added
+lines read for a semicolon, deleted once read.
 
 
 ## 2026-10-05 The loop, turn 5, F116 the clash XML, DONE in Core and built, wave 1, with Bader's answer to Q113, the readings of that pass, F112 taken in and a closing pass
