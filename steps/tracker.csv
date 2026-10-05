@@ -379,4 +379,5 @@ Q126,no workbook for the coverage sheet when the clash is skipped,F127,2a,questi
 Q127,how RESULT counts the tests of the XML,F127,2a,question,merged,118,none,2026-10-05
 Q128,what the C04 baseline run did not put back,none,none,question,merged,118,none,2026-10-05
 Q131,the default of the viewpoints box,F136,before any test run,question,merged,118,none,2026-10-05
-Q133,a mirrored test can find more than the one it mirrors,F132,2a,question,waiting for Bader,none,none,2026-10-05
+Q133,a mirrored test can find more than the one it mirrors,F132,2a,question,merged,121,none,2026-10-05
+Q134,code that waits for F114 by Bader's order,F131,2b,question,waiting for Bader,none,none,2026-10-05

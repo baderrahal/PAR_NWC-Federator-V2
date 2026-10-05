@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 381 rows: open 150, in progress 51, in review 2, merged 132, proven by a run 21, waiting for Bader 23, dropped 2
-- By wave: 1 22, 2a 28, 2a and 2b 1, 2b 31, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any test run 4, before the test of wave 1 2, before the waves 111, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 24, outside the waves 2
+- By status, of 382 rows: open 150, in progress 51, in review 2, merged 133, proven by a run 21, waiting for Bader 23, dropped 2
+- By wave: 1 22, 2a 28, 2a and 2b 1, 2b 32, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any test run 4, before the test of wave 1 2, before the waves 111, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 24, outside the waves 2
 - In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, and 39 FR items
-- Waits for Bader, 23 rows: F18, Q25, Q27, Q28, Q29, Q30, Q31, Q35, Q36, Q37, Q38, Q39, Q40, Q45, Q46, Q47, Q49, Q50, Q51, Q76, Q77, Q78, Q133
+- Waits for Bader, 23 rows: F18, Q25, Q27, Q28, Q29, Q30, Q31, Q35, Q36, Q37, Q38, Q39, Q40, Q45, Q46, Q47, Q49, Q50, Q51, Q76, Q77, Q78, Q134
 
 ## Wave 1
 
@@ -65,7 +65,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q122 | whose status a result carries | F132 | question | merged | 118 | none | 2026-10-05 |
 | Q126 | no workbook for the coverage sheet when the clash is skipped | F127 | question | merged | 118 | none | 2026-10-05 |
 | Q127 | how RESULT counts the tests of the XML | F127 | question | merged | 118 | none | 2026-10-05 |
-| Q133 | a mirrored test can find more than the one it mirrors | F132 | question | waiting for Bader | none | none | 2026-10-05 |
+| Q133 | a mirrored test can find more than the one it mirrors | F132 | question | merged | 121 | none | 2026-10-05 |
 
 ## Wave 2a and 2b
 
@@ -108,6 +108,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q119 | which models a view shows | F114 | question | merged | 118 | none | 2026-10-05 |
 | Q120 | a view the tool made that a person changed | F114 | question | merged | 118 | none | 2026-10-05 |
 | Q123 | a run with no XML picked and the team map | F131 | question | merged | 118 | none | 2026-10-05 |
+| Q134 | code that waits for F114 by Bader's order | F131 | question | waiting for Bader | none | none | 2026-10-05 |
 
 ## Wave 2c
 
