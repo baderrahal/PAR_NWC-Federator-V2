@@ -163,6 +163,12 @@ namespace ViewpointProbe
                             parameters[2],
                             parameters.Length > 3 ? parameters[3] : null);
                     }
+                    else if (mode == "vpcomment")
+                    {
+                        MeasureViewComments(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -8573,6 +8579,680 @@ namespace ViewpointProbe
             }
 
             return built.ToString();
+        }
+
+        // ---------- P9 of Q114, scan.md 5z-o, does a comment on a saved view or folder survive ----------
+
+        private const string P9Author = "Parsons NWC Federator";
+        private const string P9Sentence = "Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.";
+        private const string P9Top = "P9 probe";
+        private const string P9Sub = "P9 sub";
+        private const string P9ComFolder = "P9 com folder";
+
+        private sealed class P9Target
+        {
+            public string Label;
+            public string Route;
+            public bool IsFolder;
+            public List<string> Path = new List<string>();
+            public string Body;
+            public bool Written;
+            public string WriteSeconds = "UNKNOWN";
+            public int HiddenBefore = -2;
+            public int MaterialBefore = -2;
+            public int HiddenAfterEdit = -2;
+            public int MaterialAfterEdit = -2;
+            public bool NowSame;
+            public bool ReopenSame;
+            public int HiddenNow = -2;
+            public int MaterialNow = -2;
+            public int HiddenReopen = -2;
+            public int MaterialReopen = -2;
+        }
+
+        /// <summary>
+        /// P9: a comment written by DocumentSavedViewpoints.AddComment after the add, and one put
+        /// on the COM view's Comments() before InwSavedViewsColl.Add where P6 said yes, on a
+        /// viewpoint two folders deep and on a folder. Each is read back off SavedItem.Comments
+        /// before a save, and after a SaveFile, a Document.Clear and a TryOpenFile of the saved
+        /// file. A viewpoint's Hidden count and MaterialOverrides count are read before and after
+        /// the edit, and the seconds of each write are read.
+        /// </summary>
+        private void MeasureViewComments(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            int folders0;
+            int comments0;
+            int views0 = TreeCounts(document, out folders0, out comments0);
+            Say("the tree at the open: viewpoints " + views0 + ", folders " + folders0 + ", comments on any item " + comments0);
+
+            List<string> legacyPath = FirstViewTwoDeep(document);
+
+            if (legacyPath == null)
+            {
+                Say("UNKNOWN: no viewpoint two folders deep in this tree, so the existing view is not measured");
+            }
+            else
+            {
+                Say("the existing viewpoint two folders deep, the first found: [" + Shown(string.Join(" / ", legacyPath.ToArray())) + "]");
+            }
+
+            // The state the new views record: model 0's root hidden, one clash pair painted red and green.
+            int[] first;
+            int[] second;
+            string pairName;
+            document.Models.ResetAllHidden();
+            document.Models.ResetAllTemporaryMaterials();
+
+            using (ModelItemCollection one = new ModelItemCollection())
+            {
+                one.Add(document.Models[0].RootItem);
+                document.Models.SetHidden(one, true);
+            }
+
+            if (FindClashPair(document, out first, out second, out pairName))
+            {
+                PaintOne(document, first, Color.Red);
+                PaintOne(document, second, Color.Green);
+                Say("model 0's root hidden, the pair [" + Shown(pairName) + "] painted red and green");
+            }
+            else
+            {
+                Say("model 0's root hidden, no clash pair with geometry found, so nothing is painted");
+            }
+
+            // The folders, made the way the tool makes them, a .NET FolderItem by AddCopy.
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            EnsureFolder(document, P9Top);
+
+            using (GroupItem top = FindFolderItem(document, P9Top))
+            using (FolderItem sub = new FolderItem())
+            {
+                sub.DisplayName = P9Sub;
+                document.SavedViewpoints.AddCopy(top, sub);
+            }
+
+            Say("folders \"" + P9Top + "\" and \"" + P9Top + " / " + P9Sub + "\" made by FolderItem and AddCopy in " + Seconds(clock));
+
+            string stamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture);
+            List<P9Target> targets = new List<P9Target>();
+
+            P9Target comBefore = NewTarget(targets, "V1", "the COM view's Comments() before the add", false, stamp, P9Top, P9Sub, "P9 view com before add");
+            P9Target addAfter = NewTarget(targets, "V2", "AddComment after the add", false, stamp, P9Top, P9Sub, "P9 view addcomment after add");
+            P9Target plain = NewTarget(targets, "V3", "no comment, the control", false, stamp, P9Top, P9Sub, "P9 view plain");
+            P9Target folderAdd = NewTarget(targets, "F1", "AddComment on a folder one below the root folder", true, stamp, P9Top, P9Sub);
+            P9Target folderCom = NewTarget(targets, "F2", "the COM folder view's Comments() before the add", true, stamp, P9Top, P9ComFolder);
+            P9Target legacy = null;
+
+            if (legacyPath != null)
+            {
+                legacy = NewTarget(targets, "L1", "AddComment on an existing viewpoint two folders deep", false, stamp, legacyPath.ToArray());
+            }
+
+            plain.Body = null;
+            InwOpState10 state = ComApiBridge.State;
+            InwOpFolderView comSub = FindComFolderAt(state, P9Top, P9Sub);
+            InwOpFolderView comTop = FindComFolderAt(state, P9Top);
+            Say("the COM folders found: \"" + P9Top + "\" " + (comTop != null) + ", \"" + P9Top + " / " + P9Sub + "\" " + (comSub != null));
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                // V1, the comment on the COM view before the add.
+                try
+                {
+                    InwOpView view = NewComView(state, comBefore.Path[comBefore.Path.Count - 1], camera);
+                    InwCommentsColl before = view.Comments();
+                    Say("V1 the new COM view's Comments(): Count " + before.Count + ", ReadOnly " + ComReadOnly(before));
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    object made = state.ObjectFactory(nwEObjectType.eObjectType_nwOpComment, null, null);
+                    InwOpComment comment = (InwOpComment)made;
+                    comment.Body = comBefore.Body;
+                    comment.User = P9Author;
+                    before.Add(comment);
+                    comBefore.WriteSeconds = Seconds(clock);
+                    Say("V1 the factory's comment is InwOpComment " + (made is InwOpComment) + ", InwOpComment2 " + (made is InwOpComment2)
+                        + ", InwOpComment3 " + (made is InwOpComment3) + ". Made, Body and User set, and added in " + comBefore.WriteSeconds
+                        + ", the view's Comments().Count now " + view.Comments().Count);
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    comSub.SavedViews().Add(view);
+                    Say("V1 InwSavedViewsColl.Add into \"" + P9Sub + "\" took " + Seconds(clock));
+                    comBefore.Written = true;
+                    SayComViewComments(FindComFolderAt(state, P9Top, P9Sub), comBefore.Path[comBefore.Path.Count - 1], "V1");
+                }
+                catch (Exception error)
+                {
+                    Say("V1 THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                // V2 and V3, the COM view with no comment.
+                foreach (P9Target bare in new[] { addAfter, plain })
+                {
+                    try
+                    {
+                        InwOpView view = NewComView(state, bare.Path[bare.Path.Count - 1], camera);
+                        FindComFolderAt(state, P9Top, P9Sub).SavedViews().Add(view);
+                        Say(bare.Label + " added through COM with no comment");
+
+                        if (bare == plain)
+                        {
+                            plain.Written = true;
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Say(bare.Label + " THREW " + error.GetType().Name + ": " + error.Message);
+                    }
+                }
+
+                // F2, a COM folder view with a comment before the add.
+                try
+                {
+                    InwOpFolderView folder = (InwOpFolderView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpFolderView, null, null);
+                    folder.name = P9ComFolder;
+                    InwCommentsColl before = folder.Comments();
+                    Say("F2 the new COM folder view's Comments(): Count " + before.Count + ", ReadOnly " + ComReadOnly(before));
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    InwOpComment comment = (InwOpComment)state.ObjectFactory(nwEObjectType.eObjectType_nwOpComment, null, null);
+                    comment.Body = folderCom.Body;
+                    comment.User = P9Author;
+                    before.Add(comment);
+                    folderCom.WriteSeconds = Seconds(clock);
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    FindComFolderAt(state, P9Top).SavedViews().Add(folder);
+                    Say("F2 comment added in " + folderCom.WriteSeconds + ", InwSavedViewsColl.Add into \"" + P9Top + "\" took " + Seconds(clock));
+                    folderCom.Written = true;
+                }
+                catch (Exception error)
+                {
+                    Say("F2 THREW " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+
+            // The .NET edits after the add: V2, F1 and L1.
+            foreach (P9Target edit in new[] { addAfter, folderAdd, legacy })
+            {
+                if (edit == null)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    using (SavedItem item = ResolveNames(document, edit.Path))
+                    {
+                        if (item == null)
+                        {
+                            Say(edit.Label + " NOT FOUND by its names, so no comment is written");
+                            continue;
+                        }
+
+                        if (!edit.IsFolder)
+                        {
+                            edit.HiddenBefore = HiddenCount((SavedViewpoint)item);
+                            edit.MaterialBefore = MaterialCount((SavedViewpoint)item);
+                        }
+
+                        Say(edit.Label + " before the edit: a " + item.GetType().Name + ", comments " + item.Comments.Count
+                            + (edit.IsFolder ? string.Empty : ", Hidden " + edit.HiddenBefore + ", MaterialOverrides " + edit.MaterialBefore));
+
+                        using (Comment comment = document.CreateCommentWithUniqueId(edit.Body, CommentStatus.New, P9Author))
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddComment(item, comment);
+                            edit.WriteSeconds = Seconds(clock);
+                        }
+
+                        edit.Written = true;
+                        Say(edit.Label + " AddComment(item, comment) RETURNED after " + edit.WriteSeconds);
+                    }
+
+                    using (SavedItem again = ResolveNames(document, edit.Path))
+                    {
+                        if (again != null && !edit.IsFolder)
+                        {
+                            edit.HiddenAfterEdit = HiddenCount((SavedViewpoint)again);
+                            edit.MaterialAfterEdit = MaterialCount((SavedViewpoint)again);
+                            Say(edit.Label + " after the edit, re-found by its names: Hidden " + edit.HiddenAfterEdit
+                                + ", MaterialOverrides " + edit.MaterialAfterEdit);
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say(edit.Label + " THREW " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+
+            Say(string.Empty);
+            Say("READ BACK BEFORE ANY SAVE, off SavedItem.Comments, each item re-found by its names from a fresh RootItem:");
+
+            foreach (P9Target target in targets)
+            {
+                target.NowSame = ReadTarget(document, target, false);
+            }
+
+            int folders1;
+            int comments1;
+            int views1 = TreeCounts(document, out folders1, out comments1);
+            Say("the tree before the save: viewpoints " + views1 + ", folders " + folders1 + ", comments on any item " + comments1);
+
+            document.Models.ResetAllHidden();
+            document.Models.ResetAllTemporaryMaterials();
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P9 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("READ BACK AFTER A SAVE, A CLEAR AND A REOPEN:");
+
+            foreach (P9Target target in targets)
+            {
+                target.ReopenSame = ReadTarget(document, target, true);
+            }
+
+            int folders2;
+            int comments2;
+            int views2 = TreeCounts(document, out folders2, out comments2);
+            Say("the tree after the reopen: viewpoints " + views2 + ", folders " + folders2 + ", comments on any item " + comments2);
+            Say(string.Empty);
+            Say("EACH TARGET:  label | route | written | write seconds | read back the same before the save | after the reopen | Hidden before edit, after edit, before save, after reopen | MaterialOverrides the same four");
+
+            foreach (P9Target target in targets)
+            {
+                Say("   " + target.Label + " | " + target.Route + " | " + target.Written + " | " + target.WriteSeconds + " | " + target.NowSame
+                    + " | " + target.ReopenSame
+                    + (target.IsFolder ? " | a folder" : " | " + target.HiddenBefore + ", " + target.HiddenAfterEdit + ", " + target.HiddenNow + ", " + target.HiddenReopen
+                    + " | " + target.MaterialBefore + ", " + target.MaterialAfterEdit + ", " + target.MaterialNow + ", " + target.MaterialReopen));
+            }
+
+            Say("(-2 is not read, -1 is a read that threw)");
+            bool viewAdd = addAfter.Written && addAfter.NowSame && addAfter.ReopenSame;
+            bool viewCom = comBefore.Written && comBefore.NowSame && comBefore.ReopenSame;
+            bool folderA = folderAdd.Written && folderAdd.NowSame && folderAdd.ReopenSame;
+            bool folderC = folderCom.Written && folderCom.NowSame && folderCom.ReopenSame;
+            bool legacyA = legacy != null && legacy.Written && legacy.NowSame && legacy.ReopenSame;
+            bool countsHeld = SameCounts(addAfter) && (legacy == null || SameCounts(legacy));
+            bool comCounts = comBefore.HiddenReopen == plain.HiddenReopen && comBefore.MaterialReopen == plain.MaterialReopen
+                && comBefore.HiddenNow == plain.HiddenNow && comBefore.MaterialNow == plain.MaterialNow;
+            Say("P9 by route: AddComment on a view two folders deep " + Yes(viewAdd) + ", on an existing view two folders deep " + Yes(legacyA)
+                + ", on a folder " + Yes(folderA) + ". COM before the add on a view two folders deep " + Yes(viewCom) + ", on a folder " + Yes(folderC));
+            Say("P9 counts: AddComment left Hidden and MaterialOverrides the same before and after the edit and through the reopen " + Yes(countsHeld)
+                + ". The COM view with a comment reads the same counts as the plain one " + Yes(comCounts));
+            Say("P9 " + ((viewAdd || viewCom) && (folderA || folderC) && countsHeld ? "YES" : "NO")
+                + "   a comment on a view two folders deep and on a folder read back with the same body and author after a save, a clear and a reopen, by at least one route each, with the counts held");
+        }
+
+        private static string Yes(bool value)
+        {
+            return value ? "YES" : "NO";
+        }
+
+        private static bool SameCounts(P9Target t)
+        {
+            return t.HiddenBefore >= 0 && t.MaterialBefore >= 0
+                && t.HiddenBefore == t.HiddenAfterEdit && t.HiddenBefore == t.HiddenNow && t.HiddenBefore == t.HiddenReopen
+                && t.MaterialBefore == t.MaterialAfterEdit && t.MaterialBefore == t.MaterialNow && t.MaterialBefore == t.MaterialReopen;
+        }
+
+        private static P9Target NewTarget(List<P9Target> into, string label, string route, bool isFolder, string stamp, params string[] path)
+        {
+            P9Target target = new P9Target();
+            target.Label = label;
+            target.Route = route;
+            target.IsFolder = isFolder;
+            target.Path.AddRange(path);
+            target.Body = P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " path=" + string.Join("/", path, 0, path.Length - 1)
+                + " name=" + path[path.Length - 1] + " probe=" + label;
+            into.Add(target);
+            return target;
+        }
+
+        private static InwOpView NewComView(InwOpState10 state, string name, Viewpoint camera)
+        {
+            InwOpView view = (InwOpView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpView, null, null);
+            view.name = name;
+            view.ApplyHideAttribs = true;
+            view.ApplyMaterialAttribs = true;
+            view.anonview = ComApiBridge.ToInwOpAnonView(camera);
+            return view;
+        }
+
+        private static string ComReadOnly(InwCommentsColl comments)
+        {
+            try
+            {
+                return comments.ReadOnly.ToString();
+            }
+            catch (Exception error)
+            {
+                return "UNKNOWN, the read threw " + error.GetType().Name;
+            }
+        }
+
+        /// <summary>The COM folder at that path of names from the COM root, each level read fresh.</summary>
+        private static InwOpFolderView FindComFolderAt(InwOpState10 state, params string[] names)
+        {
+            InwSavedViewsColl views = state.SavedViews();
+            InwOpFolderView found = null;
+
+            foreach (string name in names)
+            {
+                found = null;
+
+                for (int i = 1; i <= views.Count; i++)
+                {
+                    InwOpFolderView folder = views[i] as InwOpFolderView;
+
+                    if (folder != null && string.Equals(folder.name, name, StringComparison.Ordinal))
+                    {
+                        found = folder;
+                        break;
+                    }
+                }
+
+                if (found == null)
+                {
+                    return null;
+                }
+
+                views = found.SavedViews();
+            }
+
+            return found;
+        }
+
+        private void SayComViewComments(InwOpFolderView folder, string name, string label)
+        {
+            if (folder == null)
+            {
+                Say(label + " read back through COM: the folder was not found");
+                return;
+            }
+
+            InwSavedViewsColl views = folder.SavedViews();
+
+            for (int i = views.Count; i >= 1; i--)
+            {
+                InwOpView view = views[i] as InwOpView;
+
+                if (view != null && string.Equals(view.name, name, StringComparison.Ordinal))
+                {
+                    InwCommentsColl comments = view.Comments();
+                    Say(label + " read back through COM, the added view's Comments().Count " + comments.Count);
+
+                    for (int c = 1; c <= comments.Count; c++)
+                    {
+                        InwOpComment comment = comments[c] as InwOpComment;
+                        Say("   COM comment " + c + ": " + (comment == null ? "not an InwOpComment" : "User [" + Shown(comment.User) + "] Body [" + Shown(comment.Body) + "]"));
+                    }
+
+                    return;
+                }
+            }
+
+            Say(label + " read back through COM: no view of that name in the folder");
+        }
+
+        /// <summary>The item at that path of names, each level the first child of that name, Ordinal, from a fresh RootItem.</summary>
+        private static SavedItem ResolveNames(Document document, List<string> names)
+        {
+            GroupItem parent = document.SavedViewpoints.RootItem;
+
+            for (int level = 0; level < names.Count; level++)
+            {
+                SavedItem found = null;
+                SavedItemCollection children = parent.Children;
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    SavedItem child = children[i];
+
+                    if (string.Equals(child.DisplayName, names[level], StringComparison.Ordinal))
+                    {
+                        found = child;
+                        break;
+                    }
+
+                    child.Dispose();
+                }
+
+                parent.Dispose();
+
+                if (found == null)
+                {
+                    return null;
+                }
+
+                if (level == names.Count - 1)
+                {
+                    return found;
+                }
+
+                parent = found as GroupItem;
+
+                if (parent == null)
+                {
+                    found.Dispose();
+                    return null;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>Reads one target's comments and counts, and says whether exactly one comment reads the body and author written.</summary>
+        private bool ReadTarget(Document document, P9Target target, bool reopened)
+        {
+            try
+            {
+                using (SavedItem item = ResolveNames(document, target.Path))
+                {
+                    if (item == null)
+                    {
+                        Say("   " + target.Label + " NOT FOUND by its names [" + Shown(string.Join(" / ", target.Path.ToArray())) + "]");
+                        return false;
+                    }
+
+                    int hidden = -2;
+                    int material = -2;
+                    SavedViewpoint view = item as SavedViewpoint;
+
+                    if (view != null)
+                    {
+                        hidden = HiddenCount(view);
+                        material = MaterialCount(view);
+                    }
+
+                    if (reopened)
+                    {
+                        target.HiddenReopen = hidden;
+                        target.MaterialReopen = material;
+                    }
+                    else
+                    {
+                        target.HiddenNow = hidden;
+                        target.MaterialNow = material;
+                    }
+
+                    CommentCollection comments = item.Comments;
+                    int count = comments == null ? 0 : comments.Count;
+                    Say("   " + target.Label + " a " + item.GetType().Name + ", comments " + count
+                        + (view == null ? string.Empty : ", Hidden " + hidden + ", MaterialOverrides " + material));
+                    bool same = false;
+                    bool sameButNewline = false;
+
+                    for (int c = 0; c < count; c++)
+                    {
+                        Comment comment = comments[c];
+                        Say("      comment " + c + ": Author [" + Shown(comment.Author) + "] Status " + comment.Status + " Id " + comment.Id
+                            + " CreationDate " + comment.CreationDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+                        Say("         Body [" + Shown(comment.Body) + "]");
+
+                        if (target.Body != null && string.Equals(comment.Author, P9Author, StringComparison.Ordinal))
+                        {
+                            if (string.Equals(comment.Body, target.Body, StringComparison.Ordinal))
+                            {
+                                same = true;
+                            }
+                            else if (string.Equals((comment.Body ?? string.Empty).Replace("\r\n", "\n"), target.Body, StringComparison.Ordinal))
+                            {
+                                sameButNewline = true;
+                            }
+                        }
+                    }
+
+                    if (target.Body == null)
+                    {
+                        return count == 0;
+                    }
+
+                    bool exact = same && count == 1;
+                    Say("      written Body [" + Shown(target.Body) + "] Author [" + P9Author + "]");
+                    Say("      " + target.Label + (exact ? " EXACTLY ONE COMMENT, BODY AND AUTHOR THE SAME, Ordinal"
+                        : sameButNewline ? " the body differs from the one written only by its line break"
+                        : same ? " the body and author read the same, but " + count + " comments are there"
+                        : " NOT the same"));
+                    return exact;
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   " + target.Label + " the read THREW " + error.GetType().Name + ": " + error.Message);
+                return false;
+            }
+        }
+
+        private static List<string> FirstViewTwoDeep(Document document)
+        {
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SavedItemCollection top = root.Children;
+
+                for (int i = 0; i < top.Count; i++)
+                {
+                    GroupItem first = top[i] as GroupItem;
+
+                    if (first == null)
+                    {
+                        continue;
+                    }
+
+                    SavedItemCollection middle = first.Children;
+
+                    for (int j = 0; j < middle.Count; j++)
+                    {
+                        GroupItem second = middle[j] as GroupItem;
+
+                        if (second == null)
+                        {
+                            continue;
+                        }
+
+                        SavedItemCollection leaves = second.Children;
+
+                        for (int k = 0; k < leaves.Count; k++)
+                        {
+                            if (leaves[k] is SavedViewpoint)
+                            {
+                                return new List<string> { first.DisplayName, second.DisplayName, leaves[k].DisplayName };
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static int TreeCounts(Document document, out int folders, out int comments)
+        {
+            folders = 0;
+            comments = 0;
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                {
+                    return TreeCountsUnder(root, ref folders, ref comments);
+                }
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        private static int TreeCountsUnder(GroupItem parent, ref int folders, ref int comments)
+        {
+            int views = 0;
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    comments += child.Comments == null ? 0 : child.Comments.Count;
+                    GroupItem group = child as GroupItem;
+
+                    if (group != null)
+                    {
+                        folders++;
+                        views += TreeCountsUnder(group, ref folders, ref comments);
+                    }
+                    else
+                    {
+                        views++;
+                    }
+                }
+            }
+
+            return views;
         }
     }
 }

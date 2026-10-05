@@ -6243,3 +6243,141 @@ legacy and none of the 34 the NWCs brought. The dump is committed for LegacyClas
 over, and that test has to read exactly 2813 legacy and 34 not, or the legacy removal stops until
 the rule is fixed. The 67 leaves under Over 150mm in 17 tests are part 6's lower bound. The empty
 Guid on every item is new, and goes to P10 and P11 before the Guid is put in the mark.
+
+## 5z-o. DOES A COMMENT ON A SAVED VIEW AND ON A FOLDER SURVIVE A SAVE AND A REOPEN, MEASURED 2026-10-05
+
+P9 of Q114, the views by team design, part 3. F114 marks every view and folder it makes with a
+comment, so a later run knows its own. Nothing had read whether a comment written on a saved
+viewpoint, rather than on a clash result, is kept. The question: does a comment written by
+DocumentSavedViewpoints.AddComment, or put on the COM view before the add where P6 said yes, on a
+viewpoint two folders deep and on a folder, read back with the same body and author off
+SavedItem.Comments after a save, a clear and a reopen, do the view's Hidden count and
+MaterialOverrides count read the same before and after the edit, and how many seconds does the
+write take? Yes: the mark is the comment. The counts change: the mark is written before the read
+back. No: B7 is put to Bader.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-comments.ps1` is P8's `probe-viewpoint-tree.ps1` with
+the new mode `vpcomment` of `ViewpointProbe.dll` in place of `vptree` and no `-Dump`. The guard is
+the loop's, tools\loop\nw-guard.ps1 dot-sourced, with the Roamer refusal, the settings backup, the
+adoption by AdoptStart's four conditions, Dispose, the close through the held handle only when
+needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0 after it. The probe
+copied the C02 NWF of run set 04,
+`%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`,
+41,317,271 bytes, sha256 0944C100, into the new folder `probes\view-comments-20261005-144832`, and
+the mode, on that copy:
+
+1. opens it, hides model 0's root and paints the first clash pair with geometry red and green, so
+   the new views record a hidden state and colours
+2. makes the folders `P9 probe` and `P9 probe / P9 sub` the way the tool does, a .NET FolderItem by
+   AddCopy, the parent read fresh
+3. writes through the COM view, ApplyHideAttribs and ApplyMaterialAttribs true, into `P9 sub`, so
+   two folders deep: V1 with a comment made by `ObjectFactory(eObjectType_nwOpComment)`, its Body
+   set and then its User set, added to the view's `Comments()` before `InwSavedViewsColl.Add`. V2
+   and V3 with no comment
+4. writes a COM folder view `P9 com folder` into `P9 probe` with a comment in its `Comments()`
+   before the add, F2
+5. writes `AddComment(item, comment)`, the comment made by
+   `Document.CreateCommentWithUniqueId(body, CommentStatus.New, "Parsons NWC Federator")`, on V2
+   after its add, on the folder `P9 probe / P9 sub`, F1, and on the existing F85 viewpoint
+   `AR vs ME / Over 150mm / BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1`, L1, the first one
+   two folders deep. Each item is re-found by its names from a fresh RootItem, and a viewpoint's
+   Hidden and MaterialOverrides counts are read just before and just after the call. V3 is the
+   control for V1
+6. every body is the design's sentence, a line feed, and a marker line naming the stamp, the
+   folder path, the name and the target. Each is read back off SavedItem.Comments and compared
+   Ordinal, body and author, before any save, and again after SaveFile into
+   `p9-copy-with-comments.nwf` in the work folder, Document.Clear and TryOpenFile of that file
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-comments.ps1 -Out tools\probes\ViewpointProbe\p9-view-comments-result-20261005.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+One run at 14:48, `p9-view-comments-result-20261005.txt`, the machine name on line 1 masked by hand
+as `[machine]` and nothing else changed. Navisworks pid 596, adopted on all four conditions, line
+37. ExecuteAddInPlugin returned 0 after 67.87 s, line 48. Dispose returned and pid 596 was gone
+6.9 s later, not forced, line 161.
+
+**THE ANSWER IS YES, BY ADDCOMMENT. THE COM ROUTE BEFORE THE ADD DOES NOT KEEP THE BODY AND
+AUTHOR.** Lines 145 to 152 and 155 of the result, with the time cut from the start of each:
+
+```
+EACH TARGET:  label | route | written | write seconds | read back the same before the save | after the reopen | Hidden before edit, after edit, before save, after reopen | MaterialOverrides the same four
+   V1 | the COM view's Comments() before the add | True | 0.001 s | False | False | -2, -2, 1, 1 | -2, -2, 2, 2
+   V2 | AddComment after the add | True | 0.003 s | True | True | 1, 1, 1, 1 | 2, 2, 2, 2
+   V3 | no comment, the control | True | UNKNOWN | True | True | -2, -2, 1, 1 | -2, -2, 2, 2
+   F1 | AddComment on a folder one below the root folder | True | 0.000 s | True | True | a folder
+   F2 | the COM folder view's Comments() before the add | True | 0.000 s | False | False | a folder
+   L1 | AddComment on an existing viewpoint two folders deep | True | 0.000 s | True | True | 2, 2, 2, 2 | 4697, 4697, 4697, 4697
+(-2 is not read, -1 is a read that threw)
+P9 YES   a comment on a view two folders deep and on a folder read back with the same body and author after a save, a clear and a reopen, by at least one route each, with the counts held
+```
+
+1. AddComment kept the comment on all three items it was given: the new view two folders deep,
+   the existing F85 view two folders deep and the folder. Each read back exactly one comment, its
+   Body and Author equal to what was written, Ordinal, the line feed inside the body included, and
+   Status New. That held before the save, lines 90 to 110, and after the save, the clear and the
+   reopen, lines 122 to 142
+2. AddComment left the counts alone. V2 read Hidden 1 and MaterialOverrides 2 before the call,
+   after it, before the save and after the reopen. L1 read Hidden 2 and MaterialOverrides 4697 at
+   all four
+3. The write is cheap. AddComment returned after 0.003 s on V2 and under 0.001 s on F1 and L1,
+   lines 76, 79 and 81. Making the comment and adding it to the COM view's collection took
+   0.001 s on V1
+4. THE COM ROUTE. The COM comment collection of a new view and of a new folder view read Count 0
+   and ReadOnly False, lines 66 and 73. The factory's object is InwOpComment, InwOpComment2 and
+   InwOpComment3, line 67. The comment was kept through the add, the save and the reopen, one
+   comment each on V1 and F2. But it read back Body `Parsons NWC Federator`, the string given to
+   User, and Author `p003653K`, a value no line of the probe wrote, which reads as this machine's
+   login name, lines 86 to 87, 102 to 103, 118 to 119 and 134 to 135. The COM read of V1's
+   comment after the add said the same, User `p003653K` and Body `Parsons NWC Federator`, line 70.
+   The body the probe set never read back on either. V1 read the same Hidden and
+   MaterialOverrides counts as the plain V3, 1 and 2
+5. The tree went from 2847 viewpoints, 22 folders and 0 comments to 2850, 25 and 5, and read the
+   same after the reopen, lines 61, 111 and 143. The five comments read Id 1 to 5 in the order they
+   were made, the two COM ones included, and kept their Ids through the reopen
+6. SaveFile took 12.823 s, 41,319,461 bytes read back, line 112. Document.Clear took 0.985 s,
+   line 113. TryOpenFile of the saved file took 8.084 s, line 114. The saved copy is
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf`,
+   sha256 869DD965B03E5A82B6E3AE3DF7E70B4F2462B752B698DFA1F178AD6FCF9A0921, line 157, the copy
+   P10, P11 and P12 work on
+
+A READ THIS PROBE DID NOT ASK FOR. Each COM add into a folder took about 9 s here: V1's
+`InwSavedViewsColl.Add` 9.490 s, line 68, F2's 8.993 s, line 74, and V2 and V3 about 9.1 s and
+9.2 s each, read off the timestamps of lines 69 to 72, those two with the view's making included.
+5p measured 7.9 ms a view for twenty, and quoted the dimming round's 558 ms a view for 430 on
+1A02MM. Why these took about 9 s each, in a document of 2847 viewpoints with model 0's root
+hidden, is UNKNOWN. It bears on P18's rate and on part 6.
+
+**BADER'S THINGS.** The NWF the copy was made from read sha256 0944C100 at the start and at the
+end, lines 22 and 267. 40 registry values were put back, each read again with 0 still differing,
+lines 255 and 256. InfoCenter.log and LastSession.xml were put back reading their backup's sha256,
+lines 260 and 261. No AutoSave file was added, changed or gone, line 263. The prober also listed
+the AutoSave folder with each file's sha256 before the run and again after it: 202 files both
+times, 0 differing. The tool's own logs folder had nothing added or changed, line 264. Two
+AdskLicensingAgent processes were children of pid 596, lines 172 and 173. Pid 39832 read exited,
+line 207. Pid 40800's start time could not be read, so the probe said UNKNOWN whether it exited,
+line 206. Read again by the prober after the run, no process held pid 40800. The two
+AdskLicensingAgent processes still running, pids 9444 and 41324, are the ones 5z-n names, and the
+probe touched neither.
+
+**STILL UNKNOWN.**
+
+- why the COM route reads back the User string as the body and the login name as the author. One
+  order was tried, Body set and then User. Whether another order, or InwOpComment3's own members,
+  keep the body was not measured
+- whether a comment survives a reopen in a new Navisworks. The close was Document.Clear inside the
+  same Navisworks
+- whether AddComment on a folder at the root, or on a folder holding thousands of views, behaves
+  the same. F1 was one folder below a root folder, holding three views
+- the Comments window and the Saved Viewpoints window were not read, so what a person sees there
+  is not measured
+- the seconds of AddComment over many views. Three calls were timed, each one at most 0.003 s
+- what P10 asks of the Guid. This probe did not read it
+- why each COM add took about 9 s here
+
+**WHAT THIS DECIDES.** By the row of P9, the mark is the comment, written by
+DocumentSavedViewpoints.AddComment after the add with a comment from
+Document.CreateCommentWithUniqueId. The COM route before the add, which P6 made the first try, is
+not used, because the body written never read back. The counts held, so the mark need not be
+written before the read back. B7 is not put to Bader.
