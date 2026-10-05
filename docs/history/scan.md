@@ -5994,3 +5994,131 @@ process held pid 45468 and no AdskLicensingAgent ran.
 with the parent read fresh and the index checked by name just before. The census out and back of
 the design is still what stops a save on any difference, since a removal from the middle or from
 a folder was not measured here.
+
+## 5z-m. WHAT WORKSETS DO 1A04PK'S HV AND FP MODELS CARRY, MEASURED 2026-10-05
+
+P4 of Q114, the views by team design, part 3. SilentMiss in F131 needs, for each model of a
+group, its whole list of workset names, and the design said every 1A04PK line reads UNKNOWN
+until the HV model's list and the FP model's list are read. The question: what are the workset
+names of 1A04PK's HV model and of its FP model, each list whole? The answer is SilentMiss's first
+real input and decides the spellings of the drafted also-ask lines.
+
+HOW. The row names the census mode of 5t on a copy of 1A04PK's NWF, or F116's model worksets rows
+of a 1A04PK run since F116 merged. No .log or .tsv under `%LOCALAPPDATA%\NwcFederatorLoop\runs` or
+under steps\runs carries a model worksets row, the 1A04PK run of run set 04, run-20261004-211839,
+included. So the probe was run. The census
+mode's walk swallows a throw part way and says nothing of it, so a list it gives cannot be said to
+be whole. The new mode `worksets` of `ViewpointProbe.dll` reads the same tab and property the
+add-in's ModelFactsReader reads, the `Workset` property on the `LcRevitData_Element` tab. That is
+the category and property every workset condition of the clash XML in samples asks,
+`LcRevitData_Element` and `lcldrevit_parameter_-1002053`. Per model, the mode:
+
+1. says whether the model was read from under the loop folder
+2. walks every item under the model's root, counting the items, the items with geometry, the items
+   with the Element tab and those with a Workset value on it, and every item whose read threw.
+   Each item's read sits in its own try, and the walk's own throw is said
+3. reads each value with no catch inside, by its data type, so a failed read is counted and not
+   hidden
+4. lists every other tab carrying a property whose display or internal name holds "workset"
+5. prints each workset name in brackets with its length, the number of Element tabs carrying it,
+   and any leading or trailing space or character outside printable ASCII
+
+It calls the list WHOLE only when the walk finished, no item's read threw, and the model was read
+from under the loop folder.
+
+`tools\probes\ViewpointProbe\probe-model-worksets.ps1` is P2's `probe-test-remove.ps1` with this
+mode in place of `testremove`, `-Codes` in place of `-TestName`, `-Nwf` allowed under `runs` only,
+and nothing saved. The guard is the loop's, tools\loop\nw-guard.ps1 dot-sourced, with the Roamer
+refusal, the settings backup, the adoption by AdoptStart's four conditions, Dispose, the close
+through the held handle only when needed, and SettingsPutBack. Before the run the prober inflated
+the NWF's body and read its ten model paths. All ten were absolute paths under
+`%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C04`, so opening a copy reads nothing outside
+the loop folder. Get-Process Roamer read 0 before the run and 0 after it. The probe copied
+`%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf`,
+4,699 bytes, sha256 7ECA0ECA, into the new folder `probes\model-worksets-20261005-135921`, and
+opened the copy.
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-model-worksets.ps1 -Out tools\probes\ViewpointProbe\p4-model-worksets-result-20261005.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf -Codes HV,FP
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+One run at 13:59, `p4-model-worksets-result-20261005.txt`, the machine name on line 1 masked by
+hand as `[machine]` and nothing else changed. Navisworks pid 32088, adopted on all four conditions,
+line 37. TryOpenFile of the copy returned True after 7.192 s with 10 models, every one read from
+under the loop folder, lines 56 to 68. ExecuteAddInPlugin returned 0 after 34.94 s, line 48.
+Dispose returned and pid 32088 was gone 6.6 s later, not forced, line 291.
+
+**THE ANSWER.** Lines 70 to 286 of the result:
+
+```
+1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc     LIST WHOLE: YES
+  items 7884, with geometry 2992, with the Element tab 2409, with a Workset value 2409,
+  items whose read threw 0, walk 3.652 s
+  [ME-Ductwork]        on 2218 Element tabs
+  [ME-PIPING]          on  179
+  [PL-Drainage]        on   12
+  3 names, each plain ASCII with no leading or trailing space
+
+1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc     LIST WHOLE: YES
+  items 41130, with geometry 21422, with the Element tab 12127, with a Workset value 12127,
+  items whose read threw 0, walk 23.962 s
+  [FF-Fire Fighting]   on 12127 Element tabs
+  1 name, plain ASCII with no leading or trailing space
+
+the Workset property, in both models   display [Workset], internal
+                                       [lcldrevit_parameter_-1002053], DisplayString
+```
+
+1. The HV model carries THREE workset names, `ME-Ductwork`, `ME-PIPING` and `PL-Drainage`, and no
+   name starting HV-. The list is whole: every one of its 2409 Element tabs carries a Workset
+   value, and no read threw
+2. The FP model carries ONE workset name, `FF-Fire Fighting`, on every one of its 12127 Element
+   tabs, and no name starting FP-. The list is whole on the same terms
+3. The workset values the clash XML in samples asks, counted by the prober on 2026-10-05 in both
+   `1104-PAR_CLASH_AllInOne_25mm.xml` and `1104-PAR_CLASH_AllInOne (2) (1).xml`, are the seven 5t
+   names: `PL-Drainage` 6, `PL-Domestic Water` 6, `ME-PIPING` 5, `ME-DUCTWORK` 5, `FP-PIPING` 5,
+   `FF-FIRE FIGHTING` 2, `ME-EQUIPMENT` 1. Compared as strings with the two lists:
+   - `ME-PIPING` and `PL-Drainage` are carried by the HV model exactly as asked
+   - `ME-DUCTWORK` is carried by the HV model as `ME-Ductwork`, the same letters in another case
+   - `FF-FIRE FIGHTING` is carried by the FP model as `FF-Fire Fighting`, the same letters in
+     another case
+   - `FP-PIPING` is carried by neither model in any case. Under the design's 1.3, the text after
+     the first hyphen, `PIPING`, matches the HV model's `ME-PIPING` case blind, and matches no
+     name of the FP model
+4. Other tabs carry a property named Workset too. In the FP model 5744 Level tabs, 11859 System
+   Type tabs, 12127 Phase Created tabs and 1123 Symbol tabs carry one, with many Family and Type
+   tabs among others. The HV model has the same kinds of tab. Their values are names such as `Shared Levels and Grids-ZZ`, `Piping System Types`, `Phase Settings` and
+   `Family  : ...`. Three are names of the kind a team uses:
+   - `FF-Fire Fighting` on one FamilyInstance tab of the FP model, line 91
+   - `ME-Ductwork` on 12 FamilyInstance tabs of the HV model, line 210
+   - `ME-Links-ZZ` on 2 RevitLinkInstance tabs of the HV model, line 213
+
+   None of these is on the Element tab, so a workset condition of the clash XML does not read them
+
+**BADER'S THINGS.** The NWF the copy was made from read sha256 7ECA0ECA at the start and at the
+end, lines 22 and 379. 35 registry values were put back, each read again with 0 still differing,
+line 368. InfoCenter.log and LastSession.xml were put back reading their backup's sha256, lines
+372 to 374. No AutoSave file was added, changed or gone, line 375. The prober also listed the
+AutoSave folder with each file's sha256 before the run and again after it: 202 files both times,
+0 differing. The tool's own logs folder had nothing added or changed, line 376. Two
+AdskLicensingAgent processes, pids 50232 and 52552, children of pid 32088, read exited, lines 321
+and 322. Two others, pids 9444 and 41324, read STILL RUNNING, lines 323 and 324. They are children
+of a Revit.exe, pid 37712, that the probe did not start, and the probe touched neither of them.
+
+**STILL UNKNOWN.**
+
+- whether a Navisworks search of `LcRevitData_Element` Workset `equals` matches across case. This
+  run read the names and ran no search, so whether `ME-DUCTWORK` finds `ME-Ductwork` without a
+  correction was not measured here
+- whether the HV model holds items of the category a set filters on, which is F127's per-model
+  count. Nothing here counted categories
+- the worksets of 1A04PK's AR, EL, ME and ST models. Only HV and FP were walked
+- whether these lists hold for any NWC of 1A04PK other than the run set 04 copy of 2026-10-04.
+  The NWCs are files exported from Revit, and a new export can carry other worksets
+- whether a model of another group with the code HV or FP carries the same names
+
+**WHAT THIS DECIDES.** By the row of P4, these two lists are SilentMiss's first real input for
+1A04PK, each list whole. The HV model carries ME- and PL- names and the FP model carries one FF-
+name, so the also-ask spellings for these two models are drafted from the names above. Which
+lines are drafted is the rule's work in F131, and is not decided here.

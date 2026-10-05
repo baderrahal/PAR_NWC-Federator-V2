@@ -151,6 +151,12 @@ namespace ViewpointProbe
                             parameters.Length > 3 ? parameters[3] : null,
                             parameters.Length > 4 ? parameters[4] : null);
                     }
+                    else if (mode == "worksets")
+                    {
+                        MeasureModelWorksets(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -7739,6 +7745,312 @@ namespace ViewpointProbe
             }
 
             return onlyLeft.Count == 0 && onlyRight.Count == 0;
+        }
+
+        // ---------- P4 of Q114, scan.md 5z-m ----------
+
+        /// <summary>
+        /// The workset names of the models whose file name carries one of the codes handed
+        /// in, each list whole. Whole means every item under the model's root was visited,
+        /// no item's read threw, and the model was read from under the loop folder. The
+        /// Workset is read off the LcRevitData_Element tab the way ModelFactsReader reads
+        /// it, and every other tab is searched for a property whose name holds "workset",
+        /// so a workset carried somewhere else cannot hide.
+        /// </summary>
+        private void MeasureModelWorksets(string nwf, string codes)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(codes))
+            {
+                Say("UNKNOWN: no discipline codes were handed in");
+                return;
+            }
+
+            List<string> wanted = new List<string>();
+
+            foreach (string part in codes.Split(','))
+            {
+                if (part.Trim().Length > 0)
+                {
+                    wanted.Add(part.Trim());
+                }
+            }
+
+            Say("codes asked: " + Joined(wanted));
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count + ", document units " + document.Units);
+
+            List<int> chosen = new List<int>();
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                Model model = document.Models[m];
+                string file = model.FileName ?? string.Empty;
+                string name = Path.GetFileName(file);
+                bool under = file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase);
+                string code = string.Empty;
+
+                foreach (string w in wanted)
+                {
+                    if (name.IndexOf("-" + w + "-", StringComparison.Ordinal) >= 0)
+                    {
+                        code = w;
+                    }
+                }
+
+                Say("   model " + m + "  " + name + "  under the loop folder " + under
+                    + (code.Length > 0 ? "  READ, code " + code : string.Empty));
+
+                if (code.Length > 0)
+                {
+                    chosen.Add(m);
+                }
+            }
+
+            Say("models whose file name carries an asked code: " + chosen.Count);
+
+            foreach (int m in chosen)
+            {
+                WalkWorksetsWhole(document.Models[m], loopRoot);
+            }
+        }
+
+        private void WalkWorksetsWhole(Model model, string loopRoot)
+        {
+            string file = model.FileName ?? string.Empty;
+            bool under = file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase);
+            Say(string.Empty);
+            Say("================ " + Path.GetFileName(file) + " ================");
+
+            int items = 0;
+            int geometry = 0;
+            int elementTabs = 0;
+            int withWorkset = 0;
+            int itemErrors = 0;
+            List<string> errorNotes = new List<string>();
+            string walkThrew = string.Empty;
+            Dictionary<string, int> worksets = new Dictionary<string, int>(StringComparer.Ordinal);
+            Dictionary<string, int> elementProperty = new Dictionary<string, int>(StringComparer.Ordinal);
+            Dictionary<string, int> elsewhere = new Dictionary<string, int>(StringComparer.Ordinal);
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                using (ModelItem root = model.RootItem)
+                {
+                    foreach (ModelItem item in root.DescendantsAndSelf)
+                    {
+                        using (item)
+                        {
+                            items++;
+
+                            try
+                            {
+                                if (item.HasGeometry)
+                                {
+                                    geometry++;
+                                }
+
+                                ReadWorksetTabs(item, worksets, elementProperty, elsewhere, ref elementTabs, ref withWorkset);
+                            }
+                            catch (Exception error)
+                            {
+                                itemErrors++;
+
+                                if (errorNotes.Count < 5)
+                                {
+                                    errorNotes.Add(error.GetType().Name + ": " + error.Message);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                walkThrew = error.GetType().Name + ": " + error.Message;
+            }
+
+            Say("walk took " + Seconds(clock) + ", the walk threw: " + (walkThrew.Length == 0 ? "no" : walkThrew));
+            Say("items " + items + ", with geometry " + geometry + ", with the LcRevitData_Element tab " + elementTabs
+                + ", of those with a Workset value " + withWorkset + ", items whose read threw " + itemErrors);
+
+            foreach (string note in errorNotes)
+            {
+                Say("   an item's read threw " + note);
+            }
+
+            Say("the Workset property on the Element tab, by display name, internal name and value type:");
+
+            if (elementProperty.Count == 0)
+            {
+                Say("   none");
+            }
+
+            foreach (KeyValuePair<string, int> pair in elementProperty)
+            {
+                Say("   " + pair.Key + "  on " + pair.Value + " item(s)");
+            }
+
+            Say("a property naming workset on any OTHER tab, by tab, property and value:");
+
+            if (elsewhere.Count == 0)
+            {
+                Say("   none");
+            }
+
+            foreach (KeyValuePair<string, int> pair in elsewhere)
+            {
+                Say("   " + pair.Key + "  on " + pair.Value + " item(s)");
+            }
+
+            List<string> names = new List<string>(worksets.Keys);
+            names.Sort(StringComparer.Ordinal);
+            Say("WORKSET NAMES, " + names.Count + ", each in brackets, with its length and the Element tabs carrying it:");
+
+            foreach (string name in names)
+            {
+                Say("   [" + name + "]  length " + name.Length + "  on " + worksets[name] + "  " + Unusual(name));
+            }
+
+            bool whole = walkThrew.Length == 0 && itemErrors == 0 && under;
+            Say("LIST WHOLE: " + (whole ? "YES" : "NO")
+                + ", the walk finished " + (walkThrew.Length == 0)
+                + ", no item's read threw " + (itemErrors == 0)
+                + ", read from under the loop folder " + under);
+        }
+
+        private static void ReadWorksetTabs(
+            ModelItem item,
+            Dictionary<string, int> worksets,
+            Dictionary<string, int> elementProperty,
+            Dictionary<string, int> elsewhere,
+            ref int elementTabs,
+            ref int withWorkset)
+        {
+            using (PropertyCategoryCollection tabs = item.PropertyCategories)
+            {
+                if (tabs == null)
+                {
+                    return;
+                }
+
+                foreach (PropertyCategory tab in tabs)
+                {
+                    bool isElement = string.Equals(Words(tab.Name), ElementTabInternalName, StringComparison.OrdinalIgnoreCase);
+
+                    if (isElement)
+                    {
+                        elementTabs++;
+                    }
+
+                    using (DataPropertyCollection properties = tab.Properties)
+                    {
+                        for (int i = 0; i < properties.Count; i++)
+                        {
+                            using (DataProperty property = properties[i])
+                            {
+                                string display = Words(property.DisplayName);
+                                string internalName = Words(property.Name);
+                                string text;
+                                string type;
+
+                                if (isElement && string.Equals(display, "Workset", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    StrictText(property, out text, out type);
+                                    Bump(elementProperty, "[" + display + "] [" + internalName + "] " + type);
+
+                                    if (text.Length > 0)
+                                    {
+                                        withWorkset++;
+                                        Bump(worksets, text);
+                                    }
+                                }
+                                else if (display.IndexOf("workset", StringComparison.OrdinalIgnoreCase) >= 0
+                                    || internalName.IndexOf("workset", StringComparison.OrdinalIgnoreCase) >= 0)
+                                {
+                                    StrictText(property, out text, out type);
+                                    Bump(elsewhere, "tab [" + Words(tab.DisplayName) + "] [" + Words(tab.Name) + "] property ["
+                                        + display + "] [" + internalName + "] " + type + " value [" + text + "]");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>The value as text, letting a failed read throw so it is counted and not hidden.</summary>
+        private static void StrictText(DataProperty property, out string text, out string type)
+        {
+            using (VariantData value = property.Value)
+            {
+                if (value == null)
+                {
+                    text = string.Empty;
+                    type = "null";
+                    return;
+                }
+
+                type = value.DataType.ToString();
+
+                if (value.DataType == VariantDataType.DisplayString)
+                {
+                    text = value.ToDisplayString() ?? string.Empty;
+                }
+                else if (value.DataType == VariantDataType.IdentifierString)
+                {
+                    text = value.ToIdentifierString() ?? string.Empty;
+                }
+                else
+                {
+                    text = value.ToString() ?? string.Empty;
+                }
+            }
+        }
+
+        /// <summary>Says a leading or trailing space and any character outside printable ASCII, by code point.</summary>
+        private static string Unusual(string name)
+        {
+            List<string> notes = new List<string>();
+
+            if (name.Length > 0 && char.IsWhiteSpace(name[0]))
+            {
+                notes.Add("LEADING SPACE");
+            }
+
+            if (name.Length > 0 && char.IsWhiteSpace(name[name.Length - 1]))
+            {
+                notes.Add("TRAILING SPACE");
+            }
+
+            foreach (char c in name)
+            {
+                if (c < 0x20 || c > 0x7e)
+                {
+                    notes.Add("U+" + ((int)c).ToString("X4"));
+                }
+            }
+
+            return notes.Count == 0 ? "plain ASCII" : string.Join(", ", notes.ToArray());
         }
     }
 }
