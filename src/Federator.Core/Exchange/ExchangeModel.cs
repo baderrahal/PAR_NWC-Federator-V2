@@ -392,8 +392,8 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// The team map read beside the picked file, F131, Q114 points 1 and 2 and Q115 by its
-        /// default A, by ReadPicked wherever it reads the picked file, so the pick, the run, the
+        /// The team map read beside the picked file, F131, Q114 points 1 and 2 and Q115 answered
+        /// A, by ReadPicked wherever it reads the picked file, so the pick, the run, the
         /// open file run and both hand buttons read one map with one list of corrections. Read on
         /// its own, so a fault in one cannot leave the other unread. Null for a document read as
         /// the file stands, which no run builds from.

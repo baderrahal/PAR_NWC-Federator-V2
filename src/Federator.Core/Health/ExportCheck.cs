@@ -667,7 +667,7 @@ namespace Federator.Core.Health
             }
         }
 
-        private static string Named(ModelExport model)
+        internal static string Named(ModelExport model)
         {
             string discipline = string.IsNullOrEmpty(model.Discipline) ? "??" : model.Discipline;
             return discipline + "  " + (string.IsNullOrEmpty(model.File) ? "a model with no name" : model.File);

@@ -543,7 +543,7 @@ namespace Federator.Core.Exchange
             // accepts, so the judge of a set that finds nothing knows each, F116 and F131.
             document.Corrected(outcome.Lines(), RevitWorksets.With(list.Spellings));
 
-            // The team map beside the same file, its own file, F131, Q115 by its default A.
+            // The team map beside the same file, its own file, F131, Q115 answered A.
             document.TeamsBeside(TeamMap.Beside(path, new TeamMapSettings()));
             return document;
         }

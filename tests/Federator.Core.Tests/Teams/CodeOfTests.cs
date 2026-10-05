@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// The code and the team of a side and of a model, F131, Q116 by its default A. A side's code
+    /// The code and the team of a side and of a model, F131, Q116 answered A. A side's code
     /// is the first part of its set name that is a known code, the map's codes and those of the
     /// group's own models, and its team is the map's. A model's code is part 5 of its file name,
     /// read by ContainerName.Parse as it always was, and its team is the map's.
@@ -52,7 +52,7 @@ namespace Federator.Core.Tests
             Assert.That(CodeOf.Set("BLD-ST-AR-Walls", known, Hyphen), Is.EqualTo("ST"), "the first of two codes");
         }
 
-        /// <summary>Q117 by its default A: a set name carrying no known code is UNKNOWN, never guessed.</summary>
+        /// <summary>A set name carrying no known code gives no code, never a guess. Its team is then the folder's or UNKNOWN, Q117 answered C and A, TeamMapTests.</summary>
         [Test]
         public void ASetNameWithNoKnownCodeIsUnknown()
         {

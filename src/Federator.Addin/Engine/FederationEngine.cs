@@ -17,6 +17,7 @@ using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
+using Federator.Core.Teams;
 using Federator.Core.Views;
 using Federator.Core.Units;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
@@ -40,6 +41,14 @@ namespace Federator.Addin.Engine
         private readonly LiveLine live;
         private readonly RunLog log;
         private readonly ExchangeDocument exchange;
+
+        /// <summary>
+        /// The team map of this run, F131: the one beside the picked XML, or the one the window
+        /// kept for a run with none, Q123 answered B. Null for a press that federates no group
+        /// and so reads no model's team.
+        /// </summary>
+        private readonly TeamMap teams;
+
         private readonly ReportOptions reports;
         /// <summary>
         /// Where the reports go. Decided in the constructor for a scanned run, from the
@@ -118,15 +127,16 @@ namespace Federator.Addin.Engine
         /// normal case. Null when nothing was picked, and then no set is built and no test
         /// is created. The report folder is worked out once, from the picked folder or
         /// from beside the NWF folder, so every group in the run writes into the same
-        /// place.
+        /// place. The team map is the run's, TeamMapMemory.ForRun.
         /// </summary>
         public FederationEngine(
             Action<string> progress,
             RunLog log,
             ExchangeDocument exchange,
+            TeamMap teams,
             ReportOptions reports,
             string nwfFolder)
-            : this(progress, log, exchange, reports)
+            : this(progress, log, exchange, teams, reports)
         {
             this.reportFolder = string.IsNullOrEmpty(nwfFolder)
                     && string.IsNullOrEmpty(this.reports.ExcelFolder)
@@ -141,12 +151,13 @@ namespace Federator.Addin.Engine
         /// uses for its line, and the hand buttons write no file at all. Handing a folder
         /// in here is what once wrote to Clash Reports\Clash Reports: the window passed the
         /// report folder as the NWF folder and the constructor built Clash Reports beside
-        /// it again.
+        /// it again. The team map is null for a hand press that federates no group.
         /// </summary>
         public FederationEngine(
             Action<string> progress,
             RunLog log,
             ExchangeDocument exchange,
+            TeamMap teams,
             ReportOptions reports)
         {
             if (log == null)
@@ -157,6 +168,7 @@ namespace Federator.Addin.Engine
             this.progress = progress ?? delegate { };
             this.log = log;
             this.exchange = exchange;
+            this.teams = teams;
             this.reports = reports ?? new ReportOptions();
             this.guard = new RepeatedFailureGuard(this.reports.StopAfterFailures);
             this.reportFolder = null;
@@ -2230,6 +2242,22 @@ namespace Federator.Addin.Engine
                 {
                     log.Row("model worksets", model.File, ExportCheck.WorksetCount(model), ExportCheck.EveryWorkset(model));
                 }
+
+                // F131. Each model's team beside its code, Q116 answered A, and how many sets of
+                // its team with another code cannot reach it, FR-181, counted against the
+                // group's models so one dropped by Exports is said. No coverage count is handed
+                // in, because the count of items no set catches is F127's COVERAGE block, so no
+                // miss is named and each is counted as UNKNOWN until the coverage counts them.
+                log.Block(
+                    SilentMisses.BlockTitle + " " + Words.Or(job.Building, "this group"),
+                    teams == null
+                        ? new List<string> { "no team map was handed to this press, so no model's team was read" }
+                        : SilentMisses.Find(
+                            exchange == null ? null : exchange.Sets,
+                            exports,
+                            teams,
+                            new ViewpointSettings().SetNameSeparator,
+                            null).GroupLines(document.Models.Count));
             }
             catch (Exception error)
             {

@@ -279,7 +279,7 @@ and 6 does not read as broken.
 ### The teams of the picked file, F131
 
 - THE TEAM MAP IS ONE PROJECT'S DATA, IN A FILE OF ITS OWN BESIDE THE PICKED XML, Q114
-  points 1 and 2 decided by Bader on 2026-10-04 and Q115 by its default A. Its name is the
+  points 1 and 2 decided by Bader on 2026-10-04 and Q115 answered A on 2026-10-05. Its name is the
   XML's without the extension and `TeamMapSettings.Suffix`, default `.teams.txt`, one full
   path tested with File.Exists and never a search, joined by `ListFile.PathBeside`, the join
   the list of corrections is found by. It is read by `ListFile`, the one way a list beside
@@ -291,9 +291,18 @@ and 6 does not read as broken.
   Bader's map by a test. Nothing in src names a team or a code
 - ONE TEAM A LINE, `team: name | code | code`, in the order a pair is written, point 12, and
   `size-folder: team | team`, the teams whose pairs carry the size folder, point 11. Any other
-  code is a team of its own named by its code, Bader's rule. A name with no code is
-  `TeamMapSettings.UnknownTeam`, UNKNOWN, Q117 by its default A, the one word
-  `ViewpointSettings.DefaultUnknownDiscipline` reads. Codes compare Ordinal, nothing trimmed
+  code is a team of its own named by its code, Bader's rule. Codes compare Ordinal, nothing
+  trimmed
+- A SET NAME WITH NO CODE TAKES THE TEAM ITS FOLDER NAMES, AND UNKNOWN WHERE NONE DOES, Q117
+  answered C, and A where the XML's set tree names no team, by Bader on 2026-10-05.
+  `TeamMap.TeamOfSet`: the code's team where the set name carries one, `CodeOf.Set`, and where
+  it carries none the folder above the set in the clash XML's set tree whose whole name is a
+  team of the map, Ordinal, the folder nearest the set first, so the client's BLD-Security
+  Devices in the folder Electrical is Electrical. Where no folder does, and with no map, it is
+  `TeamMapSettings.UnknownTeam`, UNKNOWN, the one word `ViewpointSettings.DefaultUnknownDiscipline`
+  reads. NAMED IN THE LOG: `TeamMap.SetLines` gives a TEAMS line for each set of the picked XML
+  whose name carries no code of the map, with its team or UNKNOWN, said after the map's own
+  lines, and none where the map maps no team
 - A MAP THAT CANNOT BE READ IS SAID, NEVER HALF READ AND NEVER A THROW. A line it does not
   know, a code on two teams or twice on one line, a team named twice, a team with no code,
   an empty name or code, a code holding any space or a character a person cannot see, a team
@@ -302,11 +311,24 @@ and 6 does not read as broken.
   UTF-8, make the whole map unread with its line and why. The character is named the way
   `InvisibleDifference` names it, TAB (U+0009), because a code holding one never equals the
   code read off a file name and would make a team of its own while the map read as whole, F131
-  on the breaker's finding of its first attempt. Missing, unread, holding no team or with no XML
-  picked, Q123 by its default A, the map maps nothing: every code is a team of its own and no
-  pair carries the size folder. The TEAMS lines and the window's grey line say which,
-  `TeamMap.Lines` and `WindowLine`, in words held in Core
-- WHERE THE TEAM APPLIES, Q116 by its default A. The views read the team, and the log,
+  on the breaker's finding of its first attempt. Missing, unread or holding no team the map
+  maps nothing: every code is a team of its own and no pair carries the size folder. The TEAMS
+  lines and the window's grey line say which, `TeamMap.Lines` and `WindowLine`, in words held in
+  Core
+- A RUN WITH NO CLASH XML READS THE MAP THE WINDOW KEPT, Q123 answered B by Bader on
+  2026-10-05: the window keeps the last team map used, for runs with no XML, and the log names
+  it. `TeamMapMemory`, kept the way `FolderMemory` keeps the picker folders, is one file,
+  `team-map.txt`, beside the logs, holding ONE FULL PATH, `kept: path`, read by `ListFile`, so
+  the map read is the file a person keeps beside the XML and never a copy of it. A run with an
+  XML keeps its map only where it was read whole with a team, `Remember`, so a pick with no map
+  or a map that cannot be read never takes the teams away from the next run with no XML, and
+  the line says which map stays. `TeamMap.Kept` reads the kept map at its path, said as the
+  kept map on every TEAMS line and on the grey line. None kept, it maps nothing and says so.
+  A memory that cannot be read, a line it does not know, a second map or a path that is not a
+  full one, is said and maps nothing, never a throw. `TeamMapMemory.ForRun` is the one rule for
+  the map of a run: the picked XML's, carried in `ExchangeDocument.Teams` by `ReadPicked`, or the
+  kept one where no XML is picked, and a document not read by `ReadPicked` is refused
+- WHERE THE TEAM APPLIES, Q116 answered A by Bader on 2026-10-05. The views read the team, and the log,
   COVERAGE and the form write it beside the code, `TeamMap.CodeWithTeam`, HV in Mechanical.
   The grouping, the one-discipline judgement, the alignment and export checks and the
   workbook keep the code, so HV against PL is still created and lands in Mechanical vs
@@ -333,15 +355,26 @@ and 6 does not read as broken.
   as `ModelExport.NotCounted` is, it is UNKNOWN, and a sum beside one not taken is a lower
   bound whose line says at least. A set asking no category by its whole name is counted on a
   line saying no count can confirm it
+- A SET WITH NO CODE IS JUDGED BY THE TEAM ITS FOLDER NAMES, Q117 answered C, against every
+  model of that team, each having a code other than its none, and its SILENT MISS line says it
+  is in that team by its folder. The SILENT MISS line writes the set's code with its team
+  beside it, as it writes the model's
 - WHAT IS NOT JUDGED IS SAID BESIDE THE ALL CLEAR. A set whose name carries no code the map or
-  a model of the group knows, the client's BLD-Security Devices, and a model whose code was not
-  read have a team that is UNKNOWN, so they are judged against nothing, and `SilentMisses.Lines`
+  a model of the group knows and whose folders name no team, and a model whose code was not
+  read, have a team that is UNKNOWN, so they are judged against nothing, and `SilentMisses.Lines`
   counts each kind on a line of its own. WHERE NO PAIR IS JUDGED THE LINE SAYS SO AND WHY, NEVER
   THE ALL CLEAR: no set or no model handed in, a list holding none read the same as no list, or
   no model of the group of a set's team with another code. F131 on the breaker's finding of its
   second attempt, an empty list of models printing the all clear over nothing read. A condition
   whose value is empty asks no name and closes nothing, as every reader of workset values skips
   one
+- EACH MODEL'S LINE CARRIES ITS TEAM AND HOW MANY SETS CANNOT REACH IT, the group's TEAMS block,
+  `SilentMisses.GroupLines`: one line a model, its code with its team beside it, Q116 answered
+  A, and how many of the sets of its team with another code cannot reach it, could not be
+  judged, or that all can reach it, so a model missed by many sets is one line. A model of the
+  group not handed in, dropped where its worksets could not be read, is counted against the
+  group's model count. No model line where no map maps a team. Until F127's coverage count is
+  handed in, no miss is named and each is counted as UNKNOWN until the coverage counts them
 - THE CORRECTION FOR A SILENT MISS IS DRAFTED AND NEVER APPLIED, one also-ask line of the
   list of corrections, `also-ask: value | spelling | spelling`, the value and every spelling
   of the model whose text after its prefix is the value's, compared case blind. The prefix is
@@ -1109,7 +1142,9 @@ and 6 does not read as broken.
   cased, and the code is whichever hyphen separated part of a set name is exactly one of
   them, read by `CodeOf.Set` since F131. A SET NAME CARRYING NO KNOWN CODE IS REPORTED AND NEVER GUESSED: the client's own
   file holds BLD-Security Devices, which breaks the pattern its siblings follow, so the
-  folder says UNKNOWN and the count goes in the block
+  folder says UNKNOWN and the count goes in the block. Bader's answer C to Q117 gives such a
+  set the team its folder names, `TeamMap.TeamOfSet`, which the TEAMS lines and the silent
+  miss judge read already and these folders read once F114 puts the team pairs in their place
 - THE SMALL SERVICE RULE IN F85 IS ITS OWN AND IS NOT INHERITED FROM F72a. A service at or
   under the threshold stays out of the tree, decided on the SIZE and never on the status.
   F72a is off by default, and it leaves a service against another service exactly as it

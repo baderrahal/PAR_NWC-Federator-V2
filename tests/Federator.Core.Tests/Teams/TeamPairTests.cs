@@ -62,7 +62,7 @@ namespace Federator.Core.Tests
             Assert.That(PairOfCodes("LS", string.Empty).CarriesSizeFolder, Is.False);
         }
 
-        /// <summary>Q123 by its default A: with no map every code is a team of its own, the pair is of codes by name, and none carries the size folder.</summary>
+        /// <summary>With no map every code is a team of its own, the pair is of codes by name, and none carries the size folder.</summary>
         [Test]
         public void WithNoMapAPairIsOfCodesAndCarriesNoSizeFolder()
         {

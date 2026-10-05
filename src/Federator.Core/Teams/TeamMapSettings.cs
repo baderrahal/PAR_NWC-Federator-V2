@@ -4,7 +4,7 @@ namespace Federator.Core.Teams
 {
     /// <summary>
     /// Where the team map of a picked clash XML is kept, and the word a code no name carries
-    /// reads as, Q114 points 1 and 2 and Q115 answered by default A: the map is a plain file of
+    /// reads as, Q114 points 1 and 2 and Q115 answered A on 2026-10-05: the map is a plain file of
     /// its own BESIDE the XML and named after it, the XML's file name without its extension
     /// followed by a suffix, so a.xml is read with a.teams.txt in the same folder, beside the
     /// list of corrections of Q113 and never inside it, so a fault in one list cannot leave the
@@ -22,9 +22,9 @@ namespace Federator.Core.Teams
 
         /// <summary>
         /// The team of a side or a model whose name carries no discipline code this tool can
-        /// read. The client's own matrix holds one such set, BLD-Security Devices, and Q117's
-        /// default A keeps it UNKNOWN and named, never guessed. The one place the word is
-        /// set, ViewpointSettings.DefaultUnknownDiscipline reads it.
+        /// read and whose folders in the set tree name no team, Q117 answered C and A, named and
+        /// never guessed. The one place the word is set, ViewpointSettings.DefaultUnknownDiscipline
+        /// reads it.
         /// </summary>
         public const string DefaultUnknownTeam = "UNKNOWN";
 
