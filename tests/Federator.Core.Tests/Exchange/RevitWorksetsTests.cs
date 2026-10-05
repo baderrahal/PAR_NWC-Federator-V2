@@ -120,7 +120,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheListInsideCoreIsExactlyTheNamesMeasuredOnC02()
         {
-            IList<string> list = RevitWorksets.All();
+            IList<string> list = RevitWorksets.With(null);
             IList<string> measured = MeasuredOnC02();
 
             Assert.That(measured.Count, Is.EqualTo(39), "5t's own count, scan.md");
@@ -160,7 +160,7 @@ namespace Federator.Core.Tests
         [Test]
         public void BothSpellingsOfTheFourWorksetsTheBuildingsSpellTwoWaysAreMeasured()
         {
-            List<string> list = new List<string>(RevitWorksets.All());
+            List<string> list = new List<string>(RevitWorksets.With(null));
             list.AddRange(TheProjectsList().Worksets);
 
             foreach (string name in new[]

@@ -671,7 +671,7 @@ namespace Federator.Core.Tests
         public void TheCommittedFileAsksEveryMeasuredSpellingWithItsCategoryInEveryGroup()
         {
             SetBuildPlan plan = SetBuildPlan.From(new ExchangeReader().ReadFile(Samples.CorrectedMatrix()));
-            List<string> measured = new List<string>(RevitWorksets.All());
+            List<string> measured = new List<string>(RevitWorksets.With(null));
 
             foreach (string spelling in TheList().Worksets)
             {
@@ -1642,7 +1642,7 @@ namespace Federator.Core.Tests
 
             string none = Words(MatrixCorrections.Apply(
                 WorksetSet("BLD-XX-Nowhere", "XX-NOWHERE"), null, null, null,
-                ValueRewrite.For(new[] { "XX-NOWHERE" }, RevitWorksets.All())));
+                ValueRewrite.For(new[] { "XX-NOWHERE" }, RevitWorksets.With(null))));
 
             Assert.That(none, Does.Contain("no model measured so far in this project carries a workset spelled that way but for its case"));
             Assert.That(none, Does.Not.Contain("in this run"));
@@ -2051,7 +2051,7 @@ namespace Federator.Core.Tests
                 // A file read as it stands is judged against the names inside Core alone.
                 Assert.That(
                     SetBuildPlan.From(new ExchangeReader().ReadFile(Samples.Matrix())).Worksets,
-                    Is.EqualTo(RevitWorksets.All()));
+                    Is.EqualTo(RevitWorksets.With(null)));
             }
             finally
             {

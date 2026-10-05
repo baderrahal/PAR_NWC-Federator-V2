@@ -44,12 +44,6 @@ namespace Federator.Core.Exchange
         private static List<string> known;
         private static List<string[]> decided;
 
-        /// <summary>Every workset the list names, in the order the file wrote them.</summary>
-        public static IList<string> All()
-        {
-            return new List<string>(Load());
-        }
-
         /// <summary>
         /// Every workset spelling measured for a picked clash XML: the names this list holds, then
         /// the workset lines of the project's list beside that XML, each once, Q113. THE ONE PLACE
