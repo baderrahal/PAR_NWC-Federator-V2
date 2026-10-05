@@ -257,12 +257,16 @@ namespace Federator.Addin.Engine
                             keys.Clear();
                         }
 
+                        // FR-013. Sides that could not be counted are UNKNOWN for every set and
+                        // never zero, and Core refuses every leftover of this document for it.
                         int pointing;
                         found.Add(new DocumentSet(
                             here,
                             child.DisplayName,
                             keys,
-                            sides.TryGetValue(child.DisplayName, out pointing) ? pointing : 0));
+                            sides == null
+                                ? DocumentSet.SidesNotCounted
+                                : sides.TryGetValue(child.DisplayName, out pointing) ? pointing : 0));
 
                         continue;
                     }
@@ -281,10 +285,17 @@ namespace Federator.Addin.Engine
         /// How many clash test SIDES resolve to each set, by set name. Read once and not
         /// once per set, because walking 1830 tests per set is the O(n squared) shape that
         /// once built 1.7 million native handles in one group.
+        ///
+        /// NULL WHERE THE COUNT COULD NOT BE TAKEN, FR-013, the whole read or one side. A side
+        /// left uncounted makes a set look UNUSED, which is what removes it, so an empty map
+        /// here removed every set the file no longer names with the box on and orphaned the
+        /// tests pointing at it. The comment over the old catch argued the opposite.
         /// </summary>
         private Dictionary<string, int> SidesBySetName(Document document)
         {
             Dictionary<string, int> sides = new Dictionary<string, int>(StringComparer.Ordinal);
+            int notRead = 0;
+            Exception first = null;
 
             try
             {
@@ -299,8 +310,18 @@ namespace Federator.Addin.Engine
                         continue;
                     }
 
-                    CountSide(document, test.SelectionA, sides);
-                    CountSide(document, test.SelectionB, sides);
+                    foreach (Autodesk.Navisworks.Api.Clash.ClashSelection side in new[] { test.SelectionA, test.SelectionB })
+                    {
+                        try
+                        {
+                            CountSide(document, side, sides);
+                        }
+                        catch (Exception error)
+                        {
+                            notRead++;
+                            first = first ?? error;
+                        }
+                    }
                 }
             }
             catch (Exception error)
@@ -308,9 +329,19 @@ namespace Federator.Addin.Engine
                 log.Failure(
                     "reading what the clash tests point at",
                     error,
-                    "no set is removed or renamed and the run goes on");
+                    "how many sides point at each set is UNKNOWN, so no set is removed or renamed and the run goes on");
 
-                return new Dictionary<string, int>(StringComparer.Ordinal);
+                return null;
+            }
+
+            if (notRead > 0)
+            {
+                log.Failure(
+                    "reading what " + notRead + " clash test side(s) point at",
+                    first,
+                    "how many sides point at each set is UNKNOWN, so no set is removed or renamed and the run goes on");
+
+                return null;
             }
 
             return sides;
@@ -319,31 +350,22 @@ namespace Federator.Addin.Engine
         private static void CountSide(
             Document document, Autodesk.Navisworks.Api.Clash.ClashSelection side, Dictionary<string, int> sides)
         {
-            try
-            {
-                SelectionSourceCollection sources = side.Selection.SelectionSources;
+            SelectionSourceCollection sources = side.Selection.SelectionSources;
 
-                if (sources == null || sources.Count == 0)
+            if (sources == null || sources.Count == 0)
+            {
+                return;
+            }
+
+            using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[0]))
+            {
+                if (pointed == null)
                 {
                     return;
                 }
 
-                using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[0]))
-                {
-                    if (pointed == null)
-                    {
-                        return;
-                    }
-
-                    string name = pointed.DisplayName ?? string.Empty;
-                    sides[name] = sides.ContainsKey(name) ? sides[name] + 1 : 1;
-                }
-            }
-            catch (Exception)
-            {
-                // A side this tool cannot read is a side it does not count, which is the
-                // safe direction: an uncounted side makes a set look SAFER to remove, so
-                // it is never counted and the refusal errs towards leaving things alone.
+                string name = pointed.DisplayName ?? string.Empty;
+                sides[name] = sides.ContainsKey(name) ? sides[name] + 1 : 1;
             }
         }
 

@@ -24,6 +24,12 @@ namespace Federator.Core.Sets
     public sealed class LeftoverSet
     {
         internal LeftoverSet(string path, string name, int sides, LeftoverAction action, string twinPath, string twinName)
+            : this(path, name, sides, action, twinPath, twinName, false)
+        {
+        }
+
+        internal LeftoverSet(
+            string path, string name, int sides, LeftoverAction action, string twinPath, string twinName, bool sidesUnknown)
         {
             Path = path ?? string.Empty;
             Name = name ?? string.Empty;
@@ -31,7 +37,14 @@ namespace Federator.Core.Sets
             Action = action;
             TwinPath = twinPath ?? string.Empty;
             TwinName = twinName ?? string.Empty;
+            SidesUnknown = sidesUnknown;
         }
+
+        /// <summary>
+        /// The clash test sides of its document could not all be counted, so it is refused
+        /// whatever its own count reads, FR-013.
+        /// </summary>
+        public bool SidesUnknown { get; private set; }
 
         public string Path { get; private set; }
 
@@ -50,6 +63,13 @@ namespace Federator.Core.Sets
         /// <summary>What the log says about it, naming what points at it every time.</summary>
         public string Line()
         {
+            if (SidesUnknown)
+            {
+                return Path + "   the picked file does not name it and the clash test sides of this NWF could not all"
+                    + " be counted. NOTHING IS DONE, because a set that looks unused may be pointed at by a side"
+                    + " that was not counted, and removing it would leave that side resolving to nothing";
+            }
+
             switch (Action)
             {
                 case LeftoverAction.Remove:
@@ -82,6 +102,12 @@ namespace Federator.Core.Sets
             Sides = sides;
         }
 
+        /// <summary>
+        /// A side count that could not be taken, FR-013. It is UNKNOWN and never zero, because
+        /// zero sides is what removes a set.
+        /// </summary>
+        public const int SidesNotCounted = -1;
+
         public string Path { get; private set; }
 
         public string Name { get; private set; }
@@ -89,7 +115,14 @@ namespace Federator.Core.Sets
         /// <summary>What it asks, in the same keys `SetDrift` compares on, IN ORDER.</summary>
         public IList<string> ConditionKeys { get; private set; }
 
+        /// <summary>How many clash test sides resolve to it, or below zero where they could not be counted.</summary>
         public int Sides { get; private set; }
+
+        /// <summary>Whether its sides were counted.</summary>
+        public bool SidesCounted
+        {
+            get { return Sides >= 0; }
+        }
     }
 
     /// <summary>
@@ -151,10 +184,29 @@ namespace Federator.Core.Sets
                 }
             }
 
+            // FR-013. ONE SET WHOSE SIDES COULD NOT BE COUNTED REFUSES EVERY LEFTOVER, because
+            // the twin a leftover would be renamed into, or the leftover itself, may be pointed
+            // at by a side nobody counted, and an uncounted side made a set look unused.
+            bool everyCounted = true;
+
+            foreach (DocumentSet set in inDocument)
+            {
+                if (set != null && !set.SidesCounted)
+                {
+                    everyCounted = false;
+                }
+            }
+
             foreach (DocumentSet set in inDocument)
             {
                 if (set == null || named.Contains(set.Name))
                 {
+                    continue;
+                }
+
+                if (!everyCounted)
+                {
+                    leftovers.Add(new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null, null, true));
                     continue;
                 }
 
@@ -237,10 +289,15 @@ namespace Federator.Core.Sets
             int removed = 0;
             int renamed = 0;
             int refused = 0;
+            int uncounted = 0;
 
             foreach (LeftoverSet one in leftovers)
             {
-                if (one.Action == LeftoverAction.Remove)
+                if (one.SidesUnknown)
+                {
+                    uncounted++;
+                }
+                else if (one.Action == LeftoverAction.Remove)
                 {
                     removed++;
                 }
@@ -258,6 +315,11 @@ namespace Federator.Core.Sets
             lines.Add("   " + removed + " nothing points at, so they are removed");
             lines.Add("   " + renamed + " are the working half of a pair, so the unused half goes and this one takes its name");
             lines.Add("   " + refused + " are pointed at with no twin, so nothing is done about them");
+
+            if (uncounted > 0)
+            {
+                lines.Add("   " + uncounted + " are left alone because the clash test sides of this NWF could not all be counted");
+            }
 
             foreach (LeftoverSet one in leftovers)
             {

@@ -213,6 +213,55 @@ namespace Federator.Core.Tests.Sets
         }
 
         /// <summary>
+        /// A SIDE COUNT THAT COULD NOT BE TAKEN IS NOT ZERO SIDES, FR-013. When the clash tests
+        /// could not be read, every set read 0 sides and every set the file no longer names was
+        /// removed, orphaning the tests that point at it. Such a set is refused and said.
+        /// </summary>
+        [Test]
+        public void ALeftoverWhoseSidesCouldNotBeCountedIsRefusedAndNeverRemoved()
+        {
+            IList<LeftoverSet> leftovers = SetLeftovers.For(
+                new List<DocumentSet> { Set("BLD-Old-Thing", DocumentSet.SidesNotCounted, Asks) },
+                new List<string> { "BLD-Something-Else" });
+
+            Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse));
+            Assert.That(leftovers[0].SidesUnknown, Is.True);
+            Assert.That(leftovers[0].Line(), Does.Contain("could not all be counted"));
+            Assert.That(leftovers[0].Line(), Does.Contain("NOTHING IS DONE"));
+        }
+
+        /// <summary>
+        /// ONE SET WHOSE SIDES COULD NOT BE COUNTED REFUSES EVERY LEFTOVER OF ITS DOCUMENT,
+        /// FR-013, because the twin a leftover would be renamed into, or the leftover itself, may
+        /// be pointed at by a side that was not counted. A set at 0 counted sides is not removed
+        /// and a working half is not renamed.
+        /// </summary>
+        [Test]
+        public void OneSetWhoseSidesCouldNotBeCountedRefusesEveryLeftover()
+        {
+            IList<LeftoverSet> leftovers = SetLeftovers.For(
+                new List<DocumentSet>
+                {
+                    Set("BLD-Broken", 60, Asks),
+                    Set("BLD-Corrected", DocumentSet.SidesNotCounted, Asks),
+                    Set("BLD-Unused", 0, AsksSomethingElse)
+                },
+                new List<string> { "BLD-Corrected" });
+
+            Assert.That(leftovers.Count, Is.EqualTo(2));
+
+            foreach (LeftoverSet leftover in leftovers)
+            {
+                Assert.That(leftover.Action, Is.EqualTo(LeftoverAction.Refuse), leftover.Name);
+                Assert.That(leftover.SidesUnknown, Is.True, leftover.Name);
+            }
+
+            Assert.That(
+                Joined(SetLeftovers.Lines(leftovers)),
+                Does.Contain("2 are left alone because the clash test sides of this NWF could not all be counted"));
+        }
+
+        /// <summary>
         /// RUNNING TWICE OVER THE SAME NWF CHANGES NOTHING THE SECOND TIME. After the
         /// rename the document holds one set, carrying the name the file asks for, so
         /// there is no leftover at all.
