@@ -185,11 +185,14 @@ and 6 does not read as broken.
   `revit-worksets.txt` inside Core holds the C02 census alone, the 39 names measured before
   F116. Q113 D keeps all four categories of Q103 in this project's list
 - THE CENSUS AND THE LIST ARE PUT TOGETHER IN ONE PLACE, `RevitWorksets.With`, F116 on the
-  readings of the Q113 pass. The corrections take their spellings from it and the EMPTY SETS
-  judge is handed the same ones, through `ExchangeDocument.Worksets` and
-  `SetBuildPlan.Worksets` to `EmptySets.Why`, so a spelling a MATRIX line says was measured is
-  never one that block calls carried by no model. A file read as it stands is judged against
-  the census alone
+  readings of the Q113 pass. The case corrections take their spellings from it with the
+  list's workset lines, and the EMPTY SETS judge is handed it with every spelling the list
+  names, `MatrixCorrectionList.Spellings`: the workset lines, then every spelling an also-ask
+  line accepts beside its value, F131 on the readers' finding of its first attempt. It
+  reaches `EmptySets.Why` through `ExchangeDocument.Worksets` and `SetBuildPlan.Worksets`, so
+  a spelling a MATRIX line says was measured or accepted is never one that block calls
+  carried by no model. The value of an also-ask line is what a set asks, measured or not, and
+  is not among them. A file read as it stands is judged against the census alone
 - A WORKSET VALUE IS CORRECTED ONLY WHERE THE LIST NAMES A SPELLING OF IT, the same but for
   its case, `MatrixCorrectionList.NamesASpellingOf`, F116 on the breaker's finding: a value is
   corrected only from what the list beside the XML says. It is then asked in every spelling
@@ -293,9 +296,13 @@ and 6 does not read as broken.
   `ViewpointSettings.DefaultUnknownDiscipline` reads. Codes compare Ordinal, nothing trimmed
 - A MAP THAT CANNOT BE READ IS SAID, NEVER HALF READ AND NEVER A THROW. A line it does not
   know, a code on two teams or twice on one line, a team named twice, a team with no code,
-  an empty name or code, a code holding a space, a team name with a space at either end, a
-  size-folder line naming a team no team line names, or bytes that are not UTF-8, make the
-  whole map unread with its line and why. Missing, unread, holding no team or with no XML
+  an empty name or code, a code holding any space or a character a person cannot see, a team
+  name with a space at either end or such a character anywhere, on a team line or a
+  size-folder line, a size-folder line naming a team no team line names, or bytes that are not
+  UTF-8, make the whole map unread with its line and why. The character is named the way
+  `InvisibleDifference` names it, TAB (U+0009), because a code holding one never equals the
+  code read off a file name and would make a team of its own while the map read as whole, F131
+  on the breaker's finding of its first attempt. Missing, unread, holding no team or with no XML
   picked, Q123 by its default A, the map maps nothing: every code is a team of its own and no
   pair carries the size folder. The TEAMS lines and the window's grey line say which,
   `TeamMap.Lines` and `WindowLine`, in words held in Core
@@ -316,19 +323,35 @@ and 6 does not read as broken.
 - A SET THAT CANNOT REACH A MODEL OF ITS OWN TEAM IS A SILENT MISS, FR-181, Q114 point 3,
   `SilentMisses`: a set of team T and code C and a model of team T with another code, where
   every group of the set asks, not negated, a workset the model's whole list does not carry
-  or a Source File its file name does not hold. A model whose worksets were not all read is
-  counted as not judged, never called missed. It is NAMED only where the coverage count of
-  Q112 request 2 shows the model holding items of the set's categories that no set catches,
-  and without that count it is counted on one line that says UNKNOWN
+  or a Source File its file name does not hold. Whether a workset asked finds a carried name
+  is `ExportCheck.WorksetFinds`, the one place the export check reads it too. The file name
+  STANDS IN for the Source File of the model's items, which is not read, and the line of such
+  a miss says so. A model whose worksets were not all read is counted as not judged, never
+  called missed. It is NAMED only where the coverage count of Q112 request 2 shows the model
+  holding items of the set's categories that no set catches, and without that count it is
+  counted on one line that says UNKNOWN. A COUNT NOT TAKEN IS NEVER A ZERO: null or below zero,
+  as `ModelExport.NotCounted` is, it is UNKNOWN, and a sum beside one not taken is a lower
+  bound whose line says at least. A set asking no category by its whole name is counted on a
+  line saying no count can confirm it
+- WHAT IS NOT JUDGED IS SAID BESIDE THE ALL CLEAR. A set whose name carries no code the map or
+  a model of the group knows, the client's BLD-Security Devices, and a model whose code was not
+  read have a team that is UNKNOWN, so they are judged against nothing, and `SilentMisses.Lines`
+  counts each kind on a line of its own. No sets or no models handed in is said, never an all
+  clear
 - THE CORRECTION FOR A SILENT MISS IS DRAFTED AND NEVER APPLIED, one also-ask line of the
   list of corrections, `also-ask: value | spelling | spelling`, the value and every spelling
-  of the model whose text after its prefix is the value's, compared case blind. Bader
+  of the model whose text after its prefix is the value's, compared case blind. The prefix is
+  split by `WorksetDisagreements.BodyOf`, where `PrefixOf` splits it, and never at the set
+  name separator, which is another setting. Bader
   approves it by copying it into the list. Read there, every group asking one of its
   spellings is written once for each, through `AskEverySpelling`, the way Q102 asks every
   spelling, after every other correction. A spelling on two lines unreads the list, because
   two lines sharing a spelling ask each value where the other is or move the file on every
   run. A line written twice is kept once, and a list with no also-ask line says on its first
-  MATRIX line what it said before F131. A Source File gets no drafted line
+  MATRIX line what it said before F131. A Source File gets no drafted line. It is THE ONE WAY
+  a value also asks another spelling, the Or row of Q69: `ValueOrRow`, a row nothing in src
+  called, was deleted with its overload of `MatrixCorrections.Apply` on F131's second attempt,
+  and its tests drive an also-ask line
 
 ## Rules the code holds
 
